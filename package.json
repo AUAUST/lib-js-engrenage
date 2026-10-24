@@ -1,0 +1,51 @@
+{
+  "name": "@auaust/engrenage",
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "version": "0.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Shared configurations and tooling.",
+  "sideEffects": false,
+  "author": {
+    "name": "Aurian Aubert",
+    "email": "aurian@auaust.ch",
+    "url": "https://auaust.ch"
+  },
+  "repository": {
+    "url": "git+https://github.com/AUAUST/lib-js-engrenage.git"
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "build": "pnpm run build:tsdown && tsc --noEmit --project tsconfig.dist.json && vitest run --config vitest.config.ts --typecheck --mode build --",
+    "build:tsdown": "tsdown --config-loader tsx",
+    "coverage": "vitest run --coverage",
+    "test": "vitest run --config vitest.config.ts --typecheck -- && pnpm run typecheck",
+    "typecheck": "echo 'Typechecking...' && tsc --noEmit && echo 'All good!'",
+    "watch": "vitest --config vitest.config.ts --typecheck --",
+    "ci:prepare": "pnpm run typecheck && pnpm run build",
+    "ci:publish": "changeset publish"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/core": "^0.18.5",
+    "@changesets/cli": "^3.0.3",
+    "@types/node": "^26.6.5",
+    "@vitest/coverage-istanbul": "^5.0.5",
+    "publint": "^0.3.25",
+    "tsdown": "^0.23.1",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.22.0",
+      "onFail": "download"
+    }
+  }
+}
