@@ -9,7 +9,11 @@ export { sourceSyntaxRestrictions } from "#eslint/presets/sourceSyntaxRestrictio
 export { syntaxRestrictions } from "#eslint/presets/syntaxRestrictions";
 export { toolConfigFiles } from "#eslint/presets/toolConfigFiles";
 export { typescriptFiles } from "#eslint/presets/typescriptFiles";
-export type { EslintConventions } from "#eslint/types/EslintConventions";
+export type { Config } from "#eslint/types/Config";
+export type { Conventions } from "#eslint/types/Conventions";
 export type { ImportPattern } from "#eslint/types/ImportPattern";
+export type { Plugin } from "#eslint/types/Plugin";
+export type { Rule } from "#eslint/types/Rule";
+export type { Rules } from "#eslint/types/Rules";
 export type { SyntaxRestriction } from "#eslint/types/SyntaxRestriction";
 export { filesIn } from "#eslint/utils/filesIn";

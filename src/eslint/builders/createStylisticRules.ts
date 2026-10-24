@@ -1,8 +1,9 @@
-import stylistic from "@stylistic/eslint-plugin";
 import { typescriptFiles } from "#eslint/presets/typescriptFiles";
+import type { Config } from "#eslint/types/Config";
+import stylistic from "@stylistic/eslint-plugin";
 import { defineConfig } from "eslint/config";
 
-export function createStylisticRules() {
+export function createStylisticRules(): Config[] {
   return defineConfig([
     {
       files: [typescriptFiles],

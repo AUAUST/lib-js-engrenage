@@ -21,7 +21,9 @@
     "#eslint/*": "./src/eslint/*.ts",
     "#prettier": "./src/prettier/index.ts",
     "#prettier/*": "./src/prettier/*.ts",
+    "#types/*": "./src/types/*.ts",
     "#typescript/*": "./src/typescript/*.ts",
+    "#utils/*": "./src/utils/*.ts",
     "#vite/*": "./src/vite/*.ts"
   },
   "scripts": {
@@ -88,6 +90,7 @@
     "src"
   ],
   "exports": {
+    ".": "./dist/index.mjs",
     "./eslint": "./dist/eslint/index.mjs",
     "./prettier": "./dist/prettier/index.mjs",
     "./typescript": "./dist/typescript/index.mjs",

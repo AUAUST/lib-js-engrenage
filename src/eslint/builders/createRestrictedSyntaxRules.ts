@@ -1,15 +1,20 @@
-import { map } from "@auaust/primitive-kit/arrays";
 import { sourceSyntaxRestrictions } from "#eslint/presets/sourceSyntaxRestrictions";
 import { syntaxRestrictions } from "#eslint/presets/syntaxRestrictions";
 import { typescriptFiles } from "#eslint/presets/typescriptFiles";
-import type { EslintConventions } from "#eslint/types/EslintConventions";
+import type { Config } from "#eslint/types/Config";
+import type { SyntaxRestriction } from "#eslint/types/SyntaxRestriction";
 import { filesIn } from "#eslint/utils/filesIn";
+import type { Directory } from "#types/Directory";
+import { map } from "@auaust/primitive-kit/arrays";
 import { defineConfig } from "eslint/config";
 
 export function createRestrictedSyntaxRules({
   sourceDirectories,
   syntaxRestrictions: projectRestrictions = [],
-}: Pick<EslintConventions, "sourceDirectories" | "syntaxRestrictions">) {
+}: {
+  sourceDirectories: Directory[];
+  syntaxRestrictions?: SyntaxRestriction[];
+}): Config[] {
   return defineConfig([
     {
       files: [typescriptFiles],

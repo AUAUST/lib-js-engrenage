@@ -1,9 +1,10 @@
 import standardConfig, {
   createPrettierConfig,
   prettierOptions,
+  type Config,
 } from "@auaust/engrenage/prettier";
 import { format } from "prettier";
-import { describe, expect, test } from "vitest";
+import { describe, expect, expectTypeOf, test } from "vitest";
 
 describe("createPrettierConfig", () => {
   test("formats with the shared standard", async () => {
@@ -20,6 +21,7 @@ describe("createPrettierConfig", () => {
       printWidth: 100,
     });
 
+    expectTypeOf(config).toEqualTypeOf<Config>();
     expect(config).toEqual({
       ...prettierOptions,
       printWidth: 100,

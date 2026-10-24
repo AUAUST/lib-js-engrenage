@@ -1,14 +1,18 @@
-import { entries } from "@auaust/toolkit/object";
+import type { Directory } from "#types/Directory";
+import type { PackageName } from "#types/PackageName";
 import type { PathAlias } from "#typescript/types/PathAlias";
+import type { Paths } from "#typescript/types/Paths";
+import { resolvePath } from "#utils/resolvePath";
+import { entries } from "@auaust/toolkit/object";
 import { globSync } from "node:fs";
-import { relative, resolve } from "node:path";
+import { relative } from "node:path";
 
 function toPosixPath(path: string): string {
   return path.replaceAll("\\", "/");
 }
 
 function toEntryName(
-  packageName: string,
+  packageName: PackageName,
   alias: string,
   isDirectoryEntry: boolean,
 ): string {
@@ -19,10 +23,12 @@ function toEntryName(
 }
 
 export function resolvePathAliases(
-  packageName: string,
-  paths: Record<string, readonly string[]>,
-  root: string,
+  packageName: PackageName,
+  paths: Paths,
+  root: Directory | URL,
 ): PathAlias[] {
+  const rootPath = resolvePath(root);
+
   const aliases = new Map<string, PathAlias>();
   const entryPaths = new Map<string, string>();
 
@@ -36,7 +42,9 @@ export function resolvePathAliases(
     }
 
     for (const target of targets) {
-      const pattern = toPosixPath(relative(root, resolve(root, target)));
+      const pattern = toPosixPath(
+        relative(rootPath, resolvePath(rootPath, target)),
+      );
 
       const wildcard = pattern.indexOf("*");
       const prefix = pattern.slice(0, wildcard);
@@ -45,7 +53,7 @@ export function resolvePathAliases(
       const isDirectoryEntry = hasPattern && pattern.endsWith("*/index.ts");
 
       const files = globSync(pattern, {
-        cwd: root,
+        cwd: rootPath,
       }).sort();
 
       for (const file of files) {

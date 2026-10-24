@@ -1,5 +1,5 @@
-import { createViteAliases } from "@auaust/engrenage/vite";
-import { describe, expect, test } from "vitest";
+import { createViteAliases, type Alias } from "@auaust/engrenage/vite";
+import { describe, expect, expectTypeOf, test } from "vitest";
 
 describe("createViteAliases", () => {
   test("maps each alias exactly to its resolved path", () => {
@@ -14,6 +14,7 @@ describe("createViteAliases", () => {
       "/project",
     );
 
+    expectTypeOf(createViteAliases).returns.toEqualTypeOf<Alias[]>();
     expect(alias?.replacement).toBe("/project/src/group/index.ts");
     expect(alias?.find).toBeInstanceOf(RegExp);
     expect("@scope/package/group").toMatch(alias?.find ?? "");

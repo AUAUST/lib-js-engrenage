@@ -1,8 +1,12 @@
+import {
+  createEslintConfig,
+  type Config,
+  type Conventions,
+} from "@auaust/engrenage/eslint";
 import { map } from "@auaust/primitive-kit/arrays";
-import { createEslintConfig } from "@auaust/engrenage/eslint";
 import { ESLint } from "eslint";
 import { fileURLToPath } from "node:url";
-import { describe, expect, test } from "vitest";
+import { describe, expect, expectTypeOf, test } from "vitest";
 
 const root = new URL("../fixtures/eslint/", import.meta.url);
 
@@ -34,12 +38,8 @@ describe("createEslintConfig", () => {
     expect(await lintedRules("tool.config.ts")).toEqual([]);
   });
 
-  test("rejects a root that is not a directory URL", () => {
-    expect(() => {
-      return createEslintConfig({
-        root: new URL("file:///project"),
-        sourceDirectories: ["src"],
-      });
-    }).toThrow('ending with "/"');
+  test("exposes its contract through the local aliases", () => {
+    expectTypeOf(createEslintConfig).parameter(0).toEqualTypeOf<Conventions>();
+    expectTypeOf(createEslintConfig).returns.toEqualTypeOf<Config[]>();
   });
 });

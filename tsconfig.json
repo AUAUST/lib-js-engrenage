@@ -6,7 +6,8 @@
     "declarationMap": true,
     "outDir": "dist",
     "paths": {
-      "@auaust/engrenage/*": ["./src/*/index.ts"]
+      "@auaust/engrenage/*": ["./src/*/index.ts"],
+      "@auaust/engrenage": ["./src/index.ts"]
     },
     "types": ["node"]
   },

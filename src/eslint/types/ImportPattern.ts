@@ -1,4 +1,4 @@
-export type ImportPattern = {
+export interface ImportPattern {
   regex: string;
   message: string;
-};
+}

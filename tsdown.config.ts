@@ -1,8 +1,8 @@
-import { resolvePathAliases } from "./src/typescript/index";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { defineConfig } from "tsdown";
 import initialPackageJson from "./package.json" with { type: "json" };
+import { resolvePathAliases } from "./src/typescript/index";
 import tsconfig from "./tsconfig.json" with { type: "json" };
 
 const root = import.meta.dirname;

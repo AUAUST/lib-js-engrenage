@@ -1,6 +1,10 @@
-import { resolvePathAliases } from "@auaust/engrenage/typescript";
+import {
+  resolvePathAliases,
+  type PathAlias,
+  type Paths,
+} from "@auaust/engrenage/typescript";
 import { fileURLToPath } from "node:url";
-import { describe, expect, test } from "vitest";
+import { describe, expect, expectTypeOf, test } from "vitest";
 
 const root = fileURLToPath(
   new URL("../fixtures/typescript/aliases/", import.meta.url),
@@ -17,6 +21,8 @@ describe("resolvePathAliases", () => {
       root,
     );
 
+    expectTypeOf(resolvePathAliases).parameter(1).toEqualTypeOf<Paths>();
+    expectTypeOf(aliases).toEqualTypeOf<PathAlias[]>();
     expect(aliases).toEqual([
       {
         alias: "@scope/package/group",

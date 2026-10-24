@@ -1,15 +1,16 @@
+import type { Directory } from "#types/Directory";
 import type { PathAlias } from "#typescript/types/PathAlias";
-import { resolve } from "node:path";
-import type { Alias } from "vite";
+import { resolvePath } from "#utils/resolvePath";
+import type { Alias } from "#vite/types/Alias";
 
 export function createViteAliases(
   pathAliases: PathAlias[],
-  root: string,
+  root: Directory | URL,
 ): Alias[] {
   return pathAliases.map(({ alias, path }) => {
     return {
       find: new RegExp(`^${RegExp.escape(alias)}$`),
-      replacement: resolve(root, path),
+      replacement: resolvePath(root, path),
     };
   });
 }

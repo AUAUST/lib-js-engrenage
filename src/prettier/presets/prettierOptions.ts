@@ -1,4 +1,4 @@
-import type { Config } from "prettier";
+import type { Config } from "#prettier/types/Config";
 
 export const prettierOptions = {
   printWidth: 80,
