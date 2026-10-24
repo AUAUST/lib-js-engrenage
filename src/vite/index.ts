@@ -1,1 +1,1 @@
-export { createViteAliases } from "./builders/createViteAliases";
+export { createViteAliases } from "#vite/builders/createViteAliases";
