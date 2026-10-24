@@ -1,18 +1,14 @@
 {
+  "extends": "./src/typescript/presets/base.json",
   "compilerOptions": {
-    "declaration": false,
+    "declaration": true,
+    "declarationDir": "dist/types",
     "declarationMap": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "outDir": "dist",
-    "paths": {},
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "ESNext",
-    "types": ["node"],
-    "verbatimModuleSyntax": true
+    "paths": {
+      "@auaust/engrenage/*": ["./src/*/index.ts"]
+    },
+    "types": ["node"]
   },
   "exclude": ["node_modules", "dist"]
 }

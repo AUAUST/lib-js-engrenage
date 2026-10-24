@@ -1,0 +1,4 @@
+{
+  "extends": "@auaust/engrenage/typescript/presets/base.json",
+  "files": ["index.ts"]
+}

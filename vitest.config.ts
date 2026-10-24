@@ -1,35 +1,37 @@
-import { rmSync } from "fs";
+import { resolvePathAliases } from "./src/typescript/index";
+import { createViteAliases } from "./src/vite/index";
+import { rmSync } from "node:fs";
+import { resolve } from "node:path";
 import { defineConfig } from "vitest/config";
-import {
-  getCompileTimeVariables,
-  getOutDir,
-  getViteDevAliases,
-} from "./codegen/index.js";
+import packageJson from "./package.json" with { type: "json" };
+import tsconfig from "./tsconfig.json" with { type: "json" };
 
-const define = getCompileTimeVariables();
+const root = import.meta.dirname;
+
+function getSourceAliases() {
+  const pathAliases = resolvePathAliases(
+    packageJson.name,
+    tsconfig.compilerOptions.paths,
+    root,
+  );
+
+  return createViteAliases(pathAliases, root);
+}
 
 export default defineConfig(({ mode }) => {
-  // If vitest is ran with `--mode build`, the tests will be
-  // run against the dist folder rather than the src folder.
   const shouldTestDist = mode === "build";
 
-  const alias: Array<{ find: string | RegExp; replacement: string }> = [];
-
   if (!shouldTestDist) {
-    const dist = getOutDir(true);
-
-    try {
-      rmSync(dist, { recursive: true });
-    } catch {}
-
-    alias.push(...getViteDevAliases());
+    rmSync(resolve(root, tsconfig.compilerOptions.outDir), {
+      recursive: true,
+      force: true,
+    });
   }
 
   return {
     resolve: {
-      alias,
+      alias: shouldTestDist ? [] : getSourceAliases(),
     },
-    define,
     test: {
       coverage: {
         provider: "istanbul",

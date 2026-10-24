@@ -16,31 +16,74 @@
   "repository": {
     "url": "git+https://github.com/AUAUST/lib-js-engrenage.git"
   },
+  "imports": {
+    "#eslint/*": "./src/eslint/*.ts",
+    "#typescript/*": "./src/typescript/*.ts",
+    "#vite/*": "./src/vite/*.ts"
+  },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "build": "pnpm run build:tsdown && tsc --noEmit --project tsconfig.dist.json && vitest run --config vitest.config.ts --typecheck --mode build --",
     "build:tsdown": "tsdown --config-loader tsx",
     "coverage": "vitest run --coverage",
+    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "test": "vitest run --config vitest.config.ts --typecheck -- && pnpm run typecheck",
     "typecheck": "echo 'Typechecking...' && tsc --noEmit && echo 'All good!'",
     "watch": "vitest --config vitest.config.ts --typecheck --",
-    "ci:prepare": "pnpm run typecheck && pnpm run build",
+    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run build",
     "ci:publish": "changeset publish"
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-import-x": "^4.17.1",
+    "typescript-eslint": "^8.72.0"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",
+    "@auaust/primitive-kit": "^0.42.2",
+    "@auaust/toolkit": "^0.5.1",
+    "@changesets/changelog-github": "^1.0.1",
     "@changesets/cli": "^3.0.3",
     "@types/node": "^26.6.5",
     "@vitest/coverage-istanbul": "^5.0.5",
+    "eslint": "^10.13.0",
+    "jiti": "^2.7.0",
     "publint": "^0.3.25",
     "tsdown": "^0.23.1",
-    "typescript": "^7.0.2",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.5",
     "vitest": "^5.0.5"
+  },
+  "inlinedDependencies": {
+    "@auaust/primitive-kit": "0.42.2",
+    "@auaust/toolkit": "0.5.1"
+  },
+  "peerDependencies": {
+    "eslint": "^10.0.0",
+    "typescript": "^6.0.0",
+    "vite": "^8.0.0"
+  },
+  "peerDependenciesMeta": {
+    "eslint": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    }
   },
   "files": [
     "dist",
     "src"
   ],
+  "exports": {
+    "./eslint": "./dist/eslint/index.mjs",
+    "./typescript": "./dist/typescript/index.mjs",
+    "./vite": "./dist/vite/index.mjs",
+    "./typescript/presets/*.json": "./src/typescript/presets/*.json"
+  },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
