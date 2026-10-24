@@ -1,4 +1,5 @@
-import { createSyncCommand } from "@auaust/engrenage/agents";
+import sync from "#bin/engrenage/agents/sync";
+import { Command } from "@commander-js/extra-typings";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -13,7 +14,7 @@ const emptyBlock = [
 let root: string;
 
 async function runSync(...args: string[]) {
-  await createSyncCommand().parseAsync(["--root", root, ...args], {
+  await sync(new Command("sync")).parseAsync(["--root", root, ...args], {
     from: "user",
   });
 }
@@ -37,7 +38,7 @@ afterEach(() => {
   process.exitCode = undefined;
 });
 
-describe("createSyncCommand", () => {
+describe("engrenage agents sync", () => {
   test("fills the blocks so a later check passes", async () => {
     await runSync();
 

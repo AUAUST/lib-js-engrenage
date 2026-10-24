@@ -10,7 +10,7 @@ const root = import.meta.dirname;
 const packageJsonUrl = new URL("./package.json", import.meta.url);
 
 const binEntries = {
-  "bin/engrenage": "bin/engrenage.ts",
+  "bin/engrenage": "bin/engrenage/index.ts",
 };
 
 const fileExports = {
@@ -74,7 +74,12 @@ export default defineConfig((_, { ci }) => {
       ignoreRules: ["cjs-resolves-to-esm"],
     },
     deps: {
-      onlyBundle: ["@auaust/toolkit", "@auaust/primitive-kit"],
+      onlyBundle: [
+        "@auaust/toolkit",
+        "@auaust/primitive-kit",
+        "commander",
+        "@commander-js/extra-typings",
+      ],
     },
     failOnWarn: ci,
     hooks: {

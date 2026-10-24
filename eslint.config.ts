@@ -3,6 +3,6 @@ import { createEslintConfig } from "./src/eslint/index";
 export default createEslintConfig({
   root: new URL("./", import.meta.url),
   sourceDirectories: ["src", "bin"],
-  defaultExportFiles: ["src/prettier/index.ts"],
+  defaultExportFiles: ["src/prettier/index.ts", "bin/**/*.ts"],
   ignores: ["tests/fixtures/**"],
 });

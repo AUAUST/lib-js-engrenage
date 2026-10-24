@@ -19,9 +19,11 @@
   },
   "imports": {
     "#agents/*": "./src/agents/*.ts",
+    "#bin/*": "./bin/*.ts",
     "#eslint/*": "./src/eslint/*.ts",
     "#prettier": "./src/prettier/index.ts",
     "#prettier/*": "./src/prettier/*.ts",
+    "#support/*": "./src/support/*.ts",
     "#types/*": "./src/types/*.ts",
     "#typescript/*": "./src/typescript/*.ts",
     "#utils/*": "./src/utils/*.ts",
@@ -31,23 +33,21 @@
     "engrenage": "./dist/bin/engrenage.mjs"
   },
   "scripts": {
-    "agents:sync": "tsx bin/engrenage.ts agents sync",
     "build": "pnpm run build:tsdown && tsc --noEmit --project tsconfig.dist.json && vitest run --config vitest.config.ts --typecheck --mode build --",
     "build:tsdown": "tsdown --config-loader tsx",
     "coverage": "vitest run --coverage",
+    "engrenage": "node bin/engrenage/index.ts",
     "format": "prettier --write --ignore-unknown",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "test": "vitest run --config vitest.config.ts --typecheck -- && pnpm run typecheck",
     "typecheck": "echo 'Typechecking...' && tsc --noEmit && echo 'All good!'",
     "watch": "vitest --config vitest.config.ts --typecheck --",
-    "ci:prepare": "pnpm run typecheck && pnpm run lint && tsx bin/engrenage.ts agents sync --check && pnpm run build",
+    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage agents sync --check && pnpm run build",
     "ci:publish": "changeset publish"
   },
   "dependencies": {
-    "@commander-js/extra-typings": "^15.0.0",
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
-    "commander": "~15.0.0",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import-x": "^4.17.1",
     "typescript-eslint": "^8.72.0"
@@ -58,8 +58,10 @@
     "@auaust/toolkit": "^0.5.1",
     "@changesets/changelog-github": "^1.0.1",
     "@changesets/cli": "^3.0.3",
+    "@commander-js/extra-typings": "^15.0.0",
     "@types/node": "^26.6.5",
     "@vitest/coverage-istanbul": "^5.0.5",
+    "commander": "~15.0.0",
     "eslint": "^10.13.0",
     "jiti": "^2.7.0",
     "prettier": "^3.9.10",
@@ -72,7 +74,9 @@
   },
   "inlinedDependencies": {
     "@auaust/primitive-kit": "0.42.2",
-    "@auaust/toolkit": "0.5.1"
+    "@auaust/toolkit": "0.5.1",
+    "@commander-js/extra-typings": "15.0.0",
+    "commander": "15.0.0"
   },
   "peerDependencies": {
     "eslint": "^10.0.0",

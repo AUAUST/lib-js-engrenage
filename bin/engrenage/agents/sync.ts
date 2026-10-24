@@ -1,8 +1,9 @@
 import { syncAgentFiles } from "#agents/utils/syncAgentFiles";
-import { Command, Option } from "@commander-js/extra-typings";
+import { defineCommand } from "#support/commander/utils/defineCommand";
+import { Option } from "@commander-js/extra-typings";
 
-export function createSyncCommand() {
-  return new Command("sync")
+export default defineCommand((command) => {
+  return command
     .description(
       "Fill the engrenage blocks of the agent files from the shared fragments.",
     )
@@ -27,4 +28,4 @@ export function createSyncCommand() {
         process.exitCode = 1;
       }
     });
-}
+});
