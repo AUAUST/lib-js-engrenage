@@ -9,7 +9,13 @@ const root = import.meta.dirname;
 
 const packageJsonUrl = new URL("./package.json", import.meta.url);
 
-const typescriptPresets = {
+const binEntries = {
+  "bin/engrenage": "bin/engrenage.ts",
+};
+
+const fileExports = {
+  "./agents/rules/*.md": "./src/agents/presets/rules/*.md",
+  "./agents/sections/*.md": "./src/agents/presets/sections/*.md",
   "./typescript/presets/*.json": "./src/typescript/presets/*.json",
 };
 
@@ -26,7 +32,10 @@ function getEntries(): Record<string, string> {
     entries[name] = path;
   }
 
-  return entries;
+  return {
+    ...entries,
+    ...binEntries,
+  };
 }
 
 async function assertPackageJsonUnchanged() {
@@ -48,10 +57,11 @@ export default defineConfig((_, { ci }) => {
     exports: {
       enabled: true,
       packageJson: false,
+      exclude: [/^bin\//],
       customExports(exports) {
         return {
           ...exports,
-          ...typescriptPresets,
+          ...fileExports,
         };
       },
     },

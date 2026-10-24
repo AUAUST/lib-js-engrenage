@@ -18,6 +18,7 @@
     "url": "git+https://github.com/AUAUST/lib-js-engrenage.git"
   },
   "imports": {
+    "#agents/*": "./src/agents/*.ts",
     "#eslint/*": "./src/eslint/*.ts",
     "#prettier": "./src/prettier/index.ts",
     "#prettier/*": "./src/prettier/*.ts",
@@ -26,8 +27,12 @@
     "#utils/*": "./src/utils/*.ts",
     "#vite/*": "./src/vite/*.ts"
   },
+  "bin": {
+    "engrenage": "./dist/bin/engrenage.mjs"
+  },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "agents:sync": "tsx bin/engrenage.ts agents sync",
     "build": "pnpm run build:tsdown && tsc --noEmit --project tsconfig.dist.json && vitest run --config vitest.config.ts --typecheck --mode build --",
     "build:tsdown": "tsdown --config-loader tsx",
     "coverage": "vitest run --coverage",
@@ -36,7 +41,7 @@
     "test": "vitest run --config vitest.config.ts --typecheck -- && pnpm run typecheck",
     "typecheck": "echo 'Typechecking...' && tsc --noEmit && echo 'All good!'",
     "watch": "vitest --config vitest.config.ts --typecheck --",
-    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run build",
+    "ci:prepare": "pnpm run typecheck && pnpm run lint && tsx bin/engrenage.ts agents sync --check && pnpm run build",
     "ci:publish": "changeset publish"
   },
   "dependencies": {
@@ -91,10 +96,13 @@
   ],
   "exports": {
     ".": "./dist/index.mjs",
+    "./agents": "./dist/agents/index.mjs",
     "./eslint": "./dist/eslint/index.mjs",
     "./prettier": "./dist/prettier/index.mjs",
     "./typescript": "./dist/typescript/index.mjs",
     "./vite": "./dist/vite/index.mjs",
+    "./agents/rules/*.md": "./src/agents/presets/rules/*.md",
+    "./agents/sections/*.md": "./src/agents/presets/sections/*.md",
     "./typescript/presets/*.json": "./src/typescript/presets/*.json"
   },
   "devEngines": {
