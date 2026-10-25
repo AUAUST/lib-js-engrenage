@@ -2,18 +2,16 @@
 
 Apply throughout the repository. Follow these rules in changed code; preserve unrelated work.
 
-<!-- engrenage:sections/instruction-maintenance -->
+<!-- @reference @auaust/engrenage/agents/sections/instruction-maintenance.md -->
 
 ## Instruction maintenance
 
 - Never modify AGENTS.md or `.claude/rules/` unless the user explicitly asks to change agent instructions. Finishing a feature, refactor or new convention does not authorize it; mention the suggested change in your report instead.
-- Blocks between `<!-- engrenage:… -->` markers are generated from `@auaust/engrenage/agents` by `engrenage agents sync`. Never edit them in place: add project rules outside the blocks, or change the shared source in `@auaust/engrenage`.
+- A `<!-- @reference <reference> -->` marker opens a block that `engrenage agents sync` fills with the referenced file, up to the next `@reference` or `<!-- @end -->` marker. Never edit blocks in place: add project rules after an `@end` marker, or change the referenced source.
 - AGENTS.md holds only rules every agent needs. Surface-specific detail lives in `.claude/rules/`, one file per surface. Neither holds feature documentation, file inventories, API details or records of recent changes.
 - When a rule becomes mechanically enforced, list it under the matching "Enforced by tooling" line and keep prose only for what tools cannot check.
 
-<!-- /engrenage:sections/instruction-maintenance -->
-
-<!-- engrenage:sections/precedence -->
+<!-- @reference @auaust/engrenage/agents/sections/precedence.md -->
 
 ## Precedence and conflicts
 
@@ -21,9 +19,7 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 - When a request contradicts these rules, would create debt, or asks for an inappropriate abstraction, stop before implementing it: explain the issue and propose an alternative. If the user confirms, implement it as a one-time exception, never a precedent, and keep every other rule.
 - When a conflict between rules, code and request has no clear resolution, ask instead of guessing.
 
-<!-- /engrenage:sections/precedence -->
-
-<!-- engrenage:sections/decision-protocol -->
+<!-- @reference @auaust/engrenage/agents/sections/decision-protocol.md -->
 
 ## Decision protocol
 
@@ -35,7 +31,7 @@ Pause on real choices: ask the questions and wait for the answers before continu
 - When answers arrive, resume the same task. If they change earlier assumptions, pause again with a new batch. Silence never settles a real choice.
 - Real choices include new infrastructure patterns, ownership boundaries, shared lifecycles, new role directories or namespaces, and unresolved behavioral policy. Propose the smallest coherent prerequisite instead of a temporary bypass or a silently created framework.
 
-<!-- /engrenage:sections/decision-protocol -->
+<!-- @end -->
 
 ## Project and tools
 
@@ -47,9 +43,11 @@ Pause on real choices: ask the questions and wait for the answers before continu
 
 - Every directory in `src/` with an `index.ts` is a public entry `@auaust/engrenage/<name>`, discovered from the tsconfig `paths`. `src/index.ts` is the root entry.
 - `src/types/` and `src/utils/` hold global types and helpers shared by several entries; the root entry exposes them. Anything not specific to one tool belongs there.
-- Inside an entry, code lives in `builders/` (functions producing configuration), `presets/` (static configuration and shipped files), `types/` and `utils/`.
-- `bin/` holds CLI entry points. They are built into `dist/bin/` as package binaries and never exported; their logic lives in the matching entry.
-- Shipped non-code files (tsconfig presets, agent fragments) stay in `src/` and are exported through the file exports in `tsdown.config.ts`.
+- Inside an entry, code lives in `builders/` (functions producing configuration), `types/` and `utils/`.
+- `config/<tool>/` holds the AUAUST configuration as pure data: rule values, presets, agent fragments, tsconfig files. It contains no logic and imports only types, which ESLint enforces; `src/` owns all logic, and each entry barrel re-exports its `config/` directory through a generated `// @reference config/<tool>` block.
+- `src/support/` holds internal helpers for the package's own tooling and is never exported.
+- `bin/<program>/` defines a CLI as files: each directory is a command group with an `index.ts`, each other file a leaf command, all default-exporting `defineCommand` and registering children with `registerSubcommands`. Commands only parse arguments and call entry utilities.
+- Shipped non-code files stay in `config/` and are exported through the file exports in `tsdown.config.ts`.
 
 ## Modules and exports
 
@@ -58,14 +56,14 @@ Pause on real choices: ask the questions and wait for the answers before continu
 - Name types after their tool's concept without a tool prefix (`Config`, `Rules`, `Conventions`). Use the global `Directory`, `File` and `Glob` for path-like values, adding `URL` to the union where a URL is accepted.
 - Compose builder arguments from those types inline; never derive them by picking from a larger options type.
 - Package exports are generated by tsdown from the entries and file exports. Run `pnpm build:tsdown` after adding an entry and commit the resulting `package.json`; never hand-edit `exports`.
-- `@auaust/toolkit` and `@auaust/primitive-kit` are devDependencies bundled into `dist`, so engrenage never depends on them at install time. Tool packages consumers configure (`eslint`, `prettier`, `typescript`, `vite`) are optional peer dependencies.
+- `@auaust/toolkit`, `@auaust/primitive-kit` and commander are devDependencies bundled into `dist`, so engrenage never depends on them at install time. Tool packages consumers configure (`eslint`, `prettier`, `typescript`, `vite`) are optional peer dependencies.
 
 ## Agent fragments
 
-- `src/agents/presets/sections/` holds shared AGENTS.md sections and `src/agents/presets/rules/` shared `.claude/rules` files. They must stay project-agnostic: no paths, commands or tools specific to one repository.
-- After changing a fragment, run `pnpm agents:sync`, which also updates this repository's own copies.
+- `config/agents/sections/` holds shared AGENTS.md sections and `config/agents/rules/` shared `.claude/rules` files. They must stay project-agnostic: no paths, commands or tools specific to one repository.
+- After changing a fragment, run `pnpm engrenage agents sync`, which also updates this repository's own copies.
 
-<!-- engrenage:sections/implementation -->
+<!-- @reference @auaust/engrenage/agents/sections/implementation.md -->
 
 ## Implementation
 
@@ -83,9 +81,7 @@ Pause on real choices: ask the questions and wait for the answers before continu
 - Keep secrets in `.env` (documented by `.env.example`), out of source, logs and runtime code.
 - Propose missing or outdated skills, MCP servers, scripts, dependencies or abstractions when they would help. Never add, remove or upgrade them without the user's approval.
 
-<!-- /engrenage:sections/implementation -->
-
-<!-- engrenage:sections/typescript -->
+<!-- @reference @auaust/engrenage/agents/sections/typescript.md -->
 
 ## TypeScript
 
@@ -94,22 +90,20 @@ Pause on real choices: ask the questions and wait for the answers before continu
 - Do not add `any`, casts, assertions, `@ts-*` directives or `eslint-disable` comments without a supported invariant. Disabled lint rules are not permission. Never add entries to `eslint-suppressions.json` unless explicitly requested.
 - Validate data at external boundaries. Never hand-edit generated code, bundles or WebAssembly; change their sources and regenerate.
 
-<!-- /engrenage:sections/typescript -->
-
-<!-- engrenage:sections/auaust-libraries -->
+<!-- @reference @auaust/engrenage/agents/sections/auaust-libraries.md -->
 
 ## AUAUST libraries
 
 - Reuse `@auaust/toolkit` and `@auaust/primitive-kit` instead of reimplementing their helpers; prefer toolkit when both provide one.
 - Shared tooling configuration comes from `@auaust/engrenage`. Extend its builders and presets locally instead of copying or redefining them.
 
-<!-- /engrenage:sections/auaust-libraries -->
+<!-- @end -->
 
 ## Code conventions
 
 - Code style: `.claude/rules/code-style.md`.
 
-<!-- engrenage:sections/verification -->
+<!-- @reference @auaust/engrenage/agents/sections/verification.md -->
 
 ## Verification
 
@@ -118,12 +112,13 @@ Pause on real choices: ask the questions and wait for the answers before continu
 - Format only changed files, never the whole repository.
 - Report actual results and blockers, including unavailable integrations and skipped checks. Never weaken compiler or lint settings to hide failures.
 
-<!-- /engrenage:sections/verification -->
+<!-- @end -->
 
 ## Commands
 
 - `pnpm lint` and `pnpm typecheck` for source changes; `pnpm test` runs tests in source mode and type checking.
 - `pnpm build` for entries, exports, imports or bundling changes. It builds, validates packaging with publint and attw, and reruns the tests against `dist/`.
 - `pnpm format <files>` on changed files only.
-- `pnpm agents:sync` after changing agent fragments; CI checks it with `--check`.
+- `pnpm engrenage agents sync` after changing agent fragments; CI checks it with `--check`.
+- `pnpm engrenage codegen barrels [names…]` after adding, renaming or removing a `config/` module; CI checks it with `--check`.
 - Add a changeset for any change that should be released.
