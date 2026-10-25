@@ -16,7 +16,7 @@ describe("defineTsdownConfig", () => {
 
     const callback = vi.fn((config: ResolvedConfig) => {
       return {
-        bundle: [config.package.name ?? ""],
+        bundle: [config.packageJson.name],
       };
     });
 

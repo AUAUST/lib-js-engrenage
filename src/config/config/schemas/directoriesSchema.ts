@@ -1,12 +1,7 @@
-import { optional, strictObject } from "valibot";
+import { array, type GenericSchema } from "valibot";
 
-import { sourceDirectoriesSchema } from "#config/config/schemas/sourceDirectoriesSchema";
-import { testDirectoriesSchema } from "#config/config/schemas/testDirectoriesSchema";
+import { directorySchema } from "#config/config/schemas/directorySchema";
+import type { Directories } from "#types/Directory";
 
-export const directoriesSchema = optional(
-  strictObject({
-    source: sourceDirectoriesSchema,
-    test: testDirectoriesSchema,
-  }),
-  {},
-);
+export const directoriesSchema: GenericSchema<Directories> =
+  array(directorySchema);

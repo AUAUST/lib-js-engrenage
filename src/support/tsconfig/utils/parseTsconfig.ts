@@ -7,7 +7,6 @@ import {
   type FormatDiagnosticsHost,
 } from "typescript";
 
-import { resolve } from "#support/filesystem/utils/resolve";
 import type { File } from "#types/File";
 
 const formatHost: FormatDiagnosticsHost = {
@@ -20,10 +19,8 @@ function toError(diagnostics: readonly Diagnostic[]): Error {
   return new Error(formatDiagnostics(diagnostics, formatHost));
 }
 
-export function readCompilerOptions(tsconfig: File | URL): CompilerOptions {
-  const tsconfigPath = resolve(tsconfig);
-
-  const parsed = getParsedCommandLineOfConfigFile(tsconfigPath, undefined, {
+export function parseTsconfig(path: File): CompilerOptions {
+  const parsed = getParsedCommandLineOfConfigFile(path, undefined, {
     ...sys,
     onUnRecoverableConfigFileDiagnostic(diagnostic) {
       throw toError([diagnostic]);
@@ -31,7 +28,7 @@ export function readCompilerOptions(tsconfig: File | URL): CompilerOptions {
   });
 
   if (!parsed) {
-    throw new Error(`Unable to read ${tsconfigPath}`);
+    throw new Error(`Unable to read ${path}`);
   }
 
   if (parsed.errors.length > 0) {

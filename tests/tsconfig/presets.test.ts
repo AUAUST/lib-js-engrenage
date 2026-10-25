@@ -3,8 +3,9 @@ import { createRequire } from "node:module";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { readCompilerOptions } from "@auaust/engrenage/typescript";
 import { describe, expect, test } from "vitest";
+
+import { createTsconfig } from "#support/tsconfig/utils/createTsconfig";
 
 const tsc = createRequire(import.meta.url).resolve("typescript/lib/tsc.js");
 
@@ -39,7 +40,10 @@ describe("tsconfig presets", () => {
   test("resolves library output paths inside the consumer", () => {
     const library = getFixture("library");
 
-    const compilerOptions = readCompilerOptions(join(library, "tsconfig.json"));
+    const { compilerOptions } = createTsconfig({
+      root: library,
+      path: join(library, "tsconfig.json"),
+    });
 
     expect(compilerOptions).toMatchObject({
       declaration: false,

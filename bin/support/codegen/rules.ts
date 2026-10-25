@@ -9,10 +9,10 @@ export default defineCommand((command) => {
     )
     .option("--check", "report outdated files without writing them", false)
     .action(async ({ check }) => {
-      const { root } = await loadConfig();
+      const config = await loadConfig();
 
       const outdated = await syncRuleTypes({
-        root,
+        config,
         check,
       });
 

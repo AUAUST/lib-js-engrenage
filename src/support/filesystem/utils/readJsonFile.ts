@@ -1,12 +1,9 @@
-import { readFile } from "#support/filesystem/utils/readFile";
+import { readFileSync } from "node:fs";
+
 import type { File } from "#types/File";
 
 export function readJsonFile(path: File): unknown {
-  const json = readFile(path);
-
-  if (json === undefined) {
-    return null;
-  }
+  const json = readFileSync(path, "utf8");
 
   try {
     return JSON.parse(json);

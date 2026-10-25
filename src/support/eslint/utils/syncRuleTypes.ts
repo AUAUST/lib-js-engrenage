@@ -16,13 +16,12 @@ import { flatConfigsToPlugins, pluginsToRulesDTS } from "eslint-typegen/core";
 import { builtinRules } from "eslint/use-at-your-own-risk";
 import { format, resolveConfig } from "prettier";
 
-import { loadConfig } from "#config/utils/loadConfig";
 import { createEslintConfig } from "#eslint/builders/createEslintConfig";
 import { rulesFile, ruleSourcesDirectory } from "#support/eslint/constants";
 import { normalizeRuleSchema } from "#support/eslint/utils/normalizeRuleSchema";
 import { resolve } from "#support/filesystem/utils/resolve";
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Plugin } from "#eslint/types/Plugin";
-import type { Directory } from "#types/Directory";
 import type { File, Files } from "#types/File";
 
 const generatedHeader =
@@ -34,9 +33,9 @@ interface RuleSource {
   plugin: Plugin;
 }
 
-async function readRuleSources(root: string): Promise<RuleSource[]> {
+async function readRuleSources(config: ResolvedConfig): Promise<RuleSource[]> {
   const configuredPlugins = await flatConfigsToPlugins(
-    createEslintConfig(await loadConfig(root)),
+    createEslintConfig(config),
   );
 
   const pluginSources = map(entries(configuredPlugins), ([prefix, plugin]) => {
@@ -120,15 +119,15 @@ async function formatModule(path: string, content: string): Promise<string> {
 }
 
 export async function syncRuleTypes({
-  root,
+  config,
   check = false,
 }: {
-  root: Directory | URL;
+  config: ResolvedConfig;
   check?: boolean;
 }): Promise<Files> {
-  const rootPath = resolve(root);
+  const { root: rootPath } = config;
 
-  const sources = await readRuleSources(rootPath);
+  const sources = await readRuleSources(config);
 
   const modules = new Map<File, string>([
     [rulesFile, createRulesModule(sources)],

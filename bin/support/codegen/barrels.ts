@@ -13,10 +13,10 @@ export default defineCommand((command) => {
     )
     .option("--check", "report outdated barrels without writing them", false)
     .action(async (barrels, { check }) => {
-      const { root } = await loadConfig();
+      const config = await loadConfig();
 
       const outdated = syncBarrels({
-        root,
+        config,
         barrels,
         check,
       });

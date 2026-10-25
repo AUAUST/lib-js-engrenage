@@ -23,27 +23,21 @@ export function createTsdownConfig(
     "tsdown options",
   );
 
-  const { name } = config.package;
+  const { packageJson, tsconfig } = config;
 
-  const { outDir, paths } = config.tsconfig;
+  const pathAliases = resolvePathAliases(
+    packageJson.name,
+    tsconfig.paths,
+    config.root,
+  );
 
-  if (name === null) {
-    throw new Error(`${config.packagePath} must declare a name`);
-  }
-
-  if (outDir === undefined || paths === undefined) {
-    throw new Error(`${config.tsconfigPath} must resolve outDir and paths`);
-  }
-
-  const pathAliases = resolvePathAliases(name, paths, config.root);
-
-  const packageSnapshot = readPackageSnapshot(config.packagePath);
+  const packageSnapshot = readPackageSnapshot(packageJson.path);
 
   return {
     cwd: config.root,
     entry: createTsdownEntries(pathAliases, bins),
-    outDir,
-    tsconfig: config.tsconfigPath,
+    outDir: tsconfig.outDir,
+    tsconfig: tsconfig.path,
     dts: {
       compilerOptions: {
         declaration: true,
@@ -71,7 +65,7 @@ export function createTsdownConfig(
     hooks: {
       "build:done"() {
         if (ci) {
-          assertPackageUnchanged(config.packagePath, packageSnapshot);
+          assertPackageUnchanged(packageJson.path, packageSnapshot);
         }
       },
     },

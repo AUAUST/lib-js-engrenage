@@ -1,5 +1,3 @@
-export { readCompilerOptions } from "#typescript/utils/readCompilerOptions";
-export { readSubpathImports } from "#typescript/utils/readSubpathImports";
 export { resolveImportSpecifier } from "#typescript/utils/resolveImportSpecifier";
 export { resolvePathAliases } from "#typescript/utils/resolvePathAliases";
 export { syncBarrels } from "#typescript/utils/syncBarrels";

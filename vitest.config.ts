@@ -1,40 +1,28 @@
 import { rmSync } from "node:fs";
-import { resolve } from "node:path";
 
 import { configDefaults, defineConfig } from "vitest/config";
 
-import { readCompilerOptions, resolvePathAliases } from "#typescript/index";
+import { loadConfig } from "#config/index";
+import { resolvePathAliases } from "#typescript/index";
 import { createViteAliases } from "#vite/index";
-import packageJson from "./package.json" with { type: "json" };
 
-const root = import.meta.dirname;
-
-function getCompilerOptions() {
-  const { outDir, paths } = readCompilerOptions(resolve(root, "tsconfig.json"));
-
-  if (outDir == null || paths == null) {
-    throw new Error("tsconfig.json must resolve outDir and paths");
-  }
-
-  return {
-    outDir,
-    paths,
-  };
-}
-
-const { outDir, paths } = getCompilerOptions();
+const config = await loadConfig(import.meta.dirname);
 
 function getSourceAliases() {
-  const pathAliases = resolvePathAliases(packageJson.name, paths, root);
+  const pathAliases = resolvePathAliases(
+    config.packageJson.name,
+    config.tsconfig.paths,
+    config.root,
+  );
 
-  return createViteAliases(pathAliases, root);
+  return createViteAliases(pathAliases, config.root);
 }
 
 export default defineConfig(({ mode }) => {
   const shouldTestDist = mode === "build";
 
   if (!shouldTestDist) {
-    rmSync(outDir, {
+    rmSync(config.resolve(config.tsconfig.outDir), {
       recursive: true,
       force: true,
     });

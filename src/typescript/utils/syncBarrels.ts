@@ -10,11 +10,11 @@ import {
   barrelModules,
   typescriptBlocks,
 } from "#typescript/constants";
-import { readSubpathImports } from "#typescript/utils/readSubpathImports";
 import { resolveImportSpecifier } from "#typescript/utils/resolveImportSpecifier";
 import { compareNaturally } from "#utils/compareNaturally";
 import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Directory } from "#types/Directory";
 import type { File, Files } from "#types/File";
 import type { Glob } from "#types/Glob";
@@ -87,17 +87,17 @@ function createRegistry(
 }
 
 export function syncBarrels({
-  root,
+  config,
   barrels = [],
   check = false,
 }: {
-  root: Directory | URL;
+  config: ResolvedConfig;
   barrels?: string[];
   check?: boolean;
 }): Files {
-  const rootPath = resolve(root);
+  const { root: rootPath } = config;
 
-  const imports = readSubpathImports(rootPath);
+  const { imports } = config.packageJson;
 
   const allFiles = globSync(barrelFiles, {
     cwd: rootPath,

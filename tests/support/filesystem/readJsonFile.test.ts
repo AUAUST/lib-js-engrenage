@@ -19,9 +19,11 @@ afterEach(() => {
   });
 });
 
-describe("readOptionalJsonFile", () => {
-  test("returns null for a missing file", () => {
-    expect(readJsonFile(join(root, "missing.json"))).toBeNull();
+describe("readJsonFile", () => {
+  test("fails on a missing file", () => {
+    expect(() => {
+      return readJsonFile(join(root, "missing.json"));
+    }).toThrow("missing.json");
   });
 
   test("names the file holding invalid JSON", () => {

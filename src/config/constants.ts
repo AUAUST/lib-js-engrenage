@@ -19,6 +19,8 @@ export const defaultCodeFiles: Glob = "**/*.{ts,tsx}";
 
 export const defaultConfigFiles: Globs = freeze(["*.config.ts", ".*.ts"]);
 
+export const defaultDiscoveredFiles: Globs = freeze([]);
+
 export const defaultFixtureFiles: Glob = "**/fixtures/**";
 
 export const defaultGitignoreFile: File = ".gitignore";

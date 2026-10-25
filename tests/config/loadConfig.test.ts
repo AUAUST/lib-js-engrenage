@@ -68,12 +68,13 @@ describe("loadConfig", () => {
       test: ["tests"],
     });
     expect(config.files.generated).toEqual(lockFiles);
-    expect(config.package).toEqual({
-      name: null,
-      description: null,
-      version: null,
-    });
-    expect(config.tsconfig).toEqual({});
+    expect(config.raw).toEqual({});
+    expect(config.packageJsonPath).toBeUndefined();
+    expect(config.packageJson.optional.name).toBeUndefined();
+    expect(config.tsconfig.optional.outDir).toBeUndefined();
+    expect(() => config.tsconfig.outDir).toThrow(
+      `No tsconfig found in ${first}`,
+    );
     expect(nestedConfig.directories).toEqual(config.directories);
   });
 
@@ -82,22 +83,26 @@ describe("loadConfig", () => {
 
     const config = await loadConfig(root);
 
+    expect(config.raw).toEqual({
+      directories: {
+        test: ["test"],
+      },
+      files: {
+        generated: ["src/generated/**"],
+      },
+    });
     expect(config.directories.test).toEqual(["test"]);
     expect(config.files.generated).toEqual([
       ...lockFiles,
       "src/generated/**",
       "dist/**",
     ]);
-    expect(config.package).toEqual({
-      name: "custom-fixture",
-      description: "Custom fixture.",
-      version: "1.2.3",
-    });
+    expect(config.packageJson.name).toBe("custom-fixture");
     expect(config.tsconfig.outDir).toBe("dist");
     expect(loadConfig(root)).toBe(loadConfig(root));
   });
 
-  test("reads the configured tsconfig and rejects a missing one", async () => {
+  test("reads the configured tsconfig and rejects a missing configured file, even the default name", async () => {
     const root = createProject();
 
     writeFileSync(
@@ -127,18 +132,29 @@ describe("loadConfig", () => {
     );
 
     await expect(loadConfig(missing)).rejects.toThrow(
-      join(missing, "tsconfig.app.json"),
+      `The configured tsconfig.app.json does not exist in ${missing}`,
+    );
+
+    const explicitDefault = createProject();
+
+    writeFileSync(
+      join(explicitDefault, "engrenage.config.ts"),
+      'export default { files: { tsconfig: "tsconfig.json" } };\n',
+    );
+
+    await expect(loadConfig(explicitDefault)).rejects.toThrow(
+      "The configured tsconfig.json does not exist",
     );
   });
 
-  test("resolves paths against the root and rejects escaping ones", async () => {
+  test("resolves existing source files against the root and rejects escaping paths", async () => {
     const root = getFixture("custom");
 
     const config = await loadConfig(root);
 
-    expect(config.packagePath).toBe(join(root, "package.json"));
+    expect(config.packageJsonPath).toBe(join(root, "package.json"));
     expect(config.tsconfigPath).toBe(join(root, "tsconfig.json"));
-    expect(config.gitignorePath).toBe(join(root, ".gitignore"));
+    expect(config.gitignorePath).toBeUndefined();
     expect(() => {
       return config.resolve("../outside");
     }).toThrow("escapes");
