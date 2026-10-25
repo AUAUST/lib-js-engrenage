@@ -30,7 +30,7 @@ const binEntries = {
 const fileExports = {
   "./agents/rules/*.md": "./config/agents/rules/*.md",
   "./agents/sections/*.md": "./config/agents/sections/*.md",
-  "./typescript/presets/*.json": "./config/typescript/*.json",
+  "./tsconfig/*.json": "./config/tsconfig/*.json",
 };
 
 function getEntries(): Record<string, string> {

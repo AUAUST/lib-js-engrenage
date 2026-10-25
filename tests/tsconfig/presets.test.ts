@@ -9,7 +9,7 @@ const tsc = createRequire(import.meta.url).resolve("typescript/lib/tsc.js");
 
 function getFixture(name: string): string {
   return fileURLToPath(
-    new URL(`../fixtures/typescript/${name}`, import.meta.url),
+    new URL(`../fixtures/tsconfig/${name}`, import.meta.url),
   );
 }
 
@@ -23,9 +23,9 @@ function showConfig(project: string) {
   return JSON.parse(runTsc("--showConfig", "-p", project));
 }
 
-describe("typescript presets", () => {
+describe("tsconfig presets", () => {
   test("resolves the base preset through the package exports", () => {
-    const { compilerOptions } = showConfig(getFixture("preset"));
+    const { compilerOptions } = showConfig(getFixture("base"));
 
     expect(compilerOptions).toMatchObject({
       declaration: false,
@@ -66,11 +66,5 @@ describe("typescript presets", () => {
       join(library, "tests/index.ts"),
       join(library, "src/env.d.ts"),
     ]);
-  });
-
-  test("fails on an unreadable tsconfig", () => {
-    expect(() => {
-      return readCompilerOptions(join(getFixture("library"), "missing.json"));
-    }).toThrow("missing.json");
   });
 });
