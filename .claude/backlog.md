@@ -29,6 +29,11 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: some formats have native extension (`extends`, imports, includes) and can consume shared content directly, while others (VS Code settings, `.editorconfig`, `.gitignore`, `.gitattributes`) have none and must be fully generated, merged with project-owned content, or filled through marked blocks like the agent fragments. This is not yet known per file, nor whether project additions survive regeneration.
    - Fix: inventory each candidate file, record whether it extends natively, merges, or is fully rewritten, and decide where project-specific additions live, before designing `engrenage sync`.
 
+6. Canonical `package.json` order.
+   - Where: `package.json`, `src/prettier/` or `src/eslint/`
+   - Problem: nothing enforces a key order in `package.json`, so manual edits and generated fields (tsdown `exports`, new imports or peer dependencies) land in arbitrary positions.
+   - Fix: add a Prettier or ESLint plugin to the shared config that sorts `package.json` in a canonical order.
+
 ## 2. Upstream
 
 1. primitive-kit `filter` return type.
@@ -45,3 +50,20 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Where: `env.d.ts`
    - Problem: `c12/dist/index.d.mts` imports `DownloadTemplateOptions` from `giget`, an optional peer engrenage does not install, so type checks with `skipLibCheck: false` (`tsconfig.dist.json`) fail. An ambient `giget` module stands in for it.
    - Fix: once c12 stops type-importing giget from its public types (or engrenage moves to the stable `c12@4`, if fixed there), delete `env.d.ts`.
+
+## 3. Architecture
+
+1. Resolved paths of common project files.
+   - Where: `src/config/types/ResolvedConfig.ts`, `src/config/utils/loadConfig.ts`, `src/tsdown/builders/createTsdownConfig.ts`, `src/eslint/builders/createEslintConfig.ts`
+   - Problem: consumers resolve common files by hand (`config.resolve(config.files.tsconfig)`, `config.resolve(packageFile)`, `config.files.gitignore` resolved again in `createIgnoreRules`), repeating path logic the config should own.
+   - Fix: expose absolute paths on the resolved config: `tsconfigPath` and `gitignorePath` (and possibly `packagePath`). Rename `config.typescript` to `config.tsconfig`, and keep `typescript` free for genuine TypeScript settings if they are ever needed.
+
+2. Compile-time variables in the root config.
+   - Where: `src/config/`, `src/tsdown/`, future Vite and Vitest builders
+   - Problem: toolkit defines `__NAME__`, `__VERSION__`, `__LICENSE__` and `__TIMESTAMP__` by hand for tsdown and Vitest, with matching ambient declarations in `src/ambient.d.ts`. Engrenage has no shared source for them.
+   - Fix: declare compile-time variables as an `engrenage.config.ts` setting, so tsdown, Vite, Vitest and other builders apply the same `define` record. Later, generate the ambient `.d.ts` declarations from it. Settle which fields are standard and whether `__TIMESTAMP__` stays, given it makes builds non-reproducible.
+
+3. Rationalize helpers.
+   - Where: `src/utils/`, `src/support/`, each entry's `utils/` and `builders/`
+   - Problem: small helpers keep accumulating across entries, with overlapping responsibilities and unclear ownership.
+   - Fix: scan the codebase, merge overlapping helpers, move each to its rightful owner, and spot missing abstractions that several helpers work around.
