@@ -22,10 +22,12 @@ export function syncAgentFiles({
     files,
     check,
     update(content, path) {
-      return syncBlocks(content, markdownBlocks, (reference) => {
-        const source = resolveAgentReference(config, reference, path);
+      return syncBlocks(content, markdownBlocks, {
+        reference(reference) {
+          const source = resolveAgentReference(config, reference, path);
 
-        return readFileSync(source, "utf8");
+          return readFileSync(source, "utf8");
+        },
       });
     },
   });

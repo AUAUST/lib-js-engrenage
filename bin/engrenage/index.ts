@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 import agents from "#bin/engrenage/agents/index";
 import { registerSubcommands } from "#support/commander/utils/registerSubcommands";
 import { Command } from "@commander-js/extra-typings";

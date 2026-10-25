@@ -69,6 +69,7 @@ describe("loadConfig", () => {
     expect(config.files.generated).toEqual(lockFiles);
     expect(config.package).toEqual({
       name: null,
+      description: null,
       version: null,
     });
     expect(config.typescript).toEqual({});
@@ -88,6 +89,7 @@ describe("loadConfig", () => {
     ]);
     expect(config.package).toEqual({
       name: "custom-fixture",
+      description: "Custom fixture.",
       version: "1.2.3",
     });
     expect(config.typescript.outDir).toBe("dist");

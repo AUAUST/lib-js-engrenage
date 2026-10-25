@@ -1,38 +1,32 @@
-import { defineConfig } from "eslint/config";
-import { createEslintConfig } from "#eslint/index";
+import { globalIgnores } from "eslint/config";
+import { defineEslintConfig } from "#eslint/index";
 
-export default defineConfig([
-  createEslintConfig({
-    root: new URL("./", import.meta.url),
-    sourceDirectories: ["src", "bin"],
-    defaultExportFiles: ["src/prettier/index.ts", "bin/**/*.ts"],
-    ignores: ["tests/fixtures/**"],
-  }),
-  {
-    files: [
-      "src/**/config/schemas/**/*.ts",
-      "src/**/config/defaults/**/*.ts",
-      "src/**/constants/**/*.ts",
+export default defineEslintConfig({}, globalIgnores(["tests/fixtures/**"]), {
+  files: [
+    "src/**/config/schemas/**/*.ts",
+    "src/**/config/defaults/**/*.ts",
+    "src/**/constants/**/*.ts",
+    "src/**/conventions/**/*.ts",
+  ],
+  rules: {
+    "@typescript-eslint/no-restricted-imports": [
+      "error",
+      {
+        patterns: [
+          {
+            regex:
+              "^(?!valibot$|node:|#[^/]+/(config/(schemas|defaults)|constants|conventions)/)",
+            allowTypeImports: true,
+            message:
+              "Schemas, defaults, constants and conventions stay pure: import valibot, types or other schemas, defaults, constants and conventions.",
+          },
+          {
+            regex: "^node:",
+            message:
+              "Schemas, defaults, constants and conventions never import node:*.",
+          },
+        ],
+      },
     ],
-    rules: {
-      "@typescript-eslint/no-restricted-imports": [
-        "error",
-        {
-          patterns: [
-            {
-              regex:
-                "^(?!valibot$|node:|#[^/]+/(config/(schemas|defaults)|constants)/)",
-              allowTypeImports: true,
-              message:
-                "Schemas, defaults and constants stay pure: import valibot, types or other schemas, defaults and constants.",
-            },
-            {
-              regex: "^node:",
-              message: "Schemas, defaults and constants never import node:*.",
-            },
-          ],
-        },
-      ],
-    },
   },
-]);
+});

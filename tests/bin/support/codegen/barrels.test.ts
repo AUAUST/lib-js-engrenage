@@ -37,6 +37,7 @@ beforeEach(() => {
     JSON.stringify({
       imports: {
         "#config/*": "./config/*.ts",
+        "#rules/*": "./src/rules/*.ts",
       },
     }),
   );
@@ -76,6 +77,39 @@ describe("support codegen barrels", () => {
     await runBarrels("--check");
 
     expect(process.exitCode).toBeUndefined();
+  });
+
+  test("registers default exports matched relative to the barrel, or to the root with a leading slash, except the barrel itself", async () => {
+    const registry = [
+      'export { default as first } from "#rules/first";',
+      'export { default as second } from "#rules/second";',
+    ];
+
+    writeProjectFile("src/rules/first.ts", "export default 1;\n");
+    writeProjectFile("src/rules/second.ts", "export default 2;\n");
+    writeProjectFile("src/rules/index.ts", "// @registry *.ts\n// @end\n");
+
+    writeProjectFile(
+      "src/all/index.ts",
+      "// @registry /src/rules/*.ts\n// @end\n",
+    );
+
+    await runBarrels("rules", "all");
+
+    expect(readFileSync(join(root, "src/rules/index.ts"), "utf8")).toBe(
+      ["// @registry *.ts", ...registry, "// @end", ""].join("\n"),
+    );
+
+    expect(readFileSync(join(root, "src/all/index.ts"), "utf8")).toBe(
+      [
+        "// @registry /src/rules/*.ts",
+        'export { default as first } from "#rules/first";',
+        'export { default as index } from "#rules/index";',
+        'export { default as second } from "#rules/second";',
+        "// @end",
+        "",
+      ].join("\n"),
+    );
   });
 
   test("rejects an unknown barrel name", async () => {

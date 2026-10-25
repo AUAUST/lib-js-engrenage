@@ -1,3 +1,4 @@
+import { loadConfig } from "#config/utils/loadConfig";
 import { createEslintConfig } from "#eslint/builders/createEslintConfig";
 import type { Plugin } from "#eslint/types/Plugin";
 import { normalizeRuleSchema } from "#support/eslint/utils/normalizeRuleSchema";
@@ -36,10 +37,7 @@ interface RuleSource {
 
 async function readRuleSources(root: string): Promise<RuleSource[]> {
   const configuredPlugins = await flatConfigsToPlugins(
-    createEslintConfig({
-      root,
-      sourceDirectories: [],
-    }),
+    createEslintConfig(await loadConfig(root)),
   );
 
   const pluginSources = map(entries(configuredPlugins), ([prefix, plugin]) => {

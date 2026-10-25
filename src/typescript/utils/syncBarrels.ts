@@ -1,6 +1,8 @@
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+import type { Glob } from "#types/Glob";
+import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import { barrelFiles } from "#typescript/constants/barrelFiles";
 import { typescriptBlocks } from "#typescript/constants/typescriptBlocks";
 import type { SubpathImports } from "#typescript/types/SubpathImports";
@@ -10,7 +12,7 @@ import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
 import { map } from "@auaust/primitive-kit/arrays";
 import { globSync } from "node:fs";
-import { basename, dirname } from "node:path";
+import { basename, dirname, extname } from "node:path";
 
 function barrelName(file: File): string {
   return basename(dirname(file));
@@ -30,6 +32,42 @@ function createReexports(
 
     return `export * from "${specifier}";`;
   });
+
+  return reexports.join("\n");
+}
+
+function createRegistry(
+  root: string,
+  imports: SubpathImports,
+  barrel: File,
+  glob: Glob,
+): string {
+  const isRootRelative = glob.startsWith("/");
+
+  const cwd = isRootRelative ? root : dirname(barrel);
+
+  const modules = globSync(isRootRelative ? glob.slice(1) : glob, {
+    cwd,
+  });
+
+  const reexports: string[] = [];
+
+  for (const module of modules.sort()) {
+    const path = resolve(cwd, module);
+
+    if (path === barrel) {
+      continue;
+    }
+
+    const specifier = resolveImportSpecifier(
+      imports,
+      relativeWithin(root, path),
+    );
+
+    const name = basename(module, extname(module));
+
+    reexports.push(`export { default as ${name} } from "${specifier}";`);
+  }
 
   return reexports.join("\n");
 }
@@ -66,9 +104,14 @@ export function syncBarrels({
     root: rootPath,
     files,
     check,
-    update(content) {
-      return syncBlocks(content, typescriptBlocks, (directory) => {
-        return createReexports(rootPath, imports, directory);
+    update(content, barrel) {
+      return syncBlocks(content, typescriptBlocks, {
+        reference(directory) {
+          return createReexports(rootPath, imports, directory);
+        },
+        registry(glob) {
+          return createRegistry(rootPath, imports, barrel, glob);
+        },
       });
     },
   });

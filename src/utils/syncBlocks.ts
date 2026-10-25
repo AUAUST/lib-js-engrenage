@@ -1,12 +1,19 @@
+import type { BlockFillers } from "#types/BlockFillers";
 import type { BlockSyntax } from "#types/BlockSyntax";
+import { map } from "@auaust/primitive-kit/arrays";
+import { keys } from "@auaust/toolkit/object";
 
 export function syncBlocks(
   content: string,
   { open, close, padding }: BlockSyntax,
-  fill: (reference: string) => string,
+  fillers: BlockFillers,
 ): string {
+  const directives = map(keys(fillers), (directive) => {
+    return RegExp.escape(directive);
+  });
+
   const marker = new RegExp(
-    `^${RegExp.escape(open)}@(?:reference (\\S+)|end)${RegExp.escape(close)}$`,
+    `^${RegExp.escape(open)}@(?:(${directives.join("|")}) (\\S+)|end)${RegExp.escape(close)}$`,
     "gm",
   );
 
@@ -16,9 +23,9 @@ export function syncBlocks(
   let cursor = 0;
 
   for (const [index, match] of markers.entries()) {
-    const [opening, reference] = match;
+    const [opening, directive, reference] = match;
 
-    if (reference === undefined) {
+    if (directive === undefined || reference === undefined) {
       continue;
     }
 
@@ -26,6 +33,12 @@ export function syncBlocks(
 
     if (next === undefined) {
       throw new Error(`Missing "@end" marker after "${opening}"`);
+    }
+
+    const fill = fillers[directive];
+
+    if (fill === undefined) {
+      throw new Error(`No filler for "@${directive}" markers`);
     }
 
     const filled = fill(reference).trim();
