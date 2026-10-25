@@ -1,4 +1,4 @@
-// engrenage:config/eslint
+// @reference config/eslint
 export * from "#config/eslint/baseRules";
 export * from "#config/eslint/importRules";
 export * from "#config/eslint/promiseRules";
@@ -8,7 +8,7 @@ export * from "#config/eslint/stylisticRules";
 export * from "#config/eslint/syntaxRestrictions";
 export * from "#config/eslint/toolConfigFiles";
 export * from "#config/eslint/typescriptFiles";
-// /engrenage:config/eslint
+// @end
 
 export { createBaseRules } from "#eslint/builders/createBaseRules";
 export { createEslintConfig } from "#eslint/builders/createEslintConfig";

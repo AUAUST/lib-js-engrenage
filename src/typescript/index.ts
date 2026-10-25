@@ -1,7 +1,7 @@
-// engrenage:config/typescript
+// @reference config/typescript
 export * from "#config/typescript/barrelFiles";
 export * from "#config/typescript/typescriptBlocks";
-// /engrenage:config/typescript
+// @end
 
 export type { PathAlias } from "#typescript/types/PathAlias";
 export type { Paths } from "#typescript/types/Paths";

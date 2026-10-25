@@ -2,42 +2,47 @@ import { syncBlocks } from "@auaust/engrenage";
 import { markdownBlocks } from "@auaust/engrenage/agents";
 import { describe, expect, test } from "vitest";
 
-function readFragment(id: string) {
-  return `## ${id}\n`;
+function fill(reference: string) {
+  return `## ${reference}\n`;
 }
 
 describe("syncBlocks", () => {
-  test("replaces only the content between markers", () => {
+  test("fills each block up to the next marker, ignoring inline mentions", () => {
     const content = [
       "# Local title",
-      "<!-- engrenage:sections/shared -->",
+      "<!-- @reference ./first.md -->",
       "stale text",
-      "<!-- /engrenage:sections/shared -->",
-      "## Local section",
+      "<!-- @reference ./second.md -->",
+      "<!-- @end -->",
+      "Mentions `<!-- @end -->` inline.",
       "",
     ].join("\n");
 
-    expect(syncBlocks(content, markdownBlocks, readFragment)).toBe(
+    expect(syncBlocks(content, markdownBlocks, fill)).toBe(
       [
         "# Local title",
-        "<!-- engrenage:sections/shared -->",
+        "<!-- @reference ./first.md -->",
         "",
-        "## sections/shared",
+        "## ./first.md",
         "",
-        "<!-- /engrenage:sections/shared -->",
-        "## Local section",
+        "<!-- @reference ./second.md -->",
+        "",
+        "## ./second.md",
+        "",
+        "<!-- @end -->",
+        "Mentions `<!-- @end -->` inline.",
         "",
       ].join("\n"),
     );
   });
 
-  test("rejects a block without its closing marker", () => {
+  test("rejects a last block without an end marker", () => {
     expect(() => {
       return syncBlocks(
-        "<!-- engrenage:sections/shared -->\n",
+        "<!-- @reference ./first.md -->\nlocal text\n",
         markdownBlocks,
-        readFragment,
+        fill,
       );
-    }).toThrow("Missing closing marker");
+    }).toThrow('Missing "@end" marker');
   });
 });

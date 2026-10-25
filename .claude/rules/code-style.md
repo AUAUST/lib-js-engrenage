@@ -3,7 +3,7 @@ paths:
   - "**/*.ts"
 ---
 
-<!-- engrenage:rules/code-style -->
+<!-- @reference @auaust/engrenage/agents/rules/code-style.md -->
 
 # Code style
 
@@ -23,4 +23,4 @@ paths:
 - Factories returning APIs define methods as named local functions and expose them through shorthand properties.
 - No statement-spacing blank lines inside object literals, arrays or argument lists.
 
-<!-- /engrenage:rules/code-style -->
+<!-- @end -->

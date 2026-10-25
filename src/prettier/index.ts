@@ -1,6 +1,6 @@
-// engrenage:config/prettier
+// @reference config/prettier
 export * from "#config/prettier/prettierOptions";
-// /engrenage:config/prettier
+// @end
 
 export { prettierOptions as default } from "#config/prettier/prettierOptions";
 export { createPrettierConfig } from "#prettier/builders/createPrettierConfig";

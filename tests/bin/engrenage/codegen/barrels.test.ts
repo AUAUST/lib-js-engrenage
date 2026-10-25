@@ -11,7 +11,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-const emptyBlock = "// engrenage:config/tool\n// /engrenage:config/tool\n";
+const emptyBlock = "// @reference config/tool\n// @end\n";
 
 let root: string;
 
@@ -64,9 +64,9 @@ describe("engrenage codegen barrels", () => {
 
     expect(readFileSync(join(root, "src/tool/index.ts"), "utf8")).toBe(
       [
-        "// engrenage:config/tool",
+        "// @reference config/tool",
         'export * from "#config/tool/preset";',
-        "// /engrenage:config/tool",
+        "// @end",
         "",
       ].join("\n"),
     );

@@ -1,12 +1,12 @@
 import { agentFiles } from "#config/agents/agentFiles";
 import { markdownBlocks } from "#config/agents/markdownBlocks";
-import { readFragment } from "#agents/utils/readFragment";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import { resolvePath } from "#utils/resolvePath";
+import { resolveReference } from "#utils/resolveReference";
 import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
-import { globSync } from "node:fs";
+import { globSync, readFileSync } from "node:fs";
 
 export function syncAgentFiles({
   root,
@@ -23,8 +23,10 @@ export function syncAgentFiles({
     root,
     files,
     check,
-    update(content) {
-      return syncBlocks(content, markdownBlocks, readFragment);
+    update(content, path) {
+      return syncBlocks(content, markdownBlocks, (reference) => {
+        return readFileSync(resolveReference(reference, path), "utf8");
+      });
     },
   });
 }

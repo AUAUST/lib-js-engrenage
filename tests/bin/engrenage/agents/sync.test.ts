@@ -1,13 +1,19 @@
 import sync from "#bin/engrenage/agents/sync";
 import { Command } from "@commander-js/extra-typings";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 const emptyBlock = [
-  "<!-- engrenage:sections/precedence -->",
-  "<!-- /engrenage:sections/precedence -->",
+  "<!-- @reference ./.claude/shared.md -->",
+  "<!-- @end -->",
   "",
 ].join("\n");
 
@@ -22,6 +28,9 @@ async function runSync(...args: string[]) {
 beforeEach(() => {
   root = mkdtempSync(join(tmpdir(), "engrenage-agents-"));
 
+  mkdirSync(join(root, ".claude"));
+
+  writeFileSync(join(root, ".claude/shared.md"), "## Shared section\n");
   writeFileSync(join(root, "AGENTS.md"), emptyBlock);
 
   vi.spyOn(console, "info").mockImplementation(() => {});
@@ -43,7 +52,7 @@ describe("engrenage agents sync", () => {
     await runSync();
 
     expect(readFileSync(join(root, "AGENTS.md"), "utf8")).toContain(
-      "## Precedence and conflicts",
+      "## Shared section",
     );
 
     await runSync("--check");

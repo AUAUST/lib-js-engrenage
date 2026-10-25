@@ -1,7 +1,6 @@
-// engrenage:config/agents
+// @reference config/agents
 export * from "#config/agents/agentFiles";
 export * from "#config/agents/markdownBlocks";
-// /engrenage:config/agents
+// @end
 
-export { readFragment } from "#agents/utils/readFragment";
 export { syncAgentFiles } from "#agents/utils/syncAgentFiles";

@@ -12,7 +12,7 @@ export function syncFiles({
   root: Directory | URL;
   files: File[];
   check: boolean;
-  update: (content: string) => string;
+  update: (content: string, path: File) => string;
 }): File[] {
   const outdated: File[] = [];
 
@@ -21,7 +21,7 @@ export function syncFiles({
 
     const content = readFileSync(path, "utf8");
 
-    const synced = update(content);
+    const synced = update(content, path);
 
     if (synced === content) {
       continue;
