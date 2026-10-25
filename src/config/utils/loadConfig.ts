@@ -1,11 +1,13 @@
 import { configSchema } from "#config/config/schemas/configSchema";
+import { packageFile } from "#config/constants";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
 import { findConfigFile } from "#config/utils/findConfigFile";
 import { importConfigFile } from "#config/utils/importConfigFile";
 import { readPackageInfo } from "#config/utils/readPackageInfo";
-import { readTypescriptInfo } from "#config/utils/readTypescriptInfo";
+import { readTsconfigInfo } from "#config/utils/readTsconfigInfo";
 import { warnMissingConfig } from "#config/utils/warnMissingConfig";
 import { resolve } from "#support/filesystem/utils/resolve";
+import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { validate } from "#support/validation/utils/validate";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Directory } from "#types/Directory";
@@ -24,12 +26,22 @@ async function readConfig(root: Directory): Promise<ResolvedConfig> {
 
   const config = validate(configSchema, input, configFile ?? root);
 
-  const typescript = readTypescriptInfo(root, config.files.tsconfig);
+  const packagePath = resolveWithin(root, packageFile);
+
+  const tsconfigPath = resolveWithin(root, config.files.tsconfig);
+
+  const gitignorePath = resolveWithin(root, config.files.gitignore);
+
+  const tsconfig = readTsconfigInfo({
+    root,
+    tsconfig: config.files.tsconfig,
+    tsconfigPath,
+  });
 
   const generated =
-    typescript.outDir === undefined
+    tsconfig.outDir === undefined
       ? config.files.generated
-      : [...config.files.generated, `${typescript.outDir}/**`];
+      : [...config.files.generated, `${tsconfig.outDir}/**`];
 
   return createResolvedConfig({
     root,
@@ -40,8 +52,11 @@ async function readConfig(root: Directory): Promise<ResolvedConfig> {
         generated,
       },
     },
-    package: readPackageInfo(root),
-    typescript,
+    gitignorePath,
+    package: readPackageInfo(packagePath),
+    packagePath,
+    tsconfig,
+    tsconfigPath,
   });
 }
 

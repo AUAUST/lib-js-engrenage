@@ -54,8 +54,7 @@ export function createEslintConfig(
     typescriptConfigs.base,
     ignore
       ? createIgnoreRules({
-          root: config.root,
-          gitignore: config.files.gitignore,
+          gitignorePath: config.gitignorePath,
           generatedFiles: config.files.generated,
           fixtureFiles: config.files.fixtures,
           testDirectories: config.directories.test,

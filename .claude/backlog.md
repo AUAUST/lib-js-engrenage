@@ -53,17 +53,12 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
 
 ## 3. Architecture
 
-1. Resolved paths of common project files.
-   - Where: `src/config/types/ResolvedConfig.ts`, `src/config/utils/loadConfig.ts`, `src/tsdown/builders/createTsdownConfig.ts`, `src/eslint/builders/createEslintConfig.ts`
-   - Problem: consumers resolve common files by hand (`config.resolve(config.files.tsconfig)`, `config.resolve(packageFile)`, `config.files.gitignore` resolved again in `createIgnoreRules`), repeating path logic the config should own.
-   - Fix: expose absolute paths on the resolved config: `tsconfigPath` and `gitignorePath` (and possibly `packagePath`). Rename `config.typescript` to `config.tsconfig`, and keep `typescript` free for genuine TypeScript settings if they are ever needed.
-
-2. Compile-time variables in the root config.
+1. Compile-time variables in the root config.
    - Where: `src/config/`, `src/tsdown/`, future Vite and Vitest builders
    - Problem: toolkit defines `__NAME__`, `__VERSION__`, `__LICENSE__` and `__TIMESTAMP__` by hand for tsdown and Vitest, with matching ambient declarations in `src/ambient.d.ts`. Engrenage has no shared source for them.
    - Fix: declare compile-time variables as an `engrenage.config.ts` setting, so tsdown, Vite, Vitest and other builders apply the same `define` record. Later, generate the ambient `.d.ts` declarations from it. Settle which fields are standard and whether `__TIMESTAMP__` stays, given it makes builds non-reproducible.
 
-3. Rationalize helpers.
+2. Rationalize helpers.
    - Where: `src/utils/`, `src/support/`, each entry's `utils/` and `builders/`
    - Problem: small helpers keep accumulating across entries, with overlapping responsibilities and unclear ownership.
    - Fix: scan the codebase, merge overlapping helpers, move each to its rightful owner, and spot missing abstractions that several helpers work around.

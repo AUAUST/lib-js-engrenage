@@ -4,19 +4,26 @@ import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import type { configSchema } from "#config/config/schemas/configSchema";
 import type { PackageInfo } from "#config/types/PackageInfo";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { TypescriptInfo } from "#config/types/TypescriptInfo";
+import type { TsconfigInfo } from "#config/types/TsconfigInfo";
 import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
 
 export function createResolvedConfig({
   root,
   config,
+  gitignorePath,
   package: packageInfo,
-  typescript,
+  packagePath,
+  tsconfig,
+  tsconfigPath,
 }: {
   root: Directory;
   config: InferOutput<typeof configSchema>;
+  gitignorePath: File;
   package: PackageInfo;
-  typescript: TypescriptInfo;
+  packagePath: File;
+  tsconfig: TsconfigInfo;
+  tsconfigPath: File;
 }): ResolvedConfig {
   function resolve(...paths: string[]): string {
     return resolveWithin(root, ...paths);
@@ -25,8 +32,11 @@ export function createResolvedConfig({
   return {
     ...config,
     root,
+    packagePath,
+    tsconfigPath,
+    gitignorePath,
     package: packageInfo,
-    typescript,
+    tsconfig,
     resolve,
   };
 }

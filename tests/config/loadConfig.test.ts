@@ -73,7 +73,7 @@ describe("loadConfig", () => {
       description: null,
       version: null,
     });
-    expect(config.typescript).toEqual({});
+    expect(config.tsconfig).toEqual({});
     expect(nestedConfig.directories).toEqual(config.directories);
   });
 
@@ -93,7 +93,7 @@ describe("loadConfig", () => {
       description: "Custom fixture.",
       version: "1.2.3",
     });
-    expect(config.typescript.outDir).toBe("dist");
+    expect(config.tsconfig.outDir).toBe("dist");
     expect(loadConfig(root)).toBe(loadConfig(root));
   });
 
@@ -116,7 +116,7 @@ describe("loadConfig", () => {
 
     const config = await loadConfig(root);
 
-    expect(config.typescript.outDir).toBe("build");
+    expect(config.tsconfig.outDir).toBe("build");
     expect(config.files.generated).toContain("build/**");
 
     const missing = createProject();
@@ -136,9 +136,9 @@ describe("loadConfig", () => {
 
     const config = await loadConfig(root);
 
-    expect(config.resolve(config.files.gitignore)).toBe(
-      join(root, ".gitignore"),
-    );
+    expect(config.packagePath).toBe(join(root, "package.json"));
+    expect(config.tsconfigPath).toBe(join(root, "tsconfig.json"));
+    expect(config.gitignorePath).toBe(join(root, ".gitignore"));
     expect(() => {
       return config.resolve("../outside");
     }).toThrow("escapes");

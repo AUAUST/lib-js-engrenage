@@ -1,7 +1,6 @@
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
-import { packageFile } from "#config/constants";
 import { validate } from "#support/validation/utils/validate";
 import { createTsdownEntries } from "#tsdown/builders/createTsdownEntries";
 import { optionsSchema } from "#tsdown/config/schemas/optionsSchema";
@@ -26,29 +25,25 @@ export function createTsdownConfig(
 
   const { name } = config.package;
 
-  const { outDir, paths } = config.typescript;
+  const { outDir, paths } = config.tsconfig;
 
   if (name === null) {
-    throw new Error(`${config.resolve(packageFile)} must declare a name`);
+    throw new Error(`${config.packagePath} must declare a name`);
   }
 
   if (outDir === undefined || paths === undefined) {
-    throw new Error(
-      `${config.resolve(config.files.tsconfig)} must resolve outDir and paths`,
-    );
+    throw new Error(`${config.tsconfigPath} must resolve outDir and paths`);
   }
 
   const pathAliases = resolvePathAliases(name, paths, config.root);
 
-  const packagePath = config.resolve(packageFile);
-
-  const packageSnapshot = readPackageSnapshot(packagePath);
+  const packageSnapshot = readPackageSnapshot(config.packagePath);
 
   return {
     cwd: config.root,
     entry: createTsdownEntries(pathAliases, bins),
     outDir,
-    tsconfig: config.resolve(config.files.tsconfig),
+    tsconfig: config.tsconfigPath,
     dts: {
       compilerOptions: {
         declaration: true,
@@ -76,7 +71,7 @@ export function createTsdownConfig(
     hooks: {
       "build:done"() {
         if (ci) {
-          assertPackageUnchanged(packagePath, packageSnapshot);
+          assertPackageUnchanged(config.packagePath, packageSnapshot);
         }
       },
     },
