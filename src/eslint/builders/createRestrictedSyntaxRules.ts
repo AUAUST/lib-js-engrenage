@@ -1,31 +1,32 @@
-import { misplacedTestRestriction } from "#config/eslint/misplacedTestRestriction";
-import { restrictedProperties } from "#config/eslint/restrictedProperties";
-import { sourceSyntaxRestrictions } from "#config/eslint/sourceSyntaxRestrictions";
-import { syntaxRestrictions } from "#config/eslint/syntaxRestrictions";
-import { testDirectories as defaultTestDirectories } from "#config/eslint/testDirectories";
-import { testFiles } from "#config/eslint/testFiles";
-import { typescriptFiles } from "#config/eslint/typescriptFiles";
+import { codeFilesSchema } from "#config/config/schemas/codeFilesSchema";
+import { testDirectoriesSchema } from "#config/config/schemas/testDirectoriesSchema";
+import { testFilesSchema } from "#config/config/schemas/testFilesSchema";
 import { restrictProperties } from "#eslint/builders/restrictProperties";
 import { restrictSyntax } from "#eslint/builders/restrictSyntax";
+import { misplacedTestRestriction } from "#eslint/config/defaults/misplacedTestRestriction";
+import { restrictedProperties } from "#eslint/config/defaults/restrictedProperties";
+import { sourceSyntaxRestrictions } from "#eslint/config/defaults/sourceSyntaxRestrictions";
+import { syntaxRestrictions } from "#eslint/config/defaults/syntaxRestrictions";
 import type { Config } from "#eslint/types/Config";
 import type { SyntaxRestriction } from "#eslint/types/SyntaxRestriction";
 import { filesIn } from "#eslint/utils/filesIn";
 import type { Directory } from "#types/Directory";
 import { map } from "@auaust/primitive-kit/arrays";
 import { defineConfig } from "eslint/config";
+import { getDefault } from "valibot";
 
 export function createRestrictedSyntaxRules({
   sourceDirectories,
-  testDirectories = defaultTestDirectories,
+  testDirectories = getDefault(testDirectoriesSchema),
   syntaxRestrictions: projectRestrictions = [],
 }: {
   sourceDirectories: Directory[];
-  testDirectories?: Directory[];
+  testDirectories?: readonly Directory[];
   syntaxRestrictions?: SyntaxRestriction[];
 }): Config[] {
   return defineConfig([
     {
-      files: [typescriptFiles],
+      files: [getDefault(codeFilesSchema)],
       rules: {
         ...restrictProperties(...restrictedProperties),
         ...restrictSyntax(...syntaxRestrictions, ...projectRestrictions),
@@ -40,7 +41,7 @@ export function createRestrictedSyntaxRules({
       ),
     },
     {
-      files: [testFiles],
+      files: [getDefault(testFilesSchema)],
       ignores: map(testDirectories, filesIn),
       rules: restrictSyntax(
         ...syntaxRestrictions,

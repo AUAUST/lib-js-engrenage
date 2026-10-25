@@ -1,6 +1,5 @@
 import standardConfig, {
   createPrettierConfig,
-  prettierOptions,
   type Config,
 } from "@auaust/engrenage/prettier";
 import { format } from "prettier";
@@ -23,7 +22,7 @@ describe("createPrettierConfig", () => {
 
     expectTypeOf(config).toEqualTypeOf<Config>();
     expect(config).toEqual({
-      ...prettierOptions,
+      ...standardConfig,
       printWidth: 100,
     });
   });

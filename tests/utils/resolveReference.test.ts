@@ -10,7 +10,7 @@ describe("resolveReference", () => {
   test("resolves package specifiers and paths relative to the referencing file", () => {
     expect(
       resolveReference("@auaust/engrenage/agents/sections/precedence.md", from),
-    ).toBe(join(root, "config/agents/sections/precedence.md"));
+    ).toBe(join(root, "data/agents/sections/precedence.md"));
     expect(resolveReference("./package.json", from)).toBe(
       join(root, "package.json"),
     );

@@ -1,6 +1,2 @@
-// @reference config/agents
-export * from "#config/agents/agentFiles";
-export * from "#config/agents/markdownBlocks";
-// @end
-
+export { resolveAgentReference } from "#agents/utils/resolveAgentReference";
 export { syncAgentFiles } from "#agents/utils/syncAgentFiles";

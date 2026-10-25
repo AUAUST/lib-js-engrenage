@@ -5,5 +5,6 @@ export type { Glob } from "#types/Glob";
 export type { PackageName } from "#types/PackageName";
 export { resolvePath } from "#utils/resolvePath";
 export { resolveReference } from "#utils/resolveReference";
+export { resolveWithin } from "#utils/resolveWithin";
 export { syncBlocks } from "#utils/syncBlocks";
 export { syncFiles } from "#utils/syncFiles";

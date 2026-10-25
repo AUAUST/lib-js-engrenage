@@ -1,6 +1,6 @@
+import { loadConfig } from "#config/utils/loadConfig";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { syncBarrels } from "#typescript/utils/syncBarrels";
-import { Option } from "@commander-js/extra-typings";
 
 export default defineCommand((command) => {
   return command
@@ -11,14 +11,10 @@ export default defineCommand((command) => {
       "[barrels...]",
       "barrels to sync, by directory name (all by default)",
     )
-    .addOption(
-      new Option(
-        "--root <directory>",
-        "project root containing the barrels",
-      ).default(process.cwd(), "current directory"),
-    )
     .option("--check", "report outdated barrels without writing them", false)
-    .action((barrels, { root, check }) => {
+    .action(async (barrels, { check }) => {
+      const { root } = await loadConfig();
+
       const outdated = syncBarrels({
         root,
         barrels,

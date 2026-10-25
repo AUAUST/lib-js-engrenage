@@ -20,7 +20,7 @@
   "imports": {
     "#agents/*": "./src/agents/*.ts",
     "#bin/*": "./bin/*.ts",
-    "#config/*": "./config/*.ts",
+    "#config/*": "./src/config/*.ts",
     "#eslint/*": "./src/eslint/*.ts",
     "#prettier": "./src/prettier/index.ts",
     "#prettier/*": "./src/prettier/*.ts",
@@ -51,9 +51,11 @@
   "dependencies": {
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
+    "c12": "4.0.0-rc.3",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import-x": "^4.17.1",
-    "typescript-eslint": "^8.72.0"
+    "typescript-eslint": "^8.72.0",
+    "valibot": "^1.5.0"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",
@@ -102,18 +104,19 @@
   "files": [
     "dist",
     "src",
-    "config"
+    "data"
   ],
   "exports": {
     ".": "./dist/index.mjs",
     "./agents": "./dist/agents/index.mjs",
+    "./config": "./dist/config/index.mjs",
     "./eslint": "./dist/eslint/index.mjs",
     "./prettier": "./dist/prettier/index.mjs",
     "./typescript": "./dist/typescript/index.mjs",
     "./vite": "./dist/vite/index.mjs",
-    "./agents/rules/*.md": "./config/agents/rules/*.md",
-    "./agents/sections/*.md": "./config/agents/sections/*.md",
-    "./tsconfig/*.json": "./config/tsconfig/*.json"
+    "./agents/rules/*.md": "./data/agents/rules/*.md",
+    "./agents/sections/*.md": "./data/agents/sections/*.md",
+    "./tsconfig/*.json": "./data/tsconfig/*.json"
   },
   "devEngines": {
     "packageManager": {

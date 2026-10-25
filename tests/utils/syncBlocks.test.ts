@@ -1,5 +1,5 @@
+import { markdownBlocks } from "#agents/constants/markdownBlocks";
 import { syncBlocks } from "@auaust/engrenage";
-import { markdownBlocks } from "@auaust/engrenage/agents";
 import { describe, expect, test } from "vitest";
 
 function fill(reference: string) {

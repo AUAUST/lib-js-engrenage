@@ -28,9 +28,9 @@ const binEntries = {
 };
 
 const fileExports = {
-  "./agents/rules/*.md": "./config/agents/rules/*.md",
-  "./agents/sections/*.md": "./config/agents/sections/*.md",
-  "./tsconfig/*.json": "./config/tsconfig/*.json",
+  "./agents/rules/*.md": "./data/agents/rules/*.md",
+  "./agents/sections/*.md": "./data/agents/sections/*.md",
+  "./tsconfig/*.json": "./data/tsconfig/*.json",
 };
 
 function getEntries(): Record<string, string> {

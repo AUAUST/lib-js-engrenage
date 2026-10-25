@@ -1,20 +1,21 @@
-import { promiseRules } from "#config/eslint/promiseRules";
-import { testDirectories as defaultTestDirectories } from "#config/eslint/testDirectories";
+import { testDirectoriesSchema } from "#config/config/schemas/testDirectoriesSchema";
+import { promiseRules } from "#eslint/config/defaults/promiseRules";
 import type { Config } from "#eslint/types/Config";
 import { filesIn } from "#eslint/utils/filesIn";
 import type { Directory } from "#types/Directory";
 import { resolvePath } from "#utils/resolvePath";
 import { map } from "@auaust/primitive-kit/arrays";
 import { defineConfig } from "eslint/config";
+import { getDefault } from "valibot";
 
 export function createPromiseRules({
   root,
   sourceDirectories,
-  testDirectories = defaultTestDirectories,
+  testDirectories = getDefault(testDirectoriesSchema),
 }: {
   root: Directory | URL;
   sourceDirectories: Directory[];
-  testDirectories?: Directory[];
+  testDirectories?: readonly Directory[];
 }): Config[] {
   return defineConfig([
     {

@@ -20,7 +20,7 @@ const emptyBlock = [
 let root: string;
 
 async function runSync(...args: string[]) {
-  await sync(new Command("sync")).parseAsync(["--root", root, ...args], {
+  await sync(new Command("sync")).parseAsync(args, {
     from: "user",
   });
 }
@@ -33,7 +33,17 @@ beforeEach(() => {
   writeFileSync(join(root, ".claude/shared.md"), "## Shared section\n");
   writeFileSync(join(root, "AGENTS.md"), emptyBlock);
 
+  writeFileSync(
+    join(root, "package.json"),
+    JSON.stringify({
+      name: "agents-project",
+      version: "0.0.0",
+    }),
+  );
+
+  vi.spyOn(process, "cwd").mockReturnValue(root);
   vi.spyOn(console, "info").mockImplementation(() => {});
+  vi.spyOn(console, "warn").mockImplementation(() => {});
 });
 
 afterEach(() => {

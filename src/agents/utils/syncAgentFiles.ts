@@ -1,31 +1,31 @@
-import { agentFiles } from "#config/agents/agentFiles";
-import { markdownBlocks } from "#config/agents/markdownBlocks";
-import type { Directory } from "#types/Directory";
+import { markdownBlocks } from "#agents/constants/markdownBlocks";
+import { resolveAgentReference } from "#agents/utils/resolveAgentReference";
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
-import { resolvePath } from "#utils/resolvePath";
-import { resolveReference } from "#utils/resolveReference";
 import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
 import { globSync, readFileSync } from "node:fs";
 
 export function syncAgentFiles({
-  root,
+  config,
   check = false,
 }: {
-  root: Directory | URL;
+  config: ResolvedConfig;
   check?: boolean;
 }): File[] {
-  const files = globSync(agentFiles, {
-    cwd: resolvePath(root),
+  const files = globSync(config.agents.instructionFiles, {
+    cwd: config.root,
   }).sort();
 
   return syncFiles({
-    root,
+    root: config.root,
     files,
     check,
     update(content, path) {
       return syncBlocks(content, markdownBlocks, (reference) => {
-        return readFileSync(resolveReference(reference, path), "utf8");
+        const source = resolveAgentReference(config, reference, path);
+
+        return readFileSync(source, "utf8");
       });
     },
   });

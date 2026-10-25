@@ -1,8 +1,3 @@
-// @reference config/typescript
-export * from "#config/typescript/barrelFiles";
-export * from "#config/typescript/typescriptBlocks";
-// @end
-
 export type { PathAlias } from "#typescript/types/PathAlias";
 export type { Paths } from "#typescript/types/Paths";
 export type { SubpathImports } from "#typescript/types/SubpathImports";

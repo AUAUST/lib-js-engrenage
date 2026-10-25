@@ -1,10 +1,10 @@
-import { barrelFiles } from "#config/typescript/barrelFiles";
-import { typescriptBlocks } from "#config/typescript/typescriptBlocks";
+import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
+import { barrelFiles } from "#typescript/constants/barrelFiles";
+import { typescriptBlocks } from "#typescript/constants/typescriptBlocks";
 import type { SubpathImports } from "#typescript/types/SubpathImports";
 import { readSubpathImports } from "#typescript/utils/readSubpathImports";
 import { resolveImportSpecifier } from "#typescript/utils/resolveImportSpecifier";
-import type { Directory } from "#types/Directory";
-import type { File } from "#types/File";
 import { resolvePath } from "#utils/resolvePath";
 import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";

@@ -1,0 +1,4 @@
+{
+  "extends": "../../../../data/tsconfig/library.json",
+  "files": ["engrenage.config.ts"]
+}

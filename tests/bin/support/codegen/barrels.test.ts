@@ -24,7 +24,7 @@ function writeProjectFile(path: string, content: string) {
 }
 
 async function runBarrels(...args: string[]) {
-  await barrels(new Command("barrels")).parseAsync(["--root", root, ...args], {
+  await barrels(new Command("barrels")).parseAsync(args, {
     from: "user",
   });
 }
@@ -35,6 +35,8 @@ beforeEach(() => {
   writeProjectFile(
     "package.json",
     JSON.stringify({
+      name: "barrels-project",
+      version: "0.0.0",
       imports: {
         "#config/*": "./config/*.ts",
       },
@@ -44,7 +46,9 @@ beforeEach(() => {
   writeProjectFile("config/tool/preset.ts", "export const preset = 1;\n");
   writeProjectFile("src/tool/index.ts", emptyBlock);
 
+  vi.spyOn(process, "cwd").mockReturnValue(root);
   vi.spyOn(console, "info").mockImplementation(() => {});
+  vi.spyOn(console, "warn").mockImplementation(() => {});
 });
 
 afterEach(() => {
