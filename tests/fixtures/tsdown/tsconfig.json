@@ -1,0 +1,10 @@
+{
+  "extends": "../../../data/tsconfig/library.json",
+  "compilerOptions": {
+    "paths": {
+      "@fixture/tsdown/*": ["./src/*/index.ts"],
+      "@fixture/tsdown": ["./src/index.ts"]
+    }
+  },
+  "include": ["src", "bin"]
+}

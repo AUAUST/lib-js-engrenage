@@ -9,10 +9,10 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: Vite warns that the extensionless `./src/…` imports are unsupported by `configLoader: 'native'`, planned as the future default.
    - Fix: once Vite makes the native loader the default, import the config helpers with explicit extensions or through `#…` subpath imports.
 
-2. Consuming the effective tsconfig.
-   - Where: `src/typescript/utils/`
-   - Problem: `readCompilerOptions` returns raw compiler options, so each project still adapts them by hand, for example turning `paths` into tsdown entries and checking that `outDir` and `paths` are set in `tsdown.config.ts` and `vitest.config.ts`.
-   - Fix: add TypeScript helpers that hand the resolved tsconfig to tools in the shape they expect (such as tsdown entries from `paths`), shared with the `createTsdownConfig` and `createVitestConfig` builders.
+2. Vitest config from the resolved config.
+   - Where: `vitest.config.ts`, `src/vite/`
+   - Problem: `vitest.config.ts` still reads the tsconfig by hand, turning `paths` into Vite aliases and checking that `outDir` and `paths` are set, while `defineTsdownConfig` already takes them from the resolved engrenage config.
+   - Fix: add a `defineVitestConfig` builder that takes `outDir` and `paths` from the resolved config, as `createTsdownConfig` does.
 
 3. Barrel codegen cannot heal a barrel that names a removed module.
    - Where: `bin/support/codegen/index.ts`, `bin/support/codegen/rules.ts`

@@ -25,6 +25,7 @@
     "#prettier": "./src/prettier/index.ts",
     "#prettier/*": "./src/prettier/*.ts",
     "#support/*": "./src/support/*.ts",
+    "#tsdown/*": "./src/tsdown/*.ts",
     "#types/*": "./src/types/*.ts",
     "#typescript/*": "./src/typescript/*.ts",
     "#utils/*": "./src/utils/*.ts",
@@ -90,7 +91,8 @@
     "eslint": "^10.0.0",
     "prettier": "^3.0.0",
     "typescript": "^6.0.0",
-    "vite": "^8.0.0"
+    "vite": "^8.0.0",
+    "tsdown": "^0.23.0"
   },
   "peerDependenciesMeta": {
     "eslint": {
@@ -100,6 +102,9 @@
       "optional": true
     },
     "prettier": {
+      "optional": true
+    },
+    "tsdown": {
       "optional": true
     }
   },
@@ -118,6 +123,8 @@
     "./eslint/constants": "./dist/eslint/constants.mjs",
     "./prettier": "./dist/prettier/index.mjs",
     "./prettier/constants": "./dist/prettier/constants.mjs",
+    "./tsdown": "./dist/tsdown/index.mjs",
+    "./tsdown/constants": "./dist/tsdown/constants.mjs",
     "./typescript": "./dist/typescript/index.mjs",
     "./typescript/constants": "./dist/typescript/constants.mjs",
     "./vite": "./dist/vite/index.mjs",
