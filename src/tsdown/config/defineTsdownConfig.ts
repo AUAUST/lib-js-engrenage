@@ -1,8 +1,8 @@
+import { value } from "@auaust/toolkit/value";
 import { mergeConfig } from "tsdown";
 
 import { loadConfig } from "#config/utils/loadConfig";
 import { createTsdownConfig } from "#tsdown/builders/createTsdownConfig";
-import { resolveConfigInput } from "#utils/resolveConfigInput";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#tsdown/types/Config";
 import type { ConfigFn } from "#tsdown/types/ConfigFn";
@@ -16,7 +16,7 @@ export function defineTsdownConfig(
   return async function tsdownConfig(_, { ci }) {
     const config = await loadConfig();
 
-    const resolvedOptions = await resolveConfigInput(options, config);
+    const resolvedOptions = await value(options, config);
 
     return mergeConfig(
       createTsdownConfig(

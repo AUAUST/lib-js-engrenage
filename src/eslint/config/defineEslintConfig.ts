@@ -1,8 +1,8 @@
+import { value } from "@auaust/toolkit/value";
 import { defineConfig } from "eslint/config";
 
 import { loadConfig } from "#config/utils/loadConfig";
 import { createEslintConfig } from "#eslint/builders/createEslintConfig";
-import { resolveConfigInput } from "#utils/resolveConfigInput";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#eslint/types/Config";
 import type { ConfigWithExtends } from "#eslint/types/ConfigWithExtends";
@@ -15,7 +15,7 @@ export async function defineEslintConfig(
 ): Promise<Config[]> {
   const config = await loadConfig();
 
-  const resolvedOptions = await resolveConfigInput(options, config);
+  const resolvedOptions = await value(options, config);
 
   return defineConfig(createEslintConfig(config, resolvedOptions), ...configs);
 }

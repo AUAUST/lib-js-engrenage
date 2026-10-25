@@ -10,7 +10,7 @@ Add `defineEslintConfig(options | (engrenage) => options, ...configs)` to `@auau
 
 Each restriction is now its own rule under the `auaust/` namespace (`auaust/no-runtime-typeof`, `auaust/no-array-is-array`, `auaust/no-object-statics`, `auaust/no-is-null`, `auaust/no-is-undefined`, `auaust/no-loose-undefined`, `auaust/no-complex-concise-arrows`, `auaust/no-dynamic-import`, `auaust/no-misplaced-tests`), typed in `Rules`. Scoping one off is a native config (`{ files: ["src/utils/is*.ts"], rules: { "auaust/no-runtime-typeof": "off" } }`), and the project's own `no-restricted-syntax` and `no-restricted-properties` no longer replace engrenage's restrictions. `Array.isArray` is now also reported when destructured or accessed with brackets.
 
-`syncBlocks` takes one filler per directive. The barrels codegen fills `// @registry <glob>` blocks with `export { default as <file> }` for each matched module except the barrel itself; the glob is relative to the barrel, or to the root with a leading `/`. `ConfigInput` accepts callback arguments, and `resolveConfigInput` is exported from `@auaust/engrenage`. Validation errors from a union now name the failing nested key.
+`syncBlocks` takes one filler per directive. The barrels codegen fills `// @registry <glob>` blocks with `export { default as <file> }` for each matched module except the barrel itself; the glob is relative to the barrel, or to the root with a leading `/`. `ConfigInput` accepts callback arguments. Validation errors from a union now name the failing nested key.
 
 **Breaking:**
 

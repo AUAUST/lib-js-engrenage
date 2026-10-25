@@ -1,4 +1,3 @@
-export { resolveConfigInput } from "#utils/resolveConfigInput";
 export { resolveReference } from "#utils/resolveReference";
 export { syncBlocks } from "#utils/syncBlocks";
 export { syncFiles } from "#utils/syncFiles";
