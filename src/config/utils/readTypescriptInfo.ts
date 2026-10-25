@@ -1,4 +1,4 @@
-import { defaultTsconfigFile } from "#config/constants/defaultTsconfigFile";
+import { defaultTsconfigFile } from "#config/constants";
 import type { TypescriptInfo } from "#config/types/TypescriptInfo";
 import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import { resolve } from "#support/filesystem/utils/resolve";

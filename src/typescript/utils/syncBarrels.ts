@@ -1,11 +1,13 @@
-import { barrelModules } from "#typescript/constants/barrelModules";
+import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
-import type { File } from "#types/File";
+import type { File, Files } from "#types/File";
 import type { Glob } from "#types/Glob";
-import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
-import { barrelFiles } from "#typescript/constants/barrelFiles";
-import { typescriptBlocks } from "#typescript/constants/typescriptBlocks";
+import {
+  barrelFiles,
+  barrelModules,
+  typescriptBlocks,
+} from "#typescript/constants";
 import type { SubpathImports } from "#typescript/types/SubpathImports";
 import { readSubpathImports } from "#typescript/utils/readSubpathImports";
 import { resolveImportSpecifier } from "#typescript/utils/resolveImportSpecifier";
@@ -81,7 +83,7 @@ export function syncBarrels({
   root: Directory | URL;
   barrels?: string[];
   check?: boolean;
-}): File[] {
+}): Files {
   const rootPath = resolve(root);
 
   const imports = readSubpathImports(rootPath);

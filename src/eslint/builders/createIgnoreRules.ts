@@ -2,7 +2,7 @@ import type { Config } from "#eslint/types/Config";
 import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-import type { Glob } from "#types/Glob";
+import type { Glob, Globs } from "#types/Glob";
 import { filesIn } from "#utils/filesIn";
 import { map } from "@auaust/primitive-kit/arrays";
 import { defineConfig, globalIgnores, includeIgnoreFile } from "eslint/config";
@@ -16,7 +16,7 @@ export function createIgnoreRules({
 }: {
   root: Directory | URL;
   gitignore: File;
-  generatedFiles: Glob[];
+  generatedFiles: Globs;
   fixtureFiles: Glob;
   testDirectories: Directory[];
 }): Config[] {

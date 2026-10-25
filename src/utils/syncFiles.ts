@@ -1,6 +1,6 @@
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
-import type { File } from "#types/File";
+import type { File, Files } from "#types/File";
 import { readFileSync, writeFileSync } from "node:fs";
 
 export function syncFiles({
@@ -10,10 +10,10 @@ export function syncFiles({
   update,
 }: {
   root: Directory | URL;
-  files: File[];
+  files: Files;
   check: boolean;
   update: (content: string, path: File) => string;
-}): File[] {
+}): Files {
   const outdated: File[] = [];
 
   for (const file of files) {

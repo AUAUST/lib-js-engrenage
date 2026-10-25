@@ -1,4 +1,4 @@
-import { builtinGeneratedFiles } from "#config/constants/builtinGeneratedFiles";
+import { builtinGeneratedFiles } from "#config/constants";
 import { globSchema } from "#config/config/schemas/globSchema";
 import { array, optional, pipe, transform } from "valibot";
 

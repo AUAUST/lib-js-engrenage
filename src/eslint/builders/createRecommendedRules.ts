@@ -1,4 +1,4 @@
-import { recommendedRules } from "#eslint/constants/recommendedRules";
+import { recommendedRules } from "#eslint/constants";
 import type { Config } from "#eslint/types/Config";
 import type { Glob } from "#types/Glob";
 import js from "@eslint/js";

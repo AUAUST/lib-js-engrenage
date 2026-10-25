@@ -1,7 +1,7 @@
-import { markdownBlocks } from "#agents/constants/markdownBlocks";
+import { markdownBlocks } from "#agents/constants";
 import { resolveAgentReference } from "#agents/utils/resolveAgentReference";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { File } from "#types/File";
+import type { Files } from "#types/File";
 import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
 import { globSync, readFileSync } from "node:fs";
@@ -12,7 +12,7 @@ export function syncAgentFiles({
 }: {
   config: ResolvedConfig;
   check?: boolean;
-}): File[] {
+}): Files {
   const files = globSync(config.agents.instructionFiles, {
     cwd: config.root,
   }).sort();

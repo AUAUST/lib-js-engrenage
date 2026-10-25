@@ -43,12 +43,12 @@ Pause on real choices: ask the questions and wait for the answers before continu
 
 - Every directory in `src/` with an `index.ts` is a public entry `@auaust/engrenage/<name>`, discovered from the tsconfig `paths`. `src/index.ts` is the root entry.
 - `src/types/` and `src/utils/` hold global types and helpers shared by several entries; the root entry exposes them. Anything not specific to one tool belongs there.
-- Inside an entry, code lives in `builders/` (pure `create…` helpers: input and known data to output), `types/`, `utils/`, `constants/` (fixed internal values that are neither data files nor options) and `config/`.
+- Inside an entry, code lives in `builders/` (pure `create…` helpers: input and known data to output), `types/`, `utils/`, `constants.ts` (the domain's fixed internal values, such as option defaults and known file names) and `config/`.
 - Schemas, defaults and constants stay pure JavaScript: they import only valibot, types and other schemas, defaults or constants, never `node:*`, which ESLint enforces. Filesystem access and other logic live in `builders/` and `utils/`.
 
 ## Modules and exports
 
-- One function, constant or type per module, named after it. Each type lives in its own file under `types/` and is re-exported by its entry's barrel; global types are exported only by the root entry.
+- One function, constant or type per module, named after it, except `constants.ts`, which holds all of its domain's constants. Each type lives in its own file under `types/` and is re-exported by its entry's barrel; global types are exported only by the root entry.
 - Internal imports use the `#<area>/…` subpath imports declared in `package.json`, barrels included. Never import an entry through its package name from inside `src/`.
 - Name types after their tool's concept without a tool prefix (`Config`, `Rules`, `Conventions`). Use the global `Directory`, `File` and `Glob` for path-like values, adding `URL` to the union where a URL is accepted.
 - Compose builder arguments from those types inline; never derive them by picking from a larger options type.

@@ -1,4 +1,4 @@
-import { defaultGitignoreFile } from "#config/constants/defaultGitignoreFile";
+import { defaultGitignoreFile } from "#config/constants";
 import { fileSchema } from "#config/config/schemas/fileSchema";
 import { optional } from "valibot";
 

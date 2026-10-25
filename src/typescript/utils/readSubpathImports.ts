@@ -1,4 +1,4 @@
-import { packageFile } from "#config/constants/packageFile";
+import { packageFile } from "#config/constants";
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { SubpathImports } from "#typescript/types/SubpathImports";

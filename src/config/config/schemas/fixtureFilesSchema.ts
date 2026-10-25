@@ -1,4 +1,4 @@
-import { defaultFixtureFiles } from "#config/constants/defaultFixtureFiles";
+import { defaultFixtureFiles } from "#config/constants";
 import { globSchema } from "#config/config/schemas/globSchema";
 import { optional } from "valibot";
 

@@ -1,4 +1,4 @@
-import { configFileName } from "#config/constants/configFileName";
+import { configFileName } from "#config/constants";
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

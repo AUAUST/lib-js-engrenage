@@ -1,4 +1,4 @@
-import { defaultInstructionFiles } from "#config/constants/defaultInstructionFiles";
+import { defaultInstructionFiles } from "#config/constants";
 import { globSchema } from "#config/config/schemas/globSchema";
 import { array, optional } from "valibot";
 

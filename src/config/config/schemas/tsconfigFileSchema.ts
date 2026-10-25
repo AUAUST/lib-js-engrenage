@@ -1,4 +1,4 @@
-import { defaultTsconfigFile } from "#config/constants/defaultTsconfigFile";
+import { defaultTsconfigFile } from "#config/constants";
 import { fileSchema } from "#config/config/schemas/fileSchema";
 import { optional } from "valibot";
 

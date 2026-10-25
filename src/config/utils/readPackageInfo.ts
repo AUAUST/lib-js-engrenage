@@ -1,4 +1,4 @@
-import { packageFile } from "#config/constants/packageFile";
+import { packageFile } from "#config/constants";
 import { packageSchema } from "#config/config/schemas/packageSchema";
 import type { PackageInfo } from "#config/types/PackageInfo";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";

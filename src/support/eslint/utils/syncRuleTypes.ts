@@ -1,12 +1,11 @@
-import { ruleSourcesDirectory } from "#support/eslint/constants/ruleSourcesDirectory";
-import { rulesFile } from "#support/eslint/constants/rulesFile";
 import { loadConfig } from "#config/utils/loadConfig";
 import { createEslintConfig } from "#eslint/builders/createEslintConfig";
 import type { Plugin } from "#eslint/types/Plugin";
+import { ruleSourcesDirectory, rulesFile } from "#support/eslint/constants";
 import { normalizeRuleSchema } from "#support/eslint/utils/normalizeRuleSchema";
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
-import type { File } from "#types/File";
+import type { File, Files } from "#types/File";
 import { map } from "@auaust/primitive-kit/arrays";
 import { toPascalCase } from "@auaust/primitive-kit/strings";
 import { mappedValues } from "@auaust/toolkit/mappedValues";
@@ -124,7 +123,7 @@ export async function syncRuleTypes({
 }: {
   root: Directory | URL;
   check?: boolean;
-}): Promise<File[]> {
+}): Promise<Files> {
   const rootPath = resolve(root);
 
   const sources = await readRuleSources(rootPath);

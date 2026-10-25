@@ -1,13 +1,13 @@
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import { pluginName } from "#eslint/constants/pluginName";
+import { pluginName } from "#eslint/constants";
 import type { Config } from "#eslint/types/Config";
 import type { Convention } from "#eslint/types/Convention";
 import type { Rules } from "#eslint/types/Rules";
 import type { ScopeReference } from "#eslint/types/ScopeReference";
-import type { Glob } from "#types/Glob";
 import { createRuleName } from "#eslint/utils/createRuleName";
 import { isConventionEnabled } from "#eslint/utils/isConventionEnabled";
 import { resolveScopeReference } from "#eslint/utils/resolveScopeReference";
+import type { Globs } from "#types/Glob";
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
@@ -25,7 +25,7 @@ function createRules(name: string, { rules, rule }: Convention): Rules {
 function resolveScope(
   config: ResolvedConfig,
   references: ScopeReference[],
-): Glob[] {
+): Globs {
   return flatMap(references, (reference) => {
     return resolveScopeReference(config, reference);
   });
