@@ -6,7 +6,7 @@ Add `defineEslintConfig(options | (engrenage) => options, ...configs)` to `@auau
 
 - `ignore`: the gitignore file, `files.generated` and `files.fixtures` under each test directory (`tests/**/fixtures/**` by default);
 - `recommended`: the ESLint and typescript-eslint presets with the AUAUST adjustments;
-- `globals`, `typeChecks`, `stylistic`, `imports`, `promises`, `structure`: `false` turns the whole category off, and an object turns off single conventions (`{ typeChecks: { noRuntimeTypeof: false } }`). Unknown keys are rejected.
+- `globals`, `comparisons`, `stylistic`, `imports`, `promises`, `structure`: `false` turns the whole category off, and an object turns off single conventions (`{ comparisons: { noRuntimeTypeof: false } }`). Unknown keys are rejected.
 
 Each restriction is now its own rule under the `auaust/` namespace (`auaust/no-runtime-typeof`, `auaust/no-array-is-array`, `auaust/no-object-statics`, `auaust/no-is-null`, `auaust/no-is-undefined`, `auaust/no-loose-undefined`, `auaust/no-complex-concise-arrows`, `auaust/no-dynamic-import`, `auaust/no-misplaced-tests`), typed in `Rules`. Scoping one off is a native config (`{ files: ["src/utils/is*.ts"], rules: { "auaust/no-runtime-typeof": "off" } }`), and the project's own `no-restricted-syntax` and `no-restricted-properties` no longer replace engrenage's restrictions. `Array.isArray` is now also reported when destructured or accessed with brackets.
 

@@ -60,7 +60,7 @@ describe("createEslintConfig", () => {
   test("turns off single conventions and whole categories", async () => {
     expect(
       await lintedRules("src/restricted.ts", {
-        typeChecks: {
+        comparisons: {
           noRuntimeTypeof: false,
         },
       }),
@@ -128,7 +128,7 @@ describe("createEslintConfig", () => {
 
     expect(() => {
       return createEslintConfig(config, {
-        typeChecks: {
+        comparisons: {
           // @ts-expect-error: unknown convention
           noTypof: false,
         },
