@@ -34,6 +34,14 @@ describe("createEslintConfig", () => {
     );
   });
 
+  test("reports test files outside the test directories", async () => {
+    expect(await lintedRules("src/misplaced.test.ts")).toEqual([
+      "no-restricted-syntax",
+    ]);
+
+    expect(await lintedRules("tests/placed.test.ts")).toEqual([]);
+  });
+
   test("allows default exports in tool configs", async () => {
     expect(await lintedRules("tool.config.ts")).toEqual([]);
   });

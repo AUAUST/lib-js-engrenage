@@ -9,12 +9,7 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: Vite warns that the extensionless `./src/…` imports are unsupported by `configLoader: 'native'`, planned as the future default.
    - Fix: once Vite makes the native loader the default, import the config helpers with explicit extensions or through `#…` subpath imports.
 
-2. Test files outside `tests/`.
-   - Where: `config/eslint/`
-   - Problem: nothing stops a project from placing test files next to sources, although tests belong under the root `tests/`.
-   - Fix: add a shipped ESLint rule that reports files matching the conventional `*.{test,spec}.*` patterns outside `tests/`.
-
-3. Consuming the effective tsconfig.
+2. Consuming the effective tsconfig.
    - Where: `src/typescript/utils/`
    - Problem: `readCompilerOptions` returns raw compiler options, so each project still adapts them by hand, for example turning `paths` into tsdown entries and checking that `outDir` and `paths` are set in `tsdown.config.ts` and `vitest.config.ts`.
    - Fix: add TypeScript helpers that hand the resolved tsconfig to tools in the shape they expect (such as tsdown entries from `paths`), shared with the `createTsdownConfig` and `createVitestConfig` builders.

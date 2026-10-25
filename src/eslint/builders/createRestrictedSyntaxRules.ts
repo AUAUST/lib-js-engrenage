@@ -1,6 +1,9 @@
+import { misplacedTestRestriction } from "#config/eslint/misplacedTestRestriction";
 import { restrictedProperties } from "#config/eslint/restrictedProperties";
 import { sourceSyntaxRestrictions } from "#config/eslint/sourceSyntaxRestrictions";
 import { syntaxRestrictions } from "#config/eslint/syntaxRestrictions";
+import { testDirectories as defaultTestDirectories } from "#config/eslint/testDirectories";
+import { testFiles } from "#config/eslint/testFiles";
 import { typescriptFiles } from "#config/eslint/typescriptFiles";
 import { restrictProperties } from "#eslint/builders/restrictProperties";
 import { restrictSyntax } from "#eslint/builders/restrictSyntax";
@@ -13,9 +16,11 @@ import { defineConfig } from "eslint/config";
 
 export function createRestrictedSyntaxRules({
   sourceDirectories,
+  testDirectories = defaultTestDirectories,
   syntaxRestrictions: projectRestrictions = [],
 }: {
   sourceDirectories: Directory[];
+  testDirectories?: Directory[];
   syntaxRestrictions?: SyntaxRestriction[];
 }): Config[] {
   return defineConfig([
@@ -32,6 +37,15 @@ export function createRestrictedSyntaxRules({
         ...syntaxRestrictions,
         ...sourceSyntaxRestrictions,
         ...projectRestrictions,
+      ),
+    },
+    {
+      files: [testFiles],
+      ignores: map(testDirectories, filesIn),
+      rules: restrictSyntax(
+        ...syntaxRestrictions,
+        ...projectRestrictions,
+        misplacedTestRestriction,
       ),
     },
   ]);

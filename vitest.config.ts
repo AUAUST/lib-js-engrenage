@@ -1,6 +1,6 @@
 import { rmSync } from "node:fs";
 import { resolve } from "node:path";
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 import packageJson from "./package.json" with { type: "json" };
 import { readCompilerOptions, resolvePathAliases } from "#typescript/index";
 import { createViteAliases } from "#vite/index";
@@ -46,6 +46,7 @@ export default defineConfig(({ mode }) => {
       coverage: {
         provider: "istanbul",
       },
+      exclude: [...configDefaults.exclude, "tests/fixtures/**"],
     },
     tsconfig: shouldTestDist ? "tsconfig.dist.json" : "tsconfig.json",
   };

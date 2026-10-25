@@ -10,7 +10,7 @@ paths:
 ## Enforced by tooling
 
 - Prettier with the `@auaust/engrenage/prettier` standard.
-- ESLint through `@auaust/engrenage/eslint`: braces on every control-flow body; multiline non-empty object literals; concise arrow bodies limited to an identifier, literal, member access, negation, comparison or call; a blank line after imports, around multiline `const`/`let` declarations and before a non-sole `return`; type-only and consolidated imports; named exports outside tool configs and declared default-export files; `x == null` for nullish checks; `isNull`/`isUndefined` only as callbacks; runtime `typeof` only as `typeof x === "undefined"`; no `Object.*` or `Array.isArray`; static imports in source directories; no promise-returning functions where a void return is expected.
+- ESLint through `@auaust/engrenage/eslint`: braces on every control-flow body; multiline non-empty object literals; concise arrow bodies limited to an identifier, literal, member access, negation, comparison or call; a blank line after imports, around multiline `const`/`let` declarations and before a non-sole `return`; type-only and consolidated imports; named exports outside tool configs and declared default-export files; `x == null` for nullish checks; `isNull`/`isUndefined` only as callbacks; runtime `typeof` only as `typeof x === "undefined"`; no `Object.*` or `Array.isArray`; static imports in source directories; no promise-returning functions where a void return is expected; test files only under the test directories.
 
 ## Not checked by tools
 

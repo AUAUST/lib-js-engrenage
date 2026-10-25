@@ -1,11 +1,14 @@
 // @reference config/eslint
 export * from "#config/eslint/baseRules";
 export * from "#config/eslint/importRules";
+export * from "#config/eslint/misplacedTestRestriction";
 export * from "#config/eslint/promiseRules";
 export * from "#config/eslint/restrictedProperties";
 export * from "#config/eslint/sourceSyntaxRestrictions";
 export * from "#config/eslint/stylisticRules";
 export * from "#config/eslint/syntaxRestrictions";
+export * from "#config/eslint/testDirectories";
+export * from "#config/eslint/testFiles";
 export * from "#config/eslint/toolConfigFiles";
 export * from "#config/eslint/typescriptFiles";
 // @end
