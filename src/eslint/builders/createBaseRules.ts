@@ -1,4 +1,5 @@
-import { typescriptFiles } from "#eslint/presets/typescriptFiles";
+import { baseRules } from "#config/eslint/baseRules";
+import { typescriptFiles } from "#config/eslint/typescriptFiles";
 import type { Config } from "#eslint/types/Config";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
@@ -25,15 +26,7 @@ export function createBaseRules({
     typescriptConfigs.recommended,
     {
       files: [typescriptFiles],
-      rules: {
-        "@typescript-eslint/ban-ts-comment": "off",
-        "@typescript-eslint/no-empty-object-type": "off",
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-unsafe-function-type": "off",
-        "@typescript-eslint/no-unused-vars": "off",
-        "no-cond-assign": "off",
-        curly: ["error", "all"],
-      },
+      rules: baseRules,
     },
   ]);
 }

@@ -1,4 +1,5 @@
-import { syncBlocks } from "@auaust/engrenage/agents";
+import { syncBlocks } from "@auaust/engrenage";
+import { markdownBlocks } from "@auaust/engrenage/agents";
 import { describe, expect, test } from "vitest";
 
 function readFragment(id: string) {
@@ -16,7 +17,7 @@ describe("syncBlocks", () => {
       "",
     ].join("\n");
 
-    expect(syncBlocks(content, readFragment)).toBe(
+    expect(syncBlocks(content, markdownBlocks, readFragment)).toBe(
       [
         "# Local title",
         "<!-- engrenage:sections/shared -->",
@@ -32,7 +33,11 @@ describe("syncBlocks", () => {
 
   test("rejects a block without its closing marker", () => {
     expect(() => {
-      return syncBlocks("<!-- engrenage:sections/shared -->\n", readFragment);
+      return syncBlocks(
+        "<!-- engrenage:sections/shared -->\n",
+        markdownBlocks,
+        readFragment,
+      );
     }).toThrow("Missing closing marker");
   });
 });

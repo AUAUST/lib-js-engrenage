@@ -1,8 +1,28 @@
+import { defineConfig } from "eslint/config";
 import { createEslintConfig } from "./src/eslint/index";
 
-export default createEslintConfig({
-  root: new URL("./", import.meta.url),
-  sourceDirectories: ["src", "bin"],
-  defaultExportFiles: ["src/prettier/index.ts", "bin/**/*.ts"],
-  ignores: ["tests/fixtures/**"],
-});
+export default defineConfig([
+  createEslintConfig({
+    root: new URL("./", import.meta.url),
+    sourceDirectories: ["src", "bin", "config"],
+    defaultExportFiles: ["src/prettier/index.ts", "bin/**/*.ts"],
+    ignores: ["tests/fixtures/**"],
+  }),
+  {
+    files: ["config/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              regex: ".*",
+              allowTypeImports: true,
+              message: "config/ holds data only: import types, never values.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+]);

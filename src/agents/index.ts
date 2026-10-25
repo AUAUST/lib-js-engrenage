@@ -1,4 +1,7 @@
-export { agentFiles } from "#agents/presets/agentFiles";
+// engrenage:config/agents
+export * from "#config/agents/agentFiles";
+export * from "#config/agents/markdownBlocks";
+// /engrenage:config/agents
+
 export { readFragment } from "#agents/utils/readFragment";
 export { syncAgentFiles } from "#agents/utils/syncAgentFiles";
-export { syncBlocks } from "#agents/utils/syncBlocks";

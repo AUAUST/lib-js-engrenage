@@ -14,9 +14,9 @@ const binEntries = {
 };
 
 const fileExports = {
-  "./agents/rules/*.md": "./src/agents/presets/rules/*.md",
-  "./agents/sections/*.md": "./src/agents/presets/sections/*.md",
-  "./typescript/presets/*.json": "./src/typescript/presets/*.json",
+  "./agents/rules/*.md": "./config/agents/rules/*.md",
+  "./agents/sections/*.md": "./config/agents/sections/*.md",
+  "./typescript/presets/*.json": "./config/typescript/*.json",
 };
 
 function getEntries(): Record<string, string> {

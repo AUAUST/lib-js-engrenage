@@ -1,3 +1,15 @@
+// engrenage:config/eslint
+export * from "#config/eslint/baseRules";
+export * from "#config/eslint/importRules";
+export * from "#config/eslint/promiseRules";
+export * from "#config/eslint/restrictedProperties";
+export * from "#config/eslint/sourceSyntaxRestrictions";
+export * from "#config/eslint/stylisticRules";
+export * from "#config/eslint/syntaxRestrictions";
+export * from "#config/eslint/toolConfigFiles";
+export * from "#config/eslint/typescriptFiles";
+// /engrenage:config/eslint
+
 export { createBaseRules } from "#eslint/builders/createBaseRules";
 export { createEslintConfig } from "#eslint/builders/createEslintConfig";
 export { createImportRules } from "#eslint/builders/createImportRules";
@@ -5,14 +17,13 @@ export { createPromiseRules } from "#eslint/builders/createPromiseRules";
 export { createRestrictedSyntaxRules } from "#eslint/builders/createRestrictedSyntaxRules";
 export { createStylisticRules } from "#eslint/builders/createStylisticRules";
 export { restrictImports } from "#eslint/builders/restrictImports";
-export { sourceSyntaxRestrictions } from "#eslint/presets/sourceSyntaxRestrictions";
-export { syntaxRestrictions } from "#eslint/presets/syntaxRestrictions";
-export { toolConfigFiles } from "#eslint/presets/toolConfigFiles";
-export { typescriptFiles } from "#eslint/presets/typescriptFiles";
+export { restrictProperties } from "#eslint/builders/restrictProperties";
+export { restrictSyntax } from "#eslint/builders/restrictSyntax";
 export type { Config } from "#eslint/types/Config";
 export type { Conventions } from "#eslint/types/Conventions";
 export type { ImportPattern } from "#eslint/types/ImportPattern";
 export type { Plugin } from "#eslint/types/Plugin";
+export type { RestrictedProperty } from "#eslint/types/RestrictedProperty";
 export type { Rule } from "#eslint/types/Rule";
 export type { Rules } from "#eslint/types/Rules";
 export type { SyntaxRestriction } from "#eslint/types/SyntaxRestriction";

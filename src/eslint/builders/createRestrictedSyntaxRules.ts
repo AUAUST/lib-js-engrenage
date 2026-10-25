@@ -1,6 +1,9 @@
-import { sourceSyntaxRestrictions } from "#eslint/presets/sourceSyntaxRestrictions";
-import { syntaxRestrictions } from "#eslint/presets/syntaxRestrictions";
-import { typescriptFiles } from "#eslint/presets/typescriptFiles";
+import { restrictedProperties } from "#config/eslint/restrictedProperties";
+import { sourceSyntaxRestrictions } from "#config/eslint/sourceSyntaxRestrictions";
+import { syntaxRestrictions } from "#config/eslint/syntaxRestrictions";
+import { typescriptFiles } from "#config/eslint/typescriptFiles";
+import { restrictProperties } from "#eslint/builders/restrictProperties";
+import { restrictSyntax } from "#eslint/builders/restrictSyntax";
 import type { Config } from "#eslint/types/Config";
 import type { SyntaxRestriction } from "#eslint/types/SyntaxRestriction";
 import { filesIn } from "#eslint/utils/filesIn";
@@ -19,34 +22,17 @@ export function createRestrictedSyntaxRules({
     {
       files: [typescriptFiles],
       rules: {
-        "no-restricted-properties": [
-          "error",
-          {
-            object: "Object",
-            message: "Use the @auaust/toolkit/object equivalent.",
-          },
-          {
-            object: "Array",
-            property: "isArray",
-            message: "Use isArray from @auaust/toolkit.",
-          },
-        ],
-        "no-restricted-syntax": [
-          "error",
-          ...syntaxRestrictions,
-          ...projectRestrictions,
-        ],
+        ...restrictProperties(...restrictedProperties),
+        ...restrictSyntax(...syntaxRestrictions, ...projectRestrictions),
       },
     },
     {
       files: map(sourceDirectories, filesIn),
-      rules: {
-        "no-restricted-syntax": [
-          "error",
-          ...sourceSyntaxRestrictions,
-          ...projectRestrictions,
-        ],
-      },
+      rules: restrictSyntax(
+        ...syntaxRestrictions,
+        ...sourceSyntaxRestrictions,
+        ...projectRestrictions,
+      ),
     },
   ]);
 }

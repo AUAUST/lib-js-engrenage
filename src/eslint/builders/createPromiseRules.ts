@@ -1,3 +1,4 @@
+import { promiseRules } from "#config/eslint/promiseRules";
 import type { Config } from "#eslint/types/Config";
 import { filesIn } from "#eslint/utils/filesIn";
 import type { Directory } from "#types/Directory";
@@ -23,16 +24,7 @@ export function createPromiseRules({
           tsconfigRootDir: resolvePath(root),
         },
       },
-      rules: {
-        "@typescript-eslint/no-misused-promises": [
-          "error",
-          {
-            checksVoidReturn: {
-              attributes: false,
-            },
-          },
-        ],
-      },
+      rules: promiseRules,
     },
   ]);
 }
