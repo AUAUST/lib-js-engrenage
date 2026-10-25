@@ -45,7 +45,7 @@
     "test": "vitest run --config vitest.config.ts --typecheck -- && pnpm run typecheck",
     "typecheck": "echo 'Typechecking...' && tsc --noEmit && echo 'All good!'",
     "watch": "vitest --config vitest.config.ts --typecheck --",
-    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage agents sync --check && pnpm run engrenage codegen barrels --check && pnpm run support codegen rules --check && pnpm run build",
+    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage agents sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run build",
     "ci:publish": "changeset publish"
   },
   "dependencies": {

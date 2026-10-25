@@ -1,4 +1,4 @@
-import barrels from "#bin/engrenage/codegen/barrels";
+import barrels from "#bin/support/codegen/barrels";
 import { Command } from "@commander-js/extra-typings";
 import {
   mkdirSync,
@@ -58,7 +58,7 @@ afterEach(() => {
   process.exitCode = undefined;
 });
 
-describe("engrenage codegen barrels", () => {
+describe("support codegen barrels", () => {
   test("re-exports the named directory so a later check passes", async () => {
     await runBarrels("tool");
 
