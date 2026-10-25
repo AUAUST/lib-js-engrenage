@@ -1,5 +1,5 @@
 import { defineConfig } from "eslint/config";
-import { createEslintConfig } from "./src/eslint/index";
+import { createEslintConfig } from "#eslint/index";
 
 export default defineConfig([
   createEslintConfig({

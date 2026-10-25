@@ -2,8 +2,8 @@ import { rmSync } from "node:fs";
 import { resolve } from "node:path";
 import { defineConfig } from "vitest/config";
 import packageJson from "./package.json" with { type: "json" };
-import { resolvePathAliases } from "./src/typescript/index";
-import { createViteAliases } from "./src/vite/index";
+import { resolvePathAliases } from "#typescript/index";
+import { createViteAliases } from "#vite/index";
 import tsconfig from "./tsconfig.json" with { type: "json" };
 
 const root = import.meta.dirname;
