@@ -1,6 +1,6 @@
+import { describe, expectTypeOf, test } from "vitest";
 import type { Rules } from "@auaust/engrenage/eslint";
 import type { Linter } from "eslint";
-import { describe, expectTypeOf, test } from "vitest";
 
 declare module "@auaust/engrenage/eslint" {
   interface Rules {
@@ -11,7 +11,7 @@ declare module "@auaust/engrenage/eslint" {
 describe("Rules", () => {
   test("types the options of each configured source", () => {
     expectTypeOf<{
-      curly: ["error", "all"];
+      "curly": ["error", "all"];
       "@typescript-eslint/consistent-type-imports": [
         "error",
         {

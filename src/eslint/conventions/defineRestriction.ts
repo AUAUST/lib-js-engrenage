@@ -1,6 +1,7 @@
+import type { Rule } from "eslint";
+
 import { defineConvention } from "#eslint/conventions/defineConvention";
 import type { Convention } from "#eslint/types/Convention";
-import type { Rule } from "eslint";
 import type { ScopeReference } from "#eslint/types/ScopeReference";
 
 export function defineRestriction({

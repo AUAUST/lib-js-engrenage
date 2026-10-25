@@ -1,4 +1,3 @@
-import type { File } from "#types/File";
 import {
   safeParse,
   summarize,
@@ -7,6 +6,8 @@ import {
   type InferOutput,
   type IssuePathItem,
 } from "valibot";
+
+import type { File } from "#types/File";
 
 function expandUnionIssue(issue: BaseIssue<unknown>): BaseIssue<unknown>[] {
   const branchIssues: BaseIssue<unknown>[] = [];

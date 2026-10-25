@@ -1,5 +1,3 @@
-import sync from "#bin/engrenage/agents/sync";
-import { Command } from "@commander-js/extra-typings";
 import {
   mkdirSync,
   mkdtempSync,
@@ -9,7 +7,11 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+
+import { Command } from "@commander-js/extra-typings";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+
+import sync from "#bin/engrenage/agents/sync";
 
 const emptyBlock = [
   "<!-- @reference ./.claude/shared.md -->",

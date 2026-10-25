@@ -1,10 +1,11 @@
+import { globSync, readFileSync } from "node:fs";
+
 import { markdownBlocks } from "#agents/constants";
 import { resolveAgentReference } from "#agents/utils/resolveAgentReference";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Files } from "#types/File";
 import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
-import { globSync, readFileSync } from "node:fs";
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { Files } from "#types/File";
 
 export function syncAgentFiles({
   config,

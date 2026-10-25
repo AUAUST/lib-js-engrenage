@@ -1,6 +1,7 @@
-import { builtinGeneratedFiles } from "#config/constants";
-import { globSchema } from "#config/config/schemas/globSchema";
 import { array, optional, pipe, transform } from "valibot";
+
+import { globSchema } from "#config/config/schemas/globSchema";
+import { builtinGeneratedFiles } from "#config/constants";
 
 export const generatedFilesSchema = optional(
   pipe(

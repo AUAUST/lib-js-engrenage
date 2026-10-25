@@ -1,7 +1,8 @@
-import type { BlockFillers } from "#types/BlockFillers";
-import type { BlockSyntax } from "#types/BlockSyntax";
 import { map } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
+
+import type { BlockFillers } from "#types/BlockFillers";
+import type { BlockSyntax } from "#types/BlockSyntax";
 
 export function syncBlocks(
   content: string,

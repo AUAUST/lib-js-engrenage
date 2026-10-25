@@ -1,5 +1,4 @@
 import { configSchema } from "#config/config/schemas/configSchema";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
 import { findConfigFile } from "#config/utils/findConfigFile";
 import { importConfigFile } from "#config/utils/importConfigFile";
@@ -8,6 +7,7 @@ import { readTypescriptInfo } from "#config/utils/readTypescriptInfo";
 import { warnMissingConfig } from "#config/utils/warnMissingConfig";
 import { resolve } from "#support/filesystem/utils/resolve";
 import { validate } from "#support/validation/utils/validate";
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Directory } from "#types/Directory";
 
 const loadedConfigs = new Map<Directory, Promise<ResolvedConfig>>();

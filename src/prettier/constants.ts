@@ -1,5 +1,6 @@
-import type { Options } from "#prettier/types/Options";
 import { freeze } from "@auaust/toolkit/object";
+
+import type { Options } from "#prettier/types/Options";
 
 export const defaultOptions = freeze({
   arrowParens: "always",

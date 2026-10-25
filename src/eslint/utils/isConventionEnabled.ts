@@ -1,5 +1,6 @@
-import type { Convention } from "#eslint/types/Convention";
 import { isBoolean } from "@auaust/toolkit/isBoolean";
+
+import type { Convention } from "#eslint/types/Convention";
 
 export function isConventionEnabled(
   name: string,

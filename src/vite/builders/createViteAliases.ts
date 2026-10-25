@@ -1,8 +1,9 @@
+import { map } from "@auaust/primitive-kit/arrays";
+
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { PathAlias } from "#typescript/types/PathAlias";
 import type { Alias } from "#vite/types/Alias";
-import { map } from "@auaust/primitive-kit/arrays";
 
 export function createViteAliases(
   pathAliases: PathAlias[],

@@ -1,6 +1,11 @@
 {
-  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never",
+    "source.sortImports": "never"
+  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "prettier.requireConfig": true
 }

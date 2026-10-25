@@ -1,8 +1,9 @@
+import { entries, values } from "@auaust/toolkit/object";
+
+import { createRuleName } from "#eslint/utils/createRuleName";
 import type { Convention } from "#eslint/types/Convention";
 import type { Plugin } from "#eslint/types/Plugin";
 import type { RuleModule } from "#eslint/types/RuleModule";
-import { createRuleName } from "#eslint/utils/createRuleName";
-import { entries, values } from "@auaust/toolkit/object";
 
 export function createPlugin(
   categories: Record<string, Record<string, Convention>>,

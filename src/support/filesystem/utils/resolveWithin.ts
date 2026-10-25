@@ -1,6 +1,7 @@
+import { isAbsolute, relative, sep } from "node:path";
+
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
-import { isAbsolute, relative, sep } from "node:path";
 
 export function resolveWithin(
   base: Directory | URL,

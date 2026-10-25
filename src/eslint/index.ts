@@ -3,6 +3,7 @@ export { restrictImports } from "#eslint/builders/restrictImports";
 export { restrictProperties } from "#eslint/builders/restrictProperties";
 export { restrictSyntax } from "#eslint/builders/restrictSyntax";
 export { defineEslintConfig } from "#eslint/config/defineEslintConfig";
+export { filesIn } from "#utils/filesIn";
 export type { Config } from "#eslint/types/Config";
 export type { ConfigWithExtends } from "#eslint/types/ConfigWithExtends";
 export type { Convention } from "#eslint/types/Convention";
@@ -20,4 +21,3 @@ export type { TypescriptEslintRules } from "#eslint/types/rules/TypescriptEslint
 export type { Scope } from "#eslint/types/Scope";
 export type { ScopeReference } from "#eslint/types/ScopeReference";
 export type { SyntaxRestriction } from "#eslint/types/SyntaxRestriction";
-export { filesIn } from "#utils/filesIn";

@@ -14,6 +14,11 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: `readCompilerOptions` returns raw compiler options, so each project still adapts them by hand, for example turning `paths` into tsdown entries and checking that `outDir` and `paths` are set in `tsdown.config.ts` and `vitest.config.ts`.
    - Fix: add TypeScript helpers that hand the resolved tsconfig to tools in the shape they expect (such as tsdown entries from `paths`), shared with the `createTsdownConfig` and `createVitestConfig` builders.
 
+3. Barrel codegen cannot heal a barrel that names a removed module.
+   - Where: `bin/support/codegen/index.ts`, `bin/support/codegen/rules.ts`
+   - Problem: the `support` CLI registers every codegen subcommand at startup, and the `rules` subcommand imports the ESLint config builder and with it every conventions barrel. Renaming or deleting a convention module therefore crashes `pnpm support codegen barrels` with `ERR_MODULE_NOT_FOUND` before it can rewrite the stale barrel line, which has to be fixed by hand first.
+   - Fix: decouple subcommand registration from their implementations so the barrels command never evaluates the modules it generates; a lazy dynamic import conflicts with the `noDynamicImport` convention, so this needs a deliberate loading pattern for CLI subcommands.
+
 ## 2. Upstream
 
 1. primitive-kit `filter` return type.

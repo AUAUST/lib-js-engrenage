@@ -1,5 +1,6 @@
-import { resolveReference } from "@auaust/engrenage";
 import { join } from "node:path";
+
+import { resolveReference } from "@auaust/engrenage";
 import { describe, expect, test } from "vitest";
 
 const root = join(import.meta.dirname, "../..");

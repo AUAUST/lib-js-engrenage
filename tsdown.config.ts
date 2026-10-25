@@ -1,8 +1,10 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+
 import { defineConfig } from "tsdown";
-import initialPackageJson from "./package.json" with { type: "json" };
+
 import { readCompilerOptions, resolvePathAliases } from "#typescript/index";
+import initialPackageJson from "./package.json" with { type: "json" };
 
 const root = import.meta.dirname;
 

@@ -727,7 +727,7 @@ type TypescriptEslintBanTsComment =
   | []
   | [
       {
-        minimumDescriptionLength?: number;
+        "minimumDescriptionLength"?: number;
 
         "ts-check"?:
           | boolean

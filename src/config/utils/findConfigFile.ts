@@ -1,10 +1,12 @@
+import { existsSync } from "node:fs";
+
+import { map } from "@auaust/primitive-kit/arrays";
+import { SUPPORTED_EXTENSIONS } from "c12";
+
 import { configFileName } from "#config/constants";
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-import { map } from "@auaust/primitive-kit/arrays";
-import { SUPPORTED_EXTENSIONS } from "c12";
-import { existsSync } from "node:fs";
 
 export function findConfigFile(root: Directory): File | null {
   const candidates = map(SUPPORTED_EXTENSIONS, (extension) => {

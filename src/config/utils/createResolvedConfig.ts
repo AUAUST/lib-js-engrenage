@@ -1,10 +1,11 @@
+import type { InferOutput } from "valibot";
+
+import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import type { configSchema } from "#config/config/schemas/configSchema";
 import type { PackageInfo } from "#config/types/PackageInfo";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { TypescriptInfo } from "#config/types/TypescriptInfo";
 import type { Directory } from "#types/Directory";
-import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
-import type { InferOutput } from "valibot";
 
 export function createResolvedConfig({
   root,

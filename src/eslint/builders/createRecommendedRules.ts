@@ -1,9 +1,10 @@
-import { recommendedRules } from "#eslint/constants";
-import type { Config } from "#eslint/types/Config";
-import type { Glob } from "#types/Glob";
 import js from "@eslint/js";
 import { defineConfig } from "eslint/config";
 import { configs as typescriptConfigs } from "typescript-eslint";
+
+import { recommendedRules } from "#eslint/constants";
+import type { Config } from "#eslint/types/Config";
+import type { Glob } from "#types/Glob";
 
 export function createRecommendedRules({
   codeFiles,

@@ -1,7 +1,8 @@
+import { existsSync } from "node:fs";
+
+import { resolveReference } from "#utils/resolveReference";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
-import { resolveReference } from "#utils/resolveReference";
-import { existsSync } from "node:fs";
 
 function isRelative(reference: string): boolean {
   return reference.startsWith("./") || reference.startsWith("../");

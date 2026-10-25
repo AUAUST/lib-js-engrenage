@@ -1,7 +1,8 @@
-import type { SubpathImports } from "#typescript/types/SubpathImports";
-import type { File } from "#types/File";
-import { entries } from "@auaust/toolkit/object";
 import { isString } from "@auaust/toolkit/isString";
+import { entries } from "@auaust/toolkit/object";
+
+import type { File } from "#types/File";
+import type { SubpathImports } from "#typescript/types/SubpathImports";
 
 function matchSpecifier(
   specifier: string,

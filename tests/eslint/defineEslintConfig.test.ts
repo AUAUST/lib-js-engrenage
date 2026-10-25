@@ -1,9 +1,10 @@
-import type { ResolvedConfig } from "@auaust/engrenage/config";
+import { fileURLToPath } from "node:url";
+
 import { defineEslintConfig } from "@auaust/engrenage/eslint";
 import { map } from "@auaust/primitive-kit/arrays";
 import { ESLint } from "eslint";
-import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, test, vi } from "vitest";
+import type { ResolvedConfig } from "@auaust/engrenage/config";
 
 const root = fileURLToPath(new URL("../fixtures/eslint/", import.meta.url));
 

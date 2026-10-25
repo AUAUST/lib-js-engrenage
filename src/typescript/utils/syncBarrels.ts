@@ -1,21 +1,24 @@
+import { globSync } from "node:fs";
+import { basename, dirname, extname } from "node:path";
+
+import { map } from "@auaust/primitive-kit/arrays";
+
 import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import { resolve } from "#support/filesystem/utils/resolve";
-import type { Directory } from "#types/Directory";
-import type { File, Files } from "#types/File";
-import type { Glob } from "#types/Glob";
 import {
   barrelFiles,
   barrelModules,
   typescriptBlocks,
 } from "#typescript/constants";
-import type { SubpathImports } from "#typescript/types/SubpathImports";
 import { readSubpathImports } from "#typescript/utils/readSubpathImports";
 import { resolveImportSpecifier } from "#typescript/utils/resolveImportSpecifier";
+import { compareNaturally } from "#utils/compareNaturally";
 import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
-import { map } from "@auaust/primitive-kit/arrays";
-import { globSync } from "node:fs";
-import { basename, dirname, extname } from "node:path";
+import type { Directory } from "#types/Directory";
+import type { File, Files } from "#types/File";
+import type { Glob } from "#types/Glob";
+import type { SubpathImports } from "#typescript/types/SubpathImports";
 
 function barrelName(file: File): string {
   return basename(dirname(file));
@@ -28,11 +31,13 @@ function createReexports(
 ): string {
   const modules = globSync(barrelModules, {
     cwd: resolve(root, directory),
-  }).sort();
+  });
 
-  const reexports = map(modules, (module) => {
-    const specifier = resolveImportSpecifier(imports, `${directory}/${module}`);
+  const specifiers = map(modules, (module) => {
+    return resolveImportSpecifier(imports, `${directory}/${module}`);
+  });
 
+  const reexports = map(specifiers.sort(compareNaturally), (specifier) => {
     return `export * from "${specifier}";`;
   });
 
@@ -53,9 +58,9 @@ function createRegistry(
     cwd,
   });
 
-  const reexports: string[] = [];
+  const names = new Map<string, string>();
 
-  for (const module of modules.sort()) {
+  for (const module of modules) {
     const path = resolve(cwd, module);
 
     if (path === barrel) {
@@ -67,10 +72,16 @@ function createRegistry(
       relativeWithin(root, path),
     );
 
-    const name = basename(module, extname(module));
-
-    reexports.push(`export { default as ${name} } from "${specifier}";`);
+    names.set(specifier, basename(module, extname(module)));
   }
+
+  const sortedNames = [...names].sort(([left], [right]) => {
+    return compareNaturally(left, right);
+  });
+
+  const reexports = map(sortedNames, ([specifier, name]) => {
+    return `export { default as ${name} } from "${specifier}";`;
+  });
 
   return reexports.join("\n");
 }

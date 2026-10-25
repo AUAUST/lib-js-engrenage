@@ -1,8 +1,9 @@
-import { readCompilerOptions } from "@auaust/engrenage/typescript";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { readCompilerOptions } from "@auaust/engrenage/typescript";
 import { describe, expect, test } from "vitest";
 
 const tsc = createRequire(import.meta.url).resolve("typescript/lib/tsc.js");

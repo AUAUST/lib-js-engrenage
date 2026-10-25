@@ -1,10 +1,11 @@
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import {
   resolveAgentReference,
   syncAgentFiles,
 } from "@auaust/engrenage/agents";
 import { loadConfig } from "@auaust/engrenage/config";
-import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
 const root = fileURLToPath(new URL("../fixtures/agents", import.meta.url));

@@ -74,7 +74,7 @@ export interface CoreRules {
    * Enforce camelcase naming convention
    * @see https://eslint.org/docs/latest/rules/camelcase
    */
-  camelcase?: Linter.RuleEntry<Camelcase>;
+  "camelcase"?: Linter.RuleEntry<Camelcase>;
   /**
    * Enforce or disallow capitalization of the first letter of a comment
    * @see https://eslint.org/docs/latest/rules/capitalized-comments
@@ -107,7 +107,7 @@ export interface CoreRules {
    * Enforce a maximum cyclomatic complexity allowed in a program
    * @see https://eslint.org/docs/latest/rules/complexity
    */
-  complexity?: Linter.RuleEntry<Complexity>;
+  "complexity"?: Linter.RuleEntry<Complexity>;
   /**
    * Enforce consistent spacing inside computed property brackets
    * @see https://eslint.org/docs/latest/rules/computed-property-spacing
@@ -133,7 +133,7 @@ export interface CoreRules {
    * Enforce consistent brace style for all control statements
    * @see https://eslint.org/docs/latest/rules/curly
    */
-  curly?: Linter.RuleEntry<Curly>;
+  "curly"?: Linter.RuleEntry<Curly>;
   /**
    * Require `default` cases in `switch` statements
    * @see https://eslint.org/docs/latest/rules/default-case
@@ -170,7 +170,7 @@ export interface CoreRules {
    * Require the use of `===` and `!==`
    * @see https://eslint.org/docs/latest/rules/eqeqeq
    */
-  eqeqeq?: Linter.RuleEntry<Eqeqeq>;
+  "eqeqeq"?: Linter.RuleEntry<Eqeqeq>;
   /**
    * Enforce `for` loop update clause moving the counter in the right direction
    * @see https://eslint.org/docs/latest/rules/for-direction
@@ -274,7 +274,7 @@ export interface CoreRules {
    * @see https://eslint.org/docs/latest/rules/indent
    * @deprecated
    */
-  indent?: Linter.RuleEntry<Indent>;
+  "indent"?: Linter.RuleEntry<Indent>;
   /**
    * Enforce consistent indentation
    * @see https://eslint.org/docs/latest/rules/indent-legacy
@@ -1383,12 +1383,12 @@ export interface CoreRules {
    * @see https://eslint.org/docs/latest/rules/quotes
    * @deprecated
    */
-  quotes?: Linter.RuleEntry<Quotes>;
+  "quotes"?: Linter.RuleEntry<Quotes>;
   /**
    * Enforce the use of the radix argument when using `parseInt()`
    * @see https://eslint.org/docs/latest/rules/radix
    */
-  radix?: Linter.RuleEntry<Radix>;
+  "radix"?: Linter.RuleEntry<Radix>;
   /**
    * Disallow assignments that can lead to race conditions due to usage of `await` or `yield`
    * @see https://eslint.org/docs/latest/rules/require-atomic-updates
@@ -1420,7 +1420,7 @@ export interface CoreRules {
    * @see https://eslint.org/docs/latest/rules/semi
    * @deprecated
    */
-  semi?: Linter.RuleEntry<Semi>;
+  "semi"?: Linter.RuleEntry<Semi>;
   /**
    * Enforce consistent spacing before and after semicolons
    * @see https://eslint.org/docs/latest/rules/semi-spacing
@@ -1488,7 +1488,7 @@ export interface CoreRules {
    * Require or disallow strict mode directives
    * @see https://eslint.org/docs/latest/rules/strict
    */
-  strict?: Linter.RuleEntry<Strict>;
+  "strict"?: Linter.RuleEntry<Strict>;
   /**
    * Enforce spacing around colons of switch statements
    * @see https://eslint.org/docs/latest/rules/switch-colon-spacing
@@ -1554,7 +1554,7 @@ export interface CoreRules {
    * Require or disallow "Yoda" conditions
    * @see https://eslint.org/docs/latest/rules/yoda
    */
-  yoda?: Linter.RuleEntry<Yoda>;
+  "yoda"?: Linter.RuleEntry<Yoda>;
 }
 
 /* ======= Declarations ======= */

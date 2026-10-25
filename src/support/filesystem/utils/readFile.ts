@@ -1,5 +1,6 @@
-import type { File } from "#types/File";
 import { readFileSync } from "node:fs";
+
+import type { File } from "#types/File";
 
 export function readFile(path: File): string | undefined {
   try {

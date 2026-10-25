@@ -1,6 +1,6 @@
 import { defineConfig, type Config } from "@auaust/engrenage/config";
-import type { ConfigInput } from "@auaust/engrenage";
 import { describe, expect, expectTypeOf, test } from "vitest";
+import type { ConfigInput } from "@auaust/engrenage";
 
 describe("defineConfig", () => {
   test("returns the config it receives", () => {

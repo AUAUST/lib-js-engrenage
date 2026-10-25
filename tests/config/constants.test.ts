@@ -1,3 +1,7 @@
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
 import { loadConfig } from "@auaust/engrenage/config";
 import {
   builtinGeneratedFiles,
@@ -7,9 +11,6 @@ import {
   defaultTestDirectories,
 } from "@auaust/engrenage/config/constants";
 import { pluginName } from "@auaust/engrenage/eslint/constants";
-import { mkdtempSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 const root = mkdtempSync(join(tmpdir(), "engrenage-constants-"));

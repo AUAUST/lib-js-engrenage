@@ -1,3 +1,5 @@
+import { fileURLToPath } from "node:url";
+
 import { loadConfig, type ResolvedConfig } from "@auaust/engrenage/config";
 import {
   createEslintConfig,
@@ -5,10 +7,9 @@ import {
   type Options,
 } from "@auaust/engrenage/eslint";
 import { map } from "@auaust/primitive-kit/arrays";
-import type { Maybe } from "@auaust/toolkit/types";
 import { ESLint } from "eslint";
-import { fileURLToPath } from "node:url";
 import { describe, expect, expectTypeOf, test } from "vitest";
+import type { Maybe } from "@auaust/toolkit/types";
 
 const root = new URL("../fixtures/eslint/", import.meta.url);
 
@@ -33,8 +34,18 @@ describe("createEslintConfig", () => {
     const rules = await lintedRules("src/violations.ts");
 
     expect(rules).toEqual(
-      expect.arrayContaining(["curly", "import-x/no-default-export"]),
+      expect.arrayContaining(["curly", "eqeqeq", "import-x/no-default-export"]),
     );
+    expect(rules.filter((rule) => rule === "eqeqeq")).toHaveLength(1);
+  });
+
+  test("reports misordered and unused imports", async () => {
+    expect(await lintedRules("src/imports.ts")).toEqual([
+      "perfectionist/sort-named-imports",
+      "perfectionist/sort-imports",
+      "perfectionist/sort-imports",
+      "unused-imports/no-unused-imports",
+    ]);
   });
 
   test("reports each restriction under its own rule, in every syntactic form", async () => {

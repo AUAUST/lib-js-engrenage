@@ -1,7 +1,8 @@
+import { readFileSync, writeFileSync } from "node:fs";
+
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { File, Files } from "#types/File";
-import { readFileSync, writeFileSync } from "node:fs";
 
 export function syncFiles({
   root,

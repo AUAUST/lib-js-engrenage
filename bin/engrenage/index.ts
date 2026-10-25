@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
+import { Command } from "@commander-js/extra-typings";
+
 import agents from "#bin/engrenage/agents/index";
 import { registerSubcommands } from "#support/commander/utils/registerSubcommands";
-import { Command } from "@commander-js/extra-typings";
 import packageJson from "../../package.json" with { type: "json" };
 
 const program = registerSubcommands(

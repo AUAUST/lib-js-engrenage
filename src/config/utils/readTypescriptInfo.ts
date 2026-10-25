@@ -1,11 +1,12 @@
+import { existsSync } from "node:fs";
+
 import { defaultTsconfigFile } from "#config/constants";
-import type { TypescriptInfo } from "#config/types/TypescriptInfo";
 import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import { resolve } from "#support/filesystem/utils/resolve";
+import { readCompilerOptions } from "#typescript/utils/readCompilerOptions";
+import type { TypescriptInfo } from "#config/types/TypescriptInfo";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-import { readCompilerOptions } from "#typescript/utils/readCompilerOptions";
-import { existsSync } from "node:fs";
 
 export function readTypescriptInfo(
   root: Directory,

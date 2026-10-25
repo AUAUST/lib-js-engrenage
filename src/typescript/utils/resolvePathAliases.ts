@@ -1,11 +1,13 @@
+import { globSync } from "node:fs";
+import { relative } from "node:path";
+
+import { entries } from "@auaust/toolkit/object";
+
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { PackageName } from "#types/PackageName";
 import type { PathAlias } from "#typescript/types/PathAlias";
 import type { Paths } from "#typescript/types/Paths";
-import { entries } from "@auaust/toolkit/object";
-import { globSync } from "node:fs";
-import { relative } from "node:path";
 
 function toPosixPath(path: string): string {
   return path.replaceAll("\\", "/");

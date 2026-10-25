@@ -1,5 +1,3 @@
-import { resolve } from "#support/filesystem/utils/resolve";
-import type { File } from "#types/File";
 import {
   formatDiagnostics,
   getParsedCommandLineOfConfigFile,
@@ -8,6 +6,9 @@ import {
   type Diagnostic,
   type FormatDiagnosticsHost,
 } from "typescript";
+
+import { resolve } from "#support/filesystem/utils/resolve";
+import type { File } from "#types/File";
 
 const formatHost: FormatDiagnosticsHost = {
   getCanonicalFileName: (fileName) => fileName,

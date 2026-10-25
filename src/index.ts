@@ -1,3 +1,7 @@
+export { resolveConfigInput } from "#utils/resolveConfigInput";
+export { resolveReference } from "#utils/resolveReference";
+export { syncBlocks } from "#utils/syncBlocks";
+export { syncFiles } from "#utils/syncFiles";
 export type { BlockFillers } from "#types/BlockFillers";
 export type { BlockSyntax } from "#types/BlockSyntax";
 export type { ConfigInput } from "#types/ConfigInput";
@@ -5,7 +9,3 @@ export type { Directory } from "#types/Directory";
 export type { File } from "#types/File";
 export type { Glob } from "#types/Glob";
 export type { PackageName } from "#types/PackageName";
-export { resolveConfigInput } from "#utils/resolveConfigInput";
-export { resolveReference } from "#utils/resolveReference";
-export { syncBlocks } from "#utils/syncBlocks";
-export { syncFiles } from "#utils/syncFiles";

@@ -1,7 +1,8 @@
-import { defineCommand } from "#support/commander/utils/defineCommand";
-import { registerSubcommands } from "#support/commander/utils/registerSubcommands";
 import { Command } from "@commander-js/extra-typings";
 import { describe, expect, test, vi } from "vitest";
+
+import { defineCommand } from "#support/commander/utils/defineCommand";
+import { registerSubcommands } from "#support/commander/utils/registerSubcommands";
 
 describe("registerSubcommands", () => {
   test("names each subcommand after its record key", async () => {

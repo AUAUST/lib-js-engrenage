@@ -1,5 +1,3 @@
-import barrels from "#bin/support/codegen/barrels";
-import { Command } from "@commander-js/extra-typings";
 import {
   mkdirSync,
   mkdtempSync,
@@ -9,7 +7,11 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+
+import { Command } from "@commander-js/extra-typings";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+
+import barrels from "#bin/support/codegen/barrels";
 
 const emptyBlock = "// @reference config/tool\n// @end\n";
 
@@ -106,6 +108,27 @@ describe("support codegen barrels", () => {
         'export { default as first } from "#rules/first";',
         'export { default as index } from "#rules/index";',
         'export { default as second } from "#rules/second";',
+        "// @end",
+        "",
+      ].join("\n"),
+    );
+  });
+
+  test("orders re-exports naturally, as the export ordering convention does", async () => {
+    writeProjectFile(
+      "config/tool/preset10.ts",
+      "export const preset10 = 10;\n",
+    );
+    writeProjectFile("config/tool/preset2.ts", "export const preset2 = 2;\n");
+
+    await runBarrels("tool");
+
+    expect(readFileSync(join(root, "src/tool/index.ts"), "utf8")).toBe(
+      [
+        "// @reference config/tool",
+        'export * from "#config/tool/preset";',
+        'export * from "#config/tool/preset2";',
+        'export * from "#config/tool/preset10";',
         "// @end",
         "",
       ].join("\n"),

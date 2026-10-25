@@ -1,6 +1,7 @@
+import { loadConfig } from "c12";
+
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-import { loadConfig } from "c12";
 
 export async function importConfigFile(
   root: Directory,

@@ -1,7 +1,8 @@
+import { freeze } from "@auaust/toolkit/object";
+
 import type { Directories } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Glob, Globs } from "#types/Glob";
-import { freeze } from "@auaust/toolkit/object";
 
 export const builtinGeneratedFiles: Globs = freeze([
   "pnpm-lock.yaml",

@@ -1,9 +1,10 @@
+import { fileURLToPath } from "node:url";
+
 import {
   resolvePathAliases,
   type PathAlias,
   type Paths,
 } from "@auaust/engrenage/typescript";
-import { fileURLToPath } from "node:url";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
 const root = fileURLToPath(
