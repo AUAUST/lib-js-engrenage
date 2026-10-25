@@ -1,5 +1,5 @@
 import { loadConfig } from "@auaust/engrenage/config";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -23,14 +23,6 @@ function getFixture(name: string): string {
 function createProject(): string {
   const root = mkdtempSync(join(tmpdir(), "engrenage-config-"));
 
-  writeFileSync(
-    join(root, "package.json"),
-    JSON.stringify({
-      name: "temporary",
-      version: "0.0.0",
-    }),
-  );
-
   temporaryRoots.push(root);
 
   return root;
@@ -48,14 +40,23 @@ afterEach(() => {
 });
 
 describe("loadConfig", () => {
-  test("falls back to defaults and warns once without a config file", async () => {
+  test("falls back to defaults and warns once without a root config file or package file", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const first = createProject();
 
     const config = await loadConfig(first);
 
-    await loadConfig(createProject());
+    const nested = createProject();
+
+    mkdirSync(join(nested, ".config"));
+
+    writeFileSync(
+      join(nested, ".config/engrenage.config.ts"),
+      "export default { unknown: true };\n",
+    );
+
+    const nestedConfig = await loadConfig(nested);
 
     expect(warn).toHaveBeenCalledExactlyOnceWith(
       `No engrenage.config.ts found in ${first}, using defaults`,
@@ -66,10 +67,15 @@ describe("loadConfig", () => {
       test: ["tests"],
     });
     expect(config.files.generated).toEqual(lockFiles);
+    expect(config.package).toEqual({
+      name: null,
+      version: null,
+    });
     expect(config.typescript).toEqual({});
+    expect(nestedConfig.directories).toEqual(config.directories);
   });
 
-  test("replaces defaults, appends generated files and infers project values", async () => {
+  test("resolves a callback config, replaces defaults, appends generated files and infers project values", async () => {
     const root = getFixture("custom");
 
     const config = await loadConfig(root);

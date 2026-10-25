@@ -1,4 +1,5 @@
 export type { BlockSyntax } from "#types/BlockSyntax";
+export type { ConfigInput } from "#types/ConfigInput";
 export type { Directory } from "#types/Directory";
 export type { File } from "#types/File";
 export type { Glob } from "#types/Glob";

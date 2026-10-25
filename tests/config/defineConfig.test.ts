@@ -1,4 +1,5 @@
 import { defineConfig, type Config } from "@auaust/engrenage/config";
+import type { ConfigInput } from "@auaust/engrenage";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
 describe("defineConfig", () => {
@@ -10,7 +11,25 @@ describe("defineConfig", () => {
     };
 
     expect(defineConfig(config)).toBe(config);
-    expectTypeOf(defineConfig).returns.toEqualTypeOf<Config>();
+    expectTypeOf(defineConfig).returns.toEqualTypeOf<ConfigInput<Config>>();
+  });
+
+  test("accepts sync and async callbacks", () => {
+    expectTypeOf(defineConfig).toBeCallableWith(() => {
+      return {
+        files: {
+          generated: ["generated/**"],
+        },
+      };
+    });
+
+    expectTypeOf(defineConfig).toBeCallableWith(async () => {
+      return {
+        agents: {
+          snippetsDirectory: ".agents/snippets",
+        },
+      };
+    });
   });
 
   test("rejects unknown keys and nested typos", () => {
@@ -21,9 +40,19 @@ describe("defineConfig", () => {
 
     defineConfig({
       files: {
-        // @ts-expect-error: nested typo
+        code: "**/*.ts",
+        // @ts-expect-error: nested typo next to a valid key
         generatd: [],
       },
+    });
+
+    // @ts-expect-error: callbacks only reject keys without a valid sibling
+    defineConfig(async () => {
+      return {
+        files: {
+          generatd: [],
+        },
+      };
     });
   });
 });

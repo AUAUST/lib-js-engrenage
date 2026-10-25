@@ -9,7 +9,8 @@ import type { File } from "#types/File";
 import { readCompilerOptions } from "#typescript/utils/readCompilerOptions";
 import { resolvePath } from "#utils/resolvePath";
 import { resolveWithin } from "#utils/resolveWithin";
-import { loadConfig as loadConfigFile } from "c12";
+import { map } from "@auaust/primitive-kit/arrays";
+import { loadConfig as loadConfigFile, SUPPORTED_EXTENSIONS } from "c12";
 import { existsSync, readFileSync } from "node:fs";
 import { relative, sep } from "node:path";
 import {
@@ -40,11 +41,11 @@ function validate<Schema extends GenericSchema>(
 function readPackage(root: Directory): PackageInfo {
   const path = resolvePath(root, "package.json");
 
-  if (!existsSync(path)) {
-    throw new Error(`Missing ${path}`);
-  }
+  const packageJson: unknown = existsSync(path)
+    ? JSON.parse(readFileSync(path, "utf8"))
+    : {};
 
-  return validate(packageSchema, JSON.parse(readFileSync(path, "utf8")), path);
+  return validate(packageSchema, packageJson, path);
 }
 
 function toRootRelative(root: Directory, path: string): Directory {
@@ -76,10 +77,31 @@ function warnMissingConfig(root: Directory) {
   console.warn(`No engrenage.config.ts found in ${root}, using defaults`);
 }
 
-async function readConfig(root: Directory): Promise<ResolvedConfig> {
-  const { config: input, _configFile: configFile } = await loadConfigFile({
-    name: "engrenage",
+function findConfigFile(root: Directory): File | null {
+  const candidates = map(SUPPORTED_EXTENSIONS, (extension) => {
+    return resolvePath(root, `engrenage.config${extension}`);
+  });
+
+  const [configFile = null, ...others] = candidates.filter((candidate) => {
+    return existsSync(candidate);
+  });
+
+  if (others.length > 0) {
+    throw new Error(
+      `Found several engrenage config files in ${root}: ${[configFile, ...others].join(", ")}`,
+    );
+  }
+
+  return configFile;
+}
+
+async function readConfigFile(
+  root: Directory,
+  configFile: File,
+): Promise<unknown> {
+  const { config } = await loadConfigFile({
     cwd: root,
+    configFile,
     rcFile: false,
     globalRc: false,
     packageJson: false,
@@ -87,12 +109,21 @@ async function readConfig(root: Directory): Promise<ResolvedConfig> {
     envName: false,
     extend: false,
     giget: false,
-    configFileRequired: false,
+    configFileRequired: true,
   });
 
-  if (configFile === undefined) {
+  return config;
+}
+
+async function readConfig(root: Directory): Promise<ResolvedConfig> {
+  const configFile = findConfigFile(root);
+
+  if (configFile === null) {
     warnMissingConfig(root);
   }
+
+  const input =
+    configFile === null ? {} : await readConfigFile(root, configFile);
 
   const config = validate(configSchema, input, configFile ?? root);
 

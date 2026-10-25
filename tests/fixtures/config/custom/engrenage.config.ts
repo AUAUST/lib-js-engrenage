@@ -1,10 +1,12 @@
 import type { Config } from "@auaust/engrenage/config";
 
-export default {
-  directories: {
-    test: ["test"],
-  },
-  files: {
-    generated: ["src/generated/**"],
-  },
-} satisfies Config;
+export default async function config(): Promise<Config> {
+  return {
+    directories: {
+      test: ["test"],
+    },
+    files: {
+      generated: ["src/generated/**"],
+    },
+  };
+}

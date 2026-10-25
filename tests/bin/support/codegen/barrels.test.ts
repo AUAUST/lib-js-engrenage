@@ -35,8 +35,6 @@ beforeEach(() => {
   writeProjectFile(
     "package.json",
     JSON.stringify({
-      name: "barrels-project",
-      version: "0.0.0",
       imports: {
         "#config/*": "./config/*.ts",
       },
