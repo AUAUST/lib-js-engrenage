@@ -1,50 +1,26 @@
-import type { Config } from "#prettier/types/Config";
+import type { Options } from "#prettier/types/Options";
 import { freeze } from "@auaust/toolkit/object";
 
-export const printWidth = 80;
-
-export const tabWidth = 2;
-
-export const useTabs = false;
-
-export const semi = true;
-
-export const singleQuote = false;
-
-export const jsxSingleQuote = false;
-
-export const quoteProps = "as-needed";
-
-export const trailingComma = "all";
-
-export const bracketSpacing = true;
-
-export const bracketSameLine = false;
-
-export const objectWrap = "preserve";
-
-export const arrowParens = "always";
-
-export const proseWrap = "preserve";
-
-export const endOfLine = "lf";
-
-export const embeddedLanguageFormatting = "auto";
-
 export const defaultOptions = freeze({
-  printWidth,
-  tabWidth,
-  useTabs,
-  semi,
-  singleQuote,
-  jsxSingleQuote,
-  quoteProps,
-  trailingComma,
-  bracketSpacing,
-  bracketSameLine,
-  objectWrap,
-  arrowParens,
-  proseWrap,
-  endOfLine,
-  embeddedLanguageFormatting,
-} satisfies Config);
+  arrowParens: "always",
+  bracketSameLine: true,
+  bracketSpacing: true,
+  checkIgnorePragma: true,
+  embeddedLanguageFormatting: "auto",
+  endOfLine: "lf",
+  htmlWhitespaceSensitivity: "css",
+  insertPragma: false,
+  jsxSingleQuote: false,
+  objectWrap: "preserve",
+  printWidth: 80,
+  proseWrap: "preserve",
+  quoteProps: "consistent",
+  requirePragma: false,
+  semi: true,
+  singleAttributePerLine: false,
+  singleQuote: false,
+  tabWidth: 2,
+  trailingComma: "all",
+  useTabs: false,
+  vueIndentScriptAndStyle: false,
+} satisfies Options);
