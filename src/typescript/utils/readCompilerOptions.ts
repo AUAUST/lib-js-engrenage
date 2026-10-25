@@ -1,5 +1,5 @@
+import { resolve } from "#support/filesystem/utils/resolve";
 import type { File } from "#types/File";
-import { resolvePath } from "#utils/resolvePath";
 import {
   formatDiagnostics,
   getParsedCommandLineOfConfigFile,
@@ -20,7 +20,7 @@ function toError(diagnostics: readonly Diagnostic[]): Error {
 }
 
 export function readCompilerOptions(tsconfig: File | URL): CompilerOptions {
-  const tsconfigPath = resolvePath(tsconfig);
+  const tsconfigPath = resolve(tsconfig);
 
   const parsed = getParsedCommandLineOfConfigFile(tsconfigPath, undefined, {
     ...sys,

@@ -1,8 +1,8 @@
+import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { PackageName } from "#types/PackageName";
 import type { PathAlias } from "#typescript/types/PathAlias";
 import type { Paths } from "#typescript/types/Paths";
-import { resolvePath } from "#utils/resolvePath";
 import { entries } from "@auaust/toolkit/object";
 import { globSync } from "node:fs";
 import { relative } from "node:path";
@@ -27,7 +27,7 @@ export function resolvePathAliases(
   paths: Paths,
   root: Directory | URL,
 ): PathAlias[] {
-  const rootPath = resolvePath(root);
+  const rootPath = resolve(root);
 
   const aliases = new Map<string, PathAlias>();
   const entryPaths = new Map<string, string>();
@@ -43,7 +43,7 @@ export function resolvePathAliases(
 
     for (const target of targets) {
       const pattern = toPosixPath(
-        relative(rootPath, resolvePath(rootPath, target)),
+        relative(rootPath, resolve(rootPath, target)),
       );
 
       const wildcard = pattern.indexOf("*");

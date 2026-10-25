@@ -1,9 +1,9 @@
 import { createEslintConfig } from "#eslint/builders/createEslintConfig";
 import type { Plugin } from "#eslint/types/Plugin";
+import { normalizeRuleSchema } from "#support/eslint/utils/normalizeRuleSchema";
+import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-import { normalizeRuleSchema } from "#support/eslint/utils/normalizeRuleSchema";
-import { resolvePath } from "#utils/resolvePath";
 import { map } from "@auaust/primitive-kit/arrays";
 import { toPascalCase } from "@auaust/primitive-kit/strings";
 import { mappedValues } from "@auaust/toolkit/mappedValues";
@@ -129,7 +129,7 @@ export async function syncRuleTypes({
   root: Directory | URL;
   check?: boolean;
 }): Promise<File[]> {
-  const rootPath = resolvePath(root);
+  const rootPath = resolve(root);
 
   const sources = await readRuleSources(rootPath);
 
@@ -151,7 +151,7 @@ export async function syncRuleTypes({
   const outdated: File[] = [...staleFiles];
 
   for (const [file, content] of modules) {
-    const path = resolvePath(rootPath, file);
+    const path = resolve(rootPath, file);
 
     const formatted = await formatModule(path, content);
 
@@ -172,7 +172,7 @@ export async function syncRuleTypes({
 
   if (!check) {
     for (const file of staleFiles) {
-      rmSync(resolvePath(rootPath, file));
+      rmSync(resolve(rootPath, file));
     }
   }
 

@@ -1,14 +1,14 @@
+import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
-import { resolvePath } from "#utils/resolvePath";
 import { isAbsolute, relative, sep } from "node:path";
 
 export function resolveWithin(
   base: Directory | URL,
   ...paths: string[]
 ): string {
-  const basePath = resolvePath(base);
+  const basePath = resolve(base);
 
-  const path = resolvePath(basePath, ...paths);
+  const path = resolve(basePath, ...paths);
 
   const pathFromBase = relative(basePath, path);
 

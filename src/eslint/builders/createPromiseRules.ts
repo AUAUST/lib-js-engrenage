@@ -2,8 +2,8 @@ import { testDirectoriesSchema } from "#config/config/schemas/testDirectoriesSch
 import { promiseRules } from "#eslint/config/defaults/promiseRules";
 import type { Config } from "#eslint/types/Config";
 import { filesIn } from "#eslint/utils/filesIn";
+import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
-import { resolvePath } from "#utils/resolvePath";
 import { map } from "@auaust/primitive-kit/arrays";
 import { defineConfig } from "eslint/config";
 import { getDefault } from "valibot";
@@ -23,7 +23,7 @@ export function createPromiseRules({
       languageOptions: {
         parserOptions: {
           projectService: true,
-          tsconfigRootDir: resolvePath(root),
+          tsconfigRootDir: resolve(root),
         },
       },
       rules: promiseRules,

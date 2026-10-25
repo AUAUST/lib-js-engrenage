@@ -1,9 +1,9 @@
 import { codeFilesSchema } from "#config/config/schemas/codeFilesSchema";
 import { baseRules } from "#eslint/config/defaults/baseRules";
 import type { Config } from "#eslint/types/Config";
+import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
-import { resolvePath } from "#utils/resolvePath";
 import js from "@eslint/js";
 import { defineConfig, globalIgnores, includeIgnoreFile } from "eslint/config";
 import { configs as typescriptConfigs } from "typescript-eslint";
@@ -16,7 +16,7 @@ export function createBaseRules({
   root: Directory | URL;
   ignores?: Glob[];
 }): Config[] {
-  const gitignore = resolvePath(root, ".gitignore");
+  const gitignore = resolve(root, ".gitignore");
 
   const projectIgnores = ignores.length > 0 ? [globalIgnores(ignores)] : [];
 

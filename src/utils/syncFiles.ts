@@ -1,6 +1,6 @@
+import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-import { resolvePath } from "#utils/resolvePath";
 import { readFileSync, writeFileSync } from "node:fs";
 
 export function syncFiles({
@@ -17,7 +17,7 @@ export function syncFiles({
   const outdated: File[] = [];
 
   for (const file of files) {
-    const path = resolvePath(root, file);
+    const path = resolve(root, file);
 
     const content = readFileSync(path, "utf8");
 
