@@ -2,10 +2,24 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { defineConfig } from "tsdown";
 import initialPackageJson from "./package.json" with { type: "json" };
-import { resolvePathAliases } from "#typescript/index";
-import tsconfig from "./tsconfig.json" with { type: "json" };
+import { readCompilerOptions, resolvePathAliases } from "#typescript/index";
 
 const root = import.meta.dirname;
+
+function getCompilerOptions() {
+  const { outDir, paths } = readCompilerOptions(resolve(root, "tsconfig.json"));
+
+  if (outDir == null || paths == null) {
+    throw new Error("tsconfig.json must resolve outDir and paths");
+  }
+
+  return {
+    outDir,
+    paths,
+  };
+}
+
+const { outDir, paths } = getCompilerOptions();
 
 const packageJsonUrl = new URL("./package.json", import.meta.url);
 
@@ -22,11 +36,7 @@ const fileExports = {
 function getEntries(): Record<string, string> {
   const entries: Record<string, string> = {};
 
-  const pathAliases = resolvePathAliases(
-    initialPackageJson.name,
-    tsconfig.compilerOptions.paths,
-    root,
-  );
+  const pathAliases = resolvePathAliases(initialPackageJson.name, paths, root);
 
   for (const { name, path } of pathAliases) {
     entries[name] = path;
@@ -51,9 +61,14 @@ async function assertPackageJsonUnchanged() {
 export default defineConfig((_, { ci }) => {
   return {
     entry: getEntries(),
-    outDir: resolve(root, tsconfig.compilerOptions.outDir),
+    outDir,
     platform: "node",
-    dts: true,
+    dts: {
+      compilerOptions: {
+        declaration: true,
+      },
+      sourcemap: true,
+    },
     exports: {
       enabled: true,
       packageJson: false,

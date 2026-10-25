@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "./tsconfig.json",
+    "@auaust/engrenage/typescript/presets/library.dist.json"
+  ]
+}

@@ -1,15 +1,10 @@
 {
-  "extends": "./config/typescript/base.json",
+  "extends": "./config/typescript/library.json",
   "compilerOptions": {
-    "declaration": true,
-    "declarationDir": "dist/types",
-    "declarationMap": true,
-    "outDir": "dist",
     "paths": {
       "@auaust/engrenage/*": ["./src/*/index.ts"],
       "@auaust/engrenage": ["./src/index.ts"]
     },
     "types": ["node"]
-  },
-  "exclude": ["node_modules", "dist"]
+  }
 }

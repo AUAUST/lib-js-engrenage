@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "paths": {},
+    "skipLibCheck": false
+  },
+  "include": ["${configDir}/tests/**/*.ts", "${configDir}/**/env.d.ts"]
+}

@@ -2,18 +2,28 @@ import { rmSync } from "node:fs";
 import { resolve } from "node:path";
 import { defineConfig } from "vitest/config";
 import packageJson from "./package.json" with { type: "json" };
-import { resolvePathAliases } from "#typescript/index";
+import { readCompilerOptions, resolvePathAliases } from "#typescript/index";
 import { createViteAliases } from "#vite/index";
-import tsconfig from "./tsconfig.json" with { type: "json" };
 
 const root = import.meta.dirname;
 
+function getCompilerOptions() {
+  const { outDir, paths } = readCompilerOptions(resolve(root, "tsconfig.json"));
+
+  if (outDir == null || paths == null) {
+    throw new Error("tsconfig.json must resolve outDir and paths");
+  }
+
+  return {
+    outDir,
+    paths,
+  };
+}
+
+const { outDir, paths } = getCompilerOptions();
+
 function getSourceAliases() {
-  const pathAliases = resolvePathAliases(
-    packageJson.name,
-    tsconfig.compilerOptions.paths,
-    root,
-  );
+  const pathAliases = resolvePathAliases(packageJson.name, paths, root);
 
   return createViteAliases(pathAliases, root);
 }
@@ -22,7 +32,7 @@ export default defineConfig(({ mode }) => {
   const shouldTestDist = mode === "build";
 
   if (!shouldTestDist) {
-    rmSync(resolve(root, tsconfig.compilerOptions.outDir), {
+    rmSync(outDir, {
       recursive: true,
       force: true,
     });
