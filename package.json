@@ -39,6 +39,7 @@
     "coverage": "vitest run --coverage",
     "engrenage": "node bin/engrenage/index.ts",
     "format": "prettier --write --ignore-unknown",
+    "format:all": "prettier --write --ignore-unknown .",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "test": "vitest run --config vitest.config.ts --typecheck -- && pnpm run typecheck",
     "typecheck": "echo 'Typechecking...' && tsc --noEmit && echo 'All good!'",

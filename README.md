@@ -5,4 +5,4 @@
 
 # Engrenage
 
-Shared configurations for AUAUST projects. 
+Shared configurations for AUAUST projects.
