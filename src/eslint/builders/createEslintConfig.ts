@@ -12,17 +12,18 @@ import type { Options } from "#eslint/types/Options";
 import { validate } from "#support/validation/utils/validate";
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
+import type { Maybe } from "@auaust/toolkit/types";
 import stylistic from "@stylistic/eslint-plugin";
 import { defineConfig } from "eslint/config";
 import { configs as typescriptConfigs } from "typescript-eslint";
 
 export function createEslintConfig(
   config: ResolvedConfig,
-  options: Options = {},
+  options?: Maybe<Options>,
 ): Config[] {
   const { ignore, recommended, ...categories } = validate(
     optionsSchema,
-    options,
+    options ?? {},
     "ESLint options",
   );
 
@@ -52,6 +53,7 @@ export function createEslintConfig(
           root: config.root,
           gitignore: config.files.gitignore,
           generatedFiles: config.files.generated,
+          testDirectories: config.directories.test,
         })
       : [],
     recommended

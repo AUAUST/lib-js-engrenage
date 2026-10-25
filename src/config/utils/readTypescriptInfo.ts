@@ -1,3 +1,4 @@
+import { tsconfigFile } from "#config/constants/tsconfigFile";
 import type { TypescriptInfo } from "#config/types/TypescriptInfo";
 import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import { resolve } from "#support/filesystem/utils/resolve";
@@ -6,7 +7,7 @@ import { readCompilerOptions } from "#typescript/utils/readCompilerOptions";
 import { existsSync } from "node:fs";
 
 export function readTypescriptInfo(root: Directory): TypescriptInfo {
-  const path = resolve(root, "tsconfig.json");
+  const path = resolve(root, tsconfigFile);
 
   if (!existsSync(path)) {
     return {};

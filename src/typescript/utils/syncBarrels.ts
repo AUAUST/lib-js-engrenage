@@ -1,3 +1,4 @@
+import { barrelModules } from "#typescript/constants/barrelModules";
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -23,7 +24,7 @@ function createReexports(
   imports: SubpathImports,
   directory: Directory,
 ): string {
-  const modules = globSync("*.ts", {
+  const modules = globSync(barrelModules, {
     cwd: resolve(root, directory),
   }).sort();
 

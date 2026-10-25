@@ -9,7 +9,7 @@ import { resolveConfigInput } from "#utils/resolveConfigInput";
 import { defineConfig } from "eslint/config";
 
 export async function defineEslintConfig(
-  options: ConfigInput<Options, [ResolvedConfig]> = {},
+  options?: ConfigInput<Options, [ResolvedConfig]>,
   ...configs: ConfigWithExtends[]
 ): Promise<Config[]> {
   const config = await loadConfig();

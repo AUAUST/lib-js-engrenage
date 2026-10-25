@@ -1,9 +1,10 @@
 import type { ConfigInput } from "#types/ConfigInput";
+import type { Maybe } from "@auaust/toolkit/types";
 import { value } from "@auaust/toolkit/value";
 
 export async function resolveConfigInput<Data, Arguments extends unknown[]>(
   input: ConfigInput<Data, Arguments>,
   ...args: Arguments
-): Promise<Data> {
+): Promise<Maybe<Data>> {
   return value(input, ...args);
 }

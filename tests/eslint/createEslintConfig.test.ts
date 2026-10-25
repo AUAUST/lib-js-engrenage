@@ -5,6 +5,7 @@ import {
   type Options,
 } from "@auaust/engrenage/eslint";
 import { map } from "@auaust/primitive-kit/arrays";
+import type { Maybe } from "@auaust/toolkit/types";
 import { ESLint } from "eslint";
 import { fileURLToPath } from "node:url";
 import { describe, expect, expectTypeOf, test } from "vitest";
@@ -78,6 +79,9 @@ describe("createEslintConfig", () => {
 
     expect(await eslint.isPathIgnored("ignored.ts")).toBe(true);
     expect(await eslint.isPathIgnored("coverage/report.ts")).toBe(true);
+    expect(await eslint.isPathIgnored("tests/unit/fixtures/case.ts")).toBe(
+      true,
+    );
     expect(await eslint.isPathIgnored("src/violations.ts")).toBe(false);
 
     const unignored = await createLinter({
@@ -102,7 +106,7 @@ describe("createEslintConfig", () => {
 
   test("exposes its contract through the local aliases", () => {
     expectTypeOf(createEslintConfig).parameters.toEqualTypeOf<
-      [ResolvedConfig, Options?]
+      [ResolvedConfig, Maybe<Options>?]
     >();
     expectTypeOf(createEslintConfig).returns.toEqualTypeOf<Config[]>();
   });

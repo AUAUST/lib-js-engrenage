@@ -1,3 +1,4 @@
+import { configFileName } from "#config/constants/configFileName";
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -7,7 +8,7 @@ import { existsSync } from "node:fs";
 
 export function findConfigFile(root: Directory): File | null {
   const candidates = map(SUPPORTED_EXTENSIONS, (extension) => {
-    return resolve(root, `engrenage.config${extension}`);
+    return resolve(root, `${configFileName}${extension}`);
   });
 
   const [configFile = null, ...others] = candidates.filter((candidate) => {
