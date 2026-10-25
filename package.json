@@ -40,11 +40,12 @@
     "engrenage": "node bin/engrenage/index.ts",
     "format": "prettier --write --ignore-unknown",
     "format:all": "prettier --write --ignore-unknown .",
+    "support": "node bin/support/index.ts",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "test": "vitest run --config vitest.config.ts --typecheck -- && pnpm run typecheck",
     "typecheck": "echo 'Typechecking...' && tsc --noEmit && echo 'All good!'",
     "watch": "vitest --config vitest.config.ts --typecheck --",
-    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage agents sync --check && pnpm run engrenage codegen barrels --check && pnpm run build",
+    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage agents sync --check && pnpm run engrenage codegen barrels --check && pnpm run support codegen rules --check && pnpm run build",
     "ci:publish": "changeset publish"
   },
   "dependencies": {
@@ -65,6 +66,7 @@
     "@vitest/coverage-istanbul": "^5.0.5",
     "commander": "~15.0.0",
     "eslint": "^10.13.0",
+    "eslint-typegen": "^2.3.1",
     "jiti": "^2.7.0",
     "prettier": "^3.9.10",
     "publint": "^0.3.25",
