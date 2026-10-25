@@ -2,6 +2,7 @@ import standardConfig, {
   createPrettierConfig,
   type Config,
 } from "@auaust/engrenage/prettier";
+import { defaultOptions } from "@auaust/engrenage/prettier/constants";
 import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
@@ -27,7 +28,8 @@ describe("createPrettierConfig", () => {
     });
   });
 
-  test("exposes the standard as the shareable default config", () => {
-    expect(standardConfig).toEqual(createPrettierConfig());
+  test("exposes the default options as the shareable default config", () => {
+    expect(standardConfig).toBe(defaultOptions);
+    expect(createPrettierConfig()).toEqual(defaultOptions);
   });
 });
