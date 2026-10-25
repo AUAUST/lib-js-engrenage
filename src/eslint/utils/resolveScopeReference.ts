@@ -1,7 +1,7 @@
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { ScopeReference } from "#eslint/types/ScopeReference";
-import { filesIn } from "#eslint/utils/filesIn";
 import type { Glob } from "#types/Glob";
+import { filesIn } from "#utils/filesIn";
 import { map } from "@auaust/primitive-kit/arrays";
 
 export function resolveScopeReference(

@@ -24,7 +24,7 @@ async function readConfig(root: Directory): Promise<ResolvedConfig> {
 
   const config = validate(configSchema, input, configFile ?? root);
 
-  const typescript = readTypescriptInfo(root);
+  const typescript = readTypescriptInfo(root, config.files.tsconfig);
 
   const generated =
     typescript.outDir === undefined

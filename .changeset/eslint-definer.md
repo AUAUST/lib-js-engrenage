@@ -2,9 +2,9 @@
 "@auaust/engrenage": minor
 ---
 
-Add `defineEslintConfig(options | (engrenage) => options, ...configs)` to `@auaust/engrenage/eslint`. It loads `engrenage.config.ts`, builds the AUAUST configuration from the global values (`directories.source`, `directories.test`, `files.code`, `files.test`, `files.config`, `files.discovered`, `files.generated`, `files.gitignore`), appends the native ESLint configs, and resolves to the flat config array, so `eslint.config.ts` can export it directly. Options toggle categories by purpose:
+Add `defineEslintConfig(options | (engrenage) => options, ...configs)` to `@auaust/engrenage/eslint`. It loads `engrenage.config.ts`, builds the AUAUST configuration from the global values (`directories.source`, `directories.test`, `files.code`, `files.test`, `files.fixtures`, `files.config`, `files.discovered`, `files.generated`, `files.gitignore`), appends the native ESLint configs, and resolves to the flat config array, so `eslint.config.ts` can export it directly. Options toggle categories by purpose:
 
-- `ignore`: the gitignore file, `files.generated` and `fixtures` directories under each test directory (`tests/**/fixtures/**`);
+- `ignore`: the gitignore file, `files.generated` and `files.fixtures` under each test directory (`tests/**/fixtures/**` by default);
 - `recommended`: the ESLint and typescript-eslint presets with the AUAUST adjustments;
 - `globals`, `typeChecks`, `stylistic`, `imports`, `promises`, `structure`: `false` turns the whole category off, and an object turns off single conventions (`{ typeChecks: { noRuntimeTypeof: false } }`). Unknown keys are rejected.
 

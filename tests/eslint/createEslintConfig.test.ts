@@ -91,6 +91,27 @@ describe("createEslintConfig", () => {
     expect(await unignored.isPathIgnored("ignored.ts")).toBe(false);
   });
 
+  test("ignores fixtures through the global files.fixtures glob", async () => {
+    const config = await loadConfig(root);
+
+    const eslint = new ESLint({
+      cwd: fileURLToPath(root),
+      overrideConfigFile: true,
+      overrideConfig: createEslintConfig({
+        ...config,
+        files: {
+          ...config.files,
+          fixtures: "**/data/**",
+        },
+      }),
+    });
+
+    expect(await eslint.isPathIgnored("tests/unit/data/case.ts")).toBe(true);
+    expect(await eslint.isPathIgnored("tests/unit/fixtures/case.ts")).toBe(
+      false,
+    );
+  });
+
   test("rejects unknown options", async () => {
     const config = await loadConfig(root);
 

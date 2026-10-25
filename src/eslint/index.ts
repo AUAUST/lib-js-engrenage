@@ -20,4 +20,4 @@ export type { TypescriptEslintRules } from "#eslint/types/rules/TypescriptEslint
 export type { Scope } from "#eslint/types/Scope";
 export type { ScopeReference } from "#eslint/types/ScopeReference";
 export type { SyntaxRestriction } from "#eslint/types/SyntaxRestriction";
-export { filesIn } from "#eslint/utils/filesIn";
+export { filesIn } from "#utils/filesIn";

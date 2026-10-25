@@ -96,6 +96,40 @@ describe("loadConfig", () => {
     expect(loadConfig(root)).toBe(loadConfig(root));
   });
 
+  test("reads the configured tsconfig and rejects a missing one", async () => {
+    const root = createProject();
+
+    writeFileSync(
+      join(root, "engrenage.config.ts"),
+      'export default { files: { tsconfig: "tsconfig.app.json" } };\n',
+    );
+
+    writeFileSync(
+      join(root, "tsconfig.app.json"),
+      JSON.stringify({
+        compilerOptions: {
+          outDir: "build",
+        },
+      }),
+    );
+
+    const config = await loadConfig(root);
+
+    expect(config.typescript.outDir).toBe("build");
+    expect(config.files.generated).toContain("build/**");
+
+    const missing = createProject();
+
+    writeFileSync(
+      join(missing, "engrenage.config.ts"),
+      'export default { files: { tsconfig: "tsconfig.app.json" } };\n',
+    );
+
+    await expect(loadConfig(missing)).rejects.toThrow(
+      join(missing, "tsconfig.app.json"),
+    );
+  });
+
   test("resolves paths against the root and rejects escaping ones", async () => {
     const root = getFixture("custom");
 

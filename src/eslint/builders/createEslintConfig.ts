@@ -53,6 +53,7 @@ export function createEslintConfig(
           root: config.root,
           gitignore: config.files.gitignore,
           generatedFiles: config.files.generated,
+          fixtureFiles: config.files.fixtures,
           testDirectories: config.directories.test,
         })
       : [],
