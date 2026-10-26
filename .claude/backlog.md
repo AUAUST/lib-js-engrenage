@@ -39,6 +39,11 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: the ESLint config now lints `package.json`, but the VS Code ESLint extension only validates JavaScript and TypeScript by default, so `source.fixAll.eslint` likely leaves key order to `pnpm lint --fix`. Not checked in the editor yet.
    - Fix: confirm in VS Code; if so, add `"eslint.validate"` with `json` next to the default languages to the ESLint integration settings.
 
+8. Package scripts are copied by hand.
+   - Where: `package.json` `scripts` of each project
+   - Problem: the tool proxies (`engrenage tsc`, `vitest`, `tsdown`…) carry the engrenage contracts, but every project still writes the standard `typecheck`, `test`, `watch`, `coverage`, `build`, `lint` and `format` scripts pointing at them by hand.
+   - Fix: a `scripts` target of `engrenage sync` (AUAUST/lib-js-engrenage#12) that writes and checks the standard scripts and leaves project-specific ones alone. It needs the `package.json` fields ownership mode (AUAUST/lib-js-engrenage#9). Part of AUAUST/lib-js-engrenage#10.
+
 ## 2. Upstream
 
 1. primitive-kit `filter` return type.

@@ -1,4 +1,4 @@
-import { optional, record, string, unknown } from "valibot";
+import { optional, record, string, union, unknown } from "valibot";
 
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
@@ -66,6 +66,13 @@ export function createPackageJson({
 
           return keys(versions);
         });
+      },
+      bin() {
+        return validate(
+          optional(union([string(), record(string(), string())])),
+          manifest()?.bin,
+          `${path} bin`,
+        );
       },
     },
     describeMissing,

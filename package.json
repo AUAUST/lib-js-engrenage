@@ -36,6 +36,8 @@
     ".": "./dist/index.mjs",
     "./agents": "./dist/agents/index.mjs",
     "./agents/constants": "./dist/agents/constants.mjs",
+    "./agents/rules/*.md": "./data/agents/rules/*.md",
+    "./agents/sections/*.md": "./data/agents/sections/*.md",
     "./config": "./dist/config/index.mjs",
     "./config/constants": "./dist/config/constants.mjs",
     "./eslint": "./dist/eslint/index.mjs",
@@ -44,6 +46,7 @@
     "./git/constants": "./dist/git/constants.mjs",
     "./prettier": "./dist/prettier/index.mjs",
     "./prettier/constants": "./dist/prettier/constants.mjs",
+    "./tsconfig/*.json": "./data/tsconfig/*.json",
     "./tsdown": "./dist/tsdown/index.mjs",
     "./tsdown/constants": "./dist/tsdown/constants.mjs",
     "./typescript": "./dist/typescript/index.mjs",
@@ -52,10 +55,7 @@
     "./vitest": "./dist/vitest/index.mjs",
     "./vitest/constants": "./dist/vitest/constants.mjs",
     "./vscode": "./dist/vscode/index.mjs",
-    "./vscode/constants": "./dist/vscode/constants.mjs",
-    "./agents/rules/*.md": "./data/agents/rules/*.md",
-    "./agents/sections/*.md": "./data/agents/sections/*.md",
-    "./tsconfig/*.json": "./data/tsconfig/*.json"
+    "./vscode/constants": "./dist/vscode/constants.mjs"
   },
   "bin": {
     "engrenage": "./dist/bin/engrenage.mjs"
@@ -66,19 +66,18 @@
     "data"
   ],
   "scripts": {
-    "build": "pnpm run build:tsdown && tsc --noEmit --project tsconfig.dist.json && vitest run --config vitest.config.ts --typecheck --mode build --",
-    "build:tsdown": "tsdown --config-loader tsx",
+    "build": "pnpm run engrenage tsdown && pnpm run engrenage tsc:dist && pnpm run engrenage vitest:dist",
     "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run build",
     "ci:publish": "changeset publish",
-    "coverage": "vitest run --coverage",
+    "coverage": "pnpm run engrenage vitest:coverage",
     "engrenage": "node bin/engrenage/index.ts",
-    "format": "prettier --write --ignore-unknown",
-    "format:all": "prettier --write --ignore-unknown .",
-    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "format": "pnpm run engrenage prettier",
+    "format:all": "pnpm run engrenage prettier:all",
+    "lint": "pnpm run engrenage eslint",
     "support": "node bin/support/index.ts",
-    "test": "vitest run --config vitest.config.ts --typecheck -- && pnpm run typecheck",
-    "typecheck": "echo 'Typechecking...' && tsc --noEmit && echo 'All good!'",
-    "watch": "vitest --config vitest.config.ts --typecheck --"
+    "test": "pnpm run engrenage vitest && pnpm run typecheck",
+    "typecheck": "pnpm run engrenage tsc",
+    "watch": "pnpm run engrenage vitest:watch"
   },
   "prettier": "#prettier",
   "dependencies": {

@@ -8,6 +8,7 @@ import * as promises from "#eslint/conventions/promises/index";
 import * as structure from "#eslint/conventions/structure/index";
 import * as stylistic from "#eslint/conventions/stylistic/index";
 import type { Rules } from "#eslint/types/Rules";
+import type { File } from "#types/File";
 
 export const conventionCategories = freeze({
   globals,
@@ -24,15 +25,19 @@ export const packageJsonRules = freeze({
   "package-json/sort-collections": [
     "error",
     [
+      "bin",
       "config",
+      "exports",
+      "files",
+      "imports",
+      "overrides",
       "scripts",
       "dependencies",
       "devDependencies",
-      "optionalDependencies",
       "inlineDependencies",
+      "optionalDependencies",
       "peerDependencies",
       "peerDependenciesMeta",
-      "overrides",
     ],
   ],
 } as const satisfies Rules);
@@ -47,3 +52,5 @@ export const recommendedRules = freeze({
   "@typescript-eslint/no-unused-vars": "off",
   "no-cond-assign": "off",
 } as const satisfies Rules);
+
+export const defaultCacheLocation = "node_modules/.cache/eslint" satisfies File;
