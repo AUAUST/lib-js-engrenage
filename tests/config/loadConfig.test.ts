@@ -21,21 +21,17 @@ afterEach(() => {
 });
 
 describe("loadConfig", () => {
-  test("falls back to defaults and warns once without a root config file or package file", async () => {
+  test("falls back to defaults and warns once without a config file or package file", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const first = createTemporaryProject().root;
 
     const config = await loadConfig(first);
 
-    const nested = createTemporaryProject({
-      ".config/engrenage.config.ts": "export default { unknown: true };\n",
-    }).root;
-
-    const nestedConfig = await loadConfig(nested);
+    await loadConfig(createTemporaryProject().root);
 
     expect(warn).toHaveBeenCalledExactlyOnceWith(
-      `No engrenage.config.ts found in ${first}, using defaults`,
+      `No engrenage config found in ${first}, using defaults`,
     );
     expect(config.root).toBe(first);
     expect(config.directories).toEqual({
@@ -52,7 +48,29 @@ describe("loadConfig", () => {
     );
     expect(config.presets).toEqual([]);
     expect(config.environment.has("valibot")).toBe(false);
-    expect(nestedConfig.directories).toEqual(config.directories);
+  });
+
+  test("finds the config in .config/ and in parent directories, up to the nearest package file", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "outer", "type": "module" }',
+      ".config/engrenage.config.ts":
+        'export default { presets: ["library"] };\n',
+      "src/nested/.gitkeep": "",
+      "packages/inner/package.json": '{ "name": "inner", "type": "module" }',
+      "packages/inner/src/.gitkeep": "",
+    });
+
+    const config = await loadConfig(project.resolve("src/nested"));
+
+    expect(config.root).toBe(project.root);
+    expect(config.presets).toEqual(["library"]);
+
+    const inner = await loadConfig(project.resolve("packages/inner/src"));
+
+    expect(inner.root).toBe(project.resolve("packages/inner"));
+    expect(inner.raw).toEqual({});
   });
 
   test("resolves a callback config, replaces defaults, appends generated files and infers project values", async () => {
@@ -104,6 +122,17 @@ describe("loadConfig", () => {
 
     expect(config.tsconfig.outDir).toBe("build");
     expect(config.files.generated).toContain("build/**");
+
+    const outside = createTemporaryProject({
+      "engrenage.config.ts": "export default {};\n",
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          outDir: "../build",
+        },
+      }),
+    });
+
+    expect((await loadConfig(outside.root)).files.generated).toEqual(lockFiles);
 
     const missing = createTemporaryProject({
       "engrenage.config.ts": appConfig,

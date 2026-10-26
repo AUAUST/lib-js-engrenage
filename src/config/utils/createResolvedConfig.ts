@@ -16,6 +16,7 @@ import {
   defaultTestDirectories,
   defaultTestFiles,
 } from "#config/constants";
+import { isWithin } from "#support/filesystem/utils/isWithin";
 import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
@@ -92,7 +93,9 @@ export function createResolvedConfig({
     return freeze([
       ...builtinGeneratedFiles,
       ...(raw.files?.generated ?? []),
-      ...(outDir === undefined ? [] : [`${outDir}/**`]),
+      ...(outDir === undefined || !isWithin(root, outDir)
+        ? []
+        : [`${outDir}/**`]),
     ]);
   });
 

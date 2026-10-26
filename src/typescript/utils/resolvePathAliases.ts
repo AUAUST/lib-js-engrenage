@@ -26,12 +26,8 @@ function countWildcards(pattern: string): number {
   return pattern.split("*").length - 1;
 }
 
-function assertPackageAlias(packageName: PackageName, alias: string) {
-  if (alias !== packageName && !alias.startsWith(`${packageName}/`)) {
-    throw new Error(
-      `Alias '${alias}' is outside the package '${packageName}', so it cannot name an entry`,
-    );
-  }
+function isPackageAlias(packageName: PackageName, alias: string): boolean {
+  return alias === packageName || alias.startsWith(`${packageName}/`);
 }
 
 function assertWildcards(alias: string, targets: ReadonlyArray<string>) {
@@ -55,6 +51,10 @@ export function resolvePathAliases(
   const entryPaths = new Map<string, string>();
 
   for (const [aliasPattern, targets] of entries(paths)) {
+    if (!isPackageAlias(packageName, aliasPattern)) {
+      continue;
+    }
+
     const hasPattern = aliasPattern.includes("*");
 
     let matched = false;
@@ -62,8 +62,6 @@ export function resolvePathAliases(
     if (targets.length === 0) {
       throw new Error(`Alias '${aliasPattern}' has no configured paths`);
     }
-
-    assertPackageAlias(packageName, aliasPattern);
 
     if (hasPattern) {
       assertWildcards(aliasPattern, targets);

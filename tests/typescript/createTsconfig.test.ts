@@ -36,6 +36,36 @@ describe("createTsconfig", () => {
     expect(tsconfig.outDir).toBe("build");
   });
 
+  test("keeps an outDir outside the root relative to it and rejects the root itself", () => {
+    const project = createTemporaryProject({
+      "outside.json": JSON.stringify({
+        compilerOptions: {
+          outDir: "../build",
+        },
+      }),
+      "root.json": JSON.stringify({
+        compilerOptions: {
+          outDir: ".",
+        },
+      }),
+    });
+
+    const outside = createTsconfig({
+      root: project.root,
+      path: project.resolve("outside.json"),
+    });
+
+    const atRoot = createTsconfig({
+      root: project.root,
+      path: project.resolve("root.json"),
+    });
+
+    expect(outside.outDir).toBe("../build");
+    expect(() => atRoot.outDir).toThrow(
+      "sets compilerOptions.outDir to the project root",
+    );
+  });
+
   test("tolerates a missing tsconfig through the optional view only", () => {
     const root = getFixture("tsdown");
 

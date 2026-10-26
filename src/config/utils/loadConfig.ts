@@ -1,8 +1,8 @@
 import { existsSync } from "node:fs";
+import { dirname } from "node:path";
 
-import { loadConfig as loadConfigFile, SUPPORTED_EXTENSIONS } from "c12";
+import { loadConfig as loadConfigFile } from "c12";
 
-import { map } from "@auaust/primitive-kit/arrays";
 import { constant } from "@auaust/toolkit/constant";
 import { memoized } from "@auaust/toolkit/memoized";
 
@@ -22,37 +22,22 @@ import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
+interface FoundConfig {
+  root: Directory;
+  configFile: File | undefined;
+  input: unknown;
+}
+
 const loadedConfigs = new Map<Directory, Promise<ResolvedConfig>>();
 
 const warnMissingConfig = memoized(function (root: Directory) {
-  console.warn(`No engrenage.config.ts found in ${root}, using defaults`);
+  console.warn(`No engrenage config found in ${root}, using defaults`);
 }, constant(true));
 
-function findConfigFile(root: Directory): File | null {
-  const candidates = map(SUPPORTED_EXTENSIONS, (extension) => {
-    return resolve(root, `${configFileName}${extension}`);
-  });
-
-  const [configFile = null, ...others] = candidates.filter((candidate) => {
-    return existsSync(candidate);
-  });
-
-  if (others.length > 0) {
-    throw new Error(
-      `Found several engrenage config files in ${root}: ${[configFile, ...others].join(", ")}`,
-    );
-  }
-
-  return configFile;
-}
-
-async function importConfigFile(
-  root: Directory,
-  configFile: File,
-): Promise<unknown> {
-  const { config } = await loadConfigFile({
-    cwd: root,
-    configFile,
+async function loadConfigIn(directory: Directory) {
+  return loadConfigFile({
+    cwd: directory,
+    configFile: configFileName,
     rcFile: false,
     globalRc: false,
     packageJson: false,
@@ -60,10 +45,46 @@ async function importConfigFile(
     envName: false,
     extend: false,
     giget: false,
-    configFileRequired: true,
   });
+}
 
-  return config;
+async function findConfig(
+  start: Directory,
+  directory: Directory = start,
+): Promise<FoundConfig> {
+  const { config, cwd, _configFile } = await loadConfigIn(directory);
+
+  if (_configFile !== undefined) {
+    if (cwd === undefined) {
+      throw new Error(`c12 resolved ${_configFile} without its directory`);
+    }
+
+    return {
+      root: cwd,
+      configFile: _configFile,
+      input: config,
+    };
+  }
+
+  if (existsSync(resolve(directory, packageFile))) {
+    return {
+      root: directory,
+      configFile: undefined,
+      input: {},
+    };
+  }
+
+  const parent = dirname(directory);
+
+  if (parent === directory) {
+    return {
+      root: start,
+      configFile: undefined,
+      input: {},
+    };
+  }
+
+  return findConfig(start, parent);
 }
 
 function resolveSourceFile({
@@ -90,15 +111,12 @@ function resolveSourceFile({
   return path;
 }
 
-async function readConfig(root: Directory): Promise<ResolvedConfig> {
-  const configFile = findConfigFile(root);
+async function readConfig(start: Directory): Promise<ResolvedConfig> {
+  const { root, configFile, input } = await findConfig(start);
 
-  if (configFile === null) {
+  if (configFile === undefined) {
     warnMissingConfig(root);
   }
-
-  const input =
-    configFile === null ? {} : await importConfigFile(root, configFile);
 
   const raw = validate(configSchema, input, configFile ?? root);
 
@@ -134,20 +152,20 @@ async function readConfig(root: Directory): Promise<ResolvedConfig> {
 export function loadConfig(
   cwd: Directory | URL = process.cwd(),
 ): Promise<ResolvedConfig> {
-  const root = resolve(cwd);
+  const start = resolve(cwd);
 
-  const cached = loadedConfigs.get(root);
+  const cached = loadedConfigs.get(start);
 
   if (cached !== undefined) {
     return cached;
   }
 
-  const loaded = readConfig(root);
+  const loaded = readConfig(start);
 
-  loadedConfigs.set(root, loaded);
+  loadedConfigs.set(start, loaded);
 
   loaded.catch(() => {
-    loadedConfigs.delete(root);
+    loadedConfigs.delete(start);
   });
 
   return loaded;

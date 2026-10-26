@@ -1,3 +1,5 @@
+import { relative } from "node:path";
+
 import {
   formatDiagnostics,
   getParsedCommandLineOfConfigFile,
@@ -10,7 +12,7 @@ import {
 import { once } from "@auaust/toolkit/once";
 
 import { createAccessors } from "#config/utils/createAccessors";
-import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
+import { toPosixPath } from "#support/filesystem/utils/toPosixPath";
 import { noInputsDiagnostic } from "#typescript/constants";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -64,9 +66,19 @@ export function createTsconfig({
   function outDir(): Directory | undefined {
     const configured = compilerOptions()?.outDir;
 
-    return configured === undefined
-      ? undefined
-      : relativeWithin(root, configured);
+    if (configured === undefined) {
+      return undefined;
+    }
+
+    const relativeOutDir = toPosixPath(relative(root, configured));
+
+    if (relativeOutDir === "") {
+      throw new Error(
+        `${path} sets compilerOptions.outDir to the project root ${root}`,
+      );
+    }
+
+    return relativeOutDir;
   }
 
   function paths(): Paths | undefined {

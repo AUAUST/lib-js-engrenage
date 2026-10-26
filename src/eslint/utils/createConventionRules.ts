@@ -7,6 +7,7 @@ import {
 } from "@auaust/primitive-kit/arrays";
 import { isBoolean } from "@auaust/toolkit/isBoolean";
 import { entries } from "@auaust/toolkit/object";
+import { value } from "@auaust/toolkit/value";
 
 import { pluginName } from "#eslint/constants";
 import { createRuleName } from "#eslint/utils/createRuleName";
@@ -97,13 +98,19 @@ function resolveScope(
   });
 }
 
-function createRules(name: string, { rules, rule }: Convention): Rules {
+function createRules(
+  name: string,
+  { rules, rule }: Convention,
+  config: ResolvedConfig,
+): Rules {
+  const resolvedRules = value(rules, config);
+
   if (rule === undefined) {
-    return rules;
+    return resolvedRules;
   }
 
   return {
-    ...rules,
+    ...resolvedRules,
     [`${pluginName}/${createRuleName(name)}`]: "error",
   };
 }
@@ -145,7 +152,7 @@ export function createConventionRules({
           },
         },
       }),
-      rules: createRules(name, convention),
+      rules: createRules(name, convention, config),
     });
   }
 

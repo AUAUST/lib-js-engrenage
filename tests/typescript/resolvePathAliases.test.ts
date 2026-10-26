@@ -11,10 +11,11 @@ import { getFixture } from "#tests/helpers/getFixture";
 const root = getFixture("typescript/aliases");
 
 describe("resolvePathAliases", () => {
-  test("resolves exact and wildcard aliases to entrypoints", () => {
+  test("resolves exact and wildcard package aliases to entrypoints and skips the others", () => {
     const aliases = resolvePathAliases(
       "@scope/package",
       {
+        "~/*": ["./src/*"],
         "@scope/package/*": ["./src/*/index.ts"],
         "@scope/package": ["./src/main.ts"],
       },
@@ -37,17 +38,7 @@ describe("resolvePathAliases", () => {
     ]);
   });
 
-  test("rejects aliases outside the package and wildcards without a match on each side", () => {
-    expect(() => {
-      return resolvePathAliases(
-        "@scope/package",
-        {
-          "@/*": ["./src/*"],
-        },
-        root,
-      );
-    }).toThrow("is outside the package '@scope/package'");
-
+  test("rejects wildcards without a match on each side", () => {
     expect(() => {
       return resolvePathAliases(
         "@scope/package",

@@ -15,6 +15,7 @@ import {
 import { map } from "@auaust/primitive-kit/arrays";
 import type { Maybe } from "@auaust/toolkit/types";
 
+import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 
 const root = getFixture("eslint");
@@ -120,6 +121,41 @@ describe("createEslintConfig", () => {
       "perfectionist/sort-imports",
       "unused-imports/no-unused-imports",
     ]);
+  });
+
+  test("sorts the project's own tsconfig path aliases with the project imports", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "aliases", "type": "module" }',
+      "engrenage.config.ts": "export default {};\n",
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          module: "nodenext",
+          paths: {
+            "$lib/*": ["./src/lib/*"],
+          },
+        },
+      }),
+      "src/lib/thing.ts": "export const thing = 1;\n",
+    });
+
+    const eslint = new ESLint({
+      cwd: project.root,
+      overrideConfigFile: true,
+      overrideConfig: createEslintConfig(await loadConfig(project.root), {
+        promises: false,
+      }),
+    });
+
+    const [result] = await eslint.lintText(
+      'import { string } from "valibot";\n\nimport { thing } from "$lib/thing";\n\nexport const values = [string, thing];\n',
+      {
+        filePath: "src/index.ts",
+      },
+    );
+
+    expect(map(result?.messages ?? [], (message) => message.ruleId)).toEqual(
+      [],
+    );
   });
 
   test("reports each restriction under its own rule, in every syntactic form", async () => {
