@@ -1,5 +1,6 @@
 import { configSchema } from "#config/config/schemas/configSchema";
 import {
+  defaultDistTsconfigFile,
   defaultGitignoreFile,
   defaultTsconfigFile,
   packageFile,
@@ -28,6 +29,18 @@ async function readConfig(root: Directory): Promise<ResolvedConfig> {
 
   const raw = validate(configSchema, input, configFile ?? root);
 
+  const tsconfigPath = resolveSourceFile({
+    root,
+    configured: raw.files?.tsconfig,
+    fallback: defaultTsconfigFile,
+  });
+
+  const distTsconfigPath = resolveSourceFile({
+    root,
+    configured: raw.files?.distTsconfig,
+    fallback: defaultDistTsconfigFile,
+  });
+
   return createResolvedConfig({
     root,
     raw,
@@ -35,11 +48,8 @@ async function readConfig(root: Directory): Promise<ResolvedConfig> {
       root,
       fallback: packageFile,
     }),
-    tsconfigPath: resolveSourceFile({
-      root,
-      configured: raw.files?.tsconfig,
-      fallback: defaultTsconfigFile,
-    }),
+    tsconfigPath,
+    distTsconfigPath: distTsconfigPath ?? tsconfigPath,
     gitignorePath: resolveSourceFile({
       root,
       configured: raw.files?.gitignore,

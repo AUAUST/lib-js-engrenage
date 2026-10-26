@@ -26,12 +26,14 @@ export function createResolvedConfig({
   raw,
   packageJsonPath,
   tsconfigPath,
+  distTsconfigPath,
   gitignorePath,
 }: {
   root: Directory;
   raw: InferOutput<typeof configSchema>;
   packageJsonPath: File | undefined;
   tsconfigPath: File | undefined;
+  distTsconfigPath: File | undefined;
   gitignorePath: File | undefined;
 }) {
   const packageJson = once(() => {
@@ -100,6 +102,7 @@ export function createResolvedConfig({
         raw,
         packageJsonPath,
         tsconfigPath,
+        distTsconfigPath,
         gitignorePath,
         resolve,
       },

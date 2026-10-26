@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "outDir": "build",
+    "paths": {
+      "@fixture/vitest": ["./src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

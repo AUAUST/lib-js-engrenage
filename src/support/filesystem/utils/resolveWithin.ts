@@ -1,5 +1,6 @@
-import { isAbsolute, relative, sep } from "node:path";
+import { sep } from "node:path";
 
+import { isWithin } from "#support/filesystem/utils/isWithin";
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 
@@ -11,14 +12,7 @@ export function resolveWithin(
 
   const path = resolve(basePath, ...paths);
 
-  const pathFromBase = relative(basePath, path);
-
-  const escapes =
-    pathFromBase === ".." ||
-    pathFromBase.startsWith(`..${sep}`) ||
-    isAbsolute(pathFromBase);
-
-  if (escapes) {
+  if (!isWithin(basePath, path)) {
     throw new Error(`Path "${paths.join(sep)}" escapes ${basePath}`);
   }
 

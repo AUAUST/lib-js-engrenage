@@ -23,6 +23,7 @@ export const configSchema = strictObject({
       generated: optional(globsSchema),
       gitignore: optional(fileSchema),
       tsconfig: optional(fileSchema),
+      distTsconfig: optional(fileSchema),
     }),
   ),
   agents: optional(

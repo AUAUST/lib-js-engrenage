@@ -147,6 +147,39 @@ describe("loadConfig", () => {
     );
   });
 
+  test("uses tsconfig.dist.json when present, falls back to the tsconfig and rejects a missing configured dist tsconfig", async () => {
+    const root = getFixture("custom");
+
+    const config = await loadConfig(root);
+
+    expect(config.distTsconfigPath).toBe(join(root, "tsconfig.json"));
+
+    const implicit = createProject();
+
+    writeFileSync(
+      join(implicit, "engrenage.config.ts"),
+      "export default {};\n",
+    );
+    writeFileSync(join(implicit, "tsconfig.dist.json"), "{}");
+
+    const implicitConfig = await loadConfig(implicit);
+
+    expect(implicitConfig.distTsconfigPath).toBe(
+      join(implicit, "tsconfig.dist.json"),
+    );
+
+    const missing = createProject();
+
+    writeFileSync(
+      join(missing, "engrenage.config.ts"),
+      'export default { files: { distTsconfig: "tsconfig.build.json" } };\n',
+    );
+
+    await expect(loadConfig(missing)).rejects.toThrow(
+      `The configured tsconfig.build.json does not exist in ${missing}`,
+    );
+  });
+
   test("resolves existing source files against the root and rejects escaping paths", async () => {
     const root = getFixture("custom");
 

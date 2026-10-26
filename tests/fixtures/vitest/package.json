@@ -1,0 +1,10 @@
+{
+  "name": "@fixture/vitest",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./build/index.mjs",
+    "./extra": "./build/extra.mjs",
+    "./data.json": "./data/data.json"
+  }
+}

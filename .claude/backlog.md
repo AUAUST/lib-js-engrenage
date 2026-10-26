@@ -9,40 +9,40 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: Vite warns that the extensionless `./src/…` imports are unsupported by `configLoader: 'native'`, planned as the future default.
    - Fix: once Vite makes the native loader the default, import the config helpers with explicit extensions or through `#…` subpath imports.
 
-2. Vitest config from the resolved config.
-   - Where: `vitest.config.ts`, `src/vite/`
-   - Problem: `vitest.config.ts` still reads the tsconfig by hand, turning `paths` into Vite aliases and checking that `outDir` and `paths` are set, while `defineTsdownConfig` already takes them from the resolved engrenage config.
-   - Fix: add a `defineVitestConfig` builder that takes `outDir` and `paths` from the resolved config, as `createTsdownConfig` does.
-
-3. Barrel codegen cannot heal a barrel that names a removed module.
+2. Barrel codegen cannot heal a barrel that names a removed module.
    - Where: `bin/support/codegen/index.ts`, `bin/support/codegen/rules.ts`
    - Problem: the `support` CLI registers every codegen subcommand at startup, and the `rules` subcommand imports the ESLint config builder and with it every conventions barrel. Renaming or deleting a convention module therefore crashes `pnpm support codegen barrels` with `ERR_MODULE_NOT_FOUND` before it can rewrite the stale barrel line, which has to be fixed by hand first.
    - Fix: decouple subcommand registration from their implementations so the barrels command never evaluates the modules it generates; a lazy dynamic import conflicts with the `noDynamicImport` convention, so this needs a deliberate loading pattern for CLI subcommands.
 
-4. Shared project files beyond tool configs.
+3. Shared project files beyond tool configs.
    - Where: `bin/engrenage/`, `src/config/`
    - Problem: only tool configs (ESLint, Prettier, TypeScript, Vite) and agent instructions are shared. Other files that repeat hard-coded content across AUAUST projects, such as `.gitignore`, `.vscode/settings.json`, `.vscode/extensions.json`, `.editorconfig` and `.gitattributes`, are still copied by hand and drift apart.
-   - Fix: add an `engrenage sync` command that builds these files from shared content plus project options in `engrenage.config.ts`, with a `--check` mode for CI. Fold `engrenage agents sync` into it rather than running a parallel mechanism. Not yet scoped as an issue: the file list, config shape and merge policy depend on point 1.5.
+   - Fix: add an `engrenage sync` command that builds these files from shared content plus project options in `engrenage.config.ts`, with a `--check` mode for CI. Fold `engrenage agents sync` into it rather than running a parallel mechanism. Not yet scoped as an issue: the file list, config shape and merge policy depend on point 1.4.
 
-5. Classify shareable files by how they can be extended.
-   - Where: `data/`, the candidate files listed in point 1.4
+4. Classify shareable files by how they can be extended.
+   - Where: `data/`, the candidate files listed in point 1.3
    - Problem: some formats have native extension (`extends`, imports, includes) and can consume shared content directly, while others (VS Code settings, `.editorconfig`, `.gitignore`, `.gitattributes`) have none and must be fully generated, merged with project-owned content, or filled through marked blocks like the agent fragments. This is not yet known per file, nor whether project additions survive regeneration.
    - Fix: inventory each candidate file, record whether it extends natively, merges, or is fully rewritten, and decide where project-specific additions live, before designing `engrenage sync`.
 
-6. Canonical `package.json` order.
+5. Canonical `package.json` order.
    - Where: `package.json`, `src/prettier/` or `src/eslint/`
    - Problem: nothing enforces a key order in `package.json`, so manual edits and generated fields (tsdown `exports`, new imports or peer dependencies) land in arbitrary positions.
    - Fix: add a Prettier or ESLint plugin to the shared config that sorts `package.json` in a canonical order.
 
-7. Dedicated `@auaust` import group.
+6. Dedicated `@auaust` import group.
    - Where: `src/eslint/conventions/imports/importOrder.ts`
    - Problem: perfectionist's import order sorts `@auaust/*` packages among the other external imports, so AUAUST libraries are not visually set apart from third-party ones.
    - Fix: add a custom `@auaust` group to the perfectionist `sort-imports` configuration, placed between the external and internal (`#…`) groups.
 
-8. Config file lookup through c12's default discovery.
+7. Config file lookup through c12's default discovery.
    - Where: `src/config/utils/findConfigFile.ts`, `src/config/utils/importConfigFile.ts`, `src/config/utils/loadConfig.ts`
    - Problem: `findConfigFile` reimplements the lookup of `engrenage.config.*` in the current directory only (no `.config/` directory) and fails on several candidates, while c12 already discovers config files with its own algorithm.
    - Fix: let c12 find the config with its default behaviour and take the project root from c12's result (the directory holding the config, or the parent of `.config/` when the file lives there). Delete `findConfigFile` and update the loadConfig tests that pin the current-directory-only lookup.
+
+8. Shared test and build scripts.
+   - Where: `package.json` of each AUAUST library
+   - Problem: `test`, `build`, `watch` and `coverage` scripts are copied by hand around `defineVitestConfig`, which depends on them passing `--mode build` to test the build output.
+   - Fix: decide whether an `engrenage` command checks or syncs them, as `agents sync --check` does, or an agent fragment documents them.
 
 ## 2. Upstream
 
@@ -69,9 +69,9 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
 ## 3. Architecture
 
 1. Compile-time variables in the root config.
-   - Where: `src/config/`, `src/tsdown/`, future Vite and Vitest builders
+   - Where: `src/config/`, `src/tsdown/`, `src/vite/`, `src/vitest/`
    - Problem: toolkit defines `__NAME__`, `__VERSION__`, `__LICENSE__` and `__TIMESTAMP__` by hand for tsdown and Vitest, with matching ambient declarations in `src/ambient.d.ts`. Engrenage has no shared source for them.
-   - Fix: declare compile-time variables as an `engrenage.config.ts` setting, so tsdown, Vite, Vitest and other builders apply the same `define` record. Later, generate the ambient `.d.ts` declarations from it. Settle which fields are standard and whether `__TIMESTAMP__` stays, given it makes builds non-reproducible.
+   - Fix: declare compile-time variables as an `engrenage.config.ts` setting, so `createTsdownConfig` and `createViteConfig` (which `createVitestConfig` extends) apply the same `define` record. Later, generate the ambient `.d.ts` declarations from it. Settle which fields are standard and whether `__TIMESTAMP__` stays, given it makes builds non-reproducible.
 
 2. Rationalize helpers.
    - Where: `src/utils/`, `src/support/`, each entry's `utils/` and `builders/`
