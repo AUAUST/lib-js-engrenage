@@ -18,6 +18,7 @@
   },
   "scripts": {
     "build": "pnpm run engrenage tsdown && pnpm run engrenage tsc:dist && pnpm run engrenage vitest:dist",
+    "ci": "pnpm run ci:check && pnpm run ci:test && pnpm run ci:build",
     "ci:build": "pnpm run build",
     "ci:check": "pnpm run engrenage sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run typecheck && pnpm run lint",
     "ci:publish": "changeset publish",
@@ -27,6 +28,8 @@
     "format": "pnpm run engrenage prettier",
     "format:all": "pnpm run engrenage prettier:all",
     "lint": "pnpm run engrenage eslint",
+    "prepare": "pnpm run support codegen rules && pnpm run support codegen barrels && pnpm run engrenage sync",
+    "ready": "pnpm install --frozen-lockfile && pnpm run prepare && pnpm run ci && echo 'Ready!'",
     "support": "node bin/support/index.ts",
     "test": "pnpm run engrenage vitest && pnpm run typecheck",
     "typecheck": "pnpm run engrenage tsc",
