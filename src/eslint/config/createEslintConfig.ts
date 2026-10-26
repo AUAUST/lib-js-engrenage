@@ -9,7 +9,7 @@ import { configs as typescriptConfigs } from "typescript-eslint";
 
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
-import type { Maybe } from "@auaust/toolkit/types";
+import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
 import { packageFile } from "#config/constants";
 import { optionsSchema } from "#eslint/config/schemas/optionsSchema";
@@ -51,7 +51,46 @@ export function createEslintConfig(
     },
   );
 
-  return defineConfig([
+  const configs: MaybeArray<Config>[] = [];
+
+  if (ignore) {
+    configs.push(
+      createIgnoreRules({
+        gitignorePath: config.gitignorePath,
+        generatedFiles: config.files.generated,
+        outputDirectory: config.directories.output,
+        fixtureFiles: config.files.fixtures,
+        testDirectories: config.directories.test,
+      }),
+    );
+  }
+
+  if (recommended) {
+    configs.push(
+      createRecommendedRules({
+        codeFiles: config.files.code,
+      }),
+    );
+  }
+
+  if (packageJsonEnabled) {
+    configs.push({
+      name: `${pluginName}/package-json`,
+      files: [`**/${packageFile}`],
+      languageOptions: packageJsonConfigs.recommended.languageOptions,
+      rules: packageJsonRules,
+    });
+  }
+
+  if (categories.imports !== false) {
+    configs.push(
+      createImportPresets({
+        codeFiles: config.files.code,
+      }),
+    );
+  }
+
+  return defineConfig(
     {
       name: `${pluginName}/plugins`,
       plugins: {
@@ -63,33 +102,7 @@ export function createEslintConfig(
       },
     },
     typescriptConfigs.base,
-    ignore
-      ? createIgnoreRules({
-          gitignorePath: config.gitignorePath,
-          generatedFiles: config.files.generated,
-          outputDirectory: config.directories.output,
-          fixtureFiles: config.files.fixtures,
-          testDirectories: config.directories.test,
-        })
-      : [],
-    recommended
-      ? createRecommendedRules({
-          codeFiles: config.files.code,
-        })
-      : [],
-    packageJsonEnabled
-      ? {
-          name: `${pluginName}/package-json`,
-          files: [`**/${packageFile}`],
-          languageOptions: packageJsonConfigs.recommended.languageOptions,
-          rules: packageJsonRules,
-        }
-      : [],
-    categories.imports === false
-      ? []
-      : createImportPresets({
-          codeFiles: config.files.code,
-        }),
+    ...configs,
     conventionRules,
-  ]);
+  );
 }

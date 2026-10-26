@@ -5,4 +5,4 @@ import { freeze } from "@auaust/toolkit/object";
 export const attwOptions = freeze({
   profile: "node16",
   ignoreRules: ["cjs-resolves-to-esm"],
-} satisfies AttwOptions);
+} as const satisfies AttwOptions);

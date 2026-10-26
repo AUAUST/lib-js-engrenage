@@ -17,7 +17,7 @@ export const conventionCategories = freeze({
   promises,
   structure,
   performance,
-});
+} as const);
 
 export const packageJsonRules = freeze({
   "package-json/order-properties": "error",
@@ -25,16 +25,17 @@ export const packageJsonRules = freeze({
     "error",
     [
       "config",
+      "scripts",
       "dependencies",
       "devDependencies",
       "optionalDependencies",
-      "overrides",
+      "inlineDependencies",
       "peerDependencies",
       "peerDependenciesMeta",
-      "scripts",
+      "overrides",
     ],
   ],
-} satisfies Rules);
+} as const satisfies Rules);
 
 export const pluginName = "auaust";
 
@@ -45,4 +46,4 @@ export const recommendedRules = freeze({
   "@typescript-eslint/no-unsafe-function-type": "off",
   "@typescript-eslint/no-unused-vars": "off",
   "no-cond-assign": "off",
-} satisfies Rules);
+} as const satisfies Rules);

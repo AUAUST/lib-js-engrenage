@@ -1,23 +1,21 @@
-import type { FormattingOptions } from "jsonc-parser";
-
 import { freeze } from "@auaust/toolkit/object";
 
 import { defaultOptions } from "#prettier/constants";
 import type { File } from "#types/File";
 import type { Integration } from "#vscode/types/Integration";
 
-export const extensionsFile: File = ".vscode/extensions.json";
+export const extensionsFile = ".vscode/extensions.json" satisfies File;
 
-export const settingsFile: File = ".vscode/settings.json";
+export const settingsFile = ".vscode/settings.json" satisfies File;
 
 export const emptyObjectFile = "{}\n";
 
-export const formattingOptions: FormattingOptions = freeze({
+export const formattingOptions = freeze({
   insertSpaces: !defaultOptions.useTabs,
   tabSize: defaultOptions.tabWidth,
-});
+} as const);
 
-export const eslintIntegration: Integration = freeze({
+export const eslintIntegration = freeze({
   requires: ["eslint"],
   settings: {
     "editor.codeActionsOnSave": {
@@ -27,9 +25,9 @@ export const eslintIntegration: Integration = freeze({
     },
   },
   extensions: ["dbaeumer.vscode-eslint"],
-});
+} as const) satisfies Integration;
 
-export const prettierIntegration: Integration = freeze({
+export const prettierIntegration = freeze({
   requires: ["prettier"],
   settings: {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -37,19 +35,19 @@ export const prettierIntegration: Integration = freeze({
     "prettier.requireConfig": true,
   },
   extensions: ["esbenp.prettier-vscode"],
-});
+} as const) satisfies Integration;
 
-export const typescriptIntegration: Integration = freeze({
+export const typescriptIntegration = freeze({
   requires: ["typescript"],
-  settings: {
+  settings: freeze({
     "js/ts.tsdk.path": "node_modules/typescript/lib",
     "typescript.tsdk": undefined,
-  },
+  }),
   extensions: [],
-});
+} as const) satisfies Integration;
 
-export const integrations: ReadonlyArray<Integration> = freeze([
+export const integrations = freeze([
   eslintIntegration,
   prettierIntegration,
   typescriptIntegration,
-]);
+] as const) satisfies ReadonlyArray<Integration>;

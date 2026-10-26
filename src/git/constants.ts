@@ -3,7 +3,7 @@ import { freeze } from "@auaust/toolkit/object";
 import { coverageDirectory } from "#config/constants";
 import type { GlobGroup } from "#types/GlobGroup";
 
-export const javascriptIgnores: GlobGroup = freeze({
+export const javascriptIgnores = freeze({
   title: "JavaScript",
   globs: freeze([
     "node_modules",
@@ -14,15 +14,20 @@ export const javascriptIgnores: GlobGroup = freeze({
     ".eslintcache",
     "npm-debug.log*",
     "pnpm-debug.log*",
-  ]),
-});
+  ] as const),
+} as const) satisfies GlobGroup;
 
-export const lockfileIgnores: GlobGroup = freeze({
+export const lockfileIgnores = freeze({
   title: "Package locks",
-  globs: freeze(["package-lock.json", "yarn.lock", "bun.lock", "bun.lockb"]),
-});
+  globs: freeze([
+    "package-lock.json",
+    "yarn.lock",
+    "bun.lock",
+    "bun.lockb",
+  ] as const),
+} as const) satisfies GlobGroup;
 
-export const osIgnores: GlobGroup = freeze({
+export const osIgnores = freeze({
   title: "Operating systems",
   globs: freeze([
     ".DS_Store",
@@ -31,20 +36,20 @@ export const osIgnores: GlobGroup = freeze({
     ".Trashes",
     "Thumbs.db",
     "ehthumbs.db",
-  ]),
-});
+  ] as const),
+} as const) satisfies GlobGroup;
 
-export const envIgnores: GlobGroup = freeze({
+export const envIgnores = freeze({
   title: "Environment",
-  globs: freeze([".env", ".env.*", "!.env.example"]),
-});
+  globs: freeze([".env", ".env.*", "!.env.example"] as const),
+} as const) satisfies GlobGroup;
 
-export const logIgnores: GlobGroup = freeze({
+export const logIgnores = freeze({
   title: "Logs",
-  globs: freeze(["/logs", "*.log"]),
-});
+  globs: freeze(["/logs", "*.log"] as const),
+} as const) satisfies GlobGroup;
 
-export const editorIgnores: GlobGroup = freeze({
+export const editorIgnores = freeze({
   title: "Editors",
   globs: freeze([
     ".idea",
@@ -56,13 +61,13 @@ export const editorIgnores: GlobGroup = freeze({
     "*.ntvs*",
     "*.njsproj",
     "*.sln",
-  ]),
-});
+  ] as const),
+} as const) satisfies GlobGroup;
 
-export const coverageIgnores: GlobGroup = freeze({
+export const coverageIgnores = freeze({
   title: "Coverage",
-  globs: freeze([`/${coverageDirectory}`]),
-});
+  globs: freeze([`/${coverageDirectory}`] as const),
+} as const) satisfies GlobGroup;
 
 export const outputTitle = "Output";
 
@@ -73,4 +78,5 @@ export const defaultIgnores: ReadonlyArray<GlobGroup> = freeze([
   envIgnores,
   logIgnores,
   editorIgnores,
-]);
+  coverageIgnores,
+] as const) satisfies ReadonlyArray<GlobGroup>;

@@ -27,28 +27,28 @@ export const defaultOptions = freeze({
   trailingComma: "all",
   useTabs: false,
   vueIndentScriptAndStyle: false,
-} satisfies Options);
+} as const satisfies Options);
 
-export const lockfileIgnores: GlobGroup = freeze({
+export const lockfileIgnores = freeze({
   ...gitLockfileIgnores,
   globs: freeze(["pnpm-lock.yaml", ...gitLockfileIgnores.globs]),
-});
+} as const) satisfies GlobGroup;
 
-export const eslintIgnores: GlobGroup = freeze({
+export const eslintIgnores = freeze({
   title: "ESLint",
   globs: freeze(["eslint-suppressions.json"]),
-});
+} as const) satisfies GlobGroup;
 
-export const changelogIgnores: GlobGroup = freeze({
+export const changelogIgnores = freeze({
   title: "Changelog",
   globs: freeze(["CHANGELOG.md"]),
-});
+} as const) satisfies GlobGroup;
 
-export const changesetsPackage: PackageName = "@changesets/cli";
+export const changesetsPackage = "@changesets/cli" satisfies PackageName;
 
 export const codegenTitle = "Codegen";
 
-export const defaultIgnores: ReadonlyArray<GlobGroup> = freeze([
+export const defaultIgnores = freeze([
   lockfileIgnores,
   eslintIgnores,
-]);
+] as const) satisfies ReadonlyArray<GlobGroup>;
