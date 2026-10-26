@@ -1,6 +1,7 @@
 export { defineConfig } from "#config/config/defineConfig";
 export { loadConfig } from "#config/utils/loadConfig";
 export type { PackageJson } from "#support/packageJson/types/PackageJson";
+export type { ConfigInput } from "#types/ConfigInput";
 
 // @barrel types/*.ts all
 export * from "#config/types/Accessors";
