@@ -1,5 +1,3 @@
 import { defineEslintConfig } from "#eslint/index";
 
-export default defineEslintConfig({
-  packageJson: true,
-});
+export default defineEslintConfig();
