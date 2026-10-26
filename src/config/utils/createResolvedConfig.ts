@@ -50,6 +50,7 @@ function createEnvironment({ optional }: PackageJson): Environment {
 export function createResolvedConfig({
   root,
   raw,
+  configFile,
   packageJsonPath,
   tsconfigPath,
   distTsconfigPath,
@@ -58,6 +59,7 @@ export function createResolvedConfig({
 }: {
   root: Directory;
   raw: InferOutput<typeof configSchema>;
+  configFile: File | undefined;
   packageJsonPath: File | undefined;
   tsconfigPath: File | undefined;
   distTsconfigPath: File | undefined;
@@ -151,6 +153,7 @@ export function createResolvedConfig({
       {
         root,
         raw,
+        configFile,
         packageJsonPath,
         tsconfigPath,
         distTsconfigPath,

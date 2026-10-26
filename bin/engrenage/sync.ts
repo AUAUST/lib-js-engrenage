@@ -11,6 +11,7 @@ import { syncPrettierignoreFile } from "#prettier/utils/syncPrettierignoreFile";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { reportSyncResults } from "#support/commander/utils/reportSyncResults";
 import { syncVscodeFiles } from "#vscode/utils/syncVscodeFiles";
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 
 const targets = {
   agents: syncAgentFiles,
@@ -21,10 +22,29 @@ const targets = {
   workflows: syncWorkflowFiles,
 };
 
+export function runSync({
+  config,
+  names = keys(targets),
+  check = false,
+}: {
+  config: ResolvedConfig;
+  names?: ReadonlyArray<keyof typeof targets>;
+  check?: boolean;
+}) {
+  for (const name of names) {
+    reportSyncResults(
+      targets[name]({
+        config,
+        check,
+      }),
+    );
+  }
+}
+
 export default defineCommand((command) => {
   return command
     .description(
-      "Sync the project files that engrenage derives from the config.",
+      "Update the existing project files that engrenage derives from the config. `engrenage init` creates missing ones.",
     )
     .addArgument(
       new Argument("[targets...]", "targets to sync (all by default)").choices(
@@ -35,15 +55,10 @@ export default defineCommand((command) => {
     .action(async (selected, { check }) => {
       const config = await loadConfig();
 
-      const names = selected.length === 0 ? keys(targets) : selected;
-
-      for (const name of names) {
-        reportSyncResults(
-          targets[name]({
-            config,
-            check,
-          }),
-        );
-      }
+      runSync({
+        config,
+        names: selected.length === 0 ? keys(targets) : selected,
+        check,
+      });
     });
 });

@@ -6,6 +6,7 @@ export default defineTsdownConfig({
     "bin/engrenage": "bin/engrenage/index.ts",
   },
   customExports: {
+    "./agents/templates/*.md": "./data/agents/templates/*.md",
     "./agents/rules/*.md": "./data/agents/rules/*.md",
     "./agents/sections/*.md": "./data/agents/sections/*.md",
     "./github/workflows/*.yml": "./data/github/workflows/*.yml",
@@ -17,5 +18,11 @@ export default defineTsdownConfig({
     "commander",
     "@commander-js/extra-typings",
     "jsonc-parser",
+    "@clack/prompts",
+    "@clack/core",
+    "fast-string-truncated-width",
+    "fast-string-width",
+    "fast-wrap-ansi",
+    "sisteransi",
   ],
 });

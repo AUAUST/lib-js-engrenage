@@ -13,7 +13,13 @@ const emptyBlock = [
 
 function createProject() {
   const project = createTemporaryProject({
-    "engrenage.config.ts": "export default { vscode: { settings: true } };\n",
+    "engrenage.config.ts": "export default {};\n",
+    "package.json": JSON.stringify({
+      devDependencies: {
+        prettier: "*",
+      },
+    }),
+    ".vscode/settings.json": "{}\n",
     ".claude/shared.md": "## Shared section\n",
     "AGENTS.md": emptyBlock,
   });
@@ -40,7 +46,9 @@ describe("engrenage sync", () => {
     await runCommand(sync);
 
     expect(project.read("AGENTS.md")).toContain("## Shared section");
-    expect(project.read(".vscode/settings.json")).toBe("{}\n");
+    expect(project.read(".vscode/settings.json")).toContain(
+      '"editor.formatOnSave": true',
+    );
 
     await runCommand(sync, "--check");
 

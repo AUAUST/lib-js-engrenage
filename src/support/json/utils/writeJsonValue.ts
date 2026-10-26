@@ -9,12 +9,19 @@ export function writeJsonValue(
   path: File,
   location: JSONPath,
   value: JsonValue | undefined,
-  isArrayInsertion = false,
+  {
+    isArrayInsertion = false,
+    getInsertionIndex,
+  }: {
+    isArrayInsertion?: boolean;
+    getInsertionIndex?: (properties: string[]) => number;
+  } = {},
 ): string {
   try {
     const edits = modify(content, location, value, {
       formattingOptions,
       isArrayInsertion,
+      getInsertionIndex,
     });
 
     return applyEdits(content, edits);

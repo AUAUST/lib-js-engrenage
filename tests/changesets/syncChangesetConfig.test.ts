@@ -71,7 +71,7 @@ describe("syncChangesetConfig", () => {
     });
   });
 
-  test("uses the default changelog without the GitHub generator and skips projects without changesets", async () => {
+  test("uses the default changelog without the GitHub generator and skips projects without changesets or a config", async () => {
     const project = createTemporaryProject({
       ...installedPackages,
       "engrenage.config.ts": "export default {};\n",
@@ -82,6 +82,7 @@ describe("syncChangesetConfig", () => {
           "@changesets/cli": "*",
         },
       }),
+      ".changeset/config.json": "{}\n",
     });
 
     const config = await loadConfig(project.root);
@@ -98,6 +99,22 @@ describe("syncChangesetConfig", () => {
       access: "restricted",
       changelog: "@changesets/cli/changelog",
     });
+
+    const unconfigured = createTemporaryProject({
+      ...installedPackages,
+      "engrenage.config.ts": "export default {};\n",
+      "package.json": JSON.stringify({
+        devDependencies: {
+          "@changesets/cli": "*",
+        },
+      }),
+    });
+
+    expect(
+      syncChangesetConfig({
+        config: await loadConfig(unconfigured.root),
+      }),
+    ).toEqual([]);
 
     const unrelated = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",

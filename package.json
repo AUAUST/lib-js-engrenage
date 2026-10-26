@@ -82,6 +82,7 @@
     "./vitest/constants": "./dist/vitest/constants.mjs",
     "./vscode": "./dist/vscode/index.mjs",
     "./vscode/constants": "./dist/vscode/constants.mjs",
+    "./agents/templates/*.md": "./data/agents/templates/*.md",
     "./agents/rules/*.md": "./data/agents/rules/*.md",
     "./agents/sections/*.md": "./data/agents/sections/*.md",
     "./github/workflows/*.yml": "./data/github/workflows/*.yml",
@@ -110,6 +111,7 @@
     "@auaust/toolkit": "^0.5.1",
     "@changesets/changelog-github": "^1.0.1",
     "@changesets/cli": "^3.0.3",
+    "@clack/prompts": "^1.8.1",
     "@commander-js/extra-typings": "^15.0.0",
     "@types/node": "^26.6.5",
     "@vitest/coverage-istanbul": "^5.0.5",
@@ -129,9 +131,15 @@
   "inlinedDependencies": {
     "@auaust/primitive-kit": "0.42.2",
     "@auaust/toolkit": "0.5.1",
+    "@clack/core": "1.5.1",
+    "@clack/prompts": "1.8.1",
     "@commander-js/extra-typings": "15.0.0",
     "commander": "15.0.0",
-    "jsonc-parser": "3.3.1"
+    "fast-string-truncated-width": "3.0.3",
+    "fast-string-width": "3.0.2",
+    "fast-wrap-ansi": "0.2.2",
+    "jsonc-parser": "3.3.1",
+    "sisteransi": "1.0.5"
   },
   "peerDependencies": {
     "eslint": "^10.0.0",

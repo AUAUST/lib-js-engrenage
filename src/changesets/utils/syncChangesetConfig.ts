@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { createRequire } from "node:module";
 
 import { object, string } from "valibot";
@@ -17,7 +18,6 @@ import {
   packageJsonFile,
 } from "#constants";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
-import { emptyObjectFile } from "#support/json/constants";
 import { applyJsonEdits } from "#support/json/utils/applyJsonEdits";
 import { flattenJsonObject } from "#support/json/utils/flattenJsonObject";
 import { syncFiles } from "#utils/syncFiles";
@@ -103,7 +103,10 @@ export function syncChangesetConfig({
   config: ResolvedConfig;
   check?: boolean;
 }): SyncResults {
-  if (!config.environment.hasDependency(changesetsCli)) {
+  if (
+    !config.environment.hasDependency(changesetsCli) ||
+    !existsSync(config.resolve(configFile))
+  ) {
     return [];
   }
 
@@ -127,7 +130,6 @@ export function syncChangesetConfig({
     files: [
       {
         file: configFile,
-        initial: emptyObjectFile,
         update(content, path) {
           return applyJsonEdits(content, path, options);
         },

@@ -71,12 +71,13 @@ describe("syncVscodeFiles", () => {
     ).toEqual([]);
   });
 
-  test("creates enabled files, skips disabled ones and keeps existing recommendations", async () => {
+  test("updates existing enabled files and skips disabled or missing ones", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
-        "export default { vscode: { settings: false, extensions: true } };\n",
+        "export default { vscode: { settings: false } };\n",
       "package.json": packageJson,
       ".vscode/settings.json": settings,
+      ".vscode/extensions.json": "{}\n",
     });
 
     const config = await loadConfig(project.root);

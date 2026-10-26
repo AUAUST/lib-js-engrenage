@@ -1,22 +1,15 @@
-import { existsSync } from "node:fs";
-
 import { array, optional, string } from "valibot";
 
-import {
-  deduplicate,
-  every,
-  flatMap,
-  includes,
-} from "@auaust/primitive-kit/arrays";
+import { deduplicate, flatMap, includes } from "@auaust/primitive-kit/arrays";
 
-import { emptyObjectFile } from "#support/json/constants";
 import { applyJsonEdits } from "#support/json/utils/applyJsonEdits";
 import { flattenJsonObject } from "#support/json/utils/flattenJsonObject";
 import { readJsonValue } from "#support/json/utils/readJsonValue";
 import { writeJsonValue } from "#support/json/utils/writeJsonValue";
 import { syncFiles } from "#utils/syncFiles";
 import { validate } from "#utils/validate";
-import { extensionsFile, integrations, settingsFile } from "#vscode/constants";
+import { extensionsFile, settingsFile } from "#vscode/constants";
+import { findIntegrations } from "#vscode/utils/findIntegrations";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
 import type { FileSync } from "#types/FileSync";
@@ -42,20 +35,14 @@ function addRecommendations(
         path,
         ["recommendations", -1],
         extension,
-        true,
+        {
+          isArrayInsertion: true,
+        },
       );
     }
   }
 
   return synced;
-}
-
-function isSynced(
-  config: ResolvedConfig,
-  enabled: boolean | undefined,
-  file: File,
-): boolean {
-  return enabled ?? existsSync(config.resolve(file));
 }
 
 export function syncVscodeFiles({
@@ -65,9 +52,7 @@ export function syncVscodeFiles({
   config: ResolvedConfig;
   check?: boolean;
 }): SyncResults {
-  const applicable = integrations.filter(({ requires }) => {
-    return every(requires, (name) => config.environment.hasDependency(name));
-  });
+  const applicable = findIntegrations(config.environment.hasDependency);
 
   const settings = flatMap(applicable, (integration) => {
     return flattenJsonObject(integration.settings);
@@ -81,20 +66,18 @@ export function syncVscodeFiles({
 
   const files: FileSync[] = [];
 
-  if (isSynced(config, config.vscode.settings, settingsFile)) {
+  if (config.vscode.settings !== false) {
     files.push({
       file: settingsFile,
-      initial: emptyObjectFile,
       update(content, path) {
         return applyJsonEdits(content, path, settings);
       },
     });
   }
 
-  if (isSynced(config, config.vscode.extensions, extensionsFile)) {
+  if (config.vscode.extensions !== false) {
     files.push({
       file: extensionsFile,
-      initial: emptyObjectFile,
       update(content, path) {
         return addRecommendations(content, path, extensions);
       },

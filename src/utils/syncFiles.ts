@@ -1,20 +1,9 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname } from "node:path";
-
 import { resolve } from "#support/filesystem/utils/resolve";
+import { createDeferredFiles } from "#support/scaffold/utils/createDeferredFiles";
 import type { Directory } from "#types/Directory";
 import type { FileSync } from "#types/FileSync";
 import type { SyncResult } from "#types/SyncResult";
 import type { SyncResults } from "#types/SyncResults";
-import type { SyncStatus } from "#types/SyncStatus";
-
-function statusOf(exists: boolean, check: boolean): SyncStatus {
-  if (check) {
-    return "outdated";
-  }
-
-  return exists ? "synced" : "created";
-}
 
 export function syncFiles({
   root,
@@ -25,20 +14,17 @@ export function syncFiles({
   files: ReadonlyArray<FileSync>;
   check: boolean;
 }): SyncResults {
+  const deferred = createDeferredFiles(root);
   const results: SyncResult[] = [];
 
-  for (const { file, initial, update } of files) {
-    const path = resolve(root, file);
+  for (const { file, update } of files) {
+    const current = deferred.read(file);
 
-    const current = existsSync(path) ? readFileSync(path, "utf8") : undefined;
-
-    const content = current ?? initial;
-
-    if (content === undefined) {
-      throw new Error(`Cannot sync ${path}: the file does not exist`);
+    if (current === undefined) {
+      continue;
     }
 
-    const synced = update(content, path);
+    const synced = update(current, resolve(root, file));
 
     if (synced === current) {
       continue;
@@ -46,16 +32,14 @@ export function syncFiles({
 
     results.push({
       file,
-      status: statusOf(current !== undefined, check),
+      status: check ? "outdated" : "synced",
     });
 
-    if (!check) {
-      mkdirSync(dirname(path), {
-        recursive: true,
-      });
+    deferred.write(file, synced);
+  }
 
-      writeFileSync(path, synced);
-    }
+  if (!check) {
+    deferred.commit();
   }
 
   return results;

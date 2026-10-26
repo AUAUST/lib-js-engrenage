@@ -3,6 +3,7 @@
 import { Command } from "@commander-js/extra-typings";
 
 import eslint from "#bin/engrenage/eslint";
+import init from "#bin/engrenage/init";
 import prettier from "#bin/engrenage/prettier";
 import sync from "#bin/engrenage/sync";
 import tsc from "#bin/engrenage/tsc";
@@ -18,6 +19,7 @@ const program = registerSubcommands(
     .version(packageJson.version)
     .enablePositionalOptions(),
   {
+    init,
     sync,
     ...tsc,
     ...vitest,

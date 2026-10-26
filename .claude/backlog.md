@@ -16,8 +16,18 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
 
 3. pnpm workspace defaults are copied by hand.
    - Where: `pnpm-workspace.yaml` of each project
-   - Problem: `minimumReleaseAgeExclude: ["@auaust/*"]` and the shared `allowBuilds` entries repeat in every project, and the pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`.
-   - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) that writes the shared keys and keeps project `allowBuilds` entries. Editing YAML in place needs a parser that preserves the file (dependency to approve).
+   - Problem: `minimumReleaseAgeExclude: ["@auaust/*"]` and the shared `allowBuilds` entries repeat in every project, and the pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`. Without them, `engrenage init` on a fresh project fails at `pnpm install` with `ERR_PNPM_IGNORED_BUILDS` (`unrs-resolver`, pulled in by engrenage's ESLint resolver), after writing its files.
+   - Fix: an `engrenage init` step that creates a missing `pnpm-workspace.yaml`, plus an `engrenage sync` target that writes the shared keys into an existing one and keeps project `allowBuilds` entries. Editing YAML in place needs a parser that preserves the file (dependency to approve).
+
+4. No shared agent guidance on changesets.
+   - Where: `data/agents/sections/` or `data/agents/rules/`
+   - Problem: agent instructions only say to add a changeset for releasable changes. Nothing covers choosing the bump or writing the summary, so agents may pick a major bump on their own, miss that `0.x` versions ship breaking refactors in a minor release, or write verbose prose summaries.
+   - Fix: consider a shared section or rules file stating that a major changeset is never created without the user's explicit decision, that `0.x` packages take breaking changes as minor bumps, and that each summary is a concise list of imperative lines (`- Fix x`, `- Add y`).
+
+5. package.json field groups are not shared constants.
+   - Where: `src/support/packageJson/constants.ts`, `src/eslint/utils/createPackageJsonRules.ts`
+   - Problem: only `dependencyFields` is declared as a constant; the other field groups exist only inline in the package.json order lint, so the order and the model do not share a definition.
+   - Fix: declare each package.json field group as a frozen constant in `constants.ts`, like `dependencyFields`, and compose the order lint from those groups.
 
 ## 2. Upstream
 

@@ -12,8 +12,15 @@ const libraryScripts = {
   "ci:publish": "changeset publish",
 };
 
-function createLibrary(scripts: Record<string, string>, config = "{}") {
+function createLibrary(
+  scripts: Record<string, string>,
+  config = "{}",
+  workflows: Record<string, string> = {
+    ".github/workflows/ci.yml": "",
+  },
+) {
   return createTemporaryProject({
+    ...workflows,
     "engrenage.config.ts": `export default { presets: ["library"], github: ${config} };\n`,
     "package.json": JSON.stringify({
       type: "module",
@@ -26,8 +33,11 @@ function createLibrary(scripts: Record<string, string>, config = "{}") {
 }
 
 describe("syncWorkflowFiles", () => {
-  test("generates the library workflows from the presets and reports edits", async () => {
-    const project = createLibrary(libraryScripts);
+  test("regenerates the existing library workflows and reports edits", async () => {
+    const project = createLibrary(libraryScripts, "{}", {
+      ".github/workflows/ci.yml": "",
+      ".github/workflows/publish.yml": "",
+    });
 
     const config = await loadConfig(project.root);
 
@@ -38,11 +48,11 @@ describe("syncWorkflowFiles", () => {
     ).toEqual([
       {
         file: ".github/workflows/ci.yml",
-        status: "created",
+        status: "synced",
       },
       {
         file: ".github/workflows/publish.yml",
-        status: "created",
+        status: "synced",
       },
     ]);
 
@@ -69,7 +79,7 @@ describe("syncWorkflowFiles", () => {
     ]);
   });
 
-  test("requires the ci scripts and skips disabled workflows", async () => {
+  test("requires the ci scripts and skips disabled or absent workflows", async () => {
     const { "ci:test": _, ...withoutTest } = libraryScripts;
 
     const missingScript = createLibrary(withoutTest);
@@ -87,6 +97,14 @@ describe("syncWorkflowFiles", () => {
     expect(
       syncWorkflowFiles({
         config: await loadConfig(disabled.root),
+      }),
+    ).toEqual([]);
+
+    const absent = createLibrary(withoutTest, "{}", {});
+
+    expect(
+      syncWorkflowFiles({
+        config: await loadConfig(absent.root),
       }),
     ).toEqual([]);
   });
