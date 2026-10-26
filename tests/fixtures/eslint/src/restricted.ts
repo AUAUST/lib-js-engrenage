@@ -7,3 +7,23 @@ export function restricted(value: unknown) {
 
   return typeof value === "undefined";
 }
+
+export function describe(value: unknown) {
+  const kinds: Record<string, string> = {
+    string: "text",
+  };
+
+  const kind = typeof value;
+
+  return kinds[typeof value] ?? kind;
+}
+
+export const formatFile = (file: string) => `~   ${file}\n`;
+
+export function partiallyReassigned(cases: Array<[number, string]>) {
+  for (let [count, label] of cases) {
+    count += 1;
+
+    return `${label}${count}`;
+  }
+}

@@ -7,7 +7,7 @@ export interface AuaustRules {
    */
   "auaust/no-array-is-array"?: Linter.RuleEntry<[]>;
   /**
-   * Use a block body with an explicit return; concise bodies are only for a short identifier, literal, member access, negation, comparison or call.
+   * Use a block body with an explicit return; concise bodies are only for a short identifier, literal, member access, negation, comparison, call or template literal.
    */
   "auaust/no-complex-concise-arrows"?: Linter.RuleEntry<[]>;
   /**
@@ -39,7 +39,7 @@ export interface AuaustRules {
    */
   "auaust/no-primitive-kit-root"?: Linter.RuleEntry<[]>;
   /**
-   * Use `is<Type>` helpers instead of runtime `typeof` (except `typeof x === "undefined"`).
+   * Use `is<Type>` helpers instead of runtime `typeof` comparisons (except `typeof x === "undefined"`).
    */
   "auaust/no-runtime-typeof"?: Linter.RuleEntry<[]>;
   /**

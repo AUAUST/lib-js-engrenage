@@ -36,30 +36,15 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: `c12/dist/index.d.mts` imports `DownloadTemplateOptions` from `giget`, an optional peer engrenage does not install, so type checks with `skipLibCheck: false` (`tsconfig.dist.json`) fail. An ambient `giget` module stands in for it.
    - Fix: once c12 stops type-importing giget from its public types (or engrenage moves to the stable `c12@4`, if fixed there), delete `env.d.ts`.
 
-4. toolkit `compose` cannot type a generic key set.
-   - Where: `src/config/utils/createAccessors.ts`
-   - Problem: `compose` and `compose.getters` from `@auaust/toolkit/composer` infer exact property types for concrete keys, but for a generic key set (`Fields extends object`) the composed type stays deferred and is not assignable to the expected mapped type. `createAccessors` therefore ends with `as unknown as Accessors<Fields>`. `entries` has the same limitation: iterating the generic `resolvers` needs the explicit `entries<Record<string, () => unknown>>`.
-   - Fix: report the issue upstream in `@auaust/toolkit` (generic `compose.getters` input should yield a mapped `{ readonly [Key in keyof Getters]: ReturnType<Getters[Key]> }`), then drop the assertion and the explicit type argument once it is fixed.
-
-5. No natural string comparator upstream.
+4. No natural string comparator upstream.
    - Where: `src/typescript/utils/syncBarrels.ts` (`compareNaturally`)
    - Problem: engrenage keeps its own `Intl.Collator` comparator (`numeric: true`, `sensitivity: "base"`) so generated re-exports follow perfectionist's natural order. Neither toolkit nor primitive-kit offers a natural comparator to pass to `sort`/`toSorted`.
    - Fix: add a natural string comparator to primitive-kit `strings` (or toolkit), then sort with it and delete the private `compareNaturally`.
 
-6. No "exactly one element" helper.
+5. No "exactly one element" helper.
    - Where: `src/typescript/utils/resolveImportSpecifier.ts`
    - Problem: it collects candidates, destructures `[first, ...others]` and throws on none or several, a pattern that recurs wherever exactly one match is expected.
    - Fix: add a primitive-kit `arrays` helper returning the only element and failing with a described error on several (optionally on none), then use it here.
-
-7. No "insert a unique key" helper.
-   - Where: `src/typescript/utils/resolvePathAliases.ts` (aliases and entry names), `src/tsdown/utils/createTsdownEntries.ts`, `src/eslint/utils/createPlugin.ts`, `src/typescript/utils/syncBarrels.ts` (export names)
-   - Problem: five loops look a key up, throw a conflict error, then insert it; the check-then-set sequence is rewritten each time.
-   - Fix: add a toolkit helper that sets a key on a record, `Map` or `Set` and throws a caller-described error when the key is taken, then use it in these loops.
-
-8. toolkit `compose` drops the declaration of composed keys.
-   - Where: `src/config/utils/createResolvedConfig.ts` (`files` and the returned config), every consumer of `ResolvedConfig` (such as `config.agents` in `src/agents/utils/syncAgentFiles.ts`)
-   - Problem: keys passed through `compose.getters` (and likewise `values`, `methods`, `properties`) keep their types but lose the link to the property they were declared on, so go-to-definition on `config.agents`, `config.packageJson` or `config.files.generated` finds nothing and editors render them as plain string keys. Keys of the base object (`config.root`, `config.resolve`) keep their link. The cause is in the composer types of `@auaust/toolkit@0.5.1`: `getterComposers` turns the getters map into a union of `PropertyComposer<Key, …>` (`{ [Key in keyof Getters]-?: … }[keyof Getters][]`), and `ComposedEntry` rebuilds an object from each one with `Record<Name, Descriptor>`. An object built from a union of key literals carries no declarations, whereas a homomorphic mapped type over the original map (`{ [Key in keyof Getters]: … }`) does, and `Extended`, `Simplify` and `DefinedProperties` already preserve them.
-   - Fix: report upstream that the plural composers should carry their input map as a whole, for example a `PropertyComposers<Descriptors>` entry typed with `{ [Key in keyof Getters]: { readonly get: Getters[Key] } }`, which `Composed` passes straight to `DefinedProperties` instead of splitting it into one `Record` per key. Checked with the TypeScript language service: `Extended<Base, DefinedProperties<{ [Key in keyof Getters]: { readonly get: Getters[Key] } }>>` resolves both base and getter keys to their declarations. The runtime arrays can stay as they are. Settle together with point 2.4, which touches the same types; once fixed, go-to-definition on `config.agents` should land on `agents` in the `compose.getters` call of `createResolvedConfig`.
 
 ## 3. Architecture
 
