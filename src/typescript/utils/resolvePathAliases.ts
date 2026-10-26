@@ -4,14 +4,11 @@ import { relative } from "node:path";
 import { entries } from "@auaust/toolkit/object";
 
 import { resolve } from "#support/filesystem/utils/resolve";
+import { toPosixPath } from "#support/filesystem/utils/toPosixPath";
 import type { Directory } from "#types/Directory";
 import type { PackageName } from "#types/PackageName";
 import type { PathAlias } from "#typescript/types/PathAlias";
 import type { Paths } from "#typescript/types/Paths";
-
-function toPosixPath(path: string): string {
-  return path.replaceAll("\\", "/");
-}
 
 function toEntryName(
   packageName: PackageName,

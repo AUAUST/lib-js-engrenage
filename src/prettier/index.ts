@@ -1,4 +1,7 @@
 export { createPrettierConfig } from "#prettier/builders/createPrettierConfig";
 export { defaultOptions as default } from "#prettier/constants";
-export type { Config } from "#prettier/types/Config";
-export type { Plugin } from "#prettier/types/Plugin";
+// @reference src/prettier/types
+export * from "#prettier/types/Config";
+export * from "#prettier/types/Options";
+export * from "#prettier/types/Plugin";
+// @end

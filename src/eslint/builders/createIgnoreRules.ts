@@ -3,9 +3,9 @@ import { defineConfig, globalIgnores, includeIgnoreFile } from "eslint/config";
 
 import { filesIn } from "#utils/filesIn";
 import type { Config } from "#eslint/types/Config";
-import type { Directories } from "#types/Directory";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-import type { Glob, Globs } from "#types/Glob";
+import type { Glob } from "#types/Glob";
 
 export function createIgnoreRules({
   gitignorePath,
@@ -14,9 +14,9 @@ export function createIgnoreRules({
   testDirectories,
 }: {
   gitignorePath: File | undefined;
-  generatedFiles: Globs;
+  generatedFiles: readonly Glob[];
   fixtureFiles: Glob;
-  testDirectories: Directories;
+  testDirectories: readonly Directory[];
 }): Config[] {
   const fixtures = map(testDirectories, (directory) => {
     return filesIn(directory, fixtureFiles);

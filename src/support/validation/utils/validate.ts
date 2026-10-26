@@ -7,8 +7,6 @@ import {
   type IssuePathItem,
 } from "valibot";
 
-import type { File } from "#types/File";
-
 function expandUnionIssue(issue: BaseIssue<unknown>): BaseIssue<unknown>[] {
   const branchIssues: BaseIssue<unknown>[] = [];
 
@@ -34,7 +32,7 @@ function expandUnionIssue(issue: BaseIssue<unknown>): BaseIssue<unknown>[] {
 export function validate<Schema extends GenericSchema>(
   schema: Schema,
   input: unknown,
-  source: File,
+  subject: string,
 ): InferOutput<Schema> {
   const result = safeParse(schema, input);
 
@@ -45,7 +43,7 @@ export function validate<Schema extends GenericSchema>(
       expandUnionIssue,
     );
 
-    throw new Error(`Invalid ${source}:\n${summarize([first, ...others])}`);
+    throw new Error(`Invalid ${subject}:\n${summarize([first, ...others])}`);
   }
 
   return result.output;

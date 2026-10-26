@@ -16,7 +16,7 @@ import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Directory } from "#types/Directory";
-import type { File, Files } from "#types/File";
+import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 import type { SubpathImports } from "#typescript/types/SubpathImports";
 
@@ -94,7 +94,7 @@ export function syncBarrels({
   config: ResolvedConfig;
   barrels?: string[];
   check?: boolean;
-}): Files {
+}): readonly File[] {
   const { root: rootPath } = config;
 
   const { imports } = config.packageJson;

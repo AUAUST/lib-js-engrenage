@@ -1,10 +1,13 @@
 export { resolveReference } from "#utils/resolveReference";
 export { syncBlocks } from "#utils/syncBlocks";
 export { syncFiles } from "#utils/syncFiles";
-export type { BlockFillers } from "#types/BlockFillers";
-export type { BlockSyntax } from "#types/BlockSyntax";
-export type { ConfigInput } from "#types/ConfigInput";
-export type { Directory } from "#types/Directory";
-export type { File } from "#types/File";
-export type { Glob } from "#types/Glob";
-export type { PackageName } from "#types/PackageName";
+
+// @reference src/types
+export * from "#types/BlockFillers";
+export * from "#types/BlockSyntax";
+export * from "#types/ConfigInput";
+export * from "#types/Directory";
+export * from "#types/File";
+export * from "#types/Glob";
+export * from "#types/PackageName";
+// @end

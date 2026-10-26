@@ -4,20 +4,27 @@ export { restrictProperties } from "#eslint/builders/restrictProperties";
 export { restrictSyntax } from "#eslint/builders/restrictSyntax";
 export { defineEslintConfig } from "#eslint/config/defineEslintConfig";
 export { filesIn } from "#utils/filesIn";
-export type { Config } from "#eslint/types/Config";
-export type { ConfigWithExtends } from "#eslint/types/ConfigWithExtends";
-export type { Convention } from "#eslint/types/Convention";
-export type { ImportPattern } from "#eslint/types/ImportPattern";
-export type { Options } from "#eslint/types/Options";
-export type { Plugin } from "#eslint/types/Plugin";
-export type { RestrictedProperty } from "#eslint/types/RestrictedProperty";
-export type { Rule } from "#eslint/types/Rule";
-export type { RuleModule } from "#eslint/types/RuleModule";
-export type { Rules } from "#eslint/types/Rules";
-export type { CoreRules } from "#eslint/types/rules/CoreRules";
-export type { ImportXRules } from "#eslint/types/rules/ImportXRules";
-export type { StylisticRules } from "#eslint/types/rules/StylisticRules";
-export type { TypescriptEslintRules } from "#eslint/types/rules/TypescriptEslintRules";
-export type { Scope } from "#eslint/types/Scope";
-export type { ScopeReference } from "#eslint/types/ScopeReference";
-export type { SyntaxRestriction } from "#eslint/types/SyntaxRestriction";
+
+// @reference src/eslint/types
+export * from "#eslint/types/Config";
+export * from "#eslint/types/ConfigWithExtends";
+export * from "#eslint/types/Convention";
+export * from "#eslint/types/ImportPattern";
+export * from "#eslint/types/Options";
+export * from "#eslint/types/Plugin";
+export * from "#eslint/types/RestrictedProperty";
+export * from "#eslint/types/Rule";
+export * from "#eslint/types/RuleModule";
+export * from "#eslint/types/Rules";
+export * from "#eslint/types/Scope";
+export * from "#eslint/types/ScopeReference";
+export * from "#eslint/types/SyntaxRestriction";
+// @reference src/eslint/types/rules
+export * from "#eslint/types/rules/AuaustRules";
+export * from "#eslint/types/rules/CoreRules";
+export * from "#eslint/types/rules/ImportXRules";
+export * from "#eslint/types/rules/PerfectionistRules";
+export * from "#eslint/types/rules/StylisticRules";
+export * from "#eslint/types/rules/TypescriptEslintRules";
+export * from "#eslint/types/rules/UnusedImportsRules";
+// @end

@@ -3,12 +3,12 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { filesIn } from "#utils/filesIn";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { ScopeReference } from "#eslint/types/ScopeReference";
-import type { Globs } from "#types/Glob";
+import type { Glob } from "#types/Glob";
 
 export function resolveScopeReference(
   { files, directories }: ResolvedConfig,
   reference: ScopeReference,
-): Globs {
+): readonly Glob[] {
   switch (reference) {
     case "files.code":
       return [files.code];

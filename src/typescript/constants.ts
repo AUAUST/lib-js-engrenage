@@ -1,9 +1,9 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import type { BlockSyntax } from "#types/BlockSyntax";
-import type { Glob, Globs } from "#types/Glob";
+import type { Glob } from "#types/Glob";
 
-export const barrelFiles: Globs = freeze(["src/**/index.ts"]);
+export const barrelFiles: readonly Glob[] = freeze(["src/**/index.ts"]);
 
 export const barrelModules: Glob = "*.ts";
 

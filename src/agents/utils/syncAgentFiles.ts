@@ -5,7 +5,7 @@ import { resolveAgentReference } from "#agents/utils/resolveAgentReference";
 import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Files } from "#types/File";
+import type { File } from "#types/File";
 
 export function syncAgentFiles({
   config,
@@ -13,7 +13,7 @@ export function syncAgentFiles({
 }: {
   config: ResolvedConfig;
   check?: boolean;
-}): Files {
+}): readonly File[] {
   const files = globSync(config.agents.instructionFiles, {
     cwd: config.root,
   }).sort();

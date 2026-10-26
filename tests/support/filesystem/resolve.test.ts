@@ -3,7 +3,7 @@ import type { Directory } from "@auaust/engrenage";
 
 import { resolve } from "#support/filesystem/utils/resolve";
 
-describe("resolvePath", () => {
+describe("resolve", () => {
   test("resolves string and URL bases to the same absolute path", () => {
     expectTypeOf(resolve).parameter(0).toEqualTypeOf<Directory | URL>();
     expect(resolve("/project", "src", "index.ts")).toBe(

@@ -1,5 +1,4 @@
 import { constant } from "@auaust/toolkit/constant";
-import { on } from "@auaust/toolkit/on";
 import { once } from "@auaust/toolkit/once";
 
 import { createAccessors } from "#support/accessors/builders/createAccessors";
@@ -8,6 +7,7 @@ import { parseTsconfig } from "#support/tsconfig/utils/parseTsconfig";
 import type { Tsconfig } from "#support/tsconfig/types/Tsconfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+import type { Paths } from "#typescript/types/Paths";
 
 export function createTsconfig({
   root,
@@ -20,19 +20,17 @@ export function createTsconfig({
     return path === undefined ? undefined : parseTsconfig(path);
   });
 
-  const outDir = once(() => {
-    return on(compilerOptions, (options) => {
-      return options?.outDir === undefined
-        ? undefined
-        : relativeWithin(root, options.outDir);
-    });
-  });
+  function outDir(): Directory | undefined {
+    const configured = compilerOptions()?.outDir;
 
-  const paths = once(() => {
-    return on(compilerOptions, (options) => {
-      return options?.paths;
-    });
-  });
+    return configured === undefined
+      ? undefined
+      : relativeWithin(root, configured);
+  }
+
+  function paths(): Paths | undefined {
+    return compilerOptions()?.paths;
+  }
 
   function describeMissing(field: string): string {
     return path === undefined
