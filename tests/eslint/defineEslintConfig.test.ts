@@ -1,12 +1,13 @@
-import { fileURLToPath } from "node:url";
-
 import { defineEslintConfig } from "@auaust/engrenage/eslint";
 import { map } from "@auaust/primitive-kit/arrays";
 import { ESLint } from "eslint";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import type { ResolvedConfig } from "@auaust/engrenage/config";
 
-const root = fileURLToPath(new URL("../fixtures/eslint/", import.meta.url));
+import { getFixture } from "#tests/helpers/getFixture";
+import { mockCwd } from "#tests/helpers/mockCwd";
+
+const root = getFixture("eslint");
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -14,7 +15,7 @@ afterEach(() => {
 
 describe("defineEslintConfig", () => {
   test("passes the resolved config to the callback and appends native configs", async () => {
-    vi.spyOn(process, "cwd").mockReturnValue(root);
+    mockCwd(root);
 
     const callback = vi.fn((config: ResolvedConfig) => {
       return {

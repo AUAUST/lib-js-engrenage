@@ -1,5 +1,3 @@
-import { fileURLToPath } from "node:url";
-
 import { loadConfig, type ResolvedConfig } from "@auaust/engrenage/config";
 import {
   createEslintConfig,
@@ -11,11 +9,13 @@ import { ESLint } from "eslint";
 import { describe, expect, expectTypeOf, test } from "vitest";
 import type { Maybe } from "@auaust/toolkit/types";
 
-const root = new URL("../fixtures/eslint/", import.meta.url);
+import { getFixture } from "#tests/helpers/getFixture";
+
+const root = getFixture("eslint");
 
 async function createLinter(options?: Options) {
   return new ESLint({
-    cwd: fileURLToPath(root),
+    cwd: root,
     overrideConfigFile: true,
     overrideConfig: createEslintConfig(await loadConfig(root), options),
   });
@@ -106,7 +106,7 @@ describe("createEslintConfig", () => {
     const config = await loadConfig(root);
 
     const eslint = new ESLint({
-      cwd: fileURLToPath(root),
+      cwd: root,
       overrideConfigFile: true,
       overrideConfig: createEslintConfig({
         ...config,

@@ -1,10 +1,9 @@
 export { defineConfig } from "#config/config/defineConfig";
 export { loadConfig } from "#config/utils/loadConfig";
-export type { Accessors } from "#support/accessors/types/Accessors";
 export type { PackageJson } from "#support/packageJson/types/PackageJson";
-export type { Tsconfig } from "#support/tsconfig/types/Tsconfig";
 
-// @reference src/config/types
+// @barrel types/*.ts all
+export * from "#config/types/Accessors";
 export * from "#config/types/Config";
 export * from "#config/types/ResolvedConfig";
 // @end

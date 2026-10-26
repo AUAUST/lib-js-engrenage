@@ -1,5 +1,5 @@
+import { symlinkSync } from "node:fs";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { loadConfig } from "@auaust/engrenage/config";
 import { createVitestConfig } from "@auaust/engrenage/vitest";
@@ -7,10 +7,13 @@ import { createServer } from "vite";
 import { describe, expect, test } from "vitest";
 import { configDefaults } from "vitest/config";
 
-const root = fileURLToPath(new URL("../fixtures/vitest", import.meta.url));
+import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { getFixture } from "#tests/helpers/getFixture";
+
+const root = getFixture("vitest");
 
 describe("createVitestConfig", () => {
-  test("tests sources with source aliases and the project tsconfig outside build mode", async () => {
+  test("tests sources through the tsconfig paths and the project tsconfig outside build mode", async () => {
     const config = await loadConfig(root);
 
     const vitestConfig = createVitestConfig(config, {
@@ -25,11 +28,7 @@ describe("createVitestConfig", () => {
         outDir: "build",
       },
       resolve: {
-        alias: [
-          {
-            replacement: join(root, "src/index.ts"),
-          },
-        ],
+        tsconfigPaths: true,
       },
       plugins: [
         {
@@ -72,42 +71,52 @@ describe("createVitestConfig", () => {
     expect(vitestConfig.test?.typecheck?.tsconfig).toBe(
       join(root, "tsconfig.dist.json"),
     );
-    expect(vitestConfig.resolve?.alias).toEqual([]);
+    expect(vitestConfig.resolve?.tsconfigPaths).toBe(false);
     expect(vitestConfig.plugins).toEqual([]);
   });
 
-  test("fails only when a package import resolves into the build output", async () => {
-    const config = await loadConfig(root);
+  test("fails only when a package import resolves into the build output, even through a symlinked root", async () => {
+    const project = createTemporaryProject();
 
-    const server = await createServer({
-      ...createVitestConfig(config, {
-        command: "serve",
-        mode: "test",
-      }),
-      configFile: false,
-      logLevel: "silent",
-    });
+    const linkedRoot = project.resolve("linked");
 
-    const { pluginContainer } = server.environments.ssr;
+    symlinkSync(root, linkedRoot);
 
-    const importer = join(root, "src/index.ts");
+    for (const projectRoot of [root, linkedRoot]) {
+      const config = await loadConfig(projectRoot);
 
-    try {
-      await expect(
-        pluginContainer.resolveId("@fixture/vitest", importer),
-      ).resolves.toMatchObject({
-        id: join(root, "src/index.ts"),
+      const server = await createServer({
+        ...createVitestConfig(config, {
+          command: "serve",
+          mode: "test",
+        }),
+        configFile: false,
+        logLevel: "silent",
       });
-      await expect(
-        pluginContainer.resolveId("@fixture/vitest/data.json", importer),
-      ).resolves.toMatchObject({
-        id: join(root, "data/data.json"),
-      });
-      await expect(
-        pluginContainer.resolveId("@fixture/vitest/extra", importer),
-      ).rejects.toThrow("'@fixture/vitest/extra' resolves to the build output");
-    } finally {
-      await server.close();
+
+      const { pluginContainer } = server.environments.ssr;
+
+      const importer = join(projectRoot, "src/index.ts");
+
+      try {
+        await expect(
+          pluginContainer.resolveId("@fixture/vitest", importer),
+        ).resolves.toMatchObject({
+          id: join(root, "src/index.ts"),
+        });
+        await expect(
+          pluginContainer.resolveId("@fixture/vitest/data.json", importer),
+        ).resolves.toMatchObject({
+          id: join(root, "data/data.json"),
+        });
+        await expect(
+          pluginContainer.resolveId("@fixture/vitest/extra", importer),
+        ).rejects.toThrow(
+          "'@fixture/vitest/extra' resolves to the build output",
+        );
+      } finally {
+        await server.close();
+      }
     }
   });
 });

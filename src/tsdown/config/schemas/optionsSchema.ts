@@ -1,11 +1,10 @@
-import { strictObject } from "valibot";
+import { array, optional, record, strictObject, string } from "valibot";
 
-import { binsSchema } from "#tsdown/config/schemas/binsSchema";
-import { bundleSchema } from "#tsdown/config/schemas/bundleSchema";
-import { fileExportsSchema } from "#tsdown/config/schemas/fileExportsSchema";
+import { fileSchema } from "#config/config/schemas/fileSchema";
+import { globSchema } from "#config/config/schemas/globSchema";
 
 export const optionsSchema = strictObject({
-  bins: binsSchema,
-  fileExports: fileExportsSchema,
-  bundle: bundleSchema,
+  bins: optional(record(string(), fileSchema), {}),
+  fileExports: optional(record(string(), globSchema), {}),
+  bundle: optional(array(string()), []),
 });

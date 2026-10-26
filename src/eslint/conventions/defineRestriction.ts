@@ -13,8 +13,8 @@ export function defineRestriction({
 }: {
   selector: string;
   message: string;
-  files?: ScopeReference[];
-  ignores?: ScopeReference[];
+  files?: readonly ScopeReference[];
+  ignores?: readonly ScopeReference[];
   enabled?: boolean;
 }): Convention {
   return defineConvention({

@@ -13,6 +13,20 @@ describe("resolveImportSpecifier", () => {
     );
   });
 
+  test("follows the default condition of conditional targets", () => {
+    expect(
+      resolveImportSpecifier(
+        {
+          "#types/*": {
+            types: "./types/*.d.ts",
+            default: "./src/types/*.ts",
+          },
+        },
+        "src/types/File.ts",
+      ),
+    ).toBe("#types/File");
+  });
+
   test("rejects a file no subpath import covers", () => {
     expect(() => {
       return resolveImportSpecifier(imports, "bin/engrenage/index.ts");

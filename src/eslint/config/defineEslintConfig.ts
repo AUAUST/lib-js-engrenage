@@ -2,7 +2,7 @@ import { value } from "@auaust/toolkit/value";
 import { defineConfig } from "eslint/config";
 
 import { loadConfig } from "#config/utils/loadConfig";
-import { createEslintConfig } from "#eslint/builders/createEslintConfig";
+import { createEslintConfig } from "#eslint/config/createEslintConfig";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#eslint/types/Config";
 import type { ConfigWithExtends } from "#eslint/types/ConfigWithExtends";

@@ -1,3 +1,4 @@
+import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { isString } from "@auaust/toolkit/isString";
 import { entries } from "@auaust/toolkit/object";
 
@@ -15,8 +16,13 @@ function matchSpecifier(
     return target === file ? specifier : null;
   }
 
+  if (rest.length > 0) {
+    throw new Error(
+      `Subpath import "${specifier}" has several "*" in its target "${target}"`,
+    );
+  }
+
   const fits =
-    rest.length === 0 &&
     file.length >= targetPrefix.length + targetSuffix.length &&
     file.startsWith(targetPrefix) &&
     file.endsWith(targetSuffix);
@@ -33,6 +39,14 @@ function matchSpecifier(
   return specifier.replace("*", captured);
 }
 
+function resolveTarget(target: unknown): string | undefined {
+  if (isString(target)) {
+    return target;
+  }
+
+  return isPlainObject(target) ? resolveTarget(target.default) : undefined;
+}
+
 export function resolveImportSpecifier(
   imports: SubpathImports,
   file: File,
@@ -41,8 +55,10 @@ export function resolveImportSpecifier(
 
   const specifiers: string[] = [];
 
-  for (const [specifier, target] of entries(imports)) {
-    if (!isString(target)) {
+  for (const [specifier, conditions] of entries(imports)) {
+    const target = resolveTarget(conditions);
+
+    if (target === undefined) {
       continue;
     }
 

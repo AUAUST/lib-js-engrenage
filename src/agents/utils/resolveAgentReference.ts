@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
+import { createRequire } from "node:module";
 
-import { resolveReference } from "#utils/resolveReference";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
 
@@ -35,7 +35,7 @@ export function resolveAgentReference(
   }
 
   try {
-    return resolveReference(reference, from);
+    return createRequire(from).resolve(reference);
   } catch (error) {
     throw new Error(`Cannot resolve reference "${reference}" in ${from}`, {
       cause: error,

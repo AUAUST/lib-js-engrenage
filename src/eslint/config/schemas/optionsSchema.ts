@@ -1,21 +1,32 @@
-import { strictObject } from "valibot";
+import { keys } from "@auaust/toolkit/object";
+import {
+  boolean,
+  optional,
+  picklist,
+  record,
+  strictObject,
+  union,
+} from "valibot";
 
-import { comparisonsSchema } from "#eslint/config/schemas/comparisonsSchema";
-import { globalsSchema } from "#eslint/config/schemas/globalsSchema";
-import { ignoreSchema } from "#eslint/config/schemas/ignoreSchema";
-import { importsSchema } from "#eslint/config/schemas/importsSchema";
-import { promisesSchema } from "#eslint/config/schemas/promisesSchema";
-import { recommendedSchema } from "#eslint/config/schemas/recommendedSchema";
-import { structureSchema } from "#eslint/config/schemas/structureSchema";
-import { stylisticSchema } from "#eslint/config/schemas/stylisticSchema";
+import { conventionCategories } from "#eslint/constants";
+import type { Convention } from "#eslint/types/Convention";
+
+function categorySchema<Name extends string>(
+  category: Record<Name, Convention>,
+) {
+  return optional(
+    union([boolean(), record(picklist(keys(category)), boolean())]),
+    true,
+  );
+}
 
 export const optionsSchema = strictObject({
-  ignore: ignoreSchema,
-  recommended: recommendedSchema,
-  globals: globalsSchema,
-  comparisons: comparisonsSchema,
-  stylistic: stylisticSchema,
-  imports: importsSchema,
-  promises: promisesSchema,
-  structure: structureSchema,
+  ignore: optional(boolean(), true),
+  recommended: optional(boolean(), true),
+  globals: categorySchema(conventionCategories.globals),
+  comparisons: categorySchema(conventionCategories.comparisons),
+  stylistic: categorySchema(conventionCategories.stylistic),
+  imports: categorySchema(conventionCategories.imports),
+  promises: categorySchema(conventionCategories.promises),
+  structure: categorySchema(conventionCategories.structure),
 });

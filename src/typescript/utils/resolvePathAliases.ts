@@ -1,6 +1,7 @@
-import { globSync } from "node:fs";
+import { globSync, statSync } from "node:fs";
 import { relative } from "node:path";
 
+import { every, map, sort } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
 import { resolve } from "#support/filesystem/utils/resolve";
@@ -19,6 +20,28 @@ function toEntryName(
     alias === packageName ? "index" : alias.slice(packageName.length + 1);
 
   return isDirectoryEntry ? `${publicName}/index` : publicName;
+}
+
+function countWildcards(pattern: string): number {
+  return pattern.split("*").length - 1;
+}
+
+function assertPackageAlias(packageName: PackageName, alias: string) {
+  if (alias !== packageName && !alias.startsWith(`${packageName}/`)) {
+    throw new Error(
+      `Alias '${alias}' is outside the package '${packageName}', so it cannot name an entry`,
+    );
+  }
+}
+
+function assertWildcards(alias: string, targets: readonly string[]) {
+  const counts = map([alias, ...targets], countWildcards);
+
+  if (!every(counts, (count) => count === 1)) {
+    throw new Error(
+      `Alias '${alias}' and each of its targets need exactly one '*'`,
+    );
+  }
 }
 
 export function resolvePathAliases(
@@ -40,6 +63,12 @@ export function resolvePathAliases(
       throw new Error(`Alias '${aliasPattern}' has no configured paths`);
     }
 
+    assertPackageAlias(packageName, aliasPattern);
+
+    if (hasPattern) {
+      assertWildcards(aliasPattern, targets);
+    }
+
     for (const target of targets) {
       const pattern = toPosixPath(
         relative(rootPath, resolve(rootPath, target)),
@@ -51,9 +80,15 @@ export function resolvePathAliases(
 
       const isDirectoryEntry = hasPattern && pattern.endsWith("*/index.ts");
 
-      const files = globSync(pattern, {
+      const matches = globSync(pattern, {
         cwd: rootPath,
-      }).sort();
+      });
+
+      const files = sort(
+        matches.filter((match) => {
+          return statSync(resolve(rootPath, match)).isFile();
+        }),
+      );
 
       for (const file of files) {
         const path = toPosixPath(file);

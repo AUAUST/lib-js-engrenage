@@ -1,110 +1,91 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
-import { Command } from "@commander-js/extra-typings";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import barrels from "#bin/support/codegen/barrels";
+import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { mockCwd } from "#tests/helpers/mockCwd";
+import { runCommand } from "#tests/helpers/runCommand";
 
-const emptyBlock = "// @reference config/tool\n// @end\n";
-
-let root: string;
-
-function writeProjectFile(path: string, content: string) {
-  mkdirSync(join(root, path, ".."), {
-    recursive: true,
-  });
-
-  writeFileSync(join(root, path), content);
-}
-
-async function runBarrels(...args: string[]) {
-  await barrels(new Command("barrels")).parseAsync(args, {
-    from: "user",
-  });
-}
-
-beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), "engrenage-barrels-"));
-
-  writeProjectFile(
-    "package.json",
-    JSON.stringify({
+function createProject(files: Record<string, string>) {
+  const project = createTemporaryProject({
+    "package.json": JSON.stringify({
       imports: {
         "#config/*": "./config/*.ts",
         "#rules/*": "./src/rules/*.ts",
       },
     }),
-  );
+    "config/tool/preset.ts": "export const preset = 1;\n",
+    ...files,
+  });
 
-  writeProjectFile("config/tool/preset.ts", "export const preset = 1;\n");
-  writeProjectFile("src/tool/index.ts", emptyBlock);
+  mockCwd(project.root);
 
-  vi.spyOn(process, "cwd").mockReturnValue(root);
+  return project;
+}
+
+beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation(() => {});
   vi.spyOn(console, "warn").mockImplementation(() => {});
 });
 
 afterEach(() => {
-  rmSync(root, {
-    recursive: true,
-    force: true,
-  });
-
   vi.restoreAllMocks();
 
   process.exitCode = undefined;
 });
 
 describe("support codegen barrels", () => {
-  test("re-exports the named directory so a later check passes", async () => {
-    await runBarrels("tool");
+  test("re-exports the matched modules in each mode so a later check passes", async () => {
+    const project = createProject({
+      "src/tool/index.ts": [
+        "// @barrel /config/tool/*.ts all",
+        "// @barrel /config/tool/*.ts named",
+        "// @end",
+        "",
+      ].join("\n"),
+    });
 
-    expect(readFileSync(join(root, "src/tool/index.ts"), "utf8")).toBe(
+    await runCommand(barrels, "tool");
+
+    expect(project.read("src/tool/index.ts")).toBe(
       [
-        "// @reference config/tool",
+        "// @barrel /config/tool/*.ts all",
         'export * from "#config/tool/preset";',
+        "// @barrel /config/tool/*.ts named",
+        'export { preset } from "#config/tool/preset";',
         "// @end",
         "",
       ].join("\n"),
     );
 
-    await runBarrels("--check");
+    await runCommand(barrels, "--check");
 
     expect(process.exitCode).toBeUndefined();
   });
 
-  test("registers default exports matched relative to the barrel, or to the root with a leading slash, except the barrel itself", async () => {
-    const registry = [
-      'export { default as first } from "#rules/first";',
-      'export { default as second } from "#rules/second";',
-    ];
+  test("matches globs relative to the barrel, or to the root with a leading slash, except the barrel itself", async () => {
+    const project = createProject({
+      "src/rules/first.ts": "export default 1;\n",
+      "src/rules/second.ts": "export default 2;\n",
+      "src/rules/types.d.ts": "export {};\n",
+      "src/rules/index.ts": "// @barrel *.ts default\n// @end\n",
+      "src/all/index.ts": "// @barrel /src/rules/*.ts default\n// @end\n",
+    });
 
-    writeProjectFile("src/rules/first.ts", "export default 1;\n");
-    writeProjectFile("src/rules/second.ts", "export default 2;\n");
-    writeProjectFile("src/rules/index.ts", "// @registry *.ts\n// @end\n");
+    await runCommand(barrels, "rules", "src/all");
 
-    writeProjectFile(
-      "src/all/index.ts",
-      "// @registry /src/rules/*.ts\n// @end\n",
-    );
-
-    await runBarrels("rules", "all");
-
-    expect(readFileSync(join(root, "src/rules/index.ts"), "utf8")).toBe(
-      ["// @registry *.ts", ...registry, "// @end", ""].join("\n"),
-    );
-
-    expect(readFileSync(join(root, "src/all/index.ts"), "utf8")).toBe(
+    expect(project.read("src/rules/index.ts")).toBe(
       [
-        "// @registry /src/rules/*.ts",
+        "// @barrel *.ts default",
+        'export { default as first } from "#rules/first";',
+        'export { default as second } from "#rules/second";',
+        "// @end",
+        "",
+      ].join("\n"),
+    );
+
+    expect(project.read("src/all/index.ts")).toBe(
+      [
+        "// @barrel /src/rules/*.ts default",
         'export { default as first } from "#rules/first";',
         'export { default as index } from "#rules/index";',
         'export { default as second } from "#rules/second";',
@@ -114,18 +95,18 @@ describe("support codegen barrels", () => {
     );
   });
 
-  test("orders re-exports naturally, as the export ordering convention does", async () => {
-    writeProjectFile(
-      "config/tool/preset10.ts",
-      "export const preset10 = 10;\n",
-    );
-    writeProjectFile("config/tool/preset2.ts", "export const preset2 = 2;\n");
+  test("orders exports naturally, as the export ordering convention does", async () => {
+    const project = createProject({
+      "config/tool/preset10.ts": "export const preset10 = 10;\n",
+      "config/tool/preset2.ts": "export const preset2 = 2;\n",
+      "src/tool/index.ts": "// @barrel /config/tool/*.ts all\n// @end\n",
+    });
 
-    await runBarrels("tool");
+    await runCommand(barrels, "tool");
 
-    expect(readFileSync(join(root, "src/tool/index.ts"), "utf8")).toBe(
+    expect(project.read("src/tool/index.ts")).toBe(
       [
-        "// @reference config/tool",
+        "// @barrel /config/tool/*.ts all",
         'export * from "#config/tool/preset";',
         'export * from "#config/tool/preset2";',
         'export * from "#config/tool/preset10";',
@@ -135,9 +116,21 @@ describe("support codegen barrels", () => {
     );
   });
 
-  test("rejects an unknown barrel name", async () => {
-    await expect(runBarrels("missing")).rejects.toThrow(
+  test("rejects unknown barrels, unknown modes and names that are not identifiers", async () => {
+    createProject({
+      "config/tool/kebab-case.ts": "export default 1;\n",
+      "src/tool/index.ts": "// @barrel /config/tool/*.ts default\n// @end\n",
+      "src/mode/index.ts": "// @barrel /config/tool/*.ts every\n// @end\n",
+    });
+
+    await expect(runCommand(barrels, "missing")).rejects.toThrow(
       'Unknown barrel "missing"',
+    );
+    await expect(runCommand(barrels, "mode")).rejects.toThrow(
+      "Expected a barrel mode (default, named or all) in",
+    );
+    await expect(runCommand(barrels, "tool")).rejects.toThrow(
+      'cannot be exported as "kebab-case"',
     );
   });
 });

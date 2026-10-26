@@ -16,7 +16,7 @@ import {
 } from "#config/constants";
 import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
-import { createTsconfig } from "#support/tsconfig/utils/createTsconfig";
+import { createTsconfig } from "#typescript/utils/createTsconfig";
 import type { configSchema } from "#config/config/schemas/configSchema";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

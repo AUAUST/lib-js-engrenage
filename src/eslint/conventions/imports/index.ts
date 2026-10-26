@@ -1,4 +1,4 @@
-// @registry *.ts
+// @barrel *.ts default
 export { default as exportOrder } from "#eslint/conventions/imports/exportOrder";
 export { default as importOrder } from "#eslint/conventions/imports/importOrder";
 export { default as noDefaultExport } from "#eslint/conventions/imports/noDefaultExport";

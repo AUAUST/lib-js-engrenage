@@ -1,55 +1,79 @@
 import { globSync } from "node:fs";
 import { basename, dirname, extname } from "node:path";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { flatMap, map, sort } from "@auaust/primitive-kit/arrays";
 
 import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import { resolve } from "#support/filesystem/utils/resolve";
+import { toPosixPath } from "#support/filesystem/utils/toPosixPath";
 import {
   barrelFiles,
-  barrelModules,
+  declarationExtension,
   typescriptBlocks,
 } from "#typescript/constants";
 import { resolveImportSpecifier } from "#typescript/utils/resolveImportSpecifier";
-import { compareNaturally } from "#utils/compareNaturally";
 import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+import type { Files } from "#types/Files";
 import type { Glob } from "#types/Glob";
+import type { BarrelMode } from "#typescript/types/BarrelMode";
 import type { SubpathImports } from "#typescript/types/SubpathImports";
 
-function barrelName(file: File): string {
-  return basename(dirname(file));
+const collator = new Intl.Collator("en-US", {
+  numeric: true,
+  sensitivity: "base",
+});
+
+const identifier = /^[$A-Z_a-z][\w$]*$/;
+
+function compareNaturally(left: string, right: string): number {
+  return collator.compare(left, right);
 }
 
-function createReexports(
-  root: string,
-  imports: SubpathImports,
-  directory: Directory,
+function createExport(
+  mode: BarrelMode,
+  name: string,
+  specifier: string,
 ): string {
-  const modules = globSync(barrelModules, {
-    cwd: resolve(root, directory),
-  });
-
-  const specifiers = map(modules, (module) => {
-    return resolveImportSpecifier(imports, `${directory}/${module}`);
-  });
-
-  const reexports = map(specifiers.sort(compareNaturally), (specifier) => {
-    return `export * from "${specifier}";`;
-  });
-
-  return reexports.join("\n");
+  switch (mode) {
+    case "default":
+      return `export { default as ${name} } from "${specifier}";`;
+    case "named":
+      return `export { ${name} } from "${specifier}";`;
+    case "all":
+      return `export * from "${specifier}";`;
+  }
 }
 
-function createRegistry(
-  root: string,
-  imports: SubpathImports,
-  barrel: File,
-  glob: Glob,
-): string {
+function assertMode(mode: string | undefined, barrel: File): BarrelMode {
+  switch (mode) {
+    case "default":
+    case "named":
+    case "all":
+      return mode;
+    default:
+      throw new Error(
+        `Expected a barrel mode (default, named or all) in ${barrel}, got "${mode ?? ""}"`,
+      );
+  }
+}
+
+function createBarrel({
+  root,
+  imports,
+  barrel,
+  glob,
+  mode,
+}: {
+  root: Directory;
+  imports: SubpathImports;
+  barrel: File;
+  glob: Glob;
+  mode: BarrelMode;
+}): string {
   const isRootRelative = glob.startsWith("/");
 
   const cwd = isRootRelative ? root : dirname(barrel);
@@ -63,7 +87,7 @@ function createRegistry(
   for (const module of modules) {
     const path = resolve(cwd, module);
 
-    if (path === barrel) {
+    if (path === barrel || module.endsWith(declarationExtension)) {
       continue;
     }
 
@@ -75,15 +99,57 @@ function createRegistry(
     names.set(specifier, basename(module, extname(module)));
   }
 
-  const sortedNames = [...names].sort(([left], [right]) => {
+  const sortedNames = sort([...names], ([left], [right]) => {
     return compareNaturally(left, right);
   });
 
-  const reexports = map(sortedNames, ([specifier, name]) => {
-    return `export { default as ${name} } from "${specifier}";`;
+  const exportedNames = new Set<string>();
+
+  const exports = map(sortedNames, ([specifier, name]) => {
+    if (mode !== "all") {
+      if (!identifier.test(name)) {
+        throw new Error(
+          `"${specifier}" cannot be exported as "${name}" in ${barrel}`,
+        );
+      }
+
+      if (exportedNames.has(name)) {
+        throw new Error(`Several modules export "${name}" in ${barrel}`);
+      }
+
+      exportedNames.add(name);
+    }
+
+    return createExport(mode, name, specifier);
   });
 
-  return reexports.join("\n");
+  return exports.join("\n");
+}
+
+function selectBarrels(files: Files, name: string): Files {
+  const byDirectory = files.filter((file) => {
+    return dirname(file) === name;
+  });
+
+  if (byDirectory.length > 0) {
+    return byDirectory;
+  }
+
+  const byName = files.filter((file) => {
+    return basename(dirname(file)) === name;
+  });
+
+  if (byName.length === 0) {
+    throw new Error(`Unknown barrel "${name}"`);
+  }
+
+  if (byName.length > 1) {
+    throw new Error(
+      `Barrel "${name}" is ambiguous (${byName.join(", ")}): name its directory instead`,
+    );
+  }
+
+  return byName;
 }
 
 export function syncBarrels({
@@ -94,25 +160,28 @@ export function syncBarrels({
   config: ResolvedConfig;
   barrels?: string[];
   check?: boolean;
-}): readonly File[] {
+}): Files {
   const { root: rootPath } = config;
 
   const { imports } = config.packageJson;
 
-  const allFiles = globSync(barrelFiles, {
-    cwd: rootPath,
-  }).sort();
+  const discovered = globSync(
+    map(config.directories.source, (directory) => {
+      return `${directory}/${barrelFiles}`;
+    }),
+    {
+      cwd: rootPath,
+    },
+  );
 
-  for (const name of barrels) {
-    if (!allFiles.some((file) => barrelName(file) === name)) {
-      throw new Error(`Unknown barrel "${name}"`);
-    }
-  }
+  const allFiles = sort(map(discovered, toPosixPath));
 
   const files =
     barrels.length === 0
       ? allFiles
-      : allFiles.filter((file) => barrels.includes(barrelName(file)));
+      : flatMap(barrels, (name) => {
+          return selectBarrels(allFiles, name);
+        });
 
   return syncFiles({
     root: rootPath,
@@ -120,11 +189,14 @@ export function syncBarrels({
     check,
     update(content, barrel) {
       return syncBlocks(content, typescriptBlocks, {
-        reference(directory) {
-          return createReexports(rootPath, imports, directory);
-        },
-        registry(glob) {
-          return createRegistry(rootPath, imports, barrel, glob);
+        barrel(glob, mode) {
+          return createBarrel({
+            root: rootPath,
+            imports,
+            barrel,
+            glob,
+            mode: assertMode(mode, barrel),
+          });
         },
       });
     },

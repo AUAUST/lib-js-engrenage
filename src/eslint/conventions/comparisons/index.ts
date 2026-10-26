@@ -1,4 +1,4 @@
-// @registry *.ts
+// @barrel *.ts default
 export { default as noIsNull } from "#eslint/conventions/comparisons/noIsNull";
 export { default as noIsUndefined } from "#eslint/conventions/comparisons/noIsUndefined";
 export { default as noLooseEqual } from "#eslint/conventions/comparisons/noLooseEqual";

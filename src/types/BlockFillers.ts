@@ -1,1 +1,1 @@
-export type BlockFillers = Record<string, (reference: string) => string>;
+export type BlockFillers = Record<string, (...args: string[]) => string>;

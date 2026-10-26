@@ -1,3 +1,3 @@
-import type { Glob } from "#types/Glob";
+import type { Globs } from "#types/Globs";
 
-export type Paths = Record<string, readonly Glob[]>;
+export type Paths = Record<string, Globs>;

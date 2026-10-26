@@ -1,6 +1,6 @@
 import { loadConfig } from "#config/utils/loadConfig";
+import { syncRuleTypes } from "#eslint/utils/syncRuleTypes";
 import { defineCommand } from "#support/commander/utils/defineCommand";
-import { syncRuleTypes } from "#support/eslint/utils/syncRuleTypes";
 
 export default defineCommand((command) => {
   return command

@@ -1,7 +1,5 @@
-import { strictObject } from "valibot";
-
-import { guardOutDirSchema } from "#vitest/config/schemas/guardOutDirSchema";
+import { boolean, optional, strictObject } from "valibot";
 
 export const optionsSchema = strictObject({
-  guardOutDir: guardOutDirSchema,
+  guardOutDir: optional(boolean(), true),
 });

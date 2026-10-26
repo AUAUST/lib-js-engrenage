@@ -1,10 +1,12 @@
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { defineViteConfig } from "@auaust/engrenage/vite";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-const root = fileURLToPath(new URL("../fixtures/vitest", import.meta.url));
+import { getFixture } from "#tests/helpers/getFixture";
+import { mockCwd } from "#tests/helpers/mockCwd";
+
+const root = getFixture("vitest");
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -12,7 +14,7 @@ afterEach(() => {
 
 describe("defineViteConfig", () => {
   test("applies the project defaults under the native config", async () => {
-    vi.spyOn(process, "cwd").mockReturnValue(root);
+    mockCwd(root);
 
     const viteConfig = await defineViteConfig({
       build: {

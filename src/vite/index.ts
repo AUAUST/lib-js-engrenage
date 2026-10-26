@@ -1,8 +1,8 @@
-export { createViteAliases } from "#vite/builders/createViteAliases";
-export { createViteConfig } from "#vite/builders/createViteConfig";
+export { createViteConfig } from "#vite/config/createViteConfig";
 export { defineViteConfig } from "#vite/config/defineViteConfig";
+export { createViteAliases } from "#vite/utils/createViteAliases";
 
-// @reference src/vite/types
+// @barrel types/*.ts all
 export * from "#vite/types/Alias";
 export * from "#vite/types/Config";
 export * from "#vite/types/ConfigEnv";

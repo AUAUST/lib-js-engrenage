@@ -1,10 +1,11 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import type { Directory } from "#types/Directory";
+import type { Directories } from "#types/Directories";
 import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
+import type { Globs } from "#types/Globs";
 
-export const builtinGeneratedFiles: readonly Glob[] = freeze([
+export const builtinGeneratedFiles: Globs = freeze([
   "pnpm-lock.yaml",
   "package-lock.json",
   "yarn.lock",
@@ -17,12 +18,9 @@ export const configFileName = "engrenage.config";
 
 export const defaultCodeFiles: Glob = "**/*.{ts,tsx}";
 
-export const defaultConfigFiles: readonly Glob[] = freeze([
-  "*.config.ts",
-  ".*.ts",
-]);
+export const defaultConfigFiles: Globs = freeze(["*.config.ts", ".*.ts"]);
 
-export const defaultDiscoveredFiles: readonly Glob[] = freeze([]);
+export const defaultDiscoveredFiles: Globs = freeze([]);
 
 export const defaultDistTsconfigFile: File = "tsconfig.dist.json";
 
@@ -30,14 +28,14 @@ export const defaultFixtureFiles: Glob = "**/fixtures/**";
 
 export const defaultGitignoreFile: File = ".gitignore";
 
-export const defaultInstructionFiles: readonly Glob[] = freeze([
+export const defaultInstructionFiles: Globs = freeze([
   "AGENTS.md",
   ".claude/rules/**/*.md",
 ]);
 
-export const defaultSourceDirectories: readonly Directory[] = freeze(["src"]);
+export const defaultSourceDirectories: Directories = freeze(["src"]);
 
-export const defaultTestDirectories: readonly Directory[] = freeze(["tests"]);
+export const defaultTestDirectories: Directories = freeze(["tests"]);
 
 export const defaultTestFiles: Glob = "**/*.{test,spec}.{ts,tsx}";
 

@@ -1,8 +1,8 @@
-export { createOutDirGuard } from "#vitest/builders/createOutDirGuard";
-export { createVitestConfig } from "#vitest/builders/createVitestConfig";
+export { createVitestConfig } from "#vitest/config/createVitestConfig";
 export { defineVitestConfig } from "#vitest/config/defineVitestConfig";
+export { createOutDirGuard } from "#vitest/utils/createOutDirGuard";
 
-// @reference src/vitest/types
+// @barrel types/*.ts all
 export * from "#vitest/types/Config";
 export * from "#vitest/types/ConfigFn";
 export * from "#vitest/types/Options";

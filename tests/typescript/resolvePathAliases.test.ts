@@ -1,5 +1,3 @@
-import { fileURLToPath } from "node:url";
-
 import {
   resolvePathAliases,
   type PathAlias,
@@ -7,9 +5,9 @@ import {
 } from "@auaust/engrenage/typescript";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-const root = fileURLToPath(
-  new URL("../fixtures/typescript/aliases/", import.meta.url),
-);
+import { getFixture } from "#tests/helpers/getFixture";
+
+const root = getFixture("typescript/aliases");
 
 describe("resolvePathAliases", () => {
   test("resolves exact and wildcard aliases to entrypoints", () => {
@@ -36,6 +34,28 @@ describe("resolvePathAliases", () => {
         path: "src/main.ts",
       },
     ]);
+  });
+
+  test("rejects aliases outside the package and wildcards without a match on each side", () => {
+    expect(() => {
+      return resolvePathAliases(
+        "@scope/package",
+        {
+          "@/*": ["./src/*"],
+        },
+        root,
+      );
+    }).toThrow("is outside the package '@scope/package'");
+
+    expect(() => {
+      return resolvePathAliases(
+        "@scope/package",
+        {
+          "@scope/package/*": ["./src/main.ts"],
+        },
+        root,
+      );
+    }).toThrow("need exactly one '*'");
   });
 
   test("rejects an exact alias without a file", () => {

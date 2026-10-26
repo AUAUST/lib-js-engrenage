@@ -1,32 +1,16 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
-
-let root: string;
-
-beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), "engrenage-package-"));
-});
-
-afterEach(() => {
-  rmSync(root, {
-    recursive: true,
-    force: true,
-  });
-});
+import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 
 function createManifest(manifest: object) {
-  const path = join(root, "package.json");
-
-  writeFileSync(path, JSON.stringify(manifest));
+  const project = createTemporaryProject({
+    "package.json": JSON.stringify(manifest),
+  });
 
   return createPackageJson({
-    root,
-    path,
+    root: project.root,
+    path: project.resolve("package.json"),
   });
 }
 

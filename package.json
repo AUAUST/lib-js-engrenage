@@ -25,6 +25,7 @@
     "#prettier": "./src/prettier/index.ts",
     "#prettier/*": "./src/prettier/*.ts",
     "#support/*": "./src/support/*.ts",
+    "#tests/*": "./tests/*.ts",
     "#tsdown/*": "./src/tsdown/*.ts",
     "#types/*": "./src/types/*.ts",
     "#typescript/*": "./src/typescript/*.ts",

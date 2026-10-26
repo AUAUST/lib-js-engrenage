@@ -1,10 +1,10 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { loadConfig } from "@auaust/engrenage/config";
 import { afterEach, describe, expect, test, vi } from "vitest";
+
+import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { getFixture } from "#tests/helpers/getFixture";
 
 const lockFiles = [
   "pnpm-lock.yaml",
@@ -15,28 +15,7 @@ const lockFiles = [
   "coverage/**",
 ];
 
-const temporaryRoots: string[] = [];
-
-function getFixture(name: string): string {
-  return fileURLToPath(new URL(`../fixtures/config/${name}`, import.meta.url));
-}
-
-function createProject(): string {
-  const root = mkdtempSync(join(tmpdir(), "engrenage-config-"));
-
-  temporaryRoots.push(root);
-
-  return root;
-}
-
 afterEach(() => {
-  for (const root of temporaryRoots.splice(0)) {
-    rmSync(root, {
-      recursive: true,
-      force: true,
-    });
-  }
-
   vi.restoreAllMocks();
 });
 
@@ -44,18 +23,13 @@ describe("loadConfig", () => {
   test("falls back to defaults and warns once without a root config file or package file", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    const first = createProject();
+    const first = createTemporaryProject().root;
 
     const config = await loadConfig(first);
 
-    const nested = createProject();
-
-    mkdirSync(join(nested, ".config"));
-
-    writeFileSync(
-      join(nested, ".config/engrenage.config.ts"),
-      "export default { unknown: true };\n",
-    );
+    const nested = createTemporaryProject({
+      ".config/engrenage.config.ts": "export default { unknown: true };\n",
+    }).root;
 
     const nestedConfig = await loadConfig(nested);
 
@@ -79,7 +53,7 @@ describe("loadConfig", () => {
   });
 
   test("resolves a callback config, replaces defaults, appends generated files and infers project values", async () => {
-    const root = getFixture("custom");
+    const root = getFixture("config/custom");
 
     const config = await loadConfig(root);
 
@@ -102,65 +76,61 @@ describe("loadConfig", () => {
     expect(loadConfig(root)).toBe(loadConfig(root));
   });
 
-  test("reads the configured tsconfig and rejects a missing configured file, even the default name", async () => {
-    const root = createProject();
+  test("reads the configured tsconfig, rejects a missing configured file even under the default name, and retries a failed load", async () => {
+    const appConfig =
+      'export default { files: { tsconfig: "tsconfig.app.json" } };\n';
 
-    writeFileSync(
-      join(root, "engrenage.config.ts"),
-      'export default { files: { tsconfig: "tsconfig.app.json" } };\n',
-    );
+    const tsconfig = JSON.stringify({
+      compilerOptions: {
+        outDir: "build",
+      },
+    });
 
-    writeFileSync(
-      join(root, "tsconfig.app.json"),
-      JSON.stringify({
-        compilerOptions: {
-          outDir: "build",
-        },
-      }),
-    );
+    const { root } = createTemporaryProject({
+      "engrenage.config.ts": appConfig,
+      "tsconfig.app.json": tsconfig,
+    });
 
     const config = await loadConfig(root);
 
     expect(config.tsconfig.outDir).toBe("build");
     expect(config.files.generated).toContain("build/**");
 
-    const missing = createProject();
+    const missing = createTemporaryProject({
+      "engrenage.config.ts": appConfig,
+    });
 
-    writeFileSync(
-      join(missing, "engrenage.config.ts"),
-      'export default { files: { tsconfig: "tsconfig.app.json" } };\n',
+    await expect(loadConfig(missing.root)).rejects.toThrow(
+      `The configured tsconfig.app.json does not exist in ${missing.root}`,
     );
 
-    await expect(loadConfig(missing)).rejects.toThrow(
-      `The configured tsconfig.app.json does not exist in ${missing}`,
-    );
+    missing.write("tsconfig.app.json", tsconfig);
 
-    const explicitDefault = createProject();
+    await expect(loadConfig(missing.root)).resolves.toMatchObject({
+      root: missing.root,
+    });
 
-    writeFileSync(
-      join(explicitDefault, "engrenage.config.ts"),
-      'export default { files: { tsconfig: "tsconfig.json" } };\n',
-    );
+    const explicitDefault = createTemporaryProject({
+      "engrenage.config.ts":
+        'export default { files: { tsconfig: "tsconfig.json" } };\n',
+    });
 
-    await expect(loadConfig(explicitDefault)).rejects.toThrow(
+    await expect(loadConfig(explicitDefault.root)).rejects.toThrow(
       "The configured tsconfig.json does not exist",
     );
   });
 
   test("uses tsconfig.dist.json when present, falls back to the tsconfig and rejects a missing configured dist tsconfig", async () => {
-    const root = getFixture("custom");
+    const root = getFixture("config/custom");
 
     const config = await loadConfig(root);
 
     expect(config.distTsconfigPath).toBe(join(root, "tsconfig.json"));
 
-    const implicit = createProject();
-
-    writeFileSync(
-      join(implicit, "engrenage.config.ts"),
-      "export default {};\n",
-    );
-    writeFileSync(join(implicit, "tsconfig.dist.json"), "{}");
+    const implicit = createTemporaryProject({
+      "engrenage.config.ts": "export default {};\n",
+      "tsconfig.dist.json": "{}",
+    }).root;
 
     const implicitConfig = await loadConfig(implicit);
 
@@ -168,12 +138,10 @@ describe("loadConfig", () => {
       join(implicit, "tsconfig.dist.json"),
     );
 
-    const missing = createProject();
-
-    writeFileSync(
-      join(missing, "engrenage.config.ts"),
-      'export default { files: { distTsconfig: "tsconfig.build.json" } };\n',
-    );
+    const missing = createTemporaryProject({
+      "engrenage.config.ts":
+        'export default { files: { distTsconfig: "tsconfig.build.json" } };\n',
+    }).root;
 
     await expect(loadConfig(missing)).rejects.toThrow(
       `The configured tsconfig.build.json does not exist in ${missing}`,
@@ -181,7 +149,7 @@ describe("loadConfig", () => {
   });
 
   test("resolves existing source files against the root and rejects escaping paths", async () => {
-    const root = getFixture("custom");
+    const root = getFixture("config/custom");
 
     const config = await loadConfig(root);
 
@@ -194,7 +162,7 @@ describe("loadConfig", () => {
   });
 
   test("rejects unknown keys, naming the file and each key path", async () => {
-    const root = getFixture("invalid");
+    const root = getFixture("config/invalid");
 
     const error = loadConfig(root);
 

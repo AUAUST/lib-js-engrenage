@@ -1,35 +1,23 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
-
-let root: string;
-
-beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), "engrenage-json-"));
-});
-
-afterEach(() => {
-  rmSync(root, {
-    recursive: true,
-    force: true,
-  });
-});
+import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 
 describe("readJsonFile", () => {
   test("fails on a missing file", () => {
+    const project = createTemporaryProject();
+
     expect(() => {
-      return readJsonFile(join(root, "missing.json"));
+      return readJsonFile(project.resolve("missing.json"));
     }).toThrow("missing.json");
   });
 
   test("names the file holding invalid JSON", () => {
-    const path = join(root, "broken.json");
+    const project = createTemporaryProject({
+      "broken.json": "{ broken",
+    });
 
-    writeFileSync(path, "{ broken");
+    const path = project.resolve("broken.json");
 
     expect(() => {
       return readJsonFile(path);

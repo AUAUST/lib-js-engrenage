@@ -1,17 +1,9 @@
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
-import { Command } from "@commander-js/extra-typings";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import sync from "#bin/engrenage/agents/sync";
+import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { mockCwd } from "#tests/helpers/mockCwd";
+import { runCommand } from "#tests/helpers/runCommand";
 
 const emptyBlock = [
   "<!-- @reference ./.claude/shared.md -->",
@@ -19,33 +11,23 @@ const emptyBlock = [
   "",
 ].join("\n");
 
-let root: string;
-
-async function runSync(...args: string[]) {
-  await sync(new Command("sync")).parseAsync(args, {
-    from: "user",
+function createProject() {
+  const project = createTemporaryProject({
+    ".claude/shared.md": "## Shared section\n",
+    "AGENTS.md": emptyBlock,
   });
+
+  mockCwd(project.root);
+
+  return project;
 }
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), "engrenage-agents-"));
-
-  mkdirSync(join(root, ".claude"));
-
-  writeFileSync(join(root, ".claude/shared.md"), "## Shared section\n");
-  writeFileSync(join(root, "AGENTS.md"), emptyBlock);
-
-  vi.spyOn(process, "cwd").mockReturnValue(root);
   vi.spyOn(console, "info").mockImplementation(() => {});
   vi.spyOn(console, "warn").mockImplementation(() => {});
 });
 
 afterEach(() => {
-  rmSync(root, {
-    recursive: true,
-    force: true,
-  });
-
   vi.restoreAllMocks();
 
   process.exitCode = undefined;
@@ -53,21 +35,23 @@ afterEach(() => {
 
 describe("engrenage agents sync", () => {
   test("fills the blocks so a later check passes", async () => {
-    await runSync();
+    const project = createProject();
 
-    expect(readFileSync(join(root, "AGENTS.md"), "utf8")).toContain(
-      "## Shared section",
-    );
+    await runCommand(sync);
 
-    await runSync("--check");
+    expect(project.read("AGENTS.md")).toContain("## Shared section");
+
+    await runCommand(sync, "--check");
 
     expect(process.exitCode).toBeUndefined();
   });
 
   test("fails the check without writing outdated files", async () => {
-    await runSync("--check");
+    const project = createProject();
+
+    await runCommand(sync, "--check");
 
     expect(process.exitCode).toBe(1);
-    expect(readFileSync(join(root, "AGENTS.md"), "utf8")).toBe(emptyBlock);
+    expect(project.read("AGENTS.md")).toBe(emptyBlock);
   });
 });

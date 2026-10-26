@@ -41,7 +41,7 @@ describe("syncBlocks", () => {
 
   test("uses the filler of each directive and does not treat unknown ones as markers", () => {
     const content = [
-      "<!-- @registry ./*.md -->",
+      "<!-- @list ./*.md -->",
       "<!-- @unknown ./other.md -->",
       "<!-- @end -->",
       "",
@@ -49,20 +49,30 @@ describe("syncBlocks", () => {
 
     expect(
       syncBlocks(content, markdownBlocks, {
-        registry(glob: string) {
-          return `registry ${glob}`;
+        list(glob: string) {
+          return `list ${glob}`;
         },
       }),
     ).toBe(
       [
-        "<!-- @registry ./*.md -->",
+        "<!-- @list ./*.md -->",
         "",
-        "registry ./*.md",
+        "list ./*.md",
         "",
         "<!-- @end -->",
         "",
       ].join("\n"),
     );
+  });
+
+  test("passes every argument of the marker to its filler", () => {
+    expect(
+      syncBlocks("<!-- @list ./*.md all -->\n<!-- @end -->\n", markdownBlocks, {
+        list(glob: string, mode: string) {
+          return `${mode} ${glob}`;
+        },
+      }),
+    ).toBe("<!-- @list ./*.md all -->\n\nall ./*.md\n\n<!-- @end -->\n");
   });
 
   test("rejects a last block without an end marker", () => {

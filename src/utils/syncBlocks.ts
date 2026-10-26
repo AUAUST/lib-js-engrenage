@@ -14,7 +14,7 @@ export function syncBlocks(
   });
 
   const marker = new RegExp(
-    `^${RegExp.escape(open)}@(?:(${directives.join("|")}) (\\S+)|end)${RegExp.escape(close)}$`,
+    `^${RegExp.escape(open)}@(?:(${directives.join("|")})((?: \\S+)+)|end)${RegExp.escape(close)}$`,
     "gm",
   );
 
@@ -24,9 +24,9 @@ export function syncBlocks(
   let cursor = 0;
 
   for (const [index, match] of markers.entries()) {
-    const [opening, directive, reference] = match;
+    const [opening, directive, argumentList] = match;
 
-    if (directive === undefined || reference === undefined) {
+    if (directive === undefined || argumentList === undefined) {
       continue;
     }
 
@@ -42,10 +42,10 @@ export function syncBlocks(
       throw new Error(`No filler for "@${directive}" markers`);
     }
 
-    const filled = fill(reference).trim();
+    const filled = fill(...argumentList.trim().split(" ")).trim();
 
     if (filled.match(marker) !== null) {
-      throw new Error(`Content of "${reference}" contains a block marker`);
+      throw new Error(`Content of "${opening}" contains a block marker`);
     }
 
     const blockStart = match.index + opening.length;

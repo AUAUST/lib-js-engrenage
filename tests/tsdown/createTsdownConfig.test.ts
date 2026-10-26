@@ -2,7 +2,9 @@ import { loadConfig } from "@auaust/engrenage/config";
 import { createTsdownConfig } from "@auaust/engrenage/tsdown";
 import { describe, expect, test } from "vitest";
 
-const root = new URL("../fixtures/tsdown/", import.meta.url);
+import { getFixture } from "#tests/helpers/getFixture";
+
+const root = getFixture("tsdown");
 
 describe("createTsdownConfig", () => {
   test("builds entries from the tsconfig paths and wires the project options", async () => {

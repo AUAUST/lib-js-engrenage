@@ -1,19 +1,13 @@
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { describe, expect, test } from "vitest";
 
-import { createTsconfig } from "#support/tsconfig/utils/createTsconfig";
+import { getFixture } from "#tests/helpers/getFixture";
+import { createTsconfig } from "#typescript/utils/createTsconfig";
 
 const tsc = createRequire(import.meta.url).resolve("typescript/lib/tsc.js");
-
-function getFixture(name: string): string {
-  return fileURLToPath(
-    new URL(`../fixtures/tsconfig/${name}`, import.meta.url),
-  );
-}
 
 function runTsc(...args: string[]): string {
   return execFileSync(process.execPath, [tsc, ...args], {
@@ -27,7 +21,7 @@ function showConfig(project: string) {
 
 describe("tsconfig presets", () => {
   test("resolves the base preset through the package exports", () => {
-    const { compilerOptions } = showConfig(getFixture("base"));
+    const { compilerOptions } = showConfig(getFixture("tsconfig/base"));
 
     expect(compilerOptions).toMatchObject({
       declaration: false,
@@ -38,7 +32,7 @@ describe("tsconfig presets", () => {
   });
 
   test("resolves library output paths inside the consumer", () => {
-    const library = getFixture("library");
+    const library = getFixture("tsconfig/library");
 
     const { compilerOptions } = createTsconfig({
       root: library,
@@ -53,7 +47,7 @@ describe("tsconfig presets", () => {
   });
 
   test("type-checks tests and env declarations in dist mode", () => {
-    const library = getFixture("library");
+    const library = getFixture("tsconfig/library");
 
     const project = join(library, "tsconfig.dist.json");
 

@@ -13,8 +13,8 @@ export function defineReplacement({
   selector: string;
   target: string;
   replacement: string;
-  files?: ScopeReference[];
-  ignores?: ScopeReference[];
+  files?: readonly ScopeReference[];
+  ignores?: readonly ScopeReference[];
   enabled?: boolean;
 }): Convention {
   return defineRestriction({

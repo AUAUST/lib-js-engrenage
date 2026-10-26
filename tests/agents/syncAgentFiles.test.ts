@@ -1,5 +1,4 @@
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 
 import {
   resolveAgentReference,
@@ -8,7 +7,9 @@ import {
 import { loadConfig } from "@auaust/engrenage/config";
 import { describe, expect, test } from "vitest";
 
-const root = fileURLToPath(new URL("../fixtures/agents", import.meta.url));
+import { getFixture } from "#tests/helpers/getFixture";
+
+const root = getFixture("agents");
 
 const from = join(root, "INSTRUCTIONS.md");
 
@@ -24,7 +25,7 @@ describe("syncAgentFiles", () => {
     ).toEqual(["INSTRUCTIONS.md"]);
   });
 
-  test("resolves snippets and references relative to the file", async () => {
+  test("resolves snippets, references relative to the file and package specifiers", async () => {
     const config = await loadConfig(root);
 
     expect(resolveAgentReference(config, "shared.md", from)).toBe(
@@ -33,6 +34,13 @@ describe("syncAgentFiles", () => {
     expect(resolveAgentReference(config, "./AGENTS.md", from)).toBe(
       join(root, "AGENTS.md"),
     );
+    expect(
+      resolveAgentReference(
+        config,
+        "@auaust/engrenage/agents/sections/precedence.md",
+        import.meta.filename,
+      ),
+    ).toMatch(/\/data\/agents\/sections\/precedence\.md$/);
   });
 
   test("names the reference and the file when nothing matches", async () => {

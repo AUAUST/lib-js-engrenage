@@ -1,10 +1,14 @@
-import { optional, strictObject } from "valibot";
+import { array, optional, strictObject, type GenericSchema } from "valibot";
 
-import { directoriesSchema } from "#config/config/schemas/directoriesSchema";
 import { directorySchema } from "#config/config/schemas/directorySchema";
 import { fileSchema } from "#config/config/schemas/fileSchema";
 import { globSchema } from "#config/config/schemas/globSchema";
-import { globsSchema } from "#config/config/schemas/globsSchema";
+import type { Directories } from "#types/Directories";
+import type { Globs } from "#types/Globs";
+
+const directoriesSchema: GenericSchema<Directories> = array(directorySchema);
+
+const globsSchema: GenericSchema<Globs> = array(globSchema);
 
 export const configSchema = strictObject({
   directories: optional(

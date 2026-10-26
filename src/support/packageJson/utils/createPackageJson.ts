@@ -1,9 +1,9 @@
 import { once } from "@auaust/toolkit/once";
 import { optional, record, string, unknown } from "valibot";
 
-import { createAccessors } from "#support/accessors/builders/createAccessors";
+import { createAccessors } from "#config/utils/createAccessors";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
-import { validate } from "#support/validation/utils/validate";
+import { validate } from "#utils/validate";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -29,7 +29,6 @@ export function createPackageJson({
 
   return createAccessors({
     resolvers: {
-      path: () => path,
       manifest,
       name() {
         return validate(optional(string()), manifest()?.name, `${path} name`);

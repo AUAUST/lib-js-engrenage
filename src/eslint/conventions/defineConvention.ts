@@ -13,17 +13,15 @@ export function defineConvention({
 }: {
   rules?: Rules;
   rule?: RuleModule;
-  files?: ScopeReference[];
-  ignores?: ScopeReference[];
+  files?: readonly ScopeReference[];
+  ignores?: readonly ScopeReference[];
   typeAware?: boolean;
   enabled?: boolean;
 }): Convention {
   return {
     enabled,
-    scope: {
-      files,
-      ignores,
-    },
+    files,
+    ignores,
     typeAware,
     rules,
     rule,

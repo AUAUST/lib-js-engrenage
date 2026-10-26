@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+import type { Files } from "#types/Files";
 
 export function syncFiles({
   root,
@@ -11,10 +12,10 @@ export function syncFiles({
   update,
 }: {
   root: Directory | URL;
-  files: readonly File[];
+  files: Files;
   check: boolean;
   update: (content: string, path: File) => string;
-}): readonly File[] {
+}): Files {
   const outdated: File[] = [];
 
   for (const file of files) {
