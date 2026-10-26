@@ -9,40 +9,55 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: the `support` CLI registers every codegen subcommand at startup, and the `rules` subcommand imports the ESLint config builder and with it every conventions barrel. Renaming or deleting a convention module therefore crashes `pnpm support codegen barrels` with `ERR_MODULE_NOT_FOUND` before it can rewrite the stale barrel line, which has to be fixed by hand first.
    - Fix: decouple subcommand registration from their implementations so the barrels command never evaluates the modules it generates; a lazy dynamic import conflicts with the `noDynamicImport` convention, so this needs a deliberate loading pattern for CLI subcommands. Part of AUAUST/lib-js-engrenage#9.
 
-2. Shared project files beyond tool configs.
-   - Where: `bin/engrenage/`, `src/config/`
-   - Problem: only tool configs (ESLint, Prettier, TypeScript, Vite) and agent instructions are shared. Other files that repeat hard-coded content across AUAUST projects, such as `.gitignore`, `.vscode/settings.json`, `.vscode/extensions.json`, `.editorconfig` and `.gitattributes`, are still copied by hand and drift apart.
-   - Fix: add an `engrenage sync` command that builds these files from shared content plus project options in `engrenage.config.ts`, with a `--check` mode for CI. Fold `engrenage agents sync` into it rather than running a parallel mechanism. Not yet scoped as an issue: the file list, config shape and merge policy depend on point 1.3.
-
-3. Classify shareable files by how they can be extended.
-   - Where: `data/`, the candidate files listed in point 1.2
-   - Problem: some formats have native extension (`extends`, imports, includes) and can consume shared content directly, while others (VS Code settings, `.editorconfig`, `.gitignore`, `.gitattributes`) have none and must be fully generated, merged with project-owned content, or filled through marked blocks like the agent fragments. This is not yet known per file, nor whether project additions survive regeneration.
-   - Fix: inventory each candidate file, record whether it extends natively, merges, or is fully rewritten, and decide where project-specific additions live, before designing `engrenage sync`.
-
-4. Canonical `package.json` order.
+2. Canonical `package.json` order.
    - Where: `package.json`, `src/prettier/` or `src/eslint/`
    - Problem: nothing enforces a key order in `package.json`, so manual edits and generated fields (tsdown `exports`, new imports or peer dependencies) land in arbitrary positions.
    - Fix: add a Prettier or ESLint plugin to the shared config that sorts `package.json` in a canonical order.
 
-5. Dedicated `@auaust` import group.
+3. Dedicated `@auaust` import group.
    - Where: `src/eslint/conventions/imports/importOrder.ts`
    - Problem: perfectionist's import order sorts `@auaust/*` packages among the other external imports, so AUAUST libraries are not visually set apart from third-party ones.
-   - Fix: add a custom `@auaust` group to the perfectionist `sort-imports` configuration, placed between the external and internal (`#…`) groups. The autofix reorders imports across the repository, so land it as its own change.
+   - Fix: add a custom `@auaust` group to the perfectionist `sort-imports` configuration, placed between the external and internal (`#…`) groups. The autofix reorders imports across the repository, so land it as its own change, before jaune and primitive-kit migrate so their imports are reordered once.
 
-6. Config file lookup through c12's default discovery.
+4. Config file lookup through c12's default discovery.
    - Where: `src/config/utils/loadConfig.ts` (`findConfigFile`, `importConfigFile`)
    - Problem: `findConfigFile` reimplements the lookup of `engrenage.config.*` in the current directory only (no `.config/` directory) and fails on several candidates, while c12 already discovers config files with its own algorithm.
    - Fix: let c12 find the config with its default behaviour and take the project root from c12's result (the directory holding the config, or the parent of `.config/` when the file lives there). Delete `findConfigFile` and update the loadConfig tests that pin the current-directory-only lookup; settle together with point 4.1.
 
-7. Shared test and build scripts.
-   - Where: `package.json` of each AUAUST library
-   - Problem: `test`, `build`, `watch` and `coverage` scripts are copied by hand around `defineVitestConfig`, which depends on them passing `--mode build` to test the build output.
-   - Fix: decide whether an `engrenage` command checks or syncs them, as `agents sync --check` does, or an agent fragment documents them.
-
-8. Native array methods with a primitive-kit equivalent are not reported.
+5. Native array methods with a primitive-kit equivalent are not reported.
    - Where: `src/eslint/conventions/globals/`
    - Problem: the code style prefers primitive-kit and toolkit helpers over native methods with an equivalent (`sort(array)` rather than `array.sort()`), but only `Object.*` and `Array.isArray` are enforced, so native calls creep back in and are replaced by hand.
-   - Fix: add type-aware conventions reporting native array methods that primitive-kit covers, starting with `sort`, so only arrays are flagged; leave `filter` out until point 2.1 is fixed.
+   - Fix: add type-aware conventions reporting native array methods that primitive-kit covers, starting with `sort`, so only arrays are flagged; leave `filter` out until point 2.1 is fixed. Gate them on `@auaust/primitive-kit` being a dependency (AUAUST/lib-js-engrenage#11).
+
+6. Default source directories.
+   - Where: `src/config/constants.ts` (`defaultSourceDirectories`), `engrenage.config.ts`
+   - Problem: the default is `["src"]`, so every project with a `bin/` or `scripts/` directory (engrenage, toolkit, primitive-kit) lists its source directories by hand, and the conventions scoped to source directories skip those files otherwise.
+   - Fix: default to `["src", "bin", "scripts"]`. A missing directory is harmless: barrel discovery and ESLint scopes only glob it. Drop the now redundant `directories.source` from engrenage's own config, and keep a configured list replacing the default rather than extending it.
+
+7. Import order misclassifies custom path aliases.
+   - Where: `src/eslint/conventions/imports/importOrder.ts`
+   - Problem: perfectionist only treats `~/`, `@/` and `#` specifiers as internal by default. The convention does not pass `tsconfig.rootDir`, so aliases with other prefixes, such as `$lib/…` or `§/…`, sort among external packages. Conventions are static and cannot read the resolved config.
+   - Fix: pass `tsconfig: { rootDir: config.root, filename: files.tsconfig }` to `perfectionist/sort-imports`, so path aliases are matched from the tsconfig. This needs conventions whose rule options derive from the resolved config, plumbing shared with AUAUST/lib-js-engrenage#11. Check that a package's own aliases (`@auaust/toolkit/*` inside toolkit) still land in the intended group.
+
+8. ESM-only output is not enforced.
+   - Where: `src/tsdown/config/createTsdownConfig.ts`
+   - Problem: AUAUST libraries drop CommonJS, but the tsdown config relies on tsdown's default format, and nothing rejects a package without `"type": "module"`. jaune and primitive-kit still ship dual output with `main`, `module` and `require` conditions.
+   - Fix: set `format: "esm"` explicitly and fail clearly when `package.json` lacks `"type": "module"`. Decide whether a native config overriding `format` is rejected. Migrating libraries drop the `main`, `module` and `require` fields (tsdown regenerates `exports`) in a breaking release.
+
+9. VS Code settings are copied by hand.
+   - Where: `.vscode/settings.json` and `.vscode/extensions.json` of each project
+   - Problem: engrenage's settings hold ESLint fix-on-save, Prettier as the formatter and `js/ts.tsdk.path`, while toolkit and primitive-kit only set the deprecated `typescript.tsdk`. No project recommends the ESLint and Prettier extensions.
+   - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) that merges engrenage's keys into the settings and keeps other keys project-owned, plus the extension recommendations. The files are JSONC, so comments must survive the merge (parser to decide).
+
+10. Changeset config is copied by hand.
+    - Where: `.changeset/config.json` of each project
+    - Problem: the changelog generator differs (`@changesets/changelog-github` in engrenage, the default elsewhere), schema versions differ, and jaune declares `access: "restricted"` while its `package.json` publishes publicly.
+    - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) writing the shared fields, deriving `changelog[1].repo` from `package.json#repository` and `access` from `publishConfig.access`. It applies when changesets is a dependency (AUAUST/lib-js-engrenage#11).
+
+11. pnpm workspace defaults are copied by hand.
+    - Where: `pnpm-workspace.yaml` of each project
+    - Problem: `minimumReleaseAgeExclude: ["@auaust/*"]` and the shared `allowBuilds` entries repeat in every project, and the pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`.
+    - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) that writes the shared keys and keeps project `allowBuilds` entries. Editing YAML in place needs a parser that preserves the file (dependency to approve).
 
 ## 2. Upstream
 
@@ -118,7 +133,7 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
 1. Definers find the project through `process.cwd()`.
    - Where: `src/eslint/config/defineEslintConfig.ts`, `src/tsdown/config/defineTsdownConfig.ts`, `src/vite/config/defineViteConfig.ts`, `src/vitest/config/defineVitestConfig.ts`
    - Problem: each definer calls `loadConfig()` with the default `process.cwd()`. When a tool runs from another directory than its config file (ESLint 10 looks configs up from the linted file, `vite --config`, Vitest projects, editor integrations), engrenage warns, loads the defaults and roots every path at the wrong directory. The former API took `root: new URL("./", import.meta.url)`.
-   - Fix: search upward from the working directory for the nearest `engrenage.config.*` and let definers accept an explicit root for tools that run elsewhere; settle together with point 1.6.
+   - Fix: search upward from the working directory for the nearest `engrenage.config.*` and let definers accept an explicit root for tools that run elsewhere; settle together with point 1.4.
 
 2. Long-lived processes keep the first loaded config.
    - Where: `src/config/utils/loadConfig.ts`
@@ -152,5 +167,5 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
 
 8. tsdown entries reject path aliases outside the package name.
    - Where: `src/typescript/utils/resolvePathAliases.ts`
-   - Problem: entries are named after aliases of the package, so a library whose tsconfig also declares internal aliases (such as `"~/*"`) now fails its build with "is outside the package" instead of the former `Entrypoint conflict for ''`.
-   - Fix: decide whether such aliases are skipped, since they can never be public entries, or keep failing so they are noticed.
+   - Problem: entries are named after aliases of the package, so any other alias throws "is outside the package". Most AUAUST projects declare internal aliases with arbitrary prefixes (`~/*` in jaune, primitive-kit, g-class and pippy; `@/`, `$` and `§` elsewhere), so none of them can build with engrenage.
+   - Fix (decided): skip every alias that is neither the package name nor one of its subpaths, whatever its prefix, and keep validating the package's own aliases. Skipped aliases stay resolved from the tsconfig by TypeScript, tsdown and Vitest in source mode. `library.dist.json` clears `paths`, so tests must keep importing through the package aliases. Update the test pinning the error.
