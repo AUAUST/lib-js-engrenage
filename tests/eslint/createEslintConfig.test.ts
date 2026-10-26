@@ -1,4 +1,8 @@
-import { loadConfig, type ResolvedConfig } from "@auaust/engrenage/config";
+import {
+  loadConfig,
+  type Presets,
+  type ResolvedConfig,
+} from "@auaust/engrenage/config";
 import {
   createEslintConfig,
   type Config,
@@ -19,6 +23,43 @@ async function createLinter(options?: Options) {
     overrideConfigFile: true,
     overrideConfig: createEslintConfig(await loadConfig(root), options),
   });
+}
+
+const performanceSource = `import { identity } from "@auaust/toolkit";
+import { map } from "@auaust/toolkit/object";
+import * as v from "valibot";
+import { string } from "zod";
+import z, { z as zod } from "zod/mini";
+
+export * as valibot from "valibot";
+export { object } from "zod/mini";
+
+export const values = [identity, map, v.string, string, z.string, zod.string];
+`;
+
+async function lintedPerformanceRules(presets: Presets, options?: Options) {
+  const config = await loadConfig(root);
+
+  const eslint = new ESLint({
+    cwd: root,
+    overrideConfigFile: true,
+    overrideConfig: createEslintConfig(
+      {
+        ...config,
+        presets,
+      },
+      {
+        promises: false,
+        ...options,
+      },
+    ),
+  });
+
+  const [result] = await eslint.lintText(performanceSource, {
+    filePath: "src/performance.ts",
+  });
+
+  return map(result?.messages ?? [], (message) => message.ruleId);
 }
 
 async function lintedRules(file: string, options?: Options) {
@@ -71,6 +112,35 @@ describe("createEslintConfig", () => {
         globals: false,
       }),
     ).toEqual(["auaust/no-runtime-typeof"]);
+  });
+
+  test("enables the performance conventions with the library preset", async () => {
+    expect(await lintedPerformanceRules([])).toEqual([]);
+
+    expect(await lintedPerformanceRules(["library"])).toEqual([
+      "auaust/no-toolkit-root",
+      "auaust/no-valibot-namespace",
+      "auaust/no-zod-classic",
+      "auaust/no-zod-namespace",
+      "auaust/no-zod-namespace",
+      "auaust/no-valibot-namespace",
+    ]);
+  });
+
+  test("lets options override the conventions of presets", async () => {
+    expect(
+      await lintedPerformanceRules(["library"], {
+        performance: false,
+      }),
+    ).toEqual([]);
+
+    expect(
+      await lintedPerformanceRules([], {
+        performance: {
+          noZodClassic: true,
+        },
+      }),
+    ).toEqual(["auaust/no-zod-classic"]);
   });
 
   test("reports test files outside the test directories", async () => {

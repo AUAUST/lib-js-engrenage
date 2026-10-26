@@ -1,4 +1,5 @@
 import { defineRestriction } from "#eslint/conventions/defineRestriction";
+import type { Presets } from "#config/types/Presets";
 import type { Convention } from "#eslint/types/Convention";
 import type { ScopeReference } from "#eslint/types/ScopeReference";
 
@@ -9,6 +10,7 @@ export function defineReplacement({
   files,
   ignores,
   enabled,
+  presets,
 }: {
   selector: string;
   target: string;
@@ -16,6 +18,7 @@ export function defineReplacement({
   files?: readonly ScopeReference[];
   ignores?: readonly ScopeReference[];
   enabled?: boolean;
+  presets?: Presets;
 }): Convention {
   return defineRestriction({
     selector,
@@ -23,5 +26,6 @@ export function defineReplacement({
     files,
     ignores,
     enabled,
+    presets,
   });
 }

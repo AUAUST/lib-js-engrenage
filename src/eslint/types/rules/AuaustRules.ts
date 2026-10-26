@@ -35,9 +35,29 @@ export interface AuaustRules {
    */
   "auaust/no-object-statics"?: Linter.RuleEntry<[]>;
   /**
+   * Use the `@auaust/primitive-kit/<domain>` subpath entries instead of `@auaust/primitive-kit`.
+   */
+  "auaust/no-primitive-kit-root"?: Linter.RuleEntry<[]>;
+  /**
    * Use `is<Type>` helpers instead of runtime `typeof` (except `typeof x === "undefined"`).
    */
   "auaust/no-runtime-typeof"?: Linter.RuleEntry<[]>;
+  /**
+   * Use the `@auaust/toolkit/<helper>` subpath entries instead of `@auaust/toolkit`.
+   */
+  "auaust/no-toolkit-root"?: Linter.RuleEntry<[]>;
+  /**
+   * Use named imports instead of namespace imports from `valibot`.
+   */
+  "auaust/no-valibot-namespace"?: Linter.RuleEntry<[]>;
+  /**
+   * Use `zod/mini` instead of `zod`.
+   */
+  "auaust/no-zod-classic"?: Linter.RuleEntry<[]>;
+  /**
+   * Use named imports instead of namespace imports, default imports, or `z` from `zod/mini`.
+   */
+  "auaust/no-zod-namespace"?: Linter.RuleEntry<[]>;
 }
 
 /* ======= Declarations ======= */

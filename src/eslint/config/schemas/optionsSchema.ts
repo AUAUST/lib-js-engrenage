@@ -29,4 +29,5 @@ export const optionsSchema = strictObject({
   imports: categorySchema(conventionCategories.imports),
   promises: categorySchema(conventionCategories.promises),
   structure: categorySchema(conventionCategories.structure),
+  performance: categorySchema(conventionCategories.performance),
 });

@@ -93,27 +93,22 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: toolkit defines `__NAME__`, `__VERSION__`, `__LICENSE__` and `__TIMESTAMP__` by hand for tsdown and Vitest, with matching ambient declarations in `src/ambient.d.ts`. Engrenage has no shared source for them.
    - Fix: declare compile-time variables as an `engrenage.config.ts` setting, so `createTsdownConfig` and `createViteConfig` (which `createVitestConfig` extends) apply the same `define` record. Later, generate the ambient `.d.ts` declarations from it. Settle which fields are standard and whether `__TIMESTAMP__` stays, given it makes builds non-reproducible.
 
-2. Project presets in `engrenage.config.ts`.
-   - Where: `src/config/`, each `create…Config`
-   - Problem: settings that only make sense for one kind of project (library, Node, browser) have no home, so every project re-adds them through options or native configs. A library, for instance, needs ESLint rules that keep it tree-shakable and encourage tree-shakable use of other libraries, such as importing toolkit and primitive-kit helpers from their subpath entries instead of the root barrel.
-   - Fix: add a `presets` setting to `engrenage.config.ts` (for example `presets: ["library", "node"]`), resolved into the config, and let each `create…Config` apply the settings of the active presets before options and native configs. Settle the preset shape (names or objects with options), whether projects can define their own, how presets combine and override each other, and how they relate to the tsconfig presets in `data/tsconfig/`. Start with a `library` preset carrying the tree-shaking ESLint conventions.
-
-3. Read-only lists under the narrowed alias rule.
+2. Read-only lists under the narrowed alias rule.
    - Where: `src/tsdown/utils/createTsdownEntries.ts`, `src/vite/utils/createViteAliases.ts`, `src/typescript/utils/resolvePathAliases.ts`, `src/typescript/utils/syncBarrels.ts`, `src/tsdown/config/defineTsdownConfig.ts`, `src/eslint/config/defineEslintConfig.ts`, `src/eslint/utils/`, `src/tsdown/config/schemas/optionsSchema.ts`, `src/eslint/types/Convention.ts` and the convention definers
    - Problem: the TypeScript rule now allows naming read-only lists, which document that a list is never mutated. Engrenage still types list inputs it never mutates as mutable (`PathAlias[]` in `createTsdownEntries` and `createViteAliases`, `barrels` in `syncBarrels`, the native `configs` of `defineTsdownConfig` and `defineEslintConfig`), lets valibot infer mutable arrays for option lists (`bundle`), and repeats `readonly ScopeReference[]` in `Convention` and the three convention definers.
    - Fix: type list inputs as read-only, name the read-only lists that recur (`ScopeReferences`, `PathAliases`), mark schema list outputs read-only with valibot's `readonly()` action, and decide whether returned arrays (`PathAlias[]`, ESLint `Config[]`) stay mutable for consumers that extend them.
 
-4. `createViteAliases` has no consumer left.
+3. `createViteAliases` has no consumer left.
    - Where: `src/vite/utils/createViteAliases.ts`, `src/vite/types/Alias.ts`, `src/typescript/types/PathAlias.ts`
    - Problem: Vitest now resolves sources through Vite's `resolve.tsconfigPaths`, so the exported `createViteAliases` and its `Alias` type are no longer used by engrenage, and `PathAlias.alias` only serves them.
    - Fix: decide whether they stay public API; otherwise remove them before the next release and narrow `PathAlias` to what tsdown entries need.
 
-5. tsdown and ESLint native configs cannot be callbacks.
+4. tsdown and ESLint native configs cannot be callbacks.
    - Where: `src/tsdown/config/defineTsdownConfig.ts`, `src/eslint/config/defineEslintConfig.ts`
    - Problem: Vite and Vitest native configs accept a callback receiving the native arguments and then the resolved config, while tsdown and ESLint native configs are plain objects, so a native config that depends on resolved values (such as `config.directories.source`) has to go through options or repeat the paths.
    - Fix: accept `(inlineConfig, context, engrenage) => config` for tsdown and `(engrenage) => config` for ESLint native configs, resolved like the options.
 
-6. `package.json` imported through a relative path.
+5. `package.json` imported through a relative path.
    - Where: `bin/engrenage/index.ts`
    - Problem: the CLI reads its description and version with `import packageJson from "../../package.json"`, the only relative import left, because no subpath import maps `package.json`.
    - Fix: add a `#package.json` subpath import, or read the manifest through `loadConfig` from the package root.

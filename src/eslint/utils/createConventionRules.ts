@@ -1,10 +1,16 @@
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import {
+  flatMap,
+  intersection,
+  isNotEmpty,
+  map,
+} from "@auaust/primitive-kit/arrays";
 import { isBoolean } from "@auaust/toolkit/isBoolean";
 import { entries } from "@auaust/toolkit/object";
 
 import { pluginName } from "#eslint/constants";
 import { createRuleName } from "#eslint/utils/createRuleName";
 import { filesIn } from "#eslint/utils/filesIn";
+import type { Presets } from "#config/types/Presets";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#eslint/types/Config";
 import type { Convention } from "#eslint/types/Convention";
@@ -13,20 +19,43 @@ import type { ScopeReference } from "#eslint/types/ScopeReference";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
-function isEnabled(
-  name: string,
-  convention: Convention,
-  setting: boolean | Partial<Record<string, boolean>>,
+function isEnabledByDefault(
+  { enabled, presets }: Convention,
+  activePresets: Presets,
 ): boolean {
+  if (!enabled) {
+    return false;
+  }
+
+  if (presets.length === 0) {
+    return true;
+  }
+
+  return isNotEmpty(intersection(presets, activePresets));
+}
+
+function isEnabled({
+  name,
+  convention,
+  setting,
+  activePresets,
+}: {
+  name: string;
+  convention: Convention;
+  setting: boolean | Partial<Record<string, boolean>>;
+  activePresets: Presets;
+}): boolean {
   if (setting === false) {
     return false;
   }
 
+  const enabledByDefault = isEnabledByDefault(convention, activePresets);
+
   if (isBoolean(setting)) {
-    return convention.enabled;
+    return enabledByDefault;
   }
 
-  return setting[name] ?? convention.enabled;
+  return setting[name] ?? enabledByDefault;
 }
 
 function resolveScopeReference(
@@ -87,7 +116,14 @@ export function createConventionRules({
   const configs: Config[] = [];
 
   for (const [name, convention] of entries(conventions)) {
-    if (!isEnabled(name, convention, setting)) {
+    if (
+      !isEnabled({
+        name,
+        convention,
+        setting,
+        activePresets: config.presets,
+      })
+    ) {
       continue;
     }
 

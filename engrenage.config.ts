@@ -1,6 +1,7 @@
 import { defineConfig } from "#config/index";
 
 export default defineConfig({
+  presets: ["library"],
   directories: {
     source: ["src", "bin"],
   },

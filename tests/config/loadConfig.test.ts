@@ -49,6 +49,7 @@ describe("loadConfig", () => {
     expect(() => config.tsconfig.outDir).toThrow(
       `No tsconfig found in ${first}`,
     );
+    expect(config.presets).toEqual([]);
     expect(nestedConfig.directories).toEqual(config.directories);
   });
 
@@ -58,6 +59,7 @@ describe("loadConfig", () => {
     const config = await loadConfig(root);
 
     expect(config.raw).toEqual({
+      presets: ["library"],
       directories: {
         test: ["test"],
       },
@@ -65,6 +67,7 @@ describe("loadConfig", () => {
         generated: ["src/generated/**"],
       },
     });
+    expect(config.presets).toEqual(["library"]);
     expect(config.directories.test).toEqual(["test"]);
     expect(config.files.generated).toEqual([
       ...lockFiles,

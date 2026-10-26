@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import type { Presets } from "#config/types/Presets";
 import type { Directories } from "#types/Directories";
 import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
@@ -33,6 +34,8 @@ export const defaultInstructionFiles: Globs = freeze([
   ".claude/rules/**/*.md",
 ]);
 
+export const defaultPresets: Presets = freeze([]);
+
 export const defaultSourceDirectories: Directories = freeze(["src"]);
 
 export const defaultTestDirectories: Directories = freeze(["tests"]);
@@ -42,3 +45,5 @@ export const defaultTestFiles: Glob = "**/*.{test,spec}.{ts,tsx}";
 export const defaultTsconfigFile: File = "tsconfig.json";
 
 export const packageFile: File = "package.json";
+
+export const presets = freeze(["library"] as const);

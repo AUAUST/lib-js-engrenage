@@ -10,6 +10,7 @@ import {
   defaultDiscoveredFiles,
   defaultFixtureFiles,
   defaultInstructionFiles,
+  defaultPresets,
   defaultSourceDirectories,
   defaultTestDirectories,
   defaultTestFiles,
@@ -48,6 +49,10 @@ export function createResolvedConfig({
       root,
       path: tsconfigPath,
     });
+  });
+
+  const presets = once(() => {
+    return raw.presets ?? defaultPresets;
   });
 
   const directories = once(() => {
@@ -109,6 +114,7 @@ export function createResolvedConfig({
       compose.getters({
         packageJson,
         tsconfig,
+        presets,
         directories,
         files,
         agents,
