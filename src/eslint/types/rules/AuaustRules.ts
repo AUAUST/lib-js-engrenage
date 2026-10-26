@@ -31,7 +31,7 @@ export interface AuaustRules {
    */
   "auaust/no-misplaced-tests"?: Linter.RuleEntry<[]>;
   /**
-   * Use the @auaust/toolkit/object equivalent instead of `Object.*`.
+   * Use the `@auaust/toolkit/object` equivalent instead of `Object.*`.
    */
   "auaust/no-object-statics"?: Linter.RuleEntry<[]>;
   /**

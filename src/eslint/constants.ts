@@ -20,8 +20,12 @@ export const conventionCategories = freeze({
   performance,
 } as const);
 
+export const packageJsonPlacements = freeze({
+  type: freeze(["bin", "scripts"]),
+  devDependencies: freeze(["inlinedDependencies"]),
+} as const);
+
 export const packageJsonRules = freeze({
-  "package-json/order-properties": "error",
   "package-json/sort-collections": [
     "error",
     [
@@ -33,7 +37,7 @@ export const packageJsonRules = freeze({
       "scripts",
       "dependencies",
       "devDependencies",
-      "inlineDependencies",
+      "inlinedDependencies",
       "optionalDependencies",
       "peerDependencies",
       "peerDependenciesMeta",

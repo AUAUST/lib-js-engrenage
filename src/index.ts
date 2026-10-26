@@ -16,6 +16,7 @@ export * from "#types/Glob";
 export * from "#types/GlobGroup";
 export * from "#types/Globs";
 export * from "#types/IgnorePresets";
+export * from "#types/KnownPackageName";
 export * from "#types/PackageName";
 export * from "#types/PackageNames";
 export * from "#types/SyncResult";

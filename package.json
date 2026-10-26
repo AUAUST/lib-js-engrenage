@@ -13,6 +13,23 @@
   },
   "sideEffects": false,
   "type": "module",
+  "bin": {
+    "engrenage": "./dist/bin/engrenage.mjs"
+  },
+  "scripts": {
+    "build": "pnpm run engrenage tsdown && pnpm run engrenage tsc:dist && pnpm run engrenage vitest:dist",
+    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run build",
+    "ci:publish": "changeset publish",
+    "coverage": "pnpm run engrenage vitest:coverage",
+    "engrenage": "node bin/engrenage/index.ts",
+    "format": "pnpm run engrenage prettier",
+    "format:all": "pnpm run engrenage prettier:all",
+    "lint": "pnpm run engrenage eslint",
+    "support": "node bin/support/index.ts",
+    "test": "pnpm run engrenage vitest && pnpm run typecheck",
+    "typecheck": "pnpm run engrenage tsc",
+    "watch": "pnpm run engrenage vitest:watch"
+  },
   "imports": {
     "#agents/*": "./src/agents/*.ts",
     "#bin/*": "./bin/*.ts",
@@ -58,28 +75,11 @@
     "./agents/sections/*.md": "./data/agents/sections/*.md",
     "./tsconfig/*.json": "./data/tsconfig/*.json"
   },
-  "bin": {
-    "engrenage": "./dist/bin/engrenage.mjs"
-  },
   "files": [
     "dist",
     "src",
     "data"
   ],
-  "scripts": {
-    "build": "pnpm run engrenage tsdown && pnpm run engrenage tsc:dist && pnpm run engrenage vitest:dist",
-    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run build",
-    "ci:publish": "changeset publish",
-    "coverage": "pnpm run engrenage vitest:coverage",
-    "engrenage": "node bin/engrenage/index.ts",
-    "format": "pnpm run engrenage prettier",
-    "format:all": "pnpm run engrenage prettier:all",
-    "lint": "pnpm run engrenage eslint",
-    "support": "node bin/support/index.ts",
-    "test": "pnpm run engrenage vitest && pnpm run typecheck",
-    "typecheck": "pnpm run engrenage tsc",
-    "watch": "pnpm run engrenage vitest:watch"
-  },
   "prettier": "#prettier",
   "dependencies": {
     "@eslint/js": "^10.0.1",
@@ -90,6 +90,7 @@
     "eslint-plugin-package-json": "^1.11.0",
     "eslint-plugin-perfectionist": "^5.13.0",
     "eslint-plugin-unused-imports": "^4.4.1",
+    "sort-package-json": "^4.1.0",
     "typescript-eslint": "^8.72.0",
     "valibot": "^1.5.0"
   },
@@ -114,6 +115,13 @@
     "typescript": "^6.0.3",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
+  },
+  "inlinedDependencies": {
+    "@auaust/primitive-kit": "0.42.2",
+    "@auaust/toolkit": "0.5.1",
+    "@commander-js/extra-typings": "15.0.0",
+    "commander": "15.0.0",
+    "jsonc-parser": "3.3.1"
   },
   "peerDependencies": {
     "eslint": "^10.0.0",
@@ -149,12 +157,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "inlinedDependencies": {
-    "@auaust/primitive-kit": "0.42.2",
-    "@auaust/toolkit": "0.5.1",
-    "@commander-js/extra-typings": "15.0.0",
-    "commander": "15.0.0",
-    "jsonc-parser": "3.3.1"
   }
 }

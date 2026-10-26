@@ -1,7 +1,7 @@
 import { relative } from "node:path";
 
-import { defineConvention } from "#eslint/conventions/defineConvention";
 import { organization } from "#constants";
+import { defineConvention } from "#eslint/conventions/defineConvention";
 
 export default defineConvention({
   rules({ root, tsconfigPath }) {

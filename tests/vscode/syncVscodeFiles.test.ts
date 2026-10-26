@@ -53,6 +53,12 @@ describe("syncVscodeFiles", () => {
     "source.sortImports": "never"
   },
   "files.eol": "\\n",
+  "eslint.rules.customizations": [
+    {
+      "rule": "unused-imports/no-unused-vars",
+      "severity": "info"
+    }
+  ],
   "js/ts.tsdk.path": "node_modules/typescript/lib"
 }
 `);

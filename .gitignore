@@ -44,6 +44,9 @@ ehthumbs.db
 *.njsproj
 *.sln
 
+# Coverage
+/coverage
+
 # @ignore project
 
 # Output

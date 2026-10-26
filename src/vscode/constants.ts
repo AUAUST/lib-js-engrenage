@@ -24,6 +24,12 @@ export const eslintIntegration = freeze({
       "source.organizeImports": "never",
       "source.sortImports": "never",
     },
+    "eslint.rules.customizations": [
+      {
+        rule: "unused-imports/no-unused-vars",
+        severity: "info",
+      },
+    ],
   },
   extensions: ["dbaeumer.vscode-eslint"],
 } as const) satisfies Integration;

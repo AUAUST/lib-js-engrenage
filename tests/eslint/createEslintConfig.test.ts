@@ -17,7 +17,6 @@ import type { Maybe } from "@auaust/toolkit/types";
 
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
-import type { KnownPackageName } from "#types/KnownPackageName";
 
 const root = getFixture("eslint");
 

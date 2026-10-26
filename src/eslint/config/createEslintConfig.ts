@@ -1,7 +1,5 @@
 import stylistic from "@stylistic/eslint-plugin";
-import packageJson, {
-  configs as packageJsonConfigs,
-} from "eslint-plugin-package-json";
+import packageJson from "eslint-plugin-package-json";
 import perfectionist from "eslint-plugin-perfectionist";
 import unusedImports from "eslint-plugin-unused-imports";
 import { defineConfig } from "eslint/config";
@@ -11,16 +9,12 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
-import { packageFile } from "#config/constants";
 import { optionsSchema } from "#eslint/config/schemas/optionsSchema";
-import {
-  conventionCategories,
-  packageJsonRules,
-  pluginName,
-} from "#eslint/constants";
+import { conventionCategories, pluginName } from "#eslint/constants";
 import { createConventionRules } from "#eslint/utils/createConventionRules";
 import { createIgnoreRules } from "#eslint/utils/createIgnoreRules";
 import { createImportPresets } from "#eslint/utils/createImportPresets";
+import { createPackageJsonRules } from "#eslint/utils/createPackageJsonRules";
 import { createPlugin } from "#eslint/utils/createPlugin";
 import { createRecommendedRules } from "#eslint/utils/createRecommendedRules";
 import { validate } from "#utils/validate";
@@ -74,12 +68,7 @@ export function createEslintConfig(
   }
 
   if (packageJsonEnabled) {
-    configs.push({
-      name: `${pluginName}/package-json`,
-      files: [`**/${packageFile}`],
-      languageOptions: packageJsonConfigs.recommended.languageOptions,
-      rules: packageJsonRules,
-    });
+    configs.push(createPackageJsonRules());
   }
 
   if (categories.imports !== false) {

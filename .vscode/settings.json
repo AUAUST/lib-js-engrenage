@@ -7,5 +7,11 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "js/ts.tsdk.path": "node_modules/typescript/lib",
-  "prettier.requireConfig": true
+  "prettier.requireConfig": true,
+  "eslint.rules.customizations": [
+    {
+      "rule": "unused-imports/no-unused-vars",
+      "severity": "info"
+    }
+  ]
 }

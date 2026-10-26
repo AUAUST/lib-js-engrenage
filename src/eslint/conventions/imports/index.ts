@@ -5,5 +5,6 @@ export { default as noDefaultExport } from "#eslint/conventions/imports/noDefaul
 export { default as noDuplicates } from "#eslint/conventions/imports/noDuplicates";
 export { default as noDynamicImport } from "#eslint/conventions/imports/noDynamicImport";
 export { default as noUnused } from "#eslint/conventions/imports/noUnused";
+export { default as noUnusedVariables } from "#eslint/conventions/imports/noUnusedVariables";
 export { default as typeImports } from "#eslint/conventions/imports/typeImports";
 // @end
