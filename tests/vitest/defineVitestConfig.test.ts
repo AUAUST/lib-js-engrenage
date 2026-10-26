@@ -19,7 +19,7 @@ describe("defineVitestConfig", () => {
   test("passes the environment and resolved config to the native config and merges it after the options", async () => {
     mockCwd(root);
 
-    const nativeConfig = vi.fn((env: ConfigEnv, config: ResolvedConfig) => {
+    const nativeConfig = vi.fn((config: ResolvedConfig, env: ConfigEnv) => {
       return {
         tsconfig: config.resolve("tsconfig.custom.json"),
         test: {

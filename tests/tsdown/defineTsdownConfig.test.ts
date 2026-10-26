@@ -1,10 +1,6 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import {
-  defineTsdownConfig,
-  type ConfigContext,
-  type InlineConfig,
-} from "@auaust/engrenage/tsdown";
+import { defineTsdownConfig } from "@auaust/engrenage/tsdown";
 import type { ResolvedConfig } from "@auaust/engrenage/config";
 
 import { getFixture } from "#tests/helpers/getFixture";
@@ -20,24 +16,18 @@ describe("defineTsdownConfig", () => {
   test("passes the resolved config to the callbacks and merges native configs last", async () => {
     mockCwd(root);
 
-    const callback = vi.fn(
-      (
-        _inlineConfig: InlineConfig,
-        _context: ConfigContext,
-        config: ResolvedConfig,
-      ) => {
-        return {
-          bundle: [config.packageJson.name],
-        };
-      },
-    );
+    const callback = vi.fn((config: ResolvedConfig) => {
+      return {
+        bundle: [config.packageJson.name],
+      };
+    });
 
     const tsdownConfig = await defineTsdownConfig(
       callback,
       {
         platform: "neutral",
       },
-      (_inlineConfig, _context, config) => {
+      (config) => {
         return {
           exports: {
             exclude: [...config.directories.test],

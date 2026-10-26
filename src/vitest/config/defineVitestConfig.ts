@@ -12,18 +12,18 @@ import type { ConfigFn } from "#vitest/types/ConfigFn";
 import type { Options } from "#vitest/types/Options";
 
 export function defineVitestConfig(
-  options?: ConfigInput<Options, [ConfigEnv, ResolvedConfig]>,
-  ...configs: ConfigInput<Config, [ConfigEnv, ResolvedConfig]>[]
+  options?: ConfigInput<Options, [ResolvedConfig, ConfigEnv]>,
+  ...configs: ConfigInput<Config, [ResolvedConfig, ConfigEnv]>[]
 ): ConfigFn {
   return async function vitestConfig(env) {
     const config = await loadConfig();
 
-    const resolvedOptions = await value(options, env, config);
+    const resolvedOptions = await value(options, config, env);
 
     let merged: Config = createVitestConfig(config, env, resolvedOptions);
 
     for (const nativeConfig of configs) {
-      const resolvedNativeConfig = await value(nativeConfig, env, config);
+      const resolvedNativeConfig = await value(nativeConfig, config, env);
 
       merged = mergeConfig(merged, resolvedNativeConfig ?? {});
     }

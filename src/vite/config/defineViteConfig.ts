@@ -11,7 +11,7 @@ import type { ConfigEnv } from "#vite/types/ConfigEnv";
 import type { ConfigFn } from "#vite/types/ConfigFn";
 
 export function defineViteConfig(
-  ...configs: ConfigInput<Config, [ConfigEnv, ResolvedConfig]>[]
+  ...configs: ConfigInput<Config, [ResolvedConfig, ConfigEnv]>[]
 ): ConfigFn {
   return async function viteConfig(env) {
     const config = await loadConfig();
@@ -19,7 +19,7 @@ export function defineViteConfig(
     let merged: Config = createViteConfig(config);
 
     for (const nativeConfig of configs) {
-      const resolvedNativeConfig = await value(nativeConfig, env, config);
+      const resolvedNativeConfig = await value(nativeConfig, config, env);
 
       merged = mergeConfig(merged, resolvedNativeConfig ?? {});
     }

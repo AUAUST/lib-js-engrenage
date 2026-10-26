@@ -13,24 +13,24 @@ import type { Options } from "#tsdown/types/Options";
 import type { ConfigInput } from "#types/ConfigInput";
 
 export function defineTsdownConfig(
-  options?: ConfigInput<Options, [InlineConfig, ConfigContext, ResolvedConfig]>,
+  options?: ConfigInput<Options, [ResolvedConfig, InlineConfig, ConfigContext]>,
   ...configs: ReadonlyArray<
-    ConfigInput<Config, [InlineConfig, ConfigContext, ResolvedConfig]>
+    ConfigInput<Config, [ResolvedConfig, InlineConfig, ConfigContext]>
   >
 ): ConfigFn {
   return async function tsdownConfig(inlineConfig, context) {
     const config = await loadConfig();
 
-    const resolvedOptions = await value(options, inlineConfig, context, config);
+    const resolvedOptions = await value(options, config, inlineConfig, context);
 
     const resolvedConfigs: Config[] = [];
 
     for (const nativeConfig of configs) {
       const resolvedConfig = await value(
         nativeConfig,
+        config,
         inlineConfig,
         context,
-        config,
       );
 
       resolvedConfigs.push(resolvedConfig ?? {});
