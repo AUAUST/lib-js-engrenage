@@ -83,6 +83,13 @@ export function createPackageJson({
           return keys(versions);
         });
       },
+      scripts() {
+        return validate(
+          optional(record(string(), string())),
+          manifest()?.scripts,
+          `${path} scripts`,
+        );
+      },
       bin() {
         return validate(
           optional(union([string(), record(string(), string())])),

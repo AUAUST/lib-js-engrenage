@@ -30,7 +30,7 @@ export function createTsdownConfig(
   { ci }: { ci: boolean },
   options?: Maybe<Options>,
 ): Config {
-  const { bins, fileExports, bundle } = validate(
+  const { bins, customExports, bundle } = validate(
     optionsSchema,
     options ?? {},
     "tsdown options",
@@ -72,7 +72,7 @@ export function createTsdownConfig(
       enabled: true,
       packageJson: false,
       exclude: keys(bins),
-      customExports: fileExports,
+      customExports,
     },
     sourcemap: true,
     report: false,

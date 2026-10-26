@@ -5,9 +5,10 @@ export default defineTsdownConfig({
   bins: {
     "bin/engrenage": "bin/engrenage/index.ts",
   },
-  fileExports: {
+  customExports: {
     "./agents/rules/*.md": "./data/agents/rules/*.md",
     "./agents/sections/*.md": "./data/agents/sections/*.md",
+    "./github/workflows/*.yml": "./data/github/workflows/*.yml",
     "./tsconfig/*.json": "./data/tsconfig/*.json",
   },
   bundle: [

@@ -2,7 +2,10 @@ import {
   array,
   boolean,
   optional,
+  pipe,
+  regex,
   strictObject,
+  string,
   type GenericSchema,
 } from "valibot";
 
@@ -19,6 +22,11 @@ const directoriesSchema: GenericSchema<Directories> = array(directorySchema);
 const globsSchema: GenericSchema<Globs> = array(globSchema);
 
 const presetsSchema: GenericSchema<Presets> = array(presetSchema);
+
+const scriptSchema = pipe(
+  string(),
+  regex(/^[\w.-]+(?::[\w.-]+)*$/, "Expected a package.json script name"),
+);
 
 export const configSchema = strictObject({
   presets: optional(presetsSchema),
@@ -47,6 +55,13 @@ export const configSchema = strictObject({
     strictObject({
       instructionFiles: optional(globsSchema),
       snippetsDirectory: optional(directorySchema),
+    }),
+  ),
+  github: optional(
+    strictObject({
+      workflows: optional(boolean()),
+      prepareScript: optional(scriptSchema),
+      publishScript: optional(scriptSchema),
     }),
   ),
   vscode: optional(

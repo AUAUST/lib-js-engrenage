@@ -21,7 +21,7 @@ describe("createTsdownConfig", () => {
         bins: {
           "bin/cli": "bin/cli/index.ts",
         },
-        fileExports: {
+        customExports: {
           "./presets/*.json": "./data/presets/*.json",
         },
         bundle: ["@auaust/toolkit"],

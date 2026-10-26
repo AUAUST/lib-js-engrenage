@@ -6,6 +6,7 @@ import { syncAgentFiles } from "#agents/utils/syncAgentFiles";
 import { syncChangesetConfig } from "#changesets/utils/syncChangesetConfig";
 import { loadConfig } from "#config/utils/loadConfig";
 import { syncGitignoreFile } from "#git/utils/syncGitignoreFile";
+import { syncWorkflowFiles } from "#github/utils/syncWorkflowFiles";
 import { syncPrettierignoreFile } from "#prettier/utils/syncPrettierignoreFile";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { reportSyncResults } from "#support/commander/utils/reportSyncResults";
@@ -17,6 +18,7 @@ const targets = {
   gitignore: syncGitignoreFile,
   prettierignore: syncPrettierignoreFile,
   vscode: syncVscodeFiles,
+  workflows: syncWorkflowFiles,
 };
 
 export default defineCommand((command) => {

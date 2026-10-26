@@ -38,6 +38,7 @@
     "#constants": "./src/constants.ts",
     "#eslint/*": "./src/eslint/*.ts",
     "#git/*": "./src/git/*.ts",
+    "#github/*": "./src/github/*.ts",
     "#package.json": "./package.json",
     "#prettier": "./src/prettier/index.ts",
     "#prettier/*": "./src/prettier/*.ts",
@@ -64,6 +65,8 @@
     "./eslint/constants": "./dist/eslint/constants.mjs",
     "./git": "./dist/git/index.mjs",
     "./git/constants": "./dist/git/constants.mjs",
+    "./github": "./dist/github/index.mjs",
+    "./github/constants": "./dist/github/constants.mjs",
     "./prettier": "./dist/prettier/index.mjs",
     "./prettier/constants": "./dist/prettier/constants.mjs",
     "./tsdown": "./dist/tsdown/index.mjs",
@@ -77,6 +80,7 @@
     "./vscode/constants": "./dist/vscode/constants.mjs",
     "./agents/rules/*.md": "./data/agents/rules/*.md",
     "./agents/sections/*.md": "./data/agents/sections/*.md",
+    "./github/workflows/*.yml": "./data/github/workflows/*.yml",
     "./tsconfig/*.json": "./data/tsconfig/*.json"
   },
   "files": [
@@ -157,6 +161,11 @@
       "name": "pnpm",
       "version": "^11.22.0",
       "onFail": "download"
+    },
+    "runtime": {
+      "name": "node",
+      "version": ">=24.0.0",
+      "onFail": "error"
     }
   },
   "publishConfig": {

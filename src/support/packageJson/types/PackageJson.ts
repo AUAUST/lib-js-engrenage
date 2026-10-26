@@ -12,6 +12,7 @@ export type PackageJson = Accessors<{
   type: PackageType | undefined;
   imports: SubpathImports | undefined;
   dependencies: PackageNames | undefined;
+  scripts: Partial<Record<string, string>> | undefined;
   bin: File | Partial<Record<string, File>> | undefined;
   repository: string | { url: string } | undefined;
   publishConfig: { access?: PublishAccess } | undefined;
