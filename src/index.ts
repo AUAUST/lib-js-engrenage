@@ -21,6 +21,7 @@ export * from "#types/KnownPackageName";
 export * from "#types/PackageName";
 export * from "#types/PackageNames";
 export * from "#types/PackageType";
+export * from "#types/PublishAccess";
 export * from "#types/SyncResult";
 export * from "#types/SyncResults";
 export * from "#types/SyncStatus";
