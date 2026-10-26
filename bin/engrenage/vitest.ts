@@ -1,4 +1,5 @@
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
+import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
 import { buildMode } from "#vitest/constants";
 
 export default defineToolCommands({
@@ -6,26 +7,35 @@ export default defineToolCommands({
   commands: {
     "vitest": {
       description: "Run the tests once, with type tests.",
-      arguments() {
-        return ["run", "--typecheck"];
+      arguments(config, args) {
+        ensureIncludes(args, "--typecheck");
+
+        return ["run", ...args];
       },
     },
     "vitest:watch": {
       description: "Run the tests in watch mode, with type tests.",
-      arguments() {
-        return ["watch", "--typecheck"];
+      arguments(config, args) {
+        ensureIncludes(args, "--typecheck");
+
+        return ["watch", ...args];
       },
     },
     "vitest:coverage": {
       description: "Run the tests once and report coverage.",
-      arguments() {
-        return ["run", "--coverage"];
+      arguments(config, args) {
+        ensureIncludes(args, "--coverage");
+
+        return ["run", ...args];
       },
     },
     "vitest:dist": {
       description: "Run the tests once against the built output.",
-      arguments() {
-        return ["run", "--typecheck", "--mode", buildMode];
+      arguments(config, args) {
+        ensureIncludes(args, "--typecheck");
+        ensureIncludes(args, ["--mode", buildMode]);
+
+        return ["run", ...args];
       },
     },
   },

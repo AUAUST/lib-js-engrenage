@@ -5,9 +5,6 @@ export default defineToolCommands({
   commands: {
     vite: {
       description: "Run Vite.",
-      arguments() {
-        return [];
-      },
     },
   },
 });

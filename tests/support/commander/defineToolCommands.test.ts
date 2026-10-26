@@ -5,14 +5,20 @@ import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
 
-const { fake } = defineToolCommands({
+const commands = defineToolCommands({
   packageName: "fake-tool",
   binary: "fake",
   commands: {
-    fake: {
+    "fake": {
       description: "Run the fake tool.",
-      arguments(config) {
-        return ["--root", config.root];
+      arguments(config, args) {
+        args.unshift("--root", config.root);
+      },
+    },
+    "fake:only": {
+      description: "Run the fake tool with fixed arguments.",
+      arguments() {
+        return ["--only"];
       },
     },
   },
@@ -24,6 +30,20 @@ const recordingBinary = [
   "process.exitCode = 3;",
   "",
 ].join("\n");
+
+const fakeTool = {
+  "node_modules/fake-tool/package.json": JSON.stringify({
+    name: "fake-tool",
+    bin: {
+      fake: "./bin.mjs",
+    },
+  }),
+  "node_modules/fake-tool/bin.mjs": recordingBinary,
+};
+
+function readRecordedArgs(project: ReturnType<typeof createProject>): unknown {
+  return JSON.parse(project.read("node_modules/fake-tool/args.json"));
+}
 
 function createProject(files: Record<string, string> = {}) {
   const project = createTemporaryProject({
@@ -44,28 +64,34 @@ afterEach(() => {
 });
 
 describe("defineToolCommands", () => {
-  test("runs the project binary with the configured and given arguments", async () => {
-    const project = createProject({
-      "node_modules/fake-tool/package.json": JSON.stringify({
-        name: "fake-tool",
-        bin: {
-          fake: "./bin.mjs",
-        },
-      }),
-      "node_modules/fake-tool/bin.mjs": recordingBinary,
-    });
+  test("runs the project binary with the arguments edited in place", async () => {
+    const project = createProject(fakeTool);
 
-    await runCommand(fake, "--watch", "--", "src");
+    await runCommand(commands.fake, "--watch", "--", "src");
 
-    expect(
-      JSON.parse(project.read("node_modules/fake-tool/args.json")),
-    ).toEqual(["--root", project.root, "--watch", "--", "src"]);
+    expect(readRecordedArgs(project)).toEqual([
+      "--root",
+      project.root,
+      "--watch",
+      "--",
+      "src",
+    ]);
     expect(process.exitCode).toBe(3);
+  });
+
+  test("runs the project binary with the returned arguments only", async () => {
+    const project = createProject(fakeTool);
+
+    await runCommand(commands["fake:only"], "--watch");
+
+    expect(readRecordedArgs(project)).toEqual(["--only"]);
   });
 
   test("names the package to install when the project lacks it", async () => {
     createProject();
 
-    await expect(runCommand(fake)).rejects.toThrow("Install fake-tool in");
+    await expect(runCommand(commands.fake)).rejects.toThrow(
+      "Install fake-tool in",
+    );
   });
 });

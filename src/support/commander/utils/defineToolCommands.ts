@@ -2,6 +2,7 @@ import { spawn } from "node:child_process";
 import { createRequire } from "node:module";
 import { dirname } from "node:path";
 
+import { wrap } from "@auaust/primitive-kit/arrays";
 import { isString } from "@auaust/toolkit/isString";
 import { get } from "@auaust/toolkit/object";
 import { transformValues } from "@auaust/toolkit/transformValues";
@@ -112,7 +113,11 @@ export function defineToolCommands<Name extends string>({
     Name,
     {
       description: string;
-      arguments: (config: ResolvedConfig, args: string[]) => readonly string[];
+      aliases?: readonly string[] | string;
+      arguments?: (
+        config: ResolvedConfig,
+        args: string[],
+      ) => readonly string[] | undefined;
     }
   >;
 }): Record<Name, CommandDefinition> {
@@ -120,6 +125,7 @@ export function defineToolCommands<Name extends string>({
     return (command) => {
       return command
         .description(tool.description)
+        .aliases(wrap(tool.aliases))
         .helpOption(false)
         .passThroughOptions()
         .allowUnknownOption()
@@ -129,10 +135,12 @@ export function defineToolCommands<Name extends string>({
 
           const args = [...rawArgs];
 
-          await runBinary(resolveBinary(config, packageName, binary), [
-            ...tool.arguments(config, args),
-            ...args,
-          ]);
+          const transformed = tool.arguments?.(config, args) ?? args;
+
+          await runBinary(
+            resolveBinary(config, packageName, binary),
+            transformed,
+          );
         });
     };
   });

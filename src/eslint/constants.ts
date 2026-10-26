@@ -27,7 +27,6 @@ export const packageJsonRules = freeze({
     [
       "bin",
       "config",
-      "exports",
       "files",
       "imports",
       "overrides",

@@ -5,9 +5,6 @@ export default defineToolCommands({
   commands: {
     tsdown: {
       description: "Build the package.",
-      arguments() {
-        return [];
-      },
     },
   },
 });

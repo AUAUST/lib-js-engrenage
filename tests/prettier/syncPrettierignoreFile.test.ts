@@ -40,7 +40,7 @@ describe("syncPrettierignoreFile", () => {
         "bun.lock",
         "bun.lockb",
         "",
-        "# ESLint suppressions",
+        "# ESLint",
         "eslint-suppressions.json",
         "",
         "# @ignore project",

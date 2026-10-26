@@ -36,8 +36,6 @@
     ".": "./dist/index.mjs",
     "./agents": "./dist/agents/index.mjs",
     "./agents/constants": "./dist/agents/constants.mjs",
-    "./agents/rules/*.md": "./data/agents/rules/*.md",
-    "./agents/sections/*.md": "./data/agents/sections/*.md",
     "./config": "./dist/config/index.mjs",
     "./config/constants": "./dist/config/constants.mjs",
     "./eslint": "./dist/eslint/index.mjs",
@@ -46,7 +44,6 @@
     "./git/constants": "./dist/git/constants.mjs",
     "./prettier": "./dist/prettier/index.mjs",
     "./prettier/constants": "./dist/prettier/constants.mjs",
-    "./tsconfig/*.json": "./data/tsconfig/*.json",
     "./tsdown": "./dist/tsdown/index.mjs",
     "./tsdown/constants": "./dist/tsdown/constants.mjs",
     "./typescript": "./dist/typescript/index.mjs",
@@ -55,7 +52,10 @@
     "./vitest": "./dist/vitest/index.mjs",
     "./vitest/constants": "./dist/vitest/constants.mjs",
     "./vscode": "./dist/vscode/index.mjs",
-    "./vscode/constants": "./dist/vscode/constants.mjs"
+    "./vscode/constants": "./dist/vscode/constants.mjs",
+    "./agents/rules/*.md": "./data/agents/rules/*.md",
+    "./agents/sections/*.md": "./data/agents/sections/*.md",
+    "./tsconfig/*.json": "./data/tsconfig/*.json"
   },
   "bin": {
     "engrenage": "./dist/bin/engrenage.mjs"

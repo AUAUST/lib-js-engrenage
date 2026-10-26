@@ -1,16 +1,20 @@
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
+import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
+import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
 
 function checkProject(
   config: ResolvedConfig,
+  args: string[],
   project: File | undefined,
-): readonly string[] {
+) {
   if (project === undefined) {
     throw new Error(`No tsconfig found in ${config.root}`);
   }
 
-  return ["--noEmit", "--project", project];
+  ensureIncludes(args, "--noEmit");
+  ensureAnyOf(args, ["--project", "-p"], ["--project", project]);
 }
 
 export default defineToolCommands({
@@ -19,14 +23,15 @@ export default defineToolCommands({
   commands: {
     "tsc": {
       description: "Check types with the project tsconfig.",
-      arguments(config) {
-        return checkProject(config, config.tsconfigPath);
+      aliases: "typecheck",
+      arguments(config, args) {
+        checkProject(config, args, config.tsconfigPath);
       },
     },
     "tsc:dist": {
       description: "Check types with the dist tsconfig.",
-      arguments(config) {
-        return checkProject(config, config.distTsconfigPath);
+      arguments(config, args) {
+        checkProject(config, args, config.distTsconfigPath);
       },
     },
   },
