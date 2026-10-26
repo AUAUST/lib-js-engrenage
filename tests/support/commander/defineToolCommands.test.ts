@@ -6,6 +6,7 @@ import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
 
 const commands = defineToolCommands({
+  // @ts-expect-error
   packageName: "fake-tool",
   binary: "fake",
   commands: {

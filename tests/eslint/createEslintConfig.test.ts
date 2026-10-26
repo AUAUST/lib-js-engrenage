@@ -17,6 +17,7 @@ import type { Maybe } from "@auaust/toolkit/types";
 
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
+import type { KnownPackageName } from "#types/KnownPackageName";
 
 const root = getFixture("eslint");
 
@@ -232,7 +233,7 @@ describe("createEslintConfig", () => {
 
   test("enables dependency-gated conventions only for declared packages, unless options force them", async () => {
     const valibotOnly: Environment = {
-      has(name) {
+      has(name): name is "valibot" {
         return name === "valibot";
       },
     };

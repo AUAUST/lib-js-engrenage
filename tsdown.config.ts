@@ -1,3 +1,4 @@
+import { primitiveKit, toolkit } from "#constants";
 import { defineTsdownConfig } from "#tsdown/index";
 
 export default defineTsdownConfig(
@@ -11,8 +12,8 @@ export default defineTsdownConfig(
       "./tsconfig/*.json": "./data/tsconfig/*.json",
     },
     bundle: [
-      "@auaust/toolkit",
-      "@auaust/primitive-kit",
+      toolkit,
+      primitiveKit,
       "commander",
       "@commander-js/extra-typings",
       "jsonc-parser",

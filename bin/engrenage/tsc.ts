@@ -1,3 +1,4 @@
+import { typescript } from "#constants";
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
 import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
@@ -18,7 +19,7 @@ function checkProject(
 }
 
 export default defineToolCommands({
-  packageName: "typescript",
+  packageName: typescript,
   binary: "tsc",
   commands: {
     "tsc": {

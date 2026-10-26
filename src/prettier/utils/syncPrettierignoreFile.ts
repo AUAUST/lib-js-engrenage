@@ -1,9 +1,9 @@
 import { map } from "@auaust/primitive-kit/arrays";
 
+import { changesets } from "#constants";
 import { createProjectIgnores } from "#git/utils/createProjectIgnores";
 import {
   changelogIgnores,
-  changesetsPackage,
   codegenTitle,
   defaultIgnores,
 } from "#prettier/constants";
@@ -24,7 +24,7 @@ function createProjectPrettierIgnores(
 
   return [
     ...createProjectIgnores(config),
-    ...(config.environment.has(changesetsPackage) ? [changelogIgnores] : []),
+    ...(config.environment.has(changesets) ? [changelogIgnores] : []),
     ...(generated.length === 0
       ? []
       : [

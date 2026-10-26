@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import { eslint, prettier, typescript } from "#constants";
 import { defaultOptions } from "#prettier/constants";
 import type { File } from "#types/File";
 import type { Integration } from "#vscode/types/Integration";
@@ -16,7 +17,7 @@ export const formattingOptions = freeze({
 } as const);
 
 export const eslintIntegration = freeze({
-  requires: ["eslint"],
+  requires: [eslint],
   settings: {
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit",
@@ -28,7 +29,7 @@ export const eslintIntegration = freeze({
 } as const) satisfies Integration;
 
 export const prettierIntegration = freeze({
-  requires: ["prettier"],
+  requires: [prettier],
   settings: {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
@@ -38,7 +39,7 @@ export const prettierIntegration = freeze({
 } as const) satisfies Integration;
 
 export const typescriptIntegration = freeze({
-  requires: ["typescript"],
+  requires: [typescript],
   settings: freeze({
     "js/ts.tsdk.path": "node_modules/typescript/lib",
     "typescript.tsdk": undefined,

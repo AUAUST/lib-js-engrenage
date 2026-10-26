@@ -25,6 +25,7 @@ import type { Environment } from "#config/types/Environment";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+import type { KnownPackageName } from "#types/KnownPackageName";
 import type { PackageName } from "#types/PackageName";
 
 function createEnvironment({ optional }: PackageJson): Environment {
@@ -34,7 +35,7 @@ function createEnvironment({ optional }: PackageJson): Environment {
     packages.add(optional.name);
   }
 
-  function has(name: PackageName): boolean {
+  function has(name: PackageName): name is KnownPackageName {
     return packages.has(name);
   }
 

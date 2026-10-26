@@ -1,3 +1,4 @@
+import { prettier } from "#constants";
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
 import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
@@ -15,7 +16,7 @@ function formatFiles(args: string[]) {
 }
 
 export default defineToolCommands({
-  packageName: "prettier",
+  packageName: prettier,
   commands: {
     "prettier": {
       description: "Format the given files.",

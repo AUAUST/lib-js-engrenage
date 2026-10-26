@@ -11,6 +11,7 @@ describe("syncPrettierignoreFile", () => {
       "engrenage.config.ts":
         'export default { files: { generated: ["src/generated/**"] } };\n',
       "package.json": JSON.stringify({
+        type: "module",
         devDependencies: {
           "@changesets/cli": "*",
         },
@@ -66,7 +67,7 @@ describe("syncPrettierignoreFile", () => {
   test("leaves a file without markers untouched", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
-      "package.json": "{}",
+      "package.json": '{ "type": "module" }',
       ".prettierignore": "pnpm-lock.yaml\n",
     });
 

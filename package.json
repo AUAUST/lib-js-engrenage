@@ -17,6 +17,7 @@
     "#agents/*": "./src/agents/*.ts",
     "#bin/*": "./bin/*.ts",
     "#config/*": "./src/config/*.ts",
+    "#constants": "./src/constants.ts",
     "#eslint/*": "./src/eslint/*.ts",
     "#git/*": "./src/git/*.ts",
     "#package.json": "./package.json",

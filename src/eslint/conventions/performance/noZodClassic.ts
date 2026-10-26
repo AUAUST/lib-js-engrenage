@@ -1,9 +1,10 @@
+import { zod } from "#constants";
 import { defineImportReplacement } from "#eslint/conventions/defineImportReplacement";
 
 export default defineImportReplacement({
-  source: "zod",
+  source: zod,
   replacement: "`zod/mini`",
   files: ["directories.source"],
   presets: ["library"],
-  requires: ["zod"],
+  requires: [zod],
 });

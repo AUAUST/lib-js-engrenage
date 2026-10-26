@@ -1,9 +1,10 @@
+import { vitest } from "#constants";
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
 import { buildMode } from "#vitest/constants";
 
 export default defineToolCommands({
-  packageName: "vitest",
+  packageName: vitest,
   commands: {
     "vitest": {
       description: "Run the tests once, with type tests.",

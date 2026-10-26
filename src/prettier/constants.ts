@@ -3,7 +3,6 @@ import { freeze } from "@auaust/toolkit/object";
 import { lockfileIgnores as gitLockfileIgnores } from "#git/constants";
 import type { Options } from "#prettier/types/Options";
 import type { GlobGroup } from "#types/GlobGroup";
-import type { PackageName } from "#types/PackageName";
 
 export const defaultOptions = freeze({
   arrowParens: "always",
@@ -43,8 +42,6 @@ export const changelogIgnores = freeze({
   title: "Changelog",
   globs: freeze(["CHANGELOG.md"]),
 } as const) satisfies GlobGroup;
-
-export const changesetsPackage = "@changesets/cli" satisfies PackageName;
 
 export const codegenTitle = "Codegen";
 

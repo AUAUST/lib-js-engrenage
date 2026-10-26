@@ -14,7 +14,7 @@ import { createPackageJson } from "#support/packageJson/utils/createPackageJson"
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { CommandDefinition } from "#support/commander/types/CommandDefinition";
 import type { File } from "#types/File";
-import type { PackageName } from "#types/PackageName";
+import type { KnownPackageName } from "#types/KnownPackageName";
 
 const forwardedSignals = ["SIGHUP", "SIGINT", "SIGTERM"] as const;
 
@@ -24,7 +24,7 @@ function isModuleNotFound(error: unknown): boolean {
 
 function resolveManifest(
   config: ResolvedConfig,
-  packageName: PackageName,
+  packageName: KnownPackageName,
 ): File {
   const require = createRequire(config.resolve(packageFile));
 
@@ -43,7 +43,7 @@ function resolveManifest(
 
 function resolveBinary(
   config: ResolvedConfig,
-  packageName: PackageName,
+  packageName: KnownPackageName,
   binary: string,
 ): File {
   const manifestPath = resolveManifest(config, packageName);
@@ -107,7 +107,7 @@ export function defineToolCommands<Name extends string>({
   binary = packageName,
   commands,
 }: {
-  packageName: PackageName;
+  packageName: KnownPackageName;
   binary?: string;
   commands: Record<
     Name,

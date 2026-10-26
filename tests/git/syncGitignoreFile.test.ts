@@ -11,7 +11,7 @@ describe("syncGitignoreFile", () => {
   test("writes each preset as a titled group and keeps the lines around the blocks", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
-      "package.json": "{}",
+      "package.json": '{ "type": "module" }',
       "tsconfig.json": JSON.stringify({
         compilerOptions: {
           outDir: "dist",
@@ -76,7 +76,7 @@ describe("syncGitignoreFile", () => {
   test("expands defaults into every fixed group, in order", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
-      "package.json": "{}",
+      "package.json": '{ "type": "module" }',
       ".gitignore": "# @ignore defaults\n# @end\n",
     });
 
@@ -100,7 +100,7 @@ describe("syncGitignoreFile", () => {
   test("rejects an unknown preset, naming the marker and the file", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
-      "package.json": "{}",
+      "package.json": '{ "type": "module" }',
       ".gitignore": "# @ignore python\n# @end\n",
     });
 

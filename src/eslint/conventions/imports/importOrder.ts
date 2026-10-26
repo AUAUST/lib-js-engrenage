@@ -1,6 +1,7 @@
 import { relative } from "node:path";
 
 import { defineConvention } from "#eslint/conventions/defineConvention";
+import { organization } from "#constants";
 
 export default defineConvention({
   rules({ root, tsconfigPath }) {
@@ -13,12 +14,12 @@ export default defineConvention({
           customGroups: [
             {
               groupName: "value-auaust",
-              elementNamePattern: "^@auaust/",
+              elementNamePattern: `^${organization}/`,
               modifiers: ["value"],
             },
             {
               groupName: "type-auaust",
-              elementNamePattern: "^@auaust/",
+              elementNamePattern: `^${organization}/`,
               modifiers: ["type"],
             },
           ],
