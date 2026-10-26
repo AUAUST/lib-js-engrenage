@@ -2,6 +2,8 @@ import { freeze } from "@auaust/toolkit/object";
 
 import type { File } from "#types/File";
 
+export const arethetypeswrongCore = "@arethetypeswrong/core";
+
 export const changesetsChangelogGithub = "@changesets/changelog-github";
 
 export const changesetsCli = "@changesets/cli";
@@ -15,6 +17,8 @@ export const eslint = "eslint";
 export const prettier = "prettier";
 
 export const primitiveKit = "@auaust/primitive-kit";
+
+export const publint = "publint";
 
 export const toolkit = "@auaust/toolkit";
 
@@ -31,6 +35,7 @@ export const vitest = "vitest";
 export const zod = "zod";
 
 export const packages = freeze({
+  arethetypeswrongCore,
   changesetsChangelogGithub,
   changesetsCli,
   changesetsConfig,
@@ -38,6 +43,7 @@ export const packages = freeze({
   eslint,
   prettier,
   primitiveKit,
+  publint,
   toolkit,
   tsdown,
   typescript,

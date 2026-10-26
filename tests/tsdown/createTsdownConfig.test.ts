@@ -48,6 +48,45 @@ describe("createTsdownConfig", () => {
       },
       failOnWarn: true,
       minify: true,
+      publint: false,
+      attw: {
+        enabled: false,
+      },
+    });
+  });
+
+  test("enables publint and attw when the project depends on them", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({
+        name: "@scope/package",
+        type: "module",
+        devDependencies: {
+          "@arethetypeswrong/core": "^0.18.0",
+          "publint": "^0.3.0",
+        },
+      }),
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          outDir: "dist",
+          paths: {
+            "@scope/package": ["./src/index.ts"],
+          },
+        },
+      }),
+      "src/index.ts": "export {};\n",
+    });
+
+    const config = await loadConfig(project.root);
+
+    expect(
+      createTsdownConfig(config, {
+        ci: false,
+      }),
+    ).toMatchObject({
+      publint: true,
+      attw: {
+        enabled: true,
+      },
     });
   });
 

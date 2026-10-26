@@ -1,7 +1,7 @@
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
-import { packageJsonFile } from "#constants";
+import { arethetypeswrongCore, packageJsonFile, publint } from "#constants";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
 import { optionsSchema } from "#tsdown/config/schemas/optionsSchema";
 import { attwOptions, mainFields } from "#tsdown/constants";
@@ -36,7 +36,7 @@ export function createTsdownConfig(
     "tsdown options",
   );
 
-  const { packageJson, packageJsonPath, tsconfig } = config;
+  const { environment, packageJson, packageJsonPath, tsconfig } = config;
 
   if (packageJsonPath === undefined) {
     throw new Error(`No ${packageJsonFile} found in ${config.root}`);
@@ -76,9 +76,9 @@ export function createTsdownConfig(
     },
     sourcemap: true,
     report: false,
-    publint: true,
+    publint: environment.hasDependency(publint),
     attw: {
-      enabled: true,
+      enabled: environment.hasDependency(arethetypeswrongCore),
       ...attwOptions,
     },
     deps: {
