@@ -13,9 +13,7 @@ import {
   defaultFixtureFiles,
   defaultGeneratedFiles,
   defaultInstructionFiles,
-  defaultPrepareScript,
   defaultPresets,
-  defaultPublishScript,
   defaultSourceDirectories,
   defaultTestDirectories,
   defaultTestFiles,
@@ -134,8 +132,6 @@ export function createResolvedConfig({
   const github = once(() => {
     return freeze({
       workflows: raw.github?.workflows,
-      prepareScript: raw.github?.prepareScript ?? defaultPrepareScript,
-      publishScript: raw.github?.publishScript ?? defaultPublishScript,
     });
   });
 

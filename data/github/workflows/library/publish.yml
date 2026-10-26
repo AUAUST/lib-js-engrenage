@@ -32,14 +32,18 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: |
-          pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
-      - name: Build & Test
-        run: |
-          pnpm run {{ prepareScript }}
+      - name: Check
+        run: pnpm run ci:check
+
+      - name: Test
+        run: pnpm run ci:test
+
+      - name: Build
+        run: pnpm run ci:build
 
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v2
         with:
-          publish-script: "pnpm run {{ publishScript }}"
+          publish-script: pnpm run ci:publish

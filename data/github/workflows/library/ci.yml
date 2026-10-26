@@ -28,9 +28,13 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: |
-          pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
-      - name: Build & Test
-        run: |
-          pnpm run {{ prepareScript }}
+      - name: Check
+        run: pnpm run ci:check
+
+      - name: Test
+        run: pnpm run ci:test
+
+      - name: Build
+        run: pnpm run ci:build

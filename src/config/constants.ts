@@ -26,11 +26,7 @@ export const defaultInstructionFiles = freeze([
   ".claude/rules/**/*.md",
 ] as const) satisfies Globs;
 
-export const defaultPrepareScript = "ci:prepare";
-
 export const defaultPresets = freeze([] as const) satisfies Presets;
-
-export const defaultPublishScript = "ci:publish";
 
 export const defaultSourceDirectories = freeze([
   "src",

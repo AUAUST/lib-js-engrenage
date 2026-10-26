@@ -1,11 +1,11 @@
 import {
   array,
   boolean,
+  literal,
   optional,
-  pipe,
-  regex,
+  picklist,
   strictObject,
-  string,
+  union,
   type GenericSchema,
 } from "valibot";
 
@@ -13,6 +13,7 @@ import { directorySchema } from "#config/config/schemas/directorySchema";
 import { fileSchema } from "#config/config/schemas/fileSchema";
 import { globSchema } from "#config/config/schemas/globSchema";
 import { presetSchema } from "#config/config/schemas/presetSchema";
+import { workflowSetNames } from "#github/constants";
 import type { Presets } from "#config/types/Presets";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
@@ -22,11 +23,6 @@ const directoriesSchema: GenericSchema<Directories> = array(directorySchema);
 const globsSchema: GenericSchema<Globs> = array(globSchema);
 
 const presetsSchema: GenericSchema<Presets> = array(presetSchema);
-
-const scriptSchema = pipe(
-  string(),
-  regex(/^[\w.-]+(?::[\w.-]+)*$/, "Expected a package.json script name"),
-);
 
 export const configSchema = strictObject({
   presets: optional(presetsSchema),
@@ -59,9 +55,7 @@ export const configSchema = strictObject({
   ),
   github: optional(
     strictObject({
-      workflows: optional(boolean()),
-      prepareScript: optional(scriptSchema),
-      publishScript: optional(scriptSchema),
+      workflows: optional(union([literal(false), picklist(workflowSetNames)])),
     }),
   ),
   vscode: optional(

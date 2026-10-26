@@ -18,8 +18,10 @@
   },
   "scripts": {
     "build": "pnpm run engrenage tsdown && pnpm run engrenage tsc:dist && pnpm run engrenage vitest:dist",
-    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run build",
+    "ci:build": "pnpm run build",
+    "ci:check": "pnpm run engrenage sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run typecheck && pnpm run lint",
     "ci:publish": "changeset publish",
+    "ci:test": "pnpm run engrenage vitest",
     "coverage": "pnpm run engrenage vitest:coverage",
     "engrenage": "node bin/engrenage/index.ts",
     "format": "pnpm run engrenage prettier",
