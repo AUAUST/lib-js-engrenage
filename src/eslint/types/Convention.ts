@@ -6,8 +6,8 @@ import type { ScopeReference } from "#eslint/types/ScopeReference";
 export interface Convention {
   enabled: boolean;
   presets: Presets;
-  files: readonly ScopeReference[];
-  ignores: readonly ScopeReference[];
+  files: ReadonlyArray<ScopeReference>;
+  ignores: ReadonlyArray<ScopeReference>;
   typeAware: boolean;
   rules: Rules;
   rule?: RuleModule;

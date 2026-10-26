@@ -15,8 +15,8 @@ export function defineConvention({
 }: {
   rules?: Rules;
   rule?: RuleModule;
-  files?: readonly ScopeReference[];
-  ignores?: readonly ScopeReference[];
+  files?: ReadonlyArray<ScopeReference>;
+  ignores?: ReadonlyArray<ScopeReference>;
   typeAware?: boolean;
   enabled?: boolean;
   presets?: Presets;

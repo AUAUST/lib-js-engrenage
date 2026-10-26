@@ -84,7 +84,7 @@ function resolveScopeReference(
 
 function resolveScope(
   config: ResolvedConfig,
-  references: readonly ScopeReference[],
+  references: ReadonlyArray<ScopeReference>,
 ): Glob[] {
   return flatMap(references, (reference) => {
     return resolveScopeReference(config, reference);

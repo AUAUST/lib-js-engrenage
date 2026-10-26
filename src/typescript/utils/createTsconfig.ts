@@ -22,7 +22,7 @@ const formatHost: FormatDiagnosticsHost = {
   getNewLine: () => sys.newLine,
 };
 
-function toError(diagnostics: readonly Diagnostic[]): Error {
+function toError(diagnostics: ReadonlyArray<Diagnostic>): Error {
   return new Error(formatDiagnostics(diagnostics, formatHost));
 }
 

@@ -34,7 +34,7 @@ function assertPackageAlias(packageName: PackageName, alias: string) {
   }
 }
 
-function assertWildcards(alias: string, targets: readonly string[]) {
+function assertWildcards(alias: string, targets: ReadonlyArray<string>) {
   const counts = map([alias, ...targets], countWildcards);
 
   if (!every(counts, (count) => count === 1)) {

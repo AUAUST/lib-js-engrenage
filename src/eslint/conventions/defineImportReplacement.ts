@@ -29,7 +29,7 @@ function createImportSelectors(source: string, name: string): string[] {
 
 function createSelector(
   source: string,
-  imports: readonly string[] | undefined,
+  imports: ReadonlyArray<string> | undefined,
 ): string {
   if (imports === undefined) {
     return map(
@@ -63,7 +63,7 @@ function describeImport(name: string): string {
 
 function createTarget(
   source: string,
-  imports: readonly string[] | undefined,
+  imports: ReadonlyArray<string> | undefined,
 ): string {
   if (imports === undefined) {
     return `\`${source}\``;
@@ -86,10 +86,10 @@ export function defineImportReplacement({
   presets,
 }: {
   source: string;
-  imports?: readonly string[];
+  imports?: ReadonlyArray<string>;
   replacement: string;
-  files?: readonly ScopeReference[];
-  ignores?: readonly ScopeReference[];
+  files?: ReadonlyArray<ScopeReference>;
+  ignores?: ReadonlyArray<ScopeReference>;
   enabled?: boolean;
   presets?: Presets;
 }): Convention {

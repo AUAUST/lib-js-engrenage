@@ -15,8 +15,8 @@ export function defineReplacement({
   selector: string;
   target: string;
   replacement: string;
-  files?: readonly ScopeReference[];
-  ignores?: readonly ScopeReference[];
+  files?: ReadonlyArray<ScopeReference>;
+  ignores?: ReadonlyArray<ScopeReference>;
   enabled?: boolean;
   presets?: Presets;
 }): Convention {
