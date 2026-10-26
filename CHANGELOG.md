@@ -1,5 +1,13 @@
 # @auaust/engrenage
 
+## 0.1.1
+
+### Patch Changes
+
+- [`58c32c3`](https://github.com/AUAUST/lib-js-engrenage/commit/58c32c3c6384a48e43e9c8ca617fd8cf47a49542) Thanks [@apademide](https://github.com/apademide)! - Fix TS2883 in consumer config files that emit declarations: `@auaust/engrenage/config` now re-exports `ConfigInput`, and `Config` and `ResolvedConfig` are interfaces, so their inferred types are named through public entries.
+
+- [`43822b1`](https://github.com/AUAUST/lib-js-engrenage/commit/43822b11a588ffe443d8a8faa3e99f4e17480bed) Thanks [@apademide](https://github.com/apademide)! - The tsdown preset enables `publint` and `attw` only when the project depends on `publint` and `@arethetypeswrong/core`, instead of failing at the pack step when they are not installed.
+
 ## 0.1.0
 
 ### Minor Changes
