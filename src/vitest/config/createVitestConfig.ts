@@ -40,11 +40,11 @@ export function createVitestConfig(
   { mode }: ConfigEnv,
   options?: Maybe<Options>,
 ): Config {
-  const { guardOutDir } = validate(
-    optionsSchema,
-    options ?? {},
-    "Vitest options",
-  );
+  const {
+    guardOutDir,
+    isolate,
+    restoreMocks = !isolate,
+  } = validate(optionsSchema, options ?? {}, "Vitest options");
 
   const testsBuild = mode === buildMode;
 
@@ -57,6 +57,8 @@ export function createVitestConfig(
     },
     plugins: testsBuild ? [] : createSourcePlugins(config, guardOutDir),
     test: {
+      isolate,
+      restoreMocks,
       exclude: [...configDefaults.exclude, ...config.files.fixtures],
       coverage: {
         provider: defaultCoverageProvider,

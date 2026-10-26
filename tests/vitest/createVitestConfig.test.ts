@@ -37,6 +37,8 @@ describe("createVitestConfig", () => {
         },
       ],
       test: {
+        isolate: false,
+        restoreMocks: true,
         exclude: [...configDefaults.exclude, "tests/**/fixtures/**"],
         coverage: {
           provider: "istanbul",
