@@ -8,8 +8,9 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
-import { entries } from "@auaust/toolkit/object";
 import { onTestFinished } from "vitest";
+
+import { entries } from "@auaust/toolkit/object";
 
 export function createTemporaryProject(files: Record<string, string> = {}) {
   const root = mkdtempSync(join(tmpdir(), "engrenage-"));

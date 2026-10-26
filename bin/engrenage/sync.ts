@@ -1,5 +1,6 @@
-import { keys } from "@auaust/toolkit/object";
 import { Argument } from "@commander-js/extra-typings";
+
+import { keys } from "@auaust/toolkit/object";
 
 import { syncAgentFiles } from "#agents/utils/syncAgentFiles";
 import { loadConfig } from "#config/utils/loadConfig";

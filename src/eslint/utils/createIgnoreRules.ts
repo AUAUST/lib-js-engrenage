@@ -1,5 +1,6 @@
-import { map } from "@auaust/primitive-kit/arrays";
 import { defineConfig, globalIgnores, includeIgnoreFile } from "eslint/config";
+
+import { map } from "@auaust/primitive-kit/arrays";
 
 import { filesIn } from "#eslint/utils/filesIn";
 import type { Config } from "#eslint/types/Config";

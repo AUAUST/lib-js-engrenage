@@ -2,14 +2,6 @@ import { existsSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 
 import {
-  deduplicate,
-  every,
-  flatMap,
-  includes,
-} from "@auaust/primitive-kit/arrays";
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
-import { entries } from "@auaust/toolkit/object";
-import {
   applyEdits,
   findNodeAtLocation,
   getNodeValue,
@@ -21,6 +13,15 @@ import {
   type ParseError,
 } from "jsonc-parser";
 import { array, optional, string } from "valibot";
+
+import {
+  deduplicate,
+  every,
+  flatMap,
+  includes,
+} from "@auaust/primitive-kit/arrays";
+import { isPlainObject } from "@auaust/toolkit/isPlainObject";
+import { entries } from "@auaust/toolkit/object";
 
 import { syncFiles } from "#utils/syncFiles";
 import { validate } from "#utils/validate";

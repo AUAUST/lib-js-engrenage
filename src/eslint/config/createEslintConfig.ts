@@ -1,14 +1,23 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
-import { entries } from "@auaust/toolkit/object";
 import stylistic from "@stylistic/eslint-plugin";
+import packageJson, {
+  configs as packageJsonConfigs,
+} from "eslint-plugin-package-json";
 import perfectionist from "eslint-plugin-perfectionist";
 import unusedImports from "eslint-plugin-unused-imports";
 import { defineConfig } from "eslint/config";
 import { configs as typescriptConfigs } from "typescript-eslint";
+
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { entries } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
+import { packageFile } from "#config/constants";
 import { optionsSchema } from "#eslint/config/schemas/optionsSchema";
-import { conventionCategories, pluginName } from "#eslint/constants";
+import {
+  conventionCategories,
+  packageJsonRules,
+  pluginName,
+} from "#eslint/constants";
 import { createConventionRules } from "#eslint/utils/createConventionRules";
 import { createIgnoreRules } from "#eslint/utils/createIgnoreRules";
 import { createImportPresets } from "#eslint/utils/createImportPresets";
@@ -23,11 +32,12 @@ export function createEslintConfig(
   config: ResolvedConfig,
   options?: Maybe<Options>,
 ): Config[] {
-  const { ignore, recommended, ...categories } = validate(
-    optionsSchema,
-    options ?? {},
-    "ESLint options",
-  );
+  const {
+    ignore,
+    recommended,
+    packageJson: packageJsonEnabled,
+    ...categories
+  } = validate(optionsSchema, options ?? {}, "ESLint options");
 
   const conventionRules = flatMap(
     entries(conventionCategories),
@@ -47,6 +57,7 @@ export function createEslintConfig(
       plugins: {
         [pluginName]: createPlugin(conventionCategories),
         "@stylistic": stylistic,
+        "package-json": packageJson,
         perfectionist,
         "unused-imports": unusedImports,
       },
@@ -64,6 +75,14 @@ export function createEslintConfig(
       ? createRecommendedRules({
           codeFiles: config.files.code,
         })
+      : [],
+    packageJsonEnabled
+      ? {
+          name: `${pluginName}/package-json`,
+          files: [`**/${packageFile}`],
+          languageOptions: packageJsonConfigs.recommended.languageOptions,
+          rules: packageJsonRules,
+        }
       : [],
     categories.imports === false
       ? []

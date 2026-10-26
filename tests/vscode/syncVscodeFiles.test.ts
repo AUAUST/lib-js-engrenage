@@ -1,6 +1,7 @@
+import { describe, expect, test } from "vitest";
+
 import { loadConfig } from "@auaust/engrenage/config";
 import { syncVscodeFiles } from "@auaust/engrenage/vscode";
-import { describe, expect, test } from "vitest";
 
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 

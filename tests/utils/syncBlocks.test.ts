@@ -1,5 +1,6 @@
-import { syncBlocks } from "@auaust/engrenage";
 import { describe, expect, test } from "vitest";
+
+import { syncBlocks } from "@auaust/engrenage";
 
 import { markdownBlocks } from "#agents/constants";
 

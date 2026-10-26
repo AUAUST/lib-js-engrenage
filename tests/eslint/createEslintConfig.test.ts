@@ -1,3 +1,6 @@
+import { ESLint } from "eslint";
+import { describe, expect, expectTypeOf, test } from "vitest";
+
 import {
   loadConfig,
   type Environment,
@@ -10,8 +13,6 @@ import {
   type Options,
 } from "@auaust/engrenage/eslint";
 import { map } from "@auaust/primitive-kit/arrays";
-import { ESLint } from "eslint";
-import { describe, expect, expectTypeOf, test } from "vitest";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { getFixture } from "#tests/helpers/getFixture";
@@ -26,11 +27,12 @@ async function createLinter(options?: Options) {
   });
 }
 
-const performanceSource = `import { identity } from "@auaust/toolkit";
-import { map } from "@auaust/toolkit/object";
-import * as v from "valibot";
+const performanceSource = `import * as v from "valibot";
 import { string } from "zod";
 import z, { z as zod } from "zod/mini";
+
+import { identity } from "@auaust/toolkit";
+import { map } from "@auaust/toolkit/object";
 
 export * as valibot from "valibot";
 export { object } from "zod/mini";
@@ -77,6 +79,26 @@ async function lintedRules(file: string, options?: Options) {
   const eslint = await createLinter(options);
 
   const [result] = await eslint.lintFiles([file]);
+
+  return map(result?.messages ?? [], (message) => message.ruleId);
+}
+
+const misorderedPackageJson = `{
+  "version": "1.0.0",
+  "name": "@fixture/misordered",
+  "dependencies": {
+    "zod": "^4.0.0",
+    "valibot": "^1.0.0"
+  }
+}
+`;
+
+async function lintedPackageJsonRules(options?: Options) {
+  const eslint = await createLinter(options);
+
+  const [result] = await eslint.lintText(misorderedPackageJson, {
+    filePath: "package.json",
+  });
 
   return map(result?.messages ?? [], (message) => message.ruleId);
 }
@@ -137,11 +159,11 @@ describe("createEslintConfig", () => {
         presets: ["library"],
       }),
     ).toEqual([
-      "auaust/no-toolkit-root",
       "auaust/no-valibot-namespace",
       "auaust/no-zod-classic",
       "auaust/no-zod-namespace",
       "auaust/no-zod-namespace",
+      "auaust/no-toolkit-root",
       "auaust/no-valibot-namespace",
     ]);
   });
@@ -211,6 +233,19 @@ describe("createEslintConfig", () => {
     ]);
 
     expect(await lintedRules("tests/placed.test.ts")).toEqual([]);
+  });
+
+  test("reports misordered package.json properties and collections, unless disabled", async () => {
+    expect(await lintedPackageJsonRules()).toEqual([
+      "package-json/order-properties",
+      "package-json/sort-collections",
+    ]);
+
+    expect(
+      await lintedPackageJsonRules({
+        packageJson: false,
+      }),
+    ).not.toContain("package-json/order-properties");
   });
 
   test("allows default exports in tool configs", async () => {

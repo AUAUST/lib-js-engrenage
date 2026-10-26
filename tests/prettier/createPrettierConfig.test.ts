@@ -1,10 +1,11 @@
+import { format } from "prettier";
+import { describe, expect, expectTypeOf, test } from "vitest";
+
 import standardConfig, {
   createPrettierConfig,
   type Config,
 } from "@auaust/engrenage/prettier";
 import { defaultOptions } from "@auaust/engrenage/prettier/constants";
-import { format } from "prettier";
-import { describe, expect, expectTypeOf, test } from "vitest";
 
 describe("createPrettierConfig", () => {
   test("formats with the shared standard", async () => {

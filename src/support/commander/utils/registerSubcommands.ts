@@ -1,5 +1,6 @@
-import { entries } from "@auaust/toolkit/object";
 import { Command, type CommandUnknownOpts } from "@commander-js/extra-typings";
+
+import { entries } from "@auaust/toolkit/object";
 
 import type { CommandDefinition } from "#support/commander/types/CommandDefinition";
 

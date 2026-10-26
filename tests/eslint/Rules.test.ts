@@ -1,6 +1,7 @@
 import { describe, expectTypeOf, test } from "vitest";
-import type { Rules } from "@auaust/engrenage/eslint";
 import type { Linter } from "eslint";
+
+import type { Rules } from "@auaust/engrenage/eslint";
 
 declare module "@auaust/engrenage/eslint" {
   interface Rules {

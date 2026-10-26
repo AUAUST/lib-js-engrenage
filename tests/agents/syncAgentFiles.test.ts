@@ -1,11 +1,12 @@
 import { join } from "node:path";
 
+import { describe, expect, test } from "vitest";
+
 import {
   resolveAgentReference,
   syncAgentFiles,
 } from "@auaust/engrenage/agents";
 import { loadConfig } from "@auaust/engrenage/config";
-import { describe, expect, test } from "vitest";
 
 import { getFixture } from "#tests/helpers/getFixture";
 

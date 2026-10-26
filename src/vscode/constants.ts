@@ -1,5 +1,6 @@
-import { freeze } from "@auaust/toolkit/object";
 import type { FormattingOptions } from "jsonc-parser";
+
+import { freeze } from "@auaust/toolkit/object";
 
 import { defaultOptions } from "#prettier/constants";
 import type { File } from "#types/File";

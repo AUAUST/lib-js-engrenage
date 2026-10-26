@@ -1,9 +1,10 @@
+import { afterEach, describe, expect, test, vi } from "vitest";
+
 import {
   defineTsdownConfig,
   type ConfigContext,
   type InlineConfig,
 } from "@auaust/engrenage/tsdown";
-import { afterEach, describe, expect, test, vi } from "vitest";
 import type { ResolvedConfig } from "@auaust/engrenage/config";
 
 import { getFixture } from "#tests/helpers/getFixture";
@@ -16,7 +17,7 @@ afterEach(() => {
 });
 
 describe("defineTsdownConfig", () => {
-  test("passes the resolved config to the callback and merges native configs last", async () => {
+  test("passes the resolved config to the callbacks and merges native configs last", async () => {
     mockCwd(root);
 
     const callback = vi.fn(
@@ -31,12 +32,19 @@ describe("defineTsdownConfig", () => {
       },
     );
 
-    const tsdownConfig = await defineTsdownConfig(callback, {
-      platform: "neutral",
-      exports: {
-        exclude: ["internal"],
+    const tsdownConfig = await defineTsdownConfig(
+      callback,
+      {
+        platform: "neutral",
       },
-    })(
+      (_inlineConfig, _context, config) => {
+        return {
+          exports: {
+            exclude: [...config.directories.test],
+          },
+        };
+      },
+    )(
       {},
       {
         ci: false,
@@ -51,7 +59,7 @@ describe("defineTsdownConfig", () => {
     expect(tsdownConfig).toMatchObject({
       platform: "neutral",
       exports: {
-        exclude: ["internal"],
+        exclude: ["tests"],
       },
       deps: {
         onlyBundle: ["@fixture/tsdown"],

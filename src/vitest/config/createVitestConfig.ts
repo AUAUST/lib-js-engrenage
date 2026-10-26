@@ -1,6 +1,7 @@
 import { realpathSync } from "node:fs";
 
 import { configDefaults, mergeConfig } from "vitest/config";
+
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { resolve } from "#support/filesystem/utils/resolve";

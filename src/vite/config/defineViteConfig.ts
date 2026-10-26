@@ -1,5 +1,6 @@
-import { value } from "@auaust/toolkit/value";
 import { mergeConfig } from "vite";
+
+import { value } from "@auaust/toolkit/value";
 
 import { loadConfig } from "#config/utils/loadConfig";
 import { createViteConfig } from "#vite/config/createViteConfig";

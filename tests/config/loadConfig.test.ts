@@ -1,7 +1,8 @@
 import { join } from "node:path";
 
-import { loadConfig } from "@auaust/engrenage/config";
 import { afterEach, describe, expect, test, vi } from "vitest";
+
+import { loadConfig } from "@auaust/engrenage/config";
 
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";

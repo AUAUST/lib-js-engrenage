@@ -1,9 +1,10 @@
+import { describe, expect, expectTypeOf, test } from "vitest";
+
 import {
   resolvePathAliases,
   type PathAlias,
   type Paths,
 } from "@auaust/engrenage/typescript";
-import { describe, expect, expectTypeOf, test } from "vitest";
 
 import { getFixture } from "#tests/helpers/getFixture";
 

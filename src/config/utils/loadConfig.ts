@@ -1,9 +1,10 @@
 import { existsSync } from "node:fs";
 
+import { loadConfig as loadConfigFile, SUPPORTED_EXTENSIONS } from "c12";
+
 import { map } from "@auaust/primitive-kit/arrays";
 import { constant } from "@auaust/toolkit/constant";
 import { memoized } from "@auaust/toolkit/memoized";
-import { loadConfig as loadConfigFile, SUPPORTED_EXTENSIONS } from "c12";
 
 import { configSchema } from "#config/config/schemas/configSchema";
 import {

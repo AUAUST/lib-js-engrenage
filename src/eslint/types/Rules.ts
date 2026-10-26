@@ -3,6 +3,7 @@
 import type { CoreRules } from "#eslint/types/rules/CoreRules";
 import type { AuaustRules } from "#eslint/types/rules/AuaustRules";
 import type { StylisticRules } from "#eslint/types/rules/StylisticRules";
+import type { PackageJsonRules } from "#eslint/types/rules/PackageJsonRules";
 import type { PerfectionistRules } from "#eslint/types/rules/PerfectionistRules";
 import type { UnusedImportsRules } from "#eslint/types/rules/UnusedImportsRules";
 import type { TypescriptEslintRules } from "#eslint/types/rules/TypescriptEslintRules";
@@ -15,6 +16,7 @@ export interface Rules
     CoreRules,
     AuaustRules,
     StylisticRules,
+    PackageJsonRules,
     PerfectionistRules,
     UnusedImportsRules,
     TypescriptEslintRules,

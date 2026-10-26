@@ -1,7 +1,8 @@
+import type { InferOutput } from "valibot";
+
 import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
-import type { InferOutput } from "valibot";
 
 import {
   builtinGeneratedFiles,

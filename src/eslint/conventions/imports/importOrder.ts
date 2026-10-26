@@ -7,6 +7,18 @@ export default defineConvention({
       {
         type: "natural",
         sortBy: "path",
+        customGroups: [
+          {
+            groupName: "value-auaust",
+            elementNamePattern: "^@auaust/",
+            modifiers: ["value"],
+          },
+          {
+            groupName: "type-auaust",
+            elementNamePattern: "^@auaust/",
+            modifiers: ["type"],
+          },
+        ],
         groups: [
           "side-effect",
           "value-builtin",
@@ -19,6 +31,11 @@ export default defineConvention({
             newlinesBetween: 0,
           },
           "type-external",
+          "value-auaust",
+          {
+            newlinesBetween: 0,
+          },
+          "type-auaust",
           [
             "value-subpath",
             "value-internal",

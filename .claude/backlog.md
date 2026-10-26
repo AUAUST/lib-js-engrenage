@@ -9,50 +9,45 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: the `support` CLI registers every codegen subcommand at startup, and the `rules` subcommand imports the ESLint config builder and with it every conventions barrel. Renaming or deleting a convention module therefore crashes `pnpm support codegen barrels` with `ERR_MODULE_NOT_FOUND` before it can rewrite the stale barrel line, which has to be fixed by hand first.
    - Fix: decouple subcommand registration from their implementations so the barrels command never evaluates the modules it generates; a lazy dynamic import conflicts with the `noDynamicImport` convention, so this needs a deliberate loading pattern for CLI subcommands. Part of AUAUST/lib-js-engrenage#9.
 
-2. Canonical `package.json` order.
-   - Where: `package.json`, `src/prettier/` or `src/eslint/`
-   - Problem: nothing enforces a key order in `package.json`, so manual edits and generated fields (tsdown `exports`, new imports or peer dependencies) land in arbitrary positions.
-   - Fix: add a Prettier or ESLint plugin to the shared config that sorts `package.json` in a canonical order.
-
-3. Dedicated `@auaust` import group.
-   - Where: `src/eslint/conventions/imports/importOrder.ts`
-   - Problem: perfectionist's import order sorts `@auaust/*` packages among the other external imports, so AUAUST libraries are not visually set apart from third-party ones.
-   - Fix: add a custom `@auaust` group to the perfectionist `sort-imports` configuration, placed between the external and internal (`#…`) groups. The autofix reorders imports across the repository, so land it as its own change, before jaune and primitive-kit migrate so their imports are reordered once.
-
-4. Config file lookup through c12's default discovery.
+2. Config file lookup through c12's default discovery.
    - Where: `src/config/utils/loadConfig.ts` (`findConfigFile`, `importConfigFile`)
    - Problem: `findConfigFile` reimplements the lookup of `engrenage.config.*` in the current directory only (no `.config/` directory) and fails on several candidates, while c12 already discovers config files with its own algorithm.
    - Fix: let c12 find the config with its default behaviour and take the project root from c12's result (the directory holding the config, or the parent of `.config/` when the file lives there). Delete `findConfigFile` and update the loadConfig tests that pin the current-directory-only lookup; settle together with point 4.1.
 
-5. Native array methods with a primitive-kit equivalent are not reported.
+3. Native array methods with a primitive-kit equivalent are not reported.
    - Where: `src/eslint/conventions/globals/`
    - Problem: the code style prefers primitive-kit and toolkit helpers over native methods with an equivalent (`sort(array)` rather than `array.sort()`), but only `Object.*` and `Array.isArray` are enforced, so native calls creep back in and are replaced by hand.
    - Fix: add type-aware conventions reporting native array methods that primitive-kit covers, starting with `sort`, so only arrays are flagged; leave `filter` out until point 2.1 is fixed. Gate them on `@auaust/primitive-kit` being a dependency (AUAUST/lib-js-engrenage#11).
 
-6. Default source directories.
+4. Default source directories.
    - Where: `src/config/constants.ts` (`defaultSourceDirectories`), `engrenage.config.ts`
    - Problem: the default is `["src"]`, so every project with a `bin/` or `scripts/` directory (engrenage, toolkit, primitive-kit) lists its source directories by hand, and the conventions scoped to source directories skip those files otherwise.
    - Fix: default to `["src", "bin", "scripts"]`. A missing directory is harmless: barrel discovery and ESLint scopes only glob it. Drop the now redundant `directories.source` from engrenage's own config, and keep a configured list replacing the default rather than extending it.
 
-7. Import order misclassifies custom path aliases.
+5. Import order misclassifies custom path aliases.
    - Where: `src/eslint/conventions/imports/importOrder.ts`
    - Problem: perfectionist only treats `~/`, `@/` and `#` specifiers as internal by default. The convention does not pass `tsconfig.rootDir`, so aliases with other prefixes, such as `$lib/…` or `§/…`, sort among external packages. Conventions are static and cannot read the resolved config.
    - Fix: pass `tsconfig: { rootDir: config.root, filename: files.tsconfig }` to `perfectionist/sort-imports`, so path aliases are matched from the tsconfig. This needs conventions whose rule options derive from the resolved config, plumbing shared with AUAUST/lib-js-engrenage#11. Check that a package's own aliases (`@auaust/toolkit/*` inside toolkit) still land in the intended group.
 
-8. ESM-only output is not enforced.
+6. ESM-only output is not enforced.
    - Where: `src/tsdown/config/createTsdownConfig.ts`
    - Problem: AUAUST libraries drop CommonJS, but the tsdown config relies on tsdown's default format, and nothing rejects a package without `"type": "module"`. jaune and primitive-kit still ship dual output with `main`, `module` and `require` conditions.
    - Fix: set `format: "esm"` explicitly and fail clearly when `package.json` lacks `"type": "module"`. Also prefer the `module` field over `main` when resolving bundled dependencies (`inputOptions.resolve.mainFields`), which engrenage sets only in its own `tsdown.config.ts` so the UMD `main` of jsonc-parser is not bundled. Decide whether a native config overriding `format` is rejected. Migrating libraries drop the `main`, `module` and `require` fields (tsdown regenerates `exports`) in a breaking release.
 
-9. Changeset config is copied by hand.
+7. Changeset config is copied by hand.
    - Where: `.changeset/config.json` of each project
    - Problem: the changelog generator differs (`@changesets/changelog-github` in engrenage, the default elsewhere), schema versions differ, and jaune declares `access: "restricted"` while its `package.json` publishes publicly.
    - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) writing the shared fields, deriving `changelog[1].repo` from `package.json#repository` and `access` from `publishConfig.access`. It applies when changesets is a dependency (AUAUST/lib-js-engrenage#11).
 
-10. pnpm workspace defaults are copied by hand.
-    - Where: `pnpm-workspace.yaml` of each project
-    - Problem: `minimumReleaseAgeExclude: ["@auaust/*"]` and the shared `allowBuilds` entries repeat in every project, and the pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`.
-    - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) that writes the shared keys and keeps project `allowBuilds` entries. Editing YAML in place needs a parser that preserves the file (dependency to approve).
+8. pnpm workspace defaults are copied by hand.
+   - Where: `pnpm-workspace.yaml` of each project
+   - Problem: `minimumReleaseAgeExclude: ["@auaust/*"]` and the shared `allowBuilds` entries repeat in every project, and the pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`.
+   - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) that writes the shared keys and keeps project `allowBuilds` entries. Editing YAML in place needs a parser that preserves the file (dependency to approve).
+
+9. VS Code does not fix `package.json` on save.
+   - Where: `src/vscode/constants.ts` (`eslintIntegration`)
+   - Problem: the ESLint config now lints `package.json`, but the VS Code ESLint extension only validates JavaScript and TypeScript by default, so `source.fixAll.eslint` likely leaves key order to `pnpm lint --fix`. Not checked in the editor yet.
+   - Fix: confirm in VS Code; if so, add `"eslint.validate"` with `json` next to the default languages to the ESLint integration settings.
 
 ## 2. Upstream
 
@@ -113,22 +108,17 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: Vitest now resolves sources through Vite's `resolve.tsconfigPaths`, so the exported `createViteAliases` and its `Alias` type are no longer used by engrenage, and `PathAlias.alias` only serves them.
    - Fix: decide whether they stay public API; otherwise remove them before the next release and narrow `PathAlias` to what tsdown entries need.
 
-4. tsdown and ESLint native configs cannot be callbacks.
-   - Where: `src/tsdown/config/defineTsdownConfig.ts`, `src/eslint/config/defineEslintConfig.ts`
-   - Problem: Vite and Vitest native configs accept a callback receiving the native arguments and then the resolved config, while tsdown and ESLint native configs are plain objects, so a native config that depends on resolved values (such as `config.directories.source`) has to go through options or repeat the paths.
-   - Fix: accept `(inlineConfig, context, engrenage) => config` for tsdown and `(engrenage) => config` for ESLint native configs, resolved like the options.
-
-5. `package.json` imported through a relative path.
-   - Where: `bin/engrenage/index.ts`
-   - Problem: the CLI reads its description and version with `import packageJson from "../../package.json"`, the only relative import left, because no subpath import maps `package.json`.
-   - Fix: add a `#package.json` subpath import, or read the manifest through `loadConfig` from the package root.
+4. ESLint helpers live in modules with a single consumer.
+   - Where: `src/eslint/utils/` (`createConventionRules`, `createIgnoreRules`, `createImportPresets`, `createPlugin`, `createRecommendedRules`, `syncRuleTypes`)
+   - Problem: the project map gives a function its own module only when a barrel exports it or at least two modules import it. These are each imported by one module only (`createEslintConfig`, or the `codegen rules` command for `syncRuleTypes`).
+   - Fix: decide whether config builders and codegen helpers are an accepted exception; otherwise fold each into its only consumer as a private function.
 
 ## 4. Edge cases
 
 1. Definers find the project through `process.cwd()`.
    - Where: `src/eslint/config/defineEslintConfig.ts`, `src/tsdown/config/defineTsdownConfig.ts`, `src/vite/config/defineViteConfig.ts`, `src/vitest/config/defineVitestConfig.ts`
    - Problem: each definer calls `loadConfig()` with the default `process.cwd()`. When a tool runs from another directory than its config file (ESLint 10 looks configs up from the linted file, `vite --config`, Vitest projects, editor integrations), engrenage warns, loads the defaults and roots every path at the wrong directory. The former API took `root: new URL("./", import.meta.url)`.
-   - Fix: search upward from the working directory for the nearest `engrenage.config.*` and let definers accept an explicit root for tools that run elsewhere; settle together with point 1.4.
+   - Fix: search upward from the working directory for the nearest `engrenage.config.*` and let definers accept an explicit root for tools that run elsewhere; settle together with point 1.2.
 
 2. Long-lived processes keep the first loaded config.
    - Where: `src/config/utils/loadConfig.ts`

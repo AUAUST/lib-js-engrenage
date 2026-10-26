@@ -1,27 +1,24 @@
 {
   "name": "@auaust/engrenage",
-  "license": "GPL-3.0-only",
-  "type": "module",
   "version": "0.0.1",
-  "publishConfig": {
-    "access": "public"
-  },
   "description": "Shared configurations and tooling.",
-  "sideEffects": false,
-  "prettier": "#prettier",
+  "repository": {
+    "url": "git+https://github.com/AUAUST/lib-js-engrenage.git"
+  },
+  "license": "GPL-3.0-only",
   "author": {
     "name": "Aurian Aubert",
     "email": "aurian@auaust.ch",
     "url": "https://auaust.ch"
   },
-  "repository": {
-    "url": "git+https://github.com/AUAUST/lib-js-engrenage.git"
-  },
+  "sideEffects": false,
+  "type": "module",
   "imports": {
     "#agents/*": "./src/agents/*.ts",
     "#bin/*": "./bin/*.ts",
     "#config/*": "./src/config/*.ts",
     "#eslint/*": "./src/eslint/*.ts",
+    "#package.json": "./package.json",
     "#prettier": "./src/prettier/index.ts",
     "#prettier/*": "./src/prettier/*.ts",
     "#support/*": "./src/support/*.ts",
@@ -34,30 +31,60 @@
     "#vitest/*": "./src/vitest/*.ts",
     "#vscode/*": "./src/vscode/*.ts"
   },
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./agents": "./dist/agents/index.mjs",
+    "./agents/constants": "./dist/agents/constants.mjs",
+    "./config": "./dist/config/index.mjs",
+    "./config/constants": "./dist/config/constants.mjs",
+    "./eslint": "./dist/eslint/index.mjs",
+    "./eslint/constants": "./dist/eslint/constants.mjs",
+    "./prettier": "./dist/prettier/index.mjs",
+    "./prettier/constants": "./dist/prettier/constants.mjs",
+    "./tsdown": "./dist/tsdown/index.mjs",
+    "./tsdown/constants": "./dist/tsdown/constants.mjs",
+    "./typescript": "./dist/typescript/index.mjs",
+    "./typescript/constants": "./dist/typescript/constants.mjs",
+    "./vite": "./dist/vite/index.mjs",
+    "./vitest": "./dist/vitest/index.mjs",
+    "./vitest/constants": "./dist/vitest/constants.mjs",
+    "./vscode": "./dist/vscode/index.mjs",
+    "./vscode/constants": "./dist/vscode/constants.mjs",
+    "./agents/rules/*.md": "./data/agents/rules/*.md",
+    "./agents/sections/*.md": "./data/agents/sections/*.md",
+    "./tsconfig/*.json": "./data/tsconfig/*.json"
+  },
   "bin": {
     "engrenage": "./dist/bin/engrenage.mjs"
   },
+  "files": [
+    "dist",
+    "src",
+    "data"
+  ],
   "scripts": {
     "build": "pnpm run build:tsdown && tsc --noEmit --project tsconfig.dist.json && vitest run --config vitest.config.ts --typecheck --mode build --",
     "build:tsdown": "tsdown --config-loader tsx",
+    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run build",
+    "ci:publish": "changeset publish",
     "coverage": "vitest run --coverage",
     "engrenage": "node bin/engrenage/index.ts",
     "format": "prettier --write --ignore-unknown",
     "format:all": "prettier --write --ignore-unknown .",
-    "support": "node bin/support/index.ts",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "support": "node bin/support/index.ts",
     "test": "vitest run --config vitest.config.ts --typecheck -- && pnpm run typecheck",
     "typecheck": "echo 'Typechecking...' && tsc --noEmit && echo 'All good!'",
-    "watch": "vitest --config vitest.config.ts --typecheck --",
-    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run build",
-    "ci:publish": "changeset publish"
+    "watch": "vitest --config vitest.config.ts --typecheck --"
   },
+  "prettier": "#prettier",
   "dependencies": {
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "c12": "4.0.0-rc.3",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-package-json": "^1.11.0",
     "eslint-plugin-perfectionist": "^5.13.0",
     "eslint-plugin-unused-imports": "^4.4.1",
     "typescript-eslint": "^8.72.0",
@@ -85,13 +112,6 @@
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
   },
-  "inlinedDependencies": {
-    "@auaust/primitive-kit": "0.42.2",
-    "@auaust/toolkit": "0.5.1",
-    "@commander-js/extra-typings": "15.0.0",
-    "commander": "15.0.0",
-    "jsonc-parser": "3.3.1"
-  },
   "peerDependencies": {
     "eslint": "^10.0.0",
     "prettier": "^3.0.0",
@@ -104,46 +124,18 @@
     "eslint": {
       "optional": true
     },
-    "vite": {
-      "optional": true
-    },
     "prettier": {
       "optional": true
     },
     "tsdown": {
       "optional": true
     },
+    "vite": {
+      "optional": true
+    },
     "vitest": {
       "optional": true
     }
-  },
-  "files": [
-    "dist",
-    "src",
-    "data"
-  ],
-  "exports": {
-    ".": "./dist/index.mjs",
-    "./agents": "./dist/agents/index.mjs",
-    "./agents/constants": "./dist/agents/constants.mjs",
-    "./config": "./dist/config/index.mjs",
-    "./config/constants": "./dist/config/constants.mjs",
-    "./eslint": "./dist/eslint/index.mjs",
-    "./eslint/constants": "./dist/eslint/constants.mjs",
-    "./prettier": "./dist/prettier/index.mjs",
-    "./prettier/constants": "./dist/prettier/constants.mjs",
-    "./tsdown": "./dist/tsdown/index.mjs",
-    "./tsdown/constants": "./dist/tsdown/constants.mjs",
-    "./typescript": "./dist/typescript/index.mjs",
-    "./typescript/constants": "./dist/typescript/constants.mjs",
-    "./vite": "./dist/vite/index.mjs",
-    "./vitest": "./dist/vitest/index.mjs",
-    "./vitest/constants": "./dist/vitest/constants.mjs",
-    "./vscode": "./dist/vscode/index.mjs",
-    "./vscode/constants": "./dist/vscode/constants.mjs",
-    "./agents/rules/*.md": "./data/agents/rules/*.md",
-    "./agents/sections/*.md": "./data/agents/sections/*.md",
-    "./tsconfig/*.json": "./data/tsconfig/*.json"
   },
   "devEngines": {
     "packageManager": {
@@ -151,5 +143,15 @@
       "version": "^11.22.0",
       "onFail": "download"
     }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "inlinedDependencies": {
+    "@auaust/primitive-kit": "0.42.2",
+    "@auaust/toolkit": "0.5.1",
+    "@commander-js/extra-typings": "15.0.0",
+    "commander": "15.0.0",
+    "jsonc-parser": "3.3.1"
   }
 }

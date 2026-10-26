@@ -1,7 +1,8 @@
 import { join } from "node:path";
 
-import { defineVitestConfig } from "@auaust/engrenage/vitest";
 import { afterEach, describe, expect, test, vi } from "vitest";
+
+import { defineVitestConfig } from "@auaust/engrenage/vitest";
 import type { ResolvedConfig } from "@auaust/engrenage/config";
 import type { ConfigEnv } from "@auaust/engrenage/vite";
 

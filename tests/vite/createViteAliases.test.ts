@@ -1,5 +1,6 @@
-import { createViteAliases, type Alias } from "@auaust/engrenage/vite";
 import { describe, expect, expectTypeOf, test } from "vitest";
+
+import { createViteAliases, type Alias } from "@auaust/engrenage/vite";
 
 describe("createViteAliases", () => {
   test("maps each alias exactly to its resolved path", () => {

@@ -1,5 +1,6 @@
-import { value } from "@auaust/toolkit/value";
 import { mergeConfig } from "vitest/config";
+
+import { value } from "@auaust/toolkit/value";
 
 import { loadConfig } from "#config/utils/loadConfig";
 import { createVitestConfig } from "#vitest/config/createVitestConfig";

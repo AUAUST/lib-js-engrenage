@@ -1,11 +1,12 @@
 import { symlinkSync } from "node:fs";
 import { join } from "node:path";
 
-import { loadConfig } from "@auaust/engrenage/config";
-import { createVitestConfig } from "@auaust/engrenage/vitest";
 import { createServer } from "vite";
 import { describe, expect, test } from "vitest";
 import { configDefaults } from "vitest/config";
+
+import { loadConfig } from "@auaust/engrenage/config";
+import { createVitestConfig } from "@auaust/engrenage/vitest";
 
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";

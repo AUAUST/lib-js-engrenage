@@ -16,6 +16,7 @@ export * from "#eslint/types/ScopeReference";
 export * from "#eslint/types/rules/AuaustRules";
 export * from "#eslint/types/rules/CoreRules";
 export * from "#eslint/types/rules/ImportXRules";
+export * from "#eslint/types/rules/PackageJsonRules";
 export * from "#eslint/types/rules/PerfectionistRules";
 export * from "#eslint/types/rules/StylisticRules";
 export * from "#eslint/types/rules/TypescriptEslintRules";

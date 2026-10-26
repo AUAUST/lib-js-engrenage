@@ -1,7 +1,8 @@
 import { join } from "node:path";
 
-import { defineViteConfig } from "@auaust/engrenage/vite";
 import { afterEach, describe, expect, test, vi } from "vitest";
+
+import { defineViteConfig } from "@auaust/engrenage/vite";
 
 import { getFixture } from "#tests/helpers/getFixture";
 import { mockCwd } from "#tests/helpers/mockCwd";

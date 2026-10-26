@@ -1,4 +1,3 @@
-import { keys } from "@auaust/toolkit/object";
 import {
   boolean,
   optional,
@@ -7,6 +6,8 @@ import {
   strictObject,
   union,
 } from "valibot";
+
+import { keys } from "@auaust/toolkit/object";
 
 import { conventionCategories } from "#eslint/constants";
 import type { Convention } from "#eslint/types/Convention";
@@ -23,6 +24,7 @@ function categorySchema<Name extends string>(
 export const optionsSchema = strictObject({
   ignore: optional(boolean(), true),
   recommended: optional(boolean(), true),
+  packageJson: optional(boolean(), true),
   globals: categorySchema(conventionCategories.globals),
   comparisons: categorySchema(conventionCategories.comparisons),
   stylistic: categorySchema(conventionCategories.stylistic),

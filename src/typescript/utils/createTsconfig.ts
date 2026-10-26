@@ -1,4 +1,3 @@
-import { once } from "@auaust/toolkit/once";
 import {
   formatDiagnostics,
   getParsedCommandLineOfConfigFile,
@@ -7,6 +6,8 @@ import {
   type Diagnostic,
   type FormatDiagnosticsHost,
 } from "typescript";
+
+import { once } from "@auaust/toolkit/once";
 
 import { createAccessors } from "#config/utils/createAccessors";
 import { relativeWithin } from "#support/filesystem/utils/relativeWithin";

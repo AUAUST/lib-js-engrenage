@@ -8,13 +8,14 @@ import {
 } from "node:fs";
 import { dirname } from "node:path";
 
+import { flatConfigsToPlugins, pluginsToRulesDTS } from "eslint-typegen/core";
+import { builtinRules } from "eslint/use-at-your-own-risk";
+import { format, resolveConfig } from "prettier";
+
 import { map, sort } from "@auaust/primitive-kit/arrays";
 import { toPascalCase } from "@auaust/primitive-kit/strings";
 import { mappedValues } from "@auaust/toolkit/mappedValues";
 import { entries, record } from "@auaust/toolkit/object";
-import { flatConfigsToPlugins, pluginsToRulesDTS } from "eslint-typegen/core";
-import { builtinRules } from "eslint/use-at-your-own-risk";
-import { format, resolveConfig } from "prettier";
 
 import { createEslintConfig } from "#eslint/config/createEslintConfig";
 import { normalizeRuleSchema } from "#eslint/utils/normalizeRuleSchema";

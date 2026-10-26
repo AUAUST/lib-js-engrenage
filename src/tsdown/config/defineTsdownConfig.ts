@@ -1,5 +1,6 @@
-import { value } from "@auaust/toolkit/value";
 import { mergeConfig } from "tsdown";
+
+import { value } from "@auaust/toolkit/value";
 
 import { loadConfig } from "#config/utils/loadConfig";
 import { createTsdownConfig } from "#tsdown/config/createTsdownConfig";
@@ -13,12 +14,28 @@ import type { ConfigInput } from "#types/ConfigInput";
 
 export function defineTsdownConfig(
   options?: ConfigInput<Options, [InlineConfig, ConfigContext, ResolvedConfig]>,
-  ...configs: Config[]
+  ...configs: ConfigInput<
+    Config,
+    [InlineConfig, ConfigContext, ResolvedConfig]
+  >[]
 ): ConfigFn {
   return async function tsdownConfig(inlineConfig, context) {
     const config = await loadConfig();
 
     const resolvedOptions = await value(options, inlineConfig, context, config);
+
+    const resolvedConfigs: Config[] = [];
+
+    for (const nativeConfig of configs) {
+      const resolvedConfig = await value(
+        nativeConfig,
+        inlineConfig,
+        context,
+        config,
+      );
+
+      resolvedConfigs.push(resolvedConfig ?? {});
+    }
 
     return mergeConfig(
       createTsdownConfig(
@@ -28,7 +45,7 @@ export function defineTsdownConfig(
         },
         resolvedOptions,
       ),
-      ...configs,
+      ...resolvedConfigs,
     );
   };
 }

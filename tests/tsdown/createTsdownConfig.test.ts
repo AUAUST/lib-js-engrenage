@@ -1,6 +1,7 @@
+import { describe, expect, test } from "vitest";
+
 import { loadConfig } from "@auaust/engrenage/config";
 import { createTsdownConfig } from "@auaust/engrenage/tsdown";
-import { describe, expect, test } from "vitest";
 
 import { getFixture } from "#tests/helpers/getFixture";
 

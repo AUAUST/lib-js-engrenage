@@ -1,5 +1,6 @@
-import { resolveImportSpecifier } from "@auaust/engrenage/typescript";
 import { describe, expect, test } from "vitest";
+
+import { resolveImportSpecifier } from "@auaust/engrenage/typescript";
 
 const imports = {
   "#config/*": "./config/*.ts",

@@ -1,7 +1,8 @@
+import { optional, record, string, unknown } from "valibot";
+
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
-import { optional, record, string, unknown } from "valibot";
 
 import { createAccessors } from "#config/utils/createAccessors";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";

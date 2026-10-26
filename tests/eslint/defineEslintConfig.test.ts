@@ -1,7 +1,8 @@
-import { defineEslintConfig } from "@auaust/engrenage/eslint";
-import { map } from "@auaust/primitive-kit/arrays";
 import { ESLint } from "eslint";
 import { afterEach, describe, expect, test, vi } from "vitest";
+
+import { defineEslintConfig } from "@auaust/engrenage/eslint";
+import { map } from "@auaust/primitive-kit/arrays";
 import type { ResolvedConfig } from "@auaust/engrenage/config";
 
 import { getFixture } from "#tests/helpers/getFixture";
@@ -14,7 +15,7 @@ afterEach(() => {
 });
 
 describe("defineEslintConfig", () => {
-  test("passes the resolved config to the callback and appends native configs", async () => {
+  test("passes the resolved config to the callbacks and appends native configs", async () => {
     mockCwd(root);
 
     const callback = vi.fn((config: ResolvedConfig) => {
@@ -26,11 +27,15 @@ describe("defineEslintConfig", () => {
     const eslint = new ESLint({
       cwd: root,
       overrideConfigFile: true,
-      overrideConfig: await defineEslintConfig(callback, {
-        files: ["src/restricted.ts"],
-        rules: {
-          "auaust/no-array-is-array": "off",
-        },
+      overrideConfig: await defineEslintConfig(callback, (config) => {
+        return {
+          files: map(config.directories.source, (directory) => {
+            return `${directory}/restricted.ts`;
+          }),
+          rules: {
+            "auaust/no-array-is-array": "off",
+          },
+        };
       }),
     });
 
