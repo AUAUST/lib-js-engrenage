@@ -95,7 +95,6 @@ Pause on real choices: ask the questions and wait for the answers before continu
 
 ## AUAUST libraries
 
-- Reuse `@auaust/toolkit` and `@auaust/primitive-kit` instead of reimplementing their helpers; prefer toolkit when both provide one.
 - Shared tooling configuration comes from `@auaust/engrenage`. Extend its builders and presets locally instead of copying or redefining them.
 
 <!-- @end -->
@@ -103,6 +102,8 @@ Pause on real choices: ask the questions and wait for the answers before continu
 ## Code conventions
 
 - Code style: `.claude/rules/code-style.md`.
+- `@auaust/toolkit`: `.claude/rules/prefer-toolkit.md`.
+- `@auaust/primitive-kit`: `.claude/rules/prefer-primitive-kit.md`.
 
 <!-- @reference @auaust/engrenage/agents/sections/verification.md -->
 
