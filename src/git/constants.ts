@@ -1,6 +1,5 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { coverageDirectory } from "#config/constants";
 import type { GlobGroup } from "#types/GlobGroup";
 
 export const javascriptIgnores = freeze({
@@ -64,13 +63,6 @@ export const editorIgnores = freeze({
   ] as const),
 } as const) satisfies GlobGroup;
 
-export const coverageIgnores = freeze({
-  title: "Coverage",
-  globs: freeze([`/${coverageDirectory}`] as const),
-} as const) satisfies GlobGroup;
-
-export const outputTitle = "Output";
-
 export const defaultIgnores: ReadonlyArray<GlobGroup> = freeze([
   javascriptIgnores,
   lockfileIgnores,
@@ -78,5 +70,8 @@ export const defaultIgnores: ReadonlyArray<GlobGroup> = freeze([
   envIgnores,
   logIgnores,
   editorIgnores,
-  coverageIgnores,
 ] as const) satisfies ReadonlyArray<GlobGroup>;
+
+export const outputTitle = "Output";
+
+export const coverageTitle = "Coverage";

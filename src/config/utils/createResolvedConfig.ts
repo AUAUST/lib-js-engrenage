@@ -1,5 +1,6 @@
 import type { InferOutput } from "valibot";
 
+import { map } from "@auaust/primitive-kit/arrays";
 import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
@@ -7,6 +8,7 @@ import { once } from "@auaust/toolkit/once";
 import {
   defaultCodeFiles,
   defaultConfigFiles,
+  defaultCoverageDirectory,
   defaultDiscoveredFiles,
   defaultFixtureFiles,
   defaultGeneratedFiles,
@@ -20,6 +22,7 @@ import { isWithin } from "#support/filesystem/utils/isWithin";
 import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
+import { filesIn } from "#utils/filesIn";
 import type { configSchema } from "#config/config/schemas/configSchema";
 import type { Environment } from "#config/types/Environment";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
@@ -35,12 +38,12 @@ function createEnvironment({ optional }: PackageJson): Environment {
     packages.add(optional.name);
   }
 
-  function has(name: PackageName): name is KnownPackageName {
+  function hasDependency(name: PackageName): name is KnownPackageName {
     return packages.has(name);
   }
 
   return freeze({
-    has,
+    hasDependency,
   });
 }
 
@@ -95,6 +98,7 @@ export function createResolvedConfig({
         {
           source: raw.directories?.source ?? defaultSourceDirectories,
           test: raw.directories?.test ?? defaultTestDirectories,
+          coverage: raw.directories?.coverage ?? defaultCoverageDirectory,
         },
         compose.getters({
           output: outputDirectory,
@@ -104,10 +108,14 @@ export function createResolvedConfig({
   });
 
   const files = once(() => {
+    const fixtures = raw.files?.fixtures ?? defaultFixtureFiles;
+
     return freeze({
       code: raw.files?.code ?? defaultCodeFiles,
       test: raw.files?.test ?? defaultTestFiles,
-      fixtures: raw.files?.fixtures ?? defaultFixtureFiles,
+      fixtures: map(directories().test, (directory) => {
+        return filesIn(directory, fixtures);
+      }),
       config: raw.files?.config ?? defaultConfigFiles,
       discovered: raw.files?.discovered ?? defaultDiscoveredFiles,
       generated: raw.files?.generated ?? defaultGeneratedFiles,

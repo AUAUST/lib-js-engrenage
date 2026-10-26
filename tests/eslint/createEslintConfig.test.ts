@@ -15,6 +15,7 @@ import {
 import { map } from "@auaust/primitive-kit/arrays";
 import type { Maybe } from "@auaust/toolkit/types";
 
+import { packageJsonFile } from "#constants";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 
@@ -98,7 +99,7 @@ async function lintedPackageJsonRules(options?: Options) {
   const eslint = await createLinter(options);
 
   const [result] = await eslint.lintText(misorderedPackageJson, {
-    filePath: "package.json",
+    filePath: packageJsonFile,
   });
 
   return map(result?.messages ?? [], (message) => message.ruleId);
@@ -232,7 +233,7 @@ describe("createEslintConfig", () => {
 
   test("enables dependency-gated conventions only for declared packages, unless options force them", async () => {
     const valibotOnly: Environment = {
-      has(name): name is "valibot" {
+      hasDependency(name): name is "valibot" {
         return name === "valibot";
       },
     };
@@ -305,7 +306,7 @@ describe("createEslintConfig", () => {
     expect(await unignored.isPathIgnored("ignored.ts")).toBe(false);
   });
 
-  test("ignores fixtures through the global files.fixtures glob", async () => {
+  test("ignores the resolved files.fixtures globs", async () => {
     const config = await loadConfig(root);
 
     const eslint = new ESLint({
@@ -315,7 +316,7 @@ describe("createEslintConfig", () => {
         ...config,
         files: {
           ...config.files,
-          fixtures: "**/data/**",
+          fixtures: ["tests/**/data/**"],
         },
       }),
     });

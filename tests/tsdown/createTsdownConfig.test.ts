@@ -1,8 +1,9 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage/config";
 import { createTsdownConfig } from "@auaust/engrenage/tsdown";
 
+import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 
 const root = getFixture("tsdown");
@@ -34,6 +35,7 @@ describe("createTsdownConfig", () => {
         "alpha/index": "src/alpha/index.ts",
         "bin/cli": "bin/cli/index.ts",
       },
+      format: "esm",
       outDir: "dist",
       exports: {
         exclude: ["bin/cli"],
@@ -65,5 +67,21 @@ describe("createTsdownConfig", () => {
         },
       );
     }).toThrow("Bin entry 'alpha/index' conflicts");
+  });
+
+  test("rejects a package that is not an ES module", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "@scope/package" }',
+    });
+
+    const config = await loadConfig(project.root);
+
+    expect(() => {
+      return createTsdownConfig(config, {
+        ci: false,
+      });
+    }).toThrow('must declare "type": "module"');
   });
 });

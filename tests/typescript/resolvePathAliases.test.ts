@@ -2,7 +2,7 @@ import { describe, expect, expectTypeOf, test } from "vitest";
 
 import {
   resolvePathAliases,
-  type PathAlias,
+  type PathAliases,
   type Paths,
 } from "@auaust/engrenage/typescript";
 
@@ -23,15 +23,13 @@ describe("resolvePathAliases", () => {
     );
 
     expectTypeOf(resolvePathAliases).parameter(1).toEqualTypeOf<Paths>();
-    expectTypeOf(aliases).toEqualTypeOf<PathAlias[]>();
+    expectTypeOf(aliases).toEqualTypeOf<PathAliases>();
     expect(aliases).toEqual([
       {
-        alias: "@scope/package/group",
         name: "group/index",
         path: "src/group/index.ts",
       },
       {
-        alias: "@scope/package",
         name: "index",
         path: "src/main.ts",
       },

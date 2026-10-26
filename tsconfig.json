@@ -4,6 +4,7 @@
     "paths": {
       "@auaust/engrenage/*/constants": ["./src/*/constants.ts"],
       "@auaust/engrenage/*": ["./src/*/index.ts"],
+      "@auaust/engrenage/constants": ["./src/constants.ts"],
       "@auaust/engrenage": ["./src/index.ts"]
     },
     "types": ["node"]

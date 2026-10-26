@@ -1,4 +1,5 @@
 // @barrel utils/*.ts named
+export { filesIn } from "#utils/filesIn";
 export { syncBlocks } from "#utils/syncBlocks";
 export { syncFiles } from "#utils/syncFiles";
 export { syncIgnoreFile } from "#utils/syncIgnoreFile";
@@ -19,6 +20,7 @@ export * from "#types/IgnorePresets";
 export * from "#types/KnownPackageName";
 export * from "#types/PackageName";
 export * from "#types/PackageNames";
+export * from "#types/PackageType";
 export * from "#types/SyncResult";
 export * from "#types/SyncResults";
 export * from "#types/SyncStatus";

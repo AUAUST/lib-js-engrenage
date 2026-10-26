@@ -4,7 +4,7 @@ import { sortOrder } from "sort-package-json";
 import { flat, flatMap, includes } from "@auaust/primitive-kit/arrays";
 import { entries, keys, values } from "@auaust/toolkit/object";
 
-import { packageFile } from "#config/constants";
+import { packageJsonFile } from "#constants";
 import {
   packageJsonPlacements,
   packageJsonRules,
@@ -39,7 +39,7 @@ function createPropertyOrder(): string[] {
 export function createPackageJsonRules(): Config {
   return {
     name: `${pluginName}/package-json`,
-    files: [`**/${packageFile}`],
+    files: [`**/${packageJsonFile}`],
     languageOptions: packageJsonConfigs.recommended.languageOptions,
     rules: {
       ...packageJsonRules,

@@ -9,6 +9,7 @@ import { toPosixPath } from "#support/filesystem/utils/toPosixPath";
 import type { Directory } from "#types/Directory";
 import type { PackageName } from "#types/PackageName";
 import type { PathAlias } from "#typescript/types/PathAlias";
+import type { PathAliases } from "#typescript/types/PathAliases";
 import type { Paths } from "#typescript/types/Paths";
 
 function toEntryName(
@@ -44,7 +45,7 @@ export function resolvePathAliases(
   packageName: PackageName,
   paths: Paths,
   root: Directory | URL,
-): PathAlias[] {
+): PathAliases {
   const rootPath = resolve(root);
 
   const aliases = new Map<string, PathAlias>();
@@ -118,7 +119,6 @@ export function resolvePathAliases(
         entryPaths.set(name, path);
 
         aliases.set(alias, {
-          alias,
           name,
           path,
         });

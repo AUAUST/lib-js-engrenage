@@ -1,6 +1,5 @@
 export { createEslintConfig } from "#eslint/config/createEslintConfig";
 export { defineEslintConfig } from "#eslint/config/defineEslintConfig";
-export { filesIn } from "#eslint/utils/filesIn";
 
 // @barrel types/*.ts all
 export * from "#eslint/types/Config";
@@ -12,6 +11,7 @@ export * from "#eslint/types/Rule";
 export * from "#eslint/types/RuleModule";
 export * from "#eslint/types/Rules";
 export * from "#eslint/types/ScopeReference";
+export * from "#eslint/types/ScopeReferences";
 // @barrel types/rules/*.ts all
 export * from "#eslint/types/rules/AuaustRules";
 export * from "#eslint/types/rules/CoreRules";

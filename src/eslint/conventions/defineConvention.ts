@@ -5,7 +5,7 @@ import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Convention } from "#eslint/types/Convention";
 import type { RuleModule } from "#eslint/types/RuleModule";
 import type { Rules } from "#eslint/types/Rules";
-import type { ScopeReference } from "#eslint/types/ScopeReference";
+import type { ScopeReferences } from "#eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
 export function defineConvention({
@@ -20,8 +20,8 @@ export function defineConvention({
 }: {
   rules?: ResolvableValue<Rules, [ResolvedConfig]>;
   rule?: RuleModule;
-  files?: ReadonlyArray<ScopeReference>;
-  ignores?: ReadonlyArray<ScopeReference>;
+  files?: ScopeReferences;
+  ignores?: ScopeReferences;
   typeAware?: boolean;
   enabled?: boolean;
   presets?: Presets;

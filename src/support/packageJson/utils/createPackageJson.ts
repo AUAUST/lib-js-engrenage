@@ -1,10 +1,19 @@
-import { optional, record, string, union, unknown } from "valibot";
+import {
+  looseObject,
+  optional,
+  picklist,
+  record,
+  string,
+  union,
+  unknown,
+} from "valibot";
 
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
 import { createAccessors } from "#config/utils/createAccessors";
+import { packageJsonFile, packageTypes, publishAccess } from "#constants";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
 import { validate } from "#utils/validate";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
@@ -33,7 +42,7 @@ export function createPackageJson({
 
   function describeMissing(field: string): string {
     return path === undefined
-      ? `No package.json found in ${root}`
+      ? `No ${packageJsonFile} found in ${root}`
       : `${path} does not declare "${field}"`;
   }
 
@@ -42,6 +51,13 @@ export function createPackageJson({
       manifest,
       name() {
         return validate(optional(string()), manifest()?.name, `${path} name`);
+      },
+      type() {
+        return validate(
+          optional(picklist(packageTypes)),
+          manifest()?.type,
+          `${path} type`,
+        );
       },
       imports() {
         return validate(
@@ -72,6 +88,31 @@ export function createPackageJson({
           optional(union([string(), record(string(), string())])),
           manifest()?.bin,
           `${path} bin`,
+        );
+      },
+      repository() {
+        return validate(
+          optional(
+            union([
+              string(),
+              looseObject({
+                url: string(),
+              }),
+            ]),
+          ),
+          manifest()?.repository,
+          `${path} repository`,
+        );
+      },
+      publishConfig() {
+        return validate(
+          optional(
+            looseObject({
+              access: optional(picklist(publishAccess)),
+            }),
+          ),
+          manifest()?.publishConfig,
+          `${path} publishConfig`,
         );
       },
     },

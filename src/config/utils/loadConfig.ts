@@ -7,15 +7,8 @@ import { constant } from "@auaust/toolkit/constant";
 import { memoized } from "@auaust/toolkit/memoized";
 
 import { configSchema } from "#config/config/schemas/configSchema";
-import {
-  configFileName,
-  defaultDistTsconfigFile,
-  defaultGitignoreFile,
-  defaultPrettierignoreFile,
-  defaultTsconfigFile,
-  packageFile,
-} from "#config/constants";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { files } from "#constants";
 import { resolve } from "#support/filesystem/utils/resolve";
 import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { validate } from "#utils/validate";
@@ -38,7 +31,7 @@ const warnMissingConfig = memoized(function (root: Directory) {
 async function loadConfigIn(directory: Directory) {
   return loadConfigFile({
     cwd: directory,
-    configFile: configFileName,
+    configFile: files.engrenageConfig,
     rcFile: false,
     globalRc: false,
     packageJson: false,
@@ -67,7 +60,7 @@ async function findConfig(
     };
   }
 
-  if (existsSync(resolve(directory, packageFile))) {
+  if (existsSync(resolve(directory, files.packageJson))) {
     return {
       root: directory,
       configFile: undefined,
@@ -124,13 +117,13 @@ async function readConfig(start: Directory): Promise<ResolvedConfig> {
   const tsconfigPath = resolveSourceFile({
     root,
     configured: raw.files?.tsconfig,
-    fallback: defaultTsconfigFile,
+    fallback: files.tsconfig,
   });
 
   const distTsconfigPath = resolveSourceFile({
     root,
     configured: raw.files?.distTsconfig,
-    fallback: defaultDistTsconfigFile,
+    fallback: files.distTsconfig,
   });
 
   return createResolvedConfig({
@@ -138,19 +131,19 @@ async function readConfig(start: Directory): Promise<ResolvedConfig> {
     raw,
     packageJsonPath: resolveSourceFile({
       root,
-      fallback: packageFile,
+      fallback: files.packageJson,
     }),
     tsconfigPath,
     distTsconfigPath: distTsconfigPath ?? tsconfigPath,
     gitignorePath: resolveSourceFile({
       root,
       configured: raw.files?.gitignore,
-      fallback: defaultGitignoreFile,
+      fallback: files.gitignore,
     }),
     prettierignorePath: resolveSourceFile({
       root,
       configured: raw.files?.prettierignore,
-      fallback: defaultPrettierignoreFile,
+      fallback: files.prettierignore,
     }),
   });
 }

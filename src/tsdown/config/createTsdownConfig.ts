@@ -1,9 +1,10 @@
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
+import { packageJsonFile } from "#constants";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
 import { optionsSchema } from "#tsdown/config/schemas/optionsSchema";
-import { attwOptions } from "#tsdown/constants";
+import { attwOptions, mainFields } from "#tsdown/constants";
 import { createTsdownEntries } from "#tsdown/utils/createTsdownEntries";
 import { resolvePathAliases } from "#typescript/utils/resolvePathAliases";
 import { validate } from "#utils/validate";
@@ -38,7 +39,13 @@ export function createTsdownConfig(
   const { packageJson, packageJsonPath, tsconfig } = config;
 
   if (packageJsonPath === undefined) {
-    throw new Error(`No package.json found in ${config.root}`);
+    throw new Error(`No ${packageJsonFile} found in ${config.root}`);
+  }
+
+  if (packageJson.optional.type !== "module") {
+    throw new Error(
+      `${packageJsonPath} must declare "type": "module": libraries ship ESM only`,
+    );
   }
 
   const pathAliases = resolvePathAliases(
@@ -52,6 +59,7 @@ export function createTsdownConfig(
   return {
     cwd: config.root,
     entry: createTsdownEntries(pathAliases, bins),
+    format: "esm",
     outDir: tsconfig.outDir,
     tsconfig: config.tsconfigPath,
     dts: {
@@ -74,7 +82,12 @@ export function createTsdownConfig(
       ...attwOptions,
     },
     deps: {
-      onlyBundle: bundle,
+      onlyBundle: [...bundle],
+    },
+    inputOptions: {
+      resolve: {
+        mainFields: [...mainFields],
+      },
     },
     failOnWarn: ci,
     minify: ci,

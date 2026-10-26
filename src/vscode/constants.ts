@@ -1,20 +1,12 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { eslint, prettier, typescript } from "#constants";
-import { defaultOptions } from "#prettier/constants";
 import type { File } from "#types/File";
 import type { Integration } from "#vscode/types/Integration";
 
 export const extensionsFile = ".vscode/extensions.json" satisfies File;
 
 export const settingsFile = ".vscode/settings.json" satisfies File;
-
-export const emptyObjectFile = "{}\n";
-
-export const formattingOptions = freeze({
-  insertSpaces: !defaultOptions.useTabs,
-  tabSize: defaultOptions.tabWidth,
-} as const);
 
 export const eslintIntegration = freeze({
   requires: [eslint],

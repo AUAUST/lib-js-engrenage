@@ -159,7 +159,7 @@ export function syncBarrels({
   check = false,
 }: {
   config: ResolvedConfig;
-  barrels?: string[];
+  barrels?: ReadonlyArray<string>;
   check?: boolean;
 }): SyncResults {
   const { root: rootPath } = config;

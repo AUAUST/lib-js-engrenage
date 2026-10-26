@@ -1,10 +1,10 @@
 import { entries } from "@auaust/toolkit/object";
 
 import type { Entries } from "#tsdown/types/Entries";
-import type { PathAlias } from "#typescript/types/PathAlias";
+import type { PathAliases } from "#typescript/types/PathAliases";
 
 export function createTsdownEntries(
-  pathAliases: PathAlias[],
+  pathAliases: PathAliases,
   bins: Entries,
 ): Entries {
   const tsdownEntries: Entries = {};

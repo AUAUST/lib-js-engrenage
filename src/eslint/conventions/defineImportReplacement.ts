@@ -3,7 +3,7 @@ import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { defineReplacement } from "#eslint/conventions/defineReplacement";
 import type { Presets } from "#config/types/Presets";
 import type { Convention } from "#eslint/types/Convention";
-import type { ScopeReference } from "#eslint/types/ScopeReference";
+import type { ScopeReferences } from "#eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
 function createImportSelectors(source: string, name: string): string[] {
@@ -90,8 +90,8 @@ export function defineImportReplacement({
   source: string;
   imports?: ReadonlyArray<string>;
   replacement: string;
-  files?: ReadonlyArray<ScopeReference>;
-  ignores?: ReadonlyArray<ScopeReference>;
+  files?: ScopeReferences;
+  ignores?: ScopeReferences;
   enabled?: boolean;
   presets?: Presets;
   requires?: PackageNames;

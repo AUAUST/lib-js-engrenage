@@ -53,8 +53,8 @@ export function createEslintConfig(
         gitignorePath: config.gitignorePath,
         generatedFiles: config.files.generated,
         outputDirectory: config.directories.output,
+        coverageDirectory: config.directories.coverage,
         fixtureFiles: config.files.fixtures,
-        testDirectories: config.directories.test,
       }),
     );
   }

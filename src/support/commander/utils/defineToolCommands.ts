@@ -7,8 +7,8 @@ import { isString } from "@auaust/toolkit/isString";
 import { get } from "@auaust/toolkit/object";
 import { transformValues } from "@auaust/toolkit/transformValues";
 
-import { packageFile } from "#config/constants";
 import { loadConfig } from "#config/utils/loadConfig";
+import { packageJsonFile } from "#constants";
 import { resolve } from "#support/filesystem/utils/resolve";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -26,10 +26,10 @@ function resolveManifest(
   config: ResolvedConfig,
   packageName: KnownPackageName,
 ): File {
-  const require = createRequire(config.resolve(packageFile));
+  const require = createRequire(config.resolve(packageJsonFile));
 
   try {
-    return require.resolve(`${packageName}/package.json`);
+    return require.resolve(`${packageName}/${packageJsonFile}`);
   } catch (error) {
     if (!isModuleNotFound(error)) {
       throw error;

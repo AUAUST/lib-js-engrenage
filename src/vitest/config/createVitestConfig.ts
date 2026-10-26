@@ -57,9 +57,10 @@ export function createVitestConfig(
     },
     plugins: testsBuild ? [] : createSourcePlugins(config, guardOutDir),
     test: {
-      exclude: [...configDefaults.exclude, config.files.fixtures],
+      exclude: [...configDefaults.exclude, ...config.files.fixtures],
       coverage: {
         provider: defaultCoverageProvider,
+        reportsDirectory: config.directories.coverage,
       },
       typecheck: {
         tsconfig,

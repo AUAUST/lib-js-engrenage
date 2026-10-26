@@ -11,12 +11,13 @@ import { value } from "@auaust/toolkit/value";
 
 import { pluginName } from "#eslint/constants";
 import { createRuleName } from "#eslint/utils/createRuleName";
-import { filesIn } from "#eslint/utils/filesIn";
+import { filesIn } from "#utils/filesIn";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#eslint/types/Config";
 import type { Convention } from "#eslint/types/Convention";
 import type { Rules } from "#eslint/types/Rules";
 import type { ScopeReference } from "#eslint/types/ScopeReference";
+import type { ScopeReferences } from "#eslint/types/ScopeReferences";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
@@ -28,7 +29,7 @@ function isEnabledByDefault(
     return false;
   }
 
-  const hasRequiredPackages = every(requires, (name) => environment.has(name));
+  const hasRequiredPackages = every(requires, environment.hasDependency);
 
   if (!hasRequiredPackages) {
     return false;
@@ -91,7 +92,7 @@ function resolveScopeReference(
 
 function resolveScope(
   config: ResolvedConfig,
-  references: ReadonlyArray<ScopeReference>,
+  references: ScopeReferences,
 ): Glob[] {
   return flatMap(references, (reference) => {
     return resolveScopeReference(config, reference);

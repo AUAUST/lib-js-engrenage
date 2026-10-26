@@ -26,8 +26,9 @@ describe("loadConfig", () => {
     );
     expect(config.root).toBe(first);
     expect(config.directories).toEqual({
-      source: ["src"],
+      source: ["src", "bin", "scripts"],
       test: ["tests"],
+      coverage: "coverage",
     });
     expect(config.files.generated).toEqual([]);
     expect(config.raw).toEqual({});
@@ -38,7 +39,7 @@ describe("loadConfig", () => {
       `No tsconfig found in ${first}`,
     );
     expect(config.presets).toEqual([]);
-    expect(config.environment.has("valibot")).toBe(false);
+    expect(config.environment.hasDependency("valibot")).toBe(false);
   });
 
   test("finds the config in .config/ and in parent directories, up to the nearest package file", async () => {
@@ -83,10 +84,10 @@ describe("loadConfig", () => {
     expect(config.files.generated).toEqual(["src/generated/**"]);
     expect(config.directories.output).toBe("dist");
     expect(config.packageJson.name).toBe("custom-fixture");
-    expect(config.environment.has("custom-fixture")).toBe(true);
-    expect(config.environment.has("valibot")).toBe(true);
-    expect(config.environment.has("zod")).toBe(true);
-    expect(config.environment.has("@auaust/toolkit")).toBe(false);
+    expect(config.environment.hasDependency("custom-fixture")).toBe(true);
+    expect(config.environment.hasDependency("valibot")).toBe(true);
+    expect(config.environment.hasDependency("zod")).toBe(true);
+    expect(config.environment.hasDependency("@auaust/toolkit")).toBe(false);
     expect(config.tsconfig.outDir).toBe("dist");
     expect(loadConfig(root)).toBe(loadConfig(root));
   });

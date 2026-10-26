@@ -14,35 +14,10 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: the code style prefers primitive-kit and toolkit helpers over native methods with an equivalent (`sort(array)` rather than `array.sort()`), but only `Object.*` and `Array.isArray` are enforced, so native calls creep back in and are replaced by hand.
    - Fix: add type-aware conventions reporting native array methods that primitive-kit covers, starting with `sort`, so only arrays are flagged; leave `filter` out until point 2.1 is fixed. Gate them on `@auaust/primitive-kit` being a dependency (AUAUST/lib-js-engrenage#11).
 
-3. Default source directories.
-   - Where: `src/config/constants.ts` (`defaultSourceDirectories`), `engrenage.config.ts`
-   - Problem: the default is `["src"]`, so every project with a `bin/` or `scripts/` directory (engrenage, toolkit, primitive-kit) lists its source directories by hand, and the conventions scoped to source directories skip those files otherwise.
-   - Fix: default to `["src", "bin", "scripts"]`. A missing directory is harmless: barrel discovery and ESLint scopes only glob it. Drop the now redundant `directories.source` from engrenage's own config, and keep a configured list replacing the default rather than extending it.
-
-4. ESM-only output is not enforced.
-   - Where: `src/tsdown/config/createTsdownConfig.ts`
-   - Problem: AUAUST libraries drop CommonJS, but the tsdown config relies on tsdown's default format, and nothing rejects a package without `"type": "module"`. jaune and primitive-kit still ship dual output with `main`, `module` and `require` conditions.
-   - Fix: set `format: "esm"` explicitly and fail clearly when `package.json` lacks `"type": "module"`. Also prefer the `module` field over `main` when resolving bundled dependencies (`inputOptions.resolve.mainFields`), which engrenage sets only in its own `tsdown.config.ts` so the UMD `main` of jsonc-parser is not bundled. Decide whether a native config overriding `format` is rejected. Migrating libraries drop the `main`, `module` and `require` fields (tsdown regenerates `exports`) in a breaking release.
-
-5. Changeset config is copied by hand.
-   - Where: `.changeset/config.json` of each project
-   - Problem: the changelog generator differs (`@changesets/changelog-github` in engrenage, the default elsewhere), schema versions differ, and jaune declares `access: "restricted"` while its `package.json` publishes publicly.
-   - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) writing the shared fields, deriving `changelog[1].repo` from `package.json#repository` and `access` from `publishConfig.access`. It applies when changesets is a dependency (AUAUST/lib-js-engrenage#11).
-
-6. pnpm workspace defaults are copied by hand.
+3. pnpm workspace defaults are copied by hand.
    - Where: `pnpm-workspace.yaml` of each project
    - Problem: `minimumReleaseAgeExclude: ["@auaust/*"]` and the shared `allowBuilds` entries repeat in every project, and the pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`.
    - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) that writes the shared keys and keeps project `allowBuilds` entries. Editing YAML in place needs a parser that preserves the file (dependency to approve).
-
-7. VS Code does not fix `package.json` on save.
-   - Where: `src/vscode/constants.ts` (`eslintIntegration`)
-   - Problem: the ESLint config now lints `package.json`, but the VS Code ESLint extension only validates JavaScript and TypeScript by default, so `source.fixAll.eslint` likely leaves key order to `pnpm lint --fix`. Not checked in the editor yet.
-   - Fix: confirm in VS Code; if so, add `"eslint.validate"` with `json` next to the default languages to the ESLint integration settings.
-
-8. Package scripts are copied by hand.
-   - Where: `package.json` `scripts` of each project
-   - Problem: the tool proxies (`engrenage tsc`, `vitest`, `tsdown`…) carry the engrenage contracts, but every project still writes the standard `typecheck`, `test`, `watch`, `coverage`, `build`, `lint` and `format` scripts pointing at them by hand.
-   - Fix: a `scripts` target of `engrenage sync` (AUAUST/lib-js-engrenage#12) that writes and checks the standard scripts and leaves project-specific ones alone. It needs the `package.json` fields ownership mode (AUAUST/lib-js-engrenage#9). Part of AUAUST/lib-js-engrenage#10.
 
 ## 2. Upstream
 
@@ -93,21 +68,6 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: toolkit defines `__NAME__`, `__VERSION__`, `__LICENSE__` and `__TIMESTAMP__` by hand for tsdown and Vitest, with matching ambient declarations in `src/ambient.d.ts`. Engrenage has no shared source for them.
    - Fix: declare compile-time variables as an `engrenage.config.ts` setting, so `createTsdownConfig` and `createViteConfig` (which `createVitestConfig` extends) apply the same `define` record. Later, generate the ambient `.d.ts` declarations from it. Settle which fields are standard and whether `__TIMESTAMP__` stays, given it makes builds non-reproducible.
 
-2. Read-only lists under the narrowed alias rule.
-   - Where: `src/tsdown/utils/createTsdownEntries.ts`, `src/vite/utils/createViteAliases.ts`, `src/typescript/utils/resolvePathAliases.ts`, `src/typescript/utils/syncBarrels.ts`, `src/tsdown/config/defineTsdownConfig.ts`, `src/eslint/config/defineEslintConfig.ts`, `src/eslint/utils/`, `src/tsdown/config/schemas/optionsSchema.ts`, `src/eslint/types/Convention.ts` and the convention definers
-   - Problem: the TypeScript rule now allows naming read-only lists, which document that a list is never mutated. Engrenage still types list inputs it never mutates as mutable (`PathAlias[]` in `createTsdownEntries` and `createViteAliases`, `barrels` in `syncBarrels`, the native `configs` of `defineTsdownConfig` and `defineEslintConfig`), lets valibot infer mutable arrays for option lists (`bundle`), and repeats `readonly ScopeReference[]` in `Convention` and the three convention definers.
-   - Fix: type list inputs as read-only, name the read-only lists that recur (`ScopeReferences`, `PathAliases`), mark schema list outputs read-only with valibot's `readonly()` action, and decide whether returned arrays (`PathAlias[]`, ESLint `Config[]`) stay mutable for consumers that extend them.
-
-3. `createViteAliases` has no consumer left.
-   - Where: `src/vite/utils/createViteAliases.ts`, `src/vite/types/Alias.ts`, `src/typescript/types/PathAlias.ts`
-   - Problem: Vitest now resolves sources through Vite's `resolve.tsconfigPaths`, so the exported `createViteAliases` and its `Alias` type are no longer used by engrenage, and `PathAlias.alias` only serves them.
-   - Fix: decide whether they stay public API; otherwise remove them before the next release and narrow `PathAlias` to what tsdown entries need.
-
-4. ESLint helpers live in modules with a single consumer.
-   - Where: `src/eslint/utils/` (`createConventionRules`, `createIgnoreRules`, `createImportPresets`, `createPlugin`, `createRecommendedRules`, `syncRuleTypes`)
-   - Problem: the project map gives a function its own module only when a barrel exports it or at least two modules import it. These are each imported by one module only (`createEslintConfig`, or the `codegen rules` command for `syncRuleTypes`).
-   - Fix: decide whether config builders and codegen helpers are an accepted exception; otherwise fold each into its only consumer as a private function.
-
 ## 4. Edge cases
 
 1. Definers cannot load a project above the working directory.
@@ -120,22 +80,17 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: `loadConfig` caches one promise per root for the whole process (only failed loads are retried), and the resolved config memoizes its package.json and tsconfig reads. Vite and Vitest in watch mode or an editor's ESLint server keep the first `engrenage.config.ts` after edits.
    - Fix: decide how long-lived processes refresh the cache, for example by comparing the config file's modification time.
 
-3. `files.fixtures` resolves differently per tool.
-   - Where: `src/eslint/utils/createIgnoreRules.ts`, `src/vitest/config/createVitestConfig.ts`
-   - Problem: ESLint ignores the glob under each test directory only (`tests/**/fixtures/**`), while Vitest excludes it everywhere (`**/fixtures/**`), so fixtures outside the test directories are linted but never tested.
-   - Fix: define once whether `files.fixtures` is root-relative or per test directory, and resolve it the same way for both tools.
-
-4. Misspelled block directives pass the check.
+3. Misspelled block directives pass the check.
    - Where: `src/utils/syncBlocks.ts`
    - Problem: full-line markers with an unknown directive are treated as content. A typo in the first marker (`<!-- @refrence … -->`) leaves its block unfilled while `--check` passes; a typo in a later marker turns it into content of the previous block, which the next sync overwrites. A stray `@end` is ignored the same way.
    - Fix: reject full-line markers whose directive has no filler and an `@end` that closes no block. The `syncBlocks` test that keeps unknown full-line markers as content changes accordingly. Part of AUAUST/lib-js-engrenage#9.
 
-5. Only the root `.gitignore` applies.
+4. Only the root `.gitignore` applies.
    - Where: `src/eslint/utils/createIgnoreRules.ts`
    - Problem: `includeIgnoreFile` reads `files.gitignore` only, so nested `.gitignore` files (such as `tests/fixtures/eslint/.gitignore`) do not apply to the root lint run, unlike Git.
    - Fix: decide whether nested ignore files are honored; if so, include each one found under the root, scoped to its directory.
 
-6. References resolve with CommonJS conditions.
+5. References resolve with CommonJS conditions.
    - Where: `src/agents/utils/resolveAgentReference.ts`
    - Problem: `createRequire(from).resolve` applies the `require` condition, so a fragment a package exports only under `import` cannot be referenced.
    - Fix: resolve references with ESM conditions. Part of AUAUST/lib-js-engrenage#9.

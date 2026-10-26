@@ -1,17 +1,5 @@
 import { existsSync } from "node:fs";
-import { isDeepStrictEqual } from "node:util";
 
-import {
-  applyEdits,
-  findNodeAtLocation,
-  getNodeValue,
-  modify,
-  parseTree,
-  printParseErrorCode,
-  type JSONPath,
-  type Node,
-  type ParseError,
-} from "jsonc-parser";
 import { array, optional, string } from "valibot";
 
 import {
@@ -20,126 +8,19 @@ import {
   flatMap,
   includes,
 } from "@auaust/primitive-kit/arrays";
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
-import { entries } from "@auaust/toolkit/object";
 
+import { emptyObjectFile } from "#support/json/constants";
+import { applyJsonEdits } from "#support/json/utils/applyJsonEdits";
+import { flattenJsonObject } from "#support/json/utils/flattenJsonObject";
+import { readJsonValue } from "#support/json/utils/readJsonValue";
+import { writeJsonValue } from "#support/json/utils/writeJsonValue";
 import { syncFiles } from "#utils/syncFiles";
 import { validate } from "#utils/validate";
-import {
-  emptyObjectFile,
-  extensionsFile,
-  formattingOptions,
-  integrations,
-  settingsFile,
-} from "#vscode/constants";
+import { extensionsFile, integrations, settingsFile } from "#vscode/constants";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
 import type { FileSync } from "#types/FileSync";
 import type { SyncResults } from "#types/SyncResults";
-import type { Setting } from "#vscode/types/Setting";
-import type { Settings } from "#vscode/types/Settings";
-
-interface SettingEdit {
-  path: JSONPath;
-  value: Setting | undefined;
-}
-
-function parseObject(content: string, path: File): Node {
-  const errors: ParseError[] = [];
-
-  const tree = parseTree(content, errors, {
-    allowTrailingComma: true,
-  });
-
-  const [error] = errors;
-
-  if (error !== undefined) {
-    throw new Error(
-      `Invalid JSON in ${path}: ${printParseErrorCode(error.error)} at offset ${error.offset}`,
-    );
-  }
-
-  if (tree?.type !== "object") {
-    throw new Error(`${path} must contain a JSON object`);
-  }
-
-  return tree;
-}
-
-function valueAt(content: string, path: File, location: JSONPath): unknown {
-  const node = findNodeAtLocation(parseObject(content, path), location);
-
-  return node === undefined ? undefined : getNodeValue(node);
-}
-
-function modifyJson(
-  content: string,
-  path: File,
-  location: JSONPath,
-  value: Setting | undefined,
-  isArrayInsertion = false,
-): string {
-  try {
-    const edits = modify(content, location, value, {
-      formattingOptions,
-      isArrayInsertion,
-    });
-
-    return applyEdits(content, edits);
-  } catch (error) {
-    throw new Error(`Cannot set "${location.join(" > ")}" in ${path}`, {
-      cause: error,
-    });
-  }
-}
-
-function applySetting(
-  content: string,
-  path: File,
-  { path: location, value }: SettingEdit,
-): string {
-  if (isDeepStrictEqual(valueAt(content, path, location), value)) {
-    return content;
-  }
-
-  return modifyJson(content, path, location, value);
-}
-
-function flattenSettings(
-  settings: Settings,
-  parent: JSONPath = [],
-): SettingEdit[] {
-  return flatMap(entries(settings), ([key, value]) => {
-    const path = [...parent, key];
-
-    if (isPlainObject(value)) {
-      return flattenSettings(value, path);
-    }
-
-    return [
-      {
-        path,
-        value,
-      },
-    ];
-  });
-}
-
-function applySettings(
-  content: string,
-  path: File,
-  edits: ReadonlyArray<SettingEdit>,
-): string {
-  parseObject(content, path);
-
-  let synced = content;
-
-  for (const edit of edits) {
-    synced = applySetting(synced, path, edit);
-  }
-
-  return synced;
-}
 
 function addRecommendations(
   content: string,
@@ -148,7 +29,7 @@ function addRecommendations(
 ): string {
   const recommendations = validate(
     optional(array(string())),
-    valueAt(content, path, ["recommendations"]),
+    readJsonValue(content, path, ["recommendations"]),
     `${path} recommendations`,
   );
 
@@ -156,7 +37,7 @@ function addRecommendations(
 
   for (const extension of extensions) {
     if (!includes(recommendations ?? [], extension)) {
-      synced = modifyJson(
+      synced = writeJsonValue(
         synced,
         path,
         ["recommendations", -1],
@@ -185,11 +66,11 @@ export function syncVscodeFiles({
   check?: boolean;
 }): SyncResults {
   const applicable = integrations.filter(({ requires }) => {
-    return every(requires, (name) => config.environment.has(name));
+    return every(requires, (name) => config.environment.hasDependency(name));
   });
 
   const settings = flatMap(applicable, (integration) => {
-    return flattenSettings(integration.settings);
+    return flattenJsonObject(integration.settings);
   });
 
   const extensions = deduplicate(
@@ -205,7 +86,7 @@ export function syncVscodeFiles({
       file: settingsFile,
       initial: emptyObjectFile,
       update(content, path) {
-        return applySettings(content, path, settings);
+        return applyJsonEdits(content, path, settings);
       },
     });
   }

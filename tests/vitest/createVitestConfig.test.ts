@@ -37,7 +37,7 @@ describe("createVitestConfig", () => {
         },
       ],
       test: {
-        exclude: [...configDefaults.exclude, "**/fixtures/**"],
+        exclude: [...configDefaults.exclude, "tests/**/fixtures/**"],
         coverage: {
           provider: "istanbul",
         },

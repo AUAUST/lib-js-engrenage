@@ -14,10 +14,9 @@ import type { ConfigInput } from "#types/ConfigInput";
 
 export function defineTsdownConfig(
   options?: ConfigInput<Options, [InlineConfig, ConfigContext, ResolvedConfig]>,
-  ...configs: ConfigInput<
-    Config,
-    [InlineConfig, ConfigContext, ResolvedConfig]
-  >[]
+  ...configs: ReadonlyArray<
+    ConfigInput<Config, [InlineConfig, ConfigContext, ResolvedConfig]>
+  >
 ): ConfigFn {
   return async function tsdownConfig(inlineConfig, context) {
     const config = await loadConfig();

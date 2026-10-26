@@ -26,6 +26,7 @@ export const configSchema = strictObject({
     strictObject({
       source: optional(directoriesSchema),
       test: optional(directoriesSchema),
+      coverage: optional(directorySchema),
     }),
   ),
   files: optional(
