@@ -11,7 +11,6 @@
     "email": "aurian@auaust.ch",
     "url": "https://auaust.ch"
   },
-  "sideEffects": false,
   "type": "module",
   "bin": {
     "engrenage": "./dist/bin/engrenage.mjs"
@@ -93,7 +92,6 @@
     "src",
     "data"
   ],
-  "prettier": "#prettier",
   "dependencies": {
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
@@ -103,7 +101,6 @@
     "eslint-plugin-package-json": "^1.11.0",
     "eslint-plugin-perfectionist": "^5.13.0",
     "eslint-plugin-unused-imports": "^4.4.1",
-    "sort-package-json": "^4.1.0",
     "typescript-eslint": "^8.72.0",
     "valibot": "^1.5.0"
   },
@@ -161,6 +158,8 @@
       "optional": true
     }
   },
+  "sideEffects": false,
+  "prettier": "#prettier",
   "devEngines": {
     "packageManager": {
       "name": "pnpm",

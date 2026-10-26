@@ -95,10 +95,39 @@ const misorderedPackageJson = `{
 }
 `;
 
-async function lintedPackageJsonRules(options?: Options) {
+const secondaryFieldsFirstPackageJson = `{
+  "name": "@fixture/secondary",
+  "sideEffects": false,
+  "prettier": "@fixture/prettier",
+  "scripts": {
+    "test": "vitest"
+  },
+  "dependencies": {
+    "valibot": "^1.0.0"
+  }
+}
+`;
+
+const secondaryFieldsLastPackageJson = `{
+  "name": "@fixture/secondary",
+  "scripts": {
+    "test": "vitest"
+  },
+  "dependencies": {
+    "valibot": "^1.0.0"
+  },
+  "sideEffects": false,
+  "prettier": "@fixture/prettier"
+}
+`;
+
+async function lintedPackageJsonRules(
+  options?: Options,
+  content = misorderedPackageJson,
+) {
   const eslint = await createLinter(options);
 
-  const [result] = await eslint.lintText(misorderedPackageJson, {
+  const [result] = await eslint.lintText(content, {
     filePath: packageJsonFile,
   });
 
@@ -283,6 +312,16 @@ describe("createEslintConfig", () => {
         packageJson: false,
       }),
     ).not.toContain("package-json/order-properties");
+  });
+
+  test("orders secondary package.json fields after scripts and dependencies", async () => {
+    expect(
+      await lintedPackageJsonRules(undefined, secondaryFieldsFirstPackageJson),
+    ).toEqual(["package-json/order-properties"]);
+
+    expect(
+      await lintedPackageJsonRules(undefined, secondaryFieldsLastPackageJson),
+    ).toEqual([]);
   });
 
   test("allows default exports in tool configs", async () => {
