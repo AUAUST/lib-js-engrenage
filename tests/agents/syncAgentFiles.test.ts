@@ -22,7 +22,12 @@ describe("syncAgentFiles", () => {
         config,
         check: true,
       }),
-    ).toEqual(["INSTRUCTIONS.md"]);
+    ).toEqual([
+      {
+        file: "INSTRUCTIONS.md",
+        status: "outdated",
+      },
+    ]);
   });
 
   test("resolves snippets, references relative to the file and package specifiers", async () => {

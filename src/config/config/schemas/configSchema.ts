@@ -1,4 +1,10 @@
-import { array, optional, strictObject, type GenericSchema } from "valibot";
+import {
+  array,
+  boolean,
+  optional,
+  strictObject,
+  type GenericSchema,
+} from "valibot";
 
 import { directorySchema } from "#config/config/schemas/directorySchema";
 import { fileSchema } from "#config/config/schemas/fileSchema";
@@ -39,6 +45,12 @@ export const configSchema = strictObject({
     strictObject({
       instructionFiles: optional(globsSchema),
       snippetsDirectory: optional(directorySchema),
+    }),
+  ),
+  vscode: optional(
+    strictObject({
+      settings: optional(boolean()),
+      extensions: optional(boolean()),
     }),
   ),
 });

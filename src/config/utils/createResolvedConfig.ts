@@ -119,6 +119,13 @@ export function createResolvedConfig({
     });
   });
 
+  const vscode = once(() => {
+    return freeze({
+      settings: raw.vscode?.settings,
+      extensions: raw.vscode?.extensions,
+    });
+  });
+
   function resolve(...paths: string[]): string {
     return resolveWithin(root, ...paths);
   }
@@ -142,6 +149,7 @@ export function createResolvedConfig({
         directories,
         files,
         agents,
+        vscode,
       }),
     ),
   );

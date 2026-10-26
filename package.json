@@ -31,7 +31,8 @@
     "#typescript/*": "./src/typescript/*.ts",
     "#utils/*": "./src/utils/*.ts",
     "#vite/*": "./src/vite/*.ts",
-    "#vitest/*": "./src/vitest/*.ts"
+    "#vitest/*": "./src/vitest/*.ts",
+    "#vscode/*": "./src/vscode/*.ts"
   },
   "bin": {
     "engrenage": "./dist/bin/engrenage.mjs"
@@ -48,7 +49,7 @@
     "test": "vitest run --config vitest.config.ts --typecheck -- && pnpm run typecheck",
     "typecheck": "echo 'Typechecking...' && tsc --noEmit && echo 'All good!'",
     "watch": "vitest --config vitest.config.ts --typecheck --",
-    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage agents sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run build",
+    "ci:prepare": "pnpm run typecheck && pnpm run lint && pnpm run engrenage sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run build",
     "ci:publish": "changeset publish"
   },
   "dependencies": {
@@ -75,6 +76,7 @@
     "eslint": "^10.13.0",
     "eslint-typegen": "^2.3.1",
     "jiti": "^2.7.0",
+    "jsonc-parser": "^3.3.1",
     "prettier": "^3.9.10",
     "publint": "^0.3.25",
     "tsdown": "^0.23.1",
@@ -87,14 +89,15 @@
     "@auaust/primitive-kit": "0.42.2",
     "@auaust/toolkit": "0.5.1",
     "@commander-js/extra-typings": "15.0.0",
-    "commander": "15.0.0"
+    "commander": "15.0.0",
+    "jsonc-parser": "3.3.1"
   },
   "peerDependencies": {
     "eslint": "^10.0.0",
     "prettier": "^3.0.0",
+    "tsdown": "^0.23.0",
     "typescript": "^6.0.0",
     "vite": "^8.0.0",
-    "tsdown": "^0.23.0",
     "vitest": "^5.0.0"
   },
   "peerDependenciesMeta": {
@@ -136,6 +139,8 @@
     "./vite": "./dist/vite/index.mjs",
     "./vitest": "./dist/vitest/index.mjs",
     "./vitest/constants": "./dist/vitest/constants.mjs",
+    "./vscode": "./dist/vscode/index.mjs",
+    "./vscode/constants": "./dist/vscode/constants.mjs",
     "./agents/rules/*.md": "./data/agents/rules/*.md",
     "./agents/sections/*.md": "./data/agents/sections/*.md",
     "./tsconfig/*.json": "./data/tsconfig/*.json"

@@ -42,19 +42,14 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
 8. ESM-only output is not enforced.
    - Where: `src/tsdown/config/createTsdownConfig.ts`
    - Problem: AUAUST libraries drop CommonJS, but the tsdown config relies on tsdown's default format, and nothing rejects a package without `"type": "module"`. jaune and primitive-kit still ship dual output with `main`, `module` and `require` conditions.
-   - Fix: set `format: "esm"` explicitly and fail clearly when `package.json` lacks `"type": "module"`. Decide whether a native config overriding `format` is rejected. Migrating libraries drop the `main`, `module` and `require` fields (tsdown regenerates `exports`) in a breaking release.
+   - Fix: set `format: "esm"` explicitly and fail clearly when `package.json` lacks `"type": "module"`. Also prefer the `module` field over `main` when resolving bundled dependencies (`inputOptions.resolve.mainFields`), which engrenage sets only in its own `tsdown.config.ts` so the UMD `main` of jsonc-parser is not bundled. Decide whether a native config overriding `format` is rejected. Migrating libraries drop the `main`, `module` and `require` fields (tsdown regenerates `exports`) in a breaking release.
 
-9. VS Code settings are copied by hand.
-   - Where: `.vscode/settings.json` and `.vscode/extensions.json` of each project
-   - Problem: engrenage's settings hold ESLint fix-on-save, Prettier as the formatter and `js/ts.tsdk.path`, while toolkit and primitive-kit only set the deprecated `typescript.tsdk`. No project recommends the ESLint and Prettier extensions.
-   - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) that merges engrenage's keys into the settings and keeps other keys project-owned, plus the extension recommendations. The files are JSONC, so comments must survive the merge (parser to decide).
+9. Changeset config is copied by hand.
+   - Where: `.changeset/config.json` of each project
+   - Problem: the changelog generator differs (`@changesets/changelog-github` in engrenage, the default elsewhere), schema versions differ, and jaune declares `access: "restricted"` while its `package.json` publishes publicly.
+   - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) writing the shared fields, deriving `changelog[1].repo` from `package.json#repository` and `access` from `publishConfig.access`. It applies when changesets is a dependency (AUAUST/lib-js-engrenage#11).
 
-10. Changeset config is copied by hand.
-    - Where: `.changeset/config.json` of each project
-    - Problem: the changelog generator differs (`@changesets/changelog-github` in engrenage, the default elsewhere), schema versions differ, and jaune declares `access: "restricted"` while its `package.json` publishes publicly.
-    - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) writing the shared fields, deriving `changelog[1].repo` from `package.json#repository` and `access` from `publishConfig.access`. It applies when changesets is a dependency (AUAUST/lib-js-engrenage#11).
-
-11. pnpm workspace defaults are copied by hand.
+10. pnpm workspace defaults are copied by hand.
     - Where: `pnpm-workspace.yaml` of each project
     - Problem: `minimumReleaseAgeExclude: ["@auaust/*"]` and the shared `allowBuilds` entries repeat in every project, and the pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`.
     - Fix: an `engrenage sync` target (AUAUST/lib-js-engrenage#12) that writes the shared keys and keeps project `allowBuilds` entries. Editing YAML in place needs a parser that preserves the file (dependency to approve).

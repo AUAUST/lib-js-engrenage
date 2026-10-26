@@ -1,7 +1,7 @@
 import { globSync } from "node:fs";
 import { basename, dirname, extname } from "node:path";
 
-import { flatMap, map, sort } from "@auaust/primitive-kit/arrays";
+import { flatMap, map, sort, toSorted } from "@auaust/primitive-kit/arrays";
 
 import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import { resolve } from "#support/filesystem/utils/resolve";
@@ -19,6 +19,7 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Files } from "#types/Files";
 import type { Glob } from "#types/Glob";
+import type { SyncResults } from "#types/SyncResults";
 import type { BarrelMode } from "#typescript/types/BarrelMode";
 import type { SubpathImports } from "#typescript/types/SubpathImports";
 
@@ -99,7 +100,7 @@ function createBarrel({
     names.set(specifier, basename(module, extname(module)));
   }
 
-  const sortedNames = sort([...names], ([left], [right]) => {
+  const sortedNames = toSorted(names, ([left], [right]) => {
     return compareNaturally(left, right);
   });
 
@@ -160,7 +161,7 @@ export function syncBarrels({
   config: ResolvedConfig;
   barrels?: string[];
   check?: boolean;
-}): Files {
+}): SyncResults {
   const { root: rootPath } = config;
 
   const { imports } = config.packageJson;
@@ -183,22 +184,28 @@ export function syncBarrels({
           return selectBarrels(allFiles, name);
         });
 
+  function update(content: string, barrel: File): string {
+    return syncBlocks(content, typescriptBlocks, {
+      barrel(glob, mode) {
+        return createBarrel({
+          root: rootPath,
+          imports,
+          barrel,
+          glob,
+          mode: assertMode(mode, barrel),
+        });
+      },
+    });
+  }
+
   return syncFiles({
     root: rootPath,
-    files,
+    files: map(files, (file) => {
+      return {
+        file,
+        update,
+      };
+    }),
     check,
-    update(content, barrel) {
-      return syncBlocks(content, typescriptBlocks, {
-        barrel(glob, mode) {
-          return createBarrel({
-            root: rootPath,
-            imports,
-            barrel,
-            glob,
-            mode: assertMode(mode, barrel),
-          });
-        },
-      });
-    },
   });
 }

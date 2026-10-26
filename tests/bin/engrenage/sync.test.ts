@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import sync from "#bin/engrenage/agents/sync";
+import sync from "#bin/engrenage/sync";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
@@ -13,6 +13,7 @@ const emptyBlock = [
 
 function createProject() {
   const project = createTemporaryProject({
+    "engrenage.config.ts": "export default { vscode: { settings: true } };\n",
     ".claude/shared.md": "## Shared section\n",
     "AGENTS.md": emptyBlock,
   });
@@ -24,7 +25,6 @@ function createProject() {
 
 beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation(() => {});
-  vi.spyOn(console, "warn").mockImplementation(() => {});
 });
 
 afterEach(() => {
@@ -33,25 +33,29 @@ afterEach(() => {
   process.exitCode = undefined;
 });
 
-describe("engrenage agents sync", () => {
-  test("fills the blocks so a later check passes", async () => {
+describe("engrenage sync", () => {
+  test("syncs every target so a later check passes", async () => {
     const project = createProject();
 
     await runCommand(sync);
 
     expect(project.read("AGENTS.md")).toContain("## Shared section");
+    expect(project.read(".vscode/settings.json")).toBe("{}\n");
 
     await runCommand(sync, "--check");
 
     expect(process.exitCode).toBeUndefined();
   });
 
-  test("fails the check without writing outdated files", async () => {
+  test("checks only the selected targets without writing", async () => {
     const project = createProject();
 
-    await runCommand(sync, "--check");
+    await runCommand(sync, "vscode", "--check");
 
     expect(process.exitCode).toBe(1);
+    expect(console.info).toHaveBeenCalledExactlyOnceWith(
+      "outdated: .vscode/settings.json",
+    );
     expect(project.read("AGENTS.md")).toBe(emptyBlock);
   });
 });

@@ -7,7 +7,7 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 ## Instruction maintenance
 
 - Never modify AGENTS.md or `.claude/rules/` unless the user explicitly asks to change agent instructions. Finishing a feature, refactor or new convention does not authorize it; mention the suggested change in your report instead.
-- A `<!-- @reference <reference> -->` marker opens a block that `engrenage agents sync` fills with the referenced file, up to the next `@reference` or `<!-- @end -->` marker. Never edit blocks in place: add project rules after an `@end` marker, or change the referenced source.
+- A `<!-- @reference <reference> -->` marker opens a block that `engrenage sync agents` fills with the referenced file, up to the next `@reference` or `<!-- @end -->` marker. Never edit blocks in place: add project rules after an `@end` marker, or change the referenced source.
 - AGENTS.md holds only rules every agent needs. Surface-specific detail lives in `.claude/rules/`, one file per surface. Neither holds feature documentation, file inventories, API details or records of recent changes.
 - When a rule becomes mechanically enforced, list it under the matching "Enforced by tooling" line and keep prose only for what tools cannot check.
 
@@ -62,7 +62,7 @@ Pause on real choices: ask the questions and wait for the answers before continu
 ## Agent fragments
 
 - `data/agents/sections/` holds shared AGENTS.md sections and `data/agents/rules/` shared `.claude/rules` files. They must stay project-agnostic: no paths, commands or tools specific to one repository.
-- After changing a fragment, run `pnpm engrenage agents sync`, which also updates this repository's own copies.
+- After changing a fragment, run `pnpm engrenage sync agents`, which also updates this repository's own copies.
 
 <!-- @reference @auaust/engrenage/agents/sections/implementation.md -->
 
@@ -121,6 +121,6 @@ Pause on real choices: ask the questions and wait for the answers before continu
 - `pnpm lint` and `pnpm typecheck` for source changes; `pnpm test` runs tests in source mode and type checking.
 - `pnpm build` for entries, exports, imports or bundling changes. It builds, validates packaging with publint and attw, and reruns the tests against `dist/`.
 - `pnpm format <files>` on changed files only.
-- `pnpm engrenage agents sync` after changing agent fragments; CI checks it with `--check`.
+- `pnpm engrenage sync` after changing agent fragments or anything else engrenage syncs; CI checks it with `--check`.
 - `pnpm support codegen barrels [barrels…]` after adding, renaming or removing a module matched by a barrel's `// @barrel <glob> <default|named|all>` block (glob relative to the barrel, or to the root with a leading `/`); barrels are named by directory. CI checks it with `--check`.
 - Add a changeset for any change that should be released.

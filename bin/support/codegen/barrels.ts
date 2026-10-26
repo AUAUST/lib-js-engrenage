@@ -1,5 +1,6 @@
 import { loadConfig } from "#config/utils/loadConfig";
 import { defineCommand } from "#support/commander/utils/defineCommand";
+import { reportSyncResults } from "#support/commander/utils/reportSyncResults";
 import { syncBarrels } from "#typescript/utils/syncBarrels";
 
 export default defineCommand((command) => {
@@ -15,18 +16,12 @@ export default defineCommand((command) => {
     .action(async (barrels, { check }) => {
       const config = await loadConfig();
 
-      const outdated = syncBarrels({
-        config,
-        barrels,
-        check,
-      });
-
-      for (const file of outdated) {
-        console.info(check ? `outdated: ${file}` : `synced: ${file}`);
-      }
-
-      if (check && outdated.length > 0) {
-        process.exitCode = 1;
-      }
+      reportSyncResults(
+        syncBarrels({
+          config,
+          barrels,
+          check,
+        }),
+      );
     });
 });
