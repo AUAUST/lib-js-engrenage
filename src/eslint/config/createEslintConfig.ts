@@ -67,6 +67,7 @@ export function createEslintConfig(
       ? createIgnoreRules({
           gitignorePath: config.gitignorePath,
           generatedFiles: config.files.generated,
+          outputDirectory: config.directories.output,
           fixtureFiles: config.files.fixtures,
           testDirectories: config.directories.test,
         })

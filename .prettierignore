@@ -1,1 +1,28 @@
+# @ignore defaults
+
+# Package locks
 pnpm-lock.yaml
+package-lock.json
+yarn.lock
+bun.lock
+bun.lockb
+
+# ESLint
+eslint-suppressions.json
+
+# @ignore project
+
+# Output
+/dist
+
+# Coverage
+/coverage
+
+# Changelog
+CHANGELOG.md
+
+# Codegen
+/src/eslint/types/Rules.ts
+/src/eslint/types/rules/**
+
+# @end

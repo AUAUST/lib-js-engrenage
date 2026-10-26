@@ -4,12 +4,16 @@ import { keys } from "@auaust/toolkit/object";
 
 import { syncAgentFiles } from "#agents/utils/syncAgentFiles";
 import { loadConfig } from "#config/utils/loadConfig";
+import { syncGitignoreFile } from "#git/utils/syncGitignoreFile";
+import { syncPrettierignoreFile } from "#prettier/utils/syncPrettierignoreFile";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { reportSyncResults } from "#support/commander/utils/reportSyncResults";
 import { syncVscodeFiles } from "#vscode/utils/syncVscodeFiles";
 
 const targets = {
   agents: syncAgentFiles,
+  gitignore: syncGitignoreFile,
+  prettierignore: syncPrettierignoreFile,
   vscode: syncVscodeFiles,
 };
 

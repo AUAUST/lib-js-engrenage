@@ -7,15 +7,6 @@ import { loadConfig } from "@auaust/engrenage/config";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 
-const lockFiles = [
-  "pnpm-lock.yaml",
-  "package-lock.json",
-  "yarn.lock",
-  "bun.lock",
-  "bun.lockb",
-  "coverage/**",
-];
-
 afterEach(() => {
   vi.restoreAllMocks();
 });
@@ -38,7 +29,7 @@ describe("loadConfig", () => {
       source: ["src"],
       test: ["tests"],
     });
-    expect(config.files.generated).toEqual(lockFiles);
+    expect(config.files.generated).toEqual([]);
     expect(config.raw).toEqual({});
     expect(config.packageJsonPath).toBeUndefined();
     expect(config.packageJson.optional.name).toBeUndefined();
@@ -89,11 +80,8 @@ describe("loadConfig", () => {
     });
     expect(config.presets).toEqual(["library"]);
     expect(config.directories.test).toEqual(["test"]);
-    expect(config.files.generated).toEqual([
-      ...lockFiles,
-      "src/generated/**",
-      "dist/**",
-    ]);
+    expect(config.files.generated).toEqual(["src/generated/**"]);
+    expect(config.directories.output).toBe("dist");
     expect(config.packageJson.name).toBe("custom-fixture");
     expect(config.environment.has("custom-fixture")).toBe(true);
     expect(config.environment.has("valibot")).toBe(true);
@@ -121,7 +109,7 @@ describe("loadConfig", () => {
     const config = await loadConfig(root);
 
     expect(config.tsconfig.outDir).toBe("build");
-    expect(config.files.generated).toContain("build/**");
+    expect(config.directories.output).toBe("build");
 
     const outside = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
@@ -132,7 +120,7 @@ describe("loadConfig", () => {
       }),
     });
 
-    expect((await loadConfig(outside.root)).files.generated).toEqual(lockFiles);
+    expect((await loadConfig(outside.root)).directories.output).toBeUndefined();
 
     const missing = createTemporaryProject({
       "engrenage.config.ts": appConfig,
@@ -194,6 +182,7 @@ describe("loadConfig", () => {
     expect(config.packageJsonPath).toBe(join(root, "package.json"));
     expect(config.tsconfigPath).toBe(join(root, "tsconfig.json"));
     expect(config.gitignorePath).toBeUndefined();
+    expect(config.prettierignorePath).toBeUndefined();
     expect(() => {
       return config.resolve("../outside");
     }).toThrow("escapes");

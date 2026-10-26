@@ -11,6 +11,7 @@ import {
   configFileName,
   defaultDistTsconfigFile,
   defaultGitignoreFile,
+  defaultPrettierignoreFile,
   defaultTsconfigFile,
   packageFile,
 } from "#config/constants";
@@ -145,6 +146,11 @@ async function readConfig(start: Directory): Promise<ResolvedConfig> {
       root,
       configured: raw.files?.gitignore,
       fallback: defaultGitignoreFile,
+    }),
+    prettierignorePath: resolveSourceFile({
+      root,
+      configured: raw.files?.prettierignore,
+      fallback: defaultPrettierignoreFile,
     }),
   });
 }

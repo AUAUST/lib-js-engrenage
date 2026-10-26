@@ -2,18 +2,12 @@ import { freeze } from "@auaust/toolkit/object";
 
 import type { Presets } from "#config/types/Presets";
 import type { Directories } from "#types/Directories";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
-export const builtinGeneratedFiles: Globs = freeze([
-  "pnpm-lock.yaml",
-  "package-lock.json",
-  "yarn.lock",
-  "bun.lock",
-  "bun.lockb",
-  "coverage/**",
-]);
+export const coverageDirectory: Directory = "coverage";
 
 export const configFileName = "engrenage.config";
 
@@ -27,6 +21,8 @@ export const defaultDistTsconfigFile: File = "tsconfig.dist.json";
 
 export const defaultFixtureFiles: Glob = "**/fixtures/**";
 
+export const defaultGeneratedFiles: Globs = freeze([]);
+
 export const defaultGitignoreFile: File = ".gitignore";
 
 export const defaultInstructionFiles: Globs = freeze([
@@ -35,6 +31,8 @@ export const defaultInstructionFiles: Globs = freeze([
 ]);
 
 export const defaultPresets: Presets = freeze([]);
+
+export const defaultPrettierignoreFile: File = ".prettierignore";
 
 export const defaultSourceDirectories: Directories = freeze(["src"]);
 

@@ -37,6 +37,7 @@ export const configSchema = strictObject({
       discovered: optional(globsSchema),
       generated: optional(globsSchema),
       gitignore: optional(fileSchema),
+      prettierignore: optional(fileSchema),
       tsconfig: optional(fileSchema),
       distTsconfig: optional(fileSchema),
     }),

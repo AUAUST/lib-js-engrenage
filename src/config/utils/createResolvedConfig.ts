@@ -5,11 +5,11 @@ import { freeze } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
 import {
-  builtinGeneratedFiles,
   defaultCodeFiles,
   defaultConfigFiles,
   defaultDiscoveredFiles,
   defaultFixtureFiles,
+  defaultGeneratedFiles,
   defaultInstructionFiles,
   defaultPresets,
   defaultSourceDirectories,
@@ -50,6 +50,7 @@ export function createResolvedConfig({
   tsconfigPath,
   distTsconfigPath,
   gitignorePath,
+  prettierignorePath,
 }: {
   root: Directory;
   raw: InferOutput<typeof configSchema>;
@@ -57,6 +58,7 @@ export function createResolvedConfig({
   tsconfigPath: File | undefined;
   distTsconfigPath: File | undefined;
   gitignorePath: File | undefined;
+  prettierignorePath: File | undefined;
 }) {
   const packageJson = once(() => {
     return createPackageJson({
@@ -80,40 +82,35 @@ export function createResolvedConfig({
     return raw.presets ?? defaultPresets;
   });
 
-  const directories = once(() => {
-    return freeze({
-      source: raw.directories?.source ?? defaultSourceDirectories,
-      test: raw.directories?.test ?? defaultTestDirectories,
-    });
-  });
-
-  const generatedFiles = once(() => {
+  const outputDirectory = once(() => {
     const { outDir } = tsconfig().optional;
 
-    return freeze([
-      ...builtinGeneratedFiles,
-      ...(raw.files?.generated ?? []),
-      ...(outDir === undefined || !isWithin(root, outDir)
-        ? []
-        : [`${outDir}/**`]),
-    ]);
+    return outDir === undefined || !isWithin(root, outDir) ? undefined : outDir;
   });
 
-  const files = once(() => {
+  const directories = once(() => {
     return freeze(
       compose(
         {
-          code: raw.files?.code ?? defaultCodeFiles,
-          test: raw.files?.test ?? defaultTestFiles,
-          fixtures: raw.files?.fixtures ?? defaultFixtureFiles,
-          config: raw.files?.config ?? defaultConfigFiles,
-          discovered: raw.files?.discovered ?? defaultDiscoveredFiles,
+          source: raw.directories?.source ?? defaultSourceDirectories,
+          test: raw.directories?.test ?? defaultTestDirectories,
         },
         compose.getters({
-          generated: generatedFiles,
+          output: outputDirectory,
         }),
       ),
     );
+  });
+
+  const files = once(() => {
+    return freeze({
+      code: raw.files?.code ?? defaultCodeFiles,
+      test: raw.files?.test ?? defaultTestFiles,
+      fixtures: raw.files?.fixtures ?? defaultFixtureFiles,
+      config: raw.files?.config ?? defaultConfigFiles,
+      discovered: raw.files?.discovered ?? defaultDiscoveredFiles,
+      generated: raw.files?.generated ?? defaultGeneratedFiles,
+    });
   });
 
   const agents = once(() => {
@@ -143,6 +140,7 @@ export function createResolvedConfig({
         tsconfigPath,
         distTsconfigPath,
         gitignorePath,
+        prettierignorePath,
         resolve,
       },
       compose.getters({
