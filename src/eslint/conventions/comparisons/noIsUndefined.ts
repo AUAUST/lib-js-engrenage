@@ -5,4 +5,5 @@ export default defineReplacement({
   target:
     "`isUndefined(x)` calls (keep `isUndefined` for callbacks such as `filter(items, isUndefined)`)",
   replacement: "`x === undefined`",
+  requires: ["@auaust/toolkit"],
 });

@@ -1,6 +1,7 @@
 import { defineReplacement } from "#eslint/conventions/defineReplacement";
 import type { Presets } from "#config/types/Presets";
 import type { Convention } from "#eslint/types/Convention";
+import type { PackageNames } from "#types/PackageNames";
 
 function createSelector(name: string, property: string | undefined): string {
   function identifier(path: string): string {
@@ -27,11 +28,13 @@ export function defineGlobalReplacement({
   replacement,
   enabled,
   presets,
+  requires,
 }: {
   global: string;
   replacement: string;
   enabled?: boolean;
   presets?: Presets;
+  requires?: PackageNames;
 }): Convention {
   const [name = global, property] = global.split(".");
 
@@ -41,5 +44,6 @@ export function defineGlobalReplacement({
     replacement,
     enabled,
     presets,
+    requires,
   });
 }

@@ -19,8 +19,27 @@ import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
 import type { configSchema } from "#config/config/schemas/configSchema";
+import type { Environment } from "#config/types/Environment";
+import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+import type { PackageName } from "#types/PackageName";
+
+function createEnvironment({ optional }: PackageJson): Environment {
+  const packages = new Set<PackageName>(optional.dependencies);
+
+  if (optional.name !== undefined) {
+    packages.add(optional.name);
+  }
+
+  function has(name: PackageName): boolean {
+    return packages.has(name);
+  }
+
+  return freeze({
+    has,
+  });
+}
 
 export function createResolvedConfig({
   root,
@@ -49,6 +68,10 @@ export function createResolvedConfig({
       root,
       path: tsconfigPath,
     });
+  });
+
+  const environment = once(() => {
+    return createEnvironment(packageJson());
   });
 
   const presets = once(() => {
@@ -114,6 +137,7 @@ export function createResolvedConfig({
       compose.getters({
         packageJson,
         tsconfig,
+        environment,
         presets,
         directories,
         files,

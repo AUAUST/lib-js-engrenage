@@ -4,6 +4,7 @@ import { defineReplacement } from "#eslint/conventions/defineReplacement";
 import type { Presets } from "#config/types/Presets";
 import type { Convention } from "#eslint/types/Convention";
 import type { ScopeReference } from "#eslint/types/ScopeReference";
+import type { PackageNames } from "#types/PackageNames";
 
 function createImportSelectors(source: string, name: string): string[] {
   const imported = `ImportDeclaration[source.value='${source}']`;
@@ -84,6 +85,7 @@ export function defineImportReplacement({
   ignores,
   enabled,
   presets,
+  requires,
 }: {
   source: string;
   imports?: ReadonlyArray<string>;
@@ -92,6 +94,7 @@ export function defineImportReplacement({
   ignores?: ReadonlyArray<ScopeReference>;
   enabled?: boolean;
   presets?: Presets;
+  requires?: PackageNames;
 }): Convention {
   return defineReplacement({
     selector: createSelector(source, imports),
@@ -101,5 +104,6 @@ export function defineImportReplacement({
     ignores,
     enabled,
     presets,
+    requires,
   });
 }

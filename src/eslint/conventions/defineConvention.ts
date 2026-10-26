@@ -3,6 +3,7 @@ import type { Convention } from "#eslint/types/Convention";
 import type { RuleModule } from "#eslint/types/RuleModule";
 import type { Rules } from "#eslint/types/Rules";
 import type { ScopeReference } from "#eslint/types/ScopeReference";
+import type { PackageNames } from "#types/PackageNames";
 
 export function defineConvention({
   rules = {},
@@ -12,6 +13,7 @@ export function defineConvention({
   typeAware = false,
   enabled = true,
   presets = [],
+  requires = [],
 }: {
   rules?: Rules;
   rule?: RuleModule;
@@ -20,10 +22,12 @@ export function defineConvention({
   typeAware?: boolean;
   enabled?: boolean;
   presets?: Presets;
+  requires?: PackageNames;
 }): Convention {
   return {
     enabled,
     presets,
+    requires,
     files,
     ignores,
     typeAware,

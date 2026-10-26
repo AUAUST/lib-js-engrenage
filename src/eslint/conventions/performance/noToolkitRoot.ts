@@ -5,4 +5,5 @@ export default defineImportReplacement({
   replacement: "the `@auaust/toolkit/<helper>` subpath entries",
   files: ["directories.source"],
   presets: ["library"],
+  requires: ["@auaust/toolkit"],
 });

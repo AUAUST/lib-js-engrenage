@@ -2,5 +2,11 @@
   "name": "custom-fixture",
   "description": "Custom fixture.",
   "version": "1.2.3",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "valibot": "^1.0.0"
+  },
+  "peerDependencies": {
+    "zod": "^4.0.0"
+  }
 }

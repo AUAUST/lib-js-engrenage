@@ -1,3 +1,5 @@
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { keys } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 import { optional, record, string, unknown } from "valibot";
 
@@ -7,6 +9,13 @@ import { validate } from "#utils/validate";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+
+const dependencyFields = [
+  "dependencies",
+  "devDependencies",
+  "peerDependencies",
+  "optionalDependencies",
+] as const;
 
 export function createPackageJson({
   root,
@@ -39,6 +48,23 @@ export function createPackageJson({
           manifest()?.imports,
           `${path} imports`,
         );
+      },
+      dependencies() {
+        const fields = manifest();
+
+        if (fields === undefined) {
+          return undefined;
+        }
+
+        return flatMap(dependencyFields, (field) => {
+          const versions = validate(
+            optional(record(string(), string()), {}),
+            fields[field],
+            `${path} ${field}`,
+          );
+
+          return keys(versions);
+        });
       },
     },
     describeMissing,

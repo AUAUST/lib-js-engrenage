@@ -4,6 +4,7 @@ import { defineConvention } from "#eslint/conventions/defineConvention";
 import type { Presets } from "#config/types/Presets";
 import type { Convention } from "#eslint/types/Convention";
 import type { ScopeReference } from "#eslint/types/ScopeReference";
+import type { PackageNames } from "#types/PackageNames";
 
 export function defineRestriction({
   selector,
@@ -12,6 +13,7 @@ export function defineRestriction({
   ignores,
   enabled,
   presets,
+  requires,
 }: {
   selector: string;
   message: string;
@@ -19,6 +21,7 @@ export function defineRestriction({
   ignores?: ReadonlyArray<ScopeReference>;
   enabled?: boolean;
   presets?: Presets;
+  requires?: PackageNames;
 }): Convention {
   return defineConvention({
     rule: {
@@ -47,5 +50,6 @@ export function defineRestriction({
     ignores,
     enabled,
     presets,
+    requires,
   });
 }

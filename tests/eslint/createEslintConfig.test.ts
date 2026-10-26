@@ -1,5 +1,6 @@
 import {
   loadConfig,
+  type Environment,
   type Presets,
   type ResolvedConfig,
 } from "@auaust/engrenage/config";
@@ -37,7 +38,16 @@ export { object } from "zod/mini";
 export const values = [identity, map, v.string, string, z.string, zod.string];
 `;
 
-async function lintedPerformanceRules(presets: Presets, options?: Options) {
+async function lintedPerformanceRules(
+  {
+    presets,
+    environment,
+  }: {
+    presets: Presets;
+    environment?: Environment;
+  },
+  options?: Options,
+) {
   const config = await loadConfig(root);
 
   const eslint = new ESLint({
@@ -47,6 +57,7 @@ async function lintedPerformanceRules(presets: Presets, options?: Options) {
       {
         ...config,
         presets,
+        environment: environment ?? config.environment,
       },
       {
         promises: false,
@@ -115,9 +126,17 @@ describe("createEslintConfig", () => {
   });
 
   test("enables the performance conventions with the library preset", async () => {
-    expect(await lintedPerformanceRules([])).toEqual([]);
+    expect(
+      await lintedPerformanceRules({
+        presets: [],
+      }),
+    ).toEqual([]);
 
-    expect(await lintedPerformanceRules(["library"])).toEqual([
+    expect(
+      await lintedPerformanceRules({
+        presets: ["library"],
+      }),
+    ).toEqual([
       "auaust/no-toolkit-root",
       "auaust/no-valibot-namespace",
       "auaust/no-zod-classic",
@@ -129,18 +148,61 @@ describe("createEslintConfig", () => {
 
   test("lets options override the conventions of presets", async () => {
     expect(
-      await lintedPerformanceRules(["library"], {
-        performance: false,
-      }),
+      await lintedPerformanceRules(
+        {
+          presets: ["library"],
+        },
+        {
+          performance: false,
+        },
+      ),
     ).toEqual([]);
 
     expect(
-      await lintedPerformanceRules([], {
-        performance: {
-          noZodClassic: true,
+      await lintedPerformanceRules(
+        {
+          presets: [],
         },
-      }),
+        {
+          performance: {
+            noZodClassic: true,
+          },
+        },
+      ),
     ).toEqual(["auaust/no-zod-classic"]);
+  });
+
+  test("enables dependency-gated conventions only for declared packages, unless options force them", async () => {
+    const valibotOnly: Environment = {
+      has(name) {
+        return name === "valibot";
+      },
+    };
+
+    expect(
+      await lintedPerformanceRules({
+        presets: ["library"],
+        environment: valibotOnly,
+      }),
+    ).toEqual(["auaust/no-valibot-namespace", "auaust/no-valibot-namespace"]);
+
+    expect(
+      await lintedPerformanceRules(
+        {
+          presets: ["library"],
+          environment: valibotOnly,
+        },
+        {
+          performance: {
+            noZodClassic: true,
+          },
+        },
+      ),
+    ).toEqual([
+      "auaust/no-valibot-namespace",
+      "auaust/no-zod-classic",
+      "auaust/no-valibot-namespace",
+    ]);
   });
 
   test("reports test files outside the test directories", async () => {

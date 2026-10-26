@@ -13,4 +13,5 @@ export * from "#types/Files";
 export * from "#types/Glob";
 export * from "#types/Globs";
 export * from "#types/PackageName";
+export * from "#types/PackageNames";
 // @end

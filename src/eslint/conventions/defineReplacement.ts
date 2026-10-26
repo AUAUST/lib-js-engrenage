@@ -2,6 +2,7 @@ import { defineRestriction } from "#eslint/conventions/defineRestriction";
 import type { Presets } from "#config/types/Presets";
 import type { Convention } from "#eslint/types/Convention";
 import type { ScopeReference } from "#eslint/types/ScopeReference";
+import type { PackageNames } from "#types/PackageNames";
 
 export function defineReplacement({
   selector,
@@ -11,6 +12,7 @@ export function defineReplacement({
   ignores,
   enabled,
   presets,
+  requires,
 }: {
   selector: string;
   target: string;
@@ -19,6 +21,7 @@ export function defineReplacement({
   ignores?: ReadonlyArray<ScopeReference>;
   enabled?: boolean;
   presets?: Presets;
+  requires?: PackageNames;
 }): Convention {
   return defineRestriction({
     selector,
@@ -27,5 +30,6 @@ export function defineReplacement({
     ignores,
     enabled,
     presets,
+    requires,
   });
 }

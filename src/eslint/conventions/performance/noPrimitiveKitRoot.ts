@@ -5,4 +5,5 @@ export default defineImportReplacement({
   replacement: "the `@auaust/primitive-kit/<domain>` subpath entries",
   files: ["directories.source"],
   presets: ["library"],
+  requires: ["@auaust/primitive-kit"],
 });

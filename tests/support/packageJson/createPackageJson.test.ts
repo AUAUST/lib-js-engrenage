@@ -21,6 +21,7 @@ describe("createPackageJson", () => {
     });
 
     expect(packageJson.name).toBe("fixture");
+    expect(packageJson.dependencies).toEqual([]);
     expect(packageJson.optional.imports).toBeUndefined();
     expect(() => packageJson.imports).toThrow('does not declare "imports"');
   });
@@ -28,8 +29,12 @@ describe("createPackageJson", () => {
   test("rejects an invalid field in both views", () => {
     const packageJson = createManifest({
       name: 42,
+      peerDependencies: {
+        zod: 4,
+      },
     });
 
     expect(() => packageJson.optional.name).toThrow("name");
+    expect(() => packageJson.dependencies).toThrow("peerDependencies");
   });
 });

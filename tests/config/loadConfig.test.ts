@@ -50,6 +50,7 @@ describe("loadConfig", () => {
       `No tsconfig found in ${first}`,
     );
     expect(config.presets).toEqual([]);
+    expect(config.environment.has("valibot")).toBe(false);
     expect(nestedConfig.directories).toEqual(config.directories);
   });
 
@@ -75,6 +76,10 @@ describe("loadConfig", () => {
       "dist/**",
     ]);
     expect(config.packageJson.name).toBe("custom-fixture");
+    expect(config.environment.has("custom-fixture")).toBe(true);
+    expect(config.environment.has("valibot")).toBe(true);
+    expect(config.environment.has("zod")).toBe(true);
+    expect(config.environment.has("@auaust/toolkit")).toBe(false);
     expect(config.tsconfig.outDir).toBe("dist");
     expect(loadConfig(root)).toBe(loadConfig(root));
   });

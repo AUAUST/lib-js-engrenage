@@ -1,4 +1,5 @@
 import {
+  every,
   flatMap,
   intersection,
   isNotEmpty,
@@ -10,7 +11,6 @@ import { entries } from "@auaust/toolkit/object";
 import { pluginName } from "#eslint/constants";
 import { createRuleName } from "#eslint/utils/createRuleName";
 import { filesIn } from "#eslint/utils/filesIn";
-import type { Presets } from "#config/types/Presets";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#eslint/types/Config";
 import type { Convention } from "#eslint/types/Convention";
@@ -20,10 +20,16 @@ import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
 function isEnabledByDefault(
-  { enabled, presets }: Convention,
-  activePresets: Presets,
+  { enabled, presets, requires }: Convention,
+  { presets: activePresets, environment }: ResolvedConfig,
 ): boolean {
   if (!enabled) {
+    return false;
+  }
+
+  const hasRequiredPackages = every(requires, (name) => environment.has(name));
+
+  if (!hasRequiredPackages) {
     return false;
   }
 
@@ -38,18 +44,18 @@ function isEnabled({
   name,
   convention,
   setting,
-  activePresets,
+  config,
 }: {
   name: string;
   convention: Convention;
   setting: boolean | Partial<Record<string, boolean>>;
-  activePresets: Presets;
+  config: ResolvedConfig;
 }): boolean {
   if (setting === false) {
     return false;
   }
 
-  const enabledByDefault = isEnabledByDefault(convention, activePresets);
+  const enabledByDefault = isEnabledByDefault(convention, config);
 
   if (isBoolean(setting)) {
     return enabledByDefault;
@@ -121,7 +127,7 @@ export function createConventionRules({
         name,
         convention,
         setting,
-        activePresets: config.presets,
+        config,
       })
     ) {
       continue;
