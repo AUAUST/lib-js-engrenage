@@ -1,12 +1,5 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import * as comparisons from "#eslint/conventions/comparisons/index";
-import * as globals from "#eslint/conventions/globals/index";
-import * as imports from "#eslint/conventions/imports/index";
-import * as performance from "#eslint/conventions/performance/index";
-import * as promises from "#eslint/conventions/promises/index";
-import * as structure from "#eslint/conventions/structure/index";
-import * as stylistic from "#eslint/conventions/stylistic/index";
 import { dependencyFields } from "#support/packageJson/constants";
 import type { Rules } from "#eslint/types/Rules";
 import type { CoreRules } from "#eslint/types/rules/CoreRules";
@@ -16,6 +9,14 @@ import type { TypescriptEslintRules } from "#eslint/types/rules/TypescriptEslint
 import type { UnicornRules } from "#eslint/types/rules/UnicornRules";
 import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
+
+import * as comparisons from "#eslint/conventions/comparisons/index";
+import * as globals from "#eslint/conventions/globals/index";
+import * as imports from "#eslint/conventions/imports/index";
+import * as performance from "#eslint/conventions/performance/index";
+import * as promises from "#eslint/conventions/promises/index";
+import * as structure from "#eslint/conventions/structure/index";
+import * as stylistic from "#eslint/conventions/stylistic/index";
 
 export const anyFile = "**" satisfies Glob;
 
@@ -92,6 +93,7 @@ export const importRules = freeze({
   "import-x/no-empty-named-blocks": "error",
   "import-x/no-extraneous-dependencies": "error",
   "import-x/no-mutable-exports": "error",
+  "import-x/no-named-as-default": "error",
   "import-x/no-self-import": "error",
   "import-x/no-unresolved": "off",
   "import-x/no-useless-path-segments": "error",

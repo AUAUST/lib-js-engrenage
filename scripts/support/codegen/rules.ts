@@ -2,7 +2,7 @@ import { loadConfig } from "#config/utils/loadConfig";
 import { syncRuleTypes } from "#eslint/utils/syncRuleTypes";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 
-export default defineCommand((command) => {
+export const rules = defineCommand((command) => {
   return command
     .description(
       "Generate the typed ESLint rules interfaces from the plugins the shipped configuration registers.",

@@ -14,6 +14,7 @@ export default defineConvention({
           dirs: false,
           dist: false,
           env: false,
+          fn: false,
         },
       },
     ]),

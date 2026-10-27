@@ -99,6 +99,10 @@ export interface AuaustRules {
    */
   "auaust/no-else-return"?: Linter.RuleEntry<AuaustNoElseReturn>;
   /**
+   * Namespace imports and exports are reserved for project modules.
+   */
+  "auaust/no-external-namespace"?: Linter.RuleEntry<[]>;
+  /**
    * Disallow classes used as namespaces
    * @see https://typescript-eslint.io/rules/no-extraneous-class
    */
@@ -205,15 +209,11 @@ export interface AuaustRules {
    */
   "auaust/no-useless-undefined"?: Linter.RuleEntry<AuaustNoUselessUndefined>;
   /**
-   * Use named imports instead of namespace imports from `valibot`.
-   */
-  "auaust/no-valibot-namespace"?: Linter.RuleEntry<[]>;
-  /**
    * Use `zod/mini` instead of `zod`.
    */
   "auaust/no-zod-classic"?: Linter.RuleEntry<[]>;
   /**
-   * Use named imports instead of namespace imports, default imports, or `z` from `zod/mini`.
+   * Use named imports instead of default imports or `z` from `zod/mini`.
    */
   "auaust/no-zod-namespace"?: Linter.RuleEntry<[]>;
   /**

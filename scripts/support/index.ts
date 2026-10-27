@@ -3,7 +3,7 @@
 import { Command } from "@commander-js/extra-typings";
 
 import { engrenage } from "#constants";
-import codegen from "#scripts/support/codegen/index";
+import { codegen } from "#scripts/support/codegen/index";
 import { registerSubcommands } from "#support/commander/utils/registerSubcommands";
 
 const program = registerSubcommands(

@@ -79,6 +79,7 @@ export function createEslintConfig(
     configs.push(
       createImportPresets({
         codeFiles: config.code.files,
+        tsconfig: config.typescript.tsconfig,
       }),
     );
   }

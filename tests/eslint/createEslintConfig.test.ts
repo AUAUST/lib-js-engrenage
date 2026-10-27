@@ -29,17 +29,15 @@ async function createLinter(options?: Options) {
   });
 }
 
-const performanceSource = `import * as v from "valibot";
-import { string } from "zod";
+const performanceSource = `import { string } from "zod";
 import z, { z as zod } from "zod/mini";
 
 import { identity } from "@auaust/toolkit";
 import { map } from "@auaust/toolkit/object";
 
-export * as valibot from "valibot";
 export { object } from "zod/mini";
 
-export const values = [identity, map, v.string, string, z.string, zod.string];
+export const values = [identity, map, string, z.string, zod.string];
 `;
 
 async function lintedPerformanceRules(
@@ -143,6 +141,50 @@ async function lintedPackageJsonRules(
   return map(result?.messages ?? [], (message) => message.ruleId);
 }
 
+async function lintedProjectRules(source: string) {
+  const project = createTemporaryProject({
+    "package.json": JSON.stringify({
+      name: "project",
+      type: "module",
+      imports: {
+        "#*": "./src/*.ts",
+      },
+      dependencies: {
+        valibot: "*",
+      },
+    }),
+    "engrenage.config.ts": "export default {};\n",
+    "tsconfig.json": JSON.stringify({
+      compilerOptions: {
+        module: "nodenext",
+        allowImportingTsExtensions: true,
+        paths: {
+          "$lib/*": ["./src/lib/*"],
+        },
+      },
+    }),
+    "src/thing.ts": "export const thing = 1;\n",
+    "src/things.ts": "export const one = 1;\n",
+    "src/other.ts": "export const other = 1;\n",
+    "src/manifest.ts": "export default {};\n",
+    "src/lib/thing.ts": "export const thing = 1;\n",
+  });
+
+  const eslint = new ESLint({
+    cwd: project.root,
+    overrideConfigFile: true,
+    overrideConfig: createEslintConfig(await loadConfig(project.root), {
+      typeAware: false,
+    }),
+  });
+
+  const [result] = await eslint.lintText(source, {
+    filePath: "src/index.ts",
+  });
+
+  return map(result?.messages ?? [], (message) => message.ruleId);
+}
+
 describe("createEslintConfig", () => {
   test("reports the shared conventions in source files", async () => {
     const rules = await lintedRules("src/violations.ts");
@@ -200,6 +242,57 @@ describe("createEslintConfig", () => {
     expect(map(result?.messages ?? [], (message) => message.ruleId)).toEqual(
       [],
     );
+  });
+
+  test("groups project namespace and default imports and exports last, unless a comment splits them", async () => {
+    expect(
+      await lintedProjectRules(`import { string } from "valibot";
+
+import { thing } from "#thing";
+
+import * as things from "#things";
+
+import manifest from "#manifest";
+
+// Partition
+import { other } from "#other";
+
+export * as registry from "#things";
+export { thing as alias } from "#thing";
+
+export const values = [string, thing, things, manifest, other];
+`),
+    ).toEqual(["auaust/sort-exports"]);
+
+    expect(
+      await lintedProjectRules(`import * as things from "#things";
+import manifest from "#manifest";
+import { thing } from "#thing";
+
+export const values = [things, manifest, thing];
+`),
+    ).toEqual(["auaust/sort-imports", "auaust/sort-imports"]);
+  });
+
+  test("reports namespace imports and exports of dependencies, but not of project modules", async () => {
+    expect(
+      await lintedProjectRules(`import * as path from "node:path";
+
+import * as v from "valibot";
+
+import * as things from "#things";
+import * as alias from "$lib/thing";
+
+export * as valibot from "valibot";
+export * from "valibot";
+
+export const values = [path, v, things, alias];
+`),
+    ).toEqual([
+      "auaust/no-external-namespace",
+      "auaust/no-external-namespace",
+      "auaust/no-external-namespace",
+    ]);
   });
 
   test("reports each restriction under its own rule, in every syntactic form", async () => {
@@ -266,12 +359,10 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
         presets: ["library"],
       }),
     ).toEqual([
-      "auaust/no-valibot-namespace",
       "auaust/no-zod-classic",
       "auaust/no-zod-namespace",
       "auaust/no-zod-namespace",
       "auaust/no-toolkit-root",
-      "auaust/no-valibot-namespace",
     ]);
   });
 
@@ -302,35 +393,40 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
   });
 
   test("enables dependency-gated conventions only for declared packages, unless options force them", async () => {
-    const valibotOnly: Environment = {
-      hasDependency(name): name is "valibot" {
-        return name === "valibot";
+    const zodOnly: Environment = {
+      hasDependency(name): name is "zod" {
+        return name === "zod";
       },
     };
 
     expect(
       await lintedPerformanceRules({
         presets: ["library"],
-        environment: valibotOnly,
+        environment: zodOnly,
       }),
-    ).toEqual(["auaust/no-valibot-namespace", "auaust/no-valibot-namespace"]);
+    ).toEqual([
+      "auaust/no-zod-classic",
+      "auaust/no-zod-namespace",
+      "auaust/no-zod-namespace",
+    ]);
 
     expect(
       await lintedPerformanceRules(
         {
           presets: ["library"],
-          environment: valibotOnly,
+          environment: zodOnly,
         },
         {
           performance: {
-            noZodClassic: true,
+            noToolkitRoot: true,
           },
         },
       ),
     ).toEqual([
-      "auaust/no-valibot-namespace",
       "auaust/no-zod-classic",
-      "auaust/no-valibot-namespace",
+      "auaust/no-zod-namespace",
+      "auaust/no-zod-namespace",
+      "auaust/no-toolkit-root",
     ]);
   });
 

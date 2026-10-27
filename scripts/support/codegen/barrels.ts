@@ -3,7 +3,7 @@ import { defineCommand } from "#support/commander/utils/defineCommand";
 import { settleChanges } from "#support/commander/utils/settleChanges";
 import { syncBarrels } from "#typescript/utils/syncBarrels";
 
-export default defineCommand((command) => {
+export const barrels = defineCommand((command) => {
   return command
     .description(
       "Fill the engrenage blocks of the barrels with re-exports of the modules they name.",

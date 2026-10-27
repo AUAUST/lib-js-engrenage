@@ -2,6 +2,7 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  realpathSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
@@ -13,7 +14,7 @@ import { onTestFinished } from "vitest";
 import { entries } from "@auaust/toolkit/object";
 
 export function createTemporaryProject(files: Record<string, string> = {}) {
-  const root = mkdtempSync(join(tmpdir(), "engrenage-"));
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "engrenage-")));
 
   onTestFinished(() => {
     rmSync(root, {

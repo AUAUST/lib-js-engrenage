@@ -1,8 +1,34 @@
 import { relative } from "node:path";
 
+import { map } from "@auaust/primitive-kit/arrays";
+
 import { organization } from "#constants";
 import { defineConvention } from "#eslint/conventions/defineConvention";
 import { delegateRule } from "#eslint/utils/delegateRule";
+
+const projectSelectors = [
+  "subpath",
+  "tsconfig-path",
+  "internal",
+  "parent",
+  "sibling",
+  "index",
+] as const;
+
+function createProjectGroup(
+  groupName: string,
+  modifiers: ReadonlyArray<"default" | "type" | "value" | "wildcard">,
+) {
+  return {
+    groupName,
+    anyOf: map(projectSelectors, (selector) => {
+      return {
+        selector,
+        modifiers: [...modifiers],
+      };
+    }),
+  };
+}
 
 export default defineConvention({
   delegates({ root, typescript }) {
@@ -24,6 +50,10 @@ export default defineConvention({
               elementNamePattern: `^${organization}/`,
               modifiers: ["type"],
             },
+            createProjectGroup("value-wildcard-project", ["wildcard", "value"]),
+            createProjectGroup("type-wildcard-project", ["wildcard", "type"]),
+            createProjectGroup("value-default-project", ["default", "value"]),
+            createProjectGroup("type-default-project", ["default", "type"]),
           ],
           groups: [
             "side-effect",
@@ -59,9 +89,20 @@ export default defineConvention({
               "type-sibling",
               "type-index",
             ],
+            "value-wildcard-project",
+            {
+              newlinesBetween: 0,
+            },
+            "type-wildcard-project",
+            "value-default-project",
+            {
+              newlinesBetween: 0,
+            },
+            "type-default-project",
             "unknown",
           ],
           newlinesBetween: 1,
+          partitionByComment: true,
           ...(tsconfigPath !== undefined && {
             tsconfig: {
               rootDir: root,

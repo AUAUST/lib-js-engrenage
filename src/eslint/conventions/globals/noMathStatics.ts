@@ -1,3 +1,4 @@
+// eslint-disable-next-line auaust/no-external-namespace
 import * as math from "@auaust/toolkit/math";
 import { keys } from "@auaust/toolkit/object";
 

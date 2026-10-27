@@ -6,7 +6,24 @@ export default defineConvention({
     delegateRule("perfectionist/sort-exports", [
       {
         type: "natural",
-        groups: ["value-export", "type-export"],
+        customGroups: [
+          {
+            groupName: "value-wildcard-export",
+            selector: "export",
+            modifiers: ["wildcard", "value"],
+          },
+          {
+            groupName: "type-wildcard-export",
+            selector: "export",
+            modifiers: ["wildcard", "type"],
+          },
+        ],
+        groups: [
+          "value-export",
+          "type-export",
+          "value-wildcard-export",
+          "type-wildcard-export",
+        ],
         newlinesBetween: "ignore",
         partitionByComment: true,
       },

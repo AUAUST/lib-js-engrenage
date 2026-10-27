@@ -3,7 +3,6 @@ import { basename } from "node:path";
 import { includes } from "@auaust/primitive-kit/arrays";
 
 import { packageJsonFile } from "#constants";
-import manifest from "#package.json" with { type: "json" };
 import {
   initialVersion,
   privateLicense,
@@ -12,6 +11,8 @@ import {
 } from "#support/packageJson/constants";
 import type { Step } from "#support/scaffold/types/Step";
 import type { StepContext } from "#support/scaffold/types/StepContext";
+
+import manifest from "#package.json" with { type: "json" };
 
 function isUnset(context: StepContext, field: string): boolean {
   return context.readPackageJson([field]) === undefined;

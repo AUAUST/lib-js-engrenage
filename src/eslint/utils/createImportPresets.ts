@@ -4,12 +4,15 @@ import { defineConfig } from "eslint/config";
 
 import { importRules } from "#eslint/constants";
 import type { Config } from "#eslint/types/Config";
+import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
 
 export function createImportPresets({
   codeFiles,
+  tsconfig,
 }: {
   codeFiles: Globs;
+  tsconfig: File | undefined;
 }): Config[] {
   return defineConfig([
     importX.flatConfigs.recommended,
@@ -17,7 +20,11 @@ export function createImportPresets({
     {
       files: [...codeFiles],
       settings: {
-        "import-x/resolver-next": [createTypeScriptImportResolver()],
+        "import-x/resolver-next": [
+          createTypeScriptImportResolver({
+            project: tsconfig,
+          }),
+        ],
       },
       rules: importRules,
     },

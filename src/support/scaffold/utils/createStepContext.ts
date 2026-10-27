@@ -3,7 +3,6 @@ import type { JSONPath } from "jsonc-parser";
 import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { engrenage, packageJsonFile } from "#constants";
-import manifest from "#package.json" with { type: "json" };
 import { readJsonValue } from "#support/json/utils/readJsonValue";
 import { writePackageJsonValue } from "#support/packageJson/utils/writePackageJsonValue";
 import type { Presets } from "#config/types/Presets";
@@ -13,6 +12,8 @@ import type { Invocation } from "#support/scaffold/types/Invocation";
 import type { Prompter } from "#support/scaffold/types/Prompter";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
+
+import manifest from "#package.json" with { type: "json" };
 
 function resolveDependencyRange(name: PackageName): string {
   if (name === engrenage) {

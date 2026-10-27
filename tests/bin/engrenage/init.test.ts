@@ -8,10 +8,11 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { keys } from "@auaust/toolkit/object";
 
 import { init } from "#bin/engrenage/init";
-import manifest from "#package.json" with { type: "json" };
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
+
+import manifest from "#package.json" with { type: "json" };
 
 vi.mock(import("node:child_process"));
 
