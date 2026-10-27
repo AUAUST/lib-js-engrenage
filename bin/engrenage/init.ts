@@ -152,7 +152,7 @@ export const init = defineCommand((command) => {
         searchParents: false,
       });
 
-      runSync(installed);
+      await runSync(installed);
 
       settleChanges(installed, {
         check: false,

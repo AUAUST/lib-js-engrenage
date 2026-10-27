@@ -84,13 +84,17 @@ export const edit = defineCommand((command) => {
         runTool(config, prettier, ["--write", "--ignore-unknown", file]);
       }
 
-      if (hasEslint) {
-        const { status, stdout, stderr } = runTool(config, eslint, lintArgs);
-
-        if (status !== 0) {
-          process.stderr.write(stdout + stderr);
-          process.exitCode = blockingExitCode;
-        }
+      if (!hasEslint) {
+        return;
       }
+
+      const { status, stdout, stderr } = runTool(config, eslint, lintArgs);
+
+      if (!(status !== 0)) {
+        return;
+      }
+
+      process.stderr.write(stdout + stderr);
+      process.exitCode = blockingExitCode;
     });
 });

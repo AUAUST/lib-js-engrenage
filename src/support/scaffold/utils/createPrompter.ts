@@ -21,7 +21,7 @@ function requireValue(value: string | undefined): string | undefined {
 }
 
 export function createPrompter({ yes }: { yes: boolean }) {
-  if (!yes && process.stdin.isTTY !== true) {
+  if (!yes && !process.stdin.isTTY) {
     throw new Error(
       "engrenage init needs an interactive terminal; pass --yes to accept every step",
     );

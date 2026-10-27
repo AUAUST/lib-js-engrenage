@@ -8,7 +8,7 @@ import { createRuleName } from "#eslint/utils/createRuleName";
 import { createTypeAwareLanguageOptions } from "#eslint/utils/createTypeAwareLanguageOptions";
 import { resolveScope } from "#eslint/utils/resolveScope";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Config } from "#eslint/types/Config";
+import type { ConfigObject } from "#eslint/types/ConfigObject";
 import type { Convention } from "#eslint/types/Convention";
 import type { Rules } from "#eslint/types/Rules";
 
@@ -89,8 +89,8 @@ export function createConventionRules({
   conventions: Record<string, Convention>;
   setting: boolean | Partial<Record<string, boolean>>;
   typeAware: boolean;
-}): Config[] {
-  const configs: Config[] = [];
+}): ConfigObject[] {
+  const configs: ConfigObject[] = [];
 
   for (const [name, convention] of entries(conventions)) {
     if (

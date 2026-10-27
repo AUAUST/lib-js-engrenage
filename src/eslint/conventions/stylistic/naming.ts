@@ -20,5 +20,5 @@ export default defineConvention({
       },
     ]),
   ],
-  severity: "warn",
+  severity: "info",
 });

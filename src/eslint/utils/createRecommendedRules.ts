@@ -11,6 +11,7 @@ import {
   unicornRules,
 } from "#eslint/constants";
 import { createTypeAwareLanguageOptions } from "#eslint/utils/createTypeAwareLanguageOptions";
+import { resolveInfoRules } from "#eslint/utils/resolveInfoRules";
 import { resolveScope } from "#eslint/utils/resolveScope";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#eslint/types/Config";
@@ -25,7 +26,7 @@ export function createRecommendedRules({
   return defineConfig([
     js.configs.recommended,
     typescriptConfigs.recommended,
-    {
+    resolveInfoRules({
       name: `${pluginName}/recommended`,
       files: [...config.code.files],
       rules: {
@@ -34,9 +35,9 @@ export function createRecommendedRules({
         ...stylisticRules,
         ...unicornRules,
       },
-    },
+    }),
     typeAware
-      ? {
+      ? resolveInfoRules({
           name: `${pluginName}/recommended/type-aware`,
           files: resolveScope(config, [
             "files.code.published",
@@ -44,7 +45,7 @@ export function createRecommendedRules({
           ]),
           languageOptions: createTypeAwareLanguageOptions(config),
           rules: typescriptTypeAwareRules,
-        }
+        })
       : [],
   ]);
 }

@@ -14,7 +14,7 @@ export interface Convention {
   files: ScopeReferences;
   ignores: ScopeReferences;
   typeAware: boolean;
-  severity: "error" | "warn";
+  severity: "error" | "warn" | "info";
   delegates: ResolvableValue<ReadonlyArray<Delegate>, [ResolvedConfig]>;
   rule?: RuleModule;
 }

@@ -9,11 +9,11 @@ import type { UnicornRules } from "#eslint/types/rules/UnicornRules";
 import type { UnusedImportsRules } from "#eslint/types/rules/UnusedImportsRules";
 import type { TypescriptEslintRules } from "#eslint/types/rules/TypescriptEslintRules";
 import type { ImportXRules } from "#eslint/types/rules/ImportXRules";
-import type { Linter } from "eslint";
+import type { Rule } from "#eslint/types/Rule";
 
 export interface Rules
   extends
-    Partial<Linter.RulesRecord>,
+    Partial<Record<string, Rule>>,
     CoreRules,
     AuaustRules,
     StylisticRules,

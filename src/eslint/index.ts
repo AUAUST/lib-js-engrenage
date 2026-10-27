@@ -3,6 +3,7 @@ export { defineEslintConfig } from "#eslint/config/defineEslintConfig";
 
 // @barrel types/*.ts all
 export * from "#eslint/types/Config";
+export * from "#eslint/types/ConfigObject";
 export * from "#eslint/types/ConfigWithExtends";
 export * from "#eslint/types/Convention";
 export * from "#eslint/types/Delegate";

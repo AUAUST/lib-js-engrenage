@@ -1,17 +1,29 @@
 import { array, optional, string } from "valibot";
 
-import { deduplicate, flatMap, includes } from "@auaust/primitive-kit/arrays";
+import {
+  deduplicate,
+  flatMap,
+  includes,
+  map,
+} from "@auaust/primitive-kit/arrays";
 
+import { loadInfoRules } from "#eslint/utils/loadInfoRules";
 import { emptyObjectFile } from "#support/json/constants";
 import { applyJsonEdits } from "#support/json/utils/applyJsonEdits";
 import { flattenJsonObject } from "#support/json/utils/flattenJsonObject";
 import { readJsonValue } from "#support/json/utils/readJsonValue";
 import { writeJsonValue } from "#support/json/utils/writeJsonValue";
 import { validate } from "#utils/validate";
-import { extensionsFile, settingsFile } from "#vscode/constants";
+import {
+  eslintIntegration,
+  extensionsFile,
+  settingsFile,
+} from "#vscode/constants";
 import { findIntegrations } from "#vscode/utils/findIntegrations";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { JsonEdit } from "#support/json/types/JsonEdit";
 import type { File } from "#types/File";
+import type { Integration } from "#vscode/types/Integration";
 
 function addRecommendations(
   content: string,
@@ -56,7 +68,37 @@ function isEnabled(
   return configured === true || requested || config.filesystem.exists(file);
 }
 
-export function syncVscodeFiles(
+async function createSettingsEdits(
+  config: ResolvedConfig,
+  applicable: ReadonlyArray<Integration>,
+): Promise<JsonEdit[]> {
+  const infoRules = includes(applicable, eslintIntegration)
+    ? await loadInfoRules(config)
+    : [];
+
+  return flatMap(applicable, (integration) => {
+    const edits = flattenJsonObject(integration.settings);
+
+    if (integration !== eslintIntegration) {
+      return edits;
+    }
+
+    return [
+      ...edits,
+      {
+        path: ["eslint.rules.customizations"],
+        value: map(infoRules, (rule) => {
+          return {
+            rule,
+            severity: "info",
+          };
+        }),
+      },
+    ];
+  });
+}
+
+export async function syncVscodeFiles(
   config: ResolvedConfig,
   {
     settings = false,
@@ -70,10 +112,6 @@ export function syncVscodeFiles(
 
   const applicable = findIntegrations(config.environment.hasDependency);
 
-  const edits = flatMap(applicable, (integration) => {
-    return flattenJsonObject(integration.settings);
-  });
-
   const recommendations = deduplicate(
     flatMap(applicable, (integration) => {
       return integration.extensions;
@@ -86,7 +124,7 @@ export function syncVscodeFiles(
       applyJsonEdits(
         filesystem.read(settingsFile) ?? emptyObjectFile,
         config.resolve(settingsFile),
-        edits,
+        await createSettingsEdits(config, applicable),
       ),
     );
   }

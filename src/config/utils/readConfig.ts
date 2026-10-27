@@ -1,14 +1,13 @@
 import { existsSync } from "node:fs";
 import { dirname } from "node:path";
 
-import { loadConfig as loadConfigFile } from "c12";
-
 import { constant } from "@auaust/toolkit/constant";
 import { memoized } from "@auaust/toolkit/memoized";
 
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
 import { files } from "#constants";
+import { importConfigFile } from "#support/filesystem/utils/importConfigFile";
 import { resolve } from "#support/filesystem/utils/resolve";
 import { validate } from "#utils/validate";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -25,24 +24,13 @@ const warnMissingConfig = memoized(function (root: Directory) {
   console.warn(`No engrenage config found in ${root}, using defaults`);
 }, constant(true));
 
-async function loadConfigIn(directory: Directory) {
-  return loadConfigFile({
-    cwd: directory,
-    configFile: files.engrenageConfig,
-    rcFile: false,
-    globalRc: false,
-    packageJson: false,
-    dotenv: false,
-    envName: false,
-    extend: false,
-    giget: false,
-  });
-}
-
 async function findConfigFile(
   directory: Directory,
 ): Promise<FoundConfig | undefined> {
-  const { config, cwd, _configFile } = await loadConfigIn(directory);
+  const { config, cwd, _configFile } = await importConfigFile(
+    directory,
+    files.engrenageConfig,
+  );
 
   if (_configFile === undefined) {
     return;

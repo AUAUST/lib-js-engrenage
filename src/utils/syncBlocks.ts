@@ -9,7 +9,7 @@ export function syncBlocks(
   fillers: BlockFillers,
 ): string {
   const marker = new RegExp(
-    `^${RegExp.escape(open)}@(\\w+)((?: \\S+)*)${RegExp.escape(close)}$`,
+    String.raw`^${RegExp.escape(open)}@(\w+)((?: \S+)*)${RegExp.escape(close)}$`,
     "gm",
   );
 

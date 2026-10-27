@@ -80,14 +80,18 @@ describe("defineViteConfig", () => {
 
     vi.stubEnv("VITEST", "true");
 
-    expect((await viteConfig(env)).define).toEqual({
+    const testConfig = await viteConfig(env);
+
+    expect(testConfig.define).toEqual({
       __SHARED__: "1",
       __FIXTURES__: '"fixtures"',
     });
 
     vi.stubEnv("VITEST", undefined);
 
-    expect((await viteConfig(env)).define).toEqual({
+    const runtimeConfig = await viteConfig(env);
+
+    expect(runtimeConfig.define).toEqual({
       __SHARED__: "1",
     });
   });

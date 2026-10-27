@@ -1,9 +1,11 @@
 import { defineConfig } from "eslint/config";
 
+import { map } from "@auaust/primitive-kit/arrays";
 import { value } from "@auaust/toolkit/value";
 
 import { loadConfig } from "#config/utils/loadConfig";
 import { createEslintConfig } from "#eslint/config/createEslintConfig";
+import { resolveInfoRules } from "#eslint/utils/resolveInfoRules";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#eslint/types/Config";
 import type { ConfigWithExtends } from "#eslint/types/ConfigWithExtends";
@@ -28,6 +30,6 @@ export async function defineEslintConfig(
 
   return defineConfig(
     createEslintConfig(config, resolvedOptions),
-    ...resolvedConfigs,
+    ...map(resolvedConfigs, resolveInfoRules),
   );
 }

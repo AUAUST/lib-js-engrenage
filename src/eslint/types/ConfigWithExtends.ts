@@ -1,3 +1,3 @@
-import type { defineConfig } from "eslint/config";
+import type { ConfigObject } from "#eslint/types/ConfigObject";
 
-export type ConfigWithExtends = Parameters<typeof defineConfig>[number];
+export type ConfigWithExtends = ConfigObject | ConfigWithExtends[];

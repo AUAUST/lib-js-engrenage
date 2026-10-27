@@ -14,8 +14,8 @@ export function createVscodeSettingsStep(): Step {
         !filesystem.exists(settingsFile)
       );
     },
-    plan({ config }) {
-      syncVscodeFiles(config, {
+    async plan({ config }) {
+      await syncVscodeFiles(config, {
         settings: true,
       });
     },

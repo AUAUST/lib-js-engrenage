@@ -85,11 +85,13 @@ export function createStepContext({
   }
 
   function addDevDependency(name: PackageName) {
-    if (!hasDependency(name)) {
-      writePackageJson(["devDependencies", name], resolveDependencyRange(name));
-
-      installs = true;
+    if (hasDependency(name)) {
+      return;
     }
+
+    writePackageJson(["devDependencies", name], resolveDependencyRange(name));
+
+    installs = true;
   }
 
   function invoke(invocation: Invocation) {

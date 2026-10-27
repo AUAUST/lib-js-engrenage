@@ -52,9 +52,9 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Fix: add a primitive-kit `arrays` helper returning the only element and failing with a described error on several (optionally on none), then use it here.
 
 6. eslint-import-context type-imports type-fest without depending on it.
-   - Where: tests of internal modules that load `eslint-plugin-import-x`, such as `src/eslint/utils/delegateRule.ts`
-   - Problem: `eslint-import-context/lib/types.d.ts` imports `type-fest`, which it does not declare, so the dist type check (`skipLibCheck: false`) fails as soon as a test imports a source module reaching import-x types. Delegated rules are tested through `createEslintConfig` instead.
-   - Fix: once eslint-import-context declares `type-fest` (or import-x stops exposing those types), internal modules can be tested directly again.
+   - Where: `env.d.ts`
+   - Problem: `eslint-import-context/lib/types.d.ts` imports `KebabCase` and `LiteralUnion` from `type-fest`, which it does not declare, so the dist type check (`skipLibCheck: false`) fails once a test reaches a source module that loads `eslint-plugin-import-x` (the VS Code sync now does, through the ESLint config). An ambient `type-fest` module stands in for both types.
+   - Fix: once eslint-import-context declares `type-fest` (or import-x stops exposing those types), delete the `type-fest` module from `env.d.ts`.
 
 7. ESLint core rule modules are only reachable through a deprecated export.
    - Where: `src/eslint/utils/findUpstreamRule.ts`, `src/eslint/utils/syncRuleTypes.ts`

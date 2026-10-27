@@ -133,7 +133,9 @@ describe("loadConfig", () => {
       }),
     });
 
-    expect((await loadConfig(outside.root)).build.outDir).toBeUndefined();
+    const outsideConfig = await loadConfig(outside.root);
+
+    expect(outsideConfig.build.outDir).toBeUndefined();
 
     const missing = await loadConfig(
       createTemporaryProject({

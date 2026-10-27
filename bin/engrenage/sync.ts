@@ -19,7 +19,10 @@ import { syncVscodeFiles } from "#vscode/setup/syncVscodeFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 
 interface SyncTarget<Flag extends string> {
-  sync(config: ResolvedConfig, flags: Partial<Record<Flag, boolean>>): void;
+  sync(
+    config: ResolvedConfig,
+    flags: Partial<Record<Flag, boolean>>,
+  ): void | Promise<void>;
   flags?: Record<Flag, string>;
 }
 
@@ -72,7 +75,7 @@ function createFlagOptions(): ReadonlyArray<{
   });
 }
 
-export function runSync(
+export async function runSync(
   config: ResolvedConfig,
   {
     names = keys(targets),
@@ -83,7 +86,7 @@ export function runSync(
   } = {},
 ) {
   for (const name of names) {
-    targets[name].sync(config, flags[name] ?? {});
+    await targets[name].sync(config, flags[name] ?? {});
   }
 }
 
@@ -130,7 +133,7 @@ export const sync = defineCommand((command) => {
         console.info("Checking synced files...");
       }
 
-      runSync(config, {
+      await runSync(config, {
         names: selected.length === 0 ? keys(targets) : selected,
         flags,
       });

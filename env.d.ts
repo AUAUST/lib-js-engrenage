@@ -4,3 +4,11 @@ declare module "giget" {
     [option: string]: unknown;
   }
 }
+
+// eslint-import-context type-imports type-fest without depending on it.
+declare module "type-fest" {
+  export type KebabCase<Value extends string> = Value;
+
+  export type LiteralUnion<Literal, Base> =
+    Literal | (Base & Record<never, never>);
+}

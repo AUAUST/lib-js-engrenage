@@ -1,5 +1,7 @@
 import type { Rule, SourceCode } from "eslint";
 
+import { filterMap } from "@auaust/primitive-kit/arrays";
+
 import { defineConvention } from "#eslint/conventions/defineConvention";
 
 type SwitchCase = Extract<
@@ -81,17 +83,15 @@ export default defineConvention({
 
       return {
         SwitchStatement(node) {
-          const pairs = node.cases.flatMap((previous, index) => {
+          const pairs = filterMap(node.cases, (previous, index) => {
             const next = node.cases[index + 1];
 
-            return next === undefined || previous.consequent.length === 0
-              ? []
-              : [
-                  {
-                    previous,
-                    next,
-                  },
-                ];
+            if (next !== undefined && previous.consequent.length > 0) {
+              return {
+                previous,
+                next,
+              };
+            }
           });
 
           const requiresPadding =

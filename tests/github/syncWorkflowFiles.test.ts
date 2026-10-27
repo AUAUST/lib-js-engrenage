@@ -13,15 +13,17 @@ const libraryScripts = {
   "ci:publish": "changeset publish",
 };
 
+const ciWorkflow = {
+  ".github/workflows/ci.yml": "",
+};
+
 function createLibrary(
   scripts: Record<string, string>,
   config = "{}",
-  workflows: Record<string, string> = {
-    ".github/workflows/ci.yml": "",
-  },
+  workflows?: Record<string, string>,
 ) {
   return createTemporaryProject({
-    ...workflows,
+    ...(workflows ?? ciWorkflow),
     "engrenage.config.ts": `export default { presets: ["library"], github: ${config} };\n`,
     "package.json": JSON.stringify({
       type: "module",

@@ -18,6 +18,7 @@ import { createImportPresets } from "#eslint/utils/createImportPresets";
 import { createPackageJsonRules } from "#eslint/utils/createPackageJsonRules";
 import { createPlugin } from "#eslint/utils/createPlugin";
 import { createRecommendedRules } from "#eslint/utils/createRecommendedRules";
+import { resolveInfoRules } from "#eslint/utils/resolveInfoRules";
 import { validate } from "#utils/validate";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#eslint/types/Config";
@@ -98,6 +99,6 @@ export function createEslintConfig(
     },
     typescriptConfigs.base,
     ...configs,
-    conventionRules,
+    resolveInfoRules(conventionRules),
   );
 }

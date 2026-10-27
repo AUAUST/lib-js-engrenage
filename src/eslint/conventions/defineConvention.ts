@@ -24,7 +24,7 @@ export function defineConvention({
   files?: ScopeReferences;
   ignores?: ScopeReferences;
   typeAware?: boolean;
-  severity?: "error" | "warn";
+  severity?: "error" | "warn" | "info";
   enabled?: boolean;
   presets?: Presets;
   requires?: PackageNames;

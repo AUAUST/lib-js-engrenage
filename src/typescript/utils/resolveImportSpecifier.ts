@@ -36,7 +36,7 @@ function matchSpecifier(
     file.length - targetSuffix.length,
   );
 
-  return specifier.replace("*", captured);
+  return specifier.replace("*", () => captured);
 }
 
 function resolveTarget(target: unknown): string | undefined {

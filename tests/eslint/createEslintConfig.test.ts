@@ -12,6 +12,7 @@ import {
   type Config,
   type Options,
 } from "@auaust/engrenage/eslint";
+import { infoRulesSetting } from "@auaust/engrenage/eslint/constants";
 import { map } from "@auaust/primitive-kit/arrays";
 import type { Maybe } from "@auaust/toolkit/types";
 
@@ -847,6 +848,22 @@ export const longform = {
       "16:auaust/quote-props",
       "20:auaust/quote-props",
       "24:auaust/object-shorthand",
+    ]);
+  });
+
+  test("lints info rules as warnings and records them in the settings", async () => {
+    const configs = createEslintConfig(await loadConfig(root), {
+      ignore: false,
+    });
+
+    const naming = configs.find((config) => {
+      return config.rules?.["auaust/naming-convention"] !== undefined;
+    });
+
+    expect(naming?.rules?.["auaust/naming-convention"]).toBe("warn");
+
+    expect(naming?.settings?.[infoRulesSetting]).toEqual([
+      "auaust/naming-convention",
     ]);
   });
 

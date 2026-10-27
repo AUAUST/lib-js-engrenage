@@ -14,8 +14,8 @@ export function createVscodeExtensionsStep(): Step {
         !filesystem.exists(extensionsFile)
       );
     },
-    plan({ config }) {
-      syncVscodeFiles(config, {
+    async plan({ config }) {
+      await syncVscodeFiles(config, {
         extensions: true,
       });
     },

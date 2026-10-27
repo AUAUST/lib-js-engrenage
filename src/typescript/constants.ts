@@ -9,7 +9,7 @@ export const declarationExtension = ".d.ts";
 
 export const identifierPattern = /^[$A-Z_a-z][\w$]*$/;
 
-export const noInputsDiagnostic = 18003;
+export const noInputsDiagnostic = 18_003;
 
 export const typescriptBlocks = freeze({
   open: "// ",

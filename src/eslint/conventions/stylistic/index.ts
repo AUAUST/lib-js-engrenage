@@ -9,6 +9,7 @@ export { default as nameReplacements } from "#eslint/conventions/stylistic/nameR
 export { default as naming } from "#eslint/conventions/stylistic/naming";
 export { default as noComplexConciseArrows } from "#eslint/conventions/stylistic/noComplexConciseArrows";
 export { default as noUselessUndefined } from "#eslint/conventions/stylistic/noUselessUndefined";
+export { default as numericSeparators } from "#eslint/conventions/stylistic/numericSeparators";
 export { default as objectCurlyNewline } from "#eslint/conventions/stylistic/objectCurlyNewline";
 export { default as objects } from "#eslint/conventions/stylistic/objects";
 export { default as paddedBlocks } from "#eslint/conventions/stylistic/paddedBlocks";

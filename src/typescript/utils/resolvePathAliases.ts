@@ -58,11 +58,11 @@ export function resolvePathAliases(
 
     const hasPattern = aliasPattern.includes("*");
 
-    let matched = false;
-
     if (targets.length === 0) {
       throw new Error(`Alias '${aliasPattern}' has no configured paths`);
     }
+
+    let matched = false;
 
     if (hasPattern) {
       assertWildcards(aliasPattern, targets);
@@ -95,7 +95,7 @@ export function resolvePathAliases(
         const capture = path.slice(prefix.length, path.length - suffix.length);
 
         const alias = hasPattern
-          ? aliasPattern.replace("*", capture)
+          ? aliasPattern.replace("*", () => capture)
           : aliasPattern;
 
         const previousAlias = aliases.get(alias);
