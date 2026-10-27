@@ -18,12 +18,18 @@ export function describe(value: unknown) {
   return kinds[typeof value] ?? kind;
 }
 
-export const formatFile = (file: string) => `~   ${file}\n`;
+export function formatFiles(files: string[]) {
+  return files.map((file) => `~   ${file}\n`);
+}
 
 export function partiallyReassigned(cases: Array<[number, string]>) {
+  const labels: string[] = [];
+
   for (let [count, label] of cases) {
     count += 1;
 
-    return `${label}${count}`;
+    labels.push(`${label}${count}`);
   }
+
+  return labels;
 }

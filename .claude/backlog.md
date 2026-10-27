@@ -51,6 +51,21 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: it collects candidates, destructures `[first, ...others]` and throws on none or several, a pattern that recurs wherever exactly one match is expected.
    - Fix: add a primitive-kit `arrays` helper returning the only element and failing with a described error on several (optionally on none), then use it here.
 
+6. eslint-import-context type-imports type-fest without depending on it.
+   - Where: tests of internal modules that load `eslint-plugin-import-x`, such as `src/eslint/utils/delegateRule.ts`
+   - Problem: `eslint-import-context/lib/types.d.ts` imports `type-fest`, which it does not declare, so the dist type check (`skipLibCheck: false`) fails as soon as a test imports a source module reaching import-x types. Delegated rules are tested through `createEslintConfig` instead.
+   - Fix: once eslint-import-context declares `type-fest` (or import-x stops exposing those types), internal modules can be tested directly again.
+
+7. ESLint core rule modules are only reachable through a deprecated export.
+   - Where: `src/eslint/utils/findUpstreamRule.ts`, `src/eslint/utils/syncRuleTypes.ts`
+   - Problem: `builtinRules` from `eslint/use-at-your-own-risk` is marked deprecated, and `eslint/rules` only ships types, so there is no supported way to load a core rule module to delegate it or generate its types.
+   - Fix: move to the supported accessor once ESLint provides one.
+
+8. json-schema-to-typescript duplicates declarations for references with sibling keywords.
+   - Where: `src/eslint/utils/normalizeRuleSchema.ts`
+   - Problem: a `$ref` carrying a `description` (as in `unicorn/name-replacements`) is compiled as a new schema with the same name, emitting the same interface twice and failing the type check with duplicate index signatures. The rule types generator drops the keywords next to a `$ref`, which JSON Schema draft 4 ignores anyway.
+   - Fix: once `json-schema-to-typescript-lite` (through `eslint-typegen`) deduplicates these declarations, remove the `$ref` normalization.
+
 ## 3. Architecture
 
 1. The tsconfig `outDir` can diverge from the configured output directory.
@@ -89,3 +104,8 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Where: `src/config/setup/createPackageStep.ts`
    - Problem: a public package gets `license: GPL-3.0-only` only. npm publishes scoped packages as restricted by default, so `changeset publish` of a new `@auaust/*` library fails until `publishConfig.access: public` is added by hand.
    - Fix: set `publishConfig.access: public` for public packages with a scoped name, or decide that the publish workflow passes `--access public`.
+
+7. Synced VS Code settings replace whole arrays.
+   - Where: `src/vscode/setup/syncVscodeFiles.ts`, `src/support/json/utils/flattenJsonObject.ts`
+   - Problem: settings are flattened to one edit per object path, so an array such as `eslint.rules.customizations` is written as a whole and a project's own entries are dropped on every `engrenage sync`.
+   - Fix: decide how arrays merge, for example by adding the missing entries keyed by `rule` and keeping the others.

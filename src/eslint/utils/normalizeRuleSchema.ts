@@ -1,6 +1,7 @@
 import { map } from "@auaust/primitive-kit/arrays";
 import { isArray } from "@auaust/toolkit/isArray";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
+import { isString } from "@auaust/toolkit/isString";
 
 const branchKeywords = ["anyOf", "oneOf"];
 
@@ -38,9 +39,15 @@ function mergeRequirementBranches(
   };
 }
 
-function mergeAllRequirementBranches(
+function normalizeSchemaNode(
   schema: Record<string, unknown>,
 ): Record<string, unknown> {
+  if (isString(schema.$ref)) {
+    return {
+      $ref: schema.$ref,
+    };
+  }
+
   return branchKeywords.reduce(mergeRequirementBranches, schema);
 }
 
@@ -50,6 +57,6 @@ export function normalizeRuleSchema<Schema>(schema: Schema): Schema {
   }
 
   return JSON.parse(JSON.stringify(schema), (_key, value: unknown) => {
-    return isPlainObject(value) ? mergeAllRequirementBranches(value) : value;
+    return isPlainObject(value) ? normalizeSchemaNode(value) : value;
   });
 }

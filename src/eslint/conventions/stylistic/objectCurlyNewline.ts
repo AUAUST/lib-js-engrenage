@@ -1,9 +1,9 @@
 import { defineConvention } from "#eslint/conventions/defineConvention";
+import { delegateRule } from "#eslint/utils/delegateRule";
 
 export default defineConvention({
-  rules: {
-    "@stylistic/object-curly-newline": [
-      "error",
+  delegates: [
+    delegateRule("@stylistic/object-curly-newline", [
       {
         ObjectExpression: {
           minProperties: 1,
@@ -24,6 +24,6 @@ export default defineConvention({
           consistent: true,
         },
       },
-    ],
-  },
+    ]),
+  ],
 });

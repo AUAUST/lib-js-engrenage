@@ -1,12 +1,16 @@
 import { defineConvention } from "#eslint/conventions/defineConvention";
+import { delegateRule } from "#eslint/utils/delegateRule";
 
 export default defineConvention({
-  rules: {
-    "@stylistic/padded-blocks": [
-      "error",
-      {
-        switches: "never",
-      },
-    ],
-  },
+  delegates: [
+    delegateRule(
+      "@stylistic/padded-blocks",
+      [
+        {
+          switches: "never",
+        },
+      ],
+      "unpadded-switches",
+    ),
+  ],
 });

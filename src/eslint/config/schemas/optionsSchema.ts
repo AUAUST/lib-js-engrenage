@@ -25,6 +25,7 @@ export const optionsSchema = strictObject({
   ignore: optional(boolean(), true),
   recommended: optional(boolean(), true),
   packageJson: optional(boolean(), true),
+  typeAware: optional(boolean(), true),
   globals: categorySchema(conventionCategories.globals),
   comparisons: categorySchema(conventionCategories.comparisons),
   stylistic: categorySchema(conventionCategories.stylistic),

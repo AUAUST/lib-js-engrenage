@@ -1,12 +1,12 @@
 import { defineConvention } from "#eslint/conventions/defineConvention";
+import { delegateRule } from "#eslint/utils/delegateRule";
 
 export default defineConvention({
-  rules: {
-    "import-x/no-duplicates": [
-      "error",
+  delegates: [
+    delegateRule("import-x/no-duplicates", [
       {
         "prefer-inline": true,
       },
-    ],
-  },
+    ]),
+  ],
 });

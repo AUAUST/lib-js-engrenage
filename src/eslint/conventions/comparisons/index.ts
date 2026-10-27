@@ -4,4 +4,5 @@ export { default as noIsUndefined } from "#eslint/conventions/comparisons/noIsUn
 export { default as noLooseEqual } from "#eslint/conventions/comparisons/noLooseEqual";
 export { default as noLooseUndefined } from "#eslint/conventions/comparisons/noLooseUndefined";
 export { default as noRuntimeTypeof } from "#eslint/conventions/comparisons/noRuntimeTypeof";
+export { default as noTypeofUndefined } from "#eslint/conventions/comparisons/noTypeofUndefined";
 // @end

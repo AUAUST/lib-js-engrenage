@@ -51,6 +51,27 @@ describe("normalizeRuleSchema", () => {
     });
   });
 
+  test("drops the keywords that sit next to a reference", () => {
+    const schema = {
+      type: "object",
+      properties: {
+        allowList: {
+          $ref: "#/definitions/booleanObject",
+          description: "Ignored next to a reference.",
+        },
+      },
+    };
+
+    expect(normalizeRuleSchema(schema)).toEqual({
+      type: "object",
+      properties: {
+        allowList: {
+          $ref: "#/definitions/booleanObject",
+        },
+      },
+    });
+  });
+
   test("keeps branches that declare their own properties", () => {
     const schema = {
       type: "object",

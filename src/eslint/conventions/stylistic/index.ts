@@ -1,10 +1,16 @@
 // @barrel *.ts default
-export { default as bracedCases } from "#eslint/conventions/stylistic/bracedCases";
+export { default as assignments } from "#eslint/conventions/stylistic/assignments";
+export { default as conditionals } from "#eslint/conventions/stylistic/conditionals";
 export { default as curly } from "#eslint/conventions/stylistic/curly";
+export { default as exhaustiveSwitches } from "#eslint/conventions/stylistic/exhaustiveSwitches";
+export { default as functionDeclarations } from "#eslint/conventions/stylistic/functionDeclarations";
 export { default as groupedOverloads } from "#eslint/conventions/stylistic/groupedOverloads";
+export { default as nameReplacements } from "#eslint/conventions/stylistic/nameReplacements";
+export { default as naming } from "#eslint/conventions/stylistic/naming";
 export { default as noComplexConciseArrows } from "#eslint/conventions/stylistic/noComplexConciseArrows";
-export { default as noReturnUndefined } from "#eslint/conventions/stylistic/noReturnUndefined";
+export { default as noUselessUndefined } from "#eslint/conventions/stylistic/noUselessUndefined";
 export { default as objectCurlyNewline } from "#eslint/conventions/stylistic/objectCurlyNewline";
+export { default as objects } from "#eslint/conventions/stylistic/objects";
 export { default as paddedBlocks } from "#eslint/conventions/stylistic/paddedBlocks";
 export { default as paddedCases } from "#eslint/conventions/stylistic/paddedCases";
 export { default as paddedMultilineDeclarations } from "#eslint/conventions/stylistic/paddedMultilineDeclarations";
@@ -12,5 +18,10 @@ export { default as paddedMultilineExpressions } from "#eslint/conventions/styli
 export { default as paddedReturns } from "#eslint/conventions/stylistic/paddedReturns";
 export { default as preferConst } from "#eslint/conventions/stylistic/preferConst";
 export { default as preferReturnVoid } from "#eslint/conventions/stylistic/preferReturnVoid";
+export { default as switches } from "#eslint/conventions/stylistic/switches";
+export { default as typeChecks } from "#eslint/conventions/stylistic/typeChecks";
+export { default as typeStyle } from "#eslint/conventions/stylistic/typeStyle";
 export { default as unpaddedSwitches } from "#eslint/conventions/stylistic/unpaddedSwitches";
+export { default as voidPlacement } from "#eslint/conventions/stylistic/voidPlacement";
+export { default as voidReturns } from "#eslint/conventions/stylistic/voidReturns";
 // @end

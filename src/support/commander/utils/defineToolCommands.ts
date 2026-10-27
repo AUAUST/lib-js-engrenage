@@ -64,10 +64,10 @@ export function defineToolCommands<Name extends string>({
       description: string;
       message?: string;
       aliases?: readonly string[] | string;
-      arguments?: (
+      arguments?(
         config: ResolvedConfig,
         args: string[],
-      ) => readonly string[] | undefined;
+      ): readonly string[] | undefined;
     }
   >;
 }): Record<Name, CommandDefinition> {

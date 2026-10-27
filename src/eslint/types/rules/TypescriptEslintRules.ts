@@ -710,7 +710,6 @@ type TypescriptEslintArrayType =
   | [
       {
         default?: "array" | "generic" | "array-simple";
-
         readonly?: "array" | "generic" | "array-simple";
       },
     ];
@@ -728,28 +727,24 @@ type TypescriptEslintBanTsComment =
   | [
       {
         "minimumDescriptionLength"?: number;
-
         "ts-check"?:
           | boolean
           | "allow-with-description"
           | {
               descriptionFormat?: string;
             };
-
         "ts-expect-error"?:
           | boolean
           | "allow-with-description"
           | {
               descriptionFormat?: string;
             };
-
         "ts-ignore"?:
           | boolean
           | "allow-with-description"
           | {
               descriptionFormat?: string;
             };
-
         "ts-nocheck"?:
           | boolean
           | "allow-with-description"
@@ -875,13 +870,9 @@ type TypescriptEslintExplicitMemberAccessibility =
 
         overrides?: {
           accessors?: "explicit" | "no-public" | "off";
-
           constructors?: "explicit" | "no-public" | "off";
-
           methods?: "explicit" | "no-public" | "off";
-
           parameterProperties?: "explicit" | "no-public" | "off";
-
           properties?: "explicit" | "no-public" | "off";
         };
       },
@@ -1570,7 +1561,6 @@ type TypescriptEslintMemberOrdering =
                 | "natural"
                 | "natural-case-insensitive";
             };
-
         classExpressions?:
           | "never"
           | (
@@ -2208,7 +2198,6 @@ type TypescriptEslintMemberOrdering =
                 | "natural"
                 | "natural-case-insensitive";
             };
-
         default?:
           | "never"
           | (
@@ -2846,7 +2835,6 @@ type TypescriptEslintMemberOrdering =
                 | "natural"
                 | "natural-case-insensitive";
             };
-
         interfaces?:
           | "never"
           | (
@@ -2896,7 +2884,6 @@ type TypescriptEslintMemberOrdering =
                 | "natural"
                 | "natural-case-insensitive";
             };
-
         typeLiterals?:
           | "never"
           | (
@@ -3870,29 +3857,22 @@ type TypescriptEslintNoTypeAlias =
           | "in-unions"
           | "in-intersections"
           | "in-unions-and-intersections";
-
         allowCallbacks?: "always" | "never";
-
         allowConditionalTypes?: "always" | "never";
-
         allowConstructors?: "always" | "never";
-
         allowGenerics?: "always" | "never";
-
         allowLiterals?:
           | "always"
           | "never"
           | "in-unions"
           | "in-intersections"
           | "in-unions-and-intersections";
-
         allowMappedTypes?:
           | "always"
           | "never"
           | "in-unions"
           | "in-intersections"
           | "in-unions-and-intersections";
-
         allowTupleTypes?:
           | "always"
           | "never"

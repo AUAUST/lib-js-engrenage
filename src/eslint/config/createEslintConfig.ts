@@ -1,6 +1,7 @@
 import stylistic from "@stylistic/eslint-plugin";
 import packageJson from "eslint-plugin-package-json";
 import perfectionist from "eslint-plugin-perfectionist";
+import unicorn from "eslint-plugin-unicorn";
 import unusedImports from "eslint-plugin-unused-imports";
 import { defineConfig } from "eslint/config";
 import { configs as typescriptConfigs } from "typescript-eslint";
@@ -30,6 +31,7 @@ export function createEslintConfig(
     ignore,
     recommended,
     packageJson: packageJsonEnabled,
+    typeAware,
     ...categories
   } = validate(optionsSchema, options ?? {}, "ESLint options");
 
@@ -41,6 +43,7 @@ export function createEslintConfig(
         category,
         conventions,
         setting: categories[category],
+        typeAware,
       });
     },
   );
@@ -62,7 +65,8 @@ export function createEslintConfig(
   if (recommended) {
     configs.push(
       createRecommendedRules({
-        codeFiles: config.code.files,
+        config,
+        typeAware,
       }),
     );
   }
@@ -83,10 +87,11 @@ export function createEslintConfig(
     {
       name: `${pluginName}/plugins`,
       plugins: {
-        [pluginName]: createPlugin(conventionCategories),
+        [pluginName]: createPlugin(conventionCategories, config),
         "@stylistic": stylistic,
         "package-json": packageJson,
         perfectionist,
+        unicorn,
         "unused-imports": unusedImports,
       },
     },

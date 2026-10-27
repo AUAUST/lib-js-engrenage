@@ -2,21 +2,49 @@ import js from "@eslint/js";
 import { defineConfig } from "eslint/config";
 import { configs as typescriptConfigs } from "typescript-eslint";
 
-import { recommendedRules } from "#eslint/constants";
+import {
+  coreRules,
+  pluginName,
+  stylisticRules,
+  typescriptRules,
+  typescriptTypeAwareRules,
+  unicornRules,
+} from "#eslint/constants";
+import { createTypeAwareLanguageOptions } from "#eslint/utils/createTypeAwareLanguageOptions";
+import { resolveScope } from "#eslint/utils/resolveScope";
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#eslint/types/Config";
-import type { Globs } from "#types/Globs";
 
 export function createRecommendedRules({
-  codeFiles,
+  config,
+  typeAware,
 }: {
-  codeFiles: Globs;
+  config: ResolvedConfig;
+  typeAware: boolean;
 }): Config[] {
   return defineConfig([
     js.configs.recommended,
     typescriptConfigs.recommended,
     {
-      files: [...codeFiles],
-      rules: recommendedRules,
+      name: `${pluginName}/recommended`,
+      files: [...config.code.files],
+      rules: {
+        ...coreRules,
+        ...typescriptRules,
+        ...stylisticRules,
+        ...unicornRules,
+      },
     },
+    typeAware
+      ? {
+          name: `${pluginName}/recommended/type-aware`,
+          files: resolveScope(config, [
+            "files.code.published",
+            "files.code.private",
+          ]),
+          languageOptions: createTypeAwareLanguageOptions(config),
+          rules: typescriptTypeAwareRules,
+        }
+      : [],
   ]);
 }

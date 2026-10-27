@@ -1,24 +1,16 @@
-import {
-  every,
-  flatMap,
-  intersection,
-  isNotEmpty,
-} from "@auaust/primitive-kit/arrays";
+import { every, intersection, isNotEmpty } from "@auaust/primitive-kit/arrays";
 import { isBoolean } from "@auaust/toolkit/isBoolean";
 import { entries } from "@auaust/toolkit/object";
 import { value } from "@auaust/toolkit/value";
 
-import { anyFile, pluginName } from "#eslint/constants";
+import { pluginName } from "#eslint/constants";
 import { createRuleName } from "#eslint/utils/createRuleName";
-import { filesIn } from "#utils/filesIn";
+import { createTypeAwareLanguageOptions } from "#eslint/utils/createTypeAwareLanguageOptions";
+import { resolveScope } from "#eslint/utils/resolveScope";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#eslint/types/Config";
 import type { Convention } from "#eslint/types/Convention";
 import type { Rules } from "#eslint/types/Rules";
-import type { ScopeReference } from "#eslint/types/ScopeReference";
-import type { ScopeReferences } from "#eslint/types/ScopeReferences";
-import type { Glob } from "#types/Glob";
-import type { Globs } from "#types/Globs";
 
 function isEnabledByDefault(
   { enabled, presets, requires }: Convention,
@@ -65,116 +57,24 @@ function isEnabled({
   return setting[name] ?? enabledByDefault;
 }
 
-function resolveScopeReference(
-  config: ResolvedConfig,
-  reference: ScopeReference,
-): Globs {
-  const { code, test } = config;
-
-  const roles = {
-    source: config.source.dirs,
-    bin: config.bin.dirs,
-    scripts: config.scripts.dirs,
-    tests: test.dirs,
-    published: [...config.source.dirs, ...config.bin.dirs],
-    private: [...test.dirs, ...config.scripts.dirs],
-  };
-
-  switch (reference) {
-    case "files.code": {
-      return code.files;
-    }
-
-    case "files.config": {
-      return code.configFiles;
-    }
-
-    case "files.discovered": {
-      return code.discoveredFiles;
-    }
-
-    case "files.generated": {
-      return code.generatedFiles;
-    }
-
-    case "files.test": {
-      return test.files;
-    }
-
-    case "files.source": {
-      return filesIn(roles.source, code.files);
-    }
-
-    case "files.bin": {
-      return filesIn(roles.bin, code.files);
-    }
-
-    case "files.scripts": {
-      return filesIn(roles.scripts, code.files);
-    }
-
-    case "files.tests": {
-      return filesIn(roles.tests, code.files);
-    }
-
-    case "files.code.published": {
-      return filesIn(roles.published, code.files);
-    }
-
-    case "files.code.private": {
-      return filesIn(roles.private, code.files);
-    }
-
-    case "dir.source": {
-      return filesIn(roles.source, anyFile);
-    }
-
-    case "dir.bin": {
-      return filesIn(roles.bin, anyFile);
-    }
-
-    case "dir.scripts": {
-      return filesIn(roles.scripts, anyFile);
-    }
-
-    case "dir.tests": {
-      return filesIn(roles.tests, anyFile);
-    }
-
-    case "dir.published": {
-      return filesIn(roles.published, anyFile);
-    }
-
-    case "dir.private": {
-      return filesIn(roles.private, anyFile);
-    }
-  }
-}
-
-function resolveScope(
-  config: ResolvedConfig,
-  references: ScopeReferences,
-): Glob[] {
-  return flatMap(references, (reference) => {
-    return resolveScopeReference(config, reference);
-  });
-}
-
 function createRules(
   name: string,
-  { rules, rule }: Convention,
+  { delegates, rule, severity }: Convention,
   config: ResolvedConfig,
 ): Rules {
-  const resolvedRules = value(rules, config);
+  const rules: Rules = {};
 
-  if (rule === undefined) {
-    return resolvedRules;
+  for (const delegate of value(delegates, config)) {
+    rules[delegate.upstream] = "off";
+
+    rules[`${pluginName}/${delegate.name}`] = severity;
   }
 
-  return {
-    ...resolvedRules,
-    [`${pluginName}/${createRuleName(name)}`]: "error",
-  };
+  if (rule !== undefined) {
+    rules[`${pluginName}/${createRuleName(name)}`] = severity;
+  }
+
+  return rules;
 }
 
 export function createConventionRules({
@@ -182,16 +82,19 @@ export function createConventionRules({
   category,
   conventions,
   setting,
+  typeAware,
 }: {
   config: ResolvedConfig;
   category: string;
   conventions: Record<string, Convention>;
   setting: boolean | Partial<Record<string, boolean>>;
+  typeAware: boolean;
 }): Config[] {
   const configs: Config[] = [];
 
   for (const [name, convention] of entries(conventions)) {
     if (
+      (convention.typeAware && !typeAware) ||
       !isEnabled({
         name,
         convention,
@@ -207,12 +110,7 @@ export function createConventionRules({
       files: resolveScope(config, convention.files),
       ignores: resolveScope(config, convention.ignores),
       ...(convention.typeAware && {
-        languageOptions: {
-          parserOptions: {
-            projectService: true,
-            tsconfigRootDir: config.root,
-          },
-        },
+        languageOptions: createTypeAwareLanguageOptions(config),
       }),
       rules: createRules(name, convention, config),
     });

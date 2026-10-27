@@ -11,6 +11,7 @@ export function createPackageJsonRules(): Config {
     files: [`**/${packageJsonFile}`],
     languageOptions: packageJsonConfigs.recommended.languageOptions,
     rules: {
+      ...packageJsonConfigs.recommended.rules,
       ...packageJsonRules,
       "package-json/order-properties": [
         "error",

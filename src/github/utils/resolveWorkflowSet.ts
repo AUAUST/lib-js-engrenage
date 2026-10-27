@@ -12,7 +12,7 @@ export function resolveWorkflowSet({
 }: {
   workflows: WorkflowSetName | false | undefined;
   presets: Presets;
-  hasDependency: (name: PackageName) => boolean;
+  hasDependency(name: PackageName): boolean;
 }): WorkflowSetName | undefined {
   if (workflows !== undefined) {
     return workflows === false ? undefined : workflows;

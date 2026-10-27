@@ -64,7 +64,7 @@ function renderObject(
 export function inferType(
   value: JsonValue,
   exact: boolean,
-  indent: string = "",
+  indent = "",
 ): string {
   if (isArray(value)) {
     return renderArray(value, exact, indent);

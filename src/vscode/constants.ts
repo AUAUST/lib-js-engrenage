@@ -18,7 +18,11 @@ export const eslintIntegration = freeze({
     },
     "eslint.rules.customizations": [
       {
-        rule: "unused-imports/no-unused-vars",
+        rule: "auaust/no-unused-vars",
+        severity: "info",
+      },
+      {
+        rule: "auaust/naming-convention",
         severity: "info",
       },
     ],

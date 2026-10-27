@@ -1,7 +1,6 @@
 import { defineConvention } from "#eslint/conventions/defineConvention";
+import { delegateRule } from "#eslint/utils/delegateRule";
 
 export default defineConvention({
-  rules: {
-    curly: ["error", "all"],
-  },
+  delegates: [delegateRule("curly", ["all"])],
 });

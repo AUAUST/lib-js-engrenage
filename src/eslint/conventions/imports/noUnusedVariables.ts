@@ -1,12 +1,13 @@
 import { defineConvention } from "#eslint/conventions/defineConvention";
+import { delegateRule } from "#eslint/utils/delegateRule";
 
 export default defineConvention({
-  rules: {
-    "unused-imports/no-unused-vars": [
-      "warn",
+  delegates: [
+    delegateRule("unused-imports/no-unused-vars", [
       {
         ignoreRestSiblings: true,
       },
-    ],
-  },
+    ]),
+  ],
+  severity: "warn",
 });

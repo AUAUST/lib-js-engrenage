@@ -9,7 +9,7 @@ export function createAccessors<Fields extends object>({
   describeMissing,
 }: {
   resolvers: { [Field in keyof Fields]: () => Fields[Field] };
-  describeMissing: (field: string) => string;
+  describeMissing(field: string): string;
 }): Accessors<Fields> {
   const optionalGetters: PropertyComposer[] = [];
   const strictGetters: PropertyComposer[] = [];

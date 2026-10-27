@@ -7,10 +7,8 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "eslint.rules.customizations": [
-    {
-      "rule": "unused-imports/no-unused-vars",
-      "severity": "info"
-    }
+    { "rule": "auaust/no-unused-vars", "severity": "info" },
+    { "rule": "auaust/naming-convention", "severity": "info" }
   ],
   "js/ts.tsdk.path": "node_modules/typescript/lib",
   "prettier.requireConfig": true

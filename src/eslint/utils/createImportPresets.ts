@@ -2,6 +2,7 @@ import { createTypeScriptImportResolver } from "eslint-import-resolver-typescrip
 import { importX } from "eslint-plugin-import-x";
 import { defineConfig } from "eslint/config";
 
+import { importRules } from "#eslint/constants";
 import type { Config } from "#eslint/types/Config";
 import type { Globs } from "#types/Globs";
 
@@ -18,9 +19,7 @@ export function createImportPresets({
       settings: {
         "import-x/resolver-next": [createTypeScriptImportResolver()],
       },
-      rules: {
-        "import-x/no-unresolved": "off",
-      },
+      rules: importRules,
     },
   ]);
 }

@@ -64,7 +64,7 @@ async function lintedPerformanceRules(
         environment: environment ?? config.environment,
       },
       {
-        promises: false,
+        typeAware: false,
         ...options,
       },
     ),
@@ -88,6 +88,9 @@ async function lintedRules(file: string, options?: Options) {
 const misorderedPackageJson = `{
   "version": "1.0.0",
   "name": "@fixture/misordered",
+  "private": true,
+  "description": "Misordered fixture.",
+  "type": "module",
   "dependencies": {
     "zod": "^4.0.0",
     "valibot": "^1.0.0"
@@ -97,8 +100,11 @@ const misorderedPackageJson = `{
 
 const secondaryFieldsFirstPackageJson = `{
   "name": "@fixture/secondary",
+  "private": true,
+  "description": "Secondary fields fixture.",
   "sideEffects": false,
   "prettier": "@fixture/prettier",
+  "type": "module",
   "scripts": {
     "test": "vitest"
   },
@@ -110,6 +116,9 @@ const secondaryFieldsFirstPackageJson = `{
 
 const secondaryFieldsLastPackageJson = `{
   "name": "@fixture/secondary",
+  "private": true,
+  "description": "Secondary fields fixture.",
+  "type": "module",
   "scripts": {
     "test": "vitest"
   },
@@ -139,18 +148,22 @@ describe("createEslintConfig", () => {
     const rules = await lintedRules("src/violations.ts");
 
     expect(rules).toEqual(
-      expect.arrayContaining(["curly", "eqeqeq", "import-x/no-default-export"]),
+      expect.arrayContaining([
+        "auaust/curly",
+        "auaust/eqeqeq",
+        "auaust/no-default-export",
+      ]),
     );
 
-    expect(rules.filter((rule) => rule === "eqeqeq")).toHaveLength(1);
+    expect(rules.filter((rule) => rule === "auaust/eqeqeq")).toHaveLength(1);
   });
 
   test("reports misordered and unused imports", async () => {
     expect(await lintedRules("src/imports.ts")).toEqual([
-      "perfectionist/sort-named-imports",
-      "perfectionist/sort-imports",
-      "perfectionist/sort-imports",
-      "unused-imports/no-unused-imports",
+      "auaust/sort-named-imports",
+      "auaust/sort-imports",
+      "auaust/sort-imports",
+      "auaust/no-unused-imports",
     ]);
   });
 
@@ -173,7 +186,7 @@ describe("createEslintConfig", () => {
       cwd: project.root,
       overrideConfigFile: true,
       overrideConfig: createEslintConfig(await loadConfig(project.root), {
-        promises: false,
+        typeAware: false,
       }),
     });
 
@@ -331,7 +344,7 @@ describe("createEslintConfig", () => {
       fix: true,
       overrideConfigFile: true,
       overrideConfig: createEslintConfig(await loadConfig(root), {
-        promises: false,
+        typeAware: false,
       }),
     });
 
@@ -354,7 +367,9 @@ describe("createEslintConfig", () => {
 }
 `;
 
-    const source = `export let count = 0;
+    const source = `export const state = {
+  count: 0,
+};
 
 export async function run(task: () => Promise<void>, log: (text: string) => void) {
   if (Math.random() > 0.5) {
@@ -364,7 +379,7 @@ export async function run(task: () => Promise<void>, log: (text: string) => void
   }
 
   if (Math.random() > 0.5) {
-    count = 1;
+    state.count = 1;
 
     return;
   }
@@ -387,7 +402,9 @@ export function tail(ready: boolean, log: () => void) {
 }
 `;
 
-    const fixed = `export let count = 0;
+    const fixed = `export const state = {
+  count: 0,
+};
 
 export async function run(task: () => Promise<void>, log: (text: string) => void) {
   if (Math.random() > 0.5) {
@@ -395,7 +412,7 @@ export async function run(task: () => Promise<void>, log: (text: string) => void
   }
 
   if (Math.random() > 0.5) {
-    return void (count = 1);
+    return void (state.count = 1);
   }
 
   if (Math.random() > 0.5) {
@@ -450,7 +467,7 @@ export function pick(value: Value): number {
 
     async function lintedLayoutRules(options?: Options) {
       const eslint = await createLinter({
-        promises: false,
+        typeAware: false,
         ...options,
       });
 
@@ -465,8 +482,8 @@ export function pick(value: Value): number {
       "auaust/padded-blocks",
       "auaust/padded-exports",
       "auaust/grouped-overloads",
-      "@stylistic/padded-blocks",
-      "auaust/braced-cases",
+      "auaust/unpadded-switches",
+      "auaust/switch-case-braces",
       "auaust/padded-cases",
     ]);
 
@@ -474,24 +491,24 @@ export function pick(value: Value): number {
       await lintedLayoutRules({
         stylistic: {
           paddedBlocks: false,
-          bracedCases: false,
+          switches: false,
         },
       }),
     ).toEqual([
       "auaust/padded-exports",
       "auaust/grouped-overloads",
-      "@stylistic/padded-blocks",
+      "auaust/unpadded-switches",
       "auaust/padded-cases",
     ]);
   });
 
-  test("wraps case statements in a block unless it would scope their declarations", async () => {
+  test("wraps case statements in a block, declarations included", async () => {
     const eslint = new ESLint({
       cwd: root,
       fix: true,
       overrideConfigFile: true,
       overrideConfig: createEslintConfig(await loadConfig(root), {
-        promises: false,
+        typeAware: false,
       }),
     });
 
@@ -512,12 +529,97 @@ export function pick(value: Value): number {
       filePath: "src/cases.ts",
     });
 
-    expect(result?.output).toContain('case "a":\n      { return 1; }');
+    expect(result?.output).toBe(`export function pick(value: string): number {
+  switch (value) {
+    case "a": {
+      return 1;
+    }
 
-    expect(map(result?.messages ?? [], (message) => message.ruleId)).toEqual([
-      "auaust/braced-cases",
-      "no-case-declarations",
-    ]);
+    default: {
+      const fallback = 2;
+
+      return fallback;
+    }
+  }
+}
+`);
+
+    expect(map(result?.messages ?? [], (message) => message.ruleId)).toEqual(
+      [],
+    );
+  });
+
+  test("exposes delegated rules whose options projects override key by key", async () => {
+    const eslint = new ESLint({
+      cwd: root,
+      overrideConfigFile: true,
+      overrideConfig: [
+        ...createEslintConfig(await loadConfig(root), {
+          typeAware: false,
+        }),
+        {
+          rules: {
+            "auaust/name-replacements": [
+              "error",
+              {
+                replacements: {
+                  err: false,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    const [result] = await eslint.lintText(
+      "export const env = 1;\n\nexport const err = 2;\n\nexport const e = 3;\n",
+      {
+        filePath: "src/names.ts",
+      },
+    );
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual(["5:auaust/name-replacements"]);
+  });
+
+  test("allows void only to discard the value of a returned action", async () => {
+    const eslint = await createLinter({
+      typeAware: false,
+    });
+
+    const [result] = await eslint.lintText(
+      `declare function call(): void;
+
+declare const value: number;
+
+export function discard() {
+  void call();
+}
+
+export function inert() {
+  return void value;
+}
+
+export function returned() {
+  return void call();
+}
+
+export const handlers = [() => void call()];
+`,
+      {
+        filePath: "src/voids.ts",
+      },
+    );
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual(["6:auaust/void-placement", "10:auaust/void-placement"]);
   });
 
   test("allows default exports in tool configs", async () => {

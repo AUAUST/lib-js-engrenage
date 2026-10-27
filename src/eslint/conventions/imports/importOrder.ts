@@ -2,14 +2,14 @@ import { relative } from "node:path";
 
 import { organization } from "#constants";
 import { defineConvention } from "#eslint/conventions/defineConvention";
+import { delegateRule } from "#eslint/utils/delegateRule";
 
 export default defineConvention({
-  rules({ root, typescript }) {
+  delegates({ root, typescript }) {
     const tsconfigPath = typescript.tsconfig;
 
-    return {
-      "perfectionist/sort-imports": [
-        "error",
+    return [
+      delegateRule("perfectionist/sort-imports", [
         {
           type: "natural",
           sortBy: "path",
@@ -69,14 +69,13 @@ export default defineConvention({
             },
           }),
         },
-      ],
-      "perfectionist/sort-named-imports": [
-        "error",
+      ]),
+      delegateRule("perfectionist/sort-named-imports", [
         {
           type: "natural",
           groups: ["value-import", "type-import"],
         },
-      ],
-    };
+      ]),
+    ];
   },
 });

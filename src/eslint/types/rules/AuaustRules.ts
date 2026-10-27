@@ -3,25 +3,126 @@ import type { Linter } from "eslint";
 
 export interface AuaustRules {
   /**
-   * Wrap the statements of each `case` in a block.
+   * Require that function overload signatures be consecutive
+   * @see https://typescript-eslint.io/rules/adjacent-overload-signatures
    */
-  "auaust/braced-cases"?: Linter.RuleEntry<[]>;
+  "auaust/adjacent-overload-signatures"?: Linter.RuleEntry<[]>;
+  /**
+   * Enforce specifying generic type arguments on type annotation or constructor name of a constructor call
+   * @see https://typescript-eslint.io/rules/consistent-generic-constructors
+   */
+  "auaust/consistent-generic-constructors"?: Linter.RuleEntry<AuaustConsistentGenericConstructors>;
+  /**
+   * Enforce consistent usage of type assertions
+   * @see https://typescript-eslint.io/rules/consistent-type-assertions
+   */
+  "auaust/consistent-type-assertions"?: Linter.RuleEntry<AuaustConsistentTypeAssertions>;
+  /**
+   * Enforce consistent usage of type imports
+   * @see https://typescript-eslint.io/rules/consistent-type-imports
+   */
+  "auaust/consistent-type-imports"?: Linter.RuleEntry<AuaustConsistentTypeImports>;
+  /**
+   * Enforce consistent brace style for all control statements
+   * @see https://eslint.org/docs/latest/rules/curly
+   */
+  "auaust/curly"?: Linter.RuleEntry<AuaustCurly>;
+  /**
+   * Require the use of `===` and `!==`
+   * @see https://eslint.org/docs/latest/rules/eqeqeq
+   */
+  "auaust/eqeqeq"?: Linter.RuleEntry<AuaustEqeqeq>;
+  /**
+   * Enforce the consistent use of either `function` declarations or expressions assigned to variables
+   * @see https://eslint.org/docs/latest/rules/func-style
+   */
+  "auaust/func-style"?: Linter.RuleEntry<AuaustFuncStyle>;
   /**
    * Keep function overloads and their implementation together, without blank lines.
    */
   "auaust/grouped-overloads"?: Linter.RuleEntry<[]>;
   /**
+   * Require or disallow logical assignment operator shorthand
+   * @see https://eslint.org/docs/latest/rules/logical-assignment-operators
+   */
+  "auaust/logical-assignment-operators"?: Linter.RuleEntry<AuaustLogicalAssignmentOperators>;
+  /**
+   * Enforce using a particular method signature syntax
+   * @see https://typescript-eslint.io/rules/method-signature-style
+   */
+  "auaust/method-signature-style"?: Linter.RuleEntry<AuaustMethodSignatureStyle>;
+  /**
+   * Enforce replacements for variable, property, and filenames.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/name-replacements.md
+   */
+  "auaust/name-replacements"?: Linter.RuleEntry<AuaustNameReplacements>;
+  /**
+   * Enforce naming conventions for everything across a codebase
+   * @see https://typescript-eslint.io/rules/naming-convention
+   */
+  "auaust/naming-convention"?: Linter.RuleEntry<AuaustNamingConvention>;
+  /**
    * Use `isArray` from @auaust/toolkit instead of `Array.isArray`.
    */
   "auaust/no-array-is-array"?: Linter.RuleEntry<[]>;
+  /**
+   * Forbid CommonJS `require` calls and `module.exports` or `exports.*`.
+   * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/no-commonjs.md
+   */
+  "auaust/no-commonjs"?: Linter.RuleEntry<AuaustNoCommonjs>;
   /**
    * Use a block body with an explicit return; concise bodies are only for a short identifier, literal, member access, negation, comparison, call or template literal.
    */
   "auaust/no-complex-concise-arrows"?: Linter.RuleEntry<[]>;
   /**
+   * Require expressions of type void to appear in statement position
+   * @see https://typescript-eslint.io/rules/no-confusing-void-expression
+   */
+  "auaust/no-confusing-void-expression"?: Linter.RuleEntry<AuaustNoConfusingVoidExpression>;
+  /**
+   * Forbid default exports.
+   * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/no-default-export.md
+   */
+  "auaust/no-default-export"?: Linter.RuleEntry<[]>;
+  /**
+   * Forbid repeated import of the same module in multiple places.
+   * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/no-duplicates.md
+   */
+  "auaust/no-duplicates"?: Linter.RuleEntry<AuaustNoDuplicates>;
+  /**
    * Use static imports; dynamic import() is reserved for tests and framework discovery.
    */
   "auaust/no-dynamic-import"?: Linter.RuleEntry<[]>;
+  /**
+   * Disallow `else` blocks after `return` statements in `if` statements
+   * @see https://eslint.org/docs/latest/rules/no-else-return
+   */
+  "auaust/no-else-return"?: Linter.RuleEntry<AuaustNoElseReturn>;
+  /**
+   * Disallow classes used as namespaces
+   * @see https://typescript-eslint.io/rules/no-extraneous-class
+   */
+  "auaust/no-extraneous-class"?: Linter.RuleEntry<AuaustNoExtraneousClass>;
+  /**
+   * Disallow fallthrough of `case` statements
+   * @see https://eslint.org/docs/latest/rules/no-fallthrough
+   */
+  "auaust/no-fallthrough"?: Linter.RuleEntry<AuaustNoFallthrough>;
+  /**
+   * Enforce the use of top-level import type qualifier when an import only has specifiers with inline type qualifiers
+   * @see https://typescript-eslint.io/rules/no-import-type-side-effects
+   */
+  "auaust/no-import-type-side-effects"?: Linter.RuleEntry<[]>;
+  /**
+   * Disallow explicit type declarations for variables or parameters initialized to a number, string, or boolean
+   * @see https://typescript-eslint.io/rules/no-inferrable-types
+   */
+  "auaust/no-inferrable-types"?: Linter.RuleEntry<AuaustNoInferrableTypes>;
+  /**
+   * Disallow `void` type outside of generic or return types
+   * @see https://typescript-eslint.io/rules/no-invalid-void-type
+   */
+  "auaust/no-invalid-void-type"?: Linter.RuleEntry<AuaustNoInvalidVoidType>;
   /**
    * Use `x === null` instead of `isNull(x)` calls (keep `isNull` for callbacks such as `filter(items, isNull)`).
    */
@@ -39,6 +140,21 @@ export interface AuaustRules {
    */
   "auaust/no-misplaced-tests"?: Linter.RuleEntry<[]>;
   /**
+   * Disallow Promises in places not designed to handle them
+   * @see https://typescript-eslint.io/rules/no-misused-promises
+   */
+  "auaust/no-misused-promises"?: Linter.RuleEntry<AuaustNoMisusedPromises>;
+  /**
+   * Disallow use of chained assignment expressions
+   * @see https://eslint.org/docs/latest/rules/no-multi-assign
+   */
+  "auaust/no-multi-assign"?: Linter.RuleEntry<AuaustNoMultiAssign>;
+  /**
+   * Disallow nested ternary expressions.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-nested-ternary.md
+   */
+  "auaust/no-nested-ternary"?: Linter.RuleEntry<[]>;
+  /**
    * Use the `@auaust/toolkit/object` equivalent instead of `Object.*`.
    */
   "auaust/no-object-statics"?: Linter.RuleEntry<[]>;
@@ -47,10 +163,6 @@ export interface AuaustRules {
    */
   "auaust/no-primitive-kit-root"?: Linter.RuleEntry<[]>;
   /**
-   * Use a bare `return;` instead of `return undefined;`.
-   */
-  "auaust/no-return-undefined"?: Linter.RuleEntry<[]>;
-  /**
    * Use `is<Type>` helpers instead of runtime `typeof` comparisons (except `typeof x === "undefined"`).
    */
   "auaust/no-runtime-typeof"?: Linter.RuleEntry<[]>;
@@ -58,6 +170,36 @@ export interface AuaustRules {
    * Use the `@auaust/toolkit/<helper>` subpath entries instead of `@auaust/toolkit`.
    */
   "auaust/no-toolkit-root"?: Linter.RuleEntry<[]>;
+  /**
+   * Disallow comparing `undefined` using `typeof`.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-typeof-undefined.md
+   */
+  "auaust/no-typeof-undefined"?: Linter.RuleEntry<AuaustNoTypeofUndefined>;
+  /**
+   * Disallow ternary operators when simpler alternatives exist
+   * @see https://eslint.org/docs/latest/rules/no-unneeded-ternary
+   */
+  "auaust/no-unneeded-ternary"?: Linter.RuleEntry<AuaustNoUnneededTernary>;
+  /**
+   * Disallow member access on a value with type `any`
+   * @see https://typescript-eslint.io/rules/no-unsafe-member-access
+   */
+  "auaust/no-unsafe-member-access"?: Linter.RuleEntry<AuaustNoUnsafeMemberAccess>;
+  /**
+   * Disallow unused variables
+   * @see https://github.com/sweepline/eslint-plugin-unused-imports/blob/master/docs/rules/no-unused-imports.md
+   */
+  "auaust/no-unused-imports"?: Linter.RuleEntry<AuaustNoUnusedImports>;
+  /**
+   * Disallow unused variables
+   * @see https://github.com/sweepline/eslint-plugin-unused-imports/blob/master/docs/rules/no-unused-vars.md
+   */
+  "auaust/no-unused-vars"?: Linter.RuleEntry<AuaustNoUnusedVars>;
+  /**
+   * Disallow useless `undefined`.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-useless-undefined.md
+   */
+  "auaust/no-useless-undefined"?: Linter.RuleEntry<AuaustNoUselessUndefined>;
   /**
    * Use named imports instead of namespace imports from `valibot`.
    */
@@ -70,6 +212,21 @@ export interface AuaustRules {
    * Use named imports instead of namespace imports, default imports, or `z` from `zod/mini`.
    */
   "auaust/no-zod-namespace"?: Linter.RuleEntry<[]>;
+  /**
+   * Enforce consistent line breaks after opening and before closing braces
+   * @see https://eslint.style/rules/object-curly-newline
+   */
+  "auaust/object-curly-newline"?: Linter.RuleEntry<AuaustObjectCurlyNewline>;
+  /**
+   * Require or disallow method and property shorthand syntax for object literals
+   * @see https://eslint.org/docs/latest/rules/object-shorthand
+   */
+  "auaust/object-shorthand"?: Linter.RuleEntry<AuaustObjectShorthand>;
+  /**
+   * Require or disallow assignment operator shorthand where possible
+   * @see https://eslint.org/docs/latest/rules/operator-assignment
+   */
+  "auaust/operator-assignment"?: Linter.RuleEntry<AuaustOperatorAssignment>;
   /**
    * Surround types, interfaces, functions, classes, enums, namespaces and block statements with blank lines.
    */
@@ -99,9 +256,2356 @@ export interface AuaustRules {
    */
   "auaust/padded-returns"?: Linter.RuleEntry<[]>;
   /**
+   * Require `const` declarations for variables that are never reassigned after declared
+   * @see https://eslint.org/docs/latest/rules/prefer-const
+   */
+  "auaust/prefer-const"?: Linter.RuleEntry<AuaustPreferConst>;
+  /**
+   * Enforce using function types instead of interfaces with call signatures
+   * @see https://typescript-eslint.io/rules/prefer-function-type
+   */
+  "auaust/prefer-function-type"?: Linter.RuleEntry<[]>;
+  /**
+   * Disallow using `Object.assign` with an object literal as the first argument and prefer the use of object spread instead
+   * @see https://eslint.org/docs/latest/rules/prefer-object-spread
+   */
+  "auaust/prefer-object-spread"?: Linter.RuleEntry<[]>;
+  /**
+   * Enforce using concise optional chain expressions instead of chained logical ands, negated logical ors, or empty objects
+   * @see https://typescript-eslint.io/rules/prefer-optional-chain
+   */
+  "auaust/prefer-optional-chain"?: Linter.RuleEntry<AuaustPreferOptionalChain>;
+  /**
+   * Require private members to be marked as `readonly` if they're never modified outside of the constructor
+   * @see https://typescript-eslint.io/rules/prefer-readonly
+   */
+  "auaust/prefer-readonly"?: Linter.RuleEntry<AuaustPreferReadonly>;
+  /**
    * Return `void` the expression instead of following it with a bare `return` in its own block.
    */
   "auaust/prefer-return-void"?: Linter.RuleEntry<[]>;
+  /**
+   * Require type literals to be last in union types.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-type-literal-last.md
+   */
+  "auaust/prefer-type-literal-last"?: Linter.RuleEntry<[]>;
+  /**
+   * Enforce consistent awaiting of returned promises
+   * @see https://typescript-eslint.io/rules/return-await
+   */
+  "auaust/return-await"?: Linter.RuleEntry<AuaustReturnAwait>;
+  /**
+   * Enforce sorted exports.
+   * @see https://perfectionist.dev/rules/sort-exports
+   */
+  "auaust/sort-exports"?: Linter.RuleEntry<AuaustSortExports>;
+  /**
+   * Enforce sorted imports.
+   * @see https://perfectionist.dev/rules/sort-imports
+   */
+  "auaust/sort-imports"?: Linter.RuleEntry<AuaustSortImports>;
+  /**
+   * Enforce sorted named exports.
+   * @see https://perfectionist.dev/rules/sort-named-exports
+   */
+  "auaust/sort-named-exports"?: Linter.RuleEntry<AuaustSortNamedExports>;
+  /**
+   * Enforce sorted named imports.
+   * @see https://perfectionist.dev/rules/sort-named-imports
+   */
+  "auaust/sort-named-imports"?: Linter.RuleEntry<AuaustSortNamedImports>;
+  /**
+   * Enforce consistent brace style for `case` clauses.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/switch-case-braces.md
+   */
+  "auaust/switch-case-braces"?: Linter.RuleEntry<AuaustSwitchCaseBraces>;
+  /**
+   * Require switch-case statements to be exhaustive
+   * @see https://typescript-eslint.io/rules/switch-exhaustiveness-check
+   */
+  "auaust/switch-exhaustiveness-check"?: Linter.RuleEntry<AuaustSwitchExhaustivenessCheck>;
+  /**
+   * Disallow two overloads that could be unified into one with a union or an optional/rest parameter
+   * @see https://typescript-eslint.io/rules/unified-signatures
+   */
+  "auaust/unified-signatures"?: Linter.RuleEntry<AuaustUnifiedSignatures>;
+  /**
+   * Require or disallow padding within blocks
+   * @see https://eslint.style/rules/padded-blocks
+   */
+  "auaust/unpadded-switches"?: Linter.RuleEntry<AuaustUnpaddedSwitches>;
+  /**
+   * Use `void` only to discard the value of a returned action, as in `return void call()` or `() => void call()`.
+   */
+  "auaust/void-placement"?: Linter.RuleEntry<[]>;
 }
 
 /* ======= Declarations ======= */
+// ----- auaust/consistent-generic-constructors -----
+type AuaustConsistentGenericConstructors =
+  [] | ["type-annotation" | "constructor"];
+// ----- auaust/consistent-type-assertions -----
+type AuaustConsistentTypeAssertions =
+  | []
+  | [
+      | {
+          assertionStyle: "never";
+        }
+      | {
+          arrayLiteralTypeAssertions?: "allow" | "allow-as-parameter" | "never";
+
+          assertionStyle?: "as" | "angle-bracket";
+
+          objectLiteralTypeAssertions?:
+            "allow" | "allow-as-parameter" | "never";
+        },
+    ];
+// ----- auaust/consistent-type-imports -----
+type AuaustConsistentTypeImports =
+  | []
+  | [
+      {
+        disallowTypeAnnotations?: boolean;
+
+        fixStyle?: "separate-type-imports" | "inline-type-imports";
+
+        prefer?: "type-imports" | "no-type-imports";
+      },
+    ];
+// ----- auaust/curly -----
+type AuaustCurly =
+  | []
+  | ["all"]
+  | []
+  | ["multi" | "multi-line" | "multi-or-nest"]
+  | ["multi" | "multi-line" | "multi-or-nest", "consistent"];
+// ----- auaust/eqeqeq -----
+type AuaustEqeqeq =
+  | []
+  | ["always"]
+  | [
+      "always",
+      {
+        null?: "always" | "never" | "ignore";
+      },
+    ]
+  | []
+  | ["smart" | "allow-null"];
+// ----- auaust/func-style -----
+type AuaustFuncStyle =
+  | []
+  | ["declaration" | "expression"]
+  | [
+      "declaration" | "expression",
+      {
+        allowArrowFunctions?: boolean;
+        allowTypeAnnotation?: boolean;
+        overrides?: {
+          namedExports?: "declaration" | "expression" | "ignore";
+        };
+      },
+    ];
+// ----- auaust/logical-assignment-operators -----
+type AuaustLogicalAssignmentOperators = (
+  | []
+  | ["always"]
+  | [
+      "always",
+      {
+        enforceForIfStatements?: boolean;
+      },
+    ]
+  | ["never"]
+) &
+  unknown[];
+// ----- auaust/method-signature-style -----
+type AuaustMethodSignatureStyle = [] | ["property" | "method"];
+// ----- auaust/name-replacements -----
+type AuaustNameReplacements =
+  | []
+  | [
+      {
+        checkProperties?: boolean;
+
+        checkVariables?: boolean;
+
+        checkDefaultAndNamespaceImports?: boolean | string;
+
+        checkShorthandImports?: boolean | string;
+
+        checkShorthandProperties?: boolean;
+
+        checkFilenames?: boolean;
+
+        extendDefaultReplacements?: boolean;
+        replacements?: _AuaustNameReplacements_NameReplacements;
+
+        extendDefaultAllowList?: boolean;
+        allowList?: _AuaustNameReplacements_BooleanObject;
+
+        ignore?: (
+          | string
+          | {
+              [k: string]: unknown | undefined;
+            }
+        )[];
+      },
+    ];
+type _AuaustNameReplacementsReplacements =
+  (false | _AuaustNameReplacements_BooleanObject) | undefined;
+interface _AuaustNameReplacements_NameReplacements {
+  [k: string]: _AuaustNameReplacementsReplacements | undefined;
+}
+interface _AuaustNameReplacements_BooleanObject {
+  [k: string]: boolean | undefined;
+}
+// ----- auaust/naming-convention -----
+type _AuaustNamingConventionFormatOptionsConfig =
+  _AuaustNamingConventionPredefinedFormats[] | null;
+type _AuaustNamingConventionPredefinedFormats =
+  | "camelCase"
+  | "strictCamelCase"
+  | "PascalCase"
+  | "StrictPascalCase"
+  | "snake_case"
+  | "UPPER_CASE";
+type _AuaustNamingConventionUnderscoreOptions =
+  | "forbid"
+  | "allow"
+  | "require"
+  | "requireDouble"
+  | "allowDouble"
+  | "allowSingleOrDouble";
+type _AuaustNamingConvention_PrefixSuffixConfig = string[];
+type _AuaustNamingConventionTypeModifiers =
+  "boolean" | "string" | "number" | "function" | "array";
+type AuaustNamingConvention = (
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      modifiers?: (
+        | "const"
+        | "readonly"
+        | "static"
+        | "public"
+        | "protected"
+        | "private"
+        | "#private"
+        | "abstract"
+        | "destructured"
+        | "global"
+        | "exported"
+        | "unused"
+        | "requiresQuotes"
+        | "override"
+        | "async"
+        | "default"
+        | "namespace"
+      )[];
+      selector: (
+        | "default"
+        | "variableLike"
+        | "memberLike"
+        | "typeLike"
+        | "method"
+        | "property"
+        | "accessor"
+        | "variable"
+        | "function"
+        | "parameter"
+        | "parameterProperty"
+        | "classicAccessor"
+        | "enumMember"
+        | "classMethod"
+        | "objectLiteralMethod"
+        | "typeMethod"
+        | "classProperty"
+        | "objectLiteralProperty"
+        | "typeProperty"
+        | "autoAccessor"
+        | "class"
+        | "interface"
+        | "typeAlias"
+        | "enum"
+        | "typeParameter"
+        | "import"
+      )[];
+      types?: _AuaustNamingConventionTypeModifiers[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "default";
+      modifiers?: (
+        | "const"
+        | "readonly"
+        | "static"
+        | "public"
+        | "protected"
+        | "private"
+        | "#private"
+        | "abstract"
+        | "destructured"
+        | "global"
+        | "exported"
+        | "unused"
+        | "requiresQuotes"
+        | "override"
+        | "async"
+        | "default"
+        | "namespace"
+      )[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "variableLike";
+      modifiers?: ("unused" | "async")[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "variable";
+      modifiers?: (
+        "const" | "destructured" | "exported" | "global" | "unused" | "async"
+      )[];
+      types?: _AuaustNamingConventionTypeModifiers[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "function";
+      modifiers?: ("exported" | "global" | "unused" | "async")[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "parameter";
+      modifiers?: ("destructured" | "unused")[];
+      types?: _AuaustNamingConventionTypeModifiers[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "memberLike";
+      modifiers?: (
+        | "abstract"
+        | "private"
+        | "#private"
+        | "protected"
+        | "public"
+        | "readonly"
+        | "requiresQuotes"
+        | "static"
+        | "override"
+        | "async"
+      )[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "classProperty";
+      modifiers?: (
+        | "abstract"
+        | "private"
+        | "#private"
+        | "protected"
+        | "public"
+        | "readonly"
+        | "requiresQuotes"
+        | "static"
+        | "override"
+      )[];
+      types?: _AuaustNamingConventionTypeModifiers[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "objectLiteralProperty";
+      modifiers?: ("public" | "requiresQuotes")[];
+      types?: _AuaustNamingConventionTypeModifiers[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "typeProperty";
+      modifiers?: ("public" | "readonly" | "requiresQuotes")[];
+      types?: _AuaustNamingConventionTypeModifiers[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "parameterProperty";
+      modifiers?: ("private" | "protected" | "public" | "readonly")[];
+      types?: _AuaustNamingConventionTypeModifiers[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "property";
+      modifiers?: (
+        | "abstract"
+        | "private"
+        | "#private"
+        | "protected"
+        | "public"
+        | "readonly"
+        | "requiresQuotes"
+        | "static"
+        | "override"
+        | "async"
+      )[];
+      types?: _AuaustNamingConventionTypeModifiers[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "classMethod";
+      modifiers?: (
+        | "abstract"
+        | "private"
+        | "#private"
+        | "protected"
+        | "public"
+        | "requiresQuotes"
+        | "static"
+        | "override"
+        | "async"
+      )[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "objectLiteralMethod";
+      modifiers?: ("public" | "requiresQuotes" | "async")[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "typeMethod";
+      modifiers?: ("public" | "requiresQuotes")[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "method";
+      modifiers?: (
+        | "abstract"
+        | "private"
+        | "#private"
+        | "protected"
+        | "public"
+        | "requiresQuotes"
+        | "static"
+        | "override"
+        | "async"
+      )[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "classicAccessor";
+      modifiers?: (
+        | "abstract"
+        | "private"
+        | "protected"
+        | "public"
+        | "requiresQuotes"
+        | "static"
+        | "override"
+      )[];
+      types?: _AuaustNamingConventionTypeModifiers[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "autoAccessor";
+      modifiers?: (
+        | "abstract"
+        | "private"
+        | "protected"
+        | "public"
+        | "requiresQuotes"
+        | "static"
+        | "override"
+      )[];
+      types?: _AuaustNamingConventionTypeModifiers[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "accessor";
+      modifiers?: (
+        | "abstract"
+        | "private"
+        | "protected"
+        | "public"
+        | "requiresQuotes"
+        | "static"
+        | "override"
+      )[];
+      types?: _AuaustNamingConventionTypeModifiers[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "enumMember";
+      modifiers?: "requiresQuotes"[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "typeLike";
+      modifiers?: ("abstract" | "exported" | "unused")[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "class";
+      modifiers?: ("abstract" | "exported" | "unused")[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "interface";
+      modifiers?: ("exported" | "unused")[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "typeAlias";
+      modifiers?: ("exported" | "unused")[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "enum";
+      modifiers?: ("exported" | "unused")[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "typeParameter";
+      modifiers?: "unused"[];
+    }
+  | {
+      custom?: _AuaustNamingConvention_MatchRegexConfig;
+      failureMessage?: string;
+      format: _AuaustNamingConventionFormatOptionsConfig;
+      leadingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      prefix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      suffix?: _AuaustNamingConvention_PrefixSuffixConfig;
+      trailingUnderscore?: _AuaustNamingConventionUnderscoreOptions;
+      filter?: string | _AuaustNamingConvention_MatchRegexConfig;
+      selector: "import";
+      modifiers?: ("default" | "namespace")[];
+    }
+)[];
+interface _AuaustNamingConvention_MatchRegexConfig {
+  match: boolean;
+  regex: string;
+}
+// ----- auaust/no-commonjs -----
+type AuaustNoCommonjs =
+  | []
+  | ["allow-primitive-modules"]
+  | []
+  | [
+      {
+        allowPrimitiveModules?: boolean;
+        allowRequire?: boolean;
+        allowConditionalRequire?: boolean;
+      },
+    ];
+// ----- auaust/no-confusing-void-expression -----
+type AuaustNoConfusingVoidExpression =
+  | []
+  | [
+      {
+        ignoreArrowShorthand?: boolean;
+
+        ignoreVoidOperator?: boolean;
+
+        ignoreVoidReturningFunctions?: boolean;
+      },
+    ];
+// ----- auaust/no-duplicates -----
+type AuaustNoDuplicates =
+  | []
+  | [
+      {
+        "considerQueryString"?: boolean;
+        "prefer-inline"?: boolean;
+      },
+    ];
+// ----- auaust/no-else-return -----
+type AuaustNoElseReturn =
+  | []
+  | [
+      {
+        allowElseIf?: boolean;
+      },
+    ];
+// ----- auaust/no-extraneous-class -----
+type AuaustNoExtraneousClass =
+  | []
+  | [
+      {
+        allowConstructorOnly?: boolean;
+
+        allowEmpty?: boolean;
+
+        allowStaticOnly?: boolean;
+
+        allowWithDecorator?: boolean;
+      },
+    ];
+// ----- auaust/no-fallthrough -----
+type AuaustNoFallthrough =
+  | []
+  | [
+      {
+        commentPattern?: string;
+        allowEmptyCase?: boolean;
+        reportUnusedFallthroughComment?: boolean;
+      },
+    ];
+// ----- auaust/no-inferrable-types -----
+type AuaustNoInferrableTypes =
+  | []
+  | [
+      {
+        ignoreParameters?: boolean;
+
+        ignoreProperties?: boolean;
+      },
+    ];
+// ----- auaust/no-invalid-void-type -----
+type AuaustNoInvalidVoidType =
+  | []
+  | [
+      {
+        allowAsThisParameter?: boolean;
+
+        allowInGenericTypeArguments?: boolean | [string, ...string[]];
+      },
+    ];
+// ----- auaust/no-misused-promises -----
+type AuaustNoMisusedPromises =
+  | []
+  | [
+      {
+        checksConditionals?:
+          | boolean
+          | {
+              flagUnions?: "all" | "strict" | "none";
+            };
+
+        checksSpreads?: boolean;
+
+        checksVoidReturn?:
+          | boolean
+          | {
+              arguments?: boolean;
+
+              attributes?: boolean;
+
+              inheritedMethods?: boolean;
+
+              properties?: boolean;
+
+              returns?: boolean;
+
+              variables?: boolean;
+            };
+      },
+    ];
+// ----- auaust/no-multi-assign -----
+type AuaustNoMultiAssign =
+  | []
+  | [
+      {
+        ignoreNonDeclaration?: boolean;
+      },
+    ];
+// ----- auaust/no-typeof-undefined -----
+type AuaustNoTypeofUndefined =
+  | []
+  | [
+      {
+        checkGlobalVariables?: boolean;
+      },
+    ];
+// ----- auaust/no-unneeded-ternary -----
+type AuaustNoUnneededTernary =
+  | []
+  | [
+      {
+        defaultAssignment?: boolean;
+      },
+    ];
+// ----- auaust/no-unsafe-member-access -----
+type AuaustNoUnsafeMemberAccess =
+  | []
+  | [
+      {
+        allowOptionalChaining?: boolean;
+      },
+    ];
+// ----- auaust/no-unused-imports -----
+type AuaustNoUnusedImports =
+  | []
+  | [
+      | ("all" | "local")
+      | {
+          args?: "all" | "after-used" | "none";
+
+          argsIgnorePattern?: string;
+
+          caughtErrors?: "all" | "none";
+
+          caughtErrorsIgnorePattern?: string;
+
+          destructuredArrayIgnorePattern?: string;
+
+          enableAutofixRemoval?: {
+            imports?: boolean;
+          };
+
+          ignoreClassWithStaticInitBlock?: boolean;
+
+          ignoreRestSiblings?: boolean;
+
+          ignoreUsingDeclarations?: boolean;
+
+          reportUsedIgnorePattern?: boolean;
+
+          vars?: "all" | "local";
+
+          varsIgnorePattern?: string;
+        },
+    ];
+// ----- auaust/no-unused-vars -----
+type AuaustNoUnusedVars =
+  | []
+  | [
+      | ("all" | "local")
+      | {
+          args?: "all" | "after-used" | "none";
+
+          argsIgnorePattern?: string;
+
+          caughtErrors?: "all" | "none";
+
+          caughtErrorsIgnorePattern?: string;
+
+          destructuredArrayIgnorePattern?: string;
+
+          enableAutofixRemoval?: {
+            imports?: boolean;
+          };
+
+          ignoreClassWithStaticInitBlock?: boolean;
+
+          ignoreRestSiblings?: boolean;
+
+          ignoreUsingDeclarations?: boolean;
+
+          reportUsedIgnorePattern?: boolean;
+
+          vars?: "all" | "local";
+
+          varsIgnorePattern?: string;
+        },
+    ];
+// ----- auaust/no-useless-undefined -----
+type AuaustNoUselessUndefined =
+  | []
+  | [
+      {
+        checkArguments?: boolean;
+
+        checkArrowFunctionBody?: boolean;
+      },
+    ];
+// ----- auaust/object-curly-newline -----
+type AuaustObjectCurlyNewline =
+  | []
+  | [
+      | (
+          | ("always" | "never")
+          | {
+              multiline?: boolean;
+              minProperties?: number;
+              consistent?: boolean;
+            }
+        )
+      | {
+          ObjectExpression?:
+            | ("always" | "never")
+            | {
+                multiline?: boolean;
+                minProperties?: number;
+                consistent?: boolean;
+              };
+          ObjectPattern?:
+            | ("always" | "never")
+            | {
+                multiline?: boolean;
+                minProperties?: number;
+                consistent?: boolean;
+              };
+          ImportDeclaration?:
+            | ("always" | "never")
+            | {
+                multiline?: boolean;
+                minProperties?: number;
+                consistent?: boolean;
+              };
+          ExportDeclaration?:
+            | ("always" | "never")
+            | {
+                multiline?: boolean;
+                minProperties?: number;
+                consistent?: boolean;
+              };
+          TSTypeLiteral?:
+            | ("always" | "never")
+            | {
+                multiline?: boolean;
+                minProperties?: number;
+                consistent?: boolean;
+              };
+          TSInterfaceBody?:
+            | ("always" | "never")
+            | {
+                multiline?: boolean;
+                minProperties?: number;
+                consistent?: boolean;
+              };
+          TSEnumBody?:
+            | ("always" | "never")
+            | {
+                multiline?: boolean;
+                minProperties?: number;
+                consistent?: boolean;
+              };
+        },
+    ];
+// ----- auaust/object-shorthand -----
+type AuaustObjectShorthand =
+  | []
+  | [
+      | "always"
+      | "methods"
+      | "properties"
+      | "never"
+      | "consistent"
+      | "consistent-as-needed",
+    ]
+  | []
+  | ["always" | "methods" | "properties"]
+  | [
+      "always" | "methods" | "properties",
+      {
+        avoidQuotes?: boolean;
+      },
+    ]
+  | []
+  | ["always" | "methods"]
+  | [
+      "always" | "methods",
+      {
+        ignoreConstructors?: boolean;
+        methodsIgnorePattern?: string;
+        avoidQuotes?: boolean;
+        avoidExplicitReturnArrows?: boolean;
+      },
+    ];
+// ----- auaust/operator-assignment -----
+type AuaustOperatorAssignment = [] | ["always" | "never"];
+// ----- auaust/prefer-const -----
+type AuaustPreferConst =
+  | []
+  | [
+      {
+        destructuring?: "any" | "all";
+        ignoreReadBeforeAssign?: boolean;
+      },
+    ];
+// ----- auaust/prefer-optional-chain -----
+type AuaustPreferOptionalChain =
+  | []
+  | [
+      {
+        allowPotentiallyUnsafeFixesThatModifyTheReturnTypeIKnowWhatImDoing?: boolean;
+
+        checkAny?: boolean;
+
+        checkBigInt?: boolean;
+
+        checkBoolean?: boolean;
+
+        checkNumber?: boolean;
+
+        checkString?: boolean;
+
+        checkUnknown?: boolean;
+
+        requireNullish?: boolean;
+      },
+    ];
+// ----- auaust/prefer-readonly -----
+type AuaustPreferReadonly =
+  | []
+  | [
+      {
+        onlyInlineLambdas?: boolean;
+      },
+    ];
+// ----- auaust/return-await -----
+type AuaustReturnAwait =
+  | []
+  | [
+      (
+        "always" | "error-handling-correctness-only" | "in-try-catch" | "never"
+      ) &
+        string,
+    ];
+// ----- auaust/sort-exports -----
+type AuaustSortExports = {
+  fallbackSort?: {
+    type:
+      | "alphabetical"
+      | "natural"
+      | "line-length"
+      | "custom"
+      | "unsorted"
+      | "subgroup-order";
+
+    order?: "asc" | "desc";
+  };
+
+  type?:
+    | "alphabetical"
+    | "natural"
+    | "line-length"
+    | "custom"
+    | "unsorted"
+    | "subgroup-order";
+
+  specialCharacters?: "remove" | "trim" | "keep";
+
+  ignoreCase?: boolean;
+
+  alphabet?: string;
+
+  locales?: string | string[];
+
+  order?: "asc" | "desc";
+
+  customGroups?: (
+    | {
+        fallbackSort?: {
+          type:
+            | "alphabetical"
+            | "natural"
+            | "line-length"
+            | "custom"
+            | "unsorted"
+            | "subgroup-order";
+
+          order?: "asc" | "desc";
+        };
+
+        type?:
+          | "alphabetical"
+          | "natural"
+          | "line-length"
+          | "custom"
+          | "unsorted"
+          | "subgroup-order";
+
+        groupName: string;
+        newlinesInside?: "ignore" | number;
+
+        order?: "asc" | "desc";
+
+        anyOf: [
+          {
+            elementNamePattern?:
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                );
+
+            modifiers?: (
+              | "value"
+              | "type"
+              | "named"
+              | "wildcard"
+              | "multiline"
+              | "singleline"
+            )[];
+
+            selector?: "export";
+          },
+          ...{
+            elementNamePattern?:
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                );
+
+            modifiers?: (
+              | "value"
+              | "type"
+              | "named"
+              | "wildcard"
+              | "multiline"
+              | "singleline"
+            )[];
+
+            selector?: "export";
+          }[],
+        ];
+      }
+    | {
+        fallbackSort?: {
+          type:
+            | "alphabetical"
+            | "natural"
+            | "line-length"
+            | "custom"
+            | "unsorted"
+            | "subgroup-order";
+
+          order?: "asc" | "desc";
+        };
+
+        type?:
+          | "alphabetical"
+          | "natural"
+          | "line-length"
+          | "custom"
+          | "unsorted"
+          | "subgroup-order";
+
+        groupName: string;
+        newlinesInside?: "ignore" | number;
+
+        order?: "asc" | "desc";
+
+        elementNamePattern?:
+          | (
+              | {
+                  pattern: string;
+
+                  flags?: string;
+                }
+              | string
+            )[]
+          | (
+              | {
+                  pattern: string;
+
+                  flags?: string;
+                }
+              | string
+            );
+
+        modifiers?: (
+          "value" | "type" | "named" | "wildcard" | "multiline" | "singleline"
+        )[];
+
+        selector?: "export";
+      }
+  )[];
+  newlinesInside?: ("ignore" | number) | "newlinesBetween";
+
+  groups?: (
+    | string
+    | [string, ...string[]]
+    | {
+        newlinesBetween: "ignore" | number;
+      }
+    | {
+        group: string | [string, ...string[]];
+
+        fallbackSort?: {
+          type:
+            | "alphabetical"
+            | "natural"
+            | "line-length"
+            | "custom"
+            | "unsorted"
+            | "subgroup-order";
+
+          order?: "asc" | "desc";
+        };
+
+        commentAbove?: string;
+
+        type?:
+          | "alphabetical"
+          | "natural"
+          | "line-length"
+          | "custom"
+          | "unsorted"
+          | "subgroup-order";
+        newlinesInside?: "ignore" | number;
+
+        order?: "asc" | "desc";
+      }
+  )[];
+  newlinesBetween?: "ignore" | number;
+
+  partitionByComment?:
+    | boolean
+    | (
+        | (
+            | {
+                pattern: string;
+
+                flags?: string;
+              }
+            | string
+          )[]
+        | (
+            | {
+                pattern: string;
+
+                flags?: string;
+              }
+            | string
+          )
+      )
+    | {
+        block?:
+          | boolean
+          | (
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )
+            );
+
+        line?:
+          | boolean
+          | (
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )
+            );
+      };
+
+  partitionByNewLine?: boolean;
+}[];
+// ----- auaust/sort-imports -----
+type AuaustSortImports = {
+  fallbackSort?: {
+    type:
+      | "alphabetical"
+      | "natural"
+      | "line-length"
+      | "custom"
+      | "unsorted"
+      | "subgroup-order"
+      | "type-import-first";
+
+    order?: "asc" | "desc";
+    sortBy?: "specifier" | "path";
+  };
+
+  type?:
+    | "alphabetical"
+    | "natural"
+    | "line-length"
+    | "custom"
+    | "unsorted"
+    | "subgroup-order"
+    | "type-import-first";
+
+  specialCharacters?: "remove" | "trim" | "keep";
+
+  ignoreCase?: boolean;
+
+  alphabet?: string;
+
+  locales?: string | string[];
+
+  order?: "asc" | "desc";
+  sortBy?: "specifier" | "path";
+
+  customGroups?: (
+    | {
+        fallbackSort?: {
+          type:
+            | "alphabetical"
+            | "natural"
+            | "line-length"
+            | "custom"
+            | "unsorted"
+            | "subgroup-order"
+            | "type-import-first";
+
+          order?: "asc" | "desc";
+          sortBy?: "specifier" | "path";
+        };
+
+        type?:
+          | "alphabetical"
+          | "natural"
+          | "line-length"
+          | "custom"
+          | "unsorted"
+          | "subgroup-order"
+          | "type-import-first";
+
+        groupName: string;
+        newlinesInside?: "ignore" | number;
+
+        order?: "asc" | "desc";
+        sortBy?: "specifier" | "path";
+
+        anyOf: [
+          {
+            elementNamePattern?:
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                );
+
+            modifiers?: (
+              | "default"
+              | "multiline"
+              | "named"
+              | "require"
+              | "side-effect"
+              | "singleline"
+              | "ts-equals"
+              | "type"
+              | "value"
+              | "wildcard"
+            )[];
+
+            selector?:
+              | "side-effect-style"
+              | "tsconfig-path"
+              | "side-effect"
+              | "external"
+              | "internal"
+              | "builtin"
+              | "sibling"
+              | "subpath"
+              | "import"
+              | "parent"
+              | "index"
+              | "style"
+              | "type";
+          },
+          ...{
+            elementNamePattern?:
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                );
+
+            modifiers?: (
+              | "default"
+              | "multiline"
+              | "named"
+              | "require"
+              | "side-effect"
+              | "singleline"
+              | "ts-equals"
+              | "type"
+              | "value"
+              | "wildcard"
+            )[];
+
+            selector?:
+              | "side-effect-style"
+              | "tsconfig-path"
+              | "side-effect"
+              | "external"
+              | "internal"
+              | "builtin"
+              | "sibling"
+              | "subpath"
+              | "import"
+              | "parent"
+              | "index"
+              | "style"
+              | "type";
+          }[],
+        ];
+      }
+    | {
+        fallbackSort?: {
+          type:
+            | "alphabetical"
+            | "natural"
+            | "line-length"
+            | "custom"
+            | "unsorted"
+            | "subgroup-order"
+            | "type-import-first";
+
+          order?: "asc" | "desc";
+          sortBy?: "specifier" | "path";
+        };
+
+        type?:
+          | "alphabetical"
+          | "natural"
+          | "line-length"
+          | "custom"
+          | "unsorted"
+          | "subgroup-order"
+          | "type-import-first";
+
+        groupName: string;
+        newlinesInside?: "ignore" | number;
+
+        order?: "asc" | "desc";
+        sortBy?: "specifier" | "path";
+
+        elementNamePattern?:
+          | (
+              | {
+                  pattern: string;
+
+                  flags?: string;
+                }
+              | string
+            )[]
+          | (
+              | {
+                  pattern: string;
+
+                  flags?: string;
+                }
+              | string
+            );
+
+        modifiers?: (
+          | "default"
+          | "multiline"
+          | "named"
+          | "require"
+          | "side-effect"
+          | "singleline"
+          | "ts-equals"
+          | "type"
+          | "value"
+          | "wildcard"
+        )[];
+
+        selector?:
+          | "side-effect-style"
+          | "tsconfig-path"
+          | "side-effect"
+          | "external"
+          | "internal"
+          | "builtin"
+          | "sibling"
+          | "subpath"
+          | "import"
+          | "parent"
+          | "index"
+          | "style"
+          | "type";
+      }
+  )[];
+  newlinesInside?: ("ignore" | number) | "newlinesBetween";
+
+  groups?: (
+    | string
+    | [string, ...string[]]
+    | {
+        newlinesBetween: "ignore" | number;
+      }
+    | {
+        group: string | [string, ...string[]];
+
+        fallbackSort?: {
+          type:
+            | "alphabetical"
+            | "natural"
+            | "line-length"
+            | "custom"
+            | "unsorted"
+            | "subgroup-order"
+            | "type-import-first";
+
+          order?: "asc" | "desc";
+          sortBy?: "specifier" | "path";
+        };
+
+        commentAbove?: string;
+
+        type?:
+          | "alphabetical"
+          | "natural"
+          | "line-length"
+          | "custom"
+          | "unsorted"
+          | "subgroup-order"
+          | "type-import-first";
+        newlinesInside?: "ignore" | number;
+
+        order?: "asc" | "desc";
+        sortBy?: "specifier" | "path";
+      }
+  )[];
+  newlinesBetween?: "ignore" | number;
+
+  maxLineLength?: number;
+
+  sortSideEffects?: boolean;
+
+  environment?: "node" | "bun";
+
+  useExperimentalDependencyDetection?: boolean;
+
+  partitionByComment?:
+    | boolean
+    | (
+        | (
+            | {
+                pattern: string;
+
+                flags?: string;
+              }
+            | string
+          )[]
+        | (
+            | {
+                pattern: string;
+
+                flags?: string;
+              }
+            | string
+          )
+      )
+    | {
+        block?:
+          | boolean
+          | (
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )
+            );
+
+        line?:
+          | boolean
+          | (
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )
+            );
+      };
+
+  partitionByNewLine?: boolean;
+
+  internalPattern?:
+    | (
+        | {
+            pattern: string;
+
+            flags?: string;
+          }
+        | string
+      )[]
+    | (
+        | {
+            pattern: string;
+
+            flags?: string;
+          }
+        | string
+      );
+  tsconfig?: {
+    rootDir: string;
+
+    filename?: string;
+  };
+}[];
+// ----- auaust/sort-named-exports -----
+type AuaustSortNamedExports = {
+  fallbackSort?: {
+    type:
+      | "alphabetical"
+      | "natural"
+      | "line-length"
+      | "custom"
+      | "unsorted"
+      | "subgroup-order";
+
+    order?: "asc" | "desc";
+  };
+
+  type?:
+    | "alphabetical"
+    | "natural"
+    | "line-length"
+    | "custom"
+    | "unsorted"
+    | "subgroup-order";
+
+  specialCharacters?: "remove" | "trim" | "keep";
+
+  ignoreCase?: boolean;
+
+  alphabet?: string;
+
+  locales?: string | string[];
+
+  order?: "asc" | "desc";
+
+  customGroups?: (
+    | {
+        fallbackSort?: {
+          type:
+            | "alphabetical"
+            | "natural"
+            | "line-length"
+            | "custom"
+            | "unsorted"
+            | "subgroup-order";
+
+          order?: "asc" | "desc";
+        };
+
+        type?:
+          | "alphabetical"
+          | "natural"
+          | "line-length"
+          | "custom"
+          | "unsorted"
+          | "subgroup-order";
+
+        groupName: string;
+        newlinesInside?: "ignore" | number;
+
+        order?: "asc" | "desc";
+
+        anyOf: [
+          {
+            elementNamePattern?:
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                );
+
+            modifiers?: ("value" | "type")[];
+
+            selector?: "export";
+          },
+          ...{
+            elementNamePattern?:
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                );
+
+            modifiers?: ("value" | "type")[];
+
+            selector?: "export";
+          }[],
+        ];
+      }
+    | {
+        fallbackSort?: {
+          type:
+            | "alphabetical"
+            | "natural"
+            | "line-length"
+            | "custom"
+            | "unsorted"
+            | "subgroup-order";
+
+          order?: "asc" | "desc";
+        };
+
+        type?:
+          | "alphabetical"
+          | "natural"
+          | "line-length"
+          | "custom"
+          | "unsorted"
+          | "subgroup-order";
+
+        groupName: string;
+        newlinesInside?: "ignore" | number;
+
+        order?: "asc" | "desc";
+
+        elementNamePattern?:
+          | (
+              | {
+                  pattern: string;
+
+                  flags?: string;
+                }
+              | string
+            )[]
+          | (
+              | {
+                  pattern: string;
+
+                  flags?: string;
+                }
+              | string
+            );
+
+        modifiers?: ("value" | "type")[];
+
+        selector?: "export";
+      }
+  )[];
+  newlinesInside?: ("ignore" | number) | "newlinesBetween";
+
+  groups?: (
+    | string
+    | [string, ...string[]]
+    | {
+        newlinesBetween: "ignore" | number;
+      }
+    | {
+        group: string | [string, ...string[]];
+
+        fallbackSort?: {
+          type:
+            | "alphabetical"
+            | "natural"
+            | "line-length"
+            | "custom"
+            | "unsorted"
+            | "subgroup-order";
+
+          order?: "asc" | "desc";
+        };
+
+        commentAbove?: string;
+
+        type?:
+          | "alphabetical"
+          | "natural"
+          | "line-length"
+          | "custom"
+          | "unsorted"
+          | "subgroup-order";
+        newlinesInside?: "ignore" | number;
+
+        order?: "asc" | "desc";
+      }
+  )[];
+  newlinesBetween?: "ignore" | number;
+
+  useConfigurationIf?: {
+    allNamesMatchPattern?:
+      | (
+          | {
+              pattern: string;
+
+              flags?: string;
+            }
+          | string
+        )[]
+      | (
+          | {
+              pattern: string;
+
+              flags?: string;
+            }
+          | string
+        );
+
+    matchesAstSelector?: string;
+  };
+
+  ignoreAlias?: boolean;
+
+  partitionByComment?:
+    | boolean
+    | (
+        | (
+            | {
+                pattern: string;
+
+                flags?: string;
+              }
+            | string
+          )[]
+        | (
+            | {
+                pattern: string;
+
+                flags?: string;
+              }
+            | string
+          )
+      )
+    | {
+        block?:
+          | boolean
+          | (
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )
+            );
+
+        line?:
+          | boolean
+          | (
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )
+            );
+      };
+
+  partitionByNewLine?: boolean;
+}[];
+// ----- auaust/sort-named-imports -----
+type AuaustSortNamedImports = {
+  fallbackSort?: {
+    type:
+      | "alphabetical"
+      | "natural"
+      | "line-length"
+      | "custom"
+      | "unsorted"
+      | "subgroup-order";
+
+    order?: "asc" | "desc";
+  };
+
+  type?:
+    | "alphabetical"
+    | "natural"
+    | "line-length"
+    | "custom"
+    | "unsorted"
+    | "subgroup-order";
+
+  specialCharacters?: "remove" | "trim" | "keep";
+
+  ignoreCase?: boolean;
+
+  alphabet?: string;
+
+  locales?: string | string[];
+
+  order?: "asc" | "desc";
+
+  customGroups?: (
+    | {
+        fallbackSort?: {
+          type:
+            | "alphabetical"
+            | "natural"
+            | "line-length"
+            | "custom"
+            | "unsorted"
+            | "subgroup-order";
+
+          order?: "asc" | "desc";
+        };
+
+        type?:
+          | "alphabetical"
+          | "natural"
+          | "line-length"
+          | "custom"
+          | "unsorted"
+          | "subgroup-order";
+
+        groupName: string;
+        newlinesInside?: "ignore" | number;
+
+        order?: "asc" | "desc";
+
+        anyOf: [
+          {
+            elementNamePattern?:
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                );
+
+            modifiers?: ("value" | "type")[];
+
+            selector?: "import";
+          },
+          ...{
+            elementNamePattern?:
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                );
+
+            modifiers?: ("value" | "type")[];
+
+            selector?: "import";
+          }[],
+        ];
+      }
+    | {
+        fallbackSort?: {
+          type:
+            | "alphabetical"
+            | "natural"
+            | "line-length"
+            | "custom"
+            | "unsorted"
+            | "subgroup-order";
+
+          order?: "asc" | "desc";
+        };
+
+        type?:
+          | "alphabetical"
+          | "natural"
+          | "line-length"
+          | "custom"
+          | "unsorted"
+          | "subgroup-order";
+
+        groupName: string;
+        newlinesInside?: "ignore" | number;
+
+        order?: "asc" | "desc";
+
+        elementNamePattern?:
+          | (
+              | {
+                  pattern: string;
+
+                  flags?: string;
+                }
+              | string
+            )[]
+          | (
+              | {
+                  pattern: string;
+
+                  flags?: string;
+                }
+              | string
+            );
+
+        modifiers?: ("value" | "type")[];
+
+        selector?: "import";
+      }
+  )[];
+  newlinesInside?: ("ignore" | number) | "newlinesBetween";
+
+  groups?: (
+    | string
+    | [string, ...string[]]
+    | {
+        newlinesBetween: "ignore" | number;
+      }
+    | {
+        group: string | [string, ...string[]];
+
+        fallbackSort?: {
+          type:
+            | "alphabetical"
+            | "natural"
+            | "line-length"
+            | "custom"
+            | "unsorted"
+            | "subgroup-order";
+
+          order?: "asc" | "desc";
+        };
+
+        commentAbove?: string;
+
+        type?:
+          | "alphabetical"
+          | "natural"
+          | "line-length"
+          | "custom"
+          | "unsorted"
+          | "subgroup-order";
+        newlinesInside?: "ignore" | number;
+
+        order?: "asc" | "desc";
+      }
+  )[];
+  newlinesBetween?: "ignore" | number;
+
+  useConfigurationIf?: {
+    allNamesMatchPattern?:
+      | (
+          | {
+              pattern: string;
+
+              flags?: string;
+            }
+          | string
+        )[]
+      | (
+          | {
+              pattern: string;
+
+              flags?: string;
+            }
+          | string
+        );
+
+    matchesAstSelector?: string;
+  };
+
+  ignoreAlias?: boolean;
+
+  partitionByComment?:
+    | boolean
+    | (
+        | (
+            | {
+                pattern: string;
+
+                flags?: string;
+              }
+            | string
+          )[]
+        | (
+            | {
+                pattern: string;
+
+                flags?: string;
+              }
+            | string
+          )
+      )
+    | {
+        block?:
+          | boolean
+          | (
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )
+            );
+
+        line?:
+          | boolean
+          | (
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )[]
+              | (
+                  | {
+                      pattern: string;
+
+                      flags?: string;
+                    }
+                  | string
+                )
+            );
+      };
+
+  partitionByNewLine?: boolean;
+}[];
+// ----- auaust/switch-case-braces -----
+type AuaustSwitchCaseBraces = [] | ["always" | "avoid" | "single-statement"];
+// ----- auaust/switch-exhaustiveness-check -----
+type AuaustSwitchExhaustivenessCheck =
+  | []
+  | [
+      {
+        allowDefaultCaseForExhaustiveSwitch?: boolean;
+
+        considerDefaultExhaustiveForUnions?: boolean;
+
+        defaultCaseCommentPattern?: string;
+
+        requireDefaultForNonUnion?: boolean;
+      },
+    ];
+// ----- auaust/unified-signatures -----
+type AuaustUnifiedSignatures =
+  | []
+  | [
+      {
+        ignoreDifferentlyNamedParameters?: boolean;
+
+        ignoreOverloadsWithDifferentJSDoc?: boolean;
+      },
+    ];
+// ----- auaust/unpadded-switches -----
+type AuaustUnpaddedSwitches =
+  | []
+  | [
+      | ("always" | "never" | "start" | "end")
+      | {
+          blocks?: "always" | "never" | "start" | "end";
+          switches?: "always" | "never" | "start" | "end";
+          classes?: "always" | "never" | "start" | "end";
+        },
+    ]
+  | [
+      (
+        | ("always" | "never" | "start" | "end")
+        | {
+            blocks?: "always" | "never" | "start" | "end";
+            switches?: "always" | "never" | "start" | "end";
+            classes?: "always" | "never" | "start" | "end";
+          }
+      ),
+      {
+        allowSingleLineBlocks?: boolean;
+      },
+    ];

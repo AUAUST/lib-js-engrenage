@@ -1,12 +1,12 @@
 import { defineConvention } from "#eslint/conventions/defineConvention";
+import { delegateRule } from "#eslint/utils/delegateRule";
 
 export default defineConvention({
-  rules: {
-    "prefer-const": [
-      "error",
+  delegates: [
+    delegateRule("prefer-const", [
       {
         destructuring: "all",
       },
-    ],
-  },
+    ]),
+  ],
 });

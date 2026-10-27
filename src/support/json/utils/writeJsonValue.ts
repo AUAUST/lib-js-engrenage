@@ -14,7 +14,7 @@ export function writeJsonValue(
     getInsertionIndex,
   }: {
     isArrayInsertion?: boolean;
-    getInsertionIndex?: (properties: string[]) => number;
+    getInsertionIndex?(properties: string[]): number;
   } = {},
 ): string {
   try {

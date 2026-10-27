@@ -1,13 +1,13 @@
 import { defineConvention } from "#eslint/conventions/defineConvention";
+import { delegateRule } from "#eslint/utils/delegateRule";
 
 export default defineConvention({
-  rules: {
-    "@typescript-eslint/consistent-type-imports": [
-      "error",
+  delegates: [
+    delegateRule("@typescript-eslint/consistent-type-imports", [
       {
         fixStyle: "inline-type-imports",
       },
-    ],
-    "@typescript-eslint/no-import-type-side-effects": "error",
-  },
+    ]),
+    delegateRule("@typescript-eslint/no-import-type-side-effects"),
+  ],
 });

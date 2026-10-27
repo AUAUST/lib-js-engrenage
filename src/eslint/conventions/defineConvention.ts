@@ -3,26 +3,28 @@ import type { ResolvableValue } from "@auaust/toolkit/value";
 import type { Presets } from "#config/types/Presets";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Convention } from "#eslint/types/Convention";
+import type { Delegate } from "#eslint/types/Delegate";
 import type { RuleModule } from "#eslint/types/RuleModule";
-import type { Rules } from "#eslint/types/Rules";
 import type { ScopeReferences } from "#eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
 export function defineConvention({
-  rules = {},
+  delegates = [],
   rule,
   files = ["files.code"],
   ignores = [],
   typeAware = false,
+  severity = "error",
   enabled = true,
   presets = [],
   requires = [],
 }: {
-  rules?: ResolvableValue<Rules, [ResolvedConfig]>;
+  delegates?: ResolvableValue<ReadonlyArray<Delegate>, [ResolvedConfig]>;
   rule?: RuleModule;
   files?: ScopeReferences;
   ignores?: ScopeReferences;
   typeAware?: boolean;
+  severity?: "error" | "warn";
   enabled?: boolean;
   presets?: Presets;
   requires?: PackageNames;
@@ -34,7 +36,8 @@ export function defineConvention({
     files,
     ignores,
     typeAware,
-    rules,
+    severity,
+    delegates,
     rule,
   };
 }
