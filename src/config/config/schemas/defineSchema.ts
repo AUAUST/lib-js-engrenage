@@ -66,7 +66,9 @@ function isValidDefinition(input: unknown): input is Definition {
     isJsonValue(input.value) &&
     isBoolean(input.exact) &&
     (input.type === undefined || isString(input.type)) &&
-    includes(globalScopes, input.scope)
+    includes(globalScopes, input.scope) &&
+    (input.description === undefined ||
+      (isString(input.description) && !input.description.includes("*/")))
   );
 }
 
@@ -78,6 +80,7 @@ function resolveGlobal(value: GlobalValue): ResolvedGlobal {
       exact: value.exact,
       type: value.type,
       scope: value.scope,
+      description: value.description,
     };
   }
 
@@ -87,6 +90,7 @@ function resolveGlobal(value: GlobalValue): ResolvedGlobal {
     exact: false,
     type: undefined,
     scope: defaultGlobalScope,
+    description: undefined,
   };
 }
 

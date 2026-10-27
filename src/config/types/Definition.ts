@@ -8,4 +8,5 @@ export interface Definition {
   readonly exact: boolean;
   readonly type: string | undefined;
   readonly scope: GlobalScope;
+  readonly description: string | undefined;
 }

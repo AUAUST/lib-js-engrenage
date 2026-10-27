@@ -4,4 +4,5 @@ export interface DefinitionOptions {
   exact?: boolean;
   type?: string;
   scope?: GlobalScope;
+  description?: string;
 }

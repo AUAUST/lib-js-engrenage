@@ -7,7 +7,12 @@ import type { JsonValue } from "#support/json/types/JsonValue";
 
 export function define(
   value: JsonValue,
-  { exact = false, type, scope = defaultGlobalScope }: DefinitionOptions = {},
+  {
+    exact = false,
+    type,
+    scope = defaultGlobalScope,
+    description,
+  }: DefinitionOptions = {},
 ): Definition {
   return freeze({
     [definitionKey]: true,
@@ -15,5 +20,6 @@ export function define(
     exact,
     type,
     scope,
+    description,
   } as const);
 }

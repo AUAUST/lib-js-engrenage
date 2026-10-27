@@ -90,6 +90,18 @@ describe("define", () => {
       return resolveConfig({
         define: {
           values: {
+            __CLOSED__: define(true, {
+              description: "Ends early */",
+            }),
+          },
+        },
+      });
+    }).toThrow("valid top-level definition");
+
+    expect(() => {
+      return resolveConfig({
+        define: {
+          values: {
             "process.env[0]": 1,
           },
         },

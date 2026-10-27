@@ -14,11 +14,31 @@ const marker = `${typescriptBlocks.open}@${directive}${typescriptBlocks.close}`;
 
 const markerLine = new RegExp(`^${RegExp.escape(marker)}$`, "m");
 
-function renderDeclaration([name, { value, exact, type }]: [
+function renderDescription(description: string | undefined): string {
+  if (description === undefined) {
+    return "";
+  }
+
+  const lines = description.trim().split("\n");
+
+  if (lines.length === 1) {
+    return `/** ${lines.join("")} */\n`;
+  }
+
+  const body = map(lines, (line) => {
+    return ` * ${line}`.trimEnd();
+  });
+
+  return `/**\n${body.join("\n")}\n */\n`;
+}
+
+function renderDeclaration([name, { value, exact, type, description }]: [
   string,
   ResolvedGlobal,
 ]): string {
-  return `declare const ${name}: ${type ?? inferType(value, exact)};`;
+  const declaration = `declare const ${name}: ${type ?? inferType(value, exact)};`;
+
+  return `${renderDescription(description)}${declaration}`;
 }
 
 function appendBlock(content: string): string {

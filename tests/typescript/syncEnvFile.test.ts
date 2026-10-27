@@ -27,9 +27,12 @@ function createProject(input: unknown, files: Record<string, string> = {}) {
 }
 
 const values = {
-  "__DEV__": true,
+  "__DEV__": define(true, {
+    description: "Whether the build includes development checks.",
+  }),
   "__VERSION__": define("1.0.0", {
     type: "`${number}.${number}.${number}`",
+    description: "The package version.\n\nRead from package.json.",
   }),
   "import.meta.env.MODE": "test",
 };
@@ -52,8 +55,14 @@ describe("syncEnvFile", () => {
         'declare module "giget" {}',
         "",
         "// @define",
+        "/** Whether the build includes development checks. */",
         "declare const __DEV__: boolean;",
         "",
+        "/**",
+        " * The package version.",
+        " *",
+        " * Read from package.json.",
+        " */",
         "declare const __VERSION__: `${number}.${number}.${number}`;",
         "// @end",
         "",
