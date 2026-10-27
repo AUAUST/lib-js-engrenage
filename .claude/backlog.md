@@ -63,6 +63,31 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: toolkit defines `__NAME__`, `__VERSION__`, `__LICENSE__` and `__TIMESTAMP__` by hand for tsdown and Vitest, with matching ambient declarations in `src/ambient.d.ts`. Engrenage has no shared source for them.
    - Fix: declare compile-time variables as an `engrenage.config.ts` setting, so `createTsdownConfig` and `createViteConfig` (which `createVitestConfig` extends) apply the same `define` record. Later, generate the ambient `.d.ts` declarations from it. Settle which fields are standard and whether `__TIMESTAMP__` stays, given it makes builds non-reproducible.
 
+2. No scope policy for what `init` and `sync` own.
+   - Where: `bin/engrenage/init.ts`, `bin/engrenage/sync.ts`, every `create…Step` and `sync…` util
+   - Problem: steps mix three kinds of work without a stated rule: files engrenage fully owns (its config modules, `AGENTS.md`, ignore blocks), files it shares with a tool that has its own setup command (`.changeset/config.json`), and files it seeds with placeholders (`{}` VS Code files, failing workflow scripts). Mirroring another tool's setup gives files that look complete but drift from what that tool would produce, which is worse than not writing them.
+   - Fix: settle the policy before extending init or sync: engrenage writes only what it owns or what its own options define, delegates initial setup to the tool's CLI where one exists, and otherwise leaves the file to the user. Then review each step against it (points 3.3 to 3.5).
+
+3. Changesets config mirrors `changeset init`.
+   - Where: `src/changesets/utils/createChangesetConfigStep.ts`, `src/changesets/utils/syncChangesetConfig.ts`, `src/changesets/constants.ts`
+   - Problem: init writes an empty `.changeset/config.json` (and no `.changeset/README.md`), then sync fills a hand-picked subset of options (`$schema` resolved through the installed `@changesets/config`, `baseBranch`, `commit`, `access`, `changelog`, …) and leaves out the rest `changeset init` writes (`fixed`, `linked`, `ignore`). The result is an almost-correct config whose defaults engrenage now silently owns; the changelog repository is also parsed from package.json by private regexes.
+   - Fix: either have the init step run `pnpm changeset init` (as `install` already delegates to `pnpm install`) and keep sync limited to keys derived from engrenage's own config, or drop the changesets step and sync target and document the expected values instead. Decide whether `baseBranch`, `commit` and the GitHub changelog are AUAUST policy worth syncing at all.
+
+4. Placeholder files and scripts look like configuration.
+   - Where: `src/vscode/utils/createVscodeStep.ts`, `src/github/utils/createScriptsStep.ts`
+   - Problem: the VS Code step writes `{}` files that sync later fills, and the scripts step adds `package.json` scripts that only fail with "Configure the … script". Both create files or fields that exist without being real configuration.
+   - Fix: under point 3.2, decide per case: keep the VS Code files only if sync fully defines their content, and report missing workflow scripts as an init or sync error instead of writing failing placeholders.
+
+5. Other steps to check against the scope policy.
+   - Where: `src/agents/utils/createAgentsStep.ts`, `src/git/utils/createGitignoreStep.ts`, `src/prettier/utils/createPrettierStep.ts`, `src/github/utils/createWorkflowsStep.ts`
+   - Problem: these look within scope (engrenage-owned templates, ignore blocks, its Prettier preset, its workflow templates), but each also edits files other tools touch (`.gitignore` content outside the blocks, the `prettier` package.json field). This has not been reviewed against an explicit policy.
+   - Fix: once point 3.2 is settled, confirm each one writes only what engrenage owns, and note any that should delegate instead.
+
+6. Init and sync operations have no role directory.
+   - Where: `src/*/utils/create…Step.ts`, `src/*/utils/sync….ts`, `src/support/scaffold/`
+   - Problem: each entry's init steps and sync targets sit in `utils/` beside unrelated helpers (`createIgnoreRules`, `resolvePathAliases`), so what engrenage writes into a project, the subject of points 3.2 to 3.5, has no visible boundary.
+   - Fix: add a `setup/` role directory to each entry, holding its `create…Step` (init) and `sync…` (sync) modules. Private helpers stay in those modules or in `utils/`, and `src/support/scaffold/` keeps the shared step runner and types. `bin/engrenage/init.ts` and `sync.ts` then import only from `#<entry>/setup/…`. `scaffold/` was the alternative, but it clashes with `support/scaffold` and does not cover sync. Adding the directory means updating the AGENTS.md project map, which needs the user's approval.
+
 ## 4. Edge cases
 
 1. Definers cannot load a project above the working directory.
