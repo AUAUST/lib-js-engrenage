@@ -68,15 +68,20 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: toolkit defines `__NAME__`, `__VERSION__`, `__LICENSE__` and `__TIMESTAMP__` by hand for tsdown and Vitest, with matching ambient declarations in `src/ambient.d.ts`. Engrenage has no shared source for them.
    - Fix: declare compile-time variables as an `engrenage.config.ts` setting, so `createTsdownConfig` and `createViteConfig` (which `defineVitestConfig` builds on) apply the same `define` record. Later, generate the ambient `.d.ts` declarations from it. Settle which fields are standard and whether `__TIMESTAMP__` stays, given it makes builds non-reproducible.
 
-2. Tool commands lack aliases, defaults and feedback.
+2. Tool commands lack an alias, a default and feedback.
    - Where: `bin/engrenage/`, `src/support/commander/`
-   - Problem: the standard scripts need a `typecheck:dist` alias (they call `engrenage tsc:dist` until then), `engrenage vitest` adds `--typecheck` per command instead of by default, `engrenage tsdown` needs `--config-loader tsx` (AUAUST/lib-js-engrenage#18), and silent tools make projects wrap them with `echo`.
-   - Fix: add the alias; make type tests the Vitest default with `--no-typecheck` to opt out; default the tsdown config loader; have each command print what it does ("Checking types...") and "All good!" on success.
+   - Problem: the standard scripts need a `typecheck:dist` alias (they call `engrenage tsc:dist` until then), `engrenage vitest` adds `--typecheck` per command instead of by default, and only the type check and lint commands announce themselves and print "All good!".
+   - Fix: add the alias; make type tests the Vitest default with `--no-typecheck` to opt out; give the remaining check commands (`vitest`, `prettier:check`, `sync --check`) a start message through the `message` field of `defineToolCommands`.
 
 3. The `setup/` role directory is not in the project map.
    - Where: `AGENTS.md`
    - Problem: init steps and sync targets live in `src/<entry>/setup/`, but the project map does not list the directory or the rule that steps only create files engrenage owns and delegate the rest to the tool's own command.
    - Fix: once the init work in this category lands, add both to the AGENTS.md project map (with the user's approval).
+
+4. The tsconfig `outDir` can diverge from the configured output directory.
+   - Where: `src/config/`, `src/typescript/`
+   - Problem: `directories.output` in `engrenage.config.ts` overrides the tsconfig `compilerOptions.outDir` for tsdown, Vite, Vitest and the ignore files, but the tsconfig keeps its own `outDir`, so `tsc` and editors still see the old one.
+   - Fix: add an opt-in `engrenage sync` option that writes the configured output directory into the tsconfig `compilerOptions.outDir` when `directories.output` is set, and leaves the tsconfig alone otherwise. Decide where the option lives and how it treats an `outDir` inherited through `extends`.
 
 ## 4. Edge cases
 

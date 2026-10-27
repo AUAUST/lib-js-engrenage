@@ -24,6 +24,7 @@ export default defineToolCommands({
   commands: {
     "tsc": {
       description: "Check types with the project tsconfig.",
+      message: "Checking types...",
       aliases: "typecheck",
       arguments(config, args) {
         checkProject(config, args, config.tsconfigPath);
@@ -31,6 +32,7 @@ export default defineToolCommands({
     },
     "tsc:dist": {
       description: "Check types with the dist tsconfig.",
+      message: "Checking the types of the build output...",
       aliases: "typecheck:dist",
       arguments(config, args) {
         checkProject(config, args, config.distTsconfigPath);

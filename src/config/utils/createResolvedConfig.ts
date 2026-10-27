@@ -11,6 +11,7 @@ import {
   defaultConfigFiles,
   defaultCoverageDirectory,
   defaultDiscoveredFiles,
+  defaultEmptyOutDir,
   defaultFixtureFiles,
   defaultGeneratedFiles,
   defaultInstructionFiles,
@@ -144,6 +145,14 @@ export function createResolvedConfig({
   });
 
   function outputDirectory(): Directory | undefined {
+    const configured = raw.directories?.output;
+
+    if (configured !== undefined) {
+      resolveWithin(root, configured);
+
+      return configured;
+    }
+
     const { outDir } = tsconfig().optional;
 
     return outDir === undefined || !isWithin(root, outDir) ? undefined : outDir;
@@ -176,6 +185,12 @@ export function createResolvedConfig({
       config: raw.files?.config ?? defaultConfigFiles,
       discovered: raw.files?.discovered ?? defaultDiscoveredFiles,
       generated: raw.files?.generated ?? defaultGeneratedFiles,
+    });
+  });
+
+  const build = once(() => {
+    return freeze({
+      emptyOutDir: raw.build?.emptyOutDir ?? defaultEmptyOutDir,
     });
   });
 
@@ -224,6 +239,7 @@ export function createResolvedConfig({
         presets,
         directories,
         files,
+        build,
         agents,
         github,
         vscode,

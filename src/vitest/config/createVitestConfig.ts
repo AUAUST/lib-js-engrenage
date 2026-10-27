@@ -19,7 +19,7 @@ function createSourcePlugins(
   config: ResolvedConfig,
   guardOutDir: boolean,
 ): Plugin[] {
-  const { outDir } = config.tsconfig.optional;
+  const outDir = config.directories.output;
   const packageName = config.packageJson.optional.name;
 
   if (!guardOutDir || outDir === undefined || packageName === undefined) {

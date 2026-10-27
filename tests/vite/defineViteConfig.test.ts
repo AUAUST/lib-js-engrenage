@@ -41,6 +41,7 @@ describe("defineViteConfig", () => {
       },
       build: {
         outDir: "build",
+        emptyOutDir: true,
         sourcemap: true,
       },
     });

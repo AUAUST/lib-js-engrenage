@@ -66,7 +66,7 @@ function resolveBinary(
   return resolve(directory, path);
 }
 
-function runBinary(file: File, args: readonly string[]): Promise<void> {
+function runBinary(file: File, args: readonly string[]): Promise<number> {
   const child = spawn(process.execPath, [file, ...args], {
     stdio: "inherit",
   });
@@ -99,7 +99,7 @@ function runBinary(file: File, args: readonly string[]): Promise<void> {
       }
 
       process.exitCode = code ?? 1;
-      settle();
+      settle(process.exitCode);
     });
   });
 }
@@ -115,6 +115,7 @@ export function defineToolCommands<Name extends string>({
     Name,
     {
       description: string;
+      message?: string;
       aliases?: readonly string[] | string;
       arguments?: (
         config: ResolvedConfig,
@@ -139,10 +140,17 @@ export function defineToolCommands<Name extends string>({
 
           const transformed = tool.arguments?.(config, args) ?? args;
 
-          await runBinary(
-            resolveBinary(config, packageName, binary),
-            transformed,
-          );
+          const binaryPath = resolveBinary(config, packageName, binary);
+
+          if (tool.message !== undefined) {
+            console.info(tool.message);
+          }
+
+          const exitCode = await runBinary(binaryPath, transformed);
+
+          if (tool.message !== undefined && exitCode === 0) {
+            console.info("All good!");
+          }
         });
     };
   });

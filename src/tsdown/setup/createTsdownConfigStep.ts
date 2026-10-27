@@ -1,4 +1,4 @@
-import { engrenage, tsdown, typescript } from "#constants";
+import { engrenage, tsdown, tsx, typescript } from "#constants";
 import { createConfigModule } from "#support/scaffold/utils/createConfigModule";
 import { hasConfigFile } from "#support/scaffold/utils/hasConfigFile";
 import type { Step } from "#support/scaffold/types/Step";
@@ -19,6 +19,8 @@ export function createTsdownConfigStep(): Step {
           definer: "defineTsdownConfig",
         }),
       );
+
+      addDevDependency(tsx);
 
       addDevDependency(typescript);
     },

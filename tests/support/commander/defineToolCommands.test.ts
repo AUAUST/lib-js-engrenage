@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
@@ -22,13 +22,17 @@ const commands = defineToolCommands({
         return ["--only"];
       },
     },
+    "fake:checked": {
+      description: "Run the fake tool with messages.",
+      message: "Checking fakes...",
+    },
   },
 });
 
 const recordingBinary = [
   'import { writeFileSync } from "node:fs";',
   'writeFileSync(new URL("./args.json", import.meta.url), JSON.stringify(process.argv.slice(2)));',
-  "process.exitCode = 3;",
+  'process.exitCode = process.argv.includes("--pass") ? 0 : 3;',
   "",
 ].join("\n");
 
@@ -61,6 +65,8 @@ function createProject(files: Record<string, string> = {}) {
 }
 
 afterEach(() => {
+  vi.restoreAllMocks();
+
   process.exitCode = undefined;
 });
 
@@ -86,6 +92,23 @@ describe("defineToolCommands", () => {
     await runCommand(commands["fake:only"], "--watch");
 
     expect(readRecordedArgs(project)).toEqual(["--only"]);
+  });
+
+  test("announces the command and reports success only when the binary passes", async () => {
+    createProject(fakeTool);
+
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
+
+    await runCommand(commands["fake:checked"], "--pass");
+
+    expect(info.mock.calls).toEqual([["Checking fakes..."], ["All good!"]]);
+
+    info.mockClear();
+
+    await runCommand(commands["fake:checked"]);
+
+    expect(info.mock.calls).toEqual([["Checking fakes..."]]);
+    expect(process.exitCode).toBe(3);
   });
 
   test("names the package to install when the project lacks it", async () => {

@@ -24,6 +24,8 @@ export const toolkit = "@auaust/toolkit";
 
 export const tsdown = "tsdown";
 
+export const tsx = "tsx";
+
 export const typescript = "typescript";
 
 export const valibot = "valibot";
@@ -46,6 +48,7 @@ export const packages = freeze({
   publint,
   toolkit,
   tsdown,
+  tsx,
   typescript,
   valibot,
   vite,

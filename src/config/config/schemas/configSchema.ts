@@ -31,6 +31,12 @@ export const configSchema = strictObject({
       source: optional(directoriesSchema),
       test: optional(directoriesSchema),
       coverage: optional(directorySchema),
+      output: optional(directorySchema),
+    }),
+  ),
+  build: optional(
+    strictObject({
+      emptyOutDir: optional(boolean()),
     }),
   ),
   files: optional(

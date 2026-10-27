@@ -6,6 +6,8 @@ import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
+export const defaultEmptyOutDir = true;
+
 export const defaultCoverageDirectory = "coverage" satisfies Directory;
 
 export const defaultCodeFiles = "**/*.{ts,tsx}" satisfies Glob;

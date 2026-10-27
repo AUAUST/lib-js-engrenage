@@ -48,6 +48,14 @@ export function createTsdownConfig(
     );
   }
 
+  const outDir = config.directories.output;
+
+  if (outDir === undefined) {
+    throw new Error(
+      `No output directory for ${config.root}: set directories.output in the engrenage config or compilerOptions.outDir in the tsconfig`,
+    );
+  }
+
   const pathAliases = resolvePathAliases(
     packageJson.name,
     tsconfig.paths,
@@ -60,7 +68,8 @@ export function createTsdownConfig(
     cwd: config.root,
     entry: createTsdownEntries(pathAliases, bins),
     format: "esm",
-    outDir: tsconfig.outDir,
+    outDir,
+    clean: config.build.emptyOutDir,
     tsconfig: config.tsconfigPath,
     dts: {
       compilerOptions: {

@@ -37,6 +37,7 @@ describe("createTsdownConfig", () => {
       },
       format: "esm",
       outDir: "dist",
+      clean: true,
       exports: {
         exclude: ["bin/cli"],
         customExports: {
@@ -87,6 +88,37 @@ describe("createTsdownConfig", () => {
       attw: {
         enabled: true,
       },
+    });
+  });
+
+  test("takes the output directory and its emptying from the engrenage config over the tsconfig", async () => {
+    const project = createTemporaryProject({
+      "engrenage.config.ts":
+        'export default { directories: { output: "build" }, build: { emptyOutDir: false } };\n',
+      "package.json": JSON.stringify({
+        name: "@scope/package",
+        type: "module",
+      }),
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          outDir: "dist",
+          paths: {
+            "@scope/package": ["./src/index.ts"],
+          },
+        },
+      }),
+      "src/index.ts": "export {};\n",
+    });
+
+    const config = await loadConfig(project.root);
+
+    expect(
+      createTsdownConfig(config, {
+        ci: false,
+      }),
+    ).toMatchObject({
+      outDir: "build",
+      clean: false,
     });
   });
 

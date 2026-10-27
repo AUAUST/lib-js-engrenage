@@ -8,6 +8,7 @@ export default defineToolCommands({
   commands: {
     eslint: {
       description: "Lint the project, caching results in node_modules.",
+      message: "Linting...",
       aliases: "lint",
       arguments(config, args) {
         ensureIncludes(args, "--cache");

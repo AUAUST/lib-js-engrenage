@@ -217,6 +217,7 @@ describe("engrenage init", () => {
       },
       devDependencies: {
         tsdown: manifest.peerDependencies.tsdown,
+        tsx: manifest.peerDependencies.tsx,
         vitest: manifest.peerDependencies.vitest,
       },
     });
