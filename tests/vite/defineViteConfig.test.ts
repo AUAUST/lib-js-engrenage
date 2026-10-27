@@ -70,4 +70,36 @@ describe("defineViteConfig", () => {
       expect(layered.test?.typecheck?.tsconfig).toBe(layered.tsconfig);
     }
   });
+
+  test("accepts a native config or a function of the context as the test layer", async () => {
+    mockCwd(root);
+
+    const env = {
+      command: "serve",
+      mode: "test",
+    } as const;
+
+    const native = await defineViteConfig({
+      test: {
+        test: {
+          environment: "jsdom",
+        },
+      },
+    })(env);
+
+    const computed = await defineViteConfig({
+      async test(config, { mode }) {
+        return {
+          test: {
+            name: `${config.packageJson.name}:${mode}`,
+          },
+        };
+      },
+    })(env);
+
+    expect(native.test).toEqual({
+      environment: "jsdom",
+    });
+    expect(computed.test?.name).toBe("@fixture/vitest:test");
+  });
 });

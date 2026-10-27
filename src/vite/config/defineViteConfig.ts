@@ -30,9 +30,9 @@ export function defineViteConfig(
 
     let merged: Config = createViteConfig(config);
 
-    if (test !== undefined) {
-      merged = mergeConfig(merged, await test(config, env));
-    }
+    const testConfig = await value(test, config, env);
+
+    merged = mergeConfig(merged, testConfig ?? {});
 
     for (const nativeConfig of configs) {
       const resolvedNativeConfig = await value(nativeConfig, config, env);
