@@ -212,6 +212,32 @@ describe("createEslintConfig", () => {
     ]);
   });
 
+  test("reports the Math functions toolkit replaces, but not the constants", async () => {
+    const eslint = await createLinter({
+      typeAware: false,
+    });
+
+    const [result] = await eslint.lintText(
+      `const { max } = Math;
+
+export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
+`,
+      {
+        filePath: "src/math.ts",
+      },
+    );
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual([
+      "1:auaust/no-math-statics",
+      "3:auaust/no-math-statics",
+      "3:auaust/no-math-statics",
+    ]);
+  });
+
   test("turns off single conventions and whole categories", async () => {
     expect(
       await lintedRules("src/restricted.ts", {
@@ -350,14 +376,14 @@ describe("createEslintConfig", () => {
     });
 
     const shared = `
-  if (Math.random() > 0.5) {
+  if (chance()) {
     log("kept");
     log("too");
 
     return;
   }
 
-  if (Math.random() > 0.5) {
+  if (chance()) {
     log("commented");
     // keep this note
 
@@ -372,20 +398,20 @@ describe("createEslintConfig", () => {
   count: 0,
 };
 
-export async function run(task: () => Promise<void>, log: (text: string) => void) {
-  if (Math.random() > 0.5) {
+export async function run(task: () => Promise<void>, log: (text: string) => void, chance: () => boolean) {
+  if (chance()) {
     await task();
 
     return;
   }
 
-  if (Math.random() > 0.5) {
+  if (chance()) {
     state.count = 1;
 
     return;
   }
 
-  if (Math.random() > 0.5) {
+  if (chance()) {
     return undefined;
   }
 ${shared}
@@ -407,16 +433,16 @@ export function tail(ready: boolean, log: () => void) {
   count: 0,
 };
 
-export async function run(task: () => Promise<void>, log: (text: string) => void) {
-  if (Math.random() > 0.5) {
+export async function run(task: () => Promise<void>, log: (text: string) => void, chance: () => boolean) {
+  if (chance()) {
     return void (await task());
   }
 
-  if (Math.random() > 0.5) {
+  if (chance()) {
     return void (state.count = 1);
   }
 
-  if (Math.random() > 0.5) {
+  if (chance()) {
     return;
   }
 ${shared}

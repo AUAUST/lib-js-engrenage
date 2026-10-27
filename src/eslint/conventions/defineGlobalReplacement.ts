@@ -1,20 +1,28 @@
+import { join } from "@auaust/primitive-kit/arrays";
+
 import { defineReplacement } from "#eslint/conventions/defineReplacement";
 import type { Presets } from "#config/types/Presets";
 import type { Convention } from "#eslint/types/Convention";
 import type { PackageNames } from "#types/PackageNames";
 
-function createSelector(name: string, property: string | undefined): string {
+function createSelector(
+  name: string,
+  properties: ReadonlyArray<string> | undefined,
+): string {
   function identifier(path: string): string {
     return `[${path}.type='Identifier'][${path}.name='${name}']`;
   }
 
+  const pattern =
+    properties === undefined ? undefined : `/^(${join(properties, "|")})$/`;
+
   const accessed =
-    property === undefined
+    pattern === undefined
       ? ""
-      : `:matches([computed=false][property.name='${property}'], [computed=true][property.value='${property}'])`;
+      : `:matches([computed=false][property.name=${pattern}], [computed=true][property.value=${pattern}])`;
 
   const destructured =
-    property === undefined ? "" : ` > Property[key.name='${property}']`;
+    pattern === undefined ? "" : ` > Property[key.name=${pattern}]`;
 
   return [
     `MemberExpression${identifier("object")}${accessed}`,
@@ -23,24 +31,35 @@ function createSelector(name: string, property: string | undefined): string {
   ].join(", ");
 }
 
+function createTarget(
+  name: string,
+  properties: ReadonlyArray<string> | undefined,
+): string {
+  const [property, ...others] = properties ?? [];
+
+  return property === undefined || others.length > 0
+    ? `\`${name}.*\``
+    : `\`${name}.${property}\``;
+}
+
 export function defineGlobalReplacement({
   global,
+  properties,
   replacement,
   enabled,
   presets,
   requires,
 }: {
   global: string;
+  properties?: ReadonlyArray<string>;
   replacement: string;
   enabled?: boolean;
   presets?: Presets;
   requires?: PackageNames;
 }): Convention {
-  const [name = global, property] = global.split(".");
-
   return defineReplacement({
-    selector: createSelector(name, property),
-    target: property === undefined ? `\`${name}.*\`` : `\`${global}\``,
+    selector: createSelector(global, properties),
+    target: createTarget(global, properties),
     replacement,
     enabled,
     presets,

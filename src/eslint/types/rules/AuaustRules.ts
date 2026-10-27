@@ -136,6 +136,10 @@ export interface AuaustRules {
    */
   "auaust/no-loose-undefined"?: Linter.RuleEntry<[]>;
   /**
+   * Use the `@auaust/toolkit/math` equivalent instead of `Math.*`.
+   */
+  "auaust/no-math-statics"?: Linter.RuleEntry<[]>;
+  /**
    * Test files belong under the test directories.
    */
   "auaust/no-misplaced-tests"?: Linter.RuleEntry<[]>;
