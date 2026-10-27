@@ -1,6 +1,8 @@
-import { Argument } from "@commander-js/extra-typings";
+import { Argument, Option } from "@commander-js/extra-typings";
+import { boolean, optional } from "valibot";
 
-import { keys } from "@auaust/toolkit/object";
+import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { entries, keys } from "@auaust/toolkit/object";
 
 import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
 import { syncChangesetConfig } from "#changesets/setup/syncChangesetConfig";
@@ -9,39 +11,83 @@ import { syncGitignoreFile } from "#git/setup/syncGitignoreFile";
 import { syncWorkflowFiles } from "#github/setup/syncWorkflowFiles";
 import { syncPrettierignoreFile } from "#prettier/setup/syncPrettierignoreFile";
 import { defineCommand } from "#support/commander/utils/defineCommand";
-import { reportSyncResults } from "#support/commander/utils/reportSyncResults";
+import { settleChanges } from "#support/commander/utils/settleChanges";
+import { validate } from "#utils/validate";
 import { syncVscodeFiles } from "#vscode/setup/syncVscodeFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 
+interface SyncTarget<Flag extends string> {
+  sync: (config: ResolvedConfig, flags: Partial<Record<Flag, boolean>>) => void;
+  flags?: Record<Flag, string>;
+}
+
+function defineTarget<Flag extends string = never>(
+  sync: SyncTarget<Flag>["sync"],
+  flags?: Record<Flag, string>,
+): SyncTarget<Flag> {
+  return {
+    sync,
+    flags,
+  };
+}
+
 const targets = {
-  agents: syncAgentFiles,
-  changesets: syncChangesetConfig,
-  gitignore: syncGitignoreFile,
-  prettierignore: syncPrettierignoreFile,
-  vscode: syncVscodeFiles,
-  workflows: syncWorkflowFiles,
+  agents: defineTarget(syncAgentFiles),
+  changesets: defineTarget(syncChangesetConfig),
+  gitignore: defineTarget(syncGitignoreFile),
+  prettierignore: defineTarget(syncPrettierignoreFile),
+  vscode: defineTarget(syncVscodeFiles, {
+    settings: "create .vscode/settings.json when it is missing",
+    extensions: "create .vscode/extensions.json when it is missing",
+  }),
+  workflows: defineTarget(syncWorkflowFiles),
 };
 
-export function runSync({
-  config,
-  names = keys(targets),
-  check = false,
-}: {
-  config: ResolvedConfig;
-  names?: ReadonlyArray<keyof typeof targets>;
-  check?: boolean;
-}) {
-  for (const name of names) {
-    reportSyncResults(
-      targets[name]({
-        config,
-        check,
-      }),
+type TargetName = keyof typeof targets;
+
+type TargetFlags = Partial<Record<TargetName, Record<string, boolean>>>;
+
+function createFlagOptions(): ReadonlyArray<{
+  target: TargetName;
+  flag: string;
+  option: Option;
+}> {
+  return flatMap(entries(targets), ([target, { flags = {} }]) => {
+    return map(
+      entries<Record<string, string>>(flags),
+      ([flag, description]) => {
+        return {
+          target,
+          flag,
+          option: new Option(`--${target}-${flag}`, description),
+        };
+      },
     );
+  });
+}
+
+export function runSync(
+  config: ResolvedConfig,
+  {
+    names = keys(targets),
+    flags = {},
+  }: {
+    names?: ReadonlyArray<TargetName>;
+    flags?: TargetFlags;
+  } = {},
+) {
+  for (const name of names) {
+    targets[name].sync(config, flags[name] ?? {});
   }
 }
 
 export default defineCommand((command) => {
+  const flagOptions = createFlagOptions();
+
+  for (const { option } of flagOptions) {
+    command.addOption(option);
+  }
+
   return command
     .description(
       "Update the existing project files that engrenage derives from the config. `engrenage init` creates missing ones.",
@@ -52,12 +98,34 @@ export default defineCommand((command) => {
       ),
     )
     .option("--check", "report outdated files without writing them", false)
-    .action(async (selected, { check }) => {
+    .action(async (selected, { check }, self) => {
       const config = await loadConfig();
 
-      runSync({
-        config,
+      const flags: TargetFlags = {};
+
+      for (const { target, flag, option } of flagOptions) {
+        const name = option.attributeName();
+
+        const value = validate(
+          optional(boolean()),
+          self.getOptionValue(name),
+          `--${option.name()}`,
+        );
+
+        if (value !== undefined) {
+          flags[target] = {
+            ...flags[target],
+            [flag]: value,
+          };
+        }
+      }
+
+      runSync(config, {
         names: selected.length === 0 ? keys(targets) : selected,
+        flags,
+      });
+
+      settleChanges(config, {
         check,
       });
     });

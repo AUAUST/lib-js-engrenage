@@ -18,15 +18,12 @@ describe("syncAgentFiles", () => {
   test("syncs only the configured instruction files", async () => {
     const config = await loadConfig(root);
 
-    expect(
-      syncAgentFiles({
-        config,
-        check: true,
-      }),
-    ).toEqual([
+    syncAgentFiles(config);
+
+    expect(config.filesystem.discard()).toEqual([
       {
         file: "INSTRUCTIONS.md",
-        status: "outdated",
+        status: "synced",
       },
     ]);
   });

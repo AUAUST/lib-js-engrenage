@@ -1,6 +1,6 @@
 import { loadConfig } from "#config/utils/loadConfig";
 import { defineCommand } from "#support/commander/utils/defineCommand";
-import { reportSyncResults } from "#support/commander/utils/reportSyncResults";
+import { settleChanges } from "#support/commander/utils/settleChanges";
 import { syncBarrels } from "#typescript/utils/syncBarrels";
 
 export default defineCommand((command) => {
@@ -16,12 +16,10 @@ export default defineCommand((command) => {
     .action(async (barrels, { check }) => {
       const config = await loadConfig();
 
-      reportSyncResults(
-        syncBarrels({
-          config,
-          barrels,
-          check,
-        }),
-      );
+      syncBarrels(config, barrels);
+
+      settleChanges(config, {
+        check,
+      });
     });
 });

@@ -33,11 +33,9 @@ describe("syncVscodeFiles", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(
-      syncVscodeFiles({
-        config,
-      }),
-    ).toEqual([
+    syncVscodeFiles(config);
+
+    expect(config.filesystem.flush()).toEqual([
       {
         file: ".vscode/settings.json",
         status: "synced",
@@ -63,12 +61,9 @@ describe("syncVscodeFiles", () => {
 }
 `);
 
-    expect(
-      syncVscodeFiles({
-        config,
-        check: true,
-      }),
-    ).toEqual([]);
+    syncVscodeFiles(config);
+
+    expect(config.filesystem.discard()).toEqual([]);
   });
 
   test("updates existing enabled files and skips disabled or missing ones", async () => {
@@ -82,21 +77,18 @@ describe("syncVscodeFiles", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(
-      syncVscodeFiles({
-        config,
-        check: true,
-      }),
-    ).toEqual([
+    syncVscodeFiles(config);
+
+    expect(config.filesystem.discard()).toEqual([
       {
         file: ".vscode/extensions.json",
-        status: "outdated",
+        status: "synced",
       },
     ]);
 
-    syncVscodeFiles({
-      config,
-    });
+    syncVscodeFiles(config);
+
+    config.filesystem.flush();
 
     expect(project.read(".vscode/settings.json")).toBe(settings);
     expect(JSON.parse(project.read(".vscode/extensions.json"))).toEqual({

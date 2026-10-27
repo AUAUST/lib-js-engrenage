@@ -6,15 +6,15 @@ export function createPrettierignoreStep(): Step {
   return {
     name: prettierignoreFile,
     message: `Create ${prettierignoreFile}?`,
-    isMissing({ config, files, readPackageJson }) {
+    isMissing({ config, filesystem, readPackageJson }) {
       return (
         config.prettierignorePath === undefined &&
         readPackageJson([prettier]) !== undefined &&
-        !files.exists(prettierignoreFile)
+        !filesystem.exists(prettierignoreFile)
       );
     },
-    plan({ files }) {
-      files.write(prettierignoreFile, ignoreBlocks);
+    plan({ filesystem }) {
+      filesystem.write(prettierignoreFile, ignoreBlocks);
     },
   };
 }

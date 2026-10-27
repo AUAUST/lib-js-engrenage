@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname } from "node:path";
 
@@ -53,6 +54,7 @@ function resolveBinary(
   const { bin } = createPackageJson({
     root: directory,
     path: manifestPath,
+    content: readFileSync(manifestPath, "utf8"),
   });
 
   const path = isString(bin) ? bin : bin[binary];

@@ -22,8 +22,8 @@ export function createConfigFileStep(): Step {
   return {
     name: file,
     message: `Create ${file}?`,
-    isMissing({ config, files }) {
-      return config.configFile === undefined && !files.exists(file);
+    isMissing({ config, filesystem }) {
+      return config.configFile === undefined && !filesystem.exists(file);
     },
     async plan(context) {
       const answers = await context.multiselect(
@@ -35,7 +35,7 @@ export function createConfigFileStep(): Step {
 
       context.setPresets(chosen);
 
-      context.files.write(
+      context.filesystem.write(
         file,
         createConfigModule({
           entry: `${engrenage}/config`,

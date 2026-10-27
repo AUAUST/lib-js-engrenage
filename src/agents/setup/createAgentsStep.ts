@@ -8,13 +8,13 @@ export function createAgentsStep(): Step {
   return {
     name: agentsFile,
     message: `Create ${agentsFile} with the shared agent instructions?`,
-    isMissing({ files }) {
-      return !files.exists(agentsFile);
+    isMissing({ filesystem }) {
+      return !filesystem.exists(agentsFile);
     },
-    plan({ files }) {
+    plan({ filesystem }) {
       const template = createRequire(import.meta.url).resolve(agentsTemplate);
 
-      files.write(agentsFile, readFileSync(template, "utf8"));
+      filesystem.write(agentsFile, readFileSync(template, "utf8"));
     },
   };
 }

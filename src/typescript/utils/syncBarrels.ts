@@ -1,11 +1,10 @@
 import { globSync } from "node:fs";
 import { basename, dirname, extname } from "node:path";
 
-import { flatMap, map, sort, toSorted } from "@auaust/primitive-kit/arrays";
+import { flatMap, map, toSorted } from "@auaust/primitive-kit/arrays";
 
 import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import { resolve } from "#support/filesystem/utils/resolve";
-import { toPosixPath } from "#support/filesystem/utils/toPosixPath";
 import {
   barrelFiles,
   declarationExtension,
@@ -19,7 +18,6 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Files } from "#types/Files";
 import type { Glob } from "#types/Glob";
-import type { SyncResults } from "#types/SyncResults";
 import type { BarrelMode } from "#typescript/types/BarrelMode";
 import type { SubpathImports } from "#typescript/types/SubpathImports";
 
@@ -153,29 +151,19 @@ function selectBarrels(files: Files, name: string): Files {
   return byName;
 }
 
-export function syncBarrels({
-  config,
-  barrels = [],
-  check = false,
-}: {
-  config: ResolvedConfig;
-  barrels?: ReadonlyArray<string>;
-  check?: boolean;
-}): SyncResults {
+export function syncBarrels(
+  config: ResolvedConfig,
+  barrels: ReadonlyArray<string> = [],
+) {
   const { root: rootPath } = config;
 
   const { imports } = config.packageJson;
 
-  const discovered = globSync(
+  const allFiles = config.filesystem.glob(
     map(config.directories.source, (directory) => {
       return `${directory}/${barrelFiles}`;
     }),
-    {
-      cwd: rootPath,
-    },
   );
-
-  const allFiles = sort(map(discovered, toPosixPath));
 
   const files =
     barrels.length === 0
@@ -198,14 +186,13 @@ export function syncBarrels({
     });
   }
 
-  return syncFiles({
-    root: rootPath,
-    files: map(files, (file) => {
+  syncFiles(
+    config,
+    map(files, (file) => {
       return {
         file,
         update,
       };
     }),
-    check,
-  });
+  );
 }

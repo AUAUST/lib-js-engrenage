@@ -7,6 +7,7 @@ export type { ConfigInput } from "#types/ConfigInput";
 export * from "#config/types/Accessors";
 export * from "#config/types/Config";
 export * from "#config/types/Environment";
+export * from "#config/types/Filesystem";
 export * from "#config/types/Preset";
 export * from "#config/types/Presets";
 export * from "#config/types/ResolvedConfig";

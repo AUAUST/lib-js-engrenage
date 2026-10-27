@@ -1,35 +1,16 @@
-import { existsSync } from "node:fs";
 import { createRequire } from "node:module";
 
 import { object, string } from "valibot";
 
-import { isString } from "@auaust/toolkit/isString";
-
-import {
-  configFile,
-  defaultAccess,
-  defaultChangelog,
-  sharedOptions,
-} from "#changesets/constants";
-import {
-  changesetsChangelogGithub,
-  changesetsCli,
-  changesetsConfig,
-  packageJsonFile,
-} from "#constants";
+import { configFile } from "#changesets/constants";
+import { changesetsCli, changesetsConfig, packageJsonFile } from "#constants";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
 import { applyJsonEdits } from "#support/json/utils/applyJsonEdits";
 import { flattenJsonObject } from "#support/json/utils/flattenJsonObject";
 import { syncFiles } from "#utils/syncFiles";
 import { validate } from "#utils/validate";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { JsonValue } from "#support/json/types/JsonValue";
 import type { File } from "#types/File";
-import type { SyncResults } from "#types/SyncResults";
-
-const githubShorthand = /^(?:github:)?([\w.-]+)\/([\w.-]+)$/;
-
-const githubUrl = /github\.com[/:]([\w.-]+)\/([\w.-]+?)(?:\.git)?\/?$/;
 
 function resolveConfigVersion(packageJsonPath: File): string {
   try {
@@ -58,56 +39,12 @@ function resolveConfigVersion(packageJsonPath: File): string {
   }
 }
 
-function toGithubRepository(
-  repository: string | { url: string } | undefined,
-): string | undefined {
-  const url = isString(repository) ? repository : repository?.url;
-
-  if (url === undefined) {
-    return undefined;
-  }
-
-  const match = githubShorthand.exec(url) ?? githubUrl.exec(url);
-
-  if (match === null) {
-    return undefined;
-  }
-
-  const [, owner, name] = match;
-
-  return `${owner}/${name}`;
-}
-
-function createChangelog(config: ResolvedConfig): JsonValue {
-  const repo = toGithubRepository(config.packageJson.optional.repository);
-
-  if (
-    repo === undefined ||
-    !config.environment.hasDependency(changesetsChangelogGithub)
-  ) {
-    return defaultChangelog;
-  }
-
-  return [
-    changesetsChangelogGithub,
-    {
-      repo,
-    },
-  ];
-}
-
-export function syncChangesetConfig({
-  config,
-  check = false,
-}: {
-  config: ResolvedConfig;
-  check?: boolean;
-}): SyncResults {
+export function syncChangesetConfig(config: ResolvedConfig) {
   if (
     !config.environment.hasDependency(changesetsCli) ||
-    !existsSync(config.resolve(configFile))
+    !config.filesystem.exists(configFile)
   ) {
-    return [];
+    return;
   }
 
   const { packageJsonPath } = config;
@@ -120,21 +57,14 @@ export function syncChangesetConfig({
 
   const options = flattenJsonObject({
     $schema: `https://unpkg.com/${changesetsConfig}@${version}/schema.json`,
-    ...sharedOptions,
-    access: config.packageJson.optional.publishConfig?.access ?? defaultAccess,
-    changelog: createChangelog(config),
   });
 
-  return syncFiles({
-    root: config.root,
-    files: [
-      {
-        file: configFile,
-        update(content, path) {
-          return applyJsonEdits(content, path, options);
-        },
+  syncFiles(config, [
+    {
+      file: configFile,
+      update(content, path) {
+        return applyJsonEdits(content, path, options);
       },
-    ],
-    check,
-  });
+    },
+  ]);
 }

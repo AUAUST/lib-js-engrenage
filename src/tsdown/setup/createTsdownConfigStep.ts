@@ -11,15 +11,15 @@ export function createTsdownConfigStep(): Step {
   return {
     name: file,
     message: "Build the library with tsdown?",
-    isMissing({ config, files, getPresets }) {
+    isMissing({ filesystem, getPresets }) {
       return (
         includes(getPresets(), "library") &&
-        !files.exists(file) &&
-        !hasConfigFile(config.root, tsdown)
+        !filesystem.exists(file) &&
+        !hasConfigFile(filesystem, tsdown)
       );
     },
-    plan({ files, addDevDependency }) {
-      files.write(
+    plan({ filesystem, addDevDependency }) {
+      filesystem.write(
         file,
         createConfigModule({
           entry: `${engrenage}/tsdown`,

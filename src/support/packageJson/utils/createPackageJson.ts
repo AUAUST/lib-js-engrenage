@@ -14,7 +14,7 @@ import { once } from "@auaust/toolkit/once";
 
 import { createAccessors } from "#config/utils/createAccessors";
 import { packageJsonFile, packageTypes, publishAccess } from "#constants";
-import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
+import { parseJson } from "#support/json/utils/parseJson";
 import { dependencyFields } from "#support/packageJson/constants";
 import { validate } from "#utils/validate";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
@@ -24,14 +24,16 @@ import type { File } from "#types/File";
 export function createPackageJson({
   root,
   path,
+  content,
 }: {
   root: Directory;
   path: File | undefined;
+  content: string | undefined;
 }): PackageJson {
   const manifest = once(() => {
-    return path === undefined
+    return path === undefined || content === undefined
       ? undefined
-      : validate(record(string(), unknown()), readJsonFile(path), path);
+      : validate(record(string(), unknown()), parseJson(content, path), path);
   });
 
   function describeMissing(field: string): string {

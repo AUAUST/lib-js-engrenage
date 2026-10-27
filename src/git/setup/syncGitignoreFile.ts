@@ -10,17 +10,9 @@ import {
 import { createProjectIgnores } from "#git/utils/createProjectIgnores";
 import { syncIgnoreFile } from "#utils/syncIgnoreFile";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { SyncResults } from "#types/SyncResults";
 
-export function syncGitignoreFile({
-  config,
-  check = false,
-}: {
-  config: ResolvedConfig;
-  check?: boolean;
-}): SyncResults {
-  return syncIgnoreFile({
-    root: config.root,
+export function syncGitignoreFile(config: ResolvedConfig) {
+  syncIgnoreFile(config, {
     path: config.gitignorePath,
     presets: {
       javascript() {
@@ -44,6 +36,5 @@ export function syncGitignoreFile({
       defaults: () => defaultIgnores,
       project: () => createProjectIgnores(config),
     },
-    check,
   });
 }

@@ -1,26 +1,16 @@
-import { globSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 
-import { map, sort } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
 
 import { markdownBlocks } from "#agents/constants";
 import { resolveAgentReference } from "#agents/utils/resolveAgentReference";
-import { toPosixPath } from "#support/filesystem/utils/toPosixPath";
 import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
-import type { SyncResults } from "#types/SyncResults";
 
-export function syncAgentFiles({
-  config,
-  check = false,
-}: {
-  config: ResolvedConfig;
-  check?: boolean;
-}): SyncResults {
-  const discovered = globSync(config.agents.instructionFiles, {
-    cwd: config.root,
-  });
+export function syncAgentFiles(config: ResolvedConfig) {
+  const discovered = config.filesystem.glob(config.agents.instructionFiles);
 
   function update(content: string, path: File): string {
     return syncBlocks(content, markdownBlocks, {
@@ -32,16 +22,12 @@ export function syncAgentFiles({
     });
   }
 
-  const files = map(sort(map(discovered, toPosixPath)), (file) => {
+  const files = map(discovered, (file) => {
     return {
       file,
       update,
     };
   });
 
-  return syncFiles({
-    root: config.root,
-    files,
-    check,
-  });
+  syncFiles(config, files);
 }

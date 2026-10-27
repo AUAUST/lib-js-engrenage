@@ -9,11 +9,11 @@ export function createEslintConfigStep(): Step {
   return {
     name: file,
     message: "Lint with ESLint?",
-    isMissing({ config, files }) {
-      return !files.exists(file) && !hasConfigFile(config.root, eslint);
+    isMissing({ filesystem }) {
+      return !filesystem.exists(file) && !hasConfigFile(filesystem, eslint);
     },
-    plan({ files, addDevDependency }) {
-      files.write(
+    plan({ filesystem, addDevDependency }) {
+      filesystem.write(
         file,
         createConfigModule({
           entry: `${engrenage}/eslint`,

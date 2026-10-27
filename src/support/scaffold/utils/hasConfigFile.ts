@@ -1,11 +1,5 @@
-import { globSync } from "node:fs";
+import type { Filesystem } from "#config/types/Filesystem";
 
-import type { Directory } from "#types/Directory";
-
-export function hasConfigFile(root: Directory, tool: string): boolean {
-  return (
-    globSync(`${tool}.config.*`, {
-      cwd: root,
-    }).length > 0
-  );
+export function hasConfigFile(filesystem: Filesystem, tool: string): boolean {
+  return filesystem.glob(`${tool}.config.*`).length > 0;
 }

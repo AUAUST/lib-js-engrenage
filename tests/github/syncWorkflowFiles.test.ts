@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import { loadConfig } from "@auaust/engrenage/config";
 import { syncWorkflowFiles } from "@auaust/engrenage/github";
 
+import { readConfig } from "#config/utils/readConfig";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 
 const libraryScripts = {
@@ -41,11 +42,9 @@ describe("syncWorkflowFiles", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(
-      syncWorkflowFiles({
-        config,
-      }),
-    ).toEqual([
+    syncWorkflowFiles(config);
+
+    expect(config.filesystem.flush()).toEqual([
       {
         file: ".github/workflows/ci.yml",
         status: "synced",
@@ -66,15 +65,14 @@ describe("syncWorkflowFiles", () => {
 
     project.write(".github/workflows/ci.yml", "name: Edited\n");
 
-    expect(
-      syncWorkflowFiles({
-        config,
-        check: true,
-      }),
-    ).toEqual([
+    const edited = await readConfig(project.root);
+
+    syncWorkflowFiles(edited);
+
+    expect(edited.filesystem.changes()).toEqual([
       {
         file: ".github/workflows/ci.yml",
-        status: "outdated",
+        status: "synced",
       },
     ]);
   });
@@ -87,25 +85,23 @@ describe("syncWorkflowFiles", () => {
     const config = await loadConfig(missingScript.root);
 
     expect(() => {
-      syncWorkflowFiles({
-        config,
-      });
+      syncWorkflowFiles(config);
     }).toThrow('does not declare the "ci:test" script');
 
     const disabled = createLibrary(libraryScripts, "{ workflows: false }");
 
-    expect(
-      syncWorkflowFiles({
-        config: await loadConfig(disabled.root),
-      }),
-    ).toEqual([]);
+    const disabledConfig = await loadConfig(disabled.root);
+
+    syncWorkflowFiles(disabledConfig);
+
+    expect(disabledConfig.filesystem.changes()).toEqual([]);
 
     const absent = createLibrary(withoutTest, "{}", {});
 
-    expect(
-      syncWorkflowFiles({
-        config: await loadConfig(absent.root),
-      }),
-    ).toEqual([]);
+    const absentConfig = await loadConfig(absent.root);
+
+    syncWorkflowFiles(absentConfig);
+
+    expect(absentConfig.filesystem.changes()).toEqual([]);
   });
 });

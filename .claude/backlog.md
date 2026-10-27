@@ -14,10 +14,10 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: the code style prefers primitive-kit and toolkit helpers over native methods with an equivalent (`sort(array)` rather than `array.sort()`), but only `Object.*` and `Array.isArray` are enforced, so native calls creep back in and are replaced by hand.
    - Fix: add type-aware conventions reporting native array methods that primitive-kit covers, starting with `sort`, so only arrays are flagged; leave `filter` out until point 2.1 is fixed. Gate them on `@auaust/primitive-kit` being a dependency (AUAUST/lib-js-engrenage#11).
 
-3. pnpm workspace defaults are copied by hand.
-   - Where: `pnpm-workspace.yaml` of each project
-   - Problem: `minimumReleaseAgeExclude: ["@auaust/*"]` and the shared `allowBuilds` entries repeat in every project, and the pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`. Without them, `engrenage init` on a fresh project fails at `pnpm install` with `ERR_PNPM_IGNORED_BUILDS` (`unrs-resolver`, pulled in by engrenage's ESLint resolver), after writing its files.
-   - Fix: an `engrenage init` step that creates a missing `pnpm-workspace.yaml`, plus an `engrenage sync` target that writes the shared keys into an existing one and keeps project `allowBuilds` entries. Editing YAML in place needs a parser that preserves the file (dependency to approve).
+3. Existing pnpm workspace files are not synced.
+   - Where: `src/pnpm/`, `pnpm-workspace.yaml` of each project
+   - Problem: `engrenage init` creates a missing `pnpm-workspace.yaml` from `workspaceSettings`, but an existing one that lacks `allowBuilds.unrs-resolver` still fails `pnpm install` with `ERR_PNPM_IGNORED_BUILDS`, and the shared `minimumReleaseAgeExclude` keeps being copied by hand. The pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`.
+   - Fix: an `engrenage sync` target that writes `workspaceSettings` into an existing file and keeps project entries. Editing YAML in place needs a parser that preserves the file (dependency to approve).
 
 4. No shared agent guidance on changesets.
    - Where: `data/agents/sections/` or `data/agents/rules/`
@@ -63,30 +63,35 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: toolkit defines `__NAME__`, `__VERSION__`, `__LICENSE__` and `__TIMESTAMP__` by hand for tsdown and Vitest, with matching ambient declarations in `src/ambient.d.ts`. Engrenage has no shared source for them.
    - Fix: declare compile-time variables as an `engrenage.config.ts` setting, so `createTsdownConfig` and `createViteConfig` (which `createVitestConfig` extends) apply the same `define` record. Later, generate the ambient `.d.ts` declarations from it. Settle which fields are standard and whether `__TIMESTAMP__` stays, given it makes builds non-reproducible.
 
-2. No scope policy for what `init` and `sync` own.
-   - Where: `bin/engrenage/init.ts`, `bin/engrenage/sync.ts`, every `create…Step` and `sync…` util
-   - Problem: steps mix three kinds of work without a stated rule: files engrenage fully owns (its config modules, `AGENTS.md`, ignore blocks), files it shares with a tool that has its own setup command (`.changeset/config.json`), and files it seeds with placeholders (`{}` VS Code files, failing workflow scripts). Mirroring another tool's setup gives files that look complete but drift from what that tool would produce, which is worse than not writing them.
-   - Fix: settle the policy before extending init or sync: engrenage writes only what it owns or what its own options define, delegates initial setup to the tool's CLI where one exists, and otherwise leaves the file to the user. Then review each step against it (points 3.3 to 3.5).
+2. `engrenage init` cannot start from an empty directory.
+   - Where: `bin/engrenage/init.ts`, `src/config/utils/readConfig.ts`, `src/support/scaffold/utils/createStepContext.ts`
+   - Problem: init requires a `package.json` and roots at the nearest ancestor that has one, so `pnpm dlx @auaust/engrenage init` in an empty directory fails. Paths such as `packageJsonPath` are located once when the config loads, so a file created during init is not seen by the same config. Part of AUAUST/lib-js-engrenage#28.
+   - Fix: root init at the working directory and tell apart an empty directory, a `package.json` without engrenage and an engrenage project. For an empty one, run `pnpm init --bare`, then ask the package name and whether it is public (`license: GPL-3.0-only`) or private (`private: true`, `license: UNLICENSED`); set `version: 0.0.0` and copy engrenage's `author`, without `main` or `keywords`. The next question is the project type: `library` makes the package public and defaults to tsdown and the library workflows. Resolve file locations through `config.filesystem` when they are read, not when the config loads.
 
-3. Changesets config mirrors `changeset init`.
-   - Where: `src/changesets/utils/createChangesetConfigStep.ts`, `src/changesets/utils/syncChangesetConfig.ts`, `src/changesets/constants.ts`
-   - Problem: init writes an empty `.changeset/config.json` (and no `.changeset/README.md`), then sync fills a hand-picked subset of options (`$schema` resolved through the installed `@changesets/config`, `baseBranch`, `commit`, `access`, `changelog`, …) and leaves out the rest `changeset init` writes (`fixed`, `linked`, `ignore`). The result is an almost-correct config whose defaults engrenage now silently owns; the changelog repository is also parsed from package.json by private regexes.
-   - Fix: either have the init step run `pnpm changeset init` (as `install` already delegates to `pnpm install`) and keep sync limited to keys derived from engrenage's own config, or drop the changesets step and sync target and document the expected values instead. Decide whether `baseBranch`, `commit` and the GitHub changelog are AUAUST policy worth syncing at all.
+3. No build tool choice in `engrenage init`.
+   - Where: `src/tsdown/setup/`, `src/vite/`, `src/vitest/`
+   - Problem: init only offers tsdown, and only for the `library` preset. Part of AUAUST/lib-js-engrenage#28.
+   - Fix: ask tsdown, Vite or none. tsdown writes `tsdown.config.ts` and a separate `vitest.config.ts`; Vite writes `vite.config.ts` with `defineViteConfig`, and Vitest runs from it. Add a Vite option (such as `test: true`) that applies the Vitest inference in `defineViteConfig`, and report any default that `defineViteConfig` and `defineVitestConfig` resolve differently as a bug. Never call tools that scaffold a whole project, such as `create vite`.
 
-4. Placeholder files and scripts look like configuration.
-   - Where: `src/vscode/utils/createVscodeStep.ts`, `src/github/utils/createScriptsStep.ts`
-   - Problem: the VS Code step writes `{}` files that sync later fills, and the scripts step adds `package.json` scripts that only fail with "Configure the … script". Both create files or fields that exist without being real configuration.
-   - Fix: under point 3.2, decide per case: keep the VS Code files only if sync fully defines their content, and report missing workflow scripts as an init or sync error instead of writing failing placeholders.
+4. No tsconfig step in `engrenage init`.
+   - Where: `src/typescript/`
+   - Problem: projects write their tsconfig by hand, and tsconfig files are read by TypeScript from disk rather than through `config.filesystem`. Part of AUAUST/lib-js-engrenage#28.
+   - Fix: when no tsconfig exists, write one extending `@auaust/engrenage/tsconfig/library.json` with a path mapping the package name to `src/index.ts` for libraries, or `base.json` otherwise, then offer `tsconfig.dist.json` extending it and `library.dist.json`. Never overwrite an existing tsconfig.
 
-5. Other steps to check against the scope policy.
-   - Where: `src/agents/utils/createAgentsStep.ts`, `src/git/utils/createGitignoreStep.ts`, `src/prettier/utils/createPrettierStep.ts`, `src/github/utils/createWorkflowsStep.ts`
-   - Problem: these look within scope (engrenage-owned templates, ignore blocks, its Prettier preset, its workflow templates), but each also edits files other tools touch (`.gitignore` content outside the blocks, the `prettier` package.json field). This has not been reviewed against an explicit policy.
-   - Fix: once point 3.2 is settled, confirm each one writes only what engrenage owns, and note any that should delegate instead.
+5. Workflow scripts are failing placeholders.
+   - Where: `src/github/setup/createScriptsStep.ts`
+   - Problem: the step adds scripts that only fail with "Configure the … script", which is not real configuration. Part of AUAUST/lib-js-engrenage#28.
+   - Fix: replace it with a step adding the missing standard scripts (`build`, `ci`, `ci:*`, `coverage`, `format`, `lint`, `ready`, `test`), with `build` following the chosen build tool. Before including `prepare: engrenage sync`, check whether CI lifecycle hooks run it implicitly (which would break the no-changes rule), and whether `pnpm install --frozen-lockfile` already runs `prepare` (which would run it twice in `ready`).
 
-6. Init and sync operations have no role directory.
-   - Where: `src/*/utils/create…Step.ts`, `src/*/utils/sync….ts`, `src/support/scaffold/`
-   - Problem: each entry's init steps and sync targets sit in `utils/` beside unrelated helpers (`createIgnoreRules`, `resolvePathAliases`), so what engrenage writes into a project, the subject of points 3.2 to 3.5, has no visible boundary.
-   - Fix: add a `setup/` role directory to each entry, holding its `create…Step` (init) and `sync…` (sync) modules. Private helpers stay in those modules or in `utils/`, and `src/support/scaffold/` keeps the shared step runner and types. `bin/engrenage/init.ts` and `sync.ts` then import only from `#<entry>/setup/…`. `scaffold/` was the alternative, but it clashes with `support/scaffold` and does not cover sync. Adding the directory means updating the AGENTS.md project map, which needs the user's approval.
+6. Tool commands lack aliases, defaults and feedback.
+   - Where: `bin/engrenage/`, `src/support/commander/`
+   - Problem: the standard scripts need `typecheck:dist` and `lint` aliases, `engrenage vitest` adds `--typecheck` per command instead of by default, `engrenage tsdown` needs `--config-loader tsx` (AUAUST/lib-js-engrenage#18), and silent tools make projects wrap them with `echo`.
+   - Fix: add the aliases; make type tests the Vitest default with `--no-typecheck` to opt out; default the tsdown config loader; have each command print what it does ("Checking types...") and "All good!" on success.
+
+7. The `setup/` role directory is not in the project map.
+   - Where: `AGENTS.md`
+   - Problem: init steps and sync targets live in `src/<entry>/setup/`, but the project map does not list the directory or the rule that steps only create files engrenage owns and delegate the rest to the tool's own command.
+   - Fix: once the init work in this category lands, add both to the AGENTS.md project map (with the user's approval).
 
 ## 4. Edge cases
 
@@ -96,8 +101,8 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Fix: let definers accept an explicit root. Options can be callbacks receiving the resolved config, so the root cannot live in them: decide where it goes in each definer's signature.
 
 2. Long-lived processes keep the first loaded config.
-   - Where: `src/config/utils/loadConfig.ts`
-   - Problem: `loadConfig` caches one promise per root for the whole process (only failed loads are retried), and the resolved config memoizes its package.json and tsconfig reads. Vite and Vitest in watch mode or an editor's ESLint server keep the first `engrenage.config.ts` after edits.
+   - Where: `src/config/utils/loadConfig.ts`, `src/config/utils/createFilesystem.ts`
+   - Problem: `loadConfig` caches one promise per root for the whole process (only failed loads are retried), and `config.filesystem` keeps every file it read, so package.json and tsconfig edits are not seen. Vite and Vitest in watch mode or an editor's ESLint server keep the first `engrenage.config.ts` after edits.
    - Fix: decide how long-lived processes refresh the cache, for example by comparing the config file's modification time.
 
 3. Misspelled block directives pass the check.

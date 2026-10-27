@@ -1,5 +1,3 @@
-import { readFileSync } from "node:fs";
-
 import { describe, expect, test } from "vitest";
 
 import { syncChangesetConfig } from "@auaust/engrenage/changesets";
@@ -14,24 +12,21 @@ const installedPackages = {
     '{ "name": "@changesets/config", "version": "4.0.1" }',
 };
 
+const changesetsProject = {
+  ...installedPackages,
+  "engrenage.config.ts": "export default {};\n",
+  "package.json": JSON.stringify({
+    type: "module",
+    devDependencies: {
+      "@changesets/cli": "*",
+    },
+  }),
+};
+
 describe("syncChangesetConfig", () => {
-  test("writes the shared and derived options and keeps the project ones", async () => {
+  test("writes the schema of the installed config package and keeps every other option", async () => {
     const project = createTemporaryProject({
-      ...installedPackages,
-      "engrenage.config.ts": "export default {};\n",
-      "package.json": JSON.stringify({
-        type: "module",
-        repository: {
-          url: "git+https://github.com/owner/repo.git",
-        },
-        publishConfig: {
-          access: "public",
-        },
-        devDependencies: {
-          "@changesets/changelog-github": "*",
-          "@changesets/cli": "*",
-        },
-      }),
+      ...changesetsProject,
       ".changeset/config.json": JSON.stringify({
         access: "restricted",
         ignore: ["@owner/private"],
@@ -40,91 +35,39 @@ describe("syncChangesetConfig", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(
-      syncChangesetConfig({
-        config,
-      }),
-    ).toEqual([
+    syncChangesetConfig(config);
+
+    expect(config.filesystem.flush()).toEqual([
       {
         file: ".changeset/config.json",
         status: "synced",
       },
     ]);
-    expect(
-      JSON.parse(
-        readFileSync(project.resolve(".changeset/config.json"), "utf8"),
-      ),
-    ).toEqual({
-      $schema: "https://unpkg.com/@changesets/config@4.0.1/schema.json",
-      access: "public",
+    expect(JSON.parse(project.read(".changeset/config.json"))).toEqual({
+      access: "restricted",
       ignore: ["@owner/private"],
-      baseBranch: "main",
-      commit: false,
-      format: "auto",
-      updateInternalDependencies: "patch",
-      changelog: [
-        "@changesets/changelog-github",
-        {
-          repo: "owner/repo",
-        },
-      ],
+      $schema: "https://unpkg.com/@changesets/config@4.0.1/schema.json",
     });
   });
 
-  test("uses the default changelog without the GitHub generator and skips projects without changesets or a config", async () => {
-    const project = createTemporaryProject({
-      ...installedPackages,
-      "engrenage.config.ts": "export default {};\n",
-      "package.json": JSON.stringify({
-        type: "module",
-        repository: "owner/repo",
-        devDependencies: {
-          "@changesets/cli": "*",
-        },
-      }),
-      ".changeset/config.json": "{}\n",
-    });
+  test("skips projects without changesets or without a config", async () => {
+    const unconfigured = await loadConfig(
+      createTemporaryProject(changesetsProject).root,
+    );
 
-    const config = await loadConfig(project.root);
+    syncChangesetConfig(unconfigured);
 
-    syncChangesetConfig({
-      config,
-    });
+    expect(unconfigured.filesystem.changes()).toEqual([]);
 
-    expect(
-      JSON.parse(
-        readFileSync(project.resolve(".changeset/config.json"), "utf8"),
-      ),
-    ).toMatchObject({
-      access: "restricted",
-      changelog: "@changesets/cli/changelog",
-    });
+    const unrelated = await loadConfig(
+      createTemporaryProject({
+        "engrenage.config.ts": "export default {};\n",
+        "package.json": '{ "type": "module" }',
+      }).root,
+    );
 
-    const unconfigured = createTemporaryProject({
-      ...installedPackages,
-      "engrenage.config.ts": "export default {};\n",
-      "package.json": JSON.stringify({
-        devDependencies: {
-          "@changesets/cli": "*",
-        },
-      }),
-    });
+    syncChangesetConfig(unrelated);
 
-    expect(
-      syncChangesetConfig({
-        config: await loadConfig(unconfigured.root),
-      }),
-    ).toEqual([]);
-
-    const unrelated = createTemporaryProject({
-      "engrenage.config.ts": "export default {};\n",
-      "package.json": '{ "type": "module" }',
-    });
-
-    expect(
-      syncChangesetConfig({
-        config: await loadConfig(unrelated.root),
-      }),
-    ).toEqual([]);
+    expect(unrelated.filesystem.changes()).toEqual([]);
   });
 });

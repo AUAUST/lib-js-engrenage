@@ -11,7 +11,6 @@ import { syncIgnoreFile } from "#utils/syncIgnoreFile";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Glob } from "#types/Glob";
 import type { GlobGroup } from "#types/GlobGroup";
-import type { SyncResults } from "#types/SyncResults";
 
 function anchor(glob: Glob): Glob {
   return glob.startsWith("!") ? `!/${glob.slice(1)}` : `/${glob}`;
@@ -38,20 +37,12 @@ function createProjectPrettierIgnores(
   ];
 }
 
-export function syncPrettierignoreFile({
-  config,
-  check = false,
-}: {
-  config: ResolvedConfig;
-  check?: boolean;
-}): SyncResults {
-  return syncIgnoreFile({
-    root: config.root,
+export function syncPrettierignoreFile(config: ResolvedConfig) {
+  syncIgnoreFile(config, {
     path: config.prettierignorePath,
     presets: {
       defaults: () => defaultIgnores,
       project: () => createProjectPrettierIgnores(config),
     },
-    check,
   });
 }

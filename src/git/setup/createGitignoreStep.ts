@@ -40,21 +40,21 @@ export function createGitignoreStep(): Step {
   return {
     name: gitignoreFile,
     message: `Add the engrenage ignore blocks to ${gitignoreFile}?`,
-    isMissing({ config, files }) {
-      const content = files.read(resolveFile(config));
+    isMissing({ config, filesystem }) {
+      const content = filesystem.read(resolveFile(config));
 
       return content === undefined || !ignoreMarker.test(content);
     },
-    plan({ config, files }) {
+    plan({ config, filesystem }) {
       const file = resolveFile(config);
 
       const groups = [...defaultIgnores, ...createProjectIgnores(config)];
 
       const covered = new Set(flat(pluck(groups, "globs")));
 
-      const remaining = removeCovered(files.read(file) ?? "", covered);
+      const remaining = removeCovered(filesystem.read(file) ?? "", covered);
 
-      files.write(
+      filesystem.write(
         file,
         remaining === "" ? ignoreBlocks : `${ignoreBlocks}\n${remaining}\n`,
       );

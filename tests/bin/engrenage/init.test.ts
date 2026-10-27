@@ -23,7 +23,10 @@ function createProject(files: Record<string, string>) {
     recursive: true,
   });
 
-  symlinkSync(repositoryRoot, project.resolve("node_modules/@auaust/engrenage"));
+  symlinkSync(
+    repositoryRoot,
+    project.resolve("node_modules/@auaust/engrenage"),
+  );
 
   mockCwd(project.root);
 
@@ -69,12 +72,19 @@ describe("engrenage init", () => {
         "eslint": manifest.peerDependencies.eslint,
         "prettier": manifest.peerDependencies.prettier,
         "typescript": manifest.peerDependencies.typescript,
+        "@changesets/cli": manifest.peerDependencies["@changesets/cli"],
       },
     });
     expect(spawnSync).toHaveBeenCalledExactlyOnceWith("pnpm", ["install"], {
       cwd: project.root,
       stdio: "inherit",
     });
+    expect(console.info).toHaveBeenCalledWith(
+      "Run pnpm changeset init to finish the setup.",
+    );
+    expect(project.read("pnpm-workspace.yaml")).toBe(
+      'allowBuilds:\n  "unrs-resolver": true\nminimumReleaseAgeExclude:\n  - "@auaust/*"\n',
+    );
 
     expect(project.read("eslint.config.ts")).toContain(
       'import { defineEslintConfig } from "@auaust/engrenage/eslint";',
@@ -88,7 +98,9 @@ describe("engrenage init", () => {
 
     const gitignore = project.read(".gitignore");
 
-    expect(gitignore).toMatch(/^# @ignore defaults\n\n# JavaScript\nnode_modules\n/);
+    expect(gitignore).toMatch(
+      /^# @ignore defaults\n\n# JavaScript\nnode_modules\n/,
+    );
     expect(gitignore).toMatch(/# @end\n\n# Scratch\n\/scratch\n$/);
     expect(gitignore.match(/^node_modules$/gm)).toHaveLength(1);
   });
@@ -97,6 +109,7 @@ describe("engrenage init", () => {
     const project = createProject({
       "engrenage.config.ts": "export default {};\n",
       "package.json": '{\n  "name": "project",\n  "type": "module"\n}\n',
+      ".changeset/config.json": "{}\n",
     });
 
     await runCommand(init, "--yes");

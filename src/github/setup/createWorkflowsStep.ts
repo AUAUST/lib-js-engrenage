@@ -12,7 +12,7 @@ interface MissingWorkflow {
 
 function findMissingWorkflows({
   config,
-  files,
+  filesystem,
   getPresets,
   hasDependency,
 }: StepContext): ReadonlyArray<MissingWorkflow> {
@@ -31,7 +31,7 @@ function findMissingWorkflows({
   for (const file of workflowSets[name].files) {
     const path = `${workflowsDirectory}/${file}`;
 
-    if (!files.exists(path)) {
+    if (!filesystem.exists(path)) {
       missing.push({
         file: path,
         content: renderWorkflow(name, file),
@@ -51,7 +51,7 @@ export function createWorkflowsStep(): Step {
     },
     plan(context) {
       for (const { file, content } of findMissingWorkflows(context)) {
-        context.files.write(file, content);
+        context.filesystem.write(file, content);
       }
     },
   };

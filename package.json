@@ -44,6 +44,7 @@
     "#git/*": "./src/git/*.ts",
     "#github/*": "./src/github/*.ts",
     "#package.json": "./package.json",
+    "#pnpm/*": "./src/pnpm/*.ts",
     "#prettier": "./src/prettier/index.ts",
     "#prettier/*": "./src/prettier/*.ts",
     "#support/*": "./src/support/*.ts",
@@ -71,6 +72,8 @@
     "./git/constants": "./dist/git/constants.mjs",
     "./github": "./dist/github/index.mjs",
     "./github/constants": "./dist/github/constants.mjs",
+    "./pnpm": "./dist/pnpm/index.mjs",
+    "./pnpm/constants": "./dist/pnpm/constants.mjs",
     "./prettier": "./dist/prettier/index.mjs",
     "./prettier/constants": "./dist/prettier/constants.mjs",
     "./tsdown": "./dist/tsdown/index.mjs",
@@ -142,6 +145,7 @@
     "sisteransi": "1.0.5"
   },
   "peerDependencies": {
+    "@changesets/cli": "^3.0.0",
     "eslint": "^10.0.0",
     "prettier": "^3.0.0",
     "tsdown": "^0.23.0",
@@ -150,6 +154,9 @@
     "vitest": "^5.0.0"
   },
   "peerDependenciesMeta": {
+    "@changesets/cli": {
+      "optional": true
+    },
     "eslint": {
       "optional": true
     },

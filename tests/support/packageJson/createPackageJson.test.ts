@@ -1,17 +1,12 @@
 import { describe, expect, test } from "vitest";
 
-import { packageJsonFile } from "#constants";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 
 function createManifest(manifest: object) {
-  const project = createTemporaryProject({
-    "package.json": JSON.stringify(manifest),
-  });
-
   return createPackageJson({
-    root: project.root,
-    path: project.resolve(packageJsonFile),
+    root: "/project",
+    path: "/project/package.json",
+    content: JSON.stringify(manifest),
   });
 }
 

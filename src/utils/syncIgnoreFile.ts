@@ -4,32 +4,30 @@ import { getOwn, keys } from "@auaust/toolkit/object";
 import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
-import type { Directory } from "#types/Directory";
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
 import type { GlobGroup } from "#types/GlobGroup";
 import type { IgnorePresets } from "#types/IgnorePresets";
-import type { SyncResults } from "#types/SyncResults";
 
 function renderGroup({ title, globs }: GlobGroup): string {
   return [`# ${title}`, ...globs].join("\n");
 }
 
-export function syncIgnoreFile({
-  root,
-  path,
-  presets,
-  check,
-}: {
-  root: Directory;
-  path: File | undefined;
-  presets: IgnorePresets;
-  check: boolean;
-}): SyncResults {
+export function syncIgnoreFile(
+  config: ResolvedConfig,
+  {
+    path,
+    presets,
+  }: {
+    path: File | undefined;
+    presets: IgnorePresets;
+  },
+) {
   if (path === undefined) {
-    return [];
+    return;
   }
 
-  const file = relativeWithin(root, path);
+  const file = relativeWithin(config.root, path);
 
   function ignore(...names: string[]): string {
     const marker = `# @ignore ${names.join(" ")}`;
@@ -51,26 +49,22 @@ export function syncIgnoreFile({
     return map(preset(), renderGroup).join("\n\n");
   }
 
-  return syncFiles({
-    root,
-    files: [
-      {
-        file,
-        update(content) {
-          return syncBlocks(
-            content,
-            {
-              open: "# ",
-              close: "",
-              padding: "\n\n",
-            },
-            {
-              ignore,
-            },
-          );
-        },
+  syncFiles(config, [
+    {
+      file,
+      update(content) {
+        return syncBlocks(
+          content,
+          {
+            open: "# ",
+            close: "",
+            padding: "\n\n",
+          },
+          {
+            ignore,
+          },
+        );
       },
-    ],
-    check,
-  });
+    },
+  ]);
 }

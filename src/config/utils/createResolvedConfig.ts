@@ -2,6 +2,7 @@ import type { InferOutput } from "valibot";
 
 import { map } from "@auaust/primitive-kit/arrays";
 import { compose } from "@auaust/toolkit/composer";
+import { memoized } from "@auaust/toolkit/memoized";
 import { freeze } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
@@ -18,6 +19,7 @@ import {
   defaultTestDirectories,
   defaultTestFiles,
 } from "#config/constants";
+import { createFilesystem } from "#config/utils/createFilesystem";
 import { isWithin } from "#support/filesystem/utils/isWithin";
 import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
@@ -66,22 +68,35 @@ export function createResolvedConfig({
   gitignorePath: File | undefined;
   prettierignorePath: File | undefined;
 }) {
-  const packageJson = once(() => {
+  const filesystem = createFilesystem(root);
+
+  const parsePackageJson = memoized((content: string | undefined) => {
     return createPackageJson({
       root,
       path: packageJsonPath,
+      content,
     });
   });
+
+  const describeEnvironment = memoized(createEnvironment);
+
+  function packageJson(): PackageJson {
+    return parsePackageJson(
+      packageJsonPath === undefined
+        ? undefined
+        : filesystem.read(packageJsonPath),
+    );
+  }
+
+  function environment(): Environment {
+    return describeEnvironment(packageJson());
+  }
 
   const tsconfig = once(() => {
     return createTsconfig({
       root,
       path: tsconfigPath,
     });
-  });
-
-  const environment = once(() => {
-    return createEnvironment(packageJson());
   });
 
   const presets = once(() => {
@@ -159,6 +174,7 @@ export function createResolvedConfig({
         distTsconfigPath,
         gitignorePath,
         prettierignorePath,
+        filesystem,
         resolve,
       },
       compose.getters({

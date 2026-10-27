@@ -4,14 +4,12 @@ import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { engrenage, packageJsonFile } from "#constants";
 import manifest from "#package.json" with { type: "json" };
-import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import { readJsonValue } from "#support/json/utils/readJsonValue";
-import { dependencyFields } from "#support/packageJson/constants";
 import { writePackageJsonValue } from "#support/packageJson/utils/writePackageJsonValue";
-import { createDeferredFiles } from "#support/scaffold/utils/createDeferredFiles";
 import type { Presets } from "#config/types/Presets";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { JsonValue } from "#support/json/types/JsonValue";
+import type { Invocation } from "#support/scaffold/types/Invocation";
 import type { Prompter } from "#support/scaffold/types/Prompter";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
@@ -47,16 +45,16 @@ export function createStepContext({
   config: ResolvedConfig;
   prompter: Prompter;
 }) {
-  const { root } = config;
+  const { filesystem } = config;
 
   const packageJsonPath = requirePackageJson(config);
 
-  const files = createDeferredFiles(root);
+  const invocations: Invocation[] = [];
 
-  const packageJson = relativeWithin(root, packageJsonPath);
+  let installs = false;
 
   function readManifest(): string {
-    const content = files.read(packageJson);
+    const content = filesystem.read(packageJsonPath);
 
     if (content === undefined) {
       throw new Error(`${packageJsonPath} was removed during engrenage init`);
@@ -73,26 +71,41 @@ export function createStepContext({
     location: readonly [string] | readonly [string, string],
     value: JsonValue,
   ) {
-    files.write(
-      packageJson,
+    filesystem.write(
+      packageJsonPath,
       writePackageJsonValue(readManifest(), packageJsonPath, location, value),
     );
   }
 
   function hasDependency(name: PackageName): boolean {
-    if (readPackageJson(["name"]) === name) {
-      return true;
-    }
-
-    return dependencyFields.some((field) => {
-      return readPackageJson([field, name]) !== undefined;
-    });
+    return config.environment.hasDependency(name);
   }
 
   function addDevDependency(name: PackageName) {
     if (!hasDependency(name)) {
       writePackageJson(["devDependencies", name], resolveDependencyRange(name));
+
+      installs = true;
     }
+  }
+
+  function invoke(invocation: Invocation) {
+    invocations.push(invocation);
+  }
+
+  function getInvocations(): ReadonlyArray<Invocation> {
+    if (!installs) {
+      return [...invocations];
+    }
+
+    return [
+      {
+        command: "pnpm",
+        args: ["install"],
+        interactive: false,
+      },
+      ...invocations,
+    ];
   }
 
   let presets: Presets = config.presets;
@@ -107,7 +120,7 @@ export function createStepContext({
 
   return freeze({
     config,
-    files,
+    filesystem,
     getPresets,
     setPresets,
     multiselect: prompter.multiselect,
@@ -115,5 +128,7 @@ export function createStepContext({
     writePackageJson,
     hasDependency,
     addDevDependency,
+    invoke,
+    getInvocations,
   });
 }

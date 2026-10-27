@@ -5,11 +5,11 @@ export function createClaudeStep(): Step {
   return {
     name: claudeFile,
     message: `Create ${claudeFile} pointing Claude Code to ${agentsFile}?`,
-    isMissing({ files }) {
-      return !files.exists(claudeFile) && files.exists(agentsFile);
+    isMissing({ filesystem }) {
+      return !filesystem.exists(claudeFile) && filesystem.exists(agentsFile);
     },
-    plan({ files }) {
-      files.write(claudeFile, `@${agentsFile}\n`);
+    plan({ filesystem }) {
+      filesystem.write(claudeFile, `@${agentsFile}\n`);
     },
   };
 }

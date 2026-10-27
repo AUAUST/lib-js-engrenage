@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import sync from "#bin/engrenage/sync";
@@ -65,5 +67,25 @@ describe("engrenage sync", () => {
       "outdated: .vscode/settings.json",
     );
     expect(project.read("AGENTS.md")).toBe(emptyBlock);
+  });
+
+  test("creates a missing VS Code file only when its flag is passed", async () => {
+    const project = createTemporaryProject({
+      "engrenage.config.ts": "export default {};\n",
+      "package.json": '{ "devDependencies": { "prettier": "*" } }',
+    });
+
+    mockCwd(project.root);
+
+    await runCommand(sync, "vscode");
+
+    expect(existsSync(project.resolve(".vscode/settings.json"))).toBe(false);
+
+    await runCommand(sync, "vscode", "--vscode-settings");
+
+    expect(JSON.parse(project.read(".vscode/settings.json"))).toMatchObject({
+      "editor.formatOnSave": true,
+    });
+    expect(existsSync(project.resolve(".vscode/extensions.json"))).toBe(false);
   });
 });

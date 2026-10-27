@@ -1,5 +1,3 @@
-import { existsSync } from "node:fs";
-
 import { map } from "@auaust/primitive-kit/arrays";
 import { hasOwn } from "@auaust/toolkit/object";
 
@@ -9,7 +7,6 @@ import { resolveWorkflowSet } from "#github/utils/resolveWorkflowSet";
 import { syncFiles } from "#utils/syncFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { WorkflowSetName } from "#github/types/WorkflowSetName";
-import type { SyncResults } from "#types/SyncResults";
 
 function assertScripts(
   config: ResolvedConfig,
@@ -27,13 +24,7 @@ function assertScripts(
   }
 }
 
-export function syncWorkflowFiles({
-  config,
-  check = false,
-}: {
-  config: ResolvedConfig;
-  check?: boolean;
-}): SyncResults {
+export function syncWorkflowFiles(config: ResolvedConfig) {
   const name = resolveWorkflowSet({
     workflows: config.github.workflows,
     presets: config.presets,
@@ -41,7 +32,7 @@ export function syncWorkflowFiles({
   });
 
   if (name === undefined) {
-    return [];
+    return;
   }
 
   const { files, scripts } = workflowSets[name];
@@ -57,15 +48,11 @@ export function syncWorkflowFiles({
     };
   });
 
-  if (!syncs.some(({ file }) => existsSync(config.resolve(file)))) {
-    return [];
+  if (!syncs.some(({ file }) => config.filesystem.exists(file))) {
+    return;
   }
 
   assertScripts(config, name, scripts);
 
-  return syncFiles({
-    root: config.root,
-    files: syncs,
-    check,
-  });
+  syncFiles(config, syncs);
 }

@@ -26,9 +26,9 @@ describe("syncPrettierignoreFile", () => {
 
     const config = await loadConfig(project.root);
 
-    syncPrettierignoreFile({
-      config,
-    });
+    syncPrettierignoreFile(config);
+
+    config.filesystem.flush();
 
     expect(project.read(".prettierignore")).toBe(
       [
@@ -71,11 +71,10 @@ describe("syncPrettierignoreFile", () => {
       ".prettierignore": "pnpm-lock.yaml\n",
     });
 
-    expect(
-      syncPrettierignoreFile({
-        config: await loadConfig(project.root),
-        check: true,
-      }),
-    ).toEqual([]);
+    const config = await loadConfig(project.root);
+
+    syncPrettierignoreFile(config);
+
+    expect(config.filesystem.changes()).toEqual([]);
   });
 });

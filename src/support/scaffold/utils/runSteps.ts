@@ -3,8 +3,8 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { createPrompter } from "#support/scaffold/utils/createPrompter";
 import { createStepContext } from "#support/scaffold/utils/createStepContext";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { Invocation } from "#support/scaffold/types/Invocation";
 import type { Step } from "#support/scaffold/types/Step";
-import type { SyncResults } from "#types/SyncResults";
 
 export async function runSteps({
   config,
@@ -14,7 +14,7 @@ export async function runSteps({
   config: ResolvedConfig;
   steps: ReadonlyArray<Step>;
   yes: boolean;
-}): Promise<SyncResults> {
+}): Promise<ReadonlyArray<Invocation> | undefined> {
   const prompter = createPrompter({
     yes,
   });
@@ -29,7 +29,7 @@ export async function runSteps({
   if (gaps.length === 0) {
     console.info("Engrenage is set up, nothing is missing.");
 
-    return [];
+    return undefined;
   }
 
   if (config.configFile !== undefined) {
@@ -40,7 +40,7 @@ export async function runSteps({
     );
 
     if (!fill) {
-      return [];
+      return undefined;
     }
   }
 
@@ -50,5 +50,5 @@ export async function runSteps({
     }
   }
 
-  return context.files.commit();
+  return context.getInvocations();
 }

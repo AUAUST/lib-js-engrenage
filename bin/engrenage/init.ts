@@ -1,7 +1,5 @@
 import { spawnSync } from "node:child_process";
 
-import { includes } from "@auaust/primitive-kit/arrays";
-
 import { createAgentsStep } from "#agents/setup/createAgentsStep";
 import { createClaudeStep } from "#agents/setup/createClaudeStep";
 import { runSync } from "#bin/engrenage/sync";
@@ -14,46 +12,37 @@ import { createEslintConfigStep } from "#eslint/setup/createEslintConfigStep";
 import { createGitignoreStep } from "#git/setup/createGitignoreStep";
 import { createScriptsStep } from "#github/setup/createScriptsStep";
 import { createWorkflowsStep } from "#github/setup/createWorkflowsStep";
+import { createWorkspaceStep } from "#pnpm/setup/createWorkspaceStep";
 import { createPrettierignoreStep } from "#prettier/setup/createPrettierignoreStep";
 import { createPrettierStep } from "#prettier/setup/createPrettierStep";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { reportSyncResults } from "#support/commander/utils/reportSyncResults";
-import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
+import { settleChanges } from "#support/commander/utils/settleChanges";
 import { runSteps } from "#support/scaffold/utils/runSteps";
 import { createTsdownConfigStep } from "#tsdown/setup/createTsdownConfigStep";
-import { createVscodeStep } from "#vscode/setup/createVscodeStep";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { createVscodeExtensionsStep } from "#vscode/setup/createVscodeExtensionsStep";
+import { createVscodeSettingsStep } from "#vscode/setup/createVscodeSettingsStep";
+import type { Invocation } from "#support/scaffold/types/Invocation";
 import type { Directory } from "#types/Directory";
-import type { PackageNames } from "#types/PackageNames";
 
-function hasNewDependencies(
-  previous: PackageNames,
-  { root, packageJsonPath }: ResolvedConfig,
-): boolean {
-  const written = createPackageJson({
-    root,
-    path: packageJsonPath,
-  });
-
-  const current = written.optional.dependencies ?? [];
-
-  return current.some((name) => !includes(previous, name));
+function describe({ command, args }: Invocation): string {
+  return [command, ...args].join(" ");
 }
 
-function install(root: Directory) {
-  const { status, error } = spawnSync("pnpm", ["install"], {
+function invokeCommand(root: Directory, invocation: Invocation) {
+  const { status, error } = spawnSync(invocation.command, invocation.args, {
     cwd: root,
     stdio: "inherit",
   });
 
   if (error !== undefined) {
-    throw new Error("Cannot run pnpm install", {
+    throw new Error(`Cannot run ${describe(invocation)}`, {
       cause: error,
     });
   }
 
   if (status !== 0) {
-    throw new Error(`pnpm install exited with code ${status}`);
+    throw new Error(`${describe(invocation)} exited with code ${status}`);
   }
 }
 
@@ -66,13 +55,12 @@ export default defineCommand((command) => {
     .action(async ({ yes }) => {
       const config = await loadConfig();
 
-      const dependencies = config.packageJson.optional.dependencies ?? [];
-
-      const results = await runSteps({
+      const invocations = await runSteps({
         config,
         yes,
         steps: [
           createDependencyStep(),
+          createWorkspaceStep(),
           createConfigFileStep(),
           createPrettierStep(),
           createPrettierignoreStep(),
@@ -84,22 +72,31 @@ export default defineCommand((command) => {
           createChangesetConfigStep(),
           createScriptsStep(),
           createWorkflowsStep(),
-          createVscodeStep(),
+          createVscodeExtensionsStep(),
+          createVscodeSettingsStep(),
         ],
       });
 
-      if (results.length === 0) {
+      if (invocations === undefined) {
         return;
       }
 
-      reportSyncResults(results);
+      reportSyncResults(config.filesystem.flush());
 
-      if (hasNewDependencies(dependencies, config)) {
-        install(config.root);
+      for (const invocation of invocations) {
+        if (yes && invocation.interactive) {
+          console.info(`Run ${describe(invocation)} to finish the setup.`);
+        } else {
+          invokeCommand(config.root, invocation);
+        }
       }
 
-      runSync({
-        config: await readConfig(config.root),
+      const installed = await readConfig(config.root);
+
+      runSync(installed);
+
+      settleChanges(installed, {
+        check: false,
       });
     });
 });
