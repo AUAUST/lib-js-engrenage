@@ -29,6 +29,11 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: only `dependencyFields` is declared as a constant; the other field groups exist only inline in the package.json order lint, so the order and the model do not share a definition.
    - Fix: declare each package.json field group as a frozen constant in `constants.ts`, like `dependencyFields`, and compose the order lint from those groups.
 
+6. engrenage's own `prepare` hides sync drift in CI.
+   - Where: `package.json` (`prepare`, `ready`)
+   - Problem: `pnpm install --frozen-lockfile` on a fresh clone runs the root `prepare`, which runs `engrenage sync` and both codegens, so `ci:check` then checks already-synced files and passes even when the committed files are stale. `ready` also runs `prepare` twice after a fresh install. The standard scripts `engrenage init` writes leave `prepare` out for this reason.
+   - Fix: drop the sync and codegens from `prepare` (or `prepare` itself) and run them explicitly in `ready`, as the standard `ready` script does.
+
 ## 2. Upstream
 
 1. primitive-kit `filter` return type.
@@ -61,34 +66,14 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
 1. Compile-time variables in the root config.
    - Where: `src/config/`, `src/tsdown/`, `src/vite/`, `src/vitest/`
    - Problem: toolkit defines `__NAME__`, `__VERSION__`, `__LICENSE__` and `__TIMESTAMP__` by hand for tsdown and Vitest, with matching ambient declarations in `src/ambient.d.ts`. Engrenage has no shared source for them.
-   - Fix: declare compile-time variables as an `engrenage.config.ts` setting, so `createTsdownConfig` and `createViteConfig` (which `createVitestConfig` extends) apply the same `define` record. Later, generate the ambient `.d.ts` declarations from it. Settle which fields are standard and whether `__TIMESTAMP__` stays, given it makes builds non-reproducible.
+   - Fix: declare compile-time variables as an `engrenage.config.ts` setting, so `createTsdownConfig` and `createViteConfig` (which `defineVitestConfig` builds on) apply the same `define` record. Later, generate the ambient `.d.ts` declarations from it. Settle which fields are standard and whether `__TIMESTAMP__` stays, given it makes builds non-reproducible.
 
-2. `engrenage init` cannot start from an empty directory.
-   - Where: `bin/engrenage/init.ts`, `src/config/utils/readConfig.ts`, `src/support/scaffold/utils/createStepContext.ts`
-   - Problem: init requires a `package.json` and roots at the nearest ancestor that has one, so `pnpm dlx @auaust/engrenage init` in an empty directory fails. Paths such as `packageJsonPath` are located once when the config loads, so a file created during init is not seen by the same config. Part of AUAUST/lib-js-engrenage#28.
-   - Fix: root init at the working directory and tell apart an empty directory, a `package.json` without engrenage and an engrenage project. For an empty one, run `pnpm init --bare`, then ask the package name and whether it is public (`license: GPL-3.0-only`) or private (`private: true`, `license: UNLICENSED`); set `version: 0.0.0` and copy engrenage's `author`, without `main` or `keywords`. The next question is the project type: `library` makes the package public and defaults to tsdown and the library workflows. Resolve file locations through `config.filesystem` when they are read, not when the config loads.
-
-3. No build tool choice in `engrenage init`.
-   - Where: `src/tsdown/setup/`, `src/vite/`, `src/vitest/`
-   - Problem: init only offers tsdown, and only for the `library` preset. Part of AUAUST/lib-js-engrenage#28.
-   - Fix: ask tsdown, Vite or none. tsdown writes `tsdown.config.ts` and a separate `vitest.config.ts`; Vite writes `vite.config.ts` with `defineViteConfig`, and Vitest runs from it. Add a Vite option (such as `test: true`) that applies the Vitest inference in `defineViteConfig`, and report any default that `defineViteConfig` and `defineVitestConfig` resolve differently as a bug. Never call tools that scaffold a whole project, such as `create vite`.
-
-4. No tsconfig step in `engrenage init`.
-   - Where: `src/typescript/`
-   - Problem: projects write their tsconfig by hand, and tsconfig files are read by TypeScript from disk rather than through `config.filesystem`. Part of AUAUST/lib-js-engrenage#28.
-   - Fix: when no tsconfig exists, write one extending `@auaust/engrenage/tsconfig/library.json` with a path mapping the package name to `src/index.ts` for libraries, or `base.json` otherwise, then offer `tsconfig.dist.json` extending it and `library.dist.json`. Never overwrite an existing tsconfig.
-
-5. Workflow scripts are failing placeholders.
-   - Where: `src/github/setup/createScriptsStep.ts`
-   - Problem: the step adds scripts that only fail with "Configure the … script", which is not real configuration. Part of AUAUST/lib-js-engrenage#28.
-   - Fix: replace it with a step adding the missing standard scripts (`build`, `ci`, `ci:*`, `coverage`, `format`, `lint`, `ready`, `test`), with `build` following the chosen build tool. Before including `prepare: engrenage sync`, check whether CI lifecycle hooks run it implicitly (which would break the no-changes rule), and whether `pnpm install --frozen-lockfile` already runs `prepare` (which would run it twice in `ready`).
-
-6. Tool commands lack aliases, defaults and feedback.
+2. Tool commands lack aliases, defaults and feedback.
    - Where: `bin/engrenage/`, `src/support/commander/`
-   - Problem: the standard scripts need `typecheck:dist` and `lint` aliases, `engrenage vitest` adds `--typecheck` per command instead of by default, `engrenage tsdown` needs `--config-loader tsx` (AUAUST/lib-js-engrenage#18), and silent tools make projects wrap them with `echo`.
-   - Fix: add the aliases; make type tests the Vitest default with `--no-typecheck` to opt out; default the tsdown config loader; have each command print what it does ("Checking types...") and "All good!" on success.
+   - Problem: the standard scripts need a `typecheck:dist` alias (they call `engrenage tsc:dist` until then), `engrenage vitest` adds `--typecheck` per command instead of by default, `engrenage tsdown` needs `--config-loader tsx` (AUAUST/lib-js-engrenage#18), and silent tools make projects wrap them with `echo`.
+   - Fix: add the alias; make type tests the Vitest default with `--no-typecheck` to opt out; default the tsdown config loader; have each command print what it does ("Checking types...") and "All good!" on success.
 
-7. The `setup/` role directory is not in the project map.
+3. The `setup/` role directory is not in the project map.
    - Where: `AGENTS.md`
    - Problem: init steps and sync targets live in `src/<entry>/setup/`, but the project map does not list the directory or the rule that steps only create files engrenage owns and delegate the rest to the tool's own command.
    - Fix: once the init work in this category lands, add both to the AGENTS.md project map (with the user's approval).
@@ -119,3 +104,13 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Where: `src/agents/utils/resolveAgentReference.ts`
    - Problem: `createRequire(from).resolve` applies the `require` condition, so a fragment a package exports only under `import` cannot be referenced.
    - Fix: resolve references with ESM conditions. Part of AUAUST/lib-js-engrenage#9.
+
+6. The standard `coverage` script needs a coverage provider init does not add.
+   - Where: `src/config/setup/createScriptsStep.ts`, `src/vitest/constants.ts`
+   - Problem: `engrenage init` adds `coverage: engrenage vitest:coverage` whenever Vitest is a dependency, but the default provider (`@vitest/coverage-istanbul`) is neither a peer dependency of engrenage nor added, so the script fails until it is installed by hand.
+   - Fix: decide whether the Vitest step adds the provider (declaring it as an optional peer dependency) or the script is only added once the provider is a dependency.
+
+7. Public scoped packages are created without `publishConfig.access`.
+   - Where: `src/config/setup/createPackageStep.ts`
+   - Problem: a public package gets `license: GPL-3.0-only` only. npm publishes scoped packages as restricted by default, so `changeset publish` of a new `@auaust/*` library fails until `publishConfig.access: public` is added by hand.
+   - Fix: set `publishConfig.access: public` for public packages with a scoped name, or decide that the publish workflow passes `--access public`.

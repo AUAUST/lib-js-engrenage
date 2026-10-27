@@ -7,6 +7,9 @@ export function createViteConfig(config: ResolvedConfig): Config {
   return {
     root: config.root,
     tsconfig: config.tsconfigPath,
+    resolve: {
+      tsconfigPaths: true,
+    },
     build: {
       outDir,
     },

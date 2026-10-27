@@ -1,4 +1,4 @@
-import { includes, map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
 
 import { presets } from "#config/constants";
 import { engrenage, engrenageConfigFile } from "#constants";
@@ -21,17 +21,19 @@ export function createConfigFileStep(): Step {
 
   return {
     name: file,
-    message: `Create ${file}?`,
     isMissing({ config, filesystem }) {
       return config.configFile === undefined && !filesystem.exists(file);
     },
     async plan(context) {
-      const answers = await context.multiselect(
-        "Which presets apply to the project?",
-        presets,
+      const [initial = presets[0]] = context.getPresets();
+
+      const projectType = await context.select(
+        "What kind of project is this?",
+        [...presets, "other"],
+        initial,
       );
 
-      const chosen = presets.filter((preset) => includes(answers, preset));
+      const chosen = presets.filter((preset) => preset === projectType);
 
       context.setPresets(chosen);
 

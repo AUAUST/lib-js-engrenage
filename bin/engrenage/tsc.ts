@@ -31,6 +31,7 @@ export default defineToolCommands({
     },
     "tsc:dist": {
       description: "Check types with the dist tsconfig.",
+      aliases: "typecheck:dist",
       arguments(config, args) {
         checkProject(config, args, config.distTsconfigPath);
       },

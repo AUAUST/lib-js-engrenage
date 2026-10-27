@@ -28,16 +28,6 @@ function resolveDependencyRange(name: PackageName): string {
   return range;
 }
 
-function requirePackageJson({ root, packageJsonPath }: ResolvedConfig): File {
-  if (packageJsonPath === undefined) {
-    throw new Error(
-      `No ${packageJsonFile} found in ${root}; create one before running engrenage init`,
-    );
-  }
-
-  return packageJsonPath;
-}
-
 export function createStepContext({
   config,
   prompter,
@@ -47,33 +37,45 @@ export function createStepContext({
 }) {
   const { filesystem } = config;
 
-  const packageJsonPath = requirePackageJson(config);
-
   const invocations: Invocation[] = [];
 
   let installs = false;
 
-  function readManifest(): string {
-    const content = filesystem.read(packageJsonPath);
+  function requirePackageJson(): File {
+    const path = config.packageJsonPath;
+
+    if (path === undefined) {
+      throw new Error(`No ${packageJsonFile} found in ${config.root}`);
+    }
+
+    return path;
+  }
+
+  function readManifest(path: File): string {
+    const content = filesystem.read(path);
 
     if (content === undefined) {
-      throw new Error(`${packageJsonPath} was removed during engrenage init`);
+      throw new Error(`${path} was removed during engrenage init`);
     }
 
     return content;
   }
 
   function readPackageJson(location: JSONPath): unknown {
-    return readJsonValue(readManifest(), packageJsonPath, location);
+    const path = requirePackageJson();
+
+    return readJsonValue(readManifest(path), path, location);
   }
 
   function writePackageJson(
     location: readonly [string] | readonly [string, string],
     value: JsonValue,
   ) {
+    const path = requirePackageJson();
+
     filesystem.write(
-      packageJsonPath,
-      writePackageJsonValue(readManifest(), packageJsonPath, location, value),
+      path,
+      writePackageJsonValue(readManifest(path), path, location, value),
     );
   }
 
@@ -123,7 +125,9 @@ export function createStepContext({
     filesystem,
     getPresets,
     setPresets,
-    multiselect: prompter.multiselect,
+    confirm: prompter.confirm,
+    select: prompter.select,
+    text: prompter.text,
     readPackageJson,
     writePackageJson,
     hasDependency,

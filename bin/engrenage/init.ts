@@ -4,13 +4,15 @@ import { createAgentsStep } from "#agents/setup/createAgentsStep";
 import { createClaudeStep } from "#agents/setup/createClaudeStep";
 import { runSync } from "#bin/engrenage/sync";
 import { createChangesetConfigStep } from "#changesets/setup/createChangesetConfigStep";
+import { createBuildToolStep } from "#config/setup/createBuildToolStep";
 import { createConfigFileStep } from "#config/setup/createConfigFileStep";
 import { createDependencyStep } from "#config/setup/createDependencyStep";
-import { loadConfig } from "#config/utils/loadConfig";
+import { createPackageStep } from "#config/setup/createPackageStep";
+import { createScriptsStep } from "#config/setup/createScriptsStep";
 import { readConfig } from "#config/utils/readConfig";
+import { packageJsonFile } from "#constants";
 import { createEslintConfigStep } from "#eslint/setup/createEslintConfigStep";
 import { createGitignoreStep } from "#git/setup/createGitignoreStep";
-import { createScriptsStep } from "#github/setup/createScriptsStep";
 import { createWorkflowsStep } from "#github/setup/createWorkflowsStep";
 import { createWorkspaceStep } from "#pnpm/setup/createWorkspaceStep";
 import { createPrettierignoreStep } from "#prettier/setup/createPrettierignoreStep";
@@ -18,11 +20,19 @@ import { createPrettierStep } from "#prettier/setup/createPrettierStep";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { reportSyncResults } from "#support/commander/utils/reportSyncResults";
 import { settleChanges } from "#support/commander/utils/settleChanges";
+import { createPrompter } from "#support/scaffold/utils/createPrompter";
 import { runSteps } from "#support/scaffold/utils/runSteps";
 import { createTsdownConfigStep } from "#tsdown/setup/createTsdownConfigStep";
+import { createDistTsconfigStep } from "#typescript/setup/createDistTsconfigStep";
+import { createTsconfigStep } from "#typescript/setup/createTsconfigStep";
+import { createViteConfigStep } from "#vite/setup/createViteConfigStep";
+import { createVitestConfigStep } from "#vitest/setup/createVitestConfigStep";
+import { createVitestStep } from "#vitest/setup/createVitestStep";
 import { createVscodeExtensionsStep } from "#vscode/setup/createVscodeExtensionsStep";
 import { createVscodeSettingsStep } from "#vscode/setup/createVscodeSettingsStep";
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Invocation } from "#support/scaffold/types/Invocation";
+import type { Prompter } from "#support/scaffold/types/Prompter";
 import type { Directory } from "#types/Directory";
 
 function describe({ command, args }: Invocation): string {
@@ -46,6 +56,36 @@ function invokeCommand(root: Directory, invocation: Invocation) {
   }
 }
 
+async function readPackage(
+  prompter: Prompter,
+): Promise<ResolvedConfig | undefined> {
+  const config = await readConfig(process.cwd(), {
+    searchParents: false,
+  });
+
+  if (config.packageJsonPath !== undefined) {
+    return config;
+  }
+
+  const starts = await prompter.confirm(
+    `No ${packageJsonFile} in ${config.root}. Start a new package here?`,
+  );
+
+  if (!starts) {
+    return undefined;
+  }
+
+  invokeCommand(config.root, {
+    command: "pnpm",
+    args: ["init", "--bare"],
+    interactive: false,
+  });
+
+  return readConfig(config.root, {
+    searchParents: false,
+  });
+}
+
 export default defineCommand((command) => {
   return command
     .description(
@@ -53,27 +93,42 @@ export default defineCommand((command) => {
     )
     .option("-y, --yes", "accept every step without asking", false)
     .action(async ({ yes }) => {
-      const config = await loadConfig();
+      const prompter = createPrompter({
+        yes,
+      });
+
+      const config = await readPackage(prompter);
+
+      if (config === undefined) {
+        return;
+      }
 
       const invocations = await runSteps({
         config,
-        yes,
+        prompter,
         steps: [
+          createConfigFileStep(),
+          createPackageStep(),
           createDependencyStep(),
           createWorkspaceStep(),
-          createConfigFileStep(),
+          createBuildToolStep(),
+          createVitestStep(),
+          createTsdownConfigStep(),
+          createViteConfigStep(),
+          createVitestConfigStep(),
+          createTsconfigStep(),
+          createDistTsconfigStep(),
           createPrettierStep(),
           createPrettierignoreStep(),
           createGitignoreStep(),
           createEslintConfigStep(),
-          createTsdownConfigStep(),
           createAgentsStep(),
           createClaudeStep(),
           createChangesetConfigStep(),
-          createScriptsStep(),
           createWorkflowsStep(),
           createVscodeExtensionsStep(),
           createVscodeSettingsStep(),
+          createScriptsStep(),
         ],
       });
 
@@ -91,7 +146,9 @@ export default defineCommand((command) => {
         }
       }
 
-      const installed = await readConfig(config.root);
+      const installed = await readConfig(config.root, {
+        searchParents: false,
+      });
 
       runSync(installed);
 

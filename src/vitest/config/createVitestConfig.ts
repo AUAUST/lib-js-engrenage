@@ -1,12 +1,11 @@
 import { realpathSync } from "node:fs";
 
-import { configDefaults, mergeConfig } from "vitest/config";
+import { configDefaults } from "vitest/config";
 
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { resolve } from "#support/filesystem/utils/resolve";
 import { validate } from "#utils/validate";
-import { createViteConfig } from "#vite/config/createViteConfig";
 import { optionsSchema } from "#vitest/config/schemas/optionsSchema";
 import { buildMode, defaultCoverageProvider } from "#vitest/constants";
 import { createOutDirGuard } from "#vitest/utils/createOutDirGuard";
@@ -50,7 +49,7 @@ export function createVitestConfig(
 
   const tsconfig = testsBuild ? config.distTsconfigPath : config.tsconfigPath;
 
-  return mergeConfig(createViteConfig(config), {
+  return {
     tsconfig,
     resolve: {
       tsconfigPaths: !testsBuild,
@@ -68,5 +67,5 @@ export function createVitestConfig(
         tsconfig,
       },
     },
-  } satisfies Config);
+  };
 }

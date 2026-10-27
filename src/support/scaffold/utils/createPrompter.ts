@@ -2,7 +2,8 @@ import {
   cancel,
   confirm as confirmPrompt,
   isCancel,
-  multiselect as multiselectPrompt,
+  select as selectPrompt,
+  text as textPrompt,
 } from "@clack/prompts";
 
 import { freeze } from "@auaust/toolkit/object";
@@ -20,13 +21,14 @@ export function createPrompter({ yes }: { yes: boolean }) {
     );
   }
 
-  async function confirm(message: string): Promise<boolean> {
+  async function confirm(message: string, initial = true): Promise<boolean> {
     if (yes) {
-      return true;
+      return initial;
     }
 
     const answer = await confirmPrompt({
       message,
+      initialValue: initial,
     });
 
     if (isCancel(answer)) {
@@ -36,37 +38,67 @@ export function createPrompter({ yes }: { yes: boolean }) {
     return answer;
   }
 
-  async function multiselect(
+  async function select<Value extends string>(
     message: string,
-    values: ReadonlyArray<string>,
-    initial: ReadonlyArray<string> = [],
-  ): Promise<string[]> {
+    values: ReadonlyArray<Value>,
+    initial: Value,
+  ): Promise<Value> {
     if (yes) {
-      return [...initial];
+      return initial;
     }
 
-    const options = values.map((value) => {
+    const options = values.map((value): { value: string } => {
       return {
         value,
       };
     });
 
-    const answer = await multiselectPrompt({
+    const answer = await selectPrompt({
       message,
       options,
-      initialValues: [...initial],
-      required: false,
+      initialValue: initial,
     });
 
     if (isCancel(answer)) {
       abort();
     }
 
-    return answer;
+    const chosen = values.find((value) => value === answer);
+
+    if (chosen === undefined) {
+      throw new Error(`${answer} is not one of the offered choices`);
+    }
+
+    return chosen;
+  }
+
+  function requireValue(value: string | undefined): string | undefined {
+    return value === undefined || value.trim() === ""
+      ? "Enter a value"
+      : undefined;
+  }
+
+  async function text(message: string, initial: string): Promise<string> {
+    if (yes) {
+      return initial;
+    }
+
+    const answer = await textPrompt({
+      message,
+      initialValue: initial,
+      validate: requireValue,
+    });
+
+    if (isCancel(answer)) {
+      abort();
+    }
+
+    return answer.trim();
   }
 
   return freeze({
     confirm,
-    multiselect,
+    select,
+    text,
   });
 }

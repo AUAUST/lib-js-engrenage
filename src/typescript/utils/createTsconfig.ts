@@ -12,8 +12,10 @@ import {
 import { once } from "@auaust/toolkit/once";
 
 import { createAccessors } from "#config/utils/createAccessors";
+import { isWithin } from "#support/filesystem/utils/isWithin";
 import { toPosixPath } from "#support/filesystem/utils/toPosixPath";
 import { noInputsDiagnostic } from "#typescript/constants";
+import type { Filesystem } from "#config/types/Filesystem";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Paths } from "#typescript/types/Paths";
@@ -29,9 +31,27 @@ function toError(diagnostics: ReadonlyArray<Diagnostic>): Error {
   return new Error(formatDiagnostics(diagnostics, formatHost));
 }
 
-function parseTsconfig(path: File): CompilerOptions {
+function parseTsconfig({
+  root,
+  path,
+  filesystem,
+}: {
+  root: Directory;
+  path: File;
+  filesystem: Filesystem;
+}): CompilerOptions {
+  function readFile(file: File): string | undefined {
+    return isWithin(root, file) ? filesystem.read(file) : sys.readFile(file);
+  }
+
+  function fileExists(file: File): boolean {
+    return readFile(file) !== undefined;
+  }
+
   const parsed = getParsedCommandLineOfConfigFile(path, undefined, {
     ...sys,
+    readFile,
+    fileExists,
     onUnRecoverableConfigFileDiagnostic(diagnostic) {
       throw toError([diagnostic]);
     },
@@ -55,12 +75,20 @@ function parseTsconfig(path: File): CompilerOptions {
 export function createTsconfig({
   root,
   path,
+  filesystem,
 }: {
   root: Directory;
   path: File | undefined;
+  filesystem: Filesystem;
 }): Tsconfig {
   const compilerOptions = once(() => {
-    return path === undefined ? undefined : parseTsconfig(path);
+    return path === undefined
+      ? undefined
+      : parseTsconfig({
+          root,
+          path,
+          filesystem,
+        });
   });
 
   function outDir(): Directory | undefined {

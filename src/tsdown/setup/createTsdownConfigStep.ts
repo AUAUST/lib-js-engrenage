@@ -1,5 +1,3 @@
-import { includes } from "@auaust/primitive-kit/arrays";
-
 import { engrenage, tsdown, typescript } from "#constants";
 import { createConfigModule } from "#support/scaffold/utils/createConfigModule";
 import { hasConfigFile } from "#support/scaffold/utils/hasConfigFile";
@@ -10,13 +8,8 @@ export function createTsdownConfigStep(): Step {
 
   return {
     name: file,
-    message: "Build the library with tsdown?",
-    isMissing({ filesystem, getPresets }) {
-      return (
-        includes(getPresets(), "library") &&
-        !filesystem.exists(file) &&
-        !hasConfigFile(filesystem, tsdown)
-      );
+    isMissing({ filesystem, hasDependency }) {
+      return hasDependency(tsdown) && !hasConfigFile(filesystem, tsdown);
     },
     plan({ filesystem, addDevDependency }) {
       filesystem.write(
@@ -26,8 +19,6 @@ export function createTsdownConfigStep(): Step {
           definer: "defineTsdownConfig",
         }),
       );
-
-      addDevDependency(tsdown);
 
       addDevDependency(typescript);
     },

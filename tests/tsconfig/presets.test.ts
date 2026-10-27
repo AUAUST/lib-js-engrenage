@@ -4,6 +4,7 @@ import { join } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
+import { createFilesystem } from "#config/utils/createFilesystem";
 import { getFixture } from "#tests/helpers/getFixture";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
 
@@ -37,6 +38,7 @@ describe("tsconfig presets", () => {
     const { compilerOptions } = createTsconfig({
       root: library,
       path: join(library, "tsconfig.json"),
+      filesystem: createFilesystem(library),
     });
 
     expect(compilerOptions).toMatchObject({

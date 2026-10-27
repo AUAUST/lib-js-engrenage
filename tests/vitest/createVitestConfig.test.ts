@@ -1,11 +1,12 @@
 import { symlinkSync } from "node:fs";
 import { join } from "node:path";
 
-import { createServer } from "vite";
+import { createServer, mergeConfig } from "vite";
 import { describe, expect, test } from "vitest";
 import { configDefaults } from "vitest/config";
 
 import { loadConfig } from "@auaust/engrenage/config";
+import { createViteConfig } from "@auaust/engrenage/vite";
 import { createVitestConfig } from "@auaust/engrenage/vitest";
 
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
@@ -14,7 +15,7 @@ import { getFixture } from "#tests/helpers/getFixture";
 const root = getFixture("vitest");
 
 describe("createVitestConfig", () => {
-  test("tests sources through the tsconfig paths and the project tsconfig outside build mode", async () => {
+  test("returns only the test layer: sources through the tsconfig paths and the project tsconfig outside build mode", async () => {
     const config = await loadConfig(root);
 
     const vitestConfig = createVitestConfig(config, {
@@ -22,12 +23,10 @@ describe("createVitestConfig", () => {
       mode: "test",
     });
 
+    expect(vitestConfig).not.toHaveProperty("root");
+    expect(vitestConfig).not.toHaveProperty("build");
     expect(vitestConfig).toMatchObject({
-      root: config.root,
       tsconfig: join(root, "tsconfig.json"),
-      build: {
-        outDir: "build",
-      },
       resolve: {
         tsconfigPaths: true,
       },
@@ -89,10 +88,13 @@ describe("createVitestConfig", () => {
       const config = await loadConfig(projectRoot);
 
       const server = await createServer({
-        ...createVitestConfig(config, {
-          command: "serve",
-          mode: "test",
-        }),
+        ...mergeConfig(
+          createViteConfig(config),
+          createVitestConfig(config, {
+            command: "serve",
+            mode: "test",
+          }),
+        ),
         configFile: false,
         logLevel: "silent",
       });

@@ -20,6 +20,13 @@ import {
   defaultTestFiles,
 } from "#config/constants";
 import { createFilesystem } from "#config/utils/createFilesystem";
+import {
+  distTsconfigFile,
+  gitignoreFile,
+  packageJsonFile,
+  prettierignoreFile,
+  tsconfigFile,
+} from "#constants";
 import { isWithin } from "#support/filesystem/utils/isWithin";
 import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
@@ -32,6 +39,7 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 import type { PackageName } from "#types/PackageName";
+import type { Tsconfig } from "#typescript/types/Tsconfig";
 
 function createEnvironment({ optional }: PackageJson): Environment {
   const packages = new Set<PackageName>(optional.dependencies);
@@ -53,27 +61,54 @@ export function createResolvedConfig({
   root,
   raw,
   configFile,
-  packageJsonPath,
-  tsconfigPath,
-  distTsconfigPath,
-  gitignorePath,
-  prettierignorePath,
 }: {
   root: Directory;
   raw: InferOutput<typeof configSchema>;
   configFile: File | undefined;
-  packageJsonPath: File | undefined;
-  tsconfigPath: File | undefined;
-  distTsconfigPath: File | undefined;
-  gitignorePath: File | undefined;
-  prettierignorePath: File | undefined;
 }) {
   const filesystem = createFilesystem(root);
+
+  function locate(
+    fallback: File,
+    configured: File | undefined = undefined,
+  ): File | undefined {
+    if (configured === undefined) {
+      return filesystem.exists(fallback)
+        ? resolveWithin(root, fallback)
+        : undefined;
+    }
+
+    if (!filesystem.exists(configured)) {
+      throw new Error(`The configured ${configured} does not exist in ${root}`);
+    }
+
+    return resolveWithin(root, configured);
+  }
+
+  function packageJsonPath(): File | undefined {
+    return locate(packageJsonFile);
+  }
+
+  function tsconfigPath(): File | undefined {
+    return locate(tsconfigFile, raw.files?.tsconfig);
+  }
+
+  function distTsconfigPath(): File | undefined {
+    return locate(distTsconfigFile, raw.files?.distTsconfig) ?? tsconfigPath();
+  }
+
+  function gitignorePath(): File | undefined {
+    return locate(gitignoreFile, raw.files?.gitignore);
+  }
+
+  function prettierignorePath(): File | undefined {
+    return locate(prettierignoreFile, raw.files?.prettierignore);
+  }
 
   const parsePackageJson = memoized((content: string | undefined) => {
     return createPackageJson({
       root,
-      path: packageJsonPath,
+      path: packageJsonPath(),
       content,
     });
   });
@@ -81,10 +116,10 @@ export function createResolvedConfig({
   const describeEnvironment = memoized(createEnvironment);
 
   function packageJson(): PackageJson {
+    const path = packageJsonPath();
+
     return parsePackageJson(
-      packageJsonPath === undefined
-        ? undefined
-        : filesystem.read(packageJsonPath),
+      path === undefined ? undefined : filesystem.read(path),
     );
   }
 
@@ -92,22 +127,27 @@ export function createResolvedConfig({
     return describeEnvironment(packageJson());
   }
 
-  const tsconfig = once(() => {
+  const parseTsconfig = memoized((path: File | undefined) => {
     return createTsconfig({
       root,
-      path: tsconfigPath,
+      path,
+      filesystem,
     });
   });
+
+  function tsconfig(): Tsconfig {
+    return parseTsconfig(tsconfigPath());
+  }
 
   const presets = once(() => {
     return raw.presets ?? defaultPresets;
   });
 
-  const outputDirectory = once(() => {
+  function outputDirectory(): Directory | undefined {
     const { outDir } = tsconfig().optional;
 
     return outDir === undefined || !isWithin(root, outDir) ? undefined : outDir;
-  });
+  }
 
   const directories = once(() => {
     return freeze(
@@ -169,15 +209,15 @@ export function createResolvedConfig({
         root,
         raw,
         configFile,
+        filesystem,
+        resolve,
+      },
+      compose.getters({
         packageJsonPath,
         tsconfigPath,
         distTsconfigPath,
         gitignorePath,
         prettierignorePath,
-        filesystem,
-        resolve,
-      },
-      compose.getters({
         packageJson,
         tsconfig,
         environment,

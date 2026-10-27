@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, symlinkSync } from "node:fs";
+import { existsSync, mkdirSync, symlinkSync } from "node:fs";
+import { basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
@@ -66,15 +67,37 @@ describe("engrenage init", () => {
     const packageJson: unknown = JSON.parse(project.read("package.json"));
 
     expect(packageJson).toMatchObject({
+      name: "project",
+      version: "0.0.0",
+      private: true,
+      license: "UNLICENSED",
+      author: manifest.author,
       prettier: "@auaust/engrenage/prettier",
+      scripts: {
+        "ci": "pnpm run ci:check && pnpm run ci:test",
+        "ci:check":
+          "engrenage sync --check && engrenage typecheck && engrenage lint",
+        "test": "engrenage vitest && engrenage typecheck",
+        "ready":
+          "pnpm install --frozen-lockfile && engrenage sync && pnpm run ci",
+      },
       devDependencies: {
         "@auaust/engrenage": `^${manifest.version}`,
         "eslint": manifest.peerDependencies.eslint,
         "prettier": manifest.peerDependencies.prettier,
         "typescript": manifest.peerDependencies.typescript,
+        "vitest": manifest.peerDependencies.vitest,
         "@changesets/cli": manifest.peerDependencies["@changesets/cli"],
       },
     });
+    expect(packageJson).not.toHaveProperty("scripts.build");
+    expect(packageJson).not.toHaveProperty("scripts.ci:publish");
+    expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
+      extends: "@auaust/engrenage/tsconfig/base.json",
+    });
+    expect(project.read("vitest.config.ts")).toContain(
+      "export default defineVitestConfig();",
+    );
     expect(spawnSync).toHaveBeenCalledExactlyOnceWith("pnpm", ["install"], {
       cwd: project.root,
       stdio: "inherit",
@@ -127,9 +150,98 @@ describe("engrenage init", () => {
     expect(project.read("package.json")).toBe(completed);
     expect(keys(JSON.parse(completed))).toEqual([
       "name",
+      "version",
+      "private",
+      "license",
+      "author",
       "type",
+      "scripts",
       "devDependencies",
       "prettier",
     ]);
+  });
+
+  test("starts a library from an empty directory with the default answers", async () => {
+    const project = createProject({});
+
+    vi.mocked(spawnSync).mockImplementation((command, args) => {
+      if (args?.[0] === "init") {
+        project.write("package.json", '{\n  "type": "module"\n}\n');
+      }
+
+      return {
+        pid: 0,
+        output: [],
+        stdout: "",
+        stderr: "",
+        status: 0,
+        signal: null,
+      };
+    });
+
+    await runCommand(init, "--yes");
+
+    const name = basename(project.root);
+
+    expect(vi.mocked(spawnSync).mock.calls).toEqual([
+      [
+        "pnpm",
+        ["init", "--bare"],
+        {
+          cwd: project.root,
+          stdio: "inherit",
+        },
+      ],
+      [
+        "pnpm",
+        ["install"],
+        {
+          cwd: project.root,
+          stdio: "inherit",
+        },
+      ],
+    ]);
+    expect(project.read("engrenage.config.ts")).toContain(
+      'presets: ["library"]',
+    );
+    expect(JSON.parse(project.read("package.json"))).toMatchObject({
+      name,
+      version: "0.0.0",
+      license: "GPL-3.0-only",
+      scripts: {
+        "build":
+          "engrenage tsdown && engrenage typecheck:dist && engrenage vitest:dist",
+        "ci:build": "pnpm run build",
+        "ci:publish": "changeset publish",
+        "ci:test": "engrenage vitest",
+      },
+      devDependencies: {
+        tsdown: manifest.peerDependencies.tsdown,
+        vitest: manifest.peerDependencies.vitest,
+      },
+    });
+    expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
+      "private",
+    );
+    expect(existsSync(project.resolve("vite.config.ts"))).toBe(false);
+    expect(project.read("tsdown.config.ts")).toContain("defineTsdownConfig");
+    expect(project.read("vitest.config.ts")).toContain("defineVitestConfig");
+    expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
+      extends: "@auaust/engrenage/tsconfig/library.json",
+      compilerOptions: {
+        paths: {
+          [name]: ["./src/index.ts"],
+        },
+      },
+    });
+    expect(JSON.parse(project.read("tsconfig.dist.json"))).toEqual({
+      extends: [
+        "./tsconfig.json",
+        "@auaust/engrenage/tsconfig/library.dist.json",
+      ],
+    });
+    expect(project.read(".github/workflows/ci.yml")).toContain(
+      "pnpm run ci:check",
+    );
   });
 });

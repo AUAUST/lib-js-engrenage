@@ -1,24 +1,20 @@
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { createPrompter } from "#support/scaffold/utils/createPrompter";
 import { createStepContext } from "#support/scaffold/utils/createStepContext";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Invocation } from "#support/scaffold/types/Invocation";
+import type { Prompter } from "#support/scaffold/types/Prompter";
 import type { Step } from "#support/scaffold/types/Step";
 
 export async function runSteps({
   config,
+  prompter,
   steps,
-  yes,
 }: {
   config: ResolvedConfig;
+  prompter: Prompter;
   steps: ReadonlyArray<Step>;
-  yes: boolean;
 }): Promise<ReadonlyArray<Invocation> | undefined> {
-  const prompter = createPrompter({
-    yes,
-  });
-
   const context = createStepContext({
     config,
     prompter,
@@ -44,8 +40,15 @@ export async function runSteps({
     }
   }
 
+  async function accepts({ message, isRecommended }: Step): Promise<boolean> {
+    return (
+      message === undefined ||
+      prompter.confirm(message, isRecommended?.(context) ?? true)
+    );
+  }
+
   for (const step of steps) {
-    if (step.isMissing(context) && (await prompter.confirm(step.message))) {
+    if (step.isMissing(context) && (await accepts(step))) {
       await step.plan(context);
     }
   }

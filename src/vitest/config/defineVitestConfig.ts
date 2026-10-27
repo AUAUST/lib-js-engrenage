@@ -1,9 +1,5 @@
-import { mergeConfig } from "vitest/config";
-
-import { value } from "@auaust/toolkit/value";
-
-import { loadConfig } from "#config/utils/loadConfig";
-import { createVitestConfig } from "#vitest/config/createVitestConfig";
+import { defineViteConfig } from "#vite/config/defineViteConfig";
+import { createVitestLayer } from "#vitest/utils/createVitestLayer";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { ConfigInput } from "#types/ConfigInput";
 import type { ConfigEnv } from "#vite/types/ConfigEnv";
@@ -13,21 +9,12 @@ import type { Options } from "#vitest/types/Options";
 
 export function defineVitestConfig(
   options?: ConfigInput<Options, [ResolvedConfig, ConfigEnv]>,
-  ...configs: ConfigInput<Config, [ResolvedConfig, ConfigEnv]>[]
+  ...configs: ReadonlyArray<ConfigInput<Config, [ResolvedConfig, ConfigEnv]>>
 ): ConfigFn {
-  return async function vitestConfig(env) {
-    const config = await loadConfig();
-
-    const resolvedOptions = await value(options, config, env);
-
-    let merged: Config = createVitestConfig(config, env, resolvedOptions);
-
-    for (const nativeConfig of configs) {
-      const resolvedNativeConfig = await value(nativeConfig, config, env);
-
-      merged = mergeConfig(merged, resolvedNativeConfig ?? {});
-    }
-
-    return merged;
-  };
+  return defineViteConfig(
+    {
+      test: createVitestLayer(options),
+    },
+    ...configs,
+  );
 }

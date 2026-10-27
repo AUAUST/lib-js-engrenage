@@ -92,7 +92,7 @@ describe("loadConfig", () => {
     expect(loadConfig(root)).toBe(loadConfig(root));
   });
 
-  test("reads the configured tsconfig, rejects a missing configured file even under the default name, and retries a failed load", async () => {
+  test("reads the configured tsconfig, rejects a missing configured file when read, even under the default name, and follows pending writes", async () => {
     const appConfig =
       'export default { files: { tsconfig: "tsconfig.app.json" } };\n';
 
@@ -123,26 +123,29 @@ describe("loadConfig", () => {
 
     expect((await loadConfig(outside.root)).directories.output).toBeUndefined();
 
-    const missing = createTemporaryProject({
-      "engrenage.config.ts": appConfig,
-    });
+    const missing = await loadConfig(
+      createTemporaryProject({
+        "engrenage.config.ts": appConfig,
+      }).root,
+    );
 
-    await expect(loadConfig(missing.root)).rejects.toThrow(
+    expect(() => missing.tsconfigPath).toThrow(
       `The configured tsconfig.app.json does not exist in ${missing.root}`,
     );
 
-    missing.write("tsconfig.app.json", tsconfig);
+    missing.filesystem.write("tsconfig.app.json", tsconfig);
 
-    await expect(loadConfig(missing.root)).resolves.toMatchObject({
-      root: missing.root,
-    });
+    expect(missing.tsconfigPath).toBe(join(missing.root, "tsconfig.app.json"));
+    expect(missing.tsconfig.outDir).toBe("build");
 
-    const explicitDefault = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { files: { tsconfig: "tsconfig.json" } };\n',
-    });
+    const explicitDefault = await loadConfig(
+      createTemporaryProject({
+        "engrenage.config.ts":
+          'export default { files: { tsconfig: "tsconfig.json" } };\n',
+      }).root,
+    );
 
-    await expect(loadConfig(explicitDefault.root)).rejects.toThrow(
+    expect(() => explicitDefault.tsconfigPath).toThrow(
       "The configured tsconfig.json does not exist",
     );
   });
@@ -165,13 +168,15 @@ describe("loadConfig", () => {
       join(implicit, "tsconfig.dist.json"),
     );
 
-    const missing = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { files: { distTsconfig: "tsconfig.build.json" } };\n',
-    }).root;
+    const missing = await loadConfig(
+      createTemporaryProject({
+        "engrenage.config.ts":
+          'export default { files: { distTsconfig: "tsconfig.build.json" } };\n',
+      }).root,
+    );
 
-    await expect(loadConfig(missing)).rejects.toThrow(
-      `The configured tsconfig.build.json does not exist in ${missing}`,
+    expect(() => missing.distTsconfigPath).toThrow(
+      `The configured tsconfig.build.json does not exist in ${missing.root}`,
     );
   });
 

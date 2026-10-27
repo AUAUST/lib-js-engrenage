@@ -3,20 +3,36 @@ import { mergeConfig } from "vite";
 import { value } from "@auaust/toolkit/value";
 
 import { loadConfig } from "#config/utils/loadConfig";
+import { validate } from "#utils/validate";
 import { createViteConfig } from "#vite/config/createViteConfig";
+import { optionsSchema } from "#vite/config/schemas/optionsSchema";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { ConfigInput } from "#types/ConfigInput";
 import type { Config } from "#vite/types/Config";
 import type { ConfigEnv } from "#vite/types/ConfigEnv";
 import type { ConfigFn } from "#vite/types/ConfigFn";
+import type { Options } from "#vite/types/Options";
 
 export function defineViteConfig(
-  ...configs: ConfigInput<Config, [ResolvedConfig, ConfigEnv]>[]
+  options?: ConfigInput<Options, [ResolvedConfig, ConfigEnv]>,
+  ...configs: ReadonlyArray<ConfigInput<Config, [ResolvedConfig, ConfigEnv]>>
 ): ConfigFn {
   return async function viteConfig(env) {
     const config = await loadConfig();
 
+    const resolvedOptions = await value(options, config, env);
+
+    const { test } = validate(
+      optionsSchema,
+      resolvedOptions ?? {},
+      "Vite options",
+    );
+
     let merged: Config = createViteConfig(config);
+
+    if (test !== undefined) {
+      merged = mergeConfig(merged, await test(config, env));
+    }
 
     for (const nativeConfig of configs) {
       const resolvedNativeConfig = await value(nativeConfig, config, env);

@@ -16,7 +16,7 @@
     "engrenage": "./dist/bin/engrenage.mjs"
   },
   "scripts": {
-    "build": "pnpm run engrenage tsdown && pnpm run engrenage tsc:dist && pnpm run engrenage vitest:dist",
+    "build": "pnpm run engrenage tsdown && pnpm run engrenage typecheck:dist && pnpm run engrenage vitest:dist",
     "ci": "pnpm run ci:check && pnpm run ci:test && pnpm run ci:build",
     "ci:build": "pnpm run build",
     "ci:check": "pnpm run engrenage sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run typecheck && pnpm run lint",
@@ -31,7 +31,7 @@
     "ready": "pnpm install --frozen-lockfile && pnpm run prepare && pnpm run ci && echo 'Ready!'",
     "support": "node bin/support/index.ts",
     "test": "pnpm run engrenage vitest && pnpm run typecheck",
-    "typecheck": "pnpm run engrenage tsc",
+    "typecheck": "pnpm run engrenage typecheck",
     "watch": "pnpm run engrenage vitest:watch"
   },
   "imports": {

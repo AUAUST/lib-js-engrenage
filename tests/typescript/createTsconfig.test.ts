@@ -2,6 +2,7 @@ import { join } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
+import { createFilesystem } from "#config/utils/createFilesystem";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
@@ -13,6 +14,7 @@ describe("createTsconfig", () => {
     const tsconfig = createTsconfig({
       root,
       path: join(root, "tsconfig.json"),
+      filesystem: createFilesystem(root),
     });
 
     expect(tsconfig.outDir).toBe("dist");
@@ -31,6 +33,7 @@ describe("createTsconfig", () => {
     const tsconfig = createTsconfig({
       root: project.root,
       path: project.resolve("tsconfig.json"),
+      filesystem: createFilesystem(project.root),
     });
 
     expect(tsconfig.outDir).toBe("build");
@@ -53,11 +56,13 @@ describe("createTsconfig", () => {
     const outside = createTsconfig({
       root: project.root,
       path: project.resolve("outside.json"),
+      filesystem: createFilesystem(project.root),
     });
 
     const atRoot = createTsconfig({
       root: project.root,
       path: project.resolve("root.json"),
+      filesystem: createFilesystem(project.root),
     });
 
     expect(outside.outDir).toBe("../build");
@@ -72,6 +77,7 @@ describe("createTsconfig", () => {
     const tsconfig = createTsconfig({
       root,
       path: undefined,
+      filesystem: createFilesystem(root),
     });
 
     expect(tsconfig.optional.outDir).toBeUndefined();
@@ -84,6 +90,7 @@ describe("createTsconfig", () => {
     const tsconfig = createTsconfig({
       root,
       path: join(root, "missing.json"),
+      filesystem: createFilesystem(root),
     });
 
     expect(() => tsconfig.optional.outDir).toThrow("missing.json");

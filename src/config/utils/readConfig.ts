@@ -10,7 +10,6 @@ import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
 import { files } from "#constants";
 import { resolve } from "#support/filesystem/utils/resolve";
-import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { validate } from "#utils/validate";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Directory } from "#types/Directory";
@@ -40,22 +39,44 @@ async function loadConfigIn(directory: Directory) {
   });
 }
 
+async function findConfigFile(
+  directory: Directory,
+): Promise<FoundConfig | undefined> {
+  const { config, cwd, _configFile } = await loadConfigIn(directory);
+
+  if (_configFile === undefined) {
+    return undefined;
+  }
+
+  if (cwd === undefined) {
+    throw new Error(`c12 resolved ${_configFile} without its directory`);
+  }
+
+  return {
+    root: cwd,
+    configFile: _configFile,
+    input: config,
+  };
+}
+
+async function findConfigIn(root: Directory): Promise<FoundConfig> {
+  return (
+    (await findConfigFile(root)) ?? {
+      root,
+      configFile: undefined,
+      input: {},
+    }
+  );
+}
+
 async function findConfig(
   start: Directory,
   directory: Directory = start,
 ): Promise<FoundConfig> {
-  const { config, cwd, _configFile } = await loadConfigIn(directory);
+  const found = await findConfigFile(directory);
 
-  if (_configFile !== undefined) {
-    if (cwd === undefined) {
-      throw new Error(`c12 resolved ${_configFile} without its directory`);
-    }
-
-    return {
-      root: cwd,
-      configFile: _configFile,
-      input: config,
-    };
+  if (found !== undefined) {
+    return found;
   }
 
   if (existsSync(resolve(directory, files.packageJson))) {
@@ -79,70 +100,21 @@ async function findConfig(
   return findConfig(start, parent);
 }
 
-function resolveSourceFile({
-  root,
-  configured,
-  fallback,
-}: {
-  root: Directory;
-  configured?: File | undefined;
-  fallback: File;
-}): File | undefined {
-  if (configured === undefined) {
-    const path = resolveWithin(root, fallback);
-
-    return existsSync(path) ? path : undefined;
-  }
-
-  const path = resolveWithin(root, configured);
-
-  if (!existsSync(path)) {
-    throw new Error(`The configured ${configured} does not exist in ${root}`);
-  }
-
-  return path;
-}
-
-export async function readConfig(start: Directory): Promise<ResolvedConfig> {
-  const { root, configFile, input } = await findConfig(start);
+export async function readConfig(
+  start: Directory,
+  { searchParents = true }: { searchParents?: boolean } = {},
+): Promise<ResolvedConfig> {
+  const { root, configFile, input } = searchParents
+    ? await findConfig(start)
+    : await findConfigIn(start);
 
   if (configFile === undefined) {
     warnMissingConfig(root);
   }
 
-  const raw = validate(configSchema, input, configFile ?? root);
-
-  const tsconfigPath = resolveSourceFile({
-    root,
-    configured: raw.files?.tsconfig,
-    fallback: files.tsconfig,
-  });
-
-  const distTsconfigPath = resolveSourceFile({
-    root,
-    configured: raw.files?.distTsconfig,
-    fallback: files.distTsconfig,
-  });
-
   return createResolvedConfig({
     root,
-    raw,
+    raw: validate(configSchema, input, configFile ?? root),
     configFile,
-    packageJsonPath: resolveSourceFile({
-      root,
-      fallback: files.packageJson,
-    }),
-    tsconfigPath,
-    distTsconfigPath: distTsconfigPath ?? tsconfigPath,
-    gitignorePath: resolveSourceFile({
-      root,
-      configured: raw.files?.gitignore,
-      fallback: files.gitignore,
-    }),
-    prettierignorePath: resolveSourceFile({
-      root,
-      configured: raw.files?.prettierignore,
-      fallback: files.prettierignore,
-    }),
   });
 }
