@@ -2,10 +2,11 @@
 
 import { Command } from "@commander-js/extra-typings";
 
+import { claude } from "#bin/engrenage/claude/index";
 import eslint from "#bin/engrenage/eslint";
-import init from "#bin/engrenage/init";
+import { init } from "#bin/engrenage/init";
 import prettier from "#bin/engrenage/prettier";
-import sync from "#bin/engrenage/sync";
+import { sync } from "#bin/engrenage/sync";
 import tsc from "#bin/engrenage/tsc";
 import tsdown from "#bin/engrenage/tsdown";
 import vite from "#bin/engrenage/vite";
@@ -21,6 +22,7 @@ const program = registerSubcommands(
   {
     init,
     sync,
+    claude,
     ...tsc,
     ...vitest,
     ...tsdown,

@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { keys } from "@auaust/toolkit/object";
 
-import init from "#bin/engrenage/init";
+import { init } from "#bin/engrenage/init";
 import manifest from "#package.json" with { type: "json" };
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
@@ -90,21 +90,27 @@ describe("engrenage init", () => {
         "@changesets/cli": manifest.peerDependencies["@changesets/cli"],
       },
     });
+
     expect(packageJson).not.toHaveProperty("scripts.build");
     expect(packageJson).not.toHaveProperty("scripts.ci:publish");
+
     expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
       extends: "@auaust/engrenage/tsconfig/base.json",
     });
+
     expect(project.read("vitest.config.ts")).toContain(
       "export default defineVitestConfig();",
     );
+
     expect(spawnSync).toHaveBeenCalledExactlyOnceWith("pnpm", ["install"], {
       cwd: project.root,
       stdio: "inherit",
     });
+
     expect(console.info).toHaveBeenCalledWith(
       "Run pnpm changeset init to finish the setup.",
     );
+
     expect(project.read("pnpm-workspace.yaml")).toBe(
       'allowBuilds:\n  "unrs-resolver": true\nminimumReleaseAgeExclude:\n  - "@auaust/*"\n',
     );
@@ -112,9 +118,11 @@ describe("engrenage init", () => {
     expect(project.read("eslint.config.ts")).toContain(
       'import { defineEslintConfig } from "@auaust/engrenage/eslint";',
     );
+
     expect(project.read("CLAUDE.md")).toBe("@AGENTS.md\n");
     expect(project.read("AGENTS.md")).toContain("## Precedence and conflicts");
     expect(project.read(".prettierignore")).toContain("# @ignore defaults");
+
     expect(JSON.parse(project.read(".vscode/settings.json"))).toMatchObject({
       "editor.formatOnSave": true,
     });
@@ -124,6 +132,7 @@ describe("engrenage init", () => {
     expect(gitignore).toMatch(
       /^# @ignore defaults\n\n# JavaScript\nnode_modules\n/,
     );
+
     expect(gitignore).toMatch(/# @end\n\n# Scratch\n\/scratch\n$/);
     expect(gitignore.match(/^node_modules$/gm)).toHaveLength(1);
   });
@@ -144,10 +153,13 @@ describe("engrenage init", () => {
     await runCommand(init, "--yes");
 
     expect(spawnSync).not.toHaveBeenCalled();
+
     expect(console.info).toHaveBeenCalledExactlyOnceWith(
       "Engrenage is set up, nothing is missing.",
     );
+
     expect(project.read("package.json")).toBe(completed);
+
     expect(keys(JSON.parse(completed))).toEqual([
       "name",
       "version",
@@ -201,9 +213,11 @@ describe("engrenage init", () => {
         },
       ],
     ]);
+
     expect(project.read("engrenage.config.ts")).toContain(
       'presets: ["library"]',
     );
+
     expect(JSON.parse(project.read("package.json"))).toMatchObject({
       name,
       version: "0.0.0",
@@ -221,12 +235,15 @@ describe("engrenage init", () => {
         vitest: manifest.peerDependencies.vitest,
       },
     });
+
     expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
       "private",
     );
+
     expect(existsSync(project.resolve("vite.config.ts"))).toBe(false);
     expect(project.read("tsdown.config.ts")).toContain("defineTsdownConfig");
     expect(project.read("vitest.config.ts")).toContain("defineVitestConfig");
+
     expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
       extends: "@auaust/engrenage/tsconfig/library.json",
       compilerOptions: {
@@ -235,12 +252,14 @@ describe("engrenage init", () => {
         },
       },
     });
+
     expect(JSON.parse(project.read("tsconfig.dist.json"))).toEqual({
       extends: [
         "./tsconfig.json",
         "@auaust/engrenage/tsconfig/library.dist.json",
       ],
     });
+
     expect(project.read(".github/workflows/ci.yml")).toContain(
       "pnpm run ci:check",
     );

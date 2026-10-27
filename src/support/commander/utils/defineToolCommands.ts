@@ -1,71 +1,17 @@
 import { spawn } from "node:child_process";
-import { readFileSync } from "node:fs";
-import { createRequire } from "node:module";
-import { dirname } from "node:path";
 
 import { wrap } from "@auaust/primitive-kit/arrays";
-import { isString } from "@auaust/toolkit/isString";
-import { get } from "@auaust/toolkit/object";
 import { transformValues } from "@auaust/toolkit/transformValues";
 
 import { loadConfig } from "#config/utils/loadConfig";
-import { packageJsonFile } from "#constants";
 import { successMessage } from "#support/commander/constants";
-import { resolve } from "#support/filesystem/utils/resolve";
-import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
+import { resolveBinary } from "#support/commander/utils/resolveBinary";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { CommandDefinition } from "#support/commander/types/CommandDefinition";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 
 const forwardedSignals = ["SIGHUP", "SIGINT", "SIGTERM"] as const;
-
-function isModuleNotFound(error: unknown): boolean {
-  return error instanceof Error && get(error, "code") === "MODULE_NOT_FOUND";
-}
-
-function resolveManifest(
-  config: ResolvedConfig,
-  packageName: KnownPackageName,
-): File {
-  const require = createRequire(config.resolve(packageJsonFile));
-
-  try {
-    return require.resolve(`${packageName}/${packageJsonFile}`);
-  } catch (error) {
-    if (!isModuleNotFound(error)) {
-      throw error;
-    }
-
-    throw new Error(`Install ${packageName} in ${config.root} to run it`, {
-      cause: error,
-    });
-  }
-}
-
-function resolveBinary(
-  config: ResolvedConfig,
-  packageName: KnownPackageName,
-  binary: string,
-): File {
-  const manifestPath = resolveManifest(config, packageName);
-
-  const directory = dirname(manifestPath);
-
-  const { bin } = createPackageJson({
-    root: directory,
-    path: manifestPath,
-    content: readFileSync(manifestPath, "utf8"),
-  });
-
-  const path = isString(bin) ? bin : bin[binary];
-
-  if (path === undefined) {
-    throw new Error(`${manifestPath} declares no "${binary}" binary`);
-  }
-
-  return resolve(directory, path);
-}
 
 function runBinary(file: File, args: readonly string[]): Promise<number> {
   const child = spawn(process.execPath, [file, ...args], {

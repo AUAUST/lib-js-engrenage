@@ -299,6 +299,7 @@ export function createResolvedConfig({
         raw.agents?.instructionFiles ?? defaultInstructionFiles,
       ),
       snippetsDir: raw.agents?.snippetsDir,
+      claudeSettings: raw.agents?.claudeSettings,
     });
   });
 

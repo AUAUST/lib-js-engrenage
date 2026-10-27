@@ -1,5 +1,18 @@
 {
   "permissions": {
     "deny": ["Read(**/.env)", "Read(**/.env.[^e]*)", "Read(**/.env.e[^x]*)"]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm --silent engrenage claude hook edit"
+          }
+        ]
+      }
+    ]
   }
 }

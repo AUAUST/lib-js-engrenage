@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import sync from "#bin/engrenage/sync";
+import { sync } from "#bin/engrenage/sync";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
@@ -48,6 +48,7 @@ describe("engrenage sync", () => {
     await runCommand(sync);
 
     expect(project.read("AGENTS.md")).toContain("## Shared section");
+
     expect(project.read(".vscode/settings.json")).toContain(
       '"editor.formatOnSave": true',
     );
@@ -57,6 +58,7 @@ describe("engrenage sync", () => {
     await runCommand(sync, "--check");
 
     expect(process.exitCode).toBeUndefined();
+
     expect(vi.mocked(console.info).mock.calls).toEqual([
       ["Checking synced files..."],
       ["All good!"],
@@ -69,10 +71,12 @@ describe("engrenage sync", () => {
     await runCommand(sync, "vscode", "--check");
 
     expect(process.exitCode).toBe(1);
+
     expect(vi.mocked(console.info).mock.calls).toEqual([
       ["Checking synced files..."],
       ["outdated: .vscode/settings.json"],
     ]);
+
     expect(project.read("AGENTS.md")).toBe(emptyBlock);
   });
 
@@ -93,6 +97,7 @@ describe("engrenage sync", () => {
     expect(JSON.parse(project.read(".vscode/settings.json"))).toMatchObject({
       "editor.formatOnSave": true,
     });
+
     expect(existsSync(project.resolve(".vscode/extensions.json"))).toBe(false);
   });
 });

@@ -74,6 +74,7 @@ export const configSchema = strictObject({
     strictObject({
       instructionFiles: optional(globsSchema),
       snippetsDir: optional(directorySchema),
+      claudeSettings: optional(boolean()),
     }),
   ),
   github: optional(

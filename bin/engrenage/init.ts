@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 
 import { createAgentsStep } from "#agents/setup/createAgentsStep";
+import { createClaudeSettingsStep } from "#agents/setup/createClaudeSettingsStep";
 import { createClaudeStep } from "#agents/setup/createClaudeStep";
 import { runSync } from "#bin/engrenage/sync";
 import { createChangesetConfigStep } from "#changesets/setup/createChangesetConfigStep";
@@ -86,7 +87,7 @@ async function readPackage(
   });
 }
 
-export default defineCommand((command) => {
+export const init = defineCommand((command) => {
   return command
     .description(
       "Set up engrenage in the project, or add the pieces it is missing.",
@@ -124,6 +125,7 @@ export default defineCommand((command) => {
           createEslintConfigStep(),
           createAgentsStep(),
           createClaudeStep(),
+          createClaudeSettingsStep(),
           createChangesetConfigStep(),
           createWorkflowsStep(),
           createVscodeExtensionsStep(),

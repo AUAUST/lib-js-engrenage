@@ -5,6 +5,7 @@ import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
 import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
+import { syncClaudeSettings } from "#agents/setup/syncClaudeSettings";
 import { syncChangesetConfig } from "#changesets/setup/syncChangesetConfig";
 import { loadConfig } from "#config/utils/loadConfig";
 import { syncGitignoreFile } from "#git/setup/syncGitignoreFile";
@@ -35,6 +36,9 @@ function defineTarget<Flag extends string = never>(
 const targets = {
   agents: defineTarget(syncAgentFiles),
   changesets: defineTarget(syncChangesetConfig),
+  claude: defineTarget(syncClaudeSettings, {
+    settings: "create .claude/settings.json when it is missing",
+  }),
   gitignore: defineTarget(syncGitignoreFile),
   globals: defineTarget(syncEnvFile),
   prettierignore: defineTarget(syncPrettierignoreFile),
@@ -83,7 +87,7 @@ export function runSync(
   }
 }
 
-export default defineCommand((command) => {
+export const sync = defineCommand((command) => {
   const flagOptions = createFlagOptions();
 
   for (const { option } of flagOptions) {
