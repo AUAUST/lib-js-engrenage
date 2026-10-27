@@ -89,7 +89,9 @@ describe("createVitestConfig", () => {
 
       const server = await createServer({
         ...mergeConfig(
-          createViteConfig(config),
+          createViteConfig(config, {
+            isTesting: true,
+          }),
           createVitestConfig(config, {
             command: "serve",
             mode: "test",

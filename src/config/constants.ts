@@ -1,12 +1,27 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import type { GlobalScope } from "#config/types/GlobalScope";
 import type { Presets } from "#config/types/Presets";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
 export const defaultEmptyOutDir = true;
+
+export const defaultDefineTypes = true;
+
+export const defaultGlobalScope = "all" satisfies GlobalScope;
+
+export const globalScopes = freeze(["all", "test", "build"] as const);
+
+export const defaultEnvFile = "env.d.ts" satisfies File;
+
+export const definitionKey = "~definition";
+
+export const globalNamePattern =
+  /^(?:import\.meta|[$A-Z_a-z][\w$]*)(?:\.[$A-Z_a-z][\w$]*)*$/;
 
 export const defaultCoverageDirectory = "coverage" satisfies Directory;
 

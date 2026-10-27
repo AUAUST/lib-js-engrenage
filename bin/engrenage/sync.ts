@@ -12,6 +12,7 @@ import { syncWorkflowFiles } from "#github/setup/syncWorkflowFiles";
 import { syncPrettierignoreFile } from "#prettier/setup/syncPrettierignoreFile";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { settleChanges } from "#support/commander/utils/settleChanges";
+import { syncEnvFile } from "#typescript/setup/syncEnvFile";
 import { validate } from "#utils/validate";
 import { syncVscodeFiles } from "#vscode/setup/syncVscodeFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -35,6 +36,7 @@ const targets = {
   agents: defineTarget(syncAgentFiles),
   changesets: defineTarget(syncChangesetConfig),
   gitignore: defineTarget(syncGitignoreFile),
+  globals: defineTarget(syncEnvFile),
   prettierignore: defineTarget(syncPrettierignoreFile),
   vscode: defineTarget(syncVscodeFiles, {
     settings: "create .vscode/settings.json when it is missing",

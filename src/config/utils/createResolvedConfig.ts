@@ -2,17 +2,21 @@ import type { InferOutput } from "valibot";
 
 import { wrap } from "@auaust/primitive-kit/arrays";
 import { compose } from "@auaust/toolkit/composer";
+import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { memoized } from "@auaust/toolkit/memoized";
 import { freeze } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
+import { globalsSchema } from "#config/config/schemas/defineSchema";
 import {
   defaultBinDirectories,
   defaultCodeFiles,
   defaultConfigFiles,
   defaultCoverageDirectory,
+  defaultDefineTypes,
   defaultDiscoveredFiles,
   defaultEmptyOutDir,
+  defaultEnvFile,
   defaultFixtureFiles,
   defaultGeneratedFiles,
   defaultInstructionFiles,
@@ -35,8 +39,10 @@ import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
 import { filesIn } from "#utils/filesIn";
+import { validate } from "#utils/validate";
 import type { configSchema } from "#config/config/schemas/configSchema";
 import type { Environment } from "#config/types/Environment";
+import type { ResolvedGlobals } from "#config/types/ResolvedGlobals";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -102,6 +108,10 @@ export function createResolvedConfig({
     );
   }
 
+  function envFilePath(): File {
+    return resolveWithin(root, raw.typescript?.envFile ?? defaultEnvFile);
+  }
+
   function gitignorePath(): File | undefined {
     return locate(gitignoreFile, raw.git?.gitignore);
   }
@@ -163,6 +173,34 @@ export function createResolvedConfig({
       ? undefined
       : tsconfigOutDir;
   }
+
+  function resolveGlobals(): ResolvedGlobals {
+    const values = raw.define?.values;
+
+    if (values === undefined) {
+      return {};
+    }
+
+    if (isPlainObject(values)) {
+      return values;
+    }
+
+    return validate(
+      globalsSchema,
+      values({
+        packageJson: packageJson(),
+        filesystem,
+      }),
+      `define.values of ${configFile ?? root}`,
+    );
+  }
+
+  const define = once(() => {
+    return freeze({
+      types: raw.define?.types ?? defaultDefineTypes,
+      values: freeze(resolveGlobals()),
+    });
+  });
 
   const code = once(() => {
     return freeze({
@@ -227,6 +265,7 @@ export function createResolvedConfig({
         compose.getters({
           tsconfig: tsconfigPath,
           distTsconfig: distTsconfigPath,
+          envFile: envFilePath,
         }),
       ),
     );
@@ -295,6 +334,7 @@ export function createResolvedConfig({
         tsconfig,
         environment,
         presets,
+        define,
         code,
         source,
         bin,

@@ -40,17 +40,13 @@ export function syncBlocks(
       );
     }
 
-    if (argumentList === "") {
-      throw new Error(`"${line}" has no arguments`);
-    }
-
     const next = markers[index + 1];
 
     if (next === undefined) {
       throw new Error(`Missing "@end" marker after "${line}"`);
     }
 
-    const filled = fill(...argumentList.trim().split(" ")).trim();
+    const filled = fill(...argumentList.split(" ").slice(1)).trim();
 
     if (filled.match(marker) !== null) {
       throw new Error(`Content of "${line}" contains a block marker`);

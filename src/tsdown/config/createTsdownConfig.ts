@@ -3,6 +3,7 @@ import { posix } from "node:path";
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
+import { createDefine } from "#config/utils/createDefine";
 import { arethetypeswrongCore, packageJsonFile, publint } from "#constants";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
 import { optionsSchema } from "#tsdown/config/schemas/optionsSchema";
@@ -113,6 +114,9 @@ export function createTsdownConfig(
       customExports,
     },
     sourcemap: true,
+    define: createDefine(config, {
+      isTesting: false,
+    }),
     report: false,
     publint: environment.hasDependency(publint),
     attw: {

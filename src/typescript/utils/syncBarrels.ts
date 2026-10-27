@@ -8,6 +8,7 @@ import { resolve } from "#support/filesystem/utils/resolve";
 import {
   barrelFiles,
   declarationExtension,
+  identifierPattern,
   typescriptBlocks,
 } from "#typescript/constants";
 import { resolveImportSpecifier } from "#typescript/utils/resolveImportSpecifier";
@@ -26,8 +27,6 @@ const collator = new Intl.Collator("en-US", {
   numeric: true,
   sensitivity: "base",
 });
-
-const identifier = /^[$A-Z_a-z][\w$]*$/;
 
 function compareNaturally(left: string, right: string): number {
   return collator.compare(left, right);
@@ -107,7 +106,7 @@ function createBarrel({
 
   const exports = map(sortedNames, ([specifier, name]) => {
     if (mode !== "all") {
-      if (!identifier.test(name)) {
+      if (!identifierPattern.test(name)) {
         throw new Error(
           `"${specifier}" cannot be exported as "${name}" in ${barrel}`,
         );
@@ -176,6 +175,10 @@ export function syncBarrels(
   function update(content: string, barrel: File): string {
     return syncBlocks(content, typescriptBlocks, {
       barrel(glob, mode) {
+        if (glob === undefined) {
+          throw new Error(`Expected a glob in the barrel marker of ${barrel}`);
+        }
+
         return createBarrel({
           root: rootPath,
           imports,

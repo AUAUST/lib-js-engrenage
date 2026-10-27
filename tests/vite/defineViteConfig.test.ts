@@ -8,6 +8,7 @@ import {
   defineVitestConfig,
 } from "@auaust/engrenage/vitest";
 
+import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 import { mockCwd } from "#tests/helpers/mockCwd";
 
@@ -15,11 +16,14 @@ const root = getFixture("vitest");
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.unstubAllEnvs();
 });
 
 describe("defineViteConfig", () => {
   test("applies the project defaults under the native config", async () => {
     mockCwd(root);
+
+    vi.stubEnv("VITEST", undefined);
 
     const viteConfig = await defineViteConfig(
       {},
@@ -44,6 +48,47 @@ describe("defineViteConfig", () => {
         emptyOutDir: true,
         sourcemap: true,
       },
+    });
+  });
+
+  test("passes test-scoped globals only when Vitest runs the config", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "type": "module" }',
+      "engrenage.config.ts": `export default ${JSON.stringify({
+        define: {
+          values: {
+            __SHARED__: 1,
+            __FIXTURES__: {
+              "~definition": true,
+              "value": "fixtures",
+              "exact": false,
+              "scope": "test",
+            },
+          },
+        },
+      })};\n`,
+    });
+
+    mockCwd(project.root);
+
+    const viteConfig = defineViteConfig();
+
+    const env = {
+      command: "serve",
+      mode: "build",
+    } as const;
+
+    vi.stubEnv("VITEST", "true");
+
+    expect((await viteConfig(env)).define).toEqual({
+      __SHARED__: "1",
+      __FIXTURES__: '"fixtures"',
+    });
+
+    vi.stubEnv("VITEST", undefined);
+
+    expect((await viteConfig(env)).define).toEqual({
+      __SHARED__: "1",
     });
   });
 

@@ -28,7 +28,9 @@ export function defineViteConfig(
       "Vite options",
     );
 
-    let merged: Config = createViteConfig(config);
+    let merged: Config = createViteConfig(config, {
+      isTesting: process.env.VITEST === "true",
+    });
 
     const testConfig = await value(test, config, env);
 

@@ -7,6 +7,7 @@ import {
   union,
 } from "valibot";
 
+import { defineSchema } from "#config/config/schemas/defineSchema";
 import {
   directoriesSchema,
   directorySchema,
@@ -26,6 +27,7 @@ function createDirectoriesGroup() {
 
 export const configSchema = strictObject({
   presets: optional(presetsSchema),
+  define: optional(defineSchema),
   code: optional(
     strictObject({
       files: optional(globsSchema),
@@ -55,6 +57,7 @@ export const configSchema = strictObject({
     strictObject({
       tsconfig: optional(fileSchema),
       distTsconfig: optional(fileSchema),
+      envFile: optional(fileSchema),
     }),
   ),
   git: optional(

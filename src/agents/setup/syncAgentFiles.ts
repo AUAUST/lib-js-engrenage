@@ -15,6 +15,10 @@ export function syncAgentFiles(config: ResolvedConfig) {
   function update(content: string, path: File): string {
     return syncBlocks(content, markdownBlocks, {
       reference(reference) {
+        if (reference === undefined) {
+          throw new Error(`Expected a reference in a marker of ${path}`);
+        }
+
         const source = resolveAgentReference(config, reference, path);
 
         return readFileSync(source, "utf8");
