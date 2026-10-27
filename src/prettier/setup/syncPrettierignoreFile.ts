@@ -19,19 +19,19 @@ function anchor(glob: Glob): Glob {
 function createProjectPrettierIgnores(
   config: ResolvedConfig,
 ): ReadonlyArray<GlobGroup> {
-  const { generated } = config.files;
+  const { generatedFiles } = config.code;
 
   return [
     ...createProjectIgnores(config),
     ...(config.environment.hasDependency(changesetsCli)
       ? [changelogIgnores]
       : []),
-    ...(generated.length === 0
+    ...(generatedFiles.length === 0
       ? []
       : [
           {
             title: codegenTitle,
-            globs: map(generated, anchor),
+            globs: map(generatedFiles, anchor),
           },
         ]),
   ];
@@ -39,7 +39,7 @@ function createProjectPrettierIgnores(
 
 export function syncPrettierignoreFile(config: ResolvedConfig) {
   syncIgnoreFile(config, {
-    path: config.prettierignorePath,
+    path: config.prettier.prettierignore,
     presets: {
       defaults: () => defaultIgnores,
       project: () => createProjectPrettierIgnores(config),

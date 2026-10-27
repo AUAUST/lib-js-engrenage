@@ -2,9 +2,13 @@ import { defineConfig } from "#config/index";
 
 export default defineConfig({
   presets: ["library"],
-  files: {
-    config: ["*.config.ts", ".*.ts", "src/prettier/index.ts"],
-    discovered: ["bin/**/*.ts", "src/eslint/conventions/*/*.ts"],
-    generated: ["src/eslint/types/Rules.ts", "src/eslint/types/rules/**"],
+  code: {
+    configFiles: ["*.config.ts", ".*.ts", "src/prettier/index.ts"],
+    discoveredFiles: [
+      "bin/**/*.ts",
+      "scripts/**/*.ts",
+      "src/eslint/conventions/*/*.ts",
+    ],
+    generatedFiles: ["src/eslint/types/Rules.ts", "src/eslint/types/rules/**"],
   },
 });

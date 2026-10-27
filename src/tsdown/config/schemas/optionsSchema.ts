@@ -8,11 +8,9 @@ import {
   string,
 } from "valibot";
 
-import { fileSchema } from "#config/config/schemas/fileSchema";
-import { globSchema } from "#config/config/schemas/globSchema";
+import { globsSchema } from "#config/config/schemas/globsSchema";
 
 export const optionsSchema = strictObject({
-  bins: optional(record(string(), fileSchema), {}),
-  customExports: optional(record(string(), globSchema), {}),
+  customExports: optional(record(string(), globsSchema), {}),
   bundle: optional(pipe(array(string()), readonly()), []),
 });

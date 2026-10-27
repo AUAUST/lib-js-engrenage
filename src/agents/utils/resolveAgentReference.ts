@@ -12,13 +12,13 @@ function resolveSnippet(
   config: ResolvedConfig,
   reference: string,
 ): File | null {
-  const { snippetsDirectory } = config.agents;
+  const { snippetsDir } = config.agents;
 
-  if (snippetsDirectory === undefined || isRelative(reference)) {
+  if (snippetsDir === undefined || isRelative(reference)) {
     return null;
   }
 
-  const snippet = config.resolve(snippetsDirectory, reference);
+  const snippet = config.resolve(snippetsDir, reference);
 
   return existsSync(snippet) ? snippet : null;
 }

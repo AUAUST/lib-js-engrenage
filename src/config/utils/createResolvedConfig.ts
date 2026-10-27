@@ -1,12 +1,13 @@
 import type { InferOutput } from "valibot";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { wrap } from "@auaust/primitive-kit/arrays";
 import { compose } from "@auaust/toolkit/composer";
 import { memoized } from "@auaust/toolkit/memoized";
 import { freeze } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
 import {
+  defaultBinDirectories,
   defaultCodeFiles,
   defaultConfigFiles,
   defaultCoverageDirectory,
@@ -16,6 +17,7 @@ import {
   defaultGeneratedFiles,
   defaultInstructionFiles,
   defaultPresets,
+  defaultScriptDirectories,
   defaultSourceDirectories,
   defaultTestDirectories,
   defaultTestFiles,
@@ -91,19 +93,21 @@ export function createResolvedConfig({
   }
 
   function tsconfigPath(): File | undefined {
-    return locate(tsconfigFile, raw.files?.tsconfig);
+    return locate(tsconfigFile, raw.typescript?.tsconfig);
   }
 
   function distTsconfigPath(): File | undefined {
-    return locate(distTsconfigFile, raw.files?.distTsconfig) ?? tsconfigPath();
+    return (
+      locate(distTsconfigFile, raw.typescript?.distTsconfig) ?? tsconfigPath()
+    );
   }
 
   function gitignorePath(): File | undefined {
-    return locate(gitignoreFile, raw.files?.gitignore);
+    return locate(gitignoreFile, raw.git?.gitignore);
   }
 
   function prettierignorePath(): File | undefined {
-    return locate(prettierignoreFile, raw.files?.prettierignore);
+    return locate(prettierignoreFile, raw.prettier?.prettierignore);
   }
 
   const parsePackageJson = memoized((content: string | undefined) => {
@@ -141,11 +145,11 @@ export function createResolvedConfig({
   }
 
   const presets = once(() => {
-    return raw.presets ?? defaultPresets;
+    return wrap(raw.presets ?? defaultPresets);
   });
 
-  function outputDirectory(): Directory | undefined {
-    const configured = raw.directories?.output;
+  function outDir(): Directory | undefined {
+    const configured = raw.build?.outDir;
 
     if (configured !== undefined) {
       resolveWithin(root, configured);
@@ -153,51 +157,109 @@ export function createResolvedConfig({
       return configured;
     }
 
-    const { outDir } = tsconfig().optional;
+    const tsconfigOutDir = tsconfig().optional.outDir;
 
-    return outDir === undefined || !isWithin(root, outDir) ? undefined : outDir;
+    return tsconfigOutDir === undefined || !isWithin(root, tsconfigOutDir)
+      ? undefined
+      : tsconfigOutDir;
   }
 
-  const directories = once(() => {
+  const code = once(() => {
+    return freeze({
+      files: wrap(raw.code?.files ?? defaultCodeFiles),
+      configFiles: wrap(raw.code?.configFiles ?? defaultConfigFiles),
+      discoveredFiles: wrap(
+        raw.code?.discoveredFiles ?? defaultDiscoveredFiles,
+      ),
+      generatedFiles: wrap(raw.code?.generatedFiles ?? defaultGeneratedFiles),
+    });
+  });
+
+  const source = once(() => {
+    return freeze({
+      dirs: wrap(raw.source?.dirs ?? defaultSourceDirectories),
+    });
+  });
+
+  const bin = once(() => {
+    return freeze({
+      dirs: wrap(raw.bin?.dirs ?? defaultBinDirectories),
+    });
+  });
+
+  const scripts = once(() => {
+    return freeze({
+      dirs: wrap(raw.scripts?.dirs ?? defaultScriptDirectories),
+    });
+  });
+
+  const test = once(() => {
+    const dirs = wrap(raw.test?.dirs ?? defaultTestDirectories);
+
+    return freeze({
+      dirs,
+      files: wrap(raw.test?.files ?? defaultTestFiles),
+      fixtureFiles: filesIn(
+        dirs,
+        raw.test?.fixtureFiles ?? defaultFixtureFiles,
+      ),
+      coverageDir: raw.test?.coverageDir ?? defaultCoverageDirectory,
+    });
+  });
+
+  const build = once(() => {
     return freeze(
       compose(
         {
-          source: raw.directories?.source ?? defaultSourceDirectories,
-          test: raw.directories?.test ?? defaultTestDirectories,
-          coverage: raw.directories?.coverage ?? defaultCoverageDirectory,
+          emptyOutDir: raw.build?.emptyOutDir ?? defaultEmptyOutDir,
         },
         compose.getters({
-          output: outputDirectory,
+          outDir,
         }),
       ),
     );
   });
 
-  const files = once(() => {
-    const fixtures = raw.files?.fixtures ?? defaultFixtureFiles;
-
-    return freeze({
-      code: raw.files?.code ?? defaultCodeFiles,
-      test: raw.files?.test ?? defaultTestFiles,
-      fixtures: map(directories().test, (directory) => {
-        return filesIn(directory, fixtures);
-      }),
-      config: raw.files?.config ?? defaultConfigFiles,
-      discovered: raw.files?.discovered ?? defaultDiscoveredFiles,
-      generated: raw.files?.generated ?? defaultGeneratedFiles,
-    });
+  const typescript = once(() => {
+    return freeze(
+      compose(
+        {},
+        compose.getters({
+          tsconfig: tsconfigPath,
+          distTsconfig: distTsconfigPath,
+        }),
+      ),
+    );
   });
 
-  const build = once(() => {
-    return freeze({
-      emptyOutDir: raw.build?.emptyOutDir ?? defaultEmptyOutDir,
-    });
+  const git = once(() => {
+    return freeze(
+      compose(
+        {},
+        compose.getters({
+          gitignore: gitignorePath,
+        }),
+      ),
+    );
+  });
+
+  const prettier = once(() => {
+    return freeze(
+      compose(
+        {},
+        compose.getters({
+          prettierignore: prettierignorePath,
+        }),
+      ),
+    );
   });
 
   const agents = once(() => {
     return freeze({
-      instructionFiles: raw.agents?.instructionFiles ?? defaultInstructionFiles,
-      snippetsDirectory: raw.agents?.snippetsDirectory,
+      instructionFiles: wrap(
+        raw.agents?.instructionFiles ?? defaultInstructionFiles,
+      ),
+      snippetsDir: raw.agents?.snippetsDir,
     });
   });
 
@@ -229,17 +291,19 @@ export function createResolvedConfig({
       },
       compose.getters({
         packageJsonPath,
-        tsconfigPath,
-        distTsconfigPath,
-        gitignorePath,
-        prettierignorePath,
         packageJson,
         tsconfig,
         environment,
         presets,
-        directories,
-        files,
+        code,
+        source,
+        bin,
+        scripts,
+        test,
         build,
+        typescript,
+        git,
+        prettier,
         agents,
         github,
         vscode,

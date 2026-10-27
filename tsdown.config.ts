@@ -2,9 +2,6 @@ import { packages } from "#constants";
 import { defineTsdownConfig } from "#tsdown/index";
 
 export default defineTsdownConfig({
-  bins: {
-    "bin/engrenage": "bin/engrenage/index.ts",
-  },
   customExports: {
     "./agents/templates/*.md": "./data/agents/templates/*.md",
     "./agents/rules/*.md": "./data/agents/rules/*.md",

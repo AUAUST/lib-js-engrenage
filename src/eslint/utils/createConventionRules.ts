@@ -3,7 +3,6 @@ import {
   flatMap,
   intersection,
   isNotEmpty,
-  map,
 } from "@auaust/primitive-kit/arrays";
 import { isBoolean } from "@auaust/toolkit/isBoolean";
 import { entries } from "@auaust/toolkit/object";
@@ -67,26 +66,32 @@ function isEnabled({
 }
 
 function resolveScopeReference(
-  { files, directories }: ResolvedConfig,
+  config: ResolvedConfig,
   reference: ScopeReference,
 ): Globs {
+  const { code, source, bin, scripts, test } = config;
+
   switch (reference) {
-    case "files.code":
-      return [files.code];
-    case "files.test":
-      return [files.test];
-    case "files.config":
-      return files.config;
-    case "files.discovered":
-      return files.discovered;
-    case "directories.source":
-      return map(directories.source, (directory) => {
-        return filesIn(directory, files.code);
-      });
-    case "directories.test":
-      return map(directories.test, (directory) => {
-        return filesIn(directory, files.code);
-      });
+    case "code":
+      return code.files;
+    case "config":
+      return code.configFiles;
+    case "discovered":
+      return code.discoveredFiles;
+    case "testFiles":
+      return test.files;
+    case "source":
+      return filesIn(source.dirs, code.files);
+    case "bin":
+      return filesIn(bin.dirs, code.files);
+    case "scripts":
+      return filesIn(scripts.dirs, code.files);
+    case "tests":
+      return filesIn(test.dirs, code.files);
+    case "public":
+      return filesIn([...source.dirs, ...bin.dirs], code.files);
+    case "private":
+      return filesIn([...test.dirs, ...scripts.dirs], code.files);
   }
 }
 

@@ -50,11 +50,11 @@ export function createEslintConfig(
   if (ignore) {
     configs.push(
       createIgnoreRules({
-        gitignorePath: config.gitignorePath,
-        generatedFiles: config.files.generated,
-        outputDirectory: config.directories.output,
-        coverageDirectory: config.directories.coverage,
-        fixtureFiles: config.files.fixtures,
+        gitignorePath: config.git.gitignore,
+        generatedFiles: config.code.generatedFiles,
+        outputDirectory: config.build.outDir,
+        coverageDirectory: config.test.coverageDir,
+        fixtureFiles: config.test.fixtureFiles,
       }),
     );
   }
@@ -62,7 +62,7 @@ export function createEslintConfig(
   if (recommended) {
     configs.push(
       createRecommendedRules({
-        codeFiles: config.files.code,
+        codeFiles: config.code.files,
       }),
     );
   }
@@ -74,7 +74,7 @@ export function createEslintConfig(
   if (categories.imports !== false) {
     configs.push(
       createImportPresets({
-        codeFiles: config.files.code,
+        codeFiles: config.code.files,
       }),
     );
   }

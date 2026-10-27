@@ -1,7 +1,7 @@
 export default {
   sources: ["src"],
-  files: {
-    code: "**/*.ts",
+  code: {
+    files: "**/*.ts",
     generatd: [],
   },
 };

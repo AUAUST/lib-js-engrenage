@@ -5,7 +5,7 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
 ## 1. Tooling
 
 1. Barrel codegen cannot heal a barrel that names a removed module.
-   - Where: `bin/support/codegen/index.ts`, `bin/support/codegen/rules.ts`
+   - Where: `scripts/support/codegen/index.ts`, `scripts/support/codegen/rules.ts`
    - Problem: the `support` CLI registers every codegen subcommand at startup, and the `rules` subcommand imports the ESLint config builder and with it every conventions barrel. Renaming or deleting a convention module therefore crashes `pnpm support codegen barrels` with `ERR_MODULE_NOT_FOUND` before it can rewrite the stale barrel line, which has to be fixed by hand first.
    - Fix: decouple subcommand registration from their implementations so the barrels command never evaluates the modules it generates; a lazy dynamic import conflicts with the `noDynamicImport` convention, so this needs a deliberate loading pattern for CLI subcommands. Part of AUAUST/lib-js-engrenage#9.
 

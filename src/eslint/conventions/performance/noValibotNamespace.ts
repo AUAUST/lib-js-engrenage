@@ -5,7 +5,7 @@ export default defineImportReplacement({
   source: valibot,
   imports: ["*"],
   replacement: "named imports",
-  files: ["directories.source"],
+  files: ["public", "scripts"],
   presets: ["library"],
   requires: [valibot],
 });

@@ -345,7 +345,7 @@ describe("createEslintConfig", () => {
     expect(await unignored.isPathIgnored("ignored.ts")).toBe(false);
   });
 
-  test("ignores the resolved files.fixtures globs", async () => {
+  test("ignores the resolved test.fixtureFiles globs", async () => {
     const config = await loadConfig(root);
 
     const eslint = new ESLint({
@@ -353,9 +353,9 @@ describe("createEslintConfig", () => {
       overrideConfigFile: true,
       overrideConfig: createEslintConfig({
         ...config,
-        files: {
-          ...config.files,
-          fixtures: ["tests/**/data/**"],
+        test: {
+          ...config.test,
+          fixtureFiles: ["tests/**/data/**"],
         },
       }),
     });

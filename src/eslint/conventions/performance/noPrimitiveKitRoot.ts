@@ -4,7 +4,7 @@ import { defineImportReplacement } from "#eslint/conventions/defineImportReplace
 export default defineImportReplacement({
   source: primitiveKit,
   replacement: `the \`${primitiveKit}/<domain>\` subpath entries`,
-  files: ["directories.source"],
+  files: ["public", "scripts"],
   presets: ["library"],
   requires: [primitiveKit],
 });

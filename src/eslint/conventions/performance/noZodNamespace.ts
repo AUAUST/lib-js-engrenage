@@ -5,7 +5,7 @@ export default defineImportReplacement({
   source: `${zod}/mini`,
   imports: ["*", "default", "z"],
   replacement: "named imports",
-  files: ["directories.source"],
+  files: ["public", "scripts"],
   presets: ["library"],
   requires: [zod],
 });

@@ -13,13 +13,15 @@ export function createDistTsconfigStep(): Step {
     isMissing({ config, filesystem, getPresets }) {
       return (
         includes(getPresets(), "library") &&
-        config.tsconfigPath !== undefined &&
-        config.raw.files?.distTsconfig === undefined &&
+        config.typescript.tsconfig !== undefined &&
+        config.raw.typescript?.distTsconfig === undefined &&
         !filesystem.exists(distTsconfigFile)
       );
     },
     plan({ config, filesystem }) {
-      const { root, tsconfigPath } = config;
+      const { root } = config;
+
+      const tsconfigPath = config.typescript.tsconfig;
 
       if (tsconfigPath === undefined) {
         throw new Error(`No tsconfig found in ${root} to extend`);

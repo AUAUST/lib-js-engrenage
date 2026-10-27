@@ -3,11 +3,11 @@ import type { Config } from "@auaust/engrenage/config";
 export default async function config(): Promise<Config> {
   return {
     presets: ["library"],
-    directories: {
-      test: ["test"],
+    test: {
+      dirs: "test",
     },
-    files: {
-      generated: ["src/generated/**"],
+    code: {
+      generatedFiles: ["src/generated/**"],
     },
   };
 }

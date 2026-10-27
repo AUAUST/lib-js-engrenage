@@ -1,5 +1,5 @@
-import barrels from "#bin/support/codegen/barrels";
-import rules from "#bin/support/codegen/rules";
+import barrels from "#scripts/support/codegen/barrels";
+import rules from "#scripts/support/codegen/rules";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { registerSubcommands } from "#support/commander/utils/registerSubcommands";
 

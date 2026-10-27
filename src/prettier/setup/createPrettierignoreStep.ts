@@ -8,7 +8,7 @@ export function createPrettierignoreStep(): Step {
     message: `Create ${prettierignoreFile}?`,
     isMissing({ config, filesystem, readPackageJson }) {
       return (
-        config.prettierignorePath === undefined &&
+        config.prettier.prettierignore === undefined &&
         readPackageJson([prettier]) !== undefined &&
         !filesystem.exists(prettierignoreFile)
       );

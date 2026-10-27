@@ -4,7 +4,9 @@ import { organization } from "#constants";
 import { defineConvention } from "#eslint/conventions/defineConvention";
 
 export default defineConvention({
-  rules({ root, tsconfigPath }) {
+  rules({ root, typescript }) {
+    const tsconfigPath = typescript.tsconfig;
+
     return {
       "perfectionist/sort-imports": [
         "error",

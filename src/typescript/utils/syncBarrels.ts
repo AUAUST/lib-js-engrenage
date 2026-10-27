@@ -11,6 +11,7 @@ import {
   typescriptBlocks,
 } from "#typescript/constants";
 import { resolveImportSpecifier } from "#typescript/utils/resolveImportSpecifier";
+import { filesIn } from "#utils/filesIn";
 import { syncBlocks } from "#utils/syncBlocks";
 import { syncFiles } from "#utils/syncFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -159,10 +160,10 @@ export function syncBarrels(
 
   const { imports } = config.packageJson;
 
+  const { source, bin, scripts } = config;
+
   const allFiles = config.filesystem.glob(
-    map(config.directories.source, (directory) => {
-      return `${directory}/${barrelFiles}`;
-    }),
+    filesIn([...source.dirs, ...bin.dirs, ...scripts.dirs], barrelFiles),
   );
 
   const files =

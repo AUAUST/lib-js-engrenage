@@ -4,7 +4,7 @@ import { defineImportReplacement } from "#eslint/conventions/defineImportReplace
 export default defineImportReplacement({
   source: zod,
   replacement: "`zod/mini`",
-  files: ["directories.source"],
+  files: ["public", "scripts"],
   presets: ["library"],
   requires: [zod],
 });

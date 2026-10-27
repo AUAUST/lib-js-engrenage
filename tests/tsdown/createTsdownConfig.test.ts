@@ -18,9 +18,6 @@ describe("createTsdownConfig", () => {
         ci: true,
       },
       {
-        bins: {
-          "bin/cli": "bin/cli/index.ts",
-        },
         customExports: {
           "./presets/*.json": "./data/presets/*.json",
         },
@@ -94,7 +91,7 @@ describe("createTsdownConfig", () => {
   test("takes the output directory and its emptying from the engrenage config over the tsconfig", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
-        'export default { directories: { output: "build" }, build: { emptyOutDir: false } };\n',
+        'export default { build: { outDir: "build", emptyOutDir: false } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",
@@ -122,22 +119,32 @@ describe("createTsdownConfig", () => {
     });
   });
 
-  test("rejects a bin that shadows a package entry", async () => {
-    const config = await loadConfig(root);
-
-    expect(() => {
-      return createTsdownConfig(
-        config,
-        {
-          ci: false,
-        },
-        {
-          bins: {
-            "alpha/index": "bin/cli/index.ts",
+  test("rejects two bin files that build the same entry", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({
+        name: "@scope/package",
+        type: "module",
+      }),
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          outDir: "dist",
+          paths: {
+            "@scope/package": ["./src/index.ts"],
           },
         },
-      );
-    }).toThrow("Bin entry 'alpha/index' conflicts");
+      }),
+      "src/index.ts": "export {};\n",
+      "bin/cli.ts": "export {};\n",
+      "bin/cli/index.ts": "export {};\n",
+    });
+
+    const config = await loadConfig(project.root);
+
+    expect(() => {
+      return createTsdownConfig(config, {
+        ci: false,
+      });
+    }).toThrow("Bin entry 'bin/cli' is declared by both");
   });
 
   test("rejects a package that is not an ES module", async () => {

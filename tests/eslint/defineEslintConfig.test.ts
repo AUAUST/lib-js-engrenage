@@ -29,7 +29,7 @@ describe("defineEslintConfig", () => {
       overrideConfigFile: true,
       overrideConfig: await defineEslintConfig(callback, (config) => {
         return {
-          files: map(config.directories.source, (directory) => {
+          files: map(config.source.dirs, (directory) => {
             return `${directory}/restricted.ts`;
           }),
           rules: {

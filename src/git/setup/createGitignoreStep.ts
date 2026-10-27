@@ -10,10 +10,12 @@ import type { File } from "#types/File";
 
 const ignoreMarker = /^# @ignore /m;
 
-function resolveFile({ root, gitignorePath }: ResolvedConfig): File {
-  return gitignorePath === undefined
+function resolveFile({ root, git }: ResolvedConfig): File {
+  const { gitignore } = git;
+
+  return gitignore === undefined
     ? gitignoreFile
-    : relativeWithin(root, gitignorePath);
+    : relativeWithin(root, gitignore);
 }
 
 function isEntry(line: string): boolean {

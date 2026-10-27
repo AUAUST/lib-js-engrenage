@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import barrels from "#bin/support/codegen/barrels";
+import barrels from "#scripts/support/codegen/barrels";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";

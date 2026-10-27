@@ -36,7 +36,7 @@ export function createTsconfigStep(): Step {
     message: `Create ${tsconfigFile}?`,
     isMissing({ config, filesystem }) {
       return (
-        config.raw.files?.tsconfig === undefined &&
+        config.raw.typescript?.tsconfig === undefined &&
         !filesystem.exists(tsconfigFile)
       );
     },

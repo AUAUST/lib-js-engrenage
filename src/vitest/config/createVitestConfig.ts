@@ -19,7 +19,7 @@ function createSourcePlugins(
   config: ResolvedConfig,
   guardOutDir: boolean,
 ): Plugin[] {
-  const outDir = config.directories.output;
+  const { outDir } = config.build;
   const packageName = config.packageJson.optional.name;
 
   if (!guardOutDir || outDir === undefined || packageName === undefined) {
@@ -47,7 +47,9 @@ export function createVitestConfig(
 
   const testsBuild = mode === buildMode;
 
-  const tsconfig = testsBuild ? config.distTsconfigPath : config.tsconfigPath;
+  const tsconfig = testsBuild
+    ? config.typescript.distTsconfig
+    : config.typescript.tsconfig;
 
   return {
     tsconfig,
@@ -58,10 +60,10 @@ export function createVitestConfig(
     test: {
       isolate,
       restoreMocks,
-      exclude: [...configDefaults.exclude, ...config.files.fixtures],
+      exclude: [...configDefaults.exclude, ...config.test.fixtureFiles],
       coverage: {
         provider: defaultCoverageProvider,
-        reportsDirectory: config.directories.coverage,
+        reportsDirectory: config.test.coverageDir,
       },
       typecheck: {
         tsconfig,

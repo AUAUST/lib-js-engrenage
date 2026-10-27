@@ -11,7 +11,7 @@ import type { PackageNames } from "#types/PackageNames";
 export function defineConvention({
   rules = {},
   rule,
-  files = ["files.code"],
+  files = ["code"],
   ignores = [],
   typeAware = false,
   enabled = true,

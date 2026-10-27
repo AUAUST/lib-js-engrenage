@@ -29,7 +29,7 @@
     "lint": "pnpm run engrenage eslint",
     "prepare": "pnpm run support codegen rules && pnpm run support codegen barrels && pnpm run engrenage sync",
     "ready": "pnpm install --frozen-lockfile && pnpm run prepare && pnpm run ci && echo 'Ready!'",
-    "support": "node bin/support/index.ts",
+    "support": "node scripts/support/index.ts",
     "test": "pnpm run engrenage vitest && pnpm run typecheck",
     "typecheck": "pnpm run engrenage typecheck",
     "watch": "pnpm run engrenage vitest:watch"
@@ -47,6 +47,7 @@
     "#pnpm/*": "./src/pnpm/*.ts",
     "#prettier": "./src/prettier/index.ts",
     "#prettier/*": "./src/prettier/*.ts",
+    "#scripts/*": "./scripts/*.ts",
     "#support/*": "./src/support/*.ts",
     "#tests/*": "./tests/*.ts",
     "#tsdown/*": "./src/tsdown/*.ts",

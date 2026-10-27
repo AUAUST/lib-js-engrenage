@@ -4,12 +4,12 @@ import type { Config } from "#vite/types/Config";
 export function createViteConfig(config: ResolvedConfig): Config {
   return {
     root: config.root,
-    tsconfig: config.tsconfigPath,
+    tsconfig: config.typescript.tsconfig,
     resolve: {
       tsconfigPaths: true,
     },
     build: {
-      outDir: config.directories.output,
+      outDir: config.build.outDir,
       emptyOutDir: config.build.emptyOutDir,
     },
   };

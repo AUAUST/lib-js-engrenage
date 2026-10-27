@@ -25,12 +25,17 @@ describe("loadConfig", () => {
       `No engrenage config found in ${first}, using defaults`,
     );
     expect(config.root).toBe(first);
-    expect(config.directories).toEqual({
-      source: ["src", "bin", "scripts"],
-      test: ["tests"],
-      coverage: "coverage",
+    expect(config.source.dirs).toEqual(["src"]);
+    expect(config.bin.dirs).toEqual(["bin"]);
+    expect(config.scripts.dirs).toEqual(["scripts"]);
+    expect(config.code.files).toEqual(["**/*.{ts,tsx}"]);
+    expect(config.test).toEqual({
+      dirs: ["tests"],
+      files: ["**/*.{test,spec}.{ts,tsx}"],
+      fixtureFiles: ["tests/**/fixtures/**"],
+      coverageDir: "coverage",
     });
-    expect(config.files.generated).toEqual([]);
+    expect(config.code.generatedFiles).toEqual([]);
     expect(config.raw).toEqual({});
     expect(config.packageJsonPath).toBeUndefined();
     expect(config.packageJson.optional.name).toBeUndefined();
@@ -72,17 +77,18 @@ describe("loadConfig", () => {
 
     expect(config.raw).toEqual({
       presets: ["library"],
-      directories: {
-        test: ["test"],
+      test: {
+        dirs: "test",
       },
-      files: {
-        generated: ["src/generated/**"],
+      codegen: {
+        files: ["src/generated/**"],
       },
     });
     expect(config.presets).toEqual(["library"]);
-    expect(config.directories.test).toEqual(["test"]);
-    expect(config.files.generated).toEqual(["src/generated/**"]);
-    expect(config.directories.output).toBe("dist");
+    expect(config.test.dirs).toEqual(["test"]);
+    expect(config.test.fixtureFiles).toEqual(["test/**/fixtures/**"]);
+    expect(config.code.generatedFiles).toEqual(["src/generated/**"]);
+    expect(config.build.outDir).toBe("dist");
     expect(config.packageJson.name).toBe("custom-fixture");
     expect(config.environment.hasDependency("custom-fixture")).toBe(true);
     expect(config.environment.hasDependency("valibot")).toBe(true);
@@ -94,7 +100,7 @@ describe("loadConfig", () => {
 
   test("reads the configured tsconfig, rejects a missing configured file when read, even under the default name, and follows pending writes", async () => {
     const appConfig =
-      'export default { files: { tsconfig: "tsconfig.app.json" } };\n';
+      'export default { typescript: { tsconfig: "tsconfig.app.json" } };\n';
 
     const tsconfig = JSON.stringify({
       compilerOptions: {
@@ -110,7 +116,7 @@ describe("loadConfig", () => {
     const config = await loadConfig(root);
 
     expect(config.tsconfig.outDir).toBe("build");
-    expect(config.directories.output).toBe("build");
+    expect(config.build.outDir).toBe("build");
 
     const outside = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
@@ -121,7 +127,7 @@ describe("loadConfig", () => {
       }),
     });
 
-    expect((await loadConfig(outside.root)).directories.output).toBeUndefined();
+    expect((await loadConfig(outside.root)).build.outDir).toBeUndefined();
 
     const missing = await loadConfig(
       createTemporaryProject({
@@ -129,23 +135,25 @@ describe("loadConfig", () => {
       }).root,
     );
 
-    expect(() => missing.tsconfigPath).toThrow(
+    expect(() => missing.typescript.tsconfig).toThrow(
       `The configured tsconfig.app.json does not exist in ${missing.root}`,
     );
 
     missing.filesystem.write("tsconfig.app.json", tsconfig);
 
-    expect(missing.tsconfigPath).toBe(join(missing.root, "tsconfig.app.json"));
+    expect(missing.typescript.tsconfig).toBe(
+      join(missing.root, "tsconfig.app.json"),
+    );
     expect(missing.tsconfig.outDir).toBe("build");
 
     const explicitDefault = await loadConfig(
       createTemporaryProject({
         "engrenage.config.ts":
-          'export default { files: { tsconfig: "tsconfig.json" } };\n',
+          'export default { typescript: { tsconfig: "tsconfig.json" } };\n',
       }).root,
     );
 
-    expect(() => explicitDefault.tsconfigPath).toThrow(
+    expect(() => explicitDefault.typescript.tsconfig).toThrow(
       "The configured tsconfig.json does not exist",
     );
   });
@@ -155,7 +163,7 @@ describe("loadConfig", () => {
 
     const config = await loadConfig(root);
 
-    expect(config.distTsconfigPath).toBe(join(root, "tsconfig.json"));
+    expect(config.typescript.distTsconfig).toBe(join(root, "tsconfig.json"));
 
     const implicit = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
@@ -164,18 +172,18 @@ describe("loadConfig", () => {
 
     const implicitConfig = await loadConfig(implicit);
 
-    expect(implicitConfig.distTsconfigPath).toBe(
+    expect(implicitConfig.typescript.distTsconfig).toBe(
       join(implicit, "tsconfig.dist.json"),
     );
 
     const missing = await loadConfig(
       createTemporaryProject({
         "engrenage.config.ts":
-          'export default { files: { distTsconfig: "tsconfig.build.json" } };\n',
+          'export default { typescript: { distTsconfig: "tsconfig.build.json" } };\n',
       }).root,
     );
 
-    expect(() => missing.distTsconfigPath).toThrow(
+    expect(() => missing.typescript.distTsconfig).toThrow(
       `The configured tsconfig.build.json does not exist in ${missing.root}`,
     );
   });
@@ -186,9 +194,9 @@ describe("loadConfig", () => {
     const config = await loadConfig(root);
 
     expect(config.packageJsonPath).toBe(join(root, "package.json"));
-    expect(config.tsconfigPath).toBe(join(root, "tsconfig.json"));
-    expect(config.gitignorePath).toBeUndefined();
-    expect(config.prettierignorePath).toBeUndefined();
+    expect(config.typescript.tsconfig).toBe(join(root, "tsconfig.json"));
+    expect(config.git.gitignore).toBeUndefined();
+    expect(config.prettier.prettierignore).toBeUndefined();
     expect(() => {
       return config.resolve("../outside");
     }).toThrow("escapes");
@@ -201,6 +209,6 @@ describe("loadConfig", () => {
 
     await expect(error).rejects.toThrow(join(root, "engrenage.config.ts"));
     await expect(error).rejects.toThrow("at sources");
-    await expect(error).rejects.toThrow("at files.generatd");
+    await expect(error).rejects.toThrow("at code.generatd");
   });
 });

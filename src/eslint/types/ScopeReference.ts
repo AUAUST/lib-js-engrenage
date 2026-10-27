@@ -1,7 +1,11 @@
 export type ScopeReference =
-  | "files.code"
-  | "files.test"
-  | "files.config"
-  | "files.discovered"
-  | "directories.source"
-  | "directories.test";
+  | "code"
+  | "config"
+  | "discovered"
+  | "testFiles"
+  | "source"
+  | "bin"
+  | "scripts"
+  | "tests"
+  | "public"
+  | "private";

@@ -4,7 +4,7 @@ import { defineImportReplacement } from "#eslint/conventions/defineImportReplace
 export default defineImportReplacement({
   source: toolkit,
   replacement: `the \`${toolkit}/<helper>\` subpath entries`,
-  files: ["directories.source"],
+  files: ["public", "scripts"],
   presets: ["library"],
   requires: [toolkit],
 });

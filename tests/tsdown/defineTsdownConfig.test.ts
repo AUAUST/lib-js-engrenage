@@ -30,7 +30,7 @@ describe("defineTsdownConfig", () => {
       (config) => {
         return {
           exports: {
-            exclude: [...config.directories.test],
+            exclude: [...config.test.dirs],
           },
         };
       },

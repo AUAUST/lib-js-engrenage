@@ -5,20 +5,21 @@ import type { GlobGroup } from "#types/GlobGroup";
 export function createProjectIgnores(
   config: ResolvedConfig,
 ): ReadonlyArray<GlobGroup> {
-  const { output, coverage } = config.directories;
+  const { outDir } = config.build;
+  const { coverageDir } = config.test;
 
   return [
-    ...(output === undefined
+    ...(outDir === undefined
       ? []
       : [
           {
             title: outputTitle,
-            globs: [`/${output}`],
+            globs: [`/${outDir}`],
           },
         ]),
     {
       title: coverageTitle,
-      globs: [`/${coverage}`],
+      globs: [`/${coverageDir}`],
     },
   ];
 }

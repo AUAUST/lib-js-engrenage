@@ -32,7 +32,13 @@ export const defaultPresets = freeze([] as const) satisfies Presets;
 
 export const defaultSourceDirectories = freeze([
   "src",
+] as const) satisfies Directories;
+
+export const defaultBinDirectories = freeze([
   "bin",
+] as const) satisfies Directories;
+
+export const defaultScriptDirectories = freeze([
   "scripts",
 ] as const) satisfies Directories;
 

@@ -1,62 +1,76 @@
 import {
-  array,
   boolean,
   literal,
   optional,
   picklist,
   strictObject,
   union,
-  type GenericSchema,
 } from "valibot";
 
-import { directorySchema } from "#config/config/schemas/directorySchema";
+import {
+  directoriesSchema,
+  directorySchema,
+} from "#config/config/schemas/directorySchema";
 import { fileSchema } from "#config/config/schemas/fileSchema";
-import { globSchema } from "#config/config/schemas/globSchema";
-import { presetSchema } from "#config/config/schemas/presetSchema";
+import { globsSchema } from "#config/config/schemas/globsSchema";
+import { presetsSchema } from "#config/config/schemas/presetsSchema";
 import { workflowSetNames } from "#github/constants";
-import type { Presets } from "#config/types/Presets";
-import type { Directories } from "#types/Directories";
-import type { Globs } from "#types/Globs";
 
-const directoriesSchema: GenericSchema<Directories> = array(directorySchema);
-
-const globsSchema: GenericSchema<Globs> = array(globSchema);
-
-const presetsSchema: GenericSchema<Presets> = array(presetSchema);
+function createDirectoriesGroup() {
+  return optional(
+    strictObject({
+      dirs: optional(directoriesSchema),
+    }),
+  );
+}
 
 export const configSchema = strictObject({
   presets: optional(presetsSchema),
-  directories: optional(
+  code: optional(
     strictObject({
-      source: optional(directoriesSchema),
-      test: optional(directoriesSchema),
-      coverage: optional(directorySchema),
-      output: optional(directorySchema),
+      files: optional(globsSchema),
+      configFiles: optional(globsSchema),
+      discoveredFiles: optional(globsSchema),
+      generatedFiles: optional(globsSchema),
+    }),
+  ),
+  source: createDirectoriesGroup(),
+  bin: createDirectoriesGroup(),
+  scripts: createDirectoriesGroup(),
+  test: optional(
+    strictObject({
+      dirs: optional(directoriesSchema),
+      files: optional(globsSchema),
+      fixtureFiles: optional(globsSchema),
+      coverageDir: optional(directorySchema),
     }),
   ),
   build: optional(
     strictObject({
+      outDir: optional(directorySchema),
       emptyOutDir: optional(boolean()),
     }),
   ),
-  files: optional(
+  typescript: optional(
     strictObject({
-      code: optional(globSchema),
-      test: optional(globSchema),
-      fixtures: optional(globSchema),
-      config: optional(globsSchema),
-      discovered: optional(globsSchema),
-      generated: optional(globsSchema),
-      gitignore: optional(fileSchema),
-      prettierignore: optional(fileSchema),
       tsconfig: optional(fileSchema),
       distTsconfig: optional(fileSchema),
+    }),
+  ),
+  git: optional(
+    strictObject({
+      gitignore: optional(fileSchema),
+    }),
+  ),
+  prettier: optional(
+    strictObject({
+      prettierignore: optional(fileSchema),
     }),
   ),
   agents: optional(
     strictObject({
       instructionFiles: optional(globsSchema),
-      snippetsDirectory: optional(directorySchema),
+      snippetsDir: optional(directorySchema),
     }),
   ),
   github: optional(

@@ -13,7 +13,7 @@ import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 
 export function syncGitignoreFile(config: ResolvedConfig) {
   syncIgnoreFile(config, {
-    path: config.gitignorePath,
+    path: config.git.gitignore,
     presets: {
       javascript() {
         return [javascriptIgnores];
