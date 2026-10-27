@@ -126,9 +126,11 @@ describe("support codegen barrels", () => {
     await expect(runCommand(barrels, "missing")).rejects.toThrow(
       'Unknown barrel "missing"',
     );
+
     await expect(runCommand(barrels, "mode")).rejects.toThrow(
       "Expected a barrel mode (default, named or all) in",
     );
+
     await expect(runCommand(barrels, "tool")).rejects.toThrow(
       'cannot be exported as "kebab-case"',
     );

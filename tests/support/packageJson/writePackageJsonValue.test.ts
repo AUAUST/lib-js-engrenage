@@ -42,12 +42,15 @@ describe("writePackageJsonValue", () => {
       prettier: "@auaust/engrenage/prettier",
       publishConfig: {},
     });
+
     expect(withDependency.indexOf('"prettier": "@auaust')).toBeGreaterThan(
       withDependency.indexOf('"devDependencies"'),
     );
+
     expect(withDependency.indexOf('"prettier": "@auaust')).toBeLessThan(
       withDependency.indexOf('"publishConfig"'),
     );
+
     expect(withDependency.indexOf('"prettier": "^3')).toBeLessThan(
       withDependency.indexOf('"vitest"'),
     );

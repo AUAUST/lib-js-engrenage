@@ -145,6 +145,7 @@ describe("defineViteConfig", () => {
     expect(native.test).toEqual({
       environment: "jsdom",
     });
+
     expect(computed.test?.name).toBe("@fixture/vitest:test");
   });
 });

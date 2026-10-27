@@ -83,6 +83,7 @@ describe("defineToolCommands", () => {
       "--",
       "src",
     ]);
+
     expect(process.exitCode).toBe(3);
   });
 

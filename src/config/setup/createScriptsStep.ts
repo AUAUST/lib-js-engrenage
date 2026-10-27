@@ -46,8 +46,11 @@ function collectScripts({
   hasDependency,
 }: StepContext): ReadonlyArray<Script> {
   const build = createBuildCommand(hasDependency);
+
   const typecheck = hasDependency(typescript) && "engrenage typecheck";
+
   const lint = hasDependency(eslint) && "engrenage eslint";
+
   const test = hasDependency(vitest) && "engrenage vitest";
 
   const publishes =

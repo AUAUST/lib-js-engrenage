@@ -34,9 +34,11 @@ describe("syncAgentFiles", () => {
     expect(resolveAgentReference(config, "shared.md", from)).toBe(
       join(root, ".agents/snippets/shared.md"),
     );
+
     expect(resolveAgentReference(config, "./AGENTS.md", from)).toBe(
       join(root, "AGENTS.md"),
     );
+
     expect(
       resolveAgentReference(
         config,

@@ -23,6 +23,7 @@ describe("createPrettierConfig", () => {
     });
 
     expectTypeOf(config).toEqualTypeOf<Config>();
+
     expect(config).toEqual({
       ...standardConfig,
       printWidth: 100,

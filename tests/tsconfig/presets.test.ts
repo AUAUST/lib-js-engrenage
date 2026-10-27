@@ -63,6 +63,7 @@ describe("tsconfig presets", () => {
       paths: {},
       skipLibCheck: false,
     });
+
     expect(files).toEqual([
       join(library, "tests/index.ts"),
       join(library, "src/env.d.ts"),

@@ -42,6 +42,7 @@ describe("defineEslintConfig", () => {
     const [result] = await eslint.lintFiles(["src/restricted.ts"]);
 
     expect(callback).toHaveBeenCalledOnce();
+
     expect(map(result?.messages ?? [], (message) => message.ruleId)).toEqual([
       "auaust/no-runtime-typeof",
     ]);

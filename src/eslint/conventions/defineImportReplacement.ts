@@ -10,21 +10,26 @@ function createImportSelectors(source: string, name: string): string[] {
   const imported = `ImportDeclaration[source.value='${source}']`;
 
   switch (name) {
-    case "*":
+    case "*": {
       return [
         `${imported} > ImportNamespaceSpecifier`,
         `ExportAllDeclaration[source.value='${source}'][exported]`,
       ];
-    case "default":
+    }
+
+    case "default": {
       return [
         `${imported} > ImportDefaultSpecifier`,
         `${imported} > ImportSpecifier[imported.name='default']`,
       ];
-    default:
+    }
+
+    default: {
       return [
         `${imported} > ImportSpecifier[imported.name='${name}']`,
         `ExportNamedDeclaration[source.value='${source}'] > ExportSpecifier[local.name='${name}']`,
       ];
+    }
   }
 }
 
@@ -53,12 +58,17 @@ function createSelector(
 
 function describeImport(name: string): string {
   switch (name) {
-    case "*":
+    case "*": {
       return "namespace imports";
-    case "default":
+    }
+
+    case "default": {
       return "default imports";
-    default:
+    }
+
+    default: {
       return `\`${name}\``;
+    }
   }
 }
 

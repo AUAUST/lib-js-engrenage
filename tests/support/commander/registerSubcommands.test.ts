@@ -23,6 +23,7 @@ describe("registerSubcommands", () => {
     expect(program.commands.map((command) => command.name())).toEqual([
       "greet",
     ]);
+
     expect(run).toHaveBeenCalledOnce();
   });
 

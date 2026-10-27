@@ -38,12 +38,17 @@ function createExport(
   specifier: string,
 ): string {
   switch (mode) {
-    case "default":
+    case "default": {
       return `export { default as ${name} } from "${specifier}";`;
-    case "named":
+    }
+
+    case "named": {
       return `export { ${name} } from "${specifier}";`;
-    case "all":
+    }
+
+    case "all": {
       return `export * from "${specifier}";`;
+    }
   }
 }
 
@@ -51,12 +56,15 @@ function assertMode(mode: string | undefined, barrel: File): BarrelMode {
   switch (mode) {
     case "default":
     case "named":
-    case "all":
+    case "all": {
       return mode;
-    default:
+    }
+
+    default: {
       throw new Error(
         `Expected a barrel mode (default, named or all) in ${barrel}, got "${mode ?? ""}"`,
       );
+    }
   }
 }
 

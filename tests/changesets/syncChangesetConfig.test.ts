@@ -43,6 +43,7 @@ describe("syncChangesetConfig", () => {
         status: "synced",
       },
     ]);
+
     expect(JSON.parse(project.read(".changeset/config.json"))).toEqual({
       access: "restricted",
       ignore: ["@owner/private"],

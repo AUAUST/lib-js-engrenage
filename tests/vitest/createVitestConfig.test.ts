@@ -25,6 +25,7 @@ describe("createVitestConfig", () => {
 
     expect(vitestConfig).not.toHaveProperty("root");
     expect(vitestConfig).not.toHaveProperty("build");
+
     expect(vitestConfig).toMatchObject({
       tsconfig: join(root, "tsconfig.json"),
       resolve: {
@@ -47,6 +48,7 @@ describe("createVitestConfig", () => {
         },
       },
     });
+
     expect(
       createVitestConfig(
         config,
@@ -70,9 +72,11 @@ describe("createVitestConfig", () => {
     });
 
     expect(vitestConfig.tsconfig).toBe(join(root, "tsconfig.dist.json"));
+
     expect(vitestConfig.test?.typecheck?.tsconfig).toBe(
       join(root, "tsconfig.dist.json"),
     );
+
     expect(vitestConfig.resolve?.tsconfigPaths).toBe(false);
     expect(vitestConfig.plugins).toEqual([]);
   });
@@ -111,11 +115,13 @@ describe("createVitestConfig", () => {
         ).resolves.toMatchObject({
           id: join(root, "src/index.ts"),
         });
+
         await expect(
           pluginContainer.resolveId("@fixture/vitest/data.json", importer),
         ).resolves.toMatchObject({
           id: join(root, "data/data.json"),
         });
+
         await expect(
           pluginContainer.resolveId("@fixture/vitest/extra", importer),
         ).rejects.toThrow(

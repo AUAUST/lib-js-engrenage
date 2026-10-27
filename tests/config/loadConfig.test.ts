@@ -24,25 +24,30 @@ describe("loadConfig", () => {
     expect(warn).toHaveBeenCalledExactlyOnceWith(
       `No engrenage config found in ${first}, using defaults`,
     );
+
     expect(config.root).toBe(first);
     expect(config.source.dirs).toEqual(["src"]);
     expect(config.bin.dirs).toEqual(["bin"]);
     expect(config.scripts.dirs).toEqual(["scripts"]);
     expect(config.code.files).toEqual(["**/*.{ts,tsx}"]);
+
     expect(config.test).toEqual({
       dirs: ["tests"],
       files: ["**/*.{test,spec}.{ts,tsx}"],
       fixtureFiles: ["tests/**/fixtures/**"],
       coverageDir: "coverage",
     });
+
     expect(config.code.generatedFiles).toEqual([]);
     expect(config.raw).toEqual({});
     expect(config.packageJsonPath).toBeUndefined();
     expect(config.packageJson.optional.name).toBeUndefined();
     expect(config.tsconfig.optional.outDir).toBeUndefined();
+
     expect(() => config.tsconfig.outDir).toThrow(
       `No tsconfig found in ${first}`,
     );
+
     expect(config.presets).toEqual([]);
     expect(config.environment.hasDependency("valibot")).toBe(false);
   });
@@ -84,6 +89,7 @@ describe("loadConfig", () => {
         generatedFiles: ["src/generated/**"],
       },
     });
+
     expect(config.presets).toEqual(["library"]);
     expect(config.test.dirs).toEqual(["test"]);
     expect(config.test.fixtureFiles).toEqual(["test/**/fixtures/**"]);
@@ -144,6 +150,7 @@ describe("loadConfig", () => {
     expect(missing.typescript.tsconfig).toBe(
       join(missing.root, "tsconfig.app.json"),
     );
+
     expect(missing.tsconfig.outDir).toBe("build");
 
     const explicitDefault = await loadConfig(
@@ -197,6 +204,7 @@ describe("loadConfig", () => {
     expect(config.typescript.tsconfig).toBe(join(root, "tsconfig.json"));
     expect(config.git.gitignore).toBeUndefined();
     expect(config.prettier.prettierignore).toBeUndefined();
+
     expect(() => {
       return config.resolve("../outside");
     }).toThrow("escapes");

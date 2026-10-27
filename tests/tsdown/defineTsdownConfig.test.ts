@@ -46,6 +46,7 @@ describe("defineTsdownConfig", () => {
     );
 
     expect(callback).toHaveBeenCalledOnce();
+
     expect(tsdownConfig).toMatchObject({
       platform: "neutral",
       exports: {

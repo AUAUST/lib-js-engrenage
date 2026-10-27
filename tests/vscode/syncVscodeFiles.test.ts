@@ -91,6 +91,7 @@ describe("syncVscodeFiles", () => {
     config.filesystem.flush();
 
     expect(project.read(".vscode/settings.json")).toBe(settings);
+
     expect(JSON.parse(project.read(".vscode/extensions.json"))).toEqual({
       recommendations: ["dbaeumer.vscode-eslint"],
     });

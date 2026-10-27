@@ -81,40 +81,73 @@ function resolveScopeReference(
   };
 
   switch (reference) {
-    case "files.code":
+    case "files.code": {
       return code.files;
-    case "files.config":
+    }
+
+    case "files.config": {
       return code.configFiles;
-    case "files.discovered":
+    }
+
+    case "files.discovered": {
       return code.discoveredFiles;
-    case "files.generated":
+    }
+
+    case "files.generated": {
       return code.generatedFiles;
-    case "files.test":
+    }
+
+    case "files.test": {
       return test.files;
-    case "files.source":
+    }
+
+    case "files.source": {
       return filesIn(roles.source, code.files);
-    case "files.bin":
+    }
+
+    case "files.bin": {
       return filesIn(roles.bin, code.files);
-    case "files.scripts":
+    }
+
+    case "files.scripts": {
       return filesIn(roles.scripts, code.files);
-    case "files.tests":
+    }
+
+    case "files.tests": {
       return filesIn(roles.tests, code.files);
-    case "files.code.published":
+    }
+
+    case "files.code.published": {
       return filesIn(roles.published, code.files);
-    case "files.code.private":
+    }
+
+    case "files.code.private": {
       return filesIn(roles.private, code.files);
-    case "dir.source":
+    }
+
+    case "dir.source": {
       return filesIn(roles.source, anyFile);
-    case "dir.bin":
+    }
+
+    case "dir.bin": {
       return filesIn(roles.bin, anyFile);
-    case "dir.scripts":
+    }
+
+    case "dir.scripts": {
       return filesIn(roles.scripts, anyFile);
-    case "dir.tests":
+    }
+
+    case "dir.tests": {
       return filesIn(roles.tests, anyFile);
-    case "dir.published":
+    }
+
+    case "dir.published": {
       return filesIn(roles.published, anyFile);
-    case "dir.private":
+    }
+
+    case "dir.private": {
       return filesIn(roles.private, anyFile);
+    }
   }
 }
 

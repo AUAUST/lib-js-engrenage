@@ -66,6 +66,7 @@ describe("createTsconfig", () => {
     });
 
     expect(outside.outDir).toBe("../build");
+
     expect(() => atRoot.outDir).toThrow(
       "sets compilerOptions.outDir to the project root",
     );

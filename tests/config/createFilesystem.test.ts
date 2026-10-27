@@ -19,11 +19,13 @@ describe("createFilesystem", () => {
     filesystem.write("unchanged.txt", "same\n");
 
     expect(filesystem.read("nested/created.txt")).toBe("created\n");
+
     expect(filesystem.glob("**/*.txt")).toEqual([
       "existing.txt",
       "nested/created.txt",
       "unchanged.txt",
     ]);
+
     expect(existsSync(project.resolve("nested/created.txt"))).toBe(false);
 
     expect(filesystem.flush()).toEqual([
@@ -36,6 +38,7 @@ describe("createFilesystem", () => {
         status: "created",
       },
     ]);
+
     expect(project.read("existing.txt")).toBe("new\n");
     expect(project.read("nested/created.txt")).toBe("created\n");
     expect(filesystem.changes()).toEqual([]);

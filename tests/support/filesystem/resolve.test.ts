@@ -7,12 +7,15 @@ import { resolve } from "#support/filesystem/utils/resolve";
 describe("resolve", () => {
   test("resolves string and URL bases to the same absolute path", () => {
     expectTypeOf(resolve).parameter(0).toEqualTypeOf<Directory | URL>();
+
     expect(resolve("/project", "src", "index.ts")).toBe(
       "/project/src/index.ts",
     );
+
     expect(resolve(new URL("file:///project/"), "src", "index.ts")).toBe(
       "/project/src/index.ts",
     );
+
     expect(resolve(new URL("file:///project"))).toBe("/project");
   });
 

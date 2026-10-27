@@ -24,6 +24,7 @@ describe("resolvePathAliases", () => {
 
     expectTypeOf(resolvePathAliases).parameter(1).toEqualTypeOf<Paths>();
     expectTypeOf(aliases).toEqualTypeOf<PathAliases>();
+
     expect(aliases).toEqual([
       {
         name: "group/index",
