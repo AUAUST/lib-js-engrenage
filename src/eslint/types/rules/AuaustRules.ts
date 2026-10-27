@@ -3,6 +3,14 @@ import type { Linter } from "eslint";
 
 export interface AuaustRules {
   /**
+   * Wrap the statements of each `case` in a block.
+   */
+  "auaust/braced-cases"?: Linter.RuleEntry<[]>;
+  /**
+   * Keep function overloads and their implementation together, without blank lines.
+   */
+  "auaust/grouped-overloads"?: Linter.RuleEntry<[]>;
+  /**
    * Use `isArray` from @auaust/toolkit instead of `Array.isArray`.
    */
   "auaust/no-array-is-array"?: Linter.RuleEntry<[]>;
@@ -62,6 +70,34 @@ export interface AuaustRules {
    * Use named imports instead of namespace imports, default imports, or `z` from `zod/mini`.
    */
   "auaust/no-zod-namespace"?: Linter.RuleEntry<[]>;
+  /**
+   * Surround types, interfaces, functions, classes, enums, namespaces and block statements with blank lines.
+   */
+  "auaust/padded-blocks"?: Linter.RuleEntry<[]>;
+  /**
+   * Separate a `case` that has statements from the next `case` with a blank line.
+   */
+  "auaust/padded-cases"?: Linter.RuleEntry<[]>;
+  /**
+   * Separate the exports from the preceding code with a blank line.
+   */
+  "auaust/padded-exports"?: Linter.RuleEntry<[]>;
+  /**
+   * Separate the imports from the following code with a blank line.
+   */
+  "auaust/padded-imports"?: Linter.RuleEntry<[]>;
+  /**
+   * Surround multiline variable declarations with blank lines.
+   */
+  "auaust/padded-multiline-declarations"?: Linter.RuleEntry<[]>;
+  /**
+   * Surround multiline expression statements with blank lines.
+   */
+  "auaust/padded-multiline-expressions"?: Linter.RuleEntry<[]>;
+  /**
+   * Add a blank line before a `return` that follows other statements.
+   */
+  "auaust/padded-returns"?: Linter.RuleEntry<[]>;
   /**
    * Return `void` the expression instead of following it with a bare `return` in its own block.
    */

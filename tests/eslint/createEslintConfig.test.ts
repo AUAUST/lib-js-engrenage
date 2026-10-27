@@ -141,6 +141,7 @@ describe("createEslintConfig", () => {
     expect(rules).toEqual(
       expect.arrayContaining(["curly", "eqeqeq", "import-x/no-default-export"]),
     );
+
     expect(rules.filter((rule) => rule === "eqeqeq")).toHaveLength(1);
   });
 
@@ -420,8 +421,102 @@ export function tail(ready: boolean, log: () => void) {
     });
 
     expect(result?.output).toBe(fixed);
+
     expect(map(result?.messages ?? [], (message) => message.ruleId)).toEqual([
       "auaust/prefer-return-void",
+    ]);
+  });
+
+  test("reports each layout convention under its own rule", async () => {
+    const source = `type Value = string;
+export function pick(value: Value): number;
+
+export function pick(value: Value): number {
+  switch (value) {
+
+    case "a":
+      return 1;
+    case "b":
+    case "c": {
+      return 2;
+    }
+
+    default: {
+      return 3;
+    }
+  }
+}
+`;
+
+    async function lintedLayoutRules(options?: Options) {
+      const eslint = await createLinter({
+        promises: false,
+        ...options,
+      });
+
+      const [result] = await eslint.lintText(source, {
+        filePath: "src/layout.ts",
+      });
+
+      return map(result?.messages ?? [], (message) => message.ruleId);
+    }
+
+    expect(await lintedLayoutRules()).toEqual([
+      "auaust/padded-blocks",
+      "auaust/padded-exports",
+      "auaust/grouped-overloads",
+      "@stylistic/padded-blocks",
+      "auaust/braced-cases",
+      "auaust/padded-cases",
+    ]);
+
+    expect(
+      await lintedLayoutRules({
+        stylistic: {
+          paddedBlocks: false,
+          bracedCases: false,
+        },
+      }),
+    ).toEqual([
+      "auaust/padded-exports",
+      "auaust/grouped-overloads",
+      "@stylistic/padded-blocks",
+      "auaust/padded-cases",
+    ]);
+  });
+
+  test("wraps case statements in a block unless it would scope their declarations", async () => {
+    const eslint = new ESLint({
+      cwd: root,
+      fix: true,
+      overrideConfigFile: true,
+      overrideConfig: createEslintConfig(await loadConfig(root), {
+        promises: false,
+      }),
+    });
+
+    const source = `export function pick(value: string): number {
+  switch (value) {
+    case "a":
+      return 1;
+
+    default:
+      const fallback = 2;
+
+      return fallback;
+  }
+}
+`;
+
+    const [result] = await eslint.lintText(source, {
+      filePath: "src/cases.ts",
+    });
+
+    expect(result?.output).toContain('case "a":\n      { return 1; }');
+
+    expect(map(result?.messages ?? [], (message) => message.ruleId)).toEqual([
+      "auaust/braced-cases",
+      "no-case-declarations",
     ]);
   });
 
@@ -434,9 +529,11 @@ export function tail(ready: boolean, log: () => void) {
 
     expect(await eslint.isPathIgnored("ignored.ts")).toBe(true);
     expect(await eslint.isPathIgnored("coverage/report.ts")).toBe(true);
+
     expect(await eslint.isPathIgnored("tests/unit/fixtures/case.ts")).toBe(
       true,
     );
+
     expect(await eslint.isPathIgnored("src/violations.ts")).toBe(false);
 
     const unignored = await createLinter({
@@ -462,6 +559,7 @@ export function tail(ready: boolean, log: () => void) {
     });
 
     expect(await eslint.isPathIgnored("tests/unit/data/case.ts")).toBe(true);
+
     expect(await eslint.isPathIgnored("tests/unit/fixtures/case.ts")).toBe(
       false,
     );
@@ -484,6 +582,7 @@ export function tail(ready: boolean, log: () => void) {
     expectTypeOf(createEslintConfig).parameters.toEqualTypeOf<
       [ResolvedConfig, Maybe<Options>?]
     >();
+
     expectTypeOf(createEslintConfig).returns.toEqualTypeOf<Config[]>();
   });
 });
