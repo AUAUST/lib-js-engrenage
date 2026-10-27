@@ -10,9 +10,7 @@ export function settleChanges(
   { check }: { check: boolean },
 ) {
   if (!check) {
-    reportSyncResults(filesystem.flush());
-
-    return;
+    return void reportSyncResults(filesystem.flush());
   }
 
   const outdated = map(filesystem.discard(), ({ file }): SyncResult => {

@@ -95,7 +95,7 @@ export function createTsconfig({
     const configured = compilerOptions()?.outDir;
 
     if (configured === undefined) {
-      return undefined;
+      return;
     }
 
     const relativeOutDir = toPosixPath(relative(root, configured));

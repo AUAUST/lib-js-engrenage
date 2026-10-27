@@ -39,6 +39,10 @@ export interface AuaustRules {
    */
   "auaust/no-primitive-kit-root"?: Linter.RuleEntry<[]>;
   /**
+   * Use a bare `return;` instead of `return undefined;`.
+   */
+  "auaust/no-return-undefined"?: Linter.RuleEntry<[]>;
+  /**
    * Use `is<Type>` helpers instead of runtime `typeof` comparisons (except `typeof x === "undefined"`).
    */
   "auaust/no-runtime-typeof"?: Linter.RuleEntry<[]>;
@@ -58,6 +62,10 @@ export interface AuaustRules {
    * Use named imports instead of namespace imports, default imports, or `z` from `zod/mini`.
    */
   "auaust/no-zod-namespace"?: Linter.RuleEntry<[]>;
+  /**
+   * Return `void` the expression instead of following it with a bare `return` in its own block.
+   */
+  "auaust/prefer-return-void"?: Linter.RuleEntry<[]>;
 }
 
 /* ======= Declarations ======= */

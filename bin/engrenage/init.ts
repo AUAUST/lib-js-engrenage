@@ -72,7 +72,7 @@ async function readPackage(
   );
 
   if (!starts) {
-    return undefined;
+    return;
   }
 
   invokeCommand(config.root, {

@@ -23,9 +23,7 @@ export async function runSteps({
   const gaps = steps.filter((step) => step.isMissing(context));
 
   if (gaps.length === 0) {
-    console.info("Engrenage is set up, nothing is missing.");
-
-    return undefined;
+    return void console.info("Engrenage is set up, nothing is missing.");
   }
 
   if (config.configFile !== undefined) {
@@ -36,7 +34,7 @@ export async function runSteps({
     );
 
     if (!fill) {
-      return undefined;
+      return;
     }
   }
 

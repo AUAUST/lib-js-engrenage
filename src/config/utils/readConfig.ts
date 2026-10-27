@@ -45,7 +45,7 @@ async function findConfigFile(
   const { config, cwd, _configFile } = await loadConfigIn(directory);
 
   if (_configFile === undefined) {
-    return undefined;
+    return;
   }
 
   if (cwd === undefined) {

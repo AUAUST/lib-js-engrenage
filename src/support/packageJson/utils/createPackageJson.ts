@@ -66,7 +66,7 @@ export function createPackageJson({
         const fields = manifest();
 
         if (fields === undefined) {
-          return undefined;
+          return;
         }
 
         return flatMap(dependencyFields, (field) => {

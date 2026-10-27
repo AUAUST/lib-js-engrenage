@@ -44,12 +44,14 @@ export const packageJsonRules = freeze({
 export const pluginName = "auaust";
 
 export const recommendedRules = freeze({
+  "@stylistic/arrow-parens": "error",
   "@typescript-eslint/ban-ts-comment": "off",
   "@typescript-eslint/no-empty-object-type": "off",
   "@typescript-eslint/no-explicit-any": "off",
   "@typescript-eslint/no-unsafe-function-type": "off",
   "@typescript-eslint/no-unused-vars": "off",
   "no-cond-assign": "off",
+  "no-useless-return": "error",
 } as const satisfies Rules);
 
 export const defaultCacheLocation = "node_modules/.cache/eslint" satisfies File;

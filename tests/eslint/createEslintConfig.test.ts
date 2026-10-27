@@ -324,6 +324,107 @@ describe("createEslintConfig", () => {
     ).toEqual([]);
   });
 
+  test("folds a single statement into its bare return and drops useless returns", async () => {
+    const eslint = new ESLint({
+      cwd: root,
+      fix: true,
+      overrideConfigFile: true,
+      overrideConfig: createEslintConfig(await loadConfig(root), {
+        promises: false,
+      }),
+    });
+
+    const shared = `
+  if (Math.random() > 0.5) {
+    log("kept");
+    log("too");
+
+    return;
+  }
+
+  if (Math.random() > 0.5) {
+    log("commented");
+    // keep this note
+
+    return;
+  }
+
+  await task();
+}
+`;
+
+    const source = `export let count = 0;
+
+export async function run(task: () => Promise<void>, log: (text: string) => void) {
+  if (Math.random() > 0.5) {
+    await task();
+
+    return;
+  }
+
+  if (Math.random() > 0.5) {
+    count = 1;
+
+    return;
+  }
+
+  if (Math.random() > 0.5) {
+    return undefined;
+  }
+${shared}
+export function done(log: () => void) {
+  log();
+
+  return;
+}
+
+export function tail(ready: boolean, log: () => void) {
+  if (ready) {
+    log();
+    return;
+  }
+}
+`;
+
+    const fixed = `export let count = 0;
+
+export async function run(task: () => Promise<void>, log: (text: string) => void) {
+  if (Math.random() > 0.5) {
+    return void (await task());
+  }
+
+  if (Math.random() > 0.5) {
+    return void (count = 1);
+  }
+
+  if (Math.random() > 0.5) {
+    return;
+  }
+${shared}
+export function done(log: () => void) {
+  log();
+
+  
+}
+
+export function tail(ready: boolean, log: () => void) {
+  if (ready) {
+    log();
+    
+  }
+}
+`;
+
+    const [result] = await eslint.lintText(source, {
+      filePath: "src/returns.ts",
+    });
+
+    expect(result?.output).toBe(fixed);
+    expect(map(result?.messages ?? [], (message) => message.ruleId)).toEqual([
+      "auaust/prefer-return-void",
+    ]);
+  });
+
   test("allows default exports in tool configs", async () => {
     expect(await lintedRules("tool.config.ts")).toEqual([]);
   });
