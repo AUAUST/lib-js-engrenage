@@ -40,13 +40,8 @@ describe("syncBlocks", () => {
     );
   });
 
-  test("uses the filler of each directive and does not treat unknown ones as markers", () => {
-    const content = [
-      "<!-- @list ./*.md -->",
-      "<!-- @unknown ./other.md -->",
-      "<!-- @end -->",
-      "",
-    ].join("\n");
+  test("uses the filler of each directive", () => {
+    const content = ["<!-- @list ./*.md -->", "<!-- @end -->", ""].join("\n");
 
     expect(
       syncBlocks(content, markdownBlocks, {
@@ -64,6 +59,24 @@ describe("syncBlocks", () => {
         "",
       ].join("\n"),
     );
+  });
+
+  test("rejects a misspelled directive and an end marker that closes no block", () => {
+    expect(() => {
+      return syncBlocks(
+        "<!-- @refrence ./first.md -->\n<!-- @end -->\n",
+        markdownBlocks,
+        fillers,
+      );
+    }).toThrow('Unknown directive in "<!-- @refrence ./first.md -->"');
+
+    expect(() => {
+      return syncBlocks(
+        "<!-- @reference ./first.md -->\n<!-- @end -->\n<!-- @end -->\n",
+        markdownBlocks,
+        fillers,
+      );
+    }).toThrow('"<!-- @end -->" closes no block');
   });
 
   test("passes every argument of the marker to its filler", () => {

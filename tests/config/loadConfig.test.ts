@@ -80,8 +80,8 @@ describe("loadConfig", () => {
       test: {
         dirs: "test",
       },
-      codegen: {
-        files: ["src/generated/**"],
+      code: {
+        generatedFiles: ["src/generated/**"],
       },
     });
     expect(config.presets).toEqual(["library"]);

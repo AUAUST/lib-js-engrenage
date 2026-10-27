@@ -120,6 +120,10 @@ export default defineCommand((command) => {
         }
       }
 
+      if (check) {
+        console.info("Checking synced files...");
+      }
+
       runSync(config, {
         names: selected.length === 0 ? keys(targets) : selected,
         flags,

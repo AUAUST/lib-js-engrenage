@@ -1,11 +1,8 @@
 import { configs as packageJsonConfigs } from "eslint-plugin-package-json";
 
 import { packageJsonFile } from "#constants";
-import {
-  packageJsonPropertyOrder,
-  packageJsonRules,
-  pluginName,
-} from "#eslint/constants";
+import { packageJsonRules, pluginName } from "#eslint/constants";
+import { packageJsonPropertyOrder } from "#support/packageJson/constants";
 import type { Config } from "#eslint/types/Config";
 
 export function createPackageJsonRules(): Config {

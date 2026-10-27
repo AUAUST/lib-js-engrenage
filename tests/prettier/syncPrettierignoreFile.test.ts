@@ -9,7 +9,7 @@ describe("syncPrettierignoreFile", () => {
   test("writes the default and project groups, with the changelog of changesets projects", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
-        'export default { codegen: { files: "src/generated/**" } };\n',
+        'export default { code: { generatedFiles: "src/generated/**" } };\n',
       "package.json": JSON.stringify({
         type: "module",
         devDependencies: {

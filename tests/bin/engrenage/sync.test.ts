@@ -52,9 +52,15 @@ describe("engrenage sync", () => {
       '"editor.formatOnSave": true',
     );
 
+    vi.mocked(console.info).mockClear();
+
     await runCommand(sync, "--check");
 
     expect(process.exitCode).toBeUndefined();
+    expect(vi.mocked(console.info).mock.calls).toEqual([
+      ["Checking synced files..."],
+      ["All good!"],
+    ]);
   });
 
   test("checks only the selected targets without writing", async () => {
@@ -63,9 +69,10 @@ describe("engrenage sync", () => {
     await runCommand(sync, "vscode", "--check");
 
     expect(process.exitCode).toBe(1);
-    expect(console.info).toHaveBeenCalledExactlyOnceWith(
-      "outdated: .vscode/settings.json",
-    );
+    expect(vi.mocked(console.info).mock.calls).toEqual([
+      ["Checking synced files..."],
+      ["outdated: .vscode/settings.json"],
+    ]);
     expect(project.read("AGENTS.md")).toBe(emptyBlock);
   });
 

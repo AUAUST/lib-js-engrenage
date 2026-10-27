@@ -8,7 +8,7 @@ import { isBoolean } from "@auaust/toolkit/isBoolean";
 import { entries } from "@auaust/toolkit/object";
 import { value } from "@auaust/toolkit/value";
 
-import { pluginName } from "#eslint/constants";
+import { anyFile, pluginName } from "#eslint/constants";
 import { createRuleName } from "#eslint/utils/createRuleName";
 import { filesIn } from "#utils/filesIn";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -69,29 +69,52 @@ function resolveScopeReference(
   config: ResolvedConfig,
   reference: ScopeReference,
 ): Globs {
-  const { code, source, bin, scripts, test } = config;
+  const { code, test } = config;
+
+  const roles = {
+    source: config.source.dirs,
+    bin: config.bin.dirs,
+    scripts: config.scripts.dirs,
+    tests: test.dirs,
+    published: [...config.source.dirs, ...config.bin.dirs],
+    private: [...test.dirs, ...config.scripts.dirs],
+  };
 
   switch (reference) {
-    case "code":
+    case "files.code":
       return code.files;
-    case "config":
+    case "files.config":
       return code.configFiles;
-    case "discovered":
+    case "files.discovered":
       return code.discoveredFiles;
-    case "testFiles":
+    case "files.generated":
+      return code.generatedFiles;
+    case "files.test":
       return test.files;
-    case "source":
-      return filesIn(source.dirs, code.files);
-    case "bin":
-      return filesIn(bin.dirs, code.files);
-    case "scripts":
-      return filesIn(scripts.dirs, code.files);
-    case "tests":
-      return filesIn(test.dirs, code.files);
-    case "public":
-      return filesIn([...source.dirs, ...bin.dirs], code.files);
-    case "private":
-      return filesIn([...test.dirs, ...scripts.dirs], code.files);
+    case "files.source":
+      return filesIn(roles.source, code.files);
+    case "files.bin":
+      return filesIn(roles.bin, code.files);
+    case "files.scripts":
+      return filesIn(roles.scripts, code.files);
+    case "files.tests":
+      return filesIn(roles.tests, code.files);
+    case "files.code.published":
+      return filesIn(roles.published, code.files);
+    case "files.code.private":
+      return filesIn(roles.private, code.files);
+    case "dir.source":
+      return filesIn(roles.source, anyFile);
+    case "dir.bin":
+      return filesIn(roles.bin, anyFile);
+    case "dir.scripts":
+      return filesIn(roles.scripts, anyFile);
+    case "dir.tests":
+      return filesIn(roles.tests, anyFile);
+    case "dir.published":
+      return filesIn(roles.published, anyFile);
+    case "dir.private":
+      return filesIn(roles.private, anyFile);
   }
 }
 

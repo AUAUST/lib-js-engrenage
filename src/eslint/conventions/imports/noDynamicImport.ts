@@ -4,5 +4,5 @@ export default defineRestriction({
   selector: "ImportExpression",
   message:
     "Use static imports; dynamic import() is reserved for tests and framework discovery.",
-  files: ["public", "scripts"],
+  files: ["files.code.published", "files.scripts"],
 });

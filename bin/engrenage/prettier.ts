@@ -27,6 +27,7 @@ export default defineToolCommands({
     },
     "prettier:check": {
       description: "Check the formatting of the given files.",
+      message: "Checking formatting...",
       arguments(config, args) {
         ensureUnset(args, ["--write", "-w"]);
 

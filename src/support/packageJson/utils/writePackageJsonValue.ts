@@ -1,8 +1,8 @@
 import { findIndex, findLastIndex } from "@auaust/primitive-kit/arrays";
 
-import { packageJsonPropertyOrder } from "#eslint/constants";
 import { readJsonValue } from "#support/json/utils/readJsonValue";
 import { writeJsonValue } from "#support/json/utils/writeJsonValue";
+import { packageJsonPropertyOrder } from "#support/packageJson/constants";
 import type { JsonValue } from "#support/json/types/JsonValue";
 import type { File } from "#types/File";
 
@@ -10,7 +10,10 @@ function rankOf(property: string): number {
   return findIndex(packageJsonPropertyOrder, (known) => known === property);
 }
 
-function propertyInsertionIndex(property: string, properties: string[]): number {
+function propertyInsertionIndex(
+  property: string,
+  properties: string[],
+): number {
   const rank = rankOf(property);
 
   if (rank === -1) {

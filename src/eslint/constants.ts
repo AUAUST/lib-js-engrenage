@@ -7,8 +7,12 @@ import * as performance from "#eslint/conventions/performance/index";
 import * as promises from "#eslint/conventions/promises/index";
 import * as structure from "#eslint/conventions/structure/index";
 import * as stylistic from "#eslint/conventions/stylistic/index";
+import { dependencyFields } from "#support/packageJson/constants";
 import type { Rules } from "#eslint/types/Rules";
 import type { File } from "#types/File";
+import type { Glob } from "#types/Glob";
+
+export const anyFile = "**" satisfies Glob;
 
 export const conventionCategories = freeze({
   globals,
@@ -20,48 +24,6 @@ export const conventionCategories = freeze({
   performance,
 } as const);
 
-export const packageJsonPropertyOrder = freeze([
-  "$schema",
-  "name",
-  "version",
-  "private",
-  "description",
-  "keywords",
-  "homepage",
-  "bugs",
-  "repository",
-  "funding",
-  "license",
-  "author",
-  "contributors",
-  "type",
-  "bin",
-  "scripts",
-  "imports",
-  "exports",
-  "main",
-  "module",
-  "types",
-  "files",
-  "workspaces",
-  "dependencies",
-  "devDependencies",
-  "inlinedDependencies",
-  "peerDependencies",
-  "peerDependenciesMeta",
-  "optionalDependencies",
-  "bundleDependencies",
-  "overrides",
-  "resolutions",
-  "sideEffects",
-  "prettier",
-  "packageManager",
-  "engines",
-  "devEngines",
-  "publishConfig",
-  "pnpm",
-] as const);
-
 export const packageJsonRules = freeze({
   "package-json/sort-collections": [
     "error",
@@ -72,11 +34,8 @@ export const packageJsonRules = freeze({
       "imports",
       "overrides",
       "scripts",
-      "dependencies",
-      "devDependencies",
+      ...dependencyFields,
       "inlinedDependencies",
-      "optionalDependencies",
-      "peerDependencies",
       "peerDependenciesMeta",
     ],
   ],

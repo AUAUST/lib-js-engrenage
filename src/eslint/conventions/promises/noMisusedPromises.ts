@@ -11,6 +11,6 @@ export default defineConvention({
       },
     ],
   },
-  files: ["public", "private"],
+  files: ["files.code.published", "files.code.private"],
   typeAware: true,
 });

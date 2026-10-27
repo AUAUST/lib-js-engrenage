@@ -21,8 +21,8 @@ describe("defineConfig", () => {
   test("accepts sync and async callbacks", () => {
     expectTypeOf(defineConfig).toBeCallableWith(() => {
       return {
-        codegen: {
-          files: ["generated/**"],
+        code: {
+          generatedFiles: ["generated/**"],
         },
       };
     });

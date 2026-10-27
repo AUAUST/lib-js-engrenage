@@ -1,4 +1,3 @@
-import { map } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 
 import type { BlockFillers } from "#types/BlockFillers";
@@ -9,12 +8,8 @@ export function syncBlocks(
   { open, close, padding }: BlockSyntax,
   fillers: BlockFillers,
 ): string {
-  const directives = map(keys(fillers), (directive) => {
-    return RegExp.escape(directive);
-  });
-
   const marker = new RegExp(
-    `^${RegExp.escape(open)}@(?:(${directives.join("|")})((?: \\S+)+)|end)${RegExp.escape(close)}$`,
+    `^${RegExp.escape(open)}@(\\w+)((?: \\S+)*)${RegExp.escape(close)}$`,
     "gm",
   );
 
@@ -22,37 +17,51 @@ export function syncBlocks(
 
   let result = "";
   let cursor = 0;
+  let isBlockOpen = false;
 
   for (const [index, match] of markers.entries()) {
-    const [opening, directive, argumentList] = match;
+    const [line, directive = "", argumentList = ""] = match;
 
-    if (directive === undefined || argumentList === undefined) {
+    if (directive === "end") {
+      if (!isBlockOpen) {
+        throw new Error(`"${line}" closes no block`);
+      }
+
+      isBlockOpen = false;
+
       continue;
-    }
-
-    const next = markers[index + 1];
-
-    if (next === undefined) {
-      throw new Error(`Missing "@end" marker after "${opening}"`);
     }
 
     const fill = fillers[directive];
 
     if (fill === undefined) {
-      throw new Error(`No filler for "@${directive}" markers`);
+      throw new Error(
+        `Unknown directive in "${line}"; expected one of @${[...keys(fillers), "end"].join(", @")}`,
+      );
+    }
+
+    if (argumentList === "") {
+      throw new Error(`"${line}" has no arguments`);
+    }
+
+    const next = markers[index + 1];
+
+    if (next === undefined) {
+      throw new Error(`Missing "@end" marker after "${line}"`);
     }
 
     const filled = fill(...argumentList.trim().split(" ")).trim();
 
     if (filled.match(marker) !== null) {
-      throw new Error(`Content of "${opening}" contains a block marker`);
+      throw new Error(`Content of "${line}" contains a block marker`);
     }
 
-    const blockStart = match.index + opening.length;
+    const blockStart = match.index + line.length;
 
     result += `${content.slice(cursor, blockStart)}${padding}${filled}${padding}`;
 
     cursor = next.index;
+    isBlockOpen = true;
   }
 
   return result + content.slice(cursor);

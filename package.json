@@ -27,8 +27,7 @@
     "format": "pnpm run engrenage prettier",
     "format:all": "pnpm run engrenage prettier:all",
     "lint": "pnpm run engrenage eslint",
-    "prepare": "pnpm run support codegen rules && pnpm run support codegen barrels && pnpm run engrenage sync",
-    "ready": "pnpm install --frozen-lockfile && pnpm run prepare && pnpm run ci && echo 'Ready!'",
+    "ready": "pnpm install --frozen-lockfile && pnpm run support codegen rules && pnpm run support codegen barrels && pnpm run engrenage sync && pnpm run ci && echo 'Ready!'",
     "support": "node scripts/support/index.ts",
     "test": "pnpm run engrenage vitest && pnpm run typecheck",
     "typecheck": "pnpm run engrenage typecheck",
@@ -132,19 +131,6 @@
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
   },
-  "inlinedDependencies": {
-    "@auaust/primitive-kit": "0.42.2",
-    "@auaust/toolkit": "0.5.1",
-    "@clack/core": "1.5.1",
-    "@clack/prompts": "1.8.1",
-    "@commander-js/extra-typings": "15.0.0",
-    "commander": "15.0.0",
-    "fast-string-truncated-width": "3.0.3",
-    "fast-string-width": "3.0.2",
-    "fast-wrap-ansi": "0.2.2",
-    "jsonc-parser": "3.3.1",
-    "sisteransi": "1.0.5"
-  },
   "peerDependencies": {
     "@changesets/cli": "^3.0.0",
     "eslint": "^10.0.0",
@@ -177,6 +163,19 @@
     "vitest": {
       "optional": true
     }
+  },
+  "inlinedDependencies": {
+    "@auaust/primitive-kit": "0.42.2",
+    "@auaust/toolkit": "0.5.1",
+    "@clack/core": "1.5.1",
+    "@clack/prompts": "1.8.1",
+    "@commander-js/extra-typings": "15.0.0",
+    "commander": "15.0.0",
+    "fast-string-truncated-width": "3.0.3",
+    "fast-string-width": "3.0.2",
+    "fast-wrap-ansi": "0.2.2",
+    "jsonc-parser": "3.3.1",
+    "sisteransi": "1.0.5"
   },
   "sideEffects": false,
   "prettier": "#prettier",

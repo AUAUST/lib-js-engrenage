@@ -10,6 +10,7 @@ import { transformValues } from "@auaust/toolkit/transformValues";
 
 import { loadConfig } from "#config/utils/loadConfig";
 import { packageJsonFile } from "#constants";
+import { successMessage } from "#support/commander/constants";
 import { resolve } from "#support/filesystem/utils/resolve";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -149,7 +150,7 @@ export function defineToolCommands<Name extends string>({
           const exitCode = await runBinary(binaryPath, transformed);
 
           if (tool.message !== undefined && exitCode === 0) {
-            console.info("All good!");
+            console.info(successMessage);
           }
         });
     };
