@@ -2,15 +2,15 @@ import { Argument } from "@commander-js/extra-typings";
 
 import { keys } from "@auaust/toolkit/object";
 
-import { syncAgentFiles } from "#agents/utils/syncAgentFiles";
-import { syncChangesetConfig } from "#changesets/utils/syncChangesetConfig";
+import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
+import { syncChangesetConfig } from "#changesets/setup/syncChangesetConfig";
 import { loadConfig } from "#config/utils/loadConfig";
-import { syncGitignoreFile } from "#git/utils/syncGitignoreFile";
-import { syncWorkflowFiles } from "#github/utils/syncWorkflowFiles";
-import { syncPrettierignoreFile } from "#prettier/utils/syncPrettierignoreFile";
+import { syncGitignoreFile } from "#git/setup/syncGitignoreFile";
+import { syncWorkflowFiles } from "#github/setup/syncWorkflowFiles";
+import { syncPrettierignoreFile } from "#prettier/setup/syncPrettierignoreFile";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { reportSyncResults } from "#support/commander/utils/reportSyncResults";
-import { syncVscodeFiles } from "#vscode/utils/syncVscodeFiles";
+import { syncVscodeFiles } from "#vscode/setup/syncVscodeFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 
 const targets = {

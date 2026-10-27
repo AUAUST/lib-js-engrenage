@@ -38,7 +38,17 @@ export function createDeferredFiles(root: Directory | URL) {
   const pending = new Map<File, string>();
 
   function read(file: File): string | undefined {
-    return pending.get(file) ?? readFromDisk(resolve(root, file));
+    if (pending.has(file)) {
+      return pending.get(file);
+    }
+
+    const content = readFromDisk(resolve(root, file));
+
+    if (content !== undefined) {
+      pending.set(file, content);
+    }
+
+    return content;
   }
 
   function exists(file: File): boolean {

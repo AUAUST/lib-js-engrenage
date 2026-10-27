@@ -1,1 +1,1 @@
-export { syncGitignoreFile } from "#git/utils/syncGitignoreFile";
+export { syncGitignoreFile } from "#git/setup/syncGitignoreFile";
