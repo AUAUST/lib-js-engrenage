@@ -29,13 +29,13 @@ export default defineConvention({
       schema: [],
     },
     create(context) {
-      // import-x rules receive this same ESLint context at runtime; only their typings differ.
-      const importContext = context as unknown as ImportContext;
-
       function check(node: Rule.Node, source: unknown) {
         if (
           !isString(source) ||
-          projectImportTypes.has(importType(source, importContext))
+          projectImportTypes.has(
+            // import-x rules receive this same ESLint context at runtime; only their typings differ.
+            importType(source, context as unknown as ImportContext),
+          )
         ) {
           return;
         }
