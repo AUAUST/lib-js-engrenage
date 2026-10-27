@@ -804,30 +804,30 @@ type StylisticExpListStyle =
           "[]"?: _StylisticExpListStyle_BaseConfig | "off";
           "{}"?: _StylisticExpListStyle_BaseConfig | "off";
           "<>"?: _StylisticExpListStyle_BaseConfig | "off";
-          "ArrayExpression"?: _StylisticExpListStyle_BaseConfig | "off";
-          "ArrayPattern"?: _StylisticExpListStyle_BaseConfig | "off";
-          "ArrowFunctionExpression"?: _StylisticExpListStyle_BaseConfig | "off";
-          "CallExpression"?: _StylisticExpListStyle_BaseConfig | "off";
-          "ExportNamedDeclaration"?: _StylisticExpListStyle_BaseConfig | "off";
-          "FunctionDeclaration"?: _StylisticExpListStyle_BaseConfig | "off";
-          "FunctionExpression"?: _StylisticExpListStyle_BaseConfig | "off";
-          "IfStatement"?: _StylisticExpListStyle_BaseConfig | "off";
-          "ImportAttributes"?: _StylisticExpListStyle_BaseConfig | "off";
-          "ImportDeclaration"?: _StylisticExpListStyle_BaseConfig | "off";
-          "JSONArrayExpression"?: _StylisticExpListStyle_BaseConfig | "off";
-          "JSONObjectExpression"?: _StylisticExpListStyle_BaseConfig | "off";
-          "NewExpression"?: _StylisticExpListStyle_BaseConfig | "off";
-          "ObjectExpression"?: _StylisticExpListStyle_BaseConfig | "off";
-          "ObjectPattern"?: _StylisticExpListStyle_BaseConfig | "off";
-          "TSDeclareFunction"?: _StylisticExpListStyle_BaseConfig | "off";
-          "TSEnumBody"?: _StylisticExpListStyle_BaseConfig | "off";
-          "TSFunctionType"?: _StylisticExpListStyle_BaseConfig | "off";
-          "TSInterfaceBody"?: _StylisticExpListStyle_BaseConfig | "off";
-          "TSTupleType"?: _StylisticExpListStyle_BaseConfig | "off";
-          "TSTypeLiteral"?: _StylisticExpListStyle_BaseConfig | "off";
-          "TSTypeParameterDeclaration"?:
+          ArrayExpression?: _StylisticExpListStyle_BaseConfig | "off";
+          ArrayPattern?: _StylisticExpListStyle_BaseConfig | "off";
+          ArrowFunctionExpression?: _StylisticExpListStyle_BaseConfig | "off";
+          CallExpression?: _StylisticExpListStyle_BaseConfig | "off";
+          ExportNamedDeclaration?: _StylisticExpListStyle_BaseConfig | "off";
+          FunctionDeclaration?: _StylisticExpListStyle_BaseConfig | "off";
+          FunctionExpression?: _StylisticExpListStyle_BaseConfig | "off";
+          IfStatement?: _StylisticExpListStyle_BaseConfig | "off";
+          ImportAttributes?: _StylisticExpListStyle_BaseConfig | "off";
+          ImportDeclaration?: _StylisticExpListStyle_BaseConfig | "off";
+          JSONArrayExpression?: _StylisticExpListStyle_BaseConfig | "off";
+          JSONObjectExpression?: _StylisticExpListStyle_BaseConfig | "off";
+          NewExpression?: _StylisticExpListStyle_BaseConfig | "off";
+          ObjectExpression?: _StylisticExpListStyle_BaseConfig | "off";
+          ObjectPattern?: _StylisticExpListStyle_BaseConfig | "off";
+          TSDeclareFunction?: _StylisticExpListStyle_BaseConfig | "off";
+          TSEnumBody?: _StylisticExpListStyle_BaseConfig | "off";
+          TSFunctionType?: _StylisticExpListStyle_BaseConfig | "off";
+          TSInterfaceBody?: _StylisticExpListStyle_BaseConfig | "off";
+          TSTupleType?: _StylisticExpListStyle_BaseConfig | "off";
+          TSTypeLiteral?: _StylisticExpListStyle_BaseConfig | "off";
+          TSTypeParameterDeclaration?:
             _StylisticExpListStyle_BaseConfig | "off";
-          "TSTypeParameterInstantiation"?:
+          TSTypeParameterInstantiation?:
             _StylisticExpListStyle_BaseConfig | "off";
         };
       },

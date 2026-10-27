@@ -19,7 +19,7 @@ import { syncVscodeFiles } from "#vscode/setup/syncVscodeFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 
 interface SyncTarget<Flag extends string> {
-  sync: (config: ResolvedConfig, flags: Partial<Record<Flag, boolean>>) => void;
+  sync(config: ResolvedConfig, flags: Partial<Record<Flag, boolean>>): void;
   flags?: Record<Flag, string>;
 }
 

@@ -5,7 +5,7 @@ export default defineConvention({
   delegates: [
     delegateRule("@typescript-eslint/adjacent-overload-signatures"),
     delegateRule("@typescript-eslint/consistent-generic-constructors", [
-      "type-annotation",
+      "constructor",
     ]),
     delegateRule("@typescript-eslint/consistent-type-assertions", [
       {

@@ -2427,17 +2427,17 @@ type UnicornKeyNameCasing =
   | []
   | [
       {
-        "camelCase"?: boolean;
+        camelCase?: boolean;
 
-        "PascalCase"?: boolean;
+        PascalCase?: boolean;
 
-        "SCREAMING_SNAKE_CASE"?: boolean;
+        SCREAMING_SNAKE_CASE?: boolean;
 
         "kebab-case"?: boolean;
 
-        "snake_case"?: boolean;
+        snake_case?: boolean;
 
-        "ignore"?: string[];
+        ignore?: string[];
       },
     ];
 // ----- unicorn/logical-assignment-operators -----

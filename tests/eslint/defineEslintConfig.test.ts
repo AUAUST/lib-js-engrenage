@@ -45,6 +45,7 @@ describe("defineEslintConfig", () => {
 
     expect(map(result?.messages ?? [], (message) => message.ruleId)).toEqual([
       "auaust/no-runtime-typeof",
+      "auaust/no-typeof-undefined",
     ]);
   });
 });

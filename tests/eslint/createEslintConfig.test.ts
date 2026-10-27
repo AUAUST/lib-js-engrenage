@@ -208,6 +208,7 @@ describe("createEslintConfig", () => {
       "auaust/no-runtime-typeof",
       "auaust/no-array-is-array",
       "auaust/no-array-is-array",
+      "auaust/no-typeof-undefined",
     ]);
   });
 
@@ -224,7 +225,7 @@ describe("createEslintConfig", () => {
       await lintedRules("src/restricted.ts", {
         globals: false,
       }),
-    ).toEqual(["auaust/no-runtime-typeof"]);
+    ).toEqual(["auaust/no-runtime-typeof", "auaust/no-typeof-undefined"]);
   });
 
   test("enables the performance conventions with the library preset", async () => {
@@ -620,6 +621,111 @@ export const handlers = [() => void call()];
         return `${message.line}:${message.ruleId}`;
       }),
     ).toEqual(["6:auaust/void-placement", "10:auaust/void-placement"]);
+  });
+
+  test("pads cases once a case body spans several lines or a case is padded", async () => {
+    const eslint = await createLinter({
+      typeAware: false,
+    });
+
+    const [result] = await eslint.lintText(
+      `export function inline(value: string) {
+  switch (value) {
+    case "a": {
+      return 1;
+    }
+    default: {
+      return 2;
+    }
+  }
+}
+
+export function multiline(value: string) {
+  switch (value) {
+    case "a": {
+      return 1;
+    }
+    default: {
+      const doubled = value + value;
+
+      return doubled.length;
+    }
+  }
+}
+
+export function partlyPadded(value: string) {
+  switch (value) {
+    case "a": {
+      return 1;
+    }
+
+    case "b": {
+      return 2;
+    }
+    default: {
+      return 3;
+    }
+  }
+}
+`,
+      {
+        filePath: "src/cases.ts",
+      },
+    );
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual(["17:auaust/padded-cases", "34:auaust/padded-cases"]);
+  });
+
+  test("quotes all keys or none, leaving shorthand and methods alone", async () => {
+    const eslint = await createLinter({
+      typeAware: false,
+    });
+
+    const [result] = await eslint.lintText(
+      `const also = true;
+
+export const quoted = {
+  "quo:ted": true,
+  "also": also,
+  method() {
+    return also;
+  },
+  "build:done"() {
+    return also;
+  },
+};
+
+export const mixed = {
+  "quo:ted": true,
+  plain: also,
+};
+
+export const needless = {
+  "plain": true,
+};
+
+export const longform = {
+  also: also,
+};
+`,
+      {
+        filePath: "src/objects.ts",
+      },
+    );
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual([
+      "16:auaust/quote-props",
+      "20:auaust/quote-props",
+      "24:auaust/object-shorthand",
+    ]);
   });
 
   test("allows default exports in tool configs", async () => {

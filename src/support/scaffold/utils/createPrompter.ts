@@ -14,6 +14,12 @@ function abort(): never {
   process.exit(130);
 }
 
+function requireValue(value: string | undefined): string | undefined {
+  return value === undefined || value.trim() === ""
+    ? "Enter a value"
+    : undefined;
+}
+
 export function createPrompter({ yes }: { yes: boolean }) {
   if (!yes && process.stdin.isTTY !== true) {
     throw new Error(
@@ -70,12 +76,6 @@ export function createPrompter({ yes }: { yes: boolean }) {
     }
 
     return chosen;
-  }
-
-  function requireValue(value: string | undefined): string | undefined {
-    return value === undefined || value.trim() === ""
-      ? "Enter a value"
-      : undefined;
   }
 
   async function text(message: string, initial: string): Promise<string> {

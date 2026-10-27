@@ -232,7 +232,7 @@ export interface AuaustRules {
    */
   "auaust/padded-blocks"?: Linter.RuleEntry<[]>;
   /**
-   * Separate a `case` that has statements from the next `case` with a blank line.
+   * Separate a `case` that has statements from the next `case` with a blank line once a case body spans several lines or the `switch` already uses blank lines.
    */
   "auaust/padded-cases"?: Linter.RuleEntry<[]>;
   /**
@@ -289,6 +289,11 @@ export interface AuaustRules {
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-type-literal-last.md
    */
   "auaust/prefer-type-literal-last"?: Linter.RuleEntry<[]>;
+  /**
+   * Require quotes around object literal, type literal, interfaces and enums property names
+   * @see https://eslint.style/rules/quote-props
+   */
+  "auaust/quote-props"?: Linter.RuleEntry<AuaustQuoteProps>;
   /**
    * Enforce consistent awaiting of returned promises
    * @see https://typescript-eslint.io/rules/return-await
@@ -990,7 +995,7 @@ type AuaustNoDuplicates =
   | []
   | [
       {
-        "considerQueryString"?: boolean;
+        considerQueryString?: boolean;
         "prefer-inline"?: boolean;
       },
     ];
@@ -1317,6 +1322,20 @@ type AuaustPreferReadonly =
   | [
       {
         onlyInlineLambdas?: boolean;
+      },
+    ];
+// ----- auaust/quote-props -----
+type AuaustQuoteProps =
+  | []
+  | ["always" | "as-needed" | "consistent" | "consistent-as-needed"]
+  | []
+  | ["always" | "as-needed" | "consistent" | "consistent-as-needed"]
+  | [
+      "always" | "as-needed" | "consistent" | "consistent-as-needed",
+      {
+        keywords?: boolean;
+        unnecessary?: boolean;
+        numbers?: boolean;
       },
     ];
 // ----- auaust/return-await -----

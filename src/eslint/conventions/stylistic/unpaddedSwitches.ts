@@ -10,7 +10,9 @@ export default defineConvention({
           switches: "never",
         },
       ],
-      "unpadded-switches",
+      {
+        name: "unpadded-switches",
+      },
     ),
   ],
 });

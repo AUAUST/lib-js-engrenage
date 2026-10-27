@@ -77,10 +77,7 @@ export function createResolvedConfig({
 }) {
   const filesystem = createFilesystem(root);
 
-  function locate(
-    fallback: File,
-    configured: File | undefined = undefined,
-  ): File | undefined {
+  function locate(fallback: File, configured?: File): File | undefined {
     if (configured === undefined) {
       return filesystem.exists(fallback)
         ? resolveWithin(root, fallback)

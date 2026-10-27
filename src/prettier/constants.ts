@@ -17,7 +17,7 @@ export const defaultOptions = freeze({
   objectWrap: "preserve",
   printWidth: 80,
   proseWrap: "preserve",
-  quoteProps: "consistent",
+  quoteProps: "preserve",
   requirePragma: false,
   semi: true,
   singleAttributePerLine: false,
