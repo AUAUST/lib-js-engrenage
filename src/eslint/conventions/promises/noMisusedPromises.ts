@@ -5,9 +5,7 @@ export default defineConvention({
   delegates: [
     delegateRule("@typescript-eslint/no-misused-promises", [
       {
-        checksVoidReturn: {
-          attributes: false,
-        },
+        checksVoidReturn: false,
       },
     ]),
   ],

@@ -921,6 +921,62 @@ export const asserted = function asserted(): number {
     ).toEqual(["3:auaust/prefer-function-declaration"]);
   });
 
+  test("awaits possible promises, voids async callbacks and reports misused promises", async () => {
+    const source = `declare const maybe: Promise<number> | number;
+declare const flag: Promise<boolean>;
+declare const listen: (callback: () => void) => void;
+
+export async function run(): Promise<unknown> {
+  listen(async () => {
+    await maybe;
+  });
+
+  const values = await Promise.all([maybe, 1]);
+
+  const plain = await values;
+
+  return flag
+    ? {
+        ...flag,
+        plain,
+      }
+    : undefined;
+}
+`;
+
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "promises", "type": "module" }',
+      "engrenage.config.ts": "export default {};\n",
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          strict: true,
+          module: "nodenext",
+          target: "esnext",
+        },
+        include: ["src"],
+      }),
+      "src/run.ts": source,
+    });
+
+    const eslint = new ESLint({
+      cwd: project.root,
+      overrideConfigFile: true,
+      overrideConfig: createEslintConfig(await loadConfig(project.root)),
+    });
+
+    const [result] = await eslint.lintFiles(["src/run.ts"]);
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual([
+      "12:auaust/await-thenable",
+      "14:auaust/no-misused-promises",
+      "16:auaust/no-misused-promises",
+    ]);
+  });
+
   test("allows default exports in tool configs", async () => {
     expect(await lintedRules("tool.config.ts")).toEqual([]);
   });
