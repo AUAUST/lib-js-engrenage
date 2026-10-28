@@ -49,6 +49,7 @@ export function createRecommendedRules({
             "files.code.published",
             "files.code.private",
           ]),
+          extends: [typescriptConfigs.recommendedTypeCheckedOnly],
           languageOptions: createTypeAwareLanguageOptions(config),
           rules: typescriptTypeAwareRules,
         })

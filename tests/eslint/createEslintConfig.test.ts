@@ -23,7 +23,10 @@ import { getFixture } from "#tests/helpers/getFixture";
 
 const root = getFixture("eslint");
 
-const getLinter = memoized(
+const getLinter = memoized<
+  (options?: Options, fix?: boolean) => Promise<ESLint>,
+  string
+>(
   async function (options?: Options, fix = false) {
     return new ESLint({
       cwd: root,
@@ -197,6 +200,68 @@ async function lintedProjectRules(source: string) {
 }
 
 describe("createEslintConfig", () => {
+  test.each([
+    [
+      {
+        typeAware: true,
+      },
+      true,
+    ],
+    [
+      {
+        typeAware: false,
+      },
+      false,
+    ],
+    [
+      {
+        recommended: false,
+      },
+      false,
+    ],
+  ])("enables typed recommended rules with %j", async (options, enabled) => {
+    const eslint = await getLinter(options);
+
+    const [result] = await eslint.lintText(
+      'export const parsed = JSON.parse("{}");\n',
+      {
+        filePath: "src/unions.ts",
+      },
+    );
+
+    const rules = map(result?.messages ?? [], (message) => message.ruleId);
+
+    expect(rules.includes("@typescript-eslint/no-unsafe-assignment")).toBe(
+      enabled,
+    );
+
+    expect(result?.fatalErrorCount).toBe(0);
+  });
+
+  test.each([
+    ["src/example.ts", true],
+    ["bin/example.ts", true],
+    ["scripts/example.ts", true],
+    ["tests/example.test.ts", true],
+    ["tool.config.ts", false],
+    ["package.json", false],
+  ])("scopes typed recommended rules in %s", async (filePath, enabled) => {
+    const eslint = await getLinter();
+
+    const config = (await eslint.calculateConfigForFile(filePath)) as
+      Config | undefined;
+
+    expect(config?.rules?.["@typescript-eslint/no-unsafe-assignment"]).toEqual(
+      enabled ? [2] : undefined,
+    );
+
+    if (enabled) {
+      expect(config?.languageOptions?.parserOptions).toMatchObject({
+        projectService: true,
+      });
+    }
+  });
+
   test("reports the shared conventions in source files", async () => {
     const rules = await lintedRules("src/violations.ts");
 
@@ -214,7 +279,11 @@ describe("createEslintConfig", () => {
   });
 
   test("reports misordered and unused imports", async () => {
-    expect(await lintedRules("src/imports.ts")).toEqual([
+    expect(
+      await lintedRules("src/imports.ts", {
+        typeAware: false,
+      }),
+    ).toEqual([
       "auaust/sort-named-imports",
       "auaust/sort-imports",
       "auaust/sort-imports",
@@ -555,14 +624,11 @@ export async function run(task: () => Promise<void>, log: (text: string) => void
 ${shared}
 export function done(log: () => void) {
   log();
-
-  
 }
 
 export function tail(ready: boolean, log: () => void) {
   if (ready) {
     log();
-    
   }
 }
 `;
