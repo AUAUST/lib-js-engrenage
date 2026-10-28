@@ -11,6 +11,16 @@ export default defineConvention({
       },
       {
         selector: "variable",
+        filter: {
+          regex: "^__.+__$",
+          match: true,
+        },
+        format: ["UPPER_CASE"],
+        leadingUnderscore: "requireDouble",
+        trailingUnderscore: "requireDouble",
+      },
+      {
+        selector: "variable",
         modifiers: ["destructured"],
         format: null,
       },

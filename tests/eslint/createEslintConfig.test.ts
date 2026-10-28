@@ -867,6 +867,28 @@ export const longform = {
     ]);
   });
 
+  test("allows __DUNDER__ variables but not lowercase ones", async () => {
+    const eslint = await createLinter({
+      typeAware: false,
+    });
+
+    const [result] = await eslint.lintText(
+      `export const __APP_VERSION__ = "1.0.0";
+
+export const __dunder__ = true;
+`,
+      {
+        filePath: "src/dunder.ts",
+      },
+    );
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual(["3:auaust/naming-convention"]);
+  });
+
   test("allows default exports in tool configs", async () => {
     expect(await lintedRules("tool.config.ts")).toEqual([]);
   });
