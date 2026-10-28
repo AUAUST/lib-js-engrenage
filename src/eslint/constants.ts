@@ -78,7 +78,6 @@ export const typescriptTypeAwareRules = freeze({
   "@typescript-eslint/no-mixed-enums": "error",
   "@typescript-eslint/no-unnecessary-type-arguments": "info",
   "@typescript-eslint/no-unnecessary-type-assertion": "info",
-  "@typescript-eslint/no-unnecessary-type-parameters": "info",
   "@typescript-eslint/only-throw-error": "error",
   "@typescript-eslint/prefer-find": "error",
   "@typescript-eslint/prefer-includes": "error",

@@ -235,6 +235,11 @@ export interface AuaustRules {
    */
   "auaust/no-typeof-undefined"?: Rule<AuaustNoTypeofUndefined>;
   /**
+   * Disallow type parameters that aren't used multiple times
+   * @see https://typescript-eslint.io/rules/no-unnecessary-type-parameters
+   */
+  "auaust/no-unnecessary-type-parameters"?: Rule<[]>;
+  /**
    * Disallow ternary operators when simpler alternatives exist
    * @see https://eslint.org/docs/latest/rules/no-unneeded-ternary
    */

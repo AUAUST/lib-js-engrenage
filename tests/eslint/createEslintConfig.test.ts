@@ -865,6 +865,25 @@ export const longform = {
     ).toEqual(["3:auaust/no-redundant-types"]);
   });
 
+  test("allows type parameters used only in the return type, but not elsewhere", async () => {
+    const eslint = await createLinter();
+
+    const [result] = await eslint.lintFiles(["src/typeParameters.ts"]);
+
+    const messages = (result?.messages ?? []).filter((message) => {
+      return message.ruleId === "auaust/no-unnecessary-type-parameters";
+    });
+
+    expect(
+      map(messages, (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual([
+      "7:auaust/no-unnecessary-type-parameters",
+      "11:auaust/no-unnecessary-type-parameters",
+    ]);
+  });
+
   test("lints info rules as warnings and records them in the settings", async () => {
     const configs = createEslintConfig(await loadConfig(root), {
       ignore: false,

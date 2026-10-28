@@ -35,7 +35,10 @@ function mergeOption(defaults: unknown, override: unknown): unknown {
 function wrapReports(
   rule: RuleModule,
   ignoredMessages: ReadonlyArray<string>,
-  ignoreReport?: (descriptor: ReportDescriptor) => boolean,
+  ignoreReport?: (
+    descriptor: ReportDescriptor,
+    context: Rule.RuleContext,
+  ) => boolean,
   fix?: (
     descriptor: ReportDescriptor,
     context: Rule.RuleContext,
@@ -63,7 +66,7 @@ function wrapReports(
             if (
               ("messageId" in descriptor &&
                 includes(ignoredMessages, descriptor.messageId)) ||
-              ignoreReport?.(descriptor) === true
+              ignoreReport?.(descriptor, context) === true
             ) {
               return;
             }
@@ -94,7 +97,10 @@ export function delegateRule<Id extends keyof Rules & string>(
   }: {
     name?: string;
     ignoredMessages?: ReadonlyArray<string>;
-    ignoreReport?(descriptor: ReportDescriptor): boolean;
+    ignoreReport?(
+      descriptor: ReportDescriptor,
+      context: Rule.RuleContext,
+    ): boolean;
     fix?(
       descriptor: ReportDescriptor,
       context: Rule.RuleContext,
