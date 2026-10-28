@@ -33,4 +33,25 @@ describe("createPackageJson", () => {
     expect(() => packageJson.optional.name).toThrow("name");
     expect(() => packageJson.dependencies).toThrow("peerDependencies");
   });
+
+  test("exposes standard metadata fields with their expected types", () => {
+    const packageJson = createManifest({
+      version: "1.2.3",
+      author: {
+        name: "AUAUST",
+        email: "hello@auaust.ch",
+      },
+      keywords: ["tooling", 1],
+    });
+
+    expect(packageJson.version).toBe("1.2.3");
+
+    expect(packageJson.author).toEqual({
+      name: "AUAUST",
+      email: "hello@auaust.ch",
+    });
+
+    expect(packageJson.optional.description).toBeUndefined();
+    expect(() => packageJson.optional.keywords).toThrow("keywords");
+  });
 });

@@ -1,4 +1,5 @@
 import type { DefineContext } from "#config/types/DefineContext";
-import type { Globals } from "#config/types/Globals";
 
-export type GlobalsFactory = (context: DefineContext) => Globals;
+export type GlobalsFactory = (
+  context: DefineContext,
+) => Readonly<Record<string, unknown>>;

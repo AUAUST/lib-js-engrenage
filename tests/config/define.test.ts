@@ -63,6 +63,51 @@ describe("define", () => {
     });
   });
 
+  test("serializes any JSON-serializable value and rejects the rest", () => {
+    const config = resolveConfig({
+      define: {
+        values: {
+          __BUILT_AT__: new Date("2026-01-01T00:00:00.000Z"),
+          __OPTIONS__: define({
+            skipped: undefined,
+            url: new URL("https://auaust.ch"),
+          }),
+        },
+      },
+    });
+
+    expect(config.define.values.__BUILT_AT__).toMatchObject({
+      expression: '"2026-01-01T00:00:00.000Z"',
+      value: "2026-01-01T00:00:00.000Z",
+    });
+
+    expect(config.define.values.__OPTIONS__?.value).toEqual({
+      url: "https://auaust.ch/",
+    });
+
+    expect(() => {
+      return resolveConfig({
+        define: {
+          values: {
+            __HANDLERS__: {
+              onLoad: String,
+            },
+          },
+        },
+      });
+    }).toThrow('JSON-serializable value at key "onLoad"');
+
+    expect(() => {
+      return resolveConfig({
+        define: {
+          values: {
+            __SIZE__: 1n,
+          },
+        },
+      });
+    }).toThrow("JSON-serializable value");
+  });
+
   test("computes values from the package and validates them", () => {
     const config = resolveConfig({
       define: {

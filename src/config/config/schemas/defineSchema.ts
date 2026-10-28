@@ -1,25 +1,26 @@
 import {
   boolean,
+  check,
   custom,
   optional,
   pipe,
+  rawTransform,
   record,
   regex,
   strictObject,
   string,
-  transform,
   union,
+  unknown,
   type GenericSchema,
 } from "valibot";
 
-import { every, includes } from "@auaust/primitive-kit/arrays";
+import { includes } from "@auaust/primitive-kit/arrays";
 import { isFinite } from "@auaust/primitive-kit/numbers";
 import { isArray } from "@auaust/toolkit/isArray";
 import { isBoolean } from "@auaust/toolkit/isBoolean";
 import { isFunction } from "@auaust/toolkit/isFunction";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { isString } from "@auaust/toolkit/isString";
-import { values } from "@auaust/toolkit/object";
 
 import {
   defaultGlobalScope,
@@ -28,9 +29,7 @@ import {
   globalScopes,
 } from "#config/constants";
 import type { Definition } from "#config/types/Definition";
-import type { Globals } from "#config/types/Globals";
 import type { GlobalsFactory } from "#config/types/GlobalsFactory";
-import type { GlobalValue } from "#config/types/GlobalValue";
 import type { ResolvedGlobal } from "#config/types/ResolvedGlobal";
 import type { ResolvedGlobals } from "#config/types/ResolvedGlobals";
 import type { JsonValue } from "#support/json/types/JsonValue";
@@ -39,31 +38,41 @@ function isDefinition(input: unknown): input is Definition {
   return isPlainObject(input) && input[definitionKey] === true;
 }
 
-function isJsonValue(input: unknown): input is JsonValue {
+function assertSerializable(key: string, value: unknown): unknown {
+  if (isDefinition(value)) {
+    throw new TypeError("Expected define() only as a top-level definition");
+  }
+
   if (
-    input === null ||
-    isString(input) ||
-    isBoolean(input) ||
-    isFinite(input)
+    value == null ||
+    isString(value) ||
+    isBoolean(value) ||
+    isFinite(value) ||
+    isArray(value) ||
+    isPlainObject(value)
   ) {
-    return true;
+    return value;
   }
 
-  if (isArray(input)) {
-    return every(input, isJsonValue);
-  }
-
-  return (
-    isPlainObject(input) &&
-    !isDefinition(input) &&
-    every(values(input), isJsonValue)
+  throw new TypeError(
+    key === ""
+      ? "Expected a JSON-serializable value"
+      : `Expected a JSON-serializable value at key "${key}"`,
   );
 }
 
-function isValidDefinition(input: unknown): input is Definition {
+function serialize(value: unknown): string {
+  const expression = JSON.stringify(value, assertSerializable);
+
+  if (expression === undefined) {
+    throw new TypeError("Expected a JSON-serializable value");
+  }
+
+  return expression;
+}
+
+function isValidDefinition(input: Definition): boolean {
   return (
-    isDefinition(input) &&
-    isJsonValue(input.value) &&
     isBoolean(input.exact) &&
     (input.type === undefined || isString(input.type)) &&
     includes(globalScopes, input.scope) &&
@@ -72,41 +81,47 @@ function isValidDefinition(input: unknown): input is Definition {
   );
 }
 
-function resolveGlobal(value: GlobalValue): ResolvedGlobal {
-  if (isDefinition(value)) {
-    return {
-      expression: JSON.stringify(value.value),
-      value: value.value,
-      exact: value.exact,
-      type: value.type,
-      scope: value.scope,
-      description: value.description,
-    };
-  }
+function resolveGlobal(input: unknown): ResolvedGlobal {
+  const definition = isDefinition(input) ? input : undefined;
+
+  const expression = serialize(
+    definition === undefined ? input : definition.value,
+  );
+
+  const value: JsonValue = JSON.parse(expression);
 
   return {
-    expression: JSON.stringify(value),
+    expression,
     value,
-    exact: false,
-    type: undefined,
-    scope: defaultGlobalScope,
-    description: undefined,
+    exact: definition?.exact ?? false,
+    type: definition?.type,
+    scope: definition?.scope ?? defaultGlobalScope,
+    description: definition?.description,
   };
 }
 
-function isGlobalValue(input: unknown): input is GlobalValue {
-  return isValidDefinition(input) || isJsonValue(input);
-}
+const globalValueSchema: GenericSchema<unknown, ResolvedGlobal> = pipe(
+  unknown(),
+  check((input) => {
+    return !isDefinition(input) || isValidDefinition(input);
+  }, "Expected a valid top-level definition"),
+  rawTransform(({ dataset, addIssue, NEVER }) => {
+    try {
+      return resolveGlobal(dataset.value);
+    } catch (error) {
+      addIssue({
+        message: error instanceof Error ? error.message : String(error),
+      });
 
-const globalValueSchema: GenericSchema<GlobalValue, ResolvedGlobal> = pipe(
-  custom<GlobalValue>(
-    isGlobalValue,
-    "Expected a JSON value (null, a boolean, a finite number, a string, an array or a plain object) or a valid top-level definition",
-  ),
-  transform(resolveGlobal),
+      return NEVER;
+    }
+  }),
 );
 
-export const globalsSchema: GenericSchema<Globals, ResolvedGlobals> = record(
+export const globalsSchema: GenericSchema<
+  Readonly<Record<string, unknown>>,
+  ResolvedGlobals
+> = record(
   pipe(
     string(),
     regex(

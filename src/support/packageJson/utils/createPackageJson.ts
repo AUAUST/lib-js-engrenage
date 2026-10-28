@@ -1,4 +1,6 @@
 import {
+  array,
+  boolean,
   looseObject,
   optional,
   picklist,
@@ -6,6 +8,7 @@ import {
   string,
   union,
   unknown,
+  type GenericSchema,
 } from "valibot";
 
 import { flatMap } from "@auaust/primitive-kit/arrays";
@@ -20,6 +23,15 @@ import { validate } from "#utils/validate";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+
+const personSchema = union([
+  string(),
+  looseObject({
+    name: string(),
+    email: optional(string()),
+    url: optional(string()),
+  }),
+]);
 
 export function createPackageJson({
   root,
@@ -42,25 +54,92 @@ export function createPackageJson({
       : `${path} does not declare "${field}"`;
   }
 
+  function read<Output>(
+    field: string,
+    schema: GenericSchema<unknown, Output>,
+  ): Output | undefined {
+    return validate(optional(schema), manifest()?.[field], `${path} ${field}`);
+  }
+
   return createAccessors({
     resolvers: {
       manifest,
       name() {
-        return validate(optional(string()), manifest()?.name, `${path} name`);
+        return read("name", string());
+      },
+      version() {
+        return read("version", string());
+      },
+      private() {
+        return read("private", boolean());
+      },
+      description() {
+        return read("description", string());
+      },
+      keywords() {
+        return read("keywords", array(string()));
+      },
+      homepage() {
+        return read("homepage", string());
+      },
+      bugs() {
+        return read(
+          "bugs",
+          union([
+            string(),
+            looseObject({
+              url: optional(string()),
+              email: optional(string()),
+            }),
+          ]),
+        );
+      },
+      repository() {
+        return read(
+          "repository",
+          union([
+            string(),
+            looseObject({
+              url: string(),
+            }),
+          ]),
+        );
+      },
+      license() {
+        return read("license", string());
+      },
+      author() {
+        return read("author", personSchema);
+      },
+      contributors() {
+        return read("contributors", array(personSchema));
       },
       type() {
-        return validate(
-          optional(picklist(packageTypes)),
-          manifest()?.type,
-          `${path} type`,
-        );
+        return read("type", picklist(packageTypes));
+      },
+      bin() {
+        return read("bin", union([string(), record(string(), string())]));
+      },
+      scripts() {
+        return read("scripts", record(string(), string()));
       },
       imports() {
-        return validate(
-          optional(record(string(), unknown())),
-          manifest()?.imports,
-          `${path} imports`,
-        );
+        return read("imports", record(string(), unknown()));
+      },
+      main() {
+        return read("main", string());
+      },
+      module() {
+        return read("module", string());
+      },
+      types() {
+        return read("types", string());
+      },
+      files() {
+        return read("files", array(string()));
+      },
+      workspaces() {
+        return read("workspaces", array(string()));
       },
       dependencies() {
         const fields = manifest();
@@ -79,43 +158,21 @@ export function createPackageJson({
           return keys(versions);
         });
       },
-      scripts() {
-        return validate(
-          optional(record(string(), string())),
-          manifest()?.scripts,
-          `${path} scripts`,
-        );
+      sideEffects() {
+        return read("sideEffects", union([boolean(), array(string())]));
       },
-      bin() {
-        return validate(
-          optional(union([string(), record(string(), string())])),
-          manifest()?.bin,
-          `${path} bin`,
-        );
+      packageManager() {
+        return read("packageManager", string());
       },
-      repository() {
-        return validate(
-          optional(
-            union([
-              string(),
-              looseObject({
-                url: string(),
-              }),
-            ]),
-          ),
-          manifest()?.repository,
-          `${path} repository`,
-        );
+      engines() {
+        return read("engines", record(string(), string()));
       },
       publishConfig() {
-        return validate(
-          optional(
-            looseObject({
-              access: optional(picklist(publishAccess)),
-            }),
-          ),
-          manifest()?.publishConfig,
-          `${path} publishConfig`,
+        return read(
+          "publishConfig",
+          looseObject({
+            access: optional(picklist(publishAccess)),
+          }),
         );
       },
     },
