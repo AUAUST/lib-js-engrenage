@@ -13,13 +13,18 @@ afterEach(() => {
 
 describe("loadConfig", () => {
   test("falls back to defaults and warns once without a config file or package file", async () => {
+    vi.resetModules();
+
+    const { loadConfig: loadFreshConfig } =
+      await import("@auaust/engrenage/config");
+
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const first = createTemporaryProject().root;
 
-    const config = await loadConfig(first);
+    const config = await loadFreshConfig(first);
 
-    await loadConfig(createTemporaryProject().root);
+    await loadFreshConfig(createTemporaryProject().root);
 
     expect(warn).toHaveBeenCalledExactlyOnceWith(
       `No engrenage config found in ${first}, using defaults`,

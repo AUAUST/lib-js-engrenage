@@ -14,6 +14,7 @@ import {
 } from "@auaust/engrenage/eslint";
 import { infoRulesSetting } from "@auaust/engrenage/eslint/constants";
 import { map } from "@auaust/primitive-kit/arrays";
+import { memoized } from "@auaust/toolkit/memoized";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { packageJsonFile } from "#constants";
@@ -22,13 +23,22 @@ import { getFixture } from "#tests/helpers/getFixture";
 
 const root = getFixture("eslint");
 
-async function createLinter(options?: Options) {
-  return new ESLint({
-    cwd: root,
-    overrideConfigFile: true,
-    overrideConfig: createEslintConfig(await loadConfig(root), options),
-  });
-}
+const getLinter = memoized(
+  async function (options?: Options, fix = false) {
+    return new ESLint({
+      cwd: root,
+      fix,
+      overrideConfigFile: true,
+      overrideConfig: createEslintConfig(await loadConfig(root), options),
+    });
+  },
+  (options, fix = false) => {
+    return JSON.stringify({
+      options,
+      fix,
+    });
+  },
+);
 
 const performanceSource = `import { string } from "zod";
 import z, { z as zod } from "zod/mini";
@@ -77,7 +87,7 @@ async function lintedPerformanceRules(
 }
 
 async function lintedRules(file: string, options?: Options) {
-  const eslint = await createLinter(options);
+  const eslint = await getLinter(options);
 
   const [result] = await eslint.lintFiles([file]);
 
@@ -133,7 +143,7 @@ async function lintedPackageJsonRules(
   options?: Options,
   content = misorderedPackageJson,
 ) {
-  const eslint = await createLinter(options);
+  const eslint = await getLinter(options);
 
   const [result] = await eslint.lintText(content, {
     filePath: packageJsonFile,
@@ -309,7 +319,7 @@ export const values = [path, v, things, alias];
   });
 
   test("reports the Math functions toolkit replaces, but not the constants", async () => {
-    const eslint = await createLinter({
+    const eslint = await getLinter({
       typeAware: false,
     });
 
@@ -465,14 +475,12 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
   });
 
   test("folds a single statement into its bare return and drops useless returns", async () => {
-    const eslint = new ESLint({
-      cwd: root,
-      fix: true,
-      overrideConfigFile: true,
-      overrideConfig: createEslintConfig(await loadConfig(root), {
+    const eslint = await getLinter(
+      {
         typeAware: false,
-      }),
-    });
+      },
+      true,
+    );
 
     const shared = `
   if (chance()) {
@@ -592,7 +600,7 @@ export function pick(value: Value): number {
 `;
 
     async function lintedLayoutRules(options?: Options) {
-      const eslint = await createLinter({
+      const eslint = await getLinter({
         typeAware: false,
         ...options,
       });
@@ -644,7 +652,7 @@ export function pick(value: Value): number {
     ["let foo; // trailing comment\nconst bar = 1;", 1],
     ["for (let index = 0; index < 2; index++) {}", 0],
   ])("pads variable declaration groups in %s", async (source, count) => {
-    const eslint = await createLinter({
+    const eslint = await getLinter({
       typeAware: false,
     });
 
@@ -664,14 +672,12 @@ export function pick(value: Value): number {
   });
 
   test("wraps case statements in a block, declarations included", async () => {
-    const eslint = new ESLint({
-      cwd: root,
-      fix: true,
-      overrideConfigFile: true,
-      overrideConfig: createEslintConfig(await loadConfig(root), {
+    const eslint = await getLinter(
+      {
         typeAware: false,
-      }),
-    });
+      },
+      true,
+    );
 
     const source = `export function pick(value: string): number {
   switch (value) {
@@ -748,7 +754,7 @@ export function pick(value: Value): number {
   });
 
   test("allows void only to discard the value of a returned action", async () => {
-    const eslint = await createLinter({
+    const eslint = await getLinter({
       typeAware: false,
     });
 
@@ -784,7 +790,7 @@ export const handlers = [() => void call()];
   });
 
   test("allows concise arrows returning simple arrays or const literals, and empty object assertions", async () => {
-    const eslint = await createLinter({
+    const eslint = await getLinter({
       typeAware: false,
     });
 
@@ -882,7 +888,7 @@ export async function run(): Promise<number> {
   });
 
   test("pads cases once a case body spans several lines or a case is padded", async () => {
-    const eslint = await createLinter({
+    const eslint = await getLinter({
       typeAware: false,
     });
 
@@ -939,7 +945,7 @@ export function partlyPadded(value: string) {
   });
 
   test("quotes all keys or none, leaving shorthand and methods alone", async () => {
-    const eslint = await createLinter({
+    const eslint = await getLinter({
       typeAware: false,
     });
 
@@ -987,7 +993,7 @@ export const longform = {
   });
 
   test("reports literals widened in the union itself, but not through a referenced type", async () => {
-    const eslint = await createLinter();
+    const eslint = await getLinter();
 
     const [result] = await eslint.lintFiles(["src/unions.ts"]);
 
@@ -999,7 +1005,7 @@ export const longform = {
   });
 
   test("allows type parameters used only in the return type, but not elsewhere", async () => {
-    const eslint = await createLinter();
+    const eslint = await getLinter();
 
     const [result] = await eslint.lintFiles(["src/typeParameters.ts"]);
 
@@ -1034,7 +1040,7 @@ export const longform = {
   });
 
   test("allows unused parameters named to mark intent", async () => {
-    const eslint = await createLinter({
+    const eslint = await getLinter({
       typeAware: false,
     });
 
@@ -1060,7 +1066,7 @@ export function report(value: unknown, unusual: unknown) {
   });
 
   test("reports builtin imports without node: and undashed text encodings", async () => {
-    const eslint = await createLinter({
+    const eslint = await getLinter({
       typeAware: false,
     });
 
@@ -1087,7 +1093,7 @@ export const decoder = new TextDecoder("UTF8");
   });
 
   test("allows __DUNDER__ variables but not lowercase ones", async () => {
-    const eslint = await createLinter({
+    const eslint = await getLinter({
       typeAware: false,
     });
 
@@ -1109,14 +1115,12 @@ export const __dunder__ = true;
   });
 
   test("renames names to the expected case with their references", async () => {
-    const eslint = new ESLint({
-      cwd: root,
-      fix: true,
-      overrideConfigFile: true,
-      overrideConfig: createEslintConfig(await loadConfig(root), {
+    const eslint = await getLinter(
+      {
         typeAware: false,
-      }),
-    });
+      },
+      true,
+    );
 
     const [result] = await eslint.lintText(
       `type item_shape = Record<string, number>;
@@ -1163,7 +1167,7 @@ export { localTotal as local_total, user_count };
   });
 
   test("prefers function declarations unless the variable is typed", async () => {
-    const eslint = await createLinter({
+    const eslint = await getLinter({
       typeAware: false,
     });
 
@@ -1255,7 +1259,7 @@ export async function run(): Promise<unknown> {
   });
 
   test("ignores gitignored and generated files", async () => {
-    const eslint = await createLinter();
+    const eslint = await getLinter();
 
     expect(await eslint.isPathIgnored("ignored.ts")).toBe(true);
     expect(await eslint.isPathIgnored("coverage/report.ts")).toBe(true);
@@ -1266,7 +1270,7 @@ export async function run(): Promise<unknown> {
 
     expect(await eslint.isPathIgnored("src/violations.ts")).toBe(false);
 
-    const unignored = await createLinter({
+    const unignored = await getLinter({
       ignore: false,
     });
 
