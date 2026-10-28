@@ -1,5 +1,11 @@
 # @auaust/engrenage
 
+## 0.4.2
+
+### Patch Changes
+
+- [`b2ff895`](https://github.com/AUAUST/lib-js-engrenage/commit/b2ff89541f1f3774d0b677b2d9e28b32f8305c03) Thanks [@apademide](https://github.com/apademide)! - Disable too strict TypeScript rules
+
 ## 0.4.1
 
 ### Patch Changes
