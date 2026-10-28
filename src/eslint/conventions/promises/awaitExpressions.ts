@@ -6,4 +6,5 @@ export default defineConvention({
     delegateRule("unicorn/no-await-expression-member"),
     delegateRule("unicorn/prefer-top-level-await"),
   ],
+  ignores: ["files.test"],
 });

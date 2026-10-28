@@ -87,7 +87,7 @@ export interface AuaustRules {
    */
   "auaust/no-commonjs"?: Rule<AuaustNoCommonjs>;
   /**
-   * Use a block body with an explicit return; concise bodies are only for a short identifier, literal, member access, negation, comparison, call or template literal.
+   * Use a block body with an explicit return; concise bodies are only for a short identifier, literal, member access, negation, comparison, call, template literal, array of identifiers, literals or member accesses, or one of those asserted `as const`.
    */
   "auaust/no-complex-concise-arrows"?: Rule<[]>;
   /**
@@ -239,11 +239,6 @@ export interface AuaustRules {
    * @see https://eslint.org/docs/latest/rules/no-unneeded-ternary
    */
   "auaust/no-unneeded-ternary"?: Rule<AuaustNoUnneededTernary>;
-  /**
-   * Disallow member access on a value with type `any`
-   * @see https://typescript-eslint.io/rules/no-unsafe-member-access
-   */
-  "auaust/no-unsafe-member-access"?: Rule<AuaustNoUnsafeMemberAccess>;
   /**
    * Disallow reading `.value` from `Promise.allSettled()` results without a fulfilled status guard.
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-unsafe-promise-all-settled-values.md
@@ -1248,14 +1243,6 @@ type AuaustNoUnneededTernary =
   | [
       {
         defaultAssignment?: boolean;
-      },
-    ];
-// ----- auaust/no-unsafe-member-access -----
-type AuaustNoUnsafeMemberAccess =
-  | []
-  | [
-      {
-        allowOptionalChaining?: boolean;
       },
     ];
 // ----- auaust/no-unused-imports -----

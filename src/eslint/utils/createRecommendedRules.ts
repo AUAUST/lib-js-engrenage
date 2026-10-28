@@ -6,6 +6,7 @@ import {
   coreRules,
   pluginName,
   stylisticRules,
+  testRules,
   typescriptRules,
   typescriptTypeAwareRules,
   unicornRules,
@@ -36,6 +37,11 @@ export function createRecommendedRules({
         ...unicornRules,
       },
     }),
+    {
+      name: `${pluginName}/recommended/tests`,
+      files: resolveScope(config, ["files.test"]),
+      rules: testRules,
+    },
     typeAware
       ? resolveInfoRules({
           name: `${pluginName}/recommended/type-aware`,

@@ -73,6 +73,10 @@ export const typescriptRules = freeze({
   "@typescript-eslint/no-unused-vars": "off",
 } as const satisfies TypescriptEslintRules);
 
+export const testRules = freeze({
+  "no-constant-condition": "off",
+} as const satisfies CoreRules);
+
 export const typescriptTypeAwareRules = freeze({
   "@typescript-eslint/no-duplicate-type-constituents": "error",
   "@typescript-eslint/no-mixed-enums": "error",
@@ -136,7 +140,6 @@ export const unicornRules = freeze({
   "unicorn/no-loop-iterable-mutation": "error",
   "unicorn/no-mismatched-map-key": "error",
   "unicorn/no-misrefactored-assignment": "error",
-  "unicorn/no-negation-in-equality-check": "error",
   "unicorn/no-new-array": "error",
   "unicorn/no-new-buffer": "error",
   "unicorn/no-object-as-default-parameter": "error",

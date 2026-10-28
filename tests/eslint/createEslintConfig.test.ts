@@ -748,6 +748,104 @@ export const handlers = [() => void call()];
     ).toEqual(["6:auaust/void-placement", "10:auaust/void-placement"]);
   });
 
+  test("allows concise arrows returning simple arrays or const literals, and empty object assertions", async () => {
+    const eslint = await createLinter({
+      typeAware: false,
+    });
+
+    const [result] = await eslint.lintText(
+      `declare function call(): number;
+
+export const literal = () => "computed" as const;
+export const wrapped = (value: number) => [value];
+export const asserted = (value: number) => [value, 1] as const;
+export const computed = (value: number) => [call(), value];
+export const widened = () => "computed" as string;
+
+export const handler = {} as { later: string };
+
+export const filled = {
+  later: "",
+} as { later: string };
+`,
+      {
+        filePath: "src/arrows.ts",
+      },
+    );
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual([
+      "6:auaust/no-complex-concise-arrows",
+      "7:auaust/no-complex-concise-arrows",
+      "11:auaust/consistent-type-assertions",
+    ]);
+  });
+
+  test("allows constant conditions, void arguments and await members in test files", async () => {
+    const source = `declare const value: Promise<{ length: number }>;
+declare function nothing(): void;
+declare function check(input: unknown): void;
+
+export async function run(): Promise<number> {
+  if (true) {
+    check(nothing());
+  }
+
+  return (await value).length;
+}
+`;
+
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "tests", "type": "module" }',
+      "engrenage.config.ts": "export default {};\n",
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          strict: true,
+          module: "nodenext",
+          target: "esnext",
+        },
+        include: ["src", "tests"],
+      }),
+      "src/run.ts": source,
+      "tests/run.test.ts": source,
+    });
+
+    const eslint = new ESLint({
+      cwd: project.root,
+      overrideConfigFile: true,
+      overrideConfig: createEslintConfig(await loadConfig(project.root)),
+    });
+
+    const results = await eslint.lintFiles(["src/run.ts", "tests/run.test.ts"]);
+
+    const relaxedRules = new Set<Maybe<string>>([
+      "no-constant-condition",
+      "auaust/no-confusing-void-expression",
+      "auaust/no-await-expression-member",
+    ]);
+
+    expect(
+      map(results, ({ messages }) => {
+        return map(
+          messages.filter(({ ruleId }) => relaxedRules.has(ruleId)),
+          (message) => {
+            return `${message.line}:${message.ruleId}`;
+          },
+        );
+      }),
+    ).toEqual([
+      [
+        "6:no-constant-condition",
+        "7:auaust/no-confusing-void-expression",
+        "10:auaust/no-await-expression-member",
+      ],
+      [],
+    ]);
+  });
+
   test("pads cases once a case body spans several lines or a case is padded", async () => {
     const eslint = await createLinter({
       typeAware: false,
