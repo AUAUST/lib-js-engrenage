@@ -881,6 +881,32 @@ export const longform = {
     ]);
   });
 
+  test("allows unused parameters named to mark intent", async () => {
+    const eslint = await createLinter({
+      typeAware: false,
+    });
+
+    const [result] = await eslint.lintText(
+      `export function handle(ignored: unknown, unusedEvent: unknown, _index: number) {
+  return 1;
+}
+
+export function report(value: unknown, unusual: unknown) {
+  return value;
+}
+`,
+      {
+        filePath: "src/unused.ts",
+      },
+    );
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual(["5:auaust/no-unused-vars"]);
+  });
+
   test("allows __DUNDER__ variables but not lowercase ones", async () => {
     const eslint = await createLinter({
       typeAware: false,

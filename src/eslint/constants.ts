@@ -83,7 +83,6 @@ export const typescriptTypeAwareRules = freeze({
   "@typescript-eslint/prefer-find": "error",
   "@typescript-eslint/prefer-includes": "error",
   "@typescript-eslint/prefer-string-starts-ends-with": "error",
-  "@typescript-eslint/restrict-template-expressions": "error",
 } as const satisfies TypescriptEslintRules);
 
 export const importRules = freeze({
