@@ -10,10 +10,5 @@ export default defineConvention({
       },
     ]),
     delegateRule("operator-assignment", ["always"]),
-    delegateRule("no-multi-assign", [
-      {
-        ignoreNonDeclaration: true,
-      },
-    ]),
   ],
 });
