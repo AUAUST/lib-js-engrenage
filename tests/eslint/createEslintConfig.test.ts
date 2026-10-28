@@ -753,8 +753,9 @@ export function pick(value: Value): number {
     ).toEqual(["5:auaust/name-replacements"]);
   });
 
-  test("allows void only to discard the value of a returned action", async () => {
+  test("allows standalone void statements and discarded returned actions", async () => {
     const eslint = await getLinter({
+      recommended: false,
       typeAware: false,
     });
 
@@ -776,6 +777,16 @@ export function returned() {
 }
 
 export const handlers = [() => void call()];
+
+declare function refresh(): Promise<void>;
+
+declare const pendingRefresh: Promise<void>;
+
+void refresh();
+
+void pendingRefresh;
+
+export const discarded = void call();
 `,
       {
         filePath: "src/voids.ts",
@@ -786,7 +797,7 @@ export const handlers = [() => void call()];
       map(result?.messages ?? [], (message) => {
         return `${message.line}:${message.ruleId}`;
       }),
-    ).toEqual(["6:auaust/void-placement", "10:auaust/void-placement"]);
+    ).toEqual(["10:auaust/void-placement", "27:auaust/void-placement"]);
   });
 
   test("allows concise arrows returning simple arrays or const literals", async () => {
