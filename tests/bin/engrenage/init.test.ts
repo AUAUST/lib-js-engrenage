@@ -272,6 +272,10 @@ describe("engrenage init", () => {
       "private",
     );
 
+    expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
+      "publishConfig",
+    );
+
     expect(existsSync(project.resolve("vite.config.ts"))).toBe(false);
     expect(project.read("tsdown.config.ts")).toContain("defineTsdownConfig");
     expect(project.read("vitest.config.ts")).toContain("defineVitestConfig");
@@ -295,5 +299,21 @@ describe("engrenage init", () => {
     expect(project.read(".github/workflows/ci.yml")).toContain(
       "pnpm run ci:check",
     );
+  });
+
+  test("publishes a public scoped library with public access", async () => {
+    const project = createProject({
+      "package.json": '{\n  "name": "@scope/library",\n  "type": "module"\n}\n',
+    });
+
+    await runCommand(init, "--yes");
+
+    expect(JSON.parse(project.read("package.json"))).toMatchObject({
+      name: "@scope/library",
+      license: "GPL-3.0-only",
+      publishConfig: {
+        access: "public",
+      },
+    });
   });
 });

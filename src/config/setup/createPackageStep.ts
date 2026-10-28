@@ -1,6 +1,8 @@
 import { basename } from "node:path";
 
 import { includes } from "@auaust/primitive-kit/arrays";
+import { startsWith } from "@auaust/primitive-kit/strings";
+import { isString } from "@auaust/toolkit/isString";
 
 import { packageJsonFile } from "#constants";
 import {
@@ -20,6 +22,12 @@ function isUnset(context: StepContext, field: string): boolean {
 
 function hasVisibility(context: StepContext): boolean {
   return !isUnset(context, "license") || !isUnset(context, "private");
+}
+
+function isScoped(context: StepContext): boolean {
+  const name = context.readPackageJson(["name"]);
+
+  return isString(name) && startsWith(name, "@");
 }
 
 export function createPackageStep(): Step {
@@ -62,6 +70,10 @@ export function createPackageStep(): Step {
           ["license"],
           visibility === "public" ? publicLicense : privateLicense,
         );
+
+        if (visibility === "public" && isScoped(context)) {
+          writePackageJson(["publishConfig", "access"], "public");
+        }
       }
 
       if (isUnset(context, "author")) {

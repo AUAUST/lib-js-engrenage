@@ -19,11 +19,6 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: `engrenage init` creates a missing `pnpm-workspace.yaml` from `workspaceSettings`, but an existing one that lacks `allowBuilds.unrs-resolver` still fails `pnpm install` with `ERR_PNPM_IGNORED_BUILDS`, and the shared `minimumReleaseAgeExclude` keeps being copied by hand. The pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`.
    - Fix: an `engrenage sync` target that writes `workspaceSettings` into an existing file and keeps project entries. Editing YAML in place needs a parser that preserves the file (dependency to approve).
 
-4. No shared agent guidance on changesets.
-   - Where: `data/agents/sections/` or `data/agents/rules/`
-   - Problem: agent instructions only say to add a changeset for releasable changes. Nothing covers choosing the bump or writing the summary, so agents may pick a major bump on their own, miss that `0.x` versions ship breaking refactors in a minor release, or write verbose prose summaries.
-   - Fix: consider a shared section or rules file stating that a major changeset is never created without the user's explicit decision, that `0.x` packages take breaking changes as minor bumps, and that each summary is a concise list of imperative lines (`- Fix x`, `- Add y`).
-
 ## 2. Upstream
 
 1. primitive-kit `filter` return type.
@@ -93,19 +88,14 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
 4. References resolve with CommonJS conditions.
    - Where: `src/agents/utils/resolveAgentReference.ts`
    - Problem: `createRequire(from).resolve` applies the `require` condition, so a fragment a package exports only under `import` cannot be referenced.
-   - Fix: resolve references with ESM conditions. Part of AUAUST/lib-js-engrenage#9.
+   - Fix: resolve references with ESM conditions. `import.meta.resolve` still ignores its parent argument without `--experimental-import-meta-resolve` (Node 26), so this needs another resolver. Part of AUAUST/lib-js-engrenage#9.
 
 5. The standard `coverage` script needs a coverage provider init does not add.
    - Where: `src/config/setup/createScriptsStep.ts`, `src/vitest/constants.ts`
    - Problem: `engrenage init` adds `coverage: engrenage vitest:coverage` whenever Vitest is a dependency, but the default provider (`@vitest/coverage-istanbul`) is neither a peer dependency of engrenage nor added, so the script fails until it is installed by hand.
    - Fix: decide whether the Vitest step adds the provider (declaring it as an optional peer dependency) or the script is only added once the provider is a dependency.
 
-6. Public scoped packages are created without `publishConfig.access`.
-   - Where: `src/config/setup/createPackageStep.ts`
-   - Problem: a public package gets `license: GPL-3.0-only` only. npm publishes scoped packages as restricted by default, so `changeset publish` of a new `@auaust/*` library fails until `publishConfig.access: public` is added by hand.
-   - Fix: set `publishConfig.access: public` for public packages with a scoped name, or decide that the publish workflow passes `--access public`.
-
-7. Synced VS Code settings replace whole arrays.
+6. Synced VS Code settings replace whole arrays.
    - Where: `src/vscode/setup/syncVscodeFiles.ts`, `src/support/json/utils/flattenJsonObject.ts`
    - Problem: settings are flattened to one edit per object path, so an array such as `eslint.rules.customizations` is written as a whole and a project's own entries are dropped on every `engrenage sync`.
    - Fix: decide how arrays merge, for example by adding the missing entries keyed by `rule` and keeping the others.
