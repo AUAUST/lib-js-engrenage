@@ -23,12 +23,7 @@ const hooksSchema = optional(
 
 export function syncEditHook(
   config: ResolvedConfig,
-  {
-    file,
-    matcher,
-    command,
-    legacyCommand,
-  }: { file: File; matcher: string; command: string; legacyCommand?: string },
+  { file, matcher, command }: { file: File; matcher: string; command: string },
 ) {
   const path = config.resolve(file);
   const location = ["hooks", "PostToolUse"];
@@ -42,28 +37,9 @@ export function syncEditHook(
       `${file} PostToolUse hooks`,
     ) ?? [];
 
-  let found = false;
-
-  for (const [groupIndex, group] of entries.entries()) {
-    for (const [hookIndex, hook] of (group.hooks ?? []).entries()) {
-      if (hook.command === command) {
-        found = true;
-      }
-
-      if (legacyCommand === undefined || hook.command !== legacyCommand) {
-        continue;
-      }
-
-      content = writeJsonValue(
-        content,
-        path,
-        [...location, groupIndex, "hooks", hookIndex, "command"],
-        command,
-      );
-
-      found = true;
-    }
-  }
+  const found = entries.some((group) => {
+    return group.hooks?.some((hook) => hook.command === command);
+  });
 
   if (!found) {
     content = writeJsonValue(

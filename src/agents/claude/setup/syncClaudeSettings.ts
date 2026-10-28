@@ -2,7 +2,6 @@ import {
   claudeEditHook,
   claudeEditHookCommand,
   claudeSettingsFile,
-  legacyEditHookCommand,
 } from "#agents/claude/constants";
 import { syncEditHook } from "#agents/utils/syncEditHook";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -29,6 +28,5 @@ export function syncClaudeSettings(
     file: claudeSettingsFile,
     matcher: claudeEditHook.matcher,
     command: claudeEditHookCommand,
-    legacyCommand: legacyEditHookCommand,
   });
 }

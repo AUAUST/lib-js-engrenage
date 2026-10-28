@@ -20,5 +20,3 @@ export const claudeEditHook = freeze({
 } as const);
 
 export const claudeRulesGlob = ".claude/rules/**/*.md";
-
-export const legacyEditHookCommand = "pnpm --silent engrenage claude hook edit";
