@@ -313,7 +313,7 @@ describe("createEslintConfig", () => {
     const eslint = await getLinter(options);
 
     const [result] = await eslint.lintText(
-      'export const parsed = JSON.parse("{}").value;\n',
+      "export const values = [1];\ndelete values[0];\n",
       {
         filePath: "src/unions.ts",
       },
@@ -321,9 +321,7 @@ describe("createEslintConfig", () => {
 
     const rules = map(result?.messages ?? [], (message) => message.ruleId);
 
-    expect(rules.includes("@typescript-eslint/no-unsafe-member-access")).toBe(
-      enabled,
-    );
+    expect(rules.includes("@typescript-eslint/no-array-delete")).toBe(enabled);
 
     expect(result?.fatalErrorCount).toBe(0);
   });
@@ -341,9 +339,9 @@ describe("createEslintConfig", () => {
     const config = (await eslint.calculateConfigForFile(filePath)) as
       Config | undefined;
 
-    expect(
-      config?.rules?.["@typescript-eslint/no-unsafe-member-access"],
-    ).toEqual(enabled ? [2] : undefined);
+    expect(config?.rules?.["@typescript-eslint/no-array-delete"]).toEqual(
+      enabled ? [2] : undefined,
+    );
 
     if (!enabled) {
       return;
@@ -352,6 +350,10 @@ describe("createEslintConfig", () => {
     expect(config?.rules?.["@typescript-eslint/no-unsafe-assignment"]).toEqual([
       0,
     ]);
+
+    expect(
+      config?.rules?.["@typescript-eslint/no-unsafe-member-access"],
+    ).toEqual([0]);
 
     expect(config?.languageOptions?.parserOptions).toMatchObject({
       projectService: true,
