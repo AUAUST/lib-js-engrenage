@@ -1,11 +1,17 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, symlinkSync } from "node:fs";
-import { basename } from "node:path";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
+import { basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { keys } from "@auaust/toolkit/object";
+import { entries, keys, record } from "@auaust/toolkit/object";
 
 import { init } from "#bin/engrenage/init";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
@@ -18,17 +24,36 @@ vi.mock(import("node:child_process"));
 
 const repositoryRoot = fileURLToPath(new URL("../../../", import.meta.url));
 
-function createProject(files: Record<string, string>) {
-  const project = createTemporaryProject(files);
-
-  mkdirSync(project.resolve("node_modules/@auaust"), {
+function linkSourcePackage(target: string) {
+  mkdirSync(target, {
     recursive: true,
   });
 
-  symlinkSync(
-    repositoryRoot,
-    project.resolve("node_modules/@auaust/engrenage"),
+  for (const entry of readdirSync(repositoryRoot)) {
+    if (entry !== "package.json") {
+      symlinkSync(join(repositoryRoot, entry), join(target, entry));
+    }
+  }
+
+  const exports = record(
+    entries(manifest.exports).map(([path, file]) => {
+      return [path, file.replace(/^\.\/dist\/(.+)\.mjs$/, "./src/$1.ts")];
+    }),
   );
+
+  writeFileSync(
+    join(target, "package.json"),
+    JSON.stringify({
+      ...manifest,
+      exports,
+    }),
+  );
+}
+
+function createProject(files: Record<string, string>) {
+  const project = createTemporaryProject(files);
+
+  linkSourcePackage(project.resolve("node_modules/@auaust/engrenage"));
 
   mockCwd(project.root);
 
