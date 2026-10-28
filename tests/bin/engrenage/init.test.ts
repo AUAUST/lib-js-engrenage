@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
+import { sort } from "@auaust/primitive-kit/arrays";
 import { entries, keys, record } from "@auaust/toolkit/object";
 
 import { init } from "#bin/engrenage/init";
@@ -83,6 +84,95 @@ afterEach(() => {
 });
 
 describe("engrenage init", () => {
+  test("exits successfully without changes when the setup review is declined", async () => {
+    const packageJson = '{"name":"project","type":"module"}';
+    const config = "export default { agents: { preferred: [] } };\n";
+
+    const project = createProject({
+      "package.json": packageJson,
+      "engrenage.config.ts": config,
+    });
+
+    const confirm = vi.fn().mockResolvedValue(false);
+
+    vi.spyOn(prompts, "createPrompter").mockReturnValue({
+      ...prompts.createPrompter({
+        yes: true,
+      }),
+      confirm,
+    });
+
+    await runCommand(init);
+
+    expect(confirm).toHaveBeenCalledExactlyOnceWith(
+      expect.stringContaining("Review the missing setup"),
+    );
+
+    expect(project.read("package.json")).toBe(packageJson);
+    expect(project.read("engrenage.config.ts")).toBe(config);
+
+    expect(sort(readdirSync(project.root))).toEqual([
+      "engrenage.config.ts",
+      "node_modules",
+      "package.json",
+    ]);
+
+    expect(spawnSync).not.toHaveBeenCalled();
+    expect(process.exitCode ?? 0).toBe(0);
+  });
+
+  test.each(["vite", "tsdown", "vitest"])(
+    "reviews missing setup without implicitly creating a %s config or filling package fields",
+    async (tool) => {
+      const packageJson = JSON.stringify({
+        name: "project",
+        type: "module",
+        devDependencies: {
+          [tool]: "*",
+        },
+      });
+
+      const config = "export default { agents: { preferred: [] } };\n";
+
+      const project = createProject({
+        "package.json": packageJson,
+        "engrenage.config.ts": config,
+      });
+
+      const confirm = vi
+        .fn()
+        .mockResolvedValue(false)
+        .mockResolvedValueOnce(true);
+
+      vi.spyOn(prompts, "createPrompter").mockReturnValue({
+        ...prompts.createPrompter({
+          yes: true,
+        }),
+        confirm,
+      });
+
+      await runCommand(init);
+
+      expect(confirm).toHaveBeenNthCalledWith(
+        1,
+        expect.stringContaining("Review the missing setup"),
+      );
+
+      expect(confirm).toHaveBeenCalledWith(`Create ${tool}.config.ts?`, true);
+
+      expect(confirm).toHaveBeenCalledWith(
+        "Fill in the missing package.json fields?",
+        true,
+      );
+
+      expect(existsSync(project.resolve(`${tool}.config.ts`))).toBe(false);
+      expect(project.read("package.json")).toBe(packageJson);
+      expect(project.read("engrenage.config.ts")).toBe(config);
+      expect(spawnSync).not.toHaveBeenCalled();
+      expect(process.exitCode ?? 0).toBe(0);
+    },
+  );
+
   test("fills the gaps of a configured project, installs added dependencies and syncs", async () => {
     const project = createProject({
       "engrenage.config.ts":
@@ -329,6 +419,7 @@ test("does not generate agent setup without selected agents", async () => {
   });
 
   await runCommand(init, "--yes");
+
   expect(project.read("engrenage.config.ts")).toBe("export default {};\n");
 
   for (const file of [
@@ -355,6 +446,7 @@ test("sets up Codex without installing non-default rules", async () => {
   });
 
   await runCommand(init, "--yes");
+
   expect(project.read("engrenage.config.ts")).toBe(input);
 
   expect(project.read("AGENTS.override.md")).toContain(
@@ -395,6 +487,7 @@ test("uses an interactive selection for this init without rewriting an existing 
   });
 
   await runCommand(init, "--yes");
+
   expect(project.read("engrenage.config.ts")).toBe("export default {};\n");
   expect(project.read("CLAUDE.md")).toBe("@AGENTS.md\n");
 

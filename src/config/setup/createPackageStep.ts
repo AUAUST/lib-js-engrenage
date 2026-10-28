@@ -33,6 +33,7 @@ function isScoped(context: StepContext): boolean {
 export function createPackageStep(): Step {
   return {
     name: `${packageJsonFile} fields`,
+    message: `Fill in the missing ${packageJsonFile} fields?`,
     isMissing(context) {
       return (
         isUnset(context, "name") ||

@@ -8,6 +8,7 @@ export function createTsdownConfigStep(): Step {
 
   return {
     name: file,
+    message: `Create ${file}?`,
     isMissing({ filesystem, hasDependency }) {
       return hasDependency(tsdown) && !hasConfigFile(filesystem, tsdown);
     },

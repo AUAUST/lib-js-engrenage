@@ -8,6 +8,7 @@ export function createVitestConfigStep(): Step {
 
   return {
     name: file,
+    message: `Create ${file}?`,
     isMissing({ filesystem, hasDependency }) {
       return (
         hasDependency(vitest) &&

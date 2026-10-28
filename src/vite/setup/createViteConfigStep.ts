@@ -8,6 +8,7 @@ export function createViteConfigStep(): Step {
 
   return {
     name: file,
+    message: `Create ${file}?`,
     isMissing({ filesystem, hasDependency }) {
       return hasDependency(vite) && !hasConfigFile(filesystem, vite);
     },

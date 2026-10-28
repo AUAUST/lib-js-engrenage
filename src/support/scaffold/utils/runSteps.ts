@@ -30,7 +30,7 @@ export async function runSteps({
     const names = map(gaps, (step) => step.name).join(", ");
 
     const fill = await prompter.confirm(
-      `Engrenage is already set up. Fill in the gaps (${names})?`,
+      `Engrenage is already set up. Review the missing setup (${names})?`,
     );
 
     if (!fill) {
