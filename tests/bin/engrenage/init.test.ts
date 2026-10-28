@@ -104,6 +104,12 @@ describe("engrenage init", () => {
         "ci:check":
           "engrenage sync --check && engrenage typecheck && engrenage eslint",
         "test": "engrenage vitest && engrenage typecheck",
+        "typecheck": "engrenage typecheck",
+        "format": "engrenage prettier",
+        "lint": "engrenage eslint",
+        "lint:check": "engrenage eslint",
+        "lint:fix": "engrenage eslint:fix",
+        "lint:suppress": "engrenage eslint:suppress",
         "ready":
           "pnpm install --frozen-lockfile && engrenage sync && pnpm run ci",
       },

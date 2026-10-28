@@ -68,14 +68,18 @@ function collectScripts({
     "ci:publish": publishes && "changeset publish",
     "ci:test": test,
     "coverage": hasDependency(vitest) && "engrenage vitest:coverage",
-    "format": hasDependency(prettier) && "engrenage format",
+    "format": hasDependency(prettier) && "engrenage prettier",
     "lint": lint,
+    "lint:check": lint,
+    "lint:fix": hasDependency(eslint) && "engrenage eslint:fix",
+    "lint:suppress": hasDependency(eslint) && "engrenage eslint:suppress",
     "ready": chain([
       "pnpm install --frozen-lockfile",
       "engrenage sync",
       "pnpm run ci",
     ]),
     "test": chain([test, typecheck]),
+    "typecheck": typecheck,
   };
 
   const defined: Script[] = [];

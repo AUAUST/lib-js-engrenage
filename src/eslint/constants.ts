@@ -238,3 +238,6 @@ export const unicornRules = freeze({
 } as const satisfies UnicornRules);
 
 export const defaultCacheLocation = "node_modules/.cache/eslint" satisfies File;
+
+export const defaultSuppressionsFile =
+  "eslint-suppressions.json" satisfies File;
