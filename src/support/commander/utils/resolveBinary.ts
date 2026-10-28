@@ -47,7 +47,7 @@ export function resolveBinary(
   const { bin } = createPackageJson({
     root: directory,
     path: manifestPath,
-    content: readFileSync(manifestPath, "utf8"),
+    content: readFileSync(manifestPath, "utf-8"),
   });
 
   const path = isString(bin) ? bin : bin[binary];

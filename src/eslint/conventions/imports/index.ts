@@ -3,6 +3,7 @@ export { default as exportOrder } from "#eslint/conventions/imports/exportOrder"
 export { default as importOrder } from "#eslint/conventions/imports/importOrder";
 export { default as noCommonjs } from "#eslint/conventions/imports/noCommonjs";
 export { default as noDefaultExport } from "#eslint/conventions/imports/noDefaultExport";
+export { default as nodeProtocol } from "#eslint/conventions/imports/nodeProtocol";
 export { default as noDuplicates } from "#eslint/conventions/imports/noDuplicates";
 export { default as noDynamicImport } from "#eslint/conventions/imports/noDynamicImport";
 export { default as noExternalNamespace } from "#eslint/conventions/imports/noExternalNamespace";

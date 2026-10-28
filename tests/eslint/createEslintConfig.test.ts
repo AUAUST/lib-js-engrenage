@@ -907,6 +907,33 @@ export function report(value: unknown, unusual: unknown) {
     ).toEqual(["5:auaust/no-unused-vars"]);
   });
 
+  test("reports builtin imports without node: and undashed text encodings", async () => {
+    const eslint = await createLinter({
+      typeAware: false,
+    });
+
+    const [result] = await eslint.lintText(
+      `import { readFileSync } from "fs";
+
+export const content = readFileSync("file.txt", "utf-8");
+
+export const decoder = new TextDecoder("UTF8");
+`,
+      {
+        filePath: "src/encoding.ts",
+      },
+    );
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual([
+      "1:auaust/prefer-node-protocol",
+      "5:auaust/text-encoding-identifier-case",
+    ]);
+  });
+
   test("allows __DUNDER__ variables but not lowercase ones", async () => {
     const eslint = await createLinter({
       typeAware: false,

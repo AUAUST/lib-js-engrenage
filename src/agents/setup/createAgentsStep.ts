@@ -14,7 +14,7 @@ export function createAgentsStep(): Step {
     plan({ filesystem }) {
       const template = createRequire(import.meta.url).resolve(agentsTemplate);
 
-      filesystem.write(agentsFile, readFileSync(template, "utf8"));
+      filesystem.write(agentsFile, readFileSync(template, "utf-8"));
     },
   };
 }

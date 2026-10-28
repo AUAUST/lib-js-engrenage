@@ -31,7 +31,7 @@ function runTool(
     [resolveBinary(config, packageName, packageName), ...args],
     {
       cwd: config.root,
-      encoding: "utf8",
+      encoding: "utf-8",
     },
   );
 
@@ -54,7 +54,7 @@ export const edit = defineCommand((command) => {
         tool_input: { file_path: file },
       } = validate(
         payloadSchema,
-        JSON.parse(readFileSync(0, "utf8")),
+        JSON.parse(readFileSync(0, "utf-8")),
         "Claude Code hook payload",
       );
 

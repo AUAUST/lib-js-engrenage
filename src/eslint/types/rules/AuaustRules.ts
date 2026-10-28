@@ -9,6 +9,11 @@ export interface AuaustRules {
    */
   "auaust/adjacent-overload-signatures"?: Rule<[]>;
   /**
+   * Disallow awaiting a value that is not a Thenable
+   * @see https://typescript-eslint.io/rules/await-thenable
+   */
+  "auaust/await-thenable"?: Rule<AuaustAwaitThenable>;
+  /**
    * Enforce specifying generic type arguments on type annotation or constructor name of a constructor call
    * @see https://typescript-eslint.io/rules/consistent-generic-constructors
    */
@@ -28,11 +33,6 @@ export interface AuaustRules {
    * @see https://eslint.org/docs/latest/rules/curly
    */
   "auaust/curly"?: Rule<AuaustCurly>;
-  /**
-   * Require the use of `===` and `!==`
-   * @see https://eslint.org/docs/latest/rules/eqeqeq
-   */
-  "auaust/eqeqeq"?: Rule<AuaustEqeqeq>;
   /**
    * Keep function overloads and their implementation together, without blank lines.
    */
@@ -61,6 +61,26 @@ export interface AuaustRules {
    * Use `isArray` from @auaust/toolkit instead of `Array.isArray`.
    */
   "auaust/no-array-is-array"?: Rule<[]>;
+  /**
+   * Disallow asynchronous callbacks in synchronous iterator helpers.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-async-iterator-callback.md
+   */
+  "auaust/no-async-iterator-callback"?: Rule<[]>;
+  /**
+   * Disallow async functions as `Promise#finally()` callbacks.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-async-promise-finally.md
+   */
+  "auaust/no-async-promise-finally"?: Rule<[]>;
+  /**
+   * Disallow member access from await expression.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-await-expression-member.md
+   */
+  "auaust/no-await-expression-member"?: Rule<[]>;
+  /**
+   * Disallow using `await` in `Promise` method parameters.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-await-in-promise-methods.md
+   */
+  "auaust/no-await-in-promise-methods"?: Rule<[]>;
   /**
    * Forbid CommonJS `require` calls and `module.exports` or `exports.*`.
    * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/no-commonjs.md
@@ -109,6 +129,11 @@ export interface AuaustRules {
    */
   "auaust/no-fallthrough"?: Rule<AuaustNoFallthrough>;
   /**
+   * Require Promise-like statements to be handled appropriately
+   * @see https://typescript-eslint.io/rules/no-floating-promises
+   */
+  "auaust/no-floating-promises"?: Rule<AuaustNoFloatingPromises>;
+  /**
    * Enforce the use of top-level import type qualifier when an import only has specifiers with inline type qualifiers
    * @see https://typescript-eslint.io/rules/no-import-type-side-effects
    */
@@ -132,6 +157,11 @@ export interface AuaustRules {
    */
   "auaust/no-is-undefined"?: Rule<[]>;
   /**
+   * Require the use of `===` and `!==`
+   * @see https://eslint.org/docs/latest/rules/eqeqeq
+   */
+  "auaust/no-loose-equal"?: Rule<AuaustNoLooseEqual>;
+  /**
    * Use `x == null` instead of loose comparisons with `undefined`.
    */
   "auaust/no-loose-undefined"?: Rule<[]>;
@@ -154,6 +184,11 @@ export interface AuaustRules {
    */
   "auaust/no-multi-assign"?: Rule<AuaustNoMultiAssign>;
   /**
+   * Disallow calling Promise executor resolver functions more than once on the same execution path.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-multiple-promise-resolver-calls.md
+   */
+  "auaust/no-multiple-promise-resolver-calls"?: Rule<[]>;
+  /**
    * Disallow nested ternary expressions.
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-nested-ternary.md
    */
@@ -167,9 +202,29 @@ export interface AuaustRules {
    */
   "auaust/no-primitive-kit-root"?: Rule<[]>;
   /**
+   * Disallow returning values from Promise executor functions
+   * @see https://eslint.org/docs/latest/rules/no-promise-executor-return
+   */
+  "auaust/no-promise-executor-return"?: Rule<AuaustNoPromiseExecutorReturn>;
+  /**
+   * Disallow members of unions and intersections that do nothing or override type information
+   * @see https://typescript-eslint.io/rules/no-redundant-type-constituents
+   */
+  "auaust/no-redundant-types"?: Rule<[]>;
+  /**
    * Use `is<Type>` helpers instead of runtime `typeof` comparisons (except `typeof x === "undefined"`).
    */
   "auaust/no-runtime-typeof"?: Rule<[]>;
+  /**
+   * Disallow passing single-element arrays to `Promise` methods.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-single-promise-in-promise-methods.md
+   */
+  "auaust/no-single-promise-in-promise-methods"?: Rule<[]>;
+  /**
+   * Disallow `then` property.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-thenable.md
+   */
+  "auaust/no-thenable"?: Rule<[]>;
   /**
    * Use the `@auaust/toolkit/<helper>` subpath entries instead of `@auaust/toolkit`.
    */
@@ -190,6 +245,11 @@ export interface AuaustRules {
    */
   "auaust/no-unsafe-member-access"?: Rule<AuaustNoUnsafeMemberAccess>;
   /**
+   * Disallow reading `.value` from `Promise.allSettled()` results without a fulfilled status guard.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-unsafe-promise-all-settled-values.md
+   */
+  "auaust/no-unsafe-promise-all-settled-values"?: Rule<[]>;
+  /**
    * Disallow unused variables
    * @see https://github.com/sweepline/eslint-plugin-unused-imports/blob/master/docs/rules/no-unused-imports.md
    */
@@ -199,6 +259,11 @@ export interface AuaustRules {
    * @see https://github.com/sweepline/eslint-plugin-unused-imports/blob/master/docs/rules/no-unused-vars.md
    */
   "auaust/no-unused-vars"?: Rule<AuaustNoUnusedVars>;
+  /**
+   * Disallow returning/yielding `Promise.resolve/reject()` in async functions or promise callbacks
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-useless-promise-resolve-reject.md
+   */
+  "auaust/no-useless-promise-resolve-reject"?: Rule<[]>;
   /**
    * Disallow useless `undefined`.
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-useless-undefined.md
@@ -276,6 +341,11 @@ export interface AuaustRules {
    */
   "auaust/prefer-function-type"?: Rule<[]>;
   /**
+   * Prefer using the `node:` protocol when importing Node.js builtin modules.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-node-protocol.md
+   */
+  "auaust/prefer-node-protocol"?: Rule<[]>;
+  /**
    * Disallow using `Object.assign` with an object literal as the first argument and prefer the use of object spread instead
    * @see https://eslint.org/docs/latest/rules/prefer-object-spread
    */
@@ -286,6 +356,11 @@ export interface AuaustRules {
    */
   "auaust/prefer-optional-chain"?: Rule<AuaustPreferOptionalChain>;
   /**
+   * Prefer `Promise.resolve()` and `Promise.reject()` over trivial `new Promise()` calls.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-promise-static-methods.md
+   */
+  "auaust/prefer-promise-static-methods"?: Rule<[]>;
+  /**
    * Require private members to be marked as `readonly` if they're never modified outside of the constructor
    * @see https://typescript-eslint.io/rules/prefer-readonly
    */
@@ -294,6 +369,11 @@ export interface AuaustRules {
    * Return `void` the expression instead of following it with a bare `return` in its own block.
    */
   "auaust/prefer-return-void"?: Rule<[]>;
+  /**
+   * Prefer top-level await over top-level promises and async function calls.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-top-level-await.md
+   */
+  "auaust/prefer-top-level-await"?: Rule<[]>;
   /**
    * Require type literals to be last in union types.
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-type-literal-last.md
@@ -340,6 +420,11 @@ export interface AuaustRules {
    */
   "auaust/switch-exhaustiveness-check"?: Rule<AuaustSwitchExhaustivenessCheck>;
   /**
+   * Enforce consistent case for text encoding identifiers.
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/text-encoding-identifier-case.md
+   */
+  "auaust/text-encoding-identifier-case"?: Rule<AuaustTextEncodingIdentifierCase>;
+  /**
    * Disallow two overloads that could be unified into one with a union or an optional/rest parameter
    * @see https://typescript-eslint.io/rules/unified-signatures
    */
@@ -356,6 +441,14 @@ export interface AuaustRules {
 }
 
 /* ======= Declarations ======= */
+// ----- auaust/await-thenable -----
+type AuaustAwaitThenable =
+  | []
+  | [
+      {
+        allowMixedPromiseArrays?: boolean;
+      },
+    ];
 // ----- auaust/consistent-generic-constructors -----
 type AuaustConsistentGenericConstructors =
   [] | ["type-annotation" | "constructor"];
@@ -394,18 +487,6 @@ type AuaustCurly =
   | []
   | ["multi" | "multi-line" | "multi-or-nest"]
   | ["multi" | "multi-line" | "multi-or-nest", "consistent"];
-// ----- auaust/eqeqeq -----
-type AuaustEqeqeq =
-  | []
-  | ["always"]
-  | [
-      "always",
-      {
-        null?: "always" | "never" | "ignore";
-      },
-    ]
-  | []
-  | ["smart" | "allow-null"];
 // ----- auaust/logical-assignment-operators -----
 type AuaustLogicalAssignmentOperators = (
   | []
@@ -1027,6 +1108,54 @@ type AuaustNoFallthrough =
         reportUnusedFallthroughComment?: boolean;
       },
     ];
+// ----- auaust/no-floating-promises -----
+type AuaustNoFloatingPromises =
+  | []
+  | [
+      {
+        allowForKnownSafeCalls?: (
+          | string
+          | {
+              from: "file";
+              name: string | [string, ...string[]];
+              path?: string;
+            }
+          | {
+              from: "lib";
+              name: string | [string, ...string[]];
+            }
+          | {
+              from: "package";
+              name: string | [string, ...string[]];
+              package: string;
+            }
+        )[];
+
+        allowForKnownSafePromises?: (
+          | string
+          | {
+              from: "file";
+              name: string | [string, ...string[]];
+              path?: string;
+            }
+          | {
+              from: "lib";
+              name: string | [string, ...string[]];
+            }
+          | {
+              from: "package";
+              name: string | [string, ...string[]];
+              package: string;
+            }
+        )[];
+
+        checkThenables?: boolean;
+
+        ignoreIIFE?: boolean;
+
+        ignoreVoid?: boolean;
+      },
+    ];
 // ----- auaust/no-inferrable-types -----
 type AuaustNoInferrableTypes =
   | []
@@ -1047,6 +1176,18 @@ type AuaustNoInvalidVoidType =
         allowInGenericTypeArguments?: boolean | [string, ...string[]];
       },
     ];
+// ----- auaust/no-loose-equal -----
+type AuaustNoLooseEqual =
+  | []
+  | ["always"]
+  | [
+      "always",
+      {
+        null?: "always" | "never" | "ignore";
+      },
+    ]
+  | []
+  | ["smart" | "allow-null"];
 // ----- auaust/no-misused-promises -----
 type AuaustNoMisusedPromises =
   | []
@@ -1083,6 +1224,14 @@ type AuaustNoMultiAssign =
   | [
       {
         ignoreNonDeclaration?: boolean;
+      },
+    ];
+// ----- auaust/no-promise-executor-return -----
+type AuaustNoPromiseExecutorReturn =
+  | []
+  | [
+      {
+        allowVoid?: boolean;
       },
     ];
 // ----- auaust/no-typeof-undefined -----
@@ -2641,6 +2790,14 @@ type AuaustSwitchExhaustivenessCheck =
         defaultCaseCommentPattern?: string;
 
         requireDefaultForNonUnion?: boolean;
+      },
+    ];
+// ----- auaust/text-encoding-identifier-case -----
+type AuaustTextEncodingIdentifierCase =
+  | []
+  | [
+      {
+        withDash?: boolean;
       },
     ];
 // ----- auaust/unified-signatures -----

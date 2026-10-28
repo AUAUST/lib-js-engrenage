@@ -169,7 +169,7 @@ export async function syncRuleTypes({
 
     const formatted = await formatModule(path, content);
 
-    if (existsSync(path) && readFileSync(path, "utf8") === formatted) {
+    if (existsSync(path) && readFileSync(path, "utf-8") === formatted) {
       continue;
     }
 

@@ -22,6 +22,7 @@ export default defineConvention({
           mod: false,
           num: false,
           pkg: false,
+          proto: false,
           str: false,
         },
       },

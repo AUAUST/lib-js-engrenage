@@ -36,7 +36,7 @@ export function createTemporaryProject(files: Record<string, string> = {}) {
   }
 
   function read(path: string): string {
-    return readFileSync(resolve(path), "utf8");
+    return readFileSync(resolve(path), "utf-8");
   }
 
   for (const [path, content] of entries(files)) {

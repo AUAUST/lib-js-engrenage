@@ -12,7 +12,7 @@ const tsc = createRequire(import.meta.url).resolve("typescript/lib/tsc.js");
 
 function runTsc(...args: string[]): string {
   return execFileSync(process.execPath, [tsc, ...args], {
-    encoding: "utf8",
+    encoding: "utf-8",
   });
 }
 

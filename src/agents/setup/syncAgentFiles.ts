@@ -21,7 +21,7 @@ export function syncAgentFiles(config: ResolvedConfig) {
 
         const source = resolveAgentReference(config, reference, path);
 
-        return readFileSync(source, "utf8");
+        return readFileSync(source, "utf-8");
       },
     });
   }

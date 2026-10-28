@@ -28,7 +28,7 @@ interface Backup {
 }
 
 function readFromDisk(path: File): string | undefined {
-  return existsSync(path) ? readFileSync(path, "utf8") : undefined;
+  return existsSync(path) ? readFileSync(path, "utf-8") : undefined;
 }
 
 function restore({ path, original }: Backup) {
