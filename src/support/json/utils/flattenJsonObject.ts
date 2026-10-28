@@ -18,11 +18,6 @@ export function flattenJsonObject(
       return flattenJsonObject(value, path);
     }
 
-    return [
-      {
-        path,
-        value,
-      },
-    ];
+    return [{ path, value }];
   });
 }

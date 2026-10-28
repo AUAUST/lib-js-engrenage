@@ -1,4 +1,5 @@
 import { ESLint } from "eslint";
+import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
 import {
@@ -13,6 +14,7 @@ import {
   type Options,
 } from "@auaust/engrenage/eslint";
 import { infoRulesSetting } from "@auaust/engrenage/eslint/constants";
+import prettierOptions from "@auaust/engrenage/prettier";
 import { map } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
 import type { Maybe } from "@auaust/toolkit/types";
@@ -200,30 +202,118 @@ async function lintedProjectRules(source: string) {
 }
 
 describe("createEslintConfig", () => {
+  describe("object newlines", () => {
+    test.each([
+      [
+        "one property",
+        "getLinter({ typeAware: false })",
+        "getLinter({ typeAware: false })",
+      ],
+      [
+        "two properties",
+        "{ first: true, second: false }",
+        "{ first: true, second: false }",
+      ],
+      [
+        "existing newlines",
+        "{\n typeAware: false,\n}",
+        "{\n typeAware: false,\n}",
+      ],
+      [
+        "three properties",
+        "{ first: true, second: false, third: true }",
+        "{\n first: true, second: false, third: true,\n}",
+      ],
+      [
+        "nested objects",
+        "{ value: { nested: true } }",
+        "{\n value: { nested: true },\n}",
+      ],
+      [
+        "existing nested newlines",
+        "{\n value: {\n nested: true,\n },\n}",
+        "{\n value: {\n nested: true,\n },\n}",
+      ],
+      [
+        "inline arguments",
+        "run({ first: true }, { second: false })",
+        "run({ first: true }, { second: false })",
+      ],
+      [
+        "multiline arguments",
+        "run({ presets: [] }, {\n performance: { noZodClassic: true },\n})",
+        "run({\n presets: [],\n}, {\n performance: { noZodClassic: true },\n})",
+      ],
+      [
+        "three-property sibling",
+        "[{ short: true }, { a: 1, b: 2, c: 3 }]",
+        "[{\n short: true,\n}, {\n a: 1, b: 2, c: 3,\n}]",
+      ],
+      [
+        "nested arrays",
+        "[[{ short: true }, true], [{\n other: false,\n}, false]]",
+        "[[{\n short: true,\n}, true], [{\n other: false,\n}, false]]",
+      ],
+      [
+        "constructor arguments",
+        "new Config({ first: true }, {\n second: false,\n})",
+        "new Config({\n first: true,\n}, {\n second: false,\n})",
+      ],
+      [
+        "unrelated calls",
+        "[first({ short: true }), second({\n other: false,\n})]",
+        "[first({ short: true }), second({\n other: false,\n})]",
+      ],
+      [
+        "empty objects",
+        "run({}, {\n enabled: true,\n})",
+        "run({}, {\n enabled: true,\n})",
+      ],
+      [
+        "Prettier wrapping",
+        'run({ short: true }, { longProperty: "a deliberately long value that forces the object to wrap beyond the configured print width" })',
+        'run({\n short: true,\n}, {\n longProperty: "a deliberately long value that forces the object to wrap beyond the configured print width",\n})',
+      ],
+    ])("%s", async (_name, input, expected) => {
+      const eslint = await getLinter({ typeAware: false }, true);
+
+      const options = { ...prettierOptions, parser: "typescript" };
+
+      const source = await format(`export const result = ${input};`, options);
+
+      const [result] = await eslint.lintText(source, {
+        filePath: "src/objects.ts",
+      });
+
+      const output = await format(result?.output ?? source, options);
+
+      expect(output).toBe(
+        await format(`export const result = ${expected};`, options),
+      );
+
+      const [repeated] = await eslint.lintText(output, {
+        filePath: "src/objects.ts",
+      });
+
+      expect(await format(repeated?.output ?? output, options)).toBe(output);
+
+      expect(
+        repeated?.messages.filter(
+          (message) => message.ruleId === "auaust/object-curly-newline",
+        ),
+      ).toEqual([]);
+    });
+  });
+
   test.each([
-    [
-      {
-        typeAware: true,
-      },
-      true,
-    ],
-    [
-      {
-        typeAware: false,
-      },
-      false,
-    ],
-    [
-      {
-        recommended: false,
-      },
-      false,
-    ],
+    [{ typeAware: true }, true],
+    [{ typeAware: false }, false],
+    [{ recommended: false }, false],
   ])("enables typed recommended rules with %j", async (options, enabled) => {
     const eslint = await getLinter(options);
 
     const [result] = await eslint.lintText(
-      'export const parsed = JSON.parse("{}");\n',
+      'export const parsed = JSON.parse("{}").value;\n',
       {
         filePath: "src/unions.ts",
       },
@@ -231,7 +321,7 @@ describe("createEslintConfig", () => {
 
     const rules = map(result?.messages ?? [], (message) => message.ruleId);
 
-    expect(rules.includes("@typescript-eslint/no-unsafe-assignment")).toBe(
+    expect(rules.includes("@typescript-eslint/no-unsafe-member-access")).toBe(
       enabled,
     );
 
@@ -251,15 +341,21 @@ describe("createEslintConfig", () => {
     const config = (await eslint.calculateConfigForFile(filePath)) as
       Config | undefined;
 
-    expect(config?.rules?.["@typescript-eslint/no-unsafe-assignment"]).toEqual(
-      enabled ? [2] : undefined,
-    );
+    expect(
+      config?.rules?.["@typescript-eslint/no-unsafe-member-access"],
+    ).toEqual(enabled ? [2] : undefined);
 
-    if (enabled) {
-      expect(config?.languageOptions?.parserOptions).toMatchObject({
-        projectService: true,
-      });
+    if (!enabled) {
+      return;
     }
+
+    expect(config?.rules?.["@typescript-eslint/no-unsafe-assignment"]).toEqual([
+      0,
+    ]);
+
+    expect(config?.languageOptions?.parserOptions).toMatchObject({
+      projectService: true,
+    });
   });
 
   test("reports the shared conventions in source files", async () => {
@@ -637,7 +733,13 @@ export function tail(ready: boolean, log: () => void) {
       filePath: "src/returns.ts",
     });
 
-    expect(result?.output).toBe(fixed);
+    expect(result?.output).toBeDefined();
+
+    const options = { ...prettierOptions, parser: "typescript" };
+
+    expect(await format(result?.output ?? source, options)).toBe(
+      await format(fixed, options),
+    );
 
     expect(map(result?.messages ?? [], (message) => message.ruleId)).toEqual([
       "auaust/prefer-return-void",

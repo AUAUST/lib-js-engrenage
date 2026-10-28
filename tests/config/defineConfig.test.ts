@@ -27,12 +27,12 @@ describe("defineConfig", () => {
       };
     });
 
-    expectTypeOf(defineConfig).toBeCallableWith(async () => {
-      return {
+    expectTypeOf(defineConfig).toBeCallableWith(() => {
+      return Promise.resolve({
         agents: {
           snippetsDir: ".agents/snippets",
         },
-      };
+      });
     });
   });
 
@@ -51,12 +51,12 @@ describe("defineConfig", () => {
     });
 
     // @ts-expect-error: callbacks only reject keys without a valid sibling
-    defineConfig(async () => {
-      return {
+    defineConfig(() => {
+      return Promise.resolve({
         code: {
           configFilez: [],
         },
-      };
+      });
     });
   });
 });

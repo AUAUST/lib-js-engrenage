@@ -137,12 +137,12 @@ describe("defineViteConfig", () => {
     })(env);
 
     const computed = await defineViteConfig({
-      async test(config, { mode }) {
-        return {
+      test(config, { mode }) {
+        return Promise.resolve({
           test: {
             name: `${config.packageJson.name}:${mode}`,
           },
-        };
+        });
       },
     })(env);
 

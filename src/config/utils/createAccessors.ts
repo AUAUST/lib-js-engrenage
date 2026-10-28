@@ -36,10 +36,5 @@ export function createAccessors<Fields extends object>({
 
   const optional = compose(optionalGetters);
 
-  return compose(
-    {
-      optional,
-    },
-    strictGetters,
-  ) as unknown as Accessors<Fields>;
+  return compose({ optional }, strictGetters) as unknown as Accessors<Fields>;
 }

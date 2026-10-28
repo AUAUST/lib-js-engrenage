@@ -45,9 +45,7 @@ function addRecommendations(
         path,
         ["recommendations", -1],
         extension,
-        {
-          isArrayInsertion: true,
-        },
+        { isArrayInsertion: true },
       );
     }
   }

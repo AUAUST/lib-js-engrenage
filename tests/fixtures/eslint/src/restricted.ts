@@ -22,7 +22,7 @@ export function formatFiles(files: string[]) {
   return files.map((file) => `~   ${file}\n`);
 }
 
-export function partiallyReassigned(cases: Array<[number, string]>) {
+export function partiallyReassigned(cases: [number, string][]) {
   const labels: string[] = [];
 
   for (let [count, label] of cases) {

@@ -481,8 +481,8 @@ test("uses an interactive selection for this init without rewriting an existing 
 
   vi.spyOn(prompts, "createPrompter").mockReturnValue({
     ...prompter,
-    async multiselect(_message, values) {
-      return [...values];
+    multiselect(_message, values) {
+      return Promise.resolve([...values]);
     },
   });
 

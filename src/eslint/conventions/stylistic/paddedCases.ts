@@ -6,9 +6,7 @@ import { defineConvention } from "#eslint/conventions/defineConvention";
 
 type SwitchCase = Extract<
   Rule.Node,
-  {
-    type: "SwitchStatement";
-  }
+  { type: "SwitchStatement" }
 >["cases"][number];
 
 const message =
