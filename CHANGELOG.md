@@ -1,5 +1,24 @@
 # @auaust/engrenage
 
+## 0.4.1
+
+### Patch Changes
+
+- [`1f093b4`](https://github.com/AUAUST/lib-js-engrenage/commit/1f093b4ea16f72ae48f77d03f168cb7c4511548c) Thanks [@apademide](https://github.com/apademide)! - - Allow object literal type assertions while continuing to enforce `as` syntax
+
+- [`5440c22`](https://github.com/AUAUST/lib-js-engrenage/commit/5440c22b18a25e9baafbd81d5e0abfb51eb9e978) Thanks [@apademide](https://github.com/apademide)! - - Allow standalone `void` statements to explicitly ignore promises.
+
+- [`2cf7014`](https://github.com/AUAUST/lib-js-engrenage/commit/2cf7014daedea4eb6e35fe049928868c56f7ec84) Thanks [@apademide](https://github.com/apademide)! - - Allow small objects to remain inline while preserving existing multiline formatting.
+  - Wrap objects with three or more properties, nested objects, and sibling objects in arrays and argument lists when one requires multiline formatting.
+
+- [`57212f7`](https://github.com/AUAUST/lib-js-engrenage/commit/57212f721ac18f4fbac0ccd9dc020cc9d615114c) Thanks [@apademide](https://github.com/apademide)! - Add recommended stylistic TypeScript ESLint rules
+
+- [`7c9248f`](https://github.com/AUAUST/lib-js-engrenage/commit/7c9248f78c1e4c89ed6b727d566b4716ef588c29) Thanks [@apademide](https://github.com/apademide)! - - Preserve defined global types from env.d.ts in tsdown declaration output
+
+- [`7dcba49`](https://github.com/AUAUST/lib-js-engrenage/commit/7dcba49fa6e36f59a0a8240059cb6bdccae30bd9) Thanks [@apademide](https://github.com/apademide)! - - Remove legacy Claude hook command migration and the `legacyEditHookCommand` export
+
+- [`41c172a`](https://github.com/AUAUST/lib-js-engrenage/commit/41c172a4909866e2dc82fe3fd32564ff81a6defa) Thanks [@apademide](https://github.com/apademide)! - - Enable recommended typed ESLint rules for code with type checking enabled
+
 ## 0.4.0
 
 ### Minor Changes
