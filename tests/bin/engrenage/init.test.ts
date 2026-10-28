@@ -556,6 +556,8 @@ test("does not generate agent setup without selected agents", async () => {
     "AGENTS.override.md",
     ".claude/settings.json",
     ".codex/hooks.json",
+    ".ai/backlog/index.md",
+    ".claude/rules/backlog.md",
   ]) {
     expect(existsSync(project.resolve(file))).toBe(false);
   }
@@ -565,7 +567,7 @@ test("does not generate agent setup without selected agents", async () => {
   );
 });
 
-test("sets up Codex without installing non-default rules", async () => {
+test("sets up Codex with backlog guidance without installing coding rules", async () => {
   const input = 'export default { agents: { preferred: ["codex"] } };\n';
 
   const project = createProject({
@@ -582,7 +584,11 @@ test("sets up Codex without installing non-default rules", async () => {
   );
 
   expect(project.read("AGENTS.override.md")).toContain(
-    "No project rule files are present.",
+    "<code>.ai/backlog/*.md</code>",
+  );
+
+  expect(project.read(".ai/backlog/index.md")).toContain(
+    "No open categories yet.",
   );
 
   expect(project.read(".codex/hooks.json")).toContain(
@@ -620,7 +626,7 @@ test("uses an interactive selection for this init without rewriting an existing 
   expect(project.read("CLAUDE.md")).toBe("@AGENTS.md\n");
 
   expect(project.read("AGENTS.override.md")).toContain(
-    "No project rule files are present.",
+    "<code>.ai/backlog/*.md</code>",
   );
 
   expect(project.read(".claude/settings.json")).toContain(
@@ -633,5 +639,101 @@ test("uses an interactive selection for this init without rewriting an existing 
 
   expect(console.info).toHaveBeenCalledWith(
     expect.stringContaining('Add agents.preferred: ["claude","codex"]'),
+  );
+});
+
+test("declining backlog setup leaves no backlog instructions or files", async () => {
+  const project = createProject({
+    "package.json": '{"name":"project","type":"module"}',
+    ".claude/backlog.md": "Keep this legacy work.\n",
+    "engrenage.config.ts":
+      'export default { agents: { preferred: ["codex"] } };\n',
+  });
+
+  const confirm = vi.fn((message: string) => {
+    return Promise.resolve(!message.startsWith("Set up the shared backlog"));
+  });
+
+  vi.spyOn(prompts, "createPrompter").mockReturnValue({
+    ...prompts.createPrompter({ yes: true }),
+    confirm,
+  });
+
+  await runCommand(init);
+
+  expect(confirm).toHaveBeenCalledWith(
+    expect.stringContaining("Set up the shared backlog"),
+    true,
+  );
+
+  expect(existsSync(project.resolve(".ai/backlog/index.md"))).toBe(false);
+  expect(existsSync(project.resolve(".claude/rules/backlog.md"))).toBe(false);
+  expect(project.read("AGENTS.md")).not.toContain("## Backlog");
+  expect(project.read(".claude/backlog.md")).toBe("Keep this legacy work.\n");
+
+  expect(project.read("AGENTS.override.md")).toContain(
+    "No project rule files are present.",
+  );
+});
+
+test("migrates legacy backlog categories without overwriting existing work and stays idempotent", async () => {
+  const legacy =
+    "# Backlog\n\nKeep this context.\n\n## 1. Toolkit\n\n1. An open question.\n   - Expected: investigate.\n\n## Index\n\nA task without a proposed fix.\n";
+
+  const project = createProject({
+    "package.json": '{"name":"project","type":"module"}',
+    "engrenage.config.ts":
+      'export default { agents: { preferred: ["claude", "codex"] } };\n',
+    ".claude/backlog.md": legacy,
+    ".ai/backlog/toolkit.md": "Keep existing toolkit work.\n",
+    ".ai/backlog/index.md":
+      "# Backlog\n\nProject guidance.\n\n## Open categories\n\n- [Toolkit](toolkit.md): Existing scope.\n",
+    ".changeset/config.json": "{}\n",
+  });
+
+  await runCommand(init, "--yes");
+
+  expect(existsSync(project.resolve(".claude/backlog.md"))).toBe(false);
+
+  expect(project.read(".ai/backlog/toolkit.md")).toBe(
+    "Keep existing toolkit work.\n",
+  );
+
+  expect(project.read(".ai/backlog/imported-context.md")).toContain(
+    "Keep this context.",
+  );
+
+  expect(project.read(".ai/backlog/toolkit-2.md")).toContain(
+    "1. An open question.",
+  );
+
+  expect(project.read(".ai/backlog/index-3.md")).toContain(
+    "A task without a proposed fix.",
+  );
+
+  const index = project.read(".ai/backlog/index.md");
+
+  expect(index).toContain("Project guidance.");
+  expect(index).toContain("[Toolkit](toolkit.md): Existing scope.");
+  expect(index).toContain("(toolkit-2.md)");
+  expect(index).toContain("(index-3.md)");
+  expect(project.read("AGENTS.md")).toContain("## Backlog");
+
+  expect(project.read("AGENTS.override.md")).toContain(
+    "<code>.ai/backlog/*.md</code>",
+  );
+
+  expect(project.read(".claude/rules/backlog.md")).toContain(
+    ".ai/backlog/*.md",
+  );
+
+  vi.clearAllMocks();
+
+  await runCommand(init, "--yes");
+
+  expect(project.read(".ai/backlog/index.md")).toBe(index);
+
+  expect(console.info).toHaveBeenCalledExactlyOnceWith(
+    "Engrenage is set up, nothing is missing.",
   );
 });

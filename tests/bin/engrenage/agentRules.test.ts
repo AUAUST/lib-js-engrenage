@@ -108,6 +108,9 @@ describe("agents rules", () => {
         initialValues: [],
         options: [
           expect.objectContaining({
+            value: "backlog",
+          }),
+          expect.objectContaining({
             value: "prefer-primitive-kit",
           }),
           expect.objectContaining({

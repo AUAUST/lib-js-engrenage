@@ -6,6 +6,7 @@ import { createCodexHooksStep } from "#agents/codex/setup/createCodexHooksStep";
 import { createCodexStep } from "#agents/codex/setup/createCodexStep";
 import { createAgentRulesStep } from "#agents/setup/createAgentRulesStep";
 import { createAgentsStep } from "#agents/setup/createAgentsStep";
+import { createBacklogStep } from "#agents/setup/createBacklogStep";
 import { createPreferredAgentsStep } from "#agents/setup/createPreferredAgentsStep";
 import { runSync } from "#bin/engrenage/sync";
 import { createChangesetConfigStep } from "#changesets/setup/createChangesetConfigStep";
@@ -132,6 +133,7 @@ export const init = defineCommand((command) => {
           createEslintConfigStep(),
           createAgentsStep(),
           createAgentRulesStep(),
+          createBacklogStep(),
           createClaudeStep(),
           createCodexStep(),
           createCodexHooksStep(),

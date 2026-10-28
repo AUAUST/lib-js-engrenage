@@ -65,3 +65,43 @@ describe("createFilesystem", () => {
     expect(filesystem.exists("created.txt")).toBe(false);
   });
 });
+
+test("stages deletions, hides them from globs and restores them if flush fails", () => {
+  const project = createTemporaryProject({
+    "existing.txt": "Keep me.\n",
+    "blocker": "not a directory",
+  });
+
+  const filesystem = createFilesystem(project.root);
+
+  filesystem.remove("existing.txt");
+  filesystem.remove("absent.txt");
+  filesystem.write("transient.txt", "temporary");
+  filesystem.remove("transient.txt");
+
+  expect(filesystem.exists("existing.txt")).toBe(false);
+  expect(filesystem.glob("*.txt")).toEqual([]);
+
+  expect(filesystem.changes()).toEqual([
+    { file: "existing.txt", status: "deleted" },
+  ]);
+
+  expect(project.read("existing.txt")).toBe("Keep me.\n");
+
+  filesystem.write("blocker/unwritable.txt", "fail");
+
+  expect(() => filesystem.flush()).toThrow();
+  expect(project.read("existing.txt")).toBe("Keep me.\n");
+
+  filesystem.discard();
+
+  expect(filesystem.exists("existing.txt")).toBe(true);
+
+  filesystem.remove("existing.txt");
+
+  expect(filesystem.flush()).toEqual([
+    { file: "existing.txt", status: "deleted" },
+  ]);
+
+  expect(existsSync(project.resolve("existing.txt"))).toBe(false);
+});

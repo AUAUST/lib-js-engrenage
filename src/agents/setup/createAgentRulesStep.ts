@@ -15,7 +15,9 @@ export function createAgentRulesStep(): Step {
       );
     },
     async plan({ config, multiselect }) {
-      const missing = getMissingRuleTemplates(config);
+      const missing = getMissingRuleTemplates(config).filter(({ name }) => {
+        return name !== "backlog";
+      });
 
       const names = await multiselect(
         "Choose rules to add",

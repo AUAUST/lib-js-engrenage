@@ -65,7 +65,7 @@ export function createFilesystem(root: Directory) {
     return read(file) !== undefined;
   }
 
-  function write(file: File, content: string) {
+  function stage(file: File, content: string | undefined) {
     const located = locate(file);
 
     const current = readLocated(located);
@@ -79,6 +79,14 @@ export function createFilesystem(root: Directory) {
     if (originals.get(located) === content) {
       originals.delete(located);
     }
+  }
+
+  function write(file: File, content: string) {
+    stage(file, content);
+  }
+
+  function remove(file: File) {
+    stage(file, undefined);
   }
 
   function glob(patterns: Glob | Globs): Files {
@@ -95,14 +103,21 @@ export function createFilesystem(root: Directory) {
       return globs.some((pattern) => matchesGlob(file, pattern));
     });
 
-    return sort(deduplicate([...found, ...created]));
+    return sort(deduplicate([...found, ...created])).filter((file) => {
+      return !contents.has(file) || contents.get(file) !== undefined;
+    });
   }
 
   function changes(): SyncResults {
     return map(originals, ([file, original]) => {
       return {
         file,
-        status: original === undefined ? "created" : "synced",
+        status:
+          readLocated(file) === undefined
+            ? "deleted"
+            : original === undefined
+              ? "created"
+              : "synced",
       };
     });
   }
@@ -136,7 +151,13 @@ export function createFilesystem(root: Directory) {
           original: readFromDisk(path),
         });
 
-        writeFileSync(path, readLocated(result.file) ?? "");
+        const content = readLocated(result.file);
+
+        if (content === undefined) {
+          rmSync(path, { force: true });
+        } else {
+          writeFileSync(path, content);
+        }
 
         results.push(result);
       }
@@ -157,6 +178,7 @@ export function createFilesystem(root: Directory) {
     read,
     exists,
     write,
+    remove,
     glob,
     changes,
     discard,
