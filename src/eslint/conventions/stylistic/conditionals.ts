@@ -9,6 +9,5 @@ export default defineConvention({
       },
     ]),
     delegateRule("no-unneeded-ternary"),
-    delegateRule("unicorn/no-nested-ternary"),
   ],
 });

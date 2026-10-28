@@ -189,11 +189,6 @@ export interface AuaustRules {
    */
   "auaust/no-multiple-promise-resolver-calls"?: Rule<[]>;
   /**
-   * Disallow nested ternary expressions.
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-nested-ternary.md
-   */
-  "auaust/no-nested-ternary"?: Rule<[]>;
-  /**
    * Use the `@auaust/toolkit/object` equivalent instead of `Object.*`.
    */
   "auaust/no-object-statics"?: Rule<[]>;
