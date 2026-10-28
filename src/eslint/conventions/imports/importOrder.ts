@@ -15,6 +15,16 @@ const projectSelectors = [
   "index",
 ] as const;
 
+const projectValueSelectors = map(
+  projectSelectors,
+  (selector) => `value-${selector}` as const,
+) as [string, ...string[]];
+
+const projectTypeSelectors = map(
+  projectSelectors,
+  (selector) => `type-${selector}` as const,
+) as [string, ...string[]];
+
 function createProjectGroup(
   groupName: string,
   modifiers: ReadonlyArray<"default" | "type" | "value" | "wildcard">,
@@ -72,23 +82,11 @@ export default defineConvention({
               newlinesBetween: 0,
             },
             "type-auaust",
-            [
-              "value-subpath",
-              "value-internal",
-              "value-parent",
-              "value-sibling",
-              "value-index",
-            ],
+            projectValueSelectors,
             {
               newlinesBetween: 0,
             },
-            [
-              "type-subpath",
-              "type-internal",
-              "type-parent",
-              "type-sibling",
-              "type-index",
-            ],
+            projectTypeSelectors,
             "value-wildcard-project",
             {
               newlinesBetween: 0,
