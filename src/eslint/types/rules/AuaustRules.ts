@@ -179,11 +179,6 @@ export interface AuaustRules {
    */
   "auaust/no-misused-promises"?: Rule<AuaustNoMisusedPromises>;
   /**
-   * Disallow use of chained assignment expressions
-   * @see https://eslint.org/docs/latest/rules/no-multi-assign
-   */
-  "auaust/no-multi-assign"?: Rule<AuaustNoMultiAssign>;
-  /**
    * Disallow calling Promise executor resolver functions more than once on the same execution path.
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-multiple-promise-resolver-calls.md
    */
@@ -1215,14 +1210,6 @@ type AuaustNoMisusedPromises =
 
               variables?: boolean;
             };
-      },
-    ];
-// ----- auaust/no-multi-assign -----
-type AuaustNoMultiAssign =
-  | []
-  | [
-      {
-        ignoreNonDeclaration?: boolean;
       },
     ];
 // ----- auaust/no-promise-executor-return -----
