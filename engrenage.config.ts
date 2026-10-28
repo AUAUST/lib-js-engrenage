@@ -2,6 +2,9 @@ import { defineConfig } from "#config/index";
 
 export default defineConfig({
   presets: ["library"],
+  agents: {
+    preferred: ["claude", "codex"],
+  },
   code: {
     configFiles: ["*.config.ts", ".*.ts", "src/prettier/index.ts"],
     discoveredFiles: [
