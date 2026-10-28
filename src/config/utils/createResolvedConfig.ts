@@ -23,6 +23,7 @@ import {
   defaultPresets,
   defaultScriptDirectories,
   defaultSourceDirectories,
+  defaultSourcemap,
   defaultTestDirectories,
   defaultTestFiles,
 } from "#config/constants";
@@ -243,12 +244,18 @@ export function createResolvedConfig({
   });
 
   const build = once(() => {
+    const typed = () => {
+      return raw.build?.typed ?? define().types;
+    };
+
     return freeze(
       compose(
         {
           emptyOutDir: raw.build?.emptyOutDir ?? defaultEmptyOutDir,
+          sourcemap: raw.build?.sourcemap ?? defaultSourcemap,
         },
         compose.getters({
+          typed,
           outDir,
         }),
       ),

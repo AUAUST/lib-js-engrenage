@@ -10,6 +10,8 @@ import type { Globs } from "#types/Globs";
 
 export const defaultEmptyOutDir = true;
 
+export const defaultSourcemap = true;
+
 export const defaultDefineTypes = true;
 
 export const defaultGlobalScope = "all" satisfies GlobalScope;

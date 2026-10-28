@@ -1,7 +1,9 @@
+import { build } from "tsdown";
 import { describe, expect, test, vi } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
+import { define, loadConfig } from "@auaust/engrenage/config";
 import { createTsdownConfig } from "@auaust/engrenage/tsdown";
+import { syncEnvFile } from "@auaust/engrenage/typescript";
 
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
@@ -9,6 +11,73 @@ import { getFixture } from "#tests/helpers/getFixture";
 const root = getFixture("tsdown");
 
 describe("createTsdownConfig", () => {
+  test("preserves synced global types in exported declarations", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({
+        name: "@scope/package",
+        type: "module",
+      }),
+      "engrenage.config.ts": `export default ${JSON.stringify({
+        define: {
+          values: {
+            __NAME__: "package",
+            __OPTIONS__: { retries: 3, modes: ["fast", "safe"] },
+            __EXACT__: define({ modes: ["fast", "safe"] }, { exact: true }),
+            __VERSION__: define("1.2.3", {
+              type: "`${number}.${number}.${number}`",
+            }),
+          },
+        },
+      })};`,
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          outDir: "dist",
+          module: "ESNext",
+          moduleResolution: "Bundler",
+          strict: true,
+          paths: { "@scope/package": ["./src/index.ts"] },
+        },
+        include: ["src", "env.d.ts"],
+      }),
+      "src/index.ts": [
+        "export const name = __NAME__;",
+        "export const options = __OPTIONS__;",
+        "export const exact = __EXACT__;",
+        "export function version() { return __VERSION__; }",
+      ].join("\n"),
+    });
+
+    const config = await loadConfig(project.root);
+
+    syncEnvFile(config);
+
+    config.filesystem.flush();
+
+    await build({
+      ...createTsdownConfig(config, { ci: false }),
+      config: false,
+      logLevel: "silent",
+    });
+
+    const declarations = project
+      .read("dist/index.d.mts")
+      .replaceAll(/\s+/g, " ");
+
+    expect(declarations).toContain("declare const name: string;");
+    expect(declarations).toContain("retries: number;");
+    expect(declarations).toContain("modes: string[];");
+
+    expect(declarations).toContain(
+      'readonly modes: readonly ["fast", "safe"];',
+    );
+
+    expect(declarations).toContain(
+      "declare function version(): `${number}.${number}.${number}`;",
+    );
+
+    expect(declarations).not.toContain("any");
+  });
+
   test("builds entries from the tsconfig paths and wires the project options", async () => {
     const config = await loadConfig(root);
 

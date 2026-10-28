@@ -6,6 +6,8 @@ export function createViteConfig(
   config: ResolvedConfig,
   { isTesting }: { isTesting: boolean },
 ): Config {
+  const { sourcemap, outDir, emptyOutDir } = config.build;
+
   return {
     root: config.root,
     tsconfig: config.typescript.tsconfig,
@@ -16,8 +18,9 @@ export function createViteConfig(
       tsconfigPaths: true,
     },
     build: {
-      outDir: config.build.outDir,
-      emptyOutDir: config.build.emptyOutDir,
+      outDir,
+      emptyOutDir,
+      sourcemap,
     },
   };
 }

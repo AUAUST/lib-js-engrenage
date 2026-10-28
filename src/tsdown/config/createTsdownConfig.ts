@@ -76,7 +76,7 @@ export function createTsdownConfig(
     );
   }
 
-  const { outDir } = config.build;
+  const { typed, sourcemap, emptyOutDir, outDir } = config.build;
 
   if (outDir === undefined) {
     throw new Error(
@@ -99,13 +99,14 @@ export function createTsdownConfig(
     entry: createTsdownEntries(pathAliases, bins),
     format: "esm",
     outDir,
-    clean: config.build.emptyOutDir,
+    clean: emptyOutDir,
     tsconfig: config.typescript.tsconfig,
     dts: {
+      eager: typed,
       compilerOptions: {
-        declaration: true,
+        declaration: typed,
       },
-      sourcemap: true,
+      sourcemap,
     },
     exports: {
       enabled: true,
@@ -113,7 +114,7 @@ export function createTsdownConfig(
       exclude: keys(bins),
       customExports,
     },
-    sourcemap: true,
+    sourcemap,
     define: createDefine(config, {
       isTesting: false,
     }),

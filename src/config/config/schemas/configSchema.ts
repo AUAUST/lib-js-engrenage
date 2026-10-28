@@ -52,6 +52,8 @@ export const configSchema = strictObject({
     strictObject({
       outDir: optional(directorySchema),
       emptyOutDir: optional(boolean()),
+      sourcemap: optional(boolean()),
+      typed: optional(boolean()),
     }),
   ),
   typescript: optional(
