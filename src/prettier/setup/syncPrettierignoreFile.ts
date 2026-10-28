@@ -18,7 +18,7 @@ function anchor(glob: Glob): Glob {
 
 function createProjectPrettierIgnores(
   config: ResolvedConfig,
-): ReadonlyArray<GlobGroup> {
+): readonly GlobGroup[] {
   const { generatedFiles } = config.code;
 
   return [

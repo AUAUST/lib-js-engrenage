@@ -60,11 +60,11 @@ type TargetName = keyof typeof targets;
 
 type TargetFlags = Partial<Record<TargetName, Record<string, boolean>>>;
 
-function createFlagOptions(): ReadonlyArray<{
+function createFlagOptions(): readonly {
   target: TargetName;
   flag: string;
   option: Option;
-}> {
+}[] {
   return flatMap(entries(targets), ([target, { flags = {} }]) => {
     return map(
       entries<Record<string, string>>(flags),
@@ -85,7 +85,7 @@ export async function runSync(
     names = keys(targets),
     flags = {},
   }: {
-    names?: ReadonlyArray<TargetName>;
+    names?: readonly TargetName[];
     flags?: TargetFlags;
   } = {},
 ) {

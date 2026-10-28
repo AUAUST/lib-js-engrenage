@@ -15,7 +15,7 @@ import type { Options } from "#vite/types/Options";
 
 export function defineViteConfig(
   options?: ConfigInput<Options, [ResolvedConfig, ConfigEnv]>,
-  ...configs: ReadonlyArray<ConfigInput<Config, [ResolvedConfig, ConfigEnv]>>
+  ...configs: readonly ConfigInput<Config, [ResolvedConfig, ConfigEnv]>[]
 ): ConfigFn {
   return async function viteConfig(env) {
     const config = await loadConfig();

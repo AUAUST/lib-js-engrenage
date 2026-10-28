@@ -27,6 +27,7 @@ export function createRecommendedRules({
   return defineConfig([
     js.configs.recommended,
     typescriptConfigs.recommended,
+    typescriptConfigs.stylistic,
     resolveInfoRules({
       name: `${pluginName}/recommended`,
       files: [...config.code.files],

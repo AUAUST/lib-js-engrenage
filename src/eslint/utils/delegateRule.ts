@@ -34,7 +34,7 @@ function mergeOption(defaults: unknown, override: unknown): unknown {
 
 function wrapReports(
   rule: RuleModule,
-  ignoredMessages: ReadonlyArray<string>,
+  ignoredMessages: readonly string[],
   ignoreReport?: (
     descriptor: ReportDescriptor,
     context: Rule.RuleContext,
@@ -96,7 +96,7 @@ export function delegateRule<Id extends keyof Rules & string>(
     fix,
   }: {
     name?: string;
-    ignoredMessages?: ReadonlyArray<string>;
+    ignoredMessages?: readonly string[];
     ignoreReport?(
       descriptor: ReportDescriptor,
       context: Rule.RuleContext,
@@ -109,10 +109,10 @@ export function delegateRule<Id extends keyof Rules & string>(
 ): Delegate {
   const rule = findUpstreamRule(upstream);
 
-  const upstreamDefaults: ReadonlyArray<unknown> =
+  const upstreamDefaults: readonly unknown[] =
     rule.meta?.defaultOptions ?? [];
 
-  const overrides: ReadonlyArray<unknown> = options ?? [];
+  const overrides: readonly unknown[] = options ?? [];
 
   const defaultOptions = Array.from(
     {

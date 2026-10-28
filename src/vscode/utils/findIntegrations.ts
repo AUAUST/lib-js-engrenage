@@ -6,6 +6,6 @@ import type { Integration } from "#vscode/types/Integration";
 
 export function findIntegrations(
   hasDependency: (name: PackageName) => boolean,
-): ReadonlyArray<Integration> {
+): readonly Integration[] {
   return integrations.filter(({ requires }) => every(requires, hasDependency));
 }

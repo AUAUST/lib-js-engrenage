@@ -15,7 +15,7 @@ function findMissingWorkflows({
   filesystem,
   getPresets,
   hasDependency,
-}: StepContext): ReadonlyArray<MissingWorkflow> {
+}: StepContext): readonly MissingWorkflow[] {
   const name = resolveWorkflowSet({
     workflows: config.github.workflows,
     presets: getPresets(),

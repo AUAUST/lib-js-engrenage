@@ -14,7 +14,7 @@ export function createConfigModule({
   entry: string;
   definer: string;
   options?: string;
-  imports?: ReadonlyArray<NamedImport>;
+  imports?: readonly NamedImport[];
 }): string {
   const statements = map(
     [

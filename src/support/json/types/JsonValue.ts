@@ -1,4 +1,4 @@
 import type { JsonObject } from "#support/json/types/JsonObject";
 
 export type JsonValue =
-  string | number | boolean | null | ReadonlyArray<JsonValue> | JsonObject;
+  string | number | boolean | null | readonly JsonValue[] | JsonObject;

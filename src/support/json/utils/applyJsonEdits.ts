@@ -9,7 +9,7 @@ import type { File } from "#types/File";
 export function applyJsonEdits(
   content: string,
   path: File,
-  edits: ReadonlyArray<JsonEdit>,
+  edits: readonly JsonEdit[],
 ): string {
   parseJsonObject(content, path);
 

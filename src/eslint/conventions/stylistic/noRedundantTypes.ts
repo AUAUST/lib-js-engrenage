@@ -4,7 +4,7 @@ import { defineConvention } from "#eslint/conventions/defineConvention";
 import { delegateRule } from "#eslint/utils/delegateRule";
 import type { ReportDescriptor } from "#eslint/types/ReportDescriptor";
 
-const inlineLiteralNodeTypes: ReadonlyArray<string> = [
+const inlineLiteralNodeTypes: readonly string[] = [
   "TSLiteralType",
   "TSTemplateLiteralType",
 ];

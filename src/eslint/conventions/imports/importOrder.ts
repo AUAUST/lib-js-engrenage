@@ -27,7 +27,7 @@ const projectTypeSelectors = map(
 
 function createProjectGroup(
   groupName: string,
-  modifiers: ReadonlyArray<"default" | "type" | "value" | "wildcard">,
+  modifiers: readonly ("default" | "type" | "value" | "wildcard")[],
 ) {
   return {
     groupName,

@@ -9,7 +9,7 @@ import type { Options } from "#vitest/types/Options";
 
 export function defineVitestConfig(
   options?: ConfigInput<Options, [ResolvedConfig, ConfigEnv]>,
-  ...configs: ReadonlyArray<ConfigInput<Config, [ResolvedConfig, ConfigEnv]>>
+  ...configs: readonly ConfigInput<Config, [ResolvedConfig, ConfigEnv]>[]
 ): ConfigFn {
   return defineViteConfig(
     {

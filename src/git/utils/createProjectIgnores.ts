@@ -4,7 +4,7 @@ import type { GlobGroup } from "#types/GlobGroup";
 
 export function createProjectIgnores(
   config: ResolvedConfig,
-): ReadonlyArray<GlobGroup> {
+): readonly GlobGroup[] {
   const { outDir } = config.build;
   const { coverageDir } = config.test;
 

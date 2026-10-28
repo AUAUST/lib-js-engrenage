@@ -13,8 +13,8 @@ export async function runSteps({
 }: {
   config: ResolvedConfig;
   prompter: Prompter;
-  steps: ReadonlyArray<Step>;
-}): Promise<ReadonlyArray<Invocation> | undefined> {
+  steps: readonly Step[];
+}): Promise<readonly Invocation[] | undefined> {
   const context = createStepContext({
     config,
     prompter,

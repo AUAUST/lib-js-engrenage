@@ -161,7 +161,7 @@ function selectBarrels(files: Files, name: string): Files {
 
 export function syncBarrels(
   config: ResolvedConfig,
-  barrels: ReadonlyArray<string> = [],
+  barrels: readonly string[] = [],
 ) {
   const { root: rootPath } = config;
 

@@ -63,14 +63,14 @@ export const editorIgnores = freeze({
   ] as const),
 } as const) satisfies GlobGroup;
 
-export const defaultIgnores: ReadonlyArray<GlobGroup> = freeze([
+export const defaultIgnores: readonly GlobGroup[] = freeze([
   javascriptIgnores,
   lockfileIgnores,
   osIgnores,
   envIgnores,
   logIgnores,
   editorIgnores,
-] as const) satisfies ReadonlyArray<GlobGroup>;
+] as const) satisfies readonly GlobGroup[];
 
 export const outputTitle = "Output";
 

@@ -4,5 +4,5 @@ import type { PackageNames } from "#types/PackageNames";
 export interface WorkflowSet {
   files: Files;
   requires: PackageNames;
-  scripts: ReadonlyArray<string>;
+  scripts: readonly string[];
 }

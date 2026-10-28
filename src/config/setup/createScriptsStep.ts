@@ -21,7 +21,7 @@ interface Script {
   command: string;
 }
 
-function chain(commands: ReadonlyArray<Command>): string | false {
+function chain(commands: readonly Command[]): string | false {
   const present = filter(commands, isString);
 
   return present.length > 0 && present.join(" && ");
@@ -44,7 +44,7 @@ function createBuildCommand(
 function collectScripts({
   getPresets,
   hasDependency,
-}: StepContext): ReadonlyArray<Script> {
+}: StepContext): readonly Script[] {
   const build = createBuildCommand(hasDependency);
 
   const typecheck = hasDependency(typescript) && "engrenage typecheck";
@@ -96,7 +96,7 @@ function collectScripts({
   return defined;
 }
 
-function findMissingScripts(context: StepContext): ReadonlyArray<Script> {
+function findMissingScripts(context: StepContext): readonly Script[] {
   return collectScripts(context).filter(({ name }) => {
     return context.readPackageJson(["scripts", name]) === undefined;
   });

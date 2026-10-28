@@ -35,7 +35,7 @@ function createImportSelectors(source: string, name: string): string[] {
 
 function createSelector(
   source: string,
-  imports: ReadonlyArray<string> | undefined,
+  imports: readonly string[] | undefined,
 ): string {
   if (imports === undefined) {
     return map(
@@ -74,7 +74,7 @@ function describeImport(name: string): string {
 
 function createTarget(
   source: string,
-  imports: ReadonlyArray<string> | undefined,
+  imports: readonly string[] | undefined,
 ): string {
   if (imports === undefined) {
     return `\`${source}\``;
@@ -98,7 +98,7 @@ export function defineImportReplacement({
   requires,
 }: {
   source: string;
-  imports?: ReadonlyArray<string>;
+  imports?: readonly string[];
   replacement: string;
   files?: ScopeReferences;
   ignores?: ScopeReferences;

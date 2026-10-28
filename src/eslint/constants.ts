@@ -65,27 +65,31 @@ export const coreRules = freeze({
   "radix": "error",
 } as const satisfies CoreRules);
 
+export const testRules = freeze({
+  "no-constant-condition": "off",
+} as const satisfies CoreRules);
+
 export const typescriptRules = freeze({
   "@typescript-eslint/ban-ts-comment": "off",
   "@typescript-eslint/no-empty-object-type": "off",
   "@typescript-eslint/no-explicit-any": "off",
   "@typescript-eslint/no-unsafe-function-type": "off",
   "@typescript-eslint/no-unused-vars": "off",
+  "@typescript-eslint/consistent-indexed-object-style": "off",
 } as const satisfies TypescriptEslintRules);
 
-export const testRules = freeze({
-  "no-constant-condition": "off",
-} as const satisfies CoreRules);
-
 export const typescriptTypeAwareRules = freeze({
-  "@typescript-eslint/no-duplicate-type-constituents": "error",
   "@typescript-eslint/no-mixed-enums": "error",
   "@typescript-eslint/no-unnecessary-type-arguments": "info",
   "@typescript-eslint/no-unnecessary-type-assertion": "info",
-  "@typescript-eslint/only-throw-error": "error",
+  "@typescript-eslint/no-unsafe-argument": "off",
+  "@typescript-eslint/no-unsafe-assignment": "off",
+  "@typescript-eslint/no-unsafe-return": "off",
   "@typescript-eslint/prefer-find": "error",
   "@typescript-eslint/prefer-includes": "error",
   "@typescript-eslint/prefer-string-starts-ends-with": "error",
+  "@typescript-eslint/require-await": "info",
+  "@typescript-eslint/unbound-method": "off",
 } as const satisfies TypescriptEslintRules);
 
 export const importRules = freeze({

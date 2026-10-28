@@ -19,7 +19,7 @@ const formatMessages = ["doesNotMatchFormat", "doesNotMatchFormatTrimmed"];
 
 const unsafeScopeTypes = new Set(["global", "tsModule"]);
 
-function convertName(name: string, formats: ReadonlyArray<string>) {
+function convertName(name: string, formats: readonly string[]) {
   if (!/^[A-Za-z\d_]+$/.test(name)) {
     return;
   }
@@ -99,7 +99,7 @@ function declaresName(scope: Scope.Scope, name: string): boolean {
 
 function isRenameSafe(
   sourceCode: SourceCode,
-  variables: ReadonlyArray<Scope.Variable>,
+  variables: readonly Scope.Variable[],
   name: string,
 ) {
   return (

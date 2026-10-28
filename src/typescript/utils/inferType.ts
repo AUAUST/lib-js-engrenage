@@ -14,7 +14,7 @@ function renderKey(key: string): string {
 }
 
 function renderArray(
-  items: ReadonlyArray<JsonValue>,
+  items: readonly JsonValue[],
   exact: boolean,
   indent: string,
 ): string {

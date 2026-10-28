@@ -31,7 +31,7 @@ function isPackageAlias(packageName: PackageName, alias: string): boolean {
   return alias === packageName || alias.startsWith(`${packageName}/`);
 }
 
-function assertWildcards(alias: string, targets: ReadonlyArray<string>) {
+function assertWildcards(alias: string, targets: readonly string[]) {
   const counts = map([alias, ...targets], countWildcards);
 
   if (!every(counts, (count) => count === 1)) {

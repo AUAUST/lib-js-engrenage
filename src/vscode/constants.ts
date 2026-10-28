@@ -43,4 +43,4 @@ export const integrations = freeze([
   eslintIntegration,
   prettierIntegration,
   typescriptIntegration,
-] as const) satisfies ReadonlyArray<Integration>;
+] as const) satisfies readonly Integration[];

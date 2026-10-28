@@ -47,7 +47,7 @@ export function createPrompter({ yes }: { yes: boolean }) {
 
   async function select<Value extends string>(
     message: string,
-    values: ReadonlyArray<Value>,
+    values: readonly Value[],
     initial: Value,
   ): Promise<Value> {
     if (yes) {
@@ -99,8 +99,8 @@ export function createPrompter({ yes }: { yes: boolean }) {
 
   async function multiselect<Value extends string>(
     message: string,
-    values: ReadonlyArray<Value>,
-    initial: ReadonlyArray<Value> = [],
+    values: readonly Value[],
+    initial: readonly Value[] = [],
   ): Promise<Value[]> {
     if (yes) {
       return [...initial];

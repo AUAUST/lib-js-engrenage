@@ -4,5 +4,5 @@ import type { Settings } from "#vscode/types/Settings";
 export interface Integration {
   requires: PackageNames;
   settings: Settings;
-  extensions: ReadonlyArray<string>;
+  extensions: readonly string[];
 }

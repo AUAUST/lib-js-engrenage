@@ -14,13 +14,13 @@ export type PackageJson = Accessors<{
   version: string | undefined;
   private: boolean | undefined;
   description: string | undefined;
-  keywords: ReadonlyArray<string> | undefined;
+  keywords: readonly string[] | undefined;
   homepage: string | undefined;
   bugs: string | { url?: string; email?: string } | undefined;
   repository: string | { url: string } | undefined;
   license: string | undefined;
   author: string | Person | undefined;
-  contributors: ReadonlyArray<string | Person> | undefined;
+  contributors: readonly (string | Person)[] | undefined;
   type: PackageType | undefined;
   bin: File | Partial<Record<string, File>> | undefined;
   scripts: Partial<Record<string, string>> | undefined;

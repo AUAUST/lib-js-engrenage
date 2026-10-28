@@ -48,4 +48,4 @@ export const codegenTitle = "Codegen";
 export const defaultIgnores = freeze([
   lockfileIgnores,
   eslintIgnores,
-] as const) satisfies ReadonlyArray<GlobGroup>;
+] as const) satisfies readonly GlobGroup[];

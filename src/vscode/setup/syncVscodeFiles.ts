@@ -28,7 +28,7 @@ import type { Integration } from "#vscode/types/Integration";
 function addRecommendations(
   content: string,
   path: File,
-  extensions: ReadonlyArray<string>,
+  extensions: readonly string[],
 ): string {
   const recommendations = validate(
     optional(array(string())),
@@ -70,7 +70,7 @@ function isEnabled(
 
 async function createSettingsEdits(
   config: ResolvedConfig,
-  applicable: ReadonlyArray<Integration>,
+  applicable: readonly Integration[],
 ): Promise<JsonEdit[]> {
   const infoRules = includes(applicable, eslintIntegration)
     ? await loadInfoRules(config)

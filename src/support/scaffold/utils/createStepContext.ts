@@ -99,7 +99,7 @@ export function createStepContext({
     invocations.push(invocation);
   }
 
-  function getInvocations(): ReadonlyArray<Invocation> {
+  function getInvocations(): readonly Invocation[] {
     if (!installs) {
       return [...invocations];
     }

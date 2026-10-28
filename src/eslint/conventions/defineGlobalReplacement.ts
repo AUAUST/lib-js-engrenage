@@ -7,7 +7,7 @@ import type { PackageNames } from "#types/PackageNames";
 
 function createSelector(
   name: string,
-  properties: ReadonlyArray<string> | undefined,
+  properties: readonly string[] | undefined,
 ): string {
   function identifier(path: string): string {
     return `[${path}.type='Identifier'][${path}.name='${name}']`;
@@ -33,7 +33,7 @@ function createSelector(
 
 function createTarget(
   name: string,
-  properties: ReadonlyArray<string> | undefined,
+  properties: readonly string[] | undefined,
 ): string {
   const [property, ...others] = properties ?? [];
 
@@ -51,7 +51,7 @@ export function defineGlobalReplacement({
   requires,
 }: {
   global: string;
-  properties?: ReadonlyArray<string>;
+  properties?: readonly string[];
   replacement: string;
   enabled?: boolean;
   presets?: Presets;

@@ -19,7 +19,7 @@ export function defineConvention({
   presets = [],
   requires = [],
 }: {
-  delegates?: ResolvableValue<ReadonlyArray<Delegate>, [ResolvedConfig]>;
+  delegates?: ResolvableValue<readonly Delegate[], [ResolvedConfig]>;
   rule?: RuleModule;
   files?: ScopeReferences;
   ignores?: ScopeReferences;

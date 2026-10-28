@@ -11,7 +11,7 @@ import type { WorkflowSetName } from "#github/types/WorkflowSetName";
 function assertScripts(
   config: ResolvedConfig,
   name: WorkflowSetName,
-  required: ReadonlyArray<string>,
+  required: readonly string[],
 ) {
   const scripts = config.packageJson.optional.scripts ?? {};
 
