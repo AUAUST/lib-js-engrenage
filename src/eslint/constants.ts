@@ -215,7 +215,6 @@ export const unicornRules = freeze({
   "unicorn/require-module-attributes": "error",
   "unicorn/require-number-to-fixed-digits-argument": "error",
   "unicorn/require-proxy-trap-boolean-return": "error",
-  "unicorn/text-encoding-identifier-case": "error",
   "unicorn/throw-new-error": "error",
 } as const satisfies UnicornRules);
 
