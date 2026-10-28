@@ -1,5 +1,31 @@
 # @auaust/engrenage
 
+## 0.3.0
+
+### Minor Changes
+
+- [`75f8994`](https://github.com/AUAUST/lib-js-engrenage/commit/75f8994bac01aafb3647edbc7f335a3db2092ad7) Thanks [@apademide](https://github.com/apademide)! - `define()` and `define.values` accept any JSON-serializable value (including objects with `toJSON`, such as `Date` and `URL`) and fail clearly on values that cannot be serialized. The `GlobalValue` and `Globals` types are removed. The `packageJson` passed to `define.values` exposes standard fields such as `version`, `description`, `license`, `author`, `engines` and `files`, each validated when read.
+
+- [`da30bdb`](https://github.com/AUAUST/lib-js-engrenage/commit/da30bdbd32923ea819bd5cbfb613f310a00e1687) Thanks [@apademide](https://github.com/apademide)! - Enforce the `node:` protocol for Node.js builtin imports and dashed lowercase text encoding identifiers (`utf-8`).
+
+- [`406e89b`](https://github.com/AUAUST/lib-js-engrenage/commit/406e89b17d43365071c3df2bd3d5243d8751ddea) Thanks [@apademide](https://github.com/apademide)! - Rename `auaust/func-style` to `auaust/prefer-function-declaration` and allow function expressions assigned to a typed variable.
+
+- [`3c60f65`](https://github.com/AUAUST/lib-js-engrenage/commit/3c60f6556f94c334bca78b9ad0a5b5e9d7806297) Thanks [@apademide](https://github.com/apademide)! - Group the promise and async rules under the `promises` conventions, reported as `auaust/<rule>` and toggleable per convention. Enable `await-thenable`, allowing promise aggregators to receive arrays that mix promises and other values.
+
+### Patch Changes
+
+- [`e96c744`](https://github.com/AUAUST/lib-js-engrenage/commit/e96c744b9bbf62e22d8690ceca292b03f13e2b50) Thanks [@apademide](https://github.com/apademide)! - Allow `__DUNDER__` variables in the naming convention.
+
+- [`5d2ea4c`](https://github.com/AUAUST/lib-js-engrenage/commit/5d2ea4cf39a2670f9c5802a48f3020aec31331d3) Thanks [@apademide](https://github.com/apademide)! - Autofix naming convention reports by renaming the declaration and its references to camelCase or PascalCase, skipping exported declarations and names that would collide.
+
+- [`fb0d06e`](https://github.com/AUAUST/lib-js-engrenage/commit/fb0d06e263d222100129dde9afd4928ac089229a) Thanks [@apademide](https://github.com/apademide)! - Allow unused parameters named `ignored…`, `unused…` or prefixed with `_` in `no-unused-vars`.
+
+- [`f42f4b8`](https://github.com/AUAUST/lib-js-engrenage/commit/f42f4b8484838ee8b9a613ae78f71e03867f4174) Thanks [@apademide](https://github.com/apademide)! - Add `eslint:fix` and `eslint:suppress` commands, and have `engrenage init` add `typecheck`, `lint:check`, `lint:fix` and `lint:suppress` scripts, with `format` calling `engrenage prettier`.
+
+- [`512d509`](https://github.com/AUAUST/lib-js-engrenage/commit/512d509f56faaa23fc4f4d221bf0cf9e05876253) Thanks [@apademide](https://github.com/apademide)! - Report literals widened by their primitive only when written in the union itself, such as `"a" | string`, no longer through a referenced type, such as `Operator | string`. The rule is now the `auaust/no-redundant-types` convention.
+
+- [`26cfbaa`](https://github.com/AUAUST/lib-js-engrenage/commit/26cfbaae672f08b1748cbfe2e9abe7948197e019) Thanks [@apademide](https://github.com/apademide)! - Allow type parameters used only in a function's declared return type, such as `cast<Value>(target: unknown): Value | null`, which callers use to type the result. Type parameters that are never used, or used only once elsewhere, are still reported. The rule is now the `auaust/no-unnecessary-type-parameters` convention.
+
 ## 0.2.0
 
 ### Minor Changes
