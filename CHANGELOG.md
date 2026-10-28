@@ -1,5 +1,33 @@
 # @auaust/engrenage
 
+## 0.4.0
+
+### Minor Changes
+
+- [`2512af8`](https://github.com/AUAUST/lib-js-engrenage/commit/2512af832820c119e4bcb13816cec2c568f7b084) Thanks [@apademide](https://github.com/apademide)! - - Move Claude commands under `engrenage agents claude` and migrate generated hook commands.
+  - Select preferred agents during init and generate setup only for selected agents.
+  - Add Codex instructions with a scoped rule mapping and patch formatting hooks.
+  - Read paths frontmatter from shared rule sources without embedding it into instruction bodies.
+
+### Patch Changes
+
+- [`a8583d1`](https://github.com/AUAUST/lib-js-engrenage/commit/a8583d1b317c18d3283a0d7b1bfde8be9ae61134) Thanks [@apademide](https://github.com/apademide)! - - Separate reviewing missing setup from approving changes in `engrenage init`
+  - Ask before creating Vite, Vitest and tsdown configs or filling missing package fields
+
+- [`42259ed`](https://github.com/AUAUST/lib-js-engrenage/commit/42259eda54e7c713672be577af3b037aa31140a7) Thanks [@apademide](https://github.com/apademide)! - - Add interactive agent rule selection and installation by name.
+  - Generate initial agent sections from ordered default metadata.
+  - Install only default rules during automatic initialization.
+
+- [`079d6d2`](https://github.com/AUAUST/lib-js-engrenage/commit/079d6d2f43436822f45ea3110e992eaca2c35ccb) Thanks [@apademide](https://github.com/apademide)! - - Allow constant conditions, void expressions as arguments and `await` member access in test files
+  - Drop `no-unsafe-member-access` and `unicorn/no-negation-in-equality-check`
+  - Allow empty object literals in type assertions
+  - Allow concise arrows returning simple arrays or literals asserted `as const`
+
+- [`7c84ebc`](https://github.com/AUAUST/lib-js-engrenage/commit/7c84ebcd94e35ac50432d136e328d9f05842874a) Thanks [@apademide](https://github.com/apademide)! - - Set `publishConfig.access` to `public` when `engrenage init` creates a public scoped package
+  - Add the shared `agents/rules/changesets.md` agent rules fragment
+
+- [`b349efa`](https://github.com/AUAUST/lib-js-engrenage/commit/b349efabc56595a4227ada6fd2ee1b9644b9e0c2) Thanks [@apademide](https://github.com/apademide)! - - Require blank lines around let and const declarations except between declarations of the same kind
+
 ## 0.3.0
 
 ### Minor Changes
