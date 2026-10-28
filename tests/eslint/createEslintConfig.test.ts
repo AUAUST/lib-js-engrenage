@@ -889,6 +889,38 @@ export const __dunder__ = true;
     ).toEqual(["3:auaust/naming-convention"]);
   });
 
+  test("prefers function declarations unless the variable is typed", async () => {
+    const eslint = await createLinter({
+      typeAware: false,
+    });
+
+    const [result] = await eslint.lintText(
+      `type Callback = () => number;
+
+export const untyped = function untyped(): number {
+  return 1;
+};
+
+export const annotated: Callback = function annotated(): number {
+  return 1;
+};
+
+export const asserted = function asserted(): number {
+  return 1;
+} as Callback;
+`,
+      {
+        filePath: "src/functions.ts",
+      },
+    );
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual(["3:auaust/prefer-function-declaration"]);
+  });
+
   test("allows default exports in tool configs", async () => {
     expect(await lintedRules("tool.config.ts")).toEqual([]);
   });

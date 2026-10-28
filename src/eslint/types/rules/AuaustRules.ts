@@ -34,11 +34,6 @@ export interface AuaustRules {
    */
   "auaust/eqeqeq"?: Rule<AuaustEqeqeq>;
   /**
-   * Enforce the consistent use of either `function` declarations or expressions assigned to variables
-   * @see https://eslint.org/docs/latest/rules/func-style
-   */
-  "auaust/func-style"?: Rule<AuaustFuncStyle>;
-  /**
    * Keep function overloads and their implementation together, without blank lines.
    */
   "auaust/grouped-overloads"?: Rule<[]>;
@@ -271,6 +266,11 @@ export interface AuaustRules {
    */
   "auaust/prefer-const"?: Rule<AuaustPreferConst>;
   /**
+   * Enforce the consistent use of either `function` declarations or expressions assigned to variables
+   * @see https://eslint.org/docs/latest/rules/func-style
+   */
+  "auaust/prefer-function-declaration"?: Rule<AuaustPreferFunctionDeclaration>;
+  /**
    * Enforce using function types instead of interfaces with call signatures
    * @see https://typescript-eslint.io/rules/prefer-function-type
    */
@@ -406,20 +406,6 @@ type AuaustEqeqeq =
     ]
   | []
   | ["smart" | "allow-null"];
-// ----- auaust/func-style -----
-type AuaustFuncStyle =
-  | []
-  | ["declaration" | "expression"]
-  | [
-      "declaration" | "expression",
-      {
-        allowArrowFunctions?: boolean;
-        allowTypeAnnotation?: boolean;
-        overrides?: {
-          namedExports?: "declaration" | "expression" | "ignore";
-        };
-      },
-    ];
 // ----- auaust/logical-assignment-operators -----
 type AuaustLogicalAssignmentOperators = (
   | []
@@ -1341,6 +1327,20 @@ type AuaustPreferConst =
       {
         destructuring?: "any" | "all";
         ignoreReadBeforeAssign?: boolean;
+      },
+    ];
+// ----- auaust/prefer-function-declaration -----
+type AuaustPreferFunctionDeclaration =
+  | []
+  | ["declaration" | "expression"]
+  | [
+      "declaration" | "expression",
+      {
+        allowArrowFunctions?: boolean;
+        allowTypeAnnotation?: boolean;
+        overrides?: {
+          namedExports?: "declaration" | "expression" | "ignore";
+        };
       },
     ];
 // ----- auaust/prefer-optional-chain -----
