@@ -80,6 +80,7 @@ export const typescriptRules = freeze({
 } as const satisfies TypescriptEslintRules);
 
 export const typescriptTypeAwareRules = freeze({
+  "@typescript-eslint/no-base-to-string": "off",
   "@typescript-eslint/no-mixed-enums": "error",
   "@typescript-eslint/no-unnecessary-type-arguments": "info",
   "@typescript-eslint/no-unnecessary-type-assertion": "info",
@@ -96,8 +97,10 @@ export const typescriptTypeAwareRules = freeze({
   "@typescript-eslint/no-unsafe-unary-minus": "off",
   "@typescript-eslint/prefer-find": "error",
   "@typescript-eslint/prefer-includes": "error",
+  "@typescript-eslint/prefer-promise-reject-errors": "off",
   "@typescript-eslint/prefer-string-starts-ends-with": "error",
   "@typescript-eslint/require-await": "info",
+  "@typescript-eslint/restrict-template-expressions": "off",
   "@typescript-eslint/unbound-method": "off",
 } as const satisfies TypescriptEslintRules);
 
