@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 
 import { agentsFile, agentsTemplate } from "#agents/constants";
 import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
+import { getInstructionTemplates } from "#agents/utils/getInstructionTemplates";
 import type { Step } from "#support/scaffold/types/Step";
 
 export function createAgentsStep(): Step {
@@ -15,7 +16,23 @@ export function createAgentsStep(): Step {
     plan({ filesystem, config }) {
       const template = createRequire(import.meta.url).resolve(agentsTemplate);
 
-      filesystem.write(agentsFile, readFileSync(template, "utf-8"));
+      const sections = getInstructionTemplates("sections").filter(
+        (section) => section.default,
+      );
+
+      const references = sections
+        .map(({ reference }) => `<!-- @reference ${reference} -->`)
+        .join("\n");
+
+      const body = readFileSync(template, "utf-8").trimEnd();
+
+      filesystem.write(
+        agentsFile,
+        references === ""
+          ? `${body}\n`
+          : `${body}\n\n${references}\n<!-- @end -->\n`,
+      );
+
       syncAgentFiles(config);
     },
   };

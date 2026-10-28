@@ -13,6 +13,7 @@ export function parseInstruction(content: string, file: File) {
     return {
       body: content,
       frontmatter: "",
+      metadata: {},
       paths: undefined,
     };
   }
@@ -44,6 +45,7 @@ export function parseInstruction(content: string, file: File) {
   return {
     body: content.slice(frontmatter.length).trimStart(),
     frontmatter,
+    metadata: input ?? {},
     paths,
   };
 }

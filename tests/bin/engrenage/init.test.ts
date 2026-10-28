@@ -346,7 +346,7 @@ test("does not generate agent setup without selected agents", async () => {
   );
 });
 
-test("sets up only Codex and the rules it reads", async () => {
+test("sets up Codex without installing non-default rules", async () => {
   const input = 'export default { agents: { preferred: ["codex"] } };\n';
 
   const project = createProject({
@@ -362,7 +362,7 @@ test("sets up only Codex and the rules it reads", async () => {
   );
 
   expect(project.read("AGENTS.override.md")).toContain(
-    ".claude/rules/code-style.md",
+    "No project rule files are present.",
   );
 
   expect(project.read(".codex/hooks.json")).toContain(
@@ -372,9 +372,9 @@ test("sets up only Codex and the rules it reads", async () => {
   expect(existsSync(project.resolve("CLAUDE.md"))).toBe(false);
   expect(existsSync(project.resolve(".claude/settings.json"))).toBe(false);
 
-  expect(
-    project.read(".claude/rules/code-style.md").match(/^---$/gm),
-  ).toHaveLength(2);
+  expect(existsSync(project.resolve(".claude/rules/code-style.md"))).toBe(
+    false,
+  );
 });
 
 test("uses an interactive selection for this init without rewriting an existing config", async () => {
@@ -399,7 +399,7 @@ test("uses an interactive selection for this init without rewriting an existing 
   expect(project.read("CLAUDE.md")).toBe("@AGENTS.md\n");
 
   expect(project.read("AGENTS.override.md")).toContain(
-    ".claude/rules/code-style.md",
+    "No project rule files are present.",
   );
 
   expect(project.read(".claude/settings.json")).toContain(

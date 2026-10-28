@@ -1,38 +1,29 @@
-import { readFileSync } from "node:fs";
+import { filterMap, pluck } from "@auaust/primitive-kit/arrays";
 
-import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
-import { getRuleTemplates } from "#agents/utils/getRuleTemplates";
-import { parseInstruction } from "#agents/utils/parseInstruction";
+import { addAgentRules } from "#agents/setup/addAgentRules";
+import { getMissingRuleTemplates } from "#agents/utils/getMissingRuleTemplates";
 import type { Step } from "#support/scaffold/types/Step";
 
 export function createAgentRulesStep(): Step {
   return {
     name: "agent rules",
-    message: "Create missing shared coding rules in .claude/rules/?",
-    isMissing({ config, filesystem }) {
+    message: "Choose shared coding rules for .claude/rules/?",
+    isMissing({ config }) {
       return (
         (config.agents.preferred?.length ?? 0) > 0 &&
-        getRuleTemplates().some(({ file }) => !filesystem.exists(file))
+        getMissingRuleTemplates(config).some((template) => template.default)
       );
     },
-    plan({ config, filesystem }) {
-      for (const { source, file, reference } of getRuleTemplates()) {
-        if (filesystem.exists(file)) {
-          continue;
-        }
+    async plan({ config, multiselect }) {
+      const missing = getMissingRuleTemplates(config);
 
-        const { frontmatter, body } = parseInstruction(
-          readFileSync(source, "utf-8"),
-          source,
-        );
+      const names = await multiselect(
+        "Choose rules to add",
+        pluck(missing, "name"),
+        filterMap(missing, "default", "name"),
+      );
 
-        filesystem.write(
-          file,
-          `${frontmatter}\n<!-- @reference ${reference} -->\n\n${body.trim()}\n\n<!-- @end -->\n`,
-        );
-      }
-
-      syncAgentFiles(config);
+      addAgentRules(config, names);
     },
   };
 }

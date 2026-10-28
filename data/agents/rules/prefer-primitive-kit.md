@@ -1,4 +1,9 @@
 ---
+title: Primitive kit
+description: Reuse primitive-kit helpers.
+category: tools-dependencies
+default: false
+order: 30
 paths:
   - "**/*.ts"
 ---

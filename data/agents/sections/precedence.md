@@ -1,3 +1,11 @@
+---
+title: Precedence and conflicts
+description: Resolve conflicting instructions.
+category: workflow
+default: true
+order: 20
+---
+
 ## Precedence and conflicts
 
 - Precedence: an explicit user decision for the current task, then the project's own instructions, then shared instructions from `@auaust/engrenage`, then existing code patterns. Existing code never justifies repeating a violation.

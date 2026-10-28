@@ -1,3 +1,11 @@
+---
+title: Verification
+description: Verify and report changes.
+category: workflow
+default: true
+order: 70
+---
+
 ## Verification
 
 - Before delivery, review the work against architectural boundaries and quality requirements, not only behavior.

@@ -1,3 +1,11 @@
+---
+title: TypeScript
+description: Write and validate TypeScript code.
+category: coding-style
+default: true
+order: 50
+---
+
 ## TypeScript
 
 - Infer types from schemas, factories and API definitions instead of duplicating them. Preserve strict compiler settings and real optional contracts.

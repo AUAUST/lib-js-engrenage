@@ -1,3 +1,11 @@
+---
+title: Instruction maintenance
+description: Maintain shared and project-specific agent instructions.
+category: workflow
+default: true
+order: 10
+---
+
 ## Instruction maintenance
 
 - Never modify AGENTS.md or `.claude/rules/` unless the user explicitly asks to change agent instructions. Finishing a feature, refactor or new convention does not authorize it; mention the suggested change in your report instead.

@@ -1,4 +1,9 @@
 ---
+title: Code style
+description: Follow TypeScript code conventions.
+category: coding-style
+default: false
+order: 20
 paths:
   - "**/*.ts"
 ---

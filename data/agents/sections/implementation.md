@@ -1,3 +1,11 @@
+---
+title: Implementation
+description: Implement changes with clear ownership and boundaries.
+category: workflow
+default: true
+order: 40
+---
+
 ## Implementation
 
 - Quality takes precedence over feature completion. A functional workaround that introduces architectural debt is not a completed feature.

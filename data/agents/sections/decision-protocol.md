@@ -1,3 +1,11 @@
+---
+title: Decision protocol
+description: Decide when to proceed and when to ask.
+category: workflow
+default: true
+order: 30
+---
+
 ## Decision protocol
 
 Pause on real choices: ask the questions and wait for the answers before continuing. When pausing is impossible, end the turn with the questions rather than proceeding on a guess.

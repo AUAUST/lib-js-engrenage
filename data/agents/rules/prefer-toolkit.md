@@ -1,4 +1,9 @@
 ---
+title: Toolkit
+description: Reuse toolkit helpers.
+category: tools-dependencies
+default: false
+order: 40
 paths:
   - "**/*.ts"
 ---
