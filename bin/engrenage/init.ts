@@ -32,6 +32,7 @@ import { createDistTsconfigStep } from "#typescript/setup/createDistTsconfigStep
 import { createTsconfigStep } from "#typescript/setup/createTsconfigStep";
 import { createViteConfigStep } from "#vite/setup/createViteConfigStep";
 import { createVitestConfigStep } from "#vitest/setup/createVitestConfigStep";
+import { createVitestCoverageStep } from "#vitest/setup/createVitestCoverageStep";
 import { createVitestStep } from "#vitest/setup/createVitestStep";
 import { createVscodeExtensionsStep } from "#vscode/setup/createVscodeExtensionsStep";
 import { createVscodeSettingsStep } from "#vscode/setup/createVscodeSettingsStep";
@@ -119,6 +120,7 @@ export const init = defineCommand((command) => {
           createWorkspaceStep(),
           createBuildToolStep(),
           createVitestStep(),
+          createVitestCoverageStep(),
           createTsdownConfigStep(),
           createViteConfigStep(),
           createVitestConfigStep(),

@@ -95,12 +95,7 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: `createRequire(from).resolve` applies the `require` condition, so a fragment a package exports only under `import` cannot be referenced.
    - Fix: resolve references with ESM conditions. `import.meta.resolve` still ignores its parent argument without `--experimental-import-meta-resolve` (Node 26), so this needs another resolver. Part of AUAUST/lib-js-engrenage#9.
 
-5. The standard `coverage` script needs a coverage provider init does not add.
-   - Where: `src/config/setup/createScriptsStep.ts`, `src/vitest/constants.ts`
-   - Problem: `engrenage init` adds `coverage: engrenage vitest:coverage` whenever Vitest is a dependency, but the default provider (`@vitest/coverage-istanbul`) is neither a peer dependency of engrenage nor added, so the script fails until it is installed by hand.
-   - Fix: decide whether the Vitest step adds the provider (declaring it as an optional peer dependency) or the script is only added once the provider is a dependency.
-
-6. Synced VS Code settings replace whole arrays.
+5. Synced VS Code settings replace whole arrays.
    - Where: `src/vscode/setup/syncVscodeFiles.ts`, `src/support/json/utils/flattenJsonObject.ts`
    - Problem: settings are flattened to one edit per object path, so an array such as `eslint.rules.customizations` is written as a whole and a project's own entries are dropped on every `engrenage sync`.
    - Fix: decide how arrays merge, for example by adding the missing entries keyed by `rule` and keeping the others.

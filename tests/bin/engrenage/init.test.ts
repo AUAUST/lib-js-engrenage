@@ -199,6 +199,7 @@ describe("engrenage init", () => {
           "engrenage sync --check && engrenage typecheck && engrenage eslint",
         "test": "engrenage vitest && engrenage typecheck",
         "typecheck": "engrenage typecheck",
+        "coverage": "engrenage vitest:coverage",
         "format": "engrenage prettier",
         "lint": "engrenage eslint",
         "lint:check": "engrenage eslint",
@@ -208,6 +209,8 @@ describe("engrenage init", () => {
           "pnpm install --frozen-lockfile && engrenage sync && pnpm run ci",
       },
       devDependencies: {
+        "@vitest/coverage-istanbul":
+          manifest.peerDependencies["@vitest/coverage-istanbul"],
         "@auaust/engrenage": `^${manifest.version}`,
         "eslint": manifest.peerDependencies.eslint,
         "prettier": manifest.peerDependencies.prettier,
@@ -262,6 +265,87 @@ describe("engrenage init", () => {
     expect(gitignore).toMatch(/# @end\n\n# Scratch\n\/scratch\n$/);
     expect(gitignore.match(/^node_modules$/gm)).toHaveLength(1);
   });
+
+  test.each(["Want coverage?", "Test with Vitest?"])(
+    "omits the provider and coverage script when declining %s",
+    async (declined) => {
+      const project = createProject({
+        "package.json": '{"name":"project","type":"module"}',
+        "engrenage.config.ts":
+          "export default { agents: { preferred: [] } };\n",
+      });
+
+      const confirm = vi.fn((message: string) => {
+        return Promise.resolve(message !== declined);
+      });
+
+      vi.spyOn(prompts, "createPrompter").mockReturnValue({
+        ...prompts.createPrompter({ yes: true }),
+        confirm,
+      });
+
+      await runCommand(init);
+
+      const packageJson: unknown = JSON.parse(project.read("package.json"));
+
+      expect(packageJson).not.toHaveProperty(
+        "devDependencies.@vitest/coverage-istanbul",
+      );
+
+      expect(packageJson).not.toHaveProperty("scripts.coverage");
+
+      if (declined === "Test with Vitest?") {
+        expect(confirm).not.toHaveBeenCalledWith("Want coverage?", true);
+      } else {
+        expect(packageJson).toHaveProperty("devDependencies.vitest");
+      }
+    },
+  );
+
+  test.each(["dependencies", "devDependencies"])(
+    "offers a missing coverage script on re-init with Istanbul in %s",
+    async (dependencies) => {
+      const project = createProject({
+        "package.json": JSON.stringify({
+          name: "project",
+          type: "module",
+          [dependencies]: { "@vitest/coverage-istanbul": "*" },
+        }),
+        "engrenage.config.ts":
+          "export default { agents: { preferred: [] } };\n",
+        ".changeset/config.json": "{}\n",
+      });
+
+      await runCommand(init, "--yes");
+
+      const completed = JSON.parse(project.read("package.json"));
+
+      delete completed.scripts.coverage;
+
+      project.write("package.json", JSON.stringify(completed));
+
+      vi.clearAllMocks();
+
+      const confirm = vi.fn().mockResolvedValue(true);
+
+      vi.spyOn(prompts, "createPrompter").mockReturnValue({
+        ...prompts.createPrompter({ yes: true }),
+        confirm,
+      });
+
+      await runCommand(init);
+
+      expect(confirm).toHaveBeenCalledWith("Add the standard scripts?", true);
+      expect(confirm).not.toHaveBeenCalledWith("Want coverage?", true);
+
+      expect(JSON.parse(project.read("package.json"))).toMatchObject({
+        [dependencies]: { "@vitest/coverage-istanbul": "*" },
+        scripts: { coverage: "engrenage vitest:coverage" },
+      });
+
+      expect(spawnSync).not.toHaveBeenCalled();
+    },
+  );
 
   test("leaves a complete project untouched", async () => {
     const project = createProject({

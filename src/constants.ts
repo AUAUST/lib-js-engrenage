@@ -34,6 +34,8 @@ export const vite = "vite";
 
 export const vitest = "vitest";
 
+export const vitestCoverageIstanbul = "@vitest/coverage-istanbul";
+
 export const zod = "zod";
 
 export const packages = freeze({
@@ -53,6 +55,7 @@ export const packages = freeze({
   valibot,
   vite,
   vitest,
+  vitestCoverageIstanbul,
   zod,
 });
 

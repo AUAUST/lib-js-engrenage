@@ -144,6 +144,7 @@
   },
   "peerDependencies": {
     "@changesets/cli": "^3.0.0",
+    "@vitest/coverage-istanbul": "^5.0.0",
     "eslint": "^10.0.0",
     "prettier": "^3.0.0",
     "tsdown": "^0.23.0",
@@ -154,6 +155,9 @@
   },
   "peerDependenciesMeta": {
     "@changesets/cli": {
+      "optional": true
+    },
+    "@vitest/coverage-istanbul": {
       "optional": true
     },
     "prettier": {
