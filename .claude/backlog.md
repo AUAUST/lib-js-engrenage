@@ -4,27 +4,22 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
 
 ## 1. Tooling
 
-1. Barrel codegen cannot heal a barrel that names a removed module.
-   - Where: `scripts/support/codegen/index.ts`, `scripts/support/codegen/rules.ts`
-   - Problem: the `support` CLI registers every codegen subcommand at startup, and the `rules` subcommand imports the ESLint config builder and with it every conventions barrel. Renaming or deleting a convention module therefore crashes `pnpm support codegen barrels` with `ERR_MODULE_NOT_FOUND` before it can rewrite the stale barrel line, which has to be fixed by hand first.
-   - Fix: decouple subcommand registration from their implementations so the barrels command never evaluates the modules it generates; a lazy dynamic import conflicts with the `noDynamicImport` convention, so this needs a deliberate loading pattern for CLI subcommands. Part of AUAUST/lib-js-engrenage#9.
-
-2. Native array methods with a primitive-kit equivalent are not reported.
+1. Native array methods with a primitive-kit equivalent are not reported.
    - Where: `src/eslint/conventions/globals/`
    - Problem: the code style prefers primitive-kit and toolkit helpers over native methods with an equivalent (`sort(array)` rather than `array.sort()`), but only `Object.*` and `Array.isArray` are enforced, so native calls creep back in and are replaced by hand.
    - Fix: add type-aware conventions reporting native array methods that primitive-kit covers, starting with `sort`, so only arrays are flagged; leave `filter` out until point 2.1 is fixed. Gate them on `@auaust/primitive-kit` being a dependency (AUAUST/lib-js-engrenage#11).
 
-3. Existing pnpm workspace files are not synced.
+2. Existing pnpm workspace files are not synced.
    - Where: `src/pnpm/`, `pnpm-workspace.yaml` of each project
    - Problem: `engrenage init` now offers missing build approvals in existing workspaces, but `engrenage sync` does not maintain workspace settings, and the shared `minimumReleaseAgeExclude` keeps being copied by hand. The pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`.
    - Fix: an `engrenage sync` target that adds missing shared workspace settings while preserving project entries and explicit choices, using the existing `yaml` dependency.
 
-4. Package verification needs registry access in the restricted environment.
+3. Package verification needs registry access in the restricted environment.
    - Where: `pnpm` version selection and the tsdown packaging checks
    - Problem: pnpm cannot verify the selected release because registry fetches fail; the bundle builds, but the full packaging check does not finish. Source and dist tests and type checks pass through the local Node entry points.
    - Fix: rerun the normal build with registry access and a verified pnpm runtime.
 
-5. The lint command overrides `--no-cache`.
+4. The lint command overrides `--no-cache`.
    - Where: `bin/engrenage/eslint.ts`, `useCache`
    - Problem: the command appends `--cache` even when `--no-cache` is passed, so cached results can hide changes to local rule implementations.
    - Fix: honor an explicit `--no-cache`; use the ESLint executable directly for uncached verification until then.

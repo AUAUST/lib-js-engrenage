@@ -1,9 +1,14 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { barrels } from "#scripts/support/codegen/barrels";
+import { codegen } from "#scripts/support/codegen/index";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
+
+vi.mock("#eslint/utils/syncRuleTypes", () => {
+  throw new Error("Barrel generation must not load rule generation");
+});
 
 function createProject(files: Record<string, string>) {
   const project = createTemporaryProject({
@@ -34,6 +39,32 @@ afterEach(() => {
 });
 
 describe("support codegen barrels", () => {
+  test("repairs stale exports through the registered CLI without loading rule generation", async () => {
+    const project = createProject({
+      "src/tool/index.ts": [
+        "// @barrel /config/tool/*.ts all",
+        'export * from "#config/tool/removed";',
+        "// @end",
+        "",
+      ].join("\n"),
+    });
+
+    await runCommand(codegen, "barrels", "tool");
+
+    expect(project.read("src/tool/index.ts")).toBe(
+      [
+        "// @barrel /config/tool/*.ts all",
+        'export * from "#config/tool/preset";',
+        "// @end",
+        "",
+      ].join("\n"),
+    );
+
+    await runCommand(codegen, "barrels", "tool", "--check");
+
+    expect(process.exitCode).toBeUndefined();
+  });
+
   test("re-exports the matched modules in each mode so a later check passes", async () => {
     const project = createProject({
       "src/tool/index.ts": [
