@@ -10,6 +10,7 @@ import { basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { parse } from "yaml";
 
 import { sort } from "@auaust/primitive-kit/arrays";
 import { entries, keys, record } from "@auaust/toolkit/object";
@@ -237,7 +238,7 @@ describe("engrenage init", () => {
     );
 
     expect(project.read("pnpm-workspace.yaml")).toBe(
-      'allowBuilds:\n  "unrs-resolver": true\nminimumReleaseAgeExclude:\n  - "@auaust/*"\n',
+      'allowBuilds:\n  "esbuild": true\n  "unrs-resolver": true\nminimumReleaseAgeExclude:\n  - "@auaust/*"\n',
     );
 
     expect(project.read("eslint.config.ts")).toContain(
@@ -299,101 +300,144 @@ describe("engrenage init", () => {
     ]);
   });
 
-  test("starts a library from an empty directory with the default answers", async () => {
-    const project = createProject({});
+  test.each([false, true])(
+    "starts an uninstalled library with an existing tsconfig: %s",
+    async (hasTsconfig) => {
+      const project = createTemporaryProject(
+        hasTsconfig
+          ? {
+              "tsconfig.json": JSON.stringify({
+                extends: "@auaust/engrenage/tsconfig/library.json",
+              }),
+              ".gitignore": "node_modules\n\n# Custom output\n/custom-output\n",
+              "pnpm-workspace.yaml":
+                "# Existing workspace\nallowBuilds:\n  unrs-resolver: true\n",
+            }
+          : {},
+      );
 
-    vi.mocked(spawnSync).mockImplementation((command, args) => {
-      if (args?.[0] === "init") {
-        project.write("package.json", '{\n  "type": "module"\n}\n');
+      mockCwd(project.root);
+
+      vi.mocked(spawnSync).mockImplementation((command, args) => {
+        if (args?.[0] === "init") {
+          project.write("package.json", '{\n  "type": "module"\n}\n');
+        }
+
+        if (args?.[0] === "install") {
+          expect(
+            existsSync(project.resolve("node_modules/@auaust/engrenage")),
+          ).toBe(false);
+
+          expect(parse(project.read("pnpm-workspace.yaml"))).toMatchObject({
+            allowBuilds: { "esbuild": true, "unrs-resolver": true },
+          });
+
+          linkSourcePackage(project.resolve("node_modules/@auaust/engrenage"));
+        }
+
+        return {
+          pid: 0,
+          output: [],
+          stdout: "",
+          stderr: "",
+          status: 0,
+          signal: null,
+        };
+      });
+
+      await runCommand(init, "--yes");
+
+      const name = basename(project.root);
+
+      expect(vi.mocked(spawnSync).mock.calls).toEqual([
+        [
+          "pnpm",
+          ["init", "--bare"],
+          {
+            cwd: project.root,
+            stdio: "inherit",
+          },
+        ],
+        [
+          "pnpm",
+          ["install"],
+          {
+            cwd: project.root,
+            stdio: "inherit",
+          },
+        ],
+      ]);
+
+      expect(project.read("engrenage.config.ts")).toContain(
+        'presets: ["library"]',
+      );
+
+      expect(JSON.parse(project.read("package.json"))).toMatchObject({
+        name,
+        version: "0.0.0",
+        license: "GPL-3.0-only",
+        scripts: {
+          "build":
+            "engrenage tsdown && engrenage typecheck:dist && engrenage vitest:dist",
+          "ci:build": "pnpm run build",
+          "ci:publish": "changeset publish",
+          "ci:test": "engrenage vitest",
+        },
+        devDependencies: {
+          tsdown: manifest.peerDependencies.tsdown,
+          tsx: manifest.peerDependencies.tsx,
+          vitest: manifest.peerDependencies.vitest,
+        },
+      });
+
+      expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
+        "private",
+      );
+
+      expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
+        "publishConfig",
+      );
+
+      expect(existsSync(project.resolve("vite.config.ts"))).toBe(false);
+      expect(project.read("tsdown.config.ts")).toContain("defineTsdownConfig");
+      expect(project.read("vitest.config.ts")).toContain("defineVitestConfig");
+
+      expect(JSON.parse(project.read("tsconfig.json"))).toEqual(
+        hasTsconfig
+          ? {
+              extends: "@auaust/engrenage/tsconfig/library.json",
+            }
+          : {
+              extends: "@auaust/engrenage/tsconfig/library.json",
+              compilerOptions: {
+                paths: {
+                  [name]: ["./src/index.ts"],
+                },
+              },
+            },
+      );
+
+      expect(JSON.parse(project.read("tsconfig.dist.json"))).toEqual({
+        extends: [
+          "./tsconfig.json",
+          "@auaust/engrenage/tsconfig/library.dist.json",
+        ],
+      });
+
+      expect(project.read(".github/workflows/ci.yml")).toContain(
+        "pnpm run ci:check",
+      );
+
+      expect(project.read(".gitignore")).toContain("# Output\n/dist");
+      expect(project.read(".prettierignore")).toContain("# Output\n/dist");
+
+      if (hasTsconfig) {
+        expect(project.read(".gitignore")).toContain(
+          "# Custom output\n/custom-output",
+        );
       }
-
-      return {
-        pid: 0,
-        output: [],
-        stdout: "",
-        stderr: "",
-        status: 0,
-        signal: null,
-      };
-    });
-
-    await runCommand(init, "--yes");
-
-    const name = basename(project.root);
-
-    expect(vi.mocked(spawnSync).mock.calls).toEqual([
-      [
-        "pnpm",
-        ["init", "--bare"],
-        {
-          cwd: project.root,
-          stdio: "inherit",
-        },
-      ],
-      [
-        "pnpm",
-        ["install"],
-        {
-          cwd: project.root,
-          stdio: "inherit",
-        },
-      ],
-    ]);
-
-    expect(project.read("engrenage.config.ts")).toContain(
-      'presets: ["library"]',
-    );
-
-    expect(JSON.parse(project.read("package.json"))).toMatchObject({
-      name,
-      version: "0.0.0",
-      license: "GPL-3.0-only",
-      scripts: {
-        "build":
-          "engrenage tsdown && engrenage typecheck:dist && engrenage vitest:dist",
-        "ci:build": "pnpm run build",
-        "ci:publish": "changeset publish",
-        "ci:test": "engrenage vitest",
-      },
-      devDependencies: {
-        tsdown: manifest.peerDependencies.tsdown,
-        tsx: manifest.peerDependencies.tsx,
-        vitest: manifest.peerDependencies.vitest,
-      },
-    });
-
-    expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
-      "private",
-    );
-
-    expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
-      "publishConfig",
-    );
-
-    expect(existsSync(project.resolve("vite.config.ts"))).toBe(false);
-    expect(project.read("tsdown.config.ts")).toContain("defineTsdownConfig");
-    expect(project.read("vitest.config.ts")).toContain("defineVitestConfig");
-
-    expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
-      extends: "@auaust/engrenage/tsconfig/library.json",
-      compilerOptions: {
-        paths: {
-          [name]: ["./src/index.ts"],
-        },
-      },
-    });
-
-    expect(JSON.parse(project.read("tsconfig.dist.json"))).toEqual({
-      extends: [
-        "./tsconfig.json",
-        "@auaust/engrenage/tsconfig/library.dist.json",
-      ],
-    });
-
-    expect(project.read(".github/workflows/ci.yml")).toContain(
-      "pnpm run ci:check",
-    );
-  });
+    },
+  );
 
   test("publishes a public scoped library with public access", async () => {
     const project = createProject({

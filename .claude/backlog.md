@@ -16,8 +16,8 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
 
 3. Existing pnpm workspace files are not synced.
    - Where: `src/pnpm/`, `pnpm-workspace.yaml` of each project
-   - Problem: `engrenage init` creates a missing `pnpm-workspace.yaml` from `workspaceSettings`, but an existing one that lacks `allowBuilds.unrs-resolver` still fails `pnpm install` with `ERR_PNPM_IGNORED_BUILDS`, and the shared `minimumReleaseAgeExclude` keeps being copied by hand. The pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`.
-   - Fix: an `engrenage sync` target that writes `workspaceSettings` into an existing file and keeps project entries. Editing YAML in place needs a parser that preserves the file (dependency to approve).
+   - Problem: `engrenage init` now offers missing build approvals in existing workspaces, but `engrenage sync` does not maintain workspace settings, and the shared `minimumReleaseAgeExclude` keeps being copied by hand. The pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`.
+   - Fix: an `engrenage sync` target that adds missing shared workspace settings while preserving project entries and explicit choices, using the existing `yaml` dependency.
 
 4. Package verification needs registry access in the restricted environment.
    - Where: `pnpm` version selection and the tsdown packaging checks

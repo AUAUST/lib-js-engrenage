@@ -1,3 +1,5 @@
+import { isMap, parseDocument } from "yaml";
+
 import { map } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
@@ -26,15 +28,62 @@ function renderWorkspace({
   ].join("\n");
 }
 
+function addMissingBuildApprovals(content: string): string {
+  const document = parseDocument(content);
+
+  if (document.errors.length > 0) {
+    throw new Error(`Cannot read ${workspaceFile}`, {
+      cause: document.errors[0],
+    });
+  }
+
+  if (document.contents !== null && !isMap(document.contents)) {
+    throw new Error(`${workspaceFile} must contain a YAML mapping`);
+  }
+
+  const builds = document.get("allowBuilds", true);
+
+  if (builds !== undefined && !isMap(builds)) {
+    throw new Error(`allowBuilds in ${workspaceFile} must be a YAML mapping`);
+  }
+
+  let changed = false;
+
+  for (const [name, allowed] of entries(workspaceSettings.allowBuilds)) {
+    const path = ["allowBuilds", name];
+
+    if (document.hasIn(path)) {
+      continue;
+    }
+
+    document.setIn(path, allowed);
+
+    changed = true;
+  }
+
+  return changed ? document.toString() : content;
+}
+
 export function createWorkspaceStep(): Step {
   return {
     name: workspaceFile,
-    message: `Create ${workspaceFile} with the settings engrenage needs to install?`,
+    message: `Add missing install settings to ${workspaceFile}, preserving existing choices?`,
     isMissing({ filesystem }) {
-      return !filesystem.exists(workspaceFile);
+      const content = filesystem.read(workspaceFile);
+
+      return (
+        content === undefined || addMissingBuildApprovals(content) !== content
+      );
     },
     plan({ filesystem }) {
-      filesystem.write(workspaceFile, renderWorkspace(workspaceSettings));
+      const content = filesystem.read(workspaceFile);
+
+      filesystem.write(
+        workspaceFile,
+        content === undefined
+          ? renderWorkspace(workspaceSettings)
+          : addMissingBuildApprovals(content),
+      );
     },
   };
 }

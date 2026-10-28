@@ -2,7 +2,6 @@ import { flat, pluck } from "@auaust/primitive-kit/arrays";
 
 import { gitignoreFile } from "#constants";
 import { defaultIgnores, ignoreBlocks } from "#git/constants";
-import { createProjectIgnores } from "#git/utils/createProjectIgnores";
 import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Step } from "#support/scaffold/types/Step";
@@ -50,9 +49,7 @@ export function createGitignoreStep(): Step {
     plan({ config, filesystem }) {
       const file = resolveFile(config);
 
-      const groups = [...defaultIgnores, ...createProjectIgnores(config)];
-
-      const covered = new Set(flat(pluck(groups, "globs")));
+      const covered = new Set(flat(pluck(defaultIgnores, "globs")));
 
       const remaining = removeCovered(filesystem.read(file) ?? "", covered);
 

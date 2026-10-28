@@ -8,6 +8,7 @@ export const workspaceFile = "pnpm-workspace.yaml" satisfies File;
 
 export const workspaceSettings = freeze({
   allowBuilds: freeze({
+    "esbuild": true,
     "unrs-resolver": true,
   } as const),
   minimumReleaseAgeExclude: freeze([`${organization}/*`] as const),
