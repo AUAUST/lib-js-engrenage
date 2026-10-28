@@ -24,6 +24,7 @@ export function parseInstruction(content: string, file: File) {
   }
 
   const [frontmatter, yaml = ""] = match;
+
   let input: unknown;
 
   try {

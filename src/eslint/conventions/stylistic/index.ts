@@ -19,6 +19,7 @@ export { default as paddedCases } from "#eslint/conventions/stylistic/paddedCase
 export { default as paddedMultilineDeclarations } from "#eslint/conventions/stylistic/paddedMultilineDeclarations";
 export { default as paddedMultilineExpressions } from "#eslint/conventions/stylistic/paddedMultilineExpressions";
 export { default as paddedReturns } from "#eslint/conventions/stylistic/paddedReturns";
+export { default as paddedVariableDeclarations } from "#eslint/conventions/stylistic/paddedVariableDeclarations";
 export { default as preferConst } from "#eslint/conventions/stylistic/preferConst";
 export { default as preferReturnVoid } from "#eslint/conventions/stylistic/preferReturnVoid";
 export { default as switches } from "#eslint/conventions/stylistic/switches";

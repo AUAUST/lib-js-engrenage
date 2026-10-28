@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { syncAgentFiles, syncCodexFiles } from "@auaust/engrenage/agents";
+import { syncAgentFiles } from "@auaust/engrenage/agents";
+import { syncCodexFiles } from "@auaust/engrenage/agents/codex";
 import { loadConfig } from "@auaust/engrenage/config";
 
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
@@ -23,9 +24,11 @@ describe("syncCodexFiles", () => {
     });
 
     const config = await loadConfig(project.root);
+
     syncAgentFiles(config);
     syncCodexFiles(config);
     config.filesystem.flush();
+
     const result = project.read("AGENTS.override.md");
 
     expect(result).toContain(

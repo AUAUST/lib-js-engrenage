@@ -32,6 +32,7 @@ export function syncEditHook(
 ) {
   const path = config.resolve(file);
   const location = ["hooks", "PostToolUse"];
+
   let content = config.filesystem.read(file) ?? emptyObjectFile;
 
   const entries =

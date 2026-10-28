@@ -20,6 +20,7 @@ export function getPatchedFiles(patch: string): Files {
     }
 
     const moved = /^\*\*\* Move to: (.+)$/.exec(lines[index + 1] ?? "")?.[1];
+
     files.push(moved ?? file);
   }
 

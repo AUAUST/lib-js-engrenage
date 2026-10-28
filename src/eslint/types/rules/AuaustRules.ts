@@ -321,6 +321,10 @@ export interface AuaustRules {
    */
   "auaust/padded-returns"?: Rule<[]>;
   /**
+   * Separate variable declarations from other statements with blank lines, except declarations of the same kind.
+   */
+  "auaust/padded-variable-declarations"?: Rule<[]>;
+  /**
    * Require `const` declarations for variables that are never reassigned after declared
    * @see https://eslint.org/docs/latest/rules/prefer-const
    */

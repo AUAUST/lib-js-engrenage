@@ -19,6 +19,16 @@ Deferred work. One entry per item: where, what is wrong, the intended fix.
    - Problem: `engrenage init` creates a missing `pnpm-workspace.yaml` from `workspaceSettings`, but an existing one that lacks `allowBuilds.unrs-resolver` still fails `pnpm install` with `ERR_PNPM_IGNORED_BUILDS`, and the shared `minimumReleaseAgeExclude` keeps being copied by hand. The pnpm version policy (AUAUST/lib-js-engrenage#15) may add `pmOnFail`.
    - Fix: an `engrenage sync` target that writes `workspaceSettings` into an existing file and keeps project entries. Editing YAML in place needs a parser that preserves the file (dependency to approve).
 
+4. Package verification needs registry access in the restricted environment.
+   - Where: `pnpm` version selection and the tsdown packaging checks
+   - Problem: pnpm cannot verify the selected release because registry fetches fail; the bundle builds, but the full packaging check does not finish. Source and dist tests and type checks pass through the local Node entry points.
+   - Fix: rerun the normal build with registry access and a verified pnpm runtime.
+
+5. The lint command overrides `--no-cache`.
+   - Where: `bin/engrenage/eslint.ts`, `useCache`
+   - Problem: the command appends `--cache` even when `--no-cache` is passed, so cached results can hide changes to local rule implementations.
+   - Fix: honor an explicit `--no-cache`; use the ESLint executable directly for uncached verification until then.
+
 ## 2. Upstream
 
 1. primitive-kit `filter` return type.

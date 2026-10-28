@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { syncClaudeSettings } from "@auaust/engrenage/agents";
+import { syncClaudeSettings } from "@auaust/engrenage/agents/claude";
 import { loadConfig } from "@auaust/engrenage/config";
 
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
@@ -104,8 +104,11 @@ test("migrates the previous command without adding another hook", async () => {
   });
 
   const config = await loadConfig(project.root);
+
   syncClaudeSettings(config);
+
   const content = config.filesystem.read(".claude/settings.json") ?? "";
+
   expect(content).toContain("engrenage agents claude hook edit");
   expect(content).toContain('"timeout":10');
   expect(content.match(/"command"\s*:/g)).toHaveLength(1);

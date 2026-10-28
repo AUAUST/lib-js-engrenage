@@ -1,9 +1,9 @@
 import { definePadding } from "#eslint/conventions/definePadding";
 
 const declarations = [
-  "multiline-var",
-  "multiline-let",
   "multiline-const",
+  "multiline-let",
+  "multiline-var",
   {
     selector: "ExportNamedDeclaration:has(> VariableDeclaration)",
     lineMode: "multiline",

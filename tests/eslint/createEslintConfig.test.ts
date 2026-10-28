@@ -628,6 +628,41 @@ export function pick(value: Value): number {
     ]);
   });
 
+  test.each([
+    ["let foo;\nlet bar;", 0],
+    ["const foo = 1;\nconst bar = 2;", 0],
+    ["let foo;\nconst bar = 1;", 1],
+    ["const foo = 1;\nlet bar;", 1],
+    ["const bar = {};\nbar.foo();", 1],
+    ["let bar;\nbar = 1;", 1],
+    ["syncClaudeSettings(config);\nconst content = read();", 1],
+    ["run();\nlet value;", 1],
+    ["run();\n\nconst value = 1;", 0],
+    ["function run() {\nconst value = 1;\n}", 0],
+    ["function run() {\nlet value;\n}", 0],
+    ["let foo;\n\nconst bar = 1;", 0],
+    ["let foo; // trailing comment\nconst bar = 1;", 1],
+    ["for (let index = 0; index < 2; index++) {}", 0],
+  ])("pads variable declaration groups in %s", async (source, count) => {
+    const eslint = await createLinter({
+      typeAware: false,
+    });
+
+    const [result] = await eslint.lintText(source, {
+      filePath: "src/declarations.ts",
+    });
+
+    const messages = (result?.messages ?? []).filter((message) => {
+      return message.ruleId === "auaust/padded-variable-declarations";
+    });
+
+    expect(messages).toHaveLength(count);
+
+    for (const message of messages) {
+      expect(message.fix?.text).toBe("\n");
+    }
+  });
+
   test("wraps case statements in a block, declarations included", async () => {
     const eslint = new ESLint({
       cwd: root,
