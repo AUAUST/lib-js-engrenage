@@ -1,12 +1,12 @@
-import { hook } from "#bin/engrenage/claude/hook/index";
+import { edit } from "#bin/engrenage/agents/codex/hook/edit";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { registerSubcommands } from "#support/commander/utils/registerSubcommands";
 
-export const claude = defineCommand((command) => {
+export const hook = defineCommand((command) => {
   return registerSubcommands(
-    command.description("Integrate the project tools with Claude Code."),
+    command.description("Run the Claude Code hooks of the project."),
     {
-      hook,
+      edit,
     },
   );
 });

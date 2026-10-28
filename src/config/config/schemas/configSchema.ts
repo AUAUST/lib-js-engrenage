@@ -7,6 +7,7 @@ import {
   union,
 } from "valibot";
 
+import { preferredSchema } from "#agents/config/schemas/preferredSchema";
 import { defineSchema } from "#config/config/schemas/defineSchema";
 import {
   directoriesSchema,
@@ -72,9 +73,11 @@ export const configSchema = strictObject({
   ),
   agents: optional(
     strictObject({
+      preferred: optional(preferredSchema),
       instructionFiles: optional(globsSchema),
       snippetsDir: optional(directorySchema),
       claudeSettings: optional(boolean()),
+      codexHooks: optional(boolean()),
     }),
   ),
   github: optional(

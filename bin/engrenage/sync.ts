@@ -4,8 +4,9 @@ import { boolean, optional } from "valibot";
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
+import { syncClaudeSettings } from "#agents/claude/setup/syncClaudeSettings";
+import { syncCodexFiles } from "#agents/codex/setup/syncCodexFiles";
 import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
-import { syncClaudeSettings } from "#agents/setup/syncClaudeSettings";
 import { syncChangesetConfig } from "#changesets/setup/syncChangesetConfig";
 import { loadConfig } from "#config/utils/loadConfig";
 import { syncGitignoreFile } from "#git/setup/syncGitignoreFile";
@@ -41,6 +42,9 @@ const targets = {
   changesets: defineTarget(syncChangesetConfig),
   claude: defineTarget(syncClaudeSettings, {
     settings: "create .claude/settings.json when it is missing",
+  }),
+  codex: defineTarget(syncCodexFiles, {
+    hooks: "create .codex/hooks.json when it is missing",
   }),
   gitignore: defineTarget(syncGitignoreFile),
   globals: defineTarget(syncEnvFile),

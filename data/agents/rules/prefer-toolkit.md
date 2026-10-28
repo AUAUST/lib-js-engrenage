@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.ts"
+---
+
 # Toolkit
 
 ## Enforced by tooling

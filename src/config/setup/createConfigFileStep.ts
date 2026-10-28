@@ -3,17 +3,22 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { presets } from "#config/constants";
 import { engrenage, engrenageConfigFile } from "#constants";
 import { createConfigModule } from "#support/scaffold/utils/createConfigModule";
+import type { Agent } from "#agents/types/Agent";
 import type { Presets } from "#config/types/Presets";
 import type { Step } from "#support/scaffold/types/Step";
 
-function renderOptions(chosen: Presets): string {
-  if (chosen.length === 0) {
-    return "{}";
-  }
-
+function renderOptions(
+  chosen: Presets,
+  agents: readonly Agent[] | undefined,
+): string {
   const list = map(chosen, (preset) => JSON.stringify(preset)).join(", ");
 
-  return `{\n  presets: [${list}],\n}`;
+  const preferred =
+    agents === undefined
+      ? ""
+      : `  agents: { preferred: ${JSON.stringify(agents)} },\n`;
+
+  return `{\n  presets: [${list}],\n${preferred}}`;
 }
 
 export function createConfigFileStep(): Step {
@@ -42,7 +47,7 @@ export function createConfigFileStep(): Step {
         createConfigModule({
           entry: `${engrenage}/config`,
           definer: "defineConfig",
-          options: renderOptions(chosen),
+          options: renderOptions(chosen, context.getAgents()),
         }),
       );
     },

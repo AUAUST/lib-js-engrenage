@@ -1,8 +1,12 @@
 import { spawnSync } from "node:child_process";
 
+import { createClaudeSettingsStep } from "#agents/claude/setup/createClaudeSettingsStep";
+import { createClaudeStep } from "#agents/claude/setup/createClaudeStep";
+import { createCodexHooksStep } from "#agents/codex/setup/createCodexHooksStep";
+import { createCodexStep } from "#agents/codex/setup/createCodexStep";
+import { createAgentRulesStep } from "#agents/setup/createAgentRulesStep";
 import { createAgentsStep } from "#agents/setup/createAgentsStep";
-import { createClaudeSettingsStep } from "#agents/setup/createClaudeSettingsStep";
-import { createClaudeStep } from "#agents/setup/createClaudeStep";
+import { createPreferredAgentsStep } from "#agents/setup/createPreferredAgentsStep";
 import { runSync } from "#bin/engrenage/sync";
 import { createChangesetConfigStep } from "#changesets/setup/createChangesetConfigStep";
 import { createBuildToolStep } from "#config/setup/createBuildToolStep";
@@ -108,6 +112,7 @@ export const init = defineCommand((command) => {
         config,
         prompter,
         steps: [
+          createPreferredAgentsStep(),
           createConfigFileStep(),
           createPackageStep(),
           createDependencyStep(),
@@ -124,7 +129,10 @@ export const init = defineCommand((command) => {
           createGitignoreStep(),
           createEslintConfigStep(),
           createAgentsStep(),
+          createAgentRulesStep(),
           createClaudeStep(),
+          createCodexStep(),
+          createCodexHooksStep(),
           createClaudeSettingsStep(),
           createChangesetConfigStep(),
           createWorkflowsStep(),

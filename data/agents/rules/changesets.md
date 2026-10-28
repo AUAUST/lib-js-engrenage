@@ -1,3 +1,8 @@
+---
+paths:
+  - ".changeset/**"
+---
+
 # Changesets
 
 ## Not checked by tools

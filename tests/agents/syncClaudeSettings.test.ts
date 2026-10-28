@@ -16,8 +16,9 @@ const settings = `{
 describe("syncClaudeSettings", () => {
   test("adds the edit hook to existing settings once", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts": "export default {};\n",
-      "package.json": "{}",
+      "engrenage.config.ts":
+        'export default { agents: { preferred: ["claude"] } };\n',
+      "package.json": '{"type":"module"}',
       ".claude/settings.json": settings,
     });
 
@@ -39,7 +40,7 @@ describe("syncClaudeSettings", () => {
         "hooks": [
           {
             "type": "command",
-            "command": "pnpm --silent engrenage claude hook edit"
+            "command": "pnpm --silent engrenage agents claude hook edit"
           }
         ]
       }
@@ -56,8 +57,8 @@ describe("syncClaudeSettings", () => {
   test("creates missing settings only when asked, unless disabled", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
-        "export default { agents: { claudeSettings: false } };\n",
-      "package.json": "{}",
+        'export default { agents: { preferred: ["claude"], claudeSettings: false } };\n',
+      "package.json": '{"type":"module"}',
     });
 
     const config = await loadConfig(project.root);
@@ -70,8 +71,9 @@ describe("syncClaudeSettings", () => {
 
     const enabled = await loadConfig(
       createTemporaryProject({
-        "engrenage.config.ts": "export default {};\n",
-        "package.json": "{}",
+        "engrenage.config.ts":
+          'export default { agents: { preferred: ["claude"] } };\n',
+        "package.json": '{"type":"module"}',
       }).root,
     );
 
@@ -90,4 +92,21 @@ describe("syncClaudeSettings", () => {
       },
     ]);
   });
+});
+
+test("migrates the previous command without adding another hook", async () => {
+  const project = createTemporaryProject({
+    "package.json": '{"type":"module"}',
+    "engrenage.config.ts":
+      'export default { agents: { preferred: ["claude"] } };',
+    ".claude/settings.json":
+      '{"hooks":{"PostToolUse":[{"matcher":"Edit|Write","hooks":[{"type":"command","command":"pnpm --silent engrenage claude hook edit","timeout":10}]}]}}',
+  });
+
+  const config = await loadConfig(project.root);
+  syncClaudeSettings(config);
+  const content = config.filesystem.read(".claude/settings.json") ?? "";
+  expect(content).toContain("engrenage agents claude hook edit");
+  expect(content).toContain('"timeout":10');
+  expect(content.match(/"command"\s*:/g)).toHaveLength(1);
 });

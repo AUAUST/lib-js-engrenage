@@ -2,7 +2,7 @@
 
 import { Command } from "@commander-js/extra-typings";
 
-import { claude } from "#bin/engrenage/claude/index";
+import { agents } from "#bin/engrenage/agents/index";
 import { init } from "#bin/engrenage/init";
 import { sync } from "#bin/engrenage/sync";
 import { registerSubcommands } from "#support/commander/utils/registerSubcommands";
@@ -23,7 +23,7 @@ const program = registerSubcommands(
   {
     init,
     sync,
-    claude,
+    agents,
     ...tsc,
     ...vitest,
     ...tsdown,

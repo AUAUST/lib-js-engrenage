@@ -2,6 +2,7 @@ import {
   cancel,
   confirm as confirmPrompt,
   isCancel,
+  multiselect as multiselectPrompt,
   select as selectPrompt,
   text as textPrompt,
 } from "@clack/prompts";
@@ -96,7 +97,35 @@ export function createPrompter({ yes }: { yes: boolean }) {
     return answer.trim();
   }
 
+  async function multiselect<Value extends string>(
+    message: string,
+    values: ReadonlyArray<Value>,
+    initial: ReadonlyArray<Value> = [],
+  ): Promise<Value[]> {
+    if (yes) {
+      return [...initial];
+    }
+
+    const answer = await multiselectPrompt({
+      message,
+      options: values.map((value): { value: string } => {
+        return {
+          value,
+        };
+      }),
+      initialValues: [...initial],
+      required: false,
+    });
+
+    if (isCancel(answer)) {
+      abort();
+    }
+
+    return values.filter((value) => answer.includes(value));
+  }
+
   return freeze({
+    multiselect,
     confirm,
     select,
     text,

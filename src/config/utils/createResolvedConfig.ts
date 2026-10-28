@@ -292,6 +292,8 @@ export function createResolvedConfig({
 
   const agents = once(() => {
     return freeze({
+      preferred: raw.agents?.preferred,
+      codexHooks: raw.agents?.codexHooks,
       instructionFiles: wrap(
         raw.agents?.instructionFiles ?? defaultInstructionFiles,
       ),

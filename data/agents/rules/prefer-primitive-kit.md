@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.ts"
+---
+
 # Primitive kit
 
 ## Enforced by tooling

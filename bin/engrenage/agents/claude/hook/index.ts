@@ -1,4 +1,4 @@
-import { edit } from "#bin/engrenage/claude/hook/edit";
+import { edit } from "#bin/engrenage/agents/claude/hook/edit";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { registerSubcommands } from "#support/commander/utils/registerSubcommands";
 

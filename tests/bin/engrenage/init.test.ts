@@ -18,6 +18,8 @@ import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
 
+import * as prompts from "#support/scaffold/utils/createPrompter";
+
 import manifest from "#package.json" with { type: "json" };
 
 vi.mock(import("node:child_process"));
@@ -83,7 +85,8 @@ afterEach(() => {
 describe("engrenage init", () => {
   test("fills the gaps of a configured project, installs added dependencies and syncs", async () => {
     const project = createProject({
-      "engrenage.config.ts": "export default {};\n",
+      "engrenage.config.ts":
+        'export default { agents: { preferred: ["claude"] } };\n',
       "package.json": '{\n  "name": "project",\n  "type": "module"\n}\n',
       ".gitignore": "node_modules\n.DS_Store\n\n# Scratch\n/scratch\n",
     });
@@ -171,7 +174,8 @@ describe("engrenage init", () => {
 
   test("leaves a complete project untouched", async () => {
     const project = createProject({
-      "engrenage.config.ts": "export default {};\n",
+      "engrenage.config.ts":
+        'export default { agents: { preferred: ["claude"] } };\n',
       "package.json": '{\n  "name": "project",\n  "type": "module"\n}\n',
       ".changeset/config.json": "{}\n",
     });
@@ -316,4 +320,97 @@ describe("engrenage init", () => {
       },
     });
   });
+});
+
+test("does not generate agent setup without selected agents", async () => {
+  const project = createProject({
+    "package.json": '{"name":"project","type":"module"}',
+    "engrenage.config.ts": "export default {};\n",
+  });
+
+  await runCommand(init, "--yes");
+  expect(project.read("engrenage.config.ts")).toBe("export default {};\n");
+
+  for (const file of [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "AGENTS.override.md",
+    ".claude/settings.json",
+    ".codex/hooks.json",
+  ]) {
+    expect(existsSync(project.resolve(file))).toBe(false);
+  }
+
+  expect(console.info).toHaveBeenCalledWith(
+    expect.stringContaining("Add agents.preferred: []"),
+  );
+});
+
+test("sets up only Codex and the rules it reads", async () => {
+  const input = 'export default { agents: { preferred: ["codex"] } };\n';
+
+  const project = createProject({
+    "package.json": '{"name":"project","type":"module"}',
+    "engrenage.config.ts": input,
+  });
+
+  await runCommand(init, "--yes");
+  expect(project.read("engrenage.config.ts")).toBe(input);
+
+  expect(project.read("AGENTS.override.md")).toContain(
+    "intended for OpenAI Codex",
+  );
+
+  expect(project.read("AGENTS.override.md")).toContain(
+    ".claude/rules/code-style.md",
+  );
+
+  expect(project.read(".codex/hooks.json")).toContain(
+    "engrenage agents codex hook edit",
+  );
+
+  expect(existsSync(project.resolve("CLAUDE.md"))).toBe(false);
+  expect(existsSync(project.resolve(".claude/settings.json"))).toBe(false);
+
+  expect(
+    project.read(".claude/rules/code-style.md").match(/^---$/gm),
+  ).toHaveLength(2);
+});
+
+test("uses an interactive selection for this init without rewriting an existing config", async () => {
+  const project = createProject({
+    "package.json": '{"name":"project","type":"module"}',
+    "engrenage.config.ts": "export default {};\n",
+  });
+
+  const prompter = prompts.createPrompter({
+    yes: true,
+  });
+
+  vi.spyOn(prompts, "createPrompter").mockReturnValue({
+    ...prompter,
+    async multiselect(_message, values) {
+      return [...values];
+    },
+  });
+
+  await runCommand(init, "--yes");
+  expect(project.read("engrenage.config.ts")).toBe("export default {};\n");
+  expect(project.read("CLAUDE.md")).toBe("@AGENTS.md\n");
+
+  expect(project.read("AGENTS.override.md")).toContain(
+    ".claude/rules/code-style.md",
+  );
+
+  expect(project.read(".claude/settings.json")).toContain(
+    "engrenage agents claude hook edit",
+  );
+
+  expect(project.read(".codex/hooks.json")).toContain(
+    "engrenage agents codex hook edit",
+  );
+
+  expect(console.info).toHaveBeenCalledWith(
+    expect.stringContaining('Add agents.preferred: ["claude","codex"]'),
+  );
 });

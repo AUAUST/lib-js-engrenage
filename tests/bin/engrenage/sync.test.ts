@@ -15,7 +15,8 @@ const emptyBlock = [
 
 function createProject() {
   const project = createTemporaryProject({
-    "engrenage.config.ts": "export default {};\n",
+    "engrenage.config.ts":
+      'export default { agents: { preferred: ["claude"] } };\n',
     "package.json": JSON.stringify({
       devDependencies: {
         prettier: "*",
@@ -82,7 +83,8 @@ describe("engrenage sync", () => {
 
   test("creates a missing VS Code file only when its flag is passed", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts": "export default {};\n",
+      "engrenage.config.ts":
+        'export default { agents: { preferred: ["claude"] } };\n',
       "package.json": '{ "devDependencies": { "prettier": "*" } }',
     });
 

@@ -5,6 +5,7 @@ import { freeze, getOwn } from "@auaust/toolkit/object";
 import { engrenage, packageJsonFile } from "#constants";
 import { readJsonValue } from "#support/json/utils/readJsonValue";
 import { writePackageJsonValue } from "#support/packageJson/utils/writePackageJsonValue";
+import type { Agent } from "#agents/types/Agent";
 import type { Presets } from "#config/types/Presets";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { JsonValue } from "#support/json/types/JsonValue";
@@ -123,13 +124,34 @@ export function createStepContext({
     presets = chosen;
   }
 
+  let agents = config.agents.preferred;
+
+  function getAgents(): readonly Agent[] | undefined {
+    return agents;
+  }
+
+  function setAgents(chosen: Agent[]) {
+    agents = chosen;
+  }
+
   return freeze({
-    config,
+    get config() {
+      return {
+        ...config,
+        agents: {
+          ...config.agents,
+          preferred: agents,
+        },
+      };
+    },
+    getAgents,
+    setAgents,
     filesystem,
     getPresets,
     setPresets,
     confirm: prompter.confirm,
     select: prompter.select,
+    multiselect: prompter.multiselect,
     text: prompter.text,
     readPackageJson,
     writePackageJson,
