@@ -193,12 +193,14 @@ describe("createEslintConfig", () => {
     expect(rules).toEqual(
       expect.arrayContaining([
         "auaust/curly",
-        "auaust/eqeqeq",
+        "auaust/no-loose-equal",
         "auaust/no-default-export",
       ]),
     );
 
-    expect(rules.filter((rule) => rule === "auaust/eqeqeq")).toHaveLength(1);
+    expect(
+      rules.filter((rule) => rule === "auaust/no-loose-equal"),
+    ).toHaveLength(1);
   });
 
   test("reports misordered and unused imports", async () => {
@@ -849,6 +851,18 @@ export const longform = {
       "20:auaust/quote-props",
       "24:auaust/object-shorthand",
     ]);
+  });
+
+  test("reports literals widened in the union itself, but not through a referenced type", async () => {
+    const eslint = await createLinter();
+
+    const [result] = await eslint.lintFiles(["src/unions.ts"]);
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual(["3:auaust/no-redundant-types"]);
   });
 
   test("lints info rules as warnings and records them in the settings", async () => {

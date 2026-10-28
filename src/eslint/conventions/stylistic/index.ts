@@ -8,6 +8,7 @@ export { default as groupedOverloads } from "#eslint/conventions/stylistic/group
 export { default as nameReplacements } from "#eslint/conventions/stylistic/nameReplacements";
 export { default as naming } from "#eslint/conventions/stylistic/naming";
 export { default as noComplexConciseArrows } from "#eslint/conventions/stylistic/noComplexConciseArrows";
+export { default as noRedundantTypes } from "#eslint/conventions/stylistic/noRedundantTypes";
 export { default as noUselessUndefined } from "#eslint/conventions/stylistic/noUselessUndefined";
 export { default as numericSeparators } from "#eslint/conventions/stylistic/numericSeparators";
 export { default as objectCurlyNewline } from "#eslint/conventions/stylistic/objectCurlyNewline";

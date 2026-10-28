@@ -8,7 +8,23 @@
   "editor.formatOnSave": true,
   "eslint.rules.customizations": [
     {
+      "rule": "@typescript-eslint/no-unnecessary-type-arguments",
+      "severity": "info"
+    },
+    {
+      "rule": "@typescript-eslint/no-unnecessary-type-assertion",
+      "severity": "info"
+    },
+    {
+      "rule": "@typescript-eslint/no-unnecessary-type-parameters",
+      "severity": "info"
+    },
+    {
       "rule": "auaust/naming-convention",
+      "severity": "info"
+    },
+    {
+      "rule": "auaust/no-redundant-types",
       "severity": "info"
     },
     {

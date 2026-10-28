@@ -9,6 +9,7 @@ export * from "#eslint/types/Convention";
 export * from "#eslint/types/Delegate";
 export * from "#eslint/types/Options";
 export * from "#eslint/types/Plugin";
+export * from "#eslint/types/ReportDescriptor";
 export * from "#eslint/types/Rule";
 export * from "#eslint/types/RuleModule";
 export * from "#eslint/types/RuleOptions";

@@ -76,7 +76,6 @@ export const typescriptRules = freeze({
 export const typescriptTypeAwareRules = freeze({
   "@typescript-eslint/no-duplicate-type-constituents": "error",
   "@typescript-eslint/no-mixed-enums": "error",
-  "@typescript-eslint/no-redundant-type-constituents": "info",
   "@typescript-eslint/no-unnecessary-type-arguments": "info",
   "@typescript-eslint/no-unnecessary-type-assertion": "info",
   "@typescript-eslint/no-unnecessary-type-parameters": "info",

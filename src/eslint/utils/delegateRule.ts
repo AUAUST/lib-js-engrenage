@@ -5,6 +5,7 @@ import { create, entries } from "@auaust/toolkit/object";
 
 import { findUpstreamRule } from "#eslint/utils/findUpstreamRule";
 import type { Delegate } from "#eslint/types/Delegate";
+import type { ReportDescriptor } from "#eslint/types/ReportDescriptor";
 import type { RuleModule } from "#eslint/types/RuleModule";
 import type { RuleOptions } from "#eslint/types/RuleOptions";
 import type { Rules } from "#eslint/types/Rules";
@@ -29,9 +30,10 @@ function mergeOption(defaults: unknown, override: unknown): unknown {
   return merged;
 }
 
-function ignoreMessages(
+function filterReports(
   rule: RuleModule,
   ignoredMessages: ReadonlyArray<string>,
+  ignoreReport?: (descriptor: ReportDescriptor) => boolean,
 ): RuleModule["create"] {
   for (const messageId of ignoredMessages) {
     if (rule.meta?.messages?.[messageId] === undefined) {
@@ -39,7 +41,7 @@ function ignoreMessages(
     }
   }
 
-  if (ignoredMessages.length === 0) {
+  if (ignoredMessages.length === 0 && ignoreReport === undefined) {
     return rule.create;
   }
 
@@ -47,10 +49,11 @@ function ignoreMessages(
     return rule.create(
       create(context, {
         report: {
-          value(descriptor: Parameters<typeof context.report>[0]) {
+          value(descriptor: ReportDescriptor) {
             if (
-              "messageId" in descriptor &&
-              includes(ignoredMessages, descriptor.messageId)
+              ("messageId" in descriptor &&
+                includes(ignoredMessages, descriptor.messageId)) ||
+              ignoreReport?.(descriptor) === true
             ) {
               return;
             }
@@ -69,9 +72,11 @@ export function delegateRule<Id extends keyof Rules & string>(
   {
     name = upstream.slice(upstream.lastIndexOf("/") + 1),
     ignoredMessages = [],
+    ignoreReport,
   }: {
     name?: string;
     ignoredMessages?: ReadonlyArray<string>;
+    ignoreReport?(descriptor: ReportDescriptor): boolean;
   } = {},
 ): Delegate {
   const rule = findUpstreamRule(upstream);
@@ -99,7 +104,7 @@ export function delegateRule<Id extends keyof Rules & string>(
         ...rule.meta,
         defaultOptions,
       },
-      create: ignoreMessages(rule, ignoredMessages),
+      create: filterReports(rule, ignoredMessages, ignoreReport),
     },
   };
 }
