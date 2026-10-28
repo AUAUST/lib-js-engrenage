@@ -1,5 +1,122 @@
 # @auaust/engrenage
 
+## 0.2.0
+
+### Minor Changes
+
+- [`a054aa8`](https://github.com/AUAUST/lib-js-engrenage/commit/a054aa8b9cec532f0e7ae3b8bb698f073da8207e) Thanks [@apademide](https://github.com/apademide)! - - Build every `<bin dir>/<name>.ts` and `<bin dir>/<name>/index.ts` as the `<bin dir>/<name>` entry, from the `bin.dirs` of `engrenage.config.ts`, and remove the tsdown `bins` option
+
+- [`2aa09e6`](https://github.com/AUAUST/lib-js-engrenage/commit/2aa09e6d2019b5cd0a2118358299697f56c89eec) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage claude hook edit`, which fixes, formats and lints the file a Claude Code edit touched and reports the remaining lint errors to the agent
+  - Add the hook to `.claude/settings.json` through `engrenage init` and the `claude` sync target, opted out with `agents.claudeSettings: false`
+  - Shorten the shared code-style rules to the lint conventions that are not fixed automatically
+
+- [`3bcf531`](https://github.com/AUAUST/lib-js-engrenage/commit/3bcf5316e890283b9683f0260abee6f8a08508e6) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage init` to set up a project, or add the pieces it is missing on later runs
+  - `engrenage sync` only updates existing files; `init` creates them
+  - Write all synced files at once and restore them when a write fails
+
+- [`0f808a1`](https://github.com/AUAUST/lib-js-engrenage/commit/0f808a1b1bdc784b3e9b0f727e3998bdd6235b87) Thanks [@apademide](https://github.com/apademide)! - - Add a `define` config option whose `values` (a record, or a function of `packageJson` and `filesystem`) are serialized and passed as `define` to tsdown, Vite and Vitest
+  - Add the `define(value, { exact, type, scope, description })` helper to type a global exactly, override its type, limit it to tests or builds or document its declaration
+  - Add the `globals` sync target, writing `declare const` declarations into the `// @define` block of `typescript.envFile` (`env.d.ts` by default), disabled by `define.types: false`
+  - Allow block markers without arguments in `syncBlocks`
+  - `createViteConfig` takes an `{ isTesting }` option
+
+- [`fe09f61`](https://github.com/AUAUST/lib-js-engrenage/commit/fe09f618d0dab32efe1f80d665c13840a8b94f4d) Thanks [@apademide](https://github.com/apademide)! - - Accept an `info` severity in conventions, the built-in rule maps and the configs passed to `defineEslintConfig`; ESLint receives it as `warn`
+  - Show the rules declared `info` at info severity in VS Code, derived from the project's ESLint config by `engrenage sync`
+  - Declare the `naming` and `noUnusedVariables` conventions and the DOM unicorn rules as `info`
+  - Enable more unicorn rules for likely bugs, dead code, clearer APIs and early exits, leaving out those that conflict with the toolkit and primitive-kit helpers
+  - Add the `stylistic.numericSeparators` convention
+  - Make the `vscode` sync target and `syncVscodeFiles` asynchronous
+
+- [`28a8bfa`](https://github.com/AUAUST/lib-js-engrenage/commit/28a8bfab064cbb0a7f84d12da4fd560bc3a07108) Thanks [@apademide](https://github.com/apademide)! - - Root `engrenage init` at the working directory and start a package from an empty directory with `pnpm init --bare`
+  - Ask the project type first and use it as the default for the following questions; `--yes` takes every default
+  - Ask the package name and visibility, and set `version`, `license`, `private` and `author` when missing
+  - Ask the build tool (tsdown, Vite or none) and whether to test with Vitest, and create the matching config files
+  - Create a missing `tsconfig.json` and, for libraries, `tsconfig.dist.json`
+  - Add the standard scripts for the chosen tools instead of failing placeholder scripts
+  - Resolve `packageJsonPath`, `tsconfigPath` and the other file locations through `config.filesystem` when read; a missing configured file now fails when read instead of when the config loads
+  - Read tsconfig files inside the project through `config.filesystem`
+  - Change `defineViteConfig` to take options first, with a `test` layer, and set `resolve.tsconfigPaths` in `createViteConfig`
+  - Add `createVitestLayer`; `createVitestConfig` now returns only the test overrides and `defineVitestConfig` builds on `defineViteConfig`
+
+- [`e9a6f43`](https://github.com/AUAUST/lib-js-engrenage/commit/e9a6f43c498162246e803bc13733d7452cfd3668) Thanks [@apademide](https://github.com/apademide)! - - Split the `stylistic.paddingLines` convention into `paddedReturns`, `paddedMultilineDeclarations`, `paddedMultilineExpressions`, `paddedBlocks`, `imports.paddedImports` and `imports.paddedExports`, each reported under its own `auaust/*` rule
+  - Pad types, interfaces, functions, classes, enums, namespaces and block statements with blank lines
+  - Add `bracedCases`, `paddedCases`, `unpaddedSwitches` and `groupedOverloads` stylistic conventions
+
+- [`9932dfa`](https://github.com/AUAUST/lib-js-engrenage/commit/9932dfa4d6def1e87944b14fe0ed10cab58c8b8d) Thanks [@apademide](https://github.com/apademide)! - - Add `directories.output` and `build.emptyOutDir` to `engrenage.config.ts`; the output directory still defaults to the tsconfig `outDir` and is emptied before each build by default
+  - Apply them to tsdown (`outDir`, `clean`), Vite (`build.outDir`, `build.emptyOutDir`) and the Vitest output guard
+  - Print "Typechecking..." or "Linting..." before `engrenage tsc`, `tsc:dist` and `eslint`, and "All good!" when they pass
+  - Load `tsdown.config.ts` with tsx by default in `engrenage tsdown`, and add `tsx` as an optional peer dependency that `engrenage init` installs with tsdown
+
+- [`5a9924b`](https://github.com/AUAUST/lib-js-engrenage/commit/5a9924b02331120fb355d6b853a68cd98edaa98a) Thanks [@apademide](https://github.com/apademide)! - - Add the `auaust/prefer-return-void` stylistic convention: a non-function block holding only an expression statement and a bare `return` becomes `return void expression;`
+  - Add the `auaust/no-return-undefined` stylistic convention, fixing `return undefined;` into `return;`
+  - Enable `no-useless-return` in the recommended rules
+
+- [`254d62c`](https://github.com/AUAUST/lib-js-engrenage/commit/254d62ca91074b560561268d53024551cdfa36a4) Thanks [@apademide](https://github.com/apademide)! - - Add `config.filesystem`, a cached view of the project files that reads lazily and writes everything on flush
+  - Sync targets, `syncFiles`, `syncIgnoreFile` and `syncBarrels` take the resolved config first and write through `config.filesystem` instead of returning results
+  - Read `config.packageJson` and `config.environment` through `config.filesystem`, so they follow pending writes
+  - Add `--vscode-settings` and `--vscode-extensions` to `engrenage sync`, and create a VS Code file when its `vscode` option is `true`
+  - Limit the changesets sync to `$schema`; `engrenage init` adds `@changesets/cli` and runs `changeset init`
+  - Add the `@auaust/engrenage/pnpm` entry; `engrenage init` creates a missing `pnpm-workspace.yaml`
+  - Declare `@changesets/cli` as an optional peer dependency
+
+- [`66a4c72`](https://github.com/AUAUST/lib-js-engrenage/commit/66a4c72f554a30dde8fd46fd2d165feae847e8af) Thanks [@apademide](https://github.com/apademide)! - - Add the `imports.noExternalNamespace` convention, reserving namespace imports and `export * as` re-exports for project modules
+  - Sort project namespace imports, then project default imports, into their own groups after the named project imports
+  - Group wildcard re-exports after the named ones
+  - Let comments partition import sorting, as they already do for exports
+  - Report `import-x/no-named-as-default` as an error
+  - Remove `performance.noValibotNamespace`, which `imports.noExternalNamespace` covers, and drop namespace imports from `performance.noZodNamespace`
+  - Resolve imports against the project's own tsconfig instead of the one in the working directory
+
+- [`477a212`](https://github.com/AUAUST/lib-js-engrenage/commit/477a21274ad42b079befcdeb7f67494be5e2c02d) Thanks [@apademide](https://github.com/apademide)! - `defineViteConfig`, `defineVitestConfig` and `defineTsdownConfig` callbacks now receive the resolved config as their first argument, followed by the tool's own arguments.
+
+- [`cdcb48b`](https://github.com/AUAUST/lib-js-engrenage/commit/cdcb48b14e8b1e023adca2dfc21be392000d4aba) Thanks [@apademide](https://github.com/apademide)! - - Rename the ESLint convention scopes: `files.code`, `files.config`, `files.discovered`, `files.generated`, `files.test`, `files.source`, `files.bin`, `files.scripts`, `files.tests`, `files.code.published` and `files.code.private` select code files; `dir.source`, `dir.bin`, `dir.scripts`, `dir.tests`, `dir.published` and `dir.private` select every file in those directories
+  - Move `packageJsonPropertyOrder` out of `@auaust/engrenage/eslint/constants`, compose it from shared package.json field groups, and order `optionalDependencies` before `peerDependencies` and `inlinedDependencies` after them
+  - Run type tests by default in `engrenage vitest`, `vitest:watch` and `vitest:dist`; pass `--no-typecheck` to skip them
+  - Print a start message and "All good!" for `engrenage vitest`, `vitest:dist`, `vitest:coverage`, `prettier:check` and `sync --check`
+  - Use `engrenage typecheck:dist` in the standard `build` script
+  - Reject block markers with an unknown directive or no arguments, and `@end` markers that close no block
+
+- [`a054aa8`](https://github.com/AUAUST/lib-js-engrenage/commit/a054aa8b9cec532f0e7ae3b8bb698f073da8207e) Thanks [@apademide](https://github.com/apademide)! - - Group `engrenage.config.ts` by meaning instead of by kind, and mirror the groups on the resolved config:
+    - `code: { files, configFiles, discoveredFiles }`
+    - `source: { dirs }`, `bin: { dirs }`, `scripts: { dirs }`, with `src`, `bin` and `scripts` as defaults
+    - `test: { dirs, files, fixtureFiles, coverageDir }`
+    - `build: { outDir, emptyOutDir }`
+    - `codegen: { files }`
+    - `typescript: { tsconfig, distTsconfig }`, `git: { gitignore }`, `prettier: { prettierignore }`
+    - `agents: { instructionFiles, snippetsDir }`
+  - Remove `directories`, `files`, `tsconfigPath`, `distTsconfigPath`, `gitignorePath` and `prettierignorePath` from the resolved config
+  - Accept a single string or an array for every input list, including `presets`
+  - Rename the ESLint convention scopes to `code`, `config`, `discovered`, `testFiles`, `source`, `bin`, `scripts`, `tests`, `public` (source and bin) and `private` (tests and scripts)
+  - `filesIn` takes one or more directories and globs and returns every combination
+
+- [`6cdd03e`](https://github.com/AUAUST/lib-js-engrenage/commit/6cdd03e0e9e9e6927ad39736f585e699e2b2f6d2) Thanks [@apademide](https://github.com/apademide)! - - Expose every convention rule as `auaust/<rule>`, named after the upstream rule it delegates to, with our options as defaults that projects override key by key; the upstream rule is turned off where the convention applies
+  - Rename the convention rules accordingly (`curly` becomes `auaust/curly`, `import-x/no-duplicates` becomes `auaust/no-duplicates`, `@stylistic/padded-blocks` becomes `auaust/unpadded-switches`, …) and replace the `rules` field of conventions with `delegates` and `severity`
+  - Replace the `bracedCases` convention with `switches` (`unicorn/switch-case-braces`, `no-fallthrough` reporting unused fallthrough comments) and `noReturnUndefined` with `noUselessUndefined` (`unicorn/no-useless-undefined`)
+  - Add the `assignments`, `conditionals`, `exhaustiveSwitches`, `functionDeclarations`, `nameReplacements`, `naming`, `objects`, `typeChecks`, `typeStyle`, `voidPlacement` and `voidReturns` stylistic conventions, `comparisons.noTypeofUndefined`, `imports.noCommonjs` and `promises.returnAwait`
+  - Report `naming-convention` as a warning, shown as info in VS Code
+  - Replace the `recommendedRules` constant with one constant per plugin: `coreRules`, `typescriptRules`, `typescriptTypeAwareRules`, `importRules`, `stylisticRules` and `unicornRules`
+  - Add `eslint-plugin-unicorn` and enable `unicorn/prefer-node-protocol`
+  - Enable more correctness rules from ESLint, typescript-eslint (type-aware ones on published and private code) and import-x
+  - Enable the recommended `eslint-plugin-package-json` validators
+  - Add the `typeAware` ESLint option to turn off every rule that needs type information
+
+### Patch Changes
+
+- [`895ff77`](https://github.com/AUAUST/lib-js-engrenage/commit/895ff77f12aa73fcc9a4ddfc7498c2227539e301) Thanks [@apademide](https://github.com/apademide)! - - Add the `globals.noMathStatics` convention, reporting the `Math` functions that `@auaust/toolkit/math` replaces
+  - Let `defineGlobalReplacement` take the list of properties to report
+
+- [`fe1f048`](https://github.com/AUAUST/lib-js-engrenage/commit/fe1f0484df569c31894eb9c604a23a79338475d9) Thanks [@apademide](https://github.com/apademide)! - - Enforce consistent property quotes with `auaust/quote-props` (all quoted or none, methods and shorthand left alone) and set Prettier's `quoteProps` to `preserve`
+  - Keep quoted keys in long form with `auaust/object-shorthand` while accepting quoted method shorthand
+  - Prefer type arguments on the constructor with `auaust/consistent-generic-constructors`
+  - Pad switch cases only once a case body spans several lines or the switch already uses blank lines
+  - Let `delegateRule` take its name and the upstream messages to ignore as options
+
+- [`359529f`](https://github.com/AUAUST/lib-js-engrenage/commit/359529fbc85e66efcb106ff90247758cbdff1387) Thanks [@apademide](https://github.com/apademide)! - Allow template literal bodies in `auaust/no-complex-concise-arrows`, restrict `auaust/no-runtime-typeof` to `typeof` comparisons, and configure `prefer-const` with `destructuring: "all"` through the new `stylistic.preferConst` convention.
+
+- [`3c0e7db`](https://github.com/AUAUST/lib-js-engrenage/commit/3c0e7db308501bc2320ee4fc80ae680eafd44736) Thanks [@apademide](https://github.com/apademide)! - - Require `eslint` as a peer dependency, since the `engrenage` CLI always loads it
+
+- [`0728692`](https://github.com/AUAUST/lib-js-engrenage/commit/0728692872b58b4d0b4c2170a80c443ac73f25c3) Thanks [@apademide](https://github.com/apademide)! - The package.json property order places `sideEffects` and tool configs such as `prettier` after scripts and dependencies.
+
 ## 0.1.1
 
 ### Patch Changes
