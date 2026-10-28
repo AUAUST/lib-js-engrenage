@@ -789,7 +789,7 @@ export const handlers = [() => void call()];
     ).toEqual(["6:auaust/void-placement", "10:auaust/void-placement"]);
   });
 
-  test("allows concise arrows returning simple arrays or const literals, and empty object assertions", async () => {
+  test("allows concise arrows returning simple arrays or const literals", async () => {
     const eslint = await getLinter({
       typeAware: false,
     });
@@ -802,12 +802,6 @@ export const wrapped = (value: number) => [value];
 export const asserted = (value: number) => [value, 1] as const;
 export const computed = (value: number) => [call(), value];
 export const widened = () => "computed" as string;
-
-export const handler = {} as { later: string };
-
-export const filled = {
-  later: "",
-} as { later: string };
 `,
       {
         filePath: "src/arrows.ts",
@@ -821,8 +815,40 @@ export const filled = {
     ).toEqual([
       "6:auaust/no-complex-concise-arrows",
       "7:auaust/no-complex-concise-arrows",
-      "11:auaust/consistent-type-assertions",
     ]);
+  });
+
+  test("allows object literal assertions while enforcing as syntax", async () => {
+    const eslint = await getLinter({
+      typeAware: false,
+    });
+
+    const [result] = await eslint.lintText(
+      `export const empty = {} as { a: number; b: number };
+
+export const partial = {
+  a: 1,
+} as { a: number; b: number };
+
+export const complete = {
+  a: 1,
+  b: 2,
+} as { a: number; b: number };
+
+export const angled = <{ a: number; b: number }>{
+  a: 1,
+};
+`,
+      {
+        filePath: "src/assertions.ts",
+      },
+    );
+
+    expect(
+      map(result?.messages ?? [], (message) => {
+        return `${message.line}:${message.ruleId}`;
+      }),
+    ).toEqual(["12:auaust/consistent-type-assertions"]);
   });
 
   test("allows constant conditions, void arguments and await members in test files", async () => {

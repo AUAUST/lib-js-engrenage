@@ -1,4 +1,5 @@
 // @barrel *.ts default
+export { default as assertionStyle } from "#eslint/conventions/stylistic/assertionStyle";
 export { default as assignments } from "#eslint/conventions/stylistic/assignments";
 export { default as conditionals } from "#eslint/conventions/stylistic/conditionals";
 export { default as curly } from "#eslint/conventions/stylistic/curly";

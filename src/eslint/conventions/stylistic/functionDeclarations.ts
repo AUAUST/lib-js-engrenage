@@ -16,5 +16,12 @@ export default defineConvention({
         name: "prefer-function-declaration",
       },
     ),
+    delegateRule("@typescript-eslint/adjacent-overload-signatures"),
+    delegateRule("@typescript-eslint/unified-signatures", [
+      {
+        ignoreDifferentlyNamedParameters: true,
+        ignoreOverloadsWithDifferentJSDoc: true,
+      },
+    ]),
   ],
 });
