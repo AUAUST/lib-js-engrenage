@@ -903,6 +903,60 @@ export const __dunder__ = true;
     ).toEqual(["3:auaust/naming-convention"]);
   });
 
+  test("renames names to the expected case with their references", async () => {
+    const eslint = new ESLint({
+      cwd: root,
+      fix: true,
+      overrideConfigFile: true,
+      overrideConfig: createEslintConfig(await loadConfig(root), {
+        typeAware: false,
+      }),
+    });
+
+    const [result] = await eslint.lintText(
+      `type item_shape = Record<string, number>;
+
+const MAX_SIZE = 2;
+
+const user_count = MAX_SIZE;
+
+const userCount = 1;
+
+const local_total = MAX_SIZE * userCount;
+
+export const exported_total = local_total;
+
+export const shape: item_shape = {
+  MAX_SIZE,
+};
+
+export { local_total, user_count };
+`,
+      {
+        filePath: "src/renamed.ts",
+      },
+    );
+
+    expect(result?.output).toBe(`type ItemShape = Record<string, number>;
+
+const maxSize = 2;
+
+const user_count = maxSize;
+
+const userCount = 1;
+
+const localTotal = maxSize * userCount;
+
+export const exported_total = localTotal;
+
+export const shape: ItemShape = {
+  MAX_SIZE: maxSize,
+};
+
+export { localTotal as local_total, user_count };
+`);
+  });
+
   test("prefers function declarations unless the variable is typed", async () => {
     const eslint = await createLinter({
       typeAware: false,

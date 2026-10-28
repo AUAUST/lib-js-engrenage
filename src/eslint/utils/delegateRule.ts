@@ -1,3 +1,5 @@
+import type { Rule } from "eslint";
+
 import { includes } from "@auaust/primitive-kit/arrays";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { max } from "@auaust/toolkit/math";
@@ -30,10 +32,14 @@ function mergeOption(defaults: unknown, override: unknown): unknown {
   return merged;
 }
 
-function filterReports(
+function wrapReports(
   rule: RuleModule,
   ignoredMessages: ReadonlyArray<string>,
   ignoreReport?: (descriptor: ReportDescriptor) => boolean,
+  fix?: (
+    descriptor: ReportDescriptor,
+    context: Rule.RuleContext,
+  ) => Rule.ReportFixer | null,
 ): RuleModule["create"] {
   for (const messageId of ignoredMessages) {
     if (rule.meta?.messages?.[messageId] === undefined) {
@@ -41,7 +47,11 @@ function filterReports(
     }
   }
 
-  if (ignoredMessages.length === 0 && ignoreReport === undefined) {
+  if (
+    ignoredMessages.length === 0 &&
+    ignoreReport === undefined &&
+    fix === undefined
+  ) {
     return rule.create;
   }
 
@@ -58,7 +68,14 @@ function filterReports(
               return;
             }
 
-            context.report(descriptor);
+            context.report(
+              fix === undefined
+                ? descriptor
+                : {
+                    ...descriptor,
+                    fix: fix(descriptor, context),
+                  },
+            );
           },
         },
       }),
@@ -73,10 +90,15 @@ export function delegateRule<Id extends keyof Rules & string>(
     name = upstream.slice(upstream.lastIndexOf("/") + 1),
     ignoredMessages = [],
     ignoreReport,
+    fix,
   }: {
     name?: string;
     ignoredMessages?: ReadonlyArray<string>;
     ignoreReport?(descriptor: ReportDescriptor): boolean;
+    fix?(
+      descriptor: ReportDescriptor,
+      context: Rule.RuleContext,
+    ): Rule.ReportFixer | null;
   } = {},
 ): Delegate {
   const rule = findUpstreamRule(upstream);
@@ -103,8 +125,13 @@ export function delegateRule<Id extends keyof Rules & string>(
       meta: {
         ...rule.meta,
         defaultOptions,
+        ...(fix === undefined
+          ? {}
+          : {
+              fixable: "code",
+            }),
       },
-      create: filterReports(rule, ignoredMessages, ignoreReport),
+      create: wrapReports(rule, ignoredMessages, ignoreReport, fix),
     },
   };
 }

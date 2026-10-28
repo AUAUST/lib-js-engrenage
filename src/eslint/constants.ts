@@ -161,7 +161,6 @@ export const unicornRules = freeze({
   "unicorn/no-unused-iterator-helper": "error",
   "unicorn/no-url-in-search-params": "error",
   "unicorn/no-useless-boolean-cast": "error",
-  "unicorn/no-useless-coercion": "error",
   "unicorn/no-useless-collection-argument": "error",
   "unicorn/no-useless-compound-assignment": "error",
   "unicorn/no-useless-concat": "error",
