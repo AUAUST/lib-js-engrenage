@@ -6,7 +6,9 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 ## Instruction maintenance
 
-- Never modify AGENTS.md or `.claude/rules/` unless the user explicitly asks to change agent instructions. Finishing a feature, refactor or new convention does not authorize it; mention the suggested change in your report instead.
+- Change agent instructions or their sources only with explicit user consent to that change.
+- Translate requests into minimal, specific, actionable rules. Preserve intent and resolve overlap or contradictions instead of appending the user's wording verbatim.
+- Before writing instructions, ask focused questions whenever intent, scope or conflicts remain unclear.
 - A `<!-- @reference <reference> -->` marker opens a block that `engrenage sync agents` fills with the referenced file, up to the next `@reference` or `<!-- @end -->` marker. Never edit blocks in place: add project rules after an `@end` marker, or change the referenced source.
 - AGENTS.md holds only rules every agent needs. Surface-specific detail lives in `.claude/rules/`, one file per surface. Neither holds feature documentation, file inventories, API details or records of recent changes.
 - When a rule becomes mechanically enforced, remove its prose. List it under the matching "Enforced by tooling" line only when its fix is not automatic and it shapes how code is first written; autofixed formatting and layout rules need no entry.
@@ -22,6 +24,11 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 <!-- @reference @auaust/engrenage/agents/sections/decision-protocol.md -->
 
 ## Decision protocol
+
+Read user communication literally: questions are questions, not implied instructions or politely phrased demands.
+
+- When the user asks "Shouldn't we do that instead?", explain the reasoning behind the current choice and compare the alternative's pros, cons and implications. Keep your judgment; the question alone neither authorizes a change nor requires reopening settled decisions.
+- Treat exploratory questions as an effort to understand the work and its choices. Answer them without inferring a preferred outcome or a request to question everything. Change direction when the user explicitly requests or decides on it.
 
 Pause on real choices: ask the questions and wait for the answers before continuing. When pausing is impossible, end the turn with the questions rather than proceeding on a guess.
 
