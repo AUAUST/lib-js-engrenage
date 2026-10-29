@@ -15,6 +15,7 @@ import { parse } from "yaml";
 import { sort } from "@auaust/primitive-kit/arrays";
 import { entries, keys, record } from "@auaust/toolkit/object";
 
+import { scratchpadPlaceholders } from "#agents/constants";
 import { init } from "#bin/engrenage/init";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
@@ -358,6 +359,7 @@ describe("engrenage init", () => {
     await runCommand(init, "--yes");
 
     const completed = project.read("package.json");
+    const scratchpad = project.read(".ai/scratchpad.md");
 
     vi.clearAllMocks();
 
@@ -370,6 +372,7 @@ describe("engrenage init", () => {
     );
 
     expect(project.read("package.json")).toBe(completed);
+    expect(project.read(".ai/scratchpad.md")).toBe(scratchpad);
 
     expect(keys(JSON.parse(completed))).toEqual([
       "name",
@@ -557,7 +560,9 @@ test("does not generate agent setup without selected agents", async () => {
     ".claude/settings.json",
     ".codex/hooks.json",
     ".ai/backlog/index.md",
+    ".ai/scratchpad.md",
     ".claude/rules/backlog.md",
+    ".claude/rules/scratchpad.md",
   ]) {
     expect(existsSync(project.resolve(file))).toBe(false);
   }
@@ -593,6 +598,23 @@ test("sets up Codex with backlog guidance without installing coding rules", asyn
 
   expect(project.read(".codex/hooks.json")).toContain(
     "engrenage agents codex hook edit",
+  );
+
+  expect(project.read("AGENTS.md")).toContain(".ai/scratchpad.md");
+
+  expect(project.read("AGENTS.override.md")).toContain(
+    "<code>.ai/scratchpad.md</code>",
+  );
+
+  expect(project.read(".claude/rules/scratchpad.md")).toContain(
+    "handle the scratchpad",
+  );
+
+  expect(scratchpadPlaceholders).toContain(
+    project
+      .read(".ai/scratchpad.md")
+      .split("<!-- scratchpad-placeholder -->\n")[1]
+      ?.trim(),
   );
 
   expect(existsSync(project.resolve("CLAUDE.md"))).toBe(false);
@@ -668,6 +690,12 @@ test("declining backlog setup leaves no backlog instructions or files", async ()
 
   expect(existsSync(project.resolve(".ai/backlog/index.md"))).toBe(false);
   expect(existsSync(project.resolve(".claude/rules/backlog.md"))).toBe(false);
+  expect(existsSync(project.resolve(".ai/scratchpad.md"))).toBe(false);
+
+  expect(existsSync(project.resolve(".claude/rules/scratchpad.md"))).toBe(
+    false,
+  );
+
   expect(project.read("AGENTS.md")).not.toContain("## Backlog");
   expect(project.read(".claude/backlog.md")).toBe("Keep this legacy work.\n");
 
@@ -686,6 +714,7 @@ test("migrates legacy backlog categories without overwriting existing work and s
       'export default { agents: { preferred: ["claude", "codex"] } };\n',
     ".claude/backlog.md": legacy,
     ".ai/backlog/toolkit.md": "Keep existing toolkit work.\n",
+    ".ai/scratchpad.md": "# Scratchpad\n\nKeep these unprocessed notes.\n",
     ".ai/backlog/index.md":
       "# Backlog\n\nProject guidance.\n\n## Open categories\n\n- [Toolkit](toolkit.md): Existing scope.\n",
     ".changeset/config.json": "{}\n",
@@ -733,7 +762,42 @@ test("migrates legacy backlog categories without overwriting existing work and s
 
   expect(project.read(".ai/backlog/index.md")).toBe(index);
 
+  expect(project.read(".ai/scratchpad.md")).toBe(
+    "# Scratchpad\n\nKeep these unprocessed notes.\n",
+  );
+
   expect(console.info).toHaveBeenCalledExactlyOnceWith(
     "Engrenage is set up, nothing is missing.",
+  );
+});
+
+test("adds a scratchpad to an existing backlog setup", async () => {
+  const project = createProject({
+    "package.json": '{"name":"project","type":"module"}',
+    "engrenage.config.ts":
+      'export default { agents: { preferred: ["codex"] } };\n',
+    "AGENTS.md":
+      "# Agents\n\n<!-- @reference @auaust/engrenage/agents/sections/backlog.md -->\n<!-- @end -->\n",
+    ".ai/backlog/index.md": "# Backlog\n\nKeep project guidance.\n",
+    ".claude/rules/backlog.md":
+      "<!-- @reference @auaust/engrenage/agents/rules/backlog.md -->\n<!-- @end -->\n",
+  });
+
+  await runCommand(init, "--yes");
+
+  expect(project.read(".ai/scratchpad.md")).toContain(
+    "<!-- scratchpad-placeholder -->",
+  );
+
+  expect(project.read(".ai/backlog/index.md")).toBe(
+    "# Backlog\n\nKeep project guidance.\n",
+  );
+
+  expect(project.read("AGENTS.md")).toContain(
+    "Only when asked to handle the scratchpad",
+  );
+
+  expect(project.read("AGENTS.override.md")).toContain(
+    ".claude/rules/scratchpad.md",
   );
 });

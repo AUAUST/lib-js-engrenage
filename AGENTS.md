@@ -87,8 +87,7 @@ Pause on real choices: ask the questions and wait for the answers before continu
 ## Backlog
 
 - Record out-of-scope findings and user-deferred work in the shared backlog: questions, bugs, tasks and improvements. Start with `.ai/backlog/index.md` for categories and entry instructions.
-
-<!-- @end -->
+- `.ai/scratchpad.md` holds user notes. Only when asked to handle the scratchpad, follow `.claude/rules/scratchpad.md`.
 
 <!-- @reference @auaust/engrenage/agents/sections/typescript.md -->
 

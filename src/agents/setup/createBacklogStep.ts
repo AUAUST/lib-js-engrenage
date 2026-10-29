@@ -1,11 +1,15 @@
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 
+import { random } from "@auaust/primitive-kit/arrays";
+
 import {
   agentsFile,
   backlogIndex,
   backlogTemplate,
   legacyBacklog,
+  scratchpadFile,
+  scratchpadPlaceholders,
 } from "#agents/constants";
 import { addAgentRules } from "#agents/setup/addAgentRules";
 import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
@@ -58,7 +62,7 @@ export function createBacklogStep(): Step {
   return {
     name: "shared backlog",
     message:
-      "Set up the shared backlog in .ai/backlog/ (migrate any .claude/backlog.md)?",
+      "Set up the shared backlog in .ai/backlog/ and scratchpad in .ai/scratchpad.md (migrate any .claude/backlog.md)?",
     isMissing({ config, filesystem, getAgents }) {
       if ((getAgents()?.length ?? 0) === 0 || !filesystem.exists(agentsFile)) {
         return false;
@@ -66,9 +70,12 @@ export function createBacklogStep(): Step {
 
       return (
         !filesystem.exists(backlogIndex) ||
+        !filesystem.exists(scratchpadFile) ||
         filesystem.exists(legacyBacklog) ||
         !(filesystem.read(agentsFile)?.includes(sectionReference) ?? false) ||
-        getMissingRuleTemplates(config).some(({ name }) => name === "backlog")
+        getMissingRuleTemplates(config).some(({ name }) => {
+          return name === "backlog" || name === "scratchpad";
+        })
       );
     },
     plan({ config, filesystem }) {
@@ -108,7 +115,14 @@ export function createBacklogStep(): Step {
         );
       }
 
-      addAgentRules(config, ["backlog"]);
+      if (!filesystem.exists(scratchpadFile)) {
+        filesystem.write(
+          scratchpadFile,
+          `# Scratchpad\n\n<!-- scratchpad-placeholder -->\n\n${random(scratchpadPlaceholders)}\n`,
+        );
+      }
+
+      addAgentRules(config, ["backlog", "scratchpad"]);
 
       syncAgentFiles(config);
     },

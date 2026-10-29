@@ -1,3 +1,5 @@
+import { sort } from "@auaust/primitive-kit/arrays";
+
 import { claudeRulesGlob } from "#agents/claude/constants";
 import { parseInstruction } from "#agents/utils/parseInstruction";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -26,6 +28,8 @@ export function createCodexRuleMapping(config: ResolvedConfig): string {
       }
     }
   }
+
+  sort(rows, (a, b) => a.localeCompare(b));
 
   return rows.length === 0
     ? "No project rule files are present."
