@@ -1,5 +1,22 @@
 # @auaust/engrenage
 
+## 0.4.3
+
+### Patch Changes
+
+- [`2721271`](https://github.com/AUAUST/lib-js-engrenage/commit/27212710da21e456efb777067aa49dcd712581c1) Thanks [@apademide](https://github.com/apademide)! - - Fix initialization before engrenage's TypeScript presets are installed
+  - Add missing esbuild and resolver build approvals to new and existing pnpm workspaces while preserving explicit choices
+
+- [`1e7c7dc`](https://github.com/AUAUST/lib-js-engrenage/commit/1e7c7dcd8a1af050597c1b7b9e553c13bd43a82c) Thanks [@apademide](https://github.com/apademide)! - - Clarify that user questions invite explanation and comparison without implicitly requesting a change.
+  - Require explicit consent for instruction changes and distill requests into minimal, actionable rules with clarified intent.
+
+- [`67c0ca5`](https://github.com/AUAUST/lib-js-engrenage/commit/67c0ca572d3f718f73b99baf06cf261f0ce80ef6) Thanks [@apademide](https://github.com/apademide)! - - Offer Istanbul coverage during init and add the coverage script only when its provider is present
+  - Offer a missing coverage script when re-running init with Istanbul installed
+
+- [`d9b284d`](https://github.com/AUAUST/lib-js-engrenage/commit/d9b284ddc146250d3ce9a44c6ae5a9f0a895c967) Thanks [@apademide](https://github.com/apademide)! - - Add optional shared backlog setup and migrate legacy Claude backlogs to `.ai/backlog/`.
+  - Add an indexed backlog template, scoped maintenance rules and brief shared agent guidance.
+  - Add a shared scratchpad with explicit backlog triage instructions and randomized kawaii placeholders.
+
 ## 0.4.2
 
 ### Patch Changes
