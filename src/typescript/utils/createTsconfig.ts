@@ -4,11 +4,12 @@ import {
   formatDiagnostics,
   getParsedCommandLineOfConfigFile,
   sys,
-  type CompilerOptions,
   type Diagnostic,
   type FormatDiagnosticsHost,
+  type ParsedCommandLine,
 } from "typescript";
 
+import { map } from "@auaust/primitive-kit/arrays";
 import { once } from "@auaust/toolkit/once";
 
 import { createAccessors } from "#config/utils/createAccessors";
@@ -39,7 +40,7 @@ function parseTsconfig({
   root: Directory;
   path: File;
   filesystem: Filesystem;
-}): CompilerOptions {
+}): ParsedCommandLine {
   function readFile(file: File): string | undefined {
     return isWithin(root, file) ? filesystem.read(file) : sys.readFile(file);
   }
@@ -69,7 +70,7 @@ function parseTsconfig({
     throw toError(errors);
   }
 
-  return parsed.options;
+  return parsed;
 }
 
 export function createTsconfig({
@@ -81,7 +82,7 @@ export function createTsconfig({
   path: File | undefined;
   filesystem: Filesystem;
 }): Tsconfig {
-  const compilerOptions = once(() => {
+  const parsed = once(() => {
     return path === undefined
       ? undefined
       : parseTsconfig({
@@ -90,6 +91,16 @@ export function createTsconfig({
           filesystem,
         });
   });
+
+  function compilerOptions() {
+    return parsed()?.options;
+  }
+
+  function references(): readonly File[] {
+    return map(parsed()?.projectReferences ?? [], ({ path }) => {
+      return path;
+    });
+  }
 
   function outDir(): Directory | undefined {
     const configured = compilerOptions()?.outDir;
@@ -124,6 +135,7 @@ export function createTsconfig({
       compilerOptions,
       outDir,
       paths,
+      references,
     },
     describeMissing,
   });

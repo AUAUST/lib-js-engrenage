@@ -1,10 +1,7 @@
 import { existsSync } from "node:fs";
 
 import { eslint } from "#constants";
-import {
-  defaultCacheLocation,
-  defaultSuppressionsFile,
-} from "#eslint/constants";
+import { cacheDirectory, defaultSuppressionsFile } from "#eslint/constants";
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
 import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
@@ -18,7 +15,7 @@ function useCache(config: ResolvedConfig, args: string[]) {
 
   ensureIncludes(args, [
     "--cache-location",
-    config.resolve(defaultCacheLocation),
+    config.resolve(config.cache.dir, cacheDirectory),
   ]);
 }
 

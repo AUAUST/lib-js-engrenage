@@ -8,9 +8,15 @@ export function createViteConfig(
 ): Config {
   const { sourcemap, outDir, emptyOutDir } = config.build;
 
+  const { tsconfig } = config.typescript;
+
   return {
     root: config.root,
-    tsconfig: config.typescript.tsconfig,
+    ...(tsconfig === undefined
+      ? {}
+      : {
+          tsconfig,
+        }),
     define: createDefine(config, {
       isTesting,
     }),
@@ -18,7 +24,11 @@ export function createViteConfig(
       tsconfigPaths: true,
     },
     build: {
-      outDir,
+      ...(outDir === undefined
+        ? {}
+        : {
+            outDir,
+          }),
       emptyOutDir,
       sourcemap,
     },

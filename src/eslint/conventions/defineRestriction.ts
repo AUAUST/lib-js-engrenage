@@ -9,11 +9,7 @@ import type { PackageNames } from "#types/PackageNames";
 export function defineRestriction({
   selector,
   message,
-  files,
-  ignores,
-  enabled,
-  presets,
-  requires,
+  ...forward
 }: {
   selector: string;
   message: string;
@@ -46,10 +42,6 @@ export function defineRestriction({
         };
       },
     },
-    files,
-    ignores,
-    enabled,
-    presets,
-    requires,
+    ...forward,
   });
 }

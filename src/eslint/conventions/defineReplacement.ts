@@ -5,14 +5,9 @@ import type { ScopeReferences } from "#eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
 export function defineReplacement({
-  selector,
   target,
   replacement,
-  files,
-  ignores,
-  enabled,
-  presets,
-  requires,
+  ...forward
 }: {
   selector: string;
   target: string;
@@ -24,12 +19,7 @@ export function defineReplacement({
   requires?: PackageNames;
 }): Convention {
   return defineRestriction({
-    selector,
+    ...forward,
     message: `Use ${replacement} instead of ${target}.`,
-    files,
-    ignores,
-    enabled,
-    presets,
-    requires,
   });
 }

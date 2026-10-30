@@ -1,4 +1,9 @@
-import { applyEdits, modify, type JSONPath } from "jsonc-parser";
+import {
+  applyEdits,
+  modify,
+  type JSONPath,
+  type ModificationOptions,
+} from "jsonc-parser";
 
 import { formattingOptions } from "#support/json/constants";
 import type { JsonValue } from "#support/json/types/JsonValue";
@@ -9,19 +14,13 @@ export function writeJsonValue(
   path: File,
   location: JSONPath,
   value: JsonValue | undefined,
-  {
-    isArrayInsertion = false,
-    getInsertionIndex,
-  }: {
-    isArrayInsertion?: boolean;
-    getInsertionIndex?(properties: string[]): number;
-  } = {},
+  options: Omit<ModificationOptions, "formattingOptions"> = {},
 ): string {
   try {
     const edits = modify(content, location, value, {
+      isArrayInsertion: false,
+      ...options,
       formattingOptions,
-      isArrayInsertion,
-      getInsertionIndex,
     });
 
     return applyEdits(content, edits);

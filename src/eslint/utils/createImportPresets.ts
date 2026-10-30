@@ -21,9 +21,13 @@ export function createImportPresets({
       files: [...codeFiles],
       settings: {
         "import-x/resolver-next": [
-          createTypeScriptImportResolver({
-            project: tsconfig,
-          }),
+          createTypeScriptImportResolver(
+            tsconfig === undefined
+              ? {}
+              : {
+                  project: tsconfig,
+                },
+          ),
         ],
       },
       rules: importRules,

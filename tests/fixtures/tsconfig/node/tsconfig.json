@@ -1,0 +1,7 @@
+{
+  "extends": [
+    "@auaust/engrenage/tsconfig/base.json",
+    "@auaust/engrenage/tsconfig/node/24.json"
+  ],
+  "files": ["index.ts"]
+}

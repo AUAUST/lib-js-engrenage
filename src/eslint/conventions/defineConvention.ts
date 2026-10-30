@@ -38,6 +38,6 @@ export function defineConvention({
     typeAware,
     severity,
     delegates,
-    rule,
+    ...(rule === undefined ? {} : { rule }),
   };
 }

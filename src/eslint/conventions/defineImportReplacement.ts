@@ -90,12 +90,7 @@ function createTarget(
 export function defineImportReplacement({
   source,
   imports,
-  replacement,
-  files,
-  ignores,
-  enabled,
-  presets,
-  requires,
+  ...forward
 }: {
   source: string;
   imports?: readonly string[];
@@ -109,11 +104,6 @@ export function defineImportReplacement({
   return defineReplacement({
     selector: createSelector(source, imports),
     target: createTarget(source, imports),
-    replacement,
-    files,
-    ignores,
-    enabled,
-    presets,
-    requires,
+    ...forward,
   });
 }

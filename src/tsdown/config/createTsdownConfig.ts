@@ -1,5 +1,9 @@
 import { posix } from "node:path";
 
+import type { TsdownPlugin } from "tsdown";
+
+import { isNotEmpty, map } from "@auaust/primitive-kit/arrays";
+import { isString } from "@auaust/toolkit/isString";
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
@@ -17,6 +21,59 @@ import type { Config } from "#tsdown/types/Config";
 import type { Entries } from "#tsdown/types/Entries";
 import type { Options } from "#tsdown/types/Options";
 import type { File } from "#types/File";
+
+const declarationChunk = /\.d\.[cm]?ts$/;
+
+const emptyNamespace =
+  /\bvar\s+([$\w]+)\s*=\s*(?:\/\*\s*@__PURE__\s*\*\/\s*)?__exportAll\(\s*\{\s*\}\s*\);?/g;
+
+function createEmptyNamespacePlugins(): TsdownPlugin[] {
+  const emptyNamespaces = new Map<string, string[]>();
+
+  return [
+    {
+      name: "engrenage:find-empty-namespaces",
+      renderChunk: {
+        order: "pre",
+        handler(code, { fileName }) {
+          if (declarationChunk.test(fileName)) {
+            const names = Array.from(code.matchAll(emptyNamespace), (match) => {
+              return match[1];
+            });
+
+            emptyNamespaces.set(fileName, names.filter(isString));
+          }
+
+          return null;
+        },
+      },
+    },
+    {
+      name: "engrenage:declare-empty-namespaces",
+      renderChunk: {
+        order: "post",
+        handler(code, { fileName }) {
+          const names = emptyNamespaces.get(fileName) ?? [];
+
+          emptyNamespaces.delete(fileName);
+
+          if (!isNotEmpty(names)) {
+            return null;
+          }
+
+          const declarations = map(names, (name) => {
+            return `declare const ${name}: {};`;
+          });
+
+          return {
+            code: `${code.trimEnd()}\n${declarations.join("\n")}\n`,
+            map: null,
+          };
+        },
+      },
+    },
+  ];
+}
 
 function readPackageSnapshot(path: File): string {
   return JSON.stringify(readJsonFile(path));
@@ -100,7 +157,11 @@ export function createTsdownConfig(
     format: "esm",
     outDir,
     clean: emptyOutDir,
-    tsconfig: config.typescript.tsconfig,
+    ...(config.typescript.tsconfig === undefined
+      ? {}
+      : {
+          tsconfig: config.typescript.tsconfig,
+        }),
     dts: {
       eager: typed,
       compilerOptions: {
@@ -115,6 +176,7 @@ export function createTsdownConfig(
       customExports,
     },
     sourcemap,
+    plugins: createEmptyNamespacePlugins(),
     define: createDefine(config, {
       isTesting: false,
     }),

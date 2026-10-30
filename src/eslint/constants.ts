@@ -7,6 +7,7 @@ import type { ImportXRules } from "#eslint/types/rules/ImportXRules";
 import type { StylisticRules } from "#eslint/types/rules/StylisticRules";
 import type { TypescriptEslintRules } from "#eslint/types/rules/TypescriptEslintRules";
 import type { UnicornRules } from "#eslint/types/rules/UnicornRules";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 
@@ -236,7 +237,7 @@ export const unicornRules = freeze({
   "unicorn/throw-new-error": "error",
 } as const satisfies UnicornRules);
 
-export const defaultCacheLocation = "node_modules/.cache/eslint" satisfies File;
+export const cacheDirectory = "eslint" satisfies Directory;
 
 export const defaultSuppressionsFile =
   "eslint-suppressions.json" satisfies File;

@@ -16,6 +16,18 @@ import type { PackageName } from "#types/PackageName";
 
 import manifest from "#package.json" with { type: "json" };
 
+const exactVersion = /^\d+\.\d+\.\d+(?:-[\w.]+)?$/;
+
+function resolveExactVersion(name: PackageName): string {
+  const version = getOwn(manifest.devDependencies, name);
+
+  if (version === undefined || !exactVersion.test(version)) {
+    throw new Error(`${engrenage} pins no exact version of ${name}`);
+  }
+
+  return version;
+}
+
 function resolveDependencyRange(name: PackageName): string {
   if (name === engrenage) {
     return `^${manifest.version}`;
@@ -85,12 +97,18 @@ export function createStepContext({
     return config.environment.hasDependency(name);
   }
 
-  function addDevDependency(name: PackageName) {
+  function addDevDependency(
+    name: PackageName,
+    { exact = false }: { exact?: boolean } = {},
+  ) {
     if (hasDependency(name)) {
       return;
     }
 
-    writePackageJson(["devDependencies", name], resolveDependencyRange(name));
+    writePackageJson(
+      ["devDependencies", name],
+      exact ? resolveExactVersion(name) : resolveDependencyRange(name),
+    );
 
     installs = true;
   }

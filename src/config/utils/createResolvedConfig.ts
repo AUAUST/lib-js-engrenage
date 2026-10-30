@@ -10,6 +10,7 @@ import { once } from "@auaust/toolkit/once";
 import { globalsSchema } from "#config/config/schemas/defineSchema";
 import {
   defaultBinDirectories,
+  defaultCacheDirectory,
   defaultCodeFiles,
   defaultConfigFiles,
   defaultCoverageDirectory,
@@ -262,6 +263,16 @@ export function createResolvedConfig({
     );
   });
 
+  const cache = once(() => {
+    const dir = raw.cache?.dir ?? defaultCacheDirectory;
+
+    resolveWithin(root, dir);
+
+    return freeze({
+      dir,
+    });
+  });
+
   const typescript = once(() => {
     return freeze(
       compose(
@@ -348,6 +359,7 @@ export function createResolvedConfig({
         scripts,
         test,
         build,
+        cache,
         typescript,
         git,
         prettier,

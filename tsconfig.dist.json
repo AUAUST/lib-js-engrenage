@@ -1,3 +1,6 @@
 {
-  "extends": ["./tsconfig.json", "./data/tsconfig/library.dist.json"]
+  "extends": ["./tsconfig.json", "./data/tsconfig/library.dist.json"],
+  "compilerOptions": {
+    "exactOptionalPropertyTypes": false
+  }
 }

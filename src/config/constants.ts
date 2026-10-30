@@ -20,6 +20,8 @@ export const globalScopes = freeze(["all", "test", "build"] as const);
 
 export const defaultEnvFile = "env.d.ts" satisfies File;
 
+export const defaultCacheDirectory = "node_modules/.cache" satisfies Directory;
+
 export const definitionKey = "~definition";
 
 export const globalNamePattern =

@@ -48,6 +48,36 @@ describe("tsconfig presets", () => {
     });
   });
 
+  test("composes the library preset with a baseline snapshot", () => {
+    const { compilerOptions } = showConfig(getFixture("tsconfig/baseline"));
+
+    expect(compilerOptions).toMatchObject({
+      target: "es2024",
+      lib: [
+        "es2022",
+        "es2023.array",
+        "es2023.intl",
+        "es2024.collection",
+        "es2024.object",
+        "es2024.promise",
+        "es2024.regexp",
+        "es2024.string",
+      ],
+      types: [],
+      exactOptionalPropertyTypes: true,
+    });
+  });
+
+  test("gives Node tooling its runtime's features and types", () => {
+    const { compilerOptions } = showConfig(getFixture("tsconfig/node"));
+
+    expect(compilerOptions).toMatchObject({
+      target: "es2025",
+      lib: ["es2025"],
+      types: ["node"],
+    });
+  });
+
   test("type-checks tests and env declarations in dist mode", () => {
     const library = getFixture("tsconfig/library");
 
@@ -62,6 +92,9 @@ describe("tsconfig presets", () => {
     expect(compilerOptions).toMatchObject({
       paths: {},
       skipLibCheck: false,
+      target: "esnext",
+      lib: ["esnext"],
+      types: ["node"],
     });
 
     expect(files).toEqual([

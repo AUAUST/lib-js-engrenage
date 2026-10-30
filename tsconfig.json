@@ -1,5 +1,5 @@
 {
-  "extends": "./data/tsconfig/library.json",
+  "extends": ["./data/tsconfig/library.json", "./data/tsconfig/node/24.json"],
   "compilerOptions": {
     "paths": {
       "@auaust/engrenage/agents/*/constants": ["./src/agents/*/constants.ts"],
@@ -8,7 +8,6 @@
       "@auaust/engrenage/*": ["./src/*/index.ts"],
       "@auaust/engrenage/constants": ["./src/constants.ts"],
       "@auaust/engrenage": ["./src/index.ts"]
-    },
-    "types": ["node"]
+    }
   }
 }

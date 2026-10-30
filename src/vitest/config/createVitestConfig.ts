@@ -52,7 +52,11 @@ export function createVitestConfig(
     : config.typescript.tsconfig;
 
   return {
-    tsconfig,
+    ...(tsconfig === undefined
+      ? {}
+      : {
+          tsconfig,
+        }),
     resolve: {
       tsconfigPaths: !testsBuild,
     },
@@ -65,9 +69,12 @@ export function createVitestConfig(
         provider: defaultCoverageProvider,
         reportsDirectory: config.test.coverageDir,
       },
-      typecheck: {
-        tsconfig,
-      },
+      typecheck:
+        tsconfig === undefined
+          ? {}
+          : {
+              tsconfig,
+            },
     },
   };
 }

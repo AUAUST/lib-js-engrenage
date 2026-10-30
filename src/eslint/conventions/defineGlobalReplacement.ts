@@ -45,10 +45,7 @@ function createTarget(
 export function defineGlobalReplacement({
   global,
   properties,
-  replacement,
-  enabled,
-  presets,
-  requires,
+  ...forward
 }: {
   global: string;
   properties?: readonly string[];
@@ -60,9 +57,6 @@ export function defineGlobalReplacement({
   return defineReplacement({
     selector: createSelector(global, properties),
     target: createTarget(global, properties),
-    replacement,
-    enabled,
-    presets,
-    requires,
+    ...forward,
   });
 }

@@ -1,0 +1,7 @@
+{
+  "extends": [
+    "@auaust/engrenage/tsconfig/library.json",
+    "@auaust/engrenage/tsconfig/baseline/2026-10.json"
+  ],
+  "files": ["index.ts"]
+}

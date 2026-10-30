@@ -1,7 +1,7 @@
 import { spawnSync } from "node:child_process";
 
 import { eslint, prettier } from "#constants";
-import { defaultCacheLocation } from "#eslint/constants";
+import { cacheDirectory } from "#eslint/constants";
 import { resolveBinary } from "#support/commander/utils/resolveBinary";
 import { isWithin } from "#support/filesystem/utils/isWithin";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -46,7 +46,7 @@ export function formatEditedFile(config: ResolvedConfig, file: File) {
     "--no-warn-ignored",
     "--cache",
     "--cache-location",
-    config.resolve(defaultCacheLocation),
+    config.resolve(config.cache.dir, cacheDirectory),
     file,
   ];
 

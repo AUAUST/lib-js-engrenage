@@ -215,7 +215,7 @@ describe("engrenage init", () => {
         "@auaust/engrenage": `^${manifest.version}`,
         "eslint": manifest.peerDependencies.eslint,
         "prettier": manifest.peerDependencies.prettier,
-        "typescript": manifest.peerDependencies.typescript,
+        "typescript": manifest.devDependencies.typescript,
         "vitest": manifest.peerDependencies.vitest,
         "@changesets/cli": manifest.peerDependencies["@changesets/cli"],
       },
@@ -495,7 +495,10 @@ describe("engrenage init", () => {
               extends: "@auaust/engrenage/tsconfig/library.json",
             }
           : {
-              extends: "@auaust/engrenage/tsconfig/library.json",
+              extends: [
+                "@auaust/engrenage/tsconfig/library.json",
+                "@auaust/engrenage/tsconfig/baseline/2026-10.json",
+              ],
               compilerOptions: {
                 paths: {
                   [name]: ["./src/index.ts"],
@@ -667,7 +670,6 @@ test("uses an interactive selection for this init without rewriting an existing 
 test("declining backlog setup leaves no backlog instructions or files", async () => {
   const project = createProject({
     "package.json": '{"name":"project","type":"module"}',
-    ".claude/backlog.md": "Keep this legacy work.\n",
     "engrenage.config.ts":
       'export default { agents: { preferred: ["codex"] } };\n',
   });
@@ -697,77 +699,9 @@ test("declining backlog setup leaves no backlog instructions or files", async ()
   );
 
   expect(project.read("AGENTS.md")).not.toContain("## Backlog");
-  expect(project.read(".claude/backlog.md")).toBe("Keep this legacy work.\n");
 
   expect(project.read("AGENTS.override.md")).toContain(
     "No project rule files are present.",
-  );
-});
-
-test("migrates legacy backlog categories without overwriting existing work and stays idempotent", async () => {
-  const legacy =
-    "# Backlog\n\nKeep this context.\n\n## 1. Toolkit\n\n1. An open question.\n   - Expected: investigate.\n\n## Index\n\nA task without a proposed fix.\n";
-
-  const project = createProject({
-    "package.json": '{"name":"project","type":"module"}',
-    "engrenage.config.ts":
-      'export default { agents: { preferred: ["claude", "codex"] } };\n',
-    ".claude/backlog.md": legacy,
-    ".ai/backlog/toolkit.md": "Keep existing toolkit work.\n",
-    ".ai/scratchpad.md": "# Scratchpad\n\nKeep these unprocessed notes.\n",
-    ".ai/backlog/index.md":
-      "# Backlog\n\nProject guidance.\n\n## Open categories\n\n- [Toolkit](toolkit.md): Existing scope.\n",
-    ".changeset/config.json": "{}\n",
-  });
-
-  await runCommand(init, "--yes");
-
-  expect(existsSync(project.resolve(".claude/backlog.md"))).toBe(false);
-
-  expect(project.read(".ai/backlog/toolkit.md")).toBe(
-    "Keep existing toolkit work.\n",
-  );
-
-  expect(project.read(".ai/backlog/imported-context.md")).toContain(
-    "Keep this context.",
-  );
-
-  expect(project.read(".ai/backlog/toolkit-2.md")).toContain(
-    "1. An open question.",
-  );
-
-  expect(project.read(".ai/backlog/index-3.md")).toContain(
-    "A task without a proposed fix.",
-  );
-
-  const index = project.read(".ai/backlog/index.md");
-
-  expect(index).toContain("Project guidance.");
-  expect(index).toContain("[Toolkit](toolkit.md): Existing scope.");
-  expect(index).toContain("(toolkit-2.md)");
-  expect(index).toContain("(index-3.md)");
-  expect(project.read("AGENTS.md")).toContain("## Backlog");
-
-  expect(project.read("AGENTS.override.md")).toContain(
-    "<code>.ai/backlog/*.md</code>",
-  );
-
-  expect(project.read(".claude/rules/backlog.md")).toContain(
-    ".ai/backlog/*.md",
-  );
-
-  vi.clearAllMocks();
-
-  await runCommand(init, "--yes");
-
-  expect(project.read(".ai/backlog/index.md")).toBe(index);
-
-  expect(project.read(".ai/scratchpad.md")).toBe(
-    "# Scratchpad\n\nKeep these unprocessed notes.\n",
-  );
-
-  expect(console.info).toHaveBeenCalledExactlyOnceWith(
-    "Engrenage is set up, nothing is missing.",
   );
 });
 

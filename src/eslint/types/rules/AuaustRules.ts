@@ -316,6 +316,10 @@ export interface AuaustRules {
    */
   "auaust/padded-returns"?: Rule<[]>;
   /**
+   * Add a blank line before a `throw` that follows other statements.
+   */
+  "auaust/padded-throws"?: Rule<[]>;
+  /**
    * Separate variable declarations from other statements with blank lines, except declarations of the same kind.
    */
   "auaust/padded-variable-declarations"?: Rule<[]>;

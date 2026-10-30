@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "lib": [
+      "ES2022",
+      "ES2023.Array",
+      "ES2023.Intl",
+      "ES2024.Collection",
+      "ES2024.Object",
+      "ES2024.Promise",
+      "ES2024.Regexp",
+      "ES2024.String"
+    ],
+    "target": "ES2024"
+  }
+}

@@ -56,6 +56,11 @@ export const configSchema = strictObject({
       typed: optional(boolean()),
     }),
   ),
+  cache: optional(
+    strictObject({
+      dir: optional(directorySchema),
+    }),
+  ),
   typescript: optional(
     strictObject({
       tsconfig: optional(fileSchema),

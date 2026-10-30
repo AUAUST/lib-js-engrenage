@@ -24,12 +24,12 @@ interface SyncTarget<Flag extends string> {
     config: ResolvedConfig,
     flags: Partial<Record<Flag, boolean>>,
   ): void | Promise<void>;
-  flags?: Record<Flag, string>;
+  flags: Partial<Record<Flag, string>>;
 }
 
 function defineTarget<Flag extends string = never>(
   sync: SyncTarget<Flag>["sync"],
-  flags?: Record<Flag, string>,
+  flags: Partial<Record<Flag, string>> = {},
 ): SyncTarget<Flag> {
   return {
     sync,
@@ -65,7 +65,7 @@ function createFlagOptions(): readonly {
   flag: string;
   option: Option;
 }[] {
-  return flatMap(entries(targets), ([target, { flags = {} }]) => {
+  return flatMap(entries(targets), ([target, { flags }]) => {
     return map(
       entries<Record<string, string>>(flags),
       ([flag, description]) => {

@@ -1,5 +1,5 @@
 export interface Person {
   name: string;
-  email?: string;
-  url?: string;
+  email?: string | undefined;
+  url?: string | undefined;
 }

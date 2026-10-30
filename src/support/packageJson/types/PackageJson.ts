@@ -16,7 +16,10 @@ export type PackageJson = Accessors<{
   description: string | undefined;
   keywords: readonly string[] | undefined;
   homepage: string | undefined;
-  bugs: string | { url?: string; email?: string } | undefined;
+  bugs:
+    | string
+    | { url?: string | undefined; email?: string | undefined }
+    | undefined;
   repository: string | { url: string } | undefined;
   license: string | undefined;
   author: string | Person | undefined;
@@ -34,5 +37,5 @@ export type PackageJson = Accessors<{
   sideEffects: boolean | Globs | undefined;
   packageManager: string | undefined;
   engines: Partial<Record<string, string>> | undefined;
-  publishConfig: { access?: PublishAccess } | undefined;
+  publishConfig: { access?: PublishAccess | undefined } | undefined;
 }>;

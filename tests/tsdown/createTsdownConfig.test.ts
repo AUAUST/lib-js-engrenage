@@ -1,4 +1,5 @@
 import { build } from "tsdown";
+import { createProgram, getPreEmitDiagnostics } from "typescript";
 import { describe, expect, test, vi } from "vitest";
 
 import { define, loadConfig } from "@auaust/engrenage/config";
@@ -76,6 +77,50 @@ describe("createTsdownConfig", () => {
     );
 
     expect(declarations).not.toContain("any");
+  });
+
+  test("declares the namespace of an empty module entry", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({
+        name: "@scope/package",
+        type: "module",
+      }),
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          outDir: "dist",
+          module: "ESNext",
+          moduleResolution: "Bundler",
+          strict: true,
+          paths: {
+            "@scope/package/*": ["./src/*/index.ts"],
+            "@scope/package": ["./src/index.ts"],
+          },
+        },
+        include: ["src"],
+      }),
+      "src/index.ts": [
+        'export * as empty from "./empty/index.ts";',
+        'export * as filled from "./filled/index.ts";',
+      ].join("\n"),
+      "src/empty/index.ts": "export {};\n",
+      "src/filled/index.ts": "export const value = 1;\n",
+    });
+
+    const config = await loadConfig(project.root);
+
+    await build({
+      ...createTsdownConfig(config, { ci: false }),
+      config: false,
+      failOnWarn: true,
+      logLevel: "silent",
+    });
+
+    const program = createProgram([project.resolve("dist/index.d.mts")], {
+      noEmit: true,
+      strict: true,
+    });
+
+    expect(getPreEmitDiagnostics(program)).toEqual([]);
   });
 
   test("builds entries from the tsconfig paths and wires the project options", async () => {
