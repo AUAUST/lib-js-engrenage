@@ -138,7 +138,7 @@
     "publint": "^0.3.25",
     "tsdown": "^0.23.1",
     "tsx": "^4.23.15",
-    "typescript": "^6.0.3",
+    "typescript": "6.0.3",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
   },
@@ -191,6 +191,9 @@
   },
   "sideEffects": false,
   "prettier": "#prettier",
+  "engines": {
+    "node": ">=24"
+  },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
@@ -199,8 +202,8 @@
     },
     "runtime": {
       "name": "node",
-      "version": ">=24.0.0",
-      "onFail": "error"
+      "version": "24",
+      "onFail": "warn"
     }
   },
   "publishConfig": {

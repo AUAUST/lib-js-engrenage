@@ -29,3 +29,7 @@ Deferred questions, bugs, tasks and improvements.
 - [configuration](configuration.md): Configuration ownership, project roots and refresh lifecycles.
 - [agent-instructions](agent-instructions.md): Agent instruction resolution and synchronization.
 - [vscode](vscode.md): VS Code project settings and synchronization.
+- [typescript](typescript.md): TypeScript declarations engrenage generates for projects.
+- [github](github.md): GitHub repository metadata and generated workflows.
+- [toolkit](toolkit.md): Upstream @auaust/toolkit entry points and migration.
+- [codegen](codegen.md): Adoption of @auaust/codegen.
