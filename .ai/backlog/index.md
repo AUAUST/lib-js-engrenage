@@ -20,16 +20,10 @@ Deferred questions, bugs, tasks and improvements.
 ## Open categories
 
 - [coding-style](coding-style.md): Coding style conventions, ESLint behavior and linting gaps.
-- [pnpm](pnpm.md): pnpm workspace setup and synchronization.
 - [primitive-kit](primitive-kit.md): Upstream @auaust/primitive-kit types and missing helpers.
 - [json-schema-to-typescript-lite](json-schema-to-typescript-lite.md): Upstream schema compilation issues reached through eslint-typegen.
 - [c12](c12.md): Upstream c12 configuration loader issues.
 - [eslint-import-context](eslint-import-context.md): Upstream eslint-import-context dependency and type issues.
 - [eslint](eslint.md): Upstream ESLint API limitations.
-- [configuration](configuration.md): Configuration ownership, project roots and refresh lifecycles.
 - [agent-instructions](agent-instructions.md): Agent instruction resolution and synchronization.
-- [vscode](vscode.md): VS Code project settings and synchronization.
-- [typescript](typescript.md): TypeScript declarations engrenage generates for projects.
-- [github](github.md): GitHub repository metadata and generated workflows.
-- [toolkit](toolkit.md): Upstream @auaust/toolkit entry points and migration.
-- [codegen](codegen.md): Adoption of @auaust/codegen.
+- [toolkit](toolkit.md): Upstream @auaust/toolkit decisions that may affect engrenage.

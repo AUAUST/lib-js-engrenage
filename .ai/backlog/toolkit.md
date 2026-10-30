@@ -1,23 +1,12 @@
 # toolkit
 
-Upstream @auaust/toolkit entry points and migration.
+Upstream @auaust/toolkit decisions that may affect engrenage.
 
-## 1. Lint rules and imports assume per-helper toolkit subpaths.
+## 1. Pending toolkit decisions that may need engrenage support.
 
-- Where: `src/eslint/conventions/performance/noToolkitRoot.ts`, `src/eslint/conventions/globals/`, `data/agents/rules/prefer-toolkit.md`, every `@auaust/toolkit/<helper>` import
-- Problem: AUAUST/lib-js-toolkit#104 replaces per-helper subpaths with one entry per module plus the root. `auaust/no-toolkit-root` and the `Math.*`, `Object.*` and `Array.isArray` messages still point to per-helper subpaths. The latest published toolkit (0.5.1) has no module entries yet.
-- Fix: once toolkit publishes the module entries, align the rules, messages and rule fragment with them (deciding whether the root becomes allowed) and migrate engrenage's imports.
-- Done when engrenage's rules and source match toolkit's published entry points.
-
-## 2. Engrenage still depends on primitive-kit.
-
-- Problem: AUAUST/lib-js-toolkit#112 freezes `@auaust/primitive-kit` once its helpers merge into toolkit; engrenage imports its `arrays` and `numbers` helpers. Blocked until toolkit publishes the `array` and `number` modules.
-- Fix: switch to toolkit's module entries, file the gaps in `primitive-kit.1` to `.3` as toolkit helpers (AUAUST/lib-js-toolkit#117), and drop the dependency and the `prefer-primitive-kit` rule.
-- Done when engrenage no longer depends on primitive-kit.
-
-## 3. Toolkit 0.5.1 declarations fail `exactOptionalPropertyTypes`.
-
-- Where: `tsconfig.dist.json`
-- Problem: `library.json` enables `exactOptionalPropertyTypes`, and the dist check (`skipLibCheck: false`) fails on `@auaust/toolkit/composer` declarations from toolkit 0.5.1 (TS2344 on `PropertyDescriptor`). Engrenage's dist check disables the flag locally.
-- Fix: remove the local override once toolkit publishes declarations checked with the flag (AUAUST/lib-js-toolkit#150).
-- Done when `tsconfig.dist.json` no longer overrides the flag and `pnpm build` passes.
+- Problem: open toolkit decisions may require engrenage changes; none is a requirement yet, and each is settled in its toolkit issue first.
+  - Export check in CI (AUAUST/lib-js-toolkit#110 question 6): if the barrel check joins the shared CI sequence, engrenage's script setup and generated workflows include it.
+  - Build-time stripping of helper metadata (AUAUST/lib-js-toolkit#116 question 1, option A): runtime metadata objects must never reach the bundle; a tsdown plugin in engrenage's builder is one option. Optional compile-time erasure of identity looseners (AUAUST/lib-js-toolkit#149 question 5) would use the same mechanism.
+  - Translation injection (AUAUST/lib-js-toolkit#119 question 3): injecting translations without bundling them by default may need a build plugin.
+  - Build output defects (toolkit backlog `merge.18`, `merge.19`): empty module entries emit `.d.mts` files that fail `typecheck:dist`, and the root namespace object differs from the module entry's namespace in `dist/`. Both come from the tsdown and rolldown-plugin-dts output engrenage's builder configures.
+- Done when each decision states whether engrenage must change, and the resulting requirements are separate entries.
