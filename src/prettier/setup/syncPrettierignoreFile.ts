@@ -1,5 +1,6 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { includes, map } from "@auaust/primitive-kit/arrays";
 
+import { codexFile } from "#agents/codex/constants";
 import { changesetsCli } from "#constants";
 import { createProjectIgnores } from "#git/utils/createProjectIgnores";
 import {
@@ -19,19 +20,24 @@ function anchor(glob: Glob): Glob {
 function createProjectPrettierIgnores(
   config: ResolvedConfig,
 ): readonly GlobGroup[] {
-  const { generatedFiles } = config.code;
+  const generated = [
+    ...map(config.code.generatedFiles, anchor),
+    ...(includes(config.agents.preferred ?? [], "codex")
+      ? [`/${codexFile}`]
+      : []),
+  ];
 
   return [
     ...createProjectIgnores(config),
     ...(config.environment.hasDependency(changesetsCli)
       ? [changelogIgnores]
       : []),
-    ...(generatedFiles.length === 0
+    ...(generated.length === 0
       ? []
       : [
           {
             title: codegenTitle,
-            globs: map(generatedFiles, anchor),
+            globs: generated,
           },
         ]),
   ];

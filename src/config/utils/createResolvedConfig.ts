@@ -337,6 +337,10 @@ export function createResolvedConfig({
     return resolveWithin(root, ...paths);
   }
 
+  function cacheFor(packageName: PackageName): Directory {
+    return resolveWithin(root, cache().dir, packageName);
+  }
+
   return freeze(
     compose(
       {
@@ -345,6 +349,7 @@ export function createResolvedConfig({
         configFile,
         filesystem,
         resolve,
+        cacheFor,
       },
       compose.getters({
         packageJsonPath,

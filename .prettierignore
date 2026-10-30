@@ -24,5 +24,6 @@ CHANGELOG.md
 # Codegen
 /src/eslint/types/Rules.ts
 /src/eslint/types/rules/**
+/AGENTS.override.md
 
 # @end

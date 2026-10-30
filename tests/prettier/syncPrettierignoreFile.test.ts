@@ -6,10 +6,10 @@ import { syncPrettierignoreFile } from "@auaust/engrenage/prettier";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 
 describe("syncPrettierignoreFile", () => {
-  test("writes the default and project groups, with the changelog of changesets projects", async () => {
+  test("writes the default and project groups, with the changelog of changesets projects and the Codex instructions", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
-        'export default { code: { generatedFiles: "src/generated/**" } };\n',
+        'export default { code: { generatedFiles: "src/generated/**" }, agents: { preferred: ["codex"] } };\n',
       "package.json": JSON.stringify({
         type: "module",
         devDependencies: {
@@ -44,9 +44,6 @@ describe("syncPrettierignoreFile", () => {
         "# ESLint",
         "eslint-suppressions.json",
         "",
-        "# Codex",
-        "/AGENTS.override.md",
-        "",
         "# @ignore project",
         "",
         "# Output",
@@ -60,6 +57,7 @@ describe("syncPrettierignoreFile", () => {
         "",
         "# Codegen",
         "/src/generated/**",
+        "/AGENTS.override.md",
         "",
         "# @end",
         "",

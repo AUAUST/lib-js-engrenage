@@ -217,6 +217,26 @@ describe("loadConfig", () => {
     }).toThrow("escapes");
   });
 
+  test("places each package cache under the configured cache root", async () => {
+    const defaults = createTemporaryProject({
+      "package.json": "{}",
+      "engrenage.config.ts": "export default {};\n",
+    });
+
+    const moved = createTemporaryProject({
+      "package.json": "{}",
+      "engrenage.config.ts": 'export default { cache: { dir: ".cache" } };\n',
+    });
+
+    expect((await loadConfig(defaults.root)).cacheFor("eslint")).toBe(
+      defaults.resolve("node_modules/.cache/eslint"),
+    );
+
+    expect((await loadConfig(moved.root)).cacheFor("@scope/tool")).toBe(
+      moved.resolve(".cache/@scope/tool"),
+    );
+  });
+
   test("rejects unknown keys, naming the file and each key path", async () => {
     const root = getFixture("config/invalid");
 
