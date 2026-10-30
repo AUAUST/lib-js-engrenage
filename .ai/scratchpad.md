@@ -2,4 +2,4 @@
 
 <!-- scratchpad-placeholder -->
 
-Kyaa~ this teeny notebook is wiggling its lil pastel toes waiting for your boldest refactor whispers, so smoosh them in and the cinnamon-roll backlog goblins will sort them with tiny glitter tweezers! 🥐🧚‍♀️💫
+Nyaa~ every note got tucked into a fluffy issue blanket, so this marshmallow page is all empty and bouncing on its squishy lil heels, begging for your next sparkly idea crumbs! 🍡🐰🌈

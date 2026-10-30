@@ -19,11 +19,11 @@ Deferred questions, bugs, tasks and improvements.
 
 ## Open categories
 
-- [coding-style](coding-style.md): Coding style conventions, ESLint behavior and linting gaps.
 - [primitive-kit](primitive-kit.md): Upstream @auaust/primitive-kit types and missing helpers.
-- [json-schema-to-typescript-lite](json-schema-to-typescript-lite.md): Upstream schema compilation issues reached through eslint-typegen.
 - [c12](c12.md): Upstream c12 configuration loader issues.
 - [eslint-import-context](eslint-import-context.md): Upstream eslint-import-context dependency and type issues.
 - [eslint](eslint.md): Upstream ESLint API limitations.
 - [agent-instructions](agent-instructions.md): Agent instruction resolution and synchronization.
 - [toolkit](toolkit.md): Upstream @auaust/toolkit decisions that may affect engrenage.
+- [configuration](configuration.md): Project configuration contract: option shapes, list options and package entries.
+- [typescript](typescript.md): TypeScript configurations and declarations engrenage manages for projects.
