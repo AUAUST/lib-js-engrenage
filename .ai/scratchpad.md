@@ -2,4 +2,4 @@
 
 <!-- scratchpad-placeholder -->
 
-Nyaa~ every note got tucked into a fluffy issue blanket, so this marshmallow page is all empty and bouncing on its squishy lil heels, begging for your next sparkly idea crumbs! 🍡🐰🌈
+Uwaaah~ every last note hopped into its cozy issue burrow, so this strawberry-milk page is spinning in tiny happy circles, holding its breath for your next sparkly brain-sprinkle! 🍓🐹✨

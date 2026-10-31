@@ -25,5 +25,4 @@ Deferred questions, bugs, tasks and improvements.
 - [eslint](eslint.md): Upstream ESLint API limitations.
 - [agent-instructions](agent-instructions.md): Agent instruction resolution and synchronization.
 - [toolkit](toolkit.md): Upstream @auaust/toolkit decisions that may affect engrenage.
-- [configuration](configuration.md): Project configuration contract: option shapes, list options and package entries.
-- [typescript](typescript.md): TypeScript configurations and declarations engrenage manages for projects.
+- [configuration](configuration.md): Project configuration contract: environments, option shapes and list options.
