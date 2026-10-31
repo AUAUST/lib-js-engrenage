@@ -4,6 +4,7 @@ import {
   mkdirSync,
   readFileSync,
   rmSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { dirname, matchesGlob } from "node:path";
@@ -63,6 +64,14 @@ export function createFilesystem(root: Directory) {
 
   function exists(file: File): boolean {
     return read(file) !== undefined;
+  }
+
+  function isDirectory(directory: Directory): boolean {
+    const stats = statSync(resolveWithin(root, directory), {
+      throwIfNoEntry: false,
+    });
+
+    return stats?.isDirectory() === true;
   }
 
   function stage(file: File, content: string | undefined) {
@@ -177,6 +186,7 @@ export function createFilesystem(root: Directory) {
   return freeze({
     read,
     exists,
+    isDirectory,
     write,
     remove,
     glob,

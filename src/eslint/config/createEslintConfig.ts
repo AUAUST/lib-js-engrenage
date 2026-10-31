@@ -55,10 +55,10 @@ export function createEslintConfig(
     configs.push(
       createIgnoreRules({
         gitignorePath: config.git.gitignore,
-        generatedFiles: config.code.generatedFiles,
+        generatedFiles: config.files.generated,
         outputDirectory: config.build.outDir,
-        coverageDirectory: config.test.coverageDir,
-        fixtureFiles: config.test.fixtureFiles,
+        coverageDirectory: config.tests.coverageDir,
+        fixtureFiles: config.files.fixtures,
       }),
     );
   }
@@ -79,7 +79,7 @@ export function createEslintConfig(
   if (categories.imports !== false) {
     configs.push(
       createImportPresets({
-        codeFiles: config.code.files,
+        codeFiles: config.typescript.files,
         tsconfig: config.typescript.tsconfig,
       }),
     );

@@ -1,6 +1,6 @@
 import type { InferOutput } from "valibot";
 
-import { wrap } from "@auaust/primitive-kit/arrays";
+import { flatMap, wrap } from "@auaust/primitive-kit/arrays";
 import { compose } from "@auaust/toolkit/composer";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { memoized } from "@auaust/toolkit/memoized";
@@ -11,24 +11,26 @@ import { globalsSchema } from "#config/config/schemas/defineSchema";
 import {
   defaultBinDirectories,
   defaultCacheDirectory,
-  defaultCodeFiles,
-  defaultConfigFiles,
-  defaultCoverageDirectory,
+  defaultDefines,
   defaultDefineTypes,
-  defaultDiscoveredFiles,
   defaultEmptyOutDir,
   defaultEnvFile,
-  defaultFixtureFiles,
-  defaultGeneratedFiles,
   defaultInstructionFiles,
   defaultPresets,
-  defaultScriptDirectories,
+  defaultScriptsDirectories,
   defaultSourceDirectories,
   defaultSourcemap,
-  defaultTestDirectories,
-  defaultTestFiles,
+  defaultTestsCoverageDirectory,
+  defaultTestsDirectories,
+  defaultTestsFiles,
+  defaultTestsFixtures,
+  defaultToolingDirectories,
+  defaultToolingFiles,
+  defaultTypescriptFiles,
 } from "#config/constants";
 import { createFilesystem } from "#config/utils/createFilesystem";
+import { resolveCodeEnvironment } from "#config/utils/resolveCodeEnvironment";
+import { resolveListOption } from "#config/utils/resolveListOption";
 import {
   distTsconfigFile,
   gitignoreFile,
@@ -46,6 +48,7 @@ import type { configSchema } from "#config/config/schemas/configSchema";
 import type { Environment } from "#config/types/Environment";
 import type { ResolvedGlobals } from "#config/types/ResolvedGlobals";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
+import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
@@ -201,46 +204,107 @@ export function createResolvedConfig({
     });
   });
 
-  const code = once(() => {
-    return freeze({
-      files: wrap(raw.code?.files ?? defaultCodeFiles),
-      configFiles: wrap(raw.code?.configFiles ?? defaultConfigFiles),
-      discoveredFiles: wrap(
-        raw.code?.discoveredFiles ?? defaultDiscoveredFiles,
-      ),
-      generatedFiles: wrap(raw.code?.generatedFiles ?? defaultGeneratedFiles),
-    });
+  const typescriptFiles = once(() => {
+    return resolveListOption(
+      raw.typescript?.files,
+      () => defaultTypescriptFiles,
+      "typescript.files",
+    );
   });
 
-  const source = once(() => {
-    return freeze({
-      dirs: wrap(raw.source?.dirs ?? defaultSourceDirectories),
+  function resolveEnvironment(
+    name: "src" | "bin" | "scripts" | "tests",
+    dirs: Directories,
+  ) {
+    return resolveCodeEnvironment({
+      name,
+      option: raw[name],
+      dirs,
+      defines: defaultDefines[name],
+      typescriptFiles: typescriptFiles(),
+      filesystem,
     });
+  }
+
+  const source = once(() => {
+    return resolveEnvironment("src", defaultSourceDirectories);
   });
 
   const bin = once(() => {
-    return freeze({
-      dirs: wrap(raw.bin?.dirs ?? defaultBinDirectories),
-    });
+    return resolveEnvironment("bin", defaultBinDirectories);
   });
 
   const scripts = once(() => {
+    return resolveEnvironment("scripts", defaultScriptsDirectories);
+  });
+
+  const tests = once(() => {
+    const option = raw.tests === false ? undefined : raw.tests;
+    const enabled = raw.tests !== false;
+
     return freeze({
-      dirs: wrap(raw.scripts?.dirs ?? defaultScriptDirectories),
+      ...resolveEnvironment("tests", defaultTestsDirectories),
+      files: enabled
+        ? resolveListOption(
+            option?.files,
+            () => defaultTestsFiles,
+            "tests.files",
+          )
+        : [],
+      fixtures: enabled
+        ? resolveListOption(
+            option?.fixtures,
+            () => defaultTestsFixtures,
+            "tests.fixtures",
+          )
+        : [],
+      coverageDir: option?.coverageDir ?? defaultTestsCoverageDirectory,
     });
   });
 
-  const test = once(() => {
-    const dirs = wrap(raw.test?.dirs ?? defaultTestDirectories);
+  const tooling = once(() => {
+    if (raw.tooling === false) {
+      return freeze({
+        active: false,
+        dirs: [],
+        files: [],
+        globs: [],
+      });
+    }
+
+    const dirs = resolveListOption(
+      raw.tooling?.dirs,
+      () => defaultToolingDirectories,
+      "tooling.dirs",
+    );
+
+    const files = resolveListOption(
+      raw.tooling?.files,
+      () => defaultToolingFiles,
+      "tooling.files",
+    );
 
     return freeze({
+      active: dirs.some((directory) => filesystem.isDirectory(directory)),
       dirs,
-      files: wrap(raw.test?.files ?? defaultTestFiles),
-      fixtureFiles: filesIn(
-        dirs,
-        raw.test?.fixtureFiles ?? defaultFixtureFiles,
-      ),
-      coverageDir: raw.test?.coverageDir ?? defaultCoverageDirectory,
+      files,
+      globs: filesIn(dirs, files),
+    });
+  });
+
+  const files = once(() => {
+    const environments = [source(), tests(), bin(), scripts()];
+
+    return freeze({
+      generated: flatMap(environments, ({ dirs, generated }) => {
+        return filesIn(dirs, generated);
+      }),
+      discovered: flatMap(environments, ({ dirs, discovered }) => {
+        return filesIn(dirs, discovered);
+      }),
+      fixtures: filesIn(tests().dirs, tests().fixtures),
+      published: [...source().globs, ...bin().globs],
+      private: [...tests().globs, ...scripts().globs],
     });
   });
 
@@ -281,6 +345,7 @@ export function createResolvedConfig({
           tsconfig: tsconfigPath,
           distTsconfig: distTsconfigPath,
           envFile: envFilePath,
+          files: typescriptFiles,
         }),
       ),
     );
@@ -358,11 +423,12 @@ export function createResolvedConfig({
         environment,
         presets,
         define,
-        code,
-        source,
+        src: source,
+        tests,
         bin,
         scripts,
-        test,
+        tooling,
+        files,
         build,
         cache,
         typescript,

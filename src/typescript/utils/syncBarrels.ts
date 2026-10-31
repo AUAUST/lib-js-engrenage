@@ -167,10 +167,10 @@ export function syncBarrels(
 
   const { imports } = config.packageJson;
 
-  const { source, bin, scripts } = config;
+  const { src, bin, scripts } = config;
 
   const allFiles = config.filesystem.glob(
-    filesIn([...source.dirs, ...bin.dirs, ...scripts.dirs], barrelFiles),
+    filesIn([...src.dirs, ...bin.dirs, ...scripts.dirs], barrelFiles),
   );
 
   const files =

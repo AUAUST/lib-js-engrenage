@@ -10,6 +10,8 @@ export function filesIn(
   files: Glob | Globs,
 ): Globs {
   return flatMap(wrap(directories), (directory) => {
-    return map(wrap(files), (glob) => `${directory}/${glob}`);
+    return map(wrap(files), (glob) => {
+      return directory === "." ? glob : `${directory}/${glob}`;
+    });
   });
 }

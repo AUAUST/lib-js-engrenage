@@ -5,7 +5,6 @@ import type { Presets } from "#config/types/Presets";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
 export const defaultEmptyOutDir = true;
@@ -27,20 +26,55 @@ export const definitionKey = "~definition";
 export const globalNamePattern =
   /^(?:import\.meta|[$A-Z_a-z][\w$]*)(?:\.[$A-Z_a-z][\w$]*)*$/;
 
-export const defaultCoverageDirectory = "coverage" satisfies Directory;
+export const defaultTypescriptFiles = freeze([
+  "**/*.{ts,tsx}",
+] as const) satisfies Globs;
 
-export const defaultCodeFiles = "**/*.{ts,tsx}" satisfies Glob;
+export const defaultSourceDirectories = freeze([
+  "src",
+] as const) satisfies Directories;
 
-export const defaultConfigFiles = freeze([
+export const defaultTestsDirectories = freeze([
+  "tests",
+] as const) satisfies Directories;
+
+export const defaultBinDirectories = freeze([
+  "bin",
+] as const) satisfies Directories;
+
+export const defaultScriptsDirectories = freeze([
+  "scripts",
+] as const) satisfies Directories;
+
+export const defaultToolingDirectories = freeze([
+  ".",
+] as const) satisfies Directories;
+
+export const defaultToolingFiles = freeze([
   "*.config.ts",
   ".*.ts",
 ] as const) satisfies Globs;
 
-export const defaultDiscoveredFiles = freeze([] as const) satisfies Globs;
+export const defaultTestsFiles = freeze([
+  "**/*.{test,spec}.{ts,tsx}",
+] as const) satisfies Globs;
 
-export const defaultFixtureFiles = "**/fixtures/**" satisfies Glob;
+export const defaultTestsFixtures = freeze([
+  "**/fixtures/**",
+] as const) satisfies Globs;
 
-export const defaultGeneratedFiles = freeze([] as const) satisfies Globs;
+export const defaultTestsCoverageDirectory = "coverage" satisfies Directory;
+
+export const defaultGenerated = freeze([] as const) satisfies Globs;
+
+export const defaultDiscovered = freeze([] as const) satisfies Globs;
+
+export const defaultDefines = freeze({
+  src: true,
+  tests: true,
+  bin: false,
+  scripts: false,
+} as const);
 
 export const defaultInstructionFiles = freeze([
   "AGENTS.md",
@@ -48,23 +82,5 @@ export const defaultInstructionFiles = freeze([
 ] as const) satisfies Globs;
 
 export const defaultPresets = freeze([] as const) satisfies Presets;
-
-export const defaultSourceDirectories = freeze([
-  "src",
-] as const) satisfies Directories;
-
-export const defaultBinDirectories = freeze([
-  "bin",
-] as const) satisfies Directories;
-
-export const defaultScriptDirectories = freeze([
-  "scripts",
-] as const) satisfies Directories;
-
-export const defaultTestDirectories = freeze([
-  "tests",
-] as const) satisfies Directories;
-
-export const defaultTestFiles = "**/*.{test,spec}.{ts,tsx}" satisfies Glob;
 
 export const presets = freeze(["library"] as const) satisfies Globs;

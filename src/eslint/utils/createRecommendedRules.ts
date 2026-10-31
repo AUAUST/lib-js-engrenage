@@ -30,7 +30,7 @@ export function createRecommendedRules({
     typescriptConfigs.stylistic,
     resolveInfoRules({
       name: `${pluginName}/recommended`,
-      files: [...config.code.files],
+      files: [...config.typescript.files],
       rules: {
         ...coreRules,
         ...typescriptRules,

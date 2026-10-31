@@ -31,19 +31,8 @@ describe("loadConfig", () => {
     );
 
     expect(config.root).toBe(first);
-    expect(config.source.dirs).toEqual(["src"]);
-    expect(config.bin.dirs).toEqual(["bin"]);
-    expect(config.scripts.dirs).toEqual(["scripts"]);
-    expect(config.code.files).toEqual(["**/*.{ts,tsx}"]);
-
-    expect(config.test).toEqual({
-      dirs: ["tests"],
-      files: ["**/*.{test,spec}.{ts,tsx}"],
-      fixtureFiles: ["tests/**/fixtures/**"],
-      coverageDir: "coverage",
-    });
-
-    expect(config.code.generatedFiles).toEqual([]);
+    expect(config.typescript.files).toEqual(["**/*.{ts,tsx}"]);
+    expect(config.files.generated).toEqual([]);
     expect(config.raw).toEqual({});
     expect(config.packageJsonPath).toBeUndefined();
     expect(config.packageJson.optional.name).toBeUndefined();
@@ -87,18 +76,18 @@ describe("loadConfig", () => {
 
     expect(config.raw).toEqual({
       presets: ["library"],
-      test: {
+      tests: {
         dirs: "test",
       },
-      code: {
-        generatedFiles: ["src/generated/**"],
+      src: {
+        generated: ["generated/**"],
       },
     });
 
     expect(config.presets).toEqual(["library"]);
-    expect(config.test.dirs).toEqual(["test"]);
-    expect(config.test.fixtureFiles).toEqual(["test/**/fixtures/**"]);
-    expect(config.code.generatedFiles).toEqual(["src/generated/**"]);
+    expect(config.tests.dirs).toEqual(["test"]);
+    expect(config.files.fixtures).toEqual(["test/**/fixtures/**"]);
+    expect(config.files.generated).toEqual(["src/generated/**"]);
     expect(config.build.outDir).toBe("dist");
     expect(config.packageJson.name).toBe("custom-fixture");
     expect(config.environment.hasDependency("custom-fixture")).toBe(true);
@@ -244,6 +233,6 @@ describe("loadConfig", () => {
 
     await expect(error).rejects.toThrow(join(root, "engrenage.config.ts"));
     await expect(error).rejects.toThrow("at sources");
-    await expect(error).rejects.toThrow("at code.generatd");
+    await expect(error).rejects.toThrow("at src.generatd");
   });
 });

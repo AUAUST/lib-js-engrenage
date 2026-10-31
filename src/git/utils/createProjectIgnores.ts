@@ -6,7 +6,7 @@ export function createProjectIgnores(
   config: ResolvedConfig,
 ): readonly GlobGroup[] {
   const { outDir } = config.build;
-  const { coverageDir } = config.test;
+  const { coverageDir } = config.tests;
 
   return [
     ...(outDir === undefined

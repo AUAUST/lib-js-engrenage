@@ -6,10 +6,10 @@ import type { ConfigInput } from "@auaust/engrenage";
 describe("defineConfig", () => {
   test("returns the config it receives", () => {
     const config = {
-      source: {
+      src: {
         dirs: ["src", "lib"],
       },
-      test: {
+      tests: {
         dirs: "tests",
       },
     };
@@ -21,8 +21,8 @@ describe("defineConfig", () => {
   test("accepts sync and async callbacks", () => {
     expectTypeOf(defineConfig).toBeCallableWith(() => {
       return {
-        code: {
-          generatedFiles: ["generated/**"],
+        src: {
+          generated: ["generated/**"],
         },
       };
     });
@@ -43,18 +43,18 @@ describe("defineConfig", () => {
     });
 
     defineConfig({
-      code: {
-        files: "**/*.ts",
+      src: {
+        dirs: "src",
         // @ts-expect-error: nested typo next to a valid key
-        configFilez: [],
+        generatedd: [],
       },
     });
 
     // @ts-expect-error: callbacks only reject keys without a valid sibling
     defineConfig(() => {
       return Promise.resolve({
-        code: {
-          configFilez: [],
+        src: {
+          generatedd: [],
         },
       });
     });

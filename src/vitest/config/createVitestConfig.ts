@@ -64,10 +64,10 @@ export function createVitestConfig(
     test: {
       isolate,
       restoreMocks,
-      exclude: [...configDefaults.exclude, ...config.test.fixtureFiles],
+      exclude: [...configDefaults.exclude, ...config.files.fixtures],
       coverage: {
         provider: defaultCoverageProvider,
-        reportsDirectory: config.test.coverageDir,
+        reportsDirectory: config.tests.coverageDir,
       },
       typecheck:
         tsconfig === undefined

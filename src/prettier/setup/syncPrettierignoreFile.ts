@@ -21,7 +21,7 @@ function createProjectPrettierIgnores(
   config: ResolvedConfig,
 ): readonly GlobGroup[] {
   const generated = [
-    ...map(config.code.generatedFiles, anchor),
+    ...map(config.files.generated, anchor),
     ...(includes(config.agents.preferred ?? [], "codex")
       ? [`/${codexFile}`]
       : []),

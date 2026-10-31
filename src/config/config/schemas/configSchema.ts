@@ -9,43 +9,45 @@ import {
 
 import { preferredSchema } from "#agents/config/schemas/preferredSchema";
 import { defineSchema } from "#config/config/schemas/defineSchema";
-import {
-  directoriesSchema,
-  directorySchema,
-} from "#config/config/schemas/directorySchema";
+import { directorySchema } from "#config/config/schemas/directorySchema";
+import { environmentSchema } from "#config/config/schemas/environmentSchema";
 import { fileSchema } from "#config/config/schemas/fileSchema";
-import { globsSchema } from "#config/config/schemas/globsSchema";
+import { globSchema, globsSchema } from "#config/config/schemas/globsSchema";
+import { listOptionSchema } from "#config/config/schemas/listOptionSchema";
 import { presetsSchema } from "#config/config/schemas/presetsSchema";
 import { workflowSetNames } from "#github/constants";
 
-function createDirectoriesGroup() {
-  return optional(
-    strictObject({
-      dirs: optional(directoriesSchema),
-    }),
-  );
+const dirsSchema = listOptionSchema(directorySchema);
+
+const globListSchema = listOptionSchema(globSchema);
+
+function createCodeEnvironment() {
+  return {
+    dirs: optional(dirsSchema),
+    generated: optional(globListSchema),
+    discovered: optional(globListSchema),
+    defines: optional(boolean()),
+  };
 }
 
 export const configSchema = strictObject({
   presets: optional(presetsSchema),
   define: optional(defineSchema),
-  code: optional(
-    strictObject({
-      files: optional(globsSchema),
-      configFiles: optional(globsSchema),
-      discoveredFiles: optional(globsSchema),
-      generatedFiles: optional(globsSchema),
+  src: optional(environmentSchema(createCodeEnvironment())),
+  tests: optional(
+    environmentSchema({
+      ...createCodeEnvironment(),
+      files: optional(globListSchema),
+      fixtures: optional(globListSchema),
+      coverageDir: optional(directorySchema),
     }),
   ),
-  source: createDirectoriesGroup(),
-  bin: createDirectoriesGroup(),
-  scripts: createDirectoriesGroup(),
-  test: optional(
-    strictObject({
-      dirs: optional(directoriesSchema),
-      files: optional(globsSchema),
-      fixtureFiles: optional(globsSchema),
-      coverageDir: optional(directorySchema),
+  bin: optional(environmentSchema(createCodeEnvironment())),
+  scripts: optional(environmentSchema(createCodeEnvironment())),
+  tooling: optional(
+    environmentSchema({
+      dirs: optional(dirsSchema),
+      files: optional(globListSchema),
     }),
   ),
   build: optional(
@@ -65,6 +67,7 @@ export const configSchema = strictObject({
     strictObject({
       tsconfig: optional(fileSchema),
       distTsconfig: optional(fileSchema),
+      files: optional(globListSchema),
       envFile: optional(fileSchema),
     }),
   ),

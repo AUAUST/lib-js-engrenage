@@ -5,13 +5,19 @@ export default defineConfig({
   agents: {
     preferred: ["claude", "codex"],
   },
-  code: {
-    configFiles: ["*.config.ts", ".*.ts", "src/prettier/index.ts"],
-    discoveredFiles: [
-      "bin/**/*.ts",
-      "scripts/**/*.ts",
-      "src/eslint/conventions/*/*.ts",
-    ],
-    generatedFiles: ["src/eslint/types/Rules.ts", "src/eslint/types/rules/**"],
+  src: {
+    generated: ["eslint/types/Rules.ts", "eslint/types/rules/**"],
+    discovered: ["eslint/conventions/*/*.ts"],
+  },
+  bin: {
+    discovered: ["**/*.ts"],
+  },
+  scripts: {
+    discovered: ["**/*.ts"],
+  },
+  tooling: {
+    files: {
+      append: ["src/prettier/index.ts"],
+    },
   },
 });

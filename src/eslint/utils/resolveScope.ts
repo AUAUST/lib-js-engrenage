@@ -12,84 +12,75 @@ function resolveScopeReference(
   config: ResolvedConfig,
   reference: ScopeReference,
 ): Globs {
-  const { code, test } = config;
-
-  const roles = {
-    source: config.source.dirs,
-    bin: config.bin.dirs,
-    scripts: config.scripts.dirs,
-    tests: test.dirs,
-    published: [...config.source.dirs, ...config.bin.dirs],
-    private: [...test.dirs, ...config.scripts.dirs],
-  };
+  const { src, bin, scripts, tests, files } = config;
 
   switch (reference) {
     case "files.code": {
-      return code.files;
+      return config.typescript.files;
     }
 
-    case "files.config": {
-      return code.configFiles;
+    case "files.tooling": {
+      return config.tooling.globs;
     }
 
     case "files.discovered": {
-      return code.discoveredFiles;
+      return files.discovered;
     }
 
     case "files.generated": {
-      return code.generatedFiles;
+      return files.generated;
     }
 
     case "files.test": {
-      return test.files;
+      return tests.files;
     }
 
-    case "files.source": {
-      return filesIn(roles.source, code.files);
+    case "files.src": {
+      return src.globs;
     }
 
     case "files.bin": {
-      return filesIn(roles.bin, code.files);
+      return bin.globs;
     }
 
     case "files.scripts": {
-      return filesIn(roles.scripts, code.files);
+      return scripts.globs;
     }
 
     case "files.tests": {
-      return filesIn(roles.tests, code.files);
+      return tests.globs;
     }
 
     case "files.code.published": {
-      return filesIn(roles.published, code.files);
+      return files.published;
     }
 
     case "files.code.private": {
-      return filesIn(roles.private, code.files);
+      return files.private;
     }
 
-    case "dir.source": {
-      return filesIn(roles.source, anyFile);
+    case "dir.src": {
+      return filesIn(src.dirs, anyFile);
     }
 
     case "dir.bin": {
-      return filesIn(roles.bin, anyFile);
+      return filesIn(bin.dirs, anyFile);
     }
 
     case "dir.scripts": {
-      return filesIn(roles.scripts, anyFile);
+      return filesIn(scripts.dirs, anyFile);
     }
 
     case "dir.tests": {
-      return filesIn(roles.tests, anyFile);
+      return filesIn(tests.dirs, anyFile);
     }
 
     case "dir.published": {
-      return filesIn(roles.published, anyFile);
+      return filesIn([...src.dirs, ...bin.dirs], anyFile);
     }
 
     case "dir.private": {
-      return filesIn(roles.private, anyFile);
+      return filesIn([...tests.dirs, ...scripts.dirs], anyFile);
     }
   }
 }
