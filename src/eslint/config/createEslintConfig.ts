@@ -80,7 +80,7 @@ export function createEslintConfig(
     configs.push(
       createImportPresets({
         codeFiles: config.typescript.files,
-        tsconfig: config.typescript.tsconfig,
+        tsconfig: config.typescript.tsconfig.path,
       }),
     );
   }

@@ -1,3 +1,5 @@
+import { basename } from "node:path";
+
 import type { InferOutput } from "valibot";
 
 import { flatMap, wrap } from "@auaust/primitive-kit/arrays";
@@ -31,8 +33,8 @@ import {
 import { createFilesystem } from "#config/utils/createFilesystem";
 import { resolveCodeEnvironment } from "#config/utils/resolveCodeEnvironment";
 import { resolveListOption } from "#config/utils/resolveListOption";
+import { resolveTsconfig } from "#config/utils/resolveTsconfig";
 import {
-  distTsconfigFile,
   gitignoreFile,
   packageJsonFile,
   prettierignoreFile,
@@ -46,7 +48,10 @@ import { filesIn } from "#utils/filesIn";
 import { validate } from "#utils/validate";
 import type { configSchema } from "#config/config/schemas/configSchema";
 import type { Environment } from "#config/types/Environment";
+import type { EnvironmentTsconfig } from "#config/types/EnvironmentTsconfig";
 import type { ResolvedGlobals } from "#config/types/ResolvedGlobals";
+import type { TsconfigGroups } from "#config/types/TsconfigGroups";
+import type { TsconfigKey } from "#config/types/TsconfigKey";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
@@ -100,14 +105,20 @@ export function createResolvedConfig({
     return locate(packageJsonFile);
   }
 
-  function tsconfigPath(): File | undefined {
-    return locate(tsconfigFile, raw.typescript?.tsconfig);
-  }
+  const baseTsconfigFile = once(() => {
+    const file = raw.typescript?.tsconfig?.path ?? tsconfigFile;
 
-  function distTsconfigPath(): File | undefined {
-    return (
-      locate(distTsconfigFile, raw.typescript?.distTsconfig) ?? tsconfigPath()
-    );
+    if (basename(file) !== tsconfigFile) {
+      console.warn(
+        `The base tsconfig ${file} is not named ${tsconfigFile}, the only name editors and typed lint discover`,
+      );
+    }
+
+    return file;
+  });
+
+  function tsconfigPath(): File | undefined {
+    return locate(baseTsconfigFile(), raw.typescript?.tsconfig?.path);
   }
 
   function envFilePath(): File {
@@ -216,14 +227,65 @@ export function createResolvedConfig({
     name: "src" | "bin" | "scripts" | "tests",
     dirs: Directories,
   ) {
-    return resolveCodeEnvironment({
-      name,
-      option: raw[name],
-      dirs,
-      defines: defaultDefines[name],
-      typescriptFiles: typescriptFiles(),
-      filesystem,
+    return freeze({
+      ...resolveCodeEnvironment({
+        name,
+        option: raw[name],
+        dirs,
+        defines: defaultDefines[name],
+        typescriptFiles: typescriptFiles(),
+        filesystem,
+      }),
+      tsconfig: environmentTsconfigFor(name),
     });
+  }
+
+  function environmentTsconfig(
+    option:
+      | false
+      | { tsconfig?: EnvironmentTsconfig | false | undefined }
+      | undefined,
+  ) {
+    return option === false ? false : option?.tsconfig;
+  }
+
+  const tsconfigGroups = once((): TsconfigGroups => {
+    return {
+      "src": environmentTsconfig(raw.src),
+      "tests": environmentTsconfig(raw.tests),
+      "tests.dist": raw.tests === false ? false : raw.tests?.dist?.tsconfig,
+      "bin": environmentTsconfig(raw.bin),
+      "scripts": environmentTsconfig(raw.scripts),
+      "tooling": environmentTsconfig(raw.tooling),
+    };
+  });
+
+  function environmentTsconfigFor(key: TsconfigKey) {
+    const resolved = resolveTsconfig(key, tsconfigGroups());
+
+    function path(): File | undefined {
+      if (resolved.file === undefined || resolved.owner === undefined) {
+        return undefined;
+      }
+
+      const configured = tsconfigGroups()[resolved.owner];
+
+      const located = locate(
+        resolved.file,
+        configured === false ? undefined : configured?.path,
+      );
+
+      return key === "tests.dist" ? (located ?? tsconfigPath()) : located;
+    }
+
+    return freeze(
+      compose(
+        { ...resolved },
+        compose.getters({
+          path,
+        }),
+      ),
+    );
   }
 
   const source = once(() => {
@@ -259,6 +321,9 @@ export function createResolvedConfig({
           )
         : [],
       coverageDir: option?.coverageDir ?? defaultTestsCoverageDirectory,
+      dist: freeze({
+        tsconfig: environmentTsconfigFor("tests.dist"),
+      }),
     });
   });
 
@@ -269,6 +334,7 @@ export function createResolvedConfig({
         dirs: [],
         files: [],
         globs: [],
+        tsconfig: environmentTsconfigFor("tooling"),
       });
     }
 
@@ -289,6 +355,7 @@ export function createResolvedConfig({
       dirs,
       files,
       globs: filesIn(dirs, files),
+      tsconfig: environmentTsconfigFor("tooling"),
     });
   });
 
@@ -337,13 +404,34 @@ export function createResolvedConfig({
     });
   });
 
+  const baseTsconfig = once(() => {
+    const option = raw.typescript?.tsconfig;
+
+    return freeze(
+      compose(
+        {
+          file: baseTsconfigFile(),
+          extends: option?.extends,
+          compilerOptions: option?.compilerOptions ?? {},
+          unmanaged: resolveListOption(
+            option?.unmanaged,
+            () => [],
+            "typescript.tsconfig.unmanaged",
+          ),
+        },
+        compose.getters({
+          path: tsconfigPath,
+        }),
+      ),
+    );
+  });
+
   const typescript = once(() => {
     return freeze(
       compose(
         {},
         compose.getters({
-          tsconfig: tsconfigPath,
-          distTsconfig: distTsconfigPath,
+          tsconfig: baseTsconfig,
           envFile: envFilePath,
           files: typescriptFiles,
         }),

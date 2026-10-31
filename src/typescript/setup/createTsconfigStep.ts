@@ -60,7 +60,7 @@ export function createTsconfigStep(): Step {
     message: `Create ${tsconfigFile}?`,
     isMissing({ config, filesystem }) {
       return (
-        config.raw.typescript?.tsconfig === undefined &&
+        config.raw.typescript?.tsconfig?.path === undefined &&
         !filesystem.exists(tsconfigFile)
       );
     },

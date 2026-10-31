@@ -59,8 +59,6 @@ export const packages = freeze({
   zod,
 });
 
-export const distTsconfigFile = "tsconfig.dist.json" satisfies File;
-
 export const engrenageConfigFile = "engrenage.config" satisfies File;
 
 export const gitignoreFile = ".gitignore" satisfies File;
@@ -72,7 +70,6 @@ export const prettierignoreFile = ".prettierignore" satisfies File;
 export const tsconfigFile = "tsconfig.json" satisfies File;
 
 export const files = freeze({
-  distTsconfig: distTsconfigFile,
   engrenageConfig: engrenageConfigFile,
   gitignore: gitignoreFile,
   packageJson: packageJsonFile,

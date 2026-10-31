@@ -1,4 +1,6 @@
-import { describe, expect, test } from "vitest";
+import { join } from "node:path";
+
+import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage/config";
 
@@ -21,7 +23,7 @@ describe("environments", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(config.src).toEqual({
+    expect(config.src).toMatchObject({
       active: true,
       dirs: ["src"],
       generated: [],
@@ -30,7 +32,7 @@ describe("environments", () => {
       globs: ["src/**/*.{ts,tsx}"],
     });
 
-    expect(config.tests).toEqual({
+    expect(config.tests).toMatchObject({
       active: true,
       dirs: ["tests"],
       generated: [],
@@ -54,7 +56,7 @@ describe("environments", () => {
       defines: false,
     });
 
-    expect(config.tooling).toEqual({
+    expect(config.tooling).toMatchObject({
       active: true,
       dirs: ["."],
       files: ["*.config.ts", ".*.ts"],
@@ -85,7 +87,7 @@ describe("environments", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(config.bin).toEqual({
+    expect(config.bin).toMatchObject({
       active: false,
       dirs: [],
       generated: [],
@@ -101,7 +103,7 @@ describe("environments", () => {
       fixtures: [],
     });
 
-    expect(config.tooling).toEqual({
+    expect(config.tooling).toMatchObject({
       active: false,
       dirs: [],
       files: [],
@@ -160,5 +162,88 @@ describe("environments", () => {
     expect(config.typescript.files).toEqual(["**/*.ts"]);
     expect(config.tooling.files).toEqual(["a.ts", "*.config.ts"]);
     expect(config.src.globs).toEqual(["src/**/*.ts"]);
+  });
+});
+
+describe("environment tsconfigs", () => {
+  test("resolve owner and default path, following inherits", async () => {
+    const project = createProject(
+      '{ scripts: { tsconfig: { inherits: "bin" } } }',
+    );
+
+    const config = await loadConfig(project.root);
+
+    expect(config.src.tsconfig).toMatchObject({
+      owner: "src",
+      file: "tsconfig.src.json",
+      check: true,
+    });
+
+    expect(config.scripts.tsconfig).toMatchObject({
+      owner: "bin",
+      file: "tsconfig.bin.json",
+    });
+
+    expect(config.tooling.tsconfig).toMatchObject({ owner: "bin" });
+
+    expect(config.tests.dist.tsconfig).toMatchObject({
+      owner: "tests.dist",
+      file: "tsconfig.tests.dist.json",
+      check: false,
+    });
+  });
+
+  test("leave an environment without tsconfig when it is false", async () => {
+    const project = createProject("{ bin: { tsconfig: false } }");
+
+    const config = await loadConfig(project.root);
+
+    expect(config.bin.tsconfig.owner).toBeUndefined();
+    expect(config.bin.tsconfig.path).toBeUndefined();
+  });
+
+  test("fail on a cycle and on an inheriting environment with other options", async () => {
+    const cycle = await loadConfig(
+      createProject(
+        '{ bin: { tsconfig: { inherits: "scripts" } }, scripts: { tsconfig: { inherits: "bin" } } }',
+      ).root,
+    );
+
+    expect(() => cycle.bin).toThrow("inherits in a cycle: bin → scripts → bin");
+
+    const conflict = await loadConfig(
+      createProject(
+        '{ scripts: { tsconfig: { inherits: "bin", lib: ["es2024"] } } }',
+      ).root,
+    );
+
+    expect(() => conflict.scripts).toThrow(
+      "scripts.tsconfig inherits bin and cannot also set lib",
+    );
+  });
+
+  test("warn when the base tsconfig is not named tsconfig.json", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const project = createProject(
+      '{ typescript: { tsconfig: { path: "tsconfig.base.json" } } }',
+      { "tsconfig.base.json": "{}" },
+    );
+
+    const config = await loadConfig(project.root);
+
+    expect(config.typescript.tsconfig.path).toBe(
+      join(project.root, "tsconfig.base.json"),
+    );
+
+    void config.typescript.tsconfig.path;
+
+    expect(warn).toHaveBeenCalledTimes(1);
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining("tsconfig.base.json"),
+    );
+
+    warn.mockRestore();
   });
 });

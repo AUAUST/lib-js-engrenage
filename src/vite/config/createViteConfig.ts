@@ -8,7 +8,7 @@ export function createViteConfig(
 ): Config {
   const { sourcemap, outDir, emptyOutDir } = config.build;
 
-  const { tsconfig } = config.typescript;
+  const { path: tsconfig } = config.typescript.tsconfig;
 
   return {
     root: config.root,

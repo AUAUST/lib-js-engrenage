@@ -2,7 +2,7 @@ import { symlinkSync } from "node:fs";
 import { join } from "node:path";
 
 import { createServer, mergeConfig } from "vite";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { configDefaults } from "vitest/config";
 
 import { loadConfig } from "@auaust/engrenage/config";
@@ -71,10 +71,10 @@ describe("createVitestConfig", () => {
       mode: "build",
     });
 
-    expect(vitestConfig.tsconfig).toBe(join(root, "tsconfig.dist.json"));
+    expect(vitestConfig.tsconfig).toBe(join(root, "tsconfig.tests.dist.json"));
 
     expect(vitestConfig.test?.typecheck?.tsconfig).toBe(
-      join(root, "tsconfig.dist.json"),
+      join(root, "tsconfig.tests.dist.json"),
     );
 
     expect(vitestConfig.resolve?.tsconfigPaths).toBe(false);
@@ -131,5 +131,29 @@ describe("createVitestConfig", () => {
         await server.close();
       }
     }
+  });
+});
+
+describe("createVitestConfig with a renamed base tsconfig", () => {
+  test("receives the configured base tsconfig", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts":
+        'export default { typescript: { tsconfig: { path: "tsconfig.base.json" } } };\n',
+      "tsconfig.base.json": "{}",
+    });
+
+    const config = await loadConfig(project.root);
+
+    const vitestConfig = createVitestConfig(config, {
+      command: "serve",
+      mode: "test",
+    });
+
+    expect(vitestConfig.tsconfig).toBe(
+      join(project.root, "tsconfig.base.json"),
+    );
   });
 });

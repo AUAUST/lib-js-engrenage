@@ -507,7 +507,7 @@ describe("engrenage init", () => {
             },
       );
 
-      expect(JSON.parse(project.read("tsconfig.dist.json"))).toEqual({
+      expect(JSON.parse(project.read("tsconfig.tests.dist.json"))).toEqual({
         extends: [
           "./tsconfig.json",
           "@auaust/engrenage/tsconfig/library.dist.json",

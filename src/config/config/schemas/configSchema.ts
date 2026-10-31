@@ -8,9 +8,11 @@ import {
 } from "valibot";
 
 import { preferredSchema } from "#agents/config/schemas/preferredSchema";
+import { baseTsconfigSchema } from "#config/config/schemas/baseTsconfigSchema";
 import { defineSchema } from "#config/config/schemas/defineSchema";
 import { directorySchema } from "#config/config/schemas/directorySchema";
 import { environmentSchema } from "#config/config/schemas/environmentSchema";
+import { environmentTsconfigSchema } from "#config/config/schemas/environmentTsconfigSchema";
 import { fileSchema } from "#config/config/schemas/fileSchema";
 import { globSchema, globsSchema } from "#config/config/schemas/globsSchema";
 import { listOptionSchema } from "#config/config/schemas/listOptionSchema";
@@ -27,6 +29,7 @@ function createCodeEnvironment() {
     generated: optional(globListSchema),
     discovered: optional(globListSchema),
     defines: optional(boolean()),
+    tsconfig: optional(environmentTsconfigSchema),
   };
 }
 
@@ -40,6 +43,11 @@ export const configSchema = strictObject({
       files: optional(globListSchema),
       fixtures: optional(globListSchema),
       coverageDir: optional(directorySchema),
+      dist: optional(
+        strictObject({
+          tsconfig: optional(environmentTsconfigSchema),
+        }),
+      ),
     }),
   ),
   bin: optional(environmentSchema(createCodeEnvironment())),
@@ -48,6 +56,7 @@ export const configSchema = strictObject({
     environmentSchema({
       dirs: optional(dirsSchema),
       files: optional(globListSchema),
+      tsconfig: optional(environmentTsconfigSchema),
     }),
   ),
   build: optional(
@@ -65,8 +74,7 @@ export const configSchema = strictObject({
   ),
   typescript: optional(
     strictObject({
-      tsconfig: optional(fileSchema),
-      distTsconfig: optional(fileSchema),
+      tsconfig: optional(baseTsconfigSchema),
       files: optional(globListSchema),
       envFile: optional(fileSchema),
     }),

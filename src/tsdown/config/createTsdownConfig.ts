@@ -122,6 +122,7 @@ export function createTsdownConfig(
   );
 
   const { environment, packageJson, packageJsonPath, tsconfig } = config;
+  const { path: tsconfigPath } = config.typescript.tsconfig;
 
   if (packageJsonPath === undefined) {
     throw new Error(`No ${packageJsonFile} found in ${config.root}`);
@@ -157,10 +158,10 @@ export function createTsdownConfig(
     format: "esm",
     outDir,
     clean: emptyOutDir,
-    ...(config.typescript.tsconfig === undefined
+    ...(tsconfigPath === undefined
       ? {}
       : {
-          tsconfig: config.typescript.tsconfig,
+          tsconfig: tsconfigPath,
         }),
     dts: {
       eager: typed,

@@ -100,7 +100,7 @@ describe("loadConfig", () => {
 
   test("reads the configured tsconfig, rejects a missing configured file when read, even under the default name, and follows pending writes", async () => {
     const appConfig =
-      'export default { typescript: { tsconfig: "tsconfig.app.json" } };\n';
+      'export default { typescript: { tsconfig: { path: "tsconfig.app.json" } } };\n';
 
     const tsconfig = JSON.stringify({
       compilerOptions: {
@@ -137,13 +137,13 @@ describe("loadConfig", () => {
       }).root,
     );
 
-    expect(() => missing.typescript.tsconfig).toThrow(
+    expect(() => missing.typescript.tsconfig.path).toThrow(
       `The configured tsconfig.app.json does not exist in ${missing.root}`,
     );
 
     missing.filesystem.write("tsconfig.app.json", tsconfig);
 
-    expect(missing.typescript.tsconfig).toBe(
+    expect(missing.typescript.tsconfig.path).toBe(
       join(missing.root, "tsconfig.app.json"),
     );
 
@@ -152,41 +152,41 @@ describe("loadConfig", () => {
     const explicitDefault = await loadConfig(
       createTemporaryProject({
         "engrenage.config.ts":
-          'export default { typescript: { tsconfig: "tsconfig.json" } };\n',
+          'export default { typescript: { tsconfig: { path: "tsconfig.json" } } };\n',
       }).root,
     );
 
-    expect(() => explicitDefault.typescript.tsconfig).toThrow(
+    expect(() => explicitDefault.typescript.tsconfig.path).toThrow(
       "The configured tsconfig.json does not exist",
     );
   });
 
-  test("uses tsconfig.dist.json when present, falls back to the tsconfig and rejects a missing configured dist tsconfig", async () => {
+  test("uses tsconfig.tests.dist.json when present, falls back to the tsconfig and rejects a missing configured dist tsconfig", async () => {
     const root = getFixture("config/custom");
 
     const config = await loadConfig(root);
 
-    expect(config.typescript.distTsconfig).toBe(join(root, "tsconfig.json"));
+    expect(config.tests.dist.tsconfig.path).toBe(join(root, "tsconfig.json"));
 
     const implicit = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
-      "tsconfig.dist.json": "{}",
+      "tsconfig.tests.dist.json": "{}",
     }).root;
 
     const implicitConfig = await loadConfig(implicit);
 
-    expect(implicitConfig.typescript.distTsconfig).toBe(
-      join(implicit, "tsconfig.dist.json"),
+    expect(implicitConfig.tests.dist.tsconfig.path).toBe(
+      join(implicit, "tsconfig.tests.dist.json"),
     );
 
     const missing = await loadConfig(
       createTemporaryProject({
         "engrenage.config.ts":
-          'export default { typescript: { distTsconfig: "tsconfig.build.json" } };\n',
+          'export default { tests: { dist: { tsconfig: { path: "tsconfig.build.json" } } } };\n',
       }).root,
     );
 
-    expect(() => missing.typescript.distTsconfig).toThrow(
+    expect(() => missing.tests.dist.tsconfig.path).toThrow(
       `The configured tsconfig.build.json does not exist in ${missing.root}`,
     );
   });
@@ -197,7 +197,7 @@ describe("loadConfig", () => {
     const config = await loadConfig(root);
 
     expect(config.packageJsonPath).toBe(join(root, "package.json"));
-    expect(config.typescript.tsconfig).toBe(join(root, "tsconfig.json"));
+    expect(config.typescript.tsconfig.path).toBe(join(root, "tsconfig.json"));
     expect(config.git.gitignore).toBeUndefined();
     expect(config.prettier.prettierignore).toBeUndefined();
 

@@ -48,8 +48,8 @@ export function createVitestConfig(
   const testsBuild = mode === buildMode;
 
   const tsconfig = testsBuild
-    ? config.typescript.distTsconfig
-    : config.typescript.tsconfig;
+    ? config.tests.dist.tsconfig.path
+    : config.typescript.tsconfig.path;
 
   return {
     ...(tsconfig === undefined

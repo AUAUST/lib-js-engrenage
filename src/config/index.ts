@@ -11,6 +11,7 @@ export * from "#config/types/DefineContext";
 export * from "#config/types/Definition";
 export * from "#config/types/DefinitionOptions";
 export * from "#config/types/Environment";
+export * from "#config/types/EnvironmentTsconfig";
 export * from "#config/types/Filesystem";
 export * from "#config/types/GlobalScope";
 export * from "#config/types/GlobalsFactory";
@@ -22,4 +23,6 @@ export * from "#config/types/Presets";
 export * from "#config/types/ResolvedConfig";
 export * from "#config/types/ResolvedGlobal";
 export * from "#config/types/ResolvedGlobals";
+export * from "#config/types/TsconfigGroups";
+export * from "#config/types/TsconfigKey";
 // @end

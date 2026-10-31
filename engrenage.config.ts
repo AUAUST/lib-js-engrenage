@@ -5,6 +5,11 @@ export default defineConfig({
   agents: {
     preferred: ["claude", "codex"],
   },
+  tests: {
+    dist: {
+      tsconfig: { path: "tsconfig.dist.json" },
+    },
+  },
   src: {
     generated: ["eslint/types/Rules.ts", "eslint/types/rules/**"],
     discovered: ["eslint/conventions/*/*.ts"],

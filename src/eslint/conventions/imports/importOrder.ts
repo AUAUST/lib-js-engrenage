@@ -42,7 +42,7 @@ function createProjectGroup(
 
 export default defineConvention({
   delegates({ root, typescript }) {
-    const tsconfigPath = typescript.tsconfig;
+    const tsconfigPath = typescript.tsconfig.path;
 
     return [
       delegateRule("perfectionist/sort-imports", [
