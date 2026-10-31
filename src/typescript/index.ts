@@ -11,4 +11,6 @@ export * from "#typescript/types/PathAliases";
 export * from "#typescript/types/Paths";
 export * from "#typescript/types/SubpathImports";
 export * from "#typescript/types/Tsconfig";
+export * from "#typescript/types/TsconfigProducer";
+export * from "#typescript/types/TsconfigTarget";
 // @end

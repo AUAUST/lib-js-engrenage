@@ -15,6 +15,7 @@ import { syncPrettierignoreFile } from "#prettier/setup/syncPrettierignoreFile";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { settleChanges } from "#support/commander/utils/settleChanges";
 import { syncEnvFile } from "#typescript/setup/syncEnvFile";
+import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
 import { validate } from "#utils/validate";
 import { syncVscodeFiles } from "#vscode/setup/syncVscodeFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -49,6 +50,7 @@ const targets = {
   gitignore: defineTarget(syncGitignoreFile),
   globals: defineTarget(syncEnvFile),
   prettierignore: defineTarget(syncPrettierignoreFile),
+  tsconfig: defineTarget(syncTsconfigFiles),
   vscode: defineTarget(syncVscodeFiles, {
     settings: "create .vscode/settings.json when it is missing",
     extensions: "create .vscode/extensions.json when it is missing",
