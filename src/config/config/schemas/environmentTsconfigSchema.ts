@@ -22,6 +22,7 @@ export const environmentTsconfigSchema = union([
     inherits: optional(picklist(tsconfigEnvironments)),
     extends: optional(managedListOptionSchema(string())),
     include: optional(managedListOptionSchema(string())),
+    exclude: optional(managedListOptionSchema(string())),
     lib: optional(managedListOptionSchema(string())),
     types: optional(managedListOptionSchema(string())),
     compilerOptions: optional(record(string(), unknown())),

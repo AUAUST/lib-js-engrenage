@@ -22,6 +22,7 @@ function toTarget(
     file,
     extends: extended,
     include,
+    exclude,
     lib,
     types,
     compilerOptions,
@@ -35,6 +36,7 @@ function toTarget(
         file,
         extends: extended,
         include,
+        exclude,
         lib,
         types,
         compilerOptions,
@@ -67,6 +69,7 @@ function collectTargets(config: ResolvedConfig): PlannedTarget[] {
         file: tsconfig.file,
         extends: tsconfig.extends,
         include: undefined,
+        exclude: undefined,
         lib: undefined,
         types: undefined,
         compilerOptions: tsconfig.compilerOptions,
@@ -93,10 +96,17 @@ function collectTargets(config: ResolvedConfig): PlannedTarget[] {
   return targets;
 }
 
-function listPaths({ extends: extended, include, lib, types }: TsconfigTarget) {
+function listPaths({
+  extends: extended,
+  include,
+  exclude,
+  lib,
+  types,
+}: TsconfigTarget) {
   const unmanagedLists = [
     [["extends"], extended],
     [["include"], include],
+    [["exclude"], exclude],
     [["compilerOptions", "lib"], lib],
     [["compilerOptions", "types"], types],
   ] as const;

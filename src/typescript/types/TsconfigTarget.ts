@@ -7,6 +7,7 @@ export interface TsconfigTarget {
   readonly file: File;
   readonly extends: ManagedListOption<string> | undefined;
   readonly include: ManagedListOption<string> | undefined;
+  readonly exclude: ManagedListOption<string> | undefined;
   readonly lib: ManagedListOption<string> | undefined;
   readonly types: ManagedListOption<string> | undefined;
   readonly compilerOptions: Readonly<Record<string, unknown>>;
