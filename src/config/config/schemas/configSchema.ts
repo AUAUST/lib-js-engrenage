@@ -3,7 +3,9 @@ import {
   literal,
   optional,
   picklist,
+  record,
   strictObject,
+  string,
   union,
 } from "valibot";
 
@@ -13,6 +15,7 @@ import { defineSchema } from "#config/config/schemas/defineSchema";
 import { directorySchema } from "#config/config/schemas/directorySchema";
 import { environmentSchema } from "#config/config/schemas/environmentSchema";
 import { environmentTsconfigSchema } from "#config/config/schemas/environmentTsconfigSchema";
+import { exposedFilesSchema } from "#config/config/schemas/exposedFilesSchema";
 import { fileSchema } from "#config/config/schemas/fileSchema";
 import { globSchema, globsSchema } from "#config/config/schemas/globsSchema";
 import { listOptionSchema } from "#config/config/schemas/listOptionSchema";
@@ -36,7 +39,12 @@ function createCodeEnvironment() {
 export const configSchema = strictObject({
   presets: optional(presetsSchema),
   define: optional(defineSchema),
-  src: optional(environmentSchema(createCodeEnvironment())),
+  src: optional(
+    environmentSchema({
+      ...createCodeEnvironment(),
+      exports: optional(exposedFilesSchema),
+    }),
+  ),
   tests: optional(
     environmentSchema({
       ...createCodeEnvironment(),
@@ -50,7 +58,17 @@ export const configSchema = strictObject({
       ),
     }),
   ),
-  bin: optional(environmentSchema(createCodeEnvironment())),
+  bin: optional(
+    environmentSchema({
+      ...createCodeEnvironment(),
+      commands: optional(record(string(), fileSchema)),
+    }),
+  ),
+  data: optional(
+    environmentSchema({
+      exports: optional(exposedFilesSchema),
+    }),
+  ),
   scripts: optional(environmentSchema(createCodeEnvironment())),
   tooling: optional(
     environmentSchema({

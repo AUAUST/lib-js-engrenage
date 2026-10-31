@@ -20,6 +20,15 @@ export default defineConfig({
   scripts: {
     discovered: ["**/*.ts"],
   },
+  data: {
+    exports: {
+      "./agents/templates/*.md": "data/agents/templates/*.md",
+      "./agents/rules/*.md": "data/agents/rules/*.md",
+      "./agents/sections/*.md": "data/agents/sections/*.md",
+      "./github/workflows/*.yml": "data/github/workflows/*.yml",
+      "./tsconfig/*.json": "data/tsconfig/*.json",
+    },
+  },
   tooling: {
     files: {
       append: ["src/prettier/index.ts"],

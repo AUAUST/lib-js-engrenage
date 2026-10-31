@@ -132,9 +132,6 @@ describe("createTsdownConfig", () => {
         ci: true,
       },
       {
-        customExports: {
-          "./presets/*.json": "./data/presets/*.json",
-        },
         bundle: ["@auaust/toolkit"],
       },
     );
@@ -151,9 +148,6 @@ describe("createTsdownConfig", () => {
       clean: true,
       exports: {
         exclude: ["bin/cli"],
-        customExports: {
-          "./presets/*.json": "./data/presets/*.json",
-        },
       },
       deps: {
         onlyBundle: ["@auaust/toolkit"],
@@ -275,5 +269,125 @@ describe("createTsdownConfig", () => {
         ci: false,
       });
     }).toThrow('must declare "type": "module"');
+  });
+
+  describe("exposed files", () => {
+    function createProject(config: object, files: Record<string, string> = {}) {
+      return createTemporaryProject({
+        "package.json": JSON.stringify({
+          name: "@scope/package",
+          type: "module",
+        }),
+        "engrenage.config.ts": `export default ${JSON.stringify(config)};\n`,
+        "tsconfig.json": JSON.stringify({
+          compilerOptions: {
+            outDir: "dist",
+            paths: {
+              "@scope/package": ["./src/index.ts"],
+              "@scope/package/*": ["./src/*/index.ts"],
+            },
+          },
+        }),
+        "src/index.ts": "export {};\n",
+        "src/alpha/index.ts": "export {};\n",
+        "src/alpha/constants.ts": "export {};\n",
+        ...files,
+      });
+    }
+
+    test("builds the same entries from src.exports as from the equivalent paths", async () => {
+      const project = createProject({
+        src: {
+          exports: { ".": "src/index.ts", "./*": "src/*/index.ts" },
+        },
+      });
+
+      const fromExports = createTsdownConfig(await loadConfig(project.root), {
+        ci: false,
+      });
+
+      const fromPaths = createTsdownConfig(
+        await loadConfig(createProject({}).root),
+        { ci: false },
+      );
+
+      expect(fromExports.entry).toEqual({
+        "index": "src/index.ts",
+        "alpha/index": "src/alpha/index.ts",
+      });
+
+      expect(fromExports.entry).toEqual(fromPaths.entry);
+    });
+
+    test("restricts the entries to src.exports when declared", async () => {
+      const project = createProject({
+        src: {
+          exports: {
+            ".": "src/index.ts",
+            "./alpha/constants": "src/alpha/constants.ts",
+          },
+        },
+      });
+
+      expect(
+        createTsdownConfig(await loadConfig(project.root), { ci: false }).entry,
+      ).toEqual({
+        "index": "src/index.ts",
+        "alpha/constants": "src/alpha/constants.ts",
+      });
+    });
+
+    test("builds the commands from bin.commands", async () => {
+      const project = createProject(
+        {
+          bin: {
+            commands: { tool: "bin/tool/index.ts" },
+          },
+        },
+        {
+          "bin/tool/index.ts": "export {};\n",
+          "bin/other.ts": "export {};\n",
+        },
+      );
+
+      expect(
+        createTsdownConfig(await loadConfig(project.root), { ci: false }),
+      ).toMatchObject({
+        entry: { "bin/tool": "bin/tool/index.ts" },
+        exports: { exclude: ["bin/tool"] },
+      });
+    });
+
+    test("passes data.exports to tsdown's custom exports", async () => {
+      const project = createProject({
+        data: {
+          exports: { "./presets/*.json": "data/presets/*.json" },
+        },
+      });
+
+      expect(
+        createTsdownConfig(await loadConfig(project.root), { ci: false }),
+      ).toMatchObject({
+        exports: {
+          customExports: { "./presets/*.json": "./data/presets/*.json" },
+        },
+      });
+    });
+
+    test("rejects a subpath exposed by both src and data", async () => {
+      const project = createProject({
+        data: {
+          exports: { "./alpha": "data/alpha.json" },
+        },
+      });
+
+      const config = await loadConfig(project.root);
+
+      expect(() => {
+        return createTsdownConfig(config, { ci: false });
+      }).toThrow(
+        /Subpath '\.\/alpha' is exposed by both src .* and data\.exports/,
+      );
+    });
   });
 });

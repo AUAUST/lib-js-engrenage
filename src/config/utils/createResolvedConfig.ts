@@ -289,11 +289,24 @@ export function createResolvedConfig({
   }
 
   const source = once(() => {
-    return resolveEnvironment("src", defaultSourceDirectories);
+    return freeze({
+      ...resolveEnvironment("src", defaultSourceDirectories),
+      exports: raw.src === false ? undefined : raw.src?.exports,
+    });
   });
 
   const bin = once(() => {
-    return resolveEnvironment("bin", defaultBinDirectories);
+    return freeze({
+      ...resolveEnvironment("bin", defaultBinDirectories),
+      commands: raw.bin === false ? undefined : raw.bin?.commands,
+    });
+  });
+
+  const data = once(() => {
+    return freeze({
+      active: raw.data !== false,
+      exports: (raw.data === false ? undefined : raw.data?.exports) ?? {},
+    });
   });
 
   const scripts = once(() => {
@@ -515,6 +528,7 @@ export function createResolvedConfig({
         tests,
         bin,
         scripts,
+        data,
         tooling,
         files,
         build,

@@ -1,16 +1,5 @@
-import {
-  array,
-  optional,
-  pipe,
-  readonly,
-  record,
-  strictObject,
-  string,
-} from "valibot";
-
-import { globsSchema } from "#config/config/schemas/globsSchema";
+import { array, optional, pipe, readonly, strictObject, string } from "valibot";
 
 export const optionsSchema = strictObject({
-  customExports: optional(record(string(), globsSchema), {}),
   bundle: optional(pipe(array(string()), readonly()), []),
 });
