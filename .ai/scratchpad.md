@@ -1,5 +1,9 @@
 # Scratchpad
 
-<!-- scratchpad-placeholder -->
+===
 
-Uwaaah~ every last note hopped into its cozy issue burrow, so this strawberry-milk page is spinning in tiny happy circles, holding its breath for your next sparkly brain-sprinkle! 🍓🐹✨
+createTsconfigStep.ts still writes the baseline into extends, which sync immediately removes.
+
+===
+
+createDistTsconfigStep.ts still references library.dist.json.

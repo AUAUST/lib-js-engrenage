@@ -495,10 +495,7 @@ describe("engrenage init", () => {
               extends: "@auaust/engrenage/tsconfig/library.json",
             }
           : {
-              extends: [
-                "@auaust/engrenage/tsconfig/library.json",
-                "@auaust/engrenage/tsconfig/baseline/2026-10.json",
-              ],
+              extends: "@auaust/engrenage/tsconfig/library.json",
               compilerOptions: {
                 paths: {
                   [name]: ["./src/index.ts"],
