@@ -23,6 +23,7 @@ export * from "#config/types/Presets";
 export * from "#config/types/ResolvedConfig";
 export * from "#config/types/ResolvedGlobal";
 export * from "#config/types/ResolvedGlobals";
+export * from "#config/types/Runtime";
 export * from "#config/types/TsconfigGroups";
 export * from "#config/types/TsconfigKey";
 // @end

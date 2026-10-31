@@ -19,6 +19,7 @@ import { exposedFilesSchema } from "#config/config/schemas/exposedFilesSchema";
 import { fileSchema } from "#config/config/schemas/fileSchema";
 import { globSchema, globsSchema } from "#config/config/schemas/globsSchema";
 import { listOptionSchema } from "#config/config/schemas/listOptionSchema";
+import { nodeMajorSchema } from "#config/config/schemas/nodeMajorSchema";
 import { presetsSchema } from "#config/config/schemas/presetsSchema";
 import { workflowSetNames } from "#github/constants";
 
@@ -38,11 +39,18 @@ function createCodeEnvironment() {
 
 export const configSchema = strictObject({
   presets: optional(presetsSchema),
+  runtime: optional(
+    strictObject({
+      node: optional(nodeMajorSchema),
+    }),
+  ),
   define: optional(defineSchema),
   src: optional(
     environmentSchema({
       ...createCodeEnvironment(),
       exports: optional(exposedFilesSchema),
+      baseline: optional(string()),
+      node: optional(nodeMajorSchema),
     }),
   ),
   tests: optional(
@@ -62,6 +70,7 @@ export const configSchema = strictObject({
     environmentSchema({
       ...createCodeEnvironment(),
       commands: optional(record(string(), fileSchema)),
+      node: optional(nodeMajorSchema),
     }),
   ),
   data: optional(

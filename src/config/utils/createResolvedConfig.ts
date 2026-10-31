@@ -33,6 +33,9 @@ import {
 import { createFilesystem } from "#config/utils/createFilesystem";
 import { resolveCodeEnvironment } from "#config/utils/resolveCodeEnvironment";
 import { resolveListOption } from "#config/utils/resolveListOption";
+import { resolveNodeRuntime } from "#config/utils/resolveNodeRuntime";
+import { resolveRuntimeNode } from "#config/utils/resolveRuntimeNode";
+import { resolveSourceRuntime } from "#config/utils/resolveSourceRuntime";
 import { resolveTsconfig } from "#config/utils/resolveTsconfig";
 import {
   gitignoreFile,
@@ -208,6 +211,17 @@ export function createResolvedConfig({
     );
   }
 
+  const runtime = once(() => {
+    return freeze(
+      compose(
+        {},
+        compose.getters({
+          node: runtimeNode,
+        }),
+      ),
+    );
+  });
+
   const define = once(() => {
     return freeze({
       types: raw.define?.types ?? defaultDefineTypes,
@@ -222,6 +236,14 @@ export function createResolvedConfig({
       "typescript.files",
     );
   });
+
+  const runtimeNode = once(() => {
+    return resolveRuntimeNode(raw.runtime?.node);
+  });
+
+  function developmentRuntime() {
+    return resolveNodeRuntime(runtimeNode(), "runtime.node");
+  }
 
   function resolveEnvironment(
     name: "src" | "bin" | "scripts" | "tests",
@@ -289,17 +311,42 @@ export function createResolvedConfig({
   }
 
   const source = once(() => {
-    return freeze({
-      ...resolveEnvironment("src", defaultSourceDirectories),
-      exports: raw.src === false ? undefined : raw.src?.exports,
-    });
+    return freeze(
+      compose(
+        {
+          ...resolveEnvironment("src", defaultSourceDirectories),
+          exports: raw.src === false ? undefined : raw.src?.exports,
+        },
+        compose.getters({
+          runtime: () => {
+            return raw.src === false
+              ? undefined
+              : resolveSourceRuntime(raw.src ?? {});
+          },
+        }),
+      ),
+    );
   });
 
   const bin = once(() => {
-    return freeze({
-      ...resolveEnvironment("bin", defaultBinDirectories),
-      commands: raw.bin === false ? undefined : raw.bin?.commands,
-    });
+    return freeze(
+      compose(
+        {
+          ...resolveEnvironment("bin", defaultBinDirectories),
+          commands: raw.bin === false ? undefined : raw.bin?.commands,
+        },
+        compose.getters({
+          runtime: () => {
+            return raw.bin === false
+              ? undefined
+              : freeze({
+                  kind: "node" as const,
+                  major: raw.bin?.node ?? runtimeNode(),
+                });
+          },
+        }),
+      ),
+    );
   });
 
   const data = once(() => {
@@ -310,45 +357,66 @@ export function createResolvedConfig({
   });
 
   const scripts = once(() => {
-    return resolveEnvironment("scripts", defaultScriptsDirectories);
+    return freeze(
+      compose(
+        { ...resolveEnvironment("scripts", defaultScriptsDirectories) },
+        compose.getters({
+          runtime: developmentRuntime,
+        }),
+      ),
+    );
   });
 
   const tests = once(() => {
     const option = raw.tests === false ? undefined : raw.tests;
     const enabled = raw.tests !== false;
 
-    return freeze({
-      ...resolveEnvironment("tests", defaultTestsDirectories),
-      files: enabled
-        ? resolveListOption(
-            option?.files,
-            () => defaultTestsFiles,
-            "tests.files",
-          )
-        : [],
-      fixtures: enabled
-        ? resolveListOption(
-            option?.fixtures,
-            () => defaultTestsFixtures,
-            "tests.fixtures",
-          )
-        : [],
-      coverageDir: option?.coverageDir ?? defaultTestsCoverageDirectory,
-      dist: freeze({
-        tsconfig: environmentTsconfigFor("tests.dist"),
-      }),
-    });
+    return freeze(
+      compose(
+        {
+          ...resolveEnvironment("tests", defaultTestsDirectories),
+          files: enabled
+            ? resolveListOption(
+                option?.files,
+                () => defaultTestsFiles,
+                "tests.files",
+              )
+            : [],
+          fixtures: enabled
+            ? resolveListOption(
+                option?.fixtures,
+                () => defaultTestsFixtures,
+                "tests.fixtures",
+              )
+            : [],
+          coverageDir: option?.coverageDir ?? defaultTestsCoverageDirectory,
+          dist: freeze({
+            tsconfig: environmentTsconfigFor("tests.dist"),
+          }),
+        },
+        compose.getters({
+          runtime: developmentRuntime,
+        }),
+      ),
+    );
   });
 
   const tooling = once(() => {
     if (raw.tooling === false) {
-      return freeze({
-        active: false,
-        dirs: [],
-        files: [],
-        globs: [],
-        tsconfig: environmentTsconfigFor("tooling"),
-      });
+      return freeze(
+        compose(
+          {
+            active: false,
+            dirs: [],
+            files: [],
+            globs: [],
+            tsconfig: environmentTsconfigFor("tooling"),
+          },
+          compose.getters({
+            runtime: developmentRuntime,
+          }),
+        ),
+      );
     }
 
     const dirs = resolveListOption(
@@ -363,13 +431,20 @@ export function createResolvedConfig({
       "tooling.files",
     );
 
-    return freeze({
-      active: dirs.some((directory) => filesystem.isDirectory(directory)),
-      dirs,
-      files,
-      globs: filesIn(dirs, files),
-      tsconfig: environmentTsconfigFor("tooling"),
-    });
+    return freeze(
+      compose(
+        {
+          active: dirs.some((directory) => filesystem.isDirectory(directory)),
+          dirs,
+          files,
+          globs: filesIn(dirs, files),
+          tsconfig: environmentTsconfigFor("tooling"),
+        },
+        compose.getters({
+          runtime: developmentRuntime,
+        }),
+      ),
+    );
   });
 
   const files = once(() => {
@@ -523,6 +598,7 @@ export function createResolvedConfig({
         tsconfig,
         environment,
         presets,
+        runtime,
         define,
         src: source,
         tests,
