@@ -1,5 +1,41 @@
 # @auaust/engrenage
 
+## 0.5.0
+
+### Minor Changes
+
+- [`9a73416`](https://github.com/AUAUST/lib-js-engrenage/commit/9a7341654da9bc3fe166971412da94901c55081a) Thanks [@apademide](https://github.com/apademide)! - - Add `runtime.node`, `bin.node`, `src.baseline` and `src.node` options, resolved into a `runtime` per environment with the browser and Node minimums derived from the baseline snapshot
+  - Write the newest baseline snapshot as `src.baseline` in the `engrenage.config.ts` created by `engrenage init`
+
+- [`6663774`](https://github.com/AUAUST/lib-js-engrenage/commit/66637746e031065269e8b324cd9253cda5798ce5) Thanks [@apademide](https://github.com/apademide)! - - Add `src.exports`, `bin.commands` and the `data` environment with its `data.exports` to declare what each environment exposes, resolved into `config.src.exports`, `config.bin.commands` and `config.data`; without `src.exports` and `bin.commands`, entries still come from the tsconfig `paths` and the `bin.dirs` files
+  - Fail the tsdown build when `src` and `data.exports` expose the same subpath
+  - Move the tsdown `customExports` option to `data.exports` in the engrenage config
+
+- [`1704d15`](https://github.com/AUAUST/lib-js-engrenage/commit/1704d157d7ee6825c38e0c1a6585b719afaaae16) Thanks [@apademide](https://github.com/apademide)! - - Replace the `source`, `test`, `bin`, `scripts` and `code` config groups with the `src`, `tests`, `bin`, `scripts` and `tooling` environments, each resolved into `config.src`, `config.tests`, `config.bin`, `config.scripts` and `config.tooling` with its `active` state, and add `config.files` aggregating their `generated`, `discovered`, `fixtures`, `published` and `private` globs
+  - Move `source` to `src`, `test` to `tests`, `test.fixtureFiles` to `tests.fixtures`, `code.files` to `typescript.files`, `code.configFiles` to `tooling.files`, and `code.generatedFiles` and `code.discoveredFiles` to the `generated` and `discovered` lists of each environment, relative to its `dirs`
+  - Add `defines` to the `src`, `tests`, `bin` and `scripts` environments, and accept `false` to disable any environment
+  - Accept list options for the dirs and globs of every environment and for `typescript.files`
+  - Rename the ESLint scope references `files.source` and `dir.source` to `files.src` and `dir.src`, and `files.config` to `files.tooling`
+
+- [`4a9d962`](https://github.com/AUAUST/lib-js-engrenage/commit/4a9d962e0ebbf9c44a895fd945b47273908d104c) Thanks [@apademide](https://github.com/apademide)! - - Add the `ListOption`, `ListAdjustment` and `ManagedListOption` config types: a list replaces its default, adjusts it with `prepend`, `append` and `exclude`, resets it with `true`, or leaves it unmanaged with `false` where that differs from an empty list
+
+- [`237bf0d`](https://github.com/AUAUST/lib-js-engrenage/commit/237bf0ddcd2a8c49986397f96a238a7a15c72529) Thanks [@apademide](https://github.com/apademide)! - - Add the `tests.json`, `node/24.json` and `baseline/2026-10.json` tsconfig presets, and extend `tests.json` from `library.dist.json`
+  - Remove `target` from `base.json`, and set `types: []` and `exactOptionalPropertyTypes` in `library.json`
+  - Extend the newest baseline snapshot in the tsconfig of new libraries
+  - Pin `typescript` to an exact version in new projects
+  - Typecheck every referenced project when the tsconfig has references
+  - Declare the namespace of empty module entries in bundled declarations
+  - Add `cache.dir` and `config.cacheFor(packageName)` to place every tool cache under one root, removing the eslint `defaultCacheLocation` constant
+  - Require a blank line before a `throw` that follows other statements
+  - Ignore `AGENTS.override.md` in the project block of the synced `.prettierignore` when Codex is a preferred agent
+  - Require Node 24 to install engrenage
+  - Define the precedence of scoped rules, task references and tool configuration in the shared instructions
+  - Remove the migration of `.claude/backlog.md`
+
+- [`dc01af7`](https://github.com/AUAUST/lib-js-engrenage/commit/dc01af7000820a228df5e45201c29cf2c8e333fa) Thanks [@apademide](https://github.com/apademide)! - - Turn `typescript.tsconfig` into a group (`path`, `extends`, `compilerOptions`, `unmanaged`) and move `typescript.distTsconfig` to `tests.dist.tsconfig.path`, defaulting to `tsconfig.tests.dist.json`
+  - Add a `tsconfig` group (`path`, `inherits`, `extends`, `include`, `lib`, `types`, `compilerOptions`, `unmanaged`, `check`) to the `src`, `tests`, `bin`, `scripts` and `tooling` environments and to `tests.dist`, resolved into `config.<environment>.tsconfig` with its owner, following `inherits` and failing on cycles and conflicting options
+  - Warn when the base tsconfig is not named `tsconfig.json`
+
 ## 0.4.3
 
 ### Patch Changes
