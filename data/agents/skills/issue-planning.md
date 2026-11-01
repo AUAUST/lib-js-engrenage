@@ -7,6 +7,7 @@ invocation: explicit
 agent:
   name: planner
   description: Planner that builds and maintains a tree of GitHub issues and never implements it. Use proactively when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues.
+  model: opus
 ---
 
 # Issue planning
