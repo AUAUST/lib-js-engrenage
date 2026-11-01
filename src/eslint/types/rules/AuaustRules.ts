@@ -34,6 +34,10 @@ export interface AuaustRules {
    */
   "auaust/curly"?: Rule<AuaustCurly>;
   /**
+   * Write debt markers as `@debt <statement>` at the start of their own comment.
+   */
+  "auaust/debt-markers"?: Rule<[]>;
+  /**
    * Keep function overloads and their implementation together, without blank lines.
    */
   "auaust/grouped-overloads"?: Rule<[]>;

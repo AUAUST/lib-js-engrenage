@@ -618,6 +618,35 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
     expect(await lintedRules("tests/placed.test.ts")).toEqual([]);
   });
 
+  test("reports only malformed debt markers", async () => {
+    const eslint = await getLinter();
+
+    async function lintedComments(source: string) {
+      const [result] = await eslint.lintText(source, {
+        filePath: "src/violations.ts",
+      });
+
+      return map(
+        result?.messages.filter(
+          ({ ruleId }) => ruleId === "auaust/debt-markers",
+        ) ?? [],
+        (message) => message.line,
+      );
+    }
+
+    expect(
+      await lintedComments(
+        "// @debt data.dirs could be empty when data is inactive\n/**\n * @debt first line\n * second line\n */\nexport {};\n",
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lintedComments(
+        "// @debt\n// @Debt: nope\n// see @debt below\n// @debt: nope\nexport {};\n",
+      ),
+    ).toEqual([1, 2, 3, 4]);
+  });
+
   test("reports misordered package.json properties and collections, unless disabled", async () => {
     expect(await lintedPackageJsonRules()).toEqual([
       "package-json/order-properties",

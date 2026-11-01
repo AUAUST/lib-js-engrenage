@@ -1,6 +1,10 @@
 # Scratchpad
 
-<!-- scratchpad-placeholder -->
+This should be handled:
 
-> "The only way to do great work is to love what you do."
-> — Steve Jobs
+$ gh issue view 85 --repo AUAUST/lib-js-engrenage --comments
+
+Exit code 1
+GraphQL: Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. (repository.issue.projectCards)
+
+Likely a different command to use?
