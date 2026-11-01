@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { mkdirSync, symlinkSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,6 +10,7 @@ import { keys } from "@auaust/toolkit/object";
 
 import { createFilesystem } from "#config/utils/createFilesystem";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
+import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
 import { listTsconfigPresets } from "#typescript/utils/listTsconfigPresets";
@@ -27,6 +29,35 @@ function runTsc(...args: string[]): string {
 
 function showConfig(project: string) {
   return JSON.parse(runTsc("--showConfig", "-p", project));
+}
+
+function createApisProject(source: string): string {
+  const project = createTemporaryProject({
+    "index.ts": source,
+    "tsconfig.json": JSON.stringify({
+      extends: [
+        "@auaust/engrenage/tsconfig/library.json",
+        "@auaust/engrenage/tsconfig/baseline/2026-10.json",
+      ],
+      compilerOptions: {
+        types: [
+          "@auaust/engrenage/apis/timers",
+          "@auaust/engrenage/apis/performance",
+          "@auaust/engrenage/apis/crypto",
+        ],
+      },
+      files: ["index.ts"],
+    }),
+  });
+
+  mkdirSync(project.resolve("node_modules/@auaust"), { recursive: true });
+
+  symlinkSync(
+    fileURLToPath(new URL("../..", import.meta.url)),
+    project.resolve("node_modules/@auaust/engrenage"),
+  );
+
+  return project.root;
 }
 
 describe("tsconfig presets", () => {
@@ -95,6 +126,29 @@ describe("tsconfig presets", () => {
       types: [],
       exactOptionalPropertyTypes: true,
     });
+  });
+
+  test("resolves the API declaration groups installed as a package", () => {
+    const project = createApisProject(
+      `const handle = setTimeout((label: string) => {
+        performance.now();
+        crypto.getRandomValues(new Uint8Array(1));
+      }, 10, "label");
+
+      clearTimeout(handle);`,
+    );
+
+    expect(() => runTsc("-p", project)).not.toThrow();
+  });
+
+  test("keeps timer handles opaque", () => {
+    const project = createApisProject(
+      "export const handle: number = setTimeout(() => {}, 10);",
+    );
+
+    expect(() => runTsc("-p", project)).toThrow(
+      expect.objectContaining({ stdout: expect.stringContaining("TS2322") }),
+    );
   });
 
   test("gives Node tooling its runtime's features and types", () => {

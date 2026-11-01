@@ -92,4 +92,31 @@ describe("runtime tsconfig fields", () => {
       types: ["node"],
     });
   });
+
+  test("appends the selected API groups to the source types only", () => {
+    const read = syncCompilerOptions({
+      src: { baseline: "2026-10", apis: ["timers", "crypto"] },
+    });
+
+    expect(read("tsconfig.src.json").types).toEqual([
+      "@auaust/engrenage/apis/timers",
+      "@auaust/engrenage/apis/crypto",
+    ]);
+
+    expect(read("tsconfig.bin.json").types).toEqual(["node"]);
+  });
+
+  test("rejects unknown API groups and Node sources", () => {
+    expect(() => {
+      syncCompilerOptions({
+        src: { apis: ["dom"] },
+      });
+    }).toThrow(/not known API groups/);
+
+    expect(() => {
+      syncCompilerOptions({
+        src: { node: 24, apis: ["timers"] },
+      });
+    }).toThrow(/baseline runtime/);
+  });
 });

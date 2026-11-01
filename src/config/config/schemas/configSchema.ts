@@ -50,6 +50,7 @@ export const configSchema = strictObject({
       ...createCodeEnvironment(),
       exports: optional(exposedFilesSchema),
       baseline: optional(string()),
+      apis: optional(listOptionSchema(string())),
       node: optional(nodeMajorSchema),
     }),
   ),

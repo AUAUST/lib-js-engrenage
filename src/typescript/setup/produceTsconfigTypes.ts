@@ -1,4 +1,7 @@
+import { map } from "@auaust/primitive-kit/arrays";
+
 import { resolveListOption } from "#config/utils/resolveListOption";
+import { engrenage } from "#constants";
 import { resolveTsconfigRuntime } from "#typescript/utils/resolveTsconfigRuntime";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { TsconfigKey } from "#config/types/TsconfigKey";
@@ -9,7 +12,11 @@ function listDefaultTypes(
   config: ResolvedConfig,
   key: TsconfigKey,
 ): readonly string[] {
-  return resolveTsconfigRuntime(config, key).kind === "node" ? ["node"] : [];
+  if (resolveTsconfigRuntime(config, key).kind === "node") {
+    return ["node"];
+  }
+
+  return map(config.src.apis, (api) => `${engrenage}/apis/${api}`);
 }
 
 export function produceTsconfigTypes(

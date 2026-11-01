@@ -9,12 +9,19 @@ import type { Runtime } from "#config/types/Runtime";
 export function resolveSourceRuntime(option: {
   baseline?: string | undefined;
   node?: number | undefined;
+  apis?: unknown;
 }): Runtime {
-  const { baseline, node } = option;
+  const { baseline, node, apis } = option;
 
   if (baseline !== undefined && node !== undefined) {
     throw new Error(
       "src.baseline and src.node are mutually exclusive: set one of them",
+    );
+  }
+
+  if (node !== undefined && apis !== undefined) {
+    throw new Error(
+      "src.apis only applies to a baseline runtime: src.node already provides these APIs through its types",
     );
   }
 

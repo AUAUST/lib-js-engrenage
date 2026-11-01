@@ -38,3 +38,13 @@ Same for "The base tsconfig tsconfig.app.json is not named tsconfig.json, the on
 ===
 
 The planned github labels sync should be a seperate subcommand, not a part of the main sync command. `engrenage github labels`-base, like agents have their own dedicated commands. It should allow diffing the current proposed labels and the existing labels on GitHub. It should then show 3 lists: the list of matches, the list of missing labels that allows picking those to add (all by default), and the list of extra labels that allows picking those to remove (none by default). Same for bug severities and the other fields we end up defining.
+
+===
+
+We should never try to manually write existing API interfaces. All the interfaces defined in data/apis must absolutely be either generated from a source of truth, imported from an existing library, or otherwise automatically derived. We do not ever want to start hardcoding API specs.
+
+Typically, the timers.d.ts file only contains type definitions for setTimeout, leaving setInterval out. This is a perfect example of the issue: the first ever manually written API interface is already wrong.
+
+===
+
+The eslint config requires a custom exclusion rule to ignore data/**, otherwise it fails due to the directory's contents not being included by any tsconfig. This reveals another issue: eslint shouldn't try to lint files that aren't included by any of the root config's paths.

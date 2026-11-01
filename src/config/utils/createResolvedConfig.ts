@@ -36,6 +36,7 @@ import { resolveCodeEnvironment } from "#config/utils/resolveCodeEnvironment";
 import { resolveListOption } from "#config/utils/resolveListOption";
 import { resolveNodeRuntime } from "#config/utils/resolveNodeRuntime";
 import { resolveRuntimeNode } from "#config/utils/resolveRuntimeNode";
+import { resolveSourceApis } from "#config/utils/resolveSourceApis";
 import { resolveSourceRuntime } from "#config/utils/resolveSourceRuntime";
 import { resolveTsconfig } from "#config/utils/resolveTsconfig";
 import {
@@ -325,6 +326,9 @@ export function createResolvedConfig({
             return raw.src === false
               ? undefined
               : resolveSourceRuntime(raw.src ?? {});
+          },
+          apis: () => {
+            return raw.src === false ? [] : resolveSourceApis(raw.src?.apis);
           },
         }),
       ),

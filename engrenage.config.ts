@@ -26,6 +26,7 @@ export default defineConfig({
   },
   data: {
     exports: {
+      "./apis/*": "data/apis/*.d.ts",
       "./agents/templates/*.md": "data/agents/templates/*.md",
       "./agents/rules/*.md": "data/agents/rules/*.md",
       "./agents/sections/*.md": "data/agents/sections/*.md",
