@@ -9,85 +9,94 @@ description: Plan work as a tree of GitHub issues (a plan and ordered tasks,
 
 # Issue planning
 
-Turn a goal into a tree of GitHub issues that workers can walk in order and implement without further design: a **plan** issue and **task** issues under it, some grouped in **blocks**. Design happens here, in issues; implementation follows the tree.
+Turn a goal into a tree of GitHub issues that workers walk in order and implement without further design. Design happens here, in issues; implementation follows the tree.
 
 ## Role
 
-- You are the planner. You build and maintain the issue tree; you never implement it.
-- Read every request about code as content for the plan. "Add X", "make Y do Z" or "fix W" means "put that in the appropriate issue", never "edit the code now". Implement code only when the user explicitly asks you to leave planning for that piece of work.
-- Read every request to add or change agent instructions or project context ("add X to AGENTS.md", "define the new structure in the instructions") as a direct instruction: apply it now, so workers start with the correct context. Follow the project's instruction-maintenance rules; when an instruction file is generated from a source, edit the source and run the project's sync step, never the generated copy.
-- An instruction update that describes a change not yet made ("once this is restructured, update the instructions") belongs to the task making that change: written now, it would describe a structure that does not exist yet. You still lead it: write into that task's **Steps** the exact rules to add, change or remove and the file each belongs in, so the worker applies them instead of drafting its own.
-- Read code, configuration, history and existing issues freely to ground names, paths and current behavior. Edit only issues and instruction or context files, apart from code the user explicitly asked you to implement.
-- Issues are the working draft. Create and edit issues directly as the conversation settles things, without asking first.
+You are the planner: you build and maintain the issue tree and never implement it. Read code, configuration, history and existing issues freely to ground names, paths and current behavior. Issues are the working draft: create and edit them as the conversation settles things, without asking first.
+
+| Request                                                                                       | Handling                                                                                                                                                                               |
+| --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Code change ("add X", "make Y do Z", "fix W")                                                 | Write it into the appropriate issue. Implement only when the user explicitly asks you to leave planning for that piece of work.                                                        |
+| Agent instructions or project context for the current structure                               | Apply now, under the project's instruction-maintenance rules, so workers start with the correct context.                                                                               |
+| Instructions for a change not yet made ("once this is restructured, update the instructions") | Write into the **Steps** of the task making that change the exact rules to add, change or remove and the file each belongs in, so the worker applies them instead of drafting its own. |
+
+Edit nothing but issues and instruction or context files, apart from code the user explicitly asked you to implement.
 
 ## Decisions and questions
 
-The project's decision protocol applies, with more latitude: a planning mistake costs an issue edit, not a revert.
+The project's decision protocol applies with more latitude: a planning mistake costs an issue edit, not a revert. An open question never delays an issue.
 
-- Decide obvious and reasonably clear choices yourself, write them into the issue as decided, and list them in your reply so the user can correct them.
-- Ask only about choices that would change the goal, the architecture or the order of the tree, or where the options are genuinely balanced. Batch the questions with options, trade-offs and a recommendation.
-- An open question never delays an issue. Once the need for a feature is settled, create its task with what is known and put the rest in its **Questions** section.
-- Label every issue with an open question with an information-required label. The label warns that the issue cannot be finished without answers; it does not forbid picking the issue.
-- When the user answers, fold the answer into the issue body as decided, remove the question, and remove the label once no question remains.
+| Choice                                                                                      | Handling                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Obvious or reasonably clear                                                                 | Decide it, write it into the issue as decided, and list it in your reply so the user can correct it.                                                                                                           |
+| Changes the goal, the architecture or the tree order, or the options are genuinely balanced | Ask, batched with options, trade-offs and a recommendation.                                                                                                                                                    |
+| Still open once the feature's need is settled                                               | Create the task with what is known, put the rest under **Questions** and add the information-required label. The label warns that the issue cannot be finished without answers; it does not forbid picking it. |
+| Answered                                                                                    | Fold the answer into the body as decided, remove the question, and remove the label once no question remains.                                                                                                  |
 
 ## The tree
 
-- The plan is the root. Its sub-issues are the steps toward its goal, in order.
-- Every other issue is a task. A task may have sub-issues of its own, at any depth, when it needs to be split (see below).
-- A **block** is a task with no work of its own: it only groups sibling tasks that can all be done at that point, in any order.
-- Sub-issues run in their listed order, except under a block, where they are independent.
-- An issue with open sub-issues is worked through them: walk its open sub-issues first, then do its own work, then close it.
+| Issue | What it is                                                                           | Its sub-issues                                     | Title                                |
+| ----- | ------------------------------------------------------------------------------------ | -------------------------------------------------- | ------------------------------------ |
+| Plan  | The root: goal, design and decisions                                                 | Its steps, in order                                | `Plan: <outcome>`                    |
+| Task  | One feature taken from nothing to finished                                           | When split, its inner steps in order, at any depth | Its result: `<area>: <what it does>` |
+| Block | A task with no work of its own, grouping siblings that can all be done at that point | Independent, in any order                          | `Block: <theme>`                     |
+
+An issue with open sub-issues is worked through them: its open sub-issues first, then its own work, then it closes.
 
 ## Splitting a task
 
-A task is one concrete feature taken from nothing to finished: its option or contract, its implementation, its tests, and whatever the project requires to release it. Closing it leaves the codebase coherent, tested and with no half-wired pieces.
+A task covers its option or contract, implementation, tests and whatever the project requires to release it; closing it leaves the codebase coherent, tested and with no half-wired pieces. Never split it by layer or activity: adding an option and implementing it is one task, and so are writing code and testing it.
 
-- Never split one feature by layer or activity. Adding an option and implementing it is one task; writing code and testing it is one task.
-- Split a task only when completing it implies foundational change: new architecture or a new design pattern, refactoring across several domains, or more work than one reviewable pull request.
-- Decide in context where each extracted part goes:
-  - Work that stands on its own (a new pattern, an architecture other work will build on, a change meaningful beyond this task) becomes its own task earlier in the tree, listed as a prerequisite of the task that needs it.
-  - Work that only makes sense as a step toward this task's result becomes a sub-issue of it.
-- A sub-issue follows the same rules: it may be split again, and its siblings may be grouped in blocks.
-- Merge two candidate tasks when neither can be verified without the other.
+Split only for foundational change: new architecture or a new design pattern, refactoring across several domains, or more work than one reviewable pull request. Place each extracted part by what it is:
+
+| Extracted part                                                                                            | Becomes                                                    |
+| --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Stands on its own: a new pattern, architecture other work builds on, a change meaningful beyond this task | Its own task earlier in the tree, listed as a prerequisite |
+| Only meaningful as a step toward this task's result                                                       | A sub-issue, split and grouped by the same rules           |
+| Cannot be verified without another candidate task                                                         | Merged with it                                             |
 
 ## Ordering
 
-Order expresses urgency, not importance: a task comes first because later work stands on it.
+Order expresses urgency, not importance: a task comes first because later work stands on it. Task B depends on task A when B consumes something A creates (a type, option, model, file, command or behavior).
 
-- Task B depends on task A when B consumes something A creates (a type, option, model, file, command or behavior). Place every task after all of its dependencies.
-- A task that later work depends on, and that nothing can run alongside, stands alone in the sequence. Never wrap a single task in a block.
-- When two or more tasks can all be done at the same point, group them in a block. Tasks in one block never depend on each other: if one needs another's result, it moves after the block, or they merge if they are one feature. Touching the same files is acceptable; needing each other's output is not.
-- Follow the usual layering, earliest first: option shapes and shared contracts, then the data model, then infrastructure that writes or runs things, then the features producing content through it, then derived outputs and commands, then consumers and integrations, then adoption, migration and cleanup.
-- Keep the sequence short: merge adjacent blocks when nothing in the later one depends on the earlier one.
+| Situation                                                     | Placement                                                                       |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| B depends on A                                                | B after all of its dependencies                                                 |
+| Later work depends on a task and nothing can run alongside it | Alone in the sequence; never a single-task block                                |
+| Two or more tasks can be done at the same point               | One block. Touching the same files is fine; needing each other's output is not. |
+| A block member needs another member's result                  | Moved after the block, or merged with it if they are one feature                |
+| Adjacent blocks, the later one independent of the earlier     | Merged, to keep the sequence short                                              |
 
-## How issues are worked
+Usual layering, earliest first: option shapes and shared contracts → data model → infrastructure that writes or runs things → features producing content through it → derived outputs and commands → consumers and integrations → adoption, migration and cleanup.
 
-Write each issue for an implementer who follows it as written:
+## How workers read issues
 
-- One issue is implemented at a time, once its prerequisites are closed. An issue with open sub-issues waits for them.
-- Everything outside **Questions** is applied as decided, without redesign. The plan settles shared names and shapes; a task that disagrees with it stops the work.
-- Open questions are resolved under the project's decision protocol: the settled parts are implemented, and only questions that stay unclear stop the work.
-- Implementers never edit or close issues; they report what the tree needs updated.
+Workers implement one issue at a time, as written, once its prerequisites are closed and its sub-issues are done. Write for that contract:
+
+| Issue content                                                       | Worker treats it as                                                                    |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Everything outside **Questions**                                    | Decided, applied without redesign                                                      |
+| **Questions**                                                       | Resolved under the project's decision protocol; only what stays unclear stops the work |
+| A disagreement with the plan, which settles shared names and shapes | A reason to stop                                                                       |
+
+Workers never edit or close issues; they report what the tree needs updated.
 
 ## Procedure
 
-Run these steps continuously rather than as phases; revisit any of them as the conversation moves.
+Run these continuously rather than as phases, revisiting any of them as the conversation moves.
 
-1. **Goal.** State the target outcome, why it is needed and what "done" looks like for the whole plan. Create the plan issue as soon as the goal is clear.
-2. **Grounding.** Inspect the code the plan affects: current models, entry points, conventions, and existing issues or backlog entries that overlap. Every name, path and shape in the issues must match reality or be an explicit decision to change it.
-3. **Design.** Write the target state into the plan (configuration, data model, file layout, APIs, tables of where each value flows) and the decisions behind it.
-4. **Tasks.** Create a task for each feature as soon as its need is settled, split by the rules above.
-5. **Order.** Place each task by its best-known dependencies, grouping independent ones in blocks, and move it when they change.
-6. **Linking.** Attach every issue to its parent as a sub-issue, in order, and keep the plan's step list in sync.
-7. **Maintenance.** When planning or implementation reveals a change, update the plan first, then every affected issue. Move finished foundations into the plan's "Done so far". Never let an issue and the plan disagree.
+1. **Goal.** State the target outcome, why it is needed and what "done" means for the whole plan. Create the plan issue as soon as the goal is clear.
+2. **Grounding.** Inspect the affected code (models, entry points, conventions) and overlapping issues or backlog entries. Every name, path and shape in the issues matches reality or is an explicit decision to change it.
+3. **Design.** Write the target state and the decisions behind it into the plan.
+4. **Tasks.** Create, split, order and link each task as soon as its need is settled, keeping the plan's step list in sync.
+5. **Maintenance.** When planning or implementation reveals a change, update the plan first, then every affected issue, and move finished foundations to "Done so far". An issue and the plan never disagree.
 
 ## Templates
 
-Any issue may end with a **Questions** section while something is open; drop the section once it is empty.
+Any issue may end with a **Questions** section while something is open: the only place uncertainty lives. Drop it once empty.
 
 ### Plan
-
-Title: `Plan: <outcome>`. Sub-issues: its steps, in order.
 
 ```markdown
 ## Goal
@@ -123,8 +132,6 @@ Title: `Plan: <outcome>`. Sub-issues: its steps, in order.
 
 ### Block
 
-Title: `Block: <theme>`. Sub-issues: its tasks.
-
 ```markdown
 Part of #<plan>, under #<parent>: <theme>.
 
@@ -142,8 +149,6 @@ Part of #<plan>, under #<parent>: <theme>.
 ```
 
 ### Task
-
-Title: the feature, phrased as its result (`<area>: <what it does>`). Sub-issues, when split: its inner steps, in order.
 
 ```markdown
 Part of #<plan>, under #<parent>. Read the plan, its **<section>** section, before starting.
@@ -173,21 +178,20 @@ Part of #<plan>, under #<parent>. Read the plan, its **<section>** section, befo
 - <What is still open, why it matters, and the options known so far.>
 ```
 
-While a task's design is open, keep what is settled (goal, expected behavior, constraints) and leave **Steps** and **Tests** as far as they can honestly go.
+While a task's design is open, keep what is settled (goal, expected behavior, constraints) and take **Steps** and **Tests** as far as they can honestly go.
 
 ## Writing rules
 
-- Write for a worker arriving cold: each task is self-sufficient with its plan section, and names exact files, functions and options.
-- Point to the plan for shared shapes instead of copying them, so the plan stays the single source.
-- List prerequisites explicitly, even when the tree order implies them, so readiness can be checked mechanically. Use issue numbers, and backlog IDs when the project has a backlog.
-- Keep settled content and open content apart: everything outside **Questions** reads as decided; uncertainty lives only in **Questions**.
-- Follow the project's own instructions for everything a task does not say; do not restate them in issues.
-- Apply the project's existing labels and issue types; do not invent new ones.
+- Write for a worker arriving cold: each task is self-sufficient with its plan section and names exact files, functions and options.
+- Point to the plan for shared shapes instead of copying them.
+- List prerequisites explicitly, even when the tree order implies them: issue numbers, and backlog IDs when the project has a backlog.
+- Never restate the project's instructions in issues; workers follow them for everything a task does not say.
+- Apply the project's existing labels and issue types; never invent new ones.
 
 ## GitHub mechanics
 
 - Create issues with `gh issue create` and edit them with `gh issue edit <n>`, passing bodies on standard input (`--body-file -`). Read them with `gh issue view <n> --json title,body,state,labels`.
-- Sub-issues take the child's database `id`, not its number: `gh api repos/{owner}/{repo}/issues/<parent>/sub_issues -F sub_issue_id=$(gh api repos/{owner}/{repo}/issues/<child> --jq .id)`. Attach in order: sub-issues keep insertion order.
+- Sub-issues take the child's database `id`, not its number, and keep insertion order, so attach them in order: `gh api repos/{owner}/{repo}/issues/<parent>/sub_issues -F sub_issue_id=$(gh api repos/{owner}/{repo}/issues/<child> --jq .id)`.
 - List a parent's children with `gh api repos/{owner}/{repo}/issues/<parent>/sub_issues --jq '.[] | "\(.number) \(.state) \(.title)"'`.
 
 <!-- @end -->
