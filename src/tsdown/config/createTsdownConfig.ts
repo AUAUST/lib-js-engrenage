@@ -14,6 +14,7 @@ import { createTsdownEntries } from "#tsdown/utils/createTsdownEntries";
 import { resolveCommandEntries } from "#tsdown/utils/resolveCommandEntries";
 import { resolveDataExports } from "#tsdown/utils/resolveDataExports";
 import { resolveSourceEntries } from "#tsdown/utils/resolveSourceEntries";
+import { resolveTsdownTarget } from "#tsdown/utils/resolveTsdownTarget";
 import { validate } from "#utils/validate";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#tsdown/types/Config";
@@ -127,8 +128,14 @@ export function createTsdownConfig(
     cwd: config.root,
     entry: createTsdownEntries(sourceEntries, bins),
     format: "esm",
+    ...(config.src.runtime === undefined
+      ? {}
+      : {
+          target: resolveTsdownTarget(config.src.runtime),
+        }),
     outDir,
     clean: emptyOutDir,
+    // @debt repeated === undefined checks instead of having a proper "prop if define" utility
     ...(tsconfigPath === undefined
       ? {}
       : {

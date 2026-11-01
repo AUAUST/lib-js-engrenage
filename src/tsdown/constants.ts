@@ -12,3 +12,11 @@ export const attwOptions = freeze({
 } as const satisfies AttwOptions);
 
 export const builtExtension = ".mjs";
+
+export const targetBrowsers: Readonly<Record<string, string>> = freeze({
+  chrome: "chrome",
+  edge: "edge",
+  firefox: "firefox",
+  safari: "safari",
+  safari_ios: "ios",
+});

@@ -391,6 +391,72 @@ describe("createTsdownConfig", () => {
     });
   });
 
+  describe("target", () => {
+    function createProject(config: object, engines?: object) {
+      return createTemporaryProject({
+        "package.json": JSON.stringify({
+          name: "@scope/package",
+          type: "module",
+          ...(engines === undefined ? {} : { engines }),
+        }),
+        "engrenage.config.ts": `export default ${JSON.stringify(config)};\n`,
+        "tsconfig.json": JSON.stringify({
+          compilerOptions: {
+            outDir: "dist",
+            paths: { "@scope/package": ["./src/index.ts"] },
+          },
+        }),
+        "src/index.ts": "export {};\n",
+      });
+    }
+
+    test("targets the browsers and the Node minimum of the baseline", async () => {
+      const project = createProject({
+        src: { baseline: "2026-10" },
+      });
+
+      expect(
+        createTsdownConfig(await loadConfig(project.root), { ci: false })
+          .target,
+      ).toEqual([
+        "chrome123",
+        "edge123",
+        "firefox124",
+        "safari17.4",
+        "ios17.4",
+        "node22",
+      ]);
+    });
+
+    test("targets the Node major of src.node", async () => {
+      const project = createProject({
+        src: { node: 24 },
+      });
+
+      expect(
+        createTsdownConfig(await loadConfig(project.root), { ci: false })
+          .target,
+      ).toEqual(["node24"]);
+    });
+
+    test("ignores engines.node", async () => {
+      const config = {
+        src: { node: 24 },
+      };
+
+      const withEngines = createProject(config, { node: ">=18" });
+      const without = createProject(config);
+
+      expect(
+        createTsdownConfig(await loadConfig(withEngines.root), { ci: false })
+          .target,
+      ).toEqual(
+        createTsdownConfig(await loadConfig(without.root), { ci: false })
+          .target,
+      );
+    });
+  });
+
   test("builds declarations with the src tsconfig on a solution base", async () => {
     const project = createTemporaryProject({
       "package.json": JSON.stringify({
