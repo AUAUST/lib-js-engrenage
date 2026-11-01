@@ -14,9 +14,9 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | --- | --- |
 | <code>.ai/backlog/*.md</code> | <code>.claude/rules/backlog.md</code> |
 | <code>.changeset/**</code> | <code>.claude/rules/changesets.md</code> |
-| <code>**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}</code> | <code>.claude/rules/debt-markers.md</code> |
 | <code>**/*.ts</code> | <code>.claude/rules/code-style.md</code> |
 | <code>**/*.ts</code> | <code>.claude/rules/prefer-primitive-kit.md</code> |
 | <code>**/*.ts</code> | <code>.claude/rules/prefer-toolkit.md</code> |
+| All files | <code>.claude/rules/debt-markers.md</code> |
 
 <!-- @end -->

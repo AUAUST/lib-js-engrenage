@@ -1,17 +1,17 @@
 ---
 title: Debt markers
-description: Mark technical debt in the code you change.
+description: Mark technical debt you notice in the code.
 category: coding-style
 default: true
 order: 30
-paths:
-  - "**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}"
 ---
 
 # Debt markers
 
-- When code you write or touch could be better and you are not fixing it, mark it in the same edit with a comment starting `@debt <statement>`, one marker per comment.
+- When code could be better and you are not fixing it, mark it with a comment starting `@debt <statement>`, one marker per comment, in the same edit as your change.
 - Mark a concern even when you cannot say how to resolve it: a vague marker beats a dropped concern. State what could be better as you see it, and add a fix only when you already know one.
-- Typical signs, not exhaustive: lines repeated across files, even when each copy is clean; an API that requires reading its implementation; a workaround for broken behavior or a type issue; a default hardcoded outside the configuration that owns it; a function, constant or type declared in a file or directory the project's placement rules do not assign it to. Other notes are welcome.
-- Mark only files you change, naming files you only read that share the matter. Report debt unrelated to your change in your final report.
+- Debt is any gap between the code as it is and the code as it would be with complete knowledge and no limits of time, scope or instructions. That includes code that holds only while something outside it stays true, and any change that makes a tool or check accept the code instead of making the code right.
+- Judge against that ideal, never against the task: code that follows an issue, a decision, an instruction or the only option within your scope is still debt when it falls short.
+- Doubt settles the question: if you wonder whether something is debt, it is.
+- Mark debt you notice wherever it is, in files you change or only read. Never search for it or investigate it beyond what your task already shows you: noticing is enough.
 - Debt never fails a check. Remove a marker only when your change resolves it.
