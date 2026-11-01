@@ -1,0 +1,14 @@
+{
+  "extends": "../../../data/tsconfig/base.json",
+  "compilerOptions": {
+    "paths": {
+      "@fixture/references/*": ["./src/*.ts"]
+    }
+  },
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.src.json" },
+    { "path": "./tsconfig.tests.json" },
+    { "path": "./tsconfig.scripts.json" }
+  ]
+}

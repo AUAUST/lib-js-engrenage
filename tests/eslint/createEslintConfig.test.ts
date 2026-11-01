@@ -1,3 +1,5 @@
+import { relative } from "node:path";
+
 import { ESLint } from "eslint";
 import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
@@ -1487,6 +1489,45 @@ export async function run(): Promise<unknown> {
       "12:auaust/await-thenable",
       "14:auaust/no-misused-promises",
       "16:auaust/no-misused-promises",
+    ]);
+  });
+
+  test("checks typed rules and resolves aliases through the referenced tsconfig of each environment", async () => {
+    const referencesRoot = getFixture("references");
+
+    const eslint = new ESLint({
+      cwd: referencesRoot,
+      overrideConfigFile: true,
+      overrideConfig: [
+        ...createEslintConfig(await loadConfig(referencesRoot)),
+        {
+          rules: {
+            "@typescript-eslint/no-unsafe-member-access": "error",
+            "import-x/no-unresolved": "error",
+          },
+        },
+      ],
+    });
+
+    const results = await eslint.lintFiles([
+      "src/runtime.ts",
+      "scripts/run.ts",
+      "tool.config.ts",
+      "tests/runtime.test.ts",
+    ]);
+
+    expect(
+      map(results, (result) => {
+        return [
+          relative(referencesRoot, result.filePath),
+          ...map(result.messages, (message) => message.ruleId),
+        ];
+      }),
+    ).toEqual([
+      ["src/runtime.ts", "@typescript-eslint/no-unsafe-member-access"],
+      ["scripts/run.ts"],
+      ["tool.config.ts"],
+      ["tests/runtime.test.ts"],
     ]);
   });
 

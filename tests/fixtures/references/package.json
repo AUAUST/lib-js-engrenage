@@ -1,0 +1,7 @@
+{
+  "name": "references-fixture",
+  "type": "module",
+  "imports": {
+    "#*": "./src/*.ts"
+  }
+}
