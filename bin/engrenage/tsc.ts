@@ -1,5 +1,6 @@
 import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
+import { tsconfigEnvironments } from "#config/constants";
 import { typescript } from "#constants";
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
@@ -20,6 +21,39 @@ function isSolution(config: ResolvedConfig, project: File): boolean {
   });
 
   return isNotEmpty(references);
+}
+
+function hasReferencedEnvironment(config: ResolvedConfig): boolean {
+  return tsconfigEnvironments.some((name) => {
+    const { owner, check } = config[name].tsconfig;
+
+    return config[name].active && owner === name && check;
+  });
+}
+
+function resolveDistProject(config: ResolvedConfig): File {
+  const { active } = config.tests;
+  const { owner, file } = config.tests.dist.tsconfig;
+
+  if (!active) {
+    throw new Error(
+      "The tests environment is inactive, so it has no dist variant",
+    );
+  }
+
+  if (owner === undefined || file === undefined) {
+    throw new Error(
+      "The dist tsconfig is disabled in the engrenage config (tests.dist.tsconfig: false)",
+    );
+  }
+
+  if (!config.filesystem.exists(file)) {
+    throw new Error(
+      `The dist tsconfig ${file} does not exist in ${config.root}, run \`engrenage init\` to create it`,
+    );
+  }
+
+  return config.resolve(file);
 }
 
 function checkProject(
@@ -51,18 +85,27 @@ export default defineToolCommands({
     "tsc": {
       aliases: "typecheck",
       description:
-        "Check types with the project tsconfig, building its references when it has any.",
+        "Check types of every environment the base tsconfig references (those with `check: true`).",
       message: "Typechecking...",
       arguments(config, args) {
-        checkProject(config, args, config.typescript.tsconfig.path);
+        const project = config.typescript.tsconfig.path;
+
+        if (!hasReferencedEnvironment(config)) {
+          throw new Error(
+            "No environment is referenced by the base tsconfig: every active environment has `check: false`",
+          );
+        }
+
+        checkProject(config, args, project);
       },
     },
     "tsc:dist": {
       aliases: "typecheck:dist",
-      description: "Check types with the dist tsconfig.",
+      description:
+        "Check the types of the tests against the build output (the tests.dist tsconfig).",
       message: "Checking the types of the build output...",
       arguments(config, args) {
-        checkProject(config, args, config.tests.dist.tsconfig.path);
+        checkProject(config, args, resolveDistProject(config));
       },
     },
   },

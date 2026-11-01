@@ -13,7 +13,10 @@ const repositoryModules = fileURLToPath(
   new URL("../../../node_modules", import.meta.url),
 );
 
-function createSolution(testSource: string) {
+function createSolution(
+  testSource: string,
+  files: Record<string, string> = {},
+) {
   const project = createTemporaryProject({
     "package.json": '{"name":"project","type":"module"}',
     "tsconfig.json": JSON.stringify({
@@ -46,6 +49,7 @@ function createSolution(testSource: string) {
     }),
     "src/index.ts": "export const value: number = 1;\n",
     "tests/index.ts": testSource,
+    ...files,
   });
 
   symlinkSync(repositoryModules, project.resolve("node_modules"));
@@ -82,5 +86,80 @@ describe("engrenage typecheck", () => {
     await runCommand(tsc.tsc);
 
     expect(process.exitCode).toBe(0);
+  });
+});
+
+describe("engrenage typecheck environments", () => {
+  afterEach(() => {
+    process.exitCode = undefined;
+  });
+
+  test("skips an environment with check: false", async () => {
+    vi.spyOn(console, "info").mockImplementation(() => {});
+
+    createSolution(
+      'import { value } from "../src/index.ts";\n\nexport const text: string = value;\n',
+      {
+        "engrenage.config.ts":
+          "export default { tests: { tsconfig: { check: false } } };\n",
+        "tsconfig.json": JSON.stringify({
+          compilerOptions: { noEmit: true },
+          files: [],
+          references: [{ path: "./tsconfig.src.json" }],
+        }),
+      },
+    );
+
+    await runCommand(tsc.tsc);
+
+    expect(process.exitCode).toBe(0);
+  });
+
+  test("fails when no environment is referenced", async () => {
+    vi.spyOn(console, "info").mockImplementation(() => {});
+
+    createSolution("export {};\n", {
+      "engrenage.config.ts":
+        "export default { src: { tsconfig: { check: false } }, tests: { tsconfig: { check: false } } };\n",
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: { noEmit: true },
+        files: [],
+      }),
+    });
+
+    await expect(runCommand(tsc.tsc)).rejects.toThrow(
+      "No environment is referenced",
+    );
+  });
+});
+
+describe("engrenage typecheck:dist", () => {
+  afterEach(() => {
+    process.exitCode = undefined;
+  });
+
+  test("checks the tests.dist variant", async () => {
+    vi.spyOn(console, "info").mockImplementation(() => {});
+
+    createSolution("export const text: string = 1;\n", {
+      "tsconfig.tests.dist.json": JSON.stringify({
+        extends: "./tsconfig.tests.json",
+      }),
+    });
+
+    await runCommand(tsc["tsc:dist"]);
+
+    expect(process.exitCode).not.toBe(0);
+  });
+
+  test("fails clearly when the variant is disabled", async () => {
+    createSolution("export {};\n", {
+      "engrenage.config.ts":
+        "export default { tests: { dist: { tsconfig: false } } };\n",
+    });
+
+    await expect(runCommand(tsc["tsc:dist"])).rejects.toThrow(
+      "dist tsconfig is disabled",
+    );
   });
 });
