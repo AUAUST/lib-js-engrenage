@@ -2,6 +2,7 @@ import { produceTsconfigBuildInfo } from "#typescript/setup/produceTsconfigBuild
 import { produceTsconfigExclude } from "#typescript/setup/produceTsconfigExclude";
 import { produceTsconfigExtends } from "#typescript/setup/produceTsconfigExtends";
 import { produceTsconfigInclude } from "#typescript/setup/produceTsconfigInclude";
+import { produceTsconfigOutDir } from "#typescript/setup/produceTsconfigOutDir";
 import { produceTsconfigPaths } from "#typescript/setup/produceTsconfigPaths";
 import { produceTsconfigSkipLibraryCheck } from "#typescript/setup/produceTsconfigSkipLibraryCheck";
 import { produceTsconfigSolution } from "#typescript/setup/produceTsconfigSolution";
@@ -14,5 +15,6 @@ export const tsconfigProducers: readonly TsconfigProducer[] = [
   produceTsconfigPaths,
   produceTsconfigSolution,
   produceTsconfigBuildInfo,
+  produceTsconfigOutDir,
   produceTsconfigSkipLibraryCheck,
 ];

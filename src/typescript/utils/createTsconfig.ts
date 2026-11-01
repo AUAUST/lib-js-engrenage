@@ -1,4 +1,4 @@
-import { relative } from "node:path";
+import { relative, resolve } from "node:path";
 
 import {
   formatDiagnostics,
@@ -36,12 +36,18 @@ function parseTsconfig({
   root,
   path,
   filesystem,
+  content,
 }: {
   root: Directory;
   path: File;
   filesystem: Filesystem;
+  content: string | undefined;
 }): ParsedCommandLine {
   function readFile(file: File): string | undefined {
+    if (content !== undefined && resolve(file) === resolve(path)) {
+      return content;
+    }
+
     return isWithin(root, file) ? filesystem.read(file) : sys.readFile(file);
   }
 
@@ -77,10 +83,12 @@ export function createTsconfig({
   root,
   path,
   filesystem,
+  content,
 }: {
   root: Directory;
   path: File | undefined;
   filesystem: Filesystem;
+  content?: string;
 }): Tsconfig {
   const parsed = once(() => {
     return path === undefined
@@ -89,6 +97,7 @@ export function createTsconfig({
           root,
           path,
           filesystem,
+          content,
         });
   });
 
