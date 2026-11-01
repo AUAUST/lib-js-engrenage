@@ -10,7 +10,7 @@ async function sync(
   files: Record<string, string> = {},
 ) {
   const project = createTemporaryProject({
-    "package.json": JSON.stringify(manifest),
+    "package.json": JSON.stringify({ type: "module", ...manifest }),
     "engrenage.config.ts": `export default ${config};`,
     "src/index.ts": "",
     ...files,
@@ -97,6 +97,7 @@ describe("syncPackageJson", () => {
     const { manifest } = await sync(`{ runtime: { node: 24 } }`, {});
 
     expect(manifest()).toEqual({
+      type: "module",
       devEngines: {
         runtime: {
           name: "node",

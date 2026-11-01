@@ -29,7 +29,6 @@ function createProject(files: Record<string, string>) {
 
 beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation(() => {});
-  vi.spyOn(console, "warn").mockImplementation(() => {});
 });
 
 afterEach(() => {

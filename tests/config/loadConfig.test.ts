@@ -47,8 +47,6 @@ describe("loadConfig", () => {
   });
 
   test("finds the config in .config/ and in parent directories, up to the nearest package file", async () => {
-    vi.spyOn(console, "warn").mockImplementation(() => {});
-
     const project = createTemporaryProject({
       "package.json": '{ "name": "outer", "type": "module" }',
       ".config/engrenage.config.ts":
@@ -208,12 +206,12 @@ describe("loadConfig", () => {
 
   test("places each package cache under the configured cache root", async () => {
     const defaults = createTemporaryProject({
-      "package.json": "{}",
+      "package.json": '{ "type": "module" }',
       "engrenage.config.ts": "export default {};\n",
     });
 
     const moved = createTemporaryProject({
-      "package.json": "{}",
+      "package.json": '{ "type": "module" }',
       "engrenage.config.ts": 'export default { cache: { dir: ".cache" } };\n',
     });
 

@@ -1,6 +1,6 @@
 import { build } from "tsdown";
 import { createProgram, getPreEmitDiagnostics } from "typescript";
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { define, loadConfig } from "@auaust/engrenage/config";
 import { createTsdownConfig } from "@auaust/engrenage/tsdown";
@@ -256,8 +256,6 @@ describe("createTsdownConfig", () => {
   });
 
   test("rejects a package that is not an ES module", async () => {
-    vi.spyOn(console, "warn").mockImplementation(() => {});
-
     const project = createTemporaryProject({
       "package.json": '{ "name": "@scope/package" }',
     });

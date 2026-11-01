@@ -18,6 +18,7 @@ function createProject() {
     "engrenage.config.ts":
       'export default { agents: { preferred: ["claude"] } };\n',
     "package.json": JSON.stringify({
+      type: "module",
       devDependencies: {
         prettier: "*",
       },
@@ -85,7 +86,8 @@ describe("engrenage sync", () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
         'export default { agents: { preferred: ["claude"] } };\n',
-      "package.json": '{ "devDependencies": { "prettier": "*" } }',
+      "package.json":
+        '{ "type": "module", "devDependencies": { "prettier": "*" } }',
     });
 
     mockCwd(project.root);

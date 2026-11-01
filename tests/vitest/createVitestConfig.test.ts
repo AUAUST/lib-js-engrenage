@@ -2,7 +2,7 @@ import { symlinkSync } from "node:fs";
 import { join } from "node:path";
 
 import { createServer, mergeConfig } from "vite";
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 import { configDefaults } from "vitest/config";
 import { startVitest } from "vitest/node";
 
@@ -187,8 +187,6 @@ describe("createVitestConfig type checking", () => {
 
 describe("createVitestConfig with a renamed base tsconfig", () => {
   test("receives the configured base tsconfig", async () => {
-    vi.spyOn(console, "warn").mockImplementation(() => {});
-
     const project = createTemporaryProject({
       "package.json": '{ "name": "project", "type": "module" }',
       "engrenage.config.ts":
