@@ -80,19 +80,15 @@ Pause on real choices: ask the questions and wait for the answers before continu
 
 ## Implementation
 
-- Quality takes precedence over feature completion. A functional workaround that introduces architectural debt is not a completed feature.
-- Before editing, inspect the execution path, authoritative definitions and available abstractions. Place code with its established owner and reuse its models, utilities, configuration and contracts rather than building parallel implementations.
-- Judge quality by clear ownership, authoritative definitions, explicit contracts, predictable execution and state lifetime, readability and minimal necessary complexity. Neither fewer lines nor more abstractions is inherently better.
-- Extend established extension points autonomously. Several small utilities or files must not disguise a missing abstraction.
-- Derive behavior from authoritative configuration, definitions, metadata or live data. Do not invent hardcoded catalogues, lists, status flags or example data.
-- Fail clearly on missing invariants. Use fallbacks only when they belong to the intended contract.
-- Avoid code comments; prefer a named function or descriptive variable. Comment only essential intent or constraints, and `@debt` markers as the debt-markers rule describes.
-- Delete obsolete starter code and commented-out implementations. Do not add READMEs for features or a `docs/` directory.
-- When work would build on or deepen an architectural violation, correcting it is a prerequisite: stop under the decision protocol with what is required, what exists, the recommended fix and its scope. Correct existing violations you touch.
-- Report relevant nearby inconsistencies without fixing them. Do not do unsolicited cleanup.
-- Write to GitHub (issues, pull requests, comments, reviews, labels, releases, pushes) only in repositories owned by the AUAUST organization. Never write to any other repository.
-- Keep secrets in `.env` (documented by `.env.example`), out of source, logs and runtime code.
-- Propose missing or outdated skills, MCP servers, scripts, dependencies or abstractions when they would help. Never add, remove or upgrade them without the user's approval.
+- Quality takes precedence over completion: a workaround that adds architectural debt is not done. Judge quality by clear ownership, authoritative definitions, explicit contracts, predictable execution and state lifetime, readability and minimal necessary complexity, not by line or abstraction count.
+- Before editing, inspect the execution path and existing abstractions. Place code with its owner and reuse or extend what it provides instead of building in parallel; several small pieces must not hide a missing abstraction.
+- Derive behavior from authoritative sources, never from hardcoded lists, flags or example data. Fail clearly on missing invariants; fall back only where the contract says so.
+- Avoid comments; let names carry intent. Comment only essential intent or constraints, and `@debt` markers as the debt-markers rule describes.
+- Delete obsolete and commented-out code. Add no feature READMEs or `docs/` directory.
+- When work would build on or deepen an architectural violation, fixing it comes first: stop under the decision protocol with what exists, the recommended fix and its scope. Correct violations you touch; report other nearby inconsistencies without fixing them.
+- Write to GitHub only in repositories owned by the AUAUST organization.
+- Keep secrets in `.env`, documented by `.env.example`, never in source, logs or runtime code.
+- Propose missing or outdated skills, MCP servers, scripts, dependencies or abstractions when they would help; add, remove or upgrade them only with the user's approval.
 
 <!-- @reference @auaust/engrenage/agents/sections/backlog.md -->
 
