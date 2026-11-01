@@ -6,6 +6,7 @@ import { entries } from "@auaust/toolkit/object";
 
 import { resolve } from "#support/filesystem/utils/resolve";
 import { toPosixPath } from "#support/filesystem/utils/toPosixPath";
+import { isPackageAlias } from "#typescript/utils/isPackageAlias";
 import type { Directory } from "#types/Directory";
 import type { PackageName } from "#types/PackageName";
 import type { PathAlias } from "#typescript/types/PathAlias";
@@ -25,10 +26,6 @@ function toEntryName(
 
 function countWildcards(pattern: string): number {
   return pattern.split("*").length - 1;
-}
-
-function isPackageAlias(packageName: PackageName, alias: string): boolean {
-  return alias === packageName || alias.startsWith(`${packageName}/`);
 }
 
 function assertWildcards(alias: string, targets: readonly string[]) {
