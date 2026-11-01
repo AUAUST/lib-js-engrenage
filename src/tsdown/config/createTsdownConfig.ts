@@ -96,6 +96,7 @@ export function createTsdownConfig(
   const { path: tsconfigPath } = config.typescript.tsconfig;
   const { path: declarationsTsconfigPath } = config.src.tsconfig;
 
+  // @debt repeats the "No package.json found" guard of createStepContext and syncChangesetConfig
   if (packageJsonPath === undefined) {
     throw new Error(`No ${packageJsonFile} found in ${config.root}`);
   }

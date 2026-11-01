@@ -49,6 +49,7 @@ export function syncChangesetConfig(config: ResolvedConfig) {
 
   const { packageJsonPath } = config;
 
+  // @debt repeats the "No package.json found" guard of createStepContext and createTsdownConfig
   if (packageJsonPath === undefined) {
     throw new Error(`No ${packageJsonFile} found in ${config.root}`);
   }

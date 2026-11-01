@@ -179,6 +179,7 @@ export function createResolvedConfig({
     const configured = raw.build?.outDir;
 
     if (configured !== undefined) {
+      // @debt resolveWithin is called only for its throw when the path escapes the root, here and in cache(); an explicit assertion would state the intent
       resolveWithin(root, configured);
 
       return configured;
@@ -272,6 +273,7 @@ export function createResolvedConfig({
     return option === false ? false : option?.tsconfig;
   }
 
+  // @debt `raw.<option> === false ? … : raw.<option>?.<field>` is repeated throughout this file for disabled options; normalizing disabled options once would remove the branches
   const tsconfigGroups = once((): TsconfigGroups => {
     return {
       "src": environmentTsconfig(raw.src),
@@ -411,6 +413,7 @@ export function createResolvedConfig({
   });
 
   const tooling = once(() => {
+    // @debt the disabled and active branches build the same composed shape twice
     if (raw.tooling === false) {
       return freeze(
         compose(

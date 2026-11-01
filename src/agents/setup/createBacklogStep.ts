@@ -48,6 +48,7 @@ export function createBacklogStep(): Step {
     },
     plan({ config, filesystem }) {
       if (!filesystem.exists(backlogIndex)) {
+        // @debt engrenage's own data files are located with createRequire(import.meta.url).resolve in several places (createCodexStep, createAgentsStep, getInstructionTemplates, renderWorkflow, resolveTsconfigPresets); one helper could own it
         filesystem.write(
           backlogIndex,
           readFileSync(
@@ -63,6 +64,7 @@ export function createBacklogStep(): Step {
         throw new Error(`Create ${agentsFile} before setting up the backlog`);
       }
 
+      // @debt the "<!-- @reference … -->" syntax is hand-written here, in createAgentsStep and createInstructionFile, and re-parsed by a regex in getMissingRuleTemplates, although markdownBlocks already describes it
       if (!instructions.includes(sectionReference)) {
         filesystem.write(
           agentsFile,

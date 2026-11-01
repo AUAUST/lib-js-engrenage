@@ -4,6 +4,7 @@ import { once } from "@auaust/toolkit/once";
 
 import type { Accessors } from "#config/types/Accessors";
 
+// @debt misplaced: a generic accessor factory in the config entry, used by createTsconfig and the support package.json model; it could live under src/support
 export function createAccessors<Fields extends object>({
   resolvers,
   describeMissing,
@@ -36,5 +37,6 @@ export function createAccessors<Fields extends object>({
 
   const optional = compose(optionalGetters);
 
+  // @debt double cast because compose cannot type getters built from a dynamic resolver map
   return compose({ optional }, strictGetters) as unknown as Accessors<Fields>;
 }

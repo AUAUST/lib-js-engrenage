@@ -82,6 +82,7 @@ async function readPackage(
     return;
   }
 
+  // @debt hand-written pnpm invocation, like those in createStepContext and createChangesetConfigStep
   invokeCommand(config.root, {
     command: "pnpm",
     args: ["init", "--bare"],

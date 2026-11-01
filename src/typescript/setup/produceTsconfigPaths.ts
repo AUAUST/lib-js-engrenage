@@ -21,6 +21,7 @@ function readHandWrittenPaths(config: ResolvedConfig, file: File): Paths {
       ? undefined
       : readJsonValue(current, file, pathsLocation);
 
+  // @debt hand-written paths are cast instead of validated against a schema
   return paths === undefined ? {} : (paths as Paths);
 }
 

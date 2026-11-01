@@ -44,6 +44,7 @@ function toTarget(
       };
 }
 
+// @debt "tests.dist" does not fit the config shape, so it is special-cased here and in createResolvedConfig, resolveTsconfigEnvironments and the extends, paths and skipLibCheck producers; a single lookup from tsconfig key to its environment would remove the branches
 function isActive(config: ResolvedConfig, key: TsconfigKey): boolean {
   return key === "tests.dist" ? config.tests.active : config[key].active;
 }
@@ -124,6 +125,7 @@ function isLeftAlone(edit: JsonEdit, leftAlone: readonly string[]): boolean {
   });
 }
 
+// @debt same JSON round-trip as serialize in defineSchema; one shared JSON-value converter could serve both
 function toJsonValue(value: unknown, subject: string): JsonValue {
   const expression = JSON.stringify(value);
 

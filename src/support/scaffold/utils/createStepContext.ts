@@ -58,6 +58,7 @@ export function createStepContext({
   function requirePackageJson(): File {
     const path = config.packageJsonPath;
 
+    // @debt the "No package.json found" guard is repeated in createTsdownConfig, syncChangesetConfig and createPackageJson's describeMissing; the resolved config could expose a required package.json path
     if (path === undefined) {
       throw new Error(`No ${packageJsonFile} found in ${config.root}`);
     }
@@ -123,6 +124,7 @@ export function createStepContext({
     }
 
     return [
+      // @debt pnpm invocations are hand-written here, in createChangesetConfigStep and in bin/engrenage/init.ts; the pnpm entry could own them
       {
         command: "pnpm",
         args: ["install"],
@@ -153,6 +155,7 @@ export function createStepContext({
   }
 
   return freeze({
+    // @debt spreading the resolved config evaluates all of its lazy getters on every access, and setPresets is not reflected here while setAgents is
     get config() {
       return {
         ...config,
