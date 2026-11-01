@@ -390,4 +390,89 @@ describe("createTsdownConfig", () => {
       );
     });
   });
+
+  test("builds declarations with the src tsconfig on a solution base", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({
+        name: "@scope/package",
+        type: "module",
+      }),
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          outDir: "dist",
+          module: "ESNext",
+          moduleResolution: "Bundler",
+          strict: true,
+          paths: { "@scope/package": ["./src/index.ts"] },
+        },
+        files: [],
+        references: [{ path: "./tsconfig.src.json" }],
+      }),
+      "tsconfig.src.json": JSON.stringify({
+        extends: "./tsconfig.json",
+        compilerOptions: { composite: true },
+        include: ["src"],
+      }),
+      "src/index.ts": "export const value = 1;\n",
+    });
+
+    const config = await loadConfig(project.root);
+
+    const tsdownConfig = createTsdownConfig(config, { ci: false });
+
+    expect(tsdownConfig.tsconfig).toBe(project.resolve("tsconfig.json"));
+
+    expect(tsdownConfig.dts).toMatchObject({
+      tsconfig: project.resolve("tsconfig.src.json"),
+    });
+
+    await build({
+      ...tsdownConfig,
+      config: false,
+      logLevel: "silent",
+    });
+
+    expect(project.read("dist/index.d.mts")).toContain(
+      "declare const value = 1;",
+    );
+  });
+
+  test("leaves the declarations tsconfig unset without a src tsconfig", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({
+        name: "@scope/package",
+        type: "module",
+      }),
+      "engrenage.config.ts": `export default ${JSON.stringify({
+        src: { tsconfig: false },
+      })};`,
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          outDir: "dist",
+          module: "ESNext",
+          moduleResolution: "Bundler",
+          strict: true,
+          paths: { "@scope/package": ["./src/index.ts"] },
+        },
+        include: ["src"],
+      }),
+      "src/index.ts": "export const value = 1;\n",
+    });
+
+    const config = await loadConfig(project.root);
+
+    const tsdownConfig = createTsdownConfig(config, { ci: false });
+
+    expect(tsdownConfig.dts).not.toHaveProperty("tsconfig");
+
+    await build({
+      ...tsdownConfig,
+      config: false,
+      logLevel: "silent",
+    });
+
+    expect(project.read("dist/index.d.mts")).toContain(
+      "declare const value = 1;",
+    );
+  });
 });

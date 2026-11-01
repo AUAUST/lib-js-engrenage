@@ -34,11 +34,3 @@ Generated tsconfigs: include globs, managed fields and checks.
 
 - Matter: `pnpm engrenage sync --check` reports drift in this repository's tsconfigs. The repository has not adopted the new tsconfig layout yet, and the other producers (target, lib, types, base references) belong to the other sub-issues of the layout work.
 - Done when this repository adopts the new layout and `sync --check` passes, or the producers' sub-issues settle what remains.
-
-## 6. Solution tsconfig and references are not coordinated across typecheck, tsdown and vite.
-
-- Matter: the build fails with `[rolldown-plugin-dts] Unable to load src/agents/claude/constants.ts; You have "references" in your tsconfig file. Perhaps you want to add dts: { build: true } in your config?`. The solution tsconfig (with `references`) is handed to tools that expect a plain one.
-- Expected (indicative; each tool's handling needs to be coordinated):
-  - `typecheck` checks the necessary entry tsconfigs instead of the solution one.
-  - tsdown and vite handle the solution tsconfig and references appropriately, building the bin and source and excluding tests and scripts.
-- Done when `pnpm build` succeeds on this repository and the rule for each tool's tsconfig is stated in one place.
