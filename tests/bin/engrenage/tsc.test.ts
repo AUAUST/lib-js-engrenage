@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { binaryTimeout } from "#tests/helpers/binaryTimeout";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
@@ -59,7 +60,7 @@ function createSolution(
   return project;
 }
 
-describe("engrenage typecheck", () => {
+describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
   afterEach(() => {
     process.exitCode = undefined;
   });
@@ -89,7 +90,7 @@ describe("engrenage typecheck", () => {
   });
 });
 
-describe("engrenage typecheck environments", () => {
+describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
   afterEach(() => {
     process.exitCode = undefined;
   });
@@ -133,7 +134,7 @@ describe("engrenage typecheck environments", () => {
   });
 });
 
-describe("engrenage typecheck:dist", () => {
+describe("engrenage typecheck:dist", { timeout: binaryTimeout }, () => {
   afterEach(() => {
     process.exitCode = undefined;
   });

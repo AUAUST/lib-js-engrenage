@@ -45,6 +45,7 @@ function runBinary(file: File, args: readonly string[]): Promise<number> {
         process.kill(process.pid, signal);
       }
 
+      // @debt The child is never killed when its caller gives up (a timed-out test), so it sets the global exit code later; with Vitest's shared workers that leaks into unrelated tests.
       process.exitCode = code ?? 1;
       settle(process.exitCode);
     });

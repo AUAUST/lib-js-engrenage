@@ -5,6 +5,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { binaryTimeout } from "#tests/helpers/binaryTimeout";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
@@ -151,51 +152,55 @@ describe("tests.dist skipLibCheck", () => {
   });
 });
 
-describe("engrenage typecheck on a synced project", () => {
-  afterEach(() => {
-    process.exitCode = undefined;
-  });
+describe(
+  "engrenage typecheck on a synced project",
+  { timeout: binaryTimeout },
+  () => {
+    afterEach(() => {
+      process.exitCode = undefined;
+    });
 
-  const options = {
-    strict: true,
-    module: "ESNext",
-    moduleResolution: "Bundler",
-    allowImportingTsExtensions: true,
-    noEmit: true,
-  };
+    const options = {
+      strict: true,
+      module: "ESNext",
+      moduleResolution: "Bundler",
+      allowImportingTsExtensions: true,
+      noEmit: true,
+    };
 
-  const input = {
-    cache: { dir: ".cache" },
-    typescript: {
-      files: "**/*.ts",
-      tsconfig: { extends: false, compilerOptions: options },
-    },
-  };
+    const input = {
+      cache: { dir: ".cache" },
+      typescript: {
+        files: "**/*.ts",
+        tsconfig: { extends: false, compilerOptions: options },
+      },
+    };
 
-  async function typecheck(testSource: string) {
-    vi.spyOn(console, "info").mockImplementation(() => {});
+    async function typecheck(testSource: string) {
+      vi.spyOn(console, "info").mockImplementation(() => {});
 
-    const { project } = syncProject(input, testSource);
+      const { project } = syncProject(input, testSource);
 
-    symlinkSync(repositoryModules, project.resolve("node_modules"));
-    mockCwd(project.root);
+      symlinkSync(repositoryModules, project.resolve("node_modules"));
+      mockCwd(project.root);
 
-    await runCommand(tsc.tsc);
-  }
+      await runCommand(tsc.tsc);
+    }
 
-  test("passes when every referenced environment checks", async () => {
-    await typecheck(
-      'import { value } from "../src/index.ts";\n\nexport const number: number = value;\n',
-    );
+    test("passes when every referenced environment checks", async () => {
+      await typecheck(
+        'import { value } from "../src/index.ts";\n\nexport const number: number = value;\n',
+      );
 
-    expect(process.exitCode).toBe(0);
-  });
+      expect(process.exitCode).toBe(0);
+    });
 
-  test("fails on a type error in a test", async () => {
-    await typecheck(
-      'import { value } from "../src/index.ts";\n\nexport const text: string = value;\n',
-    );
+    test("fails on a type error in a test", async () => {
+      await typecheck(
+        'import { value } from "../src/index.ts";\n\nexport const text: string = value;\n',
+      );
 
-    expect(process.exitCode).not.toBe(0);
-  });
-});
+      expect(process.exitCode).not.toBe(0);
+    });
+  },
+);
