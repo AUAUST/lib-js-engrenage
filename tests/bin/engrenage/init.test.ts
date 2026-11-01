@@ -226,6 +226,8 @@ describe("engrenage init", () => {
 
     expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
       extends: "@auaust/engrenage/tsconfig/base.json",
+      files: [],
+      references: [],
     });
 
     expect(project.read("vitest.config.ts")).toContain(
@@ -493,9 +495,13 @@ describe("engrenage init", () => {
         hasTsconfig
           ? {
               extends: "@auaust/engrenage/tsconfig/library.json",
+              files: [],
+              references: [],
             }
           : {
               extends: "@auaust/engrenage/tsconfig/library.json",
+              files: [],
+              references: [],
               compilerOptions: {
                 paths: {
                   [name]: ["./src/index.ts"],

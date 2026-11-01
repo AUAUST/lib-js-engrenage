@@ -3,8 +3,8 @@ import { entries, record } from "@auaust/toolkit/object";
 
 import { readJsonValue } from "#support/json/utils/readJsonValue";
 import { isPackageAlias } from "#typescript/utils/isPackageAlias";
-import { relativeToTsconfig } from "#typescript/utils/relativeToTsconfig";
 import { resolveExportPaths } from "#typescript/utils/resolveExportPaths";
+import { toTsconfigSpecifier } from "#typescript/utils/toTsconfigSpecifier";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { JsonEdit } from "#support/json/types/JsonEdit";
 import type { File } from "#types/File";
@@ -12,12 +12,6 @@ import type { Paths } from "#typescript/types/Paths";
 import type { TsconfigTarget } from "#typescript/types/TsconfigTarget";
 
 const pathsLocation = ["compilerOptions", "paths"];
-
-function toTsconfigTarget(file: File, target: string): string {
-  const relative = relativeToTsconfig(file, target);
-
-  return relative.startsWith("..") ? relative : `./${relative}`;
-}
 
 function readHandWrittenPaths(config: ResolvedConfig, file: File): Paths {
   const current = config.filesystem.read(file);
@@ -53,7 +47,10 @@ export function produceTsconfigPaths(
 
   const generated = entries(resolveExportPaths(name, src.exports)).map(
     ([alias, targets]) => {
-      return [alias, map(targets, (target) => toTsconfigTarget(file, target))];
+      return [
+        alias,
+        map(targets, (target) => toTsconfigSpecifier(file, target)),
+      ];
     },
   );
 

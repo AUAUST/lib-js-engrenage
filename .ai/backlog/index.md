@@ -26,3 +26,5 @@ Deferred questions, bugs, tasks and improvements.
 - [agent-instructions](agent-instructions.md): Agent instruction resolution and synchronization.
 - [toolkit](toolkit.md): Upstream @auaust/toolkit decisions that may affect engrenage.
 - [configuration](configuration.md): Project configuration contract: environments, option shapes and list options.
+- [typescript](typescript.md): Generated tsconfigs: include globs, managed fields and checks.
+- [tests](tests.md): Test suite isolation and reliability.

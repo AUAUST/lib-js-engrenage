@@ -1,19 +1,11 @@
-import { dirname, relative } from "node:path/posix";
-
 import { includes } from "@auaust/primitive-kit/arrays";
 
 import { resolveListOption } from "#config/utils/resolveListOption";
 import { engrenage } from "#constants";
+import { toTsconfigSpecifier } from "#typescript/utils/toTsconfigSpecifier";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { JsonEdit } from "#support/json/types/JsonEdit";
-import type { File } from "#types/File";
 import type { TsconfigTarget } from "#typescript/types/TsconfigTarget";
-
-function toRelativeSpecifier(from: File, to: File): string {
-  const specifier = relative(dirname(from), to);
-
-  return specifier.startsWith(".") ? specifier : `./${specifier}`;
-}
 
 function listDefaultExtends(
   config: ResolvedConfig,
@@ -30,7 +22,7 @@ function listDefaultExtends(
       ? config.tests.tsconfig.file
       : config.typescript.tsconfig.file;
 
-  return parent === undefined ? [] : [toRelativeSpecifier(file, parent)];
+  return parent === undefined ? [] : [toTsconfigSpecifier(file, parent)];
 }
 
 export function produceTsconfigExtends(
