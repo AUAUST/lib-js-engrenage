@@ -30,3 +30,5 @@ Deferred questions, bugs, tasks and improvements.
 - [typescript](typescript.md): Generated tsconfigs: include globs, managed fields, checks and variant resolution.
 - [package-json](package-json.md): Published package contents and fields derived by the sync `package` target.
 - [debt-markers](debt-markers.md): In-code debt markers: capture by agents, listing, checks and harvesting into planned work.
+- [file-editing](file-editing.md): In-memory editing of JSON and YAML files in the codegen tooling.
+- [github](github.md): GitHub repository synchronization: labels, issue fields and issue templates.

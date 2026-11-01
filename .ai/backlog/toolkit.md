@@ -10,3 +10,15 @@ Upstream @auaust/toolkit decisions that may affect engrenage.
   - Translation injection (AUAUST/lib-js-toolkit#119 question 3): injecting translations without bundling them by default may need a build plugin.
   - Build output defects (toolkit backlog `merge.18`, `merge.19`): empty module entries emit `.d.mts` files that fail `typecheck:dist`, and the root namespace object differs from the module entry's namespace in `dist/`. Both come from the tsdown and rolldown-plugin-dts output engrenage's builder configures.
 - Done when each decision states whether engrenage must change, and the resulting requirements are separate entries.
+
+## 2. `empty` does not exclude `undefined` in its negative guard.
+
+- Problem: with `const value = [] as string[] | undefined`, `if (!empty(value))` narrows to `(string[] & []) | undefined`, so `undefined` is not excluded. Expected `string[]` (ideally `[string, ...string[]]`).
+- Context: bug report for `@auaust/toolkit` `empty`; to be reported upstream.
+- Done when the guard narrows as expected in a released toolkit version.
+
+## 3. No `RegExp.escape` substitute, and engrenage pins `node: 24` meanwhile.
+
+- Problem: `@auaust/toolkit` has no regex domain exposing `RegExp.escape`, which is not widely available until `ES2025` is standard.
+- Expected: a toolkit regex domain with an `escape` method. Once it is available, engrenage drops the `node: 24` option in `engrenage.config.ts` and relies on its own default again.
+- Done when the toolkit exposes `escape` and `engrenage.config.ts` no longer sets `node`.

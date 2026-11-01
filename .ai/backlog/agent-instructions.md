@@ -11,7 +11,7 @@ Agent instruction resolution and synchronization.
 ## 2. Sync does not refresh skill and agent frontmatter.
 
 - Problem: `engrenage sync agents` only refills the `@reference` body of installed skills and agents. Frontmatter (`description`, `model`, `disable-model-invocation`) is written once by `engrenage agents skills add` and never updated, so source changes to a skill's metadata do not reach existing projects. The pending `agent-skills-add` changeset says skills stay current on sync.
-- Done when sync rewrites engrenage-owned frontmatter from the skill sources, or the changeset and docs state that frontmatter is init-only.
+- Done when sync rewrites engrenage-owned frontmatter from the skill sources, warns when local and source frontmatter differ, or the changeset and docs state that frontmatter is init-only.
 
 ## 3. No tool authorization presets for agent settings.
 
