@@ -39,6 +39,10 @@ When the input already describes its fix, check that fix against your own diagno
 - Adds a regression test that fails before the fix and passes after it, and the edge case the cause suggests.
 - Weakens no check and adds no assumption on code outside it. Mark whatever still falls short with debt markers.
 
+## Debt
+
+- Look for debt along your diagnosis path: the execution path, its callers and every site in the reach. Add a `@debt` mark to possible points of failure, brittle code and ugly patterns there, whether you fix, write up or are blocked.
+
 ## Scope
 
 | The sound fix                                                                                                                                     | You                                                                  |
