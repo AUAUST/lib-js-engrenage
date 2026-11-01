@@ -1,8 +1,8 @@
 ---
 name: worker
 description: Worker that implements one GitHub issue as written and stops to
-  report what the issue leaves unclear. Use only when the user explicitly asks
-  for a worker.
+  report what the issue leaves unclear. Use proactively when the user asks to
+  implement, work on or resume a specific GitHub issue.
 model: sonnet
 ---
 

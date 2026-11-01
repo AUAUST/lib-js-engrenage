@@ -1,7 +1,8 @@
 ---
 name: planner
 description: Planner that builds and maintains a tree of GitHub issues and never
-  implements it. Use only when the user explicitly asks for the planner.
+  implements it. Use proactively when the user asks to plan, scope, break down
+  or design work, or to create, restructure or review planned issues.
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/issue-planning.md -->
