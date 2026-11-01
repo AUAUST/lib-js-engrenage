@@ -11,8 +11,10 @@ import {
   scratchpadPlaceholders,
 } from "#agents/constants";
 import { addAgentRules } from "#agents/setup/addAgentRules";
+import { addAgentSkills } from "#agents/setup/addAgentSkills";
 import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
 import { getMissingRuleTemplates } from "#agents/utils/getMissingRuleTemplates";
+import { getSkillTemplates } from "#agents/utils/getSkillTemplates";
 import { engrenage } from "#constants";
 import type { Step } from "#support/scaffold/types/Step";
 
@@ -33,7 +35,13 @@ export function createBacklogStep(): Step {
         !filesystem.exists(scratchpadFile) ||
         !(filesystem.read(agentsFile)?.includes(sectionReference) ?? false) ||
         getMissingRuleTemplates(config).some(({ name }) => {
-          return name === "backlog" || name === "scratchpad";
+          return name === "backlog";
+        }) ||
+        getSkillTemplates(config).some(({ name, files }) => {
+          return (
+            name === "scratchpad" &&
+            files.some(({ file }) => !filesystem.exists(file))
+          );
         })
       );
     },
@@ -68,7 +76,8 @@ export function createBacklogStep(): Step {
         );
       }
 
-      addAgentRules(config, ["backlog", "scratchpad"]);
+      addAgentRules(config, ["backlog"]);
+      addAgentSkills(config, ["scratchpad"]);
 
       syncAgentFiles(config);
     },

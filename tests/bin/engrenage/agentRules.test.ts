@@ -111,9 +111,6 @@ describe("agents rules", () => {
             value: "backlog",
           }),
           expect.objectContaining({
-            value: "scratchpad",
-          }),
-          expect.objectContaining({
             value: "prefer-primitive-kit",
           }),
           expect.objectContaining({

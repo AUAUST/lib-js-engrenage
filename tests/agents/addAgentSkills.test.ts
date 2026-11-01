@@ -57,6 +57,30 @@ describe("addAgentSkills", () => {
     );
   });
 
+  test("lets the scratchpad skill be invoked implicitly", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module"}',
+      "engrenage.config.ts":
+        'export default { agents: { preferred: ["claude", "codex"] } };',
+    });
+
+    const config = await loadConfig(project.root);
+
+    addAgentSkills(config, ["scratchpad"]);
+
+    expect(
+      config.filesystem.read(".claude/skills/scratchpad/SKILL.md"),
+    ).not.toContain("disable-model-invocation");
+
+    expect(config.filesystem.read(".claude/agents/scratcher.md")).toMatch(
+      /name: scratcher[\s\S]*disallowedTools:[\s\S]*# Scratchpad/,
+    );
+
+    expect(
+      config.filesystem.exists(".agents/skills/scratchpad/agents/openai.yaml"),
+    ).toBe(false);
+  });
+
   test("requires preferred agents", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',

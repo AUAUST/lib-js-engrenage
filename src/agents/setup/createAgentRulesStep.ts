@@ -16,7 +16,7 @@ export function createAgentRulesStep(): Step {
     },
     async plan({ config, multiselect }) {
       const missing = getMissingRuleTemplates(config).filter(({ name }) => {
-        return name !== "backlog" && name !== "scratchpad";
+        return name !== "backlog";
       });
 
       const names = await multiselect(

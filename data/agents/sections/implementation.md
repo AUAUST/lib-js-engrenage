@@ -18,5 +18,6 @@ order: 40
 - Delete obsolete starter code and commented-out implementations. Do not add READMEs for features or a `docs/` directory.
 - When work would build on or deepen an architectural violation, correcting it is a prerequisite: stop under the decision protocol with what is required, what exists, the recommended fix and its scope. Correct existing violations you touch.
 - Report relevant nearby inconsistencies without fixing them. Do not do unsolicited cleanup.
+- Write to GitHub (issues, pull requests, comments, reviews, labels, releases, pushes) only in repositories owned by the AUAUST organization. Never write to any other repository.
 - Keep secrets in `.env` (documented by `.env.example`), out of source, logs and runtime code.
 - Propose missing or outdated skills, MCP servers, scripts, dependencies or abstractions when they would help. Never add, remove or upgrade them without the user's approval.
