@@ -22,6 +22,7 @@ const skillSchema = looseObject({
     strictObject({
       name: string(),
       description: string(),
+      model: optional(string()),
       disallowedTools: optional(array(string())),
     }),
   ),

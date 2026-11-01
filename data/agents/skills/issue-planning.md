@@ -29,7 +29,7 @@ The project's decision protocol applies, with more latitude: a planning mistake 
 - Decide obvious and reasonably clear choices yourself, write them into the issue as decided, and list them in your reply so the user can correct them.
 - Ask only about choices that would change the goal, the architecture or the order of the tree, or where the options are genuinely balanced. Batch the questions with options, trade-offs and a recommendation.
 - An open question never delays an issue. Once the need for a feature is settled, create its task with what is known and put the rest in its **Questions** section.
-- Label every issue with an open question with an information-required label. The label warns that a worker would have to guess; it does not forbid picking the issue.
+- Label every issue with an open question with an information-required label. The label warns that the issue cannot be finished without answers; it does not forbid picking the issue.
 - When the user answers, fold the answer into the issue body as decided, remove the question, and remove the label once no question remains.
 
 ## The tree
@@ -62,6 +62,15 @@ Order expresses urgency, not importance: a task comes first because later work s
 - Follow the usual layering, earliest first: option shapes and shared contracts, then the data model, then infrastructure that writes or runs things, then the features producing content through it, then derived outputs and commands, then consumers and integrations, then adoption, migration and cleanup.
 - Keep the sequence short: merge adjacent blocks when nothing in the later one depends on the earlier one.
 
+## How issues are worked
+
+Write each issue for an implementer who follows it as written:
+
+- One issue is implemented at a time, once its prerequisites are closed. An issue with open sub-issues waits for them.
+- Everything outside **Questions** is applied as decided, without redesign. The plan settles shared names and shapes; a task that disagrees with it stops the work.
+- Open questions are resolved under the project's decision protocol: the settled parts are implemented, and only questions that stay unclear stop the work.
+- Implementers never edit or close issues; they report what the tree needs updated.
+
 ## Procedure
 
 Run these steps continuously rather than as phases; revisit any of them as the conversation moves.
@@ -86,15 +95,6 @@ Title: `Plan: <outcome>`. Sub-issues: its steps, in order.
 ## Goal
 
 <Why this work is needed and the target state, in a short paragraph.>
-
-## How to work through this plan
-
-- The sub-issues of this plan are its steps, in order. Finish a step before starting the next.
-- An issue with open sub-issues is worked through them: walk them in order, then do the issue's own work, then close it.
-- A block's sub-issues are independent: take them in any order.
-- A task is ready only when its **Prerequisites** are met. If it is not ready, stop and report what is missing instead of guessing.
-- A task labelled as needing information still has open questions: resolve them with the user before implementing, or report the guesses you had to make.
-- This plan is the reference for names and shapes: when a task and this plan disagree, stop and report.
 
 ## Steps
 
@@ -134,11 +134,9 @@ Part of #<plan>, under #<parent>: <theme>.
 
 <What the earlier steps provide and what this block adds, pointing to plan sections.>
 
-## Working rules
+## Prerequisites
 
-- Prerequisite: #<n> is closed.
-- The sub-issues of this block are independent: take them in any order, each once its own prerequisites are met.
-- Close this block when every sub-issue is closed.
+- #<n> is closed.
 
 ## Done when
 

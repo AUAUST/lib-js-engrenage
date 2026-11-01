@@ -41,6 +41,22 @@ describe("addAgentSkills", () => {
     ).toContain("allow_implicit_invocation: false");
   });
 
+  test("writes the agent model to the Claude Code agent", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module"}',
+      "engrenage.config.ts":
+        'export default { agents: { preferred: ["claude"] } };',
+    });
+
+    const config = await loadConfig(project.root);
+
+    addAgentSkills(config, ["issue-implementation"]);
+
+    expect(config.filesystem.read(".claude/agents/worker.md")).toMatch(
+      /name: worker[\s\S]*model: sonnet[\s\S]*# Issue implementation/,
+    );
+  });
+
   test("requires preferred agents", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
