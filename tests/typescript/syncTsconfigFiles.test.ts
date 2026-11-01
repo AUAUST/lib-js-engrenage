@@ -1,24 +1,10 @@
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
 import { validate } from "#utils/validate";
-
-vi.mock("#typescript/setup/tsconfigProducers", () => {
-  return {
-    tsconfigProducers: [
-      (_config: unknown, { key }: { key: string }) => {
-        return [
-          { path: ["include"], value: [`${key}/**/*`] },
-          { path: ["compilerOptions", "lib"], value: ["es2024"] },
-          { path: ["compilerOptions", "target"], value: "es2024" },
-        ];
-      },
-    ],
-  };
-});
 
 function createProject(input: unknown, files: Record<string, string>) {
   const project = createTemporaryProject({
@@ -44,6 +30,7 @@ const files = {
     compilerOptions: { strict: true },
   }),
   "tsconfig.src.json": JSON.stringify({
+    include: ["custom/**/*"],
     compilerOptions: {
       lib: ["dom"],
       paths: { "#a": ["./a.ts"] },
@@ -52,6 +39,9 @@ const files = {
   }),
 };
 
+const buildInfoFile =
+  "./node_modules/.cache/typescript/tsconfig.src.tsbuildinfo";
+
 describe("syncTsconfigFiles", () => {
   test("writes managed fields and keeps every other field", () => {
     const { project, config } = createProject({}, files);
@@ -59,23 +49,21 @@ describe("syncTsconfigFiles", () => {
     config.filesystem.flush();
 
     expect(JSON.parse(project.read("tsconfig.src.json"))).toEqual({
-      include: ["src/**/*"],
+      extends: "./tsconfig.json",
+      include: ["src/**/*.{ts,tsx}", "env.d.ts"],
       exclude: ["dist"],
       compilerOptions: {
-        lib: ["es2024"],
-        target: "es2024",
+        lib: ["dom"],
         paths: { "#a": ["./a.ts"] },
+        tsBuildInfoFile: buildInfoFile,
       },
     });
 
     expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
-      extends: "./base.json",
-      include: ["base/**/*"],
-      compilerOptions: {
-        strict: true,
-        lib: ["es2024"],
-        target: "es2024",
-      },
+      extends: "@auaust/engrenage/tsconfig/base.json",
+      files: [],
+      references: [{ path: "./tsconfig.src.json" }],
+      compilerOptions: { strict: true },
     });
   });
 
@@ -83,7 +71,10 @@ describe("syncTsconfigFiles", () => {
     const { project, config } = createProject(
       {
         src: {
-          tsconfig: { lib: false, unmanaged: ["compilerOptions.target"] },
+          tsconfig: {
+            include: false,
+            unmanaged: ["compilerOptions.tsBuildInfoFile"],
+          },
         },
       },
       files,
@@ -91,13 +82,12 @@ describe("syncTsconfigFiles", () => {
 
     config.filesystem.flush();
 
-    const { include, compilerOptions } = JSON.parse(
-      project.read("tsconfig.src.json"),
-    );
+    const tsconfig = JSON.parse(project.read("tsconfig.src.json"));
 
-    expect(include).toEqual(["src/**/*"]);
+    expect(tsconfig.extends).toBe("./tsconfig.json");
+    expect(tsconfig.include).toEqual(["custom/**/*"]);
 
-    expect(compilerOptions).toEqual({
+    expect(tsconfig.compilerOptions).toEqual({
       lib: ["dom"],
       paths: { "#a": ["./a.ts"] },
     });
@@ -109,7 +99,7 @@ describe("syncTsconfigFiles", () => {
         src: {
           tsconfig: {
             compilerOptions: {
-              target: "es2025",
+              tsBuildInfoFile: "./custom.tsbuildinfo",
               customFlag: { a: 1 },
             },
           },
@@ -123,10 +113,10 @@ describe("syncTsconfigFiles", () => {
     expect(
       JSON.parse(project.read("tsconfig.src.json")).compilerOptions,
     ).toEqual({
-      lib: ["es2024"],
-      target: "es2025",
-      customFlag: { a: 1 },
+      lib: ["dom"],
       paths: { "#a": ["./a.ts"] },
+      tsBuildInfoFile: "./custom.tsbuildinfo",
+      customFlag: { a: 1 },
     });
   });
 
@@ -139,7 +129,8 @@ describe("syncTsconfigFiles", () => {
     config.filesystem.flush();
 
     expect(JSON.parse(project.read("tsconfig.src.json")).include).toEqual([
-      "src/**/*",
+      "src/**/*.{ts,tsx}",
+      "env.d.ts",
     ]);
 
     expect(() => project.read("tsconfig.tests.json")).toThrow("ENOENT");
