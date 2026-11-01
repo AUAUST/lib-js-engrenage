@@ -2,7 +2,8 @@
 name: worker
 description: Worker that implements one GitHub issue as written and stops to
   report what the issue leaves unclear. Use proactively when the user asks to
-  implement, work on or resume a specific GitHub issue.
+  implement, work on or resume a specific GitHub issue whose fix or steps are
+  already written; investigating or fixing a problem is the debugger's.
 model: sonnet
 ---
 
@@ -16,11 +17,12 @@ Implement one GitHub issue as written. The issue and its plan carry the design: 
 
 Read the issue, every ancestor on its "Part of #<plan>, under #<parent>" line up to the plan, and the plan sections it points to. Then stop and report instead of implementing when:
 
-| Check                                               | Stop when                                                                                                                                        |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Prerequisites**                                   | One is still open.                                                                                                                               |
-| Sub-issues                                          | Some are open. Report them in order: each is worked on its own before the issue's remaining work, and a block has no work beyond its sub-issues. |
-| The plan, the reference for shared names and shapes | It disagrees with the issue.                                                                                                                     |
+| Check                                               | Stop when                                                                                                                                                  |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The issue itself                                    | It has no **Steps**: it is a report or a request, not a planned task. Report that it needs the debugger, or the planner when the work spans several tasks. |
+| **Prerequisites**                                   | One is still open.                                                                                                                                         |
+| Sub-issues                                          | Some are open. Report them in order: each is worked on its own before the issue's remaining work, and a block has no work beyond its sub-issues.           |
+| The plan, the reference for shared names and shapes | It disagrees with the issue.                                                                                                                               |
 
 ## Reading the issue
 
