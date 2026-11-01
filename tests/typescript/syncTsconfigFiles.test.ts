@@ -61,7 +61,7 @@ describe("syncTsconfigFiles", () => {
 
     expect(JSON.parse(project.read("tsconfig.src.json"))).toEqual({
       extends: "./tsconfig.json",
-      include: ["src/**/*.{ts,tsx}", "env.d.ts"],
+      include: ["src/**/*.ts", "src/**/*.tsx", "env.d.ts"],
       exclude: ["dist"],
       compilerOptions: {
         target: "ES2024",
@@ -147,7 +147,8 @@ describe("syncTsconfigFiles", () => {
     config.filesystem.flush();
 
     expect(JSON.parse(project.read("tsconfig.src.json")).include).toEqual([
-      "src/**/*.{ts,tsx}",
+      "src/**/*.ts",
+      "src/**/*.tsx",
       "env.d.ts",
     ]);
 

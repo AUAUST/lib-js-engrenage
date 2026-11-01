@@ -1,8 +1,8 @@
-import { isNotEmpty, map } from "@auaust/primitive-kit/arrays";
+import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
 import { resolveListOption } from "#config/utils/resolveListOption";
-import { relativeToTsconfig } from "#typescript/utils/relativeToTsconfig";
 import { resolveTsconfigEnvironments } from "#typescript/utils/resolveTsconfigEnvironments";
+import { toTsconfigGlobs } from "#typescript/utils/toTsconfigGlobs";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { TsconfigKey } from "#config/types/TsconfigKey";
 import type { JsonEdit } from "#support/json/types/JsonEdit";
@@ -18,9 +18,7 @@ function listDefaultExclude(
 
   const includesTests = environments.includes("tests");
 
-  return includesTests
-    ? map(config.files.fixtures, (glob) => relativeToTsconfig(file, glob))
-    : [];
+  return includesTests ? toTsconfigGlobs(file, config.files.fixtures) : [];
 }
 
 export function produceTsconfigExclude(

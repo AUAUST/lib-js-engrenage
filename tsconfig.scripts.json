@@ -1,7 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "include": [
-    "scripts/**/*.{ts,tsx}",
+    "scripts/**/*.ts",
+    "scripts/**/*.tsx",
     "*.config.ts",
     ".*.ts",
     "src/prettier/index.ts"

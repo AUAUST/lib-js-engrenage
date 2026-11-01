@@ -34,11 +34,15 @@ describe("produceTsconfigInclude", () => {
     const read = syncProject({});
 
     expect(read("tsconfig.src.json").include).toEqual([
-      "src/**/*.{ts,tsx}",
+      "src/**/*.ts",
+      "src/**/*.tsx",
       "env.d.ts",
     ]);
 
-    expect(read("tsconfig.bin.json").include).toEqual(["bin/**/*.{ts,tsx}"]);
+    expect(read("tsconfig.bin.json").include).toEqual([
+      "bin/**/*.ts",
+      "bin/**/*.tsx",
+    ]);
   });
 
   test("follows a custom tests.dirs in the tests and dist includes", () => {
@@ -56,7 +60,7 @@ describe("produceTsconfigInclude", () => {
       },
     );
 
-    const expected = ["spec/**/*.{ts,tsx}", "env.d.ts"];
+    const expected = ["spec/**/*.ts", "spec/**/*.tsx", "env.d.ts"];
 
     expect(read("tsconfig.tests.json").include).toEqual(expected);
     expect(read("tsconfig.tests.dist.json").include).toEqual(expected);
@@ -70,8 +74,10 @@ describe("produceTsconfigInclude", () => {
     });
 
     expect(read("tsconfig.bin.json").include).toEqual([
-      "bin/**/*.{ts,tsx}",
-      "scripts/**/*.{ts,tsx}",
+      "bin/**/*.ts",
+      "bin/**/*.tsx",
+      "scripts/**/*.ts",
+      "scripts/**/*.tsx",
       "*.config.ts",
       ".*.ts",
     ]);
@@ -85,7 +91,8 @@ describe("produceTsconfigInclude", () => {
     });
 
     expect(read("tsconfig.bin.json").include).toEqual([
-      "bin/**/*.{ts,tsx}",
+      "bin/**/*.ts",
+      "bin/**/*.tsx",
       "env.d.ts",
     ]);
   });
@@ -99,7 +106,10 @@ describe("produceTsconfigInclude", () => {
       },
     });
 
-    expect(read("tsconfig.src.json").include).toEqual(["src/**/*.{ts,tsx}"]);
+    expect(read("tsconfig.src.json").include).toEqual([
+      "src/**/*.ts",
+      "src/**/*.tsx",
+    ]);
   });
 
   test("excludes fixtures from the tests tsconfig only", () => {
@@ -112,6 +122,22 @@ describe("produceTsconfigInclude", () => {
     expect(read("tsconfig.src.json").exclude).toBeUndefined();
   });
 
+  test("expands nested braces that tsconfig globs do not support", () => {
+    const read = syncProject({
+      typescript: { files: ["**/*.{m,c,}{ts,js}", "{a}/*.ts"] },
+    });
+
+    expect(read("tsconfig.bin.json").include).toEqual([
+      "bin/**/*.mts",
+      "bin/**/*.mjs",
+      "bin/**/*.cts",
+      "bin/**/*.cjs",
+      "bin/**/*.ts",
+      "bin/**/*.js",
+      "bin/{a}/*.ts",
+    ]);
+  });
+
   test("writes globs relative to a tsconfig in a subdirectory", () => {
     const read = syncProject({
       src: {
@@ -120,7 +146,8 @@ describe("produceTsconfigInclude", () => {
     });
 
     expect(read("config/tsconfig.src.json").include).toEqual([
-      "../src/**/*.{ts,tsx}",
+      "../src/**/*.ts",
+      "../src/**/*.tsx",
       "../env.d.ts",
     ]);
   });

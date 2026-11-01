@@ -1,10 +1,10 @@
 import { relative } from "node:path/posix";
 
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
 
 import { resolveListOption } from "#config/utils/resolveListOption";
-import { relativeToTsconfig } from "#typescript/utils/relativeToTsconfig";
 import { resolveTsconfigEnvironments } from "#typescript/utils/resolveTsconfigEnvironments";
+import { toTsconfigGlobs } from "#typescript/utils/toTsconfigGlobs";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { TsconfigKey } from "#config/types/TsconfigKey";
 import type { JsonEdit } from "#support/json/types/JsonEdit";
@@ -24,7 +24,7 @@ function listDefaultInclude(
     ? [...globs, relative(config.root, config.typescript.envFile)]
     : globs;
 
-  return map(included, (glob) => relativeToTsconfig(file, glob));
+  return toTsconfigGlobs(file, included);
 }
 
 export function produceTsconfigInclude(
