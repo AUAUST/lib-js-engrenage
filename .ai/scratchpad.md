@@ -66,3 +66,16 @@ Limitation: engrenage sync refreshes the body of installed skills and rules but 
 ===
 
 We should see if we can create issue templates to easily open new plan/block/task issues, automatically filling the relevant fields and linking to the appropriate parent or blocking issues.
+
+===
+
+Build fails with:
+
+Error: [rolldown-plugin-dts] Unable to load /Users/aurianaubert/Desktop/AUAUST/libraries/javascript/engrenage.nosync/src/agents/claude/constants.ts; You have "references" in your tsconfig file. Perhaps you want to add `dts: { build: true }` in your config?
+
+We'll want to ensure that the solution tsconfig we're using and its handling over all tooling is appropriate.
+
+-> ensure that typechecks correctly typechecks the necessary entry tsconfigs instead of the solution one
+-> ensure that tsdown and vite handle them appropriately, building the bin and source but also likely excluding tests and scripts
+
+The above behaviour is indicative; how each tool must handle solutions tsconfigs and references needs to be carefully coordinated to avoid build and typecheck errors in projects.

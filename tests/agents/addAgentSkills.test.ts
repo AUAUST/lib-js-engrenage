@@ -31,7 +31,7 @@ describe("addAgentSkills", () => {
     ).toContain("disable-model-invocation: true");
 
     expect(config.filesystem.read(".claude/agents/planner.md")).toMatch(
-      /disallowedTools:[\s\S]*- Edit[\s\S]*# Issue planning/,
+      /name: planner[\s\S]*# Issue planning/,
     );
 
     expect(
