@@ -5,9 +5,14 @@ export default defineConfig({
   agents: {
     preferred: ["claude", "codex"],
   },
+  runtime: {
+    node: 24,
+  },
   tests: {
     dist: {
-      tsconfig: { path: "tsconfig.dist.json" },
+      tsconfig: {
+        compilerOptions: { exactOptionalPropertyTypes: false },
+      },
     },
   },
   typescript: {
@@ -15,10 +20,19 @@ export default defineConfig({
   },
   src: {
     node: 24,
+    exports: {
+      "./agents/*/constants": "src/agents/*/constants.ts",
+      "./agents/*": "src/agents/*/index.ts",
+      "./*/constants": "src/*/constants.ts",
+      "./*": "src/*/index.ts",
+      "./constants": "src/constants.ts",
+      ".": "src/index.ts",
+    },
     generated: ["eslint/types/Rules.ts", "eslint/types/rules/**"],
     discovered: ["eslint/conventions/*/*.ts"],
   },
   bin: {
+    commands: { engrenage: "bin/engrenage/index.ts" },
     discovered: ["**/*.ts"],
   },
   scripts: {

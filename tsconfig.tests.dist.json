@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.tests.json",
+  "include": ["tests/**/*.ts", "tests/**/*.tsx", "env.d.ts"],
+  "exclude": ["tests/**/fixtures/**"],
+  "compilerOptions": {
+    "paths": {},
+    "tsBuildInfoFile": "./node_modules/.cache/typescript/tsconfig.tests.dist.tsbuildinfo",
+    "skipLibCheck": false,
+    "target": "ES2025",
+    "lib": ["ES2025"],
+    "types": ["node"],
+    "exactOptionalPropertyTypes": false
+  }
+}
