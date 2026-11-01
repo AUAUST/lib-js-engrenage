@@ -17,9 +17,11 @@ import { entries, keys, record } from "@auaust/toolkit/object";
 
 import { scratchpadPlaceholders } from "#agents/constants";
 import { init } from "#bin/engrenage/init";
+import { readConfig } from "#config/utils/readConfig";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
+import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
 
 import * as prompts from "#support/scaffold/utils/createPrompter";
 
@@ -503,31 +505,29 @@ describe("engrenage init", () => {
       expect(project.read("tsdown.config.ts")).toContain("defineTsdownConfig");
       expect(project.read("vitest.config.ts")).toContain("defineVitestConfig");
 
-      expect(JSON.parse(project.read("tsconfig.json"))).toEqual(
-        hasTsconfig
-          ? {
-              extends: "@auaust/engrenage/tsconfig/library.json",
-              files: [],
-              references: [],
-            }
-          : {
-              extends: "@auaust/engrenage/tsconfig/library.json",
-              files: [],
-              references: [],
-              compilerOptions: {
-                paths: {
-                  [name]: ["./src/index.ts"],
-                },
-              },
-            },
+      expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
+        extends: "@auaust/engrenage/tsconfig/library.json",
+        files: [],
+        references: [{ path: "./tsconfig.src.json" }],
+      });
+
+      expect(project.read("src/index.ts")).toBe("export {};\n");
+
+      expect(JSON.parse(project.read("tsconfig.src.json"))).toMatchObject({
+        extends: "./tsconfig.json",
+      });
+
+      expect(existsSync(project.resolve("tsconfig.tests.dist.json"))).toBe(
+        false,
       );
 
-      expect(JSON.parse(project.read("tsconfig.tests.dist.json"))).toEqual({
-        extends: [
-          "./tsconfig.json",
-          "@auaust/engrenage/tsconfig/library.dist.json",
-        ],
+      const installed = await readConfig(project.root, {
+        searchParents: false,
       });
+
+      syncTsconfigFiles(installed);
+
+      expect(installed.filesystem.discard()).toEqual([]);
 
       expect(project.read(".github/workflows/ci.yml")).toContain(
         "pnpm run ci:check",

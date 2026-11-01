@@ -76,7 +76,7 @@ function collectTargets(config: ResolvedConfig): PlannedTarget[] {
         compilerOptions: tsconfig.compilerOptions,
         unmanaged: tsconfig.unmanaged,
       },
-      create: false,
+      create: true,
     },
   ];
 

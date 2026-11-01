@@ -29,8 +29,8 @@ import { settleChanges } from "#support/commander/utils/settleChanges";
 import { createPrompter } from "#support/scaffold/utils/createPrompter";
 import { runSteps } from "#support/scaffold/utils/runSteps";
 import { createTsdownConfigStep } from "#tsdown/setup/createTsdownConfigStep";
-import { createDistTsconfigStep } from "#typescript/setup/createDistTsconfigStep";
-import { createTsconfigStep } from "#typescript/setup/createTsconfigStep";
+import { createSourceEntryStep } from "#typescript/setup/createSourceEntryStep";
+import { createTypescriptStep } from "#typescript/setup/createTypescriptStep";
 import { createViteConfigStep } from "#vite/setup/createViteConfigStep";
 import { createVitestConfigStep } from "#vitest/setup/createVitestConfigStep";
 import { createVitestCoverageStep } from "#vitest/setup/createVitestCoverageStep";
@@ -126,8 +126,8 @@ export const init = defineCommand((command) => {
           createTsdownConfigStep(),
           createViteConfigStep(),
           createVitestConfigStep(),
-          createTsconfigStep(),
-          createDistTsconfigStep(),
+          createTypescriptStep(),
+          createSourceEntryStep(),
           createPrettierStep(),
           createPrettierignoreStep(),
           createGitignoreStep(),
@@ -167,7 +167,16 @@ export const init = defineCommand((command) => {
 
       await runSync(installed);
 
-      settleChanges(installed, {
+      reportSyncResults(installed.filesystem.flush());
+
+      // @debt the config reads the base tsconfig from disk, so the targets that depend on it (gitignore, prettierignore, package fields) only see the one sync just created on a second pass; the resolved config could read pending writes
+      const synced = await readConfig(config.root, {
+        searchParents: false,
+      });
+
+      await runSync(synced);
+
+      settleChanges(synced, {
         check: false,
       });
     });

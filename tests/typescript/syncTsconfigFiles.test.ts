@@ -156,6 +156,18 @@ describe("syncTsconfigFiles", () => {
     expect(() => project.read("tsconfig.scripts.json")).toThrow("ENOENT");
   });
 
+  test("creates a missing base tsconfig", () => {
+    const { project, config } = createProject({}, { "src/index.ts": "" });
+
+    config.filesystem.flush();
+
+    expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
+      extends: "@auaust/engrenage/tsconfig/base.json",
+      files: [],
+      references: [{ path: "./tsconfig.src.json" }],
+    });
+  });
+
   test("reports drift without writing under --check", () => {
     const { project, config } = createProject({}, files);
 

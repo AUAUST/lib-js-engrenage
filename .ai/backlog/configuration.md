@@ -24,3 +24,13 @@ Project configuration contract: environments, option shapes and list options.
 - Matter: many places check the presets by hand to guess dynamic defaults. It is hard to see what a preset changes.
 - Expected: a config factory (or config state) that takes the presets and centralizes their effects, so that reading it shows what including a preset does to which option. The init script follows the same model: a config state starts from the base defaults, preset selection applies preset defaults, explicit user input edits it, and the handler consumes the final declarative result once. Related to `file-editing.1`.
 - Done when no module outside the factory inspects presets to derive a default, and init builds its answers on the same state.
+
+## 4. `sync --check` reports drift right after `init --yes` because the resolved config reads stale or on-disk state.
+
+- Where: `loadConfig` (per-directory cache), `createResolvedConfig`, `bin/engrenage/init.ts` (uncommitted work for #70, with an `@debt` marker).
+- Matter: in a fresh project, `engrenage sync --check` right after `engrenage init --yes` reports drift in `.gitignore`, `package.json` and `.prettierignore`, and prints "No engrenage config found … using defaults". Two causes:
+  1. Suspected, not confirmed: `loadConfig`'s per-directory cache holds a config loaded before init wrote the config file.
+  2. Confirmed: the resolved config reads the base tsconfig's `outDir` from disk, while sync now creates the base `tsconfig.json` itself. The first sync pass therefore wrote the ignore files and `package.json` without `/dist`. `init` works around it by running sync twice with a cache flush between, marked with `@debt`.
+- Expected: the resolved config reads pending writes (the files a sync run is about to produce) instead of the disk, so one sync pass is consistent; `init` then runs sync once without a flush. Settle first whether cause 1 is real and whether `loadConfig` needs a cache at all.
+- Related: issue #70's acceptance item "sync --check passes right after init" is unmet; its test asserts a tsconfig-only check instead. Related to `typescript.4`.
+- Done when `engrenage sync --check` passes right after `engrenage init --yes` in a fresh project, the double sync and its `@debt` marker are gone, and the test asserts the full check.
