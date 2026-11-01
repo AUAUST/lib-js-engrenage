@@ -54,3 +54,15 @@ if (!empty(value)) {
 ===
 
 Add a todo for engrenage to undo the `node: 24` config once the above escape is available. This way, engrenage will go back to relying on its own defaults.
+
+===
+
+The synced GitHub labels should include more specific categories. We should also try to use the new custom fields, i.e. the "priority" field to have `Type: Bug` + `Priority: High | Medium | Low` instead of the current `Bug: High | Medium | Low` labels. We should have labels for our "Plan" issues (parent/root), "Block" issues (groups of tasks) and "Task" issues (individual actionable items). We should also improve the dependency between issues. I.e. bugs should never be part of a plan directly (we don't plan a bug; we log them for fix and they all exist as root), but we can assign a bug issue as a blocking dependency to tasks.
+
+===
+
+Limitation: engrenage sync refreshes the body of installed skills and rules but not their frontmatter. We should consider adding support for syncing the frontmatter as well, or logging/warning when there are discrepancies between the local and remote frontmatter.
+
+===
+
+We should see if we can create issue templates to easily open new plan/block/task issues, automatically filling the relevant fields and linking to the appropriate parent or blocking issues.
