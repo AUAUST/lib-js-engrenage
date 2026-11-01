@@ -8,6 +8,7 @@ import {
 } from "@auaust/engrenage/agents";
 import { loadConfig } from "@auaust/engrenage/config";
 
+import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 
 const root = getFixture("agents");
@@ -46,6 +47,30 @@ describe("syncAgentFiles", () => {
         import.meta.filename,
       ),
     ).toMatch(/\/data\/agents\/sections\/precedence\.md$/);
+  });
+
+  test("resolves package fragments exported only under the import condition", async () => {
+    const config = await loadConfig(root);
+
+    const project = createTemporaryProject({
+      "AGENTS.md": "",
+      "node_modules/fragments/package.json": JSON.stringify({
+        name: "fragments",
+        type: "module",
+        exports: {
+ "./*.md": { import: "./*.md" } 
+},
+      }),
+      "node_modules/fragments/shared.md": "",
+    });
+
+    expect(
+      resolveAgentReference(
+        config,
+        "fragments/shared.md",
+        project.resolve("AGENTS.md"),
+      ),
+    ).toBe(project.resolve("node_modules/fragments/shared.md"));
   });
 
   test("names the reference and the file when nothing matches", async () => {
