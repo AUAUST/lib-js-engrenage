@@ -116,7 +116,13 @@ describe("defineViteConfig", () => {
       })(env);
 
       expect(layered).toEqual(vitestConfig);
-      expect(layered.test?.typecheck?.tsconfig).toBe(layered.tsconfig);
+
+      expect(layered.test?.typecheck?.tsconfig).toBe(
+        join(
+          root,
+          mode === "build" ? "tsconfig.tests.dist.json" : "tsconfig.tests.json",
+        ),
+      );
     }
   });
 

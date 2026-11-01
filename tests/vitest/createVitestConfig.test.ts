@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { createServer, mergeConfig } from "vite";
 import { describe, expect, test, vi } from "vitest";
 import { configDefaults } from "vitest/config";
+import { startVitest } from "vitest/node";
 
 import { loadConfig } from "@auaust/engrenage/config";
 import { createViteConfig } from "@auaust/engrenage/vite";
@@ -44,7 +45,7 @@ describe("createVitestConfig", () => {
           provider: "istanbul",
         },
         typecheck: {
-          tsconfig: join(root, "tsconfig.json"),
+          tsconfig: join(root, "tsconfig.tests.json"),
         },
       },
     });
@@ -130,6 +131,56 @@ describe("createVitestConfig", () => {
       } finally {
         await server.close();
       }
+    }
+  });
+});
+
+describe("createVitestConfig type checking", () => {
+  test("fails the Vitest type check on a type error in a test", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts": "export default {};\n",
+      "tsconfig.json":
+        '{ "files": [], "references": [{ "path": "./tsconfig.tests.json" }] }',
+      "tsconfig.tests.json":
+        '{ "compilerOptions": { "strict": true, "noEmit": true, "composite": true, "noEmitOnError": false, "types": [] }, "include": ["tests"] }',
+      "tests/example.test-d.ts":
+        'const value: number = "text";\nexport { value };\n',
+    });
+
+    const config = await loadConfig(project.root);
+
+    const vitestConfig = createVitestConfig(config, {
+      command: "serve",
+      mode: "test",
+    });
+
+    const typecheckTsconfig = project.resolve("tsconfig.tests.json");
+
+    expect(vitestConfig.test?.typecheck?.tsconfig).toBe(typecheckTsconfig);
+
+    const vitest = await startVitest("test", [], {
+      root: project.root,
+      config: false,
+      run: true,
+      watch: false,
+      reporters: [],
+      typecheck: {
+        enabled: true,
+        include: ["tests/**/*.test-d.ts"],
+        tsconfig: typecheckTsconfig,
+      },
+    });
+
+    try {
+      expect(
+        vitest.state.getCountOfFailedTests() +
+          vitest.state
+            .getFiles()
+            .filter((file) => file.result?.state === "fail").length,
+      ).toBeGreaterThan(0);
+    } finally {
+      await vitest.close();
     }
   });
 });

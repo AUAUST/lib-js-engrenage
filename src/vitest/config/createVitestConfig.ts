@@ -51,6 +51,10 @@ export function createVitestConfig(
     ? config.tests.dist.tsconfig.path
     : config.typescript.tsconfig.path;
 
+  const typecheckTsconfig = testsBuild
+    ? config.tests.dist.tsconfig.path
+    : config.tests.tsconfig.path;
+
   return {
     ...(tsconfig === undefined
       ? {}
@@ -70,10 +74,10 @@ export function createVitestConfig(
         reportsDirectory: config.tests.coverageDir,
       },
       typecheck:
-        tsconfig === undefined
+        typecheckTsconfig === undefined
           ? {}
           : {
-              tsconfig,
+              tsconfig: typecheckTsconfig,
             },
     },
   };
