@@ -10,3 +10,5 @@ export const attwOptions = freeze({
   profile: "node16",
   ignoreRules: ["cjs-resolves-to-esm"],
 } as const satisfies AttwOptions);
+
+export const builtExtension = ".mjs";

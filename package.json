@@ -103,8 +103,8 @@
   },
   "files": [
     "dist",
-    "src",
-    "data"
+    "data",
+    "src"
   ],
   "dependencies": {
     "@eslint/js": "^10.0.1",
@@ -206,7 +206,7 @@
     "runtime": {
       "name": "node",
       "version": "24",
-      "onFail": "warn"
+      "onFail": "error"
     }
   },
   "publishConfig": {

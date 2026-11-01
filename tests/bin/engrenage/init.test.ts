@@ -168,7 +168,18 @@ describe("engrenage init", () => {
       );
 
       expect(existsSync(project.resolve(`${tool}.config.ts`))).toBe(false);
-      expect(project.read("package.json")).toBe(packageJson);
+
+      expect(JSON.parse(project.read("package.json"))).toEqual({
+        ...JSON.parse(packageJson),
+        devEngines: {
+          runtime: {
+            name: "node",
+            version: "24",
+            onFail: "error",
+          },
+        },
+      });
+
       expect(project.read("engrenage.config.ts")).toBe(config);
       expect(spawnSync).not.toHaveBeenCalled();
       expect(process.exitCode ?? 0).toBe(0);
@@ -386,6 +397,7 @@ describe("engrenage init", () => {
       "scripts",
       "devDependencies",
       "prettier",
+      "devEngines",
     ]);
   });
 

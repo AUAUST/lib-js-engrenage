@@ -34,6 +34,10 @@ export const defaultSourceDirectories = freeze([
   "src",
 ] as const) satisfies Directories;
 
+export const defaultDataDirectories = freeze([
+  "data",
+] as const) satisfies Directories;
+
 export const defaultTestsDirectories = freeze([
   "tests",
 ] as const) satisfies Directories;

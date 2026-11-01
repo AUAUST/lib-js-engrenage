@@ -13,6 +13,7 @@ import { globalsSchema } from "#config/config/schemas/defineSchema";
 import {
   defaultBinDirectories,
   defaultCacheDirectory,
+  defaultDataDirectories,
   defaultDefines,
   defaultDefineTypes,
   defaultEmptyOutDir,
@@ -352,6 +353,14 @@ export function createResolvedConfig({
   const data = once(() => {
     return freeze({
       active: raw.data !== false,
+      dirs:
+        raw.data === false
+          ? []
+          : resolveListOption(
+              raw.data?.dirs,
+              () => defaultDataDirectories,
+              "data.dirs",
+            ),
       exports: (raw.data === false ? undefined : raw.data?.exports) ?? {},
     });
   });

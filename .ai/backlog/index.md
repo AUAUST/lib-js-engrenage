@@ -28,3 +28,4 @@ Deferred questions, bugs, tasks and improvements.
 - [toolkit](toolkit.md): Upstream @auaust/toolkit decisions that may affect engrenage.
 - [configuration](configuration.md): Project configuration contract: environments, option shapes and list options.
 - [typescript](typescript.md): Generated tsconfigs: include globs, managed fields and checks.
+- [package-json](package-json.md): Published package contents and fields derived by the sync `package` target.

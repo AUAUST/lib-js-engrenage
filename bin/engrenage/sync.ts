@@ -8,6 +8,7 @@ import { syncClaudeSettings } from "#agents/claude/setup/syncClaudeSettings";
 import { syncCodexFiles } from "#agents/codex/setup/syncCodexFiles";
 import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
 import { syncChangesetConfig } from "#changesets/setup/syncChangesetConfig";
+import { syncPackageJson } from "#config/setup/syncPackageJson";
 import { loadConfig } from "#config/utils/loadConfig";
 import { syncGitignoreFile } from "#git/setup/syncGitignoreFile";
 import { syncWorkflowFiles } from "#github/setup/syncWorkflowFiles";
@@ -49,6 +50,7 @@ const targets = {
   }),
   gitignore: defineTarget(syncGitignoreFile),
   globals: defineTarget(syncEnvFile),
+  package: defineTarget(syncPackageJson),
   prettierignore: defineTarget(syncPrettierignoreFile),
   tsconfig: defineTarget(syncTsconfigFiles),
   vscode: defineTarget(syncVscodeFiles, {

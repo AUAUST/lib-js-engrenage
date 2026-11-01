@@ -75,6 +75,7 @@ export const configSchema = strictObject({
   ),
   data: optional(
     environmentSchema({
+      dirs: optional(dirsSchema),
       exports: optional(exposedFilesSchema),
     }),
   ),
