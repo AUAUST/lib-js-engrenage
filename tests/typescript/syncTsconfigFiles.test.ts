@@ -39,6 +39,17 @@ const files = {
   }),
 };
 
+const baselineLibrary = [
+  "ES2022",
+  "ES2023.Array",
+  "ES2023.Intl",
+  "ES2024.Collection",
+  "ES2024.Object",
+  "ES2024.Promise",
+  "ES2024.Regexp",
+  "ES2024.String",
+];
+
 const buildInfoFile =
   "./node_modules/.cache/typescript/tsconfig.src.tsbuildinfo";
 
@@ -53,7 +64,9 @@ describe("syncTsconfigFiles", () => {
       include: ["src/**/*.{ts,tsx}", "env.d.ts"],
       exclude: ["dist"],
       compilerOptions: {
-        lib: ["dom"],
+        target: "ES2024",
+        lib: baselineLibrary,
+        types: [],
         paths: { "#a": ["./a.ts"] },
         tsBuildInfoFile: buildInfoFile,
       },
@@ -73,6 +86,7 @@ describe("syncTsconfigFiles", () => {
         src: {
           tsconfig: {
             include: false,
+            lib: false,
             unmanaged: ["compilerOptions.tsBuildInfoFile"],
           },
         },
@@ -88,7 +102,9 @@ describe("syncTsconfigFiles", () => {
     expect(tsconfig.include).toEqual(["custom/**/*"]);
 
     expect(tsconfig.compilerOptions).toEqual({
+      target: "ES2024",
       lib: ["dom"],
+      types: [],
       paths: { "#a": ["./a.ts"] },
     });
   });
@@ -113,7 +129,9 @@ describe("syncTsconfigFiles", () => {
     expect(
       JSON.parse(project.read("tsconfig.src.json")).compilerOptions,
     ).toEqual({
-      lib: ["dom"],
+      target: "ES2024",
+      lib: baselineLibrary,
+      types: [],
       paths: { "#a": ["./a.ts"] },
       tsBuildInfoFile: "./custom.tsbuildinfo",
       customFlag: { a: 1 },

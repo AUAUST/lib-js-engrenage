@@ -1,12 +1,21 @@
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { describe, expect, test } from "vitest";
 
+import { keys } from "@auaust/toolkit/object";
+
 import { createFilesystem } from "#config/utils/createFilesystem";
+import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
 import { getFixture } from "#tests/helpers/getFixture";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
+import { listTsconfigPresets } from "#typescript/utils/listTsconfigPresets";
+
+const dataTsconfig = fileURLToPath(
+  new URL("../../data/tsconfig", import.meta.url),
+);
 
 const tsc = createRequire(import.meta.url).resolve("typescript/lib/tsc.js");
 
@@ -21,6 +30,26 @@ function showConfig(project: string) {
 }
 
 describe("tsconfig presets", () => {
+  test.each([
+    ["baseline", ["lib", "target"]],
+    ["node", ["lib", "target", "types"]],
+  ] as const)(
+    "sets exactly the runtime fields in %s snippets",
+    (kind, fields) => {
+      const presets = listTsconfigPresets(kind);
+
+      expect(presets).not.toHaveLength(0);
+
+      for (const preset of presets) {
+        const { compilerOptions } = readJsonFile(
+          join(dataTsconfig, kind, `${preset}.json`),
+        ) as { compilerOptions: object };
+
+        expect(keys(compilerOptions).sort()).toEqual(fields);
+      }
+    },
+  );
+
   test("resolves the base preset through the package exports", () => {
     const { compilerOptions } = showConfig(getFixture("tsconfig/base"));
 
