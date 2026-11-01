@@ -708,8 +708,8 @@ test("declining backlog setup leaves no backlog instructions or files", async ()
 
   expect(project.read("AGENTS.md")).not.toContain("## Backlog");
 
-  expect(project.read("AGENTS.override.md")).toContain(
-    "No project rule files are present.",
+  expect(project.read("AGENTS.override.md")).not.toContain(
+    ".claude/rules/backlog.md",
   );
 });
 

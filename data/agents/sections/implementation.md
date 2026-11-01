@@ -14,7 +14,7 @@ order: 40
 - Extend established extension points autonomously. Several small utilities or files must not disguise a missing abstraction.
 - Derive behavior from authoritative configuration, definitions, metadata or live data. Do not invent hardcoded catalogues, lists, status flags or example data.
 - Fail clearly on missing invariants. Use fallbacks only when they belong to the intended contract.
-- Avoid code comments; prefer a named function or descriptive variable. Comment only essential intent or constraints.
+- Avoid code comments; prefer a named function or descriptive variable. Comment only essential intent or constraints, and `@debt` markers as the debt-markers rule describes.
 - Delete obsolete starter code and commented-out implementations. Do not add READMEs for features or a `docs/` directory.
 - When work would build on or deepen an architectural violation, correcting it is a prerequisite: stop under the decision protocol with what is required, what exists, the recommended fix and its scope. Correct existing violations you touch.
 - Report relevant nearby inconsistencies without fixing them. Do not do unsolicited cleanup.
