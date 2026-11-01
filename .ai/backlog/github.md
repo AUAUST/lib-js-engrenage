@@ -17,3 +17,9 @@ GitHub repository synchronization: labels, issue fields and issue templates.
 - Expected: templates that open plan, block and task issues with the relevant fields filled and the parent or blocking issues linked, if GitHub's template features allow it.
 - Depends on: `github.1`.
 - Done when each issue level has a template, or the limits of GitHub templates are recorded.
+
+## 3. Label synchronization should be its own subcommand, not part of `sync`.
+
+- Expected: `engrenage github labels`, like agents have their own dedicated commands, diffing the proposed labels against the labels existing on GitHub and showing three lists: matches, missing labels (pick which to add, all by default) and extra labels (pick which to remove, none by default). The same applies to bug severities and any other field defined later.
+- Depends on: `github.1`.
+- Done when labels, and the fields defined with them, are synced by the dedicated subcommand and no longer by the main `sync`.

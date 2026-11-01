@@ -33,3 +33,4 @@ Deferred questions, bugs, tasks and improvements.
 - [file-editing](file-editing.md): In-memory editing of JSON and YAML files in the codegen tooling.
 - [github](github.md): GitHub repository synchronization: labels, issue fields and issue templates.
 - [readme](readme.md): Project README content, deferred until the API stops breaking at every release.
+- [coding-style](coding-style.md): Local coding conventions and linting.

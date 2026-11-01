@@ -34,3 +34,10 @@ Generated tsconfigs: include globs, managed fields and checks.
 
 - Matter: `pnpm engrenage sync --check` reports drift in this repository's tsconfigs. The repository has not adopted the new tsconfig layout yet, and the other producers (target, lib, types, base references) belong to the other sub-issues of the layout work.
 - Done when this repository adopts the new layout and `sync --check` passes, or the producers' sub-issues settle what remains.
+
+## 6. `data/apis` declarations are written by hand.
+
+- Where: `data/apis/timers.d.ts`, `data/apis/crypto.d.ts`, `data/apis/performance.d.ts`.
+- Problem: API interfaces must never be hand-written. `timers.d.ts` declares `setTimeout` but not `setInterval`, so the first manual interface is already wrong.
+- Expected: every declaration in `data/apis` is generated from a source of truth, imported from an existing library, or otherwise derived automatically.
+- Done when no hand-written API specs remain in `data/apis`.
