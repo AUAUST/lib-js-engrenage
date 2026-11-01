@@ -35,7 +35,7 @@ Everything stays local to the repository.
 4. Create or update entries under the index's category, entry and numbering rules, reusing existing coverage.
 5. Apply the local edits a note explicitly asks for, within the scope above.
 6. Remove only notes that were recorded, already covered or applied. Never delete the file.
-7. When no note remains, keep the heading and placeholder marker, and add a fresh, aggressively kawaii invitation to write notes; never repeat a previous sentence.
+7. When no note remains, keep the heading and placeholder marker, and add a quote that can inspire, provoke thought or start a conversation, as an exact citation followed by its author's name. Quote it as is when the original is in French or English, otherwise in its canonical English translation. Any author qualifies, ancient or modern, real or fictional; for a fictional character, name the work or universe it comes from.
 
 ## Report
 
