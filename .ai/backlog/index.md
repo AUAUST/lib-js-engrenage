@@ -34,3 +34,4 @@ Deferred questions, bugs, tasks and improvements.
 - [github](github.md): GitHub repository synchronization: labels, issue fields and issue templates.
 - [readme](readme.md): Project README content, deferred until the API stops breaking at every release.
 - [coding-style](coding-style.md): Local coding conventions and linting.
+- [utils](utils.md): Shared public helpers in `src/utils/` and their placement.

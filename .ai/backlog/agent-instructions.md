@@ -37,3 +37,10 @@ Agent instruction resolution and synchronization.
 - Matter: agents take on work for which a dedicated agent exists, which lowers quality and efficiency.
 - Expected: a shared instruction telling agents to handle only tasks without a dedicated agent available. It must not apply to an agent that was explicitly invoked for its task: such an agent never delegates because of this instruction.
 - Done when the shared instructions state the rule with the explicit-invocation exception.
+
+## 6. The debugger agent should flag potential issues as debt far more eagerly than other agents.
+
+- Matter: the debugger's role is to identify potential problems early and keep them from escalating. Its already proactive approach should extend to marking potential issues as `@debt` much more readily than other agents do.
+- Context: the shared debt-marker rule applies to all agents equally ("doubt settles the question"); the debugger agent definition does not raise the bar for itself.
+- Expected: the debugger agent's instructions state a lower threshold for marking potential issues as debt, without changing the shared rule for other agents.
+- Done when the debugger agent source carries that instruction and `engrenage sync agents` has propagated it.

@@ -10,6 +10,12 @@ GitHub repository synchronization: labels, issue fields and issue templates.
   - `Type: Bug` plus the custom `Priority` field (`High | Medium | Low`) instead of priority-in-label.
   - Labels for the issue levels: Plan (parent/root), Block (group of tasks) and Task (individual actionable item).
   - Better issue dependencies: a bug is never part of a plan directly (bugs are logged for fix and stay at the root), but can be a blocking dependency of tasks.
+- Managed labels and fields to define, relying on GitHub's native issue fields as far as possible instead of labelling everything:
+  - Environment, mapping to the environments defined in engrenage: source, tests, tooling, bin, scripts, data.
+  - General nature: bug, feature, task, improvement.
+  - Priority or urgency: low, medium, high, critical.
+  - Status or state: blocked by other, missing info.
+- To settle: how these overlap with the Type, Priority and Plan/Block/Task levels above (for example the priority scale, Low | Medium | High versus up to critical).
 - Done when sync produces these labels and fields and the dependency rules are stated in the shared instructions.
 
 ## 2. No issue templates for plan, block and task issues.

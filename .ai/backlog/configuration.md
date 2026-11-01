@@ -34,3 +34,9 @@ Project configuration contract: environments, option shapes and list options.
 - Expected: the resolved config reads pending writes (the files a sync run is about to produce) instead of the disk, so one sync pass is consistent; `init` then runs sync once without a flush. Settle first whether cause 1 is real and whether `loadConfig` needs a cache at all.
 - Related: issue #70's acceptance item "sync --check passes right after init" is unmet; its test asserts a tsconfig-only check instead. Related to `typescript.4`.
 - Done when `engrenage sync --check` passes right after `engrenage init --yes` in a fresh project, the double sync and its `@debt` marker are gone, and the test asserts the full check.
+
+## 5. CI and test timeouts are not configurable, nor per environment.
+
+- Context: recent commit `fix: tests timeout in CI` changed a timeout; the value is fixed rather than a configuration option.
+- Expected: the CI/test timeout is a configuration option, overridable per environment (see the environment model in `configuration.1`), with the current value as default.
+- Done when the timeout is set through the project configuration, per environment, and no generated config hardcodes it.
