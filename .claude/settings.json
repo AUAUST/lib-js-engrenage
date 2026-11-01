@@ -1,6 +1,22 @@
 {
   "permissions": {
-    "deny": ["Read(**/.env)", "Read(**/.env.[^e]*)", "Read(**/.env.e[^x]*)"]
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.[^e]*)",
+      "Read(**/.env.e[^x]*)",
+      "mcp__Claude_Browser",
+      "mcp__Claude_Code_iOS_Simulator",
+      "mcp__claude-in-chrome",
+      "mcp__visualize",
+      "mcp__scheduled-tasks",
+      "mcp__mcp-registry",
+      "mcp__1a59c906-04da-521d-bda7-7f71b9f9e01c",
+      "Artifact",
+      "ArtifactComments",
+      "ArtifactData",
+      "DesignSync",
+      "NotebookEdit"
+    ]
   },
   "hooks": {
     "PostToolUse": [
