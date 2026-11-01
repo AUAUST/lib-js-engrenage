@@ -29,3 +29,4 @@ Deferred questions, bugs, tasks and improvements.
 - [configuration](configuration.md): Project configuration contract: environments, option shapes and list options.
 - [typescript](typescript.md): Generated tsconfigs: include globs, managed fields, checks and variant resolution.
 - [package-json](package-json.md): Published package contents and fields derived by the sync `package` target.
+- [debt-markers](debt-markers.md): In-code debt markers: capture by agents, listing, checks and harvesting into planned work.
