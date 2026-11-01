@@ -569,6 +569,7 @@ test("does not generate agent setup without selected agents", async () => {
     ".ai/scratchpad.md",
     ".claude/rules/backlog.md",
     ".claude/agents/scratcher.md",
+    ".claude/agents/backlogger.md",
   ]) {
     expect(existsSync(project.resolve(file))).toBe(false);
   }
@@ -724,5 +725,9 @@ test("adds a scratchpad to an existing backlog setup", async () => {
 
   expect(project.read(".agents/skills/scratchpad/SKILL.md")).toContain(
     "# Scratchpad",
+  );
+
+  expect(project.read(".agents/skills/backlog-handling/SKILL.md")).toContain(
+    "# Backlog handling",
   );
 });

@@ -19,6 +19,7 @@ import { engrenage } from "#constants";
 import type { Step } from "#support/scaffold/types/Step";
 
 const sectionReference = `${engrenage}/agents/sections/backlog.md`;
+const skills = ["scratchpad", "backlog-handling"];
 
 export function createBacklogStep(): Step {
   return {
@@ -39,7 +40,7 @@ export function createBacklogStep(): Step {
         }) ||
         getSkillTemplates(config).some(({ name, files }) => {
           return (
-            name === "scratchpad" &&
+            skills.includes(name) &&
             files.some(({ file }) => !filesystem.exists(file))
           );
         })
@@ -77,7 +78,7 @@ export function createBacklogStep(): Step {
       }
 
       addAgentRules(config, ["backlog"]);
-      addAgentSkills(config, ["scratchpad"]);
+      addAgentSkills(config, skills);
 
       syncAgentFiles(config);
     },

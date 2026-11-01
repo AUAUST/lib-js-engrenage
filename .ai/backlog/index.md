@@ -16,6 +16,7 @@ Deferred questions, bugs, tasks and improvements.
 - After adding, removing or moving entries, renumber affected categories and update entry references.
 - State the matter, relevant context, expected outcome and completion or obsolescence condition. Field labels and proposed fixes are optional.
 - Update existing entries instead of duplicating them. Remove resolved or obsolete entries; delete empty categories and their index links.
+- Once a GitHub issue tracks an entry's work, remove the entry, or reduce it to the work the issue leaves here and link the issue.
 
 ## Open categories
 
