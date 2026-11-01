@@ -10,7 +10,11 @@ export default defineConfig({
       tsconfig: { path: "tsconfig.dist.json" },
     },
   },
+  typescript: {
+    tsconfig: { extends: ["./data/tsconfig/library.json"] },
+  },
   src: {
+    node: 24,
     generated: ["eslint/types/Rules.ts", "eslint/types/rules/**"],
     discovered: ["eslint/conventions/*/*.ts"],
   },

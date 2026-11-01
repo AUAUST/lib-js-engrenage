@@ -1,5 +1,5 @@
 {
-  "extends": "@auaust/engrenage/tsconfig/library.json",
+  "extends": "./data/tsconfig/library.json",
   "compilerOptions": {
     "paths": {
       "@auaust/engrenage/agents/*/constants": ["./src/agents/*/constants.ts"],

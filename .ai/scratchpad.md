@@ -46,3 +46,11 @@ if (!empty(value)) {
   // empty<string[] | undefined>(input: string[] | undefined): input is (string[] & []) | undefined
 }
 ```
+
+===
+
+@auaust/toolkit should have a regex domain that exposes a `RegExp.escape` method available until `ES2025` becomes a widely available standard.
+
+===
+
+Add a todo for engrenage to undo the `node: 24` config once the above escape is available. This way, engrenage will go back to relying on its own defaults.
