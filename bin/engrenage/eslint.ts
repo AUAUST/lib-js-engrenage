@@ -5,24 +5,23 @@ import { defaultSuppressionsFile } from "#eslint/constants";
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
 import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
-import { getOptionsEnd } from "#support/commander/utils/getOptionsEnd";
-import { isOptionOf } from "#support/commander/utils/isOptionOf";
+import { hasOption } from "#support/commander/utils/hasOption";
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 
 function useCache(config: ResolvedConfig, args: string[]) {
+  if (hasOption(args, ["--no-cache"])) {
+    return;
+  }
+
   ensureIncludes(args, "--cache");
 
   ensureIncludes(args, ["--cache-location", config.cacheFor(eslint)]);
 }
 
 function hasSuppressions(args: readonly string[]): boolean {
-  const locatesSuppressions = args
-    .slice(0, getOptionsEnd(args))
-    .some((arg) => isOptionOf(arg, ["--suppressions-location"]));
-
   return (
-    locatesSuppressions ||
+    hasOption(args, ["--suppressions-location"]) ||
     existsSync(resolve(process.cwd(), defaultSuppressionsFile))
   );
 }
