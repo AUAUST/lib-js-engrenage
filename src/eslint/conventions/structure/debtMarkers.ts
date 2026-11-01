@@ -24,10 +24,23 @@ export default defineConvention({
       },
       messages: {
         malformedDebtMarker: message,
+        debtMarker: "{{statement}}",
       },
-      schema: [],
+      schema: [
+        {
+          type: "object",
+          properties: {
+            list: {
+              type: "boolean",
+            },
+          },
+          additionalProperties: false,
+        },
+      ],
     },
     create(context) {
+      const [{ list = false } = {}] = context.options as [{ list?: boolean }?];
+
       return {
         Program() {
           for (const comment of context.sourceCode.getAllComments()) {
@@ -39,7 +52,15 @@ export default defineConvention({
               text.startsWith(debtMarker) &&
               /^\s\S/.test(text.slice(debtMarker.length));
 
-            if (isMention && !isMarker) {
+            if (list && isMarker) {
+              context.report({
+                loc: comment.loc!,
+                messageId: "debtMarker",
+                data: {
+                  statement: text.slice(debtMarker.length).trim(),
+                },
+              });
+            } else if (!list && isMention && !isMarker) {
               context.report({
                 loc: comment.loc!,
                 messageId: "malformedDebtMarker",

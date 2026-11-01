@@ -1,0 +1,7 @@
+{
+  "name": "debt-fixture",
+  "type": "module",
+  "devDependencies": {
+    "eslint": "*"
+  }
+}

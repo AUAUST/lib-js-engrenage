@@ -6,6 +6,7 @@ export * from "#eslint/types/Config";
 export * from "#eslint/types/ConfigObject";
 export * from "#eslint/types/ConfigWithExtends";
 export * from "#eslint/types/Convention";
+export * from "#eslint/types/DebtMarker";
 export * from "#eslint/types/Delegate";
 export * from "#eslint/types/Options";
 export * from "#eslint/types/Plugin";

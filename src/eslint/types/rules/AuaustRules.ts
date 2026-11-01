@@ -36,7 +36,7 @@ export interface AuaustRules {
   /**
    * Write debt markers as `@debt <statement>` at the start of their own comment.
    */
-  "auaust/debt-markers"?: Rule<[]>;
+  "auaust/debt-markers"?: Rule<AuaustDebtMarkers>;
   /**
    * Keep function overloads and their implementation together, without blank lines.
    */
@@ -489,6 +489,14 @@ type AuaustCurly =
   | []
   | ["multi" | "multi-line" | "multi-or-nest"]
   | ["multi" | "multi-line" | "multi-or-nest", "consistent"];
+// ----- auaust/debt-markers -----
+type AuaustDebtMarkers =
+  | []
+  | [
+      {
+        list?: boolean;
+      },
+    ];
 // ----- auaust/logical-assignment-operators -----
 type AuaustLogicalAssignmentOperators = (
   | []
