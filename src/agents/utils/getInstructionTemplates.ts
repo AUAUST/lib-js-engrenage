@@ -27,7 +27,7 @@ const templateSchema = looseObject({
   order: pipe(number(), integer()),
 });
 
-export function getInstructionTemplates(kind: "rules" | "sections") {
+export function getInstructionTemplates(kind: "rules" | "sections" | "skills") {
   const directory = resolve(
     dirname(createRequire(import.meta.url).resolve(agentsTemplate)),
     `../${kind}`,

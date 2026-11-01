@@ -1,6 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { engrenage } from "#constants";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 export const codexFile = "AGENTS.override.md" satisfies File;
@@ -21,3 +22,5 @@ export const codexEditHook = freeze({
     },
   ],
 } as const);
+
+export const codexSkillsDir = ".agents/skills" satisfies Directory;

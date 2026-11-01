@@ -25,6 +25,7 @@ export default defineConfig({
       "./agents/templates/*.md": "data/agents/templates/*.md",
       "./agents/rules/*.md": "data/agents/rules/*.md",
       "./agents/sections/*.md": "data/agents/sections/*.md",
+      "./agents/skills/*.md": "data/agents/skills/*.md",
       "./github/workflows/*.yml": "data/github/workflows/*.yml",
       "./tsconfig/*.json": "data/tsconfig/*.json",
     },

@@ -1,6 +1,5 @@
-import { stringify } from "yaml";
-
 import { syncCodexInstructions } from "#agents/codex/setup/syncCodexInstructions";
+import { createInstructionFile } from "#agents/utils/createInstructionFile";
 import { getMissingRuleTemplates } from "#agents/utils/getMissingRuleTemplates";
 import { getRuleTemplates } from "#agents/utils/getRuleTemplates";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -26,16 +25,18 @@ export function addAgentRules(
       continue;
     }
 
-    const frontmatter =
-      paths === undefined
-        ? ""
-        : `---\n${stringify({
-            paths,
-          })}---\n\n`;
-
     config.filesystem.write(
       file,
-      `${frontmatter}<!-- @reference ${reference} -->\n\n${body.trim()}\n\n<!-- @end -->\n`,
+      createInstructionFile({
+        frontmatter:
+          paths === undefined
+            ? undefined
+            : {
+                paths,
+              },
+        reference,
+        body,
+      }),
     );
   }
 

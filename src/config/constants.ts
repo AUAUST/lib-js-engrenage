@@ -79,6 +79,9 @@ export const defaultDefines = freeze({
 export const defaultInstructionFiles = freeze([
   "AGENTS.md",
   ".claude/rules/**/*.md",
+  ".claude/skills/*/SKILL.md",
+  ".claude/agents/*.md",
+  ".agents/skills/*/SKILL.md",
 ] as const) satisfies Globs;
 
 export const defaultPresets = freeze([] as const) satisfies Presets;

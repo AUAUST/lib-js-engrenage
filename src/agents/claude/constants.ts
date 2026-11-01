@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 export const claudeFile = "CLAUDE.md" satisfies File;
@@ -20,3 +21,7 @@ export const claudeEditHook = freeze({
 } as const);
 
 export const claudeRulesGlob = ".claude/rules/**/*.md";
+
+export const claudeSkillsDir = ".claude/skills" satisfies Directory;
+
+export const claudeAgentsDir = ".claude/agents" satisfies Directory;
