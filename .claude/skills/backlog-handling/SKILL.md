@@ -14,9 +14,11 @@ Bring the backlog up to date with what you are given and file the entries that a
 
 Backlog IDs aren't stable nor unique. Never refer to them outside the backlog itself, and update references within the backlog whenever the IDs change.
 
+You also take entries from the debt backlog `.ai/debt.md`, which the banker fills. Move each entry you are given into the backlog category that owns the affected code, or file it under the rules below, then remove it from `.ai/debt.md`. Keep its problem, sites and other locations, and number the remaining debt entries again.
+
 ## Procedure
 
-1. Read `.ai/backlog/index.md` and find the entries the request concerns, from the IDs, topics or work it mentions, along with the entries closely related to them.
+1. Read `.ai/backlog/index.md` and find the entries the request concerns, from the IDs, topics or work it mentions, along with the entries closely related to them. Read `.ai/debt.md` when the request names debt entries.
 2. Check what the request and the project's current state add to them: answers, new context, work already done. Read entries together; combined, they may explain each other.
 3. Apply only that: update an entry with what it gained, remove it once resolved or obsolete, merge entries that prove to be one matter and split one that holds several. An entry that gains nothing stays as it is.
 4. File each entry that is ready for action as a GitHub issue.
@@ -33,7 +35,7 @@ An entry is ready for action when it needs no further decision: a located bug wi
 - Use the target repository's existing labels and issue types.
 - Create it with `gh issue create --repo <owner>/<repo> --title "<title>" --body-file -`, passing the body on standard input.
 
-Edit nothing outside `.ai/backlog/` and leave changes uncommitted.
+Edit nothing outside `.ai/backlog/` and `.ai/debt.md`, and leave changes uncommitted.
 
 ## Report
 

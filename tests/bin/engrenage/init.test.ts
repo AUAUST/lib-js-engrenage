@@ -742,4 +742,8 @@ test("adds a scratchpad to an existing backlog setup", async () => {
   expect(project.read(".agents/skills/backlog-handling/SKILL.md")).toContain(
     "# Backlog handling",
   );
+
+  expect(project.read(".agents/skills/debt-harvesting/SKILL.md")).toContain(
+    "# Debt harvesting",
+  );
 });

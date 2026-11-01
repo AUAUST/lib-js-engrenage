@@ -19,7 +19,7 @@ import { engrenage } from "#constants";
 import type { Step } from "#support/scaffold/types/Step";
 
 const sectionReference = `${engrenage}/agents/sections/backlog.md`;
-const skills = ["scratchpad", "backlog-handling"];
+const skills = ["scratchpad", "backlog-handling", "debt-harvesting"];
 
 export function createBacklogStep(): Step {
   return {
