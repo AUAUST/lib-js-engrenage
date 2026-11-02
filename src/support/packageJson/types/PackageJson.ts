@@ -1,4 +1,5 @@
 import type { Accessors } from "#config/types/Accessors";
+import type { DevEngine } from "#support/packageJson/types/DevEngine";
 import type { Person } from "#support/packageJson/types/Person";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
@@ -37,5 +38,8 @@ export type PackageJson = Accessors<{
   sideEffects: boolean | Globs | undefined;
   packageManager: string | undefined;
   engines: Partial<Record<string, string>> | undefined;
+  devEngines:
+    | { packageManager?: DevEngine | readonly DevEngine[] | undefined }
+    | undefined;
   publishConfig: { access?: PublishAccess | undefined } | undefined;
 }>;

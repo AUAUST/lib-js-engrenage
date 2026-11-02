@@ -24,6 +24,12 @@ import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
+const devEngineSchema = looseObject({
+  name: string(),
+  version: optional(string()),
+  onFail: optional(string()),
+});
+
 const personSchema = union([
   string(),
   looseObject({
@@ -164,6 +170,16 @@ export function createPackageJson({
       },
       engines() {
         return read("engines", record(string(), string()));
+      },
+      devEngines() {
+        return read(
+          "devEngines",
+          looseObject({
+            packageManager: optional(
+              union([devEngineSchema, array(devEngineSchema)]),
+            ),
+          }),
+        );
       },
       publishConfig() {
         return read(

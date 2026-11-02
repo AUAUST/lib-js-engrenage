@@ -6,6 +6,7 @@ import { agents } from "#bin/engrenage/agents/index";
 import { debt } from "#bin/engrenage/debt";
 import { eslint } from "#bin/engrenage/eslint";
 import { init } from "#bin/engrenage/init";
+import { pnpm } from "#bin/engrenage/pnpm/index";
 import { prettier } from "#bin/engrenage/prettier";
 import { sync } from "#bin/engrenage/sync";
 import { tsc } from "#bin/engrenage/tsc";
@@ -28,6 +29,7 @@ const program = registerSubcommands(
     sync,
     debt,
     agents,
+    pnpm,
     ...tsc,
     ...vitest,
     ...tsdown,

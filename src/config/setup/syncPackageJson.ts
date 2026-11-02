@@ -3,6 +3,8 @@ import { max } from "@auaust/toolkit/math";
 import { entries } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
+import { listPnpmWarnings } from "#pnpm/utils/listPnpmWarnings";
+import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
 import { writePackageJsonValue } from "#support/packageJson/utils/writePackageJsonValue";
 import { resolveCommandFiles } from "#tsdown/utils/resolveCommandFiles";
 import { syncFiles } from "#utils/syncFiles";
@@ -86,6 +88,16 @@ export function syncPackageJson(config: ResolvedConfig) {
     {
       file: packageJsonFile,
       update(content, path) {
+        const packageJson = createPackageJson({
+          root: config.root,
+          path,
+          content,
+        });
+
+        for (const warning of listPnpmWarnings(packageJson)) {
+          console.warn(`${packageJsonFile}: ${warning}`);
+        }
+
         return createFields(config).reduce((current, { location, value }) => {
           return writePackageJsonValue(current, path, location, value);
         }, content);

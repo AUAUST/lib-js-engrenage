@@ -13,3 +13,7 @@ export const workspaceSettings = freeze({
   } as const),
   minimumReleaseAgeExclude: freeze([`${organization}/*`] as const),
 } as const) satisfies WorkspaceSettings;
+
+export const upgradeCommand = "engrenage pnpm upgrade";
+
+export const onlyAllowScript = "npx only-allow pnpm";

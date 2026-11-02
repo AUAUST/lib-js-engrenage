@@ -162,3 +162,59 @@ describe("syncPackageJson", () => {
     );
   });
 });
+
+describe("syncPackageJson pnpm warnings", () => {
+  function declare(version: string) {
+    return {
+      devEngines: {
+        packageManager: {
+          name: "pnpm",
+          version,
+          onFail: "download",
+        },
+      },
+    };
+  }
+
+  async function warnings(manifest: object) {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const { resolved } = await sync(library, manifest);
+
+    const messages = warn.mock.calls.map(([message]) => String(message));
+
+    return { resolved, messages };
+  }
+
+  test("suggests the upgrade command for a lower major without failing the check", async () => {
+    const { resolved, messages } = await warnings(declare("^10.0.0"));
+
+    expect(messages).toEqual([
+      expect.stringContaining("engrenage pnpm upgrade"),
+    ]);
+
+    expect(messages[0]).toContain("pnpm 10 is behind");
+    expect(resolved.filesystem.read("package.json")).not.toContain("^11");
+  });
+
+  test("suggests updating engrenage for a higher major", async () => {
+    const { messages } = await warnings(declare("^12.0.0"));
+
+    expect(messages).toEqual([expect.stringContaining("update engrenage")]);
+  });
+
+  test("stays silent for engrenage's major", async () => {
+    const { messages } = await warnings(declare("^11.0.0"));
+
+    expect(messages).toEqual([]);
+  });
+
+  test("warns about a legacy field, a missing declaration and an only-allow script", async () => {
+    const { messages } = await warnings({
+      packageManager: "pnpm@10.26.0",
+      scripts: { preinstall: "npx only-allow pnpm" },
+    });
+
+    expect(messages).toHaveLength(4);
+  });
+});

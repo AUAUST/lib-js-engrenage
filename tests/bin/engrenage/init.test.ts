@@ -495,7 +495,10 @@ describe("engrenage init", () => {
       await runCommand(sync, "--check");
 
       expect(process.exitCode ?? 0).toBe(0);
-      expect(console.warn).not.toHaveBeenCalled();
+
+      expect(vi.mocked(console.warn).mock.calls).toEqual([
+        [expect.stringContaining("engrenage pnpm upgrade")],
+      ]);
 
       expect(project.read(".github/workflows/ci.yml")).toContain(
         "pnpm run ci:check",
