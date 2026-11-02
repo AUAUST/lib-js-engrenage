@@ -9,6 +9,7 @@ import { hasOption } from "#support/commander/utils/hasOption";
 import { resolve } from "#support/filesystem/utils/resolve";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 
+// @debt The cache is keyed on each file alone, so type-aware rules keep passing a file whose imported types changed; checks must pass `--no-cache` to be sound.
 function useCache(config: ResolvedConfig, args: string[]) {
   if (hasOption(args, ["--no-cache"])) {
     return;

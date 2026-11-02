@@ -22,7 +22,7 @@ export const apis = defineCommand((command) => {
 
       await syncApiDeclarations(config, groups);
 
-      settleChanges(config, {
+      await settleChanges(config, {
         check,
       });
     });
