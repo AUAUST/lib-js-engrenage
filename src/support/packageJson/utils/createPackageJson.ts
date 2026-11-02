@@ -144,19 +144,17 @@ export function createPackageJson({
       dependencies() {
         const fields = manifest();
 
-        if (fields === undefined) {
-          return;
+        if (fields !== undefined) {
+          return flatMap(dependencyFields, (field) => {
+            const versions = validate(
+              optional(record(string(), string()), {}),
+              fields[field],
+              `${path} ${field}`,
+            );
+
+            return keys(versions);
+          });
         }
-
-        return flatMap(dependencyFields, (field) => {
-          const versions = validate(
-            optional(record(string(), string()), {}),
-            fields[field],
-            `${path} ${field}`,
-          );
-
-          return keys(versions);
-        });
       },
       sideEffects() {
         return read("sideEffects", union([boolean(), array(string())]));

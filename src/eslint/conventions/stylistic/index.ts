@@ -25,6 +25,7 @@ export { default as paddedThrows } from "#eslint/conventions/stylistic/paddedThr
 export { default as paddedVariableDeclarations } from "#eslint/conventions/stylistic/paddedVariableDeclarations";
 export { default as preferConst } from "#eslint/conventions/stylistic/preferConst";
 export { default as preferReturnVoid } from "#eslint/conventions/stylistic/preferReturnVoid";
+export { default as preferValuedReturn } from "#eslint/conventions/stylistic/preferValuedReturn";
 export { default as switches } from "#eslint/conventions/stylistic/switches";
 export { default as textEncodingCase } from "#eslint/conventions/stylistic/textEncodingCase";
 export { default as typeChecks } from "#eslint/conventions/stylistic/typeChecks";

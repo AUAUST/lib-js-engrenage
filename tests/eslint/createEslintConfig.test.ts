@@ -1652,4 +1652,54 @@ export async function run(): Promise<unknown> {
       ).toHaveLength(count);
     });
   });
+
+  describe("auaust/prefer-valued-return", () => {
+    test("warns on an empty undefined guard before a valued return, and nothing else", async () => {
+      const eslint = await getLinter();
+
+      const [result] = await eslint.lintFiles(["src/valuedReturns.ts"]);
+
+      expect(
+        map(
+          (result?.messages ?? []).filter((message) => {
+            return message.ruleId === "auaust/prefer-valued-return";
+          }),
+          (message) => `${message.line}:${message.severity}`,
+        ),
+      ).toEqual(["2:1", "10:1"]);
+    });
+
+    test("wraps the valued return in the negated check without other rules reporting it", async () => {
+      const eslint = await getLinter({}, true);
+
+      const source = `export function guarded(value: string | undefined) {
+  if (value === undefined) {
+    return;
+  }
+
+  return value.length;
+}
+`;
+
+      const [result] = await eslint.lintText(source, {
+        filePath: "src/valuedReturns.ts",
+      });
+
+      expect(result?.output)
+        .toBe(`export function guarded(value: string | undefined) {
+  if (value !== undefined) {
+    return value.length;
+  }
+}
+`);
+
+      const [repeated] = await (
+        await getLinter()
+      ).lintText(result?.output ?? source, {
+        filePath: "src/valuedReturns.ts",
+      });
+
+      expect(repeated?.messages).toEqual([]);
+    });
+  });
 });

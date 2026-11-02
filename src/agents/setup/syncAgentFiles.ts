@@ -79,11 +79,9 @@ export function syncAgentFiles(config: ResolvedConfig) {
 
         const source = findReference(reference, path);
 
-        if (source === undefined) {
-          return;
+        if (source !== undefined) {
+          return parseInstruction(readFileSync(source, "utf-8"), source).body;
         }
-
-        return parseInstruction(readFileSync(source, "utf-8"), source).body;
       },
     });
   }

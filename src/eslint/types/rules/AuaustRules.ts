@@ -386,6 +386,10 @@ export interface AuaustRules {
    */
   "auaust/prefer-type-literal-last"?: Rule<[]>;
   /**
+   * Wrap the valued return in the negated check instead of guarding it with an empty `return;`.
+   */
+  "auaust/prefer-valued-return"?: Rule<[]>;
+  /**
    * Require quotes around object literal, type literal, interfaces and enums property names
    * @see https://eslint.style/rules/quote-props
    */
