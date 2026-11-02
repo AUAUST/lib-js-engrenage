@@ -104,7 +104,7 @@ Drop **Questions** when nothing is open. Apply the project's existing labels and
 
 ## GitHub mechanics
 
-- Read issues with `gh issue view <n> --json title,body,state,labels,comments`; plain `--comments` fails on some repositories.
+- Read issues with `gh issue view <n> --repo <owner>/<repo> --json title,body,state,labels,comments`; plain `--comments` fails on some repositories.
 - Create issues with `gh issue create` and edit them with `gh issue edit <n>`, passing bodies on standard input (`--body-file -`).
 
 <!-- @end -->
