@@ -1,5 +1,58 @@
 # @auaust/engrenage
 
+## 0.7.0
+
+### Minor Changes
+
+- [`8a466b4`](https://github.com/AUAUST/lib-js-engrenage/commit/8a466b48d7728f055a8d847ce54cab5ac55ace29) Thanks [@apademide](https://github.com/apademide)! - - **Breaking:** baseline environments type built-ins from TypeScript ES libs selected from the snapshot, written to `lib`, instead of `noLib` and `typescript-baseline-lib`
+  - **Breaking:** `<env>.tsconfig.lib` is accepted for a baseline environment and replaces or adjusts the selected libs (`esnext.*` libs are added through `append`)
+  - **Breaking:** `typescript-baseline-lib` is no longer a peer dependency nor added by `engrenage init`; projects can remove it from their `devDependencies`
+  - **Breaking:** a `src.apis` library group whose lib is already selected is left out of `types` with a warning
+
+- [`eb175e0`](https://github.com/AUAUST/lib-js-engrenage/commit/eb175e05d49173989cc8e8ea4d7a0624260d1c1a) Thanks [@apademide](https://github.com/apademide)! - - Add the `disposable` and `float16` groups to `src.apis`: they type `Symbol.dispose`, `Disposable`, `Float16Array` and `Math.f16round` in a library's own source, which are not Baseline widely available, while a consumer still resolves them from its own lib only
+
+- [`441d7f6`](https://github.com/AUAUST/lib-js-engrenage/commit/441d7f604cb9b9c8adc87dbaaccf47df1ab728f7) Thanks [@apademide](https://github.com/apademide)! - - Document every option of the `Config` interface with where its value is used, its default and what unsetting it does, generated from the config schema by `pnpm support codegen config`
+
+- [`e6af4b7`](https://github.com/AUAUST/lib-js-engrenage/commit/e6af4b7ae9de41b6ef9020d4bdc0d223afc3e9f0) Thanks [@apademide](https://github.com/apademide)! - - Make library entries import each other through the package's own name, so namespaces, module state and classes keep one identity across entries (`entry-self-references` tsdown plugin, switched off with `plugins: { "entry-self-references": false }`)
+
+- [`b38f39a`](https://github.com/AUAUST/lib-js-engrenage/commit/b38f39a1007589747d749de86498726661f3fb88) Thanks [@apademide](https://github.com/apademide)! - - Type and validate `src.apis` against the known API groups, with completion in editors and an expected-values error for an unknown group
+
+- [`1c77c50`](https://github.com/AUAUST/lib-js-engrenage/commit/1c77c5021c6d5c1f00395db4f212dd8600d66958) Thanks [@apademide](https://github.com/apademide)! - - Report `return undefined;` in functions with a return type annotation, with a fix to `return;`, through the new `auaust/no-return-undefined` rule
+
+- [`edaac3c`](https://github.com/AUAUST/lib-js-engrenage/commit/edaac3ca7abbd9352546be4cf8ff61746c734277) Thanks [@apademide](https://github.com/apademide)! - - Move engrenage's pnpm range to pnpm 12: `engrenage sync` warns about projects on pnpm 11, and `engrenage pnpm upgrade` moves them to pnpm 12
+
+- [`1061635`](https://github.com/AUAUST/lib-js-engrenage/commit/1061635ff7fd94012da4f61a96afa1d19878c626) Thanks [@apademide](https://github.com/apademide)! - - Compare the pnpm of a project with engrenage's declared pnpm range instead of its major, warning below and above it
+  - Make `engrenage pnpm upgrade` write the highest pnpm within engrenage's range, warn instead of failing for a newer pnpm, and ask before moving it back into the range (`--yes` accepts)
+  - Make `engrenage init` declare the highest pnpm within engrenage's range when the project declares none
+
+- [`0a62dd4`](https://github.com/AUAUST/lib-js-engrenage/commit/0a62dd434ddbb7655a47b7ade69c1a8535e05b36) Thanks [@apademide](https://github.com/apademide)! - - Warn during `engrenage sync` about a missing pnpm declaration, a pnpm major other than engrenage's, a legacy `packageManager` field and an obsolete `only-allow` preinstall script, without ever failing the check
+  - Add `engrenage pnpm upgrade`, which moves the project to the latest pnpm within engrenage's major, removes the obsolete fields and re-pins the lockfile
+
+- [`8e04855`](https://github.com/AUAUST/lib-js-engrenage/commit/8e04855ce55dfac196539a8eeb5104f6bc94f79e) Thanks [@apademide](https://github.com/apademide)! - - Warn about an empty `undefined` guard followed by a single valued return, with a fix wrapping the return in the negated check, through the new type-aware `auaust/prefer-valued-return` rule, skipped under `noImplicitReturns`
+
+- [`0180ad9`](https://github.com/AUAUST/lib-js-engrenage/commit/0180ad96e534f4ba42e59e91cf413dfb6e824da6) Thanks [@apademide](https://github.com/apademide)! - - Print command failures as a message with its causes, and the stack trace only in debug mode
+  - Add the `debug` option, the `--debug` flag and the `ENGRENAGE_DEBUG` environment variable to enable debug mode
+
+- [`8aacb42`](https://github.com/AUAUST/lib-js-engrenage/commit/8aacb42465133d81d419bfefef8d9eb6184eb850) Thanks [@apademide](https://github.com/apademide)! - - Add the `plugins` option to `defineTsdownConfig` to turn built-in tsdown plugins off by name
+  - Rename the empty-namespace plugins to `engrenage:empty-namespaces:find` and `engrenage:empty-namespaces:declare`
+
+- [`e9e7a07`](https://github.com/AUAUST/lib-js-engrenage/commit/e9e7a07e72bf96f012e94dd15080b43d100c8042) Thanks [@apademide](https://github.com/apademide)! - - `createOutDirGuard` takes the plugin name as its first argument: `createOutDirGuard(name, { packageName, outDir })`
+  - Add `outDirGuard` and `pluginPrefix` to `@auaust/engrenage/vitest/constants`
+
+### Patch Changes
+
+- [`5b12588`](https://github.com/AUAUST/lib-js-engrenage/commit/5b1258882dae3eabe74bb70ff0d470e9893d9c04) Thanks [@apademide](https://github.com/apademide)! - - Remove `noLib`, a `null` `lib` and the baseline and API `types` from a tsconfig whose environment has no baseline runtime
+
+- [`17b7bb8`](https://github.com/AUAUST/lib-js-engrenage/commit/17b7bb84f810c201292e9f6d23e3dbb34a3a9e09) Thanks [@apademide](https://github.com/apademide)! - - Replace a stale `lib: null` of a baseline tsconfig with the selected libs
+
+- [`63e39a6`](https://github.com/AUAUST/lib-js-engrenage/commit/63e39a69761b10e3ab00500b2d08d4a185282894) Thanks [@apademide](https://github.com/apademide)! - - Allow computed member access on namespace imports in `import-x/namespace`
+
+- [`6b3cf5f`](https://github.com/AUAUST/lib-js-engrenage/commit/6b3cf5f7a6756ebe24556ca49c385fec8df35eb3) Thanks [@apademide](https://github.com/apademide)! - - Make `src.baseline` optional: without it, sync warns and leaves the baseline libraries, types and build target out
+  - Reject `src.apis` without `src.baseline`
+
+- [`811b633`](https://github.com/AUAUST/lib-js-engrenage/commit/811b633841136921cb762333b4483f5b52acef2e) Thanks [@apademide](https://github.com/apademide)! - - Warn about an unresolvable agent `@reference` and leave its block untouched instead of failing init and sync
+  - Let a `syncBlocks` filler return `undefined` to keep its block as it is
+
 ## 0.6.0
 
 ### Minor Changes
