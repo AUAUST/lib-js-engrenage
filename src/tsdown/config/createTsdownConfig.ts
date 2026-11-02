@@ -11,11 +11,13 @@ import { optionsSchema } from "#tsdown/config/schemas/optionsSchema";
 import {
   attwOptions,
   emptyNamespaces,
+  entrySelfReferences,
   mainFields,
   pluginNames,
   pluginPrefix,
 } from "#tsdown/constants";
 import { createEmptyNamespacesPlugins } from "#tsdown/plugins/createEmptyNamespacesPlugins";
+import { createEntrySelfReferencesPlugins } from "#tsdown/plugins/createEntrySelfReferencesPlugins";
 import { createTsdownEntries } from "#tsdown/utils/createTsdownEntries";
 import { resolveCommandEntries } from "#tsdown/utils/resolveCommandEntries";
 import { resolveDataExports } from "#tsdown/utils/resolveDataExports";
@@ -25,13 +27,30 @@ import { validate } from "#utils/validate";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#tsdown/types/Config";
 import type { Options } from "#tsdown/types/Options";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+import type { PackageName } from "#types/PackageName";
+import type { PathAliases } from "#typescript/types/PathAliases";
+
+interface PluginContext {
+  packageName: PackageName;
+  sourceEntries: PathAliases;
+  root: Directory;
+}
 
 const pluginFactories = {
-  [emptyNamespaces]: createEmptyNamespacesPlugins,
+  [emptyNamespaces]: (name) => createEmptyNamespacesPlugins(name),
+  [entrySelfReferences]: (name, { packageName, sourceEntries, root }) => {
+    return createEntrySelfReferencesPlugins(
+      name,
+      packageName,
+      sourceEntries,
+      root,
+    );
+  },
 } satisfies Record<
   (typeof pluginNames)[number],
-  (name: string) => TsdownPlugin[]
+  (name: string, context: PluginContext) => TsdownPlugin[]
 >;
 
 function readPackageSnapshot(path: File): string {
@@ -127,7 +146,11 @@ export function createTsdownConfig(
     plugins: flatMap(pluginNames, (name) => {
       return plugins[name] === false
         ? []
-        : pluginFactories[name](`${pluginPrefix}:${name}`);
+        : pluginFactories[name](`${pluginPrefix}:${name}`, {
+            packageName: packageJson.name,
+            sourceEntries,
+            root: config.root,
+          });
     }),
     define: createDefine(config, {
       isTesting: false,

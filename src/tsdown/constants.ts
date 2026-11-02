@@ -8,7 +8,12 @@ export const mainFields = freeze(["module", "main"] as const);
 
 export const emptyNamespaces = "empty-namespaces";
 
-export const pluginNames = freeze([emptyNamespaces] as const);
+export const entrySelfReferences = "entry-self-references";
+
+export const pluginNames = freeze([
+  emptyNamespaces,
+  entrySelfReferences,
+] as const);
 
 export const attwOptions = freeze({
   profile: "node16",

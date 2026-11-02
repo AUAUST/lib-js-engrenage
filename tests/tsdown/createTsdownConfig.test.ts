@@ -568,6 +568,7 @@ describe("createTsdownConfig plugins", () => {
     ).toEqual([
       "engrenage:empty-namespaces:find",
       "engrenage:empty-namespaces:declare",
+      "engrenage:entry-self-references",
     ]);
 
     expect(
@@ -577,7 +578,10 @@ describe("createTsdownConfig plugins", () => {
           ci: false,
         },
         {
-          plugins: { "empty-namespaces": false },
+          plugins: {
+            "empty-namespaces": false,
+            "entry-self-references": false,
+          },
         },
       ).plugins,
     ).toEqual([]);
