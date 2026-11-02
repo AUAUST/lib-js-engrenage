@@ -7,12 +7,15 @@ import { tsc } from "#bin/engrenage/tsc";
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
 import { binaryTimeout } from "#tests/helpers/binaryTimeout";
+import { captureBinaryOutput } from "#tests/helpers/captureBinaryOutput";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
 import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
 import { validate } from "#utils/validate";
+
+vi.mock(import("node:child_process"), { spy: true });
 
 const repositoryModules = fileURLToPath(
   new URL("../../node_modules", import.meta.url),
@@ -192,11 +195,14 @@ describe(
     });
 
     test("fails on a type error in a test", async () => {
+      const output = await captureBinaryOutput();
+
       await typecheck(
         'import { value } from "../src/index.ts";\n\nexport const text: string = value;\n',
       );
 
       expect(process.exitCode).not.toBe(0);
+      expect(output()).toContain("tests/index.ts(3,14): error TS2322");
     });
   },
 );

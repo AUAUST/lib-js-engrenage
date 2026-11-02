@@ -5,9 +5,12 @@ import { describe, expect, test, vi } from "vitest";
 
 import { tsc } from "#bin/engrenage/tsc";
 import { binaryTimeout } from "#tests/helpers/binaryTimeout";
+import { captureBinaryOutput } from "#tests/helpers/captureBinaryOutput";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
+
+vi.mock(import("node:child_process"), { spy: true });
 
 const repositoryModules = fileURLToPath(
   new URL("../../../node_modules", import.meta.url),
@@ -63,6 +66,8 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
   test("checks every project referenced by a solution tsconfig", async () => {
     vi.spyOn(console, "info").mockImplementation(() => {});
 
+    const output = await captureBinaryOutput();
+
     createSolution(
       'import { value } from "../src/index.ts";\n\nexport const text: string = value;\n',
     );
@@ -70,6 +75,7 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
     await runCommand(tsc.tsc);
 
     expect(process.exitCode).not.toBe(0);
+    expect(output()).toContain("tests/index.ts(3,14): error TS2322");
   });
 
   test("passes a solution whose references check", async () => {
@@ -129,6 +135,8 @@ describe("engrenage typecheck:dist", { timeout: binaryTimeout }, () => {
   test("checks the tests.dist variant", async () => {
     vi.spyOn(console, "info").mockImplementation(() => {});
 
+    const output = await captureBinaryOutput();
+
     createSolution("export const text: string = 1;\n", {
       "tsconfig.tests.dist.json": JSON.stringify({
         extends: "./tsconfig.tests.json",
@@ -138,6 +146,7 @@ describe("engrenage typecheck:dist", { timeout: binaryTimeout }, () => {
     await runCommand(tsc["tsc:dist"]);
 
     expect(process.exitCode).not.toBe(0);
+    expect(output()).toContain("tests/index.ts(1,14): error TS2322");
   });
 
   test("fails clearly when the variant is disabled", async () => {
