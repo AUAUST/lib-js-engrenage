@@ -278,15 +278,14 @@ export interface Config {
                       exclude?: ManagedListOption<string> | undefined;
                       /**
                        * Value of `compilerOptions.lib`.
-                       * Rejected for a baseline runtime, whose built-ins come from the baseline types.
                        * `false` leaves the field to the file.
-                       * @default `ESNext` for a Node runtime
+                       * @default the ES libs selected from `src.baseline` for a baseline runtime, `ESNext` for a Node runtime
                        */
                       lib?: ManagedListOption<string> | undefined;
                       /**
                        * Value of `compilerOptions.types`.
                        * `false` leaves the field to the file.
-                       * @default `node` for a Node runtime; for a baseline runtime, the baseline year entry then `@auaust/engrenage/apis/<group>` for each `src.apis` group
+                       * @default `node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each `src.apis` group, except library groups whose lib is already in `lib`, which are left out with a warning
                        */
                       types?: ManagedListOption<string> | undefined;
                       /**
@@ -436,15 +435,14 @@ export interface Config {
                       exclude?: ManagedListOption<string> | undefined;
                       /**
                        * Value of `compilerOptions.lib`.
-                       * Rejected for a baseline runtime, whose built-ins come from the baseline types.
                        * `false` leaves the field to the file.
-                       * @default `ESNext` for a Node runtime
+                       * @default the ES libs selected from `src.baseline` for a baseline runtime, `ESNext` for a Node runtime
                        */
                       lib?: ManagedListOption<string> | undefined;
                       /**
                        * Value of `compilerOptions.types`.
                        * `false` leaves the field to the file.
-                       * @default `node` for a Node runtime; for a baseline runtime, the baseline year entry then `@auaust/engrenage/apis/<group>` for each `src.apis` group
+                       * @default `node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each `src.apis` group, except library groups whose lib is already in `lib`, which are left out with a warning
                        */
                       types?: ManagedListOption<string> | undefined;
                       /**
@@ -544,15 +542,14 @@ export interface Config {
                       exclude?: ManagedListOption<string> | undefined;
                       /**
                        * Value of `compilerOptions.lib`.
-                       * Rejected for a baseline runtime, whose built-ins come from the baseline types.
                        * `false` leaves the field to the file.
-                       * @default `ESNext` for a Node runtime
+                       * @default the ES libs selected from `src.baseline` for a baseline runtime, `ESNext` for a Node runtime
                        */
                       lib?: ManagedListOption<string> | undefined;
                       /**
                        * Value of `compilerOptions.types`.
                        * `false` leaves the field to the file.
-                       * @default `node` for a Node runtime; for a baseline runtime, the baseline year entry then `@auaust/engrenage/apis/<group>` for each `src.apis` group
+                       * @default `node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each `src.apis` group, except library groups whose lib is already in `lib`, which are left out with a warning
                        */
                       types?: ManagedListOption<string> | undefined;
                       /**
@@ -589,7 +586,7 @@ export interface Config {
               | undefined;
             /**
              * Baseline snapshot of the runtime the source targets, as `YYYY-MM` (at most the current month).
-             * It selects the `typescript-baseline-lib` year entry as the src tsconfig `types` with `noLib`, the tsdown `target` and the `engines.node` floor of `package.json`.
+             * It selects the TypeScript ES libs of the src tsconfig (the newest edition entirely widely available at the snapshot, plus each newer ES lib widely available on its own), the tsdown `target` and the `engines.node` floor of `package.json`.
              * Exclusive with `src.node`.
              * Unset, all three are skipped with a warning.
              */
@@ -700,15 +697,14 @@ export interface Config {
                       exclude?: ManagedListOption<string> | undefined;
                       /**
                        * Value of `compilerOptions.lib`.
-                       * Rejected for a baseline runtime, whose built-ins come from the baseline types.
                        * `false` leaves the field to the file.
-                       * @default `ESNext` for a Node runtime
+                       * @default the ES libs selected from `src.baseline` for a baseline runtime, `ESNext` for a Node runtime
                        */
                       lib?: ManagedListOption<string> | undefined;
                       /**
                        * Value of `compilerOptions.types`.
                        * `false` leaves the field to the file.
-                       * @default `node` for a Node runtime; for a baseline runtime, the baseline year entry then `@auaust/engrenage/apis/<group>` for each `src.apis` group
+                       * @default `node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each `src.apis` group, except library groups whose lib is already in `lib`, which are left out with a warning
                        */
                       types?: ManagedListOption<string> | undefined;
                       /**
@@ -797,15 +793,14 @@ export interface Config {
                             exclude?: ManagedListOption<string> | undefined;
                             /**
                              * Value of `compilerOptions.lib`.
-                             * Rejected for a baseline runtime, whose built-ins come from the baseline types.
                              * `false` leaves the field to the file.
-                             * @default `ESNext` for a Node runtime
+                             * @default the ES libs selected from `src.baseline` for a baseline runtime, `ESNext` for a Node runtime
                              */
                             lib?: ManagedListOption<string> | undefined;
                             /**
                              * Value of `compilerOptions.types`.
                              * `false` leaves the field to the file.
-                             * @default `node` for a Node runtime; for a baseline runtime, the baseline year entry then `@auaust/engrenage/apis/<group>` for each `src.apis` group
+                             * @default `node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each `src.apis` group, except library groups whose lib is already in `lib`, which are left out with a warning
                              */
                             types?: ManagedListOption<string> | undefined;
                             /**
@@ -894,15 +889,14 @@ export interface Config {
                       exclude?: ManagedListOption<string> | undefined;
                       /**
                        * Value of `compilerOptions.lib`.
-                       * Rejected for a baseline runtime, whose built-ins come from the baseline types.
                        * `false` leaves the field to the file.
-                       * @default `ESNext` for a Node runtime
+                       * @default the ES libs selected from `src.baseline` for a baseline runtime, `ESNext` for a Node runtime
                        */
                       lib?: ManagedListOption<string> | undefined;
                       /**
                        * Value of `compilerOptions.types`.
                        * `false` leaves the field to the file.
-                       * @default `node` for a Node runtime; for a baseline runtime, the baseline year entry then `@auaust/engrenage/apis/<group>` for each `src.apis` group
+                       * @default `node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each `src.apis` group, except library groups whose lib is already in `lib`, which are left out with a warning
                        */
                       types?: ManagedListOption<string> | undefined;
                       /**

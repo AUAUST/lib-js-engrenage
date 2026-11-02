@@ -1,9 +1,11 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { resolveNodeRuntime } from "#config/utils/resolveNodeRuntime";
+import { assertBaselineSnapshot } from "#typescript/utils/assertBaselineSnapshot";
 import { findCurrentMonth } from "#typescript/utils/findCurrentMonth";
-import { resolveBaselineLibrary } from "#typescript/utils/resolveBaselineLibrary";
+import { listEsSelections } from "#typescript/utils/listEsSelections";
 import { resolveBaselineMinimums } from "#typescript/utils/resolveBaselineMinimums";
+import { selectEsLibraries } from "#typescript/utils/selectEsLibraries";
 import type { Runtime } from "#config/types/Runtime";
 
 export function resolveSourceRuntime(option: {
@@ -41,10 +43,29 @@ export function resolveSourceRuntime(option: {
     );
   }
 
+  assertBaselineSnapshot(baseline);
+
+  const current = findCurrentMonth();
+
+  if (baseline > current) {
+    throw new Error(
+      `src.baseline ${baseline} is after the current month ${current}`,
+    );
+  }
+
+  const minimums = resolveBaselineMinimums(baseline);
+  const library = selectEsLibraries(baseline);
+
+  if (library === undefined) {
+    throw new Error(
+      `src.baseline ${baseline} predates every widely available ES edition: the earliest accepted snapshot is ${listEsSelections()[0]?.from}`,
+    );
+  }
+
   return freeze({
     kind: "baseline",
     snapshot: baseline,
-    library: resolveBaselineLibrary(baseline),
-    ...resolveBaselineMinimums(baseline),
+    lib: library,
+    ...minimums,
   });
 }

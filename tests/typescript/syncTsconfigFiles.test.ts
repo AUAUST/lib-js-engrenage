@@ -5,6 +5,7 @@ import { createResolvedConfig } from "#config/utils/createResolvedConfig";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
+import { selectEsLibraries } from "#typescript/utils/selectEsLibraries";
 import { validate } from "#utils/validate";
 
 function createProject(input: unknown, files: Record<string, string>) {
@@ -55,9 +56,8 @@ describe("syncTsconfigFiles", () => {
       exclude: ["dist"],
       compilerOptions: {
         target: "ESNext",
-        noLib: true,
-        lib: null,
-        types: ["typescript-baseline-lib/year/2023"],
+        lib: selectEsLibraries("2026-10"),
+        types: [],
         paths: { "#a": ["./a.ts"] },
         tsBuildInfoFile: buildInfoFile,
       },
@@ -122,9 +122,8 @@ describe("syncTsconfigFiles", () => {
       JSON.parse(project.read("tsconfig.src.json")).compilerOptions,
     ).toEqual({
       target: "ESNext",
-      noLib: true,
-      lib: null,
-      types: ["typescript-baseline-lib/year/2023"],
+      lib: selectEsLibraries("2026-10"),
+      types: [],
       paths: { "#a": ["./a.ts"] },
       tsBuildInfoFile: "./custom.tsbuildinfo",
       customFlag: { a: 1 },

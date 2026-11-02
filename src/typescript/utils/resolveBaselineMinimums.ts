@@ -3,7 +3,7 @@ import nodeReleases from "node-releases/data/processed/envs.json" with { type: "
 
 import { freeze } from "@auaust/toolkit/object";
 
-const snapshotPattern = /^\d{4}-(?:0[1-9]|1[0-2])$/;
+import { assertBaselineSnapshot } from "#typescript/utils/assertBaselineSnapshot";
 
 // @debt assumes V8 versions follow Chromium majors (Chromium 138 ships V8 13.8); holds only while Google keeps that numbering
 function toV8Version(chrome: number): [number, number] {
@@ -41,9 +41,7 @@ function findNodeMajor(chrome: number): number {
 }
 
 export function resolveBaselineMinimums(snapshot: string) {
-  if (!snapshotPattern.test(snapshot)) {
-    throw new Error(`The baseline snapshot ${snapshot} is not a YYYY-MM date`);
-  }
+  assertBaselineSnapshot(snapshot);
 
   const browsers: Record<string, string> = {};
 

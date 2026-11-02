@@ -36,8 +36,6 @@ export const tsx = "tsx";
 
 export const typescript = "typescript";
 
-export const typescriptBaselineLibrary = "typescript-baseline-lib";
-
 export const valibot = "valibot";
 
 export const vite = "vite";
@@ -64,7 +62,6 @@ export const packages = freeze({
   tsdown,
   tsx,
   typescript,
-  typescriptBaselineLibrary,
   valibot,
   vite,
   vitest,

@@ -2,4 +2,4 @@
 "@auaust/engrenage": patch
 ---
 
-- Reset an inherited `lib` in the `tsconfig` of a baseline runtime, which `noLib` rejected with TS5053
+- Replace a stale `lib: null` of a baseline tsconfig with the selected libs

@@ -1,15 +1,7 @@
-import {
-  baselineBrowserMapping,
-  nodeReleases,
-  typescriptBaselineLibrary,
-} from "#constants";
+import { baselineBrowserMapping, nodeReleases } from "#constants";
 import type { Step } from "#support/scaffold/types/Step";
 
-const dataPackages = [
-  baselineBrowserMapping,
-  nodeReleases,
-  typescriptBaselineLibrary,
-] as const;
+const dataPackages = [baselineBrowserMapping, nodeReleases] as const;
 
 export function createRuntimeDataStep(): Step {
   return {

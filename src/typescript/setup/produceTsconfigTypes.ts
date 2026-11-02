@@ -3,8 +3,14 @@ import { isArray } from "@auaust/toolkit/isArray";
 import { isString } from "@auaust/toolkit/isString";
 
 import { resolveListOption } from "#config/utils/resolveListOption";
-import { engrenage, typescriptBaselineLibrary } from "#constants";
+import { engrenage } from "#constants";
+import {
+  apiLibraryGroups,
+  legacyBaselineTypesPrefix,
+} from "#typescript/constants";
+import { includesEsLibrary } from "#typescript/utils/includesEsLibrary";
 import { readTsconfigValue } from "#typescript/utils/readTsconfigValue";
+import { resolveTsconfigLibrary } from "#typescript/utils/resolveTsconfigLibrary";
 import { resolveTsconfigRuntime } from "#typescript/utils/resolveTsconfigRuntime";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Runtime } from "#config/types/Runtime";
@@ -15,6 +21,7 @@ const apiTypesPrefix = `${engrenage}/apis/`;
 
 function listDefaultTypes(
   config: ResolvedConfig,
+  target: TsconfigTarget,
   runtime: Runtime | undefined,
 ): readonly string[] {
   if (runtime === undefined) {
@@ -25,10 +32,35 @@ function listDefaultTypes(
     return ["node"];
   }
 
-  return [
-    runtime.library,
-    ...map(config.src.apis, (api) => `${apiTypesPrefix}${api}`),
-  ];
+  const library = (resolveTsconfigLibrary(config, target) || runtime.lib).map(
+    (name) => name.toLowerCase(),
+  );
+
+  // @debt includesEsLibrary only knows the generated editions: a lib it does not know (`esnext.*`, `ESNext`, `DOM`) never counts as including a library group
+  return map(
+    filter(config.src.apis, (api) => {
+      if (!isLibraryGroup(api)) {
+        return true;
+      }
+
+      const name = apiLibraryGroups[api].slice("lib.".length, -".d.ts".length);
+
+      if (!includesEsLibrary(library, name)) {
+        return true;
+      }
+
+      console.warn(
+        `src.apis lists ${api}, whose lib ${name} is already in the ${target.key} tsconfig lib: it is left out of types; remove it from src.apis`,
+      );
+
+      return false;
+    }),
+    (api) => `${apiTypesPrefix}${api}`,
+  );
+}
+
+function isLibraryGroup(group: string): group is keyof typeof apiLibraryGroups {
+  return group in apiLibraryGroups;
 }
 
 function removeBaselineTypes(
@@ -49,7 +81,7 @@ function removeBaselineTypes(
     return (
       !isString(type) ||
       !(
-        type.startsWith(`${typescriptBaselineLibrary}/`) ||
+        type.startsWith(legacyBaselineTypesPrefix) ||
         type.startsWith(apiTypesPrefix)
       )
     );
@@ -85,7 +117,7 @@ export function produceTsconfigTypes(
 
   const types = resolveListOption(
     option,
-    () => listDefaultTypes(config, runtime),
+    () => listDefaultTypes(config, target, runtime),
     `${key}.tsconfig.types`,
   );
 

@@ -4,7 +4,7 @@ export type Runtime =
   | ({
       kind: "baseline";
       snapshot: string;
-      library: string;
+      lib: readonly string[];
     } & ReturnType<typeof resolveBaselineMinimums>)
   | {
       kind: "node";

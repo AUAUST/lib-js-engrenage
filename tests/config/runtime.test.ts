@@ -72,7 +72,7 @@ describe("runtime", () => {
     );
 
     expect(() => config.src.runtime).toThrow(
-      "Earliest accepted snapshot: 2023-07",
+      "the earliest accepted snapshot is 2022-08",
     );
   });
 

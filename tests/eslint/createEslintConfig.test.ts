@@ -1503,6 +1503,54 @@ export async function run(): Promise<unknown> {
     ]);
   });
 
+  test("lints Error subclasses clean in a baseline environment", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "baseline", "type": "module" }',
+      "engrenage.config.ts":
+        'export default { src: { baseline: "2026-10" } };\n',
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: { strict: true, module: "nodenext" },
+        files: [],
+        references: [{ path: "./tsconfig.src.json" }],
+      }),
+      "tsconfig.src.json": JSON.stringify({
+        extends: "./tsconfig.json",
+        compilerOptions: {
+          target: "ESNext",
+          lib: ["es2022"],
+          types: [],
+        },
+        include: ["src"],
+      }),
+      "src/run.ts": [
+        "class E extends Error {}",
+        "export function fail(): never {",
+        "  throw new E();",
+        "}",
+        "export function failText(): never {",
+        '  throw "text";',
+        "}",
+        "",
+      ].join("\n"),
+    });
+
+    const eslint = new ESLint({
+      cwd: project.root,
+      overrideConfigFile: true,
+      overrideConfig: createEslintConfig(await loadConfig(project.root)),
+    });
+
+    const [result] = await eslint.lintFiles(["src/run.ts"]);
+
+    expect(
+      (result?.messages ?? [])
+        .filter((message) => {
+          return message.ruleId === "@typescript-eslint/only-throw-error";
+        })
+        .map((message) => message.line),
+    ).toEqual([6]);
+  });
+
   test("checks typed rules and resolves aliases through the referenced tsconfig of each environment", async () => {
     const referencesRoot = getFixture("references");
 

@@ -1,7 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { mkdirSync, symlinkSync } from "node:fs";
 import { createRequire } from "node:module";
-import { dirname } from "node:path";
 
 import { build } from "tsdown";
 import { describe, expect, test } from "vitest";
@@ -12,6 +11,7 @@ import { createTsdownConfig } from "@auaust/engrenage/tsdown";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { linkSourcePackage } from "#tests/helpers/linkSourcePackage";
 import { mockCwd } from "#tests/helpers/mockCwd";
+import { selectEsLibraries } from "#typescript/utils/selectEsLibraries";
 
 const require = createRequire(import.meta.url);
 
@@ -27,11 +27,6 @@ function link(project: { resolve(path: string): string }) {
   mkdirSync(project.resolve("node_modules/@auaust"), { recursive: true });
 
   linkSourcePackage(project.resolve("node_modules/@auaust/engrenage"));
-
-  symlinkSync(
-    dirname(require.resolve("typescript-baseline-lib/package.json")),
-    project.resolve("node_modules/typescript-baseline-lib"),
-  );
 }
 
 async function buildLibrary() {
@@ -47,15 +42,14 @@ async function buildLibrary() {
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         outDir: "dist",
-        noLib: true,
         rootDir: ".",
         target: "ESNext",
         module: "ESNext",
         moduleResolution: "Bundler",
         strict: true,
         declaration: true,
+        lib: selectEsLibraries("2026-11"),
         types: [
-          "typescript-baseline-lib/year/2023",
           "@auaust/engrenage/apis/disposable",
           "@auaust/engrenage/apis/float16",
         ],

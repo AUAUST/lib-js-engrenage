@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { mkdirSync, symlinkSync } from "node:fs";
 import { createRequire } from "node:module";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { describe, expect, test } from "vitest";
@@ -13,6 +13,7 @@ import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 import { apiGroupRoots } from "#typescript/constants";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
+import { selectEsLibraries } from "#typescript/utils/selectEsLibraries";
 
 const tsc = createRequire(import.meta.url).resolve("typescript/lib/tsc.js");
 
@@ -52,53 +53,51 @@ function createApisProject(source: string, groups?: string[]): string {
   return project.root;
 }
 
-function createBaselineProject(source: string): string {
+function createBaselineProject(source: string, append: string[] = []): string {
   const project = createTemporaryProject({
     "index.ts": source,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
-        noLib: true,
         target: "ESNext",
         module: "ESNext",
         moduleResolution: "bundler",
         strict: true,
-        types: ["typescript-baseline-lib/year/2023"],
+        lib: [...(selectEsLibraries("2026-11") ?? []), ...append],
+        types: [],
       },
       files: ["index.ts"],
     }),
   });
 
-  mkdirSync(project.resolve("node_modules"), { recursive: true });
-
-  symlinkSync(
-    dirname(
-      createRequire(import.meta.url).resolve(
-        "typescript-baseline-lib/package.json",
-      ),
-    ),
-    project.resolve("node_modules/typescript-baseline-lib"),
-  );
-
   return project.root;
 }
 
 describe("tsconfig presets", () => {
-  test("accepts the built-ins of its Baseline year", () => {
+  test("accepts the built-ins of its selected libs", () => {
     const project = createBaselineProject(
-      "export const value = [1].toSorted().findLast(() => true);",
+      "export const value = [Object.groupBy([], () => ''), [1].toSorted()];",
     );
 
     expect(() => runTsc("-p", project)).not.toThrow();
   });
 
-  test("rejects a built-in newer than its Baseline year", () => {
+  test("rejects a built-in outside its selected libs", () => {
     const project = createBaselineProject(
-      'export const value = Object.groupBy([], () => "");',
+      "export const value = [Array.fromAsync([]), new Set().union(new Set())];",
     );
 
     expect(() => runTsc("-p", project)).toThrow(
-      expect.objectContaining({ stdout: expect.stringContaining("groupBy") }),
+      expect.objectContaining({ stdout: expect.stringContaining("TS2550") }),
     );
+  });
+
+  test("accepts a built-in of an appended lib", () => {
+    const project = createBaselineProject(
+      "export const value = Array.fromAsync([]);",
+      ["esnext.array"],
+    );
+
+    expect(() => runTsc("-p", project)).not.toThrow();
   });
 
   test("resolves the base preset through the package exports", () => {
