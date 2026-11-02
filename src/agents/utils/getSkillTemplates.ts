@@ -10,9 +10,15 @@ import { stringify } from "yaml";
 
 import { claudeAgentsDir, claudeSkillsDir } from "#agents/claude/constants";
 import { codexSkillsDir } from "#agents/codex/constants";
+import {
+  claudeAgentFrontmatterKeys,
+  claudeSkillFrontmatterKeys,
+  codexSkillFrontmatterKeys,
+} from "#agents/constants";
 import { createInstructionFile } from "#agents/utils/createInstructionFile";
 import { getInstructionTemplates } from "#agents/utils/getInstructionTemplates";
 import { validate } from "#utils/validate";
+import type { GeneratedFrontmatter } from "#agents/types/GeneratedFrontmatter";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
 
@@ -44,22 +50,33 @@ export function getSkillTemplates(config: ResolvedConfig) {
 
     const { name, description, reference, body } = template;
     const isExplicit = invocation === "explicit";
-    const files: { file: File; content: string }[] = [];
+
+    const files: {
+      file: File;
+      content: string;
+      frontmatter?: GeneratedFrontmatter;
+    }[] = [];
 
     if (preferred.includes("claude")) {
+      const frontmatter = {
+        keys: claudeSkillFrontmatterKeys,
+        values: {
+          name,
+          description,
+          ...(isExplicit && {
+            "disable-model-invocation": true,
+          }),
+        },
+      };
+
       files.push({
         file: `${claudeSkillsDir}/${name}/SKILL.md`,
         content: createInstructionFile({
-          frontmatter: {
-            name,
-            description,
-            ...(isExplicit && {
-              "disable-model-invocation": true,
-            }),
-          },
+          frontmatter: frontmatter.values,
           reference,
           body,
         }),
+        frontmatter,
       });
 
       if (agent !== undefined) {
@@ -70,21 +87,31 @@ export function getSkillTemplates(config: ResolvedConfig) {
             reference,
             body,
           }),
+          frontmatter: {
+            keys: claudeAgentFrontmatterKeys,
+            values: agent,
+          },
         });
       }
     }
 
     if (preferred.includes("codex")) {
+      const frontmatter = {
+        keys: codexSkillFrontmatterKeys,
+        values: {
+          name,
+          description,
+        },
+      };
+
       files.push({
         file: `${codexSkillsDir}/${name}/SKILL.md`,
         content: createInstructionFile({
-          frontmatter: {
-            name,
-            description,
-          },
+          frontmatter: frontmatter.values,
           reference,
           body,
         }),
+        frontmatter,
       });
 
       if (isExplicit) {

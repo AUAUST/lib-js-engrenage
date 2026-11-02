@@ -58,8 +58,8 @@ describe("syncAgentFiles", () => {
         name: "fragments",
         type: "module",
         exports: {
- "./*.md": { import: "./*.md" } 
-},
+          "./*.md": { import: "./*.md" },
+        },
       }),
       "node_modules/fragments/shared.md": "",
     });
@@ -79,5 +79,76 @@ describe("syncAgentFiles", () => {
     expect(() => {
       return resolveAgentReference(config, "missing.md", from);
     }).toThrow(`Cannot resolve reference "missing.md" in ${from}`);
+  });
+
+  describe("frontmatter", () => {
+    const staleScratchpad = [
+      "---",
+      "name: scratchpad",
+      "description: Stale description.",
+      "---",
+      "",
+      "<!-- @reference @auaust/engrenage/agents/skills/scratchpad.md -->",
+      "",
+      "<!-- @end -->",
+      "",
+    ].join("\n");
+
+    async function load(files: Record<string, string>) {
+      const project = createTemporaryProject({
+        "package.json": '{"type":"module"}',
+        "engrenage.config.ts":
+          'export default { agents: { preferred: ["claude"], instructionFiles: [] } };',
+        ...files,
+      });
+
+      return loadConfig(project.root);
+    }
+
+    test("updates a generated description and reports it as outdated", async () => {
+      const config = await load({
+        ".claude/skills/scratchpad/SKILL.md": staleScratchpad,
+      });
+
+      syncAgentFiles(config);
+
+      expect(config.filesystem.changes()).toEqual([
+        expect.objectContaining({
+          file: ".claude/skills/scratchpad/SKILL.md",
+        }),
+      ]);
+
+      expect(
+        config.filesystem.read(".claude/skills/scratchpad/SKILL.md"),
+      ).not.toContain("Stale description");
+    });
+
+    test("keeps a preserved key and still updates the others", async () => {
+      const config = await load({
+        ".claude/agents/worker.md": [
+          "---",
+          "# @preserve description",
+          "name: worker",
+          "description: Mine.",
+          "model: haiku",
+          "extra: kept",
+          "---",
+          "",
+          "<!-- @reference @auaust/engrenage/agents/skills/issue-implementation.md -->",
+          "",
+          "<!-- @end -->",
+          "",
+        ].join("\n"),
+      });
+
+      syncAgentFiles(config);
+
+      const content = config.filesystem.read(".claude/agents/worker.md");
+
+      expect(content).toContain("description: Mine.");
+      expect(content).toContain("model: sonnet");
+      expect(content).toContain("extra: kept");
+      expect(content).toContain("# @preserve description");
+    });
   });
 });

@@ -13,6 +13,7 @@ export function parseInstruction(content: string, file: File) {
     return {
       body: content,
       frontmatter: "",
+      yaml: "",
       metadata: {},
       paths: undefined,
     };
@@ -45,6 +46,7 @@ export function parseInstruction(content: string, file: File) {
   return {
     body: content.slice(frontmatter.length).trimStart(),
     frontmatter,
+    yaml,
     metadata: input ?? {},
     paths,
   };

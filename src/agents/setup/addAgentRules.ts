@@ -1,5 +1,4 @@
 import { syncCodexInstructions } from "#agents/codex/setup/syncCodexInstructions";
-import { createInstructionFile } from "#agents/utils/createInstructionFile";
 import { getMissingRuleTemplates } from "#agents/utils/getMissingRuleTemplates";
 import { getRuleTemplates } from "#agents/utils/getRuleTemplates";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -20,24 +19,10 @@ export function addAgentRules(
 
   const missing = getMissingRuleTemplates(config);
 
-  for (const { name, file, reference, body, paths } of missing) {
-    if (!names.includes(name)) {
-      continue;
+  for (const { name, file, content } of missing) {
+    if (names.includes(name)) {
+      config.filesystem.write(file, content);
     }
-
-    config.filesystem.write(
-      file,
-      createInstructionFile({
-        frontmatter:
-          paths === undefined
-            ? undefined
-            : {
-                paths,
-              },
-        reference,
-        body,
-      }),
-    );
   }
 
   syncCodexInstructions(config);

@@ -1,10 +1,10 @@
 ---
 name: backlogger
 description: Backlogger that brings backlog entries up to date with new
-  findings, context or answers and files the ones ready for action as GitHub
-  issues in AUAUST repositories. Use proactively for any work on backlog
-  entries. Its report ends with what remains and the kind of work it needs;
-  continue that with the agent suited to it.
+  findings, context or answers, and converts actionable ones to GitHub issues.
+  Use proactively for any work on backlog entries. Its report ends with what
+  remains and the kind of work it needs; continue that with the agent suited to
+  it.
 model: sonnet
 disallowedTools:
   - WebFetch

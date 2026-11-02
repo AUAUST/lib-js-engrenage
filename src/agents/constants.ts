@@ -34,3 +34,25 @@ export const scratchpadPlaceholders = freeze([
   "Beep-boop, your emotional support idea dumpling requests one freshly squished thought and seven billion tiny headpats! 🥟🤖💖",
   "Nyaa~ this empty page has put on its fanciest bunny ears just to welcome your next catastrophically adorable dev idea! 🐰🎀🌟",
 ] as const);
+
+export const preserveDirective = "@preserve";
+
+export const claudeSkillFrontmatterKeys = freeze([
+  "name",
+  "description",
+  "disable-model-invocation",
+] as const);
+
+export const claudeAgentFrontmatterKeys = freeze([
+  "name",
+  "description",
+  "model",
+  "disallowedTools",
+] as const);
+
+export const codexSkillFrontmatterKeys = freeze([
+  "name",
+  "description",
+] as const);
+
+export const ruleFrontmatterKeys = freeze(["paths"] as const);

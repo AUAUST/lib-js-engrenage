@@ -1,9 +1,8 @@
 ---
 name: backlog-handling
 description: Bring backlog entries up to date with new findings, context or
-  answers, and file the ones ready for action as GitHub issues in AUAUST
-  repositories. Use when the user asks to record, update, answer or settle
-  backlog entries.
+  answers, and converts actionable ones to GitHub issues. Use when the user asks
+  to record, update, answer or settle backlog entries.
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/backlog-handling.md -->
