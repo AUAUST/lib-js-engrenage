@@ -5,3 +5,4 @@ allowBuilds:
   unrs-resolver: true
 minimumReleaseAgeExclude:
   - "@auaust/*"
+  - web-features@3.45.0

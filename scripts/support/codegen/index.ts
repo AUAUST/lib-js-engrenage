@@ -1,6 +1,7 @@
 import { apis } from "#scripts/support/codegen/apis";
 import { barrels } from "#scripts/support/codegen/barrels";
 import { config } from "#scripts/support/codegen/config";
+import { editions } from "#scripts/support/codegen/editions";
 import { rules } from "#scripts/support/codegen/rules";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { registerSubcommands } from "#support/commander/utils/registerSubcommands";
@@ -14,6 +15,7 @@ export const codegen = defineCommand((command) => {
       .enablePositionalOptions()
       .option("--check", "report outdated files without writing them", false),
     {
+      editions,
       apis,
       config,
       rules,

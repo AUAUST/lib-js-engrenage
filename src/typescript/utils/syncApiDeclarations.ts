@@ -2,7 +2,6 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join as joinPath } from "node:path";
 
-import { format, resolveConfig } from "prettier";
 import {
   createCompilerHost,
   createProgram,
@@ -41,6 +40,7 @@ import { typescriptBaselineLibrary } from "#constants";
 import { resolve } from "#support/filesystem/utils/resolve";
 import { apiGroupRoots, apiLibraryGroups } from "#typescript/constants";
 import { findCurrentMonth } from "#typescript/utils/findCurrentMonth";
+import { formatModule } from "#typescript/utils/formatModule";
 import { listBaselineYears } from "#typescript/utils/listBaselineYears";
 import { toBaselineYear } from "#typescript/utils/toBaselineYear";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -275,15 +275,6 @@ function assertBaselineCompatible(group: string, content: string) {
       );
     }
   }
-}
-
-async function formatModule(path: string, content: string): Promise<string> {
-  const options = await resolveConfig(path);
-
-  return format(content, {
-    ...options,
-    filepath: path,
-  });
 }
 
 export async function syncApiDeclarations(
