@@ -323,17 +323,24 @@ export function createResolvedConfig({
   }
 
   const source = once(() => {
+    const environment = resolveEnvironment("src", defaultSourceDirectories);
+
     return freeze(
       compose(
         {
-          ...resolveEnvironment("src", defaultSourceDirectories),
+          ...environment,
           exports: raw.src === false ? undefined : raw.src?.exports,
         },
         compose.getters({
           runtime: () => {
-            return raw.src === false
-              ? undefined
-              : resolveSourceRuntime(raw.src ?? {});
+            const option = raw.src === false ? undefined : (raw.src ?? {});
+
+            return option !== undefined &&
+              (environment.active ||
+                option.baseline !== undefined ||
+                option.node !== undefined)
+              ? resolveSourceRuntime(option)
+              : undefined;
           },
           apis: () => {
             return raw.src === false ? [] : resolveSourceApis(raw.src?.apis);

@@ -120,4 +120,31 @@ describe("syncPackageJson", () => {
 
     expect(resolved.filesystem.changes()).toEqual([]);
   });
+
+  test("syncs an inactive src without src.baseline", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({ type: "module" }),
+      "engrenage.config.ts": "export default {};",
+    });
+
+    const resolved = await loadConfig(project.root);
+
+    expect(resolved.src.active).toBe(false);
+    expect(resolved.src.runtime).toBeUndefined();
+    expect(() => syncPackageJson(resolved)).not.toThrow();
+  });
+
+  test("fails for an active src without src.baseline", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({ type: "module" }),
+      "engrenage.config.ts": "export default {};",
+      "src/index.ts": "",
+    });
+
+    const resolved = await loadConfig(project.root);
+
+    expect(() => resolved.src.runtime).toThrow(
+      /src\.baseline is required: set it to \d{4}-\d{2}/,
+    );
+  });
 });
