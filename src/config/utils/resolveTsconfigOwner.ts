@@ -19,6 +19,7 @@ function readGroup(
     return group;
   }
 
+  // @debt the `in` check does not narrow `key`, hence the cast below; typing defaultTsconfigInherits as a Partial<Record<TsconfigKey, TsconfigKey>> would remove it
   return key in defaultTsconfigInherits
     ? {
         inherits:
@@ -45,6 +46,7 @@ export function resolveTsconfigOwner(
         return undefined;
       }
 
+      // @debt non-null assertion on chain.at(-2): it holds because current !== key implies at least two links, which the types cannot express; tracking the previous key in a variable would avoid it
       throw new Error(
         `${describe(chain.at(-2)!)} inherits ${current}, which has no managed tsconfig`,
       );

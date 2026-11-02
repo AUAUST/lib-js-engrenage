@@ -41,3 +41,25 @@ Generated tsconfigs: include globs, managed fields and checks.
 - Problem: API interfaces must never be hand-written. `timers.d.ts` declares `setTimeout` but not `setInterval`, so the first manual interface is already wrong.
 - Expected: every declaration in `data/apis` is generated from a source of truth, imported from an existing library, or otherwise derived automatically.
 - Done when no hand-written API specs remain in `data/apis`.
+
+## 7. Generated tsconfigs are not formatted the way Prettier formats them.
+
+- Where: the sync producers writing tsconfig files (`src/typescript/setup/`).
+- Matter: sync writes arrays one item per line (for example `paths` entries as multi-line arrays), where Prettier keeps short arrays on one line, so a formatted tsconfig differs from a freshly generated one.
+- Expected: generated tsconfigs are already Prettier-compatible, either by serializing them the way Prettier does or by an explicit Prettier pass after sync; pick the option with the least duplicated formatting logic.
+- Related: `file-editing.1` (formatting preservation when editing JSON).
+- Done when `engrenage sync` output needs no reformatting and `prettier --check` passes on the generated tsconfigs.
+
+## 8. `tsconfig.tests.dist.json` rewrites fields it already inherits.
+
+- Where: `src/typescript/utils/resolveTsconfigEnvironments.ts` (marked `@debt`).
+- Matter: the `tests.dist` file extends `tsconfig.tests.json` but also writes `include`, `exclude`, `target`, `lib` and `types`, which it inherits already. Only `paths`, `skipLibCheck` and `tsBuildInfoFile` should differ.
+- Expected: inheritance stays minimal, and the variant writes only what it changes.
+- Done when the generated `tsconfig.tests.dist.json` holds only the fields that differ from `tsconfig.tests.json`.
+
+## 9. `data/tsconfig/baseline/` and `data/tsconfig/node/` duplicate what tooling now derives.
+
+- Where: `data/tsconfig/baseline/2026-10.json`, `data/tsconfig/node/24.json` and their consumers.
+- Matter: with tsconfigs centrally managed and baseline minimums derived from dependencies (`resolveBaselineMinimums`), maintaining these preset files is redundant. Related to entry 6, which also concerns hand-maintained `data/` content.
+- Expected: the values are either derived from tooling (a target support date determines the required libs) or become constants, with minimal duplication of the supporting code, and the preset files are removed.
+- Done when neither file exists and no consumer reads them.

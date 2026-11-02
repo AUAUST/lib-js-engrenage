@@ -11,6 +11,7 @@ export function resolveTsconfigEnvironments(
   owner: TsconfigEnvironment;
   environments: readonly TsconfigEnvironment[];
 } {
+  // @debt mapping tests.dist to tests makes every producer re-emit include, exclude, target, lib and types into tsconfig.tests.dist.json although it already inherits them from tsconfig.tests.json; the plan (#37) lists only paths, skipLibCheck and tsBuildInfoFile for the variant
   const owner = key === "tests.dist" ? "tests" : key;
 
   const inheritors = tsconfigEnvironments.filter((name) => {

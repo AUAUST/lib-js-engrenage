@@ -5,6 +5,7 @@ import { freeze } from "@auaust/toolkit/object";
 
 const snapshotPattern = /^\d{4}-(?:0[1-9]|1[0-2])$/;
 
+// @debt assumes V8 versions follow Chromium majors (Chromium 138 ships V8 13.8); holds only while Google keeps that numbering
 function toV8Version(chrome: number): [number, number] {
   const digits = String(chrome);
 
@@ -21,6 +22,7 @@ function findNodeMajor(chrome: number): number {
   const target = toV8Version(chrome);
   const seen = new Set<number>();
 
+  // @debt returns the first match, so it relies on node-releases listing releases in ascending version order
   for (const release of nodeReleases) {
     const major = Number.parseInt(release.version, 10);
 
