@@ -1,5 +1,140 @@
 # @auaust/engrenage
 
+## 0.5.0
+
+### Minor Changes
+
+- [`b28cdce`](https://github.com/AUAUST/lib-js-engrenage/commit/b28cdce2ad47beb63bf8f5e759dbd30062c9be86) Thanks [@apademide](https://github.com/apademide)! - - Make `engrenage sync agents` maintain the frontmatter keys engrenage generates in skills, agents and rules (`name`, `description`, `model`, `disable-model-invocation`, `disallowedTools`, `paths`): it overwrites them, adds missing ones and removes those the source no longer produces, and `sync --check` reports the drift. Keys engrenage does not generate are never touched
+  - Add the `# @preserve <key>,<key>` YAML comment in a generated file's frontmatter to keep the listed keys as they are
+
+- [`ed7fedf`](https://github.com/AUAUST/lib-js-engrenage/commit/ed7fedfd712a9e9e2e29287953499cbd4cfba901) Thanks [@apademide](https://github.com/apademide)! - - Generate the `src.apis` declaration groups from the `lib.dom.d.ts` of TypeScript with `pnpm support codegen apis`, instead of shipping hand-written copies; `--check` runs in CI
+  - `timers` gains `setInterval` and `clearInterval`, `crypto` gains `randomUUID` and `subtle`, and `performance` gains the full `Performance` interface
+  - Add the `console`, `url`, `encoding`, `events`, `abort`, `exceptions`, `microtasks`, `streams`, `compression` and `blob` groups
+  - Declarations shared by several groups are emitted once in `apis/shared/common.d.ts`, which the group files reference, so any combination of groups type-checks without `skipLibCheck`
+  - Timer handles are now typed `number`, the DOM signature
+
+- [`c1d7c27`](https://github.com/AUAUST/lib-js-engrenage/commit/c1d7c27798873d9ec3d2993218ffaba1efc77687) Thanks [@apademide](https://github.com/apademide)! - - Add the `backlog-handling` skill and its Claude Code `backlogger` agent, which bring backlog entries up to date and file the ones ready for action as issues in AUAUST repositories; backlog setup installs it, and existing projects run `engrenage agents skills add backlog-handling`
+  - Remove backlog entries once a GitHub issue tracks their work, in the backlog template
+
+- [`2d44c59`](https://github.com/AUAUST/lib-js-engrenage/commit/2d44c59938de5637fbd2e16d7eddc417e0f9dc35) Thanks [@apademide](https://github.com/apademide)! - Add the `debt-harvesting` skill and `banker` agent, which harvest `@debt` markers into `.ai/debt.md`; the backlogger takes entries from it.
+
+- [`e62fdc4`](https://github.com/AUAUST/lib-js-engrenage/commit/e62fdc4bdb517845f6f65b40103ba42317d41b0d) Thanks [@apademide](https://github.com/apademide)! - - **Breaking:** derive the JavaScript built-in types of a baseline `src` from the consumer-installed `typescript-baseline-lib`: `noLib: true`, no `lib`, `typescript-baseline-lib/year/<Y>` first in `types` and `target: "ESNext"`, with `Y` the last Baseline year entirely widely available at the `src.baseline` snapshot
+  - **Breaking:** remove the `tsconfig/baseline/*.json` and `tsconfig/node/*.json` presets; Node environments get `lib` and `target` `ESNext`, with the Node surface from the installed `@types/node`
+  - **Breaking:** require `src.baseline` (or `src.node`) when the `src` environment is active and reject `<env>.tsconfig.lib` on baseline runtimes; `engrenage init` writes the current month
+  - **Breaking:** make `typescript-baseline-lib`, `baseline-browser-mapping` and `node-releases` peer dependencies, installed by `engrenage init`
+  - Validate Node majors against `node-releases` instead of the removed preset files
+
+- [`09e6a47`](https://github.com/AUAUST/lib-js-engrenage/commit/09e6a4711d3622164c76f5f41dc05515ba2567f4) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage debt [--json]`, which lists the `@debt` markers of the project through the `debt-markers` lint rule, whose new `list` option reports well-formed markers instead of malformed ones
+
+- [`f33d5e8`](https://github.com/AUAUST/lib-js-engrenage/commit/f33d5e8ebc4d385dbbf1a4f6aa82a7bb1d58b2a1) Thanks [@apademide](https://github.com/apademide)! - - Add the default `debt-markers` agent rule, which tells coding agents to mark technical debt with `@debt` comments in the code they change; existing projects run `engrenage agents rules add debt-markers`
+
+- [`065374a`](https://github.com/AUAUST/lib-js-engrenage/commit/065374a776d1e87bea8f59158c485678c23df0b3) Thanks [@apademide](https://github.com/apademide)! - - Add the `debugging` skill and its Claude Code `debugger` agent, on Opus, which investigates problems, fixes them at their root when the fix is contained and otherwise writes the fix into a GitHub issue for a worker; run `engrenage agents skills add debugging` in existing projects
+  - The `worker` agent is routed only to issues whose fix or steps are already written, and stops on an issue with no Steps
+
+- [`9a73416`](https://github.com/AUAUST/lib-js-engrenage/commit/9a7341654da9bc3fe166971412da94901c55081a) Thanks [@apademide](https://github.com/apademide)! - - Add `runtime.node`, `bin.node`, `src.baseline` and `src.node` options, resolved into a `runtime` per environment with the browser and Node minimums derived from the baseline snapshot
+  - Write the newest baseline snapshot as `src.baseline` in the `engrenage.config.ts` created by `engrenage init`
+
+- [`6663774`](https://github.com/AUAUST/lib-js-engrenage/commit/66637746e031065269e8b324cd9253cda5798ce5) Thanks [@apademide](https://github.com/apademide)! - - Add `src.exports`, `bin.commands` and the `data` environment with its `data.exports` to declare what each environment exposes, resolved into `config.src.exports`, `config.bin.commands` and `config.data`; without `src.exports` and `bin.commands`, entries still come from the tsconfig `paths` and the `bin.dirs` files
+  - Fail the tsdown build when `src` and `data.exports` expose the same subpath
+  - Move the tsdown `customExports` option to `data.exports` in the engrenage config
+
+- [`6d0c519`](https://github.com/AUAUST/lib-js-engrenage/commit/6d0c519704a0e0b292906800a9d2b922d41bc600) Thanks [@apademide](https://github.com/apademide)! - - Create the base `tsconfig.json` in `engrenage sync` when it is missing
+  - Stop `engrenage init` from writing tsconfig files; it creates `src/index.ts` for a new library and leaves the tsconfigs to sync
+
+- [`1704d15`](https://github.com/AUAUST/lib-js-engrenage/commit/1704d157d7ee6825c38e0c1a6585b719afaaae16) Thanks [@apademide](https://github.com/apademide)! - - Replace the `source`, `test`, `bin`, `scripts` and `code` config groups with the `src`, `tests`, `bin`, `scripts` and `tooling` environments, each resolved into `config.src`, `config.tests`, `config.bin`, `config.scripts` and `config.tooling` with its `active` state, and add `config.files` aggregating their `generated`, `discovered`, `fixtures`, `published` and `private` globs
+  - Move `source` to `src`, `test` to `tests`, `test.fixtureFiles` to `tests.fixtures`, `code.files` to `typescript.files`, `code.configFiles` to `tooling.files`, and `code.generatedFiles` and `code.discoveredFiles` to the `generated` and `discovered` lists of each environment, relative to its `dirs`
+  - Add `defines` to the `src`, `tests`, `bin` and `scripts` environments, and accept `false` to disable any environment
+  - Accept list options for the dirs and globs of every environment and for `typescript.files`
+  - Rename the ESLint scope references `files.source` and `dir.source` to `files.src` and `dir.src`, and `files.config` to `files.tooling`
+
+- [`4a9d962`](https://github.com/AUAUST/lib-js-engrenage/commit/4a9d962e0ebbf9c44a895fd945b47273908d104c) Thanks [@apademide](https://github.com/apademide)! - - Add the `ListOption`, `ListAdjustment` and `ManagedListOption` config types: a list replaces its default, adjusts it with `prepend`, `append` and `exclude`, resets it with `true`, or leaves it unmanaged with `false` where that differs from an empty list
+
+- [`a0ace29`](https://github.com/AUAUST/lib-js-engrenage/commit/a0ace29175a228eed4d020ee1be1518df64ca832) Thanks [@apademide](https://github.com/apademide)! - - Add the `tsconfig` target to `engrenage sync`: it writes only the fields engrenage manages into the base and each owned environment tsconfig, leaves `false` lists and `unmanaged` scalars alone, applies `compilerOptions` as given and creates the tsconfig of every active environment
+
+- [`8755756`](https://github.com/AUAUST/lib-js-engrenage/commit/87557566dff10a3b34b0a9cf39adadbed614abc8) Thanks [@apademide](https://github.com/apademide)! - - Write `devEngines.runtime`, and for the library preset `engines.node`, `bin` and `files`, on `engrenage sync` from the config (new `package` sync target). `devEngines.runtime` pins `runtime.node` with `onFail: "error"`, so CI runs the chosen Node major.
+
+- [`53ca499`](https://github.com/AUAUST/lib-js-engrenage/commit/53ca49957f417842618aaac5bb7def85976ad6cf) Thanks [@apademide](https://github.com/apademide)! - - Replace the `scratchpad` agent rule with the `scratchpad` skill and its Claude Code `scratcher` agent, which triage scratchpad notes into the backlog strictly locally; delete `.claude/rules/scratchpad.md` and run `engrenage agents skills add scratchpad` in existing projects
+  - Drop the scratchpad routing line from the `backlog` section
+  - Restrict GitHub writes to AUAUST repositories in the `implementation` section
+
+- [`237bf0d`](https://github.com/AUAUST/lib-js-engrenage/commit/237bf0ddcd2a8c49986397f96a238a7a15c72529) Thanks [@apademide](https://github.com/apademide)! - - Add the `tests.json`, `node/24.json` and `baseline/2026-10.json` tsconfig presets, and extend `tests.json` from `library.dist.json`
+  - Remove `target` from `base.json`, and set `types: []` and `exactOptionalPropertyTypes` in `library.json`
+  - Extend the newest baseline snapshot in the tsconfig of new libraries
+  - Pin `typescript` to an exact version in new projects
+  - Typecheck every referenced project when the tsconfig has references
+  - Declare the namespace of empty module entries in bundled declarations
+  - Add `cache.dir` and `config.cacheFor(packageName)` to place every tool cache under one root, removing the eslint `defaultCacheLocation` constant
+  - Require a blank line before a `throw` that follows other statements
+  - Ignore `AGENTS.override.md` in the project block of the synced `.prettierignore` when Codex is a preferred agent
+  - Require Node 24 to install engrenage
+  - Define the precedence of scoped rules, task references and tool configuration in the shared instructions
+  - Remove the migration of `.claude/backlog.md`
+
+- [`0c69500`](https://github.com/AUAUST/lib-js-engrenage/commit/0c69500a4f6b5b414939ee60d5a257afbd8c625f) Thanks [@apademide](https://github.com/apademide)! - - Generate the `extends` of every managed tsconfig in `engrenage sync`: the base extends the engrenage `library.json` or `base.json`, environments extend the base and the `tests.dist` variant extends the tests tsconfig, each as a path relative to its own directory
+
+- [`a4e42d1`](https://github.com/AUAUST/lib-js-engrenage/commit/a4e42d18064b463bd35126fc679042dda4c93ca0) Thanks [@apademide](https://github.com/apademide)! - - Derive the `include` of each environment tsconfig from its `dirs`, the environments inheriting it and the env file when it defines, expanding brace patterns that tsconfig globs do not support
+  - Exclude the `tests.fixtures` from the tests tsconfigs
+  - Add the `tsconfig.exclude` managed list option to every environment
+
+- [`dc01af7`](https://github.com/AUAUST/lib-js-engrenage/commit/dc01af7000820a228df5e45201c29cf2c8e333fa) Thanks [@apademide](https://github.com/apademide)! - - Turn `typescript.tsconfig` into a group (`path`, `extends`, `compilerOptions`, `unmanaged`) and move `typescript.distTsconfig` to `tests.dist.tsconfig.path`, defaulting to `tsconfig.tests.dist.json`
+  - Add a `tsconfig` group (`path`, `inherits`, `extends`, `include`, `lib`, `types`, `compilerOptions`, `unmanaged`, `check`) to the `src`, `tests`, `bin`, `scripts` and `tooling` environments and to `tests.dist`, resolved into `config.<environment>.tsconfig` with its owner, following `inherits` and failing on cycles and conflicting options
+  - Warn when the base tsconfig is not named `tsconfig.json`
+
+- [`967696c`](https://github.com/AUAUST/lib-js-engrenage/commit/967696c7179c28e597159cf9e0b283523617a4a0) Thanks [@apademide](https://github.com/apademide)! - - Write `build.outDir` into the `src` tsconfig's `compilerOptions.outDir` on `engrenage sync` when it differs from the `outDir` the tsconfig inherits, so `tsc` and editors build into the same directory as tsdown and Vitest
+
+- [`6d5b092`](https://github.com/AUAUST/lib-js-engrenage/commit/6d5b092bca589294dc91686c814f740c31fda58b) Thanks [@apademide](https://github.com/apademide)! - - Generate the package-name `paths` of the base tsconfig from `src.exports`, leaving every other alias untouched
+  - Write `paths: {}` in the `tests.dist` tsconfig so Node resolves the package through its `exports`
+
+- [`3f6734c`](https://github.com/AUAUST/lib-js-engrenage/commit/3f6734cff9bf9e8a2786f73c29a7c1ee0aff274b) Thanks [@apademide](https://github.com/apademide)! - - Write `compilerOptions.target`, `lib` and `types` of each environment tsconfig on `engrenage sync` from the environment's runtime: a baseline snapshot gives its target and libs with no types, a Node major gives its target, libs and `node` types. `lib` and `types` accept list adjustments, and `compilerOptions.target` overrides the target
+
+- [`fa6f0e7`](https://github.com/AUAUST/lib-js-engrenage/commit/fa6f0e762d2c1730567eb31c042cc0edbed537bb) Thanks [@apademide](https://github.com/apademide)! - - Write the solution base tsconfig: `files: []` and `references` to every owned environment tsconfig with `check: true`
+  - Write `compilerOptions.tsBuildInfoFile` in every environment tsconfig, under `<cache.dir>/typescript`
+  - Write `skipLibCheck: false` in the `tests.dist` tsconfig
+
+- [`c275867`](https://github.com/AUAUST/lib-js-engrenage/commit/c2758679c34ff78aec117de51eb0af569697a234) Thanks [@apademide](https://github.com/apademide)! - `createTsdownConfig` sets tsdown's `target` from the resolved `src` runtime (the baseline browsers and Node minimum, or the Node major) instead of falling back to `engines.node`.
+
+- [`41419a0`](https://github.com/AUAUST/lib-js-engrenage/commit/41419a05d4cf421195d126010c36e84656d51590) Thanks [@apademide](https://github.com/apademide)! - - `engrenage typecheck:dist` checks the `tests.dist` tsconfig and fails clearly when the variant is disabled, its file is missing or `tests` is inactive; `engrenage typecheck` fails when no environment is referenced (every `check` is false)
+
+- [`8973f04`](https://github.com/AUAUST/lib-js-engrenage/commit/8973f04a6c46c16d3e7f8df55ec720e5b7afdd47) Thanks [@apademide](https://github.com/apademide)! - - `createVitestConfig` passes the `tests` tsconfig (the `tests.dist` one in build mode) as `test.typecheck.tsconfig`, so test type checks run on a solution base; the top-level `tsconfig` stays on the base for the package-name `paths`
+
+### Patch Changes
+
+- [`a51311e`](https://github.com/AUAUST/lib-js-engrenage/commit/a51311ea067379638b754795d5f2ed33a3808b06) Thanks [@apademide](https://github.com/apademide)! - - Agent references resolve package fragments with ESM conditions, so fragments a package exports only under `import` can be referenced
+
+- [`e46d370`](https://github.com/AUAUST/lib-js-engrenage/commit/e46d370006216e19f53d3b74f4d96d730b1f58c1) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage agents skills [add <name>]` to install shared agent skills for Claude Code and Codex, and keep them current on `engrenage sync agents`
+  - Add the `issue-planning` skill and its Claude Code `planner` agent, which plan work as a tree of GitHub issues without implementing it
+  - Add the `issue-implementation` skill and its Claude Code `worker` agent, pinned to Sonnet, which implement one planned issue as written
+  - Accept `model` in a skill's agent metadata
+
+- [`8c60fcb`](https://github.com/AUAUST/lib-js-engrenage/commit/8c60fcb25a41a231d8d5e7db75c292b201b71738) Thanks [@apademide](https://github.com/apademide)! - The `ci:check` script added by `engrenage init` lints without the ESLint cache, so type-aware rules catch errors caused by changes in imported modules as CI does.
+
+- [`967c703`](https://github.com/AUAUST/lib-js-engrenage/commit/967c703d06b3ca050fed161b86734bdb7c468cfc) Thanks [@apademide](https://github.com/apademide)! - - Make `engrenage sync --check` pass right after `engrenage init`: init now syncs once, and a single sync pass writes the build output directory (`/dist`) into the ignore files even when `tsconfig.json` does not exist yet
+  - Run the selected sync targets in their declared order, with the tsconfig target first, instead of the order they were typed
+
+- [`6e07fdf`](https://github.com/AUAUST/lib-js-engrenage/commit/6e07fdfa133d24334054bb1bd8ac20087f2b8fdf) Thanks [@apademide](https://github.com/apademide)! - - Apply the `debt-markers` agent rule to all files and let agents mark debt they notice in files they only read, without searching for it
+  - Allow only technical or required comments in the `implementation` agent instructions, and forbid comments that describe the code
+  - Make agents try an alternative before changing repository-wide configuration, and report each such change separately
+  - Define debt in the `debt-markers` agent rule by its gap to the ideal code instead of a list of signs, and treat any doubt as debt
+
+- [`11ffd6c`](https://github.com/AUAUST/lib-js-engrenage/commit/11ffd6c474601a56c6acd8ed8ad0e614561bb3aa) Thanks [@apademide](https://github.com/apademide)! - - Make the `debugging` skill look for and mark debt along its diagnosis path
+  - Fix the `debugging`, `issue-implementation` and `issue-planning` skill descriptions contradicting their agents' "use proactively"
+
+- [`346847b`](https://github.com/AUAUST/lib-js-engrenage/commit/346847bd30bd80203918d93d13b641e18c606755) Thanks [@apademide](https://github.com/apademide)! - - Stop falling back to the base tsconfig when `tsconfig.tests.dist.json` is missing: `config.tests.dist.tsconfig.path` is now `undefined`, and the build-mode Vitest config and `engrenage tsc:dist` fail naming the file and `engrenage sync`
+
+- [`66f6241`](https://github.com/AUAUST/lib-js-engrenage/commit/66f6241340908d1bf162572bf298156c9b486570) Thanks [@apademide](https://github.com/apademide)! - - `engrenage eslint` no longer adds `--cache` and `--cache-location` when `--no-cache` is passed
+
+- [`fa7d47b`](https://github.com/AUAUST/lib-js-engrenage/commit/fa7d47b2271c2f959a31555ab8a08abf7427517e) Thanks [@apademide](https://github.com/apademide)! - - Condense the `implementation` agent instructions section without changing its rules
+
+- [`ea0e18d`](https://github.com/AUAUST/lib-js-engrenage/commit/ea0e18d9de172e82bfacf672f66639ce5f5480e1) Thanks [@apademide](https://github.com/apademide)! - - Fix `engrenage sync` rewriting JSON objects that already hold the synced value, which reformatted them and made `sync --check` fail on formatted files such as `tsconfig.json` paths
+
+- [`50df351`](https://github.com/AUAUST/lib-js-engrenage/commit/50df351ce48d981ed68e677718b9272d3a322ca6) Thanks [@apademide](https://github.com/apademide)! - Read issue comments in the issue-planning and issue-implementation skills, and pass `--repo <owner>/<repo>` when the debugging skill reads issues.
+
+- [`cbc4a01`](https://github.com/AUAUST/lib-js-engrenage/commit/cbc4a0129caa556c313d09a0fff1b211e96f923b) Thanks [@apademide](https://github.com/apademide)! - - Format the files `engrenage sync` and `engrenage init` write with the project's Prettier when it is installed, so synced output passes `prettier --check`; `sync --check` no longer reports format-only drift
+
+- [`a725a38`](https://github.com/AUAUST/lib-js-engrenage/commit/a725a381133a1367f4a7fa21a22aa0478294281d) Thanks [@apademide](https://github.com/apademide)! - - Write in `tsconfig.tests.dist.json` only the fields that differ from `tsconfig.tests.json`, and remove the `include`, `exclude`, `target`, `lib` and `types` it inherits unless the `tests.dist` tsconfig configures them
+
+- [`4fd1846`](https://github.com/AUAUST/lib-js-engrenage/commit/4fd184618fba63a3457cfa8b4d8ef3034dd4fe5d) Thanks [@apademide](https://github.com/apademide)! - - Build declarations with the `src` tsconfig, so the build works again with a solution base tsconfig
+
 ## 0.4.3
 
 ### Patch Changes
