@@ -1,42 +1,13 @@
-import { readdirSync } from "node:fs";
-import { createRequire } from "node:module";
-import { dirname, join } from "node:path";
-
-import { filter, map, sort } from "@auaust/primitive-kit/arrays";
 import { floor } from "@auaust/toolkit/math";
 
 import { typescriptBaselineLibrary } from "#constants";
-import { baselineWidelyAvailableMonths } from "#typescript/constants";
+import {
+  baselineWidelyAvailableMonths,
+  monthsPerYear,
+} from "#typescript/constants";
 import { findCurrentMonth } from "#typescript/utils/findCurrentMonth";
-
-const monthsPerYear = 12;
-
-function listYears(): number[] {
-  const library = dirname(
-    createRequire(import.meta.url).resolve(
-      `${typescriptBaselineLibrary}/package.json`,
-    ),
-  );
-
-  return sort(
-    map(
-      filter(readdirSync(join(library, "year")), (name) =>
-        /^\d{4}$/.test(name),
-      ),
-      Number,
-    ),
-    (a, b) => a - b,
-  );
-}
-
-function toYear(snapshot: string): number {
-  const [year = 0, month = 0] = snapshot.split("-").map(Number);
-
-  const widelyAvailable =
-    year * monthsPerYear + month - 1 - baselineWidelyAvailableMonths;
-
-  return floor(widelyAvailable / monthsPerYear) - 1;
-}
+import { listBaselineYears } from "#typescript/utils/listBaselineYears";
+import { toBaselineYear } from "#typescript/utils/toBaselineYear";
 
 function toSnapshot(year: number): string {
   const months = (year + 1) * monthsPerYear + baselineWidelyAvailableMonths;
@@ -56,8 +27,8 @@ export function resolveBaselineLibrary(snapshot: string): string {
     );
   }
 
-  const year = toYear(snapshot);
-  const years = listYears();
+  const year = toBaselineYear(snapshot);
+  const years = listBaselineYears();
   const [oldest] = years;
   const newest = years.at(-1);
 

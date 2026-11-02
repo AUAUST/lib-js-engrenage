@@ -1,17 +1,18 @@
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readdirSync, symlinkSync } from "node:fs";
+import { mkdirSync, symlinkSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { describe, expect, test } from "vitest";
 
+import { keys } from "@auaust/toolkit/object";
+
 import { createFilesystem } from "#config/utils/createFilesystem";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
+import { apiGroupRoots } from "#typescript/constants";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
-
-const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const tsc = createRequire(import.meta.url).resolve("typescript/lib/tsc.js");
 
@@ -143,9 +144,7 @@ describe("tsconfig presets", () => {
   });
 
   test("type-checks every API group together without skipping library checks", () => {
-    const groups = readdirSync(join(root, "data/apis"))
-      .filter((file) => file.endsWith(".d.ts"))
-      .map((file) => file.slice(0, -".d.ts".length));
+    const groups = keys(apiGroupRoots);
 
     const project = createApisProject(
       `export const controller = new AbortController();

@@ -28,7 +28,15 @@ export const apiGroupRoots = freeze({
   url: ["URL", "URLSearchParams"],
 } as const) satisfies Record<string, readonly string[]>;
 
-export const apiGroups = freeze(keys(apiGroupRoots));
+export const apiLibraryGroups = freeze({
+  disposable: "lib.esnext.disposable.d.ts",
+  float16: "lib.es2025.float16.d.ts",
+} as const) satisfies Record<string, string>;
+
+export const apiGroups = freeze([
+  ...keys(apiGroupRoots),
+  ...keys(apiLibraryGroups),
+]);
 
 export const baselineWidelyAvailableMonths = 30;
 
@@ -37,6 +45,8 @@ export const barrelFiles = "**/index.ts" satisfies Glob;
 export const declarationExtension = ".d.ts";
 
 export const identifierPattern = /^[$A-Z_a-z][\w$]*$/;
+
+export const monthsPerYear = 12;
 
 export const noInputsDiagnostic = 18_003;
 
