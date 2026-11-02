@@ -314,7 +314,7 @@ describe("runtime tsconfig fields", () => {
       syncCompilerOptions({
         src: { apis: ["dom"] },
       });
-    }).toThrow(/not known API groups/);
+    }).toThrow(/"abort".*"url"/s);
 
     expect(() => {
       syncCompilerOptions({

@@ -12,6 +12,10 @@ function expandUnionIssue(issue: BaseIssue<unknown>): BaseIssue<unknown>[] {
 
   for (const nested of issue.issues ?? []) {
     if (nested.path === undefined) {
+      if (nested.issues !== undefined) {
+        branchIssues.push(...expandUnionIssue({ ...nested, path: issue.path }));
+      }
+
       continue;
     }
 

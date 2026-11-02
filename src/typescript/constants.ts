@@ -2,6 +2,49 @@ import { freeze } from "@auaust/toolkit/object";
 
 import type { BlockSyntax } from "#types/BlockSyntax";
 import type { Glob } from "#types/Glob";
+import type { ApiGroup } from "#typescript/types/ApiGroup";
+
+// @debt the group names are listed twice, here and as the keys of apiGroupRoots, instead of deriving one list from the other
+export const apiGroups = freeze([
+  "abort",
+  "blob",
+  "compression",
+  "console",
+  "crypto",
+  "encoding",
+  "events",
+  "exceptions",
+  "microtasks",
+  "performance",
+  "streams",
+  "timers",
+  "url",
+] as const);
+
+// @debt Timer handles are typed `number`, the DOM signature, while Node returns an object; `setTimeout` results are not isomorphic.
+export const apiGroupRoots = freeze({
+  abort: ["AbortController", "AbortSignal"],
+  blob: ["Blob", "File"],
+  compression: ["CompressionStream", "DecompressionStream"],
+  console: ["console"],
+  crypto: ["crypto"],
+  encoding: ["TextEncoder", "TextDecoder", "atob", "btoa"],
+  events: ["Event", "EventTarget", "CustomEvent"],
+  exceptions: ["DOMException"],
+  microtasks: ["queueMicrotask"],
+  performance: ["performance"],
+  streams: [
+    "ReadableStream",
+    "WritableStream",
+    "TransformStream",
+    "ByteLengthQueuingStrategy",
+    "CountQueuingStrategy",
+    "TextEncoderStream",
+    "TextDecoderStream",
+  ],
+  timers: ["setTimeout", "setInterval", "clearTimeout", "clearInterval"],
+  url: ["URL", "URLSearchParams"],
+} as const) satisfies Record<ApiGroup, readonly string[]>;
 
 export const baselineWidelyAvailableMonths = 30;
 

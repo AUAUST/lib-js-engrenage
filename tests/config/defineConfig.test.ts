@@ -18,6 +18,17 @@ describe("defineConfig", () => {
     expectTypeOf(defineConfig).returns.toEqualTypeOf<ConfigInput<Config>>();
   });
 
+  test("types src.apis with the known groups", () => {
+    expectTypeOf(defineConfig).toBeCallableWith({
+      src: { baseline: "2026-10", apis: ["timers"] },
+    });
+
+    type Apis = NonNullable<Extract<Config["src"], object>["apis"]>;
+
+    expectTypeOf<["timers"]>().toExtend<Apis>();
+    expectTypeOf<["unknown"]>().not.toExtend<Apis>();
+  });
+
   test("accepts sync and async callbacks", () => {
     expectTypeOf(defineConfig).toBeCallableWith(() => {
       return {

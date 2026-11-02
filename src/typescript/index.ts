@@ -5,6 +5,7 @@ export { resolvePathAliases } from "#typescript/utils/resolvePathAliases";
 export { syncBarrels } from "#typescript/utils/syncBarrels";
 
 // @barrel types/*.ts all
+export * from "#typescript/types/ApiGroup";
 export * from "#typescript/types/BarrelMode";
 export * from "#typescript/types/PathAlias";
 export * from "#typescript/types/PathAliases";

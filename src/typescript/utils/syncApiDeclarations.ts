@@ -23,10 +23,17 @@ import {
   type Statement,
 } from "typescript";
 
-import { filterMap, map, sort } from "@auaust/primitive-kit/arrays";
+import {
+  filter,
+  filterMap,
+  join,
+  map,
+  sort,
+} from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
 import { resolve } from "#support/filesystem/utils/resolve";
+import { apiGroupRoots } from "#typescript/constants";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
 
@@ -35,31 +42,6 @@ const apisDirectory = "data/apis";
 const sharedFile: File = `${apisDirectory}/shared/common.d.ts`;
 
 const sharedReference = "shared/common.d.ts";
-
-// @debt Timer handles are typed `number`, the DOM signature, while Node returns an object; `setTimeout` results are not isomorphic.
-const groupRoots: Record<string, readonly string[]> = {
-  abort: ["AbortController", "AbortSignal"],
-  blob: ["Blob", "File"],
-  compression: ["CompressionStream", "DecompressionStream"],
-  console: ["console"],
-  crypto: ["crypto"],
-  encoding: ["TextEncoder", "TextDecoder", "atob", "btoa"],
-  events: ["Event", "EventTarget", "CustomEvent"],
-  exceptions: ["DOMException"],
-  microtasks: ["queueMicrotask"],
-  performance: ["performance"],
-  streams: [
-    "ReadableStream",
-    "WritableStream",
-    "TransformStream",
-    "ByteLengthQueuingStrategy",
-    "CountQueuingStrategy",
-    "TextEncoderStream",
-    "TextDecoderStream",
-  ],
-  timers: ["setTimeout", "setInterval", "clearTimeout", "clearInterval"],
-  url: ["URL", "URLSearchParams"],
-};
 
 function declaredNames(statement: Statement): string[] {
   if (
@@ -221,11 +203,11 @@ export async function syncApiDeclarations(
   config: ResolvedConfig,
   groups: readonly string[] = [],
 ) {
-  const unknown = groups.filter((group) => !(group in groupRoots));
+  const unknown = filter(groups, (group) => !(group in apiGroupRoots));
 
   if (unknown.length > 0) {
     throw new Error(
-      `Unknown API groups: ${unknown.join(", ")}. Available groups: ${keys(groupRoots).join(", ")}`,
+      `Unknown API groups: ${join(unknown, ", ")}. Available groups: ${join(keys(apiGroupRoots), ", ")}`,
     );
   }
 
@@ -245,7 +227,7 @@ export async function syncApiDeclarations(
   const index = indexStatements(source);
 
   const closures = new Map(
-    map(entries(groupRoots), ([group, roots]) => {
+    map(entries(apiGroupRoots), ([group, roots]) => {
       return [group, collectClosure(source, index, roots)] as const;
     }),
   );

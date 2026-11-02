@@ -22,6 +22,7 @@ import { listOptionSchema } from "#config/config/schemas/listOptionSchema";
 import { nodeMajorSchema } from "#config/config/schemas/nodeMajorSchema";
 import { presetsSchema } from "#config/config/schemas/presetsSchema";
 import { workflowSetNames } from "#github/constants";
+import { apiGroups } from "#typescript/constants";
 
 const dirsSchema = listOptionSchema(directorySchema);
 
@@ -51,7 +52,7 @@ export const configSchema = strictObject({
       ...createCodeEnvironment(),
       exports: optional(exposedFilesSchema),
       baseline: optional(string()),
-      apis: optional(listOptionSchema(string())),
+      apis: optional(listOptionSchema(picklist(apiGroups))),
       node: optional(nodeMajorSchema),
     }),
   ),
