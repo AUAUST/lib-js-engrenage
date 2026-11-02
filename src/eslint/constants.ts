@@ -105,6 +105,7 @@ export const typescriptTypeAwareRules = freeze({
 } as const satisfies TypescriptEslintRules);
 
 export const importRules = freeze({
+  "import-x/namespace": ["error", { allowComputed: true }],
   "import-x/no-empty-named-blocks": "error",
   "import-x/no-extraneous-dependencies": "error",
   "import-x/no-mutable-exports": "error",

@@ -8,9 +8,3 @@ Local coding conventions and linting.
 - Problem: ESLint fails on `data/` because no tsconfig includes its files, so the config carries a custom ignore. This reveals a broader issue: ESLint should not try to lint files that no tsconfig path of the root config includes.
 - Expected: the generated ESLint config derives what it lints from the paths the project's tsconfigs include, so no manual exclusion is needed.
 - Done when `eslint.config.ts` needs no `data` exclusion and files outside the configured paths are not linted.
-
-## 2. `import-x/namespace` should allow computed access.
-
-- Matter: the generated ESLint config does not set `allowComputed: true` on `import-x/namespace`.
-- Expected: the rule is configured with `allowComputed: true`.
-- Done when the rule is set so in the generated config.

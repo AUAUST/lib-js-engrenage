@@ -456,6 +456,17 @@ export const values = [things, manifest, thing];
     ).toEqual(["auaust/sort-imports", "auaust/sort-imports"]);
   });
 
+  test("allows computed access on a namespace import, but not an unknown name", async () => {
+    expect(
+      await lintedProjectRules(`import * as things from "#things";
+
+const key = "one";
+
+export const values = [things[key], things.two];
+`),
+    ).toEqual(["import-x/namespace"]);
+  });
+
   test("reports namespace imports and exports of dependencies, but not of project modules", async () => {
     expect(
       await lintedProjectRules(`import * as path from "node:path";
