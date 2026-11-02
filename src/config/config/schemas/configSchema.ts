@@ -38,6 +38,7 @@ function createCodeEnvironment() {
 }
 
 export const configSchema = strictObject({
+  debug: optional(boolean()),
   presets: optional(presetsSchema),
   runtime: optional(
     strictObject({

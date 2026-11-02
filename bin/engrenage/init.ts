@@ -60,7 +60,9 @@ function invokeCommand(root: Directory, invocation: Invocation) {
   }
 
   if (status !== 0) {
-    throw new Error(`${describe(invocation)} exited with code ${status}`);
+    throw new Error(
+      `${describe(invocation)} exited with code ${status}: fix the error above, then run engrenage init again`,
+    );
   }
 }
 

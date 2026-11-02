@@ -7,6 +7,8 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
 
+export const debugEnvironmentVariable = "ENGRENAGE_DEBUG";
+
 export const defaultEmptyOutDir = true;
 
 export const defaultSourcemap = true;

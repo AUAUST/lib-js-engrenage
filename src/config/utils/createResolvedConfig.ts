@@ -32,6 +32,7 @@ import {
   defaultTypescriptFiles,
 } from "#config/constants";
 import { createFilesystem } from "#config/utils/createFilesystem";
+import { isDebugEnvironment } from "#config/utils/isDebugEnvironment";
 import { resolveCodeEnvironment } from "#config/utils/resolveCodeEnvironment";
 import { resolveListOption } from "#config/utils/resolveListOption";
 import { resolveNodeRuntime } from "#config/utils/resolveNodeRuntime";
@@ -624,6 +625,7 @@ export function createResolvedConfig({
         root,
         raw,
         configFile,
+        debug: raw.debug === true || isDebugEnvironment(),
         filesystem,
         resolve,
         cacheFor,
