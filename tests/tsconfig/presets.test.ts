@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { mkdirSync, symlinkSync } from "node:fs";
+import { mkdirSync, readdirSync, symlinkSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -10,6 +10,8 @@ import { createFilesystem } from "#config/utils/createFilesystem";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
+
+const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const tsc = createRequire(import.meta.url).resolve("typescript/lib/tsc.js");
 
@@ -23,7 +25,7 @@ function showConfig(project: string) {
   return JSON.parse(runTsc("--showConfig", "-p", project));
 }
 
-function createApisProject(source: string): string {
+function createApisProject(source: string, groups?: string[]): string {
   const project = createTemporaryProject({
     "index.ts": source,
     "tsconfig.json": JSON.stringify({
@@ -31,11 +33,9 @@ function createApisProject(source: string): string {
       compilerOptions: {
         target: "ESNext",
         lib: ["ESNext"],
-        types: [
-          "@auaust/engrenage/apis/timers",
-          "@auaust/engrenage/apis/performance",
-          "@auaust/engrenage/apis/crypto",
-        ],
+        types: (groups ?? ["timers", "performance", "crypto"]).map(
+          (group) => `@auaust/engrenage/apis/${group}`,
+        ),
       },
       files: ["index.ts"],
     }),
@@ -128,26 +128,37 @@ describe("tsconfig presets", () => {
   });
 
   test("resolves the API declaration groups installed as a package", () => {
-    const project = createApisProject(
-      `const handle = setTimeout((label: string) => {
+    const source = `const handle = setInterval((label: string) => {
         performance.now();
-        crypto.getRandomValues(new Uint8Array(1));
+        crypto.randomUUID();
       }, 10, "label");
 
-      clearTimeout(handle);`,
-    );
+      clearInterval(handle);`;
 
-    expect(() => runTsc("-p", project)).not.toThrow();
+    expect(() => runTsc("-p", createApisProject(source))).not.toThrow();
+
+    expect(() => runTsc("-p", createApisProject(source, []))).toThrow(
+      expect.objectContaining({ stdout: expect.stringContaining("TS2304") }),
+    );
   });
 
-  test("keeps timer handles opaque", () => {
+  test("type-checks every API group together without skipping library checks", () => {
+    const groups = readdirSync(join(root, "data/apis"))
+      .filter((file) => file.endsWith(".d.ts"))
+      .map((file) => file.slice(0, -".d.ts".length));
+
     const project = createApisProject(
-      "export const handle: number = setTimeout(() => {}, 10);",
+      `export const controller = new AbortController();
+      export const stream = new ReadableStream<Uint8Array>();
+      export const url = new URL("https://example.com");
+      export const blob = new Blob([new TextEncoder().encode("a")]);
+      queueMicrotask(() => console.info(new CustomEvent("a")));`,
+      groups,
     );
 
-    expect(() => runTsc("-p", project)).toThrow(
-      expect.objectContaining({ stdout: expect.stringContaining("TS2322") }),
-    );
+    expect(() =>
+      runTsc("-p", project, "--skipLibCheck", "false"),
+    ).not.toThrow();
   });
 
   test("type-checks tests and env declarations in dist mode", () => {

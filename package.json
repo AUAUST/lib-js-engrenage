@@ -20,7 +20,7 @@
     "build": "pnpm run engrenage tsdown && pnpm run engrenage typecheck:dist && pnpm run engrenage vitest:dist",
     "ci": "pnpm run ci:check && pnpm run ci:test && pnpm run ci:build",
     "ci:build": "pnpm run build",
-    "ci:check": "pnpm run engrenage sync --check && pnpm run support codegen barrels --check && pnpm run support codegen rules --check && pnpm run typecheck && pnpm run lint",
+    "ci:check": "pnpm run engrenage sync --check && pnpm run support codegen barrels --check && pnpm run support codegen apis --check && pnpm run support codegen rules --check && pnpm run typecheck && pnpm run lint",
     "ci:publish": "changeset publish",
     "ci:test": "pnpm run engrenage vitest",
     "coverage": "pnpm run engrenage vitest:coverage",

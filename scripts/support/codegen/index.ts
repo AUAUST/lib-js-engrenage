@@ -1,3 +1,4 @@
+import { apis } from "#scripts/support/codegen/apis";
 import { barrels } from "#scripts/support/codegen/barrels";
 import { rules } from "#scripts/support/codegen/rules";
 import { defineCommand } from "#support/commander/utils/defineCommand";
@@ -7,6 +8,7 @@ export const codegen = defineCommand((command) => {
   return registerSubcommands(
     command.description("Generate sources of the package from its tooling."),
     {
+      apis,
       barrels,
       rules,
     },
