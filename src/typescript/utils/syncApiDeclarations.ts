@@ -1,13 +1,20 @@
-import { readFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { createRequire } from "node:module";
-import { dirname, join as joinPath } from "node:path";
+import { tmpdir } from "node:os";
+import { dirname, join as joinPath, relative as relativePath } from "node:path";
 
 import {
-  createCompilerHost,
   createProgram,
   createSourceFile,
   flattenDiagnosticMessageText,
   forEachChild,
+  getPreEmitDiagnostics,
   isExpressionWithTypeArguments,
   isFunctionDeclaration,
   isIdentifier,
@@ -36,14 +43,13 @@ import {
 } from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
-import { typescriptBaselineLibrary } from "#constants";
 import { resolve } from "#support/filesystem/utils/resolve";
 import { apiGroupRoots, apiLibraryGroups } from "#typescript/constants";
-import { findCurrentMonth } from "#typescript/utils/findCurrentMonth";
 import { formatModule } from "#typescript/utils/formatModule";
-import { listBaselineYears } from "#typescript/utils/listBaselineYears";
-import { toBaselineYear } from "#typescript/utils/toBaselineYear";
+import { includesEsLibrary } from "#typescript/utils/includesEsLibrary";
+import { listEsSelections } from "#typescript/utils/listEsSelections";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 const apisDirectory = "data/apis";
@@ -170,11 +176,8 @@ function readNotice(text: string): string {
   return text.slice(0, end + 2);
 }
 
-function readLibrary(name: string): string {
-  return readFileSync(
-    createRequire(import.meta.url).resolve(`typescript/lib/${name}`),
-    "utf-8",
-  );
+function readLibrary(name: string, libraries: Directory): string {
+  return readFileSync(joinPath(libraries, name), "utf-8");
 }
 
 function createModule({
@@ -218,77 +221,76 @@ function readLibraryBody(text: string): string {
     .trim();
 }
 
-// @debt the group is compiled through a virtual file on a patched compiler host; a real temporary project would be simpler to follow
-function assertBaselineCompatible(group: string, content: string) {
-  const library = dirname(
-    createRequire(import.meta.url).resolve(
-      `${typescriptBaselineLibrary}/package.json`,
-    ),
-  );
+// @debt compiling a program against a lib selection is also done in syncEditions; a shared module would own it once.
+function assertCompilesWithSelections(
+  group: string,
+  groupLibrary: string | undefined,
+  modules: ReadonlyMap<File, string>,
+  selections: readonly { from: string; lib: readonly string[] }[],
+) {
+  const directory = mkdtempSync(joinPath(tmpdir(), "engrenage-apis-"));
 
-  const virtualFile = joinPath(library, `${group}.virtual.d.ts`);
+  try {
+    for (const [file, content] of modules) {
+      const path = joinPath(directory, relativePath(apisDirectory, file));
 
-  const options = {
-    noLib: true,
-    types: [],
-    noEmit: true,
-    target: ScriptTarget.ESNext,
-    module: ModuleKind.ESNext,
-  };
-
-  const host = createCompilerHost(options);
-  const { fileExists, readFile, getSourceFile } = host;
-
-  host.fileExists = (file) => {
-    return file === virtualFile || fileExists(file);
-  };
-
-  host.readFile = (file) => {
-    return file === virtualFile ? content : readFile(file);
-  };
-
-  host.getSourceFile = (file, languageVersion, ...rest) => {
-    if (file === virtualFile) {
-      return createSourceFile(file, content, languageVersion, true);
+      mkdirSync(dirname(path), { recursive: true });
+      writeFileSync(path, content);
     }
 
-    return getSourceFile(file, languageVersion, ...rest);
-  };
+    const entry = joinPath(directory, `${group}.d.ts`);
 
-  // @debt only baseline years reachable today are checked; the float16 group duplicates Float16Array in year/2025, so codegen will fail once that year becomes reachable
-  const newest = toBaselineYear(findCurrentMonth());
+    for (const { from, lib } of selections) {
+      if (groupLibrary !== undefined && includesEsLibrary(lib, groupLibrary)) {
+        continue;
+      }
 
-  for (const year of filter(listBaselineYears(), (year) => year <= newest)) {
-    const entry = joinPath(library, "year", String(year), "index.d.ts");
+      const program = createProgram([entry], {
+        lib: map(lib, (name) => `lib.${name}.d.ts`),
+        types: [],
+        noEmit: true,
+        target: ScriptTarget.ESNext,
+        module: ModuleKind.ESNext,
+      });
 
-    const program = createProgram([entry, virtualFile], options, host);
+      const [first] = getPreEmitDiagnostics(program).filter(({ file }) => {
+        return file === undefined || file.fileName.startsWith(directory);
+      });
 
-    const diagnostics = program
-      .getSemanticDiagnostics()
-      .filter(({ file }) => file?.fileName === virtualFile);
-
-    const [first] = diagnostics;
-
-    if (first !== undefined) {
-      throw new Error(
-        `The "${group}" API group does not compile against ${typescriptBaselineLibrary}/year/${year}: ${flattenDiagnosticMessageText(first.messageText, "\n")}`,
-      );
+      if (first !== undefined) {
+        throw new Error(
+          `The "${group}" API group does not compile with the ES libs selected from ${from} (${join(lib, ", ")}): ${flattenDiagnosticMessageText(first.messageText, "\n")}`,
+        );
+      }
     }
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
   }
 }
 
 export async function syncApiDeclarations(
   config: ResolvedConfig,
   groups: readonly string[] = [],
+  {
+    libraryGroups = apiLibraryGroups,
+    libraries = dirname(
+      createRequire(import.meta.url).resolve("typescript/lib/lib.dom.d.ts"),
+    ),
+    selections = listEsSelections(),
+  }: {
+    libraryGroups?: Readonly<Record<string, string>>;
+    libraries?: Directory;
+    selections?: readonly { from: string; lib: readonly string[] }[];
+  } = {},
 ) {
   const unknown = filter(
     groups,
-    (group) => !(group in apiGroupRoots || group in apiLibraryGroups),
+    (group) => !(group in apiGroupRoots || group in libraryGroups),
   );
 
   if (unknown.length > 0) {
     throw new Error(
-      `Unknown API groups: ${join(unknown, ", ")}. Available groups: ${join([...keys(apiGroupRoots), ...keys(apiLibraryGroups)], ", ")}`,
+      `Unknown API groups: ${join(unknown, ", ")}. Available groups: ${join([...keys(apiGroupRoots), ...keys(libraryGroups)], ", ")}`,
     );
   }
 
@@ -357,21 +359,34 @@ export async function syncApiDeclarations(
     );
   }
 
-  for (const [group, name] of entries(apiLibraryGroups)) {
-    const text = readLibrary(name);
+  for (const [group, name] of entries(libraryGroups)) {
+    const text = readLibrary(name, libraries);
 
-    const content = createModule({
-      notice: readNotice(text),
-      origin: name,
-      reference: false,
-      body: [readLibraryBody(text)],
-    });
+    modules.set(
+      `${apisDirectory}/${group}.d.ts`,
+      createModule({
+        notice: readNotice(text),
+        origin: name,
+        reference: false,
+        body: [readLibraryBody(text)],
+      }),
+    );
+  }
 
-    if (groups.length === 0 || groups.includes(group)) {
-      assertBaselineCompatible(group, content);
+  for (const group of [...keys(apiGroupRoots), ...keys(libraryGroups)]) {
+    if (groups.length > 0 && !groups.includes(group)) {
+      continue;
     }
 
-    modules.set(`${apisDirectory}/${group}.d.ts`, content);
+    const name = libraryGroups[group];
+
+    assertCompilesWithSelections(
+      group,
+      // @debt the lib name is derived from the lib.<name>.d.ts file-name convention instead of being declared next to the group
+      name === undefined ? undefined : name.slice(4, -".d.ts".length),
+      modules,
+      selections,
+    );
   }
 
   for (const [file, content] of modules) {
