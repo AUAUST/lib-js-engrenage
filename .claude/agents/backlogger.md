@@ -40,7 +40,7 @@ An entry is ready for action when it needs no further decision: a located bug wi
 - Use the target repository's existing labels and issue types.
 - Create it with `gh issue create --repo <owner>/<repo> --title "<title>" --body-file -`, passing the body on standard input.
 
-Edit nothing outside `.ai/backlog/` and `.ai/debt.md`, and leave changes uncommitted.
+Edit nothing outside `.ai/backlog/` and `.ai/debt.md`.
 
 ## Report
 

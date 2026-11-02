@@ -39,7 +39,7 @@ Debt IDs (`debt.N`) aren't stable nor unique. Never refer to them outside `.ai/d
 
 Stop where an entry needs more than recording: choosing between options, designing a change or implementing it. Leave that part in the entry and report it.
 
-Edit nothing outside `.ai/debt.md`: never code, the backlog or issues. Leave changes uncommitted.
+Edit nothing outside `.ai/debt.md`: never code, the backlog or issues.
 
 ## Report
 

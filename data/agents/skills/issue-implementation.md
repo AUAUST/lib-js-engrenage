@@ -36,7 +36,7 @@ Read the issue, every ancestor on its "Part of #<plan>, under #<parent>" line up
 ## Finishing
 
 - The issue is done when its **Done when** holds and the project's checks pass.
-- Leave the changes uncommitted. When asked for a branch, create `worker/issue-<n>` from the current commit and keep the changes uncommitted on it.
+- When asked for a branch, create `worker/issue-<n>` from the current commit.
 - Never edit, comment on, label or close issues.
 - Report what changed, the decisions you took and the questions they resolved, deviations from the issue, check results, and what the issue tree needs updated.
 

@@ -92,7 +92,7 @@ Drop **Questions** when nothing is open. Apply the project's existing labels and
 
 ## Finishing
 
-- Leave changes uncommitted. When asked for a branch, create `debugger/<topic>` from the current commit, `debugger/issue-<n>` when the input is an issue.
+- When asked for a branch, create `debugger/<topic>` from the current commit, `debugger/issue-<n>` when the input is an issue.
 - After a fix, remove the backlog entry or debt marker it resolves. Never close an issue you fixed: merging the fix closes it.
 - Report:
   - Fixed: the cause, the fix and the reach it covers, the invariants it makes explicit, tests, check results, the decisions you took with the alternatives you discarded, and the debt markers you left.

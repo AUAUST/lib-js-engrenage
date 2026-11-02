@@ -15,6 +15,5 @@ order: 40
 - Change repository-wide configuration only after trying an alternative inside the code you own. Report any configuration change with its reason separately from general code changes.
 - Delete obsolete and commented-out code. Add no feature READMEs or `docs/` directory.
 - When work would build on or deepen an architectural violation, fixing it comes first: stop under the decision protocol with what exists, the recommended fix and its scope. Correct violations you touch; report other nearby inconsistencies without fixing them.
-- Write to GitHub only in repositories owned by the AUAUST organization.
 - Keep secrets in `.env`, documented by `.env.example`, never in source, logs or runtime code.
 - Propose missing or outdated skills, MCP servers, scripts, dependencies or abstractions when they would help; add, remove or upgrade them only with the user's approval.

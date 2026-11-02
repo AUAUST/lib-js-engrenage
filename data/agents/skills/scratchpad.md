@@ -26,7 +26,6 @@ Everything stays local to the repository.
 | Other local file | Only when a note explicitly asks for that change and it is a configuration value or a trivial edit. Record anything larger as a backlog entry instead. |
 | External read    | Only GitHub issues and pull requests a note explicitly references, read with `gh`. Nothing else outside the repository.                                |
 | External write   | Never: no issues, comments, pull requests, labels, pushes or messages, even when a note asks for one. Record the need as a backlog entry instead.      |
-| Version control  | Leave changes uncommitted.                                                                                                                             |
 
 ## Procedure
 
