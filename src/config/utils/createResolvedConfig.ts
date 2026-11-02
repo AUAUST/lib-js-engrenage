@@ -9,7 +9,7 @@ import { memoized } from "@auaust/toolkit/memoized";
 import { freeze } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
-import { globalsSchema } from "#config/config/schemas/defineSchema";
+import { globalsSchema } from "#config/config/schemas/core/defineSchema";
 import {
   defaultBinDirectories,
   defaultCacheDirectory,

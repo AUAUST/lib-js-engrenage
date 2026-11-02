@@ -1,8 +1,8 @@
 import { string } from "valibot";
 import { describe, expect, test, vi } from "vitest";
 
-import { listOptionSchema } from "#config/config/schemas/listOptionSchema";
-import { managedListOptionSchema } from "#config/config/schemas/managedListOptionSchema";
+import { listOptionSchema } from "#config/config/schemas/values/listOptionSchema";
+import { managedListOptionSchema } from "#config/config/schemas/values/managedListOptionSchema";
 import { resolveListOption } from "#config/utils/resolveListOption";
 import { validate } from "#utils/validate";
 

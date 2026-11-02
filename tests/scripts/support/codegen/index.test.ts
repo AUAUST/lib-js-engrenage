@@ -25,6 +25,10 @@ vi.mock("#scripts/support/codegen/apis", () => {
   return { apis: createGenerator("apis") };
 });
 
+vi.mock("#scripts/support/codegen/config", () => {
+  return { config: createGenerator("config") };
+});
+
 vi.mock("#scripts/support/codegen/rules", () => {
   return { rules: createGenerator("rules") };
 });
@@ -41,6 +45,7 @@ describe("support codegen", () => {
 
     expect(runs).toEqual([
       { name: "apis", check: true },
+      { name: "config", check: true },
       { name: "rules", check: true },
       { name: "barrels", check: true },
     ]);

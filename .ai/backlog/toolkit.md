@@ -69,3 +69,9 @@ Upstream @auaust/toolkit decisions that may affect engrenage.
 
 - Request: a `semver` domain in toolkit that provides utilities for parsing, comparing, and manipulating semantic versions. It should try to rely on existing standards and conventions, ideally wrapping or re-exporting a well-known semver library under the toolkit's structure and conventions.
 - Because toolkit aims to provide utilities, not frameworks, it should focus on offering a consistent and reliable set of tools, not a whole semver framework or class. It should allow to extract the major, minor, and patch components, optionally variants like alpha, beta, or rc, and return them as structured objects or tuples; other helpers that manipulate or compare versions should work with these structured representations rather than raw strings; it should not implement a full class with methods for every operation.
+
+## 9. Toolkit could offer a `hasValue` helper
+
+- The helper, belonging to the object domain, should check whether a given object has a specific value set for a given key. The catch is that it must return `false` if the compared value is undefined but the key is missing in the object. In JavaScript, it's often hard and inconvenient to distinguish between a key that is missing and a key that is explicitly set to `undefined` without writing verbose checks. Thus, the helper should provide a concise and reliable way to perform this check.
+- For any value other than undefined, it'd be equivalent to `object?.[key] === value`. It should also most likely rely on `SameValueZero` equality semantics, which treat `NaN` as equal to itself without distinguishing `-0` and `+0`.
+- Name not settled.

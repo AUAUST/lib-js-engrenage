@@ -2,6 +2,7 @@ import {
   boolean,
   check,
   custom,
+  description,
   optional,
   pipe,
   rawTransform,
@@ -14,7 +15,7 @@ import {
   type GenericSchema,
 } from "valibot";
 
-import { includes } from "@auaust/primitive-kit/arrays";
+import { includes, join } from "@auaust/primitive-kit/arrays";
 import { isFinite } from "@auaust/primitive-kit/numbers";
 import { isArray } from "@auaust/toolkit/isArray";
 import { isBoolean } from "@auaust/toolkit/isBoolean";
@@ -133,6 +134,34 @@ export const globalsSchema: GenericSchema<
 );
 
 export const defineSchema = strictObject({
-  types: optional(boolean()),
-  values: optional(union([globalsSchema, custom<GlobalsFactory>(isFunction)])),
+  types: optional(
+    pipe(
+      boolean(),
+      description(
+        join(
+          [
+            "Whether sync declares the `define.values` globals in the env file (`typescript.envFile`) and `build.typed` follows.",
+            "@default `true`",
+          ],
+          "\n",
+        ),
+      ),
+    ),
+  ),
+  values: optional(
+    pipe(
+      union([globalsSchema, custom<GlobalsFactory>(isFunction)]),
+      description(
+        join(
+          [
+            "Compile-time globals, by identifier or dotted path (such as `import.meta.env.NAME`) with a JSON-serializable value, optionally wrapped by `define()` for a type, scope and documentation.",
+            "A function receives the `package.json` and the filesystem and returns them.",
+            "They feed the `define` option of tsdown and Vite (hence Vitest) according to their scope, and the env file declarations.",
+            "Unset, nothing is defined.",
+          ],
+          "\n",
+        ),
+      ),
+    ),
+  ),
 });

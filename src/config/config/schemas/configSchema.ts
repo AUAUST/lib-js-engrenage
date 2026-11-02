@@ -1,144 +1,46 @@
-import {
-  boolean,
-  literal,
-  optional,
-  picklist,
-  record,
-  strictObject,
-  string,
-  union,
-} from "valibot";
+import { optional, strictObject } from "valibot";
 
-import { preferredSchema } from "#agents/config/schemas/preferredSchema";
-import { baseTsconfigSchema } from "#config/config/schemas/baseTsconfigSchema";
-import { defineSchema } from "#config/config/schemas/defineSchema";
-import { directorySchema } from "#config/config/schemas/directorySchema";
-import { environmentSchema } from "#config/config/schemas/environmentSchema";
-import { environmentTsconfigSchema } from "#config/config/schemas/environmentTsconfigSchema";
-import { exposedFilesSchema } from "#config/config/schemas/exposedFilesSchema";
-import { fileSchema } from "#config/config/schemas/fileSchema";
-import { globSchema, globsSchema } from "#config/config/schemas/globsSchema";
-import { listOptionSchema } from "#config/config/schemas/listOptionSchema";
-import { nodeMajorSchema } from "#config/config/schemas/nodeMajorSchema";
-import { presetsSchema } from "#config/config/schemas/presetsSchema";
-import { workflowSetNames } from "#github/constants";
-import { apiGroups } from "#typescript/constants";
-
-const dirsSchema = listOptionSchema(directorySchema);
-
-const globListSchema = listOptionSchema(globSchema);
-
-function createCodeEnvironment() {
-  return {
-    dirs: optional(dirsSchema),
-    generated: optional(globListSchema),
-    discovered: optional(globListSchema),
-    defines: optional(boolean()),
-    tsconfig: optional(environmentTsconfigSchema),
-  };
-}
+import { buildSchema } from "#config/config/schemas/core/buildSchema";
+import { cacheSchema } from "#config/config/schemas/core/cacheSchema";
+import { debugSchema } from "#config/config/schemas/core/debugSchema";
+import { defineSchema } from "#config/config/schemas/core/defineSchema";
+import { presetsSchema } from "#config/config/schemas/core/presetsSchema";
+import { binSchema } from "#config/config/schemas/environments/binSchema";
+import { dataSchema } from "#config/config/schemas/environments/dataSchema";
+import { runtimeSchema } from "#config/config/schemas/environments/runtimeSchema";
+import { scriptsSchema } from "#config/config/schemas/environments/scriptsSchema";
+import { sourceSchema } from "#config/config/schemas/environments/sourceSchema";
+import { testsSchema } from "#config/config/schemas/environments/testsSchema";
+import { toolingSchema } from "#config/config/schemas/environments/toolingSchema";
+import { agentsSchema } from "#config/config/schemas/tools/agentsSchema";
+import { githubSchema } from "#config/config/schemas/tools/githubSchema";
+import { gitSchema } from "#config/config/schemas/tools/gitSchema";
+import { prettierSchema } from "#config/config/schemas/tools/prettierSchema";
+import { typescriptSchema } from "#config/config/schemas/tools/typescriptSchema";
+import { vscodeSchema } from "#config/config/schemas/tools/vscodeSchema";
 
 export const configSchema = strictObject({
-  debug: optional(boolean()),
-  presets: optional(presetsSchema),
-  runtime: optional(
-    strictObject({
-      node: optional(nodeMajorSchema),
-    }),
-  ),
+  // Core
+  build: optional(buildSchema),
+  cache: optional(cacheSchema),
+  debug: optional(debugSchema),
   define: optional(defineSchema),
-  src: optional(
-    environmentSchema({
-      ...createCodeEnvironment(),
-      exports: optional(exposedFilesSchema),
-      baseline: optional(string()),
-      apis: optional(listOptionSchema(picklist(apiGroups))),
-      node: optional(nodeMajorSchema),
-    }),
-  ),
-  tests: optional(
-    environmentSchema({
-      ...createCodeEnvironment(),
-      files: optional(globListSchema),
-      fixtures: optional(globListSchema),
-      coverageDir: optional(directorySchema),
-      dist: optional(
-        strictObject({
-          tsconfig: optional(environmentTsconfigSchema),
-        }),
-      ),
-    }),
-  ),
-  bin: optional(
-    environmentSchema({
-      ...createCodeEnvironment(),
-      commands: optional(record(string(), fileSchema)),
-      node: optional(nodeMajorSchema),
-    }),
-  ),
-  data: optional(
-    environmentSchema({
-      dirs: optional(dirsSchema),
-      exports: optional(exposedFilesSchema),
-    }),
-  ),
-  scripts: optional(environmentSchema(createCodeEnvironment())),
-  tooling: optional(
-    environmentSchema({
-      dirs: optional(dirsSchema),
-      files: optional(globListSchema),
-      tsconfig: optional(environmentTsconfigSchema),
-    }),
-  ),
-  build: optional(
-    strictObject({
-      outDir: optional(directorySchema),
-      emptyOutDir: optional(boolean()),
-      sourcemap: optional(boolean()),
-      typed: optional(boolean()),
-    }),
-  ),
-  cache: optional(
-    strictObject({
-      dir: optional(directorySchema),
-    }),
-  ),
-  typescript: optional(
-    strictObject({
-      tsconfig: optional(baseTsconfigSchema),
-      files: optional(globListSchema),
-      envFile: optional(fileSchema),
-    }),
-  ),
-  git: optional(
-    strictObject({
-      gitignore: optional(fileSchema),
-    }),
-  ),
-  prettier: optional(
-    strictObject({
-      prettierignore: optional(fileSchema),
-    }),
-  ),
-  agents: optional(
-    strictObject({
-      preferred: optional(preferredSchema),
-      instructionFiles: optional(globsSchema),
-      snippetsDir: optional(directorySchema),
-      claudeSettings: optional(boolean()),
-      codexHooks: optional(boolean()),
-      attribution: optional(boolean()),
-    }),
-  ),
-  github: optional(
-    strictObject({
-      workflows: optional(union([literal(false), picklist(workflowSetNames)])),
-    }),
-  ),
-  vscode: optional(
-    strictObject({
-      settings: optional(boolean()),
-      extensions: optional(boolean()),
-    }),
-  ),
+  presets: optional(presetsSchema),
+
+  // Tooling
+  agents: optional(agentsSchema),
+  git: optional(gitSchema),
+  github: optional(githubSchema),
+  prettier: optional(prettierSchema),
+  typescript: optional(typescriptSchema),
+  vscode: optional(vscodeSchema),
+
+  // Environments
+  bin: optional(binSchema),
+  data: optional(dataSchema),
+  runtime: optional(runtimeSchema),
+  scripts: optional(scriptsSchema),
+  src: optional(sourceSchema),
+  tests: optional(testsSchema),
+  tooling: optional(toolingSchema),
 });
