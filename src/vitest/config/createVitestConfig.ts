@@ -47,6 +47,16 @@ export function createVitestConfig(
 
   const testsBuild = mode === buildMode;
 
+  if (testsBuild && config.tests.active) {
+    const { owner, file, path } = config.tests.dist.tsconfig;
+
+    if (owner !== undefined && file !== undefined && path === undefined) {
+      throw new Error(
+        `The dist tsconfig ${file} does not exist in ${config.root}, run \`engrenage sync\` to create it`,
+      );
+    }
+  }
+
   const tsconfig = testsBuild
     ? config.tests.dist.tsconfig.path
     : config.typescript.tsconfig.path;

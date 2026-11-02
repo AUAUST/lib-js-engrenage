@@ -33,7 +33,7 @@ function hasReferencedEnvironment(config: ResolvedConfig): boolean {
 
 function resolveDistProject(config: ResolvedConfig): File {
   const { active } = config.tests;
-  const { owner, file } = config.tests.dist.tsconfig;
+  const { owner, file, path } = config.tests.dist.tsconfig;
 
   if (!active) {
     throw new Error(
@@ -47,13 +47,13 @@ function resolveDistProject(config: ResolvedConfig): File {
     );
   }
 
-  if (!config.filesystem.exists(file)) {
+  if (path === undefined) {
     throw new Error(
-      `The dist tsconfig ${file} does not exist in ${config.root}, run \`engrenage init\` to create it`,
+      `The dist tsconfig ${file} does not exist in ${config.root}, run \`engrenage sync\` to create it`,
     );
   }
 
-  return config.resolve(file);
+  return path;
 }
 
 function checkProject(

@@ -159,12 +159,12 @@ describe("loadConfig", () => {
     );
   });
 
-  test("uses tsconfig.tests.dist.json when present, falls back to the tsconfig and rejects a missing configured dist tsconfig", async () => {
+  test("uses tsconfig.tests.dist.json when present, is undefined when missing and rejects a missing configured dist tsconfig", async () => {
     const root = getFixture("config/custom");
 
     const config = await loadConfig(root);
 
-    expect(config.tests.dist.tsconfig.path).toBe(join(root, "tsconfig.json"));
+    expect(config.tests.dist.tsconfig.path).toBeUndefined();
 
     const implicit = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",

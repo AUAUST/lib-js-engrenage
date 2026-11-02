@@ -306,12 +306,10 @@ export function createResolvedConfig({
 
       const configured = tsconfigGroups()[resolved.owner];
 
-      const located = locate(
+      return locate(
         resolved.file,
         configured === false ? undefined : configured?.path,
       );
-
-      return key === "tests.dist" ? (located ?? tsconfigPath()) : located;
     }
 
     return freeze(

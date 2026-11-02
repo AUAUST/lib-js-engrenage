@@ -82,6 +82,22 @@ describe("createVitestConfig", () => {
     expect(vitestConfig.plugins).toEqual([]);
   });
 
+  test("fails in build mode when the dist tsconfig is missing", async () => {
+    const config = await loadConfig(
+      createTemporaryProject({
+        "engrenage.config.ts": "export default {};\n",
+        "tests/index.test.ts": "",
+      }).root,
+    );
+
+    expect(() => {
+      return createVitestConfig(config, {
+        command: "serve",
+        mode: "build",
+      });
+    }).toThrow("The dist tsconfig tsconfig.tests.dist.json does not exist");
+  });
+
   test("fails only when a package import resolves into the build output, even through a symlinked root", async () => {
     const project = createTemporaryProject();
 
