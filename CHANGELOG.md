@@ -1,5 +1,34 @@
 # @auaust/engrenage
 
+## 0.6.0
+
+### Minor Changes
+
+- [`6b9d0a9`](https://github.com/AUAUST/lib-js-engrenage/commit/6b9d0a9226f018ce135168342d8f3421d06020dd) Thanks [@apademide](https://github.com/apademide)! - - Add the `agents.attribution` option: `false` hides Claude Code's commit and pull request attribution in `.claude/settings.json` and syncs a `no-attribution` rule, `true` drops engrenage's hiding value and syncs an `attribution` rule, and leaving it unset touches neither
+  - Write `attribution: false` into the config `engrenage init` generates
+
+### Patch Changes
+
+- [`1c327b8`](https://github.com/AUAUST/lib-js-engrenage/commit/1c327b8400a5e192f21e80edeb28d26221b24f85) Thanks [@apademide](https://github.com/apademide)! - - Allow only directive, `@debt`, project-defined documentation and user-requested comments in the implementation section, turning any other comment the code seems to need into a `@debt` marker
+  - Let debt markers be added within the task that notices them, files only read included, and scope the debugger's debt marking to what it notices while diagnosing
+
+- [`ae9e0ca`](https://github.com/AUAUST/lib-js-engrenage/commit/ae9e0ca326629221b53b8a14f174eed8daacb016) Thanks [@apademide](https://github.com/apademide)! - - Add a default `git` agent rule: no push by default, commit only to separate several tasks and otherwise suggest the message, `<type>: <summary>` subjects from a table of commit types whose summary is the label recalling the main change, a body of only one `Closes` or `Towards` line per issue, GitHub writes only in AUAUST repositories
+  - Drop the repeated "leave changes uncommitted" lines from the skills and the GitHub line from the implementation section, now carried by the `git` rule
+
+- [`b4dd1cc`](https://github.com/AUAUST/lib-js-engrenage/commit/b4dd1ccab4232a6c265e192eccf517db93da713d) Thanks [@apademide](https://github.com/apademide)! - - Give the instruction-maintenance section a "Writing instructions" group: rules in the writer's own words, correct by precise application rather than by listed cases, one imperative rule per sentence, the lightest structure that fits, merged with overlapping rules, applied wherever agent instructions are drafted, issues and backlog entries included
+
+- [`9b47329`](https://github.com/AUAUST/lib-js-engrenage/commit/9b473290dc212d6e830efa8832eef0e7bb1ffe22) Thanks [@apademide](https://github.com/apademide)! - - Make the planner and backlogger investigate every question and keep under **Questions** only what investigation cannot settle, with findings and candidate answers
+  - Remove or reduce a backlog or debt backlog entry in the same run once an issue tracks its work, with one rule in the planning, backlog and debugging skills
+  - List issue prerequisites as issue numbers only, and plan future instruction changes as intent, constraints and target file
+
+- [`5a08b6a`](https://github.com/AUAUST/lib-js-engrenage/commit/5a08b6a47ac76f0ee3038aaad72a41d5dfaf1ea7) Thanks [@apademide](https://github.com/apademide)! - - Turn the decision-protocol section into a table of situations and actions, with one complete definition of a real choice
+  - Stop on requests only when they contradict the rules or add architectural debt, and mark any other debt instead
+  - Move the generated-files rule from the TypeScript section to the implementation section, and drop the repository-specific test location from the verification section
+  - List the code-style rules ESLint does not fix one per item, and state the sibling-statement spacing rule without examples
+  - Point the planner to the worker skill instead of restating how workers resolve questions
+
+- [`d047120`](https://github.com/AUAUST/lib-js-engrenage/commit/d047120d0a568def3c1614a962eb5ec71a88d723) Thanks [@apademide](https://github.com/apademide)! - - Report unknown config keys as `Unknown key "<key>"` instead of valibot's `Invalid key: Expected never`, so options removed or renamed since an earlier version (such as the `code` group, moved to the environments in 0.5.0) read as such
+
 ## 0.5.0
 
 ### Minor Changes
