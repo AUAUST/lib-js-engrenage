@@ -65,7 +65,7 @@ async function add(name?: string) {
 
   addAgentSkills(config, names);
 
-  settleChanges(config, {
+  await settleChanges(config, {
     check: false,
   });
 }

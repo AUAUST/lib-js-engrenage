@@ -14,3 +14,7 @@ Add explanation of how to properly create commits:
 - no co-authoring
 - Closes #<> when an issue is resolved
 - Towards #<> when work is related to an issue but doesn't close it
+
+===
+
+The "no comments" instruction must be made a little more strong, like before. Agents started adding new useless comments since the instruction was relaxed for @debt markers.

@@ -153,6 +153,8 @@ export const init = defineCommand((command) => {
         return;
       }
 
+      await config.filesystem.format();
+
       reportSyncResults(config.filesystem.flush());
 
       for (const invocation of invocations) {
@@ -169,7 +171,7 @@ export const init = defineCommand((command) => {
 
       await runSync(installed);
 
-      settleChanges(installed, {
+      await settleChanges(installed, {
         check: false,
       });
     });

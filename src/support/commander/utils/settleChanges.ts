@@ -5,10 +5,12 @@ import { reportSyncResults } from "#support/commander/utils/reportSyncResults";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { SyncResult } from "#types/SyncResult";
 
-export function settleChanges(
+export async function settleChanges(
   { filesystem }: ResolvedConfig,
   { check }: { check: boolean },
 ) {
+  await filesystem.format();
+
   if (!check) {
     return void reportSyncResults(filesystem.flush());
   }

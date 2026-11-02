@@ -7,11 +7,12 @@ import {
   statSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, matchesGlob } from "node:path";
+import { dirname, join, matchesGlob } from "node:path";
 
 import { deduplicate, map, sort, wrap } from "@auaust/primitive-kit/arrays";
 import { freeze } from "@auaust/toolkit/object";
 
+import { loadPrettier } from "#prettier/utils/loadPrettier";
 import { relativeWithin } from "#support/filesystem/utils/relativeWithin";
 import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { toPosixPath } from "#support/filesystem/utils/toPosixPath";
@@ -108,13 +109,50 @@ export function createFilesystem(root: Directory) {
       toPosixPath,
     );
 
-    const created = [...originals.keys()].filter((file) => {
+    const created = originals.keys().filter((file) => {
       return globs.some((pattern) => matchesGlob(file, pattern));
     });
 
     return sort(deduplicate([...found, ...created])).filter((file) => {
       return !contents.has(file) || contents.get(file) !== undefined;
     });
+  }
+
+  async function format() {
+    const prettier = loadPrettier(root);
+
+    if (prettier === undefined) {
+      return;
+    }
+
+    for (const file of originals.keys()) {
+      const content = readLocated(file);
+
+      if (content === undefined) {
+        continue;
+      }
+
+      const path = resolveWithin(root, file);
+
+      const { ignored, inferredParser } = await prettier.getFileInfo(path, {
+        ignorePath: join(root, ".prettierignore"),
+        resolveConfig: true,
+      });
+
+      if (ignored || inferredParser === null) {
+        continue;
+      }
+
+      const options = await prettier.resolveConfig(path);
+
+      stage(
+        file,
+        await prettier.format(content, {
+          ...options,
+          filepath: path,
+        }),
+      );
+    }
   }
 
   function changes(): SyncResults {
@@ -190,6 +228,7 @@ export function createFilesystem(root: Directory) {
     write,
     remove,
     glob,
+    format,
     changes,
     discard,
     flush,

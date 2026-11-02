@@ -149,7 +149,7 @@ export const sync = defineCommand((command) => {
         flags,
       });
 
-      settleChanges(config, {
+      await settleChanges(config, {
         check,
       });
     });

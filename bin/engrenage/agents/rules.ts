@@ -59,7 +59,7 @@ async function add(name?: string) {
 
   addAgentRules(config, names);
 
-  settleChanges(config, {
+  await settleChanges(config, {
     check: false,
   });
 }
