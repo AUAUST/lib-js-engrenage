@@ -78,15 +78,7 @@ Usual layering, earliest first: option shapes and shared contracts → data mode
 
 ## How workers read issues
 
-Workers implement one issue at a time, as written, once its prerequisites are closed and its sub-issues are done. Write for that contract:
-
-| Issue content                                                       | Worker treats it as                                                                    |
-| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| Everything outside **Questions**                                    | Decided, applied without redesign                                                      |
-| **Questions**                                                       | Resolved under the project's decision protocol; only what stays unclear stops the work |
-| A disagreement with the plan, which settles shared names and shapes | A reason to stop                                                                       |
-
-Workers never edit or close issues; they report what the tree needs updated.
+Workers implement one issue at a time under the issue-implementation skill, once its prerequisites are closed and its sub-issues are done. They apply everything outside **Questions** as decided, stop when the issue disagrees with the plan, and report what the tree needs updated instead of editing issues.
 
 ## Procedure
 
