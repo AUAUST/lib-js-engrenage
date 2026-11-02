@@ -1,5 +1,6 @@
+import { isBoolean } from "@auaust/toolkit/isBoolean";
+
 import { resolveListOption } from "#config/utils/resolveListOption";
-import { readRuntimePreset } from "#typescript/utils/readRuntimePreset";
 import { resolveTsconfigRuntime } from "#typescript/utils/resolveTsconfigRuntime";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { JsonEdit } from "#support/json/types/JsonEdit";
@@ -13,9 +14,22 @@ export function produceTsconfigLibrary(
     return [];
   }
 
+  if (resolveTsconfigRuntime(config, key).kind === "baseline") {
+    if (option !== undefined && !isBoolean(option)) {
+      throw new Error(
+        `${key}.tsconfig.lib is not accepted for a baseline runtime: its built-ins come from typescript-baseline-lib, and ${key}.tsconfig.types lists further declarations such as @types/web`,
+      );
+    }
+
+    return [
+      { path: ["compilerOptions", "noLib"], value: true },
+      { path: ["compilerOptions", "lib"], value: undefined },
+    ];
+  }
+
   const library = resolveListOption(
     option,
-    () => readRuntimePreset(resolveTsconfigRuntime(config, key)).lib,
+    () => ["ESNext"],
     `${key}.tsconfig.lib`,
   );
 

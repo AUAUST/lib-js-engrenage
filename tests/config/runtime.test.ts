@@ -13,7 +13,9 @@ function createProject(config: string) {
 
 describe("runtime", () => {
   test("derives the minimums of the 2026-10 snapshot", async () => {
-    const config = await loadConfig(createProject("{}").root);
+    const config = await loadConfig(
+      createProject('{ src: { baseline: "2026-10" } }').root,
+    );
 
     expect(config.src.runtime).toMatchObject({
       kind: "baseline",
@@ -24,7 +26,9 @@ describe("runtime", () => {
   });
 
   test("runs tests, scripts and tooling on runtime.node", async () => {
-    const config = await loadConfig(createProject("{}").root);
+    const config = await loadConfig(
+      createProject('{ src: { baseline: "2026-10" } }').root,
+    );
 
     expect(config.runtime.node).toBe(24);
     expect(config.tests.runtime).toEqual({ kind: "node", major: 24 });
@@ -33,7 +37,9 @@ describe("runtime", () => {
   });
 
   test("defaults bin.node to runtime.node", async () => {
-    const config = await loadConfig(createProject("{}").root);
+    const config = await loadConfig(
+      createProject('{ src: { baseline: "2026-10" } }').root,
+    );
 
     expect(config.bin.runtime).toEqual({ kind: "node", major: 24 });
 
@@ -60,19 +66,21 @@ describe("runtime", () => {
     expect(() => config.src.runtime).toThrow("mutually exclusive");
   });
 
-  test("lists the available snapshots for an unknown one", async () => {
+  test("names the earliest accepted snapshot for an unsupported one", async () => {
     const config = await loadConfig(
       createProject('{ src: { baseline: "2020-01" } }').root,
     );
 
-    expect(() => config.src.runtime).toThrow("Available snapshots: 2026-10");
+    expect(() => config.src.runtime).toThrow(
+      "Earliest accepted snapshot: 2023-07",
+    );
   });
 
-  test("fails on a Node major without a preset", async () => {
+  test("fails on a Node major that node-releases does not list", async () => {
     const config = await loadConfig(
-      createProject("{ src: { node: 18 } }").root,
+      createProject("{ src: { node: 999 } }").root,
     );
 
-    expect(() => config.src.runtime).toThrow("Available majors: 24");
+    expect(() => config.src.runtime).toThrow("node-releases does not list");
   });
 });

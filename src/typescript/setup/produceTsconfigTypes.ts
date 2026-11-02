@@ -12,11 +12,16 @@ function listDefaultTypes(
   config: ResolvedConfig,
   key: TsconfigKey,
 ): readonly string[] {
-  if (resolveTsconfigRuntime(config, key).kind === "node") {
+  const runtime = resolveTsconfigRuntime(config, key);
+
+  if (runtime.kind === "node") {
     return ["node"];
   }
 
-  return map(config.src.apis, (api) => `${engrenage}/apis/${api}`);
+  return [
+    runtime.library,
+    ...map(config.src.apis, (api) => `${engrenage}/apis/${api}`),
+  ];
 }
 
 export function produceTsconfigTypes(

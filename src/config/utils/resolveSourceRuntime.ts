@@ -1,8 +1,8 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { resolveNodeRuntime } from "#config/utils/resolveNodeRuntime";
-import { findLatestBaseline } from "#typescript/utils/findLatestBaseline";
-import { listTsconfigPresets } from "#typescript/utils/listTsconfigPresets";
+import { findCurrentMonth } from "#typescript/utils/findCurrentMonth";
+import { resolveBaselineLibrary } from "#typescript/utils/resolveBaselineLibrary";
 import { resolveBaselineMinimums } from "#typescript/utils/resolveBaselineMinimums";
 import type { Runtime } from "#config/types/Runtime";
 
@@ -29,18 +29,16 @@ export function resolveSourceRuntime(option: {
     return resolveNodeRuntime(node, "src.node");
   }
 
-  const snapshot = baseline ?? findLatestBaseline();
-  const available = listTsconfigPresets("baseline");
-
-  if (!available.includes(snapshot)) {
+  if (baseline === undefined) {
     throw new Error(
-      `src.baseline ${snapshot} is not a known snapshot. Available snapshots: ${available.join(", ")}`,
+      `src.baseline is required: set it to ${findCurrentMonth()}, the current month`,
     );
   }
 
   return freeze({
     kind: "baseline",
-    snapshot,
-    ...resolveBaselineMinimums(snapshot),
+    snapshot: baseline,
+    library: resolveBaselineLibrary(baseline),
+    ...resolveBaselineMinimums(baseline),
   });
 }

@@ -29,6 +29,7 @@ import { settleChanges } from "#support/commander/utils/settleChanges";
 import { createPrompter } from "#support/scaffold/utils/createPrompter";
 import { runSteps } from "#support/scaffold/utils/runSteps";
 import { createTsdownConfigStep } from "#tsdown/setup/createTsdownConfigStep";
+import { createRuntimeDataStep } from "#typescript/setup/createRuntimeDataStep";
 import { createSourceEntryStep } from "#typescript/setup/createSourceEntryStep";
 import { createTypescriptStep } from "#typescript/setup/createTypescriptStep";
 import { createViteConfigStep } from "#vite/setup/createViteConfigStep";
@@ -127,6 +128,7 @@ export const init = defineCommand((command) => {
           createViteConfigStep(),
           createVitestConfigStep(),
           createTypescriptStep(),
+          createRuntimeDataStep(),
           createSourceEntryStep(),
           createPrettierStep(),
           createPrettierignoreStep(),

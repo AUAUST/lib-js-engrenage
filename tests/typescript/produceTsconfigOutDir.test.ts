@@ -5,6 +5,7 @@ import { describe, expect, test } from "vitest";
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
 import { validate } from "#utils/validate";
 
@@ -24,12 +25,12 @@ function syncOutDir(build: unknown, files: Record<string, string> = {}) {
     root: project.root,
     raw: validate(
       configSchema,
-      {
+      withSourceRuntime({
         build,
         typescript: {
           tsconfig: { extends: false },
         },
-      },
+      }),
       "test config",
     ),
     configFile: undefined,

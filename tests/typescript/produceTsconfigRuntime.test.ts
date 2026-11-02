@@ -1,8 +1,10 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { resolveSourceRuntime } from "#config/utils/resolveSourceRuntime";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
 import { validate } from "#utils/validate";
 
@@ -17,7 +19,7 @@ function syncCompilerOptions(
 
   const config = createResolvedConfig({
     root: project.root,
-    raw: validate(configSchema, input, "test config"),
+    raw: validate(configSchema, withSourceRuntime(input), "test config"),
     configFile: undefined,
   });
 
@@ -28,16 +30,37 @@ function syncCompilerOptions(
 }
 
 describe("runtime tsconfig fields", () => {
-  test("writes a baseline snapshot's target and libs with no types", () => {
+  test("writes a baseline snapshot's library types without lib", () => {
     const read = syncCompilerOptions({
       src: { baseline: "2026-10" },
     });
 
-    expect(read("tsconfig.src.json")).toMatchObject({
-      target: "ES2024",
-      lib: expect.arrayContaining(["ES2022", "ES2024.String"]),
-      types: [],
+    const options = read("tsconfig.src.json");
+
+    expect(options).toMatchObject({
+      noLib: true,
+      target: "ESNext",
+      types: ["typescript-baseline-lib/year/2023"],
     });
+
+    expect(options).not.toHaveProperty("lib");
+  });
+
+  test("maps a snapshot from July to the year three before", () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2028-01-15"));
+
+    onTestFinished(() => {
+      vi.useRealTimers();
+    });
+
+    const read = syncCompilerOptions({
+      src: { baseline: "2027-07" },
+    });
+
+    expect(read("tsconfig.src.json").types).toEqual([
+      "typescript-baseline-lib/year/2024",
+    ]);
   });
 
   test("writes a Node major's target, libs and types", () => {
@@ -47,30 +70,81 @@ describe("runtime tsconfig fields", () => {
 
     expect(read("tsconfig.bin.json")).toEqual(
       expect.objectContaining({
-        target: "ES2025",
-        lib: ["ES2025"],
+        target: "ESNext",
+        lib: ["ESNext"],
         types: ["node"],
       }),
     );
   });
 
-  test("appends to the libs and lets compilerOptions pin the target", () => {
+  test("rejects lib on a baseline runtime", () => {
+    expect(() => {
+      syncCompilerOptions({
+        src: {
+          baseline: "2026-10",
+          tsconfig: {
+            lib: { append: ["DOM"] },
+          },
+        },
+      });
+    }).toThrow(/src\.tsconfig\.lib is not accepted/);
+  });
+
+  test("removes the lib an earlier sync left and sets noLib", () => {
+    const project = createTemporaryProject();
+
+    syncCompilerOptions(
+      {
+        src: { node: 24 },
+      },
+      project,
+    );
+
+    const read = syncCompilerOptions(
+      {
+        src: { baseline: "2026-10" },
+      },
+      project,
+    );
+
+    expect(read("tsconfig.src.json")).not.toHaveProperty("lib");
+    expect(read("tsconfig.src.json")).toMatchObject({ noLib: true });
+  });
+
+  test("fails on a snapshot outside the installed years", () => {
+    expect(() => {
+      syncCompilerOptions({
+        src: { baseline: "2020-01" },
+      });
+    }).toThrow("Earliest accepted snapshot: 2023-07");
+
+    expect(() => {
+      syncCompilerOptions({
+        src: { baseline: "2035-01" },
+      });
+    }).toThrow("is after the current month");
+  });
+
+  test("fails without src.baseline, naming the current month", () => {
+    expect(() => resolveSourceRuntime({})).toThrow(
+      /src\.baseline is required: set it to \d{4}-\d{2}/,
+    );
+  });
+
+  test("lets compilerOptions pin the target", () => {
     const read = syncCompilerOptions({
       src: {
+        node: 24,
         tsconfig: {
-          lib: { append: ["DOM"] },
           compilerOptions: { target: "ES2022" },
         },
       },
     });
 
-    const { lib, target } = read("tsconfig.src.json");
-
-    expect(lib.at(-1)).toBe("DOM");
-    expect(target).toBe("ES2022");
+    expect(read("tsconfig.src.json").target).toBe("ES2022");
   });
 
-  test("switches the fields when the snapshot changes", () => {
+  test("switches the fields when the runtime changes", () => {
     const project = createTemporaryProject();
 
     syncCompilerOptions(
@@ -88,7 +162,8 @@ describe("runtime tsconfig fields", () => {
     );
 
     expect(read("tsconfig.src.json")).toMatchObject({
-      target: "ES2025",
+      target: "ESNext",
+      lib: ["ESNext"],
       types: ["node"],
     });
   });
@@ -99,6 +174,7 @@ describe("runtime tsconfig fields", () => {
     });
 
     expect(read("tsconfig.src.json").types).toEqual([
+      "typescript-baseline-lib/year/2023",
       "@auaust/engrenage/apis/timers",
       "@auaust/engrenage/apis/crypto",
     ]);

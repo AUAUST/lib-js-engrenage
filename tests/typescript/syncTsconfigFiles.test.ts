@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
 import { validate } from "#utils/validate";
 
@@ -14,7 +15,7 @@ function createProject(input: unknown, files: Record<string, string>) {
 
   const config = createResolvedConfig({
     root: project.root,
-    raw: validate(configSchema, input, "test config"),
+    raw: validate(configSchema, withSourceRuntime(input), "test config"),
     configFile: undefined,
   });
 
@@ -39,17 +40,6 @@ const files = {
   }),
 };
 
-const baselineLibrary = [
-  "ES2022",
-  "ES2023.Array",
-  "ES2023.Intl",
-  "ES2024.Collection",
-  "ES2024.Object",
-  "ES2024.Promise",
-  "ES2024.Regexp",
-  "ES2024.String",
-];
-
 const buildInfoFile =
   "./node_modules/.cache/typescript/tsconfig.src.tsbuildinfo";
 
@@ -64,9 +54,9 @@ describe("syncTsconfigFiles", () => {
       include: ["src/**/*.ts", "src/**/*.tsx", "env.d.ts"],
       exclude: ["dist"],
       compilerOptions: {
-        target: "ES2024",
-        lib: baselineLibrary,
-        types: [],
+        target: "ESNext",
+        noLib: true,
+        types: ["typescript-baseline-lib/year/2023"],
         paths: { "#a": ["./a.ts"] },
         tsBuildInfoFile: buildInfoFile,
       },
@@ -102,9 +92,10 @@ describe("syncTsconfigFiles", () => {
     expect(tsconfig.include).toEqual(["custom/**/*"]);
 
     expect(tsconfig.compilerOptions).toEqual({
-      target: "ES2024",
+      target: "ESNext",
+      noLib: true,
       lib: ["dom"],
-      types: [],
+      types: ["typescript-baseline-lib/year/2023"],
       paths: { "#a": ["./a.ts"] },
     });
   });
@@ -129,9 +120,9 @@ describe("syncTsconfigFiles", () => {
     expect(
       JSON.parse(project.read("tsconfig.src.json")).compilerOptions,
     ).toEqual({
-      target: "ES2024",
-      lib: baselineLibrary,
-      types: [],
+      target: "ESNext",
+      noLib: true,
+      types: ["typescript-baseline-lib/year/2023"],
       paths: { "#a": ["./a.ts"] },
       tsBuildInfoFile: "./custom.tsbuildinfo",
       customFlag: { a: 1 },

@@ -1,17 +1,10 @@
 {
   "extends": "./tsconfig.json",
-  "include": [
-    "bin/**/*.ts",
-    "bin/**/*.tsx"
-  ],
+  "include": ["bin/**/*.ts", "bin/**/*.tsx"],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.cache/typescript/tsconfig.bin.tsbuildinfo",
-    "target": "ES2025",
-    "lib": [
-      "ES2025"
-    ],
-    "types": [
-      "node"
-    ]
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "types": ["node"]
   }
 }

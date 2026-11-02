@@ -10,6 +10,7 @@ import { binaryTimeout } from "#tests/helpers/binaryTimeout";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
+import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
 import { validate } from "#utils/validate";
 
@@ -29,7 +30,7 @@ function syncProject(input: unknown, testSource = "") {
 
   const config = createResolvedConfig({
     root: project.root,
-    raw: validate(configSchema, input, "test config"),
+    raw: validate(configSchema, withSourceRuntime(input), "test config"),
     configFile: undefined,
   });
 

@@ -8,6 +8,7 @@ import { syncEnvFile } from "@auaust/engrenage/typescript";
 
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
+import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
 
 const root = getFixture("tsdown");
 
@@ -19,6 +20,7 @@ describe("createTsdownConfig", () => {
         type: "module",
       }),
       "engrenage.config.ts": `export default ${JSON.stringify({
+        src: { baseline: "2026-10" },
         define: {
           values: {
             __NAME__: "package",
@@ -81,6 +83,8 @@ describe("createTsdownConfig", () => {
 
   test("declares the namespace of an empty module entry", async () => {
     const project = createTemporaryProject({
+      "engrenage.config.ts":
+        'export default { src: { baseline: "2026-10" } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",
@@ -163,6 +167,8 @@ describe("createTsdownConfig", () => {
 
   test("enables publint and attw when the project depends on them", async () => {
     const project = createTemporaryProject({
+      "engrenage.config.ts":
+        'export default { src: { baseline: "2026-10" } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",
@@ -199,7 +205,7 @@ describe("createTsdownConfig", () => {
   test("takes the output directory and its emptying from the engrenage config over the tsconfig", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
-        'export default { build: { outDir: "build", emptyOutDir: false } };\n',
+        'export default { src: { baseline: "2026-10" }, build: { outDir: "build", emptyOutDir: false } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",
@@ -229,6 +235,8 @@ describe("createTsdownConfig", () => {
 
   test("rejects two bin files that build the same entry", async () => {
     const project = createTemporaryProject({
+      "engrenage.config.ts":
+        'export default { src: { baseline: "2026-10" } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",
@@ -257,6 +265,8 @@ describe("createTsdownConfig", () => {
 
   test("rejects a package that is not an ES module", async () => {
     const project = createTemporaryProject({
+      "engrenage.config.ts":
+        'export default { src: { baseline: "2026-10" } };\n',
       "package.json": '{ "name": "@scope/package" }',
     });
 
@@ -276,7 +286,7 @@ describe("createTsdownConfig", () => {
           name: "@scope/package",
           type: "module",
         }),
-        "engrenage.config.ts": `export default ${JSON.stringify(config)};\n`,
+        "engrenage.config.ts": `export default ${JSON.stringify(withSourceRuntime(config))};\n`,
         "tsconfig.json": JSON.stringify({
           compilerOptions: {
             outDir: "dist",
@@ -397,7 +407,7 @@ describe("createTsdownConfig", () => {
           type: "module",
           ...(engines === undefined ? {} : { engines }),
         }),
-        "engrenage.config.ts": `export default ${JSON.stringify(config)};\n`,
+        "engrenage.config.ts": `export default ${JSON.stringify(withSourceRuntime(config))};\n`,
         "tsconfig.json": JSON.stringify({
           compilerOptions: {
             outDir: "dist",
@@ -457,6 +467,8 @@ describe("createTsdownConfig", () => {
 
   test("builds declarations with the src tsconfig on a solution base", async () => {
     const project = createTemporaryProject({
+      "engrenage.config.ts":
+        'export default { src: { baseline: "2026-10" } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",
@@ -507,9 +519,11 @@ describe("createTsdownConfig", () => {
         name: "@scope/package",
         type: "module",
       }),
-      "engrenage.config.ts": `export default ${JSON.stringify({
-        src: { tsconfig: false },
-      })};`,
+      "engrenage.config.ts": `export default ${JSON.stringify(
+        withSourceRuntime({
+          src: { tsconfig: false },
+        }),
+      )};`,
       "tsconfig.json": JSON.stringify({
         compilerOptions: {
           outDir: "dist",

@@ -3,7 +3,7 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { presets } from "#config/constants";
 import { engrenage, engrenageConfigFile } from "#constants";
 import { createConfigModule } from "#support/scaffold/utils/createConfigModule";
-import { findLatestBaseline } from "#typescript/utils/findLatestBaseline";
+import { findCurrentMonth } from "#typescript/utils/findCurrentMonth";
 import type { Agent } from "#agents/types/Agent";
 import type { Presets } from "#config/types/Presets";
 import type { Step } from "#support/scaffold/types/Step";
@@ -19,7 +19,7 @@ function renderOptions(
       ? ""
       : `  agents: { preferred: ${JSON.stringify(agents)} },\n`;
 
-  const baseline = `  src: { baseline: ${JSON.stringify(findLatestBaseline())} },\n`;
+  const baseline = `  src: { baseline: ${JSON.stringify(findCurrentMonth())} },\n`;
 
   return `{\n  presets: [${list}],\n${baseline}${preferred}}`;
 }

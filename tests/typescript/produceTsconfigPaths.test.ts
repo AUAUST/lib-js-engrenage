@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
 import { resolveSourceEntries } from "#tsdown/utils/resolveSourceEntries";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
 import { resolvePathAliases } from "#typescript/utils/resolvePathAliases";
@@ -21,7 +22,7 @@ function syncProject(input: unknown, baseTsconfig = "{}") {
 
   const config = createResolvedConfig({
     root: project.root,
-    raw: validate(configSchema, input, "test config"),
+    raw: validate(configSchema, withSourceRuntime(input), "test config"),
     configFile: undefined,
   });
 

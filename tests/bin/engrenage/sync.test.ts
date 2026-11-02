@@ -17,7 +17,7 @@ const emptyBlock = [
 function createProject() {
   const project = createTemporaryProject({
     "engrenage.config.ts":
-      'export default { agents: { preferred: ["claude"] } };\n',
+      'export default { src: { baseline: "2026-10" }, agents: { preferred: ["claude"] } };\n',
     "package.json": JSON.stringify({
       type: "module",
       devDependencies: {
@@ -84,7 +84,7 @@ describe("engrenage sync", () => {
   test("creates a missing VS Code file only when its flag is passed", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude"] } };\n',
+        'export default { src: { baseline: "2026-10" }, agents: { preferred: ["claude"] } };\n',
       "package.json":
         '{ "type": "module", "devDependencies": { "prettier": "*" } }',
     });
@@ -107,7 +107,7 @@ describe("engrenage sync", () => {
   test("writes the output directory of a tsconfig created in the same pass", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
-        'export default { presets: ["library"], agents: { preferred: [] } };\n',
+        'export default { presets: ["library"], src: { baseline: "2026-10" }, agents: { preferred: [] } };\n',
       "package.json": '{ "type": "module" }',
       ".gitignore": "# @ignore project\n# @end\n",
       ".prettierignore": "# @ignore project\n# @end\n",

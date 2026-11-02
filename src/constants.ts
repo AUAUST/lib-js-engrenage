@@ -4,6 +4,8 @@ import type { File } from "#types/File";
 
 export const arethetypeswrongCore = "@arethetypeswrong/core";
 
+export const baselineBrowserMapping = "baseline-browser-mapping";
+
 export const changesetsChangelogGithub = "@changesets/changelog-github";
 
 export const changesetsCli = "@changesets/cli";
@@ -13,6 +15,8 @@ export const changesetsConfig = "@changesets/config";
 export const engrenage = "@auaust/engrenage";
 
 export const eslint = "eslint";
+
+export const nodeReleases = "node-releases";
 
 export const prettier = "prettier";
 
@@ -28,6 +32,8 @@ export const tsx = "tsx";
 
 export const typescript = "typescript";
 
+export const typescriptBaselineLibrary = "typescript-baseline-lib";
+
 export const valibot = "valibot";
 
 export const vite = "vite";
@@ -40,11 +46,13 @@ export const zod = "zod";
 
 export const packages = freeze({
   arethetypeswrongCore,
+  baselineBrowserMapping,
   changesetsChangelogGithub,
   changesetsCli,
   changesetsConfig,
   engrenage,
   eslint,
+  nodeReleases,
   prettier,
   primitiveKit,
   publint,
@@ -52,6 +60,7 @@ export const packages = freeze({
   tsdown,
   tsx,
   typescript,
+  typescriptBaselineLibrary,
   valibot,
   vite,
   vitest,

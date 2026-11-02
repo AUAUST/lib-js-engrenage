@@ -1,23 +1,15 @@
 import { execFileSync } from "node:child_process";
 import { mkdirSync, symlinkSync } from "node:fs";
 import { createRequire } from "node:module";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { describe, expect, test } from "vitest";
 
-import { keys } from "@auaust/toolkit/object";
-
 import { createFilesystem } from "#config/utils/createFilesystem";
-import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
-import { listTsconfigPresets } from "#typescript/utils/listTsconfigPresets";
-
-const dataTsconfig = fileURLToPath(
-  new URL("../../data/tsconfig", import.meta.url),
-);
 
 const tsc = createRequire(import.meta.url).resolve("typescript/lib/tsc.js");
 
@@ -35,11 +27,10 @@ function createApisProject(source: string): string {
   const project = createTemporaryProject({
     "index.ts": source,
     "tsconfig.json": JSON.stringify({
-      extends: [
-        "@auaust/engrenage/tsconfig/library.json",
-        "@auaust/engrenage/tsconfig/baseline/2026-10.json",
-      ],
+      extends: ["@auaust/engrenage/tsconfig/library.json"],
       compilerOptions: {
+        target: "ESNext",
+        lib: ["ESNext"],
         types: [
           "@auaust/engrenage/apis/timers",
           "@auaust/engrenage/apis/performance",
@@ -60,26 +51,54 @@ function createApisProject(source: string): string {
   return project.root;
 }
 
-describe("tsconfig presets", () => {
-  test.each([
-    ["baseline", ["lib", "target"]],
-    ["node", ["lib", "target", "types"]],
-  ] as const)(
-    "sets exactly the runtime fields in %s snippets",
-    (kind, fields) => {
-      const presets = listTsconfigPresets(kind);
+function createBaselineProject(source: string): string {
+  const project = createTemporaryProject({
+    "index.ts": source,
+    "tsconfig.json": JSON.stringify({
+      compilerOptions: {
+        noLib: true,
+        target: "ESNext",
+        module: "ESNext",
+        moduleResolution: "bundler",
+        strict: true,
+        types: ["typescript-baseline-lib/year/2023"],
+      },
+      files: ["index.ts"],
+    }),
+  });
 
-      expect(presets).not.toHaveLength(0);
+  mkdirSync(project.resolve("node_modules"), { recursive: true });
 
-      for (const preset of presets) {
-        const { compilerOptions } = readJsonFile(
-          join(dataTsconfig, kind, `${preset}.json`),
-        ) as { compilerOptions: object };
-
-        expect(keys(compilerOptions).sort()).toEqual(fields);
-      }
-    },
+  symlinkSync(
+    dirname(
+      createRequire(import.meta.url).resolve(
+        "typescript-baseline-lib/package.json",
+      ),
+    ),
+    project.resolve("node_modules/typescript-baseline-lib"),
   );
+
+  return project.root;
+}
+
+describe("tsconfig presets", () => {
+  test("accepts the built-ins of its Baseline year", () => {
+    const project = createBaselineProject(
+      "export const value = [1].toSorted().findLast(() => true);",
+    );
+
+    expect(() => runTsc("-p", project)).not.toThrow();
+  });
+
+  test("rejects a built-in newer than its Baseline year", () => {
+    const project = createBaselineProject(
+      'export const value = Object.groupBy([], () => "");',
+    );
+
+    expect(() => runTsc("-p", project)).toThrow(
+      expect.objectContaining({ stdout: expect.stringContaining("groupBy") }),
+    );
+  });
 
   test("resolves the base preset through the package exports", () => {
     const { compilerOptions } = showConfig(getFixture("tsconfig/base"));
@@ -108,26 +127,6 @@ describe("tsconfig presets", () => {
     });
   });
 
-  test("composes the library preset with a baseline snapshot", () => {
-    const { compilerOptions } = showConfig(getFixture("tsconfig/baseline"));
-
-    expect(compilerOptions).toMatchObject({
-      target: "es2024",
-      lib: [
-        "es2022",
-        "es2023.array",
-        "es2023.intl",
-        "es2024.collection",
-        "es2024.object",
-        "es2024.promise",
-        "es2024.regexp",
-        "es2024.string",
-      ],
-      types: [],
-      exactOptionalPropertyTypes: true,
-    });
-  });
-
   test("resolves the API declaration groups installed as a package", () => {
     const project = createApisProject(
       `const handle = setTimeout((label: string) => {
@@ -149,16 +148,6 @@ describe("tsconfig presets", () => {
     expect(() => runTsc("-p", project)).toThrow(
       expect.objectContaining({ stdout: expect.stringContaining("TS2322") }),
     );
-  });
-
-  test("gives Node tooling its runtime's features and types", () => {
-    const { compilerOptions } = showConfig(getFixture("tsconfig/node"));
-
-    expect(compilerOptions).toMatchObject({
-      target: "es2025",
-      lib: ["es2025"],
-      types: ["node"],
-    });
   });
 
   test("type-checks tests and env declarations in dist mode", () => {
