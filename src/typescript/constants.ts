@@ -129,8 +129,6 @@ export const esMemberCompatKeys = freeze({
 
 export const identifierPattern = /^[$A-Z_a-z][\w$]*$/;
 
-export const legacyBaselineTypesPrefix = "typescript-baseline-lib/";
-
 export const monthsPerYear = 12;
 
 export const noInputsDiagnostic = 18_003;

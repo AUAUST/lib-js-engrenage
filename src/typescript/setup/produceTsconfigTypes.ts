@@ -4,10 +4,7 @@ import { isString } from "@auaust/toolkit/isString";
 
 import { resolveListOption } from "#config/utils/resolveListOption";
 import { engrenage } from "#constants";
-import {
-  apiLibraryGroups,
-  legacyBaselineTypesPrefix,
-} from "#typescript/constants";
+import { apiLibraryGroups } from "#typescript/constants";
 import { includesEsLibrary } from "#typescript/utils/includesEsLibrary";
 import { readTsconfigValue } from "#typescript/utils/readTsconfigValue";
 import { resolveTsconfigLibrary } from "#typescript/utils/resolveTsconfigLibrary";
@@ -76,15 +73,9 @@ function removeBaselineTypes(
     return [];
   }
 
-  // @debt the removed prefixes are listed apart from what listDefaultTypes writes for a baseline runtime, so a new kind of baseline type must be added in both places
+  // @debt the removed prefix is stated apart from what listDefaultTypes writes for a baseline runtime, so a new kind of baseline type must be added in both places
   const kept = filter(current, (type) => {
-    return (
-      !isString(type) ||
-      !(
-        type.startsWith(legacyBaselineTypesPrefix) ||
-        type.startsWith(apiTypesPrefix)
-      )
-    );
+    return !isString(type) || !type.startsWith(apiTypesPrefix);
   });
 
   if (kept.length === current.length) {

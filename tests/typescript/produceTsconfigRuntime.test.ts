@@ -115,7 +115,7 @@ describe("runtime tsconfig fields", () => {
     expect(lib).not.toContain("es2023.intl");
   });
 
-  test("removes noLib, a null lib and legacy baseline types", () => {
+  test("removes noLib and a null lib", () => {
     const project = createTemporaryProject({
       "package.json": "{}",
       "src/index.ts": "",
@@ -124,7 +124,6 @@ describe("runtime tsconfig fields", () => {
         compilerOptions: {
           noLib: true,
           lib: null,
-          types: ["typescript-baseline-lib/year/2023"],
         },
       }),
     });
@@ -189,11 +188,7 @@ describe("runtime tsconfig fields", () => {
         compilerOptions: {
           noLib: true,
           lib: null,
-          types: [
-            "typescript-baseline-lib/year/2023",
-            "@auaust/engrenage/apis/timers",
-            "custom",
-          ],
+          types: ["@auaust/engrenage/apis/timers", "custom"],
         },
       }),
     });
