@@ -41,7 +41,7 @@ Read the issue, every ancestor on its "Part of #<plan>, under #<parent>" line up
 
 ## GitHub mechanics
 
-- Read issues with `gh issue view <n> --json title,body,state,labels`.
+- Read issues with `gh issue view <n> --repo <owner>/<repo> --json title,body,state,labels,comments`; plain `--comments` fails on some repositories.
 - List sub-issues with `gh api repos/{owner}/{repo}/issues/<n>/sub_issues --jq '.[] | "\(.number) \(.state) \(.title)"'`.
 
 <!-- @end -->
