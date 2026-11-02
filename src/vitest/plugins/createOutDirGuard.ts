@@ -3,19 +3,22 @@ import type { Directory } from "#types/Directory";
 import type { PackageName } from "#types/PackageName";
 import type { Plugin } from "#vite/types/Plugin";
 
-export function createOutDirGuard({
-  packageName,
-  outDir,
-}: {
-  packageName: PackageName;
-  outDir: Directory;
-}): Plugin {
+export function createOutDirGuard(
+  name: string,
+  {
+    packageName,
+    outDir,
+  }: {
+    packageName: PackageName;
+    outDir: Directory;
+  },
+): Plugin {
   function isSelfReference(source: string): boolean {
     return source === packageName || source.startsWith(`${packageName}/`);
   }
 
   return {
-    name: "engrenage:out-dir-guard",
+    name,
     enforce: "pre",
     async resolveId(source, importer, options) {
       if (!isSelfReference(source)) {

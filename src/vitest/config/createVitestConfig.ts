@@ -7,8 +7,13 @@ import type { Maybe } from "@auaust/toolkit/types";
 import { resolve } from "#support/filesystem/utils/resolve";
 import { validate } from "#utils/validate";
 import { optionsSchema } from "#vitest/config/schemas/optionsSchema";
-import { buildMode, defaultCoverageProvider } from "#vitest/constants";
-import { createOutDirGuard } from "#vitest/utils/createOutDirGuard";
+import {
+  buildMode,
+  defaultCoverageProvider,
+  outDirGuard,
+  pluginPrefix,
+} from "#vitest/constants";
+import { createOutDirGuard } from "#vitest/plugins/createOutDirGuard";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { ConfigEnv } from "#vite/types/ConfigEnv";
 import type { Plugin } from "#vite/types/Plugin";
@@ -27,7 +32,7 @@ function createSourcePlugins(
   }
 
   return [
-    createOutDirGuard({
+    createOutDirGuard(`${pluginPrefix}:${outDirGuard}`, {
       packageName,
       outDir: resolve(realpathSync(config.root), outDir),
     }),

@@ -1,6 +1,6 @@
 export { createVitestConfig } from "#vitest/config/createVitestConfig";
 export { defineVitestConfig } from "#vitest/config/defineVitestConfig";
-export { createOutDirGuard } from "#vitest/utils/createOutDirGuard";
+export { createOutDirGuard } from "#vitest/plugins/createOutDirGuard";
 export { createVitestLayer } from "#vitest/utils/createVitestLayer";
 
 // @barrel types/*.ts all
