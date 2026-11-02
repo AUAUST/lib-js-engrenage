@@ -1,61 +1,26 @@
 import { spawnSync } from "node:child_process";
-import {
-  existsSync,
-  mkdirSync,
-  readdirSync,
-  symlinkSync,
-  writeFileSync,
-} from "node:fs";
-import { basename, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { existsSync, readdirSync } from "node:fs";
+import { basename } from "node:path";
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { parse } from "yaml";
 
 import { sort } from "@auaust/primitive-kit/arrays";
-import { entries, keys, record } from "@auaust/toolkit/object";
+import { keys } from "@auaust/toolkit/object";
 
 import { scratchpadPlaceholders } from "#agents/constants";
 import { init } from "#bin/engrenage/init";
-import { readConfig } from "#config/utils/readConfig";
+import { sync } from "#bin/engrenage/sync";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { linkSourcePackage } from "#tests/helpers/linkSourcePackage";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
-import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
 
 import * as prompts from "#support/scaffold/utils/createPrompter";
 
 import manifest from "#package.json" with { type: "json" };
 
 vi.mock(import("node:child_process"));
-
-const repositoryRoot = fileURLToPath(new URL("../../../", import.meta.url));
-
-function linkSourcePackage(target: string) {
-  mkdirSync(target, {
-    recursive: true,
-  });
-
-  for (const entry of readdirSync(repositoryRoot)) {
-    if (entry !== "package.json") {
-      symlinkSync(join(repositoryRoot, entry), join(target, entry));
-    }
-  }
-
-  const exports = record(
-    entries(manifest.exports).map(([path, file]) => {
-      return [path, file.replace(/^\.\/dist\/(.+)\.mjs$/, "./src/$1.ts")];
-    }),
-  );
-
-  writeFileSync(
-    join(target, "package.json"),
-    JSON.stringify({
-      ...manifest,
-      exports,
-    }),
-  );
-}
 
 function createProject(files: Record<string, string>) {
   const project = createTemporaryProject(files);
@@ -419,6 +384,8 @@ describe("engrenage init", () => {
 
       mockCwd(project.root);
 
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+
       vi.mocked(spawnSync).mockImplementation((command, args) => {
         if (args?.[0] === "init") {
           project.write("package.json", '{\n  "type": "module"\n}\n');
@@ -519,13 +486,12 @@ describe("engrenage init", () => {
         false,
       );
 
-      const installed = await readConfig(project.root, {
-        searchParents: false,
-      });
+      vi.mocked(console.warn).mockClear();
 
-      syncTsconfigFiles(installed);
+      await runCommand(sync, "--check");
 
-      expect(installed.filesystem.discard()).toEqual([]);
+      expect(process.exitCode ?? 0).toBe(0);
+      expect(console.warn).not.toHaveBeenCalled();
 
       expect(project.read(".github/workflows/ci.yml")).toContain(
         "pnpm run ci:check",

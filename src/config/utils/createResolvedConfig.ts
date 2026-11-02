@@ -160,16 +160,26 @@ export function createResolvedConfig({
     return describeEnvironment(packageJson());
   }
 
-  const parseTsconfig = memoized((path: File | undefined) => {
-    return createTsconfig({
-      root,
-      path,
-      filesystem,
-    });
-  });
+  // @debt the memo key holds the content of the base tsconfig only, so staged changes to a local tsconfig it extends are not seen within a pass
+  const parseTsconfig = memoized(
+    (path: File | undefined, content: string | undefined) => {
+      return createTsconfig({
+        root,
+        path,
+        filesystem,
+        content,
+      });
+    },
+    (path, content) => `${path}\0${content}`,
+  );
 
   function tsconfig(): Tsconfig {
-    return parseTsconfig(tsconfigPath());
+    const path = tsconfigPath();
+
+    return parseTsconfig(
+      path,
+      path === undefined ? undefined : filesystem.read(path),
+    );
   }
 
   const presets = once(() => {

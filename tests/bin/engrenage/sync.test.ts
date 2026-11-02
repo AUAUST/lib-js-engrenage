@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { sync } from "#bin/engrenage/sync";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { linkSourcePackage } from "#tests/helpers/linkSourcePackage";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
 
@@ -101,5 +102,25 @@ describe("engrenage sync", () => {
     });
 
     expect(existsSync(project.resolve(".vscode/extensions.json"))).toBe(false);
+  });
+
+  test("writes the output directory of a tsconfig created in the same pass", async () => {
+    const project = createTemporaryProject({
+      "engrenage.config.ts":
+        'export default { presets: ["library"], agents: { preferred: [] } };\n',
+      "package.json": '{ "type": "module" }',
+      ".gitignore": "# @ignore project\n# @end\n",
+      ".prettierignore": "# @ignore project\n# @end\n",
+    });
+
+    linkSourcePackage(project.resolve("node_modules/@auaust/engrenage"));
+
+    mockCwd(project.root);
+
+    await runCommand(sync);
+
+    expect(existsSync(project.resolve("tsconfig.json"))).toBe(true);
+    expect(project.read(".gitignore")).toContain("/dist");
+    expect(project.read(".prettierignore")).toContain("/dist");
   });
 });

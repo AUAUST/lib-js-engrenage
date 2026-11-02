@@ -167,16 +167,7 @@ export const init = defineCommand((command) => {
 
       await runSync(installed);
 
-      reportSyncResults(installed.filesystem.flush());
-
-      // @debt the config reads the base tsconfig from disk, so the targets that depend on it (gitignore, prettierignore, package fields) only see the one sync just created on a second pass; the resolved config could read pending writes
-      const synced = await readConfig(config.root, {
-        searchParents: false,
-      });
-
-      await runSync(synced);
-
-      settleChanges(synced, {
+      settleChanges(installed, {
         check: false,
       });
     });

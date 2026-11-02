@@ -88,7 +88,7 @@ export function createTsconfig({
   root: Directory;
   path: File | undefined;
   filesystem: Filesystem;
-  content?: string;
+  content?: string | undefined;
 }): Tsconfig {
   const parsed = once(() => {
     return path === undefined

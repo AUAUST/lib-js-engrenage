@@ -39,7 +39,9 @@ function defineTarget<Flag extends string = never>(
   };
 }
 
+// Targets run in declaration order: those that produce a file other targets read from the config come first.
 const targets = {
+  tsconfig: defineTarget(syncTsconfigFiles),
   agents: defineTarget(syncAgentFiles),
   changesets: defineTarget(syncChangesetConfig),
   claude: defineTarget(syncClaudeSettings, {
@@ -52,7 +54,6 @@ const targets = {
   globals: defineTarget(syncEnvFile),
   package: defineTarget(syncPackageJson),
   prettierignore: defineTarget(syncPrettierignoreFile),
-  tsconfig: defineTarget(syncTsconfigFiles),
   vscode: defineTarget(syncVscodeFiles, {
     settings: "create .vscode/settings.json when it is missing",
     extensions: "create .vscode/extensions.json when it is missing",
@@ -93,8 +94,10 @@ export async function runSync(
     flags?: TargetFlags;
   } = {},
 ) {
-  for (const name of names) {
-    await targets[name].sync(config, flags[name] ?? {});
+  for (const name of keys(targets)) {
+    if (names.includes(name)) {
+      await targets[name].sync(config, flags[name] ?? {});
+    }
   }
 }
 
