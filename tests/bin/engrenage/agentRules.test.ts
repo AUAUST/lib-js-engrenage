@@ -75,6 +75,10 @@ describe("agents rules", () => {
     );
 
     expect(existsSync(project.resolve(".claude/rules/unknown.md"))).toBe(false);
+
+    await expect(runCommand(rules, "add", "no-attribution")).rejects.toThrow(
+      "agents.attribution",
+    );
   });
 
   test("offers only missing rules, including non-default choices, and detects renamed references", async () => {

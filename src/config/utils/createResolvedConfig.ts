@@ -591,6 +591,7 @@ export function createResolvedConfig({
       ),
       snippetsDir: raw.agents?.snippetsDir,
       claudeSettings: raw.agents?.claudeSettings,
+      attribution: raw.agents?.attribution,
     });
   });
 

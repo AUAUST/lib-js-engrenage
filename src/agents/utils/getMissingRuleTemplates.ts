@@ -1,20 +1,19 @@
+import { values } from "@auaust/toolkit/object";
+
+import { attributionRules } from "#agents/constants";
+import { getRuleReferences } from "#agents/utils/getRuleReferences";
 import { getRuleTemplates } from "#agents/utils/getRuleTemplates";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 
-export function getMissingRuleTemplates({ filesystem }: ResolvedConfig) {
-  const references = new Set<string>();
+export function getMissingRuleTemplates(config: ResolvedConfig) {
+  const references = getRuleReferences(config);
+  const owned = new Set<string>(values(attributionRules));
 
-  for (const file of filesystem.glob(".claude/rules/**/*.md")) {
-    const content = filesystem.read(file) ?? "";
-
-    for (const match of content.matchAll(/^<!-- @reference (\S+) -->\r?$/gm)) {
-      if (match[1] !== undefined) {
-        references.add(match[1]);
-      }
-    }
-  }
-
-  return getRuleTemplates().filter(({ file, reference }) => {
-    return !filesystem.exists(file) && !references.has(reference);
+  return getRuleTemplates().filter(({ name, file, reference }) => {
+    return (
+      !owned.has(name) &&
+      !config.filesystem.exists(file) &&
+      !references.has(reference)
+    );
   });
 }

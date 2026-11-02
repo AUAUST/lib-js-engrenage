@@ -56,3 +56,8 @@ export const codexSkillFrontmatterKeys = freeze([
 ] as const);
 
 export const ruleFrontmatterKeys = freeze(["paths"] as const);
+
+export const attributionRules = freeze({
+  true: "attribution",
+  false: "no-attribution",
+} as const);

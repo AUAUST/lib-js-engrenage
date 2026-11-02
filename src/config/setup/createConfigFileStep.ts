@@ -15,13 +15,11 @@ function renderOptions(
   const list = map(chosen, (preset) => JSON.stringify(preset)).join(", ");
 
   const preferred =
-    agents === undefined
-      ? ""
-      : `  agents: { preferred: ${JSON.stringify(agents)} },\n`;
+    agents === undefined ? "" : `preferred: ${JSON.stringify(agents)}, `;
 
   const baseline = `  src: { baseline: ${JSON.stringify(findCurrentMonth())} },\n`;
 
-  return `{\n  presets: [${list}],\n${baseline}${preferred}}`;
+  return `{\n  presets: [${list}],\n${baseline}  agents: { ${preferred}attribution: false },\n}`;
 }
 
 export function createConfigFileStep(): Step {

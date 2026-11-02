@@ -4,6 +4,7 @@ export default defineConfig({
   presets: ["library"],
   agents: {
     preferred: ["claude", "codex"],
+    attribution: false,
   },
   tests: {
     dist: {

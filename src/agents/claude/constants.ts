@@ -20,6 +20,12 @@ export const claudeEditHook = freeze({
   ],
 } as const);
 
+export const claudeHiddenAttribution = freeze({
+  commit: "",
+  pr: "",
+  sessionUrl: false,
+} as const);
+
 export const claudeRulesGlob = ".claude/rules/**/*.md";
 
 export const claudeSkillsDir = ".claude/skills" satisfies Directory;

@@ -19,5 +19,6 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | <code>**/*.ts</code> | <code>.claude/rules/prefer-toolkit.md</code> |
 | All files | <code>.claude/rules/debt-markers.md</code> |
 | All files | <code>.claude/rules/git.md</code> |
+| All files | <code>.claude/rules/no-attribution.md</code> |
 
 <!-- @end -->

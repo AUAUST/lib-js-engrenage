@@ -440,6 +440,10 @@ describe("engrenage init", () => {
         'presets: ["library"]',
       );
 
+      expect(project.read("engrenage.config.ts")).toContain(
+        "attribution: false",
+      );
+
       expect(JSON.parse(project.read("package.json"))).toMatchObject({
         name,
         version: "0.0.0",

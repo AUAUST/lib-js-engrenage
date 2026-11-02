@@ -1,4 +1,7 @@
+import { values } from "@auaust/toolkit/object";
+
 import { syncCodexInstructions } from "#agents/codex/setup/syncCodexInstructions";
+import { attributionRules } from "#agents/constants";
 import { getMissingRuleTemplates } from "#agents/utils/getMissingRuleTemplates";
 import { getRuleTemplates } from "#agents/utils/getRuleTemplates";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -9,7 +12,15 @@ export function addAgentRules(
 ) {
   const templates = getRuleTemplates();
 
+  const owned = new Set<string>(values(attributionRules));
+
   for (const name of names) {
+    if (owned.has(name)) {
+      throw new Error(
+        `The "${name}" agent rule follows the agents.attribution option; set that option and run engrenage sync instead`,
+      );
+    }
+
     if (!templates.some((template) => template.name === name)) {
       throw new Error(
         `Unknown agent rule "${name}". Available rules: ${templates.map((template) => template.name).join(", ")}`,

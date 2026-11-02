@@ -125,6 +125,7 @@ export const configSchema = strictObject({
       snippetsDir: optional(directorySchema),
       claudeSettings: optional(boolean()),
       codexHooks: optional(boolean()),
+      attribution: optional(boolean()),
     }),
   ),
   github: optional(
