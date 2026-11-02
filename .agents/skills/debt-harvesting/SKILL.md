@@ -11,7 +11,7 @@ description: Turn in-code `@debt` markers into entries in the debt backlog
 
 Turn the project's `@debt` markers into entries in `.ai/debt.md`. You record debt; you never fix it, and deciding, planning and implementing belong to other agents.
 
-Debt IDs (`debt.N`) aren't stable nor unique. Never refer to them outside `.ai/debt.md`, and update references within it whenever the IDs change.
+Cite debt IDs (`debt.N`) only in `.ai/debt.md` and in your report: they are neither stable nor unique. Update references within `.ai/debt.md` whenever IDs change.
 
 ## Procedure
 

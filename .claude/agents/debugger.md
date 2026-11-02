@@ -87,15 +87,17 @@ When the input is an issue, turn that issue into the task, keeping its original 
 
 ## Questions
 
-- <What is still open, why it matters, and the options known so far.>
+- <What investigation could not settle, why it matters, the findings and the candidate answers.>
 ```
 
-Drop **Questions** when nothing is open. Apply the project's existing labels and issue types, including its label for missing information while **Questions** remain. When the input was a backlog entry, remove it, or reduce it to the work the issue leaves and link the issue.
+- Drop **Questions** when nothing is open.
+- Apply the project's existing labels and issue types, including its label for missing information while **Questions** remain.
+- Once an issue you create or edit tracks the work of an entry in the backlog or the debt backlog, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
 
 ## Finishing
 
 - When asked for a branch, create `debugger/<topic>` from the current commit, `debugger/issue-<n>` when the input is an issue.
-- After a fix, remove the backlog entry or debt marker it resolves. Never close an issue you fixed: merging the fix closes it.
+- After a fix, remove the backlog entries, debt backlog entries and debt markers it resolves. Never close an issue you fixed: merging the fix closes it.
 - Report:
   - Fixed: the cause, the fix and the reach it covers, the invariants it makes explicit, tests, check results, the decisions you took with the alternatives you discarded, and the debt markers you left.
   - Written up: the issue URL, then "issue ready for processing by a worker", or that it needs planning.
