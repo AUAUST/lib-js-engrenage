@@ -8,8 +8,10 @@
 - When your work covers several tasks, commit each task's changes separately; otherwise leave your changes uncommitted and give the suggested commit message in your report.
 - Avoid committing changes you did not make.
 - Write every commit message, suggested or committed, with the subject `<type>: <summary>`, where `<type>` is the type below that matches the commit's main purpose.
-- Write the summary as the densest phrase that states what the commit changes, by intent rather than implementation, starting lowercase, with no trailing period and no verb the type already carries.
-- In the message body, write one `Closes #<n>` line per issue the commit resolves and one `Towards #<n>` line per issue it advances without resolving.
+- Write the summary as the label a reader would use to recall the commit's main change, starting lowercase, with no trailing period and no verb the type already carries.
+- Leave the change's parts, reasons and mechanics out of the commit message.
+- When the summary needs "and" to cover several changes, name what they have in common instead.
+- Limit the message body to one `Closes #<n>` line per issue the commit resolves and one `Towards #<n>` line per issue it advances without resolving.
 
 | Type      | Main purpose                                                              |
 | --------- | ------------------------------------------------------------------------- |
