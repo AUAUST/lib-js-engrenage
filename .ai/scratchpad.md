@@ -1,24 +1,6 @@
 # Scratchpad
 
-The planner is a bit to quick to stop investigating and tends to just write questions on issues. It should be more willing to investigate questions and explore possible answers instead of making "do the search" a step for the worker.
+<!-- scratchpad-placeholder -->
 
-===
-
-The planner didn't delete backlog entries after making them issues. Need to check the instructions if something is unclear there; the deletion should have been performed automatically after issue creation. I don't know where the "delete after issue closed" logic came from.
-
-===
-
-Add explanation of how to properly create commits:
-
-- imp, feat, tests, ... prefix
-- no co-authoring
-- Closes #<> when an issue is resolved
-- Towards #<> when work is related to an issue but doesn't close it
-
-===
-
-The "no comments" instruction must be made a little more strong, like before. Agents started adding new useless comments since the instruction was relaxed for @debt markers.
-
-===
-
-Consider making the vitest setup files a default? i.e. if a test directory has a `setup.ts` file, it could automatically be included in the `setupFiles` configuration for Vitest.
+> "Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away."
+> Antoine de Saint-Exupéry
