@@ -31,6 +31,7 @@ export const upgrade = defineCommand((command) => {
 
       const content = filesystem.read(packageJsonFile);
 
+      // @debt repeats the "No package.json found" guard of createTsdownConfig, createStepContext and syncChangesetConfig
       if (content === undefined) {
         throw new Error(`No ${packageJsonFile} found in ${config.root}`);
       }

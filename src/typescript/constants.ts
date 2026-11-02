@@ -1,25 +1,7 @@
-import { freeze } from "@auaust/toolkit/object";
+import { freeze, keys } from "@auaust/toolkit/object";
 
 import type { BlockSyntax } from "#types/BlockSyntax";
 import type { Glob } from "#types/Glob";
-import type { ApiGroup } from "#typescript/types/ApiGroup";
-
-// @debt the group names are listed twice, here and as the keys of apiGroupRoots, instead of deriving one list from the other
-export const apiGroups = freeze([
-  "abort",
-  "blob",
-  "compression",
-  "console",
-  "crypto",
-  "encoding",
-  "events",
-  "exceptions",
-  "microtasks",
-  "performance",
-  "streams",
-  "timers",
-  "url",
-] as const);
 
 // @debt Timer handles are typed `number`, the DOM signature, while Node returns an object; `setTimeout` results are not isomorphic.
 export const apiGroupRoots = freeze({
@@ -44,7 +26,9 @@ export const apiGroupRoots = freeze({
   ],
   timers: ["setTimeout", "setInterval", "clearTimeout", "clearInterval"],
   url: ["URL", "URLSearchParams"],
-} as const) satisfies Record<ApiGroup, readonly string[]>;
+} as const) satisfies Record<string, readonly string[]>;
+
+export const apiGroups = freeze(keys(apiGroupRoots));
 
 export const baselineWidelyAvailableMonths = 30;
 

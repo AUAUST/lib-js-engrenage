@@ -3,13 +3,15 @@ import { isArray } from "@auaust/toolkit/isArray";
 import { isString } from "@auaust/toolkit/isString";
 
 import { resolveListOption } from "#config/utils/resolveListOption";
-import { engrenage } from "#constants";
+import { engrenage, typescriptBaselineLibrary } from "#constants";
 import { readTsconfigValue } from "#typescript/utils/readTsconfigValue";
 import { resolveTsconfigRuntime } from "#typescript/utils/resolveTsconfigRuntime";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Runtime } from "#config/types/Runtime";
 import type { JsonEdit } from "#support/json/types/JsonEdit";
 import type { TsconfigTarget } from "#typescript/types/TsconfigTarget";
+
+const apiTypesPrefix = `${engrenage}/apis/`;
 
 function listDefaultTypes(
   config: ResolvedConfig,
@@ -25,7 +27,7 @@ function listDefaultTypes(
 
   return [
     runtime.library,
-    ...map(config.src.apis, (api) => `${engrenage}/apis/${api}`),
+    ...map(config.src.apis, (api) => `${apiTypesPrefix}${api}`),
   ];
 }
 
@@ -42,13 +44,13 @@ function removeBaselineTypes(
     return [];
   }
 
-  // @debt the prefixes restate what listDefaultTypes writes for a baseline runtime, so a new kind of baseline type must be added in both places
+  // @debt the removed prefixes are listed apart from what listDefaultTypes writes for a baseline runtime, so a new kind of baseline type must be added in both places
   const kept = filter(current, (type) => {
     return (
       !isString(type) ||
       !(
-        type.startsWith("typescript-baseline-lib/") ||
-        type.startsWith(`${engrenage}/apis/`)
+        type.startsWith(`${typescriptBaselineLibrary}/`) ||
+        type.startsWith(apiTypesPrefix)
       )
     );
   });
