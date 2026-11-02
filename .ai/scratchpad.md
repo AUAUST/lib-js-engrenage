@@ -18,3 +18,7 @@ Add explanation of how to properly create commits:
 ===
 
 The "no comments" instruction must be made a little more strong, like before. Agents started adding new useless comments since the instruction was relaxed for @debt markers.
+
+===
+
+Consider making the vitest setup files a default? i.e. if a test directory has a `setup.ts` file, it could automatically be included in the `setupFiles` configuration for Vitest.
