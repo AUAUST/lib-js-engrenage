@@ -43,7 +43,7 @@ When the input already describes its fix, check that fix against your own diagno
 
 ## Debt
 
-- Look for debt along your diagnosis path: the execution path, its callers and every site in the reach. Add a `@debt` mark to possible points of failure, brittle code and ugly patterns there, whether you fix, write up or are blocked.
+Mark the debt you notice while diagnosing, on the execution path, its callers and every site in the reach, whether you fix, write up or are blocked.
 
 ## Scope
 
