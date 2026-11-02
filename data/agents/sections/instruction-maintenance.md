@@ -1,6 +1,6 @@
 ---
 title: Instruction maintenance
-description: Maintain shared and project-specific agent instructions.
+description: Maintain agent instructions and write them as short, precise rules.
 category: workflow
 default: true
 order: 10
@@ -9,8 +9,17 @@ order: 10
 ## Instruction maintenance
 
 - Change agent instructions or their sources only with explicit user consent to that change.
-- Translate requests into minimal, specific, actionable rules. Preserve intent and resolve overlap or contradictions instead of appending the user's wording verbatim.
-- Before writing instructions, ask focused questions whenever intent, scope or conflicts remain unclear.
 - A `<!-- @reference <reference> -->` marker opens a block that `engrenage sync agents` fills with the referenced file, up to the next `@reference` or `<!-- @end -->` marker. Never edit blocks in place: add project rules after an `@end` marker, or change the referenced source.
-- AGENTS.md holds only rules every agent needs. Surface-specific detail lives in `.claude/rules/`, one file per surface. Neither holds feature documentation, file inventories, API details or records of recent changes.
-- When a rule becomes mechanically enforced, remove its prose. List it under the matching "Enforced by tooling" line only when its fix is not automatic and it shapes how code is first written; autofixed formatting and layout rules need no entry.
+- Put in AGENTS.md only rules every agent needs, and surface-specific detail in `.claude/rules/`, one file per surface. Keep feature documentation, file inventories, API details and records of recent changes out of both.
+- When tooling starts enforcing a rule, delete its prose. List it under "Enforced by tooling" only when its fix is manual and it shapes how code is first written.
+
+### Writing instructions
+
+- Apply these rules wherever you draft agent instructions, including wording proposed in issues and backlog entries.
+- State each rule as the behavior it must produce. Reuse the request's wording only where it is already the clearest and shortest; never carry over its examples.
+- Phrase a rule so that applying it precisely produces the right outcome; never list the cases that motivated it.
+- Add an example only when the rule cannot be stated without one.
+- Write one short, specific, imperative rule per sentence.
+- Use a sentence for a single rule, a list for independent rules and a table for rules that vary along shared dimensions.
+- Merge a new rule into any rule it overlaps or contradicts instead of adding it alongside.
+- Choose the clearest and shortest wording that keeps the meaning, and rephrase wording that falls short of these rules in the sections you edit.
