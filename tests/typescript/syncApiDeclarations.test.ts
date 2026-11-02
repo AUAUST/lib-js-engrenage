@@ -21,6 +21,7 @@ function createConfig() {
 describe("syncApiDeclarations", () => {
   test("compiles every group with the real selections", async () => {
     await expect(syncApiDeclarations(createConfig())).resolves.toBeUndefined();
+    // @debt The timeout is a bare literal beside `binaryTimeout`; slow compiler runs should share one named budget scale.
   }, 120_000);
 
   test("fails naming the group and the first month of the selection", async () => {

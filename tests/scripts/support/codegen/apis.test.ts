@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { apis } from "#scripts/support/codegen/apis";
+import { binaryTimeout } from "#tests/helpers/binaryTimeout";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
@@ -24,7 +25,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("support codegen apis", () => {
+describe("support codegen apis", { timeout: binaryTimeout }, () => {
   test("generates the timers group from the declarations of the DOM lib", async () => {
     const project = createProject();
 
