@@ -75,6 +75,7 @@ describe("syncTsconfigFiles", () => {
     const { project, config } = createProject(
       {
         src: {
+          node: 24,
           tsconfig: {
             include: false,
             lib: false,
@@ -94,9 +95,8 @@ describe("syncTsconfigFiles", () => {
 
     expect(tsconfig.compilerOptions).toEqual({
       target: "ESNext",
-      noLib: true,
       lib: ["dom"],
-      types: ["typescript-baseline-lib/year/2023"],
+      types: ["node"],
       paths: { "#a": ["./a.ts"] },
     });
   });

@@ -120,6 +120,66 @@ describe("runtime tsconfig fields", () => {
     });
   });
 
+  test("rejects lib: false on a baseline runtime", () => {
+    expect(() => {
+      syncCompilerOptions({
+        src: {
+          baseline: "2026-10",
+          tsconfig: { lib: false },
+        },
+      });
+    }).toThrow(/src\.tsconfig\.lib is not accepted/);
+  });
+
+  test("drops the baseline fields once src.baseline is unset", () => {
+    const project = createTemporaryProject({
+      "package.json": "{}",
+      "src/index.ts": "",
+      "tsconfig.json": "{}",
+      "tsconfig.src.json": JSON.stringify({
+        compilerOptions: {
+          noLib: true,
+          lib: null,
+          types: [
+            "typescript-baseline-lib/year/2023",
+            "@auaust/engrenage/apis/timers",
+            "custom",
+          ],
+        },
+      }),
+    });
+
+    const config = createResolvedConfig({
+      root: project.root,
+      raw: validate(configSchema, {}, "test config"),
+      configFile: undefined,
+    });
+
+    syncTsconfigFiles(config);
+    config.filesystem.flush();
+
+    const options = JSON.parse(
+      project.read("tsconfig.src.json"),
+    ).compilerOptions;
+
+    expect(options.types).toEqual(["custom"]);
+    expect(options).not.toHaveProperty("noLib");
+    expect(options).not.toHaveProperty("lib");
+
+    const parsed = getParsedCommandLineOfConfigFile(
+      join(project.root, "tsconfig.src.json"),
+      undefined,
+      {
+        ...sys,
+        onUnRecoverableConfigFileDiagnostic({ messageText }) {
+          throw new Error(flattenDiagnosticMessageText(messageText, "\n"));
+        },
+      },
+    );
+
+    expect(parsed?.errors.map(({ code }) => code)).not.toContain(5053);
+  });
+
   test("resets a lib inherited from the base tsconfig", () => {
     const project = createTemporaryProject();
 

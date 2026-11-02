@@ -1,6 +1,5 @@
-import { isBoolean } from "@auaust/toolkit/isBoolean";
-
 import { resolveListOption } from "#config/utils/resolveListOption";
+import { readTsconfigValue } from "#typescript/utils/readTsconfigValue";
 import { resolveTsconfigRuntime } from "#typescript/utils/resolveTsconfigRuntime";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { JsonEdit } from "#support/json/types/JsonEdit";
@@ -8,31 +7,39 @@ import type { TsconfigTarget } from "#typescript/types/TsconfigTarget";
 
 export function produceTsconfigLibrary(
   config: ResolvedConfig,
-  { key, lib: option }: TsconfigTarget,
+  target: TsconfigTarget,
 ): readonly JsonEdit[] {
+  const { key, lib: option } = target;
+
   if (key === "base") {
     return [];
   }
 
   const runtime = resolveTsconfigRuntime(config, key);
 
-  // @debt without a runtime the lib, noLib and types an earlier baseline sync wrote stay in the file, so removing src.baseline keeps its libraries
-  if (runtime === undefined && (option == null || option === true)) {
-    return [];
-  }
-
   if (runtime?.kind === "baseline") {
-    if (option !== undefined && !isBoolean(option)) {
+    if (option != null && option !== true) {
       throw new Error(
-        `${key}.tsconfig.lib is not accepted for a baseline runtime: its built-ins come from typescript-baseline-lib, and ${key}.tsconfig.types lists further declarations such as @types/web`,
+        `${key}.tsconfig.lib is not accepted for a baseline runtime: noLib makes every lib invalid, its built-ins come from typescript-baseline-lib, and ${key}.tsconfig.types lists further declarations such as @types/web`,
       );
     }
 
-    // @debt with `lib: false` the lib reset is left alone while noLib is still set, so a lib kept in the file fails tsc with TS5053 instead of a clear sync error
     return [
       { path: ["compilerOptions", "noLib"], value: true },
       { path: ["compilerOptions", "lib"], value: null },
     ];
+  }
+
+  const removeNoLibrary: JsonEdit = {
+    path: ["compilerOptions", "noLib"],
+    value: undefined,
+  };
+
+  if (runtime === undefined && (option == null || option === true)) {
+    return readTsconfigValue(config, target, ["compilerOptions", "lib"]) ===
+      null
+      ? [removeNoLibrary, { path: ["compilerOptions", "lib"], value: undefined }]
+      : [removeNoLibrary];
   }
 
   const library = resolveListOption(
@@ -42,6 +49,6 @@ export function produceTsconfigLibrary(
   );
 
   return library === false
-    ? []
-    : [{ path: ["compilerOptions", "lib"], value: [...library] }];
+    ? [removeNoLibrary]
+    : [removeNoLibrary, { path: ["compilerOptions", "lib"], value: [...library] }];
 }
