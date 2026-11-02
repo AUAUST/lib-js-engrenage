@@ -302,7 +302,7 @@ export function createResolvedConfig({
 
     function path(): File | undefined {
       if (resolved.file === undefined || resolved.owner === undefined) {
-        return undefined;
+        return;
       }
 
       const configured = tsconfigGroups()[resolved.owner];

@@ -36,11 +36,9 @@ export function resolveSourceRuntime(option: {
   }
 
   if (baseline === undefined) {
-    console.warn(
+    return void console.warn(
       `src.baseline is not set, so the src tsconfig gets no baseline libraries or types and the build no target: set it to ${findCurrentMonth()}, the current month`,
     );
-
-    return undefined;
   }
 
   return freeze({

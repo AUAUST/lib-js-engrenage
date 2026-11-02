@@ -206,6 +206,10 @@ export interface AuaustRules {
    */
   "auaust/no-redundant-types"?: Rule<[]>;
   /**
+   * Use a bare `return;` instead of `return undefined;` in a function with a return type annotation.
+   */
+  "auaust/no-return-undefined"?: Rule<[]>;
+  /**
    * Use `is<Type>` helpers instead of runtime `typeof` comparisons (except `typeof x === "undefined"`).
    */
   "auaust/no-runtime-typeof"?: Rule<[]>;

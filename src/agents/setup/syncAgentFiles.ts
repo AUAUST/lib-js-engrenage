@@ -67,8 +67,6 @@ export function syncAgentFiles(config: ResolvedConfig) {
       }
 
       console.warn(`${error.message}: its block is left untouched`);
-
-      return undefined;
     }
   }
 

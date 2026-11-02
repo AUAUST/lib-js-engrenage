@@ -1607,4 +1607,49 @@ export async function run(): Promise<unknown> {
 
     expectTypeOf(createEslintConfig).returns.toEqualTypeOf<Config[]>();
   });
+
+  describe("auaust/no-return-undefined", () => {
+    test.each([
+      [
+        "fixes an annotated function",
+        'export function f(x: boolean): string | undefined {\n  if (x) {\n    return undefined;\n  }\n\n  return "a";\n}\n',
+        'export function f(x: boolean): string | undefined {\n  if (x) {\n    return;\n  }\n\n  return "a";\n}\n',
+        1,
+      ],
+      [
+        "leaves an unannotated function to unicorn",
+        "export function f() {\n  return undefined;\n}\n",
+        undefined,
+        0,
+      ],
+      [
+        "ignores a shadowed undefined",
+        "export function f(undefined: string): string | undefined {\n  return undefined;\n}\n",
+        undefined,
+        0,
+      ],
+    ])("%s", async (_name, source, output, count) => {
+      if (output !== undefined) {
+        const eslint = await getLinter({ typeAware: false }, true);
+
+        const [result] = await eslint.lintText(source, {
+          filePath: "src/returns.ts",
+        });
+
+        expect(result?.output).toBe(output);
+      }
+
+      const eslintReport = await getLinter({ typeAware: false });
+
+      const [reported] = await eslintReport.lintText(source, {
+        filePath: "src/returns.ts",
+      });
+
+      expect(
+        reported?.messages.filter((message) => {
+          return message.ruleId === "auaust/no-return-undefined";
+        }),
+      ).toHaveLength(count);
+    });
+  });
 });

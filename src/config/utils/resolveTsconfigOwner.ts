@@ -43,7 +43,7 @@ export function resolveTsconfigOwner(
 
     if (group === false) {
       if (current === key) {
-        return undefined;
+        return;
       }
 
       // @debt non-null assertion on chain.at(-2): it holds because current !== key implies at least two links, which the types cannot express; tracking the previous key in a variable would avoid it
