@@ -89,6 +89,35 @@ describe("syncBlocks", () => {
     ).toBe("<!-- @list ./*.md all -->\n\nall ./*.md\n\n<!-- @end -->\n");
   });
 
+  test("keeps a block whose filler returns undefined", () => {
+    const content = [
+      "<!-- @reference ./kept.md -->",
+      "local text",
+      "<!-- @reference ./first.md -->",
+      "<!-- @end -->",
+      "",
+    ].join("\n");
+
+    expect(
+      syncBlocks(content, markdownBlocks, {
+        reference(reference: string) {
+          return reference === "./kept.md" ? undefined : `## ${reference}`;
+        },
+      }),
+    ).toBe(
+      [
+        "<!-- @reference ./kept.md -->",
+        "local text",
+        "<!-- @reference ./first.md -->",
+        "",
+        "## ./first.md",
+        "",
+        "<!-- @end -->",
+        "",
+      ].join("\n"),
+    );
+  });
+
   test("rejects a last block without an end marker", () => {
     expect(() => {
       return syncBlocks(

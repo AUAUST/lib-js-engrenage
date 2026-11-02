@@ -58,6 +58,20 @@ export function syncAgentFiles(config: ResolvedConfig) {
     .glob(config.agents.instructionFiles)
     .filter((file) => file !== codexFile);
 
+  function findReference(reference: string, path: File): File | undefined {
+    try {
+      return resolveAgentReference(config, reference, path);
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        throw error;
+      }
+
+      console.warn(`${error.message}: its block is left untouched`);
+
+      return undefined;
+    }
+  }
+
   function update(content: string, path: File): string {
     return syncBlocks(content, markdownBlocks, {
       reference(reference) {
@@ -65,7 +79,11 @@ export function syncAgentFiles(config: ResolvedConfig) {
           throw new Error(`Expected a reference in a marker of ${path}`);
         }
 
-        const source = resolveAgentReference(config, reference, path);
+        const source = findReference(reference, path);
+
+        if (source === undefined) {
+          return;
+        }
 
         return parseInstruction(readFileSync(source, "utf-8"), source).body;
       },

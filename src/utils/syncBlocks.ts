@@ -46,7 +46,13 @@ export function syncBlocks(
       throw new Error(`Missing "@end" marker after "${line}"`);
     }
 
-    const filled = fill(...argumentList.split(" ").slice(1)).trim();
+    const filled = fill(...argumentList.split(" ").slice(1))?.trim();
+
+    isBlockOpen = true;
+
+    if (filled === undefined) {
+      continue;
+    }
 
     if (filled.match(marker) !== null) {
       throw new Error(`Content of "${line}" contains a block marker`);
@@ -57,7 +63,6 @@ export function syncBlocks(
     result += `${content.slice(cursor, blockStart)}${padding}${filled}${padding}`;
 
     cursor = next.index;
-    isBlockOpen = true;
   }
 
   return result + content.slice(cursor);

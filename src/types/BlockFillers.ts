@@ -1,1 +1,4 @@
-export type BlockFillers = Record<string, (...args: string[]) => string>;
+export type BlockFillers = Record<
+  string,
+  (...args: string[]) => string | undefined
+>;

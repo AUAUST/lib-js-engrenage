@@ -1,6 +1,6 @@
 import { join } from "node:path";
 
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import {
   resolveAgentReference,
@@ -79,6 +79,34 @@ describe("syncAgentFiles", () => {
     expect(() => {
       return resolveAgentReference(config, "missing.md", from);
     }).toThrow(`Cannot resolve reference "missing.md" in ${from}`);
+  });
+
+  test("warns about an unresolvable reference and leaves its block untouched", async () => {
+    const warn = vi.spyOn(console, "warn");
+
+    const instructions = [
+      "<!-- @reference ./missing.md -->",
+      "kept text",
+      "<!-- @end -->",
+      "",
+    ].join("\n");
+
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module"}',
+      "engrenage.config.ts":
+        'export default { agents: { preferred: ["claude"], instructionFiles: ["AGENTS.md"] } };',
+      "AGENTS.md": instructions,
+    });
+
+    const config = await loadConfig(project.root);
+
+    syncAgentFiles(config);
+
+    expect(config.filesystem.read("AGENTS.md")).toBe(instructions);
+
+    expect(warn).toHaveBeenCalledWith(
+      `Cannot resolve reference "./missing.md" in ${project.resolve("AGENTS.md")}: its block is left untouched`,
+    );
   });
 
   describe("frontmatter", () => {
