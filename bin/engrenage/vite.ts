@@ -1,8 +1,8 @@
-import { vite } from "#constants";
+import { packages } from "#constants";
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 
-export default defineToolCommands({
-  packageName: vite,
+export const vite = defineToolCommands({
+  packageName: packages.vite,
   commands: {
     vite: {
       description: "Run Vite.",

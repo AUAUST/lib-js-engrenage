@@ -1,9 +1,9 @@
-import { tsdown } from "#constants";
+import { packages } from "#constants";
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
 
-export default defineToolCommands({
-  packageName: tsdown,
+export const tsdown = defineToolCommands({
+  packageName: packages.tsdown,
   commands: {
     tsdown: {
       description: "Build the package, loading the config with tsx.",

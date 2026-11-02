@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 
-import { eslint } from "#constants";
+import { packages } from "#constants";
 import { defaultSuppressionsFile } from "#eslint/constants";
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
@@ -16,7 +16,7 @@ function useCache(config: ResolvedConfig, args: string[]) {
 
   ensureIncludes(args, "--cache");
 
-  ensureIncludes(args, ["--cache-location", config.cacheFor(eslint)]);
+  ensureIncludes(args, ["--cache-location", config.cacheFor(packages.eslint)]);
 }
 
 function hasSuppressions(args: readonly string[]): boolean {
@@ -26,8 +26,8 @@ function hasSuppressions(args: readonly string[]): boolean {
   );
 }
 
-export default defineToolCommands({
-  packageName: eslint,
+export const eslint = defineToolCommands({
+  packageName: packages.eslint,
   commands: {
     "eslint": {
       description: "Lint the project, caching results in node_modules.",

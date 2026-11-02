@@ -5,18 +5,19 @@ export default defineConfig({
   agents: {
     preferred: ["claude", "codex"],
   },
-  runtime: {
-    node: 24,
-  },
   tests: {
     dist: {
       tsconfig: {
-        compilerOptions: { exactOptionalPropertyTypes: false },
+        compilerOptions: {
+          exactOptionalPropertyTypes: false,
+        },
       },
     },
   },
   typescript: {
-    tsconfig: { extends: ["./data/tsconfig/library.json"] },
+    tsconfig: {
+      extends: ["./data/tsconfig/library.json"],
+    },
   },
   src: {
     node: 24,
@@ -30,13 +31,6 @@ export default defineConfig({
     },
     generated: ["eslint/types/Rules.ts", "eslint/types/rules/**"],
     discovered: ["eslint/conventions/*/*.ts"],
-  },
-  bin: {
-    commands: { engrenage: "bin/engrenage/index.ts" },
-    discovered: ["**/*.ts"],
-  },
-  scripts: {
-    discovered: ["**/*.ts"],
   },
   data: {
     exports: {

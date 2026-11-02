@@ -10,5 +10,6 @@ export function readJsonValue(
 ): unknown {
   const node = findNodeAtLocation(parseJsonObject(content, path), location);
 
-  return node === undefined ? undefined : getNodeValue(node);
+  // jsonc-parser builds objects without a prototype, which deep strict equality never matches against plain objects; cloning rebuilds them as plain objects.
+  return node === undefined ? undefined : structuredClone(getNodeValue(node));
 }

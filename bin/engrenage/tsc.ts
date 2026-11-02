@@ -1,7 +1,7 @@
 import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
 import { tsconfigEnvironments } from "#config/constants";
-import { typescript } from "#constants";
+import { packages } from "#constants";
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
 import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
@@ -78,8 +78,8 @@ function checkProject(
   ensureIncludes(args, "--noEmit");
 }
 
-export default defineToolCommands({
-  packageName: typescript,
+export const tsc = defineToolCommands({
+  packageName: packages.typescript,
   binary: "tsc",
   commands: {
     "tsc": {

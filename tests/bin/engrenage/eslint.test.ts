@@ -1,10 +1,9 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { eslint } from "#bin/engrenage/eslint";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
-
-import eslint from "#bin/engrenage/eslint";
 
 function createProject() {
   const project = createTemporaryProject({

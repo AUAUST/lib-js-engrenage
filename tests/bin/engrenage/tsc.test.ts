@@ -3,12 +3,11 @@ import { fileURLToPath } from "node:url";
 
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { tsc } from "#bin/engrenage/tsc";
 import { binaryTimeout } from "#tests/helpers/binaryTimeout";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
-
-import tsc from "#bin/engrenage/tsc";
 
 const repositoryModules = fileURLToPath(
   new URL("../../../node_modules", import.meta.url),

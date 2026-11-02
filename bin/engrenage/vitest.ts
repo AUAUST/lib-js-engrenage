@@ -1,4 +1,4 @@
-import { vitest } from "#constants";
+import { packages } from "#constants";
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
 import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
@@ -8,8 +8,8 @@ function includeTypeTests(args: string[]) {
   ensureAnyOf(args, ["--typecheck", "--no-typecheck"], "--typecheck");
 }
 
-export default defineToolCommands({
-  packageName: vitest,
+export const vitest = defineToolCommands({
+  packageName: packages.vitest,
   commands: {
     "vitest": {
       description: "Run the tests once, with type tests unless --no-typecheck.",

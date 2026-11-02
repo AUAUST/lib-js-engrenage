@@ -148,6 +148,7 @@ function createEdits(
     return !isLeftAlone(edit, leftAlone);
   });
 
+  // @debt configured compilerOptions are only ever set: one removed from the config stays in the tsconfig file and `sync --check` still passes
   const custom = map(
     entries(target.compilerOptions),
     ([name, value]): JsonEdit => {

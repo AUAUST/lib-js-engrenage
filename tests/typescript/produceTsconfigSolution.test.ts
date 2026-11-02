@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { tsc } from "#bin/engrenage/tsc";
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
 import { binaryTimeout } from "#tests/helpers/binaryTimeout";
@@ -11,8 +12,6 @@ import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
 import { validate } from "#utils/validate";
-
-import tsc from "#bin/engrenage/tsc";
 
 const repositoryModules = fileURLToPath(
   new URL("../../node_modules", import.meta.url),

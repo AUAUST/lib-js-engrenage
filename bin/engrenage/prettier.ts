@@ -1,4 +1,4 @@
-import { prettier } from "#constants";
+import { packages } from "#constants";
 import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
 import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
 import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
@@ -15,8 +15,8 @@ function formatFiles(args: string[]) {
   ensureIncludes(args, "--ignore-unknown");
 }
 
-export default defineToolCommands({
-  packageName: prettier,
+export const prettier = defineToolCommands({
+  packageName: packages.prettier,
   commands: {
     "prettier": {
       description: "Format the given files.",
