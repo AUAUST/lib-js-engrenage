@@ -1,3 +1,10 @@
+import { join } from "node:path";
+
+import {
+  flattenDiagnosticMessageText,
+  getParsedCommandLineOfConfigFile,
+  sys,
+} from "typescript";
 import { describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { configSchema } from "#config/config/schemas/configSchema";
@@ -43,7 +50,7 @@ describe("runtime tsconfig fields", () => {
       types: ["typescript-baseline-lib/year/2023"],
     });
 
-    expect(options).not.toHaveProperty("lib");
+    expect(options).toHaveProperty("lib", null);
   });
 
   test("maps a snapshot from July to the year three before", () => {
@@ -107,8 +114,40 @@ describe("runtime tsconfig fields", () => {
       project,
     );
 
-    expect(read("tsconfig.src.json")).not.toHaveProperty("lib");
-    expect(read("tsconfig.src.json")).toMatchObject({ noLib: true });
+    expect(read("tsconfig.src.json")).toMatchObject({
+      noLib: true,
+      lib: null,
+    });
+  });
+
+  test("resets a lib inherited from the base tsconfig", () => {
+    const project = createTemporaryProject();
+
+    syncCompilerOptions(
+      {
+        src: { baseline: "2026-10" },
+        typescript: {
+          tsconfig: {
+            compilerOptions: { lib: ["ES2022"] },
+          },
+        },
+      },
+      project,
+    );
+
+    const parsed = getParsedCommandLineOfConfigFile(
+      join(project.root, "tsconfig.src.json"),
+      undefined,
+      {
+        ...sys,
+        onUnRecoverableConfigFileDiagnostic({ messageText }) {
+          throw new Error(flattenDiagnosticMessageText(messageText, "\n"));
+        },
+      },
+    );
+
+    expect(parsed?.options.noLib).toBe(true);
+    expect(parsed?.options.lib).toBeUndefined();
   });
 
   test("fails on a snapshot outside the installed years", () => {

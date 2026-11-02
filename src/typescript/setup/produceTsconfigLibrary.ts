@@ -21,9 +21,10 @@ export function produceTsconfigLibrary(
       );
     }
 
+    // @debt with `lib: false` the lib reset is left alone while noLib is still set, so a lib kept in the file fails tsc with TS5053 instead of a clear sync error
     return [
       { path: ["compilerOptions", "noLib"], value: true },
-      { path: ["compilerOptions", "lib"], value: undefined },
+      { path: ["compilerOptions", "lib"], value: null },
     ];
   }
 

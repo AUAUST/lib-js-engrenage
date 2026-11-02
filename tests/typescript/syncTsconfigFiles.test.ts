@@ -56,6 +56,7 @@ describe("syncTsconfigFiles", () => {
       compilerOptions: {
         target: "ESNext",
         noLib: true,
+        lib: null,
         types: ["typescript-baseline-lib/year/2023"],
         paths: { "#a": ["./a.ts"] },
         tsBuildInfoFile: buildInfoFile,
@@ -122,6 +123,7 @@ describe("syncTsconfigFiles", () => {
     ).toEqual({
       target: "ESNext",
       noLib: true,
+      lib: null,
       types: ["typescript-baseline-lib/year/2023"],
       paths: { "#a": ["./a.ts"] },
       tsBuildInfoFile: "./custom.tsbuildinfo",
