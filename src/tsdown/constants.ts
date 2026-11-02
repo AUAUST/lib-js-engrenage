@@ -6,7 +6,9 @@ export const binEntryFiles = freeze(["*.ts", "*/index.ts"] as const);
 
 export const mainFields = freeze(["module", "main"] as const);
 
-export const pluginNames = freeze(["empty-namespaces"] as const);
+export const emptyNamespaces = "empty-namespaces";
+
+export const pluginNames = freeze([emptyNamespaces] as const);
 
 export const attwOptions = freeze({
   profile: "node16",
@@ -22,3 +24,5 @@ export const targetBrowsers: Readonly<Record<string, string>> = freeze({
   safari: "safari",
   safari_ios: "ios",
 });
+
+export { project as pluginPrefix } from "#constants";

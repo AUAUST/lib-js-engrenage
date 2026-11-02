@@ -1,21 +1,11 @@
-import { find, wrap } from "@auaust/primitive-kit/arrays";
-
 import { parseMajorVersion } from "#support/packageJson/utils/parseMajorVersion";
+import { readProjectPnpmVersion } from "#support/packageJson/utils/readProjectPnpmVersion";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 
-export function readProjectPnpmMajor({
-  optional,
-}: PackageJson): number | undefined {
-  const declared = find(
-    wrap(optional.devEngines?.packageManager),
-    ({ name }) => name === "pnpm",
-  )?.version;
+export function readProjectPnpmMajor(
+  packageJson: PackageJson,
+): number | undefined {
+  const version = readProjectPnpmVersion(packageJson);
 
-  if (declared !== undefined) {
-    return parseMajorVersion(declared);
-  }
-
-  const legacy = /^pnpm@(.+)$/.exec(optional.packageManager ?? "")?.[1];
-
-  return legacy === undefined ? undefined : parseMajorVersion(legacy);
+  return version === undefined ? undefined : parseMajorVersion(version);
 }

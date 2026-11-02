@@ -8,7 +8,13 @@ import { createDefine } from "#config/utils/createDefine";
 import { arethetypeswrongCore, packageJsonFile, publint } from "#constants";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
 import { optionsSchema } from "#tsdown/config/schemas/optionsSchema";
-import { attwOptions, mainFields, pluginNames } from "#tsdown/constants";
+import {
+  attwOptions,
+  emptyNamespaces,
+  mainFields,
+  pluginNames,
+  pluginPrefix,
+} from "#tsdown/constants";
 import { createEmptyNamespacesPlugins } from "#tsdown/plugins/createEmptyNamespacesPlugins";
 import { createTsdownEntries } from "#tsdown/utils/createTsdownEntries";
 import { resolveCommandEntries } from "#tsdown/utils/resolveCommandEntries";
@@ -22,8 +28,11 @@ import type { Options } from "#tsdown/types/Options";
 import type { File } from "#types/File";
 
 const pluginFactories = {
-  "empty-namespaces": createEmptyNamespacesPlugins,
-} satisfies Record<(typeof pluginNames)[number], () => TsdownPlugin[]>;
+  [emptyNamespaces]: createEmptyNamespacesPlugins,
+} satisfies Record<
+  (typeof pluginNames)[number],
+  (name: string) => TsdownPlugin[]
+>;
 
 function readPackageSnapshot(path: File): string {
   return JSON.stringify(readJsonFile(path));
@@ -116,7 +125,9 @@ export function createTsdownConfig(
     },
     sourcemap,
     plugins: flatMap(pluginNames, (name) => {
-      return plugins[name] === false ? [] : pluginFactories[name]();
+      return plugins[name] === false
+        ? []
+        : pluginFactories[name](`${pluginPrefix}:${name}`);
     }),
     define: createDefine(config, {
       isTesting: false,

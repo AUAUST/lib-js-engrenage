@@ -2,6 +2,7 @@ import { describe, expect, test, vi } from "vitest";
 
 import { syncPackageJson } from "#config/setup/syncPackageJson";
 import { loadConfig } from "#config/utils/loadConfig";
+import { readSharedPnpmRange } from "#support/packageJson/utils/readSharedPnpmRange";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 
 async function sync(
@@ -186,14 +187,14 @@ describe("syncPackageJson pnpm warnings", () => {
     return { resolved, messages };
   }
 
-  test("suggests the upgrade command for a lower major without failing the check", async () => {
+  test("suggests the upgrade command below the range without failing the check", async () => {
     const { resolved, messages } = await warnings(declare("^10.0.0"));
 
     expect(messages).toEqual([
       expect.stringContaining("engrenage pnpm upgrade"),
     ]);
 
-    expect(messages[0]).toContain("pnpm 10 is behind");
+    expect(messages[0]).toContain("pnpm ^10.0.0 is below");
     expect(resolved.filesystem.read("package.json")).not.toContain("^11");
   });
 
@@ -203,18 +204,26 @@ describe("syncPackageJson pnpm warnings", () => {
     expect(messages).toEqual([expect.stringContaining("update engrenage")]);
   });
 
-  test("stays silent for engrenage's major", async () => {
+  test("warns below the floor within the major", async () => {
     const { messages } = await warnings(declare("^11.0.0"));
+
+    expect(messages).toEqual([expect.stringContaining("is below")]);
+  });
+
+  test("stays silent for engrenage's floor", async () => {
+    const { messages } = await warnings(
+      declare(`^${readSharedPnpmRange().floor}`),
+    );
 
     expect(messages).toEqual([]);
   });
 
-  test("warns about a legacy field, a missing declaration and an only-allow script", async () => {
+  test("warns about a legacy field below the range and an only-allow script", async () => {
     const { messages } = await warnings({
       packageManager: "pnpm@10.26.0",
       scripts: { preinstall: "npx only-allow pnpm" },
     });
 
-    expect(messages).toHaveLength(4);
+    expect(messages).toHaveLength(3);
   });
 });

@@ -2,6 +2,10 @@ import { freeze } from "@auaust/toolkit/object";
 
 import type { File } from "#types/File";
 
+export const organization = "@auaust";
+
+export const project = "engrenage" as const;
+
 export const arethetypeswrongCore = "@arethetypeswrong/core";
 
 export const baselineBrowserMapping = "baseline-browser-mapping";
@@ -12,7 +16,7 @@ export const changesetsCli = "@changesets/cli";
 
 export const changesetsConfig = "@changesets/config";
 
-export const engrenage = "@auaust/engrenage";
+export const engrenage = `${organization}/${project}` as const;
 
 export const eslint = "eslint";
 
@@ -68,7 +72,7 @@ export const packages = freeze({
   zod,
 });
 
-export const engrenageConfigFile = "engrenage.config" satisfies File;
+export const engrenageConfigFile = `${project}.config` satisfies File;
 
 export const gitignoreFile = ".gitignore" satisfies File;
 
@@ -85,8 +89,6 @@ export const files = freeze({
   prettierignore: prettierignoreFile,
   tsconfig: tsconfigFile,
 } as const);
-
-export const organization = "@auaust";
 
 export const packageTypes = freeze(["module", "commonjs"] as const);
 

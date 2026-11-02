@@ -1,33 +1,29 @@
-import { wrap } from "@auaust/primitive-kit/arrays";
-
 import { onlyAllowScript, upgradeCommand } from "#pnpm/constants";
-import { readProjectPnpmMajor } from "#support/packageJson/utils/readProjectPnpmMajor";
-import { readSharedPnpmMajor } from "#support/packageJson/utils/readSharedPnpmMajor";
+import { resolvePnpmRangeStatus } from "#pnpm/utils/resolvePnpmRangeStatus";
+import { readProjectPnpmVersion } from "#support/packageJson/utils/readProjectPnpmVersion";
+import { readSharedPnpmRange } from "#support/packageJson/utils/readSharedPnpmRange";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 
 export function listPnpmWarnings(packageJson: PackageJson): string[] {
-  const { devEngines, packageManager, scripts } = packageJson.optional;
+  const { packageManager, scripts } = packageJson.optional;
 
   const warnings: string[] = [];
 
-  const declared = wrap(devEngines?.packageManager);
+  const status = resolvePnpmRangeStatus(packageJson);
+  const version = readProjectPnpmVersion(packageJson);
+  const { range } = readSharedPnpmRange();
 
-  if (!declared.some(({ name }) => name === "pnpm")) {
+  if (status === "missing") {
     warnings.push(
       `devEngines.packageManager does not declare pnpm: run \`${upgradeCommand}\``,
     );
-  }
-
-  const shared = readSharedPnpmMajor();
-  const major = readProjectPnpmMajor(packageJson);
-
-  if (major !== undefined && major < shared) {
+  } else if (status === "below") {
     warnings.push(
-      `pnpm ${major} is behind engrenage's pnpm ${shared}: run \`${upgradeCommand}\``,
+      `pnpm ${version} is below engrenage's pnpm ${range}: run \`${upgradeCommand}\``,
     );
-  } else if (major !== undefined && major > shared) {
+  } else if (status === "above") {
     warnings.push(
-      `pnpm ${major} is ahead of engrenage's pnpm ${shared}: update engrenage`,
+      `pnpm ${version} is above engrenage's pnpm ${range}: update engrenage`,
     );
   }
 

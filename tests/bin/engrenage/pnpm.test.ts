@@ -3,6 +3,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import { pnpm } from "#bin/engrenage/pnpm/index";
 import { installDependencies } from "#pnpm/utils/installDependencies";
 import { resolveLatestPnpm } from "#pnpm/utils/resolveLatestPnpm";
+import { readSharedPnpmRange } from "#support/packageJson/utils/readSharedPnpmRange";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
@@ -83,15 +84,31 @@ describe("engrenage pnpm upgrade", () => {
     expect(installDependencies).not.toHaveBeenCalled();
   });
 
-  test("refuses a project ahead of engrenage's major", async () => {
-    createProject({
+  test("warns for a project ahead of the range and moves it back with --yes", async () => {
+    const project = createProject({
       devEngines: {
         packageManager: { name: "pnpm", version: "^12.0.0" },
       },
     });
 
-    await expect(runCommand(pnpm, "upgrade")).rejects.toThrow(
-      "update engrenage",
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    vi.spyOn(console, "info").mockImplementation(() => {});
+
+    await runCommand(pnpm, "upgrade", "--yes");
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining("update engrenage"),
     );
+
+    expect(resolveLatestPnpm).toHaveBeenCalledWith(
+      project.root,
+      readSharedPnpmRange().range,
+    );
+
+    expect(
+      JSON.parse(project.read("package.json")).devEngines.packageManager
+        .version,
+    ).toBe("^11.28.8");
   });
 });

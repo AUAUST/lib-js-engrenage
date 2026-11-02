@@ -22,6 +22,10 @@ import manifest from "#package.json" with { type: "json" };
 
 vi.mock(import("node:child_process"));
 
+vi.mock(import("#pnpm/utils/resolveLatestPnpm"), () => {
+  return { resolveLatestPnpm: () => "11.99.0" };
+});
+
 function createProject(files: Record<string, string>) {
   const project = createTemporaryProject(files);
 
@@ -496,9 +500,15 @@ describe("engrenage init", () => {
 
       expect(process.exitCode ?? 0).toBe(0);
 
-      expect(vi.mocked(console.warn).mock.calls).toEqual([
-        [expect.stringContaining("engrenage pnpm upgrade")],
-      ]);
+      expect(console.warn).not.toHaveBeenCalled();
+
+      expect(
+        JSON.parse(project.read("package.json")).devEngines.packageManager,
+      ).toEqual({
+        name: "pnpm",
+        version: "^11.99.0",
+        onFail: "download",
+      });
 
       expect(project.read(".github/workflows/ci.yml")).toContain(
         "pnpm run ci:check",

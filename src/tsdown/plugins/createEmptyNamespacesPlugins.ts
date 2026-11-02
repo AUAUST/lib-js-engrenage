@@ -8,13 +8,12 @@ const declarationChunk = /\.d\.[cm]?ts$/;
 const emptyNamespace =
   /\bvar\s+([$\w]+)\s*=\s*(?:\/\*\s*@__PURE__\s*\*\/\s*)?__exportAll\(\s*\{\s*\}\s*\);?/g;
 
-// @debt the rolldown plugin names restate the "empty-namespaces" key of pluginNames instead of deriving it, so renaming the key leaves them stale
-export function createEmptyNamespacesPlugins(): TsdownPlugin[] {
+export function createEmptyNamespacesPlugins(name: string): TsdownPlugin[] {
   const emptyNamespaces = new Map<string, string[]>();
 
   return [
     {
-      name: "engrenage:empty-namespaces:find",
+      name: `${name}:find`,
       renderChunk: {
         order: "pre",
         handler(code, { fileName }) {
@@ -31,7 +30,7 @@ export function createEmptyNamespacesPlugins(): TsdownPlugin[] {
       },
     },
     {
-      name: "engrenage:empty-namespaces:declare",
+      name: `${name}:declare`,
       renderChunk: {
         order: "post",
         handler(code, { fileName }) {

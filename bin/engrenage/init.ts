@@ -20,6 +20,7 @@ import { packageJsonFile } from "#constants";
 import { createEslintConfigStep } from "#eslint/setup/createEslintConfigStep";
 import { createGitignoreStep } from "#git/setup/createGitignoreStep";
 import { createWorkflowsStep } from "#github/setup/createWorkflowsStep";
+import { createPnpmStep } from "#pnpm/setup/createPnpmStep";
 import { createWorkspaceStep } from "#pnpm/setup/createWorkspaceStep";
 import { createPrettierignoreStep } from "#prettier/setup/createPrettierignoreStep";
 import { createPrettierStep } from "#prettier/setup/createPrettierStep";
@@ -123,6 +124,7 @@ export const init = defineCommand((command) => {
           createPackageStep(),
           createDependencyStep(),
           createWorkspaceStep(),
+          createPnpmStep(),
           createBuildToolStep(),
           createVitestStep(),
           createVitestCoverageStep(),
