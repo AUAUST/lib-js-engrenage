@@ -35,3 +35,5 @@ Deferred questions, bugs, tasks and improvements.
 - [coding-style](coding-style.md): Local coding conventions and linting.
 - [utils](utils.md): Shared public helpers in `src/utils/` and their placement.
 - [vitest](vitest.md): Generated Vitest configuration.
+- [cli](cli.md): The `engrenage` command line: init and sync flows and failure reporting.
+- [agents](agents.md): Shared agent fragments and their init and sync consumers.
