@@ -325,6 +325,17 @@ export function createResolvedConfig({
   const source = once(() => {
     const environment = resolveEnvironment("src", defaultSourceDirectories);
 
+    const runtime = once(() => {
+      const option = raw.src === false ? undefined : (raw.src ?? {});
+
+      return option !== undefined &&
+        (environment.active ||
+          option.baseline !== undefined ||
+          option.node !== undefined)
+        ? resolveSourceRuntime(option)
+        : undefined;
+    });
+
     return freeze(
       compose(
         {
@@ -332,16 +343,7 @@ export function createResolvedConfig({
           exports: raw.src === false ? undefined : raw.src?.exports,
         },
         compose.getters({
-          runtime: () => {
-            const option = raw.src === false ? undefined : (raw.src ?? {});
-
-            return option !== undefined &&
-              (environment.active ||
-                option.baseline !== undefined ||
-                option.node !== undefined)
-              ? resolveSourceRuntime(option)
-              : undefined;
-          },
+          runtime,
           apis: () => {
             return raw.src === false ? [] : resolveSourceApis(raw.src?.apis);
           },

@@ -164,9 +164,37 @@ describe("runtime tsconfig fields", () => {
     }).toThrow("is after the current month");
   });
 
-  test("fails without src.baseline, naming the current month", () => {
-    expect(() => resolveSourceRuntime({})).toThrow(
-      /src\.baseline is required: set it to \d{4}-\d{2}/,
+  test("leaves the runtime fields alone without src.baseline", () => {
+    const project = createTemporaryProject({
+      "package.json": "{}",
+      "src/index.ts": "",
+      "tsconfig.json": "{}",
+      "tsconfig.src.json": JSON.stringify({
+        compilerOptions: { lib: ["ES2022"] },
+      }),
+    });
+
+    const config = createResolvedConfig({
+      root: project.root,
+      raw: validate(configSchema, {}, "test config"),
+      configFile: undefined,
+    });
+
+    syncTsconfigFiles(config);
+    config.filesystem.flush();
+
+    const options = JSON.parse(
+      project.read("tsconfig.src.json"),
+    ).compilerOptions;
+
+    expect(options.lib).toEqual(["ES2022"]);
+    expect(options).not.toHaveProperty("noLib");
+    expect(options).not.toHaveProperty("types");
+  });
+
+  test("rejects src.apis without src.baseline", () => {
+    expect(() => resolveSourceRuntime({ apis: ["timers"] })).toThrow(
+      /src\.apis only applies to a baseline runtime/,
     );
   });
 

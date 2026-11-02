@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { syncPackageJson } from "#config/setup/syncPackageJson";
 import { loadConfig } from "#config/utils/loadConfig";
@@ -134,17 +134,31 @@ describe("syncPackageJson", () => {
     expect(() => syncPackageJson(resolved)).not.toThrow();
   });
 
-  test("fails for an active src without src.baseline", async () => {
+  test("syncs an active src without src.baseline, warning and leaving engines out", async () => {
+    const warn = vi.spyOn(console, "warn");
+
     const project = createTemporaryProject({
       "package.json": JSON.stringify({ type: "module" }),
-      "engrenage.config.ts": "export default {};",
+      "engrenage.config.ts": "export default { bin: false };",
       "src/index.ts": "",
     });
 
     const resolved = await loadConfig(project.root);
 
-    expect(() => resolved.src.runtime).toThrow(
-      /src\.baseline is required: set it to \d{4}-\d{2}/,
+    expect(resolved.src.runtime).toBeUndefined();
+    expect(resolved.src.runtime).toBeUndefined();
+
+    expect(warn).toHaveBeenCalledOnce();
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringMatching(/src\.baseline is not set.*set it to \d{4}-\d{2}/),
+    );
+
+    syncPackageJson(resolved);
+    resolved.filesystem.flush();
+
+    expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
+      "engines",
     );
   });
 });

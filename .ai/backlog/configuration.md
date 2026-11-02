@@ -31,9 +31,3 @@ Project configuration contract: environments, option shapes and list options.
 - Context: recent commit `fix: tests timeout in CI` changed a timeout; the value is fixed rather than a configuration option.
 - Expected: the CI/test timeout is a configuration option, overridable per environment (see the environment model in `configuration.1`), with the current value as default.
 - Done when the timeout is set through the project configuration, per environment, and no generated config hardcodes it.
-
-## 5. `src.baseline` is mandatory, and its absence fails `engrenage sync` and init.
-
-- Matter: without `src.baseline`, `engrenage sync` (run by consumers' `prepare` script) throws `Error: src.baseline is required: set it to 2026-11, the current month` with a stack trace and fails.
-- Expected: the baseline is optional. What depends on it (libs and target generation) is skipped when it is unset, with a warning that suggests setting it to the current month; no outright failure. Related to `cli.1` (error presentation).
-- Done when a project without `src.baseline` syncs successfully, skips what needs it and warns, with a test.

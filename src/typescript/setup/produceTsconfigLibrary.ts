@@ -14,7 +14,14 @@ export function produceTsconfigLibrary(
     return [];
   }
 
-  if (resolveTsconfigRuntime(config, key).kind === "baseline") {
+  const runtime = resolveTsconfigRuntime(config, key);
+
+  // @debt without a runtime the lib, noLib and types an earlier baseline sync wrote stay in the file, so removing src.baseline keeps its libraries
+  if (runtime === undefined && (option == null || option === true)) {
+    return [];
+  }
+
+  if (runtime?.kind === "baseline") {
     if (option !== undefined && !isBoolean(option)) {
       throw new Error(
         `${key}.tsconfig.lib is not accepted for a baseline runtime: its built-ins come from typescript-baseline-lib, and ${key}.tsconfig.types lists further declarations such as @types/web`,

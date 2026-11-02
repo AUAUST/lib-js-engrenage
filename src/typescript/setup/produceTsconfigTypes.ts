@@ -4,15 +4,17 @@ import { resolveListOption } from "#config/utils/resolveListOption";
 import { engrenage } from "#constants";
 import { resolveTsconfigRuntime } from "#typescript/utils/resolveTsconfigRuntime";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { TsconfigKey } from "#config/types/TsconfigKey";
+import type { Runtime } from "#config/types/Runtime";
 import type { JsonEdit } from "#support/json/types/JsonEdit";
 import type { TsconfigTarget } from "#typescript/types/TsconfigTarget";
 
 function listDefaultTypes(
   config: ResolvedConfig,
-  key: TsconfigKey,
+  runtime: Runtime | undefined,
 ): readonly string[] {
-  const runtime = resolveTsconfigRuntime(config, key);
+  if (runtime === undefined) {
+    return [];
+  }
 
   if (runtime.kind === "node") {
     return ["node"];
@@ -32,9 +34,15 @@ export function produceTsconfigTypes(
     return [];
   }
 
+  const runtime = resolveTsconfigRuntime(config, key);
+
+  if (runtime === undefined && (option == null || option === true)) {
+    return [];
+  }
+
   const types = resolveListOption(
     option,
-    () => listDefaultTypes(config, key),
+    () => listDefaultTypes(config, runtime),
     `${key}.tsconfig.types`,
   );
 

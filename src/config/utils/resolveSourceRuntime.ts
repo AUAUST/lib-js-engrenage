@@ -10,7 +10,7 @@ export function resolveSourceRuntime(option: {
   baseline?: string | undefined;
   node?: number | undefined;
   apis?: unknown;
-}): Runtime {
+}): Runtime | undefined {
   const { baseline, node, apis } = option;
 
   if (baseline !== undefined && node !== undefined) {
@@ -29,10 +29,18 @@ export function resolveSourceRuntime(option: {
     return resolveNodeRuntime(node, "src.node");
   }
 
-  if (baseline === undefined) {
+  if (baseline === undefined && apis !== undefined) {
     throw new Error(
-      `src.baseline is required: set it to ${findCurrentMonth()}, the current month`,
+      `src.apis only applies to a baseline runtime: set src.baseline, for instance to ${findCurrentMonth()}, the current month`,
     );
+  }
+
+  if (baseline === undefined) {
+    console.warn(
+      `src.baseline is not set, so the src tsconfig gets no baseline libraries or types and the build no target: set it to ${findCurrentMonth()}, the current month`,
+    );
+
+    return undefined;
   }
 
   return freeze({
