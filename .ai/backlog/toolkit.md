@@ -33,3 +33,34 @@ Upstream @auaust/toolkit decisions that may affect engrenage.
 - Decided: option (d). Engrenage ships `disposable` and `float16` `src.apis` groups that never leak into a library's published declarations (#128, plan #119); #127 verifies them on a scratch copy of toolkit.
 - Remaining: toolkit adds `disposable` and `float16` to its `src.apis` in its own migration, once the release is out.
 - Done when toolkit's `engrenage.config.ts` enables both groups.
+
+## 5. Toolkit has no `error` domain for handling thrown values.
+
+- Context: the `errors` module exports only `PipelineError`, `ReadonlyError` and `StateError`. Engrenage code that handles `unknown` thrown values works around the gap with `instanceof Error`, hand-rolled `String(value)` descriptions and try/catch blocks (`src/support/commander/utils/formatCommandError.ts`, `src/support/commander/utils/runProgram.ts`).
+- Request: consider an `error` domain hosting error-handling helpers. It would be the home of entries 6 and 7 and could absorb the existing error classes; whether it replaces or sits beside `errors` is open.
+- Done when toolkit decides whether the domain exists, and engrenage's workarounds move to what it exports or are kept with a stated reason.
+
+## 6. Toolkit has no `isError` instance check.
+
+- Request: an `isError` guard (`value is Error`) in toolkit, probably in the `error` domain of entry 5. Toolkit has none today.
+- Context: engrenage uses `instanceof Error` on `unknown` caught values (`src/support/commander/utils/formatCommandError.ts`, `src/support/commander/utils/runProgram.ts`).
+- Open: whether it only checks `instanceof Error` or also covers cross-realm errors and error-like objects.
+- Done when toolkit exports it and engrenage's `instanceof Error` checks use it.
+
+## 7. Toolkit could offer `successful()` to run a callback and wrap the thrown value.
+
+- Request: a `successful(callback, onError?)` helper. It runs the callback in a try/catch, returns the callback's value on success and otherwise the second argument; when that argument is a function, it receives the error.
+- Context: catching in JavaScript is awkward because the caught value is `unknown`.
+- Open options for the error handed to the second argument:
+  - A: forward the thrown value when it is an `Error`, and otherwise pass a custom wrapper error holding the original thrown value as its source.
+  - B: always pass the custom wrapper error, exposing an interface that tells whether the underlying value was an `Error`, so callers need no `unknown` handling.
+- Open: the wrapper error's name and shape, and whether it belongs to the `error` domain of entry 5.
+- Done when toolkit decides between the options and exports the helper, and engrenage's try/catch blocks around `unknown` errors use it.
+
+## 8. Toolkit could offer `describe()` and a debug-representation protocol.
+
+- Request 1: a `describe()` stringifier for debugging that turns any value into a useful representation for debug logs. Engrenage hand-rolls `String(value)` descriptions of thrown values (`src/support/commander/utils/formatCommandError.ts`).
+- Request 2: a debug-representation protocol, alongside `toJSON`, `valueOf`, `toString` and the custom symbols Node registers, giving any value a standard way to represent itself and allow customization. `describe()` would consume it.
+- Context: those existing hooks can still be limited for this purpose, so a custom toolkit protocol is not excluded. Toolkit has a `protocol` module with `ProtocolRegistry`, a possible home; whether it fits is open.
+- Open: whether the protocol builds on the existing hooks, a toolkit-specific symbol, or both; whether `describe()` lives in the `error` domain of entry 5 or a general one.
+- Done when toolkit decides on both requests and engrenage's hand-rolled descriptions use `describe()`.
