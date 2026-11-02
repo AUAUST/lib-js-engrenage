@@ -29,6 +29,17 @@ function expandUnionIssue(issue: BaseIssue<unknown>): BaseIssue<unknown>[] {
   return branchIssues.length === 0 ? [issue] : branchIssues;
 }
 
+function describeIssue(issue: BaseIssue<unknown>): BaseIssue<unknown> {
+  if (issue.type === "strict_object" && issue.expected === "never") {
+    return {
+      ...issue,
+      message: `Unknown key ${issue.received}`,
+    };
+  }
+
+  return issue;
+}
+
 export function validate<Schema extends GenericSchema>(
   schema: Schema,
   input: unknown,
@@ -39,9 +50,9 @@ export function validate<Schema extends GenericSchema>(
   if (!result.success) {
     const [issue, ...issues] = result.issues;
 
-    const [first = issue, ...others] = [issue, ...issues].flatMap(
-      expandUnionIssue,
-    );
+    const [first = issue, ...others] = [issue, ...issues]
+      .flatMap(expandUnionIssue)
+      .map(describeIssue);
 
     throw new Error(`Invalid ${subject}:\n${summarize([first, ...others])}`);
   }

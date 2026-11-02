@@ -230,6 +230,7 @@ describe("loadConfig", () => {
     const error = loadConfig(root);
 
     await expect(error).rejects.toThrow(join(root, "engrenage.config.ts"));
+    await expect(error).rejects.toThrow('Unknown key "sources"');
     await expect(error).rejects.toThrow("at sources");
     await expect(error).rejects.toThrow("at src.generatd");
   });
