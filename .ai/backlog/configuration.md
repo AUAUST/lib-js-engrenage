@@ -32,7 +32,7 @@ Project configuration contract: environments, option shapes and list options.
   1. Suspected, not confirmed: `loadConfig`'s per-directory cache holds a config loaded before init wrote the config file.
   2. Confirmed: the resolved config reads the base tsconfig's `outDir` from disk, while sync now creates the base `tsconfig.json` itself. The first sync pass therefore wrote the ignore files and `package.json` without `/dist`. `init` works around it by running sync twice with a cache flush between, marked with `@debt`.
 - Expected: the resolved config reads pending writes (the files a sync run is about to produce) instead of the disk, so one sync pass is consistent; `init` then runs sync once without a flush. Settle first whether cause 1 is real and whether `loadConfig` needs a cache at all.
-- Related: issue #70's acceptance item "sync --check passes right after init" is unmet; its test asserts a tsconfig-only check instead. Related to `typescript.4`.
+- Related: issue #70's acceptance item "sync --check passes right after init" is unmet; its test asserts a tsconfig-only check instead.
 - Done when `engrenage sync --check` passes right after `engrenage init --yes` in a fresh project, the double sync and its `@debt` marker are gone, and the test asserts the full check.
 
 ## 5. CI and test timeouts are not configurable, nor per environment.

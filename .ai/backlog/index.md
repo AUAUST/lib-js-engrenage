@@ -27,7 +27,7 @@ Deferred questions, bugs, tasks and improvements.
 - [agent-instructions](agent-instructions.md): Agent instruction resolution and synchronization.
 - [toolkit](toolkit.md): Upstream @auaust/toolkit decisions that may affect engrenage.
 - [configuration](configuration.md): Project configuration contract: environments, option shapes and list options.
-- [typescript](typescript.md): Generated tsconfigs: include globs, managed fields, checks and variant resolution.
+- [typescript](typescript.md): Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - [tsdown](tsdown.md): Generated tsdown build configuration: entries, outputs and declaration files.
 - [package-json](package-json.md): Published package contents and fields derived by the sync `package` target.
 - [file-editing](file-editing.md): In-memory editing of JSON and YAML files in the codegen tooling.

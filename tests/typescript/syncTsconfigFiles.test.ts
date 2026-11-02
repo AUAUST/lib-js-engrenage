@@ -168,6 +168,62 @@ describe("syncTsconfigFiles", () => {
     });
   });
 
+  test("writes in the tests.dist tsconfig only the fields that differ from the tests tsconfig", () => {
+    const { project, config } = createProject(
+      {},
+      {
+        "tests/index.test.ts": "",
+        "tsconfig.json": "{}",
+        "tsconfig.tests.dist.json": JSON.stringify({
+          include: ["stale/**/*.ts"],
+          compilerOptions: {
+            target: "ES5",
+            lib: ["ES5"],
+            strict: true,
+          },
+        }),
+      },
+    );
+
+    config.filesystem.flush();
+
+    expect(JSON.parse(project.read("tsconfig.tests.dist.json"))).toEqual({
+      extends: "./tsconfig.tests.json",
+      compilerOptions: {
+        strict: true,
+        paths: {},
+        skipLibCheck: false,
+        tsBuildInfoFile:
+          "./node_modules/.cache/typescript/tsconfig.tests.dist.tsbuildinfo",
+      },
+    });
+  });
+
+  test("keeps the inherited fields of a tests.dist tsconfig that configures them", () => {
+    const { project, config } = createProject(
+      {
+        tests: {
+          dist: {
+            tsconfig: { lib: ["ES2025", "DOM"] },
+          },
+        },
+      },
+      {
+        "tests/index.test.ts": "",
+        "tsconfig.json": "{}",
+      },
+    );
+
+    config.filesystem.flush();
+
+    const { include, compilerOptions } = JSON.parse(
+      project.read("tsconfig.tests.dist.json"),
+    );
+
+    expect(include).toBeUndefined();
+    expect(compilerOptions.lib).toEqual(["ES2025", "DOM"]);
+  });
+
   test("reports drift without writing under --check", () => {
     const { project, config } = createProject({}, files);
 

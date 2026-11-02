@@ -5,6 +5,7 @@ import { tsconfigEnvironments } from "#config/constants";
 import { emptyObjectFile } from "#support/json/constants";
 import { applyJsonEdits } from "#support/json/utils/applyJsonEdits";
 import { tsconfigProducers } from "#typescript/setup/tsconfigProducers";
+import type { ManagedListOption } from "#config/types/ManagedListOption";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { TsconfigKey } from "#config/types/TsconfigKey";
 import type { JsonEdit } from "#support/json/types/JsonEdit";
@@ -117,6 +118,42 @@ function listPaths({
   });
 }
 
+function isDefaultOption(option: ManagedListOption<string> | undefined) {
+  return option == null || option === true;
+}
+
+function inheritsTestsTsconfig(
+  config: ResolvedConfig,
+  target: TsconfigTarget,
+): boolean {
+  return (
+    target.key === "tests.dist" &&
+    config.tests.tsconfig.owner === "tests" &&
+    isDefaultOption(target.extends)
+  );
+}
+
+function listInheritedPaths(
+  config: ResolvedConfig,
+  target: TsconfigTarget,
+): readonly string[][] {
+  if (!inheritsTestsTsconfig(config, target)) {
+    return [];
+  }
+
+  const inheritedLists = [
+    [["include"], target.include],
+    [["exclude"], target.exclude],
+    [["compilerOptions", "target"], undefined],
+    [["compilerOptions", "lib"], target.lib],
+    [["compilerOptions", "types"], target.types],
+  ] as const;
+
+  return flatMap(inheritedLists, ([path, option]) => {
+    return isDefaultOption(option) ? [[...path]] : [];
+  });
+}
+
 function isLeftAlone(edit: JsonEdit, leftAlone: readonly string[]): boolean {
   const path = edit.path.join(".");
 
@@ -142,9 +179,22 @@ function createEdits(
 ): readonly JsonEdit[] {
   const leftAlone = [...listPaths(target), ...target.unmanaged];
 
-  const managed = flatMap(tsconfigProducers, (produce) => {
+  const inherited = map(
+    listInheritedPaths(config, target),
+    (path): JsonEdit => {
+      return { path, value: undefined };
+    },
+  );
+
+  const inheritedPaths = map(inherited, ({ path }) => path.join("."));
+
+  const produced = flatMap(tsconfigProducers, (produce) => {
     return produce(config, target);
   }).filter((edit) => {
+    return !isLeftAlone(edit, inheritedPaths);
+  });
+
+  const managed = [...produced, ...inherited].filter((edit) => {
     return !isLeftAlone(edit, leftAlone);
   });
 
