@@ -2,8 +2,10 @@ import { describe, expect, test, vi } from "vitest";
 
 import { syncPackageJson } from "#config/setup/syncPackageJson";
 import { loadConfig } from "#config/utils/loadConfig";
-import { readSharedPnpmRange } from "#support/packageJson/utils/readSharedPnpmRange";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { readTestPnpmVersions } from "#tests/helpers/readTestPnpmVersions";
+
+const versions = readTestPnpmVersions();
 
 async function sync(
   config: string,
@@ -188,39 +190,42 @@ describe("syncPackageJson pnpm warnings", () => {
   }
 
   test("suggests the upgrade command below the range without failing the check", async () => {
-    const { resolved, messages } = await warnings(declare("^10.0.0"));
+    const { resolved, messages } = await warnings(
+      declare(`^${versions.previousMajor}`),
+    );
 
     expect(messages).toEqual([
       expect.stringContaining("engrenage pnpm upgrade"),
     ]);
 
-    expect(messages[0]).toContain("pnpm ^10.0.0 is below");
-    expect(resolved.filesystem.read("package.json")).not.toContain("^11");
+    expect(messages[0]).toContain(`pnpm ^${versions.previousMajor} is below`);
+
+    expect(resolved.filesystem.read("package.json")).not.toContain(
+      `^${versions.floor}`,
+    );
   });
 
   test("suggests updating engrenage for a higher major", async () => {
-    const { messages } = await warnings(declare("^12.0.0"));
+    const { messages } = await warnings(declare(`^${versions.nextMajor}`));
 
     expect(messages).toEqual([expect.stringContaining("update engrenage")]);
   });
 
   test("warns below the floor within the major", async () => {
-    const { messages } = await warnings(declare("^11.0.0"));
+    const { messages } = await warnings(declare(`^${versions.belowFloor}`));
 
     expect(messages).toEqual([expect.stringContaining("is below")]);
   });
 
   test("stays silent for engrenage's floor", async () => {
-    const { messages } = await warnings(
-      declare(`^${readSharedPnpmRange().floor}`),
-    );
+    const { messages } = await warnings(declare(`^${versions.floor}`));
 
     expect(messages).toEqual([]);
   });
 
   test("warns about a legacy field below the range and an only-allow script", async () => {
     const { messages } = await warnings({
-      packageManager: "pnpm@10.26.0",
+      packageManager: `pnpm@${versions.previousMajor}`,
       scripts: { preinstall: "npx only-allow pnpm" },
     });
 

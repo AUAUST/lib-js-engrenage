@@ -14,6 +14,7 @@ import { sync } from "#bin/engrenage/sync";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { linkSourcePackage } from "#tests/helpers/linkSourcePackage";
 import { mockCwd } from "#tests/helpers/mockCwd";
+import { readTestPnpmVersions } from "#tests/helpers/readTestPnpmVersions";
 import { runCommand } from "#tests/helpers/runCommand";
 
 import * as prompts from "#support/scaffold/utils/createPrompter";
@@ -23,7 +24,7 @@ import manifest from "#package.json" with { type: "json" };
 vi.mock(import("node:child_process"));
 
 vi.mock(import("#pnpm/utils/resolveLatestPnpm"), () => {
-  return { resolveLatestPnpm: () => "11.99.0" };
+  return { resolveLatestPnpm: () => readTestPnpmVersions().latest };
 });
 
 function createProject(files: Record<string, string>) {
@@ -506,7 +507,7 @@ describe("engrenage init", () => {
         JSON.parse(project.read("package.json")).devEngines.packageManager,
       ).toEqual({
         name: "pnpm",
-        version: "^11.99.0",
+        version: `^${readTestPnpmVersions().latest}`,
         onFail: "download",
       });
 

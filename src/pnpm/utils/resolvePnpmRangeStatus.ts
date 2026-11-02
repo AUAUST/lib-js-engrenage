@@ -19,6 +19,7 @@ export function resolvePnpmRangeStatus(
   const sharedMajor = parseMajorVersion(floor);
   const major = parseMajorVersion(specifier);
 
+  // @debt an unparseable project or shared pnpm specifier counts as within the range instead of being reported
   if (major === undefined || sharedMajor === undefined) {
     return "within";
   }

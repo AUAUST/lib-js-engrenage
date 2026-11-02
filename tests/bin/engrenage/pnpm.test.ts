@@ -6,10 +6,13 @@ import { resolveLatestPnpm } from "#pnpm/utils/resolveLatestPnpm";
 import { readSharedPnpmRange } from "#support/packageJson/utils/readSharedPnpmRange";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
+import { readTestPnpmVersions } from "#tests/helpers/readTestPnpmVersions";
 import { runCommand } from "#tests/helpers/runCommand";
 
 vi.mock("#pnpm/utils/resolveLatestPnpm");
 vi.mock("#pnpm/utils/installDependencies");
+
+const versions = readTestPnpmVersions();
 
 function createProject(manifest: object) {
   const project = createTemporaryProject({
@@ -19,7 +22,7 @@ function createProject(manifest: object) {
 
   mockCwd(project.root);
 
-  vi.mocked(resolveLatestPnpm).mockReturnValue("11.28.8");
+  vi.mocked(resolveLatestPnpm).mockReturnValue(versions.latest);
 
   return project;
 }
@@ -32,7 +35,7 @@ afterEach(() => {
 describe("engrenage pnpm upgrade", () => {
   test("replaces the legacy declaration and the only-allow script", async () => {
     const project = createProject({
-      packageManager: "pnpm@10.26.0",
+      packageManager: `pnpm@${versions.previousMajor}`,
       scripts: { preinstall: "npx only-allow pnpm", build: "tsdown" },
     });
 
@@ -47,7 +50,7 @@ describe("engrenage pnpm upgrade", () => {
 
     expect(manifest.devEngines.packageManager).toEqual({
       name: "pnpm",
-      version: "^11.28.8",
+      version: `^${versions.latest}`,
       onFail: "download",
     });
 
@@ -59,7 +62,7 @@ describe("engrenage pnpm upgrade", () => {
       devEngines: {
         packageManager: {
           name: "pnpm",
-          version: "^11.0.0",
+          version: `^${versions.belowFloor}`,
           onFail: "error",
         },
       },
@@ -73,7 +76,7 @@ describe("engrenage pnpm upgrade", () => {
       JSON.parse(project.read("package.json")).devEngines.packageManager,
     ).toEqual({
       name: "pnpm",
-      version: "^11.28.8",
+      version: `^${versions.latest}`,
       onFail: "error",
     });
 
@@ -87,7 +90,7 @@ describe("engrenage pnpm upgrade", () => {
   test("warns for a project ahead of the range and moves it back with --yes", async () => {
     const project = createProject({
       devEngines: {
-        packageManager: { name: "pnpm", version: "^12.0.0" },
+        packageManager: { name: "pnpm", version: `^${versions.nextMajor}` },
       },
     });
 
@@ -109,6 +112,6 @@ describe("engrenage pnpm upgrade", () => {
     expect(
       JSON.parse(project.read("package.json")).devEngines.packageManager
         .version,
-    ).toBe("^11.28.8");
+    ).toBe(`^${versions.latest}`);
   });
 });
