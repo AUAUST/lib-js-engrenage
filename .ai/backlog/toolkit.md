@@ -64,3 +64,8 @@ Upstream @auaust/toolkit decisions that may affect engrenage.
 - Context: those existing hooks can still be limited for this purpose, so a custom toolkit protocol is not excluded. Toolkit has a `protocol` module with `ProtocolRegistry`, a possible home; whether it fits is open.
 - Open: whether the protocol builds on the existing hooks, a toolkit-specific symbol, or both; whether `describe()` lives in the `error` domain of entry 5 or a general one.
 - Done when toolkit decides on both requests and engrenage's hand-rolled descriptions use `describe()`.
+
+## 8. Toolkit could offer a `semver` domain
+
+- Request: a `semver` domain in toolkit that provides utilities for parsing, comparing, and manipulating semantic versions. It should try to rely on existing standards and conventions, ideally wrapping or re-exporting a well-known semver library under the toolkit's structure and conventions.
+- Because toolkit aims to provide utilities, not frameworks, it should focus on offering a consistent and reliable set of tools, not a whole semver framework or class. It should allow to extract the major, minor, and patch components, optionally variants like alpha, beta, or rc, and return them as structured objects or tuples; other helpers that manipulate or compare versions should work with these structured representations rather than raw strings; it should not implement a full class with methods for every operation.
