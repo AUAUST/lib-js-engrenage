@@ -554,3 +554,42 @@ describe("createTsdownConfig", () => {
     );
   });
 });
+
+describe("createTsdownConfig plugins", () => {
+  function pluginNames(plugins: unknown): string[] {
+    return (plugins as { name: string }[]).map(({ name }) => name);
+  }
+
+  test("lists the empty-namespaces plugins by default and omits them when switched off", async () => {
+    const config = await loadConfig(root);
+
+    expect(
+      pluginNames(createTsdownConfig(config, { ci: false }).plugins),
+    ).toEqual([
+      "engrenage:empty-namespaces:find",
+      "engrenage:empty-namespaces:declare",
+    ]);
+
+    expect(
+      createTsdownConfig(
+        config,
+        {
+          ci: false,
+        },
+        {
+          plugins: { "empty-namespaces": false },
+        },
+      ).plugins,
+    ).toEqual([]);
+  });
+
+  test("rejects an unknown plugin name with the known names", async () => {
+    const config = await loadConfig(root);
+
+    expect(() => {
+      return createTsdownConfig(config, { ci: false }, {
+        plugins: { unknown: false },
+      } as never);
+    }).toThrow(/empty-namespaces/);
+  });
+});
