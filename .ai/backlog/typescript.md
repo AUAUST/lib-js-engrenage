@@ -25,9 +25,3 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 
 - Matter: declarations used by several groups live in `data/apis/shared/common.d.ts`, so enabling `url` also declares `ReadableStream` and the other shared roots even when `streams` is not enabled. Types are harmless but the global surface is wider than the selected groups.
 - Done when shared roots are split so a group declares only its own roots and their closure, or the wider surface is accepted.
-
-## 5. `src.apis` does not list the available APIs.
-
-- Matter: developers cannot tell which groups and endpoints `src.apis` offers (`timers`, `performance`, `crypto`, `console`, `url`, `encoding`, `events`, `abort`, `exceptions`, `microtasks`, `streams`, `compression`, `blob`), nor what each declares.
-- Expected: the option's documentation lists every group with what it declares, derived from the generated data rather than a hand-kept list. Related to `configuration.2` (per-field documentation).
-- Done when a consumer can see the available `src.apis` groups and their contents from the option's documentation.
