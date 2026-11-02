@@ -1,7 +1,7 @@
 import { symlinkSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { tsc } from "#bin/engrenage/tsc";
 import { configSchema } from "#config/config/schemas/configSchema";
@@ -155,10 +155,6 @@ describe(
   "engrenage typecheck on a synced project",
   { timeout: binaryTimeout },
   () => {
-    afterEach(() => {
-      process.exitCode = undefined;
-    });
-
     const options = {
       strict: true,
       module: "ESNext",

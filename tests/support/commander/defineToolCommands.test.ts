@@ -66,8 +66,6 @@ function createProject(files: Record<string, string> = {}) {
 
 afterEach(() => {
   vi.restoreAllMocks();
-
-  process.exitCode = undefined;
 });
 
 describe("defineToolCommands", () => {

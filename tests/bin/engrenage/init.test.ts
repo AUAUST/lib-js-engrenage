@@ -83,8 +83,6 @@ beforeEach(() => {
 afterEach(() => {
   vi.clearAllMocks();
   vi.restoreAllMocks();
-
-  process.exitCode = undefined;
 });
 
 describe("engrenage init", () => {

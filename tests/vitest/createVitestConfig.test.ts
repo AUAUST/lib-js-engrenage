@@ -181,6 +181,8 @@ describe("createVitestConfig type checking", () => {
       ).toBeGreaterThan(0);
     } finally {
       await vitest.close();
+
+      process.exitCode = undefined;
     }
   });
 });

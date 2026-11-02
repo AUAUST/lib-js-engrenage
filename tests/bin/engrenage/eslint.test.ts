@@ -34,8 +34,6 @@ function readRecordedArgs(project: ReturnType<typeof createProject>): unknown {
 describe("engrenage eslint", () => {
   afterEach(() => {
     vi.restoreAllMocks();
-
-    process.exitCode = undefined;
   });
 
   test("caches results in node_modules", async () => {

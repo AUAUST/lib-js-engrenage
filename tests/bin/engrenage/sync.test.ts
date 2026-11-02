@@ -39,8 +39,6 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
-
-  process.exitCode = undefined;
 });
 
 describe("engrenage sync", () => {

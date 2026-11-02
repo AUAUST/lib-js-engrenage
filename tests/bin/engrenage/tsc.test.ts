@@ -1,7 +1,7 @@
 import { symlinkSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { tsc } from "#bin/engrenage/tsc";
 import { binaryTimeout } from "#tests/helpers/binaryTimeout";
@@ -60,10 +60,6 @@ function createSolution(
 }
 
 describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
-  afterEach(() => {
-    process.exitCode = undefined;
-  });
-
   test("checks every project referenced by a solution tsconfig", async () => {
     vi.spyOn(console, "info").mockImplementation(() => {});
 
@@ -90,10 +86,6 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
 });
 
 describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
-  afterEach(() => {
-    process.exitCode = undefined;
-  });
-
   test("skips an environment with check: false", async () => {
     vi.spyOn(console, "info").mockImplementation(() => {});
 
@@ -134,10 +126,6 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
 });
 
 describe("engrenage typecheck:dist", { timeout: binaryTimeout }, () => {
-  afterEach(() => {
-    process.exitCode = undefined;
-  });
-
   test("checks the tests.dist variant", async () => {
     vi.spyOn(console, "info").mockImplementation(() => {});
 

@@ -7,3 +7,8 @@ import { beforeEach, vi } from "vitest";
 beforeEach(() => {
   vi.spyOn(console, "warn").mockImplementation(() => {});
 });
+
+// `process.exitCode` is global and tests share workers, so no test may observe another's exit code.
+beforeEach(() => {
+  process.exitCode = undefined;
+});

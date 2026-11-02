@@ -33,8 +33,6 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
-
-  process.exitCode = undefined;
 });
 
 describe("support codegen barrels", () => {
