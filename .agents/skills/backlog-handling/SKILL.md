@@ -13,7 +13,7 @@ Bring the backlog up to date with what you are given and file the entries that a
 
 Cite backlog IDs only in the backlog and in your report: they are neither stable nor unique. Update references within the backlog whenever IDs change.
 
-You also take entries from the debt backlog `.ai/debt.md`, which the banker fills. Move each entry you are given out of `.ai/debt.md` into the backlog category that owns the affected code, keeping its problem, sites and other locations, or file it under **Filing issues**. Number the remaining debt entries again.
+You also take entries from the debt backlog `.ai/debt.md`, which the banker fills. Move each entry you are given out of `.ai/debt.md` into the backlog category that owns the affected code, keeping its claim, sites and bullets, or file it under **Filing issues**. Number the remaining debt entries again.
 
 ## Procedure
 

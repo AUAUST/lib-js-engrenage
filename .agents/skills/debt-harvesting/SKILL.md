@@ -25,12 +25,10 @@ Cite debt IDs (`debt.N`) only in `.ai/debt.md` and in your report: they are neit
 `.ai/debt.md` is an intake queue organised by kind, not by subsystem. Create it on your first harvest.
 
 - It opens with a short header saying what it holds, and that an entry is removed once a backlog entry or GitHub issue tracks it, or once its fix lands.
-- Entries use `## N. Title`, numbered from 1, with IDs `debt.N`.
-- Each entry states:
-  - the observed problem;
-  - the marker sites it came from, as `file:line`;
-  - the other locations that would benefit, which you found;
-  - a suggested fix, only when one is obvious.
+- Entries use `## N. Title`, numbered from 1, with IDs `debt.N`. The title states the problem as a claim.
+- Under the title, list the marker sites as `file:line`, then at most three keyword bullets (`why`, `want`, `done`), following the backlog's entry shape. Add:
+  - the other locations that would benefit, which you found, as further sites;
+  - a suggested fix as `want`, only when one is obvious.
 - Markers stay in the code until the fix lands, as its list of sites. Never remove or edit them.
 
 Stop where an entry needs more than recording: choosing between options, designing a change or implementing it. Leave that part in the entry and report it.

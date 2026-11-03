@@ -2,7 +2,7 @@
 
 Shared agent instructions, skills and the backlog conventions.
 
-## 1. Commit messages should prefer commas over "and".
+## 1. The `git.md` rule fragment should prefer commas over "and" when listing.
 
-- Matter: the commit message rules (`git.md` rule fragment) say to name what changes have in common when "and" would be needed; they should also prefer comma separation to "and" when listing.
-- Done when the shared git rule states it and `pnpm engrenage sync agents` has propagated it.
+- why: it says to name what changes have in common when "and" would be needed, but not to separate list items with commas.
+- done: the shared git rule states it and `pnpm engrenage sync agents` has propagated it.

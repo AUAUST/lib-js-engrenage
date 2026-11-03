@@ -14,7 +14,8 @@ Deferred questions, bugs, tasks and improvements.
 
 - Use headings `## N. Title`, numbered consecutively from 1 within each category. The ID is `<filename without .md>.N`, for example `primitive-kit.1`.
 - After adding, removing or moving entries, renumber affected categories and update entry references.
-- State the matter, relevant context, expected outcome and completion or obsolescence condition. Field labels and proposed fixes are optional.
+- Write the title as the claim: the problem or need, stated exactly.
+- Follow it with at most three keyword bullets: `why` (context), `want` (expected outcome), `done` (completion or obsolescence condition). Drop a bullet the title already states.
 - Update existing entries instead of duplicating them. Remove resolved or obsolete entries; delete empty categories and their index links.
 - Once a GitHub issue tracks an entry's work, remove the entry, or reduce it to the work the issue leaves here and link the issue.
 
