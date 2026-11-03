@@ -41,3 +41,9 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - Problem: `syncEditions` fails with "add it to `esMemberCompatKeys` or `esInterfaceAliases`" whenever a new lib declaration has no web-features key, so the table is edited by hand after each failure. Entries repeat one key per interface (for example every `X.@@toStringTag` and the `Intl.NumberFormatPartTypeRegistry.*` members) and the long compat paths are repeated verbatim.
 - Candidate answers: group entries by pattern or by interface so each key is stated once; or move the table next to the generated `src/typescript/generated/editions.ts` source data; or derive more keys from web-features in `syncEditions` so fewer need listing. Whether the table can be generated at all is open and needs a look at how web-features names these members. The table reads as generated data in disguise; if it cannot be derived, its maintenance should still be automated to avoid manual errors.
 - Done when the table is grouped or derived so each key appears once and maintaining it needs no per-interface duplication.
+
+## 7. No canonical key ordering for generated tsconfigs.
+
+- Matter: `package.json` has a canonical field order; tsconfigs have none.
+- Expected: a canonical ordering for tsconfig keys (top-level and `compilerOptions`), applied by the sync target, like the `package.json` one.
+- Done when generated tsconfigs follow the documented order and sync keeps it.

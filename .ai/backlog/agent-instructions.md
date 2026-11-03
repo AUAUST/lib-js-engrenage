@@ -19,8 +19,15 @@ Shared agent instructions, skills and the backlog conventions.
 - Open: skill name and its place among `data/agents/skills/`.
 - Done when the skill exists in the shared fragments and is synced.
 
-## 3. Backlog entries are too verbose to scan.
+## 3. Backlog entries and GitHub issues are too verbose to scan.
 
-- Matter: entries should be much denser and more concise.
-- Expected: the entry instructions (`index.md` source and backlogger skill) push toward short entries, and existing entries are tightened.
-- Done when the instructions state it and verbose entries are shortened.
+- Matter: entries should be much denser; agents currently open many issues of about two pages each, which overwhelms. Entries must stay clear and exhaustive, not be compacted at any cost.
+- Expected: instructions (`index.md` source, backlogger and planner skills, issue-writing guidance) push toward keyword-style content (key points, actions, context) over long explanatory sentences, applied to both backlog entries and GitHub issues. Finding the right phrasing is part of the work.
+- Done when the instructions state it, and verbose entries are shortened.
+
+## 4. Agent instructions could shrink to axioms backed by explicit tooling.
+
+- Matter: with explicit project-structure config and lint rules whose reports say what is violated and how to fix it, several instructions can become ultra-short axioms.
+- Constraint: agents must still write compliant code from the start; a late "400 lint errors" report is inefficient. Upfront guidance (rules, conventions) stays, possibly generated from the project-structure description.
+- Related: `source-structure.6`, `source-structure.7`, `configuration.6`.
+- Done when the lint rules provide actionable messages and the redundant instruction prose is removed.

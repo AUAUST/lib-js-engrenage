@@ -16,7 +16,7 @@ Project configuration contract: environments, option shapes and list options.
 ## 2. Presets are applied by scattered checks instead of a declarative config state.
 
 - Matter: many places check the presets by hand to guess dynamic defaults. It is hard to see what a preset changes.
-- Expected: a config factory (or config state) that takes the presets and centralizes their effects, so that reading it shows what including a preset does to which option. The init script follows the same model: a config state starts from the base defaults, preset selection applies preset defaults, explicit user input edits it, and the handler consumes the final declarative result once. Related to `file-editing.1`.
+- Expected: a config factory (or config state) that takes the presets and centralizes their effects, so that reading it shows what including a preset does to which option. The init script follows the same model: a config state starts from the base defaults, preset selection applies preset defaults, explicit user input edits it, and the handler consumes the final declarative result once. Related to `file-editing.1` and `configuration.7`.
 - Done when no module outside the factory inspects presets to derive a default, and init builds its answers on the same state.
 
 ## 3. CI and test timeouts are not configurable, nor per environment.
@@ -32,3 +32,28 @@ Project configuration contract: environments, option shapes and list options.
 - Expected: resolution split into cohesive modules by concern (paths, tsconfigs and environments, runtime, lists) composed by a thin factory, with the cross-entry knowledge moved to the owners.
 - Open: design of the split, which depends on `source-structure.2`.
 - Done when no single function exceeds a readable scope and each concern lives in its own module.
+
+## 5. No external, lazy boot of the configuration.
+
+- Context: follows the domain-boundary redesign (`source-structure.2`, `source-structure.6`, `configuration.4`).
+- Expected: a `loadConfig(root)`-style function so another library (e.g. toolkit) can read engrenage's understanding of a project (structure, settings) and derive its behavior.
+- Constraints:
+  - Lazy by default: a consumer evaluates only the sections it needs; an unrelated section never blocks an operation.
+  - Each section lazily evaluated on its own (inherent to the new design; verify it).
+  - Eager validation of everything available on demand (e.g. upfront checks).
+- Done when the function is public, sections resolve independently, and a full eager validation exists.
+
+## 6. Config structure and project-structure description need a redesign.
+
+- Matter: the described project structure should drive the ESLint plugin's roles and boundaries and generate rules and documentation, replacing scattered paths and matchers (`source-structure.6`, `source-structure.7`).
+- Matter: heavy cross-section derivation is valued, but the current option structure is not sacred.
+- Expected: a design balancing flexibility with clarity and maintainability, coherent and consistent across sections; includes the semantic split between global project settings (type, imports, exports, versions), shared project structure and per-tool options in each definer (`defineTsdownConfig`, ...).
+- Related: `configuration.4`, `configuration.7`, `source-structure.8`.
+- Done when the new config shape is decided and recorded, then implemented.
+
+## 7. Presets should be scoped to environments instead of the root config.
+
+- Matter: the "library" preset mostly affects how source is handled; build tool choice, scripts and bin are the same whatever the project type.
+- Expected: presets scoped where they apply (environments), not at the root.
+- Related: `configuration.2` (declarative preset effects), `configuration.1`, `configuration.6`.
+- Done when presets live under environments and the root keeps only genuinely global settings.
