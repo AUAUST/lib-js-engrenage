@@ -15,11 +15,9 @@ order: 10
 
 ### Writing instructions
 
-- Apply these rules wherever you draft agent instructions, including wording proposed in issues and backlog entries.
+- Apply these rules, on top of the writing rules, wherever you draft agent instructions, including wording proposed in issues and backlog entries.
 - State each rule as the behavior it must produce. Reuse the request's wording only where it is already the clearest and shortest; never carry over its examples.
 - Phrase a rule so that applying it precisely produces the right outcome; never list the cases that motivated it.
 - Add an example only when the rule cannot be stated without one.
 - Write one short, specific, imperative rule per sentence.
-- Use a sentence for a single rule, a list for independent rules and a table for rules that vary along shared dimensions.
 - Merge a new rule into any rule it overlaps or contradicts instead of adding it alongside.
-- Choose the clearest and shortest wording that keeps the meaning, and rephrase wording that falls short of these rules in the sections you edit.

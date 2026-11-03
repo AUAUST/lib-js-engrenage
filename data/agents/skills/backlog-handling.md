@@ -45,5 +45,5 @@ Edit nothing outside `.ai/backlog/` and `.ai/debt.md`.
 
 ## Report
 
-- What changed: entries updated, added and removed with their final IDs, and issues opened with their URLs.
-- What remains, per entry: open questions and the kind of work it needs next, such as decisions, design, planning or implementation. Say so when nothing remains.
+1. A table of changes, one row per entry or issue: final ID or URL · updated, added, removed or opened · gist.
+2. Then, per entry, its open questions and the kind of work it needs next: decisions, design, planning or implementation. Say so when nothing remains.

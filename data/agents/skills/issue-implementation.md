@@ -38,7 +38,7 @@ Read the issue, every ancestor on its "Part of #<plan>, under #<parent>" line up
 - The issue is done when its **Done when** holds and the project's checks pass.
 - When asked for a branch, create `worker/issue-<n>` from the current commit.
 - Never edit, comment on, label or close issues.
-- Report what changed, the decisions you took and the questions they resolved, deviations from the issue, check results, and what the issue tree needs updated.
+- Report a table of changes, one row per change, decision with the question it resolves, deviation from the issue and check result. Then give the open questions and what the issue tree needs updated.
 
 ## GitHub mechanics
 

@@ -43,7 +43,5 @@ Edit nothing outside `.ai/debt.md`: never code, the backlog or issues.
 
 ## Report
 
-- What changed: entries added and updated with their final IDs.
-- Markers judged not to be debt, left in the code, each with the reason.
-- Markers already tracked elsewhere, each with the entry or issue that tracks it.
-- What remains, per entry: open questions and the kind of work it needs next, such as the backlogger to file it, planning or a worker when it is directly fixable. Say so when nothing remains.
+1. A table of changes, one row per marker: site · outcome (entry added or updated with its final ID, not debt, or tracked elsewhere) · the reason it is not debt or the entry or issue tracking it.
+2. Then, per entry, its open questions and the kind of work it needs next: the backlogger to file it, planning, or a worker when it is directly fixable. Say so when nothing remains.

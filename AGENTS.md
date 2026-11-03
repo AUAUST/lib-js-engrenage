@@ -13,14 +13,49 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 ### Writing instructions
 
-- Apply these rules wherever you draft agent instructions, including wording proposed in issues and backlog entries.
+- Apply these rules, on top of the writing rules, wherever you draft agent instructions, including wording proposed in issues and backlog entries.
 - State each rule as the behavior it must produce. Reuse the request's wording only where it is already the clearest and shortest; never carry over its examples.
 - Phrase a rule so that applying it precisely produces the right outcome; never list the cases that motivated it.
 - Add an example only when the rule cannot be stated without one.
 - Write one short, specific, imperative rule per sentence.
-- Use a sentence for a single rule, a list for independent rules and a table for rules that vary along shared dimensions.
 - Merge a new rule into any rule it overlaps or contradicts instead of adding it alongside.
-- Choose the clearest and shortest wording that keeps the meaning, and rephrase wording that falls short of these rules in the sections you edit.
+
+<!-- @reference @auaust/engrenage/agents/sections/writing.md -->
+
+## Writing
+
+- Apply these rules to everything you write other than code: messages, reports, issues, comments, backlog and debt entries, instructions.
+- State each fact once, where its owner keeps it. Elsewhere, link to it with its gist so the reader knows whether to follow the link.
+- State the core idea exactly, with its reason in one clause; never hedge it or blur it into vague wording.
+- Prefer fragments and keywords to full sentences wherever the meaning stays exact.
+- Drop every sentence the reader would not miss.
+- Choose the clearest and shortest wording that keeps the meaning, and rephrase wording that falls short of these rules in the text you edit.
+
+### Structure
+
+| Content                                | Form                                         |
+| -------------------------------------- | -------------------------------------------- |
+| A single point                         | Sentence                                     |
+| Independent points                     | List                                         |
+| Three or more facts sharing dimensions | Table                                        |
+| Hierarchy, layout or layers            | ASCII tree or box diagram in a code block    |
+| Flow or dependency graph               | Mermaid, or an ASCII diagram in a code block |
+
+- Draw any hierarchy or flow before describing it, and describe only what the figure does not show.
+- Never use images or inline SVG: agents cannot read them back. Use other diagram languages only where the project already does.
+
+### Length
+
+| Text                  | Budget in words |
+| --------------------- | --------------- |
+| Plan issue            | ~1,200          |
+| Task issue            | ~250            |
+| Block issue           | ~60             |
+| Backlog or debt entry | ~60             |
+| Comment               | ~150            |
+
+- Treat a budget as a signal: past it, link to where the detail lives or split the text, never truncate it.
+- Cut repetition to meet a budget, never decisions.
 
 <!-- @reference @auaust/engrenage/agents/sections/precedence.md -->
 

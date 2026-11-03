@@ -93,11 +93,15 @@ When the input is an issue, turn that issue into the task, keeping its original 
 
 - When asked for a branch, create `debugger/<topic>` from the current commit, `debugger/issue-<n>` when the input is an issue.
 - After a fix, remove the backlog entries, debt backlog entries and debt markers it resolves. Never close an issue you fixed: merging the fix closes it.
-- Report:
-  - Fixed: the cause, the fix and the reach it covers, the invariants it makes explicit, tests, check results, the decisions you took with the alternatives you discarded, and the debt markers you left.
-  - Written up: the issue URL, then "issue ready for processing by a worker", or that it needs planning.
-  - Blocked: the batched questions, with what is done, pending and blocked.
-- End with what remains and the kind of work it needs. Say so when nothing remains.
+- Report a table of changes, whose rows depend on the outcome:
+
+  | Outcome    | Rows                                                                                                                                                                       |
+  | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | Fixed      | Each site or test changed, with the cause it corrects and the invariant it makes explicit; each decision, with the alternative discarded; check results; debt markers left |
+  | Written up | The issue URL, ready for a worker or needing planning                                                                                                                      |
+  | Blocked    | What is done, pending and blocked                                                                                                                                          |
+
+- Then give the batched questions, and end with what remains and the kind of work it needs. Say so when nothing remains.
 
 ## GitHub mechanics
 
