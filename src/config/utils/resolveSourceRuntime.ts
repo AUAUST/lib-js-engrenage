@@ -8,33 +8,15 @@ import { resolveBaselineMinimums } from "#typescript/utils/resolveBaselineMinimu
 import { selectEsLibraries } from "#typescript/utils/selectEsLibraries";
 import type { Runtime } from "#config/types/Runtime";
 
-export function resolveSourceRuntime(option: {
-  baseline?: string | undefined;
-  node?: number | undefined;
-  apis?: unknown;
+export function resolveSourceRuntime({
+  baseline,
+  node,
+}: {
+  baseline: string | undefined;
+  node: number | undefined;
 }): Runtime | undefined {
-  const { baseline, node, apis } = option;
-
-  if (baseline !== undefined && node !== undefined) {
-    throw new Error(
-      "src.baseline and src.node are mutually exclusive: set one of them",
-    );
-  }
-
-  if (node !== undefined && apis !== undefined) {
-    throw new Error(
-      "src.apis only applies to a baseline runtime: src.node already provides these APIs through its types",
-    );
-  }
-
   if (node !== undefined) {
     return resolveNodeRuntime(node, "src.node");
-  }
-
-  if (baseline === undefined && apis !== undefined) {
-    throw new Error(
-      `src.apis only applies to a baseline runtime: set src.baseline, for instance to ${findCurrentMonth()}, the current month`,
-    );
   }
 
   if (baseline === undefined) {

@@ -24,7 +24,7 @@ describe("roles", () => {
 
     expect(config.src.roles.roles).not.toHaveProperty("types");
 
-    expect(config.src.roles.roles.operations).toEqual({
+    expect(config.src.roles.roles.operations).toMatchObject({
       exports: "named-match",
     });
 

@@ -1,17 +1,11 @@
-import { boolean, description, pipe } from "valibot";
+import { boolean } from "valibot";
 
-import { join } from "@auaust/primitive-kit/arrays";
+import { declare } from "#foundation/options/utils/declare";
 
-export const debugSchema = pipe(
-  boolean(),
-  description(
-    join(
-      [
-        "Whether commands print the stack of an error and its causes.",
-        "Also enabled by the `--debug` flag and `ENGRENAGE_DEBUG=1`; any one of them enables it.",
-        "@default `false`",
-      ],
-      "\n",
-    ),
-  ),
-);
+export const debugSchema = declare(boolean(), {
+  description: [
+    "Whether commands print the stack of an error and its causes.",
+    "Also enabled by the `--debug` flag and `ENGRENAGE_DEBUG=1`; any one of them enables it.",
+  ],
+  optional: { value: false },
+});

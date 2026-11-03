@@ -4,11 +4,11 @@ import { object, string } from "valibot";
 
 import { configFile } from "#changesets/constants";
 import { changesetsCli, changesetsConfig, packageJsonFile } from "#constants";
+import { validate } from "#foundation/options/utils/validate";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
 import { applyJsonEdits } from "#support/json/utils/applyJsonEdits";
 import { flattenJsonObject } from "#support/json/utils/flattenJsonObject";
 import { syncFiles } from "#utils/syncFiles";
-import { validate } from "#utils/validate";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
 

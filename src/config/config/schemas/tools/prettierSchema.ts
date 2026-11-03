@@ -1,22 +1,16 @@
-import { description, optional, pipe, strictObject } from "valibot";
+import { declareLocation } from "#config/utils/declareLocation";
+import { prettierignoreFile } from "#constants";
+import { declareObject } from "#foundation/options/utils/declareObject";
 
-import { join } from "@auaust/primitive-kit/arrays";
-
-import { fileSchema } from "#config/config/schemas/values/fileSchema";
-
-export const prettierSchema = strictObject({
-  prettierignore: optional(
-    pipe(
-      fileSchema,
-      description(
-        join(
-          [
-            "The `.prettierignore` file that sync updates with the generated paths.",
-            "@default `.prettierignore`",
-          ],
-          "\n",
-        ),
-      ),
-    ),
-  ),
-});
+export const prettierSchema = declareObject(
+  {
+    prettierignore: declareLocation({
+      description:
+        "The `.prettierignore` file that sync updates with the generated paths.",
+      optional: { value: prettierignoreFile },
+    }),
+  },
+  {
+    optional: true,
+  },
+);

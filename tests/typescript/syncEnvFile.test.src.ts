@@ -3,9 +3,9 @@ import { describe, expect, test } from "vitest";
 import { define } from "#config/config/define";
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { validate } from "#foundation/options/utils/validate";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { syncEnvFile } from "#typescript/setup/syncEnvFile";
-import { validate } from "#utils/validate";
 
 function createProject(input: unknown, files: Record<string, string> = {}) {
   const project = createTemporaryProject({

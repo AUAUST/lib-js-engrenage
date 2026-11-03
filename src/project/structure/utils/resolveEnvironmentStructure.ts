@@ -8,6 +8,7 @@ import { entries, freeze } from "@auaust/toolkit/object";
 import { noRoles } from "#project/structure/constants";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
+import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RolesOption } from "#project/structure/types/RolesOption";
 import type { StructureEnvironment } from "#project/structure/types/StructureEnvironment";
@@ -17,7 +18,7 @@ import type { StructureOptions } from "#project/structure/types/StructureOptions
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 
-type DomainDeclaration = NonNullable<StructureOptions["domains"]>[string];
+type DomainDeclaration = StructureOptions["domains"][string];
 
 const indexFile = "index.ts";
 const environmentRoot = ".";
@@ -94,18 +95,18 @@ export function resolveEnvironmentStructure({
   name: StructureEnvironment;
   root: Directory;
   dirs: Directories;
-  options: StructureOptions | undefined;
-  roles: RolesOption | false | undefined;
+  options: StructureOptions;
+  roles: ProjectRoles;
   environmentRoles?: RolesOption | undefined;
 }): EnvironmentStructure {
-  const strictness = options?.strictness ?? "strict";
-  const namespaces = options?.namespaces ?? {};
-  const domains = entries(options?.domains ?? {});
-  const optOut = new Set(options?.optOut);
+  // @debt the public default applies after the glob metadata merge, which needs the declarations to keep unset fields, so it cannot live in the declaration
+  const { strictness, namespaces } = options;
+  const domains = entries(options.domains);
+  const optOut = new Set(options.optOut);
 
   const rolesFor = memoized(
     (scopes: readonly string[]): ResolvedRoles => {
-      return name === "bin"
+      return name === "bin" || environmentRoles === undefined
         ? noRoles
         : resolveRoles({
             environment: name,
@@ -151,9 +152,12 @@ export function resolveEnvironmentStructure({
       namespace,
       exact,
       declared: metadata.length > 0,
-      metadata: metadata.reduce<DomainDeclaration>((merged, declared) => {
-        return { ...merged, ...declared };
-      }, {}),
+      metadata: metadata.reduce<Partial<DomainDeclaration>>(
+        (merged, declared) => {
+          return { ...merged, ...declared };
+        },
+        {},
+      ),
     };
   }
 
@@ -231,7 +235,7 @@ export function resolveEnvironmentStructure({
             : { prefix: namespace.prefix }),
         },
         {
-          scopes: [...parent.scopes, ...(namespace.roles?.enable ?? [])],
+          scopes: [...parent.scopes, ...namespace.roles.enable],
         },
       );
     }
@@ -311,7 +315,7 @@ export function resolveEnvironmentStructure({
   }
 
   const rootDeclaration = namespaces[environmentRoot];
-  const rootScopes = rootDeclaration?.roles?.enable ?? [];
+  const rootScopes = rootDeclaration?.roles.enable ?? [];
 
   // @debt the project root is never walked, so the tooling environment gets no structure tree until its directories exclude non-code folders
   const walked = dirs.filter((directory) => directory !== projectRoot);

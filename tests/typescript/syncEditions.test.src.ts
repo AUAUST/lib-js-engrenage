@@ -2,12 +2,12 @@ import { describe, expect, test } from "vitest";
 
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { validate } from "#foundation/options/utils/validate";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
 import { editions } from "#typescript/generated/editions";
 import { syncEditions } from "#typescript/utils/syncEditions";
-import { validate } from "#utils/validate";
 
 describe("editions", () => {
   test("dates the libs of the committed editions", () => {

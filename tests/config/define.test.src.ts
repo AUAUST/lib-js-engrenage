@@ -4,8 +4,8 @@ import { define } from "#config/config/define";
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createDefine } from "#config/utils/createDefine";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { validate } from "#foundation/options/utils/validate";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { validate } from "#utils/validate";
 import { createViteConfig } from "#vite/config/createViteConfig";
 
 function resolveConfig(input: unknown) {

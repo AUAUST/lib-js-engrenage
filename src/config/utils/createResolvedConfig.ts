@@ -1,68 +1,48 @@
-import { basename } from "node:path";
-
-import type { InferOutput } from "valibot";
-
-import { flatMap, wrap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
 import { compose } from "@auaust/toolkit/composer";
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { memoized } from "@auaust/toolkit/memoized";
 import { freeze } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
-import { globalsSchema } from "#config/config/schemas/core/defineSchema";
-import {
-  defaultBinDirectories,
-  defaultCacheDirectory,
-  defaultDataDirectories,
-  defaultDefines,
-  defaultDefineTypes,
-  defaultEmptyOutDir,
-  defaultEnvFile,
-  defaultInstructionFiles,
-  defaultPresets,
-  defaultScriptsDirectories,
-  defaultSourceDirectories,
-  defaultSourcemap,
-  defaultTestsCoverageDirectory,
-  defaultTestsDirectories,
-  defaultTestsExtension,
-  defaultTestsFixtures,
-  defaultTestsLocation,
-  defaultTestsSuffix,
-  defaultToolingDirectories,
-  defaultToolingFiles,
-  defaultTypescriptFiles,
-  distTestsVariant,
-  sourceTestsVariant,
-} from "#config/constants";
+import { buildSchema } from "#config/config/schemas/core/buildSchema";
+import { cacheSchema } from "#config/config/schemas/core/cacheSchema";
+import { debugSchema } from "#config/config/schemas/core/debugSchema";
+import { defineSchema } from "#config/config/schemas/core/defineSchema";
+import { presetsSchema } from "#config/config/schemas/core/presetsSchema";
+import { binSchema } from "#config/config/schemas/environments/binSchema";
+import { dataSchema } from "#config/config/schemas/environments/dataSchema";
+import { runtimeSchema } from "#config/config/schemas/environments/runtimeSchema";
+import { scriptsSchema } from "#config/config/schemas/environments/scriptsSchema";
+import { sourceSchema } from "#config/config/schemas/environments/sourceSchema";
+import { testsSchema } from "#config/config/schemas/environments/testsSchema";
+import { toolingSchema } from "#config/config/schemas/environments/toolingSchema";
+import { agentsSchema } from "#config/config/schemas/tools/agentsSchema";
+import { githubSchema } from "#config/config/schemas/tools/githubSchema";
+import { gitSchema } from "#config/config/schemas/tools/gitSchema";
+import { prettierSchema } from "#config/config/schemas/tools/prettierSchema";
+import { typescriptSchema } from "#config/config/schemas/tools/typescriptSchema";
+import { vscodeSchema } from "#config/config/schemas/tools/vscodeSchema";
+import { distTestsVariant, sourceTestsVariant } from "#config/constants";
 import { createFilesystem } from "#config/utils/createFilesystem";
 import { isDebugEnvironment } from "#config/utils/isDebugEnvironment";
 import { resolveCodeEnvironment } from "#config/utils/resolveCodeEnvironment";
-import { resolveListOption } from "#config/utils/resolveListOption";
 import { resolveNodeRuntime } from "#config/utils/resolveNodeRuntime";
-import { resolveRuntimeNode } from "#config/utils/resolveRuntimeNode";
-import { resolveSourceApis } from "#config/utils/resolveSourceApis";
 import { resolveSourceRuntime } from "#config/utils/resolveSourceRuntime";
 import { resolveTsconfig } from "#config/utils/resolveTsconfig";
-import {
-  gitignoreFile,
-  packageJsonFile,
-  prettierignoreFile,
-  tsconfigFile,
-} from "#constants";
+import { packageJsonFile } from "#constants";
+import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 import { noRoles } from "#project/structure/constants";
 import { resolveEnvironmentStructure } from "#project/structure/utils/resolveEnvironmentStructure";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
-import { isWithin } from "#support/filesystem/utils/isWithin";
 import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
 import { createTsconfig } from "#typescript/utils/createTsconfig";
 import { filesIn } from "#utils/filesIn";
-import { validate } from "#utils/validate";
-import type { configSchema } from "#config/config/schemas/configSchema";
+import type { Config } from "#config/types/Config";
+import type { ConfigContext } from "#config/types/ConfigContext";
 import type { Environment } from "#config/types/Environment";
-import type { EnvironmentTsconfig } from "#config/types/EnvironmentTsconfig";
-import type { ResolvedGlobals } from "#config/types/ResolvedGlobals";
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { ResolvedEnvironmentTsconfig } from "#config/types/ResolvedEnvironmentTsconfig";
 import type { TsconfigGroups } from "#config/types/TsconfigGroups";
 import type { TsconfigKey } from "#config/types/TsconfigKey";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
@@ -96,61 +76,96 @@ function createEnvironment({ optional }: PackageJson): Environment {
   });
 }
 
+type StructureSection =
+  | { readonly enabled: false }
+  | ({
+      readonly enabled: true;
+      readonly roles?: RolesOption;
+    } & StructureOptions);
+
 export function createResolvedConfig({
   root,
   raw,
   configFile,
 }: {
   root: Directory;
-  raw: InferOutput<typeof configSchema>;
+  raw: Config;
   configFile: File | undefined;
-}) {
+}): ResolvedConfig {
   const filesystem = createFilesystem(root);
 
-  function locate(fallback: File, configured?: File): File | undefined {
-    if (configured === undefined) {
-      return filesystem.exists(fallback)
-        ? resolveWithin(root, fallback)
-        : undefined;
+  const context: ConfigContext = {
+    get(section) {
+      return config[section];
+    },
+  };
+
+  function locate(file: File, configured: boolean): File | undefined {
+    if (!configured) {
+      return filesystem.exists(file) ? resolveWithin(root, file) : undefined;
     }
 
-    if (!filesystem.exists(configured)) {
-      throw new Error(`The configured ${configured} does not exist in ${root}`);
+    if (!filesystem.exists(file)) {
+      throw new Error(`The configured ${file} does not exist in ${root}`);
     }
 
-    return resolveWithin(root, configured);
+    return resolveWithin(root, file);
   }
 
-  function packageJsonPath(): File | undefined {
-    return locate(packageJsonFile);
-  }
-
-  const baseTsconfigFile = once(() => {
-    const file = raw.typescript?.tsconfig?.path ?? tsconfigFile;
-
-    if (basename(file) !== tsconfigFile) {
-      console.warn(
-        `The base tsconfig ${file} is not named ${tsconfigFile}, the only name editors and typed lint discover`,
-      );
-    }
-
-    return file;
+  const debugOption = once(() => {
+    return debugSchema.resolve(raw.debug, context, "debug");
   });
 
-  function tsconfigPath(): File | undefined {
-    return locate(baseTsconfigFile(), raw.typescript?.tsconfig?.path);
-  }
+  const presets = once(() => {
+    return presetsSchema.resolve(raw.presets, context, "presets");
+  });
 
-  function envFilePath(): File {
-    return resolveWithin(root, raw.typescript?.envFile ?? defaultEnvFile);
-  }
+  const roles = once(() => {
+    return rolesSchema.resolve(raw.roles, context, "roles");
+  });
 
-  function gitignorePath(): File | undefined {
-    return locate(gitignoreFile, raw.git?.gitignore);
-  }
+  const define = once(() => {
+    return defineSchema.resolve(raw.define, context, "define");
+  });
 
-  function prettierignorePath(): File | undefined {
-    return locate(prettierignoreFile, raw.prettier?.prettierignore);
+  const cacheOption = once(() => {
+    return cacheSchema.resolve(raw.cache, context, "cache");
+  });
+
+  const runtimeOption = once(() => {
+    return runtimeSchema.resolve(raw.runtime, context, "runtime");
+  });
+
+  const typescriptOption = once(() => {
+    return typescriptSchema.resolve(raw.typescript, context, "typescript");
+  });
+
+  const sourceOption = once(() => {
+    return sourceSchema.resolve(raw.src, context, "src");
+  });
+
+  const testsOption = once(() => {
+    return testsSchema.resolve(raw.tests, context, "tests");
+  });
+
+  const binOption = once(() => {
+    return binSchema.resolve(raw.bin, context, "bin");
+  });
+
+  const scriptsOption = once(() => {
+    return scriptsSchema.resolve(raw.scripts, context, "scripts");
+  });
+
+  const toolingOption = once(() => {
+    return toolingSchema.resolve(raw.tooling, context, "tooling");
+  });
+
+  const dataOption = once(() => {
+    return dataSchema.resolve(raw.data, context, "data");
+  });
+
+  function packageJsonPath(): File | undefined {
+    return locate(packageJsonFile, false);
   }
 
   const parsePackageJson = memoized((content: string | undefined) => {
@@ -175,6 +190,12 @@ export function createResolvedConfig({
     return describeEnvironment(packageJson());
   }
 
+  function tsconfigPath(): File | undefined {
+    const { file, configured } = typescriptOption().tsconfig.path;
+
+    return locate(file, configured);
+  }
+
   // @debt the memo key holds the content of the base tsconfig only, so staged changes to a local tsconfig it extends are not seen within a pass
   const parseTsconfig = memoized(
     (path: File | undefined, content: string | undefined) => {
@@ -197,121 +218,33 @@ export function createResolvedConfig({
     );
   }
 
-  const presets = once(() => {
-    return wrap(raw.presets ?? defaultPresets);
-  });
-
-  function outDir(): Directory | undefined {
-    const configured = raw.build?.outDir;
-
-    if (configured !== undefined) {
-      // @debt resolveWithin is called only for its throw when the path escapes the root, here and in cache(); an explicit assertion would state the intent
-      resolveWithin(root, configured);
-
-      return configured;
-    }
-
-    const tsconfigOutDir = tsconfig().optional.outDir;
-
-    return tsconfigOutDir === undefined || !isWithin(root, tsconfigOutDir)
-      ? undefined
-      : tsconfigOutDir;
-  }
-
-  function resolveGlobals(): ResolvedGlobals {
-    const values = raw.define?.values;
-
-    if (values === undefined) {
-      return {};
-    }
-
-    if (isPlainObject(values)) {
-      return values;
-    }
-
-    return validate(
-      globalsSchema,
-      values({
-        packageJson: packageJson(),
-        filesystem,
-      }),
-      `define.values of ${configFile ?? root}`,
-    );
-  }
-
   const runtime = once(() => {
-    return freeze(
-      compose(
-        {},
-        compose.getters({
-          node: runtimeNode,
-        }),
-      ),
-    );
-  });
-
-  const define = once(() => {
-    return freeze({
-      types: raw.define?.types ?? defaultDefineTypes,
-      values: freeze(resolveGlobals()),
-    });
-  });
-
-  const typescriptFiles = once(() => {
-    return resolveListOption(
-      raw.typescript?.files,
-      () => defaultTypescriptFiles,
-      "typescript.files",
-    );
-  });
-
-  const runtimeNode = once(() => {
-    return resolveRuntimeNode(raw.runtime?.node);
+    return freeze({ node: runtimeOption().node });
   });
 
   function developmentRuntime() {
-    return resolveNodeRuntime(runtimeNode(), "runtime.node");
-  }
-
-  function resolveEnvironment(
-    name: "src" | "bin" | "scripts" | "tests",
-    dirs: Directories,
-  ) {
-    return freeze({
-      ...resolveCodeEnvironment({
-        name,
-        option: raw[name],
-        dirs,
-        defines: defaultDefines[name],
-        typescriptFiles: typescriptFiles(),
-        filesystem,
-      }),
-      tsconfig: environmentTsconfigFor(name),
-    });
+    return resolveNodeRuntime(runtime().node, "runtime.node");
   }
 
   function resolveEnvironmentRoles(
     name: RoleEnvironment,
-    option: false | { roles?: RolesOption | undefined } | undefined,
+    option: { readonly enabled: boolean; readonly roles?: RolesOption },
   ): ResolvedRoles {
-    return option === false
-      ? noRoles
-      : resolveRoles({
+    return option.enabled && option.roles !== undefined
+      ? resolveRoles({
           environment: name,
-          roles: raw.roles,
-          environmentRoles: option?.roles,
-        });
+          roles: roles(),
+          environmentRoles: option.roles,
+        })
+      : noRoles;
   }
 
   function resolveStructure(
     name: StructureEnvironment,
     environment: { active: boolean; dirs: Directories },
-    option:
-      | false
-      | (StructureOptions & { roles?: RolesOption | undefined })
-      | undefined,
+    option: StructureSection,
   ): EnvironmentStructure | undefined {
-    if (option === false || !environment.active) {
+    if (!option.enabled || !environment.active) {
       return;
     }
 
@@ -320,46 +253,31 @@ export function createResolvedConfig({
       root,
       dirs: environment.dirs,
       options: option,
-      roles: raw.roles,
-      environmentRoles: option?.roles,
+      roles: roles(),
+      environmentRoles: option.roles,
     });
   }
 
-  function environmentTsconfig(
-    option:
-      | false
-      | { tsconfig?: EnvironmentTsconfig | false | undefined }
-      | undefined,
-  ) {
-    return option === false ? false : option?.tsconfig;
-  }
-
-  // @debt `raw.<option> === false ? … : raw.<option>?.<field>` is repeated throughout this file for disabled options; normalizing disabled options once would remove the branches
   const tsconfigGroups = once((): TsconfigGroups => {
     return {
-      "src": environmentTsconfig(raw.src),
-      "tests": environmentTsconfig(raw.tests),
-      "tests.dist": raw.tests === false ? false : raw.tests?.dist?.tsconfig,
-      "bin": environmentTsconfig(raw.bin),
-      "scripts": environmentTsconfig(raw.scripts),
-      "tooling": environmentTsconfig(raw.tooling),
+      "src": sourceOption().tsconfig,
+      "tests": testsOption().tsconfig,
+      "tests.dist": testsOption().dist.tsconfig,
+      "bin": binOption().tsconfig,
+      "scripts": scriptsOption().tsconfig,
+      "tooling": toolingOption().tsconfig,
     };
   });
 
-  function environmentTsconfigFor(key: TsconfigKey) {
-    const resolved = resolveTsconfig(key, tsconfigGroups());
+  function environmentTsconfigFor(
+    key: TsconfigKey,
+  ): ResolvedEnvironmentTsconfig {
+    const { location, ...resolved } = resolveTsconfig(key, tsconfigGroups());
 
     function path(): File | undefined {
-      if (resolved.file === undefined || resolved.owner === undefined) {
-        return;
-      }
-
-      const configured = tsconfigGroups()[resolved.owner];
-
-      return locate(
-        resolved.file,
-        configured === false ? undefined : configured?.path,
-      );
+      return location === undefined
+        ? undefined
+        : locate(location.file, location.configured);
     }
 
     return freeze(
@@ -372,13 +290,33 @@ export function createResolvedConfig({
     );
   }
 
+  const typescriptFiles = once((): Globs => typescriptOption().files);
+
+  function resolveEnvironment(
+    option: {
+      dirs: Directories;
+      generated: Globs;
+      discovered: Globs;
+      defines: boolean;
+    },
+    key: TsconfigKey,
+  ) {
+    return freeze({
+      ...resolveCodeEnvironment({
+        ...option,
+        typescriptFiles: typescriptFiles(),
+        filesystem,
+      }),
+      tsconfig: environmentTsconfigFor(key),
+    });
+  }
+
   const source = once(() => {
-    const environment = resolveEnvironment("src", defaultSourceDirectories);
+    const option = sourceOption();
+    const environment = resolveEnvironment(option, "src");
 
     const runtime = once(() => {
-      const option = raw.src === false ? undefined : (raw.src ?? {});
-
-      return option !== undefined &&
+      return option.enabled &&
         (environment.active ||
           option.baseline !== undefined ||
           option.node !== undefined)
@@ -390,35 +328,32 @@ export function createResolvedConfig({
       compose(
         {
           ...environment,
-          roles: resolveEnvironmentRoles("src", raw.src),
-          exports: raw.src === false ? undefined : raw.src?.exports,
+          roles: resolveEnvironmentRoles("src", option),
+          exports: option.exports,
+          apis: option.apis,
         },
         compose.getters({
           runtime,
-          apis: () => {
-            return raw.src === false ? [] : resolveSourceApis(raw.src?.apis);
-          },
         }),
       ),
     );
   });
 
   const bin = once(() => {
+    const option = binOption();
+
     return freeze(
       compose(
         {
-          ...resolveEnvironment("bin", defaultBinDirectories),
           roles: noRoles,
-          commands: raw.bin === false ? undefined : raw.bin?.commands,
+          commands: option.commands,
         },
+        compose.values(resolveEnvironment(option, "bin")),
         compose.getters({
           runtime: () => {
-            return raw.bin === false
-              ? undefined
-              : freeze({
-                  kind: "node" as const,
-                  major: raw.bin?.node ?? runtimeNode(),
-                });
+            return option.enabled
+              ? freeze({ kind: "node" as const, major: option.node })
+              : undefined;
           },
         }),
       ),
@@ -426,28 +361,25 @@ export function createResolvedConfig({
   });
 
   const data = once(() => {
+    const option = dataOption();
+
     return freeze({
-      active: raw.data !== false,
+      active: option.enabled,
       roles: noRoles,
-      dirs:
-        raw.data === false
-          ? []
-          : resolveListOption(
-              raw.data?.dirs,
-              () => defaultDataDirectories,
-              "data.dirs",
-            ),
-      exports: (raw.data === false ? undefined : raw.data?.exports) ?? {},
+      dirs: option.dirs,
+      exports: option.exports,
     });
   });
 
   const scripts = once(() => {
+    const option = scriptsOption();
+
     return freeze(
       compose(
         {
-          ...resolveEnvironment("scripts", defaultScriptsDirectories),
-          roles: resolveEnvironmentRoles("scripts", raw.scripts),
+          roles: resolveEnvironmentRoles("scripts", option),
         },
+        compose.values(resolveEnvironment(option, "scripts")),
         compose.getters({
           runtime: developmentRuntime,
         }),
@@ -456,15 +388,12 @@ export function createResolvedConfig({
   });
 
   const tests = once(() => {
-    const option = raw.tests === false ? undefined : raw.tests;
-    const enabled = raw.tests !== false;
-
-    const location = option?.location ?? defaultTestsLocation;
-    const suffix = option?.suffix ?? defaultTestsSuffix;
-    const extension = option?.extension ?? defaultTestsExtension;
+    const option = testsOption();
 
     function pattern(variant: string): Globs {
-      return enabled ? [`${location}${suffix}${variant}${extension}`] : [];
+      return option.enabled
+        ? [`${option.location}${option.suffix}${variant}${option.extension}`]
+        : [];
     }
 
     const patterns = freeze({
@@ -476,22 +405,16 @@ export function createResolvedConfig({
     return freeze(
       compose(
         {
-          ...resolveEnvironment("tests", defaultTestsDirectories),
-          roles: resolveEnvironmentRoles("tests", raw.tests),
+          roles: resolveEnvironmentRoles("tests", option),
           patterns,
           files: [...patterns.plain, ...patterns.source, ...patterns.dist],
-          fixtures: enabled
-            ? resolveListOption(
-                option?.fixtures,
-                () => defaultTestsFixtures,
-                "tests.fixtures",
-              )
-            : [],
-          coverageDir: option?.coverageDir ?? defaultTestsCoverageDirectory,
+          fixtures: option.fixtures,
+          coverageDir: option.coverageDir,
           dist: freeze({
             tsconfig: environmentTsconfigFor("tests.dist"),
           }),
         },
+        compose.values(resolveEnvironment(option, "tests")),
         compose.getters({
           runtime: developmentRuntime,
         }),
@@ -500,37 +423,8 @@ export function createResolvedConfig({
   });
 
   const tooling = once(() => {
-    // @debt the disabled and active branches build the same composed shape twice
-    if (raw.tooling === false) {
-      return freeze(
-        compose(
-          {
-            active: false,
-            dirs: [],
-            files: [],
-            defines: false,
-            globs: [],
-            roles: noRoles,
-            tsconfig: environmentTsconfigFor("tooling"),
-          },
-          compose.getters({
-            runtime: developmentRuntime,
-          }),
-        ),
-      );
-    }
-
-    const dirs = resolveListOption(
-      raw.tooling?.dirs,
-      () => defaultToolingDirectories,
-      "tooling.dirs",
-    );
-
-    const files = resolveListOption(
-      raw.tooling?.files,
-      () => defaultToolingFiles,
-      "tooling.files",
-    );
+    const option = toolingOption();
+    const { dirs, files } = option;
 
     return freeze(
       compose(
@@ -540,7 +434,7 @@ export function createResolvedConfig({
           files,
           defines: false,
           globs: filesIn(dirs, files),
-          roles: resolveEnvironmentRoles("tooling", raw.tooling),
+          roles: resolveEnvironmentRoles("tooling", option),
           tsconfig: environmentTsconfigFor("tooling"),
         },
         compose.getters({
@@ -552,11 +446,11 @@ export function createResolvedConfig({
 
   const structure = once(() => {
     return freeze({
-      src: resolveStructure("src", source(), raw.src),
-      tests: resolveStructure("tests", tests(), raw.tests),
-      bin: resolveStructure("bin", bin(), raw.bin),
-      scripts: resolveStructure("scripts", scripts(), raw.scripts),
-      tooling: resolveStructure("tooling", tooling(), raw.tooling),
+      src: resolveStructure("src", source(), sourceOption()),
+      tests: resolveStructure("tests", tests(), testsOption()),
+      bin: resolveStructure("bin", bin(), binOption()),
+      scripts: resolveStructure("scripts", scripts(), scriptsOption()),
+      tooling: resolveStructure("tooling", tooling(), toolingOption()),
     });
   });
 
@@ -577,48 +471,51 @@ export function createResolvedConfig({
   });
 
   const build = once(() => {
-    const typed = () => {
-      return raw.build?.typed ?? define().types;
-    };
+    const { entries } = buildSchema;
 
+    function resolveOutDir() {
+      return entries.outDir.resolve(raw.build?.outDir, context, "build.outDir");
+    }
+
+    // @debt build.outDir is resolved on access because its computed default reads the tsconfig, which can fail to parse, while declarations otherwise resolve a section as a whole
     return freeze(
       compose(
         {
-          emptyOutDir: raw.build?.emptyOutDir ?? defaultEmptyOutDir,
-          sourcemap: raw.build?.sourcemap ?? defaultSourcemap,
+          emptyOutDir: entries.emptyOutDir.resolve(
+            raw.build?.emptyOutDir,
+            context,
+            "build.emptyOutDir",
+          ),
+          sourcemap: entries.sourcemap.resolve(
+            raw.build?.sourcemap,
+            context,
+            "build.sourcemap",
+          ),
+          typed: entries.typed.resolve(
+            raw.build?.typed,
+            context,
+            "build.typed",
+          ),
         },
         compose.getters({
-          typed,
-          outDir,
+          outDir: resolveOutDir,
         }),
       ),
     );
   });
 
-  const cache = once(() => {
-    const dir = raw.cache?.dir ?? defaultCacheDirectory;
-
-    resolveWithin(root, dir);
-
-    return freeze({
-      dir,
-    });
-  });
+  const cache = cacheOption;
 
   const baseTsconfig = once(() => {
-    const option = raw.typescript?.tsconfig;
+    const option = typescriptOption().tsconfig;
 
     return freeze(
       compose(
         {
-          file: baseTsconfigFile(),
-          extends: option?.extends,
-          compilerOptions: option?.compilerOptions ?? {},
-          unmanaged: resolveListOption(
-            option?.unmanaged,
-            () => [],
-            "typescript.tsconfig.unmanaged",
-          ),
+          file: option.path.file,
+          extends: option.extends,
+          compilerOptions: option.compilerOptions,
+          unmanaged: option.unmanaged,
         },
         compose.getters({
           path: tsconfigPath,
@@ -628,64 +525,63 @@ export function createResolvedConfig({
   });
 
   const typescript = once(() => {
+    const option = typescriptOption();
+
     return freeze(
       compose(
-        {},
+        {
+          files: option.files,
+        },
         compose.getters({
           tsconfig: baseTsconfig,
-          envFile: envFilePath,
-          files: typescriptFiles,
+          envFile: () => resolveWithin(root, option.envFile),
         }),
       ),
     );
   });
 
   const git = once(() => {
+    const { gitignore } = gitSchema.resolve(raw.git, context, "git");
+
     return freeze(
       compose(
         {},
         compose.getters({
-          gitignore: gitignorePath,
+          gitignore: () => locate(gitignore.file, gitignore.configured),
         }),
       ),
     );
   });
 
   const prettier = once(() => {
+    const { prettierignore } = prettierSchema.resolve(
+      raw.prettier,
+      context,
+      "prettier",
+    );
+
     return freeze(
       compose(
         {},
         compose.getters({
-          prettierignore: prettierignorePath,
+          prettierignore: () => {
+            return locate(prettierignore.file, prettierignore.configured);
+          },
         }),
       ),
     );
   });
 
   const agents = once(() => {
-    return freeze({
-      preferred: raw.agents?.preferred,
-      codexHooks: raw.agents?.codexHooks,
-      instructionFiles: wrap(
-        raw.agents?.instructionFiles ?? defaultInstructionFiles,
-      ),
-      snippetsDir: raw.agents?.snippetsDir,
-      claudeSettings: raw.agents?.claudeSettings,
-      attribution: raw.agents?.attribution,
-    });
+    return agentsSchema.resolve(raw.agents, context, "agents");
   });
 
   const github = once(() => {
-    return freeze({
-      workflows: raw.github?.workflows,
-    });
+    return githubSchema.resolve(raw.github, context, "github");
   });
 
   const vscode = once(() => {
-    return freeze({
-      settings: raw.vscode?.settings,
-      extensions: raw.vscode?.extensions,
-    });
+    return vscodeSchema.resolve(raw.vscode, context, "vscode");
   });
 
   function resolve(...paths: string[]): string {
@@ -696,23 +592,26 @@ export function createResolvedConfig({
     return resolveWithin(root, cache().dir, packageName);
   }
 
-  return freeze(
+  const config: ResolvedConfig = freeze(
     compose(
       {
         root,
         raw,
         configFile,
-        debug: raw.debug === true || isDebugEnvironment(),
         filesystem,
         resolve,
         cacheFor,
       },
       compose.getters({
+        debug: () => {
+          return debugOption() || isDebugEnvironment();
+        },
         packageJsonPath,
         packageJson,
         tsconfig,
         environment,
         presets,
+        roles,
         runtime,
         define,
         src: source,
@@ -734,4 +633,6 @@ export function createResolvedConfig({
       }),
     ),
   );
+
+  return config;
 }

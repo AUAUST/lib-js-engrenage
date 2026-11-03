@@ -1,79 +1,44 @@
-import { entries } from "@auaust/toolkit/object";
-
-import { defaultTsconfigInherits } from "#config/constants";
-import type { EnvironmentTsconfig } from "#config/types/EnvironmentTsconfig";
 import type { TsconfigGroups } from "#config/types/TsconfigGroups";
 import type { TsconfigKey } from "#config/types/TsconfigKey";
-
-function describe(key: TsconfigKey): string {
-  return `${key}.tsconfig`;
-}
-
-function readGroup(
-  key: TsconfigKey,
-  groups: TsconfigGroups,
-): EnvironmentTsconfig | false {
-  const group = groups[key];
-
-  if (group !== undefined) {
-    return group;
-  }
-
-  // @debt the `in` check does not narrow `key`, hence the cast below; typing defaultTsconfigInherits as a Partial<Record<TsconfigKey, TsconfigKey>> would remove it
-  return key in defaultTsconfigInherits
-    ? {
-        inherits:
-          defaultTsconfigInherits[key as keyof typeof defaultTsconfigInherits],
-      }
-    : {};
-}
+import type { TsconfigOwner } from "#config/types/TsconfigOwner";
 
 export function resolveTsconfigOwner(
   key: TsconfigKey,
   groups: TsconfigGroups,
-): TsconfigKey | undefined {
+): TsconfigOwner | undefined {
   const chain: TsconfigKey[] = [];
 
   let current = key;
+  let previous: TsconfigKey | undefined;
 
   for (;;) {
     chain.push(current);
 
-    const group = readGroup(current, groups);
+    const group = groups[current];
 
-    if (group === false) {
-      if (current === key) {
+    if (!group.enabled) {
+      if (previous === undefined) {
         return;
       }
 
-      // @debt non-null assertion on chain.at(-2): it holds because current !== key implies at least two links, which the types cannot express; tracking the previous key in a variable would avoid it
       throw new Error(
-        `${describe(chain.at(-2)!)} inherits ${current}, which has no managed tsconfig`,
+        `${previous}.tsconfig inherits ${current}, which has no managed tsconfig`,
       );
     }
 
-    const { inherits, ...others } = group;
+    const { inherits } = group;
 
     if (inherits === undefined) {
-      return current;
-    }
-
-    const conflicting = entries(others)
-      .filter(([, value]) => value !== undefined)
-      .map(([option]) => option);
-
-    if (conflicting.length > 0) {
-      throw new Error(
-        `${describe(current)} inherits ${inherits} and cannot also set ${conflicting.join(", ")}`,
-      );
+      return { key: current, group };
     }
 
     if (chain.includes(inherits)) {
       throw new Error(
-        `${describe(key)} inherits in a cycle: ${[...chain, inherits].join(" → ")}`,
+        `${key}.tsconfig inherits in a cycle: ${[...chain, inherits].join(" → ")}`,
       );
     }
 
+    previous = current;
     current = inherits;
   }
 }

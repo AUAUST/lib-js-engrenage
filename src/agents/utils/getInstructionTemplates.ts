@@ -17,7 +17,7 @@ import { sort } from "@auaust/primitive-kit/arrays";
 import { agentsTemplate } from "#agents/constants";
 import { parseInstruction } from "#agents/utils/parseInstruction";
 import { engrenage } from "#constants";
-import { validate } from "#utils/validate";
+import { validate } from "#foundation/options/utils/validate";
 
 const templateSchema = looseObject({
   title: string(),

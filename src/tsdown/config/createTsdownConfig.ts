@@ -6,6 +6,7 @@ import type { Maybe } from "@auaust/toolkit/types";
 
 import { createDefine } from "#config/utils/createDefine";
 import { arethetypeswrongCore, packageJsonFile, publint } from "#constants";
+import { validate } from "#foundation/options/utils/validate";
 import { readJsonFile } from "#support/filesystem/utils/readJsonFile";
 import { optionsSchema } from "#tsdown/config/schemas/optionsSchema";
 import {
@@ -23,7 +24,6 @@ import { resolveCommandEntries } from "#tsdown/utils/resolveCommandEntries";
 import { resolveDataExports } from "#tsdown/utils/resolveDataExports";
 import { resolveSourceEntries } from "#tsdown/utils/resolveSourceEntries";
 import { resolveTsdownTarget } from "#tsdown/utils/resolveTsdownTarget";
-import { validate } from "#utils/validate";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Config } from "#tsdown/types/Config";
 import type { Options } from "#tsdown/types/Options";

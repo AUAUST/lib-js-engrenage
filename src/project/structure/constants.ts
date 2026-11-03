@@ -25,8 +25,10 @@ export const roleCatalogue = {
   "hooks": { exports: "named-match", scoped: true },
   "contexts": { exports: "named-match", scoped: true },
   "pages": {
- discovered: true, exports: "default", nesting: "any" 
-},
+    discovered: true,
+    exports: "default",
+    nesting: "any",
+  },
   "styles": { accepts: ["*.css"] },
 } as const satisfies Record<string, RoleContract>;
 

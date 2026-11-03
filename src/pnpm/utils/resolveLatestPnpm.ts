@@ -4,8 +4,8 @@ import { array, pipe, regex, string, union } from "valibot";
 
 import { last, toSorted, wrap } from "@auaust/primitive-kit/arrays";
 
+import { validate } from "#foundation/options/utils/validate";
 import { compareVersions } from "#support/packageJson/utils/compareVersions";
-import { validate } from "#utils/validate";
 import type { Directory } from "#types/Directory";
 
 const releaseSchema = pipe(string(), regex(/^\d+\.\d+\.\d+$/));

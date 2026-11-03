@@ -1,6 +1,6 @@
-import type { EnvironmentTsconfig } from "#config/types/EnvironmentTsconfig";
+import type { ResolvedEnvironmentTsconfigOption } from "#config/types/ResolvedEnvironmentTsconfigOption";
 import type { TsconfigKey } from "#config/types/TsconfigKey";
 
 export type TsconfigGroups = Readonly<
-  Record<TsconfigKey, EnvironmentTsconfig | false | undefined>
+  Record<TsconfigKey, ResolvedEnvironmentTsconfigOption>
 >;

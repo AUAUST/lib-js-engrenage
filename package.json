@@ -45,6 +45,7 @@
     "#config/*": "./src/config/*.ts",
     "#constants": "./src/constants.ts",
     "#eslint/*": "./src/eslint/*.ts",
+    "#foundation/*": "./src/foundation/*.ts",
     "#git/*": "./src/git/*.ts",
     "#github/*": "./src/github/*.ts",
     "#package.json": "./package.json",

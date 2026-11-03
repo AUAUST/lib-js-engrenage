@@ -1,8 +1,10 @@
-import type { InferOutput } from "valibot";
+import type { InferInput } from "valibot";
 
-import type { environmentTsconfigSchema } from "#config/config/schemas/environments/environmentTsconfigSchema";
+import type { declareEnvironmentTsconfig } from "#config/utils/declareEnvironmentTsconfig";
 
 export type EnvironmentTsconfig = Exclude<
-  InferOutput<typeof environmentTsconfigSchema>,
+  NonNullable<
+    InferInput<ReturnType<typeof declareEnvironmentTsconfig>["schema"]>
+  >,
   false
 >;

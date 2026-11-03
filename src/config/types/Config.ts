@@ -59,7 +59,7 @@ export interface Config {
          * Compile-time globals, by identifier or dotted path (such as `import.meta.env.NAME`) with a JSON-serializable value, optionally wrapped by `define()` for a type, scope and documentation.
          * A function receives the `package.json` and the filesystem and returns them.
          * They feed the `define` option of tsdown and Vite (hence Vitest) according to their scope, and the env file declarations.
-         * Unset, nothing is defined.
+         * @default none
          */
         values?:
           | (
@@ -86,6 +86,7 @@ export interface Config {
         | {
             /**
              * Known roles to turn on, applied to the defaults before `define`.
+             * @default none
              */
             enable?:
               | (
@@ -110,6 +111,7 @@ export interface Config {
               | undefined;
             /**
              * Known roles to turn off, applied to the defaults before `define`.
+             * @default none
              */
             disable?:
               | (
@@ -144,10 +146,12 @@ export interface Config {
                   [k: string]: {
                     /**
                      * Makes the role a file role, matched by these names or globs.
+                     * @default none
                      */
                     file?: Glob | Globs | undefined;
                     /**
-                     * Files a directory role takes, as names or globs. Unset, the role takes the modules of its environment.
+                     * Files a directory role takes, as names or globs.
+                     * @default the modules of its environment
                      */
                     accepts?: Glob | Globs | undefined;
                     /**
@@ -157,14 +161,17 @@ export interface Config {
                     nesting?: (number | "any") | undefined;
                     /**
                      * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                     * @default none
                      */
                     roles?: string[] | undefined;
                     /**
                      * Semi-structured role: it requires category subdirectories whose names are free.
+                     * @default none
                      */
                     categories?: boolean | undefined;
                     /**
                      * Export style of its TypeScript and JavaScript modules: one named export matching the file name, named exports, or a default export.
+                     * @default none
                      */
                     exports?: ("named-match" | "named" | "default") | undefined;
                     /**
@@ -193,6 +200,7 @@ export interface Config {
               | undefined;
             /**
              * Directory names read as a role, mapped to the role name (`helpers` read as `utils`).
+             * @default none
              */
             aliases?:
               | {
@@ -212,7 +220,7 @@ export interface Config {
         preferred?: ("claude" | "codex")[] | undefined;
         /**
          * Globs of the agent instruction files whose `@reference` blocks sync fills.
-         * @default `AGENTS.md` and the Claude and agent rule, skill and sub-agent files
+         * @default `AGENTS.md`, `.claude/rules/** /*.md`, `.claude/skills/* /SKILL.md`, `.claude/agents/*.md`, `.agents/skills/* /SKILL.md`
          */
         instructionFiles?: Glob | Globs | undefined;
         /**
@@ -235,7 +243,7 @@ export interface Config {
         /**
          * Whether agents credit themselves in commits and pull requests.
          * It selects the `attribution` or `no-attribution` rule file and the Claude `attribution` setting.
-         * Unset, neither is managed.
+         * @default none, so neither is managed
          */
         attribution?: boolean | undefined;
       }
@@ -288,7 +296,7 @@ export interface Config {
               extends?: ManagedListOption<string> | undefined;
               /**
                * Options written into `compilerOptions` of the base tsconfig, after the ones engrenage derives.
-               * Unset, only the derived options are written.
+               * @default none
                */
               compilerOptions?:
                 | {
@@ -304,12 +312,11 @@ export interface Config {
           | undefined;
         /**
          * Globs of the TypeScript files inside every environment directory, feeding the tsconfig `include` and the published file scopes.
-         * @default every `.ts` and `.tsx` file at any depth
+         * @default `** /*.{ts,tsx}`
          */
         files?: ListOption<string> | undefined;
         /**
-         * Declaration file where sync writes the `define.values` globals, within a marked block.
-         * It is added to the tsconfig `include` of the environments that define globals.
+         * Declaration file where sync writes the `define.values` globals, within a marked block. It is added to the tsconfig `include` of the environments that define globals.
          * @default `env.d.ts`
          */
         envFile?: string | undefined;
@@ -349,12 +356,17 @@ export interface Config {
                   [k: string]: {
                     /**
                      * Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.
+                     * @default none
                      */
                     layers?: string[] | undefined;
                     /**
                      * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
+                     * @default none
                      */
                     prefix?: string | undefined;
+                    /**
+                     * @default none
+                     */
                     roles?:
                       | {
                           /**
@@ -399,10 +411,12 @@ export interface Config {
                     public?: boolean | undefined;
                     /**
                      * Public specifier of the domain, overriding the one derived from its path.
+                     * @default none
                      */
                     specifier?: string | undefined;
                     /**
                      * One line stating the domain's concern.
+                     * @default none
                      */
                     purpose?: string | undefined;
                   };
@@ -494,7 +508,7 @@ export interface Config {
                       types?: ManagedListOption<string> | undefined;
                       /**
                        * Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.
-                       * Unset, only the derived options are written.
+                       * @default none
                        */
                       compilerOptions?:
                         | {
@@ -585,12 +599,17 @@ export interface Config {
                   [k: string]: {
                     /**
                      * Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.
+                     * @default none
                      */
                     layers?: string[] | undefined;
                     /**
                      * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
+                     * @default none
                      */
                     prefix?: string | undefined;
+                    /**
+                     * @default none
+                     */
                     roles?:
                       | {
                           /**
@@ -635,10 +654,12 @@ export interface Config {
                     public?: boolean | undefined;
                     /**
                      * Public specifier of the domain, overriding the one derived from its path.
+                     * @default none
                      */
                     specifier?: string | undefined;
                     /**
                      * One line stating the domain's concern.
+                     * @default none
                      */
                     purpose?: string | undefined;
                   };
@@ -730,7 +751,7 @@ export interface Config {
                       types?: ManagedListOption<string> | undefined;
                       /**
                        * Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.
-                       * Unset, only the derived options are written.
+                       * @default none
                        */
                       compilerOptions?:
                         | {
@@ -757,6 +778,7 @@ export interface Config {
               | {
                   /**
                    * Known roles to turn on, applied to the defaults before `define`.
+                   * @default none
                    */
                   enable?:
                     | (
@@ -781,6 +803,7 @@ export interface Config {
                     | undefined;
                   /**
                    * Known roles to turn off, applied to the defaults before `define`.
+                   * @default none
                    */
                   disable?:
                     | (
@@ -815,10 +838,12 @@ export interface Config {
                         [k: string]: {
                           /**
                            * Makes the role a file role, matched by these names or globs.
+                           * @default none
                            */
                           file?: Glob | Globs | undefined;
                           /**
-                           * Files a directory role takes, as names or globs. Unset, the role takes the modules of its environment.
+                           * Files a directory role takes, as names or globs.
+                           * @default the modules of its environment
                            */
                           accepts?: Glob | Globs | undefined;
                           /**
@@ -828,14 +853,17 @@ export interface Config {
                           nesting?: (number | "any") | undefined;
                           /**
                            * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                           * @default none
                            */
                           roles?: string[] | undefined;
                           /**
                            * Semi-structured role: it requires category subdirectories whose names are free.
+                           * @default none
                            */
                           categories?: boolean | undefined;
                           /**
                            * Export style of its TypeScript and JavaScript modules: one named export matching the file name, named exports, or a default export.
+                           * @default none
                            */
                           exports?:
                             ("named-match" | "named" | "default") | undefined;
@@ -865,6 +893,7 @@ export interface Config {
                     | undefined;
                   /**
                    * Directory names read as a role, mapped to the role name (`helpers` read as `utils`).
+                   * @default none
                    */
                   aliases?:
                     | {
@@ -894,12 +923,17 @@ export interface Config {
                   [k: string]: {
                     /**
                      * Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.
+                     * @default none
                      */
                     layers?: string[] | undefined;
                     /**
                      * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
+                     * @default none
                      */
                     prefix?: string | undefined;
+                    /**
+                     * @default none
+                     */
                     roles?:
                       | {
                           /**
@@ -944,10 +978,12 @@ export interface Config {
                     public?: boolean | undefined;
                     /**
                      * Public specifier of the domain, overriding the one derived from its path.
+                     * @default none
                      */
                     specifier?: string | undefined;
                     /**
                      * One line stating the domain's concern.
+                     * @default none
                      */
                     purpose?: string | undefined;
                   };
@@ -1039,7 +1075,7 @@ export interface Config {
                       types?: ManagedListOption<string> | undefined;
                       /**
                        * Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.
-                       * Unset, only the derived options are written.
+                       * @default none
                        */
                       compilerOptions?:
                         | {
@@ -1066,6 +1102,7 @@ export interface Config {
               | {
                   /**
                    * Known roles to turn on, applied to the defaults before `define`.
+                   * @default none
                    */
                   enable?:
                     | (
@@ -1090,6 +1127,7 @@ export interface Config {
                     | undefined;
                   /**
                    * Known roles to turn off, applied to the defaults before `define`.
+                   * @default none
                    */
                   disable?:
                     | (
@@ -1124,10 +1162,12 @@ export interface Config {
                         [k: string]: {
                           /**
                            * Makes the role a file role, matched by these names or globs.
+                           * @default none
                            */
                           file?: Glob | Globs | undefined;
                           /**
-                           * Files a directory role takes, as names or globs. Unset, the role takes the modules of its environment.
+                           * Files a directory role takes, as names or globs.
+                           * @default the modules of its environment
                            */
                           accepts?: Glob | Globs | undefined;
                           /**
@@ -1137,14 +1177,17 @@ export interface Config {
                           nesting?: (number | "any") | undefined;
                           /**
                            * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                           * @default none
                            */
                           roles?: string[] | undefined;
                           /**
                            * Semi-structured role: it requires category subdirectories whose names are free.
+                           * @default none
                            */
                           categories?: boolean | undefined;
                           /**
                            * Export style of its TypeScript and JavaScript modules: one named export matching the file name, named exports, or a default export.
+                           * @default none
                            */
                           exports?:
                             ("named-match" | "named" | "default") | undefined;
@@ -1174,6 +1217,7 @@ export interface Config {
                     | undefined;
                   /**
                    * Directory names read as a role, mapped to the role name (`helpers` read as `utils`).
+                   * @default none
                    */
                   aliases?:
                     | {
@@ -1196,7 +1240,7 @@ export interface Config {
              * Baseline snapshot of the runtime the source targets, as `YYYY-MM` (at most the current month).
              * It selects the TypeScript ES libs of the src tsconfig (the newest edition entirely widely available at the snapshot, plus each newer ES lib widely available on its own), the tsdown `target` and the `engines.node` floor of `package.json`.
              * Exclusive with `src.node`.
-             * Unset, all three are skipped with a warning.
+             * @default none, so all three are skipped with a warning
              */
             baseline?: string | undefined;
             /**
@@ -1227,7 +1271,7 @@ export interface Config {
             /**
              * Node major the source targets instead of a baseline: it feeds the Node types and lib of the src tsconfig, the tsdown `target` and the `engines.node` floor.
              * Exclusive with `src.baseline` and `src.apis`.
-             * Unset, `src.baseline` decides.
+             * @default none, so `src.baseline` decides
              */
             node?: number | undefined;
           }
@@ -1251,12 +1295,17 @@ export interface Config {
                   [k: string]: {
                     /**
                      * Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.
+                     * @default none
                      */
                     layers?: string[] | undefined;
                     /**
                      * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
+                     * @default none
                      */
                     prefix?: string | undefined;
+                    /**
+                     * @default none
+                     */
                     roles?:
                       | {
                           /**
@@ -1301,10 +1350,12 @@ export interface Config {
                     public?: boolean | undefined;
                     /**
                      * Public specifier of the domain, overriding the one derived from its path.
+                     * @default none
                      */
                     specifier?: string | undefined;
                     /**
                      * One line stating the domain's concern.
+                     * @default none
                      */
                     purpose?: string | undefined;
                   };
@@ -1396,7 +1447,7 @@ export interface Config {
                       types?: ManagedListOption<string> | undefined;
                       /**
                        * Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.
-                       * Unset, only the derived options are written.
+                       * @default none
                        */
                       compilerOptions?:
                         | {
@@ -1423,6 +1474,7 @@ export interface Config {
               | {
                   /**
                    * Known roles to turn on, applied to the defaults before `define`.
+                   * @default none
                    */
                   enable?:
                     | (
@@ -1447,6 +1499,7 @@ export interface Config {
                     | undefined;
                   /**
                    * Known roles to turn off, applied to the defaults before `define`.
+                   * @default none
                    */
                   disable?:
                     | (
@@ -1481,10 +1534,12 @@ export interface Config {
                         [k: string]: {
                           /**
                            * Makes the role a file role, matched by these names or globs.
+                           * @default none
                            */
                           file?: Glob | Globs | undefined;
                           /**
-                           * Files a directory role takes, as names or globs. Unset, the role takes the modules of its environment.
+                           * Files a directory role takes, as names or globs.
+                           * @default the modules of its environment
                            */
                           accepts?: Glob | Globs | undefined;
                           /**
@@ -1494,14 +1549,17 @@ export interface Config {
                           nesting?: (number | "any") | undefined;
                           /**
                            * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                           * @default none
                            */
                           roles?: string[] | undefined;
                           /**
                            * Semi-structured role: it requires category subdirectories whose names are free.
+                           * @default none
                            */
                           categories?: boolean | undefined;
                           /**
                            * Export style of its TypeScript and JavaScript modules: one named export matching the file name, named exports, or a default export.
+                           * @default none
                            */
                           exports?:
                             ("named-match" | "named" | "default") | undefined;
@@ -1531,6 +1589,7 @@ export interface Config {
                     | undefined;
                   /**
                    * Directory names read as a role, mapped to the role name (`helpers` read as `utils`).
+                   * @default none
                    */
                   aliases?:
                     | {
@@ -1626,7 +1685,7 @@ export interface Config {
                             types?: ManagedListOption<string> | undefined;
                             /**
                              * Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.
-                             * Unset, only the derived options are written.
+                             * @default none
                              */
                             compilerOptions?:
                               | {
@@ -1669,12 +1728,17 @@ export interface Config {
                   [k: string]: {
                     /**
                      * Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.
+                     * @default none
                      */
                     layers?: string[] | undefined;
                     /**
                      * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
+                     * @default none
                      */
                     prefix?: string | undefined;
+                    /**
+                     * @default none
+                     */
                     roles?:
                       | {
                           /**
@@ -1719,10 +1783,12 @@ export interface Config {
                     public?: boolean | undefined;
                     /**
                      * Public specifier of the domain, overriding the one derived from its path.
+                     * @default none
                      */
                     specifier?: string | undefined;
                     /**
                      * One line stating the domain's concern.
+                     * @default none
                      */
                     purpose?: string | undefined;
                   };
@@ -1755,6 +1821,7 @@ export interface Config {
               | {
                   /**
                    * Known roles to turn on, applied to the defaults before `define`.
+                   * @default none
                    */
                   enable?:
                     | (
@@ -1779,6 +1846,7 @@ export interface Config {
                     | undefined;
                   /**
                    * Known roles to turn off, applied to the defaults before `define`.
+                   * @default none
                    */
                   disable?:
                     | (
@@ -1813,10 +1881,12 @@ export interface Config {
                         [k: string]: {
                           /**
                            * Makes the role a file role, matched by these names or globs.
+                           * @default none
                            */
                           file?: Glob | Globs | undefined;
                           /**
-                           * Files a directory role takes, as names or globs. Unset, the role takes the modules of its environment.
+                           * Files a directory role takes, as names or globs.
+                           * @default the modules of its environment
                            */
                           accepts?: Glob | Globs | undefined;
                           /**
@@ -1826,14 +1896,17 @@ export interface Config {
                           nesting?: (number | "any") | undefined;
                           /**
                            * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                           * @default none
                            */
                           roles?: string[] | undefined;
                           /**
                            * Semi-structured role: it requires category subdirectories whose names are free.
+                           * @default none
                            */
                           categories?: boolean | undefined;
                           /**
                            * Export style of its TypeScript and JavaScript modules: one named export matching the file name, named exports, or a default export.
+                           * @default none
                            */
                           exports?:
                             ("named-match" | "named" | "default") | undefined;
@@ -1863,6 +1936,7 @@ export interface Config {
                     | undefined;
                   /**
                    * Directory names read as a role, mapped to the role name (`helpers` read as `utils`).
+                   * @default none
                    */
                   aliases?:
                     | {
@@ -1924,7 +1998,7 @@ export interface Config {
                       types?: ManagedListOption<string> | undefined;
                       /**
                        * Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.
-                       * Unset, only the derived options are written.
+                       * @default none
                        */
                       compilerOptions?:
                         | {

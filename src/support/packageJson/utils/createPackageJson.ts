@@ -17,9 +17,9 @@ import { once } from "@auaust/toolkit/once";
 
 import { createAccessors } from "#config/utils/createAccessors";
 import { packageJsonFile, packageTypes, publishAccess } from "#constants";
+import { validate } from "#foundation/options/utils/validate";
 import { parseJson } from "#support/json/utils/parseJson";
 import { dependencyFields } from "#support/packageJson/constants";
-import { validate } from "#utils/validate";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

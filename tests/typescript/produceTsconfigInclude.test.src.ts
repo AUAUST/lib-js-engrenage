@@ -2,10 +2,10 @@ import { describe, expect, test } from "vitest";
 
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { validate } from "#foundation/options/utils/validate";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
-import { validate } from "#utils/validate";
 
 function syncProject(input: unknown, files: Record<string, string> = {}) {
   const project = createTemporaryProject({

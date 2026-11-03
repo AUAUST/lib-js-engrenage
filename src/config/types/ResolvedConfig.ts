@@ -1,5 +1,62 @@
-import type { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import type { Config } from "#config/types/Config";
+import type { Environment } from "#config/types/Environment";
+import type { Filesystem } from "#config/types/Filesystem";
+import type { Presets } from "#config/types/Presets";
+import type { ResolvedAgents } from "#config/types/ResolvedAgents";
+import type { ResolvedBin } from "#config/types/ResolvedBin";
+import type { ResolvedBuild } from "#config/types/ResolvedBuild";
+import type { ResolvedCache } from "#config/types/ResolvedCache";
+import type { ResolvedData } from "#config/types/ResolvedData";
+import type { ResolvedDefine } from "#config/types/ResolvedDefine";
+import type { ResolvedFiles } from "#config/types/ResolvedFiles";
+import type { ResolvedGit } from "#config/types/ResolvedGit";
+import type { ResolvedGithub } from "#config/types/ResolvedGithub";
+import type { ResolvedPrettier } from "#config/types/ResolvedPrettier";
+import type { ResolvedRuntimeSettings } from "#config/types/ResolvedRuntimeSettings";
+import type { ResolvedScripts } from "#config/types/ResolvedScripts";
+import type { ResolvedSource } from "#config/types/ResolvedSource";
+import type { ResolvedStructure } from "#config/types/ResolvedStructure";
+import type { ResolvedTests } from "#config/types/ResolvedTests";
+import type { ResolvedTooling } from "#config/types/ResolvedTooling";
+import type { ResolvedTypescript } from "#config/types/ResolvedTypescript";
+import type { ResolvedVscode } from "#config/types/ResolvedVscode";
+import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
+import type { PackageJson } from "#support/packageJson/types/PackageJson";
+import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
+import type { PackageName } from "#types/PackageName";
+import type { Tsconfig } from "#typescript/types/Tsconfig";
 
-export interface ResolvedConfig extends ReturnType<
-  typeof createResolvedConfig
-> {}
+export interface ResolvedConfig {
+  readonly root: Directory;
+  readonly raw: Config;
+  readonly configFile: File | undefined;
+  readonly debug: boolean;
+  readonly filesystem: Filesystem;
+  resolve(...paths: string[]): string;
+  cacheFor(packageName: PackageName): Directory;
+  readonly packageJsonPath: File | undefined;
+  readonly packageJson: PackageJson;
+  readonly tsconfig: Tsconfig;
+  readonly environment: Environment;
+  readonly presets: Presets;
+  readonly roles: ProjectRoles;
+  readonly runtime: ResolvedRuntimeSettings;
+  readonly define: ResolvedDefine;
+  readonly src: ResolvedSource;
+  readonly tests: ResolvedTests;
+  readonly bin: ResolvedBin;
+  readonly scripts: ResolvedScripts;
+  readonly data: ResolvedData;
+  readonly tooling: ResolvedTooling;
+  readonly structure: ResolvedStructure;
+  readonly files: ResolvedFiles;
+  readonly build: ResolvedBuild;
+  readonly cache: ResolvedCache;
+  readonly typescript: ResolvedTypescript;
+  readonly git: ResolvedGit;
+  readonly prettier: ResolvedPrettier;
+  readonly agents: ResolvedAgents;
+  readonly github: ResolvedGithub;
+  readonly vscode: ResolvedVscode;
+}

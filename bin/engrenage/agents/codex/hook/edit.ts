@@ -6,8 +6,8 @@ import { literal, object, string } from "valibot";
 import { getPatchedFiles } from "#agents/codex/utils/getPatchedFiles";
 import { formatEditedFile } from "#agents/utils/formatEditedFile";
 import { loadConfig } from "#config/utils/loadConfig";
+import { validate } from "#foundation/options/utils/validate";
 import { defineCommand } from "#support/commander/utils/defineCommand";
-import { validate } from "#utils/validate";
 
 const payloadSchema = object({
   cwd: string(),

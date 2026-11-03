@@ -1,9 +1,9 @@
 import { array, looseObject, optional, string } from "valibot";
 
+import { validate } from "#foundation/options/utils/validate";
 import { emptyObjectFile } from "#support/json/constants";
 import { readJsonValue } from "#support/json/utils/readJsonValue";
 import { writeJsonValue } from "#support/json/utils/writeJsonValue";
-import { validate } from "#utils/validate";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
 

@@ -1,24 +1,22 @@
-import { description, optional, pipe } from "valibot";
-
-import { join } from "@auaust/primitive-kit/arrays";
-
-import { environmentSchema } from "#config/config/schemas/values/environmentSchema";
-import { defaultScriptsDirectories } from "#config/constants";
+import {
+  defaultScriptsDirectories,
+  disabledCodeEnvironment,
+} from "#config/constants";
 import { createCodeEnvironment } from "#config/utils/createCodeEnvironment";
+import { declareObject } from "#foundation/options/utils/declareObject";
 import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 
-export const scriptsSchema = pipe(
-  environmentSchema({
+export const scriptsSchema = declareObject(
+  {
     ...createCodeEnvironment("scripts", defaultScriptsDirectories),
-    roles: optional(rolesOptionSchema),
-  }),
-  description(
-    join(
-      [
-        "The environment of the maintenance scripts of the project, never published.",
-        "`false` disables it.",
-      ],
-      "\n",
-    ),
-  ),
+    roles: rolesOptionSchema,
+  },
+  {
+    description: [
+      "The environment of the maintenance scripts of the project, never published.",
+      "`false` disables it.",
+    ],
+    optional: true,
+    disable: { value: disabledCodeEnvironment },
+  },
 );

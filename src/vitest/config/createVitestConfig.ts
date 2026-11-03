@@ -5,8 +5,8 @@ import { configDefaults, coverageConfigDefaults } from "vitest/config";
 import { includes } from "@auaust/primitive-kit/arrays";
 import type { Maybe } from "@auaust/toolkit/types";
 
+import { validate } from "#foundation/options/utils/validate";
 import { resolve } from "#support/filesystem/utils/resolve";
-import { validate } from "#utils/validate";
 import { optionsSchema } from "#vitest/config/schemas/optionsSchema";
 import {
   buildMode,

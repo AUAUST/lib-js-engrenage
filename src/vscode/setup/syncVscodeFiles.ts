@@ -8,12 +8,12 @@ import {
 } from "@auaust/primitive-kit/arrays";
 
 import { loadInfoRules } from "#eslint/utils/loadInfoRules";
+import { validate } from "#foundation/options/utils/validate";
 import { emptyObjectFile } from "#support/json/constants";
 import { applyJsonEdits } from "#support/json/utils/applyJsonEdits";
 import { flattenJsonObject } from "#support/json/utils/flattenJsonObject";
 import { readJsonValue } from "#support/json/utils/readJsonValue";
 import { writeJsonValue } from "#support/json/utils/writeJsonValue";
-import { validate } from "#utils/validate";
 import {
   eslintIntegration,
   extensionsFile,

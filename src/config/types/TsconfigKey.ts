@@ -1,3 +1,3 @@
-import type { tsconfigEnvironments } from "#config/constants";
+import type { TsconfigEnvironment } from "#config/types/TsconfigEnvironment";
 
-export type TsconfigKey = (typeof tsconfigEnvironments)[number] | "tests.dist";
+export type TsconfigKey = TsconfigEnvironment | "tests.dist";

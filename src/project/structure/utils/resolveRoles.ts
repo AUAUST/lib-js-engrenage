@@ -1,12 +1,10 @@
 import { assign, entries, freeze } from "@auaust/toolkit/object";
 
-import {
-  environmentRoleKeys,
-  noRoles,
-  roleCatalogue,
-} from "#project/structure/constants";
+import { environmentRoleKeys, noRoles } from "#project/structure/constants";
+import { resolveCatalogue } from "#project/structure/utils/resolveCatalogue";
+import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
+import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
-import type { RoleContract } from "#project/structure/types/RoleContract";
 import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
 import type { RolesOption } from "#project/structure/types/RolesOption";
 
@@ -17,33 +15,36 @@ export function resolveRoles({
   scopes = [],
 }: {
   environment: RoleEnvironment;
-  roles: RolesOption | false | undefined;
-  environmentRoles?: RolesOption | undefined;
+  roles: ProjectRoles;
+  environmentRoles: RolesOption;
   scopes?: readonly string[];
 }): ResolvedRoles {
-  if (roles === false) {
+  if (!roles.enabled) {
     return noRoles;
   }
 
-  const contracts = new Map<string, RoleContract>(entries(roleCatalogue));
+  const contracts = new Map<string, ResolvedRoleContract>(
+    entries(resolveCatalogue()),
+  );
+
   const active = new Set<string>(environmentRoleKeys[environment]);
   const aliases: Record<string, string> = {};
 
   for (const option of [roles, environmentRoles]) {
-    for (const name of option?.enable ?? []) {
+    for (const name of option.enable) {
       active.add(name);
     }
 
-    for (const name of option?.disable ?? []) {
+    for (const name of option.disable) {
       active.delete(name);
     }
 
-    for (const [name, contract] of entries(option?.define ?? {})) {
+    for (const [name, contract] of entries(option.define)) {
       contracts.set(name, contract);
       active.add(name);
     }
 
-    assign(aliases, option?.aliases);
+    assign(aliases, option.aliases);
   }
 
   for (const name of scopes) {
@@ -56,12 +57,10 @@ export function resolveRoles({
     active.add(name);
   }
 
-  const resolved: Record<string, RoleContract> = {};
+  const resolved: Record<string, ResolvedRoleContract> = {};
 
   for (const [name, contract] of contracts) {
-    const scoped = contract.scoped === true;
-
-    if (active.has(name) && (!scoped || scopes.includes(name))) {
+    if (active.has(name) && (!contract.scoped || scopes.includes(name))) {
       resolved[name] = contract;
     }
   }

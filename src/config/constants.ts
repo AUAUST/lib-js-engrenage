@@ -1,7 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import type { GlobalScope } from "#config/types/GlobalScope";
-import type { Presets } from "#config/types/Presets";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -78,10 +77,6 @@ export const defaultTestsFixtures = freeze([
 
 export const defaultTestsCoverageDirectory = "coverage" satisfies Directory;
 
-export const defaultGenerated = freeze([] as const) satisfies Globs;
-
-export const defaultDiscovered = freeze([] as const) satisfies Globs;
-
 export const defaultDefines = freeze({
   src: true,
   tests: true,
@@ -97,8 +92,6 @@ export const defaultInstructionFiles = freeze([
   ".agents/skills/*/SKILL.md",
 ] as const) satisfies Globs;
 
-export const defaultPresets = freeze([] as const) satisfies Presets;
-
 export const presets = freeze(["library"] as const) satisfies Globs;
 
 export const tsconfigEnvironments = freeze([
@@ -111,6 +104,16 @@ export const tsconfigEnvironments = freeze([
 
 export const defaultTsconfigInherits = freeze({
   tooling: "scripts",
+} as const);
+
+export const unmanagedTsconfig = freeze({ enabled: false } as const);
+
+export const disabledCodeEnvironment = freeze({
+  dirs: [],
+  generated: [],
+  discovered: [],
+  defines: false,
+  tsconfig: unmanagedTsconfig,
 } as const);
 
 export const defaultTsconfigCheck = freeze({

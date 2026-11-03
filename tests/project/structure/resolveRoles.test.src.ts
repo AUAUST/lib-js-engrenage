@@ -2,12 +2,38 @@ import { describe, expect, test } from "vitest";
 
 import { keys } from "@auaust/toolkit/object";
 
+import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
+import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
+import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
+
+function resolve({
+  environment,
+  roles,
+  environmentRoles,
+  scopes,
+}: {
+  environment: RoleEnvironment;
+  roles: unknown;
+  environmentRoles?: unknown;
+  scopes?: readonly string[];
+}) {
+  return resolveRoles({
+    environment,
+    roles: rolesSchema.resolve(roles, undefined, "roles"),
+    environmentRoles: rolesOptionSchema.resolve(
+      environmentRoles,
+      undefined,
+      "roles",
+    ),
+    ...(scopes === undefined ? {} : { scopes }),
+  });
+}
 
 describe("resolveRoles", () => {
   test("resolves the defaults of an environment, tests adding its own", () => {
-    const source = resolveRoles({ environment: "src", roles: undefined });
-    const tests = resolveRoles({ environment: "tests", roles: undefined });
+    const source = resolve({ environment: "src", roles: undefined });
+    const tests = resolve({ environment: "tests", roles: undefined });
 
     expect(keys(source.roles)).toEqual([
       "index.ts",
@@ -33,15 +59,15 @@ describe("resolveRoles", () => {
   test("applies the top level, then the environment, with define last", () => {
     const roles = { disable: ["enums" as const], enable: ["schemas" as const] };
 
-    expect(
-      resolveRoles({ environment: "src", roles }).roles,
-    ).not.toHaveProperty("enums");
+    expect(resolve({ environment: "src", roles }).roles).not.toHaveProperty(
+      "enums",
+    );
 
-    expect(resolveRoles({ environment: "src", roles }).roles).toHaveProperty(
+    expect(resolve({ environment: "src", roles }).roles).toHaveProperty(
       "schemas",
     );
 
-    const tests = resolveRoles({
+    const tests = resolve({
       environment: "tests",
       roles,
       environmentRoles: { enable: ["enums"] },
@@ -50,7 +76,7 @@ describe("resolveRoles", () => {
     expect(tests.roles).toHaveProperty("enums");
 
     expect(
-      resolveRoles({
+      resolve({
         environment: "scripts",
         roles: {
           define: {
@@ -58,12 +84,12 @@ describe("resolveRoles", () => {
           },
         },
       }).roles.utils,
-    ).toEqual({ exports: "default" });
+    ).toMatchObject({ exports: "default" });
   });
 
   test("yields no role in any environment when the role system is off", () => {
     for (const environment of ["src", "tests", "scripts", "tooling"] as const) {
-      expect(resolveRoles({ environment, roles: false })).toEqual({
+      expect(resolve({ environment, roles: false })).toEqual({
         roles: {},
         aliases: {},
       });
@@ -78,9 +104,9 @@ describe("resolveRoles", () => {
       },
     };
 
-    const elsewhere = resolveRoles({ environment: "src", roles });
+    const elsewhere = resolve({ environment: "src", roles });
 
-    const inside = resolveRoles({
+    const inside = resolve({
       environment: "src",
       roles,
       scopes: ["queries"],
@@ -91,7 +117,7 @@ describe("resolveRoles", () => {
     expect(inside.roles).toHaveProperty("queries");
 
     expect(
-      resolveRoles({
+      resolve({
         environment: "src",
         roles: undefined,
         scopes: ["hooks"],
@@ -99,13 +125,13 @@ describe("resolveRoles", () => {
     ).toHaveProperty("hooks");
 
     expect(
-      resolveRoles({ environment: "src", roles: undefined }).roles,
+      resolve({ environment: "src", roles: undefined }).roles,
     ).not.toHaveProperty("hooks");
   });
 
   test("reads an alias as an active role and rejects any other target", () => {
     expect(
-      resolveRoles({
+      resolve({
         environment: "src",
         roles: {
           aliases: { helpers: "utils" },
@@ -114,7 +140,7 @@ describe("resolveRoles", () => {
     ).toEqual({ helpers: "utils" });
 
     expect(() =>
-      resolveRoles({
+      resolve({
         environment: "src",
         roles: {
           aliases: { helpers: "unknown" },

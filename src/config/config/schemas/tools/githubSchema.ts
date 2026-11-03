@@ -1,31 +1,25 @@
-import {
-  description,
-  literal,
-  optional,
-  picklist,
-  pipe,
-  strictObject,
-  union,
-} from "valibot";
+import { picklist } from "valibot";
 
-import { join } from "@auaust/primitive-kit/arrays";
-
+import { declare } from "#foundation/options/utils/declare";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { unset } from "#foundation/options/utils/unset";
 import { workflowSetNames } from "#github/constants";
 
-export const githubSchema = strictObject({
-  workflows: optional(
-    pipe(
-      union([literal(false), picklist(workflowSetNames)]),
-      description(
-        join(
-          [
-            "Workflow set that sync keeps in `.github/workflows`; `false` disables it.",
-            "A set only updates workflow files that already exist and needs its `package.json` scripts.",
-            "@default the set named like a preset in `presets` (`library`) when its required packages (`@changesets/cli`) are dependencies",
-          ],
-          "\n",
-        ),
+export const githubSchema = declareObject(
+  {
+    workflows: declare(picklist(workflowSetNames), {
+      description: [
+        "Workflow set that sync keeps in `.github/workflows`; `false` disables it.",
+        "A set only updates workflow files that already exist and needs its `package.json` scripts.",
+      ],
+      // @debt the set is resolved by resolveWorkflowSet from the presets and dependencies of the running step, which the init prompts can change, so the declaration only documents it
+      disable: { value: false },
+      optional: unset(
+        "the set named like a preset in `presets` (`library`) when its required packages (`@changesets/cli`) are dependencies",
       ),
-    ),
-  ),
-});
+    }),
+  },
+  {
+    optional: true,
+  },
+);

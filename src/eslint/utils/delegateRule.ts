@@ -109,8 +109,7 @@ export function delegateRule<Id extends keyof Rules & string>(
 ): Delegate {
   const rule = findUpstreamRule(upstream);
 
-  const upstreamDefaults: readonly unknown[] =
-    rule.meta?.defaultOptions ?? [];
+  const upstreamDefaults: readonly unknown[] = rule.meta?.defaultOptions ?? [];
 
   const overrides: readonly unknown[] = options ?? [];
 

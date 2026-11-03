@@ -1,21 +1,27 @@
-import { description, optional, picklist, pipe, string } from "valibot";
+import { picklist, string } from "valibot";
 
 import { join, map } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
-import { environmentSchema } from "#config/config/schemas/values/environmentSchema";
 import { exposedFilesSchema } from "#config/config/schemas/values/exposedFilesSchema";
-import { listOptionSchema } from "#config/config/schemas/values/listOptionSchema";
 import { nodeMajorSchema } from "#config/config/schemas/values/nodeMajorSchema";
-import { defaultSourceDirectories } from "#config/constants";
+import {
+  defaultSourceDirectories,
+  disabledCodeEnvironment,
+} from "#config/constants";
 import { createCodeEnvironment } from "#config/utils/createCodeEnvironment";
-import { listDefaults } from "#config/utils/listSchemaDefaults";
+import { declareList } from "#config/utils/declareList";
+import { declare } from "#foundation/options/utils/declare";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { listDefaults } from "#foundation/options/utils/listDefaults";
+import { unset } from "#foundation/options/utils/unset";
 import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 import {
   apiGroupRoots,
   apiGroups,
   apiLibraryGroups,
 } from "#typescript/constants";
+import { findCurrentMonth } from "#typescript/utils/findCurrentMonth";
 
 function describeApiGroups(): string {
   const roots = map(entries(apiGroupRoots), ([group, globals]) => {
@@ -29,80 +35,74 @@ function describeApiGroups(): string {
   return join([...roots, ...libraries], ", ");
 }
 
-export const sourceSchema = pipe(
-  environmentSchema({
+export const sourceSchema = declareObject(
+  {
     ...createCodeEnvironment("src", defaultSourceDirectories),
-    roles: optional(rolesOptionSchema),
-    exports: optional(
-      pipe(
-        exposedFilesSchema,
-        description(
-          join(
-            [
-              "Subpaths the package exposes, mapped to their source file; both sides use the same single `*` or none.",
-              "They feed the tsdown entries, hence the `exports` of `package.json`, and the `paths` of the base tsconfig.",
-              "@default none, so tsdown builds no source entry",
-            ],
-            "\n",
-          ),
-        ),
-      ),
-    ),
-    baseline: optional(
-      pipe(
-        string(),
-        description(
-          join(
-            [
-              "Baseline snapshot of the runtime the source targets, as `YYYY-MM` (at most the current month).",
-              "It selects the TypeScript ES libs of the src tsconfig (the newest edition entirely widely available at the snapshot, plus each newer ES lib widely available on its own), the tsdown `target` and the `engines.node` floor of `package.json`.",
-              "Exclusive with `src.node`.",
-              "Unset, all three are skipped with a warning.",
-            ],
-            "\n",
-          ),
-        ),
-      ),
-    ),
-    apis: optional(
-      pipe(
-        listOptionSchema(picklist(apiGroups)),
-        description(
-          join(
-            [
-              "Extra API groups of a baseline runtime, added to the src tsconfig `types` as `@auaust/engrenage/apis/<group>`.",
-              "Only valid with `src.baseline`.",
-              `Groups with their root globals: ${describeApiGroups()}.`,
-              "@default none",
-            ],
-            "\n",
-          ),
-        ),
-      ),
-    ),
-    node: optional(
-      pipe(
-        nodeMajorSchema,
-        description(
-          join(
-            [
-              "Node major the source targets instead of a baseline: it feeds the Node types and lib of the src tsconfig, the tsdown `target` and the `engines.node` floor.",
-              "Exclusive with `src.baseline` and `src.apis`.",
-              "Unset, `src.baseline` decides.",
-            ],
-            "\n",
-          ),
-        ),
-      ),
-    ),
-  }),
-  description(
-    join(
-      [
-        "The source environment: published code built by tsdown.",
-        "`false` disables it, with its tsconfig, build entries and rules.",
+    roles: rolesOptionSchema,
+    exports: declare(exposedFilesSchema, {
+      description: [
+        "Subpaths the package exposes, mapped to their source file; both sides use the same single `*` or none.",
+        "They feed the tsdown entries, hence the `exports` of `package.json`, and the `paths` of the base tsconfig.",
       ],
-      "\n",
-    ),
-  ),
+      optional: unset("none, so tsdown builds no source entry"),
+    }),
+    baseline: declare(string(), {
+      description: [
+        "Baseline snapshot of the runtime the source targets, as `YYYY-MM` (at most the current month).",
+        "It selects the TypeScript ES libs of the src tsconfig (the newest edition entirely widely available at the snapshot, plus each newer ES lib widely available on its own), the tsdown `target` and the `engines.node` floor of `package.json`.",
+        "Exclusive with `src.node`.",
+      ],
+      optional: unset("none, so all three are skipped with a warning"),
+    }),
+    apis: declareList(picklist(apiGroups), {
+      description: [
+        "Extra API groups of a baseline runtime, added to the src tsconfig `types` as `@auaust/engrenage/apis/<group>`.",
+        "Only valid with `src.baseline`.",
+        `Groups with their root globals: ${describeApiGroups()}.`,
+      ],
+      optional: { value: [] },
+    }),
+    node: declare(nodeMajorSchema, {
+      description: [
+        "Node major the source targets instead of a baseline: it feeds the Node types and lib of the src tsconfig, the tsdown `target` and the `engines.node` floor.",
+        "Exclusive with `src.baseline` and `src.apis`.",
+      ],
+      optional: unset("none, so `src.baseline` decides"),
+    }),
+  },
+  {
+    description: [
+      "The source environment: published code built by tsdown.",
+      "`false` disables it, with its tsconfig, build entries and rules.",
+    ],
+    optional: true,
+    disable: {
+      value: {
+        ...disabledCodeEnvironment,
+        exports: undefined,
+        baseline: undefined,
+        node: undefined,
+        apis: [],
+      },
+    },
+    assert({ baseline, node, apis }) {
+      if (baseline !== undefined && node !== undefined) {
+        throw new Error(
+          "src.baseline and src.node are mutually exclusive: set one of them",
+        );
+      }
+
+      if (node !== undefined && apis !== undefined) {
+        throw new Error(
+          "src.apis only applies to a baseline runtime: src.node already provides these APIs through its types",
+        );
+      }
+
+      if (baseline === undefined && apis !== undefined) {
+        throw new Error(
+          `src.apis only applies to a baseline runtime: set src.baseline, for instance to ${findCurrentMonth()}, the current month`,
+        );
+      }
+    },
+  },
 );

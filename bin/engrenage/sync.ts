@@ -10,6 +10,7 @@ import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
 import { syncChangesetConfig } from "#changesets/setup/syncChangesetConfig";
 import { syncPackageJson } from "#config/setup/syncPackageJson";
 import { loadConfig } from "#config/utils/loadConfig";
+import { validate } from "#foundation/options/utils/validate";
 import { syncGitignoreFile } from "#git/setup/syncGitignoreFile";
 import { syncWorkflowFiles } from "#github/setup/syncWorkflowFiles";
 import { syncPrettierignoreFile } from "#prettier/setup/syncPrettierignoreFile";
@@ -17,7 +18,6 @@ import { defineCommand } from "#support/commander/utils/defineCommand";
 import { settleChanges } from "#support/commander/utils/settleChanges";
 import { syncEnvFile } from "#typescript/setup/syncEnvFile";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
-import { validate } from "#utils/validate";
 import { syncVscodeFiles } from "#vscode/setup/syncVscodeFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 

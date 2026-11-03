@@ -3,7 +3,7 @@ import { mergeConfig } from "vite";
 import { value } from "@auaust/toolkit/value";
 
 import { loadConfig } from "#config/utils/loadConfig";
-import { validate } from "#utils/validate";
+import { validate } from "#foundation/options/utils/validate";
 import { createViteConfig } from "#vite/config/createViteConfig";
 import { optionsSchema } from "#vite/config/schemas/optionsSchema";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";

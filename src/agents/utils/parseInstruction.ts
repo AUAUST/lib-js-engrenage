@@ -1,7 +1,7 @@
 import { array, looseObject, optional, string } from "valibot";
 import { parse } from "yaml";
 
-import { validate } from "#utils/validate";
+import { validate } from "#foundation/options/utils/validate";
 import type { File } from "#types/File";
 
 const metadataSchema = looseObject({

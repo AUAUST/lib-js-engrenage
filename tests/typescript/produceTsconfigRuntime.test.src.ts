@@ -9,11 +9,10 @@ import { describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
-import { resolveSourceRuntime } from "#config/utils/resolveSourceRuntime";
+import { validate } from "#foundation/options/utils/validate";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
-import { validate } from "#utils/validate";
 
 function syncCompilerOptions(
   input: unknown,
@@ -303,7 +302,19 @@ describe("runtime tsconfig fields", () => {
   });
 
   test("rejects src.apis without src.baseline", () => {
-    expect(() => resolveSourceRuntime({ apis: ["timers"] })).toThrow(
+    const config = createResolvedConfig({
+      root: createTemporaryProject().root,
+      raw: validate(
+        configSchema,
+        {
+          src: { apis: ["timers"] },
+        },
+        "test config",
+      ),
+      configFile: undefined,
+    });
+
+    expect(() => config.src).toThrow(
       /src\.apis only applies to a baseline runtime/,
     );
   });

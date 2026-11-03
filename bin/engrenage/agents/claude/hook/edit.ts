@@ -4,8 +4,8 @@ import { object, string } from "valibot";
 
 import { formatEditedFile } from "#agents/utils/formatEditedFile";
 import { loadConfig } from "#config/utils/loadConfig";
+import { validate } from "#foundation/options/utils/validate";
 import { defineCommand } from "#support/commander/utils/defineCommand";
-import { validate } from "#utils/validate";
 
 const payloadSchema = object({
   tool_input: object({

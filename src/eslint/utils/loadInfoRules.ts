@@ -6,8 +6,8 @@ import { keys } from "@auaust/toolkit/object";
 import { eslint } from "#constants";
 import { createEslintConfig } from "#eslint/config/createEslintConfig";
 import { infoRulesSetting } from "#eslint/constants";
+import { validate } from "#foundation/options/utils/validate";
 import { importConfigFile } from "#support/filesystem/utils/importConfigFile";
-import { validate } from "#utils/validate";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 
 const loadedConfigsSchema = array(

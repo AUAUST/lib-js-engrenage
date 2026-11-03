@@ -3,6 +3,8 @@ export { resolveRoles } from "#project/structure/utils/resolveRoles";
 
 // @barrel types/*.ts all
 export * from "#project/structure/types/EnvironmentStructure";
+export * from "#project/structure/types/ProjectRoles";
+export * from "#project/structure/types/ResolvedRoleContract";
 export * from "#project/structure/types/ResolvedRoles";
 export * from "#project/structure/types/RoleContract";
 export * from "#project/structure/types/RoleEnvironment";

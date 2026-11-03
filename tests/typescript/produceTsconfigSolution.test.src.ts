@@ -6,6 +6,7 @@ import { describe, expect, test, vi } from "vitest";
 import { tsc } from "#bin/engrenage/tsc";
 import { configSchema } from "#config/config/schemas/configSchema";
 import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { validate } from "#foundation/options/utils/validate";
 import { binaryTimeout } from "#tests/helpers/binaryTimeout";
 import { captureBinaryOutput } from "#tests/helpers/captureBinaryOutput";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
@@ -13,7 +14,6 @@ import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
 import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
-import { validate } from "#utils/validate";
 
 vi.mock(import("node:child_process"), { spy: true });
 

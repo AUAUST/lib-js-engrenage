@@ -17,7 +17,7 @@ import {
 } from "#agents/constants";
 import { createInstructionFile } from "#agents/utils/createInstructionFile";
 import { getInstructionTemplates } from "#agents/utils/getInstructionTemplates";
-import { validate } from "#utils/validate";
+import { validate } from "#foundation/options/utils/validate";
 import type { GeneratedFrontmatter } from "#agents/types/GeneratedFrontmatter";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
