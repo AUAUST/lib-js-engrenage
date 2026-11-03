@@ -1,6 +1,6 @@
 # Structure draft 1: resolved state (plan #137)
 
-The settled structure, as written into #137 and its sub-issues. The points still open are in `structure-draft.2.md`.
+The settled structure, as written into #137 and its sub-issues.
 
 ## 1. Core model
 
@@ -60,7 +60,7 @@ The settled structure, as written into #137 and its sub-issues. The points still
 
 | Environment | Exposes                                                                          | Contents                                                                               |
 | ----------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `src`       | public entries (declared visibility, `src.exports`); `#` aliases inside the repo | namespaces → domains → roles                                                           |
+| `src`       | public entries (declared visibility and specifiers); `#` aliases inside the repo | namespaces → domains → roles                                                           |
 | `bin`       | executables (`package.json#bin`)                                                 | discovered command files; thin: parse input, call a domain capability; no roles        |
 | `scripts`   | nothing (run by package scripts)                                                 | generators with their inputs beside them, maintenance scripts                          |
 | `tests`     | nothing                                                                          | tests mirroring the tested environment's layout; its own roles                         |
@@ -88,7 +88,7 @@ The difference is the **published** trait, which the `library` preset resolves t
 | `x.test.dist.ts` | dist mode only   | public specifiers only; may reach dist-only artefacts         |
 
 - Test files are matched from three configurable parts: a location glob (`**/*`), a suffix glob (`.{spec,test}`) and an extension glob (`.{ts,tsx}`). Engrenage combines them into the plain pattern and the variant patterns (location + suffix + `.src` or `.dist` + extension). Vitest's default ignores the variants (verified on 5.0.5); the variant must follow the suffix, since `x.dist.test.ts` would run in both modes.
-- Source mode: public specifiers map to `src/` through tsconfig `paths` generated from `src.exports`; any resolution into the build output fails (`createOutDirGuard`).
+- Source mode: public specifiers map to `src/` through tsconfig `paths` generated from the public entries; any resolution into the build output fails (`createOutDirGuard`).
 - Dist mode: public specifiers resolve through `exports` to the build output; a plugin fails on any resolution into `src/`; no tsconfig `paths` or bundler alias resolves.
 - The executable is spawned per mode: its source entry in source mode, the built file from `package.json#bin` in dist mode.
 - Tests mirror the tested environment's layout; all variants of one file's tests sit side by side.
@@ -135,7 +135,7 @@ src/                       layers: foundation < project < tools < workflows
 
 - "Peers" import each other's `index.ts` (`foundation/blocks` → `foundation/filesystem/index.ts`). Global roles import only each other.
 - Public roles (§5) are the one exception to "through `index.ts`".
-- Public entry paths decouple from directories through `src.exports` (`@auaust/engrenage/tsdown` → `src/tools/tsdown/index.ts`).
+- A public domain's specifier is its declared `specifier`, otherwise its path without namespaces (`tools/tsdown` → `@auaust/engrenage/tsdown`); `src.exports` keeps only exports that are not domain entries (`./constants`).
 - Visibility: everything internal unless declared public. `foundation` and `workflows` internal; `project` public for `config`, `package`, `baseline`, `formatting`; `tools` public.
 
 ### Placement
@@ -215,6 +215,7 @@ roles: {
 
 - `enable` and `disable` apply to the defaults first; `define` applies after them and may redefine a role.
 - `roles` exists at the top level (project catalogue) and in each environment (refining its set), top level first.
+- Every role is defined once, by name. A role with `scoped: true` is active only where a scope enables it: a structured role's `roles` list, or a namespace's `roles: { enable }`, which applies to its whole subtree. An app's `ui/` is a namespace enabling `components/`, `hooks/` and `contexts/` for the domains inside it.
 - Role aliases map an existing directory name to a role's contract (`helpers` read as `utils`).
 - The role system can be turned off entirely: no role or boundary rules are generated, no role checks run, any layout is accepted, and the rest of engrenage works unchanged.
 - `engrenage init` has a minimal role step: it defines one example role (the project's impure-logic role), showing how roles are declared.
@@ -232,6 +233,7 @@ roles: {
 | `index`      | an `index` file allowed (default: no)                                                                                                                |
 | `public`     | modules importable one by one from other domains of the project, without `index.ts`; package exports only when the domain's visibility declares them |
 | `discovered` | a consumer discovers its files (ESLint conventions, route files); the environments' `discovered` globs fold into it                                  |
+| `scoped`     | active only where a structured role or a namespace enables it                                                                                        |
 
 ## 6. `bin`, `scripts`, `tests`, `data` of engrenage
 
@@ -282,6 +284,7 @@ workflows/registry      every section, eager validation, composed Config type, f
 
 ## 8. Presets and traits
 
+- `preset` takes at most one base preset bundling sensible traits; `traits: { enable, disable }` (known keys) adjusts them; explicit options override both. No preset list, no environment-level presets.
 - Presets resolve into traits; resolvers read traits, never preset names. `project/presets` owns composition and trait derivation; no module inspects presets by hand.
 - First traits: **owned directories** (directories a host owns; no environment default lands there) and **published** (§2).
 - A preset's effect on an option is a computed default reading traits from context.
@@ -296,6 +299,7 @@ workflows/registry      every section, eager validation, composed Config type, f
 - Two alias sets: the global set (top level) and the `src` set (in the `src` environment). Configuration can turn off the `src` set, turn off all aliasing, or define custom aliases replacing everything or the `src` set only.
 - Root aliases are Node subpath imports in `package.json#imports`, which TypeScript, Vite and tsdown read natively.
 - Bundler aliases are allowed only when the `src` environment is declared bundled (its code only runs through a bundler); `engrenage sync` fails otherwise. They are written once into the root tsconfig `paths`, which every environment inherits (so `bin` and `scripts` use them too) and which Vite, Vitest and tsdown read. Dist-mode tests resolve none of them.
+- `src.bundled` also sets the `src` tsconfig's bundler module resolution explicitly; non-bundled projects keep the shared base settings.
 - Engrenage's own namespaces declare an empty prefix, so its domains keep short aliases (`#tsdown/…`, `#config/…`); `#package.json` is a custom global alias.
 
 ## 10. Workspaces
@@ -314,7 +318,7 @@ workflows/registry      every section, eager validation, composed Config type, f
 - Default-deny: engrenage lints, formats, scans and writes only declared environment directories and its own files; every derived scope (ESLint files, Prettier globs, ignore blocks) comes from the declared environments, never `**`.
 - The `build` contract carries a clean policy: `emitted` (only files the build wrote) for output directories shared with a host, `all` for owned ones.
 - Git and GitHub domains resolve the repository root separately from the project root.
-- GitHub workflows engrenage writes are named `engrenage-*.yml`.
+- GitHub workflows keep their names (`ci.yml`, `publish.yml`), which repository automation depends on.
 - Shared files are edited only through managed keys or marker blocks.
 
 ## 12. Strictness and the structure report
