@@ -35,4 +35,16 @@ describe("syncApiDeclarations", () => {
       'The "temporal" API group does not compile with the ES libs selected from 2022-08 (es2018.asynciterable)',
     );
   });
+
+  test("fails when a group conflicts with a selected ES lib", async () => {
+    await expect(
+      syncApiDeclarations(createConfig(), ["conflict"], {
+        libraryGroups: { conflict: "lib.conflict.d.ts" },
+        libraries: getFixture("typescript/apis/libs"),
+        selections: [{ from: "2022-08", lib: ["es2022"] }],
+      }),
+    ).rejects.toThrow(
+      "Subsequent property declarations must have the same type",
+    );
+  });
 });

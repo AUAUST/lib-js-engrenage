@@ -10,11 +10,11 @@ import { tmpdir } from "node:os";
 import { dirname, join as joinPath, relative as relativePath } from "node:path";
 
 import {
+  createCompilerHost,
   createProgram,
   createSourceFile,
   flattenDiagnosticMessageText,
   forEachChild,
-  getPreEmitDiagnostics,
   isExpressionWithTypeArguments,
   isFunctionDeclaration,
   isIdentifier,
@@ -28,6 +28,8 @@ import {
   ModuleKind,
   ScriptTarget,
   version,
+  type CompilerHost,
+  type CompilerOptions,
   type EntityName,
   type Node,
   type SourceFile,
@@ -221,12 +223,38 @@ function readLibraryBody(text: string): string {
     .trim();
 }
 
-// @debt compiling a program against a lib selection is also done in syncEditions; a shared module would own it once.
+const compilerOptions = {
+  types: [],
+  noEmit: true,
+  target: ScriptTarget.ESNext,
+  module: ModuleKind.ESNext,
+} satisfies CompilerOptions;
+
+function createCachingHost(): CompilerHost {
+  const host = createCompilerHost(compilerOptions);
+
+  const sources = new Map<string, SourceFile | undefined>();
+
+  const { getSourceFile } = host;
+
+  host.getSourceFile = (fileName, ...rest) => {
+    if (!sources.has(fileName)) {
+      sources.set(fileName, getSourceFile(fileName, ...rest));
+    }
+
+    return sources.get(fileName);
+  };
+
+  return host;
+}
+
+// @debt compiling a program against a lib selection is also done in syncEditions; a shared module would own it once, with its source-file cache.
 function assertCompilesWithSelections(
   group: string,
   groupLibrary: string | undefined,
   modules: ReadonlyMap<File, string>,
   selections: readonly { from: string; lib: readonly string[] }[],
+  host: CompilerHost,
 ) {
   const directory = mkdtempSync(joinPath(tmpdir(), "engrenage-apis-"));
 
@@ -245,17 +273,30 @@ function assertCompilesWithSelections(
         continue;
       }
 
-      const program = createProgram([entry], {
-        lib: map(lib, (name) => `lib.${name}.d.ts`),
-        types: [],
-        noEmit: true,
-        target: ScriptTarget.ESNext,
-        module: ModuleKind.ESNext,
+      const program = createProgram({
+        rootNames: [entry],
+        options: {
+          ...compilerOptions,
+          lib: map(lib, (name) => `lib.${name}.d.ts`),
+        },
+        host,
       });
 
-      const [first] = getPreEmitDiagnostics(program).filter(({ file }) => {
-        return file === undefined || file.fileName.startsWith(directory);
-      });
+      const [first] = [
+        ...program.getOptionsDiagnostics(),
+        ...program.getGlobalDiagnostics(),
+        // @debt native flatMap is used because primitive-kit's filter types its result as an array of the input array; the same typing issue affects the filter(groups, …) call in this file
+        ...program.getSourceFiles().flatMap((file) => {
+          if (!file.fileName.startsWith(directory)) {
+            return [];
+          }
+
+          return [
+            ...program.getSyntacticDiagnostics(file),
+            ...program.getSemanticDiagnostics(file),
+          ];
+        }),
+      ];
 
       if (first !== undefined) {
         throw new Error(
@@ -373,6 +414,8 @@ export async function syncApiDeclarations(
     );
   }
 
+  const host = createCachingHost();
+
   for (const group of [...keys(apiGroupRoots), ...keys(libraryGroups)]) {
     if (groups.length > 0 && !groups.includes(group)) {
       continue;
@@ -386,6 +429,7 @@ export async function syncApiDeclarations(
       name === undefined ? undefined : name.slice(4, -".d.ts".length),
       modules,
       selections,
+      host,
     );
   }
 

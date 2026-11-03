@@ -550,6 +550,7 @@ export async function syncEditions(
 
     host.getDefaultLibLocation = () => libraries;
 
+    // @debt a program without root files loads no lib, so this check never reports anything (backlog typescript.8).
     const [diagnostic] = getPreEmitDiagnostics(
       createProgram({
         rootNames: [],
