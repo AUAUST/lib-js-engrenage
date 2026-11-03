@@ -3,11 +3,8 @@ import { createRequire } from "node:module";
 import { dirname, join as joinPath } from "node:path";
 
 import {
-  createCompilerHost,
-  createProgram,
   createSourceFile,
   flattenDiagnosticMessageText,
-  getPreEmitDiagnostics,
   isCallSignatureDeclaration,
   isComputedPropertyName,
   isConstructSignatureDeclaration,
@@ -43,6 +40,7 @@ import type { Maybe } from "@auaust/toolkit/types";
 
 import { resolve } from "#support/filesystem/utils/resolve";
 import { esInterfaceAliases, esMemberCompatKeys } from "#typescript/constants";
+import { createLibraryCompiler } from "#typescript/utils/createLibraryCompiler";
 import { formatModule } from "#typescript/utils/formatModule";
 import { listEsSelections } from "#typescript/utils/listEsSelections";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
@@ -539,25 +537,16 @@ export async function syncEditions(
     }),
   );
 
+  const { compile } = createLibraryCompiler(libraries);
+
   for (const { from, lib } of listEsSelections(data)) {
-    const options = {
-      lib: map(lib, (name) => `lib.${name}.d.ts`),
-      types: [],
-      noEmit: true,
-    };
-
-    const host = createCompilerHost(options);
-
-    host.getDefaultLibLocation = () => libraries;
-
-    // @debt a program without root files loads no lib, so this check never reports anything (backlog typescript.8).
-    const [diagnostic] = getPreEmitDiagnostics(
-      createProgram({
-        rootNames: [],
-        options,
-        host,
-      }),
-    );
+    const diagnostic = compile({
+      lib,
+      // @debt the base edition, first in every selection, is trusted as TypeScript ships it so only the libs added on top are type-checked; this holds only while TypeScript keeps each edition consistent on its own.
+      trusted: lib.slice(0, 1),
+      sources: new Map([["index.d.ts", ""]]),
+      entry: "index.d.ts",
+    });
 
     if (diagnostic !== undefined) {
       throw new Error(
