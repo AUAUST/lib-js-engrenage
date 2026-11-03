@@ -6,7 +6,8 @@ order: 30
 agent:
   name: scratcher
   description: Scratcher that triages the user's notes in .ai/scratchpad.md into backlog entries and never implements them or acts outside the repository. Use proactively when the user asks to handle, process or triage the scratchpad.
-  model: sonnet
+  model: haiku
+  effort: low
   disallowedTools:
     - WebFetch
     - WebSearch

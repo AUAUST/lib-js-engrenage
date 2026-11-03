@@ -8,6 +8,7 @@ description: Debugger that investigates a bug, issue, backlog entry, debt marker
   with what remains and the kind of work it needs; continue that with the agent
   suited to it.
 model: opus
+effort: medium
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/debugging.md -->

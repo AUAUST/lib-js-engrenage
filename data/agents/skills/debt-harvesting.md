@@ -6,6 +6,8 @@ order: 50
 agent:
   name: banker
   description: Banker that harvests in-code `@debt` markers into the debt backlog `.ai/debt.md`. Use proactively for any work on debt markers. Its report ends with what remains and the kind of work it needs; continue that with the agent suited to it.
+  model: haiku
+  effort: low
   disallowedTools:
     - WebFetch
     - WebSearch

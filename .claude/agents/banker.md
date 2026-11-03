@@ -7,6 +7,8 @@ description: Banker that harvests in-code `@debt` markers into the debt backlog
 disallowedTools:
   - WebFetch
   - WebSearch
+model: haiku
+effort: low
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/debt-harvesting.md -->

@@ -14,33 +14,31 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    addAgentSkills(config, ["issue-planning"]);
+    addAgentSkills(config, ["debugging"]);
 
     expect(config.filesystem.changes()).toEqual(
       [
-        ".claude/skills/issue-planning/SKILL.md",
-        ".claude/agents/planner.md",
-        ".agents/skills/issue-planning/SKILL.md",
-        ".agents/skills/issue-planning/agents/openai.yaml",
+        ".claude/skills/debugging/SKILL.md",
+        ".claude/agents/debugger.md",
+        ".agents/skills/debugging/SKILL.md",
+        ".agents/skills/debugging/agents/openai.yaml",
       ].map((file) => expect.objectContaining({ file })),
     );
 
     expect(
-      config.filesystem.read(".claude/skills/issue-planning/SKILL.md"),
+      config.filesystem.read(".claude/skills/debugging/SKILL.md"),
     ).toContain("disable-model-invocation: true");
 
-    expect(config.filesystem.read(".claude/agents/planner.md")).toMatch(
-      /name: planner[\s\S]*# Issue planning/,
+    expect(config.filesystem.read(".claude/agents/debugger.md")).toMatch(
+      /name: debugger[\s\S]*# Debugging/,
     );
 
     expect(
-      config.filesystem.read(
-        ".agents/skills/issue-planning/agents/openai.yaml",
-      ),
+      config.filesystem.read(".agents/skills/debugging/agents/openai.yaml"),
     ).toContain("allow_implicit_invocation: false");
   });
 
-  test("writes the agent model to the Claude Code agent", async () => {
+  test("writes the agent model and effort to the Claude Code agent", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
       "engrenage.config.ts":
@@ -52,7 +50,7 @@ describe("addAgentSkills", () => {
     addAgentSkills(config, ["issue-implementation"]);
 
     expect(config.filesystem.read(".claude/agents/worker.md")).toMatch(
-      /name: worker[\s\S]*model: sonnet[\s\S]*# Issue implementation/,
+      /name: worker[\s\S]*model: sonnet\neffort: medium[\s\S]*# Issue implementation/,
     );
   });
 

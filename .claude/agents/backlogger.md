@@ -9,6 +9,7 @@ model: sonnet
 disallowedTools:
   - WebFetch
   - WebSearch
+effort: low
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/backlog-handling.md -->

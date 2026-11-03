@@ -29,6 +29,7 @@ const skillSchema = looseObject({
       name: string(),
       description: string(),
       model: optional(string()),
+      effort: optional(picklist(["low", "medium", "high", "xhigh", "max"])),
       disallowedTools: optional(array(string())),
     }),
   ),

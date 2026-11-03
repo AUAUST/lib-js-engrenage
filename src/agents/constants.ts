@@ -47,6 +47,7 @@ export const claudeAgentFrontmatterKeys = freeze([
   "name",
   "description",
   "model",
+  "effort",
   "disallowedTools",
 ] as const);
 
