@@ -14,7 +14,6 @@ export function resolveRoles({
   environment,
   roles,
   environmentRoles,
-  // @debt `aliases` sits in the roles option and `scopes` is a flat list the caller must derive from the structure; #148 may place both differently
   scopes = [],
 }: {
   environment: RoleEnvironment;

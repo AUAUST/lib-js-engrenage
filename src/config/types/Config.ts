@@ -340,6 +340,85 @@ export interface Config {
         | false
         | {
             /**
+             * Grouping directories, by path relative to the environment directory (`.` is the environment directory itself).
+             * A namespace has no `index.ts` and no roles, holds domains and namespaces, and orders them with `layers`.
+             * @default none, so namespaces are inferred
+             */
+            namespaces?:
+              | {
+                  [k: string]: {
+                    /**
+                     * Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.
+                     */
+                    layers?: string[] | undefined;
+                    /**
+                     * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
+                     */
+                    prefix?: string | undefined;
+                    roles?:
+                      | {
+                          /**
+                           * Scoped roles to turn on for the whole subtree of the namespace.
+                           */
+                          enable: (
+                            | "index.ts"
+                            | "constants.ts"
+                            | "*.d.ts"
+                            | "types"
+                            | "utils"
+                            | "errors"
+                            | "enums"
+                            | "ports"
+                            | "adapters"
+                            | "fixtures"
+                            | "setup.ts"
+                            | "schemas"
+                            | "components"
+                            | "hooks"
+                            | "contexts"
+                            | "pages"
+                            | "styles"
+                          )[];
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+            /**
+             * Metadata of domains, by path or glob relative to the environment directory.
+             * A path declaration also makes a directory a domain, even a role-named one; a glob only adds metadata.
+             * @default none
+             */
+            domains?:
+              | {
+                  [k: string]: {
+                    /**
+                     * Whether the domain is part of the package's public API.
+                     * @default `false`
+                     */
+                    public?: boolean | undefined;
+                    /**
+                     * Public specifier of the domain, overriding the one derived from its path.
+                     */
+                    specifier?: string | undefined;
+                    /**
+                     * One line stating the domain's concern.
+                     */
+                    purpose?: string | undefined;
+                  };
+                }
+              | undefined;
+            /**
+             * Directories, relative to the environment directory, that are never read as roles even though their name is one.
+             * @default none
+             */
+            optOut?: string[] | undefined;
+            /**
+             * `strict` expects every directory to be classified; under `loose`, unclassified directories count as plain domains.
+             * @default `strict`
+             */
+            strictness?: ("strict" | "loose") | undefined;
+            /**
              * Directories of the bin environment: its TypeScript files (`typescript.files`) are included in its tsconfig, linted with its rules and, for `src` and `bin`, published.
              * The environment is inactive when none exists.
              * @default `bin`
@@ -496,6 +575,85 @@ export interface Config {
     | (
         | false
         | {
+            /**
+             * Grouping directories, by path relative to the environment directory (`.` is the environment directory itself).
+             * A namespace has no `index.ts` and no roles, holds domains and namespaces, and orders them with `layers`.
+             * @default none, so namespaces are inferred
+             */
+            namespaces?:
+              | {
+                  [k: string]: {
+                    /**
+                     * Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.
+                     */
+                    layers?: string[] | undefined;
+                    /**
+                     * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
+                     */
+                    prefix?: string | undefined;
+                    roles?:
+                      | {
+                          /**
+                           * Scoped roles to turn on for the whole subtree of the namespace.
+                           */
+                          enable: (
+                            | "index.ts"
+                            | "constants.ts"
+                            | "*.d.ts"
+                            | "types"
+                            | "utils"
+                            | "errors"
+                            | "enums"
+                            | "ports"
+                            | "adapters"
+                            | "fixtures"
+                            | "setup.ts"
+                            | "schemas"
+                            | "components"
+                            | "hooks"
+                            | "contexts"
+                            | "pages"
+                            | "styles"
+                          )[];
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+            /**
+             * Metadata of domains, by path or glob relative to the environment directory.
+             * A path declaration also makes a directory a domain, even a role-named one; a glob only adds metadata.
+             * @default none
+             */
+            domains?:
+              | {
+                  [k: string]: {
+                    /**
+                     * Whether the domain is part of the package's public API.
+                     * @default `false`
+                     */
+                    public?: boolean | undefined;
+                    /**
+                     * Public specifier of the domain, overriding the one derived from its path.
+                     */
+                    specifier?: string | undefined;
+                    /**
+                     * One line stating the domain's concern.
+                     */
+                    purpose?: string | undefined;
+                  };
+                }
+              | undefined;
+            /**
+             * Directories, relative to the environment directory, that are never read as roles even though their name is one.
+             * @default none
+             */
+            optOut?: string[] | undefined;
+            /**
+             * `strict` expects every directory to be classified; under `loose`, unclassified directories count as plain domains.
+             * @default `strict`
+             */
+            strictness?: ("strict" | "loose") | undefined;
             /**
              * Directories of the scripts environment: its TypeScript files (`typescript.files`) are included in its tsconfig, linted with its rules and, for `src` and `bin`, published.
              * The environment is inactive when none exists.
@@ -726,6 +884,85 @@ export interface Config {
     | (
         | false
         | {
+            /**
+             * Grouping directories, by path relative to the environment directory (`.` is the environment directory itself).
+             * A namespace has no `index.ts` and no roles, holds domains and namespaces, and orders them with `layers`.
+             * @default none, so namespaces are inferred
+             */
+            namespaces?:
+              | {
+                  [k: string]: {
+                    /**
+                     * Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.
+                     */
+                    layers?: string[] | undefined;
+                    /**
+                     * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
+                     */
+                    prefix?: string | undefined;
+                    roles?:
+                      | {
+                          /**
+                           * Scoped roles to turn on for the whole subtree of the namespace.
+                           */
+                          enable: (
+                            | "index.ts"
+                            | "constants.ts"
+                            | "*.d.ts"
+                            | "types"
+                            | "utils"
+                            | "errors"
+                            | "enums"
+                            | "ports"
+                            | "adapters"
+                            | "fixtures"
+                            | "setup.ts"
+                            | "schemas"
+                            | "components"
+                            | "hooks"
+                            | "contexts"
+                            | "pages"
+                            | "styles"
+                          )[];
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+            /**
+             * Metadata of domains, by path or glob relative to the environment directory.
+             * A path declaration also makes a directory a domain, even a role-named one; a glob only adds metadata.
+             * @default none
+             */
+            domains?:
+              | {
+                  [k: string]: {
+                    /**
+                     * Whether the domain is part of the package's public API.
+                     * @default `false`
+                     */
+                    public?: boolean | undefined;
+                    /**
+                     * Public specifier of the domain, overriding the one derived from its path.
+                     */
+                    specifier?: string | undefined;
+                    /**
+                     * One line stating the domain's concern.
+                     */
+                    purpose?: string | undefined;
+                  };
+                }
+              | undefined;
+            /**
+             * Directories, relative to the environment directory, that are never read as roles even though their name is one.
+             * @default none
+             */
+            optOut?: string[] | undefined;
+            /**
+             * `strict` expects every directory to be classified; under `loose`, unclassified directories count as plain domains.
+             * @default `strict`
+             */
+            strictness?: ("strict" | "loose") | undefined;
             /**
              * Directories of the src environment: its TypeScript files (`typescript.files`) are included in its tsconfig, linted with its rules and, for `src` and `bin`, published.
              * The environment is inactive when none exists.
@@ -1004,6 +1241,85 @@ export interface Config {
     | (
         | false
         | {
+            /**
+             * Grouping directories, by path relative to the environment directory (`.` is the environment directory itself).
+             * A namespace has no `index.ts` and no roles, holds domains and namespaces, and orders them with `layers`.
+             * @default none, so namespaces are inferred
+             */
+            namespaces?:
+              | {
+                  [k: string]: {
+                    /**
+                     * Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.
+                     */
+                    layers?: string[] | undefined;
+                    /**
+                     * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
+                     */
+                    prefix?: string | undefined;
+                    roles?:
+                      | {
+                          /**
+                           * Scoped roles to turn on for the whole subtree of the namespace.
+                           */
+                          enable: (
+                            | "index.ts"
+                            | "constants.ts"
+                            | "*.d.ts"
+                            | "types"
+                            | "utils"
+                            | "errors"
+                            | "enums"
+                            | "ports"
+                            | "adapters"
+                            | "fixtures"
+                            | "setup.ts"
+                            | "schemas"
+                            | "components"
+                            | "hooks"
+                            | "contexts"
+                            | "pages"
+                            | "styles"
+                          )[];
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+            /**
+             * Metadata of domains, by path or glob relative to the environment directory.
+             * A path declaration also makes a directory a domain, even a role-named one; a glob only adds metadata.
+             * @default none
+             */
+            domains?:
+              | {
+                  [k: string]: {
+                    /**
+                     * Whether the domain is part of the package's public API.
+                     * @default `false`
+                     */
+                    public?: boolean | undefined;
+                    /**
+                     * Public specifier of the domain, overriding the one derived from its path.
+                     */
+                    specifier?: string | undefined;
+                    /**
+                     * One line stating the domain's concern.
+                     */
+                    purpose?: string | undefined;
+                  };
+                }
+              | undefined;
+            /**
+             * Directories, relative to the environment directory, that are never read as roles even though their name is one.
+             * @default none
+             */
+            optOut?: string[] | undefined;
+            /**
+             * `strict` expects every directory to be classified; under `loose`, unclassified directories count as plain domains.
+             * @default `strict`
+             */
+            strictness?: ("strict" | "loose") | undefined;
             /**
              * Directories of the tests environment: its TypeScript files (`typescript.files`) are included in its tsconfig, linted with its rules and, for `src` and `bin`, published.
              * The environment is inactive when none exists.
@@ -1343,6 +1659,85 @@ export interface Config {
     | (
         | false
         | {
+            /**
+             * Grouping directories, by path relative to the environment directory (`.` is the environment directory itself).
+             * A namespace has no `index.ts` and no roles, holds domains and namespaces, and orders them with `layers`.
+             * @default none, so namespaces are inferred
+             */
+            namespaces?:
+              | {
+                  [k: string]: {
+                    /**
+                     * Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.
+                     */
+                    layers?: string[] | undefined;
+                    /**
+                     * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
+                     */
+                    prefix?: string | undefined;
+                    roles?:
+                      | {
+                          /**
+                           * Scoped roles to turn on for the whole subtree of the namespace.
+                           */
+                          enable: (
+                            | "index.ts"
+                            | "constants.ts"
+                            | "*.d.ts"
+                            | "types"
+                            | "utils"
+                            | "errors"
+                            | "enums"
+                            | "ports"
+                            | "adapters"
+                            | "fixtures"
+                            | "setup.ts"
+                            | "schemas"
+                            | "components"
+                            | "hooks"
+                            | "contexts"
+                            | "pages"
+                            | "styles"
+                          )[];
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
+            /**
+             * Metadata of domains, by path or glob relative to the environment directory.
+             * A path declaration also makes a directory a domain, even a role-named one; a glob only adds metadata.
+             * @default none
+             */
+            domains?:
+              | {
+                  [k: string]: {
+                    /**
+                     * Whether the domain is part of the package's public API.
+                     * @default `false`
+                     */
+                    public?: boolean | undefined;
+                    /**
+                     * Public specifier of the domain, overriding the one derived from its path.
+                     */
+                    specifier?: string | undefined;
+                    /**
+                     * One line stating the domain's concern.
+                     */
+                    purpose?: string | undefined;
+                  };
+                }
+              | undefined;
+            /**
+             * Directories, relative to the environment directory, that are never read as roles even though their name is one.
+             * @default none
+             */
+            optOut?: string[] | undefined;
+            /**
+             * `strict` expects every directory to be classified; under `loose`, unclassified directories count as plain domains.
+             * @default `strict`
+             */
+            strictness?: ("strict" | "loose") | undefined;
             /**
              * Directories searched for tooling files.
              * @default `.`

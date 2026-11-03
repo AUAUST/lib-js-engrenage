@@ -7,6 +7,7 @@ import { dirsSchema } from "#config/config/schemas/values/dirsSchema";
 import { globListSchema } from "#config/config/schemas/values/globListSchema";
 import { defaultDefines } from "#config/constants";
 import { listDefaults } from "#config/utils/listSchemaDefaults";
+import { structureOptions } from "#project/structure/config/schemas/structureOptions";
 import type { Directories } from "#types/Directories";
 
 export function createCodeEnvironment(
@@ -14,6 +15,7 @@ export function createCodeEnvironment(
   defaultDirs: Directories,
 ) {
   return {
+    ...structureOptions,
     dirs: optional(
       pipe(
         dirsSchema,

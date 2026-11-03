@@ -2,7 +2,6 @@ import {
   array,
   description,
   optional,
-  picklist,
   pipe,
   record,
   strictObject,
@@ -10,12 +9,9 @@ import {
 } from "valibot";
 
 import { join } from "@auaust/primitive-kit/arrays";
-import { keys } from "@auaust/toolkit/object";
 
 import { roleContractSchema } from "#project/structure/config/schemas/roleContractSchema";
-import { roleCatalogue } from "#project/structure/constants";
-
-const roleKeySchema = picklist(keys(roleCatalogue));
+import { roleKeySchema } from "#project/structure/config/schemas/roleKeySchema";
 
 export const rolesOptionSchema = pipe(
   strictObject({

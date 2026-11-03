@@ -12,9 +12,11 @@ import {
 } from "#config/constants";
 import { listDefaults } from "#config/utils/listSchemaDefaults";
 import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
+import { structureOptions } from "#project/structure/config/schemas/structureOptions";
 
 export const toolingSchema = pipe(
   environmentSchema({
+    ...structureOptions,
     dirs: optional(
       pipe(
         dirsSchema,

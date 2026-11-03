@@ -51,6 +51,7 @@ import {
   tsconfigFile,
 } from "#constants";
 import { noRoles } from "#project/structure/constants";
+import { resolveEnvironmentStructure } from "#project/structure/utils/resolveEnvironmentStructure";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import { isWithin } from "#support/filesystem/utils/isWithin";
 import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
@@ -64,9 +65,12 @@ import type { EnvironmentTsconfig } from "#config/types/EnvironmentTsconfig";
 import type { ResolvedGlobals } from "#config/types/ResolvedGlobals";
 import type { TsconfigGroups } from "#config/types/TsconfigGroups";
 import type { TsconfigKey } from "#config/types/TsconfigKey";
+import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
 import type { RolesOption } from "#project/structure/types/RolesOption";
+import type { StructureEnvironment } from "#project/structure/types/StructureEnvironment";
+import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
@@ -299,6 +303,28 @@ export function createResolvedConfig({
         });
   }
 
+  function resolveStructure(
+    name: StructureEnvironment,
+    environment: { active: boolean; dirs: Directories },
+    option:
+      | false
+      | (StructureOptions & { roles?: RolesOption | undefined })
+      | undefined,
+  ): EnvironmentStructure | undefined {
+    if (option === false || !environment.active) {
+      return;
+    }
+
+    return resolveEnvironmentStructure({
+      name,
+      root,
+      dirs: environment.dirs,
+      options: option,
+      roles: raw.roles,
+      environmentRoles: option?.roles,
+    });
+  }
+
   function environmentTsconfig(
     option:
       | false
@@ -524,6 +550,16 @@ export function createResolvedConfig({
     );
   });
 
+  const structure = once(() => {
+    return freeze({
+      src: resolveStructure("src", source(), raw.src),
+      tests: resolveStructure("tests", tests(), raw.tests),
+      bin: resolveStructure("bin", bin(), raw.bin),
+      scripts: resolveStructure("scripts", scripts(), raw.scripts),
+      tooling: resolveStructure("tooling", tooling(), raw.tooling),
+    });
+  });
+
   const files = once(() => {
     const environments = [source(), tests(), bin(), scripts()];
 
@@ -685,6 +721,7 @@ export function createResolvedConfig({
         scripts,
         data,
         tooling,
+        structure,
         files,
         build,
         cache,
