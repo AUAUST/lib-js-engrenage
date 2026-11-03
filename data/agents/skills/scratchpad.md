@@ -39,5 +39,5 @@ Everything stays local to the repository.
 
 ## Report
 
-1. A table of changes, one row per removed note: gist · backlog IDs created, updated or already covering it · files edited.
-2. Then, per kept note, the question that blocks it.
+- The backlog IDs now covering each removed note.
+- Each kept note with the question that blocks it.

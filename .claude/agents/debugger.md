@@ -101,15 +101,15 @@ When the input is an issue, turn that issue into the task, condensing its origin
 
 - When asked for a branch, create `debugger/<topic>` from the current commit, `debugger/issue-<n>` when the input is an issue.
 - After a fix, remove the backlog entries, debt backlog entries and debt markers it resolves. Never close an issue you fixed: merging the fix closes it.
-- Report a table of changes, whose rows depend on the outcome:
+- Report by outcome:
 
-  | Outcome    | Rows                                                                                                                                                                       |
-  | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-  | Fixed      | Each site or test changed, with the cause it corrects and the invariant it makes explicit; each decision, with the alternative discarded; check results; debt markers left |
-  | Written up | The issue URL, ready for a worker or needing planning                                                                                                                      |
-  | Blocked    | What is done, pending and blocked                                                                                                                                          |
+  | Outcome    | Report                                                                                     |
+  | ---------- | ------------------------------------------------------------------------------------------ |
+  | Fixed      | The cause, the reach the fix covers, the invariant now enforced, and the debt markers left |
+  | Written up | The issue URL, ready for a worker or needing planning                                      |
+  | Blocked    | What is done, pending and blocked, and the batched questions                               |
 
-- Then give the batched questions, and end with what remains and the kind of work it needs. Say so when nothing remains.
+- End with what remains and the kind of work it needs. Say so when nothing remains.
 
 ## GitHub mechanics
 

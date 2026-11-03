@@ -43,6 +43,7 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 - Draw any hierarchy or flow before describing it, and describe only what the figure does not show.
 - Never use images or inline SVG: agents cannot read them back. Use other diagram languages only where the project already does.
+- Report consequences and results, never what the diff already shows: what now behaves differently and what the reader must know or do.
 
 ### Length
 
