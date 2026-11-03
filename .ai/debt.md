@@ -53,7 +53,7 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 
 - `src/config/utils/createAccessors.ts:7`: generic accessor factory in the config entry, used by `createTsconfig` and the support package.json model; could live under `src/support`.
 - `src/support/debt/constants.ts:1`: debt markers belong to the eslint tool and their only consumer is the `debtMarkers` convention; move to `src/eslint/constants.ts` or inline it.
-- Related: `source-structure.1` and `.2` (module placement and layering) may subsume these.
+- Related: #139 (relocation) and #141 (modules sorted into roles) subsume these.
 
 ## 8. Config schema descriptions unverified or hand-synced with defaults
 
@@ -67,7 +67,7 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 - Problem: `tests.dist` does not fit the config shape, so it is special-cased in `syncTsconfigFiles`, `createResolvedConfig`, `resolveTsconfigEnvironments` and the extends, paths and `skipLibCheck` producers. Producers also compute `tests.dist` fields as if it were `tests` and `syncTsconfigFiles` then drops the inherited ones.
 - Sites: `src/typescript/setup/syncTsconfigFiles.ts:48`, `src/typescript/utils/resolveTsconfigEnvironments.ts:14`.
 - Suggested fix: a single lookup from tsconfig key to environment, and knowledge of which fields a variant inherits.
-- Related: `configuration.4` and `typescript.1` touch the same resolution; design needed.
+- Related: #143 and `typescript.1` touch the same resolution; design needed.
 
 ## 10. Tsconfig producer and sync gaps
 
@@ -103,7 +103,7 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 - `src/config/utils/createResolvedConfig.ts:164`: the memo key holds the content of the base tsconfig only, so staged changes to a local tsconfig it extends are not seen within a pass.
 - `src/config/utils/createResolvedConfig.ts:194`: `resolveWithin` is called only for its throw when the path escapes the root (here and in `cache()`); an explicit assertion would state the intent.
 - `src/support/scaffold/utils/createStepContext.ts:158`: spreading the resolved config evaluates all lazy getters on every access, and `setPresets` is not reflected while `setAgents` is.
-- Related: `createResolvedConfig` size is tracked by `configuration.4`; issue #57 (long-lived processes keep the first loaded config) is adjacent.
+- Related: `createResolvedConfig` size is replaced by the layered registry (#143); issue #57 (long-lived processes keep the first loaded config) is adjacent.
 - Next: the `eslint.ts:12` cache and `defineToolCommands:48` leak need a debugger; the others are directly fixable.
 
 ## 14. Vitest and test-suite defaults
@@ -111,7 +111,7 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 - `src/vitest/config/schemas/optionsSchema.ts:4`: `isolate` defaults to shared workers, which silently breaks `vi.mock` in consumers whose test files load the same modules. Open: choose the default and its documentation (decision needed).
 - `src/vitest/config/schemas/optionsSchema.ts:7`: `guardOutDir` switches one built-in plugin through its own flag instead of by plugin name, as the `plugins` option of `defineTsdownConfig` does.
 - `tests/setup.ts:6`: every warning is silenced, unexpected ones included; a logger engrenage owns would let tests silence only expected ones.
-- Related: `vitest.1`.
+- Related: #142 (Vitest picks up `setup.ts`).
 
 ## 15. Tsdown config and entry self-references
 
@@ -128,7 +128,7 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 
 - `src/config/utils/createResolvedConfig.ts:288`: `raw.<option> === false ? … : raw.<option>?.<field>` repeated throughout; normalizing disabled options once would remove the branches.
 - `src/config/utils/createResolvedConfig.ts:438`: disabled and active branches build the same composed shape twice.
-- Related: both belong to the refactor tracked by `configuration.4`; `configuration.2` is adjacent. Update that entry via the backlogger rather than splitting work here.
+- Related: both are removed by the declaration helper (#146), which normalizes `false` at the boundary.
 
 ## Tracked elsewhere (no separate entry)
 

@@ -31,8 +31,8 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - Where: `src/typescript/utils/syncEditions.ts` (585 lines, about 15 functions, its own valibot schemas, patterns, types and file constants, nested callbacks) and `src/typescript/utils/syncApiDeclarations.ts` (405 lines, same shape).
 - Problem: each module owns reading `lib.*.d.ts` files, compat-data parsing and validation, name resolution and the file writing in one place. The two define separate private `readLibrary` functions over the same TypeScript lib directory. This is the opposite of the project's one-concern-per-module layout.
 - Expected: a structure that separates reading libraries, compat data, candidate-key resolution and writing, with schemas, types and constants in their own modules and the shared reading in one place.
-- Illustrative case: `syncEditions.ts` is the clearest instance of the problems `source-structure.1` targets (nested closures, own schemas, constants, types and utilities in one file); it should not have been accepted as is.
-- Open: the split follows from the `source-structure.1` classification; design it together or after it.
+- Illustrative case: `syncEditions.ts` is the clearest instance of the problems #141 targets (nested closures, own schemas, constants, types and utilities in one file); it should not have been accepted as is.
+- Open: the split follows the roles of #141 and the generator placement of #147; design it after them.
 - Done when neither module mixes these concerns and no nesting beyond one callback level remains.
 
 ## 6. `esMemberCompatKeys` is a hand-maintained table of about 60 near-duplicate entries.
