@@ -62,16 +62,18 @@ Never start a large refactor, even partly: an issue costs less than a half-appli
 
 ## Writing the issue
 
-When the input is an issue, turn that issue into the task, keeping its original report under **Context**. Otherwise search for an existing issue to reuse, then create one. Write for a worker arriving cold, who treats everything outside **Questions** as decided and applies it without redesign:
+When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then create one. Make the task complete through its ancestors, if any, for a worker who treats everything outside **Questions** as decided and applies it without redesign:
 
 ```markdown
+#<plan> › … › #<parent> · §<section>: <gist>
+
 ## Context
 
-<The problem, how to reproduce it, its cause and reach, with exact paths and names. Decided: <the behavior to implement>.>
+<The problem, its cause and reach, then the behavior decided, in at most three lines with exact paths and names.>
 
 ## Prerequisites
 
-- #<n> is closed.
+- #<n>: <what this task needs from it>.
 
 ## Steps
 
@@ -79,18 +81,19 @@ When the input is an issue, turn that issue into the task, keeping its original 
 
 ## Tests
 
-<The regression case and the edge case that prove the fix.>
+<The regression case, with how to reproduce it, and the edge case that prove the fix.>
 
 ## Done when
 
-<Observable behavior, and the project's checks pass.>
+<Observable behavior beyond the Steps.>
 
 ## Questions
 
-- <What investigation could not settle, why it matters, the findings and the candidate answers.>
+- <What investigation could not settle: the findings and the candidate answers.>
 ```
 
-- Drop **Questions** when nothing is open.
+- Write the header only for an issue inside a planned tree. List under **Prerequisites** only the issues tree order does not imply.
+- Drop **Prerequisites**, **Done when** or **Questions** when they would be empty, or when **Done when** would only say the Steps are done and the checks pass.
 - Apply the project's existing labels and issue types, including its label for missing information while **Questions** remain.
 - Once an issue you create or edit tracks the work of an entry in the backlog or the debt backlog, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
 

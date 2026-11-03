@@ -13,7 +13,7 @@ Implement one GitHub issue as written. The issue and its plan carry the design: 
 
 ## Before starting
 
-Read the issue, every ancestor on its "Part of #<plan>, under #<parent>" line up to the plan, and the plan sections it points to. Then stop and report instead of implementing when:
+Read the issue, then only the ancestors and plan sections its header line names. Then stop and report instead of implementing when:
 
 | Check                                               | Stop when                                                                                                                                                  |
 | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -32,7 +32,7 @@ Read the issue, every ancestor on its "Part of #<plan>, under #<parent>" line up
 
 ## Finishing
 
-- The issue is done when its **Done when** holds and the project's checks pass.
+- The issue is done when its **Done when** holds, or its **Steps** are done when it has none, and the project's checks pass.
 - When asked for a branch, create `worker/issue-<n>` from the current commit.
 - Never edit, comment on, label or close issues.
 - Report a table of changes, one row per change, decision with the question it resolves, deviation from the issue and check result. Then give the open questions and what the issue tree needs updated.

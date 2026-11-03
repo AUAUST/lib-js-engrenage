@@ -84,9 +84,9 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 
 1. **Goal.** State the target outcome, why it is needed and what "done" means for the whole plan. Create the plan issue as soon as the goal is clear.
 2. **Grounding.** Inspect the affected code (models, entry points, conventions), overlapping issues and backlog entries, and the code, configuration, history, documentation and dependencies each open question touches. Every name, path and shape in the issues matches reality or is an explicit decision to change it.
-3. **Design.** Write the target state and the decisions behind it into the plan.
-4. **Tasks.** Create, split, order and link each task as soon as its need is settled, keeping the plan's step list in sync.
-5. **Maintenance.** When planning or implementation reveals a change, update the plan first, then every affected issue, and move finished foundations to "Done so far". An issue and the plan never disagree.
+3. **Design.** Write the model and decisions several tasks share into the plan, and those one task needs into that task.
+4. **Tasks.** Create, split, order and link each task as soon as its need is settled, keeping the plan's **Map** in sync.
+5. **Maintenance.** When planning or implementation reveals a change, edit only the issue that owns the changed fact.
 
 ## Templates
 
@@ -97,25 +97,22 @@ Any issue may end with a **Questions** section while something is open: the only
 ```markdown
 ## Goal
 
-<Why this work is needed and the target state, in a short paragraph.>
+<Why this work is needed and the target state, in at most three lines.>
 
-## Steps
+## Map
 
-1. #<n>: <task title>.
-2. #<n>: block, <theme>.
-3. …
+| Step | Issue       | Gist                     | Plan sections      |
+| ---- | ----------- | ------------------------ | ------------------ |
+| 1    | #<n>        | <What the task delivers> | §<section>: <gist> |
+| 2    | #<n>, block | <Theme>                  |                    |
 
-## <Design sections>
+## <Model sections>
 
-<Target state: configuration, model, layout, tables of where each value goes. As concrete as code.>
+<Only the shapes at least two tasks use, as tables, trees and diagrams.>
 
 ## Decisions
 
-- <Each settled choice and its reason, so workers never reopen it.>
-
-## Done so far
-
-- <Existing foundations the plan builds on; finished steps move here.>
+- <Each choice spanning several tasks, with its reason in one clause.>
 
 ## Done when
 
@@ -123,21 +120,21 @@ Any issue may end with a **Questions** section while something is open: the only
 
 ## Questions
 
-- <What investigation could not settle for the whole plan, why it matters, the findings and the candidate answers.>
+- <What investigation could not settle for the whole plan: the findings and the candidate answers.>
 ```
 
 ### Block
 
 ```markdown
-Part of #<plan>, under #<parent>: <theme>.
+#<plan> › … › #<parent> · §<section>: <gist>
 
 ## Context
 
-<What the earlier steps provide and what this block adds, pointing to plan sections.>
+<What this block adds, in at most three lines.>
 
 ## Prerequisites
 
-- #<n> is closed.
+- #<n>: <what this block needs from it>.
 
 ## Done when
 
@@ -147,15 +144,15 @@ Part of #<plan>, under #<parent>: <theme>.
 ### Task
 
 ```markdown
-Part of #<plan>, under #<parent>. Read the plan, its **<section>** section, before starting.
+#<plan> › … › #<parent> · §<section>: <gist>
 
 ## Context
 
-<Current behavior and the problem, with exact paths and names. Decided: <the behavior to implement>.>
+<The problem, then what is decided for this task only, in at most three lines with exact paths and names.>
 
 ## Prerequisites
 
-- #<n> is closed.
+- #<n>: <what this task needs from it>.
 
 ## Steps
 
@@ -167,20 +164,22 @@ Part of #<plan>, under #<parent>. Read the plan, its **<section>** section, befo
 
 ## Done when
 
-<Observable behavior, and the project's checks pass.>
+<Observable behavior beyond the Steps.>
 
 ## Questions
 
-- <What investigation could not settle, why it matters, the findings and the candidate answers.>
+- <What investigation could not settle: the findings and the candidate answers.>
 ```
+
+The header lists every ancestor from the plan down to the parent, then the plan sections the issue builds on. Drop **Prerequisites** when tree order implies them all, and **Done when** when it would only say the Steps are done and the checks pass.
 
 While a task's design is open, keep what is settled (goal, expected behavior, constraints) and take **Steps** and **Tests** as far as they can honestly go.
 
 ## Writing rules
 
-- Write for a worker arriving cold: each task is self-sufficient with its plan section and names exact files, functions and options.
-- Point to the plan for shared shapes instead of copying them.
-- List every prerequisite as an issue number, even when the tree order implies it; turn any backlog entry a task depends on into an issue first.
+- Make each task complete through its ancestors: read with them, it names exact files, functions and options and leaves nothing to design.
+- Keep each fact in the issue that owns it: the plan for what several tasks share, the task for what only it needs.
+- List under **Prerequisites** only the issues tree order does not imply, never as GitHub "blocked by" relationships, which `gh` cannot set. Turn any backlog entry a task depends on into an issue first.
 - Once an issue you create or edit tracks the work of an entry in the backlog or the debt backlog, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
 - Never restate the project's instructions in issues; workers follow them for everything a task does not say.
 - Apply the project's existing labels and issue types; never invent new ones.
