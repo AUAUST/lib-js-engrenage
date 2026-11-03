@@ -2,7 +2,8 @@
 name: backlog-handling
 description: Bring backlog entries up to date with new findings, context or
   answers, and convert actionable ones into GitHub issues. Use when the user
-  asks to record, update, answer or settle backlog entries.
+  asks to record, update, answer or settle backlog entries. Prefer the
+  backlogger agent; invoke this skill directly only in a throwaway session.
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/backlog-handling.md -->

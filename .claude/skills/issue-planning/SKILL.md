@@ -1,9 +1,10 @@
 ---
 name: issue-planning
 description: Plan work as a tree of GitHub issues (a plan and ordered tasks,
-  grouped in blocks where independent) without implementing it. Use only when
-  the user asks for planning.
-disable-model-invocation: true
+  grouped in blocks where independent) without implementing it. Use proactively
+  in the main session, never as a subagent, when the user asks to plan, scope,
+  break down or design work, or to create, restructure or review planned issues,
+  so its questions reach the user directly.
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/issue-planning.md -->

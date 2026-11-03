@@ -1,13 +1,8 @@
 ---
 title: Issue planning
-description: Plan work as a tree of GitHub issues (a plan and ordered tasks, grouped in blocks where independent) without implementing it. Use only when the user asks for planning.
+description: Plan work as a tree of GitHub issues (a plan and ordered tasks, grouped in blocks where independent) without implementing it. Use proactively in the main session, never as a subagent, when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues, so its questions reach the user directly.
 category: workflow
 order: 10
-invocation: explicit
-agent:
-  name: planner
-  description: Planner that builds and maintains a tree of GitHub issues and never implements it. Use proactively when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues.
-  model: opus
 ---
 
 # Issue planning
