@@ -1,7 +1,8 @@
 import { describe, expect, test } from "vitest";
 
-import { syncBlocks } from "@auaust/engrenage";
+import { syncBlocks } from "#utils/syncBlocks";
 
+// @debt this test is source-only because the generated tsconfig paths resolve `@auaust/engrenage/agents/constants` to `agents/*/index.ts` instead of `agents/constants.ts`; it could test the built package through the public entry
 import { markdownBlocks } from "#agents/constants";
 
 const fillers = {

@@ -20,7 +20,7 @@ export function defineConvention({
   requires = [],
 }: {
   delegates?: ResolvableValue<readonly Delegate[], [ResolvedConfig]>;
-  rule?: RuleModule;
+  rule?: ResolvableValue<RuleModule, [ResolvedConfig]>;
   files?: ScopeReferences;
   ignores?: ScopeReferences;
   typeAware?: boolean;

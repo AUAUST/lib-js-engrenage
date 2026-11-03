@@ -5,6 +5,7 @@ import type { Presets } from "#config/types/Presets";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
 export const debugEnvironmentVariable = "ENGRENAGE_DEBUG";
@@ -61,9 +62,15 @@ export const defaultToolingFiles = freeze([
   ".*.ts",
 ] as const) satisfies Globs;
 
-export const defaultTestsFiles = freeze([
-  "**/*.{test,spec}.{ts,tsx}",
-] as const) satisfies Globs;
+export const defaultTestsLocation = "**/*" satisfies Glob;
+
+export const defaultTestsSuffix = ".{spec,test}" satisfies Glob;
+
+export const defaultTestsExtension = ".{ts,tsx}" satisfies Glob;
+
+export const sourceTestsVariant = ".src";
+
+export const distTestsVariant = ".dist";
 
 export const defaultTestsFixtures = freeze([
   "**/fixtures/**",

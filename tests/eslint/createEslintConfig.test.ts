@@ -10,6 +10,7 @@ import {
   type Presets,
   type ResolvedConfig,
 } from "@auaust/engrenage/config";
+import { packageJsonFile } from "@auaust/engrenage/constants";
 import {
   createEslintConfig,
   type Config,
@@ -21,7 +22,6 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
 import type { Maybe } from "@auaust/toolkit/types";
 
-import { packageJsonFile } from "#constants";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { getFixture } from "#tests/helpers/getFixture";
 

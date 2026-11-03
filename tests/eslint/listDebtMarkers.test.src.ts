@@ -1,7 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
-
+import { loadConfig } from "#config/utils/loadConfig";
 import { listDebtMarkers } from "#eslint/utils/listDebtMarkers";
 import { getFixture } from "#tests/helpers/getFixture";
 import { mockCwd } from "#tests/helpers/mockCwd";

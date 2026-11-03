@@ -1,7 +1,6 @@
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
-import { isString } from "@auaust/toolkit/isString";
 import { entries } from "@auaust/toolkit/object";
 
+import { resolveImportTarget } from "#typescript/utils/resolveImportTarget";
 import type { File } from "#types/File";
 import type { SubpathImports } from "#typescript/types/SubpathImports";
 
@@ -39,14 +38,6 @@ function matchSpecifier(
   return specifier.replace("*", () => captured);
 }
 
-function resolveTarget(target: unknown): string | undefined {
-  if (isString(target)) {
-    return target;
-  }
-
-  return isPlainObject(target) ? resolveTarget(target.default) : undefined;
-}
-
 export function resolveImportSpecifier(
   imports: SubpathImports,
   file: File,
@@ -56,7 +47,7 @@ export function resolveImportSpecifier(
   const specifiers: string[] = [];
 
   for (const [specifier, conditions] of entries(imports)) {
-    const target = resolveTarget(conditions);
+    const target = resolveImportTarget(conditions);
 
     if (target === undefined) {
       continue;

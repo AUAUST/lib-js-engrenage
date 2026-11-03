@@ -28,7 +28,7 @@ export function createPlugin(
       }
 
       if (rule !== undefined) {
-        register(createRuleName(name), rule);
+        register(createRuleName(name), value(rule, config));
       }
     }
   }

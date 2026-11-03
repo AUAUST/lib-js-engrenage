@@ -35,6 +35,14 @@ function resolveScopeReference(
       return tests.files;
     }
 
+    case "files.test.public": {
+      return [...tests.patterns.plain, ...tests.patterns.dist];
+    }
+
+    case "files.test.src": {
+      return tests.patterns.source;
+    }
+
     case "files.src": {
       return src.globs;
     }

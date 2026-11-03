@@ -6,24 +6,56 @@ import { environmentTsconfigSchema } from "#config/config/schemas/environments/e
 import { directorySchema } from "#config/config/schemas/values/directorySchema";
 import { environmentSchema } from "#config/config/schemas/values/environmentSchema";
 import { globListSchema } from "#config/config/schemas/values/globListSchema";
+import { globSchema } from "#config/config/schemas/values/globsSchema";
 import {
   defaultTestsCoverageDirectory,
   defaultTestsDirectories,
+  defaultTestsExtension,
+  defaultTestsLocation,
+  defaultTestsSuffix,
 } from "#config/constants";
 import { createCodeEnvironment } from "#config/utils/createCodeEnvironment";
 
 export const testsSchema = pipe(
   environmentSchema({
     ...createCodeEnvironment("tests", defaultTestsDirectories),
-    files: optional(
+    location: optional(
       pipe(
-        globListSchema,
+        globSchema,
         description(
           join(
             [
-              "Globs of the test files inside the tests directories, run by Vitest and linted with the test rules.",
-              // @debt the glob defaults are described in words and hand-synced with their constants; the description could be derived from the constants
-              "@default the `.test` and `.spec` TypeScript files at any depth",
+              "Glob of the directories holding test files, the first part of the test file patterns.",
+              `@default \`${defaultTestsLocation}\``,
+            ],
+            "\n",
+          ),
+        ),
+      ),
+    ),
+    suffix: optional(
+      pipe(
+        globSchema,
+        description(
+          join(
+            [
+              "Glob of the suffix that marks a test file, the second part of the test file patterns.",
+              `@default \`${defaultTestsSuffix}\``,
+            ],
+            "\n",
+          ),
+        ),
+      ),
+    ),
+    extension: optional(
+      pipe(
+        globSchema,
+        description(
+          join(
+            [
+              "Glob of the extensions of test files, the last part of the test file patterns.",
+              "Location, suffix and extension combine into the pattern of plain test files (`x.test.ts`), run by Vitest in every mode, and into those of the `.src` and `.dist` variants, run in source and dist mode only; all three are linted with the test rules.",
+              `@default \`${defaultTestsExtension}\``,
             ],
             "\n",
           ),

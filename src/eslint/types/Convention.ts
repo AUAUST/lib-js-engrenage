@@ -16,5 +16,5 @@ export interface Convention {
   typeAware: boolean;
   severity: "error" | "warn" | "info";
   delegates: ResolvableValue<readonly Delegate[], [ResolvedConfig]>;
-  rule?: RuleModule;
+  rule?: ResolvableValue<RuleModule, [ResolvedConfig]>;
 }

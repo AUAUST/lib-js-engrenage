@@ -730,10 +730,21 @@ export interface Config {
                 )
               | undefined;
             /**
-             * Globs of the test files inside the tests directories, run by Vitest and linted with the test rules.
-             * @default the `.test` and `.spec` TypeScript files at any depth
+             * Glob of the directories holding test files, the first part of the test file patterns.
+             * @default `** /*`
              */
-            files?: ListOption<string> | undefined;
+            location?: string | undefined;
+            /**
+             * Glob of the suffix that marks a test file, the second part of the test file patterns.
+             * @default `.{spec,test}`
+             */
+            suffix?: string | undefined;
+            /**
+             * Glob of the extensions of test files, the last part of the test file patterns.
+             * Location, suffix and extension combine into the pattern of plain test files (`x.test.ts`), run by Vitest in every mode, and into those of the `.src` and `.dist` variants, run in source and dist mode only; all three are linted with the test rules.
+             * @default `.{ts,tsx}`
+             */
+            extension?: string | undefined;
             /**
              * Globs of fixture files inside the tests directories, excluded from Vitest, from the tests tsconfig and from the test rules of ESLint.
              * @default everything under a `fixtures` directory

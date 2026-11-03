@@ -1,7 +1,8 @@
 import { realpathSync } from "node:fs";
 
-import { configDefaults } from "vitest/config";
+import { configDefaults, coverageConfigDefaults } from "vitest/config";
 
+import { includes } from "@auaust/primitive-kit/arrays";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { resolve } from "#support/filesystem/utils/resolve";
@@ -12,8 +13,10 @@ import {
   defaultCoverageProvider,
   outDirGuard,
   pluginPrefix,
+  sourceGuard,
 } from "#vitest/constants";
 import { createOutDirGuard } from "#vitest/plugins/createOutDirGuard";
+import { createSourceGuard } from "#vitest/plugins/createSourceGuard";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { ConfigEnv } from "#vite/types/ConfigEnv";
 import type { Plugin } from "#vite/types/Plugin";
@@ -37,6 +40,36 @@ function createSourcePlugins(
       outDir: resolve(realpathSync(config.root), outDir),
     }),
   ];
+}
+
+function createDistPlugins(config: ResolvedConfig): Plugin[] {
+  // @debt the guard reads the `library` preset; it belongs to the `published` trait once that exists
+  if (!includes(config.presets, "library")) {
+    return [];
+  }
+
+  const root = realpathSync(config.root);
+
+  return [
+    createSourceGuard(`${pluginPrefix}:${sourceGuard}`, {
+      sourceDirs: config.src.dirs.map((dir) => resolve(root, dir)),
+    }),
+  ];
+}
+
+function createTestsInclude(
+  config: ResolvedConfig,
+  testsBuild: boolean,
+): string[] | undefined {
+  // @debt the variants are selected by the `library` preset; they belong to the `published` trait once that exists
+  if (!includes(config.presets, "library")) {
+    return;
+  }
+
+  // @debt `include` replaces Vitest's default, so `.js` and `.mjs` tests are no longer collected
+  const { plain, source, dist } = config.tests.patterns;
+
+  return [...plain, ...(testsBuild ? dist : source)];
 }
 
 export function createVitestConfig(
@@ -70,6 +103,8 @@ export function createVitestConfig(
     ? config.tests.dist.tsconfig.path
     : config.tests.tsconfig.path;
 
+  const include = createTestsInclude(config, testsBuild);
+
   return {
     ...(tsconfig === undefined
       ? {}
@@ -79,13 +114,21 @@ export function createVitestConfig(
     resolve: {
       tsconfigPaths: !testsBuild,
     },
-    plugins: testsBuild ? [] : createSourcePlugins(config, guardOutDir),
+    plugins: testsBuild
+      ? createDistPlugins(config)
+      : createSourcePlugins(config, guardOutDir),
     test: {
+      ...(include === undefined ? {} : { include }),
       isolate,
       restoreMocks,
       exclude: [...configDefaults.exclude, ...config.files.fixtures],
       coverage: {
         provider: defaultCoverageProvider,
+        exclude: [
+          ...coverageConfigDefaults.exclude,
+          ...config.tests.patterns.source,
+          ...config.tests.patterns.dist,
+        ],
         reportsDirectory: config.tests.coverageDir,
       },
       typecheck:

@@ -4,6 +4,8 @@ export type ScopeReference =
   | "files.discovered"
   | "files.generated"
   | "files.test"
+  | "files.test.public"
+  | "files.test.src"
   | "files.src"
   | "files.bin"
   | "files.scripts"

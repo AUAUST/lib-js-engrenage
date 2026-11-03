@@ -25,11 +25,15 @@ import {
   defaultSourcemap,
   defaultTestsCoverageDirectory,
   defaultTestsDirectories,
-  defaultTestsFiles,
+  defaultTestsExtension,
   defaultTestsFixtures,
+  defaultTestsLocation,
+  defaultTestsSuffix,
   defaultToolingDirectories,
   defaultToolingFiles,
   defaultTypescriptFiles,
+  distTestsVariant,
+  sourceTestsVariant,
 } from "#config/constants";
 import { createFilesystem } from "#config/utils/createFilesystem";
 import { isDebugEnvironment } from "#config/utils/isDebugEnvironment";
@@ -62,6 +66,7 @@ import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+import type { Globs } from "#types/Globs";
 import type { KnownPackageName } from "#types/KnownPackageName";
 import type { PackageName } from "#types/PackageName";
 import type { Tsconfig } from "#typescript/types/Tsconfig";
@@ -404,17 +409,26 @@ export function createResolvedConfig({
     const option = raw.tests === false ? undefined : raw.tests;
     const enabled = raw.tests !== false;
 
+    const location = option?.location ?? defaultTestsLocation;
+    const suffix = option?.suffix ?? defaultTestsSuffix;
+    const extension = option?.extension ?? defaultTestsExtension;
+
+    function pattern(variant: string): Globs {
+      return enabled ? [`${location}${suffix}${variant}${extension}`] : [];
+    }
+
+    const patterns = freeze({
+      plain: pattern(""),
+      source: pattern(sourceTestsVariant),
+      dist: pattern(distTestsVariant),
+    });
+
     return freeze(
       compose(
         {
           ...resolveEnvironment("tests", defaultTestsDirectories),
-          files: enabled
-            ? resolveListOption(
-                option?.files,
-                () => defaultTestsFiles,
-                "tests.files",
-              )
-            : [],
+          patterns,
+          files: [...patterns.plain, ...patterns.source, ...patterns.dist],
           fixtures: enabled
             ? resolveListOption(
                 option?.fixtures,

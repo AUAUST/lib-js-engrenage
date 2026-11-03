@@ -1,8 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
-
 import { addAgentSkills } from "#agents/setup/addAgentSkills";
+import { loadConfig } from "#config/utils/loadConfig";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 
 describe("addAgentSkills", () => {

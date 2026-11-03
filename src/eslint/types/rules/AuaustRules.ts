@@ -148,6 +148,10 @@ export interface AuaustRules {
    */
   "auaust/no-inferrable-types"?: Rule<AuaustNoInferrableTypes>;
   /**
+   * Tests that run against the built package import its public entries; import the public entry, or rename the file to `.test.src.ts` to test internals in source mode only.
+   */
+  "auaust/no-internal-imports-in-public-tests"?: Rule<[]>;
+  /**
    * Disallow `void` type outside of generic or return types
    * @see https://typescript-eslint.io/rules/no-invalid-void-type
    */
@@ -191,6 +195,10 @@ export interface AuaustRules {
    * Use the `@auaust/toolkit/object` equivalent instead of `Object.*`.
    */
   "auaust/no-object-statics"?: Rule<[]>;
+  /**
+   * Source-only tests import internals through `#…` aliases; never the package name, or rename the file to `.test.ts` to test the built package.
+   */
+  "auaust/no-package-imports-in-source-tests"?: Rule<[]>;
   /**
    * Use the `@auaust/primitive-kit/<domain>` subpath entries instead of `@auaust/primitive-kit`.
    */

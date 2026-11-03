@@ -1,9 +1,8 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
-import { syncWorkflowFiles } from "@auaust/engrenage/github";
-
+import { loadConfig } from "#config/utils/loadConfig";
 import { readConfig } from "#config/utils/readConfig";
+import { syncWorkflowFiles } from "#github/setup/syncWorkflowFiles";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 
 const libraryScripts = {
