@@ -51,6 +51,7 @@
     "#pnpm/*": "./src/pnpm/*.ts",
     "#prettier": "./src/prettier/index.ts",
     "#prettier/*": "./src/prettier/*.ts",
+    "#project/*": "./src/project/*.ts",
     "#scripts/*": "./scripts/*.ts",
     "#support/*": "./src/support/*.ts",
     "#tests/*": "./tests/*.ts",

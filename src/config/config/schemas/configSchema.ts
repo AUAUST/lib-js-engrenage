@@ -18,6 +18,7 @@ import { gitSchema } from "#config/config/schemas/tools/gitSchema";
 import { prettierSchema } from "#config/config/schemas/tools/prettierSchema";
 import { typescriptSchema } from "#config/config/schemas/tools/typescriptSchema";
 import { vscodeSchema } from "#config/config/schemas/tools/vscodeSchema";
+import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 
 export const configSchema = strictObject({
   // Core
@@ -26,6 +27,7 @@ export const configSchema = strictObject({
   debug: optional(debugSchema),
   define: optional(defineSchema),
   presets: optional(presetsSchema),
+  roles: optional(rolesSchema),
 
   // Tooling
   agents: optional(agentsSchema),

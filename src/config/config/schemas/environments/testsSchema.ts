@@ -15,10 +15,12 @@ import {
   defaultTestsSuffix,
 } from "#config/constants";
 import { createCodeEnvironment } from "#config/utils/createCodeEnvironment";
+import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 
 export const testsSchema = pipe(
   environmentSchema({
     ...createCodeEnvironment("tests", defaultTestsDirectories),
+    roles: optional(rolesOptionSchema),
     location: optional(
       pipe(
         globSchema,

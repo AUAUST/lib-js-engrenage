@@ -17,6 +17,7 @@ import {
 } from "#vitest/constants";
 import { createOutDirGuard } from "#vitest/plugins/createOutDirGuard";
 import { createSourceGuard } from "#vitest/plugins/createSourceGuard";
+import { findSetupFiles } from "#vitest/utils/findSetupFiles";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { ConfigEnv } from "#vite/types/ConfigEnv";
 import type { Plugin } from "#vite/types/Plugin";
@@ -81,6 +82,7 @@ export function createVitestConfig(
     guardOutDir,
     isolate,
     restoreMocks = !isolate,
+    setupFiles = findSetupFiles(config),
   } = validate(optionsSchema, options ?? {}, "Vitest options");
 
   const testsBuild = mode === buildMode;
@@ -121,6 +123,7 @@ export function createVitestConfig(
       ...(include === undefined ? {} : { include }),
       isolate,
       restoreMocks,
+      setupFiles: [...setupFiles],
       exclude: [...configDefaults.exclude, ...config.files.fixtures],
       coverage: {
         provider: defaultCoverageProvider,

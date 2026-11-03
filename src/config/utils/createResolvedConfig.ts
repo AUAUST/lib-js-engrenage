@@ -50,6 +50,8 @@ import {
   prettierignoreFile,
   tsconfigFile,
 } from "#constants";
+import { noRoles } from "#project/structure/constants";
+import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import { isWithin } from "#support/filesystem/utils/isWithin";
 import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
@@ -62,6 +64,9 @@ import type { EnvironmentTsconfig } from "#config/types/EnvironmentTsconfig";
 import type { ResolvedGlobals } from "#config/types/ResolvedGlobals";
 import type { TsconfigGroups } from "#config/types/TsconfigGroups";
 import type { TsconfigKey } from "#config/types/TsconfigKey";
+import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
+import type { RolesOption } from "#project/structure/types/RolesOption";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
@@ -281,6 +286,19 @@ export function createResolvedConfig({
     });
   }
 
+  function resolveEnvironmentRoles(
+    name: RoleEnvironment,
+    option: false | { roles?: RolesOption | undefined } | undefined,
+  ): ResolvedRoles {
+    return option === false
+      ? noRoles
+      : resolveRoles({
+          environment: name,
+          roles: raw.roles,
+          environmentRoles: option?.roles,
+        });
+  }
+
   function environmentTsconfig(
     option:
       | false
@@ -346,6 +364,7 @@ export function createResolvedConfig({
       compose(
         {
           ...environment,
+          roles: resolveEnvironmentRoles("src", raw.src),
           exports: raw.src === false ? undefined : raw.src?.exports,
         },
         compose.getters({
@@ -363,6 +382,7 @@ export function createResolvedConfig({
       compose(
         {
           ...resolveEnvironment("bin", defaultBinDirectories),
+          roles: noRoles,
           commands: raw.bin === false ? undefined : raw.bin?.commands,
         },
         compose.getters({
@@ -382,6 +402,7 @@ export function createResolvedConfig({
   const data = once(() => {
     return freeze({
       active: raw.data !== false,
+      roles: noRoles,
       dirs:
         raw.data === false
           ? []
@@ -397,7 +418,10 @@ export function createResolvedConfig({
   const scripts = once(() => {
     return freeze(
       compose(
-        { ...resolveEnvironment("scripts", defaultScriptsDirectories) },
+        {
+          ...resolveEnvironment("scripts", defaultScriptsDirectories),
+          roles: resolveEnvironmentRoles("scripts", raw.scripts),
+        },
         compose.getters({
           runtime: developmentRuntime,
         }),
@@ -427,6 +451,7 @@ export function createResolvedConfig({
       compose(
         {
           ...resolveEnvironment("tests", defaultTestsDirectories),
+          roles: resolveEnvironmentRoles("tests", raw.tests),
           patterns,
           files: [...patterns.plain, ...patterns.source, ...patterns.dist],
           fixtures: enabled
@@ -459,6 +484,7 @@ export function createResolvedConfig({
             files: [],
             defines: false,
             globs: [],
+            roles: noRoles,
             tsconfig: environmentTsconfigFor("tooling"),
           },
           compose.getters({
@@ -488,6 +514,7 @@ export function createResolvedConfig({
           files,
           defines: false,
           globs: filesIn(dirs, files),
+          roles: resolveEnvironmentRoles("tooling", raw.tooling),
           tsconfig: environmentTsconfigFor("tooling"),
         },
         compose.getters({

@@ -77,6 +77,131 @@ export interface Config {
    * @default none
    */
   presets?: Preset | Presets | undefined;
+  /**
+   * The roles of the project, refined by each environment. `false` turns the role system off: no role is recognized and no role check or rule is produced.
+   */
+  roles?:
+    | (
+        | false
+        | {
+            /**
+             * Known roles to turn on, applied to the defaults before `define`.
+             */
+            enable?:
+              | (
+                  | "index.ts"
+                  | "constants.ts"
+                  | "*.d.ts"
+                  | "types"
+                  | "utils"
+                  | "errors"
+                  | "enums"
+                  | "ports"
+                  | "adapters"
+                  | "fixtures"
+                  | "setup.ts"
+                  | "schemas"
+                  | "components"
+                  | "hooks"
+                  | "contexts"
+                  | "pages"
+                  | "styles"
+                )[]
+              | undefined;
+            /**
+             * Known roles to turn off, applied to the defaults before `define`.
+             */
+            disable?:
+              | (
+                  | "index.ts"
+                  | "constants.ts"
+                  | "*.d.ts"
+                  | "types"
+                  | "utils"
+                  | "errors"
+                  | "enums"
+                  | "ports"
+                  | "adapters"
+                  | "fixtures"
+                  | "setup.ts"
+                  | "schemas"
+                  | "components"
+                  | "hooks"
+                  | "contexts"
+                  | "pages"
+                  | "styles"
+                )[]
+              | undefined;
+            /**
+             * Roles to define by name, applied last: a role that already exists is redefined whole, and a defined role is on unless it is scoped.
+             * @default none
+             */
+            define?:
+              | {
+                  /**
+                   * The contract of a role.
+                   */
+                  [k: string]: {
+                    /**
+                     * Makes the role a file role, matched by these names or globs.
+                     */
+                    file?: Glob | Globs | undefined;
+                    /**
+                     * Files a directory role takes, as names or globs. Unset, the role takes the modules of its environment.
+                     */
+                    accepts?: Glob | Globs | undefined;
+                    /**
+                     * Whether the role nests and how deep: a depth or `any`.
+                     * @default `0`, so the role is flat
+                     */
+                    nesting?: (number | "any") | undefined;
+                    /**
+                     * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                     */
+                    roles?: string[] | undefined;
+                    /**
+                     * Semi-structured role: it requires category subdirectories whose names are free.
+                     */
+                    categories?: boolean | undefined;
+                    /**
+                     * Export style of its TypeScript and JavaScript modules: one named export matching the file name, named exports, or a default export.
+                     */
+                    exports?: ("named-match" | "named" | "default") | undefined;
+                    /**
+                     * Whether an `index` file is allowed.
+                     * @default `false`
+                     */
+                    index?: boolean | undefined;
+                    /**
+                     * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
+                     * Package exports come only from the domain's visibility.
+                     * @default `false`
+                     */
+                    public?: boolean | undefined;
+                    /**
+                     * Whether a consumer discovers its files, so they may export defaults.
+                     * @default `false`
+                     */
+                    discovered?: boolean | undefined;
+                    /**
+                     * Whether the role is active only where a structured role or a namespace enables it.
+                     * @default `false`
+                     */
+                    scoped?: boolean | undefined;
+                  };
+                }
+              | undefined;
+            /**
+             * Directory names read as a role, mapped to the role name (`helpers` read as `utils`).
+             */
+            aliases?:
+              | {
+                  [k: string]: string;
+                }
+              | undefined;
+          }
+      )
+    | undefined;
   agents?:
     | {
         /**
@@ -467,6 +592,129 @@ export interface Config {
                     }
                 )
               | undefined;
+            /**
+             * Roles of the directories and files whose names carry a fixed meaning.
+             */
+            roles?:
+              | {
+                  /**
+                   * Known roles to turn on, applied to the defaults before `define`.
+                   */
+                  enable?:
+                    | (
+                        | "index.ts"
+                        | "constants.ts"
+                        | "*.d.ts"
+                        | "types"
+                        | "utils"
+                        | "errors"
+                        | "enums"
+                        | "ports"
+                        | "adapters"
+                        | "fixtures"
+                        | "setup.ts"
+                        | "schemas"
+                        | "components"
+                        | "hooks"
+                        | "contexts"
+                        | "pages"
+                        | "styles"
+                      )[]
+                    | undefined;
+                  /**
+                   * Known roles to turn off, applied to the defaults before `define`.
+                   */
+                  disable?:
+                    | (
+                        | "index.ts"
+                        | "constants.ts"
+                        | "*.d.ts"
+                        | "types"
+                        | "utils"
+                        | "errors"
+                        | "enums"
+                        | "ports"
+                        | "adapters"
+                        | "fixtures"
+                        | "setup.ts"
+                        | "schemas"
+                        | "components"
+                        | "hooks"
+                        | "contexts"
+                        | "pages"
+                        | "styles"
+                      )[]
+                    | undefined;
+                  /**
+                   * Roles to define by name, applied last: a role that already exists is redefined whole, and a defined role is on unless it is scoped.
+                   * @default none
+                   */
+                  define?:
+                    | {
+                        /**
+                         * The contract of a role.
+                         */
+                        [k: string]: {
+                          /**
+                           * Makes the role a file role, matched by these names or globs.
+                           */
+                          file?: Glob | Globs | undefined;
+                          /**
+                           * Files a directory role takes, as names or globs. Unset, the role takes the modules of its environment.
+                           */
+                          accepts?: Glob | Globs | undefined;
+                          /**
+                           * Whether the role nests and how deep: a depth or `any`.
+                           * @default `0`, so the role is flat
+                           */
+                          nesting?: (number | "any") | undefined;
+                          /**
+                           * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                           */
+                          roles?: string[] | undefined;
+                          /**
+                           * Semi-structured role: it requires category subdirectories whose names are free.
+                           */
+                          categories?: boolean | undefined;
+                          /**
+                           * Export style of its TypeScript and JavaScript modules: one named export matching the file name, named exports, or a default export.
+                           */
+                          exports?:
+                            ("named-match" | "named" | "default") | undefined;
+                          /**
+                           * Whether an `index` file is allowed.
+                           * @default `false`
+                           */
+                          index?: boolean | undefined;
+                          /**
+                           * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
+                           * Package exports come only from the domain's visibility.
+                           * @default `false`
+                           */
+                          public?: boolean | undefined;
+                          /**
+                           * Whether a consumer discovers its files, so they may export defaults.
+                           * @default `false`
+                           */
+                          discovered?: boolean | undefined;
+                          /**
+                           * Whether the role is active only where a structured role or a namespace enables it.
+                           * @default `false`
+                           */
+                          scoped?: boolean | undefined;
+                        };
+                      }
+                    | undefined;
+                  /**
+                   * Directory names read as a role, mapped to the role name (`helpers` read as `utils`).
+                   */
+                  aliases?:
+                    | {
+                        [k: string]: string;
+                      }
+                    | undefined;
+                }
+              | undefined;
           }
       )
     | undefined;
@@ -573,6 +821,129 @@ export interface Config {
                       check?: boolean | undefined;
                     }
                 )
+              | undefined;
+            /**
+             * Roles of the directories and files whose names carry a fixed meaning.
+             */
+            roles?:
+              | {
+                  /**
+                   * Known roles to turn on, applied to the defaults before `define`.
+                   */
+                  enable?:
+                    | (
+                        | "index.ts"
+                        | "constants.ts"
+                        | "*.d.ts"
+                        | "types"
+                        | "utils"
+                        | "errors"
+                        | "enums"
+                        | "ports"
+                        | "adapters"
+                        | "fixtures"
+                        | "setup.ts"
+                        | "schemas"
+                        | "components"
+                        | "hooks"
+                        | "contexts"
+                        | "pages"
+                        | "styles"
+                      )[]
+                    | undefined;
+                  /**
+                   * Known roles to turn off, applied to the defaults before `define`.
+                   */
+                  disable?:
+                    | (
+                        | "index.ts"
+                        | "constants.ts"
+                        | "*.d.ts"
+                        | "types"
+                        | "utils"
+                        | "errors"
+                        | "enums"
+                        | "ports"
+                        | "adapters"
+                        | "fixtures"
+                        | "setup.ts"
+                        | "schemas"
+                        | "components"
+                        | "hooks"
+                        | "contexts"
+                        | "pages"
+                        | "styles"
+                      )[]
+                    | undefined;
+                  /**
+                   * Roles to define by name, applied last: a role that already exists is redefined whole, and a defined role is on unless it is scoped.
+                   * @default none
+                   */
+                  define?:
+                    | {
+                        /**
+                         * The contract of a role.
+                         */
+                        [k: string]: {
+                          /**
+                           * Makes the role a file role, matched by these names or globs.
+                           */
+                          file?: Glob | Globs | undefined;
+                          /**
+                           * Files a directory role takes, as names or globs. Unset, the role takes the modules of its environment.
+                           */
+                          accepts?: Glob | Globs | undefined;
+                          /**
+                           * Whether the role nests and how deep: a depth or `any`.
+                           * @default `0`, so the role is flat
+                           */
+                          nesting?: (number | "any") | undefined;
+                          /**
+                           * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                           */
+                          roles?: string[] | undefined;
+                          /**
+                           * Semi-structured role: it requires category subdirectories whose names are free.
+                           */
+                          categories?: boolean | undefined;
+                          /**
+                           * Export style of its TypeScript and JavaScript modules: one named export matching the file name, named exports, or a default export.
+                           */
+                          exports?:
+                            ("named-match" | "named" | "default") | undefined;
+                          /**
+                           * Whether an `index` file is allowed.
+                           * @default `false`
+                           */
+                          index?: boolean | undefined;
+                          /**
+                           * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
+                           * Package exports come only from the domain's visibility.
+                           * @default `false`
+                           */
+                          public?: boolean | undefined;
+                          /**
+                           * Whether a consumer discovers its files, so they may export defaults.
+                           * @default `false`
+                           */
+                          discovered?: boolean | undefined;
+                          /**
+                           * Whether the role is active only where a structured role or a namespace enables it.
+                           * @default `false`
+                           */
+                          scoped?: boolean | undefined;
+                        };
+                      }
+                    | undefined;
+                  /**
+                   * Directory names read as a role, mapped to the role name (`helpers` read as `utils`).
+                   */
+                  aliases?:
+                    | {
+                        [k: string]: string;
+                      }
+                    | undefined;
+                }
               | undefined;
             /**
              * Subpaths the package exposes, mapped to their source file; both sides use the same single `*` or none.
@@ -730,6 +1101,129 @@ export interface Config {
                 )
               | undefined;
             /**
+             * Roles of the directories and files whose names carry a fixed meaning.
+             */
+            roles?:
+              | {
+                  /**
+                   * Known roles to turn on, applied to the defaults before `define`.
+                   */
+                  enable?:
+                    | (
+                        | "index.ts"
+                        | "constants.ts"
+                        | "*.d.ts"
+                        | "types"
+                        | "utils"
+                        | "errors"
+                        | "enums"
+                        | "ports"
+                        | "adapters"
+                        | "fixtures"
+                        | "setup.ts"
+                        | "schemas"
+                        | "components"
+                        | "hooks"
+                        | "contexts"
+                        | "pages"
+                        | "styles"
+                      )[]
+                    | undefined;
+                  /**
+                   * Known roles to turn off, applied to the defaults before `define`.
+                   */
+                  disable?:
+                    | (
+                        | "index.ts"
+                        | "constants.ts"
+                        | "*.d.ts"
+                        | "types"
+                        | "utils"
+                        | "errors"
+                        | "enums"
+                        | "ports"
+                        | "adapters"
+                        | "fixtures"
+                        | "setup.ts"
+                        | "schemas"
+                        | "components"
+                        | "hooks"
+                        | "contexts"
+                        | "pages"
+                        | "styles"
+                      )[]
+                    | undefined;
+                  /**
+                   * Roles to define by name, applied last: a role that already exists is redefined whole, and a defined role is on unless it is scoped.
+                   * @default none
+                   */
+                  define?:
+                    | {
+                        /**
+                         * The contract of a role.
+                         */
+                        [k: string]: {
+                          /**
+                           * Makes the role a file role, matched by these names or globs.
+                           */
+                          file?: Glob | Globs | undefined;
+                          /**
+                           * Files a directory role takes, as names or globs. Unset, the role takes the modules of its environment.
+                           */
+                          accepts?: Glob | Globs | undefined;
+                          /**
+                           * Whether the role nests and how deep: a depth or `any`.
+                           * @default `0`, so the role is flat
+                           */
+                          nesting?: (number | "any") | undefined;
+                          /**
+                           * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                           */
+                          roles?: string[] | undefined;
+                          /**
+                           * Semi-structured role: it requires category subdirectories whose names are free.
+                           */
+                          categories?: boolean | undefined;
+                          /**
+                           * Export style of its TypeScript and JavaScript modules: one named export matching the file name, named exports, or a default export.
+                           */
+                          exports?:
+                            ("named-match" | "named" | "default") | undefined;
+                          /**
+                           * Whether an `index` file is allowed.
+                           * @default `false`
+                           */
+                          index?: boolean | undefined;
+                          /**
+                           * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
+                           * Package exports come only from the domain's visibility.
+                           * @default `false`
+                           */
+                          public?: boolean | undefined;
+                          /**
+                           * Whether a consumer discovers its files, so they may export defaults.
+                           * @default `false`
+                           */
+                          discovered?: boolean | undefined;
+                          /**
+                           * Whether the role is active only where a structured role or a namespace enables it.
+                           * @default `false`
+                           */
+                          scoped?: boolean | undefined;
+                        };
+                      }
+                    | undefined;
+                  /**
+                   * Directory names read as a role, mapped to the role name (`helpers` read as `utils`).
+                   */
+                  aliases?:
+                    | {
+                        [k: string]: string;
+                      }
+                    | undefined;
+                }
+              | undefined;
+            /**
              * Glob of the directories holding test files, the first part of the test file patterns.
              * @default `** /*`
              */
@@ -859,6 +1353,129 @@ export interface Config {
              * @default `*.config.ts`, `.*.ts`
              */
             files?: ListOption<string> | undefined;
+            /**
+             * Roles of the directories and files whose names carry a fixed meaning.
+             */
+            roles?:
+              | {
+                  /**
+                   * Known roles to turn on, applied to the defaults before `define`.
+                   */
+                  enable?:
+                    | (
+                        | "index.ts"
+                        | "constants.ts"
+                        | "*.d.ts"
+                        | "types"
+                        | "utils"
+                        | "errors"
+                        | "enums"
+                        | "ports"
+                        | "adapters"
+                        | "fixtures"
+                        | "setup.ts"
+                        | "schemas"
+                        | "components"
+                        | "hooks"
+                        | "contexts"
+                        | "pages"
+                        | "styles"
+                      )[]
+                    | undefined;
+                  /**
+                   * Known roles to turn off, applied to the defaults before `define`.
+                   */
+                  disable?:
+                    | (
+                        | "index.ts"
+                        | "constants.ts"
+                        | "*.d.ts"
+                        | "types"
+                        | "utils"
+                        | "errors"
+                        | "enums"
+                        | "ports"
+                        | "adapters"
+                        | "fixtures"
+                        | "setup.ts"
+                        | "schemas"
+                        | "components"
+                        | "hooks"
+                        | "contexts"
+                        | "pages"
+                        | "styles"
+                      )[]
+                    | undefined;
+                  /**
+                   * Roles to define by name, applied last: a role that already exists is redefined whole, and a defined role is on unless it is scoped.
+                   * @default none
+                   */
+                  define?:
+                    | {
+                        /**
+                         * The contract of a role.
+                         */
+                        [k: string]: {
+                          /**
+                           * Makes the role a file role, matched by these names or globs.
+                           */
+                          file?: Glob | Globs | undefined;
+                          /**
+                           * Files a directory role takes, as names or globs. Unset, the role takes the modules of its environment.
+                           */
+                          accepts?: Glob | Globs | undefined;
+                          /**
+                           * Whether the role nests and how deep: a depth or `any`.
+                           * @default `0`, so the role is flat
+                           */
+                          nesting?: (number | "any") | undefined;
+                          /**
+                           * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                           */
+                          roles?: string[] | undefined;
+                          /**
+                           * Semi-structured role: it requires category subdirectories whose names are free.
+                           */
+                          categories?: boolean | undefined;
+                          /**
+                           * Export style of its TypeScript and JavaScript modules: one named export matching the file name, named exports, or a default export.
+                           */
+                          exports?:
+                            ("named-match" | "named" | "default") | undefined;
+                          /**
+                           * Whether an `index` file is allowed.
+                           * @default `false`
+                           */
+                          index?: boolean | undefined;
+                          /**
+                           * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
+                           * Package exports come only from the domain's visibility.
+                           * @default `false`
+                           */
+                          public?: boolean | undefined;
+                          /**
+                           * Whether a consumer discovers its files, so they may export defaults.
+                           * @default `false`
+                           */
+                          discovered?: boolean | undefined;
+                          /**
+                           * Whether the role is active only where a structured role or a namespace enables it.
+                           * @default `false`
+                           */
+                          scoped?: boolean | undefined;
+                        };
+                      }
+                    | undefined;
+                  /**
+                   * Directory names read as a role, mapped to the role name (`helpers` read as `utils`).
+                   */
+                  aliases?:
+                    | {
+                        [k: string]: string;
+                      }
+                    | undefined;
+                }
+              | undefined;
             /**
              * Options of the tsconfig that sync writes for the tooling files.
              * `false` manages none.

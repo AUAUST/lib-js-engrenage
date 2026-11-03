@@ -64,6 +64,25 @@ describe("createVitestConfig", () => {
     ).toEqual([]);
   });
 
+  test("loads the setup file of the tests root unless the options give others", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "tests/setup.ts": "",
+    });
+
+    const config = await loadConfig(project.root);
+    const env = { command: "serve", mode: "test" } as const;
+
+    expect(createVitestConfig(config, env).test?.setupFiles).toEqual([
+      "tests/setup.ts",
+    ]);
+
+    expect(
+      createVitestConfig(config, env, { setupFiles: ["other.ts"] }).test
+        ?.setupFiles,
+    ).toEqual(["other.ts"]);
+  });
+
   test("tests the build output with the dist tsconfig in build mode", async () => {
     const config = await loadConfig(root);
 

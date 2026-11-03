@@ -11,6 +11,7 @@ import {
   defaultToolingFiles,
 } from "#config/constants";
 import { listDefaults } from "#config/utils/listSchemaDefaults";
+import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 
 export const toolingSchema = pipe(
   environmentSchema({
@@ -42,6 +43,7 @@ export const toolingSchema = pipe(
         ),
       ),
     ),
+    roles: optional(rolesOptionSchema),
     tsconfig: optional(
       pipe(
         environmentTsconfigSchema,

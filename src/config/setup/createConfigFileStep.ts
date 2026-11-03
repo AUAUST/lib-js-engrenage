@@ -19,7 +19,9 @@ function renderOptions(
 
   const baseline = `  src: { baseline: ${JSON.stringify(findCurrentMonth())} },\n`;
 
-  return `{\n  presets: [${list}],\n${baseline}  agents: { ${preferred}attribution: false },\n}`;
+  const roles = `  roles: { define: { operations: { exports: "named-match" } } },\n`;
+
+  return `{\n  presets: [${list}],\n${baseline}${roles}  agents: { ${preferred}attribution: false },\n}`;
 }
 
 export function createConfigFileStep(): Step {

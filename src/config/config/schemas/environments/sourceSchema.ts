@@ -10,6 +10,7 @@ import { nodeMajorSchema } from "#config/config/schemas/values/nodeMajorSchema";
 import { defaultSourceDirectories } from "#config/constants";
 import { createCodeEnvironment } from "#config/utils/createCodeEnvironment";
 import { listDefaults } from "#config/utils/listSchemaDefaults";
+import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 import {
   apiGroupRoots,
   apiGroups,
@@ -31,6 +32,7 @@ function describeApiGroups(): string {
 export const sourceSchema = pipe(
   environmentSchema({
     ...createCodeEnvironment("src", defaultSourceDirectories),
+    roles: optional(rolesOptionSchema),
     exports: optional(
       pipe(
         exposedFilesSchema,

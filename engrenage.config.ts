@@ -2,6 +2,15 @@ import { defineConfig } from "#config/index";
 
 export default defineConfig({
   presets: ["library"],
+  roles: {
+    define: {
+      config: { exports: "named-match", roles: ["schemas"] },
+      schemas: { exports: "named-match", scoped: true },
+      setup: { exports: "named-match" },
+      plugins: { exports: "named-match" },
+      operations: { exports: "named-match" },
+    },
+  },
   agents: {
     preferred: ["claude", "codex"],
     attribution: false,
