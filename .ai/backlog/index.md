@@ -35,3 +35,6 @@ Deferred questions, bugs, tasks and improvements.
 - [coding-style](coding-style.md): Local coding conventions and linting.
 - [utils](utils.md): Shared public helpers in `src/utils/` and their placement.
 - [vitest](vitest.md): Generated Vitest configuration.
+- [source-structure](source-structure.md): Organization of `src/`: role directories, module boundaries and entry layering.
+- [changesets](changesets.md): Changesets configuration and presets.
+- [agent-instructions](agent-instructions.md): Shared agent instructions, skills and backlog conventions.

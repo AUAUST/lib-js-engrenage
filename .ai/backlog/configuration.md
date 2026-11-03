@@ -24,3 +24,11 @@ Project configuration contract: environments, option shapes and list options.
 - Context: recent commit `fix: tests timeout in CI` changed a timeout; the value is fixed rather than a configuration option.
 - Expected: the CI/test timeout is a configuration option, overridable per environment (see the environment model in `configuration.1`), with the current value as default.
 - Done when the timeout is set through the project configuration, per environment, and no generated config hardcodes it.
+
+## 4. `createResolvedConfig` is a 659-line function of about 46 nested closures.
+
+- Where: `src/config/utils/createResolvedConfig.ts`.
+- Problem: one exported function holds file location, tsconfig and environment resolution, runtime and API resolution, directory and glob lists, and the final accessor object, all as closures over `root` and `raw`. It imports from `typescript`, `agents`, `tsdown`, `prettier`, `pnpm` and `github` entries, so every tool's defaults pass through it. Ownership of each resolved value is hard to find and to test in isolation.
+- Expected: resolution split into cohesive modules by concern (paths, tsconfigs and environments, runtime, lists) composed by a thin factory, with the cross-entry knowledge moved to the owners.
+- Open: design of the split, which depends on `source-structure.2`.
+- Done when no single function exceeds a readable scope and each concern lives in its own module.

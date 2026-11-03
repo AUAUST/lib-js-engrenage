@@ -25,3 +25,19 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 
 - Matter: declarations used by several groups live in `data/apis/shared/common.d.ts`, so enabling `url` also declares `ReadableStream` and the other shared roots even when `streams` is not enabled. Types are harmless but the global surface is wider than the selected groups.
 - Done when shared roots are split so a group declares only its own roots and their closure, or the wider surface is accepted.
+
+## 5. `syncEditions` and `syncApiDeclarations` are monolithic modules.
+
+- Where: `src/typescript/utils/syncEditions.ts` (585 lines, about 15 functions, its own valibot schemas, patterns, types and file constants, nested callbacks) and `src/typescript/utils/syncApiDeclarations.ts` (405 lines, same shape).
+- Problem: each module owns reading `lib.*.d.ts` files, compat-data parsing and validation, name resolution and the file writing in one place. The two define separate private `readLibrary` functions over the same TypeScript lib directory. This is the opposite of the project's one-concern-per-module layout.
+- Expected: a structure that separates reading libraries, compat data, candidate-key resolution and writing, with schemas, types and constants in their own modules and the shared reading in one place.
+- Illustrative case: `syncEditions.ts` is the clearest instance of the problems `source-structure.1` targets (nested closures, own schemas, constants, types and utilities in one file); it should not have been accepted as is.
+- Open: the split follows from the `source-structure.1` classification; design it together or after it.
+- Done when neither module mixes these concerns and no nesting beyond one callback level remains.
+
+## 6. `esMemberCompatKeys` is a hand-maintained table of about 60 near-duplicate entries.
+
+- Where: `src/typescript/constants.ts` (`esMemberCompatKeys`, carrying a `@debt` marker), consumed by `src/typescript/utils/syncEditions.ts`.
+- Problem: `syncEditions` fails with "add it to `esMemberCompatKeys` or `esInterfaceAliases`" whenever a new lib declaration has no web-features key, so the table is edited by hand after each failure. Entries repeat one key per interface (for example every `X.@@toStringTag` and the `Intl.NumberFormatPartTypeRegistry.*` members) and the long compat paths are repeated verbatim.
+- Candidate answers: group entries by pattern or by interface so each key is stated once; or move the table next to the generated `src/typescript/generated/editions.ts` source data; or derive more keys from web-features in `syncEditions` so fewer need listing. Whether the table can be generated at all is open and needs a look at how web-features names these members. The table reads as generated data in disguise; if it cannot be derived, its maintenance should still be automated to avoid manual errors.
+- Done when the table is grouped or derived so each key appears once and maintaining it needs no per-interface duplication.
