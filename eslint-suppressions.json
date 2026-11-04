@@ -99,11 +99,6 @@
       "count": 2
     }
   },
-  "src/project/config/constants.ts": {
-    "auaust/readonly-constants": {
-      "count": 1
-    }
-  },
   "src/project/config/index.ts": {
     "auaust/import-surfaces": {
       "count": 26
@@ -639,14 +634,6 @@
       "count": 7
     }
   },
-  "src/tools/eslint/constants.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    },
-    "auaust/readonly-constants": {
-      "count": 2
-    }
-  },
   "src/tools/eslint/operations/createConventionRules.ts": {
     "auaust/import-surfaces": {
       "count": 1
@@ -735,11 +722,6 @@
   "src/tools/git/config/schemas/gitSchema.ts": {
     "auaust/import-surfaces": {
       "count": 2
-    }
-  },
-  "src/tools/git/constants.ts": {
-    "auaust/readonly-constants": {
-      "count": 1
     }
   },
   "src/tools/git/operations/resolveGit.ts": {
@@ -887,11 +869,6 @@
       "count": 1
     }
   },
-  "src/tools/tsdown/constants.ts": {
-    "auaust/readonly-constants": {
-      "count": 1
-    }
-  },
   "src/tools/tsdown/operations/createTsdownConfig.ts": {
     "auaust/import-surfaces": {
       "count": 18
@@ -944,11 +921,6 @@
   },
   "src/tools/tsdown/utils/resolveTsdownTarget.ts": {
     "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/tools/typescript/constants.ts": {
-    "auaust/readonly-constants": {
       "count": 1
     }
   },

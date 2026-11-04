@@ -7,7 +7,7 @@ export const barrelFiles = "**/index.ts" satisfies Glob;
 
 export const declarationExtension = ".d.ts";
 
-export const identifierPattern = /^[$A-Z_a-z][\w$]*$/;
+export const identifierPattern = freeze(/^[$A-Z_a-z][\w$]*$/);
 
 export const typescriptBlocks = freeze({
   open: "// ",

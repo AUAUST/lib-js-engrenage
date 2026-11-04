@@ -1,8 +1,11 @@
 import { configs as packageJsonConfigs } from "eslint-plugin-package-json";
 
 import { packageJsonFile } from "#constants";
-import { packageJsonPropertyOrder } from "#project/package/constants";
-import { packageJsonRules, pluginName } from "#tools/eslint/constants";
+import {
+  dependencyFields,
+  packageJsonPropertyOrder,
+} from "#project/package/constants";
+import { pluginName } from "#tools/eslint/constants";
 import type { Config } from "#tools/eslint/types/Config";
 
 export function createPackageJsonRules(): Config {
@@ -12,7 +15,20 @@ export function createPackageJsonRules(): Config {
     languageOptions: packageJsonConfigs.recommended.languageOptions,
     rules: {
       ...packageJsonConfigs.recommended.rules,
-      ...packageJsonRules,
+      "package-json/sort-collections": [
+        "error",
+        [
+          "bin",
+          "config",
+          "files",
+          "imports",
+          "overrides",
+          "scripts",
+          ...dependencyFields,
+          "inlinedDependencies",
+          "peerDependenciesMeta",
+        ],
+      ],
       "package-json/order-properties": [
         "error",
         {

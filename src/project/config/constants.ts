@@ -15,8 +15,9 @@ export const defaultCacheDirectory = "node_modules/.cache" satisfies Directory;
 
 export const definitionKey = "~definition";
 
-export const globalNamePattern =
-  /^(?:import\.meta|[$A-Z_a-z][\w$]*)(?:\.[$A-Z_a-z][\w$]*)*$/;
+export const globalNamePattern = freeze(
+  /^(?:import\.meta|[$A-Z_a-z][\w$]*)(?:\.[$A-Z_a-z][\w$]*)*$/,
+);
 
 export const sourceTestsVariant = ".src";
 

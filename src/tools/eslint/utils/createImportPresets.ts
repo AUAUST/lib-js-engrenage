@@ -2,7 +2,6 @@ import { createTypeScriptImportResolver } from "eslint-import-resolver-typescrip
 import { importX } from "eslint-plugin-import-x";
 import { defineConfig } from "eslint/config";
 
-import { importRules } from "#tools/eslint/constants";
 import type { Config } from "#tools/eslint/types/Config";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
@@ -35,7 +34,16 @@ export function createImportPresets({
           ),
         ],
       },
-      rules: importRules,
+      rules: {
+        "import-x/namespace": ["error", { allowComputed: true }],
+        "import-x/no-empty-named-blocks": "error",
+        "import-x/no-extraneous-dependencies": "error",
+        "import-x/no-mutable-exports": "error",
+        "import-x/no-named-as-default": "error",
+        "import-x/no-self-import": "error",
+        "import-x/no-unresolved": "off",
+        "import-x/no-useless-path-segments": "error",
+      },
     },
   ]);
 }

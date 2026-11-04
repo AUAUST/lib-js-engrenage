@@ -1,9 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { dependencyFields } from "#project/package/constants";
-import type { Rules } from "#tools/eslint/types/Rules";
 import type { CoreRules } from "#tools/eslint/types/rules/CoreRules";
-import type { ImportXRules } from "#tools/eslint/types/rules/ImportXRules";
 import type { StylisticRules } from "#tools/eslint/types/rules/StylisticRules";
 import type { TypescriptEslintRules } from "#tools/eslint/types/rules/TypescriptEslintRules";
 import type { UnicornRules } from "#tools/eslint/types/rules/UnicornRules";
@@ -11,23 +8,6 @@ import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 
 export const anyFile = "**" satisfies Glob;
-
-export const packageJsonRules = freeze({
-  "package-json/sort-collections": [
-    "error",
-    [
-      "bin",
-      "config",
-      "files",
-      "imports",
-      "overrides",
-      "scripts",
-      ...dependencyFields,
-      "inlinedDependencies",
-      "peerDependenciesMeta",
-    ],
-  ],
-} as const satisfies Rules);
 
 export const pluginName = "auaust";
 
@@ -94,17 +74,6 @@ export const typescriptTypeAwareRules = freeze({
   "@typescript-eslint/restrict-template-expressions": "off",
   "@typescript-eslint/unbound-method": "off",
 } as const satisfies TypescriptEslintRules);
-
-export const importRules = freeze({
-  "import-x/namespace": ["error", { allowComputed: true }],
-  "import-x/no-empty-named-blocks": "error",
-  "import-x/no-extraneous-dependencies": "error",
-  "import-x/no-mutable-exports": "error",
-  "import-x/no-named-as-default": "error",
-  "import-x/no-self-import": "error",
-  "import-x/no-unresolved": "off",
-  "import-x/no-useless-path-segments": "error",
-} as const satisfies ImportXRules);
 
 export const stylisticRules = freeze({
   "@stylistic/arrow-parens": "error",

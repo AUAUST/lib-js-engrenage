@@ -19,7 +19,6 @@ import { emittedManifestFile } from "#project/build/constants";
 import { createDefine } from "#project/config/utils/createDefine";
 import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
 import {
-  attwOptions,
   emptyNamespaces,
   entrySelfReferences,
   mainFields,
@@ -241,7 +240,8 @@ export function createTsdownConfig(
     publint: get("environment").hasDependency(publint),
     attw: {
       enabled: get("environment").hasDependency(arethetypeswrongCore),
-      ...attwOptions,
+      profile: "node16",
+      ignoreRules: ["cjs-resolves-to-esm"],
     },
     deps: {
       onlyBundle: [...bundle],

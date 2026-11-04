@@ -44,3 +44,51 @@ test("readonly-constants follows the file of the constants role", async () => {
     "auaust/readonly-constants",
   );
 });
+
+test("readonly-constants accepts frozen values and reports mutable ones", async () => {
+  const project = createTemporaryProject({
+    "package.json": JSON.stringify({ name: "library", type: "module" }),
+    "engrenage.config.ts": 'export default { preset: "library" };\n',
+    "tsconfig.json": JSON.stringify({
+      compilerOptions: {
+        module: "nodenext",
+        moduleResolution: "nodenext",
+        strict: true,
+        noEmit: true,
+      },
+      include: ["src"],
+    }),
+    "src/constants.ts": "export const value = 1;\n",
+  });
+
+  const eslint = new ESLint({
+    cwd: project.root,
+    overrideConfigFile: true,
+    overrideConfig: createEslintConfig(await loadConfig(project.root)),
+  });
+
+  async function lint(code: string) {
+    const [result] = await eslint.lintText(
+      `const freeze = <T>(value: T): Readonly<T> => value;\n${code}`,
+      { filePath: project.resolve("src/constants.ts") },
+    );
+
+    return (result?.messages ?? []).map(({ ruleId }) => ruleId);
+  }
+
+  expect(await lint("export const pattern = freeze(/x/);\n")).not.toContain(
+    "auaust/readonly-constants",
+  );
+
+  expect(await lint("export const pattern = /x/;\n")).toContain(
+    "auaust/readonly-constants",
+  );
+
+  expect(
+    await lint('export const value = freeze({ a: ["x"] } as const);\n'),
+  ).not.toContain("auaust/readonly-constants");
+
+  expect(await lint('export const value = freeze({ a: ["x"] });\n')).toContain(
+    "auaust/readonly-constants",
+  );
+});
