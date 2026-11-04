@@ -2,6 +2,7 @@ export { resolveAliases } from "#project/structure/operations/resolveAliases";
 export { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
 export { resolveImportRules } from "#project/structure/operations/resolveImportRules";
 export { resolveRoles } from "#project/structure/operations/resolveRoles";
+export { getIndexFile } from "#project/structure/utils/getIndexFile";
 export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 export { renderStructure } from "#project/structure/utils/renderStructure";
 export { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";

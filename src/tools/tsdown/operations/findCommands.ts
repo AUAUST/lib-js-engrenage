@@ -3,7 +3,7 @@ import { posix } from "node:path";
 import { entries } from "@auaust/toolkit/object";
 
 import { filesIn } from "#foundation/filesystem/utils/filesIn";
-import { binEntryFiles } from "#tools/tsdown/constants";
+import { getIndexFile } from "#project/structure/index";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { ResolvedBin } from "#project/environments/types/ResolvedBin";
@@ -28,9 +28,11 @@ export function findCommands({
     });
   }
 
+  const indexFile = getIndexFile(bin.roles);
+
   return filesystem
-    .glob(filesIn(bin.dirs, binEntryFiles))
+    .glob(filesIn(bin.dirs, ["*.ts", `*/${indexFile}`]))
     .map((file): readonly [string, File] => {
-      return [posix.basename(toEntryName(file)), file];
+      return [posix.basename(toEntryName(file, indexFile)), file];
     });
 }

@@ -1,9 +1,12 @@
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
+function isTypeKind(node: object): boolean {
+  return "exportKind" in node && node.exportKind === "type";
+}
+
 const allowed = new Set([
   "ImportDeclaration",
-  "ExportAllDeclaration",
   "TSInterfaceDeclaration",
   "TSTypeAliasDeclaration",
   "TSDeclareFunction",
@@ -29,6 +32,28 @@ export default defineConvention({
           Program(program) {
             for (const statement of program.body) {
               const type: string = statement.type;
+
+              if (type === "ExportAllDeclaration") {
+                if (!isTypeKind(statement)) {
+                  context.report({ node: statement, messageId: "value" });
+                }
+
+                continue;
+              }
+
+              if (
+                statement.type === "ExportNamedDeclaration" &&
+                statement.source != null
+              ) {
+                if (
+                  !isTypeKind(statement) &&
+                  !statement.specifiers.every(isTypeKind)
+                ) {
+                  context.report({ node: statement, messageId: "value" });
+                }
+
+                continue;
+              }
 
               const inner: { type: string } | null | undefined =
                 type === "ExportNamedDeclaration" && "declaration" in statement

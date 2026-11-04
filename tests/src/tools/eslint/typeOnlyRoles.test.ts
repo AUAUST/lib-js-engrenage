@@ -76,6 +76,30 @@ describe("type-only roles", () => {
     ).not.toEqual([]);
   });
 
+  test("allow only type re-exports", async () => {
+    const lint = await createLinter();
+    const file = "src/project/feature/types/Own.ts";
+    const source = '"#project/feature/utils/own"';
+
+    expect(await lint(file, `export type { own } from ${source};\n`)).toEqual(
+      [],
+    );
+
+    expect(
+      await lint(file, `export { type own } from ${source};\n`),
+    ).not.toContain("auaust/type-only-roles");
+
+    expect(await lint(file, `export type * from ${source};\n`)).toEqual([]);
+
+    expect(await lint(file, `export { own } from ${source};\n`)).toContain(
+      "auaust/type-only-roles",
+    );
+
+    expect(await lint(file, `export * from ${source};\n`)).toContain(
+      "auaust/type-only-roles",
+    );
+  });
+
   test("apply to a project role marked typeOnly", async () => {
     const lint = await createLinter(
       "roles: { define: { shapes: { typeOnly: true, exports: 'named-match' } } },",

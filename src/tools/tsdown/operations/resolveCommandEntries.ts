@@ -1,3 +1,4 @@
+import { getIndexFile } from "#project/structure/index";
 import { findCommands } from "#tools/tsdown/operations/findCommands";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
@@ -10,8 +11,10 @@ export function resolveCommandEntries(config: {
 }): Entries {
   const commandEntries: Entries = {};
 
+  const indexFile = getIndexFile(config.bin.roles);
+
   for (const [, file] of findCommands(config)) {
-    const name = toEntryName(file);
+    const name = toEntryName(file, indexFile);
 
     const existing = commandEntries[name];
 

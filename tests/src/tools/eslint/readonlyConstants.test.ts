@@ -1,0 +1,46 @@
+import { ESLint } from "eslint";
+import { expect, test } from "vitest";
+
+import { loadConfig } from "@auaust/engrenage";
+import { createEslintConfig } from "@auaust/engrenage/eslint";
+
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+
+test("readonly-constants follows the file of the constants role", async () => {
+  const project = createTemporaryProject({
+    "package.json": JSON.stringify({ name: "library", type: "module" }),
+    "engrenage.config.ts":
+      'export default { preset: "library", src: { roles: { define: { constants: { inherit: "constants", file: ["consts.ts"] } } } } };\n',
+    "tsconfig.json": JSON.stringify({
+      compilerOptions: {
+        module: "nodenext",
+        moduleResolution: "nodenext",
+        strict: true,
+        noEmit: true,
+      },
+      include: ["src"],
+    }),
+    "src/consts.ts": "export const value = 1;\n",
+    "src/constants.ts": "export const value = 1;\n",
+  });
+
+  const eslint = new ESLint({
+    cwd: project.root,
+    overrideConfigFile: true,
+    overrideConfig: createEslintConfig(await loadConfig(project.root)),
+  });
+
+  async function lint(file: string) {
+    const [result] = await eslint.lintText("export const list = [1];\n", {
+      filePath: project.resolve(file),
+    });
+
+    return (result?.messages ?? []).map(({ ruleId }) => ruleId);
+  }
+
+  expect(await lint("src/consts.ts")).toContain("auaust/readonly-constants");
+
+  expect(await lint("src/constants.ts")).not.toContain(
+    "auaust/readonly-constants",
+  );
+});
