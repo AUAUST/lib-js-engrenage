@@ -6,6 +6,7 @@ import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
 import { validate } from "#foundation/options/utils/validate";
 import { jsonIndentation } from "#project/format/constants";
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 import type { File } from "#types/File";
 
 const hooksSchema = optional(
@@ -22,7 +23,7 @@ const hooksSchema = optional(
   ),
 );
 
-export function syncEditHook(
+export function syncHook(
   {
     filesystem,
     resolve,
@@ -30,10 +31,11 @@ export function syncEditHook(
     filesystem: Filesystem;
     resolve(...paths: string[]): string;
   },
-  { file, matcher, command }: { file: File; matcher: string; command: string },
+  { file, hook }: { file: File; hook: HookDefinition },
 ) {
   const path = resolve(file);
-  const location = ["hooks", "PostToolUse"];
+  const { event, matcher, command, condition } = hook;
+  const location = ["hooks", event];
 
   let content = filesystem.read(file) ?? emptyObjectFile;
 
@@ -41,11 +43,11 @@ export function syncEditHook(
     validate(
       hooksSchema,
       readJsonValue(content, path, location),
-      `${file} PostToolUse hooks`,
+      `${file} ${event} hooks`,
     ) ?? [];
 
   const found = entries.some((group) => {
-    return group.hooks?.some((hook) => hook.command === command);
+    return group.hooks?.some((entry) => entry.command === command);
   });
 
   if (!found) {
@@ -59,6 +61,7 @@ export function syncEditHook(
           {
             type: "command",
             command,
+            ...(condition === undefined ? {} : { if: condition }),
           },
         ],
       },

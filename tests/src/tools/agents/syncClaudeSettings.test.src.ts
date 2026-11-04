@@ -43,6 +43,18 @@ describe("syncClaudeSettings", () => {
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm --silent engrenage agents claude hook github",
+            "if": "Bash(gh issue *)"
+          }
+        ]
+      }
     ]
   }
 }

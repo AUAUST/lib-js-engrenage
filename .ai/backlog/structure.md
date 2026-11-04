@@ -80,3 +80,9 @@ Project structure description, its report and the tooling generated from it.
 - why: `ConfigInput.ts` is generated into `project/config/types` by the registry's generator (a lower layer holding a higher layer's output); `defineConfig` stays in `project/config` while the registry owns the schema; `exposedFilesSchema` moved to `project/package/config/schemas`, a `config/` role that domain did not have; `define` and `cache` schemas and `declareDefines` have no project domain; environment schemas are composed in `project/environments`, not the registry, because the partial `loadConfig` resolves them.
 - want: decide where `ConfigInput` and `defineConfig` live and where the composition belongs; amend the plan wording.
 - done: generated output sits with its generator's layer or the exception is stated.
+
+## 13. Hook vocabulary and GitHub command logic have no home (#172)
+
+- why: `HookEvent`, `HookDefinition` and `BudgetMode` sit in `tools/agents/types/` though hook-sync vocabulary is shared by `agents/claude` and `agents/codex` and the map has no home for code shared by both; `parseGithubCommand` and `measureGithubCommand` are GitHub-command logic in `agents/utils` (`tools/github/utils` cannot be imported by a `tools` peer); `getEntryBudgetKind` hard-codes the `.ai/backlog` layout with `debtFile`, split from `createBacklogStep`.
+- want: a home for code shared by the agent sub-domains, a rule for logic about another tool's commands, one owner of the backlog layout.
+- done: each piece has one owner.

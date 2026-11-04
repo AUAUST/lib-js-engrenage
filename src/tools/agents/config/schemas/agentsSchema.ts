@@ -1,4 +1,4 @@
-import { boolean } from "valibot";
+import { boolean, picklist } from "valibot";
 
 import { wrap } from "@auaust/primitive-kit/arrays";
 
@@ -8,7 +8,13 @@ import { unset } from "#foundation/options/utils/unset";
 import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
 import { globsSchema } from "#project/config/config/schemas/values/globsSchema";
 import { defaultInstructionFiles } from "#project/config/constants";
+import { budgetSchema } from "#tools/agents/config/schemas/budgetSchema";
 import { preferredSchema } from "#tools/agents/config/schemas/preferredSchema";
+import {
+  budgetModes,
+  defaultBudgetMode,
+  defaultBudgets,
+} from "#tools/agents/constants";
 
 export const agentsSchema = declareObject(
   {
@@ -53,6 +59,44 @@ export const agentsSchema = declareObject(
       ],
       optional: unset("none, so neither is managed"),
     }),
+    budgets: declareObject(
+      {
+        mode: declare(picklist(budgetModes), {
+          description:
+            "`warn` reports a text over budget to the agent; `deny` also blocks the GitHub write it would make.",
+          optional: { value: defaultBudgetMode },
+        }),
+        plan: declare(budgetSchema, {
+          description: "Words of a plan issue.",
+          optional: { value: defaultBudgets.plan },
+        }),
+        block: declare(budgetSchema, {
+          description: "Words of a block issue.",
+          optional: { value: defaultBudgets.block },
+        }),
+        task: declare(budgetSchema, {
+          description: "Words of a task issue.",
+          optional: { value: defaultBudgets.task },
+        }),
+        comment: declare(budgetSchema, {
+          description: "Words of an issue comment.",
+          optional: { value: defaultBudgets.comment },
+        }),
+        backlogEntry: declare(budgetSchema, {
+          description: "Words of one entry of `.ai/backlog/*.md`.",
+          optional: { value: defaultBudgets.backlogEntry },
+        }),
+        debtEntry: declare(budgetSchema, {
+          description: "Words of one entry of `.ai/debt.md`.",
+          optional: { value: defaultBudgets.debtEntry },
+        }),
+      },
+      {
+        description:
+          "Length budgets in words, checked by the agent hooks (`engrenage agents <agent> hook`).",
+        optional: true,
+      },
+    ),
   },
   {
     optional: true,

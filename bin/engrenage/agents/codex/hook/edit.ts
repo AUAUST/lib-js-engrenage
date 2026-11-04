@@ -6,6 +6,8 @@ import { literal, object, string } from "valibot";
 import { validate } from "#foundation/options/utils/validate";
 import { getPatchedFiles } from "#tools/agents/codex/utils/getPatchedFiles";
 import { formatEditedFile } from "#tools/agents/operations/formatEditedFile";
+import { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
+import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
@@ -20,7 +22,7 @@ const payloadSchema = object({
 export const edit = defineCommand((command) => {
   return command
     .description(
-      "Fix, format and lint the files Codex patched, reading its PostToolUse payload from stdin.",
+      "Fix, format and lint the files Codex patched and warn when an entry is over budget, reading its PostToolUse payload from stdin.",
     )
     .action(async () => {
       const {
@@ -37,9 +39,19 @@ export const edit = defineCommand((command) => {
       for (const path of getPatchedFiles(patch)) {
         const file = resolve(cwd, path);
 
-        if (existsSync(file)) {
-          formatEditedFile(config, file);
+        if (!existsSync(file)) {
+          continue;
         }
+
+        formatEditedFile(config, file);
+
+        reportBudgetFindings(
+          measureEditedFile(config.root, file, config.agents.budgets),
+          {
+            mode: config.agents.budgets.mode,
+            event: "PostToolUse",
+          },
+        );
       }
     });
 });

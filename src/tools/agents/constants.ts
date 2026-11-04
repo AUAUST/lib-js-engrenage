@@ -62,3 +62,29 @@ export const attributionRules = freeze({
   true: "attribution",
   false: "no-attribution",
 } as const);
+
+export const debtFile = ".ai/debt.md" satisfies File;
+
+export const budgetKinds = freeze([
+  "plan",
+  "block",
+  "task",
+  "comment",
+  "backlogEntry",
+  "debtEntry",
+] as const);
+
+export const budgetModes = freeze(["warn", "deny"] as const);
+
+export const defaultBudgetMode = "warn" as const;
+
+export const defaultBudgets = freeze({
+  plan: 1200,
+  block: 60,
+  task: 250,
+  comment: 150,
+  backlogEntry: 60,
+  debtEntry: 60,
+} as const);
+
+export const hookEvents = freeze(["PreToolUse", "PostToolUse"] as const);

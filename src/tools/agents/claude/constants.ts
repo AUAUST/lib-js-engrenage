@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -7,18 +8,18 @@ export const claudeFile = "CLAUDE.md" satisfies File;
 
 export const claudeSettingsFile = ".claude/settings.json" satisfies File;
 
-export const claudeEditHookCommand =
-  "pnpm --silent engrenage agents claude hook edit";
-
 export const claudeEditHook = freeze({
+  event: "PostToolUse",
   matcher: "Edit|MultiEdit|Write",
-  hooks: [
-    {
-      type: "command",
-      command: claudeEditHookCommand,
-    },
-  ],
-} as const);
+  command: "pnpm --silent engrenage agents claude hook edit",
+} as const) satisfies HookDefinition;
+
+export const claudeGithubHook = freeze({
+  event: "PreToolUse",
+  matcher: "Bash",
+  condition: "Bash(gh issue *)",
+  command: "pnpm --silent engrenage agents claude hook github",
+} as const) satisfies HookDefinition;
 
 export const claudeHiddenAttribution = freeze({
   commit: "",

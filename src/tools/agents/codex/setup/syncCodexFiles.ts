@@ -1,10 +1,10 @@
 import {
   codexEditHook,
-  codexEditHookCommand,
+  codexGithubHook,
   codexHooksFile,
 } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
-import { syncEditHook } from "#tools/agents/operations/syncEditHook";
+import { syncHook } from "#tools/agents/operations/syncHook";
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
@@ -28,10 +28,11 @@ export function syncCodexFiles(
     configured !== false &&
     (configured === true || hooks || config.filesystem.exists(codexHooksFile))
   ) {
-    syncEditHook(config, {
-      file: codexHooksFile,
-      matcher: codexEditHook.matcher,
-      command: codexEditHookCommand,
-    });
+    for (const hook of [codexEditHook, codexGithubHook]) {
+      syncHook(config, {
+        file: codexHooksFile,
+        hook,
+      });
+    }
   }
 }

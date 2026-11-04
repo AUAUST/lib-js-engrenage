@@ -6,11 +6,11 @@ import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
 import { jsonIndentation } from "#project/format/constants";
 import {
   claudeEditHook,
-  claudeEditHookCommand,
+  claudeGithubHook,
   claudeHiddenAttribution,
   claudeSettingsFile,
 } from "#tools/agents/claude/constants";
-import { syncEditHook } from "#tools/agents/operations/syncEditHook";
+import { syncHook } from "#tools/agents/operations/syncHook";
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
@@ -72,11 +72,12 @@ export function syncClaudeSettings(
     return;
   }
 
-  syncEditHook(config, {
-    file: claudeSettingsFile,
-    matcher: claudeEditHook.matcher,
-    command: claudeEditHookCommand,
-  });
+  for (const hook of [claudeEditHook, claudeGithubHook]) {
+    syncHook(config, {
+      file: claudeSettingsFile,
+      hook,
+    });
+  }
 
   if (attribution !== undefined) {
     syncAttribution(config, attribution);

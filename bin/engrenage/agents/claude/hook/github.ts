@@ -1,0 +1,40 @@
+import { readFileSync } from "node:fs";
+
+import { object, string } from "valibot";
+
+import { validate } from "#foundation/options/utils/validate";
+import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
+import { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
+
+const payloadSchema = object({
+  tool_input: object({
+    command: string(),
+  }),
+});
+
+export const github = defineCommand((command) => {
+  return command
+    .description(
+      "Warn or deny when the body of a `gh issue create|edit|comment` command is over budget, reading Claude's PreToolUse payload from stdin.",
+    )
+    .action(async () => {
+      const {
+        tool_input: { command: shellCommand },
+      } = validate(
+        payloadSchema,
+        JSON.parse(readFileSync(0, "utf-8")),
+        "Claude Code hook payload",
+      );
+
+      const { agents } = await loadConfig();
+      const { budgets } = agents;
+      const finding = measureGithubCommand(shellCommand, budgets);
+
+      reportBudgetFindings(finding === undefined ? [] : [finding], {
+        mode: budgets.mode,
+        event: "PreToolUse",
+      });
+    });
+});

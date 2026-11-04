@@ -271,6 +271,48 @@ export interface ConfigInput {
          * @default none, so neither is managed
          */
         attribution?: boolean | undefined;
+        /**
+         * Length budgets in words, checked by the agent hooks (`engrenage agents <agent> hook`).
+         */
+        budgets?:
+          | {
+              /**
+               * `warn` reports a text over budget to the agent; `deny` also blocks the GitHub write it would make.
+               * @default `warn`
+               */
+              mode?: ("warn" | "deny") | undefined;
+              /**
+               * Words of a plan issue.
+               * @default `1200`
+               */
+              plan?: number | undefined;
+              /**
+               * Words of a block issue.
+               * @default `60`
+               */
+              block?: number | undefined;
+              /**
+               * Words of a task issue.
+               * @default `250`
+               */
+              task?: number | undefined;
+              /**
+               * Words of an issue comment.
+               * @default `150`
+               */
+              comment?: number | undefined;
+              /**
+               * Words of one entry of `.ai/backlog/*.md`.
+               * @default `60`
+               */
+              backlogEntry?: number | undefined;
+              /**
+               * Words of one entry of `.ai/debt.md`.
+               * @default `60`
+               */
+              debtEntry?: number | undefined;
+            }
+          | undefined;
       }
     | undefined;
   git?:

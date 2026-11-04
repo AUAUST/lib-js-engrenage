@@ -4,6 +4,8 @@ import { object, string } from "valibot";
 
 import { validate } from "#foundation/options/utils/validate";
 import { formatEditedFile } from "#tools/agents/operations/formatEditedFile";
+import { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
+import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
@@ -16,7 +18,7 @@ const payloadSchema = object({
 export const edit = defineCommand((command) => {
   return command
     .description(
-      "Fix, format and lint the file Claude edited, reading its PostToolUse payload from stdin.",
+      "Fix, format and lint the file Claude edited and warn when an entry is over budget, reading its PostToolUse payload from stdin.",
     )
     .action(async () => {
       const {
@@ -27,6 +29,16 @@ export const edit = defineCommand((command) => {
         "Claude Code hook payload",
       );
 
-      formatEditedFile(await loadConfig(), file);
+      const config = await loadConfig();
+
+      formatEditedFile(config, file);
+
+      reportBudgetFindings(
+        measureEditedFile(config.root, file, config.agents.budgets),
+        {
+          mode: config.agents.budgets.mode,
+          event: "PostToolUse",
+        },
+      );
     });
 });
