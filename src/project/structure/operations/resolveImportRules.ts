@@ -5,6 +5,7 @@ import { entries, freeze, keys } from "@auaust/toolkit/object";
 
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
+import type { ImportRelation } from "#project/structure/types/ImportRelation";
 import type { ImportRule } from "#project/structure/types/ImportRule";
 import type { ImportRuleSource } from "#project/structure/types/ImportRuleSource";
 import type { ImportRuleTarget } from "#project/structure/types/ImportRuleTarget";
@@ -15,6 +16,7 @@ import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { Directory } from "#types/Directory";
 
 interface Reach {
+  readonly relation: ImportRelation;
   readonly targets: readonly ImportRuleTarget[];
   readonly reason: string;
 }
@@ -37,6 +39,7 @@ function category(name: ImportCategory): ImportRuleTarget {
 function createRule(
   source: ImportRuleSource,
   targets: readonly ImportRuleTarget[],
+  relation: ImportRelation,
   effect: ImportRule["effect"],
   reason: string,
   { typeOnly = false, enforceable = true } = {},
@@ -47,6 +50,7 @@ function createRule(
         {
           source,
           targets,
+          relation,
           effect,
           typeOnly,
           enforceable,
@@ -81,18 +85,21 @@ function resolveEnvironmentRules({
       ...createRule(
         source,
         [category("bin")],
+        "test-variant",
         "forbid",
         "src never imports bin",
       ),
       ...createRule(
         source,
         [category("scripts")],
+        "test-variant",
         "forbid",
         "src never imports scripts",
       ),
       ...createRule(
         source,
         [category("tests")],
+        "test-variant",
         "forbid",
         "no environment imports tests",
       ),
@@ -101,12 +108,14 @@ function resolveEnvironmentRules({
             ...createRule(
               source,
               [category("data")],
+              "test-variant",
               "forbid",
               "a library's src never imports data/",
             ),
             ...createRule(
               source,
               [category("data")],
+              "test-variant",
               "allow",
               "a library's src reads data/ at runtime through the public specifier",
               { enforceable: false },
@@ -115,6 +124,7 @@ function resolveEnvironmentRules({
         : createRule(
             source,
             [category("data")],
+            "test-variant",
             "allow",
             "an app's src imports data/ statically through #data",
           )),
@@ -128,30 +138,35 @@ function resolveEnvironmentRules({
       ...createRule(
         source,
         [category("public-entries"), category("internal-aliases")],
+        "test-variant",
         "allow",
         "bin commands are thin and use all of src",
       ),
       ...createRule(
         source,
         [category("bin")],
+        "test-variant",
         "allow",
         "bin imports its own command tree",
       ),
       ...createRule(
         source,
         [category("scripts")],
+        "test-variant",
         "forbid",
         "bin never imports scripts",
       ),
       ...createRule(
         source,
         [category("data")],
+        "test-variant",
         "forbid",
         "bin never reads data/ directly",
       ),
       ...createRule(
         source,
         [category("tests")],
+        "test-variant",
         "forbid",
         "no environment imports tests",
       ),
@@ -165,30 +180,35 @@ function resolveEnvironmentRules({
       ...createRule(
         source,
         [category("public-entries"), category("internal-aliases")],
+        "test-variant",
         "allow",
         "scripts use all of src",
       ),
       ...createRule(
         source,
         [category("scripts")],
+        "test-variant",
         "allow",
         "scripts import their own modules",
       ),
       ...createRule(
         source,
         [category("bin")],
+        "test-variant",
         "forbid",
         "scripts never import bin",
       ),
       ...createRule(
         source,
         [category("tests")],
+        "test-variant",
         "forbid",
         "no environment imports tests",
       ),
       ...createRule(
         source,
         [category("data")],
+        "test-variant",
         "allow",
         "scripts read and write data/ by path (generated files)",
         { enforceable: false },
@@ -212,12 +232,14 @@ function resolveEnvironmentRules({
             ...createRule(
               source,
               [category("public-entries")],
+              "test-variant",
               "allow",
               "a library's tooling imports public entries only",
             ),
             ...createRule(
               source,
               [category("internal-aliases")],
+              "test-variant",
               "forbid",
               "a library's tooling never imports src internals",
             ),
@@ -225,18 +247,21 @@ function resolveEnvironmentRules({
         : createRule(
             source,
             surfaces,
+            "test-variant",
             "allow",
             "an app's tooling imports the declared domain surfaces",
           )),
       ...createRule(
         source,
         [category("bin"), category("scripts"), category("data")],
+        "test-variant",
         "forbid",
         "tooling never imports bin, scripts or data/",
       ),
       ...createRule(
         source,
         [category("tests")],
+        "test-variant",
         "forbid",
         "no environment imports tests",
       ),
@@ -247,6 +272,7 @@ function resolveEnvironmentRules({
     const spawn = createRule(
       environment("tests"),
       [category("bin")],
+      "environment",
       "allow",
       "tests spawn bin commands",
       { enforceable: false },
@@ -262,6 +288,7 @@ function resolveEnvironmentRules({
         ...createRule(
           environment("tests"),
           [category("data")],
+          "environment",
           "allow",
           "a library's tests read data/ at runtime through the public specifier",
           { enforceable: false },
@@ -269,12 +296,14 @@ function resolveEnvironmentRules({
         ...createRule(
           plain,
           [category("public-entries"), category("tests"), category("scripts")],
+          "test-variant",
           "allow",
           "x.test.ts runs in source and dist mode, so it imports the package name",
         ),
         ...createRule(
           plain,
           [category("internal-aliases"), category("bin")],
+          "test-variant",
           "forbid",
           "x.test.ts never imports internals or bin modules; those belong to x.test.src.ts",
         ),
@@ -286,12 +315,14 @@ function resolveEnvironmentRules({
             category("tests"),
             category("scripts"),
           ],
+          "test-variant",
           "allow",
           "x.test.src.ts runs in source mode only and reaches internals through #… aliases",
         ),
         ...createRule(
           source,
           [category("public-entries")],
+          "test-variant",
           "forbid",
           "x.test.src.ts never imports the package name",
         ),
@@ -303,12 +334,14 @@ function resolveEnvironmentRules({
             category("scripts"),
             category("dist-artefacts"),
           ],
+          "test-variant",
           "allow",
           "x.test.dist.ts runs in dist mode only and may reach dist-only artefacts",
         ),
         ...createRule(
           dist,
           [category("internal-aliases"), category("bin")],
+          "test-variant",
           "forbid",
           "x.test.dist.ts never imports internals or bin modules",
         ),
@@ -325,6 +358,7 @@ function resolveEnvironmentRules({
             category("tests"),
             category("data"),
           ],
+          "environment",
           "allow",
           "an app's tests import everything through #… aliases",
         ),
@@ -433,43 +467,50 @@ function resolveElementRules(
     const source: ImportRuleSource = { kind: "element", path: domain.path };
     const subdomains = members(domain);
 
-    const typeOnlyIndexes = scope.reaches.flatMap(({ targets, reason }) => {
-      return createRule(
-        source,
-        targets.filter(({ kind }) => kind === "index"),
-        "allow",
-        `${reason}, type-only`,
-        { typeOnly: true },
-      );
-    });
+    const typeOnlyIndexes = scope.reaches.flatMap(
+      ({ targets, reason, relation }) => {
+        return createRule(
+          source,
+          targets.filter(({ kind }) => kind === "index"),
+          relation,
+          "allow",
+          `${reason}, type-only`,
+          { typeOnly: true },
+        );
+      },
+    );
 
     rules.push(
       ...createRule(
         source,
         ownTargets(domain),
+        "own-roles",
         "allow",
         "a domain imports its own roles and files",
       ),
       ...createRule(
         source,
         globalTargets,
+        "global-roles",
         "allow",
         "anything imports global roles",
       ),
       ...createRule(
         source,
         flatMap(scope.ancestors, ownTargets),
+        "ancestor-roles",
         "allow",
         "a sub-domain imports its ancestors' roles directly",
       ),
       ...createRule(
         source,
         flatMap(subdomains, surface),
+        "sub-domain",
         "allow",
         "a domain reaches a sub-domain through its index.ts and public roles",
       ),
-      ...flatMap(scope.reaches, ({ targets, reason }) => {
-        return createRule(source, targets, "allow", reason);
+      ...flatMap(scope.reaches, ({ targets, reason, relation }) => {
+        return createRule(source, targets, relation, "allow", reason);
       }),
     );
 
@@ -481,13 +522,21 @@ function resolveElementRules(
           ...createRule(
             roleSource,
             hereAndAbove(domain, scope, [typesRole], false),
+            "here-and-above",
             "allow",
             "types/ imports types/ here and above",
           ),
           ...typeOnlyIndexes.flatMap((rule) => {
-            return createRule(roleSource, rule.targets, "allow", rule.reason, {
-              typeOnly: true,
-            });
+            return createRule(
+              roleSource,
+              rule.targets,
+              rule.relation,
+              "allow",
+              rule.reason,
+              {
+                typeOnly: true,
+              },
+            );
           }),
         );
       }
@@ -500,13 +549,21 @@ function resolveElementRules(
               ...hereAndAbove(domain, scope, [utilitiesRole, typesRole], true),
               ...globalTargets,
             ],
+            "here-and-above",
             "allow",
             "utils/ imports utils/, types/ and constants.ts here and above, and global roles",
           ),
           ...typeOnlyIndexes.flatMap((rule) => {
-            return createRule(roleSource, rule.targets, "allow", rule.reason, {
-              typeOnly: true,
-            });
+            return createRule(
+              roleSource,
+              rule.targets,
+              rule.relation,
+              "allow",
+              rule.reason,
+              {
+                typeOnly: true,
+              },
+            );
           }),
         );
       }
@@ -531,21 +588,25 @@ function resolveElementRules(
             });
 
       const peers =
-        container.layers === undefined
-          ? others
-          : others.filter(({ layer }) => {
-              return layer !== undefined && layer === member.layer;
-            });
+        container.relation === "isolated"
+          ? []
+          : container.layers === undefined
+            ? others
+            : others.filter(({ layer }) => {
+                return layer !== undefined && layer === member.layer;
+              });
 
       const next: Scope = {
         ancestors: scope.ancestors,
         reaches: [
           ...scope.reaches,
           {
+            relation: "lower-layer",
             targets: flatMap(lower, surface),
             reason: "domains of a lower layer, through their index.ts",
           },
           {
+            relation: "peer",
             targets: flatMap(peers, surface),
             reason: "peers, through their index.ts",
           },
@@ -570,6 +631,7 @@ function resolveElementRules(
       ...createRule(
         { kind: "element", path: role.path },
         globalTargets,
+        "global-roles",
         "allow",
         "global roles import only each other",
       ),
@@ -589,6 +651,7 @@ function resolveElementRules(
         ...createRule(
           { kind: "file", path: join(directory, indexFile) },
           surfaces,
+          "root-entry",
           "allow",
           "the index.ts of an environment root imports any public surface",
         ),
@@ -618,6 +681,7 @@ function resolveWorkspaceRules({
       ? createRule(
           { kind: "environment", environment: "src" },
           workspaces.map(({ dir }) => element(dir)),
+          "workspace",
           "forbid",
           "root src never imports a workspace",
         )
@@ -633,6 +697,7 @@ function resolveWorkspaceRules({
           others
             .filter((other) => dependencies.includes(other.dir))
             .map((other) => element(other.dir)),
+          "workspace",
           "allow",
           "a workspace imports another through a declared dependency",
         ),
@@ -641,6 +706,7 @@ function resolveWorkspaceRules({
           others
             .filter((other) => !dependencies.includes(other.dir))
             .map((other) => element(other.dir)),
+          "workspace",
           "forbid",
           "a workspace never imports a workspace that is not a declared dependency",
         ),
@@ -688,6 +754,7 @@ export function resolveImportRules({
           structure.dirs.map((directory): ImportRuleTarget => {
             return { kind: "file", path: join(directory, indexFile) };
           }),
+          "root-entry",
           "forbid",
           "nothing imports the index.ts of an environment root",
         );

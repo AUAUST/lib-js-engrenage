@@ -120,6 +120,24 @@ describe("structure", () => {
     });
   });
 
+  test("attaches purposes to namespaces and catalogue roles", async () => {
+    const { nodes } = await describeSource(
+      declaration.replace(
+        "ui: {",
+        'ui: { purpose: "Interface.", relation: "isolated",',
+      ),
+    );
+
+    expect(nodes.get("src/ui")).toMatchObject({
+      purpose: "Interface.",
+      relation: "isolated",
+    });
+
+    expect(nodes.get("src/feature/utils")?.purpose).toBe(
+      "Pure functions, one per module.",
+    );
+  });
+
   test("counts unclassified directories as domains under loose", async () => {
     const { structure, nodes } = await describeSource(
       declaration.replace("optOut:", 'strictness: "loose", optOut:'),

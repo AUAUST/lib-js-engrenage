@@ -19,6 +19,10 @@ export function declareRoleContractEntries<Inline>(
   inline: GenericSchema<Inline>,
 ) {
   return {
+    purpose: declare(string(), {
+      description: "One line stating what the role holds.",
+      optional: { value: undefined },
+    }),
     file: declare(globsSchema, {
       description:
         "Makes the role a file role, matched by these names or globs.",

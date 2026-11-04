@@ -16,6 +16,15 @@ export const structureOptions = {
           "Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.",
         optional: { value: undefined },
       }),
+      relation: declare(picklist(["peers", "isolated"]), {
+        description:
+          "How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer.",
+        optional: { value: "peers" },
+      }),
+      purpose: declare(string(), {
+        description: "One line stating what the namespace groups.",
+        optional: { value: undefined },
+      }),
       roles: declareObject(
         {
           enable: declare(array(union([string(), inlineRoleSchema.schema])), {

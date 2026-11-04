@@ -7,8 +7,16 @@ import type { StructureNode } from "#project/structure/types/StructureNode";
 const indentation = "  ";
 
 function describe(node: StructureNode): string {
-  const layers =
-    node.layers === undefined ? "" : ` (layers: ${node.layers.join(" < ")})`;
+  const details = [
+    ...(node.layers === undefined
+      ? []
+      : [`layers: ${node.layers.join(" < ")}`]),
+    ...(node.relation === undefined || node.relation === "peers"
+      ? []
+      : [`relation: ${node.relation}`]),
+  ];
+
+  const layers = details.length === 0 ? "" : ` (${details.join("; ")})`;
 
   const kinds = {
     namespace: `namespace${layers}`,
@@ -22,7 +30,7 @@ function describe(node: StructureNode): string {
         : `unclassified (${node.reason})`,
   } satisfies Record<StructureNode["kind"], string>;
 
-  return kinds[node.kind];
+  return `${kinds[node.kind]}${node.purpose === undefined ? "" : `  ${node.purpose}`}`;
 }
 
 function render(node: StructureNode, depth: number): string[] {

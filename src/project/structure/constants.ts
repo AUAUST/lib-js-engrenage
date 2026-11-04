@@ -5,31 +5,67 @@ import type { RoleContract } from "#project/structure/types/RoleContract";
 import type { RoleKey } from "#project/structure/types/RoleKey";
 
 export const roleCatalogue = {
-  "index.ts": { file: ["index.ts"] },
-  "constants.ts": { file: ["constants.ts"] },
-  "*.d.ts": { file: ["*.d.ts"] },
-  "types": { exports: "named-match" },
-  "utils": { exports: "named-match" },
-  "errors": { exports: "named-match", public: true },
-  "enums": { exports: "named-match" },
-  "ports": { exports: "named-match", public: true },
-  "adapters": { exports: "named-match", public: true },
-  "fixtures": { nesting: "any" },
-  "setup.ts": { file: ["setup.ts"], discovered: true },
-  "schemas": { exports: "named-match" },
+  "index.ts": { purpose: "The domain's public surface.", file: ["index.ts"] },
+  "constants.ts": {
+    purpose: "Deeply read-only constants of the domain.",
+    file: ["constants.ts"],
+  },
+  "*.d.ts": { purpose: "Ambient type declarations.", file: ["*.d.ts"] },
+  "types": { purpose: "Types only, one per module.", exports: "named-match" },
+  "utils": {
+    purpose: "Pure functions, one per module.",
+    exports: "named-match",
+  },
+  "errors": {
+    purpose: "Error classes, importable module by module.",
+    exports: "named-match",
+    public: true,
+  },
+  "enums": { purpose: "Enumerations, one per module.", exports: "named-match" },
+  "ports": {
+    purpose: "Interfaces other domains implement, importable module by module.",
+    exports: "named-match",
+    public: true,
+  },
+  "adapters": {
+    purpose:
+      "Implementations of other domains' ports, importable module by module.",
+    exports: "named-match",
+    public: true,
+  },
+  "fixtures": { purpose: "Static test inputs.", nesting: "any" },
+  "setup.ts": {
+    purpose: "Test runner setup file.",
+    file: ["setup.ts"],
+    discovered: true,
+  },
+  "schemas": {
+    purpose: "Validation schemas of options.",
+    exports: "named-match",
+  },
   "components": {
+    purpose: "UI components with their styles.",
     accepts: ["*.tsx", "*.css"],
     exports: "named-match",
     scoped: true,
   },
-  "hooks": { exports: "named-match", scoped: true },
-  "contexts": { exports: "named-match", scoped: true },
+  "hooks": {
+    purpose: "Reusable stateful logic of components.",
+    exports: "named-match",
+    scoped: true,
+  },
+  "contexts": {
+    purpose: "Shared state providers.",
+    exports: "named-match",
+    scoped: true,
+  },
   "pages": {
+    purpose: "Routable pages, discovered by the router.",
     discovered: true,
     exports: "default",
     nesting: "any",
   },
-  "styles": { accepts: ["*.css"] },
+  "styles": { purpose: "Stylesheets.", accepts: ["*.css"] },
 } as const satisfies Record<string, RoleContract>;
 
 export const defaultRoleKeys = [

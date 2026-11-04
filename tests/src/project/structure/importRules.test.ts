@@ -4,6 +4,8 @@ import { loadConfig } from "@auaust/engrenage";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
+const placeholder = "{dir}";
+
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',
   "src/index.ts": "",
@@ -72,6 +74,52 @@ describe("import rules", () => {
 
     expect(reached(rules, "src/tools/tool/utils")).not.toContain(
       "index:src/project/model",
+    );
+  });
+
+  test("drops peer reach in an isolated namespace and types every rule", async () => {
+    const project = createTemporaryProject({
+      ...files,
+      "src/features/a/index.ts": "",
+      "src/features/b/index.ts": "",
+      "src/tools/other/index.ts": "",
+      "ext/a/src/index.ts": "",
+      "ext/b/src/index.ts": "",
+      "engrenage.config.ts": `export default { preset: "library", src: { namespaces: { ".": { layers: ["foundation", "project", "tools", "*"] }, features: { relation: "isolated" } } }, workspaces: { "ext/*": { name: "@s/${placeholder}" } } };\n`,
+    });
+
+    const rules = (await loadConfig(project.root)).importRules;
+
+    expect(reached(rules, "src/features/a")).not.toContain(
+      "index:src/features/b",
+    );
+
+    expect(reached(rules, "src/features/a")).toContain(
+      "index:src/foundation/base",
+    );
+
+    expect(reached(rules, "src/tools/tool")).toContain(
+      "index:src/project/model",
+    );
+
+    const relations = new Set(rules.map(({ relation }) => relation));
+
+    expect(relations.has(undefined as never)).toBe(false);
+
+    expect([...relations]).toEqual(
+      expect.arrayContaining([
+        "own-roles",
+        "global-roles",
+        "ancestor-roles",
+        "sub-domain",
+        "lower-layer",
+        "peer",
+        "here-and-above",
+        "environment",
+        "test-variant",
+        "root-entry",
+        "workspace",
+      ]),
     );
   });
 

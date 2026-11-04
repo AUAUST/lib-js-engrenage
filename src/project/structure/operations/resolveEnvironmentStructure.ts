@@ -231,6 +231,12 @@ export function resolveEnvironmentStructure({
       : undefined;
   }
 
+  function purposeOf(role: string, scopes: readonly string[]) {
+    const purpose = rolesFor(scopes).roles[role]?.purpose;
+
+    return purpose === undefined ? {} : { purpose };
+  }
+
   function describe(subpath: string, path: Directory) {
     const directory = subpath.slice(subpath.lastIndexOf("/") + 1);
     const namespace = namespaces[subpath];
@@ -356,6 +362,10 @@ export function resolveEnvironmentStructure({
           ...(namespace.layers === undefined
             ? {}
             : { layers: namespace.layers }),
+          relation: namespace.relation,
+          ...(namespace.purpose === undefined
+            ? {}
+            : { purpose: namespace.purpose }),
         },
         {
           scopes: [...parent.scopes, ...namespace.roles.enable],
@@ -371,7 +381,10 @@ export function resolveEnvironmentStructure({
     if (parent.kind === "role") {
       return role === undefined || !parent.structured
         ? node("unclassified", "inferred", {})
-        : node("role", "inferred", { role });
+        : node("role", "inferred", {
+            role,
+            ...purposeOf(role, parent.scopes),
+          });
     }
 
     if (
@@ -386,6 +399,7 @@ export function resolveEnvironmentStructure({
         "inferred",
         {
           role,
+          ...purposeOf(role, parent.scopes),
         },
         {
           scopes: [...parent.scopes, ...(contained ?? [])],
@@ -483,6 +497,12 @@ export function resolveEnvironmentStructure({
     ...(rootDeclaration?.layers === undefined
       ? {}
       : { layers: rootDeclaration.layers }),
+    ...(rootDeclaration === undefined
+      ? {}
+      : { relation: rootDeclaration.relation }),
+    ...(rootDeclaration?.purpose === undefined
+      ? {}
+      : { purpose: rootDeclaration.purpose }),
     children,
   });
 

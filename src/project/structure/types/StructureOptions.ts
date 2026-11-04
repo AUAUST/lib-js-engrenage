@@ -1,3 +1,4 @@
+import type { StructureRelation } from "#project/structure/types/StructureRelation";
 import type { Directory } from "#types/Directory";
 
 export interface StructureOptions<Reference = string> {
@@ -6,6 +7,8 @@ export interface StructureOptions<Reference = string> {
       Directory,
       {
         readonly layers: readonly string[] | undefined;
+        readonly relation: StructureRelation;
+        readonly purpose: string | undefined;
         readonly roles: { readonly enable: readonly Reference[] };
       }
     >

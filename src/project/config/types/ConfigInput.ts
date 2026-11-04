@@ -212,6 +212,11 @@ export interface ConfigInput {
                    */
                   [k: string]: {
                     /**
+                     * One line stating what the role holds.
+                     * @default none
+                     */
+                    purpose?: string | undefined;
+                    /**
                      * Makes the role a file role, matched by these names or globs.
                      * @default none
                      */
@@ -486,6 +491,16 @@ export interface ConfigInput {
                      */
                     layers?: string[] | undefined;
                     /**
+                     * How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer.
+                     * @default `peers`
+                     */
+                    relation?: ("peers" | "isolated") | undefined;
+                    /**
+                     * One line stating what the namespace groups.
+                     * @default none
+                     */
+                    purpose?: string | undefined;
+                    /**
                      * @default none
                      */
                     roles?:
@@ -706,6 +721,16 @@ export interface ConfigInput {
                      */
                     layers?: string[] | undefined;
                     /**
+                     * How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer.
+                     * @default `peers`
+                     */
+                    relation?: ("peers" | "isolated") | undefined;
+                    /**
+                     * One line stating what the namespace groups.
+                     * @default none
+                     */
+                    purpose?: string | undefined;
+                    /**
                      * @default none
                      */
                     roles?:
@@ -917,6 +942,11 @@ export interface ConfigInput {
                          */
                         [k: string]: {
                           /**
+                           * One line stating what the role holds.
+                           * @default none
+                           */
+                          purpose?: string | undefined;
+                          /**
                            * Makes the role a file role, matched by these names or globs.
                            * @default none
                            */
@@ -1006,6 +1036,16 @@ export interface ConfigInput {
                      * @default none
                      */
                     layers?: string[] | undefined;
+                    /**
+                     * How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer.
+                     * @default `peers`
+                     */
+                    relation?: ("peers" | "isolated") | undefined;
+                    /**
+                     * One line stating what the namespace groups.
+                     * @default none
+                     */
+                    purpose?: string | undefined;
                     /**
                      * @default none
                      */
@@ -1218,6 +1258,11 @@ export interface ConfigInput {
                          */
                         [k: string]: {
                           /**
+                           * One line stating what the role holds.
+                           * @default none
+                           */
+                          purpose?: string | undefined;
+                          /**
                            * Makes the role a file role, matched by these names or globs.
                            * @default none
                            */
@@ -1386,6 +1431,16 @@ export interface ConfigInput {
                      * @default none
                      */
                     layers?: string[] | undefined;
+                    /**
+                     * How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer.
+                     * @default `peers`
+                     */
+                    relation?: ("peers" | "isolated") | undefined;
+                    /**
+                     * One line stating what the namespace groups.
+                     * @default none
+                     */
+                    purpose?: string | undefined;
                     /**
                      * @default none
                      */
@@ -1598,6 +1653,11 @@ export interface ConfigInput {
                          */
                         [k: string]: {
                           /**
+                           * One line stating what the role holds.
+                           * @default none
+                           */
+                          purpose?: string | undefined;
+                          /**
                            * Makes the role a file role, matched by these names or globs.
                            * @default none
                            */
@@ -1803,6 +1863,16 @@ export interface ConfigInput {
                      */
                     layers?: string[] | undefined;
                     /**
+                     * How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer.
+                     * @default `peers`
+                     */
+                    relation?: ("peers" | "isolated") | undefined;
+                    /**
+                     * One line stating what the namespace groups.
+                     * @default none
+                     */
+                    purpose?: string | undefined;
+                    /**
                      * @default none
                      */
                     roles?:
@@ -1927,6 +1997,11 @@ export interface ConfigInput {
                          * The contract of a role.
                          */
                         [k: string]: {
+                          /**
+                           * One line stating what the role holds.
+                           * @default none
+                           */
+                          purpose?: string | undefined;
                           /**
                            * Makes the role a file role, matched by these names or globs.
                            * @default none
@@ -2160,6 +2235,11 @@ export interface InlineRole {
    * Name of the role, local to its owner: it is registered as `<owner>/<name>` and shadows a root role of the same name inside the owner only.
    */
   name: string;
+  /**
+   * One line stating what the role holds.
+   * @default none
+   */
+  purpose?: string | undefined;
   /**
    * Makes the role a file role, matched by these names or globs.
    * @default none

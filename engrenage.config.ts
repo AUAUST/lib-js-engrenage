@@ -5,13 +5,30 @@ export default defineConfig({
   roles: {
     define: {
       config: {
+        purpose: "Pure option declarations of the domain.",
         exports: "named-match",
-        roles: [{ name: "schemas", exports: "named-match" }],
+        roles: [
+          {
+            name: "schemas",
+            purpose: "Validation schemas of the option declarations.",
+            exports: "named-match",
+          },
+        ],
       },
-      setup: { exports: "named-match" },
-      plugins: { exports: "named-match" },
-      operations: { exports: "named-match" },
+      setup: {
+        purpose: "Init steps and sync targets of the domain.",
+        exports: "named-match",
+      },
+      plugins: {
+        purpose: "The tool's own plugins, one per module.",
+        exports: "named-match",
+      },
+      operations: {
+        purpose: "Impure logic and definers of the domain.",
+        exports: "named-match",
+      },
       conventions: {
+        purpose: "Formatting conventions, discovered by category.",
         categories: true,
         exports: "default",
         discovered: true,
