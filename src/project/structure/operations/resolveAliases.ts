@@ -11,7 +11,6 @@ import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 
-const indexFile = "index.ts";
 const projectRoot = ".";
 const bundlerPrefix = "#";
 
@@ -26,6 +25,7 @@ function createDirectoryAliases(
   name: string,
   path: Directory,
   source: string,
+  indexFile: string,
 ): Alias[] {
   return [
     {
@@ -47,7 +47,7 @@ function createDirectoryAliases(
 
 function createSourceAliases(
   root: Directory,
-  { dirs, root: tree }: EnvironmentStructure,
+  { dirs, root: tree, indexFile }: EnvironmentStructure,
 ): Alias[] {
   const directories = flatMap(tree.children, (child) => {
     return createDirectoryAliases(
@@ -55,6 +55,7 @@ function createSourceAliases(
       child.name,
       child.path,
       `src entry ${child.path}`,
+      indexFile,
     );
   });
 

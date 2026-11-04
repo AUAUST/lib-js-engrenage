@@ -16,8 +16,8 @@ export default defineConvention({
         value:
           "An index.ts only re-exports; move this declaration into a module of the domain's roles.",
       },
-      create(context) {
-        if (basename(context.filename) !== "index.ts") {
+      create(context, { indexFile }) {
+        if (basename(context.filename) !== indexFile) {
           return {};
         }
 

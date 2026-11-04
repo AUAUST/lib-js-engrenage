@@ -248,3 +248,6 @@ export const unicornRules = freeze({
 
 export const defaultSuppressionsFile =
   "eslint-suppressions.json" satisfies File;
+
+/** @debt the key of the index role repeats the one in `project/structure`, which a utility cannot import at runtime */
+export const indexRole = "index";

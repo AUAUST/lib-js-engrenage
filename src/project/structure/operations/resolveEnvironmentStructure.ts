@@ -7,6 +7,7 @@ import { entries, freeze, values } from "@auaust/toolkit/object";
 
 import { noRoles } from "#project/structure/constants";
 import { resolveRoles } from "#project/structure/operations/resolveRoles";
+import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
@@ -24,7 +25,6 @@ import type { Directory } from "#types/Directory";
 
 type DomainDeclaration = StructureOptions["domains"][string];
 
-const indexFile = "index.ts";
 const environmentRoot = ".";
 const projectRoot = ".";
 const ignoredDirectory = "node_modules";
@@ -216,6 +216,8 @@ export function resolveEnvironmentStructure({
     },
     (scopes) => scopes.join("\0"),
   );
+
+  const indexFile = getIndexFile(rolesFor([]));
 
   function roleOf(directory: string, parent: Parent): string | undefined {
     const { roles: contracts, aliases } = rolesFor(parent.scopes);
@@ -514,6 +516,7 @@ export function resolveEnvironmentStructure({
   return freeze({
     name,
     dirs,
+    indexFile,
     strictness,
     root: tree,
     unclassified: collect(tree).filter(({ kind }) => kind === "unclassified"),

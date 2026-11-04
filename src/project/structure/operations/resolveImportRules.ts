@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { flatMap, wrap } from "@auaust/primitive-kit/arrays";
 import { entries, freeze, keys } from "@auaust/toolkit/object";
 
+import { defaultIndexFile, indexRole } from "#project/structure/constants";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportRelation } from "#project/structure/types/ImportRelation";
@@ -26,7 +27,6 @@ interface Scope {
   readonly ancestors: readonly StructureNode[];
 }
 
-const indexFile = "index.ts";
 const constantsRole = "constants";
 const typesRole = "types";
 const utilitiesRole = "utils";
@@ -223,7 +223,7 @@ function resolveEnvironmentRules({
       structures.src === undefined ? [] : collect(structures.src.root);
 
     const surfaces = flatMap(nodes, (node): ImportRuleTarget[] => {
-      return node.kind === "domain" ? [indexOf(node)] : [];
+      return node.kind === "domain" ? [indexOf(node, structures.src?.indexFile ?? defaultIndexFile)] : [];
     });
 
     rules.push(
@@ -373,8 +373,13 @@ function collect(node: StructureNode): StructureNode[] {
   return [node, ...flatMap(node.children, collect)];
 }
 
-function indexOf({ path }: StructureNode): ImportRuleTarget {
-  return { kind: "index", path };
+function indexOf(
+  { path }: StructureNode,
+  file: string,
+): ImportRuleTarget {
+  return {
+ kind: "index", path, file 
+};
 }
 
 function resolveElementRules(
@@ -390,7 +395,7 @@ function resolveElementRules(
   function filesOf(directory: string, only?: string): ImportRuleTarget[] {
     return fileGlobs
       .filter(({ name }) => {
-        return only === undefined ? name !== indexFile : name === only;
+        return only === undefined ? name !== indexRole : name === only;
       })
       .flatMap(({ globs }) => {
         return globs.map((glob): ImportRuleTarget => {
@@ -417,7 +422,7 @@ function resolveElementRules(
 
   function surface(node: StructureNode): ImportRuleTarget[] {
     if (node.kind === "domain") {
-      return [indexOf(node), ...rolesOf(node).filter(isPublic).map(modulesOf)];
+      return [indexOf(node, structure.indexFile), ...rolesOf(node).filter(isPublic).map(modulesOf)];
     }
 
     return node.kind === "namespace" ? flatMap(node.children, surface) : [];
@@ -640,7 +645,7 @@ function resolveElementRules(
 
   visit(structure.root, { reaches: [], ancestors: [] });
 
-  if (fileGlobs.some(({ name }) => name === indexFile)) {
+  if (fileGlobs.some(({ name }) => name === indexRole)) {
     const surfaces = flatMap(
       collect(structure.root).filter(({ kind }) => kind === "domain"),
       surface,
@@ -649,14 +654,14 @@ function resolveElementRules(
     for (const directory of structure.dirs) {
       rules.push(
         ...createRule(
-          { kind: "file", path: join(directory, indexFile) },
+          { kind: "file", path: join(directory, structure.indexFile) },
           globalTargets,
           "global-roles",
           "allow",
           "anything imports global roles",
         ),
         ...createRule(
-          { kind: "file", path: join(directory, indexFile) },
+          { kind: "file", path: join(directory, structure.indexFile) },
           surfaces,
           "root-entry",
           "allow",
@@ -750,7 +755,7 @@ export function resolveImportRules({
 
       if (
         structure === undefined ||
-        roles[name].roles[indexFile] === undefined
+        roles[name].roles[indexRole] === undefined
       ) {
         return [];
       }
@@ -759,7 +764,7 @@ export function resolveImportRules({
         return createRule(
           { kind: "environment", environment },
           structure.dirs.map((directory): ImportRuleTarget => {
-            return { kind: "file", path: join(directory, indexFile) };
+            return { kind: "file", path: join(directory, structure.indexFile) };
           }),
           "root-entry",
           "forbid",

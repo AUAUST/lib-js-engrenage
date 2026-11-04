@@ -147,19 +147,6 @@
   "src/project/config/config/schemas/core/defineSchema.ts": {
     "auaust/import-surfaces": {
       "count": 4
-    },
-    "auaust/role-exports": {
-      "count": 1
-    }
-  },
-  "src/project/config/config/schemas/values/directorySchema.ts": {
-    "auaust/role-exports": {
-      "count": 1
-    }
-  },
-  "src/project/config/config/schemas/values/globsSchema.ts": {
-    "auaust/role-exports": {
-      "count": 1
     }
   },
   "src/project/config/constants.ts": {

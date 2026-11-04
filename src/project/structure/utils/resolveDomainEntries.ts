@@ -4,7 +4,6 @@ import type { EnvironmentStructure } from "#project/structure/types/EnvironmentS
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { File } from "#types/File";
 
-const indexFile = "index.ts";
 const subpathPrefix = "./";
 
 function toSubpath(segments: readonly string[], node: StructureNode): string {
@@ -22,10 +21,11 @@ function toSubpath(segments: readonly string[], node: StructureNode): string {
 function collectEntries(
   node: StructureNode,
   segments: readonly string[],
+  indexFile: string,
 ): (readonly [string, File])[] {
   return node.children.flatMap((child) => {
     if (child.kind === "namespace") {
-      return collectEntries(child, segments);
+      return collectEntries(child, segments, indexFile);
     }
 
     if (child.kind !== "domain") {
@@ -38,7 +38,7 @@ function collectEntries(
       ...(child.public === true
         ? [[toSubpath(path, child), `${child.path}/${indexFile}`] as const]
         : []),
-      ...collectEntries(child, path),
+      ...collectEntries(child, path, indexFile),
     ];
   });
 }
@@ -52,7 +52,7 @@ export function resolveDomainEntries(
 
   const found = new Map<string, File>();
 
-  for (const [subpath, file] of collectEntries(structure.root, [])) {
+  for (const [subpath, file] of collectEntries(structure.root, [], structure.indexFile)) {
     const previous = found.get(subpath);
 
     if (previous !== undefined) {

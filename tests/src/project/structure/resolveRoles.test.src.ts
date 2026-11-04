@@ -5,6 +5,7 @@ import { keys } from "@auaust/toolkit/object";
 import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 import { resolveRoles } from "#project/structure/operations/resolveRoles";
+import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { normalizeRoles } from "#project/structure/utils/normalizeRoles";
 import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
 
@@ -37,7 +38,7 @@ describe("resolveRoles", () => {
     const tests = resolve({ environment: "tests", roles: undefined });
 
     expect(keys(source.roles)).toEqual([
-      "index.ts",
+      "index",
       "constants",
       "declarations",
       "types",
@@ -274,5 +275,22 @@ describe("resolveRoles", () => {
         },
       }).roles.constants,
     ).toMatchObject({ file: ["consts.ts"] });
+  });
+
+  test("reads the index file name from the index role", () => {
+    const roles = resolve({
+      environment: "src",
+      roles: {
+        define: {
+          index: { inherit: "index", file: ["main.ts"] },
+        },
+      },
+    });
+
+    expect(getIndexFile(roles)).toBe("main.ts");
+
+    expect(getIndexFile(resolve({ environment: "src", roles: false }))).toBe(
+      "index.ts",
+    );
   });
 });

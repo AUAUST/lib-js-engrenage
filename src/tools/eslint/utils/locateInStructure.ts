@@ -42,12 +42,12 @@ export function locateInStructure(
     const contract =
       node.role === undefined
         ? undefined
-        : (config[environment].roles.roles[node.role] ??
-          config.roles.define[node.role]);
+        : config[environment].roles.roles[node.role];
 
     return {
       environment,
       root: structure.root,
+      indexFile: structure.indexFile,
       node,
       contract,
       relativePath: path.slice(

@@ -24,14 +24,14 @@ export default defineConvention({
         default:
           "A module of {{role}} has one default export and no named export.",
       },
-      create(context, { node, contract, relativePath }) {
+      create(context, { node, contract, relativePath, indexFile }) {
         const style = contract?.exports;
         const file = basename(relativePath);
 
         if (
           node.kind !== "role" ||
           style === undefined ||
-          file === "index.ts"
+          file === indexFile
         ) {
           return {};
         }

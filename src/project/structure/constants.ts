@@ -5,7 +5,7 @@ import type { RoleContract } from "#project/structure/types/RoleContract";
 import type { RoleKey } from "#project/structure/types/RoleKey";
 
 export const roleCatalogue = {
-  "index.ts": { purpose: "The domain's public surface.", file: ["index.ts"] },
+  "index": { purpose: "The domain's public surface.", file: ["index.ts"] },
   "constants": {
     purpose: "Deeply read-only constants of the domain.",
     file: ["constants.ts"],
@@ -72,7 +72,7 @@ export const roleCatalogue = {
 } as const satisfies Record<string, RoleContract>;
 
 export const defaultRoleKeys = [
-  "index.ts",
+  "index",
   "constants",
   "declarations",
   "types",
@@ -94,6 +94,10 @@ export const environmentRoleKeys = {
   scripts: defaultRoleKeys,
   tooling: defaultRoleKeys,
 } as const satisfies Record<string, readonly RoleKey[]>;
+
+export const indexRole = "index" satisfies RoleKey;
+
+export const defaultIndexFile = "index.ts";
 
 export const testsSetupRole = "setup.ts" satisfies RoleKey;
 

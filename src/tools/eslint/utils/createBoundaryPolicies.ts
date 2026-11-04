@@ -1,7 +1,7 @@
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries, freeze, record } from "@auaust/toolkit/object";
 
-import { boundaryRows } from "#tools/eslint/constants";
+import { boundaryRows, indexRole } from "#tools/eslint/constants";
 import { createFileCategory } from "#tools/eslint/utils/createFileCategory";
 import type { ProjectConfig } from "#project/config/index";
 import type {
@@ -207,7 +207,7 @@ export function createBoundaryPolicies(config: ProjectConfig): BoundaryRules {
         }
 
         case "index": {
-          paths.push(`${target.path}/index.ts`);
+          paths.push(`${target.path}/${target.file}`);
           break;
         }
 
@@ -238,7 +238,7 @@ export function createBoundaryPolicies(config: ProjectConfig): BoundaryRules {
       flatMap([config.src, config.scripts, config.tooling], ({ roles }) => {
         return entries(roles.roles)
           .filter(([role, { file }]) => {
-            return file !== undefined && role !== "index.ts";
+            return file !== undefined && role !== indexRole;
           })
           .map(([role]) => createFileCategory(role));
       }),
@@ -252,7 +252,7 @@ export function createBoundaryPolicies(config: ProjectConfig): BoundaryRules {
       return [
         {
           element: { type: "domain" },
-          file: { path, categories: createFileCategory("index.ts") },
+          file: { path, categories: createFileCategory(indexRole) },
         },
       ];
     }

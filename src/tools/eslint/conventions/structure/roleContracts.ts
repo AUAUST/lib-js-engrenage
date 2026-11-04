@@ -3,8 +3,6 @@ import { basename, dirname, matchesGlob } from "node:path";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
-const indexFile = "index.ts";
-
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
   rule: (config) => {
@@ -21,7 +19,7 @@ export default defineConvention({
         accepts:
           "The role {{role}} accepts only {{accepts}}; move this file out.",
       },
-      create(context, { node, contract, relativePath }) {
+      create(context, { node, contract, relativePath, indexFile }) {
         if (node.kind !== "role" || contract === undefined) {
           return {};
         }

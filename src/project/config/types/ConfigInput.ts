@@ -157,7 +157,7 @@ export interface ConfigInput {
              */
             enable?:
               | (
-                  | "index.ts"
+                  | "index"
                   | "constants"
                   | "declarations"
                   | "types"
@@ -182,7 +182,7 @@ export interface ConfigInput {
              */
             disable?:
               | (
-                  | "index.ts"
+                  | "index"
                   | "constants"
                   | "declarations"
                   | "types"
@@ -892,7 +892,7 @@ export interface ConfigInput {
                    */
                   enable?:
                     | (
-                        | "index.ts"
+                        | "index"
                         | "constants"
                         | "declarations"
                         | "types"
@@ -917,7 +917,7 @@ export interface ConfigInput {
                    */
                   disable?:
                     | (
-                        | "index.ts"
+                        | "index"
                         | "constants"
                         | "declarations"
                         | "types"
@@ -1213,7 +1213,7 @@ export interface ConfigInput {
                    */
                   enable?:
                     | (
-                        | "index.ts"
+                        | "index"
                         | "constants"
                         | "declarations"
                         | "types"
@@ -1238,7 +1238,7 @@ export interface ConfigInput {
                    */
                   disable?:
                     | (
-                        | "index.ts"
+                        | "index"
                         | "constants"
                         | "declarations"
                         | "types"
@@ -1613,7 +1613,7 @@ export interface ConfigInput {
                    */
                   enable?:
                     | (
-                        | "index.ts"
+                        | "index"
                         | "constants"
                         | "declarations"
                         | "types"
@@ -1638,7 +1638,7 @@ export interface ConfigInput {
                    */
                   disable?:
                     | (
-                        | "index.ts"
+                        | "index"
                         | "constants"
                         | "declarations"
                         | "types"
@@ -1963,7 +1963,7 @@ export interface ConfigInput {
                    */
                   enable?:
                     | (
-                        | "index.ts"
+                        | "index"
                         | "constants"
                         | "declarations"
                         | "types"
@@ -1988,7 +1988,7 @@ export interface ConfigInput {
                    */
                   disable?:
                     | (
-                        | "index.ts"
+                        | "index"
                         | "constants"
                         | "declarations"
                         | "types"
