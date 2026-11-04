@@ -32,3 +32,9 @@ Project configuration contract: environments, option shapes and list options.
 - why: #153 step 3 lists "owned directories" as a first trait and a test of a host preset owning `tests/`; the issue does not say what the trait carries or how a preset declares it, and no host preset exists. Decided: deferred; #153 adds only `published`.
 - want: a data-carrying trait or option (`ownedDirectories`) that environment `dirs` defaults skip, designed with the first host preset.
 - done: a host preset declaring a directory as owned keeps the environment default out of it.
+
+## 5. The generated `ConfigInput` expands reused sub-schemas repeatedly instead of sharing interfaces.
+
+- why: `pnpm support codegen config` writes one huge `src/project/config/types/ConfigInput.ts` repeating the same schemas. The config is already split into sub-schemas; interfaces per scoped schema would be composable. Cost: more complex generation.
+- want: one generated interface per reused sub-schema, composed by `ConfigInput`.
+- done: `ConfigInput` references the shared interfaces and no schema is expanded twice.
