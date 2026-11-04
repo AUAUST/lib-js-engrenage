@@ -1,3 +1,3 @@
-import type { presets } from "#project/presets/constants";
+import type { presetTraits } from "#project/presets/constants";
 
-export type Preset = (typeof presets)[number];
+export type Preset = keyof typeof presetTraits;

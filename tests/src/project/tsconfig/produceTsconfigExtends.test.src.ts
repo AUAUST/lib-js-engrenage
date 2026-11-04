@@ -30,7 +30,7 @@ function syncProject(
 
 describe("produceTsconfigExtends", () => {
   test("extends the library tsconfig of the library preset", () => {
-    const read = syncProject({ presets: ["library"] });
+    const read = syncProject({ preset: "library" });
 
     expect(read("tsconfig.json")).toBe(
       "@auaust/engrenage/tsconfig/library.json",

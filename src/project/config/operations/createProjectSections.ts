@@ -1,5 +1,6 @@
-import { flatMap, includes } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
 import { compose } from "@auaust/toolkit/composer";
+import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { memoized } from "@auaust/toolkit/memoized";
 import { freeze } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
@@ -18,6 +19,7 @@ import { defineSchema } from "#project/config/config/schemas/core/defineSchema";
 import {
   distTestsVariant,
   sourceTestsVariant,
+  unmanagedTsconfig,
 } from "#project/config/constants";
 import { isDebugEnvironment } from "#project/config/operations/isDebugEnvironment";
 import { locateFile } from "#project/config/utils/locateFile";
@@ -30,7 +32,9 @@ import { testsSchema } from "#project/environments/config/schemas/testsSchema";
 import { toolingSchema } from "#project/environments/config/schemas/toolingSchema";
 import { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
 import { createPackageJson } from "#project/package/operations/createPackageJson";
-import { presetsSchema } from "#project/presets/config/schemas/presetsSchema";
+import { presetSchema } from "#project/presets/config/schemas/presetSchema";
+import { traitsSchema } from "#project/presets/config/schemas/traitsSchema";
+import { resolveTraits } from "#project/presets/index";
 import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 import { noRoles } from "#project/structure/constants";
@@ -57,6 +61,7 @@ import type { StructureEnvironmentName } from "#project/structure/types/Structur
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { TestsContext } from "#project/structure/types/TestsContext";
 import type { ResolvedEnvironmentTsconfig } from "#project/tsconfig/types/ResolvedEnvironmentTsconfig";
+import type { ResolvedEnvironmentTsconfigOption } from "#project/tsconfig/types/ResolvedEnvironmentTsconfigOption";
 import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
 import type { TsconfigGroups } from "#project/tsconfig/types/TsconfigGroups";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
@@ -113,8 +118,16 @@ export function createProjectSections({
     return resolveSection(debugSchema, raw.debug, context, "debug");
   });
 
-  function presets() {
-    return resolveSection(presetsSchema, raw.presets, context, "presets");
+  function preset() {
+    return resolveSection(presetSchema, raw.preset, context, "preset");
+  }
+
+  function traitAdjustments() {
+    return resolveSection(traitsSchema, raw.traits, context, "traits");
+  }
+
+  function traits() {
+    return resolveTraits(get("preset"), get("traitAdjustments"));
   }
 
   function roles() {
@@ -262,11 +275,25 @@ export function createProjectSections({
     });
   }
 
+  // @debt explicitness is read from the raw input because a resolved option no longer tells a default from a given value; the tests.dist tsconfig default should depend on the published trait in its declaration
+  function testsDistTsconfig(): ResolvedEnvironmentTsconfigOption {
+    const { tests } = raw;
+
+    const configured =
+      isPlainObject(tests) &&
+      isPlainObject(tests.dist) &&
+      tests.dist.tsconfig !== undefined;
+
+    return configured || get("traits").published
+      ? testsOption().dist.tsconfig
+      : unmanagedTsconfig;
+  }
+
   const tsconfigGroups = once((): TsconfigGroups => {
     return {
       "src": sourceOption().tsconfig,
       "tests": testsOption().tsconfig,
-      "tests.dist": testsOption().dist.tsconfig,
+      "tests.dist": testsDistTsconfig(),
       "bin": binOption().tsconfig,
       "scripts": scriptsOption().tsconfig,
       "tooling": toolingOption().tsconfig,
@@ -527,8 +554,7 @@ export function createProjectSections({
         scripts: get("scripts").active,
         tooling: get("tooling").active,
       },
-      // @debt library-only behavior should read the published trait (#153) instead of the library preset
-      published: includes(get("presets"), "library"),
+      published: get("traits").published,
     });
   }
 
@@ -562,7 +588,7 @@ export function createProjectSections({
         tooling: get("tooling").dirs,
       },
       data: get("data").active ? get("data").dirs : [],
-      published: includes(get("presets"), "library"),
+      published: get("traits").published,
       outDir: readOutDir(),
       structure: get("structure").src,
     });
@@ -674,7 +700,9 @@ export function createProjectSections({
     packageJson,
     tsconfig,
     environment,
-    presets,
+    preset,
+    traitAdjustments,
+    traits,
     roles,
     runtime,
     define,

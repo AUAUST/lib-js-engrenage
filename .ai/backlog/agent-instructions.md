@@ -57,3 +57,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: AGENTS.md "Project and tools" and "Modules and exports" still describe `src/support/` and codegen in `src/`, and its Commands line should name `scripts/codegen/`; #147's table still lists `sync…` names and `scripts/support/codegen/…` paths.
 - done: the map and issue match `scripts/codegen/` and the `generate…` names.
+
+## Stale after #153 (partial)
+
+- why: backlog `configuration.md` entry 3 says host presets resolve to the traits "owned directories, published" (the former is open); plan #137 §Decisions "until #153 adds it, read the `library` preset with a `@debt` marker" is obsolete; `changesets.md` may still mention presets.
+- done: each matches the traits model.

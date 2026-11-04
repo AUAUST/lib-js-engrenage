@@ -1,4 +1,4 @@
-import { filter, includes } from "@auaust/primitive-kit/arrays";
+import { filter } from "@auaust/primitive-kit/arrays";
 import { isString } from "@auaust/toolkit/isString";
 import { entries } from "@auaust/toolkit/object";
 
@@ -43,7 +43,7 @@ function createBuildCommand(
 }
 
 function collectScripts({
-  getPresets,
+  getTraits,
   hasDependency,
 }: StepContext): readonly Script[] {
   const build = createBuildCommand(hasDependency);
@@ -54,8 +54,7 @@ function collectScripts({
 
   const test = hasDependency(vitest) && "engrenage vitest";
 
-  const publishes =
-    includes(getPresets(), "library") && hasDependency(changesetsCli);
+  const publishes = getTraits().published && hasDependency(changesetsCli);
 
   const scripts = {
     "build": build,

@@ -5,6 +5,6 @@ export default defineImportReplacement({
   source: primitiveKit,
   replacement: `the \`${primitiveKit}/<domain>\` subpath entries`,
   files: ["files.code.published", "files.scripts"],
-  presets: ["library"],
+  traits: ["published"],
   requires: [primitiveKit],
 });

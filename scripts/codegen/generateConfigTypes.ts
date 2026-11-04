@@ -11,7 +11,6 @@ import { mappedValues } from "@auaust/toolkit/mappedValues";
 import { keys } from "@auaust/toolkit/object";
 
 import { globsSchema } from "#project/config/config/schemas/values/globsSchema";
-import { presetListSchema } from "#project/config/config/schemas/values/presetListSchema";
 import { configSchema } from "#workflows/registry/config/schemas/configSchema";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { File } from "#types/File";
@@ -25,8 +24,6 @@ const imports = [
   'import type { GlobalsFactory } from "#project/config/types/GlobalsFactory";',
   'import type { ListOption } from "#project/config/types/ListOption";',
   'import type { ManagedListOption } from "#project/config/types/ManagedListOption";',
-  'import type { Preset } from "#project/presets/types/Preset";',
-  'import type { Presets } from "#project/presets/types/Presets";',
   'import type { Glob } from "#types/Glob";',
   'import type { Globs } from "#types/Globs";',
 ];
@@ -106,7 +103,6 @@ function optionsOf(schema: object): unknown {
 }
 
 const readonlyListTypes = new Map<unknown, string>([
-  [optionsOf(presetListSchema), "Preset | Presets"],
   [optionsOf(globsSchema), "Glob | Globs"],
 ]);
 

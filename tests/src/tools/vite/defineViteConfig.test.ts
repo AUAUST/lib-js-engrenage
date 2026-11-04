@@ -115,7 +115,10 @@ describe("defineViteConfig", () => {
         guardOutDir: false,
       })(env);
 
-      expect(layered).toEqual(vitestConfig);
+      expect({ ...layered, plugins: undefined }).toEqual({
+        ...vitestConfig,
+        plugins: undefined,
+      });
 
       expect(layered.test?.typecheck?.tsconfig).toBe(
         join(

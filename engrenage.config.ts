@@ -1,7 +1,7 @@
 import { defineConfig } from "#project/config/index";
 
 export default defineConfig({
-  presets: ["library"],
+  preset: "library",
   roles: {
     define: {
       config: { exports: "named-match", roles: ["schemas"] },

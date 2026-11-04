@@ -10,8 +10,7 @@ const message =
   "Tests that run against the built package import its public entries; import the public entry, or rename the file to `.test.src.ts` to test internals in source mode only.";
 
 export default defineConvention({
-  // @debt the check reads the `library` preset; it belongs to the `published` trait once that exists
-  presets: ["library"],
+  traits: ["published"],
   files: ["files.test.public"],
   rule: (config) => {
     const sourceDirs = config.src.dirs.map((dir) => {

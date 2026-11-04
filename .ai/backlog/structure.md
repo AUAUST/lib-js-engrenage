@@ -104,3 +104,9 @@ Project structure description, its report and the tooling generated from it.
 - why: #147 step 3 asked for per-domain input types and a composed type in `workflows/registry/types/`; `project` cannot import `workflows` and `defineConfig` types its argument with `ConfigInput`. Sections do not map one to one onto domains (`aliases`, `roles` → `project/structure`; `cache`, `debug`, `define` → `project/config`; seven environments → `project/environments`); the file is 2,102 lines.
 - want: per-domain `<Domain>Input` types composed without `project` importing `workflows`, and a `defineConfig` that does not need the tool input types.
 - done: the generated input type is split by owning domain.
+
+## 17. Trait vocabulary has no declared homes (#153)
+
+- why: `resolveTraits` sits in `project/presets/utils/` (pure) though "owns composition and derivation" could mean `operations/`; `traitAdjustments` is exposed on `ProjectConfig` only so init can recompute traits, and no role covers state a step context must re-derive; `WorkflowSet.trait` and `Convention.traits` are tool-side declarations depending on a `project/presets` type, with no stated home for trait requirements of tool artefacts; `testsDistTsconfig` reads the raw input because a resolved option cannot tell a default from a given value (`declareObject` needs to allow a `false` default).
+- want: state where trait requirements of tool artefacts live, and give declarations computed defaults.
+- done: no section reads raw input to tell defaults from given values.

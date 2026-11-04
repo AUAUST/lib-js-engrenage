@@ -1,5 +1,5 @@
 import { defineRestriction } from "#tools/eslint/utils/defineRestriction";
-import type { Presets } from "#project/presets/types/Presets";
+import type { Trait } from "#project/presets/types/Trait";
 import type { Convention } from "#tools/eslint/types/Convention";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
@@ -15,7 +15,7 @@ export function defineReplacement({
   files?: ScopeReferences;
   ignores?: ScopeReferences;
   enabled?: boolean;
-  presets?: Presets;
+  traits?: readonly Trait[];
   requires?: PackageNames;
 }): Convention {
   return defineRestriction({

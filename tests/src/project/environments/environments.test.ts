@@ -175,7 +175,7 @@ describe("environments", () => {
 describe("environment tsconfigs", () => {
   test("resolve owner and default path, following inherits", async () => {
     const project = createProject(
-      '{ scripts: { tsconfig: { inherits: "bin" } } }',
+      '{ preset: "library", scripts: { tsconfig: { inherits: "bin" } } }',
     );
 
     const config = await loadConfig(project.root);

@@ -71,7 +71,7 @@ export const testsSchema = declareObject(
           ],
           // @debt the tests.dist tsconfig default was written from reading the code and not verified by running it
           explain:
-            "`tsconfig.tests.dist.json` extending the tests tsconfig, not referenced by the base one",
+            "`tsconfig.tests.dist.json` extending the tests tsconfig, not referenced by the base one; none without the `published` trait",
         }),
       },
       {

@@ -23,7 +23,7 @@ function createLibrary(
 ) {
   return createTemporaryProject({
     ...(workflows ?? ciWorkflow),
-    "engrenage.config.ts": `export default { presets: ["library"], github: ${config} };\n`,
+    "engrenage.config.ts": `export default { preset: "library", github: ${config} };\n`,
     "package.json": JSON.stringify({
       type: "module",
       scripts,

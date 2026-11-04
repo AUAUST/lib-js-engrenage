@@ -2,7 +2,6 @@ import { realpathSync } from "node:fs";
 
 import { configDefaults, coverageConfigDefaults } from "vitest/config";
 
-import { includes } from "@auaust/primitive-kit/arrays";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { resolve } from "#foundation/filesystem/utils/resolve";
@@ -44,8 +43,7 @@ function createSourcePlugins(
 }
 
 function createDistPlugins(config: ProjectConfig): Plugin[] {
-  // @debt the guard reads the `library` preset; it belongs to the `published` trait once that exists
-  if (!includes(config.presets, "library")) {
+  if (!config.traits.published) {
     return [];
   }
 
@@ -62,8 +60,7 @@ function createTestsInclude(
   config: ProjectConfig,
   testsBuild: boolean,
 ): string[] | undefined {
-  // @debt the variants are selected by the `library` preset; they belong to the `published` trait once that exists
-  if (!includes(config.presets, "library")) {
+  if (!config.traits.published) {
     return;
   }
 

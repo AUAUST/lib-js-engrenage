@@ -40,7 +40,7 @@ export const typescriptSchema = declareObject(
             "`false` leaves the field to the file.",
           ],
           explain:
-            "the `library` tsconfig of `@auaust/engrenage` with the `library` preset, its `base` tsconfig otherwise",
+            "the `library` tsconfig of `@auaust/engrenage` with the `published` trait, its `base` tsconfig otherwise",
         }),
         compilerOptions: declare(record(string(), unknown()), {
           description:

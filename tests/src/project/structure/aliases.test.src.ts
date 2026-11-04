@@ -31,7 +31,7 @@ const source = "src: { node: 24 }";
 describe("aliases", () => {
   test("generates the root and src aliases of a library, without #data", async () => {
     const { read } = await sync(
-      `{ presets: ["library"], ${source}, data: { exports: {} } }`,
+      `{ preset: "library", ${source}, data: { exports: {} } }`,
       { "data/a.json": "{}" },
     );
 
@@ -49,7 +49,7 @@ describe("aliases", () => {
 
   test("gives a namespace holding domains its own alias only", async () => {
     const { read } = await sync(
-      `{ presets: ["library"], src: { node: 24, namespaces: { ".": {}, tools: {} } } }`,
+      `{ preset: "library", src: { node: 24, namespaces: { ".": {}, tools: {} } } }`,
       { "src/tools/git/index.ts": "", "src/tools/git/constants.ts": "" },
     );
 
@@ -62,7 +62,7 @@ describe("aliases", () => {
 
   test("fails on a src entry colliding with a root alias", async () => {
     await expect(
-      sync(`{ presets: ["library"], ${source} }`, { "src/tests/a.ts": "" }),
+      sync(`{ preset: "library", ${source} }`, { "src/tests/a.ts": "" }),
     ).rejects.toThrow(/#tests\/\*.*src entry src\/tests/);
   });
 

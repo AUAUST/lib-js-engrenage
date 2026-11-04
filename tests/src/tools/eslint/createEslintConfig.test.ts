@@ -7,8 +7,8 @@ import { describe, expect, expectTypeOf, test } from "vitest";
 import {
   loadConfig,
   type Environment,
-  type Presets,
   type ProjectConfig,
+  type ResolvedTraits,
 } from "@auaust/engrenage/config";
 import { packageJsonFile } from "@auaust/engrenage/constants";
 import {
@@ -60,10 +60,10 @@ export const values = [identity, map, string, z.string, zod.string];
 
 async function lintedPerformanceRules(
   {
-    presets,
+    traits,
     environment,
   }: {
-    presets: Presets;
+    traits: ResolvedTraits;
     environment?: Environment;
   },
   options?: Options,
@@ -76,7 +76,7 @@ async function lintedPerformanceRules(
     overrideConfig: createEslintConfig(
       {
         ...config,
-        presets,
+        traits,
         environment: environment ?? config.environment,
       },
       {
@@ -540,16 +540,16 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
     ).toEqual(["auaust/no-runtime-typeof", "auaust/no-typeof-undefined"]);
   });
 
-  test("enables the performance conventions with the library preset", async () => {
+  test("enables the performance conventions with the published trait", async () => {
     expect(
       await lintedPerformanceRules({
-        presets: [],
+        traits: { published: false },
       }),
     ).toEqual([]);
 
     expect(
       await lintedPerformanceRules({
-        presets: ["library"],
+        traits: { published: true },
       }),
     ).toEqual([
       "auaust/no-zod-classic",
@@ -559,11 +559,11 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
     ]);
   });
 
-  test("lets options override the conventions of presets", async () => {
+  test("lets options override the conventions of traits", async () => {
     expect(
       await lintedPerformanceRules(
         {
-          presets: ["library"],
+          traits: { published: true },
         },
         {
           performance: false,
@@ -574,7 +574,7 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
     expect(
       await lintedPerformanceRules(
         {
-          presets: [],
+          traits: { published: false },
         },
         {
           performance: {
@@ -594,7 +594,7 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
 
     expect(
       await lintedPerformanceRules({
-        presets: ["library"],
+        traits: { published: true },
         environment: zodOnly,
       }),
     ).toEqual([
@@ -606,7 +606,7 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
     expect(
       await lintedPerformanceRules(
         {
-          presets: ["library"],
+          traits: { published: true },
           environment: zodOnly,
         },
         {

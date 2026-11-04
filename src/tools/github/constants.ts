@@ -9,6 +9,7 @@ export const workflowsDirectory = ".github/workflows" satisfies Directory;
 export const workflowTemplates = `${engrenage}/github/workflows`;
 
 export const libraryWorkflows = freeze({
+  trait: "published",
   files: freeze(["ci.yml", "publish.yml"] as const),
   requires: freeze([changesetsCli] as const),
   scripts: freeze(["ci:check", "ci:test", "ci:build", "ci:publish"] as const),

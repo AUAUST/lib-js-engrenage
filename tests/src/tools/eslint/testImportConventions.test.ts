@@ -13,7 +13,7 @@ const sourceRule = "auaust/no-package-imports-in-source-tests";
 async function lintTestFile(
   filePath: string,
   source: string,
-  config = "{ presets: ['library'] }",
+  config = "{ preset: 'library' }",
 ) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({

@@ -1,5 +1,3 @@
-import { includes } from "@auaust/primitive-kit/arrays";
-
 import { engrenage } from "#constants";
 import { resolveListOption } from "#project/config/operations/resolveListOption";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
@@ -12,7 +10,7 @@ function listDefaultExtends(
   { key, file }: TsconfigTarget,
 ): readonly string[] {
   if (key === "base") {
-    return includes(config.presets, "library")
+    return config.traits.published
       ? [`${engrenage}/tsconfig/library.json`]
       : [`${engrenage}/tsconfig/base.json`];
   }

@@ -18,12 +18,12 @@ interface MissingWorkflow {
 function findMissingWorkflows({
   get,
   filesystem,
-  getPresets,
+  getTraits,
   hasDependency,
 }: StepContext<Sections>): readonly MissingWorkflow[] {
   const name = resolveWorkflowSet({
     workflows: get("github").workflows,
-    presets: getPresets(),
+    traits: getTraits(),
     hasDependency,
   });
 

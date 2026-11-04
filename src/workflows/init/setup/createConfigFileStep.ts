@@ -1,18 +1,19 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { keys } from "@auaust/toolkit/object";
 
 import { engrenage, engrenageConfigFile } from "#constants";
 import { findCurrentMonth } from "#project/baseline/operations/findCurrentMonth";
-import { presets } from "#project/presets/constants";
+import { presetTraits } from "#project/presets/constants";
 import { createConfigModule } from "#project/steps/utils/createConfigModule";
-import type { Presets } from "#project/presets/types/Presets";
+import type { Preset } from "#project/presets/types/Preset";
 import type { Step } from "#project/steps/types/Step";
 import type { File } from "#types/File";
 
 function renderOptions(
-  chosen: Presets,
+  chosen: Preset | undefined,
   agents: readonly string[] | undefined,
 ): string {
-  const list = map(chosen, (preset) => JSON.stringify(preset)).join(", ");
+  const preset =
+    chosen === undefined ? "" : `  preset: ${JSON.stringify(chosen)},\n`;
 
   const preferred =
     agents === undefined ? "" : `preferred: ${JSON.stringify(agents)}, `;
@@ -21,7 +22,7 @@ function renderOptions(
 
   const roles = `  roles: { define: { operations: { exports: "named-match" } } },\n`;
 
-  return `{\n  presets: [${list}],\n${baseline}${roles}  agents: { ${preferred}attribution: false },\n}`;
+  return `{\n${preset}${baseline}${roles}  agents: { ${preferred}attribution: false },\n}`;
 }
 
 export function createConfigFileStep(): Step<{ configFile: File | undefined }> {
@@ -33,17 +34,18 @@ export function createConfigFileStep(): Step<{ configFile: File | undefined }> {
       return get("configFile") === undefined && !filesystem.exists(file);
     },
     async plan(context) {
-      const [initial = presets[0]] = context.getPresets();
+      const presets = keys(presetTraits);
+      const [fallback] = presets;
 
       const projectType = await context.select(
         "What kind of project is this?",
         [...presets, "other"],
-        initial,
+        context.getPreset() ?? fallback,
       );
 
-      const chosen = presets.filter((preset) => preset === projectType);
+      const chosen = presets.find((preset) => preset === projectType);
 
-      context.setPresets(chosen);
+      context.setPreset(chosen);
 
       context.filesystem.write(
         file,

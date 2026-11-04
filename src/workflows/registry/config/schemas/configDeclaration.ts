@@ -10,7 +10,8 @@ import { scriptsSchema } from "#project/environments/config/schemas/scriptsSchem
 import { sourceSchema } from "#project/environments/config/schemas/sourceSchema";
 import { testsSchema } from "#project/environments/config/schemas/testsSchema";
 import { toolingSchema } from "#project/environments/config/schemas/toolingSchema";
-import { presetsSchema } from "#project/presets/config/schemas/presetsSchema";
+import { presetSchema } from "#project/presets/config/schemas/presetSchema";
+import { traitsSchema } from "#project/presets/config/schemas/traitsSchema";
 import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 import { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
@@ -27,8 +28,9 @@ export const configDeclaration = declareObject({
   cache: cacheSchema,
   debug: debugSchema,
   define: defineSchema,
-  presets: presetsSchema,
+  preset: presetSchema,
   roles: rolesSchema,
+  traits: traitsSchema,
 
   // Tooling
   agents: agentsSchema,

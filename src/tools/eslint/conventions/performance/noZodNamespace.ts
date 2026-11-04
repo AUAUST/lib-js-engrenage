@@ -6,6 +6,6 @@ export default defineImportReplacement({
   imports: ["default", "z"],
   replacement: "named imports",
   files: ["files.code.published", "files.scripts"],
-  presets: ["library"],
+  traits: ["published"],
   requires: [zod],
 });

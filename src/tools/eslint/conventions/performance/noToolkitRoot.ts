@@ -5,6 +5,6 @@ export default defineImportReplacement({
   source: toolkit,
   replacement: `the \`${toolkit}/<helper>\` subpath entries`,
   files: ["files.code.published", "files.scripts"],
-  presets: ["library"],
+  traits: ["published"],
   requires: [toolkit],
 });

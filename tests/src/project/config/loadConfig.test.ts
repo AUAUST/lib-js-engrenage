@@ -42,15 +42,15 @@ describe("loadConfig", () => {
       `No tsconfig found in ${first}`,
     );
 
-    expect(config.presets).toEqual([]);
+    expect(config.preset).toBeUndefined();
+    expect(config.traits).toEqual({ published: false });
     expect(config.environment.hasDependency("valibot")).toBe(false);
   });
 
   test("finds the config in .config/ and in parent directories, up to the nearest package file", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "name": "outer", "type": "module" }',
-      ".config/engrenage.config.ts":
-        'export default { presets: ["library"] };\n',
+      ".config/engrenage.config.ts": 'export default { preset: "library" };\n',
       "src/nested/.gitkeep": "",
       "packages/inner/package.json": '{ "name": "inner", "type": "module" }',
       "packages/inner/src/.gitkeep": "",
@@ -59,7 +59,8 @@ describe("loadConfig", () => {
     const config = await loadConfig(project.resolve("src/nested"));
 
     expect(config.root).toBe(project.root);
-    expect(config.presets).toEqual(["library"]);
+    expect(config.preset).toBe("library");
+    expect(config.traits).toEqual({ published: true });
 
     const inner = await loadConfig(project.resolve("packages/inner/src"));
 
@@ -73,7 +74,7 @@ describe("loadConfig", () => {
     const config = await loadConfig(root);
 
     expect(config.raw).toEqual({
-      presets: ["library"],
+      preset: "library",
       tests: {
         dirs: "test",
       },
@@ -82,7 +83,8 @@ describe("loadConfig", () => {
       },
     });
 
-    expect(config.presets).toEqual(["library"]);
+    expect(config.preset).toBe("library");
+    expect(config.traits).toEqual({ published: true });
     expect(config.tests.dirs).toEqual(["test"]);
     expect(config.files.fixtures).toEqual(["test/**/fixtures/**"]);
     expect(config.files.generated).toEqual(["src/generated/**"]);
@@ -167,7 +169,7 @@ describe("loadConfig", () => {
     expect(config.tests.dist.tsconfig.path).toBeUndefined();
 
     const implicit = createTemporaryProject({
-      "engrenage.config.ts": "export default {};\n",
+      "engrenage.config.ts": 'export default { preset: "library" };\n',
       "tsconfig.tests.dist.json": "{}",
     }).root;
 
@@ -220,5 +222,40 @@ describe("loadConfig", () => {
     expect((await loadConfig(moved.root)).cacheFor("@scope/tool")).toBe(
       moved.resolve(".cache/@scope/tool"),
     );
+  });
+});
+
+describe("traits", () => {
+  async function resolve(options: string) {
+    const project = createTemporaryProject({
+      "package.json": '{ "type": "module" }',
+      "engrenage.config.ts": `export default { ${options} };\n`,
+      "tests/index.test.ts": "",
+    });
+
+    return loadConfig(project.root);
+  }
+
+  test("resolves the library preset to the published trait, which brings the dist mode", async () => {
+    const library = await resolve('preset: "library"');
+    const app = await resolve("");
+
+    expect(library.traits).toEqual({ published: true });
+    expect(library.tests.dist.tsconfig.owner).toBe("tests.dist");
+
+    expect(app.traits).toEqual({ published: false });
+    expect(app.tests.dist.tsconfig.owner).toBeUndefined();
+  });
+
+  test("lets traits adjust the preset, enabling winning over disabling", async () => {
+    const disabled = await resolve(
+      'preset: "library", traits: { disable: ["published"] }',
+    );
+
+    const enabled = await resolve('traits: { enable: ["published"] }');
+
+    expect(disabled.traits).toEqual({ published: false });
+    expect(disabled.tests.dist.tsconfig.owner).toBeUndefined();
+    expect(enabled.traits).toEqual({ published: true });
   });
 });

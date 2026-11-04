@@ -444,7 +444,7 @@ describe("engrenage init", () => {
       ]);
 
       expect(project.read("engrenage.config.ts")).toContain(
-        'presets: ["library"]',
+        'preset: "library"',
       );
 
       expect(project.read("engrenage.config.ts")).toContain(

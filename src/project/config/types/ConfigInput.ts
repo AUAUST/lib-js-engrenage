@@ -3,8 +3,6 @@
 import type { GlobalsFactory } from "#project/config/types/GlobalsFactory";
 import type { ListOption } from "#project/config/types/ListOption";
 import type { ManagedListOption } from "#project/config/types/ManagedListOption";
-import type { Preset } from "#project/presets/types/Preset";
-import type { Presets } from "#project/presets/types/Presets";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
@@ -97,11 +95,12 @@ export interface ConfigInput {
       }
     | undefined;
   /**
-   * Kinds of project the configuration builds on.
-   * `library` extends the library tsconfig, syncs the published `package.json` fields (`files`, `bin`, `engines.node`) and selects the library GitHub workflows.
-   * @default none
+   * Kind of project the configuration builds on, bundling traits.
+   * `library` bundles `published`: it extends the library tsconfig, syncs the published `package.json` fields (`files`, `bin`, `engines.node`), tests the built package and selects the library GitHub workflows.
+   * Options and `traits` override it.
+   * @default no preset: no trait is bundled
    */
-  presets?: Preset | Presets | undefined;
+  preset?: "library" | undefined;
   /**
    * The roles of the project, refined by each environment. `false` turns the role system off: no role is recognized and no role check or rule is produced.
    */
@@ -235,6 +234,23 @@ export interface ConfigInput {
           }
       )
     | undefined;
+  /**
+   * Traits of the project, adjusting those of the preset.
+   */
+  traits?:
+    | {
+        /**
+         * Traits to turn on, whatever the preset bundles. `published`: the project is distributed (a library) and tested as built.
+         * @default none
+         */
+        enable?: "published"[] | undefined;
+        /**
+         * Traits the preset bundles to turn off; `enable` wins over it.
+         * @default none
+         */
+        disable?: "published"[] | undefined;
+      }
+    | undefined;
   agents?:
     | {
         /**
@@ -329,7 +345,7 @@ export interface ConfigInput {
         /**
          * Workflow set that sync keeps in `.github/workflows`; `false` disables it.
          * A set only updates workflow files that already exist and needs its `package.json` scripts.
-         * @default the set named like a preset in `presets` (`library`) when its required packages (`@changesets/cli`) are dependencies
+         * @default the set whose trait is active (`library`: `published`) when its required packages (`@changesets/cli`) are dependencies
          */
         workflows?: (false | "library") | undefined;
       }
@@ -358,7 +374,7 @@ export interface ConfigInput {
               /**
                * Value of `extends` in the base tsconfig.
                * `false` leaves the field to the file.
-               * @default the `library` tsconfig of `@auaust/engrenage` with the `library` preset, its `base` tsconfig otherwise
+               * @default the `library` tsconfig of `@auaust/engrenage` with the `published` trait, its `base` tsconfig otherwise
                */
               extends?: ManagedListOption<string> | undefined;
               /**
@@ -1712,7 +1728,7 @@ export interface ConfigInput {
                   /**
                    * Options of the tsconfig that checks the tests against the built output (`engrenage typecheck:dist`).
                    * `false` manages none.
-                   * @default `tsconfig.tests.dist.json` extending the tests tsconfig, not referenced by the base one
+                   * @default `tsconfig.tests.dist.json` extending the tests tsconfig, not referenced by the base one; none without the `published` trait
                    */
                   tsconfig?:
                     | (

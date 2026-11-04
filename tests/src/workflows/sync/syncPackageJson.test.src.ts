@@ -30,7 +30,7 @@ async function sync(
 }
 
 const library = `{
-  presets: ["library"],
+  preset: "library",
   runtime: { node: 24 },
   src: { node: 24 },
   bin: { node: 26 },

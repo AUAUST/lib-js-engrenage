@@ -6,7 +6,7 @@ import { createVitestConfig } from "@auaust/engrenage/vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
-function createLibrary(config = "{ presets: ['library'] }") {
+function createLibrary(config = "{ preset: 'library' }") {
   return createTemporaryProject({
     "package.json": JSON.stringify({
       name: "library",
@@ -84,7 +84,7 @@ describe("test variants", () => {
 
   test("derives the patterns from custom location, suffix and extension parts", async () => {
     const project = createLibrary(
-      "{ presets: ['library'], tests: { location: 'tests/**/*', suffix: '.spec', extension: '.ts' } }",
+      "{ preset: 'library', tests: { location: 'tests/**/*', suffix: '.spec', extension: '.ts' } }",
     );
 
     const config = await loadConfig(project.root);

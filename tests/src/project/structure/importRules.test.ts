@@ -17,10 +17,10 @@ const files = {
   "tests/a.test.ts": "",
 };
 
-async function resolveRules(presets: string) {
+async function resolveRules(preset: string) {
   const project = createTemporaryProject({
     ...files,
-    "engrenage.config.ts": `export default { presets: ${presets}, src: { namespaces: { ".": { layers: ["foundation", "project", "tools"] } } } };\n`,
+    "engrenage.config.ts": `export default { ${preset}src: { namespaces: { ".": { layers: ["foundation", "project", "tools"] } } } };\n`,
   });
 
   return (await loadConfig(project.root)).importRules;
@@ -48,7 +48,7 @@ function reached(rules: Rules, path: string, typeOnly = false) {
 
 describe("import rules", () => {
   test("orders domains by layer and applies the role exceptions", async () => {
-    const rules = await resolveRules('["library"]');
+    const rules = await resolveRules('preset: "library", ');
 
     const base = reached(rules, "src/foundation/base");
 
@@ -76,8 +76,8 @@ describe("import rules", () => {
   });
 
   test("restricts test files by variant in a library and not in an app", async () => {
-    const library = await resolveRules('["library"]');
-    const app = await resolveRules("[]");
+    const library = await resolveRules('preset: "library", ');
+    const app = await resolveRules("");
 
     function forbidden(rules: Rules) {
       return rules

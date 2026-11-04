@@ -2,7 +2,7 @@ import type { Config } from "@auaust/engrenage/config";
 
 export default async function config(): Promise<Config> {
   return {
-    presets: ["library"],
+    preset: "library",
     tests: {
       dirs: "test",
     },

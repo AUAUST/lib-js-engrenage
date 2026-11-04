@@ -1,17 +1,17 @@
-import { every, find, includes } from "@auaust/primitive-kit/arrays";
+import { every, find } from "@auaust/primitive-kit/arrays";
 
 import { workflowSetNames, workflowSets } from "#tools/github/constants";
-import type { Presets } from "#project/presets/types/Presets";
+import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
 import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 import type { PackageName } from "#types/PackageName";
 
 export function resolveWorkflowSet({
   workflows,
-  presets,
+  traits,
   hasDependency,
 }: {
   workflows: WorkflowSetName | false | undefined;
-  presets: Presets;
+  traits: ResolvedTraits;
   hasDependency(name: PackageName): boolean;
 }): WorkflowSetName | undefined {
   if (workflows !== undefined) {
@@ -20,7 +20,7 @@ export function resolveWorkflowSet({
 
   return find(workflowSetNames, (name) => {
     return (
-      includes(presets, name) &&
+      traits[workflowSets[name].trait] &&
       every(workflowSets[name].requires, hasDependency)
     );
   });

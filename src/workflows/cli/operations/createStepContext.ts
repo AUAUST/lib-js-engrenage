@@ -6,9 +6,11 @@ import { engrenage, packageJsonFile } from "#constants";
 import { readJsonValue } from "#foundation/json/utils/readJsonValue";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
+import { resolveTraits } from "#project/presets/index";
 import { agentNames } from "#tools/agents/constants";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
-import type { Presets } from "#project/presets/types/Presets";
+import type { Preset } from "#project/presets/types/Preset";
+import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { Prompter } from "#project/steps/types/Prompter";
 import type { StepContext } from "#project/steps/types/StepContext";
@@ -143,27 +145,32 @@ export function createStepContext({
     ];
   }
 
-  let presets: Presets = config.presets;
+  let preset: Preset | undefined = config.preset;
 
   let agents: readonly Agent[] | undefined = config.agents.preferred;
 
   const overrides: {
     [Section in keyof Config]?: () => Config[Section];
   } = {
-    presets: () => {
-      return presets;
+    preset: () => {
+      return preset;
     },
+    traits: getTraits,
     agents: () => {
       return { ...config.agents, preferred: agents };
     },
   };
 
-  function getPresets(): Presets {
-    return presets;
+  function getPreset(): Preset | undefined {
+    return preset;
   }
 
-  function setPresets(chosen: Presets) {
-    presets = chosen;
+  function getTraits(): ResolvedTraits {
+    return resolveTraits(preset, config.traitAdjustments);
+  }
+
+  function setPreset(chosen: Preset | undefined) {
+    preset = chosen;
   }
 
   function getAgents(): readonly string[] | undefined {
@@ -181,8 +188,9 @@ export function createStepContext({
     getAgents,
     setAgents,
     filesystem,
-    getPresets,
-    setPresets,
+    getPreset,
+    getTraits,
+    setPreset,
     confirm: prompter.confirm,
     select: prompter.select,
     multiselect: prompter.multiselect,

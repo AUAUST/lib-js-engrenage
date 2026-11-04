@@ -5,8 +5,7 @@ const message =
   "Source-only tests import internals through `#…` aliases; never the package name, or rename the file to `.test.ts` to test the built package.";
 
 export default defineConvention({
-  // @debt the check reads the `library` preset; it belongs to the `published` trait once that exists
-  presets: ["library"],
+  traits: ["published"],
   files: ["files.test.src"],
   rule: (config) => {
     const packageName = config.packageJson.optional.name;

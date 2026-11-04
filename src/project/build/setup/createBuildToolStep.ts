@@ -1,5 +1,3 @@
-import { includes } from "@auaust/primitive-kit/arrays";
-
 import { tsdown, vite } from "#constants";
 import { hasConfigFile } from "#project/steps/utils/hasConfigFile";
 import type { Step } from "#project/steps/types/Step";
@@ -16,11 +14,11 @@ export function createBuildToolStep(): Step<{ configFile: File | undefined }> {
         })
       );
     },
-    async plan({ select, getPresets, addDevDependency }) {
+    async plan({ select, getTraits, addDevDependency }) {
       const buildTool = await select(
         "Which build tool?",
         [tsdown, vite, "none"],
-        includes(getPresets(), "library") ? tsdown : "none",
+        getTraits().published ? tsdown : "none",
       );
 
       if (buildTool !== "none") {

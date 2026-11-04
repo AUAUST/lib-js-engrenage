@@ -1,4 +1,4 @@
-import { every, intersection, isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { every, find } from "@auaust/primitive-kit/arrays";
 import { isBoolean } from "@auaust/toolkit/isBoolean";
 import { entries } from "@auaust/toolkit/object";
 import { value } from "@auaust/toolkit/value";
@@ -13,8 +13,8 @@ import type { Convention } from "#tools/eslint/types/Convention";
 import type { Rules } from "#tools/eslint/types/Rules";
 
 function isEnabledByDefault(
-  { enabled, presets, requires }: Convention,
-  { presets: activePresets, environment }: ProjectConfig,
+  { enabled, traits, requires }: Convention,
+  { traits: activeTraits, environment }: ProjectConfig,
 ): boolean {
   if (!enabled) {
     return false;
@@ -26,11 +26,11 @@ function isEnabledByDefault(
     return false;
   }
 
-  if (presets.length === 0) {
+  if (traits.length === 0) {
     return true;
   }
 
-  return isNotEmpty(intersection(presets, activePresets));
+  return find(traits, (trait) => activeTraits[trait]) !== undefined;
 }
 
 function isEnabled({

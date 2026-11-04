@@ -1,7 +1,7 @@
 import { join } from "@auaust/primitive-kit/arrays";
 
 import { defineReplacement } from "#tools/eslint/utils/defineReplacement";
-import type { Presets } from "#project/presets/types/Presets";
+import type { Trait } from "#project/presets/types/Trait";
 import type { Convention } from "#tools/eslint/types/Convention";
 import type { PackageNames } from "#types/PackageNames";
 
@@ -51,7 +51,7 @@ export function defineGlobalReplacement({
   properties?: readonly string[];
   replacement: string;
   enabled?: boolean;
-  presets?: Presets;
+  traits?: readonly Trait[];
   requires?: PackageNames;
 }): Convention {
   return defineReplacement({

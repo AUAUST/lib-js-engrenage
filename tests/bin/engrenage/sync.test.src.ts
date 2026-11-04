@@ -107,7 +107,7 @@ describe("engrenage sync", () => {
   test("writes the output directory of a tsconfig created in the same pass", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
-        'export default { presets: ["library"], src: { baseline: "2026-10" }, agents: { preferred: [] } };\n',
+        'export default { preset: "library", src: { baseline: "2026-10" }, agents: { preferred: [] } };\n',
       "package.json": '{ "type": "module" }',
       ".gitignore": "# @ignore project\n# @end\n",
       ".prettierignore": "# @ignore project\n# @end\n",

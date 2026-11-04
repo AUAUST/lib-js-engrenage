@@ -98,13 +98,13 @@ describe("createVitestConfig", () => {
     );
 
     expect(vitestConfig.resolve?.tsconfigPaths).toBe(false);
-    expect(vitestConfig.plugins).toEqual([]);
+    expect(vitestConfig.plugins).toHaveLength(1);
   });
 
   test("fails in build mode when the dist tsconfig is missing", async () => {
     const config = await loadConfig(
       createTemporaryProject({
-        "engrenage.config.ts": "export default {};\n",
+        "engrenage.config.ts": 'export default { preset: "library" };\n',
         "tests/index.test.ts": "",
       }).root,
     );

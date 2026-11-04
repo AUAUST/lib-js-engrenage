@@ -1,4 +1,4 @@
-import { deduplicate, includes } from "@auaust/primitive-kit/arrays";
+import { deduplicate } from "@auaust/primitive-kit/arrays";
 import { max } from "@auaust/toolkit/math";
 import { entries } from "@auaust/toolkit/object";
 
@@ -75,7 +75,7 @@ function createFields(config: ProjectConfig): Field[] {
     },
   };
 
-  return includes(config.presets, "library")
+  return config.traits.published
     ? [
         runtime,
         ...createEnginesFields(config),

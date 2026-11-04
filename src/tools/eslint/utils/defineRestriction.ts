@@ -1,7 +1,7 @@
 import type { Rule } from "eslint";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
-import type { Presets } from "#project/presets/types/Presets";
+import type { Trait } from "#project/presets/types/Trait";
 import type { Convention } from "#tools/eslint/types/Convention";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
@@ -16,7 +16,7 @@ export function defineRestriction({
   files?: ScopeReferences;
   ignores?: ScopeReferences;
   enabled?: boolean;
-  presets?: Presets;
+  traits?: readonly Trait[];
   requires?: PackageNames;
 }): Convention {
   return defineConvention({

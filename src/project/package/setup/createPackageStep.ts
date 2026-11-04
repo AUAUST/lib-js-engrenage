@@ -1,6 +1,5 @@
 import { basename } from "node:path";
 
-import { includes } from "@auaust/primitive-kit/arrays";
 import { startsWith } from "@auaust/primitive-kit/strings";
 import { isString } from "@auaust/toolkit/isString";
 
@@ -65,7 +64,7 @@ export function createPackageStep(): Step<Sections> {
         const visibility = await context.select(
           "Who can install the package?",
           visibilities,
-          includes(context.getPresets(), "library") ? "public" : "private",
+          context.getTraits().published ? "public" : "private",
         );
 
         if (visibility === "private") {

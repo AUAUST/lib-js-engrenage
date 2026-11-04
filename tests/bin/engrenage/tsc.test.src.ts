@@ -138,6 +138,7 @@ describe("engrenage typecheck:dist", { timeout: binaryTimeout }, () => {
     const output = await captureBinaryOutput();
 
     createSolution("export const text: string = 1;\n", {
+      "engrenage.config.ts": 'export default { preset: "library" };\n',
       "tsconfig.tests.dist.json": JSON.stringify({
         extends: "./tsconfig.tests.json",
       }),

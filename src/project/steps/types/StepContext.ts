@@ -3,7 +3,8 @@ import type { JSONPath } from "jsonc-parser";
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { OptionContext } from "#foundation/options/types/OptionContext";
-import type { Presets } from "#project/presets/types/Presets";
+import type { Preset } from "#project/presets/types/Preset";
+import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { Prompter } from "#project/steps/types/Prompter";
 import type { PackageName } from "#types/PackageName";
@@ -16,8 +17,9 @@ export interface StepContext<Sections = object> extends Pick<
   readonly filesystem: Filesystem;
   getAgents(): readonly string[] | undefined;
   setAgents(chosen: readonly string[]): void;
-  getPresets(): Presets;
-  setPresets(chosen: Presets): void;
+  getPreset(): Preset | undefined;
+  getTraits(): ResolvedTraits;
+  setPreset(chosen: Preset | undefined): void;
   readPackageJson(location: JSONPath): unknown;
   writePackageJson(
     location: readonly [string] | readonly [string, string],

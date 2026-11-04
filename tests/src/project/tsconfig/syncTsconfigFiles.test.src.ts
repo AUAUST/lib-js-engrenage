@@ -171,7 +171,9 @@ describe("syncTsconfigFiles", () => {
 
   test("writes in the tests.dist tsconfig only the fields that differ from the tests tsconfig", () => {
     const { project, config } = createProject(
-      {},
+      {
+        preset: "library",
+      },
       {
         "tests/index.test.ts": "",
         "tsconfig.json": "{}",

@@ -30,7 +30,7 @@ export function syncWorkflowFiles(
 ) {
   const name = resolveWorkflowSet({
     workflows: config.github.workflows,
-    presets: config.presets,
+    traits: config.traits,
     hasDependency: config.environment.hasDependency,
   });
 

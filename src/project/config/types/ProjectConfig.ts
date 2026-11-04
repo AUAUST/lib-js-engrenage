@@ -14,7 +14,9 @@ import type { ResolvedSource } from "#project/environments/types/ResolvedSource"
 import type { ResolvedTests } from "#project/environments/types/ResolvedTests";
 import type { ResolvedTooling } from "#project/environments/types/ResolvedTooling";
 import type { PackageJson } from "#project/package/types/PackageJson";
-import type { Presets } from "#project/presets/types/Presets";
+import type { Preset } from "#project/presets/types/Preset";
+import type { ResolvedTraitAdjustments } from "#project/presets/types/ResolvedTraitAdjustments";
+import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
 import type { ImportRule } from "#project/structure/types/ImportRule";
 import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
@@ -36,7 +38,9 @@ export interface ProjectConfig {
   readonly packageJson: PackageJson;
   readonly tsconfig: Tsconfig;
   readonly environment: Environment;
-  readonly presets: Presets;
+  readonly preset: Preset | undefined;
+  readonly traitAdjustments: ResolvedTraitAdjustments;
+  readonly traits: ResolvedTraits;
   readonly roles: ProjectRoles;
   readonly runtime: ResolvedRuntimeSettings;
   readonly define: ResolvedDefine;

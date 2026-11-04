@@ -1,5 +1,3 @@
-import { includes } from "@auaust/primitive-kit/arrays";
-
 import type { ResolvedSource } from "#project/environments/types/ResolvedSource";
 import type { Step } from "#project/steps/types/Step";
 
@@ -7,9 +5,9 @@ export function createSourceEntryStep(): Step<{ src: ResolvedSource }> {
   return {
     name: "source entry",
     message: "Create the source entry of the library?",
-    isMissing({ get, getPresets }) {
+    isMissing({ get, getTraits }) {
       return (
-        includes(getPresets(), "library") &&
+        getTraits().published &&
         get("src").dirs.length > 0 &&
         !get("src").active
       );
