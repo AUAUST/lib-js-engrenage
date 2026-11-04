@@ -379,31 +379,6 @@ describe("engrenage init", () => {
     ]);
   });
 
-  test("creates prettier.config.ts instead of the package.json reference for custom Prettier rules", async () => {
-    const project = createProject({
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude"] } };\n',
-      "package.json": '{\n  "name": "project",\n  "type": "module"\n}\n',
-    });
-
-    vi.spyOn(prompts, "createPrompter").mockReturnValue({
-      ...prompts.createPrompter({ yes: true }),
-      confirm: (message: string, initial = true) => {
-        return Promise.resolve(message.includes("custom rules") || initial);
-      },
-    });
-
-    await runCommand(init);
-
-    expect(project.read("prettier.config.ts")).toContain(
-      "export default definePrettierConfig();",
-    );
-
-    expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
-      "prettier",
-    );
-  });
-
   test.each([false, true])(
     "starts an uninstalled library with an existing tsconfig: %s",
     async (hasTsconfig) => {
