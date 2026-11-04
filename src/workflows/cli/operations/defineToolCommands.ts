@@ -3,9 +3,9 @@ import { spawn } from "node:child_process";
 import { wrap } from "@auaust/primitive-kit/arrays";
 import { transformValues } from "@auaust/toolkit/transformValues";
 
+import { resolveBinary } from "#foundation/processes/operations/resolveBinary";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { successMessage } from "#workflows/cli/constants";
-import { resolveBinary } from "#workflows/cli/operations/resolveBinary";
 import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
@@ -88,7 +88,7 @@ export function defineToolCommands<Name extends string>({
 
           const transformed = tool.arguments?.(config, args) ?? args;
 
-          const binaryPath = resolveBinary(config, packageName, binary);
+          const binaryPath = resolveBinary(config.root, packageName, binary);
 
           if (tool.message !== undefined) {
             console.info(tool.message);

@@ -29,7 +29,7 @@ import { createVscodeSettingsStep } from "#tools/vscode/setup/createVscodeSettin
 import { createConfigFileStep } from "#workflows/init/setup/createConfigFileStep";
 import { createDependencyStep } from "#workflows/init/setup/createDependencyStep";
 import { createScriptsStep } from "#workflows/init/setup/createScriptsStep";
-import type { Step } from "#workflows/cli/types/Step";
+import type { Step } from "#project/steps/types/Step";
 
 export function listInitSteps(): Step[] {
   return [

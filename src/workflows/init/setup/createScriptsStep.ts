@@ -12,8 +12,8 @@ import {
   vitest,
   vitestCoverageIstanbul,
 } from "#constants";
-import type { Step } from "#workflows/cli/types/Step";
-import type { StepContext } from "#workflows/cli/types/StepContext";
+import type { Step } from "#project/steps/types/Step";
+import type { StepContext } from "#project/steps/types/StepContext";
 
 type Command = string | false;
 

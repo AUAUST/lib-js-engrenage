@@ -16,8 +16,7 @@ import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
-// @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import type { Step } from "#workflows/cli/types/Step";
+import type { Step } from "#project/steps/types/Step";
 
 const sectionReference = `${engrenage}/agents/sections/backlog.md`;
 const skills = ["scratchpad", "backlog-handling", "debt-harvesting"];

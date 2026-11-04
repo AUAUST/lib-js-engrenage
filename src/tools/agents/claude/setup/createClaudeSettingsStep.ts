@@ -1,7 +1,6 @@
 import { claudeFile, claudeSettingsFile } from "#tools/agents/claude/constants";
 import { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSettings";
-// @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import type { Step } from "#workflows/cli/types/Step";
+import type { Step } from "#project/steps/types/Step";
 
 export function createClaudeSettingsStep(): Step {
   return {

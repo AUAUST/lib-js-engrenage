@@ -16,3 +16,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: AGENTS.md says to run `pnpm build:tsdown`, a script `package.json` lacks (`pnpm build` runs `engrenage tsdown`); its project map still describes the pre-namespace `src/` layout (rewrite: #152).
 - done: the build command and project map match the repository.
+
+## Stale after #143
+
+- why: `.ai/debt.md` cites `src/workflows/cli/operations/resolveBinary.ts` (now `src/foundation/processes/operations/resolveBinary.ts`) and `createStepContext.ts` line numbers (7, 12, 20, 23, 117); AGENTS.md and the project map omit `project/steps`; plan §Config pipeline describes `StepContext` with `get`, true only after the operations question is settled.
+- done: paths, maps and plan match the code.

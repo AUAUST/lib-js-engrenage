@@ -9,11 +9,12 @@ import { writePackageJsonValue } from "#project/package/operations/writePackageJ
 import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { Presets } from "#project/presets/types/Presets";
+import type { Invocation } from "#project/steps/types/Invocation";
+import type { Prompter } from "#project/steps/types/Prompter";
+import type { StepContext } from "#project/steps/types/StepContext";
 import type { Agent } from "#tools/agents/types/Agent";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
-import type { Invocation } from "#workflows/cli/types/Invocation";
-import type { Prompter } from "#workflows/cli/types/Prompter";
 
 import manifest from "#package.json" with { type: "json" };
 
@@ -49,7 +50,7 @@ export function createStepContext({
 }: {
   config: ResolvedConfig;
   prompter: Prompter;
-}) {
+}): StepContext {
   const { filesystem } = config;
 
   const invocations: Invocation[] = [];
@@ -161,7 +162,7 @@ export function createStepContext({
     agents = chosen;
   }
 
-  return freeze({
+  return freeze<StepContext>({
     // @debt spreading the resolved config evaluates all of its lazy getters on every access, and setPresets is not reflected here while setAgents is
     get config() {
       return {

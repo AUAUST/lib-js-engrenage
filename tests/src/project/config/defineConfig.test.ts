@@ -1,7 +1,7 @@
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import { defineConfig, type Config } from "@auaust/engrenage/config";
-import type { ConfigInput } from "@auaust/engrenage";
+import { defineConfig, type ConfigInput } from "@auaust/engrenage/config";
+import type { Resolvable } from "@auaust/engrenage";
 
 describe("defineConfig", () => {
   test("returns the config it receives", () => {
@@ -15,7 +15,7 @@ describe("defineConfig", () => {
     };
 
     expect(defineConfig(config)).toBe(config);
-    expectTypeOf(defineConfig).returns.toEqualTypeOf<ConfigInput<Config>>();
+    expectTypeOf(defineConfig).returns.toEqualTypeOf<Resolvable<ConfigInput>>();
   });
 
   test("types src.apis with the known groups", () => {
@@ -23,7 +23,7 @@ describe("defineConfig", () => {
       src: { baseline: "2026-10", apis: ["timers"] },
     });
 
-    type Apis = NonNullable<Extract<Config["src"], object>["apis"]>;
+    type Apis = NonNullable<Extract<ConfigInput["src"], object>["apis"]>;
 
     expectTypeOf<["timers"]>().toExtend<Apis>();
     expectTypeOf<["unknown"]>().not.toExtend<Apis>();

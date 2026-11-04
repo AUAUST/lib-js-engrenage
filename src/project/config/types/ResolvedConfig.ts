@@ -1,6 +1,6 @@
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { ResolvedBuild } from "#project/build/types/ResolvedBuild";
-import type { Config } from "#project/config/types/Config";
+import type { ConfigInput } from "#project/config/types/ConfigInput";
 import type { Environment } from "#project/config/types/Environment";
 import type { ResolvedAgents } from "#project/config/types/ResolvedAgents";
 import type { ResolvedCache } from "#project/config/types/ResolvedCache";
@@ -31,7 +31,7 @@ import type { PackageName } from "#types/PackageName";
 
 export interface ResolvedConfig {
   readonly root: Directory;
-  readonly raw: Config;
+  readonly raw: ConfigInput;
   readonly configFile: File | undefined;
   readonly debug: boolean;
   readonly filesystem: Filesystem;

@@ -1,10 +1,8 @@
 import { includes } from "@auaust/primitive-kit/arrays";
 
-// @debt reaches into workflows/cli, a higher layer than project; the layered registry (#143) removes the upward dependency
 import { tsdown, vite } from "#constants";
-import { hasConfigFile } from "#workflows/cli/operations/hasConfigFile";
-// @debt reaches into workflows/cli, a higher layer than project; the layered registry (#143) removes the upward dependency
-import type { Step } from "#workflows/cli/types/Step";
+import { hasConfigFile } from "#project/steps/utils/hasConfigFile";
+import type { Step } from "#project/steps/types/Step";
 
 export function createBuildToolStep(): Step {
   return {

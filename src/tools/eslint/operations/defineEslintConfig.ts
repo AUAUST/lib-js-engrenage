@@ -10,11 +10,11 @@ import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { Config } from "#tools/eslint/types/Config";
 import type { ConfigWithExtends } from "#tools/eslint/types/ConfigWithExtends";
 import type { Options } from "#tools/eslint/types/Options";
-import type { ConfigInput } from "#types/ConfigInput";
+import type { Resolvable } from "#types/Resolvable";
 
 export async function defineEslintConfig(
-  options?: ConfigInput<Options, [ResolvedConfig]>,
-  ...configs: ConfigInput<ConfigWithExtends, [ResolvedConfig]>[]
+  options?: Resolvable<Options, [ResolvedConfig]>,
+  ...configs: Resolvable<ConfigWithExtends, [ResolvedConfig]>[]
 ): Promise<Config[]> {
   const config = await loadConfig();
 

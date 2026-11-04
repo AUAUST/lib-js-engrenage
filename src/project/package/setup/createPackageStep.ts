@@ -11,10 +11,8 @@ import {
   publicLicense,
   visibilities,
 } from "#project/package/constants";
-// @debt reaches into workflows/cli, a higher layer than project; the layered registry (#143) removes the upward dependency
-import type { Step } from "#workflows/cli/types/Step";
-// @debt reaches into workflows/cli, a higher layer than project; the layered registry (#143) removes the upward dependency
-import type { StepContext } from "#workflows/cli/types/StepContext";
+import type { Step } from "#project/steps/types/Step";
+import type { StepContext } from "#project/steps/types/StepContext";
 
 import manifest from "#package.json" with { type: "json" };
 

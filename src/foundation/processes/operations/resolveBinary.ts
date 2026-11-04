@@ -2,25 +2,26 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname } from "node:path";
 
+import { parse, record, string, union } from "valibot";
+
 import { isString } from "@auaust/toolkit/isString";
 import { get } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
 import { resolve } from "#foundation/filesystem/utils/resolve";
-import { createPackageJson } from "#project/package/operations/createPackageJson";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import { readJsonValue } from "#foundation/json/utils/readJsonValue";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
+
+const binSchema = union([string(), record(string(), string())]);
 
 function isModuleNotFound(error: unknown): boolean {
   return error instanceof Error && get(error, "code") === "MODULE_NOT_FOUND";
 }
 
-function resolveManifest(
-  config: ResolvedConfig,
-  packageName: KnownPackageName,
-): File {
-  const require = createRequire(config.resolve(packageJsonFile));
+function resolveManifest(root: Directory, packageName: KnownPackageName): File {
+  const require = createRequire(resolve(root, packageJsonFile));
 
   try {
     return require.resolve(`${packageName}/${packageJsonFile}`);
@@ -29,32 +30,30 @@ function resolveManifest(
       throw error;
     }
 
-    throw new Error(`Install ${packageName} in ${config.root} to run it`, {
+    throw new Error(`Install ${packageName} in ${root} to run it`, {
       cause: error,
     });
   }
 }
 
 export function resolveBinary(
-  config: ResolvedConfig,
+  root: Directory,
   packageName: KnownPackageName,
   binary: string,
 ): File {
-  const manifestPath = resolveManifest(config, packageName);
+  const manifestPath = resolveManifest(root, packageName);
 
-  const directory = dirname(manifestPath);
+  const bin = readJsonValue(readFileSync(manifestPath, "utf-8"), manifestPath, [
+    "bin",
+  ]);
 
-  const { bin } = createPackageJson({
-    root: directory,
-    path: manifestPath,
-    content: readFileSync(manifestPath, "utf-8"),
-  });
+  const paths = bin === undefined ? undefined : parse(binSchema, bin);
 
-  const path = isString(bin) ? bin : bin[binary];
+  const path = isString(paths) ? paths : paths?.[binary];
 
   if (path === undefined) {
     throw new Error(`${manifestPath} declares no "${binary}" binary`);
   }
 
-  return resolve(directory, path);
+  return resolve(dirname(manifestPath), path);
 }

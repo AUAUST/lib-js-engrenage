@@ -9,9 +9,9 @@ import { runSteps } from "#workflows/cli/operations/runSteps";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { listInitSteps } from "#workflows/init/operations/listInitSteps";
 import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Invocation } from "#project/steps/types/Invocation";
+import type { Prompter } from "#project/steps/types/Prompter";
 import type { Directory } from "#types/Directory";
-import type { Invocation } from "#workflows/cli/types/Invocation";
-import type { Prompter } from "#workflows/cli/types/Prompter";
 
 function describe({ command, args }: Invocation): string {
   return [command, ...args].join(" ");

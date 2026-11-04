@@ -10,11 +10,11 @@ import type { ConfigContext } from "#tools/tsdown/types/ConfigContext";
 import type { ConfigFn } from "#tools/tsdown/types/ConfigFn";
 import type { InlineConfig } from "#tools/tsdown/types/InlineConfig";
 import type { Options } from "#tools/tsdown/types/Options";
-import type { ConfigInput } from "#types/ConfigInput";
+import type { Resolvable } from "#types/Resolvable";
 
 export function defineTsdownConfig(
-  options?: ConfigInput<Options, [ResolvedConfig, InlineConfig, ConfigContext]>,
-  ...configs: readonly ConfigInput<
+  options?: Resolvable<Options, [ResolvedConfig, InlineConfig, ConfigContext]>,
+  ...configs: readonly Resolvable<
     Config,
     [ResolvedConfig, InlineConfig, ConfigContext]
   >[]

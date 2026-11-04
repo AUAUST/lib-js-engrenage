@@ -11,11 +11,11 @@ import type { Config } from "#tools/vite/types/Config";
 import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
 import type { ConfigFn } from "#tools/vite/types/ConfigFn";
 import type { Options } from "#tools/vite/types/Options";
-import type { ConfigInput } from "#types/ConfigInput";
+import type { Resolvable } from "#types/Resolvable";
 
 export function defineViteConfig(
-  options?: ConfigInput<Options, [ResolvedConfig, ConfigEnv]>,
-  ...configs: readonly ConfigInput<Config, [ResolvedConfig, ConfigEnv]>[]
+  options?: Resolvable<Options, [ResolvedConfig, ConfigEnv]>,
+  ...configs: readonly Resolvable<Config, [ResolvedConfig, ConfigEnv]>[]
 ): ConfigFn {
   return async function viteConfig(env) {
     const config = await loadConfig();

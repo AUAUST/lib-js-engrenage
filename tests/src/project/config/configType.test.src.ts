@@ -2,11 +2,11 @@ import { describe, expectTypeOf, test } from "vitest";
 import type { InferInput } from "valibot";
 
 import type { configSchema } from "#project/config/config/schemas/configSchema";
-import type { Config } from "#project/config/types/Config";
+import type { ConfigInput } from "#project/config/types/ConfigInput";
 
-describe("Config", () => {
+describe("ConfigInput", () => {
   test("accepts exactly what the config schema accepts", () => {
-    expectTypeOf<Config>().toExtend<InferInput<typeof configSchema>>();
-    expectTypeOf<InferInput<typeof configSchema>>().toExtend<Config>();
+    expectTypeOf<ConfigInput>().toExtend<InferInput<typeof configSchema>>();
+    expectTypeOf<InferInput<typeof configSchema>>().toExtend<ConfigInput>();
   });
 });

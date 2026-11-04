@@ -5,7 +5,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
 
-const file = "src/project/config/types/Config.ts";
+const file = "src/project/config/types/ConfigInput.ts";
 
 beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation(() => {});
@@ -26,7 +26,7 @@ describe("support codegen config", () => {
   test("fails the check on an interface that no longer matches the schema descriptions", async () => {
     const project = createTemporaryProject({
       "package.json": JSON.stringify({}),
-      [file]: "export interface Config {}\n",
+      [file]: "export interface ConfigInput {}\n",
     });
 
     mockCwd(project.root);
@@ -34,6 +34,6 @@ describe("support codegen config", () => {
     await runCommand(config, "--check");
 
     expect(process.exitCode).toBe(1);
-    expect(project.read(file)).toBe("export interface Config {}\n");
+    expect(project.read(file)).toBe("export interface ConfigInput {}\n");
   });
 });

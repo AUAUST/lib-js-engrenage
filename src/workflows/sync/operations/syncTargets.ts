@@ -1,4 +1,3 @@
-import { syncPackageJson } from "#project/package/setup/syncPackageJson";
 import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSettings";
 import { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";
@@ -10,6 +9,7 @@ import { syncPrettierignoreFile } from "#tools/prettier/setup/syncPrettierignore
 import { syncAliases } from "#tools/typescript/setup/syncAliases";
 import { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
 import { syncVscodeFiles } from "#tools/vscode/setup/syncVscodeFiles";
+import { syncPackageJson } from "#workflows/sync/setup/syncPackageJson";
 import { defineSyncTarget } from "#workflows/sync/utils/defineSyncTarget";
 
 // Targets run in declaration order: those that produce a file other targets read from the config come first.

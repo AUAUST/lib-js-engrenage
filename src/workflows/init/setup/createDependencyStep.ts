@@ -1,5 +1,5 @@
 import { engrenage } from "#constants";
-import type { Step } from "#workflows/cli/types/Step";
+import type { Step } from "#project/steps/types/Step";
 
 export function createDependencyStep(): Step {
   return {

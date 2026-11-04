@@ -1,9 +1,9 @@
 import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
-import { syncPackageJson } from "#project/package/setup/syncPackageJson";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
+import { syncPackageJson } from "#workflows/sync/setup/syncPackageJson";
 
 const versions = readTestPnpmVersions();
 

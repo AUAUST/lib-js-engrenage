@@ -1,8 +1,7 @@
-// @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
 import { eslint, prettier } from "#constants";
 import { isWithin } from "#foundation/filesystem/utils/isWithin";
+import { resolveBinary } from "#foundation/processes/operations/resolveBinary";
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
-import { resolveBinary } from "#workflows/cli/operations/resolveBinary";
 import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
@@ -16,7 +15,7 @@ function runTool(
 ) {
   const result = spawnProcess(
     process.execPath,
-    [resolveBinary(config, packageName, packageName), ...args],
+    [resolveBinary(config.root, packageName, packageName), ...args],
     {
       cwd: config.root,
       encoding: "utf-8",

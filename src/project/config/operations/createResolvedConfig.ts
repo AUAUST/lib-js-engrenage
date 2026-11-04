@@ -47,8 +47,8 @@ import { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlob
 import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { resolveTsconfig } from "#project/tsconfig/utils/resolveTsconfig";
 import { createPrettierFormatter } from "#tools/prettier/operations/createPrettierFormatter";
-import type { Config } from "#project/config/types/Config";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { ConfigInput } from "#project/config/types/ConfigInput";
 import type { Environment } from "#project/config/types/Environment";
 import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { PackageJson } from "#project/package/types/PackageJson";
@@ -99,7 +99,7 @@ export function createResolvedConfig({
   configFile,
 }: {
   root: Directory;
-  raw: Config;
+  raw: ConfigInput;
   configFile: File | undefined;
 }): ResolvedConfig {
   const filesystem = createFilesystem(root, createPrettierFormatter(root));

@@ -9,6 +9,8 @@ import {
 
 import { freeze } from "@auaust/toolkit/object";
 
+import type { Prompter } from "#project/steps/types/Prompter";
+
 function abort(): never {
   cancel("Cancelled, nothing was written.");
 
@@ -21,7 +23,7 @@ function requireValue(value: string | undefined): string | undefined {
     : undefined;
 }
 
-export function createPrompter({ yes }: { yes: boolean }) {
+export function createPrompter({ yes }: { yes: boolean }): Prompter {
   if (!yes && !process.stdin.isTTY) {
     throw new Error(
       "This needs an interactive terminal; pass --yes to accept every question",

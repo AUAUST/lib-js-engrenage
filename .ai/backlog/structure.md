@@ -38,3 +38,9 @@ Project structure description, its report and the tooling generated from it.
 
 - why: namespace `roles.enable` only accepts catalogue roles.
 - want: scope the role to its namespace, or document why it cannot be.
+
+## 6. Roles for step adapters and non-tool sync targets are undefined (#143)
+
+- why: `createPrompter` (adapter of the `Prompter` port) stays in `workflows/cli/operations`, `workflows/sync` has no `adapters/` role to take it; `syncPackageJson`, a sync target of no tool, went to `workflows/sync/setup/`; the plan names only "init and sync step contracts" for `project/steps`, yet `Prompter` and `Invocation` live there.
+- want: decide whether `workflows` domains get `adapters/` and whether `setup/` may hold targets of no tool; state `project/steps` content.
+- done: the roles and the plan agree.

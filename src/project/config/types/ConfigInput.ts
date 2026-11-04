@@ -8,7 +8,7 @@ import type { Presets } from "#project/presets/types/Presets";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
-export interface Config {
+export interface ConfigInput {
   /**
    * Aliases generated into `package.json#imports` (and, for bundled sources, the tsconfig `paths`) by `engrenage sync`, in one flat `#` namespace.
    * `false` turns them off.

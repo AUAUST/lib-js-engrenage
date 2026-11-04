@@ -1,10 +1,7 @@
-// @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import { createConfigModule } from "#workflows/cli/utils/createConfigModule";
-// @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
 import { engrenage, eslint, typescript } from "#constants";
-import { hasConfigFile } from "#workflows/cli/operations/hasConfigFile";
-// @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import type { Step } from "#workflows/cli/types/Step";
+import { createConfigModule } from "#project/steps/utils/createConfigModule";
+import { hasConfigFile } from "#project/steps/utils/hasConfigFile";
+import type { Step } from "#project/steps/types/Step";
 
 export function createEslintConfigStep(): Step {
   const file = `${eslint}.config.ts`;

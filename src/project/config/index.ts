@@ -2,12 +2,12 @@ export { defineConfig } from "#project/config/operations/defineConfig";
 export { loadConfig } from "#project/config/operations/loadConfig";
 export { define } from "#project/config/utils/define";
 export type { PackageJson } from "#project/package/types/PackageJson";
-export type { ConfigInput } from "#types/ConfigInput";
+export type { Resolvable } from "#types/Resolvable";
 
 // @barrel types/*.ts all
 export * from "#project/config/types/Accessors";
-export * from "#project/config/types/Config";
 export * from "#project/config/types/ConfigContext";
+export * from "#project/config/types/ConfigInput";
 export * from "#project/config/types/DefineContext";
 export * from "#project/config/types/Definition";
 export * from "#project/config/types/DefinitionOptions";

@@ -3,8 +3,7 @@ import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange"
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 import { resolvePnpmRangeStatus } from "#tools/pnpm/operations/resolvePnpmRangeStatus";
 import { writePnpmDeclaration } from "#tools/pnpm/operations/writePnpmDeclaration";
-// @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import type { Step } from "#workflows/cli/types/Step";
+import type { Step } from "#project/steps/types/Step";
 
 export function createPnpmStep(): Step {
   return {

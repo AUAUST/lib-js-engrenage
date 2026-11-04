@@ -3,10 +3,10 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { engrenage, engrenageConfigFile } from "#constants";
 import { findCurrentMonth } from "#project/baseline/operations/findCurrentMonth";
 import { presets } from "#project/presets/constants";
-import { createConfigModule } from "#workflows/cli/utils/createConfigModule";
+import { createConfigModule } from "#project/steps/utils/createConfigModule";
 import type { Presets } from "#project/presets/types/Presets";
+import type { Step } from "#project/steps/types/Step";
 import type { Agent } from "#tools/agents/types/Agent";
-import type { Step } from "#workflows/cli/types/Step";
 
 function renderOptions(
   chosen: Presets,
