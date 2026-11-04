@@ -1,0 +1,101 @@
+import { ESLint } from "eslint";
+import { describe, expect, test } from "vitest";
+
+import { loadConfig } from "@auaust/engrenage";
+import { createEslintConfig } from "@auaust/engrenage/eslint";
+
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+
+async function createLinter(config = "") {
+  const project = createTemporaryProject({
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+      imports: { "#project/*": "./src/project/*.ts" },
+    }),
+    "engrenage.config.ts": `export default { preset: "library", ${config} src: { namespaces: { ".": { layers: ["project"] } } } };\n`,
+    "tsconfig.json": JSON.stringify({
+      compilerOptions: {
+        module: "nodenext",
+        moduleResolution: "nodenext",
+        allowImportingTsExtensions: true,
+        noEmit: true,
+      },
+    }),
+    "src/project/feature/index.ts": "export {};\n",
+    "src/project/feature/utils/own.ts": "export const own = 1;\n",
+    "src/project/feature/types/Seed.ts": "export type Seed = 1;\n",
+    "src/project/feature/shapes/Seed.ts": "export type Seed = 1;\n",
+  });
+
+  const eslint = new ESLint({
+    cwd: project.root,
+    overrideConfigFile: true,
+    overrideConfig: createEslintConfig(await loadConfig(project.root), {
+      typeAware: false,
+    }),
+  });
+
+  return async (filePath: string, source: string) => {
+    const [result] = await eslint.lintText(source, {
+      filePath: project.resolve(filePath),
+    });
+
+    return (result?.messages ?? [])
+      .map(({ ruleId }) => ruleId)
+      .filter((ruleId) => {
+        return (
+          ruleId?.startsWith("auaust/import-") === true ||
+          ruleId === "auaust/type-only-roles" ||
+          ruleId === "@typescript-eslint/no-import-type-side-effects"
+        );
+      });
+  };
+}
+
+describe("type-only roles", () => {
+  test("accept top-level type imports of the domain's runtime modules and reject values and inline type specifiers", async () => {
+    const lint = await createLinter();
+
+    expect(
+      await lint(
+        "src/project/feature/types/Own.ts",
+        'import type { own } from "#project/feature/utils/own";\n\nexport type Own = typeof own;\n',
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint("src/project/feature/types/Own.ts", "export const Own = 1;\n"),
+    ).toEqual(["auaust/type-only-roles"]);
+
+    expect(
+      await lint(
+        "src/project/feature/types/Own.ts",
+        'import { type own } from "#project/feature/utils/own";\n\nexport type Own = typeof own;\n',
+      ),
+    ).not.toEqual([]);
+  });
+
+  test("apply to a project role marked typeOnly", async () => {
+    const lint = await createLinter(
+      "roles: { define: { shapes: { typeOnly: true, exports: 'named-match' } } },",
+    );
+
+    expect(
+      await lint(
+        "src/project/feature/shapes/Shape.ts",
+        "export const Shape = 1;\n",
+      ),
+    ).toEqual(["auaust/type-only-roles"]);
+  });
+
+  test("are off without verbatimModuleSyntax", async () => {
+    const lint = await createLinter(
+      "typescript: { verbatimModuleSyntax: false },",
+    );
+
+    expect(
+      await lint("src/project/feature/types/Own.ts", "export const Own = 1;\n"),
+    ).toEqual([]);
+  });
+});

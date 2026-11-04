@@ -67,6 +67,11 @@ export function declareRoleContractEntries<Inline>(
       ],
       optional: unset("`false`"),
     }),
+    typeOnly: declare(boolean(), {
+      description:
+        "Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.",
+      optional: unset("`false`"),
+    }),
     discovered: declare(boolean(), {
       description:
         "Whether a consumer discovers its files, so they may export defaults.",

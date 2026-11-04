@@ -485,65 +485,51 @@ function resolveElementRules(
       },
     );
 
-    rules.push(
-      ...createRule(
-        source,
-        ownTargets(domain),
-        "own-roles",
-        "allow",
-        "a domain imports its own roles and files",
-      ),
-      ...createRule(
-        source,
-        globalTargets,
-        "global-roles",
-        "allow",
-        "anything imports global roles",
-      ),
-      ...createRule(
-        source,
-        flatMap(scope.ancestors, ownTargets),
-        "ancestor-roles",
-        "allow",
-        "a sub-domain imports its ancestors' roles directly",
-      ),
-      ...createRule(
-        source,
-        flatMap(subdomains, surface),
-        "sub-domain",
-        "allow",
-        "a domain reaches a sub-domain through its index.ts and public roles",
-      ),
-      ...flatMap(scope.reaches, ({ targets, reason, relation }) => {
-        return createRule(source, targets, relation, "allow", reason);
-      }),
-    );
+    const grants = [
+      {
+        targets: ownTargets(domain),
+        relation: "own-roles" as const,
+        reason: "a domain imports its own roles and files",
+      },
+      {
+        targets: globalTargets,
+        relation: "global-roles" as const,
+        reason: "anything imports global roles",
+      },
+      {
+        targets: flatMap(scope.ancestors, ownTargets),
+        relation: "ancestor-roles" as const,
+        reason: "a sub-domain imports its ancestors' roles directly",
+      },
+      {
+        targets: flatMap(subdomains, surface),
+        relation: "sub-domain" as const,
+        reason:
+          "a domain reaches a sub-domain through its index.ts and public roles",
+      },
+      ...scope.reaches,
+    ];
+
+    for (const { targets, relation, reason } of grants) {
+      rules.push(...createRule(source, targets, relation, "allow", reason));
+    }
 
     for (const role of rolesOf(domain)) {
       const roleSource: ImportRuleSource = { kind: "element", path: role.path };
 
-      if (role.role === typesRole) {
-        rules.push(
-          ...createRule(
-            roleSource,
-            hereAndAbove(domain, scope, [typesRole], false),
-            "here-and-above",
-            "allow",
-            "types/ imports types/ here and above",
-          ),
-          ...typeOnlyIndexes.flatMap((rule) => {
-            return createRule(
+      if (role.role !== undefined && roles[role.role]?.typeOnly) {
+        for (const { targets, relation, reason } of grants) {
+          rules.push(
+            ...createRule(
               roleSource,
-              rule.targets,
-              rule.relation,
+              targets,
+              relation,
               "allow",
-              rule.reason,
-              {
-                typeOnly: true,
-              },
-            );
-          }),
-        );
+              `${reason}, type-only`,
+              { typeOnly: true },
+            ),
+          );
+        }
       }
 
       if (role.role === utilitiesRole) {

@@ -17,6 +17,7 @@ function contract(
     public: false,
     discovered: false,
     scoped: false,
+    typeOnly: false,
     purpose: undefined,
     ...overrides,
   };

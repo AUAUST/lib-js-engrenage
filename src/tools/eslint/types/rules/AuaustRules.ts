@@ -480,9 +480,9 @@ export interface AuaustRules {
    */
   "auaust/text-encoding-identifier-case"?: Rule<AuaustTextEncodingIdentifierCase>;
   /**
-   * A types/ module declares types only.
+   * A module of a type-only role declares types only.
    */
-  "auaust/types-declarations"?: Rule<[]>;
+  "auaust/type-only-roles"?: Rule<[]>;
   /**
    * Disallow two overloads that could be unified into one with a union or an optional/rest parameter
    * @see https://typescript-eslint.io/rules/unified-signatures

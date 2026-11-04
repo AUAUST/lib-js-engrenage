@@ -74,11 +74,6 @@
       "count": 1
     }
   },
-  "src/foundation/filesystem/types/Filesystem.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
   "src/foundation/processes/operations/resolveBinary.ts": {
     "auaust/import-surfaces": {
       "count": 2
@@ -87,16 +82,6 @@
   "src/index.ts": {
     "auaust/import-surfaces": {
       "count": 7
-    }
-  },
-  "src/project/baseline/types/ApiGroup.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/project/baseline/types/Runtime.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
     }
   },
   "src/project/build/config/schemas/buildSchema.ts": {
@@ -197,16 +182,6 @@
   "src/project/config/types/DefineContext.ts": {
     "auaust/import-surfaces": {
       "count": 2
-    }
-  },
-  "src/project/config/types/Definition.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/project/config/types/GlobalScope.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
     }
   },
   "src/project/config/types/ProjectConfig.ts": {
@@ -364,16 +339,6 @@
       "count": 2
     }
   },
-  "src/project/presets/types/Preset.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/project/presets/types/Trait.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
   "src/project/steps/types/StepContext.ts": {
     "auaust/import-surfaces": {
       "count": 5
@@ -425,21 +390,6 @@
     }
   },
   "src/project/structure/types/InlineRole.ts": {
-    "auaust/import-surfaces": {
-      "count": 2
-    }
-  },
-  "src/project/structure/types/RoleContract.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/project/structure/types/RoleEnvironment.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/project/structure/types/RoleKey.ts": {
     "auaust/import-surfaces": {
       "count": 1
     }
@@ -572,11 +522,6 @@
   "src/project/tsconfig/setup/syncTsconfigFiles.ts": {
     "auaust/import-surfaces": {
       "count": 7
-    }
-  },
-  "src/project/tsconfig/types/EnvironmentTsconfig.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
     }
   },
   "src/project/tsconfig/types/ManagedEnvironmentTsconfig.ts": {
@@ -774,26 +719,6 @@
       "count": 5
     }
   },
-  "src/tools/agents/types/Agent.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/tools/agents/types/BudgetKind.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/tools/agents/types/BudgetMode.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/tools/agents/types/HookEvent.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
   "src/tools/agents/utils/renderProjectMap.ts": {
     "auaust/import-surfaces": {
       "count": 9
@@ -862,19 +787,9 @@
       "count": 3
     }
   },
-  "src/tools/eslint/types/BoundaryRow.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
   "src/tools/eslint/types/Convention.ts": {
     "auaust/import-surfaces": {
       "count": 2
-    }
-  },
-  "src/tools/eslint/types/Options.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
     }
   },
   "src/tools/eslint/utils/createPlugin.ts": {
@@ -973,11 +888,6 @@
     }
   },
   "src/tools/github/types/WorkflowSet.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/tools/github/types/WorkflowSetName.ts": {
     "auaust/import-surfaces": {
       "count": 1
     }
@@ -1132,11 +1042,6 @@
       "count": 3
     }
   },
-  "src/tools/tsdown/types/Options.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
   "src/tools/tsdown/utils/createTsdownEntries.ts": {
     "auaust/import-surfaces": {
       "count": 1
@@ -1237,11 +1142,6 @@
       "count": 1
     }
   },
-  "src/tools/vite/types/Options.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
   "src/tools/vitest/operations/createVitestConfig.ts": {
     "auaust/import-surfaces": {
       "count": 15
@@ -1285,11 +1185,6 @@
   "src/tools/vitest/setup/createVitestStep.ts": {
     "auaust/import-surfaces": {
       "count": 2
-    }
-  },
-  "src/tools/vitest/types/Options.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
     }
   },
   "src/tools/vscode/config/schemas/vscodeSchema.ts": {
@@ -1413,11 +1308,6 @@
     }
   },
   "src/workflows/sync/types/SyncTarget.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/workflows/sync/types/SyncTargetName.ts": {
     "auaust/import-surfaces": {
       "count": 1
     }

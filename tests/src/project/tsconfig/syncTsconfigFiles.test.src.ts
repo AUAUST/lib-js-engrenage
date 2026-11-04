@@ -239,4 +239,33 @@ describe("syncTsconfigFiles", () => {
 
     expect(project.read("tsconfig.src.json")).toBe(files["tsconfig.src.json"]);
   });
+
+  test("writes verbatimModuleSyntax into the base tsconfig only when it is off and rejects a contradicting compiler option", () => {
+    const { project, config } = createProject(
+      {
+        typescript: { verbatimModuleSyntax: false },
+      },
+      files,
+    );
+
+    config.filesystem.flush();
+
+    expect(
+      JSON.parse(project.read("tsconfig.json")).compilerOptions,
+    ).toMatchObject({ verbatimModuleSyntax: false });
+
+    expect(() => {
+      createProject(
+        {
+          typescript: {
+            verbatimModuleSyntax: false,
+            tsconfig: {
+              compilerOptions: { verbatimModuleSyntax: true },
+            },
+          },
+        },
+        files,
+      );
+    }).toThrow("contradicts typescript.verbatimModuleSyntax");
+  });
 });

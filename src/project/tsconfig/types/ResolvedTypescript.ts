@@ -6,4 +6,5 @@ export interface ResolvedTypescript {
   readonly tsconfig: ResolvedBaseTsconfig;
   readonly envFile: File;
   readonly files: Globs;
+  readonly verbatimModuleSyntax: boolean;
 }

@@ -34,7 +34,7 @@ const contractsOff = {
   roleContracts: false,
   roleExports: false,
   readonlyConstants: false,
-  typesDeclarations: false,
+  typeOnlyRoles: false,
 };
 
 function createEslintConfig(config: ProjectConfig, options?: Maybe<Options>) {

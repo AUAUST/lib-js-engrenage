@@ -62,7 +62,9 @@ export function resolveRoles({
 
   for (const [name, contract] of entries(contracts)) {
     if (active.has(name) && (!contract.scoped || scopes.includes(name))) {
-      resolved[name] = contract;
+      resolved[name] = roles.verbatimModuleSyntax
+        ? contract
+        : freeze({ ...contract, typeOnly: false });
     }
   }
 

@@ -2,7 +2,7 @@ import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRole
 
 export interface RoleDefinition extends Omit<
   ResolvedRoleContract,
-  "nesting" | "index" | "public" | "discovered" | "scoped"
+  "nesting" | "index" | "public" | "discovered" | "scoped" | "typeOnly"
 > {
   readonly inherit: string | undefined;
   readonly nesting: ResolvedRoleContract["nesting"] | undefined;
@@ -10,4 +10,5 @@ export interface RoleDefinition extends Omit<
   readonly public: boolean | undefined;
   readonly discovered: boolean | undefined;
   readonly scoped: boolean | undefined;
+  readonly typeOnly: boolean | undefined;
 }

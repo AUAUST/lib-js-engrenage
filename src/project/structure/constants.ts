@@ -14,7 +14,11 @@ export const roleCatalogue = {
     purpose: "Ambient type declarations.",
     file: ["*.d.ts"],
   },
-  "types": { purpose: "Types only, one per module.", exports: "named-match" },
+  "types": {
+    purpose: "Types only, one per module.",
+    exports: "named-match",
+    typeOnly: true,
+  },
   "utils": {
     purpose: "Pure functions, one per module.",
     exports: "named-match",
@@ -29,6 +33,7 @@ export const roleCatalogue = {
     purpose: "Interfaces other domains implement, importable module by module.",
     exports: "named-match",
     public: true,
+    typeOnly: true,
   },
   "adapters": {
     purpose:

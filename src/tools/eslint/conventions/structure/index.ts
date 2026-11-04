@@ -12,5 +12,5 @@ export { default as noMisplacedTests } from "#tools/eslint/conventions/structure
 export { default as readonlyConstants } from "#tools/eslint/conventions/structure/readonlyConstants";
 export { default as roleContracts } from "#tools/eslint/conventions/structure/roleContracts";
 export { default as roleExports } from "#tools/eslint/conventions/structure/roleExports";
-export { default as typesDeclarations } from "#tools/eslint/conventions/structure/typesDeclarations";
+export { default as typeOnlyRoles } from "#tools/eslint/conventions/structure/typeOnlyRoles";
 // @end

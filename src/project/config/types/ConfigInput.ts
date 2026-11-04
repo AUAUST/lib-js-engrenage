@@ -263,6 +263,11 @@ export interface ConfigInput {
                      */
                     public?: boolean | undefined;
                     /**
+                     * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
+                     * @default `false`
+                     */
+                    typeOnly?: boolean | undefined;
+                    /**
                      * Whether a consumer discovers its files, so they may export defaults.
                      * @default `false`
                      */
@@ -446,6 +451,11 @@ export interface ConfigInput {
               unmanaged?: ListOption<string> | undefined;
             }
           | undefined;
+        /**
+         * Whether imports and exports are kept as written, which makes `typeOnly` roles enforceable. Sync writes `false` into the base tsconfig; with `false`, no role is type-only and the type import convention is off.
+         * @default true
+         */
+        verbatimModuleSyntax?: boolean | undefined;
         /**
          * Globs of the TypeScript files inside every environment directory, feeding the tsconfig `include` and the published file scopes.
          * @default `** /*.{ts,tsx}`
@@ -999,6 +1009,11 @@ export interface ConfigInput {
                            */
                           public?: boolean | undefined;
                           /**
+                           * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
+                           * @default `false`
+                           */
+                          typeOnly?: boolean | undefined;
+                          /**
                            * Whether a consumer discovers its files, so they may export defaults.
                            * @default `false`
                            */
@@ -1319,6 +1334,11 @@ export interface ConfigInput {
                            * @default `false`
                            */
                           public?: boolean | undefined;
+                          /**
+                           * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
+                           * @default `false`
+                           */
+                          typeOnly?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
                            * @default `false`
@@ -1720,6 +1740,11 @@ export interface ConfigInput {
                            */
                           public?: boolean | undefined;
                           /**
+                           * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
+                           * @default `false`
+                           */
+                          typeOnly?: boolean | undefined;
+                          /**
                            * Whether a consumer discovers its files, so they may export defaults.
                            * @default `false`
                            */
@@ -2070,6 +2095,11 @@ export interface ConfigInput {
                            */
                           public?: boolean | undefined;
                           /**
+                           * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
+                           * @default `false`
+                           */
+                          typeOnly?: boolean | undefined;
+                          /**
                            * Whether a consumer discovers its files, so they may export defaults.
                            * @default `false`
                            */
@@ -2311,6 +2341,11 @@ export interface InlineRole {
    * @default `false`
    */
   public?: boolean | undefined;
+  /**
+   * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
+   * @default `false`
+   */
+  typeOnly?: boolean | undefined;
   /**
    * Whether a consumer discovers its files, so they may export defaults.
    * @default `false`

@@ -1,6 +1,6 @@
 import { basename } from "node:path";
 
-import { record, string, unknown } from "valibot";
+import { boolean, record, string, unknown } from "valibot";
 
 import { tsconfigFile } from "#constants";
 import { declare } from "#foundation/options/utils/declare";
@@ -60,6 +60,11 @@ export const typescriptSchema = declareObject(
         optional: true,
       },
     ),
+    verbatimModuleSyntax: declare(boolean(), {
+      description:
+        "Whether imports and exports are kept as written, which makes `typeOnly` roles enforceable. Sync writes `false` into the base tsconfig; with `false`, no role is type-only and the type import convention is off.",
+      optional: { value: true },
+    }),
     files: declareList(globSchema, {
       description:
         "Globs of the TypeScript files inside every environment directory, feeding the tsconfig `include` and the published file scopes.",

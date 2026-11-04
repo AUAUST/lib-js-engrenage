@@ -2,7 +2,7 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 import { compose } from "@auaust/toolkit/composer";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { memoized } from "@auaust/toolkit/memoized";
-import { freeze, keys } from "@auaust/toolkit/object";
+import { freeze, get as getProperty, keys } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
 import { packageJsonFile } from "#constants";
@@ -148,6 +148,7 @@ export function createProjectSections({
     return freeze({
       ...normalizeRoles(declared),
       enabled: declared.enabled,
+      verbatimModuleSyntax: typescriptOption().verbatimModuleSyntax,
     });
   }
 
@@ -727,14 +728,27 @@ export function createProjectSections({
   const cache = cacheOption;
 
   const baseTsconfig = once(() => {
-    const option = typescriptOption().tsconfig;
+    const { tsconfig: option, verbatimModuleSyntax } = typescriptOption();
+
+    const configured = getProperty(
+      option.compilerOptions,
+      "verbatimModuleSyntax",
+    );
+
+    if (configured !== undefined && configured !== verbatimModuleSyntax) {
+      throw new Error(
+        `typescript.tsconfig.compilerOptions.verbatimModuleSyntax contradicts typescript.verbatimModuleSyntax (${verbatimModuleSyntax}): set the second option only`,
+      );
+    }
 
     return freeze(
       compose(
         {
           file: option.path.file,
           extends: option.extends,
-          compilerOptions: option.compilerOptions,
+          compilerOptions: verbatimModuleSyntax
+            ? option.compilerOptions
+            : { ...option.compilerOptions, verbatimModuleSyntax },
           unmanaged: option.unmanaged,
         },
         compose.getters({
@@ -751,6 +765,7 @@ export function createProjectSections({
       compose(
         {
           files: option.files,
+          verbatimModuleSyntax: option.verbatimModuleSyntax,
         },
         compose.getters({
           tsconfig: baseTsconfig,

@@ -15,13 +15,13 @@ export default defineConvention({
   rule: (config) => {
     return defineStructureRule({
       config,
-      description: "A types/ module declares types only.",
+      description: "A module of a type-only role declares types only.",
       messages: {
         value:
-          "A types/ module declares no runtime value; move this declaration into utils/, operations/ or constants.ts.",
+          "A module of a type-only role declares no runtime value; move this declaration into a role that holds values.",
       },
-      create(context, { node }) {
-        if (node.role?.split("/").at(-1) !== "types") {
+      create(context, { node, contract }) {
+        if (node.kind !== "role" || contract?.typeOnly !== true) {
           return {};
         }
 

@@ -18,5 +18,6 @@ export function completeRole(
     public: definition.public ?? false,
     discovered: definition.discovered ?? false,
     scoped: definition.scoped ?? false,
+    typeOnly: definition.typeOnly ?? false,
   });
 }
