@@ -1,5 +1,7 @@
 import type { StructureKind } from "#project/structure/types/StructureKind";
+import type { StructureMirror } from "#project/structure/types/StructureMirror";
 import type { StructureSource } from "#project/structure/types/StructureSource";
+import type { UnclassifiedReason } from "#project/structure/types/UnclassifiedReason";
 import type { Directory } from "#types/Directory";
 
 export interface StructureNode {
@@ -14,5 +16,7 @@ export interface StructureNode {
   readonly public?: boolean;
   readonly specifier?: string;
   readonly purpose?: string;
+  readonly mirror?: StructureMirror;
+  readonly reason?: UnclassifiedReason;
   readonly children: readonly StructureNode[];
 }

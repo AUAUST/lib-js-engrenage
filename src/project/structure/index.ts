@@ -17,8 +17,12 @@ export * from "#project/structure/types/RoleKey";
 export * from "#project/structure/types/RolesOption";
 export * from "#project/structure/types/StructureEnvironment";
 export * from "#project/structure/types/StructureKind";
+export * from "#project/structure/types/StructureMirror";
 export * from "#project/structure/types/StructureNode";
 export * from "#project/structure/types/StructureOptions";
 export * from "#project/structure/types/StructureSource";
+export * from "#project/structure/types/TestsContext";
+export * from "#project/structure/types/TestsLayout";
 export * from "#project/structure/types/TestVariant";
+export * from "#project/structure/types/UnclassifiedReason";
 // @end

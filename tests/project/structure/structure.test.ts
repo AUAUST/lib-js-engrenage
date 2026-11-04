@@ -156,4 +156,71 @@ describe("structure", () => {
 
     expect(config.structure.tooling?.root.children).toEqual([]);
   });
+
+  describe("tests layout", () => {
+    async function describeTests(layout: string, extra: string[]) {
+      const project = createTemporaryProject({
+        "package.json": '{ "name": "project", "type": "module" }',
+        "src/index.ts": "",
+        "src/a/b/index.ts": "",
+        ...record(
+          ["tests/src/a/x.test.ts", "tests/fixtures/any/f.txt", ...extra].map(
+            (file) => [file, ""],
+          ),
+        ),
+        "engrenage.config.ts": `export default { tests: { layout: "${layout}" } };\n`,
+      });
+
+      const config = await loadConfig(project.root);
+      const structure = config.structure.tests!;
+
+      return {
+        structure,
+        nodes: new Map(
+          flatten(structure.root).map((node) => [node.path, node]),
+        ),
+      };
+    }
+
+    test("mirror requires the counterpart of every directory below a root key", async () => {
+      const { structure, nodes } = await describeTests("mirror", [
+        "tests/src/a/c/y.test.ts",
+        "tests/hello/z.test.ts",
+      ]);
+
+      expect(nodes.get("tests/src")).toMatchObject({
+        kind: "mirror",
+        mirror: { environment: "src" },
+      });
+
+      expect(nodes.get("tests/src/a")).toMatchObject({
+        kind: "mirror",
+        mirror: { environment: "src", path: "src/a" },
+      });
+
+      expect(nodes.get("tests/fixtures")).toMatchObject({ kind: "role" });
+
+      expect(
+        structure.unclassified.map(({ path, reason }) => [path, reason]),
+      ).toEqual([
+        ["tests/hello", "unknown root key"],
+        ["tests/src/a/c", "missing counterpart"],
+      ]);
+    });
+
+    test("roots accepts any directory below a root key", async () => {
+      const { structure, nodes } = await describeTests("roots", [
+        "tests/src/anything/deep/y.test.ts",
+        "tests/hello/z.test.ts",
+      ]);
+
+      expect(nodes.get("tests/src/anything/deep")).toMatchObject({
+        kind: "mirror",
+      });
+
+      expect(structure.unclassified.map(({ path }) => path)).toEqual([
+        "tests/hello",
+      ]);
+    });
+  });
 });

@@ -13,8 +13,11 @@ import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RolesOption } from "#project/structure/types/RolesOption";
 import type { StructureEnvironment } from "#project/structure/types/StructureEnvironment";
 import type { StructureKind } from "#project/structure/types/StructureKind";
+import type { StructureMirror } from "#project/structure/types/StructureMirror";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
+import type { TestsContext } from "#project/structure/types/TestsContext";
+import type { UnclassifiedReason } from "#project/structure/types/UnclassifiedReason";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 
@@ -30,6 +33,10 @@ interface Parent {
   readonly layers: readonly string[] | undefined;
   readonly scopes: readonly string[];
   readonly structured: boolean;
+  readonly mirrored?: {
+    readonly environment: StructureEnvironment;
+    readonly subpath: string;
+  };
 }
 
 function holdsFiles(directory: string): boolean {
@@ -74,14 +81,92 @@ function collect(node: StructureNode): StructureNode[] {
   return [node, ...flatMap(node.children, collect)];
 }
 
-function loosen(node: StructureNode): StructureNode {
-  const children = node.children.map(loosen);
+function loosen(
+  node: StructureNode,
+  unclassified: StructureKind,
+): StructureNode {
+  const children = node.children.map((child) => loosen(child, unclassified));
+
+  if (node.kind !== "unclassified") {
+    return freeze({ ...node, children });
+  }
 
   return freeze({
-    ...node,
-    kind: node.kind === "unclassified" ? "domain" : node.kind,
+    path: node.path,
+    name: node.name,
+    kind: unclassified,
+    source: node.source,
+    ...(node.layer === undefined ? {} : { layer: node.layer }),
     children,
   });
+}
+
+interface Mirror {
+  readonly kind: StructureKind;
+  readonly mirror?: StructureMirror;
+  readonly reason?: UnclassifiedReason;
+  readonly mirrored?: NonNullable<Parent["mirrored"]>;
+}
+
+function createMirrorClassifier(tests: TestsContext) {
+  const counterparts = memoized(
+    (environment: StructureEnvironment): ReadonlySet<string> => {
+      const structure = tests.environments[environment]?.structure;
+
+      return new Set(
+        structure === undefined
+          ? []
+          : collect(structure.root).map(({ path }) => path),
+      );
+    },
+  );
+
+  return function classify(directory: string, parent: Parent): Mirror {
+    const unknown = {
+      kind: "unclassified",
+      reason: "unknown root key",
+    } as const;
+
+    if (parent.kind === "root") {
+      const root = entries(tests.environments).find(
+        ([key]) => key === directory,
+      );
+
+      return root?.[1] === undefined
+        ? unknown
+        : {
+            kind: "mirror",
+            mirror: {
+              environment: root[0],
+              path: root[1].dirs[0] ?? root[0],
+            },
+            mirrored: { environment: root[0], subpath: "" },
+          };
+    }
+
+    if (parent.mirrored === undefined) {
+      return unknown;
+    }
+
+    const { environment } = parent.mirrored;
+    const subpath = join(parent.mirrored.subpath, directory);
+    const dirs = tests.environments[environment]?.dirs ?? [];
+
+    const path =
+      tests.layout === "roots"
+        ? join(dirs[0] ?? environment, subpath)
+        : dirs
+            .map((dir) => join(dir, subpath))
+            .find((candidate) => counterparts(environment).has(candidate));
+
+    return path === undefined
+      ? { kind: "unclassified", reason: "missing counterpart" }
+      : {
+          kind: "mirror",
+          mirror: { environment, path },
+          mirrored: { environment, subpath },
+        };
+  };
 }
 
 export function resolveEnvironmentStructure({
@@ -91,6 +176,7 @@ export function resolveEnvironmentStructure({
   options,
   roles,
   environmentRoles,
+  tests,
 }: {
   name: StructureEnvironment;
   root: Directory;
@@ -98,11 +184,15 @@ export function resolveEnvironmentStructure({
   options: StructureOptions;
   roles: ProjectRoles;
   environmentRoles?: RolesOption | undefined;
+  tests?: TestsContext;
 }): EnvironmentStructure {
   // @debt the public default applies after the glob metadata merge, which needs the declarations to keep unset fields, so it cannot live in the declaration
   const { strictness, namespaces } = options;
   const domains = entries(options.domains);
   const optOut = new Set(options.optOut);
+
+  const classifyMirror =
+    tests === undefined ? undefined : createMirrorClassifier(tests);
 
   const rolesFor = memoized(
     (scopes: readonly string[]): ResolvedRoles => {
@@ -180,10 +270,12 @@ export function resolveEnvironmentStructure({
       {
         scopes = parent.scopes,
         structured = false,
+        mirrored,
         children,
       }: {
         scopes?: readonly string[];
         structured?: boolean;
+        mirrored?: Parent["mirrored"];
         children?: readonly StructureNode[];
       } = {},
     ): StructureNode {
@@ -204,6 +296,7 @@ export function resolveEnvironmentStructure({
             layers: extra.layers,
             scopes,
             structured,
+            ...(mirrored === undefined ? {} : { mirrored }),
           }),
       });
     }
@@ -266,6 +359,26 @@ export function resolveEnvironmentStructure({
         {
           scopes: [...parent.scopes, ...(contained ?? [])],
           structured: contained !== undefined,
+        },
+      );
+    }
+
+    if (classifyMirror !== undefined && !declared) {
+      const { kind, mirror, reason, mirrored } = classifyMirror(
+        directory,
+        parent,
+      );
+
+      return node(
+        kind,
+        "inferred",
+        {
+          ...(mirror === undefined ? {} : { mirror }),
+          ...(reason === undefined ? {} : { reason }),
+        },
+        {
+          ...(mirrored === undefined ? {} : { mirrored }),
+          ...(kind === "unclassified" ? { children: [] } : {}),
         },
       );
     }
@@ -343,7 +456,10 @@ export function resolveEnvironmentStructure({
     children,
   });
 
-  const tree = strictness === "loose" ? loosen(resolvedRoot) : resolvedRoot;
+  const tree =
+    strictness === "loose"
+      ? loosen(resolvedRoot, name === "tests" ? "mirror" : "domain")
+      : resolvedRoot;
 
   return freeze({
     name,

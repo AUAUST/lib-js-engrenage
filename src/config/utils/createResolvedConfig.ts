@@ -52,6 +52,7 @@ import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
 import type { RolesOption } from "#project/structure/types/RolesOption";
 import type { StructureEnvironment } from "#project/structure/types/StructureEnvironment";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
+import type { TestsContext } from "#project/structure/types/TestsContext";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
@@ -244,6 +245,7 @@ export function createResolvedConfig({
     name: StructureEnvironment,
     environment: { active: boolean; dirs: Directories },
     option: StructureSection,
+    tests?: TestsContext,
   ): EnvironmentStructure | undefined {
     if (!option.enabled || !environment.active) {
       return;
@@ -256,6 +258,7 @@ export function createResolvedConfig({
       options: option,
       roles: roles(),
       environmentRoles: option.roles,
+      ...(tests === undefined ? {} : { tests }),
     });
   }
 
@@ -446,12 +449,44 @@ export function createResolvedConfig({
   });
 
   const structure = once(() => {
+    const sourceStructure = resolveStructure("src", source(), sourceOption());
+    const binStructure = resolveStructure("bin", bin(), binOption());
+
+    const scriptsStructure = resolveStructure(
+      "scripts",
+      scripts(),
+      scriptsOption(),
+    );
+
+    const toolingStructure = resolveStructure(
+      "tooling",
+      tooling(),
+      toolingOption(),
+    );
+
+    const testsConfig = testsOption();
+
     return freeze({
-      src: resolveStructure("src", source(), sourceOption()),
-      tests: resolveStructure("tests", tests(), testsOption()),
-      bin: resolveStructure("bin", bin(), binOption()),
-      scripts: resolveStructure("scripts", scripts(), scriptsOption()),
-      tooling: resolveStructure("tooling", tooling(), toolingOption()),
+      src: sourceStructure,
+      tests: resolveStructure(
+        "tests",
+        tests(),
+        testsConfig,
+        testsConfig.enabled
+          ? {
+              layout: testsConfig.layout,
+              environments: {
+                src: { dirs: source().dirs, structure: sourceStructure },
+                bin: { dirs: bin().dirs, structure: binStructure },
+                scripts: { dirs: scripts().dirs, structure: scriptsStructure },
+                tooling: { dirs: tooling().dirs, structure: toolingStructure },
+              },
+            }
+          : undefined,
+      ),
+      bin: binStructure,
+      scripts: scriptsStructure,
+      tooling: toolingStructure,
     });
   });
 

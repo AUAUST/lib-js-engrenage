@@ -1599,6 +1599,12 @@ export interface Config {
                 }
               | undefined;
             /**
+             * How the directories below a tests root key (a directory named after a code environment: `src`, `bin`, `scripts`, `tooling`) are classified.
+             * `roots` accepts any directory there; `mirror` requires each to exist in the structure of the environment it is named after.
+             * @default `roots`
+             */
+            layout?: ("roots" | "mirror") | undefined;
+            /**
              * Glob of the directories holding test files, the first part of the test file patterns.
              * @default `** /*`
              */

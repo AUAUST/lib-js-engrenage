@@ -1,3 +1,5 @@
+import { picklist } from "valibot";
+
 import { directorySchema } from "#config/config/schemas/values/directorySchema";
 import { globSchema } from "#config/config/schemas/values/globsSchema";
 import {
@@ -21,6 +23,13 @@ export const testsSchema = declareObject(
   {
     ...createCodeEnvironment("tests", defaultTestsDirectories),
     roles: rolesOptionSchema,
+    layout: declare(picklist(["roots", "mirror"]), {
+      description: [
+        "How the directories below a tests root key (a directory named after a code environment: `src`, `bin`, `scripts`, `tooling`) are classified.",
+        "`roots` accepts any directory there; `mirror` requires each to exist in the structure of the environment it is named after.",
+      ],
+      optional: { value: "roots" },
+    }),
     location: declare(globSchema, {
       description:
         "Glob of the directories holding test files, the first part of the test file patterns.",
