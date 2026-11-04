@@ -1,7 +1,7 @@
 import { boolean } from "valibot";
 
-import { declare } from "#foundation/options/utils/declare";
-import { defaultDefines } from "#project/config/constants";
+import { declare } from "#foundation/options/index";
+import { defaultDefines } from "#project/environments/constants";
 
 export function declareDefines(name: keyof typeof defaultDefines) {
   return declare(boolean(), {

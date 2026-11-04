@@ -22,13 +22,6 @@ export const sourceTestsVariant = ".src";
 
 export const distTestsVariant = ".dist";
 
-export const defaultDefines = freeze({
-  src: true,
-  tests: true,
-  bin: false,
-  scripts: false,
-} as const);
-
 export const liveSections = [
   "packageJsonPath",
   "packageJson",

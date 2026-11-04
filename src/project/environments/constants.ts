@@ -55,3 +55,10 @@ export const disabledCodeEnvironment = freeze({
   defines: false,
   tsconfig: unmanagedTsconfig,
 } as const);
+
+export const defaultDefines = freeze({
+  src: true,
+  tests: true,
+  bin: false,
+  scripts: false,
+} as const);
