@@ -141,6 +141,7 @@ describe("engrenage init", () => {
 
       expect(JSON.parse(project.read("package.json"))).toEqual({
         ...JSON.parse(packageJson),
+        imports: { "#package.json": "./package.json" },
         devEngines: {
           runtime: {
             name: "node",
@@ -365,6 +366,7 @@ describe("engrenage init", () => {
       "author",
       "type",
       "scripts",
+      "imports",
       "devDependencies",
       "prettier",
       "devEngines",

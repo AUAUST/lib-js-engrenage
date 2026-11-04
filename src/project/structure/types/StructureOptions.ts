@@ -7,7 +7,6 @@ export interface StructureOptions {
       Directory,
       {
         readonly layers: readonly string[] | undefined;
-        readonly prefix: string | undefined;
         readonly roles: { readonly enable: readonly RoleKey[] };
       }
     >

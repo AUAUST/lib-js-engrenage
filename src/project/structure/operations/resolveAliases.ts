@@ -8,13 +8,18 @@ import type { Alias } from "#project/structure/types/Alias";
 import type { AliasesOption } from "#project/structure/types/AliasesOption";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
-import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 
 const indexFile = "index.ts";
 const projectRoot = ".";
 const bundlerPrefix = "#";
+
+const packageJsonAlias: Alias = {
+  key: "#package.json",
+  target: "./package.json",
+  source: "project root",
+};
 
 function createDirectoryAliases(
   root: Directory,
@@ -40,39 +45,17 @@ function createDirectoryAliases(
   ];
 }
 
-function createNodeAliases(
-  root: Directory,
-  node: StructureNode,
-  source: string,
-): Alias[] {
-  const own = createDirectoryAliases(root, node.name, node.path, source);
-
-  if (node.kind !== "namespace" || node.prefix === undefined) {
-    return own;
-  }
-
-  const { prefix } = node;
-
-  const prefixed = flatMap(node.children, (child) => {
-    return child.kind === "domain"
-      ? createDirectoryAliases(
-          root,
-          `${prefix}${child.name}`,
-          child.path,
-          `${source}/${child.name}`,
-        )
-      : [];
-  });
-
-  return [...own, ...prefixed];
-}
-
 function createSourceAliases(
   root: Directory,
   { dirs, root: tree }: EnvironmentStructure,
 ): Alias[] {
   const directories = flatMap(tree.children, (child) => {
-    return createNodeAliases(root, child, `src entry ${child.path}`);
+    return createDirectoryAliases(
+      root,
+      child.name,
+      child.path,
+      `src entry ${child.path}`,
+    );
   });
 
   const files = flatMap(dirs, (dir) => {
@@ -194,7 +177,9 @@ export function resolveAliases({
       });
 
   const global = [
-    ...(options.global.generated ? [...roots, ...dataAliases] : []),
+    ...(options.global.generated
+      ? [...roots, ...dataAliases, packageJsonAlias]
+      : []),
     ...createDefinedAliases(options.global, "aliases.define", bundled),
   ];
 

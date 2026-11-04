@@ -12,7 +12,6 @@ export interface StructureNode {
   readonly role?: string;
   readonly layers?: readonly string[];
   readonly layer?: number;
-  readonly prefix?: string;
   readonly public?: boolean;
   readonly specifier?: string;
   readonly purpose?: string;

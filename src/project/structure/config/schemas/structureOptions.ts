@@ -17,11 +17,6 @@ export const structureOptions = {
           "Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.",
         optional: { value: undefined },
       }),
-      prefix: declare(string(), {
-        description:
-          "Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.",
-        optional: { value: undefined },
-      }),
       roles: declareObject(
         {
           enable: declare(array(roleKeySchema), {

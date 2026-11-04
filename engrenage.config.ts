@@ -2,9 +2,6 @@ import { defineConfig } from "#project/config/index";
 
 export default defineConfig({
   presets: ["library"],
-  aliases: {
-    define: { "#package.json": "./package.json" },
-  },
   roles: {
     define: {
       config: { exports: "named-match", roles: ["schemas"] },

@@ -31,7 +31,7 @@ const source = "src: { node: 24 }";
 describe("aliases", () => {
   test("generates the root and src aliases of a library, without #data", async () => {
     const { read } = await sync(
-      `{ presets: ["library"], ${source}, data: { exports: {} }, aliases: { define: { "#package.json": "./package.json" } } }`,
+      `{ presets: ["library"], ${source}, data: { exports: {} } }`,
       { "data/a.json": "{}" },
     );
 
@@ -45,6 +45,19 @@ describe("aliases", () => {
       "#utils": "./src/utils/index.ts",
       "#utils/*": "./src/utils/*.ts",
     });
+  });
+
+  test("gives a namespace holding domains its own alias only", async () => {
+    const { read } = await sync(
+      `{ presets: ["library"], src: { node: 24, namespaces: { ".": {}, tools: {} } } }`,
+      { "src/tools/git/index.ts": "", "src/tools/git/constants.ts": "" },
+    );
+
+    const imports = read("package.json").imports;
+
+    expect(imports["#tools/*"]).toBe("./src/tools/*.ts");
+    expect(imports).not.toHaveProperty("#git");
+    expect(imports).not.toHaveProperty("#git/*");
   });
 
   test("fails on a src entry colliding with a root alias", async () => {

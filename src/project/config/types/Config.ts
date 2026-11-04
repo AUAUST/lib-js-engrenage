@@ -385,11 +385,6 @@ export interface Config {
                      */
                     layers?: string[] | undefined;
                     /**
-                     * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
-                     * @default none
-                     */
-                    prefix?: string | undefined;
-                    /**
                      * @default none
                      */
                     roles?:
@@ -627,11 +622,6 @@ export interface Config {
                      * @default none
                      */
                     layers?: string[] | undefined;
-                    /**
-                     * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
-                     * @default none
-                     */
-                    prefix?: string | undefined;
                     /**
                      * @default none
                      */
@@ -951,11 +941,6 @@ export interface Config {
                      * @default none
                      */
                     layers?: string[] | undefined;
-                    /**
-                     * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
-                     * @default none
-                     */
-                    prefix?: string | undefined;
                     /**
                      * @default none
                      */
@@ -1353,11 +1338,6 @@ export interface Config {
                      * @default none
                      */
                     layers?: string[] | undefined;
-                    /**
-                     * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
-                     * @default none
-                     */
-                    prefix?: string | undefined;
                     /**
                      * @default none
                      */
@@ -1792,11 +1772,6 @@ export interface Config {
                      * @default none
                      */
                     layers?: string[] | undefined;
-                    /**
-                     * Alias prefix of the domains the namespace holds, consumed by the alias generation. An empty prefix gives them `#<domain>`.
-                     * @default none
-                     */
-                    prefix?: string | undefined;
                     /**
                      * @default none
                      */

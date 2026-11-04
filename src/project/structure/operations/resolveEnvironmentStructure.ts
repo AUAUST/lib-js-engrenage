@@ -346,9 +346,6 @@ export function resolveEnvironmentStructure({
           ...(namespace.layers === undefined
             ? {}
             : { layers: namespace.layers }),
-          ...(namespace.prefix === undefined
-            ? {}
-            : { prefix: namespace.prefix }),
         },
         {
           scopes: [...parent.scopes, ...namespace.roles.enable],
@@ -473,9 +470,6 @@ export function resolveEnvironmentStructure({
     ...(rootDeclaration?.layers === undefined
       ? {}
       : { layers: rootDeclaration.layers }),
-    ...(rootDeclaration?.prefix === undefined
-      ? {}
-      : { prefix: rootDeclaration.prefix }),
     children,
   });
 
