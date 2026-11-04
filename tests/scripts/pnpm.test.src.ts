@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
-import { pnpm } from "#scripts/support/pnpm";
+import { pnpm } from "#scripts/pnpm";
 import { runCommand } from "#tests/utils/runCommand";
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 

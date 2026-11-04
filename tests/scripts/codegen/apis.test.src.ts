@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { apis } from "#scripts/support/codegen/apis";
+import { apis } from "#scripts/codegen/apis";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";

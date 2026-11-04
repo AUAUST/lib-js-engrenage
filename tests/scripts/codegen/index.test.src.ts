@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { codegen } from "#scripts/support/codegen/index";
+import { codegen } from "#scripts/codegen/index";
 import { runCommand } from "#tests/utils/runCommand";
 import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
 
@@ -21,19 +21,19 @@ function createGenerator(name: string): CommandDefinition {
   };
 }
 
-vi.mock("#scripts/support/codegen/apis", () => {
+vi.mock("#scripts/codegen/apis", () => {
   return { apis: createGenerator("apis") };
 });
 
-vi.mock("#scripts/support/codegen/config", () => {
+vi.mock("#scripts/codegen/config", () => {
   return { config: createGenerator("config") };
 });
 
-vi.mock("#scripts/support/codegen/rules", () => {
+vi.mock("#scripts/codegen/rules", () => {
   return { rules: createGenerator("rules") };
 });
 
-vi.mock("#scripts/support/codegen/barrels", () => {
+vi.mock("#scripts/codegen/barrels", () => {
   return { barrels: createGenerator("barrels") };
 });
 

@@ -52,3 +52,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: `agentsSchema` descriptions of `claudeSettings` and `codexHooks` say "the edit hook"; the step prompts in `createClaudeSettingsStep.ts` and `createCodexHooksStep.ts` omit the budget and github hooks; #137 and #165 still describe `syncEditHook` and a `PostToolUse` entry only.
 - done: descriptions, prompts and issues match.
+
+## Stale after #147
+
+- why: AGENTS.md "Project and tools" and "Modules and exports" still describe `src/support/` and codegen in `src/`, and its Commands line should name `scripts/codegen/`; #147's table still lists `sync…` names and `scripts/support/codegen/…` paths.
+- done: the map and issue match `scripts/codegen/` and the `generate…` names.

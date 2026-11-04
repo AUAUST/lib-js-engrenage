@@ -43,7 +43,7 @@ import { listEsSelections } from "#project/baseline/operations/listEsSelections"
 import {
   esInterfaceAliases,
   esMemberCompatKeys,
-} from "#tools/typescript/constants";
+} from "#scripts/codegen/constants";
 import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
 import { formatModule } from "#tools/typescript/operations/formatModule";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
@@ -464,7 +464,7 @@ export async function generateEditions(
 
       if (!isTypeOnly) {
         failures.push(
-          `lib.${name}.d.ts declares ${describeDeclaration(declaration)}, which matches no web-features compat key: add it to esMemberCompatKeys or esInterfaceAliases in src/tools/typescript/constants.ts`,
+          `lib.${name}.d.ts declares ${describeDeclaration(declaration)}, which matches no web-features compat key: add it to esMemberCompatKeys or esInterfaceAliases in scripts/codegen/constants.ts`,
         );
       }
     }

@@ -13,7 +13,7 @@ export const rules = defineCommand((command) => {
         await import("#workflows/registry/operations/loadConfig");
 
       const { generateRuleTypes } =
-        await import("#tools/eslint/operations/generateRuleTypes");
+        await import("#scripts/codegen/generateRuleTypes");
 
       const config = await loadConfig();
 

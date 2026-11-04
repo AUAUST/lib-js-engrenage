@@ -86,3 +86,21 @@ Project structure description, its report and the tooling generated from it.
 - why: `HookEvent`, `HookDefinition` and `BudgetMode` sit in `tools/agents/types/` though hook-sync vocabulary is shared by `agents/claude` and `agents/codex` and the map has no home for code shared by both; `parseGithubCommand` and `measureGithubCommand` are GitHub-command logic in `agents/utils` (`tools/github/utils` cannot be imported by a `tools` peer); `getEntryBudgetKind` hard-codes the `.ai/backlog` layout with `debtFile`, split from `createBacklogStep`.
 - want: a home for code shared by the agent sub-domains, a rule for logic about another tool's commands, one owner of the backlog layout.
 - done: each piece has one owner.
+
+## 14. `scripts` files classify inconsistently (#147)
+
+- why: `engrenage structure --check` reports `scripts/codegen/{apis,barrels,config,editions,rules}.ts` and `generate*.ts` as files outside any role; `scripts/codegen/constants.ts` classifies as a plain file, not the domain `constants.ts` role; `scripts/pnpm.ts` and `scripts/index.ts` sit loose at the environment root; the conventions do not say how a CLI command module relates to the generator function it runs (each generator is two modules, command and `generate…`).
+- want: let `scripts` domains hold loose files, or define roles (`generators/`, `commands/`) and say how commands and functions pair.
+- done: `structure --check` classifies every `scripts` file.
+
+## 15. Generator wiring is hand-listed (#147)
+
+- why: the `generated` globs list `Rules.ts` and `rules/**` by hand while `ConfigInput.ts` and `editions/constants.ts` are generated but not listed (the generators format them); `scripts/codegen/index.ts` runs generators in a hard-coded order (`editions, apis, config, rules, barrels`) derived from nothing.
+- want: derive the globs and the order from the generators.
+- done: adding a generator needs no second list.
+
+## 16. Generated `ConfigInput` stays one file in `project/config/types` (#147)
+
+- why: #147 step 3 asked for per-domain input types and a composed type in `workflows/registry/types/`; `project` cannot import `workflows` and `defineConfig` types its argument with `ConfigInput`. Sections do not map one to one onto domains (`aliases`, `roles` → `project/structure`; `cache`, `debug`, `define` → `project/config`; seven environments → `project/environments`); the file is 2,102 lines.
+- want: per-domain `<Domain>Input` types composed without `project` importing `workflows`, and a `defineConfig` that does not need the tool input types.
+- done: the generated input type is split by owning domain.

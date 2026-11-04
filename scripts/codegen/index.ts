@@ -1,8 +1,8 @@
-import { apis } from "#scripts/support/codegen/apis";
-import { barrels } from "#scripts/support/codegen/barrels";
-import { config } from "#scripts/support/codegen/config";
-import { editions } from "#scripts/support/codegen/editions";
-import { rules } from "#scripts/support/codegen/rules";
+import { apis } from "#scripts/codegen/apis";
+import { barrels } from "#scripts/codegen/barrels";
+import { config } from "#scripts/codegen/config";
+import { editions } from "#scripts/codegen/editions";
+import { rules } from "#scripts/codegen/rules";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { registerSubcommands } from "#workflows/cli/operations/registerSubcommands";
 

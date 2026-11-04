@@ -1,10 +1,10 @@
 import { describe, expect, test } from "vitest";
 
 import { editions } from "#project/baseline/editions/index";
+import { generateEditions } from "#scripts/codegen/generateEditions";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
-import { generateEditions } from "#tools/typescript/operations/generateEditions";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
 describe("editions", () => {

@@ -32,7 +32,7 @@
     "lint:fix": "pnpm run engrenage eslint:fix",
     "lint:suppress": "pnpm run engrenage eslint:suppress",
     "ready": "pnpm install --frozen-lockfile && pnpm run support codegen && pnpm run engrenage sync && pnpm run ci && echo 'Ready!'",
-    "support": "node scripts/support/index.ts",
+    "support": "node scripts/index.ts",
     "test": "pnpm run engrenage vitest && pnpm run engrenage typecheck",
     "typecheck": "pnpm run engrenage typecheck",
     "typecheck:dist": "pnpm run engrenage typecheck:dist",

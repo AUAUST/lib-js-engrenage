@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 
+import { generateApiDeclarations } from "#scripts/codegen/generateApiDeclarations";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
-import { generateApiDeclarations } from "#tools/typescript/operations/generateApiDeclarations";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
 function createTestConfig() {

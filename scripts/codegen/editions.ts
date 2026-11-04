@@ -2,27 +2,27 @@
 
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 
-export const config = defineCommand((command) => {
+export const editions = defineCommand((command) => {
   return command
     .description(
-      "Generate the documented Config interface from the descriptions of the config schema.",
+      "Generate the ES editions of TypeScript with the Baseline date of each of their libs from web-features.",
     )
     .option("--check", "report an outdated file without writing it", false)
     .action(async ({ check }) => {
       const { loadConfig } =
         await import("#workflows/registry/operations/loadConfig");
 
-      const { generateConfigTypes } =
-        await import("#workflows/registry/operations/generateConfigTypes");
+      const { generateEditions } =
+        await import("#scripts/codegen/generateEditions");
 
       const { settleChanges } =
         await import("#workflows/cli/operations/settleChanges");
 
-      const resolved = await loadConfig();
+      const config = await loadConfig();
 
-      await generateConfigTypes(resolved);
+      await generateEditions(config);
 
-      await settleChanges(resolved, {
+      await settleChanges(config, {
         check,
       });
     });
