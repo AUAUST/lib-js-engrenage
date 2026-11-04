@@ -8,13 +8,21 @@ import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 import type { File } from "#types/File";
 
 function listReferencedFiles(config: ProjectConfig): readonly File[] {
-  return flatMap(tsconfigEnvironments, (name) => {
-    const { owner, file, check } = config[name].tsconfig;
+  return [
+    ...flatMap(tsconfigEnvironments, (name) => {
+      const { owner, file, check } = config[name].tsconfig;
 
-    return config[name].active && owner === name && check && file !== undefined
-      ? [file]
-      : [];
-  });
+      return config[name].active &&
+        owner === name &&
+        check &&
+        file !== undefined
+        ? [file]
+        : [];
+    }),
+    ...flatMap(config.workspaces, ({ workspaces }) => {
+      return map(workspaces, ({ tsconfig }) => tsconfig);
+    }),
+  ];
 }
 
 export function produceTsconfigSolution(

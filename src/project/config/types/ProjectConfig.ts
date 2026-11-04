@@ -23,6 +23,7 @@ import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
 import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
 import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
+import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
@@ -52,6 +53,7 @@ export interface ProjectConfig {
   readonly scripts: ResolvedScripts;
   readonly data: ResolvedData;
   readonly tooling: ResolvedTooling;
+  readonly workspaces: readonly ResolvedWorkspaceGroup[];
   readonly structure: ResolvedStructure;
   readonly aliases: ResolvedAliases;
   readonly importRules: readonly ImportRule[];

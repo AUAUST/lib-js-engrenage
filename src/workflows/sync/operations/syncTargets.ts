@@ -1,10 +1,12 @@
 import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
+import { syncWorkspaceFiles } from "#project/workspaces/setup/syncWorkspaceFiles";
 import { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSettings";
 import { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 import { syncChangesetConfig } from "#tools/changesets/setup/syncChangesetConfig";
 import { syncGitignoreFile } from "#tools/git/setup/syncGitignoreFile";
 import { syncWorkflowFiles } from "#tools/github/setup/syncWorkflowFiles";
+import { syncWorkspaceFile } from "#tools/pnpm/setup/syncWorkspaceFile";
 import { syncPrettierignoreFile } from "#tools/prettier/setup/syncPrettierignoreFile";
 import { syncAliases } from "#tools/typescript/setup/syncAliases";
 import { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
@@ -27,10 +29,12 @@ export const syncTargets = {
   gitignore: defineSyncTarget(syncGitignoreFile),
   globals: defineSyncTarget(syncEnvFile),
   package: defineSyncTarget(syncPackageJson),
+  pnpm: defineSyncTarget(syncWorkspaceFile),
   prettierignore: defineSyncTarget(syncPrettierignoreFile),
   vscode: defineSyncTarget(syncVscodeFiles, {
     settings: "create .vscode/settings.json when it is missing",
     extensions: "create .vscode/extensions.json when it is missing",
   }),
   workflows: defineSyncTarget(syncWorkflowFiles),
+  workspaces: defineSyncTarget(syncWorkspaceFiles),
 };

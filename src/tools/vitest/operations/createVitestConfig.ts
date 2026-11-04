@@ -2,8 +2,10 @@ import { realpathSync } from "node:fs";
 
 import { configDefaults, coverageConfigDefaults } from "vitest/config";
 
+import { flatMap } from "@auaust/primitive-kit/arrays";
 import type { Maybe } from "@auaust/toolkit/types";
 
+import { filesIn } from "#foundation/filesystem/utils/filesIn";
 import { resolve } from "#foundation/filesystem/utils/resolve";
 import { validate } from "#foundation/options/utils/validate";
 import { optionsSchema } from "#tools/vitest/config/schemas/optionsSchema";
@@ -26,6 +28,7 @@ import type { ResolvedTests } from "#project/environments/types/ResolvedTests";
 import type { PackageJson } from "#project/package/types/PackageJson";
 import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
 import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
+import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";
 import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
 import type { Plugin } from "#tools/vite/types/Plugin";
 import type { Config } from "#tools/vitest/types/Config";
@@ -42,6 +45,7 @@ interface Sections {
   tests: ResolvedTests;
   typescript: ResolvedTypescript;
   files: ResolvedFiles;
+  workspaces: readonly ResolvedWorkspaceGroup[];
 }
 
 function createSourcePlugins(
@@ -88,7 +92,12 @@ function createTestsInclude(
   // @debt `include` replaces Vitest's default, so `.js` and `.mjs` tests are no longer collected
   const { plain, source, dist } = get("tests").patterns;
 
-  return [...plain, ...(testsBuild ? dist : source)];
+  const patterns = [...plain, ...(testsBuild ? dist : source)];
+
+  return [
+    ...patterns,
+    ...flatMap(get("workspaces"), ({ dirs }) => filesIn(dirs, patterns)),
+  ];
 }
 
 export function createVitestConfig(

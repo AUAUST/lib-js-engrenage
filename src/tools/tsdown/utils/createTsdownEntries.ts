@@ -6,6 +6,7 @@ import type { Entries } from "#tools/tsdown/types/Entries";
 export function createTsdownEntries(
   pathAliases: PathAliases,
   bins: Entries,
+  workspaces: Entries,
 ): Entries {
   const tsdownEntries: Entries = {};
 
@@ -13,16 +14,21 @@ export function createTsdownEntries(
     tsdownEntries[name] = path;
   }
 
-  for (const [name, path] of entries(bins)) {
-    const entryPath = tsdownEntries[name];
+  for (const [kind, extra] of [
+    ["Bin", bins],
+    ["Workspace", workspaces],
+  ] as const) {
+    for (const [name, path] of entries(extra)) {
+      const entryPath = tsdownEntries[name];
 
-    if (entryPath !== undefined) {
-      throw new Error(
-        `Bin entry '${name}' conflicts with the package entry '${entryPath}'`,
-      );
+      if (entryPath !== undefined) {
+        throw new Error(
+          `${kind} entry '${name}' conflicts with the package entry '${entryPath}'`,
+        );
+      }
+
+      tsdownEntries[name] = path;
     }
-
-    tsdownEntries[name] = path;
   }
 
   return tsdownEntries;

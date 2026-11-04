@@ -6,8 +6,9 @@ import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
 import { tsconfigEnvironments } from "#project/config/constants";
 import { jsonIndentation } from "#project/format/constants";
 import { tsconfigProducers } from "#project/tsconfig/operations/tsconfigProducers";
+import { isLeftAlone } from "#project/tsconfig/utils/isLeftAlone";
+import { toJsonValue } from "#project/tsconfig/utils/toJsonValue";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { ManagedListOption } from "#project/config/types/ManagedListOption";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
@@ -153,25 +154,6 @@ function listInheritedPaths(
   return flatMap(inheritedLists, ([path, option]) => {
     return isDefaultOption(option) ? [[...path]] : [];
   });
-}
-
-function isLeftAlone(edit: JsonEdit, leftAlone: readonly string[]): boolean {
-  const path = edit.path.join(".");
-
-  return leftAlone.some((alone) => {
-    return path === alone || path.startsWith(`${alone}.`);
-  });
-}
-
-// @debt same JSON round-trip as serialize in defineSchema; one shared JSON-value converter could serve both
-function toJsonValue(value: unknown, subject: string): JsonValue {
-  const expression = JSON.stringify(value);
-
-  if (expression === undefined) {
-    throw new TypeError(`${subject} is not JSON-serializable`);
-  }
-
-  return JSON.parse(expression);
 }
 
 function createEdits(

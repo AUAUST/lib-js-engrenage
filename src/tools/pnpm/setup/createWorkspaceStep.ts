@@ -1,9 +1,10 @@
-import { isMap, parseDocument } from "yaml";
+import { isMap } from "yaml";
 
 import { map } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
 import { workspaceFile, workspaceSettings } from "#tools/pnpm/constants";
+import { parseWorkspaceDocument } from "#tools/pnpm/utils/parseWorkspaceDocument";
 import type { Step } from "#project/steps/types/Step";
 import type { WorkspaceSettings } from "#tools/pnpm/types/WorkspaceSettings";
 
@@ -29,17 +30,7 @@ function renderWorkspace({
 }
 
 function addMissingBuildApprovals(content: string): string {
-  const document = parseDocument(content);
-
-  if (document.errors.length > 0) {
-    throw new Error(`Cannot read ${workspaceFile}`, {
-      cause: document.errors[0],
-    });
-  }
-
-  if (document.contents !== null && !isMap(document.contents)) {
-    throw new Error(`${workspaceFile} must contain a YAML mapping`);
-  }
+  const document = parseWorkspaceDocument(content);
 
   const builds = document.get("allowBuilds", true);
 

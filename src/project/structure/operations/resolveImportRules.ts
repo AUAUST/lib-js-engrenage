@@ -12,6 +12,7 @@ import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
 import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureNode } from "#project/structure/types/StructureNode";
+import type { Directory } from "#types/Directory";
 
 interface Reach {
   readonly targets: readonly ImportRuleTarget[];
@@ -598,16 +599,71 @@ function resolveElementRules(
   return rules;
 }
 
+function resolveWorkspaceRules({
+  workspaces,
+  srcActive,
+}: {
+  workspaces: readonly {
+    readonly dir: Directory;
+    readonly dependencies: readonly Directory[];
+  }[];
+  srcActive: boolean;
+}): ImportRule[] {
+  function element(path: Directory): ImportRuleTarget {
+    return { kind: "element", path };
+  }
+
+  return [
+    ...(srcActive
+      ? createRule(
+          { kind: "environment", environment: "src" },
+          workspaces.map(({ dir }) => element(dir)),
+          "forbid",
+          "root src never imports a workspace",
+        )
+      : []),
+    ...flatMap(workspaces, ({ dir, dependencies }) => {
+      const source: ImportRuleSource = { kind: "element", path: dir };
+
+      const others = workspaces.filter((other) => other.dir !== dir);
+
+      return [
+        ...createRule(
+          source,
+          others
+            .filter((other) => dependencies.includes(other.dir))
+            .map((other) => element(other.dir)),
+          "allow",
+          "a workspace imports another through a declared dependency",
+        ),
+        ...createRule(
+          source,
+          others
+            .filter((other) => !dependencies.includes(other.dir))
+            .map((other) => element(other.dir)),
+          "forbid",
+          "a workspace never imports a workspace that is not a declared dependency",
+        ),
+      ];
+    }),
+  ];
+}
+
 export function resolveImportRules({
   structures,
   roles,
   active,
   published,
+  workspaces,
 }: {
   structures: Partial<Record<StructureEnvironmentName, EnvironmentStructure>>;
   roles: Readonly<Record<RoleEnvironment, ResolvedRoles>>;
   active: Readonly<Record<StructureEnvironmentName, boolean>>;
   published: boolean;
+  workspaces: readonly {
+    readonly dir: Directory;
+    readonly dependencies: readonly Directory[];
+  }[];
 }): readonly ImportRule[] {
   return freeze([
     ...resolveEnvironmentRules({
@@ -615,10 +671,14 @@ export function resolveImportRules({
       active,
       published,
     }),
+    ...resolveWorkspaceRules({ workspaces, srcActive: active.src }),
     ...flatMap(elementEnvironments, (name) => {
       const structure = structures[name];
 
-      if (structure === undefined || roles[name].roles[indexFile] === undefined) {
+      if (
+        structure === undefined ||
+        roles[name].roles[indexFile] === undefined
+      ) {
         return [];
       }
 

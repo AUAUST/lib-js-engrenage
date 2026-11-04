@@ -8,6 +8,10 @@ import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
+function workspaceGlobs({ workspaces }: ProjectConfig): Globs {
+  return flatMap(workspaces, ({ globs }) => globs);
+}
+
 function resolveScopeReference(
   config: ProjectConfig,
   reference: ScopeReference,
@@ -22,6 +26,7 @@ function resolveScopeReference(
         ...scripts.globs,
         ...tests.globs,
         ...config.tooling.globs,
+        ...workspaceGlobs(config),
       ];
     }
 
@@ -63,6 +68,10 @@ function resolveScopeReference(
 
     case "files.tests": {
       return tests.globs;
+    }
+
+    case "files.workspaces": {
+      return workspaceGlobs(config);
     }
 
     case "files.code.published": {

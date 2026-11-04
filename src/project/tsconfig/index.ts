@@ -1,8 +1,10 @@
 // @barrel utils/*.ts named
+export { isLeftAlone } from "#project/tsconfig/utils/isLeftAlone";
 export { isPackageAlias } from "#project/tsconfig/utils/isPackageAlias";
 export { relativeToTsconfig } from "#project/tsconfig/utils/relativeToTsconfig";
 export { resolveTsconfig } from "#project/tsconfig/utils/resolveTsconfig";
 export { resolveTsconfigOwner } from "#project/tsconfig/utils/resolveTsconfigOwner";
+export { toJsonValue } from "#project/tsconfig/utils/toJsonValue";
 export { toTsconfigGlobs } from "#project/tsconfig/utils/toTsconfigGlobs";
 export { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
 // @end

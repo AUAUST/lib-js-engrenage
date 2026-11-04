@@ -16,6 +16,7 @@ import { traitsSchema } from "#project/presets/config/schemas/traitsSchema";
 import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 import { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
+import { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
 import { agentsSchema } from "#tools/agents/config/schemas/agentsSchema";
 import { gitSchema } from "#tools/git/config/schemas/gitSchema";
 import { githubSchema } from "#tools/github/config/schemas/githubSchema";
@@ -50,4 +51,5 @@ export const configDeclaration = declareObject({
   src: sourceSchema,
   tests: testsSchema,
   tooling: toolingSchema,
+  workspaces: workspacesSchema,
 });

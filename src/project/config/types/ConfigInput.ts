@@ -628,7 +628,7 @@ export interface ConfigInput {
                        */
                       types?: ManagedListOption<string> | undefined;
                       /**
-                       * Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.
+                       * Options written into `compilerOptions` after the ones engrenage derives; it wins over them.
                        * @default none
                        */
                       compilerOptions?:
@@ -866,7 +866,7 @@ export interface ConfigInput {
                        */
                       types?: ManagedListOption<string> | undefined;
                       /**
-                       * Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.
+                       * Options written into `compilerOptions` after the ones engrenage derives; it wins over them.
                        * @default none
                        */
                       compilerOptions?:
@@ -1185,7 +1185,7 @@ export interface ConfigInput {
                        */
                       types?: ManagedListOption<string> | undefined;
                       /**
-                       * Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.
+                       * Options written into `compilerOptions` after the ones engrenage derives; it wins over them.
                        * @default none
                        */
                       compilerOptions?:
@@ -1583,7 +1583,7 @@ export interface ConfigInput {
                        */
                       types?: ManagedListOption<string> | undefined;
                       /**
-                       * Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.
+                       * Options written into `compilerOptions` after the ones engrenage derives; it wins over them.
                        * @default none
                        */
                       compilerOptions?:
@@ -1827,7 +1827,7 @@ export interface ConfigInput {
                              */
                             types?: ManagedListOption<string> | undefined;
                             /**
-                             * Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.
+                             * Options written into `compilerOptions` after the ones engrenage derives; it wins over them.
                              * @default none
                              */
                             compilerOptions?:
@@ -2135,7 +2135,7 @@ export interface ConfigInput {
                        */
                       types?: ManagedListOption<string> | undefined;
                       /**
-                       * Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.
+                       * Options written into `compilerOptions` after the ones engrenage derives; it wins over them.
                        * @default none
                        */
                       compilerOptions?:
@@ -2158,5 +2158,86 @@ export interface ConfigInput {
               | undefined;
           }
       )
+    | undefined;
+  /**
+   * Workspaces of the project, by the glob matching their directories (`extensions/*`).
+   * Each glob is one environment; workspaces needing another structure or runtime get a glob of their own.
+   * Sync keeps `pnpm-workspace.yaml` in line with the globs and writes the managed keys of each workspace `package.json` and `tsconfig.json`.
+   * @default none
+   */
+  workspaces?:
+    | {
+        /**
+         * The environment of the workspaces a glob matches: each matched directory is a workspace with its own `package.json` and `tsconfig.json`.
+         */
+        [k: string]: {
+          /**
+           * Package name of every workspace the glob matches, with `{dir}` standing for the directory name of the workspace.
+           * Sync writes it as the `name` of the workspace `package.json`.
+           */
+          name: string;
+          /**
+           * Globs, inside each workspace, of files produced by tools, handled as `src.generated` is.
+           * @default none
+           */
+          generated?: ListOption<string> | undefined;
+          /**
+           * Globs, inside each workspace, of files that tools discover by path and that may export defaults, handled as `src.discovered` is.
+           * @default none
+           */
+          discovered?: ListOption<string> | undefined;
+          /**
+           * Options of the `tsconfig.json` sync writes in each workspace.
+           */
+          tsconfig?:
+            | {
+                /**
+                 * Value of `extends` in the `tsconfig.json` of each workspace.
+                 * `false` leaves the field to the file.
+                 * @default the base tsconfig
+                 */
+                extends?: ManagedListOption<string> | undefined;
+                /**
+                 * Value of `include` in the `tsconfig.json` of each workspace.
+                 * `false` leaves the field to the file.
+                 * @default the TypeScript files of the workspace
+                 */
+                include?: ManagedListOption<string> | undefined;
+                /**
+                 * Value of `exclude` in the `tsconfig.json` of each workspace.
+                 * `false` leaves the field to the file.
+                 * @default none, so the field is left to the file
+                 */
+                exclude?: ManagedListOption<string> | undefined;
+                /**
+                 * Value of `compilerOptions.lib` in the `tsconfig.json` of each workspace.
+                 * `false` leaves the field to the file.
+                 * @default none, so the field is left to the file
+                 */
+                lib?: ManagedListOption<string> | undefined;
+                /**
+                 * Value of `compilerOptions.types` in the `tsconfig.json` of each workspace.
+                 * `false` leaves the field to the file.
+                 * @default none, so the field is left to the file
+                 */
+                types?: ManagedListOption<string> | undefined;
+                /**
+                 * Options written into `compilerOptions` of each workspace `tsconfig.json`.
+                 * @default none
+                 */
+                compilerOptions?:
+                  | {
+                      [k: string]: unknown;
+                    }
+                  | undefined;
+                /**
+                 * Dotted paths in each workspace `tsconfig.json` that sync never writes.
+                 * @default none
+                 */
+                unmanaged?: ListOption<string> | undefined;
+              }
+            | undefined;
+        };
+      }
     | undefined;
 }

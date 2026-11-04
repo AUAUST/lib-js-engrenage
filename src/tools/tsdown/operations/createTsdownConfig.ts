@@ -46,7 +46,9 @@ import type { PackageJson } from "#project/package/types/PackageJson";
 import type { PathAliases } from "#project/tsconfig/types/PathAliases";
 import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
 import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
+import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";
 import type { Config } from "#tools/tsdown/types/Config";
+import type { Entries } from "#tools/tsdown/types/Entries";
 import type { Options } from "#tools/tsdown/types/Options";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -64,6 +66,7 @@ interface Sections {
   src: ResolvedSource;
   bin: ResolvedBin;
   data: ResolvedData;
+  workspaces: readonly ResolvedWorkspaceGroup[];
   build: ResolvedBuild;
   define: ResolvedDefine;
 }
@@ -88,6 +91,23 @@ const pluginFactories = {
   (typeof pluginNames)[number],
   (name: string, context: PluginContext) => TsdownPlugin[]
 >;
+
+function resolveWorkspaceEntries(
+  groups: readonly ResolvedWorkspaceGroup[],
+): Entries {
+  const entries: Entries = {};
+
+  for (const { dir, entry } of flatMap(
+    groups,
+    ({ workspaces }) => workspaces,
+  )) {
+    if (entry !== undefined) {
+      entries[dir] = entry;
+    }
+  }
+
+  return entries;
+}
 
 function readPackageSnapshot(path: File): string {
   return JSON.stringify(readJsonFile(path));
@@ -152,6 +172,8 @@ export function createTsdownConfig(
     filesystem: get("filesystem"),
   });
 
+  const workspaceEntries = resolveWorkspaceEntries(get("workspaces"));
+
   const customExports = resolveDataExports(
     { data: get("data") },
     sourceEntries,
@@ -161,7 +183,7 @@ export function createTsdownConfig(
 
   return {
     cwd: root,
-    entry: createTsdownEntries(sourceEntries, bins),
+    entry: createTsdownEntries(sourceEntries, bins, workspaceEntries),
     format: "esm",
     ...(source.runtime === undefined
       ? {}
@@ -191,7 +213,7 @@ export function createTsdownConfig(
     exports: {
       enabled: true,
       packageJson: false,
-      exclude: keys(bins),
+      exclude: [...keys(bins), ...keys(workspaceEntries)],
       customExports,
     },
     sourcemap,

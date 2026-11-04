@@ -48,6 +48,8 @@ import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntr
 import { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
 import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { resolveTsconfig } from "#project/tsconfig/utils/resolveTsconfig";
+import { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
+import { resolveWorkspaces } from "#project/workspaces/operations/resolveWorkspaces";
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { SectionResolvers } from "#foundation/options/types/SectionResolvers";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
@@ -504,6 +506,24 @@ export function createProjectSections({
     );
   }
 
+  const workspacesOption = once(() => {
+    return resolveSection(
+      workspacesSchema,
+      raw.workspaces,
+      context,
+      "workspaces",
+    );
+  });
+
+  function workspaces() {
+    return resolveWorkspaces({
+      root,
+      filesystem,
+      options: workspacesOption(),
+      typescriptFiles: typescriptFiles(),
+    });
+  }
+
   function structure() {
     const sourceStructure = resolveStructure("src", get("src"), sourceOption());
     const binStructure = resolveStructure("bin", get("bin"), binOption());
@@ -583,6 +603,7 @@ export function createProjectSections({
         tooling: get("tooling").active,
       },
       published: get("traits").published,
+      workspaces: flatMap(get("workspaces"), ({ workspaces }) => workspaces),
     });
   }
 
@@ -624,17 +645,30 @@ export function createProjectSections({
 
   function files() {
     const environments = [get("src"), get("tests"), get("bin"), get("scripts")];
+    const groups = get("workspaces");
 
     return freeze({
-      generated: flatMap(environments, ({ dirs, generated }) => {
-        return filesIn(dirs, generated);
-      }),
-      discovered: flatMap(environments, ({ dirs, discovered, roles }) => {
-        return filesIn(dirs, [...discovered, ...listDiscoveredGlobs(roles)]);
-      }),
+      generated: [
+        ...flatMap(environments, ({ dirs, generated }) => {
+          return filesIn(dirs, generated);
+        }),
+        ...flatMap(groups, ({ dirs, generated }) => filesIn(dirs, generated)),
+      ],
+      discovered: [
+        ...flatMap(environments, ({ dirs, discovered, roles }) => {
+          return filesIn(dirs, [...discovered, ...listDiscoveredGlobs(roles)]);
+        }),
+        ...flatMap(groups, ({ dirs, discovered }) => {
+          return filesIn(dirs, discovered);
+        }),
+      ],
       fixtures: filesIn(get("tests").dirs, get("tests").fixtures),
       published: [...source().globs, ...bin().globs],
-      private: [...tests().globs, ...scripts().globs],
+      private: [
+        ...tests().globs,
+        ...scripts().globs,
+        ...flatMap(groups, ({ globs }) => globs),
+      ],
     });
   }
 
@@ -737,6 +771,7 @@ export function createProjectSections({
     scripts,
     data,
     tooling,
+    workspaces,
     structure,
     aliases,
     importRules,
