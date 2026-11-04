@@ -6,6 +6,7 @@ import { engrenage, packageJsonFile } from "#constants";
 import { readJsonValue } from "#foundation/json/utils/readJsonValue";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
+import { agentNames } from "#tools/agents/constants";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { Presets } from "#project/presets/types/Presets";
 import type { Invocation } from "#project/steps/types/Invocation";
@@ -144,7 +145,7 @@ export function createStepContext({
 
   let presets: Presets = config.presets;
 
-  let agents = config.agents.preferred;
+  let agents: readonly Agent[] | undefined = config.agents.preferred;
 
   const overrides: {
     [Section in keyof Config]?: () => Config[Section];
@@ -165,12 +166,12 @@ export function createStepContext({
     presets = chosen;
   }
 
-  function getAgents(): readonly Agent[] | undefined {
+  function getAgents(): readonly string[] | undefined {
     return agents;
   }
 
-  function setAgents(chosen: Agent[]) {
-    agents = chosen;
+  function setAgents(chosen: readonly string[]) {
+    agents = agentNames.filter((name) => chosen.includes(name));
   }
 
   return freeze<StepContext<Config>>({

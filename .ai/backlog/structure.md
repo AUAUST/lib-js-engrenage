@@ -74,3 +74,9 @@ Project structure description, its report and the tooling generated from it.
 - why: the public `loadConfig` returns `ProjectConfig` only, so the tests of `attribution`, `syncAgentFiles`, `syncClaudeSettings`, `syncCodexFiles`, `syncGitignoreFile`, `syncPrettierignoreFile` and `syncVscodeFiles` moved to `.test.src.ts`, against "whatever is public is tested through its public specifier".
 - want: decide how public consumers get the full `Config` (public `workflows/registry`, per-tool loaders, or accept source-only).
 - done: public API is tested through public specifiers, or the exception is stated.
+
+## 12. Generated `ConfigInput` and `defineConfig` sit below the registry (#143)
+
+- why: `ConfigInput.ts` is generated into `project/config/types` by the registry's generator (a lower layer holding a higher layer's output); `defineConfig` stays in `project/config` while the registry owns the schema; `exposedFilesSchema` moved to `project/package/config/schemas`, a `config/` role that domain did not have; `define` and `cache` schemas and `declareDefines` have no project domain; environment schemas are composed in `project/environments`, not the registry, because the partial `loadConfig` resolves them.
+- want: decide where `ConfigInput` and `defineConfig` live and where the composition belongs; amend the plan wording.
+- done: generated output sits with its generator's layer or the exception is stated.

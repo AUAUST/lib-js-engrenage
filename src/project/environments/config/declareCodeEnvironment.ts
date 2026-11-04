@@ -1,10 +1,7 @@
-import { boolean } from "valibot";
-
-import { declare } from "#foundation/options/utils/declare";
+import { declareDefines } from "#project/config/config/declareDefines";
 import { declareList } from "#project/config/config/declareList";
 import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
 import { globSchema } from "#project/config/config/schemas/values/globsSchema";
-import { defaultDefines } from "#project/config/constants";
 import { structureOptions } from "#project/structure/config/schemas/structureOptions";
 import { declareEnvironmentTsconfig } from "#project/tsconfig/config/declareEnvironmentTsconfig";
 import type { Directories } from "#types/Directories";
@@ -36,10 +33,7 @@ export function declareCodeEnvironment(
       ],
       optional: { value: [] },
     }),
-    defines: declare(boolean(), {
-      description: `Whether the ${name} tsconfig includes the env file declaring the \`define.values\` globals.`,
-      optional: { value: defaultDefines[name] },
-    }),
+    defines: declareDefines(name),
     tsconfig: declareEnvironmentTsconfig(name, {
       description: [
         `Options of the tsconfig that sync writes for the ${name} environment.`,

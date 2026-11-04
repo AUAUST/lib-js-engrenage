@@ -6,12 +6,11 @@ import { presets } from "#project/presets/constants";
 import { createConfigModule } from "#project/steps/utils/createConfigModule";
 import type { Presets } from "#project/presets/types/Presets";
 import type { Step } from "#project/steps/types/Step";
-import type { Agent } from "#tools/agents/types/Agent";
 import type { File } from "#types/File";
 
 function renderOptions(
   chosen: Presets,
-  agents: readonly Agent[] | undefined,
+  agents: readonly string[] | undefined,
 ): string {
   const list = map(chosen, (preset) => JSON.stringify(preset)).join(", ");
 

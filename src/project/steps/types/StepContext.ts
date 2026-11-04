@@ -6,8 +6,6 @@ import type { OptionContext } from "#foundation/options/types/OptionContext";
 import type { Presets } from "#project/presets/types/Presets";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { Prompter } from "#project/steps/types/Prompter";
-// @debt reaches into tools/agents, a higher layer than project; the step context could carry the chosen agents as plain names
-import type { Agent } from "#tools/agents/types/Agent";
 import type { PackageName } from "#types/PackageName";
 
 export interface StepContext<Sections = object> extends Pick<
@@ -16,8 +14,8 @@ export interface StepContext<Sections = object> extends Pick<
 > {
   get: OptionContext<Sections>["get"];
   readonly filesystem: Filesystem;
-  getAgents(): readonly Agent[] | undefined;
-  setAgents(chosen: Agent[]): void;
+  getAgents(): readonly string[] | undefined;
+  setAgents(chosen: readonly string[]): void;
   getPresets(): Presets;
   setPresets(chosen: Presets): void;
   readPackageJson(location: JSONPath): unknown;

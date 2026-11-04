@@ -14,13 +14,13 @@ import {
 } from "#project/baseline/constants";
 import { findCurrentMonth } from "#project/baseline/operations/findCurrentMonth";
 import { declareList } from "#project/config/config/declareList";
-import { exposedFilesSchema } from "#project/config/config/schemas/values/exposedFilesSchema";
 import { nodeMajorSchema } from "#project/config/config/schemas/values/nodeMajorSchema";
 import {
   defaultSourceDirectories,
   disabledCodeEnvironment,
 } from "#project/config/constants";
 import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
+import { exposedFilesSchema } from "#project/package/config/schemas/exposedFilesSchema";
 import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 

@@ -2,8 +2,8 @@ import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { declareList } from "#project/config/config/declareList";
 import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
-import { exposedFilesSchema } from "#project/config/config/schemas/values/exposedFilesSchema";
 import { defaultDataDirectories } from "#project/config/constants";
+import { exposedFilesSchema } from "#project/package/config/schemas/exposedFilesSchema";
 
 export const dataSchema = declareObject(
   {

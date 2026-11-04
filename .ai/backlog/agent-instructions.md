@@ -36,3 +36,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: `.ai/debt.md` and plan §Config pipeline still describe `ResolvedConfig` and `createResolvedConfig`; AGENTS.md project map omits `project/steps` and `workflows/registry`; docs describing `loadConfig` as returning every section (the public one is partial now); `scripts/support/codegen/config.ts` description says "Config interface" (now `ConfigInput`).
 - done: each matches the code.
+
+## Stale after #143 round 5
+
+- why: plan §Config pipeline says the registry composes each environment's schema; it is composed in `project/environments`.
+- done: the plan matches.
