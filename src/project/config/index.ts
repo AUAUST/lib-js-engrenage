@@ -1,4 +1,4 @@
-// @debt `@auaust/engrenage/config` still exports `createContext`, `define`, `PackageJson` and many resolved types beyond `defineConfig`, `ConfigInput` and `Resolvable`
+/** @debt `@auaust/engrenage/config` still exports `createContext`, `define`, `PackageJson` and many resolved types beyond `defineConfig`, `ConfigInput` and `Resolvable` */
 export { defineConfig } from "#project/config/operations/defineConfig";
 export { createContext } from "#project/config/utils/createContext";
 export { define } from "#project/config/utils/define";

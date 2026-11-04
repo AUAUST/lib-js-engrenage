@@ -1,10 +1,10 @@
-// @debt the root entry imports foundation and project modules directly instead of through their `index.ts` surfaces, which the environment-root rule allows only for public surfaces
 export { syncFiles } from "#foundation/blocks/operations/syncFiles";
 export { syncIgnoreFile } from "#foundation/blocks/operations/syncIgnoreFile";
 export { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
 export { filesIn } from "#foundation/filesystem/utils/filesIn";
 export { loadConfig } from "#workflows/registry/operations/loadConfig";
 export type { Config } from "#workflows/registry/types/Config";
+/** @debt the root entry imports foundation and project modules directly instead of through their `index.ts` surfaces, which the environment-root rule allows only for public surfaces */
 
 // @barrel types/*.ts all
 export * from "#types/BlockFillers";
