@@ -1,0 +1,35 @@
+# Snapshot of the #137 tree
+
+Taken 2026-11-04 from AUAUST/lib-js-engrenage. Sub-issue order as returned by the GitHub sub-issues API; #172 is a sub-issue of #137 and also listed as a root.
+
+```
+#137 Plan: domain-based source architecture (OPEN)
+  - #158 Block: test safety net, declaration helper, import rules and codegen speed (OPEN)
+    - #155 vitest: dist mode tests the built package through public specifiers (CLOSED)
+    - #138 eslint: prototype of boundaries generated from a structure description (OPEN)
+    - #142 config: role catalogue and contracts (CLOSED)
+    - #146 config: declaration helper and computed defaults (CLOSED)
+    - #162 structure: import rules resolved from the project structure (OPEN)
+    - #163 codegen: slow generator run (CLOSED)
+  - #148 config: project structure description (CLOSED)
+  - #140 Block: tests layout and generated aliases (OPEN)
+    - #164 structure: tests layout following the tested environments (OPEN)
+    - #159 sync: aliases generated from the project structure description (OPEN)
+  - #156 cli: report of the resolved project structure (OPEN)
+  - #139 architecture: src relocated into namespaces and domains (OPEN)
+  - #141 architecture: modules sorted into roles (OPEN)
+  - #143 config: layered registry with lazy sections (OPEN)
+  - #172 agents: length budgets enforced by hooks (OPEN)
+  - #144 Block: configuration shape, generated code and ownership (OPEN)
+    - #147 codegen: generators in scripts, generated code placed by role (OPEN)
+    - #153 config: global settings, presets, traits and tool option placement (OPEN)
+    - #160 config: engrenage touches only declared environments (OPEN)
+  - #161 Block: public API and workspaces (OPEN)
+    - #154 architecture: public API of the domains and the formatting contract (OPEN)
+    - #157 config: workspaces with generated package files (OPEN)
+  - #149 Block: structure enforcement and agent guidance (OPEN)
+    - #150 eslint: boundaries and role contracts generated from the project structure (OPEN)
+    - #151 agents: project map generated from the project structure (OPEN)
+  - #152 agents: rewrite the project structure instructions (OPEN)
+#172 agents: length budgets enforced by hooks (OPEN)
+```
