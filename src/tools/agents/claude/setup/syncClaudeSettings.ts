@@ -11,9 +11,16 @@ import {
   claudeSettingsFile,
 } from "#tools/agents/claude/constants";
 import { syncEditHook } from "#tools/agents/operations/syncEditHook";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
-function syncAttribution(config: ResolvedConfig, attribution: boolean) {
+function syncAttribution(
+  config: {
+    filesystem: Filesystem;
+    resolve(...paths: string[]): string;
+  },
+  attribution: boolean,
+) {
   const path = config.resolve(claudeSettingsFile);
   const location = ["attribution"];
   const content = config.filesystem.read(claudeSettingsFile) ?? emptyObjectFile;
@@ -43,7 +50,11 @@ function syncAttribution(config: ResolvedConfig, attribution: boolean) {
 }
 
 export function syncClaudeSettings(
-  config: ResolvedConfig,
+  config: {
+    filesystem: Filesystem;
+    resolve(...paths: string[]): string;
+    agents: ResolvedAgents;
+  },
   { settings = false }: { settings?: boolean } = {},
 ) {
   const { claudeSettings: configured, attribution } = config.agents;

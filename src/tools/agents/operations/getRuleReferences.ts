@@ -1,10 +1,12 @@
 import { claudeRulesGlob } from "#tools/agents/claude/constants";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { File } from "#types/File";
 
 export function getRuleReferences({
   filesystem,
-}: ResolvedConfig): ReadonlyMap<string, readonly File[]> {
+}: {
+  filesystem: Filesystem;
+}): ReadonlyMap<string, readonly File[]> {
   const references = new Map<string, File[]>();
 
   for (const file of filesystem.glob(claudeRulesGlob)) {

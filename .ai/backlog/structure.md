@@ -44,3 +44,9 @@ Project structure description, its report and the tooling generated from it.
 - why: `createPrompter` (adapter of the `Prompter` port) stays in `workflows/cli/operations`, `workflows/sync` has no `adapters/` role to take it; `syncPackageJson`, a sync target of no tool, went to `workflows/sync/setup/`; the plan names only "init and sync step contracts" for `project/steps`, yet `Prompter` and `Invocation` live there.
 - want: decide whether `workflows` domains get `adapters/` and whether `setup/` may hold targets of no tool; state `project/steps` content.
 - done: the roles and the plan agree.
+
+## 7. Config helpers and shared inline types have no home (#143)
+
+- why: plan `Config` is "one getter per section", yet `root`, `resolve`, `cacheFor`, `filesystem` and `configFile` are not sections and `get` currently reaches them; `resolve(...paths: string[]): string` repeats inline in about 10 agents signatures with no shared type allowed; `ResolvedAgents` (`tools/agents/types`) derives `Agent` from `preferredSchema` in `project/config`, so type and schema sit in different domains.
+- want: decide whether helpers are sections, a separate `context`, or `Config` members; where shared argument shapes live.
+- done: the plan states it and the code follows.

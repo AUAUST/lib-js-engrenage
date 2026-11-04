@@ -50,7 +50,7 @@ export function createStepContext({
 }: {
   config: ResolvedConfig;
   prompter: Prompter;
-}): StepContext {
+}): StepContext<ResolvedConfig> {
   const { filesystem } = config;
 
   const invocations: Invocation[] = [];
@@ -144,6 +144,19 @@ export function createStepContext({
 
   let presets: Presets = config.presets;
 
+  let agents = config.agents.preferred;
+
+  const overrides: {
+    [Section in keyof ResolvedConfig]?: () => ResolvedConfig[Section];
+  } = {
+    presets: () => {
+      return presets;
+    },
+    agents: () => {
+      return { ...config.agents, preferred: agents };
+    },
+  };
+
   function getPresets(): Presets {
     return presets;
   }
@@ -151,8 +164,6 @@ export function createStepContext({
   function setPresets(chosen: Presets) {
     presets = chosen;
   }
-
-  let agents = config.agents.preferred;
 
   function getAgents(): readonly Agent[] | undefined {
     return agents;
@@ -162,17 +173,12 @@ export function createStepContext({
     agents = chosen;
   }
 
-  return freeze<StepContext>({
-    // @debt spreading the resolved config evaluates all of its lazy getters on every access, and setPresets is not reflected here while setAgents is
-    get config() {
-      return {
-        ...config,
-        agents: {
-          ...config.agents,
-          preferred: agents,
-        },
-      };
+  return freeze<StepContext<ResolvedConfig>>({
+    get(section) {
+      return overrides[section]?.() ?? config[section];
     },
+    // @debt the VS Code steps still read the whole config; see StepContext
+    config,
     getAgents,
     setAgents,
     filesystem,

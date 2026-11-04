@@ -5,10 +5,15 @@ import {
 } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
 import { syncEditHook } from "#tools/agents/operations/syncEditHook";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
 export function syncCodexFiles(
-  config: ResolvedConfig,
+  config: {
+    filesystem: Filesystem;
+    resolve(...paths: string[]): string;
+    agents: ResolvedAgents;
+  },
   { hooks = false }: { hooks?: boolean } = {},
 ) {
   if (config.agents.preferred?.includes("codex") !== true) {

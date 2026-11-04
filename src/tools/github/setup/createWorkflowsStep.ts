@@ -1,9 +1,14 @@
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
+import type { ResolvedGithub } from "#project/config/types/ResolvedGithub";
 import type { Step } from "#project/steps/types/Step";
 import type { StepContext } from "#project/steps/types/StepContext";
 import type { File } from "#types/File";
+
+interface Sections {
+  github: ResolvedGithub;
+}
 
 interface MissingWorkflow {
   file: File;
@@ -11,13 +16,13 @@ interface MissingWorkflow {
 }
 
 function findMissingWorkflows({
-  config,
+  get,
   filesystem,
   getPresets,
   hasDependency,
-}: StepContext): readonly MissingWorkflow[] {
+}: StepContext<Sections>): readonly MissingWorkflow[] {
   const name = resolveWorkflowSet({
-    workflows: config.github.workflows,
+    workflows: get("github").workflows,
     presets: getPresets(),
     hasDependency,
   });
@@ -42,7 +47,7 @@ function findMissingWorkflows({
   return missing;
 }
 
-export function createWorkflowsStep(): Step {
+export function createWorkflowsStep(): Step<Sections> {
   return {
     name: workflowsDirectory,
     message: "Add the GitHub workflows?",

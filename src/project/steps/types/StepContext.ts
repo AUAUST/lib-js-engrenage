@@ -2,6 +2,7 @@ import type { JSONPath } from "jsonc-parser";
 
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
+import type { OptionContext } from "#foundation/options/types/OptionContext";
 import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { Presets } from "#project/presets/types/Presets";
 import type { Invocation } from "#project/steps/types/Invocation";
@@ -10,11 +11,12 @@ import type { Prompter } from "#project/steps/types/Prompter";
 import type { Agent } from "#tools/agents/types/Agent";
 import type { PackageName } from "#types/PackageName";
 
-// @debt carries the whole resolved config instead of `get` over the sections each step names (#143 step 2); open question on how steps hand sections to the operations that take a ResolvedConfig
-export interface StepContext extends Pick<
+// @debt `config` stays for the VS Code steps, whose sync reads the whole config through createEslintConfig; once definers read their sections through `get`, they read them as every other step does and `config` goes
+export interface StepContext<Sections = object> extends Pick<
   Prompter,
   "confirm" | "select" | "multiselect" | "text"
 > {
+  get: OptionContext<Sections>["get"];
   readonly config: ResolvedConfig;
   readonly filesystem: Filesystem;
   getAgents(): readonly Agent[] | undefined;

@@ -3,15 +3,14 @@ import { flat, pluck } from "@auaust/primitive-kit/arrays";
 import { gitignoreFile } from "#constants";
 import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
 import { defaultIgnores, ignoreBlocks } from "#tools/git/constants";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ResolvedGit } from "#project/config/types/ResolvedGit";
 import type { Step } from "#project/steps/types/Step";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 const ignoreMarker = /^# @ignore /m;
 
-function resolveFile({ root, git }: ResolvedConfig): File {
-  const { gitignore } = git;
-
+function resolveFile(root: Directory, { gitignore }: ResolvedGit): File {
   return gitignore === undefined
     ? gitignoreFile
     : relativeWithin(root, gitignore);
@@ -37,17 +36,20 @@ function removeCovered(content: string, covered: ReadonlySet<string>): string {
   return groups.join("\n\n");
 }
 
-export function createGitignoreStep(): Step {
+export function createGitignoreStep(): Step<{
+  root: Directory;
+  git: ResolvedGit;
+}> {
   return {
     name: gitignoreFile,
     message: `Add the engrenage ignore blocks to ${gitignoreFile}?`,
-    isMissing({ config, filesystem }) {
-      const content = filesystem.read(resolveFile(config));
+    isMissing({ get, filesystem }) {
+      const content = filesystem.read(resolveFile(get("root"), get("git")));
 
       return content === undefined || !ignoreMarker.test(content);
     },
-    plan({ config, filesystem }) {
-      const file = resolveFile(config);
+    plan({ get, filesystem }) {
+      const file = resolveFile(get("root"), get("git"));
 
       const covered = new Set(flat(pluck(defaultIgnores, "globs")));
 

@@ -4,10 +4,17 @@ import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexI
 import { attributionRules } from "#tools/agents/constants";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
 export function addAgentRules(
-  config: ResolvedConfig,
+  {
+    filesystem,
+    agents,
+  }: {
+    filesystem: Filesystem;
+    agents: ResolvedAgents;
+  },
   names: readonly string[],
 ) {
   const templates = getRuleTemplates();
@@ -28,13 +35,13 @@ export function addAgentRules(
     }
   }
 
-  const missing = getMissingRuleTemplates(config);
+  const missing = getMissingRuleTemplates({ filesystem });
 
   for (const { name, file, content } of missing) {
     if (names.includes(name)) {
-      config.filesystem.write(file, content);
+      filesystem.write(file, content);
     }
   }
 
-  syncCodexInstructions(config);
+  syncCodexInstructions({ filesystem, agents });
 }

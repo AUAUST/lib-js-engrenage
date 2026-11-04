@@ -21,3 +21,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: `.ai/debt.md` cites `src/workflows/cli/operations/resolveBinary.ts` (now `src/foundation/processes/operations/resolveBinary.ts`) and `createStepContext.ts` line numbers (7, 12, 20, 23, 117); AGENTS.md and the project map omit `project/steps`; plan §Config pipeline describes `StepContext` with `get`, true only after the operations question is settled.
 - done: paths, maps and plan match the code.
+
+## Stale after #143 round 2
+
+- why: plan §Config pipeline says `StepContext<Sections>` replaces `config`, true except for the VS Code steps (via `loadInfoRules` → `createEslintConfig`); `@auaust/engrenage/config` no longer exports `ResolvedAgents`.
+- done: the plan and exports description match.

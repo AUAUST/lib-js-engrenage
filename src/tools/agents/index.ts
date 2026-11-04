@@ -3,4 +3,5 @@ export { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 // @barrel types/*.ts all
 export * from "#tools/agents/types/Agent";
 export * from "#tools/agents/types/GeneratedFrontmatter";
+export * from "#tools/agents/types/ResolvedAgents";
 // @end

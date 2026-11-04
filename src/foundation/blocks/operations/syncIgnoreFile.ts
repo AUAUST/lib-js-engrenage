@@ -4,8 +4,8 @@ import { getOwn, keys } from "@auaust/toolkit/object";
 import { syncFiles } from "#foundation/blocks/operations/syncFiles";
 import { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
 import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
-// @debt reaches into project/config, a higher layer than foundation; the layered registry (#143) removes the upward dependency
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { GlobGroup } from "#types/GlobGroup";
 import type { IgnorePresets } from "#types/IgnorePresets";
@@ -15,7 +15,11 @@ function renderGroup({ title, globs }: GlobGroup): string {
 }
 
 export function syncIgnoreFile(
-  config: ResolvedConfig,
+  config: {
+    root: Directory;
+    filesystem: Filesystem;
+    resolve(...paths: string[]): string;
+  },
   {
     path,
     presets,

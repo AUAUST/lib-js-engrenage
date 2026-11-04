@@ -7,6 +7,7 @@ import { createConfigModule } from "#project/steps/utils/createConfigModule";
 import type { Presets } from "#project/presets/types/Presets";
 import type { Step } from "#project/steps/types/Step";
 import type { Agent } from "#tools/agents/types/Agent";
+import type { File } from "#types/File";
 
 function renderOptions(
   chosen: Presets,
@@ -24,13 +25,13 @@ function renderOptions(
   return `{\n  presets: [${list}],\n${baseline}${roles}  agents: { ${preferred}attribution: false },\n}`;
 }
 
-export function createConfigFileStep(): Step {
+export function createConfigFileStep(): Step<{ configFile: File | undefined }> {
   const file = `${engrenageConfigFile}.ts`;
 
   return {
     name: file,
-    isMissing({ config, filesystem }) {
-      return config.configFile === undefined && !filesystem.exists(file);
+    isMissing({ get, filesystem }) {
+      return get("configFile") === undefined && !filesystem.exists(file);
     },
     async plan(context) {
       const [initial = presets[0]] = context.getPresets();

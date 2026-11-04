@@ -21,8 +21,8 @@ import {
 } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
+import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { File } from "#types/File";
 
 const skillSchema = looseObject({
@@ -38,8 +38,8 @@ const skillSchema = looseObject({
   ),
 });
 
-export function getSkillTemplates(config: ResolvedConfig) {
-  const preferred = config.agents.preferred ?? [];
+export function getSkillTemplates({ agents }: { agents: ResolvedAgents }) {
+  const preferred = agents.preferred ?? [];
 
   if (preferred.length === 0) {
     throw new Error("Skills need agents.preferred in engrenage.config.ts");

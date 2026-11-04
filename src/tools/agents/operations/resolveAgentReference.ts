@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 
 import { resolveModulePath } from "exsolve";
 
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 function isRelative(reference: string): boolean {
@@ -10,26 +10,31 @@ function isRelative(reference: string): boolean {
 }
 
 function resolveSnippet(
-  config: ResolvedConfig,
+  resolve: (...paths: string[]) => string,
+  snippetsDir: Directory | undefined,
   reference: string,
 ): File | null {
-  const { snippetsDir } = config.agents;
-
   if (snippetsDir === undefined || isRelative(reference)) {
     return null;
   }
 
-  const snippet = config.resolve(snippetsDir, reference);
+  const snippet = resolve(snippetsDir, reference);
 
   return existsSync(snippet) ? snippet : null;
 }
 
 export function resolveAgentReference(
-  config: ResolvedConfig,
+  {
+    resolve,
+    agents,
+  }: {
+    resolve(...paths: string[]): string;
+    agents: { snippetsDir: Directory | undefined };
+  },
   reference: string,
   from: File,
 ): File {
-  const snippet = resolveSnippet(config, reference);
+  const snippet = resolveSnippet(resolve, agents.snippetsDir, reference);
 
   if (snippet !== null) {
     return snippet;

@@ -13,7 +13,7 @@ export async function runSteps({
 }: {
   config: ResolvedConfig;
   prompter: Prompter;
-  steps: readonly Step[];
+  steps: readonly Step<ResolvedConfig>[];
 }): Promise<readonly Invocation[] | undefined> {
   const context = createStepContext({
     config,
@@ -38,7 +38,10 @@ export async function runSteps({
     }
   }
 
-  async function accepts({ message, isRecommended }: Step): Promise<boolean> {
+  async function accepts({
+    message,
+    isRecommended,
+  }: Step<ResolvedConfig>): Promise<boolean> {
     return (
       message === undefined ||
       prompter.confirm(message, isRecommended?.(context) ?? true)

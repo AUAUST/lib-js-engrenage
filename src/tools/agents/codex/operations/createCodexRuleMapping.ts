@@ -2,17 +2,21 @@ import { sort } from "@auaust/primitive-kit/arrays";
 
 import { claudeRulesGlob } from "#tools/agents/claude/constants";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 
 function cell(value: string): string {
   return `<code>${value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("|", "&#124;").replaceAll("\n", "&#10;").replaceAll("\r", "&#13;")}</code>`;
 }
 
-export function createCodexRuleMapping(config: ResolvedConfig): string {
+export function createCodexRuleMapping({
+  filesystem,
+}: {
+  filesystem: Filesystem;
+}): string {
   const rows: string[] = [];
 
-  for (const file of config.filesystem.glob(claudeRulesGlob)) {
-    const content = config.filesystem.read(file);
+  for (const file of filesystem.glob(claudeRulesGlob)) {
+    const content = filesystem.read(file);
 
     if (content === undefined) {
       throw new Error(`Missing instruction file ${file}`);

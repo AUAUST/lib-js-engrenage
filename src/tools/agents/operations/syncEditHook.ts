@@ -5,7 +5,7 @@ import { readJsonValue } from "#foundation/json/utils/readJsonValue";
 import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
 import { validate } from "#foundation/options/utils/validate";
 import { jsonIndentation } from "#project/format/constants";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { File } from "#types/File";
 
 const hooksSchema = optional(
@@ -23,13 +23,19 @@ const hooksSchema = optional(
 );
 
 export function syncEditHook(
-  config: ResolvedConfig,
+  {
+    filesystem,
+    resolve,
+  }: {
+    filesystem: Filesystem;
+    resolve(...paths: string[]): string;
+  },
   { file, matcher, command }: { file: File; matcher: string; command: string },
 ) {
-  const path = config.resolve(file);
+  const path = resolve(file);
   const location = ["hooks", "PostToolUse"];
 
-  let content = config.filesystem.read(file) ?? emptyObjectFile;
+  let content = filesystem.read(file) ?? emptyObjectFile;
 
   const entries =
     validate(
@@ -63,5 +69,5 @@ export function syncEditHook(
     );
   }
 
-  config.filesystem.write(file, content);
+  filesystem.write(file, content);
 }

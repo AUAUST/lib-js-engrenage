@@ -13,12 +13,16 @@ import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
+import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { File } from "#types/File";
 import type { FileSync } from "#types/FileSync";
 
-function syncAttributionRules(config: ResolvedConfig) {
+function syncAttributionRules(config: {
+  filesystem: Filesystem;
+  agents: ResolvedAgents;
+}) {
   const { attribution } = config.agents;
 
   if (attribution === undefined) {
@@ -47,7 +51,11 @@ function syncAttributionRules(config: ResolvedConfig) {
   }
 }
 
-export function syncAgentFiles(config: ResolvedConfig) {
+export function syncAgentFiles(config: {
+  filesystem: Filesystem;
+  resolve(...paths: string[]): string;
+  agents: ResolvedAgents;
+}) {
   if ((config.agents.preferred?.length ?? 0) === 0) {
     return;
   }

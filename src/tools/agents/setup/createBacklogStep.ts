@@ -17,16 +17,20 @@ import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRule
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 import type { Step } from "#project/steps/types/Step";
+import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
 const sectionReference = `${engrenage}/agents/sections/backlog.md`;
 const skills = ["scratchpad", "backlog-handling", "debt-harvesting"];
 
-export function createBacklogStep(): Step {
+export function createBacklogStep(): Step<{
+  agents: ResolvedAgents;
+  resolve(...paths: string[]): string;
+}> {
   return {
     name: "shared backlog",
     message:
       "Set up the shared backlog in .ai/backlog/ and scratchpad in .ai/scratchpad.md?",
-    isMissing({ config, filesystem, getAgents }) {
+    isMissing({ get, filesystem, getAgents }) {
       if ((getAgents()?.length ?? 0) === 0 || !filesystem.exists(agentsFile)) {
         return false;
       }
@@ -35,10 +39,10 @@ export function createBacklogStep(): Step {
         !filesystem.exists(backlogIndex) ||
         !filesystem.exists(scratchpadFile) ||
         !(filesystem.read(agentsFile)?.includes(sectionReference) ?? false) ||
-        getMissingRuleTemplates(config).some(({ name }) => {
+        getMissingRuleTemplates({ filesystem }).some(({ name }) => {
           return name === "backlog";
         }) ||
-        getSkillTemplates(config).some(({ name, files }) => {
+        getSkillTemplates({ agents: get("agents") }).some(({ name, files }) => {
           return (
             skills.includes(name) &&
             files.some(({ file }) => !filesystem.exists(file))
@@ -46,7 +50,9 @@ export function createBacklogStep(): Step {
         })
       );
     },
-    plan({ config, filesystem }) {
+    plan({ get, filesystem }) {
+      const agents = get("agents");
+
       if (!filesystem.exists(backlogIndex)) {
         filesystem.write(
           backlogIndex,
@@ -75,10 +81,14 @@ export function createBacklogStep(): Step {
         );
       }
 
-      addAgentRules(config, ["backlog"]);
-      addAgentSkills(config, skills);
+      addAgentRules({ filesystem, agents }, ["backlog"]);
+      addAgentSkills({ filesystem, agents }, skills);
 
-      syncAgentFiles(config);
+      syncAgentFiles({
+        filesystem,
+        resolve: get("resolve"),
+        agents,
+      });
     },
   };
 }

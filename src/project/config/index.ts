@@ -17,7 +17,6 @@ export * from "#project/config/types/GlobalsFactory";
 export * from "#project/config/types/ListAdjustment";
 export * from "#project/config/types/ListOption";
 export * from "#project/config/types/ManagedListOption";
-export * from "#project/config/types/ResolvedAgents";
 export * from "#project/config/types/ResolvedCache";
 export * from "#project/config/types/ResolvedConfig";
 export * from "#project/config/types/ResolvedDefine";

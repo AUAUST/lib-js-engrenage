@@ -1,9 +1,14 @@
-// @debt reaches into project/config, a higher layer than foundation; the layered registry (#143) removes the upward dependency
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { FileSync } from "#types/FileSync";
 
 export function syncFiles(
-  { filesystem, resolve }: ResolvedConfig,
+  {
+    filesystem,
+    resolve,
+  }: {
+    filesystem: Filesystem;
+    resolve(...paths: string[]): string;
+  },
   files: readonly FileSync[],
 ) {
   for (const { file, update } of files) {
