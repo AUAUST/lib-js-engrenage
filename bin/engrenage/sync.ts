@@ -16,6 +16,7 @@ import { syncWorkflowFiles } from "#github/setup/syncWorkflowFiles";
 import { syncPrettierignoreFile } from "#prettier/setup/syncPrettierignoreFile";
 import { defineCommand } from "#support/commander/utils/defineCommand";
 import { settleChanges } from "#support/commander/utils/settleChanges";
+import { syncAliases } from "#typescript/setup/syncAliases";
 import { syncEnvFile } from "#typescript/setup/syncEnvFile";
 import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
 import { syncVscodeFiles } from "#vscode/setup/syncVscodeFiles";
@@ -42,6 +43,7 @@ function defineTarget<Flag extends string = never>(
 // Targets run in declaration order: those that produce a file other targets read from the config come first.
 const targets = {
   tsconfig: defineTarget(syncTsconfigFiles),
+  aliases: defineTarget(syncAliases),
   agents: defineTarget(syncAgentFiles),
   changesets: defineTarget(syncChangesetConfig),
   claude: defineTarget(syncClaudeSettings, {

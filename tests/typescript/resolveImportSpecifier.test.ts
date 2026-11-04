@@ -28,6 +28,15 @@ describe("resolveImportSpecifier", () => {
     ).toBe("#types/File");
   });
 
+  test("prefers the most specific subpath import", () => {
+    expect(
+      resolveImportSpecifier(
+        { "#src/*": "./src/*.ts", "#types/*": "./src/types/*.ts" },
+        "src/types/File.ts",
+      ),
+    ).toBe("#types/File");
+  });
+
   test("rejects a file no subpath import covers", () => {
     expect(() => {
       return resolveImportSpecifier(imports, "bin/engrenage/index.ts");

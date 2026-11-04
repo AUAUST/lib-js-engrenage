@@ -1,18 +1,24 @@
+import { max } from "@auaust/toolkit/math";
 import { entries } from "@auaust/toolkit/object";
 
 import { resolveImportTarget } from "#typescript/utils/resolveImportTarget";
 import type { File } from "#types/File";
 import type { SubpathImports } from "#typescript/types/SubpathImports";
 
+interface Match {
+  readonly specifier: string;
+  readonly specificity: number;
+}
+
 function matchSpecifier(
   specifier: string,
   target: string,
   file: File,
-): string | null {
+): Match | null {
   const [targetPrefix = "", targetSuffix, ...rest] = target.split("*");
 
   if (targetSuffix === undefined) {
-    return target === file ? specifier : null;
+    return target === file ? { specifier, specificity: Infinity } : null;
   }
 
   if (rest.length > 0) {
@@ -35,7 +41,10 @@ function matchSpecifier(
     file.length - targetSuffix.length,
   );
 
-  return specifier.replace("*", () => captured);
+  return {
+    specifier: specifier.replace("*", () => captured),
+    specificity: targetPrefix.length,
+  };
 }
 
 export function resolveImportSpecifier(
@@ -44,7 +53,7 @@ export function resolveImportSpecifier(
 ): string {
   const relativeFile = file.startsWith("./") ? file : `./${file}`;
 
-  const specifiers: string[] = [];
+  const matches: Match[] = [];
 
   for (const [specifier, conditions] of entries(imports)) {
     const target = resolveImportTarget(conditions);
@@ -56,17 +65,21 @@ export function resolveImportSpecifier(
     const match = matchSpecifier(specifier, target, relativeFile);
 
     if (match !== null) {
-      specifiers.push(match);
+      matches.push(match);
     }
   }
 
-  const [specifier, ...others] = specifiers;
+  const best = max(...matches.map(({ specificity }) => specificity));
 
-  if (specifier === undefined || others.length > 0) {
+  const [first, ...others] = matches.filter(({ specificity }) => {
+    return specificity === best;
+  });
+
+  if (first === undefined || others.length > 0) {
     throw new Error(
-      `Expected one subpath import for "${file}", found ${specifiers.length}`,
+      `Expected one subpath import for "${file}", found ${matches.length}`,
     );
   }
 
-  return specifier;
+  return first.specifier;
 }

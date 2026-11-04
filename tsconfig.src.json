@@ -5,6 +5,8 @@
     "tsBuildInfoFile": "./node_modules/.cache/typescript/tsconfig.src.tsbuildinfo",
     "target": "ESNext",
     "lib": ["ESNext"],
-    "types": ["node"]
+    "types": ["node"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   }
 }

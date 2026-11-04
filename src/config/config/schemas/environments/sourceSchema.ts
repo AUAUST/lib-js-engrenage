@@ -1,4 +1,4 @@
-import { picklist, string } from "valibot";
+import { boolean, picklist, string } from "valibot";
 
 import { join, map } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
@@ -15,6 +15,7 @@ import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { listDefaults } from "#foundation/options/utils/listDefaults";
 import { unset } from "#foundation/options/utils/unset";
+import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 import {
   apiGroupRoots,
@@ -39,6 +40,12 @@ export const sourceSchema = declareObject(
   {
     ...createCodeEnvironment("src", defaultSourceDirectories),
     roles: rolesOptionSchema,
+    aliases: aliasesSchema,
+    bundled: declare(boolean(), {
+      description:
+        "Whether the source only runs through a bundler. It sets the src tsconfig `module` and `moduleResolution` to the bundler ones, writes the src aliases to the tsconfig `paths` and allows bundler aliases in `aliases.define`.",
+      optional: { value: false },
+    }),
     exports: declare(exposedFilesSchema, {
       description: [
         "Subpaths the package exposes, mapped to their source file; both sides use the same single `*` or none.",
@@ -80,6 +87,12 @@ export const sourceSchema = declareObject(
       value: {
         ...disabledCodeEnvironment,
         exports: undefined,
+        aliases: {
+          enabled: false,
+          generated: false,
+          define: {},
+        },
+        bundled: false,
         baseline: undefined,
         node: undefined,
         apis: [],

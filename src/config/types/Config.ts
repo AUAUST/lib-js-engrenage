@@ -9,6 +9,31 @@ import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
 export interface Config {
+  /**
+   * Aliases generated into `package.json#imports` (and, for bundled sources, the tsconfig `paths`) by `engrenage sync`, in one flat `#` namespace.
+   * `false` turns them off.
+   */
+  aliases?:
+    | (
+        | false
+        | {
+            /**
+             * Whether the aliases derived from the project structure are generated. `false` with `define` replaces the generated set.
+             * @default `true`
+             */
+            generated?: boolean | undefined;
+            /**
+             * Aliases to add, mapped to their target. A key not starting with `#` is a bundler alias, valid only with `src.bundled`.
+             * @default none
+             */
+            define?:
+              | {
+                  [k: string]: string;
+                }
+              | undefined;
+          }
+      )
+    | undefined;
   build?:
     | {
         /**
@@ -1226,6 +1251,36 @@ export interface Config {
                     | undefined;
                 }
               | undefined;
+            /**
+             * Aliases generated into `package.json#imports` (and, for bundled sources, the tsconfig `paths`) by `engrenage sync`, in one flat `#` namespace.
+             * `false` turns them off.
+             */
+            aliases?:
+              | (
+                  | false
+                  | {
+                      /**
+                       * Whether the aliases derived from the project structure are generated. `false` with `define` replaces the generated set.
+                       * @default `true`
+                       */
+                      generated?: boolean | undefined;
+                      /**
+                       * Aliases to add, mapped to their target. A key not starting with `#` is a bundler alias, valid only with `src.bundled`.
+                       * @default none
+                       */
+                      define?:
+                        | {
+                            [k: string]: string;
+                          }
+                        | undefined;
+                    }
+                )
+              | undefined;
+            /**
+             * Whether the source only runs through a bundler. It sets the src tsconfig `module` and `moduleResolution` to the bundler ones, writes the src aliases to the tsconfig `paths` and allows bundler aliases in `aliases.define`.
+             * @default `false`
+             */
+            bundled?: boolean | undefined;
             /**
              * Subpaths the package exposes, mapped to their source file; both sides use the same single `*` or none.
              * They feed the tsdown entries, hence the `exports` of `package.json`, and the `paths` of the base tsconfig.

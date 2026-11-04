@@ -17,10 +17,12 @@ import { prettierSchema } from "#config/config/schemas/tools/prettierSchema";
 import { typescriptSchema } from "#config/config/schemas/tools/typescriptSchema";
 import { vscodeSchema } from "#config/config/schemas/tools/vscodeSchema";
 import { declareObject } from "#foundation/options/utils/declareObject";
+import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 
 export const configDeclaration = declareObject({
   // Core
+  aliases: aliasesSchema,
   build: buildSchema,
   cache: cacheSchema,
   debug: debugSchema,

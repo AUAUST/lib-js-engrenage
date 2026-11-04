@@ -30,8 +30,10 @@ import { resolveNodeRuntime } from "#config/utils/resolveNodeRuntime";
 import { resolveSourceRuntime } from "#config/utils/resolveSourceRuntime";
 import { resolveTsconfig } from "#config/utils/resolveTsconfig";
 import { packageJsonFile } from "#constants";
+import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 import { noRoles } from "#project/structure/constants";
+import { resolveAliases } from "#project/structure/utils/resolveAliases";
 import { resolveEnvironmentStructure } from "#project/structure/utils/resolveEnvironmentStructure";
 import { resolveImportRules } from "#project/structure/utils/resolveImportRules";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
@@ -334,6 +336,7 @@ export function createResolvedConfig({
           ...environment,
           roles: resolveEnvironmentRoles("src", option),
           exports: option.exports,
+          bundled: option.bundled,
           apis: option.apis,
         },
         compose.getters({
@@ -519,6 +522,37 @@ export function createResolvedConfig({
     });
   });
 
+  function readOutDir(): Directory | undefined {
+    try {
+      return build().outDir;
+    } catch {
+      // @debt an unreadable tsconfig hides the output directory, so its alias is generated instead of skipped; the output directory should resolve without parsing the tsconfig
+    }
+  }
+
+  const aliases = once(() => {
+    const option = sourceOption();
+
+    const global = aliasesSchema.resolve(raw.aliases, context, "aliases");
+
+    return resolveAliases({
+      root,
+      options: { global, src: option.aliases },
+      bundled: option.bundled,
+      environments: {
+        src: source().dirs,
+        tests: tests().dirs,
+        bin: bin().dirs,
+        scripts: scripts().dirs,
+        tooling: tooling().dirs,
+      },
+      data: data().active ? data().dirs : [],
+      published: includes(presets(), "library"),
+      outDir: readOutDir(),
+      structure: structure().src,
+    });
+  });
+
   const files = once(() => {
     const environments = [source(), tests(), bin(), scripts()];
 
@@ -686,6 +720,7 @@ export function createResolvedConfig({
         data,
         tooling,
         structure,
+        aliases,
         importRules,
         files,
         build,

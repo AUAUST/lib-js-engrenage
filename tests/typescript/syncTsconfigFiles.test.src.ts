@@ -35,6 +35,8 @@ const files = {
     include: ["custom/**/*"],
     compilerOptions: {
       lib: ["dom"],
+      module: "NodeNext",
+      moduleResolution: "NodeNext",
       paths: { "#a": ["./a.ts"] },
     },
     exclude: ["dist"],
@@ -58,6 +60,8 @@ describe("syncTsconfigFiles", () => {
         target: "ESNext",
         lib: selectEsLibraries("2026-10"),
         types: [],
+        module: "NodeNext",
+        moduleResolution: "NodeNext",
         paths: { "#a": ["./a.ts"] },
         tsBuildInfoFile: buildInfoFile,
       },
@@ -97,6 +101,8 @@ describe("syncTsconfigFiles", () => {
       target: "ESNext",
       lib: ["dom"],
       types: ["node"],
+      module: "NodeNext",
+      moduleResolution: "NodeNext",
       paths: { "#a": ["./a.ts"] },
     });
   });
@@ -124,6 +130,8 @@ describe("syncTsconfigFiles", () => {
       target: "ESNext",
       lib: selectEsLibraries("2026-10"),
       types: [],
+      module: "NodeNext",
+      moduleResolution: "NodeNext",
       paths: { "#a": ["./a.ts"] },
       tsBuildInfoFile: "./custom.tsbuildinfo",
       customFlag: { a: 1 },
