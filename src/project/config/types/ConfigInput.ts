@@ -233,7 +233,7 @@ export interface ConfigInput {
                     accepts?: Glob | Globs | undefined;
                     /**
                      * Whether the role nests and how deep: a depth or `any`.
-                     * @default `0`, so the role is flat
+                     * @default 0, so the role is flat
                      */
                     nesting?: (number | "any") | undefined;
                     /**
@@ -253,28 +253,28 @@ export interface ConfigInput {
                     exports?: ("named-match" | "named" | "default") | undefined;
                     /**
                      * Whether an `index` file is allowed.
-                     * @default `false`
+                     * @default false
                      */
                     index?: boolean | undefined;
                     /**
                      * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                      * Package exports come only from the domain's visibility.
-                     * @default `false`
+                     * @default false
                      */
                     public?: boolean | undefined;
                     /**
                      * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
-                     * @default `false`
+                     * @default false
                      */
                     typeOnly?: boolean | undefined;
                     /**
                      * Whether a consumer discovers its files, so they may export defaults.
-                     * @default `false`
+                     * @default false
                      */
                     discovered?: boolean | undefined;
                     /**
                      * Whether the role is active only where a structured role or a namespace enables it.
-                     * @default `false`
+                     * @default false
                      */
                     scoped?: boolean | undefined;
                   };
@@ -978,7 +978,7 @@ export interface ConfigInput {
                           accepts?: Glob | Globs | undefined;
                           /**
                            * Whether the role nests and how deep: a depth or `any`.
-                           * @default `0`, so the role is flat
+                           * @default 0, so the role is flat
                            */
                           nesting?: (number | "any") | undefined;
                           /**
@@ -999,28 +999,28 @@ export interface ConfigInput {
                             ("named-match" | "named" | "default") | undefined;
                           /**
                            * Whether an `index` file is allowed.
-                           * @default `false`
+                           * @default false
                            */
                           index?: boolean | undefined;
                           /**
                            * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                            * Package exports come only from the domain's visibility.
-                           * @default `false`
+                           * @default false
                            */
                           public?: boolean | undefined;
                           /**
                            * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
-                           * @default `false`
+                           * @default false
                            */
                           typeOnly?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
-                           * @default `false`
+                           * @default false
                            */
                           discovered?: boolean | undefined;
                           /**
                            * Whether the role is active only where a structured role or a namespace enables it.
-                           * @default `false`
+                           * @default false
                            */
                           scoped?: boolean | undefined;
                         };
@@ -1304,7 +1304,7 @@ export interface ConfigInput {
                           accepts?: Glob | Globs | undefined;
                           /**
                            * Whether the role nests and how deep: a depth or `any`.
-                           * @default `0`, so the role is flat
+                           * @default 0, so the role is flat
                            */
                           nesting?: (number | "any") | undefined;
                           /**
@@ -1325,28 +1325,28 @@ export interface ConfigInput {
                             ("named-match" | "named" | "default") | undefined;
                           /**
                            * Whether an `index` file is allowed.
-                           * @default `false`
+                           * @default false
                            */
                           index?: boolean | undefined;
                           /**
                            * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                            * Package exports come only from the domain's visibility.
-                           * @default `false`
+                           * @default false
                            */
                           public?: boolean | undefined;
                           /**
                            * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
-                           * @default `false`
+                           * @default false
                            */
                           typeOnly?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
-                           * @default `false`
+                           * @default false
                            */
                           discovered?: boolean | undefined;
                           /**
                            * Whether the role is active only where a structured role or a namespace enables it.
-                           * @default `false`
+                           * @default false
                            */
                           scoped?: boolean | undefined;
                         };
@@ -1709,7 +1709,7 @@ export interface ConfigInput {
                           accepts?: Glob | Globs | undefined;
                           /**
                            * Whether the role nests and how deep: a depth or `any`.
-                           * @default `0`, so the role is flat
+                           * @default 0, so the role is flat
                            */
                           nesting?: (number | "any") | undefined;
                           /**
@@ -1730,28 +1730,28 @@ export interface ConfigInput {
                             ("named-match" | "named" | "default") | undefined;
                           /**
                            * Whether an `index` file is allowed.
-                           * @default `false`
+                           * @default false
                            */
                           index?: boolean | undefined;
                           /**
                            * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                            * Package exports come only from the domain's visibility.
-                           * @default `false`
+                           * @default false
                            */
                           public?: boolean | undefined;
                           /**
                            * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
-                           * @default `false`
+                           * @default false
                            */
                           typeOnly?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
-                           * @default `false`
+                           * @default false
                            */
                           discovered?: boolean | undefined;
                           /**
                            * Whether the role is active only where a structured role or a namespace enables it.
-                           * @default `false`
+                           * @default false
                            */
                           scoped?: boolean | undefined;
                         };
@@ -2064,7 +2064,7 @@ export interface ConfigInput {
                           accepts?: Glob | Globs | undefined;
                           /**
                            * Whether the role nests and how deep: a depth or `any`.
-                           * @default `0`, so the role is flat
+                           * @default 0, so the role is flat
                            */
                           nesting?: (number | "any") | undefined;
                           /**
@@ -2085,28 +2085,28 @@ export interface ConfigInput {
                             ("named-match" | "named" | "default") | undefined;
                           /**
                            * Whether an `index` file is allowed.
-                           * @default `false`
+                           * @default false
                            */
                           index?: boolean | undefined;
                           /**
                            * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                            * Package exports come only from the domain's visibility.
-                           * @default `false`
+                           * @default false
                            */
                           public?: boolean | undefined;
                           /**
                            * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
-                           * @default `false`
+                           * @default false
                            */
                           typeOnly?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
-                           * @default `false`
+                           * @default false
                            */
                           discovered?: boolean | undefined;
                           /**
                            * Whether the role is active only where a structured role or a namespace enables it.
-                           * @default `false`
+                           * @default false
                            */
                           scoped?: boolean | undefined;
                         };
@@ -2312,7 +2312,7 @@ export interface InlineRole {
   accepts?: Glob | Globs | undefined;
   /**
    * Whether the role nests and how deep: a depth or `any`.
-   * @default `0`, so the role is flat
+   * @default 0, so the role is flat
    */
   nesting?: (number | "any") | undefined;
   /**
@@ -2332,28 +2332,28 @@ export interface InlineRole {
   exports?: ("named-match" | "named" | "default") | undefined;
   /**
    * Whether an `index` file is allowed.
-   * @default `false`
+   * @default false
    */
   index?: boolean | undefined;
   /**
    * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
    * Package exports come only from the domain's visibility.
-   * @default `false`
+   * @default false
    */
   public?: boolean | undefined;
   /**
    * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
-   * @default `false`
+   * @default false
    */
   typeOnly?: boolean | undefined;
   /**
    * Whether a consumer discovers its files, so they may export defaults.
-   * @default `false`
+   * @default false
    */
   discovered?: boolean | undefined;
   /**
    * Whether the role is active only where a structured role or a namespace enables it.
-   * @default `false`
+   * @default false
    */
   scoped?: boolean | undefined;
 }

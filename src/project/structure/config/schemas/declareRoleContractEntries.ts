@@ -11,9 +11,15 @@ import {
   type GenericSchema,
 } from "valibot";
 
+import { describeDefault } from "#foundation/options/index";
 import { declare } from "#foundation/options/utils/declare";
 import { unset } from "#foundation/options/utils/unset";
 import { globsSchema } from "#project/config/config/schemas/values/globsSchema";
+import { roleContractDefaults } from "#project/structure/constants";
+
+function inherited(value: unknown) {
+  return unset(describeDefault({ value }));
+}
 
 export function declareRoleContractEntries<Inline>(
   inline: GenericSchema<Inline>,
@@ -39,7 +45,9 @@ export function declareRoleContractEntries<Inline>(
     }),
     nesting: declare(union([number(), literal("any")]), {
       description: "Whether the role nests and how deep: a depth or `any`.",
-      optional: unset("`0`, so the role is flat"),
+      optional: unset(
+        `${describeDefault({ value: roleContractDefaults.nesting })}, so the role is flat`,
+      ),
     }),
     roles: declare(pipe(array(union([string(), inline])), readonly()), {
       description:
@@ -58,29 +66,29 @@ export function declareRoleContractEntries<Inline>(
     }),
     index: declare(boolean(), {
       description: "Whether an `index` file is allowed.",
-      optional: unset("`false`"),
+      optional: inherited(roleContractDefaults.index),
     }),
     public: declare(boolean(), {
       description: [
         "Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.",
         "Package exports come only from the domain's visibility.",
       ],
-      optional: unset("`false`"),
+      optional: inherited(roleContractDefaults.public),
     }),
     typeOnly: declare(boolean(), {
       description:
         "Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.",
-      optional: unset("`false`"),
+      optional: inherited(roleContractDefaults.typeOnly),
     }),
     discovered: declare(boolean(), {
       description:
         "Whether a consumer discovers its files, so they may export defaults.",
-      optional: unset("`false`"),
+      optional: inherited(roleContractDefaults.discovered),
     }),
     scoped: declare(boolean(), {
       description:
         "Whether the role is active only where a structured role or a namespace enables it.",
-      optional: unset("`false`"),
+      optional: inherited(roleContractDefaults.scoped),
     }),
   };
 }

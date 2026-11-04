@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import { roleContractDefaults } from "#project/structure/constants";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { RoleDefinition } from "#project/structure/types/RoleDefinition";
 
@@ -13,11 +14,11 @@ export function completeRole(
     categories: definition.categories,
     exports: definition.exports,
     purpose: definition.purpose,
-    nesting: definition.nesting ?? 0,
-    index: definition.index ?? false,
-    public: definition.public ?? false,
-    discovered: definition.discovered ?? false,
-    scoped: definition.scoped ?? false,
-    typeOnly: definition.typeOnly ?? false,
+    nesting: definition.nesting ?? roleContractDefaults.nesting,
+    index: definition.index ?? roleContractDefaults.index,
+    public: definition.public ?? roleContractDefaults.public,
+    discovered: definition.discovered ?? roleContractDefaults.discovered,
+    scoped: definition.scoped ?? roleContractDefaults.scoped,
+    typeOnly: definition.typeOnly ?? roleContractDefaults.typeOnly,
   });
 }

@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleContract } from "#project/structure/types/RoleContract";
 import type { RoleKey } from "#project/structure/types/RoleKey";
@@ -75,6 +76,15 @@ export const roleCatalogue = {
   },
   "styles": { purpose: "Stylesheets.", accepts: ["*.css"] },
 } as const satisfies Record<string, RoleContract>;
+
+export const roleContractDefaults = freeze({
+  nesting: 0,
+  index: false,
+  public: false,
+  typeOnly: false,
+  discovered: false,
+  scoped: false,
+} as const satisfies Partial<ResolvedRoleContract>);
 
 export const defaultRoleKeys = [
   "index",
