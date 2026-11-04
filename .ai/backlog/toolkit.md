@@ -35,13 +35,13 @@ Upstream @auaust/toolkit decisions that may affect engrenage.
 
 ## 5. Toolkit has no `error` domain for handling thrown values.
 
-- why: the `errors` module exports only `PipelineError`, `ReadonlyError` and `StateError`. Engrenage code that handles `unknown` thrown values works around the gap with `instanceof Error`, hand-rolled `String(value)` descriptions and try/catch blocks (`src/support/commander/utils/formatCommandError.ts`, `src/support/commander/utils/runProgram.ts`).
+- why: the `errors` module exports only `PipelineError`, `ReadonlyError` and `StateError`. Engrenage code that handles `unknown` thrown values works around the gap with `instanceof Error`, hand-rolled `String(value)` descriptions and try/catch blocks (`src/workflows/cli/operations/formatCommandError.ts`, `src/workflows/cli/operations/runProgram.ts`).
 - want: an `error` domain hosting error-handling helpers; it would be the home of entries 6 and 7 and could absorb the existing error classes. Open: whether it replaces or sits beside `errors`.
 - done: toolkit decides whether the domain exists, and engrenage's workarounds move to what it exports or are kept with a stated reason.
 
 ## 6. Toolkit has no `isError` instance check.
 
-- why: engrenage uses `instanceof Error` on `unknown` caught values (`src/support/commander/utils/formatCommandError.ts`, `src/support/commander/utils/runProgram.ts`).
+- why: engrenage uses `instanceof Error` on `unknown` caught values (`src/workflows/cli/operations/formatCommandError.ts`, `src/workflows/cli/operations/runProgram.ts`).
 - want: an `isError` guard (`value is Error`), probably in the `error` domain of entry 5. Open: whether it only checks `instanceof Error` or also covers cross-realm errors and error-like objects.
 - done: toolkit exports it and engrenage's `instanceof Error` checks use it.
 
@@ -53,7 +53,7 @@ Upstream @auaust/toolkit decisions that may affect engrenage.
 
 ## 8. Toolkit could offer `describe()` and a debug-representation protocol.
 
-- why: engrenage hand-rolls `String(value)` descriptions of thrown values (`src/support/commander/utils/formatCommandError.ts`). The existing hooks (`toJSON`, `valueOf`, `toString` and the custom symbols Node registers) can still be limited for this purpose, so a custom toolkit protocol is not excluded; toolkit has a `protocol` module with `ProtocolRegistry`, a possible home, and whether it fits is open.
+- why: engrenage hand-rolls `String(value)` descriptions of thrown values (`src/workflows/cli/operations/formatCommandError.ts`). The existing hooks (`toJSON`, `valueOf`, `toString` and the custom symbols Node registers) can still be limited for this purpose, so a custom toolkit protocol is not excluded; toolkit has a `protocol` module with `ProtocolRegistry`, a possible home, and whether it fits is open.
 - want: (1) a `describe()` stringifier that turns any value into a useful representation for debug logs; (2) a debug-representation protocol, alongside those hooks, giving any value a standard way to represent itself and allow customization, which `describe()` would consume. Open: whether the protocol builds on the existing hooks, a toolkit-specific symbol, or both; whether `describe()` lives in the `error` domain of entry 5 or a general one.
 - done: toolkit decides on both requests and engrenage's hand-rolled descriptions use `describe()`.
 

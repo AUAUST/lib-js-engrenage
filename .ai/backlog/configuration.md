@@ -21,3 +21,8 @@ Project configuration contract: environments, option shapes and list options.
 
 - why: projects where engrenage is the JavaScript part of a host (a Shopify theme, a Shopify extensions app, Laravel) need presets resolving to the traits of #153 (owned directories, published), so environment defaults never land in host directories. Related: `configuration.1`. A `shopify-extensions` preset would hold: the `extensions/*` workspace globs and their environments (Preact JSX, Polaris types, no Node built-ins, bundled `src`), the discovered `pages/` role, the host's files (`shopify.*.toml`, locales, GraphQL codegen output) as foreign or generated, one build entry per extension, not published.
 - done: each adopting project has its preset, added when that project adopts engrenage; obsolete if the project never does.
+
+## 4. `listDiscoveredGlobs` widens `files.discovered` with role-discovered globs, without a changeset.
+
+- why: #141 added it, so `files.discovered` now includes role globs (for this repository `tests/**/setup.ts`). No changeset was added; consumers may see new discovered files.
+- want: check whether consumers are affected and add a changeset if so.

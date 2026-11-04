@@ -12,3 +12,8 @@ Generated Vitest configuration.
 
 - why: tests live under one tests root only; some projects keep tests beside their sources. The tests environment, its roles and the test variants (#155) assume one root; colocated tests would put test files inside `src` environments, where roles and boundaries (#150) apply.
 - done: colocated tests are supported, or explicitly rejected with a reason.
+
+## 3. `executable.test.ts` failed once in a full run.
+
+- why: seen during #141, passing on reruns; possibly flaky (spawned process timing).
+- done: cause found, or no recurrence after several full runs.
