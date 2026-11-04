@@ -122,3 +122,9 @@ Project structure description, its report and the tooling generated from it.
 - why: `indent`, `indentWidth` and `endOfLine` of the `format` section are not applied to JSON that sync writes; `jsonIndentation` still derives from the constant `conventions`.
 - want: JSON indentation derived from the resolved `format` section.
 - done: changing `format.indent` changes the files sync writes.
+
+## 20. The roles of the `bin/` and `scripts/` directories are undefined; needs investigation
+
+- why: `scripts/codegen` mixes commands, subcommands and utility scripts with no separation, which confuses. #137's plan (§Environments) says `bin` holds thin discovered commands with no roles and `scripts` holds generators with inputs beside them; #147 moved generators into `scripts`; `structure.4` and `structure.14` leave `scripts` files unclassified.
+- want: investigate, given the strict responsibilities of both environments, then settle: the inferred file-to-command mapping; where command definitions live while the directory structure stays clean; the split into support, utilities and boilerplate layers.
+- done: `bin/` and `scripts/` have defined roles (or a documented decision not to) and `scripts/codegen` follows them.
