@@ -3,7 +3,6 @@ import { array, boolean, picklist, string } from "valibot";
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { declareRecord } from "#foundation/options/utils/declareRecord";
-import { unset } from "#foundation/options/utils/unset";
 import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
 import { globSchema } from "#project/config/config/schemas/values/globsSchema";
 import { roleKeySchema } from "#project/structure/config/schemas/roleKeySchema";
@@ -52,7 +51,7 @@ export const structureOptions = {
     declareObject({
       public: declare(boolean(), {
         description: "Whether the domain is part of the package's public API.",
-        optional: unset("`false`"),
+        optional: { value: false },
       }),
       specifier: declare(string(), {
         description:

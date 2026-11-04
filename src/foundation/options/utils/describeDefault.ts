@@ -1,4 +1,6 @@
 import { isArray } from "@auaust/toolkit/isArray";
+import { isBoolean } from "@auaust/toolkit/isBoolean";
+import { isNumber } from "@auaust/toolkit/isNumber";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { entries } from "@auaust/toolkit/object";
 
@@ -18,6 +20,10 @@ function describeValue(value: unknown): string {
     return entries(value).length === 0
       ? "none"
       : `\`${JSON.stringify(value)}\``;
+  }
+
+  if (isBoolean(value) || isNumber(value)) {
+    return String(value);
   }
 
   return `\`${String(value)}\``;

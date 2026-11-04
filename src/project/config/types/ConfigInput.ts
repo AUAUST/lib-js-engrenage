@@ -17,7 +17,7 @@ export interface ConfigInput {
         | {
             /**
              * Whether the aliases derived from the project structure are generated. `false` with `define` replaces the generated set.
-             * @default `true`
+             * @default true
              */
             generated?: boolean | undefined;
             /**
@@ -41,12 +41,12 @@ export interface ConfigInput {
         outDir?: string | undefined;
         /**
          * Whether a build empties the output directory first (the `clean` option of tsdown).
-         * @default `true`
+         * @default true
          */
         emptyOutDir?: boolean | undefined;
         /**
          * Whether builds emit source maps and the source directories are published with them.
-         * @default `true`
+         * @default true
          */
         sourcemap?: boolean | undefined;
         /**
@@ -68,14 +68,14 @@ export interface ConfigInput {
   /**
    * Whether commands print the stack of an error and its causes.
    * Also enabled by the `--debug` flag and `ENGRENAGE_DEBUG=1`; any one of them enables it.
-   * @default `false`
+   * @default false
    */
   debug?: boolean | undefined;
   define?:
     | {
         /**
          * Whether sync declares the `define.values` globals in the env file (`typescript.envFile`) and `build.typed` follows.
-         * @default `true`
+         * @default true
          */
         types?: boolean | undefined;
         /**
@@ -106,12 +106,12 @@ export interface ConfigInput {
         indent?: ("spaces" | "tabs") | undefined;
         /**
          * Width of one indentation level, in columns.
-         * @default `2`
+         * @default 2
          */
         indentWidth?: number | undefined;
         /**
          * Line width the formatter wraps at, in columns.
-         * @default `80`
+         * @default 80
          */
         lineWidth?: number | undefined;
         /**
@@ -121,7 +121,7 @@ export interface ConfigInput {
         quotes?: ("double" | "single") | undefined;
         /**
          * Whether statements end with a semicolon.
-         * @default `true`
+         * @default true
          */
         semicolons?: boolean | undefined;
         /**
@@ -242,23 +242,23 @@ export interface ConfigInput {
                     exports?: ("named-match" | "named" | "default") | undefined;
                     /**
                      * Whether an `index` file is allowed.
-                     * @default `false`
+                     * @default false
                      */
                     index?: boolean | undefined;
                     /**
                      * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                      * Package exports come only from the domain's visibility.
-                     * @default `false`
+                     * @default false
                      */
                     public?: boolean | undefined;
                     /**
                      * Whether a consumer discovers its files, so they may export defaults.
-                     * @default `false`
+                     * @default false
                      */
                     discovered?: boolean | undefined;
                     /**
                      * Whether the role is active only where a structured role or a namespace enables it.
-                     * @default `false`
+                     * @default false
                      */
                     scoped?: boolean | undefined;
                   };
@@ -341,32 +341,32 @@ export interface ConfigInput {
               mode?: ("warn" | "deny") | undefined;
               /**
                * Words of a plan issue.
-               * @default `1200`
+               * @default 1200
                */
               plan?: number | undefined;
               /**
                * Words of a block issue.
-               * @default `60`
+               * @default 60
                */
               block?: number | undefined;
               /**
                * Words of a task issue.
-               * @default `250`
+               * @default 250
                */
               task?: number | undefined;
               /**
                * Words of an issue comment.
-               * @default `150`
+               * @default 150
                */
               comment?: number | undefined;
               /**
                * Words of one entry of `.ai/backlog/*.md`.
-               * @default `60`
+               * @default 60
                */
               backlogEntry?: number | undefined;
               /**
                * Words of one entry of `.ai/debt.md`.
-               * @default `60`
+               * @default 60
                */
               debtEntry?: number | undefined;
             }
@@ -526,7 +526,7 @@ export interface ConfigInput {
                   [k: string]: {
                     /**
                      * Whether the domain is part of the package's public API.
-                     * @default `false`
+                     * @default false
                      */
                     public?: boolean | undefined;
                     /**
@@ -572,7 +572,7 @@ export interface ConfigInput {
             discovered?: ListOption<string> | undefined;
             /**
              * Whether the bin tsconfig includes the env file declaring the `define.values` globals.
-             * @default `false`
+             * @default false
              */
             defines?: boolean | undefined;
             /**
@@ -764,7 +764,7 @@ export interface ConfigInput {
                   [k: string]: {
                     /**
                      * Whether the domain is part of the package's public API.
-                     * @default `false`
+                     * @default false
                      */
                     public?: boolean | undefined;
                     /**
@@ -810,7 +810,7 @@ export interface ConfigInput {
             discovered?: ListOption<string> | undefined;
             /**
              * Whether the scripts tsconfig includes the env file declaring the `define.values` globals.
-             * @default `false`
+             * @default false
              */
             defines?: boolean | undefined;
             /**
@@ -984,23 +984,23 @@ export interface ConfigInput {
                             ("named-match" | "named" | "default") | undefined;
                           /**
                            * Whether an `index` file is allowed.
-                           * @default `false`
+                           * @default false
                            */
                           index?: boolean | undefined;
                           /**
                            * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                            * Package exports come only from the domain's visibility.
-                           * @default `false`
+                           * @default false
                            */
                           public?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
-                           * @default `false`
+                           * @default false
                            */
                           discovered?: boolean | undefined;
                           /**
                            * Whether the role is active only where a structured role or a namespace enables it.
-                           * @default `false`
+                           * @default false
                            */
                           scoped?: boolean | undefined;
                         };
@@ -1083,7 +1083,7 @@ export interface ConfigInput {
                   [k: string]: {
                     /**
                      * Whether the domain is part of the package's public API.
-                     * @default `false`
+                     * @default false
                      */
                     public?: boolean | undefined;
                     /**
@@ -1129,7 +1129,7 @@ export interface ConfigInput {
             discovered?: ListOption<string> | undefined;
             /**
              * Whether the src tsconfig includes the env file declaring the `define.values` globals.
-             * @default `true`
+             * @default true
              */
             defines?: boolean | undefined;
             /**
@@ -1303,23 +1303,23 @@ export interface ConfigInput {
                             ("named-match" | "named" | "default") | undefined;
                           /**
                            * Whether an `index` file is allowed.
-                           * @default `false`
+                           * @default false
                            */
                           index?: boolean | undefined;
                           /**
                            * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                            * Package exports come only from the domain's visibility.
-                           * @default `false`
+                           * @default false
                            */
                           public?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
-                           * @default `false`
+                           * @default false
                            */
                           discovered?: boolean | undefined;
                           /**
                            * Whether the role is active only where a structured role or a namespace enables it.
-                           * @default `false`
+                           * @default false
                            */
                           scoped?: boolean | undefined;
                         };
@@ -1346,7 +1346,7 @@ export interface ConfigInput {
                   | {
                       /**
                        * Whether the aliases derived from the project structure are generated. `false` with `define` replaces the generated set.
-                       * @default `true`
+                       * @default true
                        */
                       generated?: boolean | undefined;
                       /**
@@ -1363,7 +1363,7 @@ export interface ConfigInput {
               | undefined;
             /**
              * Whether the source only runs through a bundler. It sets the src tsconfig `module` and `moduleResolution` to the bundler ones, writes the src aliases to the tsconfig `paths` and allows bundler aliases in `aliases.define`.
-             * @default `false`
+             * @default false
              */
             bundled?: boolean | undefined;
             /**
@@ -1480,7 +1480,7 @@ export interface ConfigInput {
                   [k: string]: {
                     /**
                      * Whether the domain is part of the package's public API.
-                     * @default `false`
+                     * @default false
                      */
                     public?: boolean | undefined;
                     /**
@@ -1526,7 +1526,7 @@ export interface ConfigInput {
             discovered?: ListOption<string> | undefined;
             /**
              * Whether the tests tsconfig includes the env file declaring the `define.values` globals.
-             * @default `true`
+             * @default true
              */
             defines?: boolean | undefined;
             /**
@@ -1700,23 +1700,23 @@ export interface ConfigInput {
                             ("named-match" | "named" | "default") | undefined;
                           /**
                            * Whether an `index` file is allowed.
-                           * @default `false`
+                           * @default false
                            */
                           index?: boolean | undefined;
                           /**
                            * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                            * Package exports come only from the domain's visibility.
-                           * @default `false`
+                           * @default false
                            */
                           public?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
-                           * @default `false`
+                           * @default false
                            */
                           discovered?: boolean | undefined;
                           /**
                            * Whether the role is active only where a structured role or a namespace enables it.
-                           * @default `false`
+                           * @default false
                            */
                           scoped?: boolean | undefined;
                         };
@@ -1914,7 +1914,7 @@ export interface ConfigInput {
                   [k: string]: {
                     /**
                      * Whether the domain is part of the package's public API.
-                     * @default `false`
+                     * @default false
                      */
                     public?: boolean | undefined;
                     /**
@@ -2048,23 +2048,23 @@ export interface ConfigInput {
                             ("named-match" | "named" | "default") | undefined;
                           /**
                            * Whether an `index` file is allowed.
-                           * @default `false`
+                           * @default false
                            */
                           index?: boolean | undefined;
                           /**
                            * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                            * Package exports come only from the domain's visibility.
-                           * @default `false`
+                           * @default false
                            */
                           public?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
-                           * @default `false`
+                           * @default false
                            */
                           discovered?: boolean | undefined;
                           /**
                            * Whether the role is active only where a structured role or a namespace enables it.
-                           * @default `false`
+                           * @default false
                            */
                           scoped?: boolean | undefined;
                         };
