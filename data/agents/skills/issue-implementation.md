@@ -17,7 +17,7 @@ Implement one GitHub issue as written. The issue and its plan carry the design: 
 
 ## Before starting
 
-Read the issue, then only the ancestors and plan sections its header line names. Then stop and report instead of implementing when:
+Read the issue, then only the ancestors and plan sections its header line names. Your context ends at the nearest plan above the issue: read any other plan only when you believe it holds information the issue needs. Then stop and report instead of implementing when:
 
 | Check                                               | Stop when                                                                                                                                                  |
 | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |

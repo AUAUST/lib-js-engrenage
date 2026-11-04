@@ -14,12 +14,12 @@ Understand a problem, decide its fix, then apply it or write it down for a worke
 
 ## Input
 
-| Given                                                  | Read first                                      |
-| ------------------------------------------------------ | ----------------------------------------------- |
-| A GitHub issue                                         | Its body, comments, linked issues and ancestors |
-| A backlog entry                                        | The entry and the entries closely related to it |
-| A `@debt` marker or debt backlog entry                 | The marked code and its callers                 |
-| A direct report: an error, a failing check, a behavior | The reported output, then reproduce it yourself |
+| Given                                                  | Read first                                                             |
+| ------------------------------------------------------ | ---------------------------------------------------------------------- |
+| A GitHub issue                                         | Its body, comments, linked issues and ancestors up to the nearest plan |
+| A backlog entry                                        | The entry and the entries closely related to it                        |
+| A `@debt` marker or debt backlog entry                 | The marked code and its callers                                        |
+| A direct report: an error, a failing check, a behavior | The reported output, then reproduce it yourself                        |
 
 When the input already describes its fix, check that fix against your own diagnosis before applying it; a described fix is a hypothesis, not a decision.
 

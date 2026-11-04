@@ -43,7 +43,7 @@ The project's decision protocol applies with more latitude: a planning mistake c
 
 | Issue | What it is                                                                           | Its sub-issues                                     | Title                                |
 | ----- | ------------------------------------------------------------------------------------ | -------------------------------------------------- | ------------------------------------ |
-| Plan  | The root: goal, design and decisions                                                 | Its steps, in order                                | `Plan: <outcome>`                    |
+| Plan  | A standalone tree's root: goal, design and decisions                                 | Its steps, in order                                | `Plan: <outcome>`                    |
 | Task  | One feature taken from nothing to finished                                           | When split, its inner steps in order, at any depth | Its result: `<area>: <what it does>` |
 | Block | A task with no work of its own, grouping siblings that can all be done at that point | Independent, in any order                          | `Block: <theme>`                     |
 
@@ -61,6 +61,15 @@ Split only for foundational change: new architecture or a new design pattern, re
 | Only meaningful as a step toward this task's result                                                       | A sub-issue, split and grouped by the same rules           |
 | Cannot be verified without another candidate task                                                         | Merged with it                                             |
 
+## Nested plans
+
+Extract a part of a plan into its own plan when the Map grows too long to scan or the part is clearly distinct from the rest. Do it when obvious; otherwise propose it with the part's scope.
+
+- A nested plan works on its own: its goal, design and decisions cover its part without reading the plans that reference it.
+- Move into it every fact only its part uses; link with their gist the facts it shares with other plans.
+- Other plans treat it as a task: one Map step, never expanded, with a gist stating what it contributes there.
+- Like any issue, it can be a step or block member of another plan, a sub-issue of a task or a prerequisite.
+
 ## Ordering
 
 Order expresses urgency, not importance: a task comes first because later work stands on it. Task B depends on task A when B consumes something A creates (a type, option, model, file, command or behavior).
@@ -77,7 +86,7 @@ Usual layering, earliest first: option shapes and shared contracts → data mode
 
 ## How workers read issues
 
-Workers implement one issue at a time under the issue-implementation skill, once its prerequisites are closed and its sub-issues are done. They apply everything outside **Questions** as decided, stop when the issue disagrees with the plan, and report what the tree needs updated instead of editing issues.
+Workers implement one issue at a time under the issue-implementation skill, once its prerequisites are closed and its sub-issues are done, reading its ancestors only up to the nearest plan. They apply everything outside **Questions** as decided, stop when the issue disagrees with the plan, and report what the tree needs updated instead of editing issues.
 
 ## Procedure
 
@@ -102,10 +111,11 @@ Any issue may end with a **Questions** section while something is open: the only
 
 ## Map
 
-| Step | Issue       | Gist                     | Plan sections      |
-| ---- | ----------- | ------------------------ | ------------------ |
-| 1    | #<n>        | <What the task delivers> | §<section>: <gist> |
-| 2    | #<n>, block | <Theme>                  |                    |
+1. #<n>: <what the task delivers> · [§<section>](#<section-anchor>)
+2. #<n>: <what the block delivers> · §<section>
+   - #<n>
+   - #<n>
+3. #<n>: <what the nested plan contributes to this plan>
 
 ## <Model sections>
 
@@ -172,7 +182,9 @@ Any issue may end with a **Questions** section while something is open: the only
 - <What investigation could not settle: the findings and the candidate answers.>
 ```
 
-The header lists every ancestor from the plan down to the parent, then the plan sections the issue builds on. Drop **Prerequisites** when tree order implies them all, and **Done when** when it would only say the Steps are done and the checks pass.
+In the **Map**, give each step its gist and the plan sections it builds on, linking each section that is a heading of the plan. List a block's members under it as bare references, with no gist or section to keep in sync.
+
+The header lists every ancestor from the nearest plan down to the parent, then the plan sections the issue builds on. A plan has no header. Drop **Prerequisites** when tree order implies them all, and **Done when** when it would only say the Steps are done and the checks pass.
 
 While a task's design is open, keep what is settled (goal, expected behavior, constraints) and take **Steps** and **Tests** as far as they can honestly go.
 

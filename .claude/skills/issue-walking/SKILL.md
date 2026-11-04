@@ -18,6 +18,7 @@ Walk an issue tree in the main session: dispatch each task to a worker, review i
 walk(issue):
   closed                      → skip
   open prerequisite           → stop
+  nested plan                 → stop: it is walked on its own
   open sub-issues             → walk each in order, then its own work
   bug label                   → dispatch to a debugger
   own work (Steps)            → dispatch to a worker
@@ -27,6 +28,7 @@ walk(issue):
 - Start at the issue the user names; read each sub-issue list in order.
 - Count an issue as closed when GitHub says so or a local commit's message closes it.
 - Stop at an open prerequisite outside what you have walked, and at a leaf with neither **Steps** nor the bug label: report it for the debugger or the planner.
+- Never walk into a plan other than the one the user names. In a block, walk its other members first; then stop and report that the nested plan must be walked first.
 
 ## Dispatching
 
@@ -59,7 +61,7 @@ walk(issue):
 
 ## Report
 
-End at the end of the tree, an open prerequisite or a pending question, with the table of walked leaves, then what is pending or blocked and why.
+End at the end of the tree, an open prerequisite, a nested plan or a pending question, with the table of walked leaves, then what is pending or blocked and why.
 
 ## GitHub mechanics
 
