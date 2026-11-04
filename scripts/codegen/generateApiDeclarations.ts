@@ -35,8 +35,8 @@ import { entries, keys } from "@auaust/toolkit/object";
 
 import { resolve } from "#foundation/filesystem/utils/resolve";
 import { apiGroupRoots, apiLibraryGroups } from "#project/baseline/constants";
-import { includesEsLibrary } from "#project/baseline/operations/includesEsLibrary";
-import { listEsSelections } from "#project/baseline/operations/listEsSelections";
+import { includesEsLibrary } from "#project/baseline/utils/includesEsLibrary";
+import { listEsSelections } from "#project/baseline/utils/listEsSelections";
 import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
 import { formatModule } from "#tools/typescript/operations/formatModule";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";

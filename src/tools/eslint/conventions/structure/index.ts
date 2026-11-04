@@ -2,6 +2,7 @@
 export { default as debtMarkers } from "#tools/eslint/conventions/structure/debtMarkers";
 export { default as domainContent } from "#tools/eslint/conventions/structure/domainContent";
 export { default as importData } from "#tools/eslint/conventions/structure/importData";
+export { default as importEffects } from "#tools/eslint/conventions/structure/importEffects";
 export { default as importEnvironments } from "#tools/eslint/conventions/structure/importEnvironments";
 export { default as importLayers } from "#tools/eslint/conventions/structure/importLayers";
 export { default as importSurfaces } from "#tools/eslint/conventions/structure/importSurfaces";

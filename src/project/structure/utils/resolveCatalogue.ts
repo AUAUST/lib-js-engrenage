@@ -2,7 +2,7 @@ import { entries, record } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
 import { roleContractSchema } from "#project/structure/config/schemas/roleContractSchema";
-import { roleCatalogue } from "#project/structure/constants";
+import { noRoleEffects, roleCatalogue } from "#project/structure/constants";
 import { completeRole } from "#project/structure/utils/completeRole";
 import { normalizeRoles } from "#project/structure/utils/normalizeRoles";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
@@ -21,6 +21,7 @@ export const resolveCatalogue = once(
         }),
       ),
       aliases: {},
+      effects: noRoleEffects,
     });
 
     return record(

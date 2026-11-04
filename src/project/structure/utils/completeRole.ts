@@ -14,6 +14,7 @@ export function completeRole(
     categories: definition.categories,
     exports: definition.exports,
     purpose: definition.purpose,
+    effects: definition.effects,
     nesting: definition.nesting ?? roleContractDefaults.nesting,
     index: definition.index ?? roleContractDefaults.index,
     public: definition.public ?? roleContractDefaults.public,

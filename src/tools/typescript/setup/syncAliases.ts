@@ -8,7 +8,7 @@ import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
 import { readJsonValue } from "#foundation/json/utils/readJsonValue";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
-import { readTsconfigPaths } from "#project/tsconfig/operations/readTsconfigPaths";
+import { readTsconfigPaths } from "#project/tsconfig/utils/readTsconfigPaths";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Alias } from "#project/structure/types/Alias";

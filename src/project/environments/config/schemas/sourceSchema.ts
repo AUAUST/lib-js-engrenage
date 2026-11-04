@@ -14,7 +14,7 @@ import {
   apiGroups,
   apiLibraryGroups,
 } from "#project/baseline/constants";
-import { findCurrentMonth } from "#project/baseline/operations/findCurrentMonth";
+import { findCurrentMonth } from "#project/baseline/utils/findCurrentMonth";
 import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
 import {
   defaultSourceDirectories,

@@ -11,6 +11,7 @@ import { mappedValues } from "@auaust/toolkit/mappedValues";
 import { keys } from "@auaust/toolkit/object";
 
 import { globsSchema } from "#foundation/options/config/schemas/globsSchema";
+import { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModulesSchema";
 import { inlineRoleSchema } from "#project/structure/config/schemas/inlineRoleSchema";
 import { configSchema } from "#workflows/registry/config/schemas/configSchema";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
@@ -24,6 +25,7 @@ const generatedHeader =
 const imports = [
   'import type { ListOption, ManagedListOption } from "#foundation/options/index";',
   'import type { GlobalsFactory } from "#project/config/types/GlobalsFactory";',
+  'import type { EffectModuleResolver } from "#project/structure/index";',
   'import type { Glob } from "#types/Glob";',
   'import type { Globs } from "#types/Globs";',
 ];
@@ -107,6 +109,10 @@ const readonlyListTypes = new Map<unknown, string>([
 ]);
 
 function resolveType(schema: AnySchema): string | undefined {
+  if (schema === effectModuleResolverSchema) {
+    return "EffectModuleResolver";
+  }
+
   if (schema.type === "custom") {
     return "GlobalsFactory";
   }

@@ -2,6 +2,7 @@
 
 import type { ListOption, ManagedListOption } from "#foundation/options/index";
 import type { GlobalsFactory } from "#project/config/types/GlobalsFactory";
+import type { EffectModuleResolver } from "#project/structure/index";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
@@ -267,6 +268,11 @@ export interface ConfigInput {
                      */
                     typeOnly?: boolean | undefined;
                     /**
+                     * The effect level of the role, a name of `roles.effects.levels`. A module of a ranked role imports at runtime only bindings declared in roles of its level or purer, and external modules ranked likewise; an unranked role imports anything and is imported at runtime only by unranked roles. Type-only imports are exempt.
+                     * @default none
+                     */
+                    effects?: string | undefined;
+                    /**
                      * Whether a consumer discovers its files, so they may export defaults.
                      * @default false
                      */
@@ -286,6 +292,35 @@ export interface ConfigInput {
             aliases?:
               | {
                   [k: string]: string;
+                }
+              | undefined;
+            /**
+             * Effect levels of roles and of the external modules they import. An environment refines the project's entries.
+             */
+            effects?:
+              | {
+                  /**
+                   * Effect levels, purest first, compared by index. They must contain `pure`, `confined` and `effectful` in that order and may add levels anywhere around them.
+                   * @default `pure`, `confined`, `effectful`
+                   */
+                  levels?: string[] | undefined;
+                  /**
+                   * Levels of external modules, as a record of specifier glob to level or a function from a specifier to a level or `undefined`. A module is ranked by the environment's entry, then the project's, then the built-in ranking of `node:*` builtins, then `fallback`.
+                   * @default none, so only the built-in ranking applies
+                   */
+                  modules?:
+                    | (
+                        | EffectModuleResolver
+                        | {
+                            [k: string]: string;
+                          }
+                      )
+                    | undefined;
+                  /**
+                   * Level of an external module that nothing else ranks. Unset, such a module is unchecked.
+                   * @default none, so unranked modules are unchecked
+                   */
+                  fallback?: string | undefined;
                 }
               | undefined;
           }
@@ -1013,6 +1048,11 @@ export interface ConfigInput {
                            */
                           typeOnly?: boolean | undefined;
                           /**
+                           * The effect level of the role, a name of `roles.effects.levels`. A module of a ranked role imports at runtime only bindings declared in roles of its level or purer, and external modules ranked likewise; an unranked role imports anything and is imported at runtime only by unranked roles. Type-only imports are exempt.
+                           * @default none
+                           */
+                          effects?: string | undefined;
+                          /**
                            * Whether a consumer discovers its files, so they may export defaults.
                            * @default false
                            */
@@ -1032,6 +1072,35 @@ export interface ConfigInput {
                   aliases?:
                     | {
                         [k: string]: string;
+                      }
+                    | undefined;
+                  /**
+                   * Effect levels of roles and of the external modules they import. An environment refines the project's entries.
+                   */
+                  effects?:
+                    | {
+                        /**
+                         * Effect levels, purest first, compared by index. They must contain `pure`, `confined` and `effectful` in that order and may add levels anywhere around them.
+                         * @default `pure`, `confined`, `effectful`
+                         */
+                        levels?: string[] | undefined;
+                        /**
+                         * Levels of external modules, as a record of specifier glob to level or a function from a specifier to a level or `undefined`. A module is ranked by the environment's entry, then the project's, then the built-in ranking of `node:*` builtins, then `fallback`.
+                         * @default none, so only the built-in ranking applies
+                         */
+                        modules?:
+                          | (
+                              | EffectModuleResolver
+                              | {
+                                  [k: string]: string;
+                                }
+                            )
+                          | undefined;
+                        /**
+                         * Level of an external module that nothing else ranks. Unset, such a module is unchecked.
+                         * @default none, so unranked modules are unchecked
+                         */
+                        fallback?: string | undefined;
                       }
                     | undefined;
                 }
@@ -1339,6 +1408,11 @@ export interface ConfigInput {
                            */
                           typeOnly?: boolean | undefined;
                           /**
+                           * The effect level of the role, a name of `roles.effects.levels`. A module of a ranked role imports at runtime only bindings declared in roles of its level or purer, and external modules ranked likewise; an unranked role imports anything and is imported at runtime only by unranked roles. Type-only imports are exempt.
+                           * @default none
+                           */
+                          effects?: string | undefined;
+                          /**
                            * Whether a consumer discovers its files, so they may export defaults.
                            * @default false
                            */
@@ -1358,6 +1432,35 @@ export interface ConfigInput {
                   aliases?:
                     | {
                         [k: string]: string;
+                      }
+                    | undefined;
+                  /**
+                   * Effect levels of roles and of the external modules they import. An environment refines the project's entries.
+                   */
+                  effects?:
+                    | {
+                        /**
+                         * Effect levels, purest first, compared by index. They must contain `pure`, `confined` and `effectful` in that order and may add levels anywhere around them.
+                         * @default `pure`, `confined`, `effectful`
+                         */
+                        levels?: string[] | undefined;
+                        /**
+                         * Levels of external modules, as a record of specifier glob to level or a function from a specifier to a level or `undefined`. A module is ranked by the environment's entry, then the project's, then the built-in ranking of `node:*` builtins, then `fallback`.
+                         * @default none, so only the built-in ranking applies
+                         */
+                        modules?:
+                          | (
+                              | EffectModuleResolver
+                              | {
+                                  [k: string]: string;
+                                }
+                            )
+                          | undefined;
+                        /**
+                         * Level of an external module that nothing else ranks. Unset, such a module is unchecked.
+                         * @default none, so unranked modules are unchecked
+                         */
+                        fallback?: string | undefined;
                       }
                     | undefined;
                 }
@@ -1744,6 +1847,11 @@ export interface ConfigInput {
                            */
                           typeOnly?: boolean | undefined;
                           /**
+                           * The effect level of the role, a name of `roles.effects.levels`. A module of a ranked role imports at runtime only bindings declared in roles of its level or purer, and external modules ranked likewise; an unranked role imports anything and is imported at runtime only by unranked roles. Type-only imports are exempt.
+                           * @default none
+                           */
+                          effects?: string | undefined;
+                          /**
                            * Whether a consumer discovers its files, so they may export defaults.
                            * @default false
                            */
@@ -1763,6 +1871,35 @@ export interface ConfigInput {
                   aliases?:
                     | {
                         [k: string]: string;
+                      }
+                    | undefined;
+                  /**
+                   * Effect levels of roles and of the external modules they import. An environment refines the project's entries.
+                   */
+                  effects?:
+                    | {
+                        /**
+                         * Effect levels, purest first, compared by index. They must contain `pure`, `confined` and `effectful` in that order and may add levels anywhere around them.
+                         * @default `pure`, `confined`, `effectful`
+                         */
+                        levels?: string[] | undefined;
+                        /**
+                         * Levels of external modules, as a record of specifier glob to level or a function from a specifier to a level or `undefined`. A module is ranked by the environment's entry, then the project's, then the built-in ranking of `node:*` builtins, then `fallback`.
+                         * @default none, so only the built-in ranking applies
+                         */
+                        modules?:
+                          | (
+                              | EffectModuleResolver
+                              | {
+                                  [k: string]: string;
+                                }
+                            )
+                          | undefined;
+                        /**
+                         * Level of an external module that nothing else ranks. Unset, such a module is unchecked.
+                         * @default none, so unranked modules are unchecked
+                         */
+                        fallback?: string | undefined;
                       }
                     | undefined;
                 }
@@ -2099,6 +2236,11 @@ export interface ConfigInput {
                            */
                           typeOnly?: boolean | undefined;
                           /**
+                           * The effect level of the role, a name of `roles.effects.levels`. A module of a ranked role imports at runtime only bindings declared in roles of its level or purer, and external modules ranked likewise; an unranked role imports anything and is imported at runtime only by unranked roles. Type-only imports are exempt.
+                           * @default none
+                           */
+                          effects?: string | undefined;
+                          /**
                            * Whether a consumer discovers its files, so they may export defaults.
                            * @default false
                            */
@@ -2118,6 +2260,35 @@ export interface ConfigInput {
                   aliases?:
                     | {
                         [k: string]: string;
+                      }
+                    | undefined;
+                  /**
+                   * Effect levels of roles and of the external modules they import. An environment refines the project's entries.
+                   */
+                  effects?:
+                    | {
+                        /**
+                         * Effect levels, purest first, compared by index. They must contain `pure`, `confined` and `effectful` in that order and may add levels anywhere around them.
+                         * @default `pure`, `confined`, `effectful`
+                         */
+                        levels?: string[] | undefined;
+                        /**
+                         * Levels of external modules, as a record of specifier glob to level or a function from a specifier to a level or `undefined`. A module is ranked by the environment's entry, then the project's, then the built-in ranking of `node:*` builtins, then `fallback`.
+                         * @default none, so only the built-in ranking applies
+                         */
+                        modules?:
+                          | (
+                              | EffectModuleResolver
+                              | {
+                                  [k: string]: string;
+                                }
+                            )
+                          | undefined;
+                        /**
+                         * Level of an external module that nothing else ranks. Unset, such a module is unchecked.
+                         * @default none, so unranked modules are unchecked
+                         */
+                        fallback?: string | undefined;
                       }
                     | undefined;
                 }
@@ -2345,6 +2516,11 @@ export interface InlineRole {
    * @default false
    */
   typeOnly?: boolean | undefined;
+  /**
+   * The effect level of the role, a name of `roles.effects.levels`. A module of a ranked role imports at runtime only bindings declared in roles of its level or purer, and external modules ranked likewise; an unranked role imports anything and is imported at runtime only by unranked roles. Type-only imports are exempt.
+   * @default none
+   */
+  effects?: string | undefined;
   /**
    * Whether a consumer discovers its files, so they may export defaults.
    * @default false

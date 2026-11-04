@@ -109,6 +109,7 @@ function describeContract(contract: ResolvedRoleContract): string {
     contract.exports === undefined ? undefined : `exports ${contract.exports}`,
     contract.nesting === 0 ? undefined : `nesting ${contract.nesting}`,
     contract.index ? "`index` allowed" : undefined,
+    contract.effects === undefined ? undefined : `effects ${contract.effects}`,
     contract.discovered ? "discovered" : undefined,
     contract.scoped ? "scoped" : undefined,
   ];

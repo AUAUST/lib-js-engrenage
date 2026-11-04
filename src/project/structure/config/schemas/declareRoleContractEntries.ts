@@ -80,6 +80,14 @@ export function declareRoleContractEntries<Inline>(
         "Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.",
       optional: inherited(roleContractDefaults.typeOnly),
     }),
+    effects: declare(string(), {
+      description:
+        "The effect level of the role, a name of `roles.effects.levels`. " +
+        "A module of a ranked role imports at runtime only bindings declared in roles of its level or purer, " +
+        "and external modules ranked likewise; an unranked role imports anything and is imported at runtime only by unranked roles. " +
+        "Type-only imports are exempt.",
+      optional: { value: undefined },
+    }),
     discovered: declare(boolean(), {
       description:
         "Whether a consumer discovers its files, so they may export defaults.",

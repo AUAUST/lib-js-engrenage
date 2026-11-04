@@ -1,9 +1,6 @@
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
-
-function isTypeKind(node: object): boolean {
-  return "exportKind" in node && node.exportKind === "type";
-}
+import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 
 const allowed = new Set([
   "ImportDeclaration",
@@ -34,7 +31,7 @@ export default defineConvention({
               const type: string = statement.type;
 
               if (type === "ExportAllDeclaration") {
-                if (!isTypeKind(statement)) {
+                if (!isTypeOnlyNode(statement)) {
                   context.report({ node: statement, messageId: "value" });
                 }
 
@@ -46,8 +43,8 @@ export default defineConvention({
                 statement.source != null
               ) {
                 if (
-                  !isTypeKind(statement) &&
-                  !statement.specifiers.every(isTypeKind)
+                  !isTypeOnlyNode(statement) &&
+                  !statement.specifiers.every(isTypeOnlyNode)
                 ) {
                   context.report({ node: statement, messageId: "value" });
                 }

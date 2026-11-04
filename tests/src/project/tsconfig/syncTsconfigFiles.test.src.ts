@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { selectEsLibraries } from "#project/baseline/operations/selectEsLibraries";
+import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
 import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";

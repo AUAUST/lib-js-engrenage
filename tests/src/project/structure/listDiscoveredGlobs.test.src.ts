@@ -1,5 +1,6 @@
 import { expect, test } from "vitest";
 
+import { noRoles } from "#project/structure/constants";
 import { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 
@@ -19,6 +20,7 @@ function contract(
     scoped: false,
     typeOnly: false,
     purpose: undefined,
+    effects: undefined,
     ...overrides,
   };
 }
@@ -28,6 +30,7 @@ test("lists a discovered directory role as everything inside it", () => {
     listDiscoveredGlobs({
       roles: { conventions: contract({ discovered: true }) },
       aliases: {},
+      effects: noRoles.effects,
     }),
   ).toEqual(["**/conventions/**"]);
 });
@@ -40,6 +43,7 @@ test("lists the files of a discovered file role and skips undiscovered roles", (
         "utils": contract({}),
       },
       aliases: {},
+      effects: noRoles.effects,
     }),
   ).toEqual(["**/setup.ts"]);
 });

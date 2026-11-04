@@ -1,8 +1,8 @@
 import { engrenage } from "#constants";
-import { resolveListOption } from "#foundation/options/utils/resolveListOption";
+import { resolveListOption } from "#foundation/options/index";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
-import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { JsonEdit } from "#foundation/json/index";
+import type { ProjectConfig } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 function listDefaultExtends(

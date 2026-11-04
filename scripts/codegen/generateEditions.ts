@@ -39,7 +39,7 @@ import { entries, record, values } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { resolve } from "#foundation/filesystem/utils/resolve";
-import { listEsSelections } from "#project/baseline/operations/listEsSelections";
+import { listEsSelections } from "#project/baseline/utils/listEsSelections";
 import {
   esInterfaceAliases,
   esMemberCompatKeys,

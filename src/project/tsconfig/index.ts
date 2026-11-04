@@ -1,6 +1,12 @@
 // @barrel utils/*.ts named
+export { createTsconfig } from "#project/tsconfig/utils/createTsconfig";
 export { isLeftAlone } from "#project/tsconfig/utils/isLeftAlone";
 export { isPackageAlias } from "#project/tsconfig/utils/isPackageAlias";
+export { produceTsconfigBuildInfo } from "#project/tsconfig/utils/produceTsconfigBuildInfo";
+export { produceTsconfigExtends } from "#project/tsconfig/utils/produceTsconfigExtends";
+export { produceTsconfigPaths } from "#project/tsconfig/utils/produceTsconfigPaths";
+export { readTsconfigPaths } from "#project/tsconfig/utils/readTsconfigPaths";
+export { readTsconfigValue } from "#project/tsconfig/utils/readTsconfigValue";
 export { relativeToTsconfig } from "#project/tsconfig/utils/relativeToTsconfig";
 export { resolveTsconfig } from "#project/tsconfig/utils/resolveTsconfig";
 export { resolveTsconfigOwner } from "#project/tsconfig/utils/resolveTsconfigOwner";

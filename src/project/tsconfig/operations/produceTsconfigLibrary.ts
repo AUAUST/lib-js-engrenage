@@ -1,5 +1,5 @@
-import { readTsconfigValue } from "#project/tsconfig/operations/readTsconfigValue";
 import { resolveTsconfigLibrary } from "#project/tsconfig/operations/resolveTsconfigLibrary";
+import { readTsconfigValue } from "#project/tsconfig/utils/readTsconfigValue";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";

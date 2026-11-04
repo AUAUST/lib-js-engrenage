@@ -4,9 +4,10 @@ import { keys } from "@auaust/toolkit/object";
 
 import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
-import { resolveRoles } from "#project/structure/operations/resolveRoles";
+import { noRoles } from "#project/structure/constants";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { normalizeRoles } from "#project/structure/utils/normalizeRoles";
+import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
 
 function resolve({
@@ -95,10 +96,7 @@ describe("resolveRoles", () => {
 
   test("yields no role in any environment when the role system is off", () => {
     for (const environment of ["src", "tests", "scripts", "tooling"] as const) {
-      expect(resolve({ environment, roles: false })).toEqual({
-        roles: {},
-        aliases: {},
-      });
+      expect(resolve({ environment, roles: false })).toEqual(noRoles);
     }
   });
 
@@ -296,5 +294,50 @@ describe("resolveRoles", () => {
     expect(getIndexFile(resolve({ environment: "src", roles: false }))).toBe(
       "index.ts",
     );
+  });
+
+  test("ranks the catalogue and refines the levels per environment", () => {
+    const source = resolve({ environment: "src", roles: undefined });
+
+    expect(source.roles.utils).toMatchObject({ effects: "confined" });
+    expect(source.roles.constants).toMatchObject({ effects: "pure" });
+    expect(source.roles.adapters).toMatchObject({ effects: undefined });
+    expect(source.effects.levels).toEqual(["pure", "confined", "effectful"]);
+
+    const tests = resolve({
+      environment: "tests",
+      roles: undefined,
+      environmentRoles: {
+        effects: { levels: ["pure", "logging", "confined", "effectful"] },
+        define: {
+          utils: { inherit: "utils", effects: "effectful" },
+        },
+      },
+    });
+
+    expect(tests.roles.utils).toMatchObject({ effects: "effectful" });
+    expect(tests.effects.levels).toContain("logging");
+  });
+
+  test("fails on an unknown level", () => {
+    expect(() => {
+      resolve({
+        environment: "src",
+        roles: {
+          define: {
+            utils: { inherit: "utils", effects: "shaky" },
+          },
+        },
+      });
+    }).toThrow("shaky");
+
+    expect(() => {
+      resolve({
+        environment: "src",
+        roles: {
+          effects: { fallback: "shaky" },
+        },
+      });
+    }).toThrow("shaky");
   });
 });

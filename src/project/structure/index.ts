@@ -1,17 +1,20 @@
 export { resolveAliases } from "#project/structure/operations/resolveAliases";
 export { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
 export { resolveImportRules } from "#project/structure/operations/resolveImportRules";
-export { resolveRoles } from "#project/structure/operations/resolveRoles";
 export { getIndexFile } from "#project/structure/utils/getIndexFile";
 export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
+export { rankModule } from "#project/structure/utils/rankModule";
 export { renderStructure } from "#project/structure/utils/renderStructure";
 export { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
+export { resolveRoles } from "#project/structure/utils/resolveRoles";
 
 // @barrel types/*.ts all
 export * from "#project/structure/types/Alias";
 export * from "#project/structure/types/AliasesOption";
 export * from "#project/structure/types/DeclaredRoleContract";
 export * from "#project/structure/types/DeclaredRolesOption";
+export * from "#project/structure/types/EffectModuleResolver";
+export * from "#project/structure/types/EffectModules";
 export * from "#project/structure/types/EnvironmentStructure";
 export * from "#project/structure/types/ImportCategory";
 export * from "#project/structure/types/ImportRelation";
@@ -21,11 +24,13 @@ export * from "#project/structure/types/ImportRuleTarget";
 export * from "#project/structure/types/InlineRole";
 export * from "#project/structure/types/ProjectRoles";
 export * from "#project/structure/types/ResolvedAliases";
+export * from "#project/structure/types/ResolvedEffects";
 export * from "#project/structure/types/ResolvedRoleContract";
 export * from "#project/structure/types/ResolvedRoles";
 export * from "#project/structure/types/ResolvedStructure";
 export * from "#project/structure/types/RoleContract";
 export * from "#project/structure/types/RoleDefinition";
+export * from "#project/structure/types/RoleEffects";
 export * from "#project/structure/types/RoleEnvironment";
 export * from "#project/structure/types/RoleKey";
 export * from "#project/structure/types/RoleReference";

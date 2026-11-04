@@ -1,11 +1,11 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { findCurrentMonth } from "#project/baseline/operations/findCurrentMonth";
-import { listEsSelections } from "#project/baseline/operations/listEsSelections";
-import { selectEsLibraries } from "#project/baseline/operations/selectEsLibraries";
 import { assertBaselineSnapshot } from "#project/baseline/utils/assertBaselineSnapshot";
+import { findCurrentMonth } from "#project/baseline/utils/findCurrentMonth";
+import { listEsSelections } from "#project/baseline/utils/listEsSelections";
 import { resolveBaselineMinimums } from "#project/baseline/utils/resolveBaselineMinimums";
 import { resolveNodeRuntime } from "#project/baseline/utils/resolveNodeRuntime";
+import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
 import type { Runtime } from "#project/baseline/types/Runtime";
 
 export function resolveSourceRuntime({

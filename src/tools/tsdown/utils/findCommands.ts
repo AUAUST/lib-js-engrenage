@@ -2,11 +2,10 @@ import { posix } from "node:path";
 
 import { entries } from "@auaust/toolkit/object";
 
-import { filesIn } from "#foundation/filesystem/utils/filesIn";
+import { filesIn, type Filesystem } from "#foundation/filesystem/index";
 import { getIndexFile } from "#project/structure/index";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
-import type { ResolvedBin } from "#project/environments/types/ResolvedBin";
+import type { ResolvedBin } from "#project/environments/index";
 import type { File } from "#types/File";
 
 export function findCommands({

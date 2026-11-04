@@ -10,8 +10,8 @@ import { keys } from "@auaust/toolkit/object";
 
 import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
 import { apiGroupRoots } from "#project/baseline/constants";
-import { selectEsLibraries } from "#project/baseline/operations/selectEsLibraries";
-import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
+import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
+import { createTsconfig } from "#project/tsconfig/utils/createTsconfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 

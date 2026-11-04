@@ -5,7 +5,7 @@ import { createRequire } from "node:module";
 import { build } from "tsdown";
 import { describe, expect, test } from "vitest";
 
-import { selectEsLibraries } from "#project/baseline/operations/selectEsLibraries";
+import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createContext } from "#project/config/utils/createContext";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

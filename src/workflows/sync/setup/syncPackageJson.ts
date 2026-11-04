@@ -7,7 +7,7 @@ import { syncFiles } from "#foundation/blocks/operations/syncFiles";
 import { jsonIndentation } from "#project/format/constants";
 import { createPackageJson } from "#project/package/operations/createPackageJson";
 import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
-import { listPnpmWarnings } from "#tools/pnpm/operations/listPnpmWarnings";
+import { listPnpmWarnings } from "#tools/pnpm/utils/listPnpmWarnings";
 import { resolveCommandFiles } from "#tools/tsdown/operations/resolveCommandFiles";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { Runtime } from "#project/baseline/types/Runtime";

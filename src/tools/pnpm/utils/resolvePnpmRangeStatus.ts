@@ -1,9 +1,11 @@
-import { compareVersions } from "#project/package/utils/compareVersions";
-import { parseMajorVersion } from "#project/package/utils/parseMajorVersion";
-import { readDeclaredVersion } from "#project/package/utils/readDeclaredVersion";
-import { readProjectPnpmVersion } from "#project/package/utils/readProjectPnpmVersion";
-import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
-import type { PackageJson } from "#project/package/types/PackageJson";
+import {
+  compareVersions,
+  parseMajorVersion,
+  readDeclaredVersion,
+  readProjectPnpmVersion,
+  readSharedPnpmRange,
+  type PackageJson,
+} from "#project/package/index";
 
 export function resolvePnpmRangeStatus(
   packageJson: PackageJson,

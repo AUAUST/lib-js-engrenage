@@ -2,7 +2,7 @@ import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
 import { packages } from "#constants";
 import { tsconfigEnvironments } from "#project/tsconfig/index";
-import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
+import { createTsconfig } from "#project/tsconfig/utils/createTsconfig";
 import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
 import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
 import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";

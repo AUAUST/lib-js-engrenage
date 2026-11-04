@@ -10,22 +10,22 @@ Directories: `src`
 
 Layers of `.`: `foundation` < `project` < `tools` < `workflows`
 
-| Role           | Contents and contract                                                 | Allowed imports                                                                                                                                                                                                                                                                                                           | Public |
-| -------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| `index`        | file `index.ts`                                                       | as its domain                                                                                                                                                                                                                                                                                                             | no     |
-| `constants`    | file `constants.ts`                                                   | as its domain                                                                                                                                                                                                                                                                                                             | no     |
-| `declarations` | file `*.d.ts`                                                         | as its domain                                                                                                                                                                                                                                                                                                             | no     |
-| `types`        | exports named-match                                                   | a domain imports its own roles and files, type-only; anything imports global roles, type-only; peers, through their index.ts, type-only; a domain reaches a sub-domain through its index.ts and public roles, type-only; domains of a lower layer, through their index.ts, type-only; global roles import only each other | no     |
-| `utils`        | exports named-match                                                   | utils/ imports utils/, types/ and constants.ts here and above, and global roles; peers, through their index.ts, type-only; domains of a lower layer, through their index.ts, type-only                                                                                                                                    | no     |
-| `errors`       | exports named-match                                                   | as its domain                                                                                                                                                                                                                                                                                                             | yes    |
-| `enums`        | exports named-match                                                   | as its domain                                                                                                                                                                                                                                                                                                             | no     |
-| `ports`        | exports named-match                                                   | a domain imports its own roles and files, type-only; anything imports global roles, type-only; domains of a lower layer, through their index.ts, type-only; peers, through their index.ts, type-only                                                                                                                      | yes    |
-| `adapters`     | exports named-match                                                   | as its domain                                                                                                                                                                                                                                                                                                             | yes    |
-| `config`       | roles `config/schemas`; exports named-match                           | as its domain                                                                                                                                                                                                                                                                                                             | no     |
-| `setup`        | exports named-match                                                   | as its domain                                                                                                                                                                                                                                                                                                             | no     |
-| `plugins`      | exports named-match                                                   | as its domain                                                                                                                                                                                                                                                                                                             | no     |
-| `operations`   | exports named-match                                                   | as its domain                                                                                                                                                                                                                                                                                                             | no     |
-| `conventions`  | category subdirectories; exports default; `index` allowed; discovered | as its domain                                                                                                                                                                                                                                                                                                             | no     |
+| Role           | Contents and contract                                                                   | Allowed imports                                                                                                                                                                                                                                                                                                                                                | Public |
+| -------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| `index`        | file `index.ts`                                                                         | as its domain                                                                                                                                                                                                                                                                                                                                                  | no     |
+| `constants`    | file `constants.ts`; effects pure                                                       | as its domain                                                                                                                                                                                                                                                                                                                                                  | no     |
+| `declarations` | file `*.d.ts`                                                                           | as its domain                                                                                                                                                                                                                                                                                                                                                  | no     |
+| `types`        | exports named-match                                                                     | a domain imports its own roles and files, type-only; anything imports global roles, type-only; peers, through their index.ts, type-only; a domain reaches a sub-domain through its index.ts and public roles, type-only; domains of a lower layer, through their index.ts, type-only; global roles import only each other                                      | no     |
+| `utils`        | exports named-match; effects confined                                                   | a domain imports its own roles and files; anything imports global roles; peers, through their index.ts; a domain reaches a sub-domain through its index.ts and public roles; domains of a lower layer, through their index.ts; a sub-domain imports its ancestors' roles directly                                                                              | no     |
+| `errors`       | exports named-match; effects pure                                                       | as its domain                                                                                                                                                                                                                                                                                                                                                  | yes    |
+| `enums`        | exports named-match; effects pure                                                       | as its domain                                                                                                                                                                                                                                                                                                                                                  | no     |
+| `ports`        | exports named-match; effects pure                                                       | a domain imports its own roles and files, type-only; anything imports global roles, type-only; domains of a lower layer, through their index.ts, type-only; peers, through their index.ts, type-only; a domain imports its own roles and files; anything imports global roles; domains of a lower layer, through their index.ts; peers, through their index.ts | yes    |
+| `adapters`     | exports named-match; effects effectful                                                  | a domain imports its own roles and files; anything imports global roles; domains of a lower layer, through their index.ts; peers, through their index.ts                                                                                                                                                                                                       | yes    |
+| `config`       | roles `config/schemas`; exports named-match; effects confined                           | a domain imports its own roles and files; anything imports global roles; peers, through their index.ts; a domain reaches a sub-domain through its index.ts and public roles; domains of a lower layer, through their index.ts                                                                                                                                  | no     |
+| `setup`        | exports named-match; effects effectful                                                  | a domain imports its own roles and files; anything imports global roles; domains of a lower layer, through their index.ts; peers, through their index.ts; a sub-domain imports its ancestors' roles directly; a domain reaches a sub-domain through its index.ts and public roles                                                                              | no     |
+| `plugins`      | exports named-match; effects effectful                                                  | a domain imports its own roles and files; anything imports global roles; domains of a lower layer, through their index.ts; peers, through their index.ts                                                                                                                                                                                                       | no     |
+| `operations`   | exports named-match; effects effectful                                                  | a domain imports its own roles and files; anything imports global roles; peers, through their index.ts; a domain reaches a sub-domain through its index.ts and public roles; domains of a lower layer, through their index.ts; a sub-domain imports its ancestors' roles directly                                                                              | no     |
+| `conventions`  | category subdirectories; exports default; `index` allowed; effects confined; discovered | a domain imports its own roles and files; anything imports global roles; domains of a lower layer, through their index.ts; peers, through their index.ts                                                                                                                                                                                                       | no     |
 
 #### `src/foundation`
 
@@ -422,24 +422,24 @@ Layout: `mirror`, each directory below a root key mirrors one of that environmen
 
 Root keys: `bin` (tests `bin`), `scripts` (tests `scripts`), `src` (tests `src`)
 
-| Role           | Contents and contract                                                 | Allowed imports | Public |
-| -------------- | --------------------------------------------------------------------- | --------------- | ------ |
-| `index`        | file `index.ts`                                                       | as its domain   | no     |
-| `constants`    | file `constants.ts`                                                   | as its domain   | no     |
-| `declarations` | file `*.d.ts`                                                         | as its domain   | no     |
-| `types`        | exports named-match                                                   | as its domain   | no     |
-| `utils`        | exports named-match                                                   | as its domain   | no     |
-| `errors`       | exports named-match                                                   | as its domain   | yes    |
-| `enums`        | exports named-match                                                   | as its domain   | no     |
-| `ports`        | exports named-match                                                   | as its domain   | yes    |
-| `adapters`     | exports named-match                                                   | as its domain   | yes    |
-| `fixtures`     | nesting any                                                           | as its domain   | no     |
-| `setup.ts`     | file `setup.ts`; discovered                                           | as its domain   | no     |
-| `config`       | roles `config/schemas`; exports named-match                           | as its domain   | no     |
-| `setup`        | exports named-match                                                   | as its domain   | no     |
-| `plugins`      | exports named-match                                                   | as its domain   | no     |
-| `operations`   | exports named-match                                                   | as its domain   | no     |
-| `conventions`  | category subdirectories; exports default; `index` allowed; discovered | as its domain   | no     |
+| Role           | Contents and contract                                                                   | Allowed imports | Public |
+| -------------- | --------------------------------------------------------------------------------------- | --------------- | ------ |
+| `index`        | file `index.ts`                                                                         | as its domain   | no     |
+| `constants`    | file `constants.ts`; effects pure                                                       | as its domain   | no     |
+| `declarations` | file `*.d.ts`                                                                           | as its domain   | no     |
+| `types`        | exports named-match                                                                     | as its domain   | no     |
+| `utils`        | exports named-match; effects effectful                                                  | as its domain   | no     |
+| `errors`       | exports named-match; effects pure                                                       | as its domain   | yes    |
+| `enums`        | exports named-match; effects pure                                                       | as its domain   | no     |
+| `ports`        | exports named-match; effects pure                                                       | as its domain   | yes    |
+| `adapters`     | exports named-match; effects effectful                                                  | as its domain   | yes    |
+| `fixtures`     | nesting any; effects pure                                                               | as its domain   | no     |
+| `setup.ts`     | file `setup.ts`; discovered                                                             | as its domain   | no     |
+| `config`       | roles `config/schemas`; exports named-match; effects confined                           | as its domain   | no     |
+| `setup`        | exports named-match; effects effectful                                                  | as its domain   | no     |
+| `plugins`      | exports named-match; effects effectful                                                  | as its domain   | no     |
+| `operations`   | exports named-match; effects effectful                                                  | as its domain   | no     |
+| `conventions`  | category subdirectories; exports default; `index` allowed; effects confined; discovered | as its domain   | no     |
 
 ### bin (strict)
 
@@ -488,22 +488,22 @@ Directories: `bin`
 
 Directories: `scripts`
 
-| Role           | Contents and contract                                                 | Allowed imports | Public |
-| -------------- | --------------------------------------------------------------------- | --------------- | ------ |
-| `index`        | file `index.ts`                                                       | as its domain   | no     |
-| `constants`    | file `constants.ts`                                                   | as its domain   | no     |
-| `declarations` | file `*.d.ts`                                                         | as its domain   | no     |
-| `types`        | exports named-match                                                   | as its domain   | no     |
-| `utils`        | exports named-match                                                   | as its domain   | no     |
-| `errors`       | exports named-match                                                   | as its domain   | yes    |
-| `enums`        | exports named-match                                                   | as its domain   | no     |
-| `ports`        | exports named-match                                                   | as its domain   | yes    |
-| `adapters`     | exports named-match                                                   | as its domain   | yes    |
-| `config`       | roles `config/schemas`; exports named-match                           | as its domain   | no     |
-| `setup`        | exports named-match                                                   | as its domain   | no     |
-| `plugins`      | exports named-match                                                   | as its domain   | no     |
-| `operations`   | exports named-match                                                   | as its domain   | no     |
-| `conventions`  | category subdirectories; exports default; `index` allowed; discovered | as its domain   | no     |
+| Role           | Contents and contract                                                                   | Allowed imports | Public |
+| -------------- | --------------------------------------------------------------------------------------- | --------------- | ------ |
+| `index`        | file `index.ts`                                                                         | as its domain   | no     |
+| `constants`    | file `constants.ts`; effects pure                                                       | as its domain   | no     |
+| `declarations` | file `*.d.ts`                                                                           | as its domain   | no     |
+| `types`        | exports named-match                                                                     | as its domain   | no     |
+| `utils`        | exports named-match; effects confined                                                   | as its domain   | no     |
+| `errors`       | exports named-match; effects pure                                                       | as its domain   | yes    |
+| `enums`        | exports named-match; effects pure                                                       | as its domain   | no     |
+| `ports`        | exports named-match; effects pure                                                       | as its domain   | yes    |
+| `adapters`     | exports named-match; effects effectful                                                  | as its domain   | yes    |
+| `config`       | roles `config/schemas`; exports named-match; effects confined                           | as its domain   | no     |
+| `setup`        | exports named-match; effects effectful                                                  | as its domain   | no     |
+| `plugins`      | exports named-match; effects effectful                                                  | as its domain   | no     |
+| `operations`   | exports named-match; effects effectful                                                  | as its domain   | no     |
+| `conventions`  | category subdirectories; exports default; `index` allowed; effects confined; discovered | as its domain   | no     |
 
 #### `scripts/codegen`
 
@@ -517,22 +517,22 @@ Directories: `scripts`
 
 Directories: `tooling`
 
-| Role           | Contents and contract                                                 | Allowed imports | Public |
-| -------------- | --------------------------------------------------------------------- | --------------- | ------ |
-| `index`        | file `index.ts`                                                       | as its domain   | no     |
-| `constants`    | file `constants.ts`                                                   | as its domain   | no     |
-| `declarations` | file `*.d.ts`                                                         | as its domain   | no     |
-| `types`        | exports named-match                                                   | as its domain   | no     |
-| `utils`        | exports named-match                                                   | as its domain   | no     |
-| `errors`       | exports named-match                                                   | as its domain   | yes    |
-| `enums`        | exports named-match                                                   | as its domain   | no     |
-| `ports`        | exports named-match                                                   | as its domain   | yes    |
-| `adapters`     | exports named-match                                                   | as its domain   | yes    |
-| `config`       | roles `config/schemas`; exports named-match                           | as its domain   | no     |
-| `setup`        | exports named-match                                                   | as its domain   | no     |
-| `plugins`      | exports named-match                                                   | as its domain   | no     |
-| `operations`   | exports named-match                                                   | as its domain   | no     |
-| `conventions`  | category subdirectories; exports default; `index` allowed; discovered | as its domain   | no     |
+| Role           | Contents and contract                                                                   | Allowed imports | Public |
+| -------------- | --------------------------------------------------------------------------------------- | --------------- | ------ |
+| `index`        | file `index.ts`                                                                         | as its domain   | no     |
+| `constants`    | file `constants.ts`; effects pure                                                       | as its domain   | no     |
+| `declarations` | file `*.d.ts`                                                                           | as its domain   | no     |
+| `types`        | exports named-match                                                                     | as its domain   | no     |
+| `utils`        | exports named-match; effects confined                                                   | as its domain   | no     |
+| `errors`       | exports named-match; effects pure                                                       | as its domain   | yes    |
+| `enums`        | exports named-match; effects pure                                                       | as its domain   | no     |
+| `ports`        | exports named-match; effects pure                                                       | as its domain   | yes    |
+| `adapters`     | exports named-match; effects effectful                                                  | as its domain   | yes    |
+| `config`       | roles `config/schemas`; exports named-match; effects confined                           | as its domain   | no     |
+| `setup`        | exports named-match; effects effectful                                                  | as its domain   | no     |
+| `plugins`      | exports named-match; effects effectful                                                  | as its domain   | no     |
+| `operations`   | exports named-match; effects effectful                                                  | as its domain   | no     |
+| `conventions`  | category subdirectories; exports default; `index` allowed; effects confined; discovered | as its domain   | no     |
 
 ## Imports between environments
 

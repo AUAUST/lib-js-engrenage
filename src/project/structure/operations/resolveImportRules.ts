@@ -27,9 +27,6 @@ interface Scope {
   readonly ancestors: readonly StructureNode[];
 }
 
-const constantsRole = "constants";
-const typesRole = "types";
-const utilitiesRole = "utils";
 const elementEnvironments = ["src", "scripts", "tooling"] as const;
 
 function category(name: ImportCategory): ImportRuleTarget {
@@ -417,49 +414,9 @@ function resolveElementRules(
     ...flatMap(structure.dirs, (directory) => filesOf(directory)),
   ];
 
-  function hereAndAbove(
-    domain: StructureNode,
-    scope: Scope,
-    names: readonly string[],
-    withConstants: boolean,
-  ): ImportRuleTarget[] {
-    const levels = [domain, ...scope.ancestors];
-
-    return [
-      ...flatMap([...levels, structure.root], (level) => {
-        return rolesOf(level)
-          .filter(({ role }) => {
-            return role !== undefined && names.includes(role);
-          })
-          .map(modulesOf);
-      }),
-      ...(withConstants
-        ? [
-            ...flatMap(levels, ({ path }) => filesOf(path, constantsRole)),
-            ...flatMap(structure.dirs, (directory) => {
-              return filesOf(directory, constantsRole);
-            }),
-          ]
-        : []),
-    ];
-  }
-
   function emitDomain(domain: StructureNode, scope: Scope) {
     const source: ImportRuleSource = { kind: "element", path: domain.path };
     const subdomains = members(domain);
-
-    const typeOnlyIndexes = scope.reaches.flatMap(
-      ({ targets, reason, relation }) => {
-        return createRule(
-          source,
-          targets.filter(({ kind }) => kind === "index"),
-          relation,
-          "allow",
-          `${reason}, type-only`,
-          { typeOnly: true },
-        );
-      },
-    );
 
     const grants = [
       {
@@ -508,31 +465,12 @@ function resolveElementRules(
         }
       }
 
-      if (role.role === utilitiesRole) {
-        rules.push(
-          ...createRule(
-            roleSource,
-            [
-              ...hereAndAbove(domain, scope, [utilitiesRole, typesRole], true),
-              ...globalTargets,
-            ],
-            "here-and-above",
-            "allow",
-            "utils/ imports utils/, types/ and constants.ts here and above, and global roles",
-          ),
-          ...typeOnlyIndexes.flatMap((rule) => {
-            return createRule(
-              roleSource,
-              rule.targets,
-              rule.relation,
-              "allow",
-              rule.reason,
-              {
-                typeOnly: true,
-              },
-            );
-          }),
-        );
+      if (role.role !== undefined && roles[role.role]?.effects !== undefined) {
+        for (const { targets, relation, reason } of grants) {
+          rules.push(
+            ...createRule(roleSource, targets, relation, "allow", reason),
+          );
+        }
       }
     }
   }

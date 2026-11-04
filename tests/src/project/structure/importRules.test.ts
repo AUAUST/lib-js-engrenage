@@ -68,11 +68,7 @@ describe("import rules", () => {
       "modules:src/project/model/utils",
     );
 
-    expect(reached(rules, "src/tools/tool/utils", true)).toContain(
-      "index:src/project/model",
-    );
-
-    expect(reached(rules, "src/tools/tool/utils")).not.toContain(
+    expect(reached(rules, "src/tools/tool/utils")).toContain(
       "index:src/project/model",
     );
   });
@@ -114,7 +110,6 @@ describe("import rules", () => {
         "sub-domain",
         "lower-layer",
         "peer",
-        "here-and-above",
         "environment",
         "test-variant",
         "root-entry",

@@ -5,32 +5,39 @@ export default defineConfig({
   roles: {
     define: {
       config: {
-        purpose: "Pure option declarations of the domain.",
+        purpose: "Confined option declarations of the domain.",
         exports: "named-match",
+        effects: "confined",
         roles: [
           {
             name: "schemas",
             purpose: "Validation schemas of the option declarations.",
             exports: "named-match",
+            effects: "confined",
           },
         ],
       },
+      adapters: { inherit: "adapters", effects: "effectful" },
       setup: {
         purpose: "Init steps and sync targets of the domain.",
         exports: "named-match",
+        effects: "effectful",
       },
       plugins: {
         purpose: "The tool's own plugins, one per module.",
         exports: "named-match",
+        effects: "effectful",
       },
       operations: {
         purpose: "Impure logic and definers of the domain.",
         exports: "named-match",
+        effects: "effectful",
       },
       conventions: {
         purpose: "Formatting conventions, discovered by category.",
         categories: true,
         exports: "default",
+        effects: "confined",
         discovered: true,
         index: true,
       },
@@ -42,6 +49,13 @@ export default defineConfig({
   },
   tests: {
     layout: "mirror",
+    // @debt the mirror directory is read as the `config` role; #193 classifies mirrors as what they mirror and removes this opt-out
+    optOut: ["src/project/config"],
+    roles: {
+      define: {
+        utils: { inherit: "utils", effects: "effectful" },
+      },
+    },
     dist: {
       tsconfig: {
         compilerOptions: {

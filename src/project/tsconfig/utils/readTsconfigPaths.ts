@@ -1,5 +1,5 @@
-import { readJsonValue } from "#foundation/json/utils/readJsonValue";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import { readJsonValue } from "#foundation/json/index";
+import type { ProjectConfig } from "#project/config/index";
 import type { Paths } from "#project/tsconfig/types/Paths";
 import type { File } from "#types/File";
 

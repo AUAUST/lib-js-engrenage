@@ -134,7 +134,7 @@ describe("structure", () => {
     });
 
     expect(nodes.get("src/feature/utils")?.purpose).toBe(
-      "Pure functions, one per module.",
+      "Confined functions, one per module.",
     );
   });
 

@@ -27,5 +27,6 @@ export function normalizeRoles(roles: DeclaredRolesOption): RolesOption {
     disable: roles.disable,
     define: freeze(define),
     aliases: roles.aliases,
+    effects: roles.effects,
   });
 }

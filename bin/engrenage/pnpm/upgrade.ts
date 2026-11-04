@@ -3,8 +3,8 @@ import { readProjectPnpmVersion } from "#project/package/utils/readProjectPnpmVe
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
 import { installDependencies } from "#tools/pnpm/operations/installDependencies";
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
-import { resolvePnpmRangeStatus } from "#tools/pnpm/operations/resolvePnpmRangeStatus";
 import { upgradePnpmManifest } from "#tools/pnpm/operations/upgradePnpmManifest";
+import { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus";
 import { createPrompter } from "#workflows/cli/operations/createPrompter";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";

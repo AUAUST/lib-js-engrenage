@@ -5,7 +5,6 @@ export type ImportRelation =
   | "sub-domain"
   | "lower-layer"
   | "peer"
-  | "here-and-above"
   | "environment"
   | "test-variant"
   | "root-entry"

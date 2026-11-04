@@ -6,9 +6,9 @@ import { memoized } from "@auaust/toolkit/memoized";
 import { entries, freeze, values } from "@auaust/toolkit/object";
 
 import { noRoles } from "#project/structure/constants";
-import { resolveRoles } from "#project/structure/operations/resolveRoles";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
+import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
@@ -233,10 +233,15 @@ export function resolveEnvironmentStructure({
       : undefined;
   }
 
-  function purposeOf(role: string, scopes: readonly string[]) {
+  function metadataOf(role: string, scopes: readonly string[]) {
     const purpose = rolesFor(scopes).roles[role]?.purpose;
 
-    return purpose === undefined ? {} : { purpose };
+    const effects = rolesFor(scopes).roles[role]?.effects;
+
+    return {
+      ...(purpose === undefined ? {} : { purpose }),
+      ...(effects === undefined ? {} : { effects }),
+    };
   }
 
   function describe(subpath: string, path: Directory) {
@@ -385,7 +390,7 @@ export function resolveEnvironmentStructure({
         ? node("unclassified", "inferred", {})
         : node("role", "inferred", {
             role,
-            ...purposeOf(role, parent.scopes),
+            ...metadataOf(role, parent.scopes),
           });
     }
 
@@ -401,7 +406,7 @@ export function resolveEnvironmentStructure({
         "inferred",
         {
           role,
-          ...purposeOf(role, parent.scopes),
+          ...metadataOf(role, parent.scopes),
         },
         {
           scopes: [...parent.scopes, ...(contained ?? [])],

@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 
-import { includesEsLibrary } from "#project/baseline/operations/includesEsLibrary";
-import { listEsSelections } from "#project/baseline/operations/listEsSelections";
-import { selectEsLibraries } from "#project/baseline/operations/selectEsLibraries";
+import { includesEsLibrary } from "#project/baseline/utils/includesEsLibrary";
+import { listEsSelections } from "#project/baseline/utils/listEsSelections";
+import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
 
 const afterEs2021 = [
   "es2023.array",

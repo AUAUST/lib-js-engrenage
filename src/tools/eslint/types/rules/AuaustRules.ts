@@ -51,6 +51,10 @@ export interface AuaustRules {
    */
   "auaust/import-data"?: Rule<AuaustImportData>;
   /**
+   * A module of a ranked role imports at runtime only bindings declared in roles of its effect level or purer, and external modules ranked likewise.
+   */
+  "auaust/import-effects"?: Rule<[]>;
+  /**
    * Check dependencies between elements
    * @see https://www.jsboundaries.dev/docs/rules/dependencies/
    */

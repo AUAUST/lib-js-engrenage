@@ -1,5 +1,6 @@
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { rolesOptionEntries } from "#project/structure/config/schemas/rolesOptionEntries";
+import { noRoleEffects } from "#project/structure/constants";
 
 export const rolesSchema = declareObject(rolesOptionEntries, {
   description:
@@ -11,6 +12,7 @@ export const rolesSchema = declareObject(rolesOptionEntries, {
       disable: [],
       define: {},
       aliases: {},
+      effects: noRoleEffects,
     },
   },
 });

@@ -21,7 +21,7 @@ function describe(node: StructureNode): string {
   const kinds = {
     namespace: `namespace${layers}`,
     domain: `domain (${node.public === true ? "public" : "internal"})`,
-    role: `role ${node.role ?? node.name}`,
+    role: `role ${node.role ?? node.name}${node.effects === undefined ? "" : ` (${node.effects})`}`,
     mirror:
       node.mirror === undefined ? "mirror" : `mirror of ${node.mirror.path}`,
     unclassified:

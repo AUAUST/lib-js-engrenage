@@ -2,8 +2,8 @@ import { values } from "@auaust/toolkit/object";
 
 import { baselineWidelyAvailableMonths } from "#project/baseline/constants";
 import { editions as generatedEditions } from "#project/baseline/editions/index";
-import { selectEsLibraries } from "#project/baseline/operations/selectEsLibraries";
 import { addMonths } from "#project/baseline/utils/addMonths";
+import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
 
 export function listEsSelections(
   editions: Readonly<

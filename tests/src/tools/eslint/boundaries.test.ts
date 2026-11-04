@@ -92,7 +92,7 @@ describe("structure boundaries", () => {
     ).toEqual([]);
   });
 
-  test("allows type-only reach from utils, not runtime reach", async () => {
+  test("gives utils the reach of their domain, at runtime and type-only", async () => {
     const lint = await createLinter();
 
     expect(
@@ -107,7 +107,7 @@ describe("structure boundaries", () => {
         "src/project/feature/utils/own.ts",
         'export { value } from "#project/other/index";\n',
       ),
-    ).toEqual(["auaust/import-layers"]);
+    ).toEqual([]);
   });
 
   test("keeps public tests on the package name and source tests on internals", async () => {

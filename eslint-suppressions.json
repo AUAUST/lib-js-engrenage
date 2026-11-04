@@ -329,11 +329,6 @@
       "count": 1
     }
   },
-  "src/project/structure/config/schemas/rolesOptionEntries.ts": {
-    "auaust/import-surfaces": {
-      "count": 2
-    }
-  },
   "src/project/structure/config/schemas/rolesOptionSchema.ts": {
     "auaust/import-surfaces": {
       "count": 1
@@ -354,11 +349,6 @@
       "count": 1
     }
   },
-  "src/project/structure/utils/flattenRoleReferences.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
   "src/project/tsconfig/config/declareEnvironmentTsconfig.ts": {
     "auaust/import-surfaces": {
       "count": 7
@@ -369,22 +359,7 @@
       "count": 7
     }
   },
-  "src/project/tsconfig/operations/createTsconfig.ts": {
-    "auaust/import-surfaces": {
-      "count": 4
-    }
-  },
-  "src/project/tsconfig/operations/produceTsconfigBuildInfo.ts": {
-    "auaust/import-surfaces": {
-      "count": 3
-    }
-  },
   "src/project/tsconfig/operations/produceTsconfigExclude.ts": {
-    "auaust/import-surfaces": {
-      "count": 3
-    }
-  },
-  "src/project/tsconfig/operations/produceTsconfigExtends.ts": {
     "auaust/import-surfaces": {
       "count": 3
     }
@@ -409,11 +384,6 @@
       "count": 7
     }
   },
-  "src/project/tsconfig/operations/produceTsconfigPaths.ts": {
-    "auaust/import-surfaces": {
-      "count": 3
-    }
-  },
   "src/project/tsconfig/operations/produceTsconfigSkipLibraryCheck.ts": {
     "auaust/import-surfaces": {
       "count": 2
@@ -432,16 +402,6 @@
   "src/project/tsconfig/operations/produceTsconfigTypes.ts": {
     "auaust/import-surfaces": {
       "count": 6
-    }
-  },
-  "src/project/tsconfig/operations/readTsconfigPaths.ts": {
-    "auaust/import-surfaces": {
-      "count": 2
-    }
-  },
-  "src/project/tsconfig/operations/readTsconfigValue.ts": {
-    "auaust/import-surfaces": {
-      "count": 2
     }
   },
   "src/project/tsconfig/operations/resolvePathAliases.ts": {
@@ -684,7 +644,7 @@
       "count": 1
     },
     "auaust/readonly-constants": {
-      "count": 3
+      "count": 2
     }
   },
   "src/tools/eslint/operations/createConventionRules.ts": {
@@ -847,19 +807,9 @@
       "count": 1
     }
   },
-  "src/tools/pnpm/operations/listPnpmWarnings.ts": {
-    "auaust/import-surfaces": {
-      "count": 3
-    }
-  },
   "src/tools/pnpm/operations/resolveLatestPnpm.ts": {
     "auaust/import-surfaces": {
       "count": 3
-    }
-  },
-  "src/tools/pnpm/operations/resolvePnpmRangeStatus.ts": {
-    "auaust/import-surfaces": {
-      "count": 6
     }
   },
   "src/tools/pnpm/operations/upgradePnpmManifest.ts": {
@@ -948,11 +898,6 @@
     }
   },
   "src/tools/tsdown/operations/defineTsdownConfig.ts": {
-    "auaust/import-surfaces": {
-      "count": 3
-    }
-  },
-  "src/tools/tsdown/operations/findCommands.ts": {
     "auaust/import-surfaces": {
       "count": 3
     }
@@ -1254,31 +1199,6 @@
   },
   "src/workflows/sync/types/SyncTarget.ts": {
     "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "tests/src/project/config/configType.test.src.ts": {
-    "auaust/role-exports": {
-      "count": 1
-    }
-  },
-  "tests/src/project/config/define.test.src.ts": {
-    "auaust/role-exports": {
-      "count": 1
-    }
-  },
-  "tests/src/project/config/defineConfig.test.ts": {
-    "auaust/role-exports": {
-      "count": 1
-    }
-  },
-  "tests/src/project/config/loadConfig.test.src.ts": {
-    "auaust/role-exports": {
-      "count": 1
-    }
-  },
-  "tests/src/project/config/resolveListOption.test.src.ts": {
-    "auaust/role-exports": {
       "count": 1
     }
   }
