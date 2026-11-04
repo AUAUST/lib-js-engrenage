@@ -18,5 +18,6 @@ export interface StructureNode {
   readonly purpose?: string;
   readonly mirror?: StructureMirror;
   readonly reason?: UnclassifiedReason;
+  readonly strays?: readonly Directory[];
   readonly children: readonly StructureNode[];
 }

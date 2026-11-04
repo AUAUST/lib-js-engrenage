@@ -8,6 +8,7 @@ import { eslint } from "#bin/engrenage/eslint";
 import { init } from "#bin/engrenage/init";
 import { pnpm } from "#bin/engrenage/pnpm/index";
 import { prettier } from "#bin/engrenage/prettier";
+import { structure } from "#bin/engrenage/structure";
 import { sync } from "#bin/engrenage/sync";
 import { tsc } from "#bin/engrenage/tsc";
 import { tsdown } from "#bin/engrenage/tsdown";
@@ -27,6 +28,7 @@ const program = registerSubcommands(
   {
     init,
     sync,
+    structure,
     debt,
     agents,
     pnpm,

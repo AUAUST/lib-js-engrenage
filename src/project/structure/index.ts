@@ -1,3 +1,5 @@
+export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
+export { renderStructure } from "#project/structure/utils/renderStructure";
 export { resolveAliases } from "#project/structure/utils/resolveAliases";
 export { resolveEnvironmentStructure } from "#project/structure/utils/resolveEnvironmentStructure";
 export { resolveImportRules } from "#project/structure/utils/resolveImportRules";

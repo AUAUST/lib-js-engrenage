@@ -3,7 +3,7 @@ import { join, matchesGlob } from "node:path";
 
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
-import { entries, freeze } from "@auaust/toolkit/object";
+import { entries, freeze, values } from "@auaust/toolkit/object";
 
 import { noRoles } from "#project/structure/constants";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
@@ -62,6 +62,13 @@ function listDirectories(directory: string): string[] {
         holdsFiles(join(directory, entry.name))
       );
     })
+    .map((entry) => entry.name)
+    .sort();
+}
+
+function listFiles(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true })
+    .filter((entry) => !entry.isDirectory())
     .map((entry) => entry.name)
     .sort();
 }
@@ -302,7 +309,23 @@ export function resolveEnvironmentStructure({
     }
 
     function domain(source: StructureNode["source"]) {
+      const { roles: contracts } = rolesFor(parent.scopes);
+
+      const fileGlobs = values(contracts).flatMap(({ file }) => {
+        return file === undefined ? [] : [file].flat();
+      });
+
+      const strays =
+        fileGlobs.length === 0
+          ? []
+          : listFiles(join(root, path)).filter((file) => {
+              return !fileGlobs.some((glob) => matchesGlob(file, glob));
+            });
+
       return node("domain", source, {
+        ...(strays.length === 0
+          ? {}
+          : { strays: strays.map((file) => join(path, file)) }),
         public: metadata.public ?? false,
         ...(metadata.specifier === undefined
           ? {}
