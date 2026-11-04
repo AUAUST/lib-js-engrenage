@@ -11,9 +11,9 @@ import {
 } from "valibot";
 
 import { globsSchema } from "#config/config/schemas/values/globsSchema";
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
-import { unset } from "#foundation/options/utils/unset";
+import { declare } from "#options/utils/declare";
+import { declareObject } from "#options/utils/declareObject";
+import { unset } from "#options/utils/unset";
 
 export const roleContractSchema = declareObject(
   {

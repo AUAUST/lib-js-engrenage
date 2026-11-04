@@ -1,6 +1,6 @@
-import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
-import type { StructureEnvironment } from "#project/structure/types/StructureEnvironment";
-import type { TestsLayout } from "#project/structure/types/TestsLayout";
+import type { EnvironmentStructure } from "#structure/types/EnvironmentStructure";
+import type { StructureEnvironment } from "#structure/types/StructureEnvironment";
+import type { TestsLayout } from "#structure/types/TestsLayout";
 import type { Directories } from "#types/Directories";
 
 export interface TestsContext {

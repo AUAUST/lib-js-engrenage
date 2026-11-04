@@ -1,5 +1,5 @@
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
-import type { RoleKey } from "#project/structure/types/RoleKey";
+import type { ResolvedRoleContract } from "#structure/types/ResolvedRoleContract";
+import type { RoleKey } from "#structure/types/RoleKey";
 
 export interface RolesOption {
   readonly enable: readonly RoleKey[];

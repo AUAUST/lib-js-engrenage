@@ -1,6 +1,6 @@
 /* eslint-disable auaust/no-dynamic-import */
 
-import { defineCommand } from "#support/commander/utils/defineCommand";
+import { defineCommand } from "#cli/utils/defineCommand";
 
 export const barrels = defineCommand((command) => {
   return command
@@ -17,8 +17,7 @@ export const barrels = defineCommand((command) => {
 
       const { syncBarrels } = await import("#typescript/utils/syncBarrels");
 
-      const { settleChanges } =
-        await import("#support/commander/utils/settleChanges");
+      const { settleChanges } = await import("#cli/utils/settleChanges");
 
       const config = await loadConfig();
 

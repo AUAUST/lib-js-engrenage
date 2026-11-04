@@ -1,4 +1,4 @@
-import type { Default } from "#foundation/options/types/Default";
+import type { Default } from "#options/types/Default";
 
 export function resolveDefault<Value, Context>(
   fallback: Default<Value, Context>,

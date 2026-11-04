@@ -1,9 +1,9 @@
 import { entries, freeze, record } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
-import { roleContractSchema } from "#project/structure/config/schemas/roleContractSchema";
-import { roleCatalogue } from "#project/structure/constants";
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
+import { roleContractSchema } from "#structure/config/schemas/roleContractSchema";
+import { roleCatalogue } from "#structure/constants";
+import type { ResolvedRoleContract } from "#structure/types/ResolvedRoleContract";
 
 export const resolveCatalogue = once(
   (): Readonly<Record<string, ResolvedRoleContract>> => {

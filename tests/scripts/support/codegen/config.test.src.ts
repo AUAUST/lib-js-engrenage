@@ -5,7 +5,7 @@ import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { runCommand } from "#tests/helpers/runCommand";
 
-const file = "src/config/types/Config.ts";
+const file = "src/project/config/types/Config.ts";
 
 beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation(() => {});

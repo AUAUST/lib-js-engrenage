@@ -1,8 +1,8 @@
-// @barrel utils/*.ts named
-export { filesIn } from "#utils/filesIn";
-export { syncBlocks } from "#utils/syncBlocks";
-export { syncFiles } from "#utils/syncFiles";
-export { syncIgnoreFile } from "#utils/syncIgnoreFile";
+export { syncBlocks } from "#blocks/utils/syncBlocks";
+export { syncFiles } from "#blocks/utils/syncFiles";
+export { syncIgnoreFile } from "#blocks/utils/syncIgnoreFile";
+export { filesIn } from "#filesystem/utils/filesIn";
+
 // @barrel types/*.ts all
 export * from "#types/BlockFillers";
 export * from "#types/BlockSyntax";
@@ -25,4 +25,4 @@ export * from "#types/SyncResult";
 export * from "#types/SyncResults";
 export * from "#types/SyncStatus";
 // @end
-export { validate } from "#foundation/options/utils/validate";
+export { validate } from "#options/utils/validate";

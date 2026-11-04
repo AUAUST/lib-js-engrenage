@@ -1,7 +1,7 @@
+import { defineCommand } from "#cli/utils/defineCommand";
 import { loadConfig } from "#config/utils/loadConfig";
-import { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
-import { renderStructure } from "#project/structure/utils/renderStructure";
-import { defineCommand } from "#support/commander/utils/defineCommand";
+import { hasStructureViolations } from "#structure/utils/hasStructureViolations";
+import { renderStructure } from "#structure/utils/renderStructure";
 
 export const structure = defineCommand((command) => {
   return command

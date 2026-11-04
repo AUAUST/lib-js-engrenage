@@ -1,12 +1,12 @@
 import { existsSync } from "node:fs";
 
+import { defineToolCommands } from "#cli/utils/defineToolCommands";
+import { ensureAnyOf } from "#cli/utils/ensureAnyOf";
+import { ensureIncludes } from "#cli/utils/ensureIncludes";
+import { hasOption } from "#cli/utils/hasOption";
 import { packages } from "#constants";
 import { defaultSuppressionsFile } from "#eslint/constants";
-import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
-import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
-import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
-import { hasOption } from "#support/commander/utils/hasOption";
-import { resolve } from "#support/filesystem/utils/resolve";
+import { resolve } from "#filesystem/utils/resolve";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 
 // @debt The cache is keyed on each file alone, so type-aware rules keep passing a file whose imported types changed; checks must pass `--no-cache` to be sound.

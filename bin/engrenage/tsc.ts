@@ -1,13 +1,13 @@
 import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
+import { defineToolCommands } from "#cli/utils/defineToolCommands";
+import { ensureAnyOf } from "#cli/utils/ensureAnyOf";
+import { ensureIncludes } from "#cli/utils/ensureIncludes";
+import { getOptionsEnd } from "#cli/utils/getOptionsEnd";
+import { isOptionOf } from "#cli/utils/isOptionOf";
 import { tsconfigEnvironments } from "#config/constants";
 import { packages } from "#constants";
-import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
-import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
-import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
-import { getOptionsEnd } from "#support/commander/utils/getOptionsEnd";
-import { isOptionOf } from "#support/commander/utils/isOptionOf";
-import { createTsconfig } from "#typescript/utils/createTsconfig";
+import { createTsconfig } from "#tsconfig/utils/createTsconfig";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { File } from "#types/File";
 

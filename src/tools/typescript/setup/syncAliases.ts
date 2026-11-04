@@ -1,0 +1,84 @@
+import { map, sort } from "@auaust/primitive-kit/arrays";
+import { entries, keys, record } from "@auaust/toolkit/object";
+
+import { syncFiles } from "#blocks/utils/syncFiles";
+import { packageJsonFile } from "#constants";
+import { emptyObjectFile } from "#json/constants";
+import { applyJsonEdits } from "#json/utils/applyJsonEdits";
+import { readJsonValue } from "#json/utils/readJsonValue";
+import { writePackageJsonValue } from "#package/utils/writePackageJsonValue";
+import { readTsconfigPaths } from "#tsconfig/utils/readTsconfigPaths";
+import { toTsconfigSpecifier } from "#tsconfig/utils/toTsconfigSpecifier";
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { Alias } from "#structure/types/Alias";
+
+const importPrefix = "#";
+
+function sortByKey<Item extends readonly [string, unknown]>(items: Item[]) {
+  return sort(items, ([a], [b]) => {
+    return a < b ? -1 : a > b ? 1 : 0;
+  });
+}
+
+function syncImports(config: ResolvedConfig, aliases: readonly Alias[]) {
+  const imports = record(
+    sortByKey(
+      aliases
+        .filter(({ key }) => key.startsWith(importPrefix))
+        .map(({ key, target }) => [key, target] as const),
+    ),
+  );
+
+  syncFiles(config, [
+    {
+      file: packageJsonFile,
+      update(content, path) {
+        if (
+          keys(imports).length === 0 &&
+          readJsonValue(content, path, ["imports"]) === undefined
+        ) {
+          return content;
+        }
+
+        return writePackageJsonValue(content, path, ["imports"], imports);
+      },
+    },
+  ]);
+}
+
+function syncPaths(config: ResolvedConfig, aliases: readonly Alias[]) {
+  const { file } = config.typescript.tsconfig;
+
+  const others = entries(readTsconfigPaths(config, file)).filter(([key]) => {
+    return !key.startsWith(importPrefix);
+  });
+
+  const generated = map(aliases, ({ key, target }) => {
+    return [key, [toTsconfigSpecifier(file, target)]] as const;
+  });
+
+  config.filesystem.write(
+    file,
+    applyJsonEdits(config.filesystem.read(file) ?? emptyObjectFile, file, [
+      {
+        path: ["compilerOptions", "paths"],
+        value: record([...others, ...sortByKey(generated)]),
+      },
+    ]),
+  );
+}
+
+export function syncAliases(config: ResolvedConfig) {
+  const { enabled, global, src } = config.aliases;
+
+  if (!enabled) {
+    return;
+  }
+
+  syncImports(config, [...global, ...src]);
+
+  if (config.src.bundled) {
+    // @debt bundler aliases removed from the config stay in the tsconfig `paths`, since only `#` keys are known to be generated
+    syncPaths(config, src);
+  }
+}

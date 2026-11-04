@@ -4,10 +4,10 @@ import { empty } from "@auaust/toolkit/empty";
 
 import { addAgentSkills } from "#agents/setup/addAgentSkills";
 import { getSkillTemplates } from "#agents/utils/getSkillTemplates";
+import { defineCommand } from "#cli/utils/defineCommand";
+import { settleChanges } from "#cli/utils/settleChanges";
 import { readConfig } from "#config/utils/readConfig";
-import { defineCommand } from "#support/commander/utils/defineCommand";
-import { settleChanges } from "#support/commander/utils/settleChanges";
-import type { ResolvedConfig } from "#config/index";
+import type { ResolvedConfig } from "#config";
 
 async function getNames(config: ResolvedConfig, name: string | undefined) {
   if (name !== undefined) {

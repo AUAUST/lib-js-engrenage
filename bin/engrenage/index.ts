@@ -14,9 +14,9 @@ import { tsc } from "#bin/engrenage/tsc";
 import { tsdown } from "#bin/engrenage/tsdown";
 import { vite } from "#bin/engrenage/vite";
 import { vitest } from "#bin/engrenage/vitest";
-import { addDebugOption } from "#support/commander/utils/addDebugOption";
-import { registerSubcommands } from "#support/commander/utils/registerSubcommands";
-import { runProgram } from "#support/commander/utils/runProgram";
+import { addDebugOption } from "#cli/utils/addDebugOption";
+import { registerSubcommands } from "#cli/utils/registerSubcommands";
+import { runProgram } from "#cli/utils/runProgram";
 
 import packageJson from "#package.json" with { type: "json" };
 

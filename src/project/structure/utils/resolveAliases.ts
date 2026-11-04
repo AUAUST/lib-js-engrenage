@@ -4,11 +4,11 @@ import { join } from "node:path";
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, freeze } from "@auaust/toolkit/object";
 
-import type { Alias } from "#project/structure/types/Alias";
-import type { AliasesOption } from "#project/structure/types/AliasesOption";
-import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
-import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
-import type { StructureNode } from "#project/structure/types/StructureNode";
+import type { Alias } from "#structure/types/Alias";
+import type { AliasesOption } from "#structure/types/AliasesOption";
+import type { EnvironmentStructure } from "#structure/types/EnvironmentStructure";
+import type { ResolvedAliases } from "#structure/types/ResolvedAliases";
+import type { StructureNode } from "#structure/types/StructureNode";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 

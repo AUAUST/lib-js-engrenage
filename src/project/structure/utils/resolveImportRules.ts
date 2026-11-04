@@ -3,15 +3,15 @@ import { join } from "node:path";
 import { flatMap, wrap } from "@auaust/primitive-kit/arrays";
 import { entries, freeze } from "@auaust/toolkit/object";
 
-import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
-import type { ImportCategory } from "#project/structure/types/ImportCategory";
-import type { ImportRule } from "#project/structure/types/ImportRule";
-import type { ImportRuleSource } from "#project/structure/types/ImportRuleSource";
-import type { ImportRuleTarget } from "#project/structure/types/ImportRuleTarget";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
-import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
-import type { StructureEnvironment } from "#project/structure/types/StructureEnvironment";
-import type { StructureNode } from "#project/structure/types/StructureNode";
+import type { EnvironmentStructure } from "#structure/types/EnvironmentStructure";
+import type { ImportCategory } from "#structure/types/ImportCategory";
+import type { ImportRule } from "#structure/types/ImportRule";
+import type { ImportRuleSource } from "#structure/types/ImportRuleSource";
+import type { ImportRuleTarget } from "#structure/types/ImportRuleTarget";
+import type { ResolvedRoles } from "#structure/types/ResolvedRoles";
+import type { RoleEnvironment } from "#structure/types/RoleEnvironment";
+import type { StructureEnvironment } from "#structure/types/StructureEnvironment";
+import type { StructureNode } from "#structure/types/StructureNode";
 
 interface Reach {
   readonly targets: readonly ImportRuleTarget[];

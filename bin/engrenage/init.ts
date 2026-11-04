@@ -1,47 +1,16 @@
-import { spawnSync } from "node:child_process";
-
-import { createClaudeSettingsStep } from "#agents/claude/setup/createClaudeSettingsStep";
-import { createClaudeStep } from "#agents/claude/setup/createClaudeStep";
-import { createCodexHooksStep } from "#agents/codex/setup/createCodexHooksStep";
-import { createCodexStep } from "#agents/codex/setup/createCodexStep";
-import { createAgentRulesStep } from "#agents/setup/createAgentRulesStep";
-import { createAgentsStep } from "#agents/setup/createAgentsStep";
-import { createBacklogStep } from "#agents/setup/createBacklogStep";
-import { createPreferredAgentsStep } from "#agents/setup/createPreferredAgentsStep";
 import { runSync } from "#bin/engrenage/sync";
-import { createChangesetConfigStep } from "#changesets/setup/createChangesetConfigStep";
-import { createBuildToolStep } from "#config/setup/createBuildToolStep";
-import { createConfigFileStep } from "#config/setup/createConfigFileStep";
-import { createDependencyStep } from "#config/setup/createDependencyStep";
-import { createPackageStep } from "#config/setup/createPackageStep";
-import { createScriptsStep } from "#config/setup/createScriptsStep";
+import { createPrompter } from "#cli/utils/createPrompter";
+import { defineCommand } from "#cli/utils/defineCommand";
+import { reportSyncResults } from "#cli/utils/reportSyncResults";
+import { runSteps } from "#cli/utils/runSteps";
+import { settleChanges } from "#cli/utils/settleChanges";
 import { readConfig } from "#config/utils/readConfig";
 import { packageJsonFile } from "#constants";
-import { createEslintConfigStep } from "#eslint/setup/createEslintConfigStep";
-import { createGitignoreStep } from "#git/setup/createGitignoreStep";
-import { createWorkflowsStep } from "#github/setup/createWorkflowsStep";
-import { createPnpmStep } from "#pnpm/setup/createPnpmStep";
-import { createWorkspaceStep } from "#pnpm/setup/createWorkspaceStep";
-import { createPrettierignoreStep } from "#prettier/setup/createPrettierignoreStep";
-import { createPrettierStep } from "#prettier/setup/createPrettierStep";
-import { defineCommand } from "#support/commander/utils/defineCommand";
-import { reportSyncResults } from "#support/commander/utils/reportSyncResults";
-import { settleChanges } from "#support/commander/utils/settleChanges";
-import { createPrompter } from "#support/scaffold/utils/createPrompter";
-import { runSteps } from "#support/scaffold/utils/runSteps";
-import { createTsdownConfigStep } from "#tsdown/setup/createTsdownConfigStep";
-import { createRuntimeDataStep } from "#typescript/setup/createRuntimeDataStep";
-import { createSourceEntryStep } from "#typescript/setup/createSourceEntryStep";
-import { createTypescriptStep } from "#typescript/setup/createTypescriptStep";
-import { createViteConfigStep } from "#vite/setup/createViteConfigStep";
-import { createVitestConfigStep } from "#vitest/setup/createVitestConfigStep";
-import { createVitestCoverageStep } from "#vitest/setup/createVitestCoverageStep";
-import { createVitestStep } from "#vitest/setup/createVitestStep";
-import { createVscodeExtensionsStep } from "#vscode/setup/createVscodeExtensionsStep";
-import { createVscodeSettingsStep } from "#vscode/setup/createVscodeSettingsStep";
+import { listInitSteps } from "#init/operations/listInitSteps";
+import { spawnProcess } from "#processes/operations/spawnProcess";
+import type { Invocation } from "#cli/types/Invocation";
+import type { Prompter } from "#cli/types/Prompter";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Invocation } from "#support/scaffold/types/Invocation";
-import type { Prompter } from "#support/scaffold/types/Prompter";
 import type { Directory } from "#types/Directory";
 
 function describe({ command, args }: Invocation): string {
@@ -49,7 +18,7 @@ function describe({ command, args }: Invocation): string {
 }
 
 function invokeCommand(root: Directory, invocation: Invocation) {
-  const { status, error } = spawnSync(invocation.command, invocation.args, {
+  const { status, error } = spawnProcess(invocation.command, invocation.args, {
     cwd: root,
     stdio: "inherit",
   });
@@ -118,39 +87,7 @@ export const init = defineCommand((command) => {
       const invocations = await runSteps({
         config,
         prompter,
-        steps: [
-          createPreferredAgentsStep(),
-          createConfigFileStep(),
-          createPackageStep(),
-          createDependencyStep(),
-          createWorkspaceStep(),
-          createPnpmStep(),
-          createBuildToolStep(),
-          createVitestStep(),
-          createVitestCoverageStep(),
-          createTsdownConfigStep(),
-          createViteConfigStep(),
-          createVitestConfigStep(),
-          createTypescriptStep(),
-          createRuntimeDataStep(),
-          createSourceEntryStep(),
-          createPrettierStep(),
-          createPrettierignoreStep(),
-          createGitignoreStep(),
-          createEslintConfigStep(),
-          createAgentsStep(),
-          createAgentRulesStep(),
-          createBacklogStep(),
-          createClaudeStep(),
-          createCodexStep(),
-          createCodexHooksStep(),
-          createClaudeSettingsStep(),
-          createChangesetConfigStep(),
-          createWorkflowsStep(),
-          createVscodeExtensionsStep(),
-          createVscodeSettingsStep(),
-          createScriptsStep(),
-        ],
+        steps: listInitSteps(),
       });
 
       if (invocations === undefined) {

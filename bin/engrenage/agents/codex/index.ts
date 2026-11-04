@@ -1,6 +1,6 @@
 import { hook } from "#bin/engrenage/agents/codex/hook/index";
-import { defineCommand } from "#support/commander/utils/defineCommand";
-import { registerSubcommands } from "#support/commander/utils/registerSubcommands";
+import { defineCommand } from "#cli/utils/defineCommand";
+import { registerSubcommands } from "#cli/utils/registerSubcommands";
 
 export const codex = defineCommand((command) => {
   return registerSubcommands(

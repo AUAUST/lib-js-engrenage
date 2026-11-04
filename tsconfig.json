@@ -2,12 +2,49 @@
   "extends": "./data/tsconfig/library.json",
   "compilerOptions": {
     "paths": {
-      "@auaust/engrenage/agents/*/constants": ["./src/agents/*/constants.ts"],
-      "@auaust/engrenage/agents/*": ["./src/agents/*/index.ts"],
-      "@auaust/engrenage/*/constants": ["./src/*/constants.ts"],
-      "@auaust/engrenage/*": ["./src/*/index.ts"],
+      "@auaust/engrenage": ["./src/index.ts"],
       "@auaust/engrenage/constants": ["./src/constants.ts"],
-      "@auaust/engrenage": ["./src/index.ts"]
+      "@auaust/engrenage/agents": ["./src/tools/agents/index.ts"],
+      "@auaust/engrenage/agents/constants": ["./src/tools/agents/constants.ts"],
+      "@auaust/engrenage/agents/claude": ["./src/tools/agents/claude/index.ts"],
+      "@auaust/engrenage/agents/claude/constants": [
+        "./src/tools/agents/claude/constants.ts"
+      ],
+      "@auaust/engrenage/agents/codex": ["./src/tools/agents/codex/index.ts"],
+      "@auaust/engrenage/agents/codex/constants": [
+        "./src/tools/agents/codex/constants.ts"
+      ],
+      "@auaust/engrenage/changesets": ["./src/tools/changesets/index.ts"],
+      "@auaust/engrenage/changesets/constants": [
+        "./src/tools/changesets/constants.ts"
+      ],
+      "@auaust/engrenage/config": ["./src/project/config/index.ts"],
+      "@auaust/engrenage/config/constants": [
+        "./src/project/config/constants.ts"
+      ],
+      "@auaust/engrenage/eslint": ["./src/tools/eslint/index.ts"],
+      "@auaust/engrenage/eslint/constants": ["./src/tools/eslint/constants.ts"],
+      "@auaust/engrenage/git": ["./src/tools/git/index.ts"],
+      "@auaust/engrenage/git/constants": ["./src/tools/git/constants.ts"],
+      "@auaust/engrenage/github": ["./src/tools/github/index.ts"],
+      "@auaust/engrenage/github/constants": ["./src/tools/github/constants.ts"],
+      "@auaust/engrenage/pnpm": ["./src/tools/pnpm/index.ts"],
+      "@auaust/engrenage/pnpm/constants": ["./src/tools/pnpm/constants.ts"],
+      "@auaust/engrenage/prettier": ["./src/tools/prettier/index.ts"],
+      "@auaust/engrenage/prettier/constants": [
+        "./src/tools/prettier/constants.ts"
+      ],
+      "@auaust/engrenage/tsdown": ["./src/tools/tsdown/index.ts"],
+      "@auaust/engrenage/tsdown/constants": ["./src/tools/tsdown/constants.ts"],
+      "@auaust/engrenage/typescript": ["./src/tools/typescript/index.ts"],
+      "@auaust/engrenage/typescript/constants": [
+        "./src/tools/typescript/constants.ts"
+      ],
+      "@auaust/engrenage/vite": ["./src/tools/vite/index.ts"],
+      "@auaust/engrenage/vitest": ["./src/tools/vitest/index.ts"],
+      "@auaust/engrenage/vitest/constants": ["./src/tools/vitest/constants.ts"],
+      "@auaust/engrenage/vscode": ["./src/tools/vscode/index.ts"],
+      "@auaust/engrenage/vscode/constants": ["./src/tools/vscode/constants.ts"]
     }
   },
   "files": [],

@@ -3,9 +3,9 @@ import { readFileSync } from "node:fs";
 import { object, string } from "valibot";
 
 import { formatEditedFile } from "#agents/utils/formatEditedFile";
+import { defineCommand } from "#cli/utils/defineCommand";
 import { loadConfig } from "#config/utils/loadConfig";
-import { validate } from "#foundation/options/utils/validate";
-import { defineCommand } from "#support/commander/utils/defineCommand";
+import { validate } from "#options/utils/validate";
 
 const payloadSchema = object({
   tool_input: object({

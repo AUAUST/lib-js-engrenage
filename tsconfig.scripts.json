@@ -5,7 +5,7 @@
     "scripts/**/*.tsx",
     "*.config.ts",
     ".*.ts",
-    "src/prettier/index.ts"
+    "src/tools/prettier/index.ts"
   ],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.cache/typescript/tsconfig.scripts.tsbuildinfo",

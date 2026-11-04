@@ -1,8 +1,8 @@
 import { boolean, string } from "valibot";
 
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
-import { declareRecord } from "#foundation/options/utils/declareRecord";
+import { declare } from "#options/utils/declare";
+import { declareObject } from "#options/utils/declareObject";
+import { declareRecord } from "#options/utils/declareRecord";
 
 export const aliasesSchema = declareObject(
   {

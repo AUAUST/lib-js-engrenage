@@ -1,6 +1,6 @@
+import { defineCommand } from "#cli/utils/defineCommand";
 import { loadConfig } from "#config/utils/loadConfig";
 import { listDebtMarkers } from "#eslint/utils/listDebtMarkers";
-import { defineCommand } from "#support/commander/utils/defineCommand";
 
 export const debt = defineCommand((command) => {
   return command

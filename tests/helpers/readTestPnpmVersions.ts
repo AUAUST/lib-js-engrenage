@@ -1,5 +1,5 @@
-import { parseMajorVersion } from "#support/packageJson/utils/parseMajorVersion";
-import { readSharedPnpmRange } from "#support/packageJson/utils/readSharedPnpmRange";
+import { parseMajorVersion } from "#package/utils/parseMajorVersion";
+import { readSharedPnpmRange } from "#package/utils/readSharedPnpmRange";
 
 export function readTestPnpmVersions() {
   const { floor } = readSharedPnpmRange();

@@ -1,0 +1,131 @@
+import { describe, expect, test } from "vitest";
+
+import { syncBlocks } from "#blocks/utils/syncBlocks";
+
+// @debt this test is source-only because the generated tsconfig paths resolve `@auaust/engrenage/agents/constants` to `agents/*/index.ts` instead of `agents/constants.ts`; it could test the built package through the public entry
+import { markdownBlocks } from "#agents/constants";
+
+const fillers = {
+  reference(reference: string) {
+    return `## ${reference}\n`;
+  },
+};
+
+describe("syncBlocks", () => {
+  test("fills each block up to the next marker, ignoring inline mentions", () => {
+    const content = [
+      "# Local title",
+      "<!-- @reference ./first.md -->",
+      "stale text",
+      "<!-- @reference ./second.md -->",
+      "<!-- @end -->",
+      "Mentions `<!-- @end -->` inline.",
+      "",
+    ].join("\n");
+
+    expect(syncBlocks(content, markdownBlocks, fillers)).toBe(
+      [
+        "# Local title",
+        "<!-- @reference ./first.md -->",
+        "",
+        "## ./first.md",
+        "",
+        "<!-- @reference ./second.md -->",
+        "",
+        "## ./second.md",
+        "",
+        "<!-- @end -->",
+        "Mentions `<!-- @end -->` inline.",
+        "",
+      ].join("\n"),
+    );
+  });
+
+  test("uses the filler of each directive", () => {
+    const content = ["<!-- @list ./*.md -->", "<!-- @end -->", ""].join("\n");
+
+    expect(
+      syncBlocks(content, markdownBlocks, {
+        list(glob: string) {
+          return `list ${glob}`;
+        },
+      }),
+    ).toBe(
+      [
+        "<!-- @list ./*.md -->",
+        "",
+        "list ./*.md",
+        "",
+        "<!-- @end -->",
+        "",
+      ].join("\n"),
+    );
+  });
+
+  test("rejects a misspelled directive and an end marker that closes no block", () => {
+    expect(() => {
+      return syncBlocks(
+        "<!-- @refrence ./first.md -->\n<!-- @end -->\n",
+        markdownBlocks,
+        fillers,
+      );
+    }).toThrow('Unknown directive in "<!-- @refrence ./first.md -->"');
+
+    expect(() => {
+      return syncBlocks(
+        "<!-- @reference ./first.md -->\n<!-- @end -->\n<!-- @end -->\n",
+        markdownBlocks,
+        fillers,
+      );
+    }).toThrow('"<!-- @end -->" closes no block');
+  });
+
+  test("passes every argument of the marker to its filler", () => {
+    expect(
+      syncBlocks("<!-- @list ./*.md all -->\n<!-- @end -->\n", markdownBlocks, {
+        list(glob: string, mode: string) {
+          return `${mode} ${glob}`;
+        },
+      }),
+    ).toBe("<!-- @list ./*.md all -->\n\nall ./*.md\n\n<!-- @end -->\n");
+  });
+
+  test("keeps a block whose filler returns undefined", () => {
+    const content = [
+      "<!-- @reference ./kept.md -->",
+      "local text",
+      "<!-- @reference ./first.md -->",
+      "<!-- @end -->",
+      "",
+    ].join("\n");
+
+    expect(
+      syncBlocks(content, markdownBlocks, {
+        reference(reference: string) {
+          return reference === "./kept.md" ? undefined : `## ${reference}`;
+        },
+      }),
+    ).toBe(
+      [
+        "<!-- @reference ./kept.md -->",
+        "local text",
+        "<!-- @reference ./first.md -->",
+        "",
+        "## ./first.md",
+        "",
+        "<!-- @end -->",
+        "",
+      ].join("\n"),
+    );
+  });
+
+  test("rejects a last block without an end marker", () => {
+    expect(() => {
+      return syncBlocks(
+        "<!-- @reference ./first.md -->\nlocal text\n",
+        markdownBlocks,
+        fillers,
+      );
+    }).toThrow('Missing "@end" marker');
+  });
+});

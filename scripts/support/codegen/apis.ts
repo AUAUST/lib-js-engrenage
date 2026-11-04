@@ -1,6 +1,6 @@
 /* eslint-disable auaust/no-dynamic-import */
 
-import { defineCommand } from "#support/commander/utils/defineCommand";
+import { defineCommand } from "#cli/utils/defineCommand";
 
 export const apis = defineCommand((command) => {
   return command
@@ -15,8 +15,7 @@ export const apis = defineCommand((command) => {
       const { syncApiDeclarations } =
         await import("#typescript/utils/syncApiDeclarations");
 
-      const { settleChanges } =
-        await import("#support/commander/utils/settleChanges");
+      const { settleChanges } = await import("#cli/utils/settleChanges");
 
       const config = await loadConfig();
 

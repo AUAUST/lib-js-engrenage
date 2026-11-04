@@ -4,75 +4,22 @@ import { boolean, optional } from "valibot";
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
-import { syncClaudeSettings } from "#agents/claude/setup/syncClaudeSettings";
-import { syncCodexFiles } from "#agents/codex/setup/syncCodexFiles";
-import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
-import { syncChangesetConfig } from "#changesets/setup/syncChangesetConfig";
-import { syncPackageJson } from "#config/setup/syncPackageJson";
+import { defineCommand } from "#cli/utils/defineCommand";
+import { settleChanges } from "#cli/utils/settleChanges";
 import { loadConfig } from "#config/utils/loadConfig";
-import { validate } from "#foundation/options/utils/validate";
-import { syncGitignoreFile } from "#git/setup/syncGitignoreFile";
-import { syncWorkflowFiles } from "#github/setup/syncWorkflowFiles";
-import { syncPrettierignoreFile } from "#prettier/setup/syncPrettierignoreFile";
-import { defineCommand } from "#support/commander/utils/defineCommand";
-import { settleChanges } from "#support/commander/utils/settleChanges";
-import { syncAliases } from "#typescript/setup/syncAliases";
-import { syncEnvFile } from "#typescript/setup/syncEnvFile";
-import { syncTsconfigFiles } from "#typescript/setup/syncTsconfigFiles";
-import { syncVscodeFiles } from "#vscode/setup/syncVscodeFiles";
+import { validate } from "#options/utils/validate";
+import { syncTargets } from "#sync/operations/syncTargets";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { SyncTargetName } from "#sync/types/SyncTargetName";
 
-interface SyncTarget<Flag extends string> {
-  sync(
-    config: ResolvedConfig,
-    flags: Partial<Record<Flag, boolean>>,
-  ): void | Promise<void>;
-  flags: Partial<Record<Flag, string>>;
-}
-
-function defineTarget<Flag extends string = never>(
-  sync: SyncTarget<Flag>["sync"],
-  flags: Partial<Record<Flag, string>> = {},
-): SyncTarget<Flag> {
-  return {
-    sync,
-    flags,
-  };
-}
-
-// Targets run in declaration order: those that produce a file other targets read from the config come first.
-const targets = {
-  tsconfig: defineTarget(syncTsconfigFiles),
-  aliases: defineTarget(syncAliases),
-  agents: defineTarget(syncAgentFiles),
-  changesets: defineTarget(syncChangesetConfig),
-  claude: defineTarget(syncClaudeSettings, {
-    settings: "create .claude/settings.json when it is missing",
-  }),
-  codex: defineTarget(syncCodexFiles, {
-    hooks: "create .codex/hooks.json when it is missing",
-  }),
-  gitignore: defineTarget(syncGitignoreFile),
-  globals: defineTarget(syncEnvFile),
-  package: defineTarget(syncPackageJson),
-  prettierignore: defineTarget(syncPrettierignoreFile),
-  vscode: defineTarget(syncVscodeFiles, {
-    settings: "create .vscode/settings.json when it is missing",
-    extensions: "create .vscode/extensions.json when it is missing",
-  }),
-  workflows: defineTarget(syncWorkflowFiles),
-};
-
-type TargetName = keyof typeof targets;
-
-type TargetFlags = Partial<Record<TargetName, Record<string, boolean>>>;
+type TargetFlags = Partial<Record<SyncTargetName, Record<string, boolean>>>;
 
 function createFlagOptions(): readonly {
-  target: TargetName;
+  target: SyncTargetName;
   flag: string;
   option: Option;
 }[] {
-  return flatMap(entries(targets), ([target, { flags }]) => {
+  return flatMap(entries(syncTargets), ([target, { flags }]) => {
     return map(
       entries<Record<string, string>>(flags),
       ([flag, description]) => {
@@ -89,16 +36,16 @@ function createFlagOptions(): readonly {
 export async function runSync(
   config: ResolvedConfig,
   {
-    names = keys(targets),
+    names = keys(syncTargets),
     flags = {},
   }: {
-    names?: readonly TargetName[];
+    names?: readonly SyncTargetName[];
     flags?: TargetFlags;
   } = {},
 ) {
-  for (const name of keys(targets)) {
+  for (const name of keys(syncTargets)) {
     if (names.includes(name)) {
-      await targets[name].sync(config, flags[name] ?? {});
+      await syncTargets[name].sync(config, flags[name] ?? {});
     }
   }
 }
@@ -116,7 +63,7 @@ export const sync = defineCommand((command) => {
     )
     .addArgument(
       new Argument("[targets...]", "targets to sync (all by default)").choices(
-        keys(targets),
+        keys(syncTargets),
       ),
     )
     .option("--check", "report outdated files without writing them", false)
@@ -147,7 +94,7 @@ export const sync = defineCommand((command) => {
       }
 
       await runSync(config, {
-        names: selected.length === 0 ? keys(targets) : selected,
+        names: selected.length === 0 ? keys(syncTargets) : selected,
         flags,
       });
 

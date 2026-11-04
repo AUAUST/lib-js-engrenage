@@ -1,6 +1,6 @@
 import { Command } from "@commander-js/extra-typings";
 
-import type { CommandDefinition } from "#support/commander/types/CommandDefinition";
+import type { CommandDefinition } from "#cli/types/CommandDefinition";
 
 export async function runCommand(
   definition: CommandDefinition,

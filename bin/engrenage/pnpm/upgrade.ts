@@ -1,14 +1,14 @@
+import { createPrompter } from "#cli/utils/createPrompter";
+import { defineCommand } from "#cli/utils/defineCommand";
+import { settleChanges } from "#cli/utils/settleChanges";
 import { loadConfig } from "#config/utils/loadConfig";
 import { packageJsonFile } from "#constants";
+import { readProjectPnpmVersion } from "#package/utils/readProjectPnpmVersion";
+import { readSharedPnpmRange } from "#package/utils/readSharedPnpmRange";
 import { installDependencies } from "#pnpm/utils/installDependencies";
 import { resolveLatestPnpm } from "#pnpm/utils/resolveLatestPnpm";
 import { resolvePnpmRangeStatus } from "#pnpm/utils/resolvePnpmRangeStatus";
 import { upgradePnpmManifest } from "#pnpm/utils/upgradePnpmManifest";
-import { defineCommand } from "#support/commander/utils/defineCommand";
-import { settleChanges } from "#support/commander/utils/settleChanges";
-import { readProjectPnpmVersion } from "#support/packageJson/utils/readProjectPnpmVersion";
-import { readSharedPnpmRange } from "#support/packageJson/utils/readSharedPnpmRange";
-import { createPrompter } from "#support/scaffold/utils/createPrompter";
 
 export const upgrade = defineCommand((command) => {
   return command

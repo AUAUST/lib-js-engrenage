@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { readSharedPnpmRange } from "#package/utils/readSharedPnpmRange";
 import { resolveLatestPnpm } from "#pnpm/utils/resolveLatestPnpm";
 import { pnpm } from "#scripts/support/pnpm";
-import { readSharedPnpmRange } from "#support/packageJson/utils/readSharedPnpmRange";
 import { runCommand } from "#tests/helpers/runCommand";
 
 vi.mock("#pnpm/utils/resolveLatestPnpm");

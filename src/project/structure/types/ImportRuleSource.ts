@@ -1,5 +1,5 @@
-import type { StructureEnvironment } from "#project/structure/types/StructureEnvironment";
-import type { TestVariant } from "#project/structure/types/TestVariant";
+import type { StructureEnvironment } from "#structure/types/StructureEnvironment";
+import type { TestVariant } from "#structure/types/TestVariant";
 import type { Directory } from "#types/Directory";
 
 export type ImportRuleSource =

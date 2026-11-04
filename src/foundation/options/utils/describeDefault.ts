@@ -2,8 +2,8 @@ import { isArray } from "@auaust/toolkit/isArray";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { entries } from "@auaust/toolkit/object";
 
-import { listDefaults } from "#foundation/options/utils/listDefaults";
-import type { Default } from "#foundation/options/types/Default";
+import { listDefaults } from "#options/utils/listDefaults";
+import type { Default } from "#options/types/Default";
 
 function describeValue(value: unknown): string {
   if (value == null) {

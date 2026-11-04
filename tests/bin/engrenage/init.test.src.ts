@@ -17,7 +17,7 @@ import { mockCwd } from "#tests/helpers/mockCwd";
 import { readTestPnpmVersions } from "#tests/helpers/readTestPnpmVersions";
 import { runCommand } from "#tests/helpers/runCommand";
 
-import * as prompts from "#support/scaffold/utils/createPrompter";
+import * as prompts from "#cli/utils/createPrompter";
 
 import manifest from "#package.json" with { type: "json" };
 

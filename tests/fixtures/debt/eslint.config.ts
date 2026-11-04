@@ -1,3 +1,3 @@
-import { defineEslintConfig } from "../../../src/eslint/index.ts";
+import { defineEslintConfig } from "../../../src/tools/eslint/index.ts";
 
 export default defineEslintConfig();

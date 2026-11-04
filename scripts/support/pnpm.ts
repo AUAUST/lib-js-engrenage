@@ -1,7 +1,7 @@
+import { defineCommand } from "#cli/utils/defineCommand";
 import { project } from "#constants";
+import { readSharedPnpmRange } from "#package/utils/readSharedPnpmRange";
 import { resolveLatestPnpm } from "#pnpm/utils/resolveLatestPnpm";
-import { defineCommand } from "#support/commander/utils/defineCommand";
-import { readSharedPnpmRange } from "#support/packageJson/utils/readSharedPnpmRange";
 
 // @debt splits versions by hand next to compareVersions and parseMajorVersion instead of one version parser that yields major, minor and patch
 function toParts(version: string): number[] {

@@ -1,4 +1,4 @@
-import { defineConfig } from "#config/index";
+import { defineConfig } from "#config";
 
 export default defineConfig({
   presets: ["library"],
@@ -19,6 +19,10 @@ export default defineConfig({
     attribution: false,
   },
   tests: {
+    layout: "mirror",
+    domains: {
+      helpers: {},
+    },
     dist: {
       tsconfig: {
         compilerOptions: {
@@ -34,16 +38,56 @@ export default defineConfig({
   },
   src: {
     node: 24,
-    exports: {
-      "./agents/*/constants": "src/agents/*/constants.ts",
-      "./agents/*": "src/agents/*/index.ts",
-      "./*/constants": "src/*/constants.ts",
-      "./*": "src/*/index.ts",
-      "./constants": "src/constants.ts",
-      ".": "src/index.ts",
+    namespaces: {
+      ".": { layers: ["foundation", "project", "tools", "workflows"] },
+      "foundation": { prefix: "" },
+      "project": { prefix: "" },
+      "tools": { prefix: "" },
+      "workflows": { prefix: "" },
     },
-    generated: ["eslint/types/Rules.ts", "eslint/types/rules/**"],
-    discovered: ["eslint/conventions/*/*.ts"],
+    domains: {
+      "tools/*": { public: true },
+      "tools/agents/claude": { public: true },
+      "tools/agents/codex": { public: true },
+      "project/config": { public: true },
+      "project/package": { public: true },
+      "project/baseline": { public: true },
+    },
+    exports: {
+      ".": "src/index.ts",
+      "./constants": "src/constants.ts",
+      "./agents": "src/tools/agents/index.ts",
+      "./agents/constants": "src/tools/agents/constants.ts",
+      "./agents/claude": "src/tools/agents/claude/index.ts",
+      "./agents/claude/constants": "src/tools/agents/claude/constants.ts",
+      "./agents/codex": "src/tools/agents/codex/index.ts",
+      "./agents/codex/constants": "src/tools/agents/codex/constants.ts",
+      "./changesets": "src/tools/changesets/index.ts",
+      "./changesets/constants": "src/tools/changesets/constants.ts",
+      "./config": "src/project/config/index.ts",
+      "./config/constants": "src/project/config/constants.ts",
+      "./eslint": "src/tools/eslint/index.ts",
+      "./eslint/constants": "src/tools/eslint/constants.ts",
+      "./git": "src/tools/git/index.ts",
+      "./git/constants": "src/tools/git/constants.ts",
+      "./github": "src/tools/github/index.ts",
+      "./github/constants": "src/tools/github/constants.ts",
+      "./pnpm": "src/tools/pnpm/index.ts",
+      "./pnpm/constants": "src/tools/pnpm/constants.ts",
+      "./prettier": "src/tools/prettier/index.ts",
+      "./prettier/constants": "src/tools/prettier/constants.ts",
+      "./tsdown": "src/tools/tsdown/index.ts",
+      "./tsdown/constants": "src/tools/tsdown/constants.ts",
+      "./typescript": "src/tools/typescript/index.ts",
+      "./typescript/constants": "src/tools/typescript/constants.ts",
+      "./vite": "src/tools/vite/index.ts",
+      "./vitest": "src/tools/vitest/index.ts",
+      "./vitest/constants": "src/tools/vitest/constants.ts",
+      "./vscode": "src/tools/vscode/index.ts",
+      "./vscode/constants": "src/tools/vscode/constants.ts",
+    },
+    generated: ["tools/eslint/types/Rules.ts", "tools/eslint/types/rules/**"],
+    discovered: ["tools/eslint/conventions/*/*.ts"],
   },
   data: {
     exports: {
@@ -58,7 +102,7 @@ export default defineConfig({
   },
   tooling: {
     files: {
-      append: ["src/prettier/index.ts"],
+      append: ["src/tools/prettier/index.ts"],
     },
   },
 });

@@ -2,11 +2,11 @@ import { array, boolean, picklist, string } from "valibot";
 
 import { directorySchema } from "#config/config/schemas/values/directorySchema";
 import { globSchema } from "#config/config/schemas/values/globsSchema";
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
-import { declareRecord } from "#foundation/options/utils/declareRecord";
-import { unset } from "#foundation/options/utils/unset";
-import { roleKeySchema } from "#project/structure/config/schemas/roleKeySchema";
+import { declare } from "#options/utils/declare";
+import { declareObject } from "#options/utils/declareObject";
+import { declareRecord } from "#options/utils/declareRecord";
+import { unset } from "#options/utils/unset";
+import { roleKeySchema } from "#structure/config/schemas/roleKeySchema";
 
 export const structureOptions = {
   namespaces: declareRecord(

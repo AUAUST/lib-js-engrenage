@@ -22,8 +22,8 @@ eslint-suppressions.json
 CHANGELOG.md
 
 # Codegen
-/src/eslint/types/Rules.ts
-/src/eslint/types/rules/**
+/src/tools/eslint/types/Rules.ts
+/src/tools/eslint/types/rules/**
 /AGENTS.override.md
 
 # @end

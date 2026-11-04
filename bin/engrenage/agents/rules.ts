@@ -2,9 +2,9 @@ import { cancel, isCancel, multiselect } from "@clack/prompts";
 
 import { addAgentRules } from "#agents/setup/addAgentRules";
 import { getMissingRuleTemplates } from "#agents/utils/getMissingRuleTemplates";
+import { defineCommand } from "#cli/utils/defineCommand";
+import { settleChanges } from "#cli/utils/settleChanges";
 import { readConfig } from "#config/utils/readConfig";
-import { defineCommand } from "#support/commander/utils/defineCommand";
-import { settleChanges } from "#support/commander/utils/settleChanges";
 
 async function add(name?: string) {
   const config = await readConfig(process.cwd());

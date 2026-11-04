@@ -1,0 +1,43 @@
+import type { ResolvableValue } from "@auaust/toolkit/value";
+
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { Convention } from "#eslint/types/Convention";
+import type { Delegate } from "#eslint/types/Delegate";
+import type { RuleModule } from "#eslint/types/RuleModule";
+import type { ScopeReferences } from "#eslint/types/ScopeReferences";
+import type { Presets } from "#presets/types/Presets";
+import type { PackageNames } from "#types/PackageNames";
+
+export function defineConvention({
+  delegates = [],
+  rule,
+  files = ["files.code"],
+  ignores = [],
+  typeAware = false,
+  severity = "error",
+  enabled = true,
+  presets = [],
+  requires = [],
+}: {
+  delegates?: ResolvableValue<readonly Delegate[], [ResolvedConfig]>;
+  rule?: ResolvableValue<RuleModule, [ResolvedConfig]>;
+  files?: ScopeReferences;
+  ignores?: ScopeReferences;
+  typeAware?: boolean;
+  severity?: "error" | "warn" | "info";
+  enabled?: boolean;
+  presets?: Presets;
+  requires?: PackageNames;
+}): Convention {
+  return {
+    enabled,
+    presets,
+    requires,
+    files,
+    ignores,
+    typeAware,
+    severity,
+    delegates,
+    ...(rule === undefined ? {} : { rule }),
+  };
+}

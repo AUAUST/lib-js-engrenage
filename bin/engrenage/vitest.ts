@@ -1,7 +1,7 @@
+import { defineToolCommands } from "#cli/utils/defineToolCommands";
+import { ensureAnyOf } from "#cli/utils/ensureAnyOf";
+import { ensureIncludes } from "#cli/utils/ensureIncludes";
 import { packages } from "#constants";
-import { defineToolCommands } from "#support/commander/utils/defineToolCommands";
-import { ensureAnyOf } from "#support/commander/utils/ensureAnyOf";
-import { ensureIncludes } from "#support/commander/utils/ensureIncludes";
 import { buildMode } from "#vitest/constants";
 
 function includeTypeTests(args: string[]) {

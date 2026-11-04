@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { pnpm } from "#bin/engrenage/pnpm/index";
+import { readSharedPnpmRange } from "#package/utils/readSharedPnpmRange";
 import { installDependencies } from "#pnpm/utils/installDependencies";
 import { resolveLatestPnpm } from "#pnpm/utils/resolveLatestPnpm";
-import { readSharedPnpmRange } from "#support/packageJson/utils/readSharedPnpmRange";
 import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
 import { mockCwd } from "#tests/helpers/mockCwd";
 import { readTestPnpmVersions } from "#tests/helpers/readTestPnpmVersions";

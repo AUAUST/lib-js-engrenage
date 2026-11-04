@@ -1,6 +1,6 @@
 /* eslint-disable auaust/no-dynamic-import */
 
-import { defineCommand } from "#support/commander/utils/defineCommand";
+import { defineCommand } from "#cli/utils/defineCommand";
 
 export const rules = defineCommand((command) => {
   return command
