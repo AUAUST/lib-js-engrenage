@@ -65,5 +65,5 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## Stale after #153 (Prettier)
 
-- why: `README.md` was not scanned for the removed `"prettier": "@auaust/engrenage/prettier"` reference; the default export of `@auaust/engrenage/prettier` and `defaultOptions` are gone.
-- done: docs describe `prettier.config.ts` with `definePrettierConfig`.
+- why: `README.md` was not scanned for Prettier references.
+- done: docs describe `"prettier": "@auaust/engrenage/prettier"` for the defaults and `prettier.config.ts` with `definePrettierConfig` for custom rules.
