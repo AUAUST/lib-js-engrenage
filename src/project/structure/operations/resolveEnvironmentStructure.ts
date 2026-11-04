@@ -7,6 +7,7 @@ import { entries, freeze, values } from "@auaust/toolkit/object";
 
 import { noRoles } from "#project/structure/constants";
 import { resolveRoles } from "#project/structure/operations/resolveRoles";
+import { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
@@ -32,6 +33,7 @@ interface Parent {
   readonly kind: StructureKind | "root";
   readonly layers: readonly string[] | undefined;
   readonly scopes: readonly string[];
+  readonly owned: readonly string[];
   readonly structured: boolean;
   readonly mirrored?: {
     readonly environment: StructureEnvironmentName;
@@ -217,9 +219,14 @@ export function resolveEnvironmentStructure({
 
   function roleOf(directory: string, parent: Parent): string | undefined {
     const { roles: contracts, aliases } = rolesFor(parent.scopes);
-    const role = aliases[directory] ?? directory;
+    const local = aliases[directory] ?? directory;
 
-    return contracts[role] !== undefined && contracts[role].file === undefined
+    const role = [
+      ...parent.owned.filter((owned) => getLocalRoleName(owned) === local),
+      local,
+    ].find((candidate) => contracts[candidate] !== undefined);
+
+    return role !== undefined && contracts[role]?.file === undefined
       ? role
       : undefined;
   }
@@ -276,11 +283,13 @@ export function resolveEnvironmentStructure({
       extra: Partial<StructureNode>,
       {
         scopes = parent.scopes,
+        owned = parent.owned,
         structured = false,
         mirrored,
         children,
       }: {
         scopes?: readonly string[];
+        owned?: readonly string[];
         structured?: boolean;
         mirrored?: Parent["mirrored"];
         children?: readonly StructureNode[];
@@ -302,6 +311,7 @@ export function resolveEnvironmentStructure({
             kind,
             layers: extra.layers,
             scopes,
+            owned,
             structured,
             ...(mirrored === undefined ? {} : { mirrored }),
           }),
@@ -349,6 +359,7 @@ export function resolveEnvironmentStructure({
         },
         {
           scopes: [...parent.scopes, ...namespace.roles.enable],
+          owned: [...namespace.roles.enable, ...parent.owned],
         },
       );
     }
@@ -378,6 +389,7 @@ export function resolveEnvironmentStructure({
         },
         {
           scopes: [...parent.scopes, ...(contained ?? [])],
+          owned: [...(contained ?? []), ...parent.owned],
           structured: contained !== undefined,
         },
       );
@@ -415,6 +427,7 @@ export function resolveEnvironmentStructure({
       kind: "namespace",
       layers: undefined,
       scopes: parent.scopes,
+      owned: parent.owned,
       structured: false,
     });
 
@@ -457,6 +470,7 @@ export function resolveEnvironmentStructure({
       kind: "root",
       layers: rootDeclaration?.layers,
       scopes: rootScopes,
+      owned: rootScopes,
       structured: false,
     });
   });

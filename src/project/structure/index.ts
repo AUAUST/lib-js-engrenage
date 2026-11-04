@@ -9,11 +9,14 @@ export { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntr
 // @barrel types/*.ts all
 export * from "#project/structure/types/Alias";
 export * from "#project/structure/types/AliasesOption";
+export * from "#project/structure/types/DeclaredRoleContract";
+export * from "#project/structure/types/DeclaredRolesOption";
 export * from "#project/structure/types/EnvironmentStructure";
 export * from "#project/structure/types/ImportCategory";
 export * from "#project/structure/types/ImportRule";
 export * from "#project/structure/types/ImportRuleSource";
 export * from "#project/structure/types/ImportRuleTarget";
+export * from "#project/structure/types/InlineRole";
 export * from "#project/structure/types/ProjectRoles";
 export * from "#project/structure/types/ResolvedAliases";
 export * from "#project/structure/types/ResolvedRoleContract";
@@ -21,6 +24,7 @@ export * from "#project/structure/types/ResolvedRoles";
 export * from "#project/structure/types/RoleContract";
 export * from "#project/structure/types/RoleEnvironment";
 export * from "#project/structure/types/RoleKey";
+export * from "#project/structure/types/RoleReference";
 export * from "#project/structure/types/RolesOption";
 export * from "#project/structure/types/StructureEnvironmentName";
 export * from "#project/structure/types/StructureKind";

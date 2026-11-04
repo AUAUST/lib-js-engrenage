@@ -4,6 +4,7 @@ import { declare } from "#foundation/options/utils/declare";
 import { declareRecord } from "#foundation/options/utils/declareRecord";
 import { roleContractSchema } from "#project/structure/config/schemas/roleContractSchema";
 import { roleKeySchema } from "#project/structure/config/schemas/roleKeySchema";
+import { roleNameSchema } from "#project/structure/config/schemas/roleNameSchema";
 
 export const rolesOptionEntries = {
   enable: declare(array(roleKeySchema), {
@@ -16,7 +17,7 @@ export const rolesOptionEntries = {
       "Known roles to turn off, applied to the defaults before `define`.",
     optional: { value: [] },
   }),
-  define: declareRecord(string(), roleContractSchema, {
+  define: declareRecord(roleNameSchema, roleContractSchema, {
     description:
       "Roles to define by name, applied last: a role that already exists is redefined whole, and a defined role is on unless it is scoped.",
     optional: {

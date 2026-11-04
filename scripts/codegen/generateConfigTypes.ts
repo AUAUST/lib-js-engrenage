@@ -11,6 +11,7 @@ import { mappedValues } from "@auaust/toolkit/mappedValues";
 import { keys } from "@auaust/toolkit/object";
 
 import { globsSchema } from "#project/config/config/schemas/values/globsSchema";
+import { inlineRoleSchema } from "#project/structure/config/schemas/inlineRoleSchema";
 import { configSchema } from "#workflows/registry/config/schemas/configSchema";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { File } from "#types/File";
@@ -198,6 +199,7 @@ export async function generateConfigTypes(config: ProjectConfig) {
   const jsonSchema = toJsonSchema(configSchema, {
     errorMode: "ignore",
     typeMode: "input",
+    definitions: { InlineRole: inlineRoleSchema.schema },
     overrideSchema,
   });
 
@@ -211,6 +213,11 @@ export async function generateConfigTypes(config: ProjectConfig) {
 
   config.filesystem.write(
     configFile,
-    [generatedHeader, ...imports, "", declarations].join("\n"),
+    [
+      generatedHeader,
+      ...imports,
+      "",
+      declarations.replaceAll("}\n/**", "}\n\n/**"),
+    ].join("\n"),
   );
 }

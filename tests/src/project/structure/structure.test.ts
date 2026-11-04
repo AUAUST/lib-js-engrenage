@@ -242,3 +242,94 @@ describe("tooling structure", () => {
     expect(structure.tooling?.root.children.at(0)?.kind).toBe("domain");
   });
 });
+
+describe("inline roles", () => {
+  const files = {
+    "package.json": '{ "name": "project", "type": "module" }',
+    "src/index.ts": "",
+    "src/x/index.ts": "",
+    "src/x/game/types/T.ts": "",
+    "src/x/types/T.ts": "",
+    "src/other/index.ts": "",
+    "src/other/types/T.ts": "",
+    "src/ui/button/index.ts": "",
+    "src/ui/button/widgets/W.ts": "",
+    "src/elsewhere/index.ts": "",
+    "src/elsewhere/widgets/W.ts": "",
+  };
+
+  async function describeProject(options: string) {
+    const project = createTemporaryProject({
+      ...files,
+      "engrenage.config.ts": `export default ${options};\n`,
+    });
+
+    const config = await loadConfig(project.root);
+
+    return new Map(
+      flatten(config.structure.src!.root).map((node) => [node.path, node]),
+    );
+  }
+
+  test("shadow a root role inside their owner only", async () => {
+    const nodes = await describeProject(`{
+      roles: {
+        define: {
+          game: { roles: [{ name: "types", exports: "default" }] },
+        },
+      },
+    }`);
+
+    expect(nodes.get("src/x/game/types")).toMatchObject({
+      kind: "role",
+      role: "game/types",
+    });
+
+    expect(nodes.get("src/x/types")).toMatchObject({
+      kind: "role",
+      role: "types",
+    });
+  });
+
+  test("fail when one list names a role twice, and pass across owners", async () => {
+    await expect(
+      describeProject(`{
+        roles: {
+          define: { game: { roles: [{ name: "types" }, { name: "types" }] } },
+        },
+      }`),
+    ).rejects.toThrow("game lists the role types twice");
+
+    const nodes = await describeProject(`{
+      roles: {
+        define: {
+          game: { roles: [{ name: "types" }] },
+          arcade: { roles: [{ name: "types" }] },
+        },
+      },
+    }`);
+
+    expect(nodes.get("src/x/game/types")).toMatchObject({
+      role: "game/types",
+    });
+  });
+
+  test("of a namespace are active only in its subtree", async () => {
+    const nodes = await describeProject(`{
+      src: {
+        namespaces: {
+          ui: { roles: { enable: [{ name: "widgets", exports: "named-match" }] } },
+        },
+      },
+    }`);
+
+    expect(nodes.get("src/ui/button/widgets")).toMatchObject({
+      kind: "role",
+      role: "src:ui/widgets",
+    });
+
+    expect(nodes.get("src/elsewhere/widgets")).toMatchObject({
+      kind: "unclassified",
+    });
+  });
+});

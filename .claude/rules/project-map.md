@@ -21,7 +21,7 @@ Layers of `.`: `foundation` < `project` < `tools` < `workflows`
 | `enums`        | exports named-match                                                   | as its domain                                                                                                                                                                          | no     |
 | `ports`        | exports named-match                                                   | as its domain                                                                                                                                                                          | yes    |
 | `adapters`     | exports named-match                                                   | as its domain                                                                                                                                                                          | yes    |
-| `config`       | roles `schemas`; exports named-match                                  | as its domain                                                                                                                                                                          | no     |
+| `config`       | roles `config/schemas`; exports named-match                           | as its domain                                                                                                                                                                          | no     |
 | `setup`        | exports named-match                                                   | as its domain                                                                                                                                                                          | no     |
 | `plugins`      | exports named-match                                                   | as its domain                                                                                                                                                                          | no     |
 | `operations`   | exports named-match                                                   | as its domain                                                                                                                                                                          | no     |
@@ -435,7 +435,7 @@ Root keys: `bin` (tests `bin`), `scripts` (tests `scripts`), `src` (tests `src`)
 | `adapters`     | exports named-match                                                   | as its domain   | yes    |
 | `fixtures`     | nesting any                                                           | as its domain   | no     |
 | `setup.ts`     | file `setup.ts`; discovered                                           | as its domain   | no     |
-| `config`       | roles `schemas`; exports named-match                                  | as its domain   | no     |
+| `config`       | roles `config/schemas`; exports named-match                           | as its domain   | no     |
 | `setup`        | exports named-match                                                   | as its domain   | no     |
 | `plugins`      | exports named-match                                                   | as its domain   | no     |
 | `operations`   | exports named-match                                                   | as its domain   | no     |
@@ -499,7 +499,7 @@ Directories: `scripts`
 | `enums`        | exports named-match                                                   | as its domain   | no     |
 | `ports`        | exports named-match                                                   | as its domain   | yes    |
 | `adapters`     | exports named-match                                                   | as its domain   | yes    |
-| `config`       | roles `schemas`; exports named-match                                  | as its domain   | no     |
+| `config`       | roles `config/schemas`; exports named-match                           | as its domain   | no     |
 | `setup`        | exports named-match                                                   | as its domain   | no     |
 | `plugins`      | exports named-match                                                   | as its domain   | no     |
 | `operations`   | exports named-match                                                   | as its domain   | no     |
@@ -528,7 +528,7 @@ Directories: `tooling`
 | `enums`        | exports named-match                                                   | as its domain   | no     |
 | `ports`        | exports named-match                                                   | as its domain   | yes    |
 | `adapters`     | exports named-match                                                   | as its domain   | yes    |
-| `config`       | roles `schemas`; exports named-match                                  | as its domain   | no     |
+| `config`       | roles `config/schemas`; exports named-match                           | as its domain   | no     |
 | `setup`        | exports named-match                                                   | as its domain   | no     |
 | `plugins`      | exports named-match                                                   | as its domain   | no     |
 | `operations`   | exports named-match                                                   | as its domain   | no     |

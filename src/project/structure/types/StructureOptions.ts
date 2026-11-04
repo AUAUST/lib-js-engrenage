@@ -1,13 +1,12 @@
-import type { RoleKey } from "#project/structure/types/RoleKey";
 import type { Directory } from "#types/Directory";
 
-export interface StructureOptions {
+export interface StructureOptions<Reference = string> {
   readonly namespaces: Readonly<
     Record<
       Directory,
       {
         readonly layers: readonly string[] | undefined;
-        readonly roles: { readonly enable: readonly RoleKey[] };
+        readonly roles: { readonly enable: readonly Reference[] };
       }
     >
   >;

@@ -227,10 +227,10 @@ export interface ConfigInput {
                      */
                     nesting?: (number | "any") | undefined;
                     /**
-                     * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                     * Structured role: the roles it contains, each a registered name or an inline contract with its `name`. Scoped roles listed here are active inside it, and an inline role shadows a root role of the same name inside it only.
                      * @default none
                      */
-                    roles?: string[] | undefined;
+                    roles?: (string | InlineRole)[] | undefined;
                     /**
                      * Semi-structured role: it requires category subdirectories whose names are free.
                      * @default none
@@ -491,27 +491,9 @@ export interface ConfigInput {
                     roles?:
                       | {
                           /**
-                           * Scoped roles to turn on for the whole subtree of the namespace.
+                           * Scoped roles to turn on for the whole subtree of the namespace, each a registered name or an inline contract with its `name`.
                            */
-                          enable: (
-                            | "index.ts"
-                            | "constants.ts"
-                            | "*.d.ts"
-                            | "types"
-                            | "utils"
-                            | "errors"
-                            | "enums"
-                            | "ports"
-                            | "adapters"
-                            | "fixtures"
-                            | "setup.ts"
-                            | "schemas"
-                            | "components"
-                            | "hooks"
-                            | "contexts"
-                            | "pages"
-                            | "styles"
-                          )[];
+                          enable: (string | InlineRole)[];
                         }
                       | undefined;
                   };
@@ -729,27 +711,9 @@ export interface ConfigInput {
                     roles?:
                       | {
                           /**
-                           * Scoped roles to turn on for the whole subtree of the namespace.
+                           * Scoped roles to turn on for the whole subtree of the namespace, each a registered name or an inline contract with its `name`.
                            */
-                          enable: (
-                            | "index.ts"
-                            | "constants.ts"
-                            | "*.d.ts"
-                            | "types"
-                            | "utils"
-                            | "errors"
-                            | "enums"
-                            | "ports"
-                            | "adapters"
-                            | "fixtures"
-                            | "setup.ts"
-                            | "schemas"
-                            | "components"
-                            | "hooks"
-                            | "contexts"
-                            | "pages"
-                            | "styles"
-                          )[];
+                          enable: (string | InlineRole)[];
                         }
                       | undefined;
                   };
@@ -968,10 +932,10 @@ export interface ConfigInput {
                            */
                           nesting?: (number | "any") | undefined;
                           /**
-                           * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                           * Structured role: the roles it contains, each a registered name or an inline contract with its `name`. Scoped roles listed here are active inside it, and an inline role shadows a root role of the same name inside it only.
                            * @default none
                            */
-                          roles?: string[] | undefined;
+                          roles?: (string | InlineRole)[] | undefined;
                           /**
                            * Semi-structured role: it requires category subdirectories whose names are free.
                            * @default none
@@ -1048,27 +1012,9 @@ export interface ConfigInput {
                     roles?:
                       | {
                           /**
-                           * Scoped roles to turn on for the whole subtree of the namespace.
+                           * Scoped roles to turn on for the whole subtree of the namespace, each a registered name or an inline contract with its `name`.
                            */
-                          enable: (
-                            | "index.ts"
-                            | "constants.ts"
-                            | "*.d.ts"
-                            | "types"
-                            | "utils"
-                            | "errors"
-                            | "enums"
-                            | "ports"
-                            | "adapters"
-                            | "fixtures"
-                            | "setup.ts"
-                            | "schemas"
-                            | "components"
-                            | "hooks"
-                            | "contexts"
-                            | "pages"
-                            | "styles"
-                          )[];
+                          enable: (string | InlineRole)[];
                         }
                       | undefined;
                   };
@@ -1287,10 +1233,10 @@ export interface ConfigInput {
                            */
                           nesting?: (number | "any") | undefined;
                           /**
-                           * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                           * Structured role: the roles it contains, each a registered name or an inline contract with its `name`. Scoped roles listed here are active inside it, and an inline role shadows a root role of the same name inside it only.
                            * @default none
                            */
-                          roles?: string[] | undefined;
+                          roles?: (string | InlineRole)[] | undefined;
                           /**
                            * Semi-structured role: it requires category subdirectories whose names are free.
                            * @default none
@@ -1446,27 +1392,9 @@ export interface ConfigInput {
                     roles?:
                       | {
                           /**
-                           * Scoped roles to turn on for the whole subtree of the namespace.
+                           * Scoped roles to turn on for the whole subtree of the namespace, each a registered name or an inline contract with its `name`.
                            */
-                          enable: (
-                            | "index.ts"
-                            | "constants.ts"
-                            | "*.d.ts"
-                            | "types"
-                            | "utils"
-                            | "errors"
-                            | "enums"
-                            | "ports"
-                            | "adapters"
-                            | "fixtures"
-                            | "setup.ts"
-                            | "schemas"
-                            | "components"
-                            | "hooks"
-                            | "contexts"
-                            | "pages"
-                            | "styles"
-                          )[];
+                          enable: (string | InlineRole)[];
                         }
                       | undefined;
                   };
@@ -1685,10 +1613,10 @@ export interface ConfigInput {
                            */
                           nesting?: (number | "any") | undefined;
                           /**
-                           * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                           * Structured role: the roles it contains, each a registered name or an inline contract with its `name`. Scoped roles listed here are active inside it, and an inline role shadows a root role of the same name inside it only.
                            * @default none
                            */
-                          roles?: string[] | undefined;
+                          roles?: (string | InlineRole)[] | undefined;
                           /**
                            * Semi-structured role: it requires category subdirectories whose names are free.
                            * @default none
@@ -1880,27 +1808,9 @@ export interface ConfigInput {
                     roles?:
                       | {
                           /**
-                           * Scoped roles to turn on for the whole subtree of the namespace.
+                           * Scoped roles to turn on for the whole subtree of the namespace, each a registered name or an inline contract with its `name`.
                            */
-                          enable: (
-                            | "index.ts"
-                            | "constants.ts"
-                            | "*.d.ts"
-                            | "types"
-                            | "utils"
-                            | "errors"
-                            | "enums"
-                            | "ports"
-                            | "adapters"
-                            | "fixtures"
-                            | "setup.ts"
-                            | "schemas"
-                            | "components"
-                            | "hooks"
-                            | "contexts"
-                            | "pages"
-                            | "styles"
-                          )[];
+                          enable: (string | InlineRole)[];
                         }
                       | undefined;
                   };
@@ -2033,10 +1943,10 @@ export interface ConfigInput {
                            */
                           nesting?: (number | "any") | undefined;
                           /**
-                           * Structured role: the names of the roles it contains. Scoped roles listed here are active inside it.
+                           * Structured role: the roles it contains, each a registered name or an inline contract with its `name`. Scoped roles listed here are active inside it, and an inline role shadows a root role of the same name inside it only.
                            * @default none
                            */
-                          roles?: string[] | undefined;
+                          roles?: (string | InlineRole)[] | undefined;
                           /**
                            * Semi-structured role: it requires category subdirectories whose names are free.
                            * @default none
@@ -2240,4 +2150,65 @@ export interface ConfigInput {
         };
       }
     | undefined;
+}
+
+/**
+ * A role defined inline in a role list: a contract with its `name`, always scoped.
+ */
+export interface InlineRole {
+  /**
+   * Name of the role, local to its owner: it is registered as `<owner>/<name>` and shadows a root role of the same name inside the owner only.
+   */
+  name: string;
+  /**
+   * Makes the role a file role, matched by these names or globs.
+   * @default none
+   */
+  file?: Glob | Globs | undefined;
+  /**
+   * Files a directory role takes, as names or globs.
+   * @default the modules of its environment
+   */
+  accepts?: Glob | Globs | undefined;
+  /**
+   * Whether the role nests and how deep: a depth or `any`.
+   * @default `0`, so the role is flat
+   */
+  nesting?: (number | "any") | undefined;
+  /**
+   * Structured role: the roles it contains, each a registered name or an inline contract with its `name`. Scoped roles listed here are active inside it, and an inline role shadows a root role of the same name inside it only.
+   * @default none
+   */
+  roles?: (string | InlineRole)[] | undefined;
+  /**
+   * Semi-structured role: it requires category subdirectories whose names are free.
+   * @default none
+   */
+  categories?: boolean | undefined;
+  /**
+   * Export style of its TypeScript and JavaScript modules: one named export matching the file name, named exports, or a default export.
+   * @default none
+   */
+  exports?: ("named-match" | "named" | "default") | undefined;
+  /**
+   * Whether an `index` file is allowed.
+   * @default false
+   */
+  index?: boolean | undefined;
+  /**
+   * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
+   * Package exports come only from the domain's visibility.
+   * @default false
+   */
+  public?: boolean | undefined;
+  /**
+   * Whether a consumer discovers its files, so they may export defaults.
+   * @default false
+   */
+  discovered?: boolean | undefined;
+  /**
+   * Whether the role is active only where a structured role or a namespace enables it.
+   * @default false
+   */
+  scoped?: boolean | undefined;
 }

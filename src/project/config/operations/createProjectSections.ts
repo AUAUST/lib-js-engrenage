@@ -44,6 +44,8 @@ import { resolveEnvironmentStructure } from "#project/structure/operations/resol
 import { resolveImportRules } from "#project/structure/operations/resolveImportRules";
 import { resolveRoles } from "#project/structure/operations/resolveRoles";
 import { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
+import { normalizeNamespaces } from "#project/structure/utils/normalizeNamespaces";
+import { normalizeRoles } from "#project/structure/utils/normalizeRoles";
 import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
 import { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
 import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
@@ -57,10 +59,12 @@ import type { Environment } from "#project/config/types/Environment";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { RawConfig } from "#project/config/types/RawConfig";
 import type { PackageJson } from "#project/package/types/PackageJson";
+import type { DeclaredRolesOption } from "#project/structure/types/DeclaredRolesOption";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
+import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
-import type { RolesOption } from "#project/structure/types/RolesOption";
+import type { RoleReference } from "#project/structure/types/RoleReference";
 import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { TestsContext } from "#project/structure/types/TestsContext";
@@ -96,8 +100,8 @@ type StructureSection =
   | { readonly enabled: false }
   | ({
       readonly enabled: true;
-      readonly roles?: RolesOption;
-    } & StructureOptions);
+      readonly roles?: DeclaredRolesOption;
+    } & StructureOptions<RoleReference>);
 
 export function createProjectSections({
   root,
@@ -138,8 +142,13 @@ export function createProjectSections({
     return resolveSection(formatSchema, raw.format, context, "format");
   }
 
-  function roles() {
-    return resolveSection(rolesSchema, raw.roles, context, "roles");
+  function roles(): ProjectRoles {
+    const declared = resolveSection(rolesSchema, raw.roles, context, "roles");
+
+    return freeze({
+      ...normalizeRoles(declared),
+      enabled: declared.enabled,
+    });
   }
 
   function define() {
@@ -251,13 +260,13 @@ export function createProjectSections({
 
   function resolveEnvironmentRoles(
     name: RoleEnvironment,
-    option: { readonly enabled: boolean; readonly roles?: RolesOption },
+    option: { readonly enabled: boolean; readonly roles?: DeclaredRolesOption },
   ): ResolvedRoles {
     return option.enabled && option.roles !== undefined
       ? resolveRoles({
           environment: name,
           roles: get("roles"),
-          environmentRoles: option.roles,
+          environmentRoles: normalizeRoles(option.roles),
         })
       : noRoles;
   }
@@ -272,13 +281,27 @@ export function createProjectSections({
       return;
     }
 
+    const { namespaces, define } = normalizeNamespaces({
+      environment: name,
+      namespaces: option.namespaces,
+    });
+
+    const environmentRoles =
+      option.roles === undefined ? undefined : normalizeRoles(option.roles);
+
     return resolveEnvironmentStructure({
       name,
       root,
       dirs: environment.dirs,
-      options: option,
+      options: { ...option, namespaces },
       roles: get("roles"),
-      environmentRoles: option.roles,
+      environmentRoles:
+        environmentRoles === undefined
+          ? undefined
+          : freeze({
+              ...environmentRoles,
+              define: freeze({ ...environmentRoles.define, ...define }),
+            }),
       ...(tests === undefined ? {} : { tests }),
     });
   }

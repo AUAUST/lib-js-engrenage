@@ -4,8 +4,10 @@ export default defineConfig({
   preset: "library",
   roles: {
     define: {
-      config: { exports: "named-match", roles: ["schemas"] },
-      schemas: { exports: "named-match", scoped: true },
+      config: {
+        exports: "named-match",
+        roles: [{ name: "schemas", exports: "named-match" }],
+      },
       setup: { exports: "named-match" },
       plugins: { exports: "named-match" },
       operations: { exports: "named-match" },

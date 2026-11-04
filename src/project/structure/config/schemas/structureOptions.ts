@@ -1,11 +1,11 @@
-import { array, boolean, picklist, string } from "valibot";
+import { array, boolean, picklist, string, union } from "valibot";
 
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { declareRecord } from "#foundation/options/utils/declareRecord";
 import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
 import { globSchema } from "#project/config/config/schemas/values/globsSchema";
-import { roleKeySchema } from "#project/structure/config/schemas/roleKeySchema";
+import { inlineRoleSchema } from "#project/structure/config/schemas/inlineRoleSchema";
 
 export const structureOptions = {
   namespaces: declareRecord(
@@ -18,9 +18,9 @@ export const structureOptions = {
       }),
       roles: declareObject(
         {
-          enable: declare(array(roleKeySchema), {
+          enable: declare(array(union([string(), inlineRoleSchema.schema])), {
             description:
-              "Scoped roles to turn on for the whole subtree of the namespace.",
+              "Scoped roles to turn on for the whole subtree of the namespace, each a registered name or an inline contract with its `name`.",
           }),
         },
         {

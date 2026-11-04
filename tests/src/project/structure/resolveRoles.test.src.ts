@@ -5,6 +5,7 @@ import { keys } from "@auaust/toolkit/object";
 import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 import { resolveRoles } from "#project/structure/operations/resolveRoles";
+import { normalizeRoles } from "#project/structure/utils/normalizeRoles";
 import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
 
 function resolve({
@@ -18,13 +19,13 @@ function resolve({
   environmentRoles?: unknown;
   scopes?: readonly string[];
 }) {
+  const declared = rolesSchema.resolve(roles, undefined, "roles");
+
   return resolveRoles({
     environment,
-    roles: rolesSchema.resolve(roles, undefined, "roles"),
-    environmentRoles: rolesOptionSchema.resolve(
-      environmentRoles,
-      undefined,
-      "roles",
+    roles: { ...normalizeRoles(declared), enabled: declared.enabled },
+    environmentRoles: normalizeRoles(
+      rolesOptionSchema.resolve(environmentRoles, undefined, "roles"),
     ),
     ...(scopes === undefined ? {} : { scopes }),
   });
