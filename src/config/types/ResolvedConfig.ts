@@ -20,6 +20,7 @@ import type { ResolvedTests } from "#config/types/ResolvedTests";
 import type { ResolvedTooling } from "#config/types/ResolvedTooling";
 import type { ResolvedTypescript } from "#config/types/ResolvedTypescript";
 import type { ResolvedVscode } from "#config/types/ResolvedVscode";
+import type { ImportRule } from "#project/structure/types/ImportRule";
 import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
 import type { PackageJson } from "#support/packageJson/types/PackageJson";
 import type { Directory } from "#types/Directory";
@@ -50,6 +51,7 @@ export interface ResolvedConfig {
   readonly data: ResolvedData;
   readonly tooling: ResolvedTooling;
   readonly structure: ResolvedStructure;
+  readonly importRules: readonly ImportRule[];
   readonly files: ResolvedFiles;
   readonly build: ResolvedBuild;
   readonly cache: ResolvedCache;

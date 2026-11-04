@@ -1,4 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap, includes } from "@auaust/primitive-kit/arrays";
 import { compose } from "@auaust/toolkit/composer";
 import { memoized } from "@auaust/toolkit/memoized";
 import { freeze } from "@auaust/toolkit/object";
@@ -33,6 +33,7 @@ import { packageJsonFile } from "#constants";
 import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 import { noRoles } from "#project/structure/constants";
 import { resolveEnvironmentStructure } from "#project/structure/utils/resolveEnvironmentStructure";
+import { resolveImportRules } from "#project/structure/utils/resolveImportRules";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import { resolveWithin } from "#support/filesystem/utils/resolveWithin";
 import { createPackageJson } from "#support/packageJson/utils/createPackageJson";
@@ -454,6 +455,35 @@ export function createResolvedConfig({
     });
   });
 
+  const importRules = once(() => {
+    const trees = structure();
+
+    return resolveImportRules({
+      structures: {
+        ...(trees.src === undefined ? {} : { src: trees.src }),
+        ...(trees.tests === undefined ? {} : { tests: trees.tests }),
+        ...(trees.bin === undefined ? {} : { bin: trees.bin }),
+        ...(trees.scripts === undefined ? {} : { scripts: trees.scripts }),
+        ...(trees.tooling === undefined ? {} : { tooling: trees.tooling }),
+      },
+      roles: {
+        src: source().roles,
+        tests: tests().roles,
+        scripts: scripts().roles,
+        tooling: tooling().roles,
+      },
+      active: {
+        src: source().active,
+        tests: tests().active,
+        bin: bin().active,
+        scripts: scripts().active,
+        tooling: tooling().active,
+      },
+      // @debt library-only behavior should read the published trait (#153) instead of the library preset
+      published: includes(presets(), "library"),
+    });
+  });
+
   const files = once(() => {
     const environments = [source(), tests(), bin(), scripts()];
 
@@ -621,6 +651,7 @@ export function createResolvedConfig({
         data,
         tooling,
         structure,
+        importRules,
         files,
         build,
         cache,
