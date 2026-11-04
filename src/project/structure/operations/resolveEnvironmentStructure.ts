@@ -115,17 +115,20 @@ interface Mirror {
   readonly mirror?: StructureMirror;
   readonly reason?: UnclassifiedReason;
   readonly mirrored?: NonNullable<Parent["mirrored"]>;
+  readonly counterpart?: StructureNode;
 }
 
 function createMirrorClassifier(tests: TestsContext) {
   const counterparts = memoized(
-    (environment: StructureEnvironmentName): ReadonlySet<string> => {
+    (
+      environment: StructureEnvironmentName,
+    ): ReadonlyMap<string, StructureNode> => {
       const structure = tests.environments[environment]?.structure;
 
-      return new Set(
+      return new Map(
         structure === undefined
           ? []
-          : collect(structure.root).map(({ path }) => path),
+          : collect(structure.root).map((node) => [node.path, node]),
       );
     },
   );
@@ -168,12 +171,16 @@ function createMirrorClassifier(tests: TestsContext) {
             .map((dir) => join(dir, subpath))
             .find((candidate) => counterparts(environment).has(candidate));
 
+    const counterpart =
+      path === undefined ? undefined : counterparts(environment).get(path);
+
     return path === undefined
       ? { kind: "unclassified", reason: "missing counterpart" }
       : {
           kind: "mirror",
           mirror: { environment, path },
           mirrored: { environment, subpath },
+          ...(counterpart === undefined ? {} : { counterpart }),
         };
   };
 }
@@ -359,7 +366,17 @@ export function resolveEnvironmentStructure({
       });
     }
 
-    const role = roleOf(directory, parent);
+    const mirrorClass =
+      classifyMirror === undefined || declared || parent.kind === "role"
+        ? undefined
+        : classifyMirror(directory, parent);
+
+    const role =
+      parent.mirrored === undefined ||
+      mirrorClass === undefined ||
+      mirrorClass.counterpart?.kind === "role"
+        ? roleOf(directory, parent)
+        : undefined;
 
     if (namespace !== undefined) {
       return node(
@@ -416,11 +433,8 @@ export function resolveEnvironmentStructure({
       );
     }
 
-    if (classifyMirror !== undefined && !declared) {
-      const { kind, mirror, reason, mirrored } = classifyMirror(
-        directory,
-        parent,
-      );
+    if (mirrorClass !== undefined) {
+      const { kind, mirror, reason, mirrored } = mirrorClass;
 
       return node(
         kind,

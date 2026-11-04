@@ -226,6 +226,35 @@ describe("structure", () => {
       ]);
     });
 
+    test("a mirror takes the kind of its counterpart, not its name", async () => {
+      const project = createTemporaryProject({
+        "package.json": '{ "name": "project", "type": "module" }',
+        "src/index.ts": "",
+        "src/a/utils/index.ts": "",
+        "src/a/b/index.ts": "",
+        "src/a/b/utils/x.ts": "",
+        "tests/src/a/utils/x.test.ts": "",
+        "tests/src/a/b/utils/y.test.ts": "",
+        "engrenage.config.ts":
+          'export default { tests: { layout: "mirror" } };\n',
+      });
+
+      const { structure } = await loadConfig(project.root);
+
+      const nodes = new Map(
+        flatten(structure.tests!.root).map((node) => [node.path, node]),
+      );
+
+      expect(nodes.get("tests/src/a/utils")).toMatchObject({
+        kind: "mirror",
+      });
+
+      expect(nodes.get("tests/src/a/b/utils")).toMatchObject({
+        kind: "role",
+        role: "utils",
+      });
+    });
+
     test("roots accepts any directory below a root key", async () => {
       const { structure, nodes } = await describeTests("roots", [
         "tests/src/anything/deep/y.test.ts",

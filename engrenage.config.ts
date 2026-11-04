@@ -49,8 +49,6 @@ export default defineConfig({
   },
   tests: {
     layout: "mirror",
-    // @debt the mirror directory is read as the `config` role; #193 classifies mirrors as what they mirror and removes this opt-out
-    optOut: ["src/project/config"],
     roles: {
       define: {
         utils: { inherit: "utils", effects: "effectful" },
