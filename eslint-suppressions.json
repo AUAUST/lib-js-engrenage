@@ -919,7 +919,7 @@
   },
   "src/tools/prettier/setup/createPrettierStep.ts": {
     "auaust/import-surfaces": {
-      "count": 3
+      "count": 2
     }
   },
   "src/tools/prettier/setup/createPrettierignoreStep.ts": {
