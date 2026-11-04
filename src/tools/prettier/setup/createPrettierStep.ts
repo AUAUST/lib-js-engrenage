@@ -15,14 +15,23 @@ export function createPrettierStep(): Step {
         !hasConfigFile(filesystem, prettier)
       );
     },
-    plan({ filesystem, addDevDependency }) {
-      filesystem.write(
-        file,
-        createConfigModule({
-          entry: `${engrenage}/prettier`,
-          definer: "definePrettierConfig",
-        }),
-      );
+    async plan({ confirm, filesystem, writePackageJson, addDevDependency }) {
+      if (
+        await confirm(
+          "Does Prettier need custom rules (plugins, overrides)?",
+          false,
+        )
+      ) {
+        filesystem.write(
+          file,
+          createConfigModule({
+            entry: `${engrenage}/prettier`,
+            definer: "definePrettierConfig",
+          }),
+        );
+      } else {
+        writePackageJson([prettier], `${engrenage}/prettier`);
+      }
 
       addDevDependency(prettier);
     },

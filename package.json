@@ -195,6 +195,7 @@
     "sisteransi": "1.0.5"
   },
   "sideEffects": false,
+  "prettier": "@auaust/engrenage/prettier",
   "engines": {
     "node": ">=24"
   },

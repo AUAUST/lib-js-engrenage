@@ -211,9 +211,12 @@ describe("engrenage init", () => {
       references: [],
     });
 
-    expect(project.read("prettier.config.ts")).toContain(
-      "export default definePrettierConfig();",
+    expect(packageJson).toHaveProperty(
+      "prettier",
+      "@auaust/engrenage/prettier",
     );
+
+    expect(existsSync(project.resolve("prettier.config.ts"))).toBe(false);
 
     expect(project.read("vitest.config.ts")).toContain(
       "export default defineVitestConfig();",
@@ -371,8 +374,34 @@ describe("engrenage init", () => {
       "scripts",
       "imports",
       "devDependencies",
+      "prettier",
       "devEngines",
     ]);
+  });
+
+  test("creates prettier.config.ts instead of the package.json reference for custom Prettier rules", async () => {
+    const project = createProject({
+      "engrenage.config.ts":
+        'export default { agents: { preferred: ["claude"] } };\n',
+      "package.json": '{\n  "name": "project",\n  "type": "module"\n}\n',
+    });
+
+    vi.spyOn(prompts, "createPrompter").mockReturnValue({
+      ...prompts.createPrompter({ yes: true }),
+      confirm: (message: string, initial = true) => {
+        return Promise.resolve(message.includes("custom rules") || initial);
+      },
+    });
+
+    await runCommand(init);
+
+    expect(project.read("prettier.config.ts")).toContain(
+      "export default definePrettierConfig();",
+    );
+
+    expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
+      "prettier",
+    );
   });
 
   test.each([false, true])(
