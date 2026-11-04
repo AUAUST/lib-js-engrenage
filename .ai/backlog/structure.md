@@ -128,3 +128,9 @@ Project structure description, its report and the tooling generated from it.
 - why: `scripts/codegen` mixes commands, subcommands and utility scripts with no separation, which confuses. #137's plan (§Environments) says `bin` holds thin discovered commands with no roles and `scripts` holds generators with inputs beside them; #147 moved generators into `scripts`; `structure.4` and `structure.14` leave `scripts` files unclassified.
 - want: investigate, given the strict responsibilities of both environments, then settle: the inferred file-to-command mapping; where command definitions live while the directory structure stays clean; the split into support, utilities and boilerplate layers.
 - done: `bin/` and `scripts/` have defined roles (or a documented decision not to) and `scripts/codegen` follows them.
+
+## 21. No way to detect unused code
+
+- why: ESLint's `no-unused-vars` sees only file-local symbols; exported symbols never imported, and symbols reachable only through cycles, need a cross-file reference graph (ESLint alone cannot build it; the TypeScript language service or a tool like knip can).
+- want: a `structure` subcommand or health-check command reporting, per symbol, one of: local and unused; exported and re-exported from an entrypoint only (matched through `export { x } from` or `export *`; not used as code); exported and never referenced. Used symbols are not reported; test usage does not count. Ideally also report symbols unreachable from every public entrypoint by traversing references from the entrypoints (cycles unreachable from a root included).
+- done: the command runs, with a report in the spirit of the structure report.

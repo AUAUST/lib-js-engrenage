@@ -83,7 +83,7 @@ export function declareEnvironmentTsconfig(
       }),
       compilerOptions: declare(record(string(), unknown()), {
         description:
-          "Options written into `compilerOptions` after the ones engrenage derives; it wins over them, `noLib` included.",
+          "Options written into `compilerOptions` after the ones engrenage derives; it wins over them.",
         optional: {
           value: {},
         },
