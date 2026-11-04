@@ -551,8 +551,7 @@ Directories: `tooling`
 - scripts environment: never: scripts never import bin → bin
 - scripts environment: never: no environment imports tests → tests
 - scripts environment: scripts read and write data/ by path (generated files) → data (not enforced by lint)
-- tooling environment: a library's tooling imports public entries only → public-entries
-- tooling environment: never: a library's tooling never imports src internals → internal-aliases
+- tooling environment: tooling uses all of src → public-entries, internal-aliases
 - tooling environment: never: tooling never imports bin, scripts or data/ → bin, scripts, data
 - tooling environment: never: no environment imports tests → tests
 - tests environment: tests spawn bin commands → bin (not enforced by lint)

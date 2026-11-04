@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { flatMap, wrap } from "@auaust/primitive-kit/arrays";
 import { entries, freeze, keys } from "@auaust/toolkit/object";
 
-import { defaultIndexFile, indexRole } from "#project/structure/constants";
+import { indexRole } from "#project/structure/constants";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportRelation } from "#project/structure/types/ImportRelation";
@@ -60,11 +60,9 @@ function createRule(
 }
 
 function resolveEnvironmentRules({
-  structures,
   active,
   published,
 }: {
-  structures: Partial<Record<StructureEnvironmentName, EnvironmentStructure>>;
   active: Readonly<Record<StructureEnvironmentName, boolean>>;
   published: boolean;
 }): ImportRule[] {
@@ -219,40 +217,14 @@ function resolveEnvironmentRules({
   if (active.tooling) {
     const source = environment("tooling");
 
-    const nodes: StructureNode[] =
-      structures.src === undefined ? [] : collect(structures.src.root);
-
-    const surfaces = flatMap(nodes, (node): ImportRuleTarget[] => {
-      return node.kind === "domain"
-        ? [indexOf(node, structures.src?.indexFile ?? defaultIndexFile)]
-        : [];
-    });
-
     rules.push(
-      ...(published
-        ? [
-            ...createRule(
-              source,
-              [category("public-entries")],
-              "test-variant",
-              "allow",
-              "a library's tooling imports public entries only",
-            ),
-            ...createRule(
-              source,
-              [category("internal-aliases")],
-              "test-variant",
-              "forbid",
-              "a library's tooling never imports src internals",
-            ),
-          ]
-        : createRule(
-            source,
-            surfaces,
-            "test-variant",
-            "allow",
-            "an app's tooling imports the declared domain surfaces",
-          )),
+      ...createRule(
+        source,
+        [category("public-entries"), category("internal-aliases")],
+        "test-variant",
+        "allow",
+        "tooling uses all of src",
+      ),
       ...createRule(
         source,
         [category("bin"), category("scripts"), category("data")],
@@ -735,7 +707,6 @@ export function resolveImportRules({
 }): readonly ImportRule[] {
   return freeze([
     ...resolveEnvironmentRules({
-      structures,
       active,
       published,
     }),
