@@ -8,15 +8,15 @@ import {
   apiGroups,
   apiLibraryGroups,
 } from "#baseline/constants";
-import { findCurrentMonth } from "#baseline/utils/findCurrentMonth";
+import { findCurrentMonth } from "#baseline/operations/findCurrentMonth";
+import { declareList } from "#config/config/declareList";
 import { exposedFilesSchema } from "#config/config/schemas/values/exposedFilesSchema";
 import { nodeMajorSchema } from "#config/config/schemas/values/nodeMajorSchema";
 import {
   defaultSourceDirectories,
   disabledCodeEnvironment,
 } from "#config/constants";
-import { declareList } from "#config/utils/declareList";
-import { createCodeEnvironment } from "#environments/utils/createCodeEnvironment";
+import { declareCodeEnvironment } from "#environments/config/declareCodeEnvironment";
 import { declare } from "#options/utils/declare";
 import { declareObject } from "#options/utils/declareObject";
 import { listDefaults } from "#options/utils/listDefaults";
@@ -38,7 +38,7 @@ function describeApiGroups(): string {
 
 export const sourceSchema = declareObject(
   {
-    ...createCodeEnvironment("src", defaultSourceDirectories),
+    ...declareCodeEnvironment("src", defaultSourceDirectories),
     roles: rolesOptionSchema,
     aliases: aliasesSchema,
     bundled: declare(boolean(), {

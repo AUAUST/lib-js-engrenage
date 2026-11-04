@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { ensureUnset } from "#cli/utils/ensureUnset";
+import { ensureUnset } from "#cli/operations/ensureUnset";
 
 describe("ensureUnset", () => {
   test("removes every form of the options before the positional arguments", () => {

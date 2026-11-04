@@ -8,9 +8,9 @@ import {
   defineVitestConfig,
 } from "@auaust/engrenage/vitest";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { getFixture } from "#tests/helpers/getFixture";
-import { mockCwd } from "#tests/helpers/mockCwd";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { getFixture } from "#tests/utils/getFixture";
+import { mockCwd } from "#tests/utils/mockCwd";
 
 const root = getFixture("vitest");
 

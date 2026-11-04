@@ -1,0 +1,184 @@
+import type { JSONPath } from "jsonc-parser";
+
+import { freeze, getOwn } from "@auaust/toolkit/object";
+
+import { engrenage, packageJsonFile } from "#constants";
+import { readJsonValue } from "#json/utils/readJsonValue";
+import { writePackageJsonValue } from "#package/operations/writePackageJsonValue";
+import type { Agent } from "#agents/types/Agent";
+import type { Invocation } from "#cli/types/Invocation";
+import type { Prompter } from "#cli/types/Prompter";
+import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { JsonValue } from "#json/types/JsonValue";
+import type { Presets } from "#presets/types/Presets";
+import type { File } from "#types/File";
+import type { PackageName } from "#types/PackageName";
+
+import manifest from "#package.json" with { type: "json" };
+
+const exactVersion = /^\d+\.\d+\.\d+(?:-[\w.]+)?$/;
+
+function resolveExactVersion(name: PackageName): string {
+  const version = getOwn(manifest.devDependencies, name);
+
+  if (version === undefined || !exactVersion.test(version)) {
+    throw new Error(`${engrenage} pins no exact version of ${name}`);
+  }
+
+  return version;
+}
+
+function resolveDependencyRange(name: PackageName): string {
+  if (name === engrenage) {
+    return `^${manifest.version}`;
+  }
+
+  const range = getOwn(manifest.peerDependencies, name);
+
+  if (range === undefined) {
+    throw new Error(`${engrenage} declares no supported range for ${name}`);
+  }
+
+  return range;
+}
+
+export function createStepContext({
+  config,
+  prompter,
+}: {
+  config: ResolvedConfig;
+  prompter: Prompter;
+}) {
+  const { filesystem } = config;
+
+  const invocations: Invocation[] = [];
+
+  let installs = false;
+
+  function requirePackageJson(): File {
+    const path = config.packageJsonPath;
+
+    // @debt the "No package.json found" guard is repeated in createTsdownConfig, syncChangesetConfig and createPackageJson's describeMissing; the resolved config could expose a required package.json path
+    if (path === undefined) {
+      throw new Error(`No ${packageJsonFile} found in ${config.root}`);
+    }
+
+    return path;
+  }
+
+  function readManifest(path: File): string {
+    const content = filesystem.read(path);
+
+    if (content === undefined) {
+      throw new Error(`${path} was removed during engrenage init`);
+    }
+
+    return content;
+  }
+
+  function readPackageJson(location: JSONPath): unknown {
+    const path = requirePackageJson();
+
+    return readJsonValue(readManifest(path), path, location);
+  }
+
+  function writePackageJson(
+    location: readonly [string] | readonly [string, string],
+    value: JsonValue,
+  ) {
+    const path = requirePackageJson();
+
+    filesystem.write(
+      path,
+      writePackageJsonValue(readManifest(path), path, location, value),
+    );
+  }
+
+  function hasDependency(name: PackageName): boolean {
+    return config.environment.hasDependency(name);
+  }
+
+  function addDevDependency(
+    name: PackageName,
+    { exact = false }: { exact?: boolean } = {},
+  ) {
+    if (hasDependency(name)) {
+      return;
+    }
+
+    writePackageJson(
+      ["devDependencies", name],
+      exact ? resolveExactVersion(name) : resolveDependencyRange(name),
+    );
+
+    installs = true;
+  }
+
+  function invoke(invocation: Invocation) {
+    invocations.push(invocation);
+  }
+
+  function getInvocations(): readonly Invocation[] {
+    if (!installs) {
+      return [...invocations];
+    }
+
+    return [
+      // @debt pnpm invocations are hand-written here, in createChangesetConfigStep and in bin/engrenage/init.ts; the pnpm entry could own them
+      {
+        command: "pnpm",
+        args: ["install"],
+        interactive: false,
+      },
+      ...invocations,
+    ];
+  }
+
+  let presets: Presets = config.presets;
+
+  function getPresets(): Presets {
+    return presets;
+  }
+
+  function setPresets(chosen: Presets) {
+    presets = chosen;
+  }
+
+  let agents = config.agents.preferred;
+
+  function getAgents(): readonly Agent[] | undefined {
+    return agents;
+  }
+
+  function setAgents(chosen: Agent[]) {
+    agents = chosen;
+  }
+
+  return freeze({
+    // @debt spreading the resolved config evaluates all of its lazy getters on every access, and setPresets is not reflected here while setAgents is
+    get config() {
+      return {
+        ...config,
+        agents: {
+          ...config.agents,
+          preferred: agents,
+        },
+      };
+    },
+    getAgents,
+    setAgents,
+    filesystem,
+    getPresets,
+    setPresets,
+    confirm: prompter.confirm,
+    select: prompter.select,
+    multiselect: prompter.multiselect,
+    text: prompter.text,
+    readPackageJson,
+    writePackageJson,
+    hasDependency,
+    addDevDependency,
+    invoke,
+    getInvocations,
+  });
+}

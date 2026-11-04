@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { debt } from "#bin/engrenage/debt";
-import { getFixture } from "#tests/helpers/getFixture";
-import { mockCwd } from "#tests/helpers/mockCwd";
-import { runCommand } from "#tests/helpers/runCommand";
+import { getFixture } from "#tests/utils/getFixture";
+import { mockCwd } from "#tests/utils/mockCwd";
+import { runCommand } from "#tests/utils/runCommand";
 
 beforeEach(() => {
   mockCwd(getFixture("debt"));

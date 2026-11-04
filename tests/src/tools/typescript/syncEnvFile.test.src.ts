@@ -1,10 +1,10 @@
 import { describe, expect, test } from "vitest";
 
-import { define } from "#config/config/define";
 import { configSchema } from "#config/config/schemas/configSchema";
-import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { createResolvedConfig } from "#config/operations/createResolvedConfig";
+import { define } from "#config/utils/define";
 import { validate } from "#options/utils/validate";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncEnvFile } from "#typescript/setup/syncEnvFile";
 
 function createProject(input: unknown, files: Record<string, string> = {}) {

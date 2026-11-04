@@ -1,9 +1,9 @@
 import { map } from "@auaust/primitive-kit/arrays";
 import { hasOwn } from "@auaust/toolkit/object";
 
-import { syncFiles } from "#blocks/utils/syncFiles";
+import { syncFiles } from "#blocks/operations/syncFiles";
 import { workflowsDirectory, workflowSets } from "#github/constants";
-import { renderWorkflow } from "#github/utils/renderWorkflow";
+import { renderWorkflow } from "#github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#github/utils/resolveWorkflowSet";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { WorkflowSetName } from "#github/types/WorkflowSetName";

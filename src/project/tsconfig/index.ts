@@ -1,17 +1,8 @@
 // @barrel utils/*.ts named
-export { createTsconfig } from "#tsconfig/utils/createTsconfig";
-export { declareEnvironmentTsconfig } from "#tsconfig/utils/declareEnvironmentTsconfig";
 export { isPackageAlias } from "#tsconfig/utils/isPackageAlias";
-export { readTsconfigPaths } from "#tsconfig/utils/readTsconfigPaths";
-export { readTsconfigValue } from "#tsconfig/utils/readTsconfigValue";
 export { relativeToTsconfig } from "#tsconfig/utils/relativeToTsconfig";
-export { resolvePathAliases } from "#tsconfig/utils/resolvePathAliases";
 export { resolveTsconfig } from "#tsconfig/utils/resolveTsconfig";
-export { resolveTsconfigEnvironments } from "#tsconfig/utils/resolveTsconfigEnvironments";
-export { resolveTsconfigLibrary } from "#tsconfig/utils/resolveTsconfigLibrary";
 export { resolveTsconfigOwner } from "#tsconfig/utils/resolveTsconfigOwner";
-export { resolveTsconfigPresets } from "#tsconfig/utils/resolveTsconfigPresets";
-export { resolveTsconfigRuntime } from "#tsconfig/utils/resolveTsconfigRuntime";
 export { toTsconfigGlobs } from "#tsconfig/utils/toTsconfigGlobs";
 export { toTsconfigSpecifier } from "#tsconfig/utils/toTsconfigSpecifier";
 // @end

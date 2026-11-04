@@ -3,8 +3,8 @@ import {
   codexEditHookCommand,
   codexHooksFile,
 } from "#agents/codex/constants";
-import { syncCodexInstructions } from "#agents/codex/setup/syncCodexInstructions";
-import { syncEditHook } from "#agents/utils/syncEditHook";
+import { syncCodexInstructions } from "#agents/codex/operations/syncCodexInstructions";
+import { syncEditHook } from "#agents/operations/syncEditHook";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 
 export function syncCodexFiles(

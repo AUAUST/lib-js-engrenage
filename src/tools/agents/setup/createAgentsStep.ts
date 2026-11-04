@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 
 import { agentsFile, agentsTemplate } from "#agents/constants";
+import { getInstructionTemplates } from "#agents/operations/getInstructionTemplates";
 import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
-import { getInstructionTemplates } from "#agents/utils/getInstructionTemplates";
 import { resolveDataFile } from "#data/operations/resolveDataFile";
 // @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
 import type { Step } from "#cli/types/Step";

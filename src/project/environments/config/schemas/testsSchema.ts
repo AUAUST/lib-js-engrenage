@@ -1,5 +1,6 @@
 import { picklist } from "valibot";
 
+import { declareList } from "#config/config/declareList";
 import { directorySchema } from "#config/config/schemas/values/directorySchema";
 import { globSchema } from "#config/config/schemas/values/globsSchema";
 import {
@@ -12,16 +13,15 @@ import {
   disabledCodeEnvironment,
   unmanagedTsconfig,
 } from "#config/constants";
-import { declareList } from "#config/utils/declareList";
-import { createCodeEnvironment } from "#environments/utils/createCodeEnvironment";
+import { declareCodeEnvironment } from "#environments/config/declareCodeEnvironment";
 import { declare } from "#options/utils/declare";
 import { declareObject } from "#options/utils/declareObject";
 import { rolesOptionSchema } from "#structure/config/schemas/rolesOptionSchema";
-import { declareEnvironmentTsconfig } from "#tsconfig/utils/declareEnvironmentTsconfig";
+import { declareEnvironmentTsconfig } from "#tsconfig/config/declareEnvironmentTsconfig";
 
 export const testsSchema = declareObject(
   {
-    ...createCodeEnvironment("tests", defaultTestsDirectories),
+    ...declareCodeEnvironment("tests", defaultTestsDirectories),
     roles: rolesOptionSchema,
     layout: declare(picklist(["roots", "mirror"]), {
       description: [

@@ -1,4 +1,4 @@
-import { definePadding } from "#eslint/conventions/definePadding";
+import { definePadding } from "#eslint/utils/definePadding";
 
 export default definePadding({
   message: "Add a blank line before a `return` that follows other statements.",

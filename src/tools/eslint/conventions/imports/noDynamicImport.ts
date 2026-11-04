@@ -1,4 +1,4 @@
-import { defineRestriction } from "#eslint/conventions/defineRestriction";
+import { defineRestriction } from "#eslint/utils/defineRestriction";
 
 export default defineRestriction({
   selector: "ImportExpression",

@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import { syncChangesetConfig } from "@auaust/engrenage/changesets";
 import { loadConfig } from "@auaust/engrenage/config";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 const installedPackages = {
   "node_modules/@changesets/cli/package.json":

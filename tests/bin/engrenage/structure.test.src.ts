@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { structure } from "#bin/engrenage/structure";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { mockCwd } from "#tests/helpers/mockCwd";
-import { runCommand } from "#tests/helpers/runCommand";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { mockCwd } from "#tests/utils/mockCwd";
+import { runCommand } from "#tests/utils/runCommand";
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',

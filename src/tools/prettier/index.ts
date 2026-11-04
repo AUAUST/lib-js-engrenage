@@ -1,5 +1,5 @@
-export { createPrettierConfig } from "#prettier/config/createPrettierConfig";
 export { defaultOptions as default } from "#prettier/constants";
+export { createPrettierConfig } from "#prettier/operations/createPrettierConfig";
 export { syncPrettierignoreFile } from "#prettier/setup/syncPrettierignoreFile";
 // @barrel types/*.ts all
 export * from "#prettier/types/Config";

@@ -4,7 +4,7 @@ import { describe, expect, test } from "vitest";
 import { loadConfig } from "@auaust/engrenage/config";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 const publicRule = "auaust/no-internal-imports-in-public-tests";
 

@@ -1,5 +1,5 @@
-export { createViteConfig } from "#vite/config/createViteConfig";
-export { defineViteConfig } from "#vite/config/defineViteConfig";
+export { createViteConfig } from "#vite/operations/createViteConfig";
+export { defineViteConfig } from "#vite/operations/defineViteConfig";
 
 // @barrel types/*.ts all
 export * from "#vite/types/Config";

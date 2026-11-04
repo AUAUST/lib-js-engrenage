@@ -4,7 +4,7 @@ import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage/config";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 function createProject(config: string, files: Record<string, string> = {}) {
   return createTemporaryProject({
@@ -117,7 +117,7 @@ describe("environments", () => {
     expect(config.files.published).toEqual(["src/**/*.{ts,tsx}"]);
   });
 
-  test("prefix the generated and discovered globs of every environment by its dirs", async () => {
+  test("prefix the generated and discovered globs of every environment by its dirs, discovered roles included", async () => {
     const project = createProject(
       `{
         src: { dirs: ["lib", "src"], generated: "types/**" },
@@ -134,7 +134,10 @@ describe("environments", () => {
       "tests/snapshots/**",
     ]);
 
-    expect(config.files.discovered).toEqual(["scripts/**/*.ts"]);
+    expect(config.files.discovered).toEqual([
+      "tests/**/setup.ts",
+      "scripts/**/*.ts",
+    ]);
   });
 
   test("deactivate an environment whose dirs are missing", async () => {

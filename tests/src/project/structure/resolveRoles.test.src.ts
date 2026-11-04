@@ -4,7 +4,7 @@ import { keys } from "@auaust/toolkit/object";
 
 import { rolesOptionSchema } from "#structure/config/schemas/rolesOptionSchema";
 import { rolesSchema } from "#structure/config/schemas/rolesSchema";
-import { resolveRoles } from "#structure/utils/resolveRoles";
+import { resolveRoles } from "#structure/operations/resolveRoles";
 import type { RoleEnvironment } from "#structure/types/RoleEnvironment";
 
 function resolve({

@@ -1,6 +1,6 @@
 import { dirname } from "node:path";
 
-import { defineConvention } from "#eslint/conventions/defineConvention";
+import { defineConvention } from "#eslint/utils/defineConvention";
 import { visitImportSources } from "#eslint/utils/visitImportSources";
 import { isWithin } from "#filesystem/utils/isWithin";
 import { resolve } from "#filesystem/utils/resolve";

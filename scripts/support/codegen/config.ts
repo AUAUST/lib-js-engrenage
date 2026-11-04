@@ -1,6 +1,6 @@
 /* eslint-disable auaust/no-dynamic-import */
 
-import { defineCommand } from "#cli/utils/defineCommand";
+import { defineCommand } from "#cli/operations/defineCommand";
 
 export const config = defineCommand((command) => {
   return command
@@ -9,15 +9,16 @@ export const config = defineCommand((command) => {
     )
     .option("--check", "report an outdated file without writing it", false)
     .action(async ({ check }) => {
-      const { loadConfig } = await import("#config/utils/loadConfig");
+      const { loadConfig } = await import("#config/operations/loadConfig");
 
-      const { syncConfigTypes } = await import("#config/utils/syncConfigTypes");
+      const { generateConfigTypes } =
+        await import("#config/operations/generateConfigTypes");
 
-      const { settleChanges } = await import("#cli/utils/settleChanges");
+      const { settleChanges } = await import("#cli/operations/settleChanges");
 
       const resolved = await loadConfig();
 
-      await syncConfigTypes(resolved);
+      await generateConfigTypes(resolved);
 
       await settleChanges(resolved, {
         check,

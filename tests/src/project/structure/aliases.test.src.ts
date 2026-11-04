@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "#config/utils/loadConfig";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { loadConfig } from "#config/operations/loadConfig";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncAliases } from "#typescript/setup/syncAliases";
 
 async function sync(config: string, files: Record<string, string> = {}) {

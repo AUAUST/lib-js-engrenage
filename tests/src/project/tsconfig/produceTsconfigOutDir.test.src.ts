@@ -3,10 +3,10 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
 import { configSchema } from "#config/config/schemas/configSchema";
-import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { createResolvedConfig } from "#config/operations/createResolvedConfig";
 import { validate } from "#options/utils/validate";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tsconfig/setup/syncTsconfigFiles";
 
 const libraryPreset = fileURLToPath(

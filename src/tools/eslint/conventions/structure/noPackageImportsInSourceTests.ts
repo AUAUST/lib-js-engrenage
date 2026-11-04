@@ -1,4 +1,4 @@
-import { defineConvention } from "#eslint/conventions/defineConvention";
+import { defineConvention } from "#eslint/utils/defineConvention";
 import { visitImportSources } from "#eslint/utils/visitImportSources";
 
 const message =

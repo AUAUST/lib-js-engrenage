@@ -3,10 +3,10 @@ import { existsSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { sync } from "#bin/engrenage/sync";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { linkSourcePackage } from "#tests/helpers/linkSourcePackage";
-import { mockCwd } from "#tests/helpers/mockCwd";
-import { runCommand } from "#tests/helpers/runCommand";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
+import { mockCwd } from "#tests/utils/mockCwd";
+import { runCommand } from "#tests/utils/runCommand";
 
 const emptyBlock = [
   "<!-- @reference ./.claude/shared.md -->",

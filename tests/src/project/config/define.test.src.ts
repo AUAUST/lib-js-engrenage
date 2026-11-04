@@ -1,12 +1,12 @@
 import { describe, expect, test } from "vitest";
 
-import { define } from "#config/config/define";
 import { configSchema } from "#config/config/schemas/configSchema";
+import { createResolvedConfig } from "#config/operations/createResolvedConfig";
 import { createDefine } from "#config/utils/createDefine";
-import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { define } from "#config/utils/define";
 import { validate } from "#options/utils/validate";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { createViteConfig } from "#vite/config/createViteConfig";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createViteConfig } from "#vite/operations/createViteConfig";
 
 function resolveConfig(input: unknown) {
   const project = createTemporaryProject({

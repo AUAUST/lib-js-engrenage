@@ -1,4 +1,4 @@
-import { definePadding } from "#eslint/conventions/definePadding";
+import { definePadding } from "#eslint/utils/definePadding";
 
 export default definePadding({
   message: "Separate the exports from the preceding code with a blank line.",

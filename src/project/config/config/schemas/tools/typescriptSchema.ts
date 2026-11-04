@@ -2,12 +2,12 @@ import { basename } from "node:path";
 
 import { record, string, unknown } from "valibot";
 
+import { declareList } from "#config/config/declareList";
+import { declareLocation } from "#config/config/declareLocation";
+import { declareManagedList } from "#config/config/declareManagedList";
 import { fileSchema } from "#config/config/schemas/values/fileSchema";
 import { globSchema } from "#config/config/schemas/values/globsSchema";
 import { defaultEnvFile, defaultTypescriptFiles } from "#config/constants";
-import { declareList } from "#config/utils/declareList";
-import { declareLocation } from "#config/utils/declareLocation";
-import { declareManagedList } from "#config/utils/declareManagedList";
 import { tsconfigFile } from "#constants";
 import { declare } from "#options/utils/declare";
 import { declareObject } from "#options/utils/declareObject";

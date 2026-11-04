@@ -7,7 +7,7 @@ import {
   map,
 } from "@auaust/primitive-kit/arrays";
 
-import { loadInfoRules } from "#eslint/utils/loadInfoRules";
+import { loadInfoRules } from "#eslint/operations/loadInfoRules";
 import { emptyObjectFile } from "#json/constants";
 import { applyJsonEdits } from "#json/utils/applyJsonEdits";
 import { flattenJsonObject } from "#json/utils/flattenJsonObject";

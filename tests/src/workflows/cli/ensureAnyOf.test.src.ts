@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { ensureAnyOf } from "#cli/utils/ensureAnyOf";
+import { ensureAnyOf } from "#cli/operations/ensureAnyOf";
 
 describe("ensureAnyOf", () => {
   test("inserts the fallback before the positional arguments", () => {

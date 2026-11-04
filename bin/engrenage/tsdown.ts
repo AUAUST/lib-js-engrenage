@@ -1,5 +1,5 @@
-import { defineToolCommands } from "#cli/utils/defineToolCommands";
-import { ensureIncludes } from "#cli/utils/ensureIncludes";
+import { defineToolCommands } from "#cli/operations/defineToolCommands";
+import { ensureIncludes } from "#cli/operations/ensureIncludes";
 import { packages } from "#constants";
 
 export const tsdown = defineToolCommands({

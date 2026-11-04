@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { readJsonFile } from "#filesystem/utils/readJsonFile";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { readJsonFile } from "#filesystem/operations/readJsonFile";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 describe("readJsonFile", () => {
   test("fails on a missing file", () => {

@@ -4,11 +4,11 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test, vi } from "vitest";
 
 import { tsc } from "#bin/engrenage/tsc";
-import { binaryTimeout } from "#tests/helpers/binaryTimeout";
-import { captureBinaryOutput } from "#tests/helpers/captureBinaryOutput";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { mockCwd } from "#tests/helpers/mockCwd";
-import { runCommand } from "#tests/helpers/runCommand";
+import { binaryTimeout } from "#tests/utils/binaryTimeout";
+import { captureBinaryOutput } from "#tests/utils/captureBinaryOutput";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { mockCwd } from "#tests/utils/mockCwd";
+import { runCommand } from "#tests/utils/runCommand";
 
 vi.mock(import("node:child_process"), { spy: true });
 

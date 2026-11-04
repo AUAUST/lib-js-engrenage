@@ -9,11 +9,11 @@ import { describe, expect, test } from "vitest";
 import { keys } from "@auaust/toolkit/object";
 
 import { apiGroupRoots } from "#baseline/constants";
-import { selectEsLibraries } from "#baseline/utils/selectEsLibraries";
-import { createFilesystem } from "#filesystem/utils/createFilesystem";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { getFixture } from "#tests/helpers/getFixture";
-import { createTsconfig } from "#tsconfig/utils/createTsconfig";
+import { selectEsLibraries } from "#baseline/operations/selectEsLibraries";
+import { createFilesystem } from "#filesystem/operations/createFilesystem";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { getFixture } from "#tests/utils/getFixture";
+import { createTsconfig } from "#tsconfig/operations/createTsconfig";
 
 const tsc = createRequire(import.meta.url).resolve("typescript/lib/tsc.js");
 

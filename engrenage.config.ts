@@ -12,6 +12,12 @@ export default defineConfig({
       setup: { exports: "named-match" },
       plugins: { exports: "named-match" },
       operations: { exports: "named-match" },
+      conventions: {
+        categories: true,
+        exports: "default",
+        discovered: true,
+        index: true,
+      },
     },
   },
   agents: {
@@ -20,9 +26,6 @@ export default defineConfig({
   },
   tests: {
     layout: "mirror",
-    domains: {
-      helpers: {},
-    },
     dist: {
       tsconfig: {
         compilerOptions: {
@@ -87,7 +90,6 @@ export default defineConfig({
       "./vscode/constants": "src/tools/vscode/constants.ts",
     },
     generated: ["tools/eslint/types/Rules.ts", "tools/eslint/types/rules/**"],
-    discovered: ["tools/eslint/conventions/*/*.ts"],
   },
   data: {
     exports: {

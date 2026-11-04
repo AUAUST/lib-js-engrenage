@@ -3,7 +3,7 @@ import { relative } from "node:path";
 import { map } from "@auaust/primitive-kit/arrays";
 
 import { organization } from "#constants";
-import { defineConvention } from "#eslint/conventions/defineConvention";
+import { defineConvention } from "#eslint/utils/defineConvention";
 import { delegateRule } from "#eslint/utils/delegateRule";
 
 const projectSelectors = [

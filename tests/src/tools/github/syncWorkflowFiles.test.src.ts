@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "#config/utils/loadConfig";
-import { readConfig } from "#config/utils/readConfig";
+import { loadConfig } from "#config/operations/loadConfig";
+import { readConfig } from "#config/operations/readConfig";
 import { syncWorkflowFiles } from "#github/setup/syncWorkflowFiles";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 const libraryScripts = {
   "ci:check": "engrenage sync --check",

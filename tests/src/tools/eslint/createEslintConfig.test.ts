@@ -22,8 +22,8 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
 import type { Maybe } from "@auaust/toolkit/types";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { getFixture } from "#tests/helpers/getFixture";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { getFixture } from "#tests/utils/getFixture";
 
 const root = getFixture("eslint");
 

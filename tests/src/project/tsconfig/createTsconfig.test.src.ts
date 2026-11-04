@@ -2,10 +2,10 @@ import { join } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
-import { createFilesystem } from "#filesystem/utils/createFilesystem";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { getFixture } from "#tests/helpers/getFixture";
-import { createTsconfig } from "#tsconfig/utils/createTsconfig";
+import { createFilesystem } from "#filesystem/operations/createFilesystem";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { getFixture } from "#tests/utils/getFixture";
+import { createTsconfig } from "#tsconfig/operations/createTsconfig";
 
 describe("createTsconfig", () => {
   test("reads root-relative values once the tsconfig is used", () => {

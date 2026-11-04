@@ -4,7 +4,7 @@ import { entries } from "@auaust/toolkit/object";
 import { tsconfigEnvironments } from "#config/constants";
 import { emptyObjectFile } from "#json/constants";
 import { applyJsonEdits } from "#json/utils/applyJsonEdits";
-import { tsconfigProducers } from "#tsconfig/setup/tsconfigProducers";
+import { tsconfigProducers } from "#tsconfig/operations/tsconfigProducers";
 import type { ManagedListOption } from "#config/types/ManagedListOption";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { JsonEdit } from "#json/types/JsonEdit";

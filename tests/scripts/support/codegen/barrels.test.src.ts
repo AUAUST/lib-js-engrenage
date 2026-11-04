@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { barrels } from "#scripts/support/codegen/barrels";
 import { codegen } from "#scripts/support/codegen/index";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { mockCwd } from "#tests/helpers/mockCwd";
-import { runCommand } from "#tests/helpers/runCommand";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { mockCwd } from "#tests/utils/mockCwd";
+import { runCommand } from "#tests/utils/runCommand";
 
-vi.mock("#eslint/utils/syncRuleTypes", () => {
+vi.mock("#eslint/operations/generateRuleTypes", () => {
   throw new Error("Barrel generation must not load rule generation");
 });
 

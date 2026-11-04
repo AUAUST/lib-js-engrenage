@@ -1,6 +1,6 @@
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { findCurrentMonth } from "#baseline/utils/findCurrentMonth";
+import { findCurrentMonth } from "#baseline/operations/findCurrentMonth";
 import { createConfigModule } from "#cli/utils/createConfigModule";
 import { engrenage, engrenageConfigFile } from "#constants";
 import { presets } from "#presets/constants";

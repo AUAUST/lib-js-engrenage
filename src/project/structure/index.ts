@@ -1,9 +1,9 @@
+export { resolveAliases } from "#structure/operations/resolveAliases";
+export { resolveEnvironmentStructure } from "#structure/operations/resolveEnvironmentStructure";
+export { resolveImportRules } from "#structure/operations/resolveImportRules";
+export { resolveRoles } from "#structure/operations/resolveRoles";
 export { hasStructureViolations } from "#structure/utils/hasStructureViolations";
 export { renderStructure } from "#structure/utils/renderStructure";
-export { resolveAliases } from "#structure/utils/resolveAliases";
-export { resolveEnvironmentStructure } from "#structure/utils/resolveEnvironmentStructure";
-export { resolveImportRules } from "#structure/utils/resolveImportRules";
-export { resolveRoles } from "#structure/utils/resolveRoles";
 
 // @barrel types/*.ts all
 export * from "#structure/types/Alias";
@@ -21,7 +21,7 @@ export * from "#structure/types/RoleContract";
 export * from "#structure/types/RoleEnvironment";
 export * from "#structure/types/RoleKey";
 export * from "#structure/types/RolesOption";
-export * from "#structure/types/StructureEnvironment";
+export * from "#structure/types/StructureEnvironmentName";
 export * from "#structure/types/StructureKind";
 export * from "#structure/types/StructureMirror";
 export * from "#structure/types/StructureNode";

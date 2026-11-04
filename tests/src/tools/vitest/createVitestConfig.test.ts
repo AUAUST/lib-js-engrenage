@@ -10,8 +10,8 @@ import { loadConfig } from "@auaust/engrenage/config";
 import { createViteConfig } from "@auaust/engrenage/vite";
 import { createVitestConfig } from "@auaust/engrenage/vitest";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { getFixture } from "#tests/helpers/getFixture";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { getFixture } from "#tests/utils/getFixture";
 
 const root = getFixture("vitest");
 

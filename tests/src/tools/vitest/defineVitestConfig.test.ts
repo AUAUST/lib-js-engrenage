@@ -6,8 +6,8 @@ import { defineVitestConfig } from "@auaust/engrenage/vitest";
 import type { ResolvedConfig } from "@auaust/engrenage/config";
 import type { ConfigEnv } from "@auaust/engrenage/vite";
 
-import { getFixture } from "#tests/helpers/getFixture";
-import { mockCwd } from "#tests/helpers/mockCwd";
+import { getFixture } from "#tests/utils/getFixture";
+import { mockCwd } from "#tests/utils/mockCwd";
 
 const root = getFixture("vitest");
 

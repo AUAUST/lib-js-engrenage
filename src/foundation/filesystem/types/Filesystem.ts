@@ -1,3 +1,3 @@
-import type { createFilesystem } from "#filesystem/utils/createFilesystem";
+import type { createFilesystem } from "#filesystem/operations/createFilesystem";
 
 export interface Filesystem extends ReturnType<typeof createFilesystem> {}

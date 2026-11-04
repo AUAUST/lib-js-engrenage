@@ -2,15 +2,15 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { pnpm } from "#bin/engrenage/pnpm/index";
 import { readSharedPnpmRange } from "#package/utils/readSharedPnpmRange";
-import { installDependencies } from "#pnpm/utils/installDependencies";
-import { resolveLatestPnpm } from "#pnpm/utils/resolveLatestPnpm";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { mockCwd } from "#tests/helpers/mockCwd";
-import { readTestPnpmVersions } from "#tests/helpers/readTestPnpmVersions";
-import { runCommand } from "#tests/helpers/runCommand";
+import { installDependencies } from "#pnpm/operations/installDependencies";
+import { resolveLatestPnpm } from "#pnpm/operations/resolveLatestPnpm";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { mockCwd } from "#tests/utils/mockCwd";
+import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
+import { runCommand } from "#tests/utils/runCommand";
 
-vi.mock("#pnpm/utils/resolveLatestPnpm");
-vi.mock("#pnpm/utils/installDependencies");
+vi.mock("#pnpm/operations/resolveLatestPnpm");
+vi.mock("#pnpm/operations/installDependencies");
 
 const versions = readTestPnpmVersions();
 

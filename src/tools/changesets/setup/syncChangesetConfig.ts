@@ -2,10 +2,10 @@ import { createRequire } from "node:module";
 
 import { object, string } from "valibot";
 
-import { syncFiles } from "#blocks/utils/syncFiles";
+import { syncFiles } from "#blocks/operations/syncFiles";
 import { configFile } from "#changesets/constants";
 import { changesetsCli, changesetsConfig, packageJsonFile } from "#constants";
-import { readJsonFile } from "#filesystem/utils/readJsonFile";
+import { readJsonFile } from "#filesystem/operations/readJsonFile";
 import { applyJsonEdits } from "#json/utils/applyJsonEdits";
 import { flattenJsonObject } from "#json/utils/flattenJsonObject";
 import { validate } from "#options/utils/validate";

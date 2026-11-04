@@ -1,8 +1,8 @@
 import { flattenDiagnosticMessageText } from "typescript";
 import { describe, expect, test } from "vitest";
 
-import { getFixture } from "#tests/helpers/getFixture";
-import { createLibraryCompiler } from "#typescript/utils/createLibraryCompiler";
+import { getFixture } from "#tests/utils/getFixture";
+import { createLibraryCompiler } from "#typescript/operations/createLibraryCompiler";
 
 const { compile } = createLibraryCompiler(
   getFixture("typescript/compiler/libs"),

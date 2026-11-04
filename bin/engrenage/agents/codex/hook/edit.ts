@@ -4,9 +4,9 @@ import { resolve } from "node:path";
 import { literal, object, string } from "valibot";
 
 import { getPatchedFiles } from "#agents/codex/utils/getPatchedFiles";
-import { formatEditedFile } from "#agents/utils/formatEditedFile";
-import { defineCommand } from "#cli/utils/defineCommand";
-import { loadConfig } from "#config/utils/loadConfig";
+import { formatEditedFile } from "#agents/operations/formatEditedFile";
+import { defineCommand } from "#cli/operations/defineCommand";
+import { loadConfig } from "#config/operations/loadConfig";
 import { validate } from "#options/utils/validate";
 
 const payloadSchema = object({

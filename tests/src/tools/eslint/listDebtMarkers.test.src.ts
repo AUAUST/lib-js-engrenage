@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "#config/utils/loadConfig";
-import { listDebtMarkers } from "#eslint/utils/listDebtMarkers";
-import { getFixture } from "#tests/helpers/getFixture";
-import { mockCwd } from "#tests/helpers/mockCwd";
+import { loadConfig } from "#config/operations/loadConfig";
+import { listDebtMarkers } from "#eslint/operations/listDebtMarkers";
+import { getFixture } from "#tests/utils/getFixture";
+import { mockCwd } from "#tests/utils/mockCwd";
 
 describe("listDebtMarkers", () => {
   test("lists well-formed markers of linted files only", async () => {

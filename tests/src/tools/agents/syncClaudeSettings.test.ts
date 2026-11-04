@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import { syncClaudeSettings } from "@auaust/engrenage/agents/claude";
 import { loadConfig } from "@auaust/engrenage/config";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 const settings = `{
   // Kept by the project.

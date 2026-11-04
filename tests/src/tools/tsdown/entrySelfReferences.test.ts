@@ -6,7 +6,7 @@ import { describe, expect, test } from "vitest";
 import { loadConfig } from "@auaust/engrenage/config";
 import { createTsdownConfig, type Options } from "@auaust/engrenage/tsdown";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 async function buildProject(options?: Options) {
   const project = createTemporaryProject({

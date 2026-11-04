@@ -11,19 +11,19 @@ import { keys } from "@auaust/toolkit/object";
 import { scratchpadPlaceholders } from "#agents/constants";
 import { init } from "#bin/engrenage/init";
 import { sync } from "#bin/engrenage/sync";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { linkSourcePackage } from "#tests/helpers/linkSourcePackage";
-import { mockCwd } from "#tests/helpers/mockCwd";
-import { readTestPnpmVersions } from "#tests/helpers/readTestPnpmVersions";
-import { runCommand } from "#tests/helpers/runCommand";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
+import { mockCwd } from "#tests/utils/mockCwd";
+import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
+import { runCommand } from "#tests/utils/runCommand";
 
-import * as prompts from "#cli/utils/createPrompter";
+import * as prompts from "#cli/operations/createPrompter";
 
 import manifest from "#package.json" with { type: "json" };
 
 vi.mock(import("node:child_process"));
 
-vi.mock(import("#pnpm/utils/resolveLatestPnpm"), () => {
+vi.mock(import("#pnpm/operations/resolveLatestPnpm"), () => {
   return { resolveLatestPnpm: () => readTestPnpmVersions().latest };
 });
 

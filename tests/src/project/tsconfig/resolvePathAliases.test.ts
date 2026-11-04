@@ -6,7 +6,7 @@ import {
   type Paths,
 } from "@auaust/engrenage/typescript";
 
-import { getFixture } from "#tests/helpers/getFixture";
+import { getFixture } from "#tests/utils/getFixture";
 
 const root = getFixture("typescript/aliases");
 

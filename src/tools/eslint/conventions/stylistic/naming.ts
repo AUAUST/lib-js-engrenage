@@ -11,7 +11,7 @@ import {
 } from "@auaust/primitive-kit/strings";
 import { isString } from "@auaust/toolkit/isString";
 
-import { defineConvention } from "#eslint/conventions/defineConvention";
+import { defineConvention } from "#eslint/utils/defineConvention";
 import { delegateRule } from "#eslint/utils/delegateRule";
 import type { ReportDescriptor } from "#eslint/types/ReportDescriptor";
 

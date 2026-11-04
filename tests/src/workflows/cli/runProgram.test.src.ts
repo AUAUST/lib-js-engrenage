@@ -2,12 +2,12 @@ import { Command } from "@commander-js/extra-typings";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { sync } from "#bin/engrenage/sync";
-import { addDebugOption } from "#cli/utils/addDebugOption";
-import { defineCommand } from "#cli/utils/defineCommand";
-import { registerSubcommands } from "#cli/utils/registerSubcommands";
-import { runProgram } from "#cli/utils/runProgram";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { mockCwd } from "#tests/helpers/mockCwd";
+import { addDebugOption } from "#cli/operations/addDebugOption";
+import { defineCommand } from "#cli/operations/defineCommand";
+import { registerSubcommands } from "#cli/operations/registerSubcommands";
+import { runProgram } from "#cli/operations/runProgram";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { mockCwd } from "#tests/utils/mockCwd";
 
 const failing = defineCommand((command) => {
   return command.action(() => {

@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage/config";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',

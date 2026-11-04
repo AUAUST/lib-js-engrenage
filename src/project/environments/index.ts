@@ -1,6 +1,5 @@
 // @barrel utils/*.ts named
-export { createCodeEnvironment } from "#environments/utils/createCodeEnvironment";
-export { resolveCodeEnvironment } from "#environments/utils/resolveCodeEnvironment";
+
 // @end
 
 // @barrel types/*.ts all

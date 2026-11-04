@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { createPackageJson } from "#package/utils/createPackageJson";
+import { createPackageJson } from "#package/operations/createPackageJson";
 
 function createManifest(manifest: object) {
   return createPackageJson({

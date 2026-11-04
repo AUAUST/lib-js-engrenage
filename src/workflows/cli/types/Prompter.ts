@@ -1,3 +1,3 @@
-import type { createPrompter } from "#cli/utils/createPrompter";
+import type { createPrompter } from "#cli/operations/createPrompter";
 
 export interface Prompter extends ReturnType<typeof createPrompter> {}

@@ -1,4 +1,4 @@
-import { defineToolCommands } from "#cli/utils/defineToolCommands";
+import { defineToolCommands } from "#cli/operations/defineToolCommands";
 import { packages } from "#constants";
 
 export const vite = defineToolCommands({

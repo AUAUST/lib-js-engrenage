@@ -4,8 +4,8 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage/config";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { getFixture } from "#tests/helpers/getFixture";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { getFixture } from "#tests/utils/getFixture";
 
 afterEach(() => {
   vi.restoreAllMocks();

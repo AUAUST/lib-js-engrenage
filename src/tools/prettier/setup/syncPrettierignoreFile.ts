@@ -1,7 +1,7 @@
 import { includes, map } from "@auaust/primitive-kit/arrays";
 
 import { codexFile } from "#agents/codex/constants";
-import { syncIgnoreFile } from "#blocks/utils/syncIgnoreFile";
+import { syncIgnoreFile } from "#blocks/operations/syncIgnoreFile";
 import { changesetsCli } from "#constants";
 import { createProjectIgnores } from "#git/utils/createProjectIgnores";
 import {

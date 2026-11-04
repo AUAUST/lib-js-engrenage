@@ -1,7 +1,7 @@
 import { includes } from "@auaust/primitive-kit/arrays";
 
 // @debt reaches into workflows/cli, a higher layer than project; the layered registry (#143) removes the upward dependency
-import { hasConfigFile } from "#cli/utils/hasConfigFile";
+import { hasConfigFile } from "#cli/operations/hasConfigFile";
 import { tsdown, vite } from "#constants";
 // @debt reaches into workflows/cli, a higher layer than project; the layered registry (#143) removes the upward dependency
 import type { Step } from "#cli/types/Step";

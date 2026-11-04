@@ -4,7 +4,7 @@ import { syncAgentFiles } from "@auaust/engrenage/agents";
 import { syncCodexFiles } from "@auaust/engrenage/agents/codex";
 import { loadConfig } from "@auaust/engrenage/config";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 const override =
   "# Codex only\n\n<!-- @rules -->\n<!-- @end -->\n\nKeep this project note.\n";

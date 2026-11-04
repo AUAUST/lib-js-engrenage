@@ -1,5 +1,5 @@
-export { createTsdownConfig } from "#tsdown/config/createTsdownConfig";
-export { defineTsdownConfig } from "#tsdown/config/defineTsdownConfig";
+export { createTsdownConfig } from "#tsdown/operations/createTsdownConfig";
+export { defineTsdownConfig } from "#tsdown/operations/defineTsdownConfig";
 export { createTsdownEntries } from "#tsdown/utils/createTsdownEntries";
 
 // @barrel types/*.ts all

@@ -5,7 +5,7 @@ import { syncGitignoreFile } from "@auaust/engrenage/git";
 import { defaultIgnores } from "@auaust/engrenage/git/constants";
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 describe("syncGitignoreFile", () => {
   test("writes each preset as a titled group and keeps the lines around the blocks", async () => {

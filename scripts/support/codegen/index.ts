@@ -1,5 +1,5 @@
-import { defineCommand } from "#cli/utils/defineCommand";
-import { registerSubcommands } from "#cli/utils/registerSubcommands";
+import { defineCommand } from "#cli/operations/defineCommand";
+import { registerSubcommands } from "#cli/operations/registerSubcommands";
 import { apis } from "#scripts/support/codegen/apis";
 import { barrels } from "#scripts/support/codegen/barrels";
 import { config } from "#scripts/support/codegen/config";

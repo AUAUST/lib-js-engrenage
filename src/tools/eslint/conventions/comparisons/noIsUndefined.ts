@@ -1,5 +1,5 @@
 import { toolkit } from "#constants";
-import { defineReplacement } from "#eslint/conventions/defineReplacement";
+import { defineReplacement } from "#eslint/utils/defineReplacement";
 
 export default defineReplacement({
   selector: "CallExpression[callee.name='isUndefined']",

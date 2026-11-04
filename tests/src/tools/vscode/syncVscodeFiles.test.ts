@@ -8,8 +8,8 @@ import { loadConfig } from "@auaust/engrenage/config";
 import { syncVscodeFiles } from "@auaust/engrenage/vscode";
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { mockCwd } from "#tests/helpers/mockCwd";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { mockCwd } from "#tests/utils/mockCwd";
 
 const eslintEntry = fileURLToPath(
   new URL("../../../../src/tools/eslint/index.ts", import.meta.url),

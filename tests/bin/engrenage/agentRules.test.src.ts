@@ -6,9 +6,9 @@ import { afterEach, describe, expect, onTestFinished, test, vi } from "vitest";
 import { defineProperty, ownDescriptor } from "@auaust/toolkit/object";
 
 import { rules } from "#bin/engrenage/agents/rules";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { mockCwd } from "#tests/helpers/mockCwd";
-import { runCommand } from "#tests/helpers/runCommand";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { mockCwd } from "#tests/utils/mockCwd";
+import { runCommand } from "#tests/utils/runCommand";
 
 vi.mock(import("@clack/prompts"), async (original) => {
   return {

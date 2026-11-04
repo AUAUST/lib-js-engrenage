@@ -1,6 +1,6 @@
 import { join } from "@auaust/primitive-kit/arrays";
 
-import { definePadding } from "#eslint/conventions/definePadding";
+import { definePadding } from "#eslint/utils/definePadding";
 
 const declarations = `:matches(${join(
   [

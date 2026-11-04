@@ -1,8 +1,8 @@
-export { resolvePathAliases } from "#tsconfig/utils/resolvePathAliases";
+export { resolvePathAliases } from "#tsconfig/operations/resolvePathAliases";
+export { syncBarrels } from "#typescript/operations/syncBarrels";
 export { syncEnvFile } from "#typescript/setup/syncEnvFile";
 export { inferType } from "#typescript/utils/inferType";
 export { resolveImportSpecifier } from "#typescript/utils/resolveImportSpecifier";
-export { syncBarrels } from "#typescript/utils/syncBarrels";
 
 // @barrel types/*.ts all
 export * from "#typescript/types/BarrelMode";

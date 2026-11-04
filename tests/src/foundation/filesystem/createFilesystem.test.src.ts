@@ -2,8 +2,8 @@ import { existsSync } from "node:fs";
 
 import { describe, expect, test } from "vitest";
 
-import { createFilesystem } from "#filesystem/utils/createFilesystem";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createFilesystem } from "#filesystem/operations/createFilesystem";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 describe("createFilesystem", () => {
   test("serves reads and globs from memory and writes everything on flush", () => {

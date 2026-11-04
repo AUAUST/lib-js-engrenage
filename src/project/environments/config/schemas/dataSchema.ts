@@ -1,7 +1,7 @@
+import { declareList } from "#config/config/declareList";
 import { directorySchema } from "#config/config/schemas/values/directorySchema";
 import { exposedFilesSchema } from "#config/config/schemas/values/exposedFilesSchema";
 import { defaultDataDirectories } from "#config/constants";
-import { declareList } from "#config/utils/declareList";
 import { declare } from "#options/utils/declare";
 import { declareObject } from "#options/utils/declareObject";
 

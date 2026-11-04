@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { apis } from "#scripts/support/codegen/apis";
-import { binaryTimeout } from "#tests/helpers/binaryTimeout";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { mockCwd } from "#tests/helpers/mockCwd";
-import { runCommand } from "#tests/helpers/runCommand";
+import { binaryTimeout } from "#tests/utils/binaryTimeout";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { mockCwd } from "#tests/utils/mockCwd";
+import { runCommand } from "#tests/utils/runCommand";
 
 function createProject(files: Record<string, string> = {}) {
   const project = createTemporaryProject({

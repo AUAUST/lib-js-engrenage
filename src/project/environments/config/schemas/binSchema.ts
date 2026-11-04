@@ -6,7 +6,7 @@ import {
   defaultBinDirectories,
   disabledCodeEnvironment,
 } from "#config/constants";
-import { createCodeEnvironment } from "#environments/utils/createCodeEnvironment";
+import { declareCodeEnvironment } from "#environments/config/declareCodeEnvironment";
 import { declare } from "#options/utils/declare";
 import { declareObject } from "#options/utils/declareObject";
 import { unset } from "#options/utils/unset";
@@ -14,7 +14,7 @@ import type { ConfigContext } from "#config/types/ConfigContext";
 
 export const binSchema = declareObject(
   {
-    ...createCodeEnvironment("bin", defaultBinDirectories),
+    ...declareCodeEnvironment("bin", defaultBinDirectories),
     commands: declare(record(string(), fileSchema), {
       description: [
         "Commands the package exposes, mapped to their entry file.",

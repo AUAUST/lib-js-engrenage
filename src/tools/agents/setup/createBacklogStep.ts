@@ -9,11 +9,11 @@ import {
   scratchpadFile,
   scratchpadPlaceholders,
 } from "#agents/constants";
-import { addAgentRules } from "#agents/setup/addAgentRules";
-import { addAgentSkills } from "#agents/setup/addAgentSkills";
+import { addAgentRules } from "#agents/operations/addAgentRules";
+import { addAgentSkills } from "#agents/operations/addAgentSkills";
+import { getMissingRuleTemplates } from "#agents/operations/getMissingRuleTemplates";
+import { getSkillTemplates } from "#agents/operations/getSkillTemplates";
 import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
-import { getMissingRuleTemplates } from "#agents/utils/getMissingRuleTemplates";
-import { getSkillTemplates } from "#agents/utils/getSkillTemplates";
 import { engrenage } from "#constants";
 import { resolveDataFile } from "#data/operations/resolveDataFile";
 // @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency

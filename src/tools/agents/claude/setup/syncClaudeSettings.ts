@@ -6,7 +6,7 @@ import {
   claudeHiddenAttribution,
   claudeSettingsFile,
 } from "#agents/claude/constants";
-import { syncEditHook } from "#agents/utils/syncEditHook";
+import { syncEditHook } from "#agents/operations/syncEditHook";
 import { emptyObjectFile } from "#json/constants";
 import { readJsonValue } from "#json/utils/readJsonValue";
 import { writeJsonValue } from "#json/utils/writeJsonValue";

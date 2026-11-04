@@ -1,6 +1,6 @@
 /* eslint-disable auaust/no-dynamic-import */
 
-import { defineCommand } from "#cli/utils/defineCommand";
+import { defineCommand } from "#cli/operations/defineCommand";
 
 export const barrels = defineCommand((command) => {
   return command
@@ -13,11 +13,12 @@ export const barrels = defineCommand((command) => {
     )
     .option("--check", "report outdated barrels without writing them", false)
     .action(async (barrels, { check }) => {
-      const { loadConfig } = await import("#config/utils/loadConfig");
+      const { loadConfig } = await import("#config/operations/loadConfig");
 
-      const { syncBarrels } = await import("#typescript/utils/syncBarrels");
+      const { syncBarrels } =
+        await import("#typescript/operations/syncBarrels");
 
-      const { settleChanges } = await import("#cli/utils/settleChanges");
+      const { settleChanges } = await import("#cli/operations/settleChanges");
 
       const config = await loadConfig();
 

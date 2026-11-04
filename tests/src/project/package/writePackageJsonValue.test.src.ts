@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { writePackageJsonValue } from "#package/utils/writePackageJsonValue";
+import { writePackageJsonValue } from "#package/operations/writePackageJsonValue";
 
 const manifest = `{
   "name": "project",

@@ -1,10 +1,10 @@
 import { runSync } from "#bin/engrenage/sync";
-import { createPrompter } from "#cli/utils/createPrompter";
-import { defineCommand } from "#cli/utils/defineCommand";
-import { reportSyncResults } from "#cli/utils/reportSyncResults";
-import { runSteps } from "#cli/utils/runSteps";
-import { settleChanges } from "#cli/utils/settleChanges";
-import { readConfig } from "#config/utils/readConfig";
+import { createPrompter } from "#cli/operations/createPrompter";
+import { defineCommand } from "#cli/operations/defineCommand";
+import { reportSyncResults } from "#cli/operations/reportSyncResults";
+import { runSteps } from "#cli/operations/runSteps";
+import { settleChanges } from "#cli/operations/settleChanges";
+import { readConfig } from "#config/operations/readConfig";
 import { packageJsonFile } from "#constants";
 import { listInitSteps } from "#init/operations/listInitSteps";
 import { spawnProcess } from "#processes/operations/spawnProcess";

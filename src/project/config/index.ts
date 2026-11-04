@@ -1,6 +1,6 @@
-export { define } from "#config/config/define";
-export { defineConfig } from "#config/config/defineConfig";
-export { loadConfig } from "#config/utils/loadConfig";
+export { defineConfig } from "#config/operations/defineConfig";
+export { loadConfig } from "#config/operations/loadConfig";
+export { define } from "#config/utils/define";
 export type { PackageJson } from "#package/types/PackageJson";
 export type { ConfigInput } from "#types/ConfigInput";
 

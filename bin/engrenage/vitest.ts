@@ -1,6 +1,6 @@
-import { defineToolCommands } from "#cli/utils/defineToolCommands";
-import { ensureAnyOf } from "#cli/utils/ensureAnyOf";
-import { ensureIncludes } from "#cli/utils/ensureIncludes";
+import { defineToolCommands } from "#cli/operations/defineToolCommands";
+import { ensureAnyOf } from "#cli/operations/ensureAnyOf";
+import { ensureIncludes } from "#cli/operations/ensureIncludes";
 import { packages } from "#constants";
 import { buildMode } from "#vitest/constants";
 

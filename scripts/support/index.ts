@@ -2,9 +2,9 @@
 
 import { Command } from "@commander-js/extra-typings";
 
-import { addDebugOption } from "#cli/utils/addDebugOption";
-import { registerSubcommands } from "#cli/utils/registerSubcommands";
-import { runProgram } from "#cli/utils/runProgram";
+import { addDebugOption } from "#cli/operations/addDebugOption";
+import { registerSubcommands } from "#cli/operations/registerSubcommands";
+import { runProgram } from "#cli/operations/runProgram";
 import { engrenage } from "#constants";
 import { codegen } from "#scripts/support/codegen/index";
 import { pnpm } from "#scripts/support/pnpm";

@@ -1,4 +1,4 @@
-import { syncIgnoreFile } from "#blocks/utils/syncIgnoreFile";
+import { syncIgnoreFile } from "#blocks/operations/syncIgnoreFile";
 import {
   defaultIgnores,
   editorIgnores,

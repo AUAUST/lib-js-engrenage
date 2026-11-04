@@ -4,9 +4,9 @@ import { boolean, optional } from "valibot";
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
-import { defineCommand } from "#cli/utils/defineCommand";
-import { settleChanges } from "#cli/utils/settleChanges";
-import { loadConfig } from "#config/utils/loadConfig";
+import { defineCommand } from "#cli/operations/defineCommand";
+import { settleChanges } from "#cli/operations/settleChanges";
+import { loadConfig } from "#config/operations/loadConfig";
 import { validate } from "#options/utils/validate";
 import { syncTargets } from "#sync/operations/syncTargets";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";

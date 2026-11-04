@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage/config";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 function createProject(config: string) {
   return createTemporaryProject({

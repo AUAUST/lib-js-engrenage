@@ -1,6 +1,6 @@
 import { includes } from "@auaust/primitive-kit/arrays";
 
-import { defineConvention } from "#eslint/conventions/defineConvention";
+import { defineConvention } from "#eslint/utils/defineConvention";
 import { delegateRule } from "#eslint/utils/delegateRule";
 import type { ReportDescriptor } from "#eslint/types/ReportDescriptor";
 

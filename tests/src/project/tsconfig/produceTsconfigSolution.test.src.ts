@@ -5,14 +5,14 @@ import { describe, expect, test, vi } from "vitest";
 
 import { tsc } from "#bin/engrenage/tsc";
 import { configSchema } from "#config/config/schemas/configSchema";
-import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { createResolvedConfig } from "#config/operations/createResolvedConfig";
 import { validate } from "#options/utils/validate";
-import { binaryTimeout } from "#tests/helpers/binaryTimeout";
-import { captureBinaryOutput } from "#tests/helpers/captureBinaryOutput";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { mockCwd } from "#tests/helpers/mockCwd";
-import { runCommand } from "#tests/helpers/runCommand";
-import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
+import { binaryTimeout } from "#tests/utils/binaryTimeout";
+import { captureBinaryOutput } from "#tests/utils/captureBinaryOutput";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { mockCwd } from "#tests/utils/mockCwd";
+import { runCommand } from "#tests/utils/runCommand";
+import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tsconfig/setup/syncTsconfigFiles";
 
 vi.mock(import("node:child_process"), { spy: true });

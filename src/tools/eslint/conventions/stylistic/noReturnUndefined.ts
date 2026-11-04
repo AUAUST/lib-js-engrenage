@@ -1,6 +1,6 @@
 import type { Rule, Scope } from "eslint";
 
-import { defineConvention } from "#eslint/conventions/defineConvention";
+import { defineConvention } from "#eslint/utils/defineConvention";
 
 const message =
   "Use a bare `return;` instead of `return undefined;` in a function with a return type annotation.";

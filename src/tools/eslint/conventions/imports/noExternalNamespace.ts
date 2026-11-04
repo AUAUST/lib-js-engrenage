@@ -4,7 +4,7 @@ import type { RuleContext as ImportContext } from "eslint-plugin-import-x";
 
 import { isString } from "@auaust/toolkit/isString";
 
-import { defineConvention } from "#eslint/conventions/defineConvention";
+import { defineConvention } from "#eslint/utils/defineConvention";
 
 const projectImportTypes = new Set([
   "absolute",

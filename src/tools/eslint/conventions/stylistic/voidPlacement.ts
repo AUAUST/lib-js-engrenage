@@ -1,6 +1,6 @@
 import { join } from "@auaust/primitive-kit/arrays";
 
-import { defineRestriction } from "#eslint/conventions/defineRestriction";
+import { defineRestriction } from "#eslint/utils/defineRestriction";
 
 const returned =
   ":matches(ReturnStatement, ArrowFunctionExpression) > UnaryExpression";

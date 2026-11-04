@@ -1,5 +1,5 @@
-import { defineCommand } from "#cli/utils/defineCommand";
-import { loadConfig } from "#config/utils/loadConfig";
+import { defineCommand } from "#cli/operations/defineCommand";
+import { loadConfig } from "#config/operations/loadConfig";
 import { hasStructureViolations } from "#structure/utils/hasStructureViolations";
 import { renderStructure } from "#structure/utils/renderStructure";
 

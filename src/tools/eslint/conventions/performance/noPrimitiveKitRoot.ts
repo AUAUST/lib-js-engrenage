@@ -1,5 +1,5 @@
 import { primitiveKit } from "#constants";
-import { defineImportReplacement } from "#eslint/conventions/defineImportReplacement";
+import { defineImportReplacement } from "#eslint/utils/defineImportReplacement";
 
 export default defineImportReplacement({
   source: primitiveKit,

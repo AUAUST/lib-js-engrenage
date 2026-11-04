@@ -1,5 +1,5 @@
 import { workflowsDirectory, workflowSets } from "#github/constants";
-import { renderWorkflow } from "#github/utils/renderWorkflow";
+import { renderWorkflow } from "#github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#github/utils/resolveWorkflowSet";
 // @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
 import type { Step } from "#cli/types/Step";

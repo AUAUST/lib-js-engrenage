@@ -1,5 +1,5 @@
-export { createEslintConfig } from "#eslint/config/createEslintConfig";
-export { defineEslintConfig } from "#eslint/config/defineEslintConfig";
+export { createEslintConfig } from "#eslint/operations/createEslintConfig";
+export { defineEslintConfig } from "#eslint/operations/defineEslintConfig";
 
 // @barrel types/*.ts all
 export * from "#eslint/types/Config";

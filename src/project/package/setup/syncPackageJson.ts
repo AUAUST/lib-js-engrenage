@@ -2,14 +2,14 @@ import { deduplicate, includes } from "@auaust/primitive-kit/arrays";
 import { max } from "@auaust/toolkit/math";
 import { entries } from "@auaust/toolkit/object";
 
-import { syncFiles } from "#blocks/utils/syncFiles";
+import { syncFiles } from "#blocks/operations/syncFiles";
 import { packageJsonFile } from "#constants";
-import { createPackageJson } from "#package/utils/createPackageJson";
-import { writePackageJsonValue } from "#package/utils/writePackageJsonValue";
+import { createPackageJson } from "#package/operations/createPackageJson";
+import { writePackageJsonValue } from "#package/operations/writePackageJsonValue";
 // @debt reaches into tools/pnpm, a higher layer than project; the layered registry (#143) removes the upward dependency
-import { listPnpmWarnings } from "#pnpm/utils/listPnpmWarnings";
+import { listPnpmWarnings } from "#pnpm/operations/listPnpmWarnings";
 // @debt reaches into tools/tsdown, a higher layer than project; the layered registry (#143) removes the upward dependency
-import { resolveCommandFiles } from "#tsdown/utils/resolveCommandFiles";
+import { resolveCommandFiles } from "#tsdown/operations/resolveCommandFiles";
 import type { Runtime } from "#baseline/types/Runtime";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { JsonValue } from "#json/types/JsonValue";

@@ -3,7 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 
 import { listOptionSchema } from "#config/config/schemas/values/listOptionSchema";
 import { managedListOptionSchema } from "#config/config/schemas/values/managedListOptionSchema";
-import { resolveListOption } from "#config/utils/resolveListOption";
+import { resolveListOption } from "#config/operations/resolveListOption";
 import { validate } from "#options/utils/validate";
 
 const defaults = ["a", "b", "c"] as const;

@@ -3,8 +3,8 @@ import { promisify } from "node:util";
 
 import { expect, test } from "vitest";
 
-import { getExecutable } from "#tests/helpers/getExecutable";
-import { getFixture } from "#tests/helpers/getFixture";
+import { getExecutable } from "#tests/utils/getExecutable";
+import { getFixture } from "#tests/utils/getFixture";
 
 import manifest from "#package.json" with { type: "json" };
 

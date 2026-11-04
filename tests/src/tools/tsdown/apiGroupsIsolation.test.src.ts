@@ -5,12 +5,12 @@ import { createRequire } from "node:module";
 import { build } from "tsdown";
 import { describe, expect, test } from "vitest";
 
-import { selectEsLibraries } from "#baseline/utils/selectEsLibraries";
-import { loadConfig } from "#config/utils/loadConfig";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { linkSourcePackage } from "#tests/helpers/linkSourcePackage";
-import { mockCwd } from "#tests/helpers/mockCwd";
-import { createTsdownConfig } from "#tsdown/config/createTsdownConfig";
+import { selectEsLibraries } from "#baseline/operations/selectEsLibraries";
+import { loadConfig } from "#config/operations/loadConfig";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
+import { mockCwd } from "#tests/utils/mockCwd";
+import { createTsdownConfig } from "#tsdown/operations/createTsdownConfig";
 
 const require = createRequire(import.meta.url);
 

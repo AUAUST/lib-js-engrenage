@@ -1,6 +1,6 @@
+export { syncFiles } from "#blocks/operations/syncFiles";
+export { syncIgnoreFile } from "#blocks/operations/syncIgnoreFile";
 export { syncBlocks } from "#blocks/utils/syncBlocks";
-export { syncFiles } from "#blocks/utils/syncFiles";
-export { syncIgnoreFile } from "#blocks/utils/syncIgnoreFile";
 export { filesIn } from "#filesystem/utils/filesIn";
 
 // @barrel types/*.ts all

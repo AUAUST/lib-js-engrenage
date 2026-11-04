@@ -1,4 +1,4 @@
-import { declareLocation } from "#config/utils/declareLocation";
+import { declareLocation } from "#config/config/declareLocation";
 import { prettierignoreFile } from "#constants";
 import { declareObject } from "#options/utils/declareObject";
 

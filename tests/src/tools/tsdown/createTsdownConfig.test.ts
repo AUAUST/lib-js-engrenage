@@ -6,9 +6,9 @@ import { define, loadConfig } from "@auaust/engrenage/config";
 import { createTsdownConfig } from "@auaust/engrenage/tsdown";
 import { syncEnvFile } from "@auaust/engrenage/typescript";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { getFixture } from "#tests/helpers/getFixture";
-import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { getFixture } from "#tests/utils/getFixture";
+import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 
 const root = getFixture("tsdown");
 

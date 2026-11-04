@@ -1,13 +1,13 @@
 import { map, sort } from "@auaust/primitive-kit/arrays";
 import { entries, keys, record } from "@auaust/toolkit/object";
 
-import { syncFiles } from "#blocks/utils/syncFiles";
+import { syncFiles } from "#blocks/operations/syncFiles";
 import { packageJsonFile } from "#constants";
 import { emptyObjectFile } from "#json/constants";
 import { applyJsonEdits } from "#json/utils/applyJsonEdits";
 import { readJsonValue } from "#json/utils/readJsonValue";
-import { writePackageJsonValue } from "#package/utils/writePackageJsonValue";
-import { readTsconfigPaths } from "#tsconfig/utils/readTsconfigPaths";
+import { writePackageJsonValue } from "#package/operations/writePackageJsonValue";
+import { readTsconfigPaths } from "#tsconfig/operations/readTsconfigPaths";
 import { toTsconfigSpecifier } from "#tsconfig/utils/toTsconfigSpecifier";
 import type { ResolvedConfig } from "#config/types/ResolvedConfig";
 import type { Alias } from "#structure/types/Alias";

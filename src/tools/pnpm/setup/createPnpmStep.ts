@@ -1,8 +1,8 @@
-import { createPackageJson } from "#package/utils/createPackageJson";
+import { createPackageJson } from "#package/operations/createPackageJson";
 import { readSharedPnpmRange } from "#package/utils/readSharedPnpmRange";
-import { resolveLatestPnpm } from "#pnpm/utils/resolveLatestPnpm";
-import { resolvePnpmRangeStatus } from "#pnpm/utils/resolvePnpmRangeStatus";
-import { writePnpmDeclaration } from "#pnpm/utils/writePnpmDeclaration";
+import { resolveLatestPnpm } from "#pnpm/operations/resolveLatestPnpm";
+import { resolvePnpmRangeStatus } from "#pnpm/operations/resolvePnpmRangeStatus";
+import { writePnpmDeclaration } from "#pnpm/operations/writePnpmDeclaration";
 // @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
 import type { Step } from "#cli/types/Step";
 

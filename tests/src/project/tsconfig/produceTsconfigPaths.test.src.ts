@@ -1,13 +1,13 @@
 import { describe, expect, test } from "vitest";
 
 import { configSchema } from "#config/config/schemas/configSchema";
-import { createResolvedConfig } from "#config/utils/createResolvedConfig";
+import { createResolvedConfig } from "#config/operations/createResolvedConfig";
 import { validate } from "#options/utils/validate";
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
-import { withSourceRuntime } from "#tests/helpers/withSourceRuntime";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
+import { resolvePathAliases } from "#tsconfig/operations/resolvePathAliases";
 import { syncTsconfigFiles } from "#tsconfig/setup/syncTsconfigFiles";
-import { resolvePathAliases } from "#tsconfig/utils/resolvePathAliases";
-import { resolveSourceEntries } from "#tsdown/utils/resolveSourceEntries";
+import { resolveSourceEntries } from "#tsdown/operations/resolveSourceEntries";
 
 const exports = { ".": "src/index.ts", "./*": "src/*/index.ts" };
 

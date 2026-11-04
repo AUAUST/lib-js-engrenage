@@ -4,7 +4,7 @@ import { startVitest } from "vitest/node";
 import { loadConfig } from "@auaust/engrenage/config";
 import { createVitestConfig } from "@auaust/engrenage/vitest";
 
-import { createTemporaryProject } from "#tests/helpers/createTemporaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 function createLibrary(config = "{ presets: ['library'] }") {
   return createTemporaryProject({
