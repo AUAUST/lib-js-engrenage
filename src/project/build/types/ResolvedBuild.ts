@@ -1,7 +1,7 @@
 import type { Directory } from "#types/Directory";
 
 export interface ResolvedBuild {
-  readonly emptyOutDir: boolean;
+  readonly clean: "all" | "emitted" | false;
   readonly sourcemap: boolean;
   readonly typed: boolean;
   readonly outDir: Directory | undefined;

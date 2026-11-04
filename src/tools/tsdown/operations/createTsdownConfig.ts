@@ -1,12 +1,21 @@
+import { join } from "node:path";
+
 import type { TsdownPlugin } from "tsdown";
 
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
-import { arethetypeswrongCore, packageJsonFile, publint } from "#constants";
+import {
+  arethetypeswrongCore,
+  packageJsonFile,
+  publint,
+  tsdown,
+} from "#constants";
 import { readJsonFile } from "#foundation/filesystem/operations/readJsonFile";
+import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
 import { validate } from "#foundation/options/utils/validate";
+import { emittedManifestFile } from "#project/build/constants";
 import { createDefine } from "#project/config/utils/createDefine";
 import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
 import {
@@ -19,6 +28,7 @@ import {
 } from "#tools/tsdown/constants";
 import { resolveCommandEntries } from "#tools/tsdown/operations/resolveCommandEntries";
 import { resolveSourceEntries } from "#tools/tsdown/operations/resolveSourceEntries";
+import { createEmittedManifestPlugins } from "#tools/tsdown/plugins/createEmittedManifestPlugins";
 import { createEmptyNamespacesPlugins } from "#tools/tsdown/plugins/createEmptyNamespacesPlugins";
 import { createEntrySelfReferencesPlugins } from "#tools/tsdown/plugins/createEntrySelfReferencesPlugins";
 import { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
@@ -44,6 +54,7 @@ import type { PackageName } from "#types/PackageName";
 
 interface Sections {
   root: Directory;
+  cacheFor(packageName: PackageName): Directory;
   filesystem: Filesystem;
   environment: Environment;
   packageJson: PackageJson;
@@ -121,7 +132,7 @@ export function createTsdownConfig(
     );
   }
 
-  const { typed, sourcemap, emptyOutDir, outDir } = get("build");
+  const { typed, sourcemap, clean, outDir } = get("build");
 
   if (outDir === undefined) {
     throw new Error(
@@ -158,7 +169,7 @@ export function createTsdownConfig(
           target: resolveTsdownTarget(source.runtime),
         }),
     outDir,
-    clean: emptyOutDir,
+    clean: clean === "all",
     // @debt repeated === undefined checks instead of having a proper "prop if define" utility
     ...(tsconfigPath === undefined
       ? {}
@@ -184,15 +195,23 @@ export function createTsdownConfig(
       customExports,
     },
     sourcemap,
-    plugins: flatMap(pluginNames, (name) => {
-      return plugins[name] === false
-        ? []
-        : pluginFactories[name](`${pluginPrefix}:${name}`, {
-            packageName: packageJson.name,
-            sourceEntries,
-            root,
-          });
-    }),
+    plugins: [
+      ...flatMap(pluginNames, (name) => {
+        return plugins[name] === false
+          ? []
+          : pluginFactories[name](`${pluginPrefix}:${name}`, {
+              packageName: packageJson.name,
+              sourceEntries,
+              root,
+            });
+      }),
+      ...(clean === "emitted"
+        ? createEmittedManifestPlugins(`${pluginPrefix}:emitted-manifest`, {
+            manifest: join(get("cacheFor")(tsdown), emittedManifestFile),
+            outDir: resolveWithin(root, outDir),
+          })
+        : []),
+    ],
     define: createDefine(context, {
       isTesting: false,
     }),

@@ -202,10 +202,10 @@ describe("createTsdownConfig", () => {
     });
   });
 
-  test("takes the output directory and its emptying from the engrenage config over the tsconfig", async () => {
+  test("takes the output directory and its cleaning from the engrenage config over the tsconfig", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
-        'export default { src: { baseline: "2026-10" }, build: { outDir: "build", emptyOutDir: false } };\n',
+        'export default { src: { baseline: "2026-10" }, build: { outDir: "build", clean: false } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",

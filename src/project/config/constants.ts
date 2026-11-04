@@ -9,7 +9,7 @@ import type { Globs } from "#types/Globs";
 
 export const debugEnvironmentVariable = "ENGRENAGE_DEBUG";
 
-export const defaultEmptyOutDir = true;
+export const defaultBuildClean = "all" as const;
 
 export const defaultSourcemap = true;
 
@@ -54,6 +54,7 @@ export const defaultScriptsDirectories = freeze([
 
 export const defaultToolingDirectories = freeze([
   ".",
+  "tooling",
 ] as const) satisfies Directories;
 
 export const defaultToolingFiles = freeze([

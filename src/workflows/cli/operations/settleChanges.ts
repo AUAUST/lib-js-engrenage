@@ -1,26 +1,37 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { flatMap, map } from "@auaust/primitive-kit/arrays";
 
 import { successMessage } from "#workflows/cli/constants";
 import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
+import { listFilesystems } from "#workflows/cli/utils/listFilesystems";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 import type { SyncResult } from "#types/SyncResult";
 
 export async function settleChanges(
-  { filesystem }: ProjectConfig,
+  config: ProjectConfig & { git: ResolvedGit },
   { check }: { check: boolean },
 ) {
-  await filesystem.format();
+  const filesystems = listFilesystems(config);
 
-  if (!check) {
-    return void reportSyncResults(filesystem.flush());
+  for (const filesystem of filesystems) {
+    await filesystem.format();
   }
 
-  const outdated = map(filesystem.discard(), ({ file }): SyncResult => {
-    return {
-      file,
-      status: "outdated",
-    };
-  });
+  if (!check) {
+    return void reportSyncResults(
+      flatMap(filesystems, (filesystem) => filesystem.flush()),
+    );
+  }
+
+  const outdated = map(
+    flatMap(filesystems, (filesystem) => filesystem.discard()),
+    ({ file }): SyncResult => {
+      return {
+        file,
+        status: "outdated",
+      };
+    },
+  );
 
   reportSyncResults(outdated);
 

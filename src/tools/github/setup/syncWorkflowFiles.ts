@@ -1,11 +1,16 @@
+import { relative } from "node:path";
+
 import { map } from "@auaust/primitive-kit/arrays";
 import { hasOwn } from "@auaust/toolkit/object";
 
 import { syncFiles } from "#foundation/blocks/operations/syncFiles";
+import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
+import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
 import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 
@@ -26,7 +31,7 @@ function assertScripts(
 }
 
 export function syncWorkflowFiles(
-  config: ProjectConfig & { github: ResolvedGithub },
+  config: ProjectConfig & { git: ResolvedGit; github: ResolvedGithub },
 ) {
   const name = resolveWorkflowSet({
     workflows: config.github.workflows,
@@ -40,8 +45,11 @@ export function syncWorkflowFiles(
 
   const { files, scripts } = workflowSets[name];
 
+  const { root, filesystem } = config.git;
+  const directory = toPosixPath(relative(root, config.root)) || ".";
+
   const syncs = map(files, (file) => {
-    const content = renderWorkflow(name, file);
+    const content = renderWorkflow(name, file, directory);
 
     return {
       file: `${workflowsDirectory}/${file}`,
@@ -51,11 +59,14 @@ export function syncWorkflowFiles(
     };
   });
 
-  if (!syncs.some(({ file }) => config.filesystem.exists(file))) {
+  if (!syncs.some(({ file }) => filesystem.exists(file))) {
     return;
   }
 
   assertScripts(config, name, scripts);
 
-  syncFiles(config, syncs);
+  syncFiles(
+    { filesystem, resolve: (...paths) => resolveWithin(root, ...paths) },
+    syncs,
+  );
 }

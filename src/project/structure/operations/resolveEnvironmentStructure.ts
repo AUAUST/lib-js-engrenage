@@ -450,7 +450,6 @@ export function resolveEnvironmentStructure({
   const rootDeclaration = namespaces[environmentRoot];
   const rootScopes = rootDeclaration?.roles.enable ?? [];
 
-  // @debt the project root is never walked, so the tooling environment gets no structure tree until its directories exclude non-code folders
   const walked = dirs.filter((directory) => directory !== projectRoot);
 
   const children = flatMap(walked, (directory) => {

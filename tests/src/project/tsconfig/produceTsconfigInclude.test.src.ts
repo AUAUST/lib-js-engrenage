@@ -82,6 +82,8 @@ describe("produceTsconfigInclude", () => {
       "scripts/**/*.tsx",
       "*.config.ts",
       ".*.ts",
+      "tooling/**/*.ts",
+      "tooling/**/*.tsx",
     ]);
 
     expect(() => read("tsconfig.scripts.json")).toThrow("ENOENT");

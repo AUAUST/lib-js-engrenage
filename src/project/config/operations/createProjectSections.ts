@@ -461,16 +461,20 @@ export function createProjectSections({
 
   function tooling() {
     const option = toolingOption();
-    const { dirs, files } = option;
+    const { files } = option;
+    const walked = option.dirs.filter((directory) => directory !== ".");
+    const rootFiles = walked.length === option.dirs.length ? [] : files;
 
     return freeze(
       compose(
         {
-          active: dirs.some((directory) => filesystem.isDirectory(directory)),
-          dirs,
-          files,
+          active: option.dirs.some((directory) => {
+            return filesystem.isDirectory(directory);
+          }),
+          dirs: walked,
+          files: rootFiles,
           defines: false,
-          globs: filesIn(dirs, files),
+          globs: [...rootFiles, ...filesIn(walked, typescriptFiles())],
           roles: resolveEnvironmentRoles("tooling", option),
           tsconfig: environmentTsconfigFor("tooling"),
         },
@@ -628,11 +632,7 @@ export function createProjectSections({
     return freeze(
       compose(
         {
-          emptyOutDir: entries.emptyOutDir.resolve(
-            input?.emptyOutDir,
-            context,
-            "build.emptyOutDir",
-          ),
+          clean: entries.clean.resolve(input?.clean, context, "build.clean"),
           sourcemap: entries.sourcemap.resolve(
             input?.sourcemap,
             context,

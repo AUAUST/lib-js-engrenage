@@ -62,9 +62,9 @@ describe("environments", () => {
 
     expect(config.tooling).toMatchObject({
       active: true,
-      dirs: ["."],
+      dirs: ["tooling"],
       files: ["*.config.ts", ".*.ts"],
-      globs: ["*.config.ts", ".*.ts"],
+      globs: ["*.config.ts", ".*.ts", "tooling/**/*.{ts,tsx}"],
     });
 
     expect(config.files.fixtures).toEqual(["tests/**/fixtures/**"]);

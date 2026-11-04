@@ -1,14 +1,11 @@
-import { boolean } from "valibot";
+import { boolean, literal, picklist, union } from "valibot";
 
 import { isWithin } from "#foundation/filesystem/utils/isWithin";
 import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
-import {
-  defaultEmptyOutDir,
-  defaultSourcemap,
-} from "#project/config/constants";
+import { defaultBuildClean, defaultSourcemap } from "#project/config/constants";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 
 export const buildSchema = declareObject(
@@ -34,10 +31,12 @@ export const buildSchema = declareObject(
         return input;
       },
     }),
-    emptyOutDir: declare(boolean(), {
-      description:
-        "Whether a build empties the output directory first (the `clean` option of tsdown).",
-      optional: { value: defaultEmptyOutDir },
+    clean: declare(union([picklist(["all", "emitted"]), literal(false)]), {
+      description: [
+        'What a build removes from the output directory first: `"all"` empties it, `"emitted"` removes only the files the previous build emitted (for an output directory shared with a host), `false` removes nothing.',
+        "The emitted files are recorded in a manifest in the cache directory, written after a successful build.",
+      ],
+      optional: { value: defaultBuildClean },
     }),
     sourcemap: declare(boolean(), {
       description:

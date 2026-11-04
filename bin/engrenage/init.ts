@@ -1,3 +1,5 @@
+import { flatMap } from "@auaust/primitive-kit/arrays";
+
 import { runSync } from "#bin/engrenage/sync";
 import { packageJsonFile } from "#constants";
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
@@ -6,6 +8,7 @@ import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
 import { runSteps } from "#workflows/cli/operations/runSteps";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
+import { listFilesystems } from "#workflows/cli/utils/listFilesystems";
 import { listInitSteps } from "#workflows/init/operations/listInitSteps";
 import { readConfig } from "#workflows/registry/operations/readConfig";
 import type { Invocation } from "#project/steps/types/Invocation";
@@ -92,9 +95,15 @@ export const init = defineCommand((command) => {
         return;
       }
 
-      await config.filesystem.format();
+      const filesystems = listFilesystems(config);
 
-      reportSyncResults(config.filesystem.flush());
+      for (const filesystem of filesystems) {
+        await filesystem.format();
+      }
+
+      reportSyncResults(
+        flatMap(filesystems, (filesystem) => filesystem.flush()),
+      );
 
       for (const invocation of invocations) {
         if (yes && invocation.interactive) {

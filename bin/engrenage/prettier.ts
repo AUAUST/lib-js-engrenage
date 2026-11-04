@@ -1,3 +1,5 @@
+import { flatMap } from "@auaust/primitive-kit/arrays";
+
 import { packages } from "#constants";
 import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
 import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
@@ -40,7 +42,26 @@ export const prettier = defineToolCommands({
       arguments(config, args) {
         formatFiles(args);
 
-        args.push(config.root);
+        const directories = flatMap(
+          [
+            config.src,
+            config.bin,
+            config.scripts,
+            config.tests,
+            config.data,
+            config.tooling,
+          ],
+          ({ dirs }) => dirs,
+        );
+
+        args.push(
+          ...[
+            ...directories.filter((directory) => {
+              return config.filesystem.isDirectory(directory);
+            }),
+            ...config.filesystem.glob(config.tooling.files),
+          ].map((path) => config.resolve(path)),
+        );
       },
     },
   },

@@ -1,6 +1,13 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["scripts/**/*.ts", "scripts/**/*.tsx", "*.config.ts", ".*.ts"],
+  "include": [
+    "scripts/**/*.ts",
+    "scripts/**/*.tsx",
+    "*.config.ts",
+    ".*.ts",
+    "tooling/**/*.ts",
+    "tooling/**/*.tsx"
+  ],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.cache/typescript/tsconfig.scripts.tsbuildinfo",
     "target": "ESNext",

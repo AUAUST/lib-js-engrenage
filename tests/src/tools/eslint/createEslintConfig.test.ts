@@ -1602,7 +1602,7 @@ export async function run(): Promise<unknown> {
   test("ignores gitignored and generated files", async () => {
     const eslint = await getLinter();
 
-    expect(await eslint.isPathIgnored("ignored.ts")).toBe(true);
+    expect(await eslint.isPathIgnored("src/ignored.ts")).toBe(true);
     expect(await eslint.isPathIgnored("coverage/report.ts")).toBe(true);
 
     expect(await eslint.isPathIgnored("tests/unit/fixtures/case.ts")).toBe(
@@ -1615,7 +1615,7 @@ export async function run(): Promise<unknown> {
       ignore: false,
     });
 
-    expect(await unignored.isPathIgnored("ignored.ts")).toBe(false);
+    expect(await unignored.isPathIgnored("src/ignored.ts")).toBe(false);
   });
 
   test("ignores the resolved tests.fixtures globs", async () => {
@@ -1754,5 +1754,33 @@ export async function run(): Promise<unknown> {
 
       expect(repeated?.messages).toEqual([]);
     });
+  });
+});
+
+describe("scopes", () => {
+  test("neither lint nor report a file outside the declared environments", async () => {
+    const project = createTemporaryProject({
+      "engrenage.config.ts": "export default {};\n",
+      "package.json": JSON.stringify({ type: "module" }),
+      "src/index.ts": "export const a = 1;\n",
+      "other/invalid.ts": "var x = ;\n",
+    });
+
+    const eslint = new ESLint({
+      cwd: project.root,
+      overrideConfigFile: true,
+      overrideConfig: createEslintConfig(await loadConfig(project.root)),
+    });
+
+    await expect(
+      eslint.calculateConfigForFile("src/index.ts"),
+    ).resolves.toMatchObject({
+      languageOptions: { parser: expect.anything() },
+    });
+
+    const outside = await eslint.calculateConfigForFile("other/invalid.ts");
+
+    expect(outside?.rules ?? {}).toEqual({});
+    expect(outside?.languageOptions?.parser).toBeUndefined();
   });
 });

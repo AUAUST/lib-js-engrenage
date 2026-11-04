@@ -16,7 +16,13 @@ function resolveScopeReference(
 
   switch (reference) {
     case "files.code": {
-      return config.typescript.files;
+      return [
+        ...src.globs,
+        ...bin.globs,
+        ...scripts.globs,
+        ...tests.globs,
+        ...config.tooling.globs,
+      ];
     }
 
     case "files.tooling": {

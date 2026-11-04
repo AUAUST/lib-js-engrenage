@@ -224,3 +224,21 @@ describe("structure", () => {
     });
   });
 });
+
+describe("tooling structure", () => {
+  test("walks tooling/ into the tooling tree and leaves other root directories unwalked", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts": "export default {};\n",
+      "tooling/eslint/index.ts": "",
+      "other/stray.ts": "",
+    });
+
+    const { structure } = await loadConfig(project.root);
+
+    const names = structure.tooling?.root.children.map(({ name }) => name);
+
+    expect(names).toEqual(["eslint"]);
+    expect(structure.tooling?.root.children.at(0)?.kind).toBe("domain");
+  });
+});

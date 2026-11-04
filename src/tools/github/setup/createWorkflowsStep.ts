@@ -1,12 +1,19 @@
+import { relative } from "node:path";
+
+import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 import type { Step } from "#project/steps/types/Step";
 import type { StepContext } from "#project/steps/types/StepContext";
+import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 interface Sections {
+  root: Directory;
+  git: ResolvedGit;
   github: ResolvedGithub;
 }
 
@@ -17,7 +24,6 @@ interface MissingWorkflow {
 
 function findMissingWorkflows({
   get,
-  filesystem,
   getTraits,
   hasDependency,
 }: StepContext<Sections>): readonly MissingWorkflow[] {
@@ -31,6 +37,8 @@ function findMissingWorkflows({
     return [];
   }
 
+  const { root, filesystem } = get("git");
+  const directory = relative(root, get("root")) || ".";
   const missing: MissingWorkflow[] = [];
 
   for (const file of workflowSets[name].files) {
@@ -39,7 +47,7 @@ function findMissingWorkflows({
     if (!filesystem.exists(path)) {
       missing.push({
         file: path,
-        content: renderWorkflow(name, file),
+        content: renderWorkflow(name, file, toPosixPath(directory)),
       });
     }
   }
@@ -56,7 +64,7 @@ export function createWorkflowsStep(): Step<Sections> {
     },
     plan(context) {
       for (const { file, content } of findMissingWorkflows(context)) {
-        context.filesystem.write(file, content);
+        context.get("git").filesystem.write(file, content);
       }
     },
   };

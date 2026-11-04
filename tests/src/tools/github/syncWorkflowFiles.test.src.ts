@@ -106,4 +106,38 @@ describe("syncWorkflowFiles", () => {
 
     expect(absentConfig.filesystem.changes()).toEqual([]);
   });
+
+  test("writes the workflows under the repository root with the project as working directory", async () => {
+    const project = createTemporaryProject({
+      ".git/HEAD": "",
+      ".github/workflows/ci.yml": "",
+      "packages/app/engrenage.config.ts":
+        'export default { preset: "library" };\n',
+      "packages/app/package.json": JSON.stringify({
+        type: "module",
+        scripts: libraryScripts,
+        devDependencies: {
+          "@changesets/cli": "*",
+        },
+      }),
+    });
+
+    const config = await loadConfig(project.resolve("packages/app"));
+
+    syncWorkflowFiles(config);
+
+    expect(config.git.root).toBe(project.root);
+    expect(config.filesystem.changes()).toEqual([]);
+
+    expect(config.git.filesystem.flush()).toEqual([
+      {
+        file: ".github/workflows/ci.yml",
+        status: "synced",
+      },
+    ]);
+
+    expect(project.read(".github/workflows/ci.yml")).toContain(
+      "working-directory: packages/app",
+    );
+  });
 });

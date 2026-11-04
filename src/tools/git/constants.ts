@@ -78,3 +78,5 @@ export const coverageTitle = "Coverage";
 
 export const ignoreBlocks =
   "# @ignore defaults\n\n# @ignore project\n\n# @end\n";
+
+export const gitDirectory = ".git";

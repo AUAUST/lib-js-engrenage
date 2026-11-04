@@ -25,12 +25,17 @@ export function createRecommendedRules({
   typeAware: boolean;
 }): Config[] {
   return defineConfig([
-    js.configs.recommended,
-    typescriptConfigs.recommended,
-    typescriptConfigs.stylistic,
+    {
+      files: resolveScope(config, ["files.code"]),
+      extends: [
+        js.configs.recommended,
+        typescriptConfigs.recommended,
+        typescriptConfigs.stylistic,
+      ],
+    },
     resolveInfoRules({
       name: `${pluginName}/recommended`,
-      files: [...config.typescript.files],
+      files: resolveScope(config, ["files.code"]),
       rules: {
         ...coreRules,
         ...typescriptRules,

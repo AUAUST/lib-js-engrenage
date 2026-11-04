@@ -15,8 +15,13 @@ export function createImportPresets({
   tsconfig: File | undefined;
 }): Config[] {
   return defineConfig([
-    importX.flatConfigs.recommended,
-    importX.flatConfigs.typescript,
+    {
+      files: [...codeFiles],
+      extends: [
+        importX.flatConfigs.recommended,
+        importX.flatConfigs.typescript,
+      ],
+    },
     {
       files: [...codeFiles],
       settings: {

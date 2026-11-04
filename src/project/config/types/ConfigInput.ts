@@ -40,10 +40,11 @@ export interface ConfigInput {
          */
         outDir?: string | undefined;
         /**
-         * Whether a build empties the output directory first (the `clean` option of tsdown).
-         * @default true
+         * What a build removes from the output directory first: `"all"` empties it, `"emitted"` removes only the files the previous build emitted (for an output directory shared with a host), `false` removes nothing.
+         * The emitted files are recorded in a manifest in the cache directory, written after a successful build.
+         * @default `all`
          */
-        emptyOutDir?: boolean | undefined;
+        clean?: (("all" | "emitted") | false) | undefined;
         /**
          * Whether builds emit source maps and the source directories are published with them.
          * @default true
@@ -1941,12 +1942,12 @@ export interface ConfigInput {
              */
             strictness?: ("strict" | "loose") | undefined;
             /**
-             * Directories searched for tooling files.
-             * @default `.`
+             * Directories of the tooling environment: all their TypeScript files are included and walked like `src`. `.` contributes only the files matched by `files`.
+             * @default `.`, `tooling`
              */
             dirs?: ListOption<string> | undefined;
             /**
-             * Globs of tooling files inside the tooling directories, such as configuration files.
+             * Globs, matched at the project root only, of the root files of the tooling environment, such as configuration files. They apply when `dirs` includes `.`.
              * @default `*.config.ts`, `.*.ts`
              */
             files?: ListOption<string> | undefined;

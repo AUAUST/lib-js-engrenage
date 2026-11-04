@@ -17,6 +17,7 @@ import { conventionCategories, pluginName } from "#tools/eslint/constants";
 import { createConventionRules } from "#tools/eslint/operations/createConventionRules";
 import { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";
 import { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
+import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { createIgnoreRules } from "#tools/eslint/utils/createIgnoreRules";
 import { createImportPresets } from "#tools/eslint/utils/createImportPresets";
 import { createPlugin } from "#tools/eslint/utils/createPlugin";
@@ -84,7 +85,7 @@ export function createEslintConfig(
   if (categories.imports !== false) {
     configs.push(
       createImportPresets({
-        codeFiles: config.typescript.files,
+        codeFiles: resolveScope(config, ["files.code"]),
         tsconfig: config.typescript.tsconfig.path,
       }),
     );
@@ -102,7 +103,10 @@ export function createEslintConfig(
         "unused-imports": unusedImports,
       },
     },
-    typescriptConfigs.base,
+    {
+      files: resolveScope(config, ["files.code"]),
+      extends: [typescriptConfigs.base],
+    },
     ...configs,
     resolveInfoRules(conventionRules),
   );
