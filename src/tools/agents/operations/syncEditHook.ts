@@ -4,6 +4,7 @@ import { emptyObjectFile } from "#foundation/json/constants";
 import { readJsonValue } from "#foundation/json/utils/readJsonValue";
 import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
 import { validate } from "#foundation/options/utils/validate";
+import { jsonIndentation } from "#project/format/constants";
 import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 
@@ -55,6 +56,7 @@ export function syncEditHook(
           },
         ],
       },
+      jsonIndentation,
       {
         isArrayInsertion: true,
       },

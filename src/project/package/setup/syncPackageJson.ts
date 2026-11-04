@@ -4,6 +4,7 @@ import { entries } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
 import { syncFiles } from "#foundation/blocks/operations/syncFiles";
+import { jsonIndentation } from "#project/format/constants";
 import { createPackageJson } from "#project/package/operations/createPackageJson";
 import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
 // @debt reaches into tools/pnpm, a higher layer than project; the layered registry (#143) removes the upward dependency
@@ -101,7 +102,13 @@ export function syncPackageJson(config: ResolvedConfig) {
         }
 
         return createFields(config).reduce((current, { location, value }) => {
-          return writePackageJsonValue(current, path, location, value);
+          return writePackageJsonValue(
+            current,
+            path,
+            location,
+            value,
+            jsonIndentation,
+          );
         }, content);
       },
     },

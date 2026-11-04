@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import { conventions } from "#project/format/constants";
 import { lockfileIgnores as gitLockfileIgnores } from "#tools/git/constants";
 import type { Options } from "#tools/prettier/types/Options";
 import type { GlobGroup } from "#types/GlobGroup";
@@ -10,21 +11,21 @@ export const defaultOptions = freeze({
   bracketSpacing: true,
   checkIgnorePragma: true,
   embeddedLanguageFormatting: "auto",
-  endOfLine: "lf",
+  endOfLine: conventions.endOfLine,
   htmlWhitespaceSensitivity: "css",
   insertPragma: false,
   jsxSingleQuote: false,
   objectWrap: "preserve",
-  printWidth: 80,
+  printWidth: conventions.lineWidth,
   proseWrap: "preserve",
   quoteProps: "preserve",
   requirePragma: false,
-  semi: true,
+  semi: conventions.semicolons,
   singleAttributePerLine: false,
-  singleQuote: false,
-  tabWidth: 2,
-  trailingComma: "all",
-  useTabs: false,
+  singleQuote: conventions.quotes === "single",
+  tabWidth: conventions.indentWidth,
+  trailingComma: conventions.trailingCommas,
+  useTabs: conventions.indent === "tabs",
   vueIndentScriptAndStyle: false,
 } as const satisfies Options);
 

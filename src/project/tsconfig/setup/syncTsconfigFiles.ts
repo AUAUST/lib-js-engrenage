@@ -4,6 +4,7 @@ import { entries } from "@auaust/toolkit/object";
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
 import { tsconfigEnvironments } from "#project/config/constants";
+import { jsonIndentation } from "#project/format/constants";
 import { tsconfigProducers } from "#project/tsconfig/operations/tsconfigProducers";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
@@ -226,6 +227,7 @@ export function syncTsconfigFiles(config: ResolvedConfig) {
         current ?? emptyObjectFile,
         target.file,
         createEdits(config, target),
+        jsonIndentation,
       ),
     );
   }

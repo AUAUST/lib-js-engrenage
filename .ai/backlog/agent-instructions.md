@@ -11,3 +11,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: the project map says `config/` holds definers and `utils/` "every other function" and omits `operations/`; it says logic lives in `config/` and `utils/`; it names `tests/helpers/` (now `tests/utils/`).
 - done: #152 rewrites the instructions and `pnpm engrenage sync agents` has propagated them.
+
+## Stale after #180
+
+- why: AGENTS.md says to run `pnpm build:tsdown`, a script `package.json` lacks (`pnpm build` runs `engrenage tsdown`); its project map still describes the pre-namespace `src/` layout (rewrite: #152).
+- done: the build command and project map match the repository.

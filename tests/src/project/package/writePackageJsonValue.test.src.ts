@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 
+import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
 
 const manifest = `{
@@ -20,6 +21,7 @@ describe("writePackageJsonValue", () => {
       "package.json",
       ["prettier"],
       "@auaust/engrenage/prettier",
+      jsonIndentation,
     );
 
     const withDependency = writePackageJsonValue(
@@ -27,6 +29,7 @@ describe("writePackageJsonValue", () => {
       "package.json",
       ["devDependencies", "prettier"],
       "^3.0.0",
+      jsonIndentation,
     );
 
     const parsed: unknown = JSON.parse(withDependency);
@@ -62,6 +65,7 @@ describe("writePackageJsonValue", () => {
       "package.json",
       ["scripts", "ci:test"],
       "vitest run",
+      jsonIndentation,
     );
 
     expect(content).toBe(`{

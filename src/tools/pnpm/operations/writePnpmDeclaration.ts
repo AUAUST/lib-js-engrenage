@@ -1,5 +1,6 @@
 import { wrap } from "@auaust/primitive-kit/arrays";
 
+import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
 import type { PackageJson } from "#project/package/types/PackageJson";
 import type { File } from "#types/File";
@@ -32,5 +33,6 @@ export function writePnpmDeclaration(
       version: `^${version}`,
       onFail: current?.onFail ?? "download",
     },
+    jsonIndentation,
   );
 }

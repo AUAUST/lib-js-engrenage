@@ -13,6 +13,7 @@ import { flattenJsonObject } from "#foundation/json/utils/flattenJsonObject";
 import { readJsonValue } from "#foundation/json/utils/readJsonValue";
 import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
 import { validate } from "#foundation/options/utils/validate";
+import { jsonIndentation } from "#project/format/constants";
 import { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
 import {
   eslintIntegration,
@@ -45,6 +46,7 @@ function addRecommendations(
         path,
         ["recommendations", -1],
         extension,
+        jsonIndentation,
         { isArrayInsertion: true },
       );
     }
@@ -123,6 +125,7 @@ export async function syncVscodeFiles(
         filesystem.read(settingsFile) ?? emptyObjectFile,
         config.resolve(settingsFile),
         await createSettingsEdits(config, applicable),
+        jsonIndentation,
       ),
     );
   }

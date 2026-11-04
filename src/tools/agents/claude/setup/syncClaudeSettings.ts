@@ -3,6 +3,7 @@ import { isDeepStrictEqual } from "node:util";
 import { emptyObjectFile } from "#foundation/json/constants";
 import { readJsonValue } from "#foundation/json/utils/readJsonValue";
 import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
+import { jsonIndentation } from "#project/format/constants";
 import {
   claudeEditHook,
   claudeEditHookCommand,
@@ -25,12 +26,18 @@ function syncAttribution(config: ResolvedConfig, attribution: boolean) {
   if (attribution && hidden) {
     config.filesystem.write(
       claudeSettingsFile,
-      writeJsonValue(content, path, location, undefined),
+      writeJsonValue(content, path, location, undefined, jsonIndentation),
     );
   } else if (!attribution && !hidden) {
     config.filesystem.write(
       claudeSettingsFile,
-      writeJsonValue(content, path, location, claudeHiddenAttribution),
+      writeJsonValue(
+        content,
+        path,
+        location,
+        claudeHiddenAttribution,
+        jsonIndentation,
+      ),
     );
   }
 }

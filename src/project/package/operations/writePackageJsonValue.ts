@@ -3,6 +3,7 @@ import { findIndex, findLastIndex } from "@auaust/primitive-kit/arrays";
 import { readJsonValue } from "#foundation/json/utils/readJsonValue";
 import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
 import { packageJsonPropertyOrder } from "#project/package/constants";
+import type { JsonIndentation } from "#foundation/json/types/JsonIndentation";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { File } from "#types/File";
 
@@ -40,6 +41,7 @@ export function writePackageJsonValue(
   path: File,
   location: readonly [string] | readonly [string, string],
   value: JsonValue,
+  indentation: JsonIndentation,
 ): string {
   const [property, key] = location;
 
@@ -53,6 +55,7 @@ export function writePackageJsonValue(
         : {
             [key]: value,
           },
+      indentation,
       {
         getInsertionIndex(properties) {
           return propertyInsertionIndex(property, properties);
@@ -61,7 +64,7 @@ export function writePackageJsonValue(
     );
   }
 
-  return writeJsonValue(content, path, [property, key], value, {
+  return writeJsonValue(content, path, [property, key], value, indentation, {
     getInsertionIndex(properties) {
       return collectionInsertionIndex(key, properties);
     },

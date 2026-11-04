@@ -6,6 +6,7 @@ import { syncFiles } from "#foundation/blocks/operations/syncFiles";
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
 import { readJsonValue } from "#foundation/json/utils/readJsonValue";
+import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
 import { readTsconfigPaths } from "#project/tsconfig/operations/readTsconfigPaths";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
@@ -40,7 +41,13 @@ function syncImports(config: ResolvedConfig, aliases: readonly Alias[]) {
           return content;
         }
 
-        return writePackageJsonValue(content, path, ["imports"], imports);
+        return writePackageJsonValue(
+          content,
+          path,
+          ["imports"],
+          imports,
+          jsonIndentation,
+        );
       },
     },
   ]);
@@ -59,12 +66,17 @@ function syncPaths(config: ResolvedConfig, aliases: readonly Alias[]) {
 
   config.filesystem.write(
     file,
-    applyJsonEdits(config.filesystem.read(file) ?? emptyObjectFile, file, [
-      {
-        path: ["compilerOptions", "paths"],
-        value: record([...others, ...sortByKey(generated)]),
-      },
-    ]),
+    applyJsonEdits(
+      config.filesystem.read(file) ?? emptyObjectFile,
+      file,
+      [
+        {
+          path: ["compilerOptions", "paths"],
+          value: record([...others, ...sortByKey(generated)]),
+        },
+      ],
+      jsonIndentation,
+    ),
   );
 }
 

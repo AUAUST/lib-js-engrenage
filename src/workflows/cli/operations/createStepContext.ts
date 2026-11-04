@@ -4,6 +4,7 @@ import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { engrenage, packageJsonFile } from "#constants";
 import { readJsonValue } from "#foundation/json/utils/readJsonValue";
+import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
@@ -90,7 +91,13 @@ export function createStepContext({
 
     filesystem.write(
       path,
-      writePackageJsonValue(readManifest(path), path, location, value),
+      writePackageJsonValue(
+        readManifest(path),
+        path,
+        location,
+        value,
+        jsonIndentation,
+      ),
     );
   }
 

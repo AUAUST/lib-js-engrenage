@@ -1,4 +1,5 @@
 import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
+import { jsonIndentation } from "#project/format/constants";
 import { onlyAllowScript } from "#tools/pnpm/constants";
 import { writePnpmDeclaration } from "#tools/pnpm/operations/writePnpmDeclaration";
 import type { PackageJson } from "#project/package/types/PackageJson";
@@ -15,7 +16,13 @@ export function upgradePnpmManifest(
   let upgraded = writePnpmDeclaration(content, path, packageJson, version);
 
   if (packageManager !== undefined) {
-    upgraded = writeJsonValue(upgraded, path, ["packageManager"], undefined);
+    upgraded = writeJsonValue(
+      upgraded,
+      path,
+      ["packageManager"],
+      undefined,
+      jsonIndentation,
+    );
   }
 
   if (scripts?.["preinstall"] === onlyAllowScript) {
@@ -24,6 +31,7 @@ export function upgradePnpmManifest(
       path,
       ["scripts", "preinstall"],
       undefined,
+      jsonIndentation,
     );
   }
 

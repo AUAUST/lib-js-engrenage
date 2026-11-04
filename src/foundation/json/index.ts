@@ -9,6 +9,7 @@ export { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
 
 // @barrel types/*.ts all
 export * from "#foundation/json/types/JsonEdit";
+export * from "#foundation/json/types/JsonIndentation";
 export * from "#foundation/json/types/JsonObject";
 export * from "#foundation/json/types/JsonValue";
 // @end

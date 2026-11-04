@@ -8,6 +8,7 @@ import { readJsonFile } from "#foundation/filesystem/operations/readJsonFile";
 import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
 import { flattenJsonObject } from "#foundation/json/utils/flattenJsonObject";
 import { validate } from "#foundation/options/utils/validate";
+import { jsonIndentation } from "#project/format/constants";
 import { configFile } from "#tools/changesets/constants";
 import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
@@ -64,7 +65,7 @@ export function syncChangesetConfig(config: ResolvedConfig) {
     {
       file: configFile,
       update(content, path) {
-        return applyJsonEdits(content, path, options);
+        return applyJsonEdits(content, path, options, jsonIndentation);
       },
     },
   ]);

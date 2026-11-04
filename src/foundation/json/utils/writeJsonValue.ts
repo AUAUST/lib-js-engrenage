@@ -5,7 +5,7 @@ import {
   type ModificationOptions,
 } from "jsonc-parser";
 
-import { formattingOptions } from "#foundation/json/constants";
+import type { JsonIndentation } from "#foundation/json/types/JsonIndentation";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { File } from "#types/File";
 
@@ -14,13 +14,14 @@ export function writeJsonValue(
   path: File,
   location: JSONPath,
   value: JsonValue | undefined,
+  indentation: JsonIndentation,
   options: Omit<ModificationOptions, "formattingOptions"> = {},
 ): string {
   try {
     const edits = modify(content, location, value, {
       isArrayInsertion: false,
       ...options,
-      formattingOptions,
+      formattingOptions: indentation,
     });
 
     return applyEdits(content, edits);

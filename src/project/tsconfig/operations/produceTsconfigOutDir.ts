@@ -2,6 +2,7 @@ import { resolve } from "node:path";
 
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
+import { jsonIndentation } from "#project/format/constants";
 import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { produceTsconfigExtends } from "#project/tsconfig/operations/produceTsconfigExtends";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
@@ -25,6 +26,7 @@ function resolveInheritedOutDir(
       ...produceTsconfigExtends(config, target),
       { path: outDirLocation, value: undefined },
     ],
+    jsonIndentation,
   );
 
   return createTsconfig({
