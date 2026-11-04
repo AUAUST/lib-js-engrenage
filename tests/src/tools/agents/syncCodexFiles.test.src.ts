@@ -1,10 +1,9 @@
 import { describe, expect, test } from "vitest";
 
-import { syncAgentFiles } from "@auaust/engrenage/agents";
-import { syncCodexFiles } from "@auaust/engrenage/agents/codex";
-import { loadConfig } from "@auaust/engrenage/config";
-
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { syncCodexFiles } from "#tools/agents/codex/index";
+import { syncAgentFiles } from "#tools/agents/index";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 const override =
   "# Codex only\n\n<!-- @rules -->\n<!-- @end -->\n\nKeep this project note.\n";

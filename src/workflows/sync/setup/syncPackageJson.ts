@@ -11,7 +11,7 @@ import { listPnpmWarnings } from "#tools/pnpm/operations/listPnpmWarnings";
 import { resolveCommandFiles } from "#tools/tsdown/operations/resolveCommandFiles";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { Runtime } from "#project/baseline/types/Runtime";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 
 interface Field {
   location: readonly [string] | readonly [string, string];
@@ -22,7 +22,7 @@ function toNodeMajor(runtime: Runtime): number {
   return runtime.kind === "node" ? runtime.major : runtime.node;
 }
 
-function createEnginesFields({ bin, src }: ResolvedConfig): Field[] {
+function createEnginesFields({ bin, src }: ProjectConfig): Field[] {
   const majors = [
     ...(bin.active && bin.runtime !== undefined
       ? [toNodeMajor(bin.runtime)]
@@ -40,7 +40,7 @@ function createEnginesFields({ bin, src }: ResolvedConfig): Field[] {
       ];
 }
 
-function createPublishedFields(config: ResolvedConfig): Field[] {
+function createPublishedFields(config: ProjectConfig): Field[] {
   const { outDir, sourcemap } = config.build;
 
   if (outDir === undefined) {
@@ -65,7 +65,7 @@ function createPublishedFields(config: ResolvedConfig): Field[] {
   return [{ location: ["files"], value: files }, ...commands];
 }
 
-function createFields(config: ResolvedConfig): Field[] {
+function createFields(config: ProjectConfig): Field[] {
   const runtime: Field = {
     location: ["devEngines", "runtime"],
     value: {
@@ -84,7 +84,7 @@ function createFields(config: ResolvedConfig): Field[] {
     : [runtime];
 }
 
-export function syncPackageJson(config: ResolvedConfig) {
+export function syncPackageJson(config: ProjectConfig) {
   syncFiles(config, [
     {
       file: packageJsonFile,

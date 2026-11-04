@@ -17,8 +17,9 @@ export * from "#project/config/types/GlobalsFactory";
 export * from "#project/config/types/ListAdjustment";
 export * from "#project/config/types/ListOption";
 export * from "#project/config/types/ManagedListOption";
+export * from "#project/config/types/ProjectConfig";
+export * from "#project/config/types/RawConfig";
 export * from "#project/config/types/ResolvedCache";
-export * from "#project/config/types/ResolvedConfig";
 export * from "#project/config/types/ResolvedDefine";
 export * from "#project/config/types/ResolvedFiles";
 export * from "#project/config/types/ResolvedGlobal";
@@ -26,7 +27,6 @@ export * from "#project/config/types/ResolvedGlobals";
 export * from "#project/config/types/ResolvedLocation";
 export * from "#project/config/types/ResolvedRuntimeSettings";
 export * from "#project/config/types/ResolvedStructure";
-export * from "#project/config/types/ResolvedTypescript";
 // @end
 export * from "#foundation/filesystem/types/Filesystem";
 export * from "#project/baseline/types/Runtime";

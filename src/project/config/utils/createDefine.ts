@@ -1,9 +1,9 @@
 import { entries } from "@auaust/toolkit/object";
 
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 
 export function createDefine(
-  { define }: ResolvedConfig,
+  { define }: ProjectConfig,
   { isTesting }: { isTesting: boolean },
 ): Record<string, string> {
   const excludedScope = isTesting ? "build" : "test";

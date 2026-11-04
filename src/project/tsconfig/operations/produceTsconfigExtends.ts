@@ -4,11 +4,11 @@ import { engrenage } from "#constants";
 import { resolveListOption } from "#project/config/operations/resolveListOption";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 function listDefaultExtends(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   { key, file }: TsconfigTarget,
 ): readonly string[] {
   if (key === "base") {
@@ -26,7 +26,7 @@ function listDefaultExtends(
 }
 
 export function produceTsconfigExtends(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   target: TsconfigTarget,
 ): readonly JsonEdit[] {
   const bases = resolveListOption(

@@ -21,10 +21,21 @@ import {
   settingsFile,
 } from "#tools/vscode/constants";
 import { findIntegrations } from "#tools/vscode/utils/findIntegrations";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Environment } from "#project/config/types/Environment";
 import type { Integration } from "#tools/vscode/types/Integration";
+import type { ResolvedVscode } from "#tools/vscode/types/ResolvedVscode";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+
+interface VscodeSync {
+  root: Directory;
+  filesystem: Filesystem;
+  resolve(...paths: string[]): string;
+  environment: Environment;
+  vscode: ResolvedVscode;
+}
 
 function addRecommendations(
   content: string,
@@ -56,7 +67,7 @@ function addRecommendations(
 }
 
 function isEnabled(
-  config: ResolvedConfig,
+  { filesystem }: { filesystem: Filesystem },
   file: File,
   configured: boolean | undefined,
   requested: boolean,
@@ -65,15 +76,15 @@ function isEnabled(
     return false;
   }
 
-  return configured === true || requested || config.filesystem.exists(file);
+  return configured === true || requested || filesystem.exists(file);
 }
 
 async function createSettingsEdits(
-  config: ResolvedConfig,
+  root: Directory,
   applicable: readonly Integration[],
 ): Promise<JsonEdit[]> {
   const infoRules = includes(applicable, eslintIntegration)
-    ? await loadInfoRules(config)
+    ? await loadInfoRules(root)
     : [];
 
   return flatMap(applicable, (integration) => {
@@ -99,7 +110,7 @@ async function createSettingsEdits(
 }
 
 export async function syncVscodeFiles(
-  config: ResolvedConfig,
+  config: VscodeSync,
   {
     settings = false,
     extensions = false,
@@ -124,7 +135,7 @@ export async function syncVscodeFiles(
       applyJsonEdits(
         filesystem.read(settingsFile) ?? emptyObjectFile,
         config.resolve(settingsFile),
-        await createSettingsEdits(config, applicable),
+        await createSettingsEdits(config.root, applicable),
         jsonIndentation,
       ),
     );

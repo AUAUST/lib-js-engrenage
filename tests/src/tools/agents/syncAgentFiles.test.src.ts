@@ -2,14 +2,10 @@ import { join } from "node:path";
 
 import { describe, expect, test, vi } from "vitest";
 
-import {
-  resolveAgentReference,
-  syncAgentFiles,
-} from "@auaust/engrenage/agents";
-import { loadConfig } from "@auaust/engrenage/config";
-
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
+import { resolveAgentReference, syncAgentFiles } from "#tools/agents/index";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 const root = getFixture("agents");
 

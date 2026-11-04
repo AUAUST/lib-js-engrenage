@@ -1,108 +1,19 @@
-import { existsSync } from "node:fs";
-import { dirname } from "node:path";
-
-import { constant } from "@auaust/toolkit/constant";
-import { memoized } from "@auaust/toolkit/memoized";
-
-import { files } from "#constants";
-import { importConfigFile } from "#foundation/filesystem/operations/importConfigFile";
-import { resolve } from "#foundation/filesystem/utils/resolve";
-import { validate } from "#foundation/options/utils/validate";
-import { configSchema } from "#project/config/config/schemas/configSchema";
-import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
+import { createProjectConfig } from "#project/config/operations/createProjectConfig";
+import { readRawConfig } from "#project/config/operations/readRawConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Directory } from "#types/Directory";
-import type { File } from "#types/File";
-
-interface FoundConfig {
-  root: Directory;
-  configFile: File | undefined;
-  input: unknown;
-}
-
-const warnMissingConfig = memoized(function (root: Directory) {
-  console.warn(`No engrenage config found in ${root}, using defaults`);
-}, constant(true));
-
-async function findConfigFile(
-  directory: Directory,
-): Promise<FoundConfig | undefined> {
-  const { config, cwd, _configFile } = await importConfigFile(
-    directory,
-    files.engrenageConfig,
-  );
-
-  if (_configFile === undefined) {
-    return;
-  }
-
-  if (cwd === undefined) {
-    throw new Error(`c12 resolved ${_configFile} without its directory`);
-  }
-
-  return {
-    root: cwd,
-    configFile: _configFile,
-    input: config,
-  };
-}
-
-async function findConfigIn(root: Directory): Promise<FoundConfig> {
-  return (
-    (await findConfigFile(root)) ?? {
-      root,
-      configFile: undefined,
-      input: {},
-    }
-  );
-}
-
-async function findConfig(
-  start: Directory,
-  directory: Directory = start,
-): Promise<FoundConfig> {
-  const found = await findConfigFile(directory);
-
-  if (found !== undefined) {
-    return found;
-  }
-
-  if (existsSync(resolve(directory, files.packageJson))) {
-    return {
-      root: directory,
-      configFile: undefined,
-      input: {},
-    };
-  }
-
-  const parent = dirname(directory);
-
-  if (parent === directory) {
-    return {
-      root: start,
-      configFile: undefined,
-      input: {},
-    };
-  }
-
-  return findConfig(start, parent);
-}
 
 export async function readConfig(
   start: Directory,
-  { searchParents = true }: { searchParents?: boolean } = {},
-): Promise<ResolvedConfig> {
-  const { root, configFile, input } = searchParents
-    ? await findConfig(start)
-    : await findConfigIn(start);
+  options: { searchParents?: boolean } = {},
+): Promise<ProjectConfig> {
+  const { root, configFile, raw } = await readRawConfig(start, options);
 
-  if (configFile === undefined) {
-    warnMissingConfig(root);
-  }
-
-  return createResolvedConfig({
+  return createProjectConfig({
     root,
-    raw: validate(configSchema, input, configFile ?? root),
+    raw,
     configFile,
+    filesystem: createFilesystem(root),
   });
 }

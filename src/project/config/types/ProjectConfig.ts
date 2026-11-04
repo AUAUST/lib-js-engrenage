@@ -1,13 +1,12 @@
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { ResolvedBuild } from "#project/build/types/ResolvedBuild";
-import type { ConfigInput } from "#project/config/types/ConfigInput";
 import type { Environment } from "#project/config/types/Environment";
+import type { RawConfig } from "#project/config/types/RawConfig";
 import type { ResolvedCache } from "#project/config/types/ResolvedCache";
 import type { ResolvedDefine } from "#project/config/types/ResolvedDefine";
 import type { ResolvedFiles } from "#project/config/types/ResolvedFiles";
 import type { ResolvedRuntimeSettings } from "#project/config/types/ResolvedRuntimeSettings";
 import type { ResolvedStructure } from "#project/config/types/ResolvedStructure";
-import type { ResolvedTypescript } from "#project/config/types/ResolvedTypescript";
 import type { ResolvedBin } from "#project/environments/types/ResolvedBin";
 import type { ResolvedData } from "#project/environments/types/ResolvedData";
 import type { ResolvedScripts } from "#project/environments/types/ResolvedScripts";
@@ -19,20 +18,15 @@ import type { Presets } from "#project/presets/types/Presets";
 import type { ImportRule } from "#project/structure/types/ImportRule";
 import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
+import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
 import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
-// @debt reaches into tools, a higher layer than project; the registry (#143 step 5) composes the tool sections and removes the upward dependency
-import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
-import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
-import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
-import type { ResolvedPrettier } from "#tools/prettier/types/ResolvedPrettier";
-import type { ResolvedVscode } from "#tools/vscode/types/ResolvedVscode";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
 
-export interface ResolvedConfig {
+export interface ProjectConfig {
   readonly root: Directory;
-  readonly raw: ConfigInput;
+  readonly raw: RawConfig;
   readonly configFile: File | undefined;
   readonly debug: boolean;
   readonly filesystem: Filesystem;
@@ -59,9 +53,4 @@ export interface ResolvedConfig {
   readonly build: ResolvedBuild;
   readonly cache: ResolvedCache;
   readonly typescript: ResolvedTypescript;
-  readonly git: ResolvedGit;
-  readonly prettier: ResolvedPrettier;
-  readonly agents: ResolvedAgents;
-  readonly github: ResolvedGithub;
-  readonly vscode: ResolvedVscode;
 }

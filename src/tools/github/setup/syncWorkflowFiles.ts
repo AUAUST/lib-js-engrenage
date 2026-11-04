@@ -5,11 +5,12 @@ import { syncFiles } from "#foundation/blocks/operations/syncFiles";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
 import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 
 function assertScripts(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   name: WorkflowSetName,
   required: readonly string[],
 ) {
@@ -24,7 +25,9 @@ function assertScripts(
   }
 }
 
-export function syncWorkflowFiles(config: ResolvedConfig) {
+export function syncWorkflowFiles(
+  config: ProjectConfig & { github: ResolvedGithub },
+) {
   const name = resolveWorkflowSet({
     workflows: config.github.workflows,
     presets: config.presets,

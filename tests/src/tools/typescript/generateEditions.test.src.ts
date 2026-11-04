@@ -1,13 +1,11 @@
 import { describe, expect, test } from "vitest";
 
-import { validate } from "#foundation/options/utils/validate";
 import { editions } from "#project/baseline/editions/index";
-import { configSchema } from "#project/config/config/schemas/configSchema";
-import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { generateEditions } from "#tools/typescript/operations/generateEditions";
+import { createConfig } from "#workflows/registry/operations/createConfig";
 
 describe("editions", () => {
   test("dates the libs of the committed editions", () => {
@@ -28,9 +26,9 @@ describe("generateEditions", () => {
       "package.json": "{}",
     });
 
-    const config = createResolvedConfig({
+    const config = createConfig({
       root: project.root,
-      raw: validate(configSchema, withSourceRuntime({}), "test config"),
+      raw: withSourceRuntime({}),
       configFile: undefined,
     });
 

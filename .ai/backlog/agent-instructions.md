@@ -31,3 +31,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: plan §Config pipeline shows `project/config` taking raw input once per root, while `readConfig` validates the whole config eagerly until steps 4 and 5 land.
 - done: the plan and code agree.
+
+## Stale after #143 round 4
+
+- why: `.ai/debt.md` and plan §Config pipeline still describe `ResolvedConfig` and `createResolvedConfig`; AGENTS.md project map omits `project/steps` and `workflows/registry`; docs describing `loadConfig` as returning every section (the public one is partial now); `scripts/support/codegen/config.ts` description says "Config interface" (now `ConfigInput`).
+- done: each matches the code.

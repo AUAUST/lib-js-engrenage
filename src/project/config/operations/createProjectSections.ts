@@ -5,22 +5,22 @@ import { freeze } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
 import { packageJsonFile } from "#constants";
-import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
 import { filesIn } from "#foundation/filesystem/utils/filesIn";
 import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
-import { createSections } from "#foundation/options/utils/createSections";
+import { resolveSection } from "#foundation/options/utils/resolveSection";
+import { validate } from "#foundation/options/utils/validate";
 import { resolveSourceRuntime } from "#project/baseline/operations/resolveSourceRuntime";
 import { resolveNodeRuntime } from "#project/baseline/utils/resolveNodeRuntime";
 import { buildSchema } from "#project/build/config/schemas/buildSchema";
 import { cacheSchema } from "#project/config/config/schemas/core/cacheSchema";
 import { debugSchema } from "#project/config/config/schemas/core/debugSchema";
 import { defineSchema } from "#project/config/config/schemas/core/defineSchema";
-import { typescriptSchema } from "#project/config/config/schemas/tools/typescriptSchema";
 import {
   distTestsVariant,
   sourceTestsVariant,
 } from "#project/config/constants";
 import { isDebugEnvironment } from "#project/config/operations/isDebugEnvironment";
+import { locateFile } from "#project/config/utils/locateFile";
 import { binSchema } from "#project/environments/config/schemas/binSchema";
 import { dataSchema } from "#project/environments/config/schemas/dataSchema";
 import { runtimeSchema } from "#project/environments/config/schemas/runtimeSchema";
@@ -39,19 +39,15 @@ import { resolveEnvironmentStructure } from "#project/structure/operations/resol
 import { resolveImportRules } from "#project/structure/operations/resolveImportRules";
 import { resolveRoles } from "#project/structure/operations/resolveRoles";
 import { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
+import { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
 import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { resolveTsconfig } from "#project/tsconfig/utils/resolveTsconfig";
-// @debt reaches into tools, a higher layer than project; the registry (#143 step 5) composes the tool sections and removes the upward dependency
-import { agentsSchema } from "#tools/agents/config/schemas/agentsSchema";
-import { gitSchema } from "#tools/git/config/schemas/gitSchema";
-import { githubSchema } from "#tools/github/config/schemas/githubSchema";
-import { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
-import { createPrettierFormatter } from "#tools/prettier/operations/createPrettierFormatter";
-import { vscodeSchema } from "#tools/vscode/config/schemas/vscodeSchema";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { SectionResolvers } from "#foundation/options/types/SectionResolvers";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
-import type { ConfigInput } from "#project/config/types/ConfigInput";
 import type { Environment } from "#project/config/types/Environment";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { RawConfig } from "#project/config/types/RawConfig";
 import type { PackageJson } from "#project/package/types/PackageJson";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
@@ -94,87 +90,80 @@ type StructureSection =
       readonly roles?: RolesOption;
     } & StructureOptions);
 
-export function createResolvedConfig({
+export function createProjectSections({
   root,
   raw,
   configFile,
+  filesystem,
+  context,
 }: {
   root: Directory;
-  raw: ConfigInput;
+  raw: RawConfig;
   configFile: File | undefined;
-}): ResolvedConfig {
-  const filesystem = createFilesystem(root, createPrettierFormatter(root));
-
-  const context: ConfigContext = {
-    get(section) {
-      return sections.get(section);
-    },
-  };
-
+  filesystem: Filesystem;
+  context: ConfigContext;
+}): SectionResolvers<ProjectConfig> {
   const { get } = context;
 
   function locate(file: File, configured: boolean): File | undefined {
-    if (!configured) {
-      return filesystem.exists(file) ? resolveWithin(root, file) : undefined;
-    }
-
-    if (!filesystem.exists(file)) {
-      throw new Error(`The configured ${file} does not exist in ${root}`);
-    }
-
-    return resolveWithin(root, file);
+    return locateFile({ root, filesystem }, file, configured);
   }
 
   const debugOption = once(() => {
-    return debugSchema.resolve(raw.debug, context, "debug");
+    return resolveSection(debugSchema, raw.debug, context, "debug");
   });
 
   function presets() {
-    return presetsSchema.resolve(raw.presets, context, "presets");
+    return resolveSection(presetsSchema, raw.presets, context, "presets");
   }
 
   function roles() {
-    return rolesSchema.resolve(raw.roles, context, "roles");
+    return resolveSection(rolesSchema, raw.roles, context, "roles");
   }
 
   function define() {
-    return defineSchema.resolve(raw.define, context, "define");
+    return resolveSection(defineSchema, raw.define, context, "define");
   }
 
   const cacheOption = once(() => {
-    return cacheSchema.resolve(raw.cache, context, "cache");
+    return resolveSection(cacheSchema, raw.cache, context, "cache");
   });
 
   const runtimeOption = once(() => {
-    return runtimeSchema.resolve(raw.runtime, context, "runtime");
+    return resolveSection(runtimeSchema, raw.runtime, context, "runtime");
   });
 
   const typescriptOption = once(() => {
-    return typescriptSchema.resolve(raw.typescript, context, "typescript");
+    return resolveSection(
+      typescriptSchema,
+      raw.typescript,
+      context,
+      "typescript",
+    );
   });
 
   const sourceOption = once(() => {
-    return sourceSchema.resolve(raw.src, context, "src");
+    return resolveSection(sourceSchema, raw.src, context, "src");
   });
 
   const testsOption = once(() => {
-    return testsSchema.resolve(raw.tests, context, "tests");
+    return resolveSection(testsSchema, raw.tests, context, "tests");
   });
 
   const binOption = once(() => {
-    return binSchema.resolve(raw.bin, context, "bin");
+    return resolveSection(binSchema, raw.bin, context, "bin");
   });
 
   const scriptsOption = once(() => {
-    return scriptsSchema.resolve(raw.scripts, context, "scripts");
+    return resolveSection(scriptsSchema, raw.scripts, context, "scripts");
   });
 
   const toolingOption = once(() => {
-    return toolingSchema.resolve(raw.tooling, context, "tooling");
+    return resolveSection(toolingSchema, raw.tooling, context, "tooling");
   });
 
   const dataOption = once(() => {
-    return dataSchema.resolve(raw.data, context, "data");
+    return resolveSection(dataSchema, raw.data, context, "data");
   });
 
   function packageJsonPath(): File | undefined {
@@ -554,7 +543,12 @@ export function createResolvedConfig({
   function aliases() {
     const option = sourceOption();
 
-    const global = aliasesSchema.resolve(raw.aliases, context, "aliases");
+    const global = resolveSection(
+      aliasesSchema,
+      raw.aliases,
+      context,
+      "aliases",
+    );
 
     return resolveAliases({
       root,
@@ -593,8 +587,10 @@ export function createResolvedConfig({
   function build() {
     const { entries } = buildSchema;
 
+    const input = validate(buildSchema.schema, raw.build, "build config");
+
     function resolveOutDir() {
-      return entries.outDir.resolve(raw.build?.outDir, context, "build.outDir");
+      return entries.outDir.resolve(input?.outDir, context, "build.outDir");
     }
 
     // @debt build.outDir is resolved on access because its computed default reads the tsconfig, which can fail to parse, while declarations otherwise resolve a section as a whole
@@ -602,20 +598,16 @@ export function createResolvedConfig({
       compose(
         {
           emptyOutDir: entries.emptyOutDir.resolve(
-            raw.build?.emptyOutDir,
+            input?.emptyOutDir,
             context,
             "build.emptyOutDir",
           ),
           sourcemap: entries.sourcemap.resolve(
-            raw.build?.sourcemap,
+            input?.sourcemap,
             context,
             "build.sourcemap",
           ),
-          typed: entries.typed.resolve(
-            raw.build?.typed,
-            context,
-            "build.typed",
-          ),
+          typed: entries.typed.resolve(input?.typed, context, "build.typed"),
         },
         compose.getters({
           outDir: resolveOutDir,
@@ -660,50 +652,6 @@ export function createResolvedConfig({
     );
   }
 
-  function git() {
-    const { gitignore } = gitSchema.resolve(raw.git, context, "git");
-
-    return freeze(
-      compose(
-        {},
-        compose.getters({
-          gitignore: () => locate(gitignore.file, gitignore.configured),
-        }),
-      ),
-    );
-  }
-
-  function prettier() {
-    const { prettierignore } = prettierSchema.resolve(
-      raw.prettier,
-      context,
-      "prettier",
-    );
-
-    return freeze(
-      compose(
-        {},
-        compose.getters({
-          prettierignore: () => {
-            return locate(prettierignore.file, prettierignore.configured);
-          },
-        }),
-      ),
-    );
-  }
-
-  function agents() {
-    return agentsSchema.resolve(raw.agents, context, "agents");
-  }
-
-  function github() {
-    return githubSchema.resolve(raw.github, context, "github");
-  }
-
-  function vscode() {
-    return vscodeSchema.resolve(raw.vscode, context, "vscode");
-  }
-
   function resolve(...paths: string[]): string {
     return resolveWithin(root, ...paths);
   }
@@ -712,85 +660,36 @@ export function createResolvedConfig({
     return resolveWithin(root, cache().dir, packageName);
   }
 
-  // @debt the live sections read the filesystem, which init and sync stage changes to, so they are recomputed on every access instead of being memoized per root; a memo keyed by file content would let them be memoized like the others
-  const sections = createSections<ResolvedConfig>(
-    {
-      root: () => root,
-      raw: () => raw,
-      configFile: () => configFile,
-      filesystem: () => filesystem,
-      resolve: () => resolve,
-      cacheFor: () => cacheFor,
-      debug: () => {
-        return debugOption() || isDebugEnvironment();
-      },
-      packageJsonPath,
-      packageJson,
-      tsconfig,
-      environment,
-      presets,
-      roles,
-      runtime,
-      define,
-      src: source,
-      tests,
-      bin,
-      scripts,
-      data,
-      tooling,
-      structure,
-      aliases,
-      importRules,
-      files,
-      build,
-      cache,
-      typescript,
-      git,
-      prettier,
-      agents,
-      github,
-      vscode,
+  return {
+    root: () => root,
+    raw: () => raw,
+    configFile: () => configFile,
+    filesystem: () => filesystem,
+    resolve: () => resolve,
+    cacheFor: () => cacheFor,
+    debug: () => {
+      return debugOption() || isDebugEnvironment();
     },
-    ["packageJsonPath", "packageJson", "tsconfig", "environment"],
-  );
-
-  return freeze(
-    compose(
-      compose.getters({
-        root: () => sections.get("root"),
-        raw: () => sections.get("raw"),
-        configFile: () => sections.get("configFile"),
-        filesystem: () => sections.get("filesystem"),
-        resolve: () => sections.get("resolve"),
-        cacheFor: () => sections.get("cacheFor"),
-        debug: () => sections.get("debug"),
-        packageJsonPath: () => sections.get("packageJsonPath"),
-        packageJson: () => sections.get("packageJson"),
-        tsconfig: () => sections.get("tsconfig"),
-        environment: () => sections.get("environment"),
-        presets: () => sections.get("presets"),
-        roles: () => sections.get("roles"),
-        runtime: () => sections.get("runtime"),
-        define: () => sections.get("define"),
-        src: () => sections.get("src"),
-        tests: () => sections.get("tests"),
-        bin: () => sections.get("bin"),
-        scripts: () => sections.get("scripts"),
-        data: () => sections.get("data"),
-        tooling: () => sections.get("tooling"),
-        structure: () => sections.get("structure"),
-        aliases: () => sections.get("aliases"),
-        importRules: () => sections.get("importRules"),
-        files: () => sections.get("files"),
-        build: () => sections.get("build"),
-        cache: () => sections.get("cache"),
-        typescript: () => sections.get("typescript"),
-        git: () => sections.get("git"),
-        prettier: () => sections.get("prettier"),
-        agents: () => sections.get("agents"),
-        github: () => sections.get("github"),
-        vscode: () => sections.get("vscode"),
-      }),
-    ),
-  );
+    packageJsonPath,
+    packageJson,
+    tsconfig,
+    environment,
+    presets,
+    roles,
+    runtime,
+    define,
+    src: source,
+    tests,
+    bin,
+    scripts,
+    data,
+    tooling,
+    structure,
+    aliases,
+    importRules,
+    files,
+    build,
+    cache,
+    typescript,
+  };
 }

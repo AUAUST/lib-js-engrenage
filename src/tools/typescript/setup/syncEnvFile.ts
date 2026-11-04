@@ -8,7 +8,7 @@ import {
   typescriptBlocks,
 } from "#tools/typescript/constants";
 import { inferType } from "#tools/typescript/utils/inferType";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { ResolvedGlobal } from "#project/config/types/ResolvedGlobal";
 
 const directive = "define";
@@ -50,7 +50,7 @@ function appendBlock(content: string): string {
   return content.trim() === "" ? block : `${content.trimEnd()}\n\n${block}`;
 }
 
-export function syncEnvFile(config: ResolvedConfig) {
+export function syncEnvFile(config: ProjectConfig) {
   const { types, values } = config.define;
 
   if (!types) {

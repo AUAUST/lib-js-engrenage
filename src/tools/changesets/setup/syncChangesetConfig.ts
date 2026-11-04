@@ -10,7 +10,7 @@ import { flattenJsonObject } from "#foundation/json/utils/flattenJsonObject";
 import { validate } from "#foundation/options/utils/validate";
 import { jsonIndentation } from "#project/format/constants";
 import { configFile } from "#tools/changesets/constants";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { File } from "#types/File";
 
 function resolveConfigVersion(packageJsonPath: File): string {
@@ -40,7 +40,7 @@ function resolveConfigVersion(packageJsonPath: File): string {
   }
 }
 
-export function syncChangesetConfig(config: ResolvedConfig) {
+export function syncChangesetConfig(config: ProjectConfig) {
   if (
     !config.environment.hasDependency(changesetsCli) ||
     !config.filesystem.exists(configFile)

@@ -4,9 +4,9 @@ import { wrap } from "@auaust/primitive-kit/arrays";
 import { transformValues } from "@auaust/toolkit/transformValues";
 
 import { resolveBinary } from "#foundation/processes/operations/resolveBinary";
-import { loadConfig } from "#project/config/operations/loadConfig";
 import { successMessage } from "#workflows/cli/constants";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
@@ -66,7 +66,7 @@ export function defineToolCommands<Name extends string>({
       message?: string;
       aliases?: readonly string[] | string;
       arguments?(
-        config: ResolvedConfig,
+        config: ProjectConfig,
         args: string[],
       ): readonly string[] | undefined;
     }

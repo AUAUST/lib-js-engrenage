@@ -1,9 +1,9 @@
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 export function produceTsconfigModule(
-  { src }: ResolvedConfig,
+  { src }: ProjectConfig,
   { key }: TsconfigTarget,
 ): readonly JsonEdit[] {
   if (key !== "src") {

@@ -11,13 +11,13 @@ import { resolveTsconfigLibrary } from "#project/tsconfig/operations/resolveTsco
 import { resolveTsconfigRuntime } from "#project/tsconfig/operations/resolveTsconfigRuntime";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
 import type { Runtime } from "#project/baseline/types/Runtime";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 const apiTypesPrefix = `${engrenage}/apis/`;
 
 function listDefaultTypes(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   target: TsconfigTarget,
   runtime: Runtime | undefined,
 ): readonly string[] {
@@ -61,7 +61,7 @@ function isLibraryGroup(group: string): group is keyof typeof apiLibraryGroups {
 }
 
 function removeBaselineTypes(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   target: TsconfigTarget,
 ): readonly JsonEdit[] {
   const current = readTsconfigValue(config, target, [
@@ -91,7 +91,7 @@ function removeBaselineTypes(
 }
 
 export function produceTsconfigTypes(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   target: TsconfigTarget,
 ): readonly JsonEdit[] {
   const { key, types: option } = target;

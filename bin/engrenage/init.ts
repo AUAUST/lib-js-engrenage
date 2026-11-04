@@ -1,17 +1,17 @@
 import { runSync } from "#bin/engrenage/sync";
 import { packageJsonFile } from "#constants";
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
-import { readConfig } from "#project/config/operations/readConfig";
 import { createPrompter } from "#workflows/cli/operations/createPrompter";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
 import { runSteps } from "#workflows/cli/operations/runSteps";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { listInitSteps } from "#workflows/init/operations/listInitSteps";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import { readConfig } from "#workflows/registry/operations/readConfig";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { Prompter } from "#project/steps/types/Prompter";
 import type { Directory } from "#types/Directory";
+import type { Config } from "#workflows/registry/types/Config";
 
 function describe({ command, args }: Invocation): string {
   return [command, ...args].join(" ");
@@ -36,9 +36,7 @@ function invokeCommand(root: Directory, invocation: Invocation) {
   }
 }
 
-async function readPackage(
-  prompter: Prompter,
-): Promise<ResolvedConfig | undefined> {
+async function readPackage(prompter: Prompter): Promise<Config | undefined> {
   const config = await readConfig(process.cwd(), {
     searchParents: false,
   });

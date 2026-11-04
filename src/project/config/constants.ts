@@ -122,3 +122,10 @@ export const defaultTsconfigCheck = freeze({
   "tooling": true,
   "tests.dist": false,
 } as const);
+
+export const liveSections = [
+  "packageJsonPath",
+  "packageJson",
+  "tsconfig",
+  "environment",
+] as const;

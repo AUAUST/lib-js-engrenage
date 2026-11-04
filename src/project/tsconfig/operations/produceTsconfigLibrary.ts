@@ -1,11 +1,11 @@
 import { readTsconfigValue } from "#project/tsconfig/operations/readTsconfigValue";
 import { resolveTsconfigLibrary } from "#project/tsconfig/operations/resolveTsconfigLibrary";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 export function produceTsconfigLibrary(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   target: TsconfigTarget,
 ): readonly JsonEdit[] {
   if (target.key === "base") {

@@ -6,13 +6,13 @@ import { readTsconfigPaths } from "#project/tsconfig/operations/readTsconfigPath
 import { isPackageAlias } from "#project/tsconfig/utils/isPackageAlias";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 const pathsLocation = ["compilerOptions", "paths"];
 
 export function produceTsconfigPaths(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   { key, file }: TsconfigTarget,
 ): readonly JsonEdit[] {
   if (key === "tests.dist") {

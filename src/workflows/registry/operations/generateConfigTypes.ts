@@ -10,10 +10,10 @@ import { isBoolean } from "@auaust/toolkit/isBoolean";
 import { mappedValues } from "@auaust/toolkit/mappedValues";
 import { keys } from "@auaust/toolkit/object";
 
-import { configSchema } from "#project/config/config/schemas/configSchema";
 import { globsSchema } from "#project/config/config/schemas/values/globsSchema";
 import { presetListSchema } from "#project/config/config/schemas/values/presetListSchema";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import { configSchema } from "#workflows/registry/config/schemas/configSchema";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { File } from "#types/File";
 
 const configFile: File = "src/project/config/types/ConfigInput.ts";
@@ -198,7 +198,7 @@ function overrideSchema({ valibotSchema, jsonSchema }: OverrideSchemaContext) {
   }
 }
 
-export async function generateConfigTypes(config: ResolvedConfig) {
+export async function generateConfigTypes(config: ProjectConfig) {
   const jsonSchema = toJsonSchema(configSchema, {
     errorMode: "ignore",
     typeMode: "input",

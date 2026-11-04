@@ -1,13 +1,14 @@
 import { describe, expect, test } from "vitest";
 
-import { validate } from "#foundation/options/utils/validate";
-import { configSchema } from "#project/config/config/schemas/configSchema";
-import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
 import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
+import { createConfig } from "#workflows/registry/operations/createConfig";
 
-function syncProject(input: unknown, files: Record<string, string> = {}) {
+function syncProject(
+  input: Record<string, unknown>,
+  files: Record<string, string> = {},
+) {
   const project = createTemporaryProject({
     "package.json": "{}",
     "src/index.ts": "",
@@ -18,9 +19,9 @@ function syncProject(input: unknown, files: Record<string, string> = {}) {
     ...files,
   });
 
-  const config = createResolvedConfig({
+  const config = createConfig({
     root: project.root,
-    raw: validate(configSchema, withSourceRuntime(input), "test config"),
+    raw: withSourceRuntime(input),
     configFile: undefined,
   });
 

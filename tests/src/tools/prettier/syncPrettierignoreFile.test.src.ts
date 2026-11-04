@@ -1,9 +1,8 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
-import { syncPrettierignoreFile } from "@auaust/engrenage/prettier";
-
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { syncPrettierignoreFile } from "#tools/prettier/index";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 describe("syncPrettierignoreFile", () => {
   test("writes the default and project groups, with the changelog of changesets projects and the Codex instructions", async () => {

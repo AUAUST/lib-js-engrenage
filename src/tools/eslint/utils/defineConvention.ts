@@ -1,6 +1,6 @@
 import type { ResolvableValue } from "@auaust/toolkit/value";
 
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Presets } from "#project/presets/types/Presets";
 import type { Convention } from "#tools/eslint/types/Convention";
 import type { Delegate } from "#tools/eslint/types/Delegate";
@@ -19,8 +19,8 @@ export function defineConvention({
   presets = [],
   requires = [],
 }: {
-  delegates?: ResolvableValue<readonly Delegate[], [ResolvedConfig]>;
-  rule?: ResolvableValue<RuleModule, [ResolvedConfig]>;
+  delegates?: ResolvableValue<readonly Delegate[], [ProjectConfig]>;
+  rule?: ResolvableValue<RuleModule, [ProjectConfig]>;
   files?: ScopeReferences;
   ignores?: ScopeReferences;
   typeAware?: boolean;

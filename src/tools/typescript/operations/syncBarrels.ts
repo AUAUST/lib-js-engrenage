@@ -15,7 +15,7 @@ import {
   typescriptBlocks,
 } from "#tools/typescript/constants";
 import { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { SubpathImports } from "#project/package/types/SubpathImports";
 import type { BarrelMode } from "#tools/typescript/types/BarrelMode";
 import type { Directory } from "#types/Directory";
@@ -160,7 +160,7 @@ function selectBarrels(files: Files, name: string): Files {
 }
 
 export function syncBarrels(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   barrels: readonly string[] = [],
 ) {
   const { root: rootPath } = config;

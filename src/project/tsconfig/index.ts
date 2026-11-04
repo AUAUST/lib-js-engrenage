@@ -16,6 +16,7 @@ export * from "#project/tsconfig/types/Paths";
 export * from "#project/tsconfig/types/ResolvedBaseTsconfig";
 export * from "#project/tsconfig/types/ResolvedEnvironmentTsconfig";
 export * from "#project/tsconfig/types/ResolvedEnvironmentTsconfigOption";
+export * from "#project/tsconfig/types/ResolvedTypescript";
 export * from "#project/tsconfig/types/Tsconfig";
 export * from "#project/tsconfig/types/TsconfigEnvironment";
 export * from "#project/tsconfig/types/TsconfigGroups";

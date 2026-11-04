@@ -5,13 +5,11 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
 import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
-import { validate } from "#foundation/options/utils/validate";
-import { configSchema } from "#project/config/config/schemas/configSchema";
-import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
 import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { createPrettierFormatter } from "#tools/prettier/operations/createPrettierFormatter";
+import { createConfig } from "#workflows/registry/operations/createConfig";
 
 function createProject(files: Record<string, string>) {
   const project = createTemporaryProject({
@@ -40,9 +38,9 @@ describe("filesystem.format", () => {
       "tsconfig.json": "{}",
     });
 
-    const config = createResolvedConfig({
+    const config = createConfig({
       root: project.root,
-      raw: validate(configSchema, withSourceRuntime({}), "test config"),
+      raw: withSourceRuntime({}),
       configFile: undefined,
     });
 

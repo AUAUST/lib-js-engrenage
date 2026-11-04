@@ -1,17 +1,15 @@
 import { describe, expect, test } from "vitest";
 
-import { validate } from "#foundation/options/utils/validate";
-import { configSchema } from "#project/config/config/schemas/configSchema";
-import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
 import { resolvePathAliases } from "#project/tsconfig/operations/resolvePathAliases";
 import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { resolveSourceEntries } from "#tools/tsdown/operations/resolveSourceEntries";
+import { createConfig } from "#workflows/registry/operations/createConfig";
 
 const exports = { ".": "src/index.ts", "./*": "src/*/index.ts" };
 
-function syncProject(input: unknown, baseTsconfig = "{}") {
+function syncProject(input: Record<string, unknown>, baseTsconfig = "{}") {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({ name: "@scope/package" }),
     "src/index.ts": "",
@@ -20,9 +18,9 @@ function syncProject(input: unknown, baseTsconfig = "{}") {
     "tsconfig.json": baseTsconfig,
   });
 
-  const config = createResolvedConfig({
+  const config = createConfig({
     root: project.root,
-    raw: validate(configSchema, withSourceRuntime(input), "test config"),
+    raw: withSourceRuntime(input),
     configFile: undefined,
   });
 

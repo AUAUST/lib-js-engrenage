@@ -46,7 +46,7 @@ import {
 } from "#tools/typescript/constants";
 import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
 import { formatModule } from "#tools/typescript/operations/formatModule";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -368,7 +368,7 @@ function readDefaultFeatures(): File {
 
 // @debt generateEditions parses, matches, resolves and formats in one function; those stages could be separate modules, and collectDeclarations carries a `library_` name next to `library` for two different things.
 export async function generateEditions(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   {
     libraries = readDefaultLibraries(),
     features = readDefaultFeatures(),

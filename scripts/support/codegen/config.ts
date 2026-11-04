@@ -10,10 +10,10 @@ export const config = defineCommand((command) => {
     .option("--check", "report an outdated file without writing it", false)
     .action(async ({ check }) => {
       const { loadConfig } =
-        await import("#project/config/operations/loadConfig");
+        await import("#workflows/registry/operations/loadConfig");
 
       const { generateConfigTypes } =
-        await import("#project/config/operations/generateConfigTypes");
+        await import("#workflows/registry/operations/generateConfigTypes");
 
       const { settleChanges } =
         await import("#workflows/cli/operations/settleChanges");

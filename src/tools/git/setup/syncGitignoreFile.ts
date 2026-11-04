@@ -9,9 +9,12 @@ import {
   osIgnores,
 } from "#tools/git/constants";
 import { createProjectIgnores } from "#tools/git/utils/createProjectIgnores";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 
-export function syncGitignoreFile(config: ResolvedConfig) {
+export function syncGitignoreFile(
+  config: ProjectConfig & { git: ResolvedGit },
+) {
   syncIgnoreFile(config, {
     path: config.git.gitignore,
     presets: {

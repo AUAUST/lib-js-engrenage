@@ -1,9 +1,9 @@
 import type { Linter } from "eslint";
 
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 
 export function createTypeAwareLanguageOptions(
-  config: ResolvedConfig,
+  config: ProjectConfig,
 ): Linter.LanguageOptions {
   return {
     parserOptions: {

@@ -3,13 +3,13 @@ import { fileURLToPath } from "node:url";
 import { array, literal, looseObject, strictObject, string } from "valibot";
 import { describe, expect, test } from "vitest";
 
-import { validate } from "@auaust/engrenage";
-import { loadConfig } from "@auaust/engrenage/config";
-import { syncVscodeFiles } from "@auaust/engrenage/vscode";
 import { map } from "@auaust/primitive-kit/arrays";
 
+import { validate } from "#foundation/options/utils/validate";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { syncVscodeFiles } from "#tools/vscode/index";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 const eslintEntry = fileURLToPath(
   new URL("../../../../src/tools/eslint/index.ts", import.meta.url),

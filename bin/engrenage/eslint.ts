@@ -7,10 +7,10 @@ import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands
 import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
 import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
 import { hasOption } from "#workflows/cli/utils/hasOption";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 
 // @debt The cache is keyed on each file alone, so type-aware rules keep passing a file whose imported types changed; checks must pass `--no-cache` to be sound.
-function useCache(config: ResolvedConfig, args: string[]) {
+function useCache(config: ProjectConfig, args: string[]) {
   if (hasOption(args, ["--no-cache"])) {
     return;
   }

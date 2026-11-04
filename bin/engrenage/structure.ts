@@ -1,7 +1,7 @@
-import { loadConfig } from "#project/config/operations/loadConfig";
 import { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 import { renderStructure } from "#project/structure/utils/renderStructure";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 export const structure = defineCommand((command) => {
   return command

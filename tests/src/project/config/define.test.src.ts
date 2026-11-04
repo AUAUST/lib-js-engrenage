@@ -1,14 +1,12 @@
 import { describe, expect, test } from "vitest";
 
-import { validate } from "#foundation/options/utils/validate";
-import { configSchema } from "#project/config/config/schemas/configSchema";
-import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
 import { createDefine } from "#project/config/utils/createDefine";
 import { define } from "#project/config/utils/define";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
+import { createConfig } from "#workflows/registry/operations/createConfig";
 
-function resolveConfig(input: unknown) {
+function resolveConfig(input: Record<string, unknown>) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({
       name: "@scope/package",
@@ -16,11 +14,15 @@ function resolveConfig(input: unknown) {
     }),
   });
 
-  return createResolvedConfig({
+  const config = createConfig({
     root: project.root,
-    raw: validate(configSchema, input, "test config"),
+    raw: input,
     configFile: undefined,
   });
+
+  void config.define;
+
+  return config;
 }
 
 describe("define", () => {

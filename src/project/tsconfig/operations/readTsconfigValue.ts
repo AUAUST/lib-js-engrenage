@@ -1,9 +1,9 @@
 import { readJsonValue } from "#foundation/json/utils/readJsonValue";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 export function readTsconfigValue(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   { file }: TsconfigTarget,
   location: readonly string[],
 ): unknown {

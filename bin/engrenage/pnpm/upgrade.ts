@@ -1,5 +1,4 @@
 import { packageJsonFile } from "#constants";
-import { loadConfig } from "#project/config/operations/loadConfig";
 import { readProjectPnpmVersion } from "#project/package/utils/readProjectPnpmVersion";
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
 import { installDependencies } from "#tools/pnpm/operations/installDependencies";
@@ -9,6 +8,7 @@ import { upgradePnpmManifest } from "#tools/pnpm/operations/upgradePnpmManifest"
 import { createPrompter } from "#workflows/cli/operations/createPrompter";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 export const upgrade = defineCommand((command) => {
   return command

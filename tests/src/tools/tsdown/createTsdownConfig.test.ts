@@ -286,7 +286,7 @@ describe("createTsdownConfig", () => {
           name: "@scope/package",
           type: "module",
         }),
-        "engrenage.config.ts": `export default ${JSON.stringify(withSourceRuntime(config))};\n`,
+        "engrenage.config.ts": `export default ${JSON.stringify(withSourceRuntime({ ...config }))};\n`,
         "tsconfig.json": JSON.stringify({
           compilerOptions: {
             outDir: "dist",
@@ -407,7 +407,7 @@ describe("createTsdownConfig", () => {
           type: "module",
           ...(engines === undefined ? {} : { engines }),
         }),
-        "engrenage.config.ts": `export default ${JSON.stringify(withSourceRuntime(config))};\n`,
+        "engrenage.config.ts": `export default ${JSON.stringify(withSourceRuntime({ ...config }))};\n`,
         "tsconfig.json": JSON.stringify({
           compilerOptions: {
             outDir: "dist",

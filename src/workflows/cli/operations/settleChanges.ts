@@ -2,11 +2,11 @@ import { map } from "@auaust/primitive-kit/arrays";
 
 import { successMessage } from "#workflows/cli/constants";
 import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { SyncResult } from "#types/SyncResult";
 
 export async function settleChanges(
-  { filesystem }: ResolvedConfig,
+  { filesystem }: ProjectConfig,
   { check }: { check: boolean },
 ) {
   await filesystem.format();

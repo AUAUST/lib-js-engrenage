@@ -4,13 +4,13 @@ import { resolveListOption } from "#project/config/operations/resolveListOption"
 import { resolveTsconfigEnvironments } from "#project/tsconfig/operations/resolveTsconfigEnvironments";
 import { toTsconfigGlobs } from "#project/tsconfig/utils/toTsconfigGlobs";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 import type { File } from "#types/File";
 
 function listDefaultExclude(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   key: TsconfigKey,
   file: File,
 ): readonly string[] {
@@ -22,7 +22,7 @@ function listDefaultExclude(
 }
 
 export function produceTsconfigExclude(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   { key, file, exclude: option }: TsconfigTarget,
 ): readonly JsonEdit[] {
   if (key === "base") {

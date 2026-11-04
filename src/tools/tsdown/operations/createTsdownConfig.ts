@@ -24,7 +24,7 @@ import { createEntrySelfReferencesPlugins } from "#tools/tsdown/plugins/createEn
 import { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
 import { resolveDataExports } from "#tools/tsdown/utils/resolveDataExports";
 import { resolveTsdownTarget } from "#tools/tsdown/utils/resolveTsdownTarget";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { PathAliases } from "#project/tsconfig/types/PathAliases";
 import type { Config } from "#tools/tsdown/types/Config";
 import type { Options } from "#tools/tsdown/types/Options";
@@ -66,7 +66,7 @@ function assertPackageUnchanged(path: File, snapshot: string) {
 }
 
 export function createTsdownConfig(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   { ci }: { ci: boolean },
   options?: Maybe<Options>,
 ): Config {

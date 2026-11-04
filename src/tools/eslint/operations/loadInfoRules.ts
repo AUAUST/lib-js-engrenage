@@ -6,9 +6,10 @@ import { keys } from "@auaust/toolkit/object";
 import { eslint } from "#constants";
 import { importConfigFile } from "#foundation/filesystem/operations/importConfigFile";
 import { validate } from "#foundation/options/utils/validate";
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { infoRulesSetting } from "#tools/eslint/constants";
 import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Directory } from "#types/Directory";
 
 const loadedConfigsSchema = array(
   looseObject({
@@ -17,14 +18,14 @@ const loadedConfigsSchema = array(
   }),
 );
 
-async function loadEslintConfigs(config: ResolvedConfig) {
+async function loadEslintConfigs(root: Directory) {
   const { config: loaded, _configFile } = await importConfigFile(
-    config.root,
+    root,
     `${eslint}.config`,
   );
 
   if (_configFile === undefined) {
-    return createEslintConfig(config, {
+    return createEslintConfig(await loadConfig(root), {
       ignore: false,
     });
   }
@@ -32,10 +33,10 @@ async function loadEslintConfigs(config: ResolvedConfig) {
   return validate(loadedConfigsSchema, loaded, _configFile);
 }
 
-export async function loadInfoRules(config: ResolvedConfig): Promise<string[]> {
+export async function loadInfoRules(root: Directory): Promise<string[]> {
   const infoRules = new Set<string>();
 
-  for (const { rules = {}, settings = {} } of await loadEslintConfigs(config)) {
+  for (const { rules = {}, settings = {} } of await loadEslintConfigs(root)) {
     const declared =
       validate(
         optional(array(string())),

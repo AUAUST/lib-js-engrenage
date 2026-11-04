@@ -5,11 +5,11 @@ import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
 import { validate } from "#foundation/options/utils/validate";
-import { loadConfig } from "#project/config/operations/loadConfig";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
 import { syncTargets } from "#workflows/sync/operations/syncTargets";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Config } from "#workflows/registry/types/Config";
 import type { SyncTargetName } from "#workflows/sync/types/SyncTargetName";
 
 type TargetFlags = Partial<Record<SyncTargetName, Record<string, boolean>>>;
@@ -34,7 +34,7 @@ function createFlagOptions(): readonly {
 }
 
 export async function runSync(
-  config: ResolvedConfig,
+  config: Config,
   {
     names = keys(syncTargets),
     flags = {},

@@ -1,19 +1,19 @@
 import { map } from "@auaust/primitive-kit/arrays";
 
 import { createStepContext } from "#workflows/cli/operations/createStepContext";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { Prompter } from "#project/steps/types/Prompter";
 import type { Step } from "#project/steps/types/Step";
+import type { Config } from "#workflows/registry/types/Config";
 
 export async function runSteps({
   config,
   prompter,
   steps,
 }: {
-  config: ResolvedConfig;
+  config: Config;
   prompter: Prompter;
-  steps: readonly Step<ResolvedConfig>[];
+  steps: readonly Step<Config>[];
 }): Promise<readonly Invocation[] | undefined> {
   const context = createStepContext({
     config,
@@ -41,7 +41,7 @@ export async function runSteps({
   async function accepts({
     message,
     isRecommended,
-  }: Step<ResolvedConfig>): Promise<boolean> {
+  }: Step<Config>): Promise<boolean> {
     return (
       message === undefined ||
       prompter.confirm(message, isRecommended?.(context) ?? true)

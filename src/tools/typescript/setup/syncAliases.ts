@@ -10,7 +10,7 @@ import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
 import { readTsconfigPaths } from "#project/tsconfig/operations/readTsconfigPaths";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Alias } from "#project/structure/types/Alias";
 
 const importPrefix = "#";
@@ -21,7 +21,7 @@ function sortByKey<Item extends readonly [string, unknown]>(items: Item[]) {
   });
 }
 
-function syncImports(config: ResolvedConfig, aliases: readonly Alias[]) {
+function syncImports(config: ProjectConfig, aliases: readonly Alias[]) {
   const imports = record(
     sortByKey(
       aliases
@@ -53,7 +53,7 @@ function syncImports(config: ResolvedConfig, aliases: readonly Alias[]) {
   ]);
 }
 
-function syncPaths(config: ResolvedConfig, aliases: readonly Alias[]) {
+function syncPaths(config: ProjectConfig, aliases: readonly Alias[]) {
   const { file } = config.typescript.tsconfig;
 
   const others = entries(readTsconfigPaths(config, file)).filter(([key]) => {
@@ -80,7 +80,7 @@ function syncPaths(config: ResolvedConfig, aliases: readonly Alias[]) {
   );
 }
 
-export function syncAliases(config: ResolvedConfig) {
+export function syncAliases(config: ProjectConfig) {
   const { enabled, global, src } = config.aliases;
 
   if (!enabled) {

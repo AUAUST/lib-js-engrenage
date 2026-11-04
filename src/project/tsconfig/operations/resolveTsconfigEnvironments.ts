@@ -1,11 +1,11 @@
 import { tsconfigEnvironments } from "#project/config/constants";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 
 type TsconfigEnvironment = (typeof tsconfigEnvironments)[number];
 
 export function resolveTsconfigEnvironments(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   key: TsconfigKey,
 ): {
   owner: TsconfigEnvironment;

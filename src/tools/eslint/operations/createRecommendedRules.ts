@@ -14,14 +14,14 @@ import {
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { createTypeAwareLanguageOptions } from "#tools/eslint/utils/createTypeAwareLanguageOptions";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Config } from "#tools/eslint/types/Config";
 
 export function createRecommendedRules({
   config,
   typeAware,
 }: {
-  config: ResolvedConfig;
+  config: ProjectConfig;
   typeAware: boolean;
 }): Config[] {
   return defineConfig([

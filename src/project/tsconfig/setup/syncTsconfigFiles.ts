@@ -9,7 +9,7 @@ import { tsconfigProducers } from "#project/tsconfig/operations/tsconfigProducer
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { ManagedListOption } from "#project/config/types/ManagedListOption";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
@@ -29,7 +29,7 @@ function toTarget(
     types,
     compilerOptions,
     unmanaged,
-  }: ResolvedConfig["src"]["tsconfig"],
+  }: ProjectConfig["src"]["tsconfig"],
 ): TsconfigTarget | undefined {
   return file === undefined
     ? undefined
@@ -47,11 +47,11 @@ function toTarget(
 }
 
 // @debt "tests.dist" does not fit the config shape, so it is special-cased here and in createResolvedConfig, resolveTsconfigEnvironments and the extends, paths and skipLibCheck producers; a single lookup from tsconfig key to its environment would remove the branches
-function isActive(config: ResolvedConfig, key: TsconfigKey): boolean {
+function isActive(config: ProjectConfig, key: TsconfigKey): boolean {
   return key === "tests.dist" ? config.tests.active : config[key].active;
 }
 
-function findTsconfig(config: ResolvedConfig, key: TsconfigKey) {
+function findTsconfig(config: ProjectConfig, key: TsconfigKey) {
   return key === "tests.dist"
     ? config.tests.dist.tsconfig
     : config[key].tsconfig;
@@ -62,7 +62,7 @@ interface PlannedTarget {
   create: boolean;
 }
 
-function collectTargets(config: ResolvedConfig): PlannedTarget[] {
+function collectTargets(config: ProjectConfig): PlannedTarget[] {
   const { tsconfig } = config.typescript;
 
   const targets: PlannedTarget[] = [
@@ -124,7 +124,7 @@ function isDefaultOption(option: ManagedListOption<string> | undefined) {
 }
 
 function inheritsTestsTsconfig(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   target: TsconfigTarget,
 ): boolean {
   return (
@@ -135,7 +135,7 @@ function inheritsTestsTsconfig(
 }
 
 function listInheritedPaths(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   target: TsconfigTarget,
 ): readonly string[][] {
   if (!inheritsTestsTsconfig(config, target)) {
@@ -175,7 +175,7 @@ function toJsonValue(value: unknown, subject: string): JsonValue {
 }
 
 function createEdits(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   target: TsconfigTarget,
 ): readonly JsonEdit[] {
   const leftAlone = [...listPaths(target), ...target.unmanaged];
@@ -213,7 +213,7 @@ function createEdits(
   return [...managed, ...custom];
 }
 
-export function syncTsconfigFiles(config: ResolvedConfig) {
+export function syncTsconfigFiles(config: ProjectConfig) {
   for (const { target, create } of collectTargets(config)) {
     const current = config.filesystem.read(target.file);
 

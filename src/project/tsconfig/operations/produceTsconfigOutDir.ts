@@ -2,19 +2,21 @@ import { resolve } from "node:path";
 
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
+import { validate } from "#foundation/options/utils/validate";
+import { buildSchema } from "#project/build/config/schemas/buildSchema";
 import { jsonIndentation } from "#project/format/constants";
 import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { produceTsconfigExtends } from "#project/tsconfig/operations/produceTsconfigExtends";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 import type { Directory } from "#types/Directory";
 
 const outDirLocation = ["compilerOptions", "outDir"];
 
 function resolveInheritedOutDir(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   target: TsconfigTarget,
 ): Directory | undefined {
   const path = config.resolve(target.file);
@@ -38,10 +40,15 @@ function resolveInheritedOutDir(
 }
 
 export function produceTsconfigOutDir(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   target: TsconfigTarget,
 ): readonly JsonEdit[] {
-  const outDir = config.raw.build?.outDir;
+  // @debt the configured output directory is read by validating the raw build section again; the resolved build section could expose it next to its computed default
+  const outDir = validate(
+    buildSchema.schema,
+    config.raw.build,
+    "build config",
+  )?.outDir;
 
   if (target.key !== "src" || outDir === undefined) {
     return [];

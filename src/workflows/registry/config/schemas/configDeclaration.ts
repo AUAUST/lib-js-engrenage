@@ -3,7 +3,6 @@ import { buildSchema } from "#project/build/config/schemas/buildSchema";
 import { cacheSchema } from "#project/config/config/schemas/core/cacheSchema";
 import { debugSchema } from "#project/config/config/schemas/core/debugSchema";
 import { defineSchema } from "#project/config/config/schemas/core/defineSchema";
-import { typescriptSchema } from "#project/config/config/schemas/tools/typescriptSchema";
 import { binSchema } from "#project/environments/config/schemas/binSchema";
 import { dataSchema } from "#project/environments/config/schemas/dataSchema";
 import { runtimeSchema } from "#project/environments/config/schemas/runtimeSchema";
@@ -14,7 +13,7 @@ import { toolingSchema } from "#project/environments/config/schemas/toolingSchem
 import { presetsSchema } from "#project/presets/config/schemas/presetsSchema";
 import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
-// @debt reaches into tools, a higher layer than project; the registry (#143 step 5) composes the tool sections and removes the upward dependency
+import { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
 import { agentsSchema } from "#tools/agents/config/schemas/agentsSchema";
 import { gitSchema } from "#tools/git/config/schemas/gitSchema";
 import { githubSchema } from "#tools/github/config/schemas/githubSchema";

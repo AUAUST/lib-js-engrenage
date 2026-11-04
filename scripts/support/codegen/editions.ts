@@ -10,7 +10,7 @@ export const editions = defineCommand((command) => {
     .option("--check", "report an outdated file without writing it", false)
     .action(async ({ check }) => {
       const { loadConfig } =
-        await import("#project/config/operations/loadConfig");
+        await import("#workflows/registry/operations/loadConfig");
 
       const { generateEditions } =
         await import("#tools/typescript/operations/generateEditions");

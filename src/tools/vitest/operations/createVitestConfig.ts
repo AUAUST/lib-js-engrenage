@@ -18,14 +18,14 @@ import {
 import { findSetupFiles } from "#tools/vitest/operations/findSetupFiles";
 import { createOutDirGuard } from "#tools/vitest/plugins/createOutDirGuard";
 import { createSourceGuard } from "#tools/vitest/plugins/createSourceGuard";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
 import type { Plugin } from "#tools/vite/types/Plugin";
 import type { Config } from "#tools/vitest/types/Config";
 import type { Options } from "#tools/vitest/types/Options";
 
 function createSourcePlugins(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   guardOutDir: boolean,
 ): Plugin[] {
   const { outDir } = config.build;
@@ -43,7 +43,7 @@ function createSourcePlugins(
   ];
 }
 
-function createDistPlugins(config: ResolvedConfig): Plugin[] {
+function createDistPlugins(config: ProjectConfig): Plugin[] {
   // @debt the guard reads the `library` preset; it belongs to the `published` trait once that exists
   if (!includes(config.presets, "library")) {
     return [];
@@ -59,7 +59,7 @@ function createDistPlugins(config: ResolvedConfig): Plugin[] {
 }
 
 function createTestsInclude(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   testsBuild: boolean,
 ): string[] | undefined {
   // @debt the variants are selected by the `library` preset; they belong to the `published` trait once that exists
@@ -74,7 +74,7 @@ function createTestsInclude(
 }
 
 export function createVitestConfig(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   { mode }: ConfigEnv,
   options?: Maybe<Options>,
 ): Config {

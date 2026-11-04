@@ -1,9 +1,9 @@
 import { createDefine } from "#project/config/utils/createDefine";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Config } from "#tools/vite/types/Config";
 
 export function createViteConfig(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   { isTesting }: { isTesting: boolean },
 ): Config {
   const { sourcemap, outDir, emptyOutDir } = config.build;

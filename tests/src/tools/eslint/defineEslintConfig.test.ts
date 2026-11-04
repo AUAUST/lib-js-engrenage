@@ -3,7 +3,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { defineEslintConfig } from "@auaust/engrenage/eslint";
 import { map } from "@auaust/primitive-kit/arrays";
-import type { ResolvedConfig } from "@auaust/engrenage/config";
+import type { ProjectConfig } from "@auaust/engrenage/config";
 
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
@@ -18,7 +18,7 @@ describe("defineEslintConfig", () => {
   test("passes the resolved config to the callbacks and appends native configs", async () => {
     mockCwd(root);
 
-    const callback = vi.fn((config: ResolvedConfig) => {
+    const callback = vi.fn((config: ProjectConfig) => {
       return {
         stylistic: config.root === root,
       };

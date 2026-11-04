@@ -8,12 +8,12 @@ import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
 import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
 import { getOptionsEnd } from "#workflows/cli/utils/getOptionsEnd";
 import { isOptionOf } from "#workflows/cli/utils/isOptionOf";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { File } from "#types/File";
 
 const buildOptions = ["--build", "-b"];
 
-function isSolution(config: ResolvedConfig, project: File): boolean {
+function isSolution(config: ProjectConfig, project: File): boolean {
   const { references } = createTsconfig({
     root: config.root,
     path: project,
@@ -23,7 +23,7 @@ function isSolution(config: ResolvedConfig, project: File): boolean {
   return isNotEmpty(references);
 }
 
-function hasReferencedEnvironment(config: ResolvedConfig): boolean {
+function hasReferencedEnvironment(config: ProjectConfig): boolean {
   return tsconfigEnvironments.some((name) => {
     const { owner, check } = config[name].tsconfig;
 
@@ -31,7 +31,7 @@ function hasReferencedEnvironment(config: ResolvedConfig): boolean {
   });
 }
 
-function resolveDistProject(config: ResolvedConfig): File {
+function resolveDistProject(config: ProjectConfig): File {
   const { active } = config.tests;
   const { owner, file, path } = config.tests.dist.tsconfig;
 
@@ -57,7 +57,7 @@ function resolveDistProject(config: ResolvedConfig): File {
 }
 
 function checkProject(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   args: string[],
   project: File | undefined,
 ) {

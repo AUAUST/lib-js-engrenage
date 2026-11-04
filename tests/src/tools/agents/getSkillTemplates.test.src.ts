@@ -1,8 +1,8 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 vi.mock(import("#tools/agents/operations/getInstructionTemplates"), () => {
   return {

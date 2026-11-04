@@ -1,6 +1,6 @@
 import type { ResolvableValue } from "@auaust/toolkit/value";
 
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Presets } from "#project/presets/types/Presets";
 import type { Delegate } from "#tools/eslint/types/Delegate";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
@@ -15,6 +15,6 @@ export interface Convention {
   ignores: ScopeReferences;
   typeAware: boolean;
   severity: "error" | "warn" | "info";
-  delegates: ResolvableValue<readonly Delegate[], [ResolvedConfig]>;
-  rule?: ResolvableValue<RuleModule, [ResolvedConfig]>;
+  delegates: ResolvableValue<readonly Delegate[], [ProjectConfig]>;
+  rule?: ResolvableValue<RuleModule, [ProjectConfig]>;
 }

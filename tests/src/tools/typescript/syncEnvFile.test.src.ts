@@ -1,21 +1,22 @@
 import { describe, expect, test } from "vitest";
 
-import { validate } from "#foundation/options/utils/validate";
-import { configSchema } from "#project/config/config/schemas/configSchema";
-import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
 import { define } from "#project/config/utils/define";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
+import { createConfig } from "#workflows/registry/operations/createConfig";
 
-function createProject(input: unknown, files: Record<string, string> = {}) {
+function createProject(
+  input: Record<string, unknown>,
+  files: Record<string, string> = {},
+) {
   const project = createTemporaryProject({
     "package.json": "{}",
     ...files,
   });
 
-  const config = createResolvedConfig({
+  const config = createConfig({
     root: project.root,
-    raw: validate(configSchema, input, "test config"),
+    raw: input,
     configFile: undefined,
   });
 

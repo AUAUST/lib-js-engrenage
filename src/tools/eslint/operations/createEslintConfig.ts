@@ -8,6 +8,7 @@ import { configs as typescriptConfigs } from "typescript-eslint";
 
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
+// @debt reads the git section by resolving it again from the raw input, because the definer only has the project sections; a definer could receive the sections it reads through get
 import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
 import { validate } from "#foundation/options/utils/validate";
@@ -20,12 +21,13 @@ import { createIgnoreRules } from "#tools/eslint/utils/createIgnoreRules";
 import { createImportPresets } from "#tools/eslint/utils/createImportPresets";
 import { createPlugin } from "#tools/eslint/utils/createPlugin";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import { resolveGit } from "#tools/git/operations/resolveGit";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Options } from "#tools/eslint/types/Options";
 
 export function createEslintConfig(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   options?: Maybe<Options>,
 ): Config[] {
   const {
@@ -54,7 +56,9 @@ export function createEslintConfig(
   if (ignore) {
     configs.push(
       createIgnoreRules({
-        gitignorePath: config.git.gitignore,
+        gitignorePath: resolveGit(config.raw, {
+          get: (section) => config[section],
+        }).gitignore,
         generatedFiles: config.files.generated,
         outputDirectory: config.build.outDir,
         coverageDirectory: config.tests.coverageDir,

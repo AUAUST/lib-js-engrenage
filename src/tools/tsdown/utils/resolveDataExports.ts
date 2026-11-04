@@ -1,6 +1,6 @@
 import { entries } from "@auaust/toolkit/object";
 
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { PathAliases } from "#project/tsconfig/types/PathAliases";
 
 function toSubpathPattern(subpath: string): RegExp {
@@ -18,7 +18,7 @@ function toSubpath({ name }: { name: string }): string {
 }
 
 export function resolveDataExports(
-  { data }: ResolvedConfig,
+  { data }: ProjectConfig,
   sourceEntries: PathAliases,
 ): Record<string, string> {
   const dataExports: Record<string, string> = {};

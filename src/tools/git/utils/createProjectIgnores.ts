@@ -1,9 +1,9 @@
 import { coverageTitle, outputTitle } from "#tools/git/constants";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { GlobGroup } from "#types/GlobGroup";
 
 export function createProjectIgnores(
-  config: ResolvedConfig,
+  config: ProjectConfig,
 ): readonly GlobGroup[] {
   const { outDir } = config.build;
   const { coverageDir } = config.tests;

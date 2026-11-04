@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
-import { syncGitignoreFile } from "@auaust/engrenage/git";
-import { defaultIgnores } from "@auaust/engrenage/git/constants";
 import { map } from "@auaust/primitive-kit/arrays";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { defaultIgnores } from "#tools/git/constants";
+import { syncGitignoreFile } from "#tools/git/index";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 describe("syncGitignoreFile", () => {
   test("writes each preset as a titled group and keeps the lines around the blocks", async () => {

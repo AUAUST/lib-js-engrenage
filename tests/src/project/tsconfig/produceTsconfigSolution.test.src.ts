@@ -4,9 +4,6 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test, vi } from "vitest";
 
 import { tsc } from "#bin/engrenage/tsc";
-import { validate } from "#foundation/options/utils/validate";
-import { configSchema } from "#project/config/config/schemas/configSchema";
-import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
 import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { captureBinaryOutput } from "#tests/utils/captureBinaryOutput";
@@ -14,6 +11,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
+import { createConfig } from "#workflows/registry/operations/createConfig";
 
 vi.mock(import("node:child_process"), { spy: true });
 
@@ -21,7 +19,7 @@ const repositoryModules = fileURLToPath(
   new URL("../../../../node_modules", import.meta.url),
 );
 
-function syncProject(input: unknown, testSource = "") {
+function syncProject(input: Record<string, unknown>, testSource = "") {
   const project = createTemporaryProject({
     "package.json": '{"name":"project","type":"module"}',
     "src/index.ts": "export const value: number = 1;\n",
@@ -31,9 +29,9 @@ function syncProject(input: unknown, testSource = "") {
     "tsconfig.json": "{}",
   });
 
-  const config = createResolvedConfig({
+  const config = createConfig({
     root: project.root,
-    raw: validate(configSchema, withSourceRuntime(input), "test config"),
+    raw: withSourceRuntime(input),
     configFile: undefined,
   });
 

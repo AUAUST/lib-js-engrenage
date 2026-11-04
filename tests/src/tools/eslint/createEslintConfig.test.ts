@@ -8,7 +8,7 @@ import {
   loadConfig,
   type Environment,
   type Presets,
-  type ResolvedConfig,
+  type ProjectConfig,
 } from "@auaust/engrenage/config";
 import { packageJsonFile } from "@auaust/engrenage/constants";
 import {
@@ -1650,7 +1650,7 @@ export async function run(): Promise<unknown> {
 
   test("exposes its contract through the local aliases", () => {
     expectTypeOf(createEslintConfig).parameters.toEqualTypeOf<
-      [ResolvedConfig, Maybe<Options>?]
+      [ProjectConfig, Maybe<Options>?]
     >();
 
     expectTypeOf(createEslintConfig).returns.toEqualTypeOf<Config[]>();

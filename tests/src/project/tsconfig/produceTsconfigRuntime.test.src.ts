@@ -8,14 +8,14 @@ import {
 import { describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { validate } from "#foundation/options/utils/validate";
-import { configSchema } from "#project/config/config/schemas/configSchema";
-import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
 import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
+import { configSchema } from "#workflows/registry/config/schemas/configSchema";
+import { createConfig } from "#workflows/registry/operations/createConfig";
 
 function syncCompilerOptions(
-  input: unknown,
+  input: Record<string, unknown>,
   project = createTemporaryProject(),
 ) {
   project.write("package.json", "{}");
@@ -23,9 +23,9 @@ function syncCompilerOptions(
   project.write("bin/index.ts", "");
   project.write("tsconfig.json", "{}");
 
-  const config = createResolvedConfig({
+  const config = createConfig({
     root: project.root,
-    raw: validate(configSchema, withSourceRuntime(input), "test config"),
+    raw: withSourceRuntime(input),
     configFile: undefined,
   });
 
@@ -127,9 +127,9 @@ describe("runtime tsconfig fields", () => {
       }),
     });
 
-    const config = createResolvedConfig({
+    const config = createConfig({
       root: project.root,
-      raw: validate(configSchema, withSourceRuntime({}), "test config"),
+      raw: withSourceRuntime({}),
       configFile: undefined,
     });
 
@@ -192,9 +192,9 @@ describe("runtime tsconfig fields", () => {
       }),
     });
 
-    const config = createResolvedConfig({
+    const config = createConfig({
       root: project.root,
-      raw: validate(configSchema, {}, "test config"),
+      raw: {},
       configFile: undefined,
     });
 
@@ -283,9 +283,9 @@ describe("runtime tsconfig fields", () => {
       }),
     });
 
-    const config = createResolvedConfig({
+    const config = createConfig({
       root: project.root,
-      raw: validate(configSchema, {}, "test config"),
+      raw: {},
       configFile: undefined,
     });
 
@@ -302,7 +302,7 @@ describe("runtime tsconfig fields", () => {
   });
 
   test("rejects src.apis without src.baseline", () => {
-    const config = createResolvedConfig({
+    const config = createConfig({
       root: createTemporaryProject().root,
       raw: validate(
         configSchema,

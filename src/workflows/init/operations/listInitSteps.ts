@@ -29,10 +29,10 @@ import { createVscodeSettingsStep } from "#tools/vscode/setup/createVscodeSettin
 import { createConfigFileStep } from "#workflows/init/setup/createConfigFileStep";
 import { createDependencyStep } from "#workflows/init/setup/createDependencyStep";
 import { createScriptsStep } from "#workflows/init/setup/createScriptsStep";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { Step } from "#project/steps/types/Step";
+import type { Config } from "#workflows/registry/types/Config";
 
-export function listInitSteps(): Step<ResolvedConfig>[] {
+export function listInitSteps(): Step<Config>[] {
   return [
     createPreferredAgentsStep(),
     createConfigFileStep(),

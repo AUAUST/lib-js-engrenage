@@ -1,9 +1,9 @@
 import { readJsonValue } from "#foundation/json/utils/readJsonValue";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Paths } from "#project/tsconfig/types/Paths";
 import type { File } from "#types/File";
 
-export function readTsconfigPaths(config: ResolvedConfig, file: File): Paths {
+export function readTsconfigPaths(config: ProjectConfig, file: File): Paths {
   const current = config.filesystem.read(file);
 
   const paths =

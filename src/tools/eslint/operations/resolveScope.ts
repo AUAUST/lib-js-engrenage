@@ -2,14 +2,14 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 
 import { filesIn } from "#foundation/filesystem/utils/filesIn";
 import { anyFile } from "#tools/eslint/constants";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { ScopeReference } from "#tools/eslint/types/ScopeReference";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
 function resolveScopeReference(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   reference: ScopeReference,
 ): Globs {
   const { src, bin, scripts, tests, files } = config;
@@ -94,7 +94,7 @@ function resolveScopeReference(
 }
 
 export function resolveScope(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   references: ScopeReferences,
 ): Glob[] {
   return flatMap(references, (reference) => {

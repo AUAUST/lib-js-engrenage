@@ -3,7 +3,7 @@ import { relative } from "node:path";
 import { eslint } from "#constants";
 import { pluginName } from "#tools/eslint/constants";
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { DebtMarker } from "#tools/eslint/types/DebtMarker";
 
 function compareMarkers(a: DebtMarker, b: DebtMarker): number {
@@ -15,7 +15,7 @@ function compareMarkers(a: DebtMarker, b: DebtMarker): number {
 }
 
 export async function listDebtMarkers(
-  config: ResolvedConfig,
+  config: ProjectConfig,
 ): Promise<DebtMarker[]> {
   if (!config.environment.hasDependency(eslint)) {
     throw new Error(

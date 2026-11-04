@@ -39,7 +39,7 @@ import { includesEsLibrary } from "#project/baseline/operations/includesEsLibrar
 import { listEsSelections } from "#project/baseline/operations/listEsSelections";
 import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
 import { formatModule } from "#tools/typescript/operations/formatModule";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -240,7 +240,7 @@ function assertCompilesWithSelections(
 }
 
 export async function generateApiDeclarations(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   groups: readonly string[] = [],
   {
     libraryGroups = apiLibraryGroups,

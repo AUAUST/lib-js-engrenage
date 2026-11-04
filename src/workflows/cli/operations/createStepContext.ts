@@ -7,7 +7,6 @@ import { readJsonValue } from "#foundation/json/utils/readJsonValue";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { Presets } from "#project/presets/types/Presets";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { Prompter } from "#project/steps/types/Prompter";
@@ -15,6 +14,7 @@ import type { StepContext } from "#project/steps/types/StepContext";
 import type { Agent } from "#tools/agents/types/Agent";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
+import type { Config } from "#workflows/registry/types/Config";
 
 import manifest from "#package.json" with { type: "json" };
 
@@ -48,9 +48,9 @@ export function createStepContext({
   config,
   prompter,
 }: {
-  config: ResolvedConfig;
+  config: Config;
   prompter: Prompter;
-}): StepContext<ResolvedConfig> {
+}): StepContext<Config> {
   const { filesystem } = config;
 
   const invocations: Invocation[] = [];
@@ -147,7 +147,7 @@ export function createStepContext({
   let agents = config.agents.preferred;
 
   const overrides: {
-    [Section in keyof ResolvedConfig]?: () => ResolvedConfig[Section];
+    [Section in keyof Config]?: () => Config[Section];
   } = {
     presets: () => {
       return presets;
@@ -173,12 +173,10 @@ export function createStepContext({
     agents = chosen;
   }
 
-  return freeze<StepContext<ResolvedConfig>>({
+  return freeze<StepContext<Config>>({
     get(section) {
       return overrides[section]?.() ?? config[section];
     },
-    // @debt the VS Code steps still read the whole config; see StepContext
-    config,
     getAgents,
     setAgents,
     filesystem,

@@ -196,8 +196,6 @@ describe("loadConfig", () => {
 
     expect(config.packageJsonPath).toBe(join(root, "package.json"));
     expect(config.typescript.tsconfig.path).toBe(join(root, "tsconfig.json"));
-    expect(config.git.gitignore).toBeUndefined();
-    expect(config.prettier.prettierignore).toBeUndefined();
 
     expect(() => {
       return config.resolve("../outside");
@@ -222,16 +220,5 @@ describe("loadConfig", () => {
     expect((await loadConfig(moved.root)).cacheFor("@scope/tool")).toBe(
       moved.resolve(".cache/@scope/tool"),
     );
-  });
-
-  test("rejects unknown keys, naming the file and each key path", async () => {
-    const root = getFixture("config/invalid");
-
-    const error = loadConfig(root);
-
-    await expect(error).rejects.toThrow(join(root, "engrenage.config.ts"));
-    await expect(error).rejects.toThrow('Unknown key "sources"');
-    await expect(error).rejects.toThrow("at sources");
-    await expect(error).rejects.toThrow("at src.generatd");
   });
 });

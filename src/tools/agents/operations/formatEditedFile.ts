@@ -2,14 +2,14 @@ import { eslint, prettier } from "#constants";
 import { isWithin } from "#foundation/filesystem/utils/isWithin";
 import { resolveBinary } from "#foundation/processes/operations/resolveBinary";
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 
 const blockingExitCode = 2;
 
 function runTool(
-  config: ResolvedConfig,
+  config: ProjectConfig,
   packageName: KnownPackageName,
   args: readonly string[],
 ) {
@@ -31,7 +31,7 @@ function runTool(
   return result;
 }
 
-export function formatEditedFile(config: ResolvedConfig, file: File) {
+export function formatEditedFile(config: ProjectConfig, file: File) {
   if (!isWithin(config.root, file)) {
     return;
   }

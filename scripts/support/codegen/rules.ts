@@ -10,7 +10,7 @@ export const rules = defineCommand((command) => {
     .option("--check", "report outdated files without writing them", false)
     .action(async ({ check }) => {
       const { loadConfig } =
-        await import("#project/config/operations/loadConfig");
+        await import("#workflows/registry/operations/loadConfig");
 
       const { generateRuleTypes } =
         await import("#tools/eslint/operations/generateRuleTypes");

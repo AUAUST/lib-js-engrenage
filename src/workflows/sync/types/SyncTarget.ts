@@ -1,8 +1,8 @@
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Config } from "#workflows/registry/types/Config";
 
 export interface SyncTarget<Flag extends string> {
   sync(
-    config: ResolvedConfig,
+    config: Config,
     flags: Partial<Record<Flag, boolean>>,
   ): void | Promise<void>;
   flags: Partial<Record<Flag, string>>;

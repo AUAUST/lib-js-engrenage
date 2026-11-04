@@ -3,7 +3,7 @@ import { custom, optional, strictObject } from "valibot";
 import { isFunction } from "@auaust/toolkit/isFunction";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Config } from "#tools/vite/types/Config";
 import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
 import type { Resolvable } from "#types/Resolvable";
@@ -14,6 +14,6 @@ function isResolvable(input: unknown): boolean {
 
 export const optionsSchema = strictObject({
   test: optional(
-    custom<Resolvable<Config, [ResolvedConfig, ConfigEnv]>>(isResolvable),
+    custom<Resolvable<Config, [ProjectConfig, ConfigEnv]>>(isResolvable),
   ),
 });

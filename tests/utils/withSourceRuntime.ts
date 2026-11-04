@@ -1,10 +1,8 @@
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 
-export function withSourceRuntime(input: unknown = {}): unknown {
-  if (!isPlainObject(input)) {
-    return input;
-  }
-
+export function withSourceRuntime(
+  input: Record<string, unknown> = {},
+): Record<string, unknown> {
   const { src } = input;
 
   if (src === false) {

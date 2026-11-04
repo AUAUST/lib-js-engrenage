@@ -1,13 +1,12 @@
-import type { OptionContext } from "#foundation/options/types/OptionContext";
+import { create, defineGetter, freeze } from "@auaust/toolkit/object";
 
-export function createSections<Sections>(
-  resolvers: {
-    [Section in keyof Sections]: (
-      get: OptionContext<Sections>["get"],
-    ) => Sections[Section];
-  },
+import type { OptionContext } from "#foundation/options/types/OptionContext";
+import type { SectionResolvers } from "#foundation/options/types/SectionResolvers";
+
+export function createSections<Sections extends object>(
+  resolvers: SectionResolvers<Sections>,
   live: readonly (keyof Sections)[] = [],
-): OptionContext<Sections> {
+): OptionContext<Sections> & { readonly sections: Sections } {
   const memos: { [Section in keyof Sections]?: { value: Sections[Section] } } =
     {};
 
@@ -47,5 +46,11 @@ export function createSections<Sections>(
     }
   }
 
-  return { get };
+  const sections: Sections = create(null);
+
+  for (const section in resolvers) {
+    defineGetter(sections, section, () => get(section));
+  }
+
+  return { get, sections: freeze(sections) };
 }

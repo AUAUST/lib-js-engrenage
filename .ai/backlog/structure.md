@@ -62,3 +62,15 @@ Project structure description, its report and the tooling generated from it.
 - why: `configDeclaration` groups "Core", "Tooling" and "Environments" sections in one declaration with no counterpart in the target layout; `generateConfigTypes` lives in `project/config/operations` but needs the registry once tool schemas leave `project/config`; `createSections` has no per-section raw-validation hook for eager validation (step 5); `packageJsonPath`, `packageJson`, `tsconfig` and `environment` stay live because `init` stages changes in the filesystem.
 - want: place the declaration, the generator and the validation hook; decide whether the live sections can be keyed on file content.
 - done: the registry has no live exceptions and each piece has an owner.
+
+## 10. Config registry leftovers from #143 round 4
+
+- why: `define` and `cache` schemas have no project domain (`project/config`, `project/environments` or `project/build` are candidates); `typescript` is a `ProjectConfig` section while `tools/typescript` consumes it, unstated in the plan; `liveSections` is a concept the plan does not name; `get(section)` is also used in `createProjectSections` helpers, beyond the plan's "definers, domain resolvers and steps"; `createPrettierFormatter` is injected only by the registry; each section is validated twice (registry, then `resolveSection`); `readRawConfig` accepts any plain-object default export; ESLint re-resolves `git` from raw input and `produceTsconfigOutDir` re-validates `raw.build`.
+- want: place the schemas, name or remove the live concept, settle validation once per section.
+- done: each piece has an owner and no section is validated twice.
+
+## 11. Public tests of sync targets became source-only (#143)
+
+- why: the public `loadConfig` returns `ProjectConfig` only, so the tests of `attribution`, `syncAgentFiles`, `syncClaudeSettings`, `syncCodexFiles`, `syncGitignoreFile`, `syncPrettierignoreFile` and `syncVscodeFiles` moved to `.test.src.ts`, against "whatever is public is tested through its public specifier".
+- want: decide how public consumers get the full `Config` (public `workflows/registry`, per-tool loaders, or accept source-only).
+- done: public API is tested through public specifiers, or the exception is stated.

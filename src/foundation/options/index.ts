@@ -7,6 +7,7 @@ export { declareRecord } from "#foundation/options/utils/declareRecord";
 export { describeDefault } from "#foundation/options/utils/describeDefault";
 export { listDefaults } from "#foundation/options/utils/listDefaults";
 export { resolveDefault } from "#foundation/options/utils/resolveDefault";
+export { resolveSection } from "#foundation/options/utils/resolveSection";
 export { unset } from "#foundation/options/utils/unset";
 export { validate } from "#foundation/options/utils/validate";
 // @end
@@ -24,4 +25,5 @@ export * from "#foundation/options/types/ObjectOutput";
 export * from "#foundation/options/types/ObjectResolution";
 export * from "#foundation/options/types/OptionContext";
 export * from "#foundation/options/types/OutputOf";
+export * from "#foundation/options/types/SectionResolvers";
 // @end

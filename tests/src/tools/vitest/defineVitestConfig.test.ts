@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { defineVitestConfig } from "@auaust/engrenage/vitest";
-import type { ResolvedConfig } from "@auaust/engrenage/config";
+import type { ProjectConfig } from "@auaust/engrenage/config";
 import type { ConfigEnv } from "@auaust/engrenage/vite";
 
 import { getFixture } from "#tests/utils/getFixture";
@@ -19,7 +19,7 @@ describe("defineVitestConfig", () => {
   test("passes the environment and resolved config to the native config and merges it after the options", async () => {
     mockCwd(root);
 
-    const nativeConfig = vi.fn((config: ResolvedConfig, env: ConfigEnv) => {
+    const nativeConfig = vi.fn((config: ProjectConfig, env: ConfigEnv) => {
       return {
         tsconfig: config.resolve("tsconfig.custom.json"),
         test: {

@@ -6,15 +6,15 @@ import { value } from "@auaust/toolkit/value";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Config } from "#tools/eslint/types/Config";
 import type { ConfigWithExtends } from "#tools/eslint/types/ConfigWithExtends";
 import type { Options } from "#tools/eslint/types/Options";
 import type { Resolvable } from "#types/Resolvable";
 
 export async function defineEslintConfig(
-  options?: Resolvable<Options, [ResolvedConfig]>,
-  ...configs: Resolvable<ConfigWithExtends, [ResolvedConfig]>[]
+  options?: Resolvable<Options, [ProjectConfig]>,
+  ...configs: Resolvable<ConfigWithExtends, [ProjectConfig]>[]
 ): Promise<Config[]> {
   const config = await loadConfig();
 

@@ -11,7 +11,7 @@ export const apis = defineCommand((command) => {
     .option("--check", "report outdated groups without writing them", false)
     .action(async (groups, { check }) => {
       const { loadConfig } =
-        await import("#project/config/operations/loadConfig");
+        await import("#workflows/registry/operations/loadConfig");
 
       const { generateApiDeclarations } =
         await import("#tools/typescript/operations/generateApiDeclarations");

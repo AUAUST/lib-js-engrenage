@@ -1,19 +1,17 @@
 import { describe, expect, test } from "vitest";
 
-import { validate } from "#foundation/options/utils/validate";
-import { configSchema } from "#project/config/config/schemas/configSchema";
-import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { generateApiDeclarations } from "#tools/typescript/operations/generateApiDeclarations";
+import { createConfig } from "#workflows/registry/operations/createConfig";
 
-function createConfig() {
+function createTestConfig() {
   const project = createTemporaryProject({ "package.json": "{}" });
 
-  return createResolvedConfig({
+  return createConfig({
     root: project.root,
-    raw: validate(configSchema, withSourceRuntime({}), "test config"),
+    raw: withSourceRuntime({}),
     configFile: undefined,
   });
 }
@@ -21,14 +19,14 @@ function createConfig() {
 describe("generateApiDeclarations", () => {
   test("compiles every group with the real selections", async () => {
     await expect(
-      generateApiDeclarations(createConfig()),
+      generateApiDeclarations(createTestConfig()),
     ).resolves.toBeUndefined();
     // @debt The timeout is a bare literal beside `binaryTimeout`; slow compiler runs should share one named budget scale.
   }, 120_000);
 
   test("fails naming the group and the first month of the selection", async () => {
     await expect(
-      generateApiDeclarations(createConfig(), ["temporal"], {
+      generateApiDeclarations(createTestConfig(), ["temporal"], {
         libraryGroups: { temporal: "lib.temporal.d.ts" },
         libraries: getFixture("typescript/apis/libs"),
         selections: [{ from: "2022-08", lib: ["es2018.asynciterable"] }],
@@ -40,7 +38,7 @@ describe("generateApiDeclarations", () => {
 
   test("fails when a group conflicts with a selected ES lib", async () => {
     await expect(
-      generateApiDeclarations(createConfig(), ["conflict"], {
+      generateApiDeclarations(createTestConfig(), ["conflict"], {
         libraryGroups: { conflict: "lib.conflict.d.ts" },
         libraries: getFixture("typescript/apis/libs"),
         selections: [{ from: "2022-08", lib: ["es2022"] }],

@@ -2,14 +2,14 @@ import { cancel, isCancel, multiselect } from "@clack/prompts";
 
 import { empty } from "@auaust/toolkit/empty";
 
-import { readConfig } from "#project/config/operations/readConfig";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
-import type { ResolvedConfig } from "#project/config/index";
+import { readConfig } from "#workflows/registry/operations/readConfig";
+import type { Config } from "#workflows/registry/types/Config";
 
-async function getNames(config: ResolvedConfig, name: string | undefined) {
+async function getNames(config: Config, name: string | undefined) {
   if (name !== undefined) {
     return [name];
   }

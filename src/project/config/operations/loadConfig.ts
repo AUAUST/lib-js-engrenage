@@ -1,13 +1,13 @@
 import { resolve } from "#foundation/filesystem/utils/resolve";
 import { readConfig } from "#project/config/operations/readConfig";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Directory } from "#types/Directory";
 
-const loadedConfigs = new Map<Directory, Promise<ResolvedConfig>>();
+const loadedConfigs = new Map<Directory, Promise<ProjectConfig>>();
 
 export function loadConfig(
   cwd: Directory | URL = process.cwd(),
-): Promise<ResolvedConfig> {
+): Promise<ProjectConfig> {
   const start = resolve(cwd);
 
   const cached = loadedConfigs.get(start);

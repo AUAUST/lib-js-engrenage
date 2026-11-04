@@ -9,7 +9,9 @@ import {
   codegenTitle,
   defaultIgnores,
 } from "#tools/prettier/constants";
-import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
+import type { ResolvedPrettier } from "#tools/prettier/types/ResolvedPrettier";
 import type { Glob } from "#types/Glob";
 import type { GlobGroup } from "#types/GlobGroup";
 
@@ -18,7 +20,7 @@ function anchor(glob: Glob): Glob {
 }
 
 function createProjectPrettierIgnores(
-  config: ResolvedConfig,
+  config: ProjectConfig & { agents: ResolvedAgents },
 ): readonly GlobGroup[] {
   const generated = [
     ...map(config.files.generated, anchor),
@@ -43,7 +45,12 @@ function createProjectPrettierIgnores(
   ];
 }
 
-export function syncPrettierignoreFile(config: ResolvedConfig) {
+export function syncPrettierignoreFile(
+  config: ProjectConfig & {
+    agents: ResolvedAgents;
+    prettier: ResolvedPrettier;
+  },
+) {
   syncIgnoreFile(config, {
     path: config.prettier.prettierignore,
     presets: {

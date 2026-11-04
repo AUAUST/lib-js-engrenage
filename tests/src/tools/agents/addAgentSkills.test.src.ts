@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 describe("addAgentSkills", () => {
   test("installs an explicit skill and its agent for every preferred agent", async () => {
