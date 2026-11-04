@@ -63,6 +63,8 @@ export const attributionRules = freeze({
   false: "no-attribution",
 } as const);
 
+export const projectMapFile = ".claude/rules/project-map.md" satisfies File;
+
 export const debtFile = ".ai/debt.md" satisfies File;
 
 export const budgetKinds = freeze([

@@ -2,7 +2,7 @@ import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { syncWorkspaceFiles } from "#project/workspaces/setup/syncWorkspaceFiles";
 import { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSettings";
 import { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";
-import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
+import { syncAgents } from "#tools/agents/setup/syncAgents";
 import { syncChangesetConfig } from "#tools/changesets/setup/syncChangesetConfig";
 import { syncGitignoreFile } from "#tools/git/setup/syncGitignoreFile";
 import { syncWorkflowFiles } from "#tools/github/setup/syncWorkflowFiles";
@@ -18,7 +18,7 @@ import { defineSyncTarget } from "#workflows/sync/utils/defineSyncTarget";
 export const syncTargets = {
   tsconfig: defineSyncTarget(syncTsconfigFiles),
   aliases: defineSyncTarget(syncAliases),
-  agents: defineSyncTarget(syncAgentFiles),
+  agents: defineSyncTarget(syncAgents),
   changesets: defineSyncTarget(syncChangesetConfig),
   claude: defineSyncTarget(syncClaudeSettings, {
     settings: "create .claude/settings.json when it is missing",

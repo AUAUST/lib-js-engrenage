@@ -464,6 +464,7 @@ export function createProjectSections({
       compose(
         {
           roles: resolveEnvironmentRoles("tests", option),
+          layout: option.enabled ? option.layout : "roots",
           patterns,
           files: [...patterns.plain, ...patterns.source, ...patterns.dist],
           fixtures: option.fixtures,
