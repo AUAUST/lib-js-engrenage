@@ -5,10 +5,11 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
 import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
+import { formatContent } from "#project/format/operations/formatContent";
 import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
-import { createPrettierFormatter } from "#tools/prettier/operations/createPrettierFormatter";
+import { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
 function createProject(files: Record<string, string>) {
@@ -67,7 +68,13 @@ describe("filesystem.format", () => {
 
     const filesystem = createFilesystem(
       project.root,
-      createPrettierFormatter(project.root),
+      (path, content) => {
+        return formatContent(content, {
+          path,
+          root: project.root,
+          formatter: formatWithPrettier,
+        });
+      },
     );
 
     project.write("data.json", '{\n  "list": ["a"]\n}\n');

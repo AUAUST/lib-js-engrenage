@@ -48,10 +48,11 @@ export const sourceSchema = declareObject(
     }),
     exports: declare(exposedFilesSchema, {
       description: [
-        "Subpaths the package exposes, mapped to their source file; both sides use the same single `*` or none.",
+        "Subpaths the package exposes besides its public domains, mapped to their source file; both sides use the same single `*` or none.",
+        "A public domain exposes its `index.ts` on its own, so only other files are listed here; a subpath a public domain already exposes fails.",
         "They feed the tsdown entries, hence the `exports` of `package.json`, and the `paths` of the base tsconfig.",
       ],
-      optional: unset("none, so tsdown builds no source entry"),
+      optional: unset("none, so only public domains are exposed"),
     }),
     baseline: declare(string(), {
       description: [

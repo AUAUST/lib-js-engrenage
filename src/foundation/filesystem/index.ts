@@ -8,6 +8,6 @@ export { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
 // @end
 
 // @barrel types/*.ts all
+export * from "#foundation/filesystem/types/FileFormatter";
 export * from "#foundation/filesystem/types/Filesystem";
-export * from "#foundation/filesystem/types/Formatter";
 // @end

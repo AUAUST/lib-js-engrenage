@@ -1,7 +1,7 @@
 import { join } from "node:path";
 
 import { flatMap, wrap } from "@auaust/primitive-kit/arrays";
-import { entries, freeze } from "@auaust/toolkit/object";
+import { entries, freeze, keys } from "@auaust/toolkit/object";
 
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
@@ -577,6 +577,24 @@ function resolveElementRules(
 
   visit(structure.root, { reaches: [], ancestors: [] });
 
+  if (fileGlobs.some(({ name }) => name === indexFile)) {
+    const surfaces = flatMap(
+      collect(structure.root).filter(({ kind }) => kind === "domain"),
+      surface,
+    );
+
+    for (const directory of structure.dirs) {
+      rules.push(
+        ...createRule(
+          { kind: "file", path: join(directory, indexFile) },
+          surfaces,
+          "allow",
+          "the index.ts of an environment root imports any public surface",
+        ),
+      );
+    }
+  }
+
   return rules;
 }
 
@@ -596,6 +614,24 @@ export function resolveImportRules({
       structures,
       active,
       published,
+    }),
+    ...flatMap(elementEnvironments, (name) => {
+      const structure = structures[name];
+
+      if (structure === undefined || roles[name].roles[indexFile] === undefined) {
+        return [];
+      }
+
+      return flatMap(keys(structures), (environment) => {
+        return createRule(
+          { kind: "environment", environment },
+          structure.dirs.map((directory): ImportRuleTarget => {
+            return { kind: "file", path: join(directory, indexFile) };
+          }),
+          "forbid",
+          "nothing imports the index.ts of an environment root",
+        );
+      });
     }),
     ...flatMap(elementEnvironments, (name) => {
       const structure = structures[name];

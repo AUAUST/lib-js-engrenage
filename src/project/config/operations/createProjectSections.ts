@@ -2,7 +2,7 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 import { compose } from "@auaust/toolkit/composer";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { memoized } from "@auaust/toolkit/memoized";
-import { freeze } from "@auaust/toolkit/object";
+import { freeze, keys } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
 import { packageJsonFile } from "#constants";
@@ -44,6 +44,7 @@ import { resolveEnvironmentStructure } from "#project/structure/operations/resol
 import { resolveImportRules } from "#project/structure/operations/resolveImportRules";
 import { resolveRoles } from "#project/structure/operations/resolveRoles";
 import { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
+import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
 import { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
 import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { resolveTsconfig } from "#project/tsconfig/utils/resolveTsconfig";
@@ -365,15 +366,33 @@ export function createProjectSections({
         {
           ...environment,
           roles: resolveEnvironmentRoles("src", option),
-          exports: option.exports,
           bundled: option.bundled,
           apis: option.apis,
         },
         compose.getters({
+          exports: () => resolveSourceExports(option.exports),
           runtime,
         }),
       ),
     );
+  }
+
+  function resolveSourceExports(
+    configured: Readonly<Record<string, File>> | undefined,
+  ): Readonly<Record<string, File>> | undefined {
+    const derived = resolveDomainEntries(get("structure").src);
+
+    for (const subpath of keys(configured ?? {})) {
+      if (subpath in derived) {
+        throw new Error(
+          `Subpath '${subpath}' is exposed by src.exports and by the public domain ${derived[subpath]}: remove it from src.exports`,
+        );
+      }
+    }
+
+    const exposed = { ...configured, ...derived };
+
+    return keys(exposed).length === 0 ? undefined : freeze(exposed);
   }
 
   function bin() {

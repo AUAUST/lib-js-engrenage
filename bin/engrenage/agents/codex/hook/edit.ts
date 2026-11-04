@@ -8,6 +8,7 @@ import { getPatchedFiles } from "#tools/agents/codex/utils/getPatchedFiles";
 import { formatEditedFile } from "#tools/agents/operations/formatEditedFile";
 import { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
+import { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
@@ -43,7 +44,7 @@ export const edit = defineCommand((command) => {
           continue;
         }
 
-        formatEditedFile(config, file);
+        await formatEditedFile(config, file, formatWithPrettier);
 
         reportBudgetFindings(
           measureEditedFile(config.root, file, config.agents.budgets),

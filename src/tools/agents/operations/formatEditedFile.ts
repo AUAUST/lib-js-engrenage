@@ -1,8 +1,10 @@
-import { eslint, prettier } from "#constants";
+import { eslint } from "#constants";
 import { isWithin } from "#foundation/filesystem/utils/isWithin";
 import { resolveBinary } from "#foundation/processes/operations/resolveBinary";
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
+import { formatFile } from "#project/format/operations/formatFile";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { Formatter } from "#project/format/ports/Formatter";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 
@@ -31,14 +33,16 @@ function runTool(
   return result;
 }
 
-export function formatEditedFile(config: ProjectConfig, file: File) {
+export async function formatEditedFile(
+  config: ProjectConfig,
+  file: File,
+  formatter: Formatter,
+) {
   if (!isWithin(config.root, file)) {
     return;
   }
 
-  const { hasDependency } = config.environment;
-
-  const hasEslint = hasDependency(eslint);
+  const hasEslint = config.environment.hasDependency(eslint);
 
   const lintArgs = [
     "--no-warn-ignored",
@@ -52,17 +56,14 @@ export function formatEditedFile(config: ProjectConfig, file: File) {
     runTool(config, eslint, ["--fix", ...lintArgs]);
   }
 
-  if (hasDependency(prettier)) {
-    const result = runTool(config, prettier, [
-      "--write",
-      "--ignore-unknown",
-      file,
-    ]);
+  try {
+    await formatFile(file, { root: config.root, formatter });
+  } catch (error) {
+    process.stderr.write(
+      `${error instanceof Error ? error.message : String(error)}\n`,
+    );
 
-    if (result.status !== 0) {
-      process.stderr.write(result.stdout + result.stderr);
-      process.exitCode = blockingExitCode;
-    }
+    process.exitCode = blockingExitCode;
   }
 
   if (!hasEslint) {

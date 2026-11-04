@@ -2,7 +2,7 @@ import { mkdirSync } from "node:fs";
 
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage";
 import { record } from "@auaust/toolkit/object";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

@@ -4,13 +4,8 @@ import { ESLint } from "eslint";
 import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import {
-  createContext,
-  loadConfig,
-  type Environment,
-  type ProjectConfig,
-  type ResolvedTraits,
-} from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage";
+import { createContext, type Environment, type ProjectConfig, type ResolvedTraits } from "@auaust/engrenage/config";
 import { packageJsonFile } from "@auaust/engrenage/constants";
 import {
   createEslintConfig,

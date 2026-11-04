@@ -1,3 +1,4 @@
+export { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
 export { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
 export { definePrettierConfig } from "#tools/prettier/operations/definePrettierConfig";
 export { syncPrettierignoreFile } from "#tools/prettier/setup/syncPrettierignoreFile";

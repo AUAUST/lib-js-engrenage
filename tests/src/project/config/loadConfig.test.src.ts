@@ -2,8 +2,7 @@ import { join } from "node:path";
 
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
-
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 
@@ -16,7 +15,7 @@ describe("loadConfig", () => {
     vi.resetModules();
 
     const { loadConfig: loadFreshConfig } =
-      await import("@auaust/engrenage/config");
+      await import("#project/config/operations/loadConfig");
 
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 

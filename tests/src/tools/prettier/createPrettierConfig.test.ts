@@ -1,7 +1,8 @@
 import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import { createContext, loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage";
+import { createContext } from "@auaust/engrenage/config";
 import {
   createPrettierConfig,
   definePrettierConfig,

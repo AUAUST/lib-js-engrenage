@@ -1,8 +1,9 @@
 import { describe, expect, test } from "vitest";
 
+import { loadConfig } from "@auaust/engrenage";
+import { syncClaudeSettings } from "@auaust/engrenage/agents/claude";
+
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { syncClaudeSettings } from "#tools/agents/claude/index";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 const settings = `{
   // Kept by the project.

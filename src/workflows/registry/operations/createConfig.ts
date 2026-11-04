@@ -2,10 +2,11 @@ import { createFilesystem } from "#foundation/filesystem/operations/createFilesy
 import { createSections } from "#foundation/options/utils/createSections";
 import { liveSections } from "#project/config/constants";
 import { createProjectSections } from "#project/config/operations/createProjectSections";
+import { formatContent } from "#project/format/operations/formatContent";
 import { resolveAgents } from "#tools/agents/operations/resolveAgents";
 import { resolveGit } from "#tools/git/operations/resolveGit";
 import { resolveGithub } from "#tools/github/operations/resolveGithub";
-import { createPrettierFormatter } from "#tools/prettier/operations/createPrettierFormatter";
+import { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
 import { resolvePrettier } from "#tools/prettier/operations/resolvePrettier";
 import { resolveVscode } from "#tools/vscode/operations/resolveVscode";
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
@@ -19,7 +20,11 @@ export function createConfig({
   root,
   raw,
   configFile,
-  filesystem = createFilesystem(root, createPrettierFormatter(root)),
+  filesystem = createFilesystem(root, (path, content) => {
+    return formatContent(content, {
+ path, root, formatter: formatWithPrettier 
+});
+  }),
 }: {
   root: Directory;
   raw: RawConfig;

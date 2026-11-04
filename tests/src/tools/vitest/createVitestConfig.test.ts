@@ -6,7 +6,8 @@ import { describe, expect, test } from "vitest";
 import { configDefaults } from "vitest/config";
 import { startVitest } from "vitest/node";
 
-import { createContext, loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage";
+import { createContext } from "@auaust/engrenage/config";
 import { createViteConfig } from "@auaust/engrenage/vite";
 import { createVitestConfig } from "@auaust/engrenage/vitest";
 

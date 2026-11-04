@@ -2,7 +2,8 @@ import { build } from "tsdown";
 import { createProgram, getPreEmitDiagnostics } from "typescript";
 import { describe, expect, test } from "vitest";
 
-import { createContext, define, loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage";
+import { createContext, define } from "@auaust/engrenage/config";
 import { createTsdownConfig } from "@auaust/engrenage/tsdown";
 import { syncEnvFile } from "@auaust/engrenage/typescript";
 

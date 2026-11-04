@@ -2,7 +2,7 @@ import { join } from "node:path";
 
 import { describe, expect, test, vi } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 

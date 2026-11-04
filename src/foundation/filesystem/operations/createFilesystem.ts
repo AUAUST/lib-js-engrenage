@@ -15,7 +15,7 @@ import { freeze } from "@auaust/toolkit/object";
 import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
 import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
 import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
-import type { Formatter } from "#foundation/filesystem/types/Formatter";
+import type { FileFormatter } from "#foundation/filesystem/types/FileFormatter";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Files } from "#types/Files";
@@ -43,7 +43,7 @@ function restore({ path, original }: Backup) {
   }
 }
 
-export function createFilesystem(root: Directory, formatter?: Formatter) {
+export function createFilesystem(root: Directory, formatter?: FileFormatter) {
   const contents = new Map<File, string | undefined>();
   const originals = new Map<File, string | undefined>();
 

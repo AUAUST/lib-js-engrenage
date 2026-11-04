@@ -4,6 +4,7 @@ export { resolveImportRules } from "#project/structure/operations/resolveImportR
 export { resolveRoles } from "#project/structure/operations/resolveRoles";
 export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 export { renderStructure } from "#project/structure/utils/renderStructure";
+export { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
 
 // @barrel types/*.ts all
 export * from "#project/structure/types/Alias";

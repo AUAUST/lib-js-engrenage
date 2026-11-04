@@ -3,7 +3,8 @@ import { pathToFileURL } from "node:url";
 import { build } from "tsdown";
 import { describe, expect, test } from "vitest";
 
-import { createContext, loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage";
+import { createContext } from "@auaust/engrenage/config";
 import { createTsdownConfig, type Options } from "@auaust/engrenage/tsdown";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

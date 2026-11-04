@@ -39,5 +39,5 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 ## 7. Generated tsconfigs have no canonical key ordering.
 
 - why: `package.json` has a canonical field order; tsconfigs have none.
-- want: a canonical ordering for tsconfig keys (top-level and `compilerOptions`), applied by the sync target, like the `package.json` one.
+- want: a canonical ordering for tsconfig keys at every layer that makes sense (top-level, `compilerOptions`, maybe more), applied by the sync target, like the `package.json` one. Lists and records that aren't order-dependent should also be consistently sorted. Order-dependent structures must always be generated in the correct order, i.e. paths should start by the most specific and proceed to the more general; not generated and not managed structures should not be reordered arbitrarily as not to break a use-defined order.
 - done: generated tsconfigs follow the documented order and sync keeps it.
