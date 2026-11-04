@@ -1,6 +1,6 @@
 # utils
 
-Shared public helpers in `src/utils/` and their placement.
+Shared helpers and their placement.
 
 ## 1. No helper re-throws an error with a better message and its cause.
 

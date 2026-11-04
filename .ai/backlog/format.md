@@ -8,11 +8,7 @@
 
 ## 2. `jsonIndentation` and `JsonIndentation` have no tool-boundary home
 
-- why: `foundation/json` cannot import `project/format`, so `{ insertSpaces, tabSize }` restates `Conventions.indent` and `indentWidth`; JSON has no tool domain, so `jsonIndentation` sits in `project/format/constants.ts` and thirteen callers pass it.
+- why: `foundation/json` cannot import `project/format`, so `{ insertSpaces, tabSize }` restates `Conventions.indent` and `indentWidth`; JSON has no tool domain, so `jsonIndentation` sits in `src/project/format/constants.ts` and thirteen callers pass it.
+- also: JSON written by sync ignores `indent`, `indentWidth` and `endOfLine` of the `format` section.
 - want: a `jsonc` adapter or `project/format/utils` mapping, or conventions threaded through the step context.
-- done: one vocabulary, mapped once at a boundary.
-
-## 3. `project/format` is not in `package.json` `exports`
-
-- why: the plan makes it public, but visibility is declared in #154; `pnpm build` generated no `./format` export.
-- done: the export exists once visibility is declared.
+- done: one vocabulary, mapped once at a boundary; changing `format.indent` changes the JSON sync writes.

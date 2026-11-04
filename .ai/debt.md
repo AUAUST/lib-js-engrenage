@@ -4,145 +4,201 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 
 ## 1. The "No package.json found" guard is repeated in six modules
 
-- `src/workflows/cli/operations/createStepContext.ts:61`
-- `src/tools/tsdown/operations/createTsdownConfig.ts:83`
-- `src/tools/changesets/setup/syncChangesetConfig.ts:52`
-- `src/tools/pnpm/setup/createPnpmStep.ts:19`
+- `src/workflows/cli/operations/createStepContext.ts:66`
+- `src/tools/tsdown/operations/createTsdownConfig.ts:144`
+- `src/tools/changesets/setup/syncChangesetConfig.ts:53`
+- `src/tools/pnpm/setup/createPnpmStep.ts:27`
 - `bin/engrenage/pnpm/upgrade.ts:48`
-- also: `createPackageJson`'s `describeMissing` (named by the marker at `createStepContext.ts:61`)
+- also: the `describeMissing` accessor of `src/project/config/utils/createAccessors.ts`
 - why: each checks that the resolved config has a package.json and throws the same error.
-- want: the resolved config exposes a required package.json path (or a helper throws once).
+- want: the resolved config exposes a required package.json path.
 
 ## 2. Subprocess and pnpm invocations are hand-written in several places
 
-- `bin/engrenage/init.ts:89`
+- `bin/engrenage/init.ts:59`
 - `src/tools/changesets/setup/createChangesetConfigStep.ts:15`
-- `src/workflows/cli/operations/createStepContext.ts:127`
-- `src/tools/pnpm/operations/installDependencies.ts:5`
-- `src/tools/pnpm/operations/resolveLatestPnpm.ts:13`
-- also: other `spawnSync` users found by search, `src/workflows/cli/operations/resolveBinary.ts`, `src/tools/agents/operations/formatEditedFile.ts`
-- why: pnpm is spawned and its status checked by hand in each site instead of one shared subprocess helper owned by the pnpm entry.
-- want: one subprocess helper (spawn, check status, report) and pnpm invocations owned by `src/pnpm`.
+- `src/workflows/cli/operations/createStepContext.ts:138`
+- `src/tools/pnpm/operations/installDependencies.ts:4`
+- `src/tools/pnpm/operations/resolveLatestPnpm.ts:12`
+- also: `invokeCommand` in `bin/engrenage/init.ts`, `src/tools/agents/operations/formatEditedFile.ts`
+- why: callers check the spawn error and status of `spawnProcess` by hand, and build pnpm commands themselves.
+- want: `spawnProcess` owns the check; `tools/pnpm` owns pnpm invocations.
 
 ## 3. Version parsing is split across modules
 
-- `scripts/support/pnpm.ts:6`
-- also: `src/project/package/utils/parseMajorVersion.ts`, `src/project/package/utils/compareVersions.ts`, `src/tools/pnpm/operations/resolvePnpmRangeStatus.ts`, `src/project/package/utils/readProjectPnpmMajor.ts`, `src/tools/pnpm/operations/resolveLatestPnpm.ts`
-- why: versions are split by hand next to `compareVersions` and `parseMajorVersion` instead of one parser yielding major, minor and patch. Related: the `semver` domain idea of `toolkit.9`.
-- want: one version parser module.
+- `scripts/pnpm.ts:6`
+- also: `src/project/package/utils/{parseMajorVersion,compareVersions,readProjectPnpmMajor,readProjectPnpmVersion}.ts`, `src/tools/pnpm/operations/resolvePnpmRangeStatus.ts`, `src/tools/pnpm/operations/resolveLatestPnpm.ts`
+- why: versions are split by hand next to `compareVersions` and `parseMajorVersion`. Related: `toolkit.9` (`semver` domain).
+- want: one version parser yielding major, minor and patch.
 
-## 4. Engrenage's own data files are located by repeated `createRequire` resolution
+## 4. The reference marker syntax is hand-written and conflicts go unreported
 
-- `src/tools/agents/setup/createBacklogStep.ts:51`
-- also: `src/tools/agents/codex/setup/createCodexStep.ts`, `src/tools/agents/setup/createAgentsStep.ts`, `src/tools/agents/operations/getInstructionTemplates.ts`, `src/tools/github/operations/renderWorkflow.ts`, `src/project/tsconfig/operations/resolveTsconfigPresets.ts`; `src/tools/prettier/operations/loadPrettier.ts` and the `generateEditions`/`generateApiDeclarations` modules also use `createRequire`, probably for other purposes (to check)
-- why: related: GitHub issue #9 notes `createRequire` resolves references with CommonJS conditions.
-- want: one helper owns resolution of the package's data files.
-
-## 5. The reference marker syntax is hand-written and conflicts go unreported
-
-- `src/tools/agents/setup/createBacklogStep.ts:67`
-- `src/tools/agents/setup/syncAgentFiles.ts:32`
-- also: `src/tools/agents/operations/getRuleReferences.ts`, `src/tools/agents/utils/createInstructionFile.ts`, `src/tools/agents/setup/createAgentsStep.ts`
-- why: the `<!-- @reference … -->` syntax is written by hand in `createBacklogStep`, `createAgentsStep` and `createInstructionFile`, and re-parsed by a regex in `getMissingRuleTemplates`, although `markdownBlocks` already describes it. Separately, a project file at a wanted rule's path without its reference silently keeps the rule out of sync, with no conflict report. GitHub issue #9 (one marker grammar, markers failing silently) covers part of this; the conflict report may fit it.
+- `src/tools/agents/setup/createBacklogStep.ts:69`
+- `src/tools/agents/setup/syncAgentFiles.ts:36`
+- also: `createAgentsStep`, `createInstructionFile`, `getMissingRuleTemplates`
+- why: `markdownBlocks` already describes the syntax; #9 (one marker grammar, silent failures) covers part of it.
 - want: the backlogger decides whether to fold it into #9.
 
-## 6. Casts and assertions that typing could remove
+## 5. Casts and assertions that typing could remove
 
-- `src/project/config/operations/generateConfigTypes.ts:208`: valibot draft 07 JSON schema asserted to the draft 04 type of json-schema-to-typescript-lite (differs only by numeric exclusive bounds).
-- `src/tools/eslint/conventions/stylistic/noReturnUndefined.ts:67`: rule typed on ESLint core ESTree nodes, so the return type is probed with `in` instead of typescript-eslint nodes.
-- `src/tools/eslint/conventions/stylistic/preferValuedReturn.ts:106`: cast and redundant `node.type` check from the visitor parameter widened to `Rule.Node`; type the listener on `BlockStatement`.
-- `src/project/tsconfig/operations/produceTsconfigPaths.ts:24`: hand-written paths cast instead of validated against a schema.
-- `src/project/tsconfig/utils/resolveTsconfigOwner.ts:22`: the `in` check does not narrow `key`; type `defaultTsconfigInherits` as `Partial<Record<TsconfigKey, TsconfigKey>>`.
-- `src/project/tsconfig/utils/resolveTsconfigOwner.ts:49`: non-null assertion on `chain.at(-2)`; track the previous key.
-- `src/project/config/utils/createAccessors.ts:40`: double cast because `compose` cannot type getters from a dynamic resolver map.
-- why: `coding-style.2` already tracks the last three (`resolveTsconfigOwner`, `createAccessors`); these markers add the exact fixes (the `Partial<Record>` typing at line 22 is not in that entry). The four first sites are not tracked.
+- `scripts/codegen/generateConfigTypes.ts:206`
+- `src/tools/eslint/conventions/stylistic/noReturnUndefined.ts:67`
+- `src/tools/eslint/conventions/stylistic/preferValuedReturn.ts:106`
+- `src/tools/eslint/utils/createBoundaryRule.ts:11`
+- `src/project/tsconfig/operations/readTsconfigPaths.ts:14`
+- `src/project/config/utils/createAccessors.ts:40`
+- also, unmarked: `src/project/presets/utils/resolveTraits.ts:17`, `scripts/codegen/generateEditions.ts:299`, `:321`, `src/tools/eslint/conventions/imports/noExternalNamespace.ts:37`
+- why: `coding-style.2` tracks `createAccessors`, `noExternalNamespace` and `generateEditions`; the rest is untracked.
 
-## 7. Misplaced modules
+## 6. Modules sit outside their layer's contract
 
-- `src/project/config/utils/createAccessors.ts:7`: generic accessor factory in the config entry, used by `createTsconfig` and the support package.json model; could live under `src/support`.
-- `src/tools/eslint/operations/listDebtMarkers.ts`: check whether the debt marker constants now sit with the eslint tool (relocated by #139).
-- why: #139 (relocation) and #141 (modules sorted into roles) subsume these.
+- `src/index.ts:7`: the root entry imports foundation and project modules directly instead of through their `index.ts`, which the environment-root rule allows only for public surfaces.
+- `src/project/config/utils/createAccessors.ts:7`: generic accessor factory in `project/config`, used by `createTsconfig` and the package.json model; could live in `foundation`.
+- why: related `structure.16` (`createContext`, same directory, also generic).
 
-## 8. Config schema descriptions are unverified or hand-synced with defaults
+## 7. `@auaust/engrenage/config` exports more than its contract
 
-- `src/project/environments/config/schemas/testsSchema.ts:25`: hand-synced; derive from constants.
-- `src/project/config/config/schemas/tools/typescriptSchema.ts:91`: hand-synced; derive from constants.
-- `src/project/environments/config/schemas/binSchema.ts:35`: unverified ("engines.node floor").
-- `src/project/tsconfig/config/declareEnvironmentTsconfig.ts:142`: unverified (unmanaged description).
-- `src/project/environments/config/schemas/testsSchema.ts:71`: unverified (`tests.dist` tsconfig default).
-- why: descriptions state defaults in words and are hand-synced with their constants, or were written from reading the code without running it.
-- want: a worker or debugger runs the behavior and confirms or corrects the unverified text.
+- `src/project/config/index.ts:1`
+- why: #154 limited the entry to `defineConfig`, `ConfigInput` and `Resolvable`; it still exports `createContext`, `define`, `PackageJson` and many resolved types. Removing them is breaking. Placement of `createContext` is open in `structure.16`.
+- want: the entry exports only its contract, with a changeset.
 
-## 9. `tests.dist` and variant handling is special-cased across tsconfig code
+## 8. Config declarations state defaults they do not own or did not verify
 
-- `src/project/tsconfig/setup/syncTsconfigFiles.ts:48`
+- `src/project/config/config/declareManagedList.ts:21`
+- `src/project/structure/operations/resolveEnvironmentStructure.ts:198`
+- `src/tools/github/config/schemas/githubSchema.ts:15`
+- `src/project/environments/config/schemas/binSchema.ts:27`
+- `src/project/environments/config/schemas/testsSchema.ts:72`
+- `src/project/tsconfig/config/declareEnvironmentTsconfig.ts:91`
+- why: the first three document a default computed elsewhere (`structure.15`); the last three are unverified.
+- want: a worker runs the unverified behavior and corrects the text.
+
+## 9. `tests.dist` is special-cased across tsconfig code
+
+- `src/project/tsconfig/setup/syncTsconfigFiles.ts:50`
 - `src/project/tsconfig/operations/resolveTsconfigEnvironments.ts:14`
-- why: `tests.dist` does not fit the config shape, so it is special-cased in `syncTsconfigFiles`, `createResolvedConfig`, `resolveTsconfigEnvironments` and the extends, paths and `skipLibCheck` producers. Producers also compute `tests.dist` fields as if it were `tests` and `syncTsconfigFiles` then drops the inherited ones. #143 and `typescript.1` touch the same resolution; design needed.
-- want: a single lookup from tsconfig key to environment, and knowledge of which fields a variant inherits.
+- also: the extends, paths and `skipLibCheck` producers
+- why: `structure.15` tracks the raw-input read of its default.
+- want: one lookup from tsconfig key to environment, with the fields each variant inherits.
 
-## 10. Tsconfig producer and sync gaps
+## 10. Tsconfig producers repeat guards and conversions
 
-- `src/project/tsconfig/operations/tsconfigProducers.ts:14`: most producers open with the same `key === "base"` early return; split base and environment producers or declare the targets of each.
-- `src/project/tsconfig/setup/syncTsconfigFiles.ts:201`: configured `compilerOptions` are only ever set; one removed from the config stays in the tsconfig file and `sync --check` still passes (a behavior bug of sync).
-- `src/project/tsconfig/setup/syncTsconfigFiles.ts:165`: same JSON round-trip as `serialize` in `defineSchema`; one shared JSON-value converter could serve both. Also benefiting: `src/project/config/operations/generateConfigTypes.ts`.
-- `src/project/tsconfig/operations/resolveTsconfigLibrary.ts:6`: both tsconfig producers call it, so a `resolveListOption` warning for `<env>.tsconfig.lib` can print twice.
-- want: the backlogger files the `syncTsconfigFiles:201` bug; the others are directly fixable.
+- `src/project/tsconfig/operations/tsconfigProducers.ts:15`
+- `src/project/tsconfig/utils/toJsonValue.ts:3`
+- `src/project/tsconfig/operations/resolveTsconfigLibrary.ts:6`
+- want: directly fixable by a worker.
 
-## 11. ES library selection logic rests on assumptions
+## 11. Tsconfig sync keeps entries removed from the config
 
-- `src/project/tsconfig/operations/produceTsconfigTypes.ts:36`: `includesEsLibrary` only knows generated editions; unknown libs (`esnext.*`, `ESNext`, `DOM`) never count as including a group.
-- `src/project/tsconfig/operations/produceTsconfigTypes.ts:76`: the removed prefix is stated apart from what `listDefaultTypes` writes, so a new baseline type kind must be added in both places.
-- `src/project/baseline/operations/includesEsLibrary.ts:5`: the `editions` parameter type is repeated in three modules, and an edition key in the selection is assumed to be its base.
-- `src/project/baseline/operations/listEsSelections.ts:13`: candidate months derive from the selection rule, not from the selection, so a rule change must be mirrored.
-- `src/project/baseline/utils/addMonths.ts:5`: the day is kept as is, so the result can be an impossible date (2026-02-31); it only compares correctly as a string.
-- `src/tools/typescript/operations/generateApiDeclarations.ts:385`: the lib name is derived from the `lib.<name>.d.ts` file-name convention instead of being declared next to the group.
-- why: related `typescript.3`, `typescript.4` and `typescript.5` (`generateEditions`/`generateApiDeclarations` split, also covers the shared program compilation of `generateApiDeclarations.ts:224` and the `library_` naming in `generateEditions.ts:368`).
+- `src/project/tsconfig/setup/syncTsconfigFiles.ts:184`: `compilerOptions`; `sync --check` still passes.
+- `src/tools/typescript/setup/syncAliases.ts:93`: bundler aliases in `paths`.
+- why: sync cannot tell entries it wrote from hand-written ones. Adjacent: #59.
+- want: a design for knowing which entries sync owns.
 
-## 12. Baseline runtime resolution depends on external conventions
+## 12. ES library selection rests on assumptions
 
-- `src/project/baseline/utils/resolveBaselineMinimums.ts:8`: assumes V8 versions follow Chromium majors (Chromium 138 ships V8 13.8).
-- `src/project/baseline/utils/resolveBaselineMinimums.ts:25`: returns the first match, relying on `node-releases` listing releases in ascending order.
-- why: both hold only while upstream conventions stay.
-- want: a decision, by planning, on adding a validating check or accepting the assumption.
+- `src/project/tsconfig/operations/produceTsconfigTypes.ts:36`
+- `src/project/tsconfig/operations/produceTsconfigTypes.ts:76`
+- `src/project/baseline/operations/includesEsLibrary.ts:5`
+- `src/project/baseline/operations/listEsSelections.ts:13`
+- `src/project/baseline/utils/addMonths.ts:5`
+- `scripts/codegen/generateApiDeclarations.ts:358`
+- why: related `typescript.3`, `typescript.4`, `typescript.5`.
 
-## 13. Check and runtime behavior is unsound or leaks
+## 13. Baseline and edition generation depend on upstream conventions
 
-- `bin/engrenage/eslint.ts:12`: the ESLint cache is keyed on each file alone, so type-aware rules keep passing a file whose imported types changed; checks must pass `--no-cache` to be sound. Open: choose between disabling the cache for checks and a cache strategy.
-- `src/workflows/cli/operations/defineToolCommands.ts:48`: the child is never killed when its caller gives up (timed-out test), setting the global exit code later and leaking into unrelated tests.
-- `src/workflows/cli/operations/runProgram.ts:17`: resolves the config again after a failure instead of reading the one the failing command resolved.
-- `src/workflows/cli/operations/defineCommand.ts:6`: the existing-option check guards against registering `--debug` twice when nested definitions pass through `defineCommand`, instead of one owner registering it once.
-- `src/tools/pnpm/operations/resolvePnpmRangeStatus.ts:22`: an unparseable project or shared pnpm specifier counts as within the range instead of being reported.
-- `src/project/config/operations/createResolvedConfig.ts:164`: the memo key holds the content of the base tsconfig only, so staged changes to a local tsconfig it extends are not seen within a pass.
-- `src/project/config/operations/createResolvedConfig.ts:194`: `resolveWithin` is called only for its throw when the path escapes the root (here and in `cache()`); an explicit assertion would state the intent.
-- `src/workflows/cli/operations/createStepContext.ts:158`: spreading the resolved config evaluates all lazy getters on every access, and `setPresets` is not reflected while `setAgents` is.
-- why: `createResolvedConfig` size is replaced by the layered registry (#143); issue #57 (long-lived processes keep the first loaded config) is adjacent.
-- want: a debugger takes the `eslint.ts:12` cache and `defineToolCommands:48` leak; the others are directly fixable.
+- `src/project/baseline/utils/resolveBaselineMinimums.ts:8`: V8 follows Chromium majors.
+- `src/project/baseline/utils/resolveBaselineMinimums.ts:25`: `node-releases` ascending order.
+- `scripts/codegen/generateEditions.ts:548`: TypeScript base editions consistent.
+- want: a planning decision: a validating check or accepting each assumption.
 
-## 14. Vitest and test-suite defaults are unsettled
+## 14. Checks and processes give unsound or leaking results
 
-- `src/tools/vitest/config/schemas/optionsSchema.ts:4`: `isolate` defaults to shared workers, which silently breaks `vi.mock` in consumers whose test files load the same modules. Open: choose the default and its documentation (decision needed).
-- `src/tools/vitest/config/schemas/optionsSchema.ts:7`: `guardOutDir` switches one built-in plugin through its own flag instead of by plugin name, as the `plugins` option of `defineTsdownConfig` does.
-- `tests/setup.ts:6`: every warning is silenced, unexpected ones included; a logger engrenage owns would let tests silence only expected ones.
-- why: related #142 (Vitest picks up `setup.ts`).
+- `bin/engrenage/eslint.ts:12`: per-file cache. Open: disable it for checks, or a cache strategy.
+- `src/workflows/cli/operations/defineToolCommands.ts:48`
+- `src/tools/typescript/operations/createLibraryCompiler.ts:41`
+- `src/project/config/operations/createProjectSections.ts:231`
+- `src/tools/pnpm/operations/resolvePnpmRangeStatus.ts:22`
+- why: adjacent: #57.
+- want: a debugger takes `eslint.ts:12` and `defineToolCommands.ts:48`.
 
-## 15. Tsdown config and entry self-references
+## 15. CLI and config code guard or redo work instead of owning it
 
-- `src/tools/tsdown/operations/createTsdownConfig.ts:121`: repeated `=== undefined` checks instead of a "prop if defined" utility. Candidate for `src/utils` (public helper) or toolkit; placement is a decision.
-- `src/tools/tsdown/plugins/createEntrySelfReferencesPlugins.ts:12`: the package specifier is rebuilt from the tsdown entry name; `PathAlias` should carry it so both stay in sync.
-- `src/tools/tsdown/plugins/createEntrySelfReferencesPlugins.ts:39`: declarations stay bundled because rolldown-plugin-dts keeps externalized `import()` types verbatim; needs an upstream fix (rolldown-plugin-dts), to be filed as an upstream backlog entry.
+- `src/workflows/cli/operations/runProgram.ts:17`: resolves the config again after a failure.
+- `src/workflows/cli/operations/defineCommand.ts:6`: guards `--debug` against double registration.
+- `src/project/build/config/schemas/buildSchema.ts:28`: `resolveWithin` called only for its throw.
+- want: directly fixable by a worker.
 
-## 16. Timer handle types are not isomorphic
+## 16. `build.outDir` resolution depends on parsing the tsconfig
 
-- `src/tools/typescript/constants.ts:6`
-- why: timer handles are typed `number` (DOM signature) while Node returns an object, so `setTimeout` results differ. Related: `typescript.3` and `typescript.4` (`src.apis` declarations).
+- `src/project/config/operations/createProjectSections.ts:638`: an unreadable tsconfig hides the output directory, so its alias is generated instead of skipped.
+- `src/project/config/operations/createProjectSections.ts:708`: `build.outDir` resolves on access, unlike other sections.
+- why: its computed default reads the tsconfig. `structure.9` tracks `produceTsconfigOutDir` re-validating `raw.build`.
+- want: the output directory resolves without parsing the tsconfig.
 
-## 17. Disabled options are branched on repeatedly in the config resolver
+## 17. Vitest options replace or hide defaults
 
-- `src/project/config/operations/createResolvedConfig.ts:288`: `raw.<option> === false ? … : raw.<option>?.<field>` repeated throughout.
-- `src/project/config/operations/createResolvedConfig.ts:438`: disabled and active branches build the same composed shape twice.
-- want: normalize disabled options once; the declaration helper (#146) does this at the boundary and removes both.
+- `src/tools/vitest/config/schemas/optionsSchema.ts:4`: shared workers break `vi.mock`. Open: the default.
+- `src/tools/vitest/config/schemas/optionsSchema.ts:7`
+- `src/tools/vitest/config/schemas/optionsSchema.ts:9`
+- `src/tools/vitest/operations/createVitestConfig.ts:92`
+
+## 18. The test suite silences, hard-codes and skips
+
+- `tests/setup.ts:6`
+- `tests/scripts/codegen/generateApiDeclarations.test.src.ts:24`
+- `tests/utils/binaryTimeout.ts:1`
+- `src/project/build/operations/createEmittedManifest.ts:28`
+- why: related `configuration.2` (timeouts not configurable).
+
+## 19. Generated tsconfig paths miss `@auaust/engrenage/agents/constants`
+
+- `tests/src/foundation/blocks/syncBlocks.test.src.ts:5`
+- why: the paths resolve it to `agents/*/index.ts` instead of `agents/constants.ts`, though `package.json` exports `./agents/constants`; the test stays source-only.
+- want: a debugger fixes the paths generation; the test then runs through the public entry.
+
+## 20. Tsdown config and entry self-references
+
+- `src/tools/tsdown/operations/createTsdownConfig.ts:195`: repeated `=== undefined` checks instead of a "prop if defined" helper; placement (`src/utils` or toolkit) is a decision.
+- `src/tools/tsdown/plugins/createEntrySelfReferencesPlugins.ts:12`: the package specifier is rebuilt from the entry name; `PathAlias` should carry it.
+- `src/tools/tsdown/plugins/createEntrySelfReferencesPlugins.ts:39`: declarations stay bundled because rolldown-plugin-dts keeps externalized `import()` types verbatim; needs an upstream fix.
+
+## 21. Timer handle types are not isomorphic
+
+- `src/project/baseline/constants.ts:3`
+- why: handles are typed `number` (DOM) while Node returns an object. Related: `typescript.3`, `typescript.4`.
+
+## 22. `formatContent` needs its formatter passed by every caller
+
+- `src/project/format/operations/formatContent.ts:5`
+- why: `project` cannot import `tools`, so the Prettier adapter is not bound; #154 planned `formatContent(content, { path, root })`.
+- want: a decision on where the adapter is bound (planning).
+
+## 23. Nested workflows are relocated by string substitution
+
+- `src/tools/github/operations/renderWorkflow.ts:9`
+- why: regex replacements on the templates silently stop matching when a template changes.
+- want: template the YAML instead.
+
+## 24. The project map is long and written by `sync` only
+
+- `src/tools/agents/utils/renderProjectMap.ts:288`
+- why: per-domain peer and lower-layer target lists make about 580 lines loaded at every session start; a project that ran `init` without `sync` has no map. Check against #151 before filing.
+
+## 25. ESLint convention internals have local gaps
+
+- `src/tools/eslint/conventions/stylistic/naming.ts:27`: splits words by hand; consider primitive-kit's `splitWords`.
+- `src/tools/eslint/conventions/stylistic/preferValuedReturn.ts:142`: the fix hardcodes a two-space indent instead of deriving it from the source.
+- want: directly fixable by a worker.
 
 ## Tracked elsewhere (no separate entry)
 
-- `src/tools/typescript/constants.ts:62` (`X.@@toStringTag` entries): `typescript.6`.
-- `src/tools/typescript/operations/generateEditions.ts:368`, `src/tools/typescript/operations/generateApiDeclarations.ts:224`: `typescript.5` (listed under entry 11 for context).
+- `scripts/codegen/constants.ts:18`: `typescript.6`.
+- `scripts/codegen/generateEditions.ts:369`: `typescript.5`.
+- `src/project/config/config/declareList.ts:11`: `structure.2`.
+- `src/project/config/operations/createProjectSections.ts:309`: `structure.15`.
+- `src/project/tsconfig/operations/produceTsconfigOutDir.ts:46`, `src/tools/eslint/operations/createEslintConfig.ts:11`: `structure.9`.
+- `src/tools/eslint/operations/createEslintConfig.ts:32`: `structure.16`.
+- `src/foundation/json/types/JsonIndentation.ts:1`, `src/project/format/constants.ts:15`: `format.2`.
+- `src/tools/agents/utils/parseGithubCommand.ts:24`, `:46`: `agent-instructions.5`.
+- `src/tools/typescript/operations/createLibraryCompiler.ts:146`: `primitive-kit.1`; the marker adds `createLibraryCompiler` and `generateApiDeclarations` as sites.
