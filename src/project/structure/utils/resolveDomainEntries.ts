@@ -52,7 +52,11 @@ export function resolveDomainEntries(
 
   const found = new Map<string, File>();
 
-  for (const [subpath, file] of collectEntries(structure.root, [], structure.indexFile)) {
+  for (const [subpath, file] of collectEntries(
+    structure.root,
+    [],
+    structure.indexFile,
+  )) {
     const previous = found.get(subpath);
 
     if (previous !== undefined) {

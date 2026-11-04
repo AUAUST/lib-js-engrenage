@@ -223,7 +223,9 @@ function resolveEnvironmentRules({
       structures.src === undefined ? [] : collect(structures.src.root);
 
     const surfaces = flatMap(nodes, (node): ImportRuleTarget[] => {
-      return node.kind === "domain" ? [indexOf(node, structures.src?.indexFile ?? defaultIndexFile)] : [];
+      return node.kind === "domain"
+        ? [indexOf(node, structures.src?.indexFile ?? defaultIndexFile)]
+        : [];
     });
 
     rules.push(
@@ -373,13 +375,12 @@ function collect(node: StructureNode): StructureNode[] {
   return [node, ...flatMap(node.children, collect)];
 }
 
-function indexOf(
-  { path }: StructureNode,
-  file: string,
-): ImportRuleTarget {
+function indexOf({ path }: StructureNode, file: string): ImportRuleTarget {
   return {
- kind: "index", path, file 
-};
+    kind: "index",
+    path,
+    file,
+  };
 }
 
 function resolveElementRules(
@@ -422,7 +423,10 @@ function resolveElementRules(
 
   function surface(node: StructureNode): ImportRuleTarget[] {
     if (node.kind === "domain") {
-      return [indexOf(node, structure.indexFile), ...rolesOf(node).filter(isPublic).map(modulesOf)];
+      return [
+        indexOf(node, structure.indexFile),
+        ...rolesOf(node).filter(isPublic).map(modulesOf),
+      ];
     }
 
     return node.kind === "namespace" ? flatMap(node.children, surface) : [];
