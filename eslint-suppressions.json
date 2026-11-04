@@ -1,0 +1,1498 @@
+{
+  "scripts/codegen/apis.ts": {
+    "auaust/domain-content": {
+      "count": 1
+    }
+  },
+  "scripts/codegen/barrels.ts": {
+    "auaust/domain-content": {
+      "count": 1
+    }
+  },
+  "scripts/codegen/config.ts": {
+    "auaust/domain-content": {
+      "count": 1
+    }
+  },
+  "scripts/codegen/editions.ts": {
+    "auaust/domain-content": {
+      "count": 1
+    }
+  },
+  "scripts/codegen/generateApiDeclarations.ts": {
+    "auaust/domain-content": {
+      "count": 1
+    }
+  },
+  "scripts/codegen/generateConfigTypes.ts": {
+    "auaust/domain-content": {
+      "count": 1
+    }
+  },
+  "scripts/codegen/generateEditions.ts": {
+    "auaust/domain-content": {
+      "count": 1
+    }
+  },
+  "scripts/codegen/generateRuleTypes.ts": {
+    "auaust/domain-content": {
+      "count": 1
+    }
+  },
+  "scripts/codegen/index.ts": {
+    "auaust/index-declarations": {
+      "count": 1
+    }
+  },
+  "scripts/codegen/rules.ts": {
+    "auaust/domain-content": {
+      "count": 1
+    }
+  },
+  "scripts/index.ts": {
+    "auaust/index-declarations": {
+      "count": 3
+    }
+  },
+  "scripts/pnpm.ts": {
+    "auaust/domain-content": {
+      "count": 1
+    }
+  },
+  "src/foundation/blocks/operations/syncFiles.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/foundation/blocks/operations/syncIgnoreFile.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/foundation/filesystem/operations/readJsonFile.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/foundation/filesystem/types/Filesystem.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/foundation/processes/operations/resolveBinary.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/index.ts": {
+    "auaust/import-surfaces": {
+      "count": 7
+    }
+  },
+  "src/project/baseline/types/ApiGroup.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/baseline/types/Runtime.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/build/config/schemas/buildSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 7
+    }
+  },
+  "src/project/build/operations/createEmittedManifest.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/build/setup/createBuildToolStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/config/config/declareDefines.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/config/config/declareList.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/project/config/config/declareLocation.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/project/config/config/declareManagedList.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/project/config/config/schemas/core/cacheSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    },
+    "auaust/role-contracts": {
+      "count": 1
+    }
+  },
+  "src/project/config/config/schemas/core/debugSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    },
+    "auaust/role-contracts": {
+      "count": 1
+    }
+  },
+  "src/project/config/config/schemas/core/defineSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    },
+    "auaust/role-contracts": {
+      "count": 1
+    },
+    "auaust/role-exports": {
+      "count": 1
+    }
+  },
+  "src/project/config/config/schemas/values/directorySchema.ts": {
+    "auaust/role-contracts": {
+      "count": 1
+    },
+    "auaust/role-exports": {
+      "count": 1
+    }
+  },
+  "src/project/config/config/schemas/values/fileSchema.ts": {
+    "auaust/role-contracts": {
+      "count": 1
+    }
+  },
+  "src/project/config/config/schemas/values/globsSchema.ts": {
+    "auaust/role-contracts": {
+      "count": 1
+    },
+    "auaust/role-exports": {
+      "count": 1
+    }
+  },
+  "src/project/config/config/schemas/values/listOptionSchema.ts": {
+    "auaust/role-contracts": {
+      "count": 1
+    }
+  },
+  "src/project/config/config/schemas/values/managedListOptionSchema.ts": {
+    "auaust/role-contracts": {
+      "count": 1
+    }
+  },
+  "src/project/config/config/schemas/values/nodeMajorSchema.ts": {
+    "auaust/role-contracts": {
+      "count": 1
+    }
+  },
+  "src/project/config/constants.ts": {
+    "auaust/readonly-constants": {
+      "count": 1
+    }
+  },
+  "src/project/config/index.ts": {
+    "auaust/import-surfaces": {
+      "count": 26
+    }
+  },
+  "src/project/config/operations/createProjectConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/project/config/operations/createProjectSections.ts": {
+    "auaust/import-surfaces": {
+      "count": 52
+    }
+  },
+  "src/project/config/operations/loadConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/config/operations/readConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/config/operations/readRawConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/config/types/ConfigContext.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/config/types/ConfigInput.ts": {
+    "auaust/role-exports": {
+      "count": 1
+    }
+  },
+  "src/project/config/types/DefineContext.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/config/types/Definition.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/config/types/GlobalScope.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/config/types/ProjectConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 19
+    }
+  },
+  "src/project/config/types/ResolvedGlobal.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/config/types/ResolvedStructure.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/config/utils/createDefine.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/config/utils/locateFile.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/environments/config/declareCodeEnvironment.ts": {
+    "auaust/import-surfaces": {
+      "count": 6
+    }
+  },
+  "src/project/environments/config/schemas/binSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 7
+    }
+  },
+  "src/project/environments/config/schemas/dataSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 6
+    }
+  },
+  "src/project/environments/config/schemas/runtimeSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/project/environments/config/schemas/scriptsSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/project/environments/config/schemas/sourceSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 12
+    }
+  },
+  "src/project/environments/config/schemas/testsSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 8
+    }
+  },
+  "src/project/environments/config/schemas/toolingSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 8
+    }
+  },
+  "src/project/environments/operations/resolveCodeEnvironment.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/environments/types/ResolvedBin.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/environments/types/ResolvedCodeEnvironment.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/environments/types/ResolvedData.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/environments/types/ResolvedScripts.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/environments/types/ResolvedSource.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/environments/types/ResolvedTests.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/project/environments/types/ResolvedTooling.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/format/config/schemas/formatSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/format/operations/formatFile.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/package/config/schemas/exposedFilesSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/package/operations/createPackageJson.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/project/package/operations/writePackageJsonValue.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/project/package/setup/createPackageStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/package/types/PackageJson.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/package/utils/resolveExportPaths.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/presets/config/schemas/presetSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/presets/config/schemas/traitsSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/presets/types/Preset.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/presets/types/Trait.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/steps/types/StepContext.ts": {
+    "auaust/import-surfaces": {
+      "count": 5
+    }
+  },
+  "src/project/steps/utils/hasConfigFile.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/structure/config/schemas/aliasesSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/project/structure/config/schemas/declareRoleContractEntries.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/project/structure/config/schemas/inlineRoleSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/structure/config/schemas/roleContractSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/structure/config/schemas/rolesOptionEntries.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/structure/config/schemas/rolesOptionSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/structure/config/schemas/rolesSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/structure/config/schemas/structureOptions.ts": {
+    "auaust/import-surfaces": {
+      "count": 5
+    }
+  },
+  "src/project/structure/types/InlineRole.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/structure/types/RoleContract.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/structure/types/RoleEnvironment.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/structure/types/RoleKey.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/structure/utils/flattenRoleReferences.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/structure/utils/hasStructureViolations.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/structure/utils/renderStructure.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/tsconfig/config/declareEnvironmentTsconfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 8
+    }
+  },
+  "src/project/tsconfig/config/schemas/typescriptSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 8
+    }
+  },
+  "src/project/tsconfig/operations/createTsconfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/project/tsconfig/operations/produceTsconfigBuildInfo.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/project/tsconfig/operations/produceTsconfigExclude.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/project/tsconfig/operations/produceTsconfigExtends.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/project/tsconfig/operations/produceTsconfigInclude.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/project/tsconfig/operations/produceTsconfigLibrary.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/tsconfig/operations/produceTsconfigModule.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/tsconfig/operations/produceTsconfigOutDir.ts": {
+    "auaust/import-surfaces": {
+      "count": 7
+    }
+  },
+  "src/project/tsconfig/operations/produceTsconfigPaths.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/project/tsconfig/operations/produceTsconfigSkipLibraryCheck.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/tsconfig/operations/produceTsconfigSolution.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/project/tsconfig/operations/produceTsconfigTarget.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/tsconfig/operations/produceTsconfigTypes.ts": {
+    "auaust/import-surfaces": {
+      "count": 6
+    }
+  },
+  "src/project/tsconfig/operations/readTsconfigPaths.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/tsconfig/operations/readTsconfigValue.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/tsconfig/operations/resolvePathAliases.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/tsconfig/operations/resolveTsconfigEnvironments.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/tsconfig/operations/resolveTsconfigLibrary.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/tsconfig/operations/resolveTsconfigPresets.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/tsconfig/operations/resolveTsconfigRuntime.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/tsconfig/setup/syncTsconfigFiles.ts": {
+    "auaust/import-surfaces": {
+      "count": 7
+    }
+  },
+  "src/project/tsconfig/types/EnvironmentTsconfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/tsconfig/types/ManagedEnvironmentTsconfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/tsconfig/types/ResolvedBaseTsconfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/tsconfig/types/ResolvedEnvironmentTsconfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/tsconfig/types/Tsconfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/tsconfig/types/TsconfigEnvironment.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/tsconfig/types/TsconfigProducer.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/project/tsconfig/types/TsconfigTarget.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/tsconfig/utils/isLeftAlone.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/tsconfig/utils/toJsonValue.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/project/workspaces/config/schemas/workspacesSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 6
+    }
+  },
+  "src/project/workspaces/operations/resolveWorkspaces.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/project/workspaces/setup/syncWorkspaceFiles.ts": {
+    "auaust/import-surfaces": {
+      "count": 9
+    }
+  },
+  "src/project/workspaces/types/WorkspaceTsconfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/claude/setup/createClaudeSettingsStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/claude/setup/createClaudeStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/claude/setup/syncClaudeSettings.ts": {
+    "auaust/import-surfaces": {
+      "count": 5
+    }
+  },
+  "src/tools/agents/codex/operations/createCodexRuleMapping.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/agents/codex/operations/syncCodexInstructions.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/agents/codex/setup/createCodexHooksStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/codex/setup/createCodexStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/agents/codex/setup/syncCodexFiles.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/config/schemas/agentsSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 6
+    }
+  },
+  "src/tools/agents/operations/addAgentRules.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/agents/operations/addAgentSkills.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/operations/formatEditedFile.ts": {
+    "auaust/import-surfaces": {
+      "count": 5
+    }
+  },
+  "src/tools/agents/operations/getInstructionTemplates.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/agents/operations/getMissingRuleTemplates.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/operations/getRuleReferences.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/agents/operations/getSkillTemplates.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/agents/operations/measureEditedFile.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/agents/operations/parseInstruction.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/operations/resolveAgents.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/agents/operations/syncHook.ts": {
+    "auaust/import-surfaces": {
+      "count": 6
+    }
+  },
+  "src/tools/agents/setup/createAgentRulesStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/setup/createAgentsStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/agents/setup/createBacklogStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/agents/setup/createPreferredAgentsStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/setup/syncAgentFiles.ts": {
+    "auaust/import-surfaces": {
+      "count": 5
+    }
+  },
+  "src/tools/agents/setup/syncProjectMap.ts": {
+    "auaust/import-surfaces": {
+      "count": 5
+    }
+  },
+  "src/tools/agents/types/Agent.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/types/BudgetKind.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/types/BudgetMode.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/types/HookEvent.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/agents/utils/renderProjectMap.ts": {
+    "auaust/import-surfaces": {
+      "count": 9
+    }
+  },
+  "src/tools/changesets/setup/createChangesetConfigStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/changesets/setup/syncChangesetConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 7
+    }
+  },
+  "src/tools/eslint/constants.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    },
+    "auaust/readonly-constants": {
+      "count": 3
+    }
+  },
+  "src/tools/eslint/operations/createConventionRules.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/eslint/operations/createEslintConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/eslint/operations/createPackageJsonRules.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/eslint/operations/createRecommendedRules.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/eslint/operations/defineEslintConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/eslint/operations/listDebtMarkers.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/eslint/operations/loadInfoRules.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/eslint/operations/resolveScope.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/eslint/setup/createEslintConfigStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/eslint/types/BoundaryRow.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/eslint/types/Convention.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/eslint/types/Options.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/eslint/utils/createPlugin.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/eslint/utils/createTypeAwareLanguageOptions.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/eslint/utils/defineConvention.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/eslint/utils/defineGlobalReplacement.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/eslint/utils/defineImportReplacement.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/eslint/utils/defineReplacement.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/eslint/utils/defineRestriction.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/git/config/schemas/gitSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/git/constants.ts": {
+    "auaust/readonly-constants": {
+      "count": 1
+    }
+  },
+  "src/tools/git/operations/resolveGit.ts": {
+    "auaust/import-surfaces": {
+      "count": 5
+    }
+  },
+  "src/tools/git/setup/createGitignoreStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/git/setup/syncGitignoreFile.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/git/types/ResolvedGit.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/git/utils/createProjectIgnores.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/github/config/schemas/githubSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/github/operations/renderWorkflow.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/github/operations/resolveGithub.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/github/setup/createWorkflowsStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/tools/github/setup/syncWorkflowFiles.ts": {
+    "auaust/import-surfaces": {
+      "count": 5
+    }
+  },
+  "src/tools/github/types/WorkflowSet.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/github/types/WorkflowSetName.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/github/utils/resolveWorkflowSet.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/pnpm/operations/installDependencies.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/pnpm/operations/listPnpmWarnings.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/pnpm/operations/resolveLatestPnpm.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/pnpm/operations/resolvePnpmRangeStatus.ts": {
+    "auaust/import-surfaces": {
+      "count": 6
+    }
+  },
+  "src/tools/pnpm/operations/upgradePnpmManifest.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/pnpm/operations/writePnpmDeclaration.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/pnpm/setup/createPnpmStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/tools/pnpm/setup/createWorkspaceStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/pnpm/setup/syncWorkspaceFile.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/prettier/config/schemas/prettierSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/prettier/constants.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/prettier/operations/createPrettierConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/prettier/operations/definePrettierConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/prettier/operations/loadPrettier.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/prettier/operations/resolvePrettier.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/tools/prettier/setup/createPrettierStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/prettier/setup/createPrettierignoreStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/prettier/setup/syncPrettierignoreFile.ts": {
+    "auaust/import-surfaces": {
+      "count": 5
+    }
+  },
+  "src/tools/prettier/utils/mapConventions.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/tsdown/constants.ts": {
+    "auaust/readonly-constants": {
+      "count": 1
+    }
+  },
+  "src/tools/tsdown/operations/createTsdownConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 18
+    }
+  },
+  "src/tools/tsdown/operations/defineTsdownConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/tsdown/operations/findCommands.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/tsdown/operations/resolveCommandEntries.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/tsdown/operations/resolveCommandFiles.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/tsdown/operations/resolveSourceEntries.ts": {
+    "auaust/import-surfaces": {
+      "count": 6
+    }
+  },
+  "src/tools/tsdown/plugins/createEmittedManifestPlugins.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/tsdown/plugins/createEntrySelfReferencesPlugins.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/tsdown/setup/createTsdownConfigStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/tsdown/types/Options.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/tsdown/utils/createTsdownEntries.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/tsdown/utils/resolveDataExports.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/tsdown/utils/resolveTsdownTarget.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/typescript/constants.ts": {
+    "auaust/readonly-constants": {
+      "count": 1
+    }
+  },
+  "src/tools/typescript/index.ts": {
+    "auaust/import-surfaces": {
+      "count": 9
+    }
+  },
+  "src/tools/typescript/operations/syncBarrels.ts": {
+    "auaust/import-surfaces": {
+      "count": 7
+    }
+  },
+  "src/tools/typescript/setup/createRuntimeDataStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/typescript/setup/createSourceEntryStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/typescript/setup/createTypescriptStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/typescript/setup/syncAliases.ts": {
+    "auaust/import-surfaces": {
+      "count": 10
+    }
+  },
+  "src/tools/typescript/setup/syncEnvFile.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/tools/typescript/utils/inferType.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/typescript/utils/resolveImportSpecifier.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/typescript/utils/resolveSubpathImport.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/vite/config/schemas/optionsSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/vite/operations/createViteConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 7
+    }
+  },
+  "src/tools/vite/operations/defineViteConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/tools/vite/plugins/createEmittedManifestPlugin.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/vite/setup/createViteConfigStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/vite/types/ConfigLayer.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/vite/types/Options.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/vitest/operations/createVitestConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 15
+    }
+  },
+  "src/tools/vitest/operations/createVitestLayer.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/tools/vitest/operations/defineVitestConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/vitest/operations/findSetupFiles.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/tools/vitest/plugins/createOutDirGuard.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/vitest/plugins/createSourceGuard.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/vitest/setup/createVitestConfigStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/vitest/setup/createVitestCoverageStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/vitest/setup/createVitestStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/vitest/types/Options.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/tools/vscode/config/schemas/vscodeSchema.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/vscode/operations/resolveVscode.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/tools/vscode/setup/createVscodeExtensionsStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/vscode/setup/createVscodeSettingsStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/tools/vscode/setup/syncVscodeFiles.ts": {
+    "auaust/import-surfaces": {
+      "count": 11
+    }
+  },
+  "src/workflows/cli/operations/createPrompter.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/workflows/cli/operations/createStepContext.ts": {
+    "auaust/import-surfaces": {
+      "count": 12
+    }
+  },
+  "src/workflows/cli/operations/defineToolCommands.ts": {
+    "auaust/import-surfaces": {
+      "count": 3
+    }
+  },
+  "src/workflows/cli/operations/formatCommandError.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/workflows/cli/operations/runProgram.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/workflows/cli/operations/runSteps.ts": {
+    "auaust/import-surfaces": {
+      "count": 4
+    }
+  },
+  "src/workflows/cli/operations/settleChanges.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/workflows/cli/utils/listFilesystems.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/workflows/init/operations/listInitSteps.ts": {
+    "auaust/import-surfaces": {
+      "count": 30
+    }
+  },
+  "src/workflows/init/setup/createConfigFileStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 5
+    }
+  },
+  "src/workflows/init/setup/createDependencyStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/workflows/init/setup/createScriptsStep.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/workflows/registry/config/schemas/configDeclaration.ts": {
+    "auaust/import-surfaces": {
+      "count": 24
+    }
+  },
+  "src/workflows/registry/operations/createConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 13
+    }
+  },
+  "src/workflows/registry/operations/loadConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/workflows/registry/operations/readConfig.ts": {
+    "auaust/import-surfaces": {
+      "count": 2
+    }
+  },
+  "src/workflows/registry/types/Config.ts": {
+    "auaust/import-surfaces": {
+      "count": 6
+    }
+  },
+  "src/workflows/sync/operations/syncTargets.ts": {
+    "auaust/import-surfaces": {
+      "count": 13
+    }
+  },
+  "src/workflows/sync/setup/syncPackageJson.ts": {
+    "auaust/import-surfaces": {
+      "count": 9
+    }
+  },
+  "src/workflows/sync/types/SyncTarget.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "src/workflows/sync/types/SyncTargetName.ts": {
+    "auaust/import-surfaces": {
+      "count": 1
+    }
+  },
+  "tests/src/project/config/configType.test.src.ts": {
+    "auaust/role-exports": {
+      "count": 1
+    }
+  },
+  "tests/src/project/config/define.test.src.ts": {
+    "auaust/role-exports": {
+      "count": 1
+    }
+  },
+  "tests/src/project/config/defineConfig.test.ts": {
+    "auaust/role-exports": {
+      "count": 1
+    }
+  },
+  "tests/src/project/config/loadConfig.test.src.ts": {
+    "auaust/role-exports": {
+      "count": 1
+    }
+  },
+  "tests/src/project/config/resolveListOption.test.src.ts": {
+    "auaust/role-exports": {
+      "count": 1
+    }
+  }
+}

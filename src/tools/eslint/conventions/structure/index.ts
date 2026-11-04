@@ -1,6 +1,16 @@
 // @barrel *.ts default
 export { default as debtMarkers } from "#tools/eslint/conventions/structure/debtMarkers";
-export { default as noInternalImportsInPublicTests } from "#tools/eslint/conventions/structure/noInternalImportsInPublicTests";
+export { default as domainContent } from "#tools/eslint/conventions/structure/domainContent";
+export { default as importData } from "#tools/eslint/conventions/structure/importData";
+export { default as importEnvironments } from "#tools/eslint/conventions/structure/importEnvironments";
+export { default as importLayers } from "#tools/eslint/conventions/structure/importLayers";
+export { default as importSurfaces } from "#tools/eslint/conventions/structure/importSurfaces";
+export { default as importTests } from "#tools/eslint/conventions/structure/importTests";
+export { default as importWorkspaces } from "#tools/eslint/conventions/structure/importWorkspaces";
+export { default as indexDeclarations } from "#tools/eslint/conventions/structure/indexDeclarations";
 export { default as noMisplacedTests } from "#tools/eslint/conventions/structure/noMisplacedTests";
-export { default as noPackageImportsInSourceTests } from "#tools/eslint/conventions/structure/noPackageImportsInSourceTests";
+export { default as readonlyConstants } from "#tools/eslint/conventions/structure/readonlyConstants";
+export { default as roleContracts } from "#tools/eslint/conventions/structure/roleContracts";
+export { default as roleExports } from "#tools/eslint/conventions/structure/roleExports";
+export { default as typesDeclarations } from "#tools/eslint/conventions/structure/typesDeclarations";
 // @end

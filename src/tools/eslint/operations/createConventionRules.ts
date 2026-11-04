@@ -61,6 +61,7 @@ function createRules(
   name: string,
   { delegates, rule, severity }: Convention,
   config: ProjectConfig,
+  options: unknown,
 ): Rules {
   const rules: Rules = {};
 
@@ -71,7 +72,8 @@ function createRules(
   }
 
   if (rule !== undefined) {
-    rules[`${pluginName}/${createRuleName(name)}`] = severity;
+    rules[`${pluginName}/${createRuleName(name)}`] =
+      options === undefined ? severity : [severity, options];
   }
 
   return rules;
@@ -83,12 +85,14 @@ export function createConventionRules({
   conventions,
   setting,
   typeAware,
+  ruleOptions = {},
 }: {
   config: ProjectConfig;
   category: string;
   conventions: Record<string, Convention>;
   setting: boolean | Partial<Record<string, boolean>>;
   typeAware: boolean;
+  ruleOptions?: Readonly<Record<string, unknown>>;
 }): ConfigObject[] {
   const configs: ConfigObject[] = [];
 
@@ -112,7 +116,7 @@ export function createConventionRules({
       ...(convention.typeAware && {
         languageOptions: createTypeAwareLanguageOptions(config),
       }),
-      rules: createRules(name, convention, config),
+      rules: createRules(name, convention, config, ruleOptions[name]),
     });
   }
 

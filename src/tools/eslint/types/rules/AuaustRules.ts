@@ -38,9 +38,47 @@ export interface AuaustRules {
    */
   "auaust/debt-markers"?: Rule<AuaustDebtMarkers>;
   /**
+   * A domain holds only roles, sub-domains and namespaces, and a namespace only domains and namespaces.
+   */
+  "auaust/domain-content"?: Rule<[]>;
+  /**
    * Keep function overloads and their implementation together, without blank lines.
    */
   "auaust/grouped-overloads"?: Rule<[]>;
+  /**
+   * Check dependencies between elements
+   * @see https://www.jsboundaries.dev/docs/rules/dependencies/
+   */
+  "auaust/import-data"?: Rule<AuaustImportData>;
+  /**
+   * Check dependencies between elements
+   * @see https://www.jsboundaries.dev/docs/rules/dependencies/
+   */
+  "auaust/import-environments"?: Rule<AuaustImportEnvironments>;
+  /**
+   * Check dependencies between elements
+   * @see https://www.jsboundaries.dev/docs/rules/dependencies/
+   */
+  "auaust/import-layers"?: Rule<AuaustImportLayers>;
+  /**
+   * Check dependencies between elements
+   * @see https://www.jsboundaries.dev/docs/rules/dependencies/
+   */
+  "auaust/import-surfaces"?: Rule<AuaustImportSurfaces>;
+  /**
+   * Check dependencies between elements
+   * @see https://www.jsboundaries.dev/docs/rules/dependencies/
+   */
+  "auaust/import-tests"?: Rule<AuaustImportTests>;
+  /**
+   * Check dependencies between elements
+   * @see https://www.jsboundaries.dev/docs/rules/dependencies/
+   */
+  "auaust/import-workspaces"?: Rule<AuaustImportWorkspaces>;
+  /**
+   * An index.ts re-exports and declares no local value, except a SCREAMING_CASE constant of metadata.
+   */
+  "auaust/index-declarations"?: Rule<[]>;
   /**
    * Require or disallow logical assignment operator shorthand
    * @see https://eslint.org/docs/latest/rules/logical-assignment-operators
@@ -100,11 +138,6 @@ export interface AuaustRules {
    */
   "auaust/no-confusing-void-expression"?: Rule<AuaustNoConfusingVoidExpression>;
   /**
-   * Forbid default exports.
-   * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/no-default-export.md
-   */
-  "auaust/no-default-export"?: Rule<[]>;
-  /**
    * Forbid repeated import of the same module in multiple places.
    * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/no-duplicates.md
    */
@@ -147,10 +180,6 @@ export interface AuaustRules {
    * @see https://typescript-eslint.io/rules/no-inferrable-types
    */
   "auaust/no-inferrable-types"?: Rule<AuaustNoInferrableTypes>;
-  /**
-   * Tests that run against the built package import its public entries; import the public entry, or rename the file to `.test.src.ts` to test internals in source mode only.
-   */
-  "auaust/no-internal-imports-in-public-tests"?: Rule<[]>;
   /**
    * Disallow `void` type outside of generic or return types
    * @see https://typescript-eslint.io/rules/no-invalid-void-type
@@ -195,10 +224,6 @@ export interface AuaustRules {
    * Use the `@auaust/toolkit/object` equivalent instead of `Object.*`.
    */
   "auaust/no-object-statics"?: Rule<[]>;
-  /**
-   * Source-only tests import internals through `#…` aliases; never the package name, or rename the file to `.test.ts` to test the built package.
-   */
-  "auaust/no-package-imports-in-source-tests"?: Rule<[]>;
   /**
    * Use the `@auaust/primitive-kit/<domain>` subpath entries instead of `@auaust/primitive-kit`.
    */
@@ -403,10 +428,22 @@ export interface AuaustRules {
    */
   "auaust/quote-props"?: Rule<AuaustQuoteProps>;
   /**
+   * A constants.ts exports deeply read-only values.
+   */
+  "auaust/readonly-constants"?: Rule<[]>;
+  /**
    * Enforce consistent awaiting of returned promises
    * @see https://typescript-eslint.io/rules/return-await
    */
   "auaust/return-await"?: Rule<AuaustReturnAwait>;
+  /**
+   * A file in a role directory follows the role's nesting, categories, index and accepted files.
+   */
+  "auaust/role-contracts"?: Rule<[]>;
+  /**
+   * A module exports what its role's exports contract states: one named export matching the file, named exports, or one default export.
+   */
+  "auaust/role-exports"?: Rule<[]>;
   /**
    * Enforce sorted exports.
    * @see https://perfectionist.dev/rules/sort-exports
@@ -442,6 +479,10 @@ export interface AuaustRules {
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/text-encoding-identifier-case.md
    */
   "auaust/text-encoding-identifier-case"?: Rule<AuaustTextEncodingIdentifierCase>;
+  /**
+   * A types/ module declares types only.
+   */
+  "auaust/types-declarations"?: Rule<[]>;
   /**
    * Disallow two overloads that could be unified into one with a union or an optional/rest parameter
    * @see https://typescript-eslint.io/rules/unified-signatures
@@ -511,6 +552,54 @@ type AuaustDebtMarkers =
   | [
       {
         list?: boolean;
+      },
+    ];
+// ----- auaust/import-data -----
+type AuaustImportData =
+  | []
+  | [
+      {
+        policies?: unknown[];
+      },
+    ];
+// ----- auaust/import-environments -----
+type AuaustImportEnvironments =
+  | []
+  | [
+      {
+        policies?: unknown[];
+      },
+    ];
+// ----- auaust/import-layers -----
+type AuaustImportLayers =
+  | []
+  | [
+      {
+        policies?: unknown[];
+      },
+    ];
+// ----- auaust/import-surfaces -----
+type AuaustImportSurfaces =
+  | []
+  | [
+      {
+        policies?: unknown[];
+      },
+    ];
+// ----- auaust/import-tests -----
+type AuaustImportTests =
+  | []
+  | [
+      {
+        policies?: unknown[];
+      },
+    ];
+// ----- auaust/import-workspaces -----
+type AuaustImportWorkspaces =
+  | []
+  | [
+      {
+        policies?: unknown[];
       },
     ];
 // ----- auaust/logical-assignment-operators -----

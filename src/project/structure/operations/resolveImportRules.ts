@@ -650,6 +650,13 @@ function resolveElementRules(
       rules.push(
         ...createRule(
           { kind: "file", path: join(directory, indexFile) },
+          globalTargets,
+          "global-roles",
+          "allow",
+          "anything imports global roles",
+        ),
+        ...createRule(
+          { kind: "file", path: join(directory, indexFile) },
           surfaces,
           "root-entry",
           "allow",

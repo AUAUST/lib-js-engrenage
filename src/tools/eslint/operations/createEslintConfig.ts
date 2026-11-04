@@ -18,9 +18,11 @@ import { createConventionRules } from "#tools/eslint/operations/createConvention
 import { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";
 import { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
+import { createBoundaryRuleOptions } from "#tools/eslint/utils/createBoundaryRuleOptions";
 import { createIgnoreRules } from "#tools/eslint/utils/createIgnoreRules";
 import { createImportPresets } from "#tools/eslint/utils/createImportPresets";
 import { createPlugin } from "#tools/eslint/utils/createPlugin";
+import { resolveBoundaries } from "#tools/eslint/utils/resolveBoundaries";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
 import { resolveGit } from "#tools/git/operations/resolveGit";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
@@ -37,6 +39,7 @@ export function createEslintConfig(
     recommended,
     packageJson: packageJsonEnabled,
     typeAware,
+    boundaries,
     ...categories
   } = validate(optionsSchema, options ?? {}, "ESLint options");
 
@@ -49,6 +52,8 @@ export function createEslintConfig(
         conventions,
         setting: categories[category],
         typeAware,
+        ruleOptions:
+          category === "structure" ? createBoundaryRuleOptions(boundaries) : {},
       });
     },
   );
@@ -80,6 +85,14 @@ export function createEslintConfig(
 
   if (packageJsonEnabled) {
     configs.push(createPackageJsonRules());
+  }
+
+  if (categories.structure !== false) {
+    configs.push({
+      name: `${pluginName}/boundaries`,
+      files: resolveScope(config, ["files.code"]),
+      settings: resolveBoundaries(config).settings,
+    });
   }
 
   if (categories.imports !== false) {

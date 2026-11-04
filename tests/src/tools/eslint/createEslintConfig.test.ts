@@ -5,10 +5,15 @@ import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage";
-import { createContext, type Environment, type ProjectConfig, type ResolvedTraits } from "@auaust/engrenage/config";
+import {
+  createContext,
+  type Environment,
+  type ProjectConfig,
+  type ResolvedTraits,
+} from "@auaust/engrenage/config";
 import { packageJsonFile } from "@auaust/engrenage/constants";
 import {
-  createEslintConfig,
+  createEslintConfig as createConfig,
   type Config,
   type Options,
 } from "@auaust/engrenage/eslint";
@@ -22,6 +27,22 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 
 const root = getFixture("eslint");
+
+const contractsOff = {
+  domainContent: false,
+  indexDeclarations: false,
+  roleContracts: false,
+  roleExports: false,
+  readonlyConstants: false,
+  typesDeclarations: false,
+};
+
+function createEslintConfig(config: ProjectConfig, options?: Maybe<Options>) {
+  return createConfig(config, {
+    ...options,
+    structure: options?.structure ?? contractsOff,
+  });
+}
 
 const prettierOptions = createPrettierConfig(
   createContext(await loadConfig(root)),
@@ -366,11 +387,7 @@ describe("createEslintConfig", () => {
     const rules = await lintedRules("src/violations.ts");
 
     expect(rules).toEqual(
-      expect.arrayContaining([
-        "auaust/curly",
-        "auaust/no-loose-equal",
-        "auaust/no-default-export",
-      ]),
+      expect.arrayContaining(["auaust/curly", "auaust/no-loose-equal"]),
     );
 
     expect(

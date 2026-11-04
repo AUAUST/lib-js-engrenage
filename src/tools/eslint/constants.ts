@@ -49,6 +49,15 @@ export const packageJsonRules = freeze({
 
 export const pluginName = "auaust";
 
+export const boundaryRows = freeze([
+  "environments",
+  "tests",
+  "data",
+  "workspaces",
+  "layers",
+  "surfaces",
+] as const);
+
 export const infoRulesSetting = `${pluginName}/info-rules`;
 
 export const coreRules = freeze({

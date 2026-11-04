@@ -24,6 +24,7 @@ function convertName(name: string, formats: readonly string[]) {
     return;
   }
 
+  // @debt consider primitive-kit's splitWords
   const words = join(
     map(split(name, "_"), (word) => {
       return /[a-z]/.test(word) ? word : toLowerCase(word);
