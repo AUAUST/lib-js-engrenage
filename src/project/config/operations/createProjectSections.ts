@@ -59,6 +59,7 @@ import type { Environment } from "#project/config/types/Environment";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { RawConfig } from "#project/config/types/RawConfig";
 import type { PackageJson } from "#project/package/types/PackageJson";
+import type { ProgramLayout } from "#project/structure/index";
 import type { DeclaredRolesOption } from "#project/structure/types/DeclaredRolesOption";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
@@ -272,11 +273,21 @@ export function createProjectSections({
       : noRoles;
   }
 
+  function layoutOf(option: {
+    readonly enabled: boolean;
+    readonly layout?: ProgramLayout;
+  }): ProgramLayout | undefined {
+    return option.enabled ? option.layout : undefined;
+  }
+
   function resolveStructure(
     name: StructureEnvironmentName,
     environment: { active: boolean; dirs: Directories },
     option: StructureSection,
-    tests?: TestsContext,
+    extra: {
+      tests?: TestsContext;
+      layout?: ProgramLayout | undefined;
+    } = {},
   ): EnvironmentStructure | undefined {
     if (!option.enabled || !environment.active) {
       return;
@@ -303,7 +314,7 @@ export function createProjectSections({
               ...environmentRoles,
               define: freeze({ ...environmentRoles.define, ...define }),
             }),
-      ...(tests === undefined ? {} : { tests }),
+      ...extra,
     });
   }
 
@@ -551,12 +562,16 @@ export function createProjectSections({
 
   function structure() {
     const sourceStructure = resolveStructure("src", get("src"), sourceOption());
-    const binStructure = resolveStructure("bin", get("bin"), binOption());
+
+    const binStructure = resolveStructure("bin", get("bin"), binOption(), {
+      layout: layoutOf(binOption()),
+    });
 
     const scriptsStructure = resolveStructure(
       "scripts",
       get("scripts"),
       scriptsOption(),
+      { layout: layoutOf(scriptsOption()) },
     );
 
     const toolingStructure = resolveStructure(
@@ -575,27 +590,29 @@ export function createProjectSections({
         testsConfig,
         testsConfig.enabled
           ? {
-              layout: testsConfig.layout,
-              environments: {
-                src: {
-                  dirs: get("src").dirs,
-                  structure: sourceStructure,
-                },
-                bin: {
-                  dirs: get("bin").dirs,
-                  structure: binStructure,
-                },
-                scripts: {
-                  dirs: get("scripts").dirs,
-                  structure: scriptsStructure,
-                },
-                tooling: {
-                  dirs: get("tooling").dirs,
-                  structure: toolingStructure,
+              tests: {
+                layout: testsConfig.layout,
+                environments: {
+                  src: {
+                    dirs: get("src").dirs,
+                    structure: sourceStructure,
+                  },
+                  bin: {
+                    dirs: get("bin").dirs,
+                    structure: binStructure,
+                  },
+                  scripts: {
+                    dirs: get("scripts").dirs,
+                    structure: scriptsStructure,
+                  },
+                  tooling: {
+                    dirs: get("tooling").dirs,
+                    structure: toolingStructure,
+                  },
                 },
               },
             }
-          : undefined,
+          : {},
       ),
       bin: binStructure,
       scripts: scriptsStructure,

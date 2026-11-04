@@ -172,7 +172,7 @@ function renderNode(
         : "internal";
 
     lines.push(
-      `- Domain in ${code(parent.path)}${layer === "" ? "" : `, layer ${code(layer)}`}`,
+      `- ${node.commands === true ? "Command group" : "Domain"} in ${code(parent.path)}${layer === "" ? "" : `, layer ${code(layer)}`}`,
       `- Visibility: ${visibility}`,
       ...(node.purpose === undefined ? [] : [`- Purpose: ${node.purpose}`]),
     );

@@ -10,6 +10,7 @@ import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
+import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
 import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RolesOption } from "#project/structure/types/RolesOption";
@@ -193,6 +194,7 @@ export function resolveEnvironmentStructure({
   roles,
   environmentRoles,
   tests,
+  layout,
 }: {
   name: StructureEnvironmentName;
   root: Directory;
@@ -201,11 +203,13 @@ export function resolveEnvironmentStructure({
   roles: ProjectRoles;
   environmentRoles?: RolesOption | undefined;
   tests?: TestsContext;
+  layout?: ProgramLayout | undefined;
 }): EnvironmentStructure {
   // @debt the public default applies after the glob metadata merge, which needs the declarations to keep unset fields, so it cannot live in the declaration
   const { strictness, namespaces } = options;
   const domains = entries(options.domains);
   const optOut = new Set(options.optOut);
+  const commands = layout === "commands";
 
   const classifyMirror =
     tests === undefined ? undefined : createMirrorClassifier(tests);
@@ -346,13 +350,14 @@ export function resolveEnvironmentStructure({
       });
 
       const strays =
-        fileGlobs.length === 0
+        commands || fileGlobs.length === 0
           ? []
           : listFiles(join(root, path)).filter((file) => {
               return !fileGlobs.some((glob) => matchesGlob(file, glob));
             });
 
       return node("domain", source, {
+        ...(commands ? { commands: true as const } : {}),
         ...(strays.length === 0
           ? {}
           : { strays: strays.map((file) => join(path, file)) }),
@@ -450,7 +455,7 @@ export function resolveEnvironmentStructure({
       );
     }
 
-    if (existsSync(join(root, path, indexFile))) {
+    if (commands || existsSync(join(root, path, indexFile))) {
       return domain("inferred");
     }
 
@@ -515,6 +520,7 @@ export function resolveEnvironmentStructure({
     name,
     kind: "namespace",
     source: rootDeclaration === undefined ? "inferred" : "config",
+    ...(commands ? { commands: true as const } : {}),
     ...(rootDeclaration?.layers === undefined
       ? {}
       : { layers: rootDeclaration.layers }),

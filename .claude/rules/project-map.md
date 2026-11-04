@@ -447,67 +447,67 @@ Directories: `bin`
 
 #### `bin/engrenage`
 
-- Domain in `.`
+- Command group in `.`
 - Visibility: internal
 - Children: `bin/engrenage/agents`, `bin/engrenage/pnpm`
 
 #### `bin/engrenage/agents`
 
-- Domain in `bin/engrenage`
+- Command group in `bin/engrenage`
 - Visibility: internal
 - Children: `bin/engrenage/agents/claude`, `bin/engrenage/agents/codex`
 
 #### `bin/engrenage/agents/claude`
 
-- Domain in `bin/engrenage/agents`
+- Command group in `bin/engrenage/agents`
 - Visibility: internal
 - Children: `bin/engrenage/agents/claude/hook`
 
 #### `bin/engrenage/agents/claude/hook`
 
-- Domain in `bin/engrenage/agents/claude`
+- Command group in `bin/engrenage/agents/claude`
 - Visibility: internal
 
 #### `bin/engrenage/agents/codex`
 
-- Domain in `bin/engrenage/agents`
+- Command group in `bin/engrenage/agents`
 - Visibility: internal
 - Children: `bin/engrenage/agents/codex/hook`
 
 #### `bin/engrenage/agents/codex/hook`
 
-- Domain in `bin/engrenage/agents/codex`
+- Command group in `bin/engrenage/agents/codex`
 - Visibility: internal
 
 #### `bin/engrenage/pnpm`
 
-- Domain in `bin/engrenage`
+- Command group in `bin/engrenage`
 - Visibility: internal
 
 ### scripts (strict)
 
 Directories: `scripts`
 
-| Role           | Contents and contract                                                                   | Allowed imports | Public |
-| -------------- | --------------------------------------------------------------------------------------- | --------------- | ------ |
-| `index`        | file `index.ts`                                                                         | as its domain   | no     |
-| `constants`    | file `constants.ts`; effects pure                                                       | as its domain   | no     |
-| `declarations` | file `*.d.ts`                                                                           | as its domain   | no     |
-| `types`        | exports named-match                                                                     | as its domain   | no     |
-| `utils`        | exports named-match; effects confined                                                   | as its domain   | no     |
-| `errors`       | exports named-match; effects pure                                                       | as its domain   | yes    |
-| `enums`        | exports named-match; effects pure                                                       | as its domain   | no     |
-| `ports`        | exports named-match; effects pure                                                       | as its domain   | yes    |
-| `adapters`     | exports named-match; effects effectful                                                  | as its domain   | yes    |
-| `config`       | roles `config/schemas`; exports named-match; effects confined                           | as its domain   | no     |
-| `setup`        | exports named-match; effects effectful                                                  | as its domain   | no     |
-| `plugins`      | exports named-match; effects effectful                                                  | as its domain   | no     |
-| `operations`   | exports named-match; effects effectful                                                  | as its domain   | no     |
-| `conventions`  | category subdirectories; exports default; `index` allowed; effects confined; discovered | as its domain   | no     |
+| Role           | Contents and contract                                                                   | Allowed imports                                                         | Public |
+| -------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------ |
+| `index`        | file `index.ts`                                                                         | as its domain                                                           | no     |
+| `constants`    | file `constants.ts`; effects pure                                                       | as its domain                                                           | no     |
+| `declarations` | file `*.d.ts`                                                                           | as its domain                                                           | no     |
+| `types`        | exports named-match                                                                     | as its domain                                                           | no     |
+| `utils`        | exports named-match; effects confined                                                   | as its domain                                                           | no     |
+| `errors`       | exports named-match; effects pure                                                       | as its domain                                                           | yes    |
+| `enums`        | exports named-match; effects pure                                                       | as its domain                                                           | no     |
+| `ports`        | exports named-match; effects pure                                                       | as its domain                                                           | yes    |
+| `adapters`     | exports named-match; effects effectful                                                  | as its domain                                                           | yes    |
+| `config`       | roles `config/schemas`; exports named-match; effects confined                           | as its domain                                                           | no     |
+| `setup`        | exports named-match; effects effectful                                                  | as its domain                                                           | no     |
+| `plugins`      | exports named-match; effects effectful                                                  | as its domain                                                           | no     |
+| `operations`   | exports named-match; effects effectful                                                  | a domain imports its own roles and files; anything imports global roles | no     |
+| `conventions`  | category subdirectories; exports default; `index` allowed; effects confined; discovered | as its domain                                                           | no     |
 
 #### `scripts/codegen`
 
-- Domain in `.`
+- Command group in `.`
 - Visibility: internal
 - Imports:
   - a domain imports its own roles and files

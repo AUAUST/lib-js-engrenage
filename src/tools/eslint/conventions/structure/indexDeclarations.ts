@@ -11,13 +11,16 @@ export default defineConvention({
     return defineStructureRule({
       config,
       description:
-        "An index.ts re-exports and declares no local value, except a SCREAMING_CASE constant of metadata.",
+        "An index.ts re-exports and declares no local value, except a SCREAMING_CASE constant of metadata; the index.ts of a command group declares its command.",
       messages: {
         value:
           "An index.ts only re-exports; move this declaration into a module of the domain's roles.",
       },
-      create(context, { indexFile }) {
-        if (basename(context.filename) !== indexFile) {
+      create(context, { indexFile, node }) {
+        if (
+          basename(context.filename) !== indexFile ||
+          node.commands === true
+        ) {
           return {};
         }
 

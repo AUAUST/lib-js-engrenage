@@ -696,6 +696,12 @@ export interface ConfigInput {
                 )
               | undefined;
             /**
+             * How the directories of the environment are classified.
+             * `commands` makes the environment root and every directory that is not a role a command group: its `index.ts` declares the command and each other module is one subcommand named after its file; `domains` classifies them as domains.
+             * @default `commands`
+             */
+            layout?: ("commands" | "domains") | undefined;
+            /**
              * Commands the package exposes, mapped to their entry file.
              * They feed the tsdown entries and the `bin` field of `package.json`.
              * @default the entry files found in the bin directories
@@ -925,6 +931,12 @@ export interface ConfigInput {
                     }
                 )
               | undefined;
+            /**
+             * How the directories of the environment are classified.
+             * `commands` makes the environment root and every directory that is not a role a command group: its `index.ts` declares the command and each other module is one subcommand named after its file; `domains` classifies them as domains.
+             * @default `commands`
+             */
+            layout?: ("commands" | "domains") | undefined;
             /**
              * Roles of the directories and files whose names carry a fixed meaning.
              */

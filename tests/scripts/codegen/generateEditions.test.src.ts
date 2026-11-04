@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import { editions } from "#project/baseline/editions/index";
-import { generateEditions } from "#scripts/codegen/generateEditions";
+import { generateEditions } from "#scripts/codegen/operations/generateEditions";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { generateApiDeclarations } from "#scripts/codegen/generateApiDeclarations";
+import { generateApiDeclarations } from "#scripts/codegen/operations/generateApiDeclarations";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";

@@ -13,7 +13,7 @@ export const editions = defineCommand((command) => {
         await import("#workflows/registry/operations/loadConfig");
 
       const { generateEditions } =
-        await import("#scripts/codegen/generateEditions");
+        await import("#scripts/codegen/operations/generateEditions");
 
       const { settleChanges } =
         await import("#workflows/cli/operations/settleChanges");

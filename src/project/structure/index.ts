@@ -22,6 +22,7 @@ export * from "#project/structure/types/ImportRule";
 export * from "#project/structure/types/ImportRuleSource";
 export * from "#project/structure/types/ImportRuleTarget";
 export * from "#project/structure/types/InlineRole";
+export * from "#project/structure/types/ProgramLayout";
 export * from "#project/structure/types/ProjectRoles";
 export * from "#project/structure/types/ResolvedAliases";
 export * from "#project/structure/types/ResolvedEffects";

@@ -13,7 +13,7 @@ export const rules = defineCommand((command) => {
         await import("#workflows/registry/operations/loadConfig");
 
       const { generateRuleTypes } =
-        await import("#scripts/codegen/generateRuleTypes");
+        await import("#scripts/codegen/operations/generateRuleTypes");
 
       const config = await loadConfig();
 

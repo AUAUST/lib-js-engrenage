@@ -1,5 +1,6 @@
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
+import { declareProgramLayout } from "#project/environments/config/declareProgramLayout";
 import {
   defaultScriptsDirectories,
   disabledCodeEnvironment,
@@ -9,6 +10,7 @@ import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOption
 export const scriptsSchema = declareObject(
   {
     ...declareCodeEnvironment("scripts", defaultScriptsDirectories),
+    layout: declareProgramLayout(),
     roles: rolesOptionSchema,
   },
   {

@@ -6,6 +6,7 @@ import { declareObject } from "#foundation/options/utils/declareObject";
 import { unset } from "#foundation/options/utils/unset";
 import { nodeMajorSchema } from "#project/baseline/config/schemas/nodeMajorSchema";
 import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
+import { declareProgramLayout } from "#project/environments/config/declareProgramLayout";
 import {
   defaultBinDirectories,
   disabledCodeEnvironment,
@@ -15,6 +16,7 @@ import type { ConfigContext } from "#project/config/types/ConfigContext";
 export const binSchema = declareObject(
   {
     ...declareCodeEnvironment("bin", defaultBinDirectories),
+    layout: declareProgramLayout(),
     commands: declare(record(string(), fileSchema), {
       description: [
         "Commands the package exposes, mapped to their entry file.",

@@ -38,7 +38,7 @@ export interface AuaustRules {
    */
   "auaust/debt-markers"?: Rule<AuaustDebtMarkers>;
   /**
-   * A domain holds only roles, sub-domains and namespaces, and a namespace only domains and namespaces.
+   * A domain holds only roles, sub-domains and namespaces, and a namespace only domains and namespaces; a command group also holds command modules.
    */
   "auaust/domain-content"?: Rule<[]>;
   /**
@@ -80,7 +80,7 @@ export interface AuaustRules {
    */
   "auaust/import-workspaces"?: Rule<AuaustImportWorkspaces>;
   /**
-   * An index.ts re-exports and declares no local value, except a SCREAMING_CASE constant of metadata.
+   * An index.ts re-exports and declares no local value, except a SCREAMING_CASE constant of metadata; the index.ts of a command group declares its command.
    */
   "auaust/index-declarations"?: Rule<[]>;
   /**
@@ -445,7 +445,7 @@ export interface AuaustRules {
    */
   "auaust/role-contracts"?: Rule<[]>;
   /**
-   * A module exports what its role's exports contract states: one named export matching the file, named exports, or one default export.
+   * A module exports what its role's exports contract states: one named export matching the file, named exports, or one default export; a command module exports one command named after the file.
    */
   "auaust/role-exports"?: Rule<[]>;
   /**
