@@ -3,23 +3,23 @@ import { boolean, picklist, string } from "valibot";
 import { join, map } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
+import { declareList } from "#foundation/options/config/declareList";
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { listDefaults } from "#foundation/options/utils/listDefaults";
 import { unset } from "#foundation/options/utils/unset";
+import { nodeMajorSchema } from "#project/baseline/config/schemas/nodeMajorSchema";
 import {
   apiGroupRoots,
   apiGroups,
   apiLibraryGroups,
 } from "#project/baseline/constants";
 import { findCurrentMonth } from "#project/baseline/operations/findCurrentMonth";
-import { declareList } from "#project/config/config/declareList";
-import { nodeMajorSchema } from "#project/config/config/schemas/values/nodeMajorSchema";
+import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
 import {
   defaultSourceDirectories,
   disabledCodeEnvironment,
-} from "#project/config/constants";
-import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
+} from "#project/environments/constants";
 import { exposedFilesSchema } from "#project/package/config/schemas/exposedFilesSchema";
 import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";

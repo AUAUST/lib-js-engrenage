@@ -3,6 +3,7 @@ import { freeze } from "@auaust/toolkit/object";
 import { engrenage } from "#constants";
 import type { BlockSyntax } from "#types/BlockSyntax";
 import type { File } from "#types/File";
+import type { Globs } from "#types/Globs";
 
 export const markdownBlocks = freeze({
   open: "<!-- ",
@@ -90,3 +91,11 @@ export const defaultBudgets = freeze({
 } as const);
 
 export const hookEvents = freeze(["PreToolUse", "PostToolUse"] as const);
+
+export const defaultInstructionFiles = freeze([
+  "AGENTS.md",
+  ".claude/rules/**/*.md",
+  ".claude/skills/*/SKILL.md",
+  ".claude/agents/*.md",
+  ".agents/skills/*/SKILL.md",
+] as const) satisfies Globs;

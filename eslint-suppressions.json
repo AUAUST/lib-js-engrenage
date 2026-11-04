@@ -86,7 +86,7 @@
   },
   "src/project/build/config/schemas/buildSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 7
+      "count": 6
     }
   },
   "src/project/build/operations/createEmittedManifest.ts": {
@@ -102,36 +102,6 @@
   "src/project/config/config/declareDefines.ts": {
     "auaust/import-surfaces": {
       "count": 1
-    }
-  },
-  "src/project/config/config/declareList.ts": {
-    "auaust/import-surfaces": {
-      "count": 4
-    }
-  },
-  "src/project/config/config/declareLocation.ts": {
-    "auaust/import-surfaces": {
-      "count": 4
-    }
-  },
-  "src/project/config/config/declareManagedList.ts": {
-    "auaust/import-surfaces": {
-      "count": 4
-    }
-  },
-  "src/project/config/config/schemas/core/cacheSchema.ts": {
-    "auaust/import-surfaces": {
-      "count": 3
-    }
-  },
-  "src/project/config/config/schemas/core/debugSchema.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/project/config/config/schemas/core/defineSchema.ts": {
-    "auaust/import-surfaces": {
-      "count": 4
     }
   },
   "src/project/config/constants.ts": {
@@ -194,11 +164,6 @@
       "count": 1
     }
   },
-  "src/project/config/types/ResolvedStructure.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
   "src/project/config/utils/createDefine.ts": {
     "auaust/import-surfaces": {
       "count": 1
@@ -216,12 +181,12 @@
   },
   "src/project/environments/config/schemas/binSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 7
+      "count": 6
     }
   },
   "src/project/environments/config/schemas/dataSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 6
+      "count": 5
     }
   },
   "src/project/environments/config/schemas/runtimeSchema.ts": {
@@ -231,22 +196,22 @@
   },
   "src/project/environments/config/schemas/scriptsSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 3
+      "count": 2
     }
   },
   "src/project/environments/config/schemas/sourceSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 12
+      "count": 11
     }
   },
   "src/project/environments/config/schemas/testsSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 8
+      "count": 7
     }
   },
   "src/project/environments/config/schemas/toolingSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 8
+      "count": 7
     }
   },
   "src/project/environments/operations/resolveCodeEnvironment.ts": {
@@ -399,24 +364,14 @@
       "count": 1
     }
   },
-  "src/project/structure/utils/hasStructureViolations.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/project/structure/utils/renderStructure.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
   "src/project/tsconfig/config/declareEnvironmentTsconfig.ts": {
     "auaust/import-surfaces": {
-      "count": 8
+      "count": 7
     }
   },
   "src/project/tsconfig/config/schemas/typescriptSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 8
+      "count": 7
     }
   },
   "src/project/tsconfig/operations/createTsconfig.ts": {
@@ -471,7 +426,7 @@
   },
   "src/project/tsconfig/operations/produceTsconfigSolution.ts": {
     "auaust/import-surfaces": {
-      "count": 3
+      "count": 2
     }
   },
   "src/project/tsconfig/operations/produceTsconfigTarget.ts": {
@@ -501,7 +456,7 @@
   },
   "src/project/tsconfig/operations/resolveTsconfigEnvironments.ts": {
     "auaust/import-surfaces": {
-      "count": 2
+      "count": 1
     }
   },
   "src/project/tsconfig/operations/resolveTsconfigLibrary.ts": {
@@ -521,7 +476,7 @@
   },
   "src/project/tsconfig/setup/syncTsconfigFiles.ts": {
     "auaust/import-surfaces": {
-      "count": 7
+      "count": 6
     }
   },
   "src/project/tsconfig/types/ManagedEnvironmentTsconfig.ts": {
@@ -540,11 +495,6 @@
     }
   },
   "src/project/tsconfig/types/Tsconfig.ts": {
-    "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/project/tsconfig/types/TsconfigEnvironment.ts": {
     "auaust/import-surfaces": {
       "count": 1
     }
@@ -631,7 +581,7 @@
   },
   "src/tools/agents/config/schemas/agentsSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 6
+      "count": 5
     }
   },
   "src/tools/agents/operations/addAgentRules.ts": {

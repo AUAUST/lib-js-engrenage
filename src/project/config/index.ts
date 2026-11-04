@@ -6,7 +6,6 @@ export type { PackageJson } from "#project/package/types/PackageJson";
 export type { Resolvable } from "#types/Resolvable";
 
 // @barrel types/*.ts all
-export * from "#project/config/types/Accessors";
 export * from "#project/config/types/ConfigContext";
 export * from "#project/config/types/ConfigInput";
 export * from "#project/config/types/DefineContext";
@@ -15,9 +14,6 @@ export * from "#project/config/types/DefinitionOptions";
 export * from "#project/config/types/Environment";
 export * from "#project/config/types/GlobalScope";
 export * from "#project/config/types/GlobalsFactory";
-export * from "#project/config/types/ListAdjustment";
-export * from "#project/config/types/ListOption";
-export * from "#project/config/types/ManagedListOption";
 export * from "#project/config/types/ProjectConfig";
 export * from "#project/config/types/RawConfig";
 export * from "#project/config/types/ResolvedCache";
@@ -25,9 +21,7 @@ export * from "#project/config/types/ResolvedDefine";
 export * from "#project/config/types/ResolvedFiles";
 export * from "#project/config/types/ResolvedGlobal";
 export * from "#project/config/types/ResolvedGlobals";
-export * from "#project/config/types/ResolvedLocation";
 export * from "#project/config/types/ResolvedRuntimeSettings";
-export * from "#project/config/types/ResolvedStructure";
 // @end
 export * from "#foundation/filesystem/types/Filesystem";
 export * from "#project/baseline/types/Runtime";

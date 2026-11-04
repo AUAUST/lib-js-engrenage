@@ -1,4 +1,4 @@
-import { tsconfigEnvironments } from "#project/config/constants";
+import { tsconfigEnvironments } from "#project/tsconfig/constants";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 

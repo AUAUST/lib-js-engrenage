@@ -28,3 +28,8 @@ export * from "#project/tsconfig/types/TsconfigProducer";
 export * from "#project/tsconfig/types/TsconfigTarget";
 export * from "#project/tsconfig/types/UnmanagedEnvironmentTsconfig";
 // @end
+
+export {
+  tsconfigEnvironments,
+  unmanagedTsconfig,
+} from "#project/tsconfig/constants";

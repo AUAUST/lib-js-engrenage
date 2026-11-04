@@ -3,13 +3,13 @@ import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
-import { tsconfigEnvironments } from "#project/config/constants";
 import { jsonIndentation } from "#project/format/constants";
+import { tsconfigEnvironments } from "#project/tsconfig/constants";
 import { tsconfigProducers } from "#project/tsconfig/operations/tsconfigProducers";
 import { isLeftAlone } from "#project/tsconfig/utils/isLeftAlone";
 import { toJsonValue } from "#project/tsconfig/utils/toJsonValue";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { ManagedListOption } from "#project/config/types/ManagedListOption";
+import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";

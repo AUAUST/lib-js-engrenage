@@ -1,7 +1,7 @@
+import { declareList } from "#foundation/options/config/declareList";
+import { directorySchema } from "#foundation/options/config/schemas/directorySchema";
+import { globSchema } from "#foundation/options/config/schemas/globsSchema";
 import { declareDefines } from "#project/config/config/declareDefines";
-import { declareList } from "#project/config/config/declareList";
-import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
-import { globSchema } from "#project/config/config/schemas/values/globsSchema";
 import { structureOptions } from "#project/structure/config/schemas/structureOptions";
 import { declareEnvironmentTsconfig } from "#project/tsconfig/config/declareEnvironmentTsconfig";
 import type { Directories } from "#types/Directories";

@@ -1,7 +1,7 @@
 import { engrenage } from "#constants";
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
-import { nodeMajorSchema } from "#project/config/config/schemas/values/nodeMajorSchema";
+import { nodeMajorSchema } from "#project/baseline/config/schemas/nodeMajorSchema";
 
 import manifest from "#package.json" with { type: "json" };
 

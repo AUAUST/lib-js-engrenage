@@ -1,15 +1,15 @@
+import { declareList } from "#foundation/options/config/declareList";
+import { directorySchema } from "#foundation/options/config/schemas/directorySchema";
+import { globSchema } from "#foundation/options/config/schemas/globsSchema";
 import { declareObject } from "#foundation/options/utils/declareObject";
-import { declareList } from "#project/config/config/declareList";
-import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
-import { globSchema } from "#project/config/config/schemas/values/globsSchema";
 import {
   defaultToolingDirectories,
   defaultToolingFiles,
-  unmanagedTsconfig,
-} from "#project/config/constants";
+} from "#project/environments/constants";
 import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 import { structureOptions } from "#project/structure/config/schemas/structureOptions";
 import { declareEnvironmentTsconfig } from "#project/tsconfig/config/declareEnvironmentTsconfig";
+import { unmanagedTsconfig } from "#project/tsconfig/index";
 
 export const toolingSchema = declareObject(
   {

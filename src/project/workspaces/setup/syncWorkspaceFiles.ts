@@ -4,7 +4,7 @@ import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
-import { resolveListOption } from "#project/config/operations/resolveListOption";
+import { resolveListOption } from "#foundation/options/utils/resolveListOption";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
 import {
@@ -16,7 +16,7 @@ import {
 import { selfImports } from "#project/workspaces/constants";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
-import type { ManagedListOption } from "#project/config/types/ManagedListOption";
+import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { ResolvedWorkspace } from "#project/workspaces/types/ResolvedWorkspace";
 import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";

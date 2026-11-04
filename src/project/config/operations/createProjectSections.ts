@@ -13,13 +13,12 @@ import { validate } from "#foundation/options/utils/validate";
 import { resolveSourceRuntime } from "#project/baseline/operations/resolveSourceRuntime";
 import { resolveNodeRuntime } from "#project/baseline/utils/resolveNodeRuntime";
 import { buildSchema } from "#project/build/config/schemas/buildSchema";
-import { cacheSchema } from "#project/config/config/schemas/core/cacheSchema";
-import { debugSchema } from "#project/config/config/schemas/core/debugSchema";
-import { defineSchema } from "#project/config/config/schemas/core/defineSchema";
+import { cacheSchema } from "#project/config/config/schemas/cacheSchema";
+import { debugSchema } from "#project/config/config/schemas/debugSchema";
+import { defineSchema } from "#project/config/config/schemas/defineSchema";
 import {
   distTestsVariant,
   sourceTestsVariant,
-  unmanagedTsconfig,
 } from "#project/config/constants";
 import { isDebugEnvironment } from "#project/config/operations/isDebugEnvironment";
 import { locateFile } from "#project/config/utils/locateFile";
@@ -48,6 +47,7 @@ import { normalizeNamespaces } from "#project/structure/utils/normalizeNamespace
 import { normalizeRoles } from "#project/structure/utils/normalizeRoles";
 import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
 import { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
+import { unmanagedTsconfig } from "#project/tsconfig/index";
 import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { resolveTsconfig } from "#project/tsconfig/utils/resolveTsconfig";
 import { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";

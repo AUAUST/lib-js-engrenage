@@ -1,7 +1,7 @@
 import { boolean, union, type GenericSchema } from "valibot";
 
-import { listOptionSchema } from "#project/config/config/schemas/values/listOptionSchema";
-import type { ManagedListOption } from "#project/config/types/ManagedListOption";
+import { listOptionSchema } from "#foundation/options/config/schemas/listOptionSchema";
+import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
 
 export function managedListOptionSchema<Item>(
   item: GenericSchema<Item>,

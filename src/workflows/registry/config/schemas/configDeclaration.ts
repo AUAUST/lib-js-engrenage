@@ -1,8 +1,8 @@
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { buildSchema } from "#project/build/config/schemas/buildSchema";
-import { cacheSchema } from "#project/config/config/schemas/core/cacheSchema";
-import { debugSchema } from "#project/config/config/schemas/core/debugSchema";
-import { defineSchema } from "#project/config/config/schemas/core/defineSchema";
+import { cacheSchema } from "#project/config/config/schemas/cacheSchema";
+import { debugSchema } from "#project/config/config/schemas/debugSchema";
+import { defineSchema } from "#project/config/config/schemas/defineSchema";
 import { binSchema } from "#project/environments/config/schemas/binSchema";
 import { dataSchema } from "#project/environments/config/schemas/dataSchema";
 import { runtimeSchema } from "#project/environments/config/schemas/runtimeSchema";

@@ -3,9 +3,9 @@ import { isArray } from "@auaust/toolkit/isArray";
 import { isString } from "@auaust/toolkit/isString";
 
 import { engrenage } from "#constants";
+import { resolveListOption } from "#foundation/options/utils/resolveListOption";
 import { apiLibraryGroups } from "#project/baseline/constants";
 import { includesEsLibrary } from "#project/baseline/operations/includesEsLibrary";
-import { resolveListOption } from "#project/config/operations/resolveListOption";
 import { readTsconfigValue } from "#project/tsconfig/operations/readTsconfigValue";
 import { resolveTsconfigLibrary } from "#project/tsconfig/operations/resolveTsconfigLibrary";
 import { resolveTsconfigRuntime } from "#project/tsconfig/operations/resolveTsconfigRuntime";

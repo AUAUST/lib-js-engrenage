@@ -1,7 +1,7 @@
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 
-import type { ResolvedStructure } from "#project/config/types/ResolvedStructure";
+import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 
 const indentation = "  ";

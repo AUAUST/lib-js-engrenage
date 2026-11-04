@@ -2,7 +2,7 @@ import { compose, type PropertyComposer } from "@auaust/toolkit/composer";
 import { entries } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
-import type { Accessors } from "#project/config/types/Accessors";
+import type { Accessors } from "#foundation/options/types/Accessors";
 
 // @debt misplaced: a generic accessor factory in the config entry, used by createTsconfig and the package.json model; it could live in foundation
 export function createAccessors<Fields extends object>({

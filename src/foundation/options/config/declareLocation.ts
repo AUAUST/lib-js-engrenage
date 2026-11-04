@@ -1,9 +1,9 @@
+import { fileSchema } from "#foundation/options/config/schemas/fileSchema";
 import { declare } from "#foundation/options/utils/declare";
 import { describeDefault } from "#foundation/options/utils/describeDefault";
-import { fileSchema } from "#project/config/config/schemas/values/fileSchema";
 import type { Declaration } from "#foundation/options/types/Declaration";
 import type { Description } from "#foundation/options/types/Description";
-import type { ResolvedLocation } from "#project/config/types/ResolvedLocation";
+import type { ResolvedLocation } from "#foundation/options/types/ResolvedLocation";
 import type { File } from "#types/File";
 
 export function declareLocation(options: {

@@ -1,14 +1,14 @@
 import type { GenericSchema } from "valibot";
 
+import { listOptionSchema } from "#foundation/options/config/schemas/listOptionSchema";
 import { declare } from "#foundation/options/utils/declare";
-import { listOptionSchema } from "#project/config/config/schemas/values/listOptionSchema";
-import { resolveListOption } from "#project/config/operations/resolveListOption";
+import { resolveListOption } from "#foundation/options/utils/resolveListOption";
 import type { Declaration } from "#foundation/options/types/Declaration";
 import type { Default } from "#foundation/options/types/Default";
 import type { Description } from "#foundation/options/types/Description";
-import type { ListOption } from "#project/config/types/ListOption";
+import type { ListOption } from "#foundation/options/types/ListOption";
 
-// @debt a `config/` module imports `operations/`: resolveListOption warns on the console, so it cannot be a pure `utils/` function the declaration could import
+// @debt resolveListOption warns on the console, which a pure `utils/` function should not do
 export function declareList<Item extends string, Context = unknown>(
   item: GenericSchema<Item>,
   options: {

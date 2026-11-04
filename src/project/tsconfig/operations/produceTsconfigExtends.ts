@@ -1,5 +1,5 @@
 import { engrenage } from "#constants";
-import { resolveListOption } from "#project/config/operations/resolveListOption";
+import { resolveListOption } from "#foundation/options/utils/resolveListOption";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";

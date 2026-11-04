@@ -1,4 +1,4 @@
-import { resolveListOption } from "#project/config/operations/resolveListOption";
+import { resolveListOption } from "#foundation/options/utils/resolveListOption";
 import { resolveTsconfigRuntime } from "#project/tsconfig/operations/resolveTsconfigRuntime";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";

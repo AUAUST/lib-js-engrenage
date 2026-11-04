@@ -1,13 +1,13 @@
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
-import type { ResolvedStructure } from "#project/config/types/ResolvedStructure";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ImportRule } from "#project/structure/types/ImportRule";
 import type { ImportRuleSource } from "#project/structure/types/ImportRuleSource";
 import type { ImportRuleTarget } from "#project/structure/types/ImportRuleTarget";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { Globs } from "#types/Globs";

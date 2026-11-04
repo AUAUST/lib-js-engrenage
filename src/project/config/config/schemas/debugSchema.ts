@@ -1,6 +1,6 @@
 import { boolean } from "valibot";
 
-import { declare } from "#foundation/options/utils/declare";
+import { declare } from "#foundation/options/index";
 
 export const debugSchema = declare(boolean(), {
   description: [

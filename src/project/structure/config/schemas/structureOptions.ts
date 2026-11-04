@@ -1,10 +1,10 @@
 import { array, boolean, picklist, string, union } from "valibot";
 
+import { directorySchema } from "#foundation/options/config/schemas/directorySchema";
+import { globSchema } from "#foundation/options/config/schemas/globsSchema";
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { declareRecord } from "#foundation/options/utils/declareRecord";
-import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
-import { globSchema } from "#project/config/config/schemas/values/globsSchema";
 import { inlineRoleSchema } from "#project/structure/config/schemas/inlineRoleSchema";
 
 export const structureOptions = {

@@ -2,17 +2,17 @@ import { boolean, picklist, record, string, unknown } from "valibot";
 
 import { entries } from "@auaust/toolkit/object";
 
+import { declareList } from "#foundation/options/config/declareList";
+import { declareLocation } from "#foundation/options/config/declareLocation";
+import { declareManagedList } from "#foundation/options/config/declareManagedList";
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { unset } from "#foundation/options/utils/unset";
-import { declareList } from "#project/config/config/declareList";
-import { declareLocation } from "#project/config/config/declareLocation";
-import { declareManagedList } from "#project/config/config/declareManagedList";
 import {
   defaultTsconfigCheck,
   defaultTsconfigInherits,
   tsconfigEnvironments,
-} from "#project/config/constants";
+} from "#project/tsconfig/constants";
 import type { Description } from "#foundation/options/types/Description";
 import type { TsconfigEnvironment } from "#project/tsconfig/types/TsconfigEnvironment";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";

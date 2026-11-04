@@ -1,5 +1,5 @@
-import type { ManagedListOption } from "#project/config/types/ManagedListOption";
-import type { ResolvedLocation } from "#project/config/types/ResolvedLocation";
+import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
+import type { ResolvedLocation } from "#foundation/options/types/ResolvedLocation";
 import type { TsconfigEnvironment } from "#project/tsconfig/types/TsconfigEnvironment";
 
 export interface ManagedEnvironmentTsconfig {

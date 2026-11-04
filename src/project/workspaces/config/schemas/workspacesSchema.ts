@@ -1,11 +1,11 @@
 import { record, string, unknown } from "valibot";
 
+import { declareList } from "#foundation/options/config/declareList";
+import { declareManagedList } from "#foundation/options/config/declareManagedList";
+import { globSchema } from "#foundation/options/config/schemas/globsSchema";
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { declareRecord } from "#foundation/options/utils/declareRecord";
-import { declareList } from "#project/config/config/declareList";
-import { declareManagedList } from "#project/config/config/declareManagedList";
-import { globSchema } from "#project/config/config/schemas/values/globsSchema";
 import { directoryPlaceholder } from "#project/workspaces/constants";
 
 const workspaceSchema = declareObject(

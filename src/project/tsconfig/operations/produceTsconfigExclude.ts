@@ -1,6 +1,6 @@
 import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
-import { resolveListOption } from "#project/config/operations/resolveListOption";
+import { resolveListOption } from "#foundation/options/utils/resolveListOption";
 import { resolveTsconfigEnvironments } from "#project/tsconfig/operations/resolveTsconfigEnvironments";
 import { toTsconfigGlobs } from "#project/tsconfig/utils/toTsconfigGlobs";
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";

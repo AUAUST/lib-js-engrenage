@@ -1,4 +1,4 @@
-import type { ManagedListOption } from "#project/config/types/ManagedListOption";
+import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
 
 export interface WorkspaceTsconfig {
   readonly extends: ManagedListOption<string> | undefined;

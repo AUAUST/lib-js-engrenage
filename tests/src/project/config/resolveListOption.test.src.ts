@@ -1,10 +1,10 @@
 import { string } from "valibot";
 import { describe, expect, test, vi } from "vitest";
 
+import { listOptionSchema } from "#foundation/options/config/schemas/listOptionSchema";
+import { managedListOptionSchema } from "#foundation/options/config/schemas/managedListOptionSchema";
+import { resolveListOption } from "#foundation/options/utils/resolveListOption";
 import { validate } from "#foundation/options/utils/validate";
-import { listOptionSchema } from "#project/config/config/schemas/values/listOptionSchema";
-import { managedListOptionSchema } from "#project/config/config/schemas/values/managedListOptionSchema";
-import { resolveListOption } from "#project/config/operations/resolveListOption";
 
 const defaults = ["a", "b", "c"] as const;
 

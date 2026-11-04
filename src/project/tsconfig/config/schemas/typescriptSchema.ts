@@ -3,17 +3,17 @@ import { basename } from "node:path";
 import { boolean, record, string, unknown } from "valibot";
 
 import { tsconfigFile } from "#constants";
+import { declareList } from "#foundation/options/config/declareList";
+import { declareLocation } from "#foundation/options/config/declareLocation";
+import { declareManagedList } from "#foundation/options/config/declareManagedList";
+import { fileSchema } from "#foundation/options/config/schemas/fileSchema";
+import { globSchema } from "#foundation/options/config/schemas/globsSchema";
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
-import { declareList } from "#project/config/config/declareList";
-import { declareLocation } from "#project/config/config/declareLocation";
-import { declareManagedList } from "#project/config/config/declareManagedList";
-import { fileSchema } from "#project/config/config/schemas/values/fileSchema";
-import { globSchema } from "#project/config/config/schemas/values/globsSchema";
 import {
   defaultEnvFile,
   defaultTypescriptFiles,
-} from "#project/config/constants";
+} from "#project/tsconfig/constants";
 
 export const typescriptSchema = declareObject(
   {

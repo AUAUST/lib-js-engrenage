@@ -14,7 +14,7 @@ import { once } from "@auaust/toolkit/once";
 
 import { isWithin } from "#foundation/filesystem/utils/isWithin";
 import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
-import { createAccessors } from "#project/config/utils/createAccessors";
+import { createAccessors } from "#foundation/options/utils/createAccessors";
 import { noInputsDiagnostic } from "#project/tsconfig/constants";
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { Paths } from "#project/tsconfig/types/Paths";

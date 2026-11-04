@@ -1,15 +1,15 @@
 import { record, string } from "valibot";
 
+import { fileSchema } from "#foundation/options/config/schemas/fileSchema";
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { unset } from "#foundation/options/utils/unset";
-import { fileSchema } from "#project/config/config/schemas/values/fileSchema";
-import { nodeMajorSchema } from "#project/config/config/schemas/values/nodeMajorSchema";
+import { nodeMajorSchema } from "#project/baseline/config/schemas/nodeMajorSchema";
+import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
 import {
   defaultBinDirectories,
   disabledCodeEnvironment,
-} from "#project/config/constants";
-import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
+} from "#project/environments/constants";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 
 export const binSchema = declareObject(

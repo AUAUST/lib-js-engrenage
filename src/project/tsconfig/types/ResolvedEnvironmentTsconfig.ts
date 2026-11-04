@@ -1,4 +1,4 @@
-import type { ManagedListOption } from "#project/config/types/ManagedListOption";
+import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 import type { File } from "#types/File";
 

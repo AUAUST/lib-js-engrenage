@@ -3,9 +3,9 @@ import { isArray } from "@auaust/toolkit/isArray";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import type { MaybeArray } from "@auaust/toolkit/types";
 
-import type { ListAdjustment } from "#project/config/types/ListAdjustment";
-import type { ListOption } from "#project/config/types/ListOption";
-import type { ManagedListOption } from "#project/config/types/ManagedListOption";
+import type { ListAdjustment } from "#foundation/options/types/ListAdjustment";
+import type { ListOption } from "#foundation/options/types/ListOption";
+import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
 
 function toItems<Item extends string>(
   value: MaybeArray<Item> | undefined,

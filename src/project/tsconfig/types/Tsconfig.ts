@@ -1,6 +1,6 @@
 import type { CompilerOptions } from "typescript";
 
-import type { Accessors } from "#project/config/types/Accessors";
+import type { Accessors } from "#foundation/options/types/Accessors";
 import type { Paths } from "#project/tsconfig/types/Paths";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

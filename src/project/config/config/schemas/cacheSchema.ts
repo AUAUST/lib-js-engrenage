@@ -1,7 +1,9 @@
-import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
-import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
+import { resolveWithin } from "#foundation/filesystem/index";
+import {
+  declare,
+  declareObject,
+  directorySchema,
+} from "#foundation/options/index";
 import { defaultCacheDirectory } from "#project/config/constants";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 
