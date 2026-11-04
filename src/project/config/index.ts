@@ -1,5 +1,6 @@
 export { defineConfig } from "#project/config/operations/defineConfig";
 export { loadConfig } from "#project/config/operations/loadConfig";
+export { createContext } from "#project/config/utils/createContext";
 export { define } from "#project/config/utils/define";
 export type { PackageJson } from "#project/package/types/PackageJson";
 export type { Resolvable } from "#types/Resolvable";

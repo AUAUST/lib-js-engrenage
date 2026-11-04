@@ -62,3 +62,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: backlog `configuration.md` entry 3 says host presets resolve to the traits "owned directories, published" (the former is open); plan #137 §Decisions "until #153 adds it, read the `library` preset with a `@debt` marker" is obsolete; `changesets.md` may still mention presets.
 - done: each matches the traits model.
+
+## Stale after #153 (Prettier)
+
+- why: `README.md` was not scanned for the removed `"prettier": "@auaust/engrenage/prettier"` reference; the default export of `@auaust/engrenage/prettier` and `defaultOptions` are gone.
+- done: docs describe `prettier.config.ts` with `definePrettierConfig`.

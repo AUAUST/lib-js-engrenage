@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 
+import { createContext } from "#project/config/utils/createContext";
 import { createDefine } from "#project/config/utils/createDefine";
 import { define } from "#project/config/utils/define";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -45,7 +46,7 @@ describe("define", () => {
     });
 
     expect(
-      createDefine(config, {
+      createDefine(createContext(config), {
         isTesting: false,
       }),
     ).toEqual({
@@ -55,7 +56,7 @@ describe("define", () => {
     });
 
     expect(
-      createViteConfig(config, {
+      createViteConfig(createContext(config), {
         isTesting: true,
       }).define,
     ).toEqual({

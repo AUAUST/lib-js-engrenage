@@ -3,10 +3,11 @@ import { posix } from "node:path";
 import { builtExtension } from "#tools/tsdown/constants";
 import { findCommands } from "#tools/tsdown/operations/findCommands";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { ResolvedBin } from "#project/environments/types/ResolvedBin";
 
 export function resolveCommandFiles(
-  config: ProjectConfig,
+  config: { bin: ResolvedBin; filesystem: Filesystem },
   outDir: string,
 ): Record<string, string> {
   const commandFiles: Record<string, string> = {};

@@ -2,7 +2,7 @@ import { build } from "tsdown";
 import { createProgram, getPreEmitDiagnostics } from "typescript";
 import { describe, expect, test } from "vitest";
 
-import { define, loadConfig } from "@auaust/engrenage/config";
+import { createContext, define, loadConfig } from "@auaust/engrenage/config";
 import { createTsdownConfig } from "@auaust/engrenage/tsdown";
 import { syncEnvFile } from "@auaust/engrenage/typescript";
 
@@ -57,7 +57,7 @@ describe("createTsdownConfig", () => {
     config.filesystem.flush();
 
     await build({
-      ...createTsdownConfig(config, { ci: false }),
+      ...createTsdownConfig(createContext(config), { ci: false }),
       config: false,
       logLevel: "silent",
     });
@@ -113,7 +113,7 @@ describe("createTsdownConfig", () => {
     const config = await loadConfig(project.root);
 
     await build({
-      ...createTsdownConfig(config, { ci: false }),
+      ...createTsdownConfig(createContext(config), { ci: false }),
       config: false,
       failOnWarn: true,
       logLevel: "silent",
@@ -131,7 +131,7 @@ describe("createTsdownConfig", () => {
     const config = await loadConfig(root);
 
     const tsdownConfig = createTsdownConfig(
-      config,
+      createContext(config),
       {
         ci: true,
       },
@@ -191,7 +191,7 @@ describe("createTsdownConfig", () => {
     const config = await loadConfig(project.root);
 
     expect(
-      createTsdownConfig(config, {
+      createTsdownConfig(createContext(config), {
         ci: false,
       }),
     ).toMatchObject({
@@ -224,7 +224,7 @@ describe("createTsdownConfig", () => {
     const config = await loadConfig(project.root);
 
     expect(
-      createTsdownConfig(config, {
+      createTsdownConfig(createContext(config), {
         ci: false,
       }),
     ).toMatchObject({
@@ -257,7 +257,7 @@ describe("createTsdownConfig", () => {
     const config = await loadConfig(project.root);
 
     expect(() => {
-      return createTsdownConfig(config, {
+      return createTsdownConfig(createContext(config), {
         ci: false,
       });
     }).toThrow("Bin entry 'bin/cli' is declared by both");
@@ -273,7 +273,7 @@ describe("createTsdownConfig", () => {
     const config = await loadConfig(project.root);
 
     expect(() => {
-      return createTsdownConfig(config, {
+      return createTsdownConfig(createContext(config), {
         ci: false,
       });
     }).toThrow('must declare "type": "module"');
@@ -310,12 +310,15 @@ describe("createTsdownConfig", () => {
         },
       });
 
-      const fromExports = createTsdownConfig(await loadConfig(project.root), {
-        ci: false,
-      });
+      const fromExports = createTsdownConfig(
+        createContext(await loadConfig(project.root)),
+        {
+          ci: false,
+        },
+      );
 
       const fromPaths = createTsdownConfig(
-        await loadConfig(createProject({}).root),
+        createContext(await loadConfig(createProject({}).root)),
         { ci: false },
       );
 
@@ -338,7 +341,9 @@ describe("createTsdownConfig", () => {
       });
 
       expect(
-        createTsdownConfig(await loadConfig(project.root), { ci: false }).entry,
+        createTsdownConfig(createContext(await loadConfig(project.root)), {
+          ci: false,
+        }).entry,
       ).toEqual({
         "index": "src/index.ts",
         "alpha/constants": "src/alpha/constants.ts",
@@ -359,7 +364,9 @@ describe("createTsdownConfig", () => {
       );
 
       expect(
-        createTsdownConfig(await loadConfig(project.root), { ci: false }),
+        createTsdownConfig(createContext(await loadConfig(project.root)), {
+          ci: false,
+        }),
       ).toMatchObject({
         entry: { "bin/tool": "bin/tool/index.ts" },
         exports: { exclude: ["bin/tool"] },
@@ -374,7 +381,9 @@ describe("createTsdownConfig", () => {
       });
 
       expect(
-        createTsdownConfig(await loadConfig(project.root), { ci: false }),
+        createTsdownConfig(createContext(await loadConfig(project.root)), {
+          ci: false,
+        }),
       ).toMatchObject({
         exports: {
           customExports: { "./presets/*.json": "./data/presets/*.json" },
@@ -392,7 +401,7 @@ describe("createTsdownConfig", () => {
       const config = await loadConfig(project.root);
 
       expect(() => {
-        return createTsdownConfig(config, { ci: false });
+        return createTsdownConfig(createContext(config), { ci: false });
       }).toThrow(
         /Subpath '\.\/alpha' is exposed by both src .* and data\.exports/,
       );
@@ -424,8 +433,9 @@ describe("createTsdownConfig", () => {
       });
 
       expect(
-        createTsdownConfig(await loadConfig(project.root), { ci: false })
-          .target,
+        createTsdownConfig(createContext(await loadConfig(project.root)), {
+          ci: false,
+        }).target,
       ).toEqual([
         "chrome123",
         "edge123",
@@ -442,8 +452,9 @@ describe("createTsdownConfig", () => {
       });
 
       expect(
-        createTsdownConfig(await loadConfig(project.root), { ci: false })
-          .target,
+        createTsdownConfig(createContext(await loadConfig(project.root)), {
+          ci: false,
+        }).target,
       ).toEqual(["node24"]);
     });
 
@@ -456,11 +467,13 @@ describe("createTsdownConfig", () => {
       const without = createProject(config);
 
       expect(
-        createTsdownConfig(await loadConfig(withEngines.root), { ci: false })
-          .target,
+        createTsdownConfig(createContext(await loadConfig(withEngines.root)), {
+          ci: false,
+        }).target,
       ).toEqual(
-        createTsdownConfig(await loadConfig(without.root), { ci: false })
-          .target,
+        createTsdownConfig(createContext(await loadConfig(without.root)), {
+          ci: false,
+        }).target,
       );
     });
   });
@@ -494,7 +507,9 @@ describe("createTsdownConfig", () => {
 
     const config = await loadConfig(project.root);
 
-    const tsdownConfig = createTsdownConfig(config, { ci: false });
+    const tsdownConfig = createTsdownConfig(createContext(config), {
+      ci: false,
+    });
 
     expect(tsdownConfig.tsconfig).toBe(project.resolve("tsconfig.json"));
 
@@ -539,7 +554,9 @@ describe("createTsdownConfig", () => {
 
     const config = await loadConfig(project.root);
 
-    const tsdownConfig = createTsdownConfig(config, { ci: false });
+    const tsdownConfig = createTsdownConfig(createContext(config), {
+      ci: false,
+    });
 
     expect(tsdownConfig.dts).not.toHaveProperty("tsconfig");
 
@@ -564,7 +581,9 @@ describe("createTsdownConfig plugins", () => {
     const config = await loadConfig(root);
 
     expect(
-      pluginNames(createTsdownConfig(config, { ci: false }).plugins),
+      pluginNames(
+        createTsdownConfig(createContext(config), { ci: false }).plugins,
+      ),
     ).toEqual([
       "engrenage:empty-namespaces:find",
       "engrenage:empty-namespaces:declare",
@@ -573,7 +592,7 @@ describe("createTsdownConfig plugins", () => {
 
     expect(
       createTsdownConfig(
-        config,
+        createContext(config),
         {
           ci: false,
         },
@@ -591,7 +610,7 @@ describe("createTsdownConfig plugins", () => {
     const config = await loadConfig(root);
 
     expect(() => {
-      return createTsdownConfig(config, { ci: false }, {
+      return createTsdownConfig(createContext(config), { ci: false }, {
         plugins: { unknown: false },
       } as never);
     }).toThrow(/empty-namespaces/);

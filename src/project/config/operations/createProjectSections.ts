@@ -31,6 +31,7 @@ import { sourceSchema } from "#project/environments/config/schemas/sourceSchema"
 import { testsSchema } from "#project/environments/config/schemas/testsSchema";
 import { toolingSchema } from "#project/environments/config/schemas/toolingSchema";
 import { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
+import { formatSchema } from "#project/format/config/schemas/formatSchema";
 import { createPackageJson } from "#project/package/operations/createPackageJson";
 import { presetSchema } from "#project/presets/config/schemas/presetSchema";
 import { traitsSchema } from "#project/presets/config/schemas/traitsSchema";
@@ -128,6 +129,10 @@ export function createProjectSections({
 
   function traits() {
     return resolveTraits(get("preset"), get("traitAdjustments"));
+  }
+
+  function format() {
+    return resolveSection(formatSchema, raw.format, context, "format");
   }
 
   function roles() {
@@ -704,6 +709,7 @@ export function createProjectSections({
     traitAdjustments,
     traits,
     roles,
+    format,
     runtime,
     define,
     src: source,

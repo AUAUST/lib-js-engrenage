@@ -175,7 +175,6 @@ describe("engrenage init", () => {
       private: true,
       license: "UNLICENSED",
       author: manifest.author,
-      prettier: "@auaust/engrenage/prettier",
       scripts: {
         "ci": "pnpm run ci:check && pnpm run ci:test",
         "ci:check":
@@ -211,6 +210,10 @@ describe("engrenage init", () => {
       files: [],
       references: [],
     });
+
+    expect(project.read("prettier.config.ts")).toContain(
+      "export default definePrettierConfig();",
+    );
 
     expect(project.read("vitest.config.ts")).toContain(
       "export default defineVitestConfig();",
@@ -368,7 +371,6 @@ describe("engrenage init", () => {
       "scripts",
       "imports",
       "devDependencies",
-      "prettier",
       "devEngines",
     ]);
   });

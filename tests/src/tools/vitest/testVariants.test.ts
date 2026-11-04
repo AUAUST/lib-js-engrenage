@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { startVitest } from "vitest/node";
 
-import { loadConfig } from "@auaust/engrenage/config";
+import { createContext, loadConfig } from "@auaust/engrenage/config";
 import { createVitestConfig } from "@auaust/engrenage/vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -41,7 +41,7 @@ async function collect(root: string, mode: "test" | "build") {
       watch: false,
       reporters: [],
     },
-    createVitestConfig(config, { command: "serve", mode }),
+    createVitestConfig(createContext(config), { command: "serve", mode }),
   );
 
   try {
@@ -72,13 +72,17 @@ describe("test variants", () => {
     });
 
     expect(
-      createVitestConfig(config, { command: "serve", mode: "test" }).test
-        ?.include,
+      createVitestConfig(createContext(config), {
+        command: "serve",
+        mode: "test",
+      }).test?.include,
     ).toEqual(["**/*.{spec,test}.{ts,tsx}", "**/*.{spec,test}.src.{ts,tsx}"]);
 
     expect(
-      createVitestConfig(config, { command: "serve", mode: "build" }).test
-        ?.include,
+      createVitestConfig(createContext(config), {
+        command: "serve",
+        mode: "build",
+      }).test?.include,
     ).toEqual(["**/*.{spec,test}.{ts,tsx}", "**/*.{spec,test}.dist.{ts,tsx}"]);
   });
 

@@ -13,6 +13,7 @@ import type { ResolvedScripts } from "#project/environments/types/ResolvedScript
 import type { ResolvedSource } from "#project/environments/types/ResolvedSource";
 import type { ResolvedTests } from "#project/environments/types/ResolvedTests";
 import type { ResolvedTooling } from "#project/environments/types/ResolvedTooling";
+import type { Conventions } from "#project/format/types/Conventions";
 import type { PackageJson } from "#project/package/types/PackageJson";
 import type { Preset } from "#project/presets/types/Preset";
 import type { ResolvedTraitAdjustments } from "#project/presets/types/ResolvedTraitAdjustments";
@@ -42,6 +43,7 @@ export interface ProjectConfig {
   readonly traitAdjustments: ResolvedTraitAdjustments;
   readonly traits: ResolvedTraits;
   readonly roles: ProjectRoles;
+  readonly format: Conventions;
   readonly runtime: ResolvedRuntimeSettings;
   readonly define: ResolvedDefine;
   readonly src: ResolvedSource;

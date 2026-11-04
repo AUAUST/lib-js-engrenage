@@ -1,10 +1,22 @@
 import { resolveExportPaths } from "#project/package/utils/resolveExportPaths";
 import { resolvePathAliases } from "#project/tsconfig/operations/resolvePathAliases";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ResolvedSource } from "#project/environments/types/ResolvedSource";
+import type { PackageJson } from "#project/package/types/PackageJson";
 import type { PathAliases } from "#project/tsconfig/types/PathAliases";
+import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
+import type { Directory } from "#types/Directory";
 
-export function resolveSourceEntries(config: ProjectConfig): PathAliases {
-  const { packageJson, root, src, tsconfig } = config;
+export function resolveSourceEntries({
+  packageJson,
+  root,
+  src,
+  tsconfig,
+}: {
+  packageJson: PackageJson;
+  root: Directory;
+  src: ResolvedSource;
+  tsconfig: Tsconfig;
+}): PathAliases {
   const { name } = packageJson;
 
   return resolvePathAliases(

@@ -1,5 +1,6 @@
 import { value } from "@auaust/toolkit/value";
 
+import { createContext } from "#project/config/utils/createContext";
 import { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
@@ -13,6 +14,6 @@ export function createVitestLayer(
   return async function vitestLayer(config, env) {
     const resolvedOptions = await value(options, config, env);
 
-    return createVitestConfig(config, env, resolvedOptions);
+    return createVitestConfig(createContext(config), env, resolvedOptions);
   };
 }

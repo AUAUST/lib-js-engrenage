@@ -3,7 +3,7 @@ import { pathToFileURL } from "node:url";
 import { build } from "tsdown";
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
+import { createContext, loadConfig } from "@auaust/engrenage/config";
 import { createTsdownConfig, type Options } from "@auaust/engrenage/tsdown";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -49,7 +49,7 @@ async function buildProject(options?: Options) {
   const config = await loadConfig(project.root);
 
   await build({
-    ...createTsdownConfig(config, { ci: false }, options),
+    ...createTsdownConfig(createContext(config), { ci: false }, options),
     config: false,
     logLevel: "silent",
   });

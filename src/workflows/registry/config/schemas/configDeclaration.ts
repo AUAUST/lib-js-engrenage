@@ -10,6 +10,7 @@ import { scriptsSchema } from "#project/environments/config/schemas/scriptsSchem
 import { sourceSchema } from "#project/environments/config/schemas/sourceSchema";
 import { testsSchema } from "#project/environments/config/schemas/testsSchema";
 import { toolingSchema } from "#project/environments/config/schemas/toolingSchema";
+import { formatSchema } from "#project/format/config/schemas/formatSchema";
 import { presetSchema } from "#project/presets/config/schemas/presetSchema";
 import { traitsSchema } from "#project/presets/config/schemas/traitsSchema";
 import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
@@ -28,6 +29,7 @@ export const configDeclaration = declareObject({
   cache: cacheSchema,
   debug: debugSchema,
   define: defineSchema,
+  format: formatSchema,
   preset: presetSchema,
   roles: rolesSchema,
   traits: traitsSchema,

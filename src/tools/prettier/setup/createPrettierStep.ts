@@ -1,15 +1,28 @@
 import { engrenage, prettier } from "#constants";
+import { createConfigModule } from "#project/steps/utils/createConfigModule";
+import { hasConfigFile } from "#project/steps/utils/hasConfigFile";
 import type { Step } from "#project/steps/types/Step";
 
 export function createPrettierStep(): Step {
+  const file = `${prettier}.config.ts`;
+
   return {
-    name: `${prettier} in package.json`,
+    name: file,
     message: "Format with Prettier?",
-    isMissing({ readPackageJson }) {
-      return readPackageJson([prettier]) === undefined;
+    isMissing({ filesystem, readPackageJson }) {
+      return (
+        readPackageJson([prettier]) === undefined &&
+        !hasConfigFile(filesystem, prettier)
+      );
     },
-    plan({ writePackageJson, addDevDependency }) {
-      writePackageJson([prettier], `${engrenage}/prettier`);
+    plan({ filesystem, addDevDependency }) {
+      filesystem.write(
+        file,
+        createConfigModule({
+          entry: `${engrenage}/prettier`,
+          definer: "definePrettierConfig",
+        }),
+      );
 
       addDevDependency(prettier);
     },

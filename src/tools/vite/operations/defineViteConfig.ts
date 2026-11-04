@@ -4,6 +4,7 @@ import { value } from "@auaust/toolkit/value";
 
 import { validate } from "#foundation/options/utils/validate";
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { createContext } from "#project/config/utils/createContext";
 import { optionsSchema } from "#tools/vite/config/schemas/optionsSchema";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
@@ -28,7 +29,7 @@ export function defineViteConfig(
       "Vite options",
     );
 
-    let merged: Config = createViteConfig(config, {
+    let merged: Config = createViteConfig(createContext(config), {
       isTesting: process.env.VITEST === "true",
     });
 

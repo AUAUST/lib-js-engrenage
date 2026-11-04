@@ -26,3 +26,9 @@ Project configuration contract: environments, option shapes and list options.
 
 - why: #141 added it, so `files.discovered` now includes role globs (for this repository `tests/**/setup.ts`). No changeset was added; consumers may see new discovered files.
 - want: check whether consumers are affected and add a changeset if so.
+
+## Owned-directories trait is deferred with host presets (#153)
+
+- why: #153 step 3 lists "owned directories" as a first trait and a test of a host preset owning `tests/`; the issue does not say what the trait carries or how a preset declares it, and no host preset exists. Decided: deferred; #153 adds only `published`.
+- want: a data-carrying trait or option (`ownedDirectories`) that environment `dirs` defaults skip, designed with the first host preset.
+- done: a host preset declaring a directory as owned keeps the environment default out of it.

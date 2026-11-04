@@ -5,6 +5,7 @@ import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
 import {
+  createContext,
   loadConfig,
   type Environment,
   type ProjectConfig,
@@ -17,7 +18,7 @@ import {
   type Options,
 } from "@auaust/engrenage/eslint";
 import { infoRulesSetting } from "@auaust/engrenage/eslint/constants";
-import prettierOptions from "@auaust/engrenage/prettier";
+import { createPrettierConfig } from "@auaust/engrenage/prettier";
 import { map } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
 import type { Maybe } from "@auaust/toolkit/types";
@@ -26,6 +27,10 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 
 const root = getFixture("eslint");
+
+const prettierOptions = createPrettierConfig(
+  createContext(await loadConfig(root)),
+);
 
 const getLinter = memoized<
   (options?: Options, fix?: boolean) => Promise<ESLint>,

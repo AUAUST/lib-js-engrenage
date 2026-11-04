@@ -26,6 +26,7 @@ import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Options } from "#tools/eslint/types/Options";
 
+// @debt the creator takes the flat ProjectConfig, unlike the tsdown, Vite, Vitest and Prettier creators, which read their sections through get: the conventions' public `rule` and `delegates` callbacks and their helpers receive the flat config
 export function createEslintConfig(
   config: ProjectConfig,
   options?: Maybe<Options>,

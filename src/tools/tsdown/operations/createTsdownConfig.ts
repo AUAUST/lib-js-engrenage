@@ -24,13 +24,38 @@ import { createEntrySelfReferencesPlugins } from "#tools/tsdown/plugins/createEn
 import { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
 import { resolveDataExports } from "#tools/tsdown/utils/resolveDataExports";
 import { resolveTsdownTarget } from "#tools/tsdown/utils/resolveTsdownTarget";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { OptionContext } from "#foundation/options/types/OptionContext";
+import type { ResolvedBuild } from "#project/build/types/ResolvedBuild";
+import type { Environment } from "#project/config/types/Environment";
+import type { ResolvedDefine } from "#project/config/types/ResolvedDefine";
+import type { ResolvedBin } from "#project/environments/types/ResolvedBin";
+import type { ResolvedData } from "#project/environments/types/ResolvedData";
+import type { ResolvedSource } from "#project/environments/types/ResolvedSource";
+import type { PackageJson } from "#project/package/types/PackageJson";
 import type { PathAliases } from "#project/tsconfig/types/PathAliases";
+import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
+import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
 import type { Config } from "#tools/tsdown/types/Config";
 import type { Options } from "#tools/tsdown/types/Options";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
+
+interface Sections {
+  root: Directory;
+  filesystem: Filesystem;
+  environment: Environment;
+  packageJson: PackageJson;
+  packageJsonPath: File | undefined;
+  tsconfig: Tsconfig;
+  typescript: ResolvedTypescript;
+  src: ResolvedSource;
+  bin: ResolvedBin;
+  data: ResolvedData;
+  build: ResolvedBuild;
+  define: ResolvedDefine;
+}
 
 interface PluginContext {
   packageName: PackageName;
@@ -66,7 +91,7 @@ function assertPackageUnchanged(path: File, snapshot: string) {
 }
 
 export function createTsdownConfig(
-  config: ProjectConfig,
+  context: OptionContext<Sections>,
   { ci }: { ci: boolean },
   options?: Maybe<Options>,
 ): Config {
@@ -76,13 +101,18 @@ export function createTsdownConfig(
     "tsdown options",
   );
 
-  const { environment, packageJson, packageJsonPath } = config;
-  const { path: tsconfigPath } = config.typescript.tsconfig;
-  const { path: declarationsTsconfigPath } = config.src.tsconfig;
+  const { get } = context;
+
+  const root = get("root");
+  const packageJson = get("packageJson");
+  const packageJsonPath = get("packageJsonPath");
+  const source = get("src");
+  const { path: tsconfigPath } = get("typescript").tsconfig;
+  const { path: declarationsTsconfigPath } = source.tsconfig;
 
   // @debt repeats the "No package.json found" guard of createStepContext and syncChangesetConfig
   if (packageJsonPath === undefined) {
-    throw new Error(`No ${packageJsonFile} found in ${config.root}`);
+    throw new Error(`No ${packageJsonFile} found in ${root}`);
   }
 
   if (packageJson.optional.type !== "module") {
@@ -91,30 +121,41 @@ export function createTsdownConfig(
     );
   }
 
-  const { typed, sourcemap, emptyOutDir, outDir } = config.build;
+  const { typed, sourcemap, emptyOutDir, outDir } = get("build");
 
   if (outDir === undefined) {
     throw new Error(
-      `No output directory for ${config.root}: set build.outDir in the engrenage config or compilerOptions.outDir in the tsconfig`,
+      `No output directory for ${root}: set build.outDir in the engrenage config or compilerOptions.outDir in the tsconfig`,
     );
   }
 
-  const sourceEntries = resolveSourceEntries(config);
+  const sourceEntries = resolveSourceEntries({
+    packageJson,
+    root,
+    src: source,
+    tsconfig: get("tsconfig"),
+  });
 
-  const bins = resolveCommandEntries(config);
+  const bins = resolveCommandEntries({
+    bin: get("bin"),
+    filesystem: get("filesystem"),
+  });
 
-  const customExports = resolveDataExports(config, sourceEntries);
+  const customExports = resolveDataExports(
+    { data: get("data") },
+    sourceEntries,
+  );
 
   const packageSnapshot = readPackageSnapshot(packageJsonPath);
 
   return {
-    cwd: config.root,
+    cwd: root,
     entry: createTsdownEntries(sourceEntries, bins),
     format: "esm",
-    ...(config.src.runtime === undefined
+    ...(source.runtime === undefined
       ? {}
       : {
-          target: resolveTsdownTarget(config.src.runtime),
+          target: resolveTsdownTarget(source.runtime),
         }),
     outDir,
     clean: emptyOutDir,
@@ -149,16 +190,16 @@ export function createTsdownConfig(
         : pluginFactories[name](`${pluginPrefix}:${name}`, {
             packageName: packageJson.name,
             sourceEntries,
-            root: config.root,
+            root,
           });
     }),
-    define: createDefine(config, {
+    define: createDefine(context, {
       isTesting: false,
     }),
     report: false,
-    publint: environment.hasDependency(publint),
+    publint: get("environment").hasDependency(publint),
     attw: {
-      enabled: environment.hasDependency(arethetypeswrongCore),
+      enabled: get("environment").hasDependency(arethetypeswrongCore),
       ...attwOptions,
     },
     deps: {

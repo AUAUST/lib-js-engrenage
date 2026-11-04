@@ -95,6 +95,48 @@ export interface ConfigInput {
       }
     | undefined;
   /**
+   * Formatting conventions of the project, mapped by each formatter at its boundary (Prettier options, and conventions no formatter covers).
+   */
+  format?:
+    | {
+        /**
+         * Whether indentation uses spaces or tabs.
+         * @default `spaces`
+         */
+        indent?: ("spaces" | "tabs") | undefined;
+        /**
+         * Width of one indentation level, in columns.
+         * @default `2`
+         */
+        indentWidth?: number | undefined;
+        /**
+         * Line width the formatter wraps at, in columns.
+         * @default `80`
+         */
+        lineWidth?: number | undefined;
+        /**
+         * Quotes of string literals.
+         * @default `double`
+         */
+        quotes?: ("double" | "single") | undefined;
+        /**
+         * Whether statements end with a semicolon.
+         * @default `true`
+         */
+        semicolons?: boolean | undefined;
+        /**
+         * Where multiline lists get a trailing comma.
+         * @default `all`
+         */
+        trailingCommas?: ("all" | "es5" | "none") | undefined;
+        /**
+         * Line ending of formatted files.
+         * @default `lf`
+         */
+        endOfLine?: ("lf" | "crlf") | undefined;
+      }
+    | undefined;
+  /**
    * Kind of project the configuration builds on, bundling traits.
    * `library` bundles `published`: it extends the library tsconfig, syncs the published `package.json` fields (`files`, `bin`, `engines.node`), tests the built package and selects the library GitHub workflows.
    * Options and `traits` override it.

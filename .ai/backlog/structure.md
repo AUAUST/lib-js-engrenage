@@ -110,3 +110,15 @@ Project structure description, its report and the tooling generated from it.
 - why: `resolveTraits` sits in `project/presets/utils/` (pure) though "owns composition and derivation" could mean `operations/`; `traitAdjustments` is exposed on `ProjectConfig` only so init can recompute traits, and no role covers state a step context must re-derive; `WorkflowSet.trait` and `Convention.traits` are tool-side declarations depending on a `project/presets` type, with no stated home for trait requirements of tool artefacts; `testsDistTsconfig` reads the raw input because a resolved option cannot tell a default from a given value (`declareObject` needs to allow a `false` default).
 - want: state where trait requirements of tool artefacts live, and give declarations computed defaults.
 - done: no section reads raw input to tell defaults from given values.
+
+## 18. Context, format and mapping helpers lack homes (#153)
+
+- why: `createContext` (flat config → `OptionContext`, public in `@auaust/engrenage/config`) sits in `project/config/utils/` though it is generic (`foundation/options/` or an `operations/` role fit); `project/format` gained a `config/schemas/` role; `mapConventions` is a pure mapping in `tools/prettier/utils/` (`config/` is a candidate); the ESLint creator and the conventions' public `rule(config)` and `delegates(config)` callbacks still take the flat `ProjectConfig`.
+- want: place `createContext`, decide where tool mappings of conventions live, and move the ESLint creator and convention callbacks to `get`.
+- done: no creator takes the flat config.
+
+## 19. Format conventions do not reach JSON sync files (#153)
+
+- why: `indent`, `indentWidth` and `endOfLine` of the `format` section are not applied to JSON that sync writes; `jsonIndentation` still derives from the constant `conventions`.
+- want: JSON indentation derived from the resolved `format` section.
+- done: changing `format.indent` changes the files sync writes.

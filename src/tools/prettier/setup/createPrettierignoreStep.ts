@@ -1,4 +1,5 @@
 import { prettier, prettierignoreFile } from "#constants";
+import { hasConfigFile } from "#project/steps/utils/hasConfigFile";
 import { ignoreBlocks } from "#tools/git/constants";
 import type { Step } from "#project/steps/types/Step";
 import type { ResolvedPrettier } from "#tools/prettier/types/ResolvedPrettier";
@@ -12,7 +13,8 @@ export function createPrettierignoreStep(): Step<{
     isMissing({ get, filesystem, readPackageJson }) {
       return (
         get("prettier").prettierignore === undefined &&
-        readPackageJson([prettier]) !== undefined &&
+        (hasConfigFile(filesystem, prettier) ||
+          readPackageJson([prettier]) !== undefined) &&
         !filesystem.exists(prettierignoreFile)
       );
     },

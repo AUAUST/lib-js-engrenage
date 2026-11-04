@@ -190,7 +190,6 @@
     "sisteransi": "1.0.5"
   },
   "sideEffects": false,
-  "prettier": "#tools/prettier/index",
   "engines": {
     "node": ">=24"
   },

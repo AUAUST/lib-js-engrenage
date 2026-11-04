@@ -3,6 +3,7 @@ import { mergeConfig } from "tsdown";
 import { value } from "@auaust/toolkit/value";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { createContext } from "#project/config/utils/createContext";
 import { createTsdownConfig } from "#tools/tsdown/operations/createTsdownConfig";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Config } from "#tools/tsdown/types/Config";
@@ -39,7 +40,7 @@ export function defineTsdownConfig(
 
     return mergeConfig(
       createTsdownConfig(
-        config,
+        createContext(config),
         {
           ci: context.ci,
         },

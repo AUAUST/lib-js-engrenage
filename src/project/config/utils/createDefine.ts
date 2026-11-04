@@ -1,16 +1,17 @@
 import { entries } from "@auaust/toolkit/object";
 
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { OptionContext } from "#foundation/options/types/OptionContext";
+import type { ResolvedDefine } from "#project/config/types/ResolvedDefine";
 
 export function createDefine(
-  { define }: ProjectConfig,
+  { get }: OptionContext<{ define: ResolvedDefine }>,
   { isTesting }: { isTesting: boolean },
 ): Record<string, string> {
   const excludedScope = isTesting ? "build" : "test";
 
   const expressions: Record<string, string> = {};
 
-  for (const [name, { expression, scope }] of entries(define.values)) {
+  for (const [name, { expression, scope }] of entries(get("define").values)) {
     if (scope !== excludedScope) {
       expressions[name] = expression;
     }

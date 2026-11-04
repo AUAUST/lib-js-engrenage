@@ -95,9 +95,4 @@ export default defineConfig({
       "./tsconfig/*.json": "data/tsconfig/*.json",
     },
   },
-  tooling: {
-    files: {
-      append: ["src/tools/prettier/index.ts"],
-    },
-  },
 });

@@ -1,23 +1,36 @@
 import { createDefine } from "#project/config/utils/createDefine";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { OptionContext } from "#foundation/options/types/OptionContext";
+import type { ResolvedBuild } from "#project/build/types/ResolvedBuild";
+import type { ResolvedDefine } from "#project/config/types/ResolvedDefine";
+import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
 import type { Config } from "#tools/vite/types/Config";
+import type { Directory } from "#types/Directory";
+
+interface Sections {
+  root: Directory;
+  build: ResolvedBuild;
+  typescript: ResolvedTypescript;
+  define: ResolvedDefine;
+}
 
 export function createViteConfig(
-  config: ProjectConfig,
+  context: OptionContext<Sections>,
   { isTesting }: { isTesting: boolean },
 ): Config {
-  const { sourcemap, outDir, emptyOutDir } = config.build;
+  const { get } = context;
 
-  const { path: tsconfig } = config.typescript.tsconfig;
+  const { sourcemap, outDir, emptyOutDir } = get("build");
+
+  const { path: tsconfig } = get("typescript").tsconfig;
 
   return {
-    root: config.root,
+    root: get("root"),
     ...(tsconfig === undefined
       ? {}
       : {
           tsconfig,
         }),
-    define: createDefine(config, {
+    define: createDefine(context, {
       isTesting,
     }),
     resolve: {

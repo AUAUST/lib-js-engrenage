@@ -6,7 +6,7 @@ import { describe, expect, test } from "vitest";
 import { configDefaults } from "vitest/config";
 import { startVitest } from "vitest/node";
 
-import { loadConfig } from "@auaust/engrenage/config";
+import { createContext, loadConfig } from "@auaust/engrenage/config";
 import { createViteConfig } from "@auaust/engrenage/vite";
 import { createVitestConfig } from "@auaust/engrenage/vitest";
 
@@ -19,7 +19,7 @@ describe("createVitestConfig", () => {
   test("returns only the test layer: sources through the tsconfig paths and the project tsconfig outside build mode", async () => {
     const config = await loadConfig(root);
 
-    const vitestConfig = createVitestConfig(config, {
+    const vitestConfig = createVitestConfig(createContext(config), {
       command: "serve",
       mode: "test",
     });
@@ -52,7 +52,7 @@ describe("createVitestConfig", () => {
 
     expect(
       createVitestConfig(
-        config,
+        createContext(config),
         {
           command: "serve",
           mode: "test",
@@ -73,20 +73,21 @@ describe("createVitestConfig", () => {
     const config = await loadConfig(project.root);
     const env = { command: "serve", mode: "test" } as const;
 
-    expect(createVitestConfig(config, env).test?.setupFiles).toEqual([
-      "tests/setup.ts",
-    ]);
+    expect(
+      createVitestConfig(createContext(config), env).test?.setupFiles,
+    ).toEqual(["tests/setup.ts"]);
 
     expect(
-      createVitestConfig(config, env, { setupFiles: ["other.ts"] }).test
-        ?.setupFiles,
+      createVitestConfig(createContext(config), env, {
+        setupFiles: ["other.ts"],
+      }).test?.setupFiles,
     ).toEqual(["other.ts"]);
   });
 
   test("tests the build output with the dist tsconfig in build mode", async () => {
     const config = await loadConfig(root);
 
-    const vitestConfig = createVitestConfig(config, {
+    const vitestConfig = createVitestConfig(createContext(config), {
       command: "serve",
       mode: "build",
     });
@@ -110,7 +111,7 @@ describe("createVitestConfig", () => {
     );
 
     expect(() => {
-      return createVitestConfig(config, {
+      return createVitestConfig(createContext(config), {
         command: "serve",
         mode: "build",
       });
@@ -129,10 +130,10 @@ describe("createVitestConfig", () => {
 
       const server = await createServer({
         ...mergeConfig(
-          createViteConfig(config, {
+          createViteConfig(createContext(config), {
             isTesting: true,
           }),
-          createVitestConfig(config, {
+          createVitestConfig(createContext(config), {
             command: "serve",
             mode: "test",
           }),
@@ -185,7 +186,7 @@ describe("createVitestConfig type checking", () => {
 
     const config = await loadConfig(project.root);
 
-    const vitestConfig = createVitestConfig(config, {
+    const vitestConfig = createVitestConfig(createContext(config), {
       command: "serve",
       mode: "test",
     });
@@ -233,7 +234,7 @@ describe("createVitestConfig with a renamed base tsconfig", () => {
 
     const config = await loadConfig(project.root);
 
-    const vitestConfig = createVitestConfig(config, {
+    const vitestConfig = createVitestConfig(createContext(config), {
       command: "serve",
       mode: "test",
     });
