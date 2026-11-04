@@ -1,6 +1,6 @@
 import type { Rule } from "eslint";
 
-import { defineConvention } from "#eslint/utils/defineConvention";
+import { defineConvention } from "#tools/eslint/utils/defineConvention";
 
 const message =
   "Return `void` the expression instead of following it with a bare `return` in its own block.";

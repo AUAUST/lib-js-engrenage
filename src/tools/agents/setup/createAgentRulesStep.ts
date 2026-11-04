@@ -1,9 +1,9 @@
 import { filterMap, pluck } from "@auaust/primitive-kit/arrays";
 
-import { addAgentRules } from "#agents/operations/addAgentRules";
-import { getMissingRuleTemplates } from "#agents/operations/getMissingRuleTemplates";
+import { addAgentRules } from "#tools/agents/operations/addAgentRules";
+import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 // @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import type { Step } from "#cli/types/Step";
+import type { Step } from "#workflows/cli/types/Step";
 
 export function createAgentRulesStep(): Step {
   return {

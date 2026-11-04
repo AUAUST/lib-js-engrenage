@@ -1,6 +1,6 @@
 import { hook } from "#bin/engrenage/agents/claude/hook/index";
-import { defineCommand } from "#cli/operations/defineCommand";
-import { registerSubcommands } from "#cli/operations/registerSubcommands";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { registerSubcommands } from "#workflows/cli/operations/registerSubcommands";
 
 export const claude = defineCommand((command) => {
   return registerSubcommands(

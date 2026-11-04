@@ -1,3 +1,3 @@
-import type { environmentRoleKeys } from "#structure/constants";
+import type { environmentRoleKeys } from "#project/structure/constants";
 
 export type RoleEnvironment = keyof typeof environmentRoleKeys;

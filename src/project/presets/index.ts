@@ -1,4 +1,4 @@
 // @barrel types/*.ts all
-export * from "#presets/types/Preset";
-export * from "#presets/types/Presets";
+export * from "#project/presets/types/Preset";
+export * from "#project/presets/types/Presets";
 // @end

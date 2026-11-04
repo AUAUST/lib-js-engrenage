@@ -1,6 +1,6 @@
-import type { ManagedListOption } from "#config/types/ManagedListOption";
-import type { ResolvedLocation } from "#config/types/ResolvedLocation";
-import type { TsconfigEnvironment } from "#tsconfig/types/TsconfigEnvironment";
+import type { ManagedListOption } from "#project/config/types/ManagedListOption";
+import type { ResolvedLocation } from "#project/config/types/ResolvedLocation";
+import type { TsconfigEnvironment } from "#project/tsconfig/types/TsconfigEnvironment";
 
 export interface ManagedEnvironmentTsconfig {
   readonly enabled: true;

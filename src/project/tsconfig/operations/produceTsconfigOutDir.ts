@@ -1,13 +1,13 @@
 import { resolve } from "node:path";
 
-import { emptyObjectFile } from "#json/constants";
-import { applyJsonEdits } from "#json/utils/applyJsonEdits";
-import { createTsconfig } from "#tsconfig/operations/createTsconfig";
-import { produceTsconfigExtends } from "#tsconfig/operations/produceTsconfigExtends";
-import { toTsconfigSpecifier } from "#tsconfig/utils/toTsconfigSpecifier";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { JsonEdit } from "#json/types/JsonEdit";
-import type { TsconfigTarget } from "#tsconfig/types/TsconfigTarget";
+import { emptyObjectFile } from "#foundation/json/constants";
+import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
+import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
+import { produceTsconfigExtends } from "#project/tsconfig/operations/produceTsconfigExtends";
+import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
+import type { JsonEdit } from "#foundation/json/types/JsonEdit";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 import type { Directory } from "#types/Directory";
 
 const outDirLocation = ["compilerOptions", "outDir"];

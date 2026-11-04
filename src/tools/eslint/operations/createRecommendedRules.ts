@@ -10,12 +10,12 @@ import {
   typescriptRules,
   typescriptTypeAwareRules,
   unicornRules,
-} from "#eslint/constants";
-import { resolveScope } from "#eslint/operations/resolveScope";
-import { createTypeAwareLanguageOptions } from "#eslint/utils/createTypeAwareLanguageOptions";
-import { resolveInfoRules } from "#eslint/utils/resolveInfoRules";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Config } from "#eslint/types/Config";
+} from "#tools/eslint/constants";
+import { resolveScope } from "#tools/eslint/operations/resolveScope";
+import { createTypeAwareLanguageOptions } from "#tools/eslint/utils/createTypeAwareLanguageOptions";
+import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Config } from "#tools/eslint/types/Config";
 
 export function createRecommendedRules({
   config,

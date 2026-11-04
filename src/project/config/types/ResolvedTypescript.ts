@@ -1,4 +1,4 @@
-import type { ResolvedBaseTsconfig } from "#tsconfig/types/ResolvedBaseTsconfig";
+import type { ResolvedBaseTsconfig } from "#project/tsconfig/types/ResolvedBaseTsconfig";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
 

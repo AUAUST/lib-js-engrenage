@@ -1,9 +1,9 @@
 import { posix } from "node:path";
 
-import { builtExtension } from "#tsdown/constants";
-import { findCommands } from "#tsdown/operations/findCommands";
-import { toEntryName } from "#tsdown/utils/toEntryName";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { builtExtension } from "#tools/tsdown/constants";
+import { findCommands } from "#tools/tsdown/operations/findCommands";
+import { toEntryName } from "#tools/tsdown/utils/toEntryName";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 export function resolveCommandFiles(
   config: ResolvedConfig,

@@ -1,8 +1,8 @@
-import { defineToolCommands } from "#cli/operations/defineToolCommands";
-import { ensureAnyOf } from "#cli/operations/ensureAnyOf";
-import { ensureIncludes } from "#cli/operations/ensureIncludes";
 import { packages } from "#constants";
-import { buildMode } from "#vitest/constants";
+import { buildMode } from "#tools/vitest/constants";
+import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
+import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
+import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
 
 function includeTypeTests(args: string[]) {
   ensureAnyOf(args, ["--typecheck", "--no-typecheck"], "--typecheck");

@@ -4,16 +4,16 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test, vi } from "vitest";
 
 import { tsc } from "#bin/engrenage/tsc";
-import { configSchema } from "#config/config/schemas/configSchema";
-import { createResolvedConfig } from "#config/operations/createResolvedConfig";
-import { validate } from "#options/utils/validate";
+import { validate } from "#foundation/options/utils/validate";
+import { configSchema } from "#project/config/config/schemas/configSchema";
+import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
+import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { captureBinaryOutput } from "#tests/utils/captureBinaryOutput";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
-import { syncTsconfigFiles } from "#tsconfig/setup/syncTsconfigFiles";
 
 vi.mock(import("node:child_process"), { spy: true });
 

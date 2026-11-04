@@ -2,12 +2,12 @@ import { cancel, isCancel, multiselect } from "@clack/prompts";
 
 import { empty } from "@auaust/toolkit/empty";
 
-import { addAgentSkills } from "#agents/operations/addAgentSkills";
-import { getSkillTemplates } from "#agents/operations/getSkillTemplates";
-import { defineCommand } from "#cli/operations/defineCommand";
-import { settleChanges } from "#cli/operations/settleChanges";
-import { readConfig } from "#config/operations/readConfig";
-import type { ResolvedConfig } from "#config";
+import { readConfig } from "#project/config/operations/readConfig";
+import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { settleChanges } from "#workflows/cli/operations/settleChanges";
+import type { ResolvedConfig } from "#project/config/index";
 
 async function getNames(config: ResolvedConfig, name: string | undefined) {
   if (name !== undefined) {

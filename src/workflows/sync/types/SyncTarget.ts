@@ -1,4 +1,4 @@
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 export interface SyncTarget<Flag extends string> {
   sync(

@@ -1,7 +1,7 @@
 import { sep } from "node:path";
 
-import { isWithin } from "#filesystem/utils/isWithin";
-import { resolve } from "#filesystem/utils/resolve";
+import { isWithin } from "#foundation/filesystem/utils/isWithin";
+import { resolve } from "#foundation/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 
 export function resolveWithin(

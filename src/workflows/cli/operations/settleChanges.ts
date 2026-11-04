@@ -1,8 +1,8 @@
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { successMessage } from "#cli/constants";
-import { reportSyncResults } from "#cli/operations/reportSyncResults";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { successMessage } from "#workflows/cli/constants";
+import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { SyncResult } from "#types/SyncResult";
 
 export async function settleChanges(

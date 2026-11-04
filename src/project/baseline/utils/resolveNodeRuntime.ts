@@ -2,7 +2,7 @@ import nodeReleases from "node-releases/data/processed/envs.json" with { type: "
 
 import { freeze } from "@auaust/toolkit/object";
 
-import type { Runtime } from "#baseline/types/Runtime";
+import type { Runtime } from "#project/baseline/types/Runtime";
 
 function listNodeMajors(): number[] {
   const majors = new Set<number>();

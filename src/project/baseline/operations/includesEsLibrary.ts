@@ -1,6 +1,6 @@
 import { entries, keys } from "@auaust/toolkit/object";
 
-import { editions as generatedEditions } from "#baseline/editions/index";
+import { editions as generatedEditions } from "#project/baseline/editions/index";
 
 // @debt the `editions` parameter type is repeated in three modules, and an edition key in the selection is assumed to be its base.
 export function includesEsLibrary(

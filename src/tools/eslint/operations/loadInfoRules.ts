@@ -4,11 +4,11 @@ import { includes, sort } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 
 import { eslint } from "#constants";
-import { infoRulesSetting } from "#eslint/constants";
-import { createEslintConfig } from "#eslint/operations/createEslintConfig";
-import { importConfigFile } from "#filesystem/operations/importConfigFile";
-import { validate } from "#options/utils/validate";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { importConfigFile } from "#foundation/filesystem/operations/importConfigFile";
+import { validate } from "#foundation/options/utils/validate";
+import { infoRulesSetting } from "#tools/eslint/constants";
+import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 const loadedConfigsSchema = array(
   looseObject({

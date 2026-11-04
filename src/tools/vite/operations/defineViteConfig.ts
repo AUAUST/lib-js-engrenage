@@ -2,16 +2,16 @@ import { mergeConfig } from "vite";
 
 import { value } from "@auaust/toolkit/value";
 
-import { loadConfig } from "#config/operations/loadConfig";
-import { validate } from "#options/utils/validate";
-import { optionsSchema } from "#vite/config/schemas/optionsSchema";
-import { createViteConfig } from "#vite/operations/createViteConfig";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { validate } from "#foundation/options/utils/validate";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { optionsSchema } from "#tools/vite/config/schemas/optionsSchema";
+import { createViteConfig } from "#tools/vite/operations/createViteConfig";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Config } from "#tools/vite/types/Config";
+import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
+import type { ConfigFn } from "#tools/vite/types/ConfigFn";
+import type { Options } from "#tools/vite/types/Options";
 import type { ConfigInput } from "#types/ConfigInput";
-import type { Config } from "#vite/types/Config";
-import type { ConfigEnv } from "#vite/types/ConfigEnv";
-import type { ConfigFn } from "#vite/types/ConfigFn";
-import type { Options } from "#vite/types/Options";
 
 export function defineViteConfig(
   options?: ConfigInput<Options, [ResolvedConfig, ConfigEnv]>,

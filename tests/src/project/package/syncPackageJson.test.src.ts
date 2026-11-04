@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { loadConfig } from "#config/operations/loadConfig";
-import { syncPackageJson } from "#package/setup/syncPackageJson";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { syncPackageJson } from "#project/package/setup/syncPackageJson";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 

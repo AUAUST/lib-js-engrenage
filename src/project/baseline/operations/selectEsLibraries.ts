@@ -1,7 +1,7 @@
 import { entries, values } from "@auaust/toolkit/object";
 
-import { editions as generatedEditions } from "#baseline/editions/index";
-import { qualifiesAtSnapshot } from "#baseline/utils/qualifiesAtSnapshot";
+import { editions as generatedEditions } from "#project/baseline/editions/index";
+import { qualifiesAtSnapshot } from "#project/baseline/utils/qualifiesAtSnapshot";
 
 export function selectEsLibraries(
   snapshot: string,

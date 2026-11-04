@@ -2,10 +2,10 @@ import {
   codexEditHook,
   codexEditHookCommand,
   codexHooksFile,
-} from "#agents/codex/constants";
-import { syncCodexInstructions } from "#agents/codex/operations/syncCodexInstructions";
-import { syncEditHook } from "#agents/operations/syncEditHook";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+} from "#tools/agents/codex/constants";
+import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
+import { syncEditHook } from "#tools/agents/operations/syncEditHook";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 export function syncCodexFiles(
   config: ResolvedConfig,

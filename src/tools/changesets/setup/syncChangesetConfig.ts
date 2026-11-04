@@ -2,14 +2,14 @@ import { createRequire } from "node:module";
 
 import { object, string } from "valibot";
 
-import { syncFiles } from "#blocks/operations/syncFiles";
-import { configFile } from "#changesets/constants";
 import { changesetsCli, changesetsConfig, packageJsonFile } from "#constants";
-import { readJsonFile } from "#filesystem/operations/readJsonFile";
-import { applyJsonEdits } from "#json/utils/applyJsonEdits";
-import { flattenJsonObject } from "#json/utils/flattenJsonObject";
-import { validate } from "#options/utils/validate";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { syncFiles } from "#foundation/blocks/operations/syncFiles";
+import { readJsonFile } from "#foundation/filesystem/operations/readJsonFile";
+import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
+import { flattenJsonObject } from "#foundation/json/utils/flattenJsonObject";
+import { validate } from "#foundation/options/utils/validate";
+import { configFile } from "#tools/changesets/constants";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 
 function resolveConfigVersion(packageJsonPath: File): string {

@@ -1,7 +1,7 @@
-import { writeJsonValue } from "#json/utils/writeJsonValue";
-import { onlyAllowScript } from "#pnpm/constants";
-import { writePnpmDeclaration } from "#pnpm/operations/writePnpmDeclaration";
-import type { PackageJson } from "#package/types/PackageJson";
+import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
+import { onlyAllowScript } from "#tools/pnpm/constants";
+import { writePnpmDeclaration } from "#tools/pnpm/operations/writePnpmDeclaration";
+import type { PackageJson } from "#project/package/types/PackageJson";
 import type { File } from "#types/File";
 
 export function upgradePnpmManifest(

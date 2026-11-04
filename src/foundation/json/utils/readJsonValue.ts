@@ -1,6 +1,6 @@
 import { findNodeAtLocation, getNodeValue, type JSONPath } from "jsonc-parser";
 
-import { parseJsonObject } from "#json/utils/parseJsonObject";
+import { parseJsonObject } from "#foundation/json/utils/parseJsonObject";
 import type { File } from "#types/File";
 
 export function readJsonValue(

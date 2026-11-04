@@ -1,15 +1,15 @@
 import { includes, map } from "@auaust/primitive-kit/arrays";
 
-import { codexFile } from "#agents/codex/constants";
-import { syncIgnoreFile } from "#blocks/operations/syncIgnoreFile";
 import { changesetsCli } from "#constants";
-import { createProjectIgnores } from "#git/utils/createProjectIgnores";
+import { syncIgnoreFile } from "#foundation/blocks/operations/syncIgnoreFile";
+import { codexFile } from "#tools/agents/codex/constants";
+import { createProjectIgnores } from "#tools/git/utils/createProjectIgnores";
 import {
   changelogIgnores,
   codegenTitle,
   defaultIgnores,
-} from "#prettier/constants";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+} from "#tools/prettier/constants";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { Glob } from "#types/Glob";
 import type { GlobGroup } from "#types/GlobGroup";
 

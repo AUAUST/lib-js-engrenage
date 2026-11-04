@@ -1,4 +1,4 @@
-import { debugEnvironmentVariable } from "#config/constants";
+import { debugEnvironmentVariable } from "#project/config/constants";
 
 export function isDebugEnvironment(
   environment: NodeJS.ProcessEnv = process.env,

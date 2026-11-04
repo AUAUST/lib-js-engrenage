@@ -1,7 +1,7 @@
-export { syncFiles } from "#blocks/operations/syncFiles";
-export { syncIgnoreFile } from "#blocks/operations/syncIgnoreFile";
-export { syncBlocks } from "#blocks/utils/syncBlocks";
-export { filesIn } from "#filesystem/utils/filesIn";
+export { syncFiles } from "#foundation/blocks/operations/syncFiles";
+export { syncIgnoreFile } from "#foundation/blocks/operations/syncIgnoreFile";
+export { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
+export { filesIn } from "#foundation/filesystem/utils/filesIn";
 
 // @barrel types/*.ts all
 export * from "#types/BlockFillers";
@@ -25,4 +25,4 @@ export * from "#types/SyncResult";
 export * from "#types/SyncResults";
 export * from "#types/SyncStatus";
 // @end
-export { validate } from "#options/utils/validate";
+export { validate } from "#foundation/options/utils/validate";

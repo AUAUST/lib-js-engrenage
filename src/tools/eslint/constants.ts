@@ -1,22 +1,22 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { dependencyFields } from "#package/constants";
-import type { Rules } from "#eslint/types/Rules";
-import type { CoreRules } from "#eslint/types/rules/CoreRules";
-import type { ImportXRules } from "#eslint/types/rules/ImportXRules";
-import type { StylisticRules } from "#eslint/types/rules/StylisticRules";
-import type { TypescriptEslintRules } from "#eslint/types/rules/TypescriptEslintRules";
-import type { UnicornRules } from "#eslint/types/rules/UnicornRules";
+import { dependencyFields } from "#project/package/constants";
+import type { Rules } from "#tools/eslint/types/Rules";
+import type { CoreRules } from "#tools/eslint/types/rules/CoreRules";
+import type { ImportXRules } from "#tools/eslint/types/rules/ImportXRules";
+import type { StylisticRules } from "#tools/eslint/types/rules/StylisticRules";
+import type { TypescriptEslintRules } from "#tools/eslint/types/rules/TypescriptEslintRules";
+import type { UnicornRules } from "#tools/eslint/types/rules/UnicornRules";
 import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 
-import * as comparisons from "#eslint/conventions/comparisons/index";
-import * as globals from "#eslint/conventions/globals/index";
-import * as imports from "#eslint/conventions/imports/index";
-import * as performance from "#eslint/conventions/performance/index";
-import * as promises from "#eslint/conventions/promises/index";
-import * as structure from "#eslint/conventions/structure/index";
-import * as stylistic from "#eslint/conventions/stylistic/index";
+import * as comparisons from "#tools/eslint/conventions/comparisons/index";
+import * as globals from "#tools/eslint/conventions/globals/index";
+import * as imports from "#tools/eslint/conventions/imports/index";
+import * as performance from "#tools/eslint/conventions/performance/index";
+import * as promises from "#tools/eslint/conventions/promises/index";
+import * as structure from "#tools/eslint/conventions/structure/index";
+import * as stylistic from "#tools/eslint/conventions/stylistic/index";
 
 export const anyFile = "**" satisfies Glob;
 

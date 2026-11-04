@@ -8,7 +8,6 @@ import { parse } from "yaml";
 import { sort } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 
-import { scratchpadPlaceholders } from "#agents/constants";
 import { init } from "#bin/engrenage/init";
 import { sync } from "#bin/engrenage/sync";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -16,14 +15,15 @@ import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 import { runCommand } from "#tests/utils/runCommand";
+import { scratchpadPlaceholders } from "#tools/agents/constants";
 
-import * as prompts from "#cli/operations/createPrompter";
+import * as prompts from "#workflows/cli/operations/createPrompter";
 
 import manifest from "#package.json" with { type: "json" };
 
 vi.mock(import("node:child_process"));
 
-vi.mock(import("#pnpm/operations/resolveLatestPnpm"), () => {
+vi.mock(import("#tools/pnpm/operations/resolveLatestPnpm"), () => {
   return { resolveLatestPnpm: () => readTestPnpmVersions().latest };
 });
 

@@ -1,9 +1,9 @@
 import type { Rule } from "eslint";
 
-import { defineConvention } from "#eslint/utils/defineConvention";
-import type { Convention } from "#eslint/types/Convention";
-import type { ScopeReferences } from "#eslint/types/ScopeReferences";
-import type { Presets } from "#presets/types/Presets";
+import { defineConvention } from "#tools/eslint/utils/defineConvention";
+import type { Presets } from "#project/presets/types/Presets";
+import type { Convention } from "#tools/eslint/types/Convention";
+import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
 export function defineRestriction({

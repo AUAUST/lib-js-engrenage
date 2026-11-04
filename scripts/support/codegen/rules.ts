@@ -1,6 +1,6 @@
 /* eslint-disable auaust/no-dynamic-import */
 
-import { defineCommand } from "#cli/operations/defineCommand";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
 
 export const rules = defineCommand((command) => {
   return command
@@ -9,10 +9,11 @@ export const rules = defineCommand((command) => {
     )
     .option("--check", "report outdated files without writing them", false)
     .action(async ({ check }) => {
-      const { loadConfig } = await import("#config/operations/loadConfig");
+      const { loadConfig } =
+        await import("#project/config/operations/loadConfig");
 
       const { generateRuleTypes } =
-        await import("#eslint/operations/generateRuleTypes");
+        await import("#tools/eslint/operations/generateRuleTypes");
 
       const config = await loadConfig();
 

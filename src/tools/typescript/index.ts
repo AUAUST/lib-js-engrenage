@@ -1,17 +1,17 @@
-export { resolvePathAliases } from "#tsconfig/operations/resolvePathAliases";
-export { syncBarrels } from "#typescript/operations/syncBarrels";
-export { syncEnvFile } from "#typescript/setup/syncEnvFile";
-export { inferType } from "#typescript/utils/inferType";
-export { resolveImportSpecifier } from "#typescript/utils/resolveImportSpecifier";
+export { resolvePathAliases } from "#project/tsconfig/operations/resolvePathAliases";
+export { syncBarrels } from "#tools/typescript/operations/syncBarrels";
+export { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
+export { inferType } from "#tools/typescript/utils/inferType";
+export { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
 
 // @barrel types/*.ts all
-export * from "#typescript/types/BarrelMode";
+export * from "#tools/typescript/types/BarrelMode";
 // @end
-export * from "#baseline/types/ApiGroup";
-export * from "#package/types/SubpathImports";
-export * from "#tsconfig/types/PathAlias";
-export * from "#tsconfig/types/PathAliases";
-export * from "#tsconfig/types/Paths";
-export * from "#tsconfig/types/Tsconfig";
-export * from "#tsconfig/types/TsconfigProducer";
-export * from "#tsconfig/types/TsconfigTarget";
+export * from "#project/baseline/types/ApiGroup";
+export * from "#project/package/types/SubpathImports";
+export * from "#project/tsconfig/types/PathAlias";
+export * from "#project/tsconfig/types/PathAliases";
+export * from "#project/tsconfig/types/Paths";
+export * from "#project/tsconfig/types/Tsconfig";
+export * from "#project/tsconfig/types/TsconfigProducer";
+export * from "#project/tsconfig/types/TsconfigTarget";

@@ -1,14 +1,14 @@
 // @barrel utils/*.ts named
-export { applyJsonEdits } from "#json/utils/applyJsonEdits";
-export { flattenJsonObject } from "#json/utils/flattenJsonObject";
-export { parseJson } from "#json/utils/parseJson";
-export { parseJsonObject } from "#json/utils/parseJsonObject";
-export { readJsonValue } from "#json/utils/readJsonValue";
-export { writeJsonValue } from "#json/utils/writeJsonValue";
+export { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
+export { flattenJsonObject } from "#foundation/json/utils/flattenJsonObject";
+export { parseJson } from "#foundation/json/utils/parseJson";
+export { parseJsonObject } from "#foundation/json/utils/parseJsonObject";
+export { readJsonValue } from "#foundation/json/utils/readJsonValue";
+export { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
 // @end
 
 // @barrel types/*.ts all
-export * from "#json/types/JsonEdit";
-export * from "#json/types/JsonObject";
-export * from "#json/types/JsonValue";
+export * from "#foundation/json/types/JsonEdit";
+export * from "#foundation/json/types/JsonObject";
+export * from "#foundation/json/types/JsonValue";
 // @end

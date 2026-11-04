@@ -1,3 +1,3 @@
 // @barrel operations/*.ts named
-export { resolveDataFile } from "#data/operations/resolveDataFile";
+export { resolveDataFile } from "#foundation/data/operations/resolveDataFile";
 // @end

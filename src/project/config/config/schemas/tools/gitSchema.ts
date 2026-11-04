@@ -1,6 +1,6 @@
-import { declareLocation } from "#config/config/declareLocation";
 import { gitignoreFile } from "#constants";
-import { declareObject } from "#options/utils/declareObject";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { declareLocation } from "#project/config/config/declareLocation";
 
 export const gitSchema = declareObject(
   {

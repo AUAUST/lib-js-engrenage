@@ -33,13 +33,13 @@ import {
 } from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
-import { apiGroupRoots, apiLibraryGroups } from "#baseline/constants";
-import { includesEsLibrary } from "#baseline/operations/includesEsLibrary";
-import { listEsSelections } from "#baseline/operations/listEsSelections";
-import { resolve } from "#filesystem/utils/resolve";
-import { createLibraryCompiler } from "#typescript/operations/createLibraryCompiler";
-import { formatModule } from "#typescript/operations/formatModule";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { resolve } from "#foundation/filesystem/utils/resolve";
+import { apiGroupRoots, apiLibraryGroups } from "#project/baseline/constants";
+import { includesEsLibrary } from "#project/baseline/operations/includesEsLibrary";
+import { listEsSelections } from "#project/baseline/operations/listEsSelections";
+import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
+import { formatModule } from "#tools/typescript/operations/formatModule";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

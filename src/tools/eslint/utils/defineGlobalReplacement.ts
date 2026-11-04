@@ -1,8 +1,8 @@
 import { join } from "@auaust/primitive-kit/arrays";
 
-import { defineReplacement } from "#eslint/utils/defineReplacement";
-import type { Convention } from "#eslint/types/Convention";
-import type { Presets } from "#presets/types/Presets";
+import { defineReplacement } from "#tools/eslint/utils/defineReplacement";
+import type { Presets } from "#project/presets/types/Presets";
+import type { Convention } from "#tools/eslint/types/Convention";
 import type { PackageNames } from "#types/PackageNames";
 
 function createSelector(

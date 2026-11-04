@@ -1,6 +1,6 @@
 import { find, wrap } from "@auaust/primitive-kit/arrays";
 
-import type { PackageJson } from "#package/types/PackageJson";
+import type { PackageJson } from "#project/package/types/PackageJson";
 
 export function readProjectPnpmVersion({
   optional,

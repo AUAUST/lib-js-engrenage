@@ -1,10 +1,10 @@
 import { cancel, isCancel, multiselect } from "@clack/prompts";
 
-import { addAgentRules } from "#agents/operations/addAgentRules";
-import { getMissingRuleTemplates } from "#agents/operations/getMissingRuleTemplates";
-import { defineCommand } from "#cli/operations/defineCommand";
-import { settleChanges } from "#cli/operations/settleChanges";
-import { readConfig } from "#config/operations/readConfig";
+import { readConfig } from "#project/config/operations/readConfig";
+import { addAgentRules } from "#tools/agents/operations/addAgentRules";
+import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { settleChanges } from "#workflows/cli/operations/settleChanges";
 
 async function add(name?: string) {
   const config = await readConfig(process.cwd());

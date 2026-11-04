@@ -1,8 +1,8 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { defaultGlobalScope, definitionKey } from "#config/constants";
-import type { Definition } from "#config/types/Definition";
-import type { DefinitionOptions } from "#config/types/DefinitionOptions";
+import { defaultGlobalScope, definitionKey } from "#project/config/constants";
+import type { Definition } from "#project/config/types/Definition";
+import type { DefinitionOptions } from "#project/config/types/DefinitionOptions";
 
 export function define(
   value: unknown,

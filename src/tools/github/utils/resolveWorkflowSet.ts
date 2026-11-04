@@ -1,8 +1,8 @@
 import { every, find, includes } from "@auaust/primitive-kit/arrays";
 
-import { workflowSetNames, workflowSets } from "#github/constants";
-import type { WorkflowSetName } from "#github/types/WorkflowSetName";
-import type { Presets } from "#presets/types/Presets";
+import { workflowSetNames, workflowSets } from "#tools/github/constants";
+import type { Presets } from "#project/presets/types/Presets";
+import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 import type { PackageName } from "#types/PackageName";
 
 export function resolveWorkflowSet({

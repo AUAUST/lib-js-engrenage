@@ -1,5 +1,5 @@
-import type { GlobalScope } from "#config/types/GlobalScope";
-import type { JsonValue } from "#json/types/JsonValue";
+import type { JsonValue } from "#foundation/json/types/JsonValue";
+import type { GlobalScope } from "#project/config/types/GlobalScope";
 
 export interface ResolvedGlobal {
   readonly expression: string;

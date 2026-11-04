@@ -2,10 +2,10 @@ import { describe, expect, test } from "vitest";
 
 import { keys } from "@auaust/toolkit/object";
 
-import { rolesOptionSchema } from "#structure/config/schemas/rolesOptionSchema";
-import { rolesSchema } from "#structure/config/schemas/rolesSchema";
-import { resolveRoles } from "#structure/operations/resolveRoles";
-import type { RoleEnvironment } from "#structure/types/RoleEnvironment";
+import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
+import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
+import { resolveRoles } from "#project/structure/operations/resolveRoles";
+import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
 
 function resolve({
   environment,

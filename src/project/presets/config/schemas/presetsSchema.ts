@@ -1,7 +1,7 @@
 import { wrap } from "@auaust/primitive-kit/arrays";
 
-import { presetListSchema } from "#config/config/schemas/values/presetListSchema";
-import { declare } from "#options/utils/declare";
+import { declare } from "#foundation/options/utils/declare";
+import { presetListSchema } from "#project/config/config/schemas/values/presetListSchema";
 
 export const presetsSchema = declare(presetListSchema, {
   description: [

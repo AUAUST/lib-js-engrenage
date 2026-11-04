@@ -1,12 +1,12 @@
 import { assign, entries, freeze } from "@auaust/toolkit/object";
 
-import { environmentRoleKeys, noRoles } from "#structure/constants";
-import { resolveCatalogue } from "#structure/operations/resolveCatalogue";
-import type { ProjectRoles } from "#structure/types/ProjectRoles";
-import type { ResolvedRoleContract } from "#structure/types/ResolvedRoleContract";
-import type { ResolvedRoles } from "#structure/types/ResolvedRoles";
-import type { RoleEnvironment } from "#structure/types/RoleEnvironment";
-import type { RolesOption } from "#structure/types/RolesOption";
+import { environmentRoleKeys, noRoles } from "#project/structure/constants";
+import { resolveCatalogue } from "#project/structure/operations/resolveCatalogue";
+import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
+import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
+import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
+import type { RolesOption } from "#project/structure/types/RolesOption";
 
 export function resolveRoles({
   environment,

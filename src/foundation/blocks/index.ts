@@ -1,3 +1,3 @@
 // @barrel utils/*.ts named
-export { syncBlocks } from "#blocks/utils/syncBlocks";
+export { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
 // @end

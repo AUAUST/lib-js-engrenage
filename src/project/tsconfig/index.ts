@@ -1,27 +1,27 @@
 // @barrel utils/*.ts named
-export { isPackageAlias } from "#tsconfig/utils/isPackageAlias";
-export { relativeToTsconfig } from "#tsconfig/utils/relativeToTsconfig";
-export { resolveTsconfig } from "#tsconfig/utils/resolveTsconfig";
-export { resolveTsconfigOwner } from "#tsconfig/utils/resolveTsconfigOwner";
-export { toTsconfigGlobs } from "#tsconfig/utils/toTsconfigGlobs";
-export { toTsconfigSpecifier } from "#tsconfig/utils/toTsconfigSpecifier";
+export { isPackageAlias } from "#project/tsconfig/utils/isPackageAlias";
+export { relativeToTsconfig } from "#project/tsconfig/utils/relativeToTsconfig";
+export { resolveTsconfig } from "#project/tsconfig/utils/resolveTsconfig";
+export { resolveTsconfigOwner } from "#project/tsconfig/utils/resolveTsconfigOwner";
+export { toTsconfigGlobs } from "#project/tsconfig/utils/toTsconfigGlobs";
+export { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
 // @end
 
 // @barrel types/*.ts all
-export * from "#tsconfig/types/EnvironmentTsconfig";
-export * from "#tsconfig/types/ManagedEnvironmentTsconfig";
-export * from "#tsconfig/types/PathAlias";
-export * from "#tsconfig/types/PathAliases";
-export * from "#tsconfig/types/Paths";
-export * from "#tsconfig/types/ResolvedBaseTsconfig";
-export * from "#tsconfig/types/ResolvedEnvironmentTsconfig";
-export * from "#tsconfig/types/ResolvedEnvironmentTsconfigOption";
-export * from "#tsconfig/types/Tsconfig";
-export * from "#tsconfig/types/TsconfigEnvironment";
-export * from "#tsconfig/types/TsconfigGroups";
-export * from "#tsconfig/types/TsconfigKey";
-export * from "#tsconfig/types/TsconfigOwner";
-export * from "#tsconfig/types/TsconfigProducer";
-export * from "#tsconfig/types/TsconfigTarget";
-export * from "#tsconfig/types/UnmanagedEnvironmentTsconfig";
+export * from "#project/tsconfig/types/EnvironmentTsconfig";
+export * from "#project/tsconfig/types/ManagedEnvironmentTsconfig";
+export * from "#project/tsconfig/types/PathAlias";
+export * from "#project/tsconfig/types/PathAliases";
+export * from "#project/tsconfig/types/Paths";
+export * from "#project/tsconfig/types/ResolvedBaseTsconfig";
+export * from "#project/tsconfig/types/ResolvedEnvironmentTsconfig";
+export * from "#project/tsconfig/types/ResolvedEnvironmentTsconfigOption";
+export * from "#project/tsconfig/types/Tsconfig";
+export * from "#project/tsconfig/types/TsconfigEnvironment";
+export * from "#project/tsconfig/types/TsconfigGroups";
+export * from "#project/tsconfig/types/TsconfigKey";
+export * from "#project/tsconfig/types/TsconfigOwner";
+export * from "#project/tsconfig/types/TsconfigProducer";
+export * from "#project/tsconfig/types/TsconfigTarget";
+export * from "#project/tsconfig/types/UnmanagedEnvironmentTsconfig";
 // @end

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { normalizeRuleSchema } from "#eslint/utils/normalizeRuleSchema";
+import { normalizeRuleSchema } from "#tools/eslint/utils/normalizeRuleSchema";
 
 describe("normalizeRuleSchema", () => {
   test("folds the parent properties into requirement-only branches", () => {

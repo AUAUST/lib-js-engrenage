@@ -3,7 +3,7 @@ import nodeReleases from "node-releases/data/processed/envs.json" with { type: "
 
 import { freeze } from "@auaust/toolkit/object";
 
-import { assertBaselineSnapshot } from "#baseline/utils/assertBaselineSnapshot";
+import { assertBaselineSnapshot } from "#project/baseline/utils/assertBaselineSnapshot";
 
 // @debt assumes V8 versions follow Chromium majors (Chromium 138 ships V8 13.8); holds only while Google keeps that numbering
 function toV8Version(chrome: number): [number, number] {

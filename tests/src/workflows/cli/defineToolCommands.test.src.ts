@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { defineToolCommands } from "#cli/operations/defineToolCommands";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
+import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
 
 const commands = defineToolCommands({
   // @ts-expect-error

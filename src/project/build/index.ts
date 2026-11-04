@@ -1,3 +1,3 @@
 // @barrel types/*.ts all
-export * from "#build/types/ResolvedBuild";
+export * from "#project/build/types/ResolvedBuild";
 // @end

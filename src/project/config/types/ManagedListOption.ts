@@ -1,3 +1,3 @@
-import type { ListOption } from "#config/types/ListOption";
+import type { ListOption } from "#project/config/types/ListOption";
 
 export type ManagedListOption<Item> = ListOption<Item> | boolean;

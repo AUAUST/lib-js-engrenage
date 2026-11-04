@@ -1,4 +1,4 @@
-import type { RuleModule } from "#eslint/types/RuleModule";
+import type { RuleModule } from "#tools/eslint/types/RuleModule";
 
 export interface Delegate {
   name: string;

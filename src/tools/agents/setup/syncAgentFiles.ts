@@ -2,19 +2,19 @@ import { readFileSync } from "node:fs";
 
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { codexFile } from "#agents/codex/constants";
-import { syncCodexInstructions } from "#agents/codex/operations/syncCodexInstructions";
-import { attributionRules, markdownBlocks } from "#agents/constants";
-import { getRuleReferences } from "#agents/operations/getRuleReferences";
-import { getRuleTemplates } from "#agents/operations/getRuleTemplates";
-import { getSkillTemplates } from "#agents/operations/getSkillTemplates";
-import { parseInstruction } from "#agents/operations/parseInstruction";
-import { resolveAgentReference } from "#agents/operations/resolveAgentReference";
-import { syncFrontmatter } from "#agents/operations/syncFrontmatter";
-import { syncFiles } from "#blocks/operations/syncFiles";
-import { syncBlocks } from "#blocks/utils/syncBlocks";
-import type { GeneratedFrontmatter } from "#agents/types/GeneratedFrontmatter";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { syncFiles } from "#foundation/blocks/operations/syncFiles";
+import { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
+import { codexFile } from "#tools/agents/codex/constants";
+import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
+import { attributionRules, markdownBlocks } from "#tools/agents/constants";
+import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
+import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
+import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
+import { parseInstruction } from "#tools/agents/operations/parseInstruction";
+import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
+import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { File } from "#types/File";
 import type { FileSync } from "#types/FileSync";
 

@@ -1,7 +1,7 @@
 import { wrap } from "@auaust/primitive-kit/arrays";
 
-import { writePackageJsonValue } from "#package/operations/writePackageJsonValue";
-import type { PackageJson } from "#package/types/PackageJson";
+import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
+import type { PackageJson } from "#project/package/types/PackageJson";
 import type { File } from "#types/File";
 
 export function writePnpmDeclaration(

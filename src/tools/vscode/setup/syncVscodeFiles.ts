@@ -7,23 +7,23 @@ import {
   map,
 } from "@auaust/primitive-kit/arrays";
 
-import { loadInfoRules } from "#eslint/operations/loadInfoRules";
-import { emptyObjectFile } from "#json/constants";
-import { applyJsonEdits } from "#json/utils/applyJsonEdits";
-import { flattenJsonObject } from "#json/utils/flattenJsonObject";
-import { readJsonValue } from "#json/utils/readJsonValue";
-import { writeJsonValue } from "#json/utils/writeJsonValue";
-import { validate } from "#options/utils/validate";
+import { emptyObjectFile } from "#foundation/json/constants";
+import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
+import { flattenJsonObject } from "#foundation/json/utils/flattenJsonObject";
+import { readJsonValue } from "#foundation/json/utils/readJsonValue";
+import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
+import { validate } from "#foundation/options/utils/validate";
+import { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
 import {
   eslintIntegration,
   extensionsFile,
   settingsFile,
-} from "#vscode/constants";
-import { findIntegrations } from "#vscode/utils/findIntegrations";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { JsonEdit } from "#json/types/JsonEdit";
+} from "#tools/vscode/constants";
+import { findIntegrations } from "#tools/vscode/utils/findIntegrations";
+import type { JsonEdit } from "#foundation/json/types/JsonEdit";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Integration } from "#tools/vscode/types/Integration";
 import type { File } from "#types/File";
-import type { Integration } from "#vscode/types/Integration";
 
 function addRecommendations(
   content: string,

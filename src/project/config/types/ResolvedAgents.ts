@@ -1,5 +1,5 @@
 // @debt reaches into tools/agents, a higher layer than project; the layered registry (#143) removes the upward dependency
-import type { Agent } from "#agents/types/Agent";
+import type { Agent } from "#tools/agents/types/Agent";
 import type { Directory } from "#types/Directory";
 import type { Globs } from "#types/Globs";
 

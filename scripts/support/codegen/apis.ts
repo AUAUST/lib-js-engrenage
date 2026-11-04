@@ -1,6 +1,6 @@
 /* eslint-disable auaust/no-dynamic-import */
 
-import { defineCommand } from "#cli/operations/defineCommand";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
 
 export const apis = defineCommand((command) => {
   return command
@@ -10,12 +10,14 @@ export const apis = defineCommand((command) => {
     .argument("[groups...]", "groups to generate (all by default)")
     .option("--check", "report outdated groups without writing them", false)
     .action(async (groups, { check }) => {
-      const { loadConfig } = await import("#config/operations/loadConfig");
+      const { loadConfig } =
+        await import("#project/config/operations/loadConfig");
 
       const { generateApiDeclarations } =
-        await import("#typescript/operations/generateApiDeclarations");
+        await import("#tools/typescript/operations/generateApiDeclarations");
 
-      const { settleChanges } = await import("#cli/operations/settleChanges");
+      const { settleChanges } =
+        await import("#workflows/cli/operations/settleChanges");
 
       const config = await loadConfig();
 

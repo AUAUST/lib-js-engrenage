@@ -1,10 +1,10 @@
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 
-import { tsconfigEnvironments } from "#config/constants";
-import { toTsconfigSpecifier } from "#tsconfig/utils/toTsconfigSpecifier";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { JsonEdit } from "#json/types/JsonEdit";
-import type { TsconfigTarget } from "#tsconfig/types/TsconfigTarget";
+import { tsconfigEnvironments } from "#project/config/constants";
+import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
+import type { JsonEdit } from "#foundation/json/types/JsonEdit";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 import type { File } from "#types/File";
 
 function listReferencedFiles(config: ResolvedConfig): readonly File[] {

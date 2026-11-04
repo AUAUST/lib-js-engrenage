@@ -1,14 +1,14 @@
 import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
-import { defineToolCommands } from "#cli/operations/defineToolCommands";
-import { ensureAnyOf } from "#cli/operations/ensureAnyOf";
-import { ensureIncludes } from "#cli/operations/ensureIncludes";
-import { getOptionsEnd } from "#cli/utils/getOptionsEnd";
-import { isOptionOf } from "#cli/utils/isOptionOf";
-import { tsconfigEnvironments } from "#config/constants";
 import { packages } from "#constants";
-import { createTsconfig } from "#tsconfig/operations/createTsconfig";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { tsconfigEnvironments } from "#project/config/constants";
+import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
+import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
+import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
+import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
+import { getOptionsEnd } from "#workflows/cli/utils/getOptionsEnd";
+import { isOptionOf } from "#workflows/cli/utils/isOptionOf";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 
 const buildOptions = ["--build", "-b"];

@@ -3,26 +3,26 @@ import { boolean, picklist, string } from "valibot";
 import { join, map } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
+import { declare } from "#foundation/options/utils/declare";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { listDefaults } from "#foundation/options/utils/listDefaults";
+import { unset } from "#foundation/options/utils/unset";
 import {
   apiGroupRoots,
   apiGroups,
   apiLibraryGroups,
-} from "#baseline/constants";
-import { findCurrentMonth } from "#baseline/operations/findCurrentMonth";
-import { declareList } from "#config/config/declareList";
-import { exposedFilesSchema } from "#config/config/schemas/values/exposedFilesSchema";
-import { nodeMajorSchema } from "#config/config/schemas/values/nodeMajorSchema";
+} from "#project/baseline/constants";
+import { findCurrentMonth } from "#project/baseline/operations/findCurrentMonth";
+import { declareList } from "#project/config/config/declareList";
+import { exposedFilesSchema } from "#project/config/config/schemas/values/exposedFilesSchema";
+import { nodeMajorSchema } from "#project/config/config/schemas/values/nodeMajorSchema";
 import {
   defaultSourceDirectories,
   disabledCodeEnvironment,
-} from "#config/constants";
-import { declareCodeEnvironment } from "#environments/config/declareCodeEnvironment";
-import { declare } from "#options/utils/declare";
-import { declareObject } from "#options/utils/declareObject";
-import { listDefaults } from "#options/utils/listDefaults";
-import { unset } from "#options/utils/unset";
-import { aliasesSchema } from "#structure/config/schemas/aliasesSchema";
-import { rolesOptionSchema } from "#structure/config/schemas/rolesOptionSchema";
+} from "#project/config/constants";
+import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
+import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
+import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 
 function describeApiGroups(): string {
   const roots = map(entries(apiGroupRoots), ([group, globals]) => {

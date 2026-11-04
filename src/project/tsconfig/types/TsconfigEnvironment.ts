@@ -1,3 +1,3 @@
-import type { tsconfigEnvironments } from "#config/constants";
+import type { tsconfigEnvironments } from "#project/config/constants";
 
 export type TsconfigEnvironment = (typeof tsconfigEnvironments)[number];

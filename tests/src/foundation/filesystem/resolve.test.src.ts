@@ -1,6 +1,6 @@
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import { resolve } from "#filesystem/utils/resolve";
+import { resolve } from "#foundation/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 
 describe("resolve", () => {

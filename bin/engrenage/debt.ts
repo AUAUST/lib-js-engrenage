@@ -1,6 +1,6 @@
-import { defineCommand } from "#cli/operations/defineCommand";
-import { loadConfig } from "#config/operations/loadConfig";
-import { listDebtMarkers } from "#eslint/operations/listDebtMarkers";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
 
 export const debt = defineCommand((command) => {
   return command

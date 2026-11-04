@@ -1,4 +1,4 @@
-import type { StructureEnvironmentName } from "#structure/types/StructureEnvironmentName";
+import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { Directory } from "#types/Directory";
 
 export interface StructureMirror {

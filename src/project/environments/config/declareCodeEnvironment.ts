@@ -1,12 +1,12 @@
 import { boolean } from "valibot";
 
-import { declareList } from "#config/config/declareList";
-import { directorySchema } from "#config/config/schemas/values/directorySchema";
-import { globSchema } from "#config/config/schemas/values/globsSchema";
-import { defaultDefines } from "#config/constants";
-import { declare } from "#options/utils/declare";
-import { structureOptions } from "#structure/config/schemas/structureOptions";
-import { declareEnvironmentTsconfig } from "#tsconfig/config/declareEnvironmentTsconfig";
+import { declare } from "#foundation/options/utils/declare";
+import { declareList } from "#project/config/config/declareList";
+import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
+import { globSchema } from "#project/config/config/schemas/values/globsSchema";
+import { defaultDefines } from "#project/config/constants";
+import { structureOptions } from "#project/structure/config/schemas/structureOptions";
+import { declareEnvironmentTsconfig } from "#project/tsconfig/config/declareEnvironmentTsconfig";
 import type { Directories } from "#types/Directories";
 
 export function declareCodeEnvironment(

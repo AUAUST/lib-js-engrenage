@@ -1,6 +1,6 @@
 import { entries } from "@auaust/toolkit/object";
 
-import type { Paths } from "#tsconfig/types/Paths";
+import type { Paths } from "#project/tsconfig/types/Paths";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
 

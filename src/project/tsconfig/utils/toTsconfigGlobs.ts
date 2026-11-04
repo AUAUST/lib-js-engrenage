@@ -1,6 +1,6 @@
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 
-import { relativeToTsconfig } from "#tsconfig/utils/relativeToTsconfig";
+import { relativeToTsconfig } from "#project/tsconfig/utils/relativeToTsconfig";
 import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 

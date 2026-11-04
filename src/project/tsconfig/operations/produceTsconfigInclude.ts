@@ -2,13 +2,13 @@ import { relative } from "node:path/posix";
 
 import { flatMap } from "@auaust/primitive-kit/arrays";
 
-import { resolveListOption } from "#config/operations/resolveListOption";
-import { resolveTsconfigEnvironments } from "#tsconfig/operations/resolveTsconfigEnvironments";
-import { toTsconfigGlobs } from "#tsconfig/utils/toTsconfigGlobs";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { JsonEdit } from "#json/types/JsonEdit";
-import type { TsconfigKey } from "#tsconfig/types/TsconfigKey";
-import type { TsconfigTarget } from "#tsconfig/types/TsconfigTarget";
+import { resolveListOption } from "#project/config/operations/resolveListOption";
+import { resolveTsconfigEnvironments } from "#project/tsconfig/operations/resolveTsconfigEnvironments";
+import { toTsconfigGlobs } from "#project/tsconfig/utils/toTsconfigGlobs";
+import type { JsonEdit } from "#foundation/json/types/JsonEdit";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
+import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 import type { File } from "#types/File";
 
 function listDefaultInclude(

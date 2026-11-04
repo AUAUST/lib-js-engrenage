@@ -1,6 +1,6 @@
 import type { Rule } from "eslint";
 
-import { defineConvention } from "#eslint/utils/defineConvention";
+import { defineConvention } from "#tools/eslint/utils/defineConvention";
 
 const message =
   "Wrap the valued return in the negated check instead of guarding it with an empty `return;`.";

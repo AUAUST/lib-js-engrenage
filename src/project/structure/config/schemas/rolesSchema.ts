@@ -1,5 +1,5 @@
-import { declareObject } from "#options/utils/declareObject";
-import { rolesOptionEntries } from "#structure/config/schemas/rolesOptionEntries";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { rolesOptionEntries } from "#project/structure/config/schemas/rolesOptionEntries";
 
 export const rolesSchema = declareObject(rolesOptionEntries, {
   description:

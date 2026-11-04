@@ -1,11 +1,11 @@
 import type { GenericSchema } from "valibot";
 
-import { managedListOptionSchema } from "#config/config/schemas/values/managedListOptionSchema";
-import { declare } from "#options/utils/declare";
-import { unset } from "#options/utils/unset";
-import type { ManagedListOption } from "#config/types/ManagedListOption";
-import type { Declaration } from "#options/types/Declaration";
-import type { Description } from "#options/types/Description";
+import { declare } from "#foundation/options/utils/declare";
+import { unset } from "#foundation/options/utils/unset";
+import { managedListOptionSchema } from "#project/config/config/schemas/values/managedListOptionSchema";
+import type { Declaration } from "#foundation/options/types/Declaration";
+import type { Description } from "#foundation/options/types/Description";
+import type { ManagedListOption } from "#project/config/types/ManagedListOption";
 
 export function declareManagedList<Item extends string>(
   item: GenericSchema<Item>,

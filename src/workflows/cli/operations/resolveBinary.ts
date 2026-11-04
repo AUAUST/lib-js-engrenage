@@ -6,9 +6,9 @@ import { isString } from "@auaust/toolkit/isString";
 import { get } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
-import { resolve } from "#filesystem/utils/resolve";
-import { createPackageJson } from "#package/operations/createPackageJson";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { resolve } from "#foundation/filesystem/utils/resolve";
+import { createPackageJson } from "#project/package/operations/createPackageJson";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 

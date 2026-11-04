@@ -1,12 +1,15 @@
 import { isNotEmpty, map } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
-import { syncBlocks } from "#blocks/utils/syncBlocks";
-import { relativeWithin } from "#filesystem/utils/relativeWithin";
-import { identifierPattern, typescriptBlocks } from "#typescript/constants";
-import { inferType } from "#typescript/utils/inferType";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { ResolvedGlobal } from "#config/types/ResolvedGlobal";
+import { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
+import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
+import {
+  identifierPattern,
+  typescriptBlocks,
+} from "#tools/typescript/constants";
+import { inferType } from "#tools/typescript/utils/inferType";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ResolvedGlobal } from "#project/config/types/ResolvedGlobal";
 
 const directive = "define";
 

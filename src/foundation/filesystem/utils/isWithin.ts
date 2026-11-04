@@ -1,6 +1,6 @@
 import { isAbsolute, relative, sep } from "node:path";
 
-import { resolve } from "#filesystem/utils/resolve";
+import { resolve } from "#foundation/filesystem/utils/resolve";
 import type { Directory } from "#types/Directory";
 
 export function isWithin(base: Directory | URL, path: string): boolean {

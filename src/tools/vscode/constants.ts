@@ -1,8 +1,8 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { eslint, prettier, typescript } from "#constants";
+import type { Integration } from "#tools/vscode/types/Integration";
 import type { File } from "#types/File";
-import type { Integration } from "#vscode/types/Integration";
 
 export const extensionsFile = ".vscode/extensions.json" satisfies File;
 

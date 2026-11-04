@@ -1,7 +1,7 @@
 import { wrap } from "@auaust/primitive-kit/arrays";
 
-import { getOptionsEnd } from "#cli/utils/getOptionsEnd";
-import { hasOption } from "#cli/utils/hasOption";
+import { getOptionsEnd } from "#workflows/cli/utils/getOptionsEnd";
+import { hasOption } from "#workflows/cli/utils/hasOption";
 
 export function ensureAnyOf(
   args: string[],

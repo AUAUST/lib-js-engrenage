@@ -1,6 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import type { GlobalScope } from "#config/types/GlobalScope";
+import type { GlobalScope } from "#project/config/types/GlobalScope";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

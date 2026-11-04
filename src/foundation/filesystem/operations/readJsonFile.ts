@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 
-import { parseJson } from "#json/utils/parseJson";
+import { parseJson } from "#foundation/json/utils/parseJson";
 import type { File } from "#types/File";
 
 export function readJsonFile(path: File): unknown {

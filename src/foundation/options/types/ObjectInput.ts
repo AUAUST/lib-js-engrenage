@@ -1,7 +1,7 @@
 import type { Simplify } from "@auaust/toolkit/types";
 
-import type { DeclarationEntries } from "#options/types/DeclarationEntries";
-import type { InputOf } from "#options/types/InputOf";
+import type { DeclarationEntries } from "#foundation/options/types/DeclarationEntries";
+import type { InputOf } from "#foundation/options/types/InputOf";
 
 export type ObjectInput<Entries extends DeclarationEntries> = Simplify<
   {

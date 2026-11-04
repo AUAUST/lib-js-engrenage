@@ -3,10 +3,10 @@ import { isMap, parseDocument } from "yaml";
 import { map } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
-import { workspaceFile, workspaceSettings } from "#pnpm/constants";
+import { workspaceFile, workspaceSettings } from "#tools/pnpm/constants";
 // @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import type { Step } from "#cli/types/Step";
-import type { WorkspaceSettings } from "#pnpm/types/WorkspaceSettings";
+import type { WorkspaceSettings } from "#tools/pnpm/types/WorkspaceSettings";
+import type { Step } from "#workflows/cli/types/Step";
 
 function renderWorkspace({
   allowBuilds,

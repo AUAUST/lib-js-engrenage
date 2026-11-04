@@ -1,10 +1,10 @@
 import { flatMap } from "@auaust/primitive-kit/arrays";
 
-import { anyFile } from "#eslint/constants";
-import { filesIn } from "#filesystem/utils/filesIn";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { ScopeReference } from "#eslint/types/ScopeReference";
-import type { ScopeReferences } from "#eslint/types/ScopeReferences";
+import { filesIn } from "#foundation/filesystem/utils/filesIn";
+import { anyFile } from "#tools/eslint/constants";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ScopeReference } from "#tools/eslint/types/ScopeReference";
+import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 

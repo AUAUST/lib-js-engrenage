@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from "vitest";
 
 import { codegen } from "#scripts/support/codegen/index";
 import { runCommand } from "#tests/utils/runCommand";
-import type { CommandDefinition } from "#cli/types/CommandDefinition";
+import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
 
 const { runs } = vi.hoisted(() => {
   return {

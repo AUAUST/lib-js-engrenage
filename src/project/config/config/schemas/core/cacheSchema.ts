@@ -1,9 +1,9 @@
-import { directorySchema } from "#config/config/schemas/values/directorySchema";
-import { defaultCacheDirectory } from "#config/constants";
-import { resolveWithin } from "#filesystem/utils/resolveWithin";
-import { declare } from "#options/utils/declare";
-import { declareObject } from "#options/utils/declareObject";
-import type { ConfigContext } from "#config/types/ConfigContext";
+import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
+import { declare } from "#foundation/options/utils/declare";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
+import { defaultCacheDirectory } from "#project/config/constants";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
 
 export const cacheSchema = declareObject(
   {

@@ -1,5 +1,5 @@
 // @debt reaches into project/config, a higher layer than foundation; the layered registry (#143) removes the upward dependency
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { FileSync } from "#types/FileSync";
 
 export function syncFiles(

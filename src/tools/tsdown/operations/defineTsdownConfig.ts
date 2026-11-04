@@ -2,14 +2,14 @@ import { mergeConfig } from "tsdown";
 
 import { value } from "@auaust/toolkit/value";
 
-import { loadConfig } from "#config/operations/loadConfig";
-import { createTsdownConfig } from "#tsdown/operations/createTsdownConfig";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Config } from "#tsdown/types/Config";
-import type { ConfigContext } from "#tsdown/types/ConfigContext";
-import type { ConfigFn } from "#tsdown/types/ConfigFn";
-import type { InlineConfig } from "#tsdown/types/InlineConfig";
-import type { Options } from "#tsdown/types/Options";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { createTsdownConfig } from "#tools/tsdown/operations/createTsdownConfig";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Config } from "#tools/tsdown/types/Config";
+import type { ConfigContext } from "#tools/tsdown/types/ConfigContext";
+import type { ConfigFn } from "#tools/tsdown/types/ConfigFn";
+import type { InlineConfig } from "#tools/tsdown/types/InlineConfig";
+import type { Options } from "#tools/tsdown/types/Options";
 import type { ConfigInput } from "#types/ConfigInput";
 
 export function defineTsdownConfig(

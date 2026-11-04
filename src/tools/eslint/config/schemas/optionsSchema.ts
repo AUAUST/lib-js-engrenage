@@ -9,8 +9,8 @@ import {
 
 import { keys } from "@auaust/toolkit/object";
 
-import { conventionCategories } from "#eslint/constants";
-import type { Convention } from "#eslint/types/Convention";
+import { conventionCategories } from "#tools/eslint/constants";
+import type { Convention } from "#tools/eslint/types/Convention";
 
 function categorySchema<Name extends string>(
   category: Record<Name, Convention>,

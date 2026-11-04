@@ -1,7 +1,7 @@
 import { entries } from "@auaust/toolkit/object";
 
-import type { PathAliases } from "#tsconfig/types/PathAliases";
-import type { Entries } from "#tsdown/types/Entries";
+import type { PathAliases } from "#project/tsconfig/types/PathAliases";
+import type { Entries } from "#tools/tsdown/types/Entries";
 
 export function createTsdownEntries(
   pathAliases: PathAliases,

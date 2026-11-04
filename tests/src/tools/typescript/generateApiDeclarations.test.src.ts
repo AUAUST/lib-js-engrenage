@@ -1,12 +1,12 @@
 import { describe, expect, test } from "vitest";
 
-import { configSchema } from "#config/config/schemas/configSchema";
-import { createResolvedConfig } from "#config/operations/createResolvedConfig";
-import { validate } from "#options/utils/validate";
+import { validate } from "#foundation/options/utils/validate";
+import { configSchema } from "#project/config/config/schemas/configSchema";
+import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
-import { generateApiDeclarations } from "#typescript/operations/generateApiDeclarations";
+import { generateApiDeclarations } from "#tools/typescript/operations/generateApiDeclarations";
 
 function createConfig() {
   const project = createTemporaryProject({ "package.json": "{}" });

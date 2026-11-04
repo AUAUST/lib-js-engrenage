@@ -38,12 +38,15 @@ import { join, map, sort } from "@auaust/primitive-kit/arrays";
 import { entries, record, values } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
-import { listEsSelections } from "#baseline/operations/listEsSelections";
-import { resolve } from "#filesystem/utils/resolve";
-import { esInterfaceAliases, esMemberCompatKeys } from "#typescript/constants";
-import { createLibraryCompiler } from "#typescript/operations/createLibraryCompiler";
-import { formatModule } from "#typescript/operations/formatModule";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { resolve } from "#foundation/filesystem/utils/resolve";
+import { listEsSelections } from "#project/baseline/operations/listEsSelections";
+import {
+  esInterfaceAliases,
+  esMemberCompatKeys,
+} from "#tools/typescript/constants";
+import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
+import { formatModule } from "#tools/typescript/operations/formatModule";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

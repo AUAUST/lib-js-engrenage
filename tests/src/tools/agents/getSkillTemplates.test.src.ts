@@ -1,10 +1,10 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { getSkillTemplates } from "#agents/operations/getSkillTemplates";
-import { loadConfig } from "#config/operations/loadConfig";
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 
-vi.mock(import("#agents/operations/getInstructionTemplates"), () => {
+vi.mock(import("#tools/agents/operations/getInstructionTemplates"), () => {
   return {
     getInstructionTemplates: () => {
       return [

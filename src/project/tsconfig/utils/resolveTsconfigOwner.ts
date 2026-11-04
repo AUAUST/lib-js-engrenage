@@ -1,6 +1,6 @@
-import type { TsconfigGroups } from "#tsconfig/types/TsconfigGroups";
-import type { TsconfigKey } from "#tsconfig/types/TsconfigKey";
-import type { TsconfigOwner } from "#tsconfig/types/TsconfigOwner";
+import type { TsconfigGroups } from "#project/tsconfig/types/TsconfigGroups";
+import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
+import type { TsconfigOwner } from "#project/tsconfig/types/TsconfigOwner";
 
 export function resolveTsconfigOwner(
   key: TsconfigKey,

@@ -1,6 +1,6 @@
 import type { JSONPath } from "jsonc-parser";
 
-import type { JsonValue } from "#json/types/JsonValue";
+import type { JsonValue } from "#foundation/json/types/JsonValue";
 
 export interface JsonEdit {
   path: JSONPath;

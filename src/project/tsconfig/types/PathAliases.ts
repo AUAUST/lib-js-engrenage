@@ -1,3 +1,3 @@
-import type { PathAlias } from "#tsconfig/types/PathAlias";
+import type { PathAlias } from "#project/tsconfig/types/PathAlias";
 
 export type PathAliases = readonly PathAlias[];

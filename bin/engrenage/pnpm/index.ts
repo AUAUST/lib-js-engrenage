@@ -1,6 +1,6 @@
 import { upgrade } from "#bin/engrenage/pnpm/upgrade";
-import { defineCommand } from "#cli/operations/defineCommand";
-import { registerSubcommands } from "#cli/operations/registerSubcommands";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { registerSubcommands } from "#workflows/cli/operations/registerSubcommands";
 
 export const pnpm = defineCommand((command) => {
   return registerSubcommands(

@@ -1,6 +1,6 @@
 import type { Linter } from "eslint";
 
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 export function createTypeAwareLanguageOptions(
   config: ResolvedConfig,

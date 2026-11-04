@@ -8,18 +8,21 @@ import {
 } from "valibot";
 import { stringify } from "yaml";
 
-import { claudeAgentsDir, claudeSkillsDir } from "#agents/claude/constants";
-import { codexSkillsDir } from "#agents/codex/constants";
+import { validate } from "#foundation/options/utils/validate";
+import {
+  claudeAgentsDir,
+  claudeSkillsDir,
+} from "#tools/agents/claude/constants";
+import { codexSkillsDir } from "#tools/agents/codex/constants";
 import {
   claudeAgentFrontmatterKeys,
   claudeSkillFrontmatterKeys,
   codexSkillFrontmatterKeys,
-} from "#agents/constants";
-import { getInstructionTemplates } from "#agents/operations/getInstructionTemplates";
-import { createInstructionFile } from "#agents/utils/createInstructionFile";
-import { validate } from "#options/utils/validate";
-import type { GeneratedFrontmatter } from "#agents/types/GeneratedFrontmatter";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+} from "#tools/agents/constants";
+import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
+import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { File } from "#types/File";
 
 const skillSchema = looseObject({

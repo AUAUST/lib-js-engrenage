@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 
 import { resolveModulePath } from "exsolve";
 
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 
 function isRelative(reference: string): boolean {

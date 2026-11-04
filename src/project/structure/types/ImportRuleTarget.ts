@@ -1,4 +1,4 @@
-import type { ImportCategory } from "#structure/types/ImportCategory";
+import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
 

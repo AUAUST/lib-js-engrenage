@@ -1,9 +1,9 @@
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 
-import { defineReplacement } from "#eslint/utils/defineReplacement";
-import type { Convention } from "#eslint/types/Convention";
-import type { ScopeReferences } from "#eslint/types/ScopeReferences";
-import type { Presets } from "#presets/types/Presets";
+import { defineReplacement } from "#tools/eslint/utils/defineReplacement";
+import type { Presets } from "#project/presets/types/Presets";
+import type { Convention } from "#tools/eslint/types/Convention";
+import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
 function createImportSelectors(source: string, name: string): string[] {

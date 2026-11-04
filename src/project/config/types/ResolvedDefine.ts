@@ -1,4 +1,4 @@
-import type { ResolvedGlobals } from "#config/types/ResolvedGlobals";
+import type { ResolvedGlobals } from "#project/config/types/ResolvedGlobals";
 
 export interface ResolvedDefine {
   readonly types: boolean;

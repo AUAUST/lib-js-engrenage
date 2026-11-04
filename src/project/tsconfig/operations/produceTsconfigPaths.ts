@@ -1,13 +1,13 @@
 import { map } from "@auaust/primitive-kit/arrays";
 import { entries, record } from "@auaust/toolkit/object";
 
-import { resolveExportPaths } from "#package/utils/resolveExportPaths";
-import { readTsconfigPaths } from "#tsconfig/operations/readTsconfigPaths";
-import { isPackageAlias } from "#tsconfig/utils/isPackageAlias";
-import { toTsconfigSpecifier } from "#tsconfig/utils/toTsconfigSpecifier";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { JsonEdit } from "#json/types/JsonEdit";
-import type { TsconfigTarget } from "#tsconfig/types/TsconfigTarget";
+import { resolveExportPaths } from "#project/package/utils/resolveExportPaths";
+import { readTsconfigPaths } from "#project/tsconfig/operations/readTsconfigPaths";
+import { isPackageAlias } from "#project/tsconfig/utils/isPackageAlias";
+import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
+import type { JsonEdit } from "#foundation/json/types/JsonEdit";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 const pathsLocation = ["compilerOptions", "paths"];
 

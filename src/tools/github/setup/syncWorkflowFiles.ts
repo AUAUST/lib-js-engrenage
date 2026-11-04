@@ -1,12 +1,12 @@
 import { map } from "@auaust/primitive-kit/arrays";
 import { hasOwn } from "@auaust/toolkit/object";
 
-import { syncFiles } from "#blocks/operations/syncFiles";
-import { workflowsDirectory, workflowSets } from "#github/constants";
-import { renderWorkflow } from "#github/operations/renderWorkflow";
-import { resolveWorkflowSet } from "#github/utils/resolveWorkflowSet";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { WorkflowSetName } from "#github/types/WorkflowSetName";
+import { syncFiles } from "#foundation/blocks/operations/syncFiles";
+import { workflowsDirectory, workflowSets } from "#tools/github/constants";
+import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
+import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 
 function assertScripts(
   config: ResolvedConfig,

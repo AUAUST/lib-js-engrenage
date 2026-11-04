@@ -1,4 +1,4 @@
-import { syncIgnoreFile } from "#blocks/operations/syncIgnoreFile";
+import { syncIgnoreFile } from "#foundation/blocks/operations/syncIgnoreFile";
 import {
   defaultIgnores,
   editorIgnores,
@@ -7,9 +7,9 @@ import {
   lockfileIgnores,
   logIgnores,
   osIgnores,
-} from "#git/constants";
-import { createProjectIgnores } from "#git/utils/createProjectIgnores";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+} from "#tools/git/constants";
+import { createProjectIgnores } from "#tools/git/utils/createProjectIgnores";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 export function syncGitignoreFile(config: ResolvedConfig) {
   syncIgnoreFile(config, {

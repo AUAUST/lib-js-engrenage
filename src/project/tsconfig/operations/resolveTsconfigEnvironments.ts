@@ -1,6 +1,6 @@
-import { tsconfigEnvironments } from "#config/constants";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { TsconfigKey } from "#tsconfig/types/TsconfigKey";
+import { tsconfigEnvironments } from "#project/config/constants";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 
 type TsconfigEnvironment = (typeof tsconfigEnvironments)[number];
 

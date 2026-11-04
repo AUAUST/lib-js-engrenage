@@ -1,4 +1,4 @@
-import type { EnvironmentStructure } from "#structure/types/EnvironmentStructure";
+import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 
 export interface ResolvedStructure {
   readonly src: EnvironmentStructure | undefined;

@@ -1,4 +1,4 @@
-import { defineConvention } from "#eslint/utils/defineConvention";
+import { defineConvention } from "#tools/eslint/utils/defineConvention";
 
 const debtMarker = "@debt";
 

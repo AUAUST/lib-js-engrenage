@@ -1,6 +1,6 @@
-import { createDefine } from "#config/utils/createDefine";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Config } from "#vite/types/Config";
+import { createDefine } from "#project/config/utils/createDefine";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Config } from "#tools/vite/types/Config";
 
 export function createViteConfig(
   config: ResolvedConfig,

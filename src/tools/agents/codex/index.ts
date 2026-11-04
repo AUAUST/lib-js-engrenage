@@ -1,1 +1,1 @@
-export { syncCodexFiles } from "#agents/codex/setup/syncCodexFiles";
+export { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";

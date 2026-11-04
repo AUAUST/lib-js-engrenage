@@ -1,13 +1,13 @@
 import { describe, expect, test } from "vitest";
 
-import { editions } from "#baseline/editions/index";
-import { configSchema } from "#config/config/schemas/configSchema";
-import { createResolvedConfig } from "#config/operations/createResolvedConfig";
-import { validate } from "#options/utils/validate";
+import { validate } from "#foundation/options/utils/validate";
+import { editions } from "#project/baseline/editions/index";
+import { configSchema } from "#project/config/config/schemas/configSchema";
+import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
-import { generateEditions } from "#typescript/operations/generateEditions";
+import { generateEditions } from "#tools/typescript/operations/generateEditions";
 
 describe("editions", () => {
   test("dates the libs of the committed editions", () => {

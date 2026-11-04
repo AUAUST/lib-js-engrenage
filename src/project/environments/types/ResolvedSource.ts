@@ -1,6 +1,6 @@
-import type { ApiGroup } from "#baseline/types/ApiGroup";
-import type { Runtime } from "#baseline/types/Runtime";
-import type { ResolvedCodeEnvironment } from "#environments/types/ResolvedCodeEnvironment";
+import type { ApiGroup } from "#project/baseline/types/ApiGroup";
+import type { Runtime } from "#project/baseline/types/Runtime";
+import type { ResolvedCodeEnvironment } from "#project/environments/types/ResolvedCodeEnvironment";
 import type { File } from "#types/File";
 
 export interface ResolvedSource extends ResolvedCodeEnvironment {

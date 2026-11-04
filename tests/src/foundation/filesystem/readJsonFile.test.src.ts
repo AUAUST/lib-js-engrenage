@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { readJsonFile } from "#filesystem/operations/readJsonFile";
+import { readJsonFile } from "#foundation/filesystem/operations/readJsonFile";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 describe("readJsonFile", () => {

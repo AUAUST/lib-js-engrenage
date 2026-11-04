@@ -1,5 +1,5 @@
 import { packages } from "#constants";
-import { defineTsdownConfig } from "#tsdown";
+import { defineTsdownConfig } from "#tools/tsdown/index";
 
 export default defineTsdownConfig({
   bundle: [

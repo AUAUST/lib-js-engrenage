@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { getPatchedFiles } from "#agents/codex/utils/getPatchedFiles";
+import { getPatchedFiles } from "#tools/agents/codex/utils/getPatchedFiles";
 
 test("extracts additions, updates and rename destinations while excluding deletions", () => {
   expect(

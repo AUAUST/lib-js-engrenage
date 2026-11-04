@@ -12,13 +12,13 @@ import {
 import { map } from "@auaust/primitive-kit/arrays";
 import { once } from "@auaust/toolkit/once";
 
-import { createAccessors } from "#config/utils/createAccessors";
-import { isWithin } from "#filesystem/utils/isWithin";
-import { toPosixPath } from "#filesystem/utils/toPosixPath";
-import { noInputsDiagnostic } from "#tsconfig/constants";
-import type { Filesystem } from "#filesystem/types/Filesystem";
-import type { Paths } from "#tsconfig/types/Paths";
-import type { Tsconfig } from "#tsconfig/types/Tsconfig";
+import { isWithin } from "#foundation/filesystem/utils/isWithin";
+import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
+import { createAccessors } from "#project/config/utils/createAccessors";
+import { noInputsDiagnostic } from "#project/tsconfig/constants";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Paths } from "#project/tsconfig/types/Paths";
+import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

@@ -15,12 +15,12 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
-import { createAccessors } from "#config/utils/createAccessors";
 import { packageJsonFile, packageTypes, publishAccess } from "#constants";
-import { parseJson } from "#json/utils/parseJson";
-import { validate } from "#options/utils/validate";
-import { dependencyFields } from "#package/constants";
-import type { PackageJson } from "#package/types/PackageJson";
+import { parseJson } from "#foundation/json/utils/parseJson";
+import { validate } from "#foundation/options/utils/validate";
+import { createAccessors } from "#project/config/utils/createAccessors";
+import { dependencyFields } from "#project/package/constants";
+import type { PackageJson } from "#project/package/types/PackageJson";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

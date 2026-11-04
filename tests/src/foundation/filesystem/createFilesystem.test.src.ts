@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 
 import { describe, expect, test } from "vitest";
 
-import { createFilesystem } from "#filesystem/operations/createFilesystem";
+import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 describe("createFilesystem", () => {

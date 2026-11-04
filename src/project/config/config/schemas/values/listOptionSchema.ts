@@ -6,7 +6,7 @@ import {
   type GenericSchema,
 } from "valibot";
 
-import type { ListOption } from "#config/types/ListOption";
+import type { ListOption } from "#project/config/types/ListOption";
 
 export function listOptionSchema<Item>(
   item: GenericSchema<Item>,

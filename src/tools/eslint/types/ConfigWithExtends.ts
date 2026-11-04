@@ -1,3 +1,3 @@
-import type { ConfigObject } from "#eslint/types/ConfigObject";
+import type { ConfigObject } from "#tools/eslint/types/ConfigObject";
 
 export type ConfigWithExtends = ConfigObject | ConfigWithExtends[];

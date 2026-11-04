@@ -1,8 +1,8 @@
-import { readTsconfigValue } from "#tsconfig/operations/readTsconfigValue";
-import { resolveTsconfigLibrary } from "#tsconfig/operations/resolveTsconfigLibrary";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { JsonEdit } from "#json/types/JsonEdit";
-import type { TsconfigTarget } from "#tsconfig/types/TsconfigTarget";
+import { readTsconfigValue } from "#project/tsconfig/operations/readTsconfigValue";
+import { resolveTsconfigLibrary } from "#project/tsconfig/operations/resolveTsconfigLibrary";
+import type { JsonEdit } from "#foundation/json/types/JsonEdit";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 export function produceTsconfigLibrary(
   config: ResolvedConfig,

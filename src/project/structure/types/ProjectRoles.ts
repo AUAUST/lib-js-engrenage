@@ -1,4 +1,4 @@
-import type { RolesOption } from "#structure/types/RolesOption";
+import type { RolesOption } from "#project/structure/types/RolesOption";
 
 export interface ProjectRoles extends RolesOption {
   readonly enabled: boolean;

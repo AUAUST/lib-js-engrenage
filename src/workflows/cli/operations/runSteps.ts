@@ -1,10 +1,10 @@
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { createStepContext } from "#cli/operations/createStepContext";
-import type { Invocation } from "#cli/types/Invocation";
-import type { Prompter } from "#cli/types/Prompter";
-import type { Step } from "#cli/types/Step";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { createStepContext } from "#workflows/cli/operations/createStepContext";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Invocation } from "#workflows/cli/types/Invocation";
+import type { Prompter } from "#workflows/cli/types/Prompter";
+import type { Step } from "#workflows/cli/types/Step";
 
 export async function runSteps({
   config,

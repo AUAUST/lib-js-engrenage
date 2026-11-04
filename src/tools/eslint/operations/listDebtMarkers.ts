@@ -1,10 +1,10 @@
 import { relative } from "node:path";
 
 import { eslint } from "#constants";
-import { pluginName } from "#eslint/constants";
-import { createRuleName } from "#eslint/utils/createRuleName";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { DebtMarker } from "#eslint/types/DebtMarker";
+import { pluginName } from "#tools/eslint/constants";
+import { createRuleName } from "#tools/eslint/utils/createRuleName";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { DebtMarker } from "#tools/eslint/types/DebtMarker";
 
 function compareMarkers(a: DebtMarker, b: DebtMarker): number {
   if (a.file === b.file) {

@@ -1,3 +1,3 @@
-import { configDeclaration } from "#config/config/schemas/configDeclaration";
+import { configDeclaration } from "#project/config/config/schemas/configDeclaration";
 
 export const configSchema = configDeclaration.schema;

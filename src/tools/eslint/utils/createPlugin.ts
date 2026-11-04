@@ -1,11 +1,11 @@
 import { entries, values } from "@auaust/toolkit/object";
 import { value } from "@auaust/toolkit/value";
 
-import { createRuleName } from "#eslint/utils/createRuleName";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Convention } from "#eslint/types/Convention";
-import type { Plugin } from "#eslint/types/Plugin";
-import type { RuleModule } from "#eslint/types/RuleModule";
+import { createRuleName } from "#tools/eslint/utils/createRuleName";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Convention } from "#tools/eslint/types/Convention";
+import type { Plugin } from "#tools/eslint/types/Plugin";
+import type { RuleModule } from "#tools/eslint/types/RuleModule";
 
 export function createPlugin(
   categories: Record<string, Record<string, Convention>>,

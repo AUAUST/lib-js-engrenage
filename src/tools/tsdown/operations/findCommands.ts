@@ -2,10 +2,10 @@ import { posix } from "node:path";
 
 import { entries } from "@auaust/toolkit/object";
 
-import { filesIn } from "#filesystem/utils/filesIn";
-import { binEntryFiles } from "#tsdown/constants";
-import { toEntryName } from "#tsdown/utils/toEntryName";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { filesIn } from "#foundation/filesystem/utils/filesIn";
+import { binEntryFiles } from "#tools/tsdown/constants";
+import { toEntryName } from "#tools/tsdown/utils/toEntryName";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 
 export function findCommands({

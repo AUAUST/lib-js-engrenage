@@ -1,10 +1,10 @@
 import { array, looseObject, optional, string } from "valibot";
 
-import { emptyObjectFile } from "#json/constants";
-import { readJsonValue } from "#json/utils/readJsonValue";
-import { writeJsonValue } from "#json/utils/writeJsonValue";
-import { validate } from "#options/utils/validate";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { emptyObjectFile } from "#foundation/json/constants";
+import { readJsonValue } from "#foundation/json/utils/readJsonValue";
+import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
+import { validate } from "#foundation/options/utils/validate";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 
 const hooksSchema = optional(

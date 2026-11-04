@@ -1,4 +1,4 @@
-import { definePadding } from "#eslint/utils/definePadding";
+import { definePadding } from "#tools/eslint/utils/definePadding";
 
 const exported = ":matches(ExportNamedDeclaration, ExportDefaultDeclaration)";
 

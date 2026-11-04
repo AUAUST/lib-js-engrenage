@@ -1,7 +1,7 @@
-import { codexFile, codexHooksFile } from "#agents/codex/constants";
-import { syncCodexFiles } from "#agents/codex/setup/syncCodexFiles";
+import { codexFile, codexHooksFile } from "#tools/agents/codex/constants";
+import { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";
 // @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import type { Step } from "#cli/types/Step";
+import type { Step } from "#workflows/cli/types/Step";
 
 export function createCodexHooksStep(): Step {
   return {

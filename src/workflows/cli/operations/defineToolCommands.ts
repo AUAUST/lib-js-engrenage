@@ -3,13 +3,13 @@ import { spawn } from "node:child_process";
 import { wrap } from "@auaust/primitive-kit/arrays";
 import { transformValues } from "@auaust/toolkit/transformValues";
 
-import { successMessage } from "#cli/constants";
-import { resolveBinary } from "#cli/operations/resolveBinary";
-import { loadConfig } from "#config/operations/loadConfig";
-import type { CommandDefinition } from "#cli/types/CommandDefinition";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { successMessage } from "#workflows/cli/constants";
+import { resolveBinary } from "#workflows/cli/operations/resolveBinary";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
+import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
 
 const forwardedSignals = ["SIGHUP", "SIGINT", "SIGTERM"] as const;
 

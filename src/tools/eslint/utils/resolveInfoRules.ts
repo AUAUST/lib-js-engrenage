@@ -5,11 +5,11 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { isArray } from "@auaust/toolkit/isArray";
 import { entries } from "@auaust/toolkit/object";
 
-import { infoRulesSetting } from "#eslint/constants";
-import type { ConfigObject } from "#eslint/types/ConfigObject";
-import type { ConfigWithExtends } from "#eslint/types/ConfigWithExtends";
-import type { Rule } from "#eslint/types/Rule";
-import type { Rules } from "#eslint/types/Rules";
+import { infoRulesSetting } from "#tools/eslint/constants";
+import type { ConfigObject } from "#tools/eslint/types/ConfigObject";
+import type { ConfigWithExtends } from "#tools/eslint/types/ConfigWithExtends";
+import type { Rule } from "#tools/eslint/types/Rule";
+import type { Rules } from "#tools/eslint/types/Rules";
 
 function isInfo(rule: Rule): boolean {
   return rule === "info" || (isArray(rule) && rule[0] === "info");

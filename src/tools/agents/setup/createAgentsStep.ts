@@ -1,11 +1,11 @@
 import { readFileSync } from "node:fs";
 
-import { agentsFile, agentsTemplate } from "#agents/constants";
-import { getInstructionTemplates } from "#agents/operations/getInstructionTemplates";
-import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
-import { resolveDataFile } from "#data/operations/resolveDataFile";
+import { resolveDataFile } from "#foundation/data/operations/resolveDataFile";
+import { agentsFile, agentsTemplate } from "#tools/agents/constants";
+import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
+import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 // @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import type { Step } from "#cli/types/Step";
+import type { Step } from "#workflows/cli/types/Step";
 
 export function createAgentsStep(): Step {
   return {

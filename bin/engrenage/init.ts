@@ -1,17 +1,17 @@
 import { runSync } from "#bin/engrenage/sync";
-import { createPrompter } from "#cli/operations/createPrompter";
-import { defineCommand } from "#cli/operations/defineCommand";
-import { reportSyncResults } from "#cli/operations/reportSyncResults";
-import { runSteps } from "#cli/operations/runSteps";
-import { settleChanges } from "#cli/operations/settleChanges";
-import { readConfig } from "#config/operations/readConfig";
 import { packageJsonFile } from "#constants";
-import { listInitSteps } from "#init/operations/listInitSteps";
-import { spawnProcess } from "#processes/operations/spawnProcess";
-import type { Invocation } from "#cli/types/Invocation";
-import type { Prompter } from "#cli/types/Prompter";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
+import { readConfig } from "#project/config/operations/readConfig";
+import { createPrompter } from "#workflows/cli/operations/createPrompter";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
+import { runSteps } from "#workflows/cli/operations/runSteps";
+import { settleChanges } from "#workflows/cli/operations/settleChanges";
+import { listInitSteps } from "#workflows/init/operations/listInitSteps";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { Directory } from "#types/Directory";
+import type { Invocation } from "#workflows/cli/types/Invocation";
+import type { Prompter } from "#workflows/cli/types/Prompter";
 
 function describe({ command, args }: Invocation): string {
   return [command, ...args].join(" ");

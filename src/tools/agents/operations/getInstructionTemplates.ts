@@ -13,11 +13,11 @@ import {
 
 import { sort } from "@auaust/primitive-kit/arrays";
 
-import { agentsTemplate } from "#agents/constants";
-import { parseInstruction } from "#agents/operations/parseInstruction";
 import { engrenage } from "#constants";
-import { resolveDataFile } from "#data/operations/resolveDataFile";
-import { validate } from "#options/utils/validate";
+import { resolveDataFile } from "#foundation/data/operations/resolveDataFile";
+import { validate } from "#foundation/options/utils/validate";
+import { agentsTemplate } from "#tools/agents/constants";
+import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 
 const templateSchema = looseObject({
   title: string(),

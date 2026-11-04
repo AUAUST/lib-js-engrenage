@@ -2,13 +2,13 @@ import { boolean } from "valibot";
 
 import { wrap } from "@auaust/primitive-kit/arrays";
 
-import { directorySchema } from "#config/config/schemas/values/directorySchema";
-import { globsSchema } from "#config/config/schemas/values/globsSchema";
-import { preferredSchema } from "#config/config/schemas/values/preferredSchema";
-import { defaultInstructionFiles } from "#config/constants";
-import { declare } from "#options/utils/declare";
-import { declareObject } from "#options/utils/declareObject";
-import { unset } from "#options/utils/unset";
+import { declare } from "#foundation/options/utils/declare";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { unset } from "#foundation/options/utils/unset";
+import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
+import { globsSchema } from "#project/config/config/schemas/values/globsSchema";
+import { preferredSchema } from "#project/config/config/schemas/values/preferredSchema";
+import { defaultInstructionFiles } from "#project/config/constants";
 
 export const agentsSchema = declareObject(
   {

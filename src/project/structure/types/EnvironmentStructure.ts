@@ -1,5 +1,5 @@
-import type { StructureEnvironmentName } from "#structure/types/StructureEnvironmentName";
-import type { StructureNode } from "#structure/types/StructureNode";
+import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
+import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { Directories } from "#types/Directories";
 
 export interface EnvironmentStructure {

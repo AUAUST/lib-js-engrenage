@@ -1,7 +1,7 @@
 import { isArray } from "@auaust/toolkit/isArray";
 
-import { ensureAnyOf } from "#cli/operations/ensureAnyOf";
-import { ensureIncludes } from "#cli/operations/ensureIncludes";
+import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
+import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
 
 export function ensureIncludesAll(
   args: string[],

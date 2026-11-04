@@ -3,25 +3,25 @@ import { basename, dirname, extname } from "node:path";
 
 import { flatMap, map, toSorted } from "@auaust/primitive-kit/arrays";
 
-import { syncFiles } from "#blocks/operations/syncFiles";
-import { syncBlocks } from "#blocks/utils/syncBlocks";
-import { filesIn } from "#filesystem/utils/filesIn";
-import { relativeWithin } from "#filesystem/utils/relativeWithin";
-import { resolve } from "#filesystem/utils/resolve";
+import { syncFiles } from "#foundation/blocks/operations/syncFiles";
+import { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
+import { filesIn } from "#foundation/filesystem/utils/filesIn";
+import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
+import { resolve } from "#foundation/filesystem/utils/resolve";
 import {
   barrelFiles,
   declarationExtension,
   identifierPattern,
   typescriptBlocks,
-} from "#typescript/constants";
-import { resolveImportSpecifier } from "#typescript/utils/resolveImportSpecifier";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { SubpathImports } from "#package/types/SubpathImports";
+} from "#tools/typescript/constants";
+import { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { SubpathImports } from "#project/package/types/SubpathImports";
+import type { BarrelMode } from "#tools/typescript/types/BarrelMode";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Files } from "#types/Files";
 import type { Glob } from "#types/Glob";
-import type { BarrelMode } from "#typescript/types/BarrelMode";
 
 const collator = new Intl.Collator("en-US", {
   numeric: true,

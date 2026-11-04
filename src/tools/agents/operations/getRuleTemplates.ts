@@ -1,6 +1,6 @@
-import { ruleFrontmatterKeys } from "#agents/constants";
-import { getInstructionTemplates } from "#agents/operations/getInstructionTemplates";
-import { createInstructionFile } from "#agents/utils/createInstructionFile";
+import { ruleFrontmatterKeys } from "#tools/agents/constants";
+import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
+import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
 
 export function getRuleTemplates() {
   return getInstructionTemplates("rules").map((template) => {

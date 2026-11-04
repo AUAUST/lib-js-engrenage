@@ -1,5 +1,5 @@
-import { defaultOptions } from "#prettier/constants";
-import type { Config } from "#prettier/types/Config";
+import { defaultOptions } from "#tools/prettier/constants";
+import type { Config } from "#tools/prettier/types/Config";
 
 export function createPrettierConfig(options: Config = {}): Config {
   return {

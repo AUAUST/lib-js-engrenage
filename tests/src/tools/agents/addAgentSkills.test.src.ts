@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 
-import { addAgentSkills } from "#agents/operations/addAgentSkills";
-import { loadConfig } from "#config/operations/loadConfig";
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 
 describe("addAgentSkills", () => {
   test("installs an explicit skill and its agent for every preferred agent", async () => {

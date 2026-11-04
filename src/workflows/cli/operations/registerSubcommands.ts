@@ -2,7 +2,7 @@ import { Command, type CommandUnknownOpts } from "@commander-js/extra-typings";
 
 import { entries } from "@auaust/toolkit/object";
 
-import type { CommandDefinition } from "#cli/types/CommandDefinition";
+import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
 
 export function registerSubcommands<Parent extends CommandUnknownOpts>(
   parent: Parent,

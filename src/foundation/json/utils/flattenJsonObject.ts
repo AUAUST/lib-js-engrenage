@@ -4,8 +4,8 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { entries } from "@auaust/toolkit/object";
 
-import type { JsonEdit } from "#json/types/JsonEdit";
-import type { JsonObject } from "#json/types/JsonObject";
+import type { JsonEdit } from "#foundation/json/types/JsonEdit";
+import type { JsonObject } from "#foundation/json/types/JsonObject";
 
 export function flattenJsonObject(
   object: JsonObject,

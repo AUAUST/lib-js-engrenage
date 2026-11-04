@@ -1,10 +1,10 @@
 import { values } from "@auaust/toolkit/object";
 
-import { syncCodexInstructions } from "#agents/codex/operations/syncCodexInstructions";
-import { attributionRules } from "#agents/constants";
-import { getMissingRuleTemplates } from "#agents/operations/getMissingRuleTemplates";
-import { getRuleTemplates } from "#agents/operations/getRuleTemplates";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
+import { attributionRules } from "#tools/agents/constants";
+import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
+import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 export function addAgentRules(
   config: ResolvedConfig,

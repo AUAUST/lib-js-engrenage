@@ -1,4 +1,4 @@
-import { relativeToTsconfig } from "#tsconfig/utils/relativeToTsconfig";
+import { relativeToTsconfig } from "#project/tsconfig/utils/relativeToTsconfig";
 import type { File } from "#types/File";
 
 export function toTsconfigSpecifier(tsconfig: File, target: string): string {

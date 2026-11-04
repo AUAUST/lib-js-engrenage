@@ -1,4 +1,4 @@
-import type { RoleKey } from "#structure/types/RoleKey";
+import type { RoleKey } from "#project/structure/types/RoleKey";
 import type { Directory } from "#types/Directory";
 
 export interface StructureOptions {

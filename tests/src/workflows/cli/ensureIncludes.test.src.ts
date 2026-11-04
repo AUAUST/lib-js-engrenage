@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { ensureIncludes } from "#cli/operations/ensureIncludes";
+import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
 
 describe("ensureIncludes", () => {
   test("adds a missing option with its value once", () => {

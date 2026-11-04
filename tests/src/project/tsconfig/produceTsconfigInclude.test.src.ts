@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
 
-import { configSchema } from "#config/config/schemas/configSchema";
-import { createResolvedConfig } from "#config/operations/createResolvedConfig";
-import { validate } from "#options/utils/validate";
+import { validate } from "#foundation/options/utils/validate";
+import { configSchema } from "#project/config/config/schemas/configSchema";
+import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
+import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
-import { syncTsconfigFiles } from "#tsconfig/setup/syncTsconfigFiles";
 
 function syncProject(input: unknown, files: Record<string, string> = {}) {
   const project = createTemporaryProject({

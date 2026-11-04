@@ -4,11 +4,11 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
-import { createDefine } from "#config/utils/createDefine";
 import { arethetypeswrongCore, packageJsonFile, publint } from "#constants";
-import { readJsonFile } from "#filesystem/operations/readJsonFile";
-import { validate } from "#options/utils/validate";
-import { optionsSchema } from "#tsdown/config/schemas/optionsSchema";
+import { readJsonFile } from "#foundation/filesystem/operations/readJsonFile";
+import { validate } from "#foundation/options/utils/validate";
+import { createDefine } from "#project/config/utils/createDefine";
+import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
 import {
   attwOptions,
   emptyNamespaces,
@@ -16,18 +16,18 @@ import {
   mainFields,
   pluginNames,
   pluginPrefix,
-} from "#tsdown/constants";
-import { resolveCommandEntries } from "#tsdown/operations/resolveCommandEntries";
-import { resolveSourceEntries } from "#tsdown/operations/resolveSourceEntries";
-import { createEmptyNamespacesPlugins } from "#tsdown/plugins/createEmptyNamespacesPlugins";
-import { createEntrySelfReferencesPlugins } from "#tsdown/plugins/createEntrySelfReferencesPlugins";
-import { createTsdownEntries } from "#tsdown/utils/createTsdownEntries";
-import { resolveDataExports } from "#tsdown/utils/resolveDataExports";
-import { resolveTsdownTarget } from "#tsdown/utils/resolveTsdownTarget";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { PathAliases } from "#tsconfig/types/PathAliases";
-import type { Config } from "#tsdown/types/Config";
-import type { Options } from "#tsdown/types/Options";
+} from "#tools/tsdown/constants";
+import { resolveCommandEntries } from "#tools/tsdown/operations/resolveCommandEntries";
+import { resolveSourceEntries } from "#tools/tsdown/operations/resolveSourceEntries";
+import { createEmptyNamespacesPlugins } from "#tools/tsdown/plugins/createEmptyNamespacesPlugins";
+import { createEntrySelfReferencesPlugins } from "#tools/tsdown/plugins/createEntrySelfReferencesPlugins";
+import { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
+import { resolveDataExports } from "#tools/tsdown/utils/resolveDataExports";
+import { resolveTsdownTarget } from "#tools/tsdown/utils/resolveTsdownTarget";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { PathAliases } from "#project/tsconfig/types/PathAliases";
+import type { Config } from "#tools/tsdown/types/Config";
+import type { Options } from "#tools/tsdown/types/Options";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";

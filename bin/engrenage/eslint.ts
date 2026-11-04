@@ -1,13 +1,13 @@
 import { existsSync } from "node:fs";
 
-import { defineToolCommands } from "#cli/operations/defineToolCommands";
-import { ensureAnyOf } from "#cli/operations/ensureAnyOf";
-import { ensureIncludes } from "#cli/operations/ensureIncludes";
-import { hasOption } from "#cli/utils/hasOption";
 import { packages } from "#constants";
-import { defaultSuppressionsFile } from "#eslint/constants";
-import { resolve } from "#filesystem/utils/resolve";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { resolve } from "#foundation/filesystem/utils/resolve";
+import { defaultSuppressionsFile } from "#tools/eslint/constants";
+import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
+import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
+import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
+import { hasOption } from "#workflows/cli/utils/hasOption";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 // @debt The cache is keyed on each file alone, so type-aware rules keep passing a file whose imported types changed; checks must pass `--no-cache` to be sound.
 function useCache(config: ResolvedConfig, args: string[]) {

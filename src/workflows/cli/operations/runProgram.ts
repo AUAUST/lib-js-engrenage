@@ -1,8 +1,8 @@
 import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
-import { formatCommandError } from "#cli/operations/formatCommandError";
-import { isDebugEnvironment } from "#config/operations/isDebugEnvironment";
-import { loadConfig } from "#config/operations/loadConfig";
+import { isDebugEnvironment } from "#project/config/operations/isDebugEnvironment";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { formatCommandError } from "#workflows/cli/operations/formatCommandError";
 
 function isDebugFlagSet(command: CommandUnknownOpts | null): boolean {
   for (let current = command; current !== null; current = current.parent) {

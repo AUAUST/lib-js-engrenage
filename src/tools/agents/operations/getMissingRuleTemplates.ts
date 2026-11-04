@@ -1,9 +1,9 @@
 import { values } from "@auaust/toolkit/object";
 
-import { attributionRules } from "#agents/constants";
-import { getRuleReferences } from "#agents/operations/getRuleReferences";
-import { getRuleTemplates } from "#agents/operations/getRuleTemplates";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { attributionRules } from "#tools/agents/constants";
+import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
+import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 export function getMissingRuleTemplates(config: ResolvedConfig) {
   const references = getRuleReferences(config);

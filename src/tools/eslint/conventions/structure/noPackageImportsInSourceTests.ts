@@ -1,5 +1,5 @@
-import { defineConvention } from "#eslint/utils/defineConvention";
-import { visitImportSources } from "#eslint/utils/visitImportSources";
+import { defineConvention } from "#tools/eslint/utils/defineConvention";
+import { visitImportSources } from "#tools/eslint/utils/visitImportSources";
 
 const message =
   "Source-only tests import internals through `#…` aliases; never the package name, or rename the file to `.test.ts` to test the built package.";

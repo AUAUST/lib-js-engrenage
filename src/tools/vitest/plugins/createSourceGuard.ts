@@ -1,6 +1,6 @@
-import { isWithin } from "#filesystem/utils/isWithin";
+import { isWithin } from "#foundation/filesystem/utils/isWithin";
+import type { Plugin } from "#tools/vite/types/Plugin";
 import type { Directories } from "#types/Directories";
-import type { Plugin } from "#vite/types/Plugin";
 
 export function createSourceGuard(
   name: string,

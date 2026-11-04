@@ -1,7 +1,7 @@
-import { findCommands } from "#tsdown/operations/findCommands";
-import { toEntryName } from "#tsdown/utils/toEntryName";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Entries } from "#tsdown/types/Entries";
+import { findCommands } from "#tools/tsdown/operations/findCommands";
+import { toEntryName } from "#tools/tsdown/utils/toEntryName";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Entries } from "#tools/tsdown/types/Entries";
 
 export function resolveCommandEntries(config: ResolvedConfig): Entries {
   const commandEntries: Entries = {};

@@ -1,8 +1,10 @@
 import { picklist } from "valibot";
 
-import { declareList } from "#config/config/declareList";
-import { directorySchema } from "#config/config/schemas/values/directorySchema";
-import { globSchema } from "#config/config/schemas/values/globsSchema";
+import { declare } from "#foundation/options/utils/declare";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { declareList } from "#project/config/config/declareList";
+import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
+import { globSchema } from "#project/config/config/schemas/values/globsSchema";
 import {
   defaultTestsCoverageDirectory,
   defaultTestsDirectories,
@@ -12,12 +14,10 @@ import {
   defaultTestsSuffix,
   disabledCodeEnvironment,
   unmanagedTsconfig,
-} from "#config/constants";
-import { declareCodeEnvironment } from "#environments/config/declareCodeEnvironment";
-import { declare } from "#options/utils/declare";
-import { declareObject } from "#options/utils/declareObject";
-import { rolesOptionSchema } from "#structure/config/schemas/rolesOptionSchema";
-import { declareEnvironmentTsconfig } from "#tsconfig/config/declareEnvironmentTsconfig";
+} from "#project/config/constants";
+import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
+import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
+import { declareEnvironmentTsconfig } from "#project/tsconfig/config/declareEnvironmentTsconfig";
 
 export const testsSchema = declareObject(
   {

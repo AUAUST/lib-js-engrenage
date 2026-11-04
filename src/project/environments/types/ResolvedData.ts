@@ -1,4 +1,4 @@
-import type { ResolvedRoles } from "#structure/types/ResolvedRoles";
+import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { Directories } from "#types/Directories";
 import type { File } from "#types/File";
 

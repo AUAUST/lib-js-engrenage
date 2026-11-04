@@ -1,5 +1,5 @@
-import type { Filesystem } from "#filesystem/types/Filesystem";
-import type { PackageJson } from "#package/types/PackageJson";
+import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { PackageJson } from "#project/package/types/PackageJson";
 
 export interface DefineContext {
   packageJson: PackageJson;

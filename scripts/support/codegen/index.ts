@@ -1,10 +1,10 @@
-import { defineCommand } from "#cli/operations/defineCommand";
-import { registerSubcommands } from "#cli/operations/registerSubcommands";
 import { apis } from "#scripts/support/codegen/apis";
 import { barrels } from "#scripts/support/codegen/barrels";
 import { config } from "#scripts/support/codegen/config";
 import { editions } from "#scripts/support/codegen/editions";
 import { rules } from "#scripts/support/codegen/rules";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { registerSubcommands } from "#workflows/cli/operations/registerSubcommands";
 
 export const codegen = defineCommand((command) => {
   const parent = registerSubcommands(

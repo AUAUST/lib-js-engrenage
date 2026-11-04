@@ -1,7 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
 // @debt reaches into tools/prettier, a higher layer than foundation; the layered registry (#143) removes the upward dependency
-import { defaultOptions } from "#prettier/constants";
+import { defaultOptions } from "#tools/prettier/constants";
 
 export const emptyObjectFile = "{}\n";
 

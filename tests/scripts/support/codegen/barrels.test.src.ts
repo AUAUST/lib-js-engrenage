@@ -6,7 +6,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
 
-vi.mock("#eslint/operations/generateRuleTypes", () => {
+vi.mock("#tools/eslint/operations/generateRuleTypes", () => {
   throw new Error("Barrel generation must not load rule generation");
 });
 

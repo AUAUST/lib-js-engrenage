@@ -2,17 +2,17 @@ import { filter, map } from "@auaust/primitive-kit/arrays";
 import { isArray } from "@auaust/toolkit/isArray";
 import { isString } from "@auaust/toolkit/isString";
 
-import { apiLibraryGroups } from "#baseline/constants";
-import { includesEsLibrary } from "#baseline/operations/includesEsLibrary";
-import { resolveListOption } from "#config/operations/resolveListOption";
 import { engrenage } from "#constants";
-import { readTsconfigValue } from "#tsconfig/operations/readTsconfigValue";
-import { resolveTsconfigLibrary } from "#tsconfig/operations/resolveTsconfigLibrary";
-import { resolveTsconfigRuntime } from "#tsconfig/operations/resolveTsconfigRuntime";
-import type { Runtime } from "#baseline/types/Runtime";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { JsonEdit } from "#json/types/JsonEdit";
-import type { TsconfigTarget } from "#tsconfig/types/TsconfigTarget";
+import { apiLibraryGroups } from "#project/baseline/constants";
+import { includesEsLibrary } from "#project/baseline/operations/includesEsLibrary";
+import { resolveListOption } from "#project/config/operations/resolveListOption";
+import { readTsconfigValue } from "#project/tsconfig/operations/readTsconfigValue";
+import { resolveTsconfigLibrary } from "#project/tsconfig/operations/resolveTsconfigLibrary";
+import { resolveTsconfigRuntime } from "#project/tsconfig/operations/resolveTsconfigRuntime";
+import type { JsonEdit } from "#foundation/json/types/JsonEdit";
+import type { Runtime } from "#project/baseline/types/Runtime";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 const apiTypesPrefix = `${engrenage}/apis/`;
 

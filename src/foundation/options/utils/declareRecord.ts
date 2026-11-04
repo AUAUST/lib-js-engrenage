@@ -3,11 +3,11 @@ import { record, type GenericSchema } from "valibot";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { entries, freeze } from "@auaust/toolkit/object";
 
-import { createOptionSchema } from "#options/utils/createOptionSchema";
-import { resolveDefault } from "#options/utils/resolveDefault";
-import type { Declaration } from "#options/types/Declaration";
-import type { Default } from "#options/types/Default";
-import type { Description } from "#options/types/Description";
+import { createOptionSchema } from "#foundation/options/utils/createOptionSchema";
+import { resolveDefault } from "#foundation/options/utils/resolveDefault";
+import type { Declaration } from "#foundation/options/types/Declaration";
+import type { Default } from "#foundation/options/types/Default";
+import type { Description } from "#foundation/options/types/Description";
 
 export function declareRecord<
   Input,

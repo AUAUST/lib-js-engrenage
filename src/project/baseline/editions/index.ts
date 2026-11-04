@@ -1,1 +1,1 @@
-export { editions } from "#baseline/editions/constants";
+export { editions } from "#project/baseline/editions/constants";

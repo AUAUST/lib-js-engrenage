@@ -1,4 +1,4 @@
-import type { GlobalScope } from "#config/types/GlobalScope";
+import type { GlobalScope } from "#project/config/types/GlobalScope";
 
 export interface DefinitionOptions {
   exact?: boolean;

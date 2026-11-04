@@ -1,7 +1,7 @@
-import { defineRestriction } from "#eslint/utils/defineRestriction";
-import type { Convention } from "#eslint/types/Convention";
-import type { ScopeReferences } from "#eslint/types/ScopeReferences";
-import type { Presets } from "#presets/types/Presets";
+import { defineRestriction } from "#tools/eslint/utils/defineRestriction";
+import type { Presets } from "#project/presets/types/Presets";
+import type { Convention } from "#tools/eslint/types/Convention";
+import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
 export function defineReplacement({

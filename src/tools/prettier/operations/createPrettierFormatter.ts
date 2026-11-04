@@ -1,7 +1,7 @@
 import { join } from "node:path";
 
-import { loadPrettier } from "#prettier/operations/loadPrettier";
-import type { Formatter } from "#filesystem/types/Formatter";
+import { loadPrettier } from "#tools/prettier/operations/loadPrettier";
+import type { Formatter } from "#foundation/filesystem/types/Formatter";
 import type { Directory } from "#types/Directory";
 
 export function createPrettierFormatter(root: Directory): Formatter {

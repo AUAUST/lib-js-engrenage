@@ -1,3 +1,3 @@
 // @barrel types/*.ts all
-export * from "#pnpm/types/WorkspaceSettings";
+export * from "#tools/pnpm/types/WorkspaceSettings";
 // @end

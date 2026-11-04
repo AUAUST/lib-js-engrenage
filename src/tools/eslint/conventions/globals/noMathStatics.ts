@@ -3,7 +3,7 @@ import * as math from "@auaust/toolkit/math";
 import { keys } from "@auaust/toolkit/object";
 
 import { toolkit } from "#constants";
-import { defineGlobalReplacement } from "#eslint/utils/defineGlobalReplacement";
+import { defineGlobalReplacement } from "#tools/eslint/utils/defineGlobalReplacement";
 
 export default defineGlobalReplacement({
   global: "Math",

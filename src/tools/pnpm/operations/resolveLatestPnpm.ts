@@ -2,9 +2,9 @@ import { array, pipe, regex, string, union } from "valibot";
 
 import { last, toSorted, wrap } from "@auaust/primitive-kit/arrays";
 
-import { validate } from "#options/utils/validate";
-import { compareVersions } from "#package/utils/compareVersions";
-import { spawnProcess } from "#processes/operations/spawnProcess";
+import { validate } from "#foundation/options/utils/validate";
+import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
+import { compareVersions } from "#project/package/utils/compareVersions";
 import type { Directory } from "#types/Directory";
 
 const releaseSchema = pipe(string(), regex(/^\d+\.\d+\.\d+$/));

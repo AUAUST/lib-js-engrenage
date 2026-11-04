@@ -1,9 +1,9 @@
 import { findIndex, findLastIndex } from "@auaust/primitive-kit/arrays";
 
-import { readJsonValue } from "#json/utils/readJsonValue";
-import { writeJsonValue } from "#json/utils/writeJsonValue";
-import { packageJsonPropertyOrder } from "#package/constants";
-import type { JsonValue } from "#json/types/JsonValue";
+import { readJsonValue } from "#foundation/json/utils/readJsonValue";
+import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
+import { packageJsonPropertyOrder } from "#project/package/constants";
+import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { File } from "#types/File";
 
 function rankOf(property: string): number {

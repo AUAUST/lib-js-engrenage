@@ -1,4 +1,4 @@
-import type { Alias } from "#structure/types/Alias";
+import type { Alias } from "#project/structure/types/Alias";
 
 export interface ResolvedAliases {
   readonly enabled: boolean;

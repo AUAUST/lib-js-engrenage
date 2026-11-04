@@ -2,7 +2,7 @@ import type { Rule, SourceCode } from "eslint";
 
 import { filterMap } from "@auaust/primitive-kit/arrays";
 
-import { defineConvention } from "#eslint/utils/defineConvention";
+import { defineConvention } from "#tools/eslint/utils/defineConvention";
 
 type SwitchCase = Extract<
   Rule.Node,

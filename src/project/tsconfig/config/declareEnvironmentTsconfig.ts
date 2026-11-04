@@ -2,20 +2,20 @@ import { boolean, picklist, record, string, unknown } from "valibot";
 
 import { entries } from "@auaust/toolkit/object";
 
-import { declareList } from "#config/config/declareList";
-import { declareLocation } from "#config/config/declareLocation";
-import { declareManagedList } from "#config/config/declareManagedList";
+import { declare } from "#foundation/options/utils/declare";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { unset } from "#foundation/options/utils/unset";
+import { declareList } from "#project/config/config/declareList";
+import { declareLocation } from "#project/config/config/declareLocation";
+import { declareManagedList } from "#project/config/config/declareManagedList";
 import {
   defaultTsconfigCheck,
   defaultTsconfigInherits,
   tsconfigEnvironments,
-} from "#config/constants";
-import { declare } from "#options/utils/declare";
-import { declareObject } from "#options/utils/declareObject";
-import { unset } from "#options/utils/unset";
-import type { Description } from "#options/types/Description";
-import type { TsconfigEnvironment } from "#tsconfig/types/TsconfigEnvironment";
-import type { TsconfigKey } from "#tsconfig/types/TsconfigKey";
+} from "#project/config/constants";
+import type { Description } from "#foundation/options/types/Description";
+import type { TsconfigEnvironment } from "#project/tsconfig/types/TsconfigEnvironment";
+import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 
 const inheritedDefaults: Readonly<
   Partial<Record<TsconfigKey, TsconfigEnvironment>>

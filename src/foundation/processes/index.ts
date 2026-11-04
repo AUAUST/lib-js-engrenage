@@ -1,3 +1,3 @@
 // @barrel operations/*.ts named
-export { spawnProcess } from "#processes/operations/spawnProcess";
+export { spawnProcess } from "#foundation/processes/operations/spawnProcess";
 // @end

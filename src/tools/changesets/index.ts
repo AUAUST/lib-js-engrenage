@@ -1,1 +1,1 @@
-export { syncChangesetConfig } from "#changesets/setup/syncChangesetConfig";
+export { syncChangesetConfig } from "#tools/changesets/setup/syncChangesetConfig";

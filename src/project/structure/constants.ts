@@ -1,8 +1,8 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import type { ResolvedRoles } from "#structure/types/ResolvedRoles";
-import type { RoleContract } from "#structure/types/RoleContract";
-import type { RoleKey } from "#structure/types/RoleKey";
+import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import type { RoleContract } from "#project/structure/types/RoleContract";
+import type { RoleKey } from "#project/structure/types/RoleKey";
 
 export const roleCatalogue = {
   "index.ts": { file: ["index.ts"] },

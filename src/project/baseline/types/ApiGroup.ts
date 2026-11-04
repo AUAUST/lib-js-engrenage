@@ -1,3 +1,3 @@
-import type { apiGroups } from "#baseline/constants";
+import type { apiGroups } from "#project/baseline/constants";
 
 export type ApiGroup = (typeof apiGroups)[number];

@@ -8,12 +8,12 @@ import { describe, expect, test } from "vitest";
 
 import { keys } from "@auaust/toolkit/object";
 
-import { apiGroupRoots } from "#baseline/constants";
-import { selectEsLibraries } from "#baseline/operations/selectEsLibraries";
-import { createFilesystem } from "#filesystem/operations/createFilesystem";
+import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
+import { apiGroupRoots } from "#project/baseline/constants";
+import { selectEsLibraries } from "#project/baseline/operations/selectEsLibraries";
+import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
-import { createTsconfig } from "#tsconfig/operations/createTsconfig";
 
 const tsc = createRequire(import.meta.url).resolve("typescript/lib/tsc.js");
 

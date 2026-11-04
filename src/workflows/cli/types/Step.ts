@@ -1,4 +1,4 @@
-import type { StepContext } from "#cli/types/StepContext";
+import type { StepContext } from "#workflows/cli/types/StepContext";
 
 export interface Step {
   name: string;

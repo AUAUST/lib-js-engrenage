@@ -1,16 +1,16 @@
 import { isDeepStrictEqual } from "node:util";
 
+import { emptyObjectFile } from "#foundation/json/constants";
+import { readJsonValue } from "#foundation/json/utils/readJsonValue";
+import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
 import {
   claudeEditHook,
   claudeEditHookCommand,
   claudeHiddenAttribution,
   claudeSettingsFile,
-} from "#agents/claude/constants";
-import { syncEditHook } from "#agents/operations/syncEditHook";
-import { emptyObjectFile } from "#json/constants";
-import { readJsonValue } from "#json/utils/readJsonValue";
-import { writeJsonValue } from "#json/utils/writeJsonValue";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+} from "#tools/agents/claude/constants";
+import { syncEditHook } from "#tools/agents/operations/syncEditHook";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 function syncAttribution(config: ResolvedConfig, attribution: boolean) {
   const path = config.resolve(claudeSettingsFile);

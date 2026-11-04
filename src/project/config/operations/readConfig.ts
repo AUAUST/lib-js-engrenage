@@ -4,13 +4,13 @@ import { dirname } from "node:path";
 import { constant } from "@auaust/toolkit/constant";
 import { memoized } from "@auaust/toolkit/memoized";
 
-import { configSchema } from "#config/config/schemas/configSchema";
-import { createResolvedConfig } from "#config/operations/createResolvedConfig";
 import { files } from "#constants";
-import { importConfigFile } from "#filesystem/operations/importConfigFile";
-import { resolve } from "#filesystem/utils/resolve";
-import { validate } from "#options/utils/validate";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { importConfigFile } from "#foundation/filesystem/operations/importConfigFile";
+import { resolve } from "#foundation/filesystem/utils/resolve";
+import { validate } from "#foundation/options/utils/validate";
+import { configSchema } from "#project/config/config/schemas/configSchema";
+import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

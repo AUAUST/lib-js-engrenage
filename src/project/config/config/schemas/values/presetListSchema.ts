@@ -1,8 +1,8 @@
 import { array, picklist, union, type GenericSchema } from "valibot";
 
-import { presets } from "#presets/constants";
-import type { Preset } from "#presets/types/Preset";
-import type { Presets } from "#presets/types/Presets";
+import { presets } from "#project/presets/constants";
+import type { Preset } from "#project/presets/types/Preset";
+import type { Presets } from "#project/presets/types/Presets";
 
 const presetSchema = picklist(presets);
 

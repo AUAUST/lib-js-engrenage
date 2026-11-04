@@ -1,7 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { lockfileIgnores as gitLockfileIgnores } from "#git/constants";
-import type { Options } from "#prettier/types/Options";
+import { lockfileIgnores as gitLockfileIgnores } from "#tools/git/constants";
+import type { Options } from "#tools/prettier/types/Options";
 import type { GlobGroup } from "#types/GlobGroup";
 
 export const defaultOptions = freeze({

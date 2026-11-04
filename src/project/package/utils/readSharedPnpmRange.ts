@@ -1,4 +1,4 @@
-import { readDeclaredVersion } from "#package/utils/readDeclaredVersion";
+import { readDeclaredVersion } from "#project/package/utils/readDeclaredVersion";
 
 import manifest from "#package.json" with { type: "json" };
 

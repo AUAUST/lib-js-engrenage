@@ -1,8 +1,8 @@
-import { codexFile } from "#agents/codex/constants";
-import { createCodexRuleMapping } from "#agents/codex/operations/createCodexRuleMapping";
-import { markdownBlocks } from "#agents/constants";
-import { syncBlocks } from "#blocks/utils/syncBlocks";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
+import { codexFile } from "#tools/agents/codex/constants";
+import { createCodexRuleMapping } from "#tools/agents/codex/operations/createCodexRuleMapping";
+import { markdownBlocks } from "#tools/agents/constants";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 export function syncCodexInstructions(config: ResolvedConfig) {
   if (config.agents.preferred?.includes("codex") !== true) {

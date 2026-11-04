@@ -1,9 +1,9 @@
-import { defineToolCommands } from "#cli/operations/defineToolCommands";
-import { ensureAnyOf } from "#cli/operations/ensureAnyOf";
-import { ensureIncludes } from "#cli/operations/ensureIncludes";
-import { ensureIncludesAll } from "#cli/operations/ensureIncludesAll";
-import { ensureUnset } from "#cli/operations/ensureUnset";
 import { packages } from "#constants";
+import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
+import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
+import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
+import { ensureIncludesAll } from "#workflows/cli/operations/ensureIncludesAll";
+import { ensureUnset } from "#workflows/cli/operations/ensureUnset";
 
 function formatFiles(args: string[]) {
   ensureAnyOf(

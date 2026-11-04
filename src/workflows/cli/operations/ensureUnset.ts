@@ -1,7 +1,7 @@
 import { wrap } from "@auaust/primitive-kit/arrays";
 
-import { getOptionsEnd } from "#cli/utils/getOptionsEnd";
-import { isOptionOf } from "#cli/utils/isOptionOf";
+import { getOptionsEnd } from "#workflows/cli/utils/getOptionsEnd";
+import { isOptionOf } from "#workflows/cli/utils/isOptionOf";
 
 export function ensureUnset(
   args: string[],

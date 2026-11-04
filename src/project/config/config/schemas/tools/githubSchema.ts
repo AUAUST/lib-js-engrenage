@@ -1,10 +1,10 @@
 import { picklist } from "valibot";
 
 // @debt reaches into tools/github, a higher layer than project; the layered registry (#143) removes the upward dependency
-import { workflowSetNames } from "#github/constants";
-import { declare } from "#options/utils/declare";
-import { declareObject } from "#options/utils/declareObject";
-import { unset } from "#options/utils/unset";
+import { declare } from "#foundation/options/utils/declare";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { unset } from "#foundation/options/utils/unset";
+import { workflowSetNames } from "#tools/github/constants";
 
 export const githubSchema = declareObject(
   {

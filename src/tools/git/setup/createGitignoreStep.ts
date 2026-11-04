@@ -1,12 +1,12 @@
 import { flat, pluck } from "@auaust/primitive-kit/arrays";
 
 import { gitignoreFile } from "#constants";
-import { relativeWithin } from "#filesystem/utils/relativeWithin";
-import { defaultIgnores, ignoreBlocks } from "#git/constants";
+import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
+import { defaultIgnores, ignoreBlocks } from "#tools/git/constants";
 // @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import type { Step } from "#cli/types/Step";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
+import type { Step } from "#workflows/cli/types/Step";
 
 const ignoreMarker = /^# @ignore /m;
 

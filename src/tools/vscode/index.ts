@@ -1,7 +1,7 @@
-export { syncVscodeFiles } from "#vscode/setup/syncVscodeFiles";
+export { syncVscodeFiles } from "#tools/vscode/setup/syncVscodeFiles";
 
 // @barrel types/*.ts all
-export * from "#vscode/types/Integration";
-export * from "#vscode/types/Setting";
-export * from "#vscode/types/Settings";
+export * from "#tools/vscode/types/Integration";
+export * from "#tools/vscode/types/Setting";
+export * from "#tools/vscode/types/Settings";
 // @end

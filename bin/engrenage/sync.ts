@@ -4,13 +4,13 @@ import { boolean, optional } from "valibot";
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
-import { defineCommand } from "#cli/operations/defineCommand";
-import { settleChanges } from "#cli/operations/settleChanges";
-import { loadConfig } from "#config/operations/loadConfig";
-import { validate } from "#options/utils/validate";
-import { syncTargets } from "#sync/operations/syncTargets";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { SyncTargetName } from "#sync/types/SyncTargetName";
+import { validate } from "#foundation/options/utils/validate";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { settleChanges } from "#workflows/cli/operations/settleChanges";
+import { syncTargets } from "#workflows/sync/operations/syncTargets";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { SyncTargetName } from "#workflows/sync/types/SyncTargetName";
 
 type TargetFlags = Partial<Record<SyncTargetName, Record<string, boolean>>>;
 

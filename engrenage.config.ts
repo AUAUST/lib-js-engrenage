@@ -1,4 +1,4 @@
-import { defineConfig } from "#config";
+import { defineConfig } from "#project/config/index";
 
 export default defineConfig({
   presets: ["library"],
@@ -43,10 +43,6 @@ export default defineConfig({
     node: 24,
     namespaces: {
       ".": { layers: ["foundation", "project", "tools", "workflows"] },
-      "foundation": { prefix: "" },
-      "project": { prefix: "" },
-      "tools": { prefix: "" },
-      "workflows": { prefix: "" },
     },
     domains: {
       "tools/*": { public: true },

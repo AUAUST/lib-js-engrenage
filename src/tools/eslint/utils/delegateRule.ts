@@ -5,12 +5,12 @@ import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { max } from "@auaust/toolkit/math";
 import { create, entries } from "@auaust/toolkit/object";
 
-import { findUpstreamRule } from "#eslint/utils/findUpstreamRule";
-import type { Delegate } from "#eslint/types/Delegate";
-import type { ReportDescriptor } from "#eslint/types/ReportDescriptor";
-import type { RuleModule } from "#eslint/types/RuleModule";
-import type { RuleOptions } from "#eslint/types/RuleOptions";
-import type { Rules } from "#eslint/types/Rules";
+import { findUpstreamRule } from "#tools/eslint/utils/findUpstreamRule";
+import type { Delegate } from "#tools/eslint/types/Delegate";
+import type { ReportDescriptor } from "#tools/eslint/types/ReportDescriptor";
+import type { RuleModule } from "#tools/eslint/types/RuleModule";
+import type { RuleOptions } from "#tools/eslint/types/RuleOptions";
+import type { Rules } from "#tools/eslint/types/Rules";
 
 function mergeOption(defaults: unknown, override: unknown): unknown {
   if (override === undefined) {

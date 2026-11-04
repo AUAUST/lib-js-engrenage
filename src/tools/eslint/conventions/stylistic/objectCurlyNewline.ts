@@ -1,8 +1,8 @@
 import type { Rule, SourceCode } from "eslint";
 
-import { defineConvention } from "#eslint/utils/defineConvention";
-import { delegateRule } from "#eslint/utils/delegateRule";
-import type { ReportDescriptor } from "#eslint/types/ReportDescriptor";
+import { defineConvention } from "#tools/eslint/utils/defineConvention";
+import { delegateRule } from "#tools/eslint/utils/delegateRule";
+import type { ReportDescriptor } from "#tools/eslint/types/ReportDescriptor";
 
 type Node = Parameters<SourceCode["getAncestors"]>[0];
 

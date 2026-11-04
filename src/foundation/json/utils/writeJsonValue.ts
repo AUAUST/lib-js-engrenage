@@ -5,8 +5,8 @@ import {
   type ModificationOptions,
 } from "jsonc-parser";
 
-import { formattingOptions } from "#json/constants";
-import type { JsonValue } from "#json/types/JsonValue";
+import { formattingOptions } from "#foundation/json/constants";
+import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { File } from "#types/File";
 
 export function writeJsonValue(

@@ -1,11 +1,11 @@
 import { readFileSync } from "node:fs";
 
-import { codexFile, codexTemplate } from "#agents/codex/constants";
-import { syncCodexFiles } from "#agents/codex/setup/syncCodexFiles";
-import { agentsFile } from "#agents/constants";
-import { resolveDataFile } from "#data/operations/resolveDataFile";
+import { resolveDataFile } from "#foundation/data/operations/resolveDataFile";
+import { codexFile, codexTemplate } from "#tools/agents/codex/constants";
+import { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";
+import { agentsFile } from "#tools/agents/constants";
 // @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import type { Step } from "#cli/types/Step";
+import type { Step } from "#workflows/cli/types/Step";
 
 export function createCodexStep(): Step {
   return {

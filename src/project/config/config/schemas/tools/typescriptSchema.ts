@@ -2,15 +2,18 @@ import { basename } from "node:path";
 
 import { record, string, unknown } from "valibot";
 
-import { declareList } from "#config/config/declareList";
-import { declareLocation } from "#config/config/declareLocation";
-import { declareManagedList } from "#config/config/declareManagedList";
-import { fileSchema } from "#config/config/schemas/values/fileSchema";
-import { globSchema } from "#config/config/schemas/values/globsSchema";
-import { defaultEnvFile, defaultTypescriptFiles } from "#config/constants";
 import { tsconfigFile } from "#constants";
-import { declare } from "#options/utils/declare";
-import { declareObject } from "#options/utils/declareObject";
+import { declare } from "#foundation/options/utils/declare";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { declareList } from "#project/config/config/declareList";
+import { declareLocation } from "#project/config/config/declareLocation";
+import { declareManagedList } from "#project/config/config/declareManagedList";
+import { fileSchema } from "#project/config/config/schemas/values/fileSchema";
+import { globSchema } from "#project/config/config/schemas/values/globsSchema";
+import {
+  defaultEnvFile,
+  defaultTypescriptFiles,
+} from "#project/config/constants";
 
 export const typescriptSchema = declareObject(
   {

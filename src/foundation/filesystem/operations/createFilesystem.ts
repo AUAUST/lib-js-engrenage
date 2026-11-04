@@ -12,10 +12,10 @@ import { dirname, matchesGlob } from "node:path";
 import { deduplicate, map, sort, wrap } from "@auaust/primitive-kit/arrays";
 import { freeze } from "@auaust/toolkit/object";
 
-import { relativeWithin } from "#filesystem/utils/relativeWithin";
-import { resolveWithin } from "#filesystem/utils/resolveWithin";
-import { toPosixPath } from "#filesystem/utils/toPosixPath";
-import type { Formatter } from "#filesystem/types/Formatter";
+import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
+import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
+import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
+import type { Formatter } from "#foundation/filesystem/types/Formatter";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Files } from "#types/Files";

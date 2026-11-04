@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { applyJsonEdits } from "#json/utils/applyJsonEdits";
+import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
 
 const content = `{
   "compilerOptions": {

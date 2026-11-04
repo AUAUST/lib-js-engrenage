@@ -1,6 +1,6 @@
 import { floor } from "@auaust/toolkit/math";
 
-import { monthsPerYear } from "#baseline/constants";
+import { monthsPerYear } from "#project/baseline/constants";
 
 // @debt the day is kept as is, so the result can be an impossible date such as 2026-02-31; it only compares correctly as a string.
 export function addMonths(date: string, months: number): string {

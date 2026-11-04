@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
 
-import { configSchema } from "#config/config/schemas/configSchema";
-import { createResolvedConfig } from "#config/operations/createResolvedConfig";
-import { define } from "#config/utils/define";
-import { validate } from "#options/utils/validate";
+import { validate } from "#foundation/options/utils/validate";
+import { configSchema } from "#project/config/config/schemas/configSchema";
+import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
+import { define } from "#project/config/utils/define";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { syncEnvFile } from "#typescript/setup/syncEnvFile";
+import { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
 
 function createProject(input: unknown, files: Record<string, string> = {}) {
   const project = createTemporaryProject({

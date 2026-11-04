@@ -1,4 +1,4 @@
-import { defineReplacement } from "#eslint/utils/defineReplacement";
+import { defineReplacement } from "#tools/eslint/utils/defineReplacement";
 
 export default defineReplacement({
   selector:

@@ -4,12 +4,12 @@ import { relative } from "node:path";
 import { every, map, sort } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
-import { resolve } from "#filesystem/utils/resolve";
-import { toPosixPath } from "#filesystem/utils/toPosixPath";
-import { isPackageAlias } from "#tsconfig/utils/isPackageAlias";
-import type { PathAlias } from "#tsconfig/types/PathAlias";
-import type { PathAliases } from "#tsconfig/types/PathAliases";
-import type { Paths } from "#tsconfig/types/Paths";
+import { resolve } from "#foundation/filesystem/utils/resolve";
+import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
+import { isPackageAlias } from "#project/tsconfig/utils/isPackageAlias";
+import type { PathAlias } from "#project/tsconfig/types/PathAlias";
+import type { PathAliases } from "#project/tsconfig/types/PathAliases";
+import type { Paths } from "#project/tsconfig/types/Paths";
 import type { Directory } from "#types/Directory";
 import type { PackageName } from "#types/PackageName";
 

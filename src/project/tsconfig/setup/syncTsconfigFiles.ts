@@ -1,16 +1,16 @@
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
-import { tsconfigEnvironments } from "#config/constants";
-import { emptyObjectFile } from "#json/constants";
-import { applyJsonEdits } from "#json/utils/applyJsonEdits";
-import { tsconfigProducers } from "#tsconfig/operations/tsconfigProducers";
-import type { ManagedListOption } from "#config/types/ManagedListOption";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { JsonEdit } from "#json/types/JsonEdit";
-import type { JsonValue } from "#json/types/JsonValue";
-import type { TsconfigKey } from "#tsconfig/types/TsconfigKey";
-import type { TsconfigTarget } from "#tsconfig/types/TsconfigTarget";
+import { emptyObjectFile } from "#foundation/json/constants";
+import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
+import { tsconfigEnvironments } from "#project/config/constants";
+import { tsconfigProducers } from "#project/tsconfig/operations/tsconfigProducers";
+import type { JsonEdit } from "#foundation/json/types/JsonEdit";
+import type { JsonValue } from "#foundation/json/types/JsonValue";
+import type { ManagedListOption } from "#project/config/types/ManagedListOption";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
+import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 const variantKeys: readonly TsconfigKey[] = [
   ...tsconfigEnvironments,

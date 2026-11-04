@@ -1,7 +1,7 @@
-import type { Accessors } from "#config/types/Accessors";
-import type { DevEngine } from "#package/types/DevEngine";
-import type { Person } from "#package/types/Person";
-import type { SubpathImports } from "#package/types/SubpathImports";
+import type { Accessors } from "#project/config/types/Accessors";
+import type { DevEngine } from "#project/package/types/DevEngine";
+import type { Person } from "#project/package/types/Person";
+import type { SubpathImports } from "#project/package/types/SubpathImports";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
 import type { PackageName } from "#types/PackageName";

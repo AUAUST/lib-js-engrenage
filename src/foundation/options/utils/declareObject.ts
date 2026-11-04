@@ -3,16 +3,16 @@ import { strictObject } from "valibot";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { entries as entriesOf, freeze, record } from "@auaust/toolkit/object";
 
-import { createOptionSchema } from "#options/utils/createOptionSchema";
-import { resolveDefault } from "#options/utils/resolveDefault";
-import type { Declaration } from "#options/types/Declaration";
-import type { DeclarationEntries } from "#options/types/DeclarationEntries";
-import type { Default } from "#options/types/Default";
-import type { Description } from "#options/types/Description";
-import type { ObjectContext } from "#options/types/ObjectContext";
-import type { ObjectDeclaration } from "#options/types/ObjectDeclaration";
-import type { ObjectInput } from "#options/types/ObjectInput";
-import type { ObjectResolution } from "#options/types/ObjectResolution";
+import { createOptionSchema } from "#foundation/options/utils/createOptionSchema";
+import { resolveDefault } from "#foundation/options/utils/resolveDefault";
+import type { Declaration } from "#foundation/options/types/Declaration";
+import type { DeclarationEntries } from "#foundation/options/types/DeclarationEntries";
+import type { Default } from "#foundation/options/types/Default";
+import type { Description } from "#foundation/options/types/Description";
+import type { ObjectContext } from "#foundation/options/types/ObjectContext";
+import type { ObjectDeclaration } from "#foundation/options/types/ObjectDeclaration";
+import type { ObjectInput } from "#foundation/options/types/ObjectInput";
+import type { ObjectResolution } from "#foundation/options/types/ObjectResolution";
 
 export function declareObject<
   const Entries extends DeclarationEntries,

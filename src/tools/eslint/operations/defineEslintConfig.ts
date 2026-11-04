@@ -3,13 +3,13 @@ import { defineConfig } from "eslint/config";
 import { map } from "@auaust/primitive-kit/arrays";
 import { value } from "@auaust/toolkit/value";
 
-import { loadConfig } from "#config/operations/loadConfig";
-import { createEslintConfig } from "#eslint/operations/createEslintConfig";
-import { resolveInfoRules } from "#eslint/utils/resolveInfoRules";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Config } from "#eslint/types/Config";
-import type { ConfigWithExtends } from "#eslint/types/ConfigWithExtends";
-import type { Options } from "#eslint/types/Options";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
+import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Config } from "#tools/eslint/types/Config";
+import type { ConfigWithExtends } from "#tools/eslint/types/ConfigWithExtends";
+import type { Options } from "#tools/eslint/types/Options";
 import type { ConfigInput } from "#types/ConfigInput";
 
 export async function defineEslintConfig(

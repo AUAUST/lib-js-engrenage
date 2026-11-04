@@ -1,6 +1,6 @@
-import { parseMajorVersion } from "#package/utils/parseMajorVersion";
-import { readProjectPnpmVersion } from "#package/utils/readProjectPnpmVersion";
-import type { PackageJson } from "#package/types/PackageJson";
+import { parseMajorVersion } from "#project/package/utils/parseMajorVersion";
+import { readProjectPnpmVersion } from "#project/package/utils/readProjectPnpmVersion";
+import type { PackageJson } from "#project/package/types/PackageJson";
 
 export function readProjectPnpmMajor(
   packageJson: PackageJson,

@@ -1,8 +1,8 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { resolveTsconfigOwner } from "#tsconfig/utils/resolveTsconfigOwner";
-import type { TsconfigGroups } from "#tsconfig/types/TsconfigGroups";
-import type { TsconfigKey } from "#tsconfig/types/TsconfigKey";
+import { resolveTsconfigOwner } from "#project/tsconfig/utils/resolveTsconfigOwner";
+import type { TsconfigGroups } from "#project/tsconfig/types/TsconfigGroups";
+import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 
 export function resolveTsconfig(key: TsconfigKey, groups: TsconfigGroups) {
   const owner = resolveTsconfigOwner(key, groups);

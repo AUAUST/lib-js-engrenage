@@ -1,4 +1,4 @@
-import type { resolveBaselineMinimums } from "#baseline/utils/resolveBaselineMinimums";
+import type { resolveBaselineMinimums } from "#project/baseline/utils/resolveBaselineMinimums";
 
 export type Runtime =
   | ({

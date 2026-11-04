@@ -1,5 +1,5 @@
-import type { ManagedEnvironmentTsconfig } from "#tsconfig/types/ManagedEnvironmentTsconfig";
-import type { TsconfigKey } from "#tsconfig/types/TsconfigKey";
+import type { ManagedEnvironmentTsconfig } from "#project/tsconfig/types/ManagedEnvironmentTsconfig";
+import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 
 export interface TsconfigOwner {
   readonly key: TsconfigKey;

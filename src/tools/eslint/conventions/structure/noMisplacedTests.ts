@@ -1,4 +1,4 @@
-import { defineRestriction } from "#eslint/utils/defineRestriction";
+import { defineRestriction } from "#tools/eslint/utils/defineRestriction";
 
 export default defineRestriction({
   selector: "Program",

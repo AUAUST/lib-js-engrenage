@@ -1,5 +1,5 @@
-import type { ResolvedRoles } from "#structure/types/ResolvedRoles";
-import type { ResolvedEnvironmentTsconfig } from "#tsconfig/types/ResolvedEnvironmentTsconfig";
+import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import type { ResolvedEnvironmentTsconfig } from "#project/tsconfig/types/ResolvedEnvironmentTsconfig";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
 

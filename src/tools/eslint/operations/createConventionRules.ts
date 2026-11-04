@@ -3,14 +3,14 @@ import { isBoolean } from "@auaust/toolkit/isBoolean";
 import { entries } from "@auaust/toolkit/object";
 import { value } from "@auaust/toolkit/value";
 
-import { pluginName } from "#eslint/constants";
-import { resolveScope } from "#eslint/operations/resolveScope";
-import { createRuleName } from "#eslint/utils/createRuleName";
-import { createTypeAwareLanguageOptions } from "#eslint/utils/createTypeAwareLanguageOptions";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { ConfigObject } from "#eslint/types/ConfigObject";
-import type { Convention } from "#eslint/types/Convention";
-import type { Rules } from "#eslint/types/Rules";
+import { pluginName } from "#tools/eslint/constants";
+import { resolveScope } from "#tools/eslint/operations/resolveScope";
+import { createRuleName } from "#tools/eslint/utils/createRuleName";
+import { createTypeAwareLanguageOptions } from "#tools/eslint/utils/createTypeAwareLanguageOptions";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ConfigObject } from "#tools/eslint/types/ConfigObject";
+import type { Convention } from "#tools/eslint/types/Convention";
+import type { Rules } from "#tools/eslint/types/Rules";
 
 function isEnabledByDefault(
   { enabled, presets, requires }: Convention,

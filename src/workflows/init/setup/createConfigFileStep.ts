@@ -1,12 +1,12 @@
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { findCurrentMonth } from "#baseline/operations/findCurrentMonth";
-import { createConfigModule } from "#cli/utils/createConfigModule";
 import { engrenage, engrenageConfigFile } from "#constants";
-import { presets } from "#presets/constants";
-import type { Agent } from "#agents/types/Agent";
-import type { Step } from "#cli/types/Step";
-import type { Presets } from "#presets/types/Presets";
+import { findCurrentMonth } from "#project/baseline/operations/findCurrentMonth";
+import { presets } from "#project/presets/constants";
+import { createConfigModule } from "#workflows/cli/utils/createConfigModule";
+import type { Presets } from "#project/presets/types/Presets";
+import type { Agent } from "#tools/agents/types/Agent";
+import type { Step } from "#workflows/cli/types/Step";
 
 function renderOptions(
   chosen: Presets,

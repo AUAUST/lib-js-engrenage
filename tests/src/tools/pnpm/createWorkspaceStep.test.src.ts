@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
 import { parse } from "yaml";
 
-import { createPrompter } from "#cli/operations/createPrompter";
-import { createStepContext } from "#cli/operations/createStepContext";
-import { createResolvedConfig } from "#config/operations/createResolvedConfig";
-import { createWorkspaceStep } from "#pnpm/setup/createWorkspaceStep";
+import { createResolvedConfig } from "#project/config/operations/createResolvedConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createWorkspaceStep } from "#tools/pnpm/setup/createWorkspaceStep";
+import { createPrompter } from "#workflows/cli/operations/createPrompter";
+import { createStepContext } from "#workflows/cli/operations/createStepContext";
 
 function createContext(content: string) {
   const project = createTemporaryProject({

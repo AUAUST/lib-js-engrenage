@@ -1,5 +1,5 @@
-import type { DeclarationEntries } from "#options/types/DeclarationEntries";
-import type { ObjectOutput } from "#options/types/ObjectOutput";
+import type { DeclarationEntries } from "#foundation/options/types/DeclarationEntries";
+import type { ObjectOutput } from "#foundation/options/types/ObjectOutput";
 
 export type ObjectResolution<Entries extends DeclarationEntries, Disabled> = [
   Disabled,

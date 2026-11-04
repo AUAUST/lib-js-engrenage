@@ -1,7 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { organization } from "#constants";
-import type { WorkspaceSettings } from "#pnpm/types/WorkspaceSettings";
+import type { WorkspaceSettings } from "#tools/pnpm/types/WorkspaceSettings";
 import type { File } from "#types/File";
 
 export const workspaceFile = "pnpm-workspace.yaml" satisfies File;

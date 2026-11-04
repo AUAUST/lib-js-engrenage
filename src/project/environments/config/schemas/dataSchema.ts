@@ -1,9 +1,9 @@
-import { declareList } from "#config/config/declareList";
-import { directorySchema } from "#config/config/schemas/values/directorySchema";
-import { exposedFilesSchema } from "#config/config/schemas/values/exposedFilesSchema";
-import { defaultDataDirectories } from "#config/constants";
-import { declare } from "#options/utils/declare";
-import { declareObject } from "#options/utils/declareObject";
+import { declare } from "#foundation/options/utils/declare";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { declareList } from "#project/config/config/declareList";
+import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
+import { exposedFilesSchema } from "#project/config/config/schemas/values/exposedFilesSchema";
+import { defaultDataDirectories } from "#project/config/constants";
 
 export const dataSchema = declareObject(
   {

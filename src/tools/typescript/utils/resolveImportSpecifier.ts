@@ -1,8 +1,8 @@
 import { max } from "@auaust/toolkit/math";
 import { entries } from "@auaust/toolkit/object";
 
-import { resolveImportTarget } from "#typescript/utils/resolveImportTarget";
-import type { SubpathImports } from "#package/types/SubpathImports";
+import { resolveImportTarget } from "#tools/typescript/utils/resolveImportTarget";
+import type { SubpathImports } from "#project/package/types/SubpathImports";
 import type { File } from "#types/File";
 
 interface Match {

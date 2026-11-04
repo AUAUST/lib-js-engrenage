@@ -1,9 +1,9 @@
 import { array, string } from "valibot";
 
-import { declare } from "#options/utils/declare";
-import { declareRecord } from "#options/utils/declareRecord";
-import { roleContractSchema } from "#structure/config/schemas/roleContractSchema";
-import { roleKeySchema } from "#structure/config/schemas/roleKeySchema";
+import { declare } from "#foundation/options/utils/declare";
+import { declareRecord } from "#foundation/options/utils/declareRecord";
+import { roleContractSchema } from "#project/structure/config/schemas/roleContractSchema";
+import { roleKeySchema } from "#project/structure/config/schemas/roleKeySchema";
 
 export const rolesOptionEntries = {
   enable: declare(array(roleKeySchema), {

@@ -4,8 +4,8 @@ import stylistic, {
 
 import { create } from "@auaust/toolkit/object";
 
-import { defineConvention } from "#eslint/utils/defineConvention";
-import type { Convention } from "#eslint/types/Convention";
+import { defineConvention } from "#tools/eslint/utils/defineConvention";
+import type { Convention } from "#tools/eslint/types/Convention";
 
 const paddingRule = stylistic.rules["padding-line-between-statements"];
 

@@ -1,4 +1,4 @@
-import type { DefineContext } from "#config/types/DefineContext";
+import type { DefineContext } from "#project/config/types/DefineContext";
 
 export type GlobalsFactory = (
   context: DefineContext,

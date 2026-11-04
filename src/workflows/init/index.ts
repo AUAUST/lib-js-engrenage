@@ -1,3 +1,3 @@
 // @barrel operations/*.ts named
-export { listInitSteps } from "#init/operations/listInitSteps";
+export { listInitSteps } from "#workflows/init/operations/listInitSteps";
 // @end

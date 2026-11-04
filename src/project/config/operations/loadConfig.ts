@@ -1,6 +1,6 @@
-import { readConfig } from "#config/operations/readConfig";
-import { resolve } from "#filesystem/utils/resolve";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { resolve } from "#foundation/filesystem/utils/resolve";
+import { readConfig } from "#project/config/operations/readConfig";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { Directory } from "#types/Directory";
 
 const loadedConfigs = new Map<Directory, Promise<ResolvedConfig>>();

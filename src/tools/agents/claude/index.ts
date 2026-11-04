@@ -1,2 +1,2 @@
-export { createClaudeSettingsStep } from "#agents/claude/setup/createClaudeSettingsStep";
-export { syncClaudeSettings } from "#agents/claude/setup/syncClaudeSettings";
+export { createClaudeSettingsStep } from "#tools/agents/claude/setup/createClaudeSettingsStep";
+export { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSettings";

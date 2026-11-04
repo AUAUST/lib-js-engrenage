@@ -1,5 +1,5 @@
-import { getSkillTemplates } from "#agents/operations/getSkillTemplates";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 export function addAgentSkills(
   config: ResolvedConfig,

@@ -1,11 +1,11 @@
 import { map } from "@auaust/primitive-kit/arrays";
 import { getOwn, keys } from "@auaust/toolkit/object";
 
-import { syncFiles } from "#blocks/operations/syncFiles";
-import { syncBlocks } from "#blocks/utils/syncBlocks";
-import { relativeWithin } from "#filesystem/utils/relativeWithin";
+import { syncFiles } from "#foundation/blocks/operations/syncFiles";
+import { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
+import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
 // @debt reaches into project/config, a higher layer than foundation; the layered registry (#143) removes the upward dependency
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 import type { GlobGroup } from "#types/GlobGroup";
 import type { IgnorePresets } from "#types/IgnorePresets";

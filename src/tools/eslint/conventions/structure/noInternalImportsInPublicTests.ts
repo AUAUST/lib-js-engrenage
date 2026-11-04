@@ -1,10 +1,10 @@
 import { dirname } from "node:path";
 
-import { defineConvention } from "#eslint/utils/defineConvention";
-import { visitImportSources } from "#eslint/utils/visitImportSources";
-import { isWithin } from "#filesystem/utils/isWithin";
-import { resolve } from "#filesystem/utils/resolve";
-import { resolveSubpathImport } from "#typescript/utils/resolveSubpathImport";
+import { isWithin } from "#foundation/filesystem/utils/isWithin";
+import { resolve } from "#foundation/filesystem/utils/resolve";
+import { defineConvention } from "#tools/eslint/utils/defineConvention";
+import { visitImportSources } from "#tools/eslint/utils/visitImportSources";
+import { resolveSubpathImport } from "#tools/typescript/utils/resolveSubpathImport";
 
 const message =
   "Tests that run against the built package import its public entries; import the public entry, or rename the file to `.test.src.ts` to test internals in source mode only.";

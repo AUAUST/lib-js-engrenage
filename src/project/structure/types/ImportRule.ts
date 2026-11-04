@@ -1,5 +1,5 @@
-import type { ImportRuleSource } from "#structure/types/ImportRuleSource";
-import type { ImportRuleTarget } from "#structure/types/ImportRuleTarget";
+import type { ImportRuleSource } from "#project/structure/types/ImportRuleSource";
+import type { ImportRuleTarget } from "#project/structure/types/ImportRuleTarget";
 
 export interface ImportRule {
   readonly source: ImportRuleSource;

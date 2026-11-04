@@ -1,5 +1,5 @@
-import { baselineWidelyAvailableMonths } from "#baseline/constants";
-import { addMonths } from "#baseline/utils/addMonths";
+import { baselineWidelyAvailableMonths } from "#project/baseline/constants";
+import { addMonths } from "#project/baseline/utils/addMonths";
 
 export function qualifiesAtSnapshot(
   date: string | null,

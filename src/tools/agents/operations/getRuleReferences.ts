@@ -1,5 +1,5 @@
-import { claudeRulesGlob } from "#agents/claude/constants";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { claudeRulesGlob } from "#tools/agents/claude/constants";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 
 export function getRuleReferences({

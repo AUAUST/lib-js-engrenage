@@ -1,9 +1,9 @@
 // @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import { resolveBinary } from "#cli/operations/resolveBinary";
 import { eslint, prettier } from "#constants";
-import { isWithin } from "#filesystem/utils/isWithin";
-import { spawnProcess } from "#processes/operations/spawnProcess";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { isWithin } from "#foundation/filesystem/utils/isWithin";
+import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
+import { resolveBinary } from "#workflows/cli/operations/resolveBinary";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 

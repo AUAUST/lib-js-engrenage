@@ -1,24 +1,24 @@
-import { buildSchema } from "#build/config/schemas/buildSchema";
-import { cacheSchema } from "#config/config/schemas/core/cacheSchema";
-import { debugSchema } from "#config/config/schemas/core/debugSchema";
-import { defineSchema } from "#config/config/schemas/core/defineSchema";
-import { agentsSchema } from "#config/config/schemas/tools/agentsSchema";
-import { githubSchema } from "#config/config/schemas/tools/githubSchema";
-import { gitSchema } from "#config/config/schemas/tools/gitSchema";
-import { prettierSchema } from "#config/config/schemas/tools/prettierSchema";
-import { typescriptSchema } from "#config/config/schemas/tools/typescriptSchema";
-import { vscodeSchema } from "#config/config/schemas/tools/vscodeSchema";
-import { binSchema } from "#environments/config/schemas/binSchema";
-import { dataSchema } from "#environments/config/schemas/dataSchema";
-import { runtimeSchema } from "#environments/config/schemas/runtimeSchema";
-import { scriptsSchema } from "#environments/config/schemas/scriptsSchema";
-import { sourceSchema } from "#environments/config/schemas/sourceSchema";
-import { testsSchema } from "#environments/config/schemas/testsSchema";
-import { toolingSchema } from "#environments/config/schemas/toolingSchema";
-import { declareObject } from "#options/utils/declareObject";
-import { presetsSchema } from "#presets/config/schemas/presetsSchema";
-import { aliasesSchema } from "#structure/config/schemas/aliasesSchema";
-import { rolesSchema } from "#structure/config/schemas/rolesSchema";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { buildSchema } from "#project/build/config/schemas/buildSchema";
+import { cacheSchema } from "#project/config/config/schemas/core/cacheSchema";
+import { debugSchema } from "#project/config/config/schemas/core/debugSchema";
+import { defineSchema } from "#project/config/config/schemas/core/defineSchema";
+import { agentsSchema } from "#project/config/config/schemas/tools/agentsSchema";
+import { githubSchema } from "#project/config/config/schemas/tools/githubSchema";
+import { gitSchema } from "#project/config/config/schemas/tools/gitSchema";
+import { prettierSchema } from "#project/config/config/schemas/tools/prettierSchema";
+import { typescriptSchema } from "#project/config/config/schemas/tools/typescriptSchema";
+import { vscodeSchema } from "#project/config/config/schemas/tools/vscodeSchema";
+import { binSchema } from "#project/environments/config/schemas/binSchema";
+import { dataSchema } from "#project/environments/config/schemas/dataSchema";
+import { runtimeSchema } from "#project/environments/config/schemas/runtimeSchema";
+import { scriptsSchema } from "#project/environments/config/schemas/scriptsSchema";
+import { sourceSchema } from "#project/environments/config/schemas/sourceSchema";
+import { testsSchema } from "#project/environments/config/schemas/testsSchema";
+import { toolingSchema } from "#project/environments/config/schemas/toolingSchema";
+import { presetsSchema } from "#project/presets/config/schemas/presetsSchema";
+import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
+import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 
 export const configDeclaration = declareObject({
   // Core

@@ -1,16 +1,16 @@
-import { syncClaudeSettings } from "#agents/claude/setup/syncClaudeSettings";
-import { syncCodexFiles } from "#agents/codex/setup/syncCodexFiles";
-import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
-import { syncChangesetConfig } from "#changesets/setup/syncChangesetConfig";
-import { syncGitignoreFile } from "#git/setup/syncGitignoreFile";
-import { syncWorkflowFiles } from "#github/setup/syncWorkflowFiles";
-import { syncPackageJson } from "#package/setup/syncPackageJson";
-import { syncPrettierignoreFile } from "#prettier/setup/syncPrettierignoreFile";
-import { defineSyncTarget } from "#sync/utils/defineSyncTarget";
-import { syncTsconfigFiles } from "#tsconfig/setup/syncTsconfigFiles";
-import { syncAliases } from "#typescript/setup/syncAliases";
-import { syncEnvFile } from "#typescript/setup/syncEnvFile";
-import { syncVscodeFiles } from "#vscode/setup/syncVscodeFiles";
+import { syncPackageJson } from "#project/package/setup/syncPackageJson";
+import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
+import { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSettings";
+import { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";
+import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
+import { syncChangesetConfig } from "#tools/changesets/setup/syncChangesetConfig";
+import { syncGitignoreFile } from "#tools/git/setup/syncGitignoreFile";
+import { syncWorkflowFiles } from "#tools/github/setup/syncWorkflowFiles";
+import { syncPrettierignoreFile } from "#tools/prettier/setup/syncPrettierignoreFile";
+import { syncAliases } from "#tools/typescript/setup/syncAliases";
+import { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
+import { syncVscodeFiles } from "#tools/vscode/setup/syncVscodeFiles";
+import { defineSyncTarget } from "#workflows/sync/utils/defineSyncTarget";
 
 // Targets run in declaration order: those that produce a file other targets read from the config come first.
 export const syncTargets = {

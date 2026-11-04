@@ -2,17 +2,17 @@ import { deduplicate, includes } from "@auaust/primitive-kit/arrays";
 import { max } from "@auaust/toolkit/math";
 import { entries } from "@auaust/toolkit/object";
 
-import { syncFiles } from "#blocks/operations/syncFiles";
 import { packageJsonFile } from "#constants";
-import { createPackageJson } from "#package/operations/createPackageJson";
-import { writePackageJsonValue } from "#package/operations/writePackageJsonValue";
+import { syncFiles } from "#foundation/blocks/operations/syncFiles";
+import { createPackageJson } from "#project/package/operations/createPackageJson";
+import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
 // @debt reaches into tools/pnpm, a higher layer than project; the layered registry (#143) removes the upward dependency
-import { listPnpmWarnings } from "#pnpm/operations/listPnpmWarnings";
+import { listPnpmWarnings } from "#tools/pnpm/operations/listPnpmWarnings";
 // @debt reaches into tools/tsdown, a higher layer than project; the layered registry (#143) removes the upward dependency
-import { resolveCommandFiles } from "#tsdown/operations/resolveCommandFiles";
-import type { Runtime } from "#baseline/types/Runtime";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { JsonValue } from "#json/types/JsonValue";
+import { resolveCommandFiles } from "#tools/tsdown/operations/resolveCommandFiles";
+import type { JsonValue } from "#foundation/json/types/JsonValue";
+import type { Runtime } from "#project/baseline/types/Runtime";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 interface Field {
   location: readonly [string] | readonly [string, string];

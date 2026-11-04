@@ -10,19 +10,19 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
-import { optionsSchema } from "#eslint/config/schemas/optionsSchema";
-import { conventionCategories, pluginName } from "#eslint/constants";
-import { createConventionRules } from "#eslint/operations/createConventionRules";
-import { createPackageJsonRules } from "#eslint/operations/createPackageJsonRules";
-import { createRecommendedRules } from "#eslint/operations/createRecommendedRules";
-import { createIgnoreRules } from "#eslint/utils/createIgnoreRules";
-import { createImportPresets } from "#eslint/utils/createImportPresets";
-import { createPlugin } from "#eslint/utils/createPlugin";
-import { resolveInfoRules } from "#eslint/utils/resolveInfoRules";
-import { validate } from "#options/utils/validate";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Config } from "#eslint/types/Config";
-import type { Options } from "#eslint/types/Options";
+import { validate } from "#foundation/options/utils/validate";
+import { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
+import { conventionCategories, pluginName } from "#tools/eslint/constants";
+import { createConventionRules } from "#tools/eslint/operations/createConventionRules";
+import { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";
+import { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
+import { createIgnoreRules } from "#tools/eslint/utils/createIgnoreRules";
+import { createImportPresets } from "#tools/eslint/utils/createImportPresets";
+import { createPlugin } from "#tools/eslint/utils/createPlugin";
+import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Config } from "#tools/eslint/types/Config";
+import type { Options } from "#tools/eslint/types/Options";
 
 export function createEslintConfig(
   config: ResolvedConfig,

@@ -1,6 +1,6 @@
 import { values } from "@auaust/toolkit/object";
 
-import type { ResolvedStructure } from "#config/types/ResolvedStructure";
+import type { ResolvedStructure } from "#project/config/types/ResolvedStructure";
 
 export function hasStructureViolations(structure: ResolvedStructure): boolean {
   return values(structure).some((environment) => {

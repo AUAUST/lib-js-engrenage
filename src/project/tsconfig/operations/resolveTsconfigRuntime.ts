@@ -1,7 +1,7 @@
-import { resolveTsconfigEnvironments } from "#tsconfig/operations/resolveTsconfigEnvironments";
-import type { Runtime } from "#baseline/types/Runtime";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { TsconfigKey } from "#tsconfig/types/TsconfigKey";
+import { resolveTsconfigEnvironments } from "#project/tsconfig/operations/resolveTsconfigEnvironments";
+import type { Runtime } from "#project/baseline/types/Runtime";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 
 export function resolveTsconfigRuntime(
   config: ResolvedConfig,

@@ -1,16 +1,16 @@
 import { map, sort } from "@auaust/primitive-kit/arrays";
 import { entries, keys, record } from "@auaust/toolkit/object";
 
-import { syncFiles } from "#blocks/operations/syncFiles";
 import { packageJsonFile } from "#constants";
-import { emptyObjectFile } from "#json/constants";
-import { applyJsonEdits } from "#json/utils/applyJsonEdits";
-import { readJsonValue } from "#json/utils/readJsonValue";
-import { writePackageJsonValue } from "#package/operations/writePackageJsonValue";
-import { readTsconfigPaths } from "#tsconfig/operations/readTsconfigPaths";
-import { toTsconfigSpecifier } from "#tsconfig/utils/toTsconfigSpecifier";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Alias } from "#structure/types/Alias";
+import { syncFiles } from "#foundation/blocks/operations/syncFiles";
+import { emptyObjectFile } from "#foundation/json/constants";
+import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
+import { readJsonValue } from "#foundation/json/utils/readJsonValue";
+import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
+import { readTsconfigPaths } from "#project/tsconfig/operations/readTsconfigPaths";
+import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Alias } from "#project/structure/types/Alias";
 
 const importPrefix = "#";
 

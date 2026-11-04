@@ -1,14 +1,14 @@
-import { createPrompter } from "#cli/operations/createPrompter";
-import { defineCommand } from "#cli/operations/defineCommand";
-import { settleChanges } from "#cli/operations/settleChanges";
-import { loadConfig } from "#config/operations/loadConfig";
 import { packageJsonFile } from "#constants";
-import { readProjectPnpmVersion } from "#package/utils/readProjectPnpmVersion";
-import { readSharedPnpmRange } from "#package/utils/readSharedPnpmRange";
-import { installDependencies } from "#pnpm/operations/installDependencies";
-import { resolveLatestPnpm } from "#pnpm/operations/resolveLatestPnpm";
-import { resolvePnpmRangeStatus } from "#pnpm/operations/resolvePnpmRangeStatus";
-import { upgradePnpmManifest } from "#pnpm/operations/upgradePnpmManifest";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { readProjectPnpmVersion } from "#project/package/utils/readProjectPnpmVersion";
+import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
+import { installDependencies } from "#tools/pnpm/operations/installDependencies";
+import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
+import { resolvePnpmRangeStatus } from "#tools/pnpm/operations/resolvePnpmRangeStatus";
+import { upgradePnpmManifest } from "#tools/pnpm/operations/upgradePnpmManifest";
+import { createPrompter } from "#workflows/cli/operations/createPrompter";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { settleChanges } from "#workflows/cli/operations/settleChanges";
 
 export const upgrade = defineCommand((command) => {
   return command

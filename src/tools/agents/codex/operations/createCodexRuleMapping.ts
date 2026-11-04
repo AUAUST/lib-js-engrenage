@@ -1,8 +1,8 @@
 import { sort } from "@auaust/primitive-kit/arrays";
 
-import { claudeRulesGlob } from "#agents/claude/constants";
-import { parseInstruction } from "#agents/operations/parseInstruction";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import { claudeRulesGlob } from "#tools/agents/claude/constants";
+import { parseInstruction } from "#tools/agents/operations/parseInstruction";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 function cell(value: string): string {
   return `<code>${value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("|", "&#124;").replaceAll("\n", "&#10;").replaceAll("\r", "&#13;")}</code>`;

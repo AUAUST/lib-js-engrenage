@@ -1,11 +1,11 @@
 import { includes } from "@auaust/primitive-kit/arrays";
 
-import { resolveListOption } from "#config/operations/resolveListOption";
 import { engrenage } from "#constants";
-import { toTsconfigSpecifier } from "#tsconfig/utils/toTsconfigSpecifier";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { JsonEdit } from "#json/types/JsonEdit";
-import type { TsconfigTarget } from "#tsconfig/types/TsconfigTarget";
+import { resolveListOption } from "#project/config/operations/resolveListOption";
+import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
+import type { JsonEdit } from "#foundation/json/types/JsonEdit";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 function listDefaultExtends(
   config: ResolvedConfig,

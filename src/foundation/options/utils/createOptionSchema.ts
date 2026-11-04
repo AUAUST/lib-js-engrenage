@@ -7,9 +7,9 @@ import {
   type GenericSchema,
 } from "valibot";
 
-import { describeDefault } from "#options/utils/describeDefault";
-import type { Default } from "#options/types/Default";
-import type { Description } from "#options/types/Description";
+import { describeDefault } from "#foundation/options/utils/describeDefault";
+import type { Default } from "#foundation/options/types/Default";
+import type { Description } from "#foundation/options/types/Description";
 
 export function createOptionSchema(
   core: GenericSchema,

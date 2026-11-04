@@ -1,4 +1,4 @@
-import type { ResolvedGlobal } from "#config/types/ResolvedGlobal";
+import type { ResolvedGlobal } from "#project/config/types/ResolvedGlobal";
 
 export interface ResolvedGlobals {
   readonly [name: string]: ResolvedGlobal;

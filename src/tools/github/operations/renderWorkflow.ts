@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 
-import { resolveDataFile } from "#data/operations/resolveDataFile";
-import { workflowTemplates } from "#github/constants";
-import type { WorkflowSetName } from "#github/types/WorkflowSetName";
+import { resolveDataFile } from "#foundation/data/operations/resolveDataFile";
+import { workflowTemplates } from "#tools/github/constants";
+import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 import type { File } from "#types/File";
 
 export function renderWorkflow(name: WorkflowSetName, file: File): string {

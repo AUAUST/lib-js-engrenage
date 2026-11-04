@@ -3,8 +3,8 @@ import { relative } from "node:path";
 import { map } from "@auaust/primitive-kit/arrays";
 
 import { organization } from "#constants";
-import { defineConvention } from "#eslint/utils/defineConvention";
-import { delegateRule } from "#eslint/utils/delegateRule";
+import { defineConvention } from "#tools/eslint/utils/defineConvention";
+import { delegateRule } from "#tools/eslint/utils/delegateRule";
 
 const projectSelectors = [
   "subpath",

@@ -1,6 +1,6 @@
-export { resolveAgentReference } from "#agents/operations/resolveAgentReference";
-export { syncAgentFiles } from "#agents/setup/syncAgentFiles";
+export { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
+export { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 // @barrel types/*.ts all
-export * from "#agents/types/Agent";
-export * from "#agents/types/GeneratedFrontmatter";
+export * from "#tools/agents/types/Agent";
+export * from "#tools/agents/types/GeneratedFrontmatter";
 // @end

@@ -2,22 +2,22 @@ import { readFileSync } from "node:fs";
 
 import { random } from "@auaust/primitive-kit/arrays";
 
+import { engrenage } from "#constants";
+import { resolveDataFile } from "#foundation/data/operations/resolveDataFile";
 import {
   agentsFile,
   backlogIndex,
   backlogTemplate,
   scratchpadFile,
   scratchpadPlaceholders,
-} from "#agents/constants";
-import { addAgentRules } from "#agents/operations/addAgentRules";
-import { addAgentSkills } from "#agents/operations/addAgentSkills";
-import { getMissingRuleTemplates } from "#agents/operations/getMissingRuleTemplates";
-import { getSkillTemplates } from "#agents/operations/getSkillTemplates";
-import { syncAgentFiles } from "#agents/setup/syncAgentFiles";
-import { engrenage } from "#constants";
-import { resolveDataFile } from "#data/operations/resolveDataFile";
+} from "#tools/agents/constants";
+import { addAgentRules } from "#tools/agents/operations/addAgentRules";
+import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
+import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
+import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 // @debt reaches into workflows/cli, a higher layer than tools; the layered registry (#143) removes the upward dependency
-import type { Step } from "#cli/types/Step";
+import type { Step } from "#workflows/cli/types/Step";
 
 const sectionReference = `${engrenage}/agents/sections/backlog.md`;
 const skills = ["scratchpad", "backlog-handling", "debt-harvesting"];

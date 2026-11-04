@@ -1,5 +1,5 @@
-import type { definitionKey } from "#config/constants";
-import type { GlobalScope } from "#config/types/GlobalScope";
+import type { definitionKey } from "#project/config/constants";
+import type { GlobalScope } from "#project/config/types/GlobalScope";
 
 export interface Definition {
   readonly [definitionKey]: true;

@@ -1,10 +1,10 @@
 import type { ResolvableValue } from "@auaust/toolkit/value";
 
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { Delegate } from "#eslint/types/Delegate";
-import type { RuleModule } from "#eslint/types/RuleModule";
-import type { ScopeReferences } from "#eslint/types/ScopeReferences";
-import type { Presets } from "#presets/types/Presets";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { Presets } from "#project/presets/types/Presets";
+import type { Delegate } from "#tools/eslint/types/Delegate";
+import type { RuleModule } from "#tools/eslint/types/RuleModule";
+import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
 export interface Convention {

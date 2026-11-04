@@ -1,5 +1,5 @@
 import { toolkit } from "#constants";
-import { defineGlobalReplacement } from "#eslint/utils/defineGlobalReplacement";
+import { defineGlobalReplacement } from "#tools/eslint/utils/defineGlobalReplacement";
 
 export default defineGlobalReplacement({
   global: "Object",

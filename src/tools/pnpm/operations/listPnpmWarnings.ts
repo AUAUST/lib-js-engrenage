@@ -1,8 +1,8 @@
-import { readProjectPnpmVersion } from "#package/utils/readProjectPnpmVersion";
-import { readSharedPnpmRange } from "#package/utils/readSharedPnpmRange";
-import { onlyAllowScript, upgradeCommand } from "#pnpm/constants";
-import { resolvePnpmRangeStatus } from "#pnpm/operations/resolvePnpmRangeStatus";
-import type { PackageJson } from "#package/types/PackageJson";
+import { readProjectPnpmVersion } from "#project/package/utils/readProjectPnpmVersion";
+import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
+import { onlyAllowScript, upgradeCommand } from "#tools/pnpm/constants";
+import { resolvePnpmRangeStatus } from "#tools/pnpm/operations/resolvePnpmRangeStatus";
+import type { PackageJson } from "#project/package/types/PackageJson";
 
 export function listPnpmWarnings(packageJson: PackageJson): string[] {
   const { packageManager, scripts } = packageJson.optional;

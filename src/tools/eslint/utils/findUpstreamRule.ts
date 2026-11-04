@@ -6,8 +6,8 @@ import unusedImports from "eslint-plugin-unused-imports";
 import { builtinRules } from "eslint/use-at-your-own-risk";
 import { plugin as typescript } from "typescript-eslint";
 
-import type { Plugin } from "#eslint/types/Plugin";
-import type { RuleModule } from "#eslint/types/RuleModule";
+import type { Plugin } from "#tools/eslint/types/Plugin";
+import type { RuleModule } from "#tools/eslint/types/RuleModule";
 
 const upstreamPlugins: Record<string, Plugin> = {
   "@stylistic": stylistic,

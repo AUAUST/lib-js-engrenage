@@ -10,7 +10,7 @@ import {
   string,
 } from "valibot";
 
-import { pluginNames } from "#tsdown/constants";
+import { pluginNames } from "#tools/tsdown/constants";
 
 export const optionsSchema = strictObject({
   bundle: optional(pipe(array(string()), readonly()), []),

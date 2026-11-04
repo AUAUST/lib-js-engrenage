@@ -1,6 +1,6 @@
 /* eslint-disable auaust/no-dynamic-import */
 
-import { defineCommand } from "#cli/operations/defineCommand";
+import { defineCommand } from "#workflows/cli/operations/defineCommand";
 
 export const editions = defineCommand((command) => {
   return command
@@ -9,12 +9,14 @@ export const editions = defineCommand((command) => {
     )
     .option("--check", "report an outdated file without writing it", false)
     .action(async ({ check }) => {
-      const { loadConfig } = await import("#config/operations/loadConfig");
+      const { loadConfig } =
+        await import("#project/config/operations/loadConfig");
 
       const { generateEditions } =
-        await import("#typescript/operations/generateEditions");
+        await import("#tools/typescript/operations/generateEditions");
 
-      const { settleChanges } = await import("#cli/operations/settleChanges");
+      const { settleChanges } =
+        await import("#workflows/cli/operations/settleChanges");
 
       const config = await loadConfig();
 

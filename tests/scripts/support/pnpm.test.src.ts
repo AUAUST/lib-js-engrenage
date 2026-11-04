@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { readSharedPnpmRange } from "#package/utils/readSharedPnpmRange";
-import { resolveLatestPnpm } from "#pnpm/operations/resolveLatestPnpm";
+import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
 import { pnpm } from "#scripts/support/pnpm";
 import { runCommand } from "#tests/utils/runCommand";
+import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 
-vi.mock("#pnpm/operations/resolveLatestPnpm");
+vi.mock("#tools/pnpm/operations/resolveLatestPnpm");
 
 afterEach(() => {
   vi.restoreAllMocks();

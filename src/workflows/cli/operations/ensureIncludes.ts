@@ -1,6 +1,6 @@
 import { wrap } from "@auaust/primitive-kit/arrays";
 
-import { ensureAnyOf } from "#cli/operations/ensureAnyOf";
+import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
 
 export function ensureIncludes(
   args: string[],

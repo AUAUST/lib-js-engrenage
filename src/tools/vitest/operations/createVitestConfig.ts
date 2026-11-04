@@ -5,24 +5,24 @@ import { configDefaults, coverageConfigDefaults } from "vitest/config";
 import { includes } from "@auaust/primitive-kit/arrays";
 import type { Maybe } from "@auaust/toolkit/types";
 
-import { resolve } from "#filesystem/utils/resolve";
-import { validate } from "#options/utils/validate";
-import { optionsSchema } from "#vitest/config/schemas/optionsSchema";
+import { resolve } from "#foundation/filesystem/utils/resolve";
+import { validate } from "#foundation/options/utils/validate";
+import { optionsSchema } from "#tools/vitest/config/schemas/optionsSchema";
 import {
   buildMode,
   defaultCoverageProvider,
   outDirGuard,
   pluginPrefix,
   sourceGuard,
-} from "#vitest/constants";
-import { findSetupFiles } from "#vitest/operations/findSetupFiles";
-import { createOutDirGuard } from "#vitest/plugins/createOutDirGuard";
-import { createSourceGuard } from "#vitest/plugins/createSourceGuard";
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
-import type { ConfigEnv } from "#vite/types/ConfigEnv";
-import type { Plugin } from "#vite/types/Plugin";
-import type { Config } from "#vitest/types/Config";
-import type { Options } from "#vitest/types/Options";
+} from "#tools/vitest/constants";
+import { findSetupFiles } from "#tools/vitest/operations/findSetupFiles";
+import { createOutDirGuard } from "#tools/vitest/plugins/createOutDirGuard";
+import { createSourceGuard } from "#tools/vitest/plugins/createSourceGuard";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
+import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
+import type { Plugin } from "#tools/vite/types/Plugin";
+import type { Config } from "#tools/vitest/types/Config";
+import type { Options } from "#tools/vitest/types/Options";
 
 function createSourcePlugins(
   config: ResolvedConfig,

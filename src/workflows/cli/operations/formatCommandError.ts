@@ -1,6 +1,6 @@
 import { join } from "@auaust/primitive-kit/arrays";
 
-import { debugEnvironmentVariable } from "#config/constants";
+import { debugEnvironmentVariable } from "#project/config/constants";
 
 function describe(value: unknown): string {
   return value instanceof Error ? value.message : String(value);

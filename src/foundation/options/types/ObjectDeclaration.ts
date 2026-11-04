@@ -1,5 +1,5 @@
-import type { Declaration } from "#options/types/Declaration";
-import type { DeclarationEntries } from "#options/types/DeclarationEntries";
+import type { Declaration } from "#foundation/options/types/Declaration";
+import type { DeclarationEntries } from "#foundation/options/types/DeclarationEntries";
 
 export interface ObjectDeclaration<
   Entries extends DeclarationEntries,

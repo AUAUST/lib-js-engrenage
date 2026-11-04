@@ -20,22 +20,22 @@ import { isFunction } from "@auaust/toolkit/isFunction";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { isString } from "@auaust/toolkit/isString";
 
+import { declare } from "#foundation/options/utils/declare";
+import { declareObject } from "#foundation/options/utils/declareObject";
+import { validate } from "#foundation/options/utils/validate";
 import {
   defaultDefineTypes,
   defaultGlobalScope,
   definitionKey,
   globalNamePattern,
   globalScopes,
-} from "#config/constants";
-import { declare } from "#options/utils/declare";
-import { declareObject } from "#options/utils/declareObject";
-import { validate } from "#options/utils/validate";
-import type { ConfigContext } from "#config/types/ConfigContext";
-import type { Definition } from "#config/types/Definition";
-import type { GlobalsFactory } from "#config/types/GlobalsFactory";
-import type { ResolvedGlobal } from "#config/types/ResolvedGlobal";
-import type { ResolvedGlobals } from "#config/types/ResolvedGlobals";
-import type { JsonValue } from "#json/types/JsonValue";
+} from "#project/config/constants";
+import type { JsonValue } from "#foundation/json/types/JsonValue";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { Definition } from "#project/config/types/Definition";
+import type { GlobalsFactory } from "#project/config/types/GlobalsFactory";
+import type { ResolvedGlobal } from "#project/config/types/ResolvedGlobal";
+import type { ResolvedGlobals } from "#project/config/types/ResolvedGlobals";
 
 function isDefinition(input: unknown): input is Definition {
   return isPlainObject(input) && input[definitionKey] === true;

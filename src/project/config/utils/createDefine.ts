@@ -1,6 +1,6 @@
 import { entries } from "@auaust/toolkit/object";
 
-import type { ResolvedConfig } from "#config/types/ResolvedConfig";
+import type { ResolvedConfig } from "#project/config/types/ResolvedConfig";
 
 export function createDefine(
   { define }: ResolvedConfig,

@@ -3,12 +3,12 @@
 // @end
 
 // @barrel types/*.ts all
-export * from "#environments/types/ResolvedBin";
-export * from "#environments/types/ResolvedCodeEnvironment";
-export * from "#environments/types/ResolvedData";
-export * from "#environments/types/ResolvedScripts";
-export * from "#environments/types/ResolvedSource";
-export * from "#environments/types/ResolvedTests";
-export * from "#environments/types/ResolvedTestsPatterns";
-export * from "#environments/types/ResolvedTooling";
+export * from "#project/environments/types/ResolvedBin";
+export * from "#project/environments/types/ResolvedCodeEnvironment";
+export * from "#project/environments/types/ResolvedData";
+export * from "#project/environments/types/ResolvedScripts";
+export * from "#project/environments/types/ResolvedSource";
+export * from "#project/environments/types/ResolvedTests";
+export * from "#project/environments/types/ResolvedTestsPatterns";
+export * from "#project/environments/types/ResolvedTooling";
 // @end

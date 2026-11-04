@@ -1,10 +1,10 @@
+import { declareObject } from "#foundation/options/utils/declareObject";
 import {
   defaultScriptsDirectories,
   disabledCodeEnvironment,
-} from "#config/constants";
-import { declareCodeEnvironment } from "#environments/config/declareCodeEnvironment";
-import { declareObject } from "#options/utils/declareObject";
-import { rolesOptionSchema } from "#structure/config/schemas/rolesOptionSchema";
+} from "#project/config/constants";
+import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
+import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 
 export const scriptsSchema = declareObject(
   {

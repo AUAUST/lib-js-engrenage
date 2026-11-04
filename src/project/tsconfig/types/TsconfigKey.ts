@@ -1,3 +1,3 @@
-import type { TsconfigEnvironment } from "#tsconfig/types/TsconfigEnvironment";
+import type { TsconfigEnvironment } from "#project/tsconfig/types/TsconfigEnvironment";
 
 export type TsconfigKey = TsconfigEnvironment | "tests.dist";

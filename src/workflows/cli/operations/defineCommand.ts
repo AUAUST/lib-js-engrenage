@@ -1,7 +1,7 @@
 import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
-import { addDebugOption } from "#cli/operations/addDebugOption";
-import type { CommandDefinition } from "#cli/types/CommandDefinition";
+import { addDebugOption } from "#workflows/cli/operations/addDebugOption";
+import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
 
 // @debt the existing-option check guards against registering --debug twice when nested definitions both pass through defineCommand, instead of one owner registering it once
 function addDebugOptions(command: CommandUnknownOpts) {

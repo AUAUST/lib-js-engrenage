@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
-import { listDiscoveredGlobs } from "#structure/utils/listDiscoveredGlobs";
-import type { ResolvedRoleContract } from "#structure/types/ResolvedRoleContract";
+import { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
+import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 
 function contract(
   overrides: Partial<ResolvedRoleContract>,
