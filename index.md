@@ -1,12 +1,12 @@
 # Snapshot of the #137 tree
 
-Taken 2026-11-04 from AUAUST/lib-js-engrenage. Sub-issue order as returned by the GitHub sub-issues API; #172 is a sub-issue of #137 and also listed as a root.
+Taken 2026-11-04 from AUAUST/lib-js-engrenage, after the rewrite under the new issue-planning skill (#175). Sub-issue order as returned by the GitHub sub-issues API.
 
 ```
 #137 Plan: domain-based source architecture (OPEN)
   - #158 Block: test safety net, declaration helper, import rules and codegen speed (OPEN)
     - #155 vitest: dist mode tests the built package through public specifiers (CLOSED)
-    - #138 eslint: prototype of boundaries generated from a structure description (OPEN)
+    - #138 eslint: prototype of boundaries generated from a structure description (CLOSED)
     - #142 config: role catalogue and contracts (CLOSED)
     - #146 config: declaration helper and computed defaults (CLOSED)
     - #162 structure: import rules resolved from the project structure (OPEN)
@@ -31,5 +31,4 @@ Taken 2026-11-04 from AUAUST/lib-js-engrenage. Sub-issue order as returned by th
     - #150 eslint: boundaries and role contracts generated from the project structure (OPEN)
     - #151 agents: project map generated from the project structure (OPEN)
   - #152 agents: rewrite the project structure instructions (OPEN)
-#172 agents: length budgets enforced by hooks (OPEN)
 ```
