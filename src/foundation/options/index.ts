@@ -1,5 +1,6 @@
 // @barrel utils/*.ts named
 export { createOptionSchema } from "#foundation/options/utils/createOptionSchema";
+export { createSections } from "#foundation/options/utils/createSections";
 export { declare } from "#foundation/options/utils/declare";
 export { declareObject } from "#foundation/options/utils/declareObject";
 export { declareRecord } from "#foundation/options/utils/declareRecord";

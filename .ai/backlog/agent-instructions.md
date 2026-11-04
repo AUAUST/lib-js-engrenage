@@ -26,3 +26,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: plan §Config pipeline says `StepContext<Sections>` replaces `config`, true except for the VS Code steps (via `loadInfoRules` → `createEslintConfig`); `@auaust/engrenage/config` no longer exports `ResolvedAgents`.
 - done: the plan and exports description match.
+
+## Stale after #143 round 3
+
+- why: plan §Config pipeline shows `project/config` taking raw input once per root, while `readConfig` validates the whole config eagerly until steps 4 and 5 land.
+- done: the plan and code agree.

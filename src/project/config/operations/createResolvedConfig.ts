@@ -8,18 +8,14 @@ import { packageJsonFile } from "#constants";
 import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
 import { filesIn } from "#foundation/filesystem/utils/filesIn";
 import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
+import { createSections } from "#foundation/options/utils/createSections";
 import { resolveSourceRuntime } from "#project/baseline/operations/resolveSourceRuntime";
 import { resolveNodeRuntime } from "#project/baseline/utils/resolveNodeRuntime";
 import { buildSchema } from "#project/build/config/schemas/buildSchema";
 import { cacheSchema } from "#project/config/config/schemas/core/cacheSchema";
 import { debugSchema } from "#project/config/config/schemas/core/debugSchema";
 import { defineSchema } from "#project/config/config/schemas/core/defineSchema";
-import { agentsSchema } from "#project/config/config/schemas/tools/agentsSchema";
-import { githubSchema } from "#project/config/config/schemas/tools/githubSchema";
-import { gitSchema } from "#project/config/config/schemas/tools/gitSchema";
-import { prettierSchema } from "#project/config/config/schemas/tools/prettierSchema";
 import { typescriptSchema } from "#project/config/config/schemas/tools/typescriptSchema";
-import { vscodeSchema } from "#project/config/config/schemas/tools/vscodeSchema";
 import {
   distTestsVariant,
   sourceTestsVariant,
@@ -35,7 +31,6 @@ import { toolingSchema } from "#project/environments/config/schemas/toolingSchem
 import { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
 import { createPackageJson } from "#project/package/operations/createPackageJson";
 import { presetsSchema } from "#project/presets/config/schemas/presetsSchema";
-// @debt reaches into tools/prettier, a higher layer than project; the layered registry (#143) removes the upward dependency
 import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 import { noRoles } from "#project/structure/constants";
@@ -46,7 +41,13 @@ import { resolveRoles } from "#project/structure/operations/resolveRoles";
 import { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
 import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { resolveTsconfig } from "#project/tsconfig/utils/resolveTsconfig";
+// @debt reaches into tools, a higher layer than project; the registry (#143 step 5) composes the tool sections and removes the upward dependency
+import { agentsSchema } from "#tools/agents/config/schemas/agentsSchema";
+import { gitSchema } from "#tools/git/config/schemas/gitSchema";
+import { githubSchema } from "#tools/github/config/schemas/githubSchema";
+import { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
 import { createPrettierFormatter } from "#tools/prettier/operations/createPrettierFormatter";
+import { vscodeSchema } from "#tools/vscode/config/schemas/vscodeSchema";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { ConfigInput } from "#project/config/types/ConfigInput";
 import type { Environment } from "#project/config/types/Environment";
@@ -106,9 +107,11 @@ export function createResolvedConfig({
 
   const context: ConfigContext = {
     get(section) {
-      return config[section];
+      return sections.get(section);
     },
   };
+
+  const { get } = context;
 
   function locate(file: File, configured: boolean): File | undefined {
     if (!configured) {
@@ -126,17 +129,17 @@ export function createResolvedConfig({
     return debugSchema.resolve(raw.debug, context, "debug");
   });
 
-  const presets = once(() => {
+  function presets() {
     return presetsSchema.resolve(raw.presets, context, "presets");
-  });
+  }
 
-  const roles = once(() => {
+  function roles() {
     return rolesSchema.resolve(raw.roles, context, "roles");
-  });
+  }
 
-  const define = once(() => {
+  function define() {
     return defineSchema.resolve(raw.define, context, "define");
-  });
+  }
 
   const cacheOption = once(() => {
     return cacheSchema.resolve(raw.cache, context, "cache");
@@ -197,7 +200,7 @@ export function createResolvedConfig({
   }
 
   function environment(): Environment {
-    return describeEnvironment(packageJson());
+    return describeEnvironment(get("packageJson"));
   }
 
   function tsconfigPath(): File | undefined {
@@ -228,12 +231,12 @@ export function createResolvedConfig({
     );
   }
 
-  const runtime = once(() => {
+  function runtime() {
     return freeze({ node: runtimeOption().node });
-  });
+  }
 
   function developmentRuntime() {
-    return resolveNodeRuntime(runtime().node, "runtime.node");
+    return resolveNodeRuntime(get("runtime").node, "runtime.node");
   }
 
   function resolveEnvironmentRoles(
@@ -243,7 +246,7 @@ export function createResolvedConfig({
     return option.enabled && option.roles !== undefined
       ? resolveRoles({
           environment: name,
-          roles: roles(),
+          roles: get("roles"),
           environmentRoles: option.roles,
         })
       : noRoles;
@@ -264,7 +267,7 @@ export function createResolvedConfig({
       root,
       dirs: environment.dirs,
       options: option,
-      roles: roles(),
+      roles: get("roles"),
       environmentRoles: option.roles,
       ...(tests === undefined ? {} : { tests }),
     });
@@ -323,7 +326,7 @@ export function createResolvedConfig({
     });
   }
 
-  const source = once(() => {
+  function source() {
     const option = sourceOption();
     const environment = resolveEnvironment(option, "src");
 
@@ -350,9 +353,9 @@ export function createResolvedConfig({
         }),
       ),
     );
-  });
+  }
 
-  const bin = once(() => {
+  function bin() {
     const option = binOption();
 
     return freeze(
@@ -371,9 +374,9 @@ export function createResolvedConfig({
         }),
       ),
     );
-  });
+  }
 
-  const data = once(() => {
+  function data() {
     const option = dataOption();
 
     return freeze({
@@ -382,9 +385,9 @@ export function createResolvedConfig({
       dirs: option.dirs,
       exports: option.exports,
     });
-  });
+  }
 
-  const scripts = once(() => {
+  function scripts() {
     const option = scriptsOption();
 
     return freeze(
@@ -398,9 +401,9 @@ export function createResolvedConfig({
         }),
       ),
     );
-  });
+  }
 
-  const tests = once(() => {
+  function tests() {
     const option = testsOption();
 
     function pattern(variant: string): Globs {
@@ -433,9 +436,9 @@ export function createResolvedConfig({
         }),
       ),
     );
-  });
+  }
 
-  const tooling = once(() => {
+  function tooling() {
     const option = toolingOption();
     const { dirs, files } = option;
 
@@ -455,21 +458,21 @@ export function createResolvedConfig({
         }),
       ),
     );
-  });
+  }
 
-  const structure = once(() => {
-    const sourceStructure = resolveStructure("src", source(), sourceOption());
-    const binStructure = resolveStructure("bin", bin(), binOption());
+  function structure() {
+    const sourceStructure = resolveStructure("src", get("src"), sourceOption());
+    const binStructure = resolveStructure("bin", get("bin"), binOption());
 
     const scriptsStructure = resolveStructure(
       "scripts",
-      scripts(),
+      get("scripts"),
       scriptsOption(),
     );
 
     const toolingStructure = resolveStructure(
       "tooling",
-      tooling(),
+      get("tooling"),
       toolingOption(),
     );
 
@@ -479,16 +482,28 @@ export function createResolvedConfig({
       src: sourceStructure,
       tests: resolveStructure(
         "tests",
-        tests(),
+        get("tests"),
         testsConfig,
         testsConfig.enabled
           ? {
               layout: testsConfig.layout,
               environments: {
-                src: { dirs: source().dirs, structure: sourceStructure },
-                bin: { dirs: bin().dirs, structure: binStructure },
-                scripts: { dirs: scripts().dirs, structure: scriptsStructure },
-                tooling: { dirs: tooling().dirs, structure: toolingStructure },
+                src: {
+                  dirs: get("src").dirs,
+                  structure: sourceStructure,
+                },
+                bin: {
+                  dirs: get("bin").dirs,
+                  structure: binStructure,
+                },
+                scripts: {
+                  dirs: get("scripts").dirs,
+                  structure: scriptsStructure,
+                },
+                tooling: {
+                  dirs: get("tooling").dirs,
+                  structure: toolingStructure,
+                },
               },
             }
           : undefined,
@@ -497,10 +512,10 @@ export function createResolvedConfig({
       scripts: scriptsStructure,
       tooling: toolingStructure,
     });
-  });
+  }
 
-  const importRules = once(() => {
-    const trees = structure();
+  function importRules() {
+    const trees = get("structure");
 
     return resolveImportRules({
       structures: {
@@ -511,32 +526,32 @@ export function createResolvedConfig({
         ...(trees.tooling === undefined ? {} : { tooling: trees.tooling }),
       },
       roles: {
-        src: source().roles,
-        tests: tests().roles,
-        scripts: scripts().roles,
-        tooling: tooling().roles,
+        src: get("src").roles,
+        tests: get("tests").roles,
+        scripts: get("scripts").roles,
+        tooling: get("tooling").roles,
       },
       active: {
-        src: source().active,
-        tests: tests().active,
-        bin: bin().active,
-        scripts: scripts().active,
-        tooling: tooling().active,
+        src: get("src").active,
+        tests: get("tests").active,
+        bin: get("bin").active,
+        scripts: get("scripts").active,
+        tooling: get("tooling").active,
       },
       // @debt library-only behavior should read the published trait (#153) instead of the library preset
-      published: includes(presets(), "library"),
+      published: includes(get("presets"), "library"),
     });
-  });
+  }
 
   function readOutDir(): Directory | undefined {
     try {
-      return build().outDir;
+      return get("build").outDir;
     } catch {
       // @debt an unreadable tsconfig hides the output directory, so its alias is generated instead of skipped; the output directory should resolve without parsing the tsconfig
     }
   }
 
-  const aliases = once(() => {
+  function aliases() {
     const option = sourceOption();
 
     const global = aliasesSchema.resolve(raw.aliases, context, "aliases");
@@ -546,21 +561,21 @@ export function createResolvedConfig({
       options: { global, src: option.aliases },
       bundled: option.bundled,
       environments: {
-        src: source().dirs,
-        tests: tests().dirs,
-        bin: bin().dirs,
-        scripts: scripts().dirs,
-        tooling: tooling().dirs,
+        src: get("src").dirs,
+        tests: get("tests").dirs,
+        bin: get("bin").dirs,
+        scripts: get("scripts").dirs,
+        tooling: get("tooling").dirs,
       },
-      data: data().active ? data().dirs : [],
-      published: includes(presets(), "library"),
+      data: get("data").active ? get("data").dirs : [],
+      published: includes(get("presets"), "library"),
       outDir: readOutDir(),
-      structure: structure().src,
+      structure: get("structure").src,
     });
-  });
+  }
 
-  const files = once(() => {
-    const environments = [source(), tests(), bin(), scripts()];
+  function files() {
+    const environments = [get("src"), get("tests"), get("bin"), get("scripts")];
 
     return freeze({
       generated: flatMap(environments, ({ dirs, generated }) => {
@@ -569,13 +584,13 @@ export function createResolvedConfig({
       discovered: flatMap(environments, ({ dirs, discovered, roles }) => {
         return filesIn(dirs, [...discovered, ...listDiscoveredGlobs(roles)]);
       }),
-      fixtures: filesIn(tests().dirs, tests().fixtures),
+      fixtures: filesIn(get("tests").dirs, get("tests").fixtures),
       published: [...source().globs, ...bin().globs],
       private: [...tests().globs, ...scripts().globs],
     });
-  });
+  }
 
-  const build = once(() => {
+  function build() {
     const { entries } = buildSchema;
 
     function resolveOutDir() {
@@ -607,7 +622,7 @@ export function createResolvedConfig({
         }),
       ),
     );
-  });
+  }
 
   const cache = cacheOption;
 
@@ -629,7 +644,7 @@ export function createResolvedConfig({
     );
   });
 
-  const typescript = once(() => {
+  function typescript() {
     const option = typescriptOption();
 
     return freeze(
@@ -643,9 +658,9 @@ export function createResolvedConfig({
         }),
       ),
     );
-  });
+  }
 
-  const git = once(() => {
+  function git() {
     const { gitignore } = gitSchema.resolve(raw.git, context, "git");
 
     return freeze(
@@ -656,9 +671,9 @@ export function createResolvedConfig({
         }),
       ),
     );
-  });
+  }
 
-  const prettier = once(() => {
+  function prettier() {
     const { prettierignore } = prettierSchema.resolve(
       raw.prettier,
       context,
@@ -675,19 +690,19 @@ export function createResolvedConfig({
         }),
       ),
     );
-  });
+  }
 
-  const agents = once(() => {
+  function agents() {
     return agentsSchema.resolve(raw.agents, context, "agents");
-  });
+  }
 
-  const github = once(() => {
+  function github() {
     return githubSchema.resolve(raw.github, context, "github");
-  });
+  }
 
-  const vscode = once(() => {
+  function vscode() {
     return vscodeSchema.resolve(raw.vscode, context, "vscode");
-  });
+  }
 
   function resolve(...paths: string[]): string {
     return resolveWithin(root, ...paths);
@@ -697,49 +712,85 @@ export function createResolvedConfig({
     return resolveWithin(root, cache().dir, packageName);
   }
 
-  const config: ResolvedConfig = freeze(
-    compose(
-      {
-        root,
-        raw,
-        configFile,
-        filesystem,
-        resolve,
-        cacheFor,
+  // @debt the live sections read the filesystem, which init and sync stage changes to, so they are recomputed on every access instead of being memoized per root; a memo keyed by file content would let them be memoized like the others
+  const sections = createSections<ResolvedConfig>(
+    {
+      root: () => root,
+      raw: () => raw,
+      configFile: () => configFile,
+      filesystem: () => filesystem,
+      resolve: () => resolve,
+      cacheFor: () => cacheFor,
+      debug: () => {
+        return debugOption() || isDebugEnvironment();
       },
+      packageJsonPath,
+      packageJson,
+      tsconfig,
+      environment,
+      presets,
+      roles,
+      runtime,
+      define,
+      src: source,
+      tests,
+      bin,
+      scripts,
+      data,
+      tooling,
+      structure,
+      aliases,
+      importRules,
+      files,
+      build,
+      cache,
+      typescript,
+      git,
+      prettier,
+      agents,
+      github,
+      vscode,
+    },
+    ["packageJsonPath", "packageJson", "tsconfig", "environment"],
+  );
+
+  return freeze(
+    compose(
       compose.getters({
-        debug: () => {
-          return debugOption() || isDebugEnvironment();
-        },
-        packageJsonPath,
-        packageJson,
-        tsconfig,
-        environment,
-        presets,
-        roles,
-        runtime,
-        define,
-        src: source,
-        tests,
-        bin,
-        scripts,
-        data,
-        tooling,
-        structure,
-        aliases,
-        importRules,
-        files,
-        build,
-        cache,
-        typescript,
-        git,
-        prettier,
-        agents,
-        github,
-        vscode,
+        root: () => sections.get("root"),
+        raw: () => sections.get("raw"),
+        configFile: () => sections.get("configFile"),
+        filesystem: () => sections.get("filesystem"),
+        resolve: () => sections.get("resolve"),
+        cacheFor: () => sections.get("cacheFor"),
+        debug: () => sections.get("debug"),
+        packageJsonPath: () => sections.get("packageJsonPath"),
+        packageJson: () => sections.get("packageJson"),
+        tsconfig: () => sections.get("tsconfig"),
+        environment: () => sections.get("environment"),
+        presets: () => sections.get("presets"),
+        roles: () => sections.get("roles"),
+        runtime: () => sections.get("runtime"),
+        define: () => sections.get("define"),
+        src: () => sections.get("src"),
+        tests: () => sections.get("tests"),
+        bin: () => sections.get("bin"),
+        scripts: () => sections.get("scripts"),
+        data: () => sections.get("data"),
+        tooling: () => sections.get("tooling"),
+        structure: () => sections.get("structure"),
+        aliases: () => sections.get("aliases"),
+        importRules: () => sections.get("importRules"),
+        files: () => sections.get("files"),
+        build: () => sections.get("build"),
+        cache: () => sections.get("cache"),
+        typescript: () => sections.get("typescript"),
+        git: () => sections.get("git"),
+        prettier: () => sections.get("prettier"),
+        agents: () => sections.get("agents"),
+        github: () => sections.get("github"),
+        vscode: () => sections.get("vscode"),
       }),
     ),
   );
-
-  return config;
 }

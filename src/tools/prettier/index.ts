@@ -5,4 +5,5 @@ export { syncPrettierignoreFile } from "#tools/prettier/setup/syncPrettierignore
 export * from "#tools/prettier/types/Config";
 export * from "#tools/prettier/types/Options";
 export * from "#tools/prettier/types/Plugin";
+export * from "#tools/prettier/types/ResolvedPrettier";
 // @end

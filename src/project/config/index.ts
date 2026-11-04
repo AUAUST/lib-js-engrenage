@@ -21,16 +21,12 @@ export * from "#project/config/types/ResolvedCache";
 export * from "#project/config/types/ResolvedConfig";
 export * from "#project/config/types/ResolvedDefine";
 export * from "#project/config/types/ResolvedFiles";
-export * from "#project/config/types/ResolvedGit";
-export * from "#project/config/types/ResolvedGithub";
 export * from "#project/config/types/ResolvedGlobal";
 export * from "#project/config/types/ResolvedGlobals";
 export * from "#project/config/types/ResolvedLocation";
-export * from "#project/config/types/ResolvedPrettier";
 export * from "#project/config/types/ResolvedRuntimeSettings";
 export * from "#project/config/types/ResolvedStructure";
 export * from "#project/config/types/ResolvedTypescript";
-export * from "#project/config/types/ResolvedVscode";
 // @end
 export * from "#foundation/filesystem/types/Filesystem";
 export * from "#project/baseline/types/Runtime";

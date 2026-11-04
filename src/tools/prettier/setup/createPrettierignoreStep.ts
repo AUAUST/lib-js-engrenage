@@ -1,7 +1,7 @@
 import { prettier, prettierignoreFile } from "#constants";
 import { ignoreBlocks } from "#tools/git/constants";
-import type { ResolvedPrettier } from "#project/config/types/ResolvedPrettier";
 import type { Step } from "#project/steps/types/Step";
+import type { ResolvedPrettier } from "#tools/prettier/types/ResolvedPrettier";
 
 export function createPrettierignoreStep(): Step<{
   prettier: ResolvedPrettier;

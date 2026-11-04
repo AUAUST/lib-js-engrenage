@@ -1,9 +1,9 @@
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
-import type { ResolvedGithub } from "#project/config/types/ResolvedGithub";
 import type { Step } from "#project/steps/types/Step";
 import type { StepContext } from "#project/steps/types/StepContext";
+import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
 import type { File } from "#types/File";
 
 interface Sections {

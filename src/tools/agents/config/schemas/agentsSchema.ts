@@ -7,8 +7,8 @@ import { declareObject } from "#foundation/options/utils/declareObject";
 import { unset } from "#foundation/options/utils/unset";
 import { directorySchema } from "#project/config/config/schemas/values/directorySchema";
 import { globsSchema } from "#project/config/config/schemas/values/globsSchema";
-import { preferredSchema } from "#project/config/config/schemas/values/preferredSchema";
 import { defaultInstructionFiles } from "#project/config/constants";
+import { preferredSchema } from "#tools/agents/config/schemas/preferredSchema";
 
 export const agentsSchema = declareObject(
   {

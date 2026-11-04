@@ -4,7 +4,7 @@ import { describe, expect, test } from "vitest";
 
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
-import { gitSchema } from "#project/config/config/schemas/tools/gitSchema";
+import { gitSchema } from "#tools/git/config/schemas/gitSchema";
 
 describe("declare", () => {
   test("fills defaults, rejects invalid input and describes the default", () => {

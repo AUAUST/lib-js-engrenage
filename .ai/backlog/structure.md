@@ -50,3 +50,15 @@ Project structure description, its report and the tooling generated from it.
 - why: plan `Config` is "one getter per section", yet `root`, `resolve`, `cacheFor`, `filesystem` and `configFile` are not sections and `get` currently reaches them; `resolve(...paths: string[]): string` repeats inline in about 10 agents signatures with no shared type allowed; `ResolvedAgents` (`tools/agents/types`) derives `Agent` from `preferredSchema` in `project/config`, so type and schema sit in different domains.
 - want: decide whether helpers are sections, a separate `context`, or `Config` members; where shared argument shapes live.
 - done: the plan states it and the code follows.
+
+## 8. Interfaces implemented elsewhere may be ports, not types
+
+- why: `foundation/filesystem/types/Filesystem.ts`, `foundation/filesystem/types/Formatter.ts` and `project/steps/types/Prompter.ts` state an interface that another domain implements (`createPrettierFormatter`, `createPrompter`), which is what `ports/` and `adapters/` are for; they sit in `types/`. Other interfaces injected by `workflows` may be the same.
+- want: review which `types/` modules are ports (interface injected, implemented by an adapter in another domain) and whether the decisions' "contract domains declare ports" applies beyond `project/build`; then relocate or state why not.
+- done: every injected interface is a port or has a stated reason not to be.
+
+## 9. Config registry gaps found in #143 round 3
+
+- why: `configDeclaration` groups "Core", "Tooling" and "Environments" sections in one declaration with no counterpart in the target layout; `generateConfigTypes` lives in `project/config/operations` but needs the registry once tool schemas leave `project/config`; `createSections` has no per-section raw-validation hook for eager validation (step 5); `packageJsonPath`, `packageJson`, `tsconfig` and `environment` stay live because `init` stages changes in the filesystem.
+- want: place the declaration, the generator and the validation hook; decide whether the live sections can be keyed on file content.
+- done: the registry has no live exceptions and each piece has an owner.
