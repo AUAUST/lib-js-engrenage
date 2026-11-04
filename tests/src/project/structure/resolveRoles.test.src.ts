@@ -38,8 +38,8 @@ describe("resolveRoles", () => {
 
     expect(keys(source.roles)).toEqual([
       "index.ts",
-      "constants.ts",
-      "*.d.ts",
+      "constants",
+      "declarations",
       "types",
       "utils",
       "errors",
@@ -148,5 +148,131 @@ describe("resolveRoles", () => {
         },
       }),
     ).toThrow("not an active role");
+  });
+
+  test("merges the given fields over the inherited role, replacing a whole redefinition", () => {
+    const inherited = resolve({
+      environment: "src",
+      roles: {
+        define: {
+          utils: { inherit: "utils", nesting: "any" },
+        },
+      },
+    }).roles.utils;
+
+    expect(inherited).toMatchObject({
+      nesting: "any",
+      exports: "named-match",
+      purpose: expect.any(String),
+    });
+
+    const redefined = resolve({
+      environment: "src",
+      roles: {
+        define: {
+          utils: { nesting: "any" },
+        },
+      },
+    }).roles.utils;
+
+    expect(redefined).toMatchObject({ nesting: "any" });
+    expect(redefined?.exports).toBeUndefined();
+    expect(redefined?.purpose).toBeUndefined();
+  });
+
+  test("resolves a homonym against the previous layer and any other name against the final root role", () => {
+    const roles = resolve({
+      environment: "src",
+      roles: {
+        define: {
+          utils: { inherit: "utils", nesting: 1 },
+        },
+      },
+      environmentRoles: {
+        define: {
+          utils: { inherit: "utils", public: true },
+          helpers: { inherit: "utils", purpose: "Helpers." },
+        },
+      },
+    }).roles;
+
+    expect(roles.utils).toMatchObject({
+      nesting: 1,
+      public: true,
+      exports: "named-match",
+    });
+
+    expect(roles.helpers).toMatchObject({
+      nesting: 1,
+      public: true,
+      purpose: "Helpers.",
+    });
+  });
+
+  test("resolves an inline role against root roles unless it names a sibling by its qualified name", () => {
+    function define(inherit: string) {
+      return {
+        foo: {
+          roles: [
+            { name: "baz", inherit },
+            { name: "bar", nesting: 2 },
+          ],
+        },
+      };
+    }
+
+    expect(() =>
+      resolve({
+        environment: "src",
+        roles: { define: define("bar") },
+      }),
+    ).toThrow("inherits bar, which is not defined");
+
+    const roles = resolve({
+      environment: "src",
+      roles: { define: define("foo/bar") },
+      scopes: ["foo/baz"],
+    }).roles;
+
+    expect(roles["foo/baz"]).toMatchObject({ nesting: 2, scoped: true });
+  });
+
+  test("fails on a cycle with its path and on a homonym without an earlier layer", () => {
+    expect(() =>
+      resolve({
+        environment: "src",
+        roles: {
+          define: {
+            foo: { inherit: "bar" },
+            bar: { inherit: "baz" },
+            baz: { inherit: "foo" },
+          },
+        },
+      }),
+    ).toThrow("foo -> bar -> baz -> foo");
+
+    expect(() =>
+      resolve({
+        environment: "src",
+        roles: {
+          define: {
+            foo: { inherit: "foo" },
+          },
+        },
+      }),
+    ).toThrow("no earlier layer defines it");
+  });
+
+  test("renames a file role by inheriting it with another file", () => {
+    expect(
+      resolve({
+        environment: "src",
+        roles: {
+          define: {
+            constants: { inherit: "constants", file: ["consts.ts"] },
+          },
+        },
+      }).roles.constants,
+    ).toMatchObject({ file: ["consts.ts"] });
   });
 });

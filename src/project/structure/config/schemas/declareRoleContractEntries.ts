@@ -19,6 +19,11 @@ export function declareRoleContractEntries<Inline>(
   inline: GenericSchema<Inline>,
 ) {
   return {
+    inherit: declare(string(), {
+      description:
+        "The role whose contract the given fields are merged over: a root name or a qualified `<owner>/<name>`, read as written. A role inheriting its own name takes the role of the previous layer (catalogue, project, environment). Given fields replace inherited ones, `roles` included.",
+      optional: { value: undefined },
+    }),
     purpose: declare(string(), {
       description: "One line stating what the role holds.",
       optional: { value: undefined },
@@ -34,12 +39,7 @@ export function declareRoleContractEntries<Inline>(
     }),
     nesting: declare(union([number(), literal("any")]), {
       description: "Whether the role nests and how deep: a depth or `any`.",
-      optional: {
-        explain: "`0`, so the role is flat",
-        compute() {
-          return 0;
-        },
-      },
+      optional: unset("`0`, so the role is flat"),
     }),
     roles: declare(pipe(array(union([string(), inline])), readonly()), {
       description:
@@ -58,24 +58,24 @@ export function declareRoleContractEntries<Inline>(
     }),
     index: declare(boolean(), {
       description: "Whether an `index` file is allowed.",
-      optional: { value: false },
+      optional: unset("`false`"),
     }),
     public: declare(boolean(), {
       description: [
         "Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.",
         "Package exports come only from the domain's visibility.",
       ],
-      optional: { value: false },
+      optional: unset("`false`"),
     }),
     discovered: declare(boolean(), {
       description:
         "Whether a consumer discovers its files, so they may export defaults.",
-      optional: { value: false },
+      optional: unset("`false`"),
     }),
     scoped: declare(boolean(), {
       description:
         "Whether the role is active only where a structured role or a namespace enables it.",
-      optional: { value: false },
+      optional: unset("`false`"),
     }),
   };
 }

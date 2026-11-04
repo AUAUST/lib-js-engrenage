@@ -23,6 +23,7 @@ export * from "#project/structure/types/ResolvedAliases";
 export * from "#project/structure/types/ResolvedRoleContract";
 export * from "#project/structure/types/ResolvedRoles";
 export * from "#project/structure/types/RoleContract";
+export * from "#project/structure/types/RoleDefinition";
 export * from "#project/structure/types/RoleEnvironment";
 export * from "#project/structure/types/RoleKey";
 export * from "#project/structure/types/RoleReference";

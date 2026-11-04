@@ -13,8 +13,8 @@ Layers of `.`: `foundation` < `project` < `tools` < `workflows`
 | Role           | Contents and contract                                                 | Allowed imports                                                                                                                                                                        | Public |
 | -------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
 | `index.ts`     | file `index.ts`                                                       | as its domain                                                                                                                                                                          | no     |
-| `constants.ts` | file `constants.ts`                                                   | as its domain                                                                                                                                                                          | no     |
-| `*.d.ts`       | file `*.d.ts`                                                         | as its domain                                                                                                                                                                          | no     |
+| `constants`    | file `constants.ts`                                                   | as its domain                                                                                                                                                                          | no     |
+| `declarations` | file `*.d.ts`                                                         | as its domain                                                                                                                                                                          | no     |
 | `types`        | exports named-match                                                   | types/ imports types/ here and above; peers, through their index.ts, type-only; domains of a lower layer, through their index.ts, type-only; global roles import only each other       | no     |
 | `utils`        | exports named-match                                                   | utils/ imports utils/, types/ and constants.ts here and above, and global roles; peers, through their index.ts, type-only; domains of a lower layer, through their index.ts, type-only | no     |
 | `errors`       | exports named-match                                                   | as its domain                                                                                                                                                                          | yes    |
@@ -425,8 +425,8 @@ Root keys: `bin` (tests `bin`), `scripts` (tests `scripts`), `src` (tests `src`)
 | Role           | Contents and contract                                                 | Allowed imports | Public |
 | -------------- | --------------------------------------------------------------------- | --------------- | ------ |
 | `index.ts`     | file `index.ts`                                                       | as its domain   | no     |
-| `constants.ts` | file `constants.ts`                                                   | as its domain   | no     |
-| `*.d.ts`       | file `*.d.ts`                                                         | as its domain   | no     |
+| `constants`    | file `constants.ts`                                                   | as its domain   | no     |
+| `declarations` | file `*.d.ts`                                                         | as its domain   | no     |
 | `types`        | exports named-match                                                   | as its domain   | no     |
 | `utils`        | exports named-match                                                   | as its domain   | no     |
 | `errors`       | exports named-match                                                   | as its domain   | yes    |
@@ -491,8 +491,8 @@ Directories: `scripts`
 | Role           | Contents and contract                                                 | Allowed imports | Public |
 | -------------- | --------------------------------------------------------------------- | --------------- | ------ |
 | `index.ts`     | file `index.ts`                                                       | as its domain   | no     |
-| `constants.ts` | file `constants.ts`                                                   | as its domain   | no     |
-| `*.d.ts`       | file `*.d.ts`                                                         | as its domain   | no     |
+| `constants`    | file `constants.ts`                                                   | as its domain   | no     |
+| `declarations` | file `*.d.ts`                                                         | as its domain   | no     |
 | `types`        | exports named-match                                                   | as its domain   | no     |
 | `utils`        | exports named-match                                                   | as its domain   | no     |
 | `errors`       | exports named-match                                                   | as its domain   | yes    |
@@ -520,8 +520,8 @@ Directories: `tooling`
 | Role           | Contents and contract                                                 | Allowed imports | Public |
 | -------------- | --------------------------------------------------------------------- | --------------- | ------ |
 | `index.ts`     | file `index.ts`                                                       | as its domain   | no     |
-| `constants.ts` | file `constants.ts`                                                   | as its domain   | no     |
-| `*.d.ts`       | file `*.d.ts`                                                         | as its domain   | no     |
+| `constants`    | file `constants.ts`                                                   | as its domain   | no     |
+| `declarations` | file `*.d.ts`                                                         | as its domain   | no     |
 | `types`        | exports named-match                                                   | as its domain   | no     |
 | `utils`        | exports named-match                                                   | as its domain   | no     |
 | `errors`       | exports named-match                                                   | as its domain   | yes    |

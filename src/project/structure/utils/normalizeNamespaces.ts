@@ -1,7 +1,7 @@
 import { entries, freeze, record } from "@auaust/toolkit/object";
 
 import { flattenRoleReferences } from "#project/structure/utils/flattenRoleReferences";
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
+import type { RoleDefinition } from "#project/structure/types/RoleDefinition";
 import type { RoleReference } from "#project/structure/types/RoleReference";
 import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
@@ -14,9 +14,9 @@ export function normalizeNamespaces({
   namespaces: StructureOptions<RoleReference>["namespaces"];
 }): {
   readonly namespaces: StructureOptions["namespaces"];
-  readonly define: Readonly<Record<string, ResolvedRoleContract>>;
+  readonly define: Readonly<Record<string, RoleDefinition>>;
 } {
-  const define: Record<string, ResolvedRoleContract> = {};
+  const define: Record<string, RoleDefinition> = {};
 
   const normalized = record(
     entries(namespaces).map(([path, namespace]) => {

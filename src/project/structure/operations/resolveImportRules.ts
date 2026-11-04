@@ -27,7 +27,7 @@ interface Scope {
 }
 
 const indexFile = "index.ts";
-const constantsFile = "constants.ts";
+const constantsRole = "constants";
 const typesRole = "types";
 const utilitiesRole = "utils";
 const elementEnvironments = ["src", "scripts", "tooling"] as const;
@@ -454,9 +454,9 @@ function resolveElementRules(
       }),
       ...(withConstants
         ? [
-            ...flatMap(levels, ({ path }) => filesOf(path, constantsFile)),
+            ...flatMap(levels, ({ path }) => filesOf(path, constantsRole)),
             ...flatMap(structure.dirs, (directory) => {
-              return filesOf(directory, constantsFile);
+              return filesOf(directory, constantsRole);
             }),
           ]
         : []),

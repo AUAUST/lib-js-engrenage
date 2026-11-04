@@ -2,7 +2,7 @@ import { isString } from "@auaust/toolkit/isString";
 import { freeze } from "@auaust/toolkit/object";
 
 import { roleContractSchema } from "#project/structure/config/schemas/roleContractSchema";
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
+import type { RoleDefinition } from "#project/structure/types/RoleDefinition";
 import type { RoleReference } from "#project/structure/types/RoleReference";
 
 export function flattenRoleReferences({
@@ -12,7 +12,7 @@ export function flattenRoleReferences({
 }: {
   owner: string;
   references: readonly RoleReference[];
-  define: Record<string, ResolvedRoleContract>;
+  define: Record<string, RoleDefinition>;
 }): string[] {
   const seen = new Set<string>();
 

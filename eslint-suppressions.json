@@ -137,16 +137,10 @@
   "src/project/config/config/schemas/core/cacheSchema.ts": {
     "auaust/import-surfaces": {
       "count": 3
-    },
-    "auaust/role-contracts": {
-      "count": 1
     }
   },
   "src/project/config/config/schemas/core/debugSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 1
-    },
-    "auaust/role-contracts": {
       "count": 1
     }
   },
@@ -154,46 +148,17 @@
     "auaust/import-surfaces": {
       "count": 4
     },
-    "auaust/role-contracts": {
-      "count": 1
-    },
     "auaust/role-exports": {
       "count": 1
     }
   },
   "src/project/config/config/schemas/values/directorySchema.ts": {
-    "auaust/role-contracts": {
-      "count": 1
-    },
     "auaust/role-exports": {
-      "count": 1
-    }
-  },
-  "src/project/config/config/schemas/values/fileSchema.ts": {
-    "auaust/role-contracts": {
       "count": 1
     }
   },
   "src/project/config/config/schemas/values/globsSchema.ts": {
-    "auaust/role-contracts": {
-      "count": 1
-    },
     "auaust/role-exports": {
-      "count": 1
-    }
-  },
-  "src/project/config/config/schemas/values/listOptionSchema.ts": {
-    "auaust/role-contracts": {
-      "count": 1
-    }
-  },
-  "src/project/config/config/schemas/values/managedListOptionSchema.ts": {
-    "auaust/role-contracts": {
-      "count": 1
-    }
-  },
-  "src/project/config/config/schemas/values/nodeMajorSchema.ts": {
-    "auaust/role-contracts": {
       "count": 1
     }
   },

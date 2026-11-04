@@ -2,11 +2,11 @@ import { entries, freeze } from "@auaust/toolkit/object";
 
 import { flattenRoleReferences } from "#project/structure/utils/flattenRoleReferences";
 import type { DeclaredRolesOption } from "#project/structure/types/DeclaredRolesOption";
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
+import type { RoleDefinition } from "#project/structure/types/RoleDefinition";
 import type { RolesOption } from "#project/structure/types/RolesOption";
 
 export function normalizeRoles(roles: DeclaredRolesOption): RolesOption {
-  const define: Record<string, ResolvedRoleContract> = {};
+  const define: Record<string, RoleDefinition> = {};
 
   for (const [name, contract] of entries(roles.define)) {
     define[name] = freeze({

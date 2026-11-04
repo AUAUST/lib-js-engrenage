@@ -428,7 +428,7 @@ export interface AuaustRules {
    */
   "auaust/quote-props"?: Rule<AuaustQuoteProps>;
   /**
-   * A constants.ts exports deeply read-only values.
+   * The constants file exports deeply read-only values.
    */
   "auaust/readonly-constants"?: Rule<[]>;
   /**

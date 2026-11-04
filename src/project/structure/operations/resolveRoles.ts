@@ -1,7 +1,8 @@
-import { assign, entries, freeze } from "@auaust/toolkit/object";
+import { assign, entries, freeze, keys } from "@auaust/toolkit/object";
 
 import { environmentRoleKeys, noRoles } from "#project/structure/constants";
 import { resolveCatalogue } from "#project/structure/operations/resolveCatalogue";
+import { resolveRoleContracts } from "#project/structure/operations/resolveRoleContracts";
 import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
@@ -23,9 +24,10 @@ export function resolveRoles({
     return noRoles;
   }
 
-  const contracts = new Map<string, ResolvedRoleContract>(
-    entries(resolveCatalogue()),
-  );
+  const contracts = resolveRoleContracts({
+    catalogue: resolveCatalogue(),
+    layers: [roles.define, environmentRoles.define],
+  });
 
   const active = new Set<string>(environmentRoleKeys[environment]);
   const aliases: Record<string, string> = {};
@@ -39,8 +41,7 @@ export function resolveRoles({
       active.delete(name);
     }
 
-    for (const [name, contract] of entries(option.define)) {
-      contracts.set(name, contract);
+    for (const name of keys(option.define)) {
       active.add(name);
     }
 
@@ -48,7 +49,7 @@ export function resolveRoles({
   }
 
   for (const name of scopes) {
-    if (!contracts.has(name)) {
+    if (!(name in contracts)) {
       throw new Error(
         `The scope enables the role ${name}, which is not defined for ${environment}`,
       );
@@ -59,7 +60,7 @@ export function resolveRoles({
 
   const resolved: Record<string, ResolvedRoleContract> = {};
 
-  for (const [name, contract] of contracts) {
+  for (const [name, contract] of entries(contracts)) {
     if (active.has(name) && (!contract.scoped || scopes.includes(name))) {
       resolved[name] = contract;
     }

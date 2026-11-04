@@ -1,4 +1,6 @@
-import { basename } from "node:path";
+import { basename, matchesGlob } from "node:path";
+
+import { wrap } from "@auaust/primitive-kit/arrays";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
@@ -10,16 +12,22 @@ export default defineConvention({
   rule: (config) => {
     return defineStructureRule({
       config,
-      description: "A constants.ts exports deeply read-only values.",
+      description: "The constants file exports deeply read-only values.",
       messages: {
         mutable:
-          "`{{name}}` is not deeply read-only; declare it `as const` or wrap it in `freeze`, or move it out of constants.ts.",
+          "`{{name}}` is not deeply read-only; declare it `as const` or wrap it in `freeze`, or move it out of the constants file.",
       },
-      create(context) {
+      create(context, { environment }) {
+        const globs = wrap(
+          config[environment].roles.roles.constants?.file ?? [],
+        );
+
         const services = context.sourceCode.parserServices;
 
         if (
-          basename(context.filename) !== "constants.ts" ||
+          !globs.some((glob) =>
+            matchesGlob(basename(context.filename), glob),
+          ) ||
           services?.program == null ||
           services.esTreeNodeToTSNodeMap == null
         ) {

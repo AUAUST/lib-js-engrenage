@@ -3,12 +3,13 @@ import { once } from "@auaust/toolkit/once";
 
 import { roleContractSchema } from "#project/structure/config/schemas/roleContractSchema";
 import { roleCatalogue } from "#project/structure/constants";
+import { completeRole } from "#project/structure/utils/completeRole";
 import { normalizeRoles } from "#project/structure/utils/normalizeRoles";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 
 export const resolveCatalogue = once(
   (): Readonly<Record<string, ResolvedRoleContract>> => {
-    return normalizeRoles({
+    const { define } = normalizeRoles({
       enable: [],
       disable: [],
       define: record(
@@ -20,6 +21,12 @@ export const resolveCatalogue = once(
         }),
       ),
       aliases: {},
-    }).define;
+    });
+
+    return record(
+      entries(define).map(([name, definition]) => {
+        return [name, completeRole(definition)] as const;
+      }),
+    );
   },
 );

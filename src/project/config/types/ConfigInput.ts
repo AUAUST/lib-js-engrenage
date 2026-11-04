@@ -158,8 +158,8 @@ export interface ConfigInput {
             enable?:
               | (
                   | "index.ts"
-                  | "constants.ts"
-                  | "*.d.ts"
+                  | "constants"
+                  | "declarations"
                   | "types"
                   | "utils"
                   | "errors"
@@ -183,8 +183,8 @@ export interface ConfigInput {
             disable?:
               | (
                   | "index.ts"
-                  | "constants.ts"
-                  | "*.d.ts"
+                  | "constants"
+                  | "declarations"
                   | "types"
                   | "utils"
                   | "errors"
@@ -211,6 +211,11 @@ export interface ConfigInput {
                    * The contract of a role.
                    */
                   [k: string]: {
+                    /**
+                     * The role whose contract the given fields are merged over: a root name or a qualified `<owner>/<name>`, read as written. A role inheriting its own name takes the role of the previous layer (catalogue, project, environment). Given fields replace inherited ones, `roles` included.
+                     * @default none
+                     */
+                    inherit?: string | undefined;
                     /**
                      * One line stating what the role holds.
                      * @default none
@@ -248,23 +253,23 @@ export interface ConfigInput {
                     exports?: ("named-match" | "named" | "default") | undefined;
                     /**
                      * Whether an `index` file is allowed.
-                     * @default false
+                     * @default `false`
                      */
                     index?: boolean | undefined;
                     /**
                      * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                      * Package exports come only from the domain's visibility.
-                     * @default false
+                     * @default `false`
                      */
                     public?: boolean | undefined;
                     /**
                      * Whether a consumer discovers its files, so they may export defaults.
-                     * @default false
+                     * @default `false`
                      */
                     discovered?: boolean | undefined;
                     /**
                      * Whether the role is active only where a structured role or a namespace enables it.
-                     * @default false
+                     * @default `false`
                      */
                     scoped?: boolean | undefined;
                   };
@@ -888,8 +893,8 @@ export interface ConfigInput {
                   enable?:
                     | (
                         | "index.ts"
-                        | "constants.ts"
-                        | "*.d.ts"
+                        | "constants"
+                        | "declarations"
                         | "types"
                         | "utils"
                         | "errors"
@@ -913,8 +918,8 @@ export interface ConfigInput {
                   disable?:
                     | (
                         | "index.ts"
-                        | "constants.ts"
-                        | "*.d.ts"
+                        | "constants"
+                        | "declarations"
                         | "types"
                         | "utils"
                         | "errors"
@@ -941,6 +946,11 @@ export interface ConfigInput {
                          * The contract of a role.
                          */
                         [k: string]: {
+                          /**
+                           * The role whose contract the given fields are merged over: a root name or a qualified `<owner>/<name>`, read as written. A role inheriting its own name takes the role of the previous layer (catalogue, project, environment). Given fields replace inherited ones, `roles` included.
+                           * @default none
+                           */
+                          inherit?: string | undefined;
                           /**
                            * One line stating what the role holds.
                            * @default none
@@ -979,23 +989,23 @@ export interface ConfigInput {
                             ("named-match" | "named" | "default") | undefined;
                           /**
                            * Whether an `index` file is allowed.
-                           * @default false
+                           * @default `false`
                            */
                           index?: boolean | undefined;
                           /**
                            * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                            * Package exports come only from the domain's visibility.
-                           * @default false
+                           * @default `false`
                            */
                           public?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
-                           * @default false
+                           * @default `false`
                            */
                           discovered?: boolean | undefined;
                           /**
                            * Whether the role is active only where a structured role or a namespace enables it.
-                           * @default false
+                           * @default `false`
                            */
                           scoped?: boolean | undefined;
                         };
@@ -1204,8 +1214,8 @@ export interface ConfigInput {
                   enable?:
                     | (
                         | "index.ts"
-                        | "constants.ts"
-                        | "*.d.ts"
+                        | "constants"
+                        | "declarations"
                         | "types"
                         | "utils"
                         | "errors"
@@ -1229,8 +1239,8 @@ export interface ConfigInput {
                   disable?:
                     | (
                         | "index.ts"
-                        | "constants.ts"
-                        | "*.d.ts"
+                        | "constants"
+                        | "declarations"
                         | "types"
                         | "utils"
                         | "errors"
@@ -1257,6 +1267,11 @@ export interface ConfigInput {
                          * The contract of a role.
                          */
                         [k: string]: {
+                          /**
+                           * The role whose contract the given fields are merged over: a root name or a qualified `<owner>/<name>`, read as written. A role inheriting its own name takes the role of the previous layer (catalogue, project, environment). Given fields replace inherited ones, `roles` included.
+                           * @default none
+                           */
+                          inherit?: string | undefined;
                           /**
                            * One line stating what the role holds.
                            * @default none
@@ -1295,23 +1310,23 @@ export interface ConfigInput {
                             ("named-match" | "named" | "default") | undefined;
                           /**
                            * Whether an `index` file is allowed.
-                           * @default false
+                           * @default `false`
                            */
                           index?: boolean | undefined;
                           /**
                            * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                            * Package exports come only from the domain's visibility.
-                           * @default false
+                           * @default `false`
                            */
                           public?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
-                           * @default false
+                           * @default `false`
                            */
                           discovered?: boolean | undefined;
                           /**
                            * Whether the role is active only where a structured role or a namespace enables it.
-                           * @default false
+                           * @default `false`
                            */
                           scoped?: boolean | undefined;
                         };
@@ -1599,8 +1614,8 @@ export interface ConfigInput {
                   enable?:
                     | (
                         | "index.ts"
-                        | "constants.ts"
-                        | "*.d.ts"
+                        | "constants"
+                        | "declarations"
                         | "types"
                         | "utils"
                         | "errors"
@@ -1624,8 +1639,8 @@ export interface ConfigInput {
                   disable?:
                     | (
                         | "index.ts"
-                        | "constants.ts"
-                        | "*.d.ts"
+                        | "constants"
+                        | "declarations"
                         | "types"
                         | "utils"
                         | "errors"
@@ -1652,6 +1667,11 @@ export interface ConfigInput {
                          * The contract of a role.
                          */
                         [k: string]: {
+                          /**
+                           * The role whose contract the given fields are merged over: a root name or a qualified `<owner>/<name>`, read as written. A role inheriting its own name takes the role of the previous layer (catalogue, project, environment). Given fields replace inherited ones, `roles` included.
+                           * @default none
+                           */
+                          inherit?: string | undefined;
                           /**
                            * One line stating what the role holds.
                            * @default none
@@ -1690,23 +1710,23 @@ export interface ConfigInput {
                             ("named-match" | "named" | "default") | undefined;
                           /**
                            * Whether an `index` file is allowed.
-                           * @default false
+                           * @default `false`
                            */
                           index?: boolean | undefined;
                           /**
                            * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                            * Package exports come only from the domain's visibility.
-                           * @default false
+                           * @default `false`
                            */
                           public?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
-                           * @default false
+                           * @default `false`
                            */
                           discovered?: boolean | undefined;
                           /**
                            * Whether the role is active only where a structured role or a namespace enables it.
-                           * @default false
+                           * @default `false`
                            */
                           scoped?: boolean | undefined;
                         };
@@ -1944,8 +1964,8 @@ export interface ConfigInput {
                   enable?:
                     | (
                         | "index.ts"
-                        | "constants.ts"
-                        | "*.d.ts"
+                        | "constants"
+                        | "declarations"
                         | "types"
                         | "utils"
                         | "errors"
@@ -1969,8 +1989,8 @@ export interface ConfigInput {
                   disable?:
                     | (
                         | "index.ts"
-                        | "constants.ts"
-                        | "*.d.ts"
+                        | "constants"
+                        | "declarations"
                         | "types"
                         | "utils"
                         | "errors"
@@ -1997,6 +2017,11 @@ export interface ConfigInput {
                          * The contract of a role.
                          */
                         [k: string]: {
+                          /**
+                           * The role whose contract the given fields are merged over: a root name or a qualified `<owner>/<name>`, read as written. A role inheriting its own name takes the role of the previous layer (catalogue, project, environment). Given fields replace inherited ones, `roles` included.
+                           * @default none
+                           */
+                          inherit?: string | undefined;
                           /**
                            * One line stating what the role holds.
                            * @default none
@@ -2035,23 +2060,23 @@ export interface ConfigInput {
                             ("named-match" | "named" | "default") | undefined;
                           /**
                            * Whether an `index` file is allowed.
-                           * @default false
+                           * @default `false`
                            */
                           index?: boolean | undefined;
                           /**
                            * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
                            * Package exports come only from the domain's visibility.
-                           * @default false
+                           * @default `false`
                            */
                           public?: boolean | undefined;
                           /**
                            * Whether a consumer discovers its files, so they may export defaults.
-                           * @default false
+                           * @default `false`
                            */
                           discovered?: boolean | undefined;
                           /**
                            * Whether the role is active only where a structured role or a namespace enables it.
-                           * @default false
+                           * @default `false`
                            */
                           scoped?: boolean | undefined;
                         };
@@ -2236,6 +2261,11 @@ export interface InlineRole {
    */
   name: string;
   /**
+   * The role whose contract the given fields are merged over: a root name or a qualified `<owner>/<name>`, read as written. A role inheriting its own name takes the role of the previous layer (catalogue, project, environment). Given fields replace inherited ones, `roles` included.
+   * @default none
+   */
+  inherit?: string | undefined;
+  /**
    * One line stating what the role holds.
    * @default none
    */
@@ -2272,23 +2302,23 @@ export interface InlineRole {
   exports?: ("named-match" | "named" | "default") | undefined;
   /**
    * Whether an `index` file is allowed.
-   * @default false
+   * @default `false`
    */
   index?: boolean | undefined;
   /**
    * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
    * Package exports come only from the domain's visibility.
-   * @default false
+   * @default `false`
    */
   public?: boolean | undefined;
   /**
    * Whether a consumer discovers its files, so they may export defaults.
-   * @default false
+   * @default `false`
    */
   discovered?: boolean | undefined;
   /**
    * Whether the role is active only where a structured role or a namespace enables it.
-   * @default false
+   * @default `false`
    */
   scoped?: boolean | undefined;
 }

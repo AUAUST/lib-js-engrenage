@@ -6,11 +6,14 @@ import type { RoleKey } from "#project/structure/types/RoleKey";
 
 export const roleCatalogue = {
   "index.ts": { purpose: "The domain's public surface.", file: ["index.ts"] },
-  "constants.ts": {
+  "constants": {
     purpose: "Deeply read-only constants of the domain.",
     file: ["constants.ts"],
   },
-  "*.d.ts": { purpose: "Ambient type declarations.", file: ["*.d.ts"] },
+  "declarations": {
+    purpose: "Ambient type declarations.",
+    file: ["*.d.ts"],
+  },
   "types": { purpose: "Types only, one per module.", exports: "named-match" },
   "utils": {
     purpose: "Pure functions, one per module.",
@@ -70,8 +73,8 @@ export const roleCatalogue = {
 
 export const defaultRoleKeys = [
   "index.ts",
-  "constants.ts",
-  "*.d.ts",
+  "constants",
+  "declarations",
   "types",
   "utils",
   "errors",
