@@ -1,5 +1,5 @@
 // @barrel utils/*.ts named
-
+export { findHookBypass } from "#tools/git/utils/findHookBypass";
 // @end
 
 // @barrel setup/*.ts named

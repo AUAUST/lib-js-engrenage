@@ -6,6 +6,15 @@ import { registerLazySubcommands } from "#workflows/cli/operations/registerLazyS
 
 export const hook = defineCommand((command) => {
   return registerLazySubcommands(command, {
+    git: {
+      description:
+        "Deny a `git` command that skips the commit gate, reading Claude's PreToolUse payload from stdin.",
+      async load() {
+        const { git } = await import("#bin/engrenage/agents/claude/hook/git");
+
+        return git;
+      },
+    },
     github: {
       description:
         "Warn or deny when the body of a `gh issue create|edit|comment` command is over budget, reading Claude's PreToolUse payload from stdin.",

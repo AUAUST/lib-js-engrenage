@@ -12,8 +12,8 @@ export const claudeShellVariable = "CLAUDECODE";
 
 export const claudeHookPrefix = "pnpm --silent engrenage agents claude hook ";
 
-export const claudeHooks = freeze(
-  (["create", "edit", "comment"] as const).map((verb) => {
+export const claudeHooks = freeze([
+  ...(["create", "edit", "comment"] as const).map((verb) => {
     return {
       event: "PreToolUse",
       matcher: "Bash",
@@ -21,7 +21,27 @@ export const claudeHooks = freeze(
       command: `${claudeHookPrefix}github`,
     } as const satisfies HookDefinition;
   }),
-) satisfies readonly HookDefinition[];
+  ...(["commit", "-c", "-C", "config"] as const).map((start) => {
+    return {
+      event: "PreToolUse",
+      matcher: "Bash",
+      condition: `Bash(git ${start} *)`,
+      command: `${claudeHookPrefix}git`,
+    } as const satisfies HookDefinition;
+  }),
+]) satisfies readonly HookDefinition[];
+
+// @debt permission entries are add-only: one engrenage stops producing stays in consumers' settings until sync records what it wrote (#229, #105)
+export const claudePermissions = freeze({
+  deny: [
+    "Bash(git commit --no-verify*)",
+    "Bash(git commit -n*)",
+    "Bash(LEFTHOOK=0 *)",
+    "Bash(LEFTHOOK=false *)",
+    "Bash(git config core.hooksPath*)",
+  ],
+  allow: ["Bash(gh api *issue-field-values*)"],
+} as const);
 
 export const claudeHiddenAttribution = freeze({
   commit: "",

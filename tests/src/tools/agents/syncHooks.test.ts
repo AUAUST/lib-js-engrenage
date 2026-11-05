@@ -69,6 +69,18 @@ describe("syncHooks", () => {
           ],
         };
       }),
+      ...["commit", "-c", "-C", "config"].map((start) => {
+        return {
+          matcher: "Bash",
+          hooks: [
+            {
+              type: "command",
+              command: "pnpm --silent engrenage agents claude hook git",
+              if: `Bash(git ${start} *)`,
+            },
+          ],
+        };
+      }),
     ]);
 
     await syncClaudeSettings(config);

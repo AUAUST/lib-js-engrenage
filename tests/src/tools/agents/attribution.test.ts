@@ -55,7 +55,7 @@ describe("agents.attribution", () => {
 
     expect(JSON.parse(project.read(".claude/settings.json"))).toMatchObject({
       hooks: {
-        PreToolUse: [expect.anything(), expect.anything(), expect.anything()],
+        PreToolUse: Array.from({ length: 7 }, () => expect.anything()),
       },
       attribution: hidden,
     });
@@ -139,18 +139,43 @@ describe("agents.attribution", () => {
     const files = {
       ".claude/settings.json": JSON.stringify({
         hooks: {
-          PreToolUse: ["create", "edit", "comment"].map((verb) => {
-            return {
-              matcher: "Bash",
-              hooks: [
-                {
-                  type: "command",
-                  command: "pnpm --silent engrenage agents claude hook github",
-                  if: `Bash(gh issue ${verb} *)`,
-                },
-              ],
-            };
-          }),
+          PreToolUse: [
+            ...["create", "edit", "comment"].map((verb) => {
+              return {
+                matcher: "Bash",
+                hooks: [
+                  {
+                    type: "command",
+                    command:
+                      "pnpm --silent engrenage agents claude hook github",
+                    if: `Bash(gh issue ${verb} *)`,
+                  },
+                ],
+              };
+            }),
+            ...["commit", "-c", "-C", "config"].map((start) => {
+              return {
+                matcher: "Bash",
+                hooks: [
+                  {
+                    type: "command",
+                    command: "pnpm --silent engrenage agents claude hook git",
+                    if: `Bash(git ${start} *)`,
+                  },
+                ],
+              };
+            }),
+          ],
+        },
+        permissions: {
+          deny: [
+            "Bash(git commit --no-verify*)",
+            "Bash(git commit -n*)",
+            "Bash(LEFTHOOK=0 *)",
+            "Bash(LEFTHOOK=false *)",
+            "Bash(git config core.hooksPath*)",
+          ],
+          allow: ["Bash(gh api *issue-field-values*)"],
         },
         attribution: hidden,
       }),

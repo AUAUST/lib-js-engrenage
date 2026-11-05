@@ -21,5 +21,6 @@ export const codexHooks = freeze([
   },
 ] as const) satisfies readonly HookDefinition[];
 
+// @debt Codex has no git bypass guard; its hook entries cannot filter on the command
 // @debt Codex commits skip the gate until a variable Codex sets in its shells is known
 export const codexSkillsDir = ".agents/skills" satisfies Directory;

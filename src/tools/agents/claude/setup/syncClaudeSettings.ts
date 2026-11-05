@@ -1,12 +1,18 @@
 import { isDeepStrictEqual } from "node:util";
 
+import { array, optional, string } from "valibot";
+
+import { entries } from "@auaust/toolkit/object";
+
 import { emptyObjectFile } from "#foundation/json/constants";
 import { readJsonValue, writeJsonValue } from "#foundation/json/index";
+import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
 import {
   claudeHiddenAttribution,
   claudeHookPrefix,
   claudeHooks,
+  claudePermissions,
   claudeSettingsFile,
 } from "#tools/agents/claude/constants";
 import { agentsSection } from "#tools/agents/operations/agentsSection";
@@ -51,6 +57,40 @@ async function syncAttribution(
   }
 }
 
+async function syncPermissions(config: {
+  filesystem: Filesystem;
+  resolve(...paths: string[]): string;
+}) {
+  const path = config.resolve(claudeSettingsFile);
+
+  let content =
+    (await config.filesystem.read(claudeSettingsFile)) ?? emptyObjectFile;
+
+  for (const [list, wanted] of entries(claudePermissions)) {
+    const present =
+      validate(
+        optional(array(string())),
+        readJsonValue(content, path, ["permissions", list]),
+        `${claudeSettingsFile} permissions.${list}`,
+      ) ?? [];
+
+    for (const rule of wanted) {
+      if (!present.includes(rule)) {
+        content = writeJsonValue(
+          content,
+          path,
+          ["permissions", list, -1],
+          rule,
+          jsonIndentation,
+          { isArrayInsertion: true },
+        );
+      }
+    }
+  }
+
+  await config.filesystem.write(claudeSettingsFile, content);
+}
+
 export async function syncClaudeSettings(
   { resolve, context }: LoadedConfig,
   { settings = false }: { settings?: boolean } = {},
@@ -81,6 +121,8 @@ export async function syncClaudeSettings(
     hooks: claudeHooks,
     prefix: claudeHookPrefix,
   });
+
+  await syncPermissions(config);
 
   if (attribution !== undefined) {
     await syncAttribution(config, attribution);

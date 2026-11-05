@@ -31,7 +31,17 @@ describe("syncClaudeSettings", () => {
     expect(project.read(".claude/settings.json")).toBe(`{
   // Kept by the project.
   "permissions": {
-    "deny": ["Read(**/.env)"]
+    "deny": [
+      "Read(**/.env)",
+      "Bash(git commit --no-verify*)",
+      "Bash(git commit -n*)",
+      "Bash(LEFTHOOK=0 *)",
+      "Bash(LEFTHOOK=false *)",
+      "Bash(git config core.hooksPath*)"
+    ],
+    "allow": [
+      "Bash(gh api *issue-field-values*)"
+    ]
   },
   "hooks": {
     "PreToolUse": [
@@ -62,6 +72,46 @@ describe("syncClaudeSettings", () => {
             "type": "command",
             "command": "pnpm --silent engrenage agents claude hook github",
             "if": "Bash(gh issue comment *)"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm --silent engrenage agents claude hook git",
+            "if": "Bash(git commit *)"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm --silent engrenage agents claude hook git",
+            "if": "Bash(git -c *)"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm --silent engrenage agents claude hook git",
+            "if": "Bash(git -C *)"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm --silent engrenage agents claude hook git",
+            "if": "Bash(git config *)"
           }
         ]
       }
