@@ -1,6 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { engrenage } from "#constants";
+import type { ImportCategory, ImportRelation } from "#project/structure/index";
 import type { BlockSyntax } from "#types/BlockSyntax";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
@@ -65,6 +66,31 @@ export const attributionRules = freeze({
 } as const);
 
 export const projectMapFile = ".claude/rules/project-map.md" satisfies File;
+
+export const projectMapDirectory = ".claude/rules/project-map" satisfies File;
+
+export const projectMapCategories = freeze([
+  "public-entries",
+  "internal-aliases",
+  "bin",
+  "scripts",
+  "data",
+  "tests",
+] as const satisfies readonly ImportCategory[]);
+
+export const projectMapRelations = freeze({
+  "own-roles": "its own roles and files",
+  "global-roles": "the global roles of the environment root",
+  "ancestor-roles": "the roles of its ancestor domains, as a sub-domain",
+  "sub-domain": "the `index.ts` and public roles of its sub-domains",
+  "lower-layer": "the `index.ts` of domains in lower layers",
+  "peer":
+    "the `index.ts` of its peers (same layer, unless the namespace is isolated)",
+  "environment": "another environment, as the matrix states",
+  "test-variant": "as the test file table states",
+  "root-entry": "any public surface, from the environment root file",
+  "workspace": "another workspace, only through a declared dependency",
+} as const satisfies Record<ImportRelation, string>);
 
 export const debtFile = ".ai/debt.md" satisfies File;
 

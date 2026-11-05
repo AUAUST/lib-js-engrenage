@@ -1,23 +1,31 @@
+import { stringify } from "yaml";
+
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
+import {
+  projectMapCategories,
+  projectMapDirectory,
+  projectMapFile,
+  projectMapRelations,
+} from "#tools/agents/constants";
 import type {
+  Alias,
   EnvironmentStructure,
+  ImportCategory,
   ImportRule,
-  ImportRuleSource,
-  ImportRuleTarget,
-  ResolvedRoleContract,
   ResolvedRoles,
   ResolvedStructure,
   StructureEnvironmentName,
   StructureNode,
+  TestVariant,
 } from "#project/structure/index";
+import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
 
-interface Parent {
-  readonly path: string;
-  readonly layers: readonly string[] | undefined;
-}
+type EnvironmentRules = ImportRule & {
+  readonly source: { readonly kind: "environment" };
+};
 
 function code(value: string): string {
   return `\`${value}\``;
@@ -27,324 +35,143 @@ function list(values: readonly string[]): string {
   return values.map(code).join(", ");
 }
 
-function cell(value: string): string {
-  return value.replaceAll("|", String.raw`\|`);
-}
-
 function unique<Value>(values: readonly Value[]): Value[] {
   return [...new Set(values)];
 }
 
-function describeSource(
-  source: ImportRuleSource,
-  patterns: { plain: Globs; source: Globs; dist: Globs },
-): string {
-  switch (source.kind) {
-    case "environment": {
-      return `${source.environment} environment`;
-    }
+function categoriesOf(rules: readonly ImportRule[]): ImportCategory[] {
+  return unique(
+    flatMap(rules, ({ targets }) => {
+      return targets
+        .filter((target) => target.kind === "category")
+        .map(({ category }) => category);
+    }),
+  );
+}
 
-    case "test-variant": {
+function mapFile(name: StructureEnvironmentName): File {
+  return `${projectMapDirectory}/${name}.md`;
+}
+
+function members(node: StructureNode): StructureNode[] {
+  return node.children.filter(({ kind }) => {
+    return kind === "domain" || kind === "namespace";
+  });
+}
+
+function inline(node: StructureNode): string {
+  const children = members(node);
+
+  const name = `${node.name}${node.kind === "namespace" ? "/" : ""}${node.public === true ? "*" : ""}`;
+
+  return children.length === 0
+    ? name
+    : `${name}{${children.map(inline).join(" ")}}`;
+}
+
+function renderCell(
+  rules: readonly EnvironmentRules[],
+  category: ImportCategory,
+  perFile: boolean,
+): string {
+  const matching = rules.filter(({ targets }) => {
+    return targets.some((target) => {
+      return target.kind === "category" && target.category === category;
+    });
+  });
+
+  if (matching.length === 0) {
+    return perFile ? "per file" : "-";
+  }
+
+  return [
+    matching.some(({ effect }) => effect === "forbid") ? "never" : undefined,
+    matching.some(({ effect, enforceable }) => {
+      return effect === "allow" && enforceable;
+    })
+      ? "yes"
+      : undefined,
+    matching.some(({ effect, enforceable }) => {
+      return effect === "allow" && !enforceable;
+    })
+      ? "⚠"
+      : undefined,
+  ]
+    .filter((part) => part !== undefined)
+    .join(" ");
+}
+
+function renderOverview({
+  structure,
+  importRules,
+  patterns,
+}: {
+  structure: ResolvedStructure;
+  importRules: readonly ImportRule[];
+  patterns: { plain: Globs; source: Globs; dist: Globs };
+}): string {
+  const environmentRules = importRules.filter(
+    (rule): rule is EnvironmentRules => {
+      return rule.source.kind === "environment";
+    },
+  );
+
+  const variantRules = importRules.filter(({ source }) => {
+    return source.kind === "test-variant";
+  });
+
+  const used = new Set(
+    importRules
+      .filter(({ source }) => {
+        return source.kind === "element" || source.kind === "file";
+      })
+      .map(({ relation }) => relation),
+  );
+
+  const mapped = entries(structure)
+    .filter(([, environment]) => environment !== undefined)
+    .map(([name]) => name);
+
+  const names = unique([
+    ...mapped,
+    ...environmentRules.map(({ source }) => source.environment),
+  ]);
+
+  const variantCategories = new Set(categoriesOf(variantRules));
+
+  const columns = projectMapCategories.filter((category) => {
+    return categoriesOf(environmentRules).includes(category);
+  });
+
+  const variants: readonly TestVariant[] = ["plain", "src", "dist"];
+
+  const variantRows = variants
+    .map((variant) => {
+      const own = variantRules.filter(({ source }) => {
+        return source.kind === "test-variant" && source.variant === variant;
+      });
+
+      return { variant, own };
+    })
+    .filter(({ own }) => own.length > 0)
+    .map(({ variant, own }) => {
       const globs = {
         plain: patterns.plain,
         src: patterns.source,
         dist: patterns.dist,
-      }[source.variant];
+      }[variant];
 
-      return `test files ${list(globs)}`;
-    }
+      const side = (effect: ImportRule["effect"]) => {
+        return categoriesOf(own.filter((rule) => rule.effect === effect)).join(
+          ", ",
+        );
+      };
 
-    case "element": {
-      return code(source.path);
-    }
-
-    case "file": {
-      return code(source.path);
-    }
-  }
-}
-
-function describeTarget(target: ImportRuleTarget): string {
-  switch (target.kind) {
-    case "category": {
-      return target.category;
-    }
-
-    case "element": {
-      return code(target.path);
-    }
-
-    case "index": {
-      return code(target.path);
-    }
-
-    case "modules": {
-      return code(`${target.path}/*`);
-    }
-
-    case "file": {
-      return code(target.path);
-    }
-  }
-}
-
-function describeNotes({ typeOnly, enforceable, reason }: ImportRule): string {
-  return `${typeOnly && !reason.includes("type-only") ? " (type-only)" : ""}${enforceable ? "" : " (not enforced by lint)"}`;
-}
-
-function describeRule(rule: ImportRule, targets: readonly string[]): string {
-  const subject = `${rule.effect === "forbid" ? "never: " : ""}${rule.reason}`;
-
-  return `${subject}${targets.length === 0 ? "" : ` → ${unique(targets).join(", ")}`}${describeNotes(rule)}`;
-}
-
-function describeContract(contract: ResolvedRoleContract): string {
-  const parts = [
-    contract.file === undefined
-      ? undefined
-      : `file ${list([contract.file].flat())}`,
-    contract.accepts === undefined
-      ? undefined
-      : `accepts ${list([contract.accepts].flat())}`,
-    contract.roles === undefined ? undefined : `roles ${list(contract.roles)}`,
-    contract.categories === true ? "category subdirectories" : undefined,
-    contract.exports === undefined ? undefined : `exports ${contract.exports}`,
-    contract.nesting === 0 ? undefined : `nesting ${contract.nesting}`,
-    contract.index ? "`index` allowed" : undefined,
-    contract.effects === undefined ? undefined : `effects ${contract.effects}`,
-    contract.discovered ? "discovered" : undefined,
-    contract.scoped ? "scoped" : undefined,
-  ];
-
-  return parts.filter((part) => part !== undefined).join("; ");
-}
-
-function collect(node: StructureNode): StructureNode[] {
-  return [node, ...flatMap(node.children, collect)];
-}
-
-function layerName({ layer }: StructureNode, parent: Parent): string {
-  return layer === undefined ? "" : (parent.layers?.[layer] ?? String(layer));
-}
-
-function renderRoles(
-  roles: ResolvedRoles,
-  rolesRules: ReadonlyMap<string, readonly string[]>,
-): string[] {
-  const rows = entries(roles.roles).map(([name, contract]) => {
-    const imports = rolesRules.get(name) ?? [];
-
-    return `| ${cell(code(name))} | ${cell(describeContract(contract))} | ${cell(imports.join("; ") || "as its domain")} | ${contract.public ? "yes" : "no"} |`;
-  });
-
-  return rows.length === 0
-    ? []
-    : [
-        "| Role | Contents and contract | Allowed imports | Public |",
-        "| --- | --- | --- | --- |",
-        ...rows,
-        "",
-      ];
-}
-
-function renderNode(
-  node: StructureNode,
-  parent: Parent,
-  elementRules: ReadonlyMap<string, readonly ImportRule[]>,
-): string[] {
-  const layer = layerName(node, parent);
-
-  const children = node.children.filter(({ kind }) => {
-    return kind === "domain" || kind === "namespace";
-  });
-
-  const lines = [`#### ${code(node.path)}`, ""];
-
-  if (node.kind === "namespace") {
-    lines.push(
-      `- Namespace${layer === "" ? "" : `, layer ${code(layer)} of ${code(parent.path)}`}`,
-      ...(node.layers === undefined
-        ? ["- Layers: none, children are peers"]
-        : [`- Layers: ${node.layers.map(code).join(" < ")}`]),
-    );
-  } else {
-    const visibility =
-      node.public === true
-        ? `public${node.specifier === undefined ? "" : ` as ${code(node.specifier)}`}`
-        : "internal";
-
-    lines.push(
-      `- ${node.commands === true ? "Command group" : "Domain"} in ${code(parent.path)}${layer === "" ? "" : `, layer ${code(layer)}`}`,
-      `- Visibility: ${visibility}`,
-      ...(node.purpose === undefined ? [] : [`- Purpose: ${node.purpose}`]),
-    );
-  }
-
-  if (children.length > 0) {
-    lines.push(`- Children: ${list(children.map(({ path }) => path))}`);
-  }
-
-  if (node.kind === "domain") {
-    const rules = elementRules.get(node.path) ?? [];
-
-    if (rules.length > 0) {
-      lines.push("- Imports:");
-
-      for (const rule of rules) {
-        const surfaces = rule.targets
-          .filter(({ kind }) => kind === "index")
-          .map(describeTarget);
-
-        lines.push(`  - ${describeRule(rule, surfaces)}`);
-      }
-    }
-  }
-
-  lines.push("");
-
-  const next: Parent = { path: node.path, layers: node.layers };
-
-  return [
-    ...lines,
-    ...flatMap(children, (child) => renderNode(child, next, elementRules)),
-  ];
-}
-
-function renderEnvironment({
-  name,
-  environment,
-  roles,
-  elementRules,
-  extra,
-}: {
-  name: StructureEnvironmentName;
-  environment: EnvironmentStructure;
-  roles: ResolvedRoles | undefined;
-  elementRules: ReadonlyMap<string, readonly ImportRule[]>;
-  extra: readonly string[];
-}): string[] {
-  const nodes = collect(environment.root);
-
-  const rolesRules = new Map<string, string[]>();
-
-  for (const node of nodes) {
-    if (node.kind !== "role" || node.role === undefined) {
-      continue;
-    }
-
-    const reasons = (elementRules.get(node.path) ?? []).map((rule) => {
-      return describeRule(rule, []);
+      return `| ${list(globs)} | ${side("allow")} | ${side("forbid")} |`;
     });
 
-    rolesRules.set(
-      node.role,
-      unique([...(rolesRules.get(node.role) ?? []), ...reasons]),
-    );
-  }
-
-  const rootChildren = environment.root.children.filter(({ kind }) => {
-    return kind === "domain" || kind === "namespace";
-  });
-
-  const mirrors = environment.root.children.filter(({ kind }) => {
-    return kind === "mirror";
-  });
-
-  const root: Parent = {
-    path: environment.root.path,
-    layers: environment.root.layers,
-  };
-
-  return [
-    `### ${name} (${environment.strictness})`,
-    "",
-    `Directories: ${list(environment.dirs)}`,
-    ...(environment.root.layers === undefined
-      ? []
-      : [
-          "",
-          `Layers of ${code(environment.root.path)}: ${environment.root.layers.map(code).join(" < ")}`,
-        ]),
-    ...(extra.length === 0 ? [] : ["", ...extra]),
-    ...(mirrors.length === 0
-      ? []
-      : [
-          "",
-          `Root keys: ${mirrors
-            .map(({ name: key, mirror }) => {
-              return `${code(key)}${mirror === undefined ? "" : ` (tests ${code(mirror.path)})`}`;
-            })
-            .join(", ")}`,
-        ]),
-    ...(environment.unclassified.length === 0
-      ? []
-      : [
-          "",
-          `Unclassified: ${list(environment.unclassified.map(({ path }) => path))}`,
-        ]),
-    "",
-    ...(roles === undefined ? [] : renderRoles(roles, rolesRules)),
-    ...flatMap(rootChildren, (child) => renderNode(child, root, elementRules)),
-  ];
-}
-
-// @debt the map lists long peer and lower-layer targets per domain (about 580 lines, loaded at every session start) and is written by `sync` only, so a project that ran init without sync has none
-export function renderProjectMap({
-  structure,
-  importRules,
-  roles,
-  tests,
-}: {
-  structure: ResolvedStructure;
-  importRules: readonly ImportRule[];
-  roles: Readonly<Partial<Record<StructureEnvironmentName, ResolvedRoles>>>;
-  tests: {
-    layout: "roots" | "mirror";
-    patterns: { plain: Globs; source: Globs; dist: Globs };
-  };
-}): string {
-  const nodePaths = new Set(
-    flatMap(
-      entries(structure).flatMap(([, environment]) => {
-        return environment === undefined ? [] : [environment];
-      }),
-      ({ root }) => collect(root).map(({ path }) => path),
-    ),
-  );
-
-  const elementRules = new Map<string, ImportRule[]>();
-  const otherRules: ImportRule[] = [];
-
-  for (const rule of importRules) {
-    if (rule.source.kind === "element" && nodePaths.has(rule.source.path)) {
-      elementRules.set(rule.source.path, [
-        ...(elementRules.get(rule.source.path) ?? []),
-        rule,
-      ]);
-    } else {
-      otherRules.push(rule);
-    }
-  }
-
-  const environments = entries(structure).flatMap(([name, environment]) => {
-    if (environment === undefined) {
-      return [];
-    }
-
-    const extra =
-      name === "tests"
-        ? [
-            `Layout: ${code(tests.layout)}${tests.layout === "mirror" ? ", each directory below a root key mirrors one of that environment" : ", any directory below a root key is accepted"}`,
-          ]
-        : [];
-
-    return renderEnvironment({
-      name,
-      environment,
-      roles: name === "bin" ? undefined : roles[name],
-      elementRules,
-      extra,
-    });
+  const workspaceRules = importRules.filter(({ relation, source }) => {
+    return relation === "workspace" && source.kind === "element";
   });
 
   return [
@@ -352,24 +179,256 @@ export function renderProjectMap({
     "",
     "Generated by `engrenage sync agents` from the project structure. Do not edit.",
     "",
+    "## Notation",
+    "",
+    "Trees: `name*` public domain, `{…}` sub-domains, `#alias/…` import alias, `[isolated]` peers never import each other. Lint enforces every rule.",
+    "",
+    "| Relation | A domain may import |",
+    "| --- | --- |",
+    ...entries(projectMapRelations)
+      .filter(([relation]) => used.has(relation))
+      .map(([relation, meaning]) => `| ${code(relation)} | ${meaning} |`),
+    "",
     "## Environments",
     "",
-    ...environments,
-    ...(otherRules.length === 0
+    `| from / to | ${columns.join(" | ")} | map |`,
+    `| --- |${columns.map(() => " --- |").join("")} --- |`,
+    ...names.map((name) => {
+      const own = environmentRules.filter(({ source }) => {
+        return source.environment === name;
+      });
+
+      const cells = columns.map((category) => {
+        return renderCell(
+          own,
+          category,
+          name === "tests" && variantCategories.has(category),
+        );
+      });
+
+      return `| ${code(name)} | ${cells.join(" | ")} | ${mapped.includes(name) ? code(mapFile(name)) : "-"} |`;
+    }),
+    "",
+    "`-` states nothing; ⚠ is a stated allowance lint cannot check.",
+    ...(variantRows.length === 0
       ? []
       : [
-          "## Imports between environments",
           "",
-          ...otherRules.map((rule) => {
-            const targets = rule.targets.map(describeTarget);
-
-            return `- ${describeSource(rule.source, tests.patterns)}: ${describeRule(rule, targets)}`;
-          }),
+          "## Test files",
           "",
+          "| Files | May import | Never |",
+          "| --- | --- | --- |",
+          ...variantRows,
         ]),
+    ...(workspaceRules.length === 0
+      ? []
+      : [
+          "",
+          "## Workspaces",
+          "",
+          ...workspaceRules.map(({ source, effect, reason }) => {
+            return `- ${source.kind === "element" ? code(source.path) : ""}: ${effect === "forbid" ? "never: " : ""}${reason}`;
+          }),
+        ]),
+  ].join("\n");
+}
+
+function renderLine(
+  node: StructureNode,
+  aliases: ReadonlyMap<string, string>,
+  globalRoles: readonly string[] = [],
+): string {
+  const children = members(node);
+
+  const plain = children.filter(({ kind, purpose }) => {
+    return kind === "domain" && purpose === undefined;
+  });
+
+  const alias = aliases.get(node.path);
+
+  return [
+    `${node.name}/`,
+    alias,
+    node.layers === undefined ? undefined : node.layers.join(" < "),
+    node.relation === "isolated" ? "[isolated]" : undefined,
+    plain.length === 0 ? undefined : plain.map(inline).join(" "),
+    node.purpose,
+    globalRoles.length === 0
+      ? undefined
+      : `(global roles: ${globalRoles.join(" ")})`,
   ]
-    .join("\n")
-    .replaceAll(/\n{3,}/g, "\n\n")
-    .trimEnd()
-    .concat("\n");
+    .filter((part) => part !== undefined)
+    .join("  ");
+}
+
+function renderTree(
+  node: StructureNode,
+  aliases: ReadonlyMap<string, string>,
+  prefix: string,
+): string[] {
+  const rows = members(node).filter(({ kind, purpose }) => {
+    return kind === "namespace" || purpose !== undefined;
+  });
+
+  return flatMap(rows, (child, index) => {
+    const last = index === rows.length - 1;
+
+    const line =
+      child.kind === "namespace"
+        ? renderLine(child, aliases)
+        : `${inline(child)}  ${child.purpose}`;
+
+    return [
+      `${prefix}${last ? "└─ " : "├─ "}${line}`,
+      ...renderTree(child, aliases, `${prefix}${last ? "   " : "│  "}`),
+    ];
+  });
+}
+
+function renderRoles(roles: ResolvedRoles): string[] {
+  const rows = entries(roles.roles).map(([name, contract]) => {
+    const imports = [
+      contract.typeOnly ? "type-only" : undefined,
+      contract.effects === undefined ? undefined : `level ${contract.effects}`,
+    ]
+      .filter((part) => part !== undefined)
+      .join(", ");
+
+    return `| ${code(name)} | ${(contract.purpose ?? "").replaceAll("|", String.raw`\|`)} | ${imports} |`;
+  });
+
+  return rows.length === 0
+    ? []
+    : [
+        "",
+        `Effect levels, purest first: ${roles.effects.levels.map(code).join(" < ")}. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other.`,
+        "",
+        "| Role | Purpose | Imports where they differ |",
+        "| --- | --- | --- |",
+        ...rows,
+      ];
+}
+
+function renderEnvironmentMap({
+  name,
+  environment,
+  roles,
+  aliases,
+}: {
+  name: StructureEnvironmentName;
+  environment: EnvironmentStructure;
+  roles: ResolvedRoles | undefined;
+  aliases: ReadonlyMap<string, string>;
+}): string {
+  const { root } = environment;
+
+  const mirrors = root.children.filter(({ kind }) => kind === "mirror");
+
+  const globalRoles = root.children
+    .filter((child) => child.kind === "role")
+    .map(({ name: role }) => role);
+
+  const tree = [
+    renderLine(
+      { ...root, name: environment.dirs.join("/ ") },
+      aliases,
+      globalRoles,
+    ),
+    ...renderTree(root, aliases, ""),
+    ...mirrors.map(({ name: key, mirror }, index) => {
+      return `${index === mirrors.length - 1 ? "└─" : "├─"} ${key}/  mirrors ${mirror === undefined ? key : mirror.path}`;
+    }),
+  ];
+
+  const paths = environment.dirs.map((dir) => {
+    return dir === "." ? "**" : `${dir}/**`;
+  });
+
+  return [
+    "---",
+    stringify({ paths }).trimEnd(),
+    "---",
+    "",
+    `# Project map: ${name}`,
+    "",
+    ...(environment.strictness === "loose"
+      ? ["Strictness: loose, unclassified directories are plain domains.", ""]
+      : []),
+    "```",
+    ...tree,
+    "```",
+    ...(environment.unclassified.length === 0
+      ? []
+      : [
+          "",
+          `Unclassified: ${list(environment.unclassified.map(({ path }) => path))}`,
+        ]),
+    ...(roles === undefined ? [] : renderRoles(roles)),
+  ].join("\n");
+}
+
+function findAliases(
+  structure: ResolvedStructure,
+  aliases: readonly Alias[],
+): Map<string, string> {
+  const found = new Map<string, string>();
+
+  for (const [, environment] of entries(structure)) {
+    for (const child of environment?.root.children ?? []) {
+      const alias = aliases.find(({ key, source }) => {
+        return (
+          key === `#${child.name}/*` && source === `src entry ${child.path}`
+        );
+      });
+
+      if (alias !== undefined) {
+        found.set(child.path, `#${child.name}/…`);
+      }
+    }
+  }
+
+  return found;
+}
+
+export function renderProjectMap({
+  structure,
+  importRules,
+  roles,
+  aliases,
+  patterns,
+}: {
+  structure: ResolvedStructure;
+  importRules: readonly ImportRule[];
+  roles: Readonly<Partial<Record<StructureEnvironmentName, ResolvedRoles>>>;
+  aliases: readonly Alias[];
+  patterns: { plain: Globs; source: Globs; dist: Globs };
+}): { file: File; content: string }[] {
+  const found = findAliases(structure, aliases);
+
+  const files = [
+    {
+      file: projectMapFile,
+      content: `${renderOverview({
+        structure,
+        importRules,
+        patterns,
+      })}\n`,
+    },
+  ];
+
+  for (const [name, environment] of entries(structure)) {
+    if (environment !== undefined) {
+      files.push({
+        file: mapFile(name),
+        content: `${renderEnvironmentMap({
+          name,
+          environment,
+          roles: name === "bin" ? undefined : roles[name],
+          aliases: found,
+        })}\n`,
+      });
+    }
+  }
+
+  return files;
 }

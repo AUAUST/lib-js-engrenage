@@ -5,17 +5,27 @@ import { syncAgents } from "@auaust/engrenage/agents";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
-const mapFile = ".claude/rules/project-map.md";
+const overviewFile = ".claude/rules/project-map.md";
+const sourceFile = ".claude/rules/project-map/src.md";
 
-function createProject() {
+function createProject(peers = 0) {
+  const extra: Record<string, string> = {};
+
+  for (let index = 0; index < peers; index++) {
+    extra[`src/feature${index}/index.ts`] = "";
+  }
+
   return createTemporaryProject({
     "package.json": '{ "name": "project", "type": "module" }',
     "engrenage.config.ts": `export default {
   preset: "library",
   agents: { preferred: ["claude"] },
-  roles: { define: { handlers: { exports: "named-match" } } },
+  roles: { define: { handlers: { exports: "named-match", purpose: "Request handlers." } } },
   src: {
-    namespaces: { ".": { layers: ["base", "*"] } },
+    namespaces: {
+      ".": { layers: ["base", "*"] },
+      "isolated": { relation: "isolated" },
+    },
     domains: { "feature": { purpose: "The feature." } },
   },
 };\n`,
@@ -23,43 +33,70 @@ function createProject() {
     "src/feature/index.ts": "",
     "src/feature/entry.ts": "",
     "src/feature/handlers/run.ts": "",
+    "src/isolated/one/index.ts": "",
+    "src/isolated/two/index.ts": "",
+    ...extra,
   });
 }
 
+async function sync(peers?: number) {
+  const project = createProject(peers);
+  const config = await loadConfig(project.root);
+
+  syncAgents(config);
+  config.filesystem.flush();
+
+  return { project, config };
+}
+
 describe("project map", () => {
-  test("renders namespaces, layers, domains and project-defined roles", async () => {
-    const project = createProject();
-    const config = await loadConfig(project.root);
+  test("renders the overview and the src map from the structure", async () => {
+    const { project } = await sync();
 
-    syncAgents(config);
-    config.filesystem.flush();
+    const overview = project.read(overviewFile);
+    const map = project.read(sourceFile);
 
-    const map = project.read(mapFile);
-
-    expect(map).toContain("Layers of `.`: `base` < `*`");
-    expect(map).toContain("#### `src/feature`");
-    expect(map).toContain("- Visibility: public");
-    expect(map).toContain("- Purpose: The feature.");
-    expect(map).toContain("| `handlers` |");
-    expect(map).toContain("domains of a lower layer");
+    expect(overview).toContain("| `peer`");
+    expect(overview).toContain("| `src`");
+    expect(overview).toContain(".claude/rules/project-map/src.md");
+    expect(map).toContain("paths:\n  - src/**");
+    expect(map).toContain("base < *");
+    expect(map).toContain("isolated/  #isolated/…  [isolated]  one two");
+    expect(map).toContain("feature*  The feature.");
+    expect(map).toContain("| `handlers` | Request handlers. |");
   });
 
-  test("reports a stale map as synced and a fresh one as unchanged", async () => {
-    const config = await loadConfig(createProject().root);
+  test("peer domains add no line to the src map", async () => {
+    const few = await sync();
+    const many = await sync(10);
 
-    syncAgents(config);
-    config.filesystem.flush();
-    config.filesystem.write(mapFile, "stale\n");
+    expect(many.project.read(sourceFile)?.split("\n")).toHaveLength(
+      few.project.read(sourceFile)?.split("\n").length ?? 0,
+    );
+
+    expect(many.project.read(overviewFile)?.split("\n")).toHaveLength(
+      few.project.read(overviewFile)?.split("\n").length ?? 0,
+    );
+  });
+
+  test("reports a stale or extra map as synced and a fresh one as unchanged", async () => {
+    const { project, config } = await sync();
+
+    config.filesystem.write(sourceFile, "stale\n");
+    config.filesystem.write(".claude/rules/project-map/gone.md", "extra\n");
     config.filesystem.flush();
     syncAgents(config);
 
-    expect(config.filesystem.flush()).toContainEqual({
-      file: mapFile,
-      status: "synced",
-    });
+    expect(config.filesystem.flush()).toEqual(
+      expect.arrayContaining([
+        { file: sourceFile, status: "synced" },
+        { file: ".claude/rules/project-map/gone.md", status: "deleted" },
+      ]),
+    );
 
     syncAgents(config);
 
     expect(config.filesystem.discard()).toEqual([]);
+    expect(project.read(sourceFile)).toContain("# Project map: src");
   });
 });

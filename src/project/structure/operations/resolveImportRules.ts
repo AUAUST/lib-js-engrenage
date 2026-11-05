@@ -69,6 +69,7 @@ function resolveEnvironmentRules({
     return { kind: "environment", environment: name } as const;
   }
 
+  /** @debt most environment-sourced rules are labelled with the `test-variant` relation instead of `environment`, so the project map derives its matrix from the source kind */
   function variant(name: "plain" | "src" | "dist") {
     return { kind: "test-variant", variant: name } as const;
   }

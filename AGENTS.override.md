@@ -17,6 +17,11 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | <code>**/*.ts</code> | <code>.claude/rules/code-style.md</code> |
 | <code>**/*.ts</code> | <code>.claude/rules/prefer-primitive-kit.md</code> |
 | <code>**/*.ts</code> | <code>.claude/rules/prefer-toolkit.md</code> |
+| <code>bin/**</code> | <code>.claude/rules/project-map/bin.md</code> |
+| <code>scripts/**</code> | <code>.claude/rules/project-map/scripts.md</code> |
+| <code>src/**</code> | <code>.claude/rules/project-map/src.md</code> |
+| <code>tests/**</code> | <code>.claude/rules/project-map/tests.md</code> |
+| <code>tooling/**</code> | <code>.claude/rules/project-map/tooling.md</code> |
 | All files | <code>.claude/rules/debt-markers.md</code> |
 | All files | <code>.claude/rules/git.md</code> |
 | All files | <code>.claude/rules/no-attribution.md</code> |
