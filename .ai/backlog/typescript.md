@@ -36,30 +36,24 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - want: candidate answers: group entries by pattern or by interface so each key is stated once; or move the table next to the generated `src/project/baseline/editions/constants.ts` source data; or derive more keys from web-features in `generateEditions` so fewer need listing. Whether the table can be generated at all is open and needs a look at how web-features names these members.
 - done: the table is grouped or derived so each key appears once and maintaining it needs no per-interface duplication.
 
-## 7. Generated tsconfigs have no canonical key ordering.
-
-- why: `package.json` has a canonical field order; tsconfigs have none.
-- want: a canonical ordering for tsconfig keys at every layer that makes sense (top-level, `compilerOptions`, maybe more), applied by the sync target, like the `package.json` one. Lists and records that aren't order-dependent should also be consistently sorted. Order-dependent structures must always be generated in the correct order, i.e. paths should start by the most specific and proceed to the more general; not generated and not managed structures should not be reordered arbitrarily as not to break a use-defined order.
-- done: generated tsconfigs follow the documented order and sync keeps it.
-
-## 8. ES library selection and baseline month logic rest on assumptions
+## 7. ES library selection and baseline month logic rest on assumptions
 
 - sites: `src/project/tsconfig/operations/produceTsconfigTypes.ts:35,75`, `src/project/baseline/utils/{includesEsLibrary.ts:5,listEsSelections.ts:13,addMonths.ts:5}`, `scripts/codegen/operations/generateApiDeclarations.ts:358`.
 - why: an unknown lib (`esnext.*`, `DOM`) never counts as including a group; candidate months follow the selection rule, not the selection; lib name comes from file-name convention; `addMonths` can return impossible dates (2026-02-31); the removed prefix is stated apart from `listDefaultTypes`. Related: `typescript.3`–`typescript.5`.
 - want: a validating check or explicit declaration per assumption.
 
-## 9. Baseline and edition generation depend on upstream conventions
+## 8. Baseline and edition generation depend on upstream conventions
 
 - sites: `src/project/baseline/utils/resolveBaselineMinimums.ts:8` (V8 versions follow Chromium majors), `:25` (first match relies on `node-releases` ascending order), `scripts/codegen/operations/generateEditions.ts:548` (base edition trusted as TypeScript ships it).
 - want: decide per assumption: a validating check or acceptance (planning).
 
-## 10. Timer handle types are not isomorphic
+## 9. Timer handle types are not isomorphic
 
 - site: `src/project/baseline/constants.ts:3`
 - why: handles typed `number` (DOM) while Node returns an object. Related: `typescript.3`, `typescript.4`.
 - want: a type holding under both signatures.
 
-## 11. The library compiler keeps sources in a shared mutable binding
+## 10. The library compiler keeps sources in a shared mutable binding
 
 - site: `src/tools/typescript/operations/createLibraryCompiler.ts:41`
 - why: holds only while compilations stay synchronous.

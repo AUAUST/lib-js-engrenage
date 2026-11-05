@@ -37,6 +37,5 @@ Deferred questions, bugs, tasks and improvements.
 - [vitest](vitest.md): Generated Vitest configuration.
 - [structure](structure.md): Project structure description, its report and the tooling generated from it.
 - [changesets](changesets.md): Changesets configuration and presets.
-- [format](format.md): Formatting conventions of `project/format` and the tools they map to.
 - [github](github.md): Generated GitHub workflows and templates.
 - [agent-instructions](agent-instructions.md): Shared agent instructions, skills and backlog conventions.
