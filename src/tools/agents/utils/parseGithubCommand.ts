@@ -8,6 +8,7 @@ const heredocPattern =
 
 const titlePattern = /(?:--title|\s-t)[\s=]+(?:"([^"]*)"|'([^']*)'|(\S+))/;
 
+// @debt the kind comes from `Plan:`/`Block:` title prefixes, which the #239 protocol drops for issue types, so every unprefixed plan or segment is measured against the task budget.
 function getKind(action: GithubWrite["action"], title: string | undefined) {
   if (action === "comment") {
     return "comment" satisfies BudgetKind;

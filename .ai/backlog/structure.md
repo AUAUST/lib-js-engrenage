@@ -64,3 +64,8 @@ Project structure description, its report and the tooling generated from it.
 
 - sites: `src/project/config/constants.ts:22` (test-variant suffixes belong to `project/environments`), `src/project/structure/operations/resolveImportRules.ts:72` (environment-sourced rules labelled `test-variant` instead of `environment`). `liveSections` and the `layout` option: #225.
 - want: each term and constant owned by its domain, one meaning per name.
+
+## 11. Packages built with engrenage publish no effect levels for their exports
+
+- why: #234 ranks other packages' imports through the `structure.effects` config map only, though an engrenage-built package's roles already carry a level per export.
+- want: such packages publish levels derived from their roles, read when another project imports them, so consumers stop declaring them by hand.

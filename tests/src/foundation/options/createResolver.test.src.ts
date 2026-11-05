@@ -67,8 +67,9 @@ describe("createResolver", () => {
 
   test("re-resolves a memoized section when a live section it read changes", async () => {
     const versions = {
- a: { content: "a" }, b: { content: "b" } 
-};
+      a: { content: "a" },
+      b: { content: "b" },
+    };
 
     let current = versions.a;
 

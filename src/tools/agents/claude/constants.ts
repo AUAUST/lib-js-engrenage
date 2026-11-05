@@ -8,6 +8,8 @@ export const claudeFile = "CLAUDE.md" satisfies File;
 
 export const claudeSettingsFile = ".claude/settings.json" satisfies File;
 
+// @debt Edits made through Bash (sed, scripts, codemods) never match this matcher, so they skip formatting and lint; nothing at commit time catches what the hook misses.
+// @debt The command runs the project's own CLI, so whenever the project fails to load (mid-refactor in engrenage itself, a broken config) the hook exits non-blocking and edits go unformatted without the agent knowing.
 export const claudeEditHook = freeze({
   event: "PostToolUse",
   matcher: "Edit|MultiEdit|Write",
