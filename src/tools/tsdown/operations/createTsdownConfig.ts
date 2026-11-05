@@ -127,11 +127,11 @@ function assertPackageUnchanged(path: File, snapshot: string) {
   }
 }
 
-export function createTsdownConfig(
+export async function createTsdownConfig(
   context: OptionContext<Sections>,
   { ci }: { ci: boolean },
   options?: Maybe<Options>,
-): Config {
+): Promise<Config> {
   const { bundle, plugins } = validate(
     optionsSchema,
     options ?? {},
@@ -140,11 +140,13 @@ export function createTsdownConfig(
 
   const { get } = context;
 
-  const root = get("root");
-  const packageJson = get("packageJson");
-  const packageJsonPath = get("packageJsonPath");
-  const source = get("src");
-  const { path: tsconfigPath } = get("typescript").tsconfig;
+  const root = await get("root");
+  const packageJson = await get("packageJson");
+  const packageJsonPath = await get("packageJsonPath");
+  const source = await get("src");
+  const typescript = await get("typescript");
+
+  const tsconfigPath = await typescript.tsconfig.path;
   const { path: declarationsTsconfigPath } = source.tsconfig;
 
   // @debt repeats the "No package.json found" guard of createStepContext and syncChangesetConfig
@@ -158,7 +160,9 @@ export function createTsdownConfig(
     );
   }
 
-  const { typed, sourcemap, clean, outDir } = get("build");
+  const build = await get("build");
+  const { typed, sourcemap, clean } = build;
+  const outDir = await build.outDir;
 
   if (outDir === undefined) {
     throw new Error(
@@ -166,26 +170,28 @@ export function createTsdownConfig(
     );
   }
 
-  const sourceEntries = resolveSourceEntries({
+  const sourceEntries = await resolveSourceEntries({
     packageJson,
     root,
     src: source,
-    tsconfig: get("tsconfig"),
+    tsconfig: await get("tsconfig"),
   });
 
   const bins = resolveCommandEntries({
-    bin: get("bin"),
-    filesystem: get("filesystem"),
+    bin: await get("bin"),
+    filesystem: await get("filesystem"),
   });
 
-  const workspaceEntries = resolveWorkspaceEntries(get("workspaces"));
+  const workspaceEntries = resolveWorkspaceEntries(await get("workspaces"));
 
   const customExports = resolveDataExports(
-    { data: get("data") },
+    { data: await get("data") },
     sourceEntries,
   );
 
   const packageSnapshot = readPackageSnapshot(packageJsonPath);
+
+  const environment = await get("environment");
 
   return {
     cwd: root,
@@ -235,18 +241,21 @@ export function createTsdownConfig(
       }),
       ...(clean === "emitted"
         ? createEmittedManifestPlugins(`${pluginPrefix}:emitted-manifest`, {
-            manifest: join(get("cacheFor")(tsdown), emittedManifestFile),
+            manifest: join(
+              (await get("cacheFor"))(tsdown),
+              emittedManifestFile,
+            ),
             outDir: resolveWithin(root, outDir),
           })
         : []),
     ],
-    define: createDefine(context, {
+    define: await createDefine(context, {
       isTesting: false,
     }),
     report: false,
-    publint: get("environment").hasDependency(publint),
+    publint: environment.hasDependency(publint),
     attw: {
-      enabled: get("environment").hasDependency(arethetypeswrongCore),
+      enabled: environment.hasDependency(arethetypeswrongCore),
       profile: "node16",
       ignoreRules: ["cjs-resolves-to-esm"],
     },

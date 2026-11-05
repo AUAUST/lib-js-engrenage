@@ -1,7 +1,7 @@
 import type { ResolvableValue } from "@auaust/toolkit/value";
 
-import type { ProjectConfig } from "#project/config/index";
 import type { Trait } from "#project/presets/index";
+import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { Delegate } from "#tools/eslint/types/Delegate";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
@@ -15,6 +15,6 @@ export interface Convention {
   ignores: ScopeReferences;
   typeAware: boolean;
   severity: "error" | "warn" | "info";
-  delegates: ResolvableValue<readonly Delegate[], [ProjectConfig]>;
-  rule?: ResolvableValue<RuleModule, [ProjectConfig]>;
+  delegates: ResolvableValue<readonly Delegate[], [ConventionConfig]>;
+  rule?: ResolvableValue<RuleModule, [ConventionConfig]>;
 }

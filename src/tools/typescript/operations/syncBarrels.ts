@@ -12,6 +12,7 @@ import {
   typescriptBlocks,
 } from "#tools/typescript/constants";
 import { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
+import type { OptionContext } from "#foundation/options/index";
 import type { ProjectConfig } from "#project/config/index";
 import type { SubpathImports } from "#project/package/index";
 import type { BarrelMode } from "#tools/typescript/types/BarrelMode";
@@ -156,18 +157,23 @@ function selectBarrels(files: Files, name: string): Files {
   return byName;
 }
 
-export function syncBarrels(
-  config: ProjectConfig,
+export async function syncBarrels(
+  config: OptionContext<ProjectConfig>,
   barrels: readonly string[] = [],
 ) {
-  const { root: rootPath } = config;
+  const [rootPath, { imports }, source, bin, scripts, filesystem, resolve] =
+    await Promise.all([
+      config.get("root"),
+      config.get("packageJson"),
+      config.get("src"),
+      config.get("bin"),
+      config.get("scripts"),
+      config.get("filesystem"),
+      config.get("resolve"),
+    ]);
 
-  const { imports } = config.packageJson;
-
-  const { src, bin, scripts } = config;
-
-  const allFiles = config.filesystem.glob(
-    filesIn([...src.dirs, ...bin.dirs, ...scripts.dirs], barrelFiles),
+  const allFiles = filesystem.glob(
+    filesIn([...source.dirs, ...bin.dirs, ...scripts.dirs], barrelFiles),
   );
 
   const files =
@@ -196,7 +202,7 @@ export function syncBarrels(
   }
 
   syncFiles(
-    config,
+    { filesystem, resolve },
     map(files, (file) => {
       return {
         file,

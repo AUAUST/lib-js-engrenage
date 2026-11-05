@@ -43,10 +43,12 @@ export const edit = defineCommand((command) => {
       // @debt formatWithPrettier called in a loop means every file re-instantiates the formatter
       await formatEditedFile(config, file, formatWithPrettier);
 
+      const agents = await config.get("agents");
+
       reportBudgetFindings(
-        measureEditedFile(config.root, file, config.agents.budgets),
+        measureEditedFile(await config.get("root"), file, agents.budgets),
         {
-          mode: config.agents.budgets.mode,
+          mode: agents.budgets.mode,
           event: "PostToolUse",
         },
       );

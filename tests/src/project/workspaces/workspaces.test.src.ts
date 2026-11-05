@@ -8,6 +8,7 @@ import { runSync, sync } from "#bin/engrenage/sync";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
+import { resolveConventionConfig } from "#tools/eslint/operations/resolveConventionConfig";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
@@ -132,20 +133,23 @@ describe("workspaces", () => {
 
     const resolved = await loadConfig(project.root);
 
-    expect(resolveScope(resolved, ["files.workspaces"])).toEqual([
+    const conventions = await resolveConventionConfig(resolved);
+
+    expect(resolveScope(conventions, ["files.workspaces"])).toEqual([
       "extensions/action-a/**/*.{ts,tsx}",
       "extensions/action-b/**/*.{ts,tsx}",
       "extensions/functions-c/**/*.{ts,tsx}",
     ]);
 
-    expect(resolveScope(resolved, ["files.code"])).toEqual(
-      expect.arrayContaining(resolveScope(resolved, ["files.workspaces"])),
+    expect(resolveScope(conventions, ["files.code"])).toEqual(
+      expect.arrayContaining(resolveScope(conventions, ["files.workspaces"])),
     );
 
     await runSync(resolved, { names: ["tsconfig"] });
 
     expect(
-      JSON.parse(resolved.filesystem.read("tsconfig.json") ?? "").references,
+      JSON.parse((await resolved.get("filesystem")).read("tsconfig.json") ?? "")
+        .references,
     ).toEqual(
       expect.arrayContaining([
         { path: "./extensions/action-a/tsconfig.json" },
@@ -157,7 +161,8 @@ describe("workspaces", () => {
   test("resolves the import rules between workspaces from their dependencies", async () => {
     const project = createProject();
 
-    const { importRules } = await loadConfig(project.root);
+    const config = await loadConfig(project.root);
+    const importRules = await config.get("importRules");
 
     function targets(source: string, effect: "allow" | "forbid") {
       return importRules
@@ -220,7 +225,7 @@ describe("workspace modules", () => {
     const resolved = await loadConfig(project.root);
 
     await runSync(resolved, { names: ["tsconfig", "aliases", "workspaces"] });
-    resolved.filesystem.flush();
+    (await resolved.get("filesystem")).flush();
 
     execFileSync(
       process.execPath,

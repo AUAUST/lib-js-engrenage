@@ -3,8 +3,8 @@ import boundaries from "eslint-plugin-boundaries";
 import { create } from "@auaust/toolkit/object";
 
 import { resolveBoundaries } from "#tools/eslint/utils/resolveBoundaries";
-import type { ProjectConfig } from "#project/config/index";
 import type { BoundaryRow } from "#tools/eslint/types/BoundaryRow";
+import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { Plugin } from "#tools/eslint/types/Plugin";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 
@@ -12,7 +12,7 @@ import type { RuleModule } from "#tools/eslint/types/RuleModule";
 const plugin = boundaries as unknown as Plugin;
 
 export function createBoundaryRule(
-  config: ProjectConfig,
+  config: ConventionConfig,
   row: BoundaryRow,
 ): RuleModule {
   const dependencies = plugin.rules?.dependencies;

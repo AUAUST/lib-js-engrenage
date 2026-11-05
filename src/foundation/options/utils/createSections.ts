@@ -1,56 +1,91 @@
-import { create, defineGetter, freeze } from "@auaust/toolkit/object";
-
 import type { OptionContext } from "#foundation/options/types/OptionContext";
 import type { SectionResolvers } from "#foundation/options/types/SectionResolvers";
 
 export function createSections<Sections extends object>(
   resolvers: SectionResolvers<Sections>,
   live: readonly (keyof Sections)[] = [],
-): OptionContext<Sections> & { readonly sections: Sections } {
-  const memos: { [Section in keyof Sections]?: { value: Sections[Section] } } =
-    {};
+): OptionContext<Sections> {
+  const memos = new Map<keyof Sections, Promise<unknown>>();
+  const waits = new Map<keyof Sections, Set<keyof Sections>>();
 
-  const resolving: PropertyKey[] = [];
+  function findPath(
+    from: keyof Sections,
+    to: keyof Sections,
+  ): (keyof Sections)[] | undefined {
+    const visited = new Set<keyof Sections>();
 
-  function get<Section extends keyof Sections>(
-    section: Section,
-  ): Sections[Section] {
-    const memo = memos[section];
-
-    if (memo !== undefined) {
-      return memo.value;
-    }
-
-    const start = resolving.indexOf(section);
-
-    if (start !== -1) {
-      const path = [...resolving.slice(start), section];
-
-      throw new Error(
-        `Config sections depend on each other: ${path.map(String).join(" -> ")}`,
-      );
-    }
-
-    resolving.push(section);
-
-    try {
-      const value = resolvers[section](get);
-
-      if (!live.includes(section)) {
-        memos[section] = { value };
+    function walk(
+      section: keyof Sections,
+      path: (keyof Sections)[],
+    ): (keyof Sections)[] | undefined {
+      if (section === to) {
+        return path;
       }
 
-      return value;
-    } finally {
-      resolving.pop();
+      if (visited.has(section)) {
+        return;
+      }
+
+      visited.add(section);
+
+      for (const next of waits.get(section) ?? []) {
+        const found = walk(next, [...path, next]);
+
+        if (found !== undefined) {
+          return found;
+        }
+      }
     }
+
+    return walk(from, [from]);
   }
 
-  const sections: Sections = create(null);
+  function createGet(
+    dependent: keyof Sections | undefined,
+  ): OptionContext<Sections>["get"] {
+    async function get<Section extends keyof Sections>(
+      section: Section,
+    ): Promise<Sections[Section]> {
+      if (dependent !== undefined) {
+        const cycle = findPath(section, dependent);
 
-  for (const section in resolvers) {
-    defineGetter(sections, section, () => get(section));
+        if (cycle !== undefined) {
+          throw new Error(
+            `Config sections depend on each other: ${[...cycle, section].map(String).join(" -> ")}`,
+          );
+        }
+
+        const dependencies = waits.get(dependent) ?? new Set();
+
+        dependencies.add(section);
+        waits.set(dependent, dependencies);
+      }
+
+      const memo = memos.get(section);
+
+      if (memo !== undefined) {
+        return memo as Promise<Sections[Section]>;
+      }
+
+      const pending = (async () => {
+        return resolvers[section](createGet(section));
+      })();
+
+      if (!live.includes(section)) {
+        memos.set(section, pending);
+
+        pending.catch(() => {
+          if (memos.get(section) === pending) {
+            memos.delete(section);
+          }
+        });
+      }
+
+      return pending;
+    }
+
+    return get;
   }
 
-  return { get, sections: freeze(sections) };
+  return { get: createGet(undefined) };
 }

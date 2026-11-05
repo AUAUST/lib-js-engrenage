@@ -22,15 +22,15 @@ describe("roles", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(config.src.roles.roles).not.toHaveProperty("types");
+    expect((await config.get("src")).roles.roles).not.toHaveProperty("types");
 
-    expect(config.src.roles.roles.operations).toMatchObject({
+    expect((await config.get("src")).roles.roles.operations).toMatchObject({
       exports: "named-match",
     });
 
-    expect(config.tests.roles.roles).toHaveProperty("types");
-    expect(config.bin.roles.roles).toEqual({});
-    expect(config.data.roles.roles).toEqual({});
+    expect((await config.get("tests")).roles.roles).toHaveProperty("types");
+    expect((await config.get("bin")).roles.roles).toEqual({});
+    expect((await config.get("data")).roles.roles).toEqual({});
   });
 
   test("are off with `roles: false`", async () => {
@@ -38,7 +38,7 @@ describe("roles", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(config.src.roles.roles).toEqual({});
-    expect(config.tests.roles.roles).toEqual({});
+    expect((await config.get("src")).roles.roles).toEqual({});
+    expect((await config.get("tests")).roles.roles).toEqual({});
   });
 });

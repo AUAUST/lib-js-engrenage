@@ -3,7 +3,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { defineTsdownConfig } from "#tools/tsdown/operations/defineTsdownConfig";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
 
 const root = getFixture("tsdown");
 
@@ -15,9 +15,9 @@ describe("defineTsdownConfig", () => {
   test("passes the resolved config to the callbacks and merges native configs last", async () => {
     mockCwd(root);
 
-    const callback = vi.fn((config: ProjectConfig) => {
+    const callback = vi.fn(async (config: ConfigContext) => {
       return {
-        bundle: [config.packageJson.name],
+        bundle: [(await config.get("packageJson")).name],
       };
     });
 
@@ -26,10 +26,10 @@ describe("defineTsdownConfig", () => {
       {
         platform: "neutral",
       },
-      (config) => {
+      async (config) => {
         return {
           exports: {
-            exclude: [...config.tests.dirs],
+            exclude: [...(await config.get("tests")).dirs],
           },
         };
       },

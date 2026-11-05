@@ -8,44 +8,52 @@ import { jsonIndentation } from "#project/format/constants";
 import { createTsconfig } from "#project/tsconfig/utils/createTsconfig";
 import { produceTsconfigExtends } from "#project/tsconfig/utils/produceTsconfigExtends";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 import type { Directory } from "#types/Directory";
 
 const outDirLocation = ["compilerOptions", "outDir"];
 
-function resolveInheritedOutDir(
-  config: ProjectConfig,
+async function resolveInheritedOutDir(
+  config: ConfigContext,
   target: TsconfigTarget,
-): Directory | undefined {
-  const path = config.resolve(target.file);
+): Promise<Directory | undefined> {
+  const [root, filesystem, resolvePath] = await Promise.all([
+    config.get("root"),
+    config.get("filesystem"),
+    config.get("resolve"),
+  ]);
+
+  const path = resolvePath(target.file);
 
   const content = applyJsonEdits(
-    config.filesystem.read(path) ?? emptyObjectFile,
+    filesystem.read(path) ?? emptyObjectFile,
     target.file,
     [
-      ...produceTsconfigExtends(config, target),
+      ...(await produceTsconfigExtends(config, target)),
       { path: outDirLocation, value: undefined },
     ],
     jsonIndentation,
   );
 
   return createTsconfig({
-    root: config.root,
+    root,
     path,
-    filesystem: config.filesystem,
+    filesystem,
     content,
   }).optional.compilerOptions?.outDir;
 }
 
-export function produceTsconfigOutDir(
-  config: ProjectConfig,
+export async function produceTsconfigOutDir(
+  config: ConfigContext,
   target: TsconfigTarget,
-): readonly JsonEdit[] {
+): Promise<readonly JsonEdit[]> {
+  const raw = await config.get("raw");
+
   // @debt the configured output directory is read by validating the raw build section again; the resolved build section could expose it next to its computed default
   const outDir = validate(
     buildSchema.schema,
-    config.raw.build,
+    raw.build,
     "build config",
   )?.outDir;
 
@@ -53,12 +61,10 @@ export function produceTsconfigOutDir(
     return [];
   }
 
-  const inherited = resolveInheritedOutDir(config, target);
+  const inherited = await resolveInheritedOutDir(config, target);
+  const resolvePath = await config.get("resolve");
 
-  if (
-    inherited !== undefined &&
-    resolve(inherited) === config.resolve(outDir)
-  ) {
+  if (inherited !== undefined && resolve(inherited) === resolvePath(outDir)) {
     return [];
   }
 

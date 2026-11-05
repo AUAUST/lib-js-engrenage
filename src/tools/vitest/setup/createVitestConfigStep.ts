@@ -11,10 +11,10 @@ export function createVitestConfigStep(): Step {
   return {
     name: file,
     message: `Create ${file}?`,
-    isMissing({ filesystem, hasDependency }) {
+    async isMissing({ filesystem, hasDependency }) {
       return (
-        hasDependency(vitest) &&
-        !hasDependency(vite) &&
+        (await hasDependency(vitest)) &&
+        !(await hasDependency(vite)) &&
         !hasConfigFile(filesystem, vitest)
       );
     },

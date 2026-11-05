@@ -7,12 +7,12 @@ import { createPrompter } from "#workflows/cli/operations/createPrompter";
 import { createStepContext } from "#workflows/cli/operations/createStepContext";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
-function createContext(content: string) {
+async function createContext(content: string) {
   const project = createTemporaryProject({
     "pnpm-workspace.yaml": content,
   });
 
-  return createStepContext({
+  return await createStepContext({
     config: createConfig({
       root: project.root,
       raw: {},
@@ -24,10 +24,10 @@ function createContext(content: string) {
 
 describe("createWorkspaceStep", () => {
   test("adds approvals to an empty workspace file", async () => {
-    const context = createContext("# Workspace\n");
+    const context = await createContext("# Workspace\n");
     const step = createWorkspaceStep();
 
-    expect(step.isMissing(context)).toBe(true);
+    expect(await step.isMissing(context)).toBe(true);
 
     await step.plan(context);
 
@@ -35,7 +35,7 @@ describe("createWorkspaceStep", () => {
       "# Workspace",
     );
 
-    expect(step.isMissing(context)).toBe(false);
+    expect(await step.isMissing(context)).toBe(false);
   });
 
   test.each(["", "allowBuilds:\n  esbuild: false # Explicit denial\n"])(
@@ -43,10 +43,10 @@ describe("createWorkspaceStep", () => {
     async (builds) => {
       const content = `# Workspace\npackages:\n  - packages/*\n${builds}minimumReleaseAgeExclude:\n  - internal-package\n`;
 
-      const context = createContext(content);
+      const context = await createContext(content);
       const step = createWorkspaceStep();
 
-      expect(step.isMissing(context)).toBe(true);
+      expect(await step.isMissing(context)).toBe(true);
 
       await step.plan(context);
 
@@ -67,15 +67,15 @@ describe("createWorkspaceStep", () => {
         expect(updated).toContain("esbuild: false # Explicit denial");
       }
 
-      expect(step.isMissing(context)).toBe(false);
+      expect(await step.isMissing(context)).toBe(false);
     },
   );
 
-  test("leaves explicit approvals and denials byte-for-byte unchanged", () => {
+  test("leaves explicit approvals and denials byte-for-byte unchanged", async () => {
     const content =
       "allowBuilds: {esbuild: false, unrs-resolver: true, custom: true}\n";
 
-    const context = createContext(content);
+    const context = await createContext(content);
 
     expect(createWorkspaceStep().isMissing(context)).toBe(false);
     expect(context.filesystem.read("pnpm-workspace.yaml")).toBe(content);
@@ -84,8 +84,8 @@ describe("createWorkspaceStep", () => {
 
   test.each(["packages: [\n", "- package\n", "allowBuilds: false\n"])(
     "rejects invalid workspace settings without changing them: %s",
-    (content) => {
-      const context = createContext(content);
+    async (content) => {
+      const context = await createContext(content);
 
       expect(() => createWorkspaceStep().isMissing(context)).toThrow(
         "pnpm-workspace.yaml",

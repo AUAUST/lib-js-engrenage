@@ -5,11 +5,11 @@ export function createTypescriptStep(): Step {
   return {
     name: typescript,
     message: "Add TypeScript?",
-    isMissing({ hasDependency }) {
-      return !hasDependency(typescript);
+    async isMissing({ hasDependency }) {
+      return !(await hasDependency(typescript));
     },
-    plan({ addDevDependency }) {
-      addDevDependency(typescript, {
+    async plan({ addDevDependency }) {
+      await addDevDependency(typescript, {
         exact: true,
       });
     },

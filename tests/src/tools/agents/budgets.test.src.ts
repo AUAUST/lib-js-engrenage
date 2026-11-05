@@ -10,7 +10,10 @@ const words = (count: number) =>
   Array.from({ length: count }, () => "word").join(" ");
 
 async function loadBudgets(root: string) {
-  return (await loadConfig(root)).agents.budgets;
+  const config = await loadConfig(root);
+  const { budgets } = await config.get("agents");
+
+  return budgets;
 }
 
 describe("budgets", () => {

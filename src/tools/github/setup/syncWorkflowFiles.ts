@@ -8,34 +8,42 @@ import { resolveWithin, toPosixPath } from "#foundation/filesystem/index";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
+import type { OptionContext } from "#foundation/options/index";
 import type { ProjectConfig } from "#project/config/index";
 import type { ResolvedGit } from "#tools/git/index";
 import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
 import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 
-function assertScripts(
-  config: ProjectConfig,
+async function assertScripts(
+  config: OptionContext<ProjectConfig>,
   name: WorkflowSetName,
   required: readonly string[],
 ) {
-  const scripts = config.packageJson.optional.scripts ?? {};
+  const packageJson = await config.get("packageJson");
+
+  const scripts = packageJson.optional.scripts ?? {};
 
   for (const script of required) {
     if (!hasOwn(scripts, script)) {
       throw new Error(
-        `${config.packageJsonPath} does not declare the "${script}" script that the ${name} workflows run`,
+        `${await config.get("packageJsonPath")} does not declare the "${script}" script that the ${name} workflows run`,
       );
     }
   }
 }
 
-export function syncWorkflowFiles(
-  config: ProjectConfig & { git: ResolvedGit; github: ResolvedGithub },
+export async function syncWorkflowFiles(
+  config: OptionContext<
+    ProjectConfig & { git: ResolvedGit; github: ResolvedGithub }
+  >,
 ) {
+  const github = await config.get("github");
+  const environment = await config.get("environment");
+
   const name = resolveWorkflowSet({
-    workflows: config.github.workflows,
-    traits: config.traits,
-    hasDependency: config.environment.hasDependency,
+    workflows: github.workflows,
+    traits: await config.get("traits"),
+    hasDependency: environment.hasDependency,
   });
 
   if (name === undefined) {
@@ -44,8 +52,10 @@ export function syncWorkflowFiles(
 
   const { files, scripts } = workflowSets[name];
 
-  const { root, filesystem } = config.git;
-  const directory = toPosixPath(relative(root, config.root)) || ".";
+  const { root, filesystem } = await config.get("git");
+
+  const directory =
+    toPosixPath(relative(root, await config.get("root"))) || ".";
 
   const syncs = map(files, (file) => {
     const content = renderWorkflow(name, file, directory);
@@ -62,7 +72,7 @@ export function syncWorkflowFiles(
     return;
   }
 
-  assertScripts(config, name, scripts);
+  await assertScripts(config, name, scripts);
 
   syncFiles(
     { filesystem, resolve: (...paths) => resolveWithin(root, ...paths) },

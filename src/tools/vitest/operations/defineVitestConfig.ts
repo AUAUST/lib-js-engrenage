@@ -1,14 +1,14 @@
 import { defineViteConfig, type ConfigEnv } from "#tools/vite/index";
 import { createVitestLayer } from "#tools/vitest/operations/createVitestLayer";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { Config } from "#tools/vitest/types/Config";
 import type { ConfigFn } from "#tools/vitest/types/ConfigFn";
 import type { Options } from "#tools/vitest/types/Options";
 import type { Resolvable } from "#types/Resolvable";
 
 export function defineVitestConfig(
-  options?: Resolvable<Options, [ProjectConfig, ConfigEnv]>,
-  ...configs: readonly Resolvable<Config, [ProjectConfig, ConfigEnv]>[]
+  options?: Resolvable<Options, [ConfigContext, ConfigEnv]>,
+  ...configs: readonly Resolvable<Config, [ConfigContext, ConfigEnv]>[]
 ): ConfigFn {
   return defineViteConfig(
     {

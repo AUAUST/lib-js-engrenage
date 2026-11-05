@@ -21,11 +21,12 @@ async function sync(
 
   const resolved = await loadConfig(project.root);
 
-  syncPackageJson(resolved);
+  await syncPackageJson(resolved);
 
   return {
     resolved,
-    manifest: () => JSON.parse(resolved.filesystem.read("package.json") ?? ""),
+    manifest: async () =>
+      JSON.parse((await resolved.get("filesystem")).read("package.json") ?? ""),
   };
 }
 
@@ -50,7 +51,7 @@ describe("syncPackageJson", () => {
       },
     );
 
-    expect(manifest()).toMatchObject({
+    expect(await manifest()).toMatchObject({
       devEngines: {
         runtime: {
           name: "node",
@@ -70,7 +71,12 @@ describe("syncPackageJson", () => {
       {},
     );
 
-    expect(manifest().files).toEqual(["dist", "assets", "static", "src"]);
+    expect((await manifest()).files).toEqual([
+      "dist",
+      "assets",
+      "static",
+      "src",
+    ]);
   });
 
   test("keeps the other engines and devEngines keys and leaves bin alone without commands", async () => {
@@ -82,7 +88,7 @@ describe("syncPackageJson", () => {
       },
     });
 
-    expect(manifest()).toMatchObject({
+    expect(await manifest()).toMatchObject({
       bin: { other: "./other.js" },
       engines: { pnpm: ">=11", node: ">=24" },
       devEngines: {
@@ -99,7 +105,7 @@ describe("syncPackageJson", () => {
   test("only writes devEngines.runtime outside the library preset", async () => {
     const { manifest } = await sync(`{ runtime: { node: 24 } }`, {});
 
-    expect(manifest()).toEqual({
+    expect(await manifest()).toEqual({
       type: "module",
       devEngines: {
         runtime: {
@@ -114,14 +120,14 @@ describe("syncPackageJson", () => {
   test("reports drift until the file is written", async () => {
     const { resolved } = await sync(library, {});
 
-    expect(resolved.filesystem.changes()).toEqual([
+    expect((await resolved.get("filesystem")).changes()).toEqual([
       { file: "package.json", status: "synced" },
     ]);
 
-    resolved.filesystem.flush();
-    syncPackageJson(resolved);
+    (await resolved.get("filesystem")).flush();
+    await syncPackageJson(resolved);
 
-    expect(resolved.filesystem.changes()).toEqual([]);
+    expect((await resolved.get("filesystem")).changes()).toEqual([]);
   });
 
   test("syncs an inactive src without src.baseline", async () => {
@@ -132,8 +138,8 @@ describe("syncPackageJson", () => {
 
     const resolved = await loadConfig(project.root);
 
-    expect(resolved.src.active).toBe(false);
-    expect(resolved.src.runtime).toBeUndefined();
+    expect((await resolved.get("src")).active).toBe(false);
+    expect((await resolved.get("src")).runtime).toBeUndefined();
     expect(() => syncPackageJson(resolved)).not.toThrow();
   });
 
@@ -148,8 +154,8 @@ describe("syncPackageJson", () => {
 
     const resolved = await loadConfig(project.root);
 
-    expect(resolved.src.runtime).toBeUndefined();
-    expect(resolved.src.runtime).toBeUndefined();
+    expect((await resolved.get("src")).runtime).toBeUndefined();
+    expect((await resolved.get("src")).runtime).toBeUndefined();
 
     expect(warn).toHaveBeenCalledOnce();
 
@@ -157,8 +163,8 @@ describe("syncPackageJson", () => {
       expect.stringMatching(/src\.baseline is not set.*set it to \d{4}-\d{2}/),
     );
 
-    syncPackageJson(resolved);
-    resolved.filesystem.flush();
+    await syncPackageJson(resolved);
+    (await resolved.get("filesystem")).flush();
 
     expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
       "engines",
@@ -200,9 +206,9 @@ describe("syncPackageJson pnpm warnings", () => {
 
     expect(messages[0]).toContain(`pnpm ^${versions.previousMajor} is below`);
 
-    expect(resolved.filesystem.read("package.json")).not.toContain(
-      `^${versions.floor}`,
-    );
+    expect(
+      (await resolved.get("filesystem")).read("package.json"),
+    ).not.toContain(`^${versions.floor}`);
   });
 
   test("suggests updating engrenage for a higher major", async () => {

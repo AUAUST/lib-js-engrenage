@@ -26,9 +26,9 @@ describe("syncPrettierignoreFile", () => {
 
     const config = await loadConfig(project.root);
 
-    syncPrettierignoreFile(config);
+    await syncPrettierignoreFile(config);
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     expect(project.read(".prettierignore")).toBe(
       [
@@ -74,8 +74,8 @@ describe("syncPrettierignoreFile", () => {
 
     const config = await loadConfig(project.root);
 
-    syncPrettierignoreFile(config);
+    await syncPrettierignoreFile(config);
 
-    expect(config.filesystem.changes()).toEqual([]);
+    expect((await config.get("filesystem")).changes()).toEqual([]);
   });
 });

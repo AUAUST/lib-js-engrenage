@@ -5,7 +5,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
-function syncProject(
+async function syncProject(
   input: Record<string, unknown>,
   files: Record<string, string> = {},
 ) {
@@ -25,15 +25,15 @@ function syncProject(
     configFile: undefined,
   });
 
-  syncTsconfigFiles(config);
-  config.filesystem.flush();
+  await syncTsconfigFiles(config);
+  (await config.get("filesystem")).flush();
 
   return (file: string) => JSON.parse(project.read(file));
 }
 
 describe("produceTsconfigInclude", () => {
-  test("includes the globs of the environment and the env file when it defines", () => {
-    const read = syncProject({});
+  test("includes the globs of the environment and the env file when it defines", async () => {
+    const read = await syncProject({});
 
     expect(read("tsconfig.src.json").include).toEqual([
       "src/**/*.ts",
@@ -47,8 +47,8 @@ describe("produceTsconfigInclude", () => {
     ]);
   });
 
-  test("follows a custom tests.dirs in the tests include, which the dist variant inherits", () => {
-    const read = syncProject(
+  test("follows a custom tests.dirs in the tests include, which the dist variant inherits", async () => {
+    const read = await syncProject(
       {
         tests: {
           dirs: ["spec"],
@@ -68,8 +68,8 @@ describe("produceTsconfigInclude", () => {
     expect(read("tsconfig.tests.dist.json").include).toBeUndefined();
   });
 
-  test("adds the globs of an inheriting environment", () => {
-    const read = syncProject({
+  test("adds the globs of an inheriting environment", async () => {
+    const read = await syncProject({
       scripts: {
         tsconfig: { inherits: "bin" },
       },
@@ -89,8 +89,8 @@ describe("produceTsconfigInclude", () => {
     expect(() => read("tsconfig.scripts.json")).toThrow("ENOENT");
   });
 
-  test("adds the env file to an environment that defines", () => {
-    const read = syncProject({
+  test("adds the env file to an environment that defines", async () => {
+    const read = await syncProject({
       bin: { defines: true },
     });
 
@@ -101,8 +101,8 @@ describe("produceTsconfigInclude", () => {
     ]);
   });
 
-  test("removes an excluded glob", () => {
-    const read = syncProject({
+  test("removes an excluded glob", async () => {
+    const read = await syncProject({
       src: {
         tsconfig: {
           include: { exclude: ["env.d.ts"] },
@@ -116,8 +116,8 @@ describe("produceTsconfigInclude", () => {
     ]);
   });
 
-  test("excludes fixtures from the tests tsconfig only", () => {
-    const read = syncProject({});
+  test("excludes fixtures from the tests tsconfig only", async () => {
+    const read = await syncProject({});
 
     expect(read("tsconfig.tests.json").exclude).toEqual([
       "tests/**/fixtures/**",
@@ -126,8 +126,8 @@ describe("produceTsconfigInclude", () => {
     expect(read("tsconfig.src.json").exclude).toBeUndefined();
   });
 
-  test("expands nested braces that tsconfig globs do not support", () => {
-    const read = syncProject({
+  test("expands nested braces that tsconfig globs do not support", async () => {
+    const read = await syncProject({
       typescript: { files: ["**/*.{m,c,}{ts,js}", "{a}/*.ts"] },
     });
 
@@ -142,8 +142,8 @@ describe("produceTsconfigInclude", () => {
     ]);
   });
 
-  test("writes globs relative to a tsconfig in a subdirectory", () => {
-    const read = syncProject({
+  test("writes globs relative to a tsconfig in a subdirectory", async () => {
+    const read = await syncProject({
       src: {
         tsconfig: { path: "config/tsconfig.src.json" },
       },

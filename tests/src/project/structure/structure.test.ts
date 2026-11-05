@@ -37,8 +37,14 @@ function createProject(options: string) {
   return project;
 }
 
+async function loadStructure(root: string) {
+  const config = await loadConfig(root);
+
+  return config.get("structure");
+}
+
 type StructureNode = NonNullable<
-  Awaited<ReturnType<typeof loadConfig>>["structure"]["src"]
+  Awaited<ReturnType<typeof loadStructure>>["src"]
 >["root"];
 
 function flatten(node: StructureNode): StructureNode[] {
@@ -49,10 +55,13 @@ async function describeSource(options: string) {
   const config = await loadConfig(createProject(options).root);
 
   const nodes = new Map(
-    flatten(config.structure.src!.root).map((node) => [node.path, node]),
+    flatten((await config.get("structure")).src!.root).map((node) => [
+      node.path,
+      node,
+    ]),
   );
 
-  return { structure: config.structure.src!, nodes };
+  return { structure: (await config.get("structure")).src!, nodes };
 }
 
 const declaration = `{
@@ -173,7 +182,7 @@ describe("structure", () => {
     const project = createProject("{}");
     const config = await loadConfig(project.root);
 
-    expect(config.structure.tooling?.root.children).toEqual([]);
+    expect((await config.get("structure")).tooling?.root.children).toEqual([]);
   });
 
   describe("tests layout", () => {
@@ -191,7 +200,7 @@ describe("structure", () => {
       });
 
       const config = await loadConfig(project.root);
-      const structure = config.structure.tests!;
+      const structure = (await config.get("structure")).tests!;
 
       return {
         structure,
@@ -240,7 +249,7 @@ describe("structure", () => {
           'export default { tests: { layout: "mirror" } };\n',
       });
 
-      const { structure } = await loadConfig(project.root);
+      const structure = await loadStructure(project.root);
 
       const nodes = new Map(
         flatten(structure.tests!.root).map((node) => [node.path, node]),
@@ -282,7 +291,7 @@ describe("tooling structure", () => {
       "other/stray.ts": "",
     });
 
-    const { structure } = await loadConfig(project.root);
+    const structure = await loadStructure(project.root);
 
     const names = structure.tooling?.root.children.map(({ name }) => name);
 
@@ -315,7 +324,10 @@ describe("inline roles", () => {
     const config = await loadConfig(project.root);
 
     return new Map(
-      flatten(config.structure.src!.root).map((node) => [node.path, node]),
+      flatten((await config.get("structure")).src!.root).map((node) => [
+        node.path,
+        node,
+      ]),
     );
   }
 

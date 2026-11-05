@@ -11,11 +11,11 @@ export function createViteConfigStep(): Step {
   return {
     name: file,
     message: `Create ${file}?`,
-    isMissing({ filesystem, hasDependency }) {
-      return hasDependency(vite) && !hasConfigFile(filesystem, vite);
+    async isMissing({ filesystem, hasDependency }) {
+      return (await hasDependency(vite)) && !hasConfigFile(filesystem, vite);
     },
-    plan({ filesystem, hasDependency }) {
-      const tested = hasDependency(vitest);
+    async plan({ filesystem, hasDependency }) {
+      const tested = await hasDependency(vitest);
 
       filesystem.write(
         file,

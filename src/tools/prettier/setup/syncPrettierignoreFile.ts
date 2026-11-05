@@ -1,7 +1,7 @@
 import { includes, map } from "@auaust/primitive-kit/arrays";
 
 import { changesetsCli } from "#constants";
-import { syncIgnoreFile } from "#foundation/blocks/index";
+import { settlePreset, syncIgnoreFile } from "#foundation/blocks/index";
 import { codexFile, type ResolvedAgents } from "#tools/agents/index";
 import { createProjectIgnores } from "#tools/git/index";
 import {
@@ -9,6 +9,7 @@ import {
   codegenTitle,
   defaultIgnores,
 } from "#tools/prettier/constants";
+import type { OptionContext } from "#foundation/options/index";
 import type { ProjectConfig } from "#project/config/index";
 import type { ResolvedPrettier } from "#tools/prettier/types/ResolvedPrettier";
 import type { Glob } from "#types/Glob";
@@ -18,21 +19,22 @@ function anchor(glob: Glob): Glob {
   return glob.startsWith("!") ? `!/${glob.slice(1)}` : `/${glob}`;
 }
 
-function createProjectPrettierIgnores(
-  config: ProjectConfig & { agents: ResolvedAgents },
-): readonly GlobGroup[] {
+async function createProjectPrettierIgnores(
+  config: OptionContext<ProjectConfig & { agents: ResolvedAgents }>,
+): Promise<readonly GlobGroup[]> {
+  const files = await config.get("files");
+  const agents = await config.get("agents");
+
   const generated = [
-    ...map(config.files.generated, anchor),
-    ...(includes(config.agents.preferred ?? [], "codex")
-      ? [`/${codexFile}`]
-      : []),
+    ...map(files.generated, anchor),
+    ...(includes(agents.preferred ?? [], "codex") ? [`/${codexFile}`] : []),
   ];
 
+  const environment = await config.get("environment");
+
   return [
-    ...createProjectIgnores(config),
-    ...(config.environment.hasDependency(changesetsCli)
-      ? [changelogIgnores]
-      : []),
+    ...(await createProjectIgnores(config)),
+    ...(environment.hasDependency(changesetsCli) ? [changelogIgnores] : []),
     ...(generated.length === 0
       ? []
       : [
@@ -44,17 +46,34 @@ function createProjectPrettierIgnores(
   ];
 }
 
-export function syncPrettierignoreFile(
-  config: ProjectConfig & {
-    agents: ResolvedAgents;
-    prettier: ResolvedPrettier;
-  },
+export async function syncPrettierignoreFile(
+  config: OptionContext<
+    ProjectConfig & {
+      agents: ResolvedAgents;
+      prettier: ResolvedPrettier;
+    }
+  >,
 ) {
-  syncIgnoreFile(config, {
-    path: config.prettier.prettierignore,
-    presets: {
-      defaults: () => defaultIgnores,
-      project: () => createProjectPrettierIgnores(config),
+  const [root, filesystem, resolve, prettier, project] = await Promise.all([
+    config.get("root"),
+    config.get("filesystem"),
+    config.get("resolve"),
+    config.get("prettier"),
+    settlePreset(createProjectPrettierIgnores(config)),
+  ]);
+
+  syncIgnoreFile(
+    {
+      root,
+      filesystem,
+      resolve,
     },
-  });
+    {
+      path: prettier.prettierignore,
+      presets: {
+        defaults: () => defaultIgnores,
+        project,
+      },
+    },
+  );
 }

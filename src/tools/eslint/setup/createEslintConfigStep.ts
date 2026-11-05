@@ -14,7 +14,7 @@ export function createEslintConfigStep(): Step {
     isMissing({ filesystem }) {
       return !filesystem.exists(file) && !hasConfigFile(filesystem, eslint);
     },
-    plan({ filesystem, addDevDependency }) {
+    async plan({ filesystem, addDevDependency }) {
       filesystem.write(
         file,
         createConfigModule({
@@ -23,9 +23,9 @@ export function createEslintConfigStep(): Step {
         }),
       );
 
-      addDevDependency(eslint);
+      await addDevDependency(eslint);
 
-      addDevDependency(typescript);
+      await addDevDependency(typescript);
     },
   };
 }

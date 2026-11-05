@@ -2,34 +2,36 @@ import { values } from "@auaust/toolkit/object";
 
 import { projectMapDirectory } from "#tools/agents/constants";
 import { renderProjectMap } from "#tools/agents/utils/renderProjectMap";
-import type { Filesystem } from "#foundation/filesystem/index";
-import type {
-  ImportRule,
-  ResolvedAliases,
-  ResolvedRoles,
-  ResolvedStructure,
-} from "#project/structure/index";
-import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
-import type { Globs } from "#types/Globs";
+import type { OptionContext } from "#foundation/options/index";
+import type { ProjectMapSections } from "#tools/agents/types/ProjectMapSections";
 
-export function syncProjectMap(config: {
-  filesystem: Filesystem;
-  agents: ResolvedAgents;
-  structure: ResolvedStructure;
-  aliases: ResolvedAliases;
-  importRules: readonly ImportRule[];
-  src: { roles: ResolvedRoles };
-  scripts: { roles: ResolvedRoles };
-  tooling: { roles: ResolvedRoles };
-  tests: {
-    roles: ResolvedRoles;
-    patterns: { plain: Globs; source: Globs; dist: Globs };
-  };
-}) {
-  const { filesystem, structure, tests } = config;
+export async function syncProjectMap({
+  get,
+}: OptionContext<ProjectMapSections>) {
+  const [
+    filesystem,
+    agents,
+    structure,
+    aliases,
+    importRules,
+    source,
+    scripts,
+    tooling,
+    tests,
+  ] = await Promise.all([
+    get("filesystem"),
+    get("agents"),
+    get("structure"),
+    get("aliases"),
+    get("importRules"),
+    get("src"),
+    get("scripts"),
+    get("tooling"),
+    get("tests"),
+  ]);
 
   if (
-    (config.agents.preferred?.length ?? 0) === 0 ||
+    (agents.preferred?.length ?? 0) === 0 ||
     values(structure).every((environment) => environment === undefined)
   ) {
     return;
@@ -37,14 +39,14 @@ export function syncProjectMap(config: {
 
   const maps = renderProjectMap({
     structure,
-    importRules: config.importRules,
+    importRules,
     roles: {
-      src: config.src.roles,
-      scripts: config.scripts.roles,
-      tooling: config.tooling.roles,
+      src: source.roles,
+      scripts: scripts.roles,
+      tooling: tooling.roles,
       tests: tests.roles,
     },
-    aliases: [...config.aliases.global, ...config.aliases.src],
+    aliases: [...aliases.global, ...aliases.src],
     patterns: tests.patterns,
   });
 

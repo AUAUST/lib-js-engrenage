@@ -4,5 +4,5 @@ export interface ResolvedBuild {
   readonly clean: "all" | "emitted" | false;
   readonly sourcemap: boolean;
   readonly typed: boolean;
-  readonly outDir: Directory | undefined;
+  readonly outDir: Promise<Directory | undefined>;
 }

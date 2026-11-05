@@ -13,6 +13,8 @@ import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { OptionContext } from "#foundation/options/index";
+import type { AgentSections } from "#tools/agents/types/AgentSections";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { File } from "#types/File";
@@ -50,11 +52,13 @@ function syncAttributionRules(config: {
   }
 }
 
-export function syncAgentFiles(config: {
-  filesystem: Filesystem;
-  resolve(...paths: string[]): string;
-  agents: ResolvedAgents;
-}) {
+export async function syncAgentFiles({ get }: OptionContext<AgentSections>) {
+  const config = {
+    filesystem: await get("filesystem"),
+    resolve: await get("resolve"),
+    agents: await get("agents"),
+  };
+
   if ((config.agents.preferred?.length ?? 0) === 0) {
     return;
   }

@@ -1,7 +1,6 @@
 import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import { createContext } from "#project/config/utils/createContext";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
@@ -15,7 +14,7 @@ async function createContextOf(config: string) {
     "engrenage.config.ts": `export default ${config};\n`,
   });
 
-  return createContext(await loadConfig(project.root));
+  return await loadConfig(project.root);
 }
 
 describe("createPrettierConfig", () => {
@@ -23,7 +22,7 @@ describe("createPrettierConfig", () => {
     const config = createPrettierConfig(await createContextOf("{}"));
 
     const output = await format("const value = {a: 'b', c: [1,2]}", {
-      ...config,
+      ...(await config),
       parser: "typescript",
     });
 
@@ -35,7 +34,7 @@ describe("createPrettierConfig", () => {
       "{ format: { quotes: 'single', semicolons: false, lineWidth: 100 } }",
     );
 
-    const config = createPrettierConfig(context, { tabWidth: 4 });
+    const config = await createPrettierConfig(context, { tabWidth: 4 });
 
     expectTypeOf(config).toEqualTypeOf<Config>();
 

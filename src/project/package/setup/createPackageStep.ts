@@ -19,16 +19,21 @@ interface Sections {
   root: Directory;
 }
 
-function isUnset(context: StepContext<Sections>, field: string): boolean {
-  return context.readPackageJson([field]) === undefined;
+async function isUnset(
+  context: StepContext<Sections>,
+  field: string,
+): Promise<boolean> {
+  return (await context.readPackageJson([field])) === undefined;
 }
 
-function hasVisibility(context: StepContext<Sections>): boolean {
-  return !isUnset(context, "license") || !isUnset(context, "private");
+async function hasVisibility(context: StepContext<Sections>): Promise<boolean> {
+  return (
+    !(await isUnset(context, "license")) || !(await isUnset(context, "private"))
+  );
 }
 
-function isScoped(context: StepContext<Sections>): boolean {
-  const name = context.readPackageJson(["name"]);
+async function isScoped(context: StepContext<Sections>): Promise<boolean> {
+  const name = await context.readPackageJson(["name"]);
 
   return isString(name) && startsWith(name, "@");
 }
@@ -37,51 +42,53 @@ export function createPackageStep(): Step<Sections> {
   return {
     name: `${packageJsonFile} fields`,
     message: `Fill in the missing ${packageJsonFile} fields?`,
-    isMissing(context) {
+    async isMissing(context) {
       return (
-        isUnset(context, "name") ||
-        isUnset(context, "version") ||
-        isUnset(context, "author") ||
-        !hasVisibility(context)
+        (await isUnset(context, "name")) ||
+        (await isUnset(context, "version")) ||
+        (await isUnset(context, "author")) ||
+        !(await hasVisibility(context))
       );
     },
     async plan(context) {
       const { get, writePackageJson } = context;
 
-      if (isUnset(context, "name")) {
-        writePackageJson(
+      if (await isUnset(context, "name")) {
+        await writePackageJson(
           ["name"],
-          await context.text("Package name?", basename(get("root"))),
+          await context.text("Package name?", basename(await get("root"))),
         );
       }
 
-      if (isUnset(context, "version")) {
-        writePackageJson(["version"], initialVersion);
+      if (await isUnset(context, "version")) {
+        await writePackageJson(["version"], initialVersion);
       }
 
-      if (!hasVisibility(context)) {
+      if (!(await hasVisibility(context))) {
+        const traits = await context.getTraits();
+
         const visibility = await context.select(
           "Who can install the package?",
           visibilities,
-          context.getTraits().published ? "public" : "private",
+          traits.published ? "public" : "private",
         );
 
         if (visibility === "private") {
-          writePackageJson(["private"], true);
+          await writePackageJson(["private"], true);
         }
 
-        writePackageJson(
+        await writePackageJson(
           ["license"],
           visibility === "public" ? publicLicense : privateLicense,
         );
 
-        if (visibility === "public" && isScoped(context)) {
-          writePackageJson(["publishConfig", "access"], "public");
+        if (visibility === "public" && (await isScoped(context))) {
+          await writePackageJson(["publishConfig", "access"], "public");
         }
       }
 
-      if (isUnset(context, "author")) {
-        writePackageJson(["author"], manifest.author);
+      if (await isUnset(context, "author")) {
+        await writePackageJson(["author"], manifest.author);
       }
     },
   };

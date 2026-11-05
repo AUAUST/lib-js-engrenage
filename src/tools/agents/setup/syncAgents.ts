@@ -1,10 +1,12 @@
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 import { syncProjectMap } from "#tools/agents/setup/syncProjectMap";
+import type { OptionContext } from "#foundation/options/index";
+import type { AgentSections } from "#tools/agents/types/AgentSections";
+import type { ProjectMapSections } from "#tools/agents/types/ProjectMapSections";
 
-export function syncAgents(
-  config: Parameters<typeof syncProjectMap>[0] &
-    Parameters<typeof syncAgentFiles>[0],
+export async function syncAgents(
+  config: OptionContext<AgentSections & ProjectMapSections>,
 ) {
-  syncProjectMap(config);
-  syncAgentFiles(config);
+  await syncProjectMap(config);
+  await syncAgentFiles(config);
 }

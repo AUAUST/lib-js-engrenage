@@ -19,10 +19,11 @@ async function sync(config: string, files: Record<string, string> = {}) {
 
   const resolved = await loadConfig(project.root);
 
-  syncAliases(resolved);
+  await syncAliases(resolved);
 
   return {
-    read: (file: string) => JSON.parse(resolved.filesystem.read(file) ?? ""),
+    read: async (file: string) =>
+      JSON.parse((await resolved.get("filesystem")).read(file) ?? ""),
   };
 }
 
@@ -35,7 +36,7 @@ describe("aliases", () => {
       { "data/a.json": "{}" },
     );
 
-    expect(read("package.json").imports).toEqual({
+    expect((await read("package.json")).imports).toEqual({
       "#constants": "./src/constants.ts",
       "#index": "./src/index.ts",
       "#package.json": "./package.json",
@@ -53,7 +54,7 @@ describe("aliases", () => {
       { "src/tools/git/index.ts": "", "src/tools/git/constants.ts": "" },
     );
 
-    const imports = read("package.json").imports;
+    const imports = (await read("package.json")).imports;
 
     expect(imports["#tools/*"]).toBe("./src/tools/*.ts");
     expect(imports).not.toHaveProperty("#git");
@@ -72,16 +73,18 @@ describe("aliases", () => {
       { "data/a.json": "{}" },
     );
 
-    expect(read("tsconfig.json").compilerOptions.paths).toMatchObject({
+    expect((await read("tsconfig.json")).compilerOptions.paths).toMatchObject({
       "$shopify/*": ["./shopify/*.ts"],
       "#utils/*": ["./src/utils/*.ts"],
     });
 
-    expect(read("package.json").imports).toMatchObject({
+    expect((await read("package.json")).imports).toMatchObject({
       "#data/*": "./data/*",
     });
 
-    expect(read("package.json").imports).not.toHaveProperty("$shopify/*");
+    expect((await read("package.json")).imports).not.toHaveProperty(
+      "$shopify/*",
+    );
   });
 
   test("fails on a bundler alias unless the source is bundled", async () => {
@@ -95,6 +98,6 @@ describe("aliases", () => {
   test("leaves package.json alone when aliases are off", async () => {
     const { read } = await sync(`{ ${source}, aliases: false }`);
 
-    expect(read("package.json").imports).toBeUndefined();
+    expect((await read("package.json")).imports).toBeUndefined();
   });
 });

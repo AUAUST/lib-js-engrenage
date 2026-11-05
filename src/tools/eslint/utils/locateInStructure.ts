@@ -1,7 +1,7 @@
 import { relative } from "node:path";
 
-import type { ProjectConfig } from "#project/config/index";
 import type { StructureNode } from "#project/structure/index";
+import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { StructureLocation } from "#tools/eslint/types/StructureLocation";
 
 const environments = ["src", "scripts", "tooling", "tests"] as const;
@@ -11,7 +11,7 @@ function contains(node: StructureNode, path: string): boolean {
 }
 
 export function locateInStructure(
-  config: ProjectConfig,
+  config: ConventionConfig,
   filename: string,
 ): StructureLocation | undefined {
   const path = relative(config.root, filename).replaceAll("\\", "/");

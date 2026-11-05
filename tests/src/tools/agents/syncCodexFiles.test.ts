@@ -25,9 +25,9 @@ describe("syncCodexFiles", () => {
 
     const config = await loadConfig(project.root);
 
-    syncAgentFiles(config);
-    syncCodexFiles(config);
-    config.filesystem.flush();
+    await syncAgentFiles(config);
+    await syncCodexFiles(config);
+    (await config.get("filesystem")).flush();
 
     const result = project.read("AGENTS.override.md");
 
@@ -48,20 +48,23 @@ describe("syncCodexFiles", () => {
       "engrenage agents codex hook edit",
     );
 
-    syncCodexFiles(config);
-    expect(config.filesystem.changes()).toEqual([]);
+    await syncCodexFiles(config);
+    expect((await config.get("filesystem")).changes()).toEqual([]);
 
-    config.filesystem.write(
+    (await config.get("filesystem")).write(
       ".claude/rules/types.md",
       '---\npaths: ["lib/**"]\n---\nTypes',
     );
 
-    syncCodexFiles(config);
-    expect(config.filesystem.read("AGENTS.override.md")).toContain("lib/**");
+    await syncCodexFiles(config);
 
-    expect(config.filesystem.read("AGENTS.override.md")).not.toContain(
-      "src/**/*.ts",
-    );
+    expect(
+      (await config.get("filesystem")).read("AGENTS.override.md"),
+    ).toContain("lib/**");
+
+    expect(
+      (await config.get("filesystem")).read("AGENTS.override.md"),
+    ).not.toContain("src/**/*.ts");
   });
 
   test("does nothing without selected agents, even with an explicit creation flag", async () => {
@@ -73,11 +76,11 @@ describe("syncCodexFiles", () => {
 
     const config = await loadConfig(project.root);
 
-    syncCodexFiles(config, {
+    await syncCodexFiles(config, {
       hooks: true,
     });
 
-    expect(config.filesystem.changes()).toEqual([]);
+    expect((await config.get("filesystem")).changes()).toEqual([]);
   });
 
   test("rejects invalid frontmatter with the rule path", async () => {
@@ -91,7 +94,7 @@ describe("syncCodexFiles", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(() => syncCodexFiles(config)).toThrow(
+    await expect(() => syncCodexFiles(config)).rejects.toThrow(
       ".claude/rules/broken.md frontmatter",
     );
   });

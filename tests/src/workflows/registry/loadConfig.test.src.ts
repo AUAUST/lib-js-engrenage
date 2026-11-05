@@ -31,7 +31,7 @@ describe("loadConfig of the registry", () => {
 
     const partial = await loadProjectConfig(project.root);
 
-    expect(partial.build.sourcemap).toBe(true);
+    expect((await partial.get("build")).sourcemap).toBe(true);
   });
 
   test("resolves the tool sections lazily next to the project sections", async () => {
@@ -42,8 +42,8 @@ describe("loadConfig of the registry", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(config.agents.preferred).toEqual(["claude"]);
-    expect(config.git.gitignore).toBeUndefined();
-    expect(config.prettier.prettierignore).toBeUndefined();
+    expect((await config.get("agents")).preferred).toEqual(["claude"]);
+    expect((await config.get("git")).gitignore).toBeUndefined();
+    expect((await config.get("prettier")).prettierignore).toBeUndefined();
   });
 });

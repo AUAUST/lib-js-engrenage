@@ -4,7 +4,6 @@ import { entries, freeze, record } from "@auaust/toolkit/object";
 import { boundaryRows, indexRole } from "#tools/eslint/constants";
 import { createFileCategory } from "#tools/eslint/utils/createFileCategory";
 import { resolveImportSpecifier } from "#tools/typescript/index";
-import type { ProjectConfig } from "#project/config/index";
 import type { SubpathImports } from "#project/package/index";
 import type {
   ImportRule,
@@ -18,6 +17,7 @@ import type { BoundaryOptions } from "#tools/eslint/types/BoundaryOptions";
 import type { BoundaryPolicy } from "#tools/eslint/types/BoundaryPolicy";
 import type { BoundaryRow } from "#tools/eslint/types/BoundaryRow";
 import type { BoundaryRules } from "#tools/eslint/types/BoundaryRules";
+import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { Glob } from "#types/Glob";
 
 type ElementRow = Extract<BoundaryRow, "layers" | "surfaces">;
@@ -109,7 +109,9 @@ function splitRule(rule: ImportRule): Piece[] {
   ];
 }
 
-export function createBoundaryPolicies(config: ProjectConfig): BoundaryRules {
+export function createBoundaryPolicies(
+  config: ConventionConfig,
+): BoundaryRules {
   const packageName = config.packageJson.optional.name;
 
   const directories = {

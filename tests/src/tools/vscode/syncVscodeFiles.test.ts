@@ -45,7 +45,7 @@ describe("syncVscodeFiles", () => {
 
     await syncVscodeFiles(config);
 
-    expect(config.filesystem.flush()).toEqual([
+    expect((await config.get("filesystem")).flush()).toEqual([
       {
         file: ".vscode/settings.json",
         status: "synced",
@@ -68,7 +68,7 @@ describe("syncVscodeFiles", () => {
 
     await syncVscodeFiles(config);
 
-    expect(config.filesystem.discard()).toEqual([]);
+    expect((await config.get("filesystem")).discard()).toEqual([]);
   });
 
   test("shows the rules the ESLint config declares as info at info severity", async () => {
@@ -94,7 +94,7 @@ export default defineEslintConfig({}, {
       settings: true,
     });
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     const settings = validate(
       looseObject({
@@ -133,7 +133,7 @@ export default defineEslintConfig({}, {
 
     await syncVscodeFiles(config);
 
-    expect(config.filesystem.discard()).toEqual([
+    expect((await config.get("filesystem")).discard()).toEqual([
       {
         file: ".vscode/extensions.json",
         status: "synced",
@@ -142,7 +142,7 @@ export default defineEslintConfig({}, {
 
     await syncVscodeFiles(config);
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     expect(project.read(".vscode/settings.json")).toBe(settings);
 

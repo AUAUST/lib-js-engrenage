@@ -5,11 +5,14 @@ export function createVitestCoverageStep(): Step {
   return {
     name: vitestCoverageIstanbul,
     message: "Want coverage?",
-    isMissing({ hasDependency }) {
-      return hasDependency(vitest) && !hasDependency(vitestCoverageIstanbul);
+    async isMissing({ hasDependency }) {
+      return (
+        (await hasDependency(vitest)) &&
+        !(await hasDependency(vitestCoverageIstanbul))
+      );
     },
-    plan({ addDevDependency }) {
-      addDevDependency(vitestCoverageIstanbul);
+    async plan({ addDevDependency }) {
+      await addDevDependency(vitestCoverageIstanbul);
     },
   };
 }

@@ -11,7 +11,7 @@ export function createPreferredAgentsStep(): Step<{
       return getAgents() === undefined;
     },
     async plan({ get, multiselect, setAgents }) {
-      const configFile = get("configFile");
+      const configFile = await get("configFile");
 
       const chosen = await multiselect(
         "Which coding agents do you use?",

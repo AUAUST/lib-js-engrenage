@@ -21,7 +21,7 @@ import { resolve } from "#foundation/filesystem/utils/resolve";
 import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
 import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
 import { normalizeRuleSchema } from "#tools/eslint/utils/normalizeRuleSchema";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { Plugin } from "#tools/eslint/types/Plugin";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -42,9 +42,9 @@ interface RuleSource {
   plugin: Plugin;
 }
 
-async function readRuleSources(config: ProjectConfig): Promise<RuleSource[]> {
+async function readRuleSources(config: ConfigContext): Promise<RuleSource[]> {
   const configuredPlugins = await flatConfigsToPlugins(
-    createEslintConfig(config),
+    await createEslintConfig(config),
   );
 
   const pluginSources = map(entries(configuredPlugins), ([prefix, plugin]) => {
@@ -136,10 +136,10 @@ export async function generateRuleTypes({
   config,
   check = false,
 }: {
-  config: ProjectConfig;
+  config: ConfigContext;
   check?: boolean;
 }): Promise<Files> {
-  const { root: rootPath } = config;
+  const rootPath = await config.get("root");
 
   const sources = await readRuleSources(config);
 

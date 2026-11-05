@@ -9,7 +9,7 @@ import { applyJsonEdits, flattenJsonObject } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
 import { configFile } from "#tools/changesets/constants";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { File } from "#types/File";
 
 function resolveConfigVersion(packageJsonPath: File): string {
@@ -39,19 +39,25 @@ function resolveConfigVersion(packageJsonPath: File): string {
   }
 }
 
-export function syncChangesetConfig(config: ProjectConfig) {
+export async function syncChangesetConfig(config: ConfigContext) {
+  const filesystem = await config.get("filesystem");
+
+  const environment = await config.get("environment");
+
   if (
-    !config.environment.hasDependency(changesetsCli) ||
-    !config.filesystem.exists(configFile)
+    !environment.hasDependency(changesetsCli) ||
+    !filesystem.exists(configFile)
   ) {
     return;
   }
 
-  const { packageJsonPath } = config;
+  const packageJsonPath = await config.get("packageJsonPath");
 
   // @debt repeats the "No package.json found" guard of createStepContext and createTsdownConfig
   if (packageJsonPath === undefined) {
-    throw new Error(`No ${packageJsonFile} found in ${config.root}`);
+    throw new Error(
+      `No ${packageJsonFile} found in ${await config.get("root")}`,
+    );
   }
 
   const version = resolveConfigVersion(packageJsonPath);
@@ -60,12 +66,18 @@ export function syncChangesetConfig(config: ProjectConfig) {
     $schema: `https://unpkg.com/${changesetsConfig}@${version}/schema.json`,
   });
 
-  syncFiles(config, [
+  syncFiles(
     {
-      file: configFile,
-      update(content, path) {
-        return applyJsonEdits(content, path, options, jsonIndentation);
-      },
+      filesystem,
+      resolve: await config.get("resolve"),
     },
-  ]);
+    [
+      {
+        file: configFile,
+        update(content, path) {
+          return applyJsonEdits(content, path, options, jsonIndentation);
+        },
+      },
+    ],
+  );
 }

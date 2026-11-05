@@ -11,7 +11,8 @@ import {
 } from "#tools/agents/claude/constants";
 import { syncHook } from "#tools/agents/operations/syncHook";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
+import type { OptionContext } from "#foundation/options/index";
+import type { AgentSections } from "#tools/agents/types/AgentSections";
 
 function syncAttribution(
   config: {
@@ -48,14 +49,16 @@ function syncAttribution(
   }
 }
 
-export function syncClaudeSettings(
-  config: {
-    filesystem: Filesystem;
-    resolve(...paths: string[]): string;
-    agents: ResolvedAgents;
-  },
+export async function syncClaudeSettings(
+  { get }: OptionContext<AgentSections>,
   { settings = false }: { settings?: boolean } = {},
 ) {
+  const config = {
+    filesystem: await get("filesystem"),
+    resolve: await get("resolve"),
+    agents: await get("agents"),
+  };
+
   const { claudeSettings: configured, attribution } = config.agents;
 
   if (

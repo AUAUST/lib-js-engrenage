@@ -9,8 +9,8 @@ export function createChangesetConfigStep(): Step {
     isMissing({ filesystem }) {
       return !filesystem.exists(configFile);
     },
-    plan({ addDevDependency, invoke }) {
-      addDevDependency(changesetsCli);
+    async plan({ addDevDependency, invoke }) {
+      await addDevDependency(changesetsCli);
 
       // @debt hand-written pnpm invocation, like those in createStepContext and bin/engrenage/init.ts
       invoke({

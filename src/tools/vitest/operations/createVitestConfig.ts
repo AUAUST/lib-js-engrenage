@@ -50,12 +50,16 @@ interface Sections {
   workspaces: readonly ResolvedWorkspaceGroup[];
 }
 
-function createSourcePlugins(
+async function createSourcePlugins(
   { get }: OptionContext<Sections>,
   guardOutDir: boolean,
-): Plugin[] {
-  const { outDir } = get("build");
-  const packageName = get("packageJson").optional.name;
+): Promise<Plugin[]> {
+  const build = await get("build");
+
+  const outDir = await build.outDir;
+  const packageJson = await get("packageJson");
+
+  const packageName = packageJson.optional.name;
 
   if (!guardOutDir || outDir === undefined || packageName === undefined) {
     return [];
@@ -64,49 +68,59 @@ function createSourcePlugins(
   return [
     createOutDirGuard(`${pluginPrefix}:${outDirGuard}`, {
       packageName,
-      outDir: resolve(realpathSync(get("root")), outDir),
+      outDir: resolve(realpathSync(await get("root")), outDir),
     }),
   ];
 }
 
-function createDistPlugins({ get }: OptionContext<Sections>): Plugin[] {
-  if (!get("traits").published) {
+async function createDistPlugins({
+  get,
+}: OptionContext<Sections>): Promise<Plugin[]> {
+  const traits = await get("traits");
+
+  if (!traits.published) {
     return [];
   }
 
-  const root = realpathSync(get("root"));
+  const root = realpathSync(await get("root"));
+
+  const source = await get("src");
 
   return [
     createSourceGuard(`${pluginPrefix}:${sourceGuard}`, {
-      sourceDirs: get("src").dirs.map((dir) => resolve(root, dir)),
+      sourceDirs: source.dirs.map((dir) => resolve(root, dir)),
     }),
   ];
 }
 
-function createTestsInclude(
+async function createTestsInclude(
   { get }: OptionContext<Sections>,
   testsBuild: boolean,
-): string[] | undefined {
-  if (!get("traits").published) {
+): Promise<string[] | undefined> {
+  const traits = await get("traits");
+
+  if (!traits.published) {
     return;
   }
 
   // @debt `include` replaces Vitest's default, so `.js` and `.mjs` tests are no longer collected
-  const { plain, source, dist } = get("tests").patterns;
+  const tests = await get("tests");
+
+  const { plain, source, dist } = tests.patterns;
 
   const patterns = [...plain, ...(testsBuild ? dist : source)];
 
   return [
     ...patterns,
-    ...flatMap(get("workspaces"), ({ dirs }) => filesIn(dirs, patterns)),
+    ...flatMap(await get("workspaces"), ({ dirs }) => filesIn(dirs, patterns)),
   ];
 }
 
-export function createVitestConfig(
+export async function createVitestConfig(
   context: OptionContext<Sections>,
   { mode }: ConfigEnv,
   options?: Maybe<Options>,
-): Config {
+): Promise<Config> {
   const { get } = context;
 
   const {
@@ -114,32 +128,36 @@ export function createVitestConfig(
     isolate,
     restoreMocks = !isolate,
     setupFiles = findSetupFiles({
-      tests: get("tests"),
-      filesystem: get("filesystem"),
+      tests: await get("tests"),
+      filesystem: await get("filesystem"),
     }),
   } = validate(optionsSchema, options ?? {}, "Vitest options");
 
   const testsBuild = mode === buildMode;
+  const tests = await get("tests");
 
-  if (testsBuild && get("tests").active) {
-    const { owner, file, path } = get("tests").dist.tsconfig;
+  if (testsBuild && tests.active) {
+    const { owner, file, path } = tests.dist.tsconfig;
 
     if (owner !== undefined && file !== undefined && path === undefined) {
       throw new Error(
-        `The dist tsconfig ${file} does not exist in ${get("root")}, run \`engrenage sync\` to create it`,
+        `The dist tsconfig ${file} does not exist in ${await get("root")}, run \`engrenage sync\` to create it`,
       );
     }
   }
 
+  const typescript = await get("typescript");
+
   const tsconfig = testsBuild
-    ? get("tests").dist.tsconfig.path
-    : get("typescript").tsconfig.path;
+    ? tests.dist.tsconfig.path
+    : await typescript.tsconfig.path;
 
   const typecheckTsconfig = testsBuild
-    ? get("tests").dist.tsconfig.path
-    : get("tests").tsconfig.path;
+    ? tests.dist.tsconfig.path
+    : tests.tsconfig.path;
 
-  const include = createTestsInclude(context, testsBuild);
+  const include = await createTestsInclude(context, testsBuild);
+  const { fixtures } = await get("files");
 
   return {
     ...(tsconfig === undefined
@@ -151,22 +169,22 @@ export function createVitestConfig(
       tsconfigPaths: !testsBuild,
     },
     plugins: testsBuild
-      ? createDistPlugins(context)
-      : createSourcePlugins(context, guardOutDir),
+      ? await createDistPlugins(context)
+      : await createSourcePlugins(context, guardOutDir),
     test: {
       ...(include === undefined ? {} : { include }),
       isolate,
       restoreMocks,
       setupFiles: [...setupFiles],
-      exclude: [...configDefaults.exclude, ...get("files").fixtures],
+      exclude: [...configDefaults.exclude, ...fixtures],
       coverage: {
         provider: defaultCoverageProvider,
         exclude: [
           ...coverageConfigDefaults.exclude,
-          ...get("tests").patterns.source,
-          ...get("tests").patterns.dist,
+          ...tests.patterns.source,
+          ...tests.patterns.dist,
         ],
-        reportsDirectory: get("tests").coverageDir,
+        reportsDirectory: tests.coverageDir,
       },
       typecheck:
         typecheckTsconfig === undefined

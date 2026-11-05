@@ -1,10 +1,15 @@
 import { readJsonValue } from "#foundation/json/index";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { Paths } from "#project/tsconfig/types/Paths";
 import type { File } from "#types/File";
 
-export function readTsconfigPaths(config: ProjectConfig, file: File): Paths {
-  const current = config.filesystem.read(file);
+export async function readTsconfigPaths(
+  config: ConfigContext,
+  file: File,
+): Promise<Paths> {
+  const filesystem = await config.get("filesystem");
+
+  const current = filesystem.read(file);
 
   const paths =
     current === undefined

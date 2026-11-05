@@ -7,7 +7,6 @@ import { describe, expect, test } from "vitest";
 
 import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
 import { loadConfig } from "#project/config/operations/loadConfig";
-import { createContext } from "#project/config/utils/createContext";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
@@ -72,7 +71,7 @@ async function buildLibrary() {
   const config = await loadConfig(project.root);
 
   await build({
-    ...createTsdownConfig(createContext(config), { ci: false }),
+    ...(await createTsdownConfig(config, { ci: false })),
     config: false,
     logLevel: "silent",
   });

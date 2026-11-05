@@ -5,8 +5,11 @@ import { isFunction } from "@auaust/toolkit/isFunction";
 import { declare, declareObject, validate } from "#foundation/options/index";
 import { globalsSchema } from "#project/config/config/schemas/globalsSchema";
 import { defaultDefineTypes } from "#project/config/constants";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { GlobalsFactory } from "#project/config/types/GlobalsFactory";
+import type { PackageJson } from "#project/package/index";
+import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
 
 export const defineSchema = declareObject(
   {
@@ -26,20 +29,29 @@ export const defineSchema = declareObject(
         optional: {
           value: {},
         },
-        adjust(input, _fallback, context: ConfigContext) {
+        adjust(
+          input,
+          _fallback,
+          context: {
+            root: Directory;
+            configFile: File | undefined;
+            packageJson: PackageJson;
+            filesystem: Filesystem;
+          },
+        ) {
           if (!isFunction(input)) {
             return input;
           }
 
-          const configFile = context.get("configFile");
+          const { configFile } = context;
 
           return validate(
             globalsSchema,
             input({
-              packageJson: context.get("packageJson"),
-              filesystem: context.get("filesystem"),
+              packageJson: context.packageJson,
+              filesystem: context.filesystem,
             }),
-            `define.values of ${configFile ?? context.get("root")}`,
+            `define.values of ${configFile ?? context.root}`,
           );
         },
       },

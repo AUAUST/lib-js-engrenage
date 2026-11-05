@@ -7,12 +7,18 @@ export function createRuntimeDataStep(): Step {
   return {
     name: "runtime data",
     message: `Add ${dataPackages.join(", ")} to the devDependencies?`,
-    isMissing({ hasDependency }) {
-      return dataPackages.some((name) => !hasDependency(name));
-    },
-    plan({ addDevDependency }) {
+    async isMissing({ hasDependency }) {
       for (const name of dataPackages) {
-        addDevDependency(name);
+        if (!(await hasDependency(name))) {
+          return true;
+        }
+      }
+
+      return false;
+    },
+    async plan({ addDevDependency }) {
+      for (const name of dataPackages) {
+        await addDevDependency(name);
       }
     },
   };

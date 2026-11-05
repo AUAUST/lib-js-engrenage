@@ -8,6 +8,7 @@ import {
   typescriptBlocks,
 } from "#tools/typescript/constants";
 import { inferType } from "#tools/typescript/utils/inferType";
+import type { OptionContext } from "#foundation/options/index";
 import type { ProjectConfig, ResolvedGlobal } from "#project/config/index";
 
 const directive = "define";
@@ -49,20 +50,24 @@ function appendBlock(content: string): string {
   return content.trim() === "" ? block : `${content.trimEnd()}\n\n${block}`;
 }
 
-export function syncEnvFile(config: ProjectConfig) {
-  const { types, values } = config.define;
+export async function syncEnvFile(config: OptionContext<ProjectConfig>) {
+  const { types, values } = await config.get("define");
 
   if (!types) {
     return;
   }
 
-  const file = relativeWithin(config.root, config.typescript.envFile);
+  const typescript = await config.get("typescript");
+
+  const file = relativeWithin(await config.get("root"), typescript.envFile);
+
+  const filesystem = await config.get("filesystem");
 
   const declared = entries(values).filter(([name]) => {
     return identifierPattern.test(name);
   });
 
-  const current = config.filesystem.read(file) ?? "";
+  const current = filesystem.read(file) ?? "";
 
   const hasBlock = markerLine.test(current);
 
@@ -74,7 +79,7 @@ export function syncEnvFile(config: ProjectConfig) {
 
   const declarations = map(declared, renderDeclaration).join("\n\n");
 
-  config.filesystem.write(
+  filesystem.write(
     file,
     syncBlocks(content, typescriptBlocks, {
       [directive](...args) {

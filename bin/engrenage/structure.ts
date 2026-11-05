@@ -16,14 +16,14 @@ export const structure = defineCommand((command) => {
     .action(async ({ check }) => {
       const config = await loadConfig();
 
-      for (const line of renderStructure(config.structure)) {
+      for (const line of renderStructure(await config.get("structure"))) {
         console.info(line);
       }
 
       const cycles = findImportCycles({
-        root: config.root,
-        structure: config.structure,
-        aliases: config.aliases,
+        root: await config.get("root"),
+        structure: await config.get("structure"),
+        aliases: await config.get("aliases"),
       });
 
       for (const line of renderImportCycles(cycles)) {
@@ -32,7 +32,8 @@ export const structure = defineCommand((command) => {
 
       if (
         check &&
-        (hasStructureViolations(config.structure) || cycles.length > 0)
+        (hasStructureViolations(await config.get("structure")) ||
+          cycles.length > 0)
       ) {
         process.exitCode = 1;
       }

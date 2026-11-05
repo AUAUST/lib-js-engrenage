@@ -3,11 +3,7 @@ import { mergeConfig } from "vite";
 import { value } from "@auaust/toolkit/value";
 
 import { validate } from "#foundation/options/index";
-import {
-  createContext,
-  loadConfig,
-  type ProjectConfig,
-} from "#project/config/index";
+import { loadConfig, type ConfigContext } from "#project/config/index";
 import { optionsSchema } from "#tools/vite/config/schemas/optionsSchema";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
 import type { Config } from "#tools/vite/types/Config";
@@ -17,8 +13,8 @@ import type { Options } from "#tools/vite/types/Options";
 import type { Resolvable } from "#types/Resolvable";
 
 export function defineViteConfig(
-  options?: Resolvable<Options, [ProjectConfig, ConfigEnv]>,
-  ...configs: readonly Resolvable<Config, [ProjectConfig, ConfigEnv]>[]
+  options?: Resolvable<Options, [ConfigContext, ConfigEnv]>,
+  ...configs: readonly Resolvable<Config, [ConfigContext, ConfigEnv]>[]
 ): ConfigFn {
   return async function viteConfig(env) {
     const config = await loadConfig();
@@ -31,7 +27,7 @@ export function defineViteConfig(
       "Vite options",
     );
 
-    let merged: Config = createViteConfig(createContext(config), {
+    let merged: Config = await createViteConfig(config, {
       isTesting: process.env.VITEST === "true",
     });
 

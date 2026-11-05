@@ -1,13 +1,12 @@
 import { describe, expect, test } from "vitest";
 
-import { createContext } from "#project/config/utils/createContext";
 import { createDefine } from "#project/config/utils/createDefine";
 import { define } from "#project/config/utils/define";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
-function resolveConfig(input: Record<string, unknown>) {
+async function resolveConfig(input: Record<string, unknown>) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({
       name: "@scope/package",
@@ -21,14 +20,14 @@ function resolveConfig(input: Record<string, unknown>) {
     configFile: undefined,
   });
 
-  void config.define;
+  void (await config.get("define"));
 
   return config;
 }
 
 describe("define", () => {
-  test("serializes values and splits them by scope for builds and tests", () => {
-    const config = resolveConfig({
+  test("serializes values and splits them by scope for builds and tests", async () => {
+    const config = await resolveConfig({
       define: {
         values: {
           "__DEBUG__": false,
@@ -46,7 +45,7 @@ describe("define", () => {
     });
 
     expect(
-      createDefine(createContext(config), {
+      await createDefine(config, {
         isTesting: false,
       }),
     ).toEqual({
@@ -56,9 +55,11 @@ describe("define", () => {
     });
 
     expect(
-      createViteConfig(createContext(config), {
-        isTesting: true,
-      }).define,
+      (
+        await createViteConfig(config, {
+          isTesting: true,
+        })
+      ).define,
     ).toEqual({
       __DEBUG__: "false",
       __OPTIONS__: '{"retries":3}',
@@ -66,8 +67,8 @@ describe("define", () => {
     });
   });
 
-  test("serializes any JSON-serializable value and rejects the rest", () => {
-    const config = resolveConfig({
+  test("serializes any JSON-serializable value and rejects the rest", async () => {
+    const config = await resolveConfig({
       define: {
         values: {
           __BUILT_AT__: new Date("2026-01-01T00:00:00.000Z"),
@@ -79,17 +80,17 @@ describe("define", () => {
       },
     });
 
-    expect(config.define.values.__BUILT_AT__).toMatchObject({
+    expect((await config.get("define")).values.__BUILT_AT__).toMatchObject({
       expression: '"2026-01-01T00:00:00.000Z"',
       value: "2026-01-01T00:00:00.000Z",
     });
 
-    expect(config.define.values.__OPTIONS__?.value).toEqual({
+    expect((await config.get("define")).values.__OPTIONS__?.value).toEqual({
       url: "https://auaust.ch/",
     });
 
-    expect(() => {
-      return resolveConfig({
+    await expect(async () => {
+      return await resolveConfig({
         define: {
           values: {
             __HANDLERS__: {
@@ -98,21 +99,21 @@ describe("define", () => {
           },
         },
       });
-    }).toThrow('JSON-serializable value at key "onLoad"');
+    }).rejects.toThrow('JSON-serializable value at key "onLoad"');
 
-    expect(() => {
-      return resolveConfig({
+    await expect(async () => {
+      return await resolveConfig({
         define: {
           values: {
             __SIZE__: 1n,
           },
         },
       });
-    }).toThrow("JSON-serializable value");
+    }).rejects.toThrow("JSON-serializable value");
   });
 
-  test("computes values from the package and validates them", () => {
-    const config = resolveConfig({
+  test("computes values from the package and validates them", async () => {
+    const config = await resolveConfig({
       define: {
         values({ packageJson }: { packageJson: { name: string } }) {
           return {
@@ -122,20 +123,22 @@ describe("define", () => {
       },
     });
 
-    expect(config.define.values.__NAME__?.expression).toBe('"@scope/package"');
+    expect((await config.get("define")).values.__NAME__?.expression).toBe(
+      '"@scope/package"',
+    );
 
-    expect(() => {
-      return resolveConfig({
+    await expect(async () => {
+      return await resolveConfig({
         define: {
           values: {
             __NESTED__: [define(true)],
           },
         },
       });
-    }).toThrow("top-level definition");
+    }).rejects.toThrow("top-level definition");
 
-    expect(() => {
-      return resolveConfig({
+    await expect(async () => {
+      return await resolveConfig({
         define: {
           values: {
             __CLOSED__: define(true, {
@@ -144,16 +147,16 @@ describe("define", () => {
           },
         },
       });
-    }).toThrow("valid top-level definition");
+    }).rejects.toThrow("valid top-level definition");
 
-    expect(() => {
-      return resolveConfig({
+    await expect(async () => {
+      return await resolveConfig({
         define: {
           values: {
             "process.env[0]": 1,
           },
         },
       });
-    }).toThrow("dotted path");
+    }).rejects.toThrow("dotted path");
   });
 });

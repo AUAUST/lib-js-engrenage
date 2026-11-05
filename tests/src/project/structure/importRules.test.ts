@@ -25,7 +25,9 @@ async function resolveRules(preset: string) {
     "engrenage.config.ts": `export default { ${preset}src: { namespaces: { ".": { layers: ["foundation", "project", "tools"] } } } };\n`,
   });
 
-  return (await loadConfig(project.root)).importRules;
+  const config = await loadConfig(project.root);
+
+  return config.get("importRules");
 }
 
 type Rules = Awaited<ReturnType<typeof resolveRules>>;
@@ -84,7 +86,8 @@ describe("import rules", () => {
       "engrenage.config.ts": `export default { preset: "library", src: { namespaces: { ".": { layers: ["foundation", "project", "tools", "*"] }, features: { relation: "isolated" } } }, workspaces: { "ext/*": { name: "@s/${placeholder}" } } };\n`,
     });
 
-    const rules = (await loadConfig(project.root)).importRules;
+    const config = await loadConfig(project.root);
+    const rules = await config.get("importRules");
 
     expect(reached(rules, "src/features/a")).not.toContain(
       "index:src/features/b",

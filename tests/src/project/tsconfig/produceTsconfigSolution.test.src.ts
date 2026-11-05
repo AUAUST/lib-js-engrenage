@@ -19,7 +19,7 @@ const repositoryModules = fileURLToPath(
   new URL("../../../../node_modules", import.meta.url),
 );
 
-function syncProject(input: Record<string, unknown>, testSource = "") {
+async function syncProject(input: Record<string, unknown>, testSource = "") {
   const project = createTemporaryProject({
     "package.json": '{"name":"project","type":"module"}',
     "src/index.ts": "export const value: number = 1;\n",
@@ -35,8 +35,8 @@ function syncProject(input: Record<string, unknown>, testSource = "") {
     configFile: undefined,
   });
 
-  syncTsconfigFiles(config);
-  config.filesystem.flush();
+  await syncTsconfigFiles(config);
+  (await config.get("filesystem")).flush();
 
   return {
     project,
@@ -45,8 +45,8 @@ function syncProject(input: Record<string, unknown>, testSource = "") {
 }
 
 describe("solution tsconfig", () => {
-  test("references the owned environments that are checked", () => {
-    const { read } = syncProject({});
+  test("references the owned environments that are checked", async () => {
+    const { read } = await syncProject({});
 
     expect(read("tsconfig.json").files).toEqual([]);
 
@@ -58,8 +58,8 @@ describe("solution tsconfig", () => {
     ]);
   });
 
-  test("skips an environment with check false and an inheriting one", () => {
-    const { read } = syncProject({
+  test("skips an environment with check false and an inheriting one", async () => {
+    const { read } = await syncProject({
       tests: {
         tsconfig: { check: false },
       },
@@ -74,8 +74,8 @@ describe("solution tsconfig", () => {
     ]);
   });
 
-  test("never references the tests.dist variant", () => {
-    const { read } = syncProject({
+  test("never references the tests.dist variant", async () => {
+    const { read } = await syncProject({
       tests: {
         dist: {
           tsconfig: { path: "tsconfig.tests.dist.json" },
@@ -90,8 +90,8 @@ describe("solution tsconfig", () => {
 });
 
 describe("tsconfig build info", () => {
-  test("goes to the typescript cache named after the tsconfig", () => {
-    const { read } = syncProject({
+  test("goes to the typescript cache named after the tsconfig", async () => {
+    const { read } = await syncProject({
       tests: {
         dist: {
           tsconfig: { path: "tsconfig.tests.dist.json" },
@@ -110,8 +110,8 @@ describe("tsconfig build info", () => {
     expect(read("tsconfig.json").compilerOptions).toBeUndefined();
   });
 
-  test("follows a custom cache.dir", () => {
-    const { read } = syncProject({
+  test("follows a custom cache.dir", async () => {
+    const { read } = await syncProject({
       cache: { dir: ".cache" },
     });
 
@@ -120,8 +120,8 @@ describe("tsconfig build info", () => {
     );
   });
 
-  test("is relative to a tsconfig in a subdirectory", () => {
-    const { read } = syncProject({
+  test("is relative to a tsconfig in a subdirectory", async () => {
+    const { read } = await syncProject({
       src: {
         tsconfig: { path: "config/tsconfig.src.json" },
       },
@@ -134,8 +134,8 @@ describe("tsconfig build info", () => {
 });
 
 describe("tests.dist skipLibCheck", () => {
-  test("is false in the variant only", () => {
-    const { read } = syncProject({
+  test("is false in the variant only", async () => {
+    const { read } = await syncProject({
       tests: {
         dist: {
           tsconfig: { path: "tsconfig.tests.dist.json" },
@@ -176,7 +176,7 @@ describe(
     async function typecheck(testSource: string) {
       vi.spyOn(console, "info").mockImplementation(() => {});
 
-      const { project } = syncProject(input, testSource);
+      const { project } = await syncProject(input, testSource);
 
       symlinkSync(repositoryModules, project.resolve("node_modules"));
       mockCwd(project.root);

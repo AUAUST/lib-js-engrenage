@@ -9,6 +9,7 @@ import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 import { syncTargets } from "#workflows/sync/operations/syncTargets";
+import type { OptionContext } from "#foundation/options/index";
 import type { Config } from "#workflows/registry/types/Config";
 import type { SyncTargetName } from "#workflows/sync/types/SyncTargetName";
 
@@ -35,7 +36,7 @@ function createFlagOptions(): readonly {
 
 // @debt sync orchestration lives in a command module and is imported by `init` and by a `project/workspaces` test, so bin is not thin; it belongs in `workflows/sync`
 export async function runSync(
-  config: Config,
+  config: OptionContext<Config>,
   {
     names = keys(syncTargets),
     flags = {},

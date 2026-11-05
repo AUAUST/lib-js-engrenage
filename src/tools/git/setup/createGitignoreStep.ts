@@ -43,13 +43,15 @@ export function createGitignoreStep(): Step<{
   return {
     name: gitignoreFile,
     message: `Add the engrenage ignore blocks to ${gitignoreFile}?`,
-    isMissing({ get, filesystem }) {
-      const content = filesystem.read(resolveFile(get("root"), get("git")));
+    async isMissing({ get, filesystem }) {
+      const content = filesystem.read(
+        resolveFile(await get("root"), await get("git")),
+      );
 
       return content === undefined || !ignoreMarker.test(content);
     },
-    plan({ get, filesystem }) {
-      const file = resolveFile(get("root"), get("git"));
+    async plan({ get, filesystem }) {
+      const file = resolveFile(await get("root"), await get("git"));
 
       const covered = new Set(flat(pluck(defaultIgnores, "globs")));
 

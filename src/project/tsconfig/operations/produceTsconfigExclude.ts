@@ -4,34 +4,38 @@ import { resolveListOption } from "#foundation/options/index";
 import { resolveTsconfigEnvironments } from "#project/tsconfig/operations/resolveTsconfigEnvironments";
 import { toTsconfigGlobs } from "#project/tsconfig/utils/toTsconfigGlobs";
 import type { JsonEdit } from "#foundation/json/index";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 import type { File } from "#types/File";
 
-function listDefaultExclude(
-  config: ProjectConfig,
+async function createDefaultExclude(
+  config: ConfigContext,
   key: TsconfigKey,
   file: File,
-): readonly string[] {
-  const { environments } = resolveTsconfigEnvironments(config, key);
+): Promise<() => readonly string[]> {
+  const { environments } = await resolveTsconfigEnvironments(config, key);
 
   const includesTests = environments.includes("tests");
 
-  return includesTests ? toTsconfigGlobs(file, config.files.fixtures) : [];
+  const { fixtures } = await config.get("files");
+
+  return () => {
+    return includesTests ? toTsconfigGlobs(file, fixtures) : [];
+  };
 }
 
-export function produceTsconfigExclude(
-  config: ProjectConfig,
+export async function produceTsconfigExclude(
+  config: ConfigContext,
   { key, file, exclude: option }: TsconfigTarget,
-): readonly JsonEdit[] {
+): Promise<readonly JsonEdit[]> {
   if (key === "base") {
     return [];
   }
 
   const exclude = resolveListOption(
     option,
-    () => listDefaultExclude(config, key, file),
+    await createDefaultExclude(config, key, file),
     `${key}.tsconfig.exclude`,
   );
 

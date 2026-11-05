@@ -38,10 +38,10 @@ function createProject(
 async function sync(root: string) {
   const config = await loadConfig(root);
 
-  syncAgentFiles(config);
-  syncClaudeSettings(config);
+  await syncAgentFiles(config);
+  await syncClaudeSettings(config);
 
-  return config;
+  return config.get("filesystem");
 }
 
 describe("agents.attribution", () => {
@@ -51,7 +51,7 @@ describe("agents.attribution", () => {
         "<!-- @reference @auaust/engrenage/agents/rules/attribution.md -->\n<!-- @end -->\n",
     });
 
-    (await sync(project.root)).filesystem.flush();
+    (await sync(project.root)).flush();
 
     expect(JSON.parse(project.read(".claude/settings.json"))).toMatchObject({
       hooks: {
@@ -66,9 +66,9 @@ describe("agents.attribution", () => {
 
     expect(existsSync(project.resolve(attributionRule))).toBe(false);
     expect(project.read("AGENTS.override.md")).toContain(noAttributionRule);
-    expect((await sync(project.root)).filesystem.discard()).toEqual([]);
+    expect((await sync(project.root)).discard()).toEqual([]);
 
-    (await loadConfig(project.root)).filesystem.write(
+    (await (await loadConfig(project.root)).get("filesystem")).write(
       ".claude/settings.json",
       JSON.stringify({
         model: "opus",
@@ -76,7 +76,7 @@ describe("agents.attribution", () => {
       }),
     );
 
-    (await sync(project.root)).filesystem.flush();
+    (await sync(project.root)).flush();
 
     expect(JSON.parse(project.read(".claude/settings.json"))).toMatchObject({
       model: "opus",
@@ -89,7 +89,7 @@ describe("agents.attribution", () => {
       ", attribution: false, claudeSettings: false",
     );
 
-    (await sync(project.root)).filesystem.flush();
+    (await sync(project.root)).flush();
 
     expect(existsSync(project.resolve(".claude/settings.json"))).toBe(false);
     expect(existsSync(project.resolve(noAttributionRule))).toBe(true);
@@ -105,7 +105,7 @@ describe("agents.attribution", () => {
         "<!-- @reference @auaust/engrenage/agents/rules/no-attribution.md -->\n<!-- @end -->\n",
     });
 
-    (await sync(project.root)).filesystem.flush();
+    (await sync(project.root)).flush();
 
     const settings = JSON.parse(project.read(".claude/settings.json"));
 
@@ -119,12 +119,12 @@ describe("agents.attribution", () => {
 
     const custom = { commit: "Co-Authored-By: Agent", pr: "" };
 
-    (await loadConfig(project.root)).filesystem.write(
+    (await (await loadConfig(project.root)).get("filesystem")).write(
       ".claude/settings.json",
       JSON.stringify({ attribution: custom }),
     );
 
-    (await sync(project.root)).filesystem.flush();
+    (await sync(project.root)).flush();
 
     expect(JSON.parse(project.read(".claude/settings.json"))).toMatchObject({
       attribution: custom,
@@ -168,9 +168,9 @@ describe("agents.attribution", () => {
 
     const project = createProject("", files);
 
-    const config = await sync(project.root);
+    const filesystem = await sync(project.root);
 
-    config.filesystem.flush();
+    filesystem.flush();
 
     expect(project.read(".claude/settings.json")).toBe(
       files[".claude/settings.json"],

@@ -27,7 +27,8 @@ export const github = defineCommand((command) => {
       "Codex hook payload",
     );
 
-    const { agents } = await loadConfig(cwd);
+    const config = await loadConfig(cwd);
+    const agents = await config.get("agents");
     const { budgets } = agents;
     const finding = measureGithubCommand(shellCommand, budgets);
 

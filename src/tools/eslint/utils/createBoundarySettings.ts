@@ -6,8 +6,8 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import { createFileCategory } from "#tools/eslint/utils/createFileCategory";
-import type { ProjectConfig } from "#project/config/index";
 import type { StructureNode } from "#project/structure/index";
+import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { Glob } from "#types/Glob";
 
 const elementEnvironments = ["src", "scripts", "tooling"] as const;
@@ -20,7 +20,7 @@ function byDepth(a: StructureNode, b: StructureNode): number {
   return b.path.split("/").length - a.path.split("/").length;
 }
 
-function listFiles(config: ProjectConfig): {
+function listFiles(config: ConventionConfig): {
   category: string;
   pattern: Glob[];
 }[] {
@@ -70,7 +70,7 @@ function resolveResolver(): string {
   );
 }
 
-export function createBoundarySettings(config: ProjectConfig): Settings {
+export function createBoundarySettings(config: ConventionConfig): Settings {
   const nodes = flatMap(elementEnvironments, (name) => {
     const structure = config.structure[name];
 

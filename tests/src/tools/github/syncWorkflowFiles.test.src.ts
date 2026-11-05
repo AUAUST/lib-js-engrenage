@@ -43,9 +43,9 @@ describe("syncWorkflowFiles", () => {
 
     const config = await loadConfig(project.root);
 
-    syncWorkflowFiles(config);
+    await syncWorkflowFiles(config);
 
-    expect(config.filesystem.flush()).toEqual([
+    expect((await config.get("filesystem")).flush()).toEqual([
       {
         file: ".github/workflows/ci.yml",
         status: "synced",
@@ -69,9 +69,9 @@ describe("syncWorkflowFiles", () => {
 
     const edited = await readConfig(project.root);
 
-    syncWorkflowFiles(edited);
+    await syncWorkflowFiles(edited);
 
-    expect(edited.filesystem.changes()).toEqual([
+    expect((await edited.get("filesystem")).changes()).toEqual([
       {
         file: ".github/workflows/ci.yml",
         status: "synced",
@@ -86,25 +86,25 @@ describe("syncWorkflowFiles", () => {
 
     const config = await loadConfig(missingScript.root);
 
-    expect(() => {
-      syncWorkflowFiles(config);
-    }).toThrow('does not declare the "ci:test" script');
+    await expect(async () => {
+      await syncWorkflowFiles(config);
+    }).rejects.toThrow('does not declare the "ci:test" script');
 
     const disabled = createLibrary(libraryScripts, "{ workflows: false }");
 
     const disabledConfig = await loadConfig(disabled.root);
 
-    syncWorkflowFiles(disabledConfig);
+    await syncWorkflowFiles(disabledConfig);
 
-    expect(disabledConfig.filesystem.changes()).toEqual([]);
+    expect((await disabledConfig.get("filesystem")).changes()).toEqual([]);
 
     const absent = createLibrary(withoutTest, "{}", {});
 
     const absentConfig = await loadConfig(absent.root);
 
-    syncWorkflowFiles(absentConfig);
+    await syncWorkflowFiles(absentConfig);
 
-    expect(absentConfig.filesystem.changes()).toEqual([]);
+    expect((await absentConfig.get("filesystem")).changes()).toEqual([]);
   });
 
   test("writes the workflows under the repository root with the project as working directory", async () => {
@@ -124,12 +124,12 @@ describe("syncWorkflowFiles", () => {
 
     const config = await loadConfig(project.resolve("packages/app"));
 
-    syncWorkflowFiles(config);
+    await syncWorkflowFiles(config);
 
-    expect(config.git.root).toBe(project.root);
-    expect(config.filesystem.changes()).toEqual([]);
+    expect((await config.get("git")).root).toBe(project.root);
+    expect((await config.get("filesystem")).changes()).toEqual([]);
 
-    expect(config.git.filesystem.flush()).toEqual([
+    expect((await config.get("git")).filesystem.flush()).toEqual([
       {
         file: ".github/workflows/ci.yml",
         status: "synced",

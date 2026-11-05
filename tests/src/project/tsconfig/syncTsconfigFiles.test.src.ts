@@ -6,7 +6,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
-function createProject(
+async function createProject(
   input: Record<string, unknown>,
   files: Record<string, string>,
 ) {
@@ -21,7 +21,7 @@ function createProject(
     configFile: undefined,
   });
 
-  syncTsconfigFiles(config);
+  await syncTsconfigFiles(config);
 
   return { project, config };
 }
@@ -48,10 +48,10 @@ const buildInfoFile =
   "./node_modules/.cache/typescript/tsconfig.src.tsbuildinfo";
 
 describe("syncTsconfigFiles", () => {
-  test("writes managed fields and keeps every other field", () => {
-    const { project, config } = createProject({}, files);
+  test("writes managed fields and keeps every other field", async () => {
+    const { project, config } = await createProject({}, files);
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     expect(JSON.parse(project.read("tsconfig.src.json"))).toEqual({
       extends: "./tsconfig.json",
@@ -76,8 +76,8 @@ describe("syncTsconfigFiles", () => {
     });
   });
 
-  test("leaves a false list and an unmanaged scalar untouched", () => {
-    const { project, config } = createProject(
+  test("leaves a false list and an unmanaged scalar untouched", async () => {
+    const { project, config } = await createProject(
       {
         src: {
           node: 24,
@@ -91,7 +91,7 @@ describe("syncTsconfigFiles", () => {
       files,
     );
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     const tsconfig = JSON.parse(project.read("tsconfig.src.json"));
 
@@ -108,8 +108,8 @@ describe("syncTsconfigFiles", () => {
     });
   });
 
-  test("writes compilerOptions over managed and custom fields", () => {
-    const { project, config } = createProject(
+  test("writes compilerOptions over managed and custom fields", async () => {
+    const { project, config } = await createProject(
       {
         src: {
           tsconfig: {
@@ -123,7 +123,7 @@ describe("syncTsconfigFiles", () => {
       files,
     );
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     expect(
       JSON.parse(project.read("tsconfig.src.json")).compilerOptions,
@@ -139,13 +139,13 @@ describe("syncTsconfigFiles", () => {
     });
   });
 
-  test("creates the tsconfig of an active environment only", () => {
-    const { project, config } = createProject(
+  test("creates the tsconfig of an active environment only", async () => {
+    const { project, config } = await createProject(
       {},
       { "src/index.ts": "", "tsconfig.json": "{}" },
     );
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     expect(JSON.parse(project.read("tsconfig.src.json")).include).toEqual([
       "src/**/*.ts",
@@ -157,10 +157,10 @@ describe("syncTsconfigFiles", () => {
     expect(() => project.read("tsconfig.scripts.json")).toThrow("ENOENT");
   });
 
-  test("creates a missing base tsconfig", () => {
-    const { project, config } = createProject({}, { "src/index.ts": "" });
+  test("creates a missing base tsconfig", async () => {
+    const { project, config } = await createProject({}, { "src/index.ts": "" });
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
       extends: "@auaust/engrenage/tsconfig/base.json",
@@ -169,8 +169,8 @@ describe("syncTsconfigFiles", () => {
     });
   });
 
-  test("writes in the tests.dist tsconfig only the fields that differ from the tests tsconfig", () => {
-    const { project, config } = createProject(
+  test("writes in the tests.dist tsconfig only the fields that differ from the tests tsconfig", async () => {
+    const { project, config } = await createProject(
       {
         preset: "library",
       },
@@ -188,7 +188,7 @@ describe("syncTsconfigFiles", () => {
       },
     );
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     expect(JSON.parse(project.read("tsconfig.tests.dist.json"))).toEqual({
       extends: "./tsconfig.tests.json",
@@ -202,8 +202,8 @@ describe("syncTsconfigFiles", () => {
     });
   });
 
-  test("keeps the inherited fields of a tests.dist tsconfig that configures them", () => {
-    const { project, config } = createProject(
+  test("keeps the inherited fields of a tests.dist tsconfig that configures them", async () => {
+    const { project, config } = await createProject(
       {
         tests: {
           dist: {
@@ -217,7 +217,7 @@ describe("syncTsconfigFiles", () => {
       },
     );
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     const { include, compilerOptions } = JSON.parse(
       project.read("tsconfig.tests.dist.json"),
@@ -227,10 +227,10 @@ describe("syncTsconfigFiles", () => {
     expect(compilerOptions.lib).toEqual(["ES2025", "DOM"]);
   });
 
-  test("reports drift without writing under --check", () => {
-    const { project, config } = createProject({}, files);
+  test("reports drift without writing under --check", async () => {
+    const { project, config } = await createProject({}, files);
 
-    const outdated = config.filesystem.discard();
+    const outdated = (await config.get("filesystem")).discard();
 
     expect(outdated.map(({ file }) => file).sort()).toEqual([
       "tsconfig.json",
@@ -240,22 +240,22 @@ describe("syncTsconfigFiles", () => {
     expect(project.read("tsconfig.src.json")).toBe(files["tsconfig.src.json"]);
   });
 
-  test("writes verbatimModuleSyntax into the base tsconfig only when it is off and rejects a contradicting compiler option", () => {
-    const { project, config } = createProject(
+  test("writes verbatimModuleSyntax into the base tsconfig only when it is off and rejects a contradicting compiler option", async () => {
+    const { project, config } = await createProject(
       {
         typescript: { verbatimModuleSyntax: false },
       },
       files,
     );
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     expect(
       JSON.parse(project.read("tsconfig.json")).compilerOptions,
     ).toMatchObject({ verbatimModuleSyntax: false });
 
-    expect(() => {
-      createProject(
+    await expect(async () => {
+      await createProject(
         {
           typescript: {
             verbatimModuleSyntax: false,
@@ -266,6 +266,6 @@ describe("syncTsconfigFiles", () => {
         },
         files,
       );
-    }).toThrow("contradicts typescript.verbatimModuleSyntax");
+    }).rejects.toThrow("contradicts typescript.verbatimModuleSyntax");
   });
 });

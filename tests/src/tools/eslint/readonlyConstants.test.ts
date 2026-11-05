@@ -27,7 +27,7 @@ test("readonly-constants follows the file of the constants role", async () => {
   const eslint = new ESLint({
     cwd: project.root,
     overrideConfigFile: true,
-    overrideConfig: createEslintConfig(await loadConfig(project.root)),
+    overrideConfig: await createEslintConfig(await loadConfig(project.root)),
   });
 
   async function lint(file: string) {
@@ -64,7 +64,7 @@ test("readonly-constants accepts frozen values and reports mutable ones", async 
   const eslint = new ESLint({
     cwd: project.root,
     overrideConfigFile: true,
-    overrideConfig: createEslintConfig(await loadConfig(project.root)),
+    overrideConfig: await createEslintConfig(await loadConfig(project.root)),
   });
 
   async function lint(code: string) {

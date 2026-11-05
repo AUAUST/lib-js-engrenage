@@ -1,9 +1,14 @@
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { OptionContext } from "#foundation/options/index";
 import type { ResolvedGit } from "#tools/git/index";
 
-export function listFilesystems(config: {
+export async function listFilesystems({
+  get,
+}: OptionContext<{
   filesystem: Filesystem;
   git: ResolvedGit;
-}): Filesystem[] {
-  return [...new Set([config.filesystem, config.git.filesystem])];
+}>): Promise<Filesystem[]> {
+  const git = await get("git");
+
+  return [...new Set([await get("filesystem"), git.filesystem])];
 }

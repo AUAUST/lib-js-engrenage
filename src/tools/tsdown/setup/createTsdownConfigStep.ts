@@ -11,10 +11,12 @@ export function createTsdownConfigStep(): Step {
   return {
     name: file,
     message: `Create ${file}?`,
-    isMissing({ filesystem, hasDependency }) {
-      return hasDependency(tsdown) && !hasConfigFile(filesystem, tsdown);
+    async isMissing({ filesystem, hasDependency }) {
+      return (
+        (await hasDependency(tsdown)) && !hasConfigFile(filesystem, tsdown)
+      );
     },
-    plan({ filesystem, addDevDependency }) {
+    async plan({ filesystem, addDevDependency }) {
       filesystem.write(
         file,
         createConfigModule({
@@ -23,9 +25,9 @@ export function createTsdownConfigStep(): Step {
         }),
       );
 
-      addDevDependency(tsx);
+      await addDevDependency(tsx);
 
-      addDevDependency(typescript);
+      await addDevDependency(typescript);
     },
   };
 }

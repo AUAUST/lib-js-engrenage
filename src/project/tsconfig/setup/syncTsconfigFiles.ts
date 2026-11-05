@@ -9,7 +9,7 @@ import { tsconfigProducers } from "#project/tsconfig/operations/tsconfigProducer
 import { isLeftAlone } from "#project/tsconfig/utils/isLeftAlone";
 import { toJsonValue } from "#project/tsconfig/utils/toJsonValue";
 import type { ManagedListOption } from "#foundation/options/index";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext, ProjectConfig } from "#project/config/index";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
@@ -47,14 +47,25 @@ function toTarget(
 }
 
 // @debt "tests.dist" does not fit the config shape, so it is special-cased here and in createResolvedConfig, resolveTsconfigEnvironments and the extends, paths and skipLibCheck producers; a single lookup from tsconfig key to its environment would remove the branches
-function isActive(config: ProjectConfig, key: TsconfigKey): boolean {
-  return key === "tests.dist" ? config.tests.active : config[key].active;
+async function isActive(
+  config: ConfigContext,
+  key: TsconfigKey,
+): Promise<boolean> {
+  const { active } = await config.get(key === "tests.dist" ? "tests" : key);
+
+  return active;
 }
 
-function findTsconfig(config: ProjectConfig, key: TsconfigKey) {
-  return key === "tests.dist"
-    ? config.tests.dist.tsconfig
-    : config[key].tsconfig;
+async function findTsconfig(config: ConfigContext, key: TsconfigKey) {
+  if (key === "tests.dist") {
+    const { dist } = await config.get("tests");
+
+    return dist.tsconfig;
+  }
+
+  const { tsconfig } = await config.get(key);
+
+  return tsconfig;
 }
 
 interface PlannedTarget {
@@ -62,8 +73,8 @@ interface PlannedTarget {
   create: boolean;
 }
 
-function collectTargets(config: ProjectConfig): PlannedTarget[] {
-  const { tsconfig } = config.typescript;
+async function collectTargets(config: ConfigContext): Promise<PlannedTarget[]> {
+  const { tsconfig } = await config.get("typescript");
 
   const targets: PlannedTarget[] = [
     {
@@ -83,9 +94,9 @@ function collectTargets(config: ProjectConfig): PlannedTarget[] {
   ];
 
   for (const key of variantKeys) {
-    const resolved = findTsconfig(config, key);
+    const resolved = await findTsconfig(config, key);
 
-    if (resolved.owner !== key || !isActive(config, key)) {
+    if (resolved.owner !== key || !(await isActive(config, key))) {
       continue;
     }
 
@@ -123,22 +134,24 @@ function isDefaultOption(option: ManagedListOption<string> | undefined) {
   return option == null || option === true;
 }
 
-function inheritsTestsTsconfig(
-  config: ProjectConfig,
+async function inheritsTestsTsconfig(
+  config: ConfigContext,
   target: TsconfigTarget,
-): boolean {
+): Promise<boolean> {
+  const tests = await config.get("tests");
+
   return (
     target.key === "tests.dist" &&
-    config.tests.tsconfig.owner === "tests" &&
+    tests.tsconfig.owner === "tests" &&
     isDefaultOption(target.extends)
   );
 }
 
-function listInheritedPaths(
-  config: ProjectConfig,
+async function listInheritedPaths(
+  config: ConfigContext,
   target: TsconfigTarget,
-): readonly string[][] {
-  if (!inheritsTestsTsconfig(config, target)) {
+): Promise<readonly string[][]> {
+  if (!(await inheritsTestsTsconfig(config, target))) {
     return [];
   }
 
@@ -155,14 +168,14 @@ function listInheritedPaths(
   });
 }
 
-function createEdits(
-  config: ProjectConfig,
+async function createEdits(
+  config: ConfigContext,
   target: TsconfigTarget,
-): readonly JsonEdit[] {
+): Promise<readonly JsonEdit[]> {
   const leftAlone = [...listPaths(target), ...target.unmanaged];
 
   const inherited = map(
-    listInheritedPaths(config, target),
+    await listInheritedPaths(config, target),
     (path): JsonEdit => {
       return { path, value: undefined };
     },
@@ -170,9 +183,13 @@ function createEdits(
 
   const inheritedPaths = map(inherited, ({ path }) => path.join("."));
 
-  const produced = flatMap(tsconfigProducers, (produce) => {
-    return produce(config, target);
-  }).filter((edit) => {
+  const edits: JsonEdit[] = [];
+
+  for (const produce of tsconfigProducers) {
+    edits.push(...(await produce(config, target)));
+  }
+
+  const produced = edits.filter((edit) => {
     return !isLeftAlone(edit, inheritedPaths);
   });
 
@@ -194,20 +211,22 @@ function createEdits(
   return [...managed, ...custom];
 }
 
-export function syncTsconfigFiles(config: ProjectConfig) {
-  for (const { target, create } of collectTargets(config)) {
-    const current = config.filesystem.read(target.file);
+export async function syncTsconfigFiles(config: ConfigContext) {
+  const filesystem = await config.get("filesystem");
+
+  for (const { target, create } of await collectTargets(config)) {
+    const current = filesystem.read(target.file);
 
     if (current === undefined && !create) {
       continue;
     }
 
-    config.filesystem.write(
+    filesystem.write(
       target.file,
       applyJsonEdits(
         current ?? emptyObjectFile,
         target.file,
-        createEdits(config, target),
+        await createEdits(config, target),
         jsonIndentation,
       ),
     );

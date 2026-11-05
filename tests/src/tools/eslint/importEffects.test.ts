@@ -65,7 +65,7 @@ async function createLinter({
   const eslint = new ESLint({
     cwd: project.root,
     overrideConfigFile: true,
-    overrideConfig: createEslintConfig(await loadConfig(project.root)),
+    overrideConfig: await createEslintConfig(await loadConfig(project.root)),
   });
 
   return async (filePath: string, source: string) => {
@@ -128,7 +128,9 @@ describe("import effects", () => {
     expect(await inserted(constants, trace)).toHaveLength(1);
 
     await expect(
-      createLinter({ effects: 'levels: ["confined", "pure", "effectful"]' }),
+      createLinter({
+        effects: 'levels: ["confined", "pure", "effectful"]',
+      }),
     ).rejects.toThrow("effect levels");
   });
 

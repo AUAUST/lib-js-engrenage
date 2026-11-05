@@ -30,9 +30,9 @@ describe("syncGitignoreFile", () => {
 
     const config = await loadConfig(project.root);
 
-    syncGitignoreFile(config);
+    await syncGitignoreFile(config);
 
-    expect(config.filesystem.flush()).toEqual([
+    expect((await config.get("filesystem")).flush()).toEqual([
       {
         file: ".gitignore",
         status: "synced",
@@ -63,9 +63,9 @@ describe("syncGitignoreFile", () => {
       ].join("\n"),
     );
 
-    syncGitignoreFile(config);
+    await syncGitignoreFile(config);
 
-    expect(config.filesystem.discard()).toEqual([]);
+    expect((await config.get("filesystem")).discard()).toEqual([]);
   });
 
   test("expands defaults into every fixed group, in order", async () => {
@@ -77,9 +77,9 @@ describe("syncGitignoreFile", () => {
 
     const config = await loadConfig(project.root);
 
-    syncGitignoreFile(config);
+    await syncGitignoreFile(config);
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     const lines = project.read(".gitignore").split("\n");
 
@@ -103,9 +103,9 @@ describe("syncGitignoreFile", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(() => {
-      syncGitignoreFile(config);
-    }).toThrow(
+    await expect(async () => {
+      await syncGitignoreFile(config);
+    }).rejects.toThrow(
       'Unknown preset in "# @ignore python" of .gitignore, expected one of: javascript, lockfiles, os, env, logs, editors, defaults, project',
     );
   });

@@ -46,7 +46,7 @@ async function createLinter(prefix = "auaust/import-") {
   const eslint = new ESLint({
     cwd: project.root,
     overrideConfigFile: true,
-    overrideConfig: createEslintConfig(await loadConfig(project.root), {
+    overrideConfig: await createEslintConfig(await loadConfig(project.root), {
       typeAware: false,
     }),
   });

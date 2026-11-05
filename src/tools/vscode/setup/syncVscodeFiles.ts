@@ -15,7 +15,7 @@ import {
   writeJsonValue,
   type JsonEdit,
 } from "#foundation/json/index";
-import { validate } from "#foundation/options/index";
+import { validate, type OptionContext } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
 import { loadInfoRules } from "#tools/eslint/index";
 import {
@@ -31,7 +31,7 @@ import type { ResolvedVscode } from "#tools/vscode/types/ResolvedVscode";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
-interface VscodeSync {
+interface VscodeSections {
   root: Directory;
   filesystem: Filesystem;
   resolve(...paths: string[]): string;
@@ -69,7 +69,7 @@ function addRecommendations(
 }
 
 function isEnabled(
-  { filesystem }: { filesystem: Filesystem },
+  filesystem: Filesystem,
   file: File,
   configured: boolean | undefined,
   requested: boolean,
@@ -112,7 +112,7 @@ async function createSettingsEdits(
 }
 
 export async function syncVscodeFiles(
-  config: VscodeSync,
+  { get }: OptionContext<VscodeSections>,
   {
     settings = false,
     extensions = false,
@@ -121,9 +121,15 @@ export async function syncVscodeFiles(
     extensions?: boolean;
   } = {},
 ) {
-  const { filesystem } = config;
+  const [root, filesystem, resolve, environment, vscode] = await Promise.all([
+    get("root"),
+    get("filesystem"),
+    get("resolve"),
+    get("environment"),
+    get("vscode"),
+  ]);
 
-  const applicable = findIntegrations(config.environment.hasDependency);
+  const applicable = findIntegrations(environment.hasDependency);
 
   const recommendations = deduplicate(
     flatMap(applicable, (integration) => {
@@ -131,24 +137,24 @@ export async function syncVscodeFiles(
     }),
   );
 
-  if (isEnabled(config, settingsFile, config.vscode.settings, settings)) {
+  if (isEnabled(filesystem, settingsFile, vscode.settings, settings)) {
     filesystem.write(
       settingsFile,
       applyJsonEdits(
         filesystem.read(settingsFile) ?? emptyObjectFile,
-        config.resolve(settingsFile),
-        await createSettingsEdits(config.root, applicable),
+        resolve(settingsFile),
+        await createSettingsEdits(root, applicable),
         jsonIndentation,
       ),
     );
   }
 
-  if (isEnabled(config, extensionsFile, config.vscode.extensions, extensions)) {
+  if (isEnabled(filesystem, extensionsFile, vscode.extensions, extensions)) {
     filesystem.write(
       extensionsFile,
       addRecommendations(
         filesystem.read(extensionsFile) ?? emptyObjectFile,
-        config.resolve(extensionsFile),
+        resolve(extensionsFile),
         recommendations,
       ),
     );

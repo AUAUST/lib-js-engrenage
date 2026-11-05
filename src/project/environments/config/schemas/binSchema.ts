@@ -13,7 +13,7 @@ import {
   defaultBinDirectories,
   disabledCodeEnvironment,
 } from "#project/environments/constants";
-import type { ConfigContext } from "#project/config/index";
+import type { ResolvedRuntimeSettings } from "#project/config/index";
 
 export const binSchema = declareObject(
   {
@@ -33,8 +33,8 @@ export const binSchema = declareObject(
       ],
       optional: {
         explain: "`runtime.node`",
-        compute(context: ConfigContext) {
-          return context.get("runtime").node;
+        compute(context: { runtime: ResolvedRuntimeSettings }) {
+          return context.runtime.node;
         },
       },
     }),

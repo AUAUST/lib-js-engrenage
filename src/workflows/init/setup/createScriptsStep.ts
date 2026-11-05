@@ -13,6 +13,7 @@ import {
   vitestCoverageIstanbul,
 } from "#constants";
 import type { Step, StepContext } from "#project/steps/index";
+import type { PackageName } from "#types/PackageName";
 
 type Command = string | false;
 
@@ -27,9 +28,34 @@ function chain(commands: readonly Command[]): string | false {
   return present.length > 0 && present.join(" && ");
 }
 
-function createBuildCommand(
+type HasDependency = (name: PackageName) => boolean;
+
+async function resolveDependencies(
   hasDependency: StepContext["hasDependency"],
-): Command {
+): Promise<HasDependency> {
+  const names = [
+    changesetsCli,
+    eslint,
+    prettier,
+    tsdown,
+    typescript,
+    vite,
+    vitest,
+    vitestCoverageIstanbul,
+  ];
+
+  const installed = new Set<PackageName>();
+
+  for (const name of names) {
+    if (await hasDependency(name)) {
+      installed.add(name);
+    }
+  }
+
+  return (name) => installed.has(name);
+}
+
+function createBuildCommand(hasDependency: HasDependency): Command {
   if (hasDependency(tsdown)) {
     return chain([
       "engrenage tsdown",
@@ -41,10 +67,12 @@ function createBuildCommand(
   return hasDependency(vite) && "engrenage vite build";
 }
 
-function collectScripts({
+async function collectScripts({
   getTraits,
-  hasDependency,
-}: StepContext): readonly Script[] {
+  hasDependency: hasInstalledDependency,
+}: StepContext): Promise<readonly Script[]> {
+  const hasDependency = await resolveDependencies(hasInstalledDependency);
+
   const build = createBuildCommand(hasDependency);
 
   const typecheck = hasDependency(typescript) && "engrenage typecheck";
@@ -53,7 +81,9 @@ function collectScripts({
 
   const test = hasDependency(vitest) && "engrenage vitest";
 
-  const publishes = getTraits().published && hasDependency(changesetsCli);
+  const traits = await getTraits();
+
+  const publishes = traits.published && hasDependency(changesetsCli);
 
   const scripts = {
     "build": build,
@@ -102,22 +132,34 @@ function collectScripts({
   return defined;
 }
 
-function findMissingScripts(context: StepContext): readonly Script[] {
-  return collectScripts(context).filter(({ name }) => {
-    return context.readPackageJson(["scripts", name]) === undefined;
-  });
+async function findMissingScripts(
+  context: StepContext,
+): Promise<readonly Script[]> {
+  const missing: Script[] = [];
+
+  for (const script of await collectScripts(context)) {
+    if (
+      (await context.readPackageJson(["scripts", script.name])) === undefined
+    ) {
+      missing.push(script);
+    }
+  }
+
+  return missing;
 }
 
 export function createScriptsStep(): Step {
   return {
     name: "scripts",
     message: "Add the standard scripts?",
-    isMissing(context) {
-      return findMissingScripts(context).length > 0;
+    async isMissing(context) {
+      const missing = await findMissingScripts(context);
+
+      return missing.length > 0;
     },
-    plan(context) {
-      for (const { name, command } of findMissingScripts(context)) {
-        context.writePackageJson(["scripts", name], command);
+    async plan(context) {
+      for (const { name, command } of await findMissingScripts(context)) {
+        await context.writePackageJson(["scripts", name], command);
       }
     },
   };

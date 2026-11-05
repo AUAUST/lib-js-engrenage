@@ -11,6 +11,7 @@ import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { listFilesystems } from "#workflows/cli/utils/listFilesystems";
 import { listInitSteps } from "#workflows/init/operations/listInitSteps";
 import { readConfig } from "#workflows/registry/operations/readConfig";
+import type { OptionContext } from "#foundation/options/index";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { Prompter } from "#project/steps/types/Prompter";
 import type { Directory } from "#types/Directory";
@@ -39,17 +40,19 @@ function invokeCommand(root: Directory, invocation: Invocation) {
   }
 }
 
-async function readPackage(prompter: Prompter): Promise<Config | undefined> {
+async function readPackage(
+  prompter: Prompter,
+): Promise<OptionContext<Config> | undefined> {
   const config = await readConfig(process.cwd(), {
     searchParents: false,
   });
 
-  if (config.packageJsonPath !== undefined) {
+  if ((await config.get("packageJsonPath")) !== undefined) {
     return config;
   }
 
   const starts = await prompter.confirm(
-    `No ${packageJsonFile} in ${config.root}. Start a new package here?`,
+    `No ${packageJsonFile} in ${await config.get("root")}. Start a new package here?`,
   );
 
   if (!starts) {
@@ -57,13 +60,13 @@ async function readPackage(prompter: Prompter): Promise<Config | undefined> {
   }
 
   // @debt hand-written pnpm invocation, like those in createStepContext and createChangesetConfigStep
-  invokeCommand(config.root, {
+  invokeCommand(await config.get("root"), {
     command: "pnpm",
     args: ["init", "--bare"],
     interactive: false,
   });
 
-  return readConfig(config.root, {
+  return readConfig(await config.get("root"), {
     searchParents: false,
   });
 }
@@ -92,7 +95,7 @@ export const init = defineCommand((command) => {
         return;
       }
 
-      const filesystems = listFilesystems(config);
+      const filesystems = await listFilesystems(config);
 
       for (const filesystem of filesystems) {
         await filesystem.format();
@@ -106,11 +109,11 @@ export const init = defineCommand((command) => {
         if (yes && invocation.interactive) {
           console.info(`Run ${describe(invocation)} to finish the setup.`);
         } else {
-          invokeCommand(config.root, invocation);
+          invokeCommand(await config.get("root"), invocation);
         }
       }
 
-      const installed = await readConfig(config.root, {
+      const installed = await readConfig(await config.get("root"), {
         searchParents: false,
       });
 

@@ -2,23 +2,25 @@ import { eslint } from "#constants";
 import { isWithin } from "#foundation/filesystem/index";
 import { resolveBinary, spawnProcess } from "#foundation/processes/index";
 import { formatFile } from "#project/format/index";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { Formatter } from "#project/format/ports/Formatter";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 
 const blockingExitCode = 2;
 
-function runTool(
-  config: ProjectConfig,
+async function runTool(
+  config: ConfigContext,
   packageName: KnownPackageName,
   args: readonly string[],
 ) {
+  const root = await config.get("root");
+
   const result = spawnProcess(
     process.execPath,
-    [resolveBinary(config.root, packageName, packageName), ...args],
+    [resolveBinary(root, packageName, packageName), ...args],
     {
-      cwd: config.root,
+      cwd: root,
       encoding: "utf-8",
     },
   );
@@ -34,30 +36,34 @@ function runTool(
 
 // @debt Each edit spawns ESLint twice (fix, then lint), and each process loads the project's ESLint config again; this takes most of the hook's time.
 export async function formatEditedFile(
-  config: ProjectConfig,
+  config: ConfigContext,
   file: File,
   formatter: Formatter,
 ) {
-  if (!isWithin(config.root, file)) {
+  const root = await config.get("root");
+
+  if (!isWithin(root, file)) {
     return;
   }
 
-  const hasEslint = config.environment.hasDependency(eslint);
+  const environment = await config.get("environment");
+
+  const hasEslint = environment.hasDependency(eslint);
 
   const lintArgs = [
     "--no-warn-ignored",
     "--cache",
     "--cache-location",
-    config.cacheFor(eslint),
+    (await config.get("cacheFor"))(eslint),
     file,
   ];
 
   if (hasEslint) {
-    runTool(config, eslint, ["--fix", ...lintArgs]);
+    await runTool(config, eslint, ["--fix", ...lintArgs]);
   }
 
   try {
-    await formatFile(file, { root: config.root, formatter });
+    await formatFile(file, { root, formatter });
   } catch (error) {
     process.stderr.write(
       `${error instanceof Error ? error.message : String(error)}\n`,
@@ -70,7 +76,7 @@ export async function formatEditedFile(
     return;
   }
 
-  const { status, stdout, stderr } = runTool(config, eslint, lintArgs);
+  const { status, stdout, stderr } = await runTool(config, eslint, lintArgs);
 
   if (!(status !== 0)) {
     return;

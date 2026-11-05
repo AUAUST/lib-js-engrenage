@@ -2,34 +2,41 @@ import { engrenage } from "#constants";
 import { resolveListOption } from "#foundation/options/index";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
 import type { JsonEdit } from "#foundation/json/index";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
-function listDefaultExtends(
-  config: ProjectConfig,
+async function createDefaultExtends(
+  config: ConfigContext,
   { key, file }: TsconfigTarget,
-): readonly string[] {
+): Promise<() => readonly string[]> {
   if (key === "base") {
-    return config.traits.published
-      ? [`${engrenage}/tsconfig/library.json`]
-      : [`${engrenage}/tsconfig/base.json`];
+    const { published } = await config.get("traits");
+
+    return () => {
+      return published
+        ? [`${engrenage}/tsconfig/library.json`]
+        : [`${engrenage}/tsconfig/base.json`];
+    };
   }
 
-  const parent =
-    key === "tests.dist"
-      ? config.tests.tsconfig.file
-      : config.typescript.tsconfig.file;
+  const tests = await config.get("tests");
+  const typescript = await config.get("typescript");
 
-  return parent === undefined ? [] : [toTsconfigSpecifier(file, parent)];
+  const parent =
+    key === "tests.dist" ? tests.tsconfig.file : typescript.tsconfig.file;
+
+  return () => {
+    return parent === undefined ? [] : [toTsconfigSpecifier(file, parent)];
+  };
 }
 
-export function produceTsconfigExtends(
-  config: ProjectConfig,
+export async function produceTsconfigExtends(
+  config: ConfigContext,
   target: TsconfigTarget,
-): readonly JsonEdit[] {
+): Promise<readonly JsonEdit[]> {
   const bases = resolveListOption(
     target.extends,
-    () => listDefaultExtends(config, target),
+    await createDefaultExtends(config, target),
     `${target.key}.tsconfig.extends`,
   );
 

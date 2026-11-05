@@ -10,6 +10,7 @@ export { createRecommendedRules } from "#tools/eslint/operations/createRecommend
 export { defineEslintConfig } from "#tools/eslint/operations/defineEslintConfig";
 export { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";
 export { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
+export { resolveConventionConfig } from "#tools/eslint/operations/resolveConventionConfig";
 export { resolveScope } from "#tools/eslint/operations/resolveScope";
 // @end
 
@@ -25,6 +26,7 @@ export * from "#tools/eslint/types/Config";
 export * from "#tools/eslint/types/ConfigObject";
 export * from "#tools/eslint/types/ConfigWithExtends";
 export * from "#tools/eslint/types/Convention";
+export * from "#tools/eslint/types/ConventionConfig";
 export * from "#tools/eslint/types/DebtMarker";
 export * from "#tools/eslint/types/Delegate";
 export * from "#tools/eslint/types/Options";

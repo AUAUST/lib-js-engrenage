@@ -5,11 +5,11 @@ export function createDependencyStep(): Step {
   return {
     name: engrenage,
     message: `Add ${engrenage} to the devDependencies?`,
-    isMissing({ hasDependency }) {
-      return !hasDependency(engrenage);
+    async isMissing({ hasDependency }) {
+      return !(await hasDependency(engrenage));
     },
-    plan({ addDevDependency }) {
-      addDevDependency(engrenage);
+    async plan({ addDevDependency }) {
+      await addDevDependency(engrenage);
     },
   };
 }

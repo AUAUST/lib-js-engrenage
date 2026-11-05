@@ -5,7 +5,7 @@ import {
   directorySchema,
 } from "#foundation/options/index";
 import { defaultCacheDirectory } from "#project/config/constants";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { Directory } from "#types/Directory";
 
 export const cacheSchema = declareObject(
   {
@@ -13,8 +13,8 @@ export const cacheSchema = declareObject(
       description:
         "Directory, inside the project, where tools keep their caches (TypeScript build info, ESLint), one folder per tool.",
       optional: { value: defaultCacheDirectory },
-      adjust(input, _fallback, context: ConfigContext) {
-        resolveWithin(context.get("root"), input);
+      adjust(input, _fallback, context: { root: Directory }) {
+        resolveWithin(context.root, input);
 
         return input;
       },

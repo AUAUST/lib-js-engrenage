@@ -23,7 +23,7 @@ async function createLinter() {
   const eslint = new ESLint({
     cwd: project.root,
     overrideConfigFile: true,
-    overrideConfig: createEslintConfig(await loadConfig(project.root), {
+    overrideConfig: await createEslintConfig(await loadConfig(project.root), {
       typeAware: false,
     }),
   });
@@ -53,7 +53,7 @@ describe("command trees", () => {
     const { project, lint } = await createLinter();
     const config = await loadConfig(project.root);
 
-    expect(config.structure.scripts?.unclassified).toEqual([]);
+    expect((await config.get("structure")).scripts?.unclassified).toEqual([]);
 
     expect(
       await lint(

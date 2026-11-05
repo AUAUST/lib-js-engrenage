@@ -1,11 +1,11 @@
 import { createBoundaryPolicies } from "#tools/eslint/utils/createBoundaryPolicies";
 import { createBoundarySettings } from "#tools/eslint/utils/createBoundarySettings";
-import type { ProjectConfig } from "#project/config/index";
 import type { Boundaries } from "#tools/eslint/types/Boundaries";
+import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 
-const cache = new WeakMap<ProjectConfig, Boundaries>();
+const cache = new WeakMap<ConventionConfig, Boundaries>();
 
-export function resolveBoundaries(config: ProjectConfig): Boundaries {
+export function resolveBoundaries(config: ConventionConfig): Boundaries {
   let boundaries = cache.get(config);
 
   if (boundaries === undefined) {

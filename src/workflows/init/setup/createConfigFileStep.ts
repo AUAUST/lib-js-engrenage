@@ -29,8 +29,10 @@ export function createConfigFileStep(): Step<{ configFile: File | undefined }> {
 
   return {
     name: file,
-    isMissing({ get, filesystem }) {
-      return get("configFile") === undefined && !filesystem.exists(file);
+    async isMissing({ get, filesystem }) {
+      return (
+        (await get("configFile")) === undefined && !filesystem.exists(file)
+      );
     },
     async plan(context) {
       const presets = keys(presetTraits);

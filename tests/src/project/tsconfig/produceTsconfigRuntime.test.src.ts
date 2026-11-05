@@ -14,7 +14,7 @@ import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { configSchema } from "#workflows/registry/config/schemas/configSchema";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
-function syncCompilerOptions(
+async function syncCompilerOptions(
   input: Record<string, unknown>,
   project = createTemporaryProject(),
 ) {
@@ -29,15 +29,15 @@ function syncCompilerOptions(
     configFile: undefined,
   });
 
-  syncTsconfigFiles(config);
-  config.filesystem.flush();
+  await syncTsconfigFiles(config);
+  (await config.get("filesystem")).flush();
 
   return (file: string) => JSON.parse(project.read(file)).compilerOptions;
 }
 
 describe("runtime tsconfig fields", () => {
-  test("writes the libs selected for a snapshot, without noLib", () => {
-    const read = syncCompilerOptions({
+  test("writes the libs selected for a snapshot, without noLib", async () => {
+    const read = await syncCompilerOptions({
       src: { baseline: "2026-10" },
     });
 
@@ -63,8 +63,8 @@ describe("runtime tsconfig fields", () => {
     expect(options.types).toEqual([]);
   });
 
-  test("writes the selection of a newer snapshot", () => {
-    const read = syncCompilerOptions({
+  test("writes the selection of a newer snapshot", async () => {
+    const read = await syncCompilerOptions({
       src: { baseline: "2026-11", apis: ["timers"] },
     });
 
@@ -84,8 +84,8 @@ describe("runtime tsconfig fields", () => {
     expect(options.types).toEqual(["@auaust/engrenage/apis/timers"]);
   });
 
-  test("writes a Node major's target, libs and types", () => {
-    const read = syncCompilerOptions({
+  test("writes a Node major's target, libs and types", async () => {
+    const read = await syncCompilerOptions({
       bin: { node: 24 },
     });
 
@@ -98,8 +98,8 @@ describe("runtime tsconfig fields", () => {
     );
   });
 
-  test("adjusts the selected libs", () => {
-    const read = syncCompilerOptions({
+  test("adjusts the selected libs", async () => {
+    const read = await syncCompilerOptions({
       src: {
         baseline: "2026-11",
         tsconfig: {
@@ -114,7 +114,7 @@ describe("runtime tsconfig fields", () => {
     expect(lib).not.toContain("es2023.intl");
   });
 
-  test("removes noLib and a null lib", () => {
+  test("removes noLib and a null lib", async () => {
     const project = createTemporaryProject({
       "package.json": "{}",
       "src/index.ts": "",
@@ -133,8 +133,8 @@ describe("runtime tsconfig fields", () => {
       configFile: undefined,
     });
 
-    syncTsconfigFiles(config);
-    config.filesystem.flush();
+    await syncTsconfigFiles(config);
+    (await config.get("filesystem")).flush();
 
     const options = JSON.parse(
       project.read("tsconfig.src.json"),
@@ -145,7 +145,7 @@ describe("runtime tsconfig fields", () => {
     expect(options.types).toEqual([]);
   });
 
-  test("leaves a library group out when its lib is selected", () => {
+  test("leaves a library group out when its lib is selected", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2027-11-15"));
 
@@ -156,7 +156,7 @@ describe("runtime tsconfig fields", () => {
       warn.mockRestore();
     });
 
-    const read = syncCompilerOptions({
+    const read = await syncCompilerOptions({
       src: { baseline: "2027-11", apis: ["float16", "timers"] },
     });
 
@@ -168,7 +168,7 @@ describe("runtime tsconfig fields", () => {
       expect.stringContaining("src.apis lists float16"),
     );
 
-    const earlier = syncCompilerOptions({
+    const earlier = await syncCompilerOptions({
       src: { baseline: "2027-10", apis: ["float16", "timers"] },
     });
 
@@ -178,7 +178,7 @@ describe("runtime tsconfig fields", () => {
     ]);
   });
 
-  test("drops the baseline fields once src.baseline is unset", () => {
+  test("drops the baseline fields once src.baseline is unset", async () => {
     const project = createTemporaryProject({
       "package.json": "{}",
       "src/index.ts": "",
@@ -198,8 +198,8 @@ describe("runtime tsconfig fields", () => {
       configFile: undefined,
     });
 
-    syncTsconfigFiles(config);
-    config.filesystem.flush();
+    await syncTsconfigFiles(config);
+    (await config.get("filesystem")).flush();
 
     const options = JSON.parse(
       project.read("tsconfig.src.json"),
@@ -223,10 +223,10 @@ describe("runtime tsconfig fields", () => {
     expect(parsed?.errors.map(({ code }) => code)).not.toContain(5053);
   });
 
-  test("replaces a lib inherited from the base tsconfig", () => {
+  test("replaces a lib inherited from the base tsconfig", async () => {
     const project = createTemporaryProject();
 
-    syncCompilerOptions(
+    await syncCompilerOptions(
       {
         src: { baseline: "2026-10" },
         typescript: {
@@ -253,27 +253,27 @@ describe("runtime tsconfig fields", () => {
     expect(parsed?.options.lib).toContain("lib.es2021.d.ts");
   });
 
-  test("fails on a snapshot without an ES lib selection", () => {
-    expect(() => {
-      syncCompilerOptions({
+  test("fails on a snapshot without an ES lib selection", async () => {
+    await expect(async () => {
+      await syncCompilerOptions({
         src: { baseline: "2020-01" },
       });
-    }).toThrow("the earliest accepted snapshot is 2022-08");
+    }).rejects.toThrow("the earliest accepted snapshot is 2022-08");
 
-    expect(() => {
-      syncCompilerOptions({
+    await expect(async () => {
+      await syncCompilerOptions({
         src: { baseline: "2022-07" },
       });
-    }).toThrow("the earliest accepted snapshot is 2022-08");
+    }).rejects.toThrow("the earliest accepted snapshot is 2022-08");
 
-    expect(() => {
-      syncCompilerOptions({
+    await expect(async () => {
+      await syncCompilerOptions({
         src: { baseline: "2035-01" },
       });
-    }).toThrow("is after the current month");
+    }).rejects.toThrow("is after the current month");
   });
 
-  test("leaves the runtime fields alone without src.baseline", () => {
+  test("leaves the runtime fields alone without src.baseline", async () => {
     const project = createTemporaryProject({
       "package.json": "{}",
       "src/index.ts": "",
@@ -289,8 +289,8 @@ describe("runtime tsconfig fields", () => {
       configFile: undefined,
     });
 
-    syncTsconfigFiles(config);
-    config.filesystem.flush();
+    await syncTsconfigFiles(config);
+    (await config.get("filesystem")).flush();
 
     const options = JSON.parse(
       project.read("tsconfig.src.json"),
@@ -301,7 +301,7 @@ describe("runtime tsconfig fields", () => {
     expect(options).not.toHaveProperty("types");
   });
 
-  test("rejects src.apis without src.baseline", () => {
+  test("rejects src.apis without src.baseline", async () => {
     const config = createConfig({
       root: createTemporaryProject().root,
       raw: validate(
@@ -314,13 +314,13 @@ describe("runtime tsconfig fields", () => {
       configFile: undefined,
     });
 
-    expect(() => config.src).toThrow(
+    await expect(config.get("src")).rejects.toThrow(
       /src\.apis only applies to a baseline runtime/,
     );
   });
 
-  test("lets compilerOptions pin the target", () => {
-    const read = syncCompilerOptions({
+  test("lets compilerOptions pin the target", async () => {
+    const read = await syncCompilerOptions({
       src: {
         node: 24,
         tsconfig: {
@@ -332,17 +332,17 @@ describe("runtime tsconfig fields", () => {
     expect(read("tsconfig.src.json").target).toBe("ES2022");
   });
 
-  test("switches the fields when the runtime changes", () => {
+  test("switches the fields when the runtime changes", async () => {
     const project = createTemporaryProject();
 
-    syncCompilerOptions(
+    await syncCompilerOptions(
       {
         src: { baseline: "2026-10" },
       },
       project,
     );
 
-    const read = syncCompilerOptions(
+    const read = await syncCompilerOptions(
       {
         src: { node: 24 },
       },
@@ -356,8 +356,8 @@ describe("runtime tsconfig fields", () => {
     });
   });
 
-  test("appends the selected API groups to the source types only", () => {
-    const read = syncCompilerOptions({
+  test("appends the selected API groups to the source types only", async () => {
+    const read = await syncCompilerOptions({
       src: { baseline: "2026-10", apis: ["timers", "crypto"] },
     });
 
@@ -369,17 +369,17 @@ describe("runtime tsconfig fields", () => {
     expect(read("tsconfig.bin.json").types).toEqual(["node"]);
   });
 
-  test("rejects unknown API groups and Node sources", () => {
-    expect(() => {
-      syncCompilerOptions({
+  test("rejects unknown API groups and Node sources", async () => {
+    await expect(async () => {
+      await syncCompilerOptions({
         src: { apis: ["dom"] },
       });
-    }).toThrow(/"abort".*"url"/s);
+    }).rejects.toThrow(/"abort".*"url"/s);
 
-    expect(() => {
-      syncCompilerOptions({
+    await expect(async () => {
+      await syncCompilerOptions({
         src: { node: 24, apis: ["timers"] },
       });
-    }).toThrow(/baseline runtime/);
+    }).rejects.toThrow(/baseline runtime/);
   });
 });

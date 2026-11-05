@@ -28,7 +28,10 @@ async function exposed(
     "engrenage.config.ts": `export default { preset: "library", ${roles} src: ${source} };\n`,
   });
 
-  return (await loadConfig(project.root)).src.exports;
+  const config = await loadConfig(project.root);
+  const { exports } = await config.get("src");
+
+  return exports;
 }
 
 describe("domain entries", () => {

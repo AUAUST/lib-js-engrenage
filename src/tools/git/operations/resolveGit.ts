@@ -12,14 +12,14 @@ import { gitSchema } from "#tools/git/config/schemas/gitSchema";
 import { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
 import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 
-export function resolveGit(
+export async function resolveGit(
   raw: RawConfig,
   context: ConfigContext,
-): ResolvedGit {
+): Promise<ResolvedGit> {
   const { gitignore } = resolveSection(gitSchema, raw.git, context, "git");
 
-  const projectRoot = context.get("root");
-  const projectFilesystem = context.get("filesystem");
+  const projectRoot = await context.get("root");
+  const projectFilesystem = await context.get("filesystem");
 
   const location = {
     root: projectRoot,

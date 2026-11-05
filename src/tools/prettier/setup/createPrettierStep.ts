@@ -5,15 +5,15 @@ export function createPrettierStep(): Step {
   return {
     name: `${prettier}.config.ts`,
     message: "Format with Prettier?",
-    isMissing({ filesystem, readPackageJson }) {
+    async isMissing({ filesystem, readPackageJson }) {
       return (
-        readPackageJson([prettier]) === undefined &&
+        (await readPackageJson([prettier])) === undefined &&
         !hasConfigFile(filesystem, prettier)
       );
     },
-    plan({ writePackageJson, addDevDependency }) {
-      writePackageJson([prettier], `${engrenage}/prettier`);
-      addDevDependency(prettier);
+    async plan({ writePackageJson, addDevDependency }) {
+      await writePackageJson([prettier], `${engrenage}/prettier`);
+      await addDevDependency(prettier);
     },
   };
 }

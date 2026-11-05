@@ -19,7 +19,7 @@ async function isConfigDebug(): Promise<boolean> {
   try {
     const config = await loadConfig();
 
-    return config.debug;
+    return await config.get("debug");
   } catch {
     return false;
   }

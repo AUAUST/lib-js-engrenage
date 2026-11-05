@@ -1,17 +1,14 @@
 import { claudeFile, claudeSettingsFile } from "#tools/agents/claude/constants";
 import { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSettings";
 import type { Step } from "#project/steps/index";
-import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
+import type { AgentSections } from "#tools/agents/types/AgentSections";
 
-export function createClaudeSettingsStep(): Step<{
-  agents: ResolvedAgents;
-  resolve(...paths: string[]): string;
-}> {
+export function createClaudeSettingsStep(): Step<AgentSections> {
   return {
     name: claudeSettingsFile,
     message: "Fix, format and lint the files Claude Code edits with a hook?",
-    isMissing({ get, filesystem }) {
-      const agents = get("agents");
+    async isMissing({ get, filesystem }) {
+      const agents = await get("agents");
 
       return (
         agents.preferred?.includes("claude") === true &&
@@ -20,17 +17,10 @@ export function createClaudeSettingsStep(): Step<{
         !filesystem.exists(claudeSettingsFile)
       );
     },
-    plan({ get, filesystem }) {
-      syncClaudeSettings(
-        {
-          filesystem,
-          resolve: get("resolve"),
-          agents: get("agents"),
-        },
-        {
-          settings: true,
-        },
-      );
+    async plan(context) {
+      await syncClaudeSettings(context, {
+        settings: true,
+      });
     },
   };
 }

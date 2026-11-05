@@ -45,10 +45,10 @@ describe("filesystem.format", () => {
       configFile: undefined,
     });
 
-    syncTsconfigFiles(config);
+    await syncTsconfigFiles(config);
 
-    await config.filesystem.format();
-    config.filesystem.flush();
+    await (await config.get("filesystem")).format();
+    (await config.get("filesystem")).flush();
 
     const content = project.read("tsconfig.src.json");
 

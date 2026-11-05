@@ -9,7 +9,10 @@ import { createConfig } from "#workflows/registry/operations/createConfig";
 
 const exports = { ".": "src/index.ts", "./*": "src/*/index.ts" };
 
-function syncProject(input: Record<string, unknown>, baseTsconfig = "{}") {
+async function syncProject(
+  input: Record<string, unknown>,
+  baseTsconfig = "{}",
+) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({ name: "@scope/package" }),
     "src/index.ts": "",
@@ -24,8 +27,8 @@ function syncProject(input: Record<string, unknown>, baseTsconfig = "{}") {
     configFile: undefined,
   });
 
-  syncTsconfigFiles(config);
-  config.filesystem.flush();
+  await syncTsconfigFiles(config);
+  (await config.get("filesystem")).flush();
 
   return {
     config,
@@ -35,8 +38,8 @@ function syncProject(input: Record<string, unknown>, baseTsconfig = "{}") {
 }
 
 describe("produceTsconfigPaths", () => {
-  test("generates the package-name aliases from src.exports", () => {
-    const { read } = syncProject({
+  test("generates the package-name aliases from src.exports", async () => {
+    const { read } = await syncProject({
       src: { exports },
     });
 
@@ -46,8 +49,8 @@ describe("produceTsconfigPaths", () => {
     });
   });
 
-  test("keeps hand-written aliases and replaces stale package-name ones", () => {
-    const { read } = syncProject(
+  test("keeps hand-written aliases and replaces stale package-name ones", async () => {
+    const { read } = await syncProject(
       {
         src: { exports },
       },
@@ -68,10 +71,10 @@ describe("produceTsconfigPaths", () => {
     });
   });
 
-  test("leaves paths untouched without src.exports", () => {
+  test("leaves paths untouched without src.exports", async () => {
     const paths = { "@scope/package": ["./src/index.ts"] };
 
-    const { read } = syncProject(
+    const { read } = await syncProject(
       {},
       JSON.stringify({
         compilerOptions: { paths },
@@ -81,8 +84,8 @@ describe("produceTsconfigPaths", () => {
     expect(read("tsconfig.json").compilerOptions.paths).toEqual(paths);
   });
 
-  test("resolves the generated aliases like src.exports", () => {
-    const { config, root, read } = syncProject({
+  test("resolves the generated aliases like src.exports", async () => {
+    const { config, root, read } = await syncProject({
       src: { exports },
     });
 
@@ -92,11 +95,18 @@ describe("produceTsconfigPaths", () => {
         read("tsconfig.json").compilerOptions.paths,
         root,
       ),
-    ).toEqual(resolveSourceEntries(config));
+    ).toEqual(
+      await resolveSourceEntries({
+        packageJson: await config.get("packageJson"),
+        root: await config.get("root"),
+        src: await config.get("src"),
+        tsconfig: await config.get("tsconfig"),
+      }),
+    );
   });
 
-  test("writes empty paths in the tests.dist tsconfig", () => {
-    const { read } = syncProject({
+  test("writes empty paths in the tests.dist tsconfig", async () => {
+    const { read } = await syncProject({
       tests: {
         dist: {
           tsconfig: { path: "tsconfig.tests.dist.json" },

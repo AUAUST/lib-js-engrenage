@@ -15,13 +15,19 @@ const root = getFixture("agents");
 
 const from = join(root, "INSTRUCTIONS.md");
 
+async function resolveSections({
+  get,
+}: Awaited<ReturnType<typeof loadConfig>>) {
+  return { resolve: await get("resolve"), agents: await get("agents") };
+}
+
 describe("syncAgentFiles", () => {
   test("syncs only the configured instruction files", async () => {
     const config = await loadConfig(root);
 
-    syncAgentFiles(config);
+    await syncAgentFiles(config);
 
-    expect(config.filesystem.discard()).toEqual([
+    expect((await config.get("filesystem")).discard()).toEqual([
       {
         file: "INSTRUCTIONS.md",
         status: "synced",
@@ -31,18 +37,19 @@ describe("syncAgentFiles", () => {
 
   test("resolves snippets, references relative to the file and package specifiers", async () => {
     const config = await loadConfig(root);
+    const references = await resolveSections(config);
 
-    expect(resolveAgentReference(config, "shared.md", from)).toBe(
+    expect(resolveAgentReference(references, "shared.md", from)).toBe(
       join(root, ".agents/snippets/shared.md"),
     );
 
-    expect(resolveAgentReference(config, "./AGENTS.md", from)).toBe(
+    expect(resolveAgentReference(references, "./AGENTS.md", from)).toBe(
       join(root, "AGENTS.md"),
     );
 
     expect(
       resolveAgentReference(
-        config,
+        references,
         "@auaust/engrenage/agents/sections/precedence.md",
         import.meta.filename,
       ),
@@ -50,7 +57,7 @@ describe("syncAgentFiles", () => {
   });
 
   test("resolves package fragments exported only under the import condition", async () => {
-    const config = await loadConfig(root);
+    const references = await resolveSections(await loadConfig(root));
 
     const project = createTemporaryProject({
       "AGENTS.md": "",
@@ -66,7 +73,7 @@ describe("syncAgentFiles", () => {
 
     expect(
       resolveAgentReference(
-        config,
+        references,
         "fragments/shared.md",
         project.resolve("AGENTS.md"),
       ),
@@ -74,10 +81,10 @@ describe("syncAgentFiles", () => {
   });
 
   test("names the reference and the file when nothing matches", async () => {
-    const config = await loadConfig(root);
+    const references = await resolveSections(await loadConfig(root));
 
     expect(() => {
-      return resolveAgentReference(config, "missing.md", from);
+      return resolveAgentReference(references, "missing.md", from);
     }).toThrow(`Cannot resolve reference "missing.md" in ${from}`);
   });
 
@@ -100,9 +107,11 @@ describe("syncAgentFiles", () => {
 
     const config = await loadConfig(project.root);
 
-    syncAgentFiles(config);
+    await syncAgentFiles(config);
 
-    expect(config.filesystem.read("AGENTS.md")).toBe(instructions);
+    expect((await config.get("filesystem")).read("AGENTS.md")).toBe(
+      instructions,
+    );
 
     expect(warn).toHaveBeenCalledWith(
       `Cannot resolve reference "./missing.md" in ${project.resolve("AGENTS.md")}: its block is left untouched`,
@@ -138,16 +147,18 @@ describe("syncAgentFiles", () => {
         ".claude/skills/scratchpad/SKILL.md": staleScratchpad,
       });
 
-      syncAgentFiles(config);
+      await syncAgentFiles(config);
 
-      expect(config.filesystem.changes()).toEqual([
+      expect((await config.get("filesystem")).changes()).toEqual([
         expect.objectContaining({
           file: ".claude/skills/scratchpad/SKILL.md",
         }),
       ]);
 
       expect(
-        config.filesystem.read(".claude/skills/scratchpad/SKILL.md"),
+        (await config.get("filesystem")).read(
+          ".claude/skills/scratchpad/SKILL.md",
+        ),
       ).not.toContain("Stale description");
     });
 
@@ -169,9 +180,11 @@ describe("syncAgentFiles", () => {
         ].join("\n"),
       });
 
-      syncAgentFiles(config);
+      await syncAgentFiles(config);
 
-      const content = config.filesystem.read(".claude/agents/worker.md");
+      const content = (await config.get("filesystem")).read(
+        ".claude/agents/worker.md",
+      );
 
       expect(content).toContain("description: Mine.");
       expect(content).toContain("model: sonnet");

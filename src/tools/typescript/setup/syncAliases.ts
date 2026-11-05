@@ -11,6 +11,8 @@ import {
   readTsconfigPaths,
   toTsconfigSpecifier,
 } from "#project/tsconfig/index";
+import type { Filesystem } from "#foundation/filesystem/index";
+import type { OptionContext } from "#foundation/options/index";
 import type { ProjectConfig } from "#project/config/index";
 import type { Alias } from "#project/structure/index";
 
@@ -22,7 +24,13 @@ function sortByKey<Item extends readonly [string, unknown]>(items: Item[]) {
   });
 }
 
-function syncImports(config: ProjectConfig, aliases: readonly Alias[]) {
+function syncImports(
+  config: {
+    filesystem: Filesystem;
+    resolve(...paths: string[]): string;
+  },
+  aliases: readonly Alias[],
+) {
   const imports = record(
     sortByKey(
       aliases
@@ -54,21 +62,29 @@ function syncImports(config: ProjectConfig, aliases: readonly Alias[]) {
   ]);
 }
 
-function syncPaths(config: ProjectConfig, aliases: readonly Alias[]) {
-  const { file } = config.typescript.tsconfig;
+async function syncPaths(
+  config: OptionContext<ProjectConfig>,
+  aliases: readonly Alias[],
+) {
+  const typescript = await config.get("typescript");
 
-  const others = entries(readTsconfigPaths(config, file)).filter(([key]) => {
-    return !key.startsWith(importPrefix);
-  });
+  const { file } = typescript.tsconfig;
+  const filesystem = await config.get("filesystem");
+
+  const others = entries(await readTsconfigPaths(config, file)).filter(
+    ([key]) => {
+      return !key.startsWith(importPrefix);
+    },
+  );
 
   const generated = map(aliases, ({ key, target }) => {
     return [key, [toTsconfigSpecifier(file, target)]] as const;
   });
 
-  config.filesystem.write(
+  filesystem.write(
     file,
     applyJsonEdits(
-      config.filesystem.read(file) ?? emptyObjectFile,
+      filesystem.read(file) ?? emptyObjectFile,
       file,
       [
         {
@@ -81,17 +97,25 @@ function syncPaths(config: ProjectConfig, aliases: readonly Alias[]) {
   );
 }
 
-export function syncAliases(config: ProjectConfig) {
-  const { enabled, global, src } = config.aliases;
+export async function syncAliases(config: OptionContext<ProjectConfig>) {
+  const { enabled, global, src } = await config.get("aliases");
 
   if (!enabled) {
     return;
   }
 
-  syncImports(config, [...global, ...src]);
+  syncImports(
+    {
+      filesystem: await config.get("filesystem"),
+      resolve: await config.get("resolve"),
+    },
+    [...global, ...src],
+  );
 
-  if (config.src.bundled) {
+  const source = await config.get("src");
+
+  if (source.bundled) {
     // @debt bundler aliases removed from the config stay in the tsconfig `paths`, since only `#` keys are known to be generated
-    syncPaths(config, src);
+    await syncPaths(config, src);
   }
 }

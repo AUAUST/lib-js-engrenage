@@ -24,7 +24,7 @@ export const barrels = defineCommand((command) => {
 
       const config = await loadConfig();
 
-      syncBarrels(config, barrels);
+      await syncBarrels(config, barrels);
 
       await settleChanges(config, {
         check,

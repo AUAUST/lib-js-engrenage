@@ -16,9 +16,9 @@ async function cyclesOf(files: Record<string, string>) {
   const config = await loadConfig(project.root);
 
   return findImportCycles({
-    root: config.root,
-    structure: config.structure,
-    aliases: config.aliases,
+    root: await config.get("root"),
+    structure: await config.get("structure"),
+    aliases: await config.get("aliases"),
   });
 }
 

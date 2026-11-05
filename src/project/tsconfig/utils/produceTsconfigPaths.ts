@@ -6,15 +6,15 @@ import { isPackageAlias } from "#project/tsconfig/utils/isPackageAlias";
 import { readTsconfigPaths } from "#project/tsconfig/utils/readTsconfigPaths";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
 import type { JsonEdit } from "#foundation/json/index";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 const pathsLocation = ["compilerOptions", "paths"];
 
-export function produceTsconfigPaths(
-  config: ProjectConfig,
+export async function produceTsconfigPaths(
+  config: ConfigContext,
   { key, file }: TsconfigTarget,
-): readonly JsonEdit[] {
+): Promise<readonly JsonEdit[]> {
   if (key === "tests.dist") {
     return [
       {
@@ -24,15 +24,21 @@ export function produceTsconfigPaths(
     ];
   }
 
-  const { src, packageJson } = config;
-
-  if (key !== "base" || src.exports === undefined) {
+  if (key !== "base") {
     return [];
   }
 
-  const { name } = packageJson;
+  const source = await config.get("src");
 
-  const generated = entries(resolveExportPaths(name, src.exports)).map(
+  const exposed = await source.exports;
+
+  if (exposed === undefined) {
+    return [];
+  }
+
+  const { name } = await config.get("packageJson");
+
+  const generated = entries(resolveExportPaths(name, exposed)).map(
     ([alias, targets]) => {
       return [
         alias,
@@ -41,7 +47,7 @@ export function produceTsconfigPaths(
     },
   );
 
-  const others = entries(readTsconfigPaths(config, file)).filter(
+  const others = entries(await readTsconfigPaths(config, file)).filter(
     ([alias]) => !isPackageAlias(name, alias),
   );
 

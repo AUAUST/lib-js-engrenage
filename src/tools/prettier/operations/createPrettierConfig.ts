@@ -4,13 +4,13 @@ import type { OptionContext } from "#foundation/options/index";
 import type { Conventions } from "#project/format/index";
 import type { Config } from "#tools/prettier/types/Config";
 
-export function createPrettierConfig(
+export async function createPrettierConfig(
   { get }: OptionContext<{ format: Conventions }>,
   options: Config = {},
-): Config {
+): Promise<Config> {
   return {
     ...fixedOptions,
-    ...mapConventions(get("format")),
+    ...mapConventions(await get("format")),
     ...options,
   };
 }

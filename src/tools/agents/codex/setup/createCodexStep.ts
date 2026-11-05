@@ -5,33 +5,30 @@ import { codexFile, codexTemplate } from "#tools/agents/codex/constants";
 import { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";
 import { agentsFile } from "#tools/agents/constants";
 import type { Step } from "#project/steps/index";
-import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
+import type { AgentSections } from "#tools/agents/types/AgentSections";
 
-export function createCodexStep(): Step<{
-  agents: ResolvedAgents;
-  resolve(...paths: string[]): string;
-}> {
+export function createCodexStep(): Step<AgentSections> {
   return {
     name: codexFile,
     message: `Create ${codexFile} with Codex instructions and a rule mapping?`,
-    isMissing({ get, filesystem }) {
+    async isMissing({ get, filesystem }) {
+      const agents = await get("agents");
+
       return (
-        get("agents").preferred?.includes("codex") === true &&
+        agents.preferred?.includes("codex") === true &&
         filesystem.exists(agentsFile) &&
         !filesystem.exists(codexFile)
       );
     },
-    plan({ get, filesystem }) {
+    async plan(context) {
+      const { filesystem } = context;
+
       filesystem.write(
         codexFile,
         readFileSync(resolveDataFile(codexTemplate), "utf-8"),
       );
 
-      syncCodexFiles({
-        filesystem,
-        resolve: get("resolve"),
-        agents: get("agents"),
-      });
+      await syncCodexFiles(context);
     },
   };
 }

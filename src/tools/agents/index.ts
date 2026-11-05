@@ -46,6 +46,7 @@ export { preferredSchema } from "#tools/agents/config/schemas/preferredSchema";
 
 // @barrel types/*.ts all
 export * from "#tools/agents/types/Agent";
+export * from "#tools/agents/types/AgentSections";
 export * from "#tools/agents/types/AgentsInput";
 export * from "#tools/agents/types/BudgetFinding";
 export * from "#tools/agents/types/BudgetKind";
@@ -55,5 +56,6 @@ export * from "#tools/agents/types/GeneratedFrontmatter";
 export * from "#tools/agents/types/GithubWrite";
 export * from "#tools/agents/types/HookDefinition";
 export * from "#tools/agents/types/HookEvent";
+export * from "#tools/agents/types/ProjectMapSections";
 export * from "#tools/agents/types/ResolvedAgents";
 // @end

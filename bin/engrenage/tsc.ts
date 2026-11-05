@@ -8,32 +8,44 @@ import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
 import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
 import { getOptionsEnd } from "#workflows/cli/utils/getOptionsEnd";
 import { isOptionOf } from "#workflows/cli/utils/isOptionOf";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { File } from "#types/File";
 
 const buildOptions = ["--build", "-b"];
 
-function isSolution(config: ProjectConfig, project: File): boolean {
+async function isSolution(
+  config: ConfigContext,
+  project: File,
+): Promise<boolean> {
   const { references } = createTsconfig({
-    root: config.root,
+    root: await config.get("root"),
     path: project,
-    filesystem: config.filesystem,
+    filesystem: await config.get("filesystem"),
   });
 
   return isNotEmpty(references);
 }
 
-function hasReferencedEnvironment(config: ProjectConfig): boolean {
-  return tsconfigEnvironments.some((name) => {
-    const { owner, check } = config[name].tsconfig;
+async function hasReferencedEnvironment(
+  config: ConfigContext,
+): Promise<boolean> {
+  for (const name of tsconfigEnvironments) {
+    const { active, tsconfig } = await config.get(name);
+    const { owner, check } = tsconfig;
 
-    return config[name].active && owner === name && check;
-  });
+    if (active && owner === name && check) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
-function resolveDistProject(config: ProjectConfig): File {
-  const { active } = config.tests;
-  const { owner, file, path } = config.tests.dist.tsconfig;
+async function resolveDistProject(config: ConfigContext): Promise<File> {
+  const { active } = await config.get("tests");
+  const tests = await config.get("tests");
+
+  const { owner, file, path } = tests.dist.tsconfig;
 
   if (!active) {
     throw new Error(
@@ -49,27 +61,27 @@ function resolveDistProject(config: ProjectConfig): File {
 
   if (path === undefined) {
     throw new Error(
-      `The dist tsconfig ${file} does not exist in ${config.root}, run \`engrenage sync\` to create it`,
+      `The dist tsconfig ${file} does not exist in ${await config.get("root")}, run \`engrenage sync\` to create it`,
     );
   }
 
   return path;
 }
 
-function checkProject(
-  config: ProjectConfig,
+async function checkProject(
+  config: ConfigContext,
   args: string[],
   project: File | undefined,
 ) {
   if (project === undefined) {
-    throw new Error(`No tsconfig found in ${config.root}`);
+    throw new Error(`No tsconfig found in ${await config.get("root")}`);
   }
 
   const builds = args.slice(0, getOptionsEnd(args)).some((arg) => {
     return isOptionOf(arg, buildOptions);
   });
 
-  if (!builds && isSolution(config, project)) {
+  if (!builds && (await isSolution(config, project))) {
     args.unshift("--build", project);
   } else if (!builds) {
     ensureAnyOf(args, ["--project", "-p"], ["--project", project]);
@@ -84,22 +96,24 @@ export const tsc = defineToolCommands({
   commands: {
     "tsc": {
       message: "Typechecking...",
-      arguments(config, args) {
-        const project = config.typescript.tsconfig.path;
+      async arguments(config, args) {
+        const typescript = await config.get("typescript");
 
-        if (!hasReferencedEnvironment(config)) {
+        const project = await typescript.tsconfig.path;
+
+        if (!(await hasReferencedEnvironment(config))) {
           throw new Error(
             "No environment is referenced by the base tsconfig: every active environment has `check: false`",
           );
         }
 
-        checkProject(config, args, project);
+        await checkProject(config, args, project);
       },
     },
     "tsc:dist": {
       message: "Checking the types of the build output...",
-      arguments(config, args) {
-        checkProject(config, args, resolveDistProject(config));
+      async arguments(config, args) {
+        await checkProject(config, args, await resolveDistProject(config));
       },
     },
   },

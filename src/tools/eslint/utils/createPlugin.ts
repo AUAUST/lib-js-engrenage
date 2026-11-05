@@ -2,14 +2,14 @@ import { entries, values } from "@auaust/toolkit/object";
 import { value } from "@auaust/toolkit/value";
 
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
-import type { ProjectConfig } from "#project/config/index";
 import type { Convention } from "#tools/eslint/types/Convention";
+import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { Plugin } from "#tools/eslint/types/Plugin";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 
 export function createPlugin(
   categories: Record<string, Record<string, Convention>>,
-  config: ProjectConfig,
+  config: ConventionConfig,
 ): Plugin {
   const rules: Record<string, RuleModule> = {};
 

@@ -9,7 +9,7 @@ interface Sections {
 }
 
 describe("createSections", () => {
-  test("resolves a section once and lets sections read lower ones", () => {
+  test("resolves a section once and lets sections read lower ones", async () => {
     let calls = 0;
 
     const { get } = createSections<Sections>({
@@ -18,26 +18,65 @@ describe("createSections", () => {
 
         return 1;
       },
-      b: (read) => read("a") + 1,
-      c: (read) => read("a") + read("b"),
+      b: async (read) => (await read("a")) + 1,
+      c: async (read) => (await read("a")) + (await read("b")),
     });
 
-    expect(get("c")).toBe(3);
-    expect(get("b")).toBe(2);
+    expect(await get("c")).toBe(3);
+    expect(await get("b")).toBe(2);
     expect(calls).toBe(1);
   });
 
-  test("fails with the path of sections reading each other", () => {
+  test("resolves a shared dependency once for sections resolved in parallel", async () => {
+    let calls = 0;
+
+    const { get } = createSections<Sections>({
+      a: async () => {
+        calls += 1;
+
+        await Promise.resolve();
+
+        return 1;
+      },
+      b: async (read) => (await read("a")) + 1,
+      c: async (read) => (await read("a")) + 2,
+    });
+
+    expect(await Promise.all([get("b"), get("c")])).toEqual([2, 3]);
+    expect(calls).toBe(1);
+  });
+
+  test("fails with the path of sections reading each other", async () => {
     const { get } = createSections<Sections>({
       a: (read) => read("b"),
       b: (read) => read("c"),
       c: (read) => read("b"),
     });
 
-    expect(() => get("a")).toThrow("b -> c -> b");
+    await expect(get("a")).rejects.toThrow("b -> c -> b");
   });
 
-  test("recomputes live sections", () => {
+  test("fails on a cycle between sections resolved in parallel", async () => {
+    const { get } = createSections<Sections>({
+      a: async (read) => {
+        await Promise.resolve();
+
+        return read("b");
+      },
+      b: async (read) => {
+        await Promise.resolve();
+
+        return read("a");
+      },
+      c: () => 0,
+    });
+
+    const results = await Promise.allSettled([get("a"), get("b")]);
+
+    expect(results.some(({ status }) => status === "rejected")).toBe(true);
+  });
+
+  test("recomputes live sections", async () => {
     let value = 0;
 
     const { get } = createSections<Sections>(
@@ -53,6 +92,6 @@ describe("createSections", () => {
       ["a"],
     );
 
-    expect([get("a"), get("a")]).toEqual([1, 2]);
+    expect([await get("a"), await get("a")]).toEqual([1, 2]);
   });
 });

@@ -24,7 +24,8 @@ export const github = defineCommand((command) => {
       "Claude Code hook payload",
     );
 
-    const { agents } = await loadConfig();
+    const config = await loadConfig();
+    const agents = await config.get("agents");
     const { budgets } = agents;
     const finding = measureGithubCommand(shellCommand, budgets);
 

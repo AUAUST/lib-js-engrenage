@@ -10,31 +10,41 @@ import { resolveTsconfigLibrary } from "#project/tsconfig/operations/resolveTsco
 import { resolveTsconfigRuntime } from "#project/tsconfig/operations/resolveTsconfigRuntime";
 import { readTsconfigValue } from "#project/tsconfig/utils/readTsconfigValue";
 import type { JsonEdit } from "#foundation/json/index";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 const apiTypesPrefix = `${engrenage}/apis/`;
 
-function listDefaultTypes(
-  config: ProjectConfig,
+async function createDefaultTypes(
+  config: ConfigContext,
   target: TsconfigTarget,
   runtime: Runtime | undefined,
-): readonly string[] {
+): Promise<() => readonly string[]> {
   if (runtime === undefined) {
-    return [];
+    return () => [];
   }
 
   if (runtime.kind === "node") {
-    return ["node"];
+    return () => ["node"];
   }
 
-  const library = (resolveTsconfigLibrary(config, target) || runtime.lib).map(
-    (name) => name.toLowerCase(),
-  );
+  const library = (
+    (await resolveTsconfigLibrary(config, target)) || runtime.lib
+  ).map((name) => name.toLowerCase());
 
+  const { apis } = await config.get("src");
+
+  return () => listBaselineTypes(target, apis, library);
+}
+
+function listBaselineTypes(
+  target: TsconfigTarget,
+  apis: readonly string[],
+  library: readonly string[],
+): readonly string[] {
   // @debt includesEsLibrary only knows the generated editions: a lib it does not know (`esnext.*`, `ESNext`, `DOM`) never counts as including a library group
   return map(
-    filter(config.src.apis, (api) => {
+    filter(apis, (api) => {
       if (!isLibraryGroup(api)) {
         return true;
       }
@@ -59,11 +69,11 @@ function isLibraryGroup(group: string): group is keyof typeof apiLibraryGroups {
   return group in apiLibraryGroups;
 }
 
-function removeBaselineTypes(
-  config: ProjectConfig,
+async function removeBaselineTypes(
+  config: ConfigContext,
   target: TsconfigTarget,
-): readonly JsonEdit[] {
-  const current = readTsconfigValue(config, target, [
+): Promise<readonly JsonEdit[]> {
+  const current = await readTsconfigValue(config, target, [
     "compilerOptions",
     "types",
   ]);
@@ -89,17 +99,17 @@ function removeBaselineTypes(
   ];
 }
 
-export function produceTsconfigTypes(
-  config: ProjectConfig,
+export async function produceTsconfigTypes(
+  config: ConfigContext,
   target: TsconfigTarget,
-): readonly JsonEdit[] {
+): Promise<readonly JsonEdit[]> {
   const { key, types: option } = target;
 
   if (key === "base") {
     return [];
   }
 
-  const runtime = resolveTsconfigRuntime(config, key);
+  const runtime = await resolveTsconfigRuntime(config, key);
 
   if (runtime === undefined && (option == null || option === true)) {
     return removeBaselineTypes(config, target);
@@ -107,7 +117,7 @@ export function produceTsconfigTypes(
 
   const types = resolveListOption(
     option,
-    () => listDefaultTypes(config, target, runtime),
+    await createDefaultTypes(config, target, runtime),
     `${key}.tsconfig.types`,
   );
 

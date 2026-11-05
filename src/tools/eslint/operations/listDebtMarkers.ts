@@ -3,6 +3,7 @@ import { relative } from "node:path";
 import { eslint } from "#constants";
 import { pluginName } from "#tools/eslint/constants";
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
+import type { OptionContext } from "#foundation/options/index";
 import type { ProjectConfig } from "#project/config/index";
 import type { DebtMarker } from "#tools/eslint/types/DebtMarker";
 
@@ -14,10 +15,14 @@ function compareMarkers(a: DebtMarker, b: DebtMarker): number {
   return a.file < b.file ? -1 : 1;
 }
 
-export async function listDebtMarkers(
-  config: ProjectConfig,
-): Promise<DebtMarker[]> {
-  if (!config.environment.hasDependency(eslint)) {
+export async function listDebtMarkers({
+  get,
+}: OptionContext<Pick<ProjectConfig, "root" | "environment">>): Promise<
+  DebtMarker[]
+> {
+  const environment = await get("environment");
+
+  if (!environment.hasDependency(eslint)) {
     throw new Error(
       `Listing debt markers requires the ${eslint} dependency. Install it, then retry.`,
     );
@@ -29,10 +34,12 @@ export async function listDebtMarkers(
 
   // @debt Markers are listed through the project's full ESLint config, so files are parsed with type information that comment markers never need.
 
+  const root = await get("root");
+
   const ruleId = `${pluginName}/${createRuleName("debtMarkers")}`;
 
   const results = await new ESLint({
-    cwd: config.root,
+    cwd: root,
     cache: false,
     ruleFilter: (rule) => rule.ruleId === ruleId,
     overrideConfig: {
@@ -48,7 +55,7 @@ export async function listDebtMarkers(
     for (const { ruleId: id, line, column, message } of messages) {
       if (id === ruleId) {
         markers.push({
-          file: relative(config.root, filePath),
+          file: relative(root, filePath),
           line,
           column,
           statement: message,

@@ -17,15 +17,18 @@ export interface StepContext<Sections = object> extends Pick<
   getAgents(): readonly string[] | undefined;
   setAgents(chosen: readonly string[]): void;
   getPreset(): Preset | undefined;
-  getTraits(): ResolvedTraits;
+  getTraits(): Promise<ResolvedTraits>;
   setPreset(chosen: Preset | undefined): void;
-  readPackageJson(location: JSONPath): unknown;
+  readPackageJson(location: JSONPath): Promise<unknown>;
   writePackageJson(
     location: readonly [string] | readonly [string, string],
     value: JsonValue,
-  ): void;
-  hasDependency(name: PackageName): boolean;
-  addDevDependency(name: PackageName, options?: { exact?: boolean }): void;
+  ): Promise<void>;
+  hasDependency(name: PackageName): Promise<boolean>;
+  addDevDependency(
+    name: PackageName,
+    options?: { exact?: boolean },
+  ): Promise<void>;
   invoke(invocation: Invocation): void;
   getInvocations(): readonly Invocation[];
 }

@@ -5,7 +5,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { defineVitestConfig } from "#tools/vitest/operations/defineVitestConfig";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
 
 const root = getFixture("vitest");
@@ -18,14 +18,16 @@ describe("defineVitestConfig", () => {
   test("passes the environment and resolved config to the native config and merges it after the options", async () => {
     mockCwd(root);
 
-    const nativeConfig = vi.fn((config: ProjectConfig, env: ConfigEnv) => {
-      return {
-        tsconfig: config.resolve("tsconfig.custom.json"),
-        test: {
-          exclude: [env.mode],
-        },
-      };
-    });
+    const nativeConfig = vi.fn(
+      async (config: ConfigContext, env: ConfigEnv) => {
+        return {
+          tsconfig: (await config.get("resolve"))("tsconfig.custom.json"),
+          test: {
+            exclude: [env.mode],
+          },
+        };
+      },
+    );
 
     const vitestConfig = await defineVitestConfig(
       {

@@ -86,6 +86,7 @@ import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { Environment } from "#project/config/types/Environment";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { RawConfig } from "#project/config/types/RawConfig";
+import type { ResolvedRuntimeSettings } from "#project/config/types/ResolvedRuntimeSettings";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -130,86 +131,103 @@ export function createProjectSections({
   filesystem: Filesystem;
   context: ConfigContext;
 }): SectionResolvers<ProjectConfig> {
-  const { get } = context;
+  type Get = ConfigContext["get"];
 
   function locate(file: File, configured: boolean): File | undefined {
     return locateFile({ root, filesystem }, file, configured);
   }
 
   const debugOption = once(() => {
-    return resolveSection(debugSchema, raw.debug, context, "debug");
+    return resolveSection(debugSchema, raw.debug, undefined, "debug");
   });
 
   function preset() {
-    return resolveSection(presetSchema, raw.preset, context, "preset");
+    return resolveSection(presetSchema, raw.preset, undefined, "preset");
   }
 
   function traitAdjustments() {
-    return resolveSection(traitsSchema, raw.traits, context, "traits");
+    return resolveSection(traitsSchema, raw.traits, undefined, "traits");
   }
 
-  function traits() {
-    return resolveTraits(get("preset"), get("traitAdjustments"));
+  async function traits(get: Get) {
+    return resolveTraits(await get("preset"), await get("traitAdjustments"));
   }
 
   function format() {
-    return resolveSection(formatSchema, raw.format, context, "format");
+    return resolveSection(formatSchema, raw.format, undefined, "format");
   }
 
-  function roles(): ProjectRoles {
-    const declared = resolveSection(rolesSchema, raw.roles, context, "roles");
+  async function roles(get: Get): Promise<ProjectRoles> {
+    const declared = resolveSection(rolesSchema, raw.roles, undefined, "roles");
+
+    const traits = await get("traits");
 
     return freeze({
       ...normalizeRoles(declared),
       enabled: declared.enabled,
       verbatimModuleSyntax: typescriptOption().verbatimModuleSyntax,
-      published: get("traits").published,
+      published: traits.published,
     });
   }
 
   function define() {
-    return resolveSection(defineSchema, raw.define, context, "define");
+    return resolveSection(
+      defineSchema,
+      raw.define,
+      {
+        root,
+        configFile,
+        packageJson: packageJson(),
+        filesystem,
+      },
+      "define",
+    );
   }
 
   const cacheOption = once(() => {
-    return resolveSection(cacheSchema, raw.cache, context, "cache");
+    return resolveSection(cacheSchema, raw.cache, { root }, "cache");
   });
 
   const runtimeOption = once(() => {
-    return resolveSection(runtimeSchema, raw.runtime, context, "runtime");
+    return resolveSection(runtimeSchema, raw.runtime, undefined, "runtime");
   });
 
   const typescriptOption = once(() => {
     return resolveSection(
       typescriptSchema,
       raw.typescript,
-      context,
+      undefined,
       "typescript",
     );
   });
 
   const sourceOption = once(() => {
-    return resolveSection(sourceSchema, raw.src, context, "src");
+    return resolveSection(sourceSchema, raw.src, undefined, "src");
   });
 
   const testsOption = once(() => {
-    return resolveSection(testsSchema, raw.tests, context, "tests");
+    return resolveSection(testsSchema, raw.tests, undefined, "tests");
   });
 
-  const binOption = once(() => {
-    return resolveSection(binSchema, raw.bin, context, "bin");
-  });
+  async function binOption(get: Get) {
+    return resolveSection(
+      binSchema,
+      raw.bin,
+      { runtime: await get("runtime") },
+      "bin",
+    );
+  }
 
   const scriptsOption = once(() => {
-    return resolveSection(scriptsSchema, raw.scripts, context, "scripts");
+    return resolveSection(scriptsSchema, raw.scripts, undefined, "scripts");
   });
 
   const toolingOption = once(() => {
-    return resolveSection(toolingSchema, raw.tooling, context, "tooling");
+    return resolveSection(toolingSchema, raw.tooling, undefined, "tooling");
   });
 
   const dataOption = once(() => {
-    return resolveSection(dataSchema, raw.data, context, "data");
+    return resolveSection(dataSchema, raw.data, undefined, "data");
   });
 
   function packageJsonPath(): File | undefined {
@@ -234,8 +252,8 @@ export function createProjectSections({
     );
   }
 
-  function environment(): Environment {
-    return describeEnvironment(get("packageJson"));
+  async function environment(get: Get): Promise<Environment> {
+    return describeEnvironment(await get("packageJson"));
   }
 
   function tsconfigPath(): File | undefined {
@@ -270,18 +288,19 @@ export function createProjectSections({
     return freeze({ node: runtimeOption().node });
   }
 
-  function developmentRuntime() {
-    return resolveNodeRuntime(get("runtime").node, "runtime.node");
+  function developmentRuntime({ node }: ResolvedRuntimeSettings) {
+    return resolveNodeRuntime(node, "runtime.node");
   }
 
-  function resolveEnvironmentRoles(
+  async function resolveEnvironmentRoles(
+    get: Get,
     name: RoleEnvironment,
     option: { readonly enabled: boolean; readonly roles?: DeclaredRolesOption },
-  ): ResolvedRoles {
+  ): Promise<ResolvedRoles> {
     return option.enabled && option.roles !== undefined
       ? resolveRoles({
           environment: name,
-          roles: get("roles"),
+          roles: await get("roles"),
           environmentRoles: normalizeRoles(option.roles),
         })
       : noRoles;
@@ -294,7 +313,8 @@ export function createProjectSections({
     return option.enabled ? option.layout : undefined;
   }
 
-  function resolveStructure(
+  async function resolveStructure(
+    get: Get,
     name: StructureEnvironmentName,
     environment: { active: boolean; dirs: Directories },
     option: StructureSection,
@@ -302,7 +322,7 @@ export function createProjectSections({
       tests?: TestsContext;
       layout?: ProgramLayout | undefined;
     } = {},
-  ): EnvironmentStructure | undefined {
+  ): Promise<EnvironmentStructure | undefined> {
     if (!option.enabled || !environment.active) {
       return;
     }
@@ -320,7 +340,7 @@ export function createProjectSections({
       root,
       dirs: environment.dirs,
       options: { ...option, namespaces },
-      roles: get("roles"),
+      roles: await get("roles"),
       environmentRoles:
         environmentRoles === undefined
           ? undefined
@@ -333,7 +353,9 @@ export function createProjectSections({
   }
 
   // @debt explicitness is read from the raw input because a resolved option no longer tells a default from a given value; the tests.dist tsconfig default should depend on the published trait in its declaration
-  function testsDistTsconfig(): ResolvedEnvironmentTsconfigOption {
+  async function testsDistTsconfig(
+    get: Get,
+  ): Promise<ResolvedEnvironmentTsconfigOption> {
     const { tests } = raw;
 
     const configured =
@@ -341,26 +363,34 @@ export function createProjectSections({
       isPlainObject(tests.dist) &&
       tests.dist.tsconfig !== undefined;
 
-    return configured || get("traits").published
+    const traits = await get("traits");
+
+    return configured || traits.published
       ? testsOption().dist.tsconfig
       : unmanagedTsconfig;
   }
 
-  const tsconfigGroups = once((): TsconfigGroups => {
+  async function tsconfigGroups(get: Get): Promise<TsconfigGroups> {
+    const binOptions = await binOption(get);
+
     return {
       "src": sourceOption().tsconfig,
       "tests": testsOption().tsconfig,
-      "tests.dist": testsDistTsconfig(),
-      "bin": binOption().tsconfig,
+      "tests.dist": await testsDistTsconfig(get),
+      "bin": binOptions.tsconfig,
       "scripts": scriptsOption().tsconfig,
       "tooling": toolingOption().tsconfig,
     };
-  });
+  }
 
-  function environmentTsconfigFor(
+  async function environmentTsconfigFor(
+    get: Get,
     key: TsconfigKey,
-  ): ResolvedEnvironmentTsconfig {
-    const { location, ...resolved } = resolveTsconfig(key, tsconfigGroups());
+  ): Promise<ResolvedEnvironmentTsconfig> {
+    const { location, ...resolved } = resolveTsconfig(
+      key,
+      await tsconfigGroups(get),
+    );
 
     function path(): File | undefined {
       return location === undefined
@@ -380,7 +410,8 @@ export function createProjectSections({
 
   const typescriptFiles = once((): Globs => typescriptOption().files);
 
-  function resolveEnvironment(
+  async function resolveEnvironment(
+    get: Get,
     option: {
       dirs: Directories;
       generated: Globs;
@@ -395,13 +426,13 @@ export function createProjectSections({
         typescriptFiles: typescriptFiles(),
         filesystem,
       }),
-      tsconfig: environmentTsconfigFor(key),
+      tsconfig: await environmentTsconfigFor(get, key),
     });
   }
 
-  function source() {
+  async function source(get: Get) {
     const option = sourceOption();
-    const environment = resolveEnvironment(option, "src");
+    const environment = await resolveEnvironment(get, option, "src");
 
     const runtime = once(() => {
       return option.enabled &&
@@ -416,22 +447,24 @@ export function createProjectSections({
       compose(
         {
           ...environment,
-          roles: resolveEnvironmentRoles("src", option),
+          roles: await resolveEnvironmentRoles(get, "src", option),
           bundled: option.bundled,
           apis: option.apis,
         },
         compose.getters({
-          exports: () => resolveSourceExports(option.exports),
+          exports: once(() => resolveSourceExports(option.exports)),
           runtime,
         }),
       ),
     );
   }
 
-  function resolveSourceExports(
+  async function resolveSourceExports(
     configured: Readonly<Record<string, File>> | undefined,
-  ): Readonly<Record<string, File>> | undefined {
-    const derived = resolveDomainEntries(get("structure").src);
+  ): Promise<Readonly<Record<string, File>> | undefined> {
+    const structure = await context.get("structure");
+
+    const derived = resolveDomainEntries(structure.src);
 
     for (const subpath of keys(configured ?? {})) {
       if (subpath in derived) {
@@ -446,8 +479,8 @@ export function createProjectSections({
     return keys(exposed).length === 0 ? undefined : freeze(exposed);
   }
 
-  function bin() {
-    const option = binOption();
+  async function bin(get: Get) {
+    const option = await binOption(get);
 
     return freeze(
       compose(
@@ -455,7 +488,7 @@ export function createProjectSections({
           roles: noRoles,
           commands: option.commands,
         },
-        compose.values(resolveEnvironment(option, "bin")),
+        compose.values(await resolveEnvironment(get, option, "bin")),
         compose.getters({
           runtime: () => {
             return option.enabled
@@ -478,23 +511,25 @@ export function createProjectSections({
     });
   }
 
-  function scripts() {
+  async function scripts(get: Get) {
+    const runtimeSettings = await get("runtime");
     const option = scriptsOption();
 
     return freeze(
       compose(
         {
-          roles: resolveEnvironmentRoles("scripts", option),
+          roles: await resolveEnvironmentRoles(get, "scripts", option),
         },
-        compose.values(resolveEnvironment(option, "scripts")),
+        compose.values(await resolveEnvironment(get, option, "scripts")),
         compose.getters({
-          runtime: developmentRuntime,
+          runtime: () => developmentRuntime(runtimeSettings),
         }),
       ),
     );
   }
 
-  function tests() {
+  async function tests(get: Get) {
+    const runtimeSettings = await get("runtime");
     const option = testsOption();
 
     function pattern(variant: string): Globs {
@@ -512,25 +547,26 @@ export function createProjectSections({
     return freeze(
       compose(
         {
-          roles: resolveEnvironmentRoles("tests", option),
+          roles: await resolveEnvironmentRoles(get, "tests", option),
           layout: option.enabled ? option.layout : "roots",
           patterns,
           files: [...patterns.plain, ...patterns.source, ...patterns.dist],
           fixtures: option.fixtures,
           coverageDir: option.coverageDir,
           dist: freeze({
-            tsconfig: environmentTsconfigFor("tests.dist"),
+            tsconfig: await environmentTsconfigFor(get, "tests.dist"),
           }),
         },
-        compose.values(resolveEnvironment(option, "tests")),
+        compose.values(await resolveEnvironment(get, option, "tests")),
         compose.getters({
-          runtime: developmentRuntime,
+          runtime: () => developmentRuntime(runtimeSettings),
         }),
       ),
     );
   }
 
-  function tooling() {
+  async function tooling(get: Get) {
+    const runtimeSettings = await get("runtime");
     const option = toolingOption();
     const { files } = option;
     const walked = option.dirs.filter((directory) => directory !== ".");
@@ -546,11 +582,11 @@ export function createProjectSections({
           files: rootFiles,
           defines: false,
           globs: [...rootFiles, ...filesIn(walked, typescriptFiles())],
-          roles: resolveEnvironmentRoles("tooling", option),
-          tsconfig: environmentTsconfigFor("tooling"),
+          roles: await resolveEnvironmentRoles(get, "tooling", option),
+          tsconfig: await environmentTsconfigFor(get, "tooling"),
         },
         compose.getters({
-          runtime: developmentRuntime,
+          runtime: () => developmentRuntime(runtimeSettings),
         }),
       ),
     );
@@ -560,7 +596,7 @@ export function createProjectSections({
     return resolveSection(
       workspacesSchema,
       raw.workspaces,
-      context,
+      undefined,
       "workspaces",
     );
   });
@@ -574,23 +610,40 @@ export function createProjectSections({
     });
   }
 
-  function structure() {
-    const sourceStructure = resolveStructure("src", get("src"), sourceOption());
+  async function structure(get: Get) {
+    const [source, bin, scripts, tests, tooling] = await Promise.all([
+      get("src"),
+      get("bin"),
+      get("scripts"),
+      get("tests"),
+      get("tooling"),
+    ]);
 
-    const binStructure = resolveStructure("bin", get("bin"), binOption(), {
-      layout: layoutOf(binOption()),
+    const sourceStructure = await resolveStructure(
+      get,
+      "src",
+      source,
+      sourceOption(),
+    );
+
+    const binOptions = await binOption(get);
+
+    const binStructure = await resolveStructure(get, "bin", bin, binOptions, {
+      layout: layoutOf(binOptions),
     });
 
-    const scriptsStructure = resolveStructure(
+    const scriptsStructure = await resolveStructure(
+      get,
       "scripts",
-      get("scripts"),
+      scripts,
       scriptsOption(),
       { layout: layoutOf(scriptsOption()) },
     );
 
-    const toolingStructure = resolveStructure(
+    const toolingStructure = await resolveStructure(
+      get,
       "tooling",
-      get("tooling"),
+      tooling,
       toolingOption(),
     );
 
@@ -598,9 +651,10 @@ export function createProjectSections({
 
     return freeze({
       src: sourceStructure,
-      tests: resolveStructure(
+      tests: await resolveStructure(
+        get,
         "tests",
-        get("tests"),
+        tests,
         testsConfig,
         testsConfig.enabled
           ? {
@@ -608,19 +662,19 @@ export function createProjectSections({
                 layout: testsConfig.layout,
                 environments: {
                   src: {
-                    dirs: get("src").dirs,
+                    dirs: source.dirs,
                     structure: sourceStructure,
                   },
                   bin: {
-                    dirs: get("bin").dirs,
+                    dirs: bin.dirs,
                     structure: binStructure,
                   },
                   scripts: {
-                    dirs: get("scripts").dirs,
+                    dirs: scripts.dirs,
                     structure: scriptsStructure,
                   },
                   tooling: {
-                    dirs: get("tooling").dirs,
+                    dirs: tooling.dirs,
                     structure: toolingStructure,
                   },
                 },
@@ -634,8 +688,18 @@ export function createProjectSections({
     });
   }
 
-  function importRules() {
-    const trees = get("structure");
+  async function importRules(get: Get) {
+    const [trees, source, tests, bin, scripts, tooling, traits, groups] =
+      await Promise.all([
+        get("structure"),
+        get("src"),
+        get("tests"),
+        get("bin"),
+        get("scripts"),
+        get("tooling"),
+        get("traits"),
+        get("workspaces"),
+      ]);
 
     return resolveImportRules({
       structures: {
@@ -646,62 +710,83 @@ export function createProjectSections({
         ...(trees.tooling === undefined ? {} : { tooling: trees.tooling }),
       },
       roles: {
-        src: get("src").roles,
-        tests: get("tests").roles,
-        scripts: get("scripts").roles,
-        tooling: get("tooling").roles,
+        src: source.roles,
+        tests: tests.roles,
+        scripts: scripts.roles,
+        tooling: tooling.roles,
       },
       active: {
-        src: get("src").active,
-        tests: get("tests").active,
-        bin: get("bin").active,
-        scripts: get("scripts").active,
-        tooling: get("tooling").active,
+        src: source.active,
+        tests: tests.active,
+        bin: bin.active,
+        scripts: scripts.active,
+        tooling: tooling.active,
       },
-      published: get("traits").published,
-      workspaces: flatMap(get("workspaces"), ({ workspaces }) => workspaces),
+      published: traits.published,
+      workspaces: flatMap(groups, ({ workspaces }) => workspaces),
     });
   }
 
-  function readOutDir(): Directory | undefined {
+  async function readOutDir(get: Get): Promise<Directory | undefined> {
     try {
-      return get("build").outDir;
+      const build = await get("build");
+
+      return await build.outDir;
     } catch {
       // @debt an unreadable tsconfig hides the output directory, so its alias is generated instead of skipped; the output directory should resolve without parsing the tsconfig
     }
   }
 
-  function aliases() {
+  async function aliases(get: Get) {
     const option = sourceOption();
 
     const global = resolveSection(
       aliasesSchema,
       raw.aliases,
-      context,
+      undefined,
       "aliases",
     );
+
+    const [source, tests, bin, scripts, tooling, data, traits, trees] =
+      await Promise.all([
+        get("src"),
+        get("tests"),
+        get("bin"),
+        get("scripts"),
+        get("tooling"),
+        get("data"),
+        get("traits"),
+        get("structure"),
+      ]);
 
     return resolveAliases({
       root,
       options: { global, src: option.aliases },
       bundled: option.bundled,
       environments: {
-        src: get("src").dirs,
-        tests: get("tests").dirs,
-        bin: get("bin").dirs,
-        scripts: get("scripts").dirs,
-        tooling: get("tooling").dirs,
+        src: source.dirs,
+        tests: tests.dirs,
+        bin: bin.dirs,
+        scripts: scripts.dirs,
+        tooling: tooling.dirs,
       },
-      data: get("data").active ? get("data").dirs : [],
-      published: get("traits").published,
-      outDir: readOutDir(),
-      structure: get("structure").src,
+      data: data.active ? data.dirs : [],
+      published: traits.published,
+      outDir: await readOutDir(get),
+      structure: trees.src,
     });
   }
 
-  function files() {
-    const environments = [get("src"), get("tests"), get("bin"), get("scripts")];
-    const groups = get("workspaces");
+  async function files(get: Get) {
+    const [source, tests, bin, scripts, groups] = await Promise.all([
+      get("src"),
+      get("tests"),
+      get("bin"),
+      get("scripts"),
+      get("workspaces"),
+    ]);
+
+    const environments = [source, tests, bin, scripts];
 
     return freeze({
       generated: [
@@ -718,36 +803,50 @@ export function createProjectSections({
           return filesIn(dirs, discovered);
         }),
       ],
-      fixtures: filesIn(get("tests").dirs, get("tests").fixtures),
-      published: [...source().globs, ...bin().globs],
+      fixtures: filesIn(tests.dirs, tests.fixtures),
+      published: [...source.globs, ...bin.globs],
       private: [
-        ...tests().globs,
-        ...scripts().globs,
+        ...tests.globs,
+        ...scripts.globs,
         ...flatMap(groups, ({ globs }) => globs),
       ],
     });
   }
 
-  function build() {
+  async function build(get: Get) {
     const { entries } = buildSchema;
 
     const input = validate(buildSchema.schema, raw.build, "build config");
 
+    const buildContext = { get: context.get, define: await get("define") };
+
     function resolveOutDir() {
-      return entries.outDir.resolve(input?.outDir, context, "build.outDir");
+      return entries.outDir.resolve(
+        input?.outDir,
+        buildContext,
+        "build.outDir",
+      );
     }
 
     // @debt build.outDir is resolved on access because its computed default reads the tsconfig, which can fail to parse, while declarations otherwise resolve a section as a whole
     return freeze(
       compose(
         {
-          clean: entries.clean.resolve(input?.clean, context, "build.clean"),
+          clean: entries.clean.resolve(
+            input?.clean,
+            buildContext,
+            "build.clean",
+          ),
           sourcemap: entries.sourcemap.resolve(
             input?.sourcemap,
-            context,
+            buildContext,
             "build.sourcemap",
           ),
-          typed: entries.typed.resolve(input?.typed, context, "build.typed"),
+          typed: entries.typed.resolve(
+            input?.typed,
+            buildContext,
+            "build.typed",
+          ),
         },
         compose.getters({
           outDir: resolveOutDir,
@@ -783,7 +882,7 @@ export function createProjectSections({
           unmanaged: option.unmanaged,
         },
         compose.getters({
-          path: tsconfigPath,
+          path: () => Promise.try(tsconfigPath),
         }),
       ),
     );

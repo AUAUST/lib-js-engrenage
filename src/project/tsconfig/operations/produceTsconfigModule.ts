@@ -1,16 +1,18 @@
 import type { JsonEdit } from "#foundation/json/index";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
-export function produceTsconfigModule(
-  { src }: ProjectConfig,
+export async function produceTsconfigModule(
+  config: ConfigContext,
   { key }: TsconfigTarget,
-): readonly JsonEdit[] {
+): Promise<readonly JsonEdit[]> {
   if (key !== "src") {
     return [];
   }
 
-  const value = src.bundled ? "ESNext" : "NodeNext";
+  const { bundled } = await config.get("src");
+
+  const value = bundled ? "ESNext" : "NodeNext";
 
   return [
     {
@@ -19,7 +21,7 @@ export function produceTsconfigModule(
     },
     {
       path: ["compilerOptions", "moduleResolution"],
-      value: src.bundled ? "Bundler" : "NodeNext",
+      value: bundled ? "Bundler" : "NodeNext",
     },
   ];
 }

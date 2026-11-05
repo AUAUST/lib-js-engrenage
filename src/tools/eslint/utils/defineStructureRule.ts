@@ -1,7 +1,7 @@
 import type { Rule } from "eslint";
 
 import { locateInStructure } from "#tools/eslint/utils/locateInStructure";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 import type { StructureLocation } from "#tools/eslint/types/StructureLocation";
 
@@ -11,7 +11,7 @@ export function defineStructureRule({
   messages,
   create,
 }: {
-  config: ProjectConfig;
+  config: ConventionConfig;
   description: string;
   messages: Record<string, string>;
   create(

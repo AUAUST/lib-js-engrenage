@@ -18,12 +18,12 @@ export function createPnpmStep(): Step<{
   return {
     name: "pnpm version",
     message: "Declare the pnpm version of the project in devEngines?",
-    isMissing({ get }) {
-      return resolvePnpmRangeStatus(get("packageJson")) === "missing";
+    async isMissing({ get }) {
+      return resolvePnpmRangeStatus(await get("packageJson")) === "missing";
     },
-    plan({ get, filesystem }) {
-      const root = get("root");
-      const path = get("packageJsonPath");
+    async plan({ get, filesystem }) {
+      const root = await get("root");
+      const path = await get("packageJsonPath");
       const content = path === undefined ? undefined : filesystem.read(path);
 
       // @debt repeats the "No package.json found" guard of upgrade, createTsdownConfig, createStepContext and syncChangesetConfig

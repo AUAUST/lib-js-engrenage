@@ -13,7 +13,10 @@ import {
   type ManagedListOption,
 } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
-import { writePackageJsonValue } from "#project/package/index";
+import {
+  writePackageJsonValue,
+  type PackageJson,
+} from "#project/package/index";
 import {
   isLeftAlone,
   toJsonValue,
@@ -21,7 +24,7 @@ import {
   toTsconfigSpecifier,
 } from "#project/tsconfig/index";
 import { selfImports } from "#project/workspaces/constants";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { ResolvedWorkspace } from "#project/workspaces/types/ResolvedWorkspace";
 import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";
 
@@ -31,11 +34,9 @@ interface Field {
 }
 
 function createPackageFields(
-  { packageJson }: ProjectConfig,
+  { optional: { version, license } }: PackageJson,
   { name }: ResolvedWorkspace,
 ): Field[] {
-  const { version, license } = packageJson.optional;
-
   const fields: Field[] = [
     { location: ["name"], value: name },
     { location: ["private"], value: true },
@@ -63,12 +64,14 @@ function isManaged(option: ManagedListOption<string> | undefined): boolean {
   return option !== undefined && !isBoolean(option);
 }
 
-function createTsconfigEdits(
-  config: ProjectConfig,
+async function createTsconfigEdits(
+  config: ConfigContext,
   { tsconfig: option }: ResolvedWorkspaceGroup,
   { tsconfig, globs }: ResolvedWorkspace,
-): JsonEdit[] {
-  const base = config.typescript.tsconfig.file;
+): Promise<JsonEdit[]> {
+  const typescript = await config.get("typescript");
+
+  const base = typescript.tsconfig.file;
 
   const lists = [
     [
@@ -119,15 +122,22 @@ function createTsconfigEdits(
   });
 }
 
-export function syncWorkspaceFiles(config: ProjectConfig) {
-  for (const group of config.workspaces) {
+export async function syncWorkspaceFiles(config: ConfigContext) {
+  const [groups, filesystem, resolvePath, packageJson] = await Promise.all([
+    config.get("workspaces"),
+    config.get("filesystem"),
+    config.get("resolve"),
+    config.get("packageJson"),
+  ]);
+
+  for (const group of groups) {
     for (const workspace of group.workspaces) {
       const packageFile = workspace.packageJson;
-      const packagePath = config.resolve(packageFile);
+      const packagePath = resolvePath(packageFile);
 
-      config.filesystem.write(
+      filesystem.write(
         packageFile,
-        createPackageFields(config, workspace).reduce(
+        createPackageFields(packageJson, workspace).reduce(
           (current, { location, value }) => {
             return writePackageJsonValue(
               current,
@@ -137,16 +147,16 @@ export function syncWorkspaceFiles(config: ProjectConfig) {
               jsonIndentation,
             );
           },
-          config.filesystem.read(packageFile) ?? emptyObjectFile,
+          filesystem.read(packageFile) ?? emptyObjectFile,
         ),
       );
 
-      config.filesystem.write(
+      filesystem.write(
         workspace.tsconfig,
         applyJsonEdits(
-          config.filesystem.read(workspace.tsconfig) ?? emptyObjectFile,
+          filesystem.read(workspace.tsconfig) ?? emptyObjectFile,
           workspace.tsconfig,
-          createTsconfigEdits(config, group, workspace),
+          await createTsconfigEdits(config, group, workspace),
           jsonIndentation,
         ),
       );

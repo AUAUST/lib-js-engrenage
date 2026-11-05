@@ -12,8 +12,10 @@ import {
 import { listPnpmWarnings } from "#tools/pnpm/index";
 import { resolveCommandFiles } from "#tools/tsdown/index";
 import type { JsonValue } from "#foundation/json/index";
+import type { OptionContext } from "#foundation/options/index";
 import type { Runtime } from "#project/baseline/index";
 import type { ProjectConfig } from "#project/config/index";
+import type { ResolvedBin, ResolvedSource } from "#project/environments/index";
 
 interface Field {
   location: readonly [string] | readonly [string, string];
@@ -24,7 +26,13 @@ function toNodeMajor(runtime: Runtime): number {
   return runtime.kind === "node" ? runtime.major : runtime.node;
 }
 
-function createEnginesFields({ bin, src }: ProjectConfig): Field[] {
+function createEnginesFields({
+  bin,
+  src,
+}: {
+  bin: ResolvedBin;
+  src: ResolvedSource;
+}): Field[] {
   const majors = [
     ...(bin.active && bin.runtime !== undefined
       ? [toNodeMajor(bin.runtime)]
@@ -42,75 +50,107 @@ function createEnginesFields({ bin, src }: ProjectConfig): Field[] {
       ];
 }
 
-function createPublishedFields(config: ProjectConfig): Field[] {
-  const { outDir, sourcemap } = config.build;
+async function createPublishedFields(
+  config: OptionContext<ProjectConfig>,
+): Promise<Field[]> {
+  const { get } = config;
+  const { sourcemap, outDir } = await get("build");
+  const directory = await outDir;
 
-  if (outDir === undefined) {
+  if (directory === undefined) {
     return [];
   }
 
-  const files = deduplicate([
-    outDir,
-    ...(config.data.active ? config.data.dirs : []),
-    ...(sourcemap ? config.src.dirs : []),
+  const [data, source, bin, filesystem] = await Promise.all([
+    get("data"),
+    get("src"),
+    get("bin"),
+    get("filesystem"),
   ]);
 
-  const commands = entries(resolveCommandFiles(config, outDir)).map(
-    ([command, file]): Field => {
-      return {
-        location: ["bin", command],
-        value: file,
-      };
-    },
-  );
+  const files = deduplicate([
+    directory,
+    ...(data.active ? data.dirs : []),
+    ...(sourcemap ? source.dirs : []),
+  ]);
+
+  const commands = entries(
+    resolveCommandFiles({ bin, filesystem }, directory),
+  ).map(([command, file]): Field => {
+    return {
+      location: ["bin", command],
+      value: file,
+    };
+  });
 
   return [{ location: ["files"], value: files }, ...commands];
 }
 
-function createFields(config: ProjectConfig): Field[] {
+async function createFields(
+  config: OptionContext<ProjectConfig>,
+): Promise<Field[]> {
+  const { get } = config;
+
+  const { node } = await get("runtime");
+
   const runtime: Field = {
     location: ["devEngines", "runtime"],
     value: {
       name: "node",
-      version: String(config.runtime.node),
+      version: String(node),
       onFail: "error",
     },
   };
 
-  return config.traits.published
-    ? [
-        runtime,
-        ...createEnginesFields(config),
-        ...createPublishedFields(config),
-      ]
-    : [runtime];
+  const traits = await get("traits");
+
+  if (!traits.published) {
+    return [runtime];
+  }
+
+  return [
+    runtime,
+    ...createEnginesFields({ bin: await get("bin"), src: await get("src") }),
+    ...(await createPublishedFields(config)),
+  ];
 }
 
-export function syncPackageJson(config: ProjectConfig) {
-  syncFiles(config, [
+export async function syncPackageJson(config: OptionContext<ProjectConfig>) {
+  const { get } = config;
+
+  const root = await get("root");
+  const fields = await createFields(config);
+
+  syncFiles(
     {
-      file: packageJsonFile,
-      update(content, path) {
-        const packageJson = createPackageJson({
-          root: config.root,
-          path,
-          content,
-        });
-
-        for (const warning of listPnpmWarnings(packageJson)) {
-          console.warn(`${packageJsonFile}: ${warning}`);
-        }
-
-        return createFields(config).reduce((current, { location, value }) => {
-          return writePackageJsonValue(
-            current,
-            path,
-            location,
-            value,
-            jsonIndentation,
-          );
-        }, content);
-      },
+      filesystem: await get("filesystem"),
+      resolve: await get("resolve"),
     },
-  ]);
+    [
+      {
+        file: packageJsonFile,
+        update(content, path) {
+          const packageJson = createPackageJson({
+            root,
+            path,
+            content,
+          });
+
+          for (const warning of listPnpmWarnings(packageJson)) {
+            console.warn(`${packageJsonFile}: ${warning}`);
+          }
+
+          return fields.reduce((current, { location, value }) => {
+            return writePackageJsonValue(
+              current,
+              path,
+              location,
+              value,
+              jsonIndentation,
+            );
+          }, content);
+        },
+      },
+    ],
+  );
 }

@@ -5,9 +5,14 @@ import {
   declare,
   declareObject,
   directorySchema,
+  type OptionContext,
 } from "#foundation/options/index";
 import { defaultBuildClean, defaultSourcemap } from "#project/build/constants";
-import type { ConfigContext } from "#project/config/index";
+import type { ResolvedDefine } from "#project/config/index";
+import type { Tsconfig } from "#project/tsconfig/index";
+import type { Directory } from "#types/Directory";
+
+type OutDirContext = OptionContext<{ root: Directory; tsconfig: Tsconfig }>;
 
 export const buildSchema = declareObject(
   {
@@ -17,17 +22,19 @@ export const buildSchema = declareObject(
       optional: {
         explain:
           "`compilerOptions.outDir` of the base tsconfig; building fails when neither is set",
-        compute(context: ConfigContext) {
-          const outDir = context.get("tsconfig").optional.outDir;
+        async compute(context: OutDirContext) {
+          const { optional } = await context.get("tsconfig");
+          const { outDir } = optional;
 
-          return outDir === undefined || !isWithin(context.get("root"), outDir)
+          return outDir === undefined ||
+            !isWithin(await context.get("root"), outDir)
             ? undefined
             : outDir;
         },
       },
-      adjust(input, _fallback, context: ConfigContext) {
+      async adjust(input, _fallback, context: OutDirContext) {
         // @debt resolveWithin is called only for its throw when the path escapes the root, here and in cache(); an explicit assertion would state the intent
-        resolveWithin(context.get("root"), input);
+        resolveWithin(await context.get("root"), input);
 
         return input;
       },
@@ -48,8 +55,8 @@ export const buildSchema = declareObject(
       description: "Whether tsdown emits declaration files.",
       optional: {
         explain: "`define.types`",
-        compute(context: ConfigContext) {
-          return context.get("define").types;
+        compute(context: { define: ResolvedDefine }) {
+          return context.define.types;
         },
       },
     }),

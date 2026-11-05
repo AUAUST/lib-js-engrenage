@@ -24,9 +24,9 @@ describe("syncClaudeSettings", () => {
 
     const config = await loadConfig(project.root);
 
-    syncClaudeSettings(config);
+    await syncClaudeSettings(config);
 
-    config.filesystem.flush();
+    (await config.get("filesystem")).flush();
 
     expect(project.read(".claude/settings.json")).toBe(`{
   // Kept by the project.
@@ -61,9 +61,9 @@ describe("syncClaudeSettings", () => {
 }
 `);
 
-    syncClaudeSettings(config);
+    await syncClaudeSettings(config);
 
-    expect(config.filesystem.discard()).toEqual([]);
+    expect((await config.get("filesystem")).discard()).toEqual([]);
   });
 
   test("creates missing settings only when asked, unless disabled", async () => {
@@ -75,11 +75,11 @@ describe("syncClaudeSettings", () => {
 
     const config = await loadConfig(project.root);
 
-    syncClaudeSettings(config, {
+    await syncClaudeSettings(config, {
       settings: true,
     });
 
-    expect(config.filesystem.discard()).toEqual([]);
+    expect((await config.get("filesystem")).discard()).toEqual([]);
 
     const enabled = await loadConfig(
       createTemporaryProject({
@@ -89,15 +89,15 @@ describe("syncClaudeSettings", () => {
       }).root,
     );
 
-    syncClaudeSettings(enabled);
+    await syncClaudeSettings(enabled);
 
-    expect(enabled.filesystem.discard()).toEqual([]);
+    expect((await enabled.get("filesystem")).discard()).toEqual([]);
 
-    syncClaudeSettings(enabled, {
+    await syncClaudeSettings(enabled, {
       settings: true,
     });
 
-    expect(enabled.filesystem.flush()).toEqual([
+    expect((await enabled.get("filesystem")).flush()).toEqual([
       {
         file: ".claude/settings.json",
         status: "created",

@@ -1,13 +1,15 @@
 import { readJsonValue } from "#foundation/json/index";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
-export function readTsconfigValue(
-  config: ProjectConfig,
+export async function readTsconfigValue(
+  config: ConfigContext,
   { file }: TsconfigTarget,
   location: readonly string[],
-): unknown {
-  const content = config.filesystem.read(file);
+): Promise<unknown> {
+  const filesystem = await config.get("filesystem");
+
+  const content = filesystem.read(file);
 
   return content === undefined
     ? undefined

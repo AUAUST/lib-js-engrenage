@@ -19,7 +19,7 @@ import { globsSchema } from "#foundation/options/config/schemas/globsSchema";
 import { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModulesSchema";
 import { configDeclaration } from "#workflows/registry/config/schemas/configDeclaration";
 import { configSchema } from "#workflows/registry/config/schemas/configSchema";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -478,7 +478,7 @@ function findImports(
 }
 
 export async function generateConfigTypes(
-  config: ProjectConfig,
+  config: ConfigContext,
   modules: SchemaModules,
 ) {
   const inputs = selectInputs(collectInputs(modules));
@@ -513,7 +513,9 @@ export async function generateConfigTypes(
   for (const { name, domain, core, description } of files) {
     const declarations = await render(core, name, names, description);
 
-    config.filesystem.write(
+    const filesystem = await config.get("filesystem");
+
+    filesystem.write(
       `src/${domain}/types/${name}.ts`,
       [
         generatedHeader,

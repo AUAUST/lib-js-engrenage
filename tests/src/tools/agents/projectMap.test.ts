@@ -43,8 +43,8 @@ async function sync(peers?: number) {
   const project = createProject(peers);
   const config = await loadConfig(project.root);
 
-  syncAgents(config);
-  config.filesystem.flush();
+  await syncAgents(config);
+  (await config.get("filesystem")).flush();
 
   return { project, config };
 }
@@ -82,21 +82,26 @@ describe("project map", () => {
   test("reports a stale or extra map as synced and a fresh one as unchanged", async () => {
     const { project, config } = await sync();
 
-    config.filesystem.write(sourceFile, "stale\n");
-    config.filesystem.write(".claude/rules/project-map/gone.md", "extra\n");
-    config.filesystem.flush();
-    syncAgents(config);
+    (await config.get("filesystem")).write(sourceFile, "stale\n");
 
-    expect(config.filesystem.flush()).toEqual(
+    (await config.get("filesystem")).write(
+      ".claude/rules/project-map/gone.md",
+      "extra\n",
+    );
+
+    (await config.get("filesystem")).flush();
+    await syncAgents(config);
+
+    expect((await config.get("filesystem")).flush()).toEqual(
       expect.arrayContaining([
         { file: sourceFile, status: "synced" },
         { file: ".claude/rules/project-map/gone.md", status: "deleted" },
       ]),
     );
 
-    syncAgents(config);
+    await syncAgents(config);
 
-    expect(config.filesystem.discard()).toEqual([]);
+    expect((await config.get("filesystem")).discard()).toEqual([]);
     expect(project.read(sourceFile)).toContain("# Project map: src");
   });
 });

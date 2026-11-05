@@ -5,15 +5,17 @@ export function createSourceEntryStep(): Step<{ src: ResolvedSource }> {
   return {
     name: "source entry",
     message: "Create the source entry of the library?",
-    isMissing({ get, getTraits }) {
-      return (
-        getTraits().published &&
-        get("src").dirs.length > 0 &&
-        !get("src").active
-      );
+    async isMissing({ get, getTraits }) {
+      const source = await get("src");
+
+      const traits = await getTraits();
+
+      return traits.published && source.dirs.length > 0 && !source.active;
     },
-    plan({ get, filesystem }) {
-      const [directory] = get("src").dirs;
+    async plan({ get, filesystem }) {
+      const source = await get("src");
+
+      const [directory] = source.dirs;
 
       if (directory === undefined) {
         throw new Error("The src environment has no directory");

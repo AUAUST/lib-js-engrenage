@@ -7,15 +7,22 @@ import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { readConfig } from "#workflows/registry/operations/readConfig";
+import type { OptionContext } from "#foundation/options/index";
 import type { Config } from "#workflows/registry/types/Config";
 
-async function getNames(config: Config, name: string | undefined) {
+async function getNames(
+  config: OptionContext<Config>,
+  name: string | undefined,
+) {
   if (name !== undefined) {
     return [name];
   }
 
-  const missing = getSkillTemplates(config).filter(({ files }) => {
-    return files.some(({ file }) => !config.filesystem.exists(file));
+  const filesystem = await config.get("filesystem");
+  const agents = await config.get("agents");
+
+  const missing = getSkillTemplates({ agents }).filter(({ files }) => {
+    return files.some(({ file }) => !filesystem.exists(file));
   });
 
   if (missing.length === 0) {
@@ -63,7 +70,13 @@ async function add(name?: string) {
     return;
   }
 
-  addAgentSkills(config, names);
+  addAgentSkills(
+    {
+      filesystem: await config.get("filesystem"),
+      agents: await config.get("agents"),
+    },
+    names,
+  );
 
   await settleChanges(config, {
     check: false,

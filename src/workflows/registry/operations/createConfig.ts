@@ -32,29 +32,28 @@ export function createConfig({
   raw: RawConfig;
   configFile: File | undefined;
   filesystem?: Filesystem;
-}): Config {
-  const registry: OptionContext<Config> & { readonly sections: Config } =
-    createSections<Config>(
-      {
-        ...createProjectSections({
-          root,
-          raw,
-          configFile,
-          filesystem,
-          context: {
-            get(section) {
-              return registry.get(section);
-            },
+}): OptionContext<Config> {
+  const registry: OptionContext<Config> = createSections<Config>(
+    {
+      ...createProjectSections({
+        root,
+        raw,
+        configFile,
+        filesystem,
+        context: {
+          get(section) {
+            return registry.get(section);
           },
-        }),
-        agents: () => resolveAgents(raw, registry),
-        git: () => resolveGit(raw, registry),
-        github: () => resolveGithub(raw, registry),
-        prettier: () => resolvePrettier(raw, registry),
-        vscode: () => resolveVscode(raw, registry),
-      },
-      liveSections,
-    );
+        },
+      }),
+      agents: () => resolveAgents(raw),
+      git: (get) => resolveGit(raw, { get }),
+      github: () => resolveGithub(raw),
+      prettier: (get) => resolvePrettier(raw, { get }),
+      vscode: () => resolveVscode(raw),
+    },
+    liveSections,
+  );
 
-  return registry.sections;
+  return registry;
 }

@@ -1,13 +1,15 @@
 import { resolveTsconfigEnvironments } from "#project/tsconfig/operations/resolveTsconfigEnvironments";
 import type { Runtime } from "#project/baseline/index";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 
-export function resolveTsconfigRuntime(
-  config: ProjectConfig,
+export async function resolveTsconfigRuntime(
+  config: ConfigContext,
   key: TsconfigKey,
-): Runtime | undefined {
-  const { owner } = resolveTsconfigEnvironments(config, key);
+): Promise<Runtime | undefined> {
+  const { owner } = await resolveTsconfigEnvironments(config, key);
 
-  return config[owner].runtime;
+  const { runtime } = await config.get(owner);
+
+  return runtime;
 }

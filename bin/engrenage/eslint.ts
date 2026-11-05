@@ -7,17 +7,20 @@ import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands
 import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
 import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
 import { hasOption } from "#workflows/cli/utils/hasOption";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
 
 // @debt The cache is keyed on each file alone, so type-aware rules keep passing a file whose imported types changed; checks must pass `--no-cache` to be sound.
-function useCache(config: ProjectConfig, args: string[]) {
+async function useCache(config: ConfigContext, args: string[]) {
   if (hasOption(args, ["--no-cache"])) {
     return;
   }
 
   ensureIncludes(args, "--cache");
 
-  ensureIncludes(args, ["--cache-location", config.cacheFor(packages.eslint)]);
+  ensureIncludes(args, [
+    "--cache-location",
+    (await config.get("cacheFor"))(packages.eslint),
+  ]);
 }
 
 function hasSuppressions(args: readonly string[]): boolean {
@@ -32,14 +35,14 @@ export const eslint = defineToolCommands({
   commands: {
     "eslint": {
       message: "Linting...",
-      arguments(config, args) {
-        useCache(config, args);
+      async arguments(config, args) {
+        await useCache(config, args);
       },
     },
     "eslint:fix": {
       message: "Fixing lint errors...",
-      arguments(config, args) {
-        useCache(config, args);
+      async arguments(config, args) {
+        await useCache(config, args);
 
         ensureIncludes(args, "--fix");
 
@@ -50,8 +53,8 @@ export const eslint = defineToolCommands({
     },
     "eslint:suppress": {
       message: "Suppressing lint errors...",
-      arguments(config, args) {
-        useCache(config, args);
+      async arguments(config, args) {
+        await useCache(config, args);
 
         ensureAnyOf(
           args,

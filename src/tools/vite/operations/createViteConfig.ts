@@ -20,32 +20,40 @@ interface Sections {
   define: ResolvedDefine;
 }
 
-export function createViteConfig(
+export async function createViteConfig(
   context: OptionContext<Sections>,
   { isTesting }: { isTesting: boolean },
-): Config {
+): Promise<Config> {
   const { get } = context;
 
-  const { sourcemap, outDir, clean } = get("build");
+  const root = await get("root");
+  const build = await get("build");
+  const { sourcemap, clean } = build;
+  const outDir = await build.outDir;
 
-  const { path: tsconfig } = get("typescript").tsconfig;
+  const typescript = await get("typescript");
+
+  const tsconfig = await typescript.tsconfig.path;
 
   return {
-    root: get("root"),
+    root,
     ...(tsconfig === undefined
       ? {}
       : {
           tsconfig,
         }),
-    define: createDefine(context, {
+    define: await createDefine(context, {
       isTesting,
     }),
     ...(clean === "emitted" && outDir !== undefined
       ? {
           plugins: [
             createEmittedManifestPlugin(`${pluginPrefix}:emitted-manifest`, {
-              manifest: join(get("cacheFor")(vite), emittedManifestFile),
-              outDir: resolveWithin(get("root"), outDir),
+              manifest: join(
+                (await get("cacheFor"))(vite),
+                emittedManifestFile,
+              ),
+              outDir: resolveWithin(root, outDir),
             }),
           ],
         }

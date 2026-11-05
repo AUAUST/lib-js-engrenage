@@ -22,11 +22,11 @@ export const upgrade = defineCommand((command) => {
 
       const { range } = readSharedPnpmRange();
 
-      const version = resolveLatestPnpm(config.root, range);
+      const version = resolveLatestPnpm(await config.get("root"), range);
 
-      if (resolvePnpmRangeStatus(config.packageJson) === "above") {
+      if (resolvePnpmRangeStatus(await config.get("packageJson")) === "above") {
         console.warn(
-          `pnpm ${readProjectPnpmVersion(config.packageJson)} is above engrenage's pnpm ${range}: update engrenage to support it`,
+          `pnpm ${readProjectPnpmVersion(await config.get("packageJson"))} is above engrenage's pnpm ${range}: update engrenage to support it`,
         );
 
         const proceeds = await createPrompter({ yes }).confirm(
@@ -38,19 +38,21 @@ export const upgrade = defineCommand((command) => {
         }
       }
 
-      const { filesystem } = config;
+      const filesystem = await config.get("filesystem");
 
       const content = filesystem.read(packageJsonFile);
 
       // @debt repeats the "No package.json found" guard of createTsdownConfig, createStepContext and syncChangesetConfig
       if (content === undefined) {
-        throw new Error(`No ${packageJsonFile} found in ${config.root}`);
+        throw new Error(
+          `No ${packageJsonFile} found in ${await config.get("root")}`,
+        );
       }
 
       const upgraded = upgradePnpmManifest(
         content,
-        config.resolve(packageJsonFile),
-        config.packageJson,
+        (await config.get("resolve"))(packageJsonFile),
+        await config.get("packageJson"),
         version,
       );
 
@@ -64,6 +66,6 @@ export const upgrade = defineCommand((command) => {
         check: false,
       });
 
-      installDependencies(config.root);
+      installDependencies(await config.get("root"));
     });
 });

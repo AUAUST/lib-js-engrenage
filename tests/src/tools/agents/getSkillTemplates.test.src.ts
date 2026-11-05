@@ -40,7 +40,9 @@ describe("getSkillTemplates", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(() => getSkillTemplates(config)).toThrow(
+    const agents = await config.get("agents");
+
+    expect(() => getSkillTemplates({ agents })).toThrow(
       /\/skills\/broken\.md skill metadata[\s\S]*received "extreme"[\s\S]*agent\.effort/,
     );
   });

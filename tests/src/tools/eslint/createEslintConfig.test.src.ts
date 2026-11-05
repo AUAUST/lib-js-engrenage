@@ -9,13 +9,13 @@ import { memoized } from "@auaust/toolkit/memoized";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { packageJsonFile } from "#constants";
-import { createContext } from "#project/config/utils/createContext";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { infoRulesSetting } from "#tools/eslint/constants";
 import { createEslintConfig as createConfig } from "#tools/eslint/operations/createEslintConfig";
 import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { Environment } from "#project/config/types/Environment";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
@@ -33,16 +33,30 @@ const contractsOff = {
   typeOnlyRoles: false,
 };
 
-function createEslintConfig(config: ProjectConfig, options?: Maybe<Options>) {
+function overrideSections(
+  config: ConfigContext,
+  overrides: Partial<ProjectConfig>,
+): ConfigContext {
+  return {
+    async get(section) {
+      return section in overrides
+        ? (overrides[section] as ProjectConfig[typeof section])
+        : config.get(section);
+    },
+  };
+}
+
+async function createEslintConfig(
+  config: ConfigContext,
+  options?: Maybe<Options>,
+) {
   return createConfig(config, {
     ...options,
     structure: options?.structure ?? contractsOff,
   });
 }
 
-const prettierOptions = createPrettierConfig(
-  createContext(await loadConfig(root)),
-);
+const prettierOptions = await createPrettierConfig(await loadConfig(root));
 
 const getLinter = memoized<
   (options?: Options, fix?: boolean) => Promise<ESLint>,
@@ -53,7 +67,7 @@ const getLinter = memoized<
       cwd: root,
       fix,
       overrideConfigFile: true,
-      overrideConfig: createEslintConfig(await loadConfig(root), options),
+      overrideConfig: await createEslintConfig(await loadConfig(root), options),
     });
   },
   (options, fix = false) => {
@@ -90,12 +104,11 @@ async function lintedPerformanceRules(
   const eslint = new ESLint({
     cwd: root,
     overrideConfigFile: true,
-    overrideConfig: createEslintConfig(
-      {
-        ...config,
+    overrideConfig: await createEslintConfig(
+      overrideSections(config, {
         traits,
-        environment: environment ?? config.environment,
-      },
+        environment: environment ?? (await config.get("environment")),
+      }),
       {
         typeAware: false,
         ...options,
@@ -208,7 +221,7 @@ async function lintedProjectRules(source: string) {
   const eslint = new ESLint({
     cwd: project.root,
     overrideConfigFile: true,
-    overrideConfig: createEslintConfig(await loadConfig(project.root), {
+    overrideConfig: await createEslintConfig(await loadConfig(project.root), {
       typeAware: false,
     }),
   });
@@ -255,13 +268,13 @@ describe("createEslintConfig", () => {
       ],
       [
         "inline arguments",
-        "run({ first: true }, { second: false })",
-        "run({ first: true }, { second: false })",
+        "await run({ first: true }, { second: false })",
+        "await run({ first: true }, { second: false })",
       ],
       [
         "multiline arguments",
-        "run({ presets: [] }, {\n performance: { noZodClassic: true },\n})",
-        "run({\n presets: [],\n}, {\n performance: { noZodClassic: true },\n})",
+        "await run({ presets: [] }, {\n performance: { noZodClassic: true },\n})",
+        "await run({\n presets: [],\n}, {\n performance: { noZodClassic: true },\n})",
       ],
       [
         "three-property sibling",
@@ -285,13 +298,13 @@ describe("createEslintConfig", () => {
       ],
       [
         "empty objects",
-        "run({}, {\n enabled: true,\n})",
-        "run({}, {\n enabled: true,\n})",
+        "await run({}, {\n enabled: true,\n})",
+        "await run({}, {\n enabled: true,\n})",
       ],
       [
         "Prettier wrapping",
-        'run({ short: true }, { longProperty: "a deliberately long value that forces the object to wrap beyond the configured print width" })',
-        'run({\n short: true,\n}, {\n longProperty: "a deliberately long value that forces the object to wrap beyond the configured print width",\n})',
+        'await run({ short: true }, { longProperty: "a deliberately long value that forces the object to wrap beyond the configured print width" })',
+        'await run({\n short: true,\n}, {\n longProperty: "a deliberately long value that forces the object to wrap beyond the configured print width",\n})',
       ],
     ])("%s", async (_name, input, expected) => {
       const eslint = await getLinter({ typeAware: false }, true);
@@ -422,7 +435,7 @@ describe("createEslintConfig", () => {
     const eslint = new ESLint({
       cwd: project.root,
       overrideConfigFile: true,
-      overrideConfig: createEslintConfig(await loadConfig(project.root), {
+      overrideConfig: await createEslintConfig(await loadConfig(project.root), {
         typeAware: false,
       }),
     });
@@ -869,8 +882,8 @@ export function pick(value: Value): number {
     ["const bar = {};\nbar.foo();", 1],
     ["let bar;\nbar = 1;", 1],
     ["syncClaudeSettings(config);\nconst content = read();", 1],
-    ["run();\nlet value;", 1],
-    ["run();\n\nconst value = 1;", 0],
+    ["await run();\nlet value;", 1],
+    ["await run();\n\nconst value = 1;", 0],
     ["function run() {\nconst value = 1;\n}", 0],
     ["function run() {\nlet value;\n}", 0],
     ["let foo;\n\nconst bar = 1;", 0],
@@ -946,9 +959,9 @@ export function pick(value: Value): number {
       cwd: root,
       overrideConfigFile: true,
       overrideConfig: [
-        ...createEslintConfig(await loadConfig(root), {
+        ...(await createEslintConfig(await loadConfig(root), {
           typeAware: false,
-        }),
+        })),
         {
           rules: {
             "auaust/name-replacements": [
@@ -1119,7 +1132,7 @@ export async function run(): Promise<number> {
     const eslint = new ESLint({
       cwd: project.root,
       overrideConfigFile: true,
-      overrideConfig: createEslintConfig(await loadConfig(project.root)),
+      overrideConfig: await createEslintConfig(await loadConfig(project.root)),
     });
 
     const results = await eslint.lintFiles(["src/run.ts", "tests/run.test.ts"]);
@@ -1286,7 +1299,7 @@ export const longform = {
   });
 
   test("lints info rules as warnings and records them in the settings", async () => {
-    const configs = createEslintConfig(await loadConfig(root), {
+    const configs = await createEslintConfig(await loadConfig(root), {
       ignore: false,
     });
 
@@ -1500,7 +1513,7 @@ export async function run(): Promise<unknown> {
     const eslint = new ESLint({
       cwd: project.root,
       overrideConfigFile: true,
-      overrideConfig: createEslintConfig(await loadConfig(project.root)),
+      overrideConfig: await createEslintConfig(await loadConfig(project.root)),
     });
 
     const [result] = await eslint.lintFiles(["src/run.ts"]);
@@ -1550,7 +1563,7 @@ export async function run(): Promise<unknown> {
     const eslint = new ESLint({
       cwd: project.root,
       overrideConfigFile: true,
-      overrideConfig: createEslintConfig(await loadConfig(project.root)),
+      overrideConfig: await createEslintConfig(await loadConfig(project.root)),
     });
 
     const [result] = await eslint.lintFiles(["src/run.ts"]);
@@ -1571,7 +1584,7 @@ export async function run(): Promise<unknown> {
       cwd: referencesRoot,
       overrideConfigFile: true,
       overrideConfig: [
-        ...createEslintConfig(await loadConfig(referencesRoot)),
+        ...(await createEslintConfig(await loadConfig(referencesRoot))),
         {
           rules: {
             "@typescript-eslint/no-unsafe-member-access": "error",
@@ -1632,13 +1645,14 @@ export async function run(): Promise<unknown> {
     const eslint = new ESLint({
       cwd: root,
       overrideConfigFile: true,
-      overrideConfig: createEslintConfig({
-        ...config,
-        files: {
-          ...config.files,
-          fixtures: ["tests/**/data/**"],
-        },
-      }),
+      overrideConfig: await createEslintConfig(
+        overrideSections(config, {
+          files: {
+            ...(await config.get("files")),
+            fixtures: ["tests/**/data/**"],
+          },
+        }),
+      ),
     });
 
     expect(await eslint.isPathIgnored("tests/unit/data/case.ts")).toBe(true);
@@ -1651,22 +1665,22 @@ export async function run(): Promise<unknown> {
   test("rejects unknown options", async () => {
     const config = await loadConfig(root);
 
-    expect(() => {
-      return createEslintConfig(config, {
+    await expect(async () => {
+      return await createEslintConfig(config, {
         comparisons: {
           // @ts-expect-error: unknown convention
           noTypof: false,
         },
       });
-    }).toThrow("noTypof");
+    }).rejects.toThrow("noTypof");
   });
 
   test("exposes its contract through the local aliases", () => {
     expectTypeOf(createEslintConfig).parameters.toEqualTypeOf<
-      [ProjectConfig, Maybe<Options>?]
+      [ConfigContext, Maybe<Options>?]
     >();
 
-    expectTypeOf(createEslintConfig).returns.toEqualTypeOf<Config[]>();
+    expectTypeOf(createEslintConfig).returns.toEqualTypeOf<Promise<Config[]>>();
   });
 
   describe("auaust/no-return-undefined", () => {
@@ -1777,7 +1791,7 @@ describe("scopes", () => {
     const eslint = new ESLint({
       cwd: project.root,
       overrideConfigFile: true,
-      overrideConfig: createEslintConfig(await loadConfig(project.root)),
+      overrideConfig: await createEslintConfig(await loadConfig(project.root)),
     });
 
     await expect(

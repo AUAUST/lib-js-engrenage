@@ -10,10 +10,10 @@ import {
 import { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
 import type { ResolvedPrettier } from "#tools/prettier/types/ResolvedPrettier";
 
-export function resolvePrettier(
+export async function resolvePrettier(
   raw: RawConfig,
   context: ConfigContext,
-): ResolvedPrettier {
+): Promise<ResolvedPrettier> {
   const { prettierignore } = resolveSection(
     prettierSchema,
     raw.prettier,
@@ -22,8 +22,8 @@ export function resolvePrettier(
   );
 
   const location = {
-    root: context.get("root"),
-    filesystem: context.get("filesystem"),
+    root: await context.get("root"),
+    filesystem: await context.get("filesystem"),
   };
 
   return freeze(

@@ -12,6 +12,7 @@ import {
   type ResolvedTraits,
 } from "#project/presets/index";
 import { agentNames } from "#tools/agents/constants";
+import type { OptionContext } from "#foundation/options/index";
 import type { Invocation, Prompter, StepContext } from "#project/steps/index";
 import type { Agent } from "#tools/agents/index";
 import type { File } from "#types/File";
@@ -46,25 +47,27 @@ function resolveDependencyRange(name: PackageName): string {
   return range;
 }
 
-export function createStepContext({
+export async function createStepContext({
   config,
   prompter,
 }: {
-  config: Config;
+  config: OptionContext<Config>;
   prompter: Prompter;
-}): StepContext<Config> {
-  const { filesystem } = config;
+}): Promise<StepContext<Config>> {
+  const filesystem = await config.get("filesystem");
 
   const invocations: Invocation[] = [];
 
   let installs = false;
 
-  function requirePackageJson(): File {
-    const path = config.packageJsonPath;
+  async function requirePackageJson(): Promise<File> {
+    const path = await config.get("packageJsonPath");
 
     // @debt the "No package.json found" guard is repeated in createTsdownConfig, syncChangesetConfig and createPackageJson's describeMissing; the resolved config could expose a required package.json path
     if (path === undefined) {
-      throw new Error(`No ${packageJsonFile} found in ${config.root}`);
+      throw new Error(
+        `No ${packageJsonFile} found in ${await config.get("root")}`,
+      );
     }
 
     return path;
@@ -80,17 +83,17 @@ export function createStepContext({
     return content;
   }
 
-  function readPackageJson(location: JSONPath): unknown {
-    const path = requirePackageJson();
+  async function readPackageJson(location: JSONPath): Promise<unknown> {
+    const path = await requirePackageJson();
 
     return readJsonValue(readManifest(path), path, location);
   }
 
-  function writePackageJson(
+  async function writePackageJson(
     location: readonly [string] | readonly [string, string],
     value: JsonValue,
   ) {
-    const path = requirePackageJson();
+    const path = await requirePackageJson();
 
     filesystem.write(
       path,
@@ -104,19 +107,21 @@ export function createStepContext({
     );
   }
 
-  function hasDependency(name: PackageName): boolean {
-    return config.environment.hasDependency(name);
+  async function hasDependency(name: PackageName): Promise<boolean> {
+    const environment = await config.get("environment");
+
+    return environment.hasDependency(name);
   }
 
-  function addDevDependency(
+  async function addDevDependency(
     name: PackageName,
     { exact = false }: { exact?: boolean } = {},
   ) {
-    if (hasDependency(name)) {
+    if (await hasDependency(name)) {
       return;
     }
 
-    writePackageJson(
+    await writePackageJson(
       ["devDependencies", name],
       exact ? resolveExactVersion(name) : resolveDependencyRange(name),
     );
@@ -144,19 +149,22 @@ export function createStepContext({
     ];
   }
 
-  let preset: Preset | undefined = config.preset;
+  let preset: Preset | undefined = await config.get("preset");
 
-  let agents: readonly Agent[] | undefined = config.agents.preferred;
+  const resolvedAgents = await config.get("agents");
+
+  let agents: readonly Agent[] | undefined = resolvedAgents.preferred;
 
   const overrides: {
-    [Section in keyof Config]?: () => Config[Section];
+    [Section in keyof Config]?: () =>
+      Config[Section] | Promise<Config[Section]>;
   } = {
     preset: () => {
       return preset;
     },
     traits: getTraits,
-    agents: () => {
-      return { ...config.agents, preferred: agents };
+    agents: async () => {
+      return { ...(await config.get("agents")), preferred: agents };
     },
   };
 
@@ -164,8 +172,8 @@ export function createStepContext({
     return preset;
   }
 
-  function getTraits(): ResolvedTraits {
-    return resolveTraits(preset, config.traitAdjustments);
+  async function getTraits(): Promise<ResolvedTraits> {
+    return resolveTraits(preset, await config.get("traitAdjustments"));
   }
 
   function setPreset(chosen: Preset | undefined) {
@@ -181,8 +189,8 @@ export function createStepContext({
   }
 
   return freeze<StepContext<Config>>({
-    get(section) {
-      return overrides[section]?.() ?? config[section];
+    async get(section) {
+      return (await overrides[section]?.()) ?? config.get(section);
     },
     getAgents,
     setAgents,

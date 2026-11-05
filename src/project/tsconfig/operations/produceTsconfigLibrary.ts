@@ -1,13 +1,13 @@
 import { resolveTsconfigLibrary } from "#project/tsconfig/operations/resolveTsconfigLibrary";
 import { readTsconfigValue } from "#project/tsconfig/utils/readTsconfigValue";
 import type { JsonEdit } from "#foundation/json/index";
-import type { ProjectConfig } from "#project/config/index";
+import type { ConfigContext } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
-export function produceTsconfigLibrary(
-  config: ProjectConfig,
+export async function produceTsconfigLibrary(
+  config: ConfigContext,
   target: TsconfigTarget,
-): readonly JsonEdit[] {
+): Promise<readonly JsonEdit[]> {
   if (target.key === "base") {
     return [];
   }
@@ -17,7 +17,7 @@ export function produceTsconfigLibrary(
     value: undefined,
   };
 
-  const library = resolveTsconfigLibrary(config, target);
+  const library = await resolveTsconfigLibrary(config, target);
 
   if (library !== false) {
     return [
@@ -27,7 +27,8 @@ export function produceTsconfigLibrary(
   }
 
   return target.lib === false ||
-    readTsconfigValue(config, target, ["compilerOptions", "lib"]) !== null
+    (await readTsconfigValue(config, target, ["compilerOptions", "lib"])) !==
+      null
     ? [removeNoLibrary]
     : [removeNoLibrary, { path: ["compilerOptions", "lib"], value: undefined }];
 }

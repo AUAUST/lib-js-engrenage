@@ -3,11 +3,11 @@ import { basename, dirname, matchesGlob } from "node:path";
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { values } from "@auaust/toolkit/object";
 
-import type { ProjectConfig } from "#project/config/index";
+import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { StructureLocation } from "#tools/eslint/types/StructureLocation";
 
 export function isRoleFile(
-  config: ProjectConfig,
+  config: ConventionConfig,
   { environment, relativePath }: StructureLocation,
 ): boolean {
   const globs = flatMap(values(config[environment].roles.roles), ({ file }) => {

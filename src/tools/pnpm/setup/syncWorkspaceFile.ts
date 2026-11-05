@@ -4,9 +4,17 @@ import { map } from "@auaust/primitive-kit/arrays";
 
 import { workspaceFile } from "#tools/pnpm/constants";
 import { parseWorkspaceDocument } from "#tools/pnpm/utils/parseWorkspaceDocument";
+import type { OptionContext } from "#foundation/options/index";
 import type { ProjectConfig } from "#project/config/index";
 
-export function syncWorkspaceFile({ workspaces, filesystem }: ProjectConfig) {
+export async function syncWorkspaceFile({
+  get,
+}: OptionContext<Pick<ProjectConfig, "workspaces" | "filesystem">>) {
+  const [workspaces, filesystem] = await Promise.all([
+    get("workspaces"),
+    get("filesystem"),
+  ]);
+
   if (workspaces.length === 0) {
     return;
   }

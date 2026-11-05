@@ -6,7 +6,6 @@ import { describe, expect, test } from "vitest";
 import { configDefaults } from "vitest/config";
 import { startVitest } from "vitest/node";
 
-import { createContext } from "#project/config/utils/createContext";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
@@ -19,15 +18,15 @@ describe("createVitestConfig", () => {
   test("returns only the test layer: sources through the tsconfig paths and the project tsconfig outside build mode", async () => {
     const config = await loadConfig(root);
 
-    const vitestConfig = createVitestConfig(createContext(config), {
+    const vitestConfig = createVitestConfig(config, {
       command: "serve",
       mode: "test",
     });
 
-    expect(vitestConfig).not.toHaveProperty("root");
-    expect(vitestConfig).not.toHaveProperty("build");
+    expect(await vitestConfig).not.toHaveProperty("root");
+    expect(await vitestConfig).not.toHaveProperty("build");
 
-    expect(vitestConfig).toMatchObject({
+    expect(await vitestConfig).toMatchObject({
       tsconfig: join(root, "tsconfig.json"),
       resolve: {
         tsconfigPaths: true,
@@ -51,15 +50,17 @@ describe("createVitestConfig", () => {
     });
 
     expect(
-      createVitestConfig(
-        createContext(config),
-        {
-          command: "serve",
-          mode: "test",
-        },
-        {
-          guardOutDir: false,
-        },
+      (
+        await createVitestConfig(
+          config,
+          {
+            command: "serve",
+            mode: "test",
+          },
+          {
+            guardOutDir: false,
+          },
+        )
       ).plugins,
     ).toEqual([]);
   });
@@ -73,33 +74,37 @@ describe("createVitestConfig", () => {
     const config = await loadConfig(project.root);
     const env = { command: "serve", mode: "test" } as const;
 
-    expect(
-      createVitestConfig(createContext(config), env).test?.setupFiles,
-    ).toEqual(["tests/setup.ts"]);
+    expect((await createVitestConfig(config, env)).test?.setupFiles).toEqual([
+      "tests/setup.ts",
+    ]);
 
     expect(
-      createVitestConfig(createContext(config), env, {
-        setupFiles: ["other.ts"],
-      }).test?.setupFiles,
+      (
+        await createVitestConfig(config, env, {
+          setupFiles: ["other.ts"],
+        })
+      ).test?.setupFiles,
     ).toEqual(["other.ts"]);
   });
 
   test("tests the build output with the dist tsconfig in build mode", async () => {
     const config = await loadConfig(root);
 
-    const vitestConfig = createVitestConfig(createContext(config), {
+    const vitestConfig = createVitestConfig(config, {
       command: "serve",
       mode: "build",
     });
 
-    expect(vitestConfig.tsconfig).toBe(join(root, "tsconfig.tests.dist.json"));
-
-    expect(vitestConfig.test?.typecheck?.tsconfig).toBe(
+    expect((await vitestConfig).tsconfig).toBe(
       join(root, "tsconfig.tests.dist.json"),
     );
 
-    expect(vitestConfig.resolve?.tsconfigPaths).toBe(false);
-    expect(vitestConfig.plugins).toHaveLength(1);
+    expect((await vitestConfig).test?.typecheck?.tsconfig).toBe(
+      join(root, "tsconfig.tests.dist.json"),
+    );
+
+    expect((await vitestConfig).resolve?.tsconfigPaths).toBe(false);
+    expect((await vitestConfig).plugins).toHaveLength(1);
   });
 
   test("fails in build mode when the dist tsconfig is missing", async () => {
@@ -110,12 +115,14 @@ describe("createVitestConfig", () => {
       }).root,
     );
 
-    expect(() => {
-      return createVitestConfig(createContext(config), {
+    await expect(() => {
+      return createVitestConfig(config, {
         command: "serve",
         mode: "build",
       });
-    }).toThrow("The dist tsconfig tsconfig.tests.dist.json does not exist");
+    }).rejects.toThrow(
+      "The dist tsconfig tsconfig.tests.dist.json does not exist",
+    );
   });
 
   test("fails only when a package import resolves into the build output, even through a symlinked root", async () => {
@@ -130,10 +137,10 @@ describe("createVitestConfig", () => {
 
       const server = await createServer({
         ...mergeConfig(
-          createViteConfig(createContext(config), {
+          await createViteConfig(config, {
             isTesting: true,
           }),
-          createVitestConfig(createContext(config), {
+          await createVitestConfig(config, {
             command: "serve",
             mode: "test",
           }),
@@ -186,14 +193,16 @@ describe("createVitestConfig type checking", () => {
 
     const config = await loadConfig(project.root);
 
-    const vitestConfig = createVitestConfig(createContext(config), {
+    const vitestConfig = createVitestConfig(config, {
       command: "serve",
       mode: "test",
     });
 
     const typecheckTsconfig = project.resolve("tsconfig.tests.json");
 
-    expect(vitestConfig.test?.typecheck?.tsconfig).toBe(typecheckTsconfig);
+    expect((await vitestConfig).test?.typecheck?.tsconfig).toBe(
+      typecheckTsconfig,
+    );
 
     const vitest = await startVitest("test", [], {
       root: project.root,
@@ -234,12 +243,12 @@ describe("createVitestConfig with a renamed base tsconfig", () => {
 
     const config = await loadConfig(project.root);
 
-    const vitestConfig = createVitestConfig(createContext(config), {
+    const vitestConfig = createVitestConfig(config, {
       command: "serve",
       mode: "test",
     });
 
-    expect(vitestConfig.tsconfig).toBe(
+    expect((await vitestConfig).tsconfig).toBe(
       join(project.root, "tsconfig.base.json"),
     );
   });

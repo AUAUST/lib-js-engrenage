@@ -1,6 +1,7 @@
 import { map } from "@auaust/primitive-kit/arrays";
 
 import { createStepContext } from "#workflows/cli/operations/createStepContext";
+import type { OptionContext } from "#foundation/options/index";
 import type { Invocation, Prompter, Step } from "#project/steps/index";
 import type { Config } from "#workflows/registry/index";
 
@@ -9,22 +10,28 @@ export async function runSteps({
   prompter,
   steps,
 }: {
-  config: Config;
+  config: OptionContext<Config>;
   prompter: Prompter;
   steps: readonly Step<Config>[];
 }): Promise<readonly Invocation[] | undefined> {
-  const context = createStepContext({
+  const context = await createStepContext({
     config,
     prompter,
   });
 
-  const gaps = steps.filter((step) => step.isMissing(context));
+  const gaps: Step<Config>[] = [];
+
+  for (const step of steps) {
+    if (await step.isMissing(context)) {
+      gaps.push(step);
+    }
+  }
 
   if (gaps.length === 0) {
     return void console.info("Engrenage is set up, nothing is missing.");
   }
 
-  if (config.configFile !== undefined) {
+  if ((await config.get("configFile")) !== undefined) {
     const names = map(gaps, (step) => step.name).join(", ");
 
     const fill = await prompter.confirm(
@@ -42,12 +49,12 @@ export async function runSteps({
   }: Step<Config>): Promise<boolean> {
     return (
       message === undefined ||
-      prompter.confirm(message, isRecommended?.(context) ?? true)
+      prompter.confirm(message, (await isRecommended?.(context)) ?? true)
     );
   }
 
   for (const step of steps) {
-    if (step.isMissing(context) && (await accepts(step))) {
+    if ((await step.isMissing(context)) && (await accepts(step))) {
       await step.plan(context);
     }
   }

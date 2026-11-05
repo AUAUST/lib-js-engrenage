@@ -9,11 +9,13 @@ export function createPrettierignoreStep(): Step<{
   return {
     name: prettierignoreFile,
     message: `Create ${prettierignoreFile}?`,
-    isMissing({ get, filesystem, readPackageJson }) {
+    async isMissing({ get, filesystem, readPackageJson }) {
+      const resolved = await get("prettier");
+
       return (
-        get("prettier").prettierignore === undefined &&
+        resolved.prettierignore === undefined &&
         (hasConfigFile(filesystem, prettier) ||
-          readPackageJson([prettier]) !== undefined) &&
+          (await readPackageJson([prettier])) !== undefined) &&
         !filesystem.exists(prettierignoreFile)
       );
     },

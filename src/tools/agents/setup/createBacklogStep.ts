@@ -17,20 +17,17 @@ import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRule
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 import type { Step } from "#project/steps/index";
-import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
+import type { AgentSections } from "#tools/agents/types/AgentSections";
 
 const sectionReference = `${engrenage}/agents/sections/backlog.md`;
 const skills = ["scratchpad", "backlog-handling", "debt-harvesting"];
 
-export function createBacklogStep(): Step<{
-  agents: ResolvedAgents;
-  resolve(...paths: string[]): string;
-}> {
+export function createBacklogStep(): Step<AgentSections> {
   return {
     name: "shared backlog",
     message:
       "Set up the shared backlog in .ai/backlog/ and scratchpad in .ai/scratchpad.md?",
-    isMissing({ get, filesystem, getAgents }) {
+    async isMissing({ get, filesystem, getAgents }) {
       if ((getAgents()?.length ?? 0) === 0 || !filesystem.exists(agentsFile)) {
         return false;
       }
@@ -42,16 +39,19 @@ export function createBacklogStep(): Step<{
         getMissingRuleTemplates({ filesystem }).some(({ name }) => {
           return name === "backlog";
         }) ||
-        getSkillTemplates({ agents: get("agents") }).some(({ name, files }) => {
-          return (
-            skills.includes(name) &&
-            files.some(({ file }) => !filesystem.exists(file))
-          );
-        })
+        getSkillTemplates({ agents: await get("agents") }).some(
+          ({ name, files }) => {
+            return (
+              skills.includes(name) &&
+              files.some(({ file }) => !filesystem.exists(file))
+            );
+          },
+        )
       );
     },
-    plan({ get, filesystem }) {
-      const agents = get("agents");
+    async plan(context) {
+      const { filesystem, get } = context;
+      const agents = await get("agents");
 
       if (!filesystem.exists(backlogIndex)) {
         filesystem.write(
@@ -84,11 +84,7 @@ export function createBacklogStep(): Step<{
       addAgentRules({ filesystem, agents }, ["backlog"]);
       addAgentSkills({ filesystem, agents }, skills);
 
-      syncAgentFiles({
-        filesystem,
-        resolve: get("resolve"),
-        agents,
-      });
+      await syncAgentFiles(context);
     },
   };
 }

@@ -6,7 +6,7 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { defineEslintConfig } from "#tools/eslint/operations/defineEslintConfig";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
 
 const root = getFixture("eslint");
 
@@ -18,18 +18,18 @@ describe("defineEslintConfig", () => {
   test("passes the resolved config to the callbacks and appends native configs", async () => {
     mockCwd(root);
 
-    const callback = vi.fn((config: ProjectConfig) => {
+    const callback = vi.fn(async (config: ConfigContext) => {
       return {
-        stylistic: config.root === root,
+        stylistic: (await config.get("root")) === root,
       };
     });
 
     const eslint = new ESLint({
       cwd: root,
       overrideConfigFile: true,
-      overrideConfig: await defineEslintConfig(callback, (config) => {
+      overrideConfig: await defineEslintConfig(callback, async (config) => {
         return {
-          files: map(config.src.dirs, (directory) => {
+          files: map((await config.get("src")).dirs, (directory) => {
             return `${directory}/restricted.ts`;
           }),
           rules: {

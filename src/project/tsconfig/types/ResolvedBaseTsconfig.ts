@@ -6,5 +6,5 @@ export interface ResolvedBaseTsconfig {
   readonly extends: ManagedListOption<string> | undefined;
   readonly compilerOptions: Readonly<Record<string, unknown>>;
   readonly unmanaged: readonly string[];
-  readonly path: File | undefined;
+  readonly path: Promise<File | undefined>;
 }

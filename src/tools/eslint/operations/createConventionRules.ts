@@ -7,14 +7,14 @@ import { pluginName } from "#tools/eslint/constants";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
 import { createTypeAwareLanguageOptions } from "#tools/eslint/utils/createTypeAwareLanguageOptions";
-import type { ProjectConfig } from "#project/config/index";
 import type { ConfigObject } from "#tools/eslint/types/ConfigObject";
 import type { Convention } from "#tools/eslint/types/Convention";
+import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { Rules } from "#tools/eslint/types/Rules";
 
 function isEnabledByDefault(
   { enabled, traits, requires }: Convention,
-  { traits: activeTraits, environment }: ProjectConfig,
+  { traits: activeTraits, environment }: ConventionConfig,
 ): boolean {
   if (!enabled) {
     return false;
@@ -42,7 +42,7 @@ function isEnabled({
   name: string;
   convention: Convention;
   setting: boolean | Partial<Record<string, boolean>>;
-  config: ProjectConfig;
+  config: ConventionConfig;
 }): boolean {
   if (setting === false) {
     return false;
@@ -60,7 +60,7 @@ function isEnabled({
 function createRules(
   name: string,
   { delegates, rule, severity }: Convention,
-  config: ProjectConfig,
+  config: ConventionConfig,
   options: unknown,
 ): Rules {
   const rules: Rules = {};
@@ -87,7 +87,7 @@ export function createConventionRules({
   typeAware,
   ruleOptions = {},
 }: {
-  config: ProjectConfig;
+  config: ConventionConfig;
   category: string;
   conventions: Record<string, Convention>;
   setting: boolean | Partial<Record<string, boolean>>;

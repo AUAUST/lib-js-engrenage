@@ -5,7 +5,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
-function createProject(
+async function createProject(
   input: Record<string, unknown>,
   files: Record<string, string> = {},
 ) {
@@ -20,9 +20,9 @@ function createProject(
     configFile: undefined,
   });
 
-  syncEnvFile(config);
+  await syncEnvFile(config);
 
-  config.filesystem.flush();
+  (await config.get("filesystem")).flush();
 
   return project;
 }
@@ -39,8 +39,8 @@ const values = {
 };
 
 describe("syncEnvFile", () => {
-  test("appends a declaration block to an existing file and keeps the rest", () => {
-    const project = createProject(
+  test("appends a declaration block to an existing file and keeps the rest", async () => {
+    const project = await createProject(
       {
         define: {
           values,
@@ -71,8 +71,8 @@ describe("syncEnvFile", () => {
     );
   });
 
-  test("leaves the file alone when types are disabled", () => {
-    const project = createProject({
+  test("leaves the file alone when types are disabled", async () => {
+    const project = await createProject({
       define: {
         types: false,
         values,

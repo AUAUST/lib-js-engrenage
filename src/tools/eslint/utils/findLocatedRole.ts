@@ -3,11 +3,11 @@ import { matchesGlob } from "node:path";
 import { wrap } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
-import type { ProjectConfig } from "#project/config/index";
+import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { StructureLocation } from "#tools/eslint/types/StructureLocation";
 
 export function findLocatedRole(
-  config: ProjectConfig,
+  config: ConventionConfig,
   { environment, node, relativePath }: StructureLocation,
 ): { name: string; effects: string | undefined } | undefined {
   if (node.kind === "role") {

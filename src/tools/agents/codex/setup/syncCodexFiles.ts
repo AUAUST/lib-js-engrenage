@@ -5,17 +5,19 @@ import {
 } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
 import { syncHook } from "#tools/agents/operations/syncHook";
-import type { Filesystem } from "#foundation/filesystem/index";
-import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
+import type { OptionContext } from "#foundation/options/index";
+import type { AgentSections } from "#tools/agents/types/AgentSections";
 
-export function syncCodexFiles(
-  config: {
-    filesystem: Filesystem;
-    resolve(...paths: string[]): string;
-    agents: ResolvedAgents;
-  },
+export async function syncCodexFiles(
+  { get }: OptionContext<AgentSections>,
   { hooks = false }: { hooks?: boolean } = {},
 ) {
+  const config = {
+    filesystem: await get("filesystem"),
+    resolve: await get("resolve"),
+    agents: await get("agents"),
+  };
+
   if (config.agents.preferred?.includes("codex") !== true) {
     return;
   }

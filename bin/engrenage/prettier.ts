@@ -34,28 +34,41 @@ export const prettier = defineToolCommands({
       },
     },
     "prettier:all": {
-      arguments(config, args) {
+      async arguments(config, args) {
         formatFiles(args);
 
+        const [
+          source,
+          bin,
+          scripts,
+          tests,
+          data,
+          tooling,
+          filesystem,
+          resolve,
+        ] = await Promise.all([
+          config.get("src"),
+          config.get("bin"),
+          config.get("scripts"),
+          config.get("tests"),
+          config.get("data"),
+          config.get("tooling"),
+          config.get("filesystem"),
+          config.get("resolve"),
+        ]);
+
         const directories = flatMap(
-          [
-            config.src,
-            config.bin,
-            config.scripts,
-            config.tests,
-            config.data,
-            config.tooling,
-          ],
+          [source, bin, scripts, tests, data, tooling],
           ({ dirs }) => dirs,
         );
 
         args.push(
           ...[
             ...directories.filter((directory) => {
-              return config.filesystem.isDirectory(directory);
+              return filesystem.isDirectory(directory);
             }),
-            ...config.filesystem.glob(config.tooling.files),
-          ].map((path) => config.resolve(path)),
+            ...filesystem.glob(tooling.files),
+          ].map((path) => resolve(path)),
         );
       },
     },

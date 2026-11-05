@@ -5,11 +5,13 @@ export function createVitestStep(): Step {
   return {
     name: vitest,
     message: "Test with Vitest?",
-    isMissing({ filesystem, hasDependency }) {
-      return !hasDependency(vitest) && !hasConfigFile(filesystem, vitest);
+    async isMissing({ filesystem, hasDependency }) {
+      return (
+        !(await hasDependency(vitest)) && !hasConfigFile(filesystem, vitest)
+      );
     },
-    plan({ addDevDependency }) {
-      addDevDependency(vitest);
+    async plan({ addDevDependency }) {
+      await addDevDependency(vitest);
     },
   };
 }

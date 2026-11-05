@@ -9,9 +9,11 @@ export function createAgentRulesStep(): Step<{ agents: ResolvedAgents }> {
   return {
     name: "agent rules",
     message: "Choose shared coding rules for .claude/rules/?",
-    isMissing({ get, filesystem }) {
+    async isMissing({ get, filesystem }) {
+      const agents = await get("agents");
+
       return (
-        (get("agents").preferred?.length ?? 0) > 0 &&
+        (agents.preferred?.length ?? 0) > 0 &&
         getMissingRuleTemplates({ filesystem }).some(
           (template) => template.default,
         )
@@ -30,7 +32,7 @@ export function createAgentRulesStep(): Step<{ agents: ResolvedAgents }> {
         filterMap(missing, "default", "name"),
       );
 
-      addAgentRules({ filesystem, agents: get("agents") }, names);
+      addAgentRules({ filesystem, agents: await get("agents") }, names);
     },
   };
 }

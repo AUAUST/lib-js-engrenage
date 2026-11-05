@@ -7,7 +7,7 @@ import {
 import type { ResolvedSource } from "#project/environments/index";
 import type { Directory } from "#types/Directory";
 
-export function resolveSourceEntries({
+export async function resolveSourceEntries({
   packageJson,
   root,
   src,
@@ -17,14 +17,13 @@ export function resolveSourceEntries({
   root: Directory;
   src: ResolvedSource;
   tsconfig: Tsconfig;
-}): PathAliases {
+}): Promise<PathAliases> {
   const { name } = packageJson;
+  const exposed = await src.exports;
 
   return resolvePathAliases(
     name,
-    src.exports === undefined
-      ? tsconfig.paths
-      : resolveExportPaths(name, src.exports),
+    exposed === undefined ? tsconfig.paths : resolveExportPaths(name, exposed),
     root,
   );
 }

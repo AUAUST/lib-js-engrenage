@@ -13,7 +13,7 @@ const libraryPreset = fileURLToPath(
   new URL("../../../../data/tsconfig/library.json", import.meta.url),
 );
 
-function syncOutDir(build: unknown, files: Record<string, string> = {}) {
+async function syncOutDir(build: unknown, files: Record<string, string> = {}) {
   const project = createTemporaryProject({
     "package.json": "{}",
     "src/index.ts": "",
@@ -36,28 +36,28 @@ function syncOutDir(build: unknown, files: Record<string, string> = {}) {
     configFile: undefined,
   });
 
-  syncTsconfigFiles(config);
-  config.filesystem.flush();
+  await syncTsconfigFiles(config);
+  (await config.get("filesystem")).flush();
 
   return JSON.parse(project.read("tsconfig.src.json")).compilerOptions;
 }
 
 describe("produceTsconfigOutDir", () => {
-  test("writes a build.outDir that differs from the inherited one", () => {
-    expect(syncOutDir({ outDir: "build" }).outDir).toBe("./build");
+  test("writes a build.outDir that differs from the inherited one", async () => {
+    expect((await syncOutDir({ outDir: "build" })).outDir).toBe("./build");
   });
 
-  test("writes nothing when build.outDir matches the inherited one", () => {
-    expect(syncOutDir({ outDir: "dist" })).not.toHaveProperty("outDir");
+  test("writes nothing when build.outDir matches the inherited one", async () => {
+    expect(await syncOutDir({ outDir: "dist" })).not.toHaveProperty("outDir");
   });
 
-  test("leaves outDir untouched without build.outDir", () => {
+  test("leaves outDir untouched without build.outDir", async () => {
     const tsconfig = JSON.stringify({
       compilerOptions: { outDir: "./out" },
     });
 
-    expect(syncOutDir({}, { "tsconfig.src.json": tsconfig }).outDir).toBe(
-      "./out",
-    );
+    expect(
+      (await syncOutDir({}, { "tsconfig.src.json": tsconfig })).outDir,
+    ).toBe("./out");
   });
 });

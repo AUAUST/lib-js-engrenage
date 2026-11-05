@@ -31,7 +31,7 @@ test("tooling imports src internals like scripts do, but never bin", async () =>
   const eslint = new ESLint({
     cwd: project.root,
     overrideConfigFile: true,
-    overrideConfig: createEslintConfig(await loadConfig(project.root), {
+    overrideConfig: await createEslintConfig(await loadConfig(project.root), {
       typeAware: false,
     }),
   });

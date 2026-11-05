@@ -5,7 +5,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
-function syncProject(
+async function syncProject(
   input: Record<string, unknown>,
   files: Record<string, string> = {},
 ) {
@@ -22,15 +22,15 @@ function syncProject(
     configFile: undefined,
   });
 
-  syncTsconfigFiles(config);
-  config.filesystem.flush();
+  await syncTsconfigFiles(config);
+  (await config.get("filesystem")).flush();
 
   return (file: string) => JSON.parse(project.read(file)).extends;
 }
 
 describe("produceTsconfigExtends", () => {
-  test("extends the library tsconfig of the library preset", () => {
-    const read = syncProject({ preset: "library" });
+  test("extends the library tsconfig of the library preset", async () => {
+    const read = await syncProject({ preset: "library" });
 
     expect(read("tsconfig.json")).toBe(
       "@auaust/engrenage/tsconfig/library.json",
@@ -39,14 +39,14 @@ describe("produceTsconfigExtends", () => {
     expect(read("tsconfig.src.json")).toBe("./tsconfig.json");
   });
 
-  test("extends the base tsconfig without preset", () => {
-    const read = syncProject({});
+  test("extends the base tsconfig without preset", async () => {
+    const read = await syncProject({});
 
     expect(read("tsconfig.json")).toBe("@auaust/engrenage/tsconfig/base.json");
   });
 
-  test("extends the base from an environment tsconfig in a subdirectory", () => {
-    const read = syncProject({
+  test("extends the base from an environment tsconfig in a subdirectory", async () => {
+    const read = await syncProject({
       src: {
         tsconfig: { path: "config/tsconfig.src.json" },
       },
@@ -55,8 +55,8 @@ describe("produceTsconfigExtends", () => {
     expect(read("config/tsconfig.src.json")).toBe("../tsconfig.json");
   });
 
-  test("appends a base as an array", () => {
-    const read = syncProject({
+  test("appends a base as an array", async () => {
+    const read = await syncProject({
       src: {
         tsconfig: {
           extends: { append: ["./custom.json"] },
@@ -70,8 +70,8 @@ describe("produceTsconfigExtends", () => {
     ]);
   });
 
-  test("extends the tests tsconfig from the dist variant", () => {
-    const read = syncProject(
+  test("extends the tests tsconfig from the dist variant", async () => {
+    const read = await syncProject(
       {
         tests: {
           dist: {
