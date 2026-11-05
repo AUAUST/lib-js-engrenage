@@ -1,12 +1,12 @@
 import { ESLint } from "eslint";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { defineEslintConfig } from "@auaust/engrenage/eslint";
 import { map } from "@auaust/primitive-kit/arrays";
-import type { ProjectConfig } from "@auaust/engrenage/config";
 
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { defineEslintConfig } from "#tools/eslint/operations/defineEslintConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 
 const root = getFixture("eslint");
 

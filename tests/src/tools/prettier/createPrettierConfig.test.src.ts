@@ -1,16 +1,13 @@
 import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
-import { createContext } from "@auaust/engrenage/config";
-import {
-  createPrettierConfig,
-  definePrettierConfig,
-  type Config,
-} from "@auaust/engrenage/prettier";
-
+import { createContext } from "#project/config/utils/createContext";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
+import { definePrettierConfig } from "#tools/prettier/operations/definePrettierConfig";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
+import type { Config } from "#tools/prettier/types/Config";
 
 async function createContextOf(config: string) {
   const project = createTemporaryProject({

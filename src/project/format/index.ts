@@ -7,4 +7,5 @@ export * from "#project/format/ports/Formatter";
 
 // @barrel types/*.ts all
 export * from "#project/format/types/Conventions";
+export * from "#project/format/types/FormatInput";
 // @end

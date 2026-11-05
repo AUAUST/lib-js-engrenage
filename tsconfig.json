@@ -12,7 +12,6 @@
         "./src/project/config/constants.ts"
       ],
       "@auaust/engrenage/baseline": ["./src/project/baseline/index.ts"],
-      "@auaust/engrenage/config": ["./src/project/config/index.ts"],
       "@auaust/engrenage/format": ["./src/project/format/index.ts"],
       "@auaust/engrenage/package": ["./src/project/package/index.ts"],
       "@auaust/engrenage/agents": ["./src/tools/agents/index.ts"],
@@ -28,7 +27,8 @@
       "@auaust/engrenage/typescript": ["./src/tools/typescript/index.ts"],
       "@auaust/engrenage/vite": ["./src/tools/vite/index.ts"],
       "@auaust/engrenage/vitest": ["./src/tools/vitest/index.ts"],
-      "@auaust/engrenage/vscode": ["./src/tools/vscode/index.ts"]
+      "@auaust/engrenage/vscode": ["./src/tools/vscode/index.ts"],
+      "@auaust/engrenage/config": ["./src/workflows/config/index.ts"]
     }
   },
   "files": [],

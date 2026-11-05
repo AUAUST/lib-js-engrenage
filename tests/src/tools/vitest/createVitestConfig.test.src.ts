@@ -6,13 +6,12 @@ import { describe, expect, test } from "vitest";
 import { configDefaults } from "vitest/config";
 import { startVitest } from "vitest/node";
 
-import { loadConfig } from "@auaust/engrenage";
-import { createContext } from "@auaust/engrenage/config";
-import { createViteConfig } from "@auaust/engrenage/vite";
-import { createVitestConfig } from "@auaust/engrenage/vitest";
-
+import { createContext } from "#project/config/utils/createContext";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
+import { createViteConfig } from "#tools/vite/operations/createViteConfig";
+import { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 const root = getFixture("vitest");
 

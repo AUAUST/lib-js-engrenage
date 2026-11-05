@@ -8,6 +8,7 @@ import * as promises from "#tools/eslint/conventions/promises/index";
 import * as structure from "#tools/eslint/conventions/structure/index";
 import * as stylistic from "#tools/eslint/conventions/stylistic/index";
 
+// @debt no location fits this value; it's not a constant, not a helper. new role required?
 export const conventionCategories = freeze({
   globals,
   comparisons,

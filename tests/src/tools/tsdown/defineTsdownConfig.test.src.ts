@@ -1,10 +1,9 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { defineTsdownConfig } from "@auaust/engrenage/tsdown";
-import type { ProjectConfig } from "@auaust/engrenage/config";
-
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { defineTsdownConfig } from "#tools/tsdown/operations/defineTsdownConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 
 const root = getFixture("tsdown");
 

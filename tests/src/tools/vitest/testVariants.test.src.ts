@@ -1,11 +1,10 @@
 import { describe, expect, test } from "vitest";
 import { startVitest } from "vitest/node";
 
-import { loadConfig } from "@auaust/engrenage";
-import { createContext } from "@auaust/engrenage/config";
-import { createVitestConfig } from "@auaust/engrenage/vitest";
-
+import { createContext } from "#project/config/utils/createContext";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 function createLibrary(config = "{ preset: 'library' }") {
   return createTemporaryProject({

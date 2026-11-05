@@ -1,4 +1,4 @@
-import { defineConfig } from "#project/config/index";
+import { defineConfig } from "#workflows/config/index";
 
 export default defineConfig({
   preset: "library",
@@ -76,7 +76,7 @@ export default defineConfig({
       "tools/*": { public: true },
       "tools/agents/claude": { public: true },
       "tools/agents/codex": { public: true },
-      "project/config": { public: true },
+      "workflows/config": { public: true },
       "project/package": { public: true },
       "project/baseline": { public: true },
       "project/format": { public: true },
@@ -88,7 +88,37 @@ export default defineConfig({
       "./agents/*/constants": "src/tools/agents/*/constants.ts",
       "./config/constants": "src/project/config/constants.ts",
     },
-    generated: ["tools/eslint/types/Rules.ts", "tools/eslint/types/rules/**"],
+    generated: [
+      "tools/eslint/types/Rules.ts",
+      "tools/eslint/types/rules/**",
+      "project/build/types/BuildInput.ts",
+      "project/config/types/CacheInput.ts",
+      "project/config/types/DefineInput.ts",
+      "project/environments/types/BinInput.ts",
+      "project/environments/types/DataInput.ts",
+      "project/environments/types/RuntimeInput.ts",
+      "project/environments/types/ScriptsInput.ts",
+      "project/environments/types/SourceInput.ts",
+      "project/environments/types/TestsInput.ts",
+      "project/environments/types/ToolingInput.ts",
+      "project/format/types/FormatInput.ts",
+      "project/presets/types/TraitsInput.ts",
+      "project/structure/types/AliasesInput.ts",
+      "project/structure/types/DomainInput.ts",
+      "project/structure/types/EffectsInput.ts",
+      "project/structure/types/InlineRoleInput.ts",
+      "project/structure/types/NamespaceInput.ts",
+      "project/structure/types/RoleContractInput.ts",
+      "project/structure/types/RolesInput.ts",
+      "project/structure/types/RolesOptionInput.ts",
+      "project/tsconfig/types/TypescriptInput.ts",
+      "tools/agents/types/AgentsInput.ts",
+      "tools/git/types/GitInput.ts",
+      "tools/github/types/GithubInput.ts",
+      "tools/prettier/types/PrettierInput.ts",
+      "tools/vscode/types/VscodeInput.ts",
+      "workflows/config/types/ConfigInput.ts",
+    ],
   },
   data: {
     exports: {

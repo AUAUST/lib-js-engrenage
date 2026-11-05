@@ -41,7 +41,7 @@
   },
   "src/project/config/index.ts": {
     "auaust/import-surfaces": {
-      "count": 26
+      "count": 25
     }
   },
   "src/project/config/operations/createProjectConfig.ts": {
@@ -71,11 +71,6 @@
   },
   "src/project/config/types/ConfigContext.ts": {
     "auaust/import-surfaces": {
-      "count": 1
-    }
-  },
-  "src/project/config/types/ConfigInput.ts": {
-    "auaust/role-exports": {
       "count": 1
     }
   },
@@ -276,7 +271,7 @@
   },
   "src/project/structure/config/schemas/structureOptions.ts": {
     "auaust/import-surfaces": {
-      "count": 5
+      "count": 4
     }
   },
   "src/project/structure/types/InlineRole.ts": {

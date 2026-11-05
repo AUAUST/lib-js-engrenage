@@ -1,11 +1,15 @@
 /* eslint-disable auaust/no-dynamic-import */
 
+import { globSync } from "node:fs";
+import { join } from "node:path";
+
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import type { File } from "#types/File";
 
 export const config = defineCommand((command) => {
   return command
     .description(
-      "Generate the documented Config interface from the descriptions of the config schema.",
+      "Generate the documented config input interfaces from the descriptions of the config schemas.",
     )
     .option("--check", "report an outdated file without writing it", false)
     .action(async ({ check }) => {
@@ -20,7 +24,15 @@ export const config = defineCommand((command) => {
 
       const resolved = await loadConfig();
 
-      await generateConfigTypes(resolved);
+      const modules = new Map<File, Record<string, unknown>>();
+
+      for (const file of globSync("src/**/config/schemas/*.ts", {
+        cwd: join(import.meta.dirname, "../.."),
+      })) {
+        modules.set(file, await import(`#${file.slice("src/".length, -3)}`));
+      }
+
+      await generateConfigTypes(resolved, modules);
 
       await settleChanges(resolved, {
         check,

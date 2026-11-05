@@ -129,7 +129,7 @@ Layers of `.`: `foundation` < `project` < `tools` < `workflows`
 #### `src/project/config`
 
 - Domain in `src/project`
-- Visibility: public
+- Visibility: internal
 - Imports:
   - a domain imports its own roles and files
   - anything imports global roles
@@ -372,7 +372,7 @@ Layers of `.`: `foundation` < `project` < `tools` < `workflows`
 
 - Namespace, layer `workflows` of `.`
 - Layers: none, children are peers
-- Children: `src/workflows/cli`, `src/workflows/init`, `src/workflows/registry`, `src/workflows/sync`
+- Children: `src/workflows/cli`, `src/workflows/config`, `src/workflows/init`, `src/workflows/registry`, `src/workflows/sync`
 
 #### `src/workflows/cli`
 
@@ -382,7 +382,17 @@ Layers of `.`: `foundation` < `project` < `tools` < `workflows`
   - a domain imports its own roles and files
   - anything imports global roles
   - domains of a lower layer, through their index.ts → `src/foundation/blocks`, `src/foundation/data`, `src/foundation/filesystem`, `src/foundation/json`, `src/foundation/options`, `src/foundation/processes`, `src/project/baseline`, `src/project/build`, `src/project/config`, `src/project/environments`, `src/project/format`, `src/project/package`, `src/project/presets`, `src/project/steps`, `src/project/structure`, `src/project/tsconfig`, `src/project/workspaces`, `src/tools/agents`, `src/tools/changesets`, `src/tools/eslint`, `src/tools/git`, `src/tools/github`, `src/tools/pnpm`, `src/tools/prettier`, `src/tools/tsdown`, `src/tools/typescript`, `src/tools/vite`, `src/tools/vitest`, `src/tools/vscode`
-  - peers, through their index.ts → `src/workflows/init`, `src/workflows/registry`, `src/workflows/sync`
+  - peers, through their index.ts → `src/workflows/config`, `src/workflows/init`, `src/workflows/registry`, `src/workflows/sync`
+
+#### `src/workflows/config`
+
+- Domain in `src/workflows`
+- Visibility: public
+- Imports:
+  - a domain imports its own roles and files
+  - anything imports global roles
+  - domains of a lower layer, through their index.ts → `src/foundation/blocks`, `src/foundation/data`, `src/foundation/filesystem`, `src/foundation/json`, `src/foundation/options`, `src/foundation/processes`, `src/project/baseline`, `src/project/build`, `src/project/config`, `src/project/environments`, `src/project/format`, `src/project/package`, `src/project/presets`, `src/project/steps`, `src/project/structure`, `src/project/tsconfig`, `src/project/workspaces`, `src/tools/agents`, `src/tools/changesets`, `src/tools/eslint`, `src/tools/git`, `src/tools/github`, `src/tools/pnpm`, `src/tools/prettier`, `src/tools/tsdown`, `src/tools/typescript`, `src/tools/vite`, `src/tools/vitest`, `src/tools/vscode`
+  - peers, through their index.ts → `src/workflows/cli`, `src/workflows/init`, `src/workflows/registry`, `src/workflows/sync`
 
 #### `src/workflows/init`
 
@@ -392,7 +402,7 @@ Layers of `.`: `foundation` < `project` < `tools` < `workflows`
   - a domain imports its own roles and files
   - anything imports global roles
   - domains of a lower layer, through their index.ts → `src/foundation/blocks`, `src/foundation/data`, `src/foundation/filesystem`, `src/foundation/json`, `src/foundation/options`, `src/foundation/processes`, `src/project/baseline`, `src/project/build`, `src/project/config`, `src/project/environments`, `src/project/format`, `src/project/package`, `src/project/presets`, `src/project/steps`, `src/project/structure`, `src/project/tsconfig`, `src/project/workspaces`, `src/tools/agents`, `src/tools/changesets`, `src/tools/eslint`, `src/tools/git`, `src/tools/github`, `src/tools/pnpm`, `src/tools/prettier`, `src/tools/tsdown`, `src/tools/typescript`, `src/tools/vite`, `src/tools/vitest`, `src/tools/vscode`
-  - peers, through their index.ts → `src/workflows/cli`, `src/workflows/registry`, `src/workflows/sync`
+  - peers, through their index.ts → `src/workflows/cli`, `src/workflows/config`, `src/workflows/registry`, `src/workflows/sync`
 
 #### `src/workflows/registry`
 
@@ -402,7 +412,7 @@ Layers of `.`: `foundation` < `project` < `tools` < `workflows`
   - a domain imports its own roles and files
   - anything imports global roles
   - domains of a lower layer, through their index.ts → `src/foundation/blocks`, `src/foundation/data`, `src/foundation/filesystem`, `src/foundation/json`, `src/foundation/options`, `src/foundation/processes`, `src/project/baseline`, `src/project/build`, `src/project/config`, `src/project/environments`, `src/project/format`, `src/project/package`, `src/project/presets`, `src/project/steps`, `src/project/structure`, `src/project/tsconfig`, `src/project/workspaces`, `src/tools/agents`, `src/tools/changesets`, `src/tools/eslint`, `src/tools/git`, `src/tools/github`, `src/tools/pnpm`, `src/tools/prettier`, `src/tools/tsdown`, `src/tools/typescript`, `src/tools/vite`, `src/tools/vitest`, `src/tools/vscode`
-  - peers, through their index.ts → `src/workflows/cli`, `src/workflows/init`, `src/workflows/sync`
+  - peers, through their index.ts → `src/workflows/cli`, `src/workflows/config`, `src/workflows/init`, `src/workflows/sync`
 
 #### `src/workflows/sync`
 
@@ -412,7 +422,7 @@ Layers of `.`: `foundation` < `project` < `tools` < `workflows`
   - a domain imports its own roles and files
   - anything imports global roles
   - domains of a lower layer, through their index.ts → `src/foundation/blocks`, `src/foundation/data`, `src/foundation/filesystem`, `src/foundation/json`, `src/foundation/options`, `src/foundation/processes`, `src/project/baseline`, `src/project/build`, `src/project/config`, `src/project/environments`, `src/project/format`, `src/project/package`, `src/project/presets`, `src/project/steps`, `src/project/structure`, `src/project/tsconfig`, `src/project/workspaces`, `src/tools/agents`, `src/tools/changesets`, `src/tools/eslint`, `src/tools/git`, `src/tools/github`, `src/tools/pnpm`, `src/tools/prettier`, `src/tools/tsdown`, `src/tools/typescript`, `src/tools/vite`, `src/tools/vitest`, `src/tools/vscode`
-  - peers, through their index.ts → `src/workflows/cli`, `src/workflows/init`, `src/workflows/registry`
+  - peers, through their index.ts → `src/workflows/cli`, `src/workflows/config`, `src/workflows/init`, `src/workflows/registry`
 
 ### tests (strict)
 
@@ -578,7 +588,7 @@ Directories: `tooling`
 - scripts environment: never: nothing imports the index.ts of an environment root → `tooling/index.ts`
 - tooling environment: never: nothing imports the index.ts of an environment root → `tooling/index.ts`
 - `src/index.ts`: anything imports global roles → `src/types/*`, `src/constants.ts`, `src/*.d.ts`
-- `src/index.ts`: the index.ts of an environment root imports any public surface → `src/foundation/blocks`, `src/foundation/data`, `src/foundation/filesystem`, `src/foundation/json`, `src/foundation/options`, `src/foundation/processes`, `src/project/baseline`, `src/project/baseline/editions`, `src/project/build`, `src/project/config`, `src/project/environments`, `src/project/format`, `src/project/format/ports/*`, `src/project/package`, `src/project/presets`, `src/project/steps`, `src/project/structure`, `src/project/tsconfig`, `src/project/workspaces`, `src/tools/agents`, `src/tools/agents/claude`, `src/tools/agents/codex`, `src/tools/changesets`, `src/tools/eslint`, `src/tools/git`, `src/tools/github`, `src/tools/pnpm`, `src/tools/prettier`, `src/tools/prettier/adapters/*`, `src/tools/tsdown`, `src/tools/typescript`, `src/tools/vite`, `src/tools/vitest`, `src/tools/vscode`, `src/workflows/cli`, `src/workflows/init`, `src/workflows/registry`, `src/workflows/sync`
+- `src/index.ts`: the index.ts of an environment root imports any public surface → `src/foundation/blocks`, `src/foundation/data`, `src/foundation/filesystem`, `src/foundation/json`, `src/foundation/options`, `src/foundation/processes`, `src/project/baseline`, `src/project/baseline/editions`, `src/project/build`, `src/project/config`, `src/project/environments`, `src/project/format`, `src/project/format/ports/*`, `src/project/package`, `src/project/presets`, `src/project/steps`, `src/project/structure`, `src/project/tsconfig`, `src/project/workspaces`, `src/tools/agents`, `src/tools/agents/claude`, `src/tools/agents/codex`, `src/tools/changesets`, `src/tools/eslint`, `src/tools/git`, `src/tools/github`, `src/tools/pnpm`, `src/tools/prettier`, `src/tools/prettier/adapters/*`, `src/tools/tsdown`, `src/tools/typescript`, `src/tools/vite`, `src/tools/vitest`, `src/tools/vscode`, `src/workflows/cli`, `src/workflows/config`, `src/workflows/init`, `src/workflows/registry`, `src/workflows/sync`
 - `scripts/index.ts`: anything imports global roles → `scripts/constants.ts`, `scripts/*.d.ts`
 - `scripts/index.ts`: the index.ts of an environment root imports any public surface → `scripts/codegen`
 - `tooling/index.ts`: anything imports global roles → `tooling/constants.ts`, `tooling/*.d.ts`

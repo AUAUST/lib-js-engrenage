@@ -3,11 +3,11 @@ import { pathToFileURL } from "node:url";
 import { build } from "tsdown";
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
-import { createContext } from "@auaust/engrenage/config";
-import { createTsdownConfig, type Options } from "@auaust/engrenage/tsdown";
-
+import { createContext } from "#project/config/utils/createContext";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTsdownConfig } from "#tools/tsdown/operations/createTsdownConfig";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
+import type { Options } from "#tools/tsdown/types/Options";
 
 async function buildProject(options?: Options) {
   const project = createTemporaryProject({

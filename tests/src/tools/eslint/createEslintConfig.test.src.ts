@@ -4,27 +4,23 @@ import { ESLint } from "eslint";
 import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
-import {
-  createContext,
-  type Environment,
-  type ProjectConfig,
-  type ResolvedTraits,
-} from "@auaust/engrenage/config";
-import { packageJsonFile } from "@auaust/engrenage/constants";
-import {
-  createEslintConfig as createConfig,
-  type Config,
-  type Options,
-} from "@auaust/engrenage/eslint";
-import { infoRulesSetting } from "@auaust/engrenage/eslint/constants";
-import { createPrettierConfig } from "@auaust/engrenage/prettier";
 import { map } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
 import type { Maybe } from "@auaust/toolkit/types";
 
+import { packageJsonFile } from "#constants";
+import { createContext } from "#project/config/utils/createContext";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
+import { infoRulesSetting } from "#tools/eslint/constants";
+import { createEslintConfig as createConfig } from "#tools/eslint/operations/createEslintConfig";
+import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
+import { loadConfig } from "#workflows/registry/operations/loadConfig";
+import type { Environment } from "#project/config/types/Environment";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
+import type { Config } from "#tools/eslint/types/Config";
+import type { Options } from "#tools/eslint/types/Options";
 
 const root = getFixture("eslint");
 

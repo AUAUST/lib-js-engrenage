@@ -2,12 +2,11 @@ import { join } from "node:path";
 
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { defineVitestConfig } from "@auaust/engrenage/vitest";
-import type { ProjectConfig } from "@auaust/engrenage/config";
-import type { ConfigEnv } from "@auaust/engrenage/vite";
-
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { defineVitestConfig } from "#tools/vitest/operations/defineVitestConfig";
+import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
 
 const root = getFixture("vitest");
 

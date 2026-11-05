@@ -1,14 +1,11 @@
-/** @debt `@auaust/engrenage/config` still exports `createContext`, `define`, `PackageJson` and many resolved types beyond `defineConfig`, `ConfigInput` and `Resolvable` */
-export { defineConfig } from "#project/config/operations/defineConfig";
 export { createContext } from "#project/config/utils/createContext";
 export { define } from "#project/config/utils/define";
-export type { PackageJson } from "#project/package/types/PackageJson";
-export type { Resolvable } from "#types/Resolvable";
 
 // @barrel types/*.ts all
+export * from "#project/config/types/CacheInput";
 export * from "#project/config/types/ConfigContext";
-export * from "#project/config/types/ConfigInput";
 export * from "#project/config/types/DefineContext";
+export * from "#project/config/types/DefineInput";
 export * from "#project/config/types/Definition";
 export * from "#project/config/types/DefinitionOptions";
 export * from "#project/config/types/Environment";

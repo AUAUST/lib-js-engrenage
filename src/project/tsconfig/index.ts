@@ -32,6 +32,7 @@ export * from "#project/tsconfig/types/TsconfigKey";
 export * from "#project/tsconfig/types/TsconfigOwner";
 export * from "#project/tsconfig/types/TsconfigProducer";
 export * from "#project/tsconfig/types/TsconfigTarget";
+export * from "#project/tsconfig/types/TypescriptInput";
 export * from "#project/tsconfig/types/UnmanagedEnvironmentTsconfig";
 // @end
 

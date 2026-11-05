@@ -5,7 +5,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
 
-const file = "src/project/config/types/ConfigInput.ts";
+const file = "src/workflows/config/types/ConfigInput.ts";
 
 beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation(() => {});

@@ -3,6 +3,7 @@ export { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 export { syncAgents } from "#tools/agents/setup/syncAgents";
 // @barrel types/*.ts all
 export * from "#tools/agents/types/Agent";
+export * from "#tools/agents/types/AgentsInput";
 export * from "#tools/agents/types/BudgetFinding";
 export * from "#tools/agents/types/BudgetKind";
 export * from "#tools/agents/types/BudgetMode";

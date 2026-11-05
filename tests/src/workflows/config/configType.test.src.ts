@@ -1,7 +1,7 @@
 import { describe, expectTypeOf, test } from "vitest";
 import type { InferInput } from "valibot";
 
-import type { ConfigInput } from "#project/config/types/ConfigInput";
+import type { ConfigInput } from "#workflows/config/types/ConfigInput";
 import type { configSchema } from "#workflows/registry/config/schemas/configSchema";
 
 describe("ConfigInput", () => {
