@@ -71,6 +71,16 @@ export default defineConfig({
     node: 24,
     namespaces: {
       ".": { layers: ["foundation", "project", "tools", "workflows"] },
+      "foundation": { purpose: "Primitives without project knowledge." },
+      "project": {
+        purpose: "Tool-agnostic project models and contract domains.",
+      },
+      "tools": {
+        purpose: "One domain per external tool, holding its adapters.",
+      },
+      "workflows": {
+        purpose: "Composition of tools into the registry and commands.",
+      },
     },
     exports: {
       ".": "src/entry.ts",
