@@ -71,8 +71,7 @@ async function add(name?: string) {
 }
 
 export const skills = defineCommand((command) => {
-  command
-    .action(() => add());
+  command.action(() => add());
 
   command
     .command("add")

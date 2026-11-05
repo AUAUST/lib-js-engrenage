@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import { array, literal, looseObject, strictObject, string } from "valibot";
 import { describe, expect, test } from "vitest";
 
-import { loadConfig, validate  } from "@auaust/engrenage";
+import { loadConfig, validate } from "@auaust/engrenage";
 import { syncVscodeFiles } from "@auaust/engrenage/vscode";
 import { map } from "@auaust/primitive-kit/arrays";
 

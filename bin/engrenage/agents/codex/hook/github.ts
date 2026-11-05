@@ -17,24 +17,23 @@ const payloadSchema = object({
 });
 
 export const github = defineCommand((command) => {
-  return command
-    .action(async () => {
-      const {
-        cwd,
-        tool_input: { command: shellCommand },
-      } = validate(
-        payloadSchema,
-        JSON.parse(readFileSync(0, "utf-8")),
-        "Codex hook payload",
-      );
+  return command.action(async () => {
+    const {
+      cwd,
+      tool_input: { command: shellCommand },
+    } = validate(
+      payloadSchema,
+      JSON.parse(readFileSync(0, "utf-8")),
+      "Codex hook payload",
+    );
 
-      const { agents } = await loadConfig(cwd);
-      const { budgets } = agents;
-      const finding = measureGithubCommand(shellCommand, budgets);
+    const { agents } = await loadConfig(cwd);
+    const { budgets } = agents;
+    const finding = measureGithubCommand(shellCommand, budgets);
 
-      reportBudgetFindings(finding === undefined ? [] : [finding], {
-        mode: budgets.mode,
-        event: "PreToolUse",
-      });
+    reportBudgetFindings(finding === undefined ? [] : [finding], {
+      mode: budgets.mode,
+      event: "PreToolUse",
     });
+  });
 });

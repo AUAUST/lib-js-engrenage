@@ -17,26 +17,25 @@ const payloadSchema = object({
 });
 
 export const edit = defineCommand((command) => {
-  return command
-    .action(async () => {
-      const {
-        tool_input: { file_path: file },
-      } = validate(
-        payloadSchema,
-        JSON.parse(readFileSync(0, "utf-8")),
-        "Claude Code hook payload",
-      );
+  return command.action(async () => {
+    const {
+      tool_input: { file_path: file },
+    } = validate(
+      payloadSchema,
+      JSON.parse(readFileSync(0, "utf-8")),
+      "Claude Code hook payload",
+    );
 
-      const config = await loadConfig();
+    const config = await loadConfig();
 
-      await formatEditedFile(config, file, formatWithPrettier);
+    await formatEditedFile(config, file, formatWithPrettier);
 
-      reportBudgetFindings(
-        measureEditedFile(config.root, file, config.agents.budgets),
-        {
-          mode: config.agents.budgets.mode,
-          event: "PostToolUse",
-        },
-      );
-    });
+    reportBudgetFindings(
+      measureEditedFile(config.root, file, config.agents.budgets),
+      {
+        mode: config.agents.budgets.mode,
+        event: "PostToolUse",
+      },
+    );
+  });
 });

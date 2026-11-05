@@ -66,16 +66,13 @@ describe("filesystem.format", () => {
   test("reports no change for a formatted file whose value is up to date", async () => {
     const project = createProject({});
 
-    const filesystem = createFilesystem(
-      project.root,
-      (path, content) => {
-        return formatContent(content, {
-          path,
-          root: project.root,
-          formatter: formatWithPrettier,
-        });
-      },
-    );
+    const filesystem = createFilesystem(project.root, (path, content) => {
+      return formatContent(content, {
+        path,
+        root: project.root,
+        formatter: formatWithPrettier,
+      });
+    });
 
     project.write("data.json", '{\n  "list": ["a"]\n}\n');
 

@@ -21,35 +21,35 @@ const payloadSchema = object({
 });
 
 export const edit = defineCommand((command) => {
-  return command
-    .action(async () => {
-      const {
-        cwd,
-        tool_input: { command: patch },
-      } = validate(
-        payloadSchema,
-        JSON.parse(readFileSync(0, "utf-8")),
-        "Codex hook payload",
-      );
+  return command.action(async () => {
+    const {
+      cwd,
+      tool_input: { command: patch },
+    } = validate(
+      payloadSchema,
+      JSON.parse(readFileSync(0, "utf-8")),
+      "Codex hook payload",
+    );
 
-      const config = await loadConfig(cwd);
+    const config = await loadConfig(cwd);
 
-      for (const path of getPatchedFiles(patch)) {
-        const file = resolve(cwd, path);
+    for (const path of getPatchedFiles(patch)) {
+      const file = resolve(cwd, path);
 
-        if (!existsSync(file)) {
-          continue;
-        }
-
-        await formatEditedFile(config, file, formatWithPrettier);
-
-        reportBudgetFindings(
-          measureEditedFile(config.root, file, config.agents.budgets),
-          {
-            mode: config.agents.budgets.mode,
-            event: "PostToolUse",
-          },
-        );
+      if (!existsSync(file)) {
+        continue;
       }
-    });
+
+      // @debt formatWithPrettier called in a loop means every file re-instantiates the formatter
+      await formatEditedFile(config, file, formatWithPrettier);
+
+      reportBudgetFindings(
+        measureEditedFile(config.root, file, config.agents.budgets),
+        {
+          mode: config.agents.budgets.mode,
+          event: "PostToolUse",
+        },
+      );
+    }
+  });
 });

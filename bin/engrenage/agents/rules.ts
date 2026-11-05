@@ -65,8 +65,7 @@ async function add(name?: string) {
 }
 
 export const rules = defineCommand((command) => {
-  command
-    .action(() => add());
+  command.action(() => add());
 
   command
     .command("add")

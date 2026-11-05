@@ -3,7 +3,10 @@ import { join } from "node:path";
 import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage";
-import { resolveAgentReference, syncAgentFiles } from "@auaust/engrenage/agents";
+import {
+  resolveAgentReference,
+  syncAgentFiles,
+} from "@auaust/engrenage/agents";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
