@@ -19,14 +19,7 @@ export const globalNamePattern = freeze(
   /^(?:import\.meta|[$A-Z_a-z][\w$]*)(?:\.[$A-Z_a-z][\w$]*)*$/,
 );
 
-// @debt test-variant suffixes belong to the tests environment (`project/environments`), and `liveSections` is imported directly by `workflows/registry`, a registry concept kept in config constants
+// @debt test-variant suffixes belong to the tests environment (`project/environments`)
 export const sourceTestsVariant = ".src";
 
 export const distTestsVariant = ".dist";
-
-export const liveSections = [
-  "packageJsonPath",
-  "packageJson",
-  "tsconfig",
-  "environment",
-] as const;

@@ -39,7 +39,7 @@ import { includesEsLibrary } from "#project/baseline/utils/includesEsLibrary";
 import { listEsSelections } from "#project/baseline/utils/listEsSelections";
 import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
 import { formatModule } from "#tools/typescript/operations/formatModule";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -240,7 +240,7 @@ function assertCompilesWithSelections(
 }
 
 export async function generateApiDeclarations(
-  config: ConfigContext,
+  config: LoadedConfig,
   groups: readonly string[] = [],
   {
     libraryGroups = apiLibraryGroups,
@@ -363,8 +363,8 @@ export async function generateApiDeclarations(
     );
   }
 
-  const filesystem = await config.get("filesystem");
-  const root = await config.get("root");
+  const filesystem = config.context.filesystem;
+  const root = config.context.root;
 
   for (const [file, content] of modules) {
     const isRequested =

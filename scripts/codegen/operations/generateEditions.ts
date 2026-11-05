@@ -46,7 +46,7 @@ import {
 } from "#scripts/codegen/constants";
 import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
 import { formatModule } from "#tools/typescript/operations/formatModule";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -371,7 +371,7 @@ function readDefaultFeatures(): File {
 
 // @debt generateEditions parses, matches, resolves and formats in one function; those stages could be separate modules, and collectDeclarations carries a `library_` name next to `library` for two different things.
 export async function generateEditions(
-  config: ConfigContext,
+  config: LoadedConfig,
   {
     libraries = readDefaultLibraries(),
     features = readDefaultFeatures(),
@@ -578,13 +578,10 @@ export async function generateEditions(
     "",
   ].join("\n");
 
-  const filesystem = await config.get("filesystem");
+  const filesystem = config.context.filesystem;
 
   await filesystem.write(
     editionsFile,
-    await formatModule(
-      resolve(await config.get("root"), editionsFile),
-      content,
-    ),
+    await formatModule(resolve(config.context.root, editionsFile), content),
   );
 }

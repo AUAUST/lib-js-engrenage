@@ -1,10 +1,9 @@
 import { relative } from "node:path";
 
 import { eslint } from "#constants";
+import { environmentSection, type LoadedConfig } from "#project/config/index";
 import { pluginName } from "#tools/eslint/constants";
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
-import type { OptionContext } from "#foundation/options/index";
-import type { ProjectConfig } from "#project/config/index";
 import type { DebtMarker } from "#tools/eslint/types/DebtMarker";
 
 function compareMarkers(a: DebtMarker, b: DebtMarker): number {
@@ -16,11 +15,10 @@ function compareMarkers(a: DebtMarker, b: DebtMarker): number {
 }
 
 export async function listDebtMarkers({
-  get,
-}: OptionContext<Pick<ProjectConfig, "root" | "environment">>): Promise<
-  DebtMarker[]
-> {
-  const environment = await get("environment");
+  resolve,
+  context,
+}: LoadedConfig): Promise<DebtMarker[]> {
+  const environment = await resolve(environmentSection);
 
   if (!environment.hasDependency(eslint)) {
     throw new Error(
@@ -34,7 +32,7 @@ export async function listDebtMarkers({
 
   // @debt Markers are listed through the project's full ESLint config, so files are parsed with type information that comment markers never need.
 
-  const root = await get("root");
+  const root = context.root;
 
   const ruleId = `${pluginName}/${createRuleName("debtMarkers")}`;
 

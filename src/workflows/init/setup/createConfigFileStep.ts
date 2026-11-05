@@ -5,7 +5,6 @@ import { findCurrentMonth } from "#project/baseline/index";
 import { presetTraits } from "#project/presets/constants";
 import { createConfigModule, type Step } from "#project/steps/index";
 import type { Preset } from "#project/presets/index";
-import type { File } from "#types/File";
 
 function renderOptions(
   chosen: Preset | undefined,
@@ -24,15 +23,14 @@ function renderOptions(
   return `{\n${preset}${baseline}${roles}  agents: { ${preferred}attribution: false },\n}`;
 }
 
-export function createConfigFileStep(): Step<{ configFile: File | undefined }> {
+export function createConfigFileStep(): Step {
   const file = `${engrenageConfigFile}.ts`;
 
   return {
     name: file,
-    async isMissing({ get, filesystem }) {
+    async isMissing({ context, filesystem }) {
       return (
-        (await get("configFile")) === undefined &&
-        !(await filesystem.exists(file))
+        context.configFile === undefined && !(await filesystem.exists(file))
       );
     },
     async plan(context) {

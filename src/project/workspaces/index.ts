@@ -11,7 +11,3 @@ export { workspacesSchema } from "#project/workspaces/config/schemas/workspacesS
 // @barrel operations/*.ts named
 export { resolveWorkspaces } from "#project/workspaces/operations/resolveWorkspaces";
 // @end
-
-// @barrel setup/*.ts named
-export { syncWorkspaceFiles } from "#project/workspaces/setup/syncWorkspaceFiles";
-// @end

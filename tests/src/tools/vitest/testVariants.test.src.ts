@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { startVitest } from "vitest/node";
 
+import { testsSection } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
@@ -64,7 +65,7 @@ describe("test variants", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.get("tests")).patterns).toEqual({
+    expect((await config.resolve(testsSection)).patterns).toEqual({
       plain: ["**/*.{spec,test}.{ts,tsx}"],
       source: ["**/*.{spec,test}.src.{ts,tsx}"],
       dist: ["**/*.{spec,test}.dist.{ts,tsx}"],
@@ -96,7 +97,7 @@ describe("test variants", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.get("tests")).files).toEqual([
+    expect((await config.resolve(testsSection)).files).toEqual([
       "tests/**/*.spec.ts",
       "tests/**/*.spec.src.ts",
       "tests/**/*.spec.dist.ts",

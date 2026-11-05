@@ -4,8 +4,8 @@ export { syncWorkflowFiles } from "#tools/github/setup/syncWorkflowFiles";
 // @end
 
 // @barrel operations/*.ts named
+export { githubSection } from "#tools/github/operations/githubSection";
 export { renderWorkflow } from "#tools/github/operations/renderWorkflow";
-export { resolveGithub } from "#tools/github/operations/resolveGithub";
 // @end
 
 // @barrel config/schemas/*.ts named

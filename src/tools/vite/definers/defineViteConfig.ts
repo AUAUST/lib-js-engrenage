@@ -3,7 +3,7 @@ import { mergeConfig } from "vite";
 import { value } from "@auaust/toolkit/value";
 
 import { validate } from "#foundation/options/index";
-import { loadConfig, type ConfigContext } from "#project/config/index";
+import { loadConfig, type LoadedConfig } from "#project/config/index";
 import { optionsSchema } from "#tools/vite/config/schemas/optionsSchema";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
 import type { Config } from "#tools/vite/types/Config";
@@ -13,8 +13,8 @@ import type { Options } from "#tools/vite/types/Options";
 import type { Resolvable } from "#types/Resolvable";
 
 export function defineViteConfig(
-  options?: Resolvable<Options, [ConfigContext, ConfigEnv]>,
-  ...configs: readonly Resolvable<Config, [ConfigContext, ConfigEnv]>[]
+  options?: Resolvable<Options, [LoadedConfig, ConfigEnv]>,
+  ...configs: readonly Resolvable<Config, [LoadedConfig, ConfigEnv]>[]
 ): ConfigFn {
   return async function viteConfig(env) {
     const config = await loadConfig();

@@ -9,10 +9,10 @@ import {
   claudeHiddenAttribution,
   claudeSettingsFile,
 } from "#tools/agents/claude/constants";
+import { agentsSection } from "#tools/agents/operations/agentsSection";
 import { syncHook } from "#tools/agents/operations/syncHook";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { OptionContext } from "#foundation/options/index";
-import type { AgentSections } from "#tools/agents/types/AgentSections";
+import type { LoadedConfig } from "#project/config/index";
 
 async function syncAttribution(
   config: {
@@ -52,13 +52,13 @@ async function syncAttribution(
 }
 
 export async function syncClaudeSettings(
-  { get }: OptionContext<AgentSections>,
+  { resolve, context }: LoadedConfig,
   { settings = false }: { settings?: boolean } = {},
 ) {
   const config = {
-    filesystem: await get("filesystem"),
-    resolve: await get("resolve"),
-    agents: await get("agents"),
+    filesystem: context.filesystem,
+    resolve: context.path,
+    agents: await resolve(agentsSection),
   };
 
   const { claudeSettings: configured, attribution } = config.agents;

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { createDefine } from "#project/config/utils/createDefine";
+import { defineSection } from "#project/config/index";
+import { createDefine } from "#project/config/operations/createDefine";
 import { define } from "#project/config/utils/define";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
@@ -20,7 +21,7 @@ async function resolveConfig(input: Record<string, unknown>) {
     configFile: undefined,
   });
 
-  void (await config.get("define"));
+  void (await config.resolve(defineSection));
 
   return config;
 }
@@ -80,12 +81,16 @@ describe("define", () => {
       },
     });
 
-    expect((await config.get("define")).values.__BUILT_AT__).toMatchObject({
+    expect(
+      (await config.resolve(defineSection)).values.__BUILT_AT__,
+    ).toMatchObject({
       expression: '"2026-01-01T00:00:00.000Z"',
       value: "2026-01-01T00:00:00.000Z",
     });
 
-    expect((await config.get("define")).values.__OPTIONS__?.value).toEqual({
+    expect(
+      (await config.resolve(defineSection)).values.__OPTIONS__?.value,
+    ).toEqual({
       url: "https://auaust.ch/",
     });
 
@@ -123,9 +128,9 @@ describe("define", () => {
       },
     });
 
-    expect((await config.get("define")).values.__NAME__?.expression).toBe(
-      '"@scope/package"',
-    );
+    expect(
+      (await config.resolve(defineSection)).values.__NAME__?.expression,
+    ).toBe('"@scope/package"');
 
     await expect(async () => {
       return await resolveConfig({

@@ -23,6 +23,7 @@ export { syncProjectMap } from "#tools/agents/setup/syncProjectMap";
 // @barrel operations/*.ts named
 export { addAgentRules } from "#tools/agents/operations/addAgentRules";
 export { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+export { agentsSection } from "#tools/agents/operations/agentsSection";
 export { formatEditedFile } from "#tools/agents/operations/formatEditedFile";
 export { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 export { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
@@ -33,7 +34,6 @@ export { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 export { parseInstruction } from "#tools/agents/operations/parseInstruction";
 export { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 export { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
-export { resolveAgents } from "#tools/agents/operations/resolveAgents";
 export { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 export { syncHook } from "#tools/agents/operations/syncHook";
 // @end

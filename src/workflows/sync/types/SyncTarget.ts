@@ -1,9 +1,8 @@
-import type { OptionContext } from "#foundation/options/index";
-import type { Config } from "#workflows/registry/index";
+import type { LoadedConfig } from "#project/config/index";
 
 export interface SyncTarget<Flag extends string> {
   sync(
-    config: OptionContext<Config>,
+    config: LoadedConfig,
     flags: Partial<Record<Flag, boolean>>,
   ): void | Promise<void>;
   flags: Partial<Record<Flag, string>>;

@@ -1,5 +1,6 @@
 import { cancel, isCancel, multiselect } from "@clack/prompts";
 
+import { agentsSection } from "#tools/agents/index";
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
@@ -15,7 +16,7 @@ async function add(name?: string) {
     names = [name];
   } else {
     const missing = await getMissingRuleTemplates({
-      filesystem: await config.get("filesystem"),
+      filesystem: config.context.filesystem,
     });
 
     if (missing.length === 0) {
@@ -61,8 +62,8 @@ async function add(name?: string) {
 
   await addAgentRules(
     {
-      filesystem: await config.get("filesystem"),
-      agents: await config.get("agents"),
+      filesystem: config.context.filesystem,
+      agents: await config.resolve(agentsSection),
     },
     names,
   );

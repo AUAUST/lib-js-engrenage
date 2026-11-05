@@ -2,17 +2,16 @@ import type { JSONPath } from "jsonc-parser";
 
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { JsonValue } from "#foundation/json/index";
-import type { OptionContext } from "#foundation/options/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { Preset, ResolvedTraits } from "#project/presets/index";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { Prompter } from "#project/steps/types/Prompter";
 import type { PackageName } from "#types/PackageName";
 
-export interface StepContext<Sections = object> extends Pick<
-  Prompter,
-  "confirm" | "select" | "multiselect" | "text"
-> {
-  get: OptionContext<Sections>["get"];
+export interface StepContext
+  extends
+    LoadedConfig,
+    Pick<Prompter, "confirm" | "select" | "multiselect" | "text"> {
   readonly filesystem: Filesystem;
   getAgents(): readonly string[] | undefined;
   setAgents(chosen: readonly string[]): void;

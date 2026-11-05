@@ -39,9 +39,8 @@ import { createConfigFileStep } from "#workflows/init/setup/createConfigFileStep
 import { createDependencyStep } from "#workflows/init/setup/createDependencyStep";
 import { createScriptsStep } from "#workflows/init/setup/createScriptsStep";
 import type { Step } from "#project/steps/index";
-import type { Config } from "#workflows/registry/index";
 
-export function listInitSteps(): Step<Config>[] {
+export function listInitSteps(): Step[] {
   return [
     createPreferredAgentsStep(),
     createConfigFileStep(),

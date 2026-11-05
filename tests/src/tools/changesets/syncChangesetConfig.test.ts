@@ -37,7 +37,7 @@ describe("syncChangesetConfig", () => {
 
     await syncChangesetConfig(config);
 
-    expect(await (await config.get("filesystem")).flush()).toEqual([
+    expect(await config.context.filesystem.flush()).toEqual([
       {
         file: ".changeset/config.json",
         status: "synced",
@@ -58,7 +58,7 @@ describe("syncChangesetConfig", () => {
 
     await syncChangesetConfig(unconfigured);
 
-    expect((await unconfigured.get("filesystem")).changes()).toEqual([]);
+    expect(unconfigured.context.filesystem.changes()).toEqual([]);
 
     const unrelated = await loadConfig(
       createTemporaryProject({
@@ -69,6 +69,6 @@ describe("syncChangesetConfig", () => {
 
     await syncChangesetConfig(unrelated);
 
-    expect((await unrelated.get("filesystem")).changes()).toEqual([]);
+    expect(unrelated.context.filesystem.changes()).toEqual([]);
   });
 });

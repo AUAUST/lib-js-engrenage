@@ -6,6 +6,7 @@ import { literal, object, string } from "valibot";
 import { pathExists } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/utils/validate";
 import { getPatchedFiles } from "#tools/agents/codex/utils/getPatchedFiles";
+import { agentsSection } from "#tools/agents/index";
 import { formatEditedFile } from "#tools/agents/operations/formatEditedFile";
 import { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
@@ -44,10 +45,10 @@ export const edit = defineCommand((command) => {
       // @debt formatWithPrettier called in a loop means every file re-instantiates the formatter
       await formatEditedFile(config, file, formatWithPrettier);
 
-      const agents = await config.get("agents");
+      const agents = await config.resolve(agentsSection);
 
       reportBudgetFindings(
-        await measureEditedFile(await config.get("root"), file, agents.budgets),
+        await measureEditedFile(config.context.root, file, agents.budgets),
         {
           mode: agents.budgets.mode,
           event: "PostToolUse",

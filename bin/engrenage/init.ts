@@ -3,19 +3,21 @@ import { flat } from "@auaust/primitive-kit/arrays";
 import { runSync } from "#bin/engrenage/sync";
 import { packageJsonFile } from "#constants";
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
+import {
+  packageJsonPathSection,
+  type LoadedConfig,
+} from "#project/config/index";
 import { createPrompter } from "#workflows/cli/operations/createPrompter";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { listFilesystems } from "#workflows/cli/operations/listFilesystems";
 import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
 import { runSteps } from "#workflows/cli/operations/runSteps";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
-import { listFilesystems } from "#workflows/cli/utils/listFilesystems";
 import { listInitSteps } from "#workflows/init/operations/listInitSteps";
 import { readConfig } from "#workflows/registry/operations/readConfig";
-import type { OptionContext } from "#foundation/options/index";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { Prompter } from "#project/steps/types/Prompter";
 import type { Directory } from "#types/Directory";
-import type { Config } from "#workflows/registry/types/Config";
 
 function describe({ command, args }: Invocation): string {
   return [command, ...args].join(" ");
@@ -46,17 +48,17 @@ async function invokeCommand(root: Directory, invocation: Invocation) {
 
 async function readPackage(
   prompter: Prompter,
-): Promise<OptionContext<Config> | undefined> {
+): Promise<LoadedConfig | undefined> {
   const config = await readConfig(process.cwd(), {
     searchParents: false,
   });
 
-  if ((await config.get("packageJsonPath")) !== undefined) {
+  if ((await config.resolve(packageJsonPathSection)) !== undefined) {
     return config;
   }
 
   const starts = await prompter.confirm(
-    `No ${packageJsonFile} in ${await config.get("root")}. Start a new package here?`,
+    `No ${packageJsonFile} in ${config.context.root}. Start a new package here?`,
   );
 
   if (!starts) {
@@ -64,13 +66,13 @@ async function readPackage(
   }
 
   // @debt hand-written pnpm invocation, like those in createStepContext and createChangesetConfigStep
-  await invokeCommand(await config.get("root"), {
+  await invokeCommand(config.context.root, {
     command: "pnpm",
     args: ["init", "--bare"],
     interactive: false,
   });
 
-  return readConfig(await config.get("root"), {
+  return readConfig(config.context.root, {
     searchParents: false,
   });
 }
@@ -115,11 +117,11 @@ export const init = defineCommand((command) => {
         if (yes && invocation.interactive) {
           console.info(`Run ${describe(invocation)} to finish the setup.`);
         } else {
-          await invokeCommand(await config.get("root"), invocation);
+          await invokeCommand(config.context.root, invocation);
         }
       }
 
-      const installed = await readConfig(await config.get("root"), {
+      const installed = await readConfig(config.context.root, {
         searchParents: false,
       });
 

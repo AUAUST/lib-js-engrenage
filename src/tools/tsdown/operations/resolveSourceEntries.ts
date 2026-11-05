@@ -4,22 +4,21 @@ import {
   type PathAliases,
   type Tsconfig,
 } from "#project/tsconfig/index";
-import type { ResolvedSource } from "#project/environments/index";
 import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
 
 export async function resolveSourceEntries({
   packageJson,
   root,
-  src,
+  exposed,
   tsconfig,
 }: {
   packageJson: PackageJson;
   root: Directory;
-  src: ResolvedSource;
+  exposed: Readonly<Record<string, File>> | undefined;
   tsconfig: Tsconfig;
 }): Promise<PathAliases> {
   const { name } = packageJson;
-  const exposed = await src.exports;
 
   return resolvePathAliases(
     name,

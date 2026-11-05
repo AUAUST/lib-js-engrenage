@@ -2,6 +2,7 @@ import { join } from "node:path";
 
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { packageJsonSection } from "@auaust/engrenage";
 import { defineViteConfig } from "@auaust/engrenage/vite";
 import {
   createVitestLayer,
@@ -147,7 +148,7 @@ describe("defineViteConfig", () => {
 
     const computed = await defineViteConfig({
       async test(config, { mode }) {
-        const { name } = await config.get("packageJson");
+        const { name } = await config.resolve(packageJsonSection);
 
         return {
           test: { name: `${name}:${mode}` },

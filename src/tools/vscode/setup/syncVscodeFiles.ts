@@ -15,7 +15,8 @@ import {
   writeJsonValue,
   type JsonEdit,
 } from "#foundation/json/index";
-import { validate, type OptionContext } from "#foundation/options/index";
+import { validate } from "#foundation/options/index";
+import { environmentSection, type LoadedConfig } from "#project/config/index";
 import { jsonIndentation } from "#project/format/constants";
 import { loadInfoRules } from "#tools/eslint/index";
 import {
@@ -23,21 +24,12 @@ import {
   extensionsFile,
   settingsFile,
 } from "#tools/vscode/constants";
+import { vscodeSection } from "#tools/vscode/operations/vscodeSection";
 import { findIntegrations } from "#tools/vscode/utils/findIntegrations";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { Environment } from "#project/config/index";
 import type { Integration } from "#tools/vscode/types/Integration";
-import type { ResolvedVscode } from "#tools/vscode/types/ResolvedVscode";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-
-interface VscodeSections {
-  root: Directory;
-  filesystem: Filesystem;
-  resolve(...paths: string[]): string;
-  environment: Environment;
-  vscode: ResolvedVscode;
-}
 
 function addRecommendations(
   content: string,
@@ -112,7 +104,7 @@ async function createSettingsEdits(
 }
 
 export async function syncVscodeFiles(
-  { get }: OptionContext<VscodeSections>,
+  config: LoadedConfig,
   {
     settings = false,
     extensions = false,
@@ -122,11 +114,11 @@ export async function syncVscodeFiles(
   } = {},
 ) {
   const [root, filesystem, resolve, environment, vscode] = await Promise.all([
-    get("root"),
-    get("filesystem"),
-    get("resolve"),
-    get("environment"),
-    get("vscode"),
+    config.context.root,
+    config.context.filesystem,
+    config.context.path,
+    config.resolve(environmentSection),
+    config.resolve(vscodeSection),
   ]);
 
   const applicable = findIntegrations(environment.hasDependency);

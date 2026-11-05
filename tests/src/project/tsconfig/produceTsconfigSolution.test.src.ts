@@ -4,13 +4,13 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test, vi } from "vitest";
 
 import { tsc } from "#bin/engrenage/tsc";
-import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { captureBinaryOutput } from "#tests/utils/captureBinaryOutput";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
+import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
 vi.mock(import("node:child_process"), { spy: true });
@@ -36,7 +36,7 @@ async function syncProject(input: Record<string, unknown>, testSource = "") {
   });
 
   await syncTsconfigFiles(config);
-  await (await config.get("filesystem")).flush();
+  await config.context.filesystem.flush();
 
   return {
     project,

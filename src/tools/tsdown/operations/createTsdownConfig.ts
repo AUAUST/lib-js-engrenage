@@ -12,17 +12,24 @@ import {
   publint,
   tsdown,
 } from "#constants";
-import {
-  readJsonFile,
-  resolveWithin,
-  type Filesystem,
-} from "#foundation/filesystem/index";
-import { validate, type OptionContext } from "#foundation/options/index";
+import { readJsonFile, resolveWithin } from "#foundation/filesystem/index";
+import { validate } from "#foundation/options/index";
 import { emittedManifestFile } from "#project/build/constants";
 import {
+  binSection,
+  buildSection,
+  cacheSection,
   createDefine,
-  type Environment,
-  type ResolvedDefine,
+  dataSection,
+  environmentSection,
+  packageJsonPathSection,
+  packageJsonSection,
+  sourceExportsSection,
+  sourceSection,
+  tsconfigSection,
+  typescriptSection,
+  workspacesSection,
+  type LoadedConfig,
 } from "#project/config/index";
 import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
 import {
@@ -40,18 +47,7 @@ import { createEntrySelfReferencesPlugins } from "#tools/tsdown/plugins/createEn
 import { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
 import { resolveDataExports } from "#tools/tsdown/utils/resolveDataExports";
 import { resolveTsdownTarget } from "#tools/tsdown/utils/resolveTsdownTarget";
-import type { ResolvedBuild } from "#project/build/index";
-import type {
-  ResolvedBin,
-  ResolvedData,
-  ResolvedSource,
-} from "#project/environments/index";
-import type { PackageJson } from "#project/package/index";
-import type {
-  PathAliases,
-  ResolvedTypescript,
-  Tsconfig,
-} from "#project/tsconfig/index";
+import type { PathAliases } from "#project/tsconfig/index";
 import type { ResolvedWorkspaceGroup } from "#project/workspaces/index";
 import type { Config } from "#tools/tsdown/types/Config";
 import type { Entries } from "#tools/tsdown/types/Entries";
@@ -59,23 +55,6 @@ import type { Options } from "#tools/tsdown/types/Options";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
-
-interface Sections {
-  root: Directory;
-  cacheFor(packageName: PackageName): Directory;
-  filesystem: Filesystem;
-  environment: Environment;
-  packageJson: PackageJson;
-  packageJsonPath: File | undefined;
-  tsconfig: Tsconfig;
-  typescript: ResolvedTypescript;
-  src: ResolvedSource;
-  bin: ResolvedBin;
-  data: ResolvedData;
-  workspaces: readonly ResolvedWorkspaceGroup[];
-  build: ResolvedBuild;
-  define: ResolvedDefine;
-}
 
 interface PluginContext {
   packageName: PackageName;
@@ -128,7 +107,7 @@ async function assertPackageUnchanged(path: File, snapshot: string) {
 }
 
 export async function createTsdownConfig(
-  context: OptionContext<Sections>,
+  config: LoadedConfig,
   { ci }: { ci: boolean },
   options?: Maybe<Options>,
 ): Promise<Config> {
@@ -138,13 +117,11 @@ export async function createTsdownConfig(
     "tsdown options",
   );
 
-  const { get } = context;
-
-  const root = await get("root");
-  const packageJson = await get("packageJson");
-  const packageJsonPath = await get("packageJsonPath");
-  const source = await get("src");
-  const typescript = await get("typescript");
+  const root = config.context.root;
+  const packageJson = await config.resolve(packageJsonSection);
+  const packageJsonPath = await config.resolve(packageJsonPathSection);
+  const source = await config.resolve(sourceSection);
+  const typescript = await config.resolve(typescriptSection);
 
   const tsconfigPath = await typescript.tsconfig.path;
   const declarationsTsconfigPath = await source.tsconfig.path;
@@ -160,7 +137,7 @@ export async function createTsdownConfig(
     );
   }
 
-  const build = await get("build");
+  const build = await config.resolve(buildSection);
   const { typed, sourcemap, clean } = build;
   const outDir = await build.outDir;
 
@@ -173,25 +150,29 @@ export async function createTsdownConfig(
   const sourceEntries = await resolveSourceEntries({
     packageJson,
     root,
-    src: source,
-    tsconfig: await get("tsconfig"),
+    exposed: await config.resolve(sourceExportsSection),
+    tsconfig: await config.resolve(tsconfigSection),
   });
 
   const bins = await resolveCommandEntries({
-    bin: await get("bin"),
-    filesystem: await get("filesystem"),
+    bin: await config.resolve(binSection),
+    filesystem: config.context.filesystem,
   });
 
-  const workspaceEntries = resolveWorkspaceEntries(await get("workspaces"));
+  const workspaceEntries = resolveWorkspaceEntries(
+    await config.resolve(workspacesSection),
+  );
 
   const customExports = resolveDataExports(
-    { data: await get("data") },
+    { data: await config.resolve(dataSection) },
     sourceEntries,
   );
 
   const packageSnapshot = await readPackageSnapshot(packageJsonPath);
 
-  const environment = await get("environment");
+  const environment = await config.resolve(environmentSection);
+
+  const cache = await config.resolve(cacheSection);
 
   return {
     cwd: root,
@@ -241,15 +222,12 @@ export async function createTsdownConfig(
       }),
       ...(clean === "emitted"
         ? createEmittedManifestPlugins(`${pluginPrefix}:emitted-manifest`, {
-            manifest: join(
-              (await get("cacheFor"))(tsdown),
-              emittedManifestFile,
-            ),
+            manifest: join(cache.for(tsdown), emittedManifestFile),
             outDir: resolveWithin(root, outDir),
           })
         : []),
     ],
-    define: await createDefine(context, {
+    define: await createDefine(config, {
       isTesting: false,
     }),
     report: false,

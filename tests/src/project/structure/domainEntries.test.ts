@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
+import { loadConfig, sourceExportsSection } from "@auaust/engrenage";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
@@ -29,9 +29,8 @@ async function exposed(
   });
 
   const config = await loadConfig(project.root);
-  const { exports } = await config.get("src");
 
-  return exports;
+  return config.resolve(sourceExportsSection);
 }
 
 describe("domain entries", () => {

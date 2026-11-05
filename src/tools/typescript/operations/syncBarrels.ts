@@ -6,14 +6,19 @@ import { flatMap, map, toSorted } from "@auaust/primitive-kit/arrays";
 import { syncBlocks, syncFiles } from "#foundation/blocks/index";
 import { filesIn, relativeWithin, resolve } from "#foundation/filesystem/index";
 import {
+  binSection,
+  packageJsonSection,
+  scriptsSection,
+  sourceSection,
+  type LoadedConfig,
+} from "#project/config/index";
+import {
   barrelFiles,
   declarationExtension,
   identifierPattern,
   typescriptBlocks,
 } from "#tools/typescript/constants";
 import { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
-import type { OptionContext } from "#foundation/options/index";
-import type { ProjectConfig } from "#project/config/index";
 import type { SubpathImports } from "#project/package/index";
 import type { BarrelMode } from "#tools/typescript/types/BarrelMode";
 import type { Directory } from "#types/Directory";
@@ -177,18 +182,18 @@ function selectBarrels(files: Files, name: string): Files {
 }
 
 export async function syncBarrels(
-  config: OptionContext<ProjectConfig>,
+  config: LoadedConfig,
   barrels: readonly string[] = [],
 ) {
   const [rootPath, { imports }, source, bin, scripts, filesystem, resolve] =
     await Promise.all([
-      config.get("root"),
-      config.get("packageJson"),
-      config.get("src"),
-      config.get("bin"),
-      config.get("scripts"),
-      config.get("filesystem"),
-      config.get("resolve"),
+      config.context.root,
+      config.resolve(packageJsonSection),
+      config.resolve(sourceSection),
+      config.resolve(binSection),
+      config.resolve(scriptsSection),
+      config.context.filesystem,
+      config.context.path,
     ]);
 
   const allFiles = await filesystem.glob(

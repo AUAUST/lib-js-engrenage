@@ -2,9 +2,13 @@ import { join } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
+import { buildSection } from "#project/config/index";
 import { loadConfig as loadProjectConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
+import { agentsSection } from "#tools/agents/index";
+import { gitSection } from "#tools/git/index";
+import { prettierSection } from "#tools/prettier/index";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 describe("loadConfig of the registry", () => {
@@ -31,7 +35,7 @@ describe("loadConfig of the registry", () => {
 
     const partial = await loadProjectConfig(project.root);
 
-    expect((await partial.get("build")).sourcemap).toBe(true);
+    expect((await partial.resolve(buildSection)).sourcemap).toBe(true);
   });
 
   test("resolves the tool sections lazily next to the project sections", async () => {
@@ -42,11 +46,14 @@ describe("loadConfig of the registry", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.get("agents")).preferred).toEqual(["claude"]);
-    await expect((await config.get("git")).gitignore).resolves.toBeUndefined();
+    expect((await config.resolve(agentsSection)).preferred).toEqual(["claude"]);
 
     await expect(
-      (await config.get("prettier")).prettierignore,
+      (await config.resolve(gitSection)).gitignore,
+    ).resolves.toBeUndefined();
+
+    await expect(
+      (await config.resolve(prettierSection)).prettierignore,
     ).resolves.toBeUndefined();
   });
 });

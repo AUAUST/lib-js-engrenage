@@ -1,6 +1,12 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
+import {
+  binSection,
+  dataSection,
+  loadConfig,
+  sourceSection,
+  testsSection,
+} from "@auaust/engrenage";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
@@ -22,15 +28,22 @@ describe("roles", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.get("src")).roles.roles).not.toHaveProperty("types");
+    expect(
+      (await config.resolve(sourceSection)).roles.roles,
+    ).not.toHaveProperty("types");
 
-    expect((await config.get("src")).roles.roles.operations).toMatchObject({
+    expect(
+      (await config.resolve(sourceSection)).roles.roles.operations,
+    ).toMatchObject({
       exports: "named-match",
     });
 
-    expect((await config.get("tests")).roles.roles).toHaveProperty("types");
-    expect((await config.get("bin")).roles.roles).toEqual({});
-    expect((await config.get("data")).roles.roles).toEqual({});
+    expect((await config.resolve(testsSection)).roles.roles).toHaveProperty(
+      "types",
+    );
+
+    expect((await config.resolve(binSection)).roles.roles).toEqual({});
+    expect((await config.resolve(dataSection)).roles.roles).toEqual({});
   });
 
   test("are off with `roles: false`", async () => {
@@ -38,7 +51,7 @@ describe("roles", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.get("src")).roles.roles).toEqual({});
-    expect((await config.get("tests")).roles.roles).toEqual({});
+    expect((await config.resolve(sourceSection)).roles.roles).toEqual({});
+    expect((await config.resolve(testsSection)).roles.roles).toEqual({});
   });
 });

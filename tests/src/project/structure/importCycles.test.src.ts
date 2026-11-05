@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 
+import { aliasesSection, structureSection } from "#project/config/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -16,9 +17,9 @@ async function cyclesOf(files: Record<string, string>) {
   const config = await loadConfig(project.root);
 
   return findImportCycles({
-    root: await config.get("root"),
-    structure: await config.get("structure"),
-    aliases: await config.get("aliases"),
+    root: config.context.root,
+    structure: await config.resolve(structureSection),
+    aliases: await config.resolve(aliasesSection),
   });
 }
 

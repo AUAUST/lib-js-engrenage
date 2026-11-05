@@ -2,7 +2,7 @@ import { mkdirSync } from "node:fs";
 
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
+import { loadConfig, structureSection } from "@auaust/engrenage";
 import { record } from "@auaust/toolkit/object";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -40,7 +40,7 @@ function createProject(options: string) {
 async function loadStructure(root: string) {
   const config = await loadConfig(root);
 
-  return config.get("structure");
+  return config.resolve(structureSection);
 }
 
 type StructureNode = NonNullable<
@@ -55,13 +55,13 @@ async function describeSource(options: string) {
   const config = await loadConfig(createProject(options).root);
 
   const nodes = new Map(
-    flatten((await config.get("structure")).src!.root).map((node) => [
+    flatten((await config.resolve(structureSection)).src!.root).map((node) => [
       node.path,
       node,
     ]),
   );
 
-  return { structure: (await config.get("structure")).src!, nodes };
+  return { structure: (await config.resolve(structureSection)).src!, nodes };
 }
 
 const declaration = `{
@@ -182,7 +182,9 @@ describe("structure", () => {
     const project = createProject("{}");
     const config = await loadConfig(project.root);
 
-    expect((await config.get("structure")).tooling?.root.children).toEqual([]);
+    expect(
+      (await config.resolve(structureSection)).tooling?.root.children,
+    ).toEqual([]);
   });
 
   describe("tests layout", () => {
@@ -200,7 +202,7 @@ describe("structure", () => {
       });
 
       const config = await loadConfig(project.root);
-      const structure = (await config.get("structure")).tests!;
+      const structure = (await config.resolve(structureSection)).tests!;
 
       return {
         structure,
@@ -324,10 +326,9 @@ describe("inline roles", () => {
     const config = await loadConfig(project.root);
 
     return new Map(
-      flatten((await config.get("structure")).src!.root).map((node) => [
-        node.path,
-        node,
-      ]),
+      flatten((await config.resolve(structureSection)).src!.root).map(
+        (node) => [node.path, node],
+      ),
     );
   }
 

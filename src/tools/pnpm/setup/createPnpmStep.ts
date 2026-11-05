@@ -1,29 +1,25 @@
 import {
-  createPackageJson,
-  readSharedPnpmRange,
-  type PackageJson,
-} from "#project/package/index";
+  packageJsonPathSection,
+  packageJsonSection,
+} from "#project/config/index";
+import { createPackageJson, readSharedPnpmRange } from "#project/package/index";
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 import { writePnpmDeclaration } from "#tools/pnpm/operations/writePnpmDeclaration";
 import { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus";
 import type { Step } from "#project/steps/index";
-import type { Directory } from "#types/Directory";
-import type { File } from "#types/File";
 
-export function createPnpmStep(): Step<{
-  root: Directory;
-  packageJson: PackageJson;
-  packageJsonPath: File | undefined;
-}> {
+export function createPnpmStep(): Step {
   return {
     name: "pnpm version",
     message: "Declare the pnpm version of the project in devEngines?",
-    async isMissing({ get }) {
-      return resolvePnpmRangeStatus(await get("packageJson")) === "missing";
+    async isMissing({ resolve }) {
+      return (
+        resolvePnpmRangeStatus(await resolve(packageJsonSection)) === "missing"
+      );
     },
-    async plan({ get, filesystem }) {
-      const root = await get("root");
-      const path = await get("packageJsonPath");
+    async plan({ resolve, context, filesystem }) {
+      const root = context.root;
+      const path = await resolve(packageJsonPathSection);
 
       const content =
         path === undefined ? undefined : await filesystem.read(path);

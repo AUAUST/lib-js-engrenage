@@ -8,9 +8,10 @@ import {
 import { describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { validate } from "#foundation/options/utils/validate";
-import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
+import { sourceSection } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
+import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
 import { configSchema } from "#workflows/registry/config/schemas/configSchema";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
@@ -30,7 +31,7 @@ async function syncCompilerOptions(
   });
 
   await syncTsconfigFiles(config);
-  await (await config.get("filesystem")).flush();
+  await config.context.filesystem.flush();
 
   return (file: string) => JSON.parse(project.read(file)).compilerOptions;
 }
@@ -134,7 +135,7 @@ describe("runtime tsconfig fields", () => {
     });
 
     await syncTsconfigFiles(config);
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     const options = JSON.parse(
       project.read("tsconfig.src.json"),
@@ -199,7 +200,7 @@ describe("runtime tsconfig fields", () => {
     });
 
     await syncTsconfigFiles(config);
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     const options = JSON.parse(
       project.read("tsconfig.src.json"),
@@ -290,7 +291,7 @@ describe("runtime tsconfig fields", () => {
     });
 
     await syncTsconfigFiles(config);
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     const options = JSON.parse(
       project.read("tsconfig.src.json"),
@@ -314,7 +315,7 @@ describe("runtime tsconfig fields", () => {
       configFile: undefined,
     });
 
-    await expect(config.get("src")).rejects.toThrow(
+    await expect(config.resolve(sourceSection)).rejects.toThrow(
       /src\.apis only applies to a baseline runtime/,
     );
   });

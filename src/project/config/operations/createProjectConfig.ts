@@ -1,15 +1,17 @@
+import { freeze } from "@auaust/toolkit/object";
+
 import {
   createFilesystem,
+  resolveWithin,
   type Filesystem,
 } from "#foundation/filesystem/index";
-import { createSections } from "#foundation/options/index";
-import { liveSections } from "#project/config/constants";
-import { createProjectSections } from "#project/config/operations/createProjectSections";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
+import { createResolver } from "#foundation/options/index";
+import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { RawConfig } from "#project/config/types/RawConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
+// @debt section values live in `operations` because their resolvers call effectful operations, while the `config` role meant to own them is confined (#243–#246)
 export function createProjectConfig({
   root,
   raw,
@@ -20,21 +22,19 @@ export function createProjectConfig({
   raw: RawConfig;
   configFile: File | undefined;
   filesystem?: Filesystem;
-}): ConfigContext {
-  const context: ConfigContext = createSections(
-    createProjectSections({
-      root,
-      raw,
-      configFile,
-      filesystem,
-      context: {
-        get(section) {
-          return context.get(section);
-        },
-      },
-    }),
-    liveSections,
-  );
+}): LoadedConfig {
+  const { resolve, context } = createResolver(raw, {
+    root,
+    filesystem,
+    configFile,
+    path(...paths: string[]) {
+      return resolveWithin(root, ...paths);
+    },
+  });
 
-  return context;
+  return freeze({
+    resolve,
+    context,
+    raw,
+  });
 }

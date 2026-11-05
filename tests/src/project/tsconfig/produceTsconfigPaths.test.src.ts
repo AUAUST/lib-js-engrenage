@@ -1,10 +1,15 @@
 import { describe, expect, test } from "vitest";
 
+import {
+  packageJsonSection,
+  sourceExportsSection,
+  tsconfigSection,
+} from "#project/config/index";
 import { resolvePathAliases } from "#project/tsconfig/operations/resolvePathAliases";
-import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { resolveSourceEntries } from "#tools/tsdown/operations/resolveSourceEntries";
+import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
 const exports = { ".": "src/index.ts", "./*": "src/*/index.ts" };
@@ -28,7 +33,7 @@ async function syncProject(
   });
 
   await syncTsconfigFiles(config);
-  await (await config.get("filesystem")).flush();
+  await config.context.filesystem.flush();
 
   return {
     config,
@@ -97,10 +102,10 @@ describe("produceTsconfigPaths", () => {
       ),
     ).toEqual(
       await resolveSourceEntries({
-        packageJson: await config.get("packageJson"),
-        root: await config.get("root"),
-        src: await config.get("src"),
-        tsconfig: await config.get("tsconfig"),
+        packageJson: await config.resolve(packageJsonSection),
+        root: config.context.root,
+        exposed: await config.resolve(sourceExportsSection),
+        tsconfig: await config.resolve(tsconfigSection),
       }),
     );
   });

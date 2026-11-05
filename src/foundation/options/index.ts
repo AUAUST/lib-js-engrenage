@@ -5,6 +5,7 @@ export { declareLocation } from "#foundation/options/declarers/declareLocation";
 export { declareManagedList } from "#foundation/options/declarers/declareManagedList";
 export { declareObject } from "#foundation/options/declarers/declareObject";
 export { declareRecord } from "#foundation/options/declarers/declareRecord";
+export { declareSection } from "#foundation/options/declarers/declareSection";
 // @end
 
 // @barrel config/*.ts named
@@ -22,7 +23,7 @@ export { managedListOptionSchema } from "#foundation/options/config/schemas/mana
 // @barrel utils/*.ts named
 export { createAccessors } from "#foundation/options/utils/createAccessors";
 export { createOptionSchema } from "#foundation/options/utils/createOptionSchema";
-export { createSections } from "#foundation/options/utils/createSections";
+export { createResolver } from "#foundation/options/utils/createResolver";
 export { describeDefault } from "#foundation/options/utils/describeDefault";
 export { listDefaults } from "#foundation/options/utils/listDefaults";
 export { resolveDefault } from "#foundation/options/utils/resolveDefault";
@@ -47,10 +48,10 @@ export * from "#foundation/options/types/ObjectDeclaration";
 export * from "#foundation/options/types/ObjectInput";
 export * from "#foundation/options/types/ObjectOutput";
 export * from "#foundation/options/types/ObjectResolution";
-export * from "#foundation/options/types/OptionContext";
 export * from "#foundation/options/types/OutputOf";
 export * from "#foundation/options/types/ResolvedLocation";
-export * from "#foundation/options/types/SectionResolvers";
+export * from "#foundation/options/types/Resolver";
+export * from "#foundation/options/types/Section";
 // @end
 
 // @debt globsSchema.ts exports `globSchema` besides its named export, which no barrel can expose; split it into its own module

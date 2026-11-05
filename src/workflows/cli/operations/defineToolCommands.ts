@@ -4,8 +4,8 @@ import { transformValues } from "@auaust/toolkit/transformValues";
 
 import { resolveBinary } from "#foundation/processes/index";
 import { successMessage } from "#workflows/cli/constants";
-import { loadConfig, type Config } from "#workflows/registry/index";
-import type { OptionContext } from "#foundation/options/index";
+import { loadConfig } from "#workflows/registry/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
@@ -63,7 +63,7 @@ export function defineToolCommands<Name extends string>({
     {
       message?: string;
       arguments?(
-        config: OptionContext<Config>,
+        config: LoadedConfig,
         args: string[],
       ): readonly string[] | undefined | Promise<readonly string[] | undefined>;
     }
@@ -84,7 +84,7 @@ export function defineToolCommands<Name extends string>({
           const transformed = (await tool.arguments?.(config, args)) ?? args;
 
           const binaryPath = await resolveBinary(
-            await config.get("root"),
+            config.context.root,
             packageName,
             binary,
           );

@@ -1,14 +1,14 @@
 import { codexFile, codexHooksFile } from "#tools/agents/codex/constants";
 import { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";
+import { agentsSection } from "#tools/agents/operations/agentsSection";
 import type { Step } from "#project/steps/index";
-import type { AgentSections } from "#tools/agents/types/AgentSections";
 
-export function createCodexHooksStep(): Step<AgentSections> {
+export function createCodexHooksStep(): Step {
   return {
     name: codexHooksFile,
     message: "Fix, format and lint the files Codex edits with apply_patch?",
-    async isMissing({ get, filesystem }) {
-      const agents = await get("agents");
+    async isMissing({ resolve, filesystem }) {
+      const agents = await resolve(agentsSection);
 
       return (
         agents.preferred?.includes("codex") === true &&

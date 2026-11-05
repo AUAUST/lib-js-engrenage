@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
+import { importRulesSection, loadConfig } from "@auaust/engrenage";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
@@ -27,7 +27,7 @@ async function resolveRules(preset: string) {
 
   const config = await loadConfig(project.root);
 
-  return config.get("importRules");
+  return config.resolve(importRulesSection);
 }
 
 type Rules = Awaited<ReturnType<typeof resolveRules>>;
@@ -87,7 +87,7 @@ describe("import rules", () => {
     });
 
     const config = await loadConfig(project.root);
-    const rules = await config.get("importRules");
+    const rules = await config.resolve(importRulesSection);
 
     expect(reached(rules, "src/features/a")).not.toContain(
       "index:src/features/b",

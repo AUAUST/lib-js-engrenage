@@ -41,7 +41,7 @@ async function sync(root: string) {
   await syncAgentFiles(config);
   await syncClaudeSettings(config);
 
-  return config.get("filesystem");
+  return config.context.filesystem;
 }
 
 describe("agents.attribution", () => {
@@ -68,9 +68,9 @@ describe("agents.attribution", () => {
     expect(project.read("AGENTS.override.md")).toContain(noAttributionRule);
     expect((await sync(project.root)).discard()).toEqual([]);
 
-    await (
-      await (await loadConfig(project.root)).get("filesystem")
-    ).write(
+    const { filesystem } = (await loadConfig(project.root)).context;
+
+    await filesystem.write(
       ".claude/settings.json",
       JSON.stringify({
         model: "opus",
@@ -121,9 +121,12 @@ describe("agents.attribution", () => {
 
     const custom = { commit: "Co-Authored-By: Agent", pr: "" };
 
-    await (
-      await (await loadConfig(project.root)).get("filesystem")
-    ).write(".claude/settings.json", JSON.stringify({ attribution: custom }));
+    const { filesystem } = (await loadConfig(project.root)).context;
+
+    await filesystem.write(
+      ".claude/settings.json",
+      JSON.stringify({ attribution: custom }),
+    );
 
     await (await sync(project.root)).flush();
 

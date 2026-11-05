@@ -2,6 +2,14 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 
 import { packages } from "#constants";
 import { findDirectories } from "#foundation/filesystem/index";
+import {
+  binSection,
+  dataSection,
+  scriptsSection,
+  sourceSection,
+  testsSection,
+  toolingSection,
+} from "#project/config/index";
 import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
 import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
 import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
@@ -48,14 +56,14 @@ export const prettier = defineToolCommands({
           filesystem,
           resolve,
         ] = await Promise.all([
-          config.get("src"),
-          config.get("bin"),
-          config.get("scripts"),
-          config.get("tests"),
-          config.get("data"),
-          config.get("tooling"),
-          config.get("filesystem"),
-          config.get("resolve"),
+          config.resolve(sourceSection),
+          config.resolve(binSection),
+          config.resolve(scriptsSection),
+          config.resolve(testsSection),
+          config.resolve(dataSection),
+          config.resolve(toolingSection),
+          config.context.filesystem,
+          config.context.path,
         ]);
 
         const directories = flatMap(

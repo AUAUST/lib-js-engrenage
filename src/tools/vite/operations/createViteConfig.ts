@@ -3,37 +3,30 @@ import { join } from "node:path";
 import { project as pluginPrefix, vite } from "#constants";
 import { resolveWithin } from "#foundation/filesystem/index";
 import { emittedManifestFile } from "#project/build/constants";
-import { createDefine, type ResolvedDefine } from "#project/config/index";
+import {
+  buildSection,
+  cacheSection,
+  createDefine,
+  typescriptSection,
+  type LoadedConfig,
+} from "#project/config/index";
 import { createEmittedManifestPlugin } from "#tools/vite/plugins/createEmittedManifestPlugin";
-import type { OptionContext } from "#foundation/options/index";
-import type { ResolvedBuild } from "#project/build/index";
-import type { ResolvedTypescript } from "#project/tsconfig/index";
 import type { Config } from "#tools/vite/types/Config";
-import type { Directory } from "#types/Directory";
-import type { PackageName } from "#types/PackageName";
-
-interface Sections {
-  root: Directory;
-  cacheFor(packageName: PackageName): Directory;
-  build: ResolvedBuild;
-  typescript: ResolvedTypescript;
-  define: ResolvedDefine;
-}
 
 export async function createViteConfig(
-  context: OptionContext<Sections>,
+  config: LoadedConfig,
   { isTesting }: { isTesting: boolean },
 ): Promise<Config> {
-  const { get } = context;
-
-  const root = await get("root");
-  const build = await get("build");
+  const root = config.context.root;
+  const build = await config.resolve(buildSection);
   const { sourcemap, clean } = build;
   const outDir = await build.outDir;
 
-  const typescript = await get("typescript");
+  const typescript = await config.resolve(typescriptSection);
 
   const tsconfig = await typescript.tsconfig.path;
+
+  const cache = await config.resolve(cacheSection);
 
   return {
     root,
@@ -42,17 +35,14 @@ export async function createViteConfig(
       : {
           tsconfig,
         }),
-    define: await createDefine(context, {
+    define: await createDefine(config, {
       isTesting,
     }),
     ...(clean === "emitted" && outDir !== undefined
       ? {
           plugins: [
             createEmittedManifestPlugin(`${pluginPrefix}:emitted-manifest`, {
-              manifest: join(
-                (await get("cacheFor"))(vite),
-                emittedManifestFile,
-              ),
+              manifest: join(cache.for(vite), emittedManifestFile),
               outDir: resolveWithin(root, outDir),
             }),
           ],

@@ -1,5 +1,3 @@
-import { syncTsconfigFiles } from "#project/tsconfig/index";
-import { syncWorkspaceFiles } from "#project/workspaces/index";
 import {
   syncAgents,
   syncClaudeSettings,
@@ -10,7 +8,12 @@ import { syncGitignoreFile } from "#tools/git/index";
 import { syncWorkflowFiles } from "#tools/github/index";
 import { syncWorkspaceFile } from "#tools/pnpm/index";
 import { syncPrettierignoreFile } from "#tools/prettier/index";
-import { syncAliases, syncEnvFile } from "#tools/typescript/index";
+import {
+  syncAliases,
+  syncEnvFile,
+  syncTsconfigFiles,
+  syncWorkspaceFiles,
+} from "#tools/typescript/index";
 import { syncVscodeFiles } from "#tools/vscode/index";
 import { syncPackageJson } from "#workflows/sync/setup/syncPackageJson";
 import { defineSyncTarget } from "#workflows/sync/utils/defineSyncTarget";

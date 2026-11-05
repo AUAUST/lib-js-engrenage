@@ -13,21 +13,21 @@ import {
 } from "#tools/agents/constants";
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+import { agentsSection } from "#tools/agents/operations/agentsSection";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 import type { Step } from "#project/steps/index";
-import type { AgentSections } from "#tools/agents/types/AgentSections";
 
 const sectionReference = `${engrenage}/agents/sections/backlog.md`;
 const skills = ["scratchpad", "backlog-handling", "debt-harvesting"];
 
-export function createBacklogStep(): Step<AgentSections> {
+export function createBacklogStep(): Step {
   return {
     name: "shared backlog",
     message:
       "Set up the shared backlog in .ai/backlog/ and scratchpad in .ai/scratchpad.md?",
-    async isMissing({ get, filesystem, getAgents }) {
+    async isMissing({ resolve, filesystem, getAgents }) {
       if (
         (getAgents()?.length ?? 0) === 0 ||
         !(await filesystem.exists(agentsFile))
@@ -45,7 +45,7 @@ export function createBacklogStep(): Step<AgentSections> {
         return true;
       }
 
-      const agents = await get("agents");
+      const agents = await resolve(agentsSection);
 
       const [missingRules, skillTemplates] = await Promise.all([
         getMissingRuleTemplates({ filesystem }),
@@ -71,8 +71,8 @@ export function createBacklogStep(): Step<AgentSections> {
       return false;
     },
     async plan(context) {
-      const { filesystem, get } = context;
-      const agents = await get("agents");
+      const { filesystem, resolve } = context;
+      const agents = await resolve(agentsSection);
 
       if (!(await filesystem.exists(backlogIndex))) {
         await filesystem.write(

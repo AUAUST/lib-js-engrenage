@@ -1,16 +1,15 @@
+import { formatSection, type LoadedConfig } from "#project/config/index";
 import { fixedOptions } from "#tools/prettier/constants";
 import { mapConventions } from "#tools/prettier/utils/mapConventions";
-import type { OptionContext } from "#foundation/options/index";
-import type { Conventions } from "#project/format/index";
 import type { Config } from "#tools/prettier/types/Config";
 
 export async function createPrettierConfig(
-  { get }: OptionContext<{ format: Conventions }>,
+  { resolve }: LoadedConfig,
   options: Config = {},
 ): Promise<Config> {
   return {
     ...fixedOptions,
-    ...mapConventions(await get("format")),
+    ...mapConventions(await resolve(formatSection)),
     ...options,
   };
 }

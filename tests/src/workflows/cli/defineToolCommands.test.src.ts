@@ -11,8 +11,8 @@ const commands = defineToolCommands({
   binary: "fake",
   commands: {
     "fake": {
-      async arguments(config, args) {
-        args.unshift("--root", await config.get("root"));
+      arguments(config, args) {
+        args.unshift("--root", config.context.root);
       },
     },
     "fake:only": {

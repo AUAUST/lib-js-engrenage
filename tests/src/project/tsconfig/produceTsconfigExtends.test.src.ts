@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 
-import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
+import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
 async function syncProject(
@@ -23,7 +23,7 @@ async function syncProject(
   });
 
   await syncTsconfigFiles(config);
-  await (await config.get("filesystem")).flush();
+  await config.context.filesystem.flush();
 
   return (file: string) => JSON.parse(project.read(file)).extends;
 }

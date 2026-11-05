@@ -1,6 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { agentsSection } from "#tools/agents/index";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
@@ -40,7 +41,7 @@ describe("getSkillTemplates", () => {
 
     const config = await loadConfig(project.root);
 
-    const agents = await config.get("agents");
+    const agents = await config.resolve(agentsSection);
 
     await expect(getSkillTemplates({ agents })).rejects.toThrow(
       /\/skills\/broken\.md skill metadata[\s\S]*received "extreme"[\s\S]*agent\.effort/,

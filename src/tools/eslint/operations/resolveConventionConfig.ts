@@ -1,8 +1,26 @@
-import type { OptionContext } from "#foundation/options/index";
-import type { ProjectConfig } from "#project/config/index";
+import {
+  binSection,
+  buildSection,
+  dataSection,
+  environmentSection,
+  filesSection,
+  importRulesSection,
+  packageJsonSection,
+  rolesSection,
+  scriptsSection,
+  sourceSection,
+  structureSection,
+  testsSection,
+  toolingSection,
+  traitsSection,
+  typescriptSection,
+  workspacesSection,
+  type LoadedConfig,
+} from "#project/config/index";
+import type { ResolvedBuild } from "#project/build/index";
 import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 
-async function readOutDir(build: ProjectConfig["build"]) {
+async function readOutDir(build: ResolvedBuild) {
   try {
     return await build.outDir;
   } catch {
@@ -10,12 +28,13 @@ async function readOutDir(build: ProjectConfig["build"]) {
   }
 }
 
-export async function resolveConventionConfig({
-  get,
-}: OptionContext<ProjectConfig>): Promise<ConventionConfig> {
+export async function resolveConventionConfig(
+  config: LoadedConfig,
+): Promise<ConventionConfig> {
+  const { root } = config.context;
+  const { raw } = config;
+
   const [
-    root,
-    raw,
     structure,
     importRules,
     source,
@@ -33,24 +52,22 @@ export async function resolveConventionConfig({
     roles,
     workspaces,
   ] = await Promise.all([
-    get("root"),
-    get("raw"),
-    get("structure"),
-    get("importRules"),
-    get("src"),
-    get("tests"),
-    get("bin"),
-    get("scripts"),
-    get("tooling"),
-    get("data"),
-    get("files"),
-    get("build"),
-    get("typescript"),
-    get("packageJson"),
-    get("environment"),
-    get("traits"),
-    get("roles"),
-    get("workspaces"),
+    config.resolve(structureSection),
+    config.resolve(importRulesSection),
+    config.resolve(sourceSection),
+    config.resolve(testsSection),
+    config.resolve(binSection),
+    config.resolve(scriptsSection),
+    config.resolve(toolingSection),
+    config.resolve(dataSection),
+    config.resolve(filesSection),
+    config.resolve(buildSection),
+    config.resolve(typescriptSection),
+    config.resolve(packageJsonSection),
+    config.resolve(environmentSection),
+    config.resolve(traitsSection),
+    config.resolve(rolesSection),
+    config.resolve(workspacesSection),
   ]);
 
   return {

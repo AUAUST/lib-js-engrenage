@@ -3,7 +3,7 @@ import { defineConfig } from "eslint/config";
 import { map } from "@auaust/primitive-kit/arrays";
 import { value } from "@auaust/toolkit/value";
 
-import { loadConfig, type ConfigContext } from "#project/config/index";
+import { loadConfig, type LoadedConfig } from "#project/config/index";
 import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
 import type { Config } from "#tools/eslint/types/Config";
@@ -12,8 +12,8 @@ import type { Options } from "#tools/eslint/types/Options";
 import type { Resolvable } from "#types/Resolvable";
 
 export async function defineEslintConfig(
-  options?: Resolvable<Options, [ConfigContext]>,
-  ...configs: Resolvable<ConfigWithExtends, [ConfigContext]>[]
+  options?: Resolvable<Options, [LoadedConfig]>,
+  ...configs: Resolvable<ConfigWithExtends, [LoadedConfig]>[]
 ): Promise<Config[]> {
   const config = await loadConfig();
 

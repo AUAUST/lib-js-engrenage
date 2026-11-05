@@ -4,6 +4,14 @@ import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { engrenage, packageJsonFile } from "#constants";
 import { readJsonValue, type JsonValue } from "#foundation/json/index";
+import {
+  environmentSection,
+  packageJsonPathSection,
+  presetSection,
+  traitAdjustmentsSection,
+  traitsSection,
+  type LoadedConfig,
+} from "#project/config/index";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/index";
 import {
@@ -12,12 +20,11 @@ import {
   type ResolvedTraits,
 } from "#project/presets/index";
 import { agentNames } from "#tools/agents/constants";
-import type { OptionContext } from "#foundation/options/index";
+import { agentsSection, type Agent } from "#tools/agents/index";
+import type { Section } from "#foundation/options/index";
 import type { Invocation, Prompter, StepContext } from "#project/steps/index";
-import type { Agent } from "#tools/agents/index";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
-import type { Config } from "#workflows/registry/index";
 
 import manifest from "#package.json" with { type: "json" };
 
@@ -51,23 +58,21 @@ export async function createStepContext({
   config,
   prompter,
 }: {
-  config: OptionContext<Config>;
+  config: LoadedConfig;
   prompter: Prompter;
-}): Promise<StepContext<Config>> {
-  const filesystem = await config.get("filesystem");
+}): Promise<StepContext> {
+  const filesystem = config.context.filesystem;
 
   const invocations: Invocation[] = [];
 
   let installs = false;
 
   async function requirePackageJson(): Promise<File> {
-    const path = await config.get("packageJsonPath");
+    const path = await config.resolve(packageJsonPathSection);
 
     // @debt the "No package.json found" guard is repeated in createTsdownConfig, syncChangesetConfig and createPackageJson's describeMissing; the resolved config could expose a required package.json path
     if (path === undefined) {
-      throw new Error(
-        `No ${packageJsonFile} found in ${await config.get("root")}`,
-      );
+      throw new Error(`No ${packageJsonFile} found in ${config.context.root}`);
     }
 
     return path;
@@ -108,7 +113,7 @@ export async function createStepContext({
   }
 
   async function hasDependency(name: PackageName): Promise<boolean> {
-    const environment = await config.get("environment");
+    const environment = await config.resolve(environmentSection);
 
     return environment.hasDependency(name);
   }
@@ -149,31 +154,43 @@ export async function createStepContext({
     ];
   }
 
-  let preset: Preset | undefined = await config.get("preset");
+  let preset: Preset | undefined = await config.resolve(presetSection);
 
-  const resolvedAgents = await config.get("agents");
+  const resolvedAgents = await config.resolve(agentsSection);
 
   let agents: readonly Agent[] | undefined = resolvedAgents.preferred;
 
-  const overrides: {
-    [Section in keyof Config]?: () =>
-      Config[Section] | Promise<Config[Section]>;
-  } = {
-    preset: () => {
-      return preset;
-    },
-    traits: getTraits,
-    agents: async () => {
-      return { ...(await config.get("agents")), preferred: agents };
-    },
-  };
+  const overrides = new Map<Section, () => unknown>();
+
+  function override<Output>(
+    section: Section<Output>,
+    resolve: () => Output | Promise<Output>,
+  ) {
+    overrides.set(section, resolve);
+  }
+
+  override(presetSection, () => {
+    return preset;
+  });
+
+  override(traitsSection, getTraits);
+
+  override(agentsSection, async () => {
+    return { ...(await config.resolve(agentsSection)), preferred: agents };
+  });
+
+  async function resolve<Output>(section: Section<Output>): Promise<Output> {
+    const overridden = (await overrides.get(section)?.()) as Output | undefined;
+
+    return overridden ?? config.resolve(section);
+  }
 
   function getPreset(): Preset | undefined {
     return preset;
   }
 
   async function getTraits(): Promise<ResolvedTraits> {
-    return resolveTraits(preset, await config.get("traitAdjustments"));
+    return resolveTraits(preset, await config.resolve(traitAdjustmentsSection));
   }
 
   function setPreset(chosen: Preset | undefined) {
@@ -188,10 +205,10 @@ export async function createStepContext({
     agents = agentNames.filter((name) => chosen.includes(name));
   }
 
-  return freeze<StepContext<Config>>({
-    async get(section) {
-      return (await overrides[section]?.()) ?? config.get(section);
-    },
+  return freeze<StepContext>({
+    resolve,
+    context: config.context,
+    raw: config.raw,
     getAgents,
     setAgents,
     filesystem,

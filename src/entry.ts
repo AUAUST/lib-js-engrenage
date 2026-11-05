@@ -5,8 +5,50 @@ export {
   syncIgnoreFile,
 } from "#foundation/blocks/index";
 export { filesIn } from "#foundation/filesystem/index";
+export {
+  aliasesSection,
+  binOptionsSection,
+  binSection,
+  buildSection,
+  cacheSection,
+  dataSection,
+  debugSection,
+  defineSection,
+  environmentSection,
+  filesSection,
+  formatSection,
+  importRulesSection,
+  packageJsonPathSection,
+  packageJsonSection,
+  presetSection,
+  rolesSection,
+  runtimeSection,
+  scriptsOptionsSection,
+  scriptsSection,
+  sourceExportsSection,
+  sourceOptionsSection,
+  sourceSection,
+  structureSection,
+  testsOptionsSection,
+  testsSection,
+  toolingOptionsSection,
+  toolingSection,
+  traitAdjustmentsSection,
+  traitsSection,
+  tsconfigSection,
+  typescriptOptionsSection,
+  typescriptSection,
+  workspacesSection,
+} from "#project/config/index";
+export { agentsSection } from "#tools/agents/index";
+export { gitSection } from "#tools/git/index";
+export { githubSection } from "#tools/github/index";
+export { prettierSection } from "#tools/prettier/index";
+export { vscodeSection } from "#tools/vscode/index";
+// @debt the section values are published from the root entry until their owning domains export them (#243–#246)
 export { loadConfig } from "#workflows/registry/index";
-export type { Config } from "#workflows/registry/index";
+
+export type { LoadedConfig } from "#project/config/index";
 
 // @debt the global types role holds domain vocabulary: block types belong to `foundation/blocks`, sync results to the sync contract, `PackageType` and `PublishAccess` to `project/package`, `IgnorePresets` and `GlobGroup` to the ignore-file owner
 // @barrel types/*.ts all

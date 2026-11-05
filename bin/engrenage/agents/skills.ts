@@ -2,24 +2,21 @@ import { cancel, isCancel, multiselect } from "@clack/prompts";
 
 import { empty } from "@auaust/toolkit/empty";
 
+import { agentsSection } from "#tools/agents/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { readConfig } from "#workflows/registry/operations/readConfig";
-import type { OptionContext } from "#foundation/options/index";
-import type { Config } from "#workflows/registry/types/Config";
+import type { LoadedConfig } from "#project/config/index";
 
-async function getNames(
-  config: OptionContext<Config>,
-  name: string | undefined,
-) {
+async function getNames(config: LoadedConfig, name: string | undefined) {
   if (name !== undefined) {
     return [name];
   }
 
-  const filesystem = await config.get("filesystem");
-  const agents = await config.get("agents");
+  const filesystem = config.context.filesystem;
+  const agents = await config.resolve(agentsSection);
 
   const templates = await getSkillTemplates({ agents });
 
@@ -82,8 +79,8 @@ async function add(name?: string) {
 
   await addAgentSkills(
     {
-      filesystem: await config.get("filesystem"),
-      agents: await config.get("agents"),
+      filesystem: config.context.filesystem,
+      agents: await config.resolve(agentsSection),
     },
     names,
   );

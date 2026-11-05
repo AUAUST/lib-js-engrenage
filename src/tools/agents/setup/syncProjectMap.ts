@@ -1,13 +1,20 @@
 import { values } from "@auaust/toolkit/object";
 
+import {
+  aliasesSection,
+  importRulesSection,
+  scriptsSection,
+  sourceSection,
+  structureSection,
+  testsSection,
+  toolingSection,
+  type LoadedConfig,
+} from "#project/config/index";
 import { projectMapDirectory } from "#tools/agents/constants";
+import { agentsSection } from "#tools/agents/operations/agentsSection";
 import { renderProjectMap } from "#tools/agents/utils/renderProjectMap";
-import type { OptionContext } from "#foundation/options/index";
-import type { ProjectMapSections } from "#tools/agents/types/ProjectMapSections";
 
-export async function syncProjectMap({
-  get,
-}: OptionContext<ProjectMapSections>) {
+export async function syncProjectMap({ resolve, context }: LoadedConfig) {
   const [
     filesystem,
     agents,
@@ -19,15 +26,15 @@ export async function syncProjectMap({
     tooling,
     tests,
   ] = await Promise.all([
-    get("filesystem"),
-    get("agents"),
-    get("structure"),
-    get("aliases"),
-    get("importRules"),
-    get("src"),
-    get("scripts"),
-    get("tooling"),
-    get("tests"),
+    context.filesystem,
+    resolve(agentsSection),
+    resolve(structureSection),
+    resolve(aliasesSection),
+    resolve(importRulesSection),
+    resolve(sourceSection),
+    resolve(scriptsSection),
+    resolve(toolingSection),
+    resolve(testsSection),
   ]);
 
   if (

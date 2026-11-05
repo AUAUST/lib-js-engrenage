@@ -54,7 +54,7 @@ describe("createTsdownConfig", () => {
 
     await syncEnvFile(config);
 
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     await build({
       ...(await createTsdownConfig(config, { ci: false })),
@@ -141,7 +141,7 @@ describe("createTsdownConfig", () => {
     );
 
     expect(await tsdownConfig).toMatchObject({
-      cwd: await config.get("root"),
+      cwd: config.context.root,
       entry: {
         "index": "src/index.ts",
         "alpha/index": "src/alpha/index.ts",

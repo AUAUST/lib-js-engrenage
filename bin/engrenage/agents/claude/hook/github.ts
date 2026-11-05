@@ -3,6 +3,7 @@ import { text } from "node:stream/consumers";
 import { object, string } from "valibot";
 
 import { validate } from "#foundation/options/utils/validate";
+import { agentsSection } from "#tools/agents/index";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 import { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
@@ -25,7 +26,7 @@ export const github = defineCommand((command) => {
     );
 
     const config = await loadConfig();
-    const agents = await config.get("agents");
+    const agents = await config.resolve(agentsSection);
     const { budgets } = agents;
     const finding = measureGithubCommand(shellCommand, budgets);
 

@@ -5,14 +5,16 @@ import {
   declare,
   declareObject,
   directorySchema,
-  type OptionContext,
 } from "#foundation/options/index";
 import { defaultBuildClean, defaultSourcemap } from "#project/build/constants";
 import type { ResolvedDefine } from "#project/config/index";
 import type { Tsconfig } from "#project/tsconfig/index";
 import type { Directory } from "#types/Directory";
 
-type OutDirContext = OptionContext<{ root: Directory; tsconfig: Tsconfig }>;
+interface OutDirContext {
+  readonly root: Directory;
+  tsconfig(): Promise<Tsconfig>;
+}
 
 export const buildSchema = declareObject(
   {
@@ -23,20 +25,19 @@ export const buildSchema = declareObject(
         explain:
           "`compilerOptions.outDir` of the base tsconfig; building fails when neither is set",
         async compute(context: OutDirContext) {
-          const { optional } = await context.get("tsconfig");
+          const { optional } = await context.tsconfig();
           const { outDir } = optional;
 
-          return outDir === undefined ||
-            !isWithin(await context.get("root"), outDir)
+          return outDir === undefined || !isWithin(context.root, outDir)
             ? undefined
             : outDir;
         },
       },
-      async adjust(input, _fallback, context: OutDirContext) {
+      adjust(input, _fallback, context: OutDirContext) {
         // @debt resolveWithin is called only for its throw when the path escapes the root, here and in cache(); an explicit assertion would state the intent
-        resolveWithin(await context.get("root"), input);
+        resolveWithin(context.root, input);
 
-        return input;
+        return Promise.resolve(input);
       },
     }),
     clean: declare(union([picklist(["all", "emitted"]), literal(false)]), {

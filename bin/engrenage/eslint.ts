@@ -1,25 +1,25 @@
 import { packages } from "#constants";
 import { pathExists } from "#foundation/filesystem/index";
 import { resolve } from "#foundation/filesystem/utils/resolve";
+import { cacheSection } from "#project/config/index";
 import { defaultSuppressionsFile } from "#tools/eslint/constants";
 import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
 import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
 import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
 import { hasOption } from "#workflows/cli/utils/hasOption";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 
 // @debt The cache is keyed on each file alone, so type-aware rules keep passing a file whose imported types changed; checks must pass `--no-cache` to be sound.
-async function useCache(config: ConfigContext, args: string[]) {
+async function useCache(config: LoadedConfig, args: string[]) {
   if (hasOption(args, ["--no-cache"])) {
     return;
   }
 
   ensureIncludes(args, "--cache");
 
-  ensureIncludes(args, [
-    "--cache-location",
-    (await config.get("cacheFor"))(packages.eslint),
-  ]);
+  const cache = await config.resolve(cacheSection);
+
+  ensureIncludes(args, ["--cache-location", cache.for(packages.eslint)]);
 }
 
 async function hasSuppressions(args: readonly string[]): Promise<boolean> {

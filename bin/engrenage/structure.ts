@@ -1,3 +1,4 @@
+import { aliasesSection, structureSection } from "#project/config/index";
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
 import { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 import { renderImportCycles } from "#project/structure/utils/renderImportCycles";
@@ -16,14 +17,16 @@ export const structure = defineCommand((command) => {
     .action(async ({ check }) => {
       const config = await loadConfig();
 
-      for (const line of renderStructure(await config.get("structure"))) {
+      for (const line of renderStructure(
+        await config.resolve(structureSection),
+      )) {
         console.info(line);
       }
 
       const cycles = await findImportCycles({
-        root: await config.get("root"),
-        structure: await config.get("structure"),
-        aliases: await config.get("aliases"),
+        root: config.context.root,
+        structure: await config.resolve(structureSection),
+        aliases: await config.resolve(aliasesSection),
       });
 
       for (const line of renderImportCycles(cycles)) {
@@ -32,7 +35,7 @@ export const structure = defineCommand((command) => {
 
       if (
         check &&
-        (hasStructureViolations(await config.get("structure")) ||
+        (hasStructureViolations(await config.resolve(structureSection)) ||
           cycles.length > 0)
       ) {
         process.exitCode = 1;

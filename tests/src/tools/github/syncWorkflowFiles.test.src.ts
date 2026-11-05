@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { gitSection } from "#tools/git/index";
 import { syncWorkflowFiles } from "#tools/github/setup/syncWorkflowFiles";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 import { readConfig } from "#workflows/registry/operations/readConfig";
@@ -45,7 +46,7 @@ describe("syncWorkflowFiles", () => {
 
     await syncWorkflowFiles(config);
 
-    expect(await (await config.get("filesystem")).flush()).toEqual([
+    expect(await config.context.filesystem.flush()).toEqual([
       {
         file: ".github/workflows/ci.yml",
         status: "synced",
@@ -71,7 +72,7 @@ describe("syncWorkflowFiles", () => {
 
     await syncWorkflowFiles(edited);
 
-    expect((await edited.get("filesystem")).changes()).toEqual([
+    expect(edited.context.filesystem.changes()).toEqual([
       {
         file: ".github/workflows/ci.yml",
         status: "synced",
@@ -96,7 +97,7 @@ describe("syncWorkflowFiles", () => {
 
     await syncWorkflowFiles(disabledConfig);
 
-    expect((await disabledConfig.get("filesystem")).changes()).toEqual([]);
+    expect(disabledConfig.context.filesystem.changes()).toEqual([]);
 
     const absent = createLibrary(withoutTest, "{}", {});
 
@@ -104,7 +105,7 @@ describe("syncWorkflowFiles", () => {
 
     await syncWorkflowFiles(absentConfig);
 
-    expect((await absentConfig.get("filesystem")).changes()).toEqual([]);
+    expect(absentConfig.context.filesystem.changes()).toEqual([]);
   });
 
   test("writes the workflows under the repository root with the project as working directory", async () => {
@@ -126,15 +127,17 @@ describe("syncWorkflowFiles", () => {
 
     await syncWorkflowFiles(config);
 
-    expect((await config.get("git")).root).toBe(project.root);
-    expect((await config.get("filesystem")).changes()).toEqual([]);
+    expect((await config.resolve(gitSection)).root).toBe(project.root);
+    expect(config.context.filesystem.changes()).toEqual([]);
 
-    expect(await (await config.get("git")).filesystem.flush()).toEqual([
-      {
-        file: ".github/workflows/ci.yml",
-        status: "synced",
-      },
-    ]);
+    expect(await (await config.resolve(gitSection)).filesystem.flush()).toEqual(
+      [
+        {
+          file: ".github/workflows/ci.yml",
+          status: "synced",
+        },
+      ],
+    );
 
     expect(project.read(".github/workflows/ci.yml")).toContain(
       "working-directory: packages/app",

@@ -1,36 +1,38 @@
 import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
 import { packages } from "#constants";
+import { testsSection, typescriptSection } from "#project/config/index";
 import { tsconfigEnvironments } from "#project/tsconfig/index";
 import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
+import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
 import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
 import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
 import { getOptionsEnd } from "#workflows/cli/utils/getOptionsEnd";
 import { isOptionOf } from "#workflows/cli/utils/isOptionOf";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { File } from "#types/File";
 
 const buildOptions = ["--build", "-b"];
 
 async function isSolution(
-  config: ConfigContext,
+  config: LoadedConfig,
   project: File,
 ): Promise<boolean> {
   const { references } = await createTsconfig({
-    root: await config.get("root"),
+    root: config.context.root,
     path: project,
-    filesystem: await config.get("filesystem"),
+    filesystem: config.context.filesystem,
   });
 
   return isNotEmpty(references);
 }
 
 async function hasReferencedEnvironment(
-  config: ConfigContext,
+  config: LoadedConfig,
 ): Promise<boolean> {
   for (const name of tsconfigEnvironments) {
-    const { active, tsconfig } = await config.get(name);
+    const { active, tsconfig } = await resolveTsconfigEnvironment(config, name);
     const { owner, check } = tsconfig;
 
     if (active && owner === name && check) {
@@ -41,9 +43,9 @@ async function hasReferencedEnvironment(
   return false;
 }
 
-async function resolveDistProject(config: ConfigContext): Promise<File> {
-  const { active } = await config.get("tests");
-  const tests = await config.get("tests");
+async function resolveDistProject(config: LoadedConfig): Promise<File> {
+  const { active } = await config.resolve(testsSection);
+  const tests = await config.resolve(testsSection);
 
   const { owner, file } = tests.dist.tsconfig;
   const path = await tests.dist.tsconfig.path;
@@ -62,7 +64,7 @@ async function resolveDistProject(config: ConfigContext): Promise<File> {
 
   if (path === undefined) {
     throw new Error(
-      `The dist tsconfig ${file} does not exist in ${await config.get("root")}, run \`engrenage sync\` to create it`,
+      `The dist tsconfig ${file} does not exist in ${config.context.root}, run \`engrenage sync\` to create it`,
     );
   }
 
@@ -70,12 +72,12 @@ async function resolveDistProject(config: ConfigContext): Promise<File> {
 }
 
 async function checkProject(
-  config: ConfigContext,
+  config: LoadedConfig,
   args: string[],
   project: File | undefined,
 ) {
   if (project === undefined) {
-    throw new Error(`No tsconfig found in ${await config.get("root")}`);
+    throw new Error(`No tsconfig found in ${config.context.root}`);
   }
 
   const builds = args.slice(0, getOptionsEnd(args)).some((arg) => {
@@ -98,7 +100,7 @@ export const tsc = defineToolCommands({
     "tsc": {
       message: "Typechecking...",
       async arguments(config, args) {
-        const typescript = await config.get("typescript");
+        const typescript = await config.resolve(typescriptSection);
 
         const project = await typescript.tsconfig.path;
 

@@ -2,10 +2,7 @@ import { mergeConfig } from "tsdown";
 
 import { value } from "@auaust/toolkit/value";
 
-import {
-  loadConfig,
-  type ConfigContext as ProjectContext,
-} from "#project/config/index";
+import { loadConfig, type LoadedConfig } from "#project/config/index";
 import { createTsdownConfig } from "#tools/tsdown/operations/createTsdownConfig";
 import type { Config } from "#tools/tsdown/types/Config";
 import type { ConfigContext } from "#tools/tsdown/types/ConfigContext";
@@ -15,10 +12,10 @@ import type { Options } from "#tools/tsdown/types/Options";
 import type { Resolvable } from "#types/Resolvable";
 
 export function defineTsdownConfig(
-  options?: Resolvable<Options, [ProjectContext, InlineConfig, ConfigContext]>,
+  options?: Resolvable<Options, [LoadedConfig, InlineConfig, ConfigContext]>,
   ...configs: readonly Resolvable<
     Config,
-    [ProjectContext, InlineConfig, ConfigContext]
+    [LoadedConfig, InlineConfig, ConfigContext]
   >[]
 ): ConfigFn {
   return async function tsdownConfig(inlineConfig, context) {

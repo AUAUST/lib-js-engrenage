@@ -3,9 +3,9 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
 import { validate } from "#foundation/options/utils/validate";
-import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
+import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
 import { configSchema } from "#workflows/registry/config/schemas/configSchema";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
@@ -37,7 +37,7 @@ async function syncOutDir(build: unknown, files: Record<string, string> = {}) {
   });
 
   await syncTsconfigFiles(config);
-  await (await config.get("filesystem")).flush();
+  await config.context.filesystem.flush();
 
   return JSON.parse(project.read("tsconfig.src.json")).compilerOptions;
 }

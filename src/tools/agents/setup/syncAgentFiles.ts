@@ -6,6 +6,7 @@ import { syncBlocks, syncFiles } from "#foundation/blocks/index";
 import { codexFile } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/index";
 import { attributionRules, markdownBlocks } from "#tools/agents/constants";
+import { agentsSection } from "#tools/agents/operations/agentsSection";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
@@ -13,8 +14,7 @@ import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { OptionContext } from "#foundation/options/index";
-import type { AgentSections } from "#tools/agents/types/AgentSections";
+import type { LoadedConfig } from "#project/config/index";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { File } from "#types/File";
@@ -56,11 +56,11 @@ async function syncAttributionRules(config: {
   }
 }
 
-export async function syncAgentFiles({ get }: OptionContext<AgentSections>) {
+export async function syncAgentFiles({ resolve, context }: LoadedConfig) {
   const config = {
-    filesystem: await get("filesystem"),
-    resolve: await get("resolve"),
-    agents: await get("agents"),
+    filesystem: context.filesystem,
+    resolve: context.path,
+    agents: await resolve(agentsSection),
   };
 
   if ((config.agents.preferred?.length ?? 0) === 0) {

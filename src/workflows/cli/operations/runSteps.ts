@@ -1,25 +1,24 @@
 import { map } from "@auaust/primitive-kit/arrays";
 
 import { createStepContext } from "#workflows/cli/operations/createStepContext";
-import type { OptionContext } from "#foundation/options/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { Invocation, Prompter, Step } from "#project/steps/index";
-import type { Config } from "#workflows/registry/index";
 
 export async function runSteps({
   config,
   prompter,
   steps,
 }: {
-  config: OptionContext<Config>;
+  config: LoadedConfig;
   prompter: Prompter;
-  steps: readonly Step<Config>[];
+  steps: readonly Step[];
 }): Promise<readonly Invocation[] | undefined> {
   const context = await createStepContext({
     config,
     prompter,
   });
 
-  const gaps: Step<Config>[] = [];
+  const gaps: Step[] = [];
 
   for (const step of steps) {
     if (await step.isMissing(context)) {
@@ -31,7 +30,7 @@ export async function runSteps({
     return void console.info("Engrenage is set up, nothing is missing.");
   }
 
-  if ((await config.get("configFile")) !== undefined) {
+  if (config.context.configFile !== undefined) {
     const names = map(gaps, (step) => step.name).join(", ");
 
     const fill = await prompter.confirm(
@@ -43,10 +42,7 @@ export async function runSteps({
     }
   }
 
-  async function accepts({
-    message,
-    isRecommended,
-  }: Step<Config>): Promise<boolean> {
+  async function accepts({ message, isRecommended }: Step): Promise<boolean> {
     return (
       message === undefined ||
       prompter.confirm(message, (await isRecommended?.(context)) ?? true)

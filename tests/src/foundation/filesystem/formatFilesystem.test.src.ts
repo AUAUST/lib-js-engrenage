@@ -6,10 +6,10 @@ import { describe, expect, test } from "vitest";
 
 import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
 import { formatContent } from "#project/format/operations/formatContent";
-import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
+import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
 function createProject(files: Record<string, string>) {
@@ -47,8 +47,8 @@ describe("filesystem.format", () => {
 
     await syncTsconfigFiles(config);
 
-    await (await config.get("filesystem")).format();
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.format();
+    await config.context.filesystem.flush();
 
     const content = project.read("tsconfig.src.json");
 

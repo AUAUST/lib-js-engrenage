@@ -5,9 +5,8 @@ import { agentsFile, agentsTemplate } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 import type { Step } from "#project/steps/index";
-import type { AgentSections } from "#tools/agents/types/AgentSections";
 
-export function createAgentsStep(): Step<AgentSections> {
+export function createAgentsStep(): Step {
   return {
     name: agentsFile,
     message: `Create ${agentsFile} with the shared agent instructions?`,

@@ -32,7 +32,7 @@ describe("syncGitignoreFile", () => {
 
     await syncGitignoreFile(config);
 
-    expect(await (await config.get("filesystem")).flush()).toEqual([
+    expect(await config.context.filesystem.flush()).toEqual([
       {
         file: ".gitignore",
         status: "synced",
@@ -65,7 +65,7 @@ describe("syncGitignoreFile", () => {
 
     await syncGitignoreFile(config);
 
-    expect((await config.get("filesystem")).discard()).toEqual([]);
+    expect(config.context.filesystem.discard()).toEqual([]);
   });
 
   test("expands defaults into every fixed group, in order", async () => {
@@ -79,7 +79,7 @@ describe("syncGitignoreFile", () => {
 
     await syncGitignoreFile(config);
 
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     const lines = project.read(".gitignore").split("\n");
 

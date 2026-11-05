@@ -7,9 +7,13 @@ import { syncFiles } from "#foundation/blocks/index";
 import { readJsonFile } from "#foundation/filesystem/index";
 import { applyJsonEdits, flattenJsonObject } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
+import {
+  environmentSection,
+  packageJsonPathSection,
+  type LoadedConfig,
+} from "#project/config/index";
 import { jsonIndentation } from "#project/format/constants";
 import { configFile } from "#tools/changesets/constants";
-import type { ConfigContext } from "#project/config/index";
 import type { File } from "#types/File";
 
 // @debt `createRequire().resolve` walks node_modules synchronously; Node has no promise-based module resolution
@@ -40,10 +44,10 @@ async function resolveConfigVersion(packageJsonPath: File): Promise<string> {
   }
 }
 
-export async function syncChangesetConfig(config: ConfigContext) {
-  const filesystem = await config.get("filesystem");
+export async function syncChangesetConfig(config: LoadedConfig) {
+  const filesystem = config.context.filesystem;
 
-  const environment = await config.get("environment");
+  const environment = await config.resolve(environmentSection);
 
   if (
     !environment.hasDependency(changesetsCli) ||
@@ -52,13 +56,11 @@ export async function syncChangesetConfig(config: ConfigContext) {
     return;
   }
 
-  const packageJsonPath = await config.get("packageJsonPath");
+  const packageJsonPath = await config.resolve(packageJsonPathSection);
 
   // @debt repeats the "No package.json found" guard of createStepContext and createTsdownConfig
   if (packageJsonPath === undefined) {
-    throw new Error(
-      `No ${packageJsonFile} found in ${await config.get("root")}`,
-    );
+    throw new Error(`No ${packageJsonFile} found in ${config.context.root}`);
   }
 
   const version = await resolveConfigVersion(packageJsonPath);
@@ -70,7 +72,7 @@ export async function syncChangesetConfig(config: ConfigContext) {
   await syncFiles(
     {
       filesystem,
-      resolve: await config.get("resolve"),
+      resolve: config.context.path,
     },
     [
       {

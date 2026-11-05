@@ -2,7 +2,7 @@ import { join } from "node:path";
 
 import { describe, expect, test, vi } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
+import { agentsSection, loadConfig } from "@auaust/engrenage";
 import {
   resolveAgentReference,
   syncAgentFiles,
@@ -16,9 +16,10 @@ const root = getFixture("agents");
 const from = join(root, "INSTRUCTIONS.md");
 
 async function resolveSections({
-  get,
+  resolve,
+  context,
 }: Awaited<ReturnType<typeof loadConfig>>) {
-  return { resolve: await get("resolve"), agents: await get("agents") };
+  return { resolve: context.path, agents: await resolve(agentsSection) };
 }
 
 describe("syncAgentFiles", () => {
@@ -27,7 +28,7 @@ describe("syncAgentFiles", () => {
 
     await syncAgentFiles(config);
 
-    expect((await config.get("filesystem")).discard()).toEqual([
+    expect(config.context.filesystem.discard()).toEqual([
       {
         file: "INSTRUCTIONS.md",
         status: "synced",
@@ -109,7 +110,7 @@ describe("syncAgentFiles", () => {
 
     await syncAgentFiles(config);
 
-    expect(await (await config.get("filesystem")).read("AGENTS.md")).toBe(
+    expect(await config.context.filesystem.read("AGENTS.md")).toBe(
       instructions,
     );
 
@@ -149,16 +150,16 @@ describe("syncAgentFiles", () => {
 
       await syncAgentFiles(config);
 
-      expect((await config.get("filesystem")).changes()).toEqual([
+      expect(config.context.filesystem.changes()).toEqual([
         expect.objectContaining({
           file: ".claude/skills/scratchpad/SKILL.md",
         }),
       ]);
 
       expect(
-        await (
-          await config.get("filesystem")
-        ).read(".claude/skills/scratchpad/SKILL.md"),
+        await config.context.filesystem.read(
+          ".claude/skills/scratchpad/SKILL.md",
+        ),
       ).not.toContain("Stale description");
     });
 
@@ -182,9 +183,9 @@ describe("syncAgentFiles", () => {
 
       await syncAgentFiles(config);
 
-      const content = await (
-        await config.get("filesystem")
-      ).read(".claude/agents/worker.md");
+      const content = await config.context.filesystem.read(
+        ".claude/agents/worker.md",
+      );
 
       expect(content).toContain("description: Mine.");
       expect(content).toContain("model: sonnet");

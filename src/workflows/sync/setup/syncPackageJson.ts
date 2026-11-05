@@ -4,6 +4,15 @@ import { entries } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
 import { syncFiles } from "#foundation/blocks/index";
+import {
+  binSection,
+  buildSection,
+  dataSection,
+  runtimeSection,
+  sourceSection,
+  traitsSection,
+  type LoadedConfig,
+} from "#project/config/index";
 import { jsonIndentation } from "#project/format/constants";
 import {
   createPackageJson,
@@ -12,9 +21,7 @@ import {
 import { listPnpmWarnings } from "#tools/pnpm/index";
 import { resolveCommandFiles } from "#tools/tsdown/index";
 import type { JsonValue } from "#foundation/json/index";
-import type { OptionContext } from "#foundation/options/index";
 import type { Runtime } from "#project/baseline/index";
-import type { ProjectConfig } from "#project/config/index";
 import type { ResolvedBin, ResolvedSource } from "#project/environments/index";
 
 interface Field {
@@ -50,11 +57,9 @@ function createEnginesFields({
       ];
 }
 
-async function createPublishedFields(
-  config: OptionContext<ProjectConfig>,
-): Promise<Field[]> {
-  const { get } = config;
-  const { sourcemap, outDir } = await get("build");
+async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
+  const { resolve, context } = config;
+  const { sourcemap, outDir } = await resolve(buildSection);
   const directory = await outDir;
 
   if (directory === undefined) {
@@ -62,10 +67,10 @@ async function createPublishedFields(
   }
 
   const [data, source, bin, filesystem] = await Promise.all([
-    get("data"),
-    get("src"),
-    get("bin"),
-    get("filesystem"),
+    resolve(dataSection),
+    resolve(sourceSection),
+    resolve(binSection),
+    context.filesystem,
   ]);
 
   const files = deduplicate([
@@ -86,12 +91,10 @@ async function createPublishedFields(
   return [{ location: ["files"], value: files }, ...commands];
 }
 
-async function createFields(
-  config: OptionContext<ProjectConfig>,
-): Promise<Field[]> {
-  const { get } = config;
+async function createFields(config: LoadedConfig): Promise<Field[]> {
+  const { resolve } = config;
 
-  const { node } = await get("runtime");
+  const { node } = await resolve(runtimeSection);
 
   const runtime: Field = {
     location: ["devEngines", "runtime"],
@@ -102,7 +105,7 @@ async function createFields(
     },
   };
 
-  const traits = await get("traits");
+  const traits = await resolve(traitsSection);
 
   if (!traits.published) {
     return [runtime];
@@ -110,21 +113,24 @@ async function createFields(
 
   return [
     runtime,
-    ...createEnginesFields({ bin: await get("bin"), src: await get("src") }),
+    ...createEnginesFields({
+      bin: await resolve(binSection),
+      src: await resolve(sourceSection),
+    }),
     ...(await createPublishedFields(config)),
   ];
 }
 
-export async function syncPackageJson(config: OptionContext<ProjectConfig>) {
-  const { get } = config;
+export async function syncPackageJson(config: LoadedConfig) {
+  const { context } = config;
 
-  const root = await get("root");
+  const root = context.root;
   const fields = await createFields(config);
 
   await syncFiles(
     {
-      filesystem: await get("filesystem"),
-      resolve: await get("resolve"),
+      filesystem: context.filesystem,
+      resolve: context.path,
     },
     [
       {

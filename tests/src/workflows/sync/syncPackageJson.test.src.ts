@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
+import { sourceSection } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
@@ -26,7 +27,7 @@ async function sync(
   return {
     resolved,
     manifest: async () => {
-      const filesystem = await resolved.get("filesystem");
+      const filesystem = resolved.context.filesystem;
 
       return JSON.parse((await filesystem.read("package.json")) ?? "");
     },
@@ -123,14 +124,14 @@ describe("syncPackageJson", () => {
   test("reports drift until the file is written", async () => {
     const { resolved } = await sync(library, {});
 
-    expect((await resolved.get("filesystem")).changes()).toEqual([
+    expect(resolved.context.filesystem.changes()).toEqual([
       { file: "package.json", status: "synced" },
     ]);
 
-    await (await resolved.get("filesystem")).flush();
+    await resolved.context.filesystem.flush();
     await syncPackageJson(resolved);
 
-    expect((await resolved.get("filesystem")).changes()).toEqual([]);
+    expect(resolved.context.filesystem.changes()).toEqual([]);
   });
 
   test("syncs an inactive src without src.baseline", async () => {
@@ -141,8 +142,8 @@ describe("syncPackageJson", () => {
 
     const resolved = await loadConfig(project.root);
 
-    expect((await resolved.get("src")).active).toBe(false);
-    expect((await resolved.get("src")).runtime).toBeUndefined();
+    expect((await resolved.resolve(sourceSection)).active).toBe(false);
+    expect((await resolved.resolve(sourceSection)).runtime).toBeUndefined();
     expect(() => syncPackageJson(resolved)).not.toThrow();
   });
 
@@ -157,8 +158,8 @@ describe("syncPackageJson", () => {
 
     const resolved = await loadConfig(project.root);
 
-    expect((await resolved.get("src")).runtime).toBeUndefined();
-    expect((await resolved.get("src")).runtime).toBeUndefined();
+    expect((await resolved.resolve(sourceSection)).runtime).toBeUndefined();
+    expect((await resolved.resolve(sourceSection)).runtime).toBeUndefined();
 
     expect(warn).toHaveBeenCalledOnce();
 
@@ -167,7 +168,7 @@ describe("syncPackageJson", () => {
     );
 
     await syncPackageJson(resolved);
-    await (await resolved.get("filesystem")).flush();
+    await resolved.context.filesystem.flush();
 
     expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
       "engines",
@@ -210,7 +211,7 @@ describe("syncPackageJson pnpm warnings", () => {
     expect(messages[0]).toContain(`pnpm ^${versions.previousMajor} is below`);
 
     expect(
-      await (await resolved.get("filesystem")).read("package.json"),
+      await resolved.context.filesystem.read("package.json"),
     ).not.toContain(`^${versions.floor}`);
   });
 

@@ -11,34 +11,26 @@ import {
   visibilities,
 } from "#project/package/constants";
 import type { Step, StepContext } from "#project/steps/index";
-import type { Directory } from "#types/Directory";
 
 import manifest from "#package.json" with { type: "json" };
 
-interface Sections {
-  root: Directory;
-}
-
-async function isUnset(
-  context: StepContext<Sections>,
-  field: string,
-): Promise<boolean> {
+async function isUnset(context: StepContext, field: string): Promise<boolean> {
   return (await context.readPackageJson([field])) === undefined;
 }
 
-async function hasVisibility(context: StepContext<Sections>): Promise<boolean> {
+async function hasVisibility(context: StepContext): Promise<boolean> {
   return (
     !(await isUnset(context, "license")) || !(await isUnset(context, "private"))
   );
 }
 
-async function isScoped(context: StepContext<Sections>): Promise<boolean> {
+async function isScoped(context: StepContext): Promise<boolean> {
   const name = await context.readPackageJson(["name"]);
 
   return isString(name) && startsWith(name, "@");
 }
 
-export function createPackageStep(): Step<Sections> {
+export function createPackageStep(): Step {
   return {
     name: `${packageJsonFile} fields`,
     message: `Fill in the missing ${packageJsonFile} fields?`,
@@ -51,12 +43,12 @@ export function createPackageStep(): Step<Sections> {
       );
     },
     async plan(context) {
-      const { get, writePackageJson } = context;
+      const { writePackageJson } = context;
 
       if (await isUnset(context, "name")) {
         await writePackageJson(
           ["name"],
-          await context.text("Package name?", basename(await get("root"))),
+          await context.text("Package name?", basename(context.context.root)),
         );
       }
 

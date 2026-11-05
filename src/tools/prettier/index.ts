@@ -11,7 +11,7 @@ export { definePrettierConfig } from "#tools/prettier/definers/definePrettierCon
 // @barrel operations/*.ts named
 export { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
 export { loadPrettier } from "#tools/prettier/operations/loadPrettier";
-export { resolvePrettier } from "#tools/prettier/operations/resolvePrettier";
+export { prettierSection } from "#tools/prettier/operations/prettierSection";
 // @end
 
 // @barrel config/schemas/*.ts named

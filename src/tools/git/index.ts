@@ -1,5 +1,5 @@
 // @barrel utils/*.ts named
-export { createProjectIgnores } from "#tools/git/utils/createProjectIgnores";
+
 // @end
 
 // @barrel setup/*.ts named
@@ -8,8 +8,9 @@ export { syncGitignoreFile } from "#tools/git/setup/syncGitignoreFile";
 // @end
 
 // @barrel operations/*.ts named
+export { createProjectIgnores } from "#tools/git/operations/createProjectIgnores";
 export { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
-export { resolveGit } from "#tools/git/operations/resolveGit";
+export { gitSection } from "#tools/git/operations/gitSection";
 // @end
 
 // @barrel config/schemas/*.ts named

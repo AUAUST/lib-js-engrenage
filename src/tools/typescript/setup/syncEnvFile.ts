@@ -4,12 +4,16 @@ import { entries } from "@auaust/toolkit/object";
 import { syncBlocks } from "#foundation/blocks/index";
 import { relativeWithin } from "#foundation/filesystem/index";
 import {
+  defineSection,
+  typescriptSection,
+  type LoadedConfig,
+  type ResolvedGlobal,
+} from "#project/config/index";
+import {
   identifierPattern,
   typescriptBlocks,
 } from "#tools/typescript/constants";
 import { inferType } from "#tools/typescript/utils/inferType";
-import type { OptionContext } from "#foundation/options/index";
-import type { ProjectConfig, ResolvedGlobal } from "#project/config/index";
 
 const directive = "define";
 
@@ -50,18 +54,18 @@ function appendBlock(content: string): string {
   return content.trim() === "" ? block : `${content.trimEnd()}\n\n${block}`;
 }
 
-export async function syncEnvFile(config: OptionContext<ProjectConfig>) {
-  const { types, values } = await config.get("define");
+export async function syncEnvFile(config: LoadedConfig) {
+  const { types, values } = await config.resolve(defineSection);
 
   if (!types) {
     return;
   }
 
-  const typescript = await config.get("typescript");
+  const typescript = await config.resolve(typescriptSection);
 
-  const file = relativeWithin(await config.get("root"), typescript.envFile);
+  const file = relativeWithin(config.context.root, typescript.envFile);
 
-  const filesystem = await config.get("filesystem");
+  const filesystem = config.context.filesystem;
 
   const declared = entries(values).filter(([name]) => {
     return identifierPattern.test(name);

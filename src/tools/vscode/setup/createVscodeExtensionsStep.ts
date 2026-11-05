@@ -1,28 +1,18 @@
+import { environmentSection } from "#project/config/index";
 import { extensionsFile } from "#tools/vscode/constants";
+import { vscodeSection } from "#tools/vscode/operations/vscodeSection";
 import { syncVscodeFiles } from "#tools/vscode/setup/syncVscodeFiles";
 import { findIntegrations } from "#tools/vscode/utils/findIntegrations";
-import type { Filesystem } from "#foundation/filesystem/index";
-import type { Environment } from "#project/config/index";
 import type { Step } from "#project/steps/index";
-import type { ResolvedVscode } from "#tools/vscode/types/ResolvedVscode";
-import type { Directory } from "#types/Directory";
 
-interface Sections {
-  root: Directory;
-  filesystem: Filesystem;
-  resolve(...paths: string[]): string;
-  environment: Environment;
-  vscode: ResolvedVscode;
-}
-
-export function createVscodeExtensionsStep(): Step<Sections> {
+export function createVscodeExtensionsStep(): Step {
   return {
     name: extensionsFile,
     message: "Recommend the VS Code extensions of the project tools?",
-    async isMissing({ get, filesystem }) {
-      const { hasDependency } = await get("environment");
+    async isMissing({ resolve, filesystem }) {
+      const { hasDependency } = await resolve(environmentSection);
 
-      const vscode = await get("vscode");
+      const vscode = await resolve(vscodeSection);
 
       return (
         vscode.extensions !== false &&

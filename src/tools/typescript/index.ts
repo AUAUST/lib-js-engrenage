@@ -4,6 +4,8 @@ export { createSourceEntryStep } from "#tools/typescript/setup/createSourceEntry
 export { createTypescriptStep } from "#tools/typescript/setup/createTypescriptStep";
 export { syncAliases } from "#tools/typescript/setup/syncAliases";
 export { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
+export { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
+export { syncWorkspaceFiles } from "#tools/typescript/setup/syncWorkspaceFiles";
 // @end
 
 export { resolvePathAliases } from "#project/tsconfig/index";

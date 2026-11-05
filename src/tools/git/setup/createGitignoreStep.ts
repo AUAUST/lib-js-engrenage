@@ -3,6 +3,7 @@ import { flat, pluck } from "@auaust/primitive-kit/arrays";
 import { gitignoreFile } from "#constants";
 import { relativeWithin } from "#foundation/filesystem/index";
 import { defaultIgnores, ignoreBlocks } from "#tools/git/constants";
+import { gitSection } from "#tools/git/operations/gitSection";
 import type { Step } from "#project/steps/index";
 import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 import type { Directory } from "#types/Directory";
@@ -41,22 +42,19 @@ function removeCovered(content: string, covered: ReadonlySet<string>): string {
   return groups.join("\n\n");
 }
 
-export function createGitignoreStep(): Step<{
-  root: Directory;
-  git: ResolvedGit;
-}> {
+export function createGitignoreStep(): Step {
   return {
     name: gitignoreFile,
     message: `Add the engrenage ignore blocks to ${gitignoreFile}?`,
-    async isMissing({ get, filesystem }) {
+    async isMissing({ resolve, context, filesystem }) {
       const content = await filesystem.read(
-        await resolveFile(await get("root"), await get("git")),
+        await resolveFile(context.root, await resolve(gitSection)),
       );
 
       return content === undefined || !ignoreMarker.test(content);
     },
-    async plan({ get, filesystem }) {
-      const file = await resolveFile(await get("root"), await get("git"));
+    async plan({ resolve, context, filesystem }) {
+      const file = await resolveFile(context.root, await resolve(gitSection));
 
       const covered = new Set(flat(pluck(defaultIgnores, "globs")));
 

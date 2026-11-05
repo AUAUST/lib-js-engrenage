@@ -9,15 +9,20 @@ import { memoized } from "@auaust/toolkit/memoized";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { packageJsonFile } from "#constants";
+import {
+  environmentSection,
+  filesSection,
+  traitsSection,
+} from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { infoRulesSetting } from "#tools/eslint/constants";
 import { createEslintConfig as createConfig } from "#tools/eslint/operations/createEslintConfig";
 import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { Section } from "#foundation/options/index";
 import type { Environment } from "#project/config/types/Environment";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Options } from "#tools/eslint/types/Options";
@@ -34,20 +39,20 @@ const contractsOff = {
 };
 
 function overrideSections(
-  config: ConfigContext,
-  overrides: Partial<ProjectConfig>,
-): ConfigContext {
-  return {
-    async get(section) {
-      return section in overrides
-        ? (overrides[section] as ProjectConfig[typeof section])
-        : config.get(section);
-    },
-  };
+  config: LoadedConfig,
+  overrides: ReadonlyMap<Section, unknown>,
+): LoadedConfig {
+  async function resolve<Output>(section: Section<Output>): Promise<Output> {
+    return overrides.has(section)
+      ? (overrides.get(section) as Output)
+      : config.resolve(section);
+  }
+
+  return { ...config, resolve };
 }
 
 async function createEslintConfig(
-  config: ConfigContext,
+  config: LoadedConfig,
   options?: Maybe<Options>,
 ) {
   return createConfig(config, {
@@ -105,10 +110,16 @@ async function lintedPerformanceRules(
     cwd: root,
     overrideConfigFile: true,
     overrideConfig: await createEslintConfig(
-      overrideSections(config, {
-        traits,
-        environment: environment ?? (await config.get("environment")),
-      }),
+      overrideSections(
+        config,
+        new Map<Section, unknown>([
+          [traitsSection, traits],
+          [
+            environmentSection,
+            environment ?? (await config.resolve(environmentSection)),
+          ],
+        ]),
+      ),
       {
         typeAware: false,
         ...options,
@@ -1646,12 +1657,18 @@ export async function run(): Promise<unknown> {
       cwd: root,
       overrideConfigFile: true,
       overrideConfig: await createEslintConfig(
-        overrideSections(config, {
-          files: {
-            ...(await config.get("files")),
-            fixtures: ["tests/**/data/**"],
-          },
-        }),
+        overrideSections(
+          config,
+          new Map<Section, unknown>([
+            [
+              filesSection,
+              {
+                ...(await config.resolve(filesSection)),
+                fixtures: ["tests/**/data/**"],
+              },
+            ],
+          ]),
+        ),
       ),
     });
 
@@ -1677,7 +1694,7 @@ export async function run(): Promise<unknown> {
 
   test("exposes its contract through the local aliases", () => {
     expectTypeOf(createEslintConfig).parameters.toEqualTypeOf<
-      [ConfigContext, Maybe<Options>?]
+      [LoadedConfig, Maybe<Options>?]
     >();
 
     expectTypeOf(createEslintConfig).returns.toEqualTypeOf<Promise<Config[]>>();

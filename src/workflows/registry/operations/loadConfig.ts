@@ -1,14 +1,13 @@
 import { resolve } from "#foundation/filesystem/index";
 import { readConfig } from "#workflows/registry/operations/readConfig";
-import type { OptionContext } from "#foundation/options/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
-import type { Config } from "#workflows/registry/types/Config";
 
-const loadedConfigs = new Map<Directory, Promise<OptionContext<Config>>>();
+const loadedConfigs = new Map<Directory, Promise<LoadedConfig>>();
 
 export function loadConfig(
   cwd: Directory | URL = process.cwd(),
-): Promise<OptionContext<Config>> {
+): Promise<LoadedConfig> {
   const start = resolve(cwd);
 
   const cached = loadedConfigs.get(start);

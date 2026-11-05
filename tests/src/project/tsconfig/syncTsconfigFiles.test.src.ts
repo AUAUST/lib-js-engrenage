@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 
 import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
-import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
+import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
 async function createProject(
@@ -51,7 +51,7 @@ describe("syncTsconfigFiles", () => {
   test("writes managed fields and keeps every other field", async () => {
     const { project, config } = await createProject({}, files);
 
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     expect(JSON.parse(project.read("tsconfig.src.json"))).toEqual({
       extends: "./tsconfig.json",
@@ -91,7 +91,7 @@ describe("syncTsconfigFiles", () => {
       files,
     );
 
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     const tsconfig = JSON.parse(project.read("tsconfig.src.json"));
 
@@ -123,7 +123,7 @@ describe("syncTsconfigFiles", () => {
       files,
     );
 
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     expect(
       JSON.parse(project.read("tsconfig.src.json")).compilerOptions,
@@ -145,7 +145,7 @@ describe("syncTsconfigFiles", () => {
       { "src/index.ts": "", "tsconfig.json": "{}" },
     );
 
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     expect(JSON.parse(project.read("tsconfig.src.json")).include).toEqual([
       "src/**/*.ts",
@@ -160,7 +160,7 @@ describe("syncTsconfigFiles", () => {
   test("creates a missing base tsconfig", async () => {
     const { project, config } = await createProject({}, { "src/index.ts": "" });
 
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
       extends: "@auaust/engrenage/tsconfig/base.json",
@@ -188,7 +188,7 @@ describe("syncTsconfigFiles", () => {
       },
     );
 
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     expect(JSON.parse(project.read("tsconfig.tests.dist.json"))).toEqual({
       extends: "./tsconfig.tests.json",
@@ -217,7 +217,7 @@ describe("syncTsconfigFiles", () => {
       },
     );
 
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     const { include, compilerOptions } = JSON.parse(
       project.read("tsconfig.tests.dist.json"),
@@ -230,7 +230,7 @@ describe("syncTsconfigFiles", () => {
   test("reports drift without writing under --check", async () => {
     const { project, config } = await createProject({}, files);
 
-    const outdated = (await config.get("filesystem")).discard();
+    const outdated = config.context.filesystem.discard();
 
     expect(outdated.map(({ file }) => file).sort()).toEqual([
       "tsconfig.json",
@@ -248,7 +248,7 @@ describe("syncTsconfigFiles", () => {
       files,
     );
 
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     expect(
       JSON.parse(project.read("tsconfig.json")).compilerOptions,

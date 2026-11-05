@@ -1,22 +1,14 @@
 import { relative } from "node:path";
 
 import { toPosixPath } from "#foundation/filesystem/index";
+import { environmentSection } from "#project/config/index";
+import { gitSection } from "#tools/git/index";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
+import { githubSection } from "#tools/github/operations/githubSection";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
-import type { Environment } from "#project/config/index";
 import type { Step, StepContext } from "#project/steps/index";
-import type { ResolvedGit } from "#tools/git/index";
-import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
-import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-
-interface Sections {
-  root: Directory;
-  environment: Environment;
-  git: ResolvedGit;
-  github: ResolvedGithub;
-}
 
 interface MissingWorkflow {
   file: File;
@@ -24,11 +16,12 @@ interface MissingWorkflow {
 }
 
 async function findMissingWorkflows({
-  get,
+  resolve,
+  context,
   getTraits,
-}: StepContext<Sections>): Promise<readonly MissingWorkflow[]> {
-  const github = await get("github");
-  const environment = await get("environment");
+}: StepContext): Promise<readonly MissingWorkflow[]> {
+  const github = await resolve(githubSection);
+  const environment = await resolve(environmentSection);
 
   const name = resolveWorkflowSet({
     workflows: github.workflows,
@@ -40,8 +33,8 @@ async function findMissingWorkflows({
     return [];
   }
 
-  const { root, filesystem } = await get("git");
-  const directory = relative(root, await get("root")) || ".";
+  const { root, filesystem } = await resolve(gitSection);
+  const directory = relative(root, context.root) || ".";
   const missing: MissingWorkflow[] = [];
 
   await Promise.all(
@@ -60,7 +53,7 @@ async function findMissingWorkflows({
   return missing;
 }
 
-export function createWorkflowsStep(): Step<Sections> {
+export function createWorkflowsStep(): Step {
   return {
     name: workflowsDirectory,
     message: "Add the GitHub workflows?",
@@ -71,7 +64,7 @@ export function createWorkflowsStep(): Step<Sections> {
     },
     async plan(context) {
       for (const { file, content } of await findMissingWorkflows(context)) {
-        const git = await context.get("git");
+        const git = await context.resolve(gitSection);
 
         await git.filesystem.write(file, content);
       }

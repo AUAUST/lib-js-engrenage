@@ -27,7 +27,7 @@ describe("syncCodexFiles", () => {
 
     await syncAgentFiles(config);
     await syncCodexFiles(config);
-    await (await config.get("filesystem")).flush();
+    await config.context.filesystem.flush();
 
     const result = project.read("AGENTS.override.md");
 
@@ -49,20 +49,21 @@ describe("syncCodexFiles", () => {
     );
 
     await syncCodexFiles(config);
-    expect((await config.get("filesystem")).changes()).toEqual([]);
+    expect(config.context.filesystem.changes()).toEqual([]);
 
-    await (
-      await config.get("filesystem")
-    ).write(".claude/rules/types.md", '---\npaths: ["lib/**"]\n---\nTypes');
+    await config.context.filesystem.write(
+      ".claude/rules/types.md",
+      '---\npaths: ["lib/**"]\n---\nTypes',
+    );
 
     await syncCodexFiles(config);
 
     expect(
-      await (await config.get("filesystem")).read("AGENTS.override.md"),
+      await config.context.filesystem.read("AGENTS.override.md"),
     ).toContain("lib/**");
 
     expect(
-      await (await config.get("filesystem")).read("AGENTS.override.md"),
+      await config.context.filesystem.read("AGENTS.override.md"),
     ).not.toContain("src/**/*.ts");
   });
 
@@ -79,7 +80,7 @@ describe("syncCodexFiles", () => {
       hooks: true,
     });
 
-    expect((await config.get("filesystem")).changes()).toEqual([]);
+    expect(config.context.filesystem.changes()).toEqual([]);
   });
 
   test("rejects invalid frontmatter with the rule path", async () => {

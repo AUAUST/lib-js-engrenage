@@ -1,12 +1,11 @@
 import { tsdown, vite } from "#constants";
 import { hasConfigFile, type Step } from "#project/steps/index";
-import type { File } from "#types/File";
 
-export function createBuildToolStep(): Step<{ configFile: File | undefined }> {
+export function createBuildToolStep(): Step {
   return {
     name: "build tool",
-    async isMissing({ get, filesystem, hasDependency }) {
-      if ((await get("configFile")) !== undefined) {
+    async isMissing({ context, filesystem, hasDependency }) {
+      if (context.configFile !== undefined) {
         return false;
       }
 

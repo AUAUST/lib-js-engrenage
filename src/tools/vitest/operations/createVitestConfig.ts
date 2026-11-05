@@ -5,12 +5,19 @@ import { configDefaults, coverageConfigDefaults } from "vitest/config";
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import type { Maybe } from "@auaust/toolkit/types";
 
+import { filesIn, resolve } from "#foundation/filesystem/index";
+import { validate } from "#foundation/options/index";
 import {
-  filesIn,
-  resolve,
-  type Filesystem,
-} from "#foundation/filesystem/index";
-import { validate, type OptionContext } from "#foundation/options/index";
+  buildSection,
+  filesSection,
+  packageJsonSection,
+  sourceSection,
+  testsSection,
+  traitsSection,
+  typescriptSection,
+  workspacesSection,
+  type LoadedConfig,
+} from "#project/config/index";
 import { optionsSchema } from "#tools/vitest/config/schemas/optionsSchema";
 import {
   buildMode,
@@ -22,42 +29,18 @@ import {
 import { findSetupFiles } from "#tools/vitest/operations/findSetupFiles";
 import { createOutDirGuard } from "#tools/vitest/plugins/createOutDirGuard";
 import { createSourceGuard } from "#tools/vitest/plugins/createSourceGuard";
-import type { ResolvedBuild } from "#project/build/index";
-import type { ResolvedFiles } from "#project/config/index";
-import type {
-  ResolvedSource,
-  ResolvedTests,
-} from "#project/environments/index";
-import type { PackageJson } from "#project/package/index";
-import type { ResolvedTraits } from "#project/presets/index";
-import type { ResolvedTypescript } from "#project/tsconfig/index";
-import type { ResolvedWorkspaceGroup } from "#project/workspaces/index";
 import type { ConfigEnv, Plugin } from "#tools/vite/index";
 import type { Config } from "#tools/vitest/types/Config";
 import type { Options } from "#tools/vitest/types/Options";
-import type { Directory } from "#types/Directory";
-
-interface Sections {
-  root: Directory;
-  filesystem: Filesystem;
-  packageJson: PackageJson;
-  traits: ResolvedTraits;
-  build: ResolvedBuild;
-  src: ResolvedSource;
-  tests: ResolvedTests;
-  typescript: ResolvedTypescript;
-  files: ResolvedFiles;
-  workspaces: readonly ResolvedWorkspaceGroup[];
-}
 
 async function createSourcePlugins(
-  { get }: OptionContext<Sections>,
+  config: LoadedConfig,
   guardOutDir: boolean,
 ): Promise<Plugin[]> {
-  const build = await get("build");
+  const build = await config.resolve(buildSection);
 
   const outDir = await build.outDir;
-  const packageJson = await get("packageJson");
+  const packageJson = await config.resolve(packageJsonSection);
 
   const packageName = packageJson.optional.name;
 
@@ -68,23 +51,21 @@ async function createSourcePlugins(
   return [
     createOutDirGuard(`${pluginPrefix}:${outDirGuard}`, {
       packageName,
-      outDir: resolve(await realpath(await get("root")), outDir),
+      outDir: resolve(await realpath(config.context.root), outDir),
     }),
   ];
 }
 
-async function createDistPlugins({
-  get,
-}: OptionContext<Sections>): Promise<Plugin[]> {
-  const traits = await get("traits");
+async function createDistPlugins(config: LoadedConfig): Promise<Plugin[]> {
+  const traits = await config.resolve(traitsSection);
 
   if (!traits.published) {
     return [];
   }
 
-  const root = await realpath(await get("root"));
+  const root = await realpath(config.context.root);
 
-  const source = await get("src");
+  const source = await config.resolve(sourceSection);
 
   return [
     createSourceGuard(`${pluginPrefix}:${sourceGuard}`, {
@@ -94,17 +75,17 @@ async function createDistPlugins({
 }
 
 async function createTestsInclude(
-  { get }: OptionContext<Sections>,
+  config: LoadedConfig,
   testsBuild: boolean,
 ): Promise<string[] | undefined> {
-  const traits = await get("traits");
+  const traits = await config.resolve(traitsSection);
 
   if (!traits.published) {
     return;
   }
 
   // @debt `include` replaces Vitest's default, so `.js` and `.mjs` tests are no longer collected
-  const tests = await get("tests");
+  const tests = await config.resolve(testsSection);
 
   const { plain, source, dist } = tests.patterns;
 
@@ -112,29 +93,29 @@ async function createTestsInclude(
 
   return [
     ...patterns,
-    ...flatMap(await get("workspaces"), ({ dirs }) => filesIn(dirs, patterns)),
+    ...flatMap(await config.resolve(workspacesSection), ({ dirs }) =>
+      filesIn(dirs, patterns),
+    ),
   ];
 }
 
 export async function createVitestConfig(
-  context: OptionContext<Sections>,
+  config: LoadedConfig,
   { mode }: ConfigEnv,
   options?: Maybe<Options>,
 ): Promise<Config> {
-  const { get } = context;
-
   const {
     guardOutDir,
     isolate,
     restoreMocks = !isolate,
     setupFiles = await findSetupFiles({
-      tests: await get("tests"),
-      filesystem: await get("filesystem"),
+      tests: await config.resolve(testsSection),
+      filesystem: config.context.filesystem,
     }),
   } = validate(optionsSchema, options ?? {}, "Vitest options");
 
   const testsBuild = mode === buildMode;
-  const tests = await get("tests");
+  const tests = await config.resolve(testsSection);
 
   if (testsBuild && tests.active) {
     const { owner, file } = tests.dist.tsconfig;
@@ -145,12 +126,12 @@ export async function createVitestConfig(
       (await tests.dist.tsconfig.path) === undefined
     ) {
       throw new Error(
-        `The dist tsconfig ${file} does not exist in ${await get("root")}, run \`engrenage sync\` to create it`,
+        `The dist tsconfig ${file} does not exist in ${config.context.root}, run \`engrenage sync\` to create it`,
       );
     }
   }
 
-  const typescript = await get("typescript");
+  const typescript = await config.resolve(typescriptSection);
 
   const tsconfig = await (testsBuild
     ? tests.dist.tsconfig.path
@@ -160,8 +141,8 @@ export async function createVitestConfig(
     ? tests.dist.tsconfig.path
     : tests.tsconfig.path);
 
-  const include = await createTestsInclude(context, testsBuild);
-  const { fixtures } = await get("files");
+  const include = await createTestsInclude(config, testsBuild);
+  const { fixtures } = await config.resolve(filesSection);
 
   return {
     ...(tsconfig === undefined
@@ -173,8 +154,8 @@ export async function createVitestConfig(
       tsconfigPaths: !testsBuild,
     },
     plugins: testsBuild
-      ? await createDistPlugins(context)
-      : await createSourcePlugins(context, guardOutDir),
+      ? await createDistPlugins(config)
+      : await createSourcePlugins(config, guardOutDir),
     test: {
       ...(include === undefined ? {} : { include }),
       isolate,

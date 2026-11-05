@@ -1,19 +1,19 @@
-import type { ResolvedSource } from "#project/environments/index";
+import { sourceSection } from "#project/config/index";
 import type { Step } from "#project/steps/index";
 
-export function createSourceEntryStep(): Step<{ src: ResolvedSource }> {
+export function createSourceEntryStep(): Step {
   return {
     name: "source entry",
     message: "Create the source entry of the library?",
-    async isMissing({ get, getTraits }) {
-      const source = await get("src");
+    async isMissing({ resolve, getTraits }) {
+      const source = await resolve(sourceSection);
 
       const traits = await getTraits();
 
       return traits.published && source.dirs.length > 0 && !source.active;
     },
-    async plan({ get, filesystem }) {
-      const source = await get("src");
+    async plan({ resolve, filesystem }) {
+      const source = await resolve(sourceSection);
 
       const [directory] = source.dirs;
 

@@ -1,4 +1,5 @@
 import { packageJsonFile } from "#constants";
+import { packageJsonSection } from "#project/config/index";
 import { readProjectPnpmVersion } from "#project/package/utils/readProjectPnpmVersion";
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
 import { installDependencies } from "#tools/pnpm/operations/installDependencies";
@@ -22,11 +23,14 @@ export const upgrade = defineCommand((command) => {
 
       const { range } = readSharedPnpmRange();
 
-      const version = await resolveLatestPnpm(await config.get("root"), range);
+      const version = await resolveLatestPnpm(config.context.root, range);
 
-      if (resolvePnpmRangeStatus(await config.get("packageJson")) === "above") {
+      if (
+        resolvePnpmRangeStatus(await config.resolve(packageJsonSection)) ===
+        "above"
+      ) {
         console.warn(
-          `pnpm ${readProjectPnpmVersion(await config.get("packageJson"))} is above engrenage's pnpm ${range}: update engrenage to support it`,
+          `pnpm ${readProjectPnpmVersion(await config.resolve(packageJsonSection))} is above engrenage's pnpm ${range}: update engrenage to support it`,
         );
 
         const proceeds = await createPrompter({ yes }).confirm(
@@ -38,21 +42,21 @@ export const upgrade = defineCommand((command) => {
         }
       }
 
-      const filesystem = await config.get("filesystem");
+      const filesystem = config.context.filesystem;
 
       const content = await filesystem.read(packageJsonFile);
 
       // @debt repeats the "No package.json found" guard of createTsdownConfig, createStepContext and syncChangesetConfig
       if (content === undefined) {
         throw new Error(
-          `No ${packageJsonFile} found in ${await config.get("root")}`,
+          `No ${packageJsonFile} found in ${config.context.root}`,
         );
       }
 
       const upgraded = upgradePnpmManifest(
         content,
-        (await config.get("resolve"))(packageJsonFile),
-        await config.get("packageJson"),
+        config.context.path(packageJsonFile),
+        await config.resolve(packageJsonSection),
         version,
       );
 
@@ -66,6 +70,6 @@ export const upgrade = defineCommand((command) => {
         check: false,
       });
 
-      await installDependencies(await config.get("root"));
+      await installDependencies(config.context.root);
     });
 });

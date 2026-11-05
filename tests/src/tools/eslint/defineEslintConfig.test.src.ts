@@ -3,10 +3,11 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { map } from "@auaust/primitive-kit/arrays";
 
+import { sourceSection } from "#project/config/index";
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { defineEslintConfig } from "#tools/eslint/definers/defineEslintConfig";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 
 const root = getFixture("eslint");
 
@@ -18,9 +19,9 @@ describe("defineEslintConfig", () => {
   test("passes the resolved config to the callbacks and appends native configs", async () => {
     mockCwd(root);
 
-    const callback = vi.fn(async (config: ConfigContext) => {
+    const callback = vi.fn((config: LoadedConfig) => {
       return {
-        stylistic: (await config.get("root")) === root,
+        stylistic: config.context.root === root,
       };
     });
 
@@ -29,9 +30,12 @@ describe("defineEslintConfig", () => {
       overrideConfigFile: true,
       overrideConfig: await defineEslintConfig(callback, async (config) => {
         return {
-          files: map((await config.get("src")).dirs, (directory) => {
-            return `${directory}/restricted.ts`;
-          }),
+          files: map(
+            (await config.resolve(sourceSection)).dirs,
+            (directory) => {
+              return `${directory}/restricted.ts`;
+            },
+          ),
           rules: {
             "auaust/no-array-is-array": "off",
           },

@@ -4,18 +4,18 @@ import {
   codexHooksFile,
 } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
+import { agentsSection } from "#tools/agents/operations/agentsSection";
 import { syncHook } from "#tools/agents/operations/syncHook";
-import type { OptionContext } from "#foundation/options/index";
-import type { AgentSections } from "#tools/agents/types/AgentSections";
+import type { LoadedConfig } from "#project/config/index";
 
 export async function syncCodexFiles(
-  { get }: OptionContext<AgentSections>,
+  { resolve, context }: LoadedConfig,
   { hooks = false }: { hooks?: boolean } = {},
 ) {
   const config = {
-    filesystem: await get("filesystem"),
-    resolve: await get("resolve"),
-    agents: await get("agents"),
+    filesystem: context.filesystem,
+    resolve: context.path,
+    agents: await resolve(agentsSection),
   };
 
   if (config.agents.preferred?.includes("codex") !== true) {

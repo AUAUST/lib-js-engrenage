@@ -5,7 +5,7 @@ export { syncVscodeFiles } from "#tools/vscode/setup/syncVscodeFiles";
 // @end
 
 // @barrel operations/*.ts named
-export { resolveVscode } from "#tools/vscode/operations/resolveVscode";
+export { vscodeSection } from "#tools/vscode/operations/vscodeSection";
 // @end
 
 // @barrel config/schemas/*.ts named

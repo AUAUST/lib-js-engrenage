@@ -4,15 +4,15 @@ import { resolveDataFile } from "#foundation/data/index";
 import { codexFile, codexTemplate } from "#tools/agents/codex/constants";
 import { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";
 import { agentsFile } from "#tools/agents/constants";
+import { agentsSection } from "#tools/agents/operations/agentsSection";
 import type { Step } from "#project/steps/index";
-import type { AgentSections } from "#tools/agents/types/AgentSections";
 
-export function createCodexStep(): Step<AgentSections> {
+export function createCodexStep(): Step {
   return {
     name: codexFile,
     message: `Create ${codexFile} with Codex instructions and a rule mapping?`,
-    async isMissing({ get, filesystem }) {
-      const agents = await get("agents");
+    async isMissing({ resolve, filesystem }) {
+      const agents = await resolve(agentsSection);
 
       return (
         agents.preferred?.includes("codex") === true &&

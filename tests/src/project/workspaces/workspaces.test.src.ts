@@ -5,6 +5,7 @@ import { build } from "vite";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { runSync, sync } from "#bin/engrenage/sync";
+import { importRulesSection } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
@@ -147,7 +148,7 @@ describe("workspaces", () => {
 
     await runSync(resolved, { names: ["tsconfig"] });
 
-    const filesystem = await resolved.get("filesystem");
+    const filesystem = resolved.context.filesystem;
 
     expect(
       JSON.parse((await filesystem.read("tsconfig.json")) ?? "").references,
@@ -163,7 +164,7 @@ describe("workspaces", () => {
     const project = createProject();
 
     const config = await loadConfig(project.root);
-    const importRules = await config.get("importRules");
+    const importRules = await config.resolve(importRulesSection);
 
     function targets(source: string, effect: "allow" | "forbid") {
       return importRules
@@ -226,7 +227,7 @@ describe("workspace modules", () => {
     const resolved = await loadConfig(project.root);
 
     await runSync(resolved, { names: ["tsconfig", "aliases", "workspaces"] });
-    await (await resolved.get("filesystem")).flush();
+    await resolved.context.filesystem.flush();
 
     execFileSync(
       process.execPath,

@@ -8,19 +8,16 @@ import {
   logIgnores,
   osIgnores,
 } from "#tools/git/constants";
-import { createProjectIgnores } from "#tools/git/utils/createProjectIgnores";
-import type { OptionContext } from "#foundation/options/index";
-import type { ProjectConfig } from "#project/config/index";
-import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
+import { createProjectIgnores } from "#tools/git/operations/createProjectIgnores";
+import { gitSection } from "#tools/git/operations/gitSection";
+import type { LoadedConfig } from "#project/config/index";
 
-export async function syncGitignoreFile(
-  config: OptionContext<ProjectConfig & { git: ResolvedGit }>,
-) {
+export async function syncGitignoreFile(config: LoadedConfig) {
   const [root, filesystem, resolve, git, project] = await Promise.all([
-    config.get("root"),
-    config.get("filesystem"),
-    config.get("resolve"),
-    config.get("git"),
+    config.context.root,
+    config.context.filesystem,
+    config.context.path,
+    config.resolve(gitSection),
     settlePreset(createProjectIgnores(config)),
   ]);
 

@@ -1,9 +1,9 @@
 import type { StepContext } from "#project/steps/types/StepContext";
 
-export interface Step<Sections = object> {
+export interface Step {
   name: string;
   message?: string;
-  isMissing(context: StepContext<Sections>): boolean | Promise<boolean>;
-  isRecommended?(context: StepContext<Sections>): boolean | Promise<boolean>;
-  plan(context: StepContext<Sections>): void | Promise<void>;
+  isMissing(context: StepContext): boolean | Promise<boolean>;
+  isRecommended?(context: StepContext): boolean | Promise<boolean>;
+  plan(context: StepContext): void | Promise<void>;
 }

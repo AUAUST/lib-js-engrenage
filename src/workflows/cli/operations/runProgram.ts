@@ -1,6 +1,6 @@
 import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
-import { isDebugEnvironment } from "#project/config/index";
+import { debugSection, isDebugEnvironment } from "#project/config/index";
 import { formatCommandError } from "#workflows/cli/operations/formatCommandError";
 import { loadConfig } from "#workflows/registry/index";
 
@@ -19,7 +19,7 @@ async function isConfigDebug(): Promise<boolean> {
   try {
     const config = await loadConfig();
 
-    return await config.get("debug");
+    return await config.resolve(debugSection);
   } catch {
     return false;
   }

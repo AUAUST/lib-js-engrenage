@@ -1,7 +1,7 @@
 import { ESLint } from "eslint";
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
+import { loadConfig, structureSection } from "@auaust/engrenage";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -53,7 +53,9 @@ describe("command trees", () => {
     const { project, lint } = await createLinter();
     const config = await loadConfig(project.root);
 
-    expect((await config.get("structure")).scripts?.unclassified).toEqual([]);
+    expect(
+      (await config.resolve(structureSection)).scripts?.unclassified,
+    ).toEqual([]);
 
     expect(
       await lint(

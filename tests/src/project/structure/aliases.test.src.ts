@@ -23,7 +23,7 @@ async function sync(config: string, files: Record<string, string> = {}) {
 
   return {
     read: async (file: string) => {
-      const filesystem = await resolved.get("filesystem");
+      const filesystem = resolved.context.filesystem;
 
       return JSON.parse((await filesystem.read(file)) ?? "");
     },

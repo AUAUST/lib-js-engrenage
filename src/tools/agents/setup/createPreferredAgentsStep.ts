@@ -1,17 +1,14 @@
 import { agentNames } from "#tools/agents/constants";
 import type { Step } from "#project/steps/index";
-import type { File } from "#types/File";
 
-export function createPreferredAgentsStep(): Step<{
-  configFile: File | undefined;
-}> {
+export function createPreferredAgentsStep(): Step {
   return {
     name: "preferred agents",
     isMissing({ getAgents }) {
       return getAgents() === undefined;
     },
-    async plan({ get, multiselect, setAgents }) {
-      const configFile = await get("configFile");
+    async plan({ context, multiselect, setAgents }) {
+      const configFile = context.configFile;
 
       const chosen = await multiselect(
         "Which coding agents do you use?",
