@@ -606,7 +606,7 @@ test("sets up Codex with backlog guidance without installing coding rules", asyn
   );
 
   expect(project.read(".codex/hooks.json")).toContain(
-    "engrenage agents codex hook edit",
+    "engrenage agents codex hook github",
   );
 
   expect(project.read(".agents/skills/scratchpad/SKILL.md")).toContain(
@@ -655,11 +655,11 @@ test("uses an interactive selection for this init without rewriting an existing 
   );
 
   expect(project.read(".claude/settings.json")).toContain(
-    "engrenage agents claude hook edit",
+    "engrenage agents claude hook github",
   );
 
   expect(project.read(".codex/hooks.json")).toContain(
-    "engrenage agents codex hook edit",
+    "engrenage agents codex hook github",
   );
 
   expect(console.info).toHaveBeenCalledWith(

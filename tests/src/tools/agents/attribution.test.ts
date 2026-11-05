@@ -55,7 +55,7 @@ describe("agents.attribution", () => {
 
     expect(JSON.parse(project.read(".claude/settings.json"))).toMatchObject({
       hooks: {
-        PostToolUse: [expect.anything()],
+        PreToolUse: [expect.anything(), expect.anything(), expect.anything()],
       },
       attribution: hidden,
     });
@@ -139,29 +139,18 @@ describe("agents.attribution", () => {
     const files = {
       ".claude/settings.json": JSON.stringify({
         hooks: {
-          PostToolUse: [
-            {
-              matcher: "Edit|MultiEdit|Write",
-              hooks: [
-                {
-                  type: "command",
-                  command: "pnpm --silent engrenage agents claude hook edit",
-                },
-              ],
-            },
-          ],
-          PreToolUse: [
-            {
+          PreToolUse: ["create", "edit", "comment"].map((verb) => {
+            return {
               matcher: "Bash",
               hooks: [
                 {
                   type: "command",
                   command: "pnpm --silent engrenage agents claude hook github",
-                  if: "Bash(gh issue *)",
+                  if: `Bash(gh issue ${verb} *)`,
                 },
               ],
-            },
-          ],
+            };
+          }),
         },
         attribution: hidden,
       }),

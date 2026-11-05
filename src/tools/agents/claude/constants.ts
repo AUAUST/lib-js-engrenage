@@ -8,20 +8,18 @@ export const claudeFile = "CLAUDE.md" satisfies File;
 
 export const claudeSettingsFile = ".claude/settings.json" satisfies File;
 
-// @debt Edits made through Bash (sed, scripts, codemods) never match this matcher, so they skip formatting and lint; nothing at commit time catches what the hook misses.
-// @debt The command runs the project's own CLI, so whenever the project fails to load (mid-refactor in engrenage itself, a broken config) the hook exits non-blocking and edits go unformatted without the agent knowing.
-export const claudeEditHook = freeze({
-  event: "PostToolUse",
-  matcher: "Edit|MultiEdit|Write",
-  command: "pnpm --silent engrenage agents claude hook edit",
-} as const) satisfies HookDefinition;
+export const claudeHookPrefix = "pnpm --silent engrenage agents claude hook ";
 
-export const claudeGithubHook = freeze({
-  event: "PreToolUse",
-  matcher: "Bash",
-  condition: "Bash(gh issue *)",
-  command: "pnpm --silent engrenage agents claude hook github",
-} as const) satisfies HookDefinition;
+export const claudeHooks = freeze(
+  (["create", "edit", "comment"] as const).map((verb) => {
+    return {
+      event: "PreToolUse",
+      matcher: "Bash",
+      condition: `Bash(gh issue ${verb} *)`,
+      command: `${claudeHookPrefix}github`,
+    } as const satisfies HookDefinition;
+  }),
+) satisfies readonly HookDefinition[];
 
 export const claudeHiddenAttribution = freeze({
   commit: "",

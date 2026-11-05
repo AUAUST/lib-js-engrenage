@@ -1,9 +1,7 @@
-import { text } from "node:stream/consumers";
-
 import { literal, object, string } from "valibot";
 
-import { validate } from "#foundation/options/utils/validate";
 import { agentsSection } from "#tools/agents/index";
+import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 import { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
@@ -22,11 +20,7 @@ export const github = defineCommand((command) => {
     const {
       cwd,
       tool_input: { command: shellCommand },
-    } = validate(
-      payloadSchema,
-      JSON.parse(await text(process.stdin)),
-      "Codex hook payload",
-    );
+    } = await readHookPayload(payloadSchema, "Codex");
 
     const config = await loadConfig(cwd);
     const agents = await config.resolve(agentsSection);

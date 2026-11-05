@@ -11,16 +11,14 @@ export const codexTemplate = `${engrenage}/agents/templates/${codexFile}`;
 
 export const codexHooksFile = ".codex/hooks.json" satisfies File;
 
-export const codexEditHook = freeze({
-  event: "PostToolUse",
-  matcher: "^apply_patch$",
-  command: "pnpm --silent engrenage agents codex hook edit",
-} as const) satisfies HookDefinition;
+export const codexHookPrefix = "pnpm --silent engrenage agents codex hook ";
 
-export const codexGithubHook = freeze({
-  event: "PreToolUse",
-  matcher: "^Bash$",
-  command: "pnpm --silent engrenage agents codex hook github",
-} as const) satisfies HookDefinition;
+export const codexHooks = freeze([
+  {
+    event: "PreToolUse",
+    matcher: "^Bash$",
+    command: `${codexHookPrefix}github`,
+  },
+] as const) satisfies readonly HookDefinition[];
 
 export const codexSkillsDir = ".agents/skills" satisfies Directory;

@@ -9,7 +9,7 @@ import type { File } from "#types/File";
 export const config = defineCommand((command) => {
   return command
     .description(
-      "Generate the documented config input interfaces from the descriptions of the config schemas.",
+      "Generate `ConfigInput` and the documented config input interfaces from the descriptions of the config schemas.",
     )
     .option("--check", "report an outdated file without writing it", false)
     .action(async ({ check }) => {

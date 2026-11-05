@@ -1,4 +1,8 @@
-import { claudeFile, claudeSettingsFile } from "#tools/agents/claude/constants";
+import {
+  claudeFile,
+  claudeHooks,
+  claudeSettingsFile,
+} from "#tools/agents/claude/constants";
 import { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSettings";
 import { agentsSection } from "#tools/agents/operations/agentsSection";
 import type { Step } from "#project/steps/index";
@@ -6,7 +10,7 @@ import type { Step } from "#project/steps/index";
 export function createClaudeSettingsStep(): Step {
   return {
     name: claudeSettingsFile,
-    message: "Fix, format and lint the files Claude Code edits with a hook?",
+    message: `Check ${claudeHooks.map(({ condition }) => condition).join(", ")} commands with a Claude Code hook?`,
     async isMissing({ resolve, filesystem }) {
       const agents = await resolve(agentsSection);
 

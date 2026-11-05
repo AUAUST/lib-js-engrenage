@@ -1,11 +1,11 @@
 import {
-  codexEditHook,
-  codexGithubHook,
+  codexHookPrefix,
+  codexHooks,
   codexHooksFile,
 } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
 import { agentsSection } from "#tools/agents/operations/agentsSection";
-import { syncHook } from "#tools/agents/operations/syncHook";
+import { syncHooks } from "#tools/agents/operations/syncHooks";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function syncCodexFiles(
@@ -32,11 +32,10 @@ export async function syncCodexFiles(
       hooks ||
       (await config.filesystem.exists(codexHooksFile)))
   ) {
-    for (const hook of [codexEditHook, codexGithubHook]) {
-      await syncHook(config, {
-        file: codexHooksFile,
-        hook,
-      });
-    }
+    await syncHooks(config, {
+      file: codexHooksFile,
+      hooks: codexHooks,
+      prefix: codexHookPrefix,
+    });
   }
 }

@@ -24,7 +24,6 @@ export { syncProjectMap } from "#tools/agents/setup/syncProjectMap";
 export { addAgentRules } from "#tools/agents/operations/addAgentRules";
 export { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 export { agentsSection } from "#tools/agents/operations/agentsSection";
-export { formatEditedFile } from "#tools/agents/operations/formatEditedFile";
 export { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 export { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 export { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
@@ -32,10 +31,11 @@ export { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 export { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 export { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 export { parseInstruction } from "#tools/agents/operations/parseInstruction";
+export { readHookPayload } from "#tools/agents/operations/readHookPayload";
 export { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 export { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 export { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
-export { syncHook } from "#tools/agents/operations/syncHook";
+export { syncHooks } from "#tools/agents/operations/syncHooks";
 // @end
 
 // @barrel config/schemas/*.ts named

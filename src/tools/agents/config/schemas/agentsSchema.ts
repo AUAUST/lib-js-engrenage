@@ -42,7 +42,7 @@ export const agentsSchema = declareObject(
     }),
     claudeSettings: declare(boolean(), {
       description: [
-        "Whether `engrenage init` creates `.claude/settings.json` (the edit hook) for a project that prefers Claude.",
+        "Whether `engrenage init` creates `.claude/settings.json` (hooks, permissions and attribution) for a project that prefers Claude.",
         "`false` leaves it alone.",
       ],
       optional: unset("created by init, then kept by sync"),

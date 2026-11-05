@@ -2,6 +2,7 @@ import { deduplicate } from "@auaust/primitive-kit/arrays";
 
 import type { Files } from "#types/Files";
 
+// @debt Nothing calls this since the Codex edit hook was removed (#254); delete it with its test or give it a consumer.
 export function getPatchedFiles(patch: string): Files {
   const lines = patch.trim().split(/\r?\n/);
 

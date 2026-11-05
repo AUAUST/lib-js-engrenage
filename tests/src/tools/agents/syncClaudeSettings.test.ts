@@ -14,7 +14,7 @@ const settings = `{
 `;
 
 describe("syncClaudeSettings", () => {
-  test("adds the edit hook to existing settings once", async () => {
+  test("adds the hooks to existing settings once", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
         'export default { agents: { preferred: ["claude"] } };\n',
@@ -34,17 +34,6 @@ describe("syncClaudeSettings", () => {
     "deny": ["Read(**/.env)"]
   },
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Edit|MultiEdit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "pnpm --silent engrenage agents claude hook edit"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -52,7 +41,27 @@ describe("syncClaudeSettings", () => {
           {
             "type": "command",
             "command": "pnpm --silent engrenage agents claude hook github",
-            "if": "Bash(gh issue *)"
+            "if": "Bash(gh issue create *)"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm --silent engrenage agents claude hook github",
+            "if": "Bash(gh issue edit *)"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm --silent engrenage agents claude hook github",
+            "if": "Bash(gh issue comment *)"
           }
         ]
       }

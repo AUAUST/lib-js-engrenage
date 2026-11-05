@@ -6,15 +6,6 @@ import { registerLazySubcommands } from "#workflows/cli/operations/registerLazyS
 
 export const hook = defineCommand((command) => {
   return registerLazySubcommands(command, {
-    edit: {
-      description:
-        "Fix, format and lint the files Codex patched and warn when an entry is over budget, reading its PostToolUse payload from stdin.",
-      async load() {
-        const { edit } = await import("#bin/engrenage/agents/codex/hook/edit");
-
-        return edit;
-      },
-    },
     github: {
       description:
         "Warn or deny when the body of a `gh issue create|edit|comment` command is over budget, reading Codex's PreToolUse payload from stdin.",

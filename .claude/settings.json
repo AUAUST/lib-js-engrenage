@@ -19,17 +19,6 @@
     ]
   },
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Edit|MultiEdit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "pnpm --silent engrenage agents claude hook edit"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -37,7 +26,27 @@
           {
             "type": "command",
             "command": "pnpm --silent engrenage agents claude hook github",
-            "if": "Bash(gh issue *)"
+            "if": "Bash(gh issue create *)"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm --silent engrenage agents claude hook github",
+            "if": "Bash(gh issue edit *)"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm --silent engrenage agents claude hook github",
+            "if": "Bash(gh issue comment *)"
           }
         ]
       }

@@ -4,13 +4,13 @@ import { emptyObjectFile } from "#foundation/json/constants";
 import { readJsonValue, writeJsonValue } from "#foundation/json/index";
 import { jsonIndentation } from "#project/format/constants";
 import {
-  claudeEditHook,
-  claudeGithubHook,
   claudeHiddenAttribution,
+  claudeHookPrefix,
+  claudeHooks,
   claudeSettingsFile,
 } from "#tools/agents/claude/constants";
 import { agentsSection } from "#tools/agents/operations/agentsSection";
-import { syncHook } from "#tools/agents/operations/syncHook";
+import { syncHooks } from "#tools/agents/operations/syncHooks";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";
 
@@ -76,12 +76,11 @@ export async function syncClaudeSettings(
     return;
   }
 
-  for (const hook of [claudeEditHook, claudeGithubHook]) {
-    await syncHook(config, {
-      file: claudeSettingsFile,
-      hook,
-    });
-  }
+  await syncHooks(config, {
+    file: claudeSettingsFile,
+    hooks: claudeHooks,
+    prefix: claudeHookPrefix,
+  });
 
   if (attribution !== undefined) {
     await syncAttribution(config, attribution);

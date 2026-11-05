@@ -6,7 +6,7 @@ import type { Step } from "#project/steps/index";
 export function createCodexHooksStep(): Step {
   return {
     name: codexHooksFile,
-    message: "Fix, format and lint the files Codex edits with apply_patch?",
+    message: "Add the hooks of engrenage to Codex?",
     async isMissing({ resolve, filesystem }) {
       const agents = await resolve(agentsSection);
 
