@@ -31,7 +31,6 @@ Deferred questions, bugs, tasks and improvements.
 - [tsdown](tsdown.md): Generated tsdown build configuration: entries, outputs and declaration files.
 - [package-json](package-json.md): Published package contents and fields derived by the sync `package` target.
 - [file-editing](file-editing.md): In-memory editing of JSON and YAML files in the codegen tooling.
-- [github](github.md): GitHub repository synchronization: labels, issue fields and issue templates.
 - [readme](readme.md): Project README content, deferred until the API stops breaking at every release.
 - [coding-style](coding-style.md): Local coding conventions and linting.
 - [utils](utils.md): Shared helpers and their placement.
