@@ -61,7 +61,7 @@ Never start a large refactor, even partly: an issue costs less than a half-appli
 When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then create one. Make the task complete through its ancestors, if any, for a worker who treats everything outside **Questions** as decided and applies it without redesign:
 
 ```markdown
-#<plan> › … › #<parent> · §<section>: <gist>
+#<plan> › … › #<parent> · <section>: <gist>
 
 ## Context
 

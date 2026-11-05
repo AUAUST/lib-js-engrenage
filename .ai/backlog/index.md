@@ -38,6 +38,5 @@ Deferred questions, bugs, tasks and improvements.
 - [structure](structure.md): Project structure description, its report and the tooling generated from it.
 - [changesets](changesets.md): Changesets configuration and presets.
 - [format](format.md): Formatting conventions of `project/format` and the tools they map to.
-- [cli](cli.md): CLI workflow: command registration, subprocesses and process lifetime.
 - [github](github.md): Generated GitHub workflows and templates.
 - [agent-instructions](agent-instructions.md): Shared agent instructions, skills and backlog conventions.

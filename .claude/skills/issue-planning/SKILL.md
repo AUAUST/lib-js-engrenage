@@ -111,8 +111,8 @@ Any issue may end with a **Questions** section while something is open: the only
 
 ## Map
 
-1. #<n>: <what the task delivers> · [§<section>](#<section-anchor>)
-2. #<n>: <what the block delivers> · §<section>
+1. #<n>: <what the task delivers> · [<section>](#<section-anchor>)
+2. #<n>: <what the block delivers> · <section>
    - #<n>
    - #<n>
 3. #<n>: <what the nested plan contributes to this plan>
@@ -137,7 +137,7 @@ Any issue may end with a **Questions** section while something is open: the only
 ### Block
 
 ```markdown
-#<plan> › … › #<parent> · §<section>: <gist>
+#<plan> › … › #<parent> · <section>: <gist>
 
 ## Context
 
@@ -155,7 +155,7 @@ Any issue may end with a **Questions** section while something is open: the only
 ### Task
 
 ```markdown
-#<plan> › … › #<parent> · §<section>: <gist>
+#<plan> › … › #<parent> · <section>: <gist>
 
 ## Context
 

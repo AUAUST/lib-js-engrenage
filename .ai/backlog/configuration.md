@@ -33,42 +33,7 @@ Project configuration contract: environments, option shapes and list options.
 - want: a data-carrying trait or option (`ownedDirectories`) that environment `dirs` defaults skip, designed with the first host preset.
 - done: a host preset declaring a directory as owned keeps the environment default out of it.
 
-## 6. Option names reuse one word for different vocabularies
+## 6. Option declarers and helpers sit in the wrong modules
 
-- why: `layout` is `roots | mirror` in `tests` and `commands | domains` in `bin` and `scripts`; `commands` is both a `layout` value and the `bin.commands` entry map; `./config` and `./config/constants` resolve to different domains; prettier, git and agents take sections in `engrenage.config.ts` while eslint, vite, vitest and tsdown take options only as definer arguments.
-- want: distinct names (`tests.mirror`, `bin.tree`, `bin.entries`) and one rule for where tool options live.
-- done: each option name has one meaning and every tool is configured the same way.
-
-## 7. The "No package.json found" guard is repeated in five modules
-
-- sites: `src/workflows/cli/operations/createStepContext.ts:65`, `src/tools/tsdown/operations/createTsdownConfig.ts:150`, `src/tools/changesets/setup/syncChangesetConfig.ts:52`, `src/tools/pnpm/setup/createPnpmStep.ts:29`, `bin/engrenage/pnpm/upgrade.ts:45`, `describeMissing` of `createPackageJson`.
-- why: each checks the resolved config has a package.json and throws the same error.
-- want: the resolved config exposes a required package.json path.
-
-## 8. Config declarations state defaults they do not own or did not verify
-
-- sites: `src/foundation/options/config/declareManagedList.ts:21`, `src/project/config/operations/createProjectSections.ts:335`, `src/project/environments/config/schemas/binSchema.ts:31`, `testsSchema.ts:76`, `src/project/tsconfig/config/declareEnvironmentTsconfig.ts:93`, `src/tools/github/config/schemas/githubSchema.ts:13`.
-- why: defaults are computed elsewhere, so declarations only document them; three claims were never run. The explicitness check reads raw input (see `structure.12`).
-- want: run the unverified behaviour and correct the text; the `tests.dist` default depends on its published trait in its declaration.
-
-## 9. `build.outDir` resolution depends on parsing the tsconfig
-
-- sites: `src/project/config/operations/createProjectSections.ts:670` (unreadable tsconfig hides the output directory, so its alias is generated instead of skipped), `:740` (resolved on access, unlike other sections), `src/project/tsconfig/operations/produceTsconfigOutDir.ts:45` (revalidates raw `build`; `structure.8`).
-- want: the output directory resolves without parsing the tsconfig; the resolved build section exposes it.
-
-## 10. Option declarers and helpers sit in the wrong modules
-
-- sites: `src/foundation/options/config/declareLocation.ts:9` (declarers split by imports, not concern), `src/foundation/options/index.ts:52` (`globsSchema.ts` also default-exports `globSchema`, which no barrel exposes), `src/foundation/options/utils/createAccessors.ts:7` (generic factory used by the tsconfig and package.json models), `src/project/structure/config/schemas/structureOptions.ts:12` (spreadable record of declarations in `schemas`). Related: `structure.17`, `structure.18`.
+- sites: `src/foundation/options/config/declareLocation.ts:9` (declarers split by imports, not concern), `src/foundation/options/index.ts:52` (`globsSchema.ts` also default-exports `globSchema`, which no barrel exposes), `src/foundation/options/utils/createAccessors.ts:7` (generic factory used by the tsconfig and package.json models), `src/project/structure/config/schemas/structureOptions.ts:12` (spreadable record of declarations in `schemas`). Related: role contracts in #227.
 - want: each declarer and schema in the module its concern names; `globSchema` in its own module.
-
-## 11. Project config caches go stale or load the file twice
-
-- sites: `src/project/config/operations/createProjectSections.ts:247` (memo key holds only the base tsconfig content, so staged changes to an extended local tsconfig are missed within a pass), `src/project/config/operations/readConfig.ts:7` (duplicates `workflows/registry` `readConfig` and `loadConfig`, second cache, no validation).
-- why: definers read an unvalidated partial config; a process may load the file twice. Adjacent: #57, `structure.20`.
-- want: one validating loader and one cache owner; the memo key covers extended local tsconfigs.
-
-## 12. `define` stays in `project/config`, so its tests run from source only
-
-- site: `src/project/config/utils/define.ts:7`
-- why: `define` needs internals `project/config` does not export; its public-specifier tests became source-only (`structure.22`).
-- want: a placement that lets the tests reach the public entry.
