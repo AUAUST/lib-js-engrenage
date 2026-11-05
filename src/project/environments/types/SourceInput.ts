@@ -137,7 +137,7 @@ export interface SourceInput {
   bundled?: (boolean | undefined)
   /**
    * Subpaths the package exposes besides its public domains, mapped to their source file; both sides use the same single `*` or none.
-   * A public domain exposes its `index.ts` on its own, so only other files are listed here; a subpath a public domain already exposes fails.
+   * A public domain, one holding the entry role's file, exposes that file on its own, so only other files are listed here; a subpath a public domain already exposes fails.
    * They feed the tsdown entries, hence the `exports` of `package.json`, and the `paths` of the base tsconfig.
    * @default none, so only public domains are exposed
    */

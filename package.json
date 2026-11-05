@@ -41,8 +41,8 @@
   "imports": {
     "#bin/*": "./bin/*.ts",
     "#constants": "./src/constants.ts",
+    "#entry": "./src/entry.ts",
     "#foundation/*": "./src/foundation/*.ts",
-    "#index": "./src/index.ts",
     "#package.json": "./package.json",
     "#project/*": "./src/project/*.ts",
     "#scripts/*": "./scripts/*.ts",

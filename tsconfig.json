@@ -2,7 +2,7 @@
   "extends": "./data/tsconfig/library.json",
   "compilerOptions": {
     "paths": {
-      "@auaust/engrenage": ["./src/index.ts"],
+      "@auaust/engrenage": ["./src/entry.ts"],
       "@auaust/engrenage/constants": ["./src/constants.ts"],
       "@auaust/engrenage/*/constants": ["./src/tools/*/constants.ts"],
       "@auaust/engrenage/agents/*/constants": [
@@ -11,24 +11,24 @@
       "@auaust/engrenage/config/constants": [
         "./src/project/config/constants.ts"
       ],
-      "@auaust/engrenage/baseline": ["./src/project/baseline/index.ts"],
-      "@auaust/engrenage/format": ["./src/project/format/index.ts"],
-      "@auaust/engrenage/package": ["./src/project/package/index.ts"],
-      "@auaust/engrenage/agents": ["./src/tools/agents/index.ts"],
-      "@auaust/engrenage/agents/claude": ["./src/tools/agents/claude/index.ts"],
-      "@auaust/engrenage/agents/codex": ["./src/tools/agents/codex/index.ts"],
-      "@auaust/engrenage/changesets": ["./src/tools/changesets/index.ts"],
-      "@auaust/engrenage/eslint": ["./src/tools/eslint/index.ts"],
-      "@auaust/engrenage/git": ["./src/tools/git/index.ts"],
-      "@auaust/engrenage/github": ["./src/tools/github/index.ts"],
-      "@auaust/engrenage/pnpm": ["./src/tools/pnpm/index.ts"],
-      "@auaust/engrenage/prettier": ["./src/tools/prettier/index.ts"],
-      "@auaust/engrenage/tsdown": ["./src/tools/tsdown/index.ts"],
-      "@auaust/engrenage/typescript": ["./src/tools/typescript/index.ts"],
-      "@auaust/engrenage/vite": ["./src/tools/vite/index.ts"],
-      "@auaust/engrenage/vitest": ["./src/tools/vitest/index.ts"],
-      "@auaust/engrenage/vscode": ["./src/tools/vscode/index.ts"],
-      "@auaust/engrenage/config": ["./src/workflows/config/index.ts"]
+      "@auaust/engrenage/baseline": ["./src/project/baseline/entry.ts"],
+      "@auaust/engrenage/format": ["./src/project/format/entry.ts"],
+      "@auaust/engrenage/package": ["./src/project/package/entry.ts"],
+      "@auaust/engrenage/agents": ["./src/tools/agents/entry.ts"],
+      "@auaust/engrenage/agents/claude": ["./src/tools/agents/claude/entry.ts"],
+      "@auaust/engrenage/agents/codex": ["./src/tools/agents/codex/entry.ts"],
+      "@auaust/engrenage/changesets": ["./src/tools/changesets/entry.ts"],
+      "@auaust/engrenage/eslint": ["./src/tools/eslint/entry.ts"],
+      "@auaust/engrenage/git": ["./src/tools/git/entry.ts"],
+      "@auaust/engrenage/github": ["./src/tools/github/entry.ts"],
+      "@auaust/engrenage/pnpm": ["./src/tools/pnpm/entry.ts"],
+      "@auaust/engrenage/prettier": ["./src/tools/prettier/entry.ts"],
+      "@auaust/engrenage/tsdown": ["./src/tools/tsdown/entry.ts"],
+      "@auaust/engrenage/typescript": ["./src/tools/typescript/entry.ts"],
+      "@auaust/engrenage/vite": ["./src/tools/vite/entry.ts"],
+      "@auaust/engrenage/vitest": ["./src/tools/vitest/entry.ts"],
+      "@auaust/engrenage/vscode": ["./src/tools/vscode/entry.ts"],
+      "@auaust/engrenage/config": ["./src/workflows/config/entry.ts"]
     }
   },
   "files": [],

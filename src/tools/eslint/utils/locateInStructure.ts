@@ -48,6 +48,7 @@ export function locateInStructure(
       environment,
       root: structure.root,
       indexFile: structure.indexFile,
+      entryFile: structure.entryFile,
       node,
       contract,
       relativePath: path.slice(

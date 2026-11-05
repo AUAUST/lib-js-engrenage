@@ -5,7 +5,7 @@ import { isString } from "@auaust/toolkit/isString";
 import { engrenage } from "#constants";
 import { resolveListOption } from "#foundation/options/utils/resolveListOption";
 import { apiLibraryGroups } from "#project/baseline/constants";
-import { includesEsLibrary } from "#project/baseline/utils/includesEsLibrary";
+import { includesEsLibrary } from "#project/baseline/index";
 import { resolveTsconfigLibrary } from "#project/tsconfig/operations/resolveTsconfigLibrary";
 import { resolveTsconfigRuntime } from "#project/tsconfig/operations/resolveTsconfigRuntime";
 import { readTsconfigValue } from "#project/tsconfig/utils/readTsconfigValue";

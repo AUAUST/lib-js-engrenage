@@ -1,9 +1,23 @@
-import { definePrettierConfig } from "#tools/prettier/operations/definePrettierConfig";
+// @barrel setup/*.ts named
+export { createPrettierignoreStep } from "#tools/prettier/setup/createPrettierignoreStep";
+export { createPrettierStep } from "#tools/prettier/setup/createPrettierStep";
+export { syncPrettierignoreFile } from "#tools/prettier/setup/syncPrettierignoreFile";
+// @end
 
-export { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
+// @barrel operations/*.ts named
 export { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
 export { definePrettierConfig } from "#tools/prettier/operations/definePrettierConfig";
-export { syncPrettierignoreFile } from "#tools/prettier/setup/syncPrettierignoreFile";
+export { loadPrettier } from "#tools/prettier/operations/loadPrettier";
+export { resolvePrettier } from "#tools/prettier/operations/resolvePrettier";
+// @end
+
+// @barrel config/schemas/*.ts named
+export { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
+// @end
+
+import { definePrettierConfig } from "#tools/prettier/operations/definePrettierConfig";
+
+export { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
 
 /** @debt the default export loads the project configuration as soon as the entry is imported, even by consumers that only want `definePrettierConfig`; a lazy default needs a dedicated entry */
 export default definePrettierConfig();

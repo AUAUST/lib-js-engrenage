@@ -6,44 +6,61 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',
-  "src/index.ts": "",
+  "src/entry.ts": "",
   "src/tools/alpha/index.ts": "",
+  "src/tools/alpha/entry.ts": "",
   "src/tools/beta/index.ts": "",
+  "src/tools/beta/entry.ts": "",
   "src/tools/beta/inner/index.ts": "",
   "src/project/model/index.ts": "",
+  "src/project/model/entry.ts": "",
   "src/hidden/index.ts": "",
 };
 
-async function exposed(source: string) {
+async function exposed(
+  source: string,
+  extra: Record<string, string> = {},
+  roles = "",
+) {
   const project = createTemporaryProject({
     ...files,
-    "engrenage.config.ts": `export default { src: ${source} };\n`,
+    ...extra,
+    "engrenage.config.ts": `export default { preset: "library", ${roles} src: ${source} };\n`,
   });
 
   return (await loadConfig(project.root)).src.exports;
 }
 
 describe("domain entries", () => {
-  test("a public domain exposes its index by its path without namespaces, an internal one nothing", async () => {
+  test("a domain holding an entry exposes it by its path without namespaces, one without nothing", async () => {
     expect(
       await exposed(`{
         namespaces: { tools: {}, project: {} },
-        domains: { "tools/*": { public: true }, "project/model": { public: true } },
       }`),
     ).toEqual({
-      "./alpha": "src/tools/alpha/index.ts",
-      "./beta": "src/tools/beta/index.ts",
-      "./model": "src/project/model/index.ts",
+      "./alpha": "src/tools/alpha/entry.ts",
+      "./beta": "src/tools/beta/entry.ts",
+      "./model": "src/project/model/entry.ts",
     });
+  });
+
+  test("the entry role's file names the entry of a domain", async () => {
+    expect(
+      await exposed(
+        `{ namespaces: { tools: {}, project: {} } }`,
+        { "src/tools/beta/exports.ts": "" },
+        `roles: { define: { entry: { purpose: "Entry.", file: ["exports.ts"] } } },`,
+      ),
+    ).toEqual({ "./beta": "src/tools/beta/exports.ts" });
   });
 
   test("a declared specifier replaces the derived one", async () => {
     expect(
       await exposed(`{
         namespaces: { tools: {} },
-        domains: { "tools/alpha": { public: true, specifier: "./first" } },
+        domains: { "tools/alpha": { specifier: "./first" } },
       }`),
-    ).toEqual({ "./first": "src/tools/alpha/index.ts" });
+    ).toMatchObject({ "./first": "src/tools/alpha/entry.ts" });
   });
 
   test("two public domains with one specifier fail", async () => {
@@ -51,8 +68,8 @@ describe("domain entries", () => {
       exposed(`{
         namespaces: { tools: {} },
         domains: {
-          "tools/alpha": { public: true, specifier: "./same" },
-          "tools/beta": { public: true, specifier: "./same" },
+          "tools/alpha": { specifier: "./same" },
+          "tools/beta": { specifier: "./same" },
         },
       }`),
     ).rejects.toThrow("share the specifier './same'");

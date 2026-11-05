@@ -11,12 +11,12 @@ export interface RolesOptionInput {
    * Known roles to turn on, applied to the defaults before `define`.
    * @default none
    */
-  enable?: (("index" | "constants" | "declarations" | "types" | "utils" | "errors" | "enums" | "ports" | "adapters" | "fixtures" | "setup.ts" | "schemas" | "components" | "hooks" | "contexts" | "pages" | "styles")[] | undefined)
+  enable?: (("index" | "entry" | "constants" | "declarations" | "types" | "utils" | "errors" | "enums" | "ports" | "adapters" | "fixtures" | "setup.ts" | "schemas" | "components" | "hooks" | "contexts" | "pages" | "styles")[] | undefined)
   /**
    * Known roles to turn off, applied to the defaults before `define`.
    * @default none
    */
-  disable?: (("index" | "constants" | "declarations" | "types" | "utils" | "errors" | "enums" | "ports" | "adapters" | "fixtures" | "setup.ts" | "schemas" | "components" | "hooks" | "contexts" | "pages" | "styles")[] | undefined)
+  disable?: (("index" | "entry" | "constants" | "declarations" | "types" | "utils" | "errors" | "enums" | "ports" | "adapters" | "fixtures" | "setup.ts" | "schemas" | "components" | "hooks" | "contexts" | "pages" | "styles")[] | undefined)
   /**
    * Roles to define by name, applied last: a role that already exists is redefined whole, and a defined role is on unless it is scoped.
    * @default none

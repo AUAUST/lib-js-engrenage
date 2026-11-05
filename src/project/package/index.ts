@@ -1,3 +1,16 @@
+// @barrel setup/*.ts named
+export { createPackageStep } from "#project/package/setup/createPackageStep";
+// @end
+
+// @barrel operations/*.ts named
+export { createPackageJson } from "#project/package/operations/createPackageJson";
+export { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
+// @end
+
+// @barrel config/schemas/*.ts named
+export { exposedFilesSchema } from "#project/package/config/schemas/exposedFilesSchema";
+// @end
+
 // @barrel utils/*.ts named
 export { compareVersions } from "#project/package/utils/compareVersions";
 export { parseMajorVersion } from "#project/package/utils/parseMajorVersion";

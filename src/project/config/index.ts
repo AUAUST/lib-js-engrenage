@@ -20,8 +20,8 @@ export * from "#project/config/types/ResolvedGlobal";
 export * from "#project/config/types/ResolvedGlobals";
 export * from "#project/config/types/ResolvedRuntimeSettings";
 // @end
+export type { Runtime } from "#project/baseline/index";
 export * from "#foundation/filesystem/types/Filesystem";
-export * from "#project/baseline/types/Runtime";
 export * from "#project/build/types/ResolvedBuild";
 export * from "#project/environments/types/ResolvedBin";
 export * from "#project/environments/types/ResolvedCodeEnvironment";

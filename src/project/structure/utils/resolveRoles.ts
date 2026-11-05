@@ -5,6 +5,7 @@ import {
   defaultEffectLevels,
   environmentRoleKeys,
   noRoles,
+  publishedRoleKeys,
 } from "#project/structure/constants";
 import { resolveCatalogue } from "#project/structure/utils/resolveCatalogue";
 import { resolveRoleContracts } from "#project/structure/utils/resolveRoleContracts";
@@ -79,7 +80,13 @@ export function resolveRoles({
     layers: [roles.define, environmentRoles.define],
   });
 
-  const active = new Set<string>(environmentRoleKeys[environment]);
+  const active = new Set<string>([
+    ...environmentRoleKeys[environment],
+    ...(roles.published && environment in publishedRoleKeys
+      ? publishedRoleKeys[environment as keyof typeof publishedRoleKeys]
+      : []),
+  ]);
+
   const aliases: Record<string, string> = {};
 
   for (const option of [roles, environmentRoles]) {

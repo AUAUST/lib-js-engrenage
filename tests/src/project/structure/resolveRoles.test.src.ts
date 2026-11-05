@@ -29,6 +29,7 @@ function resolve({
       ...normalizeRoles(declared),
       enabled: declared.enabled,
       verbatimModuleSyntax: true,
+      published: false,
     },
     environmentRoles: normalizeRoles(
       rolesOptionSchema.resolve(environmentRoles, undefined, "roles"),

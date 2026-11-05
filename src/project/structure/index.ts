@@ -2,6 +2,7 @@ export { findImportCycles } from "#project/structure/operations/findImportCycles
 export { resolveAliases } from "#project/structure/operations/resolveAliases";
 export { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
 export { resolveImportRules } from "#project/structure/operations/resolveImportRules";
+export { getEntryFile } from "#project/structure/utils/getEntryFile";
 export { getIndexFile } from "#project/structure/utils/getIndexFile";
 export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 export { rankModule } from "#project/structure/utils/rankModule";

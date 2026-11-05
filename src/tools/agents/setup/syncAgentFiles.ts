@@ -5,7 +5,7 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { syncFiles } from "#foundation/blocks/operations/syncFiles";
 import { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
 import { codexFile } from "#tools/agents/codex/constants";
-import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
+import { syncCodexInstructions } from "#tools/agents/codex/index";
 import { attributionRules, markdownBlocks } from "#tools/agents/constants";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";

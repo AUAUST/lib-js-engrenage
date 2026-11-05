@@ -8,6 +8,11 @@ import type { RoleKey } from "#project/structure/types/RoleKey";
 
 export const roleCatalogue = {
   "index": { purpose: "The domain's public surface.", file: ["index.ts"] },
+  "entry": {
+    purpose:
+      "The package entry of a public domain, re-exporting the public subset of its surface.",
+    file: ["entry.ts"],
+  },
   "constants": {
     purpose: "Deeply read-only constants of the domain.",
     file: ["constants.ts"],
@@ -117,6 +122,10 @@ export const testsRoleKeys = [
   "setup.ts",
 ] as const satisfies readonly RoleKey[];
 
+export const publishedRoleKeys = {
+  src: ["entry"],
+} as const satisfies Partial<Record<string, readonly RoleKey[]>>;
+
 export const environmentRoleKeys = {
   src: defaultRoleKeys,
   tests: [...defaultRoleKeys, ...testsRoleKeys],
@@ -127,6 +136,8 @@ export const environmentRoleKeys = {
 export const indexRole = "index" satisfies RoleKey;
 
 export const defaultIndexFile = "index.ts";
+
+export const entryRole = "entry" satisfies RoleKey;
 
 export const testsSetupRole = "setup.ts" satisfies RoleKey;
 

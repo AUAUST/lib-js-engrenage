@@ -1,5 +1,11 @@
+// @barrel setup/*.ts named
+export { createViteConfigStep } from "#tools/vite/setup/createViteConfigStep";
+// @end
+
+// @barrel operations/*.ts named
 export { createViteConfig } from "#tools/vite/operations/createViteConfig";
 export { defineViteConfig } from "#tools/vite/operations/defineViteConfig";
+// @end
 
 // @barrel types/*.ts all
 export * from "#tools/vite/types/Config";

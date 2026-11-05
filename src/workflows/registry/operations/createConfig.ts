@@ -2,13 +2,13 @@ import { createFilesystem } from "#foundation/filesystem/operations/createFilesy
 import { createSections } from "#foundation/options/utils/createSections";
 import { liveSections } from "#project/config/constants";
 import { createProjectSections } from "#project/config/operations/createProjectSections";
-import { formatContent } from "#project/format/operations/formatContent";
-import { resolveAgents } from "#tools/agents/operations/resolveAgents";
-import { resolveGit } from "#tools/git/operations/resolveGit";
-import { resolveGithub } from "#tools/github/operations/resolveGithub";
+import { formatContent } from "#project/format/index";
+import { resolveAgents } from "#tools/agents/index";
+import { resolveGit } from "#tools/git/index";
+import { resolveGithub } from "#tools/github/index";
 import { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
-import { resolvePrettier } from "#tools/prettier/operations/resolvePrettier";
-import { resolveVscode } from "#tools/vscode/operations/resolveVscode";
+import { resolvePrettier } from "#tools/prettier/index";
+import { resolveVscode } from "#tools/vscode/index";
 import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
 import type { OptionContext } from "#foundation/options/types/OptionContext";
 import type { RawConfig } from "#project/config/types/RawConfig";
@@ -22,8 +22,10 @@ export function createConfig({
   configFile,
   filesystem = createFilesystem(root, (path, content) => {
     return formatContent(content, {
- path, root, formatter: formatWithPrettier 
-});
+      path,
+      root,
+      formatter: formatWithPrettier,
+    });
   }),
 }: {
   root: Directory;

@@ -6,7 +6,7 @@ import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
 import { resolveListOption } from "#foundation/options/utils/resolveListOption";
 import { jsonIndentation } from "#project/format/constants";
-import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
+import { writePackageJsonValue } from "#project/package/index";
 import {
   isLeftAlone,
   toJsonValue,

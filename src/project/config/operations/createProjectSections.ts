@@ -10,8 +10,10 @@ import { filesIn } from "#foundation/filesystem/utils/filesIn";
 import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
 import { resolveSection } from "#foundation/options/utils/resolveSection";
 import { validate } from "#foundation/options/utils/validate";
-import { resolveSourceRuntime } from "#project/baseline/operations/resolveSourceRuntime";
-import { resolveNodeRuntime } from "#project/baseline/utils/resolveNodeRuntime";
+import {
+  resolveNodeRuntime,
+  resolveSourceRuntime,
+} from "#project/baseline/index";
 import { buildSchema } from "#project/build/config/schemas/buildSchema";
 import { cacheSchema } from "#project/config/config/schemas/cacheSchema";
 import { debugSchema } from "#project/config/config/schemas/debugSchema";
@@ -30,8 +32,8 @@ import { sourceSchema } from "#project/environments/config/schemas/sourceSchema"
 import { testsSchema } from "#project/environments/config/schemas/testsSchema";
 import { toolingSchema } from "#project/environments/config/schemas/toolingSchema";
 import { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
-import { formatSchema } from "#project/format/config/schemas/formatSchema";
-import { createPackageJson } from "#project/package/operations/createPackageJson";
+import { formatSchema } from "#project/format/index";
+import { createPackageJson } from "#project/package/index";
 import { presetSchema } from "#project/presets/config/schemas/presetSchema";
 import { traitsSchema } from "#project/presets/config/schemas/traitsSchema";
 import { resolveTraits } from "#project/presets/index";
@@ -150,6 +152,7 @@ export function createProjectSections({
       ...normalizeRoles(declared),
       enabled: declared.enabled,
       verbatimModuleSyntax: typescriptOption().verbatimModuleSyntax,
+      published: get("traits").published,
     });
   }
 

@@ -25,7 +25,7 @@ import { createImportPresets } from "#tools/eslint/utils/createImportPresets";
 import { createPlugin } from "#tools/eslint/utils/createPlugin";
 import { resolveBoundaries } from "#tools/eslint/utils/resolveBoundaries";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
-import { resolveGit } from "#tools/git/operations/resolveGit";
+import { resolveGit } from "#tools/git/index";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Options } from "#tools/eslint/types/Options";

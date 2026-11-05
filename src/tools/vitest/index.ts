@@ -1,3 +1,9 @@
+// @barrel setup/*.ts named
+export { createVitestConfigStep } from "#tools/vitest/setup/createVitestConfigStep";
+export { createVitestCoverageStep } from "#tools/vitest/setup/createVitestCoverageStep";
+export { createVitestStep } from "#tools/vitest/setup/createVitestStep";
+// @end
+
 export { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";
 export { createVitestLayer } from "#tools/vitest/operations/createVitestLayer";
 export { defineVitestConfig } from "#tools/vitest/operations/defineVitestConfig";

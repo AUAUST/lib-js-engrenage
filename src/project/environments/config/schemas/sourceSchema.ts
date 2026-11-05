@@ -8,19 +8,18 @@ import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { listDefaults } from "#foundation/options/utils/listDefaults";
 import { unset } from "#foundation/options/utils/unset";
-import { nodeMajorSchema } from "#project/baseline/config/schemas/nodeMajorSchema";
 import {
   apiGroupRoots,
   apiGroups,
   apiLibraryGroups,
 } from "#project/baseline/constants";
-import { findCurrentMonth } from "#project/baseline/utils/findCurrentMonth";
+import { findCurrentMonth, nodeMajorSchema } from "#project/baseline/index";
 import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
 import {
   defaultSourceDirectories,
   disabledCodeEnvironment,
 } from "#project/environments/constants";
-import { exposedFilesSchema } from "#project/package/config/schemas/exposedFilesSchema";
+import { exposedFilesSchema } from "#project/package/index";
 import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
 
@@ -49,7 +48,7 @@ export const sourceSchema = declareObject(
     exports: declare(exposedFilesSchema, {
       description: [
         "Subpaths the package exposes besides its public domains, mapped to their source file; both sides use the same single `*` or none.",
-        "A public domain exposes its `index.ts` on its own, so only other files are listed here; a subpath a public domain already exposes fails.",
+        "A public domain, one holding the entry role's file, exposes that file on its own, so only other files are listed here; a subpath a public domain already exposes fails.",
         "They feed the tsdown entries, hence the `exports` of `package.json`, and the `paths` of the base tsconfig.",
       ],
       optional: unset("none, so only public domains are exposed"),

@@ -19,11 +19,6 @@
       "count": 2
     }
   },
-  "src/index.ts": {
-    "auaust/import-surfaces": {
-      "count": 7
-    }
-  },
   "src/project/build/config/schemas/buildSchema.ts": {
     "auaust/import-surfaces": {
       "count": 6
@@ -41,7 +36,7 @@
   },
   "src/project/config/index.ts": {
     "auaust/import-surfaces": {
-      "count": 25
+      "count": 24
     }
   },
   "src/project/config/operations/createProjectConfig.ts": {
@@ -51,7 +46,7 @@
   },
   "src/project/config/operations/createProjectSections.ts": {
     "auaust/import-surfaces": {
-      "count": 52
+      "count": 48
     }
   },
   "src/project/config/operations/loadConfig.ts": {
@@ -106,17 +101,17 @@
   },
   "src/project/environments/config/schemas/binSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 6
+      "count": 5
     }
   },
   "src/project/environments/config/schemas/dataSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 5
+      "count": 4
     }
   },
   "src/project/environments/config/schemas/runtimeSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 3
+      "count": 2
     }
   },
   "src/project/environments/config/schemas/scriptsSchema.ts": {
@@ -126,7 +121,7 @@
   },
   "src/project/environments/config/schemas/sourceSchema.ts": {
     "auaust/import-surfaces": {
-      "count": 11
+      "count": 8
     }
   },
   "src/project/environments/config/schemas/testsSchema.ts": {
@@ -331,7 +326,7 @@
   },
   "src/project/tsconfig/operations/produceTsconfigTypes.ts": {
     "auaust/import-surfaces": {
-      "count": 6
+      "count": 5
     }
   },
   "src/project/tsconfig/operations/resolvePathAliases.ts": {
@@ -411,12 +406,12 @@
   },
   "src/project/workspaces/operations/resolveWorkspaces.ts": {
     "auaust/import-surfaces": {
-      "count": 4
+      "count": 3
     }
   },
   "src/project/workspaces/setup/syncWorkspaceFiles.ts": {
     "auaust/import-surfaces": {
-      "count": 9
+      "count": 8
     }
   },
   "src/project/workspaces/types/WorkspaceTsconfig.ts": {
@@ -471,7 +466,7 @@
   },
   "src/tools/agents/operations/addAgentRules.ts": {
     "auaust/import-surfaces": {
-      "count": 2
+      "count": 1
     }
   },
   "src/tools/agents/operations/addAgentSkills.ts": {
@@ -481,7 +476,7 @@
   },
   "src/tools/agents/operations/formatEditedFile.ts": {
     "auaust/import-surfaces": {
-      "count": 5
+      "count": 4
     }
   },
   "src/tools/agents/operations/getInstructionTemplates.ts": {
@@ -546,7 +541,7 @@
   },
   "src/tools/agents/setup/syncAgentFiles.ts": {
     "auaust/import-surfaces": {
-      "count": 5
+      "count": 4
     }
   },
   "src/tools/agents/setup/syncProjectMap.ts": {
@@ -576,7 +571,7 @@
   },
   "src/tools/eslint/operations/createEslintConfig.ts": {
     "auaust/import-surfaces": {
-      "count": 3
+      "count": 2
     }
   },
   "src/tools/eslint/operations/createPackageJsonRules.ts": {
@@ -726,7 +721,7 @@
   },
   "src/tools/pnpm/operations/resolveLatestPnpm.ts": {
     "auaust/import-surfaces": {
-      "count": 3
+      "count": 2
     }
   },
   "src/tools/pnpm/operations/upgradePnpmManifest.ts": {
@@ -736,12 +731,12 @@
   },
   "src/tools/pnpm/operations/writePnpmDeclaration.ts": {
     "auaust/import-surfaces": {
-      "count": 3
+      "count": 2
     }
   },
   "src/tools/pnpm/setup/createPnpmStep.ts": {
     "auaust/import-surfaces": {
-      "count": 4
+      "count": 2
     }
   },
   "src/tools/pnpm/setup/createWorkspaceStep.ts": {
@@ -796,7 +791,7 @@
   },
   "src/tools/prettier/setup/syncPrettierignoreFile.ts": {
     "auaust/import-surfaces": {
-      "count": 5
+      "count": 4
     }
   },
   "src/tools/prettier/utils/mapConventions.ts": {
@@ -826,7 +821,7 @@
   },
   "src/tools/tsdown/operations/resolveSourceEntries.ts": {
     "auaust/import-surfaces": {
-      "count": 6
+      "count": 5
     }
   },
   "src/tools/tsdown/plugins/createEmittedManifestPlugins.ts": {
@@ -861,7 +856,7 @@
   },
   "src/tools/typescript/index.ts": {
     "auaust/import-surfaces": {
-      "count": 9
+      "count": 7
     }
   },
   "src/tools/typescript/operations/syncBarrels.ts": {
@@ -886,7 +881,7 @@
   },
   "src/tools/typescript/setup/syncAliases.ts": {
     "auaust/import-surfaces": {
-      "count": 10
+      "count": 9
     }
   },
   "src/tools/typescript/setup/syncEnvFile.ts": {
@@ -951,7 +946,7 @@
   },
   "src/tools/vitest/operations/defineVitestConfig.ts": {
     "auaust/import-surfaces": {
-      "count": 3
+      "count": 2
     }
   },
   "src/tools/vitest/operations/findSetupFiles.ts": {
@@ -1006,7 +1001,7 @@
   },
   "src/tools/vscode/setup/syncVscodeFiles.ts": {
     "auaust/import-surfaces": {
-      "count": 11
+      "count": 10
     }
   },
   "src/workflows/cli/operations/createPrompter.ts": {
@@ -1016,7 +1011,7 @@
   },
   "src/workflows/cli/operations/createStepContext.ts": {
     "auaust/import-surfaces": {
-      "count": 12
+      "count": 11
     }
   },
   "src/workflows/cli/operations/defineToolCommands.ts": {
@@ -1051,12 +1046,12 @@
   },
   "src/workflows/init/operations/listInitSteps.ts": {
     "auaust/import-surfaces": {
-      "count": 30
+      "count": 3
     }
   },
   "src/workflows/init/setup/createConfigFileStep.ts": {
     "auaust/import-surfaces": {
-      "count": 5
+      "count": 4
     }
   },
   "src/workflows/init/setup/createDependencyStep.ts": {
@@ -1071,12 +1066,12 @@
   },
   "src/workflows/registry/config/schemas/configDeclaration.ts": {
     "auaust/import-surfaces": {
-      "count": 24
+      "count": 18
     }
   },
   "src/workflows/registry/operations/createConfig.ts": {
     "auaust/import-surfaces": {
-      "count": 13
+      "count": 7
     }
   },
   "src/workflows/registry/operations/loadConfig.ts": {
@@ -1096,12 +1091,12 @@
   },
   "src/workflows/sync/operations/syncTargets.ts": {
     "auaust/import-surfaces": {
-      "count": 13
+      "count": 2
     }
   },
   "src/workflows/sync/setup/syncPackageJson.ts": {
     "auaust/import-surfaces": {
-      "count": 9
+      "count": 5
     }
   },
   "src/workflows/sync/types/SyncTarget.ts": {

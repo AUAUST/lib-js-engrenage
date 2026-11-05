@@ -6,6 +6,7 @@ import { memoized } from "@auaust/toolkit/memoized";
 import { entries, freeze, values } from "@auaust/toolkit/object";
 
 import { noRoles } from "#project/structure/constants";
+import { getEntryFile } from "#project/structure/utils/getEntryFile";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
@@ -205,7 +206,6 @@ export function resolveEnvironmentStructure({
   tests?: TestsContext;
   layout?: ProgramLayout | undefined;
 }): EnvironmentStructure {
-  // @debt the public default applies after the glob metadata merge, which needs the declarations to keep unset fields, so it cannot live in the declaration
   const { strictness, namespaces } = options;
   const domains = entries(options.domains);
   const optOut = new Set(options.optOut);
@@ -229,6 +229,7 @@ export function resolveEnvironmentStructure({
   );
 
   const indexFile = getIndexFile(rolesFor([]));
+  const entryFile = getEntryFile(rolesFor([]));
 
   function roleOf(directory: string, parent: Parent): string | undefined {
     const { roles: contracts, aliases } = rolesFor(parent.scopes);
@@ -361,7 +362,8 @@ export function resolveEnvironmentStructure({
         ...(strays.length === 0
           ? {}
           : { strays: strays.map((file) => join(path, file)) }),
-        public: metadata.public ?? false,
+        public:
+          entryFile !== undefined && existsSync(join(root, path, entryFile)),
         ...(metadata.specifier === undefined
           ? {}
           : { specifier: metadata.specifier }),
@@ -542,6 +544,7 @@ export function resolveEnvironmentStructure({
     name,
     dirs,
     indexFile,
+    entryFile,
     strictness,
     root: tree,
     unclassified: collect(tree).filter(({ kind }) => kind === "unclassified"),

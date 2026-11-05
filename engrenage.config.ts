@@ -72,17 +72,8 @@ export default defineConfig({
     namespaces: {
       ".": { layers: ["foundation", "project", "tools", "workflows"] },
     },
-    domains: {
-      "tools/*": { public: true },
-      "tools/agents/claude": { public: true },
-      "tools/agents/codex": { public: true },
-      "workflows/config": { public: true },
-      "project/package": { public: true },
-      "project/baseline": { public: true },
-      "project/format": { public: true },
-    },
     exports: {
-      ".": "src/index.ts",
+      ".": "src/entry.ts",
       "./constants": "src/constants.ts",
       "./*/constants": "src/tools/*/constants.ts",
       "./agents/*/constants": "src/tools/agents/*/constants.ts",

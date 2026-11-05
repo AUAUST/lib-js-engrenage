@@ -21,11 +21,11 @@ function toSubpath(segments: readonly string[], node: StructureNode): string {
 function collectEntries(
   node: StructureNode,
   segments: readonly string[],
-  indexFile: string,
+  entryFile: string,
 ): (readonly [string, File])[] {
   return node.children.flatMap((child) => {
     if (child.kind === "namespace") {
-      return collectEntries(child, segments, indexFile);
+      return collectEntries(child, segments, entryFile);
     }
 
     if (child.kind !== "domain") {
@@ -36,9 +36,9 @@ function collectEntries(
 
     return [
       ...(child.public === true
-        ? [[toSubpath(path, child), `${child.path}/${indexFile}`] as const]
+        ? [[toSubpath(path, child), `${child.path}/${entryFile}`] as const]
         : []),
-      ...collectEntries(child, path, indexFile),
+      ...collectEntries(child, path, entryFile),
     ];
   });
 }
@@ -46,7 +46,7 @@ function collectEntries(
 export function resolveDomainEntries(
   structure: EnvironmentStructure | undefined,
 ): Record<string, File> {
-  if (structure === undefined) {
+  if (structure?.entryFile === undefined) {
     return {};
   }
 
@@ -55,7 +55,7 @@ export function resolveDomainEntries(
   for (const [subpath, file] of collectEntries(
     structure.root,
     [],
-    structure.indexFile,
+    structure.entryFile,
   )) {
     const previous = found.get(subpath);
 

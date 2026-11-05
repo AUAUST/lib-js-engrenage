@@ -3,7 +3,7 @@ import { directorySchema } from "#foundation/options/config/schemas/directorySch
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { defaultDataDirectories } from "#project/environments/constants";
-import { exposedFilesSchema } from "#project/package/config/schemas/exposedFilesSchema";
+import { exposedFilesSchema } from "#project/package/index";
 
 export const dataSchema = declareObject(
   {

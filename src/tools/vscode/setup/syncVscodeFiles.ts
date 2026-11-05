@@ -14,7 +14,7 @@ import { readJsonValue } from "#foundation/json/utils/readJsonValue";
 import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
 import { validate } from "#foundation/options/utils/validate";
 import { jsonIndentation } from "#project/format/constants";
-import { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
+import { loadInfoRules } from "#tools/eslint/index";
 import {
   eslintIntegration,
   extensionsFile,

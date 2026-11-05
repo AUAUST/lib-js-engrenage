@@ -4,7 +4,7 @@ import { fileSchema } from "#foundation/options/config/schemas/fileSchema";
 import { declare } from "#foundation/options/utils/declare";
 import { declareObject } from "#foundation/options/utils/declareObject";
 import { unset } from "#foundation/options/utils/unset";
-import { nodeMajorSchema } from "#project/baseline/config/schemas/nodeMajorSchema";
+import { nodeMajorSchema } from "#project/baseline/index";
 import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
 import { declareProgramLayout } from "#project/environments/config/declareProgramLayout";
 import {

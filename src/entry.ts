@@ -1,10 +1,11 @@
-export { syncFiles } from "#foundation/blocks/operations/syncFiles";
-export { syncIgnoreFile } from "#foundation/blocks/operations/syncIgnoreFile";
-export { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
-export { filesIn } from "#foundation/filesystem/utils/filesIn";
-export { loadConfig } from "#workflows/registry/operations/loadConfig";
-export type { Config } from "#workflows/registry/types/Config";
-/** @debt the root entry imports foundation and project modules directly instead of through their `index.ts` surfaces, which the environment-root rule allows only for public surfaces */
+export {
+  syncBlocks,
+  syncFiles,
+  syncIgnoreFile,
+} from "#foundation/blocks/index";
+export { filesIn } from "#foundation/filesystem/index";
+export { loadConfig } from "#workflows/registry/index";
+export type { Config } from "#workflows/registry/index";
 
 // @barrel types/*.ts all
 export * from "#types/BlockFillers";
@@ -28,4 +29,4 @@ export * from "#types/SyncResult";
 export * from "#types/SyncResults";
 export * from "#types/SyncStatus";
 // @end
-export { validate } from "#foundation/options/utils/validate";
+export { validate } from "#foundation/options/index";

@@ -1,3 +1,11 @@
+// @barrel operations/*.ts named
+export { resolveSourceRuntime } from "#project/baseline/operations/resolveSourceRuntime";
+// @end
+
+// @barrel config/schemas/*.ts named
+export { nodeMajorSchema } from "#project/baseline/config/schemas/nodeMajorSchema";
+// @end
+
 // @barrel utils/*.ts named
 export { addMonths } from "#project/baseline/utils/addMonths";
 export { assertBaselineSnapshot } from "#project/baseline/utils/assertBaselineSnapshot";

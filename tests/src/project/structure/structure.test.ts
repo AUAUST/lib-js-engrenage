@@ -9,13 +9,14 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',
-  "src/index.ts": "",
+  "src/entry.ts": "",
   "src/zone/top/index.ts": "",
   "src/zone/base/index.ts": "",
   "src/zone/mid/index.ts": "",
   "src/feature/index.ts": "",
   "src/feature/utils/a.ts": "",
   "src/feature/sub/index.ts": "",
+  "src/feature/sub/entry.ts": "",
   "src/feature/sub/types/T.ts": "",
   "src/errors/index.ts": "",
   "src/types/index.ts": "",
@@ -55,6 +56,7 @@ async function describeSource(options: string) {
 }
 
 const declaration = `{
+  preset: "library",
   src: {
     namespaces: {
       ".": { layers: ["zone", "*"] },
@@ -63,7 +65,6 @@ const declaration = `{
     },
     domains: {
       errors: { purpose: "Error classes." },
-      "feature/*": { public: true },
     },
     optOut: ["types"],
   },
@@ -179,7 +180,7 @@ describe("structure", () => {
     async function describeTests(layout: string, extra: string[]) {
       const project = createTemporaryProject({
         "package.json": '{ "name": "project", "type": "module" }',
-        "src/index.ts": "",
+        "src/entry.ts": "",
         "src/a/b/index.ts": "",
         ...record(
           ["tests/src/a/x.test.ts", "tests/fixtures/any/f.txt", ...extra].map(
@@ -229,7 +230,7 @@ describe("structure", () => {
     test("a mirror takes the kind of its counterpart, not its name", async () => {
       const project = createTemporaryProject({
         "package.json": '{ "name": "project", "type": "module" }',
-        "src/index.ts": "",
+        "src/entry.ts": "",
         "src/a/utils/index.ts": "",
         "src/a/b/index.ts": "",
         "src/a/b/utils/x.ts": "",
@@ -293,7 +294,7 @@ describe("tooling structure", () => {
 describe("inline roles", () => {
   const files = {
     "package.json": '{ "name": "project", "type": "module" }',
-    "src/index.ts": "",
+    "src/entry.ts": "",
     "src/x/index.ts": "",
     "src/x/game/types/T.ts": "",
     "src/x/types/T.ts": "",

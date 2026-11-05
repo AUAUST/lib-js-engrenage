@@ -11,15 +11,17 @@ function createProject() {
   return createTemporaryProject({
     "package.json": '{ "name": "project", "type": "module" }',
     "engrenage.config.ts": `export default {
+  preset: "library",
   agents: { preferred: ["claude"] },
   roles: { define: { handlers: { exports: "named-match" } } },
   src: {
     namespaces: { ".": { layers: ["base", "*"] } },
-    domains: { "feature": { public: true, purpose: "The feature." } },
+    domains: { "feature": { purpose: "The feature." } },
   },
 };\n`,
     "src/base/core/index.ts": "",
     "src/feature/index.ts": "",
+    "src/feature/entry.ts": "",
     "src/feature/handlers/run.ts": "",
   });
 }

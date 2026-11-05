@@ -4,7 +4,7 @@ import { last, toSorted, wrap } from "@auaust/primitive-kit/arrays";
 
 import { validate } from "#foundation/options/utils/validate";
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
-import { compareVersions } from "#project/package/utils/compareVersions";
+import { compareVersions } from "#project/package/index";
 import type { Directory } from "#types/Directory";
 
 const releaseSchema = pipe(string(), regex(/^\d+\.\d+\.\d+$/));

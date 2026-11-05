@@ -1,6 +1,6 @@
 import { values } from "@auaust/toolkit/object";
 
-import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
+import { syncCodexInstructions } from "#tools/agents/codex/index";
 import { attributionRules } from "#tools/agents/constants";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";

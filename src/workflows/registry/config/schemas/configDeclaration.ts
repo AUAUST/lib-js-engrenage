@@ -10,18 +10,18 @@ import { scriptsSchema } from "#project/environments/config/schemas/scriptsSchem
 import { sourceSchema } from "#project/environments/config/schemas/sourceSchema";
 import { testsSchema } from "#project/environments/config/schemas/testsSchema";
 import { toolingSchema } from "#project/environments/config/schemas/toolingSchema";
-import { formatSchema } from "#project/format/config/schemas/formatSchema";
+import { formatSchema } from "#project/format/index";
 import { presetSchema } from "#project/presets/config/schemas/presetSchema";
 import { traitsSchema } from "#project/presets/config/schemas/traitsSchema";
 import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
 import { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
 import { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
-import { agentsSchema } from "#tools/agents/config/schemas/agentsSchema";
-import { gitSchema } from "#tools/git/config/schemas/gitSchema";
-import { githubSchema } from "#tools/github/config/schemas/githubSchema";
-import { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
-import { vscodeSchema } from "#tools/vscode/config/schemas/vscodeSchema";
+import { agentsSchema } from "#tools/agents/index";
+import { gitSchema } from "#tools/git/index";
+import { githubSchema } from "#tools/github/index";
+import { prettierSchema } from "#tools/prettier/index";
+import { vscodeSchema } from "#tools/vscode/index";
 
 export const configDeclaration = declareObject({
   // Core

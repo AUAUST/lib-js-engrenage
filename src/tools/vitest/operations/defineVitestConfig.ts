@@ -1,4 +1,4 @@
-import { defineViteConfig } from "#tools/vite/operations/defineViteConfig";
+import { defineViteConfig } from "#tools/vite/index";
 import { createVitestLayer } from "#tools/vitest/operations/createVitestLayer";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";

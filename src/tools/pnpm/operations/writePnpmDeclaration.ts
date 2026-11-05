@@ -1,7 +1,7 @@
 import { wrap } from "@auaust/primitive-kit/arrays";
 
 import { jsonIndentation } from "#project/format/constants";
-import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
+import { writePackageJsonValue } from "#project/package/index";
 import type { PackageJson } from "#project/package/types/PackageJson";
 import type { File } from "#types/File";
 

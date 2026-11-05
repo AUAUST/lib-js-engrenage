@@ -3,7 +3,7 @@ import { includes, map } from "@auaust/primitive-kit/arrays";
 import { changesetsCli } from "#constants";
 import { syncIgnoreFile } from "#foundation/blocks/operations/syncIgnoreFile";
 import { codexFile } from "#tools/agents/codex/constants";
-import { createProjectIgnores } from "#tools/git/utils/createProjectIgnores";
+import { createProjectIgnores } from "#tools/git/index";
 import {
   changelogIgnores,
   codegenTitle,

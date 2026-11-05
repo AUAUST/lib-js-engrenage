@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { flatMap, wrap } from "@auaust/primitive-kit/arrays";
 import { entries, freeze, keys } from "@auaust/toolkit/object";
 
-import { indexRole } from "#project/structure/constants";
+import { entryRole, indexRole } from "#project/structure/constants";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportRelation } from "#project/structure/types/ImportRelation";
@@ -352,6 +352,19 @@ function indexOf({ path }: StructureNode, file: string): ImportRuleTarget {
   };
 }
 
+function rootFileRole(
+  { entryFile, indexFile }: EnvironmentStructure,
+  roles: ResolvedRoles["roles"],
+): { readonly role: string; readonly file: string } | undefined {
+  if (entryFile !== undefined) {
+    return { role: entryRole, file: entryFile };
+  }
+
+  return roles[indexRole] === undefined
+    ? undefined
+    : { role: indexRole, file: indexFile };
+}
+
 function resolveElementRules(
   structure: EnvironmentStructure,
   { roles }: ResolvedRoles,
@@ -365,7 +378,9 @@ function resolveElementRules(
   function filesOf(directory: string, only?: string): ImportRuleTarget[] {
     return fileGlobs
       .filter(({ name }) => {
-        return only === undefined ? name !== indexRole : name === only;
+        return only === undefined
+          ? name !== indexRole && name !== entryRole
+          : name === only;
       })
       .flatMap(({ globs }) => {
         return globs.map((glob): ImportRuleTarget => {
@@ -445,6 +460,21 @@ function resolveElementRules(
 
     for (const { targets, relation, reason } of grants) {
       rules.push(...createRule(source, targets, relation, "allow", reason));
+    }
+
+    if (structure.entryFile !== undefined && domain.public === true) {
+      rules.push(
+        ...createRule(
+          {
+            kind: "file",
+            path: join(domain.path, structure.entryFile),
+          },
+          surface(domain),
+          "own-roles",
+          "allow",
+          "a package entry re-exports its own domain's index.ts and public roles",
+        ),
+      );
     }
 
     for (const role of rolesOf(domain)) {
@@ -545,27 +575,41 @@ function resolveElementRules(
 
   visit(structure.root, { reaches: [], ancestors: [] });
 
-  if (fileGlobs.some(({ name }) => name === indexRole)) {
+  const rootRole = rootFileRole(structure, roles);
+
+  if (rootRole !== undefined) {
     const surfaces = flatMap(
       collect(structure.root).filter(({ kind }) => kind === "domain"),
-      surface,
+      (domain) => {
+        return [
+          ...surface(domain),
+          ...(rootRole.role === entryRole && domain.public === true
+            ? [
+                {
+                  kind: "file",
+                  path: join(domain.path, rootRole.file),
+                } satisfies ImportRuleTarget,
+              ]
+            : []),
+        ];
+      },
     );
 
     for (const directory of structure.dirs) {
       rules.push(
         ...createRule(
-          { kind: "file", path: join(directory, structure.indexFile) },
+          { kind: "file", path: join(directory, rootRole.file) },
           globalTargets,
           "global-roles",
           "allow",
           "anything imports global roles",
         ),
         ...createRule(
-          { kind: "file", path: join(directory, structure.indexFile) },
+          { kind: "file", path: join(directory, rootRole.file) },
           surfaces,
           "root-entry",
           "allow",
-          "the index.ts of an environment root imports any public surface",
+          `the ${rootRole.file} of an environment root imports any public surface`,
         ),
       );
     }
@@ -652,10 +696,12 @@ export function resolveImportRules({
     ...flatMap(elementEnvironments, (name) => {
       const structure = structures[name];
 
-      if (
-        structure === undefined ||
-        roles[name].roles[indexRole] === undefined
-      ) {
+      const root =
+        structure === undefined
+          ? undefined
+          : rootFileRole(structure, roles[name].roles);
+
+      if (structure === undefined || root === undefined) {
         return [];
       }
 
@@ -663,11 +709,11 @@ export function resolveImportRules({
         return createRule(
           { kind: "environment", environment },
           structure.dirs.map((directory): ImportRuleTarget => {
-            return { kind: "file", path: join(directory, structure.indexFile) };
+            return { kind: "file", path: join(directory, root.file) };
           }),
           "root-entry",
           "forbid",
-          "nothing imports the index.ts of an environment root",
+          `nothing imports the ${root.file} of an environment root`,
         );
       });
     }),

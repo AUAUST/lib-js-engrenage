@@ -5,10 +5,12 @@ import { entries } from "@auaust/toolkit/object";
 import { packageJsonFile } from "#constants";
 import { syncFiles } from "#foundation/blocks/operations/syncFiles";
 import { jsonIndentation } from "#project/format/constants";
-import { createPackageJson } from "#project/package/operations/createPackageJson";
-import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
-import { listPnpmWarnings } from "#tools/pnpm/utils/listPnpmWarnings";
-import { resolveCommandFiles } from "#tools/tsdown/operations/resolveCommandFiles";
+import {
+  createPackageJson,
+  writePackageJsonValue,
+} from "#project/package/index";
+import { listPnpmWarnings } from "#tools/pnpm/index";
+import { resolveCommandFiles } from "#tools/tsdown/index";
 import type { JsonValue } from "#foundation/json/types/JsonValue";
 import type { Runtime } from "#project/baseline/types/Runtime";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";

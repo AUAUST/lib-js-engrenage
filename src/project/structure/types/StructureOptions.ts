@@ -17,7 +17,6 @@ export interface StructureOptions<Reference = string> {
     Record<
       string,
       {
-        readonly public: boolean | undefined;
         readonly specifier: string | undefined;
         readonly purpose: string | undefined;
       }

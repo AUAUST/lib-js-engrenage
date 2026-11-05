@@ -3,11 +3,6 @@
 
 export interface DomainInput {
   /**
-   * Whether the domain is part of the package's public API.
-   * @default false
-   */
-  public?: (boolean | undefined)
-  /**
    * Public specifier of the domain, overriding the one derived from its path.
    * @default none
    */

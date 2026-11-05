@@ -6,6 +6,7 @@ export interface EnvironmentStructure {
   readonly name: StructureEnvironmentName;
   readonly dirs: Directories;
   readonly indexFile: string;
+  readonly entryFile: string | undefined;
   readonly strictness: "strict" | "loose";
   readonly root: StructureNode;
   readonly unclassified: readonly StructureNode[];

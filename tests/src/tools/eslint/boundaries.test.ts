@@ -14,6 +14,7 @@ async function createLinter(prefix = "auaust/import-") {
       name: "library",
       type: "module",
       imports: {
+        "#entry": "./src/entry.ts",
         "#foundation/*": "./src/foundation/*.ts",
         "#project/*": "./src/project/*.ts",
       },
@@ -35,6 +36,8 @@ async function createLinter(prefix = "auaust/import-") {
     "src/project/feature/inner/index.ts": exported,
     "src/project/feature/inner/utils/deep.ts": exported,
     "src/project/other/index.ts": exported,
+    "src/project/other/entry.ts": exported,
+    "src/entry.ts": exported,
     "src/project/other/utils/priv.ts": exported,
   });
 
@@ -90,6 +93,38 @@ describe("structure boundaries", () => {
         'export { value } from "#project/feature/utils/own";\n',
       ),
     ).toEqual([]);
+  });
+
+  test("lets only the root entry import a domain entry", async () => {
+    const lint = await createLinter();
+
+    expect(
+      await lint(
+        "src/project/feature/index.ts",
+        'export { value } from "#project/other/entry";\n',
+      ),
+    ).toEqual(["auaust/import-surfaces"]);
+
+    expect(
+      await lint(
+        "src/project/other/entry.ts",
+        'export { value } from "#project/other/index";\n',
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        "src/entry.ts",
+        'export { value as a } from "#project/other/entry";\nexport { value as b } from "#project/feature/index";\n',
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        "src/project/feature/index.ts",
+        'export { value } from "#entry";\n',
+      ),
+    ).not.toEqual([]);
   });
 
   test("gives utils the reach of their domain, at runtime and type-only", async () => {

@@ -5,7 +5,7 @@ import { freeze, getOwn } from "@auaust/toolkit/object";
 import { engrenage, packageJsonFile } from "#constants";
 import { readJsonValue } from "#foundation/json/utils/readJsonValue";
 import { jsonIndentation } from "#project/format/constants";
-import { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
+import { writePackageJsonValue } from "#project/package/index";
 import { resolveTraits } from "#project/presets/index";
 import { agentNames } from "#tools/agents/constants";
 import type { JsonValue } from "#foundation/json/types/JsonValue";

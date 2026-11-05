@@ -4,7 +4,7 @@ import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import { filesIn } from "#foundation/filesystem/utils/filesIn";
-import { createPackageJson } from "#project/package/operations/createPackageJson";
+import { createPackageJson } from "#project/package/index";
 import {
   directoryPlaceholder,
   workspaceEntryGlob,

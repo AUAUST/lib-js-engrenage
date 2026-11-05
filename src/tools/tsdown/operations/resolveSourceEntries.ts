@@ -1,4 +1,4 @@
-import { resolveExportPaths } from "#project/package/utils/resolveExportPaths";
+import { resolveExportPaths } from "#project/package/index";
 import { resolvePathAliases } from "#project/tsconfig/operations/resolvePathAliases";
 import type { ResolvedSource } from "#project/environments/types/ResolvedSource";
 import type { PackageJson } from "#project/package/types/PackageJson";
