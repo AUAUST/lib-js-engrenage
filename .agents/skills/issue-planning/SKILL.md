@@ -63,11 +63,11 @@ Split only for foundational change: new architecture or a new design pattern, re
 
 ## Nested plans
 
-Extract a part of a plan into its own plan when the Map grows too long to scan or the part is clearly distinct from the rest. Do it when obvious; otherwise propose it with the part's scope.
+Extract a part of a plan into its own plan when the Roadmap grows too long to scan or the part is clearly distinct from the rest. Do it when obvious; otherwise propose it with the part's scope.
 
 - A nested plan works on its own: its goal, design and decisions cover its part without reading the plans that reference it.
 - Move into it every fact only its part uses; link with their gist the facts it shares with other plans.
-- Other plans treat it as a task: one Map step, never expanded, with a gist stating what it contributes there.
+- Other plans treat it as a task: one Roadmap step, never expanded, with a gist stating what it contributes there.
 - Like any issue, it can be a step or block member of another plan, a sub-issue of a task or a prerequisite.
 
 ## Ordering
@@ -95,7 +95,7 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 1. **Goal.** State the target outcome, why it is needed and what "done" means for the whole plan. Create the plan issue as soon as the goal is clear.
 2. **Grounding.** Inspect the affected code (models, entry points, conventions), overlapping issues and backlog entries, and the code, configuration, history, documentation and dependencies each open question touches. Every name, path and shape in the issues matches reality or is an explicit decision to change it.
 3. **Design.** Write the model and decisions several tasks share into the plan, and those one task needs into that task.
-4. **Tasks.** Create, split, order and link each task as soon as its need is settled, keeping the plan's **Map** in sync.
+4. **Tasks.** Create, split, order and link each task as soon as its need is settled, keeping the plan's **Roadmap** in sync.
 5. **Maintenance.** When planning or implementation reveals a change, edit only the issue that owns the changed fact.
 
 ## Templates
@@ -109,7 +109,7 @@ Any issue may end with a **Questions** section while something is open: the only
 
 <Why this work is needed and the target state, in at most three lines.>
 
-## Map
+## Roadmap
 
 1. #<n>: <what the task delivers> · [<section>](#<section-anchor>)
 2. #<n>: <what the block delivers> · <section>
@@ -182,7 +182,7 @@ Any issue may end with a **Questions** section while something is open: the only
 - <What investigation could not settle: the findings and the candidate answers.>
 ```
 
-In the **Map**, give each step its gist and the plan sections it builds on, linking each section that is a heading of the plan. List a block's members under it as bare references, with no gist or section to keep in sync.
+In the **Roadmap**, give each step its gist and the plan sections it builds on, linking each section that is a heading of the plan. List a block's members under it as bare references, with no gist or section to keep in sync.
 
 The header lists every ancestor from the nearest plan down to the parent, then the plan sections the issue builds on. A plan has no header. Drop **Prerequisites** when tree order implies them all, and **Done when** when it would only say the Steps are done and the checks pass.
 

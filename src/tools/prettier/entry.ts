@@ -1,8 +1,8 @@
-import { definePrettierConfig } from "#src/tools/prettier/index";
+import { definePrettierConfig } from "#tools/prettier/index";
 
 export default definePrettierConfig();
 
-export { definePrettierConfig } from "#src/tools/prettier/index";
+export { definePrettierConfig } from "#tools/prettier/index";
 export {
   createPrettierConfig,
   formatWithPrettier,
