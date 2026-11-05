@@ -1,11 +1,10 @@
 import { array, looseObject, optional, string } from "valibot";
 
 import { emptyObjectFile } from "#foundation/json/constants";
-import { readJsonValue } from "#foundation/json/utils/readJsonValue";
-import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
-import { validate } from "#foundation/options/utils/validate";
+import { readJsonValue, writeJsonValue } from "#foundation/json/index";
+import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 import type { File } from "#types/File";
 

@@ -40,3 +40,33 @@ export {
   tsconfigEnvironments,
   unmanagedTsconfig,
 } from "#project/tsconfig/constants";
+
+// @barrel config/*.ts named
+export { declareEnvironmentTsconfig } from "#project/tsconfig/config/declareEnvironmentTsconfig";
+// @end
+
+// @barrel config/schemas/*.ts named
+export { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
+// @end
+
+// @barrel operations/*.ts named
+export { produceTsconfigExclude } from "#project/tsconfig/operations/produceTsconfigExclude";
+export { produceTsconfigInclude } from "#project/tsconfig/operations/produceTsconfigInclude";
+export { produceTsconfigLibrary } from "#project/tsconfig/operations/produceTsconfigLibrary";
+export { produceTsconfigModule } from "#project/tsconfig/operations/produceTsconfigModule";
+export { produceTsconfigOutDir } from "#project/tsconfig/operations/produceTsconfigOutDir";
+export { produceTsconfigSkipLibraryCheck } from "#project/tsconfig/operations/produceTsconfigSkipLibraryCheck";
+export { produceTsconfigSolution } from "#project/tsconfig/operations/produceTsconfigSolution";
+export { produceTsconfigTarget } from "#project/tsconfig/operations/produceTsconfigTarget";
+export { produceTsconfigTypes } from "#project/tsconfig/operations/produceTsconfigTypes";
+export { resolvePathAliases } from "#project/tsconfig/operations/resolvePathAliases";
+export { resolveTsconfigEnvironments } from "#project/tsconfig/operations/resolveTsconfigEnvironments";
+export { resolveTsconfigLibrary } from "#project/tsconfig/operations/resolveTsconfigLibrary";
+export { resolveTsconfigPresets } from "#project/tsconfig/operations/resolveTsconfigPresets";
+export { resolveTsconfigRuntime } from "#project/tsconfig/operations/resolveTsconfigRuntime";
+export { tsconfigProducers } from "#project/tsconfig/operations/tsconfigProducers";
+// @end
+
+// @barrel setup/*.ts named
+export { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
+// @end

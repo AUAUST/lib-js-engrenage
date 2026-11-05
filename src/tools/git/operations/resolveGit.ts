@@ -1,13 +1,15 @@
 import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
-import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
-import { resolveSection } from "#foundation/options/utils/resolveSection";
-import { locateFile } from "#project/config/utils/locateFile";
+import { createFilesystem } from "#foundation/filesystem/index";
+import { resolveSection } from "#foundation/options/index";
+import {
+  locateFile,
+  type ConfigContext,
+  type RawConfig,
+} from "#project/config/index";
 import { gitSchema } from "#tools/git/config/schemas/gitSchema";
 import { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
-import type { RawConfig } from "#project/config/types/RawConfig";
 import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 
 export function resolveGit(

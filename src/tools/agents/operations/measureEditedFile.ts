@@ -1,7 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 
-import { isWithin } from "#foundation/filesystem/utils/isWithin";
-import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
+import { isWithin, relativeWithin } from "#foundation/filesystem/index";
 import { getEntryBudgetKind } from "#tools/agents/utils/getEntryBudgetKind";
 import { getOverBudgetEntries } from "#tools/agents/utils/getOverBudgetEntries";
 import type { BudgetFinding } from "#tools/agents/types/BudgetFinding";

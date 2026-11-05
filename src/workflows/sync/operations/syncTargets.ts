@@ -1,5 +1,5 @@
-import { syncTsconfigFiles } from "#project/tsconfig/setup/syncTsconfigFiles";
-import { syncWorkspaceFiles } from "#project/workspaces/setup/syncWorkspaceFiles";
+import { syncTsconfigFiles } from "#project/tsconfig/index";
+import { syncWorkspaceFiles } from "#project/workspaces/index";
 import {
   syncAgents,
   syncClaudeSettings,

@@ -1,8 +1,6 @@
 import { boolean } from "valibot";
 
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
-import { unset } from "#foundation/options/utils/unset";
+import { declare, declareObject, unset } from "#foundation/options/index";
 
 export const vscodeSchema = declareObject(
   {

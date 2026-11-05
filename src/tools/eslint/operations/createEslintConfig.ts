@@ -11,7 +11,7 @@ import { entries } from "@auaust/toolkit/object";
 // @debt reads the git section by resolving it again from the raw input, because the definer only has the project sections; a definer could receive the sections it reads through get
 import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
-import { validate } from "#foundation/options/utils/validate";
+import { validate } from "#foundation/options/index";
 import { conventionCategories } from "#tools/eslint/config/conventionCategories";
 import { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
 import { pluginName } from "#tools/eslint/constants";
@@ -26,7 +26,7 @@ import { createPlugin } from "#tools/eslint/utils/createPlugin";
 import { resolveBoundaries } from "#tools/eslint/utils/resolveBoundaries";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
 import { resolveGit } from "#tools/git/index";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Options } from "#tools/eslint/types/Options";
 

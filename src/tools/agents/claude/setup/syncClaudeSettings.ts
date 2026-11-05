@@ -1,8 +1,7 @@
 import { isDeepStrictEqual } from "node:util";
 
 import { emptyObjectFile } from "#foundation/json/constants";
-import { readJsonValue } from "#foundation/json/utils/readJsonValue";
-import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
+import { readJsonValue, writeJsonValue } from "#foundation/json/index";
 import { jsonIndentation } from "#project/format/constants";
 import {
   claudeEditHook,
@@ -11,7 +10,7 @@ import {
   claudeSettingsFile,
 } from "#tools/agents/claude/constants";
 import { syncHook } from "#tools/agents/operations/syncHook";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
 function syncAttribution(

@@ -10,8 +10,7 @@ import {
   publicLicense,
   visibilities,
 } from "#project/package/constants";
-import type { Step } from "#project/steps/types/Step";
-import type { StepContext } from "#project/steps/types/StepContext";
+import type { Step, StepContext } from "#project/steps/index";
 import type { Directory } from "#types/Directory";
 
 import manifest from "#package.json" with { type: "json" };

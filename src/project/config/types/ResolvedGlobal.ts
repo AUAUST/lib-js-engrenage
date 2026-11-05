@@ -1,4 +1,4 @@
-import type { JsonValue } from "#foundation/json/types/JsonValue";
+import type { JsonValue } from "#foundation/json/index";
 import type { GlobalScope } from "#project/config/types/GlobalScope";
 
 export interface ResolvedGlobal {

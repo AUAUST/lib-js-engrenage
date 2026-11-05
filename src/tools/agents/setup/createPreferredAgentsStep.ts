@@ -1,5 +1,5 @@
 import { agentNames } from "#tools/agents/constants";
-import type { Step } from "#project/steps/types/Step";
+import type { Step } from "#project/steps/index";
 import type { File } from "#types/File";
 
 export function createPreferredAgentsStep(): Step<{

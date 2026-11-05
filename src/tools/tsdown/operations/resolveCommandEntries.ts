@@ -1,8 +1,8 @@
 import { getIndexFile } from "#project/structure/index";
 import { findCommands } from "#tools/tsdown/utils/findCommands";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
-import type { ResolvedBin } from "#project/environments/types/ResolvedBin";
+import type { Filesystem } from "#foundation/filesystem/index";
+import type { ResolvedBin } from "#project/environments/index";
 import type { Entries } from "#tools/tsdown/types/Entries";
 
 export function resolveCommandEntries(config: {

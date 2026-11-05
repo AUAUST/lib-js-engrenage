@@ -1,7 +1,7 @@
 import { join } from "@auaust/primitive-kit/arrays";
 
 import { defineReplacement } from "#tools/eslint/utils/defineReplacement";
-import type { Trait } from "#project/presets/types/Trait";
+import type { Trait } from "#project/presets/index";
 import type { Convention } from "#tools/eslint/types/Convention";
 import type { PackageNames } from "#types/PackageNames";
 

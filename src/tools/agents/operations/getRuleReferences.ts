@@ -1,5 +1,5 @@
 import { claudeRulesGlob } from "#tools/agents/claude/constants";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { File } from "#types/File";
 
 export function getRuleReferences({

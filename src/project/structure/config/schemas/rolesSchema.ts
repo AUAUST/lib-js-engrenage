@@ -1,4 +1,4 @@
-import { declareObject } from "#foundation/options/utils/declareObject";
+import { declareObject } from "#foundation/options/index";
 import { rolesOptionEntries } from "#project/structure/config/schemas/rolesOptionEntries";
 import { noRoleEffects } from "#project/structure/constants";
 

@@ -1,6 +1,6 @@
-import { resolveListOption } from "#foundation/options/utils/resolveListOption";
+import { resolveListOption } from "#foundation/options/index";
 import { resolveTsconfigRuntime } from "#project/tsconfig/operations/resolveTsconfigRuntime";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 // @debt both tsconfig producers call this, so a warning raised by resolveListOption for `<env>.tsconfig.lib` can print twice

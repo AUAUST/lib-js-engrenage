@@ -6,8 +6,7 @@ import { isString } from "@auaust/toolkit/isString";
 import { entries } from "@auaust/toolkit/object";
 
 import { identifierPattern } from "#tools/typescript/constants";
-import type { JsonObject } from "#foundation/json/types/JsonObject";
-import type { JsonValue } from "#foundation/json/types/JsonValue";
+import type { JsonObject, JsonValue } from "#foundation/json/index";
 
 function renderKey(key: string): string {
   return identifierPattern.test(key) ? key : JSON.stringify(key);

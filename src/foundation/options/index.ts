@@ -48,3 +48,6 @@ export * from "#foundation/options/types/OutputOf";
 export * from "#foundation/options/types/ResolvedLocation";
 export * from "#foundation/options/types/SectionResolvers";
 // @end
+
+// @debt globsSchema.ts exports `globSchema` besides its named export, which no barrel can expose; split it into its own module
+export { globSchema } from "#foundation/options/config/schemas/globsSchema";

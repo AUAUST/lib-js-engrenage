@@ -1,5 +1,5 @@
 import { typescript } from "#constants";
-import type { Step } from "#project/steps/types/Step";
+import type { Step } from "#project/steps/index";
 
 export function createTypescriptStep(): Step {
   return {

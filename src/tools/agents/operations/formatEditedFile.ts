@@ -1,9 +1,8 @@
 import { eslint } from "#constants";
-import { isWithin } from "#foundation/filesystem/utils/isWithin";
-import { resolveBinary } from "#foundation/processes/operations/resolveBinary";
-import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
+import { isWithin } from "#foundation/filesystem/index";
+import { resolveBinary, spawnProcess } from "#foundation/processes/index";
 import { formatFile } from "#project/format/index";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { Formatter } from "#project/format/ports/Formatter";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";

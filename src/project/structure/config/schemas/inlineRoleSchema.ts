@@ -1,7 +1,6 @@
 import { lazy, type GenericSchema } from "valibot";
 
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
+import { declare, declareObject } from "#foundation/options/index";
 import { declareRoleContractEntries } from "#project/structure/config/schemas/declareRoleContractEntries";
 import { roleNameSchema } from "#project/structure/config/schemas/roleNameSchema";
 import type { InlineRole } from "#project/structure/types/InlineRole";

@@ -1,7 +1,6 @@
-import { resolveSection } from "#foundation/options/utils/resolveSection";
+import { resolveSection } from "#foundation/options/index";
 import { vscodeSchema } from "#tools/vscode/config/schemas/vscodeSchema";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
-import type { RawConfig } from "#project/config/types/RawConfig";
+import type { ConfigContext, RawConfig } from "#project/config/index";
 import type { ResolvedVscode } from "#tools/vscode/types/ResolvedVscode";
 
 export function resolveVscode(

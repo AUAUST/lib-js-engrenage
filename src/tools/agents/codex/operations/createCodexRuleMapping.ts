@@ -2,7 +2,7 @@ import { sort } from "@auaust/primitive-kit/arrays";
 
 import { claudeRulesGlob } from "#tools/agents/claude/constants";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Filesystem } from "#foundation/filesystem/index";
 
 function cell(value: string): string {
   return `<code>${value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("|", "&#124;").replaceAll("\n", "&#10;").replaceAll("\r", "&#13;")}</code>`;

@@ -3,21 +3,20 @@ import type { JSONPath } from "jsonc-parser";
 import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { engrenage, packageJsonFile } from "#constants";
-import { readJsonValue } from "#foundation/json/utils/readJsonValue";
+import { readJsonValue, type JsonValue } from "#foundation/json/index";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/index";
-import { resolveTraits } from "#project/presets/index";
+import {
+  resolveTraits,
+  type Preset,
+  type ResolvedTraits,
+} from "#project/presets/index";
 import { agentNames } from "#tools/agents/constants";
-import type { JsonValue } from "#foundation/json/types/JsonValue";
-import type { Preset } from "#project/presets/types/Preset";
-import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
-import type { Invocation } from "#project/steps/types/Invocation";
-import type { Prompter } from "#project/steps/types/Prompter";
-import type { StepContext } from "#project/steps/types/StepContext";
-import type { Agent } from "#tools/agents/types/Agent";
+import type { Invocation, Prompter, StepContext } from "#project/steps/index";
+import type { Agent } from "#tools/agents/index";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
-import type { Config } from "#workflows/registry/types/Config";
+import type { Config } from "#workflows/registry/index";
 
 import manifest from "#package.json" with { type: "json" };
 

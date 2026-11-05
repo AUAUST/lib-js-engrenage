@@ -1,5 +1,5 @@
-import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { JsonEdit } from "#foundation/json/index";
+import type { ProjectConfig } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 export function produceTsconfigModule(

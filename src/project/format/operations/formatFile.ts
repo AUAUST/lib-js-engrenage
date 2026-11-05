@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
 
-import { resolve } from "#foundation/filesystem/utils/resolve";
+import { resolve } from "#foundation/filesystem/index";
 import { formatContent } from "#project/format/operations/formatContent";
 import type { Formatter } from "#project/format/ports/Formatter";
 import type { Directory } from "#types/Directory";

@@ -1,4 +1,4 @@
-import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
+import { spawnProcess } from "#foundation/processes/index";
 import type { Directory } from "#types/Directory";
 
 // @debt repeats the spawn-and-check of invokeCommand in engrenage init instead of spawnProcess owning the check

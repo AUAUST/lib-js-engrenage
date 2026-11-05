@@ -1,5 +1,5 @@
-import { isWithin } from "#foundation/filesystem/utils/isWithin";
-import type { Plugin } from "#tools/vite/types/Plugin";
+import { isWithin } from "#foundation/filesystem/index";
+import type { Plugin } from "#tools/vite/index";
 import type { Directories } from "#types/Directories";
 
 export function createSourceGuard(

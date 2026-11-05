@@ -405,11 +405,18 @@ function resolveElementRules(
     return role !== undefined && roles[role]?.public;
   }
 
+  const publicFileRoles = fileGlobs
+    .filter(({ name }) => {
+      return name !== indexRole && name !== entryRole && roles[name]?.public;
+    })
+    .map(({ name }) => name);
+
   function surface(node: StructureNode): ImportRuleTarget[] {
     if (node.kind === "domain") {
       return [
         indexOf(node, structure.indexFile),
         ...rolesOf(node).filter(isPublic).map(modulesOf),
+        ...flatMap(publicFileRoles, (name) => filesOf(node.path, name)),
       ];
     }
 

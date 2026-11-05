@@ -1,7 +1,7 @@
 import type { ResolvableValue } from "@auaust/toolkit/value";
 
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
-import type { Trait } from "#project/presets/types/Trait";
+import type { ProjectConfig } from "#project/config/index";
+import type { Trait } from "#project/presets/index";
 import type { Convention } from "#tools/eslint/types/Convention";
 import type { Delegate } from "#tools/eslint/types/Delegate";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";

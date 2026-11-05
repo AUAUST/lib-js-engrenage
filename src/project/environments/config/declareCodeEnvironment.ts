@@ -1,9 +1,11 @@
-import { declareList } from "#foundation/options/config/declareList";
-import { directorySchema } from "#foundation/options/config/schemas/directorySchema";
-import { globSchema } from "#foundation/options/config/schemas/globsSchema";
+import {
+  declareList,
+  directorySchema,
+  globSchema,
+} from "#foundation/options/index";
 import { declareDefines } from "#project/environments/config/declareDefines";
-import { structureOptions } from "#project/structure/config/schemas/structureOptions";
-import { declareEnvironmentTsconfig } from "#project/tsconfig/config/declareEnvironmentTsconfig";
+import { structureOptions } from "#project/structure/index";
+import { declareEnvironmentTsconfig } from "#project/tsconfig/index";
 import type { Directories } from "#types/Directories";
 
 export function declareCodeEnvironment(

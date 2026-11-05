@@ -1,6 +1,6 @@
 import { keys } from "@auaust/toolkit/object";
 
-import { createEmittedManifest } from "#project/build/operations/createEmittedManifest";
+import { createEmittedManifest } from "#project/build/index";
 import type { Plugin } from "#tools/vite/types/Plugin";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

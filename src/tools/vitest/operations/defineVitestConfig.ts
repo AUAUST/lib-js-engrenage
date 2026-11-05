@@ -1,7 +1,6 @@
-import { defineViteConfig } from "#tools/vite/index";
+import { defineViteConfig, type ConfigEnv } from "#tools/vite/index";
 import { createVitestLayer } from "#tools/vitest/operations/createVitestLayer";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
-import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
+import type { ProjectConfig } from "#project/config/index";
 import type { Config } from "#tools/vitest/types/Config";
 import type { ConfigFn } from "#tools/vitest/types/ConfigFn";
 import type { Options } from "#tools/vitest/types/Options";

@@ -1,7 +1,6 @@
 import { boolean, number, picklist } from "valibot";
 
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
+import { declare, declareObject } from "#foundation/options/index";
 import { conventions } from "#project/format/constants";
 
 export const formatSchema = declareObject(

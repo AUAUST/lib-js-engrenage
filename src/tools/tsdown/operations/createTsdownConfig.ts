@@ -12,11 +12,18 @@ import {
   publint,
   tsdown,
 } from "#constants";
-import { readJsonFile } from "#foundation/filesystem/operations/readJsonFile";
-import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
-import { validate } from "#foundation/options/utils/validate";
+import {
+  readJsonFile,
+  resolveWithin,
+  type Filesystem,
+} from "#foundation/filesystem/index";
+import { validate, type OptionContext } from "#foundation/options/index";
 import { emittedManifestFile } from "#project/build/constants";
-import { createDefine } from "#project/config/utils/createDefine";
+import {
+  createDefine,
+  type Environment,
+  type ResolvedDefine,
+} from "#project/config/index";
 import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
 import {
   emptyNamespaces,
@@ -33,19 +40,19 @@ import { createEntrySelfReferencesPlugins } from "#tools/tsdown/plugins/createEn
 import { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
 import { resolveDataExports } from "#tools/tsdown/utils/resolveDataExports";
 import { resolveTsdownTarget } from "#tools/tsdown/utils/resolveTsdownTarget";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
-import type { OptionContext } from "#foundation/options/types/OptionContext";
-import type { ResolvedBuild } from "#project/build/types/ResolvedBuild";
-import type { Environment } from "#project/config/types/Environment";
-import type { ResolvedDefine } from "#project/config/types/ResolvedDefine";
-import type { ResolvedBin } from "#project/environments/types/ResolvedBin";
-import type { ResolvedData } from "#project/environments/types/ResolvedData";
-import type { ResolvedSource } from "#project/environments/types/ResolvedSource";
-import type { PackageJson } from "#project/package/types/PackageJson";
-import type { PathAliases } from "#project/tsconfig/types/PathAliases";
-import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
-import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
-import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";
+import type { ResolvedBuild } from "#project/build/index";
+import type {
+  ResolvedBin,
+  ResolvedData,
+  ResolvedSource,
+} from "#project/environments/index";
+import type { PackageJson } from "#project/package/index";
+import type {
+  PathAliases,
+  ResolvedTypescript,
+  Tsconfig,
+} from "#project/tsconfig/index";
+import type { ResolvedWorkspaceGroup } from "#project/workspaces/index";
 import type { Config } from "#tools/tsdown/types/Config";
 import type { Entries } from "#tools/tsdown/types/Entries";
 import type { Options } from "#tools/tsdown/types/Options";

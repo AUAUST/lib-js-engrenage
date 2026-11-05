@@ -5,7 +5,7 @@ import {
 } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
 import { syncHook } from "#tools/agents/operations/syncHook";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
 export function syncCodexFiles(

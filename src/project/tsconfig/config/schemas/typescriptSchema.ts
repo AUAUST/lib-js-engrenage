@@ -3,13 +3,15 @@ import { basename } from "node:path";
 import { boolean, record, string, unknown } from "valibot";
 
 import { tsconfigFile } from "#constants";
-import { declareList } from "#foundation/options/config/declareList";
-import { declareLocation } from "#foundation/options/config/declareLocation";
-import { declareManagedList } from "#foundation/options/config/declareManagedList";
-import { fileSchema } from "#foundation/options/config/schemas/fileSchema";
-import { globSchema } from "#foundation/options/config/schemas/globsSchema";
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
+import {
+  declare,
+  declareList,
+  declareLocation,
+  declareManagedList,
+  declareObject,
+  fileSchema,
+  globSchema,
+} from "#foundation/options/index";
 import {
   defaultEnvFile,
   defaultTypescriptFiles,

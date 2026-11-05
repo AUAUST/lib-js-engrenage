@@ -2,8 +2,7 @@ import { readFileSync } from "node:fs";
 
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { syncFiles } from "#foundation/blocks/operations/syncFiles";
-import { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
+import { syncBlocks, syncFiles } from "#foundation/blocks/index";
 import { codexFile } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/index";
 import { attributionRules, markdownBlocks } from "#tools/agents/constants";
@@ -13,7 +12,7 @@ import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { File } from "#types/File";

@@ -3,11 +3,8 @@ import { basename, dirname, extname } from "node:path";
 
 import { flatMap, map, toSorted } from "@auaust/primitive-kit/arrays";
 
-import { syncFiles } from "#foundation/blocks/operations/syncFiles";
-import { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
-import { filesIn } from "#foundation/filesystem/utils/filesIn";
-import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
-import { resolve } from "#foundation/filesystem/utils/resolve";
+import { syncBlocks, syncFiles } from "#foundation/blocks/index";
+import { filesIn, relativeWithin, resolve } from "#foundation/filesystem/index";
 import {
   barrelFiles,
   declarationExtension,
@@ -15,8 +12,8 @@ import {
   typescriptBlocks,
 } from "#tools/typescript/constants";
 import { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
-import type { SubpathImports } from "#project/package/types/SubpathImports";
+import type { ProjectConfig } from "#project/config/index";
+import type { SubpathImports } from "#project/package/index";
 import type { BarrelMode } from "#tools/typescript/types/BarrelMode";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

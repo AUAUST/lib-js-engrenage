@@ -4,7 +4,7 @@ import { map } from "@auaust/primitive-kit/arrays";
 
 import { workspaceFile } from "#tools/pnpm/constants";
 import { parseWorkspaceDocument } from "#tools/pnpm/utils/parseWorkspaceDocument";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 
 export function syncWorkspaceFile({ workspaces, filesystem }: ProjectConfig) {
   if (workspaces.length === 0) {

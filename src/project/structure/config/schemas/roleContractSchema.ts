@@ -1,4 +1,4 @@
-import { declareObject } from "#foundation/options/utils/declareObject";
+import { declareObject } from "#foundation/options/index";
 import { declareRoleContractEntries } from "#project/structure/config/schemas/declareRoleContractEntries";
 import { inlineRoleSchema } from "#project/structure/config/schemas/inlineRoleSchema";
 

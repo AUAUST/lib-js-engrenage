@@ -1,5 +1,5 @@
 import { coverageTitle, outputTitle } from "#tools/git/constants";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { GlobGroup } from "#types/GlobGroup";
 
 export function createProjectIgnores(

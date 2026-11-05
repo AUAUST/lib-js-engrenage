@@ -1,4 +1,4 @@
-import type { Conventions } from "#project/format/types/Conventions";
+import type { Conventions } from "#project/format/index";
 import type { Options } from "#tools/prettier/types/Options";
 
 export function mapConventions({

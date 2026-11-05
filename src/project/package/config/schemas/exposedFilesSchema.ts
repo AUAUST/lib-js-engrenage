@@ -2,7 +2,7 @@ import { check, pipe, record, string } from "valibot";
 
 import { entries } from "@auaust/toolkit/object";
 
-import { fileSchema } from "#foundation/options/config/schemas/fileSchema";
+import { fileSchema } from "#foundation/options/index";
 
 function countWildcards(value: string): number {
   return value.split("*").length - 1;

@@ -6,15 +6,21 @@ import { freeze, get as getProperty, keys } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
 import { packageJsonFile } from "#constants";
-import { filesIn } from "#foundation/filesystem/utils/filesIn";
-import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
-import { resolveSection } from "#foundation/options/utils/resolveSection";
-import { validate } from "#foundation/options/utils/validate";
+import {
+  filesIn,
+  resolveWithin,
+  type Filesystem,
+} from "#foundation/filesystem/index";
+import {
+  resolveSection,
+  validate,
+  type SectionResolvers,
+} from "#foundation/options/index";
 import {
   resolveNodeRuntime,
   resolveSourceRuntime,
 } from "#project/baseline/index";
-import { buildSchema } from "#project/build/config/schemas/buildSchema";
+import { buildSchema } from "#project/build/index";
 import { cacheSchema } from "#project/config/config/schemas/cacheSchema";
 import { debugSchema } from "#project/config/config/schemas/debugSchema";
 import { defineSchema } from "#project/config/config/schemas/defineSchema";
@@ -24,58 +30,62 @@ import {
 } from "#project/config/constants";
 import { isDebugEnvironment } from "#project/config/operations/isDebugEnvironment";
 import { locateFile } from "#project/config/utils/locateFile";
-import { binSchema } from "#project/environments/config/schemas/binSchema";
-import { dataSchema } from "#project/environments/config/schemas/dataSchema";
-import { runtimeSchema } from "#project/environments/config/schemas/runtimeSchema";
-import { scriptsSchema } from "#project/environments/config/schemas/scriptsSchema";
-import { sourceSchema } from "#project/environments/config/schemas/sourceSchema";
-import { testsSchema } from "#project/environments/config/schemas/testsSchema";
-import { toolingSchema } from "#project/environments/config/schemas/toolingSchema";
-import { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
+import {
+  binSchema,
+  dataSchema,
+  resolveCodeEnvironment,
+  runtimeSchema,
+  scriptsSchema,
+  sourceSchema,
+  testsSchema,
+  toolingSchema,
+} from "#project/environments/index";
 import { formatSchema } from "#project/format/index";
-import { createPackageJson } from "#project/package/index";
-import { presetSchema } from "#project/presets/config/schemas/presetSchema";
-import { traitsSchema } from "#project/presets/config/schemas/traitsSchema";
-import { resolveTraits } from "#project/presets/index";
-import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
-import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
+import { createPackageJson, type PackageJson } from "#project/package/index";
+import {
+  presetSchema,
+  resolveTraits,
+  traitsSchema,
+} from "#project/presets/index";
 import { noRoles } from "#project/structure/constants";
-import { resolveAliases } from "#project/structure/operations/resolveAliases";
-import { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
-import { resolveImportRules } from "#project/structure/operations/resolveImportRules";
-import { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
-import { normalizeNamespaces } from "#project/structure/utils/normalizeNamespaces";
-import { normalizeRoles } from "#project/structure/utils/normalizeRoles";
-import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
-import { resolveRoles } from "#project/structure/utils/resolveRoles";
-import { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
-import { unmanagedTsconfig } from "#project/tsconfig/index";
-import { createTsconfig } from "#project/tsconfig/utils/createTsconfig";
-import { resolveTsconfig } from "#project/tsconfig/utils/resolveTsconfig";
-import { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
-import { resolveWorkspaces } from "#project/workspaces/operations/resolveWorkspaces";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
-import type { SectionResolvers } from "#foundation/options/types/SectionResolvers";
+import {
+  aliasesSchema,
+  listDiscoveredGlobs,
+  normalizeNamespaces,
+  normalizeRoles,
+  resolveAliases,
+  resolveDomainEntries,
+  resolveEnvironmentStructure,
+  resolveImportRules,
+  resolveRoles,
+  rolesSchema,
+  type DeclaredRolesOption,
+  type EnvironmentStructure,
+  type ProgramLayout,
+  type ProjectRoles,
+  type ResolvedRoles,
+  type RoleEnvironment,
+  type RoleReference,
+  type StructureEnvironmentName,
+  type StructureOptions,
+  type TestsContext,
+} from "#project/structure/index";
+import {
+  createTsconfig,
+  resolveTsconfig,
+  typescriptSchema,
+  unmanagedTsconfig,
+  type ResolvedEnvironmentTsconfig,
+  type ResolvedEnvironmentTsconfigOption,
+  type Tsconfig,
+  type TsconfigGroups,
+  type TsconfigKey,
+} from "#project/tsconfig/index";
+import { resolveWorkspaces, workspacesSchema } from "#project/workspaces/index";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { Environment } from "#project/config/types/Environment";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { RawConfig } from "#project/config/types/RawConfig";
-import type { PackageJson } from "#project/package/types/PackageJson";
-import type { ProgramLayout } from "#project/structure/index";
-import type { DeclaredRolesOption } from "#project/structure/types/DeclaredRolesOption";
-import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
-import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
-import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
-import type { RoleReference } from "#project/structure/types/RoleReference";
-import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
-import type { StructureOptions } from "#project/structure/types/StructureOptions";
-import type { TestsContext } from "#project/structure/types/TestsContext";
-import type { ResolvedEnvironmentTsconfig } from "#project/tsconfig/types/ResolvedEnvironmentTsconfig";
-import type { ResolvedEnvironmentTsconfigOption } from "#project/tsconfig/types/ResolvedEnvironmentTsconfigOption";
-import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
-import type { TsconfigGroups } from "#project/tsconfig/types/TsconfigGroups";
-import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

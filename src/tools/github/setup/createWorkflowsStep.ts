@@ -1,12 +1,11 @@
 import { relative } from "node:path";
 
-import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
+import { toPosixPath } from "#foundation/filesystem/index";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
-import type { Step } from "#project/steps/types/Step";
-import type { StepContext } from "#project/steps/types/StepContext";
-import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
+import type { Step, StepContext } from "#project/steps/index";
+import type { ResolvedGit } from "#tools/git/index";
 import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

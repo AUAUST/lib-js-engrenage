@@ -1,9 +1,12 @@
-import { createPackageJson, readSharedPnpmRange } from "#project/package/index";
+import {
+  createPackageJson,
+  readSharedPnpmRange,
+  type PackageJson,
+} from "#project/package/index";
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 import { writePnpmDeclaration } from "#tools/pnpm/operations/writePnpmDeclaration";
 import { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus";
-import type { PackageJson } from "#project/package/types/PackageJson";
-import type { Step } from "#project/steps/types/Step";
+import type { Step } from "#project/steps/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

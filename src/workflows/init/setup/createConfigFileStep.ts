@@ -3,9 +3,8 @@ import { keys } from "@auaust/toolkit/object";
 import { engrenage, engrenageConfigFile } from "#constants";
 import { findCurrentMonth } from "#project/baseline/index";
 import { presetTraits } from "#project/presets/constants";
-import { createConfigModule } from "#project/steps/utils/createConfigModule";
-import type { Preset } from "#project/presets/types/Preset";
-import type { Step } from "#project/steps/types/Step";
+import { createConfigModule, type Step } from "#project/steps/index";
+import type { Preset } from "#project/presets/index";
 import type { File } from "#types/File";
 
 function renderOptions(

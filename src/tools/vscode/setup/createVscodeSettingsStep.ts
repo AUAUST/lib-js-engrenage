@@ -1,8 +1,8 @@
 import { settingsFile } from "#tools/vscode/constants";
 import { syncVscodeFiles } from "#tools/vscode/setup/syncVscodeFiles";
 import { findIntegrations } from "#tools/vscode/utils/findIntegrations";
-import type { Environment } from "#project/config/types/Environment";
-import type { Step } from "#project/steps/types/Step";
+import type { Environment } from "#project/config/index";
+import type { Step } from "#project/steps/index";
 import type { ResolvedVscode } from "#tools/vscode/types/ResolvedVscode";
 import type { Directory } from "#types/Directory";
 

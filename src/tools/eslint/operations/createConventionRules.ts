@@ -7,7 +7,7 @@ import { pluginName } from "#tools/eslint/constants";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
 import { createTypeAwareLanguageOptions } from "#tools/eslint/utils/createTypeAwareLanguageOptions";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { ConfigObject } from "#tools/eslint/types/ConfigObject";
 import type { Convention } from "#tools/eslint/types/Convention";
 import type { Rules } from "#tools/eslint/types/Rules";

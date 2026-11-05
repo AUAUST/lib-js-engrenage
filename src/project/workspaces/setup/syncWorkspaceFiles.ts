@@ -3,8 +3,15 @@ import { isBoolean } from "@auaust/toolkit/isBoolean";
 import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";
-import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
-import { resolveListOption } from "#foundation/options/utils/resolveListOption";
+import {
+  applyJsonEdits,
+  type JsonEdit,
+  type JsonValue,
+} from "#foundation/json/index";
+import {
+  resolveListOption,
+  type ManagedListOption,
+} from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/index";
 import {
@@ -14,10 +21,7 @@ import {
   toTsconfigSpecifier,
 } from "#project/tsconfig/index";
 import { selfImports } from "#project/workspaces/constants";
-import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { JsonValue } from "#foundation/json/types/JsonValue";
-import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { ResolvedWorkspace } from "#project/workspaces/types/ResolvedWorkspace";
 import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";
 

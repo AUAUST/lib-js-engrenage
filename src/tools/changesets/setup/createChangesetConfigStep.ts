@@ -1,6 +1,6 @@
 import { changesetsCli } from "#constants";
 import { configFile } from "#tools/changesets/constants";
-import type { Step } from "#project/steps/types/Step";
+import type { Step } from "#project/steps/index";
 
 export function createChangesetConfigStep(): Step {
   return {

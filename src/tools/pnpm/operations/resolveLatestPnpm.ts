@@ -2,8 +2,8 @@ import { array, pipe, regex, string, union } from "valibot";
 
 import { last, toSorted, wrap } from "@auaust/primitive-kit/arrays";
 
-import { validate } from "#foundation/options/utils/validate";
-import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
+import { validate } from "#foundation/options/index";
+import { spawnProcess } from "#foundation/processes/index";
 import { compareVersions } from "#project/package/index";
 import type { Directory } from "#types/Directory";
 

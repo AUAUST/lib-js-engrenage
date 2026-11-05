@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 
-import { resolveDataFile } from "#foundation/data/operations/resolveDataFile";
+import { resolveDataFile } from "#foundation/data/index";
 import { workflowTemplates } from "#tools/github/constants";
 import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 import type { Directory } from "#types/Directory";

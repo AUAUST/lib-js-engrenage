@@ -11,10 +11,12 @@ import {
   type GenericSchema,
 } from "valibot";
 
-import { globsSchema } from "#foundation/options/config/schemas/globsSchema";
-import { describeDefault } from "#foundation/options/index";
-import { declare } from "#foundation/options/utils/declare";
-import { unset } from "#foundation/options/utils/unset";
+import {
+  declare,
+  describeDefault,
+  globsSchema,
+  unset,
+} from "#foundation/options/index";
 import { roleContractDefaults } from "#project/structure/constants";
 
 function inherited(value: unknown) {

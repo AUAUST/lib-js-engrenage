@@ -2,16 +2,17 @@ import { map, sort } from "@auaust/primitive-kit/arrays";
 import { entries, keys, record } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
-import { syncFiles } from "#foundation/blocks/operations/syncFiles";
+import { syncFiles } from "#foundation/blocks/index";
 import { emptyObjectFile } from "#foundation/json/constants";
-import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
-import { readJsonValue } from "#foundation/json/utils/readJsonValue";
+import { applyJsonEdits, readJsonValue } from "#foundation/json/index";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/index";
-import { readTsconfigPaths } from "#project/tsconfig/utils/readTsconfigPaths";
-import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
-import type { Alias } from "#project/structure/types/Alias";
+import {
+  readTsconfigPaths,
+  toTsconfigSpecifier,
+} from "#project/tsconfig/index";
+import type { ProjectConfig } from "#project/config/index";
+import type { Alias } from "#project/structure/index";
 
 const importPrefix = "#";
 

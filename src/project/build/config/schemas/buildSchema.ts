@@ -1,12 +1,13 @@
 import { boolean, literal, picklist, union } from "valibot";
 
-import { isWithin } from "#foundation/filesystem/utils/isWithin";
-import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
-import { directorySchema } from "#foundation/options/config/schemas/directorySchema";
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
+import { isWithin, resolveWithin } from "#foundation/filesystem/index";
+import {
+  declare,
+  declareObject,
+  directorySchema,
+} from "#foundation/options/index";
 import { defaultBuildClean, defaultSourcemap } from "#project/build/constants";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { ConfigContext } from "#project/config/index";
 
 export const buildSchema = declareObject(
   {

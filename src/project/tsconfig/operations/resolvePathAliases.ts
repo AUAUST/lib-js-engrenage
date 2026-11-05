@@ -4,8 +4,7 @@ import { relative } from "node:path";
 import { every, map, sort } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
-import { resolve } from "#foundation/filesystem/utils/resolve";
-import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
+import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import { isPackageAlias } from "#project/tsconfig/utils/isPackageAlias";
 import type { PathAlias } from "#project/tsconfig/types/PathAlias";
 import type { PathAliases } from "#project/tsconfig/types/PathAliases";

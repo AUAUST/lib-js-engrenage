@@ -1,4 +1,4 @@
-import { createBuildToolStep } from "#project/build/setup/createBuildToolStep";
+import { createBuildToolStep } from "#project/build/index";
 import { createPackageStep } from "#project/package/index";
 import {
   createAgentRulesStep,
@@ -38,8 +38,8 @@ import {
 import { createConfigFileStep } from "#workflows/init/setup/createConfigFileStep";
 import { createDependencyStep } from "#workflows/init/setup/createDependencyStep";
 import { createScriptsStep } from "#workflows/init/setup/createScriptsStep";
-import type { Step } from "#project/steps/types/Step";
-import type { Config } from "#workflows/registry/types/Config";
+import type { Step } from "#project/steps/index";
+import type { Config } from "#workflows/registry/index";
 
 export function listInitSteps(): Step<Config>[] {
   return [

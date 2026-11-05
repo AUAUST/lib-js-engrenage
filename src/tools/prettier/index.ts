@@ -12,12 +12,14 @@ export { resolvePrettier } from "#tools/prettier/operations/resolvePrettier";
 // @end
 
 // @barrel config/schemas/*.ts named
+export { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
+// @end
+
+// @barrel adapters/*.ts named
 export { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
 // @end
 
 import { definePrettierConfig } from "#tools/prettier/operations/definePrettierConfig";
-
-export { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
 
 /** @debt the default export loads the project configuration as soon as the entry is imported, even by consumers that only want `definePrettierConfig`; a lazy default needs a dedicated entry */
 export default definePrettierConfig();

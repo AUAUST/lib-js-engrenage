@@ -7,3 +7,8 @@ export * from "#project/presets/types/ResolvedTraits";
 export * from "#project/presets/types/Trait";
 export * from "#project/presets/types/TraitsInput";
 // @end
+
+// @barrel config/schemas/*.ts named
+export { presetSchema } from "#project/presets/config/schemas/presetSchema";
+export { traitsSchema } from "#project/presets/config/schemas/traitsSchema";
+// @end

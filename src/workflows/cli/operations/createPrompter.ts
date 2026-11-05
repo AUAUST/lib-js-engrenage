@@ -9,7 +9,7 @@ import {
 
 import { freeze } from "@auaust/toolkit/object";
 
-import type { Prompter } from "#project/steps/types/Prompter";
+import type { Prompter } from "#project/steps/index";
 
 function abort(): never {
   cancel("Cancelled, nothing was written.");

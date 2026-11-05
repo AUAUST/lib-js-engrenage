@@ -3,15 +3,14 @@ import { basename } from "node:path/posix";
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, freeze } from "@auaust/toolkit/object";
 
-import { filesIn } from "#foundation/filesystem/utils/filesIn";
+import { filesIn, type Filesystem } from "#foundation/filesystem/index";
 import { createPackageJson } from "#project/package/index";
 import {
   directoryPlaceholder,
   workspaceEntryGlob,
   workspaceTsconfigFile,
 } from "#project/workspaces/constants";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
-import type { OutputOf } from "#foundation/options/types/OutputOf";
+import type { OutputOf } from "#foundation/options/index";
 import type { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
 import type { ResolvedWorkspace } from "#project/workspaces/types/ResolvedWorkspace";
 import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";

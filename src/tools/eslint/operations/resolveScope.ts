@@ -1,8 +1,8 @@
 import { flatMap } from "@auaust/primitive-kit/arrays";
 
-import { filesIn } from "#foundation/filesystem/utils/filesIn";
+import { filesIn } from "#foundation/filesystem/index";
 import { anyFile } from "#tools/eslint/constants";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { ScopeReference } from "#tools/eslint/types/ScopeReference";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { Glob } from "#types/Glob";

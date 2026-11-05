@@ -1,6 +1,5 @@
 import { vitest } from "#constants";
-import { hasConfigFile } from "#project/steps/utils/hasConfigFile";
-import type { Step } from "#project/steps/types/Step";
+import { hasConfigFile, type Step } from "#project/steps/index";
 
 export function createVitestStep(): Step {
   return {

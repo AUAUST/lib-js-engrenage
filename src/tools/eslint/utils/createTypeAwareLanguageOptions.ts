@@ -1,6 +1,6 @@
 import type { Linter } from "eslint";
 
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 
 export function createTypeAwareLanguageOptions(
   config: ProjectConfig,

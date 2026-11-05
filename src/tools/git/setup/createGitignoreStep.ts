@@ -1,9 +1,9 @@
 import { flat, pluck } from "@auaust/primitive-kit/arrays";
 
 import { gitignoreFile } from "#constants";
-import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
+import { relativeWithin } from "#foundation/filesystem/index";
 import { defaultIgnores, ignoreBlocks } from "#tools/git/constants";
-import type { Step } from "#project/steps/types/Step";
+import type { Step } from "#project/steps/index";
 import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

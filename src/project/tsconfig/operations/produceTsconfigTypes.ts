@@ -3,15 +3,14 @@ import { isArray } from "@auaust/toolkit/isArray";
 import { isString } from "@auaust/toolkit/isString";
 
 import { engrenage } from "#constants";
-import { resolveListOption } from "#foundation/options/utils/resolveListOption";
+import { resolveListOption } from "#foundation/options/index";
 import { apiLibraryGroups } from "#project/baseline/constants";
-import { includesEsLibrary } from "#project/baseline/index";
+import { includesEsLibrary, type Runtime } from "#project/baseline/index";
 import { resolveTsconfigLibrary } from "#project/tsconfig/operations/resolveTsconfigLibrary";
 import { resolveTsconfigRuntime } from "#project/tsconfig/operations/resolveTsconfigRuntime";
 import { readTsconfigValue } from "#project/tsconfig/utils/readTsconfigValue";
-import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { Runtime } from "#project/baseline/types/Runtime";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { JsonEdit } from "#foundation/json/index";
+import type { ProjectConfig } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 
 const apiTypesPrefix = `${engrenage}/apis/`;

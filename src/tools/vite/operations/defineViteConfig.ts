@@ -2,12 +2,14 @@ import { mergeConfig } from "vite";
 
 import { value } from "@auaust/toolkit/value";
 
-import { validate } from "#foundation/options/utils/validate";
-import { loadConfig } from "#project/config/operations/loadConfig";
-import { createContext } from "#project/config/utils/createContext";
+import { validate } from "#foundation/options/index";
+import {
+  createContext,
+  loadConfig,
+  type ProjectConfig,
+} from "#project/config/index";
 import { optionsSchema } from "#tools/vite/config/schemas/optionsSchema";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Config } from "#tools/vite/types/Config";
 import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
 import type { ConfigFn } from "#tools/vite/types/ConfigFn";

@@ -32,6 +32,11 @@ export function syncBlocks(
       continue;
     }
 
+    // @debt Temporary: skips `@debt` comments, which fd4f415 (debug: lazy CLI subcommand loading) places on lines the marker regex reads as directives. Remove once that commit is reverted or the parser tells block markers from other comments.
+    if (directive === "debt") {
+      continue;
+    }
+
     const fill = fillers[directive];
 
     if (fill === undefined) {

@@ -8,11 +8,14 @@ import {
 } from "@auaust/primitive-kit/arrays";
 
 import { emptyObjectFile } from "#foundation/json/constants";
-import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
-import { flattenJsonObject } from "#foundation/json/utils/flattenJsonObject";
-import { readJsonValue } from "#foundation/json/utils/readJsonValue";
-import { writeJsonValue } from "#foundation/json/utils/writeJsonValue";
-import { validate } from "#foundation/options/utils/validate";
+import {
+  applyJsonEdits,
+  flattenJsonObject,
+  readJsonValue,
+  writeJsonValue,
+  type JsonEdit,
+} from "#foundation/json/index";
+import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
 import { loadInfoRules } from "#tools/eslint/index";
 import {
@@ -21,9 +24,8 @@ import {
   settingsFile,
 } from "#tools/vscode/constants";
 import { findIntegrations } from "#tools/vscode/utils/findIntegrations";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
-import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { Environment } from "#project/config/types/Environment";
+import type { Filesystem } from "#foundation/filesystem/index";
+import type { Environment } from "#project/config/index";
 import type { Integration } from "#tools/vscode/types/Integration";
 import type { ResolvedVscode } from "#tools/vscode/types/ResolvedVscode";
 import type { Directory } from "#types/Directory";

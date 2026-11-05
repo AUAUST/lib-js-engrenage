@@ -1,4 +1,4 @@
-import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
+import type { ManagedListOption } from "#foundation/options/index";
 import type { File } from "#types/File";
 
 export interface ResolvedBaseTsconfig {

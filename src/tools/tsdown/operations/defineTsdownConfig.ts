@@ -2,10 +2,12 @@ import { mergeConfig } from "tsdown";
 
 import { value } from "@auaust/toolkit/value";
 
-import { loadConfig } from "#project/config/operations/loadConfig";
-import { createContext } from "#project/config/utils/createContext";
+import {
+  createContext,
+  loadConfig,
+  type ProjectConfig,
+} from "#project/config/index";
 import { createTsdownConfig } from "#tools/tsdown/operations/createTsdownConfig";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Config } from "#tools/tsdown/types/Config";
 import type { ConfigContext } from "#tools/tsdown/types/ConfigContext";
 import type { ConfigFn } from "#tools/tsdown/types/ConfigFn";

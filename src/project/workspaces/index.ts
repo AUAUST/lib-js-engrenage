@@ -3,3 +3,15 @@ export * from "#project/workspaces/types/ResolvedWorkspace";
 export * from "#project/workspaces/types/ResolvedWorkspaceGroup";
 export * from "#project/workspaces/types/WorkspaceTsconfig";
 // @end
+
+// @barrel config/schemas/*.ts named
+export { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
+// @end
+
+// @barrel operations/*.ts named
+export { resolveWorkspaces } from "#project/workspaces/operations/resolveWorkspaces";
+// @end
+
+// @barrel setup/*.ts named
+export { syncWorkspaceFiles } from "#project/workspaces/setup/syncWorkspaceFiles";
+// @end

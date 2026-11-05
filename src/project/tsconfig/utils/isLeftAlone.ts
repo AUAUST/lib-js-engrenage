@@ -1,4 +1,4 @@
-import type { JsonEdit } from "#foundation/json/types/JsonEdit";
+import type { JsonEdit } from "#foundation/json/index";
 
 export function isLeftAlone(edit: JsonEdit, leftAlone: readonly string[]) {
   const path = edit.path.join(".");

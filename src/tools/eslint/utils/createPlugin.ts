@@ -2,7 +2,7 @@ import { entries, values } from "@auaust/toolkit/object";
 import { value } from "@auaust/toolkit/value";
 
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { Convention } from "#tools/eslint/types/Convention";
 import type { Plugin } from "#tools/eslint/types/Plugin";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";

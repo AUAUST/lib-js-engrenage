@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { random } from "@auaust/primitive-kit/arrays";
 
 import { engrenage } from "#constants";
-import { resolveDataFile } from "#foundation/data/operations/resolveDataFile";
+import { resolveDataFile } from "#foundation/data/index";
 import {
   agentsFile,
   backlogIndex,
@@ -16,7 +16,7 @@ import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
-import type { Step } from "#project/steps/types/Step";
+import type { Step } from "#project/steps/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
 const sectionReference = `${engrenage}/agents/sections/backlog.md`;

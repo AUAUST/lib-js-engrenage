@@ -1,6 +1,6 @@
 import { entries } from "@auaust/toolkit/object";
 
-import type { OptionContext } from "#foundation/options/types/OptionContext";
+import type { OptionContext } from "#foundation/options/index";
 import type { ResolvedDefine } from "#project/config/types/ResolvedDefine";
 
 export function createDefine(

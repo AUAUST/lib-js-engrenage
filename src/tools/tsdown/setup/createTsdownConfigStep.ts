@@ -1,7 +1,9 @@
 import { engrenage, tsdown, tsx, typescript } from "#constants";
-import { createConfigModule } from "#project/steps/utils/createConfigModule";
-import { hasConfigFile } from "#project/steps/utils/hasConfigFile";
-import type { Step } from "#project/steps/types/Step";
+import {
+  createConfigModule,
+  hasConfigFile,
+  type Step,
+} from "#project/steps/index";
 
 export function createTsdownConfigStep(): Step {
   const file = `${tsdown}.config.ts`;

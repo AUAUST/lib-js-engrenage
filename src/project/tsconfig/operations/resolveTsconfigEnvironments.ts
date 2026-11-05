@@ -1,5 +1,5 @@
 import { tsconfigEnvironments } from "#project/tsconfig/constants";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 
 type TsconfigEnvironment = (typeof tsconfigEnvironments)[number];

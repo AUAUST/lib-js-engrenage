@@ -2,7 +2,7 @@ import type { TsdownPlugin } from "tsdown";
 
 import { keys } from "@auaust/toolkit/object";
 
-import { createEmittedManifest } from "#project/build/operations/createEmittedManifest";
+import { createEmittedManifest } from "#project/build/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

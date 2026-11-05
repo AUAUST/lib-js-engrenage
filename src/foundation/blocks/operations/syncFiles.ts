@@ -1,4 +1,4 @@
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { FileSync } from "#types/FileSync";
 
 export function syncFiles(

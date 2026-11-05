@@ -1,29 +1,34 @@
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
-import type { ResolvedBuild } from "#project/build/types/ResolvedBuild";
+import type { Filesystem } from "#foundation/filesystem/index";
+import type { ResolvedBuild } from "#project/build/index";
 import type { Environment } from "#project/config/types/Environment";
 import type { RawConfig } from "#project/config/types/RawConfig";
 import type { ResolvedCache } from "#project/config/types/ResolvedCache";
 import type { ResolvedDefine } from "#project/config/types/ResolvedDefine";
 import type { ResolvedFiles } from "#project/config/types/ResolvedFiles";
 import type { ResolvedRuntimeSettings } from "#project/config/types/ResolvedRuntimeSettings";
-import type { ResolvedBin } from "#project/environments/types/ResolvedBin";
-import type { ResolvedData } from "#project/environments/types/ResolvedData";
-import type { ResolvedScripts } from "#project/environments/types/ResolvedScripts";
-import type { ResolvedSource } from "#project/environments/types/ResolvedSource";
-import type { ResolvedTests } from "#project/environments/types/ResolvedTests";
-import type { ResolvedTooling } from "#project/environments/types/ResolvedTooling";
-import type { Conventions } from "#project/format/types/Conventions";
-import type { PackageJson } from "#project/package/types/PackageJson";
-import type { Preset } from "#project/presets/types/Preset";
-import type { ResolvedTraitAdjustments } from "#project/presets/types/ResolvedTraitAdjustments";
-import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
-import type { ResolvedStructure } from "#project/structure/index";
-import type { ImportRule } from "#project/structure/types/ImportRule";
-import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
-import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
-import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
-import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
-import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";
+import type {
+  ResolvedBin,
+  ResolvedData,
+  ResolvedScripts,
+  ResolvedSource,
+  ResolvedTests,
+  ResolvedTooling,
+} from "#project/environments/index";
+import type { Conventions } from "#project/format/index";
+import type { PackageJson } from "#project/package/index";
+import type {
+  Preset,
+  ResolvedTraitAdjustments,
+  ResolvedTraits,
+} from "#project/presets/index";
+import type {
+  ImportRule,
+  ProjectRoles,
+  ResolvedAliases,
+  ResolvedStructure,
+} from "#project/structure/index";
+import type { ResolvedTypescript, Tsconfig } from "#project/tsconfig/index";
+import type { ResolvedWorkspaceGroup } from "#project/workspaces/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";

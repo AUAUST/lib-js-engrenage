@@ -1,5 +1,5 @@
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
-import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
+import type { Filesystem } from "#foundation/filesystem/index";
+import type { ResolvedGit } from "#tools/git/index";
 
 export function listFilesystems(config: {
   filesystem: Filesystem;

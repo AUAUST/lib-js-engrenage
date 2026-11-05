@@ -1,5 +1,5 @@
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
 export function addAgentSkills(

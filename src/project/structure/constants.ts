@@ -17,6 +17,7 @@ export const roleCatalogue = {
     purpose: "Deeply read-only constants of the domain.",
     file: ["constants.ts"],
     effects: "pure",
+    public: true,
   },
   "declarations": {
     purpose: "Ambient type declarations.",

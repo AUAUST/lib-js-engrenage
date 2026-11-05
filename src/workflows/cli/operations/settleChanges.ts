@@ -3,8 +3,8 @@ import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { successMessage } from "#workflows/cli/constants";
 import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
 import { listFilesystems } from "#workflows/cli/utils/listFilesystems";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
-import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
+import type { ProjectConfig } from "#project/config/index";
+import type { ResolvedGit } from "#tools/git/index";
 import type { SyncResult } from "#types/SyncResult";
 
 export async function settleChanges(

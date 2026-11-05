@@ -3,14 +3,13 @@ import { relative } from "node:path";
 import { map } from "@auaust/primitive-kit/arrays";
 import { hasOwn } from "@auaust/toolkit/object";
 
-import { syncFiles } from "#foundation/blocks/operations/syncFiles";
-import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
-import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
+import { syncFiles } from "#foundation/blocks/index";
+import { resolveWithin, toPosixPath } from "#foundation/filesystem/index";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
-import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
+import type { ProjectConfig } from "#project/config/index";
+import type { ResolvedGit } from "#tools/git/index";
 import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
 import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 

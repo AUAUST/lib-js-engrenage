@@ -1,9 +1,11 @@
 import { array, picklist } from "valibot";
 
-import { directorySchema } from "#foundation/options/config/schemas/directorySchema";
-import { globSchema } from "#foundation/options/config/schemas/globsSchema";
-import { declare } from "#foundation/options/utils/declare";
-import { declareRecord } from "#foundation/options/utils/declareRecord";
+import {
+  declare,
+  declareRecord,
+  directorySchema,
+  globSchema,
+} from "#foundation/options/index";
 import { domainSchema } from "#project/structure/config/schemas/domainSchema";
 import { namespaceSchema } from "#project/structure/config/schemas/namespaceSchema";
 

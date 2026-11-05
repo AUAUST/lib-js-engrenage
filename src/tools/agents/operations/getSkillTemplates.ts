@@ -8,7 +8,7 @@ import {
 } from "valibot";
 import { stringify } from "yaml";
 
-import { validate } from "#foundation/options/utils/validate";
+import { validate } from "#foundation/options/index";
 import {
   claudeAgentsDir,
   claudeSkillsDir,

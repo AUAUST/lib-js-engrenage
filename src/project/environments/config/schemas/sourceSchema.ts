@@ -3,11 +3,13 @@ import { boolean, picklist, string } from "valibot";
 import { join, map } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
-import { declareList } from "#foundation/options/config/declareList";
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
-import { listDefaults } from "#foundation/options/utils/listDefaults";
-import { unset } from "#foundation/options/utils/unset";
+import {
+  declare,
+  declareList,
+  declareObject,
+  listDefaults,
+  unset,
+} from "#foundation/options/index";
 import {
   apiGroupRoots,
   apiGroups,
@@ -20,8 +22,7 @@ import {
   disabledCodeEnvironment,
 } from "#project/environments/constants";
 import { exposedFilesSchema } from "#project/package/index";
-import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
-import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
+import { aliasesSchema, rolesOptionSchema } from "#project/structure/index";
 
 function describeApiGroups(): string {
   const roots = map(entries(apiGroupRoots), ([group, globals]) => {

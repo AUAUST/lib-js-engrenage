@@ -3,8 +3,7 @@ import { getOwn, keys } from "@auaust/toolkit/object";
 
 import { syncFiles } from "#foundation/blocks/operations/syncFiles";
 import { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
-import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import { relativeWithin, type Filesystem } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { GlobGroup } from "#types/GlobGroup";

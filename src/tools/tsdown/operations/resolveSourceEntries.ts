@@ -1,9 +1,10 @@
-import { resolveExportPaths } from "#project/package/index";
-import { resolvePathAliases } from "#project/tsconfig/operations/resolvePathAliases";
-import type { ResolvedSource } from "#project/environments/types/ResolvedSource";
-import type { PackageJson } from "#project/package/types/PackageJson";
-import type { PathAliases } from "#project/tsconfig/types/PathAliases";
-import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
+import { resolveExportPaths, type PackageJson } from "#project/package/index";
+import {
+  resolvePathAliases,
+  type PathAliases,
+  type Tsconfig,
+} from "#project/tsconfig/index";
+import type { ResolvedSource } from "#project/environments/index";
 import type { Directory } from "#types/Directory";
 
 export function resolveSourceEntries({

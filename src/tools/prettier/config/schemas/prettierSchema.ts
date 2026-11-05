@@ -1,6 +1,5 @@
 import { prettierignoreFile } from "#constants";
-import { declareLocation } from "#foundation/options/config/declareLocation";
-import { declareObject } from "#foundation/options/utils/declareObject";
+import { declareLocation, declareObject } from "#foundation/options/index";
 
 export const prettierSchema = declareObject(
   {

@@ -1,4 +1,4 @@
-import type { Config } from "#workflows/registry/types/Config";
+import type { Config } from "#workflows/registry/index";
 
 export interface SyncTarget<Flag extends string> {
   sync(

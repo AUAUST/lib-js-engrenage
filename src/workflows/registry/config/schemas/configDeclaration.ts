@@ -1,22 +1,20 @@
-import { declareObject } from "#foundation/options/utils/declareObject";
-import { buildSchema } from "#project/build/config/schemas/buildSchema";
-import { cacheSchema } from "#project/config/config/schemas/cacheSchema";
-import { debugSchema } from "#project/config/config/schemas/debugSchema";
-import { defineSchema } from "#project/config/config/schemas/defineSchema";
-import { binSchema } from "#project/environments/config/schemas/binSchema";
-import { dataSchema } from "#project/environments/config/schemas/dataSchema";
-import { runtimeSchema } from "#project/environments/config/schemas/runtimeSchema";
-import { scriptsSchema } from "#project/environments/config/schemas/scriptsSchema";
-import { sourceSchema } from "#project/environments/config/schemas/sourceSchema";
-import { testsSchema } from "#project/environments/config/schemas/testsSchema";
-import { toolingSchema } from "#project/environments/config/schemas/toolingSchema";
+import { declareObject } from "#foundation/options/index";
+import { buildSchema } from "#project/build/index";
+import { cacheSchema, debugSchema, defineSchema } from "#project/config/index";
+import {
+  binSchema,
+  dataSchema,
+  runtimeSchema,
+  scriptsSchema,
+  sourceSchema,
+  testsSchema,
+  toolingSchema,
+} from "#project/environments/index";
 import { formatSchema } from "#project/format/index";
-import { presetSchema } from "#project/presets/config/schemas/presetSchema";
-import { traitsSchema } from "#project/presets/config/schemas/traitsSchema";
-import { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
-import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
-import { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
-import { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
+import { presetSchema, traitsSchema } from "#project/presets/index";
+import { aliasesSchema, rolesSchema } from "#project/structure/index";
+import { typescriptSchema } from "#project/tsconfig/index";
+import { workspacesSchema } from "#project/workspaces/index";
 import { agentsSchema } from "#tools/agents/index";
 import { gitSchema } from "#tools/git/index";
 import { githubSchema } from "#tools/github/index";

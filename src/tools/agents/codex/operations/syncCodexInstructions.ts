@@ -1,8 +1,8 @@
-import { syncBlocks } from "#foundation/blocks/utils/syncBlocks";
+import { syncBlocks } from "#foundation/blocks/index";
 import { codexFile } from "#tools/agents/codex/constants";
 import { createCodexRuleMapping } from "#tools/agents/codex/operations/createCodexRuleMapping";
 import { markdownBlocks } from "#tools/agents/constants";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
 export function syncCodexInstructions({

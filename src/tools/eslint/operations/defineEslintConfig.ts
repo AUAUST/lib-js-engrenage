@@ -3,10 +3,9 @@ import { defineConfig } from "eslint/config";
 import { map } from "@auaust/primitive-kit/arrays";
 import { value } from "@auaust/toolkit/value";
 
-import { loadConfig } from "#project/config/operations/loadConfig";
+import { loadConfig, type ProjectConfig } from "#project/config/index";
 import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Config } from "#tools/eslint/types/Config";
 import type { ConfigWithExtends } from "#tools/eslint/types/ConfigWithExtends";
 import type { Options } from "#tools/eslint/types/Options";

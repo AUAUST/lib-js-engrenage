@@ -3,14 +3,13 @@ import { createRequire } from "node:module";
 import { object, string } from "valibot";
 
 import { changesetsCli, changesetsConfig, packageJsonFile } from "#constants";
-import { syncFiles } from "#foundation/blocks/operations/syncFiles";
-import { readJsonFile } from "#foundation/filesystem/operations/readJsonFile";
-import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
-import { flattenJsonObject } from "#foundation/json/utils/flattenJsonObject";
-import { validate } from "#foundation/options/utils/validate";
+import { syncFiles } from "#foundation/blocks/index";
+import { readJsonFile } from "#foundation/filesystem/index";
+import { applyJsonEdits, flattenJsonObject } from "#foundation/json/index";
+import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
 import { configFile } from "#tools/changesets/constants";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { File } from "#types/File";
 
 function resolveConfigVersion(packageJsonPath: File): string {

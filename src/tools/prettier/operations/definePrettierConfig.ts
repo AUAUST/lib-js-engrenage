@@ -1,9 +1,11 @@
 import { value } from "@auaust/toolkit/value";
 
-import { loadConfig } from "#project/config/operations/loadConfig";
-import { createContext } from "#project/config/utils/createContext";
+import {
+  createContext,
+  loadConfig,
+  type ProjectConfig,
+} from "#project/config/index";
 import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Config } from "#tools/prettier/types/Config";
 import type { Resolvable } from "#types/Resolvable";
 

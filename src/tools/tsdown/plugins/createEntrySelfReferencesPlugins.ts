@@ -2,8 +2,8 @@ import { normalize } from "node:path";
 
 import type { TsdownPlugin } from "tsdown";
 
-import { resolve } from "#foundation/filesystem/utils/resolve";
-import type { PathAliases } from "#project/tsconfig/types/PathAliases";
+import { resolve } from "#foundation/filesystem/index";
+import type { PathAliases } from "#project/tsconfig/index";
 import type { Directory } from "#types/Directory";
 import type { PackageName } from "#types/PackageName";
 

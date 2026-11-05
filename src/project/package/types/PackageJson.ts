@@ -1,4 +1,4 @@
-import type { Accessors } from "#foundation/options/types/Accessors";
+import type { Accessors } from "#foundation/options/index";
 import type { DevEngine } from "#project/package/types/DevEngine";
 import type { Person } from "#project/package/types/Person";
 import type { SubpathImports } from "#project/package/types/SubpathImports";

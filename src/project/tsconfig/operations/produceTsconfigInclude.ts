@@ -2,11 +2,11 @@ import { relative } from "node:path/posix";
 
 import { flatMap } from "@auaust/primitive-kit/arrays";
 
-import { resolveListOption } from "#foundation/options/utils/resolveListOption";
+import { resolveListOption } from "#foundation/options/index";
 import { resolveTsconfigEnvironments } from "#project/tsconfig/operations/resolveTsconfigEnvironments";
 import { toTsconfigGlobs } from "#project/tsconfig/utils/toTsconfigGlobs";
-import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { JsonEdit } from "#foundation/json/index";
+import type { ProjectConfig } from "#project/config/index";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 import type { File } from "#types/File";

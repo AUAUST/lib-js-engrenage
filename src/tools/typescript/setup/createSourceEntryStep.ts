@@ -1,5 +1,5 @@
-import type { ResolvedSource } from "#project/environments/types/ResolvedSource";
-import type { Step } from "#project/steps/types/Step";
+import type { ResolvedSource } from "#project/environments/index";
+import type { Step } from "#project/steps/index";
 
 export function createSourceEntryStep(): Step<{ src: ResolvedSource }> {
   return {

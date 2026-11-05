@@ -5,9 +5,12 @@ import { configDefaults, coverageConfigDefaults } from "vitest/config";
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import type { Maybe } from "@auaust/toolkit/types";
 
-import { filesIn } from "#foundation/filesystem/utils/filesIn";
-import { resolve } from "#foundation/filesystem/utils/resolve";
-import { validate } from "#foundation/options/utils/validate";
+import {
+  filesIn,
+  resolve,
+  type Filesystem,
+} from "#foundation/filesystem/index";
+import { validate, type OptionContext } from "#foundation/options/index";
 import { optionsSchema } from "#tools/vitest/config/schemas/optionsSchema";
 import {
   buildMode,
@@ -19,18 +22,17 @@ import {
 import { findSetupFiles } from "#tools/vitest/operations/findSetupFiles";
 import { createOutDirGuard } from "#tools/vitest/plugins/createOutDirGuard";
 import { createSourceGuard } from "#tools/vitest/plugins/createSourceGuard";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
-import type { OptionContext } from "#foundation/options/types/OptionContext";
-import type { ResolvedBuild } from "#project/build/types/ResolvedBuild";
-import type { ResolvedFiles } from "#project/config/types/ResolvedFiles";
-import type { ResolvedSource } from "#project/environments/types/ResolvedSource";
-import type { ResolvedTests } from "#project/environments/types/ResolvedTests";
-import type { PackageJson } from "#project/package/types/PackageJson";
-import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
-import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
-import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";
-import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
-import type { Plugin } from "#tools/vite/types/Plugin";
+import type { ResolvedBuild } from "#project/build/index";
+import type { ResolvedFiles } from "#project/config/index";
+import type {
+  ResolvedSource,
+  ResolvedTests,
+} from "#project/environments/index";
+import type { PackageJson } from "#project/package/index";
+import type { ResolvedTraits } from "#project/presets/index";
+import type { ResolvedTypescript } from "#project/tsconfig/index";
+import type { ResolvedWorkspaceGroup } from "#project/workspaces/index";
+import type { ConfigEnv, Plugin } from "#tools/vite/index";
 import type { Config } from "#tools/vitest/types/Config";
 import type { Options } from "#tools/vitest/types/Options";
 import type { Directory } from "#types/Directory";

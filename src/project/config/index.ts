@@ -1,6 +1,3 @@
-export { createContext } from "#project/config/utils/createContext";
-export { define } from "#project/config/utils/define";
-
 // @barrel types/*.ts all
 export * from "#project/config/types/CacheInput";
 export * from "#project/config/types/ConfigContext";
@@ -20,28 +17,62 @@ export * from "#project/config/types/ResolvedGlobal";
 export * from "#project/config/types/ResolvedGlobals";
 export * from "#project/config/types/ResolvedRuntimeSettings";
 // @end
+export type { Filesystem } from "#foundation/filesystem/index";
 export type { Runtime } from "#project/baseline/index";
-export * from "#foundation/filesystem/types/Filesystem";
-export * from "#project/build/types/ResolvedBuild";
-export * from "#project/environments/types/ResolvedBin";
-export * from "#project/environments/types/ResolvedCodeEnvironment";
-export * from "#project/environments/types/ResolvedData";
-export * from "#project/environments/types/ResolvedScripts";
-export * from "#project/environments/types/ResolvedSource";
-export * from "#project/environments/types/ResolvedTests";
-export * from "#project/environments/types/ResolvedTestsPatterns";
-export * from "#project/environments/types/ResolvedTooling";
-export * from "#project/presets/types/Preset";
-export * from "#project/presets/types/ResolvedTraitAdjustments";
-export * from "#project/presets/types/ResolvedTraits";
-export * from "#project/presets/types/Trait";
-export * from "#project/tsconfig/types/EnvironmentTsconfig";
-export * from "#project/tsconfig/types/ManagedEnvironmentTsconfig";
-export * from "#project/tsconfig/types/ResolvedBaseTsconfig";
-export * from "#project/tsconfig/types/ResolvedEnvironmentTsconfig";
-export * from "#project/tsconfig/types/ResolvedEnvironmentTsconfigOption";
-export * from "#project/tsconfig/types/TsconfigEnvironment";
-export * from "#project/tsconfig/types/TsconfigGroups";
-export * from "#project/tsconfig/types/TsconfigKey";
-export * from "#project/tsconfig/types/TsconfigOwner";
-export * from "#project/tsconfig/types/UnmanagedEnvironmentTsconfig";
+export type { ResolvedBuild } from "#project/build/index";
+export type {
+  ResolvedBin,
+  ResolvedCodeEnvironment,
+  ResolvedData,
+  ResolvedScripts,
+  ResolvedSource,
+  ResolvedTests,
+  ResolvedTestsPatterns,
+  ResolvedTooling,
+} from "#project/environments/index";
+export type {
+  Preset,
+  ResolvedTraitAdjustments,
+  ResolvedTraits,
+  Trait,
+} from "#project/presets/index";
+export type {
+  EnvironmentTsconfig,
+  ManagedEnvironmentTsconfig,
+  ResolvedBaseTsconfig,
+  ResolvedEnvironmentTsconfig,
+  ResolvedEnvironmentTsconfigOption,
+  TsconfigEnvironment,
+  TsconfigGroups,
+  TsconfigKey,
+  TsconfigOwner,
+  UnmanagedEnvironmentTsconfig,
+} from "#project/tsconfig/index";
+
+// @barrel config/schemas/*.ts named
+export { cacheSchema } from "#project/config/config/schemas/cacheSchema";
+export { debugSchema } from "#project/config/config/schemas/debugSchema";
+export { defineSchema } from "#project/config/config/schemas/defineSchema";
+export { globalsSchema } from "#project/config/config/schemas/globalsSchema";
+// @end
+
+// @barrel operations/*.ts named
+export { createProjectConfig } from "#project/config/operations/createProjectConfig";
+export { createProjectSections } from "#project/config/operations/createProjectSections";
+export { isDebugEnvironment } from "#project/config/operations/isDebugEnvironment";
+export { loadConfig } from "#project/config/operations/loadConfig";
+export { readConfig } from "#project/config/operations/readConfig";
+export { readRawConfig } from "#project/config/operations/readRawConfig";
+// @end
+
+// @barrel utils/*.ts named
+export { assertSerializable } from "#project/config/utils/assertSerializable";
+export { createContext } from "#project/config/utils/createContext";
+export { createDefine } from "#project/config/utils/createDefine";
+export { define } from "#project/config/utils/define";
+export { isDefinition } from "#project/config/utils/isDefinition";
+export { isValidDefinition } from "#project/config/utils/isValidDefinition";
+export { locateFile } from "#project/config/utils/locateFile";
+export { resolveGlobal } from "#project/config/utils/resolveGlobal";
+export { serialize } from "#project/config/utils/serialize";
+// @end

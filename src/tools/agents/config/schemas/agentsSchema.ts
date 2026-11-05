@@ -2,11 +2,13 @@ import { boolean, picklist } from "valibot";
 
 import { wrap } from "@auaust/primitive-kit/arrays";
 
-import { directorySchema } from "#foundation/options/config/schemas/directorySchema";
-import { globsSchema } from "#foundation/options/config/schemas/globsSchema";
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
-import { unset } from "#foundation/options/utils/unset";
+import {
+  declare,
+  declareObject,
+  directorySchema,
+  globsSchema,
+  unset,
+} from "#foundation/options/index";
 import { budgetSchema } from "#tools/agents/config/schemas/budgetSchema";
 import { preferredSchema } from "#tools/agents/config/schemas/preferredSchema";
 import {

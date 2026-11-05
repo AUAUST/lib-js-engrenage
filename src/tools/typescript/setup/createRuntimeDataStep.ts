@@ -1,5 +1,5 @@
 import { baselineBrowserMapping, nodeReleases } from "#constants";
-import type { Step } from "#project/steps/types/Step";
+import type { Step } from "#project/steps/index";
 
 const dataPackages = [baselineBrowserMapping, nodeReleases] as const;
 

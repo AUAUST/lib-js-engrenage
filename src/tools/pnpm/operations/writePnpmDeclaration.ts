@@ -1,8 +1,10 @@
 import { wrap } from "@auaust/primitive-kit/arrays";
 
 import { jsonIndentation } from "#project/format/constants";
-import { writePackageJsonValue } from "#project/package/index";
-import type { PackageJson } from "#project/package/types/PackageJson";
+import {
+  writePackageJsonValue,
+  type PackageJson,
+} from "#project/package/index";
 import type { File } from "#types/File";
 
 export function writePnpmDeclaration(

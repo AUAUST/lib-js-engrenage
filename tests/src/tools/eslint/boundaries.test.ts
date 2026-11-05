@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
+import { assign } from "@auaust/toolkit/object";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
@@ -39,6 +40,7 @@ async function createLinter(prefix = "auaust/import-") {
     "src/project/other/entry.ts": exported,
     "src/entry.ts": exported,
     "src/project/other/utils/priv.ts": exported,
+    "src/project/other/constants.ts": exported,
   });
 
   const eslint = new ESLint({
@@ -49,17 +51,25 @@ async function createLinter(prefix = "auaust/import-") {
     }),
   });
 
-  return async (filePath: string, source: string) => {
+  async function report(filePath: string, source: string) {
     const [result] = await eslint.lintText(source, {
       filePath: project.resolve(filePath),
     });
 
-    return (result?.messages ?? [])
-      .map(({ ruleId }) => ruleId)
-      .filter((ruleId) => {
-        return ruleId?.startsWith(prefix) === true;
-      });
-  };
+    return (result?.messages ?? []).filter(({ ruleId }) => {
+      return ruleId?.startsWith(prefix) === true;
+    });
+  }
+
+  async function lint(filePath: string, source: string) {
+    return (await report(filePath, source)).map(({ ruleId }) => ruleId);
+  }
+
+  return assign(lint, {
+    messages: async (filePath: string, source: string) => {
+      return (await report(filePath, source)).map(({ message }) => message);
+    },
+  });
 }
 
 describe("structure boundaries", () => {
@@ -91,6 +101,28 @@ describe("structure boundaries", () => {
       await lint(
         "src/project/feature/inner/utils/deep.ts",
         'export { value } from "#project/feature/utils/own";\n',
+      ),
+    ).toEqual([]);
+  });
+
+  test("names the index.ts of the target domain in a surfaces message", async () => {
+    const lint = await createLinter();
+
+    const [message] = await lint.messages(
+      "src/project/feature/index.ts",
+      'export { value } from "#project/other/utils/priv";\n',
+    );
+
+    expect(message).toContain("Import `#project/other/index` instead");
+  });
+
+  test("lets a peer import the constants of a domain", async () => {
+    const lint = await createLinter();
+
+    expect(
+      await lint(
+        "src/project/feature/index.ts",
+        'export { value } from "#project/other/constants";\n',
       ),
     ).toEqual([]);
   });

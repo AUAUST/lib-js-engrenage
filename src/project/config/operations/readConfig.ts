@@ -1,4 +1,4 @@
-import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
+import { createFilesystem } from "#foundation/filesystem/index";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { readRawConfig } from "#project/config/operations/readRawConfig";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";

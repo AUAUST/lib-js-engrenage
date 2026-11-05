@@ -1,8 +1,6 @@
 import { picklist } from "valibot";
 
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
-import { unset } from "#foundation/options/utils/unset";
+import { declare, declareObject, unset } from "#foundation/options/index";
 import { workflowSetNames } from "#tools/github/constants";
 
 export const githubSchema = declareObject(

@@ -1,6 +1,6 @@
 import type { AsyncFn } from "@auaust/toolkit/types";
 
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { Config } from "#tools/vite/types/Config";
 import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
 

@@ -6,7 +6,7 @@ export { syncAliases } from "#tools/typescript/setup/syncAliases";
 export { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
 // @end
 
-export { resolvePathAliases } from "#project/tsconfig/operations/resolvePathAliases";
+export { resolvePathAliases } from "#project/tsconfig/index";
 export { syncBarrels } from "#tools/typescript/operations/syncBarrels";
 export { inferType } from "#tools/typescript/utils/inferType";
 export { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
@@ -16,9 +16,11 @@ export * from "#tools/typescript/types/BarrelMode";
 // @end
 export type { ApiGroup } from "#project/baseline/index";
 export type { SubpathImports } from "#project/package/index";
-export * from "#project/tsconfig/types/PathAlias";
-export * from "#project/tsconfig/types/PathAliases";
-export * from "#project/tsconfig/types/Paths";
-export * from "#project/tsconfig/types/Tsconfig";
-export * from "#project/tsconfig/types/TsconfigProducer";
-export * from "#project/tsconfig/types/TsconfigTarget";
+export type {
+  PathAlias,
+  PathAliases,
+  Paths,
+  Tsconfig,
+  TsconfigProducer,
+  TsconfigTarget,
+} from "#project/tsconfig/index";

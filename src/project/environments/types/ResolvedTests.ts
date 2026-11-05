@@ -1,8 +1,8 @@
-import type { Runtime } from "#project/baseline/types/Runtime";
+import type { Runtime } from "#project/baseline/index";
 import type { ResolvedCodeEnvironment } from "#project/environments/types/ResolvedCodeEnvironment";
 import type { ResolvedTestsPatterns } from "#project/environments/types/ResolvedTestsPatterns";
-import type { TestsLayout } from "#project/structure/types/TestsLayout";
-import type { ResolvedEnvironmentTsconfig } from "#project/tsconfig/types/ResolvedEnvironmentTsconfig";
+import type { TestsLayout } from "#project/structure/index";
+import type { ResolvedEnvironmentTsconfig } from "#project/tsconfig/index";
 import type { Directory } from "#types/Directory";
 import type { Globs } from "#types/Globs";
 

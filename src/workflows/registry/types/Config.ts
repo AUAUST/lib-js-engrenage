@@ -1,9 +1,9 @@
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
-import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
-import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
-import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
-import type { ResolvedPrettier } from "#tools/prettier/types/ResolvedPrettier";
-import type { ResolvedVscode } from "#tools/vscode/types/ResolvedVscode";
+import type { ProjectConfig } from "#project/config/index";
+import type { ResolvedAgents } from "#tools/agents/index";
+import type { ResolvedGit } from "#tools/git/index";
+import type { ResolvedGithub } from "#tools/github/index";
+import type { ResolvedPrettier } from "#tools/prettier/index";
+import type { ResolvedVscode } from "#tools/vscode/index";
 
 export interface Config extends ProjectConfig {
   readonly agents: ResolvedAgents;

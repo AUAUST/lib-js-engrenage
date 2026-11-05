@@ -14,8 +14,8 @@ import {
 import { sort } from "@auaust/primitive-kit/arrays";
 
 import { engrenage } from "#constants";
-import { resolveDataFile } from "#foundation/data/operations/resolveDataFile";
-import { validate } from "#foundation/options/utils/validate";
+import { resolveDataFile } from "#foundation/data/index";
+import { validate } from "#foundation/options/index";
 import { agentsTemplate } from "#tools/agents/constants";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 

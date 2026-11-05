@@ -14,7 +14,7 @@ import {
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { createTypeAwareLanguageOptions } from "#tools/eslint/utils/createTypeAwareLanguageOptions";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { Config } from "#tools/eslint/types/Config";
 
 export function createRecommendedRules({

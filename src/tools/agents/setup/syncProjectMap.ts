@@ -2,11 +2,13 @@ import { values } from "@auaust/toolkit/object";
 
 import { projectMapFile } from "#tools/agents/constants";
 import { renderProjectMap } from "#tools/agents/utils/renderProjectMap";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
-import type { ImportRule } from "#project/structure/types/ImportRule";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
-import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
-import type { TestsLayout } from "#project/structure/types/TestsLayout";
+import type { Filesystem } from "#foundation/filesystem/index";
+import type {
+  ImportRule,
+  ResolvedRoles,
+  ResolvedStructure,
+  TestsLayout,
+} from "#project/structure/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { Globs } from "#types/Globs";
 

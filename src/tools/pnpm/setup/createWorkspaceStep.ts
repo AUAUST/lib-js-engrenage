@@ -5,7 +5,7 @@ import { entries } from "@auaust/toolkit/object";
 
 import { workspaceFile, workspaceSettings } from "#tools/pnpm/constants";
 import { parseWorkspaceDocument } from "#tools/pnpm/utils/parseWorkspaceDocument";
-import type { Step } from "#project/steps/types/Step";
+import type { Step } from "#project/steps/index";
 import type { WorkspaceSettings } from "#tools/pnpm/types/WorkspaceSettings";
 
 function renderWorkspace({

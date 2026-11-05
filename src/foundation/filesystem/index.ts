@@ -11,3 +11,9 @@ export { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
 export * from "#foundation/filesystem/types/FileFormatter";
 export * from "#foundation/filesystem/types/Filesystem";
 // @end
+
+// @barrel operations/*.ts named
+export { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
+export { importConfigFile } from "#foundation/filesystem/operations/importConfigFile";
+export { readJsonFile } from "#foundation/filesystem/operations/readJsonFile";
+// @end

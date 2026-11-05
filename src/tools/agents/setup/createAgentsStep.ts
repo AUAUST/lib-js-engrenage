@@ -1,10 +1,10 @@
 import { readFileSync } from "node:fs";
 
-import { resolveDataFile } from "#foundation/data/operations/resolveDataFile";
+import { resolveDataFile } from "#foundation/data/index";
 import { agentsFile, agentsTemplate } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
-import type { Step } from "#project/steps/types/Step";
+import type { Step } from "#project/steps/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
 export function createAgentsStep(): Step<{

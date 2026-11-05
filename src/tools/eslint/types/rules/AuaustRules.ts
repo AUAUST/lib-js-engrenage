@@ -80,7 +80,7 @@ export interface AuaustRules {
    */
   "auaust/import-workspaces"?: Rule<AuaustImportWorkspaces>;
   /**
-   * An index.ts re-exports and declares no local value, except a SCREAMING_CASE constant of metadata; the index.ts of a command group declares its command.
+   * An index.ts or entry.ts re-exports and declares no local value, except a SCREAMING_CASE constant of metadata; the index.ts of a command group declares its command.
    */
   "auaust/index-declarations"?: Rule<[]>;
   /**

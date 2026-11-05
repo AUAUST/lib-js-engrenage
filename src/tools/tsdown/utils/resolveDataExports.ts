@@ -1,7 +1,7 @@
 import { entries } from "@auaust/toolkit/object";
 
-import type { ResolvedData } from "#project/environments/types/ResolvedData";
-import type { PathAliases } from "#project/tsconfig/types/PathAliases";
+import type { ResolvedData } from "#project/environments/index";
+import type { PathAliases } from "#project/tsconfig/index";
 
 function toSubpathPattern(subpath: string): RegExp {
   const escaped = subpath.replaceAll(/[$()+.?[\\\]^{|}]/g, String.raw`\$&`);

@@ -3,7 +3,7 @@ import { max } from "@auaust/toolkit/math";
 import { entries } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
-import { syncFiles } from "#foundation/blocks/operations/syncFiles";
+import { syncFiles } from "#foundation/blocks/index";
 import { jsonIndentation } from "#project/format/constants";
 import {
   createPackageJson,
@@ -11,9 +11,9 @@ import {
 } from "#project/package/index";
 import { listPnpmWarnings } from "#tools/pnpm/index";
 import { resolveCommandFiles } from "#tools/tsdown/index";
-import type { JsonValue } from "#foundation/json/types/JsonValue";
-import type { Runtime } from "#project/baseline/types/Runtime";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { JsonValue } from "#foundation/json/index";
+import type { Runtime } from "#project/baseline/index";
+import type { ProjectConfig } from "#project/config/index";
 
 interface Field {
   location: readonly [string] | readonly [string, string];

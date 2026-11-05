@@ -5,7 +5,7 @@ import type { format, getFileInfo, resolveConfig } from "prettier";
 import { get } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
-import { resolve } from "#foundation/filesystem/utils/resolve";
+import { resolve } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";
 
 interface Prettier {

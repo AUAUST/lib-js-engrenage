@@ -1,10 +1,9 @@
 import type { JSONPath } from "jsonc-parser";
 
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
-import type { JsonValue } from "#foundation/json/types/JsonValue";
-import type { OptionContext } from "#foundation/options/types/OptionContext";
-import type { Preset } from "#project/presets/types/Preset";
-import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
+import type { Filesystem } from "#foundation/filesystem/index";
+import type { JsonValue } from "#foundation/json/index";
+import type { OptionContext } from "#foundation/options/index";
+import type { Preset, ResolvedTraits } from "#project/presets/index";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { Prompter } from "#project/steps/types/Prompter";
 import type { PackageName } from "#types/PackageName";

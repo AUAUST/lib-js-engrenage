@@ -1,7 +1,6 @@
 import { array, picklist } from "valibot";
 
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
+import { declare, declareObject } from "#foundation/options/index";
 import { traits } from "#project/presets/constants";
 
 const traitSchema = picklist(traits);

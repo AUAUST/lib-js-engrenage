@@ -1,4 +1,4 @@
-import { resolve } from "#foundation/filesystem/utils/resolve";
+import { resolve } from "#foundation/filesystem/index";
 import { readConfig } from "#workflows/registry/operations/readConfig";
 import type { Directory } from "#types/Directory";
 import type { Config } from "#workflows/registry/types/Config";

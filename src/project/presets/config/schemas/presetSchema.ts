@@ -2,8 +2,7 @@ import { picklist } from "valibot";
 
 import { keys } from "@auaust/toolkit/object";
 
-import { declare } from "#foundation/options/utils/declare";
-import { unset } from "#foundation/options/utils/unset";
+import { declare, unset } from "#foundation/options/index";
 import { presetTraits } from "#project/presets/constants";
 
 export const presetSchema = declare(picklist(keys(presetTraits)), {

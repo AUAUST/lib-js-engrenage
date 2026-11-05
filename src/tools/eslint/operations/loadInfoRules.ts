@@ -4,9 +4,9 @@ import { includes, sort } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 
 import { eslint } from "#constants";
-import { importConfigFile } from "#foundation/filesystem/operations/importConfigFile";
-import { validate } from "#foundation/options/utils/validate";
-import { loadConfig } from "#project/config/operations/loadConfig";
+import { importConfigFile } from "#foundation/filesystem/index";
+import { validate } from "#foundation/options/index";
+import { loadConfig } from "#project/config/index";
 import { infoRulesSetting } from "#tools/eslint/constants";
 import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
 import type { Directory } from "#types/Directory";

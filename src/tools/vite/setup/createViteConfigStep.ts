@@ -1,7 +1,9 @@
 import { engrenage, vite, vitest } from "#constants";
-import { createConfigModule } from "#project/steps/utils/createConfigModule";
-import { hasConfigFile } from "#project/steps/utils/hasConfigFile";
-import type { Step } from "#project/steps/types/Step";
+import {
+  createConfigModule,
+  hasConfigFile,
+  type Step,
+} from "#project/steps/index";
 
 export function createViteConfigStep(): Step {
   const file = `${vite}.config.ts`;

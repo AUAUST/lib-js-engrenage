@@ -8,8 +8,8 @@ import { isString } from "@auaust/toolkit/isString";
 import { get } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
-import { resolve } from "#foundation/filesystem/utils/resolve";
-import { readJsonValue } from "#foundation/json/utils/readJsonValue";
+import { resolve } from "#foundation/filesystem/index";
+import { readJsonValue } from "#foundation/json/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";

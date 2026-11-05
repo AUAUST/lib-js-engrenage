@@ -1,5 +1,5 @@
-import { validate } from "#foundation/options/utils/validate";
-import { readRawConfig } from "#project/config/operations/readRawConfig";
+import { validate } from "#foundation/options/index";
+import { readRawConfig } from "#project/config/index";
 import { configSchema } from "#workflows/registry/config/schemas/configSchema";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 import type { Directory } from "#types/Directory";

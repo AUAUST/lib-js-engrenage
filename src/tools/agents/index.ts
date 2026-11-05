@@ -3,6 +3,7 @@ export {
   createClaudeStep,
   syncClaudeSettings,
 } from "#tools/agents/claude/index";
+export { codexFile } from "#tools/agents/codex/constants";
 export {
   createCodexHooksStep,
   createCodexStep,

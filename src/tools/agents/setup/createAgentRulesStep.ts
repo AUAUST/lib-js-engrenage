@@ -2,7 +2,7 @@ import { filterMap, pluck } from "@auaust/primitive-kit/arrays";
 
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
-import type { Step } from "#project/steps/types/Step";
+import type { Step } from "#project/steps/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
 export function createAgentRulesStep(): Step<{ agents: ResolvedAgents }> {

@@ -1,7 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { filesIn } from "#foundation/filesystem/utils/filesIn";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import { filesIn, type Filesystem } from "#foundation/filesystem/index";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
 

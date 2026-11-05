@@ -3,7 +3,7 @@ import { relative } from "node:path";
 import { eslint } from "#constants";
 import { pluginName } from "#tools/eslint/constants";
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { DebtMarker } from "#tools/eslint/types/DebtMarker";
 
 function compareMarkers(a: DebtMarker, b: DebtMarker): number {

@@ -1,15 +1,14 @@
 import { resolve } from "node:path";
 
 import { emptyObjectFile } from "#foundation/json/constants";
-import { applyJsonEdits } from "#foundation/json/utils/applyJsonEdits";
-import { validate } from "#foundation/options/utils/validate";
-import { buildSchema } from "#project/build/config/schemas/buildSchema";
+import { applyJsonEdits, type JsonEdit } from "#foundation/json/index";
+import { validate } from "#foundation/options/index";
+import { buildSchema } from "#project/build/index";
 import { jsonIndentation } from "#project/format/constants";
 import { createTsconfig } from "#project/tsconfig/utils/createTsconfig";
 import { produceTsconfigExtends } from "#project/tsconfig/utils/produceTsconfigExtends";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
-import type { JsonEdit } from "#foundation/json/types/JsonEdit";
-import type { ProjectConfig } from "#project/config/types/ProjectConfig";
+import type { ProjectConfig } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/types/TsconfigTarget";
 import type { Directory } from "#types/Directory";
 

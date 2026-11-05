@@ -3,7 +3,7 @@ import { values } from "@auaust/toolkit/object";
 import { attributionRules } from "#tools/agents/constants";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Filesystem } from "#foundation/filesystem/index";
 
 export function getMissingRuleTemplates({
   filesystem,

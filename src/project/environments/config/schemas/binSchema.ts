@@ -1,9 +1,11 @@
 import { record, string } from "valibot";
 
-import { fileSchema } from "#foundation/options/config/schemas/fileSchema";
-import { declare } from "#foundation/options/utils/declare";
-import { declareObject } from "#foundation/options/utils/declareObject";
-import { unset } from "#foundation/options/utils/unset";
+import {
+  declare,
+  declareObject,
+  fileSchema,
+  unset,
+} from "#foundation/options/index";
 import { nodeMajorSchema } from "#project/baseline/index";
 import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
 import { declareProgramLayout } from "#project/environments/config/declareProgramLayout";
@@ -11,7 +13,7 @@ import {
   defaultBinDirectories,
   disabledCodeEnvironment,
 } from "#project/environments/constants";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { ConfigContext } from "#project/config/index";
 
 export const binSchema = declareObject(
   {

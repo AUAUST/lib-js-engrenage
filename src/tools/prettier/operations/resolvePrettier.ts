@@ -1,11 +1,13 @@
 import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
-import { resolveSection } from "#foundation/options/utils/resolveSection";
-import { locateFile } from "#project/config/utils/locateFile";
+import { resolveSection } from "#foundation/options/index";
+import {
+  locateFile,
+  type ConfigContext,
+  type RawConfig,
+} from "#project/config/index";
 import { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
-import type { ConfigContext } from "#project/config/types/ConfigContext";
-import type { RawConfig } from "#project/config/types/RawConfig";
 import type { ResolvedPrettier } from "#tools/prettier/types/ResolvedPrettier";
 
 export function resolvePrettier(

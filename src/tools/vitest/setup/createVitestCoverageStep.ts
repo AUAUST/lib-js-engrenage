@@ -1,5 +1,5 @@
 import { vitest, vitestCoverageIstanbul } from "#constants";
-import type { Step } from "#project/steps/types/Step";
+import type { Step } from "#project/steps/index";
 
 export function createVitestCoverageStep(): Step {
   return {

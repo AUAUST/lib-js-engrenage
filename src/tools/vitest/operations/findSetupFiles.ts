@@ -1,9 +1,8 @@
 import { wrap } from "@auaust/primitive-kit/arrays";
 
-import { filesIn } from "#foundation/filesystem/utils/filesIn";
+import { filesIn, type Filesystem } from "#foundation/filesystem/index";
 import { testsSetupRole } from "#project/structure/constants";
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
-import type { ResolvedTests } from "#project/environments/types/ResolvedTests";
+import type { ResolvedTests } from "#project/environments/index";
 import type { Files } from "#types/Files";
 
 export function findSetupFiles({

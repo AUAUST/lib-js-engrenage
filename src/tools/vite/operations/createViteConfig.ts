@@ -1,14 +1,13 @@
 import { join } from "node:path";
 
 import { project as pluginPrefix, vite } from "#constants";
-import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
+import { resolveWithin } from "#foundation/filesystem/index";
 import { emittedManifestFile } from "#project/build/constants";
-import { createDefine } from "#project/config/utils/createDefine";
+import { createDefine, type ResolvedDefine } from "#project/config/index";
 import { createEmittedManifestPlugin } from "#tools/vite/plugins/createEmittedManifestPlugin";
-import type { OptionContext } from "#foundation/options/types/OptionContext";
-import type { ResolvedBuild } from "#project/build/types/ResolvedBuild";
-import type { ResolvedDefine } from "#project/config/types/ResolvedDefine";
-import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
+import type { OptionContext } from "#foundation/options/index";
+import type { ResolvedBuild } from "#project/build/index";
+import type { ResolvedTypescript } from "#project/tsconfig/index";
 import type { Config } from "#tools/vite/types/Config";
 import type { Directory } from "#types/Directory";
 import type { PackageName } from "#types/PackageName";
