@@ -93,3 +93,45 @@ Project structure description, its report and the tooling generated from it.
 
 - why: #150 step 3 removes `noDefaultExport`, the sole reader, and enforces `exports`; `discovered` then only feeds the project map, duplicating `exports: "default"` (`setup.ts`, loaded by path, is the exception). `configuration.4` concerns the widening. `stylistic/naming`, `padded*` and `debtMarkers` derive from no structure.
 - want: decide whether `discovered` goes from roles and config; state a reason for each non-structure rule.
+
+## 16. Domains carry no `purpose`, so the maps list bare names
+
+- why: `domains.<path>.purpose` exists but none is set; the src map shows about forty names (`steps`, `data`, `blocks`, `presets`) an agent must open to place code; the structure section requires purposes only for declared domains, and all are inferred.
+- want: a purpose per domain, required by `structure --check` in strict environments.
+- done: every domain line of every map carries a purpose.
+
+## 17. Effect levels have no stated meaning; roles are picked by what a module imports
+
+- why: maps name `pure < confined < effectful` without defining them; lint ranks only imports and the fixed `effectfulModules` list, so mutation, console output and unlisted packages are unranked; declarers split between `config/` and `utils/`, `ensureAnyOf` sits in `operations/`; catalogue `schemas` is pure yet overridden confined, `adapters` has no level.
+- want: one definition per level in catalogue and map, catalogue defaults that fit, a decision on mutation and console.
+- done: placement follows the definition and `engrenage.config.ts` overrides no level.
+
+## 18. Role contracts overlap or misname their content
+
+- why: `operations` = impure logic + definers; `config` holds the declarers (`foundation/options`) and nests as `project/config/config`; `conventions` are ESLint rules called formatting conventions; `setup.ts` vs `setup`; tests `utils` keeps the "Confined" purpose; src-only roles apply to scripts, tests and tooling.
+- want: true purposes, definers in one role, per-environment role sets, a test-setup name without extension.
+- done: each role's purpose holds for every module in it.
+
+## 19. Public domains have two hand-synced surfaces
+
+- why: `index.ts` whole-role barrels export everything (`./baseline` publishes `addMonths`); `entry.ts` lists are hand-written and unchecked against `index.ts`; Prettier's default export runs from `index.ts`; the root entry publishes internal domains.
+- want: one source of publicity (a `public` list per domain, or a tag) generating `entry.ts`, and `index.ts` barrels limited to what other domains import.
+- done: a public export is declared once and drift fails a check.
+
+## 20. Config stays two aggregates under three `config` names
+
+- why: `createProjectSections` (850 lines) resolves every `project` section; `project/config` re-exports six domains' types; `ProjectConfig` and `Config` each have `readConfig`, `loadConfig` and a cache, and definers read the unvalidated one; `project/config`, `workflows/config` and `workflows/registry` share the concern. Details: `structure.7`–`structure.9`, `structure.13`.
+- want: domains contribute section resolvers, the registry composes them, one loader; merge `workflows/config` into the registry.
+- done: no domain imports every peer and one `loadConfig` exists.
+
+## 21. Generated aliases exceed what import rules allow
+
+- why: `#src/*` gives every src module a second specifier; every root file gets one (`#entry`, which nothing may import); `bin` and `scripts` reach any internal through `#…/operations/…`, so "thin bin" has no lint backing (`runSync` and the structure check live in bin).
+- want: aliases derived from the import rules, and bin and scripts limited to domain surfaces.
+- done: each alias has an allowed importer and bin imports only surfaces.
+
+## 22. Tests lean on source mode and mirror only directories
+
+- why: 78 `.src`, 34 plain and no `.dist` test; most public behavior is tested through internals, so dist mode covers little; the mirror layout checks directories, not that a test exercises its domain (`resolveListOption` under `project/config`); `tests/bin` is flat while bin is a tree.
+- want: plain public-specifier tests wherever an entry exposes the behavior, a lint check matching a test's directory to the domain it imports, `tests/bin` mirroring the tree.
+- done: every public entry runs in dist mode and misplaced tests fail lint.

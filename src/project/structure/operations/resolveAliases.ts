@@ -59,6 +59,7 @@ function createSourceAliases(
     );
   });
 
+  // @debt every root file gets an alias, including `#entry` for the package entry that no rule lets anything import; aliases should follow the import rules
   const files = flatMap(dirs, (dir) => {
     if (!existsSync(join(root, dir))) {
       return [];
@@ -147,6 +148,7 @@ export function resolveAliases({
     });
   }
 
+  // @debt `#src/*` is generated beside the namespace aliases, so every src module has two specifiers (`#src/project/config/index`, `#project/config/index`)
   const roots = flatMap(entries(environments), ([name, dirs]) => {
     return flatMap(dirs, (dir): Alias[] => {
       return dir === projectRoot ||

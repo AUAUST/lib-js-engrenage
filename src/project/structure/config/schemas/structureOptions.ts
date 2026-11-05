@@ -9,6 +9,7 @@ import {
 import { domainSchema } from "#project/structure/config/schemas/domainSchema";
 import { namespaceSchema } from "#project/structure/config/schemas/namespaceSchema";
 
+// @debt a spreadable record of declarations in the `schemas` role, like `rolesOptionEntries` and `declareRoleContractEntries`; neither a schema nor named like one
 export const structureOptions = {
   namespaces: declareRecord(directorySchema, namespaceSchema, {
     description: [

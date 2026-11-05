@@ -2,8 +2,10 @@ import { defineConfig } from "#workflows/config/index";
 
 export default defineConfig({
   preset: "library",
+  // @debt these roles are defined for every environment, so scripts, tests and tooling maps list setup, plugins, conventions and config roles none of their modules can use
   roles: {
     define: {
+      // @debt "option declarations of the domain" does not fit `foundation/options/config` (the declarers themselves) or `project/config/config`, a role named like its domain
       config: {
         purpose: "Confined option declarations of the domain.",
         exports: "named-match",
@@ -17,6 +19,7 @@ export default defineConfig({
           },
         ],
       },
+      // @debt redefined only to give `adapters` an effect level; the catalogue should carry it, as it does for every other role
       adapters: { inherit: "adapters", effects: "effectful" },
       setup: {
         purpose: "Init steps and sync targets of the domain.",
@@ -28,11 +31,13 @@ export default defineConfig({
         exports: "named-match",
         effects: "effectful",
       },
+      // @debt two contracts in one role: the identity definer `defineConfig` and argument mutators such as `ensureAnyOf` sit beside I/O, while lint ranks roles by imports only
       operations: {
         purpose: "Impure logic and definers of the domain.",
         exports: "named-match",
         effects: "effectful",
       },
+      // @debt the modules are ESLint rule conventions, not formatting conventions, and the word collides with the `Conventions` of `project/format`
       conventions: {
         purpose: "Formatting conventions, discovered by category.",
         categories: true,
@@ -51,6 +56,7 @@ export default defineConfig({
     layout: "mirror",
     roles: {
       define: {
+        // @debt inherits the purpose "Confined functions" while raising the level to effectful, so the structure report contradicts itself for `tests/utils`
         utils: { inherit: "utils", effects: "effectful" },
       },
     },
@@ -69,6 +75,7 @@ export default defineConfig({
   },
   src: {
     node: 24,
+    // @debt no domain declares a `purpose`, so the maps list about forty bare names (`steps`, `data`, `blocks`, `presets`) and an agent must open each one to place code
     namespaces: {
       ".": { layers: ["foundation", "project", "tools", "workflows"] },
       "foundation": { purpose: "Primitives without project knowledge." },
@@ -82,6 +89,7 @@ export default defineConfig({
         purpose: "Composition of tools into the registry and commands.",
       },
     },
+    // @debt `./config` resolves to `workflows/config` but `./config/constants` to `project/config`, and the constants subpaths are hand-listed beside the derived domain entries
     exports: {
       ".": "src/entry.ts",
       "./constants": "src/constants.ts",

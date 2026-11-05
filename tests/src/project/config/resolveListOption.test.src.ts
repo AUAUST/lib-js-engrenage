@@ -1,3 +1,4 @@
+// @debt tests `foundation/options` from the mirror directory of `project/config`; the mirror layout checks that a directory exists, not that its tests exercise that domain
 import { string } from "valibot";
 import { describe, expect, test, vi } from "vitest";
 

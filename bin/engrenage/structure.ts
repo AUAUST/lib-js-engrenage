@@ -5,6 +5,7 @@ import { renderStructure } from "#project/structure/utils/renderStructure";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
+// @debt the command composes the structure check (report, cycles, violation exit) from four internal modules of `project/structure`; bin may reach any internal, so its "thin" rule has no lint backing
 export const structure = defineCommand((command) => {
   return command
     .option(

@@ -4,6 +4,7 @@ import { readRawConfig } from "#project/config/operations/readRawConfig";
 import type { ProjectConfig } from "#project/config/types/ProjectConfig";
 import type { Directory } from "#types/Directory";
 
+// @debt duplicates `workflows/registry` readConfig and loadConfig with a second cache and no schema validation, so tool definers read an unvalidated partial config and a process may load the file twice
 export async function readConfig(
   start: Directory,
   options: { searchParents?: boolean } = {},

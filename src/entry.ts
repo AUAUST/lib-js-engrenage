@@ -1,3 +1,4 @@
+// @debt the root entry publishes functions of internal domains (`foundation/blocks`, `foundation/filesystem`, `foundation/options`, `workflows/registry`), so "internal" does not mean unpublished
 export {
   syncBlocks,
   syncFiles,
@@ -7,6 +8,7 @@ export { filesIn } from "#foundation/filesystem/index";
 export { loadConfig } from "#workflows/registry/index";
 export type { Config } from "#workflows/registry/index";
 
+// @debt the global types role holds domain vocabulary: block types belong to `foundation/blocks`, sync results to the sync contract, `PackageType` and `PublishAccess` to `project/package`, `IgnorePresets` and `GlobGroup` to the ignore-file owner
 // @barrel types/*.ts all
 export * from "#types/BlockFillers";
 export * from "#types/BlockSyntax";

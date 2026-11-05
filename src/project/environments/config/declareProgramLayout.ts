@@ -2,6 +2,7 @@ import { picklist } from "valibot";
 
 import { declare } from "#foundation/options/index";
 
+// @debt `layout` means `commands | domains` here and `roots | mirror` in `tests`, and `commands` is both one of its values and the separate `bin.commands` entry map
 export function declareProgramLayout() {
   return declare(picklist(["commands", "domains"]), {
     description: [

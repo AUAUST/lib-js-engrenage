@@ -539,6 +539,7 @@ function resolveElementRules(
                 return layer !== undefined && layer === member.layer;
               });
 
+      // @debt the lower-layer and peer reasons say "through their index.ts" while `surface` also grants public roles (constants, errors, ports, adapters), so maps and lint messages understate what may be imported directly
       const next: Scope = {
         ancestors: scope.ancestors,
         reaches: [

@@ -2,6 +2,7 @@ import { freeze } from "@auaust/toolkit/object";
 
 import type { File } from "#types/File";
 
+// @debt global constants carry tool knowledge (each tool's package name and config file names) and `project/package` vocabulary (`packageTypes`, `publishAccess`) that their domains should own
 export const organization = "@auaust";
 
 export const project = "engrenage" as const;

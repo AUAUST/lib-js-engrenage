@@ -28,6 +28,7 @@ export default defineConvention({
 
         return {
           Program(program) {
+            // @debt `export default <expression>` is never inspected, so an index.ts may run code at import, as `#tools/prettier/index` does with `definePrettierConfig()`
             for (const statement of program.body) {
               const type: string = statement.type;
 

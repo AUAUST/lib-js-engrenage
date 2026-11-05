@@ -21,6 +21,7 @@ export { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier"
 
 import { definePrettierConfig } from "#tools/prettier/operations/definePrettierConfig";
 
+// @debt the default export sits in the domain's index.ts, so every runtime importer of `#tools/prettier/index` (registry, init, sync) runs `definePrettierConfig()` at import and loads the project config as an unawaited promise; it belongs in entry.ts only
 /** @debt the default export loads the project configuration as soon as the entry is imported, even by consumers that only want `definePrettierConfig`; a lazy default needs a dedicated entry */
 export default definePrettierConfig();
 // @barrel types/*.ts all

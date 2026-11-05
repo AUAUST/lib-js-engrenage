@@ -188,5 +188,5 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 - `src/project/tsconfig/operations/produceTsconfigOutDir.ts:46`, `src/tools/eslint/operations/createEslintConfig.ts:11`: `structure.8`.
 - `src/tools/eslint/operations/createEslintConfig.ts:32`: `structure.13`.
 - `src/foundation/json/types/JsonIndentation.ts:1`, `src/project/format/constants.ts:15`: `format.2`.
-- `src/tools/agents/utils/parseGithubCommand.ts:24`, `:46`: `agent-instructions.5`.
+- `src/tools/agents/utils/parseGithubCommand.ts:24`, `:46`: `agent-instructions.4`.
 - `src/tools/typescript/operations/createLibraryCompiler.ts:146`: `primitive-kit.1`; the marker adds `createLibraryCompiler` and `generateApiDeclarations` as sites.

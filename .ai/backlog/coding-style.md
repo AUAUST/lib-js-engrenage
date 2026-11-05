@@ -12,3 +12,9 @@ Local coding conventions and linting.
 
 - why: `auaust/no-dynamic-import` blocks the `import()` calls that load each CLI subcommand on demand; the rule is disabled in the 7 registration files, beside the other workarounds listed in #221, each marked `@debt`. The registration process is ugly in itself. A proper pattern to handle dynamic imports only on the expensive path is needed, while allowing to eagerly load the entire CLI graph upfront.
 - done: #221 settles the rule and its markers are resolved.
+
+## 3. Boundary lint messages name the wrong remedy
+
+- why: a `project` module importing `#tools/prettier/index`, or its own domain's `../index`, is told to "import the domain through its index.ts", which it already does; `import-surfaces` lists every grant instead of the broken one; the "never relative paths" rule of the structure section has no lint rule.
+- want: one cause and one fix per message (higher layer, own index, relative path), and a lint rule for relative imports.
+- done: each boundary message names the broken relation and its fix.

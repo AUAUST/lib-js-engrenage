@@ -346,6 +346,7 @@ export function createBoundaryPolicies(config: ProjectConfig): BoundaryRules {
 
     const reasons = [...new Set(group.map(({ rule }) => rule.reason))];
 
+    // @debt one message for every cause: an import of a higher layer's index.ts, or of the importer's own index.ts, is told to "import the domain through its index.ts", and every grant is listed instead of the broken one
     const policies: BoundaryPolicy[] = [
       {
         from,

@@ -1,3 +1,4 @@
+// @debt the public `./baseline` entry exposes date and selection helpers (`addMonths`, `findCurrentMonth`, `listEsSelections`) as API, freezing internals that no consumer imports through the package name
 export {
   addMonths,
   assertBaselineSnapshot,

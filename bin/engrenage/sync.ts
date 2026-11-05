@@ -33,6 +33,7 @@ function createFlagOptions(): readonly {
   });
 }
 
+// @debt sync orchestration lives in a command module and is imported by `init` and by a `project/workspaces` test, so bin is not thin; it belongs in `workflows/sync`
 export async function runSync(
   config: Config,
   {

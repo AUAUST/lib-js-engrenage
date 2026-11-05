@@ -116,6 +116,7 @@ type StructureSection =
       readonly roles?: DeclaredRolesOption;
     } & StructureOptions<RoleReference>);
 
+// @debt one 850-line factory resolves the sections of every `project` domain, so `project/config` stays the aggregate hub the layering meant to remove; each domain could contribute its own section resolvers for the registry to compose
 export function createProjectSections({
   root,
   raw,

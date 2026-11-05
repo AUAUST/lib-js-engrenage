@@ -51,6 +51,7 @@ export const roleCatalogue = {
     typeOnly: true,
     effects: "pure",
   },
+  // @debt the only role without an effect level, so every project redefines it to rank it
   "adapters": {
     purpose:
       "Implementations of other domains' ports, importable module by module.",
@@ -62,11 +63,13 @@ export const roleCatalogue = {
     nesting: "any",
     effects: "pure",
   },
+  // @debt the only role key carrying its extension, which reads as a file and sits one character from the `setup` role projects define
   "setup.ts": {
     purpose: "Test runner setup file.",
     file: ["setup.ts"],
     discovered: true,
   },
+  // @debt pure by default, yet schemas built with the `foundation/options` declarers import confined utils, so the only consumer redefines it as confined
   "schemas": {
     purpose: "Validation schemas of options.",
     exports: "named-match",
@@ -148,6 +151,7 @@ export const defaultEffectLevels = freeze([
   "effectful",
 ] as const);
 
+// @debt a hand-picked list: any other external module (`node:module`, `c12`, `yaml`) is unranked and importable from a pure role, so effect levels measure only these imports
 export const effectfulModules = freeze([
   "node:fs",
   "node:fs/promises",

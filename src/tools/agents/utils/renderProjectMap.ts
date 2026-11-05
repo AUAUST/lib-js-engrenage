@@ -174,6 +174,7 @@ function renderOverview({
     return relation === "workspace" && source.kind === "element";
   });
 
+  // @debt the notation claims "Lint enforces every rule" beside ⚠ cells that lint cannot check, and the column categories (`public-entries`, `internal-aliases`, `dist-artefacts`) are never defined
   return [
     "# Project map",
     "",
@@ -285,6 +286,7 @@ function renderTree(
   });
 }
 
+// @debt the table repeats in every environment map, lists roles no module of that environment uses (plugins and conventions in tests or scripts), drops the `public` flag that decides direct imports, and names effect levels without defining them
 function renderRoles(roles: ResolvedRoles): string[] {
   const rows = entries(roles.roles).map(([name, contract]) => {
     const imports = [
@@ -324,6 +326,7 @@ function renderEnvironmentMap({
 
   const mirrors = root.children.filter(({ kind }) => kind === "mirror");
 
+  // @debt only directory roles are listed, so the global `constants.ts` behind `#constants` is missing from "(global roles: …)"
   const globalRoles = root.children
     .filter((child) => child.kind === "role")
     .map(({ name: role }) => role);
@@ -340,6 +343,7 @@ function renderEnvironmentMap({
     }),
   ];
 
+  // @debt `paths` come from `dirs` only, so the tooling map never loads for the root config files it covers (`files`), and an environment without any directory still gets a map
   const paths = environment.dirs.map((dir) => {
     return dir === "." ? "**" : `${dir}/**`;
   });
@@ -375,6 +379,7 @@ function findAliases(
 
   for (const [, environment] of entries(structure)) {
     for (const child of environment?.root.children ?? []) {
+      // @debt matches the human-readable `source` label that resolveAliases writes (`src entry <path>`); an alias should carry its node path as data
       const alias = aliases.find(({ key, source }) => {
         return (
           key === `#${child.name}/*` && source === `src entry ${child.path}`
@@ -423,6 +428,7 @@ export function renderProjectMap({
         content: `${renderEnvironmentMap({
           name,
           environment,
+          // @debt the bin map is a bare tree: it states neither the command-tree contract (a file per subcommand, an index.ts per group) nor where command logic must live
           roles: name === "bin" ? undefined : roles[name],
           aliases: found,
         })}\n`,

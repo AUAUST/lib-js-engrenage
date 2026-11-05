@@ -133,6 +133,7 @@ export default defineConvention({
           });
         }
 
+        // @debt the ESTree-to-TS node map is untyped here, so nodes are cast `as TsNode` and `as never` with no stated invariant
         function symbolOf(node: object): Symbol | undefined {
           return checker.getSymbolAtLocation(
             esTreeNodeToTSNodeMap.get(node) as TsNode,

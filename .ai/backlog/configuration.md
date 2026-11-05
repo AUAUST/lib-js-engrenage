@@ -32,3 +32,9 @@ Project configuration contract: environments, option shapes and list options.
 - why: #153 step 3 lists "owned directories" as a first trait and a test of a host preset owning `tests/`; the issue does not say what the trait carries or how a preset declares it, and no host preset exists. Decided: deferred; #153 adds only `published`.
 - want: a data-carrying trait or option (`ownedDirectories`) that environment `dirs` defaults skip, designed with the first host preset.
 - done: a host preset declaring a directory as owned keeps the environment default out of it.
+
+## 6. Option names reuse one word for different vocabularies
+
+- why: `layout` is `roots | mirror` in `tests` and `commands | domains` in `bin` and `scripts`; `commands` is both a `layout` value and the `bin.commands` entry map; `./config` and `./config/constants` resolve to different domains; prettier, git and agents take sections in `engrenage.config.ts` while eslint, vite, vitest and tsdown take options only as definer arguments.
+- want: distinct names (`tests.mirror`, `bin.tree`, `bin.entries`) and one rule for where tool options live.
+- done: each option name has one meaning and every tool is configured the same way.

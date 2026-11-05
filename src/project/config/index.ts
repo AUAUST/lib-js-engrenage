@@ -17,6 +17,8 @@ export * from "#project/config/types/ResolvedGlobal";
 export * from "#project/config/types/ResolvedGlobals";
 export * from "#project/config/types/ResolvedRuntimeSettings";
 // @end
+
+// @debt hand-written re-exports of peer and lower-layer types make `project/config` a second surface of six domains; consumers should import each type from its owner
 export type { Filesystem } from "#foundation/filesystem/index";
 export type { Runtime } from "#project/baseline/index";
 export type { ResolvedBuild } from "#project/build/index";
