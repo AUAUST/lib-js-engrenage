@@ -3,6 +3,7 @@ import { promisify } from "node:util";
 
 import { expect, test } from "vitest";
 
+import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { getExecutable } from "#tests/utils/getExecutable";
 import { getFixture } from "#tests/utils/getFixture";
 
@@ -19,10 +20,16 @@ test("the executable prints its version", async () => {
   expect(stdout.trim()).toBe(manifest.version);
 });
 
-test("the executable lists the markers of the working directory", async () => {
-  const { stdout } = await run(process.execPath, [getExecutable(), "debt"], {
-    cwd: getFixture("debt"),
-  });
+test(
+  "the executable lists the markers of the working directory",
+  { timeout: binaryTimeout },
+  async () => {
+    const { stdout } = await run(process.execPath, [getExecutable(), "debt"], {
+      cwd: getFixture("debt"),
+    });
 
-  expect(stdout.trim()).toBe("src/marked.ts:1  first marker in a source file");
-});
+    expect(stdout.trim()).toBe(
+      "src/marked.ts:1  first marker in a source file",
+    );
+  },
+);

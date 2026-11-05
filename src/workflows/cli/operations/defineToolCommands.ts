@@ -1,6 +1,5 @@
 import { spawn } from "node:child_process";
 
-import { wrap } from "@auaust/primitive-kit/arrays";
 import { transformValues } from "@auaust/toolkit/transformValues";
 
 import { resolveBinary } from "#foundation/processes/operations/resolveBinary";
@@ -62,9 +61,7 @@ export function defineToolCommands<Name extends string>({
   commands: Record<
     Name,
     {
-      description: string;
       message?: string;
-      aliases?: readonly string[] | string;
       arguments?(
         config: ProjectConfig,
         args: string[],
@@ -75,8 +72,6 @@ export function defineToolCommands<Name extends string>({
   return transformValues(commands, function (tool): CommandDefinition {
     return (command) => {
       return command
-        .description(tool.description)
-        .aliases(wrap(tool.aliases))
         .helpOption(false)
         .passThroughOptions()
         .allowUnknownOption()

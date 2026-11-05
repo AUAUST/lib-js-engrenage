@@ -18,9 +18,6 @@ const payloadSchema = object({
 
 export const edit = defineCommand((command) => {
   return command
-    .description(
-      "Fix, format and lint the file Claude edited and warn when an entry is over budget, reading its PostToolUse payload from stdin.",
-    )
     .action(async () => {
       const {
         tool_input: { file_path: file },

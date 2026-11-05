@@ -4,6 +4,7 @@ import { entries } from "@auaust/toolkit/object";
 
 import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
 
+// @debt Eager registration coexists with `registerLazySubcommands`, which the engrenage CLI uses: two contracts register subcommands, and here each definition owns its description while lazy entries own it at registration.
 export function registerSubcommands<Parent extends CommandUnknownOpts>(
   parent: Parent,
   definitions: Record<string, CommandDefinition>,

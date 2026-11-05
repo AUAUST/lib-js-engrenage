@@ -27,6 +27,8 @@ export async function listDebtMarkers(
   // eslint-disable-next-line auaust/no-dynamic-import
   const { ESLint } = await import("eslint");
 
+  // @debt Markers are listed through the project's full ESLint config, so files are parsed with type information that comment markers never need.
+
   const ruleId = `${pluginName}/${createRuleName("debtMarkers")}`;
 
   const results = await new ESLint({

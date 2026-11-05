@@ -83,9 +83,6 @@ export const tsc = defineToolCommands({
   binary: "tsc",
   commands: {
     "tsc": {
-      aliases: "typecheck",
-      description:
-        "Check types of every environment the base tsconfig references (those with `check: true`).",
       message: "Typechecking...",
       arguments(config, args) {
         const project = config.typescript.tsconfig.path;
@@ -100,9 +97,6 @@ export const tsc = defineToolCommands({
       },
     },
     "tsc:dist": {
-      aliases: "typecheck:dist",
-      description:
-        "Check the types of the tests against the build output (the tests.dist tsconfig).",
       message: "Checking the types of the build output...",
       arguments(config, args) {
         checkProject(config, args, resolveDistProject(config));

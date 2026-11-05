@@ -66,7 +66,6 @@ async function add(name?: string) {
 
 export const rules = defineCommand((command) => {
   command
-    .description("Select and install shared agent rules.")
     .action(() => add());
 
   command

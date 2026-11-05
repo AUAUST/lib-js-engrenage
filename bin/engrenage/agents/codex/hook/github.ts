@@ -18,9 +18,6 @@ const payloadSchema = object({
 
 export const github = defineCommand((command) => {
   return command
-    .description(
-      "Warn or deny when the body of a `gh issue create|edit|comment` command is over budget, reading Codex's PreToolUse payload from stdin.",
-    )
     .action(async () => {
       const {
         cwd,

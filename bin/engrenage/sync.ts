@@ -58,9 +58,6 @@ export const sync = defineCommand((command) => {
   }
 
   return command
-    .description(
-      "Update the existing project files that engrenage derives from the config. `engrenage init` creates missing ones.",
-    )
     .addArgument(
       new Argument("[targets...]", "targets to sync (all by default)").choices(
         keys(syncTargets),

@@ -7,7 +7,6 @@ import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 export const structure = defineCommand((command) => {
   return command
-    .description("Print how engrenage classifies the project directories.")
     .option(
       "--check",
       "exit non-zero on an unclassified directory of a strict environment or a runtime import cycle",

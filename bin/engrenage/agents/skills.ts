@@ -72,7 +72,6 @@ async function add(name?: string) {
 
 export const skills = defineCommand((command) => {
   command
-    .description("Select and install shared agent skills.")
     .action(() => add());
 
   command

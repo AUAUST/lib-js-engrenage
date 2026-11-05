@@ -4,7 +4,6 @@ import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 export const debt = defineCommand((command) => {
   return command
-    .description("List the @debt markers of the project.")
     .option("--json", "print the markers as JSON", false)
     .action(async ({ json }) => {
       const config = await loadConfig();

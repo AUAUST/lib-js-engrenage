@@ -12,9 +12,6 @@ import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 export const upgrade = defineCommand((command) => {
   return command
-    .description(
-      "Move the project to the latest pnpm within engrenage's pnpm range.",
-    )
     .option(
       "-y, --yes",
       "accept moving a newer pnpm back into the range",

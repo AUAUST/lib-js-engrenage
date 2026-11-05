@@ -31,17 +31,13 @@ export const eslint = defineToolCommands({
   packageName: packages.eslint,
   commands: {
     "eslint": {
-      description: "Lint the project, caching results in node_modules.",
       message: "Linting...",
-      aliases: "lint",
       arguments(config, args) {
         useCache(config, args);
       },
     },
     "eslint:fix": {
-      description: "Fix lint errors and prune unused suppressions.",
       message: "Fixing lint errors...",
-      aliases: "lint:fix",
       arguments(config, args) {
         useCache(config, args);
 
@@ -53,9 +49,7 @@ export const eslint = defineToolCommands({
       },
     },
     "eslint:suppress": {
-      description: "Suppress the remaining lint errors.",
       message: "Suppressing lint errors...",
-      aliases: "lint:suppress",
       arguments(config, args) {
         useCache(config, args);
 

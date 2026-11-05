@@ -7,4 +7,5 @@ export { listFilesystems } from "#workflows/cli/utils/listFilesystems";
 
 // @barrel types/*.ts all
 export * from "#workflows/cli/types/CommandDefinition";
+export * from "#workflows/cli/types/LazyCommand";
 // @end

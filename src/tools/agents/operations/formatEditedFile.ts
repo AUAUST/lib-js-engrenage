@@ -33,6 +33,7 @@ function runTool(
   return result;
 }
 
+// @debt Each edit spawns ESLint twice (fix, then lint), and each process loads the project's ESLint config again; this takes most of the hook's time.
 export async function formatEditedFile(
   config: ProjectConfig,
   file: File,

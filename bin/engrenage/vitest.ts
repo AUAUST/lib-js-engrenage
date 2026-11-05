@@ -12,7 +12,6 @@ export const vitest = defineToolCommands({
   packageName: packages.vitest,
   commands: {
     "vitest": {
-      description: "Run the tests once, with type tests unless --no-typecheck.",
       message: "Running the tests...",
       arguments(config, args) {
         includeTypeTests(args);
@@ -21,8 +20,6 @@ export const vitest = defineToolCommands({
       },
     },
     "vitest:watch": {
-      description:
-        "Run the tests in watch mode, with type tests unless --no-typecheck.",
       arguments(config, args) {
         includeTypeTests(args);
 
@@ -30,7 +27,6 @@ export const vitest = defineToolCommands({
       },
     },
     "vitest:coverage": {
-      description: "Run the tests once and report coverage.",
       message: "Running the tests with coverage...",
       arguments(config, args) {
         ensureIncludes(args, "--coverage");
@@ -39,7 +35,6 @@ export const vitest = defineToolCommands({
       },
     },
     "vitest:dist": {
-      description: "Run the tests once against the built output.",
       message: "Running the tests against the build output...",
       arguments(config, args) {
         includeTypeTests(args);

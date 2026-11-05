@@ -11,19 +11,16 @@ const commands = defineToolCommands({
   binary: "fake",
   commands: {
     "fake": {
-      description: "Run the fake tool.",
       arguments(config, args) {
         args.unshift("--root", config.root);
       },
     },
     "fake:only": {
-      description: "Run the fake tool with fixed arguments.",
       arguments() {
         return ["--only"];
       },
     },
     "fake:checked": {
-      description: "Run the fake tool with messages.",
       message: "Checking fakes...",
     },
   },
