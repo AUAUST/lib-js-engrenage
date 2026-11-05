@@ -28,3 +28,14 @@ Shared agent instructions, skills and the backlog conventions.
 - why: an src edit loads about 1,500 map words; the role table repeats in four maps with roles the environment never uses and no `public` flag; "Lint enforces every rule" sits beside ⚠ cells; column categories are undefined; test variants appear in the always-loaded map and in the structure section; the tooling map loads only for `tooling/**`, not the root config files; the bin map states no command contract; an empty tooling map is written.
 - want: roles once with per-environment differences, defined categories, test rules in the tests map, `paths` from environment globs, no map for an empty environment, a bin contract.
 - done: each fact appears once and every map statement matches lint.
+
+## 6. ESLint runs heavier than needed in agent hooks and marker listing
+
+- sites: `src/tools/agents/operations/formatEditedFile.ts:35` (each edit spawns ESLint twice, fix then lint, each loading the config; most of the hook time), `src/tools/eslint/operations/listDebtMarkers.ts:30` (full type-aware config for comment markers).
+- want: a single ESLint pass per edit; marker listing without type information.
+
+## 7. The reference marker syntax is hand-written and conflicts go unreported
+
+- sites: `src/tools/agents/setup/createBacklogStep.ts:69`, `src/tools/agents/setup/syncAgentFiles.ts:35`, `createAgentsStep`, `createInstructionFile`, `getMissingRuleTemplates` (regex re-parse).
+- why: `markdownBlocks` already describes the syntax; a rule file at the wanted path without its reference silently drops the rule. #9 ("Markers fail silently", marker grammar) covers it.
+- want: folded into #9: one marker grammar from `markdownBlocks`; sync reports the conflict.

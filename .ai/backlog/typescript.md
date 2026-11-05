@@ -41,3 +41,49 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - why: `package.json` has a canonical field order; tsconfigs have none.
 - want: a canonical ordering for tsconfig keys at every layer that makes sense (top-level, `compilerOptions`, maybe more), applied by the sync target, like the `package.json` one. Lists and records that aren't order-dependent should also be consistently sorted. Order-dependent structures must always be generated in the correct order, i.e. paths should start by the most specific and proceed to the more general; not generated and not managed structures should not be reordered arbitrarily as not to break a use-defined order.
 - done: generated tsconfigs follow the documented order and sync keeps it.
+
+## 8. `tests.dist` is special-cased across tsconfig code
+
+- sites: `src/project/tsconfig/setup/syncTsconfigFiles.ts:49`, `src/project/tsconfig/operations/resolveTsconfigEnvironments.ts:14`, the extends, paths and skipLibCheck producers, `createResolvedConfig`.
+- why: `tests.dist` does not fit the config shape; producers compute its fields as for `tests`, then sync drops the inherited ones.
+- want: one lookup from tsconfig key to environment, with the fields each variant inherits.
+
+## 9. Tsconfig producers repeat guards and conversions
+
+- sites: `src/project/tsconfig/operations/tsconfigProducers.ts:15` (same `key === "base"` early return), `src/project/tsconfig/utils/toJsonValue.ts:3` (duplicates `serialize` in `defineSchema`).
+- want: split base and environment producers, or declare each producer's targets; one JSON-value converter.
+
+## 10. Tsconfig and alias sync keep entries removed from the config
+
+- sites: `src/project/tsconfig/setup/syncTsconfigFiles.ts:183` (`compilerOptions`; `sync --check` still passes), `src/tools/typescript/setup/syncAliases.ts:94` (bundler aliases in `paths`).
+- why: only `#` keys are known generated, so sync cannot tell its entries from hand-written ones.
+- want: a design for knowing which entries sync owns (planning).
+
+## 11. ES library selection and baseline month logic rest on assumptions
+
+- sites: `src/project/tsconfig/operations/produceTsconfigTypes.ts:35,75`, `src/project/baseline/utils/{includesEsLibrary.ts:5,listEsSelections.ts:13,addMonths.ts:5}`, `scripts/codegen/operations/generateApiDeclarations.ts:358`.
+- why: an unknown lib (`esnext.*`, `DOM`) never counts as including a group; candidate months follow the selection rule, not the selection; lib name comes from file-name convention; `addMonths` can return impossible dates (2026-02-31); the removed prefix is stated apart from `listDefaultTypes`. Related: `typescript.3`–`typescript.5`.
+- want: a validating check or explicit declaration per assumption.
+
+## 12. Baseline and edition generation depend on upstream conventions
+
+- sites: `src/project/baseline/utils/resolveBaselineMinimums.ts:8` (V8 versions follow Chromium majors), `:25` (first match relies on `node-releases` ascending order), `scripts/codegen/operations/generateEditions.ts:548` (base edition trusted as TypeScript ships it).
+- want: decide per assumption: a validating check or acceptance (planning).
+
+## 13. Generated tsconfig paths miss `@auaust/engrenage/agents/constants`
+
+- site: `tests/src/foundation/blocks/syncBlocks.test.src.ts:5`
+- why: paths resolve it to `agents/*/index.ts` instead of `agents/constants.ts`, though `package.json` exports `./agents/constants`.
+- want: fix the paths generation (debugging); the test then runs through the public entry (`structure.22`).
+
+## 14. Timer handle types are not isomorphic
+
+- site: `src/project/baseline/constants.ts:3`
+- why: handles typed `number` (DOM) while Node returns an object. Related: `typescript.3`, `typescript.4`.
+- want: a type holding under both signatures.
+
+## 15. The library compiler keeps sources in a shared mutable binding
+
+- site: `src/tools/typescript/operations/createLibraryCompiler.ts:41`
+- why: holds only while compilations stay synchronous.
+- want: per-compilation state (debugging).
