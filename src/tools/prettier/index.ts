@@ -4,9 +4,12 @@ export { createPrettierStep } from "#tools/prettier/setup/createPrettierStep";
 export { syncPrettierignoreFile } from "#tools/prettier/setup/syncPrettierignoreFile";
 // @end
 
+// @barrel definers/*.ts named
+export { definePrettierConfig } from "#tools/prettier/definers/definePrettierConfig";
+// @end
+
 // @barrel operations/*.ts named
 export { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
-export { definePrettierConfig } from "#tools/prettier/operations/definePrettierConfig";
 export { loadPrettier } from "#tools/prettier/operations/loadPrettier";
 export { resolvePrettier } from "#tools/prettier/operations/resolvePrettier";
 // @end

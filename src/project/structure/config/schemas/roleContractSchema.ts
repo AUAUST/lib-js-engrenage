@@ -1,6 +1,6 @@
 import { declareObject } from "#foundation/options/index";
-import { declareRoleContractEntries } from "#project/structure/config/schemas/declareRoleContractEntries";
 import { inlineRoleSchema } from "#project/structure/config/schemas/inlineRoleSchema";
+import { declareRoleContractEntries } from "#project/structure/declarers/declareRoleContractEntries";
 
 export const roleContractSchema = declareObject(
   declareRoleContractEntries(inlineRoleSchema.schema),

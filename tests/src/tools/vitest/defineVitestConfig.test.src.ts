@@ -4,7 +4,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { defineVitestConfig } from "#tools/vitest/operations/defineVitestConfig";
+import { defineVitestConfig } from "#tools/vitest/definers/defineVitestConfig";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
 

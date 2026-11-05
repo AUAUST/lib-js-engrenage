@@ -3,7 +3,7 @@ import {
   directorySchema,
   globSchema,
 } from "#foundation/options/index";
-import { declareDefines } from "#project/environments/config/declareDefines";
+import { declareDefines } from "#project/environments/declarers/declareDefines";
 import { structureOptions } from "#project/structure/index";
 import { declareEnvironmentTsconfig } from "#project/tsconfig/index";
 import type { Directories } from "#types/Directories";

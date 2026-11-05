@@ -5,9 +5,8 @@ export default defineConfig({
   // @debt these roles are defined for every environment, so scripts, tests and tooling maps list setup, plugins, conventions and config roles none of their modules can use
   roles: {
     define: {
-      // @debt "option declarations of the domain" does not fit `foundation/options/config` (the declarers themselves) or `project/config/config`, a role named like its domain
       config: {
-        purpose: "Confined option declarations of the domain.",
+        purpose: "The domain's config section: its declaration and resolver.",
         exports: "named-match",
         effects: "confined",
         roles: [
@@ -18,6 +17,16 @@ export default defineConfig({
             effects: "confined",
           },
         ],
+      },
+      declarers: {
+        purpose: "Functions creating option declarations.",
+        exports: "named-match",
+        effects: "confined",
+      },
+      definers: {
+        purpose: "The tool's `define…Config` definers.",
+        exports: "named-match",
+        effects: "effectful",
       },
       // @debt redefined only to give `adapters` an effect level; the catalogue should carry it, as it does for every other role
       adapters: { inherit: "adapters", effects: "effectful" },

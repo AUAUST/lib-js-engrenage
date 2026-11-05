@@ -1,7 +1,14 @@
+// @barrel declarers/*.ts named
+export { declare } from "#foundation/options/declarers/declare";
+export { declareList } from "#foundation/options/declarers/declareList";
+export { declareLocation } from "#foundation/options/declarers/declareLocation";
+export { declareManagedList } from "#foundation/options/declarers/declareManagedList";
+export { declareObject } from "#foundation/options/declarers/declareObject";
+export { declareRecord } from "#foundation/options/declarers/declareRecord";
+// @end
+
 // @barrel config/*.ts named
-export { declareList } from "#foundation/options/config/declareList";
-export { declareLocation } from "#foundation/options/config/declareLocation";
-export { declareManagedList } from "#foundation/options/config/declareManagedList";
+
 // @end
 
 // @barrel config/schemas/*.ts named
@@ -16,9 +23,6 @@ export { managedListOptionSchema } from "#foundation/options/config/schemas/mana
 export { createAccessors } from "#foundation/options/utils/createAccessors";
 export { createOptionSchema } from "#foundation/options/utils/createOptionSchema";
 export { createSections } from "#foundation/options/utils/createSections";
-export { declare } from "#foundation/options/utils/declare";
-export { declareObject } from "#foundation/options/utils/declareObject";
-export { declareRecord } from "#foundation/options/utils/declareRecord";
 export { describeDefault } from "#foundation/options/utils/describeDefault";
 export { listDefaults } from "#foundation/options/utils/listDefaults";
 export { resolveDefault } from "#foundation/options/utils/resolveDefault";

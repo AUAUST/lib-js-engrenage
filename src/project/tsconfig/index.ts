@@ -1,3 +1,7 @@
+// @barrel declarers/*.ts named
+export { declareEnvironmentTsconfig } from "#project/tsconfig/declarers/declareEnvironmentTsconfig";
+// @end
+
 // @barrel utils/*.ts named
 export { isLeftAlone } from "#project/tsconfig/utils/isLeftAlone";
 export { isPackageAlias } from "#project/tsconfig/utils/isPackageAlias";
@@ -41,7 +45,7 @@ export {
 } from "#project/tsconfig/constants";
 
 // @barrel config/*.ts named
-export { declareEnvironmentTsconfig } from "#project/tsconfig/config/declareEnvironmentTsconfig";
+
 // @end
 
 // @barrel config/schemas/*.ts named

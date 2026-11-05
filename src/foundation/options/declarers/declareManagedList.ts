@@ -1,7 +1,7 @@
 import type { GenericSchema } from "valibot";
 
 import { managedListOptionSchema } from "#foundation/options/config/schemas/managedListOptionSchema";
-import { declare } from "#foundation/options/utils/declare";
+import { declare } from "#foundation/options/declarers/declare";
 import { unset } from "#foundation/options/utils/unset";
 import type { Declaration } from "#foundation/options/types/Declaration";
 import type { Description } from "#foundation/options/types/Description";

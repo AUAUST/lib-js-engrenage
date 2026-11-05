@@ -27,7 +27,9 @@ Effect levels, purest first: `pure` < `confined` < `effectful`. A role with a le
 | `adapters`     | Implementations of other domains' ports, importable module by module. | level effectful           |
 | `fixtures`     | Static test inputs.                                                   | level pure                |
 | `setup.ts`     | Test runner setup file.                                               |                           |
-| `config`       | Confined option declarations of the domain.                           | level confined            |
+| `config`       | The domain's config section: its declaration and resolver.            | level confined            |
+| `declarers`    | Functions creating option declarations.                               | level confined            |
+| `definers`     | The tool's `define…Config` definers.                                  | level effectful           |
 | `setup`        | Init steps and sync targets of the domain.                            | level effectful           |
 | `plugins`      | The tool's own plugins, one per module.                               | level effectful           |
 | `operations`   | Impure logic and definers of the domain.                              | level effectful           |

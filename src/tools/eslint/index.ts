@@ -2,12 +2,15 @@
 export { createEslintConfigStep } from "#tools/eslint/setup/createEslintConfigStep";
 // @end
 
+// @barrel definers/*.ts named
+export { defineEslintConfig } from "#tools/eslint/definers/defineEslintConfig";
+// @end
+
 // @barrel operations/*.ts named
 export { createConventionRules } from "#tools/eslint/operations/createConventionRules";
 export { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
 export { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";
 export { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
-export { defineEslintConfig } from "#tools/eslint/operations/defineEslintConfig";
 export { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";
 export { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
 export { resolveConventionConfig } from "#tools/eslint/operations/resolveConventionConfig";

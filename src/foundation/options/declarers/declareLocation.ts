@@ -1,12 +1,11 @@
 import { fileSchema } from "#foundation/options/config/schemas/fileSchema";
-import { declare } from "#foundation/options/utils/declare";
+import { declare } from "#foundation/options/declarers/declare";
 import { describeDefault } from "#foundation/options/utils/describeDefault";
 import type { Declaration } from "#foundation/options/types/Declaration";
 import type { Description } from "#foundation/options/types/Description";
 import type { ResolvedLocation } from "#foundation/options/types/ResolvedLocation";
 import type { File } from "#types/File";
 
-// @debt the declarers are split by what they import, not by concern: `declareList`, `declareLocation` and `declareManagedList` sit in `config/` because they use schemas, while `declare`, `declareObject` and `declareRecord` sit in `utils/`
 export function declareLocation(options: {
   description: Description;
   optional: { readonly value: File; readonly explain?: string };

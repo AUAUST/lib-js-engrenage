@@ -7,12 +7,12 @@ import {
   unset,
 } from "#foundation/options/index";
 import { nodeMajorSchema } from "#project/baseline/index";
-import { declareCodeEnvironment } from "#project/environments/config/declareCodeEnvironment";
-import { declareProgramLayout } from "#project/environments/config/declareProgramLayout";
 import {
   defaultBinDirectories,
   disabledCodeEnvironment,
 } from "#project/environments/constants";
+import { declareCodeEnvironment } from "#project/environments/declarers/declareCodeEnvironment";
+import { declareProgramLayout } from "#project/environments/declarers/declareProgramLayout";
 import type { ResolvedRuntimeSettings } from "#project/config/index";
 
 export const binSchema = declareObject(

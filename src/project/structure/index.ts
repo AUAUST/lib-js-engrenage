@@ -1,3 +1,7 @@
+// @barrel declarers/*.ts named
+export { declareRoleContractEntries } from "#project/structure/declarers/declareRoleContractEntries";
+// @end
+
 export { findImportCycles } from "#project/structure/operations/findImportCycles";
 export { resolveAliases } from "#project/structure/operations/resolveAliases";
 export { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
@@ -55,7 +59,6 @@ export * from "#project/structure/types/UnclassifiedReason";
 
 // @barrel config/schemas/*.ts named
 export { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
-export { declareRoleContractEntries } from "#project/structure/config/schemas/declareRoleContractEntries";
 export { domainSchema } from "#project/structure/config/schemas/domainSchema";
 export { effectLevelsSchema } from "#project/structure/config/schemas/effectLevelsSchema";
 export { effectModulesSchema } from "#project/structure/config/schemas/effectModulesSchema";

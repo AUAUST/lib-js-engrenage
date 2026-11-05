@@ -4,9 +4,12 @@ export { createVitestCoverageStep } from "#tools/vitest/setup/createVitestCovera
 export { createVitestStep } from "#tools/vitest/setup/createVitestStep";
 // @end
 
+// @barrel definers/*.ts named
+export { defineVitestConfig } from "#tools/vitest/definers/defineVitestConfig";
+// @end
+
 export { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";
 export { createVitestLayer } from "#tools/vitest/operations/createVitestLayer";
-export { defineVitestConfig } from "#tools/vitest/operations/defineVitestConfig";
 export { createOutDirGuard } from "#tools/vitest/plugins/createOutDirGuard";
 export { createSourceGuard } from "#tools/vitest/plugins/createSourceGuard";
 
