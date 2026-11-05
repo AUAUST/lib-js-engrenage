@@ -1,7 +1,10 @@
+import { definePrettierConfig } from "#src/tools/prettier/index";
+
+export default definePrettierConfig();
+
+export { definePrettierConfig } from "#src/tools/prettier/index";
 export {
   createPrettierConfig,
-  default,
-  definePrettierConfig,
   formatWithPrettier,
   syncPrettierignoreFile,
 } from "#tools/prettier/index";
