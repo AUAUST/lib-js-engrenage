@@ -6,15 +6,15 @@ export function createClaudeStep(): Step {
   return {
     name: claudeFile,
     message: `Create ${claudeFile} pointing Claude Code to ${agentsFile}?`,
-    isMissing({ filesystem, getAgents }) {
+    async isMissing({ filesystem, getAgents }) {
       return (
         getAgents()?.includes("claude") === true &&
-        !filesystem.exists(claudeFile) &&
-        filesystem.exists(agentsFile)
+        !(await filesystem.exists(claudeFile)) &&
+        (await filesystem.exists(agentsFile))
       );
     },
-    plan({ filesystem }) {
-      filesystem.write(claudeFile, `@${agentsFile}\n`);
+    async plan({ filesystem }) {
+      await filesystem.write(claudeFile, `@${agentsFile}\n`);
     },
   };
 }

@@ -54,7 +54,7 @@ describe("createTsdownConfig", () => {
 
     await syncEnvFile(config);
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     await build({
       ...(await createTsdownConfig(config, { ci: false })),

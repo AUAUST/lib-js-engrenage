@@ -5,15 +5,15 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedBin } from "#project/environments/index";
 import type { Entries } from "#tools/tsdown/types/Entries";
 
-export function resolveCommandEntries(config: {
+export async function resolveCommandEntries(config: {
   bin: ResolvedBin;
   filesystem: Filesystem;
-}): Entries {
+}): Promise<Entries> {
   const commandEntries: Entries = {};
 
   const indexFile = getIndexFile(config.bin.roles);
 
-  for (const [, file] of findCommands(config)) {
+  for (const [, file] of await findCommands(config)) {
     const name = toEntryName(file, indexFile);
 
     const existing = commandEntries[name];

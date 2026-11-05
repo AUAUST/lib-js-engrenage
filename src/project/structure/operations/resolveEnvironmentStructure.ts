@@ -1,10 +1,11 @@
-import { existsSync, readdirSync } from "node:fs";
+import { readdir } from "node:fs/promises";
 import { join, matchesGlob } from "node:path";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flat, flatMap } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
 import { entries, freeze, values } from "@auaust/toolkit/object";
 
+import { pathExists } from "#foundation/filesystem/index";
 import { noRoles } from "#project/structure/constants";
 import { getEntryFile } from "#project/structure/utils/getEntryFile";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
@@ -43,35 +44,49 @@ interface Parent {
   };
 }
 
-function holdsFiles(directory: string): boolean {
-  return readdirSync(directory, { withFileTypes: true }).some((entry) => {
-    return (
-      !entry.isDirectory() ||
-      (entry.name !== ignoredDirectory &&
-        holdsFiles(join(directory, entry.name)))
-    );
-  });
+async function holdsFiles(directory: string): Promise<boolean> {
+  const entries = await readdir(directory, { withFileTypes: true });
+
+  const holds = await Promise.all(
+    entries.map(async (entry) => {
+      return (
+        !entry.isDirectory() ||
+        (entry.name !== ignoredDirectory &&
+          (await holdsFiles(join(directory, entry.name))))
+      );
+    }),
+  );
+
+  return holds.some(Boolean);
 }
 
-function listDirectories(directory: string): string[] {
-  if (!existsSync(directory)) {
+async function listDirectories(directory: string): Promise<string[]> {
+  if (!(await pathExists(directory))) {
     return [];
   }
 
-  return readdirSync(directory, { withFileTypes: true })
-    .filter((entry) => {
+  const entries = await readdir(directory, { withFileTypes: true });
+
+  const listed = await Promise.all(
+    entries.map(async (entry) => {
       return (
         entry.isDirectory() &&
         entry.name !== ignoredDirectory &&
-        holdsFiles(join(directory, entry.name))
+        (await holdsFiles(join(directory, entry.name)))
       );
-    })
+    }),
+  );
+
+  return entries
+    .filter((_, index) => listed[index])
     .map((entry) => entry.name)
     .sort();
 }
 
-function listFiles(directory: string): string[] {
-  return readdirSync(directory, { withFileTypes: true })
+async function listFiles(directory: string): Promise<string[]> {
+  const entries = await readdir(directory, { withFileTypes: true });
+
+  return entries
     .filter((entry) => !entry.isDirectory())
     .map((entry) => entry.name)
     .sort();
@@ -187,7 +202,7 @@ function createMirrorClassifier(tests: TestsContext) {
   };
 }
 
-export function resolveEnvironmentStructure({
+export async function resolveEnvironmentStructure({
   name,
   root,
   dirs,
@@ -205,7 +220,7 @@ export function resolveEnvironmentStructure({
   environmentRoles?: RolesOption | undefined;
   tests?: TestsContext;
   layout?: ProgramLayout | undefined;
-}): EnvironmentStructure {
+}): Promise<EnvironmentStructure> {
   const { strictness, namespaces } = options;
   const domains = entries(options.domains);
   const optOut = new Set(options.optOut);
@@ -290,11 +305,11 @@ export function resolveEnvironmentStructure({
     };
   }
 
-  function build(
+  async function build(
     envDirectory: Directory,
     subpath: string,
     parent: Parent,
-  ): StructureNode {
+  ): Promise<StructureNode> {
     const path = join(envDirectory, subpath);
 
     const { directory, namespace, exact, declared, metadata } = describe(
@@ -302,7 +317,7 @@ export function resolveEnvironmentStructure({
       path,
     );
 
-    function node(
+    async function node(
       kind: StructureKind,
       source: StructureNode["source"],
       extra: Partial<StructureNode>,
@@ -319,7 +334,7 @@ export function resolveEnvironmentStructure({
         mirrored?: Parent["mirrored"];
         children?: readonly StructureNode[];
       } = {},
-    ): StructureNode {
+    ): Promise<StructureNode> {
       const layer =
         kind === "role" ? undefined : layerOf(directory, parent.layers);
 
@@ -332,30 +347,32 @@ export function resolveEnvironmentStructure({
         ...extra,
         children:
           children ??
-          walk(envDirectory, subpath, {
+          (await walk(envDirectory, subpath, {
             kind,
             layers: extra.layers,
             scopes,
             owned,
             structured,
             ...(mirrored === undefined ? {} : { mirrored }),
-          }),
+          })),
       });
     }
 
-    function domain(source: StructureNode["source"]) {
+    async function domain(source: StructureNode["source"]) {
       const { roles: contracts } = rolesFor(parent.scopes);
 
       const fileGlobs = values(contracts).flatMap(({ file }) => {
         return file === undefined ? [] : [file].flat();
       });
 
-      const strays =
+      const files =
         commands || fileGlobs.length === 0
           ? []
-          : listFiles(join(root, path)).filter((file) => {
-              return !fileGlobs.some((glob) => matchesGlob(file, glob));
-            });
+          : await listFiles(join(root, path));
+
+      const strays = files.filter((file) => {
+        return !fileGlobs.some((glob) => matchesGlob(file, glob));
+      });
 
       return node("domain", source, {
         ...(commands ? { commands: true as const } : {}),
@@ -363,7 +380,8 @@ export function resolveEnvironmentStructure({
           ? {}
           : { strays: strays.map((file) => join(path, file)) }),
         public:
-          entryFile !== undefined && existsSync(join(root, path, entryFile)),
+          entryFile !== undefined &&
+          (await pathExists(join(root, path, entryFile))),
         ...(metadata.specifier === undefined
           ? {}
           : { specifier: metadata.specifier }),
@@ -457,7 +475,7 @@ export function resolveEnvironmentStructure({
       );
     }
 
-    if (commands || existsSync(join(root, path, indexFile))) {
+    if (commands || (await pathExists(join(root, path, indexFile)))) {
       return domain("inferred");
     }
 
@@ -465,7 +483,7 @@ export function resolveEnvironmentStructure({
       return domain("config");
     }
 
-    const probed = walk(envDirectory, subpath, {
+    const probed = await walk(envDirectory, subpath, {
       kind: "namespace",
       layers: undefined,
       scopes: parent.scopes,
@@ -484,21 +502,25 @@ export function resolveEnvironmentStructure({
       : node("unclassified", "inferred", {});
   }
 
-  function walk(
+  async function walk(
     envDirectory: Directory,
     subpath: string,
     parent: Parent,
-  ): StructureNode[] {
+  ): Promise<StructureNode[]> {
     if (parent.kind === "role" && !parent.structured) {
       return [];
     }
 
     const base = subpath === environmentRoot ? "" : `${subpath}/`;
 
-    return listDirectories(join(root, envDirectory, subpath)).map(
-      (directory) => {
+    const directories = await listDirectories(
+      join(root, envDirectory, subpath),
+    );
+
+    return Promise.all(
+      directories.map((directory) => {
         return build(envDirectory, `${base}${directory}`, parent);
-      },
+      }),
     );
   }
 
@@ -507,15 +529,19 @@ export function resolveEnvironmentStructure({
 
   const walked = dirs.filter((directory) => directory !== projectRoot);
 
-  const children = flatMap(walked, (directory) => {
-    return walk(directory, environmentRoot, {
-      kind: "root",
-      layers: rootDeclaration?.layers,
-      scopes: rootScopes,
-      owned: rootScopes,
-      structured: false,
-    });
-  });
+  const children = flat(
+    await Promise.all(
+      walked.map((directory) => {
+        return walk(directory, environmentRoot, {
+          kind: "root",
+          layers: rootDeclaration?.layers,
+          scopes: rootScopes,
+          owned: rootScopes,
+          structured: false,
+        });
+      }),
+    ),
+  );
 
   const resolvedRoot: StructureNode = freeze({
     path: environmentRoot,

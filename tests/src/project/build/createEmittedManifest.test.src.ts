@@ -14,10 +14,10 @@ function createBuild() {
   const outDir = project.resolve("dist");
   const manifest = project.resolve("cache/emitted.json");
 
-  function build(emitted: string[], options?: { fail?: boolean }) {
+  async function build(emitted: string[], options?: { fail?: boolean }) {
     const recorder = createEmittedManifest({ manifest, outDir });
 
-    recorder.removePrevious();
+    await recorder.removePrevious();
 
     mkdirSync(outDir, { recursive: true });
 
@@ -31,7 +31,7 @@ function createBuild() {
       recorder.fail();
     }
 
-    recorder.write();
+    await recorder.write();
   }
 
   return {
@@ -43,25 +43,25 @@ function createBuild() {
 }
 
 describe("createEmittedManifest", () => {
-  test("removes only the files the previous build emitted and no longer produces", () => {
+  test("removes only the files the previous build emitted and no longer produces", async () => {
     const { outDir, build } = createBuild();
 
-    build(["a.mjs", "b.mjs"]);
-    build(["a.mjs"]);
+    await build(["a.mjs", "b.mjs"]);
+    await build(["a.mjs"]);
 
     expect(existsSync(join(outDir, "host.txt"))).toBe(true);
     expect(existsSync(join(outDir, "a.mjs"))).toBe(true);
     expect(existsSync(join(outDir, "b.mjs"))).toBe(false);
   });
 
-  test("removes nothing without a manifest and writes none after a failed build", () => {
+  test("removes nothing without a manifest and writes none after a failed build", async () => {
     const { outDir, manifest, build } = createBuild();
 
-    build(["a.mjs"], { fail: true });
+    await build(["a.mjs"], { fail: true });
 
     expect(existsSync(manifest)).toBe(false);
 
-    build(["b.mjs"]);
+    await build(["b.mjs"]);
 
     expect(existsSync(join(outDir, "a.mjs"))).toBe(true);
     expect(existsSync(join(outDir, "host.txt"))).toBe(true);

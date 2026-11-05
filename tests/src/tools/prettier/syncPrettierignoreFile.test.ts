@@ -28,7 +28,7 @@ describe("syncPrettierignoreFile", () => {
 
     await syncPrettierignoreFile(config);
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     expect(project.read(".prettierignore")).toBe(
       [

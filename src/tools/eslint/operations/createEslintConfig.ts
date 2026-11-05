@@ -68,7 +68,7 @@ export async function createEslintConfig(
 
     configs.push(
       createIgnoreRules({
-        gitignorePath: git.gitignore,
+        gitignorePath: await git.gitignore,
         generatedFiles: config.files.generated,
         outputDirectory: config.build.outDir,
         coverageDirectory: config.tests.coverageDir,

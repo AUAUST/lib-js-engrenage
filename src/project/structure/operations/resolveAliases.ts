@@ -1,9 +1,10 @@
-import { existsSync, readdirSync } from "node:fs";
+import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flat, map } from "@auaust/primitive-kit/arrays";
 import { entries, freeze } from "@auaust/toolkit/object";
 
+import { pathExists } from "#foundation/filesystem/index";
 import type { Alias } from "#project/structure/types/Alias";
 import type { AliasesOption } from "#project/structure/types/AliasesOption";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
@@ -20,20 +21,20 @@ const packageJsonAlias: Alias = {
   source: "project root",
 };
 
-function createDirectoryAliases(
+async function createDirectoryAliases(
   root: Directory,
   name: string,
   path: Directory,
   source: string,
   indexFile: string,
-): Alias[] {
+): Promise<Alias[]> {
   return [
     {
       key: `#${name}/*`,
       target: `./${path}/*.ts`,
       source,
     },
-    ...(existsSync(join(root, path, indexFile))
+    ...((await pathExists(join(root, path, indexFile)))
       ? [
           {
             key: `#${name}`,
@@ -45,42 +46,52 @@ function createDirectoryAliases(
   ];
 }
 
-function createSourceAliases(
+async function createSourceAliases(
   root: Directory,
   { dirs, root: tree, indexFile }: EnvironmentStructure,
-): Alias[] {
-  const directories = flatMap(tree.children, (child) => {
-    return createDirectoryAliases(
-      root,
-      child.name,
-      child.path,
-      `src entry ${child.path}`,
-      indexFile,
-    );
-  });
+): Promise<Alias[]> {
+  const directories = flat(
+    await Promise.all(
+      tree.children.map((child) => {
+        return createDirectoryAliases(
+          root,
+          child.name,
+          child.path,
+          `src entry ${child.path}`,
+          indexFile,
+        );
+      }),
+    ),
+  );
 
   // @debt every root file gets an alias, including `#entry` for the package entry that no rule lets anything import; aliases should follow the import rules
-  const files = flatMap(dirs, (dir) => {
-    if (!existsSync(join(root, dir))) {
-      return [];
-    }
+  const files = flat(
+    await Promise.all(
+      dirs.map(async (dir): Promise<Alias[]> => {
+        if (!(await pathExists(join(root, dir)))) {
+          return [];
+        }
 
-    return readdirSync(join(root, dir), { withFileTypes: true })
-      .filter((entry) => {
-        return (
-          entry.isFile() &&
-          entry.name.endsWith(".ts") &&
-          !entry.name.endsWith(".d.ts")
-        );
-      })
-      .map((entry): Alias => {
-        return {
-          key: `#${entry.name.slice(0, -".ts".length)}`,
-          target: `./${join(dir, entry.name)}`,
-          source: `src entry ${join(dir, entry.name)}`,
-        };
-      });
-  });
+        const entries = await readdir(join(root, dir), { withFileTypes: true });
+
+        return entries
+          .filter((entry) => {
+            return (
+              entry.isFile() &&
+              entry.name.endsWith(".ts") &&
+              !entry.name.endsWith(".d.ts")
+            );
+          })
+          .map((entry): Alias => {
+            return {
+              key: `#${entry.name.slice(0, -".ts".length)}`,
+              target: `./${join(dir, entry.name)}`,
+              source: `src entry ${join(dir, entry.name)}`,
+            };
+          });
+      }),
+    ),
+  );
 
   return [...directories, ...files];
 }
@@ -121,7 +132,7 @@ function assertUnique(aliases: readonly Alias[]) {
   }
 }
 
-export function resolveAliases({
+export async function resolveAliases({
   root,
   options,
   bundled,
@@ -139,7 +150,7 @@ export function resolveAliases({
   published: boolean;
   outDir: Directory | undefined;
   structure: EnvironmentStructure | undefined;
-}): ResolvedAliases {
+}): Promise<ResolvedAliases> {
   if (!options.global.enabled) {
     return freeze({
       enabled: false,
@@ -149,35 +160,43 @@ export function resolveAliases({
   }
 
   // @debt `#src/*` is generated beside the namespace aliases, so every src module has two specifiers (`#src/project/config/index`, `#project/config/index`)
-  const roots = flatMap(entries(environments), ([name, dirs]) => {
-    return flatMap(dirs, (dir): Alias[] => {
-      return dir === projectRoot ||
-        dir === outDir ||
-        !existsSync(join(root, dir))
-        ? []
-        : [
-            {
-              key: `#${dir}/*`,
-              target: `./${dir}/*.ts`,
-              source: `${name} environment`,
-            },
-          ];
-    });
-  });
+  const roots = flat(
+    await Promise.all(
+      entries(environments).flatMap(([name, dirs]) => {
+        return dirs.map(async (dir): Promise<Alias[]> => {
+          return dir === projectRoot ||
+            dir === outDir ||
+            !(await pathExists(join(root, dir)))
+            ? []
+            : [
+                {
+                  key: `#${dir}/*`,
+                  target: `./${dir}/*.ts`,
+                  source: `${name} environment`,
+                },
+              ];
+        });
+      }),
+    ),
+  );
 
   const dataAliases = published
     ? []
-    : flatMap(data, (dir): Alias[] => {
-        return existsSync(join(root, dir))
-          ? [
-              {
-                key: `#${dir}/*`,
-                target: `./${dir}/*`,
-                source: "data environment",
-              },
-            ]
-          : [];
-      });
+    : flat(
+        await Promise.all(
+          data.map(async (dir): Promise<Alias[]> => {
+            return (await pathExists(join(root, dir)))
+              ? [
+                  {
+                    key: `#${dir}/*`,
+                    target: `./${dir}/*`,
+                    source: "data environment",
+                  },
+                ]
+              : [];
+          }),
+        ),
+      );
 
   const global = [
     ...(options.global.generated
@@ -189,7 +208,7 @@ export function resolveAliases({
   const sourceAliases = options.src.enabled
     ? [
         ...(options.src.generated && structure !== undefined
-          ? createSourceAliases(root, structure)
+          ? await createSourceAliases(root, structure)
           : []),
         ...createDefinedAliases(options.src, "src.aliases.define", bundled),
       ]

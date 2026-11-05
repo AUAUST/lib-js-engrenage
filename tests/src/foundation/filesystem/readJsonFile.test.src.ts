@@ -4,23 +4,21 @@ import { readJsonFile } from "#foundation/filesystem/operations/readJsonFile";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 describe("readJsonFile", () => {
-  test("fails on a missing file", () => {
+  test("fails on a missing file", async () => {
     const project = createTemporaryProject();
 
-    expect(() => {
-      return readJsonFile(project.resolve("missing.json"));
-    }).toThrow("missing.json");
+    await expect(readJsonFile(project.resolve("missing.json"))).rejects.toThrow(
+      "missing.json",
+    );
   });
 
-  test("names the file holding invalid JSON", () => {
+  test("names the file holding invalid JSON", async () => {
     const project = createTemporaryProject({
       "broken.json": "{ broken",
     });
 
     const path = project.resolve("broken.json");
 
-    expect(() => {
-      return readJsonFile(path);
-    }).toThrow(`Invalid JSON in ${path}`);
+    await expect(readJsonFile(path)).rejects.toThrow(`Invalid JSON in ${path}`);
   });
 });

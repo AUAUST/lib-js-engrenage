@@ -8,30 +8,36 @@ import { toEntryName } from "#tools/tsdown/utils/toEntryName";
 import type { ResolvedBin } from "#project/environments/index";
 import type { File } from "#types/File";
 
-export function findCommands({
+export async function findCommands({
   bin,
   filesystem,
 }: {
   bin: ResolvedBin;
   filesystem: Filesystem;
-}): (readonly [command: string, file: File])[] {
+}): Promise<(readonly [command: string, file: File])[]> {
   if (bin.commands !== undefined) {
-    return entries(bin.commands).map(([command, file]) => {
-      if (!filesystem.exists(file)) {
-        throw new Error(
-          `Command '${command}' points to ${file}, which does not exist`,
-        );
-      }
+    return Promise.all(
+      entries(bin.commands).map(
+        async ([command, file]): Promise<readonly [string, File]> => {
+          if (!(await filesystem.exists(file))) {
+            throw new Error(
+              `Command '${command}' points to ${file}, which does not exist`,
+            );
+          }
 
-      return [command, file];
-    });
+          return [command, file];
+        },
+      ),
+    );
   }
 
   const indexFile = getIndexFile(bin.roles);
 
-  return filesystem
-    .glob(filesIn(bin.dirs, ["*.ts", `*/${indexFile}`]))
-    .map((file): readonly [string, File] => {
-      return [posix.basename(toEntryName(file, indexFile)), file];
-    });
+  const files = await filesystem.glob(
+    filesIn(bin.dirs, ["*.ts", `*/${indexFile}`]),
+  );
+
+  return files.map((file): readonly [string, File] => {
+    return [posix.basename(toEntryName(file, indexFile)), file];
+  });
 }

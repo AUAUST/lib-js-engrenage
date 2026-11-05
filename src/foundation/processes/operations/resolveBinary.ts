@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname } from "node:path";
 
@@ -20,6 +20,7 @@ function isModuleNotFound(error: unknown): boolean {
   return error instanceof Error && get(error, "code") === "MODULE_NOT_FOUND";
 }
 
+// @debt `createRequire().resolve` walks node_modules synchronously; Node has no promise-based module resolution
 function resolveManifest(root: Directory, packageName: KnownPackageName): File {
   const require = createRequire(resolve(root, packageJsonFile));
 
@@ -36,16 +37,18 @@ function resolveManifest(root: Directory, packageName: KnownPackageName): File {
   }
 }
 
-export function resolveBinary(
+export async function resolveBinary(
   root: Directory,
   packageName: KnownPackageName,
   binary: string,
-): File {
+): Promise<File> {
   const manifestPath = resolveManifest(root, packageName);
 
-  const bin = readJsonValue(readFileSync(manifestPath, "utf-8"), manifestPath, [
-    "bin",
-  ]);
+  const bin = readJsonValue(
+    await readFile(manifestPath, "utf-8"),
+    manifestPath,
+    ["bin"],
+  );
 
   const paths = bin === undefined ? undefined : parse(binSchema, bin);
 

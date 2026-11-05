@@ -11,7 +11,10 @@ export function createBuildToolStep(): Step<{ configFile: File | undefined }> {
       }
 
       for (const tool of [tsdown, vite]) {
-        if ((await hasDependency(tool)) || hasConfigFile(filesystem, tool)) {
+        if (
+          (await hasDependency(tool)) ||
+          (await hasConfigFile(filesystem, tool))
+        ) {
           return false;
         }
       }

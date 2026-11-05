@@ -1,5 +1,5 @@
 import type { File } from "#types/File";
 
 export interface ResolvedPrettier {
-  readonly prettierignore: File | undefined;
+  readonly prettierignore: Promise<File | undefined>;
 }

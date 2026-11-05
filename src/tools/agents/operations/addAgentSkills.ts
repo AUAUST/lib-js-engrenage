@@ -2,7 +2,7 @@ import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
-export function addAgentSkills(
+export async function addAgentSkills(
   {
     filesystem,
     agents,
@@ -12,7 +12,7 @@ export function addAgentSkills(
   },
   names: readonly string[],
 ) {
-  const templates = getSkillTemplates({ agents });
+  const templates = await getSkillTemplates({ agents });
 
   for (const name of names) {
     if (!templates.some((template) => template.name === name)) {
@@ -28,8 +28,8 @@ export function addAgentSkills(
     }
 
     for (const { file, content } of template.files) {
-      if (!filesystem.exists(file)) {
-        filesystem.write(file, content);
+      if (!(await filesystem.exists(file))) {
+        await filesystem.write(file, content);
       }
     }
   }

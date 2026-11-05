@@ -1,4 +1,3 @@
-import { existsSync } from "node:fs";
 import { dirname } from "node:path";
 
 import { constant } from "@auaust/toolkit/constant";
@@ -6,7 +5,11 @@ import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { memoized } from "@auaust/toolkit/memoized";
 
 import { files } from "#constants";
-import { importConfigFile, resolve } from "#foundation/filesystem/index";
+import {
+  importConfigFile,
+  pathExists,
+  resolve,
+} from "#foundation/filesystem/index";
 import type { RawConfig } from "#project/config/types/RawConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -64,7 +67,7 @@ async function findConfig(
     return found;
   }
 
-  if (existsSync(resolve(directory, files.packageJson))) {
+  if (await pathExists(resolve(directory, files.packageJson))) {
     return {
       root: directory,
       configFile: undefined,

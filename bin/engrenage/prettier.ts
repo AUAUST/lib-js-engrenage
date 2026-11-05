@@ -1,6 +1,7 @@
 import { flatMap } from "@auaust/primitive-kit/arrays";
 
 import { packages } from "#constants";
+import { findDirectories } from "#foundation/filesystem/index";
 import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
 import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
 import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
@@ -64,10 +65,8 @@ export const prettier = defineToolCommands({
 
         args.push(
           ...[
-            ...directories.filter((directory) => {
-              return filesystem.isDirectory(directory);
-            }),
-            ...filesystem.glob(tooling.files),
+            ...(await findDirectories(filesystem, directories)),
+            ...(await filesystem.glob(tooling.files)),
           ].map((path) => resolve(path)),
         );
       },

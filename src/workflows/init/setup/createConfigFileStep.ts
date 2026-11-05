@@ -31,7 +31,8 @@ export function createConfigFileStep(): Step<{ configFile: File | undefined }> {
     name: file,
     async isMissing({ get, filesystem }) {
       return (
-        (await get("configFile")) === undefined && !filesystem.exists(file)
+        (await get("configFile")) === undefined &&
+        !(await filesystem.exists(file))
       );
     },
     async plan(context) {
@@ -48,7 +49,7 @@ export function createConfigFileStep(): Step<{ configFile: File | undefined }> {
 
       context.setPreset(chosen);
 
-      context.filesystem.write(
+      await context.filesystem.write(
         file,
         createConfigModule({
           entry: `${engrenage}/config`,

@@ -38,14 +38,20 @@ const skillSchema = looseObject({
   ),
 });
 
-export function getSkillTemplates({ agents }: { agents: ResolvedAgents }) {
+export async function getSkillTemplates({
+  agents,
+}: {
+  agents: ResolvedAgents;
+}) {
   const preferred = agents.preferred ?? [];
 
   if (preferred.length === 0) {
     throw new Error("Skills need agents.preferred in engrenage.config.ts");
   }
 
-  return getInstructionTemplates("skills").map((template) => {
+  const templates = await getInstructionTemplates("skills");
+
+  return templates.map((template) => {
     const { invocation, agent } = validate(
       skillSchema,
       template,

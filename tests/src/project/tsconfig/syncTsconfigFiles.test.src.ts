@@ -51,7 +51,7 @@ describe("syncTsconfigFiles", () => {
   test("writes managed fields and keeps every other field", async () => {
     const { project, config } = await createProject({}, files);
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     expect(JSON.parse(project.read("tsconfig.src.json"))).toEqual({
       extends: "./tsconfig.json",
@@ -91,7 +91,7 @@ describe("syncTsconfigFiles", () => {
       files,
     );
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     const tsconfig = JSON.parse(project.read("tsconfig.src.json"));
 
@@ -123,7 +123,7 @@ describe("syncTsconfigFiles", () => {
       files,
     );
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     expect(
       JSON.parse(project.read("tsconfig.src.json")).compilerOptions,
@@ -145,7 +145,7 @@ describe("syncTsconfigFiles", () => {
       { "src/index.ts": "", "tsconfig.json": "{}" },
     );
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     expect(JSON.parse(project.read("tsconfig.src.json")).include).toEqual([
       "src/**/*.ts",
@@ -160,7 +160,7 @@ describe("syncTsconfigFiles", () => {
   test("creates a missing base tsconfig", async () => {
     const { project, config } = await createProject({}, { "src/index.ts": "" });
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
       extends: "@auaust/engrenage/tsconfig/base.json",
@@ -188,7 +188,7 @@ describe("syncTsconfigFiles", () => {
       },
     );
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     expect(JSON.parse(project.read("tsconfig.tests.dist.json"))).toEqual({
       extends: "./tsconfig.tests.json",
@@ -217,7 +217,7 @@ describe("syncTsconfigFiles", () => {
       },
     );
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     const { include, compilerOptions } = JSON.parse(
       project.read("tsconfig.tests.dist.json"),
@@ -248,7 +248,7 @@ describe("syncTsconfigFiles", () => {
       files,
     );
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     expect(
       JSON.parse(project.read("tsconfig.json")).compilerOptions,

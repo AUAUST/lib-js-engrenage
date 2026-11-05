@@ -7,7 +7,8 @@ export function createVitestStep(): Step {
     message: "Test with Vitest?",
     async isMissing({ filesystem, hasDependency }) {
       return (
-        !(await hasDependency(vitest)) && !hasConfigFile(filesystem, vitest)
+        !(await hasDependency(vitest)) &&
+        !(await hasConfigFile(filesystem, vitest))
       );
     },
     async plan({ addDevDependency }) {

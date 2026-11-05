@@ -41,7 +41,7 @@ describe("budgets", () => {
       ".ai/backlog/tools.md": `# tools\n\n## 1. Short\n\n- why: ${words(5)}\n\n## 2. Long\n\n- why: ${words(80)}\n`,
     });
 
-    const findings = measureEditedFile(
+    const findings = await measureEditedFile(
       project.root,
       project.resolve(".ai/backlog/tools.md"),
       await loadBudgets(project.root),
@@ -64,7 +64,7 @@ describe("budgets", () => {
     });
 
     expect(
-      measureEditedFile(
+      await measureEditedFile(
         project.root,
         project.resolve(".ai/backlog/index.md"),
         await loadBudgets(project.root),

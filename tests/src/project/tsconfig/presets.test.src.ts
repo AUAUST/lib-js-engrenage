@@ -11,7 +11,7 @@ import { keys } from "@auaust/toolkit/object";
 import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
 import { apiGroupRoots } from "#project/baseline/constants";
 import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
-import { createTsconfig } from "#project/tsconfig/utils/createTsconfig";
+import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 
@@ -111,10 +111,10 @@ describe("tsconfig presets", () => {
     });
   });
 
-  test("resolves library output paths inside the consumer", () => {
+  test("resolves library output paths inside the consumer", async () => {
     const library = getFixture("tsconfig/library");
 
-    const { compilerOptions } = createTsconfig({
+    const { compilerOptions } = await createTsconfig({
       root: library,
       path: join(library, "tsconfig.json"),
       filesystem: createFilesystem(library),

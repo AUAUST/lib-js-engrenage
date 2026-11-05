@@ -1,5 +1,4 @@
 // @barrel utils/*.ts named
-export { createTsconfig } from "#project/tsconfig/utils/createTsconfig";
 export { isLeftAlone } from "#project/tsconfig/utils/isLeftAlone";
 export { isPackageAlias } from "#project/tsconfig/utils/isPackageAlias";
 export { produceTsconfigBuildInfo } from "#project/tsconfig/utils/produceTsconfigBuildInfo";
@@ -50,6 +49,7 @@ export { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSch
 // @end
 
 // @barrel operations/*.ts named
+export { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 export { produceTsconfigExclude } from "#project/tsconfig/operations/produceTsconfigExclude";
 export { produceTsconfigInclude } from "#project/tsconfig/operations/produceTsconfigInclude";
 export { produceTsconfigLibrary } from "#project/tsconfig/operations/produceTsconfigLibrary";

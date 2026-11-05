@@ -13,8 +13,8 @@ export function createEmittedManifestPlugin(
 
   return {
     name,
-    buildStart() {
-      manifest.removePrevious();
+    async buildStart() {
+      await manifest.removePrevious();
     },
     writeBundle(_options, bundle) {
       manifest.add(keys(bundle));
@@ -24,8 +24,8 @@ export function createEmittedManifestPlugin(
         manifest.fail();
       }
     },
-    closeBundle() {
-      manifest.write();
+    async closeBundle() {
+      await manifest.write();
     },
   };
 }

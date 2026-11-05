@@ -1,7 +1,7 @@
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { FileSync } from "#types/FileSync";
 
-export function syncFiles(
+export async function syncFiles(
   {
     filesystem,
     resolve,
@@ -11,11 +11,13 @@ export function syncFiles(
   },
   files: readonly FileSync[],
 ) {
-  for (const { file, update } of files) {
-    const current = filesystem.read(file);
+  await Promise.all(
+    files.map(async ({ file, update }) => {
+      const current = await filesystem.read(file);
 
-    if (current !== undefined) {
-      filesystem.write(file, update(current, resolve(file)));
-    }
-  }
+      if (current !== undefined) {
+        await filesystem.write(file, update(current, resolve(file)));
+      }
+    }),
+  );
 }

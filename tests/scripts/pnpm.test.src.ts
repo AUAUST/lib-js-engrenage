@@ -35,7 +35,7 @@ describe("support pnpm", () => {
   ] as const)(
     "logs a newest pnpm one %s ahead as %s",
     async (_gap, newest, level, fails) => {
-      vi.mocked(resolveLatestPnpm).mockReturnValue(newest);
+      vi.mocked(resolveLatestPnpm).mockResolvedValue(newest);
 
       const logs = {
         info: vi.spyOn(console, "info").mockImplementation(() => {}),

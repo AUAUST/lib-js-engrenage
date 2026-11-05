@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 
 import { random } from "@auaust/primitive-kit/arrays";
 
@@ -28,39 +28,60 @@ export function createBacklogStep(): Step<AgentSections> {
     message:
       "Set up the shared backlog in .ai/backlog/ and scratchpad in .ai/scratchpad.md?",
     async isMissing({ get, filesystem, getAgents }) {
-      if ((getAgents()?.length ?? 0) === 0 || !filesystem.exists(agentsFile)) {
+      if (
+        (getAgents()?.length ?? 0) === 0 ||
+        !(await filesystem.exists(agentsFile))
+      ) {
         return false;
       }
 
-      return (
-        !filesystem.exists(backlogIndex) ||
-        !filesystem.exists(scratchpadFile) ||
-        !(filesystem.read(agentsFile)?.includes(sectionReference) ?? false) ||
-        getMissingRuleTemplates({ filesystem }).some(({ name }) => {
-          return name === "backlog";
-        }) ||
-        getSkillTemplates({ agents: await get("agents") }).some(
-          ({ name, files }) => {
-            return (
-              skills.includes(name) &&
-              files.some(({ file }) => !filesystem.exists(file))
-            );
-          },
-        )
-      );
+      const instructions = await filesystem.read(agentsFile);
+
+      if (
+        !(await filesystem.exists(backlogIndex)) ||
+        !(await filesystem.exists(scratchpadFile)) ||
+        !(instructions?.includes(sectionReference) ?? false)
+      ) {
+        return true;
+      }
+
+      const agents = await get("agents");
+
+      const [missingRules, skillTemplates] = await Promise.all([
+        getMissingRuleTemplates({ filesystem }),
+        getSkillTemplates({ agents }),
+      ]);
+
+      if (missingRules.some(({ name }) => name === "backlog")) {
+        return true;
+      }
+
+      for (const { name, files } of skillTemplates) {
+        if (!skills.includes(name)) {
+          continue;
+        }
+
+        for (const { file } of files) {
+          if (!(await filesystem.exists(file))) {
+            return true;
+          }
+        }
+      }
+
+      return false;
     },
     async plan(context) {
       const { filesystem, get } = context;
       const agents = await get("agents");
 
-      if (!filesystem.exists(backlogIndex)) {
-        filesystem.write(
+      if (!(await filesystem.exists(backlogIndex))) {
+        await filesystem.write(
           backlogIndex,
-          readFileSync(resolveDataFile(backlogTemplate), "utf-8"),
+          await readFile(resolveDataFile(backlogTemplate), "utf-8"),
         );
       }
 
-      const instructions = filesystem.read(agentsFile);
+      const instructions = await filesystem.read(agentsFile);
 
       if (instructions === undefined) {
         throw new Error(`Create ${agentsFile} before setting up the backlog`);
@@ -68,21 +89,21 @@ export function createBacklogStep(): Step<AgentSections> {
 
       // @debt the "<!-- @reference … -->" syntax is hand-written here, in createAgentsStep and createInstructionFile, and re-parsed by a regex in getMissingRuleTemplates, although markdownBlocks already describes it
       if (!instructions.includes(sectionReference)) {
-        filesystem.write(
+        await filesystem.write(
           agentsFile,
           `${instructions.trimEnd()}\n\n<!-- @reference ${sectionReference} -->\n<!-- @end -->\n`,
         );
       }
 
-      if (!filesystem.exists(scratchpadFile)) {
-        filesystem.write(
+      if (!(await filesystem.exists(scratchpadFile))) {
+        await filesystem.write(
           scratchpadFile,
           `# Scratchpad\n\n<!-- scratchpad-placeholder -->\n\n${random(scratchpadPlaceholders)}\n`,
         );
       }
 
-      addAgentRules({ filesystem, agents }, ["backlog"]);
-      addAgentSkills({ filesystem, agents }, skills);
+      await addAgentRules({ filesystem, agents }, ["backlog"]);
+      await addAgentSkills({ filesystem, agents }, skills);
 
       await syncAgentFiles(context);
     },

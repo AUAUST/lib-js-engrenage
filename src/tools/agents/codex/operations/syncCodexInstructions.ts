@@ -5,7 +5,7 @@ import { markdownBlocks } from "#tools/agents/constants";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
-export function syncCodexInstructions({
+export async function syncCodexInstructions({
   filesystem,
   agents,
 }: {
@@ -16,16 +16,20 @@ export function syncCodexInstructions({
     return;
   }
 
-  const content = filesystem.read(codexFile);
+  const content = await filesystem.read(codexFile);
 
-  if (content !== undefined) {
-    filesystem.write(
-      codexFile,
-      syncBlocks(content, markdownBlocks, {
-        rules() {
-          return createCodexRuleMapping({ filesystem });
-        },
-      }),
-    );
+  if (content === undefined) {
+    return;
   }
+
+  const rules = await createCodexRuleMapping({ filesystem });
+
+  await filesystem.write(
+    codexFile,
+    syncBlocks(content, markdownBlocks, {
+      rules() {
+        return rules;
+      },
+    }),
+  );
 }

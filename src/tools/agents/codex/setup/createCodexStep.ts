@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 
 import { resolveDataFile } from "#foundation/data/index";
 import { codexFile, codexTemplate } from "#tools/agents/codex/constants";
@@ -16,16 +16,16 @@ export function createCodexStep(): Step<AgentSections> {
 
       return (
         agents.preferred?.includes("codex") === true &&
-        filesystem.exists(agentsFile) &&
-        !filesystem.exists(codexFile)
+        (await filesystem.exists(agentsFile)) &&
+        !(await filesystem.exists(codexFile))
       );
     },
     async plan(context) {
       const { filesystem } = context;
 
-      filesystem.write(
+      await filesystem.write(
         codexFile,
-        readFileSync(resolveDataFile(codexTemplate), "utf-8"),
+        await readFile(resolveDataFile(codexTemplate), "utf-8"),
       );
 
       await syncCodexFiles(context);

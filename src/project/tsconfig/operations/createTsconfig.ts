@@ -6,6 +6,7 @@ import {
   sys,
   type Diagnostic,
   type FormatDiagnosticsHost,
+  type ParseConfigFileHost,
   type ParsedCommandLine,
 } from "typescript";
 
@@ -14,6 +15,7 @@ import { once } from "@auaust/toolkit/once";
 
 import {
   isWithin,
+  readTextFile,
   toPosixPath,
   type Filesystem,
 } from "#foundation/filesystem/index";
@@ -35,36 +37,24 @@ function toError(diagnostics: readonly Diagnostic[]): Error {
 }
 
 function parseTsconfig({
-  root,
   path,
-  filesystem,
-  content,
+  files,
 }: {
-  root: Directory;
   path: File;
-  filesystem: Filesystem;
-  content: string | undefined;
+  files: ReadonlyMap<File, string | undefined>;
 }): ParsedCommandLine {
-  function readFile(file: File): string | undefined {
-    if (content !== undefined && resolve(file) === resolve(path)) {
-      return content;
-    }
-
-    return isWithin(root, file) ? filesystem.read(file) : sys.readFile(file);
-  }
-
-  function fileExists(file: File): boolean {
-    return readFile(file) !== undefined;
-  }
-
-  const parsed = getParsedCommandLineOfConfigFile(path, undefined, {
-    ...sys,
-    readFile,
-    fileExists,
+  const host: ParseConfigFileHost = {
+    useCaseSensitiveFileNames: sys.useCaseSensitiveFileNames,
+    getCurrentDirectory: sys.getCurrentDirectory,
+    readDirectory: () => [],
+    readFile: (file) => files.get(resolve(file)),
+    fileExists: (file) => files.get(resolve(file)) !== undefined,
     onUnRecoverableConfigFileDiagnostic(diagnostic) {
       throw toError([diagnostic]);
     },
-  });
+  };
+
+  const parsed = getParsedCommandLineOfConfigFile(path, undefined, host);
 
   if (!parsed) {
     throw new Error(`Unable to read ${path}`);
@@ -81,7 +71,68 @@ function parseTsconfig({
   return parsed;
 }
 
-export function createTsconfig({
+// @debt the TypeScript config parser reads files synchronously, so each `extends` level costs a probing parse before the real one; an async parser would read each file once
+async function loadTsconfigFiles({
+  root,
+  path,
+  filesystem,
+  content,
+}: {
+  root: Directory;
+  path: File;
+  filesystem: Filesystem;
+  content: string | undefined;
+}): Promise<ReadonlyMap<File, string | undefined>> {
+  const files = new Map<File, string | undefined>();
+
+  if (content !== undefined) {
+    files.set(resolve(path), content);
+  }
+
+  for (;;) {
+    const missing = new Set<File>();
+
+    const probe = (file: File) => {
+      const located = resolve(file);
+
+      if (!files.has(located)) {
+        missing.add(located);
+      }
+
+      return files.get(located);
+    };
+
+    try {
+      getParsedCommandLineOfConfigFile(path, undefined, {
+        useCaseSensitiveFileNames: sys.useCaseSensitiveFileNames,
+        getCurrentDirectory: sys.getCurrentDirectory,
+        readDirectory: () => [],
+        readFile: probe,
+        fileExists: (file) => probe(file) !== undefined,
+        onUnRecoverableConfigFileDiagnostic() {},
+      });
+    } catch {
+      // the probing pass only discovers files: invalid content surfaces in the real parse
+    }
+
+    if (missing.size === 0) {
+      return files;
+    }
+
+    await Promise.all(
+      [...missing].map(async (file) => {
+        files.set(
+          file,
+          isWithin(root, file)
+            ? await filesystem.read(file)
+            : await readTextFile(file),
+        );
+      }),
+    );
+  }
+}
+
+export async function createTsconfig({
   root,
   path,
   filesystem,
@@ -91,16 +142,21 @@ export function createTsconfig({
   path: File | undefined;
   filesystem: Filesystem;
   content?: string | undefined;
-}): Tsconfig {
-  const parsed = once(() => {
-    return path === undefined
+}): Promise<Tsconfig> {
+  const files =
+    path === undefined
       ? undefined
-      : parseTsconfig({
+      : await loadTsconfigFiles({
           root,
           path,
           filesystem,
           content,
         });
+
+  const parsed = once(() => {
+    return path === undefined || files === undefined
+      ? undefined
+      : parseTsconfig({ path, files });
   });
 
   function compilerOptions() {

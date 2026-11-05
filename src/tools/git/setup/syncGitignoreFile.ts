@@ -24,14 +24,14 @@ export async function syncGitignoreFile(
     settlePreset(createProjectIgnores(config)),
   ]);
 
-  syncIgnoreFile(
+  await syncIgnoreFile(
     {
       root,
       filesystem,
       resolve,
     },
     {
-      path: git.gitignore,
+      path: await git.gitignore,
       presets: {
         javascript() {
           return [javascriptIgnores];

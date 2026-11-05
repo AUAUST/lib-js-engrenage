@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { readdir, readFile } from "node:fs/promises";
 import { join, posix } from "node:path";
 
 import {
@@ -11,9 +11,10 @@ import {
   type ImportDeclaration,
 } from "typescript";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flat, flatMap } from "@auaust/primitive-kit/arrays";
 import { values } from "@auaust/toolkit/object";
 
+import { isMissingError } from "#foundation/filesystem/index";
 import type { Alias } from "#project/structure/types/Alias";
 import type { ImportCycle } from "#project/structure/types/ImportCycle";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
@@ -30,24 +31,39 @@ function isCodeFile(name: string): boolean {
   );
 }
 
-function listCodeFiles(root: Directory, directory: Directory): string[] {
+async function listCodeFiles(
+  root: Directory,
+  directory: Directory,
+): Promise<string[]> {
   const path = join(root, directory);
 
-  if (!existsSync(path)) {
-    return [];
-  }
+  let entries;
 
-  return flatMap(readdirSync(path, { withFileTypes: true }), (entry) => {
-    const child = posix.join(directory, entry.name);
-
-    if (entry.isDirectory()) {
-      return entry.name.startsWith(".") || ignoredDirectories.has(entry.name)
-        ? []
-        : listCodeFiles(root, child);
+  try {
+    entries = await readdir(path, { withFileTypes: true });
+  } catch (error) {
+    if (isMissingError(error)) {
+      return [];
     }
 
-    return entry.isFile() && isCodeFile(entry.name) ? [child] : [];
-  });
+    throw error;
+  }
+
+  const listed = await Promise.all(
+    entries.map(async (entry): Promise<string[]> => {
+      const child = posix.join(directory, entry.name);
+
+      if (entry.isDirectory()) {
+        return entry.name.startsWith(".") || ignoredDirectories.has(entry.name)
+          ? []
+          : listCodeFiles(root, child);
+      }
+
+      return entry.isFile() && isCodeFile(entry.name) ? [child] : [];
+    }),
+  );
+
+  return listed.flat();
 }
 
 function keepsImport(statement: ImportDeclaration): boolean {
@@ -58,10 +74,13 @@ function keepsExport(statement: ExportDeclaration): boolean {
   return !statement.isTypeOnly;
 }
 
-function readRuntimeSpecifiers(root: Directory, file: string): string[] {
+async function readRuntimeSpecifiers(
+  root: Directory,
+  file: string,
+): Promise<string[]> {
   const source = createSourceFile(
     file,
-    readFileSync(join(root, file), "utf-8"),
+    await readFile(join(root, file), "utf-8"),
     ScriptTarget.Latest,
   );
 
@@ -238,7 +257,7 @@ function shortestCycle(
 }
 
 /** @debt `typescript` is an optional peer dependency yet this runtime module imports it; and `verbatimModuleSyntax` is assumed on instead of read from the resolved typescript option */
-export function findImportCycles({
+export async function findImportCycles({
   root,
   structure,
   aliases,
@@ -246,7 +265,7 @@ export function findImportCycles({
   root: Directory;
   structure: ResolvedStructure;
   aliases: ResolvedAliases;
-}): ImportCycle[] {
+}): Promise<ImportCycle[]> {
   const directories = new Set(
     flatMap(values(structure), (environment) => {
       return environment?.dirs ?? [];
@@ -254,23 +273,29 @@ export function findImportCycles({
   );
 
   const files = new Set(
-    flatMap([...directories], (directory) => listCodeFiles(root, directory)),
+    flat(
+      await Promise.all(
+        [...directories].map((directory) => listCodeFiles(root, directory)),
+      ),
+    ),
   );
 
   const resolve = createResolver([...aliases.global, ...aliases.src], files);
 
   const graph = new Map<string, string[]>(
-    [...files].sort().map((file) => {
-      const targets = new Set(
-        flatMap(readRuntimeSpecifiers(root, file), (specifier) => {
-          const target = resolve(file, specifier);
+    await Promise.all(
+      [...files].sort().map(async (file): Promise<[string, string[]]> => {
+        const targets = new Set(
+          flatMap(await readRuntimeSpecifiers(root, file), (specifier) => {
+            const target = resolve(file, specifier);
 
-          return target === undefined ? [] : [target];
-        }),
-      );
+            return target === undefined ? [] : [target];
+          }),
+        );
 
-      return [file, [...targets].sort()];
-    }),
+        return [file, [...targets].sort()];
+      }),
+    ),
   );
 
   const cycles = flatMap(findComponents(graph), (component): ImportCycle[] => {

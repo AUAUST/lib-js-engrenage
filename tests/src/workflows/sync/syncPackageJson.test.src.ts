@@ -25,8 +25,11 @@ async function sync(
 
   return {
     resolved,
-    manifest: async () =>
-      JSON.parse((await resolved.get("filesystem")).read("package.json") ?? ""),
+    manifest: async () => {
+      const filesystem = await resolved.get("filesystem");
+
+      return JSON.parse((await filesystem.read("package.json")) ?? "");
+    },
   };
 }
 
@@ -124,7 +127,7 @@ describe("syncPackageJson", () => {
       { file: "package.json", status: "synced" },
     ]);
 
-    (await resolved.get("filesystem")).flush();
+    await (await resolved.get("filesystem")).flush();
     await syncPackageJson(resolved);
 
     expect((await resolved.get("filesystem")).changes()).toEqual([]);
@@ -164,7 +167,7 @@ describe("syncPackageJson", () => {
     );
 
     await syncPackageJson(resolved);
-    (await resolved.get("filesystem")).flush();
+    await (await resolved.get("filesystem")).flush();
 
     expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
       "engines",
@@ -207,7 +210,7 @@ describe("syncPackageJson pnpm warnings", () => {
     expect(messages[0]).toContain(`pnpm ^${versions.previousMajor} is below`);
 
     expect(
-      (await resolved.get("filesystem")).read("package.json"),
+      await (await resolved.get("filesystem")).read("package.json"),
     ).not.toContain(`^${versions.floor}`);
   });
 

@@ -39,16 +39,16 @@ describe("syncAgentFiles", () => {
     const config = await loadConfig(root);
     const references = await resolveSections(config);
 
-    expect(resolveAgentReference(references, "shared.md", from)).toBe(
+    expect(await resolveAgentReference(references, "shared.md", from)).toBe(
       join(root, ".agents/snippets/shared.md"),
     );
 
-    expect(resolveAgentReference(references, "./AGENTS.md", from)).toBe(
+    expect(await resolveAgentReference(references, "./AGENTS.md", from)).toBe(
       join(root, "AGENTS.md"),
     );
 
     expect(
-      resolveAgentReference(
+      await resolveAgentReference(
         references,
         "@auaust/engrenage/agents/sections/precedence.md",
         import.meta.filename,
@@ -72,7 +72,7 @@ describe("syncAgentFiles", () => {
     });
 
     expect(
-      resolveAgentReference(
+      await resolveAgentReference(
         references,
         "fragments/shared.md",
         project.resolve("AGENTS.md"),
@@ -83,9 +83,9 @@ describe("syncAgentFiles", () => {
   test("names the reference and the file when nothing matches", async () => {
     const references = await resolveSections(await loadConfig(root));
 
-    expect(() => {
-      return resolveAgentReference(references, "missing.md", from);
-    }).toThrow(`Cannot resolve reference "missing.md" in ${from}`);
+    await expect(
+      resolveAgentReference(references, "missing.md", from),
+    ).rejects.toThrow(`Cannot resolve reference "missing.md" in ${from}`);
   });
 
   test("warns about an unresolvable reference and leaves its block untouched", async () => {
@@ -109,7 +109,7 @@ describe("syncAgentFiles", () => {
 
     await syncAgentFiles(config);
 
-    expect((await config.get("filesystem")).read("AGENTS.md")).toBe(
+    expect(await (await config.get("filesystem")).read("AGENTS.md")).toBe(
       instructions,
     );
 
@@ -156,9 +156,9 @@ describe("syncAgentFiles", () => {
       ]);
 
       expect(
-        (await config.get("filesystem")).read(
-          ".claude/skills/scratchpad/SKILL.md",
-        ),
+        await (
+          await config.get("filesystem")
+        ).read(".claude/skills/scratchpad/SKILL.md"),
       ).not.toContain("Stale description");
     });
 
@@ -182,9 +182,9 @@ describe("syncAgentFiles", () => {
 
       await syncAgentFiles(config);
 
-      const content = (await config.get("filesystem")).read(
-        ".claude/agents/worker.md",
-      );
+      const content = await (
+        await config.get("filesystem")
+      ).read(".claude/agents/worker.md");
 
       expect(content).toContain("description: Mine.");
       expect(content).toContain("model: sonnet");

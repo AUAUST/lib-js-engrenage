@@ -13,8 +13,8 @@ export function createCodexHooksStep(): Step<AgentSections> {
       return (
         agents.preferred?.includes("codex") === true &&
         agents.codexHooks !== false &&
-        filesystem.exists(codexFile) &&
-        !filesystem.exists(codexHooksFile)
+        (await filesystem.exists(codexFile)) &&
+        !(await filesystem.exists(codexHooksFile))
       );
     },
     async plan(context) {

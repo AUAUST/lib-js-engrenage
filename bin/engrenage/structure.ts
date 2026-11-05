@@ -20,7 +20,7 @@ export const structure = defineCommand((command) => {
         console.info(line);
       }
 
-      const cycles = findImportCycles({
+      const cycles = await findImportCycles({
         root: await config.get("root"),
         structure: await config.get("structure"),
         aliases: await config.get("aliases"),

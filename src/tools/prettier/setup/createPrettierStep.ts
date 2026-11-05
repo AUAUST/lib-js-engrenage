@@ -8,7 +8,7 @@ export function createPrettierStep(): Step {
     async isMissing({ filesystem, readPackageJson }) {
       return (
         (await readPackageJson([prettier])) === undefined &&
-        !hasConfigFile(filesystem, prettier)
+        !(await hasConfigFile(filesystem, prettier))
       );
     },
     async plan({ writePackageJson, addDevDependency }) {

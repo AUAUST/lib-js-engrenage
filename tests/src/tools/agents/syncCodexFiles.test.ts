@@ -27,7 +27,7 @@ describe("syncCodexFiles", () => {
 
     await syncAgentFiles(config);
     await syncCodexFiles(config);
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     const result = project.read("AGENTS.override.md");
 
@@ -51,19 +51,18 @@ describe("syncCodexFiles", () => {
     await syncCodexFiles(config);
     expect((await config.get("filesystem")).changes()).toEqual([]);
 
-    (await config.get("filesystem")).write(
-      ".claude/rules/types.md",
-      '---\npaths: ["lib/**"]\n---\nTypes',
-    );
+    await (
+      await config.get("filesystem")
+    ).write(".claude/rules/types.md", '---\npaths: ["lib/**"]\n---\nTypes');
 
     await syncCodexFiles(config);
 
     expect(
-      (await config.get("filesystem")).read("AGENTS.override.md"),
+      await (await config.get("filesystem")).read("AGENTS.override.md"),
     ).toContain("lib/**");
 
     expect(
-      (await config.get("filesystem")).read("AGENTS.override.md"),
+      await (await config.get("filesystem")).read("AGENTS.override.md"),
     ).not.toContain("src/**/*.ts");
   });
 

@@ -44,16 +44,18 @@ async function findMissingWorkflows({
   const directory = relative(root, await get("root")) || ".";
   const missing: MissingWorkflow[] = [];
 
-  for (const file of workflowSets[name].files) {
-    const path = `${workflowsDirectory}/${file}`;
+  await Promise.all(
+    workflowSets[name].files.map(async (file) => {
+      const path = `${workflowsDirectory}/${file}`;
 
-    if (!filesystem.exists(path)) {
-      missing.push({
-        file: path,
-        content: renderWorkflow(name, file, toPosixPath(directory)),
-      });
-    }
-  }
+      if (!(await filesystem.exists(path))) {
+        missing.push({
+          file: path,
+          content: await renderWorkflow(name, file, toPosixPath(directory)),
+        });
+      }
+    }),
+  );
 
   return missing;
 }
@@ -71,7 +73,7 @@ export function createWorkflowsStep(): Step<Sections> {
       for (const { file, content } of await findMissingWorkflows(context)) {
         const git = await context.get("git");
 
-        git.filesystem.write(file, content);
+        await git.filesystem.write(file, content);
       }
     },
   };

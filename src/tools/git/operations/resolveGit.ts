@@ -26,7 +26,7 @@ export async function resolveGit(
     filesystem: projectFilesystem,
   };
 
-  const repositoryRoot = findRepositoryRoot(projectRoot);
+  const repositoryRoot = await findRepositoryRoot(projectRoot);
 
   return freeze(
     compose(

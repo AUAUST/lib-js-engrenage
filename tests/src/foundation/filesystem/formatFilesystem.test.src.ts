@@ -48,7 +48,7 @@ describe("filesystem.format", () => {
     await syncTsconfigFiles(config);
 
     await (await config.get("filesystem")).format();
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     const content = project.read("tsconfig.src.json");
 
@@ -76,7 +76,7 @@ describe("filesystem.format", () => {
 
     project.write("data.json", '{\n  "list": ["a"]\n}\n');
 
-    filesystem.write("data.json", '{\n  "list": [\n    "a"\n  ]\n}\n');
+    await filesystem.write("data.json", '{\n  "list": [\n    "a"\n  ]\n}\n');
 
     await filesystem.format();
 
@@ -88,11 +88,11 @@ describe("filesystem.format", () => {
 
     const filesystem = createFilesystem(project.root);
 
-    filesystem.write("data.json", '{\n  "list": [\n    "a"\n  ]\n}\n');
+    await filesystem.write("data.json", '{\n  "list": [\n    "a"\n  ]\n}\n');
 
     await filesystem.format();
 
-    expect(filesystem.read("data.json")).toBe(
+    expect(await filesystem.read("data.json")).toBe(
       '{\n  "list": [\n    "a"\n  ]\n}\n',
     );
   });

@@ -515,7 +515,7 @@ export async function generateConfigTypes(
 
     const filesystem = await config.get("filesystem");
 
-    filesystem.write(
+    await filesystem.write(
       `src/${domain}/types/${name}.ts`,
       [
         generatedHeader,

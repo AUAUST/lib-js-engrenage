@@ -14,7 +14,7 @@ async function add(name?: string) {
   if (name !== undefined) {
     names = [name];
   } else {
-    const missing = getMissingRuleTemplates({
+    const missing = await getMissingRuleTemplates({
       filesystem: await config.get("filesystem"),
     });
 
@@ -59,7 +59,7 @@ async function add(name?: string) {
     return;
   }
 
-  addAgentRules(
+  await addAgentRules(
     {
       filesystem: await config.get("filesystem"),
       agents: await config.get("agents"),

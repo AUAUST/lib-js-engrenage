@@ -20,7 +20,7 @@ export async function syncWorkspaceFile({
   }
 
   const packages = map(workspaces, ({ glob }) => glob);
-  const content = filesystem.read(workspaceFile);
+  const content = await filesystem.read(workspaceFile);
 
   const document =
     content === undefined ? new Document() : parseWorkspaceDocument(content);
@@ -33,5 +33,5 @@ export async function syncWorkspaceFile({
     document.contents.items.unshift(document.createPair("packages", packages));
   }
 
-  filesystem.write(workspaceFile, document.toString());
+  await filesystem.write(workspaceFile, document.toString());
 }

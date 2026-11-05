@@ -21,7 +21,7 @@ export function createSourceEntryStep(): Step<{ src: ResolvedSource }> {
         throw new Error("The src environment has no directory");
       }
 
-      filesystem.write(`${directory}/index.ts`, "export {};\n");
+      await filesystem.write(`${directory}/index.ts`, "export {};\n");
     },
   };
 }

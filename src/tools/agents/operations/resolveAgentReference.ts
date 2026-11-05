@@ -1,7 +1,6 @@
-import { existsSync } from "node:fs";
-
 import { resolveModulePath } from "exsolve";
 
+import { pathExists } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -9,21 +8,22 @@ function isRelative(reference: string): boolean {
   return reference.startsWith("./") || reference.startsWith("../");
 }
 
-function resolveSnippet(
+async function resolveSnippet(
   resolve: (...paths: string[]) => string,
   snippetsDir: Directory | undefined,
   reference: string,
-): File | null {
+): Promise<File | null> {
   if (snippetsDir === undefined || isRelative(reference)) {
     return null;
   }
 
   const snippet = resolve(snippetsDir, reference);
 
-  return existsSync(snippet) ? snippet : null;
+  return (await pathExists(snippet)) ? snippet : null;
 }
 
-export function resolveAgentReference(
+// @debt `resolveModulePath` of exsolve resolves package specifiers synchronously
+export async function resolveAgentReference(
   {
     resolve,
     agents,
@@ -33,8 +33,8 @@ export function resolveAgentReference(
   },
   reference: string,
   from: File,
-): File {
-  const snippet = resolveSnippet(resolve, agents.snippetsDir, reference);
+): Promise<File> {
+  const snippet = await resolveSnippet(resolve, agents.snippetsDir, reference);
 
   if (snippet !== null) {
     return snippet;

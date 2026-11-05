@@ -27,7 +27,7 @@ export function createVscodeSettingsStep(): Step<Sections> {
       return (
         vscode.settings !== false &&
         findIntegrations(hasDependency).length > 0 &&
-        !filesystem.exists(settingsFile)
+        !(await filesystem.exists(settingsFile))
       );
     },
     async plan(context) {

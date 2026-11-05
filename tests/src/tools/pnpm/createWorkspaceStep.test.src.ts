@@ -31,7 +31,7 @@ describe("createWorkspaceStep", () => {
 
     await step.plan(context);
 
-    expect(context.filesystem.read("pnpm-workspace.yaml")).toContain(
+    expect(await context.filesystem.read("pnpm-workspace.yaml")).toContain(
       "# Workspace",
     );
 
@@ -50,7 +50,7 @@ describe("createWorkspaceStep", () => {
 
       await step.plan(context);
 
-      const updated = context.filesystem.read("pnpm-workspace.yaml");
+      const updated = await context.filesystem.read("pnpm-workspace.yaml");
 
       expect(updated).toContain("# Workspace");
 
@@ -77,8 +77,8 @@ describe("createWorkspaceStep", () => {
 
     const context = await createContext(content);
 
-    expect(createWorkspaceStep().isMissing(context)).toBe(false);
-    expect(context.filesystem.read("pnpm-workspace.yaml")).toBe(content);
+    expect(await createWorkspaceStep().isMissing(context)).toBe(false);
+    expect(await context.filesystem.read("pnpm-workspace.yaml")).toBe(content);
     expect(context.filesystem.changes()).toEqual([]);
   });
 
@@ -87,7 +87,7 @@ describe("createWorkspaceStep", () => {
     async (content) => {
       const context = await createContext(content);
 
-      expect(() => createWorkspaceStep().isMissing(context)).toThrow(
+      await expect(createWorkspaceStep().isMissing(context)).rejects.toThrow(
         "pnpm-workspace.yaml",
       );
 

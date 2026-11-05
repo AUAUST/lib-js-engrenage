@@ -59,17 +59,17 @@ export function createWorkspaceStep(): Step {
   return {
     name: workspaceFile,
     message: `Add missing install settings to ${workspaceFile}, preserving existing choices?`,
-    isMissing({ filesystem }) {
-      const content = filesystem.read(workspaceFile);
+    async isMissing({ filesystem }) {
+      const content = await filesystem.read(workspaceFile);
 
       return (
         content === undefined || addMissingBuildApprovals(content) !== content
       );
     },
-    plan({ filesystem }) {
-      const content = filesystem.read(workspaceFile);
+    async plan({ filesystem }) {
+      const content = await filesystem.read(workspaceFile);
 
-      filesystem.write(
+      await filesystem.write(
         workspaceFile,
         content === undefined
           ? renderWorkspace(workspaceSettings)

@@ -1,6 +1,6 @@
 /* eslint-disable auaust/no-dynamic-import */
 
-import { globSync } from "node:fs";
+import { glob } from "node:fs/promises";
 import { join } from "node:path";
 
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
@@ -26,7 +26,7 @@ export const config = defineCommand((command) => {
 
       const modules = new Map<File, Record<string, unknown>>();
 
-      for (const file of globSync("src/**/config/schemas/*.ts", {
+      for await (const file of glob("src/**/config/schemas/*.ts", {
         cwd: join(import.meta.dirname, "../.."),
       })) {
         modules.set(file, await import(`#${file.slice("src/".length, -3)}`));

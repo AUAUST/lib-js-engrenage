@@ -115,12 +115,12 @@ function resolveWorkspaceEntries(
   return entries;
 }
 
-function readPackageSnapshot(path: File): string {
-  return JSON.stringify(readJsonFile(path));
+async function readPackageSnapshot(path: File): Promise<string> {
+  return JSON.stringify(await readJsonFile(path));
 }
 
-function assertPackageUnchanged(path: File, snapshot: string) {
-  if (readPackageSnapshot(path) !== snapshot) {
+async function assertPackageUnchanged(path: File, snapshot: string) {
+  if ((await readPackageSnapshot(path)) !== snapshot) {
     throw new Error(
       `${path} changed during the build: build locally and commit the regenerated file`,
     );
@@ -147,7 +147,7 @@ export async function createTsdownConfig(
   const typescript = await get("typescript");
 
   const tsconfigPath = await typescript.tsconfig.path;
-  const { path: declarationsTsconfigPath } = source.tsconfig;
+  const declarationsTsconfigPath = await source.tsconfig.path;
 
   // @debt repeats the "No package.json found" guard of createStepContext and syncChangesetConfig
   if (packageJsonPath === undefined) {
@@ -177,7 +177,7 @@ export async function createTsdownConfig(
     tsconfig: await get("tsconfig"),
   });
 
-  const bins = resolveCommandEntries({
+  const bins = await resolveCommandEntries({
     bin: await get("bin"),
     filesystem: await get("filesystem"),
   });
@@ -189,7 +189,7 @@ export async function createTsdownConfig(
     sourceEntries,
   );
 
-  const packageSnapshot = readPackageSnapshot(packageJsonPath);
+  const packageSnapshot = await readPackageSnapshot(packageJsonPath);
 
   const environment = await get("environment");
 
@@ -270,9 +270,9 @@ export async function createTsdownConfig(
     failOnWarn: ci,
     minify: ci,
     hooks: {
-      "build:done"() {
+      async "build:done"() {
         if (ci) {
-          assertPackageUnchanged(packageJsonPath, packageSnapshot);
+          await assertPackageUnchanged(packageJsonPath, packageSnapshot);
         }
       },
     },

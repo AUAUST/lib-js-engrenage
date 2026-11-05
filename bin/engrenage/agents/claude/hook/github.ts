@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { text } from "node:stream/consumers";
 
 import { object, string } from "valibot";
 
@@ -20,7 +20,7 @@ export const github = defineCommand((command) => {
       tool_input: { command: shellCommand },
     } = validate(
       payloadSchema,
-      JSON.parse(readFileSync(0, "utf-8")),
+      JSON.parse(await text(process.stdin)),
       "Claude Code hook payload",
     );
 

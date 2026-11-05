@@ -22,8 +22,11 @@ async function sync(config: string, files: Record<string, string> = {}) {
   await syncAliases(resolved);
 
   return {
-    read: async (file: string) =>
-      JSON.parse((await resolved.get("filesystem")).read(file) ?? ""),
+    read: async (file: string) => {
+      const filesystem = await resolved.get("filesystem");
+
+      return JSON.parse((await filesystem.read(file)) ?? "");
+    },
   };
 }
 

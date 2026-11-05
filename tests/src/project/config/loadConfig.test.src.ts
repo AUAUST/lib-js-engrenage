@@ -160,7 +160,9 @@ describe("loadConfig", () => {
       `The configured tsconfig.app.json does not exist in ${await missing.get("root")}`,
     );
 
-    (await missing.get("filesystem")).write("tsconfig.app.json", tsconfig);
+    await (
+      await missing.get("filesystem")
+    ).write("tsconfig.app.json", tsconfig);
 
     expect(await (await missing.get("typescript")).tsconfig.path).toBe(
       join(await missing.get("root"), "tsconfig.app.json"),
@@ -185,7 +187,9 @@ describe("loadConfig", () => {
 
     const config = await loadConfig(root);
 
-    expect((await config.get("tests")).dist.tsconfig.path).toBeUndefined();
+    await expect(
+      (await config.get("tests")).dist.tsconfig.path,
+    ).resolves.toBeUndefined();
 
     const implicit = createTemporaryProject({
       "engrenage.config.ts": 'export default { preset: "library" };\n',
@@ -194,7 +198,7 @@ describe("loadConfig", () => {
 
     const implicitConfig = await loadConfig(implicit);
 
-    expect((await implicitConfig.get("tests")).dist.tsconfig.path).toBe(
+    expect(await (await implicitConfig.get("tests")).dist.tsconfig.path).toBe(
       join(implicit, "tsconfig.tests.dist.json"),
     );
 

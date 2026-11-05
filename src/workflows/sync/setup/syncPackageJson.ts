@@ -75,7 +75,7 @@ async function createPublishedFields(
   ]);
 
   const commands = entries(
-    resolveCommandFiles({ bin, filesystem }, directory),
+    await resolveCommandFiles({ bin, filesystem }, directory),
   ).map(([command, file]): Field => {
     return {
       location: ["bin", command],
@@ -121,7 +121,7 @@ export async function syncPackageJson(config: OptionContext<ProjectConfig>) {
   const root = await get("root");
   const fields = await createFields(config);
 
-  syncFiles(
+  await syncFiles(
     {
       filesystem: await get("filesystem"),
       resolve: await get("resolve"),

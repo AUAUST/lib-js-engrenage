@@ -23,7 +23,7 @@ async function syncProject(
   });
 
   await syncTsconfigFiles(config);
-  (await config.get("filesystem")).flush();
+  await (await config.get("filesystem")).flush();
 
   return (file: string) => JSON.parse(project.read(file)).extends;
 }

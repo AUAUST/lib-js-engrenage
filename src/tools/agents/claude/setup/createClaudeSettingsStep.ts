@@ -13,8 +13,8 @@ export function createClaudeSettingsStep(): Step<AgentSections> {
       return (
         agents.preferred?.includes("claude") === true &&
         agents.claudeSettings !== false &&
-        filesystem.exists(claudeFile) &&
-        !filesystem.exists(claudeSettingsFile)
+        (await filesystem.exists(claudeFile)) &&
+        !(await filesystem.exists(claudeSettingsFile))
       );
     },
     async plan(context) {

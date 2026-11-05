@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname, join as joinPath } from "node:path";
 
@@ -167,8 +167,8 @@ function readNotice(text: string): string {
   return text.slice(0, end + 2);
 }
 
-function readLibraryText(name: string, libraries: Directory): string {
-  return readFileSync(joinPath(libraries, name), "utf-8");
+function readLibraryText(name: string, libraries: Directory): Promise<string> {
+  return readFile(joinPath(libraries, name), "utf-8");
 }
 
 function createModule({
@@ -269,7 +269,7 @@ export async function generateApiDeclarations(
     "typescript/lib/lib.dom.d.ts",
   );
 
-  const text = readFileSync(libraryPath, "utf-8");
+  const text = await readFile(libraryPath, "utf-8");
 
   const source = createSourceFile(
     "lib.dom.d.ts",
@@ -331,7 +331,7 @@ export async function generateApiDeclarations(
   }
 
   for (const [group, name] of entries(libraryGroups)) {
-    const text = readLibraryText(name, libraries);
+    const text = await readLibraryText(name, libraries);
 
     modules.set(
       `${apisDirectory}/${group}.d.ts`,
@@ -373,7 +373,10 @@ export async function generateApiDeclarations(
       groups.some((group) => file === `${apisDirectory}/${group}.d.ts`);
 
     if (isRequested) {
-      filesystem.write(file, await formatModule(resolve(root, file), content));
+      await filesystem.write(
+        file,
+        await formatModule(resolve(root, file), content),
+      );
     }
   }
 }

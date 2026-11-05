@@ -2,7 +2,7 @@ import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
 import { packages } from "#constants";
 import { tsconfigEnvironments } from "#project/tsconfig/index";
-import { createTsconfig } from "#project/tsconfig/utils/createTsconfig";
+import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
 import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
 import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
@@ -17,7 +17,7 @@ async function isSolution(
   config: ConfigContext,
   project: File,
 ): Promise<boolean> {
-  const { references } = createTsconfig({
+  const { references } = await createTsconfig({
     root: await config.get("root"),
     path: project,
     filesystem: await config.get("filesystem"),
@@ -45,7 +45,8 @@ async function resolveDistProject(config: ConfigContext): Promise<File> {
   const { active } = await config.get("tests");
   const tests = await config.get("tests");
 
-  const { owner, file, path } = tests.dist.tsconfig;
+  const { owner, file } = tests.dist.tsconfig;
+  const path = await tests.dist.tsconfig.path;
 
   if (!active) {
     throw new Error(

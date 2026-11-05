@@ -37,7 +37,7 @@ async function syncOutDir(build: unknown, files: Record<string, string> = {}) {
   });
 
   await syncTsconfigFiles(config);
-  (await config.get("filesystem")).flush();
+  await (await config.get("filesystem")).flush();
 
   return JSON.parse(project.read("tsconfig.src.json")).compilerOptions;
 }

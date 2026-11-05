@@ -1,4 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap, isNotEmpty } from "@auaust/primitive-kit/arrays";
 import { compose } from "@auaust/toolkit/composer";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { memoized } from "@auaust/toolkit/memoized";
@@ -8,6 +8,7 @@ import { once } from "@auaust/toolkit/once";
 import { packageJsonFile } from "#constants";
 import {
   filesIn,
+  findDirectories,
   resolveWithin,
   type Filesystem,
 } from "#foundation/filesystem/index";
@@ -133,7 +134,7 @@ export function createProjectSections({
 }): SectionResolvers<ProjectConfig> {
   type Get = ConfigContext["get"];
 
-  function locate(file: File, configured: boolean): File | undefined {
+  function locate(file: File, configured: boolean): Promise<File | undefined> {
     return locateFile({ root, filesystem }, file, configured);
   }
 
@@ -170,14 +171,14 @@ export function createProjectSections({
     });
   }
 
-  function define() {
+  async function define() {
     return resolveSection(
       defineSchema,
       raw.define,
       {
         root,
         configFile,
-        packageJson: packageJson(),
+        packageJson: await packageJson(),
         filesystem,
       },
       "define",
@@ -230,25 +231,29 @@ export function createProjectSections({
     return resolveSection(dataSchema, raw.data, undefined, "data");
   });
 
-  function packageJsonPath(): File | undefined {
+  function packageJsonPath(): Promise<File | undefined> {
     return locate(packageJsonFile, false);
   }
 
-  const parsePackageJson = memoized((content: string | undefined) => {
-    return createPackageJson({
-      root,
-      path: packageJsonPath(),
-      content,
-    });
-  });
+  const parsePackageJson = memoized(
+    (path: File | undefined, content: string | undefined) => {
+      return createPackageJson({
+        root,
+        path,
+        content,
+      });
+    },
+    (path, content) => `${path}\0${content}`,
+  );
 
   const describeEnvironment = memoized(createEnvironment);
 
-  function packageJson(): PackageJson {
-    const path = packageJsonPath();
+  async function packageJson(): Promise<PackageJson> {
+    const path = await packageJsonPath();
 
     return parsePackageJson(
-      path === undefined ? undefined : filesystem.read(path),
+      path,
+      path === undefined ? undefined : await filesystem.read(path),
     );
   }
 
@@ -256,7 +261,7 @@ export function createProjectSections({
     return describeEnvironment(await get("packageJson"));
   }
 
-  function tsconfigPath(): File | undefined {
+  function tsconfigPath(): Promise<File | undefined> {
     const { file, configured } = typescriptOption().tsconfig.path;
 
     return locate(file, configured);
@@ -275,12 +280,12 @@ export function createProjectSections({
     (path, content) => `${path}\0${content}`,
   );
 
-  function tsconfig(): Tsconfig {
-    const path = tsconfigPath();
+  async function tsconfig(): Promise<Tsconfig> {
+    const path = await tsconfigPath();
 
     return parseTsconfig(
       path,
-      path === undefined ? undefined : filesystem.read(path),
+      path === undefined ? undefined : await filesystem.read(path),
     );
   }
 
@@ -392,9 +397,9 @@ export function createProjectSections({
       await tsconfigGroups(get),
     );
 
-    function path(): File | undefined {
+    function path(): Promise<File | undefined> {
       return location === undefined
-        ? undefined
+        ? Promise.resolve(undefined)
         : locate(location.file, location.configured);
     }
 
@@ -421,11 +426,11 @@ export function createProjectSections({
     key: TsconfigKey,
   ) {
     return freeze({
-      ...resolveCodeEnvironment({
+      ...(await resolveCodeEnvironment({
         ...option,
         typescriptFiles: typescriptFiles(),
         filesystem,
-      }),
+      })),
       tsconfig: await environmentTsconfigFor(get, key),
     });
   }
@@ -575,9 +580,7 @@ export function createProjectSections({
     return freeze(
       compose(
         {
-          active: option.dirs.some((directory) => {
-            return filesystem.isDirectory(directory);
-          }),
+          active: isNotEmpty(await findDirectories(filesystem, option.dirs)),
           dirs: walked,
           files: rootFiles,
           defines: false,

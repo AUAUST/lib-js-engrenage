@@ -27,7 +27,7 @@ export function createVscodeExtensionsStep(): Step<Sections> {
       return (
         vscode.extensions !== false &&
         findIntegrations(hasDependency).length > 0 &&
-        !filesystem.exists(extensionsFile)
+        !(await filesystem.exists(extensionsFile))
       );
     },
     async plan(context) {

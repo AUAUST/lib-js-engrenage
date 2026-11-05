@@ -15,11 +15,11 @@ export function createVitestConfigStep(): Step {
       return (
         (await hasDependency(vitest)) &&
         !(await hasDependency(vite)) &&
-        !hasConfigFile(filesystem, vitest)
+        !(await hasConfigFile(filesystem, vitest))
       );
     },
-    plan({ filesystem }) {
-      filesystem.write(
+    async plan({ filesystem }) {
+      await filesystem.write(
         file,
         createConfigModule({
           entry: `${engrenage}/vitest`,

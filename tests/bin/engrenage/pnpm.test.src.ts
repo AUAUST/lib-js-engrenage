@@ -22,7 +22,7 @@ function createProject(manifest: object) {
 
   mockCwd(project.root);
 
-  vi.mocked(resolveLatestPnpm).mockReturnValue(versions.latest);
+  vi.mocked(resolveLatestPnpm).mockResolvedValue(versions.latest);
 
   return project;
 }

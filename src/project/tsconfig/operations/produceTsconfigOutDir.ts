@@ -5,7 +5,7 @@ import { applyJsonEdits, type JsonEdit } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import { buildSchema } from "#project/build/index";
 import { jsonIndentation } from "#project/format/constants";
-import { createTsconfig } from "#project/tsconfig/utils/createTsconfig";
+import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { produceTsconfigExtends } from "#project/tsconfig/utils/produceTsconfigExtends";
 import { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
 import type { ConfigContext } from "#project/config/index";
@@ -27,7 +27,7 @@ async function resolveInheritedOutDir(
   const path = resolvePath(target.file);
 
   const content = applyJsonEdits(
-    filesystem.read(path) ?? emptyObjectFile,
+    (await filesystem.read(path)) ?? emptyObjectFile,
     target.file,
     [
       ...(await produceTsconfigExtends(config, target)),
@@ -36,12 +36,14 @@ async function resolveInheritedOutDir(
     jsonIndentation,
   );
 
-  return createTsconfig({
+  const tsconfig = await createTsconfig({
     root,
     path,
     filesystem,
     content,
-  }).optional.compilerOptions?.outDir;
+  });
+
+  return tsconfig.optional.compilerOptions?.outDir;
 }
 
 export async function produceTsconfigOutDir(

@@ -45,7 +45,7 @@ describe("syncWorkflowFiles", () => {
 
     await syncWorkflowFiles(config);
 
-    expect((await config.get("filesystem")).flush()).toEqual([
+    expect(await (await config.get("filesystem")).flush()).toEqual([
       {
         file: ".github/workflows/ci.yml",
         status: "synced",
@@ -129,7 +129,7 @@ describe("syncWorkflowFiles", () => {
     expect((await config.get("git")).root).toBe(project.root);
     expect((await config.get("filesystem")).changes()).toEqual([]);
 
-    expect((await config.get("git")).filesystem.flush()).toEqual([
+    expect(await (await config.get("git")).filesystem.flush()).toEqual([
       {
         file: ".github/workflows/ci.yml",
         status: "synced",

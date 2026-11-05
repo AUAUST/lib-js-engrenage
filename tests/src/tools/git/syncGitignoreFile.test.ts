@@ -32,7 +32,7 @@ describe("syncGitignoreFile", () => {
 
     await syncGitignoreFile(config);
 
-    expect((await config.get("filesystem")).flush()).toEqual([
+    expect(await (await config.get("filesystem")).flush()).toEqual([
       {
         file: ".gitignore",
         status: "synced",
@@ -79,7 +79,7 @@ describe("syncGitignoreFile", () => {
 
     await syncGitignoreFile(config);
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     const lines = project.read(".gitignore").split("\n");
 

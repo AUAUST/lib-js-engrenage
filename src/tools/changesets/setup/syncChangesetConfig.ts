@@ -12,7 +12,8 @@ import { configFile } from "#tools/changesets/constants";
 import type { ConfigContext } from "#project/config/index";
 import type { File } from "#types/File";
 
-function resolveConfigVersion(packageJsonPath: File): string {
+// @debt `createRequire().resolve` walks node_modules synchronously; Node has no promise-based module resolution
+async function resolveConfigVersion(packageJsonPath: File): Promise<string> {
   try {
     const cliManifest = createRequire(packageJsonPath).resolve(
       `${changesetsCli}/${packageJsonFile}`,
@@ -26,7 +27,7 @@ function resolveConfigVersion(packageJsonPath: File): string {
       object({
         version: string(),
       }),
-      readJsonFile(configManifest),
+      await readJsonFile(configManifest),
       configManifest,
     ).version;
   } catch (error) {
@@ -46,7 +47,7 @@ export async function syncChangesetConfig(config: ConfigContext) {
 
   if (
     !environment.hasDependency(changesetsCli) ||
-    !filesystem.exists(configFile)
+    !(await filesystem.exists(configFile))
   ) {
     return;
   }
@@ -60,13 +61,13 @@ export async function syncChangesetConfig(config: ConfigContext) {
     );
   }
 
-  const version = resolveConfigVersion(packageJsonPath);
+  const version = await resolveConfigVersion(packageJsonPath);
 
   const options = flattenJsonObject({
     $schema: `https://unpkg.com/${changesetsConfig}@${version}/schema.json`,
   });
 
-  syncFiles(
+  await syncFiles(
     {
       filesystem,
       resolve: await config.get("resolve"),

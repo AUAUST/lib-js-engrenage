@@ -8,15 +8,15 @@ function cell(value: string): string {
   return `<code>${value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("|", "&#124;").replaceAll("\n", "&#10;").replaceAll("\r", "&#13;")}</code>`;
 }
 
-export function createCodexRuleMapping({
+export async function createCodexRuleMapping({
   filesystem,
 }: {
   filesystem: Filesystem;
-}): string {
+}): Promise<string> {
   const rows: string[] = [];
 
-  for (const file of filesystem.glob(claudeRulesGlob)) {
-    const content = filesystem.read(file);
+  for (const file of await filesystem.glob(claudeRulesGlob)) {
+    const content = await filesystem.read(file);
 
     if (content === undefined) {
       throw new Error(`Missing instruction file ${file}`);

@@ -9,7 +9,7 @@ export async function readTsconfigValue(
 ): Promise<unknown> {
   const filesystem = await config.get("filesystem");
 
-  const content = filesystem.read(file);
+  const content = await filesystem.read(file);
 
   return content === undefined
     ? undefined

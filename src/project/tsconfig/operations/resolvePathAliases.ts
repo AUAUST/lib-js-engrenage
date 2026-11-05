@@ -1,4 +1,4 @@
-import { globSync, statSync } from "node:fs";
+import { glob as globFiles, stat } from "node:fs/promises";
 import { relative } from "node:path";
 
 import { every, map, sort } from "@auaust/primitive-kit/arrays";
@@ -37,11 +37,11 @@ function assertWildcards(alias: string, targets: readonly string[]) {
   }
 }
 
-export function resolvePathAliases(
+export async function resolvePathAliases(
   packageName: PackageName,
   paths: Paths,
   root: Directory | URL,
-): PathAliases {
+): Promise<PathAliases> {
   const rootPath = resolve(root);
 
   const aliases = new Map<string, PathAlias>();
@@ -75,15 +75,21 @@ export function resolvePathAliases(
 
       const isDirectoryEntry = hasPattern && pattern.endsWith("*/index.ts");
 
-      const matches = globSync(pattern, {
-        cwd: rootPath,
-      });
-
-      const files = sort(
-        matches.filter((match) => {
-          return statSync(resolve(rootPath, match)).isFile();
+      const matches = await Array.fromAsync(
+        globFiles(pattern, {
+          cwd: rootPath,
         }),
       );
+
+      const isFile = await Promise.all(
+        matches.map(async (match) => {
+          const stats = await stat(resolve(rootPath, match));
+
+          return stats.isFile();
+        }),
+      );
+
+      const files = sort(matches.filter((_, index) => isFile[index]));
 
       for (const file of files) {
         const path = toPosixPath(file);

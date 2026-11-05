@@ -43,7 +43,10 @@ describe("loadConfig of the registry", () => {
     const config = await loadConfig(project.root);
 
     expect((await config.get("agents")).preferred).toEqual(["claude"]);
-    expect((await config.get("git")).gitignore).toBeUndefined();
-    expect((await config.get("prettier")).prettierignore).toBeUndefined();
+    await expect((await config.get("git")).gitignore).resolves.toBeUndefined();
+
+    await expect(
+      (await config.get("prettier")).prettierignore,
+    ).resolves.toBeUndefined();
   });
 });

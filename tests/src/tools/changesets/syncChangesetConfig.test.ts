@@ -37,7 +37,7 @@ describe("syncChangesetConfig", () => {
 
     await syncChangesetConfig(config);
 
-    expect((await config.get("filesystem")).flush()).toEqual([
+    expect(await (await config.get("filesystem")).flush()).toEqual([
       {
         file: ".changeset/config.json",
         status: "synced",

@@ -9,7 +9,7 @@ export async function readTsconfigPaths(
 ): Promise<Paths> {
   const filesystem = await config.get("filesystem");
 
-  const current = filesystem.read(file);
+  const current = await filesystem.read(file);
 
   const paths =
     current === undefined

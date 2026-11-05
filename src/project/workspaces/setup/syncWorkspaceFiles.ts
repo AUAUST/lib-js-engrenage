@@ -135,7 +135,7 @@ export async function syncWorkspaceFiles(config: ConfigContext) {
       const packageFile = workspace.packageJson;
       const packagePath = resolvePath(packageFile);
 
-      filesystem.write(
+      await filesystem.write(
         packageFile,
         createPackageFields(packageJson, workspace).reduce(
           (current, { location, value }) => {
@@ -147,14 +147,14 @@ export async function syncWorkspaceFiles(config: ConfigContext) {
               jsonIndentation,
             );
           },
-          filesystem.read(packageFile) ?? emptyObjectFile,
+          (await filesystem.read(packageFile)) ?? emptyObjectFile,
         ),
       );
 
-      filesystem.write(
+      await filesystem.write(
         workspace.tsconfig,
         applyJsonEdits(
-          filesystem.read(workspace.tsconfig) ?? emptyObjectFile,
+          (await filesystem.read(workspace.tsconfig)) ?? emptyObjectFile,
           workspace.tsconfig,
           await createTsconfigEdits(config, group, workspace),
           jsonIndentation,

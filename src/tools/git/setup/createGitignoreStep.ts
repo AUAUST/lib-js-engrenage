@@ -10,7 +10,12 @@ import type { File } from "#types/File";
 
 const ignoreMarker = /^# @ignore /m;
 
-function resolveFile(root: Directory, { gitignore }: ResolvedGit): File {
+async function resolveFile(
+  root: Directory,
+  { gitignore: located }: ResolvedGit,
+): Promise<File> {
+  const gitignore = await located;
+
   return gitignore === undefined
     ? gitignoreFile
     : relativeWithin(root, gitignore);
@@ -44,20 +49,23 @@ export function createGitignoreStep(): Step<{
     name: gitignoreFile,
     message: `Add the engrenage ignore blocks to ${gitignoreFile}?`,
     async isMissing({ get, filesystem }) {
-      const content = filesystem.read(
-        resolveFile(await get("root"), await get("git")),
+      const content = await filesystem.read(
+        await resolveFile(await get("root"), await get("git")),
       );
 
       return content === undefined || !ignoreMarker.test(content);
     },
     async plan({ get, filesystem }) {
-      const file = resolveFile(await get("root"), await get("git"));
+      const file = await resolveFile(await get("root"), await get("git"));
 
       const covered = new Set(flat(pluck(defaultIgnores, "globs")));
 
-      const remaining = removeCovered(filesystem.read(file) ?? "", covered);
+      const remaining = removeCovered(
+        (await filesystem.read(file)) ?? "",
+        covered,
+      );
 
-      filesystem.write(
+      await filesystem.write(
         file,
         remaining === "" ? ignoreBlocks : `${ignoreBlocks}\n${remaining}\n`,
       );

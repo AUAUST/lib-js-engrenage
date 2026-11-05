@@ -1,11 +1,4 @@
-import {
-  existsSync,
-  globSync,
-  mkdirSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { glob, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
 import { flatConfigsToPlugins, pluginsToRulesDTS } from "eslint-typegen/core";
@@ -17,6 +10,7 @@ import { toPascalCase } from "@auaust/primitive-kit/strings";
 import { mappedValues } from "@auaust/toolkit/mappedValues";
 import { entries, record } from "@auaust/toolkit/object";
 
+import { pathExists } from "#foundation/filesystem/index";
 import { resolve } from "#foundation/filesystem/utils/resolve";
 import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
 import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
@@ -154,9 +148,11 @@ export async function generateRuleTypes({
     );
   }
 
-  const existingFiles = globSync(`${ruleSourcesDirectory}/*.ts`, {
-    cwd: rootPath,
-  });
+  const existingFiles = await Array.fromAsync(
+    glob(`${ruleSourcesDirectory}/*.ts`, {
+      cwd: rootPath,
+    }),
+  );
 
   const staleFiles = map(existingFiles, toPosixPath).filter((file) => {
     return !modules.has(file);
@@ -169,7 +165,10 @@ export async function generateRuleTypes({
 
     const formatted = await formatModule(path, content);
 
-    if (existsSync(path) && readFileSync(path, "utf-8") === formatted) {
+    if (
+      (await pathExists(path)) &&
+      (await readFile(path, "utf-8")) === formatted
+    ) {
       continue;
     }
 
@@ -179,17 +178,15 @@ export async function generateRuleTypes({
       continue;
     }
 
-    mkdirSync(dirname(path), {
+    await mkdir(dirname(path), {
       recursive: true,
     });
 
-    writeFileSync(path, formatted);
+    await writeFile(path, formatted);
   }
 
   if (!check) {
-    for (const file of staleFiles) {
-      rmSync(resolve(rootPath, file));
-    }
+    await Promise.all(staleFiles.map((file) => rm(resolve(rootPath, file))));
   }
 
   return sort(outdated);

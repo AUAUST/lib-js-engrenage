@@ -14,7 +14,7 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { OptionContext } from "#foundation/options/index";
 import type { AgentSections } from "#tools/agents/types/AgentSections";
 
-function syncAttribution(
+async function syncAttribution(
   config: {
     filesystem: Filesystem;
     resolve(...paths: string[]): string;
@@ -23,7 +23,9 @@ function syncAttribution(
 ) {
   const path = config.resolve(claudeSettingsFile);
   const location = ["attribution"];
-  const content = config.filesystem.read(claudeSettingsFile) ?? emptyObjectFile;
+
+  const content =
+    (await config.filesystem.read(claudeSettingsFile)) ?? emptyObjectFile;
 
   const hidden = isDeepStrictEqual(
     readJsonValue(content, path, location),
@@ -31,12 +33,12 @@ function syncAttribution(
   );
 
   if (attribution && hidden) {
-    config.filesystem.write(
+    await config.filesystem.write(
       claudeSettingsFile,
       writeJsonValue(content, path, location, undefined, jsonIndentation),
     );
   } else if (!attribution && !hidden) {
-    config.filesystem.write(
+    await config.filesystem.write(
       claudeSettingsFile,
       writeJsonValue(
         content,
@@ -68,20 +70,20 @@ export async function syncClaudeSettings(
       configured === true ||
       settings ||
       attribution === false ||
-      config.filesystem.exists(claudeSettingsFile)
+      (await config.filesystem.exists(claudeSettingsFile))
     )
   ) {
     return;
   }
 
   for (const hook of [claudeEditHook, claudeGithubHook]) {
-    syncHook(config, {
+    await syncHook(config, {
       file: claudeSettingsFile,
       hook,
     });
   }
 
   if (attribution !== undefined) {
-    syncAttribution(config, attribution);
+    await syncAttribution(config, attribution);
   }
 }

@@ -14,6 +14,7 @@ interface Prettier {
   resolveConfig: typeof resolveConfig;
 }
 
+// @debt `require` of the project's prettier loads it synchronously; a dynamic `import` would make this async
 export function loadPrettier(root: Directory): Prettier | undefined {
   try {
     return createRequire(resolve(root, packageJsonFile))("prettier");

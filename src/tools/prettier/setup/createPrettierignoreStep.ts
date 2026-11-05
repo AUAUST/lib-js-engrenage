@@ -13,14 +13,14 @@ export function createPrettierignoreStep(): Step<{
       const resolved = await get("prettier");
 
       return (
-        resolved.prettierignore === undefined &&
-        (hasConfigFile(filesystem, prettier) ||
+        (await resolved.prettierignore) === undefined &&
+        ((await hasConfigFile(filesystem, prettier)) ||
           (await readPackageJson([prettier])) !== undefined) &&
-        !filesystem.exists(prettierignoreFile)
+        !(await filesystem.exists(prettierignoreFile))
       );
     },
-    plan({ filesystem }) {
-      filesystem.write(prettierignoreFile, ignoreBlocks);
+    async plan({ filesystem }) {
+      await filesystem.write(prettierignoreFile, ignoreBlocks);
     },
   };
 }

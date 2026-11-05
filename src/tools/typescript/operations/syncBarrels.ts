@@ -1,4 +1,4 @@
-import { globSync } from "node:fs";
+import { glob as globFiles } from "node:fs/promises";
 import { basename, dirname, extname } from "node:path";
 
 import { flatMap, map, toSorted } from "@auaust/primitive-kit/arrays";
@@ -66,26 +66,45 @@ function assertMode(mode: string | undefined, barrel: File): BarrelMode {
   }
 }
 
+function locateModules(
+  root: Directory,
+  barrel: File,
+  glob: Glob,
+): { cwd: Directory; pattern: Glob } {
+  const isRootRelative = glob.startsWith("/");
+
+  return {
+    cwd: isRootRelative ? root : dirname(barrel),
+    pattern: isRootRelative ? glob.slice(1) : glob,
+  };
+}
+
+async function listModules(
+  root: Directory,
+  barrel: File,
+  glob: Glob,
+): Promise<readonly string[]> {
+  const { cwd, pattern } = locateModules(root, barrel, glob);
+
+  return Array.fromAsync(globFiles(pattern, { cwd }));
+}
+
 function createBarrel({
   root,
   imports,
   barrel,
   glob,
   mode,
+  modules,
 }: {
   root: Directory;
   imports: SubpathImports;
   barrel: File;
   glob: Glob;
   mode: BarrelMode;
+  modules: readonly string[];
 }): string {
-  const isRootRelative = glob.startsWith("/");
-
-  const cwd = isRootRelative ? root : dirname(barrel);
-
-  const modules = globSync(isRootRelative ? glob.slice(1) : glob, {
-    cwd,
-  });
+  const { cwd } = locateModules(root, barrel, glob);
 
   const names = new Map<string, string>();
 
@@ -172,7 +191,7 @@ export async function syncBarrels(
       config.get("resolve"),
     ]);
 
-  const allFiles = filesystem.glob(
+  const allFiles = await filesystem.glob(
     filesIn([...source.dirs, ...bin.dirs, ...scripts.dirs], barrelFiles),
   );
 
@@ -182,6 +201,42 @@ export async function syncBarrels(
       : flatMap(barrels, (name) => {
           return selectBarrels(allFiles, name);
         });
+
+  const listed = new Map<string, readonly string[]>();
+
+  await Promise.all(
+    files.map(async (file) => {
+      const content = await filesystem.read(file);
+
+      if (content === undefined) {
+        return;
+      }
+
+      const barrel = resolve(file);
+      const globs = new Set<Glob>();
+
+      syncBlocks(content, typescriptBlocks, {
+        barrel(glob) {
+          if (glob === undefined) {
+            throw new Error(
+              `Expected a glob in the barrel marker of ${barrel}`,
+            );
+          }
+
+          globs.add(glob);
+        },
+      });
+
+      await Promise.all(
+        [...globs].map(async (glob) => {
+          listed.set(
+            `${barrel}\0${glob}`,
+            await listModules(rootPath, barrel, glob),
+          );
+        }),
+      );
+    }),
+  );
 
   function update(content: string, barrel: File): string {
     return syncBlocks(content, typescriptBlocks, {
@@ -196,12 +251,13 @@ export async function syncBarrels(
           barrel,
           glob,
           mode: assertMode(mode, barrel),
+          modules: listed.get(`${barrel}\0${glob}`) ?? [],
         });
       },
     });
   }
 
-  syncFiles(
+  await syncFiles(
     { filesystem, resolve },
     map(files, (file) => {
       return {

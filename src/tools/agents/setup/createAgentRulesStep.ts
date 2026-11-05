@@ -12,19 +12,18 @@ export function createAgentRulesStep(): Step<{ agents: ResolvedAgents }> {
     async isMissing({ get, filesystem }) {
       const agents = await get("agents");
 
-      return (
-        (agents.preferred?.length ?? 0) > 0 &&
-        getMissingRuleTemplates({ filesystem }).some(
-          (template) => template.default,
-        )
-      );
+      if ((agents.preferred?.length ?? 0) === 0) {
+        return false;
+      }
+
+      const missing = await getMissingRuleTemplates({ filesystem });
+
+      return missing.some((template) => template.default);
     },
     async plan({ get, filesystem, multiselect }) {
-      const missing = getMissingRuleTemplates({ filesystem }).filter(
-        ({ name }) => {
-          return name !== "backlog";
-        },
-      );
+      const templates = await getMissingRuleTemplates({ filesystem });
+
+      const missing = templates.filter(({ name }) => name !== "backlog");
 
       const names = await multiselect(
         "Choose rules to add",
@@ -32,7 +31,7 @@ export function createAgentRulesStep(): Step<{ agents: ResolvedAgents }> {
         filterMap(missing, "default", "name"),
       );
 
-      addAgentRules({ filesystem, agents: await get("agents") }, names);
+      await addAgentRules({ filesystem, agents: await get("agents") }, names);
     },
   };
 }

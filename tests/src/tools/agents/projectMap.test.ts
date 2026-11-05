@@ -44,7 +44,7 @@ async function sync(peers?: number) {
   const config = await loadConfig(project.root);
 
   await syncAgents(config);
-  (await config.get("filesystem")).flush();
+  await (await config.get("filesystem")).flush();
 
   return { project, config };
 }
@@ -82,17 +82,16 @@ describe("project map", () => {
   test("reports a stale or extra map as synced and a fresh one as unchanged", async () => {
     const { project, config } = await sync();
 
-    (await config.get("filesystem")).write(sourceFile, "stale\n");
+    await (await config.get("filesystem")).write(sourceFile, "stale\n");
 
-    (await config.get("filesystem")).write(
-      ".claude/rules/project-map/gone.md",
-      "extra\n",
-    );
+    await (
+      await config.get("filesystem")
+    ).write(".claude/rules/project-map/gone.md", "extra\n");
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
     await syncAgents(config);
 
-    expect((await config.get("filesystem")).flush()).toEqual(
+    expect(await (await config.get("filesystem")).flush()).toEqual(
       expect.arrayContaining([
         { file: sourceFile, status: "synced" },
         { file: ".claude/rules/project-map/gone.md", status: "deleted" },

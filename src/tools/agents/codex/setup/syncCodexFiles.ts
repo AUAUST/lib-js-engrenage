@@ -22,16 +22,18 @@ export async function syncCodexFiles(
     return;
   }
 
-  syncCodexInstructions(config);
+  await syncCodexInstructions(config);
 
   const configured = config.agents.codexHooks;
 
   if (
     configured !== false &&
-    (configured === true || hooks || config.filesystem.exists(codexHooksFile))
+    (configured === true ||
+      hooks ||
+      (await config.filesystem.exists(codexHooksFile)))
   ) {
     for (const hook of [codexEditHook, codexGithubHook]) {
-      syncHook(config, {
+      await syncHook(config, {
         file: codexHooksFile,
         hook,
       });

@@ -28,7 +28,7 @@ async function syncProject(
   });
 
   await syncTsconfigFiles(config);
-  (await config.get("filesystem")).flush();
+  await (await config.get("filesystem")).flush();
 
   return {
     config,
@@ -90,7 +90,7 @@ describe("produceTsconfigPaths", () => {
     });
 
     expect(
-      resolvePathAliases(
+      await resolvePathAliases(
         "@scope/package",
         read("tsconfig.json").compilerOptions.paths,
         root,

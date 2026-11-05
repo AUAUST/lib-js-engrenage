@@ -217,7 +217,10 @@ describe("environment tsconfigs", () => {
     const config = await loadConfig(project.root);
 
     expect((await config.get("bin")).tsconfig.owner).toBeUndefined();
-    expect((await config.get("bin")).tsconfig.path).toBeUndefined();
+
+    await expect(
+      (await config.get("bin")).tsconfig.path,
+    ).resolves.toBeUndefined();
   });
 
   test("fail on a cycle and on an inheriting environment with other options", async () => {

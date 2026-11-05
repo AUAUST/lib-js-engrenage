@@ -22,7 +22,7 @@ export const upgrade = defineCommand((command) => {
 
       const { range } = readSharedPnpmRange();
 
-      const version = resolveLatestPnpm(await config.get("root"), range);
+      const version = await resolveLatestPnpm(await config.get("root"), range);
 
       if (resolvePnpmRangeStatus(await config.get("packageJson")) === "above") {
         console.warn(
@@ -40,7 +40,7 @@ export const upgrade = defineCommand((command) => {
 
       const filesystem = await config.get("filesystem");
 
-      const content = filesystem.read(packageJsonFile);
+      const content = await filesystem.read(packageJsonFile);
 
       // @debt repeats the "No package.json found" guard of createTsdownConfig, createStepContext and syncChangesetConfig
       if (content === undefined) {
@@ -60,12 +60,12 @@ export const upgrade = defineCommand((command) => {
         return void console.info(`Already on pnpm ${version}.`);
       }
 
-      filesystem.write(packageJsonFile, upgraded);
+      await filesystem.write(packageJsonFile, upgraded);
 
       await settleChanges(config, {
         check: false,
       });
 
-      installDependencies(await config.get("root"));
+      await installDependencies(await config.get("root"));
     });
 });

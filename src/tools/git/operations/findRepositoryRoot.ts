@@ -1,12 +1,12 @@
-import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 
+import { pathExists } from "#foundation/filesystem/index";
 import { gitDirectory } from "#tools/git/constants";
 import type { Directory } from "#types/Directory";
 
-export function findRepositoryRoot(root: Directory): Directory {
-  function search(directory: Directory): Directory {
-    if (existsSync(join(directory, gitDirectory))) {
+export async function findRepositoryRoot(root: Directory): Promise<Directory> {
+  async function search(directory: Directory): Promise<Directory> {
+    if (await pathExists(join(directory, gitDirectory))) {
       return directory;
     }
 

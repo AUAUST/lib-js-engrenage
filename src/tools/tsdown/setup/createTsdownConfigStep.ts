@@ -13,11 +13,12 @@ export function createTsdownConfigStep(): Step {
     message: `Create ${file}?`,
     async isMissing({ filesystem, hasDependency }) {
       return (
-        (await hasDependency(tsdown)) && !hasConfigFile(filesystem, tsdown)
+        (await hasDependency(tsdown)) &&
+        !(await hasConfigFile(filesystem, tsdown))
       );
     },
     async plan({ filesystem, addDevDependency }) {
-      filesystem.write(
+      await filesystem.write(
         file,
         createConfigModule({
           entry: `${engrenage}/tsdown`,

@@ -1,6 +1,5 @@
-import { existsSync } from "node:fs";
-
 import { packages } from "#constants";
+import { pathExists } from "#foundation/filesystem/index";
 import { resolve } from "#foundation/filesystem/utils/resolve";
 import { defaultSuppressionsFile } from "#tools/eslint/constants";
 import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
@@ -23,10 +22,10 @@ async function useCache(config: ConfigContext, args: string[]) {
   ]);
 }
 
-function hasSuppressions(args: readonly string[]): boolean {
+async function hasSuppressions(args: readonly string[]): Promise<boolean> {
   return (
     hasOption(args, ["--suppressions-location"]) ||
-    existsSync(resolve(process.cwd(), defaultSuppressionsFile))
+    (await pathExists(resolve(process.cwd(), defaultSuppressionsFile)))
   );
 }
 
@@ -46,7 +45,7 @@ export const eslint = defineToolCommands({
 
         ensureIncludes(args, "--fix");
 
-        if (hasSuppressions(args)) {
+        if (await hasSuppressions(args)) {
           ensureIncludes(args, "--prune-suppressions");
         }
       },

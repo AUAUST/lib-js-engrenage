@@ -1,8 +1,9 @@
-import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { text } from "node:stream/consumers";
 
 import { literal, object, string } from "valibot";
 
+import { pathExists } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/utils/validate";
 import { getPatchedFiles } from "#tools/agents/codex/utils/getPatchedFiles";
 import { formatEditedFile } from "#tools/agents/operations/formatEditedFile";
@@ -27,7 +28,7 @@ export const edit = defineCommand((command) => {
       tool_input: { command: patch },
     } = validate(
       payloadSchema,
-      JSON.parse(readFileSync(0, "utf-8")),
+      JSON.parse(await text(process.stdin)),
       "Codex hook payload",
     );
 
@@ -36,7 +37,7 @@ export const edit = defineCommand((command) => {
     for (const path of getPatchedFiles(patch)) {
       const file = resolve(cwd, path);
 
-      if (!existsSync(file)) {
+      if (!(await pathExists(file))) {
         continue;
       }
 
@@ -46,7 +47,7 @@ export const edit = defineCommand((command) => {
       const agents = await config.get("agents");
 
       reportBudgetFindings(
-        measureEditedFile(await config.get("root"), file, agents.budgets),
+        await measureEditedFile(await config.get("root"), file, agents.budgets),
         {
           mode: agents.budgets.mode,
           event: "PostToolUse",

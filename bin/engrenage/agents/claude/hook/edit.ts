@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { text } from "node:stream/consumers";
 
 import { object, string } from "valibot";
 
@@ -22,7 +22,7 @@ export const edit = defineCommand((command) => {
       tool_input: { file_path: file },
     } = validate(
       payloadSchema,
-      JSON.parse(readFileSync(0, "utf-8")),
+      JSON.parse(await text(process.stdin)),
       "Claude Code hook payload",
     );
 
@@ -33,7 +33,7 @@ export const edit = defineCommand((command) => {
     const agents = await config.get("agents");
 
     reportBudgetFindings(
-      measureEditedFile(await config.get("root"), file, agents.budgets),
+      await measureEditedFile(await config.get("root"), file, agents.budgets),
       {
         mode: agents.budgets.mode,
         event: "PostToolUse",

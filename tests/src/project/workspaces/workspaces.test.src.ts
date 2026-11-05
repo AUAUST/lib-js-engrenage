@@ -147,9 +147,10 @@ describe("workspaces", () => {
 
     await runSync(resolved, { names: ["tsconfig"] });
 
+    const filesystem = await resolved.get("filesystem");
+
     expect(
-      JSON.parse((await resolved.get("filesystem")).read("tsconfig.json") ?? "")
-        .references,
+      JSON.parse((await filesystem.read("tsconfig.json")) ?? "").references,
     ).toEqual(
       expect.arrayContaining([
         { path: "./extensions/action-a/tsconfig.json" },
@@ -225,7 +226,7 @@ describe("workspace modules", () => {
     const resolved = await loadConfig(project.root);
 
     await runSync(resolved, { names: ["tsconfig", "aliases", "workspaces"] });
-    (await resolved.get("filesystem")).flush();
+    await (await resolved.get("filesystem")).flush();
 
     execFileSync(
       process.execPath,

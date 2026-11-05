@@ -45,7 +45,7 @@ describe("syncVscodeFiles", () => {
 
     await syncVscodeFiles(config);
 
-    expect((await config.get("filesystem")).flush()).toEqual([
+    expect(await (await config.get("filesystem")).flush()).toEqual([
       {
         file: ".vscode/settings.json",
         status: "synced",
@@ -94,7 +94,7 @@ export default defineEslintConfig({}, {
       settings: true,
     });
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     const settings = validate(
       looseObject({
@@ -142,7 +142,7 @@ export default defineEslintConfig({}, {
 
     await syncVscodeFiles(config);
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     expect(project.read(".vscode/settings.json")).toBe(settings);
 

@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 
 import { resolveDataFile } from "#foundation/data/index";
 import { agentsFile, agentsTemplate } from "#tools/agents/constants";
@@ -11,25 +11,28 @@ export function createAgentsStep(): Step<AgentSections> {
   return {
     name: agentsFile,
     message: `Create ${agentsFile} with the shared agent instructions?`,
-    isMissing({ filesystem, getAgents }) {
-      return (getAgents()?.length ?? 0) > 0 && !filesystem.exists(agentsFile);
+    async isMissing({ filesystem, getAgents }) {
+      return (
+        (getAgents()?.length ?? 0) > 0 && !(await filesystem.exists(agentsFile))
+      );
     },
     async plan(context) {
       const { filesystem } = context;
 
       const template = resolveDataFile(agentsTemplate);
 
-      const sections = getInstructionTemplates("sections").filter(
-        (section) => section.default,
-      );
+      const templates = await getInstructionTemplates("sections");
+
+      const sections = templates.filter((section) => section.default);
 
       const references = sections
         .map(({ reference }) => `<!-- @reference ${reference} -->`)
         .join("\n");
 
-      const body = readFileSync(template, "utf-8").trimEnd();
+      const text = await readFile(template, "utf-8");
+      const body = text.trimEnd();
 
-      filesystem.write(
+      await filesystem.write(
         agentsFile,
         references === ""
           ? `${body}\n`

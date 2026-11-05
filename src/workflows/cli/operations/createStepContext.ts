@@ -73,8 +73,8 @@ export async function createStepContext({
     return path;
   }
 
-  function readManifest(path: File): string {
-    const content = filesystem.read(path);
+  async function readManifest(path: File): Promise<string> {
+    const content = await filesystem.read(path);
 
     if (content === undefined) {
       throw new Error(`${path} was removed during engrenage init`);
@@ -86,7 +86,7 @@ export async function createStepContext({
   async function readPackageJson(location: JSONPath): Promise<unknown> {
     const path = await requirePackageJson();
 
-    return readJsonValue(readManifest(path), path, location);
+    return readJsonValue(await readManifest(path), path, location);
   }
 
   async function writePackageJson(
@@ -95,10 +95,10 @@ export async function createStepContext({
   ) {
     const path = await requirePackageJson();
 
-    filesystem.write(
+    await filesystem.write(
       path,
       writePackageJsonValue(
-        readManifest(path),
+        await readManifest(path),
         path,
         location,
         value,

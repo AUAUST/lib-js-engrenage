@@ -14,7 +14,7 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    addAgentSkills(
+    await addAgentSkills(
       {
         filesystem: await config.get("filesystem"),
         agents: await config.get("agents"),
@@ -32,19 +32,19 @@ describe("addAgentSkills", () => {
     );
 
     expect(
-      (await config.get("filesystem")).read(
-        ".claude/skills/debugging/SKILL.md",
-      ),
+      await (
+        await config.get("filesystem")
+      ).read(".claude/skills/debugging/SKILL.md"),
     ).toContain("disable-model-invocation: true");
 
     expect(
-      (await config.get("filesystem")).read(".claude/agents/debugger.md"),
+      await (await config.get("filesystem")).read(".claude/agents/debugger.md"),
     ).toMatch(/name: debugger[\s\S]*# Debugging/);
 
     expect(
-      (await config.get("filesystem")).read(
-        ".agents/skills/debugging/agents/openai.yaml",
-      ),
+      await (
+        await config.get("filesystem")
+      ).read(".agents/skills/debugging/agents/openai.yaml"),
     ).toContain("allow_implicit_invocation: false");
   });
 
@@ -57,7 +57,7 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    addAgentSkills(
+    await addAgentSkills(
       {
         filesystem: await config.get("filesystem"),
         agents: await config.get("agents"),
@@ -66,7 +66,7 @@ describe("addAgentSkills", () => {
     );
 
     expect(
-      (await config.get("filesystem")).read(".claude/agents/worker.md"),
+      await (await config.get("filesystem")).read(".claude/agents/worker.md"),
     ).toMatch(
       /name: worker[\s\S]*model: sonnet\neffort: medium[\s\S]*# Issue implementation/,
     );
@@ -81,7 +81,7 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    addAgentSkills(
+    await addAgentSkills(
       {
         filesystem: await config.get("filesystem"),
         agents: await config.get("agents"),
@@ -90,19 +90,21 @@ describe("addAgentSkills", () => {
     );
 
     expect(
-      (await config.get("filesystem")).read(
-        ".claude/skills/scratchpad/SKILL.md",
-      ),
+      await (
+        await config.get("filesystem")
+      ).read(".claude/skills/scratchpad/SKILL.md"),
     ).not.toContain("disable-model-invocation");
 
     expect(
-      (await config.get("filesystem")).read(".claude/agents/scratcher.md"),
+      await (
+        await config.get("filesystem")
+      ).read(".claude/agents/scratcher.md"),
     ).toMatch(/name: scratcher[\s\S]*disallowedTools:[\s\S]*# Scratchpad/);
 
     expect(
-      (await config.get("filesystem")).exists(
-        ".agents/skills/scratchpad/agents/openai.yaml",
-      ),
+      await (
+        await config.get("filesystem")
+      ).exists(".agents/skills/scratchpad/agents/openai.yaml"),
     ).toBe(false);
   });
 
@@ -119,7 +121,7 @@ describe("addAgentSkills", () => {
       agents: await config.get("agents"),
     };
 
-    expect(() => addAgentSkills(sections, ["issue-planning"])).toThrow(
+    await expect(addAgentSkills(sections, ["issue-planning"])).rejects.toThrow(
       "agents.preferred",
     );
   });

@@ -7,7 +7,7 @@ import { loadConfig } from "#workflows/registry/operations/loadConfig";
 vi.mock(import("#tools/agents/operations/getInstructionTemplates"), () => {
   return {
     getInstructionTemplates: () => {
-      return [
+      return Promise.resolve([
         {
           title: "Broken",
           description: "Broken skill",
@@ -25,7 +25,7 @@ vi.mock(import("#tools/agents/operations/getInstructionTemplates"), () => {
             effort: "extreme",
           },
         },
-      ];
+      ]);
     },
   };
 });
@@ -42,7 +42,7 @@ describe("getSkillTemplates", () => {
 
     const agents = await config.get("agents");
 
-    expect(() => getSkillTemplates({ agents })).toThrow(
+    await expect(getSkillTemplates({ agents })).rejects.toThrow(
       /\/skills\/broken\.md skill metadata[\s\S]*received "extreme"[\s\S]*agent\.effort/,
     );
   });

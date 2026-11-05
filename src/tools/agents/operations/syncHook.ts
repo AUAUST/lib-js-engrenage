@@ -22,7 +22,7 @@ const hooksSchema = optional(
   ),
 );
 
-export function syncHook(
+export async function syncHook(
   {
     filesystem,
     resolve,
@@ -36,7 +36,7 @@ export function syncHook(
   const { event, matcher, command, condition } = hook;
   const location = ["hooks", event];
 
-  let content = filesystem.read(file) ?? emptyObjectFile;
+  let content = (await filesystem.read(file)) ?? emptyObjectFile;
 
   const entries =
     validate(
@@ -71,5 +71,5 @@ export function syncHook(
     );
   }
 
-  filesystem.write(file, content);
+  await filesystem.write(file, content);
 }

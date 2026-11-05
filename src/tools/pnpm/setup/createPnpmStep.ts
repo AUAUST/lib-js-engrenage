@@ -24,16 +24,21 @@ export function createPnpmStep(): Step<{
     async plan({ get, filesystem }) {
       const root = await get("root");
       const path = await get("packageJsonPath");
-      const content = path === undefined ? undefined : filesystem.read(path);
+
+      const content =
+        path === undefined ? undefined : await filesystem.read(path);
 
       // @debt repeats the "No package.json found" guard of upgrade, createTsdownConfig, createStepContext and syncChangesetConfig
       if (path === undefined || content === undefined) {
         throw new Error(`No package.json found in ${root}`);
       }
 
-      const version = resolveLatestPnpm(root, readSharedPnpmRange().range);
+      const version = await resolveLatestPnpm(
+        root,
+        readSharedPnpmRange().range,
+      );
 
-      filesystem.write(
+      await filesystem.write(
         path,
         writePnpmDeclaration(
           content,

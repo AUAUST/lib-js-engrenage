@@ -2,8 +2,10 @@ import { ruleFrontmatterKeys } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
 
-export function getRuleTemplates() {
-  return getInstructionTemplates("rules").map((template) => {
+export async function getRuleTemplates() {
+  const templates = await getInstructionTemplates("rules");
+
+  return templates.map((template) => {
     const { name, paths, reference, body } = template;
 
     const frontmatter = {

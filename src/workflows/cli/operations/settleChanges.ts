@@ -1,4 +1,4 @@
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flat, flatMap, map } from "@auaust/primitive-kit/arrays";
 
 import { successMessage } from "#workflows/cli/constants";
 import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
@@ -14,13 +14,13 @@ export async function settleChanges(
 ) {
   const filesystems = await listFilesystems(config);
 
-  for (const filesystem of filesystems) {
-    await filesystem.format();
-  }
+  await Promise.all(filesystems.map((filesystem) => filesystem.format()));
 
   if (!check) {
     return void reportSyncResults(
-      flatMap(filesystems, (filesystem) => filesystem.flush()),
+      flat(
+        await Promise.all(filesystems.map((filesystem) => filesystem.flush())),
+      ),
     );
   }
 

@@ -50,15 +50,15 @@ export async function syncProjectMap({
     patterns: tests.patterns,
   });
 
-  for (const { file, content } of maps) {
-    filesystem.write(file, content);
-  }
+  await Promise.all(
+    maps.map(({ file, content }) => filesystem.write(file, content)),
+  );
 
   const written = new Set(maps.map(({ file }) => file));
 
-  for (const file of filesystem.glob(`${projectMapDirectory}/*.md`)) {
+  for (const file of await filesystem.glob(`${projectMapDirectory}/*.md`)) {
     if (!written.has(file)) {
-      filesystem.remove(file);
+      await filesystem.remove(file);
     }
   }
 }

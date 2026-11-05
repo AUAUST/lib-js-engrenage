@@ -13,5 +13,5 @@ export interface ResolvedEnvironmentTsconfig {
   readonly compilerOptions: Readonly<Record<string, unknown>>;
   readonly unmanaged: readonly string[];
   readonly check: boolean;
-  readonly path: File | undefined;
+  readonly path: Promise<File | undefined>;
 }

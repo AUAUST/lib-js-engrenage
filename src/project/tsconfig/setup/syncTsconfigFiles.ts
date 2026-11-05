@@ -215,13 +215,13 @@ export async function syncTsconfigFiles(config: ConfigContext) {
   const filesystem = await config.get("filesystem");
 
   for (const { target, create } of await collectTargets(config)) {
-    const current = filesystem.read(target.file);
+    const current = await filesystem.read(target.file);
 
     if (current === undefined && !create) {
       continue;
     }
 
-    filesystem.write(
+    await filesystem.write(
       target.file,
       applyJsonEdits(
         current ?? emptyObjectFile,

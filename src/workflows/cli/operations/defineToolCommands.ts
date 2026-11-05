@@ -83,7 +83,7 @@ export function defineToolCommands<Name extends string>({
 
           const transformed = (await tool.arguments?.(config, args)) ?? args;
 
-          const binaryPath = resolveBinary(
+          const binaryPath = await resolveBinary(
             await config.get("root"),
             packageName,
             binary,

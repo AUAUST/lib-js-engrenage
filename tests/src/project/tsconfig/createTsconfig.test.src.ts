@@ -3,15 +3,15 @@ import { join } from "node:path";
 import { describe, expect, test } from "vitest";
 
 import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
-import { createTsconfig } from "#project/tsconfig/utils/createTsconfig";
+import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 
 describe("createTsconfig", () => {
-  test("reads root-relative values once the tsconfig is used", () => {
+  test("reads root-relative values once the tsconfig is used", async () => {
     const root = getFixture("tsdown");
 
-    const tsconfig = createTsconfig({
+    const tsconfig = await createTsconfig({
       root,
       path: join(root, "tsconfig.json"),
       filesystem: createFilesystem(root),
@@ -21,7 +21,7 @@ describe("createTsconfig", () => {
     expect(tsconfig.compilerOptions).toBe(tsconfig.optional.compilerOptions);
   });
 
-  test("reads the compiler options of a tsconfig that matches no file yet", () => {
+  test("reads the compiler options of a tsconfig that matches no file yet", async () => {
     const project = createTemporaryProject({
       "tsconfig.json": JSON.stringify({
         compilerOptions: {
@@ -30,7 +30,7 @@ describe("createTsconfig", () => {
       }),
     });
 
-    const tsconfig = createTsconfig({
+    const tsconfig = await createTsconfig({
       root: project.root,
       path: project.resolve("tsconfig.json"),
       filesystem: createFilesystem(project.root),
@@ -39,7 +39,7 @@ describe("createTsconfig", () => {
     expect(tsconfig.outDir).toBe("build");
   });
 
-  test("keeps an outDir outside the root relative to it and rejects the root itself", () => {
+  test("keeps an outDir outside the root relative to it and rejects the root itself", async () => {
     const project = createTemporaryProject({
       "outside.json": JSON.stringify({
         compilerOptions: {
@@ -53,13 +53,13 @@ describe("createTsconfig", () => {
       }),
     });
 
-    const outside = createTsconfig({
+    const outside = await createTsconfig({
       root: project.root,
       path: project.resolve("outside.json"),
       filesystem: createFilesystem(project.root),
     });
 
-    const atRoot = createTsconfig({
+    const atRoot = await createTsconfig({
       root: project.root,
       path: project.resolve("root.json"),
       filesystem: createFilesystem(project.root),
@@ -72,10 +72,10 @@ describe("createTsconfig", () => {
     );
   });
 
-  test("tolerates a missing tsconfig through the optional view only", () => {
+  test("tolerates a missing tsconfig through the optional view only", async () => {
     const root = getFixture("tsdown");
 
-    const tsconfig = createTsconfig({
+    const tsconfig = await createTsconfig({
       root,
       path: undefined,
       filesystem: createFilesystem(root),
@@ -85,10 +85,10 @@ describe("createTsconfig", () => {
     expect(() => tsconfig.paths).toThrow(`No tsconfig found in ${root}`);
   });
 
-  test("fails on an unreadable tsconfig in both views", () => {
+  test("fails on an unreadable tsconfig in both views", async () => {
     const root = getFixture("tsconfig");
 
-    const tsconfig = createTsconfig({
+    const tsconfig = await createTsconfig({
       root,
       path: join(root, "missing.json"),
       filesystem: createFilesystem(root),

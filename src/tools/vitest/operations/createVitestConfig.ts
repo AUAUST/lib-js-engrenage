@@ -1,4 +1,4 @@
-import { realpathSync } from "node:fs";
+import { realpath } from "node:fs/promises";
 
 import { configDefaults, coverageConfigDefaults } from "vitest/config";
 
@@ -68,7 +68,7 @@ async function createSourcePlugins(
   return [
     createOutDirGuard(`${pluginPrefix}:${outDirGuard}`, {
       packageName,
-      outDir: resolve(realpathSync(await get("root")), outDir),
+      outDir: resolve(await realpath(await get("root")), outDir),
     }),
   ];
 }
@@ -82,7 +82,7 @@ async function createDistPlugins({
     return [];
   }
 
-  const root = realpathSync(await get("root"));
+  const root = await realpath(await get("root"));
 
   const source = await get("src");
 
@@ -127,7 +127,7 @@ export async function createVitestConfig(
     guardOutDir,
     isolate,
     restoreMocks = !isolate,
-    setupFiles = findSetupFiles({
+    setupFiles = await findSetupFiles({
       tests: await get("tests"),
       filesystem: await get("filesystem"),
     }),
@@ -137,9 +137,13 @@ export async function createVitestConfig(
   const tests = await get("tests");
 
   if (testsBuild && tests.active) {
-    const { owner, file, path } = tests.dist.tsconfig;
+    const { owner, file } = tests.dist.tsconfig;
 
-    if (owner !== undefined && file !== undefined && path === undefined) {
+    if (
+      owner !== undefined &&
+      file !== undefined &&
+      (await tests.dist.tsconfig.path) === undefined
+    ) {
       throw new Error(
         `The dist tsconfig ${file} does not exist in ${await get("root")}, run \`engrenage sync\` to create it`,
       );
@@ -148,13 +152,13 @@ export async function createVitestConfig(
 
   const typescript = await get("typescript");
 
-  const tsconfig = testsBuild
+  const tsconfig = await (testsBuild
     ? tests.dist.tsconfig.path
-    : await typescript.tsconfig.path;
+    : typescript.tsconfig.path);
 
-  const typecheckTsconfig = testsBuild
+  const typecheckTsconfig = await (testsBuild
     ? tests.dist.tsconfig.path
-    : tests.tsconfig.path;
+    : tests.tsconfig.path);
 
   const include = await createTestsInclude(context, testsBuild);
   const { fixtures } = await get("files");

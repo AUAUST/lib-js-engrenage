@@ -6,8 +6,8 @@ export function createChangesetConfigStep(): Step {
   return {
     name: configFile,
     message: "Version and publish with changesets?",
-    isMissing({ filesystem }) {
-      return !filesystem.exists(configFile);
+    async isMissing({ filesystem }) {
+      return !(await filesystem.exists(configFile));
     },
     async plan({ addDevDependency, invoke }) {
       await addDevDependency(changesetsCli);

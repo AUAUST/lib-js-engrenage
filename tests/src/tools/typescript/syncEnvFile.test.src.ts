@@ -22,7 +22,7 @@ async function createProject(
 
   await syncEnvFile(config);
 
-  (await config.get("filesystem")).flush();
+  await (await config.get("filesystem")).flush();
 
   return project;
 }

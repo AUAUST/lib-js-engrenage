@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 
 import { resolve } from "#foundation/filesystem/index";
 import { formatContent } from "#project/format/operations/formatContent";
@@ -11,7 +11,7 @@ export async function formatFile(
   { root, formatter }: { root: Directory; formatter: Formatter },
 ): Promise<void> {
   const file = resolve(root, path);
-  const content = readFileSync(file, "utf-8");
+  const content = await readFile(file, "utf-8");
 
   const formatted = await formatContent(content, {
     path: file,
@@ -20,6 +20,6 @@ export async function formatFile(
   });
 
   if (formatted !== content) {
-    writeFileSync(file, formatted);
+    await writeFile(file, formatted);
   }
 }

@@ -12,12 +12,14 @@ export function createViteConfigStep(): Step {
     name: file,
     message: `Create ${file}?`,
     async isMissing({ filesystem, hasDependency }) {
-      return (await hasDependency(vite)) && !hasConfigFile(filesystem, vite);
+      return (
+        (await hasDependency(vite)) && !(await hasConfigFile(filesystem, vite))
+      );
     },
     async plan({ filesystem, hasDependency }) {
       const tested = await hasDependency(vitest);
 
-      filesystem.write(
+      await filesystem.write(
         file,
         createConfigModule({
           entry: `${engrenage}/vite`,

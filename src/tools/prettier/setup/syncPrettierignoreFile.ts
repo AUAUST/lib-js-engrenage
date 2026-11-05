@@ -62,14 +62,14 @@ export async function syncPrettierignoreFile(
     settlePreset(createProjectPrettierIgnores(config)),
   ]);
 
-  syncIgnoreFile(
+  await syncIgnoreFile(
     {
       root,
       filesystem,
       resolve,
     },
     {
-      path: prettier.prettierignore,
+      path: await prettier.prettierignore,
       presets: {
         defaults: () => defaultIgnores,
         project,

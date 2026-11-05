@@ -10,11 +10,14 @@ import type { Directory } from "#types/Directory";
 const releaseSchema = pipe(string(), regex(/^\d+\.\d+\.\d+$/));
 
 // @debt checks the spawn error and the status by hand, as installDependencies and invokeCommand of engrenage init do, instead of spawnProcess owning the check
-export function resolveLatestPnpm(root: Directory, range: string): string {
-  const { stdout, status, error } = spawnProcess(
+export async function resolveLatestPnpm(
+  root: Directory,
+  range: string,
+): Promise<string> {
+  const { stdout, status, error } = await spawnProcess(
     "pnpm",
     ["view", `pnpm@${range}`, "version", "--json"],
-    { cwd: root, encoding: "utf-8" },
+    { cwd: root },
   );
 
   if (error !== undefined || status !== 0) {

@@ -57,24 +57,30 @@ export async function syncWorkflowFiles(
   const directory =
     toPosixPath(relative(root, await config.get("root"))) || ".";
 
-  const syncs = map(files, (file) => {
-    const content = renderWorkflow(name, file, directory);
+  const syncs = await Promise.all(
+    map(files, async (file) => {
+      const content = await renderWorkflow(name, file, directory);
 
-    return {
-      file: `${workflowsDirectory}/${file}`,
-      update() {
-        return content;
-      },
-    };
-  });
+      return {
+        file: `${workflowsDirectory}/${file}`,
+        update() {
+          return content;
+        },
+      };
+    }),
+  );
 
-  if (!syncs.some(({ file }) => filesystem.exists(file))) {
+  const exist = await Promise.all(
+    syncs.map(({ file }) => filesystem.exists(file)),
+  );
+
+  if (!exist.some(Boolean)) {
     return;
   }
 
   await assertScripts(config, name, scripts);
 
-  syncFiles(
+  await syncFiles(
     { filesystem, resolve: (...paths) => resolveWithin(root, ...paths) },
     syncs,
   );

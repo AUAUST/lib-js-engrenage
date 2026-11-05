@@ -1,4 +1,3 @@
-import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync } from "node:fs";
 import { basename } from "node:path";
 
@@ -10,6 +9,7 @@ import { keys } from "@auaust/toolkit/object";
 
 import { init } from "#bin/engrenage/init";
 import { sync } from "#bin/engrenage/sync";
+import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
@@ -21,10 +21,12 @@ import * as prompts from "#workflows/cli/operations/createPrompter";
 
 import manifest from "#package.json" with { type: "json" };
 
-vi.mock(import("node:child_process"));
+vi.mock(import("#foundation/processes/operations/spawnProcess"));
 
 vi.mock(import("#tools/pnpm/operations/resolveLatestPnpm"), () => {
-  return { resolveLatestPnpm: () => readTestPnpmVersions().latest };
+  return {
+    resolveLatestPnpm: () => Promise.resolve(readTestPnpmVersions().latest),
+  };
 });
 
 function createProject(files: Record<string, string>) {
@@ -40,13 +42,12 @@ function createProject(files: Record<string, string>) {
 beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation(() => {});
 
-  vi.mocked(spawnSync).mockReturnValue({
-    pid: 0,
-    output: [],
+  vi.mocked(spawnProcess).mockResolvedValue({
     stdout: "",
     stderr: "",
     status: 0,
     signal: null,
+    error: undefined,
   });
 });
 
@@ -89,7 +90,7 @@ describe("engrenage init", () => {
       "package.json",
     ]);
 
-    expect(spawnSync).not.toHaveBeenCalled();
+    expect(spawnProcess).not.toHaveBeenCalled();
     expect(process.exitCode ?? 0).toBe(0);
   });
 
@@ -152,7 +153,7 @@ describe("engrenage init", () => {
       });
 
       expect(project.read("engrenage.config.ts")).toBe(config);
-      expect(spawnSync).not.toHaveBeenCalled();
+      expect(spawnProcess).not.toHaveBeenCalled();
       expect(process.exitCode ?? 0).toBe(0);
     },
   );
@@ -222,7 +223,7 @@ describe("engrenage init", () => {
       "export default defineVitestConfig();",
     );
 
-    expect(spawnSync).toHaveBeenCalledExactlyOnceWith("pnpm", ["install"], {
+    expect(spawnProcess).toHaveBeenCalledExactlyOnceWith("pnpm", ["install"], {
       cwd: project.root,
       stdio: "inherit",
     });
@@ -334,7 +335,7 @@ describe("engrenage init", () => {
         scripts: { coverage: "engrenage vitest:coverage" },
       });
 
-      expect(spawnSync).not.toHaveBeenCalled();
+      expect(spawnProcess).not.toHaveBeenCalled();
     },
   );
 
@@ -355,7 +356,7 @@ describe("engrenage init", () => {
 
     await runCommand(init, "--yes");
 
-    expect(spawnSync).not.toHaveBeenCalled();
+    expect(spawnProcess).not.toHaveBeenCalled();
 
     expect(console.info).toHaveBeenCalledExactlyOnceWith(
       "Engrenage is set up, nothing is missing.",
@@ -399,7 +400,7 @@ describe("engrenage init", () => {
 
       vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      vi.mocked(spawnSync).mockImplementation((command, args) => {
+      vi.mocked(spawnProcess).mockImplementation((command, args) => {
         if (args?.[0] === "init") {
           project.write("package.json", '{\n  "type": "module"\n}\n');
         }
@@ -416,21 +417,20 @@ describe("engrenage init", () => {
           linkSourcePackage(project.resolve("node_modules/@auaust/engrenage"));
         }
 
-        return {
-          pid: 0,
-          output: [],
+        return Promise.resolve({
           stdout: "",
           stderr: "",
           status: 0,
           signal: null,
-        };
+          error: undefined,
+        });
       });
 
       await runCommand(init, "--yes");
 
       const name = basename(project.root);
 
-      expect(vi.mocked(spawnSync).mock.calls).toEqual([
+      expect(vi.mocked(spawnProcess).mock.calls).toEqual([
         [
           "pnpm",
           ["init", "--bare"],

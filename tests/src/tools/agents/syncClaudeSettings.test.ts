@@ -26,7 +26,7 @@ describe("syncClaudeSettings", () => {
 
     await syncClaudeSettings(config);
 
-    (await config.get("filesystem")).flush();
+    await (await config.get("filesystem")).flush();
 
     expect(project.read(".claude/settings.json")).toBe(`{
   // Kept by the project.
@@ -97,7 +97,7 @@ describe("syncClaudeSettings", () => {
       settings: true,
     });
 
-    expect((await enabled.get("filesystem")).flush()).toEqual([
+    expect(await (await enabled.get("filesystem")).flush()).toEqual([
       {
         file: ".claude/settings.json",
         status: "created",

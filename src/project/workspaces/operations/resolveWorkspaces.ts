@@ -3,7 +3,11 @@ import { basename } from "node:path/posix";
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, freeze } from "@auaust/toolkit/object";
 
-import { filesIn, type Filesystem } from "#foundation/filesystem/index";
+import {
+  filesIn,
+  findDirectories,
+  type Filesystem,
+} from "#foundation/filesystem/index";
 import { createPackageJson } from "#project/package/index";
 import {
   directoryPlaceholder,
@@ -18,11 +22,14 @@ import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
-function listDirectories(filesystem: Filesystem, glob: Glob): Directory[] {
-  return filesystem.glob(glob).filter((path) => filesystem.isDirectory(path));
+async function listDirectories(
+  filesystem: Filesystem,
+  glob: Glob,
+): Promise<Directory[]> {
+  return [...(await findDirectories(filesystem, await filesystem.glob(glob)))];
 }
 
-export function resolveWorkspaces({
+export async function resolveWorkspaces({
   root,
   filesystem,
   options,
@@ -32,12 +39,20 @@ export function resolveWorkspaces({
   filesystem: Filesystem;
   options: OutputOf<typeof workspacesSchema>;
   typescriptFiles: Globs;
-}): readonly ResolvedWorkspaceGroup[] {
+}): Promise<readonly ResolvedWorkspaceGroup[]> {
   const claimed = new Map<Directory, Glob>();
 
-  const matched = map(entries(options), ([glob, option]) => {
-    const dirs = listDirectories(filesystem, glob);
+  const listed = await Promise.all(
+    map(entries(options), async ([glob, option]) => {
+      return {
+        glob,
+        option,
+        dirs: await listDirectories(filesystem, glob),
+      };
+    }),
+  );
 
+  const matched = map(listed, ({ glob, option, dirs }) => {
     for (const dir of dirs) {
       const other = claimed.get(dir);
 
@@ -68,13 +83,18 @@ export function resolveWorkspaces({
     }
   }
 
-  function describe(dir: Directory): ResolvedWorkspace {
+  async function describe(dir: Directory): Promise<ResolvedWorkspace> {
     const packageJson = `${dir}/package.json`;
+
+    const [content, entries] = await Promise.all([
+      filesystem.read(packageJson),
+      filesystem.glob(`${dir}/${workspaceEntryGlob}`),
+    ]);
 
     const dependencies = createPackageJson({
       root,
       path: packageJson,
-      content: filesystem.read(packageJson),
+      content,
     }).optional.dependencies;
 
     return freeze({
@@ -82,7 +102,7 @@ export function resolveWorkspaces({
       name: names.get(dir) ?? "",
       packageJson,
       tsconfig: `${dir}/${workspaceTsconfigFile}`,
-      entry: filesystem.glob(`${dir}/${workspaceEntryGlob}`)[0],
+      entry: entries[0],
       globs: filesIn(dir, typescriptFiles),
       dependencies: names
         .entries()
@@ -95,19 +115,21 @@ export function resolveWorkspaces({
   }
 
   return freeze(
-    map(matched, ({ glob, option, dirs }) => {
-      const { generated, discovered, tsconfig } = option;
+    await Promise.all(
+      map(matched, async ({ glob, option, dirs }) => {
+        const { generated, discovered, tsconfig } = option;
 
-      return freeze({
-        glob,
-        active: dirs.length > 0,
-        dirs,
-        generated,
-        discovered,
-        globs: flatMap(dirs, (dir) => filesIn(dir, typescriptFiles)),
-        tsconfig,
-        workspaces: map(dirs, describe),
-      });
-    }),
+        return freeze({
+          glob,
+          active: dirs.length > 0,
+          dirs,
+          generated,
+          discovered,
+          globs: flatMap(dirs, (dir) => filesIn(dir, typescriptFiles)),
+          tsconfig,
+          workspaces: await Promise.all(map(dirs, describe)),
+        });
+      }),
+    ),
   );
 }

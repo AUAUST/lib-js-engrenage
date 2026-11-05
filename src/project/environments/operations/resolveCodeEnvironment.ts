@@ -1,10 +1,15 @@
+import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 import { freeze } from "@auaust/toolkit/object";
 
-import { filesIn, type Filesystem } from "#foundation/filesystem/index";
+import {
+  filesIn,
+  findDirectories,
+  type Filesystem,
+} from "#foundation/filesystem/index";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
 
-export function resolveCodeEnvironment({
+export async function resolveCodeEnvironment({
   dirs,
   generated,
   discovered,
@@ -20,7 +25,7 @@ export function resolveCodeEnvironment({
   filesystem: Filesystem;
 }) {
   return freeze({
-    active: dirs.some((directory) => filesystem.isDirectory(directory)),
+    active: isNotEmpty(await findDirectories(filesystem, dirs)),
     dirs,
     generated,
     discovered,

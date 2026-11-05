@@ -1,4 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flat } from "@auaust/primitive-kit/arrays";
 
 import { runSync } from "#bin/engrenage/sync";
 import { packageJsonFile } from "#constants";
@@ -21,11 +21,15 @@ function describe({ command, args }: Invocation): string {
   return [command, ...args].join(" ");
 }
 
-function invokeCommand(root: Directory, invocation: Invocation) {
-  const { status, error } = spawnProcess(invocation.command, invocation.args, {
-    cwd: root,
-    stdio: "inherit",
-  });
+async function invokeCommand(root: Directory, invocation: Invocation) {
+  const { status, error } = await spawnProcess(
+    invocation.command,
+    invocation.args,
+    {
+      cwd: root,
+      stdio: "inherit",
+    },
+  );
 
   if (error !== undefined) {
     throw new Error(`Cannot run ${describe(invocation)}`, {
@@ -60,7 +64,7 @@ async function readPackage(
   }
 
   // @debt hand-written pnpm invocation, like those in createStepContext and createChangesetConfigStep
-  invokeCommand(await config.get("root"), {
+  await invokeCommand(await config.get("root"), {
     command: "pnpm",
     args: ["init", "--bare"],
     interactive: false,
@@ -97,19 +101,21 @@ export const init = defineCommand((command) => {
 
       const filesystems = await listFilesystems(config);
 
-      for (const filesystem of filesystems) {
-        await filesystem.format();
-      }
+      await Promise.all(filesystems.map((filesystem) => filesystem.format()));
 
       reportSyncResults(
-        flatMap(filesystems, (filesystem) => filesystem.flush()),
+        flat(
+          await Promise.all(
+            filesystems.map((filesystem) => filesystem.flush()),
+          ),
+        ),
       );
 
       for (const invocation of invocations) {
         if (yes && invocation.interactive) {
           console.info(`Run ${describe(invocation)} to finish the setup.`);
         } else {
-          invokeCommand(await config.get("root"), invocation);
+          await invokeCommand(await config.get("root"), invocation);
         }
       }
 

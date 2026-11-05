@@ -5,13 +5,13 @@ import { testsSetupRole } from "#project/structure/constants";
 import type { ResolvedTests } from "#project/environments/index";
 import type { Files } from "#types/Files";
 
-export function findSetupFiles({
+export async function findSetupFiles({
   tests,
   filesystem,
 }: {
   tests: ResolvedTests;
   filesystem: Filesystem;
-}): Files {
+}): Promise<Files> {
   const { file } = tests.roles.roles[testsSetupRole] ?? {};
 
   if (file === undefined) {

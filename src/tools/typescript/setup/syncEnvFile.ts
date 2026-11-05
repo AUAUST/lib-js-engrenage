@@ -67,7 +67,7 @@ export async function syncEnvFile(config: OptionContext<ProjectConfig>) {
     return identifierPattern.test(name);
   });
 
-  const current = filesystem.read(file) ?? "";
+  const current = (await filesystem.read(file)) ?? "";
 
   const hasBlock = markerLine.test(current);
 
@@ -79,7 +79,7 @@ export async function syncEnvFile(config: OptionContext<ProjectConfig>) {
 
   const declarations = map(declared, renderDeclaration).join("\n\n");
 
-  filesystem.write(
+  await filesystem.write(
     file,
     syncBlocks(content, typescriptBlocks, {
       [directive](...args) {

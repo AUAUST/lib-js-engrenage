@@ -7,7 +7,7 @@ import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
-export function addAgentRules(
+export async function addAgentRules(
   {
     filesystem,
     agents,
@@ -17,7 +17,7 @@ export function addAgentRules(
   },
   names: readonly string[],
 ) {
-  const templates = getRuleTemplates();
+  const templates = await getRuleTemplates();
 
   const owned = new Set<string>(values(attributionRules));
 
@@ -35,13 +35,13 @@ export function addAgentRules(
     }
   }
 
-  const missing = getMissingRuleTemplates({ filesystem });
+  const missing = await getMissingRuleTemplates({ filesystem });
 
   for (const { name, file, content } of missing) {
     if (names.includes(name)) {
-      filesystem.write(file, content);
+      await filesystem.write(file, content);
     }
   }
 
-  syncCodexInstructions({ filesystem, agents });
+  await syncCodexInstructions({ filesystem, agents });
 }

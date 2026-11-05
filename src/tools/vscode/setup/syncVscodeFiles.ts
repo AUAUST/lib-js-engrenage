@@ -68,17 +68,17 @@ function addRecommendations(
   return synced;
 }
 
-function isEnabled(
+async function isEnabled(
   filesystem: Filesystem,
   file: File,
   configured: boolean | undefined,
   requested: boolean,
-): boolean {
+): Promise<boolean> {
   if (configured === false) {
     return false;
   }
 
-  return configured === true || requested || filesystem.exists(file);
+  return configured === true || requested || (await filesystem.exists(file));
 }
 
 async function createSettingsEdits(
@@ -137,11 +137,11 @@ export async function syncVscodeFiles(
     }),
   );
 
-  if (isEnabled(filesystem, settingsFile, vscode.settings, settings)) {
-    filesystem.write(
+  if (await isEnabled(filesystem, settingsFile, vscode.settings, settings)) {
+    await filesystem.write(
       settingsFile,
       applyJsonEdits(
-        filesystem.read(settingsFile) ?? emptyObjectFile,
+        (await filesystem.read(settingsFile)) ?? emptyObjectFile,
         resolve(settingsFile),
         await createSettingsEdits(root, applicable),
         jsonIndentation,
@@ -149,11 +149,13 @@ export async function syncVscodeFiles(
     );
   }
 
-  if (isEnabled(filesystem, extensionsFile, vscode.extensions, extensions)) {
-    filesystem.write(
+  if (
+    await isEnabled(filesystem, extensionsFile, vscode.extensions, extensions)
+  ) {
+    await filesystem.write(
       extensionsFile,
       addRecommendations(
-        filesystem.read(extensionsFile) ?? emptyObjectFile,
+        (await filesystem.read(extensionsFile)) ?? emptyObjectFile,
         resolve(extensionsFile),
         recommendations,
       ),

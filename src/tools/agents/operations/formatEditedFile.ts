@@ -16,12 +16,11 @@ async function runTool(
 ) {
   const root = await config.get("root");
 
-  const result = spawnProcess(
+  const result = await spawnProcess(
     process.execPath,
-    [resolveBinary(root, packageName, packageName), ...args],
+    [await resolveBinary(root, packageName, packageName), ...args],
     {
       cwd: root,
-      encoding: "utf-8",
     },
   );
 

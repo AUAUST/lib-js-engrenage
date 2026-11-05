@@ -24,7 +24,7 @@ function sortByKey<Item extends readonly [string, unknown]>(items: Item[]) {
   });
 }
 
-function syncImports(
+async function syncImports(
   config: {
     filesystem: Filesystem;
     resolve(...paths: string[]): string;
@@ -39,7 +39,7 @@ function syncImports(
     ),
   );
 
-  syncFiles(config, [
+  await syncFiles(config, [
     {
       file: packageJsonFile,
       update(content, path) {
@@ -81,10 +81,10 @@ async function syncPaths(
     return [key, [toTsconfigSpecifier(file, target)]] as const;
   });
 
-  filesystem.write(
+  await filesystem.write(
     file,
     applyJsonEdits(
-      filesystem.read(file) ?? emptyObjectFile,
+      (await filesystem.read(file)) ?? emptyObjectFile,
       file,
       [
         {
@@ -104,7 +104,7 @@ export async function syncAliases(config: OptionContext<ProjectConfig>) {
     return;
   }
 
-  syncImports(
+  await syncImports(
     {
       filesystem: await config.get("filesystem"),
       resolve: await config.get("resolve"),

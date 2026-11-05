@@ -1,17 +1,17 @@
 import {
-  existsSync,
-  globSync,
-  mkdirSync,
-  readFileSync,
-  rmSync,
-  statSync,
-  writeFileSync,
-} from "node:fs";
+  glob as globFiles,
+  mkdir,
+  rm,
+  stat,
+  writeFile,
+} from "node:fs/promises";
 import { dirname, matchesGlob } from "node:path";
 
 import { deduplicate, map, sort, wrap } from "@auaust/primitive-kit/arrays";
 import { freeze } from "@auaust/toolkit/object";
 
+import { readTextFile } from "#foundation/filesystem/operations/readTextFile";
+import { isMissingError } from "#foundation/filesystem/utils/isMissingError";
 import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
 import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
 import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
@@ -29,17 +29,13 @@ interface Backup {
   original: string | undefined;
 }
 
-function readFromDisk(path: File): string | undefined {
-  return existsSync(path) ? readFileSync(path, "utf-8") : undefined;
-}
-
-function restore({ path, original }: Backup) {
+async function restore({ path, original }: Backup) {
   if (original === undefined) {
-    rmSync(path, {
+    await rm(path, {
       force: true,
     });
   } else {
-    writeFileSync(path, original);
+    await writeFile(path, original);
   }
 }
 
@@ -51,34 +47,44 @@ export function createFilesystem(root: Directory, formatter?: FileFormatter) {
     return relativeWithin(root, file);
   }
 
-  function readLocated(file: File): string | undefined {
+  async function readLocated(file: File): Promise<string | undefined> {
     if (!contents.has(file)) {
-      contents.set(file, readFromDisk(resolveWithin(root, file)));
+      const content = await readTextFile(resolveWithin(root, file));
+
+      if (!contents.has(file)) {
+        contents.set(file, content);
+      }
     }
 
     return contents.get(file);
   }
 
-  function read(file: File): string | undefined {
+  function read(file: File): Promise<string | undefined> {
     return readLocated(locate(file));
   }
 
-  function exists(file: File): boolean {
-    return read(file) !== undefined;
+  async function exists(file: File): Promise<boolean> {
+    return (await read(file)) !== undefined;
   }
 
-  function isDirectory(directory: Directory): boolean {
-    const stats = statSync(resolveWithin(root, directory), {
-      throwIfNoEntry: false,
-    });
+  async function isDirectory(directory: Directory): Promise<boolean> {
+    try {
+      const stats = await stat(resolveWithin(root, directory));
 
-    return stats?.isDirectory() === true;
+      return stats.isDirectory();
+    } catch (error) {
+      if (isMissingError(error)) {
+        return false;
+      }
+
+      throw error;
+    }
   }
 
-  function stage(file: File, content: string | undefined) {
+  async function stage(file: File, content: string | undefined) {
     const located = locate(file);
 
-    const current = readLocated(located);
+    const current = await readLocated(located);
 
     if (!originals.has(located)) {
       originals.set(located, current);
@@ -91,21 +97,23 @@ export function createFilesystem(root: Directory, formatter?: FileFormatter) {
     }
   }
 
-  function write(file: File, content: string) {
-    stage(file, content);
+  function write(file: File, content: string): Promise<void> {
+    return stage(file, content);
   }
 
-  function remove(file: File) {
-    stage(file, undefined);
+  function remove(file: File): Promise<void> {
+    return stage(file, undefined);
   }
 
-  function glob(patterns: Glob | Globs): Files {
+  async function glob(patterns: Glob | Globs): Promise<Files> {
     const globs = wrap(patterns);
 
     const found = map(
-      globSync(globs, {
-        cwd: root,
-      }),
+      await Array.fromAsync(
+        globFiles(globs, {
+          cwd: root,
+        }),
+      ),
       toPosixPath,
     );
 
@@ -124,7 +132,7 @@ export function createFilesystem(root: Directory, formatter?: FileFormatter) {
     }
 
     for (const file of originals.keys()) {
-      const content = readLocated(file);
+      const content = await readLocated(file);
 
       if (content === undefined) {
         continue;
@@ -133,7 +141,7 @@ export function createFilesystem(root: Directory, formatter?: FileFormatter) {
       const formatted = await formatter(resolveWithin(root, file), content);
 
       if (formatted !== undefined) {
-        stage(file, formatted);
+        await stage(file, formatted);
       }
     }
   }
@@ -143,7 +151,7 @@ export function createFilesystem(root: Directory, formatter?: FileFormatter) {
       return {
         file,
         status:
-          readLocated(file) === undefined
+          contents.get(file) === undefined
             ? "deleted"
             : original === undefined
               ? "created"
@@ -164,7 +172,7 @@ export function createFilesystem(root: Directory, formatter?: FileFormatter) {
     return discarded;
   }
 
-  function flush(): SyncResults {
+  async function flush(): Promise<SyncResults> {
     const results: SyncResult[] = [];
     const backups: Backup[] = [];
 
@@ -172,28 +180,28 @@ export function createFilesystem(root: Directory, formatter?: FileFormatter) {
       for (const result of changes()) {
         const path = resolveWithin(root, result.file);
 
-        mkdirSync(dirname(path), {
+        await mkdir(dirname(path), {
           recursive: true,
         });
 
         backups.push({
           path,
-          original: readFromDisk(path),
+          original: await readTextFile(path),
         });
 
-        const content = readLocated(result.file);
+        const content = contents.get(result.file);
 
         if (content === undefined) {
-          rmSync(path, { force: true });
+          await rm(path, { force: true });
         } else {
-          writeFileSync(path, content);
+          await writeFile(path, content);
         }
 
         results.push(result);
       }
     } catch (error) {
       for (const backup of backups.toReversed()) {
-        restore(backup);
+        await restore(backup);
       }
 
       throw error;

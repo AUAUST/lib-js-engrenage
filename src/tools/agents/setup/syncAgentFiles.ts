@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 
 import { map } from "@auaust/primitive-kit/arrays";
 
@@ -20,7 +20,7 @@ import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { File } from "#types/File";
 import type { FileSync } from "#types/FileSync";
 
-function syncAttributionRules(config: {
+async function syncAttributionRules(config: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
 }) {
@@ -32,22 +32,26 @@ function syncAttributionRules(config: {
 
   const wanted = attributionRules[`${attribution}`];
   const unwanted = attributionRules[`${!attribution}`];
-  const references = getRuleReferences(config);
+
+  const [references, templates] = await Promise.all([
+    getRuleReferences(config),
+    getRuleTemplates(),
+  ]);
 
   // @debt a project file at the wanted rule's path without its reference silently keeps the rule out; sync could report the conflict
-  for (const { name, file, reference, content } of getRuleTemplates()) {
+  for (const { name, file, reference, content } of templates) {
     const files = references.get(reference) ?? [];
 
     if (name === unwanted) {
       for (const found of files) {
-        config.filesystem.remove(found);
+        await config.filesystem.remove(found);
       }
     } else if (
       name === wanted &&
       files.length === 0 &&
-      !config.filesystem.exists(file)
+      !(await config.filesystem.exists(file))
     ) {
-      config.filesystem.write(file, content);
+      await config.filesystem.write(file, content);
     }
   }
 }
@@ -63,15 +67,20 @@ export async function syncAgentFiles({ get }: OptionContext<AgentSections>) {
     return;
   }
 
-  syncAttributionRules(config);
+  await syncAttributionRules(config);
 
-  const discovered = config.filesystem
-    .glob(config.agents.instructionFiles)
-    .filter((file) => file !== codexFile);
+  const instructionFiles = await config.filesystem.glob(
+    config.agents.instructionFiles,
+  );
 
-  function findReference(reference: string, path: File): File | undefined {
+  const discovered = instructionFiles.filter((file) => file !== codexFile);
+
+  async function findReference(
+    reference: string,
+    path: File,
+  ): Promise<File | undefined> {
     try {
-      return resolveAgentReference(config, reference, path);
+      return await resolveAgentReference(config, reference, path);
     } catch (error) {
       if (!(error instanceof Error)) {
         throw error;
@@ -81,28 +90,61 @@ export async function syncAgentFiles({ get }: OptionContext<AgentSections>) {
     }
   }
 
-  function update(content: string, path: File): string {
-    return syncBlocks(content, markdownBlocks, {
-      reference(reference) {
-        if (reference === undefined) {
-          throw new Error(`Expected a reference in a marker of ${path}`);
+  async function readReferences(): Promise<ReadonlyMap<string, string>> {
+    const bodies = new Map<string, string>();
+
+    await Promise.all(
+      discovered.map(async (file) => {
+        const content = await config.filesystem.read(file);
+
+        if (content === undefined) {
+          return;
         }
 
-        const source = findReference(reference, path);
+        const path = config.resolve(file);
+        const referenced = new Set<string>();
 
-        if (source !== undefined) {
-          return parseInstruction(readFileSync(source, "utf-8"), source).body;
-        }
-      },
-    });
+        syncBlocks(content, markdownBlocks, {
+          reference(reference) {
+            if (reference === undefined) {
+              throw new Error(`Expected a reference in a marker of ${path}`);
+            }
+
+            referenced.add(reference);
+          },
+        });
+
+        await Promise.all(
+          [...referenced].map(async (reference) => {
+            const source = await findReference(reference, path);
+
+            if (source !== undefined) {
+              bodies.set(
+                `${path}\0${reference}`,
+                parseInstruction(await readFile(source, "utf-8"), source).body,
+              );
+            }
+          }),
+        );
+      }),
+    );
+
+    return bodies;
   }
 
-  const files = map(discovered, (file) => {
-    return {
-      file,
-      update,
+  function createUpdate(bodies: ReadonlyMap<string, string>) {
+    return function update(content: string, path: File): string {
+      return syncBlocks(content, markdownBlocks, {
+        reference(reference) {
+          if (reference === undefined) {
+            throw new Error(`Expected a reference in a marker of ${path}`);
+          }
+
+          return bodies.get(`${path}\0${reference}`);
+        },
+      });
     };
-  });
+  }
 
   const generated: FileSync[] = [];
 
@@ -123,7 +165,9 @@ export async function syncAgentFiles({ get }: OptionContext<AgentSections>) {
     });
   }
 
-  for (const { reference, files: skillFiles } of getSkillTemplates(config)) {
+  for (const { reference, files: skillFiles } of await getSkillTemplates(
+    config,
+  )) {
     for (const { file, content, frontmatter } of skillFiles) {
       if (frontmatter === undefined) {
         generated.push({
@@ -138,11 +182,23 @@ export async function syncAgentFiles({ get }: OptionContext<AgentSections>) {
     }
   }
 
-  for (const { file, reference, frontmatter } of getRuleTemplates()) {
+  for (const { file, reference, frontmatter } of await getRuleTemplates()) {
     generate(file, reference, frontmatter);
   }
 
-  syncFiles(config, generated);
-  syncFiles(config, files);
-  syncCodexInstructions(config);
+  await syncFiles(config, generated);
+
+  const update = createUpdate(await readReferences());
+
+  await syncFiles(
+    config,
+    map(discovered, (file) => {
+      return {
+        file,
+        update,
+      };
+    }),
+  );
+
+  await syncCodexInstructions(config);
 }

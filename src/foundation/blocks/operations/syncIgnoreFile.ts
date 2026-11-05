@@ -13,7 +13,7 @@ function renderGroup({ title, globs }: GlobGroup): string {
   return [`# ${title}`, ...globs].join("\n");
 }
 
-export function syncIgnoreFile(
+export async function syncIgnoreFile(
   config: {
     root: Directory;
     filesystem: Filesystem;
@@ -53,7 +53,7 @@ export function syncIgnoreFile(
     return map(preset(), renderGroup).join("\n\n");
   }
 
-  syncFiles(config, [
+  await syncFiles(config, [
     {
       file,
       update(content) {

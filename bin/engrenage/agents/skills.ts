@@ -21,9 +21,19 @@ async function getNames(
   const filesystem = await config.get("filesystem");
   const agents = await config.get("agents");
 
-  const missing = getSkillTemplates({ agents }).filter(({ files }) => {
-    return files.some(({ file }) => !filesystem.exists(file));
-  });
+  const templates = await getSkillTemplates({ agents });
+
+  const installed = await Promise.all(
+    templates.map(async ({ files }) => {
+      const exist = await Promise.all(
+        files.map(({ file }) => filesystem.exists(file)),
+      );
+
+      return exist.every(Boolean);
+    }),
+  );
+
+  const missing = templates.filter((_, index) => !installed[index]);
 
   if (missing.length === 0) {
     return void console.info(
@@ -70,7 +80,7 @@ async function add(name?: string) {
     return;
   }
 
-  addAgentSkills(
+  await addAgentSkills(
     {
       filesystem: await config.get("filesystem"),
       agents: await config.get("agents"),
