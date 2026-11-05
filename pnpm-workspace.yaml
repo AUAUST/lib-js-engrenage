@@ -2,6 +2,7 @@ allowBuilds:
   "@auaust/primitive-kit": true
   "@auaust/toolkit": true
   esbuild: true
+  lefthook: false
   unrs-resolver: true
 minimumReleaseAgeExclude:
   - "@auaust/*"

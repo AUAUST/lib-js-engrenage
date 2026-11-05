@@ -41,6 +41,15 @@ export const program = registerLazySubcommands(
         return structure;
       },
     },
+    "gate": {
+      description:
+        "Fix and check the changed files: ESLint, Prettier, types, structure, sync, related tests and the configured commands.",
+      async load() {
+        const { gate } = await import("#bin/engrenage/gate");
+
+        return gate;
+      },
+    },
     "debt": {
       description: "List the @debt markers of the project.",
       async load() {

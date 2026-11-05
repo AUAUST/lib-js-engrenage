@@ -223,10 +223,25 @@ describe("engrenage init", () => {
       "export default defineVitestConfig();",
     );
 
-    expect(spawnProcess).toHaveBeenCalledExactlyOnceWith("pnpm", ["install"], {
+    expect(spawnProcess).toHaveBeenCalledTimes(2);
+
+    expect(spawnProcess).toHaveBeenNthCalledWith(1, "pnpm", ["install"], {
       cwd: project.root,
       stdio: "inherit",
     });
+
+    expect(spawnProcess).toHaveBeenNthCalledWith(
+      2,
+      "pnpm",
+      ["exec", "lefthook", "install"],
+      {
+        cwd: project.root,
+        stdio: "inherit",
+      },
+    );
+
+    expect(packageJson).toHaveProperty("scripts.prepare", "lefthook install");
+    expect(project.read("lefthook.yml")).toContain("$CLAUDECODE");
 
     expect(console.info).toHaveBeenCalledWith(
       "Run pnpm changeset init to finish the setup.",

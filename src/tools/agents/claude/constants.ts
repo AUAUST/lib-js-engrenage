@@ -8,6 +8,8 @@ export const claudeFile = "CLAUDE.md" satisfies File;
 
 export const claudeSettingsFile = ".claude/settings.json" satisfies File;
 
+export const claudeShellVariable = "CLAUDECODE";
+
 export const claudeHookPrefix = "pnpm --silent engrenage agents claude hook ";
 
 export const claudeHooks = freeze(

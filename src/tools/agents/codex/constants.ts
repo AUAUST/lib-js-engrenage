@@ -21,4 +21,5 @@ export const codexHooks = freeze([
   },
 ] as const) satisfies readonly HookDefinition[];
 
+// @debt Codex commits skip the gate until a variable Codex sets in its shells is known
 export const codexSkillsDir = ".agents/skills" satisfies Directory;

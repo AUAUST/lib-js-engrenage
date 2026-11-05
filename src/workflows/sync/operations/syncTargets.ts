@@ -6,6 +6,7 @@ import {
 import { syncChangesetConfig } from "#tools/changesets/index";
 import { syncGitignoreFile } from "#tools/git/index";
 import { syncWorkflowFiles } from "#tools/github/index";
+import { syncLefthookConfig } from "#tools/lefthook/index";
 import { syncWorkspaceFile } from "#tools/pnpm/index";
 import { syncPrettierignoreFile } from "#tools/prettier/index";
 import {
@@ -32,6 +33,7 @@ export const syncTargets = {
   }),
   gitignore: defineSyncTarget(syncGitignoreFile),
   globals: defineSyncTarget(syncEnvFile),
+  lefthook: defineSyncTarget(syncLefthookConfig),
   package: defineSyncTarget(syncPackageJson),
   pnpm: defineSyncTarget(syncWorkspaceFile),
   prettierignore: defineSyncTarget(syncPrettierignoreFile),

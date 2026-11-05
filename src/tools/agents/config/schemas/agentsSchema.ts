@@ -1,4 +1,4 @@
-import { boolean, picklist } from "valibot";
+import { array, boolean, picklist, string } from "valibot";
 
 import { wrap } from "@auaust/primitive-kit/arrays";
 
@@ -61,6 +61,27 @@ export const agentsSchema = declareObject(
       ],
       optional: unset("none, so neither is managed"),
     }),
+    gate: declareObject(
+      {
+        commands: declare(array(string()), {
+          description:
+            "Shell commands the gate runs from the project root after its built-in checks.",
+          optional: { value: [] },
+        }),
+        hook: declare(boolean(), {
+          description: [
+            "Whether `engrenage init` creates the lefthook pre-commit command that runs `engrenage gate --staged` for agent commits, and sync keeps it while `lefthook.yml` exists.",
+            "`false` leaves it alone.",
+          ],
+          optional: unset("created by init, then kept by sync"),
+        }),
+      },
+      {
+        description:
+          "The gate that fixes and checks the files an agent changed (`engrenage gate`).",
+        optional: true,
+      },
+    ),
     budgets: declareObject(
       {
         mode: declare(picklist(budgetModes), {

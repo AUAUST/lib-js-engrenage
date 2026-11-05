@@ -60,6 +60,12 @@ export default defineConfig({
   agents: {
     preferred: ["claude", "codex"],
     attribution: false,
+    gate: {
+      commands: [
+        "pnpm run support codegen --check",
+        "pnpm run support pnpm --check",
+      ],
+    },
   },
   tests: {
     layout: "mirror",

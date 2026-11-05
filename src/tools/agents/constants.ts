@@ -1,7 +1,9 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { engrenage } from "#constants";
+import { claudeShellVariable } from "#tools/agents/claude/constants";
 import type { ImportCategory, ImportRelation } from "#project/structure/index";
+import type { Agent } from "#tools/agents/types/Agent";
 import type { BlockSyntax } from "#types/BlockSyntax";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
@@ -17,6 +19,10 @@ export const agentsFile = "AGENTS.md" satisfies File;
 export const agentsTemplate = `${engrenage}/agents/templates/${agentsFile}`;
 
 export const agentNames = freeze(["claude", "codex"] as const);
+
+export const agentShellVariables = freeze({
+  claude: claudeShellVariable,
+} as const) satisfies Partial<Record<Agent, string>>;
 
 export const backlogIndex = ".ai/backlog/index.md" satisfies File;
 

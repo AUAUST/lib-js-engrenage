@@ -5,7 +5,7 @@ import type { ProcessResult } from "#foundation/processes/types/ProcessResult";
 export function spawnProcess(
   command: string,
   args: readonly string[],
-  options: Pick<SpawnOptions, "cwd" | "stdio">,
+  options: Pick<SpawnOptions, "cwd" | "env" | "stdio">,
 ): Promise<ProcessResult> {
   return new Promise((resolve) => {
     const child = spawn(command, args, options);

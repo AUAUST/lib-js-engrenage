@@ -39,6 +39,22 @@ export interface AgentsInput {
    */
   attribution?: (boolean | undefined)
   /**
+   * The gate that fixes and checks the files an agent changed (`engrenage gate`).
+   */
+  gate?: ({
+    /**
+     * Shell commands the gate runs from the project root after its built-in checks.
+     * @default none
+     */
+    commands?: (string[] | undefined)
+    /**
+     * Whether `engrenage init` creates the lefthook pre-commit command that runs `engrenage gate --staged` for agent commits, and sync keeps it while `lefthook.yml` exists.
+     * `false` leaves it alone.
+     * @default created by init, then kept by sync
+     */
+    hook?: (boolean | undefined)
+  } | undefined)
+  /**
    * Length budgets in words, checked by the agent hooks (`engrenage agents <agent> hook`).
    */
   budgets?: ({

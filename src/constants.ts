@@ -21,6 +21,8 @@ export const engrenage = `${organization}/${project}` as const;
 
 export const eslint = "eslint";
 
+export const lefthook = "lefthook";
+
 export const nodeReleases = "node-releases";
 
 export const prettier = "prettier";
@@ -55,6 +57,7 @@ export const packages = freeze({
   changesetsConfig,
   engrenage,
   eslint,
+  lefthook,
   nodeReleases,
   prettier,
   primitiveKit,

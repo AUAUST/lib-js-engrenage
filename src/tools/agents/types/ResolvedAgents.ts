@@ -1,5 +1,6 @@
 import type { Agent } from "#tools/agents/types/Agent";
 import type { Budgets } from "#tools/agents/types/Budgets";
+import type { Gate } from "#tools/agents/types/Gate";
 import type { Directory } from "#types/Directory";
 import type { Globs } from "#types/Globs";
 
@@ -11,4 +12,5 @@ export interface ResolvedAgents {
   readonly claudeSettings: boolean | undefined;
   readonly attribution: boolean | undefined;
   readonly budgets: Budgets;
+  readonly gate: Gate;
 }

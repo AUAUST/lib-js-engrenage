@@ -9,6 +9,7 @@ export {
   createCodexStep,
   syncCodexFiles,
 } from "#tools/agents/codex/index";
+export { agentShellVariables } from "#tools/agents/constants";
 
 // @barrel setup/*.ts named
 export { createAgentRulesStep } from "#tools/agents/setup/createAgentRulesStep";
@@ -52,6 +53,7 @@ export * from "#tools/agents/types/BudgetFinding";
 export * from "#tools/agents/types/BudgetKind";
 export * from "#tools/agents/types/BudgetMode";
 export * from "#tools/agents/types/Budgets";
+export * from "#tools/agents/types/Gate";
 export * from "#tools/agents/types/GeneratedFrontmatter";
 export * from "#tools/agents/types/GithubWrite";
 export * from "#tools/agents/types/HookDefinition";
