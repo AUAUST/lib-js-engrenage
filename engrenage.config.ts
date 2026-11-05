@@ -89,6 +89,7 @@ export default defineConfig({
       "./config/constants": "src/project/config/constants.ts",
     },
     generated: [
+      // @debt this list of generated files is a signal we miss a pattern to describe generated files, *or* that declaring them isn't necessary if the only effect is to disable prettier but we already generate them properly formatted.
       "tools/eslint/types/Rules.ts",
       "tools/eslint/types/rules/**",
       "project/build/types/BuildInput.ts",

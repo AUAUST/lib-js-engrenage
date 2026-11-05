@@ -1,6 +1,4 @@
-import type { Config } from "@auaust/engrenage/config";
-
-export default async function config(): Promise<Config> {
+export default async function config() {
   return {
     preset: "library",
     tests: {

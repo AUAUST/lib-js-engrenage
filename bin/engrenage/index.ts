@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// @debt Every invocation, even `--version`, eagerly imports every subcommand and the tools behind them (~3,000 modules, ESLint and TypeScript included, ~1 s); subcommands should load their implementation on demand.
+
 import { Command } from "@commander-js/extra-typings";
 
 import { agents } from "#bin/engrenage/agents/index";
