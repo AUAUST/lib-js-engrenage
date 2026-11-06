@@ -41,9 +41,7 @@ export function createImportPresets({
         "import-x/no-extraneous-dependencies": "error",
         "import-x/no-mutable-exports": "error",
         "import-x/no-named-as-default": "error",
-        "import-x/no-self-import": "error",
         "import-x/no-unresolved": "off",
-        "import-x/no-useless-path-segments": "error",
       },
     },
     {

@@ -243,6 +243,38 @@ describe("structure boundaries", () => {
     ).toEqual([]);
   });
 
+  test("names the alias of a relative specifier and reports unknown paths", async () => {
+    const lint = await createLinter("auaust/import-specifiers");
+
+    expect(
+      await lint.messages(
+        "src/project/feature/utils/x.ts",
+        'export { value } from "./own";\n',
+      ),
+    ).toEqual(["Import `#project/feature/utils/own` instead of `./own`."]);
+
+    const [unknown] = await lint.messages(
+      "src/project/feature/utils/x.ts",
+      'export { value } from "#project/missing/index";\n',
+    );
+
+    expect(unknown).toContain("reload the editor window");
+
+    expect(
+      await lint(
+        "src/project/feature/utils/x.ts",
+        'export { default } from "#package.json";\n',
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        "engrenage.config.ts",
+        'export { value } from "@auaust/engrenage";\n',
+      ),
+    ).toEqual([]);
+  });
+
   test("enforces role contracts", async () => {
     const lint = await createLinter("auaust/role-");
 

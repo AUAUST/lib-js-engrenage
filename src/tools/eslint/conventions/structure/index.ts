@@ -5,6 +5,7 @@ export { default as importData } from "#tools/eslint/conventions/structure/impor
 export { default as importEffects } from "#tools/eslint/conventions/structure/importEffects";
 export { default as importEnvironments } from "#tools/eslint/conventions/structure/importEnvironments";
 export { default as importLayers } from "#tools/eslint/conventions/structure/importLayers";
+export { default as importSpecifiers } from "#tools/eslint/conventions/structure/importSpecifiers";
 export { default as importSurfaces } from "#tools/eslint/conventions/structure/importSurfaces";
 export { default as importTests } from "#tools/eslint/conventions/structure/importTests";
 export { default as importWorkspaces } from "#tools/eslint/conventions/structure/importWorkspaces";

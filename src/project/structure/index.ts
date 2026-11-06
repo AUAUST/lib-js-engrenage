@@ -66,12 +66,17 @@ export { structureSchema } from "#project/structure/config/schemas/structureSche
 
 // @barrel utils/*.ts named
 export { checkBoundary } from "#project/structure/utils/checkBoundary";
+export { checkData } from "#project/structure/utils/checkData";
+export { checkEnvironments } from "#project/structure/utils/checkEnvironments";
 export { checkLayers } from "#project/structure/utils/checkLayers";
 export { checkSurfaces } from "#project/structure/utils/checkSurfaces";
+export { checkTests } from "#project/structure/utils/checkTests";
+export { checkWorkspaces } from "#project/structure/utils/checkWorkspaces";
 export { completeRole } from "#project/structure/utils/completeRole";
 export { createEntityIndex } from "#project/structure/utils/createEntityIndex";
 export { createImportResolver } from "#project/structure/utils/createImportResolver";
 export { getEntryFile } from "#project/structure/utils/getEntryFile";
+export { getImportCategory } from "#project/structure/utils/getImportCategory";
 export { getIndexFile } from "#project/structure/utils/getIndexFile";
 export { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";

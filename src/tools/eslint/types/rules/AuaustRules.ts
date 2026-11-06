@@ -46,37 +46,37 @@ export interface AuaustRules {
    */
   "auaust/grouped-overloads"?: Rule<[]>;
   /**
-   * Check dependencies between elements
-   * @see https://www.jsboundaries.dev/docs/rules/dependencies/
+   * bin, tooling and a published package's src never import data directories.
    */
-  "auaust/import-data"?: Rule<AuaustImportData>;
+  "auaust/import-data"?: Rule<[]>;
   /**
    * A module of a ranked role imports at runtime only bindings declared in roles of its effect level or purer, and external modules ranked likewise.
    */
   "auaust/import-effects"?: Rule<[]>;
   /**
-   * Check dependencies between elements
-   * @see https://www.jsboundaries.dev/docs/rules/dependencies/
+   * A module imports only the environments and categories its environment reaches, and never the root file of an environment.
    */
-  "auaust/import-environments"?: Rule<AuaustImportEnvironments>;
+  "auaust/import-environments"?: Rule<[]>;
   /**
    * An element imports only the index.ts of a domain in a lower layer, of a non-isolated peer or of its own sub-domain.
    */
   "auaust/import-layers"?: Rule<[]>;
   /**
+   * A specifier names a path the structure map knows, through its alias rather than a relative path, and never the importing file itself.
+   */
+  "auaust/import-specifiers"?: Rule<[]>;
+  /**
    * An element imports its own, ancestor and global roles, and other domains only through their public roles; a type-only role imports with `import type`.
    */
   "auaust/import-surfaces"?: Rule<[]>;
   /**
-   * Check dependencies between elements
-   * @see https://www.jsboundaries.dev/docs/rules/dependencies/
+   * In a published package, a test that runs against source and dist imports the package name, a source-only test imports internals, and a dist-only test imports the package name and the build output.
    */
-  "auaust/import-tests"?: Rule<AuaustImportTests>;
+  "auaust/import-tests"?: Rule<[]>;
   /**
-   * Check dependencies between elements
-   * @see https://www.jsboundaries.dev/docs/rules/dependencies/
+   * A workspace imports another only when it declares it as a dependency, and the root src never imports a workspace.
    */
-  "auaust/import-workspaces"?: Rule<AuaustImportWorkspaces>;
+  "auaust/import-workspaces"?: Rule<[]>;
   /**
    * An index.ts or entry.ts re-exports and declares no local value, except a SCREAMING_CASE constant of metadata; the index.ts of a command group declares its command.
    */
@@ -554,38 +554,6 @@ type AuaustDebtMarkers =
   | [
       {
         list?: boolean;
-      },
-    ];
-// ----- auaust/import-data -----
-type AuaustImportData =
-  | []
-  | [
-      {
-        policies?: unknown[];
-      },
-    ];
-// ----- auaust/import-environments -----
-type AuaustImportEnvironments =
-  | []
-  | [
-      {
-        policies?: unknown[];
-      },
-    ];
-// ----- auaust/import-tests -----
-type AuaustImportTests =
-  | []
-  | [
-      {
-        policies?: unknown[];
-      },
-    ];
-// ----- auaust/import-workspaces -----
-type AuaustImportWorkspaces =
-  | []
-  | [
-      {
-        policies?: unknown[];
       },
     ];
 // ----- auaust/logical-assignment-operators -----

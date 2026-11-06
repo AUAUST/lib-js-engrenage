@@ -13,6 +13,7 @@ export function createBoundaryProject() {
       imports: {
         "#entry": "./src/entry.ts",
         "#foundation/*": "./src/foundation/*.ts",
+        "#package.json": "./package.json",
         "#project/*": "./src/project/*.ts",
       },
     }),
