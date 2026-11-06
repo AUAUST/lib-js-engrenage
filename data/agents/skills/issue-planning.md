@@ -136,7 +136,7 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 ```markdown
 ## Goal
 
-<Why this work is needed and the target state, in at most three lines.>
+<Why this work is needed and the target state.>
 
 ## Roadmap
 
@@ -174,7 +174,7 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 
 ## Context
 
-<What this segment adds, in at most three lines.>
+<What this segment adds.>
 
 ## Prerequisites
 
@@ -200,7 +200,7 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 
 ## Context
 
-<The problem, then what is decided for this task only, in at most three lines with exact paths and names.>
+<The problem, then what is decided for this task only, with exact paths and names.>
 
 ## Prerequisites
 

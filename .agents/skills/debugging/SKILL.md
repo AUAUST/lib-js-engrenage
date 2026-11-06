@@ -64,7 +64,7 @@ When the input is an issue, turn that issue into the task, condensing its origin
 
 ## Context
 
-<The problem, its cause and reach, then the behavior decided, in at most three lines with exact paths and names.>
+<The problem, its cause and reach, then the behavior decided, with exact paths and names.>
 
 ## Prerequisites
 

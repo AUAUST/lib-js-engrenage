@@ -9,7 +9,7 @@ paths:
 
 ## Enforced by tooling
 
-- Prettier (`@auaust/engrenage/prettier`) and ESLint (`@auaust/engrenage/eslint`) enforce formatting and layout. Run ESLint with `--fix` on changed files, then resolve the remaining messages; each names the expected form.
+- Prettier (`@auaust/engrenage/prettier`) and ESLint (`@auaust/engrenage/eslint`) enforce formatting and layout. The commit gate applies their fixes; resolve the messages it reports, each naming the expected form.
 
 Write these correctly from the start, since no tool fixes them:
 
