@@ -1,5 +1,6 @@
 import boundaries from "eslint-plugin-boundaries";
 
+import { cached } from "@auaust/toolkit/cached";
 import { create } from "@auaust/toolkit/object";
 
 import { resolveBoundaries } from "#tools/eslint/utils/resolveBoundaries";
@@ -23,6 +24,17 @@ export function createBoundaryRule(
 
   const generated = resolveBoundaries(config).rules[row];
 
+  const noPolicies: readonly unknown[] = [];
+
+  const mergeOptions = cached((policies: readonly unknown[]): unknown[] => {
+    return [
+      {
+        ...generated,
+        policies: [...generated.policies, ...policies],
+      },
+    ];
+  });
+
   return {
     ...dependencies,
     meta: {
@@ -39,21 +51,13 @@ export function createBoundaryRule(
       ],
     },
     create(context) {
-      const [{ policies = [] } = {}] = context.options as [
-        { policies?: unknown[] }?,
-      ];
-
-      // @debt a fresh options object per file misses the boundaries plugin's identity-keyed caches, so every file revalidates and renormalizes every policy
-      const options: unknown[] = [
-        {
-          ...generated,
-          policies: [...generated.policies, ...policies],
-        },
+      const [{ policies = noPolicies } = {}] = context.options as [
+        { policies?: readonly unknown[] }?,
       ];
 
       return dependencies.create(
         create(context, {
-          options: { value: options },
+          options: { value: mergeOptions(policies) },
         }),
       );
     },

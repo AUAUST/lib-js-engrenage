@@ -3,13 +3,10 @@ import { entries, freeze, record } from "@auaust/toolkit/object";
 
 import { boundaryRows, indexRole } from "#tools/eslint/constants";
 import { createFileCategory } from "#tools/eslint/utils/createFileCategory";
-import { resolveImportSpecifier } from "#tools/typescript/index";
-import type { SubpathImports } from "#project/package/index";
 import type {
   ImportRule,
   ImportRuleSource,
   ImportRuleTarget,
-  StructureNode,
 } from "#project/structure/index";
 import type { BoundaryDependency } from "#tools/eslint/types/BoundaryDependency";
 import type { BoundaryEntity } from "#tools/eslint/types/BoundaryEntity";
@@ -32,26 +29,6 @@ interface Alternative {
   readonly to?: BoundaryEntity;
   readonly dependency?: { source: string[] };
   readonly publicEntry: boolean;
-}
-
-const elementEnvironments = ["src", "scripts", "tooling"] as const;
-
-function collectDomains(node: StructureNode): StructureNode[] {
-  return [
-    ...(node.kind === "domain" ? [node] : []),
-    ...flatMap(node.children, collectDomains),
-  ];
-}
-
-function resolveDomainIndexSpecifier(
-  imports: SubpathImports,
-  path: string,
-): string | null {
-  try {
-    return resolveImportSpecifier(imports, `${path}/index.ts`);
-  } catch {
-    return null;
-  }
 }
 
 function isCategory(target: ImportRuleTarget, name: string): boolean {
@@ -297,45 +274,6 @@ export function createBoundaryPolicies(
     ];
   }
 
-  const domains = flatMap(elementEnvironments, (name) => {
-    const structure = config.structure[name];
-
-    return structure === undefined ? [] : collectDomains(structure.root);
-  });
-
-  // @debt one policy per source and domain only to name the domain's index specifier, so policies grow with sources times domains and each is matched against every import
-  function createDomainPolicies(
-    from: BoundaryEntity,
-    dirs: readonly string[],
-    reasons: readonly string[],
-  ): BoundaryPolicy[] {
-    const imports = config.packageJson.optional.imports;
-
-    if (imports === undefined) {
-      return [];
-    }
-
-    const policies: BoundaryPolicy[] = [];
-
-    const inside = domains
-      .filter(({ path }) => dirs.some((dir) => path.startsWith(`${dir}/`)))
-      .sort((a, b) => a.path.split("/").length - b.path.split("/").length);
-
-    for (const { path } of inside) {
-      const specifier = resolveDomainIndexSpecifier(imports, path);
-
-      if (specifier !== null) {
-        policies.push({
-          from,
-          disallow: { to: createScope("surfaces", [path]) },
-          message: `{{ from.file.path }} cannot import {{ to.file.path }}. It may import: ${reasons.join("; ")}. Import \`${specifier}\` instead, or move the code.`,
-        });
-      }
-    }
-
-    return policies;
-  }
-
   function createElementPolicies(
     row: ElementRow,
     source: ImportRuleSource,
@@ -349,7 +287,7 @@ export function createBoundaryPolicies(
 
     const reasons = [...new Set(group.map(({ rule }) => rule.reason))];
 
-    // @debt one message for every cause: an import of a higher layer's index.ts, or of the importer's own index.ts, is told to "import the domain through its index.ts", and every grant is listed instead of the broken one
+    // @debt one message for every cause: an import of a higher layer's index.ts, or of the importer's own index.ts, is told to "import the domain through its index.ts", every grant is listed instead of the broken one, and the remedy names no index specifier
     const policies: BoundaryPolicy[] = [
       {
         from,
@@ -357,10 +295,6 @@ export function createBoundaryPolicies(
         message: `{{ from.file.path }} cannot import {{ to.file.path }}. It may import: ${reasons.join("; ")}. Import the domain through its index.ts or its public roles, or move the code.`,
       },
     ];
-
-    if (row === "surfaces") {
-      policies.push(...createDomainPolicies(from, dirs, reasons));
-    }
 
     for (const typeOnly of [false, true]) {
       const paths = flatMap(

@@ -5,43 +5,10 @@ import { loadConfig } from "@auaust/engrenage";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
 import { assign } from "@auaust/toolkit/object";
 
-import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-
-const exported = "export const value = 1;\n";
+import { createBoundaryProject } from "#tests/utils/createBoundaryProject";
 
 async function createLinter(prefix = "auaust/import-") {
-  const project = createTemporaryProject({
-    "package.json": JSON.stringify({
-      name: "library",
-      type: "module",
-      imports: {
-        "#entry": "./src/entry.ts",
-        "#foundation/*": "./src/foundation/*.ts",
-        "#project/*": "./src/project/*.ts",
-      },
-    }),
-    "engrenage.config.ts": `export default { preset: "library", src: { namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
-    "tsconfig.json": JSON.stringify({
-      compilerOptions: {
-        module: "nodenext",
-        moduleResolution: "nodenext",
-        allowImportingTsExtensions: true,
-        noEmit: true,
-      },
-    }),
-    "tests/helper.ts": exported,
-    "src/foundation/base/index.ts": exported,
-    "src/foundation/base/adapters/impl.ts": exported,
-    "src/project/feature/index.ts": exported,
-    "src/project/feature/utils/own.ts": exported,
-    "src/project/feature/inner/index.ts": exported,
-    "src/project/feature/inner/utils/deep.ts": exported,
-    "src/project/other/index.ts": exported,
-    "src/project/other/entry.ts": exported,
-    "src/entry.ts": exported,
-    "src/project/other/utils/priv.ts": exported,
-    "src/project/other/constants.ts": exported,
-  });
+  const project = createBoundaryProject();
 
   const eslint = new ESLint({
     cwd: project.root,
@@ -105,7 +72,7 @@ describe("structure boundaries", () => {
     ).toEqual([]);
   });
 
-  test("names the index.ts of the target domain in a surfaces message", async () => {
+  test("names the remedy in a surfaces message", async () => {
     const lint = await createLinter();
 
     const [message] = await lint.messages(
@@ -113,7 +80,9 @@ describe("structure boundaries", () => {
       'export { value } from "#project/other/utils/priv";\n',
     );
 
-    expect(message).toContain("Import `#project/other/index` instead");
+    expect(message).toContain(
+      "Import the domain through its index.ts or its public roles",
+    );
   });
 
   test("lets a peer import the constants of a domain", async () => {
@@ -205,9 +174,12 @@ describe("structure boundaries", () => {
   test("enforces role contracts", async () => {
     const lint = await createLinter("auaust/role-");
 
-    expect(await lint("src/project/feature/utils/index.ts", exported)).toEqual([
-      "auaust/role-contracts",
-    ]);
+    expect(
+      await lint(
+        "src/project/feature/utils/index.ts",
+        "export const value = 1;\n",
+      ),
+    ).toEqual(["auaust/role-contracts"]);
 
     expect(
       await lint(
