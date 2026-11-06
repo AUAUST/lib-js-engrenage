@@ -36,13 +36,14 @@ Outside consultant mode, create and edit issues as local drafts in `.ai/issues/`
 | `<n>.draft.md`        | Its working version, with frontmatter `title`                                                            |
 | `new-<slug>.draft.md` | An issue to create, with frontmatter `title`, `type`, `parent`, `after` (the sibling it follows), fields |
 
-- Start by reading `.ai/issues/`, and resume from the drafts it holds.
+- Start by reading `.ai/issues/`. Other sessions draft there too: resume only the drafts of your task, those the user names or those of the issues you were given.
+- Your drafts are those you created, claimed or resumed. Edit, publish and delete only them, never another session's.
 - Read an issue from `.ai/issues/` when it holds a copy, and fetch it from GitHub only otherwise or when flushing.
 - Claim an issue on its first edit: fetch its body into `<n>.md`, copy it to `<n>.draft.md` and add `Drafting` to its Blockers.
 - When Blockers already has `Drafting` and `.ai/issues/` holds no draft of the issue, another maintainer is drafting it: report it, record `claim: existing` in the draft's frontmatter and keep planning.
 - Reference an issue still to create as `#new-<slug>`.
 - End each round with the drafts it changed and the changes waiting on each open question.
-- Flush when no draft holds a change waiting on an open question, or when the user asks; publish every draft in the same flush.
+- Flush when none of your drafts holds a change waiting on an open question, or when the user asks; publish all your drafts in the same flush.
 
 To flush:
 
@@ -50,7 +51,7 @@ To flush:
 2. Create the new issues in tree order, replacing each `#new-<slug>` in every draft with its number.
 3. Publish each `<n>.draft.md` body without its frontmatter, with its title.
 4. Remove `Drafting` from each issue you claimed, never from one marked `claim: existing`.
-5. Report each issue's change from `git diff --no-index <n>.md <n>.draft.md`, then delete the files.
+5. Report each issue's change from `git diff --no-index <n>.md <n>.draft.md`, then delete each of its files by exact path, never the directory or a pattern.
 
 ## Consultant mode
 
