@@ -58,3 +58,8 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - site: `src/tools/typescript/operations/createLibraryCompiler.ts:41`
 - why: holds only while compilations stay synchronous.
 - want: per-compilation state (debugging).
+
+## 11. Library names use lowercase, not TypeScript's Pascal casing
+
+- why: libs are written `es2023.array` where TypeScript's own naming is `ES2023.Array`.
+- want: a decision on `ES2023.Array` as the canonical form in options and generated data, with case-insensitive reading if kept compatible.
