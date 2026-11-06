@@ -9,7 +9,11 @@ import {
   environmentSection,
   type LoadedConfig,
 } from "#project/config/index";
-import { agentsSection } from "#tools/agents/index";
+import {
+  agentsSection,
+  measureEditedFile,
+  type BudgetFinding,
+} from "#tools/agents/index";
 import {
   hashTree,
   listChangedFiles,
@@ -21,6 +25,7 @@ import type { Directory } from "#types/Directory";
 import type { Files } from "#types/Files";
 import type { KnownPackageName } from "#types/KnownPackageName";
 import type { GateFailure } from "#workflows/gate/types/GateFailure";
+import type { GateReport } from "#workflows/gate/types/GateReport";
 import type { GateResult } from "#workflows/gate/types/GateResult";
 import type { GateStep } from "#workflows/gate/types/GateStep";
 
@@ -177,6 +182,23 @@ async function runSteps(
   return failures;
 }
 
+// @debt in staged mode the entries are read from the worktree, not from the index the commit records.
+async function measureEntries(
+  config: LoadedConfig,
+  files: Files,
+): Promise<BudgetFinding[]> {
+  const { root } = config.context;
+  const { budgets } = await config.resolve(agentsSection);
+
+  const findings = await Promise.all(
+    files.map((file) => {
+      return measureEditedFile(root, resolveWithin(root, file), budgets);
+    }),
+  );
+
+  return findings.flat();
+}
+
 async function readStamps(file: string): Promise<readonly string[]> {
   const content = await readTextFile(file);
 
@@ -187,19 +209,22 @@ async function readStamps(file: string): Promise<readonly string[]> {
 export async function runGate(
   config: LoadedConfig,
   { mode }: { mode: ChangeMode },
-): Promise<readonly GateFailure[]> {
+): Promise<GateReport> {
   const { root } = config.context;
 
   if (mode === "staged") {
     const partial = await listPartiallyStagedFiles(root);
 
     if (partial.length > 0) {
-      return [
-        {
-          step: "staging",
-          output: `Stage the whole file, since the fixes would stage its unstaged hunks:\n${partial.join("\n")}`,
-        },
-      ];
+      return {
+        failures: [
+          {
+            step: "staging",
+            output: `Stage the whole file, since the fixes would stage its unstaged hunks:\n${partial.join("\n")}`,
+          },
+        ],
+        warnings: [],
+      };
     }
   }
 
@@ -209,14 +234,15 @@ export async function runGate(
 
   const stamps = await readStamps(stamp);
 
+  // @debt a stamped tree reports no budget warnings, so the commit after a passing stop never shows them again.
   if (stamps.includes(await hashTree(root, mode))) {
-    return [];
+    return { failures: [], warnings: [] };
   }
 
   const files = await listChangedFiles(root, mode);
 
   if (files.length === 0) {
-    return [];
+    return { failures: [], warnings: [] };
   }
 
   const { fixes, checks } = await createSteps(config);
@@ -238,5 +264,5 @@ export async function runGate(
     );
   }
 
-  return failures;
+  return { failures, warnings: await measureEntries(config, files) };
 }

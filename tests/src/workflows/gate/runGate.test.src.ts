@@ -105,7 +105,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     git("add", "src/index.ts");
 
-    const failures = await runGate(await readConfig(project.root), {
+    const { failures } = await runGate(await readConfig(project.root), {
       mode: "staged",
     });
 
@@ -129,7 +129,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     git("add", "src/index.ts");
 
-    const failures = await runGate(await readConfig(project.root), {
+    const { failures } = await runGate(await readConfig(project.root), {
       mode: "staged",
     });
 
@@ -149,7 +149,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       "export const value: number = 3\n",
     );
 
-    const failures = await runGate(await readConfig(project.root), {
+    const { failures } = await runGate(await readConfig(project.root), {
       mode: "staged",
     });
 
@@ -171,9 +171,35 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     const config = await readConfig(project.root);
 
-    expect(await runGate(config, { mode: "staged" })).toEqual([]);
-    expect(await runGate(config, { mode: "staged" })).toEqual([]);
+    const passed = { failures: [], warnings: [] };
+
+    expect(await runGate(config, { mode: "staged" })).toEqual(passed);
+    expect(await runGate(config, { mode: "staged" })).toEqual(passed);
 
     expect(project.read(".runs")).toBe("run\n");
+  });
+
+  test("passes a changed debt entry over budget with a budget warning", async () => {
+    const { project } = createRepository();
+
+    project.write(
+      ".ai/debt.md",
+      `# Debt\n\n## Long entry\n\n${Array.from({ length: 80 }, () => "word").join(" ")}\n`,
+    );
+
+    const { failures, warnings } = await runGate(
+      await readConfig(project.root),
+      { mode: "worktree" },
+    );
+
+    expect(failures).toEqual([]);
+
+    expect(warnings).toMatchObject([
+      {
+        subject: "Long entry",
+        kind: "debtEntry",
+        budget: 60,
+      },
+    ]);
   });
 });
