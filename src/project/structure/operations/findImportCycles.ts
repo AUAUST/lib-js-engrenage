@@ -15,7 +15,7 @@ import { flat, flatMap } from "@auaust/primitive-kit/arrays";
 import { values } from "@auaust/toolkit/object";
 
 import { isMissingError } from "#foundation/filesystem/index";
-import type { Alias } from "#project/structure/types/Alias";
+import { createImportResolver } from "#project/structure/utils/createImportResolver";
 import type { ImportCycle } from "#project/structure/types/ImportCycle";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
@@ -105,25 +105,6 @@ async function readRuntimeSpecifiers(
   });
 }
 
-function expandAlias(alias: Alias, specifier: string): string | undefined {
-  const star = alias.key.indexOf("*");
-
-  if (star === -1) {
-    return specifier === alias.key ? alias.target : undefined;
-  }
-
-  const prefix = alias.key.slice(0, star);
-  const suffix = alias.key.slice(star + 1);
-
-  return specifier.startsWith(prefix) &&
-    specifier.endsWith(suffix) &&
-    specifier.length >= prefix.length + suffix.length
-    ? alias.target.replace("*", () => {
-        return specifier.slice(prefix.length, specifier.length - suffix.length);
-      })
-    : undefined;
-}
-
 function candidatesOf(path: string): string[] {
   const withoutExtension = path.replace(/\.(?:[cm]?js|[cm]?ts|tsx)$/, "");
 
@@ -135,29 +116,6 @@ function candidatesOf(path: string): string[] {
     ...[".ts", ".tsx"].map((extension) => `${path}${extension}`),
     ...["index.ts", "index.tsx"].map((index) => posix.join(path, index)),
   ];
-}
-
-function createResolver(aliases: readonly Alias[], files: ReadonlySet<string>) {
-  return (from: string, specifier: string): string | undefined => {
-    let target: string | undefined;
-
-    if (specifier.startsWith(".")) {
-      target = posix.join(posix.dirname(from), specifier);
-    } else if (specifier.startsWith("#")) {
-      for (const alias of aliases) {
-        const expanded = expandAlias(alias, specifier);
-
-        if (expanded !== undefined) {
-          target = posix.normalize(expanded);
-          break;
-        }
-      }
-    }
-
-    return target === undefined
-      ? undefined
-      : candidatesOf(target).find((candidate) => files.has(candidate));
-  };
 }
 
 function findComponents(graph: ReadonlyMap<string, string[]>): string[][] {
@@ -280,7 +238,15 @@ export async function findImportCycles({
     ),
   );
 
-  const resolve = createResolver([...aliases.global, ...aliases.src], files);
+  const resolveImport = createImportResolver({ root, aliases });
+
+  function resolve(from: string, specifier: string): string | undefined {
+    const resolved = resolveImport(specifier, from);
+
+    return resolved?.kind === "relative" || resolved?.kind === "alias"
+      ? candidatesOf(resolved.path).find((candidate) => files.has(candidate))
+      : undefined;
+  }
 
   const graph = new Map<string, string[]>(
     await Promise.all(

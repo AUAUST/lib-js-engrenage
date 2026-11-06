@@ -1,0 +1,116 @@
+import { describe, expect, test } from "vitest";
+
+import {
+  aliasesSection,
+  binSection,
+  dataSection,
+  scriptsSection,
+  sourceSection,
+  structureSection,
+  testsSection,
+  toolingSection,
+} from "#project/config/index";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import {
+  constants,
+  entrypoint,
+  errors,
+  indexRole,
+  utils,
+} from "#project/roles/index";
+import { createEntityIndex } from "#project/structure/utils/createEntityIndex";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+
+const roles = JSON.stringify([
+  indexRole(),
+  entrypoint(),
+  constants(),
+  errors(),
+  utils(),
+]);
+
+async function createIndex() {
+  const project = createTemporaryProject({
+    "package.json": '{ "name": "library", "type": "module" }',
+    "tsconfig.json": "{}",
+    "engrenage.config.ts": `export default { preset: "library", src: { node: 24, roles: ${roles}, namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
+    "src/entry.ts": "",
+    "src/foundation/base/index.ts": "",
+    "src/project/feature/index.ts": "",
+    "src/project/feature/entry.ts": "",
+    "src/project/feature/constants.ts": "",
+    "src/project/feature/utils/own.ts": "",
+    "src/project/feature/errors/Failure.ts": "",
+    "tests/x.test.src.ts": "",
+  });
+
+  const config = await loadConfig(project.root);
+
+  const [structure, source, tests, bin, scripts, tooling, data, aliases] =
+    await Promise.all([
+      config.resolve(structureSection),
+      config.resolve(sourceSection),
+      config.resolve(testsSection),
+      config.resolve(binSection),
+      config.resolve(scriptsSection),
+      config.resolve(toolingSection),
+      config.resolve(dataSection),
+      config.resolve(aliasesSection),
+    ]);
+
+  return createEntityIndex({
+    root: project.root,
+    structure,
+    environments: {
+      src: source,
+      tests,
+      bin,
+      scripts,
+      tooling,
+      data,
+    },
+    testPatterns: tests.patterns,
+    workspaces: [],
+    outDir: "dist",
+    aliases,
+    packageName: "library",
+  });
+}
+
+describe("createEntityIndex", () => {
+  test("places a role module in its domain, role and layer, with the domain's surface", async () => {
+    const index = await createIndex();
+
+    expect(index.entityOf("src/project/feature/utils/own.ts")).toMatchObject({
+      environment: "src",
+      domain: "project/feature",
+      role: "utils",
+      layer: 1,
+      surface: [
+        "#project/feature/index",
+        "#project/feature/errors/*",
+        "library/feature",
+      ],
+    });
+  });
+
+  test("gives a file directly in a domain its file role, and a test its variant", async () => {
+    const index = await createIndex();
+
+    expect(index.entityOf("src/project/feature/constants.ts")).toMatchObject({
+      role: "constants",
+      fileRole: "constants",
+    });
+
+    expect(index.entityOf("tests/x.test.src.ts")).toMatchObject({
+      environment: "tests",
+      variant: "src",
+    });
+  });
+
+  test("has no entity for a file in a directory the walk never saw, outside a role", async () => {
+    const index = await createIndex();
+
+    expect(index.entityOf("src/project/feature/unseen/x.ts")).toBeUndefined();
+  });
+});

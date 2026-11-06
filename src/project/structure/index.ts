@@ -10,6 +10,8 @@ export * from "#project/structure/types/AliasesOption";
 export * from "#project/structure/types/DomainInput";
 export * from "#project/structure/types/EffectModuleResolver";
 export * from "#project/structure/types/EffectModules";
+export * from "#project/structure/types/Entity";
+export * from "#project/structure/types/EntityIndex";
 export * from "#project/structure/types/EnvironmentRoles";
 export * from "#project/structure/types/EnvironmentStructure";
 export * from "#project/structure/types/ImportCategory";
@@ -24,6 +26,7 @@ export * from "#project/structure/types/ResolvedAliases";
 export * from "#project/structure/types/ResolvedEffects";
 export * from "#project/structure/types/ResolvedRoleContract";
 export * from "#project/structure/types/ResolvedRoles";
+export * from "#project/structure/types/ResolvedSpecifier";
 export * from "#project/structure/types/ResolvedStructure";
 export * from "#project/structure/types/RoleDefinition";
 export * from "#project/structure/types/RoleEffects";
@@ -57,6 +60,8 @@ export { structureSchema } from "#project/structure/config/schemas/structureSche
 
 // @barrel utils/*.ts named
 export { completeRole } from "#project/structure/utils/completeRole";
+export { createEntityIndex } from "#project/structure/utils/createEntityIndex";
+export { createImportResolver } from "#project/structure/utils/createImportResolver";
 export { getEntryFile } from "#project/structure/utils/getEntryFile";
 export { getIndexFile } from "#project/structure/utils/getIndexFile";
 export { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
