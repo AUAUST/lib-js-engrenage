@@ -2,12 +2,7 @@ import { freeze } from "@auaust/toolkit/object";
 
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 
-// @debt the index and entry roles are found by these fixed names, while a project builds its roles from presets that let it rename them
-export const indexRole = "index";
-
 export const defaultIndexFile = "index.ts";
-
-export const entryRole = "entry";
 
 export const defaultEffectLevels = freeze([
   "pure",

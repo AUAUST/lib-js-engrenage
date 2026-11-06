@@ -10,7 +10,7 @@ export {
   errors,
   fixtures,
   hooks,
-  index,
+  indexRole as index,
   pages,
   ports,
   schemas,

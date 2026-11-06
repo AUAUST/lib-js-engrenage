@@ -7,6 +7,7 @@ import { presetTraits } from "#project/presets/constants";
 import { createConfigModule, type Step } from "#project/steps/index";
 import type { Preset } from "#project/presets/index";
 
+// @debt the preset names are bare strings, unchecked against the exports of the `roles` package entry the generated config imports them from
 const sharedPresets = [
   "index",
   "constants",
@@ -19,7 +20,7 @@ const sharedPresets = [
   "adapters",
 ] as const;
 
-const testsPresets = ["fixtures", "setup"] as const;
+const testsPresets = ["fixtures", "testsetup"] as const;
 
 const publishedPresets = ["entry"] as const;
 

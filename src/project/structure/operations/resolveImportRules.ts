@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { flatMap, wrap } from "@auaust/primitive-kit/arrays";
 import { entries, freeze, keys } from "@auaust/toolkit/object";
 
-import { entryRole, indexRole } from "#project/structure/constants";
+import { entryRoleName, indexRoleName } from "#project/roles/constants";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportRelation } from "#project/structure/types/ImportRelation";
@@ -358,12 +358,12 @@ function rootFileRole(
   roles: ResolvedRoles["roles"],
 ): { readonly role: string; readonly file: string } | undefined {
   if (entryFile !== undefined) {
-    return { role: entryRole, file: entryFile };
+    return { role: entryRoleName, file: entryFile };
   }
 
-  return roles[indexRole] === undefined
+  return roles[indexRoleName] === undefined
     ? undefined
-    : { role: indexRole, file: indexFile };
+    : { role: indexRoleName, file: indexFile };
 }
 
 function resolveElementRules(
@@ -380,7 +380,7 @@ function resolveElementRules(
     return fileGlobs
       .filter(({ name }) => {
         return only === undefined
-          ? name !== indexRole && name !== entryRole
+          ? name !== indexRoleName && name !== entryRoleName
           : name === only;
       })
       .flatMap(({ globs }) => {
@@ -408,7 +408,9 @@ function resolveElementRules(
 
   const publicFileRoles = fileGlobs
     .filter(({ name }) => {
-      return name !== indexRole && name !== entryRole && roles[name]?.public;
+      return (
+        name !== indexRoleName && name !== entryRoleName && roles[name]?.public
+      );
     })
     .map(({ name }) => name);
 
@@ -592,7 +594,7 @@ function resolveElementRules(
       (domain) => {
         return [
           ...surface(domain),
-          ...(rootRole.role === entryRole && domain.public === true
+          ...(rootRole.role === entryRoleName && domain.public === true
             ? [
                 {
                   kind: "file",

@@ -7,7 +7,7 @@ import {
   enums,
   errors,
   fixtures,
-  index,
+  indexRole,
   ports,
   testsetup,
   testutils,
@@ -115,7 +115,7 @@ export default defineConfig({
   tests: {
     layout: "mirror",
     roles: [
-      index(),
+      indexRole(),
       constants(),
       declarations(),
       types(),
@@ -148,7 +148,7 @@ export default defineConfig({
   },
   src: {
     node: 24,
-    roles: [index(), entrypoint(), ...codeRoles],
+    roles: [indexRole(), entrypoint(), ...codeRoles],
     // @debt no domain declares a `purpose`, so the maps list about forty bare names (`steps`, `data`, `blocks`, `presets`) and an agent must open each one to place code
     namespaces: {
       ".": { layers: ["foundation", "project", "tools", "workflows"] },
@@ -203,10 +203,10 @@ export default defineConfig({
     ],
   },
   scripts: {
-    roles: [index(), ...codeRoles],
+    roles: [indexRole(), ...codeRoles],
   },
   tooling: {
-    roles: [index(), ...codeRoles],
+    roles: [indexRole(), ...codeRoles],
   },
   data: {
     exports: {
