@@ -17,7 +17,6 @@ import type { ResolvedTraits } from "#project/presets/index";
 import type {
   EntityIndex,
   ImportGrants,
-  ImportRule,
   ResolvedSpecifier,
   ResolvedStructure,
 } from "#project/structure/index";
@@ -43,7 +42,6 @@ export interface ConventionConfig {
   readonly root: Directory;
   readonly raw: RawConfig;
   readonly structure: ResolvedStructure;
-  readonly importRules: readonly ImportRule[];
   readonly entities: EntityIndex;
   readonly grants: ImportGrants;
   resolveImport(specifier: string, from: File): ResolvedSpecifier | undefined;

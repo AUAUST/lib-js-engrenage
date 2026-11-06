@@ -16,13 +16,6 @@ export const pluginName = "auaust";
 
 export const rolesPluginName = "roles";
 
-export const boundaryRows = freeze([
-  "environments",
-  "tests",
-  "data",
-  "workspaces",
-] as const);
-
 export const boundaryMessages = freeze({
   higherLayer:
     "`{{domain}}` imports `{{targetDomain}}`; {{order}}. Move the code down, or inject it.",

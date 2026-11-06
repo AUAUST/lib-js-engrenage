@@ -34,6 +34,7 @@ function sourceExtensionOf(
   return extname(structure?.indexFile ?? filename);
 }
 
+// @debt forces the importer's source extension onto every target, so a `.json` or `.tsx` target gets a wrong path
 function withExtension(path: string, extension: string): string {
   return `${path.slice(0, path.length - extname(path).length)}${extension}`;
 }

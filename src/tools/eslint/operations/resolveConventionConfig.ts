@@ -7,7 +7,6 @@ import {
   dataSection,
   environmentSection,
   filesSection,
-  importRulesSection,
   packageJsonSection,
   scriptsSection,
   sourceSection,
@@ -42,7 +41,6 @@ export async function resolveConventionConfig(
 
   const [
     structure,
-    importRules,
     source,
     tests,
     bin,
@@ -59,7 +57,6 @@ export async function resolveConventionConfig(
     aliases,
   ] = await Promise.all([
     config.resolve(structureSection),
-    config.resolve(importRulesSection),
     config.resolve(sourceSection),
     config.resolve(testsSection),
     config.resolve(binSection),
@@ -101,7 +98,6 @@ export async function resolveConventionConfig(
     root,
     raw,
     structure,
-    importRules,
     entities,
     grants: {
       published: traits.published,

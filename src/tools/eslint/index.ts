@@ -18,13 +18,6 @@ export { resolveScope } from "#tools/eslint/operations/resolveScope";
 // @end
 
 // @barrel types/*.ts all
-export * from "#tools/eslint/types/Boundaries";
-export * from "#tools/eslint/types/BoundaryDependency";
-export * from "#tools/eslint/types/BoundaryEntity";
-export * from "#tools/eslint/types/BoundaryOptions";
-export * from "#tools/eslint/types/BoundaryPolicy";
-export * from "#tools/eslint/types/BoundaryRow";
-export * from "#tools/eslint/types/BoundaryRules";
 export * from "#tools/eslint/types/Config";
 export * from "#tools/eslint/types/ConfigObject";
 export * from "#tools/eslint/types/ConfigWithExtends";
@@ -54,4 +47,3 @@ export * from "#tools/eslint/types/rules/UnusedImportsRules";
 // @end
 
 export { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
-export { boundaryRows } from "#tools/eslint/constants";

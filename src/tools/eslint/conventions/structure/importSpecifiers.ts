@@ -24,6 +24,7 @@ export default defineConvention({
   rule: (config) => {
     const { entities, root } = config;
 
+    // @debt the check lives in the convention rather than `project/structure` with the other checks, because it needs the entity index
     function check({
       file,
       importer,

@@ -1,5 +1,4 @@
 export {
-  boundaryRows,
   createEslintConfig,
   createEslintConfigStep,
   defineEslintConfig,
@@ -8,13 +7,6 @@ export {
 } from "#tools/eslint/index";
 export type {
   AuaustRules,
-  Boundaries,
-  BoundaryDependency,
-  BoundaryEntity,
-  BoundaryOptions,
-  BoundaryPolicy,
-  BoundaryRow,
-  BoundaryRules,
   Config,
   ConfigObject,
   ConfigWithExtends,
