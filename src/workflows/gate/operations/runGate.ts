@@ -1,6 +1,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
+import { filter, map } from "@auaust/primitive-kit/arrays";
+
 import { eslint, packages, prettier, typescript, vitest } from "#constants";
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { resolveBinary, spawnProcess } from "#foundation/processes/index";
@@ -83,9 +85,11 @@ function createCliStep(root: Directory, args: readonly string[]): GateStep {
   };
 }
 
-async function createSteps(
-  config: LoadedConfig,
-): Promise<{ fixes: GateStep[]; checks: GateStep[] }> {
+async function createSteps(config: LoadedConfig): Promise<{
+  fixes: GateStep[];
+  checks: GateStep[];
+  commands: GateStep[];
+}> {
   const { root } = config.context;
 
   const environment = await config.resolve(environmentSection);
@@ -144,16 +148,38 @@ async function createSteps(
     });
   }
 
-  for (const command of gate.commands) {
-    checks.push({
+  const commands = map(gate.commands, (command): GateStep => {
+    return {
       name: command,
       run() {
         return execute(root, "sh", ["-c", command]);
       },
-    });
+    };
+  });
+
+  return {
+    fixes,
+    checks,
+    commands,
+  };
+}
+
+async function runStep(
+  step: GateStep,
+  files: Files,
+): Promise<GateFailure | undefined> {
+  let result: GateResult;
+
+  try {
+    result = await step.run(files);
+  } catch (error) {
+    result = {
+      ok: false,
+      output: error instanceof Error ? error.message : String(error),
+    };
   }
 
-  return { fixes, checks };
+  return result.ok ? undefined : { step: step.name, output: result.output };
 }
 
 async function runSteps(
@@ -163,23 +189,27 @@ async function runSteps(
   const failures: GateFailure[] = [];
 
   for (const step of steps) {
-    let result: GateResult;
+    const failure = await runStep(step, files);
 
-    try {
-      result = await step.run(files);
-    } catch (error) {
-      result = {
-        ok: false,
-        output: error instanceof Error ? error.message : String(error),
-      };
-    }
-
-    if (!result.ok) {
-      failures.push({ step: step.name, output: result.output });
+    if (failure !== undefined) {
+      failures.push(failure);
     }
   }
 
   return failures;
+}
+
+async function runConcurrentSteps(
+  steps: readonly GateStep[],
+  files: Files,
+): Promise<GateFailure[]> {
+  const results = await Promise.all(
+    map(steps, (step) => {
+      return runStep(step, files);
+    }),
+  );
+
+  return filter(results, (failure) => failure !== undefined);
 }
 
 // @debt in staged mode the entries are read from the worktree, not from the index the commit records.
@@ -245,7 +275,7 @@ export async function runGate(
     return { failures: [], warnings: [] };
   }
 
-  const { fixes, checks } = await createSteps(config);
+  const { fixes, checks, commands } = await createSteps(config);
 
   const failures = await runSteps(fixes, files);
 
@@ -253,7 +283,10 @@ export async function runGate(
     await runGit(root, ["add", "--", ...files]);
   }
 
-  failures.push(...(await runSteps(checks, files)));
+  failures.push(
+    ...(await runConcurrentSteps(checks, files)),
+    ...(await runSteps(commands, files)),
+  );
 
   if (failures.length === 0) {
     await mkdir(dirname(stamp), { recursive: true });
