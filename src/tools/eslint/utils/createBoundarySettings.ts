@@ -5,12 +5,16 @@ import type { Settings } from "eslint-plugin-boundaries";
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries, freeze } from "@auaust/toolkit/object";
 
-import { createFileCategory } from "#tools/eslint/utils/createFileCategory";
 import type { StructureNode } from "#project/structure/index";
 import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { Glob } from "#types/Glob";
 
+// @debt duplicates `elementEnvironments` from `#project/structure` constants
 const elementEnvironments = ["src", "scripts", "tooling"] as const;
+
+function createFileCategory(role: string): string {
+  return role.replaceAll(/\W+/g, "-").replaceAll(/^-|-$/g, "");
+}
 
 function collect(node: StructureNode): StructureNode[] {
   return [node, ...flatMap(node.children, collect)];
@@ -70,6 +74,7 @@ function resolveResolver(): string {
   );
 }
 
+// @debt the element and role file-category settings serve no policy since layers and surfaces left the plugin, yet the plugin still classifies every file with them; #282 removes them with the plugin
 export function createBoundarySettings(config: ConventionConfig): Settings {
   const nodes = flatMap(elementEnvironments, (name) => {
     const structure = config.structure[name];

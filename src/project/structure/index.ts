@@ -7,6 +7,8 @@ export { resolveImportRules } from "#project/structure/operations/resolveImportR
 export * from "#project/structure/types/Alias";
 export * from "#project/structure/types/AliasesInput";
 export * from "#project/structure/types/AliasesOption";
+export * from "#project/structure/types/BoundaryCause";
+export * from "#project/structure/types/BoundaryViolation";
 export * from "#project/structure/types/DomainInput";
 export * from "#project/structure/types/EffectModuleResolver";
 export * from "#project/structure/types/EffectModules";
@@ -16,10 +18,12 @@ export * from "#project/structure/types/EnvironmentRoles";
 export * from "#project/structure/types/EnvironmentStructure";
 export * from "#project/structure/types/ImportCategory";
 export * from "#project/structure/types/ImportCycle";
+export * from "#project/structure/types/ImportKind";
 export * from "#project/structure/types/ImportRelation";
 export * from "#project/structure/types/ImportRule";
 export * from "#project/structure/types/ImportRuleSource";
 export * from "#project/structure/types/ImportRuleTarget";
+export * from "#project/structure/types/LineageMember";
 export * from "#project/structure/types/NamespaceInput";
 export * from "#project/structure/types/ProgramLayout";
 export * from "#project/structure/types/ResolvedAliases";
@@ -59,6 +63,9 @@ export { structureSchema } from "#project/structure/config/schemas/structureSche
 // @end
 
 // @barrel utils/*.ts named
+export { checkBoundary } from "#project/structure/utils/checkBoundary";
+export { checkLayers } from "#project/structure/utils/checkLayers";
+export { checkSurfaces } from "#project/structure/utils/checkSurfaces";
 export { completeRole } from "#project/structure/utils/completeRole";
 export { createEntityIndex } from "#project/structure/utils/createEntityIndex";
 export { createImportResolver } from "#project/structure/utils/createImportResolver";

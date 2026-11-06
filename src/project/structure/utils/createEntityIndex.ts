@@ -12,6 +12,7 @@ import type { Alias } from "#project/structure/types/Alias";
 import type { Entity } from "#project/structure/types/Entity";
 import type { EntityIndex } from "#project/structure/types/EntityIndex";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
+import type { LineageMember } from "#project/structure/types/LineageMember";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
@@ -38,6 +39,27 @@ interface CodeEnvironment {
 
 const projectRoot = ".";
 const selfSubpath = ".";
+const noLineage: readonly LineageMember[] = freeze([]);
+
+function extendLineage(
+  lineage: readonly LineageMember[],
+  node: StructureNode,
+  path: Directory,
+): readonly LineageMember[] {
+  if (node.kind !== "namespace" && node.kind !== "domain") {
+    return lineage;
+  }
+
+  const member: LineageMember = freeze({
+    path,
+    kind: node.kind,
+    layer: node.layer,
+    layers: node.layers,
+    isolated: node.relation === "isolated",
+  });
+
+  return freeze([...lineage, member]);
+}
 
 function createEntity(
   environment: Entity["environment"],
@@ -50,8 +72,7 @@ function createEntity(
     path,
     kind: undefined,
     commands: false,
-    namespace: undefined,
-    layer: undefined,
+    lineage: noLineage,
     domain: undefined,
     surface: freeze([]),
     role: undefined,
@@ -185,14 +206,7 @@ export function createEntityIndex({
       path: node.path,
       kind: node.kind,
       commands: node.commands === true,
-      namespace:
-        node.kind === "namespace"
-          ? freeze({
-              path: node.path,
-              isolated: node.relation === "isolated",
-            })
-          : parent.namespace,
-      layer: node.layer ?? parent.layer,
+      lineage: extendLineage(parent.lineage, node, node.path),
       domain:
         node.kind === "domain"
           ? node.path.slice(directory.length + 1)
@@ -234,10 +248,7 @@ export function createEntityIndex({
         ...createEntity(name, directory),
         kind: tree.kind,
         commands: tree.commands === true,
-        namespace: freeze({
-          path: directory,
-          isolated: tree.relation === "isolated",
-        }),
+        lineage: extendLineage(noLineage, tree, directory),
       });
 
       register(directory, {

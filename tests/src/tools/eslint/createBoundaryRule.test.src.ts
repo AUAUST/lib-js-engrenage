@@ -7,14 +7,13 @@ import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig"
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 import type { Plugin } from "#tools/eslint/types/Plugin";
 
-interface SurfacesOptions {
+interface EnvironmentsOptions {
   readonly policies: readonly {
-    readonly from: unknown;
-    readonly disallow?: unknown;
+    readonly message?: string;
   }[];
 }
 
-async function lintSurfaces(files: readonly string[]) {
+async function lintEnvironments(files: readonly string[]) {
   const dependencies = (boundaries as unknown as Plugin).rules?.dependencies;
 
   if (dependencies === undefined) {
@@ -39,40 +38,26 @@ async function lintSurfaces(files: readonly string[]) {
   }
 
   const options = create.mock.calls.map(([context]) => {
-    return context.options[0] as SurfacesOptions;
+    return context.options[0] as EnvironmentsOptions;
   });
 
   create.mockRestore();
 
   return options.filter(({ policies }) => {
-    return policies.some(({ disallow }) => {
-      return (
-        disallow !== undefined &&
-        JSON.stringify(disallow).includes('"type":"role"')
-      );
+    return policies.some(({ message }) => {
+      return message?.startsWith("src never imports bin") === true;
     });
   });
 }
 
 describe("createBoundaryRule", () => {
   test("reuses the merged options across files of one config", async () => {
-    const [first, second] = await lintSurfaces([
+    const [first, second] = await lintEnvironments([
       "src/project/feature/index.ts",
       "src/project/other/utils/priv.ts",
     ]);
 
     expect(first).toBeDefined();
     expect(second).toBe(first);
-  });
-
-  test("holds one surfaces disallow per element source", async () => {
-    const [options] = await lintSurfaces(["src/project/feature/index.ts"]);
-
-    const sources = (options?.policies ?? [])
-      .filter(({ disallow }) => disallow !== undefined)
-      .map(({ from }) => JSON.stringify(from));
-
-    expect(sources.length).toBeGreaterThan(0);
-    expect(new Set(sources).size).toBe(sources.length);
   });
 });

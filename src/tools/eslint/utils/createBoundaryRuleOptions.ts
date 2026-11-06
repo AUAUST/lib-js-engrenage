@@ -18,7 +18,5 @@ export function createBoundaryRuleOptions(
     importTests: options("tests"),
     importData: options("data"),
     importWorkspaces: options("workspaces"),
-    importLayers: options("layers"),
-    importSurfaces: options("surfaces"),
   };
 }

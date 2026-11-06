@@ -5,6 +5,12 @@ import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 
 export const defaultIndexFile = "index.ts";
 
+export const elementEnvironments = freeze([
+  "src",
+  "scripts",
+  "tooling",
+] as const);
+
 export const defaultEffectLevels = freeze([
   "pure",
   "confined",

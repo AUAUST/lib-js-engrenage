@@ -1,8 +1,6 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
-import { entries, freeze, record } from "@auaust/toolkit/object";
+import { freeze, record } from "@auaust/toolkit/object";
 
-import { boundaryRows, indexRole } from "#tools/eslint/constants";
-import { createFileCategory } from "#tools/eslint/utils/createFileCategory";
+import { boundaryRows } from "#tools/eslint/constants";
 import type {
   ImportRule,
   ImportRuleSource,
@@ -16,8 +14,6 @@ import type { BoundaryRow } from "#tools/eslint/types/BoundaryRow";
 import type { BoundaryRules } from "#tools/eslint/types/BoundaryRules";
 import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { Glob } from "#types/Glob";
-
-type ElementRow = Extract<BoundaryRow, "layers" | "surfaces">;
 
 interface Piece {
   readonly row: BoundaryRow;
@@ -74,16 +70,7 @@ function splitRule(rule: ImportRule): Piece[] {
     ];
   }
 
-  return [
-    ...piece(
-      "layers",
-      targets.filter(({ kind }) => kind === "index"),
-    ),
-    ...piece(
-      "surfaces",
-      targets.filter(({ kind }) => kind !== "index"),
-    ),
-  ];
+  return [];
 }
 
 export function createBoundaryPolicies(
@@ -118,18 +105,6 @@ export function createBoundaryPolicies(
 
   function within(dirs: readonly string[]): Glob[] {
     return dirs.map((dir) => `${dir}/**`);
-  }
-
-  function ownerDirectories(path: string): readonly string[] {
-    function holds(dirs: readonly string[]): boolean {
-      return dirs.some((dir) => {
-        return path === dir || path.startsWith(`${dir}/`);
-      });
-    }
-
-    const owner = [directories.scripts, directories.tooling].find(holds);
-
-    return owner ?? directories.src;
   }
 
   function createSource(source: ImportRuleSource): BoundaryEntity {
@@ -235,97 +210,6 @@ export function createBoundaryPolicies(
     ];
   }
 
-  const nonIndexCategories = [
-    ...new Set(
-      flatMap([config.src, config.scripts, config.tooling], ({ roles }) => {
-        return entries(roles.roles)
-          .filter(([role, { file }]) => {
-            return file !== undefined && role !== indexRole;
-          })
-          .map(([role]) => createFileCategory(role));
-      }),
-    ),
-  ];
-
-  function createScope(row: ElementRow, dirs: readonly string[]) {
-    const path = within(dirs);
-
-    if (row === "layers") {
-      return [
-        {
-          element: { type: "domain" },
-          file: { path, categories: createFileCategory(indexRole) },
-        },
-      ];
-    }
-
-    return [
-      {
-        element: { type: "role" },
-        file: { path },
-      },
-      ...(nonIndexCategories.length === 0
-        ? []
-        : [
-            {
-              file: { path, categories: nonIndexCategories },
-            },
-          ]),
-    ];
-  }
-
-  function createElementPolicies(
-    row: ElementRow,
-    source: ImportRuleSource,
-    group: readonly Piece[],
-  ): BoundaryPolicy[] {
-    const from = createSource(source);
-
-    const dirs = ownerDirectories(
-      source.kind === "element" || source.kind === "file" ? source.path : "",
-    );
-
-    const reasons = [...new Set(group.map(({ rule }) => rule.reason))];
-
-    // @debt one message for every cause: an import of a higher layer's index.ts, or of the importer's own index.ts, is told to "import the domain through its index.ts", every grant is listed instead of the broken one, and the remedy names no index specifier
-    const policies: BoundaryPolicy[] = [
-      {
-        from,
-        disallow: { to: createScope(row, dirs) },
-        message: `{{ from.file.path }} cannot import {{ to.file.path }}. It may import: ${reasons.join("; ")}. Import the domain through its index.ts or its public roles, or move the code.`,
-      },
-    ];
-
-    for (const typeOnly of [false, true]) {
-      const paths = flatMap(
-        group.filter(({ rule }) => rule.typeOnly === typeOnly),
-        ({ targets }) => {
-          return createAlternatives(targets).flatMap(({ to }) => {
-            return to?.file?.path === undefined ? [] : [to.file.path];
-          });
-        },
-      ).flat();
-
-      if (paths.length > 0) {
-        policies.push({
-          from,
-          allow: {
-            to: {
-              file: { path: paths },
-            },
-            ...(typeOnly
-              ? {
-                  dependency: { kind: "type" },
-                }
-              : {}),
-          },
-        });
-      }
-    }
-
-    return policies;
-  }
-
   function createEnvironmentPolicies(
     source: ImportRuleSource,
     group: readonly Piece[],
@@ -394,14 +278,6 @@ export function createBoundaryPolicies(
       { source: ImportRuleSource; pieces: Piece[] }
     >();
 
-    if (row === "layers" || row === "surfaces") {
-      for (const { source } of config.importRules) {
-        if (source.kind === "element" || source.kind === "file") {
-          groups.set(JSON.stringify(source), { source, pieces: [] });
-        }
-      }
-    }
-
     for (const piece of pieces.filter((candidate) => candidate.row === row)) {
       const key = JSON.stringify(piece.rule.source);
 
@@ -415,17 +291,13 @@ export function createBoundaryPolicies(
     }
 
     for (const { source, pieces: group } of groups.values()) {
-      policies.push(
-        ...(row === "layers" || row === "surfaces"
-          ? createElementPolicies(row, source, group)
-          : createEnvironmentPolicies(source, group)),
-      );
+      policies.push(...createEnvironmentPolicies(source, group));
     }
 
     return {
       default: "allow",
       policies,
-      checkUnknownLocals: row !== "layers" && row !== "surfaces",
+      checkUnknownLocals: true,
       checkAllOrigins: row === "tests",
     };
   }

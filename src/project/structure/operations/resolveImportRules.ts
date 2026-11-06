@@ -4,6 +4,7 @@ import { flatMap, wrap } from "@auaust/primitive-kit/arrays";
 import { entries, freeze, keys } from "@auaust/toolkit/object";
 
 import { entryRoleName, indexRoleName } from "#project/roles/constants";
+import { elementEnvironments } from "#project/structure/constants";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportRelation } from "#project/structure/types/ImportRelation";
@@ -26,8 +27,6 @@ interface Scope {
   readonly reaches: readonly Reach[];
   readonly ancestors: readonly StructureNode[];
 }
-
-const elementEnvironments = ["src", "scripts", "tooling"] as const;
 
 function category(name: ImportCategory): ImportRuleTarget {
   return { kind: "category", category: name };
@@ -366,6 +365,7 @@ function rootFileRole(
     : { role: indexRoleName, file: indexFile };
 }
 
+// @debt the maps render expanded element rules while lint decides from entities; #227 renders the checks instead
 function resolveElementRules(
   structure: EnvironmentStructure,
   { roles }: ResolvedRoles,
@@ -541,7 +541,7 @@ function resolveElementRules(
                 return layer !== undefined && layer === member.layer;
               });
 
-      // @debt the lower-layer and peer reasons say "through their index.ts" while `surface` also grants public roles (constants, errors, ports, adapters), so maps and lint messages understate what may be imported directly
+      // @debt the lower-layer and peer reasons say "through their index.ts" while `surface` also grants public roles (constants, errors, ports, adapters), so the maps understate what may be imported directly
       const next: Scope = {
         ancestors: scope.ancestors,
         reaches: [

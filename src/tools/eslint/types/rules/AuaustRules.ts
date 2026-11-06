@@ -60,15 +60,13 @@ export interface AuaustRules {
    */
   "auaust/import-environments"?: Rule<AuaustImportEnvironments>;
   /**
-   * Check dependencies between elements
-   * @see https://www.jsboundaries.dev/docs/rules/dependencies/
+   * An element imports only the index.ts of a domain in a lower layer, of a non-isolated peer or of its own sub-domain.
    */
-  "auaust/import-layers"?: Rule<AuaustImportLayers>;
+  "auaust/import-layers"?: Rule<[]>;
   /**
-   * Check dependencies between elements
-   * @see https://www.jsboundaries.dev/docs/rules/dependencies/
+   * An element imports its own, ancestor and global roles, and other domains only through their public roles; a type-only role imports with `import type`.
    */
-  "auaust/import-surfaces"?: Rule<AuaustImportSurfaces>;
+  "auaust/import-surfaces"?: Rule<[]>;
   /**
    * Check dependencies between elements
    * @see https://www.jsboundaries.dev/docs/rules/dependencies/
@@ -568,22 +566,6 @@ type AuaustImportData =
     ];
 // ----- auaust/import-environments -----
 type AuaustImportEnvironments =
-  | []
-  | [
-      {
-        policies?: unknown[];
-      },
-    ];
-// ----- auaust/import-layers -----
-type AuaustImportLayers =
-  | []
-  | [
-      {
-        policies?: unknown[];
-      },
-    ];
-// ----- auaust/import-surfaces -----
-type AuaustImportSurfaces =
   | []
   | [
       {

@@ -46,8 +46,6 @@ export const optionsSchema = strictObject({
       tests: boundaryPolicies,
       data: boundaryPolicies,
       workspaces: boundaryPolicies,
-      layers: boundaryPolicies,
-      surfaces: boundaryPolicies,
     }),
     {},
   ),

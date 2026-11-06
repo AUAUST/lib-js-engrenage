@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import type { BoundaryCause } from "#project/structure/index";
 import type { CoreRules } from "#tools/eslint/types/rules/CoreRules";
 import type { StylisticRules } from "#tools/eslint/types/rules/StylisticRules";
 import type { TypescriptEslintRules } from "#tools/eslint/types/rules/TypescriptEslintRules";
@@ -20,9 +21,23 @@ export const boundaryRows = freeze([
   "tests",
   "data",
   "workspaces",
-  "layers",
-  "surfaces",
 ] as const);
+
+export const boundaryMessages = freeze({
+  higherLayer:
+    "`{{domain}}` imports `{{targetDomain}}`; {{order}}. Move the code down, or inject it.",
+  isolatedPeer:
+    "`{{domain}}` imports `{{targetDomain}}`; peers of the isolated `{{boundary}}` never import each other. Move the shared code to `{{boundary}}` or lower.",
+  privateRole:
+    "`{{file}}` imports `{{target}}`, private to `{{boundary}}`. Import it from {{fix}}.",
+  ownIndex:
+    "A module of `{{domain}}` imports `{{specifier}}`. Import the role module directly.",
+  typeOnly: "`{{module}}` is type-only; use `import type`.",
+  globalRole:
+    "`{{file}}` belongs to a global role; global roles import only each other.",
+  entrySurface:
+    "`{{file}}` is a package entry; it re-exports only the index and public roles of `{{domain}}`.",
+} as const satisfies Record<BoundaryCause, string>);
 
 export const infoRulesSetting = `${pluginName}/info-rules`;
 

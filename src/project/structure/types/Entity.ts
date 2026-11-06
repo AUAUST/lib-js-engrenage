@@ -1,3 +1,4 @@
+import type { LineageMember } from "#project/structure/types/LineageMember";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureKind } from "#project/structure/types/StructureKind";
@@ -12,9 +13,7 @@ export interface Entity {
   readonly path: Directory;
   readonly kind: StructureKind | undefined;
   readonly commands: boolean;
-  readonly namespace:
-    { readonly path: Directory; readonly isolated: boolean } | undefined;
-  readonly layer: number | undefined;
+  readonly lineage: readonly LineageMember[];
   readonly domain: string | undefined;
   readonly surface: readonly string[];
   readonly role: string | undefined;

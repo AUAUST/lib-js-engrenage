@@ -3,13 +3,39 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
+import { entry } from "@auaust/engrenage/roles";
 import { assign } from "@auaust/toolkit/object";
 
 import { createBoundaryProject } from "#tests/utils/createBoundaryProject";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
-async function createLinter(prefix = "auaust/import-") {
-  const project = createBoundaryProject();
+const exported = "export const value = 1;\n";
 
+function createNestedLayersProject() {
+  return createTemporaryProject({
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+      imports: {
+        "#foundation/*": "./src/foundation/*.ts",
+        "#project/*": "./src/project/*.ts",
+        "#tools/*": "./src/tools/*.ts",
+      },
+    }),
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry())}, namespaces: { ".": { layers: ["foundation", "project", "tools"] }, project: { layers: ["core", "*"] } } } };\n`,
+    "tsconfig.json": "{}",
+    "src/foundation/base/index.ts": exported,
+    "src/project/core/index.ts": exported,
+    "src/project/extra/index.ts": exported,
+    "src/tools/kit/index.ts": exported,
+  });
+}
+
+async function createLinter(
+  prefix = "auaust/import-",
+  project = createBoundaryProject(),
+) {
   const eslint = new ESLint({
     cwd: project.root,
     overrideConfigFile: true,
@@ -72,7 +98,7 @@ describe("structure boundaries", () => {
     ).toEqual([]);
   });
 
-  test("names the remedy in a surfaces message", async () => {
+  test("names the index.ts of the target domain in a surfaces message", async () => {
     const lint = await createLinter();
 
     const [message] = await lint.messages(
@@ -80,9 +106,55 @@ describe("structure boundaries", () => {
       'export { value } from "#project/other/utils/priv";\n',
     );
 
-    expect(message).toContain(
-      "Import the domain through its index.ts or its public roles",
+    expect(message).toContain("private to `project/other`");
+    expect(message).toContain("Import it from `#project/other/index`");
+  });
+
+  test("names the layer order of an upward import", async () => {
+    const lint = await createLinter();
+
+    const [message] = await lint.messages(
+      "src/foundation/base/index.ts",
+      'export { value } from "#project/feature/index";\n',
     );
+
+    expect(message).toContain("foundation < project");
+    expect(message).toContain("Move the code down, or inject it");
+  });
+
+  test("sends a domain importing its own index to the role module", async () => {
+    const lint = await createLinter();
+
+    expect(
+      await lint.messages(
+        "src/project/feature/utils/own.ts",
+        'export { value } from "#project/feature/index";\n',
+      ),
+    ).toEqual([
+      "A module of `project/feature` imports `#project/feature/index`. Import the role module directly.",
+    ]);
+  });
+
+  test("decides layers at the container both sides share", async () => {
+    const lint = await createLinter(
+      "auaust/import-",
+      createNestedLayersProject(),
+    );
+
+    expect(
+      await lint(
+        "src/project/core/index.ts",
+        'export { value } from "#foundation/base/index";\n',
+      ),
+    ).toEqual([]);
+
+    const messages = await lint.messages(
+      "src/project/core/index.ts",
+      'export { value } from "#tools/kit/index";\n',
+    );
+
+    expect(messages).toHaveLength(1);
+    expect(messages[0]).toContain("foundation < project < tools");
   });
 
   test("lets a peer import the constants of a domain", async () => {

@@ -85,7 +85,21 @@ describe("createEntityIndex", () => {
       environment: "src",
       domain: "project/feature",
       role: "utils",
-      layer: 1,
+      lineage: [
+        {
+          path: "src",
+          layers: ["foundation", "project"],
+        },
+        {
+          path: "src/project",
+          kind: "namespace",
+          layer: 1,
+        },
+        {
+          path: "src/project/feature",
+          kind: "domain",
+        },
+      ],
       surface: [
         "#project/feature/index",
         "#project/feature/errors/*",
