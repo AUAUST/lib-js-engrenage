@@ -68,6 +68,9 @@ async function createLinter({
     "src/project/feature/utils/own.ts": "export const own = 1;\n",
     "src/project/feature/logging/trace.ts": "export const trace = 1;\n",
     "src/project/feature/constants.ts": "export const value = 1;\n",
+    "src/project/feature/config/featureSchema.ts": "export const value = 1;\n",
+    "src/project/feature/config/defineFeatureConfig.ts":
+      "export const value = 1;\n",
   });
 
   const eslint = new ESLint({
@@ -86,6 +89,23 @@ async function createLinter({
       .map(({ message }) => message);
   };
 }
+
+const config = createRolePreset({
+  name: "config",
+  effects: "confined",
+  roles: [
+    {
+      name: "schemas",
+      file: "*Schema.ts",
+      effects: "confined",
+    },
+    {
+      name: "definers",
+      file: "define*Config.ts",
+      effects: "effectful",
+    },
+  ],
+});
 
 const utility = "src/project/feature/utils/own.ts";
 const constants = "src/project/feature/constants.ts";
@@ -177,5 +197,18 @@ describe("import effects", () => {
     });
 
     expect(await listed(utility, importing("valibot", "string"))).toEqual([]);
+  });
+
+  test("rank a file at a role's root by the nested role its name matches", async () => {
+    const lint = await createLinter({ roles: [config()] });
+    const act = importing("#foundation/base/index", "act");
+
+    expect(
+      await lint("src/project/feature/config/featureSchema.ts", act),
+    ).toHaveLength(1);
+
+    expect(
+      await lint("src/project/feature/config/defineFeatureConfig.ts", act),
+    ).toEqual([]);
   });
 });

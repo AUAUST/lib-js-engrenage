@@ -13,6 +13,7 @@ import {
 import { loadConfig } from "#project/config/operations/loadConfig";
 import {
   constants,
+  createRolePreset,
   entrypoint,
   errors,
   indexRole,
@@ -21,12 +22,30 @@ import {
 import { createEntityIndex } from "#project/structure/utils/createEntityIndex";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
+const config = createRolePreset({
+  name: "config",
+  effects: "confined",
+  roles: [
+    {
+      name: "schemas",
+      file: "*Schema.ts",
+      effects: "confined",
+    },
+    {
+      name: "definers",
+      file: "define*Config.ts",
+      effects: "effectful",
+    },
+  ],
+});
+
 const roles = JSON.stringify([
   indexRole(),
   entrypoint(),
   constants(),
   errors(),
   utils(),
+  config(),
 ]);
 
 async function createIndex() {
@@ -41,6 +60,9 @@ async function createIndex() {
     "src/project/feature/constants.ts": "",
     "src/project/feature/utils/own.ts": "",
     "src/project/feature/errors/Failure.ts": "",
+    "src/project/feature/config/featureSchema.ts": "",
+    "src/project/feature/config/defineFeatureConfig.ts": "",
+    "src/project/feature/config/helper.ts": "",
     "tests/x.test.src.ts": "",
   });
 
@@ -120,6 +142,22 @@ describe("createEntityIndex", () => {
       environment: "tests",
       variant: "src",
     });
+  });
+
+  test("gives a file at a role's root the nested role its name matches, else the role", async () => {
+    const index = await createIndex();
+
+    expect(
+      index.entityOf("src/project/feature/config/featureSchema.ts"),
+    ).toMatchObject({ role: "config/schemas", effects: "confined" });
+
+    expect(
+      index.entityOf("src/project/feature/config/defineFeatureConfig.ts"),
+    ).toMatchObject({ role: "config/definers", effects: "effectful" });
+
+    expect(
+      index.entityOf("src/project/feature/config/helper.ts"),
+    ).toMatchObject({ role: "config", effects: "confined" });
   });
 
   test("has no entity for a file in a directory the walk never saw, outside a role", async () => {

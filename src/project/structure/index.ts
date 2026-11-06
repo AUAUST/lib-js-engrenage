@@ -57,6 +57,7 @@ export * from "#project/structure/types/UnclassifiedReason";
 export { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 export { domainSchema } from "#project/structure/config/schemas/domainSchema";
 export { effectLevelsSchema } from "#project/structure/config/schemas/effectLevelsSchema";
+export { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModuleResolverSchema";
 export { effectModulesSchema } from "#project/structure/config/schemas/effectModulesSchema";
 export { effectsSchema } from "#project/structure/config/schemas/effectsSchema";
 export { namespaceSchema } from "#project/structure/config/schemas/namespaceSchema";

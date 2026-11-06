@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
-import { entry } from "@auaust/engrenage/roles";
+import { createRolePreset, entry } from "@auaust/engrenage/roles";
 import { assign } from "@auaust/toolkit/object";
 
 import { createBoundaryProject } from "#tests/utils/createBoundaryProject";
@@ -29,6 +29,26 @@ function createNestedLayersProject() {
     "src/project/core/index.ts": exported,
     "src/project/extra/index.ts": exported,
     "src/tools/kit/index.ts": exported,
+  });
+}
+
+function createConfigRoleProject(strict: boolean) {
+  const config = createRolePreset({
+    name: "config",
+    strict,
+    roles: [
+      { name: "schemas", file: "*Schema.ts" },
+      { name: "definers", file: "define*Config.ts" },
+    ],
+  });
+
+  return createTemporaryProject({
+    "package.json": JSON.stringify({ name: "library", type: "module" }),
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry(), config())} } };\n`,
+    "tsconfig.json": "{}",
+    "src/feature/index.ts": exported,
+    "src/feature/config/featureSchema.ts": exported,
+    "src/feature/config/helper.ts": exported,
   });
 }
 
@@ -291,5 +311,27 @@ describe("structure boundaries", () => {
         "export const one = 1;\nexport const two = 2;\n",
       ),
     ).toEqual(["auaust/role-exports"]);
+  });
+
+  test("accepts at a strict role's root only the files its nested roles name", async () => {
+    const helper = "src/feature/config/helper.ts";
+    const schema = "src/feature/config/featureSchema.ts";
+
+    const strict = await createLinter(
+      "auaust/role-contracts",
+      createConfigRoleProject(true),
+    );
+
+    const [message] = await strict.messages(helper, exported);
+
+    expect(message).toContain("*Schema.ts, define*Config.ts");
+    expect(await strict(schema, exported)).toEqual([]);
+
+    const loose = await createLinter(
+      "auaust/role-contracts",
+      createConfigRoleProject(false),
+    );
+
+    expect(await loose(helper, exported)).toEqual([]);
   });
 });

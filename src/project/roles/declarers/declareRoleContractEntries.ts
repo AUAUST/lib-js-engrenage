@@ -34,7 +34,7 @@ export function declareRoleContractEntries<Nested>(
     }),
     file: declare(globsSchema, {
       description:
-        "Makes the role a file role, matched by these names or globs.",
+        "Makes the role a file role, matched by these names or globs; a nested role's also match files at its owner's root.",
       optional: { value: undefined },
     }),
     accepts: declare(globsSchema, {
@@ -100,6 +100,11 @@ export function declareRoleContractEntries<Nested>(
       description:
         "Whether the role is active only where a structured role or a namespace enables it.",
       optional: describedDefault(roleContractDefaults.scoped),
+    }),
+    strict: declare(boolean(), {
+      description:
+        "Accepts at its root only the files its nested roles' `file` globs name, besides their directories.",
+      optional: describedDefault(roleContractDefaults.strict),
     }),
     rules: declare(roleRulesSchema, {
       description: [

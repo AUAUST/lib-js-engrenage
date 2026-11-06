@@ -1,5 +1,7 @@
 import { basename, dirname, join, matchesGlob } from "node:path";
 
+import { wrap } from "@auaust/primitive-kit/arrays";
+
 import { relativeWithin } from "#foundation/filesystem/index";
 import { indexRoleName } from "#project/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
@@ -11,7 +13,7 @@ export default defineConvention({
     return defineStructureRule({
       config,
       description:
-        "A file in a role directory follows the role's nesting, categories, index and accepted files.",
+        "A file in a role directory follows the role's nesting, categories, index and accepted files; a strict role holds at its root only the files its nested roles name.",
       messages: {
         nesting:
           "The role {{role}} allows {{depth}} levels of directories; move this file up.",
@@ -20,11 +22,22 @@ export default defineConvention({
         index: "The role {{role}} holds no index.ts; remove it or move it out.",
         accepts:
           "The role {{role}} accepts only {{accepts}}; move this file out.",
+        strict:
+          "The strict role {{role}} accepts at its root only {{accepts}}; rename this file or move it into a nested role's directory.",
       },
-      create(context, { kind, role, contract, path, fileRole }) {
-        if (kind !== "role" || role === undefined || contract === undefined) {
+      create(context, { environment, kind, role, contract, path, fileRole }) {
+        if (
+          environment === "data" ||
+          environment === "dist" ||
+          environment === "workspace" ||
+          kind !== "role" ||
+          role === undefined ||
+          contract === undefined
+        ) {
           return {};
         }
+
+        const structure = config.structure[environment];
 
         const relativePath = relativeWithin(
           join(config.root, path),
@@ -67,6 +80,20 @@ export default defineConvention({
                 node: program,
                 messageId: "index",
                 data: { role },
+              });
+            } else if (!isIndex && contract.strict && depth === 0) {
+              const accepted = (contract.roles ?? []).flatMap((name) => {
+                return wrap(structure?.roles[name]?.contract.file ?? []);
+              });
+
+              context.report({
+                node: program,
+                messageId: "strict",
+                data: {
+                  role,
+                  accepts:
+                    accepted.length === 0 ? "no file" : accepted.join(", "),
+                },
               });
             } else if (
               !isIndex &&

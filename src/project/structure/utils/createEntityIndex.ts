@@ -14,6 +14,7 @@ import type { EntityIndex } from "#project/structure/types/EntityIndex";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { LineageMember } from "#project/structure/types/LineageMember";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
+import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
@@ -25,9 +26,15 @@ import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
+interface NamedFileRole {
+  readonly name: string;
+  readonly contract: ResolvedRoleContract;
+}
+
 interface Located {
   readonly entity: Entity;
   readonly roles: ResolvedRoles | undefined;
+  readonly named: readonly NamedFileRole[];
   readonly covers: boolean;
 }
 
@@ -40,6 +47,7 @@ interface CodeEnvironment {
 const projectRoot = ".";
 const selfSubpath = ".";
 const noLineage: readonly LineageMember[] = freeze([]);
+const noNamedFileRoles: readonly NamedFileRole[] = freeze([]);
 
 function extendLineage(
   lineage: readonly LineageMember[],
@@ -168,6 +176,7 @@ export function createEntityIndex({
     const extension = extname(environment.indexFile);
     const entry = publicEntries.get(`${node.path}/${environment.entryFile}`);
 
+    // @debt reads a child role's visibility from the environment's roles, which miss the scoped roles a namespace enables; `environment.roles` holds every role the walk met
     const roles = node.children
       .filter((child) => {
         return (
@@ -198,8 +207,16 @@ export function createEntityIndex({
     const role = node.kind === "role" ? node.role : undefined;
     const { roles } = environments[environment.name];
 
-    // @debt a scoped role (`config/schemas`) has no contract in the environment's roles, so lint skips its contract; `environment.roles` holds it, and switching to it reports three modules of this repository's `config/schemas`
-    const contract = role === undefined ? undefined : roles.roles[role];
+    const contract =
+      role === undefined ? undefined : environment.roles[role]?.contract;
+
+    const named = freeze(
+      (contract?.roles ?? []).flatMap((name): NamedFileRole[] => {
+        const nested = environment.roles[name]?.contract;
+
+        return nested?.file === undefined ? [] : [{ name, contract: nested }];
+      }),
+    );
 
     const entity: Entity = freeze({
       ...parent,
@@ -222,6 +239,7 @@ export function createEntityIndex({
     register(node.path, {
       entity,
       roles,
+      named,
       covers: node.kind === "role",
     });
 
@@ -254,6 +272,7 @@ export function createEntityIndex({
       register(directory, {
         entity,
         roles: environments[name].roles,
+        named: noNamedFileRoles,
         covers: false,
       });
 
@@ -271,6 +290,7 @@ export function createEntityIndex({
         register(directory, {
           entity: createEntity(name, directory),
           roles,
+          named: noNamedFileRoles,
           covers: true,
         });
       }
@@ -283,6 +303,7 @@ export function createEntityIndex({
         register(directory, {
           entity: createEntity("workspace", directory, glob),
           roles: undefined,
+          named: noNamedFileRoles,
           covers: true,
         });
       }
@@ -293,6 +314,7 @@ export function createEntityIndex({
     register(outDir, {
       entity: createEntity("dist", outDir),
       roles: undefined,
+      named: noNamedFileRoles,
       covers: true,
     });
   }
@@ -342,6 +364,52 @@ export function createEntityIndex({
     })?.[0];
   }
 
+  function classify(
+    name: string,
+    directory: Directory,
+    { entity, roles, named }: Located,
+  ): Pick<Entity, "role" | "fileRole" | "contract" | "effects"> {
+    const atRoot = directory === entity.path;
+
+    const nested = atRoot
+      ? named.find(({ contract }) => {
+          return wrap(contract.file ?? []).some((glob) => {
+            return matchesGlob(name, glob);
+          });
+        })
+      : undefined;
+
+    if (nested !== undefined) {
+      return {
+        role: nested.name,
+        fileRole: nested.name,
+        contract: nested.contract,
+        effects: nested.contract.effects,
+      };
+    }
+
+    const fileRole = fileRoleOf(name, roles);
+
+    if (entity.role !== undefined) {
+      return {
+        role: entity.role,
+        fileRole,
+        contract: entity.contract,
+        effects: entity.effects,
+      };
+    }
+
+    const role = atRoot ? fileRole : undefined;
+    const contract = role === undefined ? undefined : roles?.roles[role];
+
+    return {
+      role,
+      fileRole,
+      contract,
+      effects: contract?.effects,
+    };
+  }
+
   const describe = memoized((file: File): Entity | undefined => {
     const path = toProjectPath(file);
     const directory = posix.dirname(path);
@@ -351,25 +419,20 @@ export function createEntityIndex({
       return;
     }
 
-    const { entity, roles } = located;
-    const fileRole = fileRoleOf(posix.basename(path), roles);
+    const { entity } = located;
 
-    const role =
-      entity.role ?? (directory === entity.path ? fileRole : undefined);
-
-    const contract =
-      entity.role === undefined
-        ? role === undefined
-          ? undefined
-          : roles?.roles[role]
-        : entity.contract;
+    const { role, fileRole, contract, effects } = classify(
+      posix.basename(path),
+      directory,
+      located,
+    );
 
     return freeze({
       ...entity,
       role,
       fileRole,
       contract,
-      effects: entity.role === undefined ? contract?.effects : entity.effects,
+      effects,
       public:
         contract?.public === true ||
         role === indexRoleName ||

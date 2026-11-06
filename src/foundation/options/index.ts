@@ -15,6 +15,7 @@ export { declareSection } from "#foundation/options/declarers/declareSection";
 // @barrel config/schemas/*.ts named
 export { directorySchema } from "#foundation/options/config/schemas/directorySchema";
 export { fileSchema } from "#foundation/options/config/schemas/fileSchema";
+export { globSchema } from "#foundation/options/config/schemas/globSchema";
 export { globsSchema } from "#foundation/options/config/schemas/globsSchema";
 export { listOptionSchema } from "#foundation/options/config/schemas/listOptionSchema";
 export { managedListOptionSchema } from "#foundation/options/config/schemas/managedListOptionSchema";
@@ -53,6 +54,3 @@ export * from "#foundation/options/types/ResolvedLocation";
 export * from "#foundation/options/types/Resolver";
 export * from "#foundation/options/types/Section";
 // @end
-
-// @debt globsSchema.ts exports `globSchema` besides its named export, which no barrel can expose; split it into its own module
-export { globSchema } from "#foundation/options/config/schemas/globsSchema";

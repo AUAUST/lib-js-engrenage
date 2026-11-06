@@ -259,6 +259,20 @@ function listRoles(
         node.role,
         node.children.map((child) => join(child.path, anyFile)),
       );
+
+      for (const name of contract.roles ?? []) {
+        const nested = roles?.roles[name];
+
+        if (nested?.file === undefined) {
+          continue;
+        }
+
+        const globs = wrap(nested.file).map((glob) => join(node.path, glob));
+
+        contracts.set(name, nested);
+        add(files, name, globs);
+        add(ignores, node.role, globs);
+      }
     } else if (node.kind !== "role" && roles !== undefined) {
       addFileRoles(node.path, roles);
     }

@@ -439,7 +439,7 @@ export interface AuaustRules {
    */
   "auaust/return-await"?: Rule<AuaustReturnAwait>;
   /**
-   * A file in a role directory follows the role's nesting, categories, index and accepted files.
+   * A file in a role directory follows the role's nesting, categories, index and accepted files; a strict role holds at its root only the files its nested roles name.
    */
   "auaust/role-contracts"?: Rule<[]>;
   /**

@@ -18,7 +18,7 @@ export interface RoleInput {
    */
   purpose?: (string | undefined)
   /**
-   * Makes the role a file role, matched by these names or globs.
+   * Makes the role a file role, matched by these names or globs; a nested role's also match files at its owner's root.
    * @default none
    */
   file?: (Glob | Globs | undefined)
@@ -83,6 +83,11 @@ export interface RoleInput {
    * @default false
    */
   scoped?: (boolean | undefined)
+  /**
+   * Accepts at its root only the files its nested roles' `file` globs name, besides their directories.
+   * @default false
+   */
+  strict?: (boolean | undefined)
   /**
    * ESLint rules applied to the role's files only, never to the files of its nested roles.
    * Each value is a rule entry for a rule already registered, or a rule module, registered as `roles/<role>/<key>` and reported as errors.

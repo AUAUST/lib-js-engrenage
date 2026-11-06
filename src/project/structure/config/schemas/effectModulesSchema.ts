@@ -1,11 +1,6 @@
-import { custom, record, string, union } from "valibot";
+import { record, string, union } from "valibot";
 
-import { isFunction } from "@auaust/toolkit/isFunction";
-
-import type { EffectModuleResolver } from "#project/structure/types/EffectModuleResolver";
-
-export const effectModuleResolverSchema =
-  custom<EffectModuleResolver>(isFunction);
+import { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModuleResolverSchema";
 
 export const effectModulesSchema = union([
   record(string(), string()),

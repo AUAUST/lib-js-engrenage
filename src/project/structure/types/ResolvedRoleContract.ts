@@ -13,6 +13,7 @@ export interface ResolvedRoleContract {
   readonly public: boolean;
   readonly discovered: boolean;
   readonly scoped: boolean;
+  readonly strict: boolean;
   readonly typeOnly: boolean;
   readonly effects: string | undefined;
   readonly purpose: string | undefined;
