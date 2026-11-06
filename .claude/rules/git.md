@@ -5,7 +5,7 @@
 ## Commits
 
 - Don't push.
-- When your work covers several tasks, commit each task's changes separately; otherwise leave your changes uncommitted and give the suggested commit message in your report.
+- When your work covers several tasks, commit each task's changes separately; commit at each checkpoint an issue marks; otherwise leave your changes uncommitted with the suggested commit message in your report.
 - Avoid committing changes you did not make.
 - Write every commit message, suggested or committed, with the subject `<type>: <summary>`, where `<type>` is the type below that matches the commit's main purpose.
 - Write the summary as the label a reader would use to recall the commit's main change, starting lowercase, with no trailing period and no verb the type already carries.

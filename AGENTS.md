@@ -187,16 +187,16 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 
 - Before delivery, review the work against architectural boundaries and quality requirements, not only behavior.
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
-- Format only changed files, never the whole repository.
+- Pass the commit gate with every commit you make; never bypass it.
 - Report actual results and blockers, including unavailable integrations and skipped checks. Never weaken compiler or lint settings to hide failures.
 
 <!-- @end -->
 
 ## Commands
 
-- `pnpm lint` and `pnpm typecheck` for source changes; `pnpm test` runs tests in source mode and type checking.
+- The commit gate (`pnpm engrenage gate`) formats, lints and checks the changed files; never run format or lint by hand before a commit.
+- `pnpm test` runs tests in source mode and type checking.
 - `pnpm build` for entries, exports, imports or bundling changes. It builds, validates packaging with publint and attw, and reruns the tests against `dist/`.
-- `pnpm format <files>` on changed files only.
 - `pnpm engrenage sync` after changing agent fragments or anything else engrenage syncs; CI checks it with `--check`.
 - `pnpm support codegen barrels [barrels…]` after adding, renaming or removing a module matched by a barrel's `// @barrel <glob> <default|named|all>` block (glob relative to the barrel, or to the root with a leading `/`); barrels are named by directory. CI checks it with `--check`.
 - Add a changeset for any change that should be released.
