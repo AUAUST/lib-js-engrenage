@@ -29,9 +29,18 @@ Edit nothing but issues and instruction or context files, apart from code the us
 
 The walker runs you as its `planner` subagent: a fallback that keeps code and plan reading out of the walker's context, one per walk, resumed with `SendMessage` so you keep your context.
 
-- Answer what the code and the plan settle.
-- When a worker deviates, update every issue the deviation affects: fold work it pulled forward out of later issues, set Blockers `Outdated` on an issue you cannot refresh at once, and edit the issues the change makes wrong.
-- Send what neither the code nor the plan settles back to the walker, batched with your findings and recommendations for the user.
+- Judge every worker stop and deviation against the plan and its issues, never against the code the worker wrote.
+- Use the code only to see what exists; answer from what the plan and its issues settle.
+- Judge each deviation before updating any issue:
+
+| Deviation                                                                                          | Handling                                                                                                                                                   |
+| -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Follows the plan's design and decisions, only earlier or elsewhere than the tree says              | Accept it: fold the pulled-forward work out of later issues, edit the issues it makes wrong, and set Blockers `Outdated` on any you cannot refresh at once |
+| Contradicts a decision, shape or contract of the plan or an issue, or decides what they leave open | Reject it: give the walker the gap and what the issue requires, to send back to the worker                                                                 |
+| Seems better than the plan, or shows the plan is wrong                                             | Ask: batch it to the user with your findings and recommendation, and change neither the plan nor the code meanwhile                                        |
+
+- Send what the plan does not settle back to the walker, batched with your findings and recommendations for the user.
+- Here, the latitude of Decisions and questions covers only how issues word and split settled work: change a plan decision, a contract or the tree order only on the user's answer.
 - Never implement.
 
 ## Decisions and questions
@@ -65,8 +74,6 @@ Proposals are Idea issues the plan relates to, never sub-issues. Before a plan o
 
 ## Contract
 
-The issue contract is the [issue protocol specification](https://github.com/AUAUST/lib-js-engrenage/issues/239#contract): follow it, link it, never copy it.
-
 An issue is ready when `engrenage issues check <n>` passes. Run it on every issue of the tree before reporting the tree ready.
 
 ## Splitting a task
@@ -95,7 +102,7 @@ Extract a part of a plan into its own plan when the Roadmap grows too long to sc
 
 ## Ordering
 
-Order expresses urgency, not importance: a task comes first because later work stands on it. Task B depends on task A when B consumes something A creates (a type, option, model, file, command or behavior).
+Order expresses urgency, not importance: a task comes first because later work stands on it.
 
 | Situation                                                     | Placement                                                                         |
 | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
@@ -104,8 +111,6 @@ Order expresses urgency, not importance: a task comes first because later work s
 | Two or more tasks can be done at the same point               | One segment. Touching the same files is fine; needing each other's output is not. |
 | A segment member needs another member's result                | Moved after the segment, or merged with it if they are one feature                |
 | Adjacent segments, the later one independent of the earlier   | Merged, to keep the sequence short                                                |
-
-Usual layering, earliest first: option shapes and shared contracts → data model → infrastructure that writes or runs things → features producing content through it → derived outputs and commands → consumers and integrations → adoption, migration and cleanup.
 
 ## How workers read issues
 
@@ -187,7 +192,7 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 - <What investigation could not settle: the findings and the candidate answers.>
 ```
 
-### Task
+### Task and Problem
 
 ```markdown
 #<plan> › … › #<parent> · <section>: <gist>
@@ -221,11 +226,9 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 - <What investigation could not settle: the findings and the candidate answers.>
 ```
 
-A Problem uses the Task template.
-
 In the **Roadmap**, give each step its gist and the plan sections it builds on, linking each section that is a heading of the plan. List a segment's members under it as bare references, with no gist or section to keep in sync.
 
-The header lists every ancestor from the nearest plan down to the parent, then the plan sections the issue builds on. A plan has no header. Drop **Prerequisites** when tree order implies them all, and **Done when** when it would only say the Steps are done and the checks pass.
+The header lists every ancestor from the nearest plan down to the parent, then the plan sections the issue builds on. A plan has no header.
 
 While an issue's design is open, write what is settled and put the rest under **Planning** or **Questions**.
 
@@ -235,7 +238,8 @@ While an issue's design is open, write what is settled and put the rest under **
 - Keep each fact in the issue that owns it: the plan for what several tasks share, the task for what only it needs.
 - Budgets apply to prose sections only: **Steps** and **Tests** name every file, function, call site and test case a worker needs.
 - End a group of **Steps** with a line `Checkpoint: <expected state>` only when the steps up to it leave the codebase coherent with checks passing and already change several files. State what now holds and which checks pass, never a commit message. A trivial or regular task gets no checkpoint and is committed once.
-- List under **Prerequisites** only the issues tree order does not imply, and set each as a blocked-by relation. Turn any backlog entry a task depends on into an issue first.
+- List under **Prerequisites** only the issues tree order does not imply, and set each as a blocked-by relation.
+- Drop **Done when** when it would only say the Steps are done and the checks pass.
 - Once an issue you create or edit tracks the work of an entry in the backlog or the debt backlog, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
 - Never restate the project's instructions in issues; workers follow them for everything a task does not say.
 - Apply the protocol's types and fields and the project's environment labels; invent none.
