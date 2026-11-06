@@ -13,6 +13,8 @@ export const typescriptFiles = "**/*.{ts,tsx,mts,cts}" satisfies Glob;
 
 export const pluginName = "auaust";
 
+export const rolesPluginName = "roles";
+
 export const boundaryRows = freeze([
   "environments",
   "tests",

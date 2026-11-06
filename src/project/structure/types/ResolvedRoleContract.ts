@@ -1,3 +1,4 @@
+import type { RoleRules } from "#project/roles/index";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
@@ -15,4 +16,5 @@ export interface ResolvedRoleContract {
   readonly typeOnly: boolean;
   readonly effects: string | undefined;
   readonly purpose: string | undefined;
+  readonly rules: RoleRules | undefined;
 }

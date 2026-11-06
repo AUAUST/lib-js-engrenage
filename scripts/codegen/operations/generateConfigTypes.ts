@@ -17,6 +17,7 @@ import { mappedValues } from "@auaust/toolkit/mappedValues";
 import { entries, keys, values } from "@auaust/toolkit/object";
 
 import { globsSchema } from "#foundation/options/config/schemas/globsSchema";
+import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
 import { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModulesSchema";
 import { configDeclaration } from "#workflows/registry/config/schemas/configDeclaration";
 import { configSchema } from "#workflows/registry/config/schemas/configSchema";
@@ -46,6 +47,7 @@ const externalTypes = new Map<string, TypeSource>([
     "EffectModuleResolver",
     { domain: "project/structure", specifier: undefined },
   ],
+  ["RoleRules", { domain: "project/roles", specifier: undefined }],
   ["Glob", { domain: undefined, specifier: "#types/Glob" }],
   ["Globs", { domain: undefined, specifier: "#types/Globs" }],
 ]);
@@ -146,6 +148,11 @@ function resolveType(schema: AnySchema): string | undefined {
     return "EffectModuleResolver";
   }
 
+  if (schema === roleRulesSchema) {
+    return "RoleRules";
+  }
+
+  // @debt every other custom schema is read as `GlobalsFactory`; each named custom schema should map to its own type
   if (schema.type === "custom") {
     return "GlobalsFactory";
   }

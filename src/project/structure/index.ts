@@ -36,6 +36,7 @@ export * from "#project/structure/types/StructureMirror";
 export * from "#project/structure/types/StructureNode";
 export * from "#project/structure/types/StructureOptions";
 export * from "#project/structure/types/StructureRelation";
+export * from "#project/structure/types/StructureRole";
 export * from "#project/structure/types/StructureSource";
 export * from "#project/structure/types/TestsContext";
 export * from "#project/structure/types/TestsLayout";

@@ -14,7 +14,7 @@ import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 import { validate } from "#foundation/options/index";
 import { conventionCategories } from "#tools/eslint/config/conventionCategories";
 import { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
-import { pluginName } from "#tools/eslint/constants";
+import { pluginName, rolesPluginName } from "#tools/eslint/constants";
 import { createConventionRules } from "#tools/eslint/operations/createConventionRules";
 import { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";
 import { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
@@ -24,6 +24,7 @@ import { createBoundaryRuleOptions } from "#tools/eslint/utils/createBoundaryRul
 import { createIgnoreRules } from "#tools/eslint/utils/createIgnoreRules";
 import { createImportPresets } from "#tools/eslint/utils/createImportPresets";
 import { createPlugin } from "#tools/eslint/utils/createPlugin";
+import { createRoleRules } from "#tools/eslint/utils/createRoleRules";
 import { resolveBoundaries } from "#tools/eslint/utils/resolveBoundaries";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
 import { gitSection } from "#tools/git/index";
@@ -107,11 +108,16 @@ export async function createEslintConfig(
     );
   }
 
+  const roleRules = createRoleRules(config.structure);
+
   return defineConfig(
     {
       name: `${pluginName}/plugins`,
       plugins: {
         [pluginName]: createPlugin(conventionCategories, config),
+        ...(roleRules.configs.length === 0
+          ? {}
+          : { [rolesPluginName]: roleRules.plugin }),
         "@stylistic": stylistic,
         "package-json": packageJson,
         perfectionist,
@@ -125,5 +131,6 @@ export async function createEslintConfig(
     },
     ...configs,
     resolveInfoRules(conventionRules),
+    ...roleRules.configs,
   );
 }

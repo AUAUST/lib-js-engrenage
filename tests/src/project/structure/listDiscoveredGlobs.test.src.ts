@@ -21,6 +21,7 @@ function contract(
     typeOnly: false,
     purpose: undefined,
     effects: undefined,
+    rules: undefined,
     ...overrides,
   };
 }

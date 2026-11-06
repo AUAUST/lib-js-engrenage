@@ -1,9 +1,9 @@
 import { readdir } from "node:fs/promises";
 import { join, matchesGlob } from "node:path";
 
-import { flat, flatMap } from "@auaust/primitive-kit/arrays";
+import { flat, flatMap, wrap } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
-import { entries, freeze, values } from "@auaust/toolkit/object";
+import { entries, freeze, record, values } from "@auaust/toolkit/object";
 
 import { pathExists } from "#foundation/filesystem/index";
 import { noRoles } from "#project/structure/constants";
@@ -21,16 +21,19 @@ import type { StructureKind } from "#project/structure/types/StructureKind";
 import type { StructureMirror } from "#project/structure/types/StructureMirror";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
+import type { StructureRole } from "#project/structure/types/StructureRole";
 import type { TestsContext } from "#project/structure/types/TestsContext";
 import type { UnclassifiedReason } from "#project/structure/types/UnclassifiedReason";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
+import type { Glob } from "#types/Glob";
 
 type DomainDeclaration = StructureOptions["domains"][string];
 
 const environmentRoot = ".";
 const projectRoot = ".";
 const ignoredDirectory = "node_modules";
+const anyFile: Glob = "**";
 
 interface Parent {
   readonly kind: StructureKind | "root";
@@ -202,6 +205,93 @@ function createMirrorClassifier(tests: TestsContext) {
   };
 }
 
+function listRoles(
+  root: StructureNode,
+  rootFiles: readonly { directory: Directory; roles: ResolvedRoles }[],
+  rolesIn: ReadonlyMap<StructureNode, ResolvedRoles>,
+): Readonly<Record<string, StructureRole>> {
+  const files = new Map<string, Set<Glob>>();
+  const ignores = new Map<string, Set<Glob>>();
+  const contracts = new Map<string, StructureRole["contract"]>();
+
+  function add(
+    target: Map<string, Set<Glob>>,
+    role: string,
+    globs: readonly Glob[],
+  ) {
+    const set = target.get(role) ?? new Set();
+
+    for (const glob of globs) {
+      set.add(glob);
+    }
+
+    target.set(role, set);
+  }
+
+  function addFileRoles(directory: Directory, roles: ResolvedRoles) {
+    for (const [name, contract] of entries(roles.roles)) {
+      if (contract.file === undefined) {
+        continue;
+      }
+
+      contracts.set(name, contract);
+
+      add(
+        files,
+        name,
+        wrap(contract.file).map((glob) => join(directory, glob)),
+      );
+    }
+  }
+
+  function visit(node: StructureNode) {
+    const roles = rolesIn.get(node);
+
+    const contract =
+      node.role === undefined ? undefined : roles?.roles[node.role];
+
+    if (node.role !== undefined && contract !== undefined) {
+      contracts.set(node.role, contract);
+      add(files, node.role, [join(node.path, anyFile)]);
+
+      add(
+        ignores,
+        node.role,
+        node.children.map((child) => join(child.path, anyFile)),
+      );
+    } else if (node.kind !== "role" && roles !== undefined) {
+      addFileRoles(node.path, roles);
+    }
+
+    for (const child of node.children) {
+      visit(child);
+    }
+  }
+
+  for (const { directory, roles } of rootFiles) {
+    addFileRoles(directory, roles);
+  }
+
+  for (const child of root.children) {
+    visit(child);
+  }
+
+  return freeze(
+    record(
+      [...contracts].map(([name, contract]) => {
+        return [
+          name,
+          freeze({
+            contract,
+            files: freeze([...(files.get(name) ?? [])]),
+            ignores: freeze([...(ignores.get(name) ?? [])]),
+          }),
+        ] as const;
+      }),
+    ),
+  );
+}
+
 export async function resolveEnvironmentStructure({
   name,
   root,
@@ -242,6 +332,8 @@ export async function resolveEnvironmentStructure({
     },
     (scopes) => scopes.join("\0"),
   );
+
+  const rolesIn = new Map<StructureNode, ResolvedRoles>();
 
   const indexFile = getIndexFile(rolesFor([]));
   const entryFile = getEntryFile(rolesFor([]));
@@ -338,7 +430,7 @@ export async function resolveEnvironmentStructure({
       const layer =
         kind === "role" ? undefined : layerOf(directory, parent.layers);
 
-      return freeze({
+      const built: StructureNode = freeze({
         path,
         name: directory,
         kind,
@@ -356,6 +448,10 @@ export async function resolveEnvironmentStructure({
             ...(mirrored === undefined ? {} : { mirrored }),
           })),
       });
+
+      rolesIn.set(built, rolesFor(scopes));
+
+      return built;
     }
 
     async function domain(source: StructureNode["source"]) {
@@ -561,6 +657,14 @@ export async function resolveEnvironmentStructure({
     children,
   });
 
+  const structureRoles = listRoles(
+    resolvedRoot,
+    walked.map((directory) => {
+      return { directory, roles: rolesFor(rootScopes) };
+    }),
+    rolesIn,
+  );
+
   const tree =
     strictness === "loose"
       ? loosen(resolvedRoot, name === "tests" ? "mirror" : "domain")
@@ -574,5 +678,6 @@ export async function resolveEnvironmentStructure({
     strictness,
     root: tree,
     unclassified: collect(tree).filter(({ kind }) => kind === "unclassified"),
+    roles: structureRoles,
   });
 }

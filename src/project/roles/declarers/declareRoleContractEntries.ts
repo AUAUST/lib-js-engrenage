@@ -17,6 +17,7 @@ import {
   globsSchema,
   unset,
 } from "#foundation/options/index";
+import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
 import { roleContractDefaults } from "#project/roles/constants";
 
 function describedDefault(value: unknown) {
@@ -99,6 +100,13 @@ export function declareRoleContractEntries<Nested>(
       description:
         "Whether the role is active only where a structured role or a namespace enables it.",
       optional: describedDefault(roleContractDefaults.scoped),
+    }),
+    rules: declare(roleRulesSchema, {
+      description: [
+        "ESLint rules applied to the role's files only, never to the files of its nested roles.",
+        "Each value is a rule entry for a rule already registered, or a rule module, registered as `roles/<role>/<key>` and reported as errors.",
+      ],
+      optional: { value: undefined },
     }),
   };
 }

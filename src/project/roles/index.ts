@@ -1,5 +1,6 @@
 // @barrel config/schemas/*.ts named
 export { roleNameSchema } from "#project/roles/config/schemas/roleNameSchema";
+export { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
 export { roleSchema } from "#project/roles/config/schemas/roleSchema";
 export { rolesSchema } from "#project/roles/config/schemas/rolesSchema";
 // @end
@@ -12,6 +13,7 @@ export { declareRoleContractEntries } from "#project/roles/declarers/declareRole
 export * from "#project/roles/types/Role";
 export * from "#project/roles/types/RoleInput";
 export * from "#project/roles/types/RolePreset";
+export * from "#project/roles/types/RoleRules";
 // @end
 
 // @barrel utils/*.ts named
