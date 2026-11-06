@@ -19,6 +19,7 @@ import { agentsSection } from "#tools/agents/operations/agentsSection";
 import { syncHooks } from "#tools/agents/operations/syncHooks";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";
+import type { SubagentCacheTtl } from "#tools/agents/types/SubagentCacheTtl";
 
 async function syncAttribution(
   config: {
@@ -91,6 +92,27 @@ async function syncPermissions(config: {
   await config.filesystem.write(claudeSettingsFile, content);
 }
 
+async function syncSubagentCacheTtl(
+  config: {
+    filesystem: Filesystem;
+    resolve(...paths: string[]): string;
+  },
+  ttl: SubagentCacheTtl,
+) {
+  const path = config.resolve(claudeSettingsFile);
+  const location = ["subagentPromptCacheTtl"];
+
+  const content =
+    (await config.filesystem.read(claudeSettingsFile)) ?? emptyObjectFile;
+
+  if (readJsonValue(content, path, location) !== ttl) {
+    await config.filesystem.write(
+      claudeSettingsFile,
+      writeJsonValue(content, path, location, ttl, jsonIndentation),
+    );
+  }
+}
+
 export async function syncClaudeSettings(
   { resolve, context }: LoadedConfig,
   { settings = false }: { settings?: boolean } = {},
@@ -123,6 +145,8 @@ export async function syncClaudeSettings(
   });
 
   await syncPermissions(config);
+
+  await syncSubagentCacheTtl(config, config.agents.subagentCacheTtl);
 
   if (attribution !== undefined) {
     await syncAttribution(config, attribution);

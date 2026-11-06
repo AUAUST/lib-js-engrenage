@@ -122,6 +122,10 @@ export const defaultBudgets = freeze({
   debtEntry: 60,
 } as const);
 
+export const subagentCacheTtls = freeze(["5m", "1h"] as const);
+
+export const defaultSubagentCacheTtl = "1h" as const;
+
 export const hookEvents = freeze(["PreToolUse", "PostToolUse"] as const);
 
 export const defaultInstructionFiles = freeze([

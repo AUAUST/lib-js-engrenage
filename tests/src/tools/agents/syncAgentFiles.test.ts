@@ -188,7 +188,7 @@ describe("syncAgentFiles", () => {
       );
 
       expect(content).toContain("description: Mine.");
-      expect(content).toContain("model: sonnet");
+      expect(content).toContain("model: opus");
       expect(content).toContain("extra: kept");
       expect(content).toContain("# @preserve description");
     });

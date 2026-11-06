@@ -191,6 +191,7 @@ describe("agents.attribution", () => {
           allow: ["Bash(gh api *issue-field-values*)"],
         },
         attribution: hidden,
+        subagentPromptCacheTtl: "1h",
       }),
       [noAttributionRule]:
         "<!-- @reference @auaust/engrenage/agents/rules/no-attribution.md -->\n<!-- @end -->\n",

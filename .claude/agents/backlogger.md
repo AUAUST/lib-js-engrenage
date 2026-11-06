@@ -5,7 +5,7 @@ description: Backlogger that brings backlog entries up to date with new
   Use proactively for any work on backlog entries. Its report ends with what
   remains and the kind of work it needs; continue that with the agent suited to
   it.
-model: sonnet
+model: opus
 disallowedTools:
   - WebFetch
   - WebSearch

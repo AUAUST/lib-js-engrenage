@@ -136,13 +136,33 @@ describe("syncClaudeSettings", () => {
         ]
       }
     ]
-  }
+  },
+  "subagentPromptCacheTtl": "1h"
 }
 `);
 
     await syncClaudeSettings(config);
 
     expect(config.context.filesystem.discard()).toEqual([]);
+  });
+
+  test("writes the configured subagent cache lifetime over another one", async () => {
+    const project = createTemporaryProject({
+      "engrenage.config.ts":
+        'export default { agents: { preferred: ["claude"], subagentCacheTtl: "5m" } };\n',
+      "package.json": '{"type":"module"}',
+      ".claude/settings.json": '{\n  "subagentPromptCacheTtl": "1h"\n}\n',
+    });
+
+    const config = await loadConfig(project.root);
+
+    await syncClaudeSettings(config);
+
+    await config.context.filesystem.flush();
+
+    expect(project.read(".claude/settings.json")).toContain(
+      '"subagentPromptCacheTtl": "5m"',
+    );
   });
 
   test("creates missing settings only when asked, unless disabled", async () => {

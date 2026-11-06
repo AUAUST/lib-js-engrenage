@@ -67,7 +67,7 @@ describe("addAgentSkills", () => {
     expect(
       await config.context.filesystem.read(".claude/agents/worker.md"),
     ).toMatch(
-      /name: worker[\s\S]*model: sonnet\neffort: medium[\s\S]*# Issue implementation/,
+      /name: worker[\s\S]*model: opus\neffort: medium[\s\S]*# Issue implementation/,
     );
   });
 

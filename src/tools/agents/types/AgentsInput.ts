@@ -39,6 +39,12 @@ export interface AgentsInput {
    */
   attribution?: (boolean | undefined)
   /**
+   * Prompt cache lifetime of subagent requests, written to Claude's `subagentPromptCacheTtl` setting.
+   * `1h` keeps a resumed subagent's cache across a review or a consultant answer.
+   * @default `1h`
+   */
+  subagentCacheTtl?: (("5m" | "1h") | undefined)
+  /**
    * The gate that fixes and checks the files an agent changed (`engrenage gate`).
    */
   gate?: ({

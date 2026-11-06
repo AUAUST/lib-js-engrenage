@@ -7,7 +7,7 @@ invocation: explicit
 agent:
   name: worker
   description: Worker that implements one GitHub issue as written and stops to report what the issue leaves unclear. Use proactively when the user asks to implement, work on or resume a specific GitHub issue whose fix or steps are already written; investigating or fixing a problem is the debugger's.
-  model: sonnet
+  model: opus
   effort: medium
 ---
 

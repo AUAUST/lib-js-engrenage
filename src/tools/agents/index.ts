@@ -60,4 +60,5 @@ export * from "#tools/agents/types/HookDefinition";
 export * from "#tools/agents/types/HookEvent";
 export * from "#tools/agents/types/ProjectMapSections";
 export * from "#tools/agents/types/ResolvedAgents";
+export * from "#tools/agents/types/SubagentCacheTtl";
 // @end

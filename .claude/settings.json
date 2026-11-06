@@ -122,5 +122,6 @@
     "commit": "",
     "pr": "",
     "sessionUrl": false
-  }
+  },
+  "subagentPromptCacheTtl": "1h"
 }

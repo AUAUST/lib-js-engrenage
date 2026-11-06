@@ -16,6 +16,8 @@ import {
   defaultBudgetMode,
   defaultBudgets,
   defaultInstructionFiles,
+  defaultSubagentCacheTtl,
+  subagentCacheTtls,
 } from "#tools/agents/constants";
 
 export const agentsSchema = declareObject(
@@ -60,6 +62,13 @@ export const agentsSchema = declareObject(
         "It selects the `attribution` or `no-attribution` rule file and the Claude `attribution` setting.",
       ],
       optional: unset("none, so neither is managed"),
+    }),
+    subagentCacheTtl: declare(picklist(subagentCacheTtls), {
+      description: [
+        "Prompt cache lifetime of subagent requests, written to Claude's `subagentPromptCacheTtl` setting.",
+        "`1h` keeps a resumed subagent's cache across a review or a consultant answer.",
+      ],
+      optional: { value: defaultSubagentCacheTtl },
     }),
     gate: declareObject(
       {
