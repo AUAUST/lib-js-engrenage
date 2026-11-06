@@ -297,19 +297,36 @@ export function createEntityIndex({
     });
   }
 
-  const locate = memoized((directory: Directory): Located | undefined => {
-    for (
-      let current = directory, parent = posix.dirname(current);
-      current !== parent;
-      current = parent, parent = posix.dirname(current)
-    ) {
-      const located = directories.get(current);
+  const nearest = memoized(
+    (
+      directory: Directory,
+    ): { readonly path: Directory; readonly located: Located } | undefined => {
+      for (
+        let current = directory, parent = posix.dirname(current);
+        current !== parent;
+        current = parent, parent = posix.dirname(current)
+      ) {
+        const located = directories.get(current);
 
-      if (located !== undefined) {
-        return current === directory || located.covers ? located : undefined;
+        if (located !== undefined) {
+          return { path: current, located };
+        }
       }
-    }
-  });
+    },
+  );
+
+  function locate(directory: Directory): Located | undefined {
+    const found = nearest(directory);
+
+    return found !== undefined &&
+      (found.path === directory || found.located.covers)
+      ? found.located
+      : undefined;
+  }
+
+  function toProjectPath(file: File): string {
+    return toPosixPath(relative(root, resolve(root, file)));
+  }
 
   function fileRoleOf(name: string, roles: ResolvedRoles | undefined) {
     if (roles === undefined) {
@@ -326,7 +343,7 @@ export function createEntityIndex({
   }
 
   const describe = memoized((file: File): Entity | undefined => {
-    const path = toPosixPath(relative(root, resolve(root, file)));
+    const path = toProjectPath(file);
     const directory = posix.dirname(path);
     const located = locate(directory);
 
@@ -370,5 +387,13 @@ export function createEntityIndex({
     return describe(file);
   }
 
-  return { entityOf };
+  return {
+    entityOf,
+    specifierOf(file) {
+      return specifierOf(specifiers, toProjectPath(file));
+    },
+    withinEnvironment(file) {
+      return nearest(posix.dirname(toProjectPath(file))) !== undefined;
+    },
+  };
 }

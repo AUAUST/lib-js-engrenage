@@ -3,22 +3,11 @@ import { extname } from "node:path";
 import type { Rule, SourceCode } from "eslint";
 
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
-import type {
-  Entity,
-  ImportKind,
-  ResolvedSpecifier,
-} from "#project/structure/index";
+import type { Entity, ImportEdge } from "#project/structure/index";
 import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 
-interface AnalyzedImport {
-  readonly resolved: ResolvedSpecifier | undefined;
-  readonly kind: ImportKind;
-  readonly target: Entity | undefined;
-}
-
 interface ImportAnalysis {
-  readonly importer: Entity | undefined;
-  analyze(node: Rule.Node, specifier: string): AnalyzedImport;
+  edgeOf(node: Rule.Node, specifier: string): ImportEdge;
 }
 
 const analyses = new WeakMap<
@@ -55,10 +44,10 @@ function createAnalysis(
 ): ImportAnalysis {
   const importer = config.entities.entityOf(filename);
   const extension = sourceExtensionOf(config, importer, filename);
-  const analyzed = new Map<Rule.Node, AnalyzedImport>();
+  const edges = new Map<Rule.Node, ImportEdge>();
 
-  function analyze(node: Rule.Node, specifier: string): AnalyzedImport {
-    const known = analyzed.get(node);
+  function edgeOf(node: Rule.Node, specifier: string): ImportEdge {
+    const known = edges.get(node);
 
     if (known !== undefined) {
       return known;
@@ -66,23 +55,30 @@ function createAnalysis(
 
     const resolved = config.resolveImport(specifier, filename);
 
-    const target =
+    const targetFile =
       resolved?.kind === "relative" || resolved?.kind === "alias"
-        ? config.entities.entityOf(withExtension(resolved.path, extension))
+        ? withExtension(resolved.path, extension)
         : undefined;
 
-    const result: AnalyzedImport = {
+    const edge: ImportEdge = {
+      file: filename,
+      importer,
+      specifier,
       resolved,
+      targetFile,
+      target:
+        targetFile === undefined
+          ? undefined
+          : config.entities.entityOf(targetFile),
       kind: isTypeOnlyNode(node) ? "type" : "runtime",
-      target,
     };
 
-    analyzed.set(node, result);
+    edges.set(node, edge);
 
-    return result;
+    return edge;
   }
 
-  return { importer, analyze };
+  return { edgeOf };
 }
 
 export function analyzeImports(

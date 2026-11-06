@@ -65,8 +65,6 @@ export function checkBoundary(
   ): BoundaryViolation {
     return freeze({
       cause,
-      importer,
-      target,
       boundary,
       fix,
     });

@@ -18,6 +18,8 @@ export * from "#project/structure/types/EnvironmentRoles";
 export * from "#project/structure/types/EnvironmentStructure";
 export * from "#project/structure/types/ImportCategory";
 export * from "#project/structure/types/ImportCycle";
+export * from "#project/structure/types/ImportEdge";
+export * from "#project/structure/types/ImportGrants";
 export * from "#project/structure/types/ImportKind";
 export * from "#project/structure/types/ImportRelation";
 export * from "#project/structure/types/ImportRule";

@@ -37,6 +37,18 @@ export const boundaryMessages = freeze({
     "`{{file}}` belongs to a global role; global roles import only each other.",
   entrySurface:
     "`{{file}}` is a package entry; it re-exports only the index and public roles of `{{domain}}`.",
+  environment:
+    "`{{path}}` imports `{{targetPath}}`; `{{environment}}` never imports {{category}}.",
+  rootEntry:
+    "`{{path}}` imports `{{targetPath}}`; nothing imports an environment's root file.",
+  testVariant:
+    "`{{path}}` imports `{{specifier}}`; {{variantReach}}. Move the case to {{variantMove}}.",
+  workspace:
+    "`{{workspace}}` imports `{{targetWorkspace}}`, not a declared dependency of `{{workspace}}`.",
+  selfImport: "`{{path}}` imports itself.",
+  relativePath: "Import {{fix}} instead of `{{specifier}}`.",
+  unknownPath:
+    "`{{unknown}}` is not in the structure map; if you just created it, reload the editor window.",
 } as const satisfies Record<BoundaryCause, string>);
 
 export const infoRulesSetting = `${pluginName}/info-rules`;

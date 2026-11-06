@@ -16,6 +16,7 @@ import type { PackageJson } from "#project/package/index";
 import type { ResolvedTraits } from "#project/presets/index";
 import type {
   EntityIndex,
+  ImportGrants,
   ImportRule,
   ResolvedSpecifier,
   ResolvedStructure,
@@ -44,6 +45,7 @@ export interface ConventionConfig {
   readonly structure: ResolvedStructure;
   readonly importRules: readonly ImportRule[];
   readonly entities: EntityIndex;
+  readonly grants: ImportGrants;
   resolveImport(specifier: string, from: File): ResolvedSpecifier | undefined;
   readonly src: ResolvedSource;
   readonly tests: ResolvedTests;

@@ -1,3 +1,5 @@
+import { flatMap } from "@auaust/primitive-kit/arrays";
+
 import {
   aliasesSection,
   binSection,
@@ -101,6 +103,16 @@ export async function resolveConventionConfig(
     structure,
     importRules,
     entities,
+    grants: {
+      published: traits.published,
+      workspaces: new Map(
+        flatMap(workspaces, (group) => {
+          return group.workspaces.map(({ dir, dependencies }) => {
+            return [dir, dependencies] as const;
+          });
+        }),
+      ),
+    },
     resolveImport: createImportResolver({
       root,
       aliases,

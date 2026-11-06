@@ -5,4 +5,11 @@ export type BoundaryCause =
   | "ownIndex"
   | "typeOnly"
   | "globalRole"
-  | "entrySurface";
+  | "entrySurface"
+  | "environment"
+  | "rootEntry"
+  | "testVariant"
+  | "workspace"
+  | "relativePath"
+  | "selfImport"
+  | "unknownPath";
