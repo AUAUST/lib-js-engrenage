@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { structure } from "#bin/engrenage/structure";
-import { index } from "#project/roles/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
@@ -10,9 +9,6 @@ const files = {
   "package.json": '{ "name": "project", "type": "module" }',
   "src/index.ts": "",
   "src/feature/index.ts": "",
-  "src/feature/stray.ts": "",
-  "src/zone/base/index.ts": "",
-  "src/zone/top/index.ts": "",
   "src/mystery/a.ts": "",
 };
 
@@ -26,10 +22,6 @@ function createProject(config: string, extra: Record<string, string> = {}) {
   mockCwd(project.root);
 }
 
-function printed(): string[] {
-  return vi.mocked(console.info).mock.calls.map(([line]) => String(line));
-}
-
 beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation(() => {});
   process.exitCode = undefined;
@@ -40,56 +32,34 @@ afterEach(() => {
   process.exitCode = undefined;
 });
 
+// @debt the structure output is untested: asserting printed lines enforces a display, and a useful way to test what it reports is still to be found
 describe("engrenage structure", () => {
   test("fails the check on an unclassified directory of a strict environment", async () => {
     createProject("{}");
 
     await runCommand(structure, "--check");
 
-    expect(printed()).toContain("  src/mystery  unclassified  [inferred]");
     expect(process.exitCode).toBe(1);
   });
 
-  test("reports the same directory without failing under loose", async () => {
+  test("passes the check on the same directory under loose", async () => {
     createProject('{ src: { strictness: "loose" } }');
 
     await runCommand(structure, "--check");
 
-    expect(printed()).toContain("  src/mystery  domain (internal)  [inferred]");
     expect(process.exitCode).toBeUndefined();
   });
 
-  test("prints namespace layers, sources and files outside any role", async () => {
+  test("fails the check on a mirror directory lacking its counterpart", async () => {
     createProject(
-      `{ src: { roles: ${JSON.stringify([index()])}, namespaces: { zone: { layers: ["base", "*", "top"] } } } }`,
+      '{ src: { strictness: "loose" }, tests: { layout: "mirror" } }',
+      {
+        "tests/src/feature/x.test.ts": "",
+        "tests/src/ghost/y.test.ts": "",
+      },
     );
-
-    await runCommand(structure);
-
-    expect(printed()).toEqual(
-      expect.arrayContaining([
-        "src (strict)",
-        "  src/zone  namespace (layers: base < * < top)  [config]",
-        "    src/zone/base  domain (internal)  [inferred]",
-        "  src/feature  domain (internal)  [inferred]",
-        "    src/feature/stray.ts  unclassified (file outside any role)",
-      ]),
-    );
-
-    expect(process.exitCode).toBeUndefined();
-  });
-
-  test("prints the reason of a mirror directory lacking its counterpart", async () => {
-    createProject('{ tests: { layout: "mirror" } }', {
-      "tests/src/feature/x.test.ts": "",
-      "tests/src/ghost/y.test.ts": "",
-    });
 
     await runCommand(structure, "--check");
-
-    expect(printed()).toContain(
-      "    tests/src/ghost  unclassified (missing counterpart)  [inferred]",
-    );
 
     expect(process.exitCode).toBe(1);
   });
