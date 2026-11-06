@@ -303,6 +303,7 @@ export function createBoundaryPolicies(
     return structure === undefined ? [] : collectDomains(structure.root);
   });
 
+  // @debt one policy per source and domain only to name the domain's index specifier, so policies grow with sources times domains and each is matched against every import
   function createDomainPolicies(
     from: BoundaryEntity,
     dirs: readonly string[],
@@ -450,6 +451,7 @@ export function createBoundaryPolicies(
     ),
   );
 
+  // @debt grants compile to an ordered policy list the plugin walks in full for every import, last match winning, so cost grows with the structure and a file under nested sources takes its verdict from whichever source comes last in the import rules
   function createRuleOptions(row: BoundaryRow): BoundaryOptions {
     const policies: BoundaryPolicy[] = [];
 

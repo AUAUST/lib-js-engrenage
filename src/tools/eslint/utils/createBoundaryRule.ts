@@ -43,6 +43,7 @@ export function createBoundaryRule(
         { policies?: unknown[] }?,
       ];
 
+      // @debt a fresh options object per file misses the boundaries plugin's identity-keyed caches, so every file revalidates and renormalizes every policy
       const options: unknown[] = [
         {
           ...generated,

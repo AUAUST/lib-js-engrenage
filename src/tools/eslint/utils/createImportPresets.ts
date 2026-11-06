@@ -35,6 +35,7 @@ export function createImportPresets({
         ],
       },
       rules: {
+        // @debt import-x/namespace repeats the TypeScript checker on TypeScript files, at about 20 ms a file
         "import-x/namespace": ["error", { allowComputed: true }],
         "import-x/no-empty-named-blocks": "error",
         "import-x/no-extraneous-dependencies": "error",
