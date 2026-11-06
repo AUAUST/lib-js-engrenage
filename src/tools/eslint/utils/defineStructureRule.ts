@@ -1,9 +1,8 @@
 import type { Rule } from "eslint";
 
-import { locateInStructure } from "#tools/eslint/utils/locateInStructure";
+import type { Entity } from "#project/structure/index";
 import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
-import type { StructureLocation } from "#tools/eslint/types/StructureLocation";
 
 export function defineStructureRule({
   config,
@@ -14,10 +13,7 @@ export function defineStructureRule({
   config: ConventionConfig;
   description: string;
   messages: Record<string, string>;
-  create(
-    context: Rule.RuleContext,
-    location: StructureLocation,
-  ): Rule.RuleListener;
+  create(context: Rule.RuleContext, entity: Entity): Rule.RuleListener;
 }): RuleModule {
   return {
     meta: {
@@ -27,9 +23,9 @@ export function defineStructureRule({
       schema: [],
     },
     create(context) {
-      const location = locateInStructure(config, context.filename);
+      const entity = config.entities.entityOf(context.filename);
 
-      return location === undefined ? {} : create(context, location);
+      return entity === undefined ? {} : create(context, entity);
     },
   };
 }

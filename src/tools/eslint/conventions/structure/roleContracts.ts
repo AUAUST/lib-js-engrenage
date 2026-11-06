@@ -1,5 +1,7 @@
-import { basename, dirname, matchesGlob } from "node:path";
+import { basename, dirname, join, matchesGlob } from "node:path";
 
+import { relativeWithin } from "#foundation/filesystem/index";
+import { indexRoleName } from "#project/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
@@ -19,13 +21,18 @@ export default defineConvention({
         accepts:
           "The role {{role}} accepts only {{accepts}}; move this file out.",
       },
-      create(context, { node, contract, relativePath, indexFile }) {
-        if (node.kind !== "role" || contract === undefined) {
+      create(context, { kind, role, contract, path, fileRole }) {
+        if (kind !== "role" || role === undefined || contract === undefined) {
           return {};
         }
 
-        const role = node.role ?? node.name;
+        const relativePath = relativeWithin(
+          join(config.root, path),
+          context.filename,
+        );
+
         const file = basename(relativePath);
+        const isIndex = fileRole === indexRoleName;
 
         const depth =
           dirname(relativePath) === "."
@@ -48,21 +55,21 @@ export default defineConvention({
             } else if (
               contract.categories === true &&
               depth === 0 &&
-              !(file === indexFile && contract.index)
+              !(isIndex && contract.index)
             ) {
               context.report({
                 node: program,
                 messageId: "category",
                 data: { role },
               });
-            } else if (file === indexFile && !contract.index) {
+            } else if (isIndex && !contract.index) {
               context.report({
                 node: program,
                 messageId: "index",
                 data: { role },
               });
             } else if (
-              file !== indexFile &&
+              !isIndex &&
               contract.accepts !== undefined &&
               ![contract.accepts].flat().some((glob) => matchesGlob(file, glob))
             ) {

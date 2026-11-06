@@ -14,7 +14,12 @@ import type {
 } from "#project/environments/index";
 import type { PackageJson } from "#project/package/index";
 import type { ResolvedTraits } from "#project/presets/index";
-import type { ImportRule, ResolvedStructure } from "#project/structure/index";
+import type {
+  EntityIndex,
+  ImportRule,
+  ResolvedSpecifier,
+  ResolvedStructure,
+} from "#project/structure/index";
 import type {
   ResolvedBaseTsconfig,
   ResolvedTypescript,
@@ -38,6 +43,8 @@ export interface ConventionConfig {
   readonly raw: RawConfig;
   readonly structure: ResolvedStructure;
   readonly importRules: readonly ImportRule[];
+  readonly entities: EntityIndex;
+  resolveImport(specifier: string, from: File): ResolvedSpecifier | undefined;
   readonly src: ResolvedSource;
   readonly tests: ResolvedTests;
   readonly bin: ResolvedBin;

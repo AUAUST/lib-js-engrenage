@@ -1,3 +1,5 @@
+import { join } from "node:path";
+
 import {
   SymbolFlags,
   type Symbol,
@@ -6,12 +8,11 @@ import {
 } from "typescript";
 import type { Rule } from "eslint";
 
+import { relativeWithin } from "#foundation/filesystem/index";
 import { rankModule } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
-import { findLocatedRole } from "#tools/eslint/utils/findLocatedRole";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
-import { locateInStructure } from "#tools/eslint/utils/locateInStructure";
 
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
@@ -25,13 +26,13 @@ export default defineConvention({
         effects:
           "A module of {{role}} ({{level}}) imports `{{binding}}` from {{target}} ({{targetLevel}}); import only {{level}} or purer bindings, or move the code.",
       },
-      create(context, location) {
-        const source = findLocatedRole(config, location);
-        const level = source?.effects;
+      create(context, { environment, role: roleName, effects: level }) {
         const services = context.sourceCode.parserServices;
 
         if (
-          source === undefined ||
+          environment === "dist" ||
+          environment === "workspace" ||
+          roleName === undefined ||
           level === undefined ||
           services?.program == null ||
           services.esTreeNodeToTSNodeMap == null
@@ -40,9 +41,8 @@ export default defineConvention({
         }
 
         const { program, esTreeNodeToTSNodeMap } = services;
-        const { name: roleName } = source;
         const checker: TypeChecker = program.getTypeChecker();
-        const { effects } = config[location.environment].roles;
+        const { effects } = config[environment].roles;
         const allowed = effects.levels.indexOf(level);
 
         function declaringFile(symbol: Symbol | undefined) {
@@ -96,20 +96,23 @@ export default defineConvention({
               return;
             }
           } else {
-            const located = locateInStructure(config, file.fileName);
+            const declaring = config.entities.entityOf(file.fileName);
 
-            if (located === undefined) {
+            if (declaring === undefined) {
               return;
             }
 
-            const role = findLocatedRole(config, located);
+            const relativePath = relativeWithin(
+              join(config.root, declaring.path),
+              file.fileName,
+            );
 
             target =
-              role === undefined
-                ? located.relativePath
-                : `${role.name} (${located.relativePath})`;
+              declaring.role === undefined
+                ? relativePath
+                : `${declaring.role} (${relativePath})`;
 
-            targetLevel = role?.effects ?? undefined;
+            targetLevel = declaring.effects;
           }
 
           if (

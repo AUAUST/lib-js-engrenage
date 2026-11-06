@@ -1,4 +1,5 @@
 import { freeze } from "@auaust/toolkit/object";
+import type { DeepReadonly } from "@auaust/toolkit/types";
 
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 
@@ -23,7 +24,7 @@ export const effectfulModules = freeze([
   "node:worker_threads",
 ] as const);
 
-export const noRoles: ResolvedRoles = freeze({
+export const noRoles = freeze({
   roles: freeze({}),
   aliases: freeze({}),
   effects: freeze({
@@ -31,4 +32,4 @@ export const noRoles: ResolvedRoles = freeze({
     modules: freeze([]),
     fallback: undefined,
   }),
-});
+}) satisfies DeepReadonly<ResolvedRoles>;

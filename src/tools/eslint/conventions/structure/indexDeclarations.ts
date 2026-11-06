@@ -1,5 +1,4 @@
-import { basename } from "node:path";
-
+import { entryRoleName, indexRoleName } from "#project/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
@@ -16,12 +15,10 @@ export default defineConvention({
         value:
           "An index.ts or entry.ts only re-exports; move this declaration into a module of the domain's roles.",
       },
-      create(context, { indexFile, entryFile, node }) {
-        const file = basename(context.filename);
-
+      create(context, { fileRole, commands }) {
         if (
-          (file !== indexFile && file !== entryFile) ||
-          node.commands === true
+          (fileRole !== indexRoleName && fileRole !== entryRoleName) ||
+          commands
         ) {
           return {};
         }

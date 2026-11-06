@@ -20,8 +20,8 @@ export default defineConvention({
         value:
           "A module of a type-only role declares no runtime value; move this declaration into a role that holds values.",
       },
-      create(context, { node, contract }) {
-        if (node.kind !== "role" || contract?.typeOnly !== true) {
+      create(context, { kind, contract }) {
+        if (kind !== "role" || contract?.typeOnly !== true) {
           return {};
         }
 

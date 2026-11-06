@@ -34,7 +34,6 @@ export type {
   Rules,
   ScopeReference,
   ScopeReferences,
-  StructureLocation,
   StylisticRules,
   TypescriptEslintRules,
   UnicornRules,

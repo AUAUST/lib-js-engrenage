@@ -1,6 +1,5 @@
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
-import { isRoleFile } from "#tools/eslint/utils/isRoleFile";
 
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
@@ -15,18 +14,15 @@ export default defineConvention({
         namespace:
           "A namespace holds only domains and namespaces; move this file into a domain.",
       },
-      create(context, location) {
-        const { node } = location;
-        const isRoleFileHere = isRoleFile(config, location);
-
+      create(context, { kind, commands, fileRole }) {
         return {
           Program(program) {
             if (
-              (node.kind === "domain" || node.kind === "namespace") &&
-              node.commands !== true &&
-              !isRoleFileHere
+              (kind === "domain" || kind === "namespace") &&
+              !commands &&
+              fileRole === undefined
             ) {
-              context.report({ node: program, messageId: node.kind });
+              context.report({ node: program, messageId: kind });
             }
           },
         };

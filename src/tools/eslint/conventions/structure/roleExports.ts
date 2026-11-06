@@ -1,8 +1,8 @@
 import { basename, extname } from "node:path";
 
+import { indexRoleName } from "#project/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
-import { isRoleFile } from "#tools/eslint/utils/isRoleFile";
 
 interface Exports {
   names: string[];
@@ -26,26 +26,21 @@ export default defineConvention({
         default:
           "A module of {{role}} has one default export and no named export.",
       },
-      create(context, location) {
-        const { node, contract, relativePath, indexFile } = location;
-        const file = basename(relativePath);
-
-        const isCommand =
-          node.commands === true &&
-          file !== indexFile &&
-          !isRoleFile(config, location);
-
+      create(context, { kind, role: roleName, contract, commands, fileRole }) {
+        const file = basename(context.filename);
+        const isCommand = commands && fileRole === undefined;
         const style = isCommand ? "named-match" : contract?.exports;
+        const role = isCommand ? "a command group" : roleName;
 
         if (
-          (node.kind !== "role" && !isCommand) ||
+          (kind !== "role" && !isCommand) ||
+          role === undefined ||
           style === undefined ||
-          file === indexFile
+          fileRole === indexRoleName
         ) {
           return {};
         }
 
-        const role = isCommand ? "a command group" : (node.role ?? node.name);
         const name = basename(file, extname(file));
 
         const found: Exports = {

@@ -1,7 +1,3 @@
-import { basename, matchesGlob } from "node:path";
-
-import { wrap } from "@auaust/primitive-kit/arrays";
-
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 import { isDeeplyReadonly } from "#tools/eslint/utils/isDeeplyReadonly";
@@ -17,17 +13,12 @@ export default defineConvention({
         mutable:
           "`{{name}}` is not deeply read-only; declare it `as const` or wrap it in `freeze`, or move it out of the constants file.",
       },
-      create(context, { environment }) {
-        const globs = wrap(
-          config[environment].roles.roles.constants?.file ?? [],
-        );
-
+      create(context, { fileRole }) {
         const services = context.sourceCode.parserServices;
 
+        // @debt the constants role is found by its preset name, so a project that renames it loses the check
         if (
-          !globs.some((glob) =>
-            matchesGlob(basename(context.filename), glob),
-          ) ||
+          fileRole !== "constants" ||
           services?.program == null ||
           services.esTreeNodeToTSNodeMap == null
         ) {

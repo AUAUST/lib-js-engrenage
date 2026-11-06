@@ -1,4 +1,5 @@
 import {
+  aliasesSection,
   binSection,
   buildSection,
   dataSection,
@@ -16,6 +17,10 @@ import {
   workspacesSection,
   type LoadedConfig,
 } from "#project/config/index";
+import {
+  createEntityIndex,
+  createImportResolver,
+} from "#project/structure/index";
 import type { ResolvedBuild } from "#project/build/index";
 import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 
@@ -49,6 +54,7 @@ export async function resolveConventionConfig(
     environment,
     traits,
     workspaces,
+    aliases,
   ] = await Promise.all([
     config.resolve(structureSection),
     config.resolve(importRulesSection),
@@ -65,13 +71,41 @@ export async function resolveConventionConfig(
     config.resolve(environmentSection),
     config.resolve(traitsSection),
     config.resolve(workspacesSection),
+    config.resolve(aliasesSection),
   ]);
+
+  const outDir = await readOutDir(build);
+  const packageName = packageJson.optional.name;
+
+  const entities = createEntityIndex({
+    root,
+    structure,
+    environments: {
+      src: source,
+      tests,
+      bin,
+      scripts,
+      tooling,
+      data,
+    },
+    testPatterns: tests.patterns,
+    workspaces,
+    outDir,
+    aliases,
+    packageName,
+  });
 
   return {
     root,
     raw,
     structure,
     importRules,
+    entities,
+    resolveImport: createImportResolver({
+      root,
+      aliases,
+      packageName,
+    }),
     src: source,
     tests,
     bin,
@@ -83,7 +117,7 @@ export async function resolveConventionConfig(
       clean: build.clean,
       sourcemap: build.sourcemap,
       typed: build.typed,
-      outDir: await readOutDir(build),
+      outDir,
     },
     typescript: {
       envFile: typescript.envFile,

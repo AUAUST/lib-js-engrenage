@@ -41,7 +41,6 @@ export * from "#tools/eslint/types/RuleOptions";
 export * from "#tools/eslint/types/Rules";
 export * from "#tools/eslint/types/ScopeReference";
 export * from "#tools/eslint/types/ScopeReferences";
-export * from "#tools/eslint/types/StructureLocation";
 // @barrel types/rules/*.ts all
 export * from "#tools/eslint/types/rules/AuaustRules";
 export * from "#tools/eslint/types/rules/CoreRules";
