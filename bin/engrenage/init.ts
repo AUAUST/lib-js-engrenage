@@ -1,6 +1,5 @@
 import { flat } from "@auaust/primitive-kit/arrays";
 
-import { runSync } from "#bin/engrenage/sync";
 import { packageJsonFile } from "#constants";
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
 import {
@@ -15,6 +14,7 @@ import { runSteps } from "#workflows/cli/operations/runSteps";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { listInitSteps } from "#workflows/init/operations/listInitSteps";
 import { readConfig } from "#workflows/registry/operations/readConfig";
+import { runSync } from "#workflows/sync/index";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { Prompter } from "#project/steps/types/Prompter";
 import type { Directory } from "#types/Directory";

@@ -8,11 +8,12 @@ import { validate } from "#foundation/options/utils/validate";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
-import { syncTargets } from "#workflows/sync/operations/syncTargets";
-import type { LoadedConfig } from "#project/config/index";
-import type { SyncTargetName } from "#workflows/sync/types/SyncTargetName";
-
-type TargetFlags = Partial<Record<SyncTargetName, Record<string, boolean>>>;
+import {
+  runSync,
+  syncTargets,
+  type SyncTargetFlags,
+  type SyncTargetName,
+} from "#workflows/sync/index";
 
 function createFlagOptions(): readonly {
   target: SyncTargetName;
@@ -33,24 +34,6 @@ function createFlagOptions(): readonly {
   });
 }
 
-// @debt sync orchestration lives in a command module and is imported by `init` and by a `project/workspaces` test, so bin is not thin; it belongs in `workflows/sync`
-export async function runSync(
-  config: LoadedConfig,
-  {
-    names = keys(syncTargets),
-    flags = {},
-  }: {
-    names?: readonly SyncTargetName[];
-    flags?: TargetFlags;
-  } = {},
-) {
-  for (const name of keys(syncTargets)) {
-    if (names.includes(name)) {
-      await syncTargets[name].sync(config, flags[name] ?? {});
-    }
-  }
-}
-
 export const sync = defineCommand((command) => {
   const flagOptions = createFlagOptions();
 
@@ -68,7 +51,7 @@ export const sync = defineCommand((command) => {
     .action(async (selected, { check }, self) => {
       const config = await loadConfig();
 
-      const flags: TargetFlags = {};
+      const flags: SyncTargetFlags = {};
 
       for (const { target, flag, option } of flagOptions) {
         const name = option.attributeName();

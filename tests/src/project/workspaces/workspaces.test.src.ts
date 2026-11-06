@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { build } from "vite";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { runSync, sync } from "#bin/engrenage/sync";
+import { sync } from "#bin/engrenage/sync";
 import { importRulesSection } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
@@ -12,6 +12,7 @@ import { runCommand } from "#tests/utils/runCommand";
 import { resolveConventionConfig } from "#tools/eslint/operations/resolveConventionConfig";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
+import { runSync } from "#workflows/sync/index";
 
 const placeholder = "{dir}";
 
