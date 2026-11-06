@@ -60,6 +60,27 @@ describe("checkIssueBody", () => {
     ).toMatchObject([{ rule: "segment-section" }]);
   });
 
+  test("leaves an untyped free-form body unchecked, unlike a Segment", () => {
+    const body = "## Context\n\nx\n\n## Direction\n\ny\n";
+
+    expect(checkIssueBody(body, undefined)).toEqual([]);
+
+    expect(checkIssueBody(body, "Segment")).toMatchObject([
+      {
+        rule: "unknown-section",
+        message: expect.stringContaining("Direction"),
+      },
+    ]);
+  });
+
+  test("still checks an untyped body with steps as an item", () => {
+    const findings = checkIssueBody(`${task}\n## Scope\n\nx\n`, undefined);
+
+    expect(findings).toMatchObject([
+      { rule: "unknown-section", message: expect.stringContaining("Scope") },
+    ]);
+  });
+
   test("reports pending planning in steps", () => {
     const findings = checkIssueBody(
       "## Context\n\nx\n\n## Steps\n\n1. Create the tasks as sub-issues.\n\n## Tests\n\n- t\n",

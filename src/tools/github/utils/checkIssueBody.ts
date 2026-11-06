@@ -5,21 +5,26 @@ import {
 import { parseIssueBody } from "#tools/github/utils/parseIssueBody";
 import type { IssueContract } from "#tools/github/types/IssueContract";
 import type { IssueFinding } from "#tools/github/types/IssueFinding";
-import type { IssueType } from "#tools/github/types/IssueType";
 
 const pendingPlanningPatterns = [
   /^settle\b/i,
   /^(?:create|write|file|open|plan|split|break)\b.*\b(?:sub-?issues?|tasks)\b/i,
 ] as const;
 
+type ContractType = keyof typeof issueContracts;
+
+function isContractType(type: string): type is ContractType {
+  return type in issueContracts;
+}
+
 function guessType(sectionNames: readonly string[]) {
   if (sectionNames.includes("Goal")) {
-    return "Plan" satisfies IssueType;
+    return "Plan" satisfies ContractType;
   }
 
   return sectionNames.includes("Steps")
-    ? ("Task" satisfies IssueType)
-    : ("Segment" satisfies IssueType);
+    ? ("Task" satisfies ContractType)
+    : undefined;
 }
 
 function getRank(contract: IssueContract, name: string) {
@@ -37,12 +42,14 @@ function getRank(contract: IssueContract, name: string) {
 function resolveContractType(
   sectionNames: readonly string[],
   type: string | undefined,
-): IssueType {
-  return type !== undefined && type in issueContracts
-    ? (type as keyof typeof issueContracts)
-    : type === "Resource" || type === "Idea"
-      ? type
-      : guessType(sectionNames);
+) {
+  if (type === "Resource" || type === "Idea") {
+    return;
+  }
+
+  return type !== undefined && isContractType(type)
+    ? type
+    : guessType(sectionNames);
 }
 
 export function checkIssueBody(
@@ -53,7 +60,7 @@ export function checkIssueBody(
   const names = parsed.sections.map(({ name }) => name);
   const contractType = resolveContractType(names, type);
 
-  if (contractType === "Resource" || contractType === "Idea") {
+  if (contractType === undefined) {
     return [];
   }
 
