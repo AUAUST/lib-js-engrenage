@@ -200,7 +200,10 @@ async function lintedPackageJsonRules(
   return map(result?.messages ?? [], (message) => message.ruleId);
 }
 
-async function lintedProjectRules(source: string) {
+async function lintedProjectRules(
+  source: string,
+  { filePath = "src/index.ts", engrenageConfig = "export default {};\n" } = {},
+) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({
       name: "project",
@@ -212,7 +215,7 @@ async function lintedProjectRules(source: string) {
         valibot: "*",
       },
     }),
-    "engrenage.config.ts": "export default {};\n",
+    "engrenage.config.ts": engrenageConfig,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",
@@ -237,9 +240,7 @@ async function lintedProjectRules(source: string) {
     }),
   });
 
-  const [result] = await eslint.lintText(source, {
-    filePath: "src/index.ts",
-  });
+  const [result] = await eslint.lintText(source, { filePath });
 
   return map(result?.messages ?? [], (message) => message.ruleId);
 }
@@ -493,14 +494,29 @@ export const values = [things, manifest, thing];
     ).toEqual(["auaust/sort-imports", "auaust/sort-imports"]);
   });
 
-  test("allows computed access on a namespace import, but not an unknown name", async () => {
+  test("leaves namespace members of TypeScript files to the type checker", async () => {
     expect(
       await lintedProjectRules(`import * as things from "#things";
+
+export const values = [things.two];
+`),
+    ).toEqual([]);
+  });
+
+  test("allows computed access on a namespace import in other code files, but not an unknown name", async () => {
+    expect(
+      await lintedProjectRules(
+        `import * as things from "#things";
 
 const key = "one";
 
 export const values = [things[key], things.two];
-`),
+`,
+        {
+          filePath: "src/index.js",
+          engrenageConfig: `export default { typescript: { files: ["**/*.{ts,js}"] } };\n`,
+        },
+      ),
     ).toEqual(["import-x/namespace"]);
   });
 

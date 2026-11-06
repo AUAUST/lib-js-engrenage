@@ -9,6 +9,8 @@ import type { Glob } from "#types/Glob";
 
 export const anyFile = "**" satisfies Glob;
 
+export const typescriptFiles = "**/*.{ts,tsx,mts,cts}" satisfies Glob;
+
 export const pluginName = "auaust";
 
 export const boundaryRows = freeze([
