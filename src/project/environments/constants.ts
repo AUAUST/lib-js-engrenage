@@ -1,3 +1,4 @@
+// @debt importing one constant from the `tsconfig` index evaluates `createTsconfig`, so every config load parses the `typescript` compiler (~0.2 s per process).
 import { freeze } from "@auaust/toolkit/object";
 
 import { unmanagedTsconfig } from "#project/tsconfig/index";

@@ -1,10 +1,13 @@
-import { symlinkSync } from "node:fs";
+import { mkdirSync, symlinkSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { createServer, mergeConfig } from "vite";
 import { describe, expect, test } from "vitest";
 import { configDefaults } from "vitest/config";
 import { startVitest } from "vitest/node";
+
+import { flatMap, map } from "@auaust/primitive-kit/arrays";
 
 import { testsetup } from "#project/roles/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -14,6 +17,10 @@ import { createVitestConfig } from "#tools/vitest/operations/createVitestConfig"
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 const root = getFixture("vitest");
+
+const typescriptPackage = fileURLToPath(
+  new URL("../../../../node_modules/typescript", import.meta.url),
+);
 
 describe("createVitestConfig", () => {
   test("returns only the test layer: sources through the tsconfig paths and the project tsconfig outside build mode", async () => {
@@ -193,6 +200,15 @@ describe("createVitestConfig type checking", () => {
         'const value: number = "text";\nexport { value };\n',
     });
 
+    mkdirSync(project.resolve("node_modules/.bin"), { recursive: true });
+
+    symlinkSync(typescriptPackage, project.resolve("node_modules/typescript"));
+
+    symlinkSync(
+      "../typescript/bin/tsc",
+      project.resolve("node_modules/.bin/tsc"),
+    );
+
     const config = await loadConfig(project.root);
 
     const vitestConfig = createVitestConfig(config, {
@@ -220,12 +236,13 @@ describe("createVitestConfig type checking", () => {
     });
 
     try {
-      expect(
-        vitest.state.getCountOfFailedTests() +
-          vitest.state
-            .getFiles()
-            .filter((file) => file.result?.state === "fail").length,
-      ).toBeGreaterThan(0);
+      const errors = flatMap(vitest.state.getFiles(), (file) => {
+        return file.result?.errors ?? [];
+      });
+
+      expect(map(errors, ({ message }) => message)).toContain(
+        "Type 'string' is not assignable to type 'number'.",
+      );
     } finally {
       await vitest.close();
 

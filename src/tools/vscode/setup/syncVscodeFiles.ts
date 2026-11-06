@@ -18,7 +18,6 @@ import {
 import { validate } from "#foundation/options/index";
 import { environmentSection, type LoadedConfig } from "#project/config/index";
 import { jsonIndentation } from "#project/format/constants";
-import { loadInfoRules } from "#tools/eslint/index";
 import {
   eslintIntegration,
   extensionsFile,
@@ -73,12 +72,20 @@ async function isEnabled(
   return configured === true || requested || (await filesystem.exists(file));
 }
 
+// @debt `auaust/no-dynamic-import` forbids this lazy load, which keeps the ESLint engine out of every config load, so the rule is disabled on it until it allows heavy dependencies on rare paths (#221).
+async function loadEslintInfoRules(root: Directory): Promise<string[]> {
+  // eslint-disable-next-line auaust/no-dynamic-import
+  const { loadInfoRules } = await import("#tools/eslint/index");
+
+  return loadInfoRules(root);
+}
+
 async function createSettingsEdits(
   root: Directory,
   applicable: readonly Integration[],
 ): Promise<JsonEdit[]> {
   const infoRules = includes(applicable, eslintIntegration)
-    ? await loadInfoRules(root)
+    ? await loadEslintInfoRules(root)
     : [];
 
   return flatMap(applicable, (integration) => {
