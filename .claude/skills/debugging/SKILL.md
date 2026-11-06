@@ -56,9 +56,35 @@ Never start a large refactor, even partly: an issue costs less than a half-appli
 - Ask under the project's decision protocol, batched, with the diagnosis so far.
 - Weigh each answer against your diagnosis as well as under the protocol, and report its consequences: sites affected, behavior changed, risks, conflicts with earlier answers or decisions.
 
+## Drafts
+
+Write and edit issues as local drafts in `.ai/issues/`, revise them as the diagnosis and the conversation settle things, and publish them in one flush. A draft edit costs a diff instead of a full body, survives a stopped session and shows the user each change. Everything this skill says about creating and editing issues applies to the drafts until the flush.
+
+| File                  | Holds                                                                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `<n>.md`              | The body of issue `<n>` as fetched, never edited                                                                                      |
+| `<n>.draft.md`        | Its working version, with frontmatter `title`                                                                                         |
+| `new-<slug>.draft.md` | An issue to create, with frontmatter `title`, `type`, fields, and inside a planned tree `parent` and `after` (the sibling it follows) |
+
+- Start by reading `.ai/issues/`, and resume from the drafts it holds.
+- Read an issue from `.ai/issues/` when it holds a copy, and fetch it from GitHub only otherwise or when flushing.
+- Claim an issue on its first edit: fetch its body into `<n>.md`, copy it to `<n>.draft.md` and add `Drafting` to its Blockers.
+- When Blockers already has `Drafting` and `.ai/issues/` holds no draft of the issue, another maintainer is drafting it: report it, record `claim: existing` in the draft's frontmatter and keep diagnosing.
+- Reference an issue still to create as `#new-<slug>`.
+- End each round with the drafts it changed and the changes waiting on each open question.
+- Flush when no draft holds a change waiting on an open question, when the user asks, or when someone else needs the issue's current state, such as a worker; publish every draft in the same flush.
+
+To flush:
+
+1. Fetch each claimed issue again. When its body differs from `<n>.md`, merge the remote change into the draft, or ask when the two conflict.
+2. Create the new issues, in tree order inside a planned tree, replacing each `#new-<slug>` in every draft with its number.
+3. Publish each `<n>.draft.md` body without its frontmatter, with its title.
+4. Remove `Drafting` from each issue you claimed, never from one marked `claim: existing`.
+5. Report each issue's change from `git diff --no-index <n>.md <n>.draft.md`, then delete the files.
+
 ## Writing the issue
 
-When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then create one. Write it to the [issue contract](https://github.com/AUAUST/lib-js-engrenage/issues/239#contract) as a Problem, complete through its ancestors, if any, for a worker who treats everything in it as binding and applies it without redesign:
+When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then draft a new one. Write it to the [issue contract](https://github.com/AUAUST/lib-js-engrenage/issues/239#contract) as a Problem, complete through its ancestors, if any, for a worker who treats everything in it as binding and applies it without redesign:
 
 ```markdown
 #<plan> › … › #<parent> · <section>: <gist>
@@ -91,7 +117,7 @@ When the input is an issue, turn that issue into the task, condensing its origin
 - Write the header only for an issue inside a planned tree. List under **Prerequisites** only the issues tree order does not imply.
 - Drop **Prerequisites**, **Done when** or **Questions** when they would be empty, or when **Done when** would only say the Steps are done and the checks pass.
 - Set the type Problem with its Defect, and the project's environment labels. While **Questions** remain, set Blockers `Open questions`; clear it once they are gone.
-- Run `engrenage issues check <n>` on the issue before reporting it ready for a worker.
+- Run `engrenage issues check <n>` on the issue, once flushed, before reporting it ready for a worker.
 - Start any worker brief you write with `Issue: <owner>/<repo>#<n>`.
 - Once an issue you create or edit tracks the work of an entry in the backlog or the debt backlog, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
 

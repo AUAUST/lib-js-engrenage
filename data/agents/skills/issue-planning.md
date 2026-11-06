@@ -37,6 +37,7 @@ Outside consultant mode, create and edit issues as local drafts in `.ai/issues/`
 | `new-<slug>.draft.md` | An issue to create, with frontmatter `title`, `type`, `parent`, `after` (the sibling it follows), fields |
 
 - Start by reading `.ai/issues/`, and resume from the drafts it holds.
+- Read an issue from `.ai/issues/` when it holds a copy, and fetch it from GitHub only otherwise or when flushing.
 - Claim an issue on its first edit: fetch its body into `<n>.md`, copy it to `<n>.draft.md` and add `Drafting` to its Blockers.
 - When Blockers already has `Drafting` and `.ai/issues/` holds no draft of the issue, another maintainer is drafting it: report it, record `claim: existing` in the draft's frontmatter and keep planning.
 - Reference an issue still to create as `#new-<slug>`.
