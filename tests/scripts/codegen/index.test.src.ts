@@ -21,6 +21,10 @@ function createGenerator(name: string): CommandDefinition {
   };
 }
 
+vi.mock("#scripts/codegen/editions", () => {
+  return { editions: createGenerator("editions") };
+});
+
 vi.mock("#scripts/codegen/apis", () => {
   return { apis: createGenerator("apis") };
 });
@@ -44,6 +48,7 @@ describe("support codegen", () => {
     await runCommand(codegen, "--check");
 
     expect(runs).toEqual([
+      { name: "editions", check: true },
       { name: "apis", check: true },
       { name: "config", check: true },
       { name: "rules", check: true },
