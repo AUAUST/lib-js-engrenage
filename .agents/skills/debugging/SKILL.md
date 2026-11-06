@@ -57,7 +57,7 @@ Never start a large refactor, even partly: an issue costs less than a half-appli
 
 ## Writing the issue
 
-When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then create one. Make the task complete through its ancestors, if any, for a worker who treats everything outside **Questions** as decided and applies it without redesign:
+When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then create one. Write it to the [issue contract](https://github.com/AUAUST/lib-js-engrenage/issues/239#contract) as a Problem, complete through its ancestors, if any, for a worker who treats everything in it as binding and applies it without redesign:
 
 ```markdown
 #<plan> › … › #<parent> · <section>: <gist>
@@ -89,7 +89,9 @@ When the input is an issue, turn that issue into the task, condensing its origin
 
 - Write the header only for an issue inside a planned tree. List under **Prerequisites** only the issues tree order does not imply.
 - Drop **Prerequisites**, **Done when** or **Questions** when they would be empty, or when **Done when** would only say the Steps are done and the checks pass.
-- Apply the project's existing labels and issue types, including its label for missing information while **Questions** remain.
+- Set the type Problem with its Defect, and the project's environment labels. While **Questions** remain, set Blockers `Open questions`; clear it once they are gone.
+- Run `engrenage issues check <n>` on the issue before reporting it ready for a worker.
+- Start any worker brief you write with `Issue: <owner>/<repo>#<n>`.
 - Once an issue you create or edit tracks the work of an entry in the backlog or the debt backlog, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
 
 ## Finishing

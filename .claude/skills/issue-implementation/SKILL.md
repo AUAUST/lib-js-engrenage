@@ -19,23 +19,32 @@ Read the issue, then only the ancestors and plan sections its header line names.
 | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | The issue itself                                    | It has no **Steps**: it is a report or a request, not a planned task. Report that it needs the debugger, or the planner when the work spans several tasks. |
 | **Prerequisites**                                   | One is still open.                                                                                                                                         |
-| Sub-issues                                          | Some are open. Report them in order: each is worked on its own before the issue's remaining work, and a block has no work beyond its sub-issues.           |
+| Sub-issues                                          | Some are open. Report them in order: each is worked on its own before the issue's remaining work, and a segment has no work beyond its sub-issues.         |
 | The plan, the reference for shared names and shapes | It disagrees with the issue.                                                                                                                               |
+| **Planning** or **Questions**                       | Either is present.                                                                                                                                         |
+| Blockers                                            | Any is set.                                                                                                                                                |
 
 ## Reading the issue
 
-| Content                                                                         | Treatment                                                                                      |
-| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Everything outside **Questions**: names, paths, shapes, **Steps** and **Tests** | Binding. Follow the Steps in order and write the listed test cases; never substitute your own. |
-| **Questions**, and any choice the issue leaves open                             | Resolve under the project's decision protocol.                                                 |
-| Work the issue reveals beyond its scope                                         | Report it instead of doing it.                                                                 |
+Everything in the issue binds you: follow the **Steps** in order and write the listed test cases; never substitute your own.
+
+- Decide only local choices no other code, contract or issue can observe: local names, how a private function is split, fixture data.
+- Stop and report on anything else: an open section, a Step that does not match the code, a needed deviation, work belonging to another issue.
+
+## Checkpoints
+
+- At each `Checkpoint:` line, check that its expected state holds, then commit everything done so far, choosing the message under the project's git rules with `Towards #<n>` in the body.
+- When the commit gate fails, fix what it reports and commit again before the next Step.
+- When the expected state cannot be reached, stop and report: the Steps do not match the code.
+- Commit nowhere else: the walker makes the closing commit.
 
 ## Finishing
 
 - The issue is done when its **Done when** holds, or its **Steps** are done when it has none, and the project's checks pass.
+- Before reporting, run the project's gate on the worktree (`engrenage gate --worktree`) and fix what it reports.
 - When asked for a branch, create `worker/issue-<n>` from the current commit.
-- Never edit, comment on, label or close issues.
-- Report whether **Done when** holds, each deviation from the issue with its reason, the question each decision resolves, and what the issue tree needs updated.
+- Never edit, comment on, set types or fields on, or close issues.
+- Report whether **Done when** holds, each deviation from the issue with its reason, each local choice you made, and what the issue tree needs updated.
 
 ## GitHub mechanics
 
