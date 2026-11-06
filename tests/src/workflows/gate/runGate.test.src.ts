@@ -55,7 +55,7 @@ function createRepository() {
 
 describe("runGate", { timeout: binaryTimeout }, () => {
   test("rewrites, re-stages and passes an unformatted staged file", async () => {
-    const { project, git } = createRepository();
+    const { project, git } = await createRepository();
 
     project.write("src/index.ts", "export const value: number = 2\n");
 
@@ -79,7 +79,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
   });
 
   test("fails a staged type error under typecheck", async () => {
-    const { project, git } = createRepository();
+    const { project, git } = await createRepository();
 
     project.write("src/index.ts", 'export const value: number = "text";\n');
 
@@ -94,7 +94,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
   });
 
   test("fails a partially staged file before any fix", async () => {
-    const { project, git } = createRepository();
+    const { project, git } = await createRepository();
 
     project.write("src/index.ts", "export const value: number = 2\n");
 
@@ -119,7 +119,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
   });
 
   test("returns from the stamp on a tree that already passed", async () => {
-    const { project, git } = createRepository();
+    const { project, git } = await createRepository();
 
     project.write("src/index.ts", "export const value: number = 2;\n");
 
@@ -136,7 +136,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
   });
 
   test("passes a changed debt entry over budget with a budget warning", async () => {
-    const { project } = createRepository();
+    const { project } = await createRepository();
 
     project.write(
       ".ai/debt.md",

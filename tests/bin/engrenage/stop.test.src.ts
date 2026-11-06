@@ -27,8 +27,8 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-function createRepository() {
-  const repository = createGitRepository(
+async function createRepository() {
+  const repository = await createGitRepository(
     {
       "package.json": JSON.stringify({
         name: "project",
@@ -75,7 +75,7 @@ async function hasMarker(root: string): Promise<boolean> {
 
 describe("stop hook", { timeout: binaryTimeout }, () => {
   test("blocks the first stop on a failing tree, lets the second through and blocks again after a change", async () => {
-    const { project } = createRepository();
+    const { project } = await createRepository();
 
     project.write("fail", "first\n");
 
@@ -94,7 +94,7 @@ describe("stop hook", { timeout: binaryTimeout }, () => {
   });
 
   test("lets a passing tree stop at once", async () => {
-    const { project } = createRepository();
+    const { project } = await createRepository();
 
     project.write("passing", "content\n");
 

@@ -3,15 +3,33 @@ import { mkdirSync, symlinkSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { vi } from "vitest";
+
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { getExecutable } from "#tests/utils/getExecutable";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
+import { settleChanges } from "#workflows/cli/operations/settleChanges";
+import { readConfig } from "#workflows/registry/operations/readConfig";
+import { runSync } from "#workflows/sync/index";
 
 const repositoryModules = fileURLToPath(
   new URL("../../node_modules", import.meta.url),
 );
 
-export function createGitRepository(
+async function syncProject(root: string) {
+  const config = await readConfig(root);
+
+  const info = vi.spyOn(console, "info").mockImplementation(() => {});
+
+  try {
+    await runSync(config);
+
+    await settleChanges(config, { check: false });
+  } finally {
+    info.mockRestore();
+  }
+}
+
+export async function createGitRepository(
   files: Record<string, string>,
   modules: readonly string[],
 ) {
@@ -35,10 +53,7 @@ export function createGitRepository(
     });
   }
 
-  execFileSync(process.execPath, [getExecutable(), "sync"], {
-    cwd: project.root,
-    stdio: "ignore",
-  });
+  await syncProject(project.root);
 
   git("init", "--quiet");
   git("add", "-A");
