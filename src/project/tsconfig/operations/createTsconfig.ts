@@ -1,3 +1,4 @@
+// @debt this static `typescript` import runs wherever the `tsconfig` index loads, which every config load does, so commands that never read a tsconfig (`gate`, `debt`, agent hooks) still parse the compiler (~0.2 s per process).
 import { relative, resolve } from "node:path";
 
 import {
