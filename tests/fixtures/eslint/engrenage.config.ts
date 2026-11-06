@@ -1,1 +1,1 @@
-export default { roles: false };
+export default {};

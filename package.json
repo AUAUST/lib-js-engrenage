@@ -80,6 +80,7 @@
     "./pnpm/constants": "./dist/pnpm/constants.mjs",
     "./prettier": "./dist/prettier.mjs",
     "./prettier/constants": "./dist/prettier/constants.mjs",
+    "./roles": "./dist/roles.mjs",
     "./tsdown": "./dist/tsdown.mjs",
     "./tsdown/constants": "./dist/tsdown/constants.mjs",
     "./typescript": "./dist/typescript.mjs",

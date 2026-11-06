@@ -6,7 +6,6 @@ import {
   filesSection,
   importRulesSection,
   packageJsonSection,
-  rolesSection,
   scriptsSection,
   sourceSection,
   structureSection,
@@ -49,7 +48,6 @@ export async function resolveConventionConfig(
     packageJson,
     environment,
     traits,
-    roles,
     workspaces,
   ] = await Promise.all([
     config.resolve(structureSection),
@@ -66,7 +64,6 @@ export async function resolveConventionConfig(
     config.resolve(packageJsonSection),
     config.resolve(environmentSection),
     config.resolve(traitsSection),
-    config.resolve(rolesSection),
     config.resolve(workspacesSection),
   ]);
 
@@ -103,7 +100,6 @@ export async function resolveConventionConfig(
     packageJson,
     environment,
     traits,
-    roles,
     workspaces,
   };
 }

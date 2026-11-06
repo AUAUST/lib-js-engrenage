@@ -6,6 +6,7 @@ import { describe, expect, test } from "vitest";
 import { configDefaults } from "vitest/config";
 import { startVitest } from "vitest/node";
 
+import { setup } from "#project/roles/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
@@ -68,6 +69,7 @@ describe("createVitestConfig", () => {
   test("loads the setup file of the tests root unless the options give others", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts": `export default { tests: { roles: ${JSON.stringify([setup()])} } };\n`,
       "tests/setup.ts": "",
     });
 

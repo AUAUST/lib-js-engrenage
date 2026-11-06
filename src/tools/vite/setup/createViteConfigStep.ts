@@ -28,7 +28,7 @@ export function createViteConfigStep(): Step {
             options: "{\n  test: createVitestLayer(),\n}",
             imports: [
               {
-                name: "createVitestLayer",
+                names: ["createVitestLayer"],
                 entry: `${engrenage}/vitest`,
               },
             ],

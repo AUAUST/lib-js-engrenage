@@ -12,6 +12,7 @@ import {
   toolingSection,
   typescriptSection,
 } from "@auaust/engrenage";
+import { setup } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
@@ -134,7 +135,7 @@ describe("environments", () => {
     const project = createProject(
       `{
         src: { dirs: ["lib", "src"], generated: "types/**" },
-        tests: { generated: ["snapshots/**"] },
+        tests: { generated: ["snapshots/**"], roles: ${JSON.stringify([setup()])} },
         scripts: { discovered: { append: "**/*.ts" } },
       }`,
     );

@@ -1,8 +1,8 @@
 import { entries, freeze, record } from "@auaust/toolkit/object";
 
-import { flattenRoleReferences } from "#project/structure/utils/flattenRoleReferences";
-import type { RoleDefinition } from "#project/structure/types/RoleDefinition";
-import type { RoleReference } from "#project/structure/types/RoleReference";
+import { registerRoles } from "#project/structure/utils/registerRoles";
+import type { Role } from "#project/roles/index";
+import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
 import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 
@@ -11,30 +11,34 @@ export function normalizeNamespaces({
   namespaces,
 }: {
   environment: StructureEnvironmentName;
-  namespaces: StructureOptions<RoleReference>["namespaces"];
+  namespaces: StructureOptions<string | Role>["namespaces"];
 }): {
   readonly namespaces: StructureOptions["namespaces"];
-  readonly define: Readonly<Record<string, RoleDefinition>>;
+  readonly defined: RoleRegistry;
 } {
-  const define: Record<string, RoleDefinition> = {};
+  const defined: RoleRegistry = {
+    contracts: {},
+    aliases: {},
+  };
 
   const normalized = record(
     entries(namespaces).map(([path, namespace]) => {
+      const enable = registerRoles({
+        owner: `${environment}:${path}`,
+        path: `${environment}.namespaces.${path}.roles.enable`,
+        roles: namespace.roles.enable,
+        registry: defined,
+      });
+
       return [
         path,
         freeze({
           ...namespace,
-          roles: freeze({
-            enable: flattenRoleReferences({
-              owner: `${environment}:${path}`,
-              references: namespace.roles.enable,
-              define,
-            }),
-          }),
+          roles: freeze({ enable: freeze(enable) }),
         }),
       ] as const;
     }),
   );
 
-  return freeze({ namespaces: freeze(normalized), define: freeze(define) });
+  return freeze({ namespaces: freeze(normalized), defined });
 }

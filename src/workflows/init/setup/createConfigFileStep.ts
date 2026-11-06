@@ -1,3 +1,4 @@
+import { map, sort } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 
 import { engrenage, engrenageConfigFile } from "#constants";
@@ -5,6 +6,38 @@ import { findCurrentMonth } from "#project/baseline/index";
 import { presetTraits } from "#project/presets/constants";
 import { createConfigModule, type Step } from "#project/steps/index";
 import type { Preset } from "#project/presets/index";
+
+const sharedPresets = [
+  "index",
+  "constants",
+  "declarations",
+  "types",
+  "utils",
+  "errors",
+  "enums",
+  "ports",
+  "adapters",
+] as const;
+
+const testsPresets = ["fixtures", "setup"] as const;
+
+const publishedPresets = ["entry"] as const;
+
+const operationsPreset = `const operations = createRolePreset({ name: "operations", exports: "named-match" });`;
+
+function callPresets(names: readonly string[]): string {
+  return map(names, (name) => `${name}()`).join(", ");
+}
+
+function renderRoles(published: boolean): string {
+  const roles = `const roles = [${callPresets(sharedPresets)}, operations()];`;
+
+  const source = published
+    ? `const sourceRoles = [...roles, ${callPresets(publishedPresets)}];`
+    : "const sourceRoles = roles;";
+
+  return `${roles}\n\n${source}`;
+}
 
 function renderOptions(
   chosen: Preset | undefined,
@@ -16,11 +49,15 @@ function renderOptions(
   const preferred =
     agents === undefined ? "" : `preferred: ${JSON.stringify(agents)}, `;
 
-  const baseline = `  src: { baseline: ${JSON.stringify(findCurrentMonth())} },\n`;
+  const source = `  src: { baseline: ${JSON.stringify(findCurrentMonth())}, roles: sourceRoles },\n`;
 
-  const roles = `  roles: { define: { operations: { exports: "named-match" } } },\n`;
+  const environments = [
+    `  tests: { roles: [...roles, ${callPresets(testsPresets)}] },\n`,
+    "  scripts: { roles },\n",
+    "  tooling: { roles },\n",
+  ];
 
-  return `{\n${preset}${baseline}${roles}  agents: { ${preferred}attribution: false },\n}`;
+  return `{\n${preset}${source}${environments.join("")}  agents: { ${preferred}attribution: false },\n}`;
 }
 
 export function createConfigFileStep(): Step {
@@ -47,11 +84,25 @@ export function createConfigFileStep(): Step {
 
       context.setPreset(chosen);
 
+      const { published } = await context.getTraits();
+
       await context.filesystem.write(
         file,
         createConfigModule({
           entry: `${engrenage}/config`,
           definer: "defineConfig",
+          imports: [
+            {
+              names: sort([
+                "createRolePreset",
+                ...sharedPresets,
+                ...testsPresets,
+                ...(published ? publishedPresets : []),
+              ]),
+              entry: `${engrenage}/roles`,
+            },
+          ],
+          declarations: [operationsPreset, renderRoles(published)],
           options: renderOptions(chosen, context.getAgents()),
         }),
       );

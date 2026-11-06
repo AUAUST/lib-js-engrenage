@@ -3,9 +3,21 @@ import { mkdirSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 
 import { loadConfig, structureSection } from "@auaust/engrenage";
+import {
+  components,
+  createRolePreset,
+  entry,
+  fixtures,
+  setup,
+} from "@auaust/engrenage/roles";
 import { record } from "@auaust/toolkit/object";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
+
+const sourceRoles = renderCodeRoles(entry(), components());
+
+const testsRoles = renderCodeRoles(fixtures(), setup());
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',
@@ -67,6 +79,7 @@ async function describeSource(options: string) {
 const declaration = `{
   preset: "library",
   src: {
+    roles: ${sourceRoles},
     namespaces: {
       ".": { layers: ["zone", "*"] },
       zone: { layers: ["base", "*", "top"] },
@@ -171,7 +184,7 @@ describe("structure", () => {
   });
 
   test("reads role-named directories as domains and namespaces without roles", async () => {
-    const { nodes } = await describeSource(`{ roles: false }`);
+    const { nodes } = await describeSource("{}");
 
     expect(nodes.get("src/feature/utils")).toMatchObject({
       kind: "unclassified",
@@ -198,7 +211,7 @@ describe("structure", () => {
             (file) => [file, ""],
           ),
         ),
-        "engrenage.config.ts": `export default { tests: { layout: "${layout}" } };\n`,
+        "engrenage.config.ts": `export default { src: { roles: ${sourceRoles} }, tests: { layout: "${layout}", roles: ${testsRoles} } };\n`,
       });
 
       const config = await loadConfig(project.root);
@@ -247,8 +260,7 @@ describe("structure", () => {
         "src/a/b/utils/x.ts": "",
         "tests/src/a/utils/x.test.ts": "",
         "tests/src/a/b/utils/y.test.ts": "",
-        "engrenage.config.ts":
-          'export default { tests: { layout: "mirror" } };\n',
+        "engrenage.config.ts": `export default { src: { roles: ${sourceRoles} }, tests: { layout: "mirror", roles: ${testsRoles} } };\n`,
       });
 
       const structure = await loadStructure(project.root);
@@ -332,14 +344,18 @@ describe("inline roles", () => {
     );
   }
 
+  const game = createRolePreset({ name: "game" });
+
+  const arcade = createRolePreset({ name: "arcade" });
+
+  const types = createRolePreset({ name: "types" });
+
   test("shadow a root role inside their owner only", async () => {
-    const nodes = await describeProject(`{
-      roles: {
-        define: {
-          game: { roles: [{ name: "types", exports: "default" }] },
-        },
-      },
-    }`);
+    const roles = renderCodeRoles(
+      game({ roles: [types({ exports: "default" })] }),
+    );
+
+    const nodes = await describeProject(`{ src: { roles: ${roles} } }`);
 
     expect(nodes.get("src/x/game/types")).toMatchObject({
       kind: "role",
@@ -353,22 +369,20 @@ describe("inline roles", () => {
   });
 
   test("fail when one list names a role twice, and pass across owners", async () => {
-    await expect(
-      describeProject(`{
-        roles: {
-          define: { game: { roles: [{ name: "types" }, { name: "types" }] } },
-        },
-      }`),
-    ).rejects.toThrow("game lists the role types twice");
+    const twice = renderCodeRoles(game({ roles: [types(), types()] }));
 
-    const nodes = await describeProject(`{
-      roles: {
-        define: {
-          game: { roles: [{ name: "types" }] },
-          arcade: { roles: [{ name: "types" }] },
-        },
-      },
-    }`);
+    await expect(
+      describeProject(`{ src: { roles: ${twice} } }`),
+    ).rejects.toThrow(
+      "src.roles[9].roles[0] and src.roles[9].roles[1] are both named types",
+    );
+
+    const owners = renderCodeRoles(
+      game({ roles: [types()] }),
+      arcade({ roles: [types()] }),
+    );
+
+    const nodes = await describeProject(`{ src: { roles: ${owners} } }`);
 
     expect(nodes.get("src/x/game/types")).toMatchObject({
       role: "game/types",
@@ -378,6 +392,7 @@ describe("inline roles", () => {
   test("of a namespace are active only in its subtree", async () => {
     const nodes = await describeProject(`{
       src: {
+        roles: ${renderCodeRoles()},
         namespaces: {
           ui: { roles: { enable: [{ name: "widgets", exports: "named-match" }] } },
         },

@@ -36,14 +36,11 @@ CHANGELOG.md
 /src/project/environments/types/ToolingInput.ts
 /src/project/format/types/FormatInput.ts
 /src/project/presets/types/TraitsInput.ts
+/src/project/roles/types/RoleInput.ts
 /src/project/structure/types/AliasesInput.ts
 /src/project/structure/types/DomainInput.ts
-/src/project/structure/types/EffectsInput.ts
-/src/project/structure/types/InlineRoleInput.ts
 /src/project/structure/types/NamespaceInput.ts
-/src/project/structure/types/RoleContractInput.ts
-/src/project/structure/types/RolesInput.ts
-/src/project/structure/types/RolesOptionInput.ts
+/src/project/structure/types/StructureInput.ts
 /src/project/tsconfig/types/TypescriptInput.ts
 /src/tools/agents/types/AgentsInput.ts
 /src/tools/git/types/GitInput.ts

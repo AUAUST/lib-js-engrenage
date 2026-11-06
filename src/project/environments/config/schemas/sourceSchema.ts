@@ -22,7 +22,8 @@ import {
 } from "#project/environments/constants";
 import { declareCodeEnvironment } from "#project/environments/declarers/declareCodeEnvironment";
 import { exposedFilesSchema } from "#project/package/index";
-import { aliasesSchema, rolesOptionSchema } from "#project/structure/index";
+import { rolesSchema } from "#project/roles/index";
+import { aliasesSchema } from "#project/structure/index";
 
 function describeApiGroups(): string {
   const roots = map(entries(apiGroupRoots), ([group, globals]) => {
@@ -39,7 +40,7 @@ function describeApiGroups(): string {
 export const sourceSchema = declareObject(
   {
     ...declareCodeEnvironment("src", defaultSourceDirectories),
-    roles: rolesOptionSchema,
+    roles: rolesSchema,
     aliases: aliasesSchema,
     bundled: declare(boolean(), {
       description:

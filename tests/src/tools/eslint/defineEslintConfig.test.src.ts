@@ -22,6 +22,7 @@ describe("defineEslintConfig", () => {
     const callback = vi.fn((config: LoadedConfig) => {
       return {
         stylistic: config.context.root === root,
+        structure: { domainContent: false },
       };
     });
 

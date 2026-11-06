@@ -1,8 +1,10 @@
 import { describe, expect, test } from "vitest";
 
 import { loadConfig, sourceExportsSection } from "@auaust/engrenage";
+import { entry } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',
@@ -20,12 +22,12 @@ const files = {
 async function exposed(
   source: string,
   extra: Record<string, string> = {},
-  roles = "",
+  roles = renderCodeRoles(entry()),
 ) {
   const project = createTemporaryProject({
     ...files,
     ...extra,
-    "engrenage.config.ts": `export default { preset: "library", ${roles} src: ${source} };\n`,
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${roles}, ...${source} } };\n`,
   });
 
   const config = await loadConfig(project.root);
@@ -51,7 +53,7 @@ describe("domain entries", () => {
       await exposed(
         `{ namespaces: { tools: {}, project: {} } }`,
         { "src/tools/beta/exports.ts": "" },
-        `roles: { define: { entry: { purpose: "Entry.", file: ["exports.ts"] } } },`,
+        renderCodeRoles(entry({ purpose: "Entry.", file: ["exports.ts"] })),
       ),
     ).toEqual({ "./beta": "src/tools/beta/exports.ts" });
   });

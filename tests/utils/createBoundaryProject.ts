@@ -1,4 +1,7 @@
+import { entry } from "@auaust/engrenage/roles";
+
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
 const exported = "export const value = 1;\n";
 
@@ -13,7 +16,7 @@ export function createBoundaryProject() {
         "#project/*": "./src/project/*.ts",
       },
     }),
-    "engrenage.config.ts": `export default { preset: "library", src: { namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry())}, namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",

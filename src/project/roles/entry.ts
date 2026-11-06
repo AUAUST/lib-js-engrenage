@@ -1,0 +1,22 @@
+export {
+  adapters,
+  components,
+  constants,
+  contexts,
+  createRolePreset,
+  declarations,
+  entryRole as entry,
+  enums,
+  errors,
+  fixtures,
+  hooks,
+  indexRole as index,
+  pages,
+  ports,
+  schemas,
+  setup,
+  styles,
+  types,
+  utilitiesRole as utils,
+} from "#project/roles/index";
+export type { Role, RolePreset } from "#project/roles/index";

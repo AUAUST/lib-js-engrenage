@@ -3,17 +3,19 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
+import { createRolePreset, entry, type Role } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
-async function createLinter(config = "") {
+async function createLinter(config = "", roles: readonly Role[] = []) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({
       name: "library",
       type: "module",
       imports: { "#project/*": "./src/project/*.ts" },
     }),
-    "engrenage.config.ts": `export default { preset: "library", ${config} src: { namespaces: { ".": { layers: ["project"] } } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", ${config} src: { roles: ${renderCodeRoles(entry(), ...roles)}, namespaces: { ".": { layers: ["project"] } } } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",
@@ -101,9 +103,13 @@ describe("type-only roles", () => {
   });
 
   test("apply to a project role marked typeOnly", async () => {
-    const lint = await createLinter(
-      "roles: { define: { shapes: { typeOnly: true, exports: 'named-match' } } },",
-    );
+    const shapes = createRolePreset({
+      name: "shapes",
+      typeOnly: true,
+      exports: "named-match",
+    });
+
+    const lint = await createLinter("", [shapes()]);
 
     expect(
       await lint(

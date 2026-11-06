@@ -1,37 +1,23 @@
 import { isFunction } from "@auaust/toolkit/isFunction";
-import { assign, entries, freeze, keys } from "@auaust/toolkit/object";
+import { entries, freeze, record } from "@auaust/toolkit/object";
 
-import {
-  defaultEffectLevels,
-  environmentRoleKeys,
-  noRoles,
-  publishedRoleKeys,
-} from "#project/structure/constants";
-import { resolveCatalogue } from "#project/structure/utils/resolveCatalogue";
-import { resolveRoleContracts } from "#project/structure/utils/resolveRoleContracts";
-import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
+import { defaultEffectLevels } from "#project/structure/constants";
+import { registerRoles } from "#project/structure/utils/registerRoles";
+import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { ResolvedEffects } from "#project/structure/types/ResolvedEffects";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import type { RoleEffects } from "#project/structure/types/RoleEffects";
 import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
-import type { RolesOption } from "#project/structure/types/RolesOption";
+import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
 
 function resolveEffects(
-  roles: RolesOption,
-  environmentRoles: RolesOption,
+  effects: RoleEffects,
   environment: RoleEnvironment,
 ): ResolvedEffects {
-  const levels =
-    environmentRoles.effects.levels ??
-    roles.effects.levels ??
-    defaultEffectLevels;
-
-  const modules = [
-    environmentRoles.effects.modules,
-    roles.effects.modules,
-  ].filter((ranking) => ranking !== undefined);
-
-  const fallback = environmentRoles.effects.fallback ?? roles.effects.fallback;
+  const levels = effects.levels ?? defaultEffectLevels;
+  const modules = effects.modules === undefined ? [] : [effects.modules];
+  const { fallback } = effects;
 
   function assertLevel(level: string, subject: string) {
     if (!levels.includes(level)) {
@@ -63,91 +49,64 @@ function resolveEffects(
 export function resolveRoles({
   environment,
   roles,
-  environmentRoles,
+  effects,
+  verbatimModuleSyntax,
+  defined,
   scopes = [],
-}: {
+}: EnvironmentRoles & {
   environment: RoleEnvironment;
-  roles: ProjectRoles;
-  environmentRoles: RolesOption;
+  defined?: RoleRegistry;
   scopes?: readonly string[];
 }): ResolvedRoles {
-  if (!roles.enabled) {
-    return noRoles;
-  }
+  const registry: RoleRegistry = {
+    contracts: { ...defined?.contracts },
+    aliases: { ...defined?.aliases },
+  };
 
-  const contracts = resolveRoleContracts({
-    catalogue: resolveCatalogue(),
-    layers: [roles.define, environmentRoles.define],
+  registerRoles({
+    owner: undefined,
+    path: `${environment}.roles`,
+    roles,
+    registry,
   });
 
-  const active = new Set<string>([
-    ...environmentRoleKeys[environment],
-    ...(roles.published && environment in publishedRoleKeys
-      ? publishedRoleKeys[environment as keyof typeof publishedRoleKeys]
-      : []),
-  ]);
-
-  const aliases: Record<string, string> = {};
-
-  for (const option of [roles, environmentRoles]) {
-    for (const name of option.enable) {
-      active.add(name);
-    }
-
-    for (const name of option.disable) {
-      active.delete(name);
-    }
-
-    for (const name of keys(option.define)) {
-      active.add(name);
-    }
-
-    assign(aliases, option.aliases);
-  }
-
   for (const name of scopes) {
-    if (!(name in contracts)) {
+    if (!(name in registry.contracts)) {
       throw new Error(
         `The scope enables the role ${name}, which is not defined for ${environment}`,
       );
     }
-
-    active.add(name);
   }
 
-  const effects = resolveEffects(roles, environmentRoles, environment);
+  const resolvedEffects = resolveEffects(effects, environment);
   const resolved: Record<string, ResolvedRoleContract> = {};
 
-  for (const [name, contract] of entries(contracts)) {
-    if (!(active.has(name) && (!contract.scoped || scopes.includes(name)))) {
+  for (const [name, contract] of entries(registry.contracts)) {
+    if (contract.scoped && !scopes.includes(name)) {
       continue;
     }
 
     if (
       contract.effects !== undefined &&
-      !effects.levels.includes(contract.effects)
+      !resolvedEffects.levels.includes(contract.effects)
     ) {
       throw new Error(
-        `The role ${name} is ranked ${contract.effects}, which is not one of the effect levels of ${environment}: ${effects.levels.join(", ")}`,
+        `The role ${name} is ranked ${contract.effects}, which is not one of the effect levels of ${environment}: ${resolvedEffects.levels.join(", ")}`,
       );
     }
 
-    resolved[name] = roles.verbatimModuleSyntax
+    resolved[name] = verbatimModuleSyntax
       ? contract
       : freeze({ ...contract, typeOnly: false });
   }
 
-  for (const [alias, target] of entries(aliases)) {
-    if (!(target in resolved)) {
-      throw new Error(
-        `The alias ${alias} reads as ${target}, which is not an active role of ${environment}`,
-      );
-    }
-  }
+  const aliases = entries(registry.aliases).filter(([, target]) => {
+    return target in resolved;
+  });
 
   return freeze({
     roles: freeze(resolved),
-    aliases: freeze(aliases),
-    effects,
+    aliases: freeze(record(aliases)),
+    effects: resolvedEffects,
   });
 }

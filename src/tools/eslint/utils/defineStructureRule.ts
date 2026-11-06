@@ -27,9 +27,7 @@ export function defineStructureRule({
       schema: [],
     },
     create(context) {
-      const location = config.roles.enabled
-        ? locateInStructure(config, context.filename)
-        : undefined;
+      const location = locateInStructure(config, context.filename);
 
       return location === undefined ? {} : create(context, location);
     },

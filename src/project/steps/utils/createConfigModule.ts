@@ -1,8 +1,17 @@
 import { map } from "@auaust/primitive-kit/arrays";
 
-interface NamedImport {
-  name: string;
+interface NamedImports {
+  names: readonly string[];
   entry: string;
+}
+
+function renderImport({ names, entry }: NamedImports): string {
+  const list =
+    names.length === 1
+      ? ` ${names.join("")} `
+      : `\n${map(names, (name) => `  ${name},\n`).join("")}`;
+
+  return `import {${list}} from "${entry}";\n`;
 }
 
 export function createConfigModule({
@@ -10,22 +19,20 @@ export function createConfigModule({
   definer,
   options,
   imports = [],
+  declarations = [],
 }: {
   entry: string;
   definer: string;
   options?: string;
-  imports?: readonly NamedImport[];
+  imports?: readonly NamedImports[];
+  declarations?: readonly string[];
 }): string {
   const statements = map(
-    [
-      {
-        name: definer,
-        entry,
-      },
-      ...imports,
-    ],
-    (named) => `import { ${named.name} } from "${named.entry}";\n`,
+    [{ names: [definer], entry }, ...imports],
+    renderImport,
   );
 
-  return `${statements.join("")}\nexport default ${definer}(${options || ""});\n`;
+  const body = map(declarations, (declaration) => `\n${declaration}\n`);
+
+  return `${statements.join("")}${body.join("")}\nexport default ${definer}(${options || ""});\n`;
 }

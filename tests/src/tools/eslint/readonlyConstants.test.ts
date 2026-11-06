@@ -3,14 +3,15 @@ import { expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
+import { constants, entry } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
 test("readonly-constants follows the file of the constants role", async () => {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({ name: "library", type: "module" }),
-    "engrenage.config.ts":
-      'export default { preset: "library", src: { roles: { define: { constants: { inherit: "constants", file: ["consts.ts"] } } } } };\n',
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${JSON.stringify([constants({ file: ["consts.ts"] })])} } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",
@@ -48,7 +49,7 @@ test("readonly-constants follows the file of the constants role", async () => {
 test("readonly-constants accepts frozen values and reports mutable ones", async () => {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({ name: "library", type: "module" }),
-    "engrenage.config.ts": 'export default { preset: "library" };\n',
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry())} } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",

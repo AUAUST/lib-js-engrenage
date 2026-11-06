@@ -1,12 +1,12 @@
 import { toJsonSchema } from "@valibot/to-json-schema";
 import { describe, expect, test } from "vitest";
 
-import { inlineRoleSchema } from "#project/structure/config/schemas/inlineRoleSchema";
+import { roleSchema } from "#project/roles/config/schemas/roleSchema";
 
 describe("role contract defaults", () => {
   test("documents boolean and numeric defaults as values, not strings", () => {
     const json = JSON.stringify(
-      toJsonSchema(inlineRoleSchema.schema, { errorMode: "ignore" }),
+      toJsonSchema(roleSchema.schema, { errorMode: "ignore" }),
     );
 
     expect(json).toContain("@default false");

@@ -11,11 +11,11 @@ import { getEntryFile } from "#project/structure/utils/getEntryFile";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
+import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
-import type { ProjectRoles } from "#project/structure/types/ProjectRoles";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
-import type { RolesOption } from "#project/structure/types/RolesOption";
+import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
 import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureKind } from "#project/structure/types/StructureKind";
 import type { StructureMirror } from "#project/structure/types/StructureMirror";
@@ -208,7 +208,7 @@ export async function resolveEnvironmentStructure({
   dirs,
   options,
   roles,
-  environmentRoles,
+  defined,
   tests,
   layout,
 }: {
@@ -216,8 +216,8 @@ export async function resolveEnvironmentStructure({
   root: Directory;
   dirs: Directories;
   options: StructureOptions;
-  roles: ProjectRoles;
-  environmentRoles?: RolesOption | undefined;
+  roles?: EnvironmentRoles | undefined;
+  defined?: RoleRegistry;
   tests?: TestsContext;
   layout?: ProgramLayout | undefined;
 }): Promise<EnvironmentStructure> {
@@ -231,12 +231,12 @@ export async function resolveEnvironmentStructure({
 
   const rolesFor = memoized(
     (scopes: readonly string[]): ResolvedRoles => {
-      return name === "bin" || environmentRoles === undefined
+      return name === "bin" || roles === undefined
         ? noRoles
         : resolveRoles({
+            ...roles,
             environment: name,
-            roles,
-            environmentRoles,
+            ...(defined === undefined ? {} : { defined }),
             scopes,
           });
     },

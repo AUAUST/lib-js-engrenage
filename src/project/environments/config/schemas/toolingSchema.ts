@@ -8,7 +8,8 @@ import {
   defaultToolingDirectories,
   defaultToolingFiles,
 } from "#project/environments/constants";
-import { rolesOptionSchema, structureOptions } from "#project/structure/index";
+import { rolesSchema } from "#project/roles/index";
+import { structureOptions } from "#project/structure/index";
 import {
   declareEnvironmentTsconfig,
   unmanagedTsconfig,
@@ -27,7 +28,7 @@ export const toolingSchema = declareObject(
         "Globs, matched at the project root only, of the root files of the tooling environment, such as configuration files. They apply when `dirs` includes `.`.",
       optional: { value: defaultToolingFiles },
     }),
-    roles: rolesOptionSchema,
+    roles: rolesSchema,
     tsconfig: declareEnvironmentTsconfig("tooling", {
       description: [
         "Options of the tsconfig that sync writes for the tooling files.",

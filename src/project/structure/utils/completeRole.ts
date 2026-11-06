@@ -1,6 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { roleContractDefaults } from "#project/structure/constants";
+import { roleContractDefaults } from "#project/roles/constants";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { RoleDefinition } from "#project/structure/types/RoleDefinition";
 

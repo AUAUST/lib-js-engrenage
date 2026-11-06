@@ -6,7 +6,7 @@ import type { CacheInput, DefineInput } from "#project/config/index";
 import type { BinInput, DataInput, RuntimeInput, ScriptsInput, SourceInput, TestsInput, ToolingInput } from "#project/environments/index";
 import type { FormatInput } from "#project/format/index";
 import type { TraitsInput } from "#project/presets/index";
-import type { AliasesInput, RolesInput } from "#project/structure/index";
+import type { AliasesInput, StructureInput } from "#project/structure/index";
 import type { TypescriptInput } from "#project/tsconfig/index";
 import type { AgentsInput } from "#tools/agents/index";
 import type { GitInput } from "#tools/git/index";
@@ -41,9 +41,9 @@ export interface ConfigInput {
    */
   preset?: ("library" | undefined)
   /**
-   * The roles of the project, refined by each environment. `false` turns the role system off: no role is recognized and no role check or rule is produced.
+   * Structure settings shared by every environment.
    */
-  roles?: ((false | RolesInput) | undefined)
+  structure?: (StructureInput | undefined)
   /**
    * Traits of the project, adjusting those of the preset.
    */

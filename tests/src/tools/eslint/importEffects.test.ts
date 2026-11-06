@@ -3,13 +3,21 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
+import { createRolePreset, entry, type Role } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
+
+const operations = createRolePreset({
+  name: "operations",
+  exports: "named-match",
+  effects: "effectful",
+});
 
 async function createLinter({
   effects = "",
-  define = "",
-}: { effects?: string; define?: string } = {}) {
+  roles = [],
+}: { effects?: string; roles?: readonly Role[] } = {}) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({
       name: "library",
@@ -19,7 +27,7 @@ async function createLinter({
         "#project/*": "./src/project/*.ts",
       },
     }),
-    "engrenage.config.ts": `export default { preset: "library", roles: { effects: { ${effects} }, define: { operations: { exports: "named-match", effects: "effectful" }, ${define} } }, src: { namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", structure: { effects: { ${effects} } }, src: { roles: ${renderCodeRoles(entry(), operations(), ...roles)}, namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",
@@ -118,8 +126,14 @@ describe("import effects", () => {
 
     const inserted = await createLinter({
       effects: 'levels: ["pure", "logging", "confined", "effectful"]',
-      define:
-        'logging: { exports: "named-match", effects: "logging", nesting: 0 }',
+      roles: [
+        createRolePreset({
+          name: "logging",
+          exports: "named-match",
+          effects: "logging",
+          nesting: 0,
+        })(),
+      ],
     });
 
     const trace = importing("#project/feature/logging/trace", "trace");

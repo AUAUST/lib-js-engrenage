@@ -2,342 +2,143 @@ import { describe, expect, test } from "vitest";
 
 import { keys } from "@auaust/toolkit/object";
 
-import { rolesOptionSchema } from "#project/structure/config/schemas/rolesOptionSchema";
-import { rolesSchema } from "#project/structure/config/schemas/rolesSchema";
-import { noRoles } from "#project/structure/constants";
+import {
+  adapters,
+  constants,
+  createRolePreset,
+  hooks,
+  indexRole,
+  utilitiesRole,
+  type Role,
+} from "#project/roles/index";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
-import { normalizeRoles } from "#project/structure/utils/normalizeRoles";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
-import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
+import type { RoleEffects } from "#project/structure/types/RoleEffects";
 
 function resolve({
-  environment,
   roles,
-  environmentRoles,
+  effects = {},
   scopes,
 }: {
-  environment: RoleEnvironment;
-  roles: unknown;
-  environmentRoles?: unknown;
+  roles: readonly Role[];
+  effects?: Partial<RoleEffects>;
   scopes?: readonly string[];
 }) {
-  const declared = rolesSchema.resolve(roles, undefined, "roles");
-
   return resolveRoles({
-    environment,
-    roles: {
-      ...normalizeRoles(declared),
-      enabled: declared.enabled,
-      verbatimModuleSyntax: true,
-      published: false,
+    environment: "src",
+    roles,
+    effects: {
+      levels: undefined,
+      modules: undefined,
+      fallback: undefined,
+      ...effects,
     },
-    environmentRoles: normalizeRoles(
-      rolesOptionSchema.resolve(environmentRoles, undefined, "roles"),
-    ),
+    verbatimModuleSyntax: true,
     ...(scopes === undefined ? {} : { scopes }),
   });
 }
 
 describe("resolveRoles", () => {
-  test("resolves the defaults of an environment, tests adding its own", () => {
-    const source = resolve({ environment: "src", roles: undefined });
-    const tests = resolve({ environment: "tests", roles: undefined });
-
-    expect(keys(source.roles)).toEqual([
-      "index",
-      "constants",
-      "declarations",
-      "types",
-      "utils",
-      "errors",
-      "enums",
-      "ports",
-      "adapters",
-    ]);
-
-    expect(keys(tests.roles)).toEqual(
-      expect.arrayContaining(["utils", "fixtures", "setup.ts"]),
-    );
-
-    expect(source.roles).not.toHaveProperty("schemas");
-    expect(source.roles).not.toHaveProperty("fixtures");
-    expect(source.roles.errors).toMatchObject({ public: true });
-  });
-
-  test("applies the top level, then the environment, with define last", () => {
-    const roles = { disable: ["enums" as const], enable: ["schemas" as const] };
-
-    expect(resolve({ environment: "src", roles }).roles).not.toHaveProperty(
-      "enums",
-    );
-
-    expect(resolve({ environment: "src", roles }).roles).toHaveProperty(
-      "schemas",
-    );
-
-    const tests = resolve({
-      environment: "tests",
-      roles,
-      environmentRoles: { enable: ["enums"] },
+  test("resolves only the listed roles, in their order", () => {
+    const resolved = resolve({
+      roles: [indexRole(), constants(), utilitiesRole({ nesting: "any" })],
     });
 
-    expect(tests.roles).toHaveProperty("enums");
+    expect(keys(resolved.roles)).toEqual(["index", "constants", "utils"]);
 
-    expect(
-      resolve({
-        environment: "scripts",
-        roles: {
-          define: {
-            utils: { exports: "default" },
-          },
-        },
-      }).roles.utils,
-    ).toMatchObject({ exports: "default" });
-  });
+    expect(resolved.roles.utils).toMatchObject({
+      nesting: "any",
+      exports: "named-match",
+      effects: "confined",
+    });
 
-  test("yields no role in any environment when the role system is off", () => {
-    for (const environment of ["src", "tests", "scripts", "tooling"] as const) {
-      expect(resolve({ environment, roles: false })).toEqual(noRoles);
-    }
+    expect(resolve({ roles: [] }).roles).toEqual({});
   });
 
   test("activates a scoped role only where a scope enables it", () => {
-    const roles = {
-      define: {
-        gql: { roles: ["queries"] },
-        queries: { scoped: true },
-      },
-    };
-
-    const elsewhere = resolve({ environment: "src", roles });
-
-    const inside = resolve({
-      environment: "src",
-      roles,
-      scopes: ["queries"],
-    });
-
-    expect(elsewhere.roles).toHaveProperty("gql");
-    expect(elsewhere.roles).not.toHaveProperty("queries");
-    expect(inside.roles).toHaveProperty("queries");
+    expect(resolve({ roles: [hooks()] }).roles).not.toHaveProperty("hooks");
 
     expect(
-      resolve({
-        environment: "src",
-        roles: undefined,
-        scopes: ["hooks"],
-      }).roles,
+      resolve({ roles: [hooks()], scopes: ["hooks"] }).roles,
     ).toHaveProperty("hooks");
 
-    expect(
-      resolve({ environment: "src", roles: undefined }).roles,
-    ).not.toHaveProperty("hooks");
+    expect(() => resolve({ roles: [], scopes: ["hooks"] })).toThrow(
+      "not defined for src",
+    );
   });
 
-  test("reads an alias as an active role and rejects any other target", () => {
+  test("registers nested roles under their owner, active inside it only", () => {
+    const queries = createRolePreset({ name: "queries", nesting: 2 });
+    const roles = [createRolePreset({ name: "gql" })({ roles: [queries()] })];
+
+    expect(resolve({ roles }).roles.gql).toMatchObject({
+      roles: ["gql/queries"],
+    });
+
+    expect(resolve({ roles }).roles).not.toHaveProperty("gql/queries");
+
     expect(
-      resolve({
-        environment: "src",
-        roles: {
-          aliases: { helpers: "utils" },
-        },
-      }).aliases,
+      resolve({ roles, scopes: ["gql/queries"] }).roles["gql/queries"],
+    ).toMatchObject({ nesting: 2, scoped: true });
+  });
+
+  test("fails on two roles of one list named alike, naming both", () => {
+    expect(() =>
+      resolve({ roles: [utilitiesRole(), constants(), utilitiesRole()] }),
+    ).toThrow("src.roles[0] and src.roles[2] are both named utils");
+
+    const nested = createRolePreset({ name: "nested" });
+
+    expect(() =>
+      resolve({ roles: [utilitiesRole({ roles: [nested(), nested()] })] }),
+    ).toThrow(
+      "src.roles[0].roles[0] and src.roles[0].roles[1] are both named nested",
+    );
+  });
+
+  test("reads the aliases of each active role and rejects one read as two roles", () => {
+    expect(
+      resolve({ roles: [utilitiesRole({ aliases: ["helpers"] })] }).aliases,
     ).toEqual({ helpers: "utils" });
 
     expect(() =>
       resolve({
-        environment: "src",
-        roles: {
-          aliases: { helpers: "unknown" },
-        },
+        roles: [
+          utilitiesRole({ aliases: ["helpers"] }),
+          constants({ aliases: ["helpers"] }),
+        ],
       }),
-    ).toThrow("not an active role");
-  });
-
-  test("merges the given fields over the inherited role, replacing a whole redefinition", () => {
-    const inherited = resolve({
-      environment: "src",
-      roles: {
-        define: {
-          utils: { inherit: "utils", nesting: "any" },
-        },
-      },
-    }).roles.utils;
-
-    expect(inherited).toMatchObject({
-      nesting: "any",
-      exports: "named-match",
-      purpose: expect.any(String),
-    });
-
-    const redefined = resolve({
-      environment: "src",
-      roles: {
-        define: {
-          utils: { nesting: "any" },
-        },
-      },
-    }).roles.utils;
-
-    expect(redefined).toMatchObject({ nesting: "any" });
-    expect(redefined?.exports).toBeUndefined();
-    expect(redefined?.purpose).toBeUndefined();
-  });
-
-  test("resolves a homonym against the previous layer and any other name against the final root role", () => {
-    const roles = resolve({
-      environment: "src",
-      roles: {
-        define: {
-          utils: { inherit: "utils", nesting: 1 },
-        },
-      },
-      environmentRoles: {
-        define: {
-          utils: { inherit: "utils", public: true },
-          helpers: { inherit: "utils", purpose: "Helpers." },
-        },
-      },
-    }).roles;
-
-    expect(roles.utils).toMatchObject({
-      nesting: 1,
-      public: true,
-      exports: "named-match",
-    });
-
-    expect(roles.helpers).toMatchObject({
-      nesting: 1,
-      public: true,
-      purpose: "Helpers.",
-    });
-  });
-
-  test("resolves an inline role against root roles unless it names a sibling by its qualified name", () => {
-    function define(inherit: string) {
-      return {
-        foo: {
-          roles: [
-            { name: "baz", inherit },
-            { name: "bar", nesting: 2 },
-          ],
-        },
-      };
-    }
-
-    expect(() =>
-      resolve({
-        environment: "src",
-        roles: { define: define("bar") },
-      }),
-    ).toThrow("inherits bar, which is not defined");
-
-    const roles = resolve({
-      environment: "src",
-      roles: { define: define("foo/bar") },
-      scopes: ["foo/baz"],
-    }).roles;
-
-    expect(roles["foo/baz"]).toMatchObject({ nesting: 2, scoped: true });
-  });
-
-  test("fails on a cycle with its path and on a homonym without an earlier layer", () => {
-    expect(() =>
-      resolve({
-        environment: "src",
-        roles: {
-          define: {
-            foo: { inherit: "bar" },
-            bar: { inherit: "baz" },
-            baz: { inherit: "foo" },
-          },
-        },
-      }),
-    ).toThrow("foo -> bar -> baz -> foo");
-
-    expect(() =>
-      resolve({
-        environment: "src",
-        roles: {
-          define: {
-            foo: { inherit: "foo" },
-          },
-        },
-      }),
-    ).toThrow("no earlier layer defines it");
-  });
-
-  test("renames a file role by inheriting it with another file", () => {
-    expect(
-      resolve({
-        environment: "src",
-        roles: {
-          define: {
-            constants: { inherit: "constants", file: ["consts.ts"] },
-          },
-        },
-      }).roles.constants,
-    ).toMatchObject({ file: ["consts.ts"] });
+    ).toThrow("helpers");
   });
 
   test("reads the index file name from the index role", () => {
-    const roles = resolve({
-      environment: "src",
-      roles: {
-        define: {
-          index: { inherit: "index", file: ["main.ts"] },
-        },
-      },
-    });
+    expect(
+      getIndexFile(resolve({ roles: [indexRole({ file: ["main.ts"] })] })),
+    ).toBe("main.ts");
 
-    expect(getIndexFile(roles)).toBe("main.ts");
-
-    expect(getIndexFile(resolve({ environment: "src", roles: false }))).toBe(
-      "index.ts",
-    );
+    expect(getIndexFile(resolve({ roles: [] }))).toBe("index.ts");
   });
 
-  test("ranks the catalogue and refines the levels per environment", () => {
-    const source = resolve({ environment: "src", roles: undefined });
-
-    expect(source.roles.utils).toMatchObject({ effects: "confined" });
-    expect(source.roles.constants).toMatchObject({ effects: "pure" });
-    expect(source.roles.adapters).toMatchObject({ effects: undefined });
-    expect(source.effects.levels).toEqual(["pure", "confined", "effectful"]);
-
-    const tests = resolve({
-      environment: "tests",
-      roles: undefined,
-      environmentRoles: {
-        effects: { levels: ["pure", "logging", "confined", "effectful"] },
-        define: {
-          utils: { inherit: "utils", effects: "effectful" },
-        },
-      },
+  test("ranks roles against the effect levels", () => {
+    const resolved = resolve({
+      roles: [utilitiesRole({ effects: "logging" }), adapters()],
+      effects: { levels: ["pure", "logging", "confined", "effectful"] },
     });
 
-    expect(tests.roles.utils).toMatchObject({ effects: "effectful" });
-    expect(tests.effects.levels).toContain("logging");
+    expect(resolved.roles.utils).toMatchObject({ effects: "logging" });
+    expect(resolved.roles.adapters).toMatchObject({ effects: undefined });
+    expect(resolved.effects.levels).toContain("logging");
   });
 
   test("fails on an unknown level", () => {
     expect(() => {
-      resolve({
-        environment: "src",
-        roles: {
-          define: {
-            utils: { inherit: "utils", effects: "shaky" },
-          },
-        },
-      });
+      resolve({ roles: [utilitiesRole({ effects: "shaky" })] });
     }).toThrow("shaky");
 
     expect(() => {
       resolve({
-        environment: "src",
-        roles: {
-          effects: { fallback: "shaky" },
-        },
+        roles: [],
+        effects: { fallback: "shaky" },
       });
     }).toThrow("shaky");
   });

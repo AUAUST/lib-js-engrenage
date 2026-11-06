@@ -5,13 +5,13 @@ import {
 } from "#project/environments/constants";
 import { declareCodeEnvironment } from "#project/environments/declarers/declareCodeEnvironment";
 import { declareProgramLayout } from "#project/environments/declarers/declareProgramLayout";
-import { rolesOptionSchema } from "#project/structure/index";
+import { rolesSchema } from "#project/roles/index";
 
 export const scriptsSchema = declareObject(
   {
     ...declareCodeEnvironment("scripts", defaultScriptsDirectories),
     layout: declareProgramLayout(),
-    roles: rolesOptionSchema,
+    roles: rolesSchema,
   },
   {
     description: [

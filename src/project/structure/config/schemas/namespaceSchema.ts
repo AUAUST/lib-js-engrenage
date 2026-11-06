@@ -1,7 +1,7 @@
 import { array, picklist, string, union } from "valibot";
 
 import { declare, declareObject } from "#foundation/options/index";
-import { inlineRoleSchema } from "#project/structure/config/schemas/inlineRoleSchema";
+import { roleSchema } from "#project/roles/index";
 
 export const namespaceSchema = declareObject({
   layers: declare(array(string()), {
@@ -20,9 +20,9 @@ export const namespaceSchema = declareObject({
   }),
   roles: declareObject(
     {
-      enable: declare(array(union([string(), inlineRoleSchema.schema])), {
+      enable: declare(array(union([string(), roleSchema.schema])), {
         description:
-          "Scoped roles to turn on for the whole subtree of the namespace, each a registered name or an inline contract with its `name`.",
+          "Scoped roles to turn on for the whole subtree of the namespace, each the name of a role of the environment or a role of its own.",
       }),
     },
     {

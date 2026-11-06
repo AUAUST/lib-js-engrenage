@@ -1,8 +1,12 @@
 import { describe, expect, test } from "vitest";
 
 import { importRulesSection, loadConfig } from "@auaust/engrenage";
+import { entry } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
+
+const libraryRoles = renderCodeRoles(entry());
 
 const placeholder = "{dir}";
 
@@ -19,10 +23,10 @@ const files = {
   "tests/a.test.ts": "",
 };
 
-async function resolveRules(preset: string) {
+async function resolveRules(preset: string, roles = libraryRoles) {
   const project = createTemporaryProject({
     ...files,
-    "engrenage.config.ts": `export default { ${preset}src: { namespaces: { ".": { layers: ["foundation", "project", "tools"] } } } };\n`,
+    "engrenage.config.ts": `export default { ${preset}src: { roles: ${roles}, namespaces: { ".": { layers: ["foundation", "project", "tools"] } } } };\n`,
   });
 
   const config = await loadConfig(project.root);
@@ -83,7 +87,7 @@ describe("import rules", () => {
       "src/tools/other/index.ts": "",
       "ext/a/src/index.ts": "",
       "ext/b/src/index.ts": "",
-      "engrenage.config.ts": `export default { preset: "library", src: { namespaces: { ".": { layers: ["foundation", "project", "tools", "*"] }, features: { relation: "isolated" } } }, workspaces: { "ext/*": { name: "@s/${placeholder}" } } };\n`,
+      "engrenage.config.ts": `export default { preset: "library", src: { roles: ${libraryRoles}, namespaces: { ".": { layers: ["foundation", "project", "tools", "*"] }, features: { relation: "isolated" } } }, workspaces: { "ext/*": { name: "@s/${placeholder}" } } };\n`,
     });
 
     const config = await loadConfig(project.root);
@@ -123,7 +127,7 @@ describe("import rules", () => {
 
   test("restricts test files by variant in a library and not in an app", async () => {
     const library = await resolveRules('preset: "library", ');
-    const app = await resolveRules("");
+    const app = await resolveRules("", renderCodeRoles());
 
     function forbidden(rules: Rules) {
       return rules

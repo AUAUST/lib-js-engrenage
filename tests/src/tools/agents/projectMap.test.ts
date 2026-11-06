@@ -2,8 +2,16 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage";
 import { syncAgents } from "@auaust/engrenage/agents";
+import { createRolePreset, entry } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
+
+const handlers = createRolePreset({
+  name: "handlers",
+  exports: "named-match",
+  purpose: "Request handlers.",
+});
 
 const overviewFile = ".claude/rules/project-map.md";
 const sourceFile = ".claude/rules/project-map/src.md";
@@ -20,8 +28,8 @@ function createProject(peers = 0) {
     "engrenage.config.ts": `export default {
   preset: "library",
   agents: { preferred: ["claude"] },
-  roles: { define: { handlers: { exports: "named-match", purpose: "Request handlers." } } },
   src: {
+    roles: ${renderCodeRoles(entry(), handlers())},
     namespaces: {
       ".": { layers: ["base", "*"] },
       "isolated": { relation: "isolated" },

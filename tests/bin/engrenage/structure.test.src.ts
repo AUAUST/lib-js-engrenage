@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { structure } from "#bin/engrenage/structure";
+import { indexRole } from "#project/roles/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
@@ -60,7 +61,7 @@ describe("engrenage structure", () => {
 
   test("prints namespace layers, sources and files outside any role", async () => {
     createProject(
-      '{ src: { namespaces: { zone: { layers: ["base", "*", "top"] } } } }',
+      `{ src: { roles: ${JSON.stringify([indexRole()])}, namespaces: { zone: { layers: ["base", "*", "top"] } } } }`,
     );
 
     await runCommand(structure);

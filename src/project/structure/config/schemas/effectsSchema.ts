@@ -13,7 +13,7 @@ export const effectsSchema = declareObject(
     }),
     modules: declare(effectModulesSchema, {
       description:
-        "Levels of external modules, as a record of specifier glob to level or a function from a specifier to a level or `undefined`. A module is ranked by the environment's entry, then the project's, then the built-in ranking of `node:*` builtins, then `fallback`.",
+        "Levels of external modules, as a record of specifier glob to level or a function from a specifier to a level or `undefined`. A module is ranked by them, then by the built-in ranking of `node:*` builtins, then by `fallback`.",
       optional: unset("none, so only the built-in ranking applies"),
     }),
     fallback: declare(string(), {
@@ -24,7 +24,7 @@ export const effectsSchema = declareObject(
   },
   {
     description:
-      "Effect levels of roles and of the external modules they import. An environment refines the project's entries.",
+      "Effect levels of roles and of the external modules they import, shared by every environment.",
     optional: true,
   },
 );

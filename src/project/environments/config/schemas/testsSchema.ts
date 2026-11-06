@@ -17,7 +17,7 @@ import {
   disabledCodeEnvironment,
 } from "#project/environments/constants";
 import { declareCodeEnvironment } from "#project/environments/declarers/declareCodeEnvironment";
-import { rolesOptionSchema } from "#project/structure/index";
+import { rolesSchema } from "#project/roles/index";
 import {
   declareEnvironmentTsconfig,
   unmanagedTsconfig,
@@ -26,7 +26,7 @@ import {
 export const testsSchema = declareObject(
   {
     ...declareCodeEnvironment("tests", defaultTestsDirectories),
-    roles: rolesOptionSchema,
+    roles: rolesSchema,
     layout: declare(picklist(["roots", "mirror"]), {
       description: [
         "How the directories below a tests root key (a directory named after a code environment: `src`, `bin`, `scripts`, `tooling`) are classified.",

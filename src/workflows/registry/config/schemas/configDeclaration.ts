@@ -12,7 +12,7 @@ import {
 } from "#project/environments/index";
 import { formatSchema } from "#project/format/index";
 import { presetSchema, traitsSchema } from "#project/presets/index";
-import { aliasesSchema, rolesSchema } from "#project/structure/index";
+import { aliasesSchema, structureSchema } from "#project/structure/index";
 import { typescriptSchema } from "#project/tsconfig/index";
 import { workspacesSchema } from "#project/workspaces/index";
 import { agentsSchema } from "#tools/agents/index";
@@ -31,7 +31,7 @@ export const configDeclaration = declareObject({
   define: defineSchema,
   format: formatSchema,
   preset: presetSchema,
-  roles: rolesSchema,
+  structure: structureSchema,
   traits: traitsSchema,
 
   // Tooling

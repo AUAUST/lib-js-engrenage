@@ -14,11 +14,7 @@ import type {
 } from "#project/environments/index";
 import type { PackageJson } from "#project/package/index";
 import type { ResolvedTraits } from "#project/presets/index";
-import type {
-  ImportRule,
-  ProjectRoles,
-  ResolvedStructure,
-} from "#project/structure/index";
+import type { ImportRule, ResolvedStructure } from "#project/structure/index";
 import type {
   ResolvedBaseTsconfig,
   ResolvedTypescript,
@@ -52,7 +48,6 @@ export interface ConventionConfig {
   readonly packageJson: PackageJson;
   readonly environment: Environment;
   readonly traits: ResolvedTraits;
-  readonly roles: ProjectRoles;
   readonly workspaces: readonly ResolvedWorkspaceGroup[];
   readonly build: ConventionBuild;
   readonly typescript: ConventionTypescript;

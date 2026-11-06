@@ -8,7 +8,7 @@ paths:
 ```
 src/  foundation < project < tools < workflows  (global roles: types)
 ├─ foundation/  #foundation/…  blocks data filesystem json options processes  Primitives without project knowledge.
-├─ project/  #project/…  baseline*{editions} build config environments format* package* presets steps structure tsconfig workspaces  Tool-agnostic project models and contract domains.
+├─ project/  #project/…  roles < *  baseline*{editions} build config environments format* package* presets roles* steps structure tsconfig workspaces  Tool-agnostic project models and contract domains.
 ├─ tools/  #tools/…  agents*{claude* codex*} changesets* eslint* git* github* lefthook pnpm* prettier* tsdown* typescript* vite* vitest* vscode*  One domain per external tool, holding its adapters.
 └─ workflows/  #workflows/…  cli config* gate init registry sync  Composition of tools into the registry and commands.
 ```

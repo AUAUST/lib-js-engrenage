@@ -1,7 +1,7 @@
 import { wrap } from "@auaust/primitive-kit/arrays";
 
 import { filesIn, type Filesystem } from "#foundation/filesystem/index";
-import { testsSetupRole } from "#project/structure/constants";
+import { setup } from "#project/roles/index";
 import type { ResolvedTests } from "#project/environments/index";
 import type { Files } from "#types/Files";
 
@@ -12,7 +12,7 @@ export async function findSetupFiles({
   tests: ResolvedTests;
   filesystem: Filesystem;
 }): Promise<Files> {
-  const { file } = tests.roles.roles[testsSetupRole] ?? {};
+  const { file } = tests.roles.roles[setup().name] ?? {};
 
   if (file === undefined) {
     return [];

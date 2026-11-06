@@ -4,7 +4,6 @@ export interface RoleDefinition extends Omit<
   ResolvedRoleContract,
   "nesting" | "index" | "public" | "discovered" | "scoped" | "typeOnly"
 > {
-  readonly inherit: string | undefined;
   readonly nesting: ResolvedRoleContract["nesting"] | undefined;
   readonly index: boolean | undefined;
   readonly public: boolean | undefined;

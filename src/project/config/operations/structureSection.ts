@@ -3,7 +3,7 @@ import { freeze } from "@auaust/toolkit/object";
 import { declareSection, type Resolver } from "#foundation/options/index";
 import { binOptionsSection } from "#project/config/operations/binOptionsSection";
 import { binSection } from "#project/config/operations/binSection";
-import { rolesSection } from "#project/config/operations/rolesSection";
+import { readEnvironmentRoles } from "#project/config/operations/readEnvironmentRoles";
 import { scriptsOptionsSection } from "#project/config/operations/scriptsOptionsSection";
 import { scriptsSection } from "#project/config/operations/scriptsSection";
 import { sourceOptionsSection } from "#project/config/operations/sourceOptionsSection";
@@ -14,25 +14,23 @@ import { toolingOptionsSection } from "#project/config/operations/toolingOptions
 import { toolingSection } from "#project/config/operations/toolingSection";
 import {
   normalizeNamespaces,
-  normalizeRoles,
   resolveEnvironmentStructure,
-  type DeclaredRolesOption,
   type EnvironmentStructure,
   type ProgramLayout,
-  type RoleReference,
   type StructureEnvironmentName,
   type StructureOptions,
   type TestsContext,
 } from "#project/structure/index";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { Role } from "#project/roles/index";
 import type { Directories } from "#types/Directories";
 
 type StructureOption =
   | { readonly enabled: false }
   | ({
       readonly enabled: true;
-      readonly roles?: DeclaredRolesOption;
-    } & StructureOptions<RoleReference>);
+      readonly roles?: readonly Role[];
+    } & StructureOptions<string | Role>);
 
 function layoutOf(option: {
   readonly enabled: boolean;
@@ -55,27 +53,20 @@ async function resolveStructure(
     return;
   }
 
-  const { namespaces, define } = normalizeNamespaces({
+  const { namespaces, defined } = normalizeNamespaces({
     environment: name,
     namespaces: option.namespaces,
   });
-
-  const environmentRoles =
-    option.roles === undefined ? undefined : normalizeRoles(option.roles);
 
   return resolveEnvironmentStructure({
     name,
     root: config.context.root,
     dirs: environment.dirs,
     options: { ...option, namespaces },
-    roles: await config.resolve(rolesSection),
-    environmentRoles:
-      environmentRoles === undefined
-        ? undefined
-        : freeze({
-            ...environmentRoles,
-            define: freeze({ ...environmentRoles.define, ...define }),
-          }),
+    ...(option.roles === undefined
+      ? {}
+      : { roles: await readEnvironmentRoles(config, option.roles) }),
+    defined,
     ...extra,
   });
 }
