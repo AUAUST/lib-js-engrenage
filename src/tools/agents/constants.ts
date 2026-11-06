@@ -57,6 +57,7 @@ export const claudeAgentFrontmatterKeys = freeze([
   "model",
   "effort",
   "disallowedTools",
+  "hooks",
 ] as const);
 
 export const codexSkillFrontmatterKeys = freeze([

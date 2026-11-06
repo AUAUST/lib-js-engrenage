@@ -9,6 +9,11 @@ description: Debugger that investigates a bug, issue, backlog entry, debt marker
   suited to it.
 model: opus
 effort: medium
+hooks:
+  Stop:
+    - hooks:
+        - type: command
+          command: pnpm --silent engrenage agents claude hook stop
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/debugging.md -->
@@ -102,6 +107,7 @@ When the input is an issue, turn that issue into the task, condensing its origin
 
 ## Finishing
 
+- The stop gate runs the checks when you stop: fix what it reports. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again.
 - When asked for a branch, create `debugger/<topic>` from the current commit, `debugger/issue-<n>` when the input is an issue.
 - After a fix, remove the backlog entries, debt backlog entries and debt markers it resolves. Never close an issue you fixed: merging the fix closes it.
 - Report by outcome:

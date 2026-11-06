@@ -1,20 +1,12 @@
-import { execFileSync } from "node:child_process";
-import { mkdirSync, symlinkSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { writeFileSync } from "node:fs";
 
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
-import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createGitRepository } from "#tests/utils/createGitRepository";
 import { getExecutable } from "#tests/utils/getExecutable";
-import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { runGate } from "#workflows/gate/operations/runGate";
 import { readConfig } from "#workflows/registry/operations/readConfig";
-
-const repositoryModules = fileURLToPath(
-  new URL("../../../../node_modules", import.meta.url),
-);
 
 const argv = process.argv;
 
@@ -27,74 +19,38 @@ afterEach(() => {
 });
 
 function createRepository() {
-  const project = createTemporaryProject({
-    "package.json": JSON.stringify({
-      name: "project",
-      type: "module",
-      devDependencies: { prettier: "*", typescript: "*" },
-    }),
-    "engrenage.config.ts":
-      'export default { src: { baseline: "2026-10" }, agents: { gate: { commands: ["echo run >> .runs"] } } };\n',
-    ".gitignore": "node_modules\n.runs\n",
-    "tsconfig.json": JSON.stringify({
-      compilerOptions: {
-        strict: true,
-        module: "ESNext",
-        moduleResolution: "Bundler",
-        allowImportingTsExtensions: true,
-        noEmit: true,
-      },
-      files: [],
-      references: [{ path: "./tsconfig.src.json" }],
-    }),
-    "tsconfig.src.json": JSON.stringify({
-      extends: "./tsconfig.json",
-      compilerOptions: {
-        tsBuildInfoFile: "./node_modules/.cache/tsconfig/src.tsbuildinfo",
-      },
-      include: ["src"],
-    }),
-    "src/index.ts": "export const value: number = 1;\n",
-  });
-
-  mkdirSync(project.resolve("node_modules"));
-
-  for (const name of ["prettier", "typescript"]) {
-    symlinkSync(
-      join(repositoryModules, name),
-      project.resolve(`node_modules/${name}`),
-    );
-  }
-
-  linkSourcePackage(project.resolve("node_modules/@auaust/engrenage"));
-
-  function git(...args: string[]): string {
-    return execFileSync("git", args, {
-      cwd: project.root,
-      encoding: "utf-8",
-    });
-  }
-
-  execFileSync(process.execPath, [getExecutable(), "sync"], {
-    cwd: project.root,
-    stdio: "ignore",
-  });
-
-  git("init", "--quiet");
-  git("add", "-A");
-
-  git(
-    "-c",
-    "user.name=Test",
-    "-c",
-    "user.email=test@example.com",
-    "commit",
-    "--quiet",
-    "-m",
-    "initial",
+  return createGitRepository(
+    {
+      "package.json": JSON.stringify({
+        name: "project",
+        type: "module",
+        devDependencies: { prettier: "*", typescript: "*" },
+      }),
+      "engrenage.config.ts":
+        'export default { src: { baseline: "2026-10" }, agents: { gate: { commands: ["echo run >> .runs"] } } };\n',
+      ".gitignore": "node_modules\n.runs\n",
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          strict: true,
+          module: "ESNext",
+          moduleResolution: "Bundler",
+          allowImportingTsExtensions: true,
+          noEmit: true,
+        },
+        files: [],
+        references: [{ path: "./tsconfig.src.json" }],
+      }),
+      "tsconfig.src.json": JSON.stringify({
+        extends: "./tsconfig.json",
+        compilerOptions: {
+          tsBuildInfoFile: "./node_modules/.cache/tsconfig/src.tsbuildinfo",
+        },
+        include: ["src"],
+      }),
+      "src/index.ts": "export const value: number = 1;\n",
+    },
+    ["prettier", "typescript"],
   );
-
-  return { project, git };
 }
 
 describe("runGate", { timeout: binaryTimeout }, () => {

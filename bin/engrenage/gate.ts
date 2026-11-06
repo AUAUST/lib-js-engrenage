@@ -3,6 +3,7 @@ import { Option } from "@commander-js/extra-typings";
 import { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { runGate } from "#workflows/gate/index";
+import { formatGateFailure } from "#workflows/gate/utils/formatGateFailure";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 export const gate = defineCommand((command) => {
@@ -30,8 +31,8 @@ export const gate = defineCommand((command) => {
         console.warn(formatBudgetFinding(warning));
       }
 
-      for (const { step, output } of failures) {
-        console.error(`${step}\n${output.trimEnd()}\n`);
+      for (const failure of failures) {
+        console.error(formatGateFailure(failure));
       }
 
       if (failures.length > 0) {

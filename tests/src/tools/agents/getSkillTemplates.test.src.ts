@@ -1,50 +1,104 @@
 import { describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { claudeStopHook } from "#tools/agents/claude/constants";
 import { agentsSection } from "#tools/agents/index";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
+
+const skill = vi.hoisted(() => {
+  return {
+    name: "",
+    agent: {},
+  };
+});
 
 vi.mock(import("#tools/agents/operations/getInstructionTemplates"), () => {
   return {
     getInstructionTemplates: () => {
       return Promise.resolve([
         {
-          title: "Broken",
-          description: "Broken skill",
+          title: skill.name,
+          description: `${skill.name} skill`,
           category: "workflow",
           default: false,
           order: 0,
-          name: "broken",
-          source: "/skills/broken.md",
-          reference: "@auaust/engrenage/agents/skills/broken.md",
-          body: "# Broken",
+          name: skill.name,
+          source: `/skills/${skill.name}.md`,
+          reference: `@auaust/engrenage/agents/skills/${skill.name}.md`,
+          body: `# ${skill.name}`,
           paths: undefined,
-          agent: {
-            name: "breaker",
-            description: "Breaker",
-            effort: "extreme",
-          },
+          agent: skill.agent,
         },
       ]);
     },
   };
 });
 
+function mockSkill(name: string, agent: object) {
+  skill.name = name;
+  skill.agent = agent;
+}
+
+async function renderSkills() {
+  const project = createTemporaryProject({
+    "package.json": '{"type":"module"}',
+    "engrenage.config.ts":
+      'export default { agents: { preferred: ["claude"] } };',
+  });
+
+  const config = await loadConfig(project.root);
+
+  const agents = await config.resolve(agentsSection);
+
+  return getSkillTemplates({ agents });
+}
+
+async function renderAgentFrontmatter() {
+  const [template] = await renderSkills();
+
+  return template?.files.find(({ file }) => {
+    return file.startsWith(".claude/agents/");
+  })?.frontmatter?.values;
+}
+
 describe("getSkillTemplates", () => {
   test("rejects an invalid agent effort, naming the skill source", async () => {
-    const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude"] } };',
+    mockSkill("broken", {
+      name: "breaker",
+      description: "Breaker",
+      effort: "extreme",
     });
 
-    const config = await loadConfig(project.root);
-
-    const agents = await config.resolve(agentsSection);
-
-    await expect(getSkillTemplates({ agents })).rejects.toThrow(
+    await expect(renderSkills()).rejects.toThrow(
       /\/skills\/broken\.md skill metadata[\s\S]*received "extreme"[\s\S]*agent\.effort/,
     );
+  });
+
+  test("renders the stop hook for a gated agent, without its gate key", async () => {
+    mockSkill("gated", {
+      name: "worker",
+      description: "Worker",
+      gate: true,
+    });
+
+    expect(await renderAgentFrontmatter()).toEqual({
+      name: "worker",
+      description: "Worker",
+      hooks: {
+        Stop: [
+          { hooks: [{ type: "command", command: claudeStopHook.command }] },
+        ],
+      },
+    });
+  });
+
+  test("renders no hooks for an ungated agent", async () => {
+    mockSkill("ungated", { name: "helper", description: "Helper" });
+
+    expect(await renderAgentFrontmatter()).toEqual({
+      name: "helper",
+      description: "Helper",
+    });
   });
 });

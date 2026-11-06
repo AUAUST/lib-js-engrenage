@@ -1,5 +1,6 @@
 import {
   array,
+  boolean,
   looseObject,
   optional,
   picklist,
@@ -12,6 +13,7 @@ import { validate } from "#foundation/options/index";
 import {
   claudeAgentsDir,
   claudeSkillsDir,
+  claudeStopHook,
 } from "#tools/agents/claude/constants";
 import { codexSkillsDir } from "#tools/agents/codex/constants";
 import {
@@ -34,6 +36,7 @@ const skillSchema = looseObject({
       model: optional(string()),
       effort: optional(picklist(["low", "medium", "high", "xhigh", "max"])),
       disallowedTools: optional(array(string())),
+      gate: optional(boolean()),
     }),
   ),
 });
@@ -90,16 +93,31 @@ export async function getSkillTemplates({
       });
 
       if (agent !== undefined) {
+        const { gate, ...definition } = agent;
+
+        const values = {
+          ...definition,
+          ...(gate === true && {
+            hooks: {
+              Stop: [
+                {
+                  hooks: [{ type: "command", command: claudeStopHook.command }],
+                },
+              ],
+            },
+          }),
+        };
+
         files.push({
           file: `${claudeAgentsDir}/${agent.name}.md`,
           content: createInstructionFile({
-            frontmatter: agent,
+            frontmatter: values,
             reference,
             body,
           }),
           frontmatter: {
             keys: claudeAgentFrontmatterKeys,
-            values: agent,
+            values,
           },
         });
       }

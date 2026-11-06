@@ -40,7 +40,7 @@ Everything in the issue binds you: follow the **Steps** in order and write the l
 ## Finishing
 
 - The issue is done when its **Done when** holds, or its **Steps** are done when it has none, and the project's checks pass.
-- Before reporting, run the project's gate on the worktree (`engrenage gate --worktree`) and fix what it reports.
+- The stop gate runs the checks when you stop: fix what it reports. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again.
 - When asked for a branch, create `worker/issue-<n>` from the current commit.
 - Never edit, comment on, set types or fields on, or close issues.
 - Report whether **Done when** holds, each deviation from the issue with its reason, each local choice you made, and what the issue tree needs updated.

@@ -35,5 +35,14 @@ export const hook = defineCommand((command) => {
         return github;
       },
     },
+    stop: {
+      description:
+        "Block a subagent's first stop on a tree failing the worktree gate, reading Claude's SubagentStop payload from stdin.",
+      async load() {
+        const { stop } = await import("#bin/engrenage/agents/claude/hook/stop");
+
+        return stop;
+      },
+    },
   });
 });

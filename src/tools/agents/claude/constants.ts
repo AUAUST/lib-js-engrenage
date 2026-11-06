@@ -39,6 +39,10 @@ export const claudeHooks = freeze([
   }),
 ]) satisfies readonly HookDefinition[];
 
+export const claudeStopHook = freeze({
+  command: `${claudeHookPrefix}stop`,
+} as const);
+
 // @debt permission entries are add-only: one engrenage stops producing stays in consumers' settings until sync records what it wrote (#229, #105)
 export const claudePermissions = freeze({
   deny: [
