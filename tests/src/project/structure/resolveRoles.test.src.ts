@@ -7,8 +7,8 @@ import {
   constants,
   createRolePreset,
   hooks,
-  indexRole,
-  utilitiesRole,
+  index,
+  utils,
   type Role,
 } from "#project/roles/index";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
@@ -41,7 +41,7 @@ function resolve({
 describe("resolveRoles", () => {
   test("resolves only the listed roles, in their order", () => {
     const resolved = resolve({
-      roles: [indexRole(), constants(), utilitiesRole({ nesting: "any" })],
+      roles: [index(), constants(), utils({ nesting: "any" })],
     });
 
     expect(keys(resolved.roles)).toEqual(["index", "constants", "utils"]);
@@ -83,14 +83,14 @@ describe("resolveRoles", () => {
   });
 
   test("fails on two roles of one list named alike, naming both", () => {
-    expect(() =>
-      resolve({ roles: [utilitiesRole(), constants(), utilitiesRole()] }),
-    ).toThrow("src.roles[0] and src.roles[2] are both named utils");
+    expect(() => resolve({ roles: [utils(), constants(), utils()] })).toThrow(
+      "src.roles[0] and src.roles[2] are both named utils",
+    );
 
     const nested = createRolePreset({ name: "nested" });
 
     expect(() =>
-      resolve({ roles: [utilitiesRole({ roles: [nested(), nested()] })] }),
+      resolve({ roles: [utils({ roles: [nested(), nested()] })] }),
     ).toThrow(
       "src.roles[0].roles[0] and src.roles[0].roles[1] are both named nested",
     );
@@ -98,13 +98,13 @@ describe("resolveRoles", () => {
 
   test("reads the aliases of each active role and rejects one read as two roles", () => {
     expect(
-      resolve({ roles: [utilitiesRole({ aliases: ["helpers"] })] }).aliases,
+      resolve({ roles: [utils({ aliases: ["helpers"] })] }).aliases,
     ).toEqual({ helpers: "utils" });
 
     expect(() =>
       resolve({
         roles: [
-          utilitiesRole({ aliases: ["helpers"] }),
+          utils({ aliases: ["helpers"] }),
           constants({ aliases: ["helpers"] }),
         ],
       }),
@@ -113,7 +113,7 @@ describe("resolveRoles", () => {
 
   test("reads the index file name from the index role", () => {
     expect(
-      getIndexFile(resolve({ roles: [indexRole({ file: ["main.ts"] })] })),
+      getIndexFile(resolve({ roles: [index({ file: ["main.ts"] })] })),
     ).toBe("main.ts");
 
     expect(getIndexFile(resolve({ roles: [] }))).toBe("index.ts");
@@ -121,7 +121,7 @@ describe("resolveRoles", () => {
 
   test("ranks roles against the effect levels", () => {
     const resolved = resolve({
-      roles: [utilitiesRole({ effects: "logging" }), adapters()],
+      roles: [utils({ effects: "logging" }), adapters()],
       effects: { levels: ["pure", "logging", "confined", "effectful"] },
     });
 
@@ -132,7 +132,7 @@ describe("resolveRoles", () => {
 
   test("fails on an unknown level", () => {
     expect(() => {
-      resolve({ roles: [utilitiesRole({ effects: "shaky" })] });
+      resolve({ roles: [utils({ effects: "shaky" })] });
     }).toThrow("shaky");
 
     expect(() => {

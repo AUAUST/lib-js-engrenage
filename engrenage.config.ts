@@ -3,15 +3,16 @@ import {
   constants,
   createRolePreset,
   declarations,
-  entryRole,
+  entrypoint,
   enums,
   errors,
   fixtures,
-  indexRole,
+  index,
   ports,
-  setup as setupFile,
+  testsetup,
+  testutils,
   types,
-  utilitiesRole,
+  utils,
 } from "#project/roles/index";
 import { defineConfig } from "#workflows/config/index";
 
@@ -85,7 +86,7 @@ const codeRoles = [
   constants(),
   declarations(),
   types(),
-  utilitiesRole(),
+  utils(),
   errors(),
   enums(),
   ports(),
@@ -114,18 +115,17 @@ export default defineConfig({
   tests: {
     layout: "mirror",
     roles: [
-      indexRole(),
+      index(),
       constants(),
       declarations(),
       types(),
-      // @debt keeps the purpose "Confined functions" while raising the level to effectful, so the structure report contradicts itself for `tests/utils`
-      utilitiesRole({ effects: "effectful" }),
+      testutils(),
       errors(),
       enums(),
       ports(),
       rankedAdapters(),
       fixtures(),
-      setupFile(),
+      testsetup(),
       config(),
       declarers(),
       definers(),
@@ -148,7 +148,7 @@ export default defineConfig({
   },
   src: {
     node: 24,
-    roles: [indexRole(), entryRole(), ...codeRoles],
+    roles: [index(), entrypoint(), ...codeRoles],
     // @debt no domain declares a `purpose`, so the maps list about forty bare names (`steps`, `data`, `blocks`, `presets`) and an agent must open each one to place code
     namespaces: {
       ".": { layers: ["foundation", "project", "tools", "workflows"] },
@@ -203,10 +203,10 @@ export default defineConfig({
     ],
   },
   scripts: {
-    roles: [indexRole(), ...codeRoles],
+    roles: [index(), ...codeRoles],
   },
   tooling: {
-    roles: [indexRole(), ...codeRoles],
+    roles: [index(), ...codeRoles],
   },
   data: {
     exports: {

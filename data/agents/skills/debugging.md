@@ -64,10 +64,10 @@ Never start a large refactor, even partly: an issue costs less than a half-appli
 
 Write and edit issues as local drafts in `.ai/issues/`, revise them as the diagnosis and the conversation settle things, and publish them in one flush. A draft edit costs a diff instead of a full body, survives a stopped session and shows the user each change. Everything this skill says about creating and editing issues applies to the drafts until the flush.
 
-| File                  | Holds                                                                                                                       |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `<n>.md`              | The body of issue `<n>` as fetched, never edited                                                                            |
-| `<n>.draft.md`        | Its working version, with frontmatter `title`                                                                               |
+| File                  | Holds                                                                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `<n>.md`              | The body of issue `<n>` as fetched, never edited                                                                                      |
+| `<n>.draft.md`        | Its working version, with frontmatter `title`                                                                                         |
 | `new-<slug>.draft.md` | An issue to create, with frontmatter `title`, `type`, fields, and inside a planned tree `parent` and `after` (the sibling it follows) |
 
 - Start by reading `.ai/issues/`. Other sessions draft there too: resume only the drafts of your task, those the user names or those of the issues you were given.

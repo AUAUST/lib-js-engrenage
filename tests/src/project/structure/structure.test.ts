@@ -8,7 +8,7 @@ import {
   createRolePreset,
   entry,
   fixtures,
-  setup,
+  testsetup,
 } from "@auaust/engrenage/roles";
 import { record } from "@auaust/toolkit/object";
 
@@ -17,7 +17,7 @@ import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
 const sourceRoles = renderCodeRoles(entry(), components());
 
-const testsRoles = renderCodeRoles(fixtures(), setup());
+const testsRoles = renderCodeRoles(fixtures(), testsetup());
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',
