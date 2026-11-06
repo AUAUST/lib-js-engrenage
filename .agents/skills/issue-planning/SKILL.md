@@ -250,6 +250,7 @@ While an issue's design is open, write what is settled and put the rest under **
 | ------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------- |
 | Blockers `Open questions` | Written together with a **Planning** or **Questions** section; cleared once both are gone | The walker refuses the issue            |
 | Complexity `Complex`      | The work is broad or delicate                                                             | The walker dispatches it at high effort |
+| Complexity `Trivial`      | The work is small and mechanical                                                          | The walker dispatches it at low effort  |
 
 ## GitHub mechanics
 

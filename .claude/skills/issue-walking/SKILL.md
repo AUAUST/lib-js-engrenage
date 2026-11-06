@@ -16,19 +16,19 @@ Walk an issue tree in the main session: route each issue by the handling table, 
 
 Start at the issue the user names and read each sub-issue list in order. Handle each issue by the first matching row; the Complexity row applies on top of the row that dispatches.
 
-| Issue                                                                      | Walker                                                           |
-| -------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Closed, or closed by a local commit                                        | Skip                                                             |
-| A Plan other than the one walked                                           | Stop: walked on its own                                          |
-| Open sub-issues                                                            | Walk them in order (a Segment's in any order), then its own work |
-| Plan or Segment with no open sub-issue                                     | Closes with its last leaf's commit                               |
-| Any Blockers, or an open blocked-by issue                                  | Stop and report                                                  |
-| Fails `engrenage issues check` for **Planning**, **Outdated** or structure | Stop; send it to the consultant                                  |
-| Fails for **Questions**                                                    | Stop; batch the questions to the user                            |
-| Problem without **Steps**                                                  | Debugger                                                         |
-| Task or Problem with **Steps**                                             | Worker                                                           |
-| Complexity `Complex`                                                       | Dispatched with `effort: high`; otherwise the agent's defaults   |
-| Resource or Idea in a tree                                                 | Never dispatched; report it to the consultant                    |
+| Issue                                                                      | Walker                                                                                              |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Closed, or closed by a local commit                                        | Skip                                                                                                |
+| A Plan other than the one walked                                           | Stop: walked on its own                                                                             |
+| Open sub-issues                                                            | Walk them in order (a Segment's in any order), then its own work                                    |
+| Plan or Segment with no open sub-issue                                     | Closes with its last leaf's commit                                                                  |
+| Any Blockers, or an open blocked-by issue                                  | Stop and report                                                                                     |
+| Fails `engrenage issues check` for **Planning**, **Outdated** or structure | Stop; send it to the consultant                                                                     |
+| Fails for **Questions**                                                    | Stop; batch the questions to the user                                                               |
+| Problem without **Steps**                                                  | Debugger                                                                                            |
+| Task or Problem with **Steps**                                             | Worker                                                                                              |
+| Complexity `Complex` or `Trivial`                                          | Dispatched with `effort: high` (Complex) or `effort: low` (Trivial); otherwise the agent's defaults |
+| Resource or Idea in a tree                                                 | Never dispatched; report it to the consultant                                                       |
 
 Priority never reorders a tree: order states dependencies.
 
