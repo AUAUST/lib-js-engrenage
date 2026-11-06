@@ -9,6 +9,10 @@ import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { registerSubcommands } from "#workflows/cli/operations/registerSubcommands";
 import { runProgram } from "#workflows/cli/operations/runProgram";
 
+const succeeding = defineCommand((command) => {
+  return command.action(() => {});
+});
+
 const failing = defineCommand((command) => {
   return command.action(() => {
     throw new Error("outer", { cause: new Error("inner") });
@@ -40,6 +44,8 @@ beforeEach(() => {
 afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllEnvs();
+  vi.doUnmock("#project/config/index");
+  vi.doUnmock("#workflows/registry/index");
 
   process.exitCode = undefined;
 });
@@ -51,6 +57,27 @@ describe("runProgram", () => {
     expect(printed()).toContain("outer\nCaused by: inner");
     expect(printed()).not.toContain("    at ");
     expect(process.exitCode).toBe(1);
+  });
+
+  test("runs a succeeding command without loading the config modules", async () => {
+    vi.resetModules();
+    vi.doMock("#project/config/index", () => {
+      throw new Error("config modules loaded");
+    });
+    vi.doMock("#workflows/registry/index", () => {
+      throw new Error("config modules loaded");
+    });
+
+    const { runProgram: runFreshProgram } =
+      await import("#workflows/cli/operations/runProgram");
+
+    await runFreshProgram(
+      registerSubcommands(new Command("program"), { succeeding }),
+      ["node", "program", "succeeding"],
+    );
+
+    expect(console.error).not.toHaveBeenCalled();
+    expect(process.exitCode).toBeUndefined();
   });
 
   test.each([
