@@ -1,5 +1,6 @@
 import { object, string } from "valibot";
 
+import { denyToolUse } from "#tools/agents/operations/denyToolUse";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { findHookBypass } from "#tools/git/utils/findHookBypass";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
@@ -22,14 +23,8 @@ export const git = defineCommand((command) => {
       return;
     }
 
-    process.stdout.write(
-      `${JSON.stringify({
-        hookSpecificOutput: {
-          hookEventName: "PreToolUse",
-          permissionDecision: "deny",
-          permissionDecisionReason: `agent commits go through the gate; fix what it reports instead of skipping it (${bypass})`,
-        },
-      })}\n`,
+    denyToolUse(
+      `agent commits go through the gate; fix what it reports instead of skipping it (${bypass})`,
     );
   });
 });

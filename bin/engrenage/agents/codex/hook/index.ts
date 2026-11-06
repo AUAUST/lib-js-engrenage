@@ -8,7 +8,7 @@ export const hook = defineCommand((command) => {
   return registerLazySubcommands(command, {
     github: {
       description:
-        "Warn or deny when the body of a `gh issue create|edit|comment` command is over budget, reading Codex's PreToolUse payload from stdin.",
+        "Deny a `gh issue create|edit` body that breaks the issue contract, and warn or deny when a `gh issue create|edit|comment` body is over budget, reading Codex's PreToolUse payload from stdin.",
       async load() {
         const { github } =
           await import("#bin/engrenage/agents/codex/hook/github");

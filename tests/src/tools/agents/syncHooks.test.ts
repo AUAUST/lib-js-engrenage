@@ -81,6 +81,18 @@ describe("syncHooks", () => {
           ],
         };
       }),
+      ...["worker", "debugger"].map((agent) => {
+        return {
+          matcher: "Agent|Task",
+          hooks: [
+            {
+              type: "command",
+              command: "pnpm --silent engrenage agents claude hook dispatch",
+              if: `Agent(${agent})`,
+            },
+          ],
+        };
+      }),
     ]);
 
     await syncClaudeSettings(config);

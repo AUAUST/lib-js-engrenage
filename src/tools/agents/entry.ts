@@ -11,7 +11,6 @@ export type {
   BudgetMode,
   Budgets,
   GeneratedFrontmatter,
-  GithubWrite,
   HookDefinition,
   HookEvent,
   ResolvedAgents,

@@ -29,6 +29,14 @@ export const claudeHooks = freeze([
       command: `${claudeHookPrefix}git`,
     } as const satisfies HookDefinition;
   }),
+  ...(["worker", "debugger"] as const).map((agent) => {
+    return {
+      event: "PreToolUse",
+      matcher: "Agent|Task",
+      condition: `Agent(${agent})`,
+      command: `${claudeHookPrefix}dispatch`,
+    } as const satisfies HookDefinition;
+  }),
 ]) satisfies readonly HookDefinition[];
 
 // @debt permission entries are add-only: one engrenage stops producing stays in consumers' settings until sync records what it wrote (#229, #105)

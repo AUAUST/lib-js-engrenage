@@ -6,6 +6,16 @@ import { registerLazySubcommands } from "#workflows/cli/operations/registerLazyS
 
 export const hook = defineCommand((command) => {
   return registerLazySubcommands(command, {
+    dispatch: {
+      description:
+        "Deny a `worker` or `debugger` dispatch whose `Issue: <owner>/<repo>#<n>` is not ready, reading Claude's PreToolUse payload from stdin.",
+      async load() {
+        const { dispatch } =
+          await import("#bin/engrenage/agents/claude/hook/dispatch");
+
+        return dispatch;
+      },
+    },
     git: {
       description:
         "Deny a `git` command that skips the commit gate, reading Claude's PreToolUse payload from stdin.",
@@ -17,7 +27,7 @@ export const hook = defineCommand((command) => {
     },
     github: {
       description:
-        "Warn or deny when the body of a `gh issue create|edit|comment` command is over budget, reading Claude's PreToolUse payload from stdin.",
+        "Deny a `gh issue create|edit` body that breaks the issue contract, and warn or deny when a `gh issue create|edit|comment` body is over budget, reading Claude's PreToolUse payload from stdin.",
       async load() {
         const { github } =
           await import("#bin/engrenage/agents/claude/hook/github");

@@ -55,7 +55,7 @@ describe("agents.attribution", () => {
 
     expect(JSON.parse(project.read(".claude/settings.json"))).toMatchObject({
       hooks: {
-        PreToolUse: Array.from({ length: 7 }, () => expect.anything()),
+        PreToolUse: Array.from({ length: 9 }, () => expect.anything()),
       },
       attribution: hidden,
     });
@@ -161,6 +161,19 @@ describe("agents.attribution", () => {
                     type: "command",
                     command: "pnpm --silent engrenage agents claude hook git",
                     if: `Bash(git ${start} *)`,
+                  },
+                ],
+              };
+            }),
+            ...["worker", "debugger"].map((agent) => {
+              return {
+                matcher: "Agent|Task",
+                hooks: [
+                  {
+                    type: "command",
+                    command:
+                      "pnpm --silent engrenage agents claude hook dispatch",
+                    if: `Agent(${agent})`,
                   },
                 ],
               };

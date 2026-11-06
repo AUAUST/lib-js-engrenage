@@ -50,6 +50,14 @@ export const program = registerLazySubcommands(
         return gate;
       },
     },
+    "issues": {
+      description: "Check GitHub issues against the issue contract.",
+      async load() {
+        const { issues } = await import("#bin/engrenage/issues");
+
+        return issues;
+      },
+    },
     "debt": {
       description: "List the @debt markers of the project.",
       async load() {

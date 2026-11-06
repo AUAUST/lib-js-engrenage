@@ -1,9 +1,10 @@
 import { literal, object, string } from "valibot";
 
-import { agentsSection } from "#tools/agents/index";
+import { agentsSection, denyToolUse } from "#tools/agents/index";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 import { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
+import { checkGithubWrite } from "#tools/github/index";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
@@ -21,6 +22,12 @@ export const github = defineCommand((command) => {
       cwd,
       tool_input: { command: shellCommand },
     } = await readHookPayload(payloadSchema, "Codex");
+
+    const reason = await checkGithubWrite(shellCommand, cwd);
+
+    if (reason !== undefined) {
+      return void denyToolUse(reason);
+    }
 
     const config = await loadConfig(cwd);
     const agents = await config.resolve(agentsSection);
