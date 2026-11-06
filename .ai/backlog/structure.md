@@ -38,8 +38,8 @@ Project structure description, its report and the tooling generated from it.
 
 ## 6. Hook vocabulary and GitHub command logic have no home (#172)
 
-- why: `HookEvent`, `HookDefinition` and `BudgetMode` sit in `tools/agents/types/` though hook-sync vocabulary is shared by `agents/claude` and `agents/codex` and the map has no home for code shared by both; `parseGithubCommand` and `measureGithubCommand` are GitHub-command logic in `agents/utils` (`tools/github/utils` cannot be imported by a `tools` peer); `getEntryBudgetKind` hard-codes the `.ai/backlog` layout with `debtFile`, split from `createBacklogStep`.
-- want: a home for code shared by the agent sub-domains, a rule for logic about another tool's commands, one owner of the backlog layout.
+- why: `HookEvent`, `HookDefinition` and `BudgetMode` sit in `tools/agents/types/` though hook-sync vocabulary is shared by `agents/claude` and `agents/codex` and the map has no home for code shared by both; `getEntryBudgetKind` hard-codes the `.ai/backlog` layout with `debtFile`, split from `createBacklogStep`.
+- want: a home for code shared by the agent sub-domains, one owner of the backlog layout. #256 moves the GitHub-command parsing to `tools/github/utils`.
 - done: each piece has one owner.
 
 ## 7. Generator wiring is hand-listed (#147)
