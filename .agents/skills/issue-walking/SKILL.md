@@ -1,40 +1,41 @@
 ---
 name: issue-walking
 description: Walk a planned tree of GitHub issues in order, dispatching each
-  task to a worker, then reviewing and committing it. Use only when the user
-  asks to walk an issue tree.
+  leaf to a worker or debugger, then reviewing and committing it. Use only when
+  the user asks to walk an issue tree.
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/issue-walking.md -->
 
 # Issue walking
 
-Walk an issue tree in the main session: dispatch each task to a worker, review its work, commit it and report. You own sequencing, review and commits; you design and implement nothing.
+Walk an issue tree in the main session: route each issue by the handling table, review each leaf's diff, commit it and report. You own sequencing, routing, review and commits; you design and implement nothing.
 
-## Walking
+## Handling table
 
-```
-walk(issue):
-  closed                      → skip
-  open prerequisite           → stop
-  nested plan                 → stop: it is walked on its own
-  open sub-issues             → walk each in order, then its own work
-  bug label                   → dispatch to a debugger
-  own work (Steps)            → dispatch to a worker
-  no work left (block, plan)  → closes with its last leaf
-```
+Start at the issue the user names and read each sub-issue list in order. Handle each issue by the first matching row; the Complexity row applies on top of the row that dispatches.
 
-- Start at the issue the user names; read each sub-issue list in order.
-- Count an issue as closed when GitHub says so or a local commit's message closes it.
-- Stop at an open prerequisite outside what you have walked, and at a leaf with neither **Steps** nor the bug label: report it for the debugger or the planner.
-- Never walk into a plan other than the one the user names. In a block, walk its other members first; then stop and report that the nested plan must be walked first.
+| Issue                                                                      | Walker                                                           |
+| -------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Closed, or closed by a local commit                                        | Skip                                                             |
+| A Plan other than the one walked                                           | Stop: walked on its own                                          |
+| Open sub-issues                                                            | Walk them in order (a Segment's in any order), then its own work |
+| Plan or Segment with no open sub-issue                                     | Closes with its last leaf's commit                               |
+| Any Blockers, or an open blocked-by issue                                  | Stop and report                                                  |
+| Fails `engrenage issues check` for **Planning**, **Outdated** or structure | Stop; send it to the consultant                                  |
+| Fails for **Questions**                                                    | Stop; batch the questions to the user                            |
+| Problem without **Steps**                                                  | Debugger                                                         |
+| Task or Problem with **Steps**                                             | Worker                                                           |
+| Complexity `Complex`                                                       | Dispatched with `effort: high`; otherwise the agent's defaults   |
+| Resource or Idea in a tree                                                 | Never dispatched; report it to the consultant                    |
+
+Priority never reorders a tree: order states dependencies.
 
 ## Dispatching
 
-- Dispatch each leaf to a worker agent under the issue-implementation skill, or to a debugger agent under the debugging skill when it carries the project's bug label.
-- Brief either with the issue number and repository, the header chain and the plan sections the issue names; never paste issue or plan content, which the agent reads itself.
-- Dispatch with the worker's default model and low effort when the issue carries the project's low-effort label, and with its defaults otherwise.
-- Send the next leaf to the same worker when it belongs to the same block and its **Steps** name the same files; start a fresh worker otherwise.
+- Dispatch every leaf to a new agent: a worker under the issue-implementation skill, a debugger under the debugging skill.
+- Resume an agent only to answer its question or to send back review gaps and gate failures.
+- Brief with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then the header chain and the plan sections the issue names. Never paste issue or plan content: the agent reads it itself.
 
 ## After a debugger
 
@@ -46,21 +47,28 @@ walk(issue):
 
 ## After each leaf
 
-1. Check the diff against the task: its **Steps**, **Tests**, **Done when**, names and paths. Send each gap back to the agent that did the work.
+1. Review only the diff against the issue's **Steps**, **Tests** and names; read no code beyond it. Send each gap back to the agent that did the work.
 2. Add the `@debt` markers the diff calls for and the agent missed.
-3. Run the project's checks.
-4. Commit the task alone under the project's git rules, closing the issue and every block or parent it completes.
-5. Report one row to the user: issue · consequences · decisions and deviations.
+3. Commit under the project's git rules, closing the issue and every segment or parent it completes. Do not run the checks: the commit gate runs them. When it fails, send its output to the worker.
+4. Report one row to the user: issue · consequences · decisions and deviations.
 
-## Questions and tree changes
+## Checkpoints
 
-- Answer a worker's question from the plan and the ancestors when they settle it, and resume that worker.
-- Batch every other question to the user with your findings and recommendation; meanwhile walk only the leaves it does not affect.
-- Hand every change the tree needs (an issue edit, a new or reordered task) to the issue-planning skill in this session; never edit issues otherwise.
+A worker commits at each `Checkpoint:` line of its issue; your final commit closes the issue.
+
+- Review the commits from the dispatch base to `HEAD` one by one, then the uncommitted rest.
+- Fix a gap in a new commit, never by rewriting a checkpoint.
+- Read the worker's commit messages as a soft hint of how it read its Steps: compare them with the diff, never infer anything from them.
+
+## Consultant
+
+- Start the `planner` subagent on first need with the plan number, and resume it with `SendMessage`.
+- Call it only when a worker stops, reports a deviation, or an issue fits no row of the handling table; answer nothing from code yourself.
+- Batch what it sends back to the user with its findings and recommendations; meanwhile walk only the leaves it does not affect.
 
 ## Report
 
-End at the end of the tree, an open prerequisite, a nested plan or a pending question, with the table of walked leaves, then what is pending or blocked and why.
+End at the end of the tree or at a stop, with the table of walked leaves, then what is pending or blocked and why.
 
 ## GitHub mechanics
 
