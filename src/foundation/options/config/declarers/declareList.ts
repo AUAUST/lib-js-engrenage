@@ -1,7 +1,7 @@
 import type { GenericSchema } from "valibot";
 
+import { declare } from "#foundation/options/config/declarers/declare";
 import { listOptionSchema } from "#foundation/options/config/schemas/listOptionSchema";
-import { declare } from "#foundation/options/declarers/declare";
 import { resolveListOption } from "#foundation/options/utils/resolveListOption";
 import type { Declaration } from "#foundation/options/types/Declaration";
 import type { Default } from "#foundation/options/types/Default";

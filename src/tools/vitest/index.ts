@@ -4,8 +4,8 @@ export { createVitestCoverageStep } from "#tools/vitest/setup/createVitestCovera
 export { createVitestStep } from "#tools/vitest/setup/createVitestStep";
 // @end
 
-// @barrel definers/*.ts named
-export { defineVitestConfig } from "#tools/vitest/definers/defineVitestConfig";
+// @barrel config/define*Config.ts named
+export { defineVitestConfig } from "#tools/vitest/config/defineVitestConfig";
 // @end
 
 export { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";

@@ -1,6 +1,6 @@
 import { environmentSection } from "#project/config/index";
+import { vscodeSection } from "#tools/vscode/config/vscodeSection";
 import { extensionsFile } from "#tools/vscode/constants";
-import { vscodeSection } from "#tools/vscode/operations/vscodeSection";
 import { syncVscodeFiles } from "#tools/vscode/setup/syncVscodeFiles";
 import { findIntegrations } from "#tools/vscode/utils/findIntegrations";
 import type { Step } from "#project/steps/index";

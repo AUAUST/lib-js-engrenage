@@ -2,8 +2,8 @@
 export { createEslintConfigStep } from "#tools/eslint/setup/createEslintConfigStep";
 // @end
 
-// @barrel definers/*.ts named
-export { defineEslintConfig } from "#tools/eslint/definers/defineEslintConfig";
+// @barrel config/define*Config.ts named
+export { defineEslintConfig } from "#tools/eslint/config/defineEslintConfig";
 // @end
 
 // @barrel operations/*.ts named
@@ -46,4 +46,4 @@ export * from "#tools/eslint/types/rules/UnicornRules";
 export * from "#tools/eslint/types/rules/UnusedImportsRules";
 // @end
 
-export { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
+export { optionsSchema } from "#tools/eslint/config/optionsSchema";

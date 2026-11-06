@@ -16,33 +16,44 @@ import {
 } from "#project/roles/index";
 import { defineConfig } from "#workflows/config/index";
 
+// @debt file names inside config/ follow named-match only; they should derive from the domain's structured path (#271)
+// @debt not strict and ranked confined at its root: a nested role with `file` is never classified as a directory (#287 gap in `roleOf`), so `schemas` and `declarers` stay directory roles and their single modules take the root's contract
 const config = createRolePreset({
   name: "config",
-  purpose: "The domain's config section: its declaration and resolver.",
+  purpose:
+    "Everything that configures the domain: its definer, option declarations and sections.",
   exports: "named-match",
   effects: "confined",
   roles: [
     {
+      name: "definers",
+      purpose: "The domain's `define…Config` definer.",
+      file: "define*Config.ts",
+      exports: "named-match",
+      effects: "effectful",
+    },
+    {
       name: "schemas",
       purpose: "Validation schemas of the option declarations.",
+      accepts: "*Schema.ts",
       exports: "named-match",
       effects: "confined",
     },
+    {
+      name: "declarers",
+      purpose: "Functions creating option declarations.",
+      accepts: "declare*.ts",
+      exports: "named-match",
+      effects: "confined",
+    },
+    {
+      name: "sections",
+      purpose: "Section values the domain contributes to the loaded config.",
+      file: "*Section.ts",
+      exports: "named-match",
+      effects: "effectful",
+    },
   ],
-});
-
-const declarers = createRolePreset({
-  name: "declarers",
-  purpose: "Functions creating option declarations.",
-  exports: "named-match",
-  effects: "confined",
-});
-
-const definers = createRolePreset({
-  name: "definers",
-  purpose: "The tool's `define…Config` definers.",
-  exports: "named-match",
-  effects: "effectful",
 });
 
 // @debt redefined only to give `adapters` an effect level; the preset should carry it, as it does for every other role
@@ -92,8 +103,6 @@ const codeRoles = [
   ports(),
   rankedAdapters(),
   config(),
-  declarers(),
-  definers(),
   setup(),
   plugins(),
   operations(),
@@ -127,8 +136,6 @@ export default defineConfig({
       fixtures(),
       testsetup(),
       config(),
-      declarers(),
-      definers(),
       plugins(),
       operations(),
       conventions(),

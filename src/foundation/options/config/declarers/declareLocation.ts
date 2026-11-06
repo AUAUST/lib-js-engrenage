@@ -1,5 +1,5 @@
+import { declare } from "#foundation/options/config/declarers/declare";
 import { fileSchema } from "#foundation/options/config/schemas/fileSchema";
-import { declare } from "#foundation/options/declarers/declare";
 import { describeDefault } from "#foundation/options/utils/describeDefault";
 import type { Declaration } from "#foundation/options/types/Declaration";
 import type { Description } from "#foundation/options/types/Description";

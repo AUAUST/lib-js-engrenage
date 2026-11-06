@@ -16,11 +16,11 @@ import {
   apiLibraryGroups,
 } from "#project/baseline/constants";
 import { findCurrentMonth, nodeMajorSchema } from "#project/baseline/index";
+import { declareCodeEnvironment } from "#project/environments/config/declarers/declareCodeEnvironment";
 import {
   defaultSourceDirectories,
   disabledCodeEnvironment,
 } from "#project/environments/constants";
-import { declareCodeEnvironment } from "#project/environments/declarers/declareCodeEnvironment";
 import { exposedFilesSchema } from "#project/package/index";
 import { rolesSchema } from "#project/roles/index";
 import { aliasesSchema } from "#project/structure/index";

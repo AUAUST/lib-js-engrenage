@@ -19,8 +19,7 @@ import { entries, keys, values } from "@auaust/toolkit/object";
 import { globsSchema } from "#foundation/options/config/schemas/globsSchema";
 import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
 import { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModuleResolverSchema";
-import { configDeclaration } from "#workflows/registry/config/schemas/configDeclaration";
-import { configSchema } from "#workflows/registry/config/schemas/configSchema";
+import { configSchema } from "#workflows/registry/config/configSchema";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -332,7 +331,7 @@ function collectInputs(modules: SchemaModules): Map<AnySchema, DeclaredInput> {
   const inputs = new Map<AnySchema, DeclaredInput>();
 
   for (const [file, exported] of modules) {
-    const domain = file.slice("src/".length, file.indexOf("/config/schemas/"));
+    const domain = file.slice("src/".length, file.lastIndexOf("/config/"));
 
     for (const [exportName, value] of entries(exported)) {
       if (!isDeclaration(value) || !isObjectSchema(coreOf(value.schema))) {
@@ -353,15 +352,13 @@ function collectInputs(modules: SchemaModules): Map<AnySchema, DeclaredInput> {
 function selectInputs(
   declared: ReadonlyMap<AnySchema, DeclaredInput>,
 ): Map<AnySchema, DeclaredInput> {
-  const root = coreOf(configSchema);
-  const counts = countObjects(configSchema);
+  const root = coreOf(configSchema.schema);
+  const counts = countObjects(configSchema.schema);
 
   const selected = new Map<AnySchema, DeclaredInput>();
 
   const wanted = [
-    ...values(configDeclaration.entries).map((section) =>
-      coreOf(section.schema),
-    ),
+    ...values(configSchema.entries).map((section) => coreOf(section.schema)),
     ...[...counts].filter(([, count]) => count > 1).map(([core]) => core),
   ];
 
@@ -542,7 +539,7 @@ export async function generateConfigTypes(
     {
       name: composedName,
       domain: composedDomain,
-      core: coreOf(configSchema),
+      core: coreOf(configSchema.schema),
       description: undefined,
     },
   ];

@@ -1,7 +1,7 @@
 import { filterMap, pluck } from "@auaust/primitive-kit/arrays";
 
+import { agentsSection } from "#tools/agents/config/agentsSection";
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
-import { agentsSection } from "#tools/agents/operations/agentsSection";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import type { Step } from "#project/steps/index";
 

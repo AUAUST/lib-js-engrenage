@@ -4,18 +4,21 @@ export { createPrettierStep } from "#tools/prettier/setup/createPrettierStep";
 export { syncPrettierignoreFile } from "#tools/prettier/setup/syncPrettierignoreFile";
 // @end
 
-// @barrel definers/*.ts named
-export { definePrettierConfig } from "#tools/prettier/definers/definePrettierConfig";
+// @barrel config/define*Config.ts named
+export { definePrettierConfig } from "#tools/prettier/config/definePrettierConfig";
+// @end
+
+// @barrel config/*Section.ts named
+export { prettierSection } from "#tools/prettier/config/prettierSection";
 // @end
 
 // @barrel operations/*.ts named
 export { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
 export { loadPrettier } from "#tools/prettier/operations/loadPrettier";
-export { prettierSection } from "#tools/prettier/operations/prettierSection";
 // @end
 
-// @barrel config/schemas/*.ts named
-export { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
+// @barrel config/*Schema.ts named
+export { prettierSchema } from "#tools/prettier/config/prettierSchema";
 // @end
 
 // @barrel adapters/*.ts named

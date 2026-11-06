@@ -35,7 +35,7 @@ test(
         `data:text/javascript,${encodeURIComponent(recordResolutions)}`,
         "--input-type=module",
         "--eval",
-        'await import("#tools/eslint/config/schemas/optionsSchema");',
+        'await import("#tools/eslint/config/optionsSchema");',
       ],
       { cwd: repositoryRoot },
     );

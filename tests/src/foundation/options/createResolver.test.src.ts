@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { declareSection } from "#foundation/options/declarers/declareSection";
+import { declareSection } from "#foundation/options/config/declarers/declareSection";
 import { createResolver } from "#foundation/options/utils/createResolver";
 
 describe("createResolver", () => {

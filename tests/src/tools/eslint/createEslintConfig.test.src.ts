@@ -878,8 +878,8 @@ export function pick(value: Value): number {
     }
 
     expect(await lintedLayoutRules()).toEqual([
-      "auaust/padded-blocks",
       "auaust/padded-exports",
+      "auaust/padded-blocks",
       "auaust/grouped-overloads",
       "auaust/unpadded-switches",
       "auaust/switch-case-braces",

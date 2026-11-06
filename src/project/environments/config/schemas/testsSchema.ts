@@ -7,6 +7,7 @@ import {
   directorySchema,
   globSchema,
 } from "#foundation/options/index";
+import { declareCodeEnvironment } from "#project/environments/config/declarers/declareCodeEnvironment";
 import {
   defaultTestsCoverageDirectory,
   defaultTestsDirectories,
@@ -16,7 +17,6 @@ import {
   defaultTestsSuffix,
   disabledCodeEnvironment,
 } from "#project/environments/constants";
-import { declareCodeEnvironment } from "#project/environments/declarers/declareCodeEnvironment";
 import { rolesSchema } from "#project/roles/index";
 import {
   declareEnvironmentTsconfig,

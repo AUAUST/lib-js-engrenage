@@ -22,7 +22,7 @@ import { prettierSchema } from "#tools/prettier/index";
 import { vscodeSchema } from "#tools/vscode/index";
 
 // @debt the `Core`, `Tooling` and `Environments` comments explain the code, outside the allowed comment kinds; `eslint`, `vite`, `vitest` and `tsdown` take no section here, so their options come only from definer arguments
-export const configDeclaration = declareObject({
+export const configSchema = declareObject({
   // Core
   aliases: aliasesSchema,
   build: buildSchema,

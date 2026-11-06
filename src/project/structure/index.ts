@@ -53,6 +53,10 @@ export * from "#project/structure/types/TestVariant";
 export * from "#project/structure/types/UnclassifiedReason";
 // @end
 
+// @barrel config/declare*.ts named
+export { declareStructureOptions } from "#project/structure/config/declareStructureOptions";
+// @end
+
 // @barrel config/schemas/*.ts named
 export { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
 export { domainSchema } from "#project/structure/config/schemas/domainSchema";
@@ -61,7 +65,6 @@ export { effectModuleResolverSchema } from "#project/structure/config/schemas/ef
 export { effectModulesSchema } from "#project/structure/config/schemas/effectModulesSchema";
 export { effectsSchema } from "#project/structure/config/schemas/effectsSchema";
 export { namespaceSchema } from "#project/structure/config/schemas/namespaceSchema";
-export { structureOptions } from "#project/structure/config/schemas/structureOptions";
 export { structureSchema } from "#project/structure/config/schemas/structureSchema";
 // @end
 

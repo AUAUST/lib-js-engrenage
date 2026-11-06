@@ -31,7 +31,7 @@ import {
   workspacesSection,
   type LoadedConfig,
 } from "#project/config/index";
-import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
+import { optionsSchema } from "#tools/tsdown/config/optionsSchema";
 import {
   emptyNamespaces,
   entrySelfReferences,

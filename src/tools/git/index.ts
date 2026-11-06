@@ -7,18 +7,21 @@ export { createGitignoreStep } from "#tools/git/setup/createGitignoreStep";
 export { syncGitignoreFile } from "#tools/git/setup/syncGitignoreFile";
 // @end
 
+// @barrel config/*Section.ts named
+export { gitSection } from "#tools/git/config/gitSection";
+// @end
+
 // @barrel operations/*.ts named
 export { createProjectIgnores } from "#tools/git/operations/createProjectIgnores";
 export { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
-export { gitSection } from "#tools/git/operations/gitSection";
 export { hashTree } from "#tools/git/operations/hashTree";
 export { listChangedFiles } from "#tools/git/operations/listChangedFiles";
 export { listPartiallyStagedFiles } from "#tools/git/operations/listPartiallyStagedFiles";
 export { runGit } from "#tools/git/operations/runGit";
 // @end
 
-// @barrel config/schemas/*.ts named
-export { gitSchema } from "#tools/git/config/schemas/gitSchema";
+// @barrel config/*Schema.ts named
+export { gitSchema } from "#tools/git/config/gitSchema";
 // @end
 
 // @barrel types/*.ts all

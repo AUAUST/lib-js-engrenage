@@ -4,12 +4,12 @@ export { createVscodeSettingsStep } from "#tools/vscode/setup/createVscodeSettin
 export { syncVscodeFiles } from "#tools/vscode/setup/syncVscodeFiles";
 // @end
 
-// @barrel operations/*.ts named
-export { vscodeSection } from "#tools/vscode/operations/vscodeSection";
+// @barrel config/*Section.ts named
+export { vscodeSection } from "#tools/vscode/config/vscodeSection";
 // @end
 
-// @barrel config/schemas/*.ts named
-export { vscodeSchema } from "#tools/vscode/config/schemas/vscodeSchema";
+// @barrel config/*Schema.ts named
+export { vscodeSchema } from "#tools/vscode/config/vscodeSchema";
 // @end
 
 // @barrel types/*.ts all

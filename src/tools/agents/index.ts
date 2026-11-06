@@ -21,10 +21,13 @@ export { syncAgents } from "#tools/agents/setup/syncAgents";
 export { syncProjectMap } from "#tools/agents/setup/syncProjectMap";
 // @end
 
+// @barrel config/*Section.ts named
+export { agentsSection } from "#tools/agents/config/agentsSection";
+// @end
+
 // @barrel operations/*.ts named
 export { addAgentRules } from "#tools/agents/operations/addAgentRules";
 export { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
-export { agentsSection } from "#tools/agents/operations/agentsSection";
 export { denyToolUse } from "#tools/agents/operations/denyToolUse";
 export { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 export { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";

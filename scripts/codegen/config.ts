@@ -26,9 +26,12 @@ export const config = defineCommand((command) => {
 
       const modules = new Map<File, Record<string, unknown>>();
 
-      for await (const file of glob("src/**/config/schemas/*.ts", {
-        cwd: join(import.meta.dirname, "../.."),
-      })) {
+      for await (const file of glob(
+        ["src/**/config/schemas/*.ts", "src/**/config/*Schema.ts"],
+        {
+          cwd: join(import.meta.dirname, "../.."),
+        },
+      )) {
         modules.set(file, await import(`#${file.slice("src/".length, -3)}`));
       }
 

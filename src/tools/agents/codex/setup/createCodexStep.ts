@@ -3,8 +3,8 @@ import { readFile } from "node:fs/promises";
 import { resolveDataFile } from "#foundation/data/index";
 import { codexFile, codexTemplate } from "#tools/agents/codex/constants";
 import { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";
+import { agentsSection } from "#tools/agents/config/agentsSection";
 import { agentsFile } from "#tools/agents/constants";
-import { agentsSection } from "#tools/agents/operations/agentsSection";
 import type { Step } from "#project/steps/index";
 
 export function createCodexStep(): Step {

@@ -1,5 +1,5 @@
 import { declareSection } from "#foundation/options/index";
-import { vscodeSchema } from "#tools/vscode/config/schemas/vscodeSchema";
+import { vscodeSchema } from "#tools/vscode/config/vscodeSchema";
 import type { ResolvedVscode } from "#tools/vscode/types/ResolvedVscode";
 
 export const vscodeSection = declareSection({

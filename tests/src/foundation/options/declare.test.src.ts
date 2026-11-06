@@ -2,9 +2,9 @@ import { toJsonSchema } from "@valibot/to-json-schema";
 import { boolean, maxValue, number, pipe, safeParse } from "valibot";
 import { describe, expect, test } from "vitest";
 
-import { declare } from "#foundation/options/declarers/declare";
-import { declareObject } from "#foundation/options/declarers/declareObject";
-import { gitSchema } from "#tools/git/config/schemas/gitSchema";
+import { declare } from "#foundation/options/config/declarers/declare";
+import { declareObject } from "#foundation/options/config/declarers/declareObject";
+import { gitSchema } from "#tools/git/config/gitSchema";
 
 describe("declare", () => {
   test("fills defaults, rejects invalid input and describes the default", () => {

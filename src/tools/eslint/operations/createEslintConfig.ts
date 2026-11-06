@@ -12,8 +12,7 @@ import { entries } from "@auaust/toolkit/object";
 import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
 import { validate } from "#foundation/options/index";
-import { conventionCategories } from "#tools/eslint/config/conventionCategories";
-import { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
+import { optionsSchema } from "#tools/eslint/config/optionsSchema";
 import { pluginName, rolesPluginName } from "#tools/eslint/constants";
 import { createConventionRules } from "#tools/eslint/operations/createConventionRules";
 import { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";
@@ -29,6 +28,8 @@ import { gitSection } from "#tools/git/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Options } from "#tools/eslint/types/Options";
+
+import * as conventionCategories from "#tools/eslint/conventions/index";
 
 export async function createEslintConfig(
   context: LoadedConfig,

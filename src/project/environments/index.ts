@@ -1,7 +1,7 @@
-// @barrel declarers/*.ts named
-export { declareCodeEnvironment } from "#project/environments/declarers/declareCodeEnvironment";
-export { declareDefines } from "#project/environments/declarers/declareDefines";
-export { declareProgramLayout } from "#project/environments/declarers/declareProgramLayout";
+// @barrel config/declarers/*.ts named
+export { declareCodeEnvironment } from "#project/environments/config/declarers/declareCodeEnvironment";
+export { declareDefines } from "#project/environments/config/declarers/declareDefines";
+export { declareProgramLayout } from "#project/environments/config/declarers/declareProgramLayout";
 // @end
 
 // @barrel utils/*.ts named

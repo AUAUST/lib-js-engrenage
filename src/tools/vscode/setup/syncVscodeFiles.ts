@@ -18,12 +18,12 @@ import {
 import { validate } from "#foundation/options/index";
 import { environmentSection, type LoadedConfig } from "#project/config/index";
 import { jsonIndentation } from "#project/format/constants";
+import { vscodeSection } from "#tools/vscode/config/vscodeSection";
 import {
   eslintIntegration,
   extensionsFile,
   settingsFile,
 } from "#tools/vscode/constants";
-import { vscodeSection } from "#tools/vscode/operations/vscodeSection";
 import { findIntegrations } from "#tools/vscode/utils/findIntegrations";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Integration } from "#tools/vscode/types/Integration";

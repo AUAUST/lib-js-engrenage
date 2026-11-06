@@ -2,8 +2,8 @@
 export { createTsdownConfigStep } from "#tools/tsdown/setup/createTsdownConfigStep";
 // @end
 
-// @barrel definers/*.ts named
-export { defineTsdownConfig } from "#tools/tsdown/definers/defineTsdownConfig";
+// @barrel config/define*Config.ts named
+export { defineTsdownConfig } from "#tools/tsdown/config/defineTsdownConfig";
 // @end
 
 // @barrel operations/*.ts named

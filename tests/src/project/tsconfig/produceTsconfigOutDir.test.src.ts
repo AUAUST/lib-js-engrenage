@@ -6,7 +6,7 @@ import { validate } from "#foundation/options/utils/validate";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
-import { configSchema } from "#workflows/registry/config/schemas/configSchema";
+import { configSchema } from "#workflows/registry/config/configSchema";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
 const libraryPreset = fileURLToPath(
@@ -24,7 +24,7 @@ async function syncOutDir(build: unknown, files: Record<string, string> = {}) {
   const config = createConfig({
     root: project.root,
     raw: validate(
-      configSchema,
+      configSchema.schema,
       withSourceRuntime({
         build,
         typescript: {

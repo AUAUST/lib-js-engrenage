@@ -2,8 +2,8 @@
 export { resolveSourceRuntime } from "#project/baseline/operations/resolveSourceRuntime";
 // @end
 
-// @barrel config/schemas/*.ts named
-export { nodeMajorSchema } from "#project/baseline/config/schemas/nodeMajorSchema";
+// @barrel config/*Schema.ts named
+export { nodeMajorSchema } from "#project/baseline/config/nodeMajorSchema";
 // @end
 
 // @barrel utils/*.ts named

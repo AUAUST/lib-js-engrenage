@@ -3,8 +3,8 @@ import {
   directorySchema,
   globSchema,
 } from "#foundation/options/index";
-import { declareDefines } from "#project/environments/declarers/declareDefines";
-import { structureOptions } from "#project/structure/index";
+import { declareDefines } from "#project/environments/config/declarers/declareDefines";
+import { declareStructureOptions } from "#project/structure/index";
 import { declareEnvironmentTsconfig } from "#project/tsconfig/index";
 import type { Directories } from "#types/Directories";
 
@@ -13,7 +13,7 @@ export function declareCodeEnvironment(
   defaultDirs: Directories,
 ) {
   return {
-    ...structureOptions,
+    ...declareStructureOptions(),
     dirs: declareList(directorySchema, {
       description: [
         `Directories of the ${name} environment: its TypeScript files (\`typescript.files\`) are included in its tsconfig, linted with its rules and, for \`src\` and \`bin\`, published.`,

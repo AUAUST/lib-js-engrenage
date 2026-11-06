@@ -7,8 +7,8 @@ export { createPackageJson } from "#project/package/operations/createPackageJson
 export { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
 // @end
 
-// @barrel config/schemas/*.ts named
-export { exposedFilesSchema } from "#project/package/config/schemas/exposedFilesSchema";
+// @barrel config/*Schema.ts named
+export { exposedFilesSchema } from "#project/package/config/exposedFilesSchema";
 // @end
 
 // @barrel utils/*.ts named

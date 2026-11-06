@@ -9,12 +9,12 @@ import {
 } from "#project/config/index";
 import { agentsSection, codexFile } from "#tools/agents/index";
 import { createProjectIgnores } from "#tools/git/index";
+import { prettierSection } from "#tools/prettier/config/prettierSection";
 import {
   changelogIgnores,
   codegenTitle,
   defaultIgnores,
 } from "#tools/prettier/constants";
-import { prettierSection } from "#tools/prettier/operations/prettierSection";
 import type { Glob } from "#types/Glob";
 import type { GlobGroup } from "#types/GlobGroup";
 

@@ -3,11 +3,14 @@ export { createWorkflowsStep } from "#tools/github/setup/createWorkflowsStep";
 export { syncWorkflowFiles } from "#tools/github/setup/syncWorkflowFiles";
 // @end
 
+// @barrel config/*Section.ts named
+export { githubSection } from "#tools/github/config/githubSection";
+// @end
+
 // @barrel operations/*.ts named
 export { checkGithubWrite } from "#tools/github/operations/checkGithubWrite";
 export { checkIssue } from "#tools/github/operations/checkIssue";
 export { fetchIssue } from "#tools/github/operations/fetchIssue";
-export { githubSection } from "#tools/github/operations/githubSection";
 export { readGithubBody } from "#tools/github/operations/readGithubBody";
 export { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 export { requestGithub } from "#tools/github/operations/requestGithub";
@@ -25,8 +28,8 @@ export { parseRepository } from "#tools/github/utils/parseRepository";
 export { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 // @end
 
-// @barrel config/schemas/*.ts named
-export { githubSchema } from "#tools/github/config/schemas/githubSchema";
+// @barrel config/*Schema.ts named
+export { githubSchema } from "#tools/github/config/githubSchema";
 // @end
 
 // @barrel types/*.ts all

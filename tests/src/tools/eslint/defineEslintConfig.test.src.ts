@@ -6,7 +6,7 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { sourceSection } from "#project/config/index";
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { defineEslintConfig } from "#tools/eslint/definers/defineEslintConfig";
+import { defineEslintConfig } from "#tools/eslint/config/defineEslintConfig";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 
 const root = getFixture("eslint");

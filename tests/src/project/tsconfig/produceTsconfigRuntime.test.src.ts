@@ -12,7 +12,7 @@ import { sourceSection } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
-import { configSchema } from "#workflows/registry/config/schemas/configSchema";
+import { configSchema } from "#workflows/registry/config/configSchema";
 import { createConfig } from "#workflows/registry/operations/createConfig";
 
 async function syncCompilerOptions(
@@ -306,7 +306,7 @@ describe("runtime tsconfig fields", () => {
     const config = createConfig({
       root: createTemporaryProject().root,
       raw: validate(
-        configSchema,
+        configSchema.schema,
         {
           src: { apis: ["timers"] },
         },

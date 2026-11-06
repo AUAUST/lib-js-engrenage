@@ -3,7 +3,7 @@ import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection, type Resolver } from "#foundation/options/index";
 import { locateFile, type ConfigContext } from "#project/config/index";
-import { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
+import { prettierSchema } from "#tools/prettier/config/prettierSchema";
 import type { ResolvedPrettier } from "#tools/prettier/types/ResolvedPrettier";
 
 export const prettierSection = declareSection({

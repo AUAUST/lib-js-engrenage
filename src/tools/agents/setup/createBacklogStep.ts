@@ -4,6 +4,7 @@ import { random } from "@auaust/primitive-kit/arrays";
 
 import { engrenage } from "#constants";
 import { resolveDataFile } from "#foundation/data/index";
+import { agentsSection } from "#tools/agents/config/agentsSection";
 import {
   agentsFile,
   backlogIndex,
@@ -13,7 +14,6 @@ import {
 } from "#tools/agents/constants";
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
-import { agentsSection } from "#tools/agents/operations/agentsSection";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";

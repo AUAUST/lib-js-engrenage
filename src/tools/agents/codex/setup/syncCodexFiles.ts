@@ -4,7 +4,7 @@ import {
   codexHooksFile,
 } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
-import { agentsSection } from "#tools/agents/operations/agentsSection";
+import { agentsSection } from "#tools/agents/config/agentsSection";
 import { syncHooks } from "#tools/agents/operations/syncHooks";
 import type { LoadedConfig } from "#project/config/index";
 

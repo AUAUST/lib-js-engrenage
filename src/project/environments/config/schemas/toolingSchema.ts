@@ -9,7 +9,7 @@ import {
   defaultToolingFiles,
 } from "#project/environments/constants";
 import { rolesSchema } from "#project/roles/index";
-import { structureOptions } from "#project/structure/index";
+import { declareStructureOptions } from "#project/structure/index";
 import {
   declareEnvironmentTsconfig,
   unmanagedTsconfig,
@@ -17,7 +17,7 @@ import {
 
 export const toolingSchema = declareObject(
   {
-    ...structureOptions,
+    ...declareStructureOptions(),
     dirs: declareList(directorySchema, {
       description:
         "Directories of the tooling environment: all their TypeScript files are included and walked like `src`. `.` contributes only the files matched by `files`.",

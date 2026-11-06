@@ -10,8 +10,8 @@ import {
   toolingSection,
   type LoadedConfig,
 } from "#project/config/index";
+import { agentsSection } from "#tools/agents/config/agentsSection";
 import { projectMapDirectory } from "#tools/agents/constants";
-import { agentsSection } from "#tools/agents/operations/agentsSection";
 import { renderProjectMap } from "#tools/agents/utils/renderProjectMap";
 
 export async function syncProjectMap({ resolve, context }: LoadedConfig) {

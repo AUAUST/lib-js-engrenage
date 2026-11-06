@@ -13,8 +13,8 @@ import {
   type LoadedConfig,
 } from "#project/config/index";
 import { gitSection } from "#tools/git/index";
+import { githubSection } from "#tools/github/config/githubSection";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
-import { githubSection } from "#tools/github/operations/githubSection";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";

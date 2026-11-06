@@ -1,11 +1,11 @@
-// @barrel declarers/*.ts named
-export { declare } from "#foundation/options/declarers/declare";
-export { declareList } from "#foundation/options/declarers/declareList";
-export { declareLocation } from "#foundation/options/declarers/declareLocation";
-export { declareManagedList } from "#foundation/options/declarers/declareManagedList";
-export { declareObject } from "#foundation/options/declarers/declareObject";
-export { declareRecord } from "#foundation/options/declarers/declareRecord";
-export { declareSection } from "#foundation/options/declarers/declareSection";
+// @barrel config/declarers/*.ts named
+export { declare } from "#foundation/options/config/declarers/declare";
+export { declareList } from "#foundation/options/config/declarers/declareList";
+export { declareLocation } from "#foundation/options/config/declarers/declareLocation";
+export { declareManagedList } from "#foundation/options/config/declarers/declareManagedList";
+export { declareObject } from "#foundation/options/config/declarers/declareObject";
+export { declareRecord } from "#foundation/options/config/declarers/declareRecord";
+export { declareSection } from "#foundation/options/config/declarers/declareSection";
 // @end
 
 // @barrel config/*.ts named
