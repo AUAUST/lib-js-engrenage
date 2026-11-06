@@ -20,10 +20,18 @@ export async function checkGithubWrite(
     return;
   }
 
+  if (write.body.kind === "file" && write.body.path.endsWith(".draft.md")) {
+    return "publish a draft without its frontmatter: pipe its body to `--body-file -`";
+  }
+
   const body = await readGithubBody(write.body, cwd);
 
+  if (body === undefined && "path" in write.body) {
+    return `the body file \`${write.body.path}\` does not exist`;
+  }
+
   if (body === undefined) {
-    return "pass the body with `--body-file -` and a heredoc";
+    return "pass the body with `--body-file -` and a heredoc, or pipe it from a `.draft.md` file";
   }
 
   let type: string | undefined;

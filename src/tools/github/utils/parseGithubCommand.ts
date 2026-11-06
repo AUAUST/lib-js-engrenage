@@ -20,6 +20,11 @@ const bodyFileFlagPattern =
 
 const redirectPattern = /(?:^|[^<])<\s*(?:"([^"]+)"|'([^']+)'|([^\s|;&<>]+))/;
 
+const draftPattern =
+  /(?:"([^"]+\.draft\.md)"|'([^']+\.draft\.md)'|([^\s|;&<>"']+\.draft\.md))(?=[\s|;&<>]|$)/;
+
+const pipePattern = /\|\s*$/;
+
 const expansionPattern = /\$[({\w]|`/;
 
 function pick(match: RegExpExecArray | null) {
@@ -42,6 +47,27 @@ function readFlagValue(match: RegExpExecArray): GithubBodySource {
             ? value
             : value.replaceAll(/\\([\\"$`])/g, "$1"),
       };
+}
+
+function readStandardInput(rest: string, start: number): GithubBodySource {
+  const redirected = pick(redirectPattern.exec(rest.slice(start)));
+
+  if (redirected !== undefined) {
+    return expansionPattern.test(redirected)
+      ? { kind: "unreadable" }
+      : { kind: "file", path: redirected };
+  }
+
+  const source = rest.slice(0, start);
+
+  const draft = pipePattern.test(source)
+    ? pick(draftPattern.exec(source))
+    : undefined;
+
+  // @debt a body piped from a draft is assumed to be the draft without its frontmatter, whatever the piping command does.
+  return draft === undefined || expansionPattern.test(draft)
+    ? { kind: "unreadable" }
+    : { kind: "draft", path: draft };
 }
 
 function readBody(
@@ -76,11 +102,7 @@ function readBody(
     return { kind: "text", text: heredoc };
   }
 
-  const redirected = pick(redirectPattern.exec(rest));
-
-  return redirected === undefined || expansionPattern.test(redirected)
-    ? { kind: "unreadable" }
-    : { kind: "file", path: redirected };
+  return readStandardInput(rest, commandPattern.exec(rest)?.index ?? 0);
 }
 
 export function parseGithubCommand(command: string): GithubWrite | undefined {

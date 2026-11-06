@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { checkGithubWrite } from "#tools/github/operations/checkGithubWrite";
 import { checkIssue } from "#tools/github/operations/checkIssue";
 import { checkIssueBody } from "#tools/github/utils/checkIssueBody";
 import { parseGithubCommand } from "#tools/github/utils/parseGithubCommand";
@@ -248,5 +250,65 @@ describe("parseGithubCommand", () => {
     expect(
       parseGithubCommand("gh issue edit 5 --body-file - < b.md")?.body,
     ).toEqual({ kind: "file", path: "b.md" });
+  });
+
+  test.each([
+    "sed '1,/^---$/d' .ai/issues/5.draft.md | gh issue edit 5 --body-file -",
+    "tail -n +4 < .ai/issues/5.draft.md | gh issue edit 5 --body-file -",
+  ])("reads a body piped from a draft in %s", (command) => {
+    expect(parseGithubCommand(command)?.body).toEqual({
+      kind: "draft",
+      path: ".ai/issues/5.draft.md",
+    });
+  });
+
+  test("reports a body piped from another file as unreadable", () => {
+    expect(
+      parseGithubCommand("cat b.md | gh issue edit 5 --body-file -")?.body,
+    ).toEqual({ kind: "unreadable" });
+  });
+});
+
+describe("checkGithubWrite", () => {
+  const draft = ".ai/issues/new-x.draft.md";
+
+  test("checks the body of a piped draft without its frontmatter", async () => {
+    const project = createTemporaryProject({
+      [draft]: `---\ntitle: x\ntype: Problem\n---\n\n${task}\n## Scope\n\nx\n`,
+    });
+
+    await expect(
+      checkGithubWrite(
+        `sed '1,/^---$/d' ${draft} | gh issue create --title x --body-file -`,
+        project.root,
+      ),
+    ).resolves.toContain("Scope");
+
+    project.write(draft, `---\ntitle: x\n---\n\n${task}`);
+
+    await expect(
+      checkGithubWrite(
+        `sed '1,/^---$/d' ${draft} | gh issue create --title x --body-file -`,
+        project.root,
+      ),
+    ).resolves.toBeUndefined();
+  });
+
+  test("rejects a draft passed whole, frontmatter included", async () => {
+    await expect(
+      checkGithubWrite(
+        `gh issue create --title x --body-file ${draft}`,
+        createTemporaryProject().root,
+      ),
+    ).resolves.toContain("frontmatter");
+  });
+
+  test("names a missing draft", async () => {
+    await expect(
+      checkGithubWrite(
+        `sed '1,/^---$/d' ${draft} | gh issue create --title x --body-file -`,
+        createTemporaryProject().root,
+      ),
+    ).resolves.toContain(`\`${draft}\` does not exist`);
   });
 });

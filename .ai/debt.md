@@ -47,7 +47,7 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 - `src/foundation/options/types/Section.ts:4` (resolver context `unknown`, narrowed by bivariant annotation)
 - `src/tools/eslint/conventions/stylistic/noReturnUndefined.ts:67` (core ESTree nodes probed with `in`)
 - `src/tools/eslint/conventions/stylistic/preferValuedReturn.ts:106` (cast and redundant `node.type` check)
-- `src/tools/eslint/utils/createBoundaryRule.ts:11` (plugin default export mistyped upstream)
+- `src/tools/eslint/utils/createBoundaryRule.ts:11` (plugin default export mistyped upstream; goes with the plugin in #278)
 - `src/project/structure/types/InlineRole.ts:1` (replaceable by the generated `InlineRoleInput`)
 - want: validate at the boundary or type the listeners; delete `InlineRole`. Related: `coding-style.1`.
 
