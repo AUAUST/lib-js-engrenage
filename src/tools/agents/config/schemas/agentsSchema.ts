@@ -95,23 +95,23 @@ export const agentsSchema = declareObject(
       {
         mode: declare(picklist(budgetModes), {
           description:
-            "`warn` reports a text over budget to the agent; `deny` also blocks the GitHub write it would make.",
+            "`warn` reports a text over budget to the agent; `deny` also blocks the GitHub write it would make. The gate only ever warns.",
           optional: { value: defaultBudgetMode },
         }),
-        plan: declare(budgetSchema, {
-          description: "Words of a plan issue.",
-          optional: { value: defaultBudgets.plan },
+        goal: declare(budgetSchema, {
+          description: "Words of the **Goal** section of an issue.",
+          optional: { value: defaultBudgets.goal },
         }),
-        block: declare(budgetSchema, {
-          description: "Words of a block issue.",
-          optional: { value: defaultBudgets.block },
+        context: declare(budgetSchema, {
+          description: "Words of the **Context** section of an issue.",
+          optional: { value: defaultBudgets.context },
         }),
-        task: declare(budgetSchema, {
-          description: "Words of a task issue.",
-          optional: { value: defaultBudgets.task },
+        doneWhen: declare(budgetSchema, {
+          description: "Words of the **Done when** section of an issue.",
+          optional: { value: defaultBudgets.doneWhen },
         }),
         comment: declare(budgetSchema, {
-          description: "Words of an issue comment.",
+          description: "Words of a whole issue comment.",
           optional: { value: defaultBudgets.comment },
         }),
         backlogEntry: declare(budgetSchema, {
@@ -124,8 +124,10 @@ export const agentsSchema = declareObject(
         }),
       },
       {
-        description:
-          "Length budgets in words, checked by the agent hooks (`engrenage agents <agent> hook`).",
+        description: [
+          "Length budgets in words of prose only, checked by the agent hooks (`engrenage agents <agent> hook`) for issues and comments, and by `engrenage gate` for backlog and debt entries.",
+          "Sections such as **Steps** and **Tests** have no budget.",
+        ],
         optional: true,
       },
     ),

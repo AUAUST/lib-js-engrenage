@@ -101,9 +101,9 @@ export const projectMapRelations = freeze({
 export const debtFile = ".ai/debt.md" satisfies File;
 
 export const budgetKinds = freeze([
-  "plan",
-  "block",
-  "task",
+  "goal",
+  "context",
+  "doneWhen",
   "comment",
   "backlogEntry",
   "debtEntry",
@@ -114,9 +114,9 @@ export const budgetModes = freeze(["warn", "deny"] as const);
 export const defaultBudgetMode = "warn" as const;
 
 export const defaultBudgets = freeze({
-  plan: 1200,
-  block: 60,
-  task: 250,
+  goal: 60,
+  context: 80,
+  doneWhen: 60,
   comment: 150,
   backlogEntry: 60,
   debtEntry: 60,

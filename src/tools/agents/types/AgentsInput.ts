@@ -61,31 +61,32 @@ export interface AgentsInput {
     hook?: (boolean | undefined)
   } | undefined)
   /**
-   * Length budgets in words, checked by the agent hooks (`engrenage agents <agent> hook`).
+   * Length budgets in words of prose only, checked by the agent hooks (`engrenage agents <agent> hook`) for issues and comments, and by `engrenage gate` for backlog and debt entries.
+   * Sections such as **Steps** and **Tests** have no budget.
    */
   budgets?: ({
     /**
-     * `warn` reports a text over budget to the agent; `deny` also blocks the GitHub write it would make.
+     * `warn` reports a text over budget to the agent; `deny` also blocks the GitHub write it would make. The gate only ever warns.
      * @default `warn`
      */
     mode?: (("warn" | "deny") | undefined)
     /**
-     * Words of a plan issue.
-     * @default 1200
-     */
-    plan?: (number | undefined)
-    /**
-     * Words of a block issue.
+     * Words of the **Goal** section of an issue.
      * @default 60
      */
-    block?: (number | undefined)
+    goal?: (number | undefined)
     /**
-     * Words of a task issue.
-     * @default 250
+     * Words of the **Context** section of an issue.
+     * @default 80
      */
-    task?: (number | undefined)
+    context?: (number | undefined)
     /**
-     * Words of an issue comment.
+     * Words of the **Done when** section of an issue.
+     * @default 60
+     */
+    doneWhen?: (number | undefined)
+    /**
+     * Words of a whole issue comment.
      * @default 150
      */
     comment?: (number | undefined)

@@ -32,9 +32,8 @@ export const github = defineCommand((command) => {
     const config = await loadConfig(cwd);
     const agents = await config.resolve(agentsSection);
     const { budgets } = agents;
-    const finding = measureGithubCommand(shellCommand, budgets);
 
-    reportBudgetFindings(finding === undefined ? [] : [finding], {
+    reportBudgetFindings(measureGithubCommand(shellCommand, budgets), {
       mode: budgets.mode,
       event: "PreToolUse",
     });

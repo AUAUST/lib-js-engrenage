@@ -26,9 +26,9 @@ describe("budgets", () => {
 
     expect(await loadBudgets(project.root)).toEqual({
       mode: "warn",
-      plan: 1200,
-      block: 60,
-      task: 250,
+      goal: 60,
+      context: 80,
+      doneWhen: 60,
       comment: 150,
       backlogEntry: 60,
       debtEntry: 60,
@@ -73,7 +73,7 @@ describe("budgets", () => {
     ).toEqual([]);
   });
 
-  test("measures the heredoc of a gh command against its issue kind", async () => {
+  test("measures the prose sections of a gh issue body", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
       "engrenage.config.ts": "export default {};\n",
@@ -81,32 +81,36 @@ describe("budgets", () => {
 
     const budgets = await loadBudgets(project.root);
 
-    const task = (body: string) => {
-      return `gh issue create --title "tools: x" --body-file - <<'EOF'\n${body}\nEOF`;
+    const task = (context: string) => {
+      return `gh issue create --title "tools: x" --body-file - <<'EOF'\n#1 · [Gates](#gates): x\n\n## Context\n\n${context}\n\n## Steps\n\n1. ${words(300)}\n\n## Tests\n\n- x\nEOF`;
     };
 
-    expect(measureGithubCommand(task(words(300)), budgets)).toMatchObject({
-      kind: "task",
-      words: 300,
-    });
+    expect(measureGithubCommand(task(words(40)), budgets)).toEqual([]);
 
-    expect(measureGithubCommand(task(words(100)), budgets)).toBeUndefined();
+    expect(measureGithubCommand(task(words(120)), budgets)).toEqual([
+      {
+        subject: "gh issue create, Context",
+        kind: "context",
+        words: 120,
+        budget: 80,
+      },
+    ]);
 
     expect(
       measureGithubCommand(
-        `gh issue create --title "Plan: x" --body-file - <<'EOF'\n${words(300)}\nEOF`,
+        task(`${words(70)} \`${words(30)}\`\n\n\`\`\`\n${words(30)}\n\`\`\``),
         budgets,
       ),
-    ).toBeUndefined();
+    ).toEqual([]);
 
     expect(
       measureGithubCommand(
         `gh issue comment 3 --body "${words(200)}"`,
         budgets,
       ),
-    ).toMatchObject({ kind: "comment" });
+    ).toMatchObject([{ kind: "comment", words: 200 }]);
 
-    expect(measureGithubCommand("git status", budgets)).toBeUndefined();
+    expect(measureGithubCommand("git status", budgets)).toEqual([]);
   });
 
   test("warns in warn mode and denies in deny mode", () => {
@@ -114,10 +118,10 @@ describe("budgets", () => {
 
     const findings = [
       {
-        subject: "gh issue create",
-        kind: "task",
+        subject: "gh issue create, Context",
+        kind: "context",
         words: 300,
-        budget: 250,
+        budget: 80,
       },
     ] as const;
 
