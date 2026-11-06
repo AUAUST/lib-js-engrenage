@@ -1,130 +1,444 @@
+import { parse, type ParseEntry as Token } from "shell-quote";
+
+import { isString } from "@auaust/toolkit/isString";
+
 import type { GithubBodySource } from "#tools/github/types/GithubBodySource";
 import type { GithubWrite } from "#tools/github/types/GithubWrite";
 
-const commandPattern = /\bgh\s+issue\s+(create|edit|comment)\b/;
+type Word =
+  string | { readonly op: string } | { readonly process: readonly Token[] };
 
-const heredocPattern =
-  /<<-?\s*(['"]?)(\w+)\1[^\n]*\n([\s\S]*?)\n[ \t]*\2[ \t]*(?:\n|$)/;
+type Command = readonly Word[];
 
-const titlePattern = /(?:--title|\s-t)[\s=]+(?:"([^"]*)"|'([^']*)'|(\S+))/;
+type Pipeline = readonly Command[];
 
-const repositoryPattern = /(?:--repo|\s-R)[\s=]+["']?([\w.-]+\/[\w.-]+)/;
+const actions = [
+  "create",
+  "edit",
+  "comment",
+] as const satisfies readonly GithubWrite["action"][];
 
-const numberPattern = /\bgh\s+issue\s+edit\s+(?:\S*\/issues\/|#)?(\d+)\b/;
+const valueFlags = new Set([
+  "--title",
+  "-t",
+  "--body",
+  "-b",
+  "--body-file",
+  "-F",
+  "--repo",
+  "-R",
+  "--label",
+  "-l",
+  "--add-label",
+  "--remove-label",
+  "--assignee",
+  "-a",
+  "--add-assignee",
+  "--remove-assignee",
+  "--milestone",
+  "-m",
+  "--project",
+  "-p",
+  "--add-project",
+  "--remove-project",
+  "--template",
+  "-T",
+]);
 
-const bodyFlagPattern =
-  /(?:^|\s)(?:--body|-b)(?:=|\s+)(?:"((?:[^"\\]|\\[\s\S])*)"|'([^']*)'|(\S+))/;
+const separators = new Set(["||", "&&", ";;", "&", ";", "(", ")"]);
 
-const bodyFileFlagPattern =
-  /(?:^|\s)(?:--body-file|-F)(?:=|\s+)(?:"([^"]*)"|'([^']*)'|(\S+))/;
+const pipes = new Set(["|", "|&"]);
 
-const redirectPattern = /(?:^|[^<])<\s*(?:"([^"]+)"|'([^']+)'|([^\s|;&<>]+))/;
+const heredocPattern = /(?<!<)<<-?[ \t]*(['"]?)(\w+)\1(?!<)/;
+
+const heredocReferencePattern = /\0heredoc:(\d+)\0/;
+
+const numberPattern = /^(?:\S*\/issues\/|#)?(\d+)$/;
+
+const repositoryPattern = /([\w.-]+\/[\w.-]+)$/;
+
+const expansionPattern = /\$[({\w]|\$$|`/;
 
 const draftPattern =
-  /(?:"([^"]+\.draft\.md)"|'([^']+\.draft\.md)'|([^\s|;&<>"']+\.draft\.md))(?=[\s|;&<>]|$)/;
+  /(?<![^\s"'()|;&<>])[^\s"'()|;&<>`$]+\.draft\.md(?![\w.-])/;
 
-const pipePattern = /\|\s*$/;
+function liftHeredocs(command: string) {
+  const heredocs: string[] = [];
 
-const expansionPattern = /\$[({\w]|`/;
+  let text = command;
+  let match = heredocPattern.exec(text);
 
-function pick(match: RegExpExecArray | null) {
-  return match?.[1] ?? match?.[2] ?? match?.[3];
-}
+  while (match !== null) {
+    const delimiter = match[2];
+    const operator = `<<< \0heredoc:${heredocs.length}\0`;
+    const opening = text.slice(match.index + match[0].length);
+    const lineEnd = opening.indexOf("\n");
+    const lines = lineEnd === -1 ? [] : opening.slice(lineEnd + 1).split("\n");
+    const end = lines.findIndex((line) => line.trim() === delimiter);
 
-function readFlagValue(match: RegExpExecArray): GithubBodySource {
-  if (match[2] !== undefined) {
-    return { kind: "text", text: match[2] };
+    heredocs.push((end === -1 ? lines : lines.slice(0, end)).join("\n"));
+
+    text = [
+      text.slice(0, match.index),
+      operator,
+      lineEnd === -1 ? opening : opening.slice(0, lineEnd + 1),
+      end === -1 ? "" : lines.slice(end + 1).join("\n"),
+    ].join("");
+
+    match = heredocPattern.exec(text);
   }
 
-  const value = match[1] ?? match[3] ?? "";
+  return { text, heredocs };
+}
+
+function readComment(token: Token | undefined): string | undefined {
+  return token === undefined || isString(token) || !("comment" in token)
+    ? undefined
+    : token.comment;
+}
+
+function tokenize(text: string): Token[] {
+  const tokens: Token[] = [];
+
+  let rest: string | undefined = text
+    .replaceAll("\\\n", "")
+    .replaceAll("\n", "\n;");
+
+  while (rest !== undefined) {
+    const parsed = parse(rest, (key) => `$${key}`);
+    const comment = readComment(parsed.at(-1));
+    const resume = comment?.indexOf("\n") ?? -1;
+
+    if (comment === undefined || resume === -1) {
+      tokens.push(...parsed);
+      rest = undefined;
+    } else {
+      tokens.push(...parsed.slice(0, -1), { op: ";" });
+      rest = comment.slice(resume + 1);
+    }
+  }
+
+  return tokens.map((token) => {
+    return isString(token) ? token.replaceAll("\n;", "\n") : token;
+  });
+}
+
+function readOperator(token: Token | Word | undefined): string | undefined {
+  return token === undefined || isString(token) || !("op" in token)
+    ? undefined
+    : token.op;
+}
+
+function readProcess(tokens: readonly Token[], start: number) {
+  let depth = 1;
+  let index = start;
+
+  while (index < tokens.length && depth > 0) {
+    const operator = readOperator(tokens[index]);
+
+    if (operator === "<(" || operator === "(") {
+      depth += 1;
+    }
+
+    if (operator === ")") {
+      depth -= 1;
+    }
+
+    index += 1;
+  }
+
+  return {
+    process: tokens.slice(start, depth === 0 ? index - 1 : index),
+    next: index,
+  };
+}
+
+function splitPipelines(tokens: readonly Token[]): Pipeline[] {
+  const pipelines: Pipeline[] = [];
+
+  let pipeline: Command[] = [];
+  let command: Word[] = [];
+  let piped = false;
+  let index = 0;
+
+  function closeCommand() {
+    if (!(command.length > 0)) {
+      return;
+    }
+
+    pipeline.push(command);
+    command = [];
+  }
+
+  function closePipeline() {
+    if (!(pipeline.length > 0)) {
+      return;
+    }
+
+    pipelines.push(pipeline);
+    pipeline = [];
+  }
+
+  while (index < tokens.length) {
+    const token = tokens[index];
+
+    index += 1;
+
+    if (isString(token)) {
+      command.push(token);
+      piped = false;
+      continue;
+    }
+
+    if (token === undefined || "comment" in token) {
+      continue;
+    }
+
+    if ("pattern" in token) {
+      command.push(token.pattern);
+      continue;
+    }
+
+    if (token.op === "<(") {
+      const { process, next } = readProcess(tokens, index);
+
+      command.push({ process });
+      index = next;
+      continue;
+    }
+
+    if (pipes.has(token.op)) {
+      closeCommand();
+      piped = true;
+      continue;
+    }
+
+    if (separators.has(token.op)) {
+      if (command.length > 0 || !piped) {
+        closeCommand();
+        closePipeline();
+        piped = false;
+      }
+
+      continue;
+    }
+
+    command.push({ op: token.op });
+  }
+
+  closeCommand();
+  closePipeline();
+
+  return pipelines;
+}
+
+function findDraft(words: readonly (Token | Word)[]): string | undefined {
+  for (const word of words) {
+    const draft = isString(word)
+      ? draftPattern.exec(word)?.[0]
+      : "process" in word
+        ? findDraft(word.process)
+        : undefined;
+
+    if (draft !== undefined) {
+      return draft;
+    }
+  }
+}
+
+function readDraft(words: readonly (Token | Word)[]): GithubBodySource {
+  const path = findDraft(words);
+
+  return path === undefined ? { kind: "unreadable" } : { kind: "draft", path };
+}
+
+function readFlag(words: Command, names: readonly string[]): Word | undefined {
+  for (const [index, word] of words.entries()) {
+    if (!isString(word)) {
+      continue;
+    }
+
+    if (names.includes(word)) {
+      return words[index + 1];
+    }
+
+    const name = names.find((candidate) => {
+      return candidate.startsWith("--") && word.startsWith(`${candidate}=`);
+    });
+
+    if (name !== undefined) {
+      return word.slice(name.length + 1);
+    }
+  }
+}
+
+function readString(word: Word | undefined): string | undefined {
+  return isString(word) ? word : undefined;
+}
+
+function readText(
+  value: string,
+  heredocs: readonly string[],
+): GithubBodySource {
+  const heredoc = heredocReferencePattern.exec(value)?.[1];
+
+  if (heredoc !== undefined) {
+    return { kind: "text", text: heredocs[Number(heredoc)] ?? "" };
+  }
 
   return expansionPattern.test(value)
     ? { kind: "unreadable" }
-    : {
-        kind: "text",
-        text:
-          match[1] === undefined
-            ? value
-            : value.replaceAll(/\\([\\"$`])/g, "$1"),
-      };
+    : { kind: "text", text: value };
 }
 
-function readStandardInput(rest: string, start: number): GithubBodySource {
-  const redirected = pick(redirectPattern.exec(rest.slice(start)));
+function readStandardInput(
+  pipeline: Pipeline,
+  position: number,
+  heredocs: readonly string[],
+): GithubBodySource {
+  const command = pipeline[position] ?? [];
 
-  if (redirected !== undefined) {
-    return expansionPattern.test(redirected)
-      ? { kind: "unreadable" }
-      : { kind: "file", path: redirected };
+  for (const [index, word] of command.entries()) {
+    const operator = readOperator(word);
+    const target = command[index + 1];
+
+    if (operator === "<<<") {
+      if (!isString(target)) {
+        return { kind: "unreadable" };
+      }
+
+      const text = readText(target, heredocs);
+
+      return text.kind === "unreadable" ? readDraft([target]) : text;
+    }
+
+    if (operator === "<") {
+      if (target === undefined) {
+        return { kind: "unreadable" };
+      }
+
+      if (!isString(target)) {
+        return readDraft([target]);
+      }
+
+      return expansionPattern.test(target)
+        ? { kind: "unreadable" }
+        : { kind: "file", path: target };
+    }
   }
 
-  const source = rest.slice(0, start);
+  const source = pipeline[position - 1];
 
-  const draft = pipePattern.test(source)
-    ? pick(draftPattern.exec(source))
-    : undefined;
+  if (source?.length === 3 && source[0] === "cat") {
+    const input = readStandardInput(pipeline, position - 1, heredocs);
 
-  // @debt a body piped from a draft is assumed to be the draft without its frontmatter, whatever the piping command does.
-  return draft === undefined || expansionPattern.test(draft)
-    ? { kind: "unreadable" }
-    : { kind: "draft", path: draft };
+    if (input.kind === "text") {
+      return input;
+    }
+  }
+
+  return readDraft(pipeline.slice(0, position).flat());
 }
 
 function readBody(
-  rest: string,
-  heredoc: string | undefined,
+  pipeline: Pipeline,
+  position: number,
+  heredocs: readonly string[],
 ): GithubBodySource | undefined {
-  const flag = bodyFlagPattern.exec(rest);
+  const command = pipeline[position] ?? [];
+  const body = readFlag(command, ["--body", "-b"]);
 
-  if (flag !== null) {
-    const value = pick(flag) ?? "";
-
-    return heredoc !== undefined && expansionPattern.test(value)
-      ? { kind: "text", text: heredoc }
-      : readFlagValue(flag);
+  if (body !== undefined) {
+    return isString(body) ? readText(body, heredocs) : { kind: "unreadable" };
   }
 
-  const file = bodyFileFlagPattern.exec(rest);
+  const file = readFlag(command, ["--body-file", "-F"]);
 
-  if (file === null) {
-    return heredoc === undefined ? undefined : { kind: "text", text: heredoc };
+  if (file === undefined) {
+    const input = readStandardInput(pipeline, position, heredocs);
+
+    return input.kind === "text" ? input : undefined;
   }
 
-  const path = pick(file) ?? "";
-
-  if (path !== "-") {
-    return expansionPattern.test(path)
-      ? { kind: "unreadable" }
-      : { kind: "file", path };
+  if (!isString(file)) {
+    return readDraft([file]);
   }
 
-  if (heredoc !== undefined) {
-    return { kind: "text", text: heredoc };
+  if (file === "-") {
+    return readStandardInput(pipeline, position, heredocs);
   }
 
-  return readStandardInput(rest, commandPattern.exec(rest)?.index ?? 0);
+  return expansionPattern.test(file)
+    ? { kind: "unreadable" }
+    : { kind: "file", path: file };
 }
 
-export function parseGithubCommand(command: string): GithubWrite | undefined {
-  const action = commandPattern.exec(command)?.[1] as
-    GithubWrite["action"] | undefined;
+function readNumber(words: Command): number | undefined {
+  for (const [index, word] of words.entries()) {
+    const previous = words[index - 1];
 
-  if (action === undefined) {
+    if (
+      !isString(word) ||
+      word.startsWith("-") ||
+      (isString(previous) && valueFlags.has(previous))
+    ) {
+      continue;
+    }
+
+    const number = numberPattern.exec(word)?.[1];
+
+    return number === undefined ? undefined : Number(number);
+  }
+}
+
+function readWrite(
+  pipeline: Pipeline,
+  position: number,
+  heredocs: readonly string[],
+): GithubWrite | undefined {
+  const command = pipeline[position] ?? [];
+
+  const start = command.findIndex((word, index) => {
+    return word === "gh" && command[index + 1] === "issue";
+  });
+
+  const action = actions.find((candidate) => {
+    return candidate === command[start + 2];
+  });
+
+  if (start === -1 || action === undefined) {
     return;
   }
 
-  const heredoc = heredocPattern.exec(command);
-
-  const rest =
-    heredoc === null ? command : command.replaceAll(heredoc[0], "\n");
-
-  const number = numberPattern.exec(command)?.[1];
+  const words = command.slice(start + 3);
+  const repository = readString(readFlag(words, ["--repo", "-R"]));
 
   return {
     action,
-    number: number === undefined ? undefined : Number(number),
-    repository: repositoryPattern.exec(rest)?.[1],
-    title: pick(titlePattern.exec(rest)),
-    body: readBody(rest, heredoc?.[3]),
+    number: action === "create" ? undefined : readNumber(words),
+    repository:
+      repository === undefined
+        ? undefined
+        : repositoryPattern.exec(repository)?.[1],
+    title: readString(readFlag(words, ["--title", "-t"])),
+    body: readBody(pipeline, position, heredocs),
   };
+}
+
+// @debt the hook parses shell, with `shell-quote` and heredocs lifted by hand, only because agents publish drafts through `gh`; a publishing command would remove it (#217).
+export function parseGithubCommand(command: string): readonly GithubWrite[] {
+  const { text, heredocs } = liftHeredocs(command);
+  const writes: GithubWrite[] = [];
+
+  for (const pipeline of splitPipelines(tokenize(text))) {
+    for (const position of pipeline.keys()) {
+      const write = readWrite(pipeline, position, heredocs);
+
+      if (write !== undefined) {
+        writes.push(write);
+      }
+    }
+  }
+
+  return writes;
 }

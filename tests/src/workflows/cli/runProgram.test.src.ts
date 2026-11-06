@@ -61,9 +61,11 @@ describe("runProgram", () => {
 
   test("runs a succeeding command without loading the config modules", async () => {
     vi.resetModules();
+
     vi.doMock("#project/config/index", () => {
       throw new Error("config modules loaded");
     });
+
     vi.doMock("#workflows/registry/index", () => {
       throw new Error("config modules loaded");
     });

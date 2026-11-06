@@ -225,73 +225,137 @@ describe("checkIssue", () => {
 
 describe("parseGithubCommand", () => {
   const body = "## Context\n\nhello world";
+  const draft = ".ai/issues/5.draft.md";
+
+  function readBody(command: string) {
+    const writes = parseGithubCommand(command);
+
+    expect(writes).toHaveLength(1);
+
+    return writes[0]?.body;
+  }
 
   test.each([
     `gh issue create --title t --body-file - <<'EOF'\n${body}\nEOF`,
     `gh issue create --title t --body "$(cat <<'EOF'\n${body}\nEOF\n)"`,
+    `cat <<'EOF' | gh issue create --title t --body-file -\n${body}\nEOF`,
     `gh issue create --title t --body '${body}'`,
     `gh issue create --title t --body "${body}"`,
+    `gh issue create --title t --body="${body}"`,
   ])("reads the body of %s", (command) => {
-    expect(parseGithubCommand(command)?.body).toEqual({
-      kind: "text",
-      text: body,
-    });
+    expect(readBody(command)).toEqual({ kind: "text", text: body });
   });
 
   test("reads a body file and reports an unreadable body", () => {
-    expect(
-      parseGithubCommand("gh issue edit 5 --body-file ./b.md")?.body,
-    ).toEqual({ kind: "file", path: "./b.md" });
+    expect(readBody("gh issue edit 5 --body-file ./b.md")).toEqual({
+      kind: "file",
+      path: "./b.md",
+    });
+
+    expect(readBody("gh issue edit 5 --body $(cat b.md)")).toEqual({
+      kind: "unreadable",
+    });
+
+    expect(readBody("gh issue edit 5 --body-file - < b.md")).toEqual({
+      kind: "file",
+      path: "b.md",
+    });
+
+    expect(readBody("cat b.md | gh issue edit 5 --body-file -")).toEqual({
+      kind: "unreadable",
+    });
 
     expect(
-      parseGithubCommand("gh issue edit 5 --body $(cat b.md)")?.body,
+      readBody(
+        "for n in 4 5; do sed 1d .ai/issues/$n.draft.md | gh issue edit $n --body-file -; done",
+      ),
     ).toEqual({ kind: "unreadable" });
-
-    expect(
-      parseGithubCommand("gh issue edit 5 --body-file - < b.md")?.body,
-    ).toEqual({ kind: "file", path: "b.md" });
   });
 
   test.each([
-    "sed '1,/^---$/d' .ai/issues/5.draft.md | gh issue edit 5 --body-file -",
-    "tail -n +4 < .ai/issues/5.draft.md | gh issue edit 5 --body-file -",
+    `sed '1,/^---$/d' ${draft} | gh issue edit 5 --body-file -`,
+    `tail -n +4 < ${draft} | gh issue edit 5 --body-file -`,
+    `(sed '1,/^---$/d' ${draft} | gh issue edit 5 --body-file -)`,
+    `sed '1,/^---$/d' ${draft} \\\n  | gh issue edit 5 \\\n    --body-file -`,
+    `sed '1,/^---$/d' ${draft} |\n  gh issue edit 5 --body-file -`,
+    `gh issue edit 5 --body-file <(sed '1,/^---$/d' ${draft})`,
+    `gh issue edit 5 --body-file - < <(sed '1,/^---$/d' ${draft})`,
+    `gh issue edit 5 --body-file - <<<"$(sed '1,/^---$/d' ${draft})"`,
   ])("reads a body piped from a draft in %s", (command) => {
-    expect(parseGithubCommand(command)?.body).toEqual({
-      kind: "draft",
-      path: ".ai/issues/5.draft.md",
-    });
+    expect(readBody(command)).toEqual({ kind: "draft", path: draft });
   });
 
-  test("reports a body piped from another file as unreadable", () => {
+  test("reads every write of a command", () => {
+    const writes = parseGithubCommand(
+      [
+        "# publish",
+        `sed '1,/^---$/d' .ai/issues/4.draft.md | gh issue edit 4 --body-file -`,
+        `gh issue edit 5 --repo o/r --title "a b" --body-file - <<'EOF'\n${body}\nEOF`,
+        `true && gh issue comment 6 --body 'x'; gh issue list`,
+      ].join("\n"),
+    );
+
+    expect(writes).toEqual([
+      expect.objectContaining({
+        action: "edit",
+        number: 4,
+        body: { kind: "draft", path: ".ai/issues/4.draft.md" },
+      }),
+      expect.objectContaining({
+        action: "edit",
+        number: 5,
+        repository: "o/r",
+        title: "a b",
+        body: { kind: "text", text: body },
+      }),
+      expect.objectContaining({
+        action: "comment",
+        number: 6,
+        body: { kind: "text", text: "x" },
+      }),
+    ]);
+  });
+
+  test("never takes text inside a heredoc for a write", () => {
     expect(
-      parseGithubCommand("cat b.md | gh issue edit 5 --body-file -")?.body,
-    ).toEqual({ kind: "unreadable" });
+      parseGithubCommand(
+        `gh issue create --title t --body-file - <<'EOF'\nRun gh issue edit 5 --body x.\nEOF`,
+      ),
+    ).toHaveLength(1);
   });
 });
 
 describe("checkGithubWrite", () => {
   const draft = ".ai/issues/new-x.draft.md";
+  const command = `sed '1,/^---$/d' ${draft} | gh issue create --title x --body-file -`;
 
   test("checks the body of a piped draft without its frontmatter", async () => {
     const project = createTemporaryProject({
       [draft]: `---\ntitle: x\ntype: Problem\n---\n\n${task}\n## Scope\n\nx\n`,
     });
 
-    await expect(
-      checkGithubWrite(
-        `sed '1,/^---$/d' ${draft} | gh issue create --title x --body-file -`,
-        project.root,
-      ),
-    ).resolves.toContain("Scope");
+    await expect(checkGithubWrite(command, project.root)).resolves.toContain(
+      "Scope",
+    );
 
     project.write(draft, `---\ntitle: x\n---\n\n${task}`);
 
     await expect(
+      checkGithubWrite(command, project.root),
+    ).resolves.toBeUndefined();
+  });
+
+  test("checks every write of a command", async () => {
+    const project = createTemporaryProject({
+      [draft]: `---\ntitle: x\n---\n\n${task}\n## Scope\n\nx\n`,
+    });
+
+    await expect(
       checkGithubWrite(
-        `sed '1,/^---$/d' ${draft} | gh issue create --title x --body-file -`,
+        `gh issue create --title y --body 'free'\n${command}`,
         project.root,
       ),
-    ).resolves.toBeUndefined();
+    ).resolves.toContain("Scope");
   });
 
   test("rejects a draft passed whole, frontmatter included", async () => {
@@ -305,10 +369,7 @@ describe("checkGithubWrite", () => {
 
   test("names a missing draft", async () => {
     await expect(
-      checkGithubWrite(
-        `sed '1,/^---$/d' ${draft} | gh issue create --title x --body-file -`,
-        createTemporaryProject().root,
-      ),
+      checkGithubWrite(command, createTemporaryProject().root),
     ).resolves.toContain(`\`${draft}\` does not exist`);
   });
 });

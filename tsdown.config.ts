@@ -9,6 +9,7 @@ export default defineTsdownConfig({
     "commander",
     "@commander-js/extra-typings",
     "jsonc-parser",
+    "shell-quote",
     "@clack/prompts",
     "@clack/core",
     "fast-string-truncated-width",

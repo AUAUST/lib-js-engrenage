@@ -4,19 +4,14 @@ import { resolveGithubToken } from "#tools/github/operations/resolveGithubToken"
 import { resolveRepository } from "#tools/github/operations/resolveRepository";
 import { checkIssueBody } from "#tools/github/utils/checkIssueBody";
 import { parseGithubCommand } from "#tools/github/utils/parseGithubCommand";
+import type { GithubWrite } from "#tools/github/types/GithubWrite";
 import type { Directory } from "#types/Directory";
 
-export async function checkGithubWrite(
-  command: string,
+async function checkWrite(
+  write: GithubWrite,
   cwd: Directory,
 ): Promise<string | undefined> {
-  const write = parseGithubCommand(command);
-
-  if (
-    write === undefined ||
-    write.action === "comment" ||
-    write.body === undefined
-  ) {
+  if (write.action === "comment" || write.body === undefined) {
     return;
   }
 
@@ -53,4 +48,23 @@ export async function checkGithubWrite(
   return findings.length === 0
     ? undefined
     : `the issue body breaks the issue contract:\n${findings.map(({ message }) => `- ${message}`).join("\n")}`;
+}
+
+export async function checkGithubWrite(
+  command: string,
+  cwd: Directory,
+): Promise<string | undefined> {
+  const writes = parseGithubCommand(command);
+
+  const reasons = await Promise.all(
+    writes.map(async (write) => {
+      const reason = await checkWrite(write, cwd);
+
+      return reason === undefined
+        ? undefined
+        : `gh issue ${write.action}${write.number === undefined ? "" : ` ${write.number}`}: ${reason}`;
+    }),
+  );
+
+  return reasons.find((reason) => reason !== undefined);
 }
