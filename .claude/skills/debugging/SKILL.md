@@ -54,7 +54,7 @@ Never start a large refactor, even partly: an issue costs less than a half-appli
 ## Questions and answers
 
 - Ask under the project's decision protocol, batched, with the diagnosis so far.
-- Weigh each answer before acting on it: check it against the code and your diagnosis, and report its consequences (sites affected, behavior changed, risks, conflicts with earlier answers or decisions). Raise an answer that contradicts the evidence instead of applying it silently; apply it once the user confirms.
+- Weigh each answer against your diagnosis as well as under the protocol, and report its consequences: sites affected, behavior changed, risks, conflicts with earlier answers or decisions.
 
 ## Writing the issue
 

@@ -16,7 +16,7 @@ Turn a goal into a tree of GitHub issues that workers walk in order and implemen
 
 ## Role
 
-You are the planner: you build and maintain the issue tree and never implement it. Issues are the working draft: create and edit them as the conversation settles things, without asking first.
+You are the planner: you build and maintain the issue tree and never implement it. Drafts of the issues are the working draft: create and edit them as the conversation settles things, without asking first.
 
 | Request                                                                                       | Handling                                                                                                                                                     |
 | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -26,10 +26,36 @@ You are the planner: you build and maintain the issue tree and never implement i
 
 Edit nothing but issues and instruction or context files, apart from code the user explicitly asked you to implement.
 
+## Drafts
+
+Outside consultant mode, create and edit issues as local drafts in `.ai/issues/` and publish them together in one flush. A draft edit costs a diff instead of a full body, survives a stopped session and shows the user each change. Everything this skill says about creating and editing issues applies to the drafts until the flush.
+
+| File                  | Holds                                                                                                    |
+| --------------------- | -------------------------------------------------------------------------------------------------------- |
+| `<n>.md`              | The body of issue `<n>` as fetched, never edited                                                         |
+| `<n>.draft.md`        | Its working version, with frontmatter `title`                                                            |
+| `new-<slug>.draft.md` | An issue to create, with frontmatter `title`, `type`, `parent`, `after` (the sibling it follows), fields |
+
+- Start by reading `.ai/issues/`, and resume from the drafts it holds.
+- Claim an issue on its first edit: fetch its body into `<n>.md`, copy it to `<n>.draft.md` and add `Drafting` to its Blockers.
+- When Blockers already has `Drafting` and `.ai/issues/` holds no draft of the issue, another maintainer is drafting it: report it, record `claim: existing` in the draft's frontmatter and keep planning.
+- Reference an issue still to create as `#new-<slug>`.
+- End each round with the drafts it changed and the changes waiting on each open question.
+- Flush when no draft holds a change waiting on an open question, or when the user asks; publish every draft in the same flush.
+
+To flush:
+
+1. Fetch each claimed issue again. When its body differs from `<n>.md`, merge the remote change into the draft, or ask when the two conflict.
+2. Create the new issues in tree order, replacing each `#new-<slug>` in every draft with its number.
+3. Publish each `<n>.draft.md` body without its frontmatter, with its title.
+4. Remove `Drafting` from each issue you claimed, never from one marked `claim: existing`.
+5. Report each issue's change from `git diff --no-index <n>.md <n>.draft.md`, then delete the files.
+
 ## Consultant mode
 
 The walker runs you as its `planner` subagent: a fallback that keeps code and plan reading out of the walker's context, one per walk, resumed with `SendMessage` so you keep your context.
 
+- Edit issues on GitHub directly, without drafts: the walker needs each update at once.
 - Judge every worker stop and deviation against the plan and its issues, never against the code the worker wrote.
 - Use the code only to see what exists; answer from what the plan and its issues settle.
 - Judge each deviation before updating any issue:
@@ -46,10 +72,13 @@ The walker runs you as its `planner` subagent: a fallback that keeps code and pl
 
 ## Decisions and questions
 
-The project's decision protocol applies with more latitude: a planning mistake costs an issue edit, not a revert.
+The project's decision protocol applies with more latitude to your own questions, since an issue edit undoes a wrong guess before any worker builds on it. The user's requests and answers get none: trace each one's reach through the plan and the code before writing it. Only you, holding the plan's overview, skip the pause on a costly reach when the request shows its author weighed it by naming the rework or the decision it reverses.
 
+- Count as costly to reverse any change to the plan's goal or decisions, to a contract several tasks share, or to the order of issues already written.
+- When pausing on a request's reach, name the issues and decisions it rewrites, and compare it with a change confined to the concern the request raises.
+- Record each costly reach the user accepts, by confirming it or weighing it in the request, in the plan's **Decisions** with the alternative it overrode.
 - Investigate every question during grounding and work out its candidate answers before handling it below.
-- Create and update issues without waiting for answers.
+- Write what no open question affects without waiting for answers.
 
 | Question, after investigation                                                               | Handling                                                                                                                                     |
 | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -257,7 +286,7 @@ While an issue's design is open, write what is settled and put the rest under **
 
 - Create issues with `gh issue create` and edit them with `gh issue edit <n>`, passing bodies on standard input (`--body-file -`). Read them with `gh issue view <n> --repo <owner>/<repo> --json title,body,state,labels,comments`; plain `--comments` fails on some repositories.
 - Set the type through GraphQL once the issue exists: `gh api graphql -f query='mutation{updateIssueIssueType(input:{issueId:"<issue node id>",issueTypeId:"<type node id>"}){issue{number}}}'`, with the type ids from `organization(login:"<org>"){issueTypes(first:20){nodes{id name}}}`. The REST `PATCH … -f type=` is ignored silently.
-- Set a field with `gh api -X POST repos/{owner}/{repo}/issues/<n>/issue-field-values --input -` and `{"issue_field_values":[{"field_id":<id>,"value":["Open questions"]}]}` on standard input, values being option names, never option ids; the field id comes from `gh api orgs/{org}/issue-fields`. Clear it with `gh api -X DELETE repos/{owner}/{repo}/issues/<n>/issue-field-values/<id>`.
+- Set a field with `gh api -X POST repos/{owner}/{repo}/issues/<n>/issue-field-values --input -` and `{"issue_field_values":[{"field_id":<id>,"value":["Open questions"]}]}` on standard input, values being option names, never option ids; the field id comes from `gh api orgs/{org}/issue-fields`. Post every value the field must keep, read from `gh api repos/{owner}/{repo}/issues/<n>/issue-field-values`. Clear it with `gh api -X DELETE repos/{owner}/{repo}/issues/<n>/issue-field-values/<id>`; to remove one value, clear the field and post the values left, if any.
 - Sub-issues take the child's database `id`, not its number, and keep insertion order, so attach them in order: `gh api repos/{owner}/{repo}/issues/<parent>/sub_issues -F sub_issue_id=$(gh api repos/{owner}/{repo}/issues/<child> --jq .id)`.
 - Set a prerequisite outside tree order with `gh api -X POST repos/{owner}/{repo}/issues/<n>/dependencies/blocked_by -F issue_id=<database id>`.
 - List a parent's children with `gh api repos/{owner}/{repo}/issues/<parent>/sub_issues --jq '.[] | "\(.number) \(.state) \(.title)"'`.

@@ -43,6 +43,7 @@ export const openQuestionsOption = "Open questions";
 export const debuggerBlockingOptions = freeze([
   "Awaiting others",
   "Delayed",
+  "Drafting",
 ] as const);
 
 export const planningSection = "Planning";

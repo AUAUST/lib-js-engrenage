@@ -182,6 +182,22 @@ describe("checkIssue", () => {
 
     expect(rules).toContain("header-chain");
   });
+
+  test("a problem being drafted is not ready for a debugger", async () => {
+    mockGithub({
+      11: {
+        body: "## Context\n\nx\n",
+        type: "Problem",
+        blockers: ["Drafting"],
+      },
+    });
+
+    const rules = (await checkIssue(access, 11, "debugger")).map(({ rule }) => {
+      return rule;
+    });
+
+    expect(rules).toEqual(["blockers"]);
+  });
 });
 
 describe("parseGithubCommand", () => {
