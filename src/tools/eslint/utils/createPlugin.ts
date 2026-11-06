@@ -2,6 +2,7 @@ import { entries, values } from "@auaust/toolkit/object";
 import { value } from "@auaust/toolkit/value";
 
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
+import { resolveDelegate } from "#tools/eslint/utils/resolveDelegate";
 import type { Convention } from "#tools/eslint/types/Convention";
 import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { Plugin } from "#tools/eslint/types/Plugin";
@@ -24,7 +25,7 @@ export function createPlugin(
   for (const conventions of values(categories)) {
     for (const [name, { delegates, rule }] of entries(conventions)) {
       for (const delegate of value(delegates, config)) {
-        register(delegate.name, delegate.rule);
+        register(delegate.name, resolveDelegate(delegate));
       }
 
       if (rule !== undefined) {
