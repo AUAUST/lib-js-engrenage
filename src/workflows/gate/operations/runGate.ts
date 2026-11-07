@@ -116,7 +116,7 @@ async function readStamps(file: string): Promise<readonly string[]> {
   return content?.split("\n").filter((line) => line !== "") ?? [];
 }
 
-// @debt ESLint runs only on changed files, so a type change that breaks a dependent's type-aware rule passes until CI's full `lint --no-cache`
+// @debt ESLint runs only on changed files, so a type change that breaks a dependent's type-aware rule passes until CI's full `lint`
 export async function runGate(
   config: LoadedConfig,
   {

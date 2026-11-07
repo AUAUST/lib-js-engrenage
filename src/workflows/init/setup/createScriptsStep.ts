@@ -96,7 +96,7 @@ async function collectScripts({
     "ci:check": chain([
       "engrenage sync --check",
       typecheck,
-      lint && `${lint} --no-cache`,
+      lint,
     ]),
     "ci:publish": publishes && "changeset publish",
     "ci:test": test,

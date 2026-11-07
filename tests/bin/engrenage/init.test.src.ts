@@ -194,7 +194,7 @@ describe("engrenage init", () => {
       scripts: {
         "ci": "pnpm run ci:check && pnpm run ci:test",
         "ci:check":
-          "engrenage sync --check && engrenage typecheck && engrenage eslint --no-cache",
+          "engrenage sync --check && engrenage typecheck && engrenage eslint",
         "test": "engrenage vitest && engrenage typecheck",
         "typecheck": "engrenage typecheck",
         "coverage": "engrenage vitest:coverage",

@@ -36,24 +36,11 @@ describe("engrenage eslint", () => {
     vi.restoreAllMocks();
   });
 
-  test("caches results in node_modules", async () => {
+  test("runs without a cache", async () => {
     const project = createProject();
 
     await runCommand(eslint.eslint, "src");
 
-    expect(readRecordedArgs(project)).toEqual([
-      "src",
-      "--cache",
-      "--cache-location",
-      project.resolve("node_modules/.cache/eslint"),
-    ]);
-  });
-
-  test("runs without the cache when --no-cache is passed", async () => {
-    const project = createProject();
-
-    await runCommand(eslint["eslint:fix"], "--no-cache");
-
-    expect(readRecordedArgs(project)).toEqual(["--no-cache", "--fix"]);
+    expect(readRecordedArgs(project)).toEqual(["src"]);
   });
 });

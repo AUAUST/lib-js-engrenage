@@ -3,7 +3,7 @@
 
 export interface CacheInput {
   /**
-   * Directory, inside the project, where tools keep their caches (TypeScript build info, ESLint), one folder per tool.
+   * Directory, inside the project, where tools keep their caches (TypeScript build info, jscpd), one folder per tool.
    * @default `node_modules/.cache`
    */
   dir?: (string | undefined)

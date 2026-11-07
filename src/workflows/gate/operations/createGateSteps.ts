@@ -89,7 +89,6 @@ export async function createGateSteps(config: LoadedConfig): Promise<{
       run(files) {
         return executeBinary(root, packages.eslint, [
           "--fix",
-          "--no-cache",
           "--no-warn-ignored",
           "--",
           ...files,
