@@ -5,7 +5,6 @@ import { describe, expect, test, vi } from "vitest";
 import {
   binSection,
   filesSection,
-  loadConfig,
   scriptsSection,
   sourceSection,
   testsSection,
@@ -13,6 +12,7 @@ import {
   tsconfigPathSection,
   typescriptSection,
 } from "@auaust/engrenage";
+import { loadConfig } from "@auaust/engrenage/config";
 import { testsetup } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

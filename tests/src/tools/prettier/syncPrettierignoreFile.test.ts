@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
+import { loadConfig } from "@auaust/engrenage/config";
 import { syncPrettierignoreFile } from "@auaust/engrenage/prettier";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

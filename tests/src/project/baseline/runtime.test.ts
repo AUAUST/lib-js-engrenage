@@ -2,13 +2,13 @@ import { describe, expect, test } from "vitest";
 
 import {
   binSection,
-  loadConfig,
   runtimeSection,
   scriptsSection,
   sourceSection,
   testsSection,
   toolingSection,
 } from "@auaust/engrenage";
+import { loadConfig } from "@auaust/engrenage/config";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 

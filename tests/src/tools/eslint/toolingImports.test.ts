@@ -1,7 +1,7 @@
 import { ESLint } from "eslint";
 import { expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
+import { loadConfig } from "@auaust/engrenage/config";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

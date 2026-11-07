@@ -3,6 +3,7 @@ import { findImportCycles } from "#project/structure/operations/findImportCycles
 import { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 import { renderImportCycles } from "#project/structure/utils/renderImportCycles";
 import { renderStructure } from "#project/structure/utils/renderStructure";
+import { typescriptSection } from "#project/tsconfig/index";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 
@@ -23,10 +24,13 @@ export const structure = defineCommand((command) => {
         console.info(line);
       }
 
+      const { verbatimModuleSyntax } = await config.resolve(typescriptSection);
+
       const cycles = await findImportCycles({
         root: config.context.root,
         structure: await config.resolve(structureSection),
         aliases: await config.resolve(aliasesSection),
+        verbatimModuleSyntax,
       });
 
       for (const line of renderImportCycles(cycles)) {

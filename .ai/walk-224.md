@@ -4,18 +4,34 @@ Decisions and deviations taken while the user was away, for the cleanup phase. O
 
 ## Commits
 
-| Commit  | Closes                    |
-| ------- | ------------------------- |
-| 846bb3d | #289                      |
-| bb1d1f5 | #290, #288                |
-| bf739bd | #291                      |
-| a721d0a | #292, #270                |
-| 74f43f5 | #243, #244, #245          |
-| 43ef15b | #246                      |
-| bab67fc | #241                      |
-| 034d6de | #247                      |
-| 45b777a | #248                      |
-| 05d2681 | Towards #249 (incomplete) |
+| Commit  | Closes           |
+| ------- | ---------------- |
+| 846bb3d | #289             |
+| bb1d1f5 | #290, #288       |
+| bf739bd | #291             |
+| a721d0a | #292, #270       |
+| 74f43f5 | #243, #244, #245 |
+| 43ef15b | #246             |
+| bab67fc | #241             |
+| 034d6de | #247             |
+| 45b777a | #248             |
+| 05d2681 | Towards #249     |
+| ecaeb05 | #249             |
+| a1cd63d | #250             |
+| f7c394b | #251             |
+| b6eef34 | #294             |
+| 1501df6 | #271             |
+| 68a9365 | #295, #293, #225 |
+| 8c1166a | #205             |
+| 5f10f53 | #202             |
+| 2da2965 | #203             |
+| 7d8d04a | #206             |
+| c4079b4 | #204, #200       |
+| 03a26e8 | #201, #199       |
+| 99f1833 | #297             |
+| db1632f | #298             |
+| 89af216 | #299, #296       |
+| (next)  | #300, #226       |
 
 ## Log
 
@@ -138,6 +154,11 @@ Decisions and deviations taken while the user was away, for the cleanup phase. O
 | #298             | worker          | `indexDeclarations` `@debt` removed                                                                                                                                                                                                      | Only `export default <expression>` in `src` is in an entry, now exempt                                                                                                                              |
 | #299             | debugger        | Always-on plugin `engrenage:bin-declarations` deletes bin `.d.mts` in `generateBundle`                                                                                                                                                   | No tsdown/rolldown-plugin-dts option per entry (issue's fallback)                                                                                                                                   |
 | #299             | walker          | Added patch changeset and `@debt` (declarations generated, then deleted)                                                                                                                                                                 | Consumer-visible; wasted work                                                                                                                                                                       |
+| #300             | worker          | `internals: true` on `foundation/blocks`, `filesystem`, `options` → `./blocks/internals` etc.; loaders only from `./config` (re-exported through `workflows/config/index`)                                                               | Entries may re-export only their own domain's index                                                                                                                                                 |
+| #300             | worker          | Step 3 a no-op: root entry reached no optional peer                                                                                                                                                                                      | Verified by a dist test blocking every `peerDependenciesMeta` package                                                                                                                               |
+| #300             | worker          | `findImportCycles` uses `transpileModule` with the project's `verbatimModuleSyntax`; `@debt`: without it, value-style re-export of a type-only module counts as runtime edge                                                             | Replaces hand-written type-only detection                                                                                                                                                           |
+| #226             | walker          | Closed with #300's commit; Done when checked                                                                                                                                                                                             | Plan step has no own Steps                                                                                                                                                                          |
+| walk             | walker          | Paused after #300 on user request                                                                                                                                                                                                        | —                                                                                                                                                                                                   |
 
 ## Cleanup backlog
 
@@ -149,3 +170,4 @@ Decisions and deviations taken while the user was away, for the cleanup phase. O
 - `Section` erases its declaration type, so `ConfigInput` cannot be checked by inference (#248).
 - #249 managed-list defaults (`extends`, `include`, `exclude`, `lib`, `types`) stay computed per target in `tools/typescript`; only documented in the declaration. Consultant chose this (b) over moving the logic above `environments` (breaks Layering or duplicates sync's target model); `@debt` in `declareManagedList.ts` is the record. #249 closed by the walk-log commit.
 - `publishConfig.access` written into private workspaces; harmless, could be dropped (#202).
+- #227 and #228 fail `issues check` on **Planning**: each needs a breakdown pass like #226's before walking.

@@ -6,9 +6,9 @@ import {
   isExportDeclaration,
   isImportDeclaration,
   isStringLiteral,
+  ModuleKind,
   ScriptTarget,
-  type ExportDeclaration,
-  type ImportDeclaration,
+  transpileModule,
 } from "typescript";
 
 import { flat, flatMap } from "@auaust/primitive-kit/arrays";
@@ -66,26 +66,27 @@ async function listCodeFiles(
   return listed.flat();
 }
 
-function keepsImport(statement: ImportDeclaration): boolean {
-  return statement.importClause?.isTypeOnly !== true;
-}
-
-function keepsExport(statement: ExportDeclaration): boolean {
-  return !statement.isTypeOnly;
-}
-
 async function readRuntimeSpecifiers(
   root: Directory,
   file: string,
+  verbatimModuleSyntax: boolean,
 ): Promise<string[]> {
-  const source = createSourceFile(
-    file,
+  const { outputText } = transpileModule(
     await readFile(join(root, file), "utf-8"),
-    ScriptTarget.Latest,
+    {
+      fileName: file,
+      compilerOptions: {
+        module: ModuleKind.ESNext,
+        target: ScriptTarget.Latest,
+        verbatimModuleSyntax,
+      },
+    },
   );
 
-  return flatMap(source.statements, (statement): string[] => {
-    if (isImportDeclaration(statement) && keepsImport(statement)) {
+  const emitted = createSourceFile(file, outputText, ScriptTarget.Latest);
+
+  return flatMap(emitted.statements, (statement): string[] => {
+    if (isImportDeclaration(statement)) {
       return isStringLiteral(statement.moduleSpecifier)
         ? [statement.moduleSpecifier.text]
         : [];
@@ -93,8 +94,7 @@ async function readRuntimeSpecifiers(
 
     if (
       isExportDeclaration(statement) &&
-      statement.moduleSpecifier !== undefined &&
-      keepsExport(statement)
+      statement.moduleSpecifier !== undefined
     ) {
       return isStringLiteral(statement.moduleSpecifier)
         ? [statement.moduleSpecifier.text]
@@ -214,15 +214,17 @@ function shortestCycle(
   return [start, start];
 }
 
-/** @debt `typescript` is an optional peer dependency yet this runtime module imports it; and `verbatimModuleSyntax` is assumed on instead of read from the resolved typescript option */
+/** @debt without `verbatimModuleSyntax`, elision is decided per file as under `isolatedModules`, so a value-style re-export of a type-only module still counts as a runtime edge */
 export async function findImportCycles({
   root,
   structure,
   aliases,
+  verbatimModuleSyntax,
 }: {
   root: Directory;
   structure: ResolvedStructure;
   aliases: ResolvedAliases;
+  verbatimModuleSyntax: boolean;
 }): Promise<ImportCycle[]> {
   const directories = new Set(
     flatMap(values(structure), (environment) => {
@@ -252,11 +254,14 @@ export async function findImportCycles({
     await Promise.all(
       [...files].sort().map(async (file): Promise<[string, string[]]> => {
         const targets = new Set(
-          flatMap(await readRuntimeSpecifiers(root, file), (specifier) => {
-            const target = resolve(file, specifier);
+          flatMap(
+            await readRuntimeSpecifiers(root, file, verbatimModuleSyntax),
+            (specifier) => {
+              const target = resolve(file, specifier);
 
-            return target === undefined ? [] : [target];
-          }),
+              return target === undefined ? [] : [target];
+            },
+          ),
         );
 
         return [file, [...targets].sort()];

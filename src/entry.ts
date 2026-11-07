@@ -1,13 +1,5 @@
-// @debt the root entry publishes functions of internal domains (`foundation/blocks`, `foundation/filesystem`, `foundation/options`), so "internal" does not mean unpublished
-export {
-  syncBlocks,
-  syncFiles,
-  syncIgnoreFile,
-} from "#foundation/blocks/index";
-export { filesIn } from "#foundation/filesystem/index";
 export { buildOutDirSection, buildSection } from "#project/build/index";
 export { cacheSection } from "#project/cache/index";
-export { loadConfig } from "#project/config/index";
 export {
   binOptionsSection,
   binSection,
@@ -57,9 +49,6 @@ export { githubSection } from "#tools/github/index";
 export { prettierSection } from "#tools/prettier/index";
 export { vscodeSection } from "#tools/vscode/index";
 export { debugSection } from "#workflows/cli/index";
-export { loadValidatedConfig } from "#workflows/config/index";
-
-export type { LoadedConfig } from "#project/config/index";
 
 // @debt the global types role holds domain vocabulary: block types belong to `foundation/blocks`, sync results to the sync contract, `IgnorePresets` and `GlobGroup` to the ignore-file owner
 // @barrel types/*.ts all
@@ -82,4 +71,3 @@ export * from "#types/SyncResult";
 export * from "#types/SyncResults";
 export * from "#types/SyncStatus";
 // @end
-export { validate } from "#foundation/options/index";

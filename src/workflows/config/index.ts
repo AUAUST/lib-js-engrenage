@@ -1,6 +1,8 @@
 // @barrel config/define*Config.ts named
 export { defineConfig } from "#workflows/config/config/defineConfig";
 // @end
+export { loadConfig } from "#project/config/index";
+export type { LoadedConfig } from "#project/config/index";
 export type { Resolvable } from "#types/Resolvable";
 
 // @barrel operations/*.ts named

@@ -187,6 +187,9 @@ export default defineConfig({
     node: 24,
     roles: [index(), entrypoint(), ...codeRoles],
     domains: {
+      "foundation/blocks": { internals: true },
+      "foundation/filesystem": { internals: true },
+      "foundation/options": { internals: true },
       "project/cache": { purpose: "Cache directory of the project's tools." },
     },
     // @debt almost no domain declares a `purpose`, so the maps list about forty bare names (`steps`, `data`, `blocks`, `presets`) and an agent must open each one to place code

@@ -11,6 +11,15 @@
       "@auaust/engrenage/config/constants": [
         "./src/project/config/constants.ts"
       ],
+      "@auaust/engrenage/blocks/internals": [
+        "./src/foundation/blocks/index.ts"
+      ],
+      "@auaust/engrenage/filesystem/internals": [
+        "./src/foundation/filesystem/index.ts"
+      ],
+      "@auaust/engrenage/options/internals": [
+        "./src/foundation/options/index.ts"
+      ],
       "@auaust/engrenage/baseline": ["./src/project/baseline/entry.ts"],
       "@auaust/engrenage/format": ["./src/project/format/entry.ts"],
       "@auaust/engrenage/package": ["./src/project/package/entry.ts"],

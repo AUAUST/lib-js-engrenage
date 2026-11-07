@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
 import { syncChangesetConfig } from "@auaust/engrenage/changesets";
+import { loadConfig } from "@auaust/engrenage/config";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 

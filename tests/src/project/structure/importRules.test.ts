@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { importRulesSection, loadConfig } from "@auaust/engrenage";
+import { importRulesSection } from "@auaust/engrenage";
+import { loadConfig } from "@auaust/engrenage/config";
 import { entry } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

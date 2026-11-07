@@ -1,7 +1,7 @@
 import { ESLint } from "eslint";
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
+import { loadConfig } from "@auaust/engrenage/config";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
 import { createRolePreset, entry } from "@auaust/engrenage/roles";
 import { assign } from "@auaust/toolkit/object";

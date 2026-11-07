@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { environmentRolesSection, loadConfig } from "@auaust/engrenage";
+import { environmentRolesSection } from "@auaust/engrenage";
+import { loadConfig } from "@auaust/engrenage/config";
 import { createRolePreset, utils } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

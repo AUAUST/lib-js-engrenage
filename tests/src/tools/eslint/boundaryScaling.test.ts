@@ -3,7 +3,7 @@ import { performance } from "node:perf_hooks";
 import { ESLint } from "eslint";
 import { expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
+import { loadConfig } from "@auaust/engrenage/config";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
 import { record } from "@auaust/toolkit/object";
 

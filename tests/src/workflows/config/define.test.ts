@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { defineSection, loadConfig } from "@auaust/engrenage";
-import { define } from "@auaust/engrenage/config";
+import { defineSection } from "@auaust/engrenage";
+import { define, loadConfig } from "@auaust/engrenage/config";
 import { defineViteConfig } from "@auaust/engrenage/vite";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

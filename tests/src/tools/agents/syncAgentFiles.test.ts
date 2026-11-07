@@ -2,11 +2,12 @@ import { join } from "node:path";
 
 import { describe, expect, test, vi } from "vitest";
 
-import { agentsSection, loadConfig } from "@auaust/engrenage";
+import { agentsSection } from "@auaust/engrenage";
 import {
   resolveAgentReference,
   syncAgentFiles,
 } from "@auaust/engrenage/agents";
+import { loadConfig } from "@auaust/engrenage/config";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
