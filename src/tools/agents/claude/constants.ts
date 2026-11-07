@@ -19,6 +19,7 @@ export const claudeHooks = freeze([
       matcher: "Bash",
       condition: `Bash(gh issue ${verb} *)`,
       command: `${claudeHookPrefix}github`,
+      onFailure: "block",
     } as const satisfies HookDefinition;
   }),
   ...(["commit", "-c", "-C", "config"] as const).map((start) => {
@@ -27,6 +28,7 @@ export const claudeHooks = freeze([
       matcher: "Bash",
       condition: `Bash(git ${start} *)`,
       command: `${claudeHookPrefix}git`,
+      onFailure: "block",
     } as const satisfies HookDefinition;
   }),
   ...(["worker", "debugger"] as const).map((agent) => {
@@ -35,6 +37,7 @@ export const claudeHooks = freeze([
       matcher: "Agent|Task",
       condition: `Agent(${agent})`,
       command: `${claudeHookPrefix}dispatch`,
+      onFailure: "block",
     } as const satisfies HookDefinition;
   }),
 ]) satisfies readonly HookDefinition[];

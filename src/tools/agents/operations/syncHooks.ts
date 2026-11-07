@@ -6,6 +6,7 @@ import { emptyObjectFile } from "#foundation/json/constants";
 import { readJsonValue, writeJsonValue } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
+import { createHookCommand } from "#tools/agents/utils/createHookCommand";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 import type { File } from "#types/File";
@@ -21,6 +22,7 @@ const hooksSchema = optional(
             looseObject({
               command: optional(string()),
               if: optional(string()),
+              onFailure: optional(string()),
             }),
           ),
         ),
@@ -43,6 +45,13 @@ export async function syncHooks(
     prefix,
   }: { file: File; hooks: readonly HookDefinition[]; prefix: string },
 ) {
+  const produced = hooks.map((hook) => {
+    return { ...hook, command: createHookCommand(hook.command) };
+  });
+
+  const wrapped = createHookCommand(prefix);
+  const ownedPrefix = wrapped.slice(0, wrapped.indexOf(prefix) + prefix.length);
+
   const path = resolve(file);
 
   let content = (await filesystem.read(file)) ?? emptyObjectFile;
@@ -72,13 +81,15 @@ export async function syncHooks(
     matcher: string | undefined,
     command: string | undefined,
     condition: string | undefined,
+    onFailure: string | undefined,
   ) {
-    return hooks.some((hook) => {
+    return produced.some((hook) => {
       return (
         hook.event === event &&
         hook.matcher === matcher &&
         hook.command === command &&
-        hook.condition === condition
+        hook.condition === condition &&
+        hook.onFailure === onFailure
       );
     });
   }
@@ -95,10 +106,11 @@ export async function syncHooks(
         .map((entry, index) => {
           return { entry, index };
         })
-        .filter(({ entry: { command, if: condition } }) => {
+        .filter(({ entry: { command, if: condition, onFailure } }) => {
           return (
-            command?.startsWith(prefix) === true &&
-            !isProduced(event, matcher, command, condition)
+            (command?.startsWith(prefix) === true ||
+              command?.startsWith(ownedPrefix) === true) &&
+            !isProduced(event, matcher, command, condition, onFailure)
           );
         });
 
@@ -124,12 +136,16 @@ export async function syncHooks(
 
   const present = read();
 
-  for (const { event, matcher, command, condition } of hooks) {
+  for (const { event, matcher, command, condition, onFailure } of produced) {
     const found = present[event]?.some((group) => {
       return (
         group.matcher === matcher &&
         group.hooks?.some((entry) => {
-          return entry.command === command && entry.if === condition;
+          return (
+            entry.command === command &&
+            entry.if === condition &&
+            entry.onFailure === onFailure
+          );
         })
       );
     });
@@ -146,6 +162,7 @@ export async function syncHooks(
               type: "command",
               command,
               ...(condition === undefined ? {} : { if: condition }),
+              ...(onFailure === undefined ? {} : { onFailure }),
             },
           ],
         },

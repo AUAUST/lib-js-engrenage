@@ -1,11 +1,7 @@
+import { isHookCommand } from "#tools/agents/utils/isHookCommand";
+
 interface Program {
   run(): Promise<void>;
-}
-
-function isHookCommand(argv: readonly string[]): boolean {
-  const agents = argv.indexOf("agents");
-
-  return agents !== -1 && argv[agents + 2] === "hook";
 }
 
 export async function launch(
@@ -16,6 +12,8 @@ export async function launch(
 
   try {
     program = await load();
+
+    await program.run();
   } catch (error) {
     if (!isHookCommand(argv)) {
       throw error;
@@ -28,9 +26,5 @@ export async function launch(
     );
 
     process.exitCode = 2;
-
-    return;
   }
-
-  await program.run();
 }

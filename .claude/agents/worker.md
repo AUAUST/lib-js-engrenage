@@ -10,7 +10,13 @@ hooks:
   Stop:
     - hooks:
         - type: command
-          command: pnpm --silent engrenage agents claude hook stop
+          command: engrenage_hook_root="$(node -e 'const
+            fs=require("node:fs"),p=require("node:path");let
+            d=process.cwd();while(!fs.existsSync(p.join(d,"package.json"))){const
+            n=p.dirname(d);if(n===d)throw Error("No consumer package
+            found");d=n}process.stdout.write(d)')" && cd --
+            "$engrenage_hook_root" && pnpm --silent engrenage agents claude hook
+            stop || exit 2
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/issue-implementation.md -->
@@ -49,7 +55,7 @@ Everything in the issue binds you: follow the **Steps** in order and write the l
 ## Finishing
 
 - The issue is done when its **Done when** holds, or its **Steps** are done when it has none, and the project's checks pass.
-- The stop gate runs the checks when you stop: fix what it reports. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again.
+- The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again on that unchanged tree. Reporting failures never authorizes a failing commit.
 - When asked for a branch, create `worker/issue-<n>` from the current commit.
 - Never edit, comment on, set types or fields on, or close issues.
 - Report whether **Done when** holds, each deviation from the issue with its reason, each local choice you made, and what the issue tree needs updated.

@@ -1,6 +1,7 @@
 import { includes } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 
+import { reportAgentChecks } from "#tools/agents/index";
 import { syncTargets } from "#workflows/sync/operations/syncTargets";
 import type { LoadedConfig } from "#project/config/index";
 import type { SyncTargetFlags } from "#workflows/sync/types/SyncTargetFlags";
@@ -20,5 +21,13 @@ export async function runSync(
     if (includes(names, name)) {
       await syncTargets[name].sync(config, flags[name] ?? {});
     }
+  }
+
+  if (
+    names.some((name) => {
+      return name === "agents" || name === "claude" || name === "codex";
+    })
+  ) {
+    await reportAgentChecks(config);
   }
 }

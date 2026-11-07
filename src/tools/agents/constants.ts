@@ -129,7 +129,11 @@ export const subagentCacheTtls = freeze(["5m", "1h"] as const);
 
 export const defaultSubagentCacheTtl = "1h" as const;
 
-export const hookEvents = freeze(["PreToolUse", "PostToolUse"] as const);
+export const hookEvents = freeze([
+  "PreToolUse",
+  "PostToolUse",
+  "SubagentStop",
+] as const);
 
 export const defaultInstructionFiles = freeze([
   "AGENTS.md",

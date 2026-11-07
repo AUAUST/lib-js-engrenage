@@ -49,10 +49,12 @@ export async function runProgram(
   try {
     await program.parseAsync(argv);
   } catch (error) {
+    const { isHookCommand } = await import("#tools/agents/index");
+
     const debug = isDebugFlagSet(running) || (await isDebugConfigured());
 
     console.error(formatCommandError(error, { debug }));
 
-    process.exitCode = 1;
+    process.exitCode = isHookCommand(argv ?? process.argv) ? 2 : 1;
   }
 }

@@ -6,6 +6,14 @@ import { registerLazySubcommands } from "#workflows/cli/operations/registerLazyS
 
 export const agents = defineCommand((command) => {
   return registerLazySubcommands(command, {
+    check: {
+      description: "Check local agent integration without changing settings.",
+      async load() {
+        const { check } = await import("#bin/engrenage/agents/check");
+
+        return check;
+      },
+    },
     claude: {
       description: "Integrate the project tools with Claude Code.",
       async load() {

@@ -136,7 +136,7 @@ describe("agents.attribution", () => {
     });
   });
 
-  test("unset leaves settings and rule files as they are", async () => {
+  test("unset leaves attribution and rule files as they are", async () => {
     const files = {
       ".claude/settings.json": JSON.stringify({
         hooks: {
@@ -205,9 +205,10 @@ describe("agents.attribution", () => {
 
     await filesystem.flush();
 
-    expect(project.read(".claude/settings.json")).toBe(
-      files[".claude/settings.json"],
-    );
+    expect(JSON.parse(project.read(".claude/settings.json"))).toMatchObject({
+      attribution: hidden,
+      subagentPromptCacheTtl: "1h",
+    });
 
     expect(project.read(attributionRule)).toBe(files[attributionRule]);
     expect(existsSync(project.resolve(noAttributionRule))).toBe(true);

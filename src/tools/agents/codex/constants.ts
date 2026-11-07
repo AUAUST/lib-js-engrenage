@@ -16,6 +16,16 @@ export const codexHookPrefix = "pnpm --silent engrenage agents codex hook ";
 export const codexHooks = freeze([
   {
     event: "PreToolUse",
+    matcher: "^(spawn_agent|Agent)$",
+    command: `${codexHookPrefix}dispatch`,
+  },
+  {
+    event: "SubagentStop",
+    matcher: ".*",
+    command: `${codexHookPrefix}stop`,
+  },
+  {
+    event: "PreToolUse",
     matcher: "^Bash$",
     command: `${codexHookPrefix}github`,
   },

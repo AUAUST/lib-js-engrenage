@@ -1,4 +1,4 @@
-const briefPattern = /^Issue:\s*([\w.-]+\/[\w.-]+)#(\d+)\s*$/m;
+const briefPattern = /^Issue:[ \t]*([\w.-]+\/[\w.-]+)#(\d+)[ \t]*\r?(?:\n|$)/;
 
 export function findBriefedIssue(prompt: string) {
   const match = briefPattern.exec(prompt);

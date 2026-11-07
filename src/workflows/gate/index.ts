@@ -1,4 +1,5 @@
 // @barrel operations/*.ts named
+export { checkAgentStop } from "#workflows/gate/operations/checkAgentStop";
 export { runGate } from "#workflows/gate/operations/runGate";
 // @end
 

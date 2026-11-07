@@ -6,6 +6,7 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
 import { getExecutable } from "#tests/utils/getExecutable";
+import { checkAgentStop } from "#workflows/gate/operations/checkAgentStop";
 import { runGate } from "#workflows/gate/operations/runGate";
 
 const argv = process.argv;
@@ -234,6 +235,35 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     expect(project.read("src/index.ts")).toBe(
       "export const value: number = 3\n",
     );
+  });
+
+  test("keeps failing-stop escapes separate for runtime, session and agent", async () => {
+    const { project } = await createRepository();
+
+    project.write("src/index.ts", 'export const value: number = "text";\n');
+
+    const config = await loadConfig(project.root);
+
+    const identity = {
+      runtime: "codex",
+      session: "session",
+      agent: "agent",
+    };
+
+    expect(await checkAgentStop(config, identity)).toContain("typecheck");
+    expect(await checkAgentStop(config, identity)).toBeUndefined();
+
+    expect(
+      await checkAgentStop(config, { ...identity, runtime: "claude" }),
+    ).toContain("typecheck");
+
+    expect(
+      await checkAgentStop(config, { ...identity, session: "another" }),
+    ).toContain("typecheck");
+
+    expect(
+      await checkAgentStop(config, { ...identity, agent: "another" }),
+    ).toContain("typecheck");
   });
 
   test("returns from the stamp on a tree that already passed", async () => {

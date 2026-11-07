@@ -6,6 +6,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { claudeStopHook } from "#tools/agents/claude/constants";
 import { agentsSection } from "#tools/agents/index";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
+import { createHookCommand } from "#tools/agents/utils/createHookCommand";
 
 const skill = vi.hoisted(() => {
   return {
@@ -151,7 +152,14 @@ describe("getSkillTemplates", () => {
       description: "Worker",
       hooks: {
         Stop: [
-          { hooks: [{ type: "command", command: claudeStopHook.command }] },
+          {
+            hooks: [
+              {
+                type: "command",
+                command: createHookCommand(claudeStopHook.command),
+              },
+            ],
+          },
         ],
       },
     });

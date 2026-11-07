@@ -5,4 +5,5 @@ export interface HookDefinition {
   readonly matcher: string;
   readonly command: string;
   readonly condition?: string;
+  readonly onFailure?: "block";
 }

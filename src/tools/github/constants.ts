@@ -44,6 +44,7 @@ export const debuggerBlockingOptions = freeze([
   "Awaiting others",
   "Delayed",
   "Drafting",
+  "Outdated",
 ] as const);
 
 export const planningSection = "Planning";

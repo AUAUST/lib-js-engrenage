@@ -238,7 +238,11 @@ describe("engrenage init", () => {
       "export default defineVitestConfig();",
     );
 
-    expect(spawnProcess).toHaveBeenCalledTimes(2);
+    expect(spawnProcess).toHaveBeenCalledTimes(3);
+
+    expect(spawnProcess).toHaveBeenNthCalledWith(3, "claude", ["--version"], {
+      cwd: project.root,
+    });
 
     expect(spawnProcess).toHaveBeenNthCalledWith(1, "pnpm", ["install"], {
       cwd: project.root,

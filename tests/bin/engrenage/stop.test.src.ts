@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
@@ -43,6 +43,7 @@ async function createRepository() {
   );
 
   vi.mocked(readHookPayload).mockResolvedValue({
+    session_id: "session",
     agent_id: "agent",
     cwd: repository.project.root,
   });
@@ -70,7 +71,9 @@ async function runStop() {
 async function hasMarker(root: string): Promise<boolean> {
   const cache = await (await loadConfig(root)).resolve(cacheSection);
 
-  return existsSync(join(cache.for("gate"), "stops", "agent"));
+  const directory = join(cache.for("gate"), "stops");
+
+  return existsSync(directory) && readdirSync(directory).length > 0;
 }
 
 describe("stop hook", { timeout: binaryTimeout }, () => {
@@ -91,6 +94,11 @@ describe("stop hook", { timeout: binaryTimeout }, () => {
     project.write("fail", "second\n");
 
     expect((await runStop()).exitCode).toBe(2);
+
+    rmSync(project.resolve("fail"));
+
+    expect((await runStop()).exitCode).toBe(0);
+    expect(await hasMarker(project.root)).toBe(false);
   });
 
   test("lets a passing tree stop at once", async () => {

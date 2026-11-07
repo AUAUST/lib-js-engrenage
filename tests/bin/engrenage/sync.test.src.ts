@@ -60,10 +60,13 @@ describe("engrenage sync", () => {
 
     expect(process.exitCode).toBeUndefined();
 
-    expect(vi.mocked(console.info).mock.calls).toEqual([
-      ["Checking synced files..."],
-      ["All good!"],
-    ]);
+    expect(vi.mocked(console.info).mock.calls).toEqual(
+      expect.arrayContaining([["Checking synced files..."], ["All good!"]]),
+    );
+
+    expect(vi.mocked(console.info).mock.calls).toEqual(
+      expect.arrayContaining([[expect.stringContaining("runtime-unverified")]]),
+    );
   });
 
   test("checks only the selected targets without writing", async () => {

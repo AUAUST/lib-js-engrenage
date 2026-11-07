@@ -9,14 +9,38 @@ import type { IssueAudience } from "#tools/github/types/IssueAudience";
 import type { IssueFinding } from "#tools/github/types/IssueFinding";
 
 async function findAncestors(access: GithubAccess, issue: GithubIssue) {
-  const chain: number[] = [];
+  const chain: GithubIssue[] = [];
+  const findings: IssueFinding[] = [];
+  const seen = new Set([issue.number]);
 
   let parent = issue.parent;
 
   while (parent !== undefined) {
-    const ancestor = await fetchIssue(access, parent);
+    if (seen.has(parent)) {
+      findings.push({
+        rule: "ancestor-cycle",
+        message: `Ancestor #${parent}: cyclic nearest-plan chain.`,
+      });
 
-    chain.unshift(ancestor.number);
+      break;
+    }
+
+    seen.add(parent);
+
+    let ancestor: GithubIssue;
+
+    try {
+      ancestor = await fetchIssue(access, parent);
+    } catch (error) {
+      findings.push({
+        rule: "ancestor-unavailable",
+        message: `Ancestor #${parent}: ${error instanceof Error ? error.message : String(error)}`,
+      });
+
+      break;
+    }
+
+    chain.unshift(ancestor);
 
     if (ancestor.type === "Plan") {
       break;
@@ -25,7 +49,7 @@ async function findAncestors(access: GithubAccess, issue: GithubIssue) {
     parent = ancestor.parent;
   }
 
-  return chain;
+  return { chain, findings };
 }
 
 async function findMissingReferences(
@@ -51,12 +75,13 @@ export async function checkIssue(
   access: GithubAccess,
   number: number,
   audience: IssueAudience = "worker",
+  { dispatch = false }: { dispatch?: boolean } = {},
 ): Promise<IssueFinding[]> {
   const issue = await fetchIssue(access, number);
 
   const parsed = parseIssueBody(issue.body);
 
-  if (audience === "debugger") {
+  if (audience === "debugger" && !dispatch) {
     return checkIssueReadiness(
       {
         issue,
@@ -68,23 +93,63 @@ export async function checkIssue(
     );
   }
 
-  const ancestors = await findAncestors(access, issue);
+  const { chain, findings } = await findAncestors(access, issue);
+
+  const ancestors = chain.map(({ number }) => number);
 
   const missingReferences = await findMissingReferences(
     access,
     parsed.references.filter((reference) => reference !== number),
   );
 
-  return [
-    ...checkIssueBody(issue.body, issue.type),
+  findings.push(
+    ...(audience === "worker" ? checkIssueBody(issue.body, issue.type) : []),
     ...checkIssueReadiness(
       {
         issue,
         parsed,
         ancestors,
         missingReferences,
+        dispatch,
       },
       audience,
     ),
-  ];
+  );
+
+  if (dispatch) {
+    for (const [index, ancestor] of chain.entries()) {
+      const body = parseIssueBody(ancestor.body);
+
+      const missing = await findMissingReferences(
+        access,
+        body.references.filter((reference) => reference !== ancestor.number),
+      );
+
+      const blocked = [
+        ...checkIssueBody(ancestor.body, ancestor.type),
+        ...checkIssueReadiness(
+          {
+            issue: ancestor,
+            parsed: body,
+            ancestors: ancestors.slice(0, index),
+            missingReferences: missing,
+            dispatch: true,
+            ancestor: true,
+          },
+          audience,
+        ),
+      ];
+
+      findings.push(
+        ...blocked.map((finding) => {
+          return {
+            ...finding,
+            message: `Ancestor #${ancestor.number}: ${finding.message}`,
+          };
+        }),
+      );
+    }
+  }
+
+  return findings;
 }

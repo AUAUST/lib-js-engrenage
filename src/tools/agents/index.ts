@@ -10,6 +10,7 @@ export {
   syncCodexFiles,
 } from "#tools/agents/codex/index";
 export { agentShellVariables } from "#tools/agents/constants";
+export { isHookCommand } from "#tools/agents/utils/isHookCommand";
 
 // @barrel setup/*.ts named
 export { createAgentRulesStep } from "#tools/agents/setup/createAgentRulesStep";
@@ -28,6 +29,8 @@ export { agentsSection } from "#tools/agents/config/sections/agentsSection";
 // @barrel operations/*.ts named
 export { addAgentRules } from "#tools/agents/operations/addAgentRules";
 export { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+export { checkAgentDispatch } from "#tools/agents/operations/checkAgentDispatch";
+export { checkAgents } from "#tools/agents/operations/checkAgents";
 export { denyToolUse } from "#tools/agents/operations/denyToolUse";
 export { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 export { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
@@ -39,6 +42,7 @@ export { listLocalFilePatterns } from "#tools/agents/operations/listLocalFilePat
 export { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 export { parseInstruction } from "#tools/agents/operations/parseInstruction";
 export { readHookPayload } from "#tools/agents/operations/readHookPayload";
+export { reportAgentChecks } from "#tools/agents/operations/reportAgentChecks";
 export { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 export { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 export { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
@@ -54,6 +58,7 @@ export { skillSchema } from "#tools/agents/config/schemas/skillSchema";
 
 // @barrel types/*.ts all
 export * from "#tools/agents/types/Agent";
+export * from "#tools/agents/types/AgentCheckFinding";
 export * from "#tools/agents/types/AgentSections";
 export * from "#tools/agents/types/AgentsInput";
 export * from "#tools/agents/types/BudgetFinding";

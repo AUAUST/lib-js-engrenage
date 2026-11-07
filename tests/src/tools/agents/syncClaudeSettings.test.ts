@@ -28,7 +28,7 @@ describe("syncClaudeSettings", () => {
 
     await config.context.filesystem.flush();
 
-    expect(project.read(".claude/settings.json")).toBe(`{
+    const expected = `{
   // Kept by the project.
   "permissions": {
     "deny": [
@@ -139,7 +139,52 @@ describe("syncClaudeSettings", () => {
   },
   "subagentPromptCacheTtl": "1h"
 }
-`);
+`;
+
+    const current = project.read(".claude/settings.json");
+
+    expect(current).toContain("// Kept by the project.");
+
+    const actual = JSON.parse(current.replace("// Kept by the project.", ""));
+
+    const previous = JSON.parse(
+      expected.replace("// Kept by the project.", ""),
+    );
+
+    expect(actual.permissions).toEqual(previous.permissions);
+
+    expect(
+      actual.hooks.PreToolUse.map(
+        (group: {
+          matcher: string;
+          hooks: { command: string; if: string; onFailure: string }[];
+        }) => {
+          return {
+            matcher: group.matcher,
+            hooks: group.hooks.map(({ onFailure: _onFailure, ...entry }) => {
+              return {
+                ...entry,
+                command: entry.command
+                  .slice(entry.command.lastIndexOf(" && ") + 4)
+                  .replace(/ \|\| exit 2$/, ""),
+              };
+            }),
+          };
+        },
+      ),
+    ).toEqual(previous.hooks.PreToolUse);
+
+    expect(
+      actual.hooks.PreToolUse.every(
+        (group: { hooks: { command: string; onFailure: string }[] }) =>
+          group.hooks.every((entry) => {
+            return (
+              entry.command.startsWith("engrenage_hook_root=") &&
+              entry.onFailure === "block"
+            );
+          }),
+      ),
+    ).toBe(true);
 
     await syncClaudeSettings(config);
 

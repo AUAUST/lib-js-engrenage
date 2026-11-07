@@ -106,6 +106,8 @@ function mockGithub(
       type: string;
       blockers?: string[];
       parent?: number;
+      subIssues?: { number: number; state: "open" | "closed" }[];
+      blockedBy?: { number: number; state: "open" | "closed" }[];
     }
   >,
 ) {
@@ -138,6 +140,10 @@ function mockGithub(
             }),
           },
         ];
+      } else if (rest === "/sub_issues") {
+        json = issue.subIssues ?? [];
+      } else if (rest === "/dependencies/blocked_by") {
+        json = issue.blockedBy ?? [];
       } else if (rest === "/parent") {
         if (issue.parent === undefined) {
           status = 404;
@@ -158,6 +164,206 @@ describe("checkIssue", () => {
 
   const access = { repository: "o/r", token: "t" };
   const plan = { body: "## Goal\n\nx\n", type: "Plan" };
+
+  const validPlan = {
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #11\n\n## Decisions\n\nx\n",
+    type: "Plan",
+    subIssues: [{ number: 11, state: "open" as const }],
+  };
+
+  test("validates a Plan normally but denies its dispatch to a worker", async () => {
+    mockGithub({
+      10: validPlan,
+      11: {
+        body: task,
+        type: "Task",
+        parent: 10,
+      },
+    });
+
+    expect(await checkIssue(access, 10)).toEqual([]);
+
+    expect(await checkIssue(access, 10, "worker", { dispatch: true })).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ rule: "dispatch-type" }),
+      ]),
+    );
+
+    expect(await checkIssue(access, 11, "worker", { dispatch: true })).toEqual(
+      [],
+    );
+  });
+
+  test.each(["Task", "Problem"])(
+    "denies open children and prerequisites of a %s leaf",
+    async (type) => {
+      mockGithub({
+        11: {
+          body: task.replace("#10 ·", "Standalone"),
+          type,
+          subIssues: [{ number: 12, state: "open" }],
+          blockedBy: [{ number: 13, state: "open" }],
+        },
+      });
+
+      const rules = (
+        await checkIssue(access, 11, type === "Task" ? "worker" : "debugger", {
+          dispatch: true,
+        })
+      ).map(({ rule }) => rule);
+
+      expect(rules).toEqual(
+        expect.arrayContaining(["sub-issues", "blocked-by"]),
+      );
+    },
+  );
+
+  test("a report-only Problem needs Steps for a worker but remains debugger input", async () => {
+    mockGithub({
+      11: { body: "## Context\n\nA failure.\n", type: "Problem" },
+    });
+
+    expect(await checkIssue(access, 11, "worker", { dispatch: true })).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          rule: "missing-section",
+          message: expect.stringContaining("Steps"),
+        }),
+      ]),
+    );
+
+    expect(
+      await checkIssue(access, 11, "debugger", { dispatch: true }),
+    ).toEqual([]);
+  });
+
+  test("a debugger may investigate below Questions while a worker may not", async () => {
+    mockGithub({
+      10: {
+        ...validPlan,
+        body: `${validPlan.body}\n## Questions\n\nq?\n`,
+        blockers: ["Open questions"],
+      },
+      11: {
+        body: task,
+        type: "Problem",
+        parent: 10,
+      },
+    });
+
+    expect(
+      await checkIssue(access, 11, "debugger", { dispatch: true }),
+    ).toEqual([]);
+
+    expect(await checkIssue(access, 11, "worker", { dispatch: true })).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          rule: "open-section",
+          message: expect.stringContaining("Ancestor #10"),
+        }),
+      ]),
+    );
+  });
+
+  test.each(["worker", "debugger"] as const)(
+    "%s rejects ancestor Planning, Outdated and prerequisites",
+    async (audience) => {
+      mockGithub({
+        10: {
+          ...validPlan,
+          body: `${validPlan.body}\n## Planning\n\nx\n`,
+          blockers: ["Open questions", "Outdated"],
+          blockedBy: [{ number: 12, state: "open" }],
+        },
+        11: {
+          body: task,
+          type: "Problem",
+          parent: 10,
+        },
+      });
+
+      const findings = await checkIssue(access, 11, audience, {
+        dispatch: true,
+      });
+
+      expect(findings.map(({ rule }) => rule)).toEqual(
+        expect.arrayContaining(["open-section", "blockers", "blocked-by"]),
+      );
+
+      expect(
+        findings.every(({ message }) => message.startsWith("Ancestor #10")),
+      ).toBe(true);
+    },
+  );
+
+  test("reports malformed ancestor sections and missing references", async () => {
+    mockGithub({
+      10: { ...validPlan, body: "## Goal\n\nx #99\n" },
+      11: {
+        body: task,
+        type: "Task",
+        parent: 10,
+      },
+    });
+
+    const findings = await checkIssue(access, 11, "worker", { dispatch: true });
+
+    expect(findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          rule: "missing-section",
+          message: expect.stringContaining("Ancestor #10"),
+        }),
+        expect.objectContaining({
+          rule: "missing-reference",
+          message: expect.stringContaining("#99"),
+        }),
+      ]),
+    );
+  });
+
+  test("reports cycles, mismatched chains and unavailable ancestors", async () => {
+    mockGithub({
+      10: {
+        body: "#11 · Context\n",
+        type: "Segment",
+        parent: 11,
+        subIssues: [{ number: 11, state: "open" }],
+      },
+      11: {
+        body: task.replace("#10 ·", "#99 ·"),
+        type: "Task",
+        parent: 10,
+      },
+    });
+
+    expect(await checkIssue(access, 11, "worker", { dispatch: true })).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          rule: "ancestor-cycle",
+          message: expect.stringContaining("#11"),
+        }),
+        expect.objectContaining({ rule: "header-chain" }),
+      ]),
+    );
+
+    mockGithub({
+      11: {
+        body: task,
+        type: "Task",
+        parent: 10,
+      },
+    });
+
+    expect(await checkIssue(access, 11, "worker", { dispatch: true })).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          rule: "ancestor-unavailable",
+          message: expect.stringContaining("Ancestor #10"),
+        }),
+      ]),
+    );
+  });
 
   test("a task with Questions and Blockers is valid but not ready", async () => {
     mockGithub({

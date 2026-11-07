@@ -11,6 +11,7 @@ import {
   codexSkillFrontmatterKeys,
 } from "#tools/agents/constants";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
+import { createHookCommand } from "#tools/agents/utils/createHookCommand";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
@@ -70,7 +71,12 @@ export async function getSkillTemplates({
             hooks: {
               Stop: [
                 {
-                  hooks: [{ type: "command", command: claudeStopHook.command }],
+                  hooks: [
+                    {
+                      type: "command",
+                      command: createHookCommand(claudeStopHook.command),
+                    },
+                  ],
                 },
               ],
             },
