@@ -20,6 +20,7 @@ function contract(
     scoped: false,
     typeOnly: false,
     strict: false,
+    unique: false,
     purpose: undefined,
     effects: undefined,
     rules: undefined,

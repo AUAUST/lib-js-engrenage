@@ -10,9 +10,12 @@ import { noRoles } from "#project/structure/constants";
 import { getEntryFile } from "#project/structure/utils/getEntryFile";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
+import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
+import type { CardinalityViolation } from "#project/structure/types/CardinalityViolation";
 import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
+import type { NamedFileRole } from "#project/structure/types/NamedFileRole";
 import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
@@ -26,6 +29,7 @@ import type { TestsContext } from "#project/structure/types/TestsContext";
 import type { UnclassifiedReason } from "#project/structure/types/UnclassifiedReason";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 
 type DomainDeclaration = StructureOptions["domains"][string];
@@ -93,6 +97,53 @@ async function listFiles(directory: string): Promise<string[]> {
     .filter((entry) => !entry.isDirectory())
     .map((entry) => entry.name)
     .sort();
+}
+
+async function listFilesAtAnyDepth(directory: string): Promise<string[]> {
+  const entries = await readdir(directory, { withFileTypes: true });
+
+  const listed = await Promise.all(
+    entries.map(async (entry) => {
+      if (!entry.isDirectory()) {
+        return [entry.name];
+      }
+
+      if (entry.name === ignoredDirectory) {
+        return [];
+      }
+
+      const nested = await listFilesAtAnyDepth(join(directory, entry.name));
+
+      return nested.map((file) => join(entry.name, file));
+    }),
+  );
+
+  return flat(listed).sort();
+}
+
+function cardinalityOf(
+  assigned: readonly (readonly [File, string | undefined])[],
+  contracts: ResolvedRoles["roles"],
+): Pick<StructureNode, "cardinality"> {
+  const filesByRole = new Map<string, File[]>();
+
+  for (const [file, role] of assigned) {
+    if (role !== undefined && contracts[role]?.unique) {
+      filesByRole.set(role, [...(filesByRole.get(role) ?? []), file]);
+    }
+  }
+
+  const violations = [...filesByRole]
+    .filter(([, files]) => files.length > 1)
+    .map(([role, files]): CardinalityViolation => {
+      return freeze({
+        role,
+        reason: "unique",
+        files: freeze(files),
+      });
+    });
+
+  return violations.length === 0 ? {} : { cardinality: freeze(violations) };
 }
 
 function layerOf(name: string, layers: readonly string[] | undefined) {
@@ -376,6 +427,50 @@ export async function resolveEnvironmentStructure({
     };
   }
 
+  async function roleCardinality(
+    path: Directory,
+    role: string,
+    { scopes, structured }: { scopes: readonly string[]; structured: boolean },
+  ): Promise<Pick<StructureNode, "cardinality">> {
+    const roles = rolesFor(scopes);
+    const contract = roles.roles[role];
+
+    const named = structured
+      ? (contract?.roles ?? []).flatMap((name): NamedFileRole[] => {
+          const nested = roles.roles[name];
+
+          return nested?.file === undefined ? [] : [{ name, contract: nested }];
+        })
+      : [];
+
+    if (
+      contract === undefined ||
+      (!contract.unique && !named.some(({ contract }) => contract.unique))
+    ) {
+      return {};
+    }
+
+    const directory = join(root, path);
+
+    const files = structured
+      ? await listFiles(directory)
+      : await listFilesAtAnyDepth(directory);
+
+    return cardinalityOf(
+      files.map((file) => {
+        return [
+          join(path, file),
+          matchFileRole(file, {
+            named,
+            enclosing: role,
+            roles,
+          }),
+        ] as const;
+      }),
+      roles.roles,
+    );
+  }
+
   function describe(subpath: string, path: Directory) {
     const directory = subpath.slice(subpath.lastIndexOf("/") + 1);
     const namespace = namespaces[subpath];
@@ -468,7 +563,8 @@ export async function resolveEnvironmentStructure({
     }
 
     async function domain(source: StructureNode["source"]) {
-      const { roles: contracts } = rolesFor(parent.scopes);
+      const roles = rolesFor(parent.scopes);
+      const { roles: contracts } = roles;
 
       const fileGlobs = values(contracts).flatMap(({ file }) => {
         return file === undefined ? [] : [file].flat();
@@ -483,11 +579,26 @@ export async function resolveEnvironmentStructure({
         return !fileGlobs.some((glob) => matchesGlob(file, glob));
       });
 
+      const cardinality = cardinalityOf(
+        files.map((file) => {
+          return [
+            join(path, file),
+            matchFileRole(file, {
+              named: [],
+              enclosing: undefined,
+              roles,
+            }),
+          ] as const;
+        }),
+        contracts,
+      );
+
       return node("domain", source, {
         ...(commands ? { commands: true as const } : {}),
         ...(strays.length === 0
           ? {}
           : { strays: strays.map((file) => join(path, file)) }),
+        ...cardinality,
         public:
           entryFile !== undefined &&
           (await pathExists(join(root, path, entryFile))),
@@ -542,6 +653,10 @@ export async function resolveEnvironmentStructure({
         : node("role", "inferred", {
             role,
             ...metadataOf(role, parent.scopes),
+            ...(await roleCardinality(path, role, {
+              scopes: parent.scopes,
+              structured: false,
+            })),
           });
     }
 
@@ -551,6 +666,8 @@ export async function resolveEnvironmentStructure({
       !optOut.has(subpath)
     ) {
       const contained = rolesFor(parent.scopes).roles[role]?.roles;
+      const scopes = [...parent.scopes, ...(contained ?? [])];
+      const structured = contained !== undefined;
 
       return node(
         "role",
@@ -558,11 +675,12 @@ export async function resolveEnvironmentStructure({
         {
           role,
           ...metadataOf(role, parent.scopes),
+          ...(await roleCardinality(path, role, { scopes, structured })),
         },
         {
-          scopes: [...parent.scopes, ...(contained ?? [])],
+          scopes,
           owned: [...(contained ?? []), ...parent.owned],
-          structured: contained !== undefined,
+          structured,
         },
       );
     }

@@ -11,7 +11,7 @@ export const structure = defineCommand((command) => {
   return command
     .option(
       "--check",
-      "exit non-zero on an unclassified directory of a strict environment or a runtime import cycle",
+      "exit non-zero on an unclassified directory of a strict environment, a role cardinality violation or a runtime import cycle",
       false,
     )
     .action(async ({ check }) => {

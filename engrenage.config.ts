@@ -20,7 +20,6 @@ import { defineConfig } from "#workflows/config/index";
 // @debt the config imports the tooling barrel that `codegen barrels` regenerates after loading the config, so a barrel missing a rule breaks the codegen that would add it
 
 // @debt file names inside config/ follow named-match only; they should derive from the domain's structured path (#271)
-// @debt a domain may hold several definers until definers are unique (#294)
 const config = createRolePreset({
   name: "config",
   purpose:
@@ -32,6 +31,7 @@ const config = createRolePreset({
       name: "definers",
       purpose: "The domain's `define…Config` definer.",
       file: "define*Config.ts",
+      unique: true,
       exports: "named-match",
       effects: "effectful",
       rules: { "definer-entries": definerEntries },

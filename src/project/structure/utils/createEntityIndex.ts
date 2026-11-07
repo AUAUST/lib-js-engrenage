@@ -1,6 +1,5 @@
 import { extname, matchesGlob, posix, relative } from "node:path";
 
-import { wrap } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
 import { entries, freeze } from "@auaust/toolkit/object";
 
@@ -8,14 +7,15 @@ import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import { entryRoleName, indexRoleName } from "#project/roles/constants";
 import { noRoles } from "#project/structure/constants";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
+import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
 import type { Alias } from "#project/structure/types/Alias";
 import type { Entity } from "#project/structure/types/Entity";
 import type { EntityIndex } from "#project/structure/types/EntityIndex";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { LineageMember } from "#project/structure/types/LineageMember";
+import type { NamedFileRole } from "#project/structure/types/NamedFileRole";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
@@ -26,11 +26,6 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
-
-interface NamedFileRole {
-  readonly name: string;
-  readonly contract: ResolvedRoleContract;
-}
 
 interface Located {
   readonly entity: Entity;
@@ -356,20 +351,6 @@ export function createEntityIndex({
     return toPosixPath(relative(root, resolve(root, file)));
   }
 
-  function fileRoleOf(name: string, roles: ResolvedRoles | undefined) {
-    if (roles === undefined) {
-      return;
-    }
-
-    if (name === getIndexFile(roles)) {
-      return indexRoleName;
-    }
-
-    return entries(roles.roles).find(([, { file }]) => {
-      return wrap(file ?? []).some((glob) => matchesGlob(name, glob));
-    })?.[0];
-  }
-
   function classify(
     name: string,
     directory: Directory,
@@ -377,15 +358,15 @@ export function createEntityIndex({
   ): Pick<Entity, "role" | "fileRole" | "contract" | "effects"> {
     const atRoot = directory === entity.path;
 
-    const nested = atRoot
-      ? named.find(({ contract }) => {
-          return wrap(contract.file ?? []).some((glob) => {
-            return matchesGlob(name, glob);
-          });
-        })
-      : undefined;
+    const matched = matchFileRole(name, {
+      named: atRoot ? named : noNamedFileRoles,
+      enclosing: entity.role,
+      roles,
+    });
 
-    if (nested !== undefined) {
+    const nested = named.find((candidate) => candidate.name === matched);
+
+    if (atRoot && nested !== undefined) {
       return {
         role: nested.name,
         fileRole: nested.name,
@@ -408,14 +389,12 @@ export function createEntityIndex({
       };
     }
 
-    const fileRole = fileRoleOf(name, roles);
-
-    const role = atRoot ? fileRole : undefined;
+    const role = atRoot ? matched : undefined;
     const contract = role === undefined ? undefined : roles?.roles[role];
 
     return {
       role,
-      fileRole,
+      fileRole: matched,
       contract,
       effects: contract?.effects,
     };

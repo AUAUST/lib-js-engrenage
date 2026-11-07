@@ -409,3 +409,91 @@ describe("inline roles", () => {
     });
   });
 });
+
+describe("unique roles", () => {
+  const config = createRolePreset({ name: "config" });
+
+  const helpers = createRolePreset({ name: "helpers" });
+
+  async function describeProject(
+    roles: string,
+    sources: Readonly<Record<string, string>>,
+  ) {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "src/a/index.ts": "",
+      ...sources,
+      "engrenage.config.ts": `export default { src: { roles: ${roles} } };\n`,
+    });
+
+    const structure = await loadStructure(project.root);
+
+    return new Map(
+      flatten(structure.src!.root).map((node) => [node.path, node]),
+    );
+  }
+
+  function definers(unique: boolean) {
+    return renderCodeRoles(
+      config({
+        strict: true,
+        roles: [
+          {
+            name: "definers",
+            file: "define*Config.ts",
+            unique,
+          },
+        ],
+      }),
+    );
+  }
+
+  const twoDefiners = {
+    "src/a/config/defineAConfig.ts": "",
+    "src/a/config/defineBConfig.ts": "",
+  };
+
+  test("report one violation naming every file of a location", async () => {
+    const nodes = await describeProject(definers(true), twoDefiners);
+
+    expect(nodes.get("src/a/config")?.cardinality).toEqual([
+      {
+        role: "config/definers",
+        reason: "unique",
+        files: [
+          "src/a/config/defineAConfig.ts",
+          "src/a/config/defineBConfig.ts",
+        ],
+      },
+    ]);
+  });
+
+  test("pass with one file, and with several when not unique", async () => {
+    const single = await describeProject(definers(true), {
+      "src/a/config/defineAConfig.ts": "",
+    });
+
+    const several = await describeProject(definers(false), twoDefiners);
+
+    expect(single.get("src/a/config")?.cardinality).toBeUndefined();
+    expect(several.get("src/a/config")?.cardinality).toBeUndefined();
+  });
+
+  test("count a directory role's files across its nested directories", async () => {
+    const nodes = await describeProject(
+      renderCodeRoles(helpers({ nesting: "any", unique: true })),
+      {
+        "src/a/helpers/x.ts": "",
+        "src/a/helpers/deep/y.ts": "",
+      },
+    );
+
+    expect(nodes.get("src/a/helpers")?.cardinality).toEqual([
+      {
+        role: "helpers",
+        reason: "unique",
+        files: ["src/a/helpers/deep/y.ts", "src/a/helpers/x.ts"],
+      },
+    ]);
+  });
+});

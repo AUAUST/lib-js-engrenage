@@ -1,3 +1,4 @@
+import type { CardinalityViolation } from "#project/structure/types/CardinalityViolation";
 import type { StructureKind } from "#project/structure/types/StructureKind";
 import type { StructureMirror } from "#project/structure/types/StructureMirror";
 import type { StructureRelation } from "#project/structure/types/StructureRelation";
@@ -22,5 +23,6 @@ export interface StructureNode {
   readonly mirror?: StructureMirror;
   readonly reason?: UnclassifiedReason;
   readonly strays?: readonly Directory[];
+  readonly cardinality?: readonly CardinalityViolation[];
   readonly children: readonly StructureNode[];
 }

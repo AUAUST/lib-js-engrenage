@@ -89,6 +89,11 @@ export interface RoleInput {
    */
   strict?: (boolean | undefined)
   /**
+   * Holds at most one file per owning location, across its `file` globs and accepted files.
+   * @default false
+   */
+  unique?: (boolean | undefined)
+  /**
    * ESLint rules applied to the role's files only, never to the files of its nested roles.
    * Each value is a rule entry for a rule already registered, or a rule module, registered as `roles/<role>/<key>` and reported as errors.
    * @default none

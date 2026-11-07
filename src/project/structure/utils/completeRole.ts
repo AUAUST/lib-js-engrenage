@@ -23,5 +23,6 @@ export function completeRole(
     scoped: definition.scoped ?? roleContractDefaults.scoped,
     strict: definition.strict ?? roleContractDefaults.strict,
     typeOnly: definition.typeOnly ?? roleContractDefaults.typeOnly,
+    unique: definition.unique ?? roleContractDefaults.unique,
   });
 }

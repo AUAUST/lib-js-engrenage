@@ -9,6 +9,7 @@ export interface RoleDefinition extends Omit<
   | "scoped"
   | "strict"
   | "typeOnly"
+  | "unique"
 > {
   readonly nesting: ResolvedRoleContract["nesting"] | undefined;
   readonly index: boolean | undefined;
@@ -17,4 +18,5 @@ export interface RoleDefinition extends Omit<
   readonly scoped: boolean | undefined;
   readonly strict: boolean | undefined;
   readonly typeOnly: boolean | undefined;
+  readonly unique: boolean | undefined;
 }
