@@ -4,6 +4,7 @@
 import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
 import { formatCommandError } from "#workflows/cli/operations/formatCommandError";
+import { isDebugEnvironment } from "#workflows/cli/operations/isDebugEnvironment";
 
 function isDebugFlagSet(command: CommandUnknownOpts | null): boolean {
   for (let current = command; current !== null; current = current.parent) {
@@ -18,12 +19,12 @@ function isDebugFlagSet(command: CommandUnknownOpts | null): boolean {
 // @debt resolves the config again after a failure instead of reading the config the failing command already resolved
 async function isDebugConfigured(): Promise<boolean> {
   try {
-    const { debugSection, isDebugEnvironment } =
-      await import("#project/config/index");
-
     if (isDebugEnvironment()) {
       return true;
     }
+
+    const { debugSection } =
+      await import("#workflows/cli/config/sections/debugSection");
 
     const { loadConfig } = await import("#workflows/registry/index");
     const config = await loadConfig();

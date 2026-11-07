@@ -8,3 +8,11 @@ export { isOptionOf } from "#workflows/cli/utils/isOptionOf";
 export * from "#workflows/cli/types/CommandDefinition";
 export * from "#workflows/cli/types/LazyCommand";
 // @end
+
+// @barrel config/sections/*.ts named
+export { debugSection } from "#workflows/cli/config/sections/debugSection";
+// @end
+
+// @barrel config/schemas/*.ts named
+export { debugSchema } from "#workflows/cli/config/schemas/debugSchema";
+// @end

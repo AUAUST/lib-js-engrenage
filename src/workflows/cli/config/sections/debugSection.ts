@@ -1,6 +1,6 @@
 import { declareSection } from "#foundation/options/index";
-import { debugSchema } from "#project/config/config/schemas/debugSchema";
-import { isDebugEnvironment } from "#project/config/operations/isDebugEnvironment";
+import { debugSchema } from "#workflows/cli/config/schemas/debugSchema";
+import { isDebugEnvironment } from "#workflows/cli/operations/isDebugEnvironment";
 
 export const debugSection = declareSection({
   name: "debug",

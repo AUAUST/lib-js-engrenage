@@ -1,7 +1,6 @@
 import { declareObject } from "#foundation/options/index";
 import { buildSchema } from "#project/build/index";
 import { cacheSchema } from "#project/cache/index";
-import { debugSchema } from "#project/config/index";
 import {
   aliasesSchema,
   binSchema,
@@ -23,6 +22,7 @@ import { gitSchema } from "#tools/git/index";
 import { githubSchema } from "#tools/github/index";
 import { prettierSchema } from "#tools/prettier/index";
 import { vscodeSchema } from "#tools/vscode/index";
+import { debugSchema } from "#workflows/cli/index";
 
 // @debt the `Core`, `Tooling` and `Environments` comments explain the code, outside the allowed comment kinds; `eslint`, `vite`, `vitest` and `tsdown` take no section here, so their options come only from definer arguments
 export const configSchema = declareObject({

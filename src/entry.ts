@@ -7,7 +7,6 @@ export {
 export { filesIn } from "#foundation/filesystem/index";
 export { buildOutDirSection, buildSection } from "#project/build/index";
 export { cacheSection } from "#project/cache/index";
-export { debugSection } from "#project/config/index";
 export {
   binOptionsSection,
   binSection,
@@ -55,7 +54,7 @@ export { gitSection } from "#tools/git/index";
 export { githubSection } from "#tools/github/index";
 export { prettierSection } from "#tools/prettier/index";
 export { vscodeSection } from "#tools/vscode/index";
-// @debt the section values are published from the root entry until their owning domains export them (#243–#246)
+export { debugSection } from "#workflows/cli/index";
 export { loadConfig } from "#workflows/registry/index";
 
 export type { LoadedConfig } from "#project/config/index";

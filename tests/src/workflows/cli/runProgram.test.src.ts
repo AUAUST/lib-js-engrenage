@@ -44,7 +44,7 @@ beforeEach(() => {
 afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllEnvs();
-  vi.doUnmock("#project/config/index");
+  vi.doUnmock("#workflows/cli/config/sections/debugSection");
   vi.doUnmock("#workflows/registry/index");
 
   process.exitCode = undefined;
@@ -62,7 +62,7 @@ describe("runProgram", () => {
   test("runs a succeeding command without loading the config modules", async () => {
     vi.resetModules();
 
-    vi.doMock("#project/config/index", () => {
+    vi.doMock("#workflows/cli/config/sections/debugSection", () => {
       throw new Error("config modules loaded");
     });
 

@@ -46,14 +46,8 @@ export type {
   UnmanagedEnvironmentTsconfig,
 } from "#project/tsconfig/index";
 
-// @barrel config/schemas/*.ts named
-export { debugSchema } from "#project/config/config/schemas/debugSchema";
-// @end
-
 // @barrel operations/*.ts named
 export { createProjectConfig } from "#project/config/operations/createProjectConfig";
-export { debugSection } from "#project/config/operations/debugSection";
-export { isDebugEnvironment } from "#project/config/operations/isDebugEnvironment";
 export { loadConfig } from "#project/config/operations/loadConfig";
 export { readConfig } from "#project/config/operations/readConfig";
 export { readRawConfig } from "#project/config/operations/readRawConfig";

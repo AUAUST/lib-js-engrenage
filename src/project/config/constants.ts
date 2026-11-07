@@ -2,8 +2,6 @@ import { freeze } from "@auaust/toolkit/object";
 
 import type { GlobalScope } from "#project/config/types/GlobalScope";
 
-export const debugEnvironmentVariable = "ENGRENAGE_DEBUG";
-
 export const defaultDefineTypes = true;
 
 export const defaultGlobalScope = "all" satisfies GlobalScope;
