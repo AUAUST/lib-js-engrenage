@@ -106,11 +106,23 @@ describe("syncPackageJson", () => {
     });
   });
 
-  test("only writes devEngines.runtime outside the library preset", async () => {
+  test("writes the access of a private library to publishConfig", async () => {
+    const { manifest } = await sync(
+      library.replace("{", '{ visibility: "private",'),
+      {
+        publishConfig: { access: "public" },
+      },
+    );
+
+    expect((await manifest()).publishConfig).toEqual({ access: "restricted" });
+  });
+
+  test("only writes devEngines.runtime and private outside the library preset", async () => {
     const { manifest } = await sync(`{ runtime: { node: 24 } }`, {});
 
     expect(await manifest()).toEqual({
       type: "module",
+      private: true,
       devEngines: {
         runtime: {
           name: "node",

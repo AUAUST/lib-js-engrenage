@@ -13,11 +13,15 @@ import {
   type ManagedListOption,
 } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
+import { accessByVisibility } from "#project/package/constants";
 import {
   packageJsonSection,
+  visibilitySection,
   writePackageJsonValue,
   type PackageJson,
+  type PublishAccess,
 } from "#project/package/index";
+import { traitsSection } from "#project/presets/index";
 import {
   isLeftAlone,
   toJsonValue,
@@ -41,11 +45,16 @@ interface Field {
 function createPackageFields(
   { optional: { version, license } }: PackageJson,
   { name }: ResolvedWorkspace,
+  access: PublishAccess | undefined,
 ): Field[] {
   const fields: Field[] = [
     { location: ["name"], value: name },
     { location: ["private"], value: true },
   ];
+
+  if (access !== undefined) {
+    fields.push({ location: ["publishConfig", "access"], value: access });
+  }
 
   if (version !== undefined) {
     fields.push({ location: ["version"], value: version });
@@ -128,12 +137,17 @@ async function createTsconfigEdits(
 }
 
 export async function syncWorkspaceFiles(config: LoadedConfig) {
-  const [groups, filesystem, resolvePath, packageJson] = await Promise.all([
-    config.resolve(workspacesSection),
-    config.context.filesystem,
-    config.context.path,
-    config.resolve(packageJsonSection),
-  ]);
+  const [groups, filesystem, resolvePath, packageJson, traits, visibility] =
+    await Promise.all([
+      config.resolve(workspacesSection),
+      config.context.filesystem,
+      config.context.path,
+      config.resolve(packageJsonSection),
+      config.resolve(traitsSection),
+      config.resolve(visibilitySection),
+    ]);
+
+  const access = traits.published ? accessByVisibility[visibility] : undefined;
 
   for (const group of groups) {
     for (const workspace of group.workspaces) {
@@ -142,7 +156,7 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
 
       await filesystem.write(
         packageFile,
-        createPackageFields(packageJson, workspace).reduce(
+        createPackageFields(packageJson, workspace, access).reduce(
           (current, { location, value }) => {
             return writePackageJsonValue(
               current,

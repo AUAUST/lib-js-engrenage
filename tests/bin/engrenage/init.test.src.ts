@@ -143,6 +143,7 @@ describe("engrenage init", () => {
 
       expect(JSON.parse(project.read("package.json"))).toEqual({
         ...JSON.parse(packageJson),
+        private: true,
         imports: { "#package.json": "./package.json" },
         devEngines: {
           runtime: {
@@ -497,9 +498,9 @@ describe("engrenage init", () => {
         "private",
       );
 
-      expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(
-        "publishConfig",
-      );
+      expect(JSON.parse(project.read("package.json")).publishConfig).toEqual({
+        access: "restricted",
+      });
 
       expect(existsSync(project.resolve("vite.config.ts"))).toBe(false);
       expect(project.read("tsdown.config.ts")).toContain("defineTsdownConfig");

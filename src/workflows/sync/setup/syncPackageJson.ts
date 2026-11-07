@@ -14,8 +14,10 @@ import {
   type ResolvedSource,
 } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
+import { accessByVisibility } from "#project/package/constants";
 import {
   createPackageJson,
+  visibilitySection,
   writePackageJsonValue,
 } from "#project/package/index";
 import { traitsSection } from "#project/presets/index";
@@ -118,11 +120,15 @@ async function createFields(config: LoadedConfig): Promise<Field[]> {
   const traits = await resolve(traitsSection);
 
   if (!traits.published) {
-    return [runtime];
+    return [runtime, { location: ["private"], value: true }];
   }
 
   return [
     runtime,
+    {
+      location: ["publishConfig", "access"],
+      value: accessByVisibility[await resolve(visibilitySection)],
+    },
     ...createEnginesFields({
       bin: await resolve(binSection),
       src: await resolve(sourceSection),

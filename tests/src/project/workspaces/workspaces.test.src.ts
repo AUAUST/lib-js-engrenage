@@ -113,6 +113,25 @@ describe("workspaces", () => {
     expect(process.exitCode).toBeUndefined();
   });
 
+  test("writes the access of a private library to each workspace", async () => {
+    const project = createProject();
+
+    project.write(
+      "engrenage.config.ts",
+      config.replace(
+        "{\n",
+        '{\n  preset: "library",\n  visibility: "private",\n',
+      ),
+    );
+
+    await runCommand(sync, "workspaces");
+
+    expect(
+      JSON.parse(project.read("extensions/action-a/package.json"))
+        .publishConfig,
+    ).toEqual({ access: "restricted" });
+  });
+
   test("reports a workspace file that drifted from the declaration", async () => {
     createProject().write(
       "extensions/action-b/package.json",
