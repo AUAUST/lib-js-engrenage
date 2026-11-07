@@ -8,7 +8,7 @@ import { validate } from "#foundation/options/utils/validate";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
-import { validateConfig } from "#workflows/registry/operations/validateConfig";
+import { validateConfig } from "#workflows/config/operations/validateConfig";
 import {
   runSync,
   syncTargets,

@@ -11,7 +11,7 @@ src/  foundation < project < tools < workflows  (global roles: types)
 ├─ project/  #project/…  config < roles < baseline < format < presets < steps < cache < tsconfig < package < environments < build < workspaces < structure  baseline*{editions} build config environments format* package* presets roles* steps structure tsconfig workspaces  Tool-agnostic project models and contract domains.
 │  └─ cache  Cache directory of the project's tools.
 ├─ tools/  #tools/…  agents*{claude* codex*} changesets* eslint* git* github* lefthook pnpm* prettier* tsdown* typescript* vite* vitest* vscode*  One domain per external tool, holding its adapters.
-└─ workflows/  #workflows/…  cli config* gate init registry sync  Composition of tools into the registry and commands.
+└─ workflows/  #workflows/…  cli config* gate init sync  Composition of tools into the config and commands.
 ```
 
 Effect levels, purest first: `pure` < `confined` < `effectful`. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other.

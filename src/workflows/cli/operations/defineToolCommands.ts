@@ -5,7 +5,7 @@ import { transformValues } from "@auaust/toolkit/transformValues";
 import { resolveBinary } from "#foundation/processes/index";
 import { loadConfig, type LoadedConfig } from "#project/config/index";
 import { successMessage } from "#workflows/cli/constants";
-import { validateConfig } from "#workflows/registry/index";
+import { validateConfig } from "#workflows/config/index";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";

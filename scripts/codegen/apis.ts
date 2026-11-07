@@ -14,7 +14,7 @@ export const apis = defineCommand((command) => {
         await import("#project/config/operations/loadConfig");
 
       const { validateConfig } =
-        await import("#workflows/registry/operations/validateConfig");
+        await import("#workflows/config/operations/validateConfig");
 
       const { generateApiDeclarations } =
         await import("#scripts/codegen/operations/generateApiDeclarations");

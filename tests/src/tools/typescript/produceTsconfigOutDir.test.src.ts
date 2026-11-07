@@ -2,12 +2,11 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, test } from "vitest";
 
-import { validate } from "#foundation/options/utils/validate";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
-import { configSchema } from "#workflows/registry/config/schemas/configSchema";
+import { validateConfig } from "#workflows/config/operations/validateConfig";
 
 const libraryPreset = fileURLToPath(
   new URL("../../../../data/tsconfig/library.json", import.meta.url),
@@ -21,20 +20,18 @@ async function syncOutDir(build: unknown, files: Record<string, string> = {}) {
     ...files,
   });
 
-  const config = createProjectConfig({
-    root: project.root,
-    raw: validate(
-      configSchema.schema,
-      withSourceRuntime({
+  const config = validateConfig(
+    createProjectConfig({
+      root: project.root,
+      raw: withSourceRuntime({
         build,
         typescript: {
           tsconfig: { extends: false },
         },
       }),
-      "test config",
-    ),
-    configFile: undefined,
-  });
+      configFile: undefined,
+    }),
+  );
 
   await syncTsconfigFiles(config);
   await config.context.filesystem.flush();

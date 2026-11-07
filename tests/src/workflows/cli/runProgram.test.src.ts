@@ -46,7 +46,7 @@ afterEach(() => {
   vi.unstubAllEnvs();
   vi.doUnmock("#workflows/cli/config/sections/debugSection");
   vi.doUnmock("#project/config/index");
-  vi.doUnmock("#workflows/registry/index");
+  vi.doUnmock("#workflows/config/index");
 
   process.exitCode = undefined;
 });
@@ -71,7 +71,7 @@ describe("runProgram", () => {
       throw new Error("config modules loaded");
     });
 
-    vi.doMock("#workflows/registry/index", () => {
+    vi.doMock("#workflows/config/index", () => {
       throw new Error("config modules loaded");
     });
 

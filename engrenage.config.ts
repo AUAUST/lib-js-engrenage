@@ -198,7 +198,7 @@ export default defineConfig({
         purpose: "One domain per external tool, holding its adapters.",
       },
       "workflows": {
-        purpose: "Composition of tools into the registry and commands.",
+        purpose: "Composition of tools into the config and commands.",
       },
     },
     // @debt `./config` resolves to `workflows/config` but `./config/constants` to `project/config`, and the constants subpaths are hand-listed beside the derived domain entries

@@ -4,7 +4,12 @@ import {
   type OverrideSchemaContext,
 } from "@valibot/to-json-schema";
 import { compile } from "json-schema-to-typescript-lite";
-import { getDescription, type BaseIssue, type BaseSchema } from "valibot";
+import {
+  getDescription,
+  strictObject,
+  type BaseIssue,
+  type BaseSchema,
+} from "valibot";
 
 import { map, sort } from "@auaust/primitive-kit/arrays";
 import { toPascalCase } from "@auaust/primitive-kit/strings";
@@ -14,12 +19,12 @@ import { isFunction } from "@auaust/toolkit/isFunction";
 import { isObject } from "@auaust/toolkit/isObject";
 import { isString } from "@auaust/toolkit/isString";
 import { mappedValues } from "@auaust/toolkit/mappedValues";
-import { entries, keys, values } from "@auaust/toolkit/object";
+import { entries, keys, record, values } from "@auaust/toolkit/object";
 
 import { globsSchema } from "#foundation/options/config/schemas/globsSchema";
 import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
 import { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModuleResolverSchema";
-import { configSchema } from "#workflows/registry/config/schemas/configSchema";
+import { listConfigSections } from "#workflows/config/operations/listConfigSections";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -349,16 +354,29 @@ function collectInputs(modules: SchemaModules): Map<AnySchema, DeclaredInput> {
   return inputs;
 }
 
+function composeSectionSchemas(): Record<string, AnySchema> {
+  return record(
+    entries(listConfigSections()).map(([name, { declaration }]) => {
+      if (declaration === undefined) {
+        throw new Error(`Config section ${name} has no declaration`);
+      }
+
+      return [name, declaration.schema] as const;
+    }),
+  );
+}
+
 function selectInputs(
   declared: ReadonlyMap<AnySchema, DeclaredInput>,
+  sections: Readonly<Record<string, AnySchema>>,
+  root: AnySchema,
 ): Map<AnySchema, DeclaredInput> {
-  const root = coreOf(configSchema.schema);
-  const counts = countObjects(configSchema.schema);
+  const counts = countObjects(root);
 
   const selected = new Map<AnySchema, DeclaredInput>();
 
   const wanted = [
-    ...values(configSchema.entries).map((section) => coreOf(section.schema)),
+    ...values(sections).map(coreOf),
     ...[...counts].filter(([, count]) => count > 1).map(([core]) => core),
   ];
 
@@ -467,7 +485,7 @@ async function render(
 
   delete jsonSchema.$defs;
 
-  // @debt the draft 07 JSON schema of valibot is asserted to the draft 04 type of json-schema-to-typescript-lite, which only differs by numeric exclusive bounds that configSchema does not use
+  // @debt the draft 07 JSON schema of valibot is asserted to the draft 04 type of json-schema-to-typescript-lite, which only differs by numeric exclusive bounds that the config sections do not use
   const document = resolveNamedReferences(jsonSchema) as Parameters<
     typeof compile
   >[0];
@@ -515,7 +533,9 @@ export async function generateConfigTypes(
   config: LoadedConfig,
   modules: SchemaModules,
 ) {
-  const inputs = selectInputs(collectInputs(modules));
+  const sections = composeSectionSchemas();
+  const root = strictObject(sections);
+  const inputs = selectInputs(collectInputs(modules), sections, root);
 
   const names = new Map(
     map([...inputs], ([core, { name }]) => [core, name] as const),
@@ -539,7 +559,7 @@ export async function generateConfigTypes(
     {
       name: composedName,
       domain: composedDomain,
-      core: coreOf(configSchema.schema),
+      core: root,
       description: undefined,
     },
   ];

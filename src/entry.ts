@@ -1,4 +1,4 @@
-// @debt the root entry publishes functions of internal domains (`foundation/blocks`, `foundation/filesystem`, `foundation/options`, `workflows/registry`), so "internal" does not mean unpublished
+// @debt the root entry publishes functions of internal domains (`foundation/blocks`, `foundation/filesystem`, `foundation/options`), so "internal" does not mean unpublished
 export {
   syncBlocks,
   syncFiles,
@@ -56,7 +56,7 @@ export { githubSection } from "#tools/github/index";
 export { prettierSection } from "#tools/prettier/index";
 export { vscodeSection } from "#tools/vscode/index";
 export { debugSection } from "#workflows/cli/index";
-export { validateConfig } from "#workflows/registry/index";
+export { validateConfig } from "#workflows/config/index";
 
 export type { LoadedConfig } from "#project/config/index";
 

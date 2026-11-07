@@ -3,9 +3,9 @@ import { Option } from "@commander-js/extra-typings";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { validateConfig } from "#workflows/config/operations/validateConfig";
 import { runGate } from "#workflows/gate/index";
 import { formatGateFailure } from "#workflows/gate/utils/formatGateFailure";
-import { validateConfig } from "#workflows/registry/operations/validateConfig";
 
 export const gate = defineCommand((command) => {
   return command

@@ -6,7 +6,7 @@ import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
-import { validateConfig } from "#workflows/registry/operations/validateConfig";
+import { validateConfig } from "#workflows/config/operations/validateConfig";
 
 async function add(name?: string) {
   const config = validateConfig(await loadConfig());

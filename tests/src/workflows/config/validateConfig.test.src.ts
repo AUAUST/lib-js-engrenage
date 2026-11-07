@@ -9,10 +9,10 @@ import { getFixture } from "#tests/utils/getFixture";
 import { agentsSection } from "#tools/agents/index";
 import { gitSection } from "#tools/git/index";
 import { prettierSection } from "#tools/prettier/index";
-import { validateConfig } from "#workflows/registry/operations/validateConfig";
+import { validateConfig } from "#workflows/config/operations/validateConfig";
 
 describe("validateConfig", () => {
-  test("rejects unknown keys, naming the file and each key path", async () => {
+  test("rejects an unknown key of a section, naming the file and the section", async () => {
     const root = getFixture("config/invalid");
 
     const config = await loadConfig(root);
@@ -21,9 +21,19 @@ describe("validateConfig", () => {
       join(root, "engrenage.config.ts"),
     );
 
+    expect(() => validateConfig(config)).toThrow("Invalid src config");
+    expect(() => validateConfig(config)).toThrow('Unknown key "generatd"');
+  });
+
+  test("rejects an unknown top-level key, naming it", async () => {
+    const project = createTemporaryProject({
+      "package.json": "{}",
+      "engrenage.config.ts": `export default { sources: ["src"] };\n`,
+    });
+
+    const config = await loadConfig(project.root);
+
     expect(() => validateConfig(config)).toThrow('Unknown key "sources"');
-    expect(() => validateConfig(config)).toThrow("at sources");
-    expect(() => validateConfig(config)).toThrow("at src.generatd");
   });
 
   test("validates every section eagerly while a partial resolution ignores the others", async () => {

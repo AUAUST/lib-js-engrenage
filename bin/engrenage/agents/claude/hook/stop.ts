@@ -9,9 +9,9 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { hashTree } from "#tools/git/index";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { validateConfig } from "#workflows/config/operations/validateConfig";
 import { runGate } from "#workflows/gate/index";
 import { formatGateFailure } from "#workflows/gate/utils/formatGateFailure";
-import { validateConfig } from "#workflows/registry/operations/validateConfig";
 
 const payloadSchema = object({
   agent_id: string(),

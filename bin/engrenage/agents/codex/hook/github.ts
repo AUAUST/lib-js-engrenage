@@ -7,7 +7,7 @@ import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindi
 import { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
 import { checkGithubWrite } from "#tools/github/index";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
-import { validateConfig } from "#workflows/registry/operations/validateConfig";
+import { validateConfig } from "#workflows/config/operations/validateConfig";
 
 const payloadSchema = object({
   cwd: string(),

@@ -10,7 +10,7 @@ import { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus
 import { createPrompter } from "#workflows/cli/operations/createPrompter";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
-import { validateConfig } from "#workflows/registry/operations/validateConfig";
+import { validateConfig } from "#workflows/config/operations/validateConfig";
 
 export const upgrade = defineCommand((command) => {
   return command
