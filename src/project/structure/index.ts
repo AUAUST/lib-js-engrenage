@@ -15,6 +15,7 @@ export * from "#project/structure/types/AliasesOption";
 export * from "#project/structure/types/BoundaryCause";
 export * from "#project/structure/types/BoundaryViolation";
 export * from "#project/structure/types/CardinalityViolation";
+export * from "#project/structure/types/EffectModule";
 export * from "#project/structure/types/EffectModuleResolver";
 export * from "#project/structure/types/EffectModules";
 export * from "#project/structure/types/Entity";
@@ -64,6 +65,7 @@ export * from "#project/structure/types/UnclassifiedReason";
 // @barrel config/schemas/*.ts named
 export { effectLevelsSchema } from "#project/structure/config/schemas/effectLevelsSchema";
 export { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModuleResolverSchema";
+export { effectModuleSchema } from "#project/structure/config/schemas/effectModuleSchema";
 export { effectModulesSchema } from "#project/structure/config/schemas/effectModulesSchema";
 export { effectsSchema } from "#project/structure/config/schemas/effectsSchema";
 export { structureSchema } from "#project/structure/config/schemas/structureSchema";
@@ -115,6 +117,7 @@ export { resolveRoles } from "#project/structure/utils/resolveRoles";
 
 // @barrel config/sections/*.ts named
 export { aliasesSection } from "#project/structure/config/sections/aliasesSection";
+export { effectModulesSection } from "#project/structure/config/sections/effectModulesSection";
 export { entitiesSection } from "#project/structure/config/sections/entitiesSection";
 export { environmentRolesSection } from "#project/structure/config/sections/environmentRolesSection";
 export { filesSection } from "#project/structure/config/sections/filesSection";

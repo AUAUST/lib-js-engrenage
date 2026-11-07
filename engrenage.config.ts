@@ -267,6 +267,7 @@ export default defineConfig({
   },
   data: {
     exports: {
+      "./effects/*.json": "data/effects/*.json",
       "./apis/*": "data/apis/*.d.ts",
       "./agents/templates/*.md": "data/agents/templates/*.md",
       "./agents/rules/*.md": "data/agents/rules/*.md",

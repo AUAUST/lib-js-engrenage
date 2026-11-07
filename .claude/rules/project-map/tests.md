@@ -13,7 +13,7 @@ tests/  (global roles: fixtures utils)
 └─ tooling/  mirrors tooling
 ```
 
-Effect levels, purest first: `pure` < `confined` < `effectful`. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other.
+Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other.
 
 | Role           | Purpose                                                                               | Imports where they differ |
 | -------------- | ------------------------------------------------------------------------------------- | ------------------------- |

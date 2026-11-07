@@ -76,11 +76,13 @@ export default defineConvention({
           specifier,
           binding,
           symbol,
+          imported,
         }: {
           reported: Rule.Node;
           specifier: string;
           binding: string;
           symbol: Symbol | undefined;
+          imported?: string;
         }) {
           const file = declaringFile(symbol);
 
@@ -96,7 +98,7 @@ export default defineConvention({
             file.fileName.includes("/node_modules/")
           ) {
             target = `the module \`${specifier}\``;
-            targetLevel = rankModule(effects, specifier);
+            targetLevel = rankModule(effects, specifier, imported);
 
             if (targetLevel === undefined) {
               return;
@@ -158,6 +160,7 @@ export default defineConvention({
             const specifier = String(declaration.source.value);
 
             if (declaration.specifiers.length === 0) {
+              // @debt module evaluation cannot be ranked separately from imported bindings, so bare side-effect imports use the module's highest binding level
               return void check({
                 reported: declaration,
                 specifier,
@@ -175,6 +178,15 @@ export default defineConvention({
                 reported: declaration,
                 specifier,
                 binding: imported.local.name,
+                ...(imported.type === "ImportSpecifier"
+                  ? {
+                      imported: imported.imported.type === "Identifier"
+                        ? imported.imported.name
+                        : String(imported.imported.value),
+                    }
+                  : imported.type === "ImportDefaultSpecifier"
+                    ? { imported: "default" }
+                    : {}),
                 symbol: symbolOf(imported.local),
               });
             }
@@ -205,6 +217,10 @@ export default defineConvention({
                 reported: declaration,
                 specifier: String(declaration.source.value),
                 binding:
+                  exported.local.type === "Identifier"
+                    ? exported.local.name
+                    : String(exported.local.value),
+                imported:
                   exported.local.type === "Identifier"
                     ? exported.local.name
                     : String(exported.local.value),

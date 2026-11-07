@@ -8,13 +8,13 @@ export const effectsSchema = declareObject(
   {
     levels: declare(effectLevelsSchema, {
       description:
-        "Effect levels, purest first, compared by index. They must contain `pure`, `confined` and `effectful` in that order and may add levels anywhere around them.",
-      optional: unset("`pure`, `confined`, `effectful`"),
+        "Effect levels, purest first, compared by index. They must contain `pure`, `confined`, `observing` and `effectful` in that order and may add levels anywhere around them.",
+      optional: unset("`pure`, `confined`, `observing`, `effectful`"),
     }),
     modules: declare(effectModulesSchema, {
       description:
-        "Levels of external modules, as a record of specifier glob to level or a function from a specifier to a level or `undefined`. A module is ranked by them, then by the built-in ranking of `node:*` builtins, then by `fallback`.",
-      optional: unset("none, so only the built-in ranking applies"),
+        "Levels of external modules, as a record of specifier glob to entry or a function from a specifier to an entry or `undefined`. An entry is a level or `{ default: level, symbols: { [exportName]: level } }`; `symbols.default` ranks the default export. Configured entries override the shipped table, then `fallback` ranks unknown modules. Namespace imports take the highest entry level.",
+      optional: unset("none, so only the shipped table applies"),
     }),
     fallback: declare(string(), {
       description:

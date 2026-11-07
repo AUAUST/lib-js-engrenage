@@ -14,21 +14,16 @@ export const elementEnvironments = freeze([
 export const defaultEffectLevels = freeze([
   "pure",
   "confined",
+  "observing",
   "effectful",
 ] as const);
 
-// @debt a hand-picked list: any other external module (`node:module`, `c12`, `yaml`) is unranked and importable from a pure role, so effect levels measure only these imports
-export const effectfulModules = freeze([
-  "node:fs",
-  "node:fs/promises",
-  "node:child_process",
-  "node:process",
-  "node:os",
-  "node:net",
-  "node:http",
-  "node:https",
-  "node:worker_threads",
-] as const);
+export const effectLevelPurposes = freeze({
+  pure: "Compute from arguments only, without observable changes.",
+  confined: "Mutate caller-owned values or maintain a private memo cache.",
+  observing: "Read the context or write diagnostics without changing state later operations read.",
+  effectful: "Change state later operations can read, including staged writes and spawned processes.",
+}) satisfies Readonly<Record<(typeof defaultEffectLevels)[number], string>>;
 
 export const noRoles = freeze({
   roles: freeze({}),

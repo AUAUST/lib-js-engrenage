@@ -95,6 +95,7 @@
     "./vitest/constants": "./dist/vitest/constants.mjs",
     "./vscode": "./dist/vscode.mjs",
     "./vscode/constants": "./dist/vscode/constants.mjs",
+    "./effects/*.json": "./data/effects/*.json",
     "./apis/*": "./data/apis/*.d.ts",
     "./agents/templates/*.md": "./data/agents/templates/*.md",
     "./agents/rules/*.md": "./data/agents/rules/*.md",

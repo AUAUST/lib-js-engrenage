@@ -1,1 +1,3 @@
-export type EffectModuleResolver = (specifier: string) => string | undefined;
+import type { EffectModule } from "#project/structure/types/EffectModule";
+
+export type EffectModuleResolver = (specifier: string) => EffectModule | undefined;

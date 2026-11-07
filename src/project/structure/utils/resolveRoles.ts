@@ -1,9 +1,11 @@
 import { isFunction } from "@auaust/toolkit/isFunction";
-import { entries, freeze, record } from "@auaust/toolkit/object";
+import { isString } from "@auaust/toolkit/isString";
+import { entries, freeze, record, values } from "@auaust/toolkit/object";
 
 import { defaultEffectLevels } from "#project/structure/constants";
 import { registerRoles } from "#project/structure/utils/registerRoles";
 import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
+import type { EffectModules } from "#project/structure/types/EffectModules";
 import type { ResolvedEffects } from "#project/structure/types/ResolvedEffects";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
@@ -14,9 +16,10 @@ import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
 function resolveEffects(
   effects: RoleEffects,
   environment: RoleEnvironment,
+  defaults: EffectModules | undefined,
 ): ResolvedEffects {
   const levels = effects.levels ?? defaultEffectLevels;
-  const modules = effects.modules === undefined ? [] : [effects.modules];
+  const modules = [effects.modules, defaults].filter((module) => module !== undefined);
   const { fallback } = effects;
 
   function assertLevel(level: string, subject: string) {
@@ -34,7 +37,15 @@ function resolveEffects(
   for (const ranking of modules) {
     if (!isFunction(ranking)) {
       for (const [pattern, level] of entries(ranking)) {
-        assertLevel(level, `The modules ${pattern}`);
+        if (isString(level)) {
+          assertLevel(level, `The modules ${pattern}`);
+        } else {
+          assertLevel(level.default, `The modules ${pattern}`);
+
+          for (const symbolLevel of values(level.symbols)) {
+            assertLevel(symbolLevel, `The symbols of ${pattern}`);
+          }
+        }
       }
     }
   }
@@ -50,6 +61,7 @@ export function resolveRoles({
   environment,
   roles,
   effects,
+  defaultModules,
   verbatimModuleSyntax,
   defined,
   scopes = [],
@@ -78,7 +90,7 @@ export function resolveRoles({
     }
   }
 
-  const resolvedEffects = resolveEffects(effects, environment);
+  const resolvedEffects = resolveEffects(effects, environment, defaultModules);
   const resolved: Record<string, ResolvedRoleContract> = {};
 
   for (const [name, contract] of entries(registry.contracts)) {
