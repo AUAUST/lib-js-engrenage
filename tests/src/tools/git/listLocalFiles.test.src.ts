@@ -58,6 +58,7 @@ describe("listLocalFiles", () => {
     );
 
     const base = project.resolve("packages/app");
+
     const resolved = await (await loadConfig(base)).resolve(gitSection);
 
     expect(

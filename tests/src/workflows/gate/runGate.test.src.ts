@@ -63,7 +63,9 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     git("add", "--force", ".ai/issues/1.md", ".env.local");
 
     const config = await loadConfig(project.root);
+
     const options = { mode: "staged", audience: "everyone" } as const;
+
     const { failures } = await runGate(config, options);
 
     expect(failures).toEqual([

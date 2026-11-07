@@ -36,6 +36,7 @@ async function hasReferencedEnvironment(
 ): Promise<boolean> {
   for (const name of tsconfigEnvironments) {
     const { active, tsconfig } = await resolveTsconfigEnvironment(config, name);
+
     const { owner, check } = tsconfig;
 
     if (active && owner === name && check) {
@@ -48,9 +49,11 @@ async function hasReferencedEnvironment(
 
 async function resolveDistProject(config: LoadedConfig): Promise<File> {
   const { active } = await config.resolve(testsSection);
+
   const tests = await config.resolve(testsSection);
 
   const { owner, file } = tests.dist.tsconfig;
+
   const path = await tests.dist.tsconfig.path;
 
   if (!active) {

@@ -16,6 +16,7 @@ async function getNames(config: LoadedConfig, name: string | undefined) {
   }
 
   const filesystem = config.context.filesystem;
+
   const agents = await config.resolve(agentsSection);
 
   const templates = await getSkillTemplates({ agents });

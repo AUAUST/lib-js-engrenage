@@ -49,6 +49,7 @@ describe("syncHooks", () => {
     const config = await loadConfig(project.root);
 
     await syncClaudeSettings(config);
+
     await config.context.filesystem.flush();
 
     const { hooks } = JSON.parse(project.read(".claude/settings.json"));

@@ -81,6 +81,7 @@ describe("createVitestConfig", () => {
     });
 
     const config = await loadConfig(project.root);
+
     const env = { command: "serve", mode: "test" } as const;
 
     expect((await createVitestConfig(config, env)).test?.setupFiles).toEqual([

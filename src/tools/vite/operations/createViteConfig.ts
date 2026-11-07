@@ -16,7 +16,9 @@ export async function createViteConfig(
   { isTesting }: { isTesting: boolean },
 ): Promise<Config> {
   const root = config.context.root;
+
   const { sourcemap, clean } = await config.resolve(buildSection);
+
   const outDir = await config.resolve(buildOutDirSection);
 
   const tsconfig = await config.resolve(tsconfigPathSection);

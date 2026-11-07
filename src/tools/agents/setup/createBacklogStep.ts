@@ -72,6 +72,7 @@ export function createBacklogStep(): Step {
     },
     async plan(context) {
       const { filesystem, resolve } = context;
+
       const agents = await resolve(agentsSection);
 
       if (!(await filesystem.exists(backlogIndex))) {
@@ -103,6 +104,7 @@ export function createBacklogStep(): Step {
       }
 
       await addAgentRules({ filesystem, agents }, ["backlog"]);
+
       await addAgentSkills({ filesystem, agents }, skills);
 
       await syncAgentFiles(context);

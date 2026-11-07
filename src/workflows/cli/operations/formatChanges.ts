@@ -8,6 +8,7 @@ export async function formatChanges({
   context,
 }: LoadedConfig): Promise<Filesystem[]> {
   const git = await resolve(gitSection);
+
   const filesystems = [...new Set([context.filesystem, git.filesystem])];
 
   await Promise.all(

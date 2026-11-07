@@ -49,9 +49,11 @@ function createProject(peers = 0) {
 
 async function sync(peers?: number) {
   const project = createProject(peers);
+
   const config = await loadConfig(project.root);
 
   await syncAgents(config);
+
   await config.context.filesystem.flush();
 
   return { project, config };
@@ -76,6 +78,7 @@ describe("project map", () => {
 
   test("peer domains add no line to the src map", async () => {
     const few = await sync();
+
     const many = await sync(10);
 
     expect(many.project.read(sourceFile)?.split("\n")).toHaveLength(
@@ -98,6 +101,7 @@ describe("project map", () => {
     );
 
     await config.context.filesystem.flush();
+
     await syncAgents(config);
 
     expect(await config.context.filesystem.flush()).toEqual(

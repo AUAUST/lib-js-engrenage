@@ -8,6 +8,7 @@ export async function createProjectIgnores(
   config: LoadedConfig,
 ): Promise<readonly GlobGroup[]> {
   const outDir = await config.resolve(buildOutDirSection);
+
   const { coverageDir } = await config.resolve(testsSection);
 
   return [

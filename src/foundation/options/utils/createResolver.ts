@@ -155,6 +155,7 @@ export function createResolver<Context>(
     }
 
     const pending = memos.get(section) ?? memoize(section);
+
     const reading = await pending;
 
     if (!(await isStale(reading))) {

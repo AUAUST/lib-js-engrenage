@@ -184,6 +184,7 @@ describe("workspaces", () => {
     const project = createProject();
 
     const config = await loadConfig(project.root);
+
     const importRules = await config.resolve(importRulesSection);
 
     function targets(source: string, effect: "allow" | "forbid") {
@@ -247,6 +248,7 @@ describe("workspace modules", () => {
     const resolved = await loadConfig(project.root);
 
     await runSync(resolved, { names: ["tsconfig", "aliases", "workspaces"] });
+
     await resolved.context.filesystem.flush();
 
     execFileSync(

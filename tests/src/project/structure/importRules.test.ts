@@ -92,6 +92,7 @@ describe("import rules", () => {
     });
 
     const config = await loadConfig(project.root);
+
     const rules = await config.resolve(importRulesSection);
 
     expect(reached(rules, "src/features/a")).not.toContain(
@@ -128,6 +129,7 @@ describe("import rules", () => {
 
   test("restricts test files by variant in a library and not in an app", async () => {
     const library = await resolveRules('preset: "library", ');
+
     const app = await resolveRules("", renderCodeRoles());
 
     function forbidden(rules: Rules) {

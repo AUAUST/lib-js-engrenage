@@ -194,6 +194,7 @@ describe("structure", () => {
 
   test("never walks the project root as an environment directory", async () => {
     const project = createProject("{}");
+
     const config = await loadConfig(project.root);
 
     expect(
@@ -216,6 +217,7 @@ describe("structure", () => {
       });
 
       const config = await loadConfig(project.root);
+
       const structure = (await config.resolve(structureSection)).tests!;
 
       return {

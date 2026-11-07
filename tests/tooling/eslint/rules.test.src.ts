@@ -56,6 +56,7 @@ async function createLinter() {
 describe("tooling role rules", () => {
   test("report a section export not built by declareSection(…)", async () => {
     const lint = await createLinter();
+
     const file = "src/project/listed/config/sections/listedSection.ts";
 
     expect(
@@ -72,6 +73,7 @@ describe("tooling role rules", () => {
 
   test("report a definer its domain's entry does not export, never a schema", async () => {
     const lint = await createLinter();
+
     const definer = "export function define$Config() {}\n";
 
     expect(

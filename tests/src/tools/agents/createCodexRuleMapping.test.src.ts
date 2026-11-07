@@ -12,6 +12,7 @@ describe("createCodexRuleMapping", () => {
     });
 
     const filesystem = createFilesystem(project.root);
+
     const mapping = await createCodexRuleMapping({ filesystem });
 
     expect(mapping).toContain(

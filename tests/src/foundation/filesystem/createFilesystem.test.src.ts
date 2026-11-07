@@ -15,7 +15,9 @@ describe("createFilesystem", () => {
     const filesystem = createFilesystem(project.root);
 
     await filesystem.write("existing.txt", "new\n");
+
     await filesystem.write(project.resolve("nested/created.txt"), "created\n");
+
     await filesystem.write("unchanged.txt", "same\n");
 
     expect(await filesystem.read("nested/created.txt")).toBe("created\n");
@@ -53,10 +55,13 @@ describe("createFilesystem", () => {
     const filesystem = createFilesystem(project.root);
 
     await filesystem.write("existing.txt", "new\n");
+
     await filesystem.write("created.txt", "created\n");
+
     await filesystem.write("blocker/unwritable.txt", "never written\n");
 
     await expect(filesystem.flush()).rejects.toThrow();
+
     expect(project.read("existing.txt")).toBe("old\n");
     expect(existsSync(project.resolve("created.txt"))).toBe(false);
 
@@ -75,8 +80,11 @@ test("stages deletions, hides them from globs and restores them if flush fails",
   const filesystem = createFilesystem(project.root);
 
   await filesystem.remove("existing.txt");
+
   await filesystem.remove("absent.txt");
+
   await filesystem.write("transient.txt", "temporary");
+
   await filesystem.remove("transient.txt");
 
   expect(await filesystem.exists("existing.txt")).toBe(false);
@@ -91,6 +99,7 @@ test("stages deletions, hides them from globs and restores them if flush fails",
   await filesystem.write("blocker/unwritable.txt", "fail");
 
   await expect(filesystem.flush()).rejects.toThrow();
+
   expect(project.read("existing.txt")).toBe("Keep me.\n");
 
   filesystem.discard();

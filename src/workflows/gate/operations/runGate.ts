@@ -95,6 +95,7 @@ async function createSteps(config: LoadedConfig): Promise<{
   const { root } = config.context;
 
   const environment = await config.resolve(environmentSection);
+
   const { gate } = await config.resolve(agentsSection);
 
   const fixes: GateStep[] = [];
@@ -224,6 +225,7 @@ async function measureEntries(
   files: Files,
 ): Promise<BudgetFinding[]> {
   const { root } = config.context;
+
   const { budgets } = await config.resolve(agentsSection);
 
   const findings = await Promise.all(
@@ -255,6 +257,7 @@ export async function runGate(
 
   if (mode === "staged") {
     const git = await config.resolve(gitSection);
+
     const globs = await listLocalFilePatterns(config);
 
     const local: GateStep = {

@@ -38,6 +38,7 @@ async function createSourcePlugins(
   guardOutDir: boolean,
 ): Promise<Plugin[]> {
   const outDir = await config.resolve(buildOutDirSection);
+
   const packageJson = await config.resolve(packageJsonSection);
 
   const packageName = packageJson.optional.name;
@@ -116,6 +117,7 @@ export async function createVitestConfig(
   } = validate(optionsSchema, options ?? {}, "Vitest options");
 
   const testsBuild = mode === buildMode;
+
   const tests = await config.resolve(testsSection);
 
   if (testsBuild && tests.active) {
@@ -141,6 +143,7 @@ export async function createVitestConfig(
     : tests.tsconfig.path);
 
   const include = await createTestsInclude(config, testsBuild);
+
   const { fixtures } = await config.resolve(filesSection);
 
   return {

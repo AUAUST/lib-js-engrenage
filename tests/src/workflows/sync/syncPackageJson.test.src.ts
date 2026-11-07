@@ -141,6 +141,7 @@ describe("syncPackageJson", () => {
     ]);
 
     await resolved.context.filesystem.flush();
+
     await syncPackageJson(resolved);
 
     expect(resolved.context.filesystem.changes()).toEqual([]);
@@ -180,6 +181,7 @@ describe("syncPackageJson", () => {
     );
 
     await syncPackageJson(resolved);
+
     await resolved.context.filesystem.flush();
 
     expect(JSON.parse(project.read("package.json"))).not.toHaveProperty(

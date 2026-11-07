@@ -34,9 +34,11 @@ export const stop = defineCommand((command) => {
 
     // @debt the stop-marker logic lives in `bin` instead of the gate workflow, and its per-agent markers are never removed.
     const { root } = config.context;
+
     const cache = await config.resolve(cacheSection);
 
     const marker = resolveWithin(root, cache.for("gate"), "stops", agent);
+
     const tree = await hashTree(root, "worktree");
 
     const stopped = await readTextFile(marker);
@@ -46,6 +48,7 @@ export const stop = defineCommand((command) => {
     }
 
     await mkdir(dirname(marker), { recursive: true });
+
     await writeFile(marker, `${tree}\n`);
 
     process.stderr.write(

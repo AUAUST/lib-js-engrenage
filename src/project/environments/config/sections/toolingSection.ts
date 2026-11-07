@@ -15,7 +15,9 @@ export const toolingSection = declareSection({
   name: "tooling",
   async resolve(_input, config: Resolver<ConfigContext>) {
     const { node } = await config.resolve(runtimeSection);
+
     const option = await config.resolve(toolingOptionsSection);
+
     const typescript = await config.resolve(typescriptOptionsSection);
 
     const { files } = option;

@@ -368,6 +368,7 @@ describe("structure boundaries", () => {
       "If this file is intended as a barrel, enable `index` on the role.";
 
     const lint = await createLinter("auaust/", createBarrelProject());
+
     const utils = "src/project/feature/utils/index.ts";
 
     expect(await lint(utils, "export const index = 1;\n")).toEqual([]);

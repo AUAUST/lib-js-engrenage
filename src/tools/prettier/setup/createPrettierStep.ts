@@ -13,6 +13,7 @@ export function createPrettierStep(): Step {
     },
     async plan({ writePackageJson, addDevDependency }) {
       await writePackageJson([prettier], `${engrenage}/prettier`);
+
       await addDevDependency(prettier);
     },
   };

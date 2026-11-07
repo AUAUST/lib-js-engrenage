@@ -187,6 +187,7 @@ function splitPipelines(tokens: readonly Token[]): Pipeline[] {
     if (isString(token)) {
       command.push(token);
       piped = false;
+
       continue;
     }
 
@@ -196,6 +197,7 @@ function splitPipelines(tokens: readonly Token[]): Pipeline[] {
 
     if ("pattern" in token) {
       command.push(token.pattern);
+
       continue;
     }
 
@@ -204,12 +206,14 @@ function splitPipelines(tokens: readonly Token[]): Pipeline[] {
 
       command.push({ process });
       index = next;
+
       continue;
     }
 
     if (pipes.has(token.op)) {
       closeCommand();
       piped = true;
+
       continue;
     }
 

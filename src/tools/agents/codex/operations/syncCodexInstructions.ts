@@ -32,6 +32,7 @@ export async function syncCodexInstructions({
     }
 
     await syncCodexSkill(filesystem, template);
+
     installed.push(template);
   }
 

@@ -25,6 +25,7 @@ async function createDefaultExtends(
   }
 
   const tests = await config.resolve(testsSection);
+
   const typescript = await config.resolve(typescriptSection);
 
   const parent =

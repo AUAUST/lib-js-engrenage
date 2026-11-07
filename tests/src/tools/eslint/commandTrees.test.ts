@@ -52,6 +52,7 @@ async function createLinter() {
 describe("command trees", () => {
   test("accept command modules and the declarations of a group index", async () => {
     const { project, lint } = await createLinter();
+
     const config = await loadConfig(project.root);
 
     expect(

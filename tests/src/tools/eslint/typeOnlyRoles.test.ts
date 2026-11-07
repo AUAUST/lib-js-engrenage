@@ -80,6 +80,7 @@ describe("type-only roles", () => {
 
   test("allow only type re-exports", async () => {
     const lint = await createLinter();
+
     const file = "src/project/feature/types/Own.ts";
     const source = '"#project/feature/utils/own"';
 

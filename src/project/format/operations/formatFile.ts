@@ -11,6 +11,7 @@ export async function formatFile(
   { root, formatter }: { root: Directory; formatter: Formatter },
 ): Promise<void> {
   const file = resolve(root, path);
+
   const content = await readFile(file, "utf-8");
 
   const formatted = await formatContent(content, {

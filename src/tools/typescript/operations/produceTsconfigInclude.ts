@@ -30,7 +30,9 @@ async function createDefaultInclude(
   );
 
   const { defines } = await resolveTsconfigEnvironment(config, owner);
+
   const root = config.context.root;
+
   const { envFile } = await config.resolve(typescriptSection);
 
   return () => {

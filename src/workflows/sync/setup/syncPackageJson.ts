@@ -63,7 +63,9 @@ function createEnginesFields({
 
 async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
   const { resolve, context } = config;
+
   const { sourcemap } = await resolve(buildSection);
+
   const directory = await resolve(buildOutDirSection);
 
   if (directory === undefined) {
@@ -141,6 +143,7 @@ export async function syncPackageJson(config: LoadedConfig) {
   const { context } = config;
 
   const root = context.root;
+
   const fields = await createFields(config);
 
   await syncFiles(

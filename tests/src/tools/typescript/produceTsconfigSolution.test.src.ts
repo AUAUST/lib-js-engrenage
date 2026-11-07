@@ -36,6 +36,7 @@ async function syncProject(input: Record<string, unknown>, testSource = "") {
   });
 
   await syncTsconfigFiles(config);
+
   await config.context.filesystem.flush();
 
   return {

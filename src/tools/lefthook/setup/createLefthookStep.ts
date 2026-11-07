@@ -18,6 +18,7 @@ const prepareLocation: [string, string] = ["scripts", "prepare"];
 
 async function listCommands(context: StepContext) {
   const variables = listGateVariables(await context.resolve(agentsSection));
+
   const local = await listLocalFilePatterns(context);
 
   return renderGateCommand(variables, local.length > 0);

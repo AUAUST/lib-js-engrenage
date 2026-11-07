@@ -54,6 +54,7 @@ export async function produceTsconfigOutDir(
   }
 
   const inherited = await resolveInheritedOutDir(config, target);
+
   const resolvePath = config.context.path;
 
   if (inherited !== undefined && resolve(inherited) === resolvePath(outDir)) {

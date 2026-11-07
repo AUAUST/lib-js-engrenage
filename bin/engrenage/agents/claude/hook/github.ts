@@ -29,7 +29,9 @@ export const github = defineCommand((command) => {
     }
 
     const config = await loadValidatedConfig(cwd);
+
     const agents = await config.resolve(agentsSection);
+
     const { budgets } = agents;
 
     reportBudgetFindings(measureGithubCommand(shellCommand, budgets), {

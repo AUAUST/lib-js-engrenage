@@ -15,6 +15,7 @@ describe("resolveConventionSections", () => {
     });
 
     const config = await loadConfig(project.root, { searchParents: false });
+
     const spied = { ...config };
     const resolve = vi.spyOn(spied, "resolve");
 

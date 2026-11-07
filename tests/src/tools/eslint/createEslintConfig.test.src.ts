@@ -944,6 +944,107 @@ export function pick(value: Value): number {
     }
   });
 
+  test.each([
+    [
+      "awaits",
+      "async function run() { before();\nawait work();\nafter(); }",
+      2,
+    ],
+    [
+      "awaits",
+      "const before = 1;\nconst result = await work();\nconst after = 2;",
+      2,
+    ],
+    ["awaits", "before();\nresult = await work();\nafter();", 2],
+    ["awaits", "const before = 1;\nexport const result = await work();", 1],
+    ["awaits", "async function run() { await work(); }", 0],
+    ["awaits", "await first();\nawait second();", 1],
+    ["awaits", "before();\n\nawait work();\n\nafter();", 0],
+    [
+      "awaits",
+      "before();\nexpect(await runGate(await loadConfig(root), { mode: 'staged' })).toEqual();\nafter();",
+      0,
+    ],
+    [
+      "awaits",
+      "const before = 1;\nconst result = wrap(await work());\nconst after = 2;",
+      0,
+    ],
+    ["breaks", "while (ready) { before();\nbreak;\nafter(); }", 2],
+    ["breaks", "while (ready) { break; }", 0],
+    ["breaks", "while (ready) { break;\nbreak; }", 1],
+    ["breaks", "outer: while (ready) { before();\nbreak outer; }", 1],
+    ["continues", "while (ready) { before();\ncontinue;\nafter(); }", 2],
+    ["continues", "while (ready) { continue; }", 0],
+    ["continues", "while (ready) { continue;\ncontinue; }", 1],
+    ["yields", "function* run() { before();\nyield work();\nafter(); }", 2],
+    ["yields", "function* run() { yield work(); }", 0],
+    ["yields", "function* run() { yield first();\nyield* second(); }", 1],
+    [
+      "yields",
+      "function* run() { const before = 1;\nconst result = yield work();\nconst after = 2; }",
+      2,
+    ],
+  ])("pads %s in %s", async (kind, source, count) => {
+    const eslint = await getLinter({ typeAware: false });
+
+    const [result] = await eslint.lintText(source, {
+      filePath: "src/padding.ts",
+    });
+
+    const messages = (result?.messages ?? []).filter((message) => {
+      return message.ruleId === `auaust/padded-${kind}`;
+    });
+
+    expect(messages).toHaveLength(count);
+
+    for (const message of messages) {
+      expect(message.fix?.text).toBe("\n");
+    }
+  });
+
+  test("fixes awaited declarations without disrupting declaration groups", async () => {
+    const eslint = await getLinter({ typeAware: false }, true);
+
+    const source = `export async function run() {
+  const first = 1;
+  const result = await Promise.resolve(first);
+  const second = result;
+  const third = second;
+
+  return third;
+}
+`;
+
+    const fixed = `export async function run() {
+  const first = 1;
+
+  const result = await Promise.resolve(first);
+
+  const second = result;
+  const third = second;
+
+  return third;
+}
+`;
+
+    const [result] = await eslint.lintText(source, {
+      filePath: "src/padding.ts",
+    });
+
+    expect(result?.output).toBe(fixed);
+
+    expect(result?.messages).toEqual([]);
+
+    const [rechecked] = await eslint.lintText(fixed, {
+      filePath: "src/padding.ts",
+    });
+
+    expect(rechecked?.output).toBeUndefined();
+
+    expect(rechecked?.messages).toEqual([]);
+  });
+
   test("wraps case statements in a block, declarations included", async () => {
     const eslint = await getLinter(
       {

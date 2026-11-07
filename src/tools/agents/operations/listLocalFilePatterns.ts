@@ -10,6 +10,7 @@ export async function listLocalFilePatterns(
   config: LoadedConfig,
 ): Promise<Globs> {
   const git = await config.resolve(gitSection);
+
   const file = await git.gitignore;
 
   const ignored =

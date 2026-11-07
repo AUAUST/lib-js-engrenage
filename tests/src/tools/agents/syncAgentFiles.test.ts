@@ -39,6 +39,7 @@ describe("syncAgentFiles", () => {
 
   test("resolves snippets, references relative to the file and package specifiers", async () => {
     const config = await loadConfig(root);
+
     const references = await resolveSections(config);
 
     expect(await resolveAgentReference(references, "shared.md", from)).toBe(
@@ -143,6 +144,7 @@ describe("syncAgentFiles", () => {
     });
 
     const config = await loadConfig(project.root);
+
     const { filesystem } = config.context;
 
     await syncAgentFiles(config);

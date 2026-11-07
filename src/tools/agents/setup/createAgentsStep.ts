@@ -29,6 +29,7 @@ export function createAgentsStep(): Step {
         .join("\n");
 
       const text = await readFile(template, "utf-8");
+
       const body = text.trimEnd();
 
       await filesystem.write(

@@ -15,6 +15,7 @@ import type { LoadedConfig } from "#project/config/index";
 
 export async function syncLefthookConfig(config: LoadedConfig) {
   const { resolve, context } = config;
+
   const content = await context.filesystem.read(lefthookFile);
 
   if (content === undefined) {
@@ -22,6 +23,7 @@ export async function syncLefthookConfig(config: LoadedConfig) {
   }
 
   const variables = listGateVariables(await resolve(agentsSection));
+
   const local = await listLocalFilePatterns(config);
 
   const document = parseDocument(content);

@@ -25,6 +25,7 @@ async function createContext(content: string) {
 describe("createWorkspaceStep", () => {
   test("adds approvals to an empty workspace file", async () => {
     const context = await createContext("# Workspace\n");
+
     const step = createWorkspaceStep();
 
     expect(await step.isMissing(context)).toBe(true);
@@ -44,6 +45,7 @@ describe("createWorkspaceStep", () => {
       const content = `# Workspace\npackages:\n  - packages/*\n${builds}minimumReleaseAgeExclude:\n  - internal-package\n`;
 
       const context = await createContext(content);
+
       const step = createWorkspaceStep();
 
       expect(await step.isMissing(context)).toBe(true);

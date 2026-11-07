@@ -26,7 +26,9 @@ describe("syncCodexFiles", () => {
     const config = await loadConfig(project.root);
 
     await syncAgentFiles(config);
+
     await syncCodexFiles(config);
+
     await config.context.filesystem.flush();
 
     const result = project.read("AGENTS.override.md");
@@ -49,6 +51,7 @@ describe("syncCodexFiles", () => {
     );
 
     await syncCodexFiles(config);
+
     expect(config.context.filesystem.changes()).toEqual([]);
 
     await config.context.filesystem.write(
@@ -82,6 +85,7 @@ describe("syncCodexFiles", () => {
     });
 
     const config = await loadConfig(project.root);
+
     const { filesystem } = config.context;
 
     await syncCodexFiles(config);
@@ -110,6 +114,7 @@ describe("syncCodexFiles", () => {
     );
 
     await filesystem.flush();
+
     await syncCodexFiles(config);
 
     expect(filesystem.changes()).toEqual([]);

@@ -18,6 +18,7 @@ export const testsSection = declareSection({
   name: "tests",
   async resolve(_input, config: Resolver<ConfigContext>) {
     const { node } = await config.resolve(runtimeSection);
+
     const option = await config.resolve(testsOptionsSection);
 
     function pattern(variant: string): Globs {

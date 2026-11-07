@@ -213,6 +213,7 @@ describe("import effects", () => {
 
   test("rank a file at a role's root by the nested role its name matches", async () => {
     const lint = await createLinter({ roles: [config()] });
+
     const act = importing("#foundation/base/index", "act");
 
     expect(

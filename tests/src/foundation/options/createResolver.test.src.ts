@@ -127,6 +127,7 @@ describe("createResolver", () => {
     const { resolve } = createResolver({}, undefined);
 
     await resolve(derived);
+
     await resolve(derived);
 
     expect(calls).toBe(1);

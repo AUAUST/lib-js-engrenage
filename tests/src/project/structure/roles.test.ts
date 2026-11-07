@@ -22,6 +22,7 @@ describe("roles", () => {
     });
 
     const config = await loadConfig(project.root);
+
     const roles = await config.resolve(environmentRolesSection);
 
     expect(roles.src.roles).toEqual({

@@ -53,6 +53,7 @@ export async function checkIssue(
   audience: IssueAudience = "worker",
 ): Promise<IssueFinding[]> {
   const issue = await fetchIssue(access, number);
+
   const parsed = parseIssueBody(issue.body);
 
   if (audience === "debugger") {

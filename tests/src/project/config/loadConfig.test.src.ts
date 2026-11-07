@@ -309,6 +309,7 @@ describe("loadConfig", () => {
     });
 
     const defaultsConfig = await loadConfig(defaults.root);
+
     const movedConfig = await loadConfig(moved.root);
 
     expect((await defaultsConfig.resolve(cacheSection)).for("eslint")).toBe(
@@ -334,6 +335,7 @@ describe("traits", () => {
 
   test("resolves the library preset to the published trait, which brings the dist mode", async () => {
     const library = await resolve('preset: "library"');
+
     const app = await resolve("");
 
     expect(await library.resolve(traitsSection)).toEqual({ published: true });

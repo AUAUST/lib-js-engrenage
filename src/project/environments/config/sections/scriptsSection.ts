@@ -12,6 +12,7 @@ export const scriptsSection = declareSection({
   name: "scripts",
   async resolve(_input, config: Resolver<ConfigContext>) {
     const { node } = await config.resolve(runtimeSection);
+
     const option = await config.resolve(scriptsOptionsSection);
 
     return freeze(

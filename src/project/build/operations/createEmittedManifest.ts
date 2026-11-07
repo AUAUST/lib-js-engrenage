@@ -67,6 +67,7 @@ export function createEmittedManifest({
     }
 
     await mkdir(dirname(manifest), { recursive: true });
+
     await writeFile(manifest, JSON.stringify([...emitted].sort()));
   }
 

@@ -31,6 +31,7 @@ describe("syncLefthookConfig", () => {
       const config = await loadConfig(project.root);
 
       await syncLefthookConfig(config);
+
       await config.context.filesystem.flush();
 
       expect(parse(project.read("lefthook.yml"))).toEqual({
@@ -54,6 +55,7 @@ describe("syncLefthookConfig", () => {
     const config = await loadConfig(project.root);
 
     await syncLefthookConfig(config);
+
     await config.context.filesystem.flush();
 
     expect(parse(project.read("lefthook.yml"))).toEqual({
@@ -76,6 +78,7 @@ describe("syncLefthookConfig", () => {
     const config = await loadConfig(project.root);
 
     await syncLefthookConfig(config);
+
     await config.context.filesystem.flush();
 
     const content = project.read("lefthook.yml");
@@ -112,6 +115,7 @@ describe("syncLefthookConfig", () => {
     const config = await loadConfig(project.root);
 
     await syncLefthookConfig(config);
+
     await config.context.filesystem.flush();
 
     expect(project.read("lefthook.yml")).toContain("$CLAUDECODE");

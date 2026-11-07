@@ -30,6 +30,7 @@ async function syncCompilerOptions(
   });
 
   await syncTsconfigFiles(config);
+
   await config.context.filesystem.flush();
 
   return (file: string) => JSON.parse(project.read(file)).compilerOptions;
@@ -134,6 +135,7 @@ describe("runtime tsconfig fields", () => {
     });
 
     await syncTsconfigFiles(config);
+
     await config.context.filesystem.flush();
 
     const options = JSON.parse(
@@ -199,6 +201,7 @@ describe("runtime tsconfig fields", () => {
     });
 
     await syncTsconfigFiles(config);
+
     await config.context.filesystem.flush();
 
     const options = JSON.parse(
@@ -290,6 +293,7 @@ describe("runtime tsconfig fields", () => {
     });
 
     await syncTsconfigFiles(config);
+
     await config.context.filesystem.flush();
 
     const options = JSON.parse(

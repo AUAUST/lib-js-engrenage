@@ -12,6 +12,7 @@ const words = (count: number) =>
 
 async function loadBudgets(root: string) {
   const config = await loadConfig(root);
+
   const { budgets } = await config.resolve(agentsSection);
 
   return budgets;

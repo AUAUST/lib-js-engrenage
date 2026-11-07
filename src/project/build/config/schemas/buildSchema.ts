@@ -26,6 +26,7 @@ export const buildSchema = declareObject(
           "`compilerOptions.outDir` of the base tsconfig; building fails when neither is set",
         async compute(context: OutDirContext) {
           const { optional } = await context.tsconfig();
+
           const { outDir } = optional;
 
           return outDir === undefined || !isWithin(context.root, outDir)

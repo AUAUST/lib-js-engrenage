@@ -39,6 +39,7 @@ async function sync(root: string) {
   const config = await loadConfig(root);
 
   await syncAgentFiles(config);
+
   await syncClaudeSettings(config);
 
   return config.context.filesystem;

@@ -47,6 +47,7 @@ describe("createEmittedManifest", () => {
     const { outDir, build } = createBuild();
 
     await build(["a.mjs", "b.mjs"]);
+
     await build(["a.mjs"]);
 
     expect(existsSync(join(outDir, "host.txt"))).toBe(true);

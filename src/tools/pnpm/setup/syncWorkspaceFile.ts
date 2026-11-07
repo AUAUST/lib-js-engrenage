@@ -18,6 +18,7 @@ export async function syncWorkspaceFile({ resolve, context }: LoadedConfig) {
   }
 
   const packages = map(workspaces, ({ glob }) => glob);
+
   const content = await filesystem.read(workspaceFile);
 
   const document =

@@ -378,6 +378,7 @@ export async function generateEditions(
   }: { libraries?: Directory; features?: File } = {},
 ) {
   const compat = await readCompat(features);
+
   const failures: string[] = [];
 
   for (const [name, key] of entries({

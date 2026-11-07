@@ -27,6 +27,7 @@ async function isDebugConfigured(): Promise<boolean> {
       await import("#workflows/cli/config/sections/debugSection");
 
     const { loadValidatedConfig } = await import("#workflows/config/index");
+
     const config = await loadValidatedConfig();
 
     return await config.resolve(debugSection);

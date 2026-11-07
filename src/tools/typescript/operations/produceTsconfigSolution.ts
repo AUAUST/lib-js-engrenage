@@ -18,6 +18,7 @@ async function listReferencedFiles(
 
   for (const name of tsconfigEnvironments) {
     const { active, tsconfig } = await resolveTsconfigEnvironment(config, name);
+
     const { owner, file, check } = tsconfig;
 
     if (active && owner === name && check && file !== undefined) {

@@ -20,6 +20,7 @@ export function createPnpmStep(): Step {
     },
     async plan({ resolve, context, filesystem }) {
       const root = context.root;
+
       const path = await resolve(packageJsonPathSection);
 
       const content =

@@ -58,7 +58,9 @@ async function timeLint(domains: number): Promise<number> {
   });
 
   const start = performance.now();
+
   const results = await eslint.lintFiles(["src"]);
+
   const duration = performance.now() - start;
 
   expect(results.flatMap(({ messages }) => messages)).toEqual([]);
@@ -68,6 +70,7 @@ async function timeLint(domains: number): Promise<number> {
 
 test("lint time of the import rules grows linearly with the domains", async () => {
   const small = await timeLint(10);
+
   const large = await timeLint(80);
 
   expect(large).toBeLessThan(small * 16);

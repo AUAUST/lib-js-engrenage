@@ -331,13 +331,25 @@ export interface AuaustRules {
    */
   "auaust/operator-assignment"?: Rule<AuaustOperatorAssignment>;
   /**
+   * Surround awaited statements and assignments with blank lines.
+   */
+  "auaust/padded-awaits"?: Rule<[]>;
+  /**
    * Surround types, interfaces, functions, classes, enums, namespaces and block statements with blank lines.
    */
   "auaust/padded-blocks"?: Rule<[]>;
   /**
+   * Surround `break` statements with blank lines.
+   */
+  "auaust/padded-breaks"?: Rule<[]>;
+  /**
    * Separate a `case` that has statements from the next `case` with a blank line once a case body spans several lines or the `switch` already uses blank lines.
    */
   "auaust/padded-cases"?: Rule<[]>;
+  /**
+   * Surround `continue` statements with blank lines.
+   */
+  "auaust/padded-continues"?: Rule<[]>;
   /**
    * Separate the exports from the preceding code with a blank line.
    */
@@ -366,6 +378,10 @@ export interface AuaustRules {
    * Separate variable declarations from other statements with blank lines, except declarations of the same kind.
    */
   "auaust/padded-variable-declarations"?: Rule<[]>;
+  /**
+   * Surround yield statements and assignments with blank lines.
+   */
+  "auaust/padded-yields"?: Rule<[]>;
   /**
    * Require `const` declarations for variables that are never reassigned after declared
    * @see https://eslint.org/docs/latest/rules/prefer-const

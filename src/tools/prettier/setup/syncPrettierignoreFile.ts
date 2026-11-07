@@ -24,6 +24,7 @@ async function createProjectPrettierIgnores(
   config: LoadedConfig,
 ): Promise<readonly GlobGroup[]> {
   const files = await config.resolve(filesSection);
+
   const agents = await config.resolve(agentsSection);
 
   const generated = [

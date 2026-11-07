@@ -128,10 +128,15 @@ export async function createTsdownConfig(
   );
 
   const root = config.context.root;
+
   const packageJson = await config.resolve(packageJsonSection);
+
   const packageJsonPath = await config.resolve(packageJsonPathSection);
+
   const source = await config.resolve(sourceSection);
+
   const tsconfigPath = await config.resolve(tsconfigPathSection);
+
   const declarationsTsconfigPath = await source.tsconfig.path;
 
   // @debt repeats the "No package.json found" guard of createStepContext and syncChangesetConfig
@@ -146,6 +151,7 @@ export async function createTsdownConfig(
   }
 
   const { typed, sourcemap, clean } = await config.resolve(buildSection);
+
   const outDir = await config.resolve(buildOutDirSection);
 
   if (outDir === undefined) {
