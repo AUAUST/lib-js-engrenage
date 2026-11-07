@@ -28,4 +28,9 @@ export interface StructureInput {
      */
     fallback?: (string | undefined)
   } | undefined)
+  /**
+   * Whether every domain exposes its index under `<subpath>/internals`, with no stability guarantee.
+   * @default false
+   */
+  internals?: (boolean | undefined)
 }

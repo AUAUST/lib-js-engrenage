@@ -23,11 +23,12 @@ async function exposed(
   source: string,
   extra: Record<string, string> = {},
   roles = renderCodeRoles(entry()),
+  structure = "{}",
 ) {
   const project = createTemporaryProject({
     ...files,
     ...extra,
-    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${roles}, ...${source} } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", structure: ${structure}, src: { roles: ${roles}, ...${source} } };\n`,
   });
 
   const config = await loadConfig(project.root);
@@ -86,6 +87,44 @@ describe("domain entries", () => {
         exports: { "./alpha": "src/hidden/index.ts" },
       }`),
     ).rejects.toThrow("Subpath './alpha' is exposed by src.exports");
+  });
+
+  test("structure.internals exposes every domain's index under /internals unless the domain opts out", async () => {
+    expect(
+      await exposed(
+        `{
+          namespaces: { tools: {}, project: {} },
+          domains: { "project/model": { internals: false } },
+        }`,
+        {},
+        renderCodeRoles(entry()),
+        "{ internals: true }",
+      ),
+    ).toEqual({
+      "./alpha": "src/tools/alpha/entry.ts",
+      "./alpha/internals": "src/tools/alpha/index.ts",
+      "./beta": "src/tools/beta/entry.ts",
+      "./beta/internals": "src/tools/beta/index.ts",
+      "./beta/inner/internals": "src/tools/beta/inner/index.ts",
+      "./model": "src/project/model/entry.ts",
+      "./hidden/internals": "src/hidden/index.ts",
+    });
+  });
+
+  test("an /internals subpath colliding with a declared specifier fails naming both domains", async () => {
+    await expect(
+      exposed(
+        `{
+          namespaces: { tools: {} },
+          domains: { "tools/beta": { specifier: "./alpha/internals" } },
+        }`,
+        {},
+        renderCodeRoles(entry()),
+        "{ internals: true }",
+      ),
+    ).rejects.toThrow(
+      /src\/tools\/alpha\/index\.ts and src\/tools\/beta\/entry\.ts|src\/tools\/beta\/entry\.ts and src\/tools\/alpha\/index\.ts/,
+    );
   });
 });
 

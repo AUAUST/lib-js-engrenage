@@ -12,4 +12,9 @@ export interface DomainInput {
    * @default none
    */
   purpose?: (string | undefined)
+  /**
+   * Overrides `structure.internals` for this domain.
+   * @default none
+   */
+  internals?: (boolean | undefined)
 }

@@ -21,7 +21,7 @@ export const sourceExportsSection = declareSection({
     for (const subpath of keys(configured ?? {})) {
       if (subpath in derived) {
         throw new Error(
-          `Subpath '${subpath}' is exposed by src.exports and by the public domain ${derived[subpath]}: remove it from src.exports`,
+          `Subpath '${subpath}' is exposed by src.exports and by the domain ${derived[subpath]}: remove it from src.exports`,
         );
       }
     }

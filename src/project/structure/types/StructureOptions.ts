@@ -19,6 +19,7 @@ export interface StructureOptions<Reference = string> {
       {
         readonly specifier: string | undefined;
         readonly purpose: string | undefined;
+        readonly internals: boolean | undefined;
       }
     >
   >;

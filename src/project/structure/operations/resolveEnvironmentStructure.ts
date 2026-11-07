@@ -402,11 +402,13 @@ export async function resolveEnvironmentStructure({
   defined,
   tests,
   tree,
+  internals = false,
 }: {
   name: StructureEnvironmentName;
   root: Directory;
   dirs: Directories;
   options: StructureOptions;
+  internals?: boolean;
   roles?: EnvironmentRoles | undefined;
   defined?: RoleRegistry;
   tests?: TestsContext;
@@ -572,6 +574,7 @@ export async function resolveEnvironmentStructure({
       declared: metadata.length > 0,
       metadata: metadata.reduce<Partial<DomainDeclaration>>(
         (merged, declared) => {
+          // @debt a later declaration's resolved `undefined` overrides a value an earlier glob set (`specifier`, `purpose`, `internals`)
           return { ...merged, ...declared };
         },
         {},
@@ -704,6 +707,7 @@ export async function resolveEnvironmentStructure({
         ...(metadata.specifier === undefined
           ? {}
           : { specifier: metadata.specifier }),
+        internals: metadata.internals ?? internals,
         ...(metadata.purpose === undefined
           ? {}
           : { purpose: metadata.purpose }),

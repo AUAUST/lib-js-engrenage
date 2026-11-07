@@ -19,6 +19,7 @@ export interface StructureNode {
   readonly commands?: true;
   readonly public?: boolean;
   readonly specifier?: string;
+  readonly internals?: boolean;
   readonly purpose?: string;
   readonly effects?: string;
   readonly mirror?: StructureMirror;

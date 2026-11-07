@@ -13,6 +13,7 @@ import {
   toolingOptionsSection,
   toolingSection,
 } from "#project/environments/index";
+import { structureOptionsSection } from "#project/structure/config/sections/structureOptionsSection";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
 import { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
 import { normalizeNamespaces } from "#project/structure/utils/normalizeNamespaces";
@@ -53,6 +54,8 @@ async function resolveStructure(
     return;
   }
 
+  const { internals } = await config.resolve(structureOptionsSection);
+
   const { namespaces, defined } = normalizeNamespaces({
     environment: name,
     namespaces: option.namespaces,
@@ -67,6 +70,7 @@ async function resolveStructure(
       ? {}
       : { roles: await readEnvironmentRoles(config, option.roles) }),
     defined,
+    internals,
     ...extra,
   });
 }
