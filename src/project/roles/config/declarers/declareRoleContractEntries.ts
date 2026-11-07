@@ -118,6 +118,11 @@ export function declareRoleContractEntries<Nested>(
         "Holds at most one file per owning location, across its `file` globs and accepted files.",
       optional: describedDefault(roleContractDefaults.unique),
     }),
+    required: declare(boolean(), {
+      description:
+        "Holds at least one file in each owning location: each domain where it is active, each directory of its owner role for a nested file role, each of its directories for a directory role.",
+      optional: describedDefault(roleContractDefaults.required),
+    }),
     rules: declare(roleRulesSchema, {
       description: [
         "ESLint rules applied to the role's files only, never to the files of its nested roles.",

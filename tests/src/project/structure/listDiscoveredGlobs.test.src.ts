@@ -22,6 +22,7 @@ function contract(
     typeOnly: false,
     strict: false,
     unique: false,
+    required: false,
     purpose: undefined,
     effects: undefined,
     rules: undefined,

@@ -66,8 +66,10 @@ function render(node: StructureNode, depth: number): string[] {
     ...(node.strays ?? []).map((file) => {
       return `${indent}${indentation}${file} unclassified (file outside any role)`;
     }),
-    ...(node.cardinality ?? []).map(({ role, files }) => {
-      return `${indent}${indentation}\`${role}\` holds at most one file here; found ${files.join(", ")}.`;
+    ...(node.cardinality ?? []).map(({ role, reason, files, globs }) => {
+      return reason === "unique"
+        ? `${indent}${indentation}\`${role}\` holds at most one file here; found ${files.join(", ")}.`
+        : `${indent}${indentation}\`${role}\` requires a file here; add one matching ${globs.join(", ")}.`;
     }),
     ...flatMap(node.children, (child) => render(child, depth + 1)),
   ];

@@ -100,6 +100,11 @@ export interface RoleInput {
    */
   unique?: (boolean | undefined)
   /**
+   * Holds at least one file in each owning location: each domain where it is active, each directory of its owner role for a nested file role, each of its directories for a directory role.
+   * @default false
+   */
+  required?: (boolean | undefined)
+  /**
    * ESLint rules applied to the role's files only, never to the files of its nested roles.
    * Each value is a rule entry for a rule already registered, or a rule module, registered as `roles/<role>/<key>` and reported as errors.
    * @default none

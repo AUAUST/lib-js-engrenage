@@ -5,7 +5,7 @@ import { is } from "valibot";
 
 import { flat, flatMap, wrap } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
-import { entries, freeze, record, values } from "@auaust/toolkit/object";
+import { entries, freeze, keys, record, values } from "@auaust/toolkit/object";
 
 import { pathExists } from "#foundation/filesystem/index";
 import {
@@ -24,6 +24,7 @@ import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import type { CardinalityViolation } from "#project/structure/types/CardinalityViolation";
 import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
+import type { NamedFileRole } from "#project/structure/types/NamedFileRole";
 import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
@@ -133,27 +134,51 @@ async function listFilesAtAnyDepth(directory: string): Promise<string[]> {
 
 function cardinalityOf(
   assigned: readonly (readonly [File, string | undefined])[],
-  contracts: ResolvedRoles["roles"],
+  owned: readonly NamedFileRole[],
 ): Pick<StructureNode, "cardinality"> {
   const filesByRole = new Map<string, File[]>();
 
   for (const [file, role] of assigned) {
-    if (role !== undefined && contracts[role]?.unique) {
+    if (role !== undefined) {
       filesByRole.set(role, [...(filesByRole.get(role) ?? []), file]);
     }
   }
 
-  const violations = [...filesByRole]
-    .filter(([, files]) => files.length > 1)
-    .map(([role, files]): CardinalityViolation => {
-      return freeze({
-        role,
-        reason: "unique",
-        files: freeze(files),
-      });
-    });
+  const violations = owned.flatMap(
+    ({ name, contract, globs }): CardinalityViolation[] => {
+      const files = filesByRole.get(name) ?? [];
+
+      if (contract.unique && files.length > 1) {
+        return [
+          freeze({
+            role: name,
+            reason: "unique",
+            files: freeze(files),
+            globs,
+          }),
+        ];
+      }
+
+      if (contract.required && files.length === 0) {
+        return [
+          freeze({
+            role: name,
+            reason: "required",
+            files: freeze([]),
+            globs,
+          }),
+        ];
+      }
+
+      return [];
+    },
+  );
 
   return violations.length === 0 ? {} : { cardinality: freeze(violations) };
+}
+
+function constrains({ contract }: NamedFileRole): boolean {
+  return contract.unique || contract.required;
 }
 
 function layerOf(name: string, layers: readonly string[] | undefined) {
@@ -473,18 +498,29 @@ export async function resolveEnvironmentStructure({
     const roles = rolesFor(scopes);
     const contract = roles.roles[role];
 
+    if (contract === undefined) {
+      return {};
+    }
+
     const named = structured
       ? listNamedFileRoles(
-          contract?.roles ?? [],
+          contract.roles ?? [],
           (name) => roles.roles[name],
           fileNames,
         )
       : [];
 
-    if (
-      contract === undefined ||
-      (!contract.unique && !named.some(({ contract }) => contract.unique))
-    ) {
+    // @debt the directory role passes as a `NamedFileRole` matching any file; a location-constraint type naming file and directory roles alike would state it
+    const owned = [
+      ...named,
+      {
+        name: role,
+        contract,
+        globs: [anyFile],
+      },
+    ].filter(constrains);
+
+    if (owned.length === 0) {
       return {};
     }
 
@@ -505,7 +541,7 @@ export async function resolveEnvironmentStructure({
           }),
         ] as const;
       }),
-      roles.roles,
+      owned,
     );
   }
 
@@ -634,19 +670,27 @@ export async function resolveEnvironmentStructure({
         return !fileGlobs.some((glob) => matchesGlob(file, glob));
       });
 
-      const cardinality = cardinalityOf(
-        files.map((file) => {
-          return [
-            join(path, file),
-            matchFileRole(file, {
-              named: [],
-              enclosing: undefined,
-              roles,
+      const owned = listNamedFileRoles(
+        keys(contracts),
+        (role) => contracts[role],
+        undefined,
+      ).filter(constrains);
+
+      const cardinality = commands
+        ? {}
+        : cardinalityOf(
+            files.map((file) => {
+              return [
+                join(path, file),
+                matchFileRole(file, {
+                  named: [],
+                  enclosing: undefined,
+                  roles,
+                }),
+              ] as const;
             }),
-          ] as const;
-        }),
-        contracts,
-      );
+            owned,
+          );
 
       return node("domain", source, {
         ...(commands ? { commands: true as const } : {}),

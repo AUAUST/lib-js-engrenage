@@ -14,4 +14,5 @@ export const roleContractDefaults = freeze({
   scoped: false,
   strict: false,
   unique: false,
+  required: false,
 } as const);

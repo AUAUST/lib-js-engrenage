@@ -474,6 +474,7 @@ describe("unique roles", () => {
           "src/a/config/defineAConfig.ts",
           "src/a/config/defineBConfig.ts",
         ],
+        globs: ["define*Config.ts"],
       },
     ]);
   });
@@ -503,7 +504,106 @@ describe("unique roles", () => {
         role: "helpers",
         reason: "unique",
         files: ["src/a/helpers/deep/y.ts", "src/a/helpers/x.ts"],
+        globs: ["**"],
       },
     ]);
+  });
+});
+
+describe("required roles", () => {
+  const readme = createRolePreset({ name: "readme", file: "README.md" });
+
+  const config = createRolePreset({ name: "config" });
+
+  async function describeProject(
+    options: string,
+    sources: Readonly<Record<string, string>>,
+  ) {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      ...sources,
+      "engrenage.config.ts": `export default { src: ${options} };\n`,
+    });
+
+    const structure = await loadStructure(project.root);
+
+    return new Map(
+      flatten(structure.src!.root).map((node) => [node.path, node]),
+    );
+  }
+
+  test("report a domain missing a required domain file role, unless it holds one or the role is inactive", async () => {
+    const roles = renderCodeRoles(readme({ required: true, scoped: true }));
+
+    const nodes = await describeProject(
+      `{ roles: ${roles}, namespaces: { docs: { roles: { enable: ["readme"] } } } }`,
+      {
+        "src/docs/missing/index.ts": "",
+        "src/docs/held/index.ts": "",
+        "src/docs/held/README.md": "",
+        "src/other/index.ts": "",
+      },
+    );
+
+    expect(nodes.get("src/docs/missing")?.cardinality).toEqual([
+      {
+        role: "readme",
+        reason: "required",
+        files: [],
+        globs: ["README.md"],
+      },
+    ]);
+
+    expect(nodes.get("src/docs/held")?.cardinality).toBeUndefined();
+    expect(nodes.get("src/other")?.cardinality).toBeUndefined();
+  });
+
+  test("hold exactly one file when unique and required", async () => {
+    const roles = renderCodeRoles(
+      config({
+        strict: true,
+        roles: [
+          {
+            name: "definers",
+            file: "define*Config.ts",
+            unique: true,
+            required: true,
+          },
+        ],
+      }),
+    );
+
+    const nodes = await describeProject(`{ roles: ${roles} }`, {
+      "src/two/index.ts": "",
+      "src/two/config/defineAConfig.ts": "",
+      "src/two/config/defineBConfig.ts": "",
+      "src/none/index.ts": "",
+      "src/none/config/sections.ts": "",
+      "src/one/index.ts": "",
+      "src/one/config/defineOneConfig.ts": "",
+    });
+
+    expect(nodes.get("src/two/config")?.cardinality).toEqual([
+      {
+        role: "config/definers",
+        reason: "unique",
+        files: [
+          "src/two/config/defineAConfig.ts",
+          "src/two/config/defineBConfig.ts",
+        ],
+        globs: ["define*Config.ts"],
+      },
+    ]);
+
+    expect(nodes.get("src/none/config")?.cardinality).toEqual([
+      {
+        role: "config/definers",
+        reason: "required",
+        files: [],
+        globs: ["define*Config.ts"],
+      },
+    ]);
+
+    expect(nodes.get("src/one/config")?.cardinality).toBeUndefined();
   });
 });
