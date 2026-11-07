@@ -14,7 +14,10 @@ import {
   types,
   utils,
 } from "#project/roles/index";
+import { definerEntries, sectionDeclarations } from "#tooling/eslint/index";
 import { defineConfig } from "#workflows/config/index";
+
+// @debt the config imports the tooling barrel that `codegen barrels` regenerates after loading the config, so a barrel missing a rule breaks the codegen that would add it
 
 // @debt file names inside config/ follow named-match only; they should derive from the domain's structured path (#271)
 // @debt a domain may hold several definers until definers are unique (#294)
@@ -31,6 +34,7 @@ const config = createRolePreset({
       file: "define*Config.ts",
       exports: "named-match",
       effects: "effectful",
+      rules: { "definer-entries": definerEntries },
     },
     {
       name: "schemas",
@@ -52,6 +56,7 @@ const config = createRolePreset({
       accepts: "*Section.ts",
       exports: "named-match",
       effects: "effectful",
+      rules: { "section-declarations": sectionDeclarations },
     },
   ],
 });
@@ -77,6 +82,13 @@ const plugins = createRolePreset({
 const operations = createRolePreset({
   name: "operations",
   purpose: "Impure logic and definers of the domain.",
+  exports: "named-match",
+  effects: "effectful",
+});
+
+const rules = createRolePreset({
+  name: "rules",
+  purpose: "ESLint rules a role preset carries, one per module.",
   exports: "named-match",
   effects: "effectful",
 });
@@ -107,6 +119,7 @@ const codeRoles = [
   plugins(),
   operations(),
   conventions(),
+  rules(),
 ];
 
 export default defineConfig({

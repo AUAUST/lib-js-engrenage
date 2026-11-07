@@ -13,6 +13,7 @@ import { entries, record } from "@auaust/toolkit/object";
 import { pathExists } from "#foundation/filesystem/index";
 import { resolve } from "#foundation/filesystem/utils/resolve";
 import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
+import { rolesPluginName } from "#tools/eslint/constants";
 import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
 import { normalizeRuleSchema } from "#tools/eslint/utils/normalizeRuleSchema";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
@@ -41,7 +42,11 @@ async function readRuleSources(config: LoadedConfig): Promise<RuleSource[]> {
     await createEslintConfig(config),
   );
 
-  const pluginSources = map(entries(configuredPlugins), ([prefix, plugin]) => {
+  const shippedPlugins = entries(configuredPlugins).filter(([prefix]) => {
+    return prefix !== rolesPluginName;
+  });
+
+  const pluginSources = map(shippedPlugins, ([prefix, plugin]) => {
     return {
       name: `${toPascalCase(prefix)}Rules`,
       prefix,

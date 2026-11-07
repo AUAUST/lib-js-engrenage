@@ -49,6 +49,7 @@
     "#scripts/*": "./scripts/*.ts",
     "#src/*": "./src/*.ts",
     "#tests/*": "./tests/*.ts",
+    "#tooling/*": "./tooling/*.ts",
     "#tools/*": "./src/tools/*.ts",
     "#types/*": "./src/types/*.ts",
     "#workflows/*": "./src/workflows/*.ts"

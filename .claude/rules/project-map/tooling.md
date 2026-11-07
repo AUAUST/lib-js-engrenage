@@ -6,7 +6,7 @@ paths:
 # Project map: tooling
 
 ```
-tooling/
+tooling/  eslint
 ```
 
 Effect levels, purest first: `pure` < `confined` < `effectful`. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other.
@@ -27,3 +27,4 @@ Effect levels, purest first: `pure` < `confined` < `effectful`. A role with a le
 | `plugins`      | The tool's own plugins, one per module.                                               | level effectful           |
 | `operations`   | Impure logic and definers of the domain.                                              | level effectful           |
 | `conventions`  | Formatting conventions, discovered by category.                                       | level confined            |
+| `rules`        | ESLint rules a role preset carries, one per module.                                   | level effectful           |

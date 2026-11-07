@@ -9,7 +9,8 @@ paths:
 tests/  (global roles: fixtures utils)
 ├─ bin/  mirrors bin
 ├─ scripts/  mirrors scripts
-└─ src/  mirrors src
+├─ src/  mirrors src
+└─ tooling/  mirrors tooling
 ```
 
 Effect levels, purest first: `pure` < `confined` < `effectful`. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other.
