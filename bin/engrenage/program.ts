@@ -178,6 +178,15 @@ export const program = registerLazySubcommands(
         return eslint["eslint:suppress"];
       },
     },
+    "jscpd": {
+      description:
+        "Detect duplicated code in the project's code files, outside tests, fixtures and generated files.",
+      async load() {
+        const { jscpd } = await import("#bin/engrenage/jscpd");
+
+        return jscpd.jscpd;
+      },
+    },
     "prettier": {
       description: "Format the given files.",
       aliases: ["format"],

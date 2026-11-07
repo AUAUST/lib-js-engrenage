@@ -1,10 +1,9 @@
 import { Option } from "@commander-js/extra-typings";
 
-import { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 import { runGate } from "#workflows/gate/index";
-import { formatGateFailure } from "#workflows/gate/utils/formatGateFailure";
+import { formatGateEntry } from "#workflows/gate/utils/formatGateEntry";
 
 export const gate = defineCommand((command) => {
   return command
@@ -35,11 +34,11 @@ export const gate = defineCommand((command) => {
       });
 
       for (const warning of warnings) {
-        console.warn(formatBudgetFinding(warning));
+        console.warn(formatGateEntry(warning));
       }
 
       for (const failure of failures) {
-        console.error(formatGateFailure(failure));
+        console.error(formatGateEntry(failure));
       }
 
       if (failures.length > 0) {

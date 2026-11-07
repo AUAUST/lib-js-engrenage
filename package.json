@@ -142,6 +142,7 @@
     "eslint": "^10.13.0",
     "eslint-typegen": "^2.3.1",
     "jiti": "^2.7.0",
+    "jscpd": "^5.4.2",
     "json-schema-to-typescript-lite": "^15.0.0",
     "jsonc-parser": "^3.3.1",
     "lefthook": "^2.2.2",
@@ -161,6 +162,7 @@
     "@vitest/coverage-istanbul": "^5.0.0",
     "baseline-browser-mapping": "^2.11.0",
     "eslint": "^10.0.0",
+    "jscpd": "^5.0.0",
     "lefthook": "^2.0.0",
     "node-releases": "^2.0.0",
     "prettier": "^3.0.0",
@@ -175,6 +177,9 @@
       "optional": true
     },
     "@vitest/coverage-istanbul": {
+      "optional": true
+    },
+    "jscpd": {
       "optional": true
     },
     "lefthook": {

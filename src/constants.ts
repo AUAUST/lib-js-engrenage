@@ -21,6 +21,8 @@ export const engrenage = `${organization}/${project}` as const;
 
 export const eslint = "eslint";
 
+export const jscpd = "jscpd";
+
 export const lefthook = "lefthook";
 
 export const nodeReleases = "node-releases";
@@ -57,6 +59,7 @@ export const packages = freeze({
   changesetsConfig,
   engrenage,
   eslint,
+  jscpd,
   lefthook,
   nodeReleases,
   prettier,

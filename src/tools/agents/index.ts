@@ -10,6 +10,7 @@ export {
   syncCodexFiles,
 } from "#tools/agents/codex/index";
 export { agentShellVariables } from "#tools/agents/constants";
+export { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 export { isHookCommand } from "#tools/agents/utils/isHookCommand";
 
 // @barrel setup/*.ts named

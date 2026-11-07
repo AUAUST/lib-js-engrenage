@@ -8,4 +8,5 @@ export * from "#workflows/gate/types/GateFailure";
 export * from "#workflows/gate/types/GateReport";
 export * from "#workflows/gate/types/GateResult";
 export * from "#workflows/gate/types/GateStep";
+export * from "#workflows/gate/types/GateWarning";
 // @end

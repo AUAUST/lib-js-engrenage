@@ -298,11 +298,10 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     expect(failures).toEqual([]);
 
-    expect(warnings).toMatchObject([
+    expect(warnings).toEqual([
       {
-        subject: "Long entry",
-        kind: "debtEntry",
-        budget: 60,
+        step: "budgets",
+        output: expect.stringContaining("over the debtEntry budget of 60."),
       },
     ]);
   });

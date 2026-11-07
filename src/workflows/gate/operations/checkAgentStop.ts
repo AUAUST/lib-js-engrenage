@@ -6,7 +6,7 @@ import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { cacheSection } from "#project/cache/index";
 import { hashTree } from "#tools/git/index";
 import { runGate } from "#workflows/gate/operations/runGate";
-import { formatGateFailure } from "#workflows/gate/utils/formatGateFailure";
+import { formatGateEntry } from "#workflows/gate/utils/formatGateEntry";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function checkAgentStop(
@@ -43,5 +43,5 @@ export async function checkAgentStop(
 
   await writeFile(marker, `${tree}\n`);
 
-  return `${failures.map(formatGateFailure).join("\n")}\nFix them and stop again. If you must stop now, list these failures in your report and stop again: the commit gate still refuses this tree.\n`;
+  return `${failures.map(formatGateEntry).join("\n")}\nFix them and stop again. If you must stop now, list these failures in your report and stop again: the commit gate still refuses this tree.\n`;
 }

@@ -3,16 +3,23 @@ import { dirname } from "node:path";
 
 import { filter, map } from "@auaust/primitive-kit/arrays";
 
-import { eslint, packages, prettier, typescript, vitest } from "#constants";
+import {
+  eslint,
+  jscpd,
+  packages,
+  prettier,
+  typescript,
+  vitest,
+} from "#constants";
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { resolveBinary, spawnProcess } from "#foundation/processes/index";
 import { cacheSection } from "#project/cache/index";
 import { environmentSection } from "#project/package/index";
 import {
   agentsSection,
+  formatBudgetFinding,
   listLocalFilePatterns,
   measureEditedFile,
-  type BudgetFinding,
 } from "#tools/agents/index";
 import {
   gitSection,
@@ -23,6 +30,7 @@ import {
   runGit,
   type ChangeMode,
 } from "#tools/git/index";
+import { findClones, formatClone } from "#tools/jscpd/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { Files } from "#types/Files";
@@ -31,6 +39,7 @@ import type { GateFailure } from "#workflows/gate/types/GateFailure";
 import type { GateReport } from "#workflows/gate/types/GateReport";
 import type { GateResult } from "#workflows/gate/types/GateResult";
 import type { GateStep } from "#workflows/gate/types/GateStep";
+import type { GateWarning } from "#workflows/gate/types/GateWarning";
 
 const stampName = "gate";
 
@@ -91,6 +100,7 @@ async function createSteps(config: LoadedConfig): Promise<{
   fixes: GateStep[];
   checks: GateStep[];
   commands: GateStep[];
+  warnings: GateStep[];
 }> {
   const { root } = config.context;
 
@@ -154,6 +164,24 @@ async function createSteps(config: LoadedConfig): Promise<{
     });
   }
 
+  const warnings: GateStep[] = [];
+
+  // @debt duplicated code only warns until the project's existing clones are cleaned up; it should then fail the gate like the other checks
+  if (environment.hasDependency(jscpd)) {
+    warnings.push({
+      audience: "agents",
+      name: jscpd,
+      async run(files) {
+        const clones = await findClones(config, files);
+
+        return {
+          ok: clones.length === 0,
+          output: map(clones, formatClone).join("\n"),
+        };
+      },
+    });
+  }
+
   const commands = map(gate.commands, (command): GateStep => {
     return {
       audience: "agents",
@@ -168,6 +196,7 @@ async function createSteps(config: LoadedConfig): Promise<{
     fixes,
     checks,
     commands,
+    warnings,
   };
 }
 
@@ -223,7 +252,7 @@ async function runConcurrentSteps(
 async function measureEntries(
   config: LoadedConfig,
   files: Files,
-): Promise<BudgetFinding[]> {
+): Promise<GateWarning[]> {
   const { root } = config.context;
 
   const { budgets } = await config.resolve(agentsSection);
@@ -234,7 +263,16 @@ async function measureEntries(
     }),
   );
 
-  return findings.flat();
+  const flattened = findings.flat();
+
+  return flattened.length === 0
+    ? []
+    : [
+        {
+          step: "budgets",
+          output: map(flattened, formatBudgetFinding).join("\n"),
+        },
+      ];
 }
 
 async function readStamps(file: string): Promise<readonly string[]> {
@@ -311,7 +349,7 @@ export async function runGate(
     return { failures: [], warnings: [] };
   }
 
-  const { fixes, checks, commands } = await createSteps(config);
+  const { fixes, checks, commands, warnings } = await createSteps(config);
 
   const failures = await runSteps(fixes, files);
 
@@ -319,10 +357,12 @@ export async function runGate(
     await runGit(root, ["add", "--", ...files]);
   }
 
-  failures.push(
-    ...(await runConcurrentSteps(checks, files)),
-    ...(await runSteps(commands, files)),
-  );
+  const [checkFailures, duplicates] = await Promise.all([
+    runConcurrentSteps(checks, files),
+    runConcurrentSteps(warnings, files),
+  ]);
+
+  failures.push(...checkFailures, ...(await runSteps(commands, files)));
 
   if (failures.length === 0) {
     await mkdir(dirname(stamp), { recursive: true });
@@ -333,5 +373,8 @@ export async function runGate(
     );
   }
 
-  return { failures, warnings: await measureEntries(config, files) };
+  return {
+    failures,
+    warnings: [...(await measureEntries(config, files)), ...duplicates],
+  };
 }

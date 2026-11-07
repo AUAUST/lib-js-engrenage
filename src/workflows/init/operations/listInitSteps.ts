@@ -14,6 +14,7 @@ import { createChangesetConfigStep } from "#tools/changesets/index";
 import { createEslintConfigStep } from "#tools/eslint/index";
 import { createGitignoreStep } from "#tools/git/index";
 import { createWorkflowsStep } from "#tools/github/index";
+import { createJscpdStep } from "#tools/jscpd/index";
 import { createLefthookStep } from "#tools/lefthook/index";
 import { createPnpmStep, createWorkspaceStep } from "#tools/pnpm/index";
 import {
@@ -69,6 +70,7 @@ export function listInitSteps(): Step[] {
     createCodexStep(),
     createCodexHooksStep(),
     createClaudeSettingsStep(),
+    createJscpdStep(),
     createLefthookStep(),
     createChangesetConfigStep(),
     createWorkflowsStep(),
