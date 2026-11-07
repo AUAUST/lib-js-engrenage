@@ -10,12 +10,15 @@ import { cacheSection } from "#project/cache/index";
 import { environmentSection } from "#project/package/index";
 import {
   agentsSection,
+  listLocalFilePatterns,
   measureEditedFile,
   type BudgetFinding,
 } from "#tools/agents/index";
 import {
+  gitSection,
   hashTree,
   listChangedFiles,
+  listLocalFiles,
   listPartiallyStagedFiles,
   runGit,
   type ChangeMode,
@@ -76,6 +79,7 @@ function executeCli(
 
 function createCliStep(root: Directory, args: readonly string[]): GateStep {
   return {
+    audience: "agents",
     name: args.join(" "),
     run() {
       return executeCli(root, args);
@@ -98,6 +102,7 @@ async function createSteps(config: LoadedConfig): Promise<{
 
   if (environment.hasDependency(eslint)) {
     fixes.push({
+      audience: "agents",
       name: eslint,
       run(files) {
         return executeBinary(root, packages.eslint, [
@@ -112,6 +117,7 @@ async function createSteps(config: LoadedConfig): Promise<{
   }
 
   fixes.push({
+    audience: "agents",
     name: prettier,
     run(files) {
       return executeBinary(root, packages.prettier, [
@@ -134,6 +140,7 @@ async function createSteps(config: LoadedConfig): Promise<{
 
   if (environment.hasDependency(vitest)) {
     checks.push({
+      audience: "agents",
       name: "vitest related",
       run(files) {
         return executeBinary(root, packages.vitest, [
@@ -148,6 +155,7 @@ async function createSteps(config: LoadedConfig): Promise<{
 
   const commands = map(gate.commands, (command): GateStep => {
     return {
+      audience: "agents",
       name: command,
       run() {
         return execute(root, "sh", ["-c", command]);
@@ -236,9 +244,42 @@ async function readStamps(file: string): Promise<readonly string[]> {
 // @debt ESLint runs only on changed files, so a type change that breaks a dependent's type-aware rule passes until CI's full `lint --no-cache`
 export async function runGate(
   config: LoadedConfig,
-  { mode }: { mode: ChangeMode },
+  {
+    mode,
+    audience = "agents",
+  }: { mode: ChangeMode; audience?: GateStep["audience"] },
 ): Promise<GateReport> {
   const { root } = config.context;
+
+  const files = await listChangedFiles(root, mode);
+
+  if (mode === "staged") {
+    const git = await config.resolve(gitSection);
+    const globs = await listLocalFilePatterns(config);
+
+    const local: GateStep = {
+      audience: "everyone",
+      name: "local files",
+      async run(changed) {
+        const protectedFiles = await listLocalFiles(git, root, globs, changed);
+
+        return {
+          ok: protectedFiles.length === 0,
+          output: `Local files cannot be committed:\n${protectedFiles.join("\n")}\nUse git restore --staged -- <paths> to unstage them, or git rm --cached -- <paths> to stop tracking them.`,
+        };
+      },
+    };
+
+    const failures = await runSteps([local], files);
+
+    if (failures.length > 0) {
+      return { failures, warnings: [] };
+    }
+  }
+
+  if (audience === "everyone") {
+    return { failures: [], warnings: [] };
+  }
 
   if (mode === "staged") {
     const partial = await listPartiallyStagedFiles(root);
@@ -263,13 +304,7 @@ export async function runGate(
   const stamps = await readStamps(stamp);
 
   // @debt a stamped tree reports no budget warnings, so the commit after a passing stop never shows them again.
-  if (stamps.includes(await hashTree(root, mode))) {
-    return { failures: [], warnings: [] };
-  }
-
-  const files = await listChangedFiles(root, mode);
-
-  if (files.length === 0) {
+  if (files.length === 0 || stamps.includes(await hashTree(root, mode))) {
     return { failures: [], warnings: [] };
   }
 

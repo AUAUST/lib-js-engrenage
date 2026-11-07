@@ -28,7 +28,7 @@ function createRepository() {
       }),
       "engrenage.config.ts":
         'export default { src: { baseline: "2026-10" }, agents: { gate: { commands: ["echo run >> .runs"] } } };\n',
-      ".gitignore": "node_modules\n.runs\n",
+      ".gitignore": "node_modules\n.runs\n.env.*\n!.env.example\n",
       "tsconfig.json": JSON.stringify({
         compilerOptions: {
           strict: true,
@@ -54,6 +54,122 @@ function createRepository() {
 }
 
 describe("runGate", { timeout: binaryTimeout }, () => {
+  test("rejects local additions and modifications, but accepts deletions", async () => {
+    const { project, git } = await createRepository();
+
+    project.write(".ai/issues/1.md", "draft\n");
+    project.write(".env.local", "SECRET=value\n");
+
+    git("add", "--force", ".ai/issues/1.md", ".env.local");
+
+    const config = await loadConfig(project.root);
+    const options = { mode: "staged", audience: "everyone" } as const;
+    const { failures } = await runGate(config, options);
+
+    expect(failures).toEqual([
+      {
+        step: "local files",
+        output: expect.stringContaining(".ai/issues/1.md"),
+      },
+    ]);
+
+    expect(failures[0]?.output).toContain(".env.local");
+    expect(failures[0]?.output).toContain("git restore --staged");
+    expect(failures[0]?.output).toContain("git rm --cached");
+
+    git(
+      "-c",
+      "user.name=Test",
+      "-c",
+      "user.email=test@example.com",
+      "commit",
+      "--quiet",
+      "-m",
+      "fixture",
+    );
+
+    project.write(".ai/issues/1.md", "modified\n");
+
+    git("add", ".ai/issues/1.md");
+
+    expect((await runGate(config, options)).failures[0]?.output).toContain(
+      ".ai/issues/1.md",
+    );
+
+    git("rm", "--force", ".ai/issues/1.md", ".env.local");
+
+    expect(await runGate(config, options)).toEqual({
+      failures: [],
+      warnings: [],
+    });
+  });
+
+  test("allows an excluded draft and replaces gitignore defaults with an array", async () => {
+    const { project, git } = await createRepository();
+
+    project.write(
+      "engrenage.config.ts",
+      'export default { git: { local: { files: { exclude: ".ai/issues/" } } } };\n',
+    );
+
+    project.write(".ai/issues/1.md", "draft\n");
+
+    git("add", ".ai/issues/1.md");
+
+    const options = { mode: "staged", audience: "everyone" } as const;
+
+    expect(await runGate(await loadConfig(project.root), options)).toEqual({
+      failures: [],
+      warnings: [],
+    });
+
+    project.write(
+      "engrenage.config.ts",
+      'export default { git: { local: { files: ["x"] } } };\n',
+    );
+
+    project.write(".env.local", "SECRET=value\n");
+
+    git("add", "--force", ".env.local");
+    loadConfig.refresh(project.root);
+
+    expect(await runGate(await loadConfig(project.root), options)).toEqual({
+      failures: [],
+      warnings: [],
+    });
+
+    project.write("x", "local\n");
+
+    git("add", "x");
+
+    expect(
+      (await runGate(await loadConfig(project.root), options)).failures[0]
+        ?.output,
+    ).toContain("x");
+  });
+
+  test("everyone skips agent steps, partial staging, stamps and warnings", async () => {
+    const { project, git } = await createRepository();
+
+    project.write("src/index.ts", 'export const value: number = "text"\n');
+
+    git("add", "src/index.ts");
+    project.write("src/index.ts", 'export const value: number = "unstaged"\n');
+
+    expect(
+      await runGate(await loadConfig(project.root), {
+        mode: "staged",
+        audience: "everyone",
+      }),
+    ).toEqual({ failures: [], warnings: [] });
+
+    expect(
+      await (await loadConfig(project.root)).context.filesystem.exists(".runs"),
+    ).toBe(false);
+
+    expect(project.read("src/index.ts")).toContain('"unstaged"');
+  });
+
   test("rewrites, re-stages and passes an unformatted staged file", async () => {
     const { project, git } = await createRepository();
 

@@ -101,6 +101,8 @@ export const projectMapRelations = freeze({
 
 export const debtFile = ".ai/debt.md" satisfies File;
 
+export const issueDraftsDirectory = ".ai/issues/";
+
 export const budgetKinds = freeze([
   "goal",
   "context",

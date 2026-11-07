@@ -20,11 +20,18 @@ export const gate = defineCommand((command) => {
         "fix and check the changes against HEAD and the untracked files",
       ).conflicts("staged"),
     )
-    .action(async ({ worktree }) => {
+    .addOption(
+      new Option(
+        "--everyone",
+        "run only the checks every commit must pass",
+      ).conflicts("worktree"),
+    )
+    .action(async ({ worktree, everyone }) => {
       const config = await loadValidatedConfig();
 
       const { failures, warnings } = await runGate(config, {
         mode: worktree === true ? "worktree" : "staged",
+        audience: everyone === true ? "everyone" : "agents",
       });
 
       for (const warning of warnings) {

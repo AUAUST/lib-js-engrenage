@@ -17,6 +17,7 @@ describe("declare", () => {
 
     expect(gitSchema.resolve({ gitignore: "x" }, context, "git")).toEqual({
       gitignore: { file: "x", configured: true },
+      local: { gitignore: true, files: undefined },
     });
 
     expect(safeParse(gitSchema.schema, { gitignore: 1 }).success).toBe(false);

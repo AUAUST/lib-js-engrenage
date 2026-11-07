@@ -14,7 +14,7 @@ export const gitSection = declareSection({
   async resolve(input, config: Resolver<ConfigContext>): Promise<ResolvedGit> {
     const { root, filesystem } = config.context;
 
-    const { gitignore } = gitSchema.resolve(input, config, "git");
+    const { gitignore, local } = gitSchema.resolve(input, config, "git");
 
     const repositoryRoot = await findRepositoryRoot(root);
 
@@ -22,6 +22,7 @@ export const gitSection = declareSection({
     return freeze(
       compose(
         {
+          local,
           root: repositoryRoot,
           filesystem:
             repositoryRoot === root

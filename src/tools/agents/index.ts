@@ -34,6 +34,7 @@ export { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRule
 export { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 export { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 export { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
+export { listLocalFilePatterns } from "#tools/agents/operations/listLocalFilePatterns";
 export { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 export { parseInstruction } from "#tools/agents/operations/parseInstruction";
 export { readHookPayload } from "#tools/agents/operations/readHookPayload";
