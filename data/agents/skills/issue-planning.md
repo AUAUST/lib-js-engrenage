@@ -55,7 +55,7 @@ To flush:
 
 ## Consultant mode
 
-The walker runs you as its `planner` subagent: a fallback that keeps code and plan reading out of the walker's context, one per walk, resumed with `SendMessage` so you keep your context.
+The walker runs you as its `planner` subagent: a fallback that keeps code and plan reading out of the walker's context, one per walk, resumed through the client’s agent messaging or resume tool so you keep your context.
 
 - Edit issues on GitHub directly, without drafts: the walker needs each update at once.
 - Judge every worker stop and deviation against the plan and its issues, never against the code the worker wrote.

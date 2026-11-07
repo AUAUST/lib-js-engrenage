@@ -1,45 +1,20 @@
 import {
-  array,
-  boolean,
-  looseObject,
-  optional,
-  picklist,
-  strictObject,
-  string,
-} from "valibot";
-import { stringify } from "yaml";
-
-import { validate } from "#foundation/options/index";
-import {
   claudeAgentsDir,
   claudeSkillsDir,
   claudeStopHook,
 } from "#tools/agents/claude/constants";
 import { codexSkillsDir } from "#tools/agents/codex/constants";
+import { createCodexAgentProfiles } from "#tools/agents/codex/index";
 import {
   claudeAgentFrontmatterKeys,
   claudeSkillFrontmatterKeys,
   codexSkillFrontmatterKeys,
 } from "#tools/agents/constants";
-import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
+import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { File } from "#types/File";
-
-const skillSchema = looseObject({
-  invocation: optional(picklist(["explicit", "implicit"]), "implicit"),
-  agent: optional(
-    strictObject({
-      name: string(),
-      description: string(),
-      model: optional(string()),
-      effort: optional(picklist(["low", "medium", "high", "xhigh", "max"])),
-      disallowedTools: optional(array(string())),
-      gate: optional(boolean()),
-    }),
-  ),
-});
 
 export async function getSkillTemplates({
   agents,
@@ -52,16 +27,10 @@ export async function getSkillTemplates({
     throw new Error("Skills need agents.preferred in engrenage.config.ts");
   }
 
-  const templates = await getInstructionTemplates("skills");
+  const templates = await getSkillDefinitions();
 
   return templates.map((template) => {
-    const { invocation, agent } = validate(
-      skillSchema,
-      template,
-      `${template.source} skill metadata`,
-    );
-
-    const { name, description, reference, body } = template;
+    const { invocation, agent, name, description, reference, body } = template;
     const isExplicit = invocation === "explicit";
 
     const files: {
@@ -141,21 +110,20 @@ export async function getSkillTemplates({
         }),
         frontmatter,
       });
-
-      if (isExplicit) {
-        files.push({
-          file: `${codexSkillsDir}/${name}/agents/openai.yaml`,
-          content: stringify({
-            policy: {
-              allow_implicit_invocation: false,
-            },
-          }),
-        });
-      }
     }
 
     return {
       ...template,
+      invocation,
+      agent,
+      profiles:
+        preferred.includes("codex") && agent !== undefined
+          ? createCodexAgentProfiles({
+              agent,
+              reference,
+              body,
+            })
+          : [],
       files,
     };
   });

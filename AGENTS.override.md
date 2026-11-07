@@ -28,3 +28,39 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | All files | <code>.claude/rules/project-map.md</code> |
 
 <!-- @end -->
+
+## Dispatch
+
+<!-- @dispatch -->
+
+Use the installed workflows below when their descriptions match the request.
+
+| Skill | Handling |
+| --- | --- |
+| `issue-planning` | Run its skill in the main session. Plan work as a tree of GitHub issues (a plan, ordered items, and segments grouping independent ones) without implementing it. Use proactively in the main session, or as the walker's consultant, when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues, so its questions reach the user directly. |
+| `debugging` | Delegate to `debugger`. Debugger that investigates a bug, issue, backlog entry, debt marker or reported failure, fixes it at its root when the fix is contained, and otherwise writes the fix into a GitHub issue for a worker. Use proactively when the user asks to investigate, debug or fix something, unless they ask to apply a fix an issue already describes, which is the worker's. Its report ends with what remains and the kind of work it needs; continue that with the agent suited to it. |
+| `issue-implementation` | Delegate to `worker`. Worker that implements one GitHub issue as written and stops to report what the issue leaves unclear. Use proactively when the user asks to implement, work on or resume a specific GitHub issue whose fix or steps are already written; investigating or fixing a problem is the debugger's. |
+| `issue-walking` | Run its skill in the main session. Walk a planned tree of GitHub issues in order, dispatching each leaf to a worker or debugger, then reviewing and committing it. Use only when the user asks to walk an issue tree. |
+| `scratchpad` | Delegate to `scratcher`. Scratcher that triages the user's notes in .ai/scratchpad.md into backlog entries and never implements them or acts outside the repository. Use proactively when the user asks to handle, process or triage the scratchpad. |
+| `backlog-handling` | Delegate to `backlogger`. Backlogger that brings backlog entries up to date with new findings, context or answers, and converts actionable ones to GitHub issues. Use proactively for any work on backlog entries. Its report ends with what remains and the kind of work it needs; continue that with the agent suited to it. |
+| `debt-harvesting` | Delegate to `banker`. Banker that harvests in-code `@debt` markers into the debt backlog `.ai/debt.md`. Use proactively for any work on debt markers. Its report ends with what remains and the kind of work it needs; continue that with the agent suited to it. |
+
+| Profile | Canonical role | Effort |
+| --- | --- | --- |
+| `planner` | `planner` | high |
+| `debugger` | `debugger` | medium |
+| `debugger_low` | `debugger` | low |
+| `debugger_high` | `debugger` | high |
+| `worker` | `worker` | medium |
+| `worker_low` | `worker` | low |
+| `worker_high` | `worker` | high |
+| `scratcher` | `scratcher` | low |
+| `backlogger` | `backlogger` | low |
+| `banker` | `banker` | low |
+
+Spawn the named profile with Codex's spawn_agent tool (agent_type). Profiles inherit the session's selected model; do not supply another model. For a leaf with Complexity Trivial select the role's _low profile; for Complex select _high; otherwise select its unsuffixed profile. A profile's effort takes precedence over a spawn effort override.
+Keep a fresh agent context per leaf. Use send_input with its id to return questions, review gaps and gate failures to that same agent; use resume_agent first if it is closed. In clients exposing collaboration tools, use spawn_agent with the named role when supported, send_message for a running agent and followup_task for an idle agent. A client without named-profile selection cannot establish profile loading; report that unsupported path.
+
+Use the planner profile only as the walker's consultant. Keep one consultant per walk and resume it with its existing id. Send unresolved questions to the user.
+
+<!-- @end -->

@@ -165,9 +165,9 @@ export async function syncAgentFiles({ resolve, context }: LoadedConfig) {
     });
   }
 
-  for (const { reference, files: skillFiles } of await getSkillTemplates(
-    config,
-  )) {
+  for (const template of await getSkillTemplates(config)) {
+    const { reference, files: skillFiles } = template;
+
     for (const { file, content, frontmatter } of skillFiles) {
       if (frontmatter === undefined) {
         generated.push({

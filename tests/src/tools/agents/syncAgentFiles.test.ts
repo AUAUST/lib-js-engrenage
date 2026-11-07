@@ -120,6 +120,66 @@ describe("syncAgentFiles", () => {
     );
   });
 
+  test("repairs stale planning policy and toggles the owned YAML key while preserving metadata and comments", async () => {
+    const planning = "@auaust/engrenage/agents/skills/issue-planning.md";
+    const debugging = "@auaust/engrenage/agents/skills/debugging.md";
+
+    const metadata =
+      "# Keep metadata\ninterface:\n  display_name: My skill\npolicy:\n  # Keep policy comment\n  allow_implicit_invocation: false # Keep inline comment\ndependencies:\n  tools: []\n";
+
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module"}',
+      "engrenage.config.ts":
+        'export default { agents: { preferred: ["codex"] } };',
+      ".agents/skills/issue-planning/SKILL.md": `<!-- @reference ${planning} -->\n<!-- @end -->\n`,
+      ".agents/skills/issue-planning/agents/openai.yaml": metadata,
+      ".agents/skills/debugging/SKILL.md": `<!-- @reference ${debugging} -->\n<!-- @end -->\n`,
+      ".agents/skills/debugging/agents/openai.yaml": metadata.replace(
+        "false",
+        "true",
+      ),
+      ".agents/skills/scratchpad/SKILL.md": "User owned skill",
+      ".agents/skills/scratchpad/agents/openai.yaml": "keep: untouched\n",
+    });
+
+    const config = await loadConfig(project.root);
+    const { filesystem } = config.context;
+
+    await syncAgentFiles(config);
+
+    expect(
+      await filesystem.read(".agents/skills/issue-planning/agents/openai.yaml"),
+    ).toBe(metadata.replace("false", "true"));
+
+    expect(
+      await filesystem.read(".agents/skills/debugging/agents/openai.yaml"),
+    ).toBe(metadata);
+
+    expect(
+      await filesystem.read(".agents/skills/scratchpad/agents/openai.yaml"),
+    ).toBe("keep: untouched\n");
+
+    await filesystem.write(
+      ".agents/skills/issue-planning/agents/openai.yaml",
+      metadata,
+    );
+
+    await filesystem.write(
+      ".agents/skills/debugging/agents/openai.yaml",
+      metadata.replace("false", "true"),
+    );
+
+    await syncAgentFiles(config);
+
+    expect(
+      await filesystem.read(".agents/skills/issue-planning/agents/openai.yaml"),
+    ).toBe(metadata.replace("false", "true"));
+
+    expect(
+      await filesystem.read(".agents/skills/debugging/agents/openai.yaml"),
+    ).toBe(metadata);
+  });
+
   describe("frontmatter", () => {
     const staleScratchpad = [
       "---",

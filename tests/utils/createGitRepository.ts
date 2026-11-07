@@ -47,6 +47,7 @@ export async function createGitRepository(
 
   linkSourcePackage(project.resolve("node_modules/@auaust/engrenage"));
 
+  // @debt Temporary Git repositories inherit Git environment overrides and can corrupt an external index.
   function git(...args: string[]): string {
     return execFileSync("git", args, {
       cwd: project.root,

@@ -64,7 +64,7 @@ A worker commits at each `Checkpoint:` line of its issue; your final commit clos
 
 ## Consultant
 
-- Start the `planner` subagent on first need with the plan number, and resume it with `SendMessage`.
+- Start the `planner` subagent on first need with the plan number, and resume the same agent through the client’s messaging or resume tool.
 - Call it only when a worker stops, reports a deviation, or an issue fits no row of the handling table; answer nothing from code yourself.
 - Batch what it sends back to the user with its findings and recommendations; meanwhile walk only the leaves it does not affect.
 

@@ -1,9 +1,13 @@
 import { syncBlocks } from "#foundation/blocks/index";
-import { codexFile } from "#tools/agents/codex/constants";
+import { codexFile, codexSkillsDir } from "#tools/agents/codex/constants";
+import { createCodexDispatch } from "#tools/agents/codex/operations/createCodexDispatch";
 import { createCodexRuleMapping } from "#tools/agents/codex/operations/createCodexRuleMapping";
+import { syncCodexSkill } from "#tools/agents/codex/operations/syncCodexSkill";
 import { markdownBlocks } from "#tools/agents/constants";
+import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
+import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
 
 export async function syncCodexInstructions({
   filesystem,
@@ -16,6 +20,21 @@ export async function syncCodexInstructions({
     return;
   }
 
+  const installed: SkillDefinition[] = [];
+
+  for (const template of await getSkillDefinitions()) {
+    const skill = await filesystem.read(
+      `${codexSkillsDir}/${template.name}/SKILL.md`,
+    );
+
+    if (!skill?.includes(`<!-- @reference ${template.reference} -->`)) {
+      continue;
+    }
+
+    await syncCodexSkill(filesystem, template);
+    installed.push(template);
+  }
+
   const content = await filesystem.read(codexFile);
 
   if (content === undefined) {
@@ -26,10 +45,19 @@ export async function syncCodexInstructions({
 
   await filesystem.write(
     codexFile,
-    syncBlocks(content, markdownBlocks, {
-      rules() {
-        return rules;
+    syncBlocks(
+      content.includes("<!-- @dispatch -->")
+        ? content
+        : `${content.trimEnd()}\n\n## Dispatch\n\n<!-- @dispatch -->\n<!-- @end -->\n`,
+      markdownBlocks,
+      {
+        dispatch() {
+          return createCodexDispatch(installed);
+        },
+        rules() {
+          return rules;
+        },
       },
-    }),
+    ),
   );
 }

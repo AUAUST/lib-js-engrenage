@@ -33,6 +33,7 @@ export { getInstructionTemplates } from "#tools/agents/operations/getInstruction
 export { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 export { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 export { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
+export { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 export { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 export { listLocalFilePatterns } from "#tools/agents/operations/listLocalFilePatterns";
 export { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
@@ -48,6 +49,7 @@ export { syncHooks } from "#tools/agents/operations/syncHooks";
 export { agentsSchema } from "#tools/agents/config/schemas/agentsSchema";
 export { budgetSchema } from "#tools/agents/config/schemas/budgetSchema";
 export { preferredSchema } from "#tools/agents/config/schemas/preferredSchema";
+export { skillSchema } from "#tools/agents/config/schemas/skillSchema";
 // @end
 
 // @barrel types/*.ts all
@@ -64,5 +66,6 @@ export * from "#tools/agents/types/HookDefinition";
 export * from "#tools/agents/types/HookEvent";
 export * from "#tools/agents/types/ProjectMapSections";
 export * from "#tools/agents/types/ResolvedAgents";
+export * from "#tools/agents/types/SkillDefinition";
 export * from "#tools/agents/types/SubagentCacheTtl";
 // @end

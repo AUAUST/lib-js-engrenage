@@ -1,3 +1,4 @@
+import { syncCodexSkill } from "#tools/agents/codex/index";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
@@ -31,6 +32,10 @@ export async function addAgentSkills(
       if (!(await filesystem.exists(file))) {
         await filesystem.write(file, content);
       }
+    }
+
+    if (agents.preferred?.includes("codex") === true) {
+      await syncCodexSkill(filesystem, template);
     }
   }
 }

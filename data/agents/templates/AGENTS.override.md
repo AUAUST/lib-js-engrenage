@@ -10,3 +10,8 @@ Paths below are relative to the project root. Before editing a file, read and fo
 
 <!-- @rules -->
 <!-- @end -->
+
+## Dispatch
+
+<!-- @dispatch -->
+<!-- @end -->
