@@ -13,6 +13,7 @@ export { declareRoleContractEntries } from "#project/roles/config/declareRoleCon
 export * from "#project/roles/types/Role";
 export * from "#project/roles/types/RoleInput";
 export * from "#project/roles/types/RolePreset";
+export * from "#project/roles/types/RoleRuleModule";
 export * from "#project/roles/types/RoleRules";
 // @end
 

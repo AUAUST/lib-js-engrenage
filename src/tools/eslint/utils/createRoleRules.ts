@@ -5,17 +5,60 @@ import { isObject } from "@auaust/toolkit/isObject";
 import { entries, values } from "@auaust/toolkit/object";
 
 import { pluginName, rolesPluginName } from "#tools/eslint/constants";
-import type { ResolvedStructure } from "#project/structure/index";
+import type { RoleRuleModule } from "#project/roles/index";
+import type { EntityIndex, ResolvedStructure } from "#project/structure/index";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Plugin } from "#tools/eslint/types/Plugin";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 
-export function createRoleRules(structure: ResolvedStructure): {
+export function createRoleRules(
+  structure: ResolvedStructure,
+  entities: EntityIndex,
+): {
   readonly plugin: Plugin;
   readonly configs: readonly Config[];
 } {
+  const originals: Record<string, RoleRuleModule> = {};
+  const wrapped = new Map<RoleRuleModule, RuleModule>();
   const modules: Record<string, RuleModule> = {};
   const configs: Config[] = [];
+
+  function wrap(rule: RoleRuleModule): RuleModule {
+    const existing = wrapped.get(rule);
+
+    if (existing !== undefined) {
+      return existing;
+    }
+
+    const module: RuleModule = {
+      ...(rule.meta === undefined ? {} : { meta: rule.meta }),
+      create(context) {
+        const entity = entities.entityOf(context.filename);
+
+        if (entity === undefined) {
+          return {};
+        }
+
+        // @debt linear search by name because `Entity.environment` also names environments without a structure (`data`, `dist`, `workspace`); a typed lookup would index directly
+        const environment = values(structure).find((candidate) => {
+          return candidate?.name === entity.environment;
+        });
+
+        if (environment === undefined) {
+          return {};
+        }
+
+        return rule.create(context, entity, {
+          indexFile: environment.indexFile,
+          entryFile: environment.entryFile,
+        });
+      },
+    };
+
+    wrapped.set(rule, module);
+
+    return module;
+  }
 
   for (const environment of values(structure)) {
     if (environment === undefined) {
@@ -39,7 +82,7 @@ export function createRoleRules(structure: ResolvedStructure): {
         }
 
         const name = `${role}/${key}`;
-        const registered = modules[name];
+        const registered = originals[name];
 
         if (registered !== undefined && registered !== rule) {
           throw new Error(
@@ -47,7 +90,8 @@ export function createRoleRules(structure: ResolvedStructure): {
           );
         }
 
-        modules[name] = rule;
+        originals[name] = rule;
+        modules[name] = wrap(rule);
         rules[`${rolesPluginName}/${name}`] = "error";
       }
 

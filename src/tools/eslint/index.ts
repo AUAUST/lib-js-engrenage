@@ -47,3 +47,9 @@ export * from "#tools/eslint/types/rules/UnusedImportsRules";
 // @end
 
 export { optionsSchema } from "#tools/eslint/config/optionsSchema";
+export { defineRoleRule } from "#tools/eslint/utils/defineRoleRule";
+export type {
+  Entity,
+  EnvironmentFileNames,
+  LineageMember,
+} from "#project/structure/index";

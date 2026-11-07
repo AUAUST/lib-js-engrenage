@@ -1,5 +1,6 @@
 import type { Rule } from "eslint";
 
+import { createRuleMeta } from "#tools/eslint/utils/createRuleMeta";
 import type { Entity } from "#project/structure/index";
 import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
@@ -16,12 +17,7 @@ export function defineStructureRule({
   create(context: Rule.RuleContext, entity: Entity): Rule.RuleListener;
 }): RuleModule {
   return {
-    meta: {
-      type: "problem",
-      docs: { description },
-      messages,
-      schema: [],
-    },
+    meta: createRuleMeta({ description, messages }),
     create(context) {
       const entity = config.entities.entityOf(context.filename);
 

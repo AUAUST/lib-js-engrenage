@@ -14,6 +14,7 @@ export * from "#project/structure/types/EffectModuleResolver";
 export * from "#project/structure/types/EffectModules";
 export * from "#project/structure/types/Entity";
 export * from "#project/structure/types/EntityIndex";
+export * from "#project/structure/types/EnvironmentFileNames";
 export * from "#project/structure/types/EnvironmentRoles";
 export * from "#project/structure/types/EnvironmentStructure";
 export * from "#project/structure/types/ImportCategory";

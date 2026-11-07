@@ -7,13 +7,13 @@ import {
   union,
   unknown,
 } from "valibot";
-// @debt the tool-agnostic roles domain describes ESLint rules and imports ESLint types; a role could carry tool rules through a contract the ESLint domain implements
-import type { Rule } from "eslint";
 
 import { isFunction } from "@auaust/toolkit/isFunction";
 import { isObject } from "@auaust/toolkit/isObject";
 
-function isRuleModule(value: unknown): value is Rule.RuleModule {
+import type { RoleRuleModule } from "#project/roles/types/RoleRuleModule";
+
+function isRuleModule(value: unknown): value is RoleRuleModule {
   return isObject(value) && "create" in value && isFunction(value.create);
 }
 
@@ -28,6 +28,6 @@ export const roleRulesSchema = record(
   string(),
   union([
     ruleEntrySchema,
-    custom<Rule.RuleModule>(isRuleModule, "Expected an ESLint rule module"),
+    custom<RoleRuleModule>(isRuleModule, "Expected an ESLint rule module"),
   ]),
 );

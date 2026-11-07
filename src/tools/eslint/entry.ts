@@ -2,6 +2,7 @@ export {
   createEslintConfig,
   createEslintConfigStep,
   defineEslintConfig,
+  defineRoleRule,
   loadInfoRules,
   optionsSchema,
 } from "#tools/eslint/index";
@@ -14,7 +15,10 @@ export type {
   CoreRules,
   DebtMarker,
   Delegate,
+  Entity,
+  EnvironmentFileNames,
   ImportXRules,
+  LineageMember,
   Options,
   PackageJsonRules,
   PerfectionistRules,
