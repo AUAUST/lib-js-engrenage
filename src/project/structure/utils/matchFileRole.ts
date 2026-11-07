@@ -1,16 +1,16 @@
 import { matchesGlob } from "node:path";
 
-import { wrap } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
 import { indexRoleName } from "#project/roles/constants";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
+import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import type { NamedFileRole } from "#project/structure/types/NamedFileRole";
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import type { Globs } from "#types/Globs";
 
-function matchesFile(name: string, { file }: ResolvedRoleContract) {
-  return wrap(file ?? []).some((glob) => matchesGlob(name, glob));
+function matchesAny(name: string, globs: Globs) {
+  return globs.some((glob) => matchesGlob(name, glob));
 }
 
 export function matchFileRole(
@@ -25,7 +25,7 @@ export function matchFileRole(
     roles: ResolvedRoles | undefined;
   },
 ): string | undefined {
-  const nested = named.find(({ contract }) => matchesFile(name, contract));
+  const nested = named.find(({ globs }) => matchesAny(name, globs));
 
   if (nested !== undefined) {
     return nested.name;
@@ -44,6 +44,6 @@ export function matchFileRole(
   }
 
   return entries(roles.roles).find(([, contract]) => {
-    return matchesFile(name, contract);
+    return matchesAny(name, listStaticFileGlobs(contract.file));
   })?.[0];
 }

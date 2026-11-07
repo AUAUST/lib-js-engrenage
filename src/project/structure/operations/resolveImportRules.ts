@@ -1,10 +1,11 @@
 import { join } from "node:path";
 
-import { flatMap, wrap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries, freeze, keys } from "@auaust/toolkit/object";
 
 import { entryRoleName, indexRoleName } from "#project/roles/constants";
 import { elementEnvironments } from "#project/structure/constants";
+import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportRelation } from "#project/structure/types/ImportRelation";
@@ -373,7 +374,9 @@ function resolveElementRules(
   const rules: ImportRule[] = [];
 
   const fileGlobs = flatMap(entries(roles), ([name, { file }]) => {
-    return file === undefined ? [] : [{ name, globs: wrap(file) }];
+    return file === undefined
+      ? []
+      : [{ name, globs: listStaticFileGlobs(file) }];
   });
 
   function filesOf(directory: string, only?: string): ImportRuleTarget[] {

@@ -22,6 +22,7 @@ import { mappedValues } from "@auaust/toolkit/mappedValues";
 import { entries, keys, record, values } from "@auaust/toolkit/object";
 
 import { globsSchema } from "#foundation/options/config/schemas/globsSchema";
+import { roleFileResolverSchema } from "#project/roles/config/schemas/roleFileResolverSchema";
 import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
 import { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModuleResolverSchema";
 import { listConfigSections } from "#workflows/config/operations/listConfigSections";
@@ -52,6 +53,7 @@ const externalTypes = new Map<string, TypeSource>([
     { domain: "project/structure", specifier: undefined },
   ],
   ["RoleRules", { domain: "project/roles", specifier: undefined }],
+  ["RoleFileResolver", { domain: "project/roles", specifier: undefined }],
   ["Glob", { domain: undefined, specifier: "#types/Glob" }],
   ["Globs", { domain: undefined, specifier: "#types/Globs" }],
 ]);
@@ -150,6 +152,10 @@ const readonlyListTypes = new Map<unknown, string>([
 function resolveType(schema: AnySchema): string | undefined {
   if (schema === effectModuleResolverSchema) {
     return "EffectModuleResolver";
+  }
+
+  if (schema === roleFileResolverSchema) {
+    return "RoleFileResolver";
   }
 
   if (schema === roleRulesSchema) {

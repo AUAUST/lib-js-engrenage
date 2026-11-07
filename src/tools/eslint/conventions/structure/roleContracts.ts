@@ -1,12 +1,29 @@
 import { basename, dirname, join, matchesGlob } from "node:path";
 
-import { wrap } from "@auaust/primitive-kit/arrays";
-
 import { relativeWithin } from "#foundation/filesystem/index";
 import { indexRoleName } from "#project/roles/constants";
-import { entitiesSection, structureSection } from "#project/structure/index";
+import {
+  entitiesSection,
+  listNamedFileRoles,
+  structureSection,
+  type StructureNode,
+} from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
+import type { Directory } from "#types/Directory";
+
+function findNode(
+  node: StructureNode,
+  path: Directory,
+): StructureNode | undefined {
+  if (node.path === path) {
+    return node;
+  }
+
+  return node.children
+    .map((child) => findNode(child, path))
+    .find((found) => found !== undefined);
+}
 
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
@@ -74,9 +91,18 @@ export default defineConvention({
                 data: { role },
               });
             } else if (!isIndex && contract.strict && depth === 0) {
-              const accepted = (contract.roles ?? []).flatMap((name) => {
-                return wrap(structure?.roles[name]?.contract.file ?? []);
-              });
+              const owner =
+                structure === undefined
+                  ? undefined
+                  : findNode(structure.root, path);
+
+              const accepted = listNamedFileRoles(
+                contract.roles ?? [],
+                (name) => {
+                  return structure?.roles[name]?.contract;
+                },
+                owner?.fileNames,
+              ).flatMap(({ globs }) => globs);
 
               context.report({
                 node: program,

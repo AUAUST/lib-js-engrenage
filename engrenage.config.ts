@@ -1,3 +1,5 @@
+import { toPascalCase } from "@auaust/primitive-kit/strings";
+
 import {
   adapters,
   constants,
@@ -13,13 +15,25 @@ import {
   testutils,
   types,
   utils,
+  type RoleLocation,
 } from "#project/roles/index";
 import { definerEntries, sectionDeclarations } from "#tooling/eslint/index";
 import { defineConfig } from "#workflows/config/index";
 
 // @debt the config imports the tooling barrel that `codegen barrels` regenerates after loading the config, so a barrel missing a rule breaks the codegen that would add it
 
-// @debt file names inside config/ follow named-match only; they should derive from the domain's structured path (#271)
+function definerFile({ lineage }: RoleLocation): string {
+  const owner = lineage.at(-1);
+
+  if (owner === undefined) {
+    throw new Error("A config role sits outside any namespace or domain");
+  }
+
+  const name = toPascalCase(owner.name);
+
+  return name === "Config" ? "defineConfig.ts" : `define${name}Config.ts`;
+}
+
 const config = createRolePreset({
   name: "config",
   purpose:
@@ -30,7 +44,8 @@ const config = createRolePreset({
     {
       name: "definers",
       purpose: "The domain's `define…Config` definer.",
-      file: "define*Config.ts",
+      file: definerFile,
+      fileDescription: "define<Domain>Config.ts",
       unique: true,
       exports: "named-match",
       effects: "effectful",

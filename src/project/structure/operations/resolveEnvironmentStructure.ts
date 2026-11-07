@@ -1,21 +1,29 @@
 import { readdir } from "node:fs/promises";
-import { join, matchesGlob } from "node:path";
+import { basename, join, matchesGlob } from "node:path";
+
+import { is } from "valibot";
 
 import { flat, flatMap, wrap } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
 import { entries, freeze, record, values } from "@auaust/toolkit/object";
 
 import { pathExists } from "#foundation/filesystem/index";
+import {
+  roleFileResolverSchema,
+  type RoleLocation,
+  type RoleLocationMember,
+} from "#project/roles/index";
 import { noRoles } from "#project/structure/constants";
 import { getEntryFile } from "#project/structure/utils/getEntryFile";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
+import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
+import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import type { CardinalityViolation } from "#project/structure/types/CardinalityViolation";
 import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
-import type { NamedFileRole } from "#project/structure/types/NamedFileRole";
 import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
@@ -45,6 +53,8 @@ interface Parent {
   readonly scopes: readonly string[];
   readonly owned: readonly string[];
   readonly structured: boolean;
+  readonly lineage: readonly RoleLocationMember[];
+  readonly enclosing: readonly string[];
   readonly mirrored?: {
     readonly environment: StructureEnvironmentName;
     readonly subpath: string;
@@ -289,7 +299,7 @@ function listRoles(
       add(
         files,
         name,
-        wrap(contract.file).map((glob) => join(directory, glob)),
+        listStaticFileGlobs(contract.file).map((glob) => join(directory, glob)),
       );
     }
   }
@@ -317,7 +327,9 @@ function listRoles(
           continue;
         }
 
-        const globs = wrap(nested.file).map((glob) => join(node.path, glob));
+        const globs = (
+          node.fileNames?.[name] ?? listStaticFileGlobs(nested.file)
+        ).map((glob) => join(node.path, glob));
 
         contracts.set(name, nested);
         add(files, name, globs);
@@ -427,20 +439,46 @@ export async function resolveEnvironmentStructure({
     };
   }
 
+  function resolveFileNames(
+    owner: string,
+    scopes: readonly string[],
+    location: RoleLocation,
+  ): Pick<StructureNode, "fileNames"> {
+    const { roles: contracts } = rolesFor(scopes);
+
+    const resolved = (contracts[owner]?.roles ?? []).flatMap((nested) => {
+      const file = contracts[nested]?.file;
+
+      return is(roleFileResolverSchema, file)
+        ? [[nested, freeze(wrap(file(location)))] as const]
+        : [];
+    });
+
+    return resolved.length === 0 ? {} : { fileNames: freeze(record(resolved)) };
+  }
+
   async function roleCardinality(
     path: Directory,
     role: string,
-    { scopes, structured }: { scopes: readonly string[]; structured: boolean },
+    {
+      scopes,
+      structured,
+      fileNames,
+    }: {
+      scopes: readonly string[];
+      structured: boolean;
+      fileNames?: StructureNode["fileNames"];
+    },
   ): Promise<Pick<StructureNode, "cardinality">> {
     const roles = rolesFor(scopes);
     const contract = roles.roles[role];
 
     const named = structured
-      ? (contract?.roles ?? []).flatMap((name): NamedFileRole[] => {
-          const nested = roles.roles[name];
-
-          return nested?.file === undefined ? [] : [{ name, contract: nested }];
-        })
+      ? listNamedFileRoles(
+          contract?.roles ?? [],
+          (name) => roles.roles[name],
+          fileNames,
+        )
       : [];
 
     if (
@@ -517,6 +555,19 @@ export async function resolveEnvironmentStructure({
       path,
     );
 
+    function extendLineage(kind: StructureKind): readonly RoleLocationMember[] {
+      return kind === "namespace" || kind === "domain"
+        ? freeze([
+            ...parent.lineage,
+            freeze({
+              name: directory,
+              path,
+              kind,
+            }),
+          ])
+        : parent.lineage;
+    }
+
     async function node(
       kind: StructureKind,
       source: StructureNode["source"],
@@ -525,12 +576,14 @@ export async function resolveEnvironmentStructure({
         scopes = parent.scopes,
         owned = parent.owned,
         structured = false,
+        enclosing = parent.enclosing,
         mirrored,
         children,
       }: {
         scopes?: readonly string[];
         owned?: readonly string[];
         structured?: boolean;
+        enclosing?: readonly string[];
         mirrored?: Parent["mirrored"];
         children?: readonly StructureNode[];
       } = {},
@@ -553,6 +606,8 @@ export async function resolveEnvironmentStructure({
             scopes,
             owned,
             structured,
+            lineage: extendLineage(kind),
+            enclosing,
             ...(mirrored === undefined ? {} : { mirrored }),
           })),
       });
@@ -567,7 +622,7 @@ export async function resolveEnvironmentStructure({
       const { roles: contracts } = roles;
 
       const fileGlobs = values(contracts).flatMap(({ file }) => {
-        return file === undefined ? [] : [file].flat();
+        return listStaticFileGlobs(file);
       });
 
       const files =
@@ -650,14 +705,21 @@ export async function resolveEnvironmentStructure({
     if (parent.kind === "role") {
       return role === undefined || !parent.structured
         ? node("unclassified", "inferred", {})
-        : node("role", "inferred", {
-            role,
-            ...metadataOf(role, parent.scopes),
-            ...(await roleCardinality(path, role, {
-              scopes: parent.scopes,
-              structured: false,
-            })),
-          });
+        : node(
+            "role",
+            "inferred",
+            {
+              role,
+              ...metadataOf(role, parent.scopes),
+              ...(await roleCardinality(path, role, {
+                scopes: parent.scopes,
+                structured: false,
+              })),
+            },
+            {
+              enclosing: [...parent.enclosing, role],
+            },
+          );
     }
 
     if (
@@ -668,6 +730,13 @@ export async function resolveEnvironmentStructure({
       const contained = rolesFor(parent.scopes).roles[role]?.roles;
       const scopes = [...parent.scopes, ...(contained ?? [])];
       const structured = contained !== undefined;
+      const enclosing = [...parent.enclosing, role];
+
+      const { fileNames } = resolveFileNames(role, scopes, {
+        environment: name,
+        lineage: parent.lineage,
+        roles: enclosing,
+      });
 
       return node(
         "role",
@@ -675,12 +744,18 @@ export async function resolveEnvironmentStructure({
         {
           role,
           ...metadataOf(role, parent.scopes),
-          ...(await roleCardinality(path, role, { scopes, structured })),
+          ...(fileNames === undefined ? {} : { fileNames }),
+          ...(await roleCardinality(path, role, {
+            scopes,
+            structured,
+            fileNames,
+          })),
         },
         {
           scopes,
           owned: [...(contained ?? []), ...parent.owned],
           structured,
+          enclosing,
         },
       );
     }
@@ -716,6 +791,8 @@ export async function resolveEnvironmentStructure({
       scopes: parent.scopes,
       owned: parent.owned,
       structured: false,
+      lineage: extendLineage("namespace"),
+      enclosing: parent.enclosing,
     });
 
     const holdsOnlyNamespacesAndDomains =
@@ -765,6 +842,14 @@ export async function resolveEnvironmentStructure({
           scopes: rootScopes,
           owned: rootScopes,
           structured: false,
+          lineage: freeze([
+            freeze({
+              name: basename(directory),
+              path: directory,
+              kind: "namespace" as const,
+            }),
+          ]),
+          enclosing: [],
         });
       }),
     ),

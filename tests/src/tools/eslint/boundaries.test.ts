@@ -52,6 +52,27 @@ function createConfigRoleProject(strict: boolean) {
   });
 }
 
+function createDerivedDefinerProject() {
+  const config = createRolePreset({
+    name: "config",
+    strict: true,
+    roles: [{ name: "definers", file: "<definers>" }],
+  });
+
+  const roles = renderCodeRoles(entry(), config()).replace(
+    JSON.stringify("<definers>"),
+    "({ lineage }) => `define${lineage.at(-1).name}Config.ts`",
+  );
+
+  return createTemporaryProject({
+    "package.json": JSON.stringify({ name: "library", type: "module" }),
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${roles} } };\n`,
+    "tsconfig.json": "{}",
+    "src/tools/vite/index.ts": exported,
+    "src/tools/vite/config/defineviteConfig.ts": exported,
+  });
+}
+
 function createBarrelProject() {
   const conventions = createRolePreset({
     name: "conventions",
@@ -425,5 +446,23 @@ describe("structure boundaries", () => {
     );
 
     expect(await loose(helper, exported)).toEqual([]);
+  });
+
+  test("names in a strict message the root files a callback derives for the location", async () => {
+    const strict = await createLinter(
+      "auaust/role-contracts",
+      createDerivedDefinerProject(),
+    );
+
+    const [message] = await strict.messages(
+      "src/tools/vite/config/defineViteConfiguration.ts",
+      exported,
+    );
+
+    expect(message).toContain("only defineviteConfig.ts;");
+
+    expect(
+      await strict("src/tools/vite/config/defineviteConfig.ts", exported),
+    ).toEqual([]);
   });
 });

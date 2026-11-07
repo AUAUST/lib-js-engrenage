@@ -1,3 +1,5 @@
+import { fileURLToPath } from "node:url";
+
 import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
@@ -42,14 +44,18 @@ const config = createRolePreset({
   ],
 });
 
+const repositoryRoot = fileURLToPath(new URL("../../../../", import.meta.url));
+
+const staticDefiners = JSON.stringify("define*Config.ts");
+
 const conventions = createRolePreset({
   name: "conventions",
   exports: "default",
   index: true,
 });
 
-function renderRoles(indexFile: string) {
-  return JSON.stringify([
+function renderRoles(indexFile: string, definers: string) {
+  const roles = JSON.stringify([
     index({ file: [indexFile] }),
     entrypoint(),
     constants(),
@@ -58,13 +64,15 @@ function renderRoles(indexFile: string) {
     config(),
     conventions(),
   ]);
+
+  return roles.replace(staticDefiners, () => definers);
 }
 
-async function createIndex(indexFile = "index.ts") {
+async function createIndex(indexFile = "index.ts", definers = staticDefiners) {
   const project = createTemporaryProject({
     "package.json": '{ "name": "library", "type": "module" }',
     "tsconfig.json": "{}",
-    "engrenage.config.ts": `export default { preset: "library", src: { node: 24, roles: ${renderRoles(indexFile)}, namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", src: { node: 24, roles: ${renderRoles(indexFile, definers)}, namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
     "src/entry.ts": "",
     "src/foundation/base/index.ts": "",
     "src/project/feature/index.ts": "",
@@ -75,13 +83,18 @@ async function createIndex(indexFile = "index.ts") {
     "src/project/feature/config/featureSchema.ts": "",
     "src/project/feature/config/defineFeatureConfig.ts": "",
     "src/project/feature/config/helper.ts": "",
+    "src/project/feature/config/setupFeature.ts": "",
     "src/project/feature/conventions/index.ts": "",
     "src/project/feature/conventions/main.ts": "",
     "src/project/feature/utils/main.ts": "",
     "tests/x.test.src.ts": "",
   });
 
-  const config = await loadConfig(project.root);
+  return indexProject(project.root);
+}
+
+async function indexProject(root: string) {
+  const config = await loadConfig(root);
 
   const [
     structure,
@@ -106,7 +119,7 @@ async function createIndex(indexFile = "index.ts") {
   ]);
 
   return createEntityIndex({
-    root: project.root,
+    root,
     structure,
     environments: {
       src: source,
@@ -184,6 +197,41 @@ describe("createEntityIndex", () => {
     expect(
       index.entityOf("src/project/feature/config/helper.ts"),
     ).toMatchObject({ role: "config", effects: "confined" });
+  });
+
+  test("matches a nested role's root files against the names its callback returns for the location", async () => {
+    const index = await createIndex(
+      "index.ts",
+      '({ lineage }) => [`define${lineage.at(-1).name}Config.ts`, "setupFeature.ts"]',
+    );
+
+    expect(
+      index.entityOf("src/project/feature/config/definefeatureConfig.ts"),
+    ).toMatchObject({ role: "config/definers" });
+
+    expect(
+      index.entityOf("src/project/feature/config/setupFeature.ts"),
+    ).toMatchObject({ role: "config/definers" });
+
+    expect(
+      index.entityOf("src/project/feature/config/defineFeatureConfig.ts"),
+    ).toMatchObject({ role: "config" });
+  });
+
+  test("names each definer of engrenage after its domain", async () => {
+    const index = await indexProject(repositoryRoot);
+
+    expect(
+      index.entityOf("src/tools/vite/config/defineViteConfig.ts"),
+    ).toMatchObject({ role: "config/definers" });
+
+    expect(
+      index.entityOf("src/workflows/config/config/defineConfig.ts"),
+    ).toMatchObject({ role: "config/definers" });
+
+    expect(
+      index.entityOf("src/tools/vite/config/defineViteConfiguration.ts"),
+    ).toMatchObject({ role: "config" });
   });
 
   test("has no entity for a file in a directory the walk never saw, outside a role", async () => {

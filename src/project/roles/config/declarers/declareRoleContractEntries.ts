@@ -17,6 +17,7 @@ import {
   globsSchema,
   unset,
 } from "#foundation/options/index";
+import { roleFileResolverSchema } from "#project/roles/config/schemas/roleFileResolverSchema";
 import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
 import { roleContractDefaults } from "#project/roles/constants";
 
@@ -32,9 +33,14 @@ export function declareRoleContractEntries<Nested>(
       description: "One line stating what the role holds.",
       optional: { value: undefined },
     }),
-    file: declare(globsSchema, {
+    file: declare(union([globsSchema, roleFileResolverSchema]), {
       description:
-        "Makes the role a file role, matched by these names or globs; a nested role's also match files at its owner's root.",
+        "Makes the role a file role, matched by these names or globs, or by those a callback returns for each owning location; a nested role's also match files at its owner's root.",
+      optional: { value: undefined },
+    }),
+    fileDescription: declare(string(), {
+      description:
+        "How a `file` callback names the role's files, shown in maps instead of globs.",
       optional: { value: undefined },
     }),
     accepts: declare(globsSchema, {

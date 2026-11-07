@@ -5,6 +5,7 @@ import type { StructureRelation } from "#project/structure/types/StructureRelati
 import type { StructureSource } from "#project/structure/types/StructureSource";
 import type { UnclassifiedReason } from "#project/structure/types/UnclassifiedReason";
 import type { Directory } from "#types/Directory";
+import type { Globs } from "#types/Globs";
 
 export interface StructureNode {
   readonly path: Directory;
@@ -24,5 +25,6 @@ export interface StructureNode {
   readonly reason?: UnclassifiedReason;
   readonly strays?: readonly Directory[];
   readonly cardinality?: readonly CardinalityViolation[];
+  readonly fileNames?: Readonly<Record<string, Globs>>;
   readonly children: readonly StructureNode[];
 }

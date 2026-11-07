@@ -1,3 +1,4 @@
+import { isFunction } from "@auaust/toolkit/isFunction";
 import { isString } from "@auaust/toolkit/isString";
 import { freeze } from "@auaust/toolkit/object";
 
@@ -41,6 +42,12 @@ export function registerRoles({
     );
 
     const registered = owner === undefined ? name : `${owner}/${name}`;
+
+    if (owner === undefined && isFunction(declared.file)) {
+      throw new Error(
+        `${path}[${position}] gives the role ${registered} a \`file\` callback, which only a nested file role takes`,
+      );
+    }
 
     const nested =
       declared.roles === undefined

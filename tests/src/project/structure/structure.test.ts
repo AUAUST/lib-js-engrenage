@@ -389,6 +389,16 @@ describe("inline roles", () => {
     });
   });
 
+  test("take a `file` callback only as nested file roles", async () => {
+    const roles = renderCodeRoles(
+      createRolePreset({ name: "setup", file: "<setup>" })(),
+    ).replace(JSON.stringify("<setup>"), '() => "setup.ts"');
+
+    await expect(
+      describeProject(`{ src: { roles: ${roles} } }`),
+    ).rejects.toThrow("gives the role setup a `file` callback");
+  });
+
   test("of a namespace are active only in its subtree", async () => {
     const nodes = await describeProject(`{
       src: {

@@ -7,6 +7,7 @@ import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import { entryRoleName, indexRoleName } from "#project/roles/constants";
 import { noRoles } from "#project/structure/constants";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
+import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
 import type { Alias } from "#project/structure/types/Alias";
@@ -212,11 +213,13 @@ export function createEntityIndex({
       role === undefined ? undefined : environment.roles[role]?.contract;
 
     const named = freeze(
-      (contract?.roles ?? []).flatMap((name): NamedFileRole[] => {
-        const nested = environment.roles[name]?.contract;
-
-        return nested?.file === undefined ? [] : [{ name, contract: nested }];
-      }),
+      listNamedFileRoles(
+        contract?.roles ?? [],
+        (name) => {
+          return environment.roles[name]?.contract;
+        },
+        node.fileNames,
+      ),
     );
 
     const entity: Entity = freeze({

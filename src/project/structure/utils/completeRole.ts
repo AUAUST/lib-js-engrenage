@@ -9,6 +9,7 @@ export function completeRole(
 ): ResolvedRoleContract {
   return freeze({
     file: definition.file,
+    fileDescription: definition.fileDescription,
     accepts: definition.accepts,
     roles: definition.roles,
     categories: definition.categories,

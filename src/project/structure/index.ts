@@ -78,6 +78,8 @@ export { getIndexFile } from "#project/structure/utils/getIndexFile";
 export { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 export { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
+export { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
+export { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 export { matchFileRole } from "#project/structure/utils/matchFileRole";
 export { normalizeNamespaces } from "#project/structure/utils/normalizeNamespaces";
 export { rankModule } from "#project/structure/utils/rankModule";

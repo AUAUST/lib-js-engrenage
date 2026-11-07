@@ -1,9 +1,10 @@
-import { wrap } from "@auaust/primitive-kit/arrays";
-
 import { filesIn, type Filesystem } from "#foundation/filesystem/index";
 import { testsetup } from "#project/roles/index";
+import {
+  listStaticFileGlobs,
+  type ResolvedRoles,
+} from "#project/structure/index";
 import type { ResolvedTests } from "#project/environments/index";
-import type { ResolvedRoles } from "#project/structure/index";
 import type { Files } from "#types/Files";
 
 export async function findSetupFiles({
@@ -15,11 +16,11 @@ export async function findSetupFiles({
   roles: ResolvedRoles;
   filesystem: Filesystem;
 }): Promise<Files> {
-  const { file } = roles.roles[testsetup().name] ?? {};
+  const globs = listStaticFileGlobs(roles.roles[testsetup().name]?.file);
 
-  if (file === undefined) {
+  if (globs.length === 0) {
     return [];
   }
 
-  return filesystem.glob(filesIn(tests.dirs, wrap(file)));
+  return filesystem.glob(filesIn(tests.dirs, globs));
 }

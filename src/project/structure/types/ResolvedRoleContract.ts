@@ -1,9 +1,11 @@
-import type { RoleRules } from "#project/roles/index";
+import type { RoleFileResolver, RoleRules } from "#project/roles/index";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
 export interface ResolvedRoleContract {
-  readonly file: Glob | Globs | undefined;
+  readonly file: Glob | Globs | RoleFileResolver | undefined;
+  // @debt no map or structure report renders file globs yet, so nothing shows `fileDescription`
+  readonly fileDescription: string | undefined;
   readonly accepts: Glob | Globs | undefined;
   readonly nesting: number | "any";
   readonly roles: readonly string[] | undefined;

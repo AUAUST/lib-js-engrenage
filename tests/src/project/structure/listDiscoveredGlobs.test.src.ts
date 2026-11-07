@@ -9,6 +9,7 @@ function contract(
 ): ResolvedRoleContract {
   return {
     file: undefined,
+    fileDescription: undefined,
     accepts: undefined,
     nesting: 0,
     roles: undefined,
