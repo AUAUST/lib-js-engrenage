@@ -14,6 +14,11 @@ export interface AuaustRules {
    */
   "auaust/await-thenable"?: Rule<AuaustAwaitThenable>;
   /**
+   * Cognitive Complexity of functions should not be too high
+   * @see https://sonarsource.github.io/rspec/#/rspec/S3776/javascript
+   */
+  "auaust/cognitive-complexity"?: Rule<AuaustCognitiveComplexity>;
+  /**
    * Enforce specifying generic type arguments on type annotation or constructor name of a constructor call
    * @see https://typescript-eslint.io/rules/consistent-generic-constructors
    */
@@ -86,6 +91,11 @@ export interface AuaustRules {
    * @see https://eslint.org/docs/latest/rules/logical-assignment-operators
    */
   "auaust/logical-assignment-operators"?: Rule<AuaustLogicalAssignmentOperators>;
+  /**
+   * Enforce a maximum number of lines of code in a function
+   * @see https://eslint.org/docs/latest/rules/max-lines-per-function
+   */
+  "auaust/max-lines-per-function"?: Rule<AuaustMaxLinesPerFunction>;
   /**
    * Enforce using a particular method signature syntax
    * @see https://typescript-eslint.io/rules/method-signature-style
@@ -526,6 +536,11 @@ type AuaustAwaitThenable =
         allowMixedPromiseArrays?: boolean;
       },
     ];
+// ----- auaust/cognitive-complexity -----
+type AuaustCognitiveComplexity =
+  | []
+  | [number | "silence-issues"]
+  | [number | "silence-issues", "silence-issues"];
 // ----- auaust/consistent-generic-constructors -----
 type AuaustConsistentGenericConstructors =
   [] | ["type-annotation" | "constructor"];
@@ -585,6 +600,18 @@ type AuaustLogicalAssignmentOperators = (
   | ["never"]
 ) &
   unknown[];
+// ----- auaust/max-lines-per-function -----
+type AuaustMaxLinesPerFunction =
+  | []
+  | [
+      | {
+          max?: number;
+          skipComments?: boolean;
+          skipBlankLines?: boolean;
+          IIFEs?: boolean;
+        }
+      | number,
+    ];
 // ----- auaust/method-signature-style -----
 type AuaustMethodSignatureStyle = [] | ["property" | "method"];
 // ----- auaust/name-replacements -----

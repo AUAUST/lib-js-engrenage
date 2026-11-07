@@ -1,7 +1,7 @@
-import { boolean, number, picklist } from "valibot";
+import { boolean, integer, minValue, number, picklist, pipe } from "valibot";
 
 import { declare, declareObject } from "#foundation/options/index";
-import { conventions } from "#project/format/constants";
+import { complexityLimits, conventions } from "#project/format/constants";
 
 export const formatSchema = declareObject(
   {
@@ -33,10 +33,21 @@ export const formatSchema = declareObject(
       description: "Line ending of formatted files.",
       optional: { value: conventions.endOfLine },
     }),
+    // @debt complexity limits are not formatting conventions; consider a broader section on how code is written, covering formatting primitives, complexity constraints and the other rules that shape the look and feel of code
+    maxCognitiveComplexity: declare(pipe(number(), integer(), minValue(0)), {
+      description:
+        "Highest cognitive complexity a function may reach, as SonarSource defines it.",
+      optional: { value: complexityLimits.cognitiveComplexity },
+    }),
+    maxFunctionLines: declare(pipe(number(), integer(), minValue(1)), {
+      description:
+        "Most lines a function may span, blank lines and comments excluded.",
+      optional: { value: complexityLimits.functionLines },
+    }),
   },
   {
     description:
-      "Formatting conventions of the project, mapped by each formatter at its boundary (Prettier options, and conventions no formatter covers).",
+      "Formatting conventions and complexity limits of the project, mapped by each formatter or linter at its boundary (Prettier options, ESLint rules, and conventions no tool covers).",
     optional: true,
   },
 );

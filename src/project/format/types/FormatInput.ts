@@ -2,7 +2,7 @@
 
 
 /**
- * Formatting conventions of the project, mapped by each formatter at its boundary (Prettier options, and conventions no formatter covers).
+ * Formatting conventions and complexity limits of the project, mapped by each formatter or linter at its boundary (Prettier options, ESLint rules, and conventions no tool covers).
  */
 export interface FormatInput {
   /**
@@ -40,4 +40,14 @@ export interface FormatInput {
    * @default `lf`
    */
   endOfLine?: (("lf" | "crlf") | undefined)
+  /**
+   * Highest cognitive complexity a function may reach, as SonarSource defines it.
+   * @default 20
+   */
+  maxCognitiveComplexity?: (number | undefined)
+  /**
+   * Most lines a function may span, blank lines and comments excluded.
+   * @default 125
+   */
+  maxFunctionLines?: (number | undefined)
 }

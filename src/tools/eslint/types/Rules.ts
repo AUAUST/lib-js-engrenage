@@ -5,6 +5,7 @@ import type { AuaustRules } from "#tools/eslint/types/rules/AuaustRules";
 import type { StylisticRules } from "#tools/eslint/types/rules/StylisticRules";
 import type { PackageJsonRules } from "#tools/eslint/types/rules/PackageJsonRules";
 import type { PerfectionistRules } from "#tools/eslint/types/rules/PerfectionistRules";
+import type { SonarjsRules } from "#tools/eslint/types/rules/SonarjsRules";
 import type { UnicornRules } from "#tools/eslint/types/rules/UnicornRules";
 import type { UnusedImportsRules } from "#tools/eslint/types/rules/UnusedImportsRules";
 import type { TypescriptEslintRules } from "#tools/eslint/types/rules/TypescriptEslintRules";
@@ -19,6 +20,7 @@ export interface Rules
     StylisticRules,
     PackageJsonRules,
     PerfectionistRules,
+    SonarjsRules,
     UnicornRules,
     UnusedImportsRules,
     TypescriptEslintRules,

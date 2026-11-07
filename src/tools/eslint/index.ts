@@ -47,6 +47,7 @@ export * from "#tools/eslint/types/rules/CoreRules";
 export * from "#tools/eslint/types/rules/ImportXRules";
 export * from "#tools/eslint/types/rules/PackageJsonRules";
 export * from "#tools/eslint/types/rules/PerfectionistRules";
+export * from "#tools/eslint/types/rules/SonarjsRules";
 export * from "#tools/eslint/types/rules/StylisticRules";
 export * from "#tools/eslint/types/rules/TypescriptEslintRules";
 export * from "#tools/eslint/types/rules/UnicornRules";

@@ -30,7 +30,7 @@ export interface ConfigInput {
   debug?: (boolean | undefined)
   define?: (DefineInput | undefined)
   /**
-   * Formatting conventions of the project, mapped by each formatter at its boundary (Prettier options, and conventions no formatter covers).
+   * Formatting conventions and complexity limits of the project, mapped by each formatter or linter at its boundary (Prettier options, ESLint rules, and conventions no tool covers).
    */
   format?: (FormatInput | undefined)
   /**

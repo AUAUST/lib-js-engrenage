@@ -1948,3 +1948,35 @@ describe("scopes", () => {
     expect(outside?.languageOptions?.parser).toBeUndefined();
   });
 });
+
+describe("complexity limits", () => {
+  const source = `export function pick(value: number): number {
+  if (value > 0) {
+    return value;
+  }
+
+  return 0;
+}
+`;
+
+  const rules = [
+    "auaust/cognitive-complexity",
+    "auaust/max-lines-per-function",
+  ];
+
+  test("allow functions within the default limits", async () => {
+    const reported = await lintedProjectRules(source);
+
+    expect(reported).not.toEqual(expect.arrayContaining([rules[0]]));
+    expect(reported).not.toEqual(expect.arrayContaining([rules[1]]));
+  });
+
+  test("apply the limits of the format section", async () => {
+    const reported = await lintedProjectRules(source, {
+      engrenageConfig:
+        "export default { format: { maxCognitiveComplexity: 0, maxFunctionLines: 2 } };\n",
+    });
+
+    expect(reported).toEqual(expect.arrayContaining(rules));
+  });
+});

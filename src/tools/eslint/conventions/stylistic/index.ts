@@ -1,10 +1,12 @@
 // @barrel *.ts default
 export { default as assertionStyle } from "#tools/eslint/conventions/stylistic/assertionStyle";
 export { default as assignments } from "#tools/eslint/conventions/stylistic/assignments";
+export { default as cognitiveComplexity } from "#tools/eslint/conventions/stylistic/cognitiveComplexity";
 export { default as conditionals } from "#tools/eslint/conventions/stylistic/conditionals";
 export { default as curly } from "#tools/eslint/conventions/stylistic/curly";
 export { default as exhaustiveSwitches } from "#tools/eslint/conventions/stylistic/exhaustiveSwitches";
 export { default as functionDeclarations } from "#tools/eslint/conventions/stylistic/functionDeclarations";
+export { default as functionLines } from "#tools/eslint/conventions/stylistic/functionLines";
 export { default as groupedOverloads } from "#tools/eslint/conventions/stylistic/groupedOverloads";
 export { default as nameReplacements } from "#tools/eslint/conventions/stylistic/nameReplacements";
 export { default as naming } from "#tools/eslint/conventions/stylistic/naming";

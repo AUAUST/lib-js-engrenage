@@ -1,6 +1,7 @@
 import stylistic from "@stylistic/eslint-plugin";
 import packageJson from "eslint-plugin-package-json";
 import perfectionist from "eslint-plugin-perfectionist";
+import sonarjs from "eslint-plugin-sonarjs";
 import unicorn from "eslint-plugin-unicorn";
 import unusedImports from "eslint-plugin-unused-imports";
 import { defineConfig } from "eslint/config";
@@ -144,6 +145,7 @@ export async function createEslintConfig(
         "@stylistic": stylistic,
         "package-json": packageJson,
         perfectionist,
+        sonarjs,
         unicorn,
         "unused-imports": unusedImports,
       },

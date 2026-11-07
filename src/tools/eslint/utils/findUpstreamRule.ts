@@ -1,6 +1,7 @@
 import stylistic from "@stylistic/eslint-plugin";
 import { importX } from "eslint-plugin-import-x";
 import perfectionist from "eslint-plugin-perfectionist";
+import sonarjs from "eslint-plugin-sonarjs";
 import unicorn from "eslint-plugin-unicorn";
 import unusedImports from "eslint-plugin-unused-imports";
 import { builtinRules } from "eslint/use-at-your-own-risk";
@@ -14,6 +15,7 @@ const upstreamPlugins: Record<string, Plugin> = {
   "@typescript-eslint": typescript,
   "import-x": importX,
   perfectionist,
+  sonarjs,
   unicorn,
   "unused-imports": unusedImports,
 };
