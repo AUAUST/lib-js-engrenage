@@ -84,7 +84,7 @@ To flush:
 
 ## Writing the issue
 
-When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then draft a new one. Write it to the [issue contract](https://github.com/AUAUST/lib-js-engrenage/issues/239#contract) as a Problem, complete through its ancestors, if any, for a worker who treats everything in it as binding and applies it without redesign:
+When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then draft a new one. Write it as a Problem meeting the issue contract that `engrenage issues check` enforces, complete through its ancestors, if any, for a worker who treats everything in it as binding and applies it without redesign:
 
 ```markdown
 #<plan> › … › #<parent> · <section>: <gist>
