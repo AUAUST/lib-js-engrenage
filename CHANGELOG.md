@@ -1,5 +1,109 @@
 # @auaust/engrenage
 
+## 0.8.0
+
+### Minor Changes
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Replace the `agents.budgets` keys `plan`, `block` and `task` with `goal`, `context`, `doneWhen`, `comment`, `backlogEntry` and `debtEntry`, beside a `warn | deny` mode. Upgrade: rename the keys you set.
+  - **Breaking**: Remove the `edit` hooks and commands; `engrenage sync` drops them from `.claude/settings.json` and `.codex/hooks.json` and removes stale engrenage hooks, leaving the project's own. Upgrade: run `engrenage sync`.
+  - Add `engrenage gate [--staged | --worktree]`, fixing and checking the changed files (ESLint, Prettier, types, structure, sync, related tests, `agents.gate.commands`) and warning on over-budget backlog or debt entries; the `agents.gate` option; and the lefthook init step with `engrenage sync lefthook`, running the gate before agent commits
+  - Add `engrenage issues check <number>`, checking an issue against the issue contract; untyped bodies with neither **Goal** nor **Steps** get no structure check
+  - Add `engrenage agents claude|codex hook github`, checking every `gh issue create|edit|comment` of a shell command, bodies piped from `.draft.md` files included, against the issue contract and the **Goal**, **Context** and **Done when** budgets
+  - Add `engrenage agents claude hook dispatch`, denying `worker` or `debugger` dispatches whose issue is not ready
+  - Add `engrenage agents claude hook git` and matching settings rules, denying `--no-verify`, `LEFTHOOK=0` and `core.hooksPath` bypasses of the commit gate
+  - Add `gate: true` to skill `agent:` blocks, syncing a `Stop` hook that sends a subagent back once with the gate's failures
+  - Exit hook commands with code 2 and a message when they cannot load the CLI
+  - Add `effort` to skill `agent:` blocks and the `agents.subagentCacheTtl` option (`1h`, synced into `subagentPromptCacheTtl`), and fit each shipped agent's model and effort to its role
+  - Generate a project map overview in `.claude/rules/project-map.md` and one map per environment, loaded only for its files, pointed to by the default `structure` AGENTS.md section
+  - Add the `writing` AGENTS.md section, on by default, with density, structure and length rules for everything agents write
+  - Add the `issue-walking` skill, walking a planned issue tree and dispatching each task to a worker before reviewing and committing it
+  - Write plans as indexes and tasks as deltas naming their ancestors, with nested plans bounding what workers read
+  - Draft planner and debugger issue edits in `.ai/issues/` and publish them in one flush, weigh user requests in the decision protocol, and dispatch Complexity `Trivial` issues at low effort
+  - Remove links to engrenage repository documents from the shared skills
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Write the GitHub workflows at the repository root, with the project directory as `working-directory`. Upgrade: run `engrenage sync`, then delete workflows left in a nested project's `.github/`.
+  - Write `preset` from `engrenage init`, except for the `other` project type
+  - Start commands without loading the config modules, and load the ESLint engine only when the VS Code sync reads its info rules: hooks that never read the config start in about 0.1s instead of 1.1s
+  - Stop shipping `.d.mts` declarations for bin entries
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Pass `loadConfig` and the callbacks of `defineEslintConfig`, `defineViteConfig`, `defineTsdownConfig`, `defineVitestConfig` and `definePrettierConfig` a `LoadedConfig` read section by section, instead of the flat config. Upgrade: replace each `config.<key>` with `await config.resolve(<key>Section)`, imported from `@auaust/engrenage` (`sourceSection`, `buildSection`, `gitSection`…); read `src.exports` through `sourceExportsSection`, `typescript.tsconfig.path` through `tsconfigPathSection` and `build.outDir` through `buildOutDirSection`.
+  - **Breaking**: Stop validating in `loadConfig` and replace `validateConfig` with `loadValidatedConfig(cwd?, options?)`, which validates once and reports every failing section and unknown top-level key. Upgrade: call `loadValidatedConfig` where the config must be valid.
+  - **Breaking**: Limit `@auaust/engrenage/config` to `defineConfig`, `define`, `loadConfig`, `loadValidatedConfig`, `ConfigInput`, `LoadedConfig` and `Resolvable`. Upgrade: rename the `Config` type to `ConfigInput` and the value-or-function helper to `Resolvable`; import `ResolvedAgents`, `ResolvedGit`, `ResolvedGithub`, `ResolvedPrettier` and `ResolvedVscode` from their tool entries and `PackageJson` from `@auaust/engrenage/package`; drop `createContext`, `ResolvedConfig`, `InlineRole`, `sourceTestsVariant` and `distTestsVariant`.
+  - **Breaking**: Move `root`, `filesystem` and `configFile` to `config.context` and remove `raw` from `LoadedConfig` and the ESLint convention config. Upgrade: `resolve(...paths)` becomes `config.context.path(...paths)`, `cacheFor(name)` becomes `(await config.resolve(cacheSection)).for(name)`.
+  - **Breaking**: Make `createEslintConfig`, `createPrettierConfig`, `createTsdownConfig`, `createViteConfig` and `createVitestConfig` async, taking the `LoadedConfig` first. Upgrade: `await createViteConfig(config, …)`.
+  - **Breaking**: Make `formatFile` and every file read, write, glob and process of config loading, `init`, `sync` and the CLI async, and the `gitignore`, `prettierignore` and per-environment `tsconfig.path` fields promise-valued. Upgrade: `await` them.
+  - **Breaking**: Reject a config file whose default export is neither an object nor a function returning one. Upgrade: export the config object or its function.
+  - Load the config once per project root, shared by the CLI and the definers; `loadConfig.refresh(root)` reloads `engrenage.config.ts`
+  - Declare every option's default, shown as `@default` in the generated JSDoc and filled in the loaded config; fail `src.apis` and `inherits` conflicts when their section is read
+  - Add the `format` section (`indent`, `indentWidth`, `lineWidth`, `quotes`, `semicolons`, `trailingCommas`, `endOfLine`), defaulting to the former fixed conventions
+  - Resolve the `github.workflows` and `tests.dist.tsconfig` defaults in the config, with `ResolvedGithub.workflowsConfigured` and `ResolvedBuild.configuredOutDir` exposing what was set
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Remove `eslint.boundaries` and the `eslint-plugin-boundaries` dependency; `auaust/import-environments`, `auaust/import-tests`, `auaust/import-data`, `auaust/import-workspaces`, `auaust/import-layers` and `auaust/import-surfaces` decide from the structure. Upgrade: drop `eslint.boundaries`, and switch a structure rule off through the ESLint `structure` option (`structure: { importLayers: false }`).
+  - **Breaking**: Add `auaust/import-specifiers`, reporting relative specifiers an alias covers, self-imports and paths missing from the structure map, in place of `import-x/no-self-import` and `import-x/no-useless-path-segments`. Upgrade: import through the `#…` aliases.
+  - **Breaking**: Forbid tests importing an environment's root file, and check each test variant's imports: `x.test.ts` and `x.test.dist.ts` import public specifiers, `x.test.src.ts` internals. Upgrade: import the public entry, or rename the test `.src`.
+  - **Breaking**: Replace `no-default-export`, `no-internal-imports-in-public-tests` and `no-package-imports-in-source-tests` with the structure rules, and `typesDeclarations` with `typeOnlyRoles`. Upgrade: rename those rules in your overrides.
+  - **Breaking**: Make a `Convention` declare the `sections` it reads, its `rule` and `delegates` receiving them with the config context, and rename its `presets` option `traits`. Upgrade: declare `sections` and read them instead of the flat config.
+  - **Breaking**: Make `Delegate` describe the upstream rule and its options instead of holding the resolved rule. Upgrade: pass the rule's name and options.
+  - **Breaking**: Remove `StructureLocation` from `@auaust/engrenage/eslint`. Upgrade: use `Entity`.
+  - Add `defineRoleRule`, role rule modules (`roles/<role>/<key>`) receiving the file's `Entity` and its environment's file names
+  - Add the `importEffects` convention, following each runtime binding through re-exports to check it against the effect levels
+  - Report runtime imports from global type-only roles in `auaust/import-surfaces` and `auaust/import-layers`, whose messages name the broken relation and its fix
+  - Lint import boundaries several times faster, leaving `import-x/namespace` to the TypeScript checker on TypeScript files
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Replace `presets: ["library"]` with `preset: "library"` (at most one) and `traits: { enable, disable }`; the `library` preset bundles the `published` trait, which drives the published `package.json` fields, the library tsconfig, dist-mode tests, the library workflows and the library lint conventions. Upgrade: `presets: ["library"]` becomes `preset: "library"`.
+  - **Breaking**: Replace `tests.files` with `tests.location`, `tests.suffix` and `tests.extension`. Upgrade: split the glob into those three options.
+  - **Breaking**: Replace `tests.layout` with the boolean `tests.mirror` (default `false`). Upgrade: `layout: "mirror"` becomes `mirror: true`.
+  - **Breaking**: Rename `bin.layout` and `scripts.layout` to `tree` (default `commands`: the environment root and every non-role directory are command groups, their modules subcommands named after their file), and `bin.commands` to `bin.entries`. Upgrade: rename the keys.
+  - **Breaking**: Replace `build.emptyOutDir` with `build.clean`: `"all"`, `"emitted"` (only the files the previous build emitted) or `false`. Upgrade: `emptyOutDir: true` becomes `clean: "all"`.
+  - **Breaking**: Remove the `public` domain option. Upgrade: give each public domain an `entry.ts`.
+  - Reject each removed key with a message naming its replacement
+  - Add `typescript.verbatimModuleSyntax` (default `true`); `false` is written into the base tsconfig, resolves every role `typeOnly: false` and turns the type import convention off, and a contradicting `compilerOptions.verbatimModuleSyntax` fails
+  - Add `setupFiles` to the tests environment, defaulting to the `setup.ts` of the tests root
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Remove `loadConfig`, `loadValidatedConfig`, `LoadedConfig`, `PackageType` and `PublishAccess` from the root entry, which exports the config section values and shared path and sync types. Upgrade: import the loaders from `@auaust/engrenage/config` and `PackageType` and `PublishAccess` from `@auaust/engrenage/package`.
+  - **Breaking**: Move `syncBlocks`, `syncFiles` and `syncIgnoreFile` to `@auaust/engrenage/blocks/internals`, `filesIn` to `@auaust/engrenage/filesystem/internals` and `validate` to `@auaust/engrenage/options/internals`, with no stability guarantee. Upgrade: import them from there, or stop depending on them.
+  - Derive package entries from the public domains, adding `format`, `package`, `baseline` and `roles`; tools format through the `Formatter` port
+  - Add `structure.internals` and `<environment>.domains.<path>.internals`, exposing a domain's `index.ts` under `<subpath>/internals` with no stability guarantee
+  - Add `definePrettierConfig` to `@auaust/engrenage/prettier`, mapping the `format` section with the project's plugins and overrides; the default export stays the defaults-only config, and `engrenage init` writes `prettier.config.ts` only for custom rules
+  - Build entries to `dist/<specifier>.mjs`, public specifiers unchanged
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Make `@auaust/engrenage` private and `UNLICENSED`, so every install needs an npm account of the `@auaust` organization. Upgrade: complete steps 2–5 of [#199 §Manual steps](https://github.com/AUAUST/lib-js-engrenage/issues/199#manual-steps-outside-the-repository) (read token, GitHub secrets, hand-written workflows, other install environments) before upgrading.
+  - **Breaking**: Install with the `NPM_READ_TOKEN` secret in the synced library workflows (`registry-url` on `actions/setup-node`, `NODE_AUTH_TOKEN` on the install step only), publishing staying tokenless OIDC. Upgrade: give every consumer repository `NPM_READ_TOKEN` before its CI runs the upgraded workflows.
+  - **Breaking**: Resolve a published project with neither `visibility` nor `publishConfig.access` as `private`. Upgrade: set `visibility: "public"` to keep publishing publicly, and rename unscoped private packages under a scope.
+  - **Breaking**: Add the `publishing` sync target, failing `engrenage sync` and `sync --check` on a configuration that could publish a private package publicly: `"private": true` on a published root, a `publishConfig.access` or changesets `access` off the visibility, an unscoped or provenance-enabled private package, or credentials in a project `.npmrc`. Upgrade: fix what it lists.
+  - Add the top-level `visibility` option (`public` or `private`), falling back to `publishConfig.access`, then `private`; `engrenage init` asks it and derives the license from it
+  - Sync `publishConfig.access` from the visibility at the root and in every workspace of a published project, `"private": true` at the root of an unpublished one, and the changesets `access`
+  - Add the `workspaces` option (globs, a package name pattern such as `@scope/app-{dir}`, tsconfig options), syncing `pnpm-workspace.yaml#packages` and each workspace's managed `package.json` keys and `tsconfig.json`, included by tsdown, Vitest, ESLint and the base tsconfig, a workspace importing another only as a declared dependency
+  - Test libraries' built package through public specifiers in dist mode, failing on any resolution into the sources; skip the managed `tsconfig.tests.dist.json` without the `published` trait
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Give each environment only the roles it lists in `roles`, built from presets (`src: { roles: [index(), entry(), utils({ nesting: 1 })] }`). Upgrade: add the `roles` of `src`, `tests`, `scripts` and `tooling` to `engrenage.config.ts`, with `entry()` when published; `engrenage init` writes them for new projects.
+  - **Breaking**: Make a domain public by its `entry.ts` (the renamable `entry` role), which re-exports the public subset of its `index.ts`; the root package entry is `src/entry.ts`. Upgrade: move each public domain's exports into an `entry.ts`.
+  - **Breaking**: Scope ESLint, `prettier:all` and the `tooling` environment to the declared environments instead of `**`, `tooling` defaulting to the root config files and `tooling/`. Upgrade: declare any other directory to keep it checked.
+  - Describe the structure per environment (`namespaces`, `domains`, `optOut`, `strictness`), exposed as `structureSection` with its import rules as `importRulesSection`
+  - Add the `@auaust/engrenage/roles` entry with `createRolePreset` and the presets `index`, `entry`, `constants`, `declarations`, `types`, `utils`, `errors`, `enums`, `ports`, `adapters`, `fixtures`, `setup`, `schemas`, `components`, `hooks`, `contexts`, `pages` and `styles`, each call overriding any default (nested `roles`, `aliases`, the `constants` and `index` file names)
+  - Add the role field `effects` and `structure.effects` (`levels`, `modules`, `fallback`): a ranked module imports at runtime only from roles and modules of its level or purer (`pure`, `confined`, `effectful`); `utils/` is confined and may import other domains' `utils/` through their `index.ts`
+  - Add the role field `typeOnly` (on for `types` and `ports`): such modules declare no runtime value and import anything their domain may, type-only
+  - Add the role property `rules`: ESLint rule entries applied to the role's own files
+  - Add the role options `strict`, `required` and `unique`: only the files nested roles name at the role's root, at least one, at most one file per owning location
+  - Classify files at a role's root that a nested role's `file` globs match with that nested role, `file` accepting a callback over the owning location and `fileDescription` for maps
+  - Treat a file named like the index file as an ordinary module in a role with `index` off
+  - Make `constants` a public role peers and lower layers may import
+  - Let `tooling` import `src` like `scripts` does, never `bin`, `scripts`, `data/` or `tests`
+  - Add `aliases`, `src.aliases` and `src.bundled`; `engrenage sync aliases` generates `package.json#imports` and the bundled tsconfig `paths`, and `src.bundled` sets the src tsconfig `module` and `moduleResolution`
+  - Add `engrenage structure`, printing each directory's classification, each role's effect level and runtime import cycles; `--check` fails on unclassified directories of strict environments, cycles and broken `required` or `unique` roles, type-only imports never counting toward a cycle
+  - Fix tests mirror directories read as the role their name matches
+
+### Patch Changes
+
+- [`1df13fa`](https://github.com/AUAUST/lib-js-engrenage/commit/1df13fab51251fbd2665aafa7bd2f292de784268) Thanks [@apademide](https://github.com/apademide)! - - Generate Codex workflow roles with inherited models and Complexity effort profiles
+  - Sync installed skill invocation policies and workflow dispatch instructions
+
+- [`917510c`](https://github.com/AUAUST/lib-js-engrenage/commit/917510cea0e40f0bb84bdd86aa12eb7a50e577bc) Thanks [@apademide](https://github.com/apademide)! - - Protect local files from commit additions and modifications while allowing deletions.
+  - Run the local-file safeguard for human commits through Lefthook.
+
+- [`a4f6c92`](https://github.com/AUAUST/lib-js-engrenage/commit/a4f6c92392ac8521a66f9437d19a58b074c06fdd) Thanks [@apademide](https://github.com/apademide)! - - Surround standalone and assigned awaits with blank lines.
+  - Surround break, continue and yield statements with blank lines.
+
 ## 0.7.0
 
 ### Minor Changes
