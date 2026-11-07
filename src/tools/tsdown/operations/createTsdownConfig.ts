@@ -54,6 +54,7 @@ import { resolveSourceEntries } from "#tools/tsdown/operations/resolveSourceEntr
 import { createEmittedManifestPlugins } from "#tools/tsdown/plugins/createEmittedManifestPlugins";
 import { createEmptyNamespacesPlugins } from "#tools/tsdown/plugins/createEmptyNamespacesPlugins";
 import { createEntrySelfReferencesPlugins } from "#tools/tsdown/plugins/createEntrySelfReferencesPlugins";
+import { createOmittedDeclarationsPlugins } from "#tools/tsdown/plugins/createOmittedDeclarationsPlugins";
 import { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
 import { resolveDataExports } from "#tools/tsdown/utils/resolveDataExports";
 import { resolveTsdownTarget } from "#tools/tsdown/utils/resolveTsdownTarget";
@@ -229,6 +230,10 @@ export async function createTsdownConfig(
               root,
             });
       }),
+      ...createOmittedDeclarationsPlugins(
+        `${pluginPrefix}:bin-declarations`,
+        keys(bins),
+      ),
       ...(clean === "emitted"
         ? createEmittedManifestPlugins(`${pluginPrefix}:emitted-manifest`, {
             manifest: join(cache.for(tsdown), emittedManifestFile),

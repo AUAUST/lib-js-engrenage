@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+
 import { build } from "tsdown";
 import { createProgram, getPreEmitDiagnostics } from "typescript";
 import { describe, expect, test } from "vitest";
@@ -125,6 +127,41 @@ describe("createTsdownConfig", () => {
     });
 
     expect(getPreEmitDiagnostics(program)).toEqual([]);
+  });
+
+  test("builds no declarations for bin entries", async () => {
+    const project = createTemporaryProject({
+      "engrenage.config.ts":
+        'export default { src: { baseline: "2026-10" }, bin: { entries: { tool: "bin/tool.ts" } } };\n',
+      "package.json": JSON.stringify({
+        name: "@scope/package",
+        type: "module",
+      }),
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          outDir: "dist",
+          module: "ESNext",
+          moduleResolution: "Bundler",
+          strict: true,
+          paths: { "@scope/package": ["./src/index.ts"] },
+        },
+        include: ["src", "bin"],
+      }),
+      "src/index.ts": "export const value = 1;\n",
+      "bin/tool.ts": "export const tool = 1;\n",
+    });
+
+    await build({
+      ...(await createTsdownConfig(await loadConfig(project.root), {
+        ci: false,
+      })),
+      config: false,
+      logLevel: "silent",
+    });
+
+    expect(existsSync(project.resolve("dist/bin/tool.mjs"))).toBe(true);
+    expect(existsSync(project.resolve("dist/bin/tool.d.mts"))).toBe(false);
+    expect(existsSync(project.resolve("dist/index.d.mts"))).toBe(true);
   });
 
   test("builds entries from the tsconfig paths and wires the project options", async () => {
@@ -595,6 +632,7 @@ describe("createTsdownConfig plugins", () => {
       "engrenage:empty-namespaces:find",
       "engrenage:empty-namespaces:declare",
       "engrenage:entry-self-references",
+      "engrenage:bin-declarations",
     ]);
 
     expect(
@@ -612,7 +650,9 @@ describe("createTsdownConfig plugins", () => {
           },
         )
       ).plugins,
-    ).toEqual([]);
+    ).toEqual([
+      expect.objectContaining({ name: "engrenage:bin-declarations" }),
+    ]);
   });
 
   test("rejects an unknown plugin name with the known names", async () => {
