@@ -39,6 +39,7 @@ function createRepository() {
       "src/second.ts": createSource("second"),
       "src/third.ts": "export const third = 1;\n",
       "tests/third.test.ts": "export const test = 1;\n",
+      "tests/fixtures/third.ts": "export const fixture = 1;\n",
     },
     ["jscpd"],
   );
@@ -62,13 +63,27 @@ describe("findClones", { timeout: binaryTimeout }, () => {
     ]);
   });
 
-  test("ignores files outside the scanned code", async () => {
+  test("reports clones in test files", async () => {
     const { project } = await createRepository();
 
     project.write("tests/third.test.ts", createSource("third"));
 
+    const clones = await findClones(await loadConfig(project.root), [
+      "tests/third.test.ts",
+    ]);
+
+    expect(clones).toHaveLength(1);
+  });
+
+  test("ignores fixtures", async () => {
+    const { project } = await createRepository();
+
+    project.write("tests/fixtures/third.ts", createSource("third"));
+
     expect(
-      await findClones(await loadConfig(project.root), ["tests/third.test.ts"]),
+      await findClones(await loadConfig(project.root), [
+        "tests/fixtures/third.ts",
+      ]),
     ).toEqual([]);
   });
 });

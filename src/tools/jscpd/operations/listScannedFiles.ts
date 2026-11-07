@@ -7,7 +7,7 @@ import type { Files } from "#types/Files";
 export async function listScannedFiles(config: LoadedConfig): Promise<Files> {
   const files = await config.resolve(filesSection);
 
-  const excluded = [...files.generated, ...files.fixtures]; // config.resolve(testsSection) + ...test.globs if tests genuinely benefit from clones
+  const excluded = [...files.generated, ...files.fixtures];
 
   const candidates = await config.context.filesystem.glob([
     ...files.published,
