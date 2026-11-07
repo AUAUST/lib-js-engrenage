@@ -1,19 +1,73 @@
 import { describe, expect, test } from "vitest";
+import { parse } from "yaml";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncLefthookConfig } from "#tools/lefthook/setup/syncLefthookConfig";
 
-function createProject(lefthook: string) {
+function createProject(
+  lefthook: string,
+  config = 'export default { agents: { preferred: ["claude"] } };\n',
+) {
   return createTemporaryProject({
-    "engrenage.config.ts":
-      'export default { agents: { preferred: ["claude"] } };\n',
+    "engrenage.config.ts": config,
     "package.json": '{"type":"module"}',
     "lefthook.yml": lefthook,
   });
 }
 
 describe("syncLefthookConfig", () => {
+  test.each([
+    'export default { agents: { preferred: ["codex"] } };\n',
+    'export default { agents: { preferred: ["claude"], gate: { hook: false } } };\n',
+  ])(
+    "keeps only the unconditional local command without agent variables: %s",
+    async (input) => {
+      const project = createProject(
+        "pre-commit:\n  commands:\n    engrenage:\n      run: stale\n",
+        input,
+      );
+
+      const config = await loadConfig(project.root);
+
+      await syncLefthookConfig(config);
+      await config.context.filesystem.flush();
+
+      expect(parse(project.read("lefthook.yml"))).toEqual({
+        "pre-commit": {
+          commands: {
+            "engrenage-local": {
+              run: "pnpm --silent engrenage gate --staged --everyone",
+            },
+          },
+        },
+      });
+    },
+  );
+
+  test("removes a local command when its resolved patterns are empty", async () => {
+    const project = createProject(
+      "pre-commit:\n  commands:\n    engrenage-local:\n      run: stale\n",
+      'export default { agents: { preferred: ["claude"] }, git: { local: { files: [] } } };\n',
+    );
+
+    const config = await loadConfig(project.root);
+
+    await syncLefthookConfig(config);
+    await config.context.filesystem.flush();
+
+    expect(parse(project.read("lefthook.yml"))).toEqual({
+      "pre-commit": {
+        commands: {
+          engrenage: {
+            only: [{ run: 'test -n "$CLAUDECODE"' }],
+            run: "pnpm --silent engrenage gate --staged",
+          },
+        },
+      },
+    });
+  });
+
   test("keeps the user's commands and comments, and adds the gate once", async () => {
     const project = createProject(
       "# mine\npre-commit:\n  commands:\n    lint:\n      run: echo lint\n",
@@ -29,7 +83,21 @@ describe("syncLefthookConfig", () => {
     expect(content).toContain("# mine");
     expect(content).toContain("run: echo lint");
     expect(content).toContain('- run: test -n "$CLAUDECODE"');
-    expect(content).toContain("run: pnpm --silent engrenage gate --staged");
+
+    expect(parse(content)).toMatchObject({
+      "pre-commit": {
+        commands: {
+          "engrenage": {
+            only: [{ run: 'test -n "$CLAUDECODE"' }],
+            run: "pnpm --silent engrenage gate --staged",
+          },
+          "engrenage-local": {
+            skip: [{ run: 'test -n "$CLAUDECODE"' }],
+            run: "pnpm --silent engrenage gate --staged --everyone",
+          },
+        },
+      },
+    });
 
     await syncLefthookConfig(config);
 

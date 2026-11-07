@@ -2,24 +2,27 @@ import { isDeepStrictEqual } from "node:util";
 
 import { isMap, isNode, parseDocument } from "yaml";
 
-import { agentsSection } from "#tools/agents/index";
+import { agentsSection, listLocalFilePatterns } from "#tools/agents/index";
 import {
   gateCommandName,
   hookName,
   lefthookFile,
+  localCommandName,
 } from "#tools/lefthook/constants";
 import { listGateVariables } from "#tools/lefthook/utils/listGateVariables";
 import { renderGateCommand } from "#tools/lefthook/utils/renderGateCommand";
 import type { LoadedConfig } from "#project/config/index";
 
-export async function syncLefthookConfig({ resolve, context }: LoadedConfig) {
-  const variables = listGateVariables(await resolve(agentsSection));
-
+export async function syncLefthookConfig(config: LoadedConfig) {
+  const { resolve, context } = config;
   const content = await context.filesystem.read(lefthookFile);
 
-  if (variables.length === 0 || content === undefined) {
+  if (content === undefined) {
     return;
   }
+
+  const variables = listGateVariables(await resolve(agentsSection));
+  const local = await listLocalFilePatterns(config);
 
   const document = parseDocument(content);
 
@@ -33,25 +36,37 @@ export async function syncLefthookConfig({ resolve, context }: LoadedConfig) {
     throw new Error(`${lefthookFile} must contain a YAML mapping`);
   }
 
-  const path = [hookName, "commands", gateCommandName];
+  const commands = renderGateCommand(variables, local.length > 0);
 
-  const command = renderGateCommand(variables);
+  let changed = false;
 
-  const current: unknown = document.getIn(path);
+  for (const name of [gateCommandName, localCommandName] as const) {
+    const path = [hookName, "commands", name];
+    const command = commands[name];
+    const current: unknown = document.getIn(path);
 
-  if (
-    isDeepStrictEqual(isNode(current) ? current.toJSON() : current, command)
-  ) {
-    return;
-  }
-
-  for (const length of [1, 2]) {
-    if (document.getIn(path.slice(0, length)) == null) {
-      document.setIn(path.slice(0, length), document.createNode({}));
+    if (
+      isDeepStrictEqual(isNode(current) ? current.toJSON() : current, command)
+    ) {
+      continue;
     }
+
+    if (command === undefined) {
+      document.deleteIn(path);
+    } else {
+      for (const length of [1, 2]) {
+        if (document.getIn(path.slice(0, length)) == null) {
+          document.setIn(path.slice(0, length), document.createNode({}));
+        }
+      }
+
+      document.setIn(path, document.createNode(command));
+    }
+
+    changed = true;
   }
 
-  document.setIn(path, document.createNode(command));
-
-  await context.filesystem.write(lefthookFile, document.toString());
+  if (changed) {
+    await context.filesystem.write(lefthookFile, document.toString());
+  }
 }

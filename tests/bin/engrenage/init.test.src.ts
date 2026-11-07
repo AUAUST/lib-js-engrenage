@@ -479,7 +479,25 @@ describe("engrenage init", () => {
             stdio: "inherit",
           },
         ],
+        [
+          "pnpm",
+          ["exec", "lefthook", "install"],
+          {
+            cwd: project.root,
+            stdio: "inherit",
+          },
+        ],
       ]);
+
+      expect(parse(project.read("lefthook.yml"))).toEqual({
+        "pre-commit": {
+          commands: {
+            "engrenage-local": {
+              run: "pnpm --silent engrenage gate --staged --everyone",
+            },
+          },
+        },
+      });
 
       expect(project.read("engrenage.config.ts")).toContain(
         'preset: "library"',

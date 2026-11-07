@@ -1,11 +1,11 @@
 import { Document } from "yaml";
 
 import { isString } from "@auaust/toolkit/isString";
+import { keys } from "@auaust/toolkit/object";
 
 import { lefthook } from "#constants";
-import { agentsSection } from "#tools/agents/index";
+import { agentsSection, listLocalFilePatterns } from "#tools/agents/index";
 import {
-  gateCommandName,
   hookName,
   installCommand,
   lefthookFile,
@@ -16,8 +16,11 @@ import type { Step, StepContext } from "#project/steps/index";
 
 const prepareLocation: [string, string] = ["scripts", "prepare"];
 
-async function listVariables({ resolve }: StepContext) {
-  return listGateVariables(await resolve(agentsSection));
+async function listCommands(context: StepContext) {
+  const variables = listGateVariables(await context.resolve(agentsSection));
+  const local = await listLocalFilePatterns(context);
+
+  return renderGateCommand(variables, local.length > 0);
 }
 
 async function writePrepare({
@@ -36,16 +39,17 @@ async function writePrepare({
 export function createLefthookStep(): Step {
   return {
     name: lefthookFile,
-    message: `Run the commit gate for agent commits with lefthook (${lefthookFile})?`,
+    message: `Run the commit gate with lefthook (${lefthookFile})?`,
     async isMissing(context) {
-      const variables = await listVariables(context);
+      const commands = await listCommands(context);
 
       return (
-        variables.length > 0 && !(await context.filesystem.exists(lefthookFile))
+        keys(commands).length > 0 &&
+        !(await context.filesystem.exists(lefthookFile))
       );
     },
     async plan(context) {
-      const variables = await listVariables(context);
+      const commands = await listCommands(context);
 
       await context.addDevDependency(lefthook);
 
@@ -55,7 +59,7 @@ export function createLefthookStep(): Step {
         lefthookFile,
         new Document({
           [hookName]: {
-            commands: { [gateCommandName]: renderGateCommand(variables) },
+            commands,
           },
         }).toString(),
       );
