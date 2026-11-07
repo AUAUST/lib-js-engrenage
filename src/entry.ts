@@ -28,6 +28,7 @@ export {
   environmentSection,
   packageJsonPathSection,
   packageJsonSection,
+  visibilitySection,
 } from "#project/package/index";
 export {
   presetSection,
@@ -60,7 +61,7 @@ export { loadValidatedConfig } from "#workflows/config/index";
 
 export type { LoadedConfig } from "#project/config/index";
 
-// @debt the global types role holds domain vocabulary: block types belong to `foundation/blocks`, sync results to the sync contract, `PackageType` and `PublishAccess` to `project/package`, `IgnorePresets` and `GlobGroup` to the ignore-file owner
+// @debt the global types role holds domain vocabulary: block types belong to `foundation/blocks`, sync results to the sync contract, `IgnorePresets` and `GlobGroup` to the ignore-file owner
 // @barrel types/*.ts all
 export * from "#types/BlockFillers";
 export * from "#types/BlockSyntax";
@@ -76,8 +77,6 @@ export * from "#types/IgnorePresets";
 export * from "#types/KnownPackageName";
 export * from "#types/PackageName";
 export * from "#types/PackageNames";
-export * from "#types/PackageType";
-export * from "#types/PublishAccess";
 export * from "#types/Resolvable";
 export * from "#types/SyncResult";
 export * from "#types/SyncResults";

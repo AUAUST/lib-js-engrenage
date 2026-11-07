@@ -13,6 +13,7 @@ import {
   toolingOptionsSection,
 } from "#project/environments/index";
 import { formatSection } from "#project/format/index";
+import { visibilitySection } from "#project/package/index";
 import { presetSection, traitAdjustmentsSection } from "#project/presets/index";
 import {
   aliasesSection,
@@ -54,5 +55,6 @@ export function listConfigSections() {
     tests: testsOptionsSection,
     tooling: toolingOptionsSection,
     workspaces: workspacesSection,
+    visibility: visibilitySection,
   });
 }

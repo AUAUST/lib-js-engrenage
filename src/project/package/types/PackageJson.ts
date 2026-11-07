@@ -1,13 +1,13 @@
 import type { Accessors } from "#foundation/options/index";
 import type { DevEngine } from "#project/package/types/DevEngine";
+import type { PackageType } from "#project/package/types/PackageType";
 import type { Person } from "#project/package/types/Person";
+import type { PublishAccess } from "#project/package/types/PublishAccess";
 import type { SubpathImports } from "#project/package/types/SubpathImports";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
 import type { PackageName } from "#types/PackageName";
 import type { PackageNames } from "#types/PackageNames";
-import type { PackageType } from "#types/PackageType";
-import type { PublishAccess } from "#types/PublishAccess";
 
 export type PackageJson = Accessors<{
   manifest: Record<string, unknown> | undefined;

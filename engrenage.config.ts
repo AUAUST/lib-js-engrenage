@@ -140,6 +140,7 @@ const codeRoles = [
 
 export default defineConfig({
   preset: "library",
+  visibility: "private",
   agents: {
     preferred: ["claude", "codex"],
     attribution: false,

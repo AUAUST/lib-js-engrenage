@@ -1,4 +1,4 @@
-import { freeze } from "@auaust/toolkit/object";
+import { freeze, values } from "@auaust/toolkit/object";
 
 export const metadataFields = freeze([
   "$schema",
@@ -71,3 +71,12 @@ export const publicLicense = "GPL-3.0-only";
 export const privateLicense = "UNLICENSED";
 
 export const visibilities = freeze(["public", "private"] as const);
+
+export const accessByVisibility = freeze({
+  public: "public",
+  private: "restricted",
+} as const);
+
+export const publishAccess = freeze(values(accessByVisibility));
+
+export const packageTypes = freeze(["module", "commonjs"] as const);

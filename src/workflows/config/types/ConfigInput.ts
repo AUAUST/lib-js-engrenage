@@ -160,4 +160,10 @@ export interface ConfigInput {
       } | undefined)
     }
   } | undefined)
+  /**
+   * Who may install the published package from npm: `public` for anyone, `private` for members of its scope (`restricted` access).
+   * Applies only under the `published` trait; an unpublished package has no visibility.
+   * @default the `publishConfig.access` of `package.json` (`public` or `restricted`), else `private`
+   */
+  visibility?: (("public" | "private") | undefined)
 }

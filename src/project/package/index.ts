@@ -4,11 +4,13 @@ export { createPackageStep } from "#project/package/setup/createPackageStep";
 
 // @barrel operations/*.ts named
 export { createPackageJson } from "#project/package/operations/createPackageJson";
+export { resolveVisibility } from "#project/package/operations/resolveVisibility";
 export { writePackageJsonValue } from "#project/package/operations/writePackageJsonValue";
 // @end
 
 // @barrel config/schemas/*.ts named
 export { exposedFilesSchema } from "#project/package/config/schemas/exposedFilesSchema";
+export { visibilitySchema } from "#project/package/config/schemas/visibilitySchema";
 // @end
 
 // @barrel utils/*.ts named
@@ -24,12 +26,16 @@ export { resolveExportPaths } from "#project/package/utils/resolveExportPaths";
 // @barrel types/*.ts all
 export * from "#project/package/types/DevEngine";
 export * from "#project/package/types/PackageJson";
+export * from "#project/package/types/PackageType";
 export * from "#project/package/types/Person";
+export * from "#project/package/types/PublishAccess";
 export * from "#project/package/types/SubpathImports";
+export * from "#project/package/types/Visibility";
 // @end
 
 // @barrel config/sections/*.ts named
 export { environmentSection } from "#project/package/config/sections/environmentSection";
 export { packageJsonPathSection } from "#project/package/config/sections/packageJsonPathSection";
 export { packageJsonSection } from "#project/package/config/sections/packageJsonSection";
+export { visibilitySection } from "#project/package/config/sections/visibilitySection";
 // @end

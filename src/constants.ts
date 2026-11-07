@@ -2,7 +2,7 @@ import { freeze } from "@auaust/toolkit/object";
 
 import type { File } from "#types/File";
 
-// @debt global constants carry tool knowledge (each tool's package name and config file names) and `project/package` vocabulary (`packageTypes`, `publishAccess`) that their domains should own
+// @debt global constants carry tool knowledge (each tool's package name and config file names) that their domains should own
 export const organization = "@auaust";
 
 export const project = "engrenage" as const;
@@ -90,7 +90,3 @@ export const files = freeze({
   prettierignore: prettierignoreFile,
   tsconfig: tsconfigFile,
 } as const);
-
-export const packageTypes = freeze(["module", "commonjs"] as const);
-
-export const publishAccess = freeze(["public", "restricted"] as const);

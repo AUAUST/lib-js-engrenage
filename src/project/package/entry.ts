@@ -10,6 +10,9 @@ export {
 export type {
   DevEngine,
   PackageJson,
+  PackageType,
   Person,
+  PublishAccess,
   SubpathImports,
+  Visibility,
 } from "#project/package/index";
