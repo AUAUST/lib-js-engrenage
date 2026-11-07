@@ -271,6 +271,32 @@ describe("loadConfig", () => {
     }).toThrow("escapes");
   });
 
+  test("returns the same config until refreshed, then reads the edited config file", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "type": "module" }',
+      "engrenage.config.ts": "export default {};\n",
+    });
+
+    const config = await loadConfig(project.root);
+
+    expect(await loadConfig(project.root)).toBe(config);
+
+    project.write(
+      "engrenage.config.ts",
+      'export default { preset: "library" };\n',
+    );
+
+    expect(await loadConfig(project.root)).toBe(config);
+
+    loadConfig.refresh(project.root);
+
+    const refreshed = await loadConfig(project.root);
+
+    expect(refreshed).not.toBe(config);
+    expect(refreshed.context.filesystem).not.toBe(config.context.filesystem);
+    expect(await refreshed.resolve(presetSection)).toBe("library");
+  });
+
   test("places each package cache under the configured cache root", async () => {
     const defaults = createTemporaryProject({
       "package.json": '{ "type": "module" }',

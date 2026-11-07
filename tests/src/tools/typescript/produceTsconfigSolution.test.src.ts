@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test, vi } from "vitest";
 
 import { tsc } from "#bin/engrenage/tsc";
+import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { captureBinaryOutput } from "#tests/utils/captureBinaryOutput";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -11,7 +12,6 @@ import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
-import { createConfig } from "#workflows/registry/operations/createConfig";
 
 vi.mock(import("node:child_process"), { spy: true });
 
@@ -29,7 +29,7 @@ async function syncProject(input: Record<string, unknown>, testSource = "") {
     "tsconfig.json": "{}",
   });
 
-  const config = createConfig({
+  const config = createProjectConfig({
     root: project.root,
     raw: withSourceRuntime(input),
     configFile: undefined,

@@ -10,6 +10,7 @@ import { keys } from "@auaust/toolkit/object";
 import { init } from "#bin/engrenage/init";
 import { sync } from "#bin/engrenage/sync";
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
@@ -330,6 +331,8 @@ describe("engrenage init", () => {
       delete completed.scripts.coverage;
 
       project.write("package.json", JSON.stringify(completed));
+
+      loadConfig.refresh(project.root);
 
       vi.clearAllMocks();
 

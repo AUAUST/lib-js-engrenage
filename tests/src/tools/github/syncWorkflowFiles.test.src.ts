@@ -1,10 +1,9 @@
 import { describe, expect, test } from "vitest";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { gitSection } from "#tools/git/index";
 import { syncWorkflowFiles } from "#tools/github/setup/syncWorkflowFiles";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
-import { readConfig } from "#workflows/registry/operations/readConfig";
 
 const libraryScripts = {
   "ci:check": "engrenage sync --check",
@@ -68,7 +67,9 @@ describe("syncWorkflowFiles", () => {
 
     project.write(".github/workflows/ci.yml", "name: Edited\n");
 
-    const edited = await readConfig(project.root);
+    loadConfig.refresh(project.root);
+
+    const edited = await loadConfig(project.root);
 
     await syncWorkflowFiles(edited);
 

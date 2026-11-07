@@ -1,12 +1,12 @@
 import { ESLint } from "eslint";
 import { describe, expect, onTestFinished, test } from "vitest";
 
+import { loadConfig } from "#project/config/index";
 import { entrypoint } from "#project/roles/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 import { definerEntries, sectionDeclarations } from "#tooling/eslint/index";
 import { createEslintConfig } from "#tools/eslint/index";
-import { loadConfig } from "#workflows/registry/index";
 
 const rulesKey = "__engrenageToolingRules";
 

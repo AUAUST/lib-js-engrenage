@@ -9,6 +9,7 @@ import { memoized } from "@auaust/toolkit/memoized";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { packageJsonFile } from "#constants";
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { environmentSection } from "#project/package/index";
 import { traitsSection } from "#project/presets/index";
 import { filesSection } from "#project/structure/index";
@@ -17,7 +18,6 @@ import { getFixture } from "#tests/utils/getFixture";
 import { infoRulesSetting } from "#tools/eslint/constants";
 import { createEslintConfig as createConfig } from "#tools/eslint/operations/createEslintConfig";
 import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
 import type { Section } from "#foundation/options/index";
 import type { Environment } from "#project/config/types/Environment";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";

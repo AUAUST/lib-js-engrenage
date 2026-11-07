@@ -1,12 +1,13 @@
 import { literal, object, string } from "valibot";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { agentsSection, denyToolUse } from "#tools/agents/index";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 import { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
 import { checkGithubWrite } from "#tools/github/index";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
+import { validateConfig } from "#workflows/registry/operations/validateConfig";
 
 const payloadSchema = object({
   cwd: string(),
@@ -29,7 +30,7 @@ export const github = defineCommand((command) => {
       return void denyToolUse(reason);
     }
 
-    const config = await loadConfig(cwd);
+    const config = validateConfig(await loadConfig(cwd));
     const agents = await config.resolve(agentsSection);
     const { budgets } = agents;
 

@@ -5,12 +5,12 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { stop } from "#bin/engrenage/agents/claude/hook/stop";
 import { cacheSection } from "#project/cache/index";
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
 import { getExecutable } from "#tests/utils/getExecutable";
 import { runCommand } from "#tests/utils/runCommand";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
-import { readConfig } from "#workflows/registry/operations/readConfig";
 
 vi.mock("#tools/agents/operations/readHookPayload", () => {
   return { readHookPayload: vi.fn() };
@@ -68,7 +68,7 @@ async function runStop() {
 }
 
 async function hasMarker(root: string): Promise<boolean> {
-  const cache = await (await readConfig(root)).resolve(cacheSection);
+  const cache = await (await loadConfig(root)).resolve(cacheSection);
 
   return existsSync(join(cache.for("gate"), "stops", "agent"));
 }

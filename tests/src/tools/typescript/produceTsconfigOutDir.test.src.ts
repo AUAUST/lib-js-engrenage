@@ -3,11 +3,11 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
 import { validate } from "#foundation/options/utils/validate";
+import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
 import { configSchema } from "#workflows/registry/config/schemas/configSchema";
-import { createConfig } from "#workflows/registry/operations/createConfig";
 
 const libraryPreset = fileURLToPath(
   new URL("../../../../data/tsconfig/library.json", import.meta.url),
@@ -21,7 +21,7 @@ async function syncOutDir(build: unknown, files: Record<string, string> = {}) {
     ...files,
   });
 
-  const config = createConfig({
+  const config = createProjectConfig({
     root: project.root,
     raw: validate(
       configSchema.schema,

@@ -5,12 +5,13 @@ import { object, string } from "valibot";
 
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { cacheSection } from "#project/cache/index";
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { hashTree } from "#tools/git/index";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { runGate } from "#workflows/gate/index";
 import { formatGateFailure } from "#workflows/gate/utils/formatGateFailure";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
+import { validateConfig } from "#workflows/registry/operations/validateConfig";
 
 const payloadSchema = object({
   agent_id: string(),
@@ -24,7 +25,7 @@ export const stop = defineCommand((command) => {
       "Claude Code",
     );
 
-    const config = await loadConfig(cwd);
+    const config = validateConfig(await loadConfig(cwd));
 
     const { failures } = await runGate(config, { mode: "worktree" });
 

@@ -1,11 +1,11 @@
 import { describe, expect, test, vi } from "vitest";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { agentsSection } from "#tools/agents/index";
 import { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 import { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 const words = (count: number) =>
   Array.from({ length: count }, () => "word").join(" ");

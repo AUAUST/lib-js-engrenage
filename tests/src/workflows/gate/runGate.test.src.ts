@@ -2,11 +2,11 @@ import { writeFileSync } from "node:fs";
 
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
 import { getExecutable } from "#tests/utils/getExecutable";
 import { runGate } from "#workflows/gate/operations/runGate";
-import { readConfig } from "#workflows/registry/operations/readConfig";
 
 const argv = process.argv;
 
@@ -61,7 +61,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     git("add", "src/index.ts");
 
-    const { failures } = await runGate(await readConfig(project.root), {
+    const { failures } = await runGate(await loadConfig(project.root), {
       mode: "staged",
     });
 
@@ -85,7 +85,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     git("add", "src/index.ts");
 
-    const { failures } = await runGate(await readConfig(project.root), {
+    const { failures } = await runGate(await loadConfig(project.root), {
       mode: "staged",
     });
 
@@ -105,7 +105,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       "export const value: number = 3\n",
     );
 
-    const { failures } = await runGate(await readConfig(project.root), {
+    const { failures } = await runGate(await loadConfig(project.root), {
       mode: "staged",
     });
 
@@ -125,7 +125,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     git("add", "src/index.ts");
 
-    const config = await readConfig(project.root);
+    const config = await loadConfig(project.root);
 
     const passed = { failures: [], warnings: [] };
 
@@ -144,7 +144,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     );
 
     const { failures, warnings } = await runGate(
-      await readConfig(project.root),
+      await loadConfig(project.root),
       { mode: "worktree" },
     );
 

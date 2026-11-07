@@ -1,4 +1,5 @@
 import { packageJsonFile } from "#constants";
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { packageJsonSection } from "#project/package/index";
 import { readProjectPnpmVersion } from "#project/package/utils/readProjectPnpmVersion";
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
@@ -9,7 +10,7 @@ import { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus
 import { createPrompter } from "#workflows/cli/operations/createPrompter";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
+import { validateConfig } from "#workflows/registry/operations/validateConfig";
 
 export const upgrade = defineCommand((command) => {
   return command
@@ -19,7 +20,7 @@ export const upgrade = defineCommand((command) => {
       false,
     )
     .action(async ({ yes }) => {
-      const config = await loadConfig();
+      const config = validateConfig(await loadConfig());
 
       const { range } = readSharedPnpmRange();
 

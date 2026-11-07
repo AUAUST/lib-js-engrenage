@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
 
+import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { define } from "#project/config/utils/define";
 import { defineSection } from "#project/environments/index";
 import { createDefine } from "#project/environments/operations/createDefine";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
-import { createConfig } from "#workflows/registry/operations/createConfig";
 
 async function resolveConfig(input: Record<string, unknown>) {
   const project = createTemporaryProject({
@@ -15,7 +15,7 @@ async function resolveConfig(input: Record<string, unknown>) {
     }),
   });
 
-  const config = createConfig({
+  const config = createProjectConfig({
     root: project.root,
     raw: input,
     configFile: undefined,

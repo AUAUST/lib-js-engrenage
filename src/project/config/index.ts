@@ -14,7 +14,6 @@ export * from "#project/config/types/ResolvedRuntimeSettings";
 // @barrel operations/*.ts named
 export { createProjectConfig } from "#project/config/operations/createProjectConfig";
 export { loadConfig } from "#project/config/operations/loadConfig";
-export { readConfig } from "#project/config/operations/readConfig";
 export { readRawConfig } from "#project/config/operations/readRawConfig";
 // @end
 

@@ -1,10 +1,10 @@
 import { describe, expect, test } from "vitest";
 
 import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
+import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
-import { createConfig } from "#workflows/registry/operations/createConfig";
 
 async function createProject(
   input: Record<string, unknown>,
@@ -15,7 +15,7 @@ async function createProject(
     ...files,
   });
 
-  const config = createConfig({
+  const config = createProjectConfig({
     root: project.root,
     raw: withSourceRuntime(input),
     configFile: undefined,

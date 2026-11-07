@@ -1,12 +1,13 @@
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
+import { validateConfig } from "#workflows/registry/operations/validateConfig";
 
 export const debt = defineCommand((command) => {
   return command
     .option("--json", "print the markers as JSON", false)
     .action(async ({ json }) => {
-      const config = await loadConfig();
+      const config = validateConfig(await loadConfig());
 
       const markers = await listDebtMarkers(config);
 

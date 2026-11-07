@@ -2,16 +2,17 @@ import { join } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage";
+import { loadConfig, validateConfig } from "@auaust/engrenage";
 import * as config from "@auaust/engrenage/config";
 
 import { getFixture } from "#tests/utils/getFixture";
 
 describe("public configuration surface", () => {
-  test("loadConfig of the root entry fails on an unknown key", async () => {
+  test("validateConfig of the root entry fails on an unknown key", async () => {
     const root = getFixture("config/invalid");
+    const loaded = await loadConfig(root);
 
-    await expect(loadConfig(root)).rejects.toThrow(
+    expect(() => validateConfig(loaded)).toThrow(
       join(root, "engrenage.config.ts"),
     );
   });

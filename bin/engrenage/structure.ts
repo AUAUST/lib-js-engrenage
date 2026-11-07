@@ -1,10 +1,11 @@
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { aliasesSection, structureSection } from "#project/structure/index";
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
 import { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 import { renderImportCycles } from "#project/structure/utils/renderImportCycles";
 import { renderStructure } from "#project/structure/utils/renderStructure";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
+import { validateConfig } from "#workflows/registry/operations/validateConfig";
 
 // @debt the command composes the structure check (report, cycles, violation exit) from four internal modules of `project/structure`; bin may reach any internal, so its "thin" rule has no lint backing
 export const structure = defineCommand((command) => {
@@ -15,7 +16,7 @@ export const structure = defineCommand((command) => {
       false,
     )
     .action(async ({ check }) => {
-      const config = await loadConfig();
+      const config = validateConfig(await loadConfig());
 
       for (const line of renderStructure(
         await config.resolve(structureSection),

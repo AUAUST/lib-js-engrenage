@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
 
 import { editions } from "#project/baseline/editions/index";
+import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { generateEditions } from "#scripts/codegen/operations/generateEditions";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
-import { createConfig } from "#workflows/registry/operations/createConfig";
 
 describe("editions", () => {
   test("dates the libs of the committed editions", () => {
@@ -26,7 +26,7 @@ describe("generateEditions", () => {
       "package.json": "{}",
     });
 
-    const config = createConfig({
+    const config = createProjectConfig({
       root: project.root,
       raw: withSourceRuntime({}),
       configFile: undefined,

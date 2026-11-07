@@ -1,15 +1,15 @@
 import { describe, expect, test } from "vitest";
 
+import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { generateApiDeclarations } from "#scripts/codegen/operations/generateApiDeclarations";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
-import { createConfig } from "#workflows/registry/operations/createConfig";
 
 function createTestConfig() {
   const project = createTemporaryProject({ "package.json": "{}" });
 
-  return createConfig({
+  return createProjectConfig({
     root: project.root,
     raw: withSourceRuntime({}),
     configFile: undefined,

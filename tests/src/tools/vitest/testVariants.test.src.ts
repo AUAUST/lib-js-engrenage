@@ -1,10 +1,10 @@
 import { describe, expect, test } from "vitest";
 import { startVitest } from "vitest/node";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { testsSection } from "#project/environments/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 function createLibrary(config = "{ preset: 'library' }") {
   return createTemporaryProject({

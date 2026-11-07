@@ -5,10 +5,10 @@ import { fileURLToPath } from "node:url";
 
 import { vi } from "vitest";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
-import { readConfig } from "#workflows/registry/operations/readConfig";
 import { runSync } from "#workflows/sync/index";
 
 const repositoryModules = fileURLToPath(
@@ -16,7 +16,7 @@ const repositoryModules = fileURLToPath(
 );
 
 async function syncProject(root: string) {
-  const config = await readConfig(root);
+  const config = await loadConfig(root);
 
   const info = vi.spyOn(console, "info").mockImplementation(() => {});
 
@@ -26,6 +26,7 @@ async function syncProject(root: string) {
     await settleChanges(config, { check: false });
   } finally {
     info.mockRestore();
+    loadConfig.refresh(root);
   }
 }
 

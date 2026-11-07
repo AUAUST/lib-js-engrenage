@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
 import { parse } from "yaml";
 
+import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createWorkspaceStep } from "#tools/pnpm/setup/createWorkspaceStep";
 import { createPrompter } from "#workflows/cli/operations/createPrompter";
 import { createStepContext } from "#workflows/cli/operations/createStepContext";
-import { createConfig } from "#workflows/registry/operations/createConfig";
 
 async function createContext(content: string) {
   const project = createTemporaryProject({
@@ -13,7 +13,7 @@ async function createContext(content: string) {
   });
 
   return await createStepContext({
-    config: createConfig({
+    config: createProjectConfig({
       root: project.root,
       raw: {},
       configFile: undefined,

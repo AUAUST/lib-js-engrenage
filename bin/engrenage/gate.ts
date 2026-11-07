@@ -1,10 +1,11 @@
 import { Option } from "@commander-js/extra-typings";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { runGate } from "#workflows/gate/index";
 import { formatGateFailure } from "#workflows/gate/utils/formatGateFailure";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
+import { validateConfig } from "#workflows/registry/operations/validateConfig";
 
 export const gate = defineCommand((command) => {
   return command
@@ -21,7 +22,7 @@ export const gate = defineCommand((command) => {
       ).conflicts("staged"),
     )
     .action(async ({ worktree }) => {
-      const config = await loadConfig();
+      const config = validateConfig(await loadConfig());
 
       const { failures, warnings } = await runGate(config, {
         mode: worktree === true ? "worktree" : "staged",

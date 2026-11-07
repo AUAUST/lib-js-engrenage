@@ -9,12 +9,12 @@ import { startVitest } from "vitest/node";
 
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { testsetup } from "#project/roles/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
 import { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 const root = getFixture("vitest");
 

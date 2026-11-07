@@ -1,11 +1,11 @@
 import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { definePrettierConfig } from "#tools/prettier/config/definePrettierConfig";
 import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
 import type { Config } from "#tools/prettier/types/Config";
 
 async function createContextOf(config: string) {

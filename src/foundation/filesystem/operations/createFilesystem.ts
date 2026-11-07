@@ -39,7 +39,7 @@ async function restore({ path, original }: Backup) {
   }
 }
 
-export function createFilesystem(root: Directory, formatter?: FileFormatter) {
+export function createFilesystem(root: Directory) {
   const contents = new Map<File, string | undefined>();
   const originals = new Map<File, string | undefined>();
 
@@ -126,11 +126,7 @@ export function createFilesystem(root: Directory, formatter?: FileFormatter) {
     });
   }
 
-  async function format() {
-    if (formatter === undefined) {
-      return;
-    }
-
+  async function format(formatter: FileFormatter) {
     for (const file of originals.keys()) {
       const content = await readLocated(file);
 

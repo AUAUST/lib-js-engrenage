@@ -10,7 +10,10 @@ export const editions = defineCommand((command) => {
     .option("--check", "report an outdated file without writing it", false)
     .action(async ({ check }) => {
       const { loadConfig } =
-        await import("#workflows/registry/operations/loadConfig");
+        await import("#project/config/operations/loadConfig");
+
+      const { validateConfig } =
+        await import("#workflows/registry/operations/validateConfig");
 
       const { generateEditions } =
         await import("#scripts/codegen/operations/generateEditions");
@@ -18,7 +21,7 @@ export const editions = defineCommand((command) => {
       const { settleChanges } =
         await import("#workflows/cli/operations/settleChanges");
 
-      const config = await loadConfig();
+      const config = validateConfig(await loadConfig());
 
       await generateEditions(config);
 

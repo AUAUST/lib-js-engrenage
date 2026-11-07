@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncLefthookConfig } from "#tools/lefthook/setup/syncLefthookConfig";
-import { readConfig } from "#workflows/registry/operations/readConfig";
 
 function createProject(lefthook: string) {
   return createTemporaryProject({
@@ -19,7 +19,7 @@ describe("syncLefthookConfig", () => {
       "# mine\npre-commit:\n  commands:\n    lint:\n      run: echo lint\n",
     );
 
-    const config = await readConfig(project.root);
+    const config = await loadConfig(project.root);
 
     await syncLefthookConfig(config);
     await config.context.filesystem.flush();
@@ -41,7 +41,7 @@ describe("syncLefthookConfig", () => {
       'pre-commit:\n  commands:\n    engrenage:\n      only:\n        - run: test -n "$OTHER"\n      run: pnpm --silent engrenage gate --staged\n',
     );
 
-    const config = await readConfig(project.root);
+    const config = await loadConfig(project.root);
 
     await syncLefthookConfig(config);
     await config.context.filesystem.flush();

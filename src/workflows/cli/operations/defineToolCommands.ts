@@ -3,9 +3,9 @@ import { spawn } from "node:child_process";
 import { transformValues } from "@auaust/toolkit/transformValues";
 
 import { resolveBinary } from "#foundation/processes/index";
+import { loadConfig, type LoadedConfig } from "#project/config/index";
 import { successMessage } from "#workflows/cli/constants";
-import { loadConfig } from "#workflows/registry/index";
-import type { LoadedConfig } from "#project/config/index";
+import { validateConfig } from "#workflows/registry/index";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
@@ -77,7 +77,7 @@ export function defineToolCommands<Name extends string>({
         .allowUnknownOption()
         .allowExcessArguments()
         .action(async (_options, { args: rawArgs }) => {
-          const config = await loadConfig();
+          const config = validateConfig(await loadConfig());
 
           const args = [...rawArgs];
 

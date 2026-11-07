@@ -8,12 +8,12 @@ import {
 import { describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { validate } from "#foundation/options/utils/validate";
+import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { sourceSection } from "#project/environments/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
 import { configSchema } from "#workflows/registry/config/schemas/configSchema";
-import { createConfig } from "#workflows/registry/operations/createConfig";
 
 async function syncCompilerOptions(
   input: Record<string, unknown>,
@@ -24,7 +24,7 @@ async function syncCompilerOptions(
   project.write("bin/index.ts", "");
   project.write("tsconfig.json", "{}");
 
-  const config = createConfig({
+  const config = createProjectConfig({
     root: project.root,
     raw: withSourceRuntime(input),
     configFile: undefined,
@@ -128,7 +128,7 @@ describe("runtime tsconfig fields", () => {
       }),
     });
 
-    const config = createConfig({
+    const config = createProjectConfig({
       root: project.root,
       raw: withSourceRuntime({}),
       configFile: undefined,
@@ -193,7 +193,7 @@ describe("runtime tsconfig fields", () => {
       }),
     });
 
-    const config = createConfig({
+    const config = createProjectConfig({
       root: project.root,
       raw: {},
       configFile: undefined,
@@ -284,7 +284,7 @@ describe("runtime tsconfig fields", () => {
       }),
     });
 
-    const config = createConfig({
+    const config = createProjectConfig({
       root: project.root,
       raw: {},
       configFile: undefined,
@@ -303,7 +303,7 @@ describe("runtime tsconfig fields", () => {
   });
 
   test("rejects src.apis without src.baseline", async () => {
-    const config = createConfig({
+    const config = createProjectConfig({
       root: createTemporaryProject().root,
       raw: validate(
         configSchema.schema,

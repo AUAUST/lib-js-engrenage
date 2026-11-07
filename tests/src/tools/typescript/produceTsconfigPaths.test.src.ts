@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 
+import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { packageJsonSection } from "#project/package/index";
 import { sourceExportsSection } from "#project/structure/index";
 import { tsconfigSection } from "#project/tsconfig/index";
@@ -8,7 +9,6 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { resolveSourceEntries } from "#tools/tsdown/operations/resolveSourceEntries";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
-import { createConfig } from "#workflows/registry/operations/createConfig";
 
 const exports = { ".": "src/index.ts", "./*": "src/*/index.ts" };
 
@@ -24,7 +24,7 @@ async function syncProject(
     "tsconfig.json": baseTsconfig,
   });
 
-  const config = createConfig({
+  const config = createProjectConfig({
     root: project.root,
     raw: withSourceRuntime(input),
     configFile: undefined,

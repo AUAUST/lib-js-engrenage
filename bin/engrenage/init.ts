@@ -2,15 +2,16 @@ import { flat } from "@auaust/primitive-kit/arrays";
 
 import { packageJsonFile } from "#constants";
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { packageJsonPathSection } from "#project/package/index";
 import { createPrompter } from "#workflows/cli/operations/createPrompter";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
-import { listFilesystems } from "#workflows/cli/operations/listFilesystems";
+import { formatChanges } from "#workflows/cli/operations/formatChanges";
 import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
 import { runSteps } from "#workflows/cli/operations/runSteps";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { listInitSteps } from "#workflows/init/operations/listInitSteps";
-import { readConfig } from "#workflows/registry/operations/readConfig";
+import { validateConfig } from "#workflows/registry/operations/validateConfig";
 import { runSync } from "#workflows/sync/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Invocation } from "#project/steps/types/Invocation";
@@ -47,9 +48,11 @@ async function invokeCommand(root: Directory, invocation: Invocation) {
 async function readPackage(
   prompter: Prompter,
 ): Promise<LoadedConfig | undefined> {
-  const config = await readConfig(process.cwd(), {
-    searchParents: false,
-  });
+  const config = validateConfig(
+    await loadConfig(process.cwd(), {
+      searchParents: false,
+    }),
+  );
 
   if ((await config.resolve(packageJsonPathSection)) !== undefined) {
     return config;
@@ -70,9 +73,13 @@ async function readPackage(
     interactive: false,
   });
 
-  return readConfig(config.context.root, {
-    searchParents: false,
-  });
+  loadConfig.refresh(config.context.root);
+
+  return validateConfig(
+    await loadConfig(config.context.root, {
+      searchParents: false,
+    }),
+  );
 }
 
 export const init = defineCommand((command) => {
@@ -99,9 +106,7 @@ export const init = defineCommand((command) => {
         return;
       }
 
-      const filesystems = await listFilesystems(config);
-
-      await Promise.all(filesystems.map((filesystem) => filesystem.format()));
+      const filesystems = await formatChanges(config);
 
       reportSyncResults(
         flat(
@@ -119,9 +124,13 @@ export const init = defineCommand((command) => {
         }
       }
 
-      const installed = await readConfig(config.context.root, {
-        searchParents: false,
-      });
+      loadConfig.refresh(config.context.root);
+
+      const installed = validateConfig(
+        await loadConfig(config.context.root, {
+          searchParents: false,
+        }),
+      );
 
       await runSync(installed);
 

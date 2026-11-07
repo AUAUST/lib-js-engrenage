@@ -2,13 +2,13 @@ import { build } from "tsdown";
 import { createProgram, getPreEmitDiagnostics } from "typescript";
 import { describe, expect, test } from "vitest";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { define } from "#project/config/utils/define";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { createTsdownConfig } from "#tools/tsdown/operations/createTsdownConfig";
 import { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 const root = getFixture("tsdown");
 

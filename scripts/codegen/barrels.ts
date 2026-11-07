@@ -14,7 +14,10 @@ export const barrels = defineCommand((command) => {
     .option("--check", "report outdated barrels without writing them", false)
     .action(async (barrels, { check }) => {
       const { loadConfig } =
-        await import("#workflows/registry/operations/loadConfig");
+        await import("#project/config/operations/loadConfig");
+
+      const { validateConfig } =
+        await import("#workflows/registry/operations/validateConfig");
 
       const { syncBarrels } =
         await import("#tools/typescript/operations/syncBarrels");
@@ -22,7 +25,7 @@ export const barrels = defineCommand((command) => {
       const { settleChanges } =
         await import("#workflows/cli/operations/settleChanges");
 
-      const config = await loadConfig();
+      const config = validateConfig(await loadConfig());
 
       await syncBarrels(config, barrels);
 

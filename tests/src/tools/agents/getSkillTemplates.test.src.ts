@@ -1,10 +1,10 @@
 import { describe, expect, test, vi } from "vitest";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { claudeStopHook } from "#tools/agents/claude/constants";
 import { agentsSection } from "#tools/agents/index";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
-import { loadConfig } from "#workflows/registry/operations/loadConfig";
 
 const skill = vi.hoisted(() => {
   return {

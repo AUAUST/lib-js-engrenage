@@ -5,12 +5,11 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
 import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
-import { formatContent } from "#project/format/operations/formatContent";
+import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
-import { createConfig } from "#workflows/registry/operations/createConfig";
 
 function createProject(files: Record<string, string>) {
   const project = createTemporaryProject({
@@ -39,7 +38,7 @@ describe("filesystem.format", () => {
       "tsconfig.json": "{}",
     });
 
-    const config = createConfig({
+    const config = createProjectConfig({
       root: project.root,
       raw: withSourceRuntime({}),
       configFile: undefined,
@@ -47,7 +46,13 @@ describe("filesystem.format", () => {
 
     await syncTsconfigFiles(config);
 
-    await config.context.filesystem.format();
+    await config.context.filesystem.format((path, content) => {
+      return formatWithPrettier(content, {
+        path,
+        root: project.root,
+      });
+    });
+
     await config.context.filesystem.flush();
 
     const content = project.read("tsconfig.src.json");
@@ -66,19 +71,18 @@ describe("filesystem.format", () => {
   test("reports no change for a formatted file whose value is up to date", async () => {
     const project = createProject({});
 
-    const filesystem = createFilesystem(project.root, (path, content) => {
-      return formatContent(content, {
-        path,
-        root: project.root,
-        formatter: formatWithPrettier,
-      });
-    });
+    const filesystem = createFilesystem(project.root);
 
     project.write("data.json", '{\n  "list": ["a"]\n}\n');
 
     await filesystem.write("data.json", '{\n  "list": [\n    "a"\n  ]\n}\n');
 
-    await filesystem.format();
+    await filesystem.format((path, content) => {
+      return formatWithPrettier(content, {
+        path,
+        root: project.root,
+      });
+    });
 
     expect(filesystem.discard()).toEqual([]);
   });
@@ -90,7 +94,12 @@ describe("filesystem.format", () => {
 
     await filesystem.write("data.json", '{\n  "list": [\n    "a"\n  ]\n}\n');
 
-    await filesystem.format();
+    await filesystem.format((path, content) => {
+      return formatWithPrettier(content, {
+        path,
+        root: project.root,
+      });
+    });
 
     expect(await filesystem.read("data.json")).toBe(
       '{\n  "list": [\n    "a"\n  ]\n}\n',

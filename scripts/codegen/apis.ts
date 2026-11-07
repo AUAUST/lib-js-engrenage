@@ -11,7 +11,10 @@ export const apis = defineCommand((command) => {
     .option("--check", "report outdated groups without writing them", false)
     .action(async (groups, { check }) => {
       const { loadConfig } =
-        await import("#workflows/registry/operations/loadConfig");
+        await import("#project/config/operations/loadConfig");
+
+      const { validateConfig } =
+        await import("#workflows/registry/operations/validateConfig");
 
       const { generateApiDeclarations } =
         await import("#scripts/codegen/operations/generateApiDeclarations");
@@ -19,7 +22,7 @@ export const apis = defineCommand((command) => {
       const { settleChanges } =
         await import("#workflows/cli/operations/settleChanges");
 
-      const config = await loadConfig();
+      const config = validateConfig(await loadConfig());
 
       await generateApiDeclarations(config, groups);
 

@@ -2,12 +2,13 @@ import { cancel, isCancel, multiselect } from "@clack/prompts";
 
 import { empty } from "@auaust/toolkit/empty";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { agentsSection } from "#tools/agents/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
-import { readConfig } from "#workflows/registry/operations/readConfig";
+import { validateConfig } from "#workflows/registry/operations/validateConfig";
 import type { LoadedConfig } from "#project/config/index";
 
 async function getNames(config: LoadedConfig, name: string | undefined) {
@@ -69,7 +70,7 @@ async function getNames(config: LoadedConfig, name: string | undefined) {
 }
 
 async function add(name?: string) {
-  const config = await readConfig(process.cwd());
+  const config = validateConfig(await loadConfig());
 
   const names = await getNames(config, name);
 
