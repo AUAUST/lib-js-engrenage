@@ -122,7 +122,9 @@ describe("resolveRoles", () => {
   test("ranks roles against the effect levels", () => {
     const resolved = resolve({
       roles: [utils({ effects: "logging" }), adapters()],
-      effects: { levels: ["pure", "logging", "confined", "observing", "effectful"] },
+      effects: {
+        levels: ["pure", "logging", "confined", "observing", "effectful"],
+      },
     });
 
     expect(resolved.roles.utils).toMatchObject({ effects: "logging" });
@@ -143,13 +145,23 @@ describe("resolveRoles", () => {
     }).toThrow("shaky");
 
     for (const entry of [
-      { default: "shaky", symbols: { read: "pure" } },
-      { default: "pure", symbols: { read: "shaky" } },
+      {
+        default: "shaky",
+        symbols: { read: "pure" },
+      },
+      {
+        default: "pure",
+        symbols: { read: "shaky" },
+      },
     ]) {
-      expect(() => resolve({
-        roles: [],
-        effects: { modules: { custom: entry } },
-      })).toThrow("shaky");
+      expect(() =>
+        resolve({
+          roles: [],
+          effects: {
+            modules: { custom: entry },
+          },
+        }),
+      ).toThrow("shaky");
     }
   });
 });

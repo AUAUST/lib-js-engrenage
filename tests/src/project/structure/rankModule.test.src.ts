@@ -11,15 +11,42 @@ import type { ResolvedEffects } from "#project/structure/types/ResolvedEffects";
 
 describe("module effect levels", () => {
   test("requires the four default levels in order", () => {
-    expect(parse(effectLevelsSchema, defaultEffectLevels)).toEqual(defaultEffectLevels);
-    expect(parse(effectLevelsSchema, ["pure", "confined", "custom", "observing", "effectful"])).toContain("custom");
-    expect(() => parse(effectLevelsSchema, ["pure", "confined", "effectful"])).toThrow("observing");
-    expect(() => parse(effectLevelsSchema, ["pure", "observing", "confined", "effectful"])).toThrow("in that order");
+    expect(parse(effectLevelsSchema, defaultEffectLevels)).toEqual(
+      defaultEffectLevels,
+    );
+
+    expect(
+      parse(effectLevelsSchema, [
+        "pure",
+        "confined",
+        "custom",
+        "observing",
+        "effectful",
+      ]),
+    ).toContain("custom");
+
+    expect(() =>
+      parse(effectLevelsSchema, ["pure", "confined", "effectful"]),
+    ).toThrow("observing");
+
+    expect(() =>
+      parse(effectLevelsSchema, ["pure", "observing", "confined", "effectful"]),
+    ).toThrow("in that order");
   });
 
   test("uses the shipped defaults and symbol overrides", async () => {
-    const modules = parse(effectModulesSchema, await readJsonFile(resolveDataFile("@auaust/engrenage/effects/modules.json")));
-    const effects: ResolvedEffects = { levels: defaultEffectLevels, modules: [modules], fallback: undefined };
+    const modules = parse(
+      effectModulesSchema,
+      await readJsonFile(
+        resolveDataFile("@auaust/engrenage/effects/modules.json"),
+      ),
+    );
+
+    const effects: ResolvedEffects = {
+      levels: defaultEffectLevels,
+      modules: [modules],
+      fallback: undefined,
+    };
 
     expect(rankModule(effects, "node:fs", "readFileSync")).toBe("observing");
     expect(rankModule(effects, "node:fs", "writeFileSync")).toBe("effectful");
@@ -29,12 +56,19 @@ describe("module effect levels", () => {
   });
 
   test("supports structured resolver entries, module patterns and fallback", () => {
-    const entry = { default: "effectful", symbols: { default: "pure", readFileSync: "observing" } };
+    const entry = {
+      default: "effectful",
+      symbols: { default: "pure", readFileSync: "observing" },
+    };
+
     const effects: ResolvedEffects = {
       levels: defaultEffectLevels,
-      modules: [(specifier) => {
-        return specifier === "custom" ? entry : undefined;
-      }, { "custom/*": "pure" }],
+      modules: [
+        (specifier) => {
+          return specifier === "custom" ? entry : undefined;
+        },
+        { "custom/*": "pure" },
+      ],
       fallback: "confined",
     };
 
@@ -44,6 +78,23 @@ describe("module effect levels", () => {
     expect(rankModule(effects, "custom")).toBe("effectful");
     expect(rankModule(effects, "custom/pure")).toBe("pure");
     expect(rankModule(effects, "unknown")).toBe("confined");
-    expect(() => rankModule({ ...effects, modules: [() => ({ default: "pure", symbols: { invalid: "missing" } })] }, "custom", "default")).toThrow("missing");
+
+    expect(() =>
+      rankModule(
+        {
+          ...effects,
+          modules: [
+            () => {
+              return {
+                default: "pure",
+                symbols: { invalid: "missing" },
+              };
+            },
+          ],
+        },
+        "custom",
+        "default",
+      ),
+    ).toThrow("missing");
   });
 });

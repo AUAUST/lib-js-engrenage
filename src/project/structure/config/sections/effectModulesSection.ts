@@ -13,12 +13,20 @@ export const effectModulesSection = declareSection({
   async resolve() {
     const file = resolveDataFile(`${engrenage}/effects/modules.json`);
 
-    const modules = parse(record(string(), effectModuleSchema), await readJsonFile(file));
+    const modules = parse(
+      record(string(), effectModuleSchema),
+      await readJsonFile(file),
+    );
 
-    return toRecord(entries(modules).flatMap(([specifier, entry]) => {
-      return specifier.startsWith("node:")
-        ? [[specifier, entry], [specifier.slice(5), entry]] as const
-        : [[specifier, entry]] as const;
-    }));
+    return toRecord(
+      entries(modules).flatMap(([specifier, entry]) => {
+        return specifier.startsWith("node:")
+          ? ([
+              [specifier, entry],
+              [specifier.slice(5), entry],
+            ] as const)
+          : ([[specifier, entry]] as const);
+      }),
+    );
   },
 });

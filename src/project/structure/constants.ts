@@ -21,8 +21,10 @@ export const defaultEffectLevels = freeze([
 export const effectLevelPurposes = freeze({
   pure: "Compute from arguments only, without observable changes.",
   confined: "Mutate caller-owned values or maintain a private memo cache.",
-  observing: "Read the context or write diagnostics without changing state later operations read.",
-  effectful: "Change state later operations can read, including staged writes and spawned processes.",
+  observing:
+    "Read the context or write diagnostics without changing state later operations read.",
+  effectful:
+    "Change state later operations can read, including staged writes and spawned processes.",
 }) satisfies Readonly<Record<(typeof defaultEffectLevels)[number], string>>;
 
 export const noRoles = freeze({

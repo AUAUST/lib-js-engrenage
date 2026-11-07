@@ -1,6 +1,6 @@
 import type { Role } from "#project/roles/index";
-import type { RoleEffects } from "#project/structure/types/RoleEffects";
 import type { EffectModules } from "#project/structure/types/EffectModules";
+import type { RoleEffects } from "#project/structure/types/RoleEffects";
 
 export interface EnvironmentRoles {
   readonly roles: readonly Role[];

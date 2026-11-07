@@ -180,9 +180,10 @@ export default defineConvention({
                 binding: imported.local.name,
                 ...(imported.type === "ImportSpecifier"
                   ? {
-                      imported: imported.imported.type === "Identifier"
-                        ? imported.imported.name
-                        : String(imported.imported.value),
+                      imported:
+                        imported.imported.type === "Identifier"
+                          ? imported.imported.name
+                          : String(imported.imported.value),
                     }
                   : imported.type === "ImportDefaultSpecifier"
                     ? { imported: "default" }

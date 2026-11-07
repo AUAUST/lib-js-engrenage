@@ -4,8 +4,8 @@ import { entries, freeze, record, values } from "@auaust/toolkit/object";
 
 import { defaultEffectLevels } from "#project/structure/constants";
 import { registerRoles } from "#project/structure/utils/registerRoles";
-import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { EffectModules } from "#project/structure/types/EffectModules";
+import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { ResolvedEffects } from "#project/structure/types/ResolvedEffects";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
@@ -19,7 +19,11 @@ function resolveEffects(
   defaults: EffectModules | undefined,
 ): ResolvedEffects {
   const levels = effects.levels ?? defaultEffectLevels;
-  const modules = [effects.modules, defaults].filter((module) => module !== undefined);
+
+  const modules = [effects.modules, defaults].filter(
+    (module) => module !== undefined,
+  );
+
   const { fallback } = effects;
 
   function assertLevel(level: string, subject: string) {
