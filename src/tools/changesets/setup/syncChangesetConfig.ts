@@ -8,10 +8,13 @@ import { readJsonFile } from "#foundation/filesystem/index";
 import { applyJsonEdits, flattenJsonObject } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
+import { accessByVisibility } from "#project/package/constants";
 import {
   environmentSection,
   packageJsonPathSection,
+  visibilitySection,
 } from "#project/package/index";
+import { traitsSection } from "#project/presets/index";
 import { configFile } from "#tools/changesets/constants";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
@@ -65,8 +68,13 @@ export async function syncChangesetConfig(config: LoadedConfig) {
 
   const version = await resolveConfigVersion(packageJsonPath);
 
+  const traits = await config.resolve(traitsSection);
+
   const options = flattenJsonObject({
     $schema: `https://unpkg.com/${changesetsConfig}@${version}/schema.json`,
+    ...(traits.published && {
+      access: accessByVisibility[await config.resolve(visibilitySection)],
+    }),
   });
 
   await syncFiles(

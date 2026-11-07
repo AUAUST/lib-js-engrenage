@@ -51,6 +51,30 @@ describe("syncChangesetConfig", () => {
     });
   });
 
+  test("writes the access of a published project's visibility", async () => {
+    const project = createTemporaryProject({
+      ...changesetsProject,
+      "engrenage.config.ts":
+        'export default { preset: "library", visibility: "private" };\n',
+      ".changeset/config.json": JSON.stringify({
+        access: "public",
+        baseBranch: "main",
+      }),
+    });
+
+    const config = await loadConfig(project.root);
+
+    await syncChangesetConfig(config);
+
+    await config.context.filesystem.flush();
+
+    expect(JSON.parse(project.read(".changeset/config.json"))).toEqual({
+      access: "restricted",
+      baseBranch: "main",
+      $schema: "https://unpkg.com/@changesets/config@4.0.1/schema.json",
+    });
+  });
+
   test("skips projects without changesets or without a config", async () => {
     const unconfigured = await loadConfig(
       createTemporaryProject(changesetsProject).root,
