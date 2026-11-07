@@ -78,7 +78,7 @@ export interface AuaustRules {
    */
   "auaust/import-workspaces"?: Rule<[]>;
   /**
-   * A domain index, an enabled role barrel or an entry re-exports and declares no local value, except a SCREAMING_CASE constant of metadata; the index.ts of a command group declares its command.
+   * A domain index or an enabled role barrel only re-exports: it declares no local value, except a SCREAMING_CASE constant of metadata, and default-exports no expression; the index.ts of a command group declares its command.
    */
   "auaust/index-declarations"?: Rule<[]>;
   /**

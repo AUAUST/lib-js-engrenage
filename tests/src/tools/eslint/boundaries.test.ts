@@ -426,6 +426,33 @@ describe("structure boundaries", () => {
     ).toEqual([]);
   });
 
+  test("keeps domain indexes and role barrels free of work at import, entries exempt", async () => {
+    const lint = await createLinter(
+      "auaust/index-declarations",
+      createBarrelProject(),
+    );
+
+    const work = "export default createThing();\n";
+
+    expect(await lint("src/project/feature/index.ts", work)).toEqual([
+      "auaust/index-declarations",
+    ]);
+
+    expect(await lint("src/project/feature/entry.ts", work)).toEqual([]);
+    expect(await lint("src/project/feature/entry.ts", exported)).toEqual([]);
+
+    expect(
+      await lint("src/project/feature/conventions/index.ts", exported),
+    ).toEqual(["auaust/index-declarations"]);
+
+    expect(
+      await lint(
+        "src/project/feature/conventions/index.ts",
+        'export { default } from "#project/feature/conventions/first";\n',
+      ),
+    ).toEqual([]);
+  });
+
   test("accepts at a strict role's root only the files its nested roles name", async () => {
     const helper = "src/feature/config/helper.ts";
     const schema = "src/feature/config/featureSchema.ts";

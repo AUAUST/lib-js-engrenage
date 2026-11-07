@@ -1,4 +1,4 @@
-import { entryRoleName, indexRoleName } from "#project/roles/constants";
+import { indexRoleName } from "#project/roles/constants";
 import { entitiesSection } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
@@ -12,23 +12,32 @@ export default defineConvention({
     return defineStructureRule({
       entities,
       description:
-        "A domain index, an enabled role barrel or an entry re-exports and declares no local value, except a SCREAMING_CASE constant of metadata; the index.ts of a command group declares its command.",
+        "A domain index or an enabled role barrel only re-exports: it declares no local value, except a SCREAMING_CASE constant of metadata, and default-exports no expression; the index.ts of a command group declares its command.",
       messages: {
         value:
-          "An index.ts or entry.ts only re-exports; move this declaration into a module of the domain's roles.",
+          "An index.ts only re-exports; move this code into a module of the domain's roles, or into its entry.ts if consumers need it at import.",
       },
       create(context, { fileRole, commands }) {
-        if (
-          (fileRole !== indexRoleName && fileRole !== entryRoleName) ||
-          commands
-        ) {
+        if (fileRole !== indexRoleName || commands) {
           return {};
         }
 
         return {
           Program(program) {
-            // @debt `export default <expression>` is never inspected, so an index.ts may run code at import, as `#tools/prettier/index` does with `definePrettierConfig()`
             for (const statement of program.body) {
+              if (statement.type === "ExportDefaultDeclaration") {
+                const exportedType: string = statement.declaration.type;
+
+                if (
+                  exportedType !== "Identifier" &&
+                  exportedType !== "TSInterfaceDeclaration"
+                ) {
+                  context.report({ node: statement, messageId: "value" });
+                }
+
+                continue;
+              }
+
               const type: string = statement.type;
 
               const declaration:
