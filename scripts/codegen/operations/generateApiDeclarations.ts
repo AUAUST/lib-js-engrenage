@@ -5,23 +5,9 @@ import { dirname, join as joinPath } from "node:path";
 import {
   createSourceFile,
   flattenDiagnosticMessageText,
-  forEachChild,
-  isExpressionWithTypeArguments,
-  isFunctionDeclaration,
-  isIdentifier,
-  isInterfaceDeclaration,
-  isPropertyAccessExpression,
-  isQualifiedName,
-  isTypeAliasDeclaration,
-  isTypeQueryNode,
-  isTypeReferenceNode,
-  isVariableStatement,
   ScriptTarget,
   version,
-  type EntityName,
-  type Node,
   type SourceFile,
-  type Statement,
 } from "typescript";
 
 import {
@@ -37,6 +23,7 @@ import { resolve } from "#foundation/filesystem/utils/resolve";
 import { apiGroupRoots, apiLibraryGroups } from "#project/baseline/constants";
 import { includesEsLibrary } from "#project/baseline/utils/includesEsLibrary";
 import { listEsSelections } from "#project/baseline/utils/listEsSelections";
+import { createApiDeclarationCollector } from "#scripts/codegen/utils/createApiDeclarationCollector";
 import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
 import { formatModule } from "#tools/typescript/operations/formatModule";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
@@ -48,118 +35,6 @@ const apisDirectory = "data/apis";
 const sharedFile: File = `${apisDirectory}/shared/common.d.ts`;
 
 const sharedReference = "shared/common.d.ts";
-
-function declaredNames(statement: Statement): string[] {
-  if (
-    isInterfaceDeclaration(statement) ||
-    isTypeAliasDeclaration(statement) ||
-    (isFunctionDeclaration(statement) && statement.name !== undefined)
-  ) {
-    return statement.name === undefined ? [] : [statement.name.text];
-  }
-
-  if (isVariableStatement(statement)) {
-    return statement.declarationList.declarations.flatMap(({ name }) => {
-      return isIdentifier(name) ? [name.text] : [];
-    });
-  }
-
-  return [];
-}
-
-function leftmost(name: Node): string | undefined {
-  let current = name;
-
-  while (isQualifiedName(current)) {
-    current = current.left;
-  }
-
-  while (isPropertyAccessExpression(current)) {
-    current = current.expression;
-  }
-
-  return isIdentifier(current) ? current.text : undefined;
-}
-
-function referencedNames(statement: Statement): string[] {
-  const names: string[] = [];
-
-  function visit(node: Node) {
-    let reference: EntityName | Node | undefined;
-
-    if (isTypeReferenceNode(node)) {
-      reference = node.typeName;
-    } else if (isExpressionWithTypeArguments(node)) {
-      reference = node.expression;
-    } else if (isTypeQueryNode(node)) {
-      reference = node.exprName;
-    }
-
-    const name = reference === undefined ? undefined : leftmost(reference);
-
-    if (name !== undefined) {
-      names.push(name);
-    }
-
-    forEachChild(node, visit);
-  }
-
-  visit(statement);
-
-  return names;
-}
-
-function indexStatements(source: SourceFile): Map<string, number[]> {
-  const index = new Map<string, number[]>();
-
-  source.statements.forEach((statement, position) => {
-    for (const name of declaredNames(statement)) {
-      index.set(name, [...(index.get(name) ?? []), position]);
-    }
-  });
-
-  return index;
-}
-
-function collectClosure(
-  source: SourceFile,
-  index: Map<string, number[]>,
-  roots: readonly string[],
-): Set<number> {
-  const picked = new Set<number>();
-
-  const queue = [...roots];
-
-  const visited = new Set<string>();
-
-  for (const root of roots) {
-    if (!index.has(root)) {
-      throw new Error(`lib.dom.d.ts declares no "${root}"`);
-    }
-  }
-
-  while (queue.length > 0) {
-    const name = queue.pop();
-
-    if (name === undefined || visited.has(name)) {
-      continue;
-    }
-
-    visited.add(name);
-
-    for (const position of index.get(name) ?? []) {
-      picked.add(position);
-
-      const statement = source.statements[position];
-
-      if (statement !== undefined) {
-        queue.push(...referencedNames(statement));
-      }
-    }
-  }
-
-  return picked;
-}
 
 function readNotice(text: string): string {
   const end = text.indexOf("*/");
@@ -278,11 +153,11 @@ export async function generateApiDeclarations(
     true,
   );
 
-  const index = indexStatements(source);
+  const { collectClosure } = createApiDeclarationCollector(source);
 
   const closures = new Map(
     map(entries(apiGroupRoots), ([group, roots]) => {
-      return [group, collectClosure(source, index, roots)] as const;
+      return [group, collectClosure(roots)] as const;
     }),
   );
 

@@ -31,3 +31,9 @@ export const codegen = defineCommand((command) => {
     }
   });
 });
+
+export { collectConfigInputs } from "#scripts/codegen/operations/collectConfigInputs";
+export { parseEditionLibrary } from "#scripts/codegen/operations/parseEditionLibrary";
+export { readEditionCompat } from "#scripts/codegen/operations/readEditionCompat";
+export { createApiDeclarationCollector } from "#scripts/codegen/utils/createApiDeclarationCollector";
+export { findConfigTypeImports } from "#scripts/codegen/utils/findConfigTypeImports";

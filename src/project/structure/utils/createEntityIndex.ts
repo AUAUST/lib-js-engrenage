@@ -6,15 +6,17 @@ import { entries, freeze } from "@auaust/toolkit/object";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import { entryRoleName, indexRoleName } from "#project/roles/constants";
 import { noRoles } from "#project/structure/constants";
-import { getIndexFile } from "#project/structure/utils/getIndexFile";
+import { classifyEntityFile } from "#project/structure/utils/classifyEntityFile";
+import { createStructureEntity } from "#project/structure/utils/createStructureEntity";
+import { extendEntityLineage } from "#project/structure/utils/extendEntityLineage";
+import { getAliasSpecifier } from "#project/structure/utils/getAliasSpecifier";
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
-import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
-import type { Alias } from "#project/structure/types/Alias";
 import type { Entity } from "#project/structure/types/Entity";
 import type { EntityIndex } from "#project/structure/types/EntityIndex";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { LineageMember } from "#project/structure/types/LineageMember";
+import type { LocatedEntity } from "#project/structure/types/LocatedEntity";
 import type { NamedFileRole } from "#project/structure/types/NamedFileRole";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
@@ -28,13 +30,6 @@ import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
-interface Located {
-  readonly entity: Entity;
-  readonly roles: ResolvedRoles | undefined;
-  readonly named: readonly NamedFileRole[];
-  readonly covers: boolean;
-}
-
 interface CodeEnvironment {
   readonly active: boolean;
   readonly dirs: Directories;
@@ -44,78 +39,6 @@ const projectRoot = ".";
 const selfSubpath = ".";
 const noLineage: readonly LineageMember[] = freeze([]);
 const noNamedFileRoles: readonly NamedFileRole[] = freeze([]);
-
-function extendLineage(
-  lineage: readonly LineageMember[],
-  node: StructureNode,
-  path: Directory,
-): readonly LineageMember[] {
-  if (node.kind !== "namespace" && node.kind !== "domain") {
-    return lineage;
-  }
-
-  const member: LineageMember = freeze({
-    path,
-    kind: node.kind,
-    layer: node.layer,
-    layers: node.layers,
-    isolated: node.relation === "isolated",
-  });
-
-  return freeze([...lineage, member]);
-}
-
-function createEntity(
-  environment: Entity["environment"],
-  path: Directory,
-  workspace?: Glob,
-): Entity {
-  return freeze({
-    environment,
-    workspace,
-    path,
-    kind: undefined,
-    commands: false,
-    lineage: noLineage,
-    domain: undefined,
-    surface: freeze([]),
-    role: undefined,
-    fileRole: undefined,
-    contract: undefined,
-    effects: undefined,
-    public: false,
-    variant: undefined,
-  });
-}
-
-function specifierOf(aliases: readonly Alias[], path: string) {
-  for (const { key, target } of aliases) {
-    const normalized = posix.normalize(target);
-    const star = normalized.indexOf("*");
-    const keyStar = key.indexOf("*");
-
-    if (star === -1 || keyStar === -1) {
-      if (star === -1 && keyStar === -1 && normalized === path) {
-        return key;
-      }
-
-      continue;
-    }
-
-    const prefix = normalized.slice(0, star);
-    const suffix = normalized.slice(star + 1);
-
-    if (
-      path.startsWith(prefix) &&
-      path.endsWith(suffix) &&
-      path.length >= prefix.length + suffix.length
-    ) {
-      return key.replace("*", () => {
-        return path.slice(prefix.length, path.length - suffix.length);
-      });
-    }
-  }
-}
 
 export function createEntityIndex({
   root,
@@ -148,7 +71,7 @@ export function createEntityIndex({
   aliases: ResolvedAliases;
   packageName: string | undefined;
 }): EntityIndex {
-  const directories = new Map<Directory, Located>();
+  const directories = new Map<Directory, LocatedEntity>();
   const specifiers = [...aliases.src, ...aliases.global];
 
   const publicEntries = new Map(
@@ -167,7 +90,7 @@ export function createEntityIndex({
     return name === "data" ? noRoles : environmentRoles[name];
   }
 
-  function register(path: Directory, located: Located) {
+  function register(path: Directory, located: LocatedEntity) {
     if (path !== projectRoot && !directories.has(path)) {
       directories.set(path, located);
     }
@@ -187,11 +110,16 @@ export function createEntityIndex({
           environmentRoles[environment.name].roles[child.role]?.public
         );
       })
-      .map((child) => specifierOf(specifiers, `${child.path}/*${extension}`));
+      .map((child) =>
+        getAliasSpecifier(specifiers, `${child.path}/*${extension}`),
+      );
 
     return freeze(
       [
-        specifierOf(specifiers, posix.join(node.path, environment.indexFile)),
+        getAliasSpecifier(
+          specifiers,
+          posix.join(node.path, environment.indexFile),
+        ),
         ...roles,
         entry === undefined || packageName === undefined
           ? undefined
@@ -227,7 +155,7 @@ export function createEntityIndex({
       path: node.path,
       kind: node.kind,
       commands: node.commands === true,
-      lineage: extendLineage(parent.lineage, node, node.path),
+      lineage: extendEntityLineage(parent.lineage, node, node.path),
       domain:
         node.kind === "domain"
           ? node.path.slice(directory.length + 1)
@@ -267,10 +195,10 @@ export function createEntityIndex({
 
     for (const directory of environment.dirs) {
       const entity: Entity = freeze({
-        ...createEntity(name, directory),
+        ...createStructureEntity(name, directory),
         kind: tree.kind,
         commands: tree.commands === true,
-        lineage: extendLineage(noLineage, tree, directory),
+        lineage: extendEntityLineage(noLineage, tree, directory),
       });
 
       register(directory, {
@@ -292,7 +220,7 @@ export function createEntityIndex({
     if (active) {
       for (const directory of dirs) {
         register(directory, {
-          entity: createEntity(name, directory),
+          entity: createStructureEntity(name, directory),
           roles: rolesOf(name),
           named: noNamedFileRoles,
           covers: true,
@@ -305,7 +233,7 @@ export function createEntityIndex({
     if (active) {
       for (const directory of dirs) {
         register(directory, {
-          entity: createEntity("workspace", directory, glob),
+          entity: createStructureEntity("workspace", directory, glob),
           roles: undefined,
           named: noNamedFileRoles,
           covers: true,
@@ -316,7 +244,7 @@ export function createEntityIndex({
 
   if (outDir !== undefined) {
     register(outDir, {
-      entity: createEntity("dist", outDir),
+      entity: createStructureEntity("dist", outDir),
       roles: undefined,
       named: noNamedFileRoles,
       covers: true,
@@ -326,7 +254,9 @@ export function createEntityIndex({
   const nearest = memoized(
     (
       directory: Directory,
-    ): { readonly path: Directory; readonly located: Located } | undefined => {
+    ):
+      | { readonly path: Directory; readonly located: LocatedEntity }
+      | undefined => {
       for (
         let current = directory, parent = posix.dirname(current);
         current !== parent;
@@ -341,7 +271,7 @@ export function createEntityIndex({
     },
   );
 
-  function locate(directory: Directory): Located | undefined {
+  function locate(directory: Directory): LocatedEntity | undefined {
     const found = nearest(directory);
 
     return found !== undefined &&
@@ -352,55 +282,6 @@ export function createEntityIndex({
 
   function toProjectPath(file: File): string {
     return toPosixPath(relative(root, resolve(root, file)));
-  }
-
-  function classify(
-    name: string,
-    directory: Directory,
-    { entity, roles, named }: Located,
-  ): Pick<Entity, "role" | "fileRole" | "contract" | "effects"> {
-    const atRoot = directory === entity.path;
-
-    const matched = matchFileRole(name, {
-      named: atRoot ? named : noNamedFileRoles,
-      enclosing: entity.role,
-      roles,
-    });
-
-    const nested = named.find((candidate) => candidate.name === matched);
-
-    if (atRoot && nested !== undefined) {
-      return {
-        role: nested.name,
-        fileRole: nested.name,
-        contract: nested.contract,
-        effects: nested.contract.effects,
-      };
-    }
-
-    if (entity.role !== undefined) {
-      const isBarrel =
-        entity.contract?.index === true &&
-        roles !== undefined &&
-        name === getIndexFile(roles);
-
-      return {
-        role: entity.role,
-        fileRole: isBarrel ? indexRoleName : undefined,
-        contract: entity.contract,
-        effects: entity.effects,
-      };
-    }
-
-    const role = atRoot ? matched : undefined;
-    const contract = role === undefined ? undefined : roles?.roles[role];
-
-    return {
-      role,
-      fileRole: matched,
-      contract,
-      effects: contract?.effects,
-    };
   }
 
   const describe = memoized((file: File): Entity | undefined => {
@@ -414,7 +295,7 @@ export function createEntityIndex({
 
     const { entity } = located;
 
-    const { role, fileRole, contract, effects } = classify(
+    const { role, fileRole, contract, effects } = classifyEntityFile(
       posix.basename(path),
       directory,
       located,
@@ -446,7 +327,7 @@ export function createEntityIndex({
   return {
     entityOf,
     specifierOf(file) {
-      return specifierOf(specifiers, toProjectPath(file));
+      return getAliasSpecifier(specifiers, toProjectPath(file));
     },
     withinEnvironment(file) {
       return nearest(posix.dirname(toProjectPath(file))) !== undefined;

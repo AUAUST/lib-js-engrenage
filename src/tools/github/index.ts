@@ -25,6 +25,8 @@ export { findBriefedIssue } from "#tools/github/utils/findBriefedIssue";
 export { parseGithubCommand } from "#tools/github/utils/parseGithubCommand";
 export { parseIssueBody } from "#tools/github/utils/parseIssueBody";
 export { parseRepository } from "#tools/github/utils/parseRepository";
+export { parseShellPipelines } from "#tools/github/utils/parseShellPipelines";
+export { readShellOperator } from "#tools/github/utils/readShellOperator";
 export { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 // @end
 
@@ -45,6 +47,9 @@ export * from "#tools/github/types/IssueListItem";
 export * from "#tools/github/types/IssueType";
 export * from "#tools/github/types/ParsedIssueBody";
 export * from "#tools/github/types/ResolvedGithub";
+export * from "#tools/github/types/ShellCommand";
+export * from "#tools/github/types/ShellPipeline";
+export * from "#tools/github/types/ShellWord";
 export * from "#tools/github/types/WorkflowSet";
 export * from "#tools/github/types/WorkflowSetName";
 // @end

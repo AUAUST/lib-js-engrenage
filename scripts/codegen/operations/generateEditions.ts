@@ -2,40 +2,11 @@ import { readdir, readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname, join as joinPath } from "node:path";
 
-import {
-  createSourceFile,
-  flattenDiagnosticMessageText,
-  isCallSignatureDeclaration,
-  isComputedPropertyName,
-  isConstructSignatureDeclaration,
-  isFunctionDeclaration,
-  isIdentifier,
-  isInterfaceDeclaration,
-  isModuleBlock,
-  isModuleDeclaration,
-  isNumericLiteral,
-  isPropertyAccessExpression,
-  isStringLiteral,
-  isVariableStatement,
-  ScriptTarget,
-  type Node,
-  type PropertyName,
-  type Statement,
-} from "typescript";
-import {
-  literal,
-  looseObject,
-  object,
-  optional,
-  parse,
-  string,
-  union,
-  unknown,
-  record as vrecord,
-} from "valibot";
+import { flattenDiagnosticMessageText } from "typescript";
+import { looseObject, parse, string } from "valibot";
 
 import { join, map, sort } from "@auaust/primitive-kit/arrays";
-import { entries, record, values } from "@auaust/toolkit/object";
+import { entries, record } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { resolve } from "#foundation/filesystem/utils/resolve";
@@ -44,9 +15,13 @@ import {
   esInterfaceAliases,
   esMemberCompatKeys,
 } from "#scripts/codegen/constants";
+import { parseEditionLibrary } from "#scripts/codegen/operations/parseEditionLibrary";
+import { readEditionCompat } from "#scripts/codegen/operations/readEditionCompat";
+import { mergeCompatDates } from "#scripts/codegen/utils/mergeCompatDates";
 import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
 import { formatModule } from "#tools/typescript/operations/formatModule";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
+import type { LibraryDeclaration } from "#scripts/codegen/types/LibraryDeclaration";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -63,231 +38,15 @@ const intlOptionsPattern = /^Intl\.(?:Resolved)?(\w+)Options$/;
 
 const constructorSuffix = /Constructor$/;
 
-const compatSchema = object({
-  features: vrecord(
-    string(),
-    looseObject({
-      kind: string(),
-      discouraged: optional(unknown()),
-      status: optional(
-        looseObject({
-          by_compat_key: optional(
-            vrecord(
-              string(),
-              looseObject({
-                baseline: union([literal(false), string()]),
-                baseline_low_date: optional(string()),
-              }),
-            ),
-          ),
-        }),
-      ),
-    }),
-  ),
-});
-
 const versionSchema = looseObject({
   version: string(),
 });
-
-type Declaration =
-  | { type: "member"; owner: string; name: string }
-  | { type: "signature"; owner: string }
-  | { type: "value"; name: string };
-
-interface Library {
-  name: string;
-  references: readonly string[];
-  declarations: readonly Declaration[];
-  interfaces: ReadonlySet<string>;
-  values: ReadonlySet<string>;
-}
-
-interface Compat {
-  date: string | null;
-  discouraged: boolean;
-}
-
-function mergeDates(
-  dates: readonly Maybe<string>[],
-): Maybe<string> | undefined {
-  if (dates.includes(null)) {
-    return null;
-  }
-
-  return dates.length === 0 ? undefined : sort([...dates] as string[]).at(-1);
-}
 
 async function readVersion(directory: Directory): Promise<string> {
   return parse(
     versionSchema,
     JSON.parse(await readFile(joinPath(directory, "package.json"), "utf-8")),
   ).version;
-}
-
-async function readCompat(featuresFile: File): Promise<Map<string, Compat>> {
-  const { features } = parse(
-    compatSchema,
-    JSON.parse(await readFile(featuresFile, "utf-8")),
-  );
-
-  const compat = new Map<string, Compat>();
-
-  for (const feature of values(features)) {
-    if (feature.kind !== "feature") {
-      continue;
-    }
-
-    for (const [key, status] of entries(feature.status?.by_compat_key ?? {})) {
-      const date =
-        status.baseline === false || status.baseline_low_date == null
-          ? null
-          : status.baseline_low_date.replace("≤", "");
-
-      const discouraged = feature.discouraged != null;
-      const known = compat.get(key);
-
-      compat.set(
-        key,
-        known === undefined
-          ? { date, discouraged }
-          : {
-              date: mergeDates([known.date, date]) ?? null,
-              discouraged: known.discouraged && discouraged,
-            },
-      );
-    }
-  }
-
-  return compat;
-}
-
-function readMemberName(name: PropertyName | undefined): string | undefined {
-  if (name == null) {
-    return;
-  }
-
-  if (isIdentifier(name) || isStringLiteral(name)) {
-    return name.text;
-  }
-
-  if (
-    isComputedPropertyName(name) &&
-    isPropertyAccessExpression(name.expression) &&
-    isIdentifier(name.expression.expression) &&
-    name.expression.expression.text === "Symbol"
-  ) {
-    return `@@${name.expression.name.text}`;
-  }
-}
-
-function collectDeclarations(
-  statements: readonly Statement[],
-  prefix: string,
-  library: {
-    declarations: Declaration[];
-    interfaces: Set<string>;
-    values: Set<string>;
-  },
-  library_: string,
-) {
-  for (const statement of statements) {
-    if (isInterfaceDeclaration(statement)) {
-      const owner = `${prefix}${statement.name.text}`;
-
-      library.interfaces.add(owner);
-
-      for (const member of statement.members) {
-        if (
-          isCallSignatureDeclaration(member) ||
-          isConstructSignatureDeclaration(member)
-        ) {
-          library.declarations.push({ type: "signature", owner });
-
-          continue;
-        }
-
-        if (member.name == null || isNumericLiteral(member.name)) {
-          continue;
-        }
-
-        const name = readMemberName(member.name);
-
-        if (name === undefined) {
-          throw new Error(
-            `lib.${library_}.d.ts declares ${owner} with a member name that is neither an identifier nor [Symbol.<name>]`,
-          );
-        }
-
-        library.declarations.push({
-          type: "member",
-          owner,
-          name,
-        });
-      }
-    } else if (isVariableStatement(statement)) {
-      for (const { name } of statement.declarationList.declarations) {
-        if (!isIdentifier(name)) {
-          continue;
-        }
-
-        library.values.add(`${prefix}${name.text}`);
-
-        library.declarations.push({
-          type: "value",
-          name: `${prefix}${name.text}`,
-        });
-      }
-    } else if (isFunctionDeclaration(statement) && statement.name != null) {
-      library.values.add(`${prefix}${statement.name.text}`);
-
-      library.declarations.push({
-        type: "value",
-        name: `${prefix}${statement.name.text}`,
-      });
-    } else if (isModuleDeclaration(statement) && statement.body != null) {
-      const name = isIdentifier(statement.name) ? statement.name.text : "";
-      const inner = name === "global" ? prefix : `${prefix}${name}.`;
-      const body: Node = statement.body;
-
-      collectDeclarations(
-        isModuleBlock(body)
-          ? body.statements
-          : isModuleDeclaration(body)
-            ? [body]
-            : [],
-        inner,
-        library,
-        library_,
-      );
-    }
-  }
-}
-
-async function parseLibrary(
-  directory: Directory,
-  name: string,
-): Promise<Library> {
-  const source = createSourceFile(
-    `lib.${name}.d.ts`,
-    await readFile(joinPath(directory, `lib.${name}.d.ts`), "utf-8"),
-    ScriptTarget.ESNext,
-    true,
-  );
-
-  const library = {
-    declarations: [] as Declaration[],
-    interfaces: new Set<string>(),
-    values: new Set<string>(),
-  };
-
-  collectDeclarations(source.statements, "", library, name);
-
-  return {
-    name,
-    references: map(source.libReferenceDirectives, ({ fileName }) => fileName),
-    ...library,
-  };
 }
 
 function splitName(name: string): { prefix: string; base: string } {
@@ -306,7 +65,10 @@ function toRuntimeName(owner: string): string {
   return `${prefix}${alias ?? base.replace(constructorSuffix, "")}`;
 }
 
-function listCandidates(declaration: Declaration, isFirst: boolean): string[] {
+function listCandidates(
+  declaration: LibraryDeclaration,
+  isFirst: boolean,
+): string[] {
   if (declaration.type === "value") {
     return [`javascript.builtins.${declaration.name}`];
   }
@@ -345,7 +107,7 @@ function listCandidates(declaration: Declaration, isFirst: boolean): string[] {
   ];
 }
 
-function describeDeclaration(declaration: Declaration): string {
+function describeDeclaration(declaration: LibraryDeclaration): string {
   switch (declaration.type) {
     case "member": {
       return `${declaration.owner}.${declaration.name}`;
@@ -369,7 +131,7 @@ function readDefaultFeatures(): File {
   return createRequire(import.meta.url).resolve("web-features/data.json");
 }
 
-// @debt generateEditions parses, matches, resolves and formats in one function; those stages could be separate modules, and collectDeclarations carries a `library_` name next to `library` for two different things.
+// @debt generateEditions matches, resolves and formats in one function; those stages could be separate modules.
 export async function generateEditions(
   config: LoadedConfig,
   {
@@ -377,7 +139,7 @@ export async function generateEditions(
     features = readDefaultFeatures(),
   }: { libraries?: Directory; features?: File } = {},
 ) {
-  const compat = await readCompat(features);
+  const compat = await readEditionCompat(features);
 
   const failures: string[] = [];
 
@@ -404,7 +166,7 @@ export async function generateEditions(
   for (const [position, edition] of editionNames.entries()) {
     const previous = editionNames[position - 1] ?? "es5";
 
-    const { references } = await parseLibrary(libraries, edition);
+    const { references } = await parseEditionLibrary(libraries, edition);
 
     editionLibraries.set(
       edition,
@@ -417,7 +179,7 @@ export async function generateEditions(
   const parsed = new Map(
     await Promise.all(
       map(order, async (name) => {
-        return [name, await parseLibrary(libraries, name)] as const;
+        return [name, await parseEditionLibrary(libraries, name)] as const;
       }),
     ),
   );
@@ -481,7 +243,7 @@ export async function generateEditions(
       failures.push(`lib.${name}.d.ts ends with no counted declaration`);
     }
 
-    own.set(name, mergeDates(dates) ?? null);
+    own.set(name, mergeCompatDates(dates) ?? null);
   }
 
   if (failures.length > 0) {
@@ -507,7 +269,7 @@ export async function generateEditions(
 
     for (const reference of library.references) {
       const date = editionPattern.test(reference)
-        ? mergeDates(
+        ? mergeCompatDates(
             editionNames
               .filter((edition) => edition <= reference)
               .flatMap((edition) => {
@@ -524,7 +286,7 @@ export async function generateEditions(
       }
     }
 
-    const date = mergeDates(dates);
+    const date = mergeCompatDates(dates);
 
     resolved.set(name, date);
 

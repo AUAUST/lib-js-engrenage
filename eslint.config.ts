@@ -4,6 +4,5 @@ export default defineEslintConfig({
   stylistic: {
     functionLines: false, // @debt refactor required to cleanup
     cognitiveComplexity: false, // @debt refactor required to cleanup
-    fileLines: false, // @debt refactor required to cleanup
   },
 });

@@ -12,6 +12,7 @@ export {
 export { agentShellVariables } from "#tools/agents/constants";
 export { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 export { isHookCommand } from "#tools/agents/utils/isHookCommand";
+export { renderEnvironmentMap } from "#tools/agents/utils/renderEnvironmentMap";
 
 // @barrel setup/*.ts named
 export { createAgentRulesStep } from "#tools/agents/setup/createAgentRulesStep";
@@ -31,6 +32,7 @@ export { agentsSection } from "#tools/agents/config/sections/agentsSection";
 export { addAgentRules } from "#tools/agents/operations/addAgentRules";
 export { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 export { checkAgentDispatch } from "#tools/agents/operations/checkAgentDispatch";
+export { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
 export { checkAgents } from "#tools/agents/operations/checkAgents";
 export { denyToolUse } from "#tools/agents/operations/denyToolUse";
 export { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
