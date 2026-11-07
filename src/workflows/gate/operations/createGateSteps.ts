@@ -11,7 +11,7 @@ import {
 import { resolveBinary, spawnProcess } from "#foundation/processes/index";
 import { environmentSection } from "#project/package/index";
 import { agentsSection } from "#tools/agents/index";
-import { findClones, formatClone } from "#tools/jscpd/index";
+import { reportClones } from "#tools/jscpd/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { KnownPackageName } from "#types/KnownPackageName";
@@ -143,12 +143,9 @@ export async function createGateSteps(config: LoadedConfig): Promise<{
       audience: "agents",
       name: jscpd,
       async run(files) {
-        const clones = await findClones(config, files);
+        const report = await reportClones(config, files);
 
-        return {
-          ok: clones.length === 0,
-          output: map(clones, formatClone).join("\n"),
-        };
+        return { ok: report === undefined, output: report ?? "" };
       },
     });
   }

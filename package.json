@@ -77,6 +77,7 @@
     "./git/constants": "./dist/git/constants.mjs",
     "./github": "./dist/github.mjs",
     "./github/constants": "./dist/github/constants.mjs",
+    "./jscpd/constants": "./dist/jscpd/constants.mjs",
     "./lefthook/constants": "./dist/lefthook/constants.mjs",
     "./options/internals": "./dist/options/internals.mjs",
     "./package": "./dist/package.mjs",

@@ -1,11 +1,9 @@
 import { describe, expect, test } from "vitest";
 
-import { map, sort } from "@auaust/primitive-kit/arrays";
-
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
-import { findClones } from "#tools/jscpd/operations/findClones";
+import { reportClones } from "#tools/jscpd/operations/reportClones";
 
 function createSource(name: string): string {
   return `export function ${name}(values: number[]): number {
@@ -45,22 +43,18 @@ function createRepository() {
   );
 }
 
-describe("findClones", { timeout: binaryTimeout }, () => {
+describe("reportClones", { timeout: binaryTimeout }, () => {
   test("reports only the new clones of the changed files", async () => {
     const { project } = await createRepository();
 
     project.write("src/third.ts", createSource("third"));
 
-    const clones = await findClones(await loadConfig(project.root), [
+    const report = await reportClones(await loadConfig(project.root), [
       "src/third.ts",
     ]);
 
-    expect(clones).toHaveLength(1);
-
-    expect(sort(map(clones[0]?.fragments ?? [], ({ file }) => file))).toEqual([
-      expect.stringMatching(/^src\/(first|second)\.ts$/),
-      "src/third.ts",
-    ]);
+    expect(report).toMatch(/(first|second)\.ts:1-15 ~ third\.ts:1-15/);
+    expect(report).not.toMatch(/first\.ts:1-15 ~ second\.ts:1-15/);
   });
 
   test("reports clones in test files", async () => {
@@ -68,11 +62,11 @@ describe("findClones", { timeout: binaryTimeout }, () => {
 
     project.write("tests/third.test.ts", createSource("third"));
 
-    const clones = await findClones(await loadConfig(project.root), [
+    const report = await reportClones(await loadConfig(project.root), [
       "tests/third.test.ts",
     ]);
 
-    expect(clones).toHaveLength(1);
+    expect(report).toMatch(/third\.test\.ts:1-15/);
   });
 
   test("ignores fixtures", async () => {
@@ -81,9 +75,9 @@ describe("findClones", { timeout: binaryTimeout }, () => {
     project.write("tests/fixtures/third.ts", createSource("third"));
 
     expect(
-      await findClones(await loadConfig(project.root), [
+      await reportClones(await loadConfig(project.root), [
         "tests/fixtures/third.ts",
       ]),
-    ).toEqual([]);
+    ).toBeUndefined();
   });
 });
