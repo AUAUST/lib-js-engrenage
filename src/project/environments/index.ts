@@ -13,8 +13,10 @@ export { declareStructureOptions } from "#project/environments/config/declarers/
 export * from "#project/environments/types/AliasesInput";
 export * from "#project/environments/types/BinInput";
 export * from "#project/environments/types/DataInput";
+export * from "#project/environments/types/DefineContext";
 export * from "#project/environments/types/DefineInput";
 export * from "#project/environments/types/DomainInput";
+export * from "#project/environments/types/GlobalsFactory";
 export * from "#project/environments/types/NamespaceInput";
 export * from "#project/environments/types/ResolvedBin";
 export * from "#project/environments/types/ResolvedCodeEnvironment";

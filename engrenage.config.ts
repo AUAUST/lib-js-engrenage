@@ -178,7 +178,21 @@ export default defineConfig({
       "foundation": { purpose: "Primitives without project knowledge." },
       "project": {
         purpose: "Tool-agnostic project models and contract domains.",
-        layers: ["roles", "*"],
+        layers: [
+          "config",
+          "roles",
+          "baseline",
+          "format",
+          "presets",
+          "steps",
+          "cache",
+          "tsconfig",
+          "package",
+          "environments",
+          "build",
+          "workspaces",
+          "structure",
+        ],
       },
       "tools": {
         purpose: "One domain per external tool, holding its adapters.",

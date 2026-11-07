@@ -11,7 +11,6 @@ import type { RawConfig } from "#project/config/types/RawConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
-// @debt section values live in `operations` because their resolvers call effectful operations, while the `config` role meant to own them is confined (#243–#246)
 export function createProjectConfig({
   root,
   raw,

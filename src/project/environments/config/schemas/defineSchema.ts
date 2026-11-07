@@ -6,7 +6,7 @@ import { declare, declareObject, validate } from "#foundation/options/index";
 import { defaultDefineTypes } from "#project/config/constants";
 import { globalsSchema } from "#project/environments/config/schemas/globalsSchema";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { GlobalsFactory } from "#project/config/index";
+import type { GlobalsFactory } from "#project/environments/types/GlobalsFactory";
 import type { PackageJson } from "#project/package/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

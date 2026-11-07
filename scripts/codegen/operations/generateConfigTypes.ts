@@ -41,7 +41,7 @@ interface TypeSource {
 const externalTypes = new Map<string, TypeSource>([
   ["ListOption", { domain: "foundation/options", specifier: undefined }],
   ["ManagedListOption", { domain: "foundation/options", specifier: undefined }],
-  ["GlobalsFactory", { domain: "project/config", specifier: undefined }],
+  ["GlobalsFactory", { domain: "project/environments", specifier: undefined }],
   [
     "EffectModuleResolver",
     { domain: "project/structure", specifier: undefined },
