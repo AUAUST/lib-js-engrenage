@@ -133,3 +133,4 @@ Decisions and deviations taken while the user was away, for the cleanup phase. O
 - `publishConfig.access` written into private workspaces; harmless, could be dropped (#202).
   | #203 | worker | Changesets `access` written only under `published` (Step 1 said unconditionally) | #199 Derivation table: not published → untouched; same as #202 |
   | #203 | worker | Ran sync: this repo's `.changeset/config.json` `access` → `restricted` | Plan's `visibility: "private"`. **Review before publishing** |
+  | #206 | worker | Library workflows: install step gets `NODE_AUTH_TOKEN: secrets.NPM_READ_TOKEN` (+ `registry-url` in `ci.yml`); this repo's `.github/workflows` regenerated | Issue intends it. **This repo's CI now needs the `NPM_READ_TOKEN` secret** |
