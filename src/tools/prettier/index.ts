@@ -8,8 +8,8 @@ export { syncPrettierignoreFile } from "#tools/prettier/setup/syncPrettierignore
 export { definePrettierConfig } from "#tools/prettier/config/definePrettierConfig";
 // @end
 
-// @barrel config/*Section.ts named
-export { prettierSection } from "#tools/prettier/config/prettierSection";
+// @barrel config/sections/*.ts named
+export { prettierSection } from "#tools/prettier/config/sections/prettierSection";
 // @end
 
 // @barrel operations/*.ts named
@@ -17,8 +17,8 @@ export { createPrettierConfig } from "#tools/prettier/operations/createPrettierC
 export { loadPrettier } from "#tools/prettier/operations/loadPrettier";
 // @end
 
-// @barrel config/*Schema.ts named
-export { prettierSchema } from "#tools/prettier/config/prettierSchema";
+// @barrel config/schemas/*.ts named
+export { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
 // @end
 
 // @barrel adapters/*.ts named

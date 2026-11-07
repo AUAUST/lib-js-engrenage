@@ -18,7 +18,7 @@ import {
   workspacesSection,
   type LoadedConfig,
 } from "#project/config/index";
-import { optionsSchema } from "#tools/vitest/config/optionsSchema";
+import { optionsSchema } from "#tools/vitest/config/schemas/optionsSchema";
 import {
   buildMode,
   defaultCoverageProvider,

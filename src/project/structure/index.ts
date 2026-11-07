@@ -54,8 +54,8 @@ export * from "#project/structure/types/TestVariant";
 export * from "#project/structure/types/UnclassifiedReason";
 // @end
 
-// @barrel config/declare*.ts named
-export { declareStructureOptions } from "#project/structure/config/declareStructureOptions";
+// @barrel config/declarers/*.ts named
+export { declareStructureOptions } from "#project/structure/config/declarers/declareStructureOptions";
 // @end
 
 // @barrel config/schemas/*.ts named

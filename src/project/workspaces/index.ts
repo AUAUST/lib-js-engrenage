@@ -4,8 +4,8 @@ export * from "#project/workspaces/types/ResolvedWorkspaceGroup";
 export * from "#project/workspaces/types/WorkspaceTsconfig";
 // @end
 
-// @barrel config/*Schema.ts named
-export { workspacesSchema } from "#project/workspaces/config/workspacesSchema";
+// @barrel config/schemas/*.ts named
+export { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
 // @end
 
 // @barrel operations/*.ts named

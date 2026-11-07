@@ -21,8 +21,8 @@ export { syncAgents } from "#tools/agents/setup/syncAgents";
 export { syncProjectMap } from "#tools/agents/setup/syncProjectMap";
 // @end
 
-// @barrel config/*Section.ts named
-export { agentsSection } from "#tools/agents/config/agentsSection";
+// @barrel config/sections/*.ts named
+export { agentsSection } from "#tools/agents/config/sections/agentsSection";
 // @end
 
 // @barrel operations/*.ts named

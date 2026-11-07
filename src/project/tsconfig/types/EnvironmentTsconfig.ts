@@ -1,6 +1,6 @@
 import type { InferInput } from "valibot";
 
-import type { declareEnvironmentTsconfig } from "#project/tsconfig/config/declareEnvironmentTsconfig";
+import type { declareEnvironmentTsconfig } from "#project/tsconfig/config/declarers/declareEnvironmentTsconfig";
 
 export type EnvironmentTsconfig = Exclude<
   NonNullable<

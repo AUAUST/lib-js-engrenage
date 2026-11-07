@@ -27,7 +27,7 @@ Effect levels, purest first: `pure` < `confined` < `effectful`. A role with a le
 | `enums`        | Enumerations, one per module.                                                         | level pure                |
 | `ports`        | Interfaces other domains implement, importable module by module.                      | type-only, level pure     |
 | `adapters`     | Implementations of other domains' ports, importable module by module.                 | level effectful           |
-| `config`       | Everything that configures the domain: its definer, option declarations and sections. | level confined            |
+| `config`       | Everything that configures the domain: its definer, option declarations and sections. |                           |
 | `setup`        | Init steps and sync targets of the domain.                                            | level effectful           |
 | `plugins`      | The tool's own plugins, one per module.                                               | level effectful           |
 | `operations`   | Impure logic and definers of the domain.                                              | level effectful           |

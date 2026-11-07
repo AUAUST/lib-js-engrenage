@@ -15,7 +15,7 @@ import {
   claudePermissions,
   claudeSettingsFile,
 } from "#tools/agents/claude/constants";
-import { agentsSection } from "#tools/agents/config/agentsSection";
+import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import { syncHooks } from "#tools/agents/operations/syncHooks";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";

@@ -10,7 +10,7 @@ import {
   toolingSection,
   type LoadedConfig,
 } from "#project/config/index";
-import { agentsSection } from "#tools/agents/config/agentsSection";
+import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import { projectMapDirectory } from "#tools/agents/constants";
 import { renderProjectMap } from "#tools/agents/utils/renderProjectMap";
 

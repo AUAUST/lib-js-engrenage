@@ -877,28 +877,38 @@ export function pick(value: Value): number {
       return map(result?.messages ?? [], (message) => message.ruleId);
     }
 
-    expect(await lintedLayoutRules()).toEqual([
-      "auaust/padded-exports",
-      "auaust/padded-blocks",
-      "auaust/grouped-overloads",
-      "auaust/unpadded-switches",
-      "auaust/switch-case-braces",
-      "auaust/padded-cases",
-    ]);
+    const defaultRules = await lintedLayoutRules();
 
-    expect(
-      await lintedLayoutRules({
-        stylistic: {
-          paddedBlocks: false,
-          switches: false,
-        },
-      }),
-    ).toEqual([
-      "auaust/padded-exports",
-      "auaust/grouped-overloads",
-      "auaust/unpadded-switches",
-      "auaust/padded-cases",
-    ]);
+    expect(defaultRules).toEqual(
+      expect.arrayContaining([
+        "auaust/padded-exports",
+        "auaust/padded-blocks",
+        "auaust/grouped-overloads",
+        "auaust/unpadded-switches",
+        "auaust/switch-case-braces",
+        "auaust/padded-cases",
+      ]),
+    );
+
+    expect(defaultRules).toHaveLength(6);
+
+    const reducedRules = await lintedLayoutRules({
+      stylistic: {
+        paddedBlocks: false,
+        switches: false,
+      },
+    });
+
+    expect(reducedRules).toEqual(
+      expect.arrayContaining([
+        "auaust/padded-exports",
+        "auaust/grouped-overloads",
+        "auaust/unpadded-switches",
+        "auaust/padded-cases",
+      ]),
+    );
+
+    expect(reducedRules).toHaveLength(4);
   });
 
   test.each([

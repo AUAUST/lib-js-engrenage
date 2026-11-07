@@ -4,7 +4,7 @@ import {
   claudeSettingsFile,
 } from "#tools/agents/claude/constants";
 import { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSettings";
-import { agentsSection } from "#tools/agents/config/agentsSection";
+import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import type { Step } from "#project/steps/index";
 
 export function createClaudeSettingsStep(): Step {

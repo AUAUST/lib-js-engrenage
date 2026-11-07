@@ -17,13 +17,13 @@ import {
 import { defineConfig } from "#workflows/config/index";
 
 // @debt file names inside config/ follow named-match only; they should derive from the domain's structured path (#271)
-// @debt not strict and ranked confined at its root: a nested role with `file` is never classified as a directory (#287 gap in `roleOf`), so `schemas` and `declarers` stay directory roles and their single modules take the root's contract
+// @debt a domain may hold several definers until definers are unique (#294)
 const config = createRolePreset({
   name: "config",
   purpose:
     "Everything that configures the domain: its definer, option declarations and sections.",
+  strict: true,
   exports: "named-match",
-  effects: "confined",
   roles: [
     {
       name: "definers",
@@ -49,7 +49,7 @@ const config = createRolePreset({
     {
       name: "sections",
       purpose: "Section values the domain contributes to the loaded config.",
-      file: "*Section.ts",
+      accepts: "*Section.ts",
       exports: "named-match",
       effects: "effectful",
     },

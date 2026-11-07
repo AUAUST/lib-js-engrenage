@@ -15,7 +15,7 @@ import {
   workspaceTsconfigFile,
 } from "#project/workspaces/constants";
 import type { OutputOf } from "#foundation/options/index";
-import type { workspacesSchema } from "#project/workspaces/config/workspacesSchema";
+import type { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
 import type { ResolvedWorkspace } from "#project/workspaces/types/ResolvedWorkspace";
 import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";
 import type { Directory } from "#types/Directory";

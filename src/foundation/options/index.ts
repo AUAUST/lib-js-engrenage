@@ -8,10 +8,6 @@ export { declareRecord } from "#foundation/options/config/declarers/declareRecor
 export { declareSection } from "#foundation/options/config/declarers/declareSection";
 // @end
 
-// @barrel config/*.ts named
-
-// @end
-
 // @barrel config/schemas/*.ts named
 export { directorySchema } from "#foundation/options/config/schemas/directorySchema";
 export { fileSchema } from "#foundation/options/config/schemas/fileSchema";

@@ -3,8 +3,8 @@ export { createWorkflowsStep } from "#tools/github/setup/createWorkflowsStep";
 export { syncWorkflowFiles } from "#tools/github/setup/syncWorkflowFiles";
 // @end
 
-// @barrel config/*Section.ts named
-export { githubSection } from "#tools/github/config/githubSection";
+// @barrel config/sections/*.ts named
+export { githubSection } from "#tools/github/config/sections/githubSection";
 // @end
 
 // @barrel operations/*.ts named
@@ -28,8 +28,8 @@ export { parseRepository } from "#tools/github/utils/parseRepository";
 export { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 // @end
 
-// @barrel config/*Schema.ts named
-export { githubSchema } from "#tools/github/config/githubSchema";
+// @barrel config/schemas/*.ts named
+export { githubSchema } from "#tools/github/config/schemas/githubSchema";
 // @end
 
 // @barrel types/*.ts all

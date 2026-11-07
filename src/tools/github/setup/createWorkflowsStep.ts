@@ -3,7 +3,7 @@ import { relative } from "node:path";
 import { toPosixPath } from "#foundation/filesystem/index";
 import { environmentSection } from "#project/config/index";
 import { gitSection } from "#tools/git/index";
-import { githubSection } from "#tools/github/config/githubSection";
+import { githubSection } from "#tools/github/config/sections/githubSection";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";

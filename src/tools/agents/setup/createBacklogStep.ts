@@ -4,7 +4,7 @@ import { random } from "@auaust/primitive-kit/arrays";
 
 import { engrenage } from "#constants";
 import { resolveDataFile } from "#foundation/data/index";
-import { agentsSection } from "#tools/agents/config/agentsSection";
+import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import {
   agentsFile,
   backlogIndex,

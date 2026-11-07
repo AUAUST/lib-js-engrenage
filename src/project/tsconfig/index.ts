@@ -1,5 +1,5 @@
-// @barrel config/declare*.ts named
-export { declareEnvironmentTsconfig } from "#project/tsconfig/config/declareEnvironmentTsconfig";
+// @barrel config/declarers/*.ts named
+export { declareEnvironmentTsconfig } from "#project/tsconfig/config/declarers/declareEnvironmentTsconfig";
 // @end
 
 // @barrel utils/*.ts named
@@ -41,8 +41,8 @@ export {
   unmanagedTsconfig,
 } from "#project/tsconfig/constants";
 
-// @barrel config/*Schema.ts named
-export { typescriptSchema } from "#project/tsconfig/config/typescriptSchema";
+// @barrel config/schemas/*.ts named
+export { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
 // @end
 
 // @barrel operations/*.ts named

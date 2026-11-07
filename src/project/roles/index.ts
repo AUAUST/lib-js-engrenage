@@ -5,8 +5,8 @@ export { roleSchema } from "#project/roles/config/schemas/roleSchema";
 export { rolesSchema } from "#project/roles/config/schemas/rolesSchema";
 // @end
 
-// @barrel config/declare*.ts named
-export { declareRoleContractEntries } from "#project/roles/config/declareRoleContractEntries";
+// @barrel config/declarers/*.ts named
+export { declareRoleContractEntries } from "#project/roles/config/declarers/declareRoleContractEntries";
 // @end
 
 // @barrel types/*.ts all

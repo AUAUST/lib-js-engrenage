@@ -46,7 +46,7 @@ export * from "#tools/eslint/types/rules/UnicornRules";
 export * from "#tools/eslint/types/rules/UnusedImportsRules";
 // @end
 
-export { optionsSchema } from "#tools/eslint/config/optionsSchema";
+export { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
 export { defineRoleRule } from "#tools/eslint/utils/defineRoleRule";
 export type {
   Entity,

@@ -1,5 +1,5 @@
 import { environmentSection } from "#project/config/index";
-import { vscodeSection } from "#tools/vscode/config/vscodeSection";
+import { vscodeSection } from "#tools/vscode/config/sections/vscodeSection";
 import { extensionsFile } from "#tools/vscode/constants";
 import { syncVscodeFiles } from "#tools/vscode/setup/syncVscodeFiles";
 import { findIntegrations } from "#tools/vscode/utils/findIntegrations";

@@ -3,8 +3,8 @@ export { formatContent } from "#project/format/operations/formatContent";
 export { formatFile } from "#project/format/operations/formatFile";
 // @end
 
-// @barrel config/*Schema.ts named
-export { formatSchema } from "#project/format/config/formatSchema";
+// @barrel config/schemas/*.ts named
+export { formatSchema } from "#project/format/config/schemas/formatSchema";
 // @end
 
 // @barrel ports/*.ts all

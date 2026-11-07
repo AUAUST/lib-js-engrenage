@@ -4,7 +4,7 @@ import { freeze } from "@auaust/toolkit/object";
 import { createFilesystem } from "#foundation/filesystem/index";
 import { declareSection, type Resolver } from "#foundation/options/index";
 import { locateFile, type ConfigContext } from "#project/config/index";
-import { gitSchema } from "#tools/git/config/gitSchema";
+import { gitSchema } from "#tools/git/config/schemas/gitSchema";
 import { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
 import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 

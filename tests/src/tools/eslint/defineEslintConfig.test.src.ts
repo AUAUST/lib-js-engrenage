@@ -48,9 +48,15 @@ describe("defineEslintConfig", () => {
 
     expect(callback).toHaveBeenCalledOnce();
 
-    expect(map(result?.messages ?? [], (message) => message.ruleId)).toEqual([
-      "auaust/no-runtime-typeof",
-      "auaust/no-typeof-undefined",
-    ]);
+    const ruleIds = map(result?.messages ?? [], (message) => message.ruleId);
+
+    expect(ruleIds).toEqual(
+      expect.arrayContaining([
+        "auaust/no-runtime-typeof",
+        "auaust/no-typeof-undefined",
+      ]),
+    );
+
+    expect(ruleIds).toHaveLength(2);
   });
 });

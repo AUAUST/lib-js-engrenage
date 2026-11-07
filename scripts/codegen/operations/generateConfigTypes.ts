@@ -19,7 +19,7 @@ import { entries, keys, values } from "@auaust/toolkit/object";
 import { globsSchema } from "#foundation/options/config/schemas/globsSchema";
 import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
 import { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModuleResolverSchema";
-import { configSchema } from "#workflows/registry/config/configSchema";
+import { configSchema } from "#workflows/registry/config/schemas/configSchema";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

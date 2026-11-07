@@ -7,8 +7,8 @@ export { createGitignoreStep } from "#tools/git/setup/createGitignoreStep";
 export { syncGitignoreFile } from "#tools/git/setup/syncGitignoreFile";
 // @end
 
-// @barrel config/*Section.ts named
-export { gitSection } from "#tools/git/config/gitSection";
+// @barrel config/sections/*.ts named
+export { gitSection } from "#tools/git/config/sections/gitSection";
 // @end
 
 // @barrel operations/*.ts named
@@ -20,8 +20,8 @@ export { listPartiallyStagedFiles } from "#tools/git/operations/listPartiallySta
 export { runGit } from "#tools/git/operations/runGit";
 // @end
 
-// @barrel config/*Schema.ts named
-export { gitSchema } from "#tools/git/config/gitSchema";
+// @barrel config/schemas/*.ts named
+export { gitSchema } from "#tools/git/config/schemas/gitSchema";
 // @end
 
 // @barrel types/*.ts all

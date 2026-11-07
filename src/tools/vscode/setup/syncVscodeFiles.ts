@@ -18,7 +18,7 @@ import {
 import { validate } from "#foundation/options/index";
 import { environmentSection, type LoadedConfig } from "#project/config/index";
 import { jsonIndentation } from "#project/format/constants";
-import { vscodeSection } from "#tools/vscode/config/vscodeSection";
+import { vscodeSection } from "#tools/vscode/config/sections/vscodeSection";
 import {
   eslintIntegration,
   extensionsFile,

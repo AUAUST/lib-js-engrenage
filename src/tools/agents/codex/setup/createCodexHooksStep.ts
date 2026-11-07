@@ -1,6 +1,6 @@
 import { codexFile, codexHooksFile } from "#tools/agents/codex/constants";
 import { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";
-import { agentsSection } from "#tools/agents/config/agentsSection";
+import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import type { Step } from "#project/steps/index";
 
 export function createCodexHooksStep(): Step {

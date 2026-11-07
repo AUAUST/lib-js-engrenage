@@ -9,7 +9,7 @@ import {
 } from "#project/config/index";
 import { agentsSection, codexFile } from "#tools/agents/index";
 import { createProjectIgnores } from "#tools/git/index";
-import { prettierSection } from "#tools/prettier/config/prettierSection";
+import { prettierSection } from "#tools/prettier/config/sections/prettierSection";
 import {
   changelogIgnores,
   codegenTitle,

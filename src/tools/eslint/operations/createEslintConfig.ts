@@ -12,7 +12,7 @@ import { entries } from "@auaust/toolkit/object";
 import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
 import { validate } from "#foundation/options/index";
-import { optionsSchema } from "#tools/eslint/config/optionsSchema";
+import { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
 import { pluginName, rolesPluginName } from "#tools/eslint/constants";
 import { createConventionRules } from "#tools/eslint/operations/createConventionRules";
 import { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";

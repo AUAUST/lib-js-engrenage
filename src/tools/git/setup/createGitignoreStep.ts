@@ -2,7 +2,7 @@ import { flat, pluck } from "@auaust/primitive-kit/arrays";
 
 import { gitignoreFile } from "#constants";
 import { relativeWithin } from "#foundation/filesystem/index";
-import { gitSection } from "#tools/git/config/gitSection";
+import { gitSection } from "#tools/git/config/sections/gitSection";
 import { defaultIgnores, ignoreBlocks } from "#tools/git/constants";
 import type { Step } from "#project/steps/index";
 import type { ResolvedGit } from "#tools/git/types/ResolvedGit";

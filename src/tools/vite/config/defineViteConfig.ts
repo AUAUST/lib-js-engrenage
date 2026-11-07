@@ -4,7 +4,7 @@ import { value } from "@auaust/toolkit/value";
 
 import { validate } from "#foundation/options/index";
 import { loadConfig, type LoadedConfig } from "#project/config/index";
-import { optionsSchema } from "#tools/vite/config/optionsSchema";
+import { optionsSchema } from "#tools/vite/config/schemas/optionsSchema";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
 import type { Config } from "#tools/vite/types/Config";
 import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";

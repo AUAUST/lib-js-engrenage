@@ -1,5 +1,5 @@
 import { settlePreset, syncIgnoreFile } from "#foundation/blocks/index";
-import { gitSection } from "#tools/git/config/gitSection";
+import { gitSection } from "#tools/git/config/sections/gitSection";
 import {
   defaultIgnores,
   editorIgnores,
