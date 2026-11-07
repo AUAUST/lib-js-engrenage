@@ -388,16 +388,21 @@ export function createEntityIndex({
       };
     }
 
-    const fileRole = fileRoleOf(name, roles);
-
     if (entity.role !== undefined) {
+      const isBarrel =
+        entity.contract?.index === true &&
+        roles !== undefined &&
+        name === getIndexFile(roles);
+
       return {
         role: entity.role,
-        fileRole,
+        fileRole: isBarrel ? indexRoleName : undefined,
         contract: entity.contract,
         effects: entity.effects,
       };
     }
+
+    const fileRole = fileRoleOf(name, roles);
 
     const role = atRoot ? fileRole : undefined;
     const contract = role === undefined ? undefined : roles?.roles[role];

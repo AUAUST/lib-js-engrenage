@@ -28,7 +28,7 @@ export { enums } from "#project/roles/utils/enums";
 export { errors } from "#project/roles/utils/errors";
 export { fixtures } from "#project/roles/utils/fixtures";
 export { hooks } from "#project/roles/utils/hooks";
-export { indexRole } from "#project/roles/utils/indexRole";
+export { index } from "#project/roles/utils/index";
 export { pages } from "#project/roles/utils/pages";
 export { ports } from "#project/roles/utils/ports";
 export { schemas } from "#project/roles/utils/schemas";

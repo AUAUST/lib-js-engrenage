@@ -48,7 +48,7 @@ export interface RoleInput {
    */
   exports?: (("named-match" | "named" | "default") | undefined)
   /**
-   * Whether an `index` file is allowed.
+   * Whether a file named like the environment's index file is the role's barrel, re-exporting its modules; otherwise that file is an ordinary module of the role.
    * @default false
    */
   index?: (boolean | undefined)

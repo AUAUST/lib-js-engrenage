@@ -10,7 +10,7 @@ export default defineConvention({
     return defineStructureRule({
       config,
       description:
-        "An index.ts or entry.ts re-exports and declares no local value, except a SCREAMING_CASE constant of metadata; the index.ts of a command group declares its command.",
+        "A domain index, an enabled role barrel or an entry re-exports and declares no local value, except a SCREAMING_CASE constant of metadata; the index.ts of a command group declares its command.",
       messages: {
         value:
           "An index.ts or entry.ts only re-exports; move this declaration into a module of the domain's roles.",

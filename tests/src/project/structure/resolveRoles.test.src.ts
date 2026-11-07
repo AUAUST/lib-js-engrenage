@@ -7,7 +7,7 @@ import {
   constants,
   createRolePreset,
   hooks,
-  indexRole,
+  index,
   utils,
   type Role,
 } from "#project/roles/index";
@@ -41,7 +41,7 @@ function resolve({
 describe("resolveRoles", () => {
   test("resolves only the listed roles, in their order", () => {
     const resolved = resolve({
-      roles: [indexRole(), constants(), utils({ nesting: "any" })],
+      roles: [index(), constants(), utils({ nesting: "any" })],
     });
 
     expect(keys(resolved.roles)).toEqual(["index", "constants", "utils"]);
@@ -113,7 +113,7 @@ describe("resolveRoles", () => {
 
   test("reads the index file name from the index role", () => {
     expect(
-      getIndexFile(resolve({ roles: [indexRole({ file: ["main.ts"] })] })),
+      getIndexFile(resolve({ roles: [index({ file: ["main.ts"] })] })),
     ).toBe("main.ts");
 
     expect(getIndexFile(resolve({ roles: [] }))).toBe("index.ts");

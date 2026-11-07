@@ -13,13 +13,12 @@ export default defineConvention({
     return defineStructureRule({
       config,
       description:
-        "A file in a role directory follows the role's nesting, categories, index and accepted files; a strict role holds at its root only the files its nested roles name.",
+        "A file in a role directory follows the role's nesting, categories and accepted files; a strict role holds at its root only the files its nested roles name.",
       messages: {
         nesting:
           "The role {{role}} allows {{depth}} levels of directories; move this file up.",
         category:
           "The role {{role}} sorts its modules into category directories; move this file into one.",
-        index: "The role {{role}} holds no index.ts; remove it or move it out.",
         accepts:
           "The role {{role}} accepts only {{accepts}}; move this file out.",
         strict:
@@ -73,12 +72,6 @@ export default defineConvention({
               context.report({
                 node: program,
                 messageId: "category",
-                data: { role },
-              });
-            } else if (isIndex && !contract.index) {
-              context.report({
-                node: program,
-                messageId: "index",
                 data: { role },
               });
             } else if (!isIndex && contract.strict && depth === 0) {

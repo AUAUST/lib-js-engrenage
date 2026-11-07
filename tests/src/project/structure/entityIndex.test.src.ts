@@ -16,7 +16,7 @@ import {
   createRolePreset,
   entrypoint,
   errors,
-  indexRole,
+  index,
   utils,
 } from "#project/roles/index";
 import { createEntityIndex } from "#project/structure/utils/createEntityIndex";
@@ -39,20 +39,29 @@ const config = createRolePreset({
   ],
 });
 
-const roles = JSON.stringify([
-  indexRole(),
-  entrypoint(),
-  constants(),
-  errors(),
-  utils(),
-  config(),
-]);
+const conventions = createRolePreset({
+  name: "conventions",
+  exports: "default",
+  index: true,
+});
 
-async function createIndex() {
+function renderRoles(indexFile: string) {
+  return JSON.stringify([
+    index({ file: [indexFile] }),
+    entrypoint(),
+    constants(),
+    errors(),
+    utils(),
+    config(),
+    conventions(),
+  ]);
+}
+
+async function createIndex(indexFile = "index.ts") {
   const project = createTemporaryProject({
     "package.json": '{ "name": "library", "type": "module" }',
     "tsconfig.json": "{}",
-    "engrenage.config.ts": `export default { preset: "library", src: { node: 24, roles: ${roles}, namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", src: { node: 24, roles: ${renderRoles(indexFile)}, namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
     "src/entry.ts": "",
     "src/foundation/base/index.ts": "",
     "src/project/feature/index.ts": "",
@@ -63,6 +72,9 @@ async function createIndex() {
     "src/project/feature/config/featureSchema.ts": "",
     "src/project/feature/config/defineFeatureConfig.ts": "",
     "src/project/feature/config/helper.ts": "",
+    "src/project/feature/conventions/index.ts": "",
+    "src/project/feature/conventions/main.ts": "",
+    "src/project/feature/utils/main.ts": "",
     "tests/x.test.src.ts": "",
   });
 
@@ -164,5 +176,35 @@ describe("createEntityIndex", () => {
     const index = await createIndex();
 
     expect(index.entityOf("src/project/feature/unseen/x.ts")).toBeUndefined();
+  });
+
+  test("gives a role's barrel only to the index file of a role with index", async () => {
+    const renamed = await createIndex("main.ts");
+
+    expect(
+      renamed.entityOf("src/project/feature/conventions/main.ts"),
+    ).toMatchObject({ role: "conventions", fileRole: "index" });
+
+    expect(
+      renamed.entityOf("src/project/feature/conventions/index.ts"),
+    ).toMatchObject({ role: "conventions", fileRole: undefined });
+
+    expect(renamed.entityOf("src/project/feature/utils/main.ts")).toMatchObject(
+      { role: "utils", fileRole: undefined },
+    );
+  });
+
+  test("keeps the file roles of a domain's index and entry", async () => {
+    const index = await createIndex();
+
+    expect(index.entityOf("src/project/feature/index.ts")).toMatchObject({
+      role: "index",
+      fileRole: "index",
+    });
+
+    expect(index.entityOf("src/project/feature/entry.ts")).toMatchObject({
+      role: "entrypoint",
+      fileRole: "entrypoint",
+    });
   });
 });

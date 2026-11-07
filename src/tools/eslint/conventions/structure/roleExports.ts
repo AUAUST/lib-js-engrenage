@@ -4,6 +4,9 @@ import { indexRoleName } from "#project/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
+const barrelHint =
+  " If this file is intended as a barrel, enable `index` on the role.";
+
 interface Exports {
   names: string[];
   defaults: number;
@@ -20,13 +23,16 @@ export default defineConvention({
         "A module exports what its role's exports contract states: one named export matching the file, named exports, or one default export; a command module exports one command named after the file.",
       messages: {
         match:
-          "A module of {{role}} exports only `{{name}}`, named after the file.",
+          "A module of {{role}} exports only `{{name}}`, named after the file.{{hint}}",
         named:
-          "A module of {{role}} uses named exports, never a default export.",
+          "A module of {{role}} uses named exports, never a default export.{{hint}}",
         default:
-          "A module of {{role}} has one default export and no named export.",
+          "A module of {{role}} has one default export and no named export.{{hint}}",
       },
-      create(context, { kind, role: roleName, contract, commands, fileRole }) {
+      create(
+        context,
+        { environment, kind, role: roleName, contract, commands, fileRole },
+      ) {
         const file = basename(context.filename);
         const isCommand = commands && fileRole === undefined;
         const style = isCommand ? "named-match" : contract?.exports;
@@ -42,6 +48,16 @@ export default defineConvention({
         }
 
         const name = basename(file, extname(file));
+
+        // @debt hardcoded list of environments without a structure; the structure map should answer which environments it covers
+        const structure =
+          environment === "data" ||
+          environment === "dist" ||
+          environment === "workspace"
+            ? undefined
+            : config.structure[environment];
+
+        const hint = file === structure?.indexFile ? barrelHint : "";
 
         const found: Exports = {
           names: [],
@@ -93,7 +109,11 @@ export default defineConvention({
                 context.report({
                   node: program,
                   messageId: "match",
-                  data: { role, name },
+                  data: {
+                    role,
+                    name,
+                    hint,
+                  },
                 });
               }
             } else if (style === "named") {
@@ -101,7 +121,7 @@ export default defineConvention({
                 context.report({
                   node: program,
                   messageId: "named",
-                  data: { role },
+                  data: { role, hint },
                 });
               }
             } else if (
@@ -112,7 +132,7 @@ export default defineConvention({
               context.report({
                 node: program,
                 messageId: "default",
-                data: { role },
+                data: { role, hint },
               });
             }
           },

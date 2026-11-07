@@ -78,7 +78,7 @@ export interface AuaustRules {
    */
   "auaust/import-workspaces"?: Rule<[]>;
   /**
-   * An index.ts or entry.ts re-exports and declares no local value, except a SCREAMING_CASE constant of metadata; the index.ts of a command group declares its command.
+   * A domain index, an enabled role barrel or an entry re-exports and declares no local value, except a SCREAMING_CASE constant of metadata; the index.ts of a command group declares its command.
    */
   "auaust/index-declarations"?: Rule<[]>;
   /**
@@ -439,7 +439,7 @@ export interface AuaustRules {
    */
   "auaust/return-await"?: Rule<AuaustReturnAwait>;
   /**
-   * A file in a role directory follows the role's nesting, categories, index and accepted files; a strict role holds at its root only the files its nested roles name.
+   * A file in a role directory follows the role's nesting, categories and accepted files; a strict role holds at its root only the files its nested roles name.
    */
   "auaust/role-contracts"?: Rule<[]>;
   /**

@@ -52,6 +52,35 @@ function createConfigRoleProject(strict: boolean) {
   });
 }
 
+function createBarrelProject() {
+  const conventions = createRolePreset({
+    name: "conventions",
+    exports: "default",
+    index: true,
+  });
+
+  const assets = createRolePreset({ name: "assets", accepts: "*.json" });
+
+  return createTemporaryProject({
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+      imports: {
+        "#foundation/*": "./src/foundation/*.ts",
+        "#project/*": "./src/project/*.ts",
+      },
+    }),
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry(), conventions(), assets())}, namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
+    "tsconfig.json": "{}",
+    "src/foundation/base/index.ts": exported,
+    "src/project/feature/index.ts": exported,
+    "src/project/feature/utils/index.ts": "export const index = 1;\n",
+    "src/project/feature/conventions/first.ts": "export default 1;\n",
+    "src/project/feature/assets/index.ts": exported,
+    "src/project/other/index.ts": exported,
+  });
+}
+
 async function createLinter(
   prefix = "auaust/import-",
   project = createBoundaryProject(),
@@ -303,7 +332,7 @@ describe("structure boundaries", () => {
         "src/project/feature/utils/index.ts",
         "export const value = 1;\n",
       ),
-    ).toEqual(["auaust/role-contracts"]);
+    ).toEqual(["auaust/role-exports"]);
 
     expect(
       await lint(
@@ -311,6 +340,69 @@ describe("structure boundaries", () => {
         "export const one = 1;\nexport const two = 2;\n",
       ),
     ).toEqual(["auaust/role-exports"]);
+  });
+
+  test("treats a file named like the index file as a module of a role without index", async () => {
+    const barrel =
+      "If this file is intended as a barrel, enable `index` on the role.";
+
+    const lint = await createLinter("auaust/", createBarrelProject());
+    const utils = "src/project/feature/utils/index.ts";
+
+    expect(await lint(utils, "export const index = 1;\n")).toEqual([]);
+
+    expect(
+      await lint(
+        utils,
+        'export { value as index } from "#foundation/base/index";\n',
+      ),
+    ).toEqual([]);
+
+    for (const source of [
+      "export const other = 1;\n",
+      "export const index = 1;\nexport const other = 2;\n",
+      'export * from "#foundation/base/index";\n',
+    ]) {
+      const [message] = await lint.messages(utils, source);
+
+      expect(message).toContain(barrel);
+    }
+
+    expect(
+      await lint(
+        "src/project/feature/conventions/index.ts",
+        'export { default as first } from "#project/feature/conventions/first";\n',
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        "src/project/feature/conventions/index.ts",
+        "export const value = 1;\n",
+      ),
+    ).toEqual(["auaust/index-declarations"]);
+
+    expect(
+      await lint(
+        "src/project/other/index.ts",
+        'export { index } from "#project/feature/utils/index";\n',
+      ),
+    ).toEqual(["auaust/import-surfaces"]);
+
+    expect(await lint("src/project/feature/assets/index.ts", exported)).toEqual(
+      ["auaust/role-contracts"],
+    );
+
+    expect(await lint("src/project/feature/utils/entry.ts", exported)).toEqual([
+      "auaust/role-exports",
+    ]);
+
+    expect(
+      await lint(
+        "src/project/feature/utils/entry.ts",
+        "export const entry = 1;\n",
+      ),
+    ).toEqual([]);
   });
 
   test("accepts at a strict role's root only the files its nested roles name", async () => {

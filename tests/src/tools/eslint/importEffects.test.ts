@@ -66,6 +66,7 @@ async function createLinter({
     "src/foundation/base/operations/act.ts": "export const act = 1;\n",
     "src/project/feature/index.ts": "export {};\n",
     "src/project/feature/utils/own.ts": "export const own = 1;\n",
+    "src/project/feature/utils/index.ts": "export const index = 1;\n",
     "src/project/feature/logging/trace.ts": "export const trace = 1;\n",
     "src/project/feature/constants.ts": "export const value = 1;\n",
     "src/project/feature/config/featureSchema.ts": "export const value = 1;\n",
@@ -134,6 +135,17 @@ describe("import effects", () => {
 
     expect(
       await lint(utility, importing("node:fs", "readFileSync")),
+    ).toHaveLength(1);
+  });
+
+  test("ranks a module named like the index file in a role without index as the role's module", async () => {
+    const lint = await createLinter();
+
+    expect(
+      await lint(
+        "src/project/feature/utils/index.ts",
+        importing("#foundation/base/operations/act", "act"),
+      ),
     ).toHaveLength(1);
   });
 
