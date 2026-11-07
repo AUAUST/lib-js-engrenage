@@ -99,7 +99,8 @@ const conventions = createRolePreset({
   purpose: "Formatting conventions, discovered by category.",
   categories: true,
   exports: "default",
-  effects: "confined",
+  // @debt conventions rank effectful because they import section values, which only the creator resolves (#231)
+  effects: "effectful",
   discovered: true,
   index: true,
 });

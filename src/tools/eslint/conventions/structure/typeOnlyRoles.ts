@@ -1,3 +1,4 @@
+import { entitiesSection } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
@@ -12,9 +13,10 @@ const allowed = new Set([
 
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
-  rule: (config) => {
+  sections: { entities: entitiesSection },
+  rule: ({ entities }) => {
     return defineStructureRule({
-      config,
+      entities,
       description: "A module of a type-only role declares types only.",
       messages: {
         value:

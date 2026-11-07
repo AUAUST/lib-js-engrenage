@@ -10,8 +10,8 @@ import { importRulesSection } from "#project/structure/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
-import { resolveConventionConfig } from "#tools/eslint/operations/resolveConventionConfig";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
+import { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
 import { runSync } from "#workflows/sync/index";
 
 const placeholder = "{dir}";
@@ -135,16 +135,16 @@ describe("workspaces", () => {
 
     const resolved = await loadConfig(project.root);
 
-    const conventions = await resolveConventionConfig(resolved);
+    const scopes = await resolveScopeSources(resolved);
 
-    expect(resolveScope(conventions, ["files.workspaces"])).toEqual([
+    expect(resolveScope(scopes, ["files.workspaces"])).toEqual([
       "extensions/action-a/**/*.{ts,tsx}",
       "extensions/action-b/**/*.{ts,tsx}",
       "extensions/functions-c/**/*.{ts,tsx}",
     ]);
 
-    expect(resolveScope(conventions, ["files.code"])).toEqual(
-      expect.arrayContaining(resolveScope(conventions, ["files.workspaces"])),
+    expect(resolveScope(scopes, ["files.code"])).toEqual(
+      expect.arrayContaining(resolveScope(scopes, ["files.workspaces"])),
     );
 
     await runSync(resolved, { names: ["tsconfig"] });

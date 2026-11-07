@@ -1,70 +1,24 @@
-import { every, find } from "@auaust/primitive-kit/arrays";
-import { isBoolean } from "@auaust/toolkit/isBoolean";
-import { entries } from "@auaust/toolkit/object";
-import { value } from "@auaust/toolkit/value";
+import { map } from "@auaust/primitive-kit/arrays";
 
 import { pluginName } from "#tools/eslint/constants";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
 import { createTypeAwareLanguageOptions } from "#tools/eslint/utils/createTypeAwareLanguageOptions";
+import type { ConfigContext } from "#project/config/index";
 import type { ConfigObject } from "#tools/eslint/types/ConfigObject";
-import type { Convention } from "#tools/eslint/types/Convention";
-import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
+import type { ResolvedSections } from "#tools/eslint/types/ResolvedSections";
 import type { Rules } from "#tools/eslint/types/Rules";
-
-function isEnabledByDefault(
-  { enabled, traits, requires }: Convention,
-  { traits: activeTraits, environment }: ConventionConfig,
-): boolean {
-  if (!enabled) {
-    return false;
-  }
-
-  const hasRequiredPackages = every(requires, environment.hasDependency);
-
-  if (!hasRequiredPackages) {
-    return false;
-  }
-
-  if (traits.length === 0) {
-    return true;
-  }
-
-  return find(traits, (trait) => activeTraits[trait]) !== undefined;
-}
-
-function isEnabled({
-  name,
-  convention,
-  setting,
-  config,
-}: {
-  name: string;
-  convention: Convention;
-  setting: boolean | Partial<Record<string, boolean>>;
-  config: ConventionConfig;
-}): boolean {
-  if (setting === false) {
-    return false;
-  }
-
-  const enabledByDefault = isEnabledByDefault(convention, config);
-
-  if (isBoolean(setting)) {
-    return enabledByDefault;
-  }
-
-  return setting[name] ?? enabledByDefault;
-}
+import type { ScopeSources } from "#tools/eslint/types/ScopeSources";
+import type { SelectedConvention } from "#tools/eslint/types/SelectedConvention";
 
 function createRules(
-  name: string,
-  { delegates, rule, severity }: Convention,
-  config: ConventionConfig,
+  { name, convention: { delegates, rule, severity } }: SelectedConvention,
+  sections: ResolvedSections,
+  context: ConfigContext,
 ): Rules {
   const rules: Rules = {};
 
-  for (const delegate of value(delegates, config)) {
+  for (const delegate of delegates(sections, context)) {
     rules[delegate.upstream] = "off";
 
     rules[`${pluginName}/${delegate.name}`] = severity;
@@ -78,43 +32,27 @@ function createRules(
 }
 
 export function createConventionRules({
-  config,
-  category,
-  conventions,
-  setting,
-  typeAware,
+  selected,
+  sections,
+  scopes,
+  context,
 }: {
-  config: ConventionConfig;
-  category: string;
-  conventions: Record<string, Convention>;
-  setting: boolean | Partial<Record<string, boolean>>;
-  typeAware: boolean;
+  selected: readonly SelectedConvention[];
+  sections: ResolvedSections;
+  scopes: ScopeSources;
+  context: ConfigContext;
 }): ConfigObject[] {
-  const configs: ConfigObject[] = [];
+  return map(selected, (entry) => {
+    const { category, name, convention } = entry;
 
-  for (const [name, convention] of entries(conventions)) {
-    if (
-      (convention.typeAware && !typeAware) ||
-      !isEnabled({
-        name,
-        convention,
-        setting,
-        config,
-      })
-    ) {
-      continue;
-    }
-
-    configs.push({
+    return {
       name: `${pluginName}/${category}/${name}`,
-      files: resolveScope(config, convention.files),
-      ignores: resolveScope(config, convention.ignores),
+      files: resolveScope(scopes, convention.files),
+      ignores: resolveScope(scopes, convention.ignores),
       ...(convention.typeAware && {
-        languageOptions: createTypeAwareLanguageOptions(config),
+        languageOptions: createTypeAwareLanguageOptions(context.root),
       }),
-      rules: createRules(name, convention, config),
-    });
-  }
-
-  return configs;
+      rules: createRules(entry, sections, context),
+    };
+  });
 }

@@ -1,4 +1,3 @@
-export { define } from "#project/config/index";
 // @barrel config/define*Config.ts named
 export { defineConfig } from "#workflows/config/config/defineConfig";
 // @end
@@ -12,4 +11,8 @@ export { validateConfig } from "#workflows/config/operations/validateConfig";
 
 // @barrel types/*.ts all
 export * from "#workflows/config/types/ConfigInput";
+// @end
+
+// @barrel utils/*.ts named
+export { define } from "#workflows/config/utils/define";
 // @end

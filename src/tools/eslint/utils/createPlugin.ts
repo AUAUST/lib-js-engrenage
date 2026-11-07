@@ -1,16 +1,18 @@
+import { every } from "@auaust/primitive-kit/arrays";
 import { entries, values } from "@auaust/toolkit/object";
-import { value } from "@auaust/toolkit/value";
 
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
 import { resolveDelegate } from "#tools/eslint/utils/resolveDelegate";
+import type { ConfigContext } from "#project/config/index";
 import type { Convention } from "#tools/eslint/types/Convention";
-import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { Plugin } from "#tools/eslint/types/Plugin";
+import type { ResolvedSections } from "#tools/eslint/types/ResolvedSections";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 
 export function createPlugin(
-  categories: Record<string, Record<string, Convention>>,
-  config: ConventionConfig,
+  categories: Readonly<Record<string, Readonly<Record<string, Convention>>>>,
+  sections: ResolvedSections,
+  context: ConfigContext,
 ): Plugin {
   const rules: Record<string, RuleModule> = {};
 
@@ -23,13 +25,18 @@ export function createPlugin(
   }
 
   for (const conventions of values(categories)) {
-    for (const [name, { delegates, rule }] of entries(conventions)) {
-      for (const delegate of value(delegates, config)) {
+    for (const [name, convention] of entries(conventions)) {
+      // @debt a disabled convention reading sections registers no rule, since its sections stay unresolved; a configuration naming one of its rules finds none
+      if (!every(convention.sections, sections.has)) {
+        continue;
+      }
+
+      for (const delegate of convention.delegates(sections, context)) {
         register(delegate.name, resolveDelegate(delegate));
       }
 
-      if (rule !== undefined) {
-        register(createRuleName(name), value(rule, config));
+      if (convention.rule !== undefined) {
+        register(createRuleName(name), convention.rule(sections, context));
       }
     }
   }

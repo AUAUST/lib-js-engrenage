@@ -1,14 +1,14 @@
 import type { Linter } from "eslint";
 
-import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
+import type { Directory } from "#types/Directory";
 
 export function createTypeAwareLanguageOptions(
-  config: ConventionConfig,
+  root: Directory,
 ): Linter.LanguageOptions {
   return {
     parserOptions: {
       projectService: true,
-      tsconfigRootDir: config.root,
+      tsconfigRootDir: root,
     },
   };
 }

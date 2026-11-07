@@ -9,7 +9,11 @@ import {
 import type { Rule } from "eslint";
 
 import { relativeWithin } from "#foundation/filesystem/index";
-import { rankModule } from "#project/structure/index";
+import {
+  entitiesSection,
+  environmentRolesSection,
+  rankModule,
+} from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
@@ -17,9 +21,10 @@ import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
   typeAware: true,
-  rule: (config) => {
+  sections: { entities: entitiesSection, roles: environmentRolesSection },
+  rule: ({ entities, roles }, { root }) => {
     return defineStructureRule({
-      config,
+      entities,
       description:
         "A module of a ranked role imports at runtime only bindings declared in roles of its effect level or purer, and external modules ranked likewise.",
       messages: {
@@ -43,7 +48,7 @@ export default defineConvention({
 
         const { program, esTreeNodeToTSNodeMap } = services;
         const checker: TypeChecker = program.getTypeChecker();
-        const { effects } = config.roles[environment];
+        const { effects } = roles[environment];
         const allowed = effects.levels.indexOf(level);
 
         function declaringFile(symbol: Symbol | undefined) {
@@ -97,14 +102,14 @@ export default defineConvention({
               return;
             }
           } else {
-            const declaring = config.entities.entityOf(file.fileName);
+            const declaring = entities.entityOf(file.fileName);
 
             if (declaring === undefined) {
               return;
             }
 
             const relativePath = relativeWithin(
-              join(config.root, declaring.path),
+              join(root, declaring.path),
               file.fileName,
             );
 

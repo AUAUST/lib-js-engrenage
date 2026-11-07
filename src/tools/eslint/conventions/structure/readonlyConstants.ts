@@ -1,3 +1,4 @@
+import { entitiesSection } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 import { isDeeplyReadonly } from "#tools/eslint/utils/isDeeplyReadonly";
@@ -5,9 +6,10 @@ import { isDeeplyReadonly } from "#tools/eslint/utils/isDeeplyReadonly";
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling"],
   typeAware: true,
-  rule: (config) => {
+  sections: { entities: entitiesSection },
+  rule: ({ entities }) => {
     return defineStructureRule({
-      config,
+      entities,
       description: "The constants file exports deeply read-only values.",
       messages: {
         mutable:

@@ -25,7 +25,7 @@ registerHooks({
 `;
 
 test(
-  "the ESLint options schema loads the conventions without the plugins they only delegate to",
+  "the conventions load without the plugins they only delegate to",
   { timeout: binaryTimeout },
   async () => {
     const { stderr } = await run(
@@ -35,7 +35,7 @@ test(
         `data:text/javascript,${encodeURIComponent(recordResolutions)}`,
         "--input-type=module",
         "--eval",
-        'await import("#tools/eslint/config/schemas/optionsSchema");',
+        'await import("#tools/eslint/conventions/index");',
       ],
       { cwd: repositoryRoot },
     );

@@ -13,7 +13,7 @@ import type {
   ImportGrants,
   TestVariant,
 } from "#project/structure/index";
-import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
+import type { ImportGraph } from "#tools/eslint/types/ImportGraph";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 import type { Directory } from "#types/Directory";
 
@@ -48,20 +48,22 @@ const variantGuidance = freeze({
 >);
 
 export function defineBoundaryRule({
-  config,
+  root,
+  graph,
+  grants,
   description,
   check,
   messages,
 }: {
-  config: ConventionConfig;
+  root: Directory;
+  graph: ImportGraph;
+  grants: ImportGrants;
   description: string;
   check(edge: ImportEdge, grants: ImportGrants): BoundaryViolation | undefined;
   messages: Readonly<Record<BoundaryCause, string>>;
 }): RuleModule {
   function within(base: Directory, path: string): string {
-    return toPosixPath(
-      relative(resolve(config.root, base), resolve(config.root, path)),
-    );
+    return toPosixPath(relative(resolve(root, base), resolve(root, path)));
   }
 
   function render(
@@ -122,11 +124,11 @@ export function defineBoundaryRule({
       schema: [],
     },
     create(context) {
-      const analysis = analyzeImports(config, context);
+      const analysis = analyzeImports(graph, context);
 
       return visitImportSources((node, specifier) => {
         const edge = analysis.edgeOf(node, specifier);
-        const violation = check(edge, config.grants);
+        const violation = check(edge, grants);
 
         if (violation !== undefined) {
           context.report({

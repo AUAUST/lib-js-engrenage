@@ -1,34 +1,53 @@
-import { describe, expect, test } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { createProjectConfig } from "#project/config/operations/createProjectConfig";
-import { define } from "#project/config/utils/define";
-import { defineSection } from "#project/environments/index";
-import { createDefine } from "#project/environments/operations/createDefine";
+import { defineSection, loadConfig } from "@auaust/engrenage";
+import { define } from "@auaust/engrenage/config";
+import { defineViteConfig } from "@auaust/engrenage/vite";
+
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { createViteConfig } from "#tools/vite/operations/createViteConfig";
+import { mockCwd } from "#tests/utils/mockCwd";
+
+const inputKey = "__engrenageDefineTestInput__";
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
+});
 
 async function resolveConfig(input: Record<string, unknown>) {
+  vi.stubGlobal(inputKey, input);
+
   const project = createTemporaryProject({
     "package.json": JSON.stringify({
       name: "@scope/package",
       type: "module",
     }),
+    "engrenage.config.ts": `export default globalThis.${inputKey};\n`,
   });
 
-  const config = createProjectConfig({
-    root: project.root,
-    raw: input,
-    configFile: undefined,
-  });
+  const config = await loadConfig(project.root);
 
   void (await config.resolve(defineSection));
 
-  return config;
+  return { config, root: project.root };
+}
+
+async function readViteDefine(root: string, testing: boolean) {
+  mockCwd(root);
+
+  vi.stubEnv("VITEST", testing ? "true" : undefined);
+
+  const viteConfig = await defineViteConfig()({
+    command: "build",
+    mode: "production",
+  });
+
+  return viteConfig.define;
 }
 
 describe("define", () => {
   test("serializes values and splits them by scope for builds and tests", async () => {
-    const config = await resolveConfig({
+    const { root } = await resolveConfig({
       define: {
         values: {
           "__DEBUG__": false,
@@ -45,23 +64,13 @@ describe("define", () => {
       },
     });
 
-    expect(
-      await createDefine(config, {
-        isTesting: false,
-      }),
-    ).toEqual({
+    expect(await readViteDefine(root, false)).toEqual({
       "__DEBUG__": "false",
       "__OPTIONS__": '{"retries":3}',
       "import.meta.env.MODE": '"production"',
     });
 
-    expect(
-      (
-        await createViteConfig(config, {
-          isTesting: true,
-        })
-      ).define,
-    ).toEqual({
+    expect(await readViteDefine(root, true)).toEqual({
       __DEBUG__: "false",
       __OPTIONS__: '{"retries":3}',
       __FIXTURES__: '"fixtures"',
@@ -69,7 +78,7 @@ describe("define", () => {
   });
 
   test("serializes any JSON-serializable value and rejects the rest", async () => {
-    const config = await resolveConfig({
+    const { config } = await resolveConfig({
       define: {
         values: {
           __BUILT_AT__: new Date("2026-01-01T00:00:00.000Z"),
@@ -118,7 +127,7 @@ describe("define", () => {
   });
 
   test("computes values from the package and validates them", async () => {
-    const config = await resolveConfig({
+    const { config } = await resolveConfig({
       define: {
         values({ packageJson }: { packageJson: { name: string } }) {
           return {

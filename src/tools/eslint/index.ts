@@ -13,8 +13,10 @@ export { createPackageJsonRules } from "#tools/eslint/operations/createPackageJs
 export { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
 export { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";
 export { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
-export { resolveConventionConfig } from "#tools/eslint/operations/resolveConventionConfig";
+export { resolveConventionSections } from "#tools/eslint/operations/resolveConventionSections";
 export { resolveScope } from "#tools/eslint/operations/resolveScope";
+export { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
+export { selectConventions } from "#tools/eslint/operations/selectConventions";
 // @end
 
 // @barrel types/*.ts all
@@ -22,18 +24,23 @@ export * from "#tools/eslint/types/Config";
 export * from "#tools/eslint/types/ConfigObject";
 export * from "#tools/eslint/types/ConfigWithExtends";
 export * from "#tools/eslint/types/Convention";
-export * from "#tools/eslint/types/ConventionConfig";
+export * from "#tools/eslint/types/ConventionSections";
+export * from "#tools/eslint/types/ConventionValues";
 export * from "#tools/eslint/types/DebtMarker";
 export * from "#tools/eslint/types/Delegate";
+export * from "#tools/eslint/types/ImportGraph";
 export * from "#tools/eslint/types/Options";
 export * from "#tools/eslint/types/Plugin";
 export * from "#tools/eslint/types/ReportDescriptor";
+export * from "#tools/eslint/types/ResolvedSections";
 export * from "#tools/eslint/types/Rule";
 export * from "#tools/eslint/types/RuleModule";
 export * from "#tools/eslint/types/RuleOptions";
 export * from "#tools/eslint/types/Rules";
 export * from "#tools/eslint/types/ScopeReference";
 export * from "#tools/eslint/types/ScopeReferences";
+export * from "#tools/eslint/types/ScopeSources";
+export * from "#tools/eslint/types/SelectedConvention";
 // @barrel types/rules/*.ts all
 export * from "#tools/eslint/types/rules/AuaustRules";
 export * from "#tools/eslint/types/rules/CoreRules";

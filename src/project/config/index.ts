@@ -19,7 +19,6 @@ export { readRawConfig } from "#project/config/operations/readRawConfig";
 
 // @barrel utils/*.ts named
 export { assertSerializable } from "#project/config/utils/assertSerializable";
-export { define } from "#project/config/utils/define";
 export { isDefinition } from "#project/config/utils/isDefinition";
 export { isValidDefinition } from "#project/config/utils/isValidDefinition";
 export { locateFile } from "#project/config/utils/locateFile";

@@ -1,14 +1,21 @@
-import type { ResolvableValue } from "@auaust/toolkit/value";
+import { values } from "@auaust/toolkit/object";
+import { value, type ResolvableValue } from "@auaust/toolkit/value";
 
+import type { ConfigContext } from "#project/config/index";
 import type { Trait } from "#project/presets/index";
 import type { Convention } from "#tools/eslint/types/Convention";
-import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
+import type { ConventionSections } from "#tools/eslint/types/ConventionSections";
+import type { ConventionValues } from "#tools/eslint/types/ConventionValues";
 import type { Delegate } from "#tools/eslint/types/Delegate";
+import type { ResolvedSections } from "#tools/eslint/types/ResolvedSections";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
-export function defineConvention({
+export function defineConvention<
+  Sections extends ConventionSections = Record<never, never>,
+>({
+  sections,
   delegates = [],
   rule,
   files = ["files.code"],
@@ -19,8 +26,15 @@ export function defineConvention({
   traits = [],
   requires = [],
 }: {
-  delegates?: ResolvableValue<readonly Delegate[], [ConventionConfig]>;
-  rule?: ResolvableValue<RuleModule, [ConventionConfig]>;
+  sections?: Sections;
+  delegates?: ResolvableValue<
+    readonly Delegate[],
+    [ConventionValues<Sections>, ConfigContext]
+  >;
+  rule?: ResolvableValue<
+    RuleModule,
+    [ConventionValues<Sections>, ConfigContext]
+  >;
   files?: ScopeReferences;
   ignores?: ScopeReferences;
   typeAware?: boolean;
@@ -29,6 +43,13 @@ export function defineConvention({
   traits?: readonly Trait[];
   requires?: PackageNames;
 }): Convention {
+  function resolveDelegates(
+    resolved: ResolvedSections,
+    context: ConfigContext,
+  ): readonly Delegate[] {
+    return value(delegates, resolved.pick(sections), context);
+  }
+
   return {
     enabled,
     traits,
@@ -37,7 +58,14 @@ export function defineConvention({
     ignores,
     typeAware,
     severity,
-    delegates,
-    ...(rule === undefined ? {} : { rule }),
+    sections: sections === undefined ? [] : values(sections),
+    delegates: resolveDelegates,
+    ...(rule === undefined
+      ? {}
+      : {
+          rule(resolved: ResolvedSections, context: ConfigContext) {
+            return value(rule, resolved.pick(sections), context);
+          },
+        }),
   };
 }

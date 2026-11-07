@@ -15,18 +15,21 @@ import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { createTypeAwareLanguageOptions } from "#tools/eslint/utils/createTypeAwareLanguageOptions";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
 import type { Config } from "#tools/eslint/types/Config";
-import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
+import type { ScopeSources } from "#tools/eslint/types/ScopeSources";
+import type { Directory } from "#types/Directory";
 
 export function createRecommendedRules({
-  config,
+  root,
+  scopes,
   typeAware,
 }: {
-  config: ConventionConfig;
+  root: Directory;
+  scopes: ScopeSources;
   typeAware: boolean;
 }): Config[] {
   return defineConfig([
     {
-      files: resolveScope(config, ["files.code"]),
+      files: resolveScope(scopes, ["files.code"]),
       extends: [
         js.configs.recommended,
         typescriptConfigs.recommended,
@@ -35,7 +38,7 @@ export function createRecommendedRules({
     },
     resolveInfoRules({
       name: `${pluginName}/recommended`,
-      files: resolveScope(config, ["files.code"]),
+      files: resolveScope(scopes, ["files.code"]),
       rules: {
         ...coreRules,
         ...typescriptRules,
@@ -45,18 +48,18 @@ export function createRecommendedRules({
     }),
     {
       name: `${pluginName}/recommended/tests`,
-      files: resolveScope(config, ["files.test"]),
+      files: resolveScope(scopes, ["files.test"]),
       rules: testRules,
     },
     typeAware
       ? resolveInfoRules({
           name: `${pluginName}/recommended/type-aware`,
-          files: resolveScope(config, [
+          files: resolveScope(scopes, [
             "files.code.published",
             "files.code.private",
           ]),
           extends: [typescriptConfigs.recommendedTypeCheckedOnly],
-          languageOptions: createTypeAwareLanguageOptions(config),
+          languageOptions: createTypeAwareLanguageOptions(root),
           rules: typescriptTypeAwareRules,
         })
       : [],

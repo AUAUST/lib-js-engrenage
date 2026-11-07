@@ -3,14 +3,18 @@ import { relative } from "node:path";
 import { freeze } from "@auaust/toolkit/object";
 
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
+import {
+  entitiesSection,
+  importGrantsSection,
+  importResolverSection,
+  structureSection,
+  type BoundaryCause,
+  type BoundaryViolation,
+  type ImportEdge,
+} from "#project/structure/index";
 import { boundaryMessages } from "#tools/eslint/constants";
 import { defineBoundaryRule } from "#tools/eslint/utils/defineBoundaryRule";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
-import type {
-  BoundaryCause,
-  BoundaryViolation,
-  ImportEdge,
-} from "#project/structure/index";
 
 function violation(cause: BoundaryCause, fix?: string): BoundaryViolation {
   return freeze({
@@ -21,8 +25,14 @@ function violation(cause: BoundaryCause, fix?: string): BoundaryViolation {
 }
 
 export default defineConvention({
-  rule: (config) => {
-    const { entities, root } = config;
+  sections: {
+    structure: structureSection,
+    entities: entitiesSection,
+    resolveImport: importResolverSection,
+    grants: importGrantsSection,
+  },
+  rule: ({ grants, ...graph }, { root }) => {
+    const { entities } = graph;
 
     // @debt the check lives in the convention rather than `project/structure` with the other checks, because it needs the entity index
     function check({
@@ -62,7 +72,9 @@ export default defineConvention({
     }
 
     return defineBoundaryRule({
-      config,
+      root,
+      graph,
+      grants,
       description:
         "A specifier names a path the structure map knows, through its alias rather than a relative path, and never the importing file itself.",
       check,

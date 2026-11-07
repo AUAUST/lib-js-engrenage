@@ -2,21 +2,21 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 
 import { filesIn } from "#foundation/filesystem/index";
 import { anyFile } from "#tools/eslint/constants";
-import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
 import type { ScopeReference } from "#tools/eslint/types/ScopeReference";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
+import type { ScopeSources } from "#tools/eslint/types/ScopeSources";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
-function workspaceGlobs({ workspaces }: ConventionConfig): Globs {
+function workspaceGlobs({ workspaces }: ScopeSources): Globs {
   return flatMap(workspaces, ({ globs }) => globs);
 }
 
 function resolveScopeReference(
-  config: ConventionConfig,
+  sources: ScopeSources,
   reference: ScopeReference,
 ): Globs {
-  const { src, bin, scripts, tests, files } = config;
+  const { src, bin, scripts, tests, tooling, files } = sources;
 
   switch (reference) {
     case "files.code": {
@@ -25,13 +25,13 @@ function resolveScopeReference(
         ...bin.globs,
         ...scripts.globs,
         ...tests.globs,
-        ...config.tooling.globs,
-        ...workspaceGlobs(config),
+        ...tooling.globs,
+        ...workspaceGlobs(sources),
       ];
     }
 
     case "files.tooling": {
-      return config.tooling.globs;
+      return tooling.globs;
     }
 
     case "files.discovered": {
@@ -71,7 +71,7 @@ function resolveScopeReference(
     }
 
     case "files.workspaces": {
-      return workspaceGlobs(config);
+      return workspaceGlobs(sources);
     }
 
     case "files.code.published": {
@@ -109,10 +109,10 @@ function resolveScopeReference(
 }
 
 export function resolveScope(
-  config: ConventionConfig,
+  sources: ScopeSources,
   references: ScopeReferences,
 ): Glob[] {
   return flatMap(references, (reference) => {
-    return resolveScopeReference(config, reference);
+    return resolveScopeReference(sources, reference);
   });
 }

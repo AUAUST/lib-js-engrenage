@@ -1,4 +1,5 @@
 import { entryRoleName, indexRoleName } from "#project/roles/constants";
+import { entitiesSection } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
@@ -6,9 +7,10 @@ const metadata = /^[A-Z][A-Z0-9_]*$/;
 
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling"],
-  rule: (config) => {
+  sections: { entities: entitiesSection },
+  rule: ({ entities }) => {
     return defineStructureRule({
-      config,
+      entities,
       description:
         "A domain index, an enabled role barrel or an entry re-exports and declares no local value, except a SCREAMING_CASE constant of metadata; the index.ts of a command group declares its command.",
       messages: {

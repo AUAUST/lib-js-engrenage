@@ -1,6 +1,7 @@
 import { basename, extname } from "node:path";
 
 import { indexRoleName } from "#project/roles/constants";
+import { entitiesSection, structureSection } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
@@ -16,9 +17,10 @@ interface Exports {
 export default defineConvention({
   /** @debt `bin` has no lint scope, so its command modules are classified but never checked; a command group without an index.ts is accepted too */
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
-  rule: (config) => {
+  sections: { entities: entitiesSection, structure: structureSection },
+  rule: ({ entities, structure: structures }) => {
     return defineStructureRule({
-      config,
+      entities,
       description:
         "A module exports what its role's exports contract states: one named export matching the file, named exports, or one default export; a command module exports one command named after the file.",
       messages: {
@@ -55,7 +57,7 @@ export default defineConvention({
           environment === "dist" ||
           environment === "workspace"
             ? undefined
-            : config.structure[environment];
+            : structures[environment];
 
         const hint = file === structure?.indexFile ? barrelHint : "";
 

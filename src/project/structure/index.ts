@@ -87,8 +87,11 @@ export { resolveRoles } from "#project/structure/utils/resolveRoles";
 
 // @barrel config/sections/*.ts named
 export { aliasesSection } from "#project/structure/config/sections/aliasesSection";
+export { entitiesSection } from "#project/structure/config/sections/entitiesSection";
 export { environmentRolesSection } from "#project/structure/config/sections/environmentRolesSection";
 export { filesSection } from "#project/structure/config/sections/filesSection";
+export { importGrantsSection } from "#project/structure/config/sections/importGrantsSection";
+export { importResolverSection } from "#project/structure/config/sections/importResolverSection";
 export { importRulesSection } from "#project/structure/config/sections/importRulesSection";
 export { sourceExportsSection } from "#project/structure/config/sections/sourceExportsSection";
 export { structureOptionsSection } from "#project/structure/config/sections/structureOptionsSection";

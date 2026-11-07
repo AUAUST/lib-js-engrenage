@@ -4,14 +4,16 @@ import { wrap } from "@auaust/primitive-kit/arrays";
 
 import { relativeWithin } from "#foundation/filesystem/index";
 import { indexRoleName } from "#project/roles/constants";
+import { entitiesSection, structureSection } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
-  rule: (config) => {
+  sections: { entities: entitiesSection, structure: structureSection },
+  rule: ({ entities, structure: structures }, { root }) => {
     return defineStructureRule({
-      config,
+      entities,
       description:
         "A file in a role directory follows the role's nesting, categories and accepted files; a strict role holds at its root only the files its nested roles name.",
       messages: {
@@ -36,12 +38,9 @@ export default defineConvention({
           return {};
         }
 
-        const structure = config.structure[environment];
+        const structure = structures[environment];
 
-        const relativePath = relativeWithin(
-          join(config.root, path),
-          context.filename,
-        );
+        const relativePath = relativeWithin(join(root, path), context.filename);
 
         const file = basename(relativePath);
         const isIndex = fileRole === indexRoleName;

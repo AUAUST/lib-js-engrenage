@@ -3,21 +3,22 @@ import { extname } from "node:path";
 import type { Rule, SourceCode } from "eslint";
 
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
-import type { Entity, ImportEdge } from "#project/structure/index";
-import type { ConventionConfig } from "#tools/eslint/types/ConventionConfig";
+import type { Entity, EntityIndex, ImportEdge } from "#project/structure/index";
+import type { ImportGraph } from "#tools/eslint/types/ImportGraph";
 
 interface ImportAnalysis {
   edgeOf(node: Rule.Node, specifier: string): ImportEdge;
 }
 
+// @debt keyed by the entity index alone, so it holds only while the structure and import resolver come from the same loaded config as the index
 const analyses = new WeakMap<
-  ConventionConfig,
+  EntityIndex,
   WeakMap<SourceCode, ImportAnalysis>
 >();
 
 // @debt lists the environments without a structure by name instead of deriving them from the structure configuration
 function sourceExtensionOf(
-  config: ConventionConfig,
+  graph: ImportGraph,
   importer: Entity | undefined,
   filename: string,
 ): string {
@@ -29,7 +30,7 @@ function sourceExtensionOf(
     environment === "dist" ||
     environment === "workspace"
       ? undefined
-      : config.structure[environment];
+      : graph.structure[environment];
 
   return extname(structure?.indexFile ?? filename);
 }
@@ -39,12 +40,9 @@ function withExtension(path: string, extension: string): string {
   return `${path.slice(0, path.length - extname(path).length)}${extension}`;
 }
 
-function createAnalysis(
-  config: ConventionConfig,
-  filename: string,
-): ImportAnalysis {
-  const importer = config.entities.entityOf(filename);
-  const extension = sourceExtensionOf(config, importer, filename);
+function createAnalysis(graph: ImportGraph, filename: string): ImportAnalysis {
+  const importer = graph.entities.entityOf(filename);
+  const extension = sourceExtensionOf(graph, importer, filename);
   const edges = new Map<Rule.Node, ImportEdge>();
 
   function edgeOf(node: Rule.Node, specifier: string): ImportEdge {
@@ -54,7 +52,7 @@ function createAnalysis(
       return known;
     }
 
-    const resolved = config.resolveImport(specifier, filename);
+    const resolved = graph.resolveImport(specifier, filename);
 
     const targetFile =
       resolved?.kind === "relative" || resolved?.kind === "alias"
@@ -70,7 +68,7 @@ function createAnalysis(
       target:
         targetFile === undefined
           ? undefined
-          : config.entities.entityOf(targetFile),
+          : graph.entities.entityOf(targetFile),
       kind: isTypeOnlyNode(node) ? "type" : "runtime",
     };
 
@@ -83,20 +81,20 @@ function createAnalysis(
 }
 
 export function analyzeImports(
-  config: ConventionConfig,
+  graph: ImportGraph,
   context: Rule.RuleContext,
 ): ImportAnalysis {
-  let files = analyses.get(config);
+  let files = analyses.get(graph.entities);
 
   if (files === undefined) {
     files = new WeakMap();
-    analyses.set(config, files);
+    analyses.set(graph.entities, files);
   }
 
   let analysis = files.get(context.sourceCode);
 
   if (analysis === undefined) {
-    analysis = createAnalysis(config, context.filename);
+    analysis = createAnalysis(graph, context.filename);
     files.set(context.sourceCode, analysis);
   }
 

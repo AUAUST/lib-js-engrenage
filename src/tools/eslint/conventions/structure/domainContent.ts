@@ -1,11 +1,13 @@
+import { entitiesSection } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
-  rule: (config) => {
+  sections: { entities: entitiesSection },
+  rule: ({ entities }) => {
     return defineStructureRule({
-      config,
+      entities,
       description:
         "A domain holds only roles, sub-domains and namespaces, and a namespace only domains and namespaces; a command group also holds command modules.",
       messages: {

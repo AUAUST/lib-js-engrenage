@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
-import { define } from "#project/config/utils/define";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
+import { define } from "#workflows/config/index";
 
 async function createProject(
   input: Record<string, unknown>,
