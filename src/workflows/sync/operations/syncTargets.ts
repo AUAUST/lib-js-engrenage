@@ -16,6 +16,7 @@ import {
   syncWorkspaceFiles,
 } from "#tools/typescript/index";
 import { syncVscodeFiles } from "#tools/vscode/index";
+import { checkPublishing } from "#workflows/sync/setup/checkPublishing";
 import { syncPackageJson } from "#workflows/sync/setup/syncPackageJson";
 import { defineSyncTarget } from "#workflows/sync/utils/defineSyncTarget";
 
@@ -43,4 +44,5 @@ export const syncTargets = {
   }),
   workflows: defineSyncTarget(syncWorkflowFiles),
   workspaces: defineSyncTarget(syncWorkspaceFiles),
+  publishing: defineSyncTarget(checkPublishing),
 };

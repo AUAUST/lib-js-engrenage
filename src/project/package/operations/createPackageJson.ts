@@ -189,6 +189,7 @@ export function createPackageJson({
           "publishConfig",
           looseObject({
             access: optional(picklist(publishAccess)),
+            provenance: optional(boolean()),
           }),
         );
       },

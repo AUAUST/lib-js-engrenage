@@ -108,7 +108,7 @@ describe("engrenage sync", () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":
         'export default { preset: "library", src: { baseline: "2026-10" }, agents: { preferred: [] } };\n',
-      "package.json": '{ "type": "module" }',
+      "package.json": '{ "name": "@scope/library", "type": "module" }',
       ".gitignore": "# @ignore project\n# @end\n",
       ".prettierignore": "# @ignore project\n# @end\n",
     });

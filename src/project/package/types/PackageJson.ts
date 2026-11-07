@@ -41,5 +41,10 @@ export type PackageJson = Accessors<{
   devEngines:
     | { packageManager?: DevEngine | readonly DevEngine[] | undefined }
     | undefined;
-  publishConfig: { access?: PublishAccess | undefined } | undefined;
+  publishConfig:
+    | {
+        access?: PublishAccess | undefined;
+        provenance?: boolean | undefined;
+      }
+    | undefined;
 }>;

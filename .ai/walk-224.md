@@ -137,3 +137,8 @@ Decisions and deviations taken while the user was away, for the cleanup phase. O
   | #204 | worker + walker | `StepContext.setSection(section, value)` (generic) + `resolve(visibilitySection)` instead of `getVisibility`/`setVisibility`; walker added `@debt` (bypasses `getPreset`) | `project/steps` sits below `project/package` (cannot import `Visibility`). Accepted: consistent with #225 Accessor |
   | #204 | worker | Unset `package.json` name at config step counts as unscoped (default `public`); two init tests updated to new defaults | Bare-init asks the name later |
   | #204 | worker | "init's final sync fails for unscoped `private`" not tested; #201 must add it to `init.test.src.ts` | Needs #201's guard |
+  | #201 | worker | Name-scope and provenance rules apply only under `published`; `.npmrc` credential rule always | Visibility only means something under the trait |
+  | #201 | worker | Added `publishConfig.provenance` to `PackageJson` type and schema | Typed read instead of raw manifest |
+  | #201 | worker | Guard is sync target `checkPublishing`, last in `syncTargets`; throws before flush | Not `sync…`-prefixed: it checks, never writes (naming rule reserves `sync…` for targets; ambiguous) |
+  | #201 | worker | Unnamed root `package.json` under `private` reported as unscoped; one `sync.test` fixture got a scoped name | Guard rejects unnamed private libraries |
+  | #201 | walker | Fixed a type error the worker missed (`includes` on a literal tuple) with a direct comparison | Gate typecheck failed |

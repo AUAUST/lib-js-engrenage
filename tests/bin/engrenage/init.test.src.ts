@@ -605,7 +605,7 @@ describe("engrenage init", () => {
     });
   });
 
-  test("offers public by default to an unscoped library", async () => {
+  test("offers public by default to an unscoped library and fails its final sync answering private", async () => {
     const project = createProject({
       "package.json": '{\n  "name": "library",\n  "type": "module"\n}\n',
     });
@@ -619,7 +619,9 @@ describe("engrenage init", () => {
 
     vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
 
-    await runCommand(init, "--yes");
+    await expect(runCommand(init, "--yes")).rejects.toThrow(
+      "the package library is unscoped",
+    );
 
     expect(select).toHaveBeenCalledWith(
       visibilityQuestion,
