@@ -35,7 +35,7 @@ export const testsSection = declareSection({
     return freeze(
       compose(
         {
-          layout: option.enabled ? option.layout : "roots",
+          mirror: option.enabled && option.mirror,
           patterns,
           files: [...patterns.plain, ...patterns.source, ...patterns.dist],
           fixtures: option.fixtures,

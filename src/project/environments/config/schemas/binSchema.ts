@@ -18,8 +18,8 @@ import type { ResolvedRuntimeSettings } from "#project/config/index";
 export const binSchema = declareObject(
   {
     ...declareCodeEnvironment("bin", defaultBinDirectories),
-    layout: declareProgramLayout(),
-    commands: declare(record(string(), fileSchema), {
+    tree: declareProgramLayout(),
+    entries: declare(record(string(), fileSchema), {
       description: [
         "Commands the package exposes, mapped to their entry file.",
         "They feed the tsdown entries and the `bin` field of `package.json`.",
@@ -44,10 +44,11 @@ export const binSchema = declareObject(
       "`false` disables it.",
     ],
     optional: true,
+    renamed: { layout: "tree", commands: "entries" },
     disable: {
       value: {
         ...disabledCodeEnvironment,
-        commands: undefined,
+        entries: undefined,
         node: undefined,
       },
     },

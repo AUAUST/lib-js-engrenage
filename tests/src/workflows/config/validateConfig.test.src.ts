@@ -36,6 +36,21 @@ describe("validateConfig", () => {
     expect(() => validateConfig(config)).toThrow('Unknown key "sources"');
   });
 
+  test("rejects a renamed key, naming its replacement", async () => {
+    const project = createTemporaryProject({
+      "package.json": "{}",
+      "engrenage.config.ts": `export default { tests: { layout: "mirror" } };\n`,
+    });
+
+    const config = await loadConfig(project.root);
+
+    expect(() => validateConfig(config)).toThrow("Invalid tests config");
+
+    expect(() => validateConfig(config)).toThrow(
+      'Unknown key "layout", renamed "mirror"',
+    );
+  });
+
   test("validates every section eagerly while a partial resolution ignores the others", async () => {
     const project = createTemporaryProject({
       "package.json": "{}",

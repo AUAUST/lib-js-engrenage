@@ -200,8 +200,8 @@ describe("structure", () => {
     ).toEqual([]);
   });
 
-  describe("tests layout", () => {
-    async function describeTests(layout: string, extra: string[]) {
+  describe("tests mirror", () => {
+    async function describeTests(mirror: boolean, extra: string[]) {
       const project = createTemporaryProject({
         "package.json": '{ "name": "project", "type": "module" }',
         "src/entry.ts": "",
@@ -211,7 +211,7 @@ describe("structure", () => {
             (file) => [file, ""],
           ),
         ),
-        "engrenage.config.ts": `export default { src: { roles: ${sourceRoles} }, tests: { layout: "${layout}", roles: ${testsRoles} } };\n`,
+        "engrenage.config.ts": `export default { src: { roles: ${sourceRoles} }, tests: { mirror: ${mirror}, roles: ${testsRoles} } };\n`,
       });
 
       const config = await loadConfig(project.root);
@@ -226,7 +226,7 @@ describe("structure", () => {
     }
 
     test("mirror requires the counterpart of every directory below a root key", async () => {
-      const { structure, nodes } = await describeTests("mirror", [
+      const { structure, nodes } = await describeTests(true, [
         "tests/src/a/c/y.test.ts",
         "tests/hello/z.test.ts",
       ]);
@@ -260,7 +260,7 @@ describe("structure", () => {
         "src/a/b/utils/x.ts": "",
         "tests/src/a/utils/x.test.ts": "",
         "tests/src/a/b/utils/y.test.ts": "",
-        "engrenage.config.ts": `export default { src: { roles: ${sourceRoles} }, tests: { layout: "mirror", roles: ${testsRoles} } };\n`,
+        "engrenage.config.ts": `export default { src: { roles: ${sourceRoles} }, tests: { mirror: true, roles: ${testsRoles} } };\n`,
       });
 
       const structure = await loadStructure(project.root);
@@ -280,7 +280,7 @@ describe("structure", () => {
     });
 
     test("roots accepts any directory below a root key", async () => {
-      const { structure, nodes } = await describeTests("roots", [
+      const { structure, nodes } = await describeTests(false, [
         "tests/src/anything/deep/y.test.ts",
         "tests/hello/z.test.ts",
       ]);

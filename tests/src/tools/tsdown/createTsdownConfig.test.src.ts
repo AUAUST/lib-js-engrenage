@@ -349,11 +349,11 @@ describe("createTsdownConfig", () => {
       });
     });
 
-    test("builds the commands from bin.commands", async () => {
+    test("builds the commands from bin.entries", async () => {
       const project = createProject(
         {
           bin: {
-            commands: { tool: "bin/tool/index.ts" },
+            entries: { tool: "bin/tool/index.ts" },
           },
         },
         {

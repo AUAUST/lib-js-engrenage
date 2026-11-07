@@ -31,7 +31,6 @@ export * from "#project/environments/types/RuntimeInput";
 export * from "#project/environments/types/ScriptsInput";
 export * from "#project/environments/types/SourceInput";
 export * from "#project/environments/types/TestsInput";
-export * from "#project/environments/types/TestsLayout";
 export * from "#project/environments/types/ToolingInput";
 // @end
 

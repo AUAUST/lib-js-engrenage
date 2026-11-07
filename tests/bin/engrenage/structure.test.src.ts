@@ -51,13 +51,10 @@ describe("engrenage structure", () => {
   });
 
   test("fails the check on a mirror directory lacking its counterpart", async () => {
-    createProject(
-      '{ src: { strictness: "loose" }, tests: { layout: "mirror" } }',
-      {
-        "tests/src/feature/x.test.ts": "",
-        "tests/src/ghost/y.test.ts": "",
-      },
-    );
+    createProject('{ src: { strictness: "loose" }, tests: { mirror: true } }', {
+      "tests/src/feature/x.test.ts": "",
+      "tests/src/ghost/y.test.ts": "",
+    });
 
     await runCommand(structure, "--check");
 

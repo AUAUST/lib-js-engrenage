@@ -1,7 +1,13 @@
-import { strictObject } from "valibot";
+import { strictObject, type StrictObjectIssue } from "valibot";
 
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
-import { entries as entriesOf, freeze, record } from "@auaust/toolkit/object";
+import { isString } from "@auaust/toolkit/isString";
+import {
+  entries as entriesOf,
+  freeze,
+  hasOwn,
+  record,
+} from "@auaust/toolkit/object";
 
 import { createOptionSchema } from "#foundation/options/utils/createOptionSchema";
 import { resolveDefault } from "#foundation/options/utils/resolveDefault";
@@ -31,6 +37,7 @@ export function declareObject<
     optional?: Optional;
     disable?: { readonly value: Disabled };
     assert?(input: ObjectInput<Entries>, path: string): void;
+    renamed?: Readonly<Record<string, keyof Entries & string>>;
   },
 ): ObjectDeclaration<
   Entries,
@@ -47,6 +54,7 @@ export function declareObject(
     optional?: true | Default<Record<string, unknown> | false, unknown>;
     disable?: { readonly value: object };
     assert?(input: Record<string, unknown>, path: string): void;
+    renamed?: Readonly<Record<string, string>>;
   } = {},
 ): ObjectDeclaration<
   Readonly<Record<string, Declaration<unknown, unknown, unknown>>>,
@@ -54,7 +62,20 @@ export function declareObject(
   unknown,
   unknown
 > {
-  const { optional, disable, assert } = options;
+  const { optional, disable, assert, renamed = {} } = options;
+
+  function describe(issue: StrictObjectIssue): string {
+    const replacement =
+      issue.expected === "never" &&
+      isString(issue.input) &&
+      hasOwn(renamed, issue.input)
+        ? renamed[issue.input]
+        : undefined;
+
+    return replacement === undefined
+      ? issue.message
+      : `Unknown key ${issue.received}, renamed "${replacement}"`;
+  }
 
   const schema = createOptionSchema(
     strictObject(
@@ -63,6 +84,7 @@ export function declareObject(
           return [key, declaration.schema] as const;
         }),
       ),
+      describe,
     ),
     {
       description: options.description,

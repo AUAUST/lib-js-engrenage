@@ -17,9 +17,9 @@ export async function findCommands({
   roles: ResolvedRoles;
   filesystem: Filesystem;
 }): Promise<(readonly [command: string, file: File])[]> {
-  if (bin.commands !== undefined) {
+  if (bin.entries !== undefined) {
     return Promise.all(
-      entries(bin.commands).map(
+      entries(bin.entries).map(
         async ([command, file]): Promise<readonly [string, File]> => {
           if (!(await filesystem.exists(file))) {
             throw new Error(

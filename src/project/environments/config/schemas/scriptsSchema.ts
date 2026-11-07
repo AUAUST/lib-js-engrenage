@@ -10,7 +10,7 @@ import { rolesSchema } from "#project/roles/index";
 export const scriptsSchema = declareObject(
   {
     ...declareCodeEnvironment("scripts", defaultScriptsDirectories),
-    layout: declareProgramLayout(),
+    tree: declareProgramLayout(),
     roles: rolesSchema,
   },
   {
@@ -19,6 +19,7 @@ export const scriptsSchema = declareObject(
       "`false` disables it.",
     ],
     optional: true,
+    renamed: { layout: "tree" },
     disable: { value: disabledCodeEnvironment },
   },
 );

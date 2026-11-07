@@ -136,7 +136,7 @@ export default defineConfig({
     },
   },
   tests: {
-    layout: "mirror",
+    mirror: true,
     roles: [
       index(),
       constants(),

@@ -128,7 +128,7 @@ export interface ScriptsInput {
    * `commands` makes the environment root and every directory that is not a role a command group: its `index.ts` declares the command and each other module is one subcommand named after its file; `domains` classifies them as domains.
    * @default `commands`
    */
-  layout?: (("commands" | "domains") | undefined)
+  tree?: (("commands" | "domains") | undefined)
   /**
    * Roles of the directories and files whose names carry a fixed meaning, each built by a role preset of `@auaust/engrenage/roles` or `createRolePreset`.
    * Only listed roles exist.

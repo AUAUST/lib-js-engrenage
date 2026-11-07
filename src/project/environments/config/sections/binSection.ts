@@ -14,7 +14,7 @@ export const binSection = declareSection({
     return freeze(
       compose(
         {
-          commands: option.commands,
+          entries: option.entries,
         },
         compose.values(await resolveEnvironment(config, option, "bin")),
         compose.getters({

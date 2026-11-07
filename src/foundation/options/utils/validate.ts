@@ -34,7 +34,12 @@ function expandUnionIssue(issue: BaseIssue<unknown>): BaseIssue<unknown>[] {
 }
 
 function describeIssue(issue: BaseIssue<unknown>): BaseIssue<unknown> {
-  if (issue.type === "strict_object" && issue.expected === "never") {
+  // @debt detects valibot's default key message by its wording to keep the messages a schema sets, such as the renamed keys of `declareObject`
+  if (
+    issue.type === "strict_object" &&
+    issue.expected === "never" &&
+    issue.message.startsWith("Invalid key:")
+  ) {
     return {
       ...issue,
       message: `Unknown key ${issue.received}`,

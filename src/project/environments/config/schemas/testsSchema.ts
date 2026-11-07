@@ -1,4 +1,4 @@
-import { picklist } from "valibot";
+import { boolean } from "valibot";
 
 import {
   declare,
@@ -27,12 +27,12 @@ export const testsSchema = declareObject(
   {
     ...declareCodeEnvironment("tests", defaultTestsDirectories),
     roles: rolesSchema,
-    layout: declare(picklist(["roots", "mirror"]), {
+    mirror: declare(boolean(), {
       description: [
-        "How the directories below a tests root key (a directory named after a code environment: `src`, `bin`, `scripts`, `tooling`) are classified.",
-        "`roots` accepts any directory there; `mirror` requires each to exist in the structure of the environment it is named after.",
+        "Whether each directory below a tests root key (a directory named after a code environment: `src`, `bin`, `scripts`, `tooling`) must exist in the structure of the environment it is named after.",
+        "`false` accepts any directory there.",
       ],
-      optional: { value: "roots" },
+      optional: { value: false },
     }),
     location: declare(globSchema, {
       description:
@@ -91,6 +91,7 @@ export const testsSchema = declareObject(
       "`false` disables it, with its tsconfig and rules.",
     ],
     optional: true,
+    renamed: { layout: "mirror" },
     disable: {
       value: {
         ...disabledCodeEnvironment,

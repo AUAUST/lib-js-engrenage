@@ -32,11 +32,11 @@ type StructureOption =
       readonly roles?: readonly Role[];
     } & StructureOptions<string | Role>);
 
-function layoutOf(option: {
+function treeOf(option: {
   readonly enabled: boolean;
-  readonly layout?: ProgramLayout;
+  readonly tree?: ProgramLayout;
 }): ProgramLayout | undefined {
-  return option.enabled ? option.layout : undefined;
+  return option.enabled ? option.tree : undefined;
 }
 
 async function resolveStructure(
@@ -46,7 +46,7 @@ async function resolveStructure(
   option: StructureOption,
   extra: {
     tests?: TestsContext;
-    layout?: ProgramLayout | undefined;
+    tree?: ProgramLayout | undefined;
   } = {},
 ): Promise<EnvironmentStructure | undefined> {
   if (!option.enabled || !environment.active) {
@@ -99,7 +99,7 @@ export const structureSection = declareSection({
     );
 
     const binStructure = await resolveStructure(config, "bin", bin, binOption, {
-      layout: layoutOf(binOption),
+      tree: treeOf(binOption),
     });
 
     const scriptsStructure = await resolveStructure(
@@ -107,7 +107,7 @@ export const structureSection = declareSection({
       "scripts",
       scripts,
       scriptsOption,
-      { layout: layoutOf(scriptsOption) },
+      { tree: treeOf(scriptsOption) },
     );
 
     const toolingStructure = await resolveStructure(
@@ -127,7 +127,7 @@ export const structureSection = declareSection({
         testsOption.enabled
           ? {
               tests: {
-                layout: testsOption.layout,
+                mirror: testsOption.mirror,
                 environments: {
                   src: {
                     dirs: source.dirs,

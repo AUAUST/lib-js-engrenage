@@ -184,12 +184,11 @@ function createMirrorClassifier(tests: TestsContext) {
     const subpath = join(parent.mirrored.subpath, directory);
     const dirs = tests.environments[environment]?.dirs ?? [];
 
-    const path =
-      tests.layout === "roots"
-        ? join(dirs[0] ?? environment, subpath)
-        : dirs
-            .map((dir) => join(dir, subpath))
-            .find((candidate) => counterparts(environment).has(candidate));
+    const path = tests.mirror
+      ? dirs
+          .map((dir) => join(dir, subpath))
+          .find((candidate) => counterparts(environment).has(candidate))
+      : join(dirs[0] ?? environment, subpath);
 
     const counterpart =
       path === undefined ? undefined : counterparts(environment).get(path);
@@ -314,7 +313,7 @@ export async function resolveEnvironmentStructure({
   roles,
   defined,
   tests,
-  layout,
+  tree,
 }: {
   name: StructureEnvironmentName;
   root: Directory;
@@ -323,12 +322,12 @@ export async function resolveEnvironmentStructure({
   roles?: EnvironmentRoles | undefined;
   defined?: RoleRegistry;
   tests?: TestsContext;
-  layout?: ProgramLayout | undefined;
+  tree?: ProgramLayout | undefined;
 }): Promise<EnvironmentStructure> {
   const { strictness, namespaces } = options;
   const domains = entries(options.domains);
   const optOut = new Set(options.optOut);
-  const commands = layout === "commands";
+  const commands = tree === "commands";
 
   const classifyMirror =
     tests === undefined ? undefined : createMirrorClassifier(tests);
@@ -679,7 +678,7 @@ export async function resolveEnvironmentStructure({
     rolesIn,
   );
 
-  const tree =
+  const rootNode =
     strictness === "loose"
       ? loosen(resolvedRoot, name === "tests" ? "mirror" : "domain")
       : resolvedRoot;
@@ -690,8 +689,10 @@ export async function resolveEnvironmentStructure({
     indexFile,
     entryFile,
     strictness,
-    root: tree,
-    unclassified: collect(tree).filter(({ kind }) => kind === "unclassified"),
+    root: rootNode,
+    unclassified: collect(rootNode).filter(
+      ({ kind }) => kind === "unclassified",
+    ),
     roles: structureRoles,
   });
 }
