@@ -2,6 +2,7 @@ import type { JSONPath } from "jsonc-parser";
 
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { JsonValue } from "#foundation/json/index";
+import type { Section } from "#foundation/options/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Preset, ResolvedTraits } from "#project/presets/index";
 import type { Invocation } from "#project/steps/types/Invocation";
@@ -18,6 +19,8 @@ export interface StepContext
   getPreset(): Preset | undefined;
   getTraits(): Promise<ResolvedTraits>;
   setPreset(chosen: Preset | undefined): void;
+  // @debt `setSection(presetSection, …)` bypasses the preset `getPreset` reads; overriding one section should never desync another accessor
+  setSection<Output>(section: Section<Output>, value: NoInfer<Output>): void;
   readPackageJson(location: JSONPath): Promise<unknown>;
   writePackageJson(
     location: readonly [string] | readonly [string, string],

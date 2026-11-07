@@ -134,3 +134,6 @@ Decisions and deviations taken while the user was away, for the cleanup phase. O
   | #203 | worker | Changesets `access` written only under `published` (Step 1 said unconditionally) | #199 Derivation table: not published → untouched; same as #202 |
   | #203 | worker | Ran sync: this repo's `.changeset/config.json` `access` → `restricted` | Plan's `visibility: "private"`. **Review before publishing** |
   | #206 | worker | Library workflows: install step gets `NODE_AUTH_TOKEN: secrets.NPM_READ_TOKEN` (+ `registry-url` in `ci.yml`); this repo's `.github/workflows` regenerated | Issue intends it. **This repo's CI now needs the `NPM_READ_TOKEN` secret** |
+  | #204 | worker + walker | `StepContext.setSection(section, value)` (generic) + `resolve(visibilitySection)` instead of `getVisibility`/`setVisibility`; walker added `@debt` (bypasses `getPreset`) | `project/steps` sits below `project/package` (cannot import `Visibility`). Accepted: consistent with #225 Accessor |
+  | #204 | worker | Unset `package.json` name at config step counts as unscoped (default `public`); two init tests updated to new defaults | Bare-init asks the name later |
+  | #204 | worker | "init's final sync fails for unscoped `private`" not tested; #201 must add it to `init.test.src.ts` | Needs #201's guard |

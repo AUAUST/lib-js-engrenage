@@ -1,14 +1,11 @@
 import { basename } from "node:path";
 
-import { startsWith } from "@auaust/primitive-kit/strings";
-import { isString } from "@auaust/toolkit/isString";
-
 import { packageJsonFile } from "#constants";
+import { visibilitySection } from "#project/package/config/sections/visibilitySection";
 import {
   initialVersion,
   privateLicense,
   publicLicense,
-  visibilities,
 } from "#project/package/constants";
 import type { Step, StepContext } from "#project/steps/index";
 
@@ -18,16 +15,10 @@ async function isUnset(context: StepContext, field: string): Promise<boolean> {
   return (await context.readPackageJson([field])) === undefined;
 }
 
-async function hasVisibility(context: StepContext): Promise<boolean> {
-  return (
-    !(await isUnset(context, "license")) || !(await isUnset(context, "private"))
-  );
-}
+async function isPublic(context: StepContext): Promise<boolean> {
+  const { published } = await context.getTraits();
 
-async function isScoped(context: StepContext): Promise<boolean> {
-  const name = await context.readPackageJson(["name"]);
-
-  return isString(name) && startsWith(name, "@");
+  return published && (await context.resolve(visibilitySection)) === "public";
 }
 
 export function createPackageStep(): Step {
@@ -39,7 +30,7 @@ export function createPackageStep(): Step {
         (await isUnset(context, "name")) ||
         (await isUnset(context, "version")) ||
         (await isUnset(context, "author")) ||
-        !(await hasVisibility(context))
+        (await isUnset(context, "license"))
       );
     },
     async plan(context) {
@@ -56,27 +47,11 @@ export function createPackageStep(): Step {
         await writePackageJson(["version"], initialVersion);
       }
 
-      if (!(await hasVisibility(context))) {
-        const traits = await context.getTraits();
-
-        const visibility = await context.select(
-          "Who can install the package?",
-          visibilities,
-          traits.published ? "public" : "private",
-        );
-
-        if (visibility === "private") {
-          await writePackageJson(["private"], true);
-        }
-
+      if (await isUnset(context, "license")) {
         await writePackageJson(
           ["license"],
-          visibility === "public" ? publicLicense : privateLicense,
+          (await isPublic(context)) ? publicLicense : privateLicense,
         );
-
-        if (visibility === "public" && (await isScoped(context))) {
-          await writePackageJson(["publishConfig", "access"], "public");
-        }
       }
 
       if (await isUnset(context, "author")) {

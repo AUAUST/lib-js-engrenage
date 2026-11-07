@@ -1,10 +1,18 @@
 import { map, sort } from "@auaust/primitive-kit/arrays";
+import { startsWith } from "@auaust/primitive-kit/strings";
+import { isString } from "@auaust/toolkit/isString";
 import { keys } from "@auaust/toolkit/object";
 
 import { engrenage, engrenageConfigFile } from "#constants";
 import { findCurrentMonth } from "#project/baseline/index";
+import { visibilities } from "#project/package/constants";
+import { visibilitySection, type Visibility } from "#project/package/index";
 import { presetTraits } from "#project/presets/constants";
-import { createConfigModule, type Step } from "#project/steps/index";
+import {
+  createConfigModule,
+  type Step,
+  type StepContext,
+} from "#project/steps/index";
 import type { Preset } from "#project/presets/index";
 
 // @debt the preset names are bare strings, unchecked against the exports of the `roles` package entry the generated config imports them from
@@ -40,12 +48,36 @@ function renderRoles(published: boolean): string {
   return `${roles}\n\n${source}`;
 }
 
+async function isScoped(context: StepContext): Promise<boolean> {
+  const name = await context.readPackageJson(["name"]);
+
+  return isString(name) && startsWith(name, "@");
+}
+
+async function selectVisibility(context: StepContext): Promise<Visibility> {
+  const visibility = await context.select(
+    "Who can install the package?",
+    visibilities,
+    (await isScoped(context)) ? "private" : "public",
+  );
+
+  context.setSection(visibilitySection, visibility);
+
+  return visibility;
+}
+
 function renderOptions(
   chosen: Preset | undefined,
+  visibility: Visibility | undefined,
   agents: readonly string[] | undefined,
 ): string {
   const preset =
     chosen === undefined ? "" : `  preset: ${JSON.stringify(chosen)},\n`;
+
+  const declaredVisibility =
+    visibility === undefined
+      ? ""
+      : `  visibility: ${JSON.stringify(visibility)},\n`;
 
   const preferred =
     agents === undefined ? "" : `preferred: ${JSON.stringify(agents)}, `;
@@ -58,7 +90,7 @@ function renderOptions(
     "  tooling: { roles },\n",
   ];
 
-  return `{\n${preset}${source}${environments.join("")}  agents: { ${preferred}attribution: false },\n}`;
+  return `{\n${preset}${declaredVisibility}${source}${environments.join("")}  agents: { ${preferred}attribution: false },\n}`;
 }
 
 export function createConfigFileStep(): Step {
@@ -87,6 +119,10 @@ export function createConfigFileStep(): Step {
 
       const { published } = await context.getTraits();
 
+      const visibility = published
+        ? await selectVisibility(context)
+        : undefined;
+
       await context.filesystem.write(
         file,
         createConfigModule({
@@ -104,7 +140,7 @@ export function createConfigFileStep(): Step {
             },
           ],
           declarations: [operationsPreset, renderRoles(published)],
-          options: renderOptions(chosen, context.getAgents()),
+          options: renderOptions(chosen, visibility, context.getAgents()),
         }),
       );
     },

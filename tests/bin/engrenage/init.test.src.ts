@@ -17,6 +17,7 @@ import { mockCwd } from "#tests/utils/mockCwd";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 import { runCommand } from "#tests/utils/runCommand";
 import { scratchpadPlaceholders } from "#tools/agents/constants";
+import type { Prompter } from "#project/steps/index";
 
 import * as prompts from "#workflows/cli/operations/createPrompter";
 
@@ -29,6 +30,18 @@ vi.mock(import("#tools/pnpm/operations/resolveLatestPnpm"), () => {
     resolveLatestPnpm: () => Promise.resolve(readTestPnpmVersions().latest),
   };
 });
+
+const visibilityQuestion = "Who can install the package?";
+
+function answerSelect(question: string, answer: string): Prompter["select"] {
+  return (message, values, initial) => {
+    const chosen = values.find((value) => value === answer);
+
+    return Promise.resolve(
+      message === question && chosen !== undefined ? chosen : initial,
+    );
+  };
+}
 
 function createProject(files: Record<string, string>) {
   const project = createTemporaryProject(files);
@@ -498,8 +511,12 @@ describe("engrenage init", () => {
         "private",
       );
 
+      expect(project.read("engrenage.config.ts")).toContain(
+        'visibility: "public"',
+      );
+
       expect(JSON.parse(project.read("package.json")).publishConfig).toEqual({
-        access: "restricted",
+        access: "public",
       });
 
       expect(existsSync(project.resolve("vite.config.ts"))).toBe(false);
@@ -553,12 +570,31 @@ describe("engrenage init", () => {
     },
   );
 
-  test("publishes a public scoped library with public access", async () => {
+  test("writes the public visibility and license of a scoped library answering public", async () => {
     const project = createProject({
       "package.json": '{\n  "name": "@scope/library",\n  "type": "module"\n}\n',
     });
 
+    const prompter = {
+      ...prompts.createPrompter({ yes: true }),
+      select: answerSelect(visibilityQuestion, "public"),
+    };
+
+    const select = vi.spyOn(prompter, "select");
+
+    vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
+
     await runCommand(init, "--yes");
+
+    expect(select).toHaveBeenCalledWith(
+      visibilityQuestion,
+      ["public", "private"],
+      "private",
+    );
+
+    expect(project.read("engrenage.config.ts")).toContain(
+      'visibility: "public"',
+    );
 
     expect(JSON.parse(project.read("package.json"))).toMatchObject({
       name: "@scope/library",
@@ -566,6 +602,67 @@ describe("engrenage init", () => {
       publishConfig: {
         access: "public",
       },
+    });
+  });
+
+  test("offers public by default to an unscoped library", async () => {
+    const project = createProject({
+      "package.json": '{\n  "name": "library",\n  "type": "module"\n}\n',
+    });
+
+    const prompter = {
+      ...prompts.createPrompter({ yes: true }),
+      select: answerSelect(visibilityQuestion, "private"),
+    };
+
+    const select = vi.spyOn(prompter, "select");
+
+    vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
+
+    await runCommand(init, "--yes");
+
+    expect(select).toHaveBeenCalledWith(
+      visibilityQuestion,
+      ["public", "private"],
+      "public",
+    );
+
+    expect(project.read("engrenage.config.ts")).toContain(
+      'visibility: "private"',
+    );
+
+    expect(JSON.parse(project.read("package.json"))).toMatchObject({
+      license: "UNLICENSED",
+    });
+  });
+
+  test("asks no visibility of an other project", async () => {
+    const project = createProject({
+      "package.json": '{\n  "name": "project",\n  "type": "module"\n}\n',
+    });
+
+    const prompter = {
+      ...prompts.createPrompter({ yes: true }),
+      select: answerSelect("What kind of project is this?", "other"),
+    };
+
+    const select = vi.spyOn(prompter, "select");
+
+    vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
+
+    await runCommand(init, "--yes");
+
+    expect(select).not.toHaveBeenCalledWith(
+      visibilityQuestion,
+      expect.anything(),
+      expect.anything(),
+    );
+
+    expect(project.read("engrenage.config.ts")).not.toContain("visibility");
+
+    expect(JSON.parse(project.read("package.json"))).toMatchObject({
+      private: true,
+      license: "UNLICENSED",
     });
   });
 });

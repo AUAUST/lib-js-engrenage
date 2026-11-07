@@ -197,6 +197,12 @@ export async function createStepContext({
     preset = chosen;
   }
 
+  function setSection<Output>(section: Section<Output>, value: Output) {
+    override(section, () => {
+      return value;
+    });
+  }
+
   function getAgents(): readonly string[] | undefined {
     return agents;
   }
@@ -215,6 +221,7 @@ export async function createStepContext({
     getPreset,
     getTraits,
     setPreset,
+    setSection,
     confirm: prompter.confirm,
     select: prompter.select,
     multiselect: prompter.multiselect,
