@@ -22,18 +22,24 @@ export function createProjectConfig({
   configFile: File | undefined;
   filesystem?: Filesystem;
 }): LoadedConfig {
-  const { resolve, context } = createResolver(raw, {
-    root,
-    filesystem,
-    configFile,
-    path(...paths: string[]) {
-      return resolveWithin(root, ...paths);
+  const { resolve, context, validate } = createResolver(
+    raw,
+    {
+      root,
+      filesystem,
+      configFile,
+      path(...paths: string[]) {
+        return resolveWithin(root, ...paths);
+      },
     },
-  });
+    {
+      source: configFile ?? root,
+    },
+  );
 
   return freeze({
     resolve,
     context,
-    raw,
+    validate,
   });
 }

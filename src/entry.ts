@@ -56,7 +56,7 @@ export { githubSection } from "#tools/github/index";
 export { prettierSection } from "#tools/prettier/index";
 export { vscodeSection } from "#tools/vscode/index";
 export { debugSection } from "#workflows/cli/index";
-export { validateConfig } from "#workflows/config/index";
+export { loadValidatedConfig } from "#workflows/config/index";
 
 export type { LoadedConfig } from "#project/config/index";
 

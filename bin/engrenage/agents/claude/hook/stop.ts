@@ -5,11 +5,10 @@ import { object, string } from "valibot";
 
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { cacheSection } from "#project/cache/index";
-import { loadConfig } from "#project/config/operations/loadConfig";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { hashTree } from "#tools/git/index";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
-import { validateConfig } from "#workflows/config/operations/validateConfig";
+import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 import { runGate } from "#workflows/gate/index";
 import { formatGateFailure } from "#workflows/gate/utils/formatGateFailure";
 
@@ -25,7 +24,7 @@ export const stop = defineCommand((command) => {
       "Claude Code",
     );
 
-    const config = validateConfig(await loadConfig(cwd));
+    const config = await loadValidatedConfig(cwd);
 
     const { failures } = await runGate(config, { mode: "worktree" });
 

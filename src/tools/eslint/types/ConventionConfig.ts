@@ -1,5 +1,5 @@
 import type { ResolvedBuild } from "#project/build/index";
-import type { Environment, RawConfig } from "#project/config/index";
+import type { Environment } from "#project/config/index";
 import type {
   ResolvedBin,
   ResolvedData,
@@ -39,7 +39,6 @@ interface ConventionTypescript extends Omit<ResolvedTypescript, "tsconfig"> {
 
 export interface ConventionConfig {
   readonly root: Directory;
-  readonly raw: RawConfig;
   readonly structure: ResolvedStructure;
   readonly entities: EntityIndex;
   readonly grants: ImportGrants;

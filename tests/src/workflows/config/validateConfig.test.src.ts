@@ -49,6 +49,19 @@ describe("validateConfig", () => {
     expect((await partial.resolve(buildSection)).sourcemap).toBe(true);
   });
 
+  test("reports every failing section at once", async () => {
+    const project = createTemporaryProject({
+      "package.json": "{}",
+      "engrenage.config.ts": `export default { src: { generatd: true }, agents: { unknown: true }, sources: [] };\n`,
+    });
+
+    const config = await loadConfig(project.root);
+
+    expect(() => validateConfig(config)).toThrow("Invalid src config");
+    expect(() => validateConfig(config)).toThrow("Invalid agents config");
+    expect(() => validateConfig(config)).toThrow('Unknown key "sources"');
+  });
+
   test("resolves the tool sections lazily next to the project sections", async () => {
     const project = createTemporaryProject({
       "package.json": "{}",

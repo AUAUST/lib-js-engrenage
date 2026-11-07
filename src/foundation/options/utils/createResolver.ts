@@ -1,6 +1,8 @@
-import { is } from "@auaust/toolkit/object";
+import { is, keys } from "@auaust/toolkit/object";
 
 import { validate } from "#foundation/options/utils/validate";
+import type { Declaration } from "#foundation/options/types/Declaration";
+import type { InputResolver } from "#foundation/options/types/InputResolver";
 import type { Resolver } from "#foundation/options/types/Resolver";
 import type { Section } from "#foundation/options/types/Section";
 
@@ -18,9 +20,37 @@ interface Chain {
 export function createResolver<Context>(
   input: Readonly<Record<string, unknown>>,
   context: Context,
-): Resolver<Context> {
+  { source }: { source?: string } = {},
+): InputResolver<Context> {
   const memos = new Map<Section, Promise<Reading>>();
   const waits = new Map<Section, Set<Section>>();
+
+  const inputs = new Map<
+    string,
+    Map<Declaration<unknown, unknown, unknown>, unknown>
+  >();
+
+  function readInput(
+    name: string,
+    declaration: Declaration<unknown, unknown, unknown>,
+  ): unknown {
+    const validated = inputs.get(name) ?? new Map();
+
+    if (validated.has(declaration)) {
+      return validated.get(declaration);
+    }
+
+    const value = validate(
+      declaration.schema,
+      input[name],
+      source === undefined ? `${name} config` : `${name} config in ${source}`,
+    );
+
+    validated.set(declaration, value);
+    inputs.set(name, validated);
+
+    return value;
+  }
 
   function findPath(from: Section, to: Section): Section[] | undefined {
     const visited = new Set<Section>();
@@ -83,9 +113,7 @@ export function createResolver<Context>(
       const { declaration, name } = section;
 
       const value = await section.resolve(
-        declaration === undefined
-          ? undefined
-          : validate(declaration.schema, input[name], `${name} config`),
+        declaration === undefined ? undefined : readInput(name, declaration),
         config,
       );
 
@@ -165,6 +193,39 @@ export function createResolver<Context>(
     return reading;
   }
 
+  function validateSections(sections: readonly Section[]): void {
+    const failures: string[] = [];
+
+    for (const { name, declaration } of sections) {
+      if (declaration === undefined) {
+        throw new Error(`Config section ${name} has no declaration`);
+      }
+
+      try {
+        readInput(name, declaration);
+      } catch (error) {
+        if (!(error instanceof Error)) {
+          throw error;
+        }
+
+        failures.push(error.message);
+      }
+    }
+
+    const known = new Set(sections.map(({ name }) => name));
+    const unknown = keys(input).filter((key) => !known.has(key));
+
+    if (unknown.length > 0) {
+      failures.push(
+        `Invalid ${source ?? "config"}:\n${unknown.map((key) => `Unknown key "${key}"`).join("\n")}`,
+      );
+    }
+
+    if (failures.length > 0) {
+      throw new Error(failures.join("\n\n"));
+    }
+  }
+
   return {
     context,
     async resolve<Output>(section: Section<Output>): Promise<Output> {
@@ -172,5 +233,6 @@ export function createResolver<Context>(
 
       return value as Output;
     },
+    validate: validateSections,
   };
 }

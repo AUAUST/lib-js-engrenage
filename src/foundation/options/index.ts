@@ -25,7 +25,6 @@ export { describeDefault } from "#foundation/options/utils/describeDefault";
 export { listDefaults } from "#foundation/options/utils/listDefaults";
 export { resolveDefault } from "#foundation/options/utils/resolveDefault";
 export { resolveListOption } from "#foundation/options/utils/resolveListOption";
-export { resolveSection } from "#foundation/options/utils/resolveSection";
 export { unset } from "#foundation/options/utils/unset";
 export { validate } from "#foundation/options/utils/validate";
 // @end
@@ -37,6 +36,7 @@ export * from "#foundation/options/types/DeclarationEntries";
 export * from "#foundation/options/types/Default";
 export * from "#foundation/options/types/Description";
 export * from "#foundation/options/types/InputOf";
+export * from "#foundation/options/types/InputResolver";
 export * from "#foundation/options/types/ListAdjustment";
 export * from "#foundation/options/types/ListOption";
 export * from "#foundation/options/types/ManagedListOption";

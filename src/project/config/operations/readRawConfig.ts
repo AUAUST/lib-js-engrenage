@@ -27,7 +27,7 @@ const warnMissingConfig = memoized(function (root: Directory) {
 async function findConfigFile(
   directory: Directory,
 ): Promise<FoundConfig | undefined> {
-  const { config, cwd, _configFile } = await importConfigFile(
+  const { layers, cwd, _configFile } = await importConfigFile(
     directory,
     files.engrenageConfig,
   );
@@ -43,7 +43,7 @@ async function findConfigFile(
   return {
     root: cwd,
     configFile: _configFile,
-    input: config,
+    input: layers?.find(({ configFile }) => configFile !== undefined)?.config,
   };
 }
 
@@ -101,7 +101,9 @@ export async function readRawConfig(
   }
 
   if (!isPlainObject(input)) {
-    throw new TypeError(`${configFile ?? root} must export a config object`);
+    throw new TypeError(
+      `${configFile ?? root} must export a config object or a function returning one`,
+    );
   }
 
   return {

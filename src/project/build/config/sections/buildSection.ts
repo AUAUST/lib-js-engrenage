@@ -20,6 +20,7 @@ export const buildSection = declareSection({
     };
 
     return freeze({
+      configuredOutDir: input?.outDir,
       clean: entries.clean.resolve(input?.clean, context, "build.clean"),
       sourcemap: entries.sourcemap.resolve(
         input?.sourcemap,

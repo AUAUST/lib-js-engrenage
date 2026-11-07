@@ -6,22 +6,18 @@ import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 import type { PackageName } from "#types/PackageName";
 
 export function resolveWorkflowSet({
-  workflows,
   traits,
   hasDependency,
 }: {
-  workflows: WorkflowSetName | false | undefined;
   traits: ResolvedTraits;
   hasDependency(name: PackageName): boolean;
-}): WorkflowSetName | undefined {
-  if (workflows !== undefined) {
-    return workflows === false ? undefined : workflows;
-  }
-
-  return find(workflowSetNames, (name) => {
-    return (
-      traits[workflowSets[name].trait] &&
-      every(workflowSets[name].requires, hasDependency)
-    );
-  });
+}): WorkflowSetName | false {
+  return (
+    find(workflowSetNames, (name) => {
+      return (
+        traits[workflowSets[name].trait] &&
+        every(workflowSets[name].requires, hasDependency)
+      );
+    }) ?? false
+  );
 }

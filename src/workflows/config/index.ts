@@ -6,6 +6,7 @@ export type { Resolvable } from "#types/Resolvable";
 
 // @barrel operations/*.ts named
 export { listConfigSections } from "#workflows/config/operations/listConfigSections";
+export { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 export { validateConfig } from "#workflows/config/operations/validateConfig";
 // @end
 

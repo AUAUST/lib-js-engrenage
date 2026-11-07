@@ -28,7 +28,6 @@ export const binSchema = declareObject(
     }),
     node: declare(nodeMajorSchema, {
       description: [
-        // @debt the "engines.node floor" claim was written from reading the code and not verified by running it
         "Node major the commands target: it feeds the `engines.node` floor of `package.json`.",
       ],
       optional: {

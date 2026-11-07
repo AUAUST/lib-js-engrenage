@@ -73,9 +73,11 @@ export const testsSchema = declareObject(
             "Options of the tsconfig that checks the tests against the built output (`engrenage typecheck:dist`).",
             "`false` manages none.",
           ],
-          // @debt the tests.dist tsconfig default was written from reading the code and not verified by running it
           explain:
             "`tsconfig.tests.dist.json` extending the tests tsconfig, not referenced by the base one; none without the `published` trait",
+          managed(context: { readonly published: boolean }) {
+            return context.published;
+          },
         }),
       },
       {

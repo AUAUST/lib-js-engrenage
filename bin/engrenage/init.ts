@@ -10,7 +10,7 @@ import { formatChanges } from "#workflows/cli/operations/formatChanges";
 import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
 import { runSteps } from "#workflows/cli/operations/runSteps";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
-import { validateConfig } from "#workflows/config/operations/validateConfig";
+import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 import { listInitSteps } from "#workflows/init/operations/listInitSteps";
 import { runSync } from "#workflows/sync/index";
 import type { LoadedConfig } from "#project/config/index";
@@ -48,11 +48,9 @@ async function invokeCommand(root: Directory, invocation: Invocation) {
 async function readPackage(
   prompter: Prompter,
 ): Promise<LoadedConfig | undefined> {
-  const config = validateConfig(
-    await loadConfig(process.cwd(), {
-      searchParents: false,
-    }),
-  );
+  const config = await loadValidatedConfig(process.cwd(), {
+    searchParents: false,
+  });
 
   if ((await config.resolve(packageJsonPathSection)) !== undefined) {
     return config;
@@ -75,11 +73,9 @@ async function readPackage(
 
   loadConfig.refresh(config.context.root);
 
-  return validateConfig(
-    await loadConfig(config.context.root, {
-      searchParents: false,
-    }),
-  );
+  return loadValidatedConfig(config.context.root, {
+    searchParents: false,
+  });
 }
 
 export const init = defineCommand((command) => {
@@ -126,11 +122,9 @@ export const init = defineCommand((command) => {
 
       loadConfig.refresh(config.context.root);
 
-      const installed = validateConfig(
-        await loadConfig(config.context.root, {
-          searchParents: false,
-        }),
-      );
+      const installed = await loadValidatedConfig(config.context.root, {
+        searchParents: false,
+      });
 
       await runSync(installed);
 

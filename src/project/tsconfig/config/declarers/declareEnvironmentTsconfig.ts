@@ -23,9 +23,14 @@ const inheritedDefaults: Readonly<
   Partial<Record<TsconfigKey, TsconfigEnvironment>>
 > = defaultTsconfigInherits;
 
-export function declareEnvironmentTsconfig(
+// @debt `Context` reaches the declaration only through the inferred return type, so no-unnecessary-type-parameters warns that it is used once
+export function declareEnvironmentTsconfig<Context = unknown>(
   key: TsconfigKey,
-  options: { description: Description; explain: string },
+  options: {
+    description: Description;
+    explain: string;
+    managed?(context: Context): boolean;
+  },
 ) {
   const inherits = inheritedDefaults[key];
 
@@ -90,7 +95,6 @@ export function declareEnvironmentTsconfig(
           value: {},
         },
       }),
-      // @debt the unmanaged description was written from reading the code and not verified by running it
       unmanaged: declareList(string(), {
         description:
           "Dotted paths in this tsconfig (such as `compilerOptions.paths`) that sync never writes.",
@@ -111,7 +115,11 @@ export function declareEnvironmentTsconfig(
       description: options.description,
       optional: {
         explain: options.explain,
-        compute() {
+        compute(context: Context) {
+          if (options.managed?.(context) === false) {
+            return false;
+          }
+
           return inherits === undefined ? {} : { inherits };
         },
       },

@@ -5,10 +5,9 @@ import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
 import { validate } from "#foundation/options/utils/validate";
-import { loadConfig } from "#project/config/operations/loadConfig";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
-import { validateConfig } from "#workflows/config/operations/validateConfig";
+import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 import {
   runSync,
   syncTargets,
@@ -50,7 +49,7 @@ export const sync = defineCommand((command) => {
     )
     .option("--check", "report outdated files without writing them", false)
     .action(async (selected, { check }, self) => {
-      const config = validateConfig(await loadConfig());
+      const config = await loadValidatedConfig();
 
       const flags: SyncTargetFlags = {};
 

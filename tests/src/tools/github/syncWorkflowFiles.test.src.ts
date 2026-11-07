@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { gitSection } from "#tools/git/index";
+import { githubSection } from "#tools/github/config/sections/githubSection";
 import { syncWorkflowFiles } from "#tools/github/setup/syncWorkflowFiles";
 
 const libraryScripts = {
@@ -35,6 +36,12 @@ function createLibrary(
 }
 
 describe("syncWorkflowFiles", () => {
+  test("defaults the workflow set to library for a published package depending on @changesets/cli", async () => {
+    const config = await loadConfig(createLibrary(libraryScripts).root);
+
+    expect((await config.resolve(githubSection)).workflows).toBe("library");
+  });
+
   test("regenerates the existing library workflows and reports edits", async () => {
     const project = createLibrary(libraryScripts, "{}", {
       ".github/workflows/ci.yml": "",

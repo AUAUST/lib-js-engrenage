@@ -39,7 +39,6 @@ export async function resolveConventionConfig(
   config: LoadedConfig,
 ): Promise<ConventionConfig> {
   const { root } = config.context;
-  const { raw } = config;
 
   const [
     structure,
@@ -103,7 +102,6 @@ export async function resolveConventionConfig(
 
   return {
     root,
-    raw,
     structure,
     entities,
     grants: {
@@ -130,9 +128,7 @@ export async function resolveConventionConfig(
     data,
     files,
     build: {
-      clean: build.clean,
-      sourcemap: build.sourcemap,
-      typed: build.typed,
+      ...build,
       outDir,
     },
     typescript: {

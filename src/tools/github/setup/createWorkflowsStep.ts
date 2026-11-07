@@ -21,15 +21,16 @@ async function findMissingWorkflows({
   getTraits,
 }: StepContext): Promise<readonly MissingWorkflow[]> {
   const github = await resolve(githubSection);
-  const environment = await resolve(environmentSection);
+  const { hasDependency } = await resolve(environmentSection);
 
-  const name = resolveWorkflowSet({
-    workflows: github.workflows,
-    traits: await getTraits(),
-    hasDependency: environment.hasDependency,
-  });
+  const name = github.workflowsConfigured
+    ? github.workflows
+    : resolveWorkflowSet({
+        traits: await getTraits(),
+        hasDependency,
+      });
 
-  if (name === undefined) {
+  if (name === false) {
     return [];
   }
 

@@ -1,15 +1,14 @@
 import { cancel, isCancel, multiselect } from "@clack/prompts";
 
-import { loadConfig } from "#project/config/operations/loadConfig";
 import { agentsSection } from "#tools/agents/index";
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
-import { validateConfig } from "#workflows/config/operations/validateConfig";
+import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 
 async function add(name?: string) {
-  const config = validateConfig(await loadConfig());
+  const config = await loadValidatedConfig();
 
   let names: string[];
 

@@ -17,8 +17,13 @@ import type { ObjectResolution } from "#foundation/options/types/ObjectResolutio
 export function declareObject<
   const Entries extends DeclarationEntries,
   Optional extends
-    true | Default<ObjectInput<Entries>, ObjectContext<Entries>> = never,
+    | true
+    | Default<
+        ObjectInput<Entries> | ([Disabled] extends [never] ? never : false),
+        DefaultContext
+      > = never,
   const Disabled extends object = never,
+  DefaultContext = unknown,
 >(
   entries: Entries,
   options?: {
@@ -33,13 +38,13 @@ export function declareObject<
   | ([NoInfer<Optional>] extends [never] ? never : undefined)
   | ([NoInfer<Disabled>] extends [never] ? never : false),
   ObjectResolution<Entries, NoInfer<Disabled>>,
-  ObjectContext<Entries>
+  ObjectContext<Entries> & NoInfer<DefaultContext>
 >;
 export function declareObject(
   entries: Readonly<Record<string, Declaration<unknown, unknown, unknown>>>,
   options: {
     description?: Description;
-    optional?: true | Default<Record<string, unknown>, unknown>;
+    optional?: true | Default<Record<string, unknown> | false, unknown>;
     disable?: { readonly value: object };
     assert?(input: Record<string, unknown>, path: string): void;
   } = {},
@@ -68,10 +73,6 @@ export function declareObject(
   );
 
   function resolve(input: unknown, context: unknown, path: string): unknown {
-    if (disable !== undefined && input === false) {
-      return freeze({ ...disable.value, enabled: false });
-    }
-
     if (input === undefined && optional === undefined) {
       throw new Error(`${path} is required`);
     }
@@ -82,6 +83,10 @@ export function declareObject(
           ? {}
           : resolveDefault(optional, context)
         : input;
+
+    if (disable !== undefined && source === false) {
+      return freeze({ ...disable.value, enabled: false });
+    }
 
     if (!isPlainObject(source)) {
       throw new TypeError(`${path} must be an object`);

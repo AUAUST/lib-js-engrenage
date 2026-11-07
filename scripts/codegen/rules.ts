@@ -9,16 +9,13 @@ export const rules = defineCommand((command) => {
     )
     .option("--check", "report outdated files without writing them", false)
     .action(async ({ check }) => {
-      const { loadConfig } =
-        await import("#project/config/operations/loadConfig");
-
-      const { validateConfig } =
-        await import("#workflows/config/operations/validateConfig");
+      const { loadValidatedConfig } =
+        await import("#workflows/config/operations/loadValidatedConfig");
 
       const { generateRuleTypes } =
         await import("#scripts/codegen/operations/generateRuleTypes");
 
-      const config = validateConfig(await loadConfig());
+      const config = await loadValidatedConfig();
 
       const outdated = await generateRuleTypes({
         config,

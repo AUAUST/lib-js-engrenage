@@ -6,16 +6,13 @@ import { hasOwn } from "@auaust/toolkit/object";
 import { syncFiles } from "#foundation/blocks/index";
 import { resolveWithin, toPosixPath } from "#foundation/filesystem/index";
 import {
-  environmentSection,
   packageJsonPathSection,
   packageJsonSection,
 } from "#project/package/index";
-import { traitsSection } from "#project/presets/index";
 import { gitSection } from "#tools/git/index";
 import { githubSection } from "#tools/github/config/sections/githubSection";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
-import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 import type { LoadedConfig } from "#project/config/index";
 import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 
@@ -38,16 +35,9 @@ async function assertScripts(
 }
 
 export async function syncWorkflowFiles(config: LoadedConfig) {
-  const github = await config.resolve(githubSection);
-  const environment = await config.resolve(environmentSection);
+  const { workflows: name } = await config.resolve(githubSection);
 
-  const name = resolveWorkflowSet({
-    workflows: github.workflows,
-    traits: await config.resolve(traitsSection),
-    hasDependency: environment.hasDependency,
-  });
-
-  if (name === undefined) {
+  if (name === false) {
     return;
   }
 

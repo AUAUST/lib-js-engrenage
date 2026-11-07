@@ -208,7 +208,7 @@ export async function createStepContext({
   return freeze<StepContext>({
     resolve,
     context: config.context,
-    raw: config.raw,
+    validate: config.validate,
     getAgents,
     setAgents,
     filesystem,

@@ -51,7 +51,6 @@ describe("loadConfig", () => {
     ]);
 
     expect((await config.resolve(filesSection)).generated).toEqual([]);
-    expect(config.raw).toEqual({});
     expect(await config.resolve(packageJsonPathSection)).toBeUndefined();
 
     expect(
@@ -92,23 +91,13 @@ describe("loadConfig", () => {
     const inner = await loadConfig(project.resolve("packages/inner/src"));
 
     expect(inner.context.root).toBe(project.resolve("packages/inner"));
-    expect(inner.raw).toEqual({});
+    expect(await inner.resolve(presetSection)).toBeUndefined();
   });
 
   test("resolves a callback config, replaces defaults, appends generated files and infers project values", async () => {
     const root = getFixture("config/custom");
 
     const config = await loadConfig(root);
-
-    expect(config.raw).toEqual({
-      preset: "library",
-      tests: {
-        dirs: "test",
-      },
-      src: {
-        generated: ["generated/**"],
-      },
-    });
 
     expect(await config.resolve(presetSection)).toBe("library");
     expect(await config.resolve(traitsSection)).toEqual({ published: true });
@@ -271,6 +260,17 @@ describe("loadConfig", () => {
     }).toThrow("escapes");
   });
 
+  test("rejects a config exporting neither an object nor a function returning one, naming the file", async () => {
+    const project = createTemporaryProject({
+      "package.json": "{}",
+      "engrenage.config.ts": 'export default "library";\n',
+    });
+
+    await expect(loadConfig(project.root)).rejects.toThrow(
+      `${project.resolve("engrenage.config.ts")} must export a config object`,
+    );
+  });
+
   test("returns the same config until refreshed, then reads the edited config file", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "type": "module" }',
@@ -363,5 +363,15 @@ describe("traits", () => {
     ).toBeUndefined();
 
     expect(await enabled.resolve(traitsSection)).toEqual({ published: true });
+  });
+
+  test("manages no tests.dist tsconfig set to false, even when published", async () => {
+    const config = await resolve(
+      'preset: "library", tests: { dist: { tsconfig: false } }',
+    );
+
+    expect(
+      (await config.resolve(testsSection)).dist.tsconfig.owner,
+    ).toBeUndefined();
   });
 });
