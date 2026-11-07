@@ -27,3 +27,9 @@ export * from "#project/package/types/PackageJson";
 export * from "#project/package/types/Person";
 export * from "#project/package/types/SubpathImports";
 // @end
+
+// @barrel config/sections/*.ts named
+export { environmentSection } from "#project/package/config/sections/environmentSection";
+export { packageJsonPathSection } from "#project/package/config/sections/packageJsonPathSection";
+export { packageJsonSection } from "#project/package/config/sections/packageJsonSection";
+// @end

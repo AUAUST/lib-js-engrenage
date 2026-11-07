@@ -1,8 +1,9 @@
 import {
+  createPackageJson,
   packageJsonPathSection,
   packageJsonSection,
-} from "#project/config/index";
-import { createPackageJson, readSharedPnpmRange } from "#project/package/index";
+  readSharedPnpmRange,
+} from "#project/package/index";
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 import { writePnpmDeclaration } from "#tools/pnpm/operations/writePnpmDeclaration";
 import { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus";

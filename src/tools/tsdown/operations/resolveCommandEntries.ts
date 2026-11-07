@@ -1,4 +1,4 @@
-import { getIndexFile } from "#project/structure/index";
+import { getIndexFile, type ResolvedRoles } from "#project/structure/index";
 import { findCommands } from "#tools/tsdown/utils/findCommands";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";
 import type { Filesystem } from "#foundation/filesystem/index";
@@ -7,11 +7,12 @@ import type { Entries } from "#tools/tsdown/types/Entries";
 
 export async function resolveCommandEntries(config: {
   bin: ResolvedBin;
+  roles: ResolvedRoles;
   filesystem: Filesystem;
 }): Promise<Entries> {
   const commandEntries: Entries = {};
 
-  const indexFile = getIndexFile(config.bin.roles);
+  const indexFile = getIndexFile(config.roles);
 
   for (const [, file] of await findCommands(config)) {
     const name = toEntryName(file, indexFile);

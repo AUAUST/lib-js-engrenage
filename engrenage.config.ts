@@ -169,7 +169,10 @@ export default defineConfig({
   src: {
     node: 24,
     roles: [index(), entrypoint(), ...codeRoles],
-    // @debt no domain declares a `purpose`, so the maps list about forty bare names (`steps`, `data`, `blocks`, `presets`) and an agent must open each one to place code
+    domains: {
+      "project/cache": { purpose: "Cache directory of the project's tools." },
+    },
+    // @debt almost no domain declares a `purpose`, so the maps list about forty bare names (`steps`, `data`, `blocks`, `presets`) and an agent must open each one to place code
     namespaces: {
       ".": { layers: ["foundation", "project", "tools", "workflows"] },
       "foundation": { purpose: "Primitives without project knowledge." },
@@ -197,10 +200,13 @@ export default defineConfig({
       "tools/eslint/types/Rules.ts",
       "tools/eslint/types/rules/**",
       "project/build/types/BuildInput.ts",
-      "project/config/types/CacheInput.ts",
-      "project/config/types/DefineInput.ts",
+      "project/cache/types/CacheInput.ts",
+      "project/environments/types/AliasesInput.ts",
       "project/environments/types/BinInput.ts",
       "project/environments/types/DataInput.ts",
+      "project/environments/types/DefineInput.ts",
+      "project/environments/types/DomainInput.ts",
+      "project/environments/types/NamespaceInput.ts",
       "project/environments/types/RuntimeInput.ts",
       "project/environments/types/ScriptsInput.ts",
       "project/environments/types/SourceInput.ts",
@@ -209,9 +215,6 @@ export default defineConfig({
       "project/format/types/FormatInput.ts",
       "project/presets/types/TraitsInput.ts",
       "project/roles/types/RoleInput.ts",
-      "project/structure/types/AliasesInput.ts",
-      "project/structure/types/DomainInput.ts",
-      "project/structure/types/NamespaceInput.ts",
       "project/structure/types/StructureInput.ts",
       "project/tsconfig/types/TypescriptInput.ts",
       "tools/agents/types/AgentsInput.ts",

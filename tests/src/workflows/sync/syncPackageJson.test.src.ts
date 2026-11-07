@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { sourceSection } from "#project/config/index";
+import { sourceSection } from "#project/environments/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";

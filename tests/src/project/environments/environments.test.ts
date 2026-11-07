@@ -10,6 +10,7 @@ import {
   sourceSection,
   testsSection,
   toolingSection,
+  tsconfigPathSection,
   typescriptSection,
 } from "@auaust/engrenage";
 import { testsetup } from "@auaust/engrenage/roles";
@@ -269,13 +270,11 @@ describe("environment tsconfigs", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(await (await config.resolve(typescriptSection)).tsconfig.path).toBe(
+    expect(await config.resolve(tsconfigPathSection)).toBe(
       join(project.root, "tsconfig.base.json"),
     );
 
-    void (await (
-      await config.resolve(typescriptSection)
-    ).tsconfig.path);
+    void (await config.resolve(tsconfigPathSection));
 
     expect(warn).toHaveBeenCalledTimes(1);
 

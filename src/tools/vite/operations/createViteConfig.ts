@@ -3,14 +3,12 @@ import { join } from "node:path";
 import { project as pluginPrefix, vite } from "#constants";
 import { resolveWithin } from "#foundation/filesystem/index";
 import { emittedManifestFile } from "#project/build/constants";
-import {
-  buildSection,
-  cacheSection,
-  createDefine,
-  typescriptSection,
-  type LoadedConfig,
-} from "#project/config/index";
+import { buildOutDirSection, buildSection } from "#project/build/index";
+import { cacheSection } from "#project/cache/index";
+import { createDefine } from "#project/environments/index";
+import { tsconfigPathSection } from "#project/tsconfig/index";
 import { createEmittedManifestPlugin } from "#tools/vite/plugins/createEmittedManifestPlugin";
+import type { LoadedConfig } from "#project/config/index";
 import type { Config } from "#tools/vite/types/Config";
 
 export async function createViteConfig(
@@ -18,13 +16,10 @@ export async function createViteConfig(
   { isTesting }: { isTesting: boolean },
 ): Promise<Config> {
   const root = config.context.root;
-  const build = await config.resolve(buildSection);
-  const { sourcemap, clean } = build;
-  const outDir = await build.outDir;
+  const { sourcemap, clean } = await config.resolve(buildSection);
+  const outDir = await config.resolve(buildOutDirSection);
 
-  const typescript = await config.resolve(typescriptSection);
-
-  const tsconfig = await typescript.tsconfig.path;
+  const tsconfig = await config.resolve(tsconfigPathSection);
 
   const cache = await config.resolve(cacheSection);
 

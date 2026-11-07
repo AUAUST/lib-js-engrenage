@@ -2,10 +2,7 @@ import { flat } from "@auaust/primitive-kit/arrays";
 
 import { packageJsonFile } from "#constants";
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
-import {
-  packageJsonPathSection,
-  type LoadedConfig,
-} from "#project/config/index";
+import { packageJsonPathSection } from "#project/package/index";
 import { createPrompter } from "#workflows/cli/operations/createPrompter";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { listFilesystems } from "#workflows/cli/operations/listFilesystems";
@@ -15,6 +12,7 @@ import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { listInitSteps } from "#workflows/init/operations/listInitSteps";
 import { readConfig } from "#workflows/registry/operations/readConfig";
 import { runSync } from "#workflows/sync/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { Prompter } from "#project/steps/types/Prompter";
 import type { Directory } from "#types/Directory";

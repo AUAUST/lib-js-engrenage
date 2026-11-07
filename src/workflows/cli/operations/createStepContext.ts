@@ -4,24 +4,24 @@ import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { engrenage, packageJsonFile } from "#constants";
 import { readJsonValue, type JsonValue } from "#foundation/json/index";
+import { jsonIndentation } from "#project/format/constants";
 import {
   environmentSection,
   packageJsonPathSection,
+  writePackageJsonValue,
+} from "#project/package/index";
+import {
   presetSection,
+  resolveTraits,
   traitAdjustmentsSection,
   traitsSection,
-  type LoadedConfig,
-} from "#project/config/index";
-import { jsonIndentation } from "#project/format/constants";
-import { writePackageJsonValue } from "#project/package/index";
-import {
-  resolveTraits,
   type Preset,
   type ResolvedTraits,
 } from "#project/presets/index";
 import { agentNames } from "#tools/agents/constants";
 import { agentsSection, type Agent } from "#tools/agents/index";
 import type { Section } from "#foundation/options/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { Invocation, Prompter, StepContext } from "#project/steps/index";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";

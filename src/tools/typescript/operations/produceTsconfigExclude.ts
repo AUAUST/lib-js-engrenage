@@ -1,7 +1,7 @@
 import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
 import { resolveListOption } from "#foundation/options/index";
-import { filesSection, type LoadedConfig } from "#project/config/index";
+import { filesSection } from "#project/structure/index";
 import {
   toTsconfigGlobs,
   type TsconfigKey,
@@ -9,6 +9,7 @@ import {
 } from "#project/tsconfig/index";
 import { resolveTsconfigEnvironments } from "#tools/typescript/operations/resolveTsconfigEnvironments";
 import type { JsonEdit } from "#foundation/json/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 
 async function createDefaultExclude(

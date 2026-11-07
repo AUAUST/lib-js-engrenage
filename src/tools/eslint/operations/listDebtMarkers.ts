@@ -1,9 +1,10 @@
 import { relative } from "node:path";
 
 import { eslint } from "#constants";
-import { environmentSection, type LoadedConfig } from "#project/config/index";
+import { environmentSection } from "#project/package/index";
 import { pluginName } from "#tools/eslint/constants";
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
+import type { LoadedConfig } from "#project/config/index";
 import type { DebtMarker } from "#tools/eslint/types/DebtMarker";
 
 function compareMarkers(a: DebtMarker, b: DebtMarker): number {

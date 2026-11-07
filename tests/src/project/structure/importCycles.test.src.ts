@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { aliasesSection, structureSection } from "#project/config/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { aliasesSection, structureSection } from "#project/structure/index";
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 

@@ -2,11 +2,8 @@ import { includes, map } from "@auaust/primitive-kit/arrays";
 
 import { changesetsCli } from "#constants";
 import { settlePreset, syncIgnoreFile } from "#foundation/blocks/index";
-import {
-  environmentSection,
-  filesSection,
-  type LoadedConfig,
-} from "#project/config/index";
+import { environmentSection } from "#project/package/index";
+import { filesSection } from "#project/structure/index";
 import { agentsSection, codexFile } from "#tools/agents/index";
 import { createProjectIgnores } from "#tools/git/index";
 import { prettierSection } from "#tools/prettier/config/sections/prettierSection";
@@ -15,6 +12,7 @@ import {
   codegenTitle,
   defaultIgnores,
 } from "#tools/prettier/constants";
+import type { LoadedConfig } from "#project/config/index";
 import type { Glob } from "#types/Glob";
 import type { GlobGroup } from "#types/GlobGroup";
 

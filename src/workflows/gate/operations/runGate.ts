@@ -6,11 +6,8 @@ import { filter, map } from "@auaust/primitive-kit/arrays";
 import { eslint, packages, prettier, typescript, vitest } from "#constants";
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { resolveBinary, spawnProcess } from "#foundation/processes/index";
-import {
-  cacheSection,
-  environmentSection,
-  type LoadedConfig,
-} from "#project/config/index";
+import { cacheSection } from "#project/cache/index";
+import { environmentSection } from "#project/package/index";
 import {
   agentsSection,
   measureEditedFile,
@@ -23,6 +20,7 @@ import {
   runGit,
   type ChangeMode,
 } from "#tools/git/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { Files } from "#types/Files";
 import type { KnownPackageName } from "#types/KnownPackageName";

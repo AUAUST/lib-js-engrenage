@@ -1,7 +1,7 @@
 import { packages } from "#constants";
 import { pathExists } from "#foundation/filesystem/index";
 import { resolve } from "#foundation/filesystem/utils/resolve";
-import { cacheSection } from "#project/config/index";
+import { cacheSection } from "#project/cache/index";
 import { defaultSuppressionsFile } from "#tools/eslint/constants";
 import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
 import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";

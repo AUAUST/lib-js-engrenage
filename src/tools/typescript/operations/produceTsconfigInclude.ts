@@ -3,15 +3,16 @@ import { relative } from "node:path/posix";
 import { flatMap } from "@auaust/primitive-kit/arrays";
 
 import { resolveListOption } from "#foundation/options/index";
-import { typescriptSection, type LoadedConfig } from "#project/config/index";
 import {
   toTsconfigGlobs,
+  typescriptSection,
   type TsconfigKey,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import { resolveTsconfigEnvironments } from "#tools/typescript/operations/resolveTsconfigEnvironments";
 import type { JsonEdit } from "#foundation/json/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 
 async function createDefaultInclude(

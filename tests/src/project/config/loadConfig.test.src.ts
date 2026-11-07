@@ -2,20 +2,22 @@ import { join } from "node:path";
 
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { buildOutDirSection } from "#project/build/index";
+import { cacheSection } from "#project/cache/index";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { testsSection } from "#project/environments/index";
 import {
-  buildSection,
-  cacheSection,
   environmentSection,
-  filesSection,
   packageJsonPathSection,
   packageJsonSection,
-  presetSection,
-  testsSection,
-  traitsSection,
+} from "#project/package/index";
+import { presetSection, traitsSection } from "#project/presets/index";
+import { filesSection } from "#project/structure/index";
+import {
+  tsconfigPathSection,
   tsconfigSection,
   typescriptSection,
-} from "#project/config/index";
-import { loadConfig } from "#project/config/operations/loadConfig";
+} from "#project/tsconfig/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 
@@ -120,7 +122,7 @@ describe("loadConfig", () => {
       "src/generated/**",
     ]);
 
-    expect(await (await config.resolve(buildSection)).outDir).toBe("dist");
+    expect(await config.resolve(buildOutDirSection)).toBe("dist");
 
     expect((await config.resolve(packageJsonSection)).name).toBe(
       "custom-fixture",
@@ -168,7 +170,7 @@ describe("loadConfig", () => {
     const config = await loadConfig(root);
 
     expect((await config.resolve(tsconfigSection)).outDir).toBe("build");
-    expect(await (await config.resolve(buildSection)).outDir).toBe("build");
+    expect(await config.resolve(buildOutDirSection)).toBe("build");
 
     const outside = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
@@ -181,11 +183,7 @@ describe("loadConfig", () => {
 
     const outsideConfig = await loadConfig(outside.root);
 
-    expect(
-      await (
-        await outsideConfig.resolve(buildSection)
-      ).outDir,
-    ).toBeUndefined();
+    expect(await outsideConfig.resolve(buildOutDirSection)).toBeUndefined();
 
     const missing = await loadConfig(
       createTemporaryProject({
@@ -193,15 +191,15 @@ describe("loadConfig", () => {
       }).root,
     );
 
-    await expect(
-      async () => (await missing.resolve(typescriptSection)).tsconfig.path,
+    await expect(async () =>
+      missing.resolve(tsconfigPathSection),
     ).rejects.toThrow(
       `The configured tsconfig.app.json does not exist in ${missing.context.root}`,
     );
 
     await missing.context.filesystem.write("tsconfig.app.json", tsconfig);
 
-    expect(await (await missing.resolve(typescriptSection)).tsconfig.path).toBe(
+    expect(await missing.resolve(tsconfigPathSection)).toBe(
       join(missing.context.root, "tsconfig.app.json"),
     );
 
@@ -214,9 +212,8 @@ describe("loadConfig", () => {
       }).root,
     );
 
-    await expect(
-      async () =>
-        (await explicitDefault.resolve(typescriptSection)).tsconfig.path,
+    await expect(async () =>
+      explicitDefault.resolve(tsconfigPathSection),
     ).rejects.toThrow("The configured tsconfig.json does not exist");
   });
 
@@ -265,7 +262,7 @@ describe("loadConfig", () => {
       join(root, "package.json"),
     );
 
-    expect(await (await config.resolve(typescriptSection)).tsconfig.path).toBe(
+    expect(await config.resolve(tsconfigPathSection)).toBe(
       join(root, "tsconfig.json"),
     );
 

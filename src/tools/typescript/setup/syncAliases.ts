@@ -5,20 +5,17 @@ import { packageJsonFile } from "#constants";
 import { syncFiles } from "#foundation/blocks/index";
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits, readJsonValue } from "#foundation/json/index";
-import {
-  aliasesSection,
-  sourceSection,
-  typescriptSection,
-  type LoadedConfig,
-} from "#project/config/index";
+import { sourceSection } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/index";
+import { aliasesSection, type Alias } from "#project/structure/index";
 import {
   readTsconfigPaths,
   toTsconfigSpecifier,
+  typescriptSection,
 } from "#project/tsconfig/index";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { Alias } from "#project/structure/index";
+import type { LoadedConfig } from "#project/config/index";
 
 const importPrefix = "#";
 

@@ -1,16 +1,14 @@
 import { engrenage } from "#constants";
 import { resolveListOption } from "#foundation/options/index";
-import {
-  testsSection,
-  traitsSection,
-  typescriptSection,
-  type LoadedConfig,
-} from "#project/config/index";
+import { testsSection } from "#project/environments/index";
+import { traitsSection } from "#project/presets/index";
 import {
   toTsconfigSpecifier,
+  typescriptSection,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
 import type { JsonEdit } from "#foundation/json/index";
+import type { LoadedConfig } from "#project/config/index";
 
 async function createDefaultExtends(
   config: LoadedConfig,

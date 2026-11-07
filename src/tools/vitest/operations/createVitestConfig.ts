@@ -7,17 +7,16 @@ import type { Maybe } from "@auaust/toolkit/types";
 
 import { filesIn, resolve } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
+import { buildOutDirSection } from "#project/build/index";
+import { sourceSection, testsSection } from "#project/environments/index";
+import { packageJsonSection } from "#project/package/index";
+import { traitsSection } from "#project/presets/index";
 import {
-  buildSection,
+  environmentRolesSection,
   filesSection,
-  packageJsonSection,
-  sourceSection,
-  testsSection,
-  traitsSection,
-  typescriptSection,
-  workspacesSection,
-  type LoadedConfig,
-} from "#project/config/index";
+} from "#project/structure/index";
+import { tsconfigPathSection } from "#project/tsconfig/index";
+import { workspacesSection } from "#project/workspaces/index";
 import { optionsSchema } from "#tools/vitest/config/schemas/optionsSchema";
 import {
   buildMode,
@@ -29,6 +28,7 @@ import {
 import { findSetupFiles } from "#tools/vitest/operations/findSetupFiles";
 import { createOutDirGuard } from "#tools/vitest/plugins/createOutDirGuard";
 import { createSourceGuard } from "#tools/vitest/plugins/createSourceGuard";
+import type { LoadedConfig } from "#project/config/index";
 import type { ConfigEnv, Plugin } from "#tools/vite/index";
 import type { Config } from "#tools/vitest/types/Config";
 import type { Options } from "#tools/vitest/types/Options";
@@ -37,9 +37,7 @@ async function createSourcePlugins(
   config: LoadedConfig,
   guardOutDir: boolean,
 ): Promise<Plugin[]> {
-  const build = await config.resolve(buildSection);
-
-  const outDir = await build.outDir;
+  const outDir = await config.resolve(buildOutDirSection);
   const packageJson = await config.resolve(packageJsonSection);
 
   const packageName = packageJson.optional.name;
@@ -104,12 +102,15 @@ export async function createVitestConfig(
   { mode }: ConfigEnv,
   options?: Maybe<Options>,
 ): Promise<Config> {
+  const roles = await config.resolve(environmentRolesSection);
+
   const {
     guardOutDir,
     isolate,
     restoreMocks = !isolate,
     setupFiles = await findSetupFiles({
       tests: await config.resolve(testsSection),
+      roles: roles.tests,
       filesystem: config.context.filesystem,
     }),
   } = validate(optionsSchema, options ?? {}, "Vitest options");
@@ -131,11 +132,9 @@ export async function createVitestConfig(
     }
   }
 
-  const typescript = await config.resolve(typescriptSection);
-
   const tsconfig = await (testsBuild
     ? tests.dist.tsconfig.path
-    : typescript.tsconfig.path);
+    : config.resolve(tsconfigPathSection));
 
   const typecheckTsconfig = await (testsBuild
     ? tests.dist.tsconfig.path

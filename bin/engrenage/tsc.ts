@@ -1,8 +1,11 @@
 import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
 import { packages } from "#constants";
-import { testsSection, typescriptSection } from "#project/config/index";
-import { tsconfigEnvironments } from "#project/tsconfig/index";
+import { testsSection } from "#project/environments/index";
+import {
+  tsconfigEnvironments,
+  tsconfigPathSection,
+} from "#project/tsconfig/index";
 import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
@@ -100,9 +103,7 @@ export const tsc = defineToolCommands({
     "tsc": {
       message: "Typechecking...",
       async arguments(config, args) {
-        const typescript = await config.resolve(typescriptSection);
-
-        const project = await typescript.tsconfig.path;
+        const project = await config.resolve(tsconfigPathSection);
 
         if (!(await hasReferencedEnvironment(config))) {
           throw new Error(

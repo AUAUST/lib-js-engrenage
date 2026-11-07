@@ -1,16 +1,14 @@
 import { describe, expect, test } from "vitest";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import {
-  aliasesSection,
   binSection,
   dataSection,
   scriptsSection,
   sourceSection,
-  structureSection,
   testsSection,
   toolingSection,
-} from "#project/config/index";
-import { loadConfig } from "#project/config/operations/loadConfig";
+} from "#project/environments/index";
 import {
   constants,
   createRolePreset,
@@ -19,6 +17,11 @@ import {
   index,
   utils,
 } from "#project/roles/index";
+import {
+  aliasesSection,
+  environmentRolesSection,
+  structureSection,
+} from "#project/structure/index";
 import { createEntityIndex } from "#project/structure/utils/createEntityIndex";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
@@ -80,17 +83,27 @@ async function createIndex(indexFile = "index.ts") {
 
   const config = await loadConfig(project.root);
 
-  const [structure, source, tests, bin, scripts, tooling, data, aliases] =
-    await Promise.all([
-      config.resolve(structureSection),
-      config.resolve(sourceSection),
-      config.resolve(testsSection),
-      config.resolve(binSection),
-      config.resolve(scriptsSection),
-      config.resolve(toolingSection),
-      config.resolve(dataSection),
-      config.resolve(aliasesSection),
-    ]);
+  const [
+    structure,
+    source,
+    tests,
+    bin,
+    scripts,
+    tooling,
+    data,
+    aliases,
+    roles,
+  ] = await Promise.all([
+    config.resolve(structureSection),
+    config.resolve(sourceSection),
+    config.resolve(testsSection),
+    config.resolve(binSection),
+    config.resolve(scriptsSection),
+    config.resolve(toolingSection),
+    config.resolve(dataSection),
+    config.resolve(aliasesSection),
+    config.resolve(environmentRolesSection),
+  ]);
 
   return createEntityIndex({
     root: project.root,
@@ -103,6 +116,7 @@ async function createIndex(indexFile = "index.ts") {
       tooling,
       data,
     },
+    roles,
     testPatterns: tests.patterns,
     workspaces: [],
     outDir: "dist",

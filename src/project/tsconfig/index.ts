@@ -45,8 +45,16 @@ export {
 export { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
 // @end
 
+// @barrel config/sections/*.ts named
+export { tsconfigPathSection } from "#project/tsconfig/config/sections/tsconfigPathSection";
+export { tsconfigSection } from "#project/tsconfig/config/sections/tsconfigSection";
+export { typescriptOptionsSection } from "#project/tsconfig/config/sections/typescriptOptionsSection";
+export { typescriptSection } from "#project/tsconfig/config/sections/typescriptSection";
+// @end
+
 // @barrel operations/*.ts named
 export { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
+export { locateTsconfigPath } from "#project/tsconfig/operations/locateTsconfigPath";
 export { resolvePathAliases } from "#project/tsconfig/operations/resolvePathAliases";
 export { resolveTsconfigPresets } from "#project/tsconfig/operations/resolveTsconfigPresets";
 // @end

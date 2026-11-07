@@ -2,11 +2,11 @@
 
 import type { ListOption, ManagedListOption } from "#foundation/options/index";
 import type { BuildInput } from "#project/build/index";
-import type { CacheInput, DefineInput } from "#project/config/index";
-import type { BinInput, DataInput, RuntimeInput, ScriptsInput, SourceInput, TestsInput, ToolingInput } from "#project/environments/index";
+import type { CacheInput } from "#project/cache/index";
+import type { AliasesInput, BinInput, DataInput, DefineInput, RuntimeInput, ScriptsInput, SourceInput, TestsInput, ToolingInput } from "#project/environments/index";
 import type { FormatInput } from "#project/format/index";
 import type { TraitsInput } from "#project/presets/index";
-import type { AliasesInput, StructureInput } from "#project/structure/index";
+import type { StructureInput } from "#project/structure/index";
 import type { TypescriptInput } from "#project/tsconfig/index";
 import type { AgentsInput } from "#tools/agents/index";
 import type { GitInput } from "#tools/git/index";

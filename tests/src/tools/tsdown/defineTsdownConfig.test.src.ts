@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { packageJsonSection, testsSection } from "#project/config/index";
+import { testsSection } from "#project/environments/index";
+import { packageJsonSection } from "#project/package/index";
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { defineTsdownConfig } from "#tools/tsdown/config/defineTsdownConfig";

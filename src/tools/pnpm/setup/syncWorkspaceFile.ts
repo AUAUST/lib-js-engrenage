@@ -2,9 +2,10 @@ import { Document, isMap } from "yaml";
 
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { workspacesSection, type LoadedConfig } from "#project/config/index";
+import { workspacesSection } from "#project/workspaces/index";
 import { workspaceFile } from "#tools/pnpm/constants";
 import { parseWorkspaceDocument } from "#tools/pnpm/utils/parseWorkspaceDocument";
+import type { LoadedConfig } from "#project/config/index";
 
 export async function syncWorkspaceFile({ resolve, context }: LoadedConfig) {
   const [workspaces, filesystem] = await Promise.all([

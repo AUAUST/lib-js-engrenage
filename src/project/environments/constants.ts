@@ -62,3 +62,7 @@ export const defaultDefines = freeze({
   bin: false,
   scripts: false,
 } as const);
+
+export const sourceTestsVariant = ".src";
+
+export const distTestsVariant = ".dist";

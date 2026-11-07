@@ -16,8 +16,8 @@ import {
   type JsonEdit,
 } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
-import { environmentSection, type LoadedConfig } from "#project/config/index";
 import { jsonIndentation } from "#project/format/constants";
+import { environmentSection } from "#project/package/index";
 import { vscodeSection } from "#tools/vscode/config/sections/vscodeSection";
 import {
   eslintIntegration,
@@ -26,6 +26,7 @@ import {
 } from "#tools/vscode/constants";
 import { findIntegrations } from "#tools/vscode/utils/findIntegrations";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { Integration } from "#tools/vscode/types/Integration";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { stop } from "#bin/engrenage/agents/claude/hook/stop";
-import { cacheSection } from "#project/config/index";
+import { cacheSection } from "#project/cache/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
 import { getExecutable } from "#tests/utils/getExecutable";

@@ -6,7 +6,7 @@ import { engrenage } from "#constants";
 import { resolveListOption } from "#foundation/options/index";
 import { apiLibraryGroups } from "#project/baseline/constants";
 import { includesEsLibrary, type Runtime } from "#project/baseline/index";
-import { sourceSection, type LoadedConfig } from "#project/config/index";
+import { sourceSection } from "#project/environments/index";
 import {
   readTsconfigValue,
   type TsconfigTarget,
@@ -14,6 +14,7 @@ import {
 import { resolveTsconfigLibrary } from "#tools/typescript/operations/resolveTsconfigLibrary";
 import { resolveTsconfigRuntime } from "#tools/typescript/operations/resolveTsconfigRuntime";
 import type { JsonEdit } from "#foundation/json/index";
+import type { LoadedConfig } from "#project/config/index";
 
 const apiTypesPrefix = `${engrenage}/apis/`;
 

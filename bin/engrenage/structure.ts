@@ -1,4 +1,4 @@
-import { aliasesSection, structureSection } from "#project/config/index";
+import { aliasesSection, structureSection } from "#project/structure/index";
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
 import { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 import { renderImportCycles } from "#project/structure/utils/renderImportCycles";

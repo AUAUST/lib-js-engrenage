@@ -1,12 +1,8 @@
 import { map } from "@auaust/primitive-kit/arrays";
 import { entries, record } from "@auaust/toolkit/object";
 
-import {
-  packageJsonSection,
-  sourceExportsSection,
-  type LoadedConfig,
-} from "#project/config/index";
-import { resolveExportPaths } from "#project/package/index";
+import { packageJsonSection, resolveExportPaths } from "#project/package/index";
+import { sourceExportsSection } from "#project/structure/index";
 import {
   isPackageAlias,
   readTsconfigPaths,
@@ -14,6 +10,7 @@ import {
   type TsconfigTarget,
 } from "#project/tsconfig/index";
 import type { JsonEdit } from "#foundation/json/index";
+import type { LoadedConfig } from "#project/config/index";
 
 const pathsLocation = ["compilerOptions", "paths"];
 

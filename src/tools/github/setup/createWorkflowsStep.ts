@@ -1,7 +1,7 @@
 import { relative } from "node:path";
 
 import { toPosixPath } from "#foundation/filesystem/index";
-import { environmentSection } from "#project/config/index";
+import { environmentSection } from "#project/package/index";
 import { gitSection } from "#tools/git/index";
 import { githubSection } from "#tools/github/config/sections/githubSection";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";

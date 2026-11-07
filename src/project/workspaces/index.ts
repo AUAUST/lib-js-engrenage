@@ -11,3 +11,7 @@ export { workspacesSchema } from "#project/workspaces/config/schemas/workspacesS
 // @barrel operations/*.ts named
 export { resolveWorkspaces } from "#project/workspaces/operations/resolveWorkspaces";
 // @end
+
+// @barrel config/sections/*.ts named
+export { workspacesSection } from "#project/workspaces/config/sections/workspacesSection";
+// @end

@@ -9,14 +9,14 @@ import {
   environmentSection,
   packageJsonPathSection,
   packageJsonSection,
-  traitsSection,
-  type LoadedConfig,
-} from "#project/config/index";
+} from "#project/package/index";
+import { traitsSection } from "#project/presets/index";
 import { gitSection } from "#tools/git/index";
 import { githubSection } from "#tools/github/config/sections/githubSection";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
+import type { LoadedConfig } from "#project/config/index";
 import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 
 async function assertScripts(

@@ -5,11 +5,9 @@ export { resolveImportRules } from "#project/structure/operations/resolveImportR
 
 // @barrel types/*.ts all
 export * from "#project/structure/types/Alias";
-export * from "#project/structure/types/AliasesInput";
 export * from "#project/structure/types/AliasesOption";
 export * from "#project/structure/types/BoundaryCause";
 export * from "#project/structure/types/BoundaryViolation";
-export * from "#project/structure/types/DomainInput";
 export * from "#project/structure/types/EffectModuleResolver";
 export * from "#project/structure/types/EffectModules";
 export * from "#project/structure/types/Entity";
@@ -27,10 +25,10 @@ export * from "#project/structure/types/ImportRule";
 export * from "#project/structure/types/ImportRuleSource";
 export * from "#project/structure/types/ImportRuleTarget";
 export * from "#project/structure/types/LineageMember";
-export * from "#project/structure/types/NamespaceInput";
 export * from "#project/structure/types/ProgramLayout";
 export * from "#project/structure/types/ResolvedAliases";
 export * from "#project/structure/types/ResolvedEffects";
+export * from "#project/structure/types/ResolvedFiles";
 export * from "#project/structure/types/ResolvedRoleContract";
 export * from "#project/structure/types/ResolvedRoles";
 export * from "#project/structure/types/ResolvedSpecifier";
@@ -49,23 +47,15 @@ export * from "#project/structure/types/StructureRelation";
 export * from "#project/structure/types/StructureRole";
 export * from "#project/structure/types/StructureSource";
 export * from "#project/structure/types/TestsContext";
-export * from "#project/structure/types/TestsLayout";
 export * from "#project/structure/types/TestVariant";
 export * from "#project/structure/types/UnclassifiedReason";
 // @end
 
-// @barrel config/declarers/*.ts named
-export { declareStructureOptions } from "#project/structure/config/declarers/declareStructureOptions";
-// @end
-
 // @barrel config/schemas/*.ts named
-export { aliasesSchema } from "#project/structure/config/schemas/aliasesSchema";
-export { domainSchema } from "#project/structure/config/schemas/domainSchema";
 export { effectLevelsSchema } from "#project/structure/config/schemas/effectLevelsSchema";
 export { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModuleResolverSchema";
 export { effectModulesSchema } from "#project/structure/config/schemas/effectModulesSchema";
 export { effectsSchema } from "#project/structure/config/schemas/effectsSchema";
-export { namespaceSchema } from "#project/structure/config/schemas/namespaceSchema";
 export { structureSchema } from "#project/structure/config/schemas/structureSchema";
 // @end
 
@@ -93,4 +83,14 @@ export { renderImportCycles } from "#project/structure/utils/renderImportCycles"
 export { renderStructure } from "#project/structure/utils/renderStructure";
 export { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
 export { resolveRoles } from "#project/structure/utils/resolveRoles";
+// @end
+
+// @barrel config/sections/*.ts named
+export { aliasesSection } from "#project/structure/config/sections/aliasesSection";
+export { environmentRolesSection } from "#project/structure/config/sections/environmentRolesSection";
+export { filesSection } from "#project/structure/config/sections/filesSection";
+export { importRulesSection } from "#project/structure/config/sections/importRulesSection";
+export { sourceExportsSection } from "#project/structure/config/sections/sourceExportsSection";
+export { structureOptionsSection } from "#project/structure/config/sections/structureOptionsSection";
+export { structureSection } from "#project/structure/config/sections/structureSection";
 // @end

@@ -1,4 +1,3 @@
-import type { ResolvedRoles } from "#project/structure/index";
 import type { ResolvedEnvironmentTsconfig } from "#project/tsconfig/index";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
@@ -10,6 +9,5 @@ export interface ResolvedCodeEnvironment {
   readonly discovered: Globs;
   readonly defines: boolean;
   readonly globs: Globs;
-  readonly roles: ResolvedRoles;
   readonly tsconfig: ResolvedEnvironmentTsconfig;
 }

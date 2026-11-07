@@ -4,7 +4,7 @@ import { dirname } from "node:path";
 import { object, string } from "valibot";
 
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
-import { cacheSection } from "#project/config/index";
+import { cacheSection } from "#project/cache/index";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { hashTree } from "#tools/git/index";
 import { defineCommand } from "#workflows/cli/operations/defineCommand";

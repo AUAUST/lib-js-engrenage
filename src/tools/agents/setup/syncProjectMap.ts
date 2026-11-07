@@ -1,41 +1,28 @@
 import { values } from "@auaust/toolkit/object";
 
+import { testsSection } from "#project/environments/index";
 import {
   aliasesSection,
+  environmentRolesSection,
   importRulesSection,
-  scriptsSection,
-  sourceSection,
   structureSection,
-  testsSection,
-  toolingSection,
-  type LoadedConfig,
-} from "#project/config/index";
+} from "#project/structure/index";
 import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import { projectMapDirectory } from "#tools/agents/constants";
 import { renderProjectMap } from "#tools/agents/utils/renderProjectMap";
+import type { LoadedConfig } from "#project/config/index";
 
 export async function syncProjectMap({ resolve, context }: LoadedConfig) {
-  const [
-    filesystem,
-    agents,
-    structure,
-    aliases,
-    importRules,
-    source,
-    scripts,
-    tooling,
-    tests,
-  ] = await Promise.all([
-    context.filesystem,
-    resolve(agentsSection),
-    resolve(structureSection),
-    resolve(aliasesSection),
-    resolve(importRulesSection),
-    resolve(sourceSection),
-    resolve(scriptsSection),
-    resolve(toolingSection),
-    resolve(testsSection),
-  ]);
+  const [filesystem, agents, structure, aliases, importRules, roles, tests] =
+    await Promise.all([
+      context.filesystem,
+      resolve(agentsSection),
+      resolve(structureSection),
+      resolve(aliasesSection),
+      resolve(importRulesSection),
+      resolve(environmentRolesSection),
+      resolve(testsSection),
+    ]);
 
   if (
     (agents.preferred?.length ?? 0) === 0 ||
@@ -48,10 +35,10 @@ export async function syncProjectMap({ resolve, context }: LoadedConfig) {
     structure,
     importRules,
     roles: {
-      src: source.roles,
-      scripts: scripts.roles,
-      tooling: tooling.roles,
-      tests: tests.roles,
+      src: roles.src,
+      scripts: roles.scripts,
+      tooling: roles.tooling,
+      tests: roles.tests,
     },
     aliases: [...aliases.global, ...aliases.src],
     patterns: tests.patterns,

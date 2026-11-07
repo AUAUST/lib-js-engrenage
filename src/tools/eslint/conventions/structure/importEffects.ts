@@ -32,6 +32,7 @@ export default defineConvention({
         if (
           environment === "dist" ||
           environment === "workspace" ||
+          environment === "data" ||
           roleName === undefined ||
           level === undefined ||
           services?.program == null ||
@@ -42,7 +43,7 @@ export default defineConvention({
 
         const { program, esTreeNodeToTSNodeMap } = services;
         const checker: TypeChecker = program.getTypeChecker();
-        const { effects } = config[environment].roles;
+        const { effects } = config.roles[environment];
         const allowed = effects.levels.indexOf(level);
 
         function declaringFile(symbol: Symbol | undefined) {

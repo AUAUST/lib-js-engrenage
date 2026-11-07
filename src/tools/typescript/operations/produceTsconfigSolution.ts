@@ -1,13 +1,14 @@
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 
-import { workspacesSection, type LoadedConfig } from "#project/config/index";
 import { tsconfigEnvironments } from "#project/tsconfig/constants";
 import {
   toTsconfigSpecifier,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
+import { workspacesSection } from "#project/workspaces/index";
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import type { JsonEdit } from "#foundation/json/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 
 async function listReferencedFiles(

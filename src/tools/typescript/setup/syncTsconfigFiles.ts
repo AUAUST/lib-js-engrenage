@@ -3,16 +3,13 @@ import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits, type JsonEdit } from "#foundation/json/index";
-import {
-  testsSection,
-  typescriptSection,
-  type LoadedConfig,
-} from "#project/config/index";
+import { testsSection } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
 import { tsconfigEnvironments } from "#project/tsconfig/constants";
 import {
   isLeftAlone,
   toJsonValue,
+  typescriptSection,
   type ResolvedEnvironmentTsconfig,
   type TsconfigKey,
   type TsconfigTarget,
@@ -20,6 +17,7 @@ import {
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import { tsconfigProducers } from "#tools/typescript/operations/tsconfigProducers";
 import type { ManagedListOption } from "#foundation/options/index";
+import type { LoadedConfig } from "#project/config/index";
 
 const variantKeys: readonly TsconfigKey[] = [
   ...tsconfigEnvironments,

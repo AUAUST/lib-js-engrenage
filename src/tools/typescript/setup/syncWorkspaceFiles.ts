@@ -12,14 +12,9 @@ import {
   resolveListOption,
   type ManagedListOption,
 } from "#foundation/options/index";
-import {
-  packageJsonSection,
-  typescriptSection,
-  workspacesSection,
-  type LoadedConfig,
-} from "#project/config/index";
 import { jsonIndentation } from "#project/format/constants";
 import {
+  packageJsonSection,
   writePackageJsonValue,
   type PackageJson,
 } from "#project/package/index";
@@ -28,12 +23,15 @@ import {
   toJsonValue,
   toTsconfigGlobs,
   toTsconfigSpecifier,
+  typescriptSection,
 } from "#project/tsconfig/index";
 import { selfImports } from "#project/workspaces/constants";
-import type {
-  ResolvedWorkspace,
-  ResolvedWorkspaceGroup,
+import {
+  workspacesSection,
+  type ResolvedWorkspace,
+  type ResolvedWorkspaceGroup,
 } from "#project/workspaces/index";
+import type { LoadedConfig } from "#project/config/index";
 
 interface Field {
   location: readonly [string] | readonly [string, string];

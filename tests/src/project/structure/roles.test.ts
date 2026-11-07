@@ -1,12 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import {
-  binSection,
-  dataSection,
-  loadConfig,
-  sourceSection,
-  testsSection,
-} from "@auaust/engrenage";
+import { environmentRolesSection, loadConfig } from "@auaust/engrenage";
 import { createRolePreset, utils } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -27,12 +21,24 @@ describe("roles", () => {
     });
 
     const config = await loadConfig(project.root);
-    const { roles } = (await config.resolve(sourceSection)).roles;
+    const roles = await config.resolve(environmentRolesSection);
 
-    expect(roles).toEqual({ utils: expect.objectContaining({ nesting: 1 }) });
-    expect((await config.resolve(testsSection)).roles.roles).toEqual({});
-    expect((await config.resolve(binSection)).roles.roles).toEqual({});
-    expect((await config.resolve(dataSection)).roles.roles).toEqual({});
+    expect(roles.src.roles).toEqual({
+      utils: expect.objectContaining({ nesting: 1 }),
+    });
+
+    expect(roles.tests.roles).toEqual({});
+    expect(roles.bin.roles).toEqual({});
+  });
+
+  test("resolve no roles for a disabled environment", async () => {
+    const project = createProject({ tests: false });
+
+    const config = await loadConfig(project.root);
+
+    expect((await config.resolve(environmentRolesSection)).tests.roles).toEqual(
+      {},
+    );
   });
 
   test("report two roles named alike in one list and nest a built preset", async () => {
@@ -41,7 +47,7 @@ describe("roles", () => {
     });
 
     await expect(
-      (await loadConfig(duplicated.root)).resolve(sourceSection),
+      (await loadConfig(duplicated.root)).resolve(environmentRolesSection),
     ).rejects.toThrow("src.roles[0] and src.roles[1] are both named utils");
 
     const helpers = createRolePreset({ name: "helpers", purpose: "Helpers." });
@@ -51,8 +57,8 @@ describe("roles", () => {
     });
 
     expect(
-      (await (await loadConfig(nested.root)).resolve(sourceSection)).roles.roles
-        .utils,
+      (await (await loadConfig(nested.root)).resolve(environmentRolesSection))
+        .src.roles.utils,
     ).toMatchObject({ roles: ["utils/helpers"] });
   });
 });

@@ -4,25 +4,27 @@ import { entries } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
 import { syncFiles } from "#foundation/blocks/index";
+import { buildOutDirSection, buildSection } from "#project/build/index";
 import {
   binSection,
-  buildSection,
   dataSection,
   runtimeSection,
   sourceSection,
-  traitsSection,
-  type LoadedConfig,
-} from "#project/config/index";
+  type ResolvedBin,
+  type ResolvedSource,
+} from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
 import {
   createPackageJson,
   writePackageJsonValue,
 } from "#project/package/index";
+import { traitsSection } from "#project/presets/index";
+import { environmentRolesSection } from "#project/structure/index";
 import { listPnpmWarnings } from "#tools/pnpm/index";
 import { resolveCommandFiles } from "#tools/tsdown/index";
 import type { JsonValue } from "#foundation/json/index";
 import type { Runtime } from "#project/baseline/index";
-import type { ResolvedBin, ResolvedSource } from "#project/environments/index";
+import type { LoadedConfig } from "#project/config/index";
 
 interface Field {
   location: readonly [string] | readonly [string, string];
@@ -59,17 +61,18 @@ function createEnginesFields({
 
 async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
   const { resolve, context } = config;
-  const { sourcemap, outDir } = await resolve(buildSection);
-  const directory = await outDir;
+  const { sourcemap } = await resolve(buildSection);
+  const directory = await resolve(buildOutDirSection);
 
   if (directory === undefined) {
     return [];
   }
 
-  const [data, source, bin, filesystem] = await Promise.all([
+  const [data, source, bin, roles, filesystem] = await Promise.all([
     resolve(dataSection),
     resolve(sourceSection),
     resolve(binSection),
+    resolve(environmentRolesSection),
     context.filesystem,
   ]);
 
@@ -80,7 +83,14 @@ async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
   ]);
 
   const commands = entries(
-    await resolveCommandFiles({ bin, filesystem }, directory),
+    await resolveCommandFiles(
+      {
+        bin,
+        roles: roles.bin,
+        filesystem,
+      },
+      directory,
+    ),
   ).map(([command, file]): Field => {
     return {
       location: ["bin", command],

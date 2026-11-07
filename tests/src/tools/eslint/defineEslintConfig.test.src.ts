@@ -3,7 +3,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { sourceSection } from "#project/config/index";
+import { sourceSection } from "#project/environments/index";
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { defineEslintConfig } from "#tools/eslint/config/defineEslintConfig";

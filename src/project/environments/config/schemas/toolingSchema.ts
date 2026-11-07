@@ -4,12 +4,12 @@ import {
   directorySchema,
   globSchema,
 } from "#foundation/options/index";
+import { declareStructureOptions } from "#project/environments/config/declarers/declareStructureOptions";
 import {
   defaultToolingDirectories,
   defaultToolingFiles,
 } from "#project/environments/constants";
 import { rolesSchema } from "#project/roles/index";
-import { declareStructureOptions } from "#project/structure/index";
 import {
   declareEnvironmentTsconfig,
   unmanagedTsconfig,

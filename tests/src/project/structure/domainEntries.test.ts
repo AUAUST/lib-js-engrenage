@@ -78,6 +78,15 @@ describe("domain entries", () => {
       }`),
     ).rejects.toThrow("share the specifier './same'");
   });
+
+  test("a subpath both derived from a public domain and listed in src.exports fails", async () => {
+    await expect(
+      exposed(`{
+        namespaces: { tools: {} },
+        exports: { "./alpha": "src/hidden/index.ts" },
+      }`),
+    ).rejects.toThrow("Subpath './alpha' is exposed by src.exports");
+  });
 });
 
 describe("internal specifiers", () => {

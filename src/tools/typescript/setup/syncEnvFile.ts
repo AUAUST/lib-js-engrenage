@@ -3,17 +3,14 @@ import { entries } from "@auaust/toolkit/object";
 
 import { syncBlocks } from "#foundation/blocks/index";
 import { relativeWithin } from "#foundation/filesystem/index";
-import {
-  defineSection,
-  typescriptSection,
-  type LoadedConfig,
-  type ResolvedGlobal,
-} from "#project/config/index";
+import { defineSection } from "#project/environments/index";
+import { typescriptSection } from "#project/tsconfig/index";
 import {
   identifierPattern,
   typescriptBlocks,
 } from "#tools/typescript/constants";
 import { inferType } from "#tools/typescript/utils/inferType";
+import type { LoadedConfig, ResolvedGlobal } from "#project/config/index";
 
 const directive = "define";
 

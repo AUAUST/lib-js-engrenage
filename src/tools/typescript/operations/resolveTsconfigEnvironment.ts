@@ -4,8 +4,8 @@ import {
   sourceSection,
   testsSection,
   toolingSection,
-  type LoadedConfig,
-} from "#project/config/index";
+} from "#project/environments/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { TsconfigEnvironment } from "#project/tsconfig/index";
 
 export async function resolveTsconfigEnvironment(

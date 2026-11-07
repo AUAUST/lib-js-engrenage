@@ -1,6 +1,6 @@
 import { posix } from "node:path";
 
-import { getIndexFile } from "#project/structure/index";
+import { getIndexFile, type ResolvedRoles } from "#project/structure/index";
 import { builtExtension } from "#tools/tsdown/constants";
 import { findCommands } from "#tools/tsdown/utils/findCommands";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";
@@ -8,12 +8,12 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedBin } from "#project/environments/index";
 
 export async function resolveCommandFiles(
-  config: { bin: ResolvedBin; filesystem: Filesystem },
+  config: { bin: ResolvedBin; roles: ResolvedRoles; filesystem: Filesystem },
   outDir: string,
 ): Promise<Record<string, string>> {
   const commandFiles: Record<string, string> = {};
 
-  const indexFile = getIndexFile(config.bin.roles);
+  const indexFile = getIndexFile(config.roles);
 
   for (const [command, file] of await findCommands(config)) {
     if (command in commandFiles) {

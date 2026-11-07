@@ -5,41 +5,51 @@ export {
   syncIgnoreFile,
 } from "#foundation/blocks/index";
 export { filesIn } from "#foundation/filesystem/index";
+export { buildOutDirSection, buildSection } from "#project/build/index";
+export { cacheSection } from "#project/cache/index";
+export { debugSection } from "#project/config/index";
 export {
-  aliasesSection,
   binOptionsSection,
   binSection,
-  buildSection,
-  cacheSection,
   dataSection,
-  debugSection,
   defineSection,
-  environmentSection,
-  filesSection,
-  formatSection,
-  importRulesSection,
-  packageJsonPathSection,
-  packageJsonSection,
-  presetSection,
   runtimeSection,
   scriptsOptionsSection,
   scriptsSection,
-  sourceExportsSection,
   sourceOptionsSection,
   sourceSection,
-  structureOptionsSection,
-  structureSection,
   testsOptionsSection,
   testsSection,
   toolingOptionsSection,
   toolingSection,
+} from "#project/environments/index";
+export { formatSection } from "#project/format/index";
+export {
+  environmentSection,
+  packageJsonPathSection,
+  packageJsonSection,
+} from "#project/package/index";
+export {
+  presetSection,
   traitAdjustmentsSection,
   traitsSection,
+} from "#project/presets/index";
+export {
+  aliasesSection,
+  environmentRolesSection,
+  filesSection,
+  importRulesSection,
+  sourceExportsSection,
+  structureOptionsSection,
+  structureSection,
+} from "#project/structure/index";
+export {
+  tsconfigPathSection,
   tsconfigSection,
   typescriptOptionsSection,
   typescriptSection,
-  workspacesSection,
-} from "#project/config/index";
+} from "#project/tsconfig/index";
+export { workspacesSection } from "#project/workspaces/index";
 export { agentsSection } from "#tools/agents/index";
 export { gitSection } from "#tools/git/index";
 export { githubSection } from "#tools/github/index";

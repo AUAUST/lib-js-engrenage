@@ -1,5 +1,5 @@
 import { packageJsonFile } from "#constants";
-import { packageJsonSection } from "#project/config/index";
+import { packageJsonSection } from "#project/package/index";
 import { readProjectPnpmVersion } from "#project/package/utils/readProjectPnpmVersion";
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
 import { installDependencies } from "#tools/pnpm/operations/installDependencies";

@@ -15,3 +15,7 @@ export * from "#project/format/ports/Formatter";
 export * from "#project/format/types/Conventions";
 export * from "#project/format/types/FormatInput";
 // @end
+
+// @barrel config/sections/*.ts named
+export { formatSection } from "#project/format/config/sections/formatSection";
+// @end

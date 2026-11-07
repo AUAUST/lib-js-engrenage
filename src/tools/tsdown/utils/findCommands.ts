@@ -3,16 +3,18 @@ import { posix } from "node:path";
 import { entries } from "@auaust/toolkit/object";
 
 import { filesIn, type Filesystem } from "#foundation/filesystem/index";
-import { getIndexFile } from "#project/structure/index";
+import { getIndexFile, type ResolvedRoles } from "#project/structure/index";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";
 import type { ResolvedBin } from "#project/environments/index";
 import type { File } from "#types/File";
 
 export async function findCommands({
   bin,
+  roles,
   filesystem,
 }: {
   bin: ResolvedBin;
+  roles: ResolvedRoles;
   filesystem: Filesystem;
 }): Promise<(readonly [command: string, file: File])[]> {
   if (bin.commands !== undefined) {
@@ -31,7 +33,7 @@ export async function findCommands({
     );
   }
 
-  const indexFile = getIndexFile(bin.roles);
+  const indexFile = getIndexFile(roles);
 
   const files = await filesystem.glob(
     filesIn(bin.dirs, ["*.ts", `*/${indexFile}`]),

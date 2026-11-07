@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 
 import { declareSection } from "#foundation/options/index";
-import { packageJsonSection } from "#project/config/index";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
+import { packageJsonSection } from "#project/package/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 describe("createProjectConfig", () => {

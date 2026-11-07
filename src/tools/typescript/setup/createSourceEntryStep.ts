@@ -1,4 +1,4 @@
-import { sourceSection } from "#project/config/index";
+import { sourceSection } from "#project/environments/index";
 import type { Step } from "#project/steps/index";
 
 export function createSourceEntryStep(): Step {

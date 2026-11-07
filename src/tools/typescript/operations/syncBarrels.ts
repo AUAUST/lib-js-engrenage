@@ -7,11 +7,13 @@ import { syncBlocks, syncFiles } from "#foundation/blocks/index";
 import { filesIn, relativeWithin, resolve } from "#foundation/filesystem/index";
 import {
   binSection,
-  packageJsonSection,
   scriptsSection,
   sourceSection,
-  type LoadedConfig,
-} from "#project/config/index";
+} from "#project/environments/index";
+import {
+  packageJsonSection,
+  type SubpathImports,
+} from "#project/package/index";
 import {
   barrelFiles,
   declarationExtension,
@@ -19,7 +21,7 @@ import {
   typescriptBlocks,
 } from "#tools/typescript/constants";
 import { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
-import type { SubpathImports } from "#project/package/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { BarrelMode } from "#tools/typescript/types/BarrelMode";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

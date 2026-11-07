@@ -9,7 +9,7 @@ import {
   sourceSection,
   testsSection,
   toolingSection,
-} from "#project/config/index";
+} from "#project/environments/index";
 import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
 import { ensureAnyOf } from "#workflows/cli/operations/ensureAnyOf";
 import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";

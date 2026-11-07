@@ -7,7 +7,7 @@ import {
   directorySchema,
 } from "#foundation/options/index";
 import { defaultBuildClean, defaultSourcemap } from "#project/build/constants";
-import type { ResolvedDefine } from "#project/config/index";
+import type { ResolvedDefine } from "#project/environments/index";
 import type { Tsconfig } from "#project/tsconfig/index";
 import type { Directory } from "#types/Directory";
 

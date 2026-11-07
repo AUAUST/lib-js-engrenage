@@ -4,7 +4,7 @@ import {
   globSchema,
 } from "#foundation/options/index";
 import { declareDefines } from "#project/environments/config/declarers/declareDefines";
-import { declareStructureOptions } from "#project/structure/index";
+import { declareStructureOptions } from "#project/environments/config/declarers/declareStructureOptions";
 import { declareEnvironmentTsconfig } from "#project/tsconfig/index";
 import type { Directories } from "#types/Directories";
 

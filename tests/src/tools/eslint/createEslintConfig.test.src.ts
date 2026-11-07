@@ -9,11 +9,9 @@ import { memoized } from "@auaust/toolkit/memoized";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { packageJsonFile } from "#constants";
-import {
-  environmentSection,
-  filesSection,
-  traitsSection,
-} from "#project/config/index";
+import { environmentSection } from "#project/package/index";
+import { traitsSection } from "#project/presets/index";
+import { filesSection } from "#project/structure/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { infoRulesSetting } from "#tools/eslint/constants";

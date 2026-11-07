@@ -15,22 +15,32 @@ import {
 import { readJsonFile, resolveWithin } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
 import { emittedManifestFile } from "#project/build/constants";
+import { buildOutDirSection, buildSection } from "#project/build/index";
+import { cacheSection } from "#project/cache/index";
 import {
   binSection,
-  buildSection,
-  cacheSection,
   createDefine,
   dataSection,
+  sourceSection,
+} from "#project/environments/index";
+import {
   environmentSection,
   packageJsonPathSection,
   packageJsonSection,
+} from "#project/package/index";
+import {
+  environmentRolesSection,
   sourceExportsSection,
-  sourceSection,
+} from "#project/structure/index";
+import {
+  tsconfigPathSection,
   tsconfigSection,
-  typescriptSection,
+  type PathAliases,
+} from "#project/tsconfig/index";
+import {
   workspacesSection,
-  type LoadedConfig,
-} from "#project/config/index";
+  type ResolvedWorkspaceGroup,
+} from "#project/workspaces/index";
 import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
 import {
   emptyNamespaces,
@@ -47,8 +57,7 @@ import { createEntrySelfReferencesPlugins } from "#tools/tsdown/plugins/createEn
 import { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
 import { resolveDataExports } from "#tools/tsdown/utils/resolveDataExports";
 import { resolveTsdownTarget } from "#tools/tsdown/utils/resolveTsdownTarget";
-import type { PathAliases } from "#project/tsconfig/index";
-import type { ResolvedWorkspaceGroup } from "#project/workspaces/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { Config } from "#tools/tsdown/types/Config";
 import type { Entries } from "#tools/tsdown/types/Entries";
 import type { Options } from "#tools/tsdown/types/Options";
@@ -121,9 +130,7 @@ export async function createTsdownConfig(
   const packageJson = await config.resolve(packageJsonSection);
   const packageJsonPath = await config.resolve(packageJsonPathSection);
   const source = await config.resolve(sourceSection);
-  const typescript = await config.resolve(typescriptSection);
-
-  const tsconfigPath = await typescript.tsconfig.path;
+  const tsconfigPath = await config.resolve(tsconfigPathSection);
   const declarationsTsconfigPath = await source.tsconfig.path;
 
   // @debt repeats the "No package.json found" guard of createStepContext and syncChangesetConfig
@@ -137,9 +144,8 @@ export async function createTsdownConfig(
     );
   }
 
-  const build = await config.resolve(buildSection);
-  const { typed, sourcemap, clean } = build;
-  const outDir = await build.outDir;
+  const { typed, sourcemap, clean } = await config.resolve(buildSection);
+  const outDir = await config.resolve(buildOutDirSection);
 
   if (outDir === undefined) {
     throw new Error(
@@ -154,8 +160,11 @@ export async function createTsdownConfig(
     tsconfig: await config.resolve(tsconfigSection),
   });
 
+  const roles = await config.resolve(environmentRolesSection);
+
   const bins = await resolveCommandEntries({
     bin: await config.resolve(binSection),
+    roles: roles.bin,
     filesystem: config.context.filesystem,
   });
 

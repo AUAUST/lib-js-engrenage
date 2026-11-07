@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { startVitest } from "vitest/node";
 
-import { testsSection } from "#project/config/index";
+import { testsSection } from "#project/environments/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";
 import { loadConfig } from "#workflows/registry/operations/loadConfig";

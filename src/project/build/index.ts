@@ -14,3 +14,8 @@ export { createEmittedManifest } from "#project/build/operations/createEmittedMa
 // @barrel setup/*.ts named
 export { createBuildToolStep } from "#project/build/setup/createBuildToolStep";
 // @end
+
+// @barrel config/sections/*.ts named
+export { buildOutDirSection } from "#project/build/config/sections/buildOutDirSection";
+export { buildSection } from "#project/build/config/sections/buildSection";
+// @end

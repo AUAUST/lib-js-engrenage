@@ -2,7 +2,7 @@ import { join } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
-import { buildSection } from "#project/config/index";
+import { buildSection } from "#project/build/index";
 import { loadConfig as loadProjectConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
