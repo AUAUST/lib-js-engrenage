@@ -5,12 +5,14 @@ export { default as cognitiveComplexity } from "#tools/eslint/conventions/stylis
 export { default as conditionals } from "#tools/eslint/conventions/stylistic/conditionals";
 export { default as curly } from "#tools/eslint/conventions/stylistic/curly";
 export { default as exhaustiveSwitches } from "#tools/eslint/conventions/stylistic/exhaustiveSwitches";
+export { default as fileLines } from "#tools/eslint/conventions/stylistic/fileLines";
 export { default as functionDeclarations } from "#tools/eslint/conventions/stylistic/functionDeclarations";
 export { default as functionLines } from "#tools/eslint/conventions/stylistic/functionLines";
 export { default as groupedOverloads } from "#tools/eslint/conventions/stylistic/groupedOverloads";
 export { default as nameReplacements } from "#tools/eslint/conventions/stylistic/nameReplacements";
 export { default as naming } from "#tools/eslint/conventions/stylistic/naming";
 export { default as noComplexConciseArrows } from "#tools/eslint/conventions/stylistic/noComplexConciseArrows";
+export { default as noIdenticalFunctions } from "#tools/eslint/conventions/stylistic/noIdenticalFunctions";
 export { default as noRedundantTypes } from "#tools/eslint/conventions/stylistic/noRedundantTypes";
 export { default as noReturnUndefined } from "#tools/eslint/conventions/stylistic/noReturnUndefined";
 export { default as noUnnecessaryTypeParameters } from "#tools/eslint/conventions/stylistic/noUnnecessaryTypeParameters";

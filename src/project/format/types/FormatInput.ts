@@ -50,4 +50,9 @@ export interface FormatInput {
    * @default 125
    */
   maxFunctionLines?: (number | undefined)
+  /**
+   * Most lines a module may span, blank lines and comments excluded.
+   * @default 400
+   */
+  maxFileLines?: (number | undefined)
 }

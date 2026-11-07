@@ -2,4 +2,4 @@
 
 <!-- scratchpad-placeholder -->
 
-> "The only true wisdom is in knowing you know nothing." — Socrates
+“The unexamined life is not worth living.” — Socrates

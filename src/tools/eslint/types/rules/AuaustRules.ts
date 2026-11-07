@@ -92,6 +92,11 @@ export interface AuaustRules {
    */
   "auaust/logical-assignment-operators"?: Rule<AuaustLogicalAssignmentOperators>;
   /**
+   * Enforce a maximum number of lines per file
+   * @see https://eslint.org/docs/latest/rules/max-lines
+   */
+  "auaust/max-lines"?: Rule<AuaustMaxLines>;
+  /**
    * Enforce a maximum number of lines of code in a function
    * @see https://eslint.org/docs/latest/rules/max-lines-per-function
    */
@@ -182,6 +187,11 @@ export interface AuaustRules {
    * @see https://typescript-eslint.io/rules/no-floating-promises
    */
   "auaust/no-floating-promises"?: Rule<AuaustNoFloatingPromises>;
+  /**
+   * Functions should not have identical implementations
+   * @see https://sonarsource.github.io/rspec/#/rspec/S4144/javascript
+   */
+  "auaust/no-identical-functions"?: Rule<AuaustNoIdenticalFunctions>;
   /**
    * Enforce the use of top-level import type qualifier when an import only has specifiers with inline type qualifiers
    * @see https://typescript-eslint.io/rules/no-import-type-side-effects
@@ -600,6 +610,17 @@ type AuaustLogicalAssignmentOperators = (
   | ["never"]
 ) &
   unknown[];
+// ----- auaust/max-lines -----
+type AuaustMaxLines =
+  | []
+  | [
+      | number
+      | {
+          max?: number;
+          skipComments?: boolean;
+          skipBlankLines?: boolean;
+        },
+    ];
 // ----- auaust/max-lines-per-function -----
 type AuaustMaxLinesPerFunction =
   | []
@@ -1268,6 +1289,8 @@ type AuaustNoFloatingPromises =
         ignoreVoid?: boolean;
       },
     ];
+// ----- auaust/no-identical-functions -----
+type AuaustNoIdenticalFunctions = [] | [number];
 // ----- auaust/no-inferrable-types -----
 type AuaustNoInferrableTypes =
   | []

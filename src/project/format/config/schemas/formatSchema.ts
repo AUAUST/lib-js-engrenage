@@ -44,6 +44,11 @@ export const formatSchema = declareObject(
         "Most lines a function may span, blank lines and comments excluded.",
       optional: { value: complexityLimits.functionLines },
     }),
+    maxFileLines: declare(pipe(number(), integer(), minValue(1)), {
+      description:
+        "Most lines a module may span, blank lines and comments excluded.",
+      optional: { value: complexityLimits.fileLines },
+    }),
   },
   {
     description:

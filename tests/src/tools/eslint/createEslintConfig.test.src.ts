@@ -1962,21 +1962,38 @@ describe("complexity limits", () => {
   const rules = [
     "auaust/cognitive-complexity",
     "auaust/max-lines-per-function",
+    "auaust/max-lines",
   ];
 
-  test("allow functions within the default limits", async () => {
+  test("allow code within the default limits", async () => {
     const reported = await lintedProjectRules(source);
 
-    expect(reported).not.toEqual(expect.arrayContaining([rules[0]]));
-    expect(reported).not.toEqual(expect.arrayContaining([rules[1]]));
+    for (const rule of rules) {
+      expect(reported).not.toContain(rule);
+    }
   });
 
   test("apply the limits of the format section", async () => {
     const reported = await lintedProjectRules(source, {
       engrenageConfig:
-        "export default { format: { maxCognitiveComplexity: 0, maxFunctionLines: 2 } };\n",
+        "export default { format: { maxCognitiveComplexity: 0, maxFunctionLines: 2, maxFileLines: 2 } };\n",
     });
 
     expect(reported).toEqual(expect.arrayContaining(rules));
+  });
+
+  test("report identical functions", async () => {
+    const body = `{
+  const doubled = value * 2;
+  const shifted = doubled + 1;
+
+  return shifted;
+}`;
+
+    const reported = await lintedProjectRules(
+      `export function first(value: number): number ${body}\n\nexport function second(value: number): number ${body}\n`,
+    );
+
+    expect(reported).toContain("auaust/no-identical-functions");
   });
 });

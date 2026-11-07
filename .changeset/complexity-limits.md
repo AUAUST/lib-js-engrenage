@@ -2,5 +2,6 @@
 "@auaust/engrenage": minor
 ---
 
-- Report functions above a cognitive complexity of 15 (`sonarjs/cognitive-complexity`) or longer than 100 lines, blank lines and comments excluded (`max-lines-per-function`, outside test files), as the `stylistic` conventions `cognitiveComplexity` and `functionLines`. Upgrade: refactor the reported functions, raise the limits, or disable the conventions.
-- Add the `format.maxCognitiveComplexity` and `format.maxFunctionLines` options.
+- Report functions above a cognitive complexity of 20 (`sonarjs/cognitive-complexity`) or longer than 125 lines (`max-lines-per-function`), and modules longer than 300 lines (`max-lines`), blank lines and comments excluded and test files exempt from the line limits, as the `stylistic` conventions `cognitiveComplexity`, `functionLines` and `fileLines`. Upgrade: refactor the reported code, raise the limits, or disable the conventions.
+- Report functions with identical implementations (`sonarjs/no-identical-functions`) as the `stylistic` convention `noIdenticalFunctions`.
+- Add the `format.maxCognitiveComplexity`, `format.maxFunctionLines` and `format.maxFileLines` options.
