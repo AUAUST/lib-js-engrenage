@@ -171,7 +171,8 @@ describe("agents.attribution", () => {
               hooks: [
                 {
                   type: "command",
-                  command: "pnpm --silent engrenage agents claude hook dispatch",
+                  command:
+                    "pnpm --silent engrenage agents claude hook dispatch",
                 },
               ],
             },
