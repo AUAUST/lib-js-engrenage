@@ -22,7 +22,9 @@ vi.mock("#tools/agents/operations/readHookPayload", () => {
 
 vi.mock("#tools/github/operations/checkIssue", () => {
   return {
-    checkIssue: vi.fn(() => Promise.resolve([])),
+    checkIssue: vi.fn(() =>
+      Promise.resolve({ findings: [], openSubIssues: [] }),
+    ),
   };
 });
 

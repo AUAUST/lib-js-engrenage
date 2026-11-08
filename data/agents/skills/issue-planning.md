@@ -57,7 +57,7 @@ To flush:
 
 ## Consultant mode
 
-The walker runs you as its `planner` subagent: a fallback that keeps code and plan reading out of the walker's context, one per walk, resumed through the client’s agent messaging or resume tool so you keep your context.
+The walker runs you as its `planner` subagent: a fallback that keeps code and plan reading out of the walker's context.
 
 - Edit issues on GitHub directly, without drafts: the walker needs each update at once.
 - Judge every worker stop and deviation against the plan and its issues, never against the code the worker wrote.
@@ -149,7 +149,7 @@ Order expresses urgency, not importance: a task comes first because later work s
 
 ## How workers read issues
 
-Workers implement one issue at a time under the issue-implementation skill, once its prerequisites are closed and its sub-issues are done, reading its ancestors only up to the nearest plan. Everything in the issue binds them: they decide only local choices no other code, contract or issue can observe, stop on any **Planning** or **Questions**, and report what the tree needs updated instead of editing issues. The walker routes each issue by the handling table of the issue-walking skill.
+Workers implement one issue at a time under the issue-implementation skill, and the walker routes each issue by the issue-walking skill's handling table. Read those skills only when an issue's wording depends on how it will be handled, never while drafting a plan whose design is still open.
 
 ## Procedure
 
@@ -281,17 +281,16 @@ While an issue's design is open, write what is settled and put the rest under **
 
 ## Fields
 
-| Field                     | Set when                                                                                  | Effect                                  |
-| ------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------- |
-| Blockers `Open questions` | Written together with a **Planning** or **Questions** section; cleared once both are gone | The walker refuses the issue            |
-| Complexity `Complex`      | The work is broad or delicate                                                             | The walker dispatches it at high effort |
-| Complexity `Trivial`      | The work is small and mechanical                                                          | The walker dispatches it at low effort  |
+| Field                     | Set when                                                                                  | Effect                       |
+| ------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------- |
+| Blockers `Open questions` | Written together with a **Planning** or **Questions** section; cleared once both are gone | The walker refuses the issue |
+| Complexity `Complex`      | The work is broad or delicate                                                             | Higher dispatch effort       |
+| Complexity `Trivial`      | The work is small and mechanical                                                          | Lower dispatch effort        |
 
 ## GitHub mechanics
 
-- Create issues with `gh issue create` and edit them with `gh issue edit <n>`, passing bodies on standard input (`--body-file -`). Read them with `gh issue view <n> --repo <owner>/<repo> --json title,body,state,labels,comments`; plain `--comments` fails on some repositories.
+- Create issues with `gh issue create` and edit them with `gh issue edit <n>`, passing bodies on standard input (`--body-file -`).
 - Set the type through GraphQL once the issue exists: `gh api graphql -f query='mutation{updateIssueIssueType(input:{issueId:"<issue node id>",issueTypeId:"<type node id>"}){issue{number}}}'`, with the type ids from `organization(login:"<org>"){issueTypes(first:20){nodes{id name}}}`. The REST `PATCH … -f type=` is ignored silently.
 - Set a field with `gh api -X POST repos/{owner}/{repo}/issues/<n>/issue-field-values --input -` and `{"issue_field_values":[{"field_id":<id>,"value":["Open questions"]}]}` on standard input, values being option names, never option ids; the field id comes from `gh api orgs/{org}/issue-fields`. Post every value the field must keep, read from `gh api repos/{owner}/{repo}/issues/<n>/issue-field-values`. Clear it with `gh api -X DELETE repos/{owner}/{repo}/issues/<n>/issue-field-values/<id>`; to remove one value, clear the field and post the values left, if any.
 - Sub-issues take the child's database `id`, not its number, and keep insertion order, so attach them in order: `gh api repos/{owner}/{repo}/issues/<parent>/sub_issues -F sub_issue_id=$(gh api repos/{owner}/{repo}/issues/<child> --jq .id)`.
 - Set a prerequisite outside tree order with `gh api -X POST repos/{owner}/{repo}/issues/<n>/dependencies/blocked_by -F issue_id=<database id>`.
-- List a parent's children with `gh api repos/{owner}/{repo}/issues/<parent>/sub_issues --jq '.[] | "\(.number) \(.state) \(.title)"'`.

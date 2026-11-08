@@ -20,7 +20,7 @@ export async function checkAgentDispatch(
       : undefined;
   }
 
-  const findings = await checkIssue(
+  const { findings } = await checkIssue(
     { repository: issue.repository, token: await resolveGithubToken() },
     issue.number,
     role,

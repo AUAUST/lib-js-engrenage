@@ -12,3 +12,18 @@ Shared agent instructions, skills and the backlog conventions.
 - sites: `src/tools/agents/setup/createBacklogStep.ts:69`, `src/tools/agents/setup/syncAgentFiles.ts:35`, `createAgentsStep`, `createInstructionFile`, `getMissingRuleTemplates` (regex re-parse).
 - why: `markdownBlocks` already describes the syntax; a rule file at the wanted path without its reference silently drops the rule. #9 ("Markers fail silently", marker grammar) covers it.
 - want: folded into #9: one marker grammar from `markdownBlocks`; sync reports the conflict.
+
+## 3. The issue-drafts protocol is copied in the debugging and issue-planning skills and has drifted
+
+- why: the Drafts sections of `data/agents/skills/debugging.md` and `issue-planning.md` match except their flush triggers and creation order.
+- want: one rule fragment scoped to `.ai/issues/**` owning the protocol; each skill keeps only its deviations.
+
+## 4. The worker and debugger skills repeat their gated finishing lines word for word
+
+- why: the final-report, worktree-gate and stop-gate lines in the Finishing sections of `issue-implementation.md` and `debugging.md` are identical and must change together.
+- want: one source for agents with `gate: true`, generated into each, once the copies start to drift.
+
+## 5. "Serialize verification in a shared worktree" cannot be followed by instruction alone
+
+- why: in `data/agents/sections/verification.md`, a walker cannot see a gate running in an agent's stop hook; only a per-worktree gate lock (#319, "Coordinate gates per worktree") makes overlap impossible.
+- done: delete the rule once that lock lands.

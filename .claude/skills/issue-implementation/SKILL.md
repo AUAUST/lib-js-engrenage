@@ -34,23 +34,17 @@ Everything in the issue binds you: follow the **Steps** in order and write the l
 
 ## Checkpoints
 
-- At each `Checkpoint:` line, check that its expected state holds, then commit everything done so far, choosing the message under the project's git rules with `Towards #<n>` in the body.
-- When the commit gate fails, fix what it reports and commit again before the next Step.
+- At each `Checkpoint:` line, check that its expected state holds before committing.
 - When the expected state cannot be reached, stop and report: the Steps do not match the code.
 - Commit nowhere else: the walker makes the closing commit.
 
 ## Finishing
 
-- The issue is done when its **Done when** holds, or its **Steps** are done when it has none, and the project's checks pass.
+- The issue is done when its **Done when** holds, or its **Steps** are done when it has none.
 - Send no message before your final report, your only message: a completion or a blocker, sent once every command you started has finished and `engrenage gate --worktree` passes, so the stop gate reuses that pass.
-- The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again on that unchanged tree. Reporting failures never authorizes a failing commit.
+- The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again on that unchanged tree.
 - When asked for a branch, create `worker/issue-<n>` from the current commit.
 - Never edit, comment on, set types or fields on, or close issues.
 - Report whether **Done when** holds, each deviation from the issue with its reason, each local choice you made, and what the issue tree needs updated.
-
-## GitHub mechanics
-
-- Read issues with `gh issue view <n> --repo <owner>/<repo> --json title,body,state,labels,comments`; plain `--comments` fails on some repositories.
-- List sub-issues with `gh api repos/{owner}/{repo}/issues/<n>/sub_issues --jq '.[] | "\(.number) \(.state) \(.title)"'`.
 
 <!-- @end -->

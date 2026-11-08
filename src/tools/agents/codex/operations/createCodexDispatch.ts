@@ -61,7 +61,7 @@ export function createCodexDispatch(
   if (profiles.some((profile) => profile.role === "planner")) {
     lines.push(
       "",
-      "Use the planner profile only as the walker's consultant. Keep one consultant per walk and resume it with its existing id. Send unresolved questions to the user.",
+      "Use the planner profile only as the walker's consultant, and resume it with its existing id.",
     );
   }
 

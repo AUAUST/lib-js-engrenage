@@ -6,6 +6,7 @@ import { parseIssueBody } from "#tools/github/utils/parseIssueBody";
 import type { GithubAccess } from "#tools/github/types/GithubAccess";
 import type { GithubIssue } from "#tools/github/types/GithubIssue";
 import type { IssueAudience } from "#tools/github/types/IssueAudience";
+import type { IssueCheck } from "#tools/github/types/IssueCheck";
 import type { IssueFinding } from "#tools/github/types/IssueFinding";
 
 async function findAncestors(access: GithubAccess, issue: GithubIssue) {
@@ -76,13 +77,17 @@ export async function checkIssue(
   number: number,
   audience: IssueAudience = "worker",
   { dispatch = false }: { dispatch?: boolean } = {},
-): Promise<IssueFinding[]> {
+): Promise<IssueCheck> {
   const issue = await fetchIssue(access, number);
 
   const parsed = parseIssueBody(issue.body);
 
+  const openSubIssues = issue.subIssues
+    .filter(({ state }) => state === "open")
+    .map(({ number }) => number);
+
   if (audience === "debugger" && !dispatch) {
-    return checkIssueReadiness(
+    const findings = checkIssueReadiness(
       {
         issue,
         parsed,
@@ -91,6 +96,8 @@ export async function checkIssue(
       },
       audience,
     );
+
+    return { findings, openSubIssues };
   }
 
   const { chain, findings } = await findAncestors(access, issue);
@@ -151,5 +158,5 @@ export async function checkIssue(
     }
   }
 
-  return findings;
+  return { findings, openSubIssues };
 }

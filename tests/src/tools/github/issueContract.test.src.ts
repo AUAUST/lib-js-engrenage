@@ -4,6 +4,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { checkGithubWrite } from "#tools/github/operations/checkGithubWrite";
 import { checkIssue } from "#tools/github/operations/checkIssue";
 import { checkIssueBody } from "#tools/github/utils/checkIssueBody";
+import { formatIssueCheck } from "#tools/github/utils/formatIssueCheck";
 import { parseGithubCommand } from "#tools/github/utils/parseGithubCommand";
 import { parseIssueBody } from "#tools/github/utils/parseIssueBody";
 
@@ -181,17 +182,19 @@ describe("checkIssue", () => {
       },
     });
 
-    expect(await checkIssue(access, 10)).toEqual([]);
+    expect((await checkIssue(access, 10)).findings).toEqual([]);
 
-    expect(await checkIssue(access, 10, "worker", { dispatch: true })).toEqual(
+    expect(
+      (await checkIssue(access, 10, "worker", { dispatch: true })).findings,
+    ).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ rule: "dispatch-type" }),
       ]),
     );
 
-    expect(await checkIssue(access, 11, "worker", { dispatch: true })).toEqual(
-      [],
-    );
+    expect(
+      (await checkIssue(access, 11, "worker", { dispatch: true })).findings,
+    ).toEqual([]);
   });
 
   test.each(["Task", "Problem"])(
@@ -210,7 +213,7 @@ describe("checkIssue", () => {
         await checkIssue(access, 11, type === "Task" ? "worker" : "debugger", {
           dispatch: true,
         })
-      ).map(({ rule }) => rule);
+      ).findings.map(({ rule }) => rule);
 
       expect(rules).toEqual(
         expect.arrayContaining(["sub-issues", "blocked-by"]),
@@ -223,7 +226,9 @@ describe("checkIssue", () => {
       11: { body: "## Context\n\nA failure.\n", type: "Problem" },
     });
 
-    expect(await checkIssue(access, 11, "worker", { dispatch: true })).toEqual(
+    expect(
+      (await checkIssue(access, 11, "worker", { dispatch: true })).findings,
+    ).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           rule: "missing-section",
@@ -233,7 +238,7 @@ describe("checkIssue", () => {
     );
 
     expect(
-      await checkIssue(access, 11, "debugger", { dispatch: true }),
+      (await checkIssue(access, 11, "debugger", { dispatch: true })).findings,
     ).toEqual([]);
   });
 
@@ -252,10 +257,12 @@ describe("checkIssue", () => {
     });
 
     expect(
-      await checkIssue(access, 11, "debugger", { dispatch: true }),
+      (await checkIssue(access, 11, "debugger", { dispatch: true })).findings,
     ).toEqual([]);
 
-    expect(await checkIssue(access, 11, "worker", { dispatch: true })).toEqual(
+    expect(
+      (await checkIssue(access, 11, "worker", { dispatch: true })).findings,
+    ).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           rule: "open-section",
@@ -282,9 +289,11 @@ describe("checkIssue", () => {
         },
       });
 
-      const findings = await checkIssue(access, 11, audience, {
-        dispatch: true,
-      });
+      const findings = (
+        await checkIssue(access, 11, audience, {
+          dispatch: true,
+        })
+      ).findings;
 
       expect(findings.map(({ rule }) => rule)).toEqual(
         expect.arrayContaining(["open-section", "blockers", "blocked-by"]),
@@ -306,7 +315,9 @@ describe("checkIssue", () => {
       },
     });
 
-    const findings = await checkIssue(access, 11, "worker", { dispatch: true });
+    const findings = (
+      await checkIssue(access, 11, "worker", { dispatch: true })
+    ).findings;
 
     expect(findings).toEqual(
       expect.arrayContaining([
@@ -337,7 +348,9 @@ describe("checkIssue", () => {
       },
     });
 
-    expect(await checkIssue(access, 11, "worker", { dispatch: true })).toEqual(
+    expect(
+      (await checkIssue(access, 11, "worker", { dispatch: true })).findings,
+    ).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           rule: "ancestor-cycle",
@@ -355,7 +368,9 @@ describe("checkIssue", () => {
       },
     });
 
-    expect(await checkIssue(access, 11, "worker", { dispatch: true })).toEqual(
+    expect(
+      (await checkIssue(access, 11, "worker", { dispatch: true })).findings,
+    ).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           rule: "ancestor-unavailable",
@@ -376,7 +391,7 @@ describe("checkIssue", () => {
       },
     });
 
-    const findings = await checkIssue(access, 11);
+    const findings = (await checkIssue(access, 11)).findings;
 
     expect(findings.map(({ rule }) => rule)).toEqual(["open-section"]);
   });
@@ -391,7 +406,9 @@ describe("checkIssue", () => {
       },
     });
 
-    const rules = (await checkIssue(access, 11)).map(({ rule }) => rule);
+    const rules = (await checkIssue(access, 11)).findings.map(
+      ({ rule }) => rule,
+    );
 
     expect(rules).toContain("stale-field");
   });
@@ -407,7 +424,9 @@ describe("checkIssue", () => {
       },
     });
 
-    const rules = (await checkIssue(access, 11)).map(({ rule }) => rule);
+    const rules = (await checkIssue(access, 11)).findings.map(
+      ({ rule }) => rule,
+    );
 
     expect(rules).toContain("header-chain");
   });
@@ -421,9 +440,11 @@ describe("checkIssue", () => {
       },
     });
 
-    const rules = (await checkIssue(access, 11, "debugger")).map(({ rule }) => {
-      return rule;
-    });
+    const rules = (await checkIssue(access, 11, "debugger")).findings.map(
+      ({ rule }) => {
+        return rule;
+      },
+    );
 
     expect(rules).toEqual(["blockers"]);
   });
@@ -528,6 +549,40 @@ describe("parseGithubCommand", () => {
         `gh issue create --title t --body-file - <<'EOF'\nRun gh issue edit 5 --body x.\nEOF`,
       ),
     ).toHaveLength(1);
+  });
+});
+
+describe("formatIssueCheck", () => {
+  const access = { repository: "o/r", token: "t" };
+
+  test("lists open sub-issues to walk first apart from the issue's own findings", async () => {
+    mockGithub({
+      11: {
+        body: task.replace("#10 ·", "Standalone"),
+        type: "Task",
+        blockers: ["Outdated"],
+        subIssues: [
+          { number: 12, state: "closed" },
+          { number: 13, state: "open" },
+          { number: 14, state: "open" },
+        ],
+      },
+    });
+
+    const check = await checkIssue(access, 11);
+
+    expect(check.openSubIssues).toEqual([13, 14]);
+
+    expect(formatIssueCheck(11, check)).toEqual([
+      "#11 has open sub-issues to walk first: #13, #14",
+      "#11 itself: Blockers has `Outdated`: clear it first.",
+    ]);
+  });
+
+  test("reports an issue without open sub-issues as before", () => {
+    expect(formatIssueCheck(11, { findings: [], openSubIssues: [] })).toEqual([
+      "#11 ready",
+    ]);
   });
 });
 

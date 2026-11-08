@@ -2,6 +2,7 @@ import { Option } from "@commander-js/extra-typings";
 
 import {
   checkIssue,
+  formatIssueCheck,
   resolveGithubToken,
   resolveRepository,
 } from "#tools/github/index";
@@ -11,7 +12,7 @@ export const issues = defineCommand((command) => {
   command
     .command("check")
     .description(
-      "Check that an issue meets the issue contract; exit 1 with one line per finding otherwise.",
+      "Check that an issue meets the issue contract, listing its open sub-issues to walk first; exit 1 with one line per finding otherwise.",
     )
     .argument("<number>", "issue number", Number)
     .option("--repo <owner/repo>", "repository, else package.json or origin")
@@ -21,7 +22,7 @@ export const issues = defineCommand((command) => {
         .default("worker" as const),
     )
     .action(async (number, { repo, for: audience }) => {
-      const findings = await checkIssue(
+      const check = await checkIssue(
         {
           repository: await resolveRepository(process.cwd(), repo),
           token: await resolveGithubToken(),
@@ -30,15 +31,13 @@ export const issues = defineCommand((command) => {
         audience,
       );
 
-      if (findings.length === 0) {
-        return void console.log(`#${number} ready`);
+      for (const line of formatIssueCheck(number, check)) {
+        console.log(line);
       }
 
-      for (const { message } of findings) {
-        console.log(`#${number} ${message}`);
+      if (check.findings.length > 0) {
+        process.exitCode = 1;
       }
-
-      process.exitCode = 1;
     });
 
   return command;
