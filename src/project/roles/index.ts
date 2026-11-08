@@ -17,6 +17,7 @@ export * from "#project/roles/types/RoleInput";
 export * from "#project/roles/types/RoleLocation";
 export * from "#project/roles/types/RoleLocationMember";
 export * from "#project/roles/types/RolePreset";
+export * from "#project/roles/types/RoleRuleLoader";
 export * from "#project/roles/types/RoleRuleModule";
 export * from "#project/roles/types/RoleRules";
 // @end

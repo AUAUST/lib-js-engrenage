@@ -19,14 +19,12 @@ import {
 } from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
-import { resolve } from "#foundation/filesystem/utils/resolve";
+import { resolve } from "#foundation/filesystem/index";
 import { apiGroupRoots, apiLibraryGroups } from "#project/baseline/constants";
-import { includesEsLibrary } from "#project/baseline/utils/includesEsLibrary";
-import { listEsSelections } from "#project/baseline/utils/listEsSelections";
+import { includesEsLibrary, listEsSelections } from "#project/baseline/index";
 import { createApiDeclarationCollector } from "#scripts/codegen/utils/createApiDeclarationCollector";
-import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
-import { formatModule } from "#tools/typescript/operations/formatModule";
-import type { LoadedConfig } from "#project/config/types/LoadedConfig";
+import { createLibraryCompiler, formatModule } from "#tools/typescript/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

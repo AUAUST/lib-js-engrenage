@@ -11,6 +11,7 @@ import {
 import { isFunction } from "@auaust/toolkit/isFunction";
 import { isObject } from "@auaust/toolkit/isObject";
 
+import type { RoleRuleLoader } from "#project/roles/types/RoleRuleLoader";
 import type { RoleRuleModule } from "#project/roles/types/RoleRuleModule";
 
 function isRuleModule(value: unknown): value is RoleRuleModule {
@@ -29,5 +30,6 @@ export const roleRulesSchema = record(
   union([
     ruleEntrySchema,
     custom<RoleRuleModule>(isRuleModule, "Expected an ESLint rule module"),
+    custom<RoleRuleLoader>(isFunction, "Expected an ESLint rule module loader"),
   ]),
 );

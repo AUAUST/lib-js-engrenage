@@ -1,6 +1,7 @@
 import { entries, keys, values } from "@auaust/toolkit/object";
 
 import {
+  consumerEnvironments,
   elementEnvironments,
   importCategories,
   importRelations,
@@ -118,7 +119,7 @@ function renderOverview({
     "",
     "## Environments",
     "",
-    `The matrix states environment grants; domain and role boundaries still apply. No importer but its environment's root \`executable.ts\` may import a root index or entry file of ${list(elementEnvironments)}.`,
+    `The matrix states environment grants; domain and role boundaries still apply. No importer but its environment's root \`executable.ts\` may import a root index or entry file of ${list(elementEnvironments)}. ${list(consumerEnvironments)} import \`src\` only through a domain's \`index.ts\`, \`entry.ts\` and public roles.`,
     "",
     "| Category | Meaning |",
     "| --- | --- |",

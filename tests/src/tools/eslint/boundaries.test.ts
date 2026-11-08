@@ -102,6 +102,23 @@ function createBarrelProject() {
   });
 }
 
+function createConsumerProject() {
+  const operations = createRolePreset({ name: "operations" });
+
+  return createTemporaryProject({
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+      imports: { "#workflows/*": "./src/workflows/*.ts" },
+    }),
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry(), operations())}, namespaces: { ".": { layers: ["workflows"] } } } };\n`,
+    "tsconfig.json": "{}",
+    "src/workflows/cli/index.ts": exported,
+    "src/workflows/cli/operations/runProgram.ts": exported,
+    "bin/command.ts": exported,
+  });
+}
+
 async function createLinter(
   prefix = "auaust/import-",
   project = createBoundaryProject(),
@@ -311,6 +328,30 @@ describe("structure boundaries", () => {
         'import { value } from "#foundation/base/index";\nexport { value };\n',
       ),
     ).toEqual([]);
+  });
+
+  test("lets bin reach src only through domain surfaces, tests through their variant", async () => {
+    const lint = await createLinter("auaust/import-", createConsumerProject());
+
+    const internal =
+      'export { value } from "#workflows/cli/operations/runProgram";\n';
+
+    expect(await lint("bin/command.ts", internal)).toEqual([
+      "auaust/import-surfaces",
+    ]);
+
+    const [message] = await lint.messages("bin/command.ts", internal);
+
+    expect(message).toContain("Import it from `#workflows/cli/index`");
+
+    expect(
+      await lint(
+        "bin/command.ts",
+        'export { value } from "#workflows/cli/index";\n',
+      ),
+    ).toEqual([]);
+
+    expect(await lint("tests/a.test.src.ts", internal)).toEqual([]);
   });
 
   test("names the alias of a relative specifier and reports unknown paths", async () => {

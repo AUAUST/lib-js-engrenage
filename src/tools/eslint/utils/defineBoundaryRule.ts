@@ -83,6 +83,7 @@ export function defineBoundaryRule({
     const boundaryPath = boundary?.path ?? environment;
     const path = within(projectRoot, file);
 
+    // @debt a boundary in another environment renders relative to the importer's environment, as `../src/…`
     const boundaryName =
       boundaryPath === environment
         ? environment

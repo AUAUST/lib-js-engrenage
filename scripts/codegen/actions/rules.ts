@@ -1,5 +1,5 @@
 import { generateRuleTypes } from "#scripts/codegen/operations/generateRuleTypes";
-import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
+import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function ({ check }: { check: boolean }): Promise<void> {
   const config = await loadValidatedConfig();

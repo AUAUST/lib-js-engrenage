@@ -132,7 +132,7 @@ export async function createEslintConfig(
     config.resolve(entitiesSection),
   ]);
 
-  const roleRules = createRoleRules(structure, entities);
+  const roleRules = await createRoleRules(structure, entities);
 
   return defineConfig(
     {

@@ -9,8 +9,8 @@ import { join, map, sort } from "@auaust/primitive-kit/arrays";
 import { entries, record } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
-import { resolve } from "#foundation/filesystem/utils/resolve";
-import { listEsSelections } from "#project/baseline/utils/listEsSelections";
+import { resolve } from "#foundation/filesystem/index";
+import { listEsSelections } from "#project/baseline/index";
 import {
   esInterfaceAliases,
   esMemberCompatKeys,
@@ -18,9 +18,8 @@ import {
 import { parseEditionLibrary } from "#scripts/codegen/operations/parseEditionLibrary";
 import { readEditionCompat } from "#scripts/codegen/operations/readEditionCompat";
 import { mergeCompatDates } from "#scripts/codegen/utils/mergeCompatDates";
-import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
-import { formatModule } from "#tools/typescript/operations/formatModule";
-import type { LoadedConfig } from "#project/config/types/LoadedConfig";
+import { createLibraryCompiler, formatModule } from "#tools/typescript/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { LibraryDeclaration } from "#scripts/codegen/types/LibraryDeclaration";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

@@ -23,10 +23,7 @@ import {
   sourceDomains,
   toolingDomains,
 } from "#tooling/constants";
-import { definerEntries, sectionDeclarations } from "#tooling/eslint/index";
 import { defineConfig } from "#workflows/config/index";
-
-// @debt the config imports the tooling barrel that `codegen barrels` regenerates after loading the config, so a barrel missing a rule breaks the codegen that would add it
 
 function definerFile({ lineage }: RoleLocation): string {
   const owner = lineage.at(-1);
@@ -55,7 +52,14 @@ const config = createRolePreset({
       unique: true,
       exports: "named-match",
       effects: "effectful",
-      rules: { "definer-entries": definerEntries },
+      rules: {
+        // @debt the rule loads lazily only so a config load skips `tools/eslint`; #331 injects the tools a run needs, which may make loaders unnecessary
+        "definer-entries": async () => {
+          const { definerEntries } = await import("#tooling/eslint/index");
+
+          return definerEntries;
+        },
+      },
     },
     {
       name: "schemas",
@@ -77,7 +81,13 @@ const config = createRolePreset({
       accepts: "*Section.ts",
       exports: "named-match",
       effects: "effectful",
-      rules: { "section-declarations": sectionDeclarations },
+      rules: {
+        "section-declarations": async () => {
+          const { sectionDeclarations } = await import("#tooling/eslint/index");
+
+          return sectionDeclarations;
+        },
+      },
     },
   ],
 });

@@ -2,7 +2,10 @@ import { min } from "@auaust/toolkit/math";
 import { freeze } from "@auaust/toolkit/object";
 
 import { entryRoleName, indexRoleName } from "#project/roles/constants";
-import { elementEnvironments } from "#project/structure/constants";
+import {
+  consumerEnvironments,
+  elementEnvironments,
+} from "#project/structure/constants";
 import type { BoundaryCause } from "#project/structure/types/BoundaryCause";
 import type { BoundaryViolation } from "#project/structure/types/BoundaryViolation";
 import type { Entity } from "#project/structure/types/Entity";
@@ -32,11 +35,74 @@ function divergence(
   return shared;
 }
 
+function violation(
+  cause: BoundaryCause,
+  boundary?: LineageMember,
+  fix?: string,
+): BoundaryViolation {
+  return freeze({
+    cause,
+    boundary,
+    fix,
+  });
+}
+
+// @debt the fix reads the domain's index specifier as the first entry of its surface, which holds only while an alias covers the index
+function privateRole(
+  exposer: LineageMember,
+  target: Entity,
+): BoundaryViolation {
+  return violation(
+    "privateRole",
+    exposer,
+    exposer === target.lineage.at(-1) ? target.surface[0] : undefined,
+  );
+}
+
+function typeOnly(
+  importer: Entity,
+  kind: ImportKind,
+): BoundaryViolation | undefined {
+  return importer.contract?.typeOnly === true && kind === "runtime"
+    ? violation("typeOnly")
+    : undefined;
+}
+
+function checkConsumerReach(
+  importer: Entity,
+  target: Entity,
+  kind: ImportKind,
+): BoundaryViolation | undefined {
+  const targetOwner = target.lineage.at(-1);
+
+  if (
+    targetOwner === undefined ||
+    (target.lineage.length === 1
+      ? isIndexOrEntry(target)
+      : targetOwner.kind !== "domain")
+  ) {
+    return;
+  }
+
+  if (target.lineage.length > 1 && !target.public) {
+    return privateRole(targetOwner, target);
+  }
+
+  return typeOnly(importer, kind);
+}
+
 export function checkBoundary(
   importer: Entity,
   target: Entity,
   kind: ImportKind,
 ): BoundaryViolation | undefined {
+  if (
+    consumerEnvironments.some((name) => name === importer.environment) &&
+    target.environment === "src"
+  ) {
+    return checkConsumerReach(importer, target, kind);
+  }
+
   const importerLineage = importer.lineage;
   const targetLineage = target.lineage;
   const owner = importerLineage.at(-1);
@@ -58,25 +124,8 @@ export function checkBoundary(
     return;
   }
 
-  function violation(
-    cause: BoundaryCause,
-    boundary?: LineageMember,
-    fix?: string,
-  ): BoundaryViolation {
-    return freeze({
-      cause,
-      boundary,
-      fix,
-    });
-  }
-
-  // @debt the fix reads the domain's index specifier as the first entry of its surface, which holds only while an alias covers the index
   function privateTo(exposer: LineageMember): BoundaryViolation {
-    return violation(
-      "privateRole",
-      exposer,
-      exposer === targetOwner ? target.surface[0] : undefined,
-    );
+    return privateRole(exposer, target);
   }
 
   function reachSurface(split: number): BoundaryViolation | undefined {
@@ -162,7 +211,5 @@ export function checkBoundary(
     return denied;
   }
 
-  return importer.contract?.typeOnly === true && kind === "runtime"
-    ? violation("typeOnly")
-    : undefined;
+  return typeOnly(importer, kind);
 }

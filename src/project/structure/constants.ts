@@ -13,6 +13,13 @@ export const elementEnvironments = freeze([
   "tooling",
 ] as const);
 
+// @debt the environments consuming `src` through its surfaces are listed here rather than declared by the environments config
+export const consumerEnvironments = freeze([
+  "bin",
+  "scripts",
+  "tooling",
+] as const);
+
 export const defaultEffectLevels = freeze([
   "pure",
   "confined",

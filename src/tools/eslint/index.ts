@@ -58,6 +58,7 @@ export * from "#tools/eslint/types/rules/UnusedImportsRules";
 
 export { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
 export { defineRoleRule } from "#tools/eslint/utils/defineRoleRule";
+export { normalizeRuleSchema } from "#tools/eslint/utils/normalizeRuleSchema";
 export type {
   Entity,
   EnvironmentFileNames,

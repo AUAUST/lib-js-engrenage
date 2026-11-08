@@ -10,14 +10,14 @@ import { toPascalCase } from "@auaust/primitive-kit/strings";
 import { mappedValues } from "@auaust/toolkit/mappedValues";
 import { entries, record } from "@auaust/toolkit/object";
 
-import { pathExists } from "#foundation/filesystem/index";
-import { resolve } from "#foundation/filesystem/utils/resolve";
-import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
+import { pathExists, resolve, toPosixPath } from "#foundation/filesystem/index";
 import { rolesPluginName } from "#tools/eslint/constants";
-import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
-import { normalizeRuleSchema } from "#tools/eslint/utils/normalizeRuleSchema";
-import type { LoadedConfig } from "#project/config/types/LoadedConfig";
-import type { Plugin } from "#tools/eslint/types/Plugin";
+import {
+  createEslintConfig,
+  normalizeRuleSchema,
+  type Plugin,
+} from "#tools/eslint/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Files } from "#types/Files";

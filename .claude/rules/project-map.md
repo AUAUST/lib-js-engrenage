@@ -18,7 +18,7 @@ Trees: `name*` public domain, `{…}` sub-domains, `#alias/…` import alias, `[
 
 ## Environments
 
-The matrix states environment grants; domain and role boundaries still apply. No importer but its environment's root `executable.ts` may import a root index or entry file of `src`, `scripts`, `tooling`.
+The matrix states environment grants; domain and role boundaries still apply. No importer but its environment's root `executable.ts` may import a root index or entry file of `src`, `scripts`, `tooling`. `bin`, `scripts`, `tooling` import `src` only through a domain's `index.ts`, `entry.ts` and public roles.
 
 | Category           | Meaning                           |
 | ------------------ | --------------------------------- |

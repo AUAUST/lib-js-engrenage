@@ -14,10 +14,9 @@ import { isString } from "@auaust/toolkit/isString";
 import { mappedValues } from "@auaust/toolkit/mappedValues";
 import { entries, record } from "@auaust/toolkit/object";
 
-import { globsSchema } from "#foundation/options/config/schemas/globsSchema";
-import { roleFileResolverSchema } from "#project/roles/config/schemas/roleFileResolverSchema";
-import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
-import { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModuleResolverSchema";
+import { globsSchema } from "#foundation/options/index";
+import { roleFileResolverSchema, roleRulesSchema } from "#project/roles/index";
+import { effectModuleResolverSchema } from "#project/structure/index";
 import { collectConfigInputs } from "#scripts/codegen/operations/collectConfigInputs";
 import { findConfigTypeImports } from "#scripts/codegen/utils/findConfigTypeImports";
 import { getCoreConfigSchema } from "#scripts/codegen/utils/getCoreConfigSchema";
@@ -25,8 +24,8 @@ import { getLazyConfigSchema } from "#scripts/codegen/utils/getLazyConfigSchema"
 import { isConfigSchema } from "#scripts/codegen/utils/isConfigSchema";
 import { isListAdjustmentSchema } from "#scripts/codegen/utils/isListAdjustmentSchema";
 import { isUnionConfigSchema } from "#scripts/codegen/utils/isUnionConfigSchema";
-import { listConfigSections } from "#workflows/config/operations/listConfigSections";
-import type { LoadedConfig } from "#project/config/types/LoadedConfig";
+import { listConfigSections } from "#workflows/config/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { ConfigSchema } from "#scripts/codegen/types/ConfigSchema";
 import type { ObjectConfigSchema } from "#scripts/codegen/types/ObjectConfigSchema";
 import type { TypeSource } from "#scripts/codegen/types/TypeSource";

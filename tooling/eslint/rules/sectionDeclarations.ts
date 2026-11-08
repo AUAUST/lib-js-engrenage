@@ -1,6 +1,6 @@
 import type { Rule, Scope } from "eslint";
 
-import { defineRoleRule } from "#tools/eslint/utils/defineRoleRule";
+import { defineRoleRule } from "#tools/eslint/index";
 
 type Initializer = Extract<
   Scope.DefinitionType,

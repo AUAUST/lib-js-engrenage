@@ -1,6 +1,6 @@
-import { syncBarrels } from "#tools/typescript/operations/syncBarrels";
-import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
-import { settleChanges } from "#workflows/sync/operations/settleChanges";
+import { syncBarrels } from "#tools/typescript/index";
+import { loadValidatedConfig } from "#workflows/config/index";
+import { settleChanges } from "#workflows/sync/index";
 
 export default async function (
   barrels: string[],

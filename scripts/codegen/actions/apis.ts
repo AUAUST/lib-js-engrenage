@@ -1,6 +1,6 @@
 import { generateApiDeclarations } from "#scripts/codegen/operations/generateApiDeclarations";
-import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
-import { settleChanges } from "#workflows/sync/operations/settleChanges";
+import { loadValidatedConfig } from "#workflows/config/index";
+import { settleChanges } from "#workflows/sync/index";
 
 export default async function (
   groups: string[],

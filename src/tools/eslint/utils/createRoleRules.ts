@@ -1,7 +1,8 @@
 import type { Linter } from "eslint";
 
 import { isArray } from "@auaust/toolkit/isArray";
-import { isObject } from "@auaust/toolkit/isObject";
+import { isNumber } from "@auaust/toolkit/isNumber";
+import { isString } from "@auaust/toolkit/isString";
 import { entries, values } from "@auaust/toolkit/object";
 
 import {
@@ -15,13 +16,13 @@ import type { Config } from "#tools/eslint/types/Config";
 import type { Plugin } from "#tools/eslint/types/Plugin";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 
-export function createRoleRules(
+export async function createRoleRules(
   structure: ResolvedStructure,
   entities: EntityIndex,
-): {
+): Promise<{
   readonly plugin: Plugin;
   readonly configs: readonly Config[];
-} {
+}> {
   const originals: Record<string, RoleRuleModule> = {};
   const wrapped = new Map<RoleRuleModule, RuleModule>();
   const modules: Record<string, RuleModule> = {};
@@ -77,12 +78,14 @@ export function createRoleRules(
 
       const rules: Linter.RulesRecord = {};
 
-      for (const [key, rule] of entries(contract.rules)) {
-        if (isArray(rule) || !isObject(rule)) {
-          rules[key] = rule;
+      for (const [key, entry] of entries(contract.rules)) {
+        if (isArray(entry) || isString(entry) || isNumber(entry)) {
+          rules[key] = entry;
 
           continue;
         }
+
+        const rule = "create" in entry ? entry : await entry();
 
         const name = `${role}/${key}`;
         const registered = originals[name];

@@ -16,7 +16,7 @@ import {
 
 import { memoized } from "@auaust/toolkit/memoized";
 
-import { defineRoleRule } from "#tools/eslint/utils/defineRoleRule";
+import { defineRoleRule } from "#tools/eslint/index";
 import type { File } from "#types/File";
 
 function isExported(statement: Statement) {
