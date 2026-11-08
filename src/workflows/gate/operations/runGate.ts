@@ -1,9 +1,11 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
-import { filter, map } from "@auaust/primitive-kit/arrays";
+import { deduplicate, filter, map } from "@auaust/primitive-kit/arrays";
 
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
+import { LockTimeoutError } from "#foundation/processes/errors/LockTimeoutError";
+import { withProcessLock } from "#foundation/processes/index";
 import { cacheSection } from "#project/cache/index";
 import {
   agentsSection,
@@ -13,7 +15,6 @@ import {
 } from "#tools/agents/index";
 import {
   gitSection,
-  hashTree,
   listChangedFiles,
   listLocalFiles,
   listPartiallyStagedFiles,
@@ -21,19 +22,31 @@ import {
   type ChangeMode,
 } from "#tools/git/index";
 import { createGateSteps } from "#workflows/gate/operations/createGateSteps";
+import { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 import type { LoadedConfig } from "#project/config/index";
+import type { Directory } from "#types/Directory";
 import type { Files } from "#types/Files";
 import type { GateFailure } from "#workflows/gate/types/GateFailure";
 import type { GateReport } from "#workflows/gate/types/GateReport";
 import type { GateResult } from "#workflows/gate/types/GateResult";
 import type { GateStep } from "#workflows/gate/types/GateStep";
 import type { GateWarning } from "#workflows/gate/types/GateWarning";
+import type { TreeIdentity } from "#workflows/gate/types/TreeIdentity";
 
-const stampName = "gate";
+const cacheName = "gate";
 
 const stampFile = "passed";
 
 const stampLimit = 20;
+
+const lockFile = "lock";
+
+const lockTimeout = 5 * 60_000;
+
+const lockLabels = {
+  staged: "staged gate",
+  worktree: "worktree gate",
+} as const satisfies Record<ChangeMode, string>;
 
 async function runStep(
   step: GateStep,
@@ -116,46 +129,114 @@ async function readStamps(file: string): Promise<readonly string[]> {
   return content?.split("\n").filter((line) => line !== "") ?? [];
 }
 
-// @debt ESLint runs only on changed files, so a type change that breaks a dependent's type-aware rule passes until CI's full `lint`
-// @debt gates running in one worktree are not coordinated, so a commit gate overlapping an agent's stop gate can time out tests and reuses no pass (#319)
-export async function runGate(
+function formatStamp(mode: ChangeMode, identity: TreeIdentity): string {
+  return `${mode} ${identity.head} ${identity.committable} ${identity.checked}`;
+}
+
+function isReusable(
+  stamp: string,
+  mode: ChangeMode,
+  identity: TreeIdentity,
+): boolean {
+  const [stampMode, head, committable, checked] = stamp.split(" ");
+
+  if (head !== identity.head) {
+    return false;
+  }
+
+  if (mode === "worktree") {
+    return stampMode === "worktree" && checked === identity.checked;
+  }
+
+  return (
+    committable === identity.committable &&
+    (stampMode === "worktree" || checked === identity.checked)
+  );
+}
+
+async function checkVerifiedTree(
+  root: Directory,
+  mode: ChangeMode,
+  verified: TreeIdentity,
+  current: TreeIdentity,
+): Promise<GateFailure | undefined> {
+  const changed: (readonly [string, string])[] = [];
+
+  if (verified.committable !== current.committable) {
+    changed.push([verified.committable, current.committable]);
+  }
+
+  if (mode === "staged" && verified.checked !== current.checked) {
+    changed.push([verified.checked, current.checked]);
+  }
+
+  if (changed.length === 0) {
+    return;
+  }
+
+  const outputs = await Promise.all(
+    map(changed, ([before, after]) => {
+      return runGit(root, ["diff-tree", "-r", "--name-only", before, after]);
+    }),
+  );
+
+  const paths = deduplicate(
+    outputs
+      .join("\n")
+      .split("\n")
+      .filter((path) => path !== ""),
+  );
+
+  return {
+    step: "verification",
+    output: `Files changed while the gate verified them; run it again:\n${paths.join("\n")}`,
+  };
+}
+
+async function checkLocalFiles(
   config: LoadedConfig,
-  {
-    mode,
-    audience = "agents",
-  }: { mode: ChangeMode; audience?: GateStep["audience"] },
+  mode: ChangeMode,
+  files: Files,
+): Promise<GateFailure[]> {
+  if (mode !== "staged") {
+    return [];
+  }
+
+  const { root } = config.context;
+
+  const git = await config.resolve(gitSection);
+
+  const globs = await listLocalFilePatterns(config);
+
+  const local: GateStep = {
+    audience: "everyone",
+    name: "local files",
+    async run(changed) {
+      const protectedFiles = await listLocalFiles(git, root, globs, changed);
+
+      return {
+        ok: protectedFiles.length === 0,
+        output: `Local files cannot be committed:\n${protectedFiles.join("\n")}\nUse git restore --staged -- <paths> to unstage them, or git rm --cached -- <paths> to stop tracking them.`,
+      };
+    },
+  };
+
+  return runSteps([local], files);
+}
+
+// @debt ESLint runs only on changed files, so a type change that breaks a dependent's type-aware rule passes until CI's full `lint`
+async function verify(
+  config: LoadedConfig,
+  mode: ChangeMode,
 ): Promise<GateReport> {
   const { root } = config.context;
 
   const files = await listChangedFiles(root, mode);
 
-  if (mode === "staged") {
-    const git = await config.resolve(gitSection);
+  const localFailures = await checkLocalFiles(config, mode, files);
 
-    const globs = await listLocalFilePatterns(config);
-
-    const local: GateStep = {
-      audience: "everyone",
-      name: "local files",
-      async run(changed) {
-        const protectedFiles = await listLocalFiles(git, root, globs, changed);
-
-        return {
-          ok: protectedFiles.length === 0,
-          output: `Local files cannot be committed:\n${protectedFiles.join("\n")}\nUse git restore --staged -- <paths> to unstage them, or git rm --cached -- <paths> to stop tracking them.`,
-        };
-      },
-    };
-
-    const failures = await runSteps([local], files);
-
-    if (failures.length > 0) {
-      return { failures, warnings: [] };
-    }
-  }
-
-  if (audience === "everyone") {
-    return { failures: [], warnings: [] };
+  if (localFailures.length > 0) {
+    return { failures: localFailures, warnings: [] };
   }
 
   if (mode === "staged") {
@@ -174,14 +255,20 @@ export async function runGate(
     }
   }
 
+  if (files.length === 0) {
+    return { failures: [], warnings: [] };
+  }
+
   const cache = await config.resolve(cacheSection);
 
-  const stamp = resolveWithin(root, cache.for(stampName), stampFile);
+  const stamp = resolveWithin(root, cache.for(cacheName), stampFile);
 
   const stamps = await readStamps(stamp);
 
+  const initial = await readTreeIdentity(config, mode);
+
   // @debt a stamped tree reports no budget warnings, so the commit after a passing stop never shows them again.
-  if (files.length === 0 || stamps.includes(await hashTree(root, { mode }))) {
+  if (stamps.some((line) => isReusable(line, mode, initial))) {
     return { failures: [], warnings: [] };
   }
 
@@ -193,6 +280,8 @@ export async function runGate(
     await runGit(root, ["add", "--", ...files]);
   }
 
+  const verified = await readTreeIdentity(config, mode);
+
   const [checkFailures, duplicates] = await Promise.all([
     runConcurrentSteps(checks, files),
     runConcurrentSteps(warnings, files),
@@ -200,12 +289,20 @@ export async function runGate(
 
   failures.push(...checkFailures, ...(await runSteps(commands, files)));
 
+  const current = await readTreeIdentity(config, mode);
+
+  const changed = await checkVerifiedTree(root, mode, verified, current);
+
+  if (changed !== undefined) {
+    failures.push(changed);
+  }
+
   if (failures.length === 0) {
     await mkdir(dirname(stamp), { recursive: true });
 
     await writeFile(
       stamp,
-      `${[...stamps, await hashTree(root, { mode })].slice(-stampLimit).join("\n")}\n`,
+      `${[...stamps, formatStamp(mode, verified)].slice(-stampLimit).join("\n")}\n`,
     );
   }
 
@@ -213,4 +310,60 @@ export async function runGate(
     failures,
     warnings: [...(await measureEntries(config, files)), ...duplicates],
   };
+}
+
+export async function runGate(
+  config: LoadedConfig,
+  {
+    mode,
+    audience = "agents",
+  }: { mode: ChangeMode; audience?: GateStep["audience"] },
+): Promise<GateReport> {
+  const { root } = config.context;
+
+  if (audience === "everyone") {
+    const files = await listChangedFiles(root, mode);
+
+    return {
+      failures: await checkLocalFiles(config, mode, files),
+      warnings: [],
+    };
+  }
+
+  const cache = await config.resolve(cacheSection);
+
+  const lock = resolveWithin(root, cache.for(cacheName), lockFile);
+
+  const label = lockLabels[mode];
+
+  try {
+    // @debt a gate killed by a signal releases the lock while the tools it spawned may still write files
+    return await withProcessLock(
+      lock,
+      {
+        label,
+        timeout: lockTimeout,
+        onWait(holder) {
+          process.stderr.write(
+            `Waiting for the ${holder.label} of process ${holder.pid}, started ${holder.started}…\n`,
+          );
+        },
+      },
+      () => verify(config, mode),
+    );
+  } catch (error) {
+    if (!(error instanceof LockTimeoutError)) {
+      throw error;
+    }
+
+    return {
+      failures: [
+        {
+          step: "lock",
+          output: `${error.message}; rerun once it finishes, or delete the file if no gate is running.`,
+        },
+      ],
+      warnings: [],
+    };
+  }
 }

@@ -31,6 +31,7 @@ export async function checkAgentStop(
     return void (await rm(marker, { force: true }));
   }
 
+  // @debt the failing-tree marker hashes the worktree after the gate released its lock, so another gate's fixes can land in between
   const tree = await hashTree(root, { mode: "worktree" });
 
   const stopped = await readTextFile(marker);

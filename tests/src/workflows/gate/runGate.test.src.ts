@@ -1,7 +1,14 @@
-import { writeFileSync } from "node:fs";
+import { spawn, spawnSync } from "node:child_process";
+import { once } from "node:events";
+import { existsSync, writeFileSync } from "node:fs";
+import { relative } from "node:path";
+import { setTimeout } from "node:timers/promises";
 
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
+import { map } from "@auaust/primitive-kit/arrays";
+
+import { cacheSection } from "#project/cache/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
@@ -19,7 +26,15 @@ afterEach(() => {
   process.argv = argv;
 });
 
-function createRepository() {
+const slowCommand = "echo start >> .runs && sleep 1 && echo end >> .runs";
+
+const identity = {
+  runtime: "codex",
+  session: "session",
+  agent: "agent",
+};
+
+function createRepository(commands: readonly string[] = ["echo run >> .runs"]) {
   return createGitRepository(
     {
       "package.json": JSON.stringify({
@@ -27,9 +42,8 @@ function createRepository() {
         type: "module",
         devDependencies: { prettier: "*", typescript: "*" },
       }),
-      "engrenage.config.ts":
-        'export default { src: { baseline: "2026-10" }, agents: { gate: { commands: ["echo run >> .runs"] } } };\n',
-      ".gitignore": "node_modules\n.runs\n.env.*\n!.env.example\n",
+      "engrenage.config.ts": `export default { src: { baseline: "2026-10" }, agents: { gate: { commands: ${JSON.stringify(commands)} } } };\n`,
+      ".gitignore": "node_modules\n.runs*\n.env.*\n!.env.example\n",
       "tsconfig.json": JSON.stringify({
         compilerOptions: {
           strict: true,
@@ -52,6 +66,22 @@ function createRepository() {
     },
     ["prettier", "typescript"],
   );
+}
+
+async function readLockFile(root: string): Promise<string> {
+  const cache = await (await loadConfig(root)).resolve(cacheSection);
+
+  return `${cache.for("gate")}/lock`;
+}
+
+async function waitForLock(root: string): Promise<string> {
+  const lock = await readLockFile(root);
+
+  while (!existsSync(lock)) {
+    await setTimeout(50);
+  }
+
+  return lock;
 }
 
 describe("runGate", { timeout: binaryTimeout }, () => {
@@ -244,12 +274,6 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     const config = await loadConfig(project.root);
 
-    const identity = {
-      runtime: "codex",
-      session: "session",
-      agent: "agent",
-    };
-
     expect(await checkAgentStop(config, identity)).toContain("typecheck");
     expect(await checkAgentStop(config, identity)).toBeUndefined();
 
@@ -304,5 +328,157 @@ describe("runGate", { timeout: binaryTimeout }, () => {
         output: expect.stringContaining("over the debtEntry budget of 60."),
       },
     ]);
+  });
+
+  test("runs simultaneous gates one after the other", async () => {
+    const { project } = await createRepository([
+      `${slowCommand} && test -f .runs-failed || { touch .runs-failed; exit 1; }`,
+    ]);
+
+    project.write("src/index.ts", "export const value: number = 2;\n");
+
+    const config = await loadConfig(project.root);
+
+    const write = vi.spyOn(process.stderr, "write").mockReturnValue(true);
+
+    try {
+      const reports = await Promise.all([
+        runGate(config, { mode: "worktree" }),
+        runGate(config, { mode: "worktree" }),
+      ]);
+
+      expect(map(reports, ({ failures }) => failures.length)).toEqual(
+        expect.arrayContaining([0, 1]),
+      );
+
+      expect(write).toHaveBeenCalledWith(
+        expect.stringContaining("Waiting for the worktree gate of process"),
+      );
+    } finally {
+      write.mockRestore();
+    }
+
+    expect(project.read(".runs")).toBe("start\nend\nstart\nend\n");
+  });
+
+  test("reuses a passing stop for the commit that waited on it", async () => {
+    const { project, git } = await createRepository([slowCommand]);
+
+    project.write("src/index.ts", "export const value: number = 2;\n");
+    project.write(".ai/issues/1.md", "draft\n");
+
+    const config = await loadConfig(project.root);
+
+    const write = vi.spyOn(process.stderr, "write").mockReturnValue(true);
+
+    try {
+      const stop = checkAgentStop(config, identity);
+
+      await waitForLock(project.root);
+
+      git("add", "src/index.ts");
+
+      const commit = runGate(config, { mode: "staged" });
+
+      expect(await stop).toBeUndefined();
+      expect(await commit).toEqual({ failures: [], warnings: [] });
+    } finally {
+      write.mockRestore();
+    }
+
+    expect(project.read(".runs")).toBe("start\nend\n");
+    expect(git("status", "--porcelain")).toContain("?? .ai/");
+  });
+
+  test("checks again a commit whose content the stop did not pass", async () => {
+    const { project, git } = await createRepository();
+
+    project.write("src/index.ts", "export const value: number = 2;\n");
+
+    const config = await loadConfig(project.root);
+
+    expect(await checkAgentStop(config, identity)).toBeUndefined();
+
+    project.write("src/index.ts", "export const value: number = 3;\n");
+
+    git("add", "src/index.ts");
+
+    expect(await runGate(config, { mode: "staged" })).toEqual({
+      failures: [],
+      warnings: [],
+    });
+
+    expect(project.read(".runs")).toBe("run\nrun\n");
+  });
+
+  test("fails a tree edited during verification, but not for a local draft", async () => {
+    const { project, git } = await createRepository([
+      "test -f .runs-edited || { touch .runs-edited; echo 'export const other = 3;' >> src/index.ts; }",
+      "mkdir -p .ai/issues && echo draft > .ai/issues/2.md && echo run >> .runs",
+    ]);
+
+    project.write("src/index.ts", "export const value: number = 2;\n");
+
+    const config = await loadConfig(project.root);
+
+    const { failures } = await runGate(config, { mode: "worktree" });
+
+    expect(failures).toEqual([
+      { step: "verification", output: expect.stringContaining("src/index.ts") },
+    ]);
+
+    expect(await runGate(config, { mode: "worktree" })).toEqual({
+      failures: [],
+      warnings: [],
+    });
+
+    git("add", "src/index.ts");
+
+    expect(await runGate(config, { mode: "staged" })).toEqual({
+      failures: [],
+      warnings: [],
+    });
+
+    expect(project.read(".runs")).toBe("run\nrun\n");
+  });
+
+  test("releases the lock of a cancelled gate and breaks a dead holder", async () => {
+    const { project } = await createRepository([slowCommand]);
+
+    project.write("src/index.ts", "export const value: number = 2;\n");
+
+    const child = spawn(
+      process.execPath,
+      [getExecutable(), "gate", "--worktree"],
+      {
+        cwd: project.root,
+        stdio: "ignore",
+      },
+    );
+
+    const lock = await waitForLock(project.root);
+
+    child.kill("SIGTERM");
+
+    const [code, signal] = await once(child, "exit");
+
+    expect({ code, signal }).toEqual({ code: null, signal: "SIGTERM" });
+    expect(existsSync(lock)).toBe(false);
+
+    const { pid } = spawnSync(process.execPath, ["-e", ""]);
+
+    project.write(
+      relative(project.root, lock),
+      JSON.stringify({
+        pid,
+        token: "dead",
+        label: "worktree gate",
+        started: "",
+      }),
+    );
+
+    expect(
+      await runGate(await loadConfig(project.root), { mode: "worktree" }),
+    ).toEqual({ failures: [], warnings: [] });
   });
 });

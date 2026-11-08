@@ -97,6 +97,7 @@ export async function createGateSteps(config: LoadedConfig): Promise<{
     });
   }
 
+  // @debt the only lint verdict is `eslint --fix`, which runs before `prettier --write` rewrites the files, so a formatting change that breaks a lint rule passes the gate
   fixes.push({
     audience: "agents",
     name: prettier,
