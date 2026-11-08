@@ -42,12 +42,10 @@
   "imports": {
     "#bin/*": "./bin/*.ts",
     "#constants": "./src/constants.ts",
-    "#entry": "./src/entry.ts",
     "#foundation/*": "./src/foundation/*.ts",
     "#package.json": "./package.json",
     "#project/*": "./src/project/*.ts",
     "#scripts/*": "./scripts/*.ts",
-    "#src/*": "./src/*.ts",
     "#tests/*": "./tests/*.ts",
     "#tooling/*": "./tooling/*.ts",
     "#tools/*": "./src/tools/*.ts",

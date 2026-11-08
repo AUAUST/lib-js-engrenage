@@ -48,7 +48,7 @@ async function createDirectoryAliases(
 
 async function createSourceAliases(
   root: Directory,
-  { dirs, root: tree, indexFile }: EnvironmentStructure,
+  { dirs, root: tree, indexFile, entryFile }: EnvironmentStructure,
 ): Promise<Alias[]> {
   const directories = flat(
     await Promise.all(
@@ -68,7 +68,6 @@ async function createSourceAliases(
     ),
   );
 
-  // @debt every root file gets an alias, including `#entry` for the package entry that no rule lets anything import; aliases should follow the import rules
   const files = flat(
     await Promise.all(
       dirs.map(async (dir): Promise<Alias[]> => {
@@ -83,7 +82,9 @@ async function createSourceAliases(
             return (
               entry.isFile() &&
               entry.name.endsWith(".ts") &&
-              !entry.name.endsWith(".d.ts")
+              !entry.name.endsWith(".d.ts") &&
+              entry.name !== indexFile &&
+              entry.name !== entryFile
             );
           })
           .map((entry): Alias => {
@@ -164,10 +165,16 @@ export async function resolveAliases({
     });
   }
 
-  // @debt `#src/*` is generated beside the namespace aliases, so every src module has two specifiers (`#src/project/config/index`, `#project/config/index`)
+  const generatedSource =
+    options.src.enabled && options.src.generated && structure !== undefined;
+
   const roots = flat(
     await Promise.all(
       entries(environments).flatMap(([name, dirs]) => {
+        if (name === "src" && generatedSource) {
+          return [];
+        }
+
         return dirs.map(async (dir): Promise<Alias[]> => {
           return dir === projectRoot ||
             dir === outDir ||
@@ -212,9 +219,7 @@ export async function resolveAliases({
 
   const sourceAliases = options.src.enabled
     ? [
-        ...(options.src.generated && structure !== undefined
-          ? await createSourceAliases(root, structure)
-          : []),
+        ...(generatedSource ? await createSourceAliases(root, structure) : []),
         ...createDefinedAliases(options.src, "src.aliases.define", bundled),
       ]
     : [];

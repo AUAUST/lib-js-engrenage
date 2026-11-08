@@ -30,10 +30,8 @@ async function cyclesOf(files: Record<string, string>, typescript = "{}") {
 describe("findImportCycles", () => {
   test("reports the path of two peer domains importing each other's index at runtime", async () => {
     const cycles = await cyclesOf({
-      "src/a/index.ts":
-        'export { b } from "#src/b/index";\nexport const a = 1;\n',
-      "src/b/index.ts":
-        'import { a } from "#src/a/index";\nexport const b = a;\n',
+      "src/a/index.ts": 'export { b } from "#b/index";\nexport const a = 1;\n',
+      "src/b/index.ts": 'import { a } from "#a/index";\nexport const b = a;\n',
     });
 
     expect(cycles).toEqual([
@@ -44,9 +42,9 @@ describe("findImportCycles", () => {
   test("ignores the same pair with type-only imports", async () => {
     const cycles = await cyclesOf({
       "src/a/index.ts":
-        'export type { B } from "#src/b/index";\nexport type A = 1;\n',
+        'export type { B } from "#b/index";\nexport type A = 1;\n',
       "src/b/index.ts":
-        'import type { A } from "#src/a/index";\nexport type B = A;\n',
+        'import type { A } from "#a/index";\nexport type B = A;\n',
     });
 
     expect(cycles).toEqual([]);

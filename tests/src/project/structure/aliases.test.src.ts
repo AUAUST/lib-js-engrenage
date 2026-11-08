@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { entrypoint } from "#project/roles/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncAliases } from "#tools/typescript/setup/syncAliases";
 
@@ -33,22 +34,34 @@ async function sync(config: string, files: Record<string, string> = {}) {
 const source = "src: { node: 24 }";
 
 describe("aliases", () => {
-  test("generates the root and src aliases of a library, without #data", async () => {
+  test("generates namespace and global file aliases without source root aliases", async () => {
     const { read } = await sync(
-      `{ preset: "library", ${source}, data: { exports: {} } }`,
-      { "data/a.json": "{}" },
+      `{ preset: "library", src: { node: 24, roles: ${JSON.stringify([entrypoint()])} }, data: { exports: {} } }`,
+      { "data/a.json": "{}", "src/entry.ts": "" },
     );
 
     expect((await read("package.json")).imports).toEqual({
       "#constants": "./src/constants.ts",
-      "#index": "./src/index.ts",
       "#package.json": "./package.json",
-      "#src/*": "./src/*.ts",
       "#tests/*": "./tests/*.ts",
       "#types/*": "./src/types/*.ts",
       "#utils": "./src/utils/index.ts",
       "#utils/*": "./src/utils/*.ts",
     });
+  });
+
+  test("keeps the source root alias when generated source aliases are disabled", async () => {
+    const { read } = await sync(
+      '{ preset: "library", src: { node: 24, aliases: { generated: false } } }',
+    );
+
+    expect((await read("package.json")).imports).toMatchObject({
+      "#src/*": "./src/*.ts",
+    });
+
+    expect((await read("package.json")).imports).not.toHaveProperty(
+      "#constants",
+    );
   });
 
   test("gives a namespace holding domains its own alias only", async () => {
