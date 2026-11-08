@@ -10,7 +10,7 @@ import type { Step } from "#project/steps/index";
 export function createClaudeSettingsStep(): Step {
   return {
     name: claudeSettingsFile,
-    message: `Check ${claudeHooks.map(({ condition }) => condition).join(", ")} commands with a Claude Code hook?`,
+    message: `Check ${claudeHooks.map(({ condition, matcher }) => condition ?? matcher).join(", ")} commands with a Claude Code hook?`,
     async isMissing({ resolve, filesystem }) {
       const agents = await resolve(agentsSection);
 

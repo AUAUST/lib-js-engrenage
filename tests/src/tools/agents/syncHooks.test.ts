@@ -38,6 +38,16 @@ const settings = JSON.stringify({
           },
         ],
       },
+      {
+        matcher: "Agent|Task",
+        hooks: [
+          {
+            type: "command",
+            command: "pnpm --silent engrenage agents claude hook dispatch",
+            if: "Agent(worker)",
+          },
+        ],
+      },
     ],
   },
 });
@@ -112,19 +122,16 @@ describe("syncHooks", () => {
           ],
         };
       }),
-      ...["worker", "debugger"].map((agent) => {
-        return {
-          matcher: "Agent|Task",
-          hooks: [
-            {
-              type: "command",
-              command: "pnpm --silent engrenage agents claude hook dispatch",
-              if: `Agent(${agent})`,
-              onFailure: "block",
-            },
-          ],
-        };
-      }),
+      {
+        matcher: "Agent|Task",
+        hooks: [
+          {
+            type: "command",
+            command: "pnpm --silent engrenage agents claude hook dispatch",
+            onFailure: "block",
+          },
+        ],
+      },
     ]);
 
     expect(

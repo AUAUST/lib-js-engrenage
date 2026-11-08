@@ -31,15 +31,12 @@ export const claudeHooks = freeze([
       onFailure: "block",
     } as const satisfies HookDefinition;
   }),
-  ...(["worker", "debugger"] as const).map((agent) => {
-    return {
-      event: "PreToolUse",
-      matcher: "Agent|Task",
-      condition: `Agent(${agent})`,
-      command: `${claudeHookPrefix}dispatch`,
-      onFailure: "block",
-    } as const satisfies HookDefinition;
-  }),
+  {
+    event: "PreToolUse",
+    matcher: "Agent|Task",
+    command: `${claudeHookPrefix}dispatch`,
+    onFailure: "block",
+  } as const satisfies HookDefinition,
 ]) satisfies readonly HookDefinition[];
 
 export const claudeStopHook = freeze({

@@ -120,18 +120,7 @@ describe("syncClaudeSettings", () => {
         "hooks": [
           {
             "type": "command",
-            "command": "pnpm --silent engrenage agents claude hook dispatch",
-            "if": "Agent(worker)"
-          }
-        ]
-      },
-      {
-        "matcher": "Agent|Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "pnpm --silent engrenage agents claude hook dispatch",
-            "if": "Agent(debugger)"
+            "command": "pnpm --silent engrenage agents claude hook dispatch"
           }
         ]
       }
