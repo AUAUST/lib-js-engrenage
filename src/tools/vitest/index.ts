@@ -10,6 +10,10 @@ export { defineVitestConfig } from "#tools/vitest/config/defineVitestConfig";
 
 export { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";
 export { createVitestLayer } from "#tools/vitest/operations/createVitestLayer";
+export { resolveVitestArguments } from "#tools/vitest/operations/resolveVitestArguments";
+export { resolveVitestCoverageArguments } from "#tools/vitest/operations/resolveVitestCoverageArguments";
+export { resolveVitestDistArguments } from "#tools/vitest/operations/resolveVitestDistArguments";
+export { resolveVitestWatchArguments } from "#tools/vitest/operations/resolveVitestWatchArguments";
 export { createOutDirGuard } from "#tools/vitest/plugins/createOutDirGuard";
 export { createSourceGuard } from "#tools/vitest/plugins/createSourceGuard";
 

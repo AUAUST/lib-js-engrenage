@@ -144,7 +144,7 @@ export async function createStepContext({
     }
 
     return [
-      // @debt pnpm invocations are hand-written here, in createChangesetConfigStep and in bin/engrenage/init.ts; the pnpm entry could own them
+      // @debt pnpm invocations are hand-written here, in createChangesetConfigStep and in bin/engrenage/actions/init.ts; the pnpm entry could own them
       {
         command: "pnpm",
         args: ["install"],

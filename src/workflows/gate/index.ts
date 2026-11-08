@@ -14,3 +14,7 @@ export * from "#workflows/gate/types/GateStep";
 export * from "#workflows/gate/types/GateWarning";
 export * from "#workflows/gate/types/TreeIdentity";
 // @end
+
+// @barrel utils/*.ts named
+export { formatGateEntry } from "#workflows/gate/utils/formatGateEntry";
+// @end

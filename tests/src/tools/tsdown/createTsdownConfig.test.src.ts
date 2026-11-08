@@ -182,7 +182,7 @@ describe("createTsdownConfig", () => {
       entry: {
         "index": "src/index.ts",
         "alpha/index": "src/alpha/index.ts",
-        "bin/cli": "bin/cli/index.ts",
+        "bin/cli": "bin/cli/executable.ts",
       },
       format: "esm",
       outDir: "dist",
@@ -288,7 +288,7 @@ describe("createTsdownConfig", () => {
       }),
       "src/index.ts": "export {};\n",
       "bin/cli.ts": "export {};\n",
-      "bin/cli/index.ts": "export {};\n",
+      "bin/cli/executable.ts": "export {};\n",
     });
 
     const config = await loadConfig(project.root);
@@ -390,11 +390,11 @@ describe("createTsdownConfig", () => {
       const project = createProject(
         {
           bin: {
-            entries: { tool: "bin/tool/index.ts" },
+            entries: { tool: "bin/tool/executable.ts" },
           },
         },
         {
-          "bin/tool/index.ts": "export {};\n",
+          "bin/tool/executable.ts": "export {};\n",
           "bin/other.ts": "export {};\n",
         },
       );
@@ -404,7 +404,7 @@ describe("createTsdownConfig", () => {
           ci: false,
         }),
       ).toMatchObject({
-        entry: { "bin/tool": "bin/tool/index.ts" },
+        entry: { "bin/tool": "bin/tool/executable.ts" },
         exports: { exclude: ["bin/tool"] },
       });
     });

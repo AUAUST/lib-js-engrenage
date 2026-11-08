@@ -149,6 +149,9 @@ export const binDomains = freeze({
   "engrenage/agents/codex/hook": {
     purpose: "Handle Codex lifecycle hook events.",
   },
+  "engrenage/issues": {
+    purpose: "Check GitHub issues against the issue contract.",
+  },
   "engrenage/pnpm": {
     purpose: "Package manager maintenance commands.",
   },

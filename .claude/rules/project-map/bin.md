@@ -7,12 +7,13 @@ paths:
 
 ```
 bin/  (global roles: executable.ts *.ts)
-└─ engrenage{agents{claude{hook} codex{hook}} pnpm}  Project tooling commands.
+└─ engrenage{agents{claude{hook} codex{hook}} issues pnpm}  Project tooling commands.
    ├─ agents{claude{hook} codex{hook}}  Agent lifecycle and instruction commands.
    │  ├─ claude{hook}  Claude lifecycle commands.
    │  │  └─ hook  Handle Claude lifecycle hook events.
    │  └─ codex{hook}  Codex lifecycle commands.
    │     └─ hook  Handle Codex lifecycle hook events.
+   ├─ issues  Check GitHub issues against the issue contract.
    └─ pnpm  Package manager maintenance commands.
 ```
 

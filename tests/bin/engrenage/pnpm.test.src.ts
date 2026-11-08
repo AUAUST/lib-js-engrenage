@@ -1,13 +1,14 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { pnpm } from "#bin/engrenage/pnpm/index";
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
-import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
 import { installDependencies } from "#tools/pnpm/operations/installDependencies";
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
+
+import pnpm from "#bin/engrenage/pnpm/index";
 
 vi.mock("#tools/pnpm/operations/resolveLatestPnpm");
 vi.mock("#tools/pnpm/operations/installDependencies");
@@ -41,7 +42,7 @@ describe("engrenage pnpm upgrade", () => {
 
     vi.spyOn(console, "info").mockImplementation(() => {});
 
-    await runCommand(pnpm, "upgrade");
+    await runDefinition(pnpm, "upgrade");
 
     const manifest = JSON.parse(project.read("package.json"));
 
@@ -70,7 +71,7 @@ describe("engrenage pnpm upgrade", () => {
 
     vi.spyOn(console, "info").mockImplementation(() => {});
 
-    await runCommand(pnpm, "upgrade");
+    await runDefinition(pnpm, "upgrade");
 
     expect(
       JSON.parse(project.read("package.json")).devEngines.packageManager,
@@ -82,7 +83,7 @@ describe("engrenage pnpm upgrade", () => {
 
     vi.mocked(installDependencies).mockClear();
 
-    await runCommand(pnpm, "upgrade");
+    await runDefinition(pnpm, "upgrade");
 
     expect(installDependencies).not.toHaveBeenCalled();
   });
@@ -98,7 +99,7 @@ describe("engrenage pnpm upgrade", () => {
 
     vi.spyOn(console, "info").mockImplementation(() => {});
 
-    await runCommand(pnpm, "upgrade", "--yes");
+    await runDefinition(pnpm, "upgrade", "--yes");
 
     expect(warn).toHaveBeenCalledWith(
       expect.stringContaining("update engrenage"),

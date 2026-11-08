@@ -5,5 +5,4 @@ export interface SyncTarget<Flag extends string> {
     config: LoadedConfig,
     flags: Partial<Record<Flag, boolean>>,
   ): void | Promise<void>;
-  flags: Partial<Record<Flag, string>>;
 }

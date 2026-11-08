@@ -9,6 +9,8 @@ export { syncWorkspaceFiles } from "#tools/typescript/setup/syncWorkspaceFiles";
 // @end
 
 export { resolvePathAliases } from "#project/tsconfig/index";
+export { resolveTscArguments } from "#tools/typescript/operations/resolveTscArguments";
+export { resolveTscDistArguments } from "#tools/typescript/operations/resolveTscDistArguments";
 export { syncBarrels } from "#tools/typescript/operations/syncBarrels";
 export { inferType } from "#tools/typescript/utils/inferType";
 export { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";

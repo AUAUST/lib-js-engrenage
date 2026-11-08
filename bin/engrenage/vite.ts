@@ -1,9 +1,9 @@
 import { packages } from "#constants";
-import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
+import { defineToolCommand } from "#workflows/cli/index";
 
-export const vite = defineToolCommands({
+export default defineToolCommand({
   packageName: packages.vite,
-  commands: {
-    vite: {},
+  configure(command) {
+    return command.description("Run Vite.");
   },
 });

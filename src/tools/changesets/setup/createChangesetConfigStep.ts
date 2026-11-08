@@ -12,7 +12,7 @@ export function createChangesetConfigStep(): Step {
     async plan({ addDevDependency, invoke }) {
       await addDevDependency(changesetsCli);
 
-      // @debt hand-written pnpm invocation, like those in createStepContext and bin/engrenage/init.ts
+      // @debt hand-written pnpm invocation, like those in createStepContext and bin/engrenage/actions/init.ts
       invoke({
         command: "pnpm",
         args: ["changeset", "init"],

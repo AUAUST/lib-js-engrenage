@@ -33,3 +33,18 @@ test(
     );
   },
 );
+
+test(
+  "the executable lists every option of a lazy command in its help",
+  { timeout: binaryTimeout },
+  async () => {
+    const { stdout } = await run(process.execPath, [
+      getExecutable(),
+      "help",
+      "sync",
+    ]);
+
+    expect(stdout).toContain("--check");
+    expect(stdout).toContain("--vscode-settings");
+  },
+);

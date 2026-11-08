@@ -4,23 +4,17 @@ import { boolean, optional } from "valibot";
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
-import { validate } from "#foundation/options/utils/validate";
-import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
-import { settleChanges } from "#workflows/cli/operations/settleChanges";
-import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
-import {
-  runSync,
-  syncTargets,
-  type SyncTargetFlags,
-  type SyncTargetName,
-} from "#workflows/sync/index";
+import { validate } from "#foundation/options/index";
+import { defineLazyCommand } from "#workflows/cli/index";
+import { syncTargetFlags } from "#workflows/sync/constants";
+import type { SyncTargetFlags, SyncTargetName } from "#workflows/sync/index";
 
-function createFlagOptions(): readonly {
+function listFlagOptions(): readonly {
   target: SyncTargetName;
   flag: string;
   option: Option;
 }[] {
-  return flatMap(entries(syncTargets), ([target, { flags }]) => {
+  return flatMap(entries(syncTargetFlags), ([target, flags]) => {
     return map(
       entries<Record<string, string>>(flags),
       ([flag, description]) => {
@@ -34,53 +28,49 @@ function createFlagOptions(): readonly {
   });
 }
 
-export const sync = defineLegacyCommand((command) => {
-  const flagOptions = createFlagOptions();
+export default defineLazyCommand({
+  configure(command) {
+    command.description(
+      "Update the existing project files that engrenage derives from the config. `engrenage init` creates missing ones.",
+    );
 
-  for (const { option } of flagOptions) {
-    command.addOption(option);
-  }
+    for (const { option } of listFlagOptions()) {
+      command.addOption(option);
+    }
 
-  return command
-    .addArgument(
-      new Argument("[targets...]", "targets to sync (all by default)").choices(
-        keys(syncTargets),
-      ),
-    )
-    .option("--check", "report outdated files without writing them", false)
-    .action(async (selected, { check }, self) => {
-      const config = await loadValidatedConfig();
+    return command
+      .addArgument(
+        new Argument(
+          "[targets...]",
+          "targets to sync (all by default)",
+        ).choices(keys(syncTargetFlags)),
+      )
+      .option("--check", "report outdated files without writing them", false);
+  },
+  action() {
+    return import("#bin/engrenage/actions/sync");
+  },
+  parse(targets, { check }, command) {
+    const flags: SyncTargetFlags = {};
 
-      const flags: SyncTargetFlags = {};
+    for (const { target, flag, option } of listFlagOptions()) {
+      const value = validate(
+        optional(boolean()),
+        command.getOptionValue(option.attributeName()),
+        `--${option.name()}`,
+      );
 
-      for (const { target, flag, option } of flagOptions) {
-        const name = option.attributeName();
-
-        const value = validate(
-          optional(boolean()),
-          self.getOptionValue(name),
-          `--${option.name()}`,
-        );
-
-        if (value !== undefined) {
-          flags[target] = {
-            ...flags[target],
-            [flag]: value,
-          };
-        }
+      if (value !== undefined) {
+        flags[target] = {
+          ...flags[target],
+          [flag]: value,
+        };
       }
+    }
 
-      if (check) {
-        console.info("Checking synced files...");
-      }
-
-      await runSync(config, {
-        names: selected.length === 0 ? keys(syncTargets) : selected,
-        flags,
-      });
-
-      await settleChanges(config, {
-        check,
-      });
-    });
+    return [
+      targets.length === 0 ? keys(syncTargetFlags) : targets,
+      { check, flags },
+    ];
+  },
 });

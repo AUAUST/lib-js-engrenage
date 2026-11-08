@@ -48,6 +48,10 @@ test(
 
     expect(urls).toContainEqual(expect.stringContaining("/valibot/"));
 
-    expect(urls.filter((url) => url.includes("eslint"))).toEqual([]);
+    expect(
+      urls.filter((url) => {
+        return url.includes("/node_modules/") && url.includes("eslint");
+      }),
+    ).toEqual([]);
   },
 );

@@ -7,20 +7,20 @@ import { parse } from "yaml";
 import { sort } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 
-import { init } from "#bin/engrenage/init";
-import { sync } from "#bin/engrenage/sync";
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
-import { runCommand } from "#tests/utils/runCommand";
 import { scratchpadPlaceholders } from "#tools/agents/constants";
+import { syncTargetFlags } from "#workflows/sync/constants";
 import type { Prompter } from "#project/steps/index";
 
 import * as prompts from "#workflows/cli/operations/createPrompter";
 
+import init from "#bin/engrenage/actions/init";
+import sync from "#bin/engrenage/actions/sync";
 import manifest from "#package.json" with { type: "json" };
 
 vi.mock(import("#foundation/processes/operations/spawnProcess"));
@@ -89,7 +89,7 @@ describe("engrenage init", () => {
       confirm,
     });
 
-    await runCommand(init);
+    await init({ yes: false });
 
     expect(confirm).toHaveBeenCalledExactlyOnceWith(
       expect.stringContaining("Review the missing setup"),
@@ -138,7 +138,7 @@ describe("engrenage init", () => {
         confirm,
       });
 
-      await runCommand(init);
+      await init({ yes: false });
 
       expect(confirm).toHaveBeenNthCalledWith(
         1,
@@ -181,7 +181,7 @@ describe("engrenage init", () => {
       ".gitignore": "node_modules\n.DS_Store\n\n# Scratch\n/scratch\n",
     });
 
-    await runCommand(init, "--yes");
+    await init({ yes: true });
 
     const packageJson: unknown = JSON.parse(project.read("package.json"));
 
@@ -310,7 +310,7 @@ describe("engrenage init", () => {
         confirm,
       });
 
-      await runCommand(init);
+      await init({ yes: false });
 
       const packageJson: unknown = JSON.parse(project.read("package.json"));
 
@@ -342,7 +342,7 @@ describe("engrenage init", () => {
         ".changeset/config.json": "{}\n",
       });
 
-      await runCommand(init, "--yes");
+      await init({ yes: true });
 
       const completed = JSON.parse(project.read("package.json"));
 
@@ -361,7 +361,7 @@ describe("engrenage init", () => {
         confirm,
       });
 
-      await runCommand(init);
+      await init({ yes: false });
 
       expect(confirm).toHaveBeenCalledWith("Add the standard scripts?", true);
       expect(confirm).not.toHaveBeenCalledWith("Want coverage?", true);
@@ -383,14 +383,14 @@ describe("engrenage init", () => {
       ".changeset/config.json": "{}\n",
     });
 
-    await runCommand(init, "--yes");
+    await init({ yes: true });
 
     const completed = project.read("package.json");
     const scratchpad = project.read(".ai/scratchpad.md");
 
     vi.clearAllMocks();
 
-    await runCommand(init, "--yes");
+    await init({ yes: true });
 
     expect(spawnProcess).not.toHaveBeenCalled();
 
@@ -462,7 +462,7 @@ describe("engrenage init", () => {
         });
       });
 
-      await runCommand(init, "--yes");
+      await init({ yes: true });
 
       const name = basename(project.root);
 
@@ -563,7 +563,10 @@ describe("engrenage init", () => {
 
       vi.mocked(console.warn).mockClear();
 
-      await runCommand(sync, "--check");
+      await sync(keys(syncTargetFlags), {
+        check: true,
+        flags: {},
+      });
 
       expect(process.exitCode ?? 0).toBe(0);
 
@@ -606,7 +609,7 @@ describe("engrenage init", () => {
 
     vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
 
-    await runCommand(init, "--yes");
+    await init({ yes: true });
 
     expect(select).toHaveBeenCalledWith(
       visibilityQuestion,
@@ -641,7 +644,7 @@ describe("engrenage init", () => {
 
     vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
 
-    await expect(runCommand(init, "--yes")).rejects.toThrow(
+    await expect(init({ yes: true })).rejects.toThrow(
       "the package library is unscoped",
     );
 
@@ -674,7 +677,7 @@ describe("engrenage init", () => {
 
     vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
 
-    await runCommand(init, "--yes");
+    await init({ yes: true });
 
     expect(select).not.toHaveBeenCalledWith(
       visibilityQuestion,
@@ -697,7 +700,7 @@ test("does not generate agent setup without selected agents", async () => {
     "engrenage.config.ts": "export default {};\n",
   });
 
-  await runCommand(init, "--yes");
+  await init({ yes: true });
 
   expect(project.read("engrenage.config.ts")).toBe("export default {};\n");
 
@@ -729,7 +732,7 @@ test("sets up Codex with backlog guidance without installing coding rules", asyn
     "engrenage.config.ts": input,
   });
 
-  await runCommand(init, "--yes");
+  await init({ yes: true });
 
   expect(project.read("engrenage.config.ts")).toBe(input);
 
@@ -785,7 +788,7 @@ test("uses an interactive selection for this init without rewriting an existing 
     },
   });
 
-  await runCommand(init, "--yes");
+  await init({ yes: true });
 
   expect(project.read("engrenage.config.ts")).toBe("export default {};\n");
   expect(project.read("CLAUDE.md")).toBe("@AGENTS.md\n");
@@ -823,7 +826,7 @@ test("declining backlog setup leaves no backlog instructions or files", async ()
     confirm,
   });
 
-  await runCommand(init);
+  await init({ yes: false });
 
   expect(confirm).toHaveBeenCalledWith(
     expect.stringContaining("Set up the shared backlog"),
@@ -855,7 +858,7 @@ test("adds a scratchpad to an existing backlog setup", async () => {
       "<!-- @reference @auaust/engrenage/agents/rules/backlog.md -->\n<!-- @end -->\n",
   });
 
-  await runCommand(init, "--yes");
+  await init({ yes: true });
 
   expect(project.read(".ai/scratchpad.md")).toContain(
     "<!-- scratchpad-placeholder -->",

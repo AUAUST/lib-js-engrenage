@@ -14,7 +14,7 @@ function addDebugOptions(command: CommandUnknownOpts) {
   }
 }
 
-// @debt the definer bin keeps until its commands move to `defineCommand` and `defineLazyCommand` (#327, #328)
+// @debt the definer bin keeps until its commands move to `defineCommand` and `defineLazyCommand` (#328)
 export function defineLegacyCommand(
   definition: LegacyCommandDefinition,
 ): LegacyCommandDefinition {

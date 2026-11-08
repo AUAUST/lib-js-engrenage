@@ -1,3 +1,3 @@
-import type { syncTargets } from "#workflows/sync/operations/syncTargets";
+import type { syncTargetFlags } from "#workflows/sync/constants";
 
-export type SyncTargetName = keyof typeof syncTargets;
+export type SyncTargetName = keyof typeof syncTargetFlags;

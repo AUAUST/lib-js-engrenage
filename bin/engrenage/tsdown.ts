@@ -1,14 +1,14 @@
 import { packages } from "#constants";
-import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
-import { ensureIncludes } from "#workflows/cli/operations/ensureIncludes";
+import { defineToolCommand } from "#workflows/cli/index";
 
-export const tsdown = defineToolCommands({
+export default defineToolCommand({
   packageName: packages.tsdown,
-  commands: {
-    tsdown: {
-      arguments(config, args) {
-        ensureIncludes(args, ["--config-loader", "tsx"]);
-      },
-    },
+  configure(command) {
+    return command.description(
+      "Build the package, loading the config with tsx.",
+    );
+  },
+  action() {
+    return import("#bin/engrenage/actions/tsdown");
   },
 });

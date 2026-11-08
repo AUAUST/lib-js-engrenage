@@ -1,57 +1,16 @@
-import { aliasesSection, structureSection } from "#project/structure/index";
-import { findImportCycles } from "#project/structure/operations/findImportCycles";
-import { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
-import { listDomainsWithoutPurpose } from "#project/structure/utils/listDomainsWithoutPurpose";
-import { renderImportCycles } from "#project/structure/utils/renderImportCycles";
-import { renderStructure } from "#project/structure/utils/renderStructure";
-import { typescriptSection } from "#project/tsconfig/index";
-import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
-import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
+import { defineLazyCommand } from "#workflows/cli/index";
 
-// @debt the command composes the structure check (report, cycles, violation exit) from four internal modules of `project/structure`; bin may reach any internal, so its "thin" rule has no lint backing
-export const structure = defineLegacyCommand((command) => {
-  return command
-    .option(
-      "--check",
-      "exit non-zero on an unclassified directory of a strict environment, a role cardinality violation, a module beside the command group of its name or a runtime import cycle",
-      false,
-    )
-    .action(async ({ check }) => {
-      const config = await loadValidatedConfig();
-
-      for (const line of renderStructure(
-        await config.resolve(structureSection),
-      )) {
-        console.info(line);
-      }
-
-      const { verbatimModuleSyntax } = await config.resolve(typescriptSection);
-
-      const cycles = await findImportCycles({
-        root: config.context.root,
-        structure: await config.resolve(structureSection),
-        aliases: await config.resolve(aliasesSection),
-        verbatimModuleSyntax,
-      });
-
-      for (const line of renderImportCycles(cycles)) {
-        console.info(line);
-      }
-
-      for (const path of listDomainsWithoutPurpose(
-        await config.resolve(structureSection),
-      )) {
-        console.warn(
-          `${path} has no purpose: set one on its \`domains\` entry.`,
-        );
-      }
-
-      if (
-        check &&
-        (hasStructureViolations(await config.resolve(structureSection)) ||
-          cycles.length > 0)
-      ) {
-        process.exitCode = 1;
-      }
-    });
+export default defineLazyCommand({
+  configure(command) {
+    return command
+      .description("Print how engrenage classifies the project directories.")
+      .option(
+        "--check",
+        "exit non-zero on an unclassified directory of a strict environment, a role cardinality violation, a module beside the command group of its name or a runtime import cycle",
+        false,
+      );
+  },
+  action() {
+    return import("#bin/engrenage/actions/structure");
+  },
 });

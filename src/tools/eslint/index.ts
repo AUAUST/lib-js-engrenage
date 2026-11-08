@@ -14,6 +14,8 @@ export { createRecommendedRules } from "#tools/eslint/operations/createRecommend
 export { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";
 export { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
 export { resolveConventionSections } from "#tools/eslint/operations/resolveConventionSections";
+export { resolveEslintFixArguments } from "#tools/eslint/operations/resolveEslintFixArguments";
+export { resolveEslintSuppressArguments } from "#tools/eslint/operations/resolveEslintSuppressArguments";
 export { resolveScope } from "#tools/eslint/operations/resolveScope";
 export { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
 export { selectConventions } from "#tools/eslint/operations/selectConventions";

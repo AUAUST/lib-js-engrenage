@@ -19,6 +19,9 @@ import { syncVscodeFiles } from "#tools/vscode/index";
 import { checkPublishing } from "#workflows/sync/setup/checkPublishing";
 import { syncPackageJson } from "#workflows/sync/setup/syncPackageJson";
 import { defineSyncTarget } from "#workflows/sync/utils/defineSyncTarget";
+import type { syncTargetFlags } from "#workflows/sync/constants";
+import type { SyncTarget } from "#workflows/sync/types/SyncTarget";
+import type { SyncTargetName } from "#workflows/sync/types/SyncTargetName";
 
 // Targets run in declaration order: those that produce a file other targets read from the config come first.
 export const syncTargets = {
@@ -26,23 +29,20 @@ export const syncTargets = {
   aliases: defineSyncTarget(syncAliases),
   agents: defineSyncTarget(syncAgents),
   changesets: defineSyncTarget(syncChangesetConfig),
-  claude: defineSyncTarget(syncClaudeSettings, {
-    settings: "create .claude/settings.json when it is missing",
-  }),
-  codex: defineSyncTarget(syncCodexFiles, {
-    hooks: "create .codex/hooks.json when it is missing",
-  }),
+  claude: defineSyncTarget(syncClaudeSettings),
+  codex: defineSyncTarget(syncCodexFiles),
   gitignore: defineSyncTarget(syncGitignoreFile),
   globals: defineSyncTarget(syncEnvFile),
   lefthook: defineSyncTarget(syncLefthookConfig),
   package: defineSyncTarget(syncPackageJson),
   pnpm: defineSyncTarget(syncWorkspaceFile),
   prettierignore: defineSyncTarget(syncPrettierignoreFile),
-  vscode: defineSyncTarget(syncVscodeFiles, {
-    settings: "create .vscode/settings.json when it is missing",
-    extensions: "create .vscode/extensions.json when it is missing",
-  }),
+  vscode: defineSyncTarget(syncVscodeFiles),
   workflows: defineSyncTarget(syncWorkflowFiles),
   workspaces: defineSyncTarget(syncWorkspaceFiles),
   publishing: defineSyncTarget(checkPublishing),
+} satisfies {
+  readonly [Name in SyncTargetName]: SyncTarget<
+    keyof (typeof syncTargetFlags)[Name] & string
+  >;
 };

@@ -1,6 +1,9 @@
 import { posix } from "node:path";
 
-import { getIndexFile, type ResolvedRoles } from "#project/structure/index";
+import {
+  getExecutableFile,
+  type ResolvedRoles,
+} from "#project/structure/index";
 import { builtExtension } from "#tools/tsdown/constants";
 import { findCommands } from "#tools/tsdown/utils/findCommands";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";
@@ -13,7 +16,7 @@ export async function resolveCommandFiles(
 ): Promise<Record<string, string>> {
   const commandFiles: Record<string, string> = {};
 
-  const indexFile = getIndexFile(config.roles);
+  const executableFile = getExecutableFile(config.roles);
 
   for (const [command, file] of await findCommands(config)) {
     if (command in commandFiles) {
@@ -21,7 +24,7 @@ export async function resolveCommandFiles(
     }
 
     commandFiles[command] =
-      `./${posix.join(outDir, `${toEntryName(file, indexFile)}${builtExtension}`)}`;
+      `./${posix.join(outDir, `${toEntryName(file, executableFile)}${builtExtension}`)}`;
   }
 
   return commandFiles;

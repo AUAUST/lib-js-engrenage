@@ -1,3 +1,4 @@
+export { checkStructure } from "#project/structure/operations/checkStructure";
 export { createStructureDomainResolver } from "#project/structure/operations/createStructureDomainResolver";
 export { createStructureRoleResolver } from "#project/structure/operations/createStructureRoleResolver";
 export { createStructureWalker } from "#project/structure/operations/createStructureWalker";
@@ -43,6 +44,7 @@ export * from "#project/structure/types/RoleDefinition";
 export * from "#project/structure/types/RoleEffects";
 export * from "#project/structure/types/RoleEnvironment";
 export * from "#project/structure/types/RoleRegistry";
+export * from "#project/structure/types/StructureCheck";
 export * from "#project/structure/types/StructureEnvironmentName";
 export * from "#project/structure/types/StructureInput";
 export * from "#project/structure/types/StructureKind";

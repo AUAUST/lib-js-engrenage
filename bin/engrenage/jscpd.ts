@@ -1,19 +1,15 @@
-import { map } from "@auaust/primitive-kit/arrays";
-
 import { packages } from "#constants";
-import { listScannedFiles } from "#tools/jscpd/index";
-import { defineToolCommands } from "#workflows/cli/operations/defineToolCommands";
+import { defineToolCommand } from "#workflows/cli/index";
 
-export const jscpd = defineToolCommands({
+export default defineToolCommand({
   packageName: packages.jscpd,
-  commands: {
-    jscpd: {
-      message: "Detecting duplicated code...",
-      async arguments(config, args) {
-        const files = await listScannedFiles(config);
-
-        args.push(...map(files, (file) => config.context.path(file)));
-      },
-    },
+  message: "Detecting duplicated code...",
+  configure(command) {
+    return command.description(
+      "Detect duplicated code in the project's code files, outside tests, fixtures and generated files.",
+    );
+  },
+  action() {
+    return import("#bin/engrenage/actions/jscpd");
   },
 });

@@ -3,12 +3,15 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, test, vi } from "vitest";
 
-import { tsc } from "#bin/engrenage/tsc";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { captureBinaryOutput } from "#tests/utils/captureBinaryOutput";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
+
+import tsc from "#bin/engrenage/actions/tsc";
+import tscDist from "#bin/engrenage/actions/tscDist";
+import engrenage from "#bin/engrenage/index";
 
 vi.mock(import("node:child_process"), { spy: true });
 
@@ -72,7 +75,7 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
       'import { value } from "../src/index.ts";\n\nexport const text: string = value;\n',
     );
 
-    await runCommand(tsc.tsc);
+    await runDefinition(engrenage, "typecheck");
 
     expect(process.exitCode).not.toBe(0);
     expect(output()).toContain("tests/index.ts(3,14): error TS2322");
@@ -85,9 +88,20 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
       'import { value } from "../src/index.ts";\n\nexport const number: number = value;\n',
     );
 
-    await runCommand(tsc.tsc);
+    await runDefinition(engrenage, "typecheck");
 
     expect(process.exitCode).toBe(0);
+  });
+
+  test("builds a solution tsconfig without emitting", async () => {
+    createSolution("export {};\n");
+
+    expect(await tsc(["--pretty"])).toEqual([
+      "--build",
+      expect.stringContaining("tsconfig.json"),
+      "--pretty",
+      "--noEmit",
+    ]);
   });
 });
 
@@ -108,7 +122,7 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
       },
     );
 
-    await runCommand(tsc.tsc);
+    await runDefinition(engrenage, "typecheck");
 
     expect(process.exitCode).toBe(0);
   });
@@ -125,9 +139,7 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
       }),
     });
 
-    await expect(runCommand(tsc.tsc)).rejects.toThrow(
-      "No environment is referenced",
-    );
+    await expect(tsc([])).rejects.toThrow("No environment is referenced");
   });
 });
 
@@ -144,7 +156,7 @@ describe("engrenage typecheck:dist", { timeout: binaryTimeout }, () => {
       }),
     });
 
-    await runCommand(tsc["tsc:dist"]);
+    await runDefinition(engrenage, "typecheck:dist");
 
     expect(process.exitCode).not.toBe(0);
     expect(output()).toContain("tests/index.ts(1,14): error TS2322");
@@ -156,8 +168,6 @@ describe("engrenage typecheck:dist", { timeout: binaryTimeout }, () => {
         "export default { tests: { dist: { tsconfig: false } } };\n",
     });
 
-    await expect(runCommand(tsc["tsc:dist"])).rejects.toThrow(
-      "dist tsconfig is disabled",
-    );
+    await expect(tscDist([])).rejects.toThrow("dist tsconfig is disabled");
   });
 });

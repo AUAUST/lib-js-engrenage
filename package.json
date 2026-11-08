@@ -24,7 +24,7 @@
     "ci:publish": "changeset publish",
     "ci:test": "pnpm run engrenage vitest",
     "coverage": "pnpm run engrenage vitest:coverage",
-    "engrenage": "node bin/engrenage/index.ts",
+    "engrenage": "node bin/engrenage/executable.ts",
     "format": "pnpm run engrenage prettier",
     "format:all": "pnpm run engrenage prettier:all",
     "lint": "pnpm run engrenage eslint",

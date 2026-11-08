@@ -3,15 +3,16 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, test, vi } from "vitest";
 
-import { tsc } from "#bin/engrenage/tsc";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { captureBinaryOutput } from "#tests/utils/captureBinaryOutput";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
+
+import tsc from "#bin/engrenage/tsc";
 
 vi.mock(import("node:child_process"), { spy: true });
 
@@ -182,7 +183,7 @@ describe(
       symlinkSync(repositoryModules, project.resolve("node_modules"));
       mockCwd(project.root);
 
-      await runCommand(tsc.tsc);
+      await runDefinition(tsc);
     }
 
     test("passes when every referenced environment checks", async () => {

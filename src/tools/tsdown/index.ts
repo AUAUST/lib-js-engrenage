@@ -11,6 +11,7 @@ export { createTsdownConfig } from "#tools/tsdown/operations/createTsdownConfig"
 export { resolveCommandEntries } from "#tools/tsdown/operations/resolveCommandEntries";
 export { resolveCommandFiles } from "#tools/tsdown/operations/resolveCommandFiles";
 export { resolveSourceEntries } from "#tools/tsdown/operations/resolveSourceEntries";
+export { resolveTsdownArguments } from "#tools/tsdown/operations/resolveTsdownArguments";
 // @end
 
 export { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";

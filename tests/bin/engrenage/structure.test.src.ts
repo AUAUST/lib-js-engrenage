@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { structure } from "#bin/engrenage/structure";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+
+import structure from "#bin/engrenage/actions/structure";
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',
@@ -38,7 +38,7 @@ describe("engrenage structure", () => {
   test("warns on a domain without a purpose without failing the check", async () => {
     createProject('{ src: { strictness: "loose" } }');
 
-    await runCommand(structure, "--check");
+    await structure({ check: true });
 
     expect(console.warn).toHaveBeenCalledWith(
       "src/feature has no purpose: set one on its `domains` entry.",
@@ -52,7 +52,7 @@ describe("engrenage structure", () => {
       '{ src: { strictness: "loose", domains: { feature: { purpose: "A configured feature." }, mystery: { purpose: "Additional fixture files." } } } }',
     );
 
-    await runCommand(structure, "--check");
+    await structure({ check: true });
 
     expect(console.warn).not.toHaveBeenCalled();
   });
@@ -60,7 +60,7 @@ describe("engrenage structure", () => {
   test("fails the check on an unclassified directory of a strict environment", async () => {
     createProject("{}");
 
-    await runCommand(structure, "--check");
+    await structure({ check: true });
 
     expect(process.exitCode).toBe(1);
   });
@@ -68,7 +68,7 @@ describe("engrenage structure", () => {
   test("passes the check on the same directory under loose", async () => {
     createProject('{ src: { strictness: "loose" } }');
 
-    await runCommand(structure, "--check");
+    await structure({ check: true });
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -85,7 +85,7 @@ describe("engrenage structure", () => {
         ...extra,
       });
 
-      await runCommand(structure, "--check");
+      await structure({ check: true });
 
       expect(process.exitCode).toBe(exitCode);
     },
@@ -97,7 +97,7 @@ describe("engrenage structure", () => {
       "tests/src/ghost/y.test.ts": "",
     });
 
-    await runCommand(structure, "--check");
+    await structure({ check: true });
 
     expect(process.exitCode).toBe(1);
   });

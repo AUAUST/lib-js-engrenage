@@ -4,7 +4,6 @@ import { fileURLToPath } from "node:url";
 import { build } from "vite";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { sync } from "#bin/engrenage/sync";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import {
   checkWorkspaces,
@@ -13,10 +12,11 @@ import {
 } from "#project/structure/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
 import { runSync } from "#workflows/sync/index";
+
+import sync from "#bin/engrenage/actions/sync";
 
 const placeholder = "{dir}";
 
@@ -71,7 +71,10 @@ describe("workspaces", () => {
   test("syncs the workspace files of two globs, and a check reports drift", async () => {
     const project = createProject();
 
-    await runCommand(sync, "workspaces", "pnpm");
+    await sync(["workspaces", "pnpm"], {
+      check: false,
+      flags: {},
+    });
 
     expect(project.read("pnpm-workspace.yaml")).toContain(
       "packages:\n  - extensions/action-*\n  - extensions/functions-*\n",
@@ -112,7 +115,10 @@ describe("workspaces", () => {
 
     vi.mocked(console.info).mockClear();
 
-    await runCommand(sync, "workspaces", "pnpm", "--check");
+    await sync(["workspaces", "pnpm"], {
+      check: true,
+      flags: {},
+    });
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -128,7 +134,10 @@ describe("workspaces", () => {
       ),
     );
 
-    await runCommand(sync, "workspaces");
+    await sync(["workspaces"], {
+      check: false,
+      flags: {},
+    });
 
     expect(
       JSON.parse(project.read("extensions/action-a/package.json"))
@@ -142,7 +151,10 @@ describe("workspaces", () => {
       JSON.stringify({ name: "wrong", private: true }),
     );
 
-    await runCommand(sync, "workspaces", "--check");
+    await sync(["workspaces"], {
+      check: true,
+      flags: {},
+    });
 
     expect(process.exitCode).toBe(1);
 

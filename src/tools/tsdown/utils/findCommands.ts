@@ -3,7 +3,10 @@ import { posix } from "node:path";
 import { entries } from "@auaust/toolkit/object";
 
 import { filesIn, type Filesystem } from "#foundation/filesystem/index";
-import { getIndexFile, type ResolvedRoles } from "#project/structure/index";
+import {
+  getExecutableFile,
+  type ResolvedRoles,
+} from "#project/structure/index";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";
 import type { ResolvedBin } from "#project/environments/index";
 import type { File } from "#types/File";
@@ -33,13 +36,16 @@ export async function findCommands({
     );
   }
 
-  const indexFile = getIndexFile(roles);
+  const executableFile = getExecutableFile(roles);
 
   const files = await filesystem.glob(
-    filesIn(bin.dirs, ["*.ts", `*/${indexFile}`]),
+    filesIn(
+      bin.dirs,
+      executableFile === undefined ? ["*.ts"] : ["*.ts", `*/${executableFile}`],
+    ),
   );
 
   return files.map((file): readonly [string, File] => {
-    return [posix.basename(toEntryName(file, indexFile)), file];
+    return [posix.basename(toEntryName(file, executableFile)), file];
   });
 }

@@ -1,13 +1,18 @@
 import { Command } from "@commander-js/extra-typings";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { sync } from "#bin/engrenage/sync";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
+import {
+  createProgram as createDefinedProgram,
+  defineGroup,
+} from "#workflows/cli/index";
 import { addDebugOption } from "#workflows/cli/operations/addDebugOption";
 import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { registerSubcommands } from "#workflows/cli/operations/registerSubcommands";
 import { runProgram } from "#workflows/cli/operations/runProgram";
+
+import sync from "#bin/engrenage/sync";
 
 const succeeding = defineLegacyCommand((command) => {
   return command.action(() => {});
@@ -125,7 +130,15 @@ describe("runProgram", () => {
       }).root,
     );
 
-    await run(registerSubcommands(new Command("program"), { sync }), "sync");
+    await run(
+      createDefinedProgram(
+        "program",
+        defineGroup({
+          commands: { sync },
+        }),
+      ),
+      "sync",
+    );
 
     expect(printed()).toContain("Invalid");
     expect(printed()).not.toContain("    at ");

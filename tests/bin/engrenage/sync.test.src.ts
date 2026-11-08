@@ -2,11 +2,16 @@ import { existsSync } from "node:fs";
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { sync } from "#bin/engrenage/sync";
+import { keys } from "@auaust/toolkit/object";
+
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+import { syncTargetFlags } from "#workflows/sync/constants";
+
+import sync from "#bin/engrenage/actions/sync";
+
+const everyTarget = keys(syncTargetFlags);
 
 const emptyBlock = [
   "<!-- @reference ./.claude/shared.md -->",
@@ -46,7 +51,10 @@ describe("engrenage sync", () => {
   test("syncs every target so a later check passes", async () => {
     const project = createProject();
 
-    await runCommand(sync);
+    await sync(everyTarget, {
+      check: false,
+      flags: {},
+    });
 
     expect(project.read("AGENTS.md")).toContain("## Shared section");
 
@@ -56,7 +64,10 @@ describe("engrenage sync", () => {
 
     vi.mocked(console.info).mockClear();
 
-    await runCommand(sync, "--check");
+    await sync(everyTarget, {
+      check: true,
+      flags: {},
+    });
 
     expect(process.exitCode).toBeUndefined();
 
@@ -72,7 +83,10 @@ describe("engrenage sync", () => {
   test("checks only the selected targets without writing", async () => {
     const project = createProject();
 
-    await runCommand(sync, "vscode", "--check");
+    await sync(["vscode"], {
+      check: true,
+      flags: {},
+    });
 
     expect(process.exitCode).toBe(1);
 
@@ -94,11 +108,19 @@ describe("engrenage sync", () => {
 
     mockCwd(project.root);
 
-    await runCommand(sync, "vscode");
+    await sync(["vscode"], {
+      check: false,
+      flags: {},
+    });
 
     expect(existsSync(project.resolve(".vscode/settings.json"))).toBe(false);
 
-    await runCommand(sync, "vscode", "--vscode-settings");
+    await sync(["vscode"], {
+      check: false,
+      flags: {
+        vscode: { settings: true },
+      },
+    });
 
     expect(JSON.parse(project.read(".vscode/settings.json"))).toMatchObject({
       "editor.formatOnSave": true,
@@ -120,7 +142,10 @@ describe("engrenage sync", () => {
 
     mockCwd(project.root);
 
-    await runCommand(sync);
+    await sync(everyTarget, {
+      check: false,
+      flags: {},
+    });
 
     expect(existsSync(project.resolve("tsconfig.json"))).toBe(true);
     expect(project.read(".gitignore")).toContain("/dist");

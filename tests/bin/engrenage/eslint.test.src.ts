@@ -1,9 +1,11 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { eslint } from "#bin/engrenage/eslint";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
+
+import eslint from "#bin/engrenage/eslint";
+import engrenage from "#bin/engrenage/index";
 
 function createProject() {
   const project = createTemporaryProject({
@@ -39,8 +41,16 @@ describe("engrenage eslint", () => {
   test("runs without a cache", async () => {
     const project = createProject();
 
-    await runCommand(eslint.eslint, "src");
+    await runDefinition(eslint, "src");
 
     expect(readRecordedArgs(project)).toEqual(["src"]);
+  });
+
+  test("passes --debug to ESLint", async () => {
+    const project = createProject();
+
+    await runDefinition(engrenage, "eslint", "--debug");
+
+    expect(readRecordedArgs(project)).toEqual(["--debug"]);
   });
 });

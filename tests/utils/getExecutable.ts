@@ -8,7 +8,7 @@ export function getExecutable(): string {
   const path =
     process.env.MODE === buildMode
       ? manifest.bin.engrenage
-      : "./bin/engrenage/index.ts";
+      : "./bin/engrenage/executable.ts";
 
   return fileURLToPath(new URL(`../../${path}`, import.meta.url));
 }
