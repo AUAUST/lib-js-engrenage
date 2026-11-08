@@ -42,7 +42,7 @@ Everything in the issue binds you: follow the **Steps** in order and write the l
 ## Finishing
 
 - The issue is done when its **Done when** holds, or its **Steps** are done when it has none, and the project's checks pass.
-- Send no message before your final report, your only message: a completion or a blocker.
+- Send no message before your final report, your only message: a completion or a blocker, sent once every command you started has finished and `engrenage gate --worktree` passes, so the stop gate reuses that pass.
 - The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again on that unchanged tree. Reporting failures never authorizes a failing commit.
 - When asked for a branch, create `worker/issue-<n>` from the current commit.
 - Never edit, comment on, set types or fields on, or close issues.
