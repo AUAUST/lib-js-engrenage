@@ -20,6 +20,8 @@ hooks:
             found");d=n}process.stdout.write(d)')" && cd --
             "$engrenage_hook_root" && pnpm --silent engrenage agents claude hook
             stop || exit 2
+disallowedTools:
+  - SendMessage
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/debugging.md -->
@@ -140,6 +142,7 @@ When the input is an issue, turn that issue into the task, condensing its origin
 
 ## Finishing
 
+- Send no message before your final report, your only message: a completion or a blocker.
 - The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again on that unchanged tree. Reporting failures never authorizes a failing commit.
 - When asked for a branch, create `debugger/<topic>` from the current commit, `debugger/issue-<n>` when the input is an issue.
 - After a fix, remove the backlog entries, debt backlog entries and debt markers it resolves. Never close an issue you fixed: merging the fix closes it.
