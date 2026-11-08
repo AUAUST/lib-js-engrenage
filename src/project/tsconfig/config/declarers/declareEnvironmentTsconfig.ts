@@ -23,7 +23,7 @@ const inheritedDefaults: Readonly<
   Partial<Record<TsconfigKey, TsconfigEnvironment>>
 > = defaultTsconfigInherits;
 
-// @debt `Context` reaches the declaration only through the inferred return type, so no-unnecessary-type-parameters warns that it is used once
+// @debt `Context` reaches the declaration only through the inferred return type, so no-unnecessary-type-parameters warns that it is used once; given this is a valid use for "unused" type parameters, an heuristic could be added to the rule that allows them on functions without return type annotations
 export function declareEnvironmentTsconfig<Context = unknown>(
   key: TsconfigKey,
   options: {

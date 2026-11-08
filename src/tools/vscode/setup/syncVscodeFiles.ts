@@ -73,9 +73,7 @@ async function isEnabled(
   return configured === true || requested || (await filesystem.exists(file));
 }
 
-// @debt `auaust/no-dynamic-import` forbids this lazy load, which keeps the ESLint engine out of every config load, so the rule is disabled on it until it allows heavy dependencies on rare paths (#221).
 async function loadEslintInfoRules(root: Directory): Promise<string[]> {
-  // eslint-disable-next-line auaust/no-dynamic-import
   const { loadInfoRules } = await import("#tools/eslint/index");
 
   return loadInfoRules(root);

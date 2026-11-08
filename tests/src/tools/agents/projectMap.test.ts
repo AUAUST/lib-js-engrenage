@@ -86,6 +86,7 @@ describe("project map", () => {
 
   test("groups identical role contracts across environments and retains different levels", async () => {
     const common = JSON.stringify([entry(), handlers({ effects: "confined" })]);
+
     const different = JSON.stringify([
       entry(),
       handlers({ effects: "effectful" }),
@@ -113,9 +114,11 @@ describe("project map", () => {
       .filter((line) => line.startsWith("| `handlers` |"));
 
     expect(rows).toHaveLength(2);
+
     expect(rows).toContain(
       "| `handlers` | Request handlers. |  | confined |  | `src`, `scripts` |",
     );
+
     expect(rows).toContain(
       "| `handlers` | Request handlers. |  | effectful |  | `tests` |",
     );
@@ -146,7 +149,9 @@ describe("project map", () => {
     expect(project.read(overviewFile)).toContain(
       "| `config/definers` |  | `define<Domain>Config.ts` | effectful |",
     );
+
     expect(project.read(sourceFile)).toContain("(global roles: constants.ts)");
+
     expect(project.read(".claude/rules/project-map/tooling.md")).toContain(
       "  - engrenage.config.ts",
     );
@@ -167,6 +172,7 @@ describe("project map", () => {
     expect(
       existsSync(project.resolve(".claude/rules/project-map/tooling.md")),
     ).toBe(false);
+
     expect(project.read(overviewFile)).not.toContain(
       ".claude/rules/project-map/tooling.md",
     );

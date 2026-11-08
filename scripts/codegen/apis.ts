@@ -1,5 +1,3 @@
-/* eslint-disable auaust/no-dynamic-import */
-
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 
 export const apis = defineCommand((command) => {

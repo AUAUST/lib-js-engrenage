@@ -1,6 +1,3 @@
-// @debt The `auaust/no-dynamic-import` rule forbids the dynamic imports that keep the config modules off the startup path of commands that never fail, so the rule is disabled here until it allows lazy loading (#221).
-/* eslint-disable auaust/no-dynamic-import */
-
 import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
 import { formatCommandError } from "#workflows/cli/operations/formatCommandError";

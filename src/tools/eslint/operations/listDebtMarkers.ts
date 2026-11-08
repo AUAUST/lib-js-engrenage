@@ -27,8 +27,6 @@ export async function listDebtMarkers({
     );
   }
 
-  // eslint is an optional peer dependency, so it loads only once the project is known to have it
-  // eslint-disable-next-line auaust/no-dynamic-import
   const { ESLint } = await import("eslint");
 
   const root = context.root;

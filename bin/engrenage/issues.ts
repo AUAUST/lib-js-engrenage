@@ -1,5 +1,3 @@
-// @debt The `auaust/no-dynamic-import` rule forbids the dynamic imports that load each subcommand only when it runs, so the rule is disabled here until it allows lazy command loading (#221).
-
 import { Option } from "@commander-js/extra-typings";
 
 import {

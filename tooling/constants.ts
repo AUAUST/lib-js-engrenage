@@ -5,7 +5,9 @@ export const sourceDomains = freeze({
     internals: true,
     purpose: "Composable content blocks for generated files.",
   },
-  "foundation/data": { purpose: "Resolve files shipped with the package." },
+  "foundation/data": {
+    purpose: "Resolve files shipped with the package.",
+  },
   "foundation/filesystem": {
     internals: true,
     purpose: "Read, stage and write project files.",
@@ -17,7 +19,9 @@ export const sourceDomains = freeze({
     internals: true,
     purpose: "Declare and validate configuration options.",
   },
-  "foundation/processes": { purpose: "Run external processes." },
+  "foundation/processes": {
+    purpose: "Run external processes.",
+  },
   "project/baseline": {
     purpose: "Resolve browser support targets from Baseline editions.",
   },
@@ -27,7 +31,9 @@ export const sourceDomains = freeze({
   "project/build": {
     purpose: "Resolve build outputs and the emitted package manifest.",
   },
-  "project/cache": { purpose: "Cache directory of the project's tools." },
+  "project/cache": {
+    purpose: "Cache directory of the project's tools.",
+  },
   "project/config": {
     purpose: "Load and resolve declarative configuration sections.",
   },
@@ -44,7 +50,9 @@ export const sourceDomains = freeze({
   "project/presets": {
     purpose: "Project presets and their resolved traits.",
   },
-  "project/roles": { purpose: "Declare role contracts and presets." },
+  "project/roles": {
+    purpose: "Declare role contracts and presets.",
+  },
   "project/steps": {
     purpose: "Contracts and helpers for project initialization steps.",
   },
@@ -75,17 +83,27 @@ export const sourceDomains = freeze({
   "tools/git": {
     purpose: "Configure Git conventions and repository files.",
   },
-  "tools/github": { purpose: "Generate GitHub repository workflows." },
-  "tools/jscpd": { purpose: "Detect duplicate code." },
-  "tools/lefthook": { purpose: "Configure local Git hooks." },
+  "tools/github": {
+    purpose: "Generate GitHub repository workflows.",
+  },
+  "tools/jscpd": {
+    purpose: "Detect duplicate code.",
+  },
+  "tools/lefthook": {
+    purpose: "Configure local Git hooks.",
+  },
   "tools/pnpm": {
     purpose: "Configure package management and dependency policies.",
   },
-  "tools/prettier": { purpose: "Configure code formatting." },
+  "tools/prettier": {
+    purpose: "Configure code formatting.",
+  },
   "tools/tsdown": {
     purpose: "Configure package bundling and packaging validation.",
   },
-  "tools/typescript": { purpose: "Configure and run TypeScript checks." },
+  "tools/typescript": {
+    purpose: "Configure and run TypeScript checks.",
+  },
   "tools/vite": {
     purpose: "Configure application builds and development servers.",
   },
@@ -107,23 +125,33 @@ export const sourceDomains = freeze({
   "workflows/init": {
     purpose: "Initialize projects through ordered setup steps.",
   },
-  "workflows/sync": { purpose: "Synchronize generated project files." },
+  "workflows/sync": {
+    purpose: "Synchronize generated project files.",
+  },
 } as const);
 
 export const binDomains = freeze({
-  "engrenage": { purpose: "Project tooling commands." },
+  "engrenage": {
+    purpose: "Project tooling commands.",
+  },
   "engrenage/agents": {
     purpose: "Agent lifecycle and instruction commands.",
   },
-  "engrenage/agents/claude": { purpose: "Claude lifecycle commands." },
+  "engrenage/agents/claude": {
+    purpose: "Claude lifecycle commands.",
+  },
   "engrenage/agents/claude/hook": {
     purpose: "Handle Claude lifecycle hook events.",
   },
-  "engrenage/agents/codex": { purpose: "Codex lifecycle commands." },
+  "engrenage/agents/codex": {
+    purpose: "Codex lifecycle commands.",
+  },
   "engrenage/agents/codex/hook": {
     purpose: "Handle Codex lifecycle hook events.",
   },
-  "engrenage/pnpm": { purpose: "Package manager maintenance commands." },
+  "engrenage/pnpm": {
+    purpose: "Package manager maintenance commands.",
+  },
 } as const);
 
 export const scriptsDomains = freeze({
@@ -133,5 +161,7 @@ export const scriptsDomains = freeze({
 } as const);
 
 export const toolingDomains = freeze({
-  eslint: { purpose: "Repository-specific ESLint rules." },
+  eslint: {
+    purpose: "Repository-specific ESLint rules.",
+  },
 } as const);

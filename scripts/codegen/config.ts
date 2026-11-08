@@ -1,5 +1,3 @@
-/* eslint-disable auaust/no-dynamic-import */
-
 import { glob } from "node:fs/promises";
 import { join } from "node:path";
 
