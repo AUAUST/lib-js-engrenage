@@ -1,7 +1,7 @@
 import { object, string } from "valibot";
 
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 import { checkAgentStop } from "#workflows/gate/index";
 
@@ -11,7 +11,7 @@ const payloadSchema = object({
   cwd: string(),
 });
 
-export const stop = defineCommand((command) => {
+export const stop = defineLegacyCommand((command) => {
   return command.action(async () => {
     const {
       session_id: session,

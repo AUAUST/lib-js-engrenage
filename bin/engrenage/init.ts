@@ -5,7 +5,7 @@ import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { packageJsonPathSection } from "#project/package/index";
 import { createPrompter } from "#workflows/cli/operations/createPrompter";
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { formatChanges } from "#workflows/cli/operations/formatChanges";
 import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
 import { runSteps } from "#workflows/cli/operations/runSteps";
@@ -78,7 +78,7 @@ async function readPackage(
   });
 }
 
-export const init = defineCommand((command) => {
+export const init = defineLegacyCommand((command) => {
   return command
     .option("-y, --yes", "accept every step without asking", false)
     .action(async ({ yes }) => {

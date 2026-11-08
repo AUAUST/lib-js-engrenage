@@ -1,7 +1,7 @@
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { registerLazySubcommands } from "#workflows/cli/operations/registerLazySubcommands";
 
-export const pnpm = defineCommand((command) => {
+export const pnpm = defineLegacyCommand((command) => {
   return registerLazySubcommands(command, {
     upgrade: {
       description:

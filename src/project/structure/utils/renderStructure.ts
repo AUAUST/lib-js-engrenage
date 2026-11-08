@@ -71,6 +71,11 @@ function render(node: StructureNode, depth: number): string[] {
         ? `${indent}${indentation}\`${role}\` holds at most one file here; found ${files.join(", ")}.`
         : `${indent}${indentation}\`${role}\` requires a file here; add one matching ${globs.join(", ")}.`;
     }),
+    ...(node.twin === undefined
+      ? []
+      : [
+          `${indent}${indentation}${node.twin} sits beside the command group ${node.path}; move it into the group or rename one of them.`,
+        ]),
     ...flatMap(node.children, (child) => render(child, depth + 1)),
   ];
 }

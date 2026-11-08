@@ -33,7 +33,7 @@
     "lint:suppress": "pnpm run engrenage eslint:suppress",
     "prepare": "lefthook install",
     "ready": "pnpm install --frozen-lockfile && pnpm run support codegen && pnpm run engrenage sync && pnpm run ci && echo 'Ready!'",
-    "support": "node scripts/index.ts",
+    "support": "node scripts/executable.ts",
     "test": "pnpm run engrenage vitest && pnpm run engrenage typecheck",
     "typecheck": "pnpm run engrenage typecheck",
     "typecheck:dist": "pnpm run engrenage typecheck:dist",

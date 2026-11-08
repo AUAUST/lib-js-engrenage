@@ -33,7 +33,7 @@ export const boundaryMessages = freeze({
   environment:
     "`{{path}}` imports `{{targetPath}}`; `{{environment}}` never imports {{category}}.",
   rootEntry:
-    "`{{path}}` imports `{{targetPath}}`; nothing imports an environment's root file.",
+    "`{{path}}` imports `{{targetPath}}`; only the environment's root executable imports its root file.",
   testVariant:
     "`{{path}}` imports `{{specifier}}`; {{variantReach}}. Move the case to {{variantMove}}.",
   workspace:

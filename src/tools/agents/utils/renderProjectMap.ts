@@ -118,7 +118,7 @@ function renderOverview({
     "",
     "## Environments",
     "",
-    `The matrix states environment grants; domain and role boundaries still apply. No importer may import a root index or entry file of ${list(elementEnvironments)}.`,
+    `The matrix states environment grants; domain and role boundaries still apply. No importer but its environment's root \`executable.ts\` may import a root index or entry file of ${list(elementEnvironments)}.`,
     "",
     "| Category | Meaning |",
     "| --- | --- |",
@@ -219,7 +219,7 @@ export function renderProjectMap({
         content: `${renderEnvironmentMap({
           name,
           environment,
-          roles: name === "bin" ? undefined : roles[name],
+          roles: roles[name],
           aliases: found,
           paths: paths[name] ?? [],
         })}\n`,

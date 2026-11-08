@@ -1,6 +1,10 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { entryRoleName, indexRoleName } from "#project/roles/constants";
+import {
+  entryRoleName,
+  executableRoleName,
+  indexRoleName,
+} from "#project/roles/constants";
 import { elementEnvironments } from "#project/structure/constants";
 import { getImportCategory } from "#project/structure/utils/getImportCategory";
 import type { BoundaryViolation } from "#project/structure/types/BoundaryViolation";
@@ -27,7 +31,13 @@ export function checkEnvironments(
     return;
   }
 
-  if (target !== undefined && isRootFile(target)) {
+  const isOwnExecutable =
+    target !== undefined &&
+    importer.role === executableRoleName &&
+    importer.environment === target.environment &&
+    importer.path === target.path;
+
+  if (target !== undefined && isRootFile(target) && !isOwnExecutable) {
     return freeze({
       cause: "rootEntry",
       boundary: undefined,

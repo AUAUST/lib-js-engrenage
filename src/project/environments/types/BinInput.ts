@@ -3,6 +3,7 @@
 import type { ListOption, ManagedListOption } from "#foundation/options/index";
 import type { DomainInput } from "#project/environments/types/DomainInput";
 import type { NamespaceInput } from "#project/environments/types/NamespaceInput";
+import type { RoleInput } from "#project/roles/index";
 
 /**
  * The environment of the command-line entries of the package.
@@ -124,10 +125,16 @@ export interface BinInput {
   }) | undefined)
   /**
    * How the directories of the environment are classified.
-   * `commands` makes the environment root and every directory that is not a role a command group: its `index.ts` declares the command and each other module is one subcommand named after its file; `domains` classifies them as domains.
+   * `commands` makes the environment root and every directory that is not a role a command group: its `index.ts` names its subcommands and their aliases, the root group's `executable.ts` runs it, and each other module is one command; `domains` classifies them as domains.
    * @default `commands`
    */
   tree?: (("commands" | "domains") | undefined)
+  /**
+   * Roles of the directories and files whose names carry a fixed meaning, each built by a role preset of `@auaust/engrenage/roles` or `createRolePreset`.
+   * Only listed roles exist.
+   * @default none
+   */
+  roles?: (RoleInput[] | undefined)
   /**
    * Commands the package exposes, mapped to their entry file.
    * They feed the tsdown entries and the `bin` field of `package.json`.

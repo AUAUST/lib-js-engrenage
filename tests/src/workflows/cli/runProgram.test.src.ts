@@ -5,15 +5,15 @@ import { sync } from "#bin/engrenage/sync";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { addDebugOption } from "#workflows/cli/operations/addDebugOption";
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { registerSubcommands } from "#workflows/cli/operations/registerSubcommands";
 import { runProgram } from "#workflows/cli/operations/runProgram";
 
-const succeeding = defineCommand((command) => {
+const succeeding = defineLegacyCommand((command) => {
   return command.action(() => {});
 });
 
-const failing = defineCommand((command) => {
+const failing = defineLegacyCommand((command) => {
   return command.action(() => {
     throw new Error("outer", { cause: new Error("inner") });
   });

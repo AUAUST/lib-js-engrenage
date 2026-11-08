@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import { environmentRolesSection } from "@auaust/engrenage";
 import { loadConfig } from "@auaust/engrenage/config";
 import { createRolePreset, utils } from "@auaust/engrenage/roles";
+import { keys } from "@auaust/toolkit/object";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
@@ -16,7 +17,7 @@ function createProject(config: object) {
 }
 
 describe("roles", () => {
-  test("resolve the roles each environment lists, and none elsewhere", async () => {
+  test("resolve the roles each environment lists, and only the layout's roles for a commands environment", async () => {
     const project = createProject({
       src: { roles: [utils({ nesting: 1 })] },
     });
@@ -30,7 +31,13 @@ describe("roles", () => {
     });
 
     expect(roles.tests.roles).toEqual({});
-    expect(roles.bin.roles).toEqual({});
+
+    expect(keys(roles.bin.roles)).toEqual([
+      "index",
+      "executable",
+      "commands",
+      "actions",
+    ]);
   });
 
   test("resolve no roles for a disabled environment", async () => {

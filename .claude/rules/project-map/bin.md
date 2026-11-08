@@ -6,7 +6,7 @@ paths:
 # Project map: bin
 
 ```
-bin/
+bin/  (global roles: executable.ts *.ts)
 └─ engrenage{agents{claude{hook} codex{hook}} pnpm}  Project tooling commands.
    ├─ agents{claude{hook} codex{hook}}  Agent lifecycle and instruction commands.
    │  ├─ claude{hook}  Claude lifecycle commands.
@@ -16,4 +16,4 @@ bin/
    └─ pnpm  Package manager maintenance commands.
 ```
 
-Commands: one module per subcommand; one directory with an `index.ts` per command group.
+Commands: one directory per command group, whose `index.ts` names its subcommands and their aliases; the root group's `executable.ts` runs it; each other module is one command.

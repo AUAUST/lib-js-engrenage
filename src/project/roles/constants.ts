@@ -5,6 +5,8 @@ export const indexRoleName = "index";
 
 export const entryRoleName = "entrypoint";
 
+export const executableRoleName = "executable";
+
 export const roleContractDefaults = freeze({
   nesting: 0,
   index: false,

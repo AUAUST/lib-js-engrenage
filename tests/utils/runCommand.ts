@@ -1,9 +1,9 @@
 import { Command } from "@commander-js/extra-typings";
 
-import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
+import type { LegacyCommandDefinition } from "#workflows/cli/types/LegacyCommandDefinition";
 
 export async function runCommand(
-  definition: CommandDefinition,
+  definition: LegacyCommandDefinition,
   ...args: string[]
 ) {
   await definition(new Command()).parseAsync(args, {

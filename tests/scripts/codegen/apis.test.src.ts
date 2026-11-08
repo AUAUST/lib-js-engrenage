@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { apis } from "#scripts/codegen/apis";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+
+import apis from "#scripts/codegen/actions/apis";
 
 function createProject(files: Record<string, string> = {}) {
   const project = createTemporaryProject({
@@ -29,7 +29,7 @@ describe("support codegen apis", { timeout: binaryTimeout }, () => {
   test("generates the timers group from the declarations of the DOM lib", async () => {
     const project = createProject();
 
-    await runCommand(apis, "timers");
+    await apis(["timers"], { check: false });
 
     const content = project.read("data/apis/timers.d.ts");
 
@@ -47,7 +47,7 @@ describe("support codegen apis", { timeout: binaryTimeout }, () => {
       "data/apis/timers.d.ts": "declare const edited: 1;\n",
     });
 
-    await runCommand(apis, "timers", "--check");
+    await apis(["timers"], { check: true });
 
     expect(process.exitCode).toBe(1);
 

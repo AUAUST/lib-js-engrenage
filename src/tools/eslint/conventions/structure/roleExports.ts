@@ -26,7 +26,7 @@ export default defineConvention({
     return defineStructureRule({
       entities,
       description:
-        "A module exports what its role's exports contract states: one named export matching the file, named exports, or one default export; a command module exports one command named after the file.",
+        "A module exports what its role's exports contract states: one named export matching the file, named exports, or one default export.",
       messages: {
         match:
           "A module of {{role}} exports only `{{name}}`, named after the file.{{hint}}",
@@ -35,17 +35,11 @@ export default defineConvention({
         default:
           "A module of {{role}} has one default export and no named export.{{hint}}",
       },
-      create(
-        context,
-        { environment, kind, role: roleName, contract, commands, fileRole },
-      ) {
+      create(context, { environment, role, contract, fileRole }) {
         const file = basename(context.filename);
-        const isCommand = commands && fileRole === undefined;
-        const style = isCommand ? "named-match" : contract?.exports;
-        const role = isCommand ? "a command group" : roleName;
+        const style = contract?.exports;
 
         if (
-          (kind !== "role" && !isCommand) ||
           role === undefined ||
           style === undefined ||
           fileRole === indexRoleName

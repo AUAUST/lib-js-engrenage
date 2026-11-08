@@ -6,6 +6,6 @@ paths:
 # Project map: scripts
 
 ```
-scripts/  (global roles: constants.ts *.d.ts)
+scripts/  (global roles: actions constants.ts *.d.ts executable.ts *.ts)
 └─ codegen  Generate source modules from authoritative definitions.
 ```

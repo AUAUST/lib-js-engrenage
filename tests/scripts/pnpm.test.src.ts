@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
-import { pnpm } from "#scripts/pnpm";
-import { runCommand } from "#tests/utils/runCommand";
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
+
+import pnpm from "#scripts/actions/pnpm";
 
 vi.mock("#tools/pnpm/operations/resolveLatestPnpm");
 
@@ -43,7 +43,7 @@ describe("support pnpm", () => {
         error: vi.spyOn(console, "error").mockImplementation(() => {}),
       };
 
-      await runCommand(pnpm, "--check");
+      await pnpm({ check: true });
 
       expect(logs[level]).toHaveBeenCalledOnce();
       expect(process.exitCode === 1).toBe(fails);

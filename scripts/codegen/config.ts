@@ -1,39 +1,14 @@
-import { glob } from "node:fs/promises";
-import { join } from "node:path";
+import { defineLazyCommand } from "#workflows/cli/index";
 
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
-import type { File } from "#types/File";
-
-export const config = defineCommand((command) => {
-  return command
-    .description(
-      "Generate `ConfigInput` and the documented config input interfaces from the descriptions of the config schemas.",
-    )
-    .option("--check", "report an outdated file without writing it", false)
-    .action(async ({ check }) => {
-      const { loadValidatedConfig } =
-        await import("#workflows/config/operations/loadValidatedConfig");
-
-      const { generateConfigTypes } =
-        await import("#scripts/codegen/operations/generateConfigTypes");
-
-      const { settleChanges } =
-        await import("#workflows/cli/operations/settleChanges");
-
-      const resolved = await loadValidatedConfig();
-
-      const modules = new Map<File, Record<string, unknown>>();
-
-      for await (const file of glob("src/**/config/schemas/*.ts", {
-        cwd: join(import.meta.dirname, "../.."),
-      })) {
-        modules.set(file, await import(`#${file.slice("src/".length, -3)}`));
-      }
-
-      await generateConfigTypes(resolved, modules);
-
-      await settleChanges(resolved, {
-        check,
-      });
-    });
+export default defineLazyCommand({
+  configure(command) {
+    return command
+      .description(
+        "Generate `ConfigInput` and the documented config input interfaces from the descriptions of the config schemas.",
+      )
+      .option("--check", "report an outdated file without writing it", false);
+  },
+  action() {
+    return import("#scripts/codegen/actions/config");
+  },
 });

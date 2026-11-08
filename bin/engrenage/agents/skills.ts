@@ -5,7 +5,7 @@ import { empty } from "@auaust/toolkit/empty";
 import { agentsSection } from "#tools/agents/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 import type { LoadedConfig } from "#project/config/index";
@@ -91,7 +91,7 @@ async function add(name?: string) {
   });
 }
 
-export const skills = defineCommand((command) => {
+export const skills = defineLegacyCommand((command) => {
   command.action(() => add());
 
   command

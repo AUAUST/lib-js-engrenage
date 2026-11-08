@@ -5,7 +5,7 @@ import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, keys } from "@auaust/toolkit/object";
 
 import { validate } from "#foundation/options/utils/validate";
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 import {
@@ -34,7 +34,7 @@ function createFlagOptions(): readonly {
   });
 }
 
-export const sync = defineCommand((command) => {
+export const sync = defineLegacyCommand((command) => {
   const flagOptions = createFlagOptions();
 
   for (const { option } of flagOptions) {

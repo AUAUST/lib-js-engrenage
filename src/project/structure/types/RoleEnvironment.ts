@@ -1,1 +1,1 @@
-export type RoleEnvironment = "src" | "tests" | "scripts" | "tooling";
+export type RoleEnvironment = "src" | "tests" | "bin" | "scripts" | "tooling";

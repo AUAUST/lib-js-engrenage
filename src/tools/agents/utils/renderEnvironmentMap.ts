@@ -152,7 +152,7 @@ export function renderEnvironmentMap({
     ...(name === "bin" && root.commands === true
       ? [
           "",
-          "Commands: one module per subcommand; one directory with an `index.ts` per command group.",
+          "Commands: one directory per command group, whose `index.ts` names its subcommands and their aliases; the root group's `executable.ts` runs it; each other module is one command.",
         ]
       : []),
   ].join("\n");

@@ -1,7 +1,7 @@
-import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
+import type { LegacyCommandDefinition } from "#workflows/cli/types/LegacyCommandDefinition";
 
 export interface LazyCommand {
   readonly description: string;
   readonly aliases?: readonly string[];
-  load(): Promise<CommandDefinition>;
+  load(): Promise<LegacyCommandDefinition>;
 }

@@ -68,6 +68,7 @@ export async function resolveEnvironmentStructure({
     root,
     options,
     commands,
+    indexFile,
     entryFile,
     internals,
     rolesFor,

@@ -77,6 +77,7 @@ export async function syncProjectMap({ resolve, context }: LoadedConfig) {
     grants,
     roles: {
       src: roles.src,
+      bin: roles.bin,
       scripts: roles.scripts,
       tooling: roles.tooling,
       tests: roles.tests,

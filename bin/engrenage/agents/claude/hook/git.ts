@@ -3,7 +3,7 @@ import { object, string } from "valibot";
 import { denyToolUse } from "#tools/agents/operations/denyToolUse";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { findHookBypass } from "#tools/git/utils/findHookBypass";
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 
 const payloadSchema = object({
   tool_input: object({
@@ -11,7 +11,7 @@ const payloadSchema = object({
   }),
 });
 
-export const git = defineCommand((command) => {
+export const git = defineLegacyCommand((command) => {
   return command.action(async () => {
     const {
       tool_input: { command: shellCommand },

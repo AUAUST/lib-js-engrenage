@@ -16,6 +16,7 @@ import {
 import { structureOptionsSection } from "#project/structure/config/sections/structureOptionsSection";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
 import { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
+import { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";
 import { normalizeNamespaces } from "#project/structure/utils/normalizeNamespaces";
 import type { ConfigContext } from "#project/config/index";
 import type { Role } from "#project/roles/index";
@@ -56,6 +57,8 @@ async function resolveStructure(
 
   const { internals } = await config.resolve(structureOptionsSection);
 
+  const roles = listEnvironmentRoles({ tree: extra.tree, roles: option.roles });
+
   const { namespaces, defined } = normalizeNamespaces({
     environment: name,
     namespaces: option.namespaces,
@@ -66,9 +69,9 @@ async function resolveStructure(
     root: config.context.root,
     dirs: environment.dirs,
     options: { ...option, namespaces },
-    ...(option.roles === undefined
+    ...(roles === undefined
       ? {}
-      : { roles: await readEnvironmentRoles(config, option.roles) }),
+      : { roles: await readEnvironmentRoles(config, roles) }),
     defined,
     internals,
     ...extra,

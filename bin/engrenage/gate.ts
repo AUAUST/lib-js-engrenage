@@ -1,11 +1,11 @@
 import { Option } from "@commander-js/extra-typings";
 
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 import { runGate, runMessageGate } from "#workflows/gate/index";
 import { formatGateEntry } from "#workflows/gate/utils/formatGateEntry";
 
-export const gate = defineCommand((command) => {
+export const gate = defineLegacyCommand((command) => {
   return command
     .addOption(
       new Option(

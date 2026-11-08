@@ -73,6 +73,24 @@ describe("engrenage structure", () => {
     expect(process.exitCode).toBeUndefined();
   });
 
+  test.each([
+    ["fails", { "scripts/bar.ts": "" }, 1],
+    ["passes", {}, undefined],
+  ] as const)(
+    "%s the check on a module beside a command group of its name",
+    async (_verdict, extra, exitCode) => {
+      createProject('{ src: { strictness: "loose" } }', {
+        "scripts/index.ts": "",
+        "scripts/bar/index.ts": "",
+        ...extra,
+      });
+
+      await runCommand(structure, "--check");
+
+      expect(process.exitCode).toBe(exitCode);
+    },
+  );
+
   test("fails the check on a mirror directory lacking its counterpart", async () => {
     createProject('{ src: { strictness: "loose" }, tests: { mirror: true } }', {
       "tests/src/feature/x.test.ts": "",

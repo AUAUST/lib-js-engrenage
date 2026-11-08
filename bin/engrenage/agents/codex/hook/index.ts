@@ -1,7 +1,7 @@
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { registerLazySubcommands } from "#workflows/cli/operations/registerLazySubcommands";
 
-export const hook = defineCommand((command) => {
+export const hook = defineLegacyCommand((command) => {
   return registerLazySubcommands(command, {
     dispatch: {
       description: "Check Codex worker and debugger dispatch readiness.",

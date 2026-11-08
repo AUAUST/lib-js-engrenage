@@ -5,7 +5,7 @@ import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 import { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
 import { checkGithubWrite } from "#tools/github/index";
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 
 const payloadSchema = object({
@@ -15,7 +15,7 @@ const payloadSchema = object({
   }),
 });
 
-export const github = defineCommand((command) => {
+export const github = defineLegacyCommand((command) => {
   return command.action(async () => {
     const {
       cwd,

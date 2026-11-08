@@ -4,7 +4,7 @@ import { resolveCodexProfile } from "#tools/agents/codex/index";
 import { checkAgentDispatch } from "#tools/agents/operations/checkAgentDispatch";
 import { denyToolUse } from "#tools/agents/operations/denyToolUse";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 
 const payloadSchema = object({
@@ -18,7 +18,7 @@ const payloadSchema = object({
   }),
 });
 
-export const dispatch = defineCommand((command) => {
+export const dispatch = defineLegacyCommand((command) => {
   return command.action(async () => {
     const { cwd, tool_input: input } = await readHookPayload(
       payloadSchema,

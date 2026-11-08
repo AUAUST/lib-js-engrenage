@@ -1,8 +1,8 @@
 import { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 
-export const debt = defineCommand((command) => {
+export const debt = defineLegacyCommand((command) => {
   return command
     .option("--json", "print the markers as JSON", false)
     .action(async ({ json }) => {

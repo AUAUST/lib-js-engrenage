@@ -1,7 +1,7 @@
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { registerLazySubcommands } from "#workflows/cli/operations/registerLazySubcommands";
 
-export const agents = defineCommand((command) => {
+export const agents = defineLegacyCommand((command) => {
   return registerLazySubcommands(command, {
     check: {
       description: "Check local agent integration without changing settings.",

@@ -1,4 +1,4 @@
-import { join, matchesGlob } from "node:path";
+import { extname, join, matchesGlob } from "node:path";
 
 import { entries, keys, values } from "@auaust/toolkit/object";
 
@@ -22,6 +22,7 @@ export function createStructureDomainResolver({
   root,
   options,
   commands,
+  indexFile,
   entryFile,
   internals,
   rolesFor,
@@ -30,6 +31,7 @@ export function createStructureDomainResolver({
   root: Directory;
   options: StructureOptions;
   commands: boolean;
+  indexFile: File;
   entryFile: File | undefined;
   internals: boolean;
   rolesFor(scopes: readonly string[]): ResolvedRoles;
@@ -115,8 +117,11 @@ export function createStructureDomainResolver({
           owned,
         );
 
+    const twin = `${path}${extname(indexFile)}`;
+
     return {
       ...(commands ? { commands: true as const } : {}),
+      ...(commands && (await pathExists(join(root, twin))) ? { twin } : {}),
       ...(strays.length === 0
         ? {}
         : { strays: strays.map((file) => join(path, file)) }),

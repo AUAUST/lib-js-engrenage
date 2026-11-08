@@ -1,10 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { barrels } from "#scripts/codegen/barrels";
-import { codegen } from "#scripts/codegen/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
+
+import barrels from "#scripts/codegen/actions/barrels";
+import codegen from "#scripts/codegen/index";
 
 vi.mock("#scripts/codegen/operations/generateRuleTypes", () => {
   throw new Error("Barrel generation must not load rule generation");
@@ -46,7 +47,7 @@ describe("support codegen barrels", () => {
       ].join("\n"),
     });
 
-    await runCommand(codegen, "barrels", "tool");
+    await runDefinition(codegen, "barrels", "tool");
 
     expect(project.read("src/tool/index.ts")).toBe(
       [
@@ -57,7 +58,7 @@ describe("support codegen barrels", () => {
       ].join("\n"),
     );
 
-    await runCommand(codegen, "barrels", "tool", "--check");
+    await runDefinition(codegen, "barrels", "tool", "--check");
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -72,7 +73,7 @@ describe("support codegen barrels", () => {
       ].join("\n"),
     });
 
-    await runCommand(barrels, "tool");
+    await barrels(["tool"], { check: false });
 
     expect(project.read("src/tool/index.ts")).toBe(
       [
@@ -85,7 +86,7 @@ describe("support codegen barrels", () => {
       ].join("\n"),
     );
 
-    await runCommand(barrels, "--check");
+    await barrels([], { check: true });
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -99,7 +100,7 @@ describe("support codegen barrels", () => {
       "src/all/index.ts": "// @barrel /src/rules/*.ts default\n// @end\n",
     });
 
-    await runCommand(barrels, "rules", "src/all");
+    await barrels(["rules", "src/all"], { check: false });
 
     expect(project.read("src/rules/index.ts")).toBe(
       [
@@ -130,7 +131,7 @@ describe("support codegen barrels", () => {
       "src/tool/index.ts": "// @barrel /config/tool/*.ts all\n// @end\n",
     });
 
-    await runCommand(barrels, "tool");
+    await barrels(["tool"], { check: false });
 
     expect(project.read("src/tool/index.ts")).toBe(
       [
@@ -151,15 +152,15 @@ describe("support codegen barrels", () => {
       "src/mode/index.ts": "// @barrel /config/tool/*.ts every\n// @end\n",
     });
 
-    await expect(runCommand(barrels, "missing")).rejects.toThrow(
+    await expect(barrels(["missing"], { check: false })).rejects.toThrow(
       'Unknown barrel "missing"',
     );
 
-    await expect(runCommand(barrels, "mode")).rejects.toThrow(
+    await expect(barrels(["mode"], { check: false })).rejects.toThrow(
       "Expected a barrel mode (default, named or all) in",
     );
 
-    await expect(runCommand(barrels, "tool")).rejects.toThrow(
+    await expect(barrels(["tool"], { check: false })).rejects.toThrow(
       'cannot be exported as "kebab-case"',
     );
   });

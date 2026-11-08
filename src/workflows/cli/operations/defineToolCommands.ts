@@ -8,7 +8,7 @@ import { loadValidatedConfig } from "#workflows/config/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
-import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
+import type { LegacyCommandDefinition } from "#workflows/cli/types/LegacyCommandDefinition";
 
 const forwardedSignals = ["SIGHUP", "SIGINT", "SIGTERM"] as const;
 
@@ -68,8 +68,8 @@ export function defineToolCommands<Name extends string>({
       ): readonly string[] | undefined | Promise<readonly string[] | undefined>;
     }
   >;
-}): Record<Name, CommandDefinition> {
-  return transformValues(commands, function (tool): CommandDefinition {
+}): Record<Name, LegacyCommandDefinition> {
+  return transformValues(commands, function (tool): LegacyCommandDefinition {
     return (command) => {
       return command
         .helpOption(false)

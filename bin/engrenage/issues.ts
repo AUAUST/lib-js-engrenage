@@ -6,9 +6,9 @@ import {
   resolveGithubToken,
   resolveRepository,
 } from "#tools/github/index";
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 
-export const issues = defineCommand((command) => {
+export const issues = defineLegacyCommand((command) => {
   command
     .command("check")
     .description(

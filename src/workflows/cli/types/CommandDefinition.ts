@@ -1,3 +1,7 @@
-import type { Command, CommandUnknownOpts } from "@commander-js/extra-typings";
+import type { Command } from "@commander-js/extra-typings";
 
-export type CommandDefinition = (command: Command) => CommandUnknownOpts;
+import type { commandRegistration } from "#workflows/cli/constants";
+
+export interface CommandDefinition {
+  [commandRegistration](command: Command): void;
+}

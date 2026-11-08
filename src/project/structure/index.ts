@@ -87,6 +87,7 @@ export { extendEntityLineage } from "#project/structure/utils/extendEntityLineag
 export { getAliasSpecifier } from "#project/structure/utils/getAliasSpecifier";
 export { getEntryFile } from "#project/structure/utils/getEntryFile";
 export { getEnvironmentRootRole } from "#project/structure/utils/getEnvironmentRootRole";
+export { getExecutableFile } from "#project/structure/utils/getExecutableFile";
 export { getImportCategory } from "#project/structure/utils/getImportCategory";
 export { getIndexFile } from "#project/structure/utils/getIndexFile";
 export { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
@@ -96,6 +97,7 @@ export { hasStructureViolations } from "#project/structure/utils/hasStructureVio
 export { isStructureEnvironment } from "#project/structure/utils/isStructureEnvironment";
 export { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
 export { listDomainsWithoutPurpose } from "#project/structure/utils/listDomainsWithoutPurpose";
+export { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";
 export { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 export { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 export { listStructureRoles } from "#project/structure/utils/listStructureRoles";

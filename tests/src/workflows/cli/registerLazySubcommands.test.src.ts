@@ -1,7 +1,7 @@
 import { Command } from "@commander-js/extra-typings";
 import { describe, expect, test, vi } from "vitest";
 
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { registerLazySubcommands } from "#workflows/cli/operations/registerLazySubcommands";
 
 function createProgram() {
@@ -9,7 +9,7 @@ function createProgram() {
 
   const loadGreet = vi.fn(() => {
     return Promise.resolve(
-      defineCommand((command) => {
+      defineLegacyCommand((command) => {
         return command.option("--loud", "shout", false).action(run);
       }),
     );
@@ -17,7 +17,7 @@ function createProgram() {
 
   const loadOther = vi.fn(() => {
     return Promise.resolve(
-      defineCommand((command) => {
+      defineLegacyCommand((command) => {
         return command;
       }),
     );

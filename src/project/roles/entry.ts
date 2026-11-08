@@ -1,5 +1,7 @@
 export {
+  actions,
   adapters,
+  commands,
   components,
   constants,
   contexts,
@@ -8,6 +10,7 @@ export {
   entrypoint as entry,
   enums,
   errors,
+  executable,
   fixtures,
   hooks,
   index,

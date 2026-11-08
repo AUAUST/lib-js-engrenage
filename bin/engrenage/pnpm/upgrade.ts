@@ -7,11 +7,11 @@ import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 import { upgradePnpmManifest } from "#tools/pnpm/operations/upgradePnpmManifest";
 import { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus";
 import { createPrompter } from "#workflows/cli/operations/createPrompter";
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
 
-export const upgrade = defineCommand((command) => {
+export const upgrade = defineLegacyCommand((command) => {
   return command
     .option(
       "-y, --yes",

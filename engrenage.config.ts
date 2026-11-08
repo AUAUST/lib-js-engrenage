@@ -264,7 +264,7 @@ export default defineConfig({
   },
   scripts: {
     domains: scriptsDomains,
-    roles: [index(), ...codeRoles],
+    roles: codeRoles,
   },
   tooling: {
     domains: toolingDomains,

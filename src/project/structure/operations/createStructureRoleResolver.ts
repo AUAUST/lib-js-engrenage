@@ -43,7 +43,7 @@ export function createStructureRoleResolver({
 }) {
   const rolesFor = memoized(
     (scopes: readonly string[]): ResolvedRoles => {
-      return name === "bin" || roles === undefined
+      return roles === undefined
         ? noRoles
         : resolveRoles({
             ...roles,

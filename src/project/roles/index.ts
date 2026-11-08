@@ -22,7 +22,9 @@ export * from "#project/roles/types/RoleRules";
 // @end
 
 // @barrel utils/*.ts named
+export { actions } from "#project/roles/utils/actions";
 export { adapters } from "#project/roles/utils/adapters";
+export { commands } from "#project/roles/utils/commands";
 export { components } from "#project/roles/utils/components";
 export { constants } from "#project/roles/utils/constants";
 export { contexts } from "#project/roles/utils/contexts";
@@ -31,6 +33,7 @@ export { declarations } from "#project/roles/utils/declarations";
 export { entrypoint } from "#project/roles/utils/entrypoint";
 export { enums } from "#project/roles/utils/enums";
 export { errors } from "#project/roles/utils/errors";
+export { executable } from "#project/roles/utils/executable";
 export { fixtures } from "#project/roles/utils/fixtures";
 export { hooks } from "#project/roles/utils/hooks";
 export { index } from "#project/roles/utils/index";

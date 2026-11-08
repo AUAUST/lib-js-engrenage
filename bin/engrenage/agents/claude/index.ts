@@ -1,7 +1,7 @@
-import { defineCommand } from "#workflows/cli/operations/defineCommand";
+import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { registerLazySubcommands } from "#workflows/cli/operations/registerLazySubcommands";
 
-export const claude = defineCommand((command) => {
+export const claude = defineLegacyCommand((command) => {
   return registerLazySubcommands(command, {
     hook: {
       description: "Run the Claude Code hooks of the project.",

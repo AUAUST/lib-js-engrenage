@@ -1,24 +1,17 @@
-#!/usr/bin/env node
-
-import { Command } from "@commander-js/extra-typings";
-
 import { engrenage } from "#constants";
-import { codegen } from "#scripts/codegen/index";
-import { pnpm } from "#scripts/pnpm";
-import { addDebugOption } from "#workflows/cli/operations/addDebugOption";
-import { registerSubcommands } from "#workflows/cli/operations/registerSubcommands";
-import { runProgram } from "#workflows/cli/operations/runProgram";
+import { defineGroup } from "#workflows/cli/index";
 
-const program = registerSubcommands(
-  new Command("support").description(
-    `Maintain generated sources of ${engrenage} itself.`,
-  ),
-  {
+import codegen from "#scripts/codegen/index";
+import pnpm from "#scripts/pnpm";
+
+export default defineGroup({
+  configure(command) {
+    return command.description(
+      `Maintain generated sources of ${engrenage} itself.`,
+    );
+  },
+  commands: {
     codegen,
     pnpm,
   },
-);
-
-addDebugOption(program);
-
-await runProgram(program);
+});
