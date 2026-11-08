@@ -117,6 +117,7 @@ async function readStamps(file: string): Promise<readonly string[]> {
 }
 
 // @debt ESLint runs only on changed files, so a type change that breaks a dependent's type-aware rule passes until CI's full `lint`
+// @debt gates running in one worktree are not coordinated, so a commit gate overlapping an agent's stop gate can time out tests and reuses no pass (#319)
 export async function runGate(
   config: LoadedConfig,
   {

@@ -39,9 +39,9 @@ Priority never reorders a tree: order states dependencies.
 - Dispatch every leaf to a new agent: a worker under the issue-implementation skill, a debugger under the debugging skill.
 - Resume the same agent to answer its question or return review gaps and the failing commands and output from its stop or commit gate. A repeated stop may report an unchanged failing tree; never commit it until the commit gate passes.
 - Brief with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then the header chain and the plan sections the issue names. Never paste issue or plan content: the agent reads it itself.
-- Wait for terminal completion after the stop hook before reviewing or committing; a progress message never completes a leaf.
+- Complete a leaf only on the client's agent-finished event, which follows the stop hook; on a report arriving before it, end your turn without reviewing, committing or dispatching.
 - Finish review, repairs and the passing commit gate before dispatching the next leaf in the same worktree.
-- Wait for agent events with the longest timeout the client and communication policy allow; request progress only when a decision depends on it.
+- Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress only when a decision depends on it.
 
 ## After a debugger
 

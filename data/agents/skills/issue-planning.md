@@ -8,6 +8,8 @@ agent:
   description: Planner in consultant mode, for the walker's use only. The walker starts it on first need during a walk and resumes it to settle what the code and the plan settle and to update issues after a deviation.
   model: opus
   effort: high
+  disallowedTools:
+    - SendMessage
 ---
 
 # Issue planning

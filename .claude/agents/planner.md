@@ -5,6 +5,8 @@ description: Planner in consultant mode, for the walker's use only. The walker
   and the plan settle and to update issues after a deviation.
 model: opus
 effort: high
+disallowedTools:
+  - SendMessage
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/issue-planning.md -->
