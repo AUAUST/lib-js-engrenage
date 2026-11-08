@@ -1,4 +1,4 @@
-import { defineGroup } from "#workflows/cli/index";
+import { defineGroup, defineLazyCommand } from "#workflows/cli/index";
 
 import add from "#bin/engrenage/agents/rules/add";
 
@@ -9,10 +9,15 @@ export default defineGroup({
   commands: {
     add,
   },
-  async action() {
-    const { default: select } =
-      await import("#bin/engrenage/agents/rules/actions/add");
-
-    await select();
-  },
+  command: defineLazyCommand({
+    configure(command) {
+      return command;
+    },
+    action() {
+      return import("#bin/engrenage/agents/rules/actions/add");
+    },
+    parse() {
+      return [];
+    },
+  }),
 });

@@ -5,7 +5,6 @@ import { entries, freeze } from "@auaust/toolkit/object";
 import { commandRegistration } from "#workflows/cli/constants";
 import { configureCommand } from "#workflows/cli/operations/configureCommand";
 import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
-import type { CommandParameters } from "#workflows/cli/types/CommandParameters";
 
 type GroupEntry =
   | CommandDefinition
@@ -14,26 +13,20 @@ type GroupEntry =
       readonly aliases: readonly string[];
     };
 
-export function defineGroup<Configured = Command>(definition: {
-  configure?(command: Command): Configured;
-  commands: Readonly<Record<string, GroupEntry>>;
-  action?(...parameters: CommandParameters<NoInfer<Configured>>): unknown;
-}): CommandDefinition;
 export function defineGroup({
   configure,
   commands,
-  action,
+  command: own,
 }: {
   configure?(command: Command): CommandUnknownOpts;
   commands: Readonly<Record<string, GroupEntry>>;
-  action?(...parameters: unknown[]): unknown;
+  command?: CommandDefinition;
 }): CommandDefinition {
   return freeze({
     [commandRegistration](command: Command) {
-      const configured =
-        configure === undefined
-          ? command
-          : configureCommand(command, configure);
+      if (configure !== undefined) {
+        configureCommand(command, configure);
+      }
 
       for (const [name, entry] of entries(commands)) {
         const { command: definition, aliases = [] } =
@@ -42,14 +35,10 @@ export function defineGroup({
         const subcommand = new Command(name).aliases(aliases);
 
         definition[commandRegistration](subcommand);
-        configured.addCommand(subcommand);
+        command.addCommand(subcommand);
       }
 
-      if (action !== undefined) {
-        configured.action(async (...parameters) => {
-          await action(...parameters);
-        });
-      }
+      own?.[commandRegistration](command);
     },
   });
 }

@@ -1,4 +1,4 @@
-import { defineGroup } from "#workflows/cli/index";
+import { defineCommand, defineGroup } from "#workflows/cli/index";
 
 import apis from "#scripts/codegen/apis";
 import barrels from "#scripts/codegen/barrels";
@@ -12,8 +12,7 @@ export default defineGroup({
       .description(
         "Generate sources of the package from its tooling, running every generator without a subcommand.",
       )
-      .enablePositionalOptions()
-      .option("--check", "report outdated files without writing them", false);
+      .enablePositionalOptions();
   },
   commands: {
     editions,
@@ -22,11 +21,20 @@ export default defineGroup({
     rules,
     barrels,
   },
-  async action({ check }, command) {
-    for (const subcommand of command.commands) {
-      await subcommand.parseAsync(check ? ["--check"] : [], {
-        from: "user",
-      });
-    }
-  },
+  command: defineCommand({
+    configure(command) {
+      return command.option(
+        "--check",
+        "report outdated files without writing them",
+        false,
+      );
+    },
+    async action({ check }, command) {
+      for (const subcommand of command.commands) {
+        await subcommand.parseAsync(check ? ["--check"] : [], {
+          from: "user",
+        });
+      }
+    },
+  }),
 });

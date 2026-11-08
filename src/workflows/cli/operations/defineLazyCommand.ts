@@ -8,6 +8,7 @@ type ActionModule<ActionParameters extends unknown[]> =
   | ((...parameters: ActionParameters) => unknown)
   | { default(...parameters: ActionParameters): unknown };
 
+// @debt `configure` is required even for a command adding no arguments or options, so a group's own command passes an identity `configure` and a `parse` returning no parameters
 export function defineLazyCommand<
   Configured,
   ActionParameters extends unknown[] | [],
