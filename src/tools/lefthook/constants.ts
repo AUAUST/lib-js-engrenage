@@ -14,4 +14,8 @@ export const localGateCommand =
 
 export const hookName = "pre-commit";
 
+export const messageGateCommand = "pnpm --silent engrenage gate --message {1}";
+
+export const messageHookName = "commit-msg";
+
 export const installCommand = "lefthook install";

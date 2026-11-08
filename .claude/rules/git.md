@@ -11,7 +11,7 @@
 - Write the summary as the label a reader would use to recall the commit's main change, starting lowercase, with no trailing period and no verb the type already carries.
 - Leave the change's parts, reasons and mechanics out of the commit message.
 - When the summary needs "and" to cover several changes, name what they have in common instead.
-- Limit the message body to one `Closes #<n>` line per issue the commit resolves and one `Towards #<n>` line per issue it advances without resolving.
+- Limit the message body to one `Closes #<n>` consecutive line per issue the commit resolves and one `Towards #<n>` line per issue it advances without resolving, on consecutive lines.
 
 | Type      | Main purpose                                                              |
 | --------- | ------------------------------------------------------------------------- |

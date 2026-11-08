@@ -1,5 +1,6 @@
 // @barrel utils/*.ts named
 export { findHookBypass } from "#tools/git/utils/findHookBypass";
+export { hasSeparatedIssueReferences } from "#tools/git/utils/hasSeparatedIssueReferences";
 // @end
 
 // @barrel setup/*.ts named

@@ -8,9 +8,11 @@ import {
   hookName,
   lefthookFile,
   localCommandName,
+  messageHookName,
 } from "#tools/lefthook/constants";
 import { listGateVariables } from "#tools/lefthook/utils/listGateVariables";
 import { renderGateCommand } from "#tools/lefthook/utils/renderGateCommand";
+import { renderMessageGateCommand } from "#tools/lefthook/utils/renderMessageGateCommand";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function syncLefthookConfig(config: LoadedConfig) {
@@ -40,11 +42,16 @@ export async function syncLefthookConfig(config: LoadedConfig) {
 
   const commands = renderGateCommand(variables, local.length > 0);
 
+  const targets = [
+    [hookName, gateCommandName, commands[gateCommandName]],
+    [hookName, localCommandName, commands[localCommandName]],
+    [messageHookName, gateCommandName, renderMessageGateCommand(variables)],
+  ] as const;
+
   let changed = false;
 
-  for (const name of [gateCommandName, localCommandName] as const) {
-    const path = [hookName, "commands", name];
-    const command = commands[name];
+  for (const [hook, name, command] of targets) {
+    const path = [hook, "commands", name];
     const current: unknown = document.getIn(path);
 
     if (

@@ -2,7 +2,7 @@ import { Option } from "@commander-js/extra-typings";
 
 import { defineCommand } from "#workflows/cli/operations/defineCommand";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
-import { runGate } from "#workflows/gate/index";
+import { runGate, runMessageGate } from "#workflows/gate/index";
 import { formatGateEntry } from "#workflows/gate/utils/formatGateEntry";
 
 export const gate = defineCommand((command) => {
@@ -25,13 +25,20 @@ export const gate = defineCommand((command) => {
         "run only the checks every commit must pass",
       ).conflicts("worktree"),
     )
-    .action(async ({ worktree, everyone }) => {
-      const config = await loadValidatedConfig();
-
-      const { failures, warnings } = await runGate(config, {
-        mode: worktree === true ? "worktree" : "staged",
-        audience: everyone === true ? "everyone" : "agents",
-      });
+    .addOption(
+      new Option(
+        "--message <file>",
+        "check only the commit message stored in a file",
+      ).conflicts(["staged", "worktree", "everyone"]),
+    )
+    .action(async ({ worktree, everyone, message }) => {
+      const { failures, warnings } =
+        message === undefined
+          ? await runGate(await loadValidatedConfig(), {
+              mode: worktree === true ? "worktree" : "staged",
+              audience: everyone === true ? "everyone" : "agents",
+            })
+          : await runMessageGate(message);
 
       for (const warning of warnings) {
         console.warn(formatGateEntry(warning));

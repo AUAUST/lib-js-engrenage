@@ -6,12 +6,15 @@ import { keys } from "@auaust/toolkit/object";
 import { lefthook } from "#constants";
 import { agentsSection, listLocalFilePatterns } from "#tools/agents/index";
 import {
+  gateCommandName,
   hookName,
   installCommand,
   lefthookFile,
+  messageHookName,
 } from "#tools/lefthook/constants";
 import { listGateVariables } from "#tools/lefthook/utils/listGateVariables";
 import { renderGateCommand } from "#tools/lefthook/utils/renderGateCommand";
+import { renderMessageGateCommand } from "#tools/lefthook/utils/renderMessageGateCommand";
 import type { Step, StepContext } from "#project/steps/index";
 
 const prepareLocation: [string, string] = ["scripts", "prepare"];
@@ -21,7 +24,10 @@ async function listCommands(context: StepContext) {
 
   const local = await listLocalFilePatterns(context);
 
-  return renderGateCommand(variables, local.length > 0);
+  return {
+    commands: renderGateCommand(variables, local.length > 0),
+    message: renderMessageGateCommand(variables),
+  };
 }
 
 async function writePrepare({
@@ -42,7 +48,7 @@ export function createLefthookStep(): Step {
     name: lefthookFile,
     message: `Run the commit gate with lefthook (${lefthookFile})?`,
     async isMissing(context) {
-      const commands = await listCommands(context);
+      const { commands } = await listCommands(context);
 
       return (
         keys(commands).length > 0 &&
@@ -50,7 +56,7 @@ export function createLefthookStep(): Step {
       );
     },
     async plan(context) {
-      const commands = await listCommands(context);
+      const { commands, message } = await listCommands(context);
 
       await context.addDevDependency(lefthook);
 
@@ -62,6 +68,13 @@ export function createLefthookStep(): Step {
           [hookName]: {
             commands,
           },
+          ...(message === undefined
+            ? {}
+            : {
+                [messageHookName]: {
+                  commands: { [gateCommandName]: message },
+                },
+              }),
         }).toString(),
       );
 

@@ -2,6 +2,7 @@
 export { checkAgentStop } from "#workflows/gate/operations/checkAgentStop";
 export { createGateSteps } from "#workflows/gate/operations/createGateSteps";
 export { runGate } from "#workflows/gate/operations/runGate";
+export { runMessageGate } from "#workflows/gate/operations/runMessageGate";
 // @end
 
 // @barrel types/*.ts all

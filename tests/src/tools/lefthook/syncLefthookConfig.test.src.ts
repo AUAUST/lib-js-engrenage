@@ -67,6 +67,14 @@ describe("syncLefthookConfig", () => {
           },
         },
       },
+      "commit-msg": {
+        commands: {
+          engrenage: {
+            only: [{ run: 'test -n "$CLAUDECODE"' }],
+            run: "pnpm --silent engrenage gate --message {1}",
+          },
+        },
+      },
     });
   });
 

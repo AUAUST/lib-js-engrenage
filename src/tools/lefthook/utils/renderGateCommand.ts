@@ -1,19 +1,16 @@
-import { map } from "@auaust/primitive-kit/arrays";
-
 import {
   gateCommand,
   gateCommandName,
   localCommandName,
   localGateCommand,
 } from "#tools/lefthook/constants";
+import { renderGateCondition } from "#tools/lefthook/utils/renderGateCondition";
 
 export function renderGateCommand(
   variables: readonly string[],
   local: boolean,
 ) {
-  const condition = {
-    run: map(variables, (variable) => `test -n "$${variable}"`).join(" || "),
-  };
+  const condition = renderGateCondition(variables);
 
   return {
     ...(variables.length === 0
