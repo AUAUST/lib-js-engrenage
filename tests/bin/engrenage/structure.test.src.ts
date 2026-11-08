@@ -24,6 +24,7 @@ function createProject(config: string, extra: Record<string, string> = {}) {
 
 beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation(() => {});
+  vi.spyOn(console, "warn").mockImplementation(() => {});
   process.exitCode = undefined;
 });
 
@@ -34,6 +35,28 @@ afterEach(() => {
 
 // @debt the structure output is untested: asserting printed lines enforces a display, and a useful way to test what it reports is still to be found
 describe("engrenage structure", () => {
+  test("warns on a domain without a purpose without failing the check", async () => {
+    createProject('{ src: { strictness: "loose" } }');
+
+    await runCommand(structure, "--check");
+
+    expect(console.warn).toHaveBeenCalledWith(
+      "src/feature has no purpose: set one on its `domains` entry.",
+    );
+
+    expect(process.exitCode).toBeUndefined();
+  });
+
+  test("does not warn on a domain with a purpose", async () => {
+    createProject(
+      '{ src: { strictness: "loose", domains: { feature: { purpose: "A configured feature." }, mystery: { purpose: "Additional fixture files." } } } }',
+    );
+
+    await runCommand(structure, "--check");
+
+    expect(console.warn).not.toHaveBeenCalled();
+  });
+
   test("fails the check on an unclassified directory of a strict environment", async () => {
     createProject("{}");
 

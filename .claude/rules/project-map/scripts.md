@@ -6,7 +6,8 @@ paths:
 # Project map: scripts
 
 ```
-scripts/  codegen
+scripts/
+└─ codegen  Generate source modules from authoritative definitions.
 ```
 
 Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other.

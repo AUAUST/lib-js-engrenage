@@ -1,6 +1,7 @@
 import { aliasesSection, structureSection } from "#project/structure/index";
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
 import { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
+import { listDomainsWithoutPurpose } from "#project/structure/utils/listDomainsWithoutPurpose";
 import { renderImportCycles } from "#project/structure/utils/renderImportCycles";
 import { renderStructure } from "#project/structure/utils/renderStructure";
 import { typescriptSection } from "#project/tsconfig/index";
@@ -35,6 +36,12 @@ export const structure = defineCommand((command) => {
 
       for (const line of renderImportCycles(cycles)) {
         console.info(line);
+      }
+
+      for (const path of listDomainsWithoutPurpose(
+        await config.resolve(structureSection),
+      )) {
+        console.warn(`${path} has no purpose: set one on its \`domains\` entry.`);
       }
 
       if (

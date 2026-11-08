@@ -99,6 +99,7 @@ export { getStructureCardinality } from "#project/structure/utils/getStructureCa
 export { getStructureLayer } from "#project/structure/utils/getStructureLayer";
 export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 export { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
+export { listDomainsWithoutPurpose } from "#project/structure/utils/listDomainsWithoutPurpose";
 export { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 export { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 export { listStructureRoles } from "#project/structure/utils/listStructureRoles";
