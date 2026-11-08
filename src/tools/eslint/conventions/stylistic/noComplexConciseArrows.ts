@@ -1,6 +1,11 @@
+import type { Rule } from "eslint";
+
 import { join } from "@auaust/primitive-kit/arrays";
 
-import { defineRestriction } from "#tools/eslint/utils/defineRestriction";
+import { defineConvention } from "#tools/eslint/utils/defineConvention";
+
+const message =
+  "Use a block body with an explicit return; concise bodies are only for a short identifier, literal, member access, negation, comparison, call, template literal, array of identifiers, literals or member accesses, or one of those asserted `as const`.";
 
 const conciseBodies = join(
   [
@@ -36,8 +41,64 @@ const complexBodies = join(
   ", ",
 );
 
-export default defineRestriction({
-  selector: complexBodies,
-  message:
-    "Use a block body with an explicit return; concise bodies are only for a short identifier, literal, member access, negation, comparison, call, template literal, array of identifiers, literals or member accesses, or one of those asserted `as const`.",
+export default defineConvention({
+  rule: {
+    meta: {
+      type: "suggestion",
+      fixable: "code",
+      docs: {
+        description: message,
+      },
+      messages: {
+        complexConciseArrow: message,
+      },
+      schema: [],
+    },
+    create(context) {
+      const { sourceCode } = context;
+
+      return {
+        [complexBodies](node: Rule.Node) {
+          if (node.type !== "ArrowFunctionExpression") {
+            return;
+          }
+
+          const arrow = sourceCode.getTokenBefore(node.body, {
+            filter(token) {
+              return token.value === "=>";
+            },
+          });
+
+          if (arrow === null) {
+            throw new Error("Cannot find the arrow of a concise arrow body");
+          }
+
+          const [, start] = sourceCode.getRange(arrow);
+
+          const [, end] = sourceCode.getRange(node);
+
+          const text = sourceCode.text.slice(start, end).trim();
+
+          const body = sourceCode.commentsExistBetween(arrow, node.body)
+            ? `(${text})`
+            : text;
+
+          const line = sourceCode.lines[sourceCode.getLoc(node).start.line - 1];
+
+          const indent = /^\s*/u.exec(line ?? "")?.[0] ?? "";
+
+          context.report({
+            node,
+            messageId: "complexConciseArrow",
+            fix(fixer) {
+              return fixer.replaceTextRange(
+                [start, end],
+                ` {\n${indent}  return ${body};\n${indent}}`,
+              );
+            },
+          });
+        },
+      };
+    },
+  },
 });

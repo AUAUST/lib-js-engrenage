@@ -16,7 +16,6 @@ paths:
 
 Write these correctly from the start, since no tool fixes them:
 
-- Limit concise arrow bodies to an identifier, literal, member access, negation, comparison, call or template literal.
 - Check for nullish values with `x == null`.
 - Use runtime `typeof` only as `typeof x === "undefined"`.
 - Use named exports, except in tool configs and declared default-export files.

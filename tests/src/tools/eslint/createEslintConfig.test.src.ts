@@ -1203,6 +1203,58 @@ export const widened = () => "computed" as string;
     ]);
   });
 
+  test("fixes complex concise arrows into padded blocks, nested ones included", async () => {
+    const eslint = await getLinter(
+      {
+        typeAware: false,
+      },
+      true,
+    );
+
+    const source = `declare function pick(value: number): number;
+
+export const first = 1;
+export const choose = (value: number) => (value > 0 ? pick(value) : 0);
+export const last = 2;
+
+export const nested = (value: number) =>
+  // keeps comments
+  ({ pick: () => (value > 1 ? pick(value) : 0) });
+`;
+
+    const [result] = await eslint.lintText(source, {
+      filePath: "src/arrows.ts",
+    });
+
+    expect(result?.messages).toEqual([]);
+
+    const options = { ...prettierOptions, parser: "typescript" };
+
+    expect(await format(result?.output ?? source, options)).toBe(
+      `declare function pick(value: number): number;
+
+export const first = 1;
+
+export const choose = (value: number) => {
+  return value > 0 ? pick(value) : 0;
+};
+
+export const last = 2;
+
+export const nested = (value: number) => {
+  return (
+    // keeps comments
+    {
+      pick: () => {
+        return value > 1 ? pick(value) : 0;
+      },
+    }
+  );
+};
+`,
+    );
+  });
+
   test("allows object literal assertions while enforcing as syntax", async () => {
     const eslint = await getLinter({
       typeAware: false,
