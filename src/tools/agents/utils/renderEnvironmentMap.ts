@@ -13,6 +13,7 @@ import {
 } from "#project/structure/index";
 import type { Globs } from "#types/Globs";
 
+// @debt map renderers repeat code and list text formatting helpers
 function code(value: string): string {
   return `\`${value}\``;
 }
