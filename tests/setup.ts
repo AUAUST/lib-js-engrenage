@@ -1,5 +1,14 @@
 import { beforeEach, vi } from "vitest";
 
+import { startsWith } from "@auaust/primitive-kit/strings";
+import { keys } from "@auaust/toolkit/object";
+
+for (const name of keys(process.env)) {
+  if (startsWith(name, "GIT_")) {
+    delete process.env[name];
+  }
+}
+
 // Warnings such as a missing engrenage config are expected in temporary projects, and memoized
 // per process, so whichever test triggers one first depends on scheduling. Tests asserting a
 // warning observe this spy, as `vi.spyOn` reuses an existing spy.
