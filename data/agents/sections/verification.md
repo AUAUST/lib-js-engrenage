@@ -10,5 +10,7 @@ order: 70
 
 - Before delivery, review the work against architectural boundaries and quality requirements, not only behavior.
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
+- Run targeted checks during implementation; let the automatic gate own its checks at delivery, running additional checks only for coverage it lacks.
+- Serialize verification in a shared worktree; wait for a running gate before starting another check or changing files.
 - Pass the commit gate with every commit you make; never bypass it.
 - Report actual results and blockers, including unavailable integrations and skipped checks. Never weaken compiler or lint settings to hide failures.
