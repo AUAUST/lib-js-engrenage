@@ -5,18 +5,8 @@ import { elementEnvironments } from "#project/structure/constants";
 import { getImportCategory } from "#project/structure/utils/getImportCategory";
 import type { BoundaryViolation } from "#project/structure/types/BoundaryViolation";
 import type { Entity } from "#project/structure/types/Entity";
-import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportEdge } from "#project/structure/types/ImportEdge";
-
-// @debt repeats the environment grants `resolveImportRules` expands for the project maps; #227 renders the maps from these checks instead
-const forbidden: Readonly<
-  Partial<Record<Entity["environment"], readonly ImportCategory[]>>
-> = freeze({
-  src: freeze(["bin", "scripts", "tests"] as const),
-  bin: freeze(["scripts", "tests"] as const),
-  scripts: freeze(["bin", "tests"] as const),
-  tooling: freeze(["bin", "scripts", "tests"] as const),
-});
+import type { ImportGrants } from "#project/structure/types/ImportGrants";
 
 function isRootFile({ environment, lineage, path, role }: Entity): boolean {
   return (
@@ -29,6 +19,7 @@ function isRootFile({ environment, lineage, path, role }: Entity): boolean {
 
 export function checkEnvironments(
   edge: ImportEdge,
+  { environments }: ImportGrants,
 ): BoundaryViolation | undefined {
   const { importer, target } = edge;
 
@@ -47,7 +38,7 @@ export function checkEnvironments(
   const category = getImportCategory(edge);
 
   return category !== undefined &&
-    forbidden[importer.environment]?.includes(category) === true
+    environments[importer.environment]?.includes(category) === true
     ? freeze({
         cause: "environment",
         boundary: undefined,

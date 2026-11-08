@@ -6,7 +6,11 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { sync } from "#bin/engrenage/sync";
 import { loadConfig } from "#project/config/operations/loadConfig";
-import { importRulesSection } from "#project/structure/index";
+import {
+  checkWorkspaces,
+  entitiesSection,
+  importGrantsSection,
+} from "#project/structure/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
@@ -180,50 +184,53 @@ describe("workspaces", () => {
     );
   });
 
-  test("resolves the import rules between workspaces from their dependencies", async () => {
+  test("checks workspace imports against declared dependencies", async () => {
     const project = createProject();
 
     const config = await loadConfig(project.root);
 
-    const importRules = await config.resolve(importRulesSection);
+    const grants = await config.resolve(importGrantsSection);
 
-    function targets(source: string, effect: "allow" | "forbid") {
-      return importRules
-        .filter((rule) => {
-          return (
-            rule.source.kind === "element" &&
-            rule.source.path === source &&
-            rule.effect === effect
-          );
-        })
-        .flatMap((rule) => rule.targets)
-        .map((target) => {
-          return target.kind === "element" ? target.path : "";
-        });
+    const entities = await config.resolve(entitiesSection);
+
+    function check(file: string, targetFile: string) {
+      const importer = entities.entityOf(project.resolve(file));
+      const target = entities.entityOf(project.resolve(targetFile));
+
+      expect(importer).toBeDefined();
+      expect(target).toBeDefined();
+
+      return checkWorkspaces(
+        {
+          file,
+          importer,
+          specifier: targetFile,
+          resolved: undefined,
+          targetFile,
+          target,
+          kind: "runtime",
+        },
+        grants,
+      );
     }
 
-    expect(targets("extensions/action-a", "allow")).toEqual([
-      "extensions/action-b",
-    ]);
+    const actionA = "extensions/action-a/src/index.tsx";
+    const actionB = "extensions/action-b/src/index.ts";
+    const functionsC = "extensions/functions-c/src/index.ts";
 
-    expect(targets("extensions/action-a", "forbid")).toEqual([
-      "extensions/functions-c",
-    ]);
+    expect(check(actionA, actionB)).toBeUndefined();
+    expect(check(actionA, actionA)).toBeUndefined();
 
-    expect(targets("extensions/action-b", "forbid")).toEqual([
-      "extensions/action-a",
-      "extensions/functions-c",
-    ]);
-
-    expect(
-      importRules.find(({ reason }) => {
-        return reason === "root src never imports a workspace";
-      })?.targets,
-    ).toEqual([
-      { kind: "element", path: "extensions/action-a" },
-      { kind: "element", path: "extensions/action-b" },
-      { kind: "element", path: "extensions/functions-c" },
-    ]);
+    for (const [file, target] of [
+      [actionA, functionsC],
+      [actionB, actionA],
+      [actionB, functionsC],
+      ["src/index.ts", actionA],
+      ["src/index.ts", actionB],
+      ["src/index.ts", functionsC],
+    ] as const) {
+      expect(check(file, target)?.cause).toBe("workspace");
+    }
   });
 });
 

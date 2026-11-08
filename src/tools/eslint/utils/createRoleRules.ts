@@ -4,9 +4,13 @@ import { isArray } from "@auaust/toolkit/isArray";
 import { isObject } from "@auaust/toolkit/isObject";
 import { entries, values } from "@auaust/toolkit/object";
 
+import {
+  isStructureEnvironment,
+  type EntityIndex,
+  type ResolvedStructure,
+} from "#project/structure/index";
 import { pluginName, rolesPluginName } from "#tools/eslint/constants";
 import type { RoleRuleModule } from "#project/roles/index";
-import type { EntityIndex, ResolvedStructure } from "#project/structure/index";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Plugin } from "#tools/eslint/types/Plugin";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
@@ -39,10 +43,9 @@ export function createRoleRules(
           return {};
         }
 
-        // @debt linear search by name because `Entity.environment` also names environments without a structure (`data`, `dist`, `workspace`); a typed lookup would index directly
-        const environment = values(structure).find((candidate) => {
-          return candidate?.name === entity.environment;
-        });
+        const environment = isStructureEnvironment(entity.environment)
+          ? structure[entity.environment]
+          : undefined;
 
         if (environment === undefined) {
           return {};

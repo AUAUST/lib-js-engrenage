@@ -1,6 +1,6 @@
 import type { Filesystem } from "#foundation/filesystem/index";
 import type {
-  ImportRule,
+  ImportGrants,
   ResolvedAliases,
   ResolvedRoles,
   ResolvedStructure,
@@ -13,7 +13,7 @@ export interface ProjectMapSections {
   agents: ResolvedAgents;
   structure: ResolvedStructure;
   aliases: ResolvedAliases;
-  importRules: readonly ImportRule[];
+  grants: ImportGrants;
   src: { roles: ResolvedRoles };
   scripts: { roles: ResolvedRoles };
   tooling: { roles: ResolvedRoles };

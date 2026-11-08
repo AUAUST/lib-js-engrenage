@@ -31,7 +31,6 @@ export {
   aliasesSection,
   environmentRolesSection,
   filesSection,
-  importRulesSection,
   sourceExportsSection,
   structureOptionsSection,
   structureSection,

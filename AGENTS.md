@@ -151,7 +151,7 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 - Import through the generated `#…` aliases, never relative paths.
 - Put generated modules where a handwritten one would go, with a header naming their generator.
 - Keep `bin` commands thin: their logic lives in the domains owning it.
-- In a published package, `x.test.ts` runs against source and dist, `x.test.src.ts` against source only, `x.test.dist.ts` against dist only. Test public behavior through its public specifier; use `.src` only to reach internals.
+- Test public behavior through its public specifier; use `.src` only to reach internals.
 
 <!-- @reference @auaust/engrenage/agents/sections/backlog.md -->
 

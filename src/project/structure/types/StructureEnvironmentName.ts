@@ -1,3 +1,4 @@
-import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
+import type { structureEnvironmentNames } from "#project/structure/constants";
 
-export type StructureEnvironmentName = RoleEnvironment | "bin";
+export type StructureEnvironmentName =
+  (typeof structureEnvironmentNames)[number];

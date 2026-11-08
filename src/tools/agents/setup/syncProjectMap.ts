@@ -4,7 +4,7 @@ import { testsSection } from "#project/environments/index";
 import {
   aliasesSection,
   environmentRolesSection,
-  importRulesSection,
+  importGrantsSection,
   structureSection,
 } from "#project/structure/index";
 import { agentsSection } from "#tools/agents/config/sections/agentsSection";
@@ -13,13 +13,13 @@ import { renderProjectMap } from "#tools/agents/utils/renderProjectMap";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function syncProjectMap({ resolve, context }: LoadedConfig) {
-  const [filesystem, agents, structure, aliases, importRules, roles, tests] =
+  const [filesystem, agents, structure, aliases, grants, roles, tests] =
     await Promise.all([
       context.filesystem,
       resolve(agentsSection),
       resolve(structureSection),
       resolve(aliasesSection),
-      resolve(importRulesSection),
+      resolve(importGrantsSection),
       resolve(environmentRolesSection),
       resolve(testsSection),
     ]);
@@ -33,7 +33,7 @@ export async function syncProjectMap({ resolve, context }: LoadedConfig) {
 
   const maps = renderProjectMap({
     structure,
-    importRules,
+    grants,
     roles: {
       src: roles.src,
       scripts: roles.scripts,

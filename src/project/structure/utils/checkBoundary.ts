@@ -44,7 +44,7 @@ export function checkBoundary(
   const atRoot = importerLineage.length === 1;
   const global = targetLineage.length === 1;
 
-  // @debt a file at an environment root outside the global roles and the root entry is never checked, and neither is an import between two directories of one environment, as the expanded import rules grant and forbid them nothing
+  // @debt a file at an environment root outside the global roles and the root entry is never checked, and neither is an import between two directories of one environment
   if (
     !elementEnvironments.some((name) => name === importer.environment) ||
     owner === undefined ||

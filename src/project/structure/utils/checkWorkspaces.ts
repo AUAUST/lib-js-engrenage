@@ -4,7 +4,6 @@ import type { BoundaryViolation } from "#project/structure/types/BoundaryViolati
 import type { ImportEdge } from "#project/structure/types/ImportEdge";
 import type { ImportGrants } from "#project/structure/types/ImportGrants";
 
-// @debt repeats the workspace grants `resolveImportRules` expands for the project maps; #227 renders the maps from these checks instead
 export function checkWorkspaces(
   { importer, target }: ImportEdge,
   { workspaces }: ImportGrants,

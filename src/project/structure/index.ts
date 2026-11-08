@@ -7,7 +7,6 @@ export { listStructureFiles } from "#project/structure/operations/listStructureF
 export { listStructureFilesAtAnyDepth } from "#project/structure/operations/listStructureFilesAtAnyDepth";
 export { resolveAliases } from "#project/structure/operations/resolveAliases";
 export { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
-export { resolveImportRules } from "#project/structure/operations/resolveImportRules";
 
 // @barrel types/*.ts all
 export * from "#project/structure/types/Alias";
@@ -29,9 +28,6 @@ export * from "#project/structure/types/ImportEdge";
 export * from "#project/structure/types/ImportGrants";
 export * from "#project/structure/types/ImportKind";
 export * from "#project/structure/types/ImportRelation";
-export * from "#project/structure/types/ImportRule";
-export * from "#project/structure/types/ImportRuleSource";
-export * from "#project/structure/types/ImportRuleTarget";
 export * from "#project/structure/types/LineageMember";
 export * from "#project/structure/types/LocatedEntity";
 export * from "#project/structure/types/NamedFileRole";
@@ -85,7 +81,6 @@ export { completeRole } from "#project/structure/utils/completeRole";
 export { constrainsFileRole } from "#project/structure/utils/constrainsFileRole";
 export { createEntityIndex } from "#project/structure/utils/createEntityIndex";
 export { createImportResolver } from "#project/structure/utils/createImportResolver";
-export { createImportRule } from "#project/structure/utils/createImportRule";
 export { createMirrorClassifier } from "#project/structure/utils/createMirrorClassifier";
 export { createStructureEntity } from "#project/structure/utils/createStructureEntity";
 export { extendEntityLineage } from "#project/structure/utils/extendEntityLineage";
@@ -98,6 +93,7 @@ export { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 export { getStructureCardinality } from "#project/structure/utils/getStructureCardinality";
 export { getStructureLayer } from "#project/structure/utils/getStructureLayer";
 export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
+export { isStructureEnvironment } from "#project/structure/utils/isStructureEnvironment";
 export { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
 export { listDomainsWithoutPurpose } from "#project/structure/utils/listDomainsWithoutPurpose";
 export { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
@@ -111,8 +107,7 @@ export { registerRoles } from "#project/structure/utils/registerRoles";
 export { renderImportCycles } from "#project/structure/utils/renderImportCycles";
 export { renderStructure } from "#project/structure/utils/renderStructure";
 export { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
-export { resolveElementImportRules } from "#project/structure/utils/resolveElementImportRules";
-export { resolveEnvironmentImportRules } from "#project/structure/utils/resolveEnvironmentImportRules";
+export { resolveEnvironmentGrants } from "#project/structure/utils/resolveEnvironmentGrants";
 export { resolveRoles } from "#project/structure/utils/resolveRoles";
 // @end
 
@@ -124,7 +119,6 @@ export { environmentRolesSection } from "#project/structure/config/sections/envi
 export { filesSection } from "#project/structure/config/sections/filesSection";
 export { importGrantsSection } from "#project/structure/config/sections/importGrantsSection";
 export { importResolverSection } from "#project/structure/config/sections/importResolverSection";
-export { importRulesSection } from "#project/structure/config/sections/importRulesSection";
 export { sourceExportsSection } from "#project/structure/config/sections/sourceExportsSection";
 export { structureOptionsSection } from "#project/structure/config/sections/structureOptionsSection";
 export { structureSection } from "#project/structure/config/sections/structureSection";

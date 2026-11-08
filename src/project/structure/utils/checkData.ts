@@ -4,10 +4,9 @@ import type { BoundaryViolation } from "#project/structure/types/BoundaryViolati
 import type { ImportEdge } from "#project/structure/types/ImportEdge";
 import type { ImportGrants } from "#project/structure/types/ImportGrants";
 
-// @debt repeats the data grants `resolveImportRules` expands for the project maps; #227 renders the maps from these checks instead
 export function checkData(
   { importer, target }: ImportEdge,
-  { published }: ImportGrants,
+  { data }: ImportGrants,
 ): BoundaryViolation | undefined {
   if (importer === undefined || target?.environment !== "data") {
     return;
@@ -15,9 +14,7 @@ export function checkData(
 
   const { environment } = importer;
 
-  return environment === "bin" ||
-    environment === "tooling" ||
-    (environment === "src" && published)
+  return data.includes(environment)
     ? freeze({
         cause: "environment",
         boundary: undefined,

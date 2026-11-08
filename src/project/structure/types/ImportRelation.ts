@@ -5,7 +5,5 @@ export type ImportRelation =
   | "sub-domain"
   | "lower-layer"
   | "peer"
-  | "environment"
-  | "test-variant"
   | "root-entry"
   | "workspace";

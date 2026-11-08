@@ -16,7 +16,7 @@ const handlers = createRolePreset({
 const overviewFile = ".claude/rules/project-map.md";
 const sourceFile = ".claude/rules/project-map/src.md";
 
-function createProject(peers = 0) {
+function createProject(peers = 0, published = true) {
   const extra: Record<string, string> = {};
 
   for (let index = 0; index < peers; index++) {
@@ -27,6 +27,7 @@ function createProject(peers = 0) {
     "package.json": '{ "name": "project", "type": "module" }',
     "engrenage.config.ts": `export default {
   preset: "library",
+  traits: { disable: ${published ? "[]" : '["published"]'} },
   agents: { preferred: ["claude"] },
   src: {
     roles: ${renderCodeRoles(entry(), handlers())},
@@ -47,8 +48,8 @@ function createProject(peers = 0) {
   });
 }
 
-async function sync(peers?: number) {
-  const project = createProject(peers);
+async function sync(peers?: number, published?: boolean) {
+  const project = createProject(peers, published);
 
   const config = await loadConfig(project.root);
 
@@ -75,6 +76,35 @@ describe("project map", () => {
     expect(map).toContain("feature*  The feature.");
     expect(map).toContain("| `handlers` | Request handlers. |");
   });
+
+  test.each([true, false])(
+    "renders enforced grants for published=%s",
+    async (published) => {
+      const { project } = await sync(0, published);
+
+      const overview = project.read(overviewFile);
+      const sourceRow = overview
+        .split("\n")
+        .find((line) => line.startsWith("| `src` |"));
+
+      expect(sourceRow?.split("|")[6]?.trim()).toBe(
+        published ? "never" : "yes",
+      );
+      expect(overview.includes("## Test files")).toBe(published);
+      expect(overview).toContain("the package name and its subpaths");
+      expect(overview).toContain("the target's `index.ts` and public roles");
+      expect(overview).not.toContain("⚠");
+      expect(overview).not.toContain("Lint enforces every rule");
+
+      if (!published) {
+        return;
+      }
+
+      expect(overview).toContain("| source and dist |");
+      expect(overview).toContain("| source |");
+      expect(overview).toContain("| dist |");
+    },
+  );
 
   test("peer domains add no line to the src map", async () => {
     const few = await sync();

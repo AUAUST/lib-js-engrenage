@@ -1,7 +1,11 @@
 import { basename, extname } from "node:path";
 
 import { indexRoleName } from "#project/roles/constants";
-import { entitiesSection, structureSection } from "#project/structure/index";
+import {
+  entitiesSection,
+  isStructureEnvironment,
+  structureSection,
+} from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
@@ -51,13 +55,9 @@ export default defineConvention({
 
         const name = basename(file, extname(file));
 
-        // @debt hardcoded list of environments without a structure; the structure map should answer which environments it covers
-        const structure =
-          environment === "data" ||
-          environment === "dist" ||
-          environment === "workspace"
-            ? undefined
-            : structures[environment];
+        const structure = isStructureEnvironment(environment)
+          ? structures[environment]
+          : undefined;
 
         const hint = file === structure?.indexFile ? barrelHint : "";
 

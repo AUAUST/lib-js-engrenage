@@ -1,17 +1,16 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
-import { entries } from "@auaust/toolkit/object";
+import { entries, keys, values } from "@auaust/toolkit/object";
 
 import {
-  projectMapCategories,
-  projectMapDirectory,
-  projectMapFile,
-  projectMapRelations,
-} from "#tools/agents/constants";
+  elementEnvironments,
+  importCategories,
+  importRelations,
+} from "#project/structure/constants";
+import { projectMapDirectory, projectMapFile } from "#tools/agents/constants";
 import { renderEnvironmentMap } from "#tools/agents/utils/renderEnvironmentMap";
 import type {
   Alias,
   ImportCategory,
-  ImportRule,
+  ImportGrants,
   ResolvedRoles,
   ResolvedStructure,
   StructureEnvironmentName,
@@ -19,10 +18,6 @@ import type {
 } from "#project/structure/index";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
-
-type EnvironmentRules = ImportRule & {
-  readonly source: { readonly kind: "environment" };
-};
 
 function code(value: string): string {
   return `\`${value}\``;
@@ -32,130 +27,77 @@ function list(values: readonly string[]): string {
   return values.map(code).join(", ");
 }
 
-function unique<Value>(values: readonly Value[]): Value[] {
-  return [...new Set(values)];
-}
-
-function categoriesOf(rules: readonly ImportRule[]): ImportCategory[] {
-  return unique(
-    flatMap(rules, ({ targets }) => {
-      return targets
-        .filter((target) => target.kind === "category")
-        .map(({ category }) => category);
-    }),
-  );
-}
-
 function mapFile(name: StructureEnvironmentName): File {
   return `${projectMapDirectory}/${name}.md`;
 }
 
 function renderCell(
-  rules: readonly EnvironmentRules[],
+  name: StructureEnvironmentName,
   category: ImportCategory,
-  perFile: boolean,
+  grants: ImportGrants,
 ): string {
-  const matching = rules.filter(({ targets }) => {
-    return targets.some((target) => {
-      return target.kind === "category" && target.category === category;
-    });
-  });
+  const forbidden =
+    category === "data"
+      ? grants.data.includes(name)
+      : grants.environments[name]?.includes(category) === true;
 
-  if (matching.length === 0) {
-    return perFile ? "per file" : "-";
+  if (forbidden) {
+    return "never";
   }
 
-  return [
-    matching.some(({ effect }) => effect === "forbid") ? "never" : undefined,
-    matching.some(({ effect, enforceable }) => {
-      return effect === "allow" && enforceable;
-    })
-      ? "yes"
-      : undefined,
-    matching.some(({ effect, enforceable }) => {
-      return effect === "allow" && !enforceable;
-    })
-      ? "⚠"
-      : undefined,
-  ]
-    .filter((part) => part !== undefined)
-    .join(" ");
+  if (name === "tests") {
+    const variants = values(grants.variants).map((categories) => {
+      return categories?.includes(category) === true;
+    });
+
+    if (variants.some(Boolean) && !variants.every(Boolean)) {
+      return "per variant";
+    }
+
+    if (variants.some(Boolean)) {
+      return "never";
+    }
+  }
+
+  return "yes";
 }
 
 function renderOverview({
   structure,
-  importRules,
+  grants,
   patterns,
 }: {
   structure: ResolvedStructure;
-  importRules: readonly ImportRule[];
+  grants: ImportGrants;
   patterns: { plain: Globs; source: Globs; dist: Globs };
 }): string {
-  const environmentRules = importRules.filter(
-    (rule): rule is EnvironmentRules => {
-      return rule.source.kind === "environment";
-    },
-  );
-
-  const variantRules = importRules.filter(({ source }) => {
-    return source.kind === "test-variant";
-  });
-
-  const used = new Set(
-    importRules
-      .filter(({ source }) => {
-        return source.kind === "element" || source.kind === "file";
-      })
-      .map(({ relation }) => relation),
-  );
-
   const mapped = entries(structure)
     .filter(([, environment]) => environment !== undefined)
     .map(([name]) => name);
 
-  const names = unique([
-    ...mapped,
-    ...environmentRules.map(({ source }) => source.environment),
-  ]);
-
-  const variantCategories = new Set(categoriesOf(variantRules));
-
-  const columns = projectMapCategories.filter((category) => {
-    return categoriesOf(environmentRules).includes(category);
-  });
+  const columns = keys(importCategories);
 
   const variants: readonly TestVariant[] = ["plain", "src", "dist"];
 
-  const variantRows = variants
-    .map((variant) => {
-      const own = variantRules.filter(({ source }) => {
-        return source.kind === "test-variant" && source.variant === variant;
-      });
+  const variantRows = variants.map((variant) => {
+    const forbidden = grants.variants[variant] ?? [];
+    const allowed = columns.filter((category) => !forbidden.includes(category));
 
-      return { variant, own };
-    })
-    .filter(({ own }) => own.length > 0)
-    .map(({ variant, own }) => {
-      const globs = {
-        plain: patterns.plain,
-        src: patterns.source,
-        dist: patterns.dist,
-      }[variant];
+    const globs = {
+      plain: patterns.plain,
+      src: patterns.source,
+      dist: patterns.dist,
+    }[variant];
 
-      const side = (effect: ImportRule["effect"]) => {
-        return categoriesOf(own.filter((rule) => rule.effect === effect)).join(
-          ", ",
-        );
-      };
+    const against = {
+      plain: "source and dist",
+      src: "source",
+      dist: "dist",
+    }[variant];
 
-      return `| ${list(globs)} | ${side("allow")} | ${side("forbid")} |`;
-    });
-
-  const workspaceRules = importRules.filter(({ relation, source }) => {
-    return relation === "workspace" && source.kind === "element";
+    return `| ${list(globs)} | ${against} | ${list(allowed)} | ${list(forbidden)} |`;
   });
 
-  // @debt the notation claims "Lint enforces every rule" beside ⚠ cells that lint cannot check, and the column categories (`public-entries`, `internal-aliases`, `dist-artefacts`) are never defined
   return [
     "# Project map",
     "",
@@ -163,53 +105,54 @@ function renderOverview({
     "",
     "## Notation",
     "",
-    "Trees: `name*` public domain, `{…}` sub-domains, `#alias/…` import alias, `[isolated]` peers never import each other. Lint enforces every rule.",
+    "Trees: `name*` public domain, `{…}` sub-domains, `#alias/…` import alias, `[isolated]` peers never import each other.",
     "",
     "| Relation | A domain may import |",
     "| --- | --- |",
-    ...entries(projectMapRelations)
-      .filter(([relation]) => used.has(relation))
+    ...entries(importRelations)
+      .filter(([relation]) => relation !== "workspace")
       .map(([relation, meaning]) => `| ${code(relation)} | ${meaning} |`),
     "",
     "## Environments",
     "",
-    `| from / to | ${columns.join(" | ")} | map |`,
-    `| --- |${columns.map(() => " --- |").join("")} --- |`,
-    ...names.map((name) => {
-      const own = environmentRules.filter(({ source }) => {
-        return source.environment === name;
-      });
-
-      const cells = columns.map((category) => {
-        return renderCell(
-          own,
-          category,
-          name === "tests" && variantCategories.has(category),
-        );
-      });
-
-      return `| ${code(name)} | ${cells.join(" | ")} | ${mapped.includes(name) ? code(mapFile(name)) : "-"} |`;
+    `The matrix states environment grants; domain and role boundaries still apply. No importer may import a root index or entry file of ${list(elementEnvironments)}.`,
+    "",
+    "| Category | Meaning |",
+    "| --- | --- |",
+    ...entries(importCategories).map(([category, meaning]) => {
+      return `| ${code(category)} | ${meaning} |`;
     }),
     "",
-    "`-` states nothing; ⚠ is a stated allowance lint cannot check.",
-    ...(variantRows.length === 0
-      ? []
-      : [
+    `| from / to | ${columns.join(" | ")} | map |`,
+    `| --- |${columns.map(() => " --- |").join("")} --- |`,
+    ...mapped.map((name) => {
+      const cells = columns.map((category) =>
+        renderCell(name, category, grants),
+      );
+
+      return `| ${code(name)} | ${cells.join(" | ")} | ${code(mapFile(name))} |`;
+    }),
+    ...(grants.published
+      ? [
           "",
           "## Test files",
           "",
-          "| Files | May import | Never |",
-          "| --- | --- | --- |",
+          "| Files | Runs against | May import | Never |",
+          "| --- | --- | --- | --- |",
           ...variantRows,
-        ]),
-    ...(workspaceRules.length === 0
+        ]
+      : []),
+    ...(grants.workspaces.size === 0
       ? []
       : [
           "",
           "## Workspaces",
           "",
-          ...workspaceRules.map(({ source, effect, reason }) => {
-            return `- ${source.kind === "element" ? code(source.path) : ""}: ${effect === "forbid" ? "never: " : ""}${reason}`;
+          importRelations.workspace,
+          "Root src never imports a workspace.",
+          "",
+          ...[...grants.workspaces].map(([path, dependencies]) => {
+            return `- ${code(path)}: ${dependencies.length === 0 ? "no workspace dependencies" : list(dependencies)}`;
           }),
         ]),
   ].join("\n");
@@ -241,13 +184,13 @@ function findAliases(
 
 export function renderProjectMap({
   structure,
-  importRules,
+  grants,
   roles,
   aliases,
   patterns,
 }: {
   structure: ResolvedStructure;
-  importRules: readonly ImportRule[];
+  grants: ImportGrants;
   roles: Readonly<Partial<Record<StructureEnvironmentName, ResolvedRoles>>>;
   aliases: readonly Alias[];
   patterns: { plain: Globs; source: Globs; dist: Globs };
@@ -259,7 +202,7 @@ export function renderProjectMap({
       file: projectMapFile,
       content: `${renderOverview({
         structure,
-        importRules,
+        grants,
         patterns,
       })}\n`,
     },
