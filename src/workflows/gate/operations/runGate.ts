@@ -181,7 +181,7 @@ export async function runGate(
   const stamps = await readStamps(stamp);
 
   // @debt a stamped tree reports no budget warnings, so the commit after a passing stop never shows them again.
-  if (files.length === 0 || stamps.includes(await hashTree(root, mode))) {
+  if (files.length === 0 || stamps.includes(await hashTree(root, { mode }))) {
     return { failures: [], warnings: [] };
   }
 
@@ -205,7 +205,7 @@ export async function runGate(
 
     await writeFile(
       stamp,
-      `${[...stamps, await hashTree(root, mode)].slice(-stampLimit).join("\n")}\n`,
+      `${[...stamps, await hashTree(root, { mode })].slice(-stampLimit).join("\n")}\n`,
     );
   }
 

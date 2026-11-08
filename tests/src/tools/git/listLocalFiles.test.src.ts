@@ -29,6 +29,17 @@ describe("listLocalFiles", () => {
       ),
     ).toEqual([".ai/issues/1.md", ".env.local"]);
 
+    project.write(".ai/issues/2.md", "untracked draft\n");
+
+    expect(
+      await listLocalFiles(
+        resolved,
+        project.root,
+        [".ai/issues/"],
+        [".ai/issues/2.md"],
+      ),
+    ).toEqual([".ai/issues/2.md"]);
+
     expect(
       await listLocalFiles(resolved, project.root, [], [".env.local"]),
     ).toEqual([]);

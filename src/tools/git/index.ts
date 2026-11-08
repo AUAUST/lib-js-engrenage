@@ -19,6 +19,7 @@ export { hashTree } from "#tools/git/operations/hashTree";
 export { listChangedFiles } from "#tools/git/operations/listChangedFiles";
 export { listLocalFiles } from "#tools/git/operations/listLocalFiles";
 export { listPartiallyStagedFiles } from "#tools/git/operations/listPartiallyStagedFiles";
+export { readHead } from "#tools/git/operations/readHead";
 export { readIgnorePatterns } from "#tools/git/operations/readIgnorePatterns";
 export { runGit } from "#tools/git/operations/runGit";
 // @end

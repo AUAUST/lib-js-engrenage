@@ -31,7 +31,7 @@ export async function checkAgentStop(
     return void (await rm(marker, { force: true }));
   }
 
-  const tree = await hashTree(root, "worktree");
+  const tree = await hashTree(root, { mode: "worktree" });
 
   const stopped = await readTextFile(marker);
 

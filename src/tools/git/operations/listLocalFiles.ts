@@ -39,6 +39,7 @@ export async function listLocalFiles(
   const output = await runGit(git.root, [
     "ls-files",
     "--cached",
+    "--others",
     "--ignored",
     "-z",
     ...flatMap(patterns, (pattern) => ["-x", pattern]),
