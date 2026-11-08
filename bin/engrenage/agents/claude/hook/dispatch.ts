@@ -1,27 +1,12 @@
-import { object, optional, string } from "valibot";
+import { defineLazyCommand } from "#workflows/cli/index";
 
-import { checkAgentDispatch } from "#tools/agents/operations/checkAgentDispatch";
-import { denyToolUse } from "#tools/agents/operations/denyToolUse";
-import { readHookPayload } from "#tools/agents/operations/readHookPayload";
-import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
-
-const payloadSchema = object({
-  tool_input: object({
-    subagent_type: optional(string()),
-    prompt: optional(string(), ""),
-  }),
-});
-
-export const dispatch = defineLegacyCommand((command) => {
-  return command.action(async () => {
-    const {
-      tool_input: { subagent_type: agent = "", prompt },
-    } = await readHookPayload(payloadSchema, "Claude Code");
-
-    const reason = await checkAgentDispatch(agent, prompt);
-
-    if (reason !== undefined) {
-      denyToolUse(reason);
-    }
-  });
+export default defineLazyCommand({
+  configure(command) {
+    return command.description(
+      "Deny a `worker` or `debugger` dispatch whose `Issue: <owner>/<repo>#<n>` is not ready, reading Claude's PreToolUse payload from stdin.",
+    );
+  },
+  action() {
+    return import("#bin/engrenage/agents/claude/hook/actions/dispatch");
+  },
 });

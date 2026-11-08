@@ -12,6 +12,7 @@ export {
 export { agentShellVariables } from "#tools/agents/constants";
 export { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 export { isHookCommand } from "#tools/agents/utils/isHookCommand";
+export { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
 export { renderEnvironmentMap } from "#tools/agents/utils/renderEnvironmentMap";
 export { renderProjectMapRoles } from "#tools/agents/utils/renderProjectMapRoles";
 

@@ -3,14 +3,14 @@ import { join } from "node:path";
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { stop } from "#bin/engrenage/agents/claude/hook/stop";
 import { cacheSection } from "#project/cache/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
 import { getExecutable } from "#tests/utils/getExecutable";
-import { runCommand } from "#tests/utils/runCommand";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
+
+import stop from "#bin/engrenage/agents/claude/hook/actions/stop";
 
 vi.mock("#tools/agents/operations/readHookPayload", () => {
   return { readHookPayload: vi.fn() };
@@ -56,7 +56,7 @@ async function runStop() {
 
   const write = vi.spyOn(process.stderr, "write").mockReturnValue(true);
 
-  await runCommand(stop);
+  await stop();
 
   const exitCode = process.exitCode ?? 0;
 

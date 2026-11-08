@@ -5,10 +5,11 @@ import { afterEach, describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { defineProperty, ownDescriptor } from "@auaust/toolkit/object";
 
-import { rules } from "#bin/engrenage/agents/rules";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
+
+import rules from "#bin/engrenage/agents/rules/index";
 
 vi.mock(import("@clack/prompts"), async (original) => {
   return {
@@ -42,7 +43,7 @@ describe("agents rules", () => {
   test("installs by name, refreshes the Codex mapping and preserves existing files", async () => {
     const project = createProject();
 
-    await runCommand(rules, "add", "code-style");
+    await runDefinition(rules, "add", "code-style");
 
     const installed = project.read(".claude/rules/code-style.md");
 
@@ -64,19 +65,19 @@ describe("agents rules", () => {
       `${installed}\nProject note.\n`,
     );
 
-    await runCommand(rules, "add", "code-style");
+    await runDefinition(rules, "add", "code-style");
 
     expect(project.read(".claude/rules/code-style.md")).toBe(
       `${installed}\nProject note.\n`,
     );
 
-    await expect(runCommand(rules, "add", "unknown")).rejects.toThrow(
+    await expect(runDefinition(rules, "add", "unknown")).rejects.toThrow(
       "Unknown agent rule",
     );
 
     expect(existsSync(project.resolve(".claude/rules/unknown.md"))).toBe(false);
 
-    await expect(runCommand(rules, "add", "no-attribution")).rejects.toThrow(
+    await expect(runDefinition(rules, "add", "no-attribution")).rejects.toThrow(
       "agents.attribution",
     );
   });
@@ -105,7 +106,7 @@ describe("agents rules", () => {
 
     vi.mocked(multiselect).mockResolvedValue(["prefer-toolkit"]);
 
-    await runCommand(rules);
+    await runDefinition(rules);
 
     expect(multiselect).toHaveBeenCalledWith(
       expect.objectContaining({

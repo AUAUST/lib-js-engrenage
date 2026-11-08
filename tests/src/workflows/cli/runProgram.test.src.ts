@@ -1,35 +1,40 @@
-import { Command } from "@commander-js/extra-typings";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import type { Command } from "@commander-js/extra-typings";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import {
   createProgram as createDefinedProgram,
+  defineCommand,
   defineGroup,
 } from "#workflows/cli/index";
-import { addDebugOption } from "#workflows/cli/operations/addDebugOption";
-import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
-import { registerSubcommands } from "#workflows/cli/operations/registerSubcommands";
 import { runProgram } from "#workflows/cli/operations/runProgram";
 
 import sync from "#bin/engrenage/sync";
 
-const succeeding = defineLegacyCommand((command) => {
-  return command.action(() => {});
+const succeeding = defineCommand({
+  configure(command) {
+    return command;
+  },
+  action() {},
 });
 
-const failing = defineLegacyCommand((command) => {
-  return command.action(() => {
+const failing = defineCommand({
+  configure(command) {
+    return command;
+  },
+  action() {
     throw new Error("outer", { cause: new Error("inner") });
-  });
+  },
 });
 
 function createProgram() {
-  const program = registerSubcommands(new Command("program"), { failing });
-
-  addDebugOption(program);
-
-  return program;
+  return createDefinedProgram(
+    "program",
+    defineGroup({
+      commands: { failing },
+    }),
+  );
 }
 
 function run(program: Command, ...args: string[]) {
@@ -84,7 +89,12 @@ describe("runProgram", () => {
       await import("#workflows/cli/operations/runProgram");
 
     await runFreshProgram(
-      registerSubcommands(new Command("program"), { succeeding }),
+      createDefinedProgram(
+        "program",
+        defineGroup({
+          commands: { succeeding },
+        }),
+      ),
       ["node", "program", "succeeding"],
     );
 

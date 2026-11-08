@@ -1,13 +1,13 @@
 import { afterEach, expect, test, vi } from "vitest";
 
-import { stop } from "#bin/engrenage/agents/codex/hook/stop";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { runCommand } from "#tests/utils/runCommand";
 import { agentsSection } from "#tools/agents/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkAgentStop } from "#workflows/gate/index";
+
+import stop from "#bin/engrenage/agents/codex/hook/actions/stop";
 
 vi.mock("#tools/agents/operations/readHookPayload", () => {
   return {
@@ -77,7 +77,7 @@ test.each([
 
     const write = vi.spyOn(process.stderr, "write").mockReturnValue(true);
 
-    await runCommand(stop);
+    await stop();
 
     if (name.startsWith("worker") || name.startsWith("debugger")) {
       expect(checkAgentStop).toHaveBeenCalledWith(expect.anything(), {

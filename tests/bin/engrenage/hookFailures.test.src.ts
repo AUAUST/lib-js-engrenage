@@ -1,15 +1,14 @@
 import { spawnSync } from "node:child_process";
 
-import { Command } from "@commander-js/extra-typings";
 import { afterEach, expect, test, vi } from "vitest";
 
-import { dispatch } from "#bin/engrenage/agents/claude/hook/dispatch";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getExecutable } from "#tests/utils/getExecutable";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkIssue } from "#tools/github/operations/checkIssue";
-import { registerSubcommands } from "#workflows/cli/operations/registerSubcommands";
-import { runProgram } from "#workflows/cli/operations/runProgram";
+import { createProgram, runProgram } from "#workflows/cli/index";
+
+import engrenage from "#bin/engrenage/index";
 
 vi.mock("#tools/agents/operations/readHookPayload", () => {
   return {
@@ -34,7 +33,19 @@ vi.mock("#tools/github/operations/resolveGithubToken", () => {
 afterEach(() => {
   process.exitCode = undefined;
   vi.restoreAllMocks();
+  vi.doUnmock("#bin/engrenage/agents/claude/hook/actions/dispatch");
 });
+
+function runDispatch() {
+  return runProgram(createProgram("engrenage", engrenage), [
+    "node",
+    "engrenage",
+    "agents",
+    "claude",
+    "hook",
+    "dispatch",
+  ]);
+}
 
 test.each(["claude", "codex"])(
   "%s critical payload errors exit 2",
@@ -82,29 +93,28 @@ test("a GitHub failure after dispatch startup exits 2", async () => {
     tool_input: { subagent_type: "worker", prompt: "Issue: o/r#1" },
   });
 
-  const program = registerSubcommands(new Command(), {
-    agents: (agents) =>
-      registerSubcommands(agents, {
-        claude: (claude) =>
-          registerSubcommands(claude, {
-            hook: (hook) => registerSubcommands(hook, { dispatch }),
-          }),
-      }),
-  });
-
-  await runProgram(program, [
-    "node",
-    "engrenage",
-    "agents",
-    "claude",
-    "hook",
-    "dispatch",
-  ]);
+  await runDispatch();
 
   expect(checkIssue).toHaveBeenCalled();
   expect(process.exitCode).toBe(2);
 
   expect(console.error).toHaveBeenCalledWith(
     expect.stringContaining("GitHub request failed with 503"),
+  );
+});
+
+test("a hook whose action fails to load exits 2", async () => {
+  vi.spyOn(console, "error").mockImplementation(() => {});
+
+  vi.doMock("#bin/engrenage/agents/claude/hook/actions/dispatch", () => {
+    throw new Error("action failed to load");
+  });
+
+  await runDispatch();
+
+  expect(process.exitCode).toBe(2);
+
+  expect(console.error).toHaveBeenCalledWith(
+    expect.stringContaining("action failed to load"),
   );
 });

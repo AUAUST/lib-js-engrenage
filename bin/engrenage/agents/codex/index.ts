@@ -1,15 +1,12 @@
-import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
-import { registerLazySubcommands } from "#workflows/cli/operations/registerLazySubcommands";
+import { defineGroup } from "#workflows/cli/index";
 
-export const codex = defineLegacyCommand((command) => {
-  return registerLazySubcommands(command, {
-    hook: {
-      description: "Run the Codex hooks of the project.",
-      async load() {
-        const { hook } = await import("#bin/engrenage/agents/codex/hook/index");
+import hook from "#bin/engrenage/agents/codex/hook/index";
 
-        return hook;
-      },
-    },
-  });
+export default defineGroup({
+  configure(command) {
+    return command.description("Integrate the project tools with Codex.");
+  },
+  commands: {
+    hook,
+  },
 });

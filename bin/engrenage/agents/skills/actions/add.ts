@@ -2,13 +2,16 @@ import { cancel, isCancel, multiselect } from "@clack/prompts";
 
 import { empty } from "@auaust/toolkit/empty";
 
-import { agentsSection } from "#tools/agents/index";
-import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
-import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
-import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
-import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
-import { settleChanges } from "#workflows/sync/operations/settleChanges";
-import type { LoadedConfig } from "#project/config/index";
+import {
+  addAgentSkills,
+  agentsSection,
+  getSkillTemplates,
+} from "#tools/agents/index";
+import {
+  loadValidatedConfig,
+  type LoadedConfig,
+} from "#workflows/config/index";
+import { settleChanges } from "#workflows/sync/index";
 
 async function getNames(config: LoadedConfig, name: string | undefined) {
   if (name !== undefined) {
@@ -69,7 +72,7 @@ async function getNames(config: LoadedConfig, name: string | undefined) {
   process.exitCode = 130;
 }
 
-async function add(name?: string) {
+export default async function (name?: string): Promise<void> {
   const config = await loadValidatedConfig();
 
   const names = await getNames(config, name);
@@ -90,15 +93,3 @@ async function add(name?: string) {
     check: false,
   });
 }
-
-export const skills = defineLegacyCommand((command) => {
-  command.action(() => add());
-
-  command
-    .command("add")
-    .description("Install a shared agent skill by name.")
-    .argument("<name>", "skill name, for example issue-planning")
-    .action((name) => add(name));
-
-  return command;
-});

@@ -80,3 +80,29 @@ test(
     ).toEqual([]);
   },
 );
+
+test(
+  "the help of a hook group lists its commands without loading any action",
+  { timeout: binaryTimeout },
+  async () => {
+    const { stdout, stderr } = await run(process.execPath, [
+      "--import",
+      `data:text/javascript,${encodeURIComponent(recordResolutions)}`,
+      getExecutable(),
+      "agents",
+      "claude",
+      "hook",
+      "--help",
+    ]);
+
+    for (const name of ["dispatch", "git", "github", "stop"]) {
+      expect(stdout).toContain(`  ${name} `);
+    }
+
+    expect(
+      stderr.split("\n").filter((url) => {
+        return url.includes("/bin/engrenage/") && url.includes("/actions/");
+      }),
+    ).toEqual([]);
+  },
+);

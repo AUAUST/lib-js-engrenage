@@ -1,16 +1,12 @@
-import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
-import { registerLazySubcommands } from "#workflows/cli/operations/registerLazySubcommands";
+import { defineGroup } from "#workflows/cli/index";
 
-export const claude = defineLegacyCommand((command) => {
-  return registerLazySubcommands(command, {
-    hook: {
-      description: "Run the Claude Code hooks of the project.",
-      async load() {
-        const { hook } =
-          await import("#bin/engrenage/agents/claude/hook/index");
+import hook from "#bin/engrenage/agents/claude/hook/index";
 
-        return hook;
-      },
-    },
-  });
+export default defineGroup({
+  configure(command) {
+    return command.description("Integrate the project tools with Claude Code.");
+  },
+  commands: {
+    hook,
+  },
 });

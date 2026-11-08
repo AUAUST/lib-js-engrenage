@@ -1,16 +1,15 @@
 import { Command } from "@commander-js/extra-typings";
 import { describe, expect, test, vi } from "vitest";
 
-import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
 import { registerSubcommands } from "#workflows/cli/operations/registerSubcommands";
 
 describe("registerSubcommands", () => {
   test("names each subcommand after its record key", async () => {
     const run = vi.fn();
 
-    const greet = defineLegacyCommand((command) => {
+    const greet = (command: Command) => {
       return command.action(run);
-    });
+    };
 
     const program = registerSubcommands(new Command("program"), {
       greet,

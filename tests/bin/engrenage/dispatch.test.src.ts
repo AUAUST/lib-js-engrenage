@@ -1,10 +1,7 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 
-import { dispatch } from "#bin/engrenage/agents/claude/hook/dispatch";
-import { dispatch as codexDispatch } from "#bin/engrenage/agents/codex/hook/dispatch";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { runCommand } from "#tests/utils/runCommand";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
 import { agentsSection } from "#tools/agents/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
@@ -13,6 +10,9 @@ import { checkIssue } from "#tools/github/operations/checkIssue";
 import { findBriefedIssue } from "#tools/github/utils/findBriefedIssue";
 
 import * as definitions from "#tools/agents/operations/getSkillDefinitions";
+
+import dispatch from "#bin/engrenage/agents/claude/hook/actions/dispatch";
+import codexDispatch from "#bin/engrenage/agents/codex/hook/actions/dispatch";
 
 vi.mock("#tools/agents/operations/readHookPayload", () => {
   return {
@@ -50,7 +50,7 @@ test.each(["implement it", "Context\nIssue: o/r#1"])(
       tool_input: { subagent_type: "worker", prompt },
     });
 
-    await runCommand(dispatch);
+    await dispatch();
 
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringContaining(
@@ -72,7 +72,7 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
     tool_input: { subagent_type: "worker", prompt: "Issue: o/r#1\r\nContext" },
   });
 
-  await runCommand(dispatch);
+  await dispatch();
 
   expect(checkIssue).toHaveBeenCalledWith(
     { repository: "o/r", token: "token" },
@@ -85,7 +85,7 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
     tool_input: { subagent_type: "debugger", prompt: "A direct user failure" },
   });
 
-  await runCommand(dispatch);
+  await dispatch();
 
   expect(checkIssue).toHaveBeenCalledTimes(1);
   expect(process.stdout.write).not.toHaveBeenCalled();
@@ -133,7 +133,7 @@ test.each([
     tool_input: { agent_type: name, message: "Issue: o/r#1\nContext" },
   });
 
-  await runCommand(codexDispatch);
+  await codexDispatch();
 
   expect(checkIssue).toHaveBeenCalledWith(
     expect.anything(),

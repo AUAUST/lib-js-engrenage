@@ -4,6 +4,13 @@ export { parseWorkspaceDocument } from "#tools/pnpm/utils/parseWorkspaceDocument
 export { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus";
 // @end
 
+// @barrel operations/*.ts named
+export { installDependencies } from "#tools/pnpm/operations/installDependencies";
+export { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
+export { upgradePnpmManifest } from "#tools/pnpm/operations/upgradePnpmManifest";
+export { writePnpmDeclaration } from "#tools/pnpm/operations/writePnpmDeclaration";
+// @end
+
 // @barrel setup/*.ts named
 export { createPnpmStep } from "#tools/pnpm/setup/createPnpmStep";
 export { createWorkspaceStep } from "#tools/pnpm/setup/createWorkspaceStep";

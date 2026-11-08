@@ -1,35 +1,16 @@
-import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
-import { registerLazySubcommands } from "#workflows/cli/operations/registerLazySubcommands";
+import { defineGroup } from "#workflows/cli/index";
 
-export const hook = defineLegacyCommand((command) => {
-  return registerLazySubcommands(command, {
-    dispatch: {
-      description: "Check Codex worker and debugger dispatch readiness.",
-      async load() {
-        const { dispatch } =
-          await import("#bin/engrenage/agents/codex/hook/dispatch");
+import dispatch from "#bin/engrenage/agents/codex/hook/dispatch";
+import github from "#bin/engrenage/agents/codex/hook/github";
+import stop from "#bin/engrenage/agents/codex/hook/stop";
 
-        return dispatch;
-      },
-    },
-    stop: {
-      description:
-        "Return verification failures to a stopped Codex worker or debugger.",
-      async load() {
-        const { stop } = await import("#bin/engrenage/agents/codex/hook/stop");
-
-        return stop;
-      },
-    },
-    github: {
-      description:
-        "Deny a `gh issue create|edit` body that breaks the issue contract, and warn or deny when a `gh issue create|edit|comment` body is over budget, reading Codex's PreToolUse payload from stdin.",
-      async load() {
-        const { github } =
-          await import("#bin/engrenage/agents/codex/hook/github");
-
-        return github;
-      },
-    },
-  });
+export default defineGroup({
+  configure(command) {
+    return command.description("Run the Codex hooks of the project.");
+  },
+  commands: {
+    dispatch,
+    stop,
+    github,
+  },
 });

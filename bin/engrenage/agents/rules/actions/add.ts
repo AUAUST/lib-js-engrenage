@@ -1,13 +1,14 @@
 import { cancel, isCancel, multiselect } from "@clack/prompts";
 
-import { agentsSection } from "#tools/agents/index";
-import { addAgentRules } from "#tools/agents/operations/addAgentRules";
-import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
-import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
-import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
-import { settleChanges } from "#workflows/sync/operations/settleChanges";
+import {
+  addAgentRules,
+  agentsSection,
+  getMissingRuleTemplates,
+} from "#tools/agents/index";
+import { loadValidatedConfig } from "#workflows/config/index";
+import { settleChanges } from "#workflows/sync/index";
 
-async function add(name?: string) {
+export default async function (name?: string): Promise<void> {
   const config = await loadValidatedConfig();
 
   let names: string[];
@@ -72,15 +73,3 @@ async function add(name?: string) {
     check: false,
   });
 }
-
-export const rules = defineLegacyCommand((command) => {
-  command.action(() => add());
-
-  command
-    .command("add")
-    .description("Install a shared agent rule by name.")
-    .argument("<name>", "rule name, for example code-style")
-    .action((name) => add(name));
-
-  return command;
-});
