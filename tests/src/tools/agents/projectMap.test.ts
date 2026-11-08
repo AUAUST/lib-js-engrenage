@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+
 import { describe, expect, test } from "vitest";
 
 import { syncAgents } from "@auaust/engrenage/agents";
@@ -51,6 +53,10 @@ function createProject(peers = 0, published = true) {
 async function sync(peers?: number, published?: boolean) {
   const project = createProject(peers, published);
 
+  return syncProject(project);
+}
+
+async function syncProject(project: ReturnType<typeof createTemporaryProject>) {
   const config = await loadConfig(project.root);
 
   await syncAgents(config);
@@ -74,7 +80,96 @@ describe("project map", () => {
     expect(map).toContain("base < *");
     expect(map).toContain("isolated/  #isolated/…  [isolated]  one two");
     expect(map).toContain("feature*  The feature.");
-    expect(map).toContain("| `handlers` | Request handlers. |");
+    expect(overview).toContain("| `handlers` | Request handlers. |");
+    expect(map).not.toContain("| Role |");
+  });
+
+  test("groups identical role contracts across environments and retains different levels", async () => {
+    const common = JSON.stringify([entry(), handlers({ effects: "confined" })]);
+    const different = JSON.stringify([
+      entry(),
+      handlers({ effects: "effectful" }),
+    ]);
+
+    const { project } = await syncProject(
+      createTemporaryProject({
+        "package.json": '{ "name": "project", "type": "module" }',
+        "engrenage.config.ts": `export default {
+        preset: "library",
+        agents: { preferred: ["claude"] },
+        src: { roles: ${common} },
+        scripts: { roles: ${common} },
+        tests: { mirror: false, roles: ${different} },
+      };`,
+        "src/feature/index.ts": "",
+        "scripts/task/index.ts": "",
+        "tests/feature/index.ts": "",
+      }),
+    );
+
+    const rows = project
+      .read(overviewFile)
+      .split("\n")
+      .filter((line) => line.startsWith("| `handlers` |"));
+
+    expect(rows).toHaveLength(2);
+    expect(rows).toContain(
+      "| `handlers` | Request handlers. |  | confined |  | `src`, `scripts` |",
+    );
+    expect(rows).toContain(
+      "| `handlers` | Request handlers. |  | effectful |  | `tests` |",
+    );
+  });
+
+  test("renders nested file descriptions, global file roles and root tooling paths", async () => {
+    const { project } = await syncProject(
+      createTemporaryProject({
+        "package.json": '{ "name": "project", "type": "module" }',
+        "engrenage.config.ts": `export default {
+        preset: "library",
+        agents: { preferred: ["claude"] },
+        src: { roles: [
+          { name: "constants", file: "constants.ts", effects: "pure", public: true },
+          { name: "config", roles: [{
+            name: "definers", file: () => "defineFeatureConfig.ts",
+            fileDescription: "define<Domain>Config.ts", effects: "effectful"
+          }] }
+        ] },
+        tooling: { dirs: ["."], files: ["engrenage.config.ts"] },
+      };`,
+        "src/constants.ts": "",
+        "src/feature/index.ts": "",
+        "src/feature/config/defineFeatureConfig.ts": "",
+      }),
+    );
+
+    expect(project.read(overviewFile)).toContain(
+      "| `config/definers` |  | `define<Domain>Config.ts` | effectful |",
+    );
+    expect(project.read(sourceFile)).toContain("(global roles: constants.ts)");
+    expect(project.read(".claude/rules/project-map/tooling.md")).toContain(
+      "  - engrenage.config.ts",
+    );
+  });
+
+  test("omits a tooling map and link when neither directories nor root files match", async () => {
+    const { project } = await syncProject(
+      createTemporaryProject({
+        "package.json": '{ "name": "project", "type": "module" }',
+        "engrenage.config.ts": `export default {
+        preset: "library", agents: { preferred: ["claude"] },
+        tooling: { dirs: [".", "missing-tooling"], files: ["missing.config.ts"] },
+      };`,
+        "src/feature/index.ts": "",
+      }),
+    );
+
+    expect(
+      existsSync(project.resolve(".claude/rules/project-map/tooling.md")),
+    ).toBe(false);
+    expect(project.read(overviewFile)).not.toContain(
+      ".claude/rules/project-map/tooling.md",
+    );
   });
 
   test.each([true, false])(
@@ -83,6 +178,7 @@ describe("project map", () => {
       const { project } = await sync(0, published);
 
       const overview = project.read(overviewFile);
+
       const sourceRow = overview
         .split("\n")
         .find((line) => line.startsWith("| `src` |"));
@@ -90,6 +186,7 @@ describe("project map", () => {
       expect(sourceRow?.split("|")[6]?.trim()).toBe(
         published ? "never" : "yes",
       );
+
       expect(overview.includes("## Test files")).toBe(published);
       expect(overview).toContain("the package name and its subpaths");
       expect(overview).toContain("the target's `index.ts` and public roles");

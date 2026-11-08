@@ -52,14 +52,18 @@ async function createSourceAliases(
 ): Promise<Alias[]> {
   const directories = flat(
     await Promise.all(
-      tree.children.map((child) => {
-        return createDirectoryAliases(
+      tree.children.map(async (child) => {
+        const aliases = await createDirectoryAliases(
           root,
           child.name,
           child.path,
           `src entry ${child.path}`,
           indexFile,
         );
+
+        return aliases.map((alias) => {
+          return { ...alias, path: child.path };
+        });
       }),
     ),
   );
@@ -87,6 +91,7 @@ async function createSourceAliases(
               key: `#${entry.name.slice(0, -".ts".length)}`,
               target: `./${join(dir, entry.name)}`,
               source: `src entry ${join(dir, entry.name)}`,
+              path: join(dir, entry.name),
             };
           });
       }),

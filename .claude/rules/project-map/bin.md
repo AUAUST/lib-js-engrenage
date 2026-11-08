@@ -15,3 +15,5 @@ bin/
    │     └─ hook  Handle Codex lifecycle hook events.
    └─ pnpm  Package manager maintenance commands.
 ```
+
+Commands: one module per subcommand; one directory with an `index.ts` per command group.

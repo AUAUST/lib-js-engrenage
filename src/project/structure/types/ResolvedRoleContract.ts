@@ -4,7 +4,6 @@ import type { Globs } from "#types/Globs";
 
 export interface ResolvedRoleContract {
   readonly file: Glob | Globs | RoleFileResolver | undefined;
-  // @debt no map or structure report renders file globs yet, so nothing shows `fileDescription`
   readonly fileDescription: string | undefined;
   readonly accepts: Glob | Globs | undefined;
   readonly nesting: number | "any";

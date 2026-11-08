@@ -7,6 +7,7 @@ import {
 } from "#project/structure/constants";
 import { projectMapDirectory, projectMapFile } from "#tools/agents/constants";
 import { renderEnvironmentMap } from "#tools/agents/utils/renderEnvironmentMap";
+import { renderProjectMapRoles } from "#tools/agents/utils/renderProjectMapRoles";
 import type {
   Alias,
   ImportCategory,
@@ -66,10 +67,12 @@ function renderOverview({
   structure,
   grants,
   patterns,
+  roles,
 }: {
   structure: ResolvedStructure;
   grants: ImportGrants;
   patterns: { plain: Globs; source: Globs; dist: Globs };
+  roles: Readonly<Partial<Record<StructureEnvironmentName, ResolvedRoles>>>;
 }): string {
   const mapped = entries(structure)
     .filter(([, environment]) => environment !== undefined)
@@ -155,6 +158,7 @@ function renderOverview({
             return `- ${code(path)}: ${dependencies.length === 0 ? "no workspace dependencies" : list(dependencies)}`;
           }),
         ]),
+    ...renderProjectMapRoles(structure, roles),
   ].join("\n");
 }
 
@@ -166,11 +170,8 @@ function findAliases(
 
   for (const [, environment] of entries(structure)) {
     for (const child of environment?.root.children ?? []) {
-      // @debt matches the human-readable `source` label that resolveAliases writes (`src entry <path>`); an alias should carry its node path as data
-      const alias = aliases.find(({ key, source }) => {
-        return (
-          key === `#${child.name}/*` && source === `src entry ${child.path}`
-        );
+      const alias = aliases.find(({ key, path }) => {
+        return key === `#${child.name}/*` && path === child.path;
       });
 
       if (alias !== undefined) {
@@ -188,12 +189,14 @@ export function renderProjectMap({
   roles,
   aliases,
   patterns,
+  paths,
 }: {
   structure: ResolvedStructure;
   grants: ImportGrants;
   roles: Readonly<Partial<Record<StructureEnvironmentName, ResolvedRoles>>>;
   aliases: readonly Alias[];
   patterns: { plain: Globs; source: Globs; dist: Globs };
+  paths: Readonly<Partial<Record<StructureEnvironmentName, Globs>>>;
 }): { file: File; content: string }[] {
   const found = findAliases(structure, aliases);
 
@@ -204,6 +207,7 @@ export function renderProjectMap({
         structure,
         grants,
         patterns,
+        roles,
       })}\n`,
     },
   ];
@@ -215,9 +219,9 @@ export function renderProjectMap({
         content: `${renderEnvironmentMap({
           name,
           environment,
-          // @debt the bin map is a bare tree: it states neither the command-tree contract (a file per subcommand, an index.ts per group) nor where command logic must live
           roles: name === "bin" ? undefined : roles[name],
           aliases: found,
+          paths: paths[name] ?? [],
         })}\n`,
       });
     }

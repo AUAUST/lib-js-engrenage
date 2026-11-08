@@ -102,7 +102,7 @@ const plugins = createRolePreset({
 // @debt two contracts in one role: the identity definer `defineConfig` and argument mutators such as `ensureAnyOf` sit beside I/O, while lint ranks roles by imports only
 const operations = createRolePreset({
   name: "operations",
-  purpose: "Impure logic and definers of the domain.",
+  purpose: "Effectful logic of the domain.",
   exports: "named-match",
   effects: "effectful",
 });

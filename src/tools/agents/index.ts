@@ -13,6 +13,7 @@ export { agentShellVariables } from "#tools/agents/constants";
 export { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 export { isHookCommand } from "#tools/agents/utils/isHookCommand";
 export { renderEnvironmentMap } from "#tools/agents/utils/renderEnvironmentMap";
+export { renderProjectMapRoles } from "#tools/agents/utils/renderProjectMapRoles";
 
 // @barrel setup/*.ts named
 export { createAgentRulesStep } from "#tools/agents/setup/createAgentRulesStep";

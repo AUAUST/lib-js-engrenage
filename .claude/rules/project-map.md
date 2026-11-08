@@ -45,3 +45,38 @@ The matrix states environment grants; domain and role boundaries still apply. No
 | `**/*.{spec,test}.{ts,tsx}`      | source and dist | `public-entries`, `scripts`, `data`, `tests`, `dist-artefacts`          | `internal-aliases`, `bin` |
 | `**/*.{spec,test}.src.{ts,tsx}`  | source          | `internal-aliases`, `bin`, `scripts`, `data`, `tests`, `dist-artefacts` | `public-entries`          |
 | `**/*.{spec,test}.dist.{ts,tsx}` | dist            | `public-entries`, `scripts`, `data`, `tests`, `dist-artefacts`          | `internal-aliases`, `bin` |
+
+## Roles
+
+Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other.
+
+- `pure`: Compute from arguments only, without observable changes.
+- `confined`: Mutate caller-owned values or maintain a private memo cache.
+- `observing`: Read the context or write diagnostics without changing state later operations read.
+- `effectful`: Change state later operations can read, including staged writes and spawned processes.
+
+| Role               | Purpose                                                                               | Files                     | Level     | Imports           | Environments                         |
+| ------------------ | ------------------------------------------------------------------------------------- | ------------------------- | --------- | ----------------- | ------------------------------------ |
+| `index`            | The domain's public surface.                                                          | `index.ts`                |           |                   | `src`, `scripts`, `tooling`, `tests` |
+| `entrypoint`       | The package entry of a public domain, re-exporting the public subset of its surface.  | `entry.ts`                |           |                   | `src`                                |
+| `constants`        | Deeply read-only constants of the domain.                                             | `constants.ts`            | pure      | public            | `src`, `scripts`, `tooling`, `tests` |
+| `declarations`     | Ambient type declarations.                                                            | `*.d.ts`                  |           |                   | `src`, `scripts`, `tooling`, `tests` |
+| `types`            | Types only, one per module.                                                           |                           |           | type-only         | `src`, `scripts`, `tooling`, `tests` |
+| `utils`            | Confined functions, one per module.                                                   |                           | confined  |                   | `src`, `scripts`, `tooling`          |
+| `errors`           | Error classes, importable module by module.                                           |                           | pure      | public            | `src`, `scripts`, `tooling`, `tests` |
+| `enums`            | Enumerations, one per module.                                                         |                           | pure      |                   | `src`, `scripts`, `tooling`, `tests` |
+| `ports`            | Interfaces other domains implement, importable module by module.                      |                           | pure      | type-only, public | `src`, `scripts`, `tooling`, `tests` |
+| `adapters`         | Implementations of other domains' ports, importable module by module.                 |                           | effectful | public            | `src`, `scripts`, `tooling`, `tests` |
+| `config`           | Everything that configures the domain: its definer, option declarations and sections. |                           |           |                   | `src`, `scripts`, `tooling`, `tests` |
+| `setup`            | Init steps and sync targets of the domain.                                            |                           | effectful |                   | `src`, `scripts`, `tooling`          |
+| `plugins`          | The tool's own plugins, one per module.                                               |                           | effectful |                   | `src`, `scripts`, `tooling`, `tests` |
+| `operations`       | Effectful logic of the domain.                                                        |                           | effectful |                   | `src`, `scripts`, `tooling`, `tests` |
+| `conventions`      | Formatting conventions, discovered by category.                                       |                           | effectful |                   | `src`, `scripts`, `tooling`, `tests` |
+| `rules`            | ESLint rules a role preset carries, one per module.                                   |                           | effectful |                   | `src`, `scripts`, `tooling`          |
+| `config/definers`  | The domain's `define…Config` definer.                                                 | `define<Domain>Config.ts` | effectful |                   | `src`                                |
+| `config/declarers` | Functions creating option declarations.                                               |                           | confined  |                   | `src`                                |
+| `config/schemas`   | Validation schemas of the option declarations.                                        |                           | confined  |                   | `src`                                |
+| `config/sections`  | Section values the domain contributes to the loaded config.                           |                           | effectful |                   | `src`                                |
+| `testutils`        | Reusable test utilities.                                                              |                           | effectful |                   | `tests`                              |
+| `fixtures`         | Static test inputs.                                                                   |                           | pure      |                   | `tests`                              |
+| `testsetup`        | Test runner setup file.                                                               | `setup.ts`                |           |                   | `tests`                              |
