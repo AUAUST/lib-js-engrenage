@@ -17,7 +17,7 @@ import { scratchpadPlaceholders } from "#tools/agents/constants";
 import { syncTargetFlags } from "#workflows/sync/constants";
 import type { Prompter } from "#project/steps/index";
 
-import * as prompts from "#workflows/cli/operations/createPrompter";
+import * as prompts from "#workflows/init/operations/createPrompter";
 
 import init from "#bin/engrenage/actions/init";
 import sync from "#bin/engrenage/actions/sync";

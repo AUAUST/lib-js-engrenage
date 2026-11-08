@@ -6,8 +6,8 @@ import { agentsSection } from "#tools/agents/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
-import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
+import { settleChanges } from "#workflows/sync/operations/settleChanges";
 import type { LoadedConfig } from "#project/config/index";
 
 async function getNames(config: LoadedConfig, name: string | undefined) {

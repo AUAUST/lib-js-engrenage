@@ -6,10 +6,10 @@ import { installDependencies } from "#tools/pnpm/operations/installDependencies"
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 import { upgradePnpmManifest } from "#tools/pnpm/operations/upgradePnpmManifest";
 import { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus";
-import { createPrompter } from "#workflows/cli/operations/createPrompter";
 import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
-import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
+import { createPrompter } from "#workflows/init/operations/createPrompter";
+import { settleChanges } from "#workflows/sync/operations/settleChanges";
 
 export const upgrade = defineLegacyCommand((command) => {
   return command

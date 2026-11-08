@@ -55,3 +55,28 @@ test(
     ).toEqual([]);
   },
 );
+
+test(
+  "the eager command tree never imports Git, Prettier or prompt modules",
+  { timeout: binaryTimeout },
+  async () => {
+    const { stderr } = await run(process.execPath, [
+      "--import",
+      `data:text/javascript,${encodeURIComponent(recordResolutions)}`,
+      getExecutable(),
+      "--help",
+    ]);
+
+    const urls = stderr.split("\n");
+
+    expect(
+      urls.filter((url) => {
+        return (
+          url.includes("/src/tools/git/") ||
+          url.includes("/src/tools/prettier/") ||
+          url.includes("/@clack/prompts/")
+        );
+      }),
+    ).toEqual([]);
+  },
+);

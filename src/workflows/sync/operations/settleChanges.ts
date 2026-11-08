@@ -1,8 +1,8 @@
 import { flat, flatMap, map } from "@auaust/primitive-kit/arrays";
 
 import { successMessage } from "#workflows/cli/constants";
-import { formatChanges } from "#workflows/cli/operations/formatChanges";
-import { reportSyncResults } from "#workflows/cli/operations/reportSyncResults";
+import { formatChanges } from "#workflows/sync/operations/formatChanges";
+import { reportSyncResults } from "#workflows/sync/operations/reportSyncResults";
 import type { LoadedConfig } from "#project/config/index";
 import type { SyncResult } from "#types/SyncResult";
 

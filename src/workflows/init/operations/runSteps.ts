@@ -1,6 +1,6 @@
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { createStepContext } from "#workflows/cli/operations/createStepContext";
+import { createStepContext } from "#workflows/init/operations/createStepContext";
 import type { LoadedConfig } from "#project/config/index";
 import type { Invocation, Prompter, Step } from "#project/steps/index";
 

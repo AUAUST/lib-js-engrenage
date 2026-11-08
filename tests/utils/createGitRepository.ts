@@ -8,8 +8,8 @@ import { vi } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
-import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { runSync } from "#workflows/sync/index";
+import { settleChanges } from "#workflows/sync/operations/settleChanges";
 
 const repositoryModules = fileURLToPath(
   new URL("../../node_modules", import.meta.url),

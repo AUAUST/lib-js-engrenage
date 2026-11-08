@@ -4,16 +4,14 @@ import { packageJsonFile } from "#constants";
 import { spawnProcess } from "#foundation/processes/index";
 import { loadConfig, type LoadedConfig } from "#project/config/index";
 import { packageJsonPathSection } from "#project/package/index";
+import { loadValidatedConfig } from "#workflows/config/index";
+import { createPrompter, listInitSteps, runSteps } from "#workflows/init/index";
 import {
-  createPrompter,
   formatChanges,
   reportSyncResults,
-  runSteps,
+  runSync,
   settleChanges,
-} from "#workflows/cli/index";
-import { loadValidatedConfig } from "#workflows/config/index";
-import { listInitSteps } from "#workflows/init/index";
-import { runSync } from "#workflows/sync/index";
+} from "#workflows/sync/index";
 import type { Invocation, Prompter } from "#project/steps/index";
 import type { Directory } from "#types/Directory";
 

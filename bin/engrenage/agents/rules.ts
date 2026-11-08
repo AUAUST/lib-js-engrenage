@@ -4,8 +4,8 @@ import { agentsSection } from "#tools/agents/index";
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { defineLegacyCommand } from "#workflows/cli/operations/defineLegacyCommand";
-import { settleChanges } from "#workflows/cli/operations/settleChanges";
 import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
+import { settleChanges } from "#workflows/sync/operations/settleChanges";
 
 async function add(name?: string) {
   const config = await loadValidatedConfig();

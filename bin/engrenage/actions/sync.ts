@@ -1,7 +1,7 @@
-import { settleChanges } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import {
   runSync,
+  settleChanges,
   type SyncTargetFlags,
   type SyncTargetName,
 } from "#workflows/sync/index";

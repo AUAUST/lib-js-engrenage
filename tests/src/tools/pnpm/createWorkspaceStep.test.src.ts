@@ -4,8 +4,8 @@ import { parse } from "yaml";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createWorkspaceStep } from "#tools/pnpm/setup/createWorkspaceStep";
-import { createPrompter } from "#workflows/cli/operations/createPrompter";
-import { createStepContext } from "#workflows/cli/operations/createStepContext";
+import { createPrompter } from "#workflows/init/operations/createPrompter";
+import { createStepContext } from "#workflows/init/operations/createStepContext";
 
 async function createContext(content: string) {
   const project = createTemporaryProject({
