@@ -18,7 +18,6 @@ function listDebugOptions(command: CommandUnknownOpts): number[] {
 describe("createProgram", () => {
   test("gives every command of a nested group one --debug option", () => {
     const leaf = defineCommand({
-      configure: (command) => command,
       action() {},
     });
 

@@ -1,9 +1,11 @@
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, expectTypeOf, test, vi } from "vitest";
+import type { Command } from "@commander-js/extra-typings";
 
 import {
   createProgram,
   defineGroup,
   defineLazyCommand,
+  type DefaultActionParameters,
 } from "#workflows/cli/index";
 
 function run(command: Parameters<typeof createProgram>[1], ...args: string[]) {
@@ -53,7 +55,6 @@ describe("defineLazyCommand", () => {
 
     await run(
       defineLazyCommand({
-        configure: (command) => command,
         action: () => Promise.resolve(action),
       }),
     );
@@ -63,7 +64,6 @@ describe("defineLazyCommand", () => {
 
   test("rejects a loader resolving to an object without default", async () => {
     const command = defineLazyCommand({
-      configure: (command) => command,
       // @ts-expect-error a module without a default export is no action
       action() {
         return Promise.resolve({ named: vi.fn() });
@@ -78,13 +78,42 @@ describe("defineLazyCommand", () => {
   });
 
   test("requires parse when Commander's parameters do not fit the action", () => {
-    // @ts-expect-error the action takes a number, Commander passes a string
     defineLazyCommand({
       configure(command) {
         return command.argument("<count>");
       },
+      // @ts-expect-error the action takes a number, Commander passes a string
       action() {
         return Promise.resolve({ default: (count: number) => count });
+      },
+    });
+  });
+
+  test("runs the action of a command declaring nothing without parameters", async () => {
+    const action = vi.fn((name?: string) => name);
+
+    await run(
+      defineLazyCommand({
+        action: () => Promise.resolve({ default: action }),
+      }),
+    );
+
+    expect(action.mock.calls).toEqual([[]]);
+  });
+
+  test("types the action of a command declaring nothing without parameters", () => {
+    expectTypeOf<DefaultActionParameters<Command>>().toEqualTypeOf<[]>();
+
+    expectTypeOf<
+      DefaultActionParameters<Command<[], { loud: boolean }>>
+    >().toEqualTypeOf<[{ loud: boolean }, Command<[], { loud: boolean }>]>();
+
+    defineLazyCommand({
+      // @ts-expect-error a command declaring nothing passes no options
+      action() {
+        return Promise.resolve({
+          default: (options: { loud: boolean }) => options,
+        });
       },
     });
   });

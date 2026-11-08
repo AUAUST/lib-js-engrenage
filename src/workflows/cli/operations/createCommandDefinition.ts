@@ -24,23 +24,50 @@ function resolveAction(loaded: unknown, name: string): Action {
   );
 }
 
+function countDeclarations(command: Command): number {
+  return command.registeredArguments.length + command.options.length;
+}
+
+function resolveParameters(
+  parameters: unknown[],
+  {
+    parse,
+    bare,
+  }: {
+    parse: ((...parameters: unknown[]) => readonly unknown[]) | undefined;
+    bare: boolean;
+  },
+): readonly unknown[] {
+  if (parse !== undefined) {
+    return parse(...parameters);
+  }
+
+  return bare ? [] : parameters;
+}
+
 export function createCommandDefinition({
   configure,
   load,
   parse,
 }: {
-  configure(command: Command): CommandUnknownOpts;
+  configure: ((command: Command) => CommandUnknownOpts) | undefined;
   load(): unknown;
   parse: ((...parameters: unknown[]) => readonly unknown[]) | undefined;
 }): CommandDefinition {
   return freeze({
     [commandRegistration](command: Command) {
-      configureCommand(command, configure).action(async (...parameters) => {
+      const declared = countDeclarations(command);
+
+      if (configure !== undefined) {
+        configureCommand(command, configure);
+      }
+
+      const bare = countDeclarations(command) === declared;
+
+      command.action(async (...parameters) => {
         const action = resolveAction(await load(), command.name());
 
-        await action(
-          ...(parse === undefined ? parameters : parse(...parameters)),
-        );
+        await action(...resolveParameters(parameters, { parse, bare }));
       });
     },
   });

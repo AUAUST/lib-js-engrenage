@@ -20,20 +20,11 @@ describe("defineGroup", () => {
       defineGroup({
         commands: {
           leaf: defineCommand({
-            configure(command) {
-              return command;
-            },
             action: leaf,
           }),
         },
         command: defineLazyCommand({
-          configure(command) {
-            return command;
-          },
           action: load,
-          parse() {
-            return [];
-          },
         }),
       }),
     );

@@ -10,14 +10,8 @@ export default defineGroup({
     add,
   },
   command: defineLazyCommand({
-    configure(command) {
-      return command;
-    },
     action() {
       return import("#bin/engrenage/agents/rules/actions/add");
-    },
-    parse() {
-      return [];
     },
   }),
 });

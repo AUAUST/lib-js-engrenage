@@ -13,16 +13,10 @@ import { runProgram } from "#workflows/cli/operations/runProgram";
 import sync from "#bin/engrenage/sync";
 
 const succeeding = defineCommand({
-  configure(command) {
-    return command;
-  },
   action() {},
 });
 
 const failing = defineCommand({
-  configure(command) {
-    return command;
-  },
   action() {
     throw new Error("outer", { cause: new Error("inner") });
   },
