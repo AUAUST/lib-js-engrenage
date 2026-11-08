@@ -41,7 +41,9 @@ export const structure = defineCommand((command) => {
       for (const path of listDomainsWithoutPurpose(
         await config.resolve(structureSection),
       )) {
-        console.warn(`${path} has no purpose: set one on its \`domains\` entry.`);
+        console.warn(
+          `${path} has no purpose: set one on its \`domains\` entry.`,
+        );
       }
 
       if (

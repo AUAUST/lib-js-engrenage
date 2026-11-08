@@ -1,8 +1,8 @@
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { values } from "@auaust/toolkit/object";
 
-import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import { collectStructureNodes } from "#project/structure/utils/collectStructureNodes";
+import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 
 export function listDomainsWithoutPurpose(
   structure: ResolvedStructure,
@@ -13,7 +13,9 @@ export function listDomainsWithoutPurpose(
     }
 
     return collectStructureNodes(environment.root)
-      .filter((node) => node.kind === "domain" && node.purpose === undefined)
+      .filter((node) => {
+        return node.kind === "domain" && node.purpose === undefined;
+      })
       .map((node) => node.path);
   });
 }
