@@ -33,6 +33,7 @@ export const prettierIntegration = freeze({
 export const typescriptIntegration = freeze({
   requires: [typescript],
   settings: freeze({
+    "js/ts.preferences.importModuleSpecifier": "non-relative",
     "js/ts.tsdk.path": "node_modules/typescript/lib",
     "typescript.tsdk": undefined,
   }),

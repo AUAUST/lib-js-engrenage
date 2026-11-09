@@ -63,6 +63,7 @@ describe("syncVscodeFiles", () => {
   },
   "files.eol": "\\n",
   "eslint.rules.customizations": [],
+  "js/ts.preferences.importModuleSpecifier": "non-relative",
   "js/ts.tsdk.path": "node_modules/typescript/lib"
 }
 `);
