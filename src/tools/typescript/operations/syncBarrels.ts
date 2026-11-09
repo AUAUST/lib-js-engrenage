@@ -1,7 +1,8 @@
 import { glob as globFiles } from "node:fs/promises";
-import { basename, dirname, extname } from "node:path";
+import { basename, dirname, extname, relative, sep } from "node:path";
 
 import { flatMap, map, toSorted } from "@auaust/primitive-kit/arrays";
+import { toCamelCase } from "@auaust/primitive-kit/strings";
 
 import { syncBlocks, syncFiles } from "#foundation/blocks/index";
 import { filesIn, relativeWithin, resolve } from "#foundation/filesystem/index";
@@ -86,6 +87,38 @@ function locateModules(
   };
 }
 
+function staticBase(pattern: Glob): string {
+  const segments = dirname(pattern).split("/");
+
+  const dynamicIndex = segments.findIndex((segment) => {
+    return /[*?[{]/.test(segment);
+  });
+
+  return segments
+    .slice(0, dynamicIndex === -1 ? segments.length : dynamicIndex)
+    .join("/");
+}
+
+function nameModules(
+  pattern: Glob,
+  mode: BarrelMode,
+  modules: readonly string[],
+): readonly string[] {
+  const basenames = map(modules, (module) => {
+    return basename(module, extname(module));
+  });
+
+  if (mode !== "default" || new Set(basenames).size !== 1) {
+    return basenames;
+  }
+
+  const base = staticBase(pattern);
+
+  return map(modules, (module) => {
+    return toCamelCase(relative(base, dirname(module)).split(sep).join(" "));
+  });
+}
+
 async function listModules(
   root: Directory,
   barrel: File,
@@ -111,23 +144,28 @@ function createBarrel({
   mode: BarrelMode;
   modules: readonly string[];
 }): string {
-  const { cwd } = locateModules(root, barrel, glob);
+  const { cwd, pattern } = locateModules(root, barrel, glob);
+
+  const included = modules.filter((module) => {
+    return (
+      resolve(cwd, module) !== barrel && !module.endsWith(declarationExtension)
+    );
+  });
+
+  // @debt names travel in a parallel array read by index with a `""` fallback; `nameModules` could return module–name pairs instead
+  const moduleNames = nameModules(pattern, mode, included);
 
   const names = new Map<string, string>();
 
-  for (const module of modules) {
+  for (const [index, module] of included.entries()) {
     const path = resolve(cwd, module);
-
-    if (path === barrel || module.endsWith(declarationExtension)) {
-      continue;
-    }
 
     const specifier = resolveImportSpecifier(
       imports,
       relativeWithin(root, path),
     );
 
-    names.set(specifier, basename(module, extname(module)));
+    names.set(specifier, moduleNames[index] ?? "");
   }
 
   const sortedNames = toSorted(names, ([left], [right]) => {

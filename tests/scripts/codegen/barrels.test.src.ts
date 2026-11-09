@@ -145,6 +145,48 @@ describe("support codegen barrels", () => {
     );
   });
 
+  test("names default exports sharing one file name after their directories below the glob's static base", async () => {
+    const project = createProject({
+      "package.json": JSON.stringify({
+        imports: {
+          "#project/*": "./src/project/*.ts",
+          "#tools/*": "./src/tools/*.ts",
+        },
+      }),
+      "src/tools/git/extension.ts": "export default 1;\n",
+      "src/project/config/extension.ts": "export default 2;\n",
+      "src/all/index.ts": "// @barrel /src/*/*/extension.ts default\n// @end\n",
+    });
+
+    await barrels(["src/all"], { check: false });
+
+    expect(project.read("src/all/index.ts")).toBe(
+      [
+        "// @barrel /src/*/*/extension.ts default",
+        'export { default as projectConfig } from "#project/config/extension";',
+        'export { default as toolsGit } from "#tools/git/extension";',
+        "// @end",
+        "",
+      ].join("\n"),
+    );
+  });
+
+  test("rejects a file name repeated among default exports of different file names", async () => {
+    createProject({
+      "package.json": JSON.stringify({
+        imports: { "#src/*": "./src/*.ts" },
+      }),
+      "src/a/first.ts": "export default 1;\n",
+      "src/b/first.ts": "export default 2;\n",
+      "src/b/second.ts": "export default 3;\n",
+      "src/all/index.ts": "// @barrel /src/*/*.ts default\n// @end\n",
+    });
+
+    await expect(barrels(["src/all"], { check: false })).rejects.toThrow(
+      'Several modules export "first"',
+    );
+  });
+
   test("rejects unknown barrels, unknown modes and names that are not identifiers", async () => {
     createProject({
       "config/tool/kebab-case.ts": "export default 1;\n",
