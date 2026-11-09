@@ -14,7 +14,10 @@ async function buildProject(options?: Options) {
       name: "@scope/package",
       type: "module",
       exports: {
-        ".": { types: "./dist/index.d.mts", default: "./dist/index.mjs" },
+        ".": {
+          types: "./dist/index.d.mts",
+          default: "./dist/index.mjs",
+        },
         "./object": {
           types: "./dist/object.d.mts",
           default: "./dist/object.mjs",

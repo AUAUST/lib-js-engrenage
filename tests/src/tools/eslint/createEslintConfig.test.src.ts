@@ -303,6 +303,16 @@ describe("createEslintConfig", () => {
         "[first({ short: true }), second({\n other: false,\n})]",
       ],
       [
+        "multiline property value siblings",
+        "{\n short: { a: 1 },\n long: { b: 1, c: 2, d: 3 },\n}",
+        "{\n short: {\n a: 1,\n },\n long: {\n b: 1, c: 2, d: 3,\n },\n}",
+      ],
+      [
+        "inline property value siblings",
+        "{\n first: { a: 1 },\n second: { b: 2 },\n}",
+        "{\n first: { a: 1 },\n second: { b: 2 },\n}",
+      ],
+      [
         "empty objects",
         "await run({}, {\n enabled: true,\n})",
         "await run({}, {\n enabled: true,\n})",

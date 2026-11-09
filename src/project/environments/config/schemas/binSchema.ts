@@ -49,7 +49,10 @@ export const binSchema = declareObject(
       "`false` disables it.",
     ],
     optional: true,
-    renamed: { layout: "tree", commands: "entries" },
+    renamed: {
+      layout: "tree",
+      commands: "entries",
+    },
     disable: {
       value: {
         ...disabledCodeEnvironment,

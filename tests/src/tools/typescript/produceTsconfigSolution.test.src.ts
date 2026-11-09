@@ -175,7 +175,9 @@ describe(
     };
 
     const input = {
-      cache: { dir: ".cache" },
+      cache: {
+        dir: ".cache",
+      },
       typescript: {
         files: "**/*.ts",
         tsconfig: { extends: false, compilerOptions: options },

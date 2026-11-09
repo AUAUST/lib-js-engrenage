@@ -37,7 +37,9 @@ const gatedSection = declareSection({
 
 const gated = {
   name: "gated-fixture",
-  when: { installed: "absent-package" },
+  when: {
+    installed: "absent-package",
+  },
   owns: {
     keys: {
       gated: {
@@ -48,7 +50,9 @@ const gated = {
       },
     },
   },
-  contributes: { "test.entries": [{ name: "gated-entry" }] },
+  contributes: {
+    "test.entries": [{ name: "gated-entry" }],
+  },
 };
 
 const slotOwner = {

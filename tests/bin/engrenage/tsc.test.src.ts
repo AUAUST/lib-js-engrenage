@@ -35,8 +35,12 @@ function createSolution(
       },
       files: [],
       references: [
-        { path: "./tsconfig.src.json" },
-        { path: "./tsconfig.tests.json" },
+        {
+          path: "./tsconfig.src.json",
+        },
+        {
+          path: "./tsconfig.tests.json",
+        },
       ],
     }),
     "tsconfig.src.json": JSON.stringify({

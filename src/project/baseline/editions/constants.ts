@@ -12,7 +12,10 @@ export const editions = {
     "es2015.symbol": "2015-09-30",
     "es2015.symbol.wellknown": "2020-01-15",
   },
-  es2016: { "es2016.array.include": "2016-09-20", "es2016.intl": "2017-10-17" },
+  es2016: {
+    "es2016.array.include": "2016-09-20",
+    "es2016.intl": "2017-10-17",
+  },
   es2017: {
     "es2017.arraybuffer": "2015-07-29",
     "es2017.date": "2015-07-29",

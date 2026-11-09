@@ -3,7 +3,9 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/jscpd",
-  when: { installed: jscpd },
+  when: {
+    installed: jscpd,
+  },
   owns: {
     files: {
       "cache.jscpd": {

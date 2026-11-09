@@ -3,7 +3,9 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/changesets",
-  when: { installed: changesetsCli },
+  when: {
+    installed: changesetsCli,
+  },
   owns: {
     files: {
       "CHANGELOG.md": {

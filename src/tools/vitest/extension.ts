@@ -3,7 +3,9 @@ import type { Extension } from "#project/config/index";
 
 export default {
   name: "tools/vitest",
-  when: { installed: vitest },
+  when: {
+    installed: vitest,
+  },
   contributes: {
     "gate.steps": [
       {

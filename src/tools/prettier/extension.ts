@@ -3,7 +3,9 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/prettier",
-  when: { installed: prettier },
+  when: {
+    installed: prettier,
+  },
   owns: {
     keys: {
       prettier: {

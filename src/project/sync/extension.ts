@@ -11,7 +11,10 @@ export default {
         edges: { kinds: ["files", "parts"] },
         entry: syncTargetEntry,
       },
-      "sync.done": { kind: "hook", entry: syncDoneEntry },
+      "sync.done": {
+        kind: "hook",
+        entry: syncDoneEntry,
+      },
     },
   },
 } satisfies Extension;

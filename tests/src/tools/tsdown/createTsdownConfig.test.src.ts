@@ -22,7 +22,9 @@ describe("createTsdownConfig", () => {
         type: "module",
       }),
       "engrenage.config.ts": `export default ${JSON.stringify({
-        src: { baseline: "2026-10" },
+        src: {
+          baseline: "2026-10",
+        },
         define: {
           values: {
             __NAME__: "package",
@@ -550,7 +552,11 @@ describe("createTsdownConfig", () => {
           paths: { "@scope/package": ["./src/index.ts"] },
         },
         files: [],
-        references: [{ path: "./tsconfig.src.json" }],
+        references: [
+          {
+            path: "./tsconfig.src.json",
+          },
+        ],
       }),
       "tsconfig.src.json": JSON.stringify({
         extends: "./tsconfig.json",

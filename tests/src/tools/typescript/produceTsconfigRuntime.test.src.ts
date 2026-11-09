@@ -230,7 +230,9 @@ describe("runtime tsconfig fields", () => {
 
     await syncCompilerOptions(
       {
-        src: { baseline: "2026-10" },
+        src: {
+          baseline: "2026-10",
+        },
         typescript: {
           tsconfig: {
             compilerOptions: { lib: ["ES2022"] },

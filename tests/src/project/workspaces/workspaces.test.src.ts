@@ -89,8 +89,12 @@ describe("workspaces", () => {
           default: "./src/*",
         },
       },
-      shopify: { handle: "a" },
-      dependencies: { "@scope/app-action-b": "workspace:*" },
+      shopify: {
+        handle: "a",
+      },
+      dependencies: {
+        "@scope/app-action-b": "workspace:*",
+      },
     });
 
     expect(
@@ -295,7 +299,9 @@ describe("workspace modules", () => {
       root: project.root,
       configFile: false,
       logLevel: "silent",
-      resolve: { tsconfigPaths: true },
+      resolve: {
+        tsconfigPaths: true,
+      },
       build: {
         write: false,
         lib: {

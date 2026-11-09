@@ -3,7 +3,9 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/vite",
-  when: { installed: vite },
+  when: {
+    installed: vite,
+  },
   owns: {
     files: {
       "cache.vite": {

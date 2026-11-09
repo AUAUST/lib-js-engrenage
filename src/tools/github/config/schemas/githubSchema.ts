@@ -13,7 +13,9 @@ export const githubSchema = declareObject(
         "Workflow set that sync keeps in `.github/workflows`; `false` disables it.",
         "A set only updates workflow files that already exist and needs its `package.json` scripts.",
       ],
-      disable: { value: false },
+      disable: {
+        value: false,
+      },
       optional: {
         explain:
           "the set whose trait is active (`library`: `published`) when its required packages (`@changesets/cli`) are dependencies",

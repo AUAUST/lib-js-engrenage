@@ -1,5 +1,7 @@
 import type { Rule, SourceCode } from "eslint";
 
+import { map } from "@auaust/primitive-kit/arrays";
+
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { delegateRule } from "#tools/eslint/utils/delegateRule";
 import type { ReportDescriptor } from "#tools/eslint/types/ReportDescriptor";
@@ -41,6 +43,20 @@ function getSiblingObjects(
     parent.arguments.some((argument) => argument === container)
   ) {
     return collectObjects(parent.arguments);
+  }
+
+  const owner = ancestors.pop();
+
+  if (
+    parent?.type === "Property" &&
+    parent.value === container &&
+    owner?.type === "ObjectExpression"
+  ) {
+    return collectObjects(
+      map(owner.properties, (property) => {
+        return property.type === "Property" ? property.value : null;
+      }),
+    );
   }
 
   return collectObjects([container]);

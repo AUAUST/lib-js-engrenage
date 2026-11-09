@@ -111,7 +111,9 @@ describe("runSync", () => {
 
     const gated = {
       name: "gated-fixture",
-      when: { installed: "absent-package" },
+      when: {
+        installed: "absent-package",
+      },
       contributes: {
         "sync.targets": [createTarget("gated", runs)],
       },

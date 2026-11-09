@@ -62,8 +62,12 @@ describe("syncPackageJson", () => {
           onFail: "error",
         },
       },
-      engines: { node: ">=26" },
-      bin: { cli: "./dist/bin/cli.mjs" },
+      engines: {
+        node: ">=26",
+      },
+      bin: {
+        cli: "./dist/bin/cli.mjs",
+      },
       files: ["dist", "data", "src"],
     });
   });
@@ -84,18 +88,31 @@ describe("syncPackageJson", () => {
 
   test("keeps the other engines and devEngines keys and leaves bin alone without commands", async () => {
     const { manifest } = await sync(library, {
-      bin: { other: "./other.js" },
-      engines: { pnpm: ">=11", node: ">=1" },
+      bin: {
+        other: "./other.js",
+      },
+      engines: {
+        pnpm: ">=11",
+        node: ">=1",
+      },
       devEngines: {
         packageManager: { name: "pnpm", version: "11" },
       },
     });
 
     expect(await manifest()).toMatchObject({
-      bin: { other: "./other.js" },
-      engines: { pnpm: ">=11", node: ">=24" },
+      bin: {
+        other: "./other.js",
+      },
+      engines: {
+        pnpm: ">=11",
+        node: ">=24",
+      },
       devEngines: {
-        packageManager: { name: "pnpm", version: "11" },
+        packageManager: {
+          name: "pnpm",
+          version: "11",
+        },
         runtime: {
           name: "node",
           version: "24",

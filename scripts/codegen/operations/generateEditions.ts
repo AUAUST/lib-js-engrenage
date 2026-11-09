@@ -333,7 +333,8 @@ export async function generateEditions(
     `export const editions = {\n${join(
       map(
         entries(data),
-        ([edition, libraries]) => `${edition}: ${JSON.stringify(libraries)},`,
+        ([edition, libraries]) =>
+          `${edition}: ${JSON.stringify(libraries, null, 2)},`,
       ),
       "\n",
     )}\n} as const;`,

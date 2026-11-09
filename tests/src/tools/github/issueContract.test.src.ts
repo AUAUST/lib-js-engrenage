@@ -309,7 +309,10 @@ describe("checkIssue", () => {
 
   test("reports malformed ancestor sections and missing references", async () => {
     mockGithub({
-      10: { ...validPlan, body: "## Goal\n\nx #99\n" },
+      10: {
+        ...validPlan,
+        body: "## Goal\n\nx #99\n",
+      },
       11: {
         body: task,
         type: "Task",

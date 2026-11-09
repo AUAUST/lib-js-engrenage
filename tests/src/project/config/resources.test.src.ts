@@ -41,7 +41,9 @@ describe("file resources", () => {
     const config = createConfig([
       {
         name: "gated-fixture",
-        when: { installed: "absent-package" },
+        when: {
+          installed: "absent-package",
+        },
         owns: {
           files: {
             gated: {

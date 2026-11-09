@@ -19,7 +19,12 @@ export default {
     },
   },
   contributes: {
-    "agents.runtimes": [{ name: "codex", title: "Codex" }],
+    "agents.runtimes": [
+      {
+        name: "codex",
+        title: "Codex",
+      },
+    ],
     "sync.targets": [
       {
         name: codexTarget,

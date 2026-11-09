@@ -205,8 +205,12 @@ export default defineConfig({
     roles: [index(), entrypoint(), extension(), ...codeRoles],
     domains: sourceDomains,
     namespaces: {
-      ".": { layers: ["foundation", "project", "tools", "workflows"] },
-      "foundation": { purpose: "Primitives without project knowledge." },
+      ".": {
+        layers: ["foundation", "project", "tools", "workflows"],
+      },
+      "foundation": {
+        purpose: "Primitives without project knowledge.",
+      },
       "project": {
         purpose: "Tool-agnostic project models and contract domains.",
         layers: [

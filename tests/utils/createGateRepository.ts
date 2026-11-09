@@ -25,7 +25,11 @@ export function createGateRepository(
           noEmit: true,
         },
         files: [],
-        references: [{ path: "./tsconfig.src.json" }],
+        references: [
+          {
+            path: "./tsconfig.src.json",
+          },
+        ],
       }),
       "tsconfig.src.json": JSON.stringify({
         extends: "./tsconfig.json",

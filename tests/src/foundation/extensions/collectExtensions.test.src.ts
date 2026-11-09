@@ -46,7 +46,9 @@ describe("collectExtensions", () => {
           owns: {
             keys: { git: "second" },
           },
-          contributes: { "sync.targets": [{ name: "target" }] },
+          contributes: {
+            "sync.targets": [{ name: "target" }],
+          },
         },
       ]);
     }).toThrow(
@@ -75,7 +77,9 @@ describe("collectExtensions", () => {
               targets: { entry: looseObject({ load: function_() }) },
             },
           },
-          contributes: { targets: [{ name: "target" }] },
+          contributes: {
+            targets: [{ name: "target" }],
+          },
         },
       ]);
     }).toThrow(
@@ -103,7 +107,9 @@ describe("collectExtensions", () => {
               },
             },
           },
-          contributes: { targets: [{ name: "target" }] },
+          contributes: {
+            targets: [{ name: "target" }],
+          },
         },
       ]);
     }).toThrow(
@@ -412,7 +418,9 @@ describe("collectExtensions", () => {
       owns: {
         files: { tsconfig: "tsconfig.json" },
       },
-      contributes: { targets: [{ produces: ["tsconfig"] }] },
+      contributes: {
+        targets: [{ produces: ["tsconfig"] }],
+      },
     };
 
     expect(() => {

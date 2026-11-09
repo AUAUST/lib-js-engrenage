@@ -3,7 +3,9 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/tsdown",
-  when: { installed: tsdown },
+  when: {
+    installed: tsdown,
+  },
   owns: {
     files: {
       "cache.tsdown": {

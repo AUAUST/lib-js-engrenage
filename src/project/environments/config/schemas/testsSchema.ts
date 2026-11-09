@@ -95,7 +95,9 @@ export const testsSchema = declareObject(
       "`false` disables it, with its tsconfig and rules.",
     ],
     optional: true,
-    renamed: { layout: "mirror" },
+    renamed: {
+      layout: "mirror",
+    },
     disable: {
       value: {
         ...disabledCodeEnvironment,

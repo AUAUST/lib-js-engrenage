@@ -7,7 +7,9 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/eslint",
-  when: { installed: eslint },
+  when: {
+    installed: eslint,
+  },
   owns: {
     files: {
       "eslint-suppressions.json": {

@@ -3,7 +3,9 @@ import type { Extension } from "#project/config/index";
 
 export default {
   name: "tools/typescript/tsc",
-  when: { installed: typescript },
+  when: {
+    installed: typescript,
+  },
   contributes: {
     "gate.steps": [
       {

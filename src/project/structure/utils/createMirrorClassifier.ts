@@ -54,7 +54,10 @@ export function createMirrorClassifier(tests: TestsContext) {
               environment: root[0],
               path: root[1].dirs[0] ?? root[0],
             },
-            mirrored: { environment: root[0], subpath: "" },
+            mirrored: {
+              environment: root[0],
+              subpath: "",
+            },
           };
     }
 
