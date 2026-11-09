@@ -2,11 +2,11 @@
 
 Generated tsconfigs: checks, variant resolution and shipped type declarations.
 
-## 1. `engrenage typecheck` throws when no active environment owns a checked tsconfig.
+## 1. `engrenage typecheck` fails when no active environment is referenced by the base tsconfig.
 
-- why: `hasReferencedEnvironment` in `bin/engrenage/tsc.ts` (added with #69) throws "No environment is referenced by the base tsconfig: every active environment has `check: false`" when no active environment owns a tsconfig with `check` true. It runs unconditionally, so a hand-written tsconfig in a project with no active engrenage environments (no `src`, `tests`, etc.) now fails `typecheck`. Issue #69's wording supports the throw, but it is a behavior change.
-- want: a decision: keep it as is, scope it (for example only when at least one environment is active), or document it.
-- done: the behavior matches the decision, with a test covering a project without active environments.
+- why: `src/tools/typescript/operations/resolveTscArguments.ts` throws "No environment is referenced by the base tsconfig: every active environment has `check: false`" even with TypeScript installed and nothing to check. Predates AUAUST/lib-js-engrenage#379: the old `hasDependency` gate check hid it only when TypeScript was absent. Surfaced by `tests/bin/engrenage/stop.test.src.ts` while walking #379.
+- want: a decision: pass when there is nothing to check, or keep failing (perhaps only when an environment is active).
+- done: behavior matches the decision, tested on a project without referenced environments.
 
 ## 2. Generate the `src.apis` declarations at build time instead of committing them.
 
