@@ -119,6 +119,18 @@ function importing(specifier: string, name: string) {
 }
 
 describe("import effects", () => {
+  test("rank every binding a dynamic import loads", async () => {
+    const lint = await createLinter();
+
+    const [message] = await lint(
+      utility,
+      'export const value = import("#foundation/base/index");\n',
+    );
+
+    expect(message).toContain("`act`");
+    expect(message).toContain("effectful");
+  });
+
   test("follow bindings through a lower layer's index.ts and rank node builtins", async () => {
     const lint = await createLinter();
 

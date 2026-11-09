@@ -160,10 +160,6 @@ export interface AuaustRules {
    */
   "auaust/no-duplicates"?: Rule<AuaustNoDuplicates>;
   /**
-   * Use static imports; dynamic import() is reserved for tests and framework discovery.
-   */
-  "auaust/no-dynamic-import"?: Rule<[]>;
-  /**
    * Disallow `else` blocks after `return` statements in `if` statements
    * @see https://eslint.org/docs/latest/rules/no-else-return
    */
@@ -246,6 +242,10 @@ export interface AuaustRules {
    * Use the `@auaust/toolkit/object` equivalent instead of `Object.*`.
    */
   "auaust/no-object-statics"?: Rule<[]>;
+  /**
+   * A dynamic import() targets a lazy role or an optional peer, computes its specifier only in a discovered role, and is the only one of its function.
+   */
+  "auaust/no-pointless-dynamic-import"?: Rule<[]>;
   /**
    * Use the `@auaust/primitive-kit/<domain>` subpath entries instead of `@auaust/primitive-kit`.
    */

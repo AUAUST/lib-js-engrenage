@@ -192,6 +192,28 @@ export default defineConvention({
               });
             }
           },
+          ImportExpression(expression) {
+            if (expression.source.type !== "Literal") {
+              return;
+            }
+
+            const specifier = String(expression.source.value);
+            const loaded = symbolOf(expression.source);
+
+            if (loaded === undefined) {
+              return;
+            }
+
+            for (const exported of checker.getExportsOfModule(loaded)) {
+              check({
+                reported: expression,
+                specifier,
+                binding: exported.name,
+                imported: exported.name,
+                symbol: exported,
+              });
+            }
+          },
           ExportAllDeclaration(declaration) {
             if (!isTypeOnlyNode(declaration)) {
               check({

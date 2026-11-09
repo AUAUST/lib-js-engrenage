@@ -21,6 +21,7 @@ export function completeRole(
     index: definition.index ?? roleContractDefaults.index,
     public: definition.public ?? roleContractDefaults.public,
     discovered: definition.discovered ?? roleContractDefaults.discovered,
+    lazy: definition.lazy ?? roleContractDefaults.lazy,
     scoped: definition.scoped ?? roleContractDefaults.scoped,
     strict: definition.strict ?? roleContractDefaults.strict,
     typeOnly: definition.typeOnly ?? roleContractDefaults.typeOnly,

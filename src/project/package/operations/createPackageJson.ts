@@ -165,6 +165,18 @@ export function createPackageJson({
           });
         }
       },
+      optionalPeers() {
+        const peers = read(
+          "peerDependenciesMeta",
+          record(string(), looseObject({ optional: optional(boolean()) })),
+        );
+
+        if (peers !== undefined) {
+          return keys(peers).filter((name) => {
+            return peers[name]?.optional === true;
+          });
+        }
+      },
       sideEffects() {
         return read("sideEffects", union([boolean(), array(string())]));
       },

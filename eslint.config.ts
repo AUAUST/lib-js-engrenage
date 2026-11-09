@@ -6,6 +6,6 @@ export default defineEslintConfig({
     cognitiveComplexity: false, // @debt refactor required to cleanup
   },
   imports: {
-    noDynamicImport: false, // @debt the rule forbids beneficial dynamic imports, such as lazy command loading, until #221 replaces it
+    noPointlessDynamicImport: false, // @debt existing import() sites in src and scripts break the rule until #221 settles them
   },
 });
