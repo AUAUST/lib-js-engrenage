@@ -25,14 +25,16 @@ function toSource(subpath: string, file: string): string {
   return paths[key]?.[0] ?? file;
 }
 
-// @debt Every repository root entry is linked, `.git`, `node_modules` and `dist` included, so `git add -A` in a test repository records the package as an embedded repository and warns on every call.
+const unlinkedEntries: ReadonlySet<string> = new Set([".git", "package.json"]);
+
+// @debt Every other repository root entry is linked, `node_modules`, `dist` and agent files included, instead of only what the package publishes and its source mode needs.
 export function linkSourcePackage(target: string) {
   mkdirSync(target, {
     recursive: true,
   });
 
   for (const entry of readdirSync(repositoryRoot)) {
-    if (entry !== "package.json") {
+    if (!unlinkedEntries.has(entry)) {
       symlinkSync(join(repositoryRoot, entry), join(target, entry));
     }
   }

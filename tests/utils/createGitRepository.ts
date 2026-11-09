@@ -59,6 +59,10 @@ export async function createGitRepository(
   git("init", "--quiet");
   git("add", "-A");
 
+  if (git("ls-files", "--stage").includes("160000 ")) {
+    throw new Error("The test repository staged an embedded repository.");
+  }
+
   git(
     "-c",
     "user.name=Test",
