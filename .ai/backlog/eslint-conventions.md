@@ -34,3 +34,9 @@ ESLint rules and conventions engrenage ships.
 
 - site: `src/tools/eslint/conventions/stylistic/naming.ts:27`
 - want: primitive-kit `splitWords`.
+
+## 7. `projectService` spends ~5 s of a full lint matching files to tsconfigs
+
+- site: `src/tools/eslint/utils/createTypeAwareLanguageOptions.ts`
+- why: TypeScript's `isMatchedByConfig` scans every solution reference's file names per opened file, quadratic in project size; per-environment `parserOptions.project` cut a full lint from 30.5 s to 23.9 s.
+- want: per-environment `project` (against typescript-eslint's recommendation), or an upstream TypeScript fix (question).

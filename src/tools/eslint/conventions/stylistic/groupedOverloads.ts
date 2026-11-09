@@ -11,13 +11,13 @@ export default definePadding({
       prev: [
         "function-overload",
         {
-          selector: `${exported}:has(> TSDeclareFunction)`,
+          selector: `${exported}[declaration.type=TSDeclareFunction]`,
         },
       ],
       next: [
         "function-overload",
         {
-          selector: `:matches(FunctionDeclaration, ${exported}:has(> :matches(TSDeclareFunction, FunctionDeclaration)))`,
+          selector: `:matches(FunctionDeclaration, ${exported}[declaration.type=/^(TSDeclareFunction|FunctionDeclaration)$/])`,
         },
       ],
     },

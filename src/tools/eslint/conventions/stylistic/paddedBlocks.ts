@@ -2,17 +2,16 @@ import { join } from "@auaust/primitive-kit/arrays";
 
 import { definePadding } from "#tools/eslint/utils/definePadding";
 
-const declarations = `:matches(${join(
-  [
-    "ClassDeclaration",
-    "FunctionDeclaration",
-    "TSEnumDeclaration",
-    "TSInterfaceDeclaration",
-    "TSModuleDeclaration",
-    "TSTypeAliasDeclaration",
-  ],
-  ", ",
-)})`;
+const declarationTypes = [
+  "ClassDeclaration",
+  "FunctionDeclaration",
+  "TSEnumDeclaration",
+  "TSInterfaceDeclaration",
+  "TSModuleDeclaration",
+  "TSTypeAliasDeclaration",
+];
+
+const declarations = `:matches(${join(declarationTypes, ", ")})`;
 
 const blocks = `:matches(${join(
   [
@@ -30,12 +29,13 @@ const blocks = `:matches(${join(
   ", ",
 )})`;
 
-const blockLevel = `:matches(${blocks}, ${declarations}, :matches(ExportNamedDeclaration, ExportDefaultDeclaration):has(> ${declarations}))`;
+const blockLevel = `:matches(${blocks}, ${declarations}, :matches(ExportNamedDeclaration, ExportDefaultDeclaration)[declaration.type=/^(${join(declarationTypes, "|")})$/])`;
 
-const overload = ":matches(TSDeclareFunction, :has(> TSDeclareFunction))";
+const overload =
+  ":matches(TSDeclareFunction, [declaration.type=TSDeclareFunction])";
 
 const implementation =
-  ":matches(FunctionDeclaration, :has(> FunctionDeclaration))";
+  ":matches(FunctionDeclaration, [declaration.type=FunctionDeclaration])";
 
 const statement = ":matches(:statement, TSDeclareFunction)";
 

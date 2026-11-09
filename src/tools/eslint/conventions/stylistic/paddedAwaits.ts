@@ -1,8 +1,8 @@
+import { createExpressionStatementSelector } from "#tools/eslint/utils/createExpressionStatementSelector";
 import { definePadding } from "#tools/eslint/utils/definePadding";
 
 const statement = {
-  selector:
-    ":matches(ExpressionStatement:has(> AwaitExpression), ExpressionStatement:has(> AssignmentExpression[right.type=AwaitExpression]), VariableDeclaration:has(> VariableDeclarator[init.type=AwaitExpression]), ExportNamedDeclaration:has(> VariableDeclaration:has(> VariableDeclarator[init.type=AwaitExpression])))",
+  selector: createExpressionStatementSelector("AwaitExpression"),
 };
 
 export default definePadding({

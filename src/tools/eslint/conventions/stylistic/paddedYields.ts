@@ -1,8 +1,8 @@
+import { createExpressionStatementSelector } from "#tools/eslint/utils/createExpressionStatementSelector";
 import { definePadding } from "#tools/eslint/utils/definePadding";
 
 const statement = {
-  selector:
-    ":matches(ExpressionStatement:has(> YieldExpression), ExpressionStatement:has(> AssignmentExpression[right.type=YieldExpression]), VariableDeclaration:has(> VariableDeclarator[init.type=YieldExpression]))",
+  selector: createExpressionStatementSelector("YieldExpression"),
 };
 
 export default definePadding({

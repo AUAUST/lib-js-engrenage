@@ -963,6 +963,17 @@ export function pick(value: Value): number {
     ],
     ["awaits", "before();\nresult = await work();\nafter();", 2],
     ["awaits", "const before = 1;\nexport const result = await work();", 1],
+    [
+      "awaits",
+      "const before = 1;\nconst first = 1, result = await work();\nconst after = 2;",
+      2,
+    ],
+    [
+      "awaits",
+      "const before = 1;\nexport const first = 1, result = await work();",
+      1,
+    ],
+    ["awaits", "before();\nrun(async () => { await work(); });\nafter();", 0],
     ["awaits", "async function run() { await work(); }", 0],
     ["awaits", "await first();\nawait second();", 1],
     ["awaits", "before();\n\nawait work();\n\nafter();", 0],
@@ -1007,6 +1018,41 @@ export function pick(value: Value): number {
     for (const message of messages) {
       expect(message.fix?.text).toBe("\n");
     }
+  });
+
+  test.each([
+    ["blocks", "const before = 1;\nexport class Foo {}", 1],
+    ["blocks", "const before = 1;\nexport const foo = 1;", 0],
+    [
+      "blocks",
+      "export function run(a: string): void;\nexport function run(a: unknown): void {}\nconst after = 1;",
+      1,
+    ],
+    [
+      "overloads",
+      "export function run(a: string): void;\nexport function run(a: unknown): void {}",
+      0,
+    ],
+    [
+      "overloads",
+      "export function run(a: string): void;\n\nexport function run(a: unknown): void {}",
+      1,
+    ],
+  ])("groups or pads %s in %s", async (kind, source, count) => {
+    const eslint = await getLinter({ typeAware: false });
+
+    const [result] = await eslint.lintText(source, {
+      filePath: "src/padding.ts",
+    });
+
+    const ruleId =
+      kind === "blocks" ? "auaust/padded-blocks" : "auaust/grouped-overloads";
+
+    const messages = (result?.messages ?? []).filter((message) => {
+      return message.ruleId === ruleId;
+    });
+
+    expect(messages).toHaveLength(count);
   });
 
   test("fixes awaited declarations without disrupting declaration groups", async () => {

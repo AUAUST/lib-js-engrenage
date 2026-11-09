@@ -5,7 +5,7 @@ const declarations = [
   "multiline-let",
   "multiline-var",
   {
-    selector: "ExportNamedDeclaration:has(> VariableDeclaration)",
+    selector: "ExportNamedDeclaration[declaration.type=VariableDeclaration]",
     lineMode: "multiline",
   },
 ] as const;

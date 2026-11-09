@@ -38,8 +38,8 @@ const complexBodies = join(
   [
     `ArrowFunctionExpression[body.type!=/^(${conciseBodies})$/]`,
     `ArrowFunctionExpression[body.type='TSAsExpression']:not([body.typeAnnotation.typeName.name='const'][body.expression.type=/^(${constAssertedBodies})$/])`,
-    `ArrowFunctionExpression:has(> ${complexArray})`,
-    `ArrowFunctionExpression:has(> TSAsExpression:has(> ${complexArray}))`,
+    `ArrowFunctionExpression[body.type='ArrayExpression']:has(> ${complexArray})`,
+    `ArrowFunctionExpression[body.type='TSAsExpression'][body.expression.type='ArrayExpression']:has(> TSAsExpression:has(> ${complexArray}))`,
   ],
   ", ",
 );
