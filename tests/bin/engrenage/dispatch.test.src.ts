@@ -22,7 +22,12 @@ vi.mock("#tools/agents/operations/readHookPayload", () => {
 vi.mock("#tools/github/operations/checkIssue", () => {
   return {
     checkIssue: vi.fn(() =>
-      Promise.resolve({ findings: [], openSubIssues: [] }),
+      Promise.resolve({
+        findings: [],
+        subIssues: [],
+        blockedBy: [],
+        towards: [],
+      }),
     ),
   };
 });
@@ -77,7 +82,7 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
     { repository: "o/r", token: "token" },
     1,
     "worker",
-    { dispatch: true },
+    { dispatch: true, root: process.cwd() },
   );
 
   vi.mocked(readHookPayload).mockResolvedValue({
@@ -138,7 +143,7 @@ test.each([
     expect.anything(),
     1,
     name.startsWith("worker") ? "worker" : "debugger",
-    { dispatch: true },
+    { dispatch: true, root: project.root },
   );
 });
 

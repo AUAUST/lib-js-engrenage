@@ -18,7 +18,7 @@ export default async function (): Promise<void> {
     tool_input: { subagent_type: agent = "", prompt },
   } = await readHookPayload(payloadSchema, "Claude Code");
 
-  const reason = await checkAgentDispatch(agent, prompt);
+  const reason = await checkAgentDispatch(agent, prompt, process.cwd());
 
   if (reason !== undefined) {
     denyToolUse(reason);

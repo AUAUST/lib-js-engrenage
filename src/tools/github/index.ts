@@ -48,6 +48,7 @@ export * from "#tools/github/types/IssueFinding";
 export * from "#tools/github/types/IssueListItem";
 export * from "#tools/github/types/IssueType";
 export * from "#tools/github/types/ParsedIssueBody";
+export * from "#tools/github/types/RelatedIssue";
 export * from "#tools/github/types/ResolvedGithub";
 export * from "#tools/github/types/ShellCommand";
 export * from "#tools/github/types/ShellPipeline";

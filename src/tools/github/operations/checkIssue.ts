@@ -1,5 +1,7 @@
+import { listIssueCommits, type IssueCommit } from "#tools/git/index";
 import { fetchIssue } from "#tools/github/operations/fetchIssue";
 import { requestGithub } from "#tools/github/operations/requestGithub";
+import { resolveRepository } from "#tools/github/operations/resolveRepository";
 import { checkIssueBody } from "#tools/github/utils/checkIssueBody";
 import { checkIssueReadiness } from "#tools/github/utils/checkIssueReadiness";
 import { parseIssueBody } from "#tools/github/utils/parseIssueBody";
@@ -8,6 +10,8 @@ import type { GithubIssue } from "#tools/github/types/GithubIssue";
 import type { IssueAudience } from "#tools/github/types/IssueAudience";
 import type { IssueCheck } from "#tools/github/types/IssueCheck";
 import type { IssueFinding } from "#tools/github/types/IssueFinding";
+import type { RelatedIssue } from "#tools/github/types/RelatedIssue";
+import type { Directory } from "#types/Directory";
 
 async function findAncestors(access: GithubAccess, issue: GithubIssue) {
   const chain: GithubIssue[] = [];
@@ -72,19 +76,68 @@ async function findMissingReferences(
   return found.filter((number) => number !== undefined);
 }
 
+async function listLocalCommits(root: Directory, repository: string) {
+  let local: string;
+
+  try {
+    local = await resolveRepository(root);
+  } catch {
+    // @debt treats any failure to resolve the working copy's repository as a foreign repository instead of telling a missing remote from a git failure
+    return [];
+  }
+
+  return local.toLowerCase() === repository.toLowerCase()
+    ? listIssueCommits(root)
+    : [];
+}
+
+function findClosingCommits(commits: readonly IssueCommit[]) {
+  const closes = new Map<number, IssueCommit>();
+
+  for (const commit of commits) {
+    for (const number of commit.closes) {
+      if (!closes.has(number)) {
+        closes.set(number, commit);
+      }
+    }
+  }
+
+  return closes;
+}
+
+function relate(
+  related: GithubIssue["subIssues"],
+  closes: ReadonlyMap<number, IssueCommit>,
+): readonly RelatedIssue[] {
+  return related.map(({ number, state }) => {
+    return {
+      number,
+      state,
+      closedBy: state === "open" ? closes.get(number) : undefined,
+    };
+  });
+}
+
 export async function checkIssue(
   access: GithubAccess,
   number: number,
   audience: IssueAudience = "worker",
-  { dispatch = false }: { dispatch?: boolean } = {},
+  { dispatch = false, root }: { dispatch?: boolean; root?: Directory } = {},
 ): Promise<IssueCheck> {
-  const issue = await fetchIssue(access, number);
+  const [issue, commits] = await Promise.all([
+    fetchIssue(access, number),
+    root === undefined ? [] : listLocalCommits(root, access.repository),
+  ]);
 
   const parsed = parseIssueBody(issue.body);
 
-  const openSubIssues = issue.subIssues
-    .filter(({ state }) => state === "open")
-    .map(({ number }) => number);
+  const closes = findClosingCommits(commits);
+
+  const report = {
+    subIssues: relate(issue.subIssues, closes),
+    blockedBy: relate(issue.blockedBy, closes),
+    towards: commits.filter(({ towards }) => towards.includes(number)),
+  };
 
   if (audience === "debugger" && !dispatch) {
     const findings = checkIssueReadiness(
@@ -93,11 +146,12 @@ export async function checkIssue(
         parsed,
         ancestors: [],
         missingReferences: [],
+        closes,
       },
       audience,
     );
 
-    return { findings, openSubIssues };
+    return { findings, ...report };
   }
 
   const { chain, findings } = await findAncestors(access, issue);
@@ -117,6 +171,7 @@ export async function checkIssue(
         parsed,
         ancestors,
         missingReferences,
+        closes,
         dispatch,
       },
       audience,
@@ -140,6 +195,7 @@ export async function checkIssue(
             parsed: body,
             ancestors: ancestors.slice(0, index),
             missingReferences: missing,
+            closes,
             dispatch: true,
             ancestor: true,
           },
@@ -158,5 +214,5 @@ export async function checkIssue(
     }
   }
 
-  return { findings, openSubIssues };
+  return { findings, ...report };
 }

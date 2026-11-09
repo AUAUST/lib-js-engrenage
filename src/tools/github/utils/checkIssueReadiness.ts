@@ -6,6 +6,7 @@ import {
   planningSection,
   questionsSection,
 } from "#tools/github/constants";
+import type { IssueCommit } from "#tools/git/index";
 import type { GithubIssue } from "#tools/github/types/GithubIssue";
 import type { IssueAudience } from "#tools/github/types/IssueAudience";
 import type { IssueFinding } from "#tools/github/types/IssueFinding";
@@ -16,6 +17,7 @@ interface ReadinessContext {
   readonly parsed: ParsedIssueBody;
   readonly ancestors: readonly number[];
   readonly missingReferences: readonly number[];
+  readonly closes: ReadonlyMap<number, IssueCommit>;
   readonly dispatch?: boolean;
   readonly ancestor?: boolean;
 }
@@ -36,6 +38,7 @@ export function checkIssueReadiness(
     parsed,
     ancestors,
     missingReferences,
+    closes,
     dispatch = false,
     ancestor = false,
   }: ReadinessContext,
@@ -43,8 +46,15 @@ export function checkIssueReadiness(
 ): IssueFinding[] {
   const findings: IssueFinding[] = [];
 
+  const closedBy = closes.get(issue.number);
+
   if (issue.state !== "open") {
     findings.push({ rule: "state", message: `#${issue.number} is closed.` });
+  } else if (closedBy !== undefined) {
+    findings.push({
+      rule: "state",
+      message: `#${issue.number} is closed by local commit ${closedBy.hash}.`,
+    });
   }
 
   const contract =
@@ -79,7 +89,7 @@ export function checkIssueReadiness(
     }
 
     for (const { number, state } of issue.subIssues) {
-      if (state === "open") {
+      if (state === "open" && !closes.has(number)) {
         findings.push({
           rule: "sub-issues",
           message: `#${issue.number} has open sub-issue #${number}: finish it first.`,
@@ -154,7 +164,7 @@ export function checkIssueReadiness(
 
   if (audience === "worker" || dispatch) {
     for (const { number, state } of issue.blockedBy) {
-      if (state === "open") {
+      if (state === "open" && !closes.has(number)) {
         findings.push({
           rule: "blocked-by",
           message: `Blocked by the open #${number}: settle it first.`,

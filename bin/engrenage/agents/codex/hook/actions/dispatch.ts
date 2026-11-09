@@ -39,6 +39,7 @@ export default async function (): Promise<void> {
   const reason = await checkAgentDispatch(
     profile.role,
     input.message ?? input.prompt ?? "",
+    cwd,
   );
 
   if (reason !== undefined) {

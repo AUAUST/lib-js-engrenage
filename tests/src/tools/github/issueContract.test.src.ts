@@ -1,3 +1,5 @@
+import { execFileSync } from "node:child_process";
+
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -553,36 +555,106 @@ describe("parseGithubCommand", () => {
 });
 
 describe("formatIssueCheck", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   const access = { repository: "o/r", token: "t" };
 
-  test("lists open sub-issues to walk first apart from the issue's own findings", async () => {
+  function commitIn(root: string, message: string) {
+    execFileSync(
+      "git",
+      [
+        "-c",
+        "user.name=Test",
+        "-c",
+        "user.email=test@example.com",
+        "commit",
+        "--quiet",
+        "--allow-empty",
+        "-m",
+        message,
+      ],
+      { cwd: root },
+    );
+  }
+
+  function createWorkingCopy(repository: string) {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({ repository }),
+    });
+
+    execFileSync("git", ["init", "--quiet"], { cwd: project.root });
+
+    commitIn(project.root, "feat: a\n\nCloses #13\nCloses #15");
+    commitIn(project.root, "cq: b\n\nTowards #11");
+
+    return project.root;
+  }
+
+  test("reports related issues by state, counting local closes, and commits towards it", async () => {
     mockGithub({
       11: {
         body: task.replace("#10 ·", "Standalone"),
         type: "Task",
-        blockers: ["Outdated"],
         subIssues: [
           { number: 12, state: "closed" },
           { number: 13, state: "open" },
           { number: 14, state: "open" },
         ],
+        blockedBy: [{ number: 15, state: "open" }],
       },
     });
 
-    const check = await checkIssue(access, 11);
+    const root = createWorkingCopy("o/r");
 
-    expect(check.openSubIssues).toEqual([13, 14]);
+    const check = await checkIssue(access, 11, "worker", {
+      dispatch: true,
+      root,
+    });
+
+    const [closing, towards] = execFileSync(
+      "git",
+      ["log", "--format=%h", "--reverse"],
+      { cwd: root, encoding: "utf-8" },
+    )
+      .trim()
+      .split("\n");
 
     expect(formatIssueCheck(11, check)).toEqual([
-      "#11 has open sub-issues to walk first: #13, #14",
-      "#11 itself: Blockers has `Outdated`: clear it first.",
+      "#11 has open sub-issues to walk first: #14",
+      `#11 has sub-issues closed by local commits: #13 (${closing})`,
+      "#11 has sub-issues closed on GitHub: #12",
+      `#11 was blocked by issues closed by local commits: #15 (${closing})`,
+      `#11 has a commit towards it: ${towards} cq: b`,
+      "#11 itself: #11 has open sub-issue #14: finish it first.",
     ]);
   });
 
-  test("reports an issue without open sub-issues as before", () => {
-    expect(formatIssueCheck(11, { findings: [], openSubIssues: [] })).toEqual([
-      "#11 ready",
+  test("ignores local commits of another repository and reports a local close of the issue itself", async () => {
+    const standalone = {
+      body: task.replace("#10 ·", "Standalone"),
+      type: "Task",
+    };
+
+    mockGithub({ 11: standalone, 13: standalone });
+
+    const own = await checkIssue(access, 13, "worker", {
+      root: createWorkingCopy("o/r"),
+    });
+
+    expect(own.findings).toMatchObject([
+      {
+        rule: "state",
+        message: expect.stringContaining("closed by local commit"),
+      },
     ]);
+
+    const foreign = await checkIssue(access, 13, "worker", {
+      root: createWorkingCopy("x/y"),
+    });
+
+    expect(formatIssueCheck(13, foreign)).toEqual(["#13 ready"]);
   });
 });
 

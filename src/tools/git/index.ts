@@ -16,6 +16,7 @@ export { gitSection } from "#tools/git/config/sections/gitSection";
 export { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
 export { hashTree } from "#tools/git/operations/hashTree";
 export { listChangedFiles } from "#tools/git/operations/listChangedFiles";
+export { listIssueCommits } from "#tools/git/operations/listIssueCommits";
 export { listLocalFiles } from "#tools/git/operations/listLocalFiles";
 export { listPartiallyStagedFiles } from "#tools/git/operations/listPartiallyStagedFiles";
 export { readHead } from "#tools/git/operations/readHead";
@@ -30,5 +31,6 @@ export { gitSchema } from "#tools/git/config/schemas/gitSchema";
 // @barrel types/*.ts all
 export * from "#tools/git/types/ChangeMode";
 export * from "#tools/git/types/GitInput";
+export * from "#tools/git/types/IssueCommit";
 export * from "#tools/git/types/ResolvedGit";
 // @end

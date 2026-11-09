@@ -3,10 +3,12 @@ import {
   findBriefedIssue,
   resolveGithubToken,
 } from "#tools/github/index";
+import type { Directory } from "#types/Directory";
 
 export async function checkAgentDispatch(
   role: string,
   brief: string,
+  root: Directory,
 ): Promise<string | undefined> {
   if (role !== "worker" && role !== "debugger") {
     return;
@@ -24,7 +26,7 @@ export async function checkAgentDispatch(
     { repository: issue.repository, token: await resolveGithubToken() },
     issue.number,
     role,
-    { dispatch: true },
+    { dispatch: true, root },
   );
 
   return findings.length === 0

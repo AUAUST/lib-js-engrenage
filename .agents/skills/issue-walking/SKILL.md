@@ -13,7 +13,7 @@ Walk an issue tree in the main session: route each issue by the handling table, 
 
 ## Handling table
 
-Start at the issue the user names and run `engrenage issues check <n>` on each issue before routing it: it lists the open sub-issues to walk first apart from the issue's own findings. Handle each issue by the first matching row; the Complexity row applies on top of the row that dispatches.
+Start at the issue the user names and run `engrenage issues check <n>` on each issue before routing it: it reports the issue's sub-issues and blocking issues as open, closed by a local commit or closed on GitHub, the local commits towards the issue, and the issue's own findings, counting local closes as closed. Handle each issue by the first matching row; the Complexity row applies on top of the row that dispatches.
 
 | Issue                                                                      | Walker                                                                                                                                                    |
 | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -37,7 +37,7 @@ Priority never reorders a tree: order states dependencies.
 
 - Dispatch every leaf to a new agent: a worker under the issue-implementation skill, a debugger under the debugging skill.
 - Resume the same agent to answer its question or return review gaps and the failing commands and output from its stop or commit gate.
-- Brief with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then the header chain and the plan sections the issue names. Never paste issue or plan content: the agent reads it itself.
+- Brief with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then the header chain, the plan sections the issue names and the commits the check lists towards the issue, for reference. Never paste issue or plan content: the agent reads it itself.
 - Complete a leaf on the agent's final report, a completion or a blocker; never wait for a later agent-finished event, which may never wake you.
 - Finish review, repairs and the passing commit gate before dispatching the next leaf in the same worktree.
 - Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress only when a decision depends on it.
@@ -78,6 +78,5 @@ End at the end of the tree or at a stop, with the table of walked leaves, then w
 ## GitHub mechanics
 
 - Remove `Drafting` by clearing Blockers with `gh api -X DELETE repos/{owner}/{repo}/issues/<n>/issue-field-values/<id>`, then posting its other values, if any, with `gh api -X POST repos/{owner}/{repo}/issues/<n>/issue-field-values --input -` and `{"issue_field_values":[{"field_id":<id>,"value":["<option>"]}]}` on standard input; the field id comes from `gh api orgs/{org}/issue-fields`.
-- Find local closes with `git log --format=%B | grep -E '^Closes #'`.
 
 <!-- @end -->

@@ -12,13 +12,18 @@ export default async function (
     for: audience,
   }: { repo?: string | undefined; for: "worker" | "debugger" },
 ): Promise<void> {
+  const root = process.cwd();
+
   const check = await checkIssue(
     {
-      repository: await resolveRepository(process.cwd(), repo),
+      repository: await resolveRepository(root, repo),
       token: await resolveGithubToken(),
     },
     number,
     audience,
+    {
+      root,
+    },
   );
 
   for (const line of formatIssueCheck(number, check)) {
