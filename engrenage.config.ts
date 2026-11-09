@@ -102,6 +102,18 @@ const setup = createRolePreset({
   effects: "effectful",
 });
 
+const extension = createRolePreset({
+  name: "extension",
+  purpose:
+    "The domain's extension: data and lazy loaders, read without loading the domain.",
+  file: ["extension.ts"],
+  unique: true,
+  exports: "default",
+  discovered: true,
+  public: true,
+  effects: "effectful",
+});
+
 const plugins = createRolePreset({
   name: "plugins",
   purpose: "The tool's own plugins, one per module.",
@@ -201,7 +213,7 @@ export default defineConfig({
   },
   src: {
     node: 24,
-    roles: [index(), entrypoint(), ...codeRoles],
+    roles: [index(), entrypoint(), extension(), ...codeRoles],
     domains: sourceDomains,
     namespaces: {
       ".": { layers: ["foundation", "project", "tools", "workflows"] },

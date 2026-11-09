@@ -54,6 +54,18 @@ export default defineConvention({
                 continue;
               }
 
+              const declared: {
+                readonly type: string;
+                readonly kind?: unknown;
+              } = statement;
+
+              if (
+                declared.type === "TSModuleDeclaration" &&
+                declared.kind === "global"
+              ) {
+                continue;
+              }
+
               const inner: { type: string } | null | undefined =
                 type === "ExportNamedDeclaration" && "declaration" in statement
                   ? statement.declaration

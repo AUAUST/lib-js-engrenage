@@ -62,6 +62,7 @@
     "./agents/constants": "./dist/agents/constants.mjs",
     "./baseline": "./dist/baseline.mjs",
     "./blocks/internals": "./dist/blocks/internals.mjs",
+    "./builtins": "./dist/builtins.mjs",
     "./changesets": "./dist/changesets.mjs",
     "./changesets/constants": "./dist/changesets/constants.mjs",
     "./config": "./dist/config.mjs",

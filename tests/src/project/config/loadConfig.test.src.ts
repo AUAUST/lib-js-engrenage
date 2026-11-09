@@ -297,6 +297,19 @@ describe("loadConfig", () => {
     expect(await refreshed.resolve(presetSection)).toBe("library");
   });
 
+  test("registers a listed extension after every built-in", async () => {
+    const config = await loadConfig(getFixture("projects/external"), {
+      searchParents: false,
+    });
+
+    const { registry } = config.context;
+
+    const owner = registry.owner("slots", "externalFixture.entries");
+
+    expect(owner?.name).toBe("external-fixture");
+    expect(registry.extensions.at(-1)).toBe(owner);
+  });
+
   test("places each package cache under the configured cache root", async () => {
     const defaults = createTemporaryProject({
       "package.json": '{ "type": "module" }',

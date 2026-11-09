@@ -6,7 +6,7 @@ paths:
 # Project map: src
 
 ```
-src/  foundation < project < tools < workflows  (global roles: types constants.ts *.d.ts)
+src/  foundation < project < tools < workflows  (global roles: types extension.ts constants.ts *.d.ts)
 ├─ foundation/  #foundation/…  Primitives without project knowledge.
 │  ├─ blocks  Composable content blocks for generated files.
 │  ├─ data  Resolve files shipped with the package.
@@ -48,6 +48,7 @@ src/  foundation < project < tools < workflows  (global roles: types constants.t
 │  ├─ vitest*  Configure and run source and distribution tests.
 │  └─ vscode*  Configure editor settings and extension recommendations.
 └─ workflows/  #workflows/…  Composition of tools into the config and commands.
+   ├─ builtins*  List every built-in extension.
    ├─ cli  Compose command definitions and their execution context.
    ├─ config*  Compose and validate the complete project configuration.
    ├─ gate  Coordinate commit and agent verification gates.

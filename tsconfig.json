@@ -38,6 +38,7 @@
       "@auaust/engrenage/vite": ["./src/tools/vite/entry.ts"],
       "@auaust/engrenage/vitest": ["./src/tools/vitest/entry.ts"],
       "@auaust/engrenage/vscode": ["./src/tools/vscode/entry.ts"],
+      "@auaust/engrenage/builtins": ["./src/workflows/builtins/entry.ts"],
       "@auaust/engrenage/config": ["./src/workflows/config/entry.ts"]
     }
   },

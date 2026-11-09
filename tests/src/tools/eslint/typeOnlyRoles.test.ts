@@ -103,6 +103,26 @@ describe("type-only roles", () => {
     );
   });
 
+  test("accept an ambient global augmentation", async () => {
+    const lint = await createLinter();
+
+    const file = "src/project/feature/types/Own.ts";
+
+    expect(
+      await lint(
+        file,
+        "declare global {\n  interface Own {}\n}\n\nexport {};\n",
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        file,
+        "export namespace Own {\n  export const value = 1;\n}\n",
+      ),
+    ).toContain("auaust/type-only-roles");
+  });
+
   test("apply to a project role marked typeOnly", async () => {
     const shapes = createRolePreset({
       name: "shapes",

@@ -117,6 +117,9 @@ export const sourceDomains = freeze({
   "tools/vscode": {
     purpose: "Configure editor settings and extension recommendations.",
   },
+  "workflows/builtins": {
+    purpose: "List every built-in extension.",
+  },
   "workflows/cli": {
     purpose: "Compose command definitions and their execution context.",
   },

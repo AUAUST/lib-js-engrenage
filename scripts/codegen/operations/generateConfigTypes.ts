@@ -15,6 +15,7 @@ import { mappedValues } from "@auaust/toolkit/mappedValues";
 import { entries, record } from "@auaust/toolkit/object";
 
 import { globsSchema } from "#foundation/options/index";
+import { extensionSchema, type LoadedConfig } from "#project/config/index";
 import { roleFileResolverSchema, roleRulesSchema } from "#project/roles/index";
 import { effectModuleResolverSchema } from "#project/structure/index";
 import { collectConfigInputs } from "#scripts/codegen/operations/collectConfigInputs";
@@ -25,7 +26,6 @@ import { isConfigSchema } from "#scripts/codegen/utils/isConfigSchema";
 import { isListAdjustmentSchema } from "#scripts/codegen/utils/isListAdjustmentSchema";
 import { isUnionConfigSchema } from "#scripts/codegen/utils/isUnionConfigSchema";
 import { listConfigSections } from "#workflows/config/index";
-import type { LoadedConfig } from "#project/config/index";
 import type { ConfigSchema } from "#scripts/codegen/types/ConfigSchema";
 import type { ObjectConfigSchema } from "#scripts/codegen/types/ObjectConfigSchema";
 import type { TypeSource } from "#scripts/codegen/types/TypeSource";
@@ -45,6 +45,7 @@ const externalTypes = new Map<string, TypeSource>([
   ["ListOption", { domain: "foundation/options", specifier: undefined }],
   ["ManagedListOption", { domain: "foundation/options", specifier: undefined }],
   ["GlobalsFactory", { domain: "project/environments", specifier: undefined }],
+  ["Extension", { domain: "project/config", specifier: undefined }],
   [
     "EffectModuleResolver",
     { domain: "project/structure", specifier: undefined },
@@ -116,6 +117,10 @@ function resolveType(schema: ConfigSchema): string | undefined {
 
   if (schema === roleRulesSchema) {
     return "RoleRules";
+  }
+
+  if (schema === extensionSchema) {
+    return "Extension";
   }
 
   // @debt every other custom schema is read as `GlobalsFactory`; each named custom schema should map to its own type

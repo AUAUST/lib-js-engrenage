@@ -1,6 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { unmanagedTsconfig } from "#project/tsconfig/index";
+import { unmanagedTsconfig } from "#project/tsconfig/constants";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";

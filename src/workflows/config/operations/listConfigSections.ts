@@ -2,6 +2,7 @@ import { freeze } from "@auaust/toolkit/object";
 
 import { buildSection } from "#project/build/index";
 import { cacheSection } from "#project/cache/index";
+import { extensionsSection } from "#project/config/index";
 import {
   binOptionsSection,
   dataSection,
@@ -37,6 +38,7 @@ export function listConfigSections() {
     cache: cacheSection,
     debug: debugSection,
     define: defineSection,
+    extensions: extensionsSection,
     format: formatSection,
     preset: presetSection,
     structure: structureOptionsSection,

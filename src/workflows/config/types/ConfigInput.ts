@@ -3,6 +3,7 @@
 import type { ListOption, ManagedListOption } from "#foundation/options/index";
 import type { BuildInput } from "#project/build/index";
 import type { CacheInput } from "#project/cache/index";
+import type { Extension } from "#project/config/index";
 import type { AliasesInput, BinInput, DataInput, DefineInput, RuntimeInput, ScriptsInput, SourceInput, TestsInput, ToolingInput } from "#project/environments/index";
 import type { FormatInput } from "#project/format/index";
 import type { TraitsInput } from "#project/presets/index";
@@ -29,6 +30,12 @@ export interface ConfigInput {
    */
   debug?: (boolean | undefined)
   define?: (DefineInput | undefined)
+  /**
+   * Extensions to register beside the built-ins, in this order.
+   * An installed package does nothing until listed here.
+   * @default none
+   */
+  extensions?: (Extension[] | undefined)
   /**
    * Formatting conventions and complexity limits of the project, mapped by each formatter or linter at its boundary (Prettier options, ESLint rules, and conventions no tool covers).
    */

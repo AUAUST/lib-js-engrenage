@@ -2,7 +2,9 @@
 export * from "#project/config/types/ConfigContext";
 export * from "#project/config/types/Definition";
 export * from "#project/config/types/DefinitionOptions";
+export * from "#project/config/types/EngrenageSlots";
 export * from "#project/config/types/Environment";
+export * from "#project/config/types/Extension";
 export * from "#project/config/types/GlobalScope";
 export * from "#project/config/types/LoadedConfig";
 export * from "#project/config/types/RawConfig";
@@ -25,4 +27,13 @@ export { locateFile } from "#project/config/utils/locateFile";
 export { memoizeByContext } from "#project/config/utils/memoizeByContext";
 export { resolveGlobal } from "#project/config/utils/resolveGlobal";
 export { serialize } from "#project/config/utils/serialize";
+// @end
+
+// @barrel config/sections/*.ts named
+export { extensionsSection } from "#project/config/config/sections/extensionsSection";
+// @end
+
+// @barrel config/schemas/*.ts named
+export { extensionSchema } from "#project/config/config/schemas/extensionSchema";
+export { extensionsSchema } from "#project/config/config/schemas/extensionsSchema";
 // @end
