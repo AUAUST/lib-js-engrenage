@@ -4,13 +4,20 @@ import { isFunction } from "@auaust/toolkit/isFunction";
 import { isObject } from "@auaust/toolkit/isObject";
 import { freeze } from "@auaust/toolkit/object";
 
-import { commandRegistration } from "#workflows/cli/constants";
+import {
+  commandExtension,
+  commandRegistration,
+} from "#workflows/cli/constants";
 import { configureCommand } from "#workflows/cli/operations/configureCommand";
 import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
 
-type Action = (...parameters: unknown[]) => unknown;
+type Loaded = (...parameters: unknown[]) => unknown;
 
-function resolveAction(loaded: unknown, name: string): Action {
+function resolveLoaded(
+  loaded: unknown,
+  name: string,
+  kind: "action" | "extension",
+): Loaded {
   if (isFunction(loaded)) {
     return loaded;
   }
@@ -20,7 +27,7 @@ function resolveAction(loaded: unknown, name: string): Action {
   }
 
   throw new TypeError(
-    `The action of the ${name} command loads neither a function nor a module whose default export is one`,
+    `The ${kind} of the ${name} command loads neither a function nor a module whose default export is one`,
   );
 }
 
@@ -45,16 +52,47 @@ function resolveParameters(
   return bare ? [] : parameters;
 }
 
+function createExtension(
+  extend: () => Promise<unknown>,
+): (command: Command) => Promise<void> {
+  const extensions = new WeakMap<Command, Promise<void>>();
+
+  return (command) => {
+    let extension = extensions.get(command);
+
+    if (extension === undefined) {
+      extension = (async () => {
+        const extendCommand = resolveLoaded(
+          await extend(),
+          command.name(),
+          "extension",
+        );
+
+        await extendCommand(command);
+      })();
+
+      extensions.set(command, extension);
+    }
+
+    return extension;
+  };
+}
+
 export function createCommandDefinition({
   configure,
   load,
+  extend,
   parse,
 }: {
   configure: ((command: Command) => CommandUnknownOpts) | undefined;
   load(): unknown;
+  extend: (() => Promise<unknown>) | undefined;
   parse: ((...parameters: unknown[]) => readonly unknown[]) | undefined;
 }): CommandDefinition {
   return freeze({
+    ...(extend !== undefined && {
+      [commandExtension]: createExtension(extend),
+    }),
     [commandRegistration](command: Command) {
       const declared = countDeclarations(command);
 
@@ -65,7 +103,7 @@ export function createCommandDefinition({
       const bare = countDeclarations(command) === declared;
 
       command.action(async (...parameters) => {
-        const action = resolveAction(await load(), command.name());
+        const action = resolveLoaded(await load(), command.name(), "action");
 
         await action(...resolveParameters(parameters, { parse, bare }));
       });

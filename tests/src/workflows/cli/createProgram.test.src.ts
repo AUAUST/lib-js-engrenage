@@ -11,7 +11,9 @@ import {
 function listDebugOptions(command: CommandUnknownOpts): number[] {
   return [
     command.options.filter(({ long }) => long === "--debug").length,
-    ...command.commands.flatMap(listDebugOptions),
+    ...command.commands
+      .filter((subcommand) => subcommand.name() !== "help")
+      .flatMap(listDebugOptions),
   ];
 }
 

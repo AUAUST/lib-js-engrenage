@@ -10,6 +10,7 @@ export { runProgram } from "#workflows/cli/operations/runProgram";
 export * from "#workflows/cli/types/CommandDefinition";
 export * from "#workflows/cli/types/CommandParameters";
 export * from "#workflows/cli/types/DefaultActionParameters";
+export * from "#workflows/cli/types/ExtendModule";
 export * from "#workflows/cli/types/RunContext";
 // @end
 
