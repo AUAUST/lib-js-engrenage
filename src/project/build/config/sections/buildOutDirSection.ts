@@ -4,7 +4,6 @@ import { tsconfigSection } from "#project/tsconfig/index";
 import type { ConfigContext } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 
-// @debt declared under `build` to read its input, so it shares the name of `buildSection` and a cycle message can show the name twice
 export const buildOutDirSection = declareSection({
   name: "build",
   declaration: buildSchema,

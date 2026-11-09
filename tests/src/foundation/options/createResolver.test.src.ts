@@ -1,10 +1,34 @@
 import { describe, expect, test } from "vitest";
 
+import { entries, getOwn } from "@auaust/toolkit/object";
+
 import { declareSection } from "#foundation/options/config/declarers/declareSection";
 import { createResolver } from "#foundation/options/utils/createResolver";
+import type { Section } from "#foundation/options/types/Section";
+import type { SectionSource } from "#foundation/options/types/SectionSource";
+
+function createSource(
+  sections: Readonly<Record<string, Section>>,
+): SectionSource {
+  async function load(key: string) {
+    const section = getOwn(sections, key);
+
+    return section === undefined ? undefined : { input: undefined, section };
+  }
+
+  async function keyOf(section: Section) {
+    return entries(sections).find(([, value]) => value === section)?.[0];
+  }
+
+  return { load, keyOf };
+}
+
+function createSourceResolver(sections: Readonly<Record<string, Section>>) {
+  return createResolver({}, undefined, { sections: createSource(sections) });
+}
 
 describe("createResolver", () => {
-  test("resolves a shared dependency once for sections resolved in parallel", async () => {
+  test("resolves a shared key once for sections reading it in parallel", async () => {
     let calls = 0;
 
     const base = declareSection({
@@ -20,52 +44,99 @@ describe("createResolver", () => {
 
     const left = declareSection({
       name: "left",
-      async resolve(_input, config) {
-        return (await config.resolve(base)) + 1;
+      async resolve(_input, config): Promise<number> {
+        return Number(await config.resolve("base")) + 1;
       },
     });
 
     const right = declareSection({
       name: "right",
-      async resolve(_input, config) {
-        return (await config.resolve(base)) + 2;
+      async resolve(_input, config): Promise<number> {
+        return Number(await config.resolve("base")) + 2;
       },
     });
 
-    const { resolve } = createResolver({}, undefined);
+    const { resolve } = createSourceResolver({
+      base,
+      left,
+      right,
+    });
 
-    expect(await Promise.all([resolve(left), resolve(right)])).toEqual([2, 3]);
+    expect(await Promise.all([resolve("left"), resolve("right")])).toEqual([
+      2, 3,
+    ]);
+
     expect(calls).toBe(1);
   });
 
-  test("fails with the path of sections reading each other", async () => {
+  test("fails with the path of keys depending on each other", async () => {
     const first = declareSection({
       name: "first",
       resolve(_input, config): Promise<unknown> {
-        return config.resolve(second);
+        return config.resolve("second");
       },
     });
 
     const second = declareSection({
       name: "second",
       resolve(_input, config): Promise<unknown> {
-        return config.resolve(third);
+        return config.resolve("third");
       },
     });
 
     const third = declareSection({
       name: "third",
       resolve(_input, config): Promise<unknown> {
-        return config.resolve(second);
+        return config.resolve("second");
       },
     });
 
-    const { resolve } = createResolver({}, undefined);
+    const { resolve } = createSourceResolver({
+      first,
+      second,
+      third,
+    });
 
-    await expect(resolve(first)).rejects.toThrow("second -> third -> second");
+    await expect(resolve("first")).rejects.toThrow(
+      "Config keys depend on each other: first -> second -> third -> second",
+    );
   });
 
-  test("re-resolves a memoized section when a live section it read changes", async () => {
+  test("fails on an unknown key read by a section, naming both", async () => {
+    const reader = declareSection({
+      name: "reader",
+      resolve(_input, config): Promise<unknown> {
+        return config.resolve("missing");
+      },
+    });
+
+    const { resolve } = createSourceResolver({ reader });
+
+    await expect(resolve("reader")).rejects.toThrow(
+      'Unknown config key "missing", read by "reader"',
+    );
+  });
+
+  test("computes a section read by value and by key once", async () => {
+    let calls = 0;
+
+    const counted = declareSection({
+      name: "counted",
+      resolve() {
+        calls += 1;
+
+        return calls;
+      },
+    });
+
+    const { resolve } = createSourceResolver({ counted });
+
+    expect(await resolve(counted)).toBe(1);
+    expect(await resolve("counted")).toBe(1);
+    expect(calls).toBe(1);
+  });
+
+  test("re-resolves a memoized key when a live key it read changes", async () => {
     const versions = {
       a: { content: "a" },
       b: { content: "b" },
@@ -85,24 +156,24 @@ describe("createResolver", () => {
 
     const derived = declareSection({
       name: "derived",
-      async resolve(_input, config) {
+      async resolve(_input, config): Promise<unknown> {
         calls += 1;
 
         return (await config.resolve(live)).content;
       },
     });
 
-    const { resolve } = createResolver({}, undefined);
+    const { resolve } = createSourceResolver({ live, derived });
 
-    expect(await resolve(derived)).toBe("a");
+    expect(await resolve("derived")).toBe("a");
 
     current = versions.b;
 
-    expect(await resolve(derived)).toBe("b");
+    expect(await resolve("derived")).toBe("b");
     expect(calls).toBe(2);
   });
 
-  test("keeps a memoized section while the live sections it read resolve to the same object", async () => {
+  test("keeps a memoized key while the live keys it read resolve to the same object", async () => {
     const file = { content: "a" };
 
     let calls = 0;
@@ -117,16 +188,16 @@ describe("createResolver", () => {
 
     const derived = declareSection({
       name: "derived",
-      async resolve(_input, config) {
+      async resolve(_input, config): Promise<unknown> {
         calls += 1;
 
-        return (await config.resolve(live)).content;
+        return (await config.resolve("live")) === file;
       },
     });
 
-    const { resolve } = createResolver({}, undefined);
+    const { resolve } = createSourceResolver({ live, derived });
 
-    await resolve(derived);
+    await resolve("derived");
 
     await resolve(derived);
 

@@ -2,10 +2,12 @@ import { describe, expect, test } from "vitest";
 
 import { values } from "@auaust/toolkit/object";
 
-import { declareSection } from "#foundation/options/index";
+import { declareSection, type Resolver } from "#foundation/options/index";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { packageJsonSection } from "#project/package/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { Extension } from "#project/config/types/Extension";
 
 import * as builtins from "#workflows/builtins/entry";
 
@@ -20,7 +22,7 @@ function createConfig(raw: Readonly<Record<string, unknown>>) {
 }
 
 describe("createProjectConfig", () => {
-  test("re-resolves a memoized section reading packageJson after its file is staged", async () => {
+  test("re-resolves a memoized key reading packageJson after its file is staged", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "name": "before", "type": "module" }',
     });
@@ -32,20 +34,33 @@ describe("createProjectConfig", () => {
       },
     });
 
-    const config = createProjectConfig({
+    const extension = {
+      name: "name-fixture",
+      owns: {
+        keys: {
+          name: {
+            async load() {
+              return nameSection;
+            },
+          },
+        },
+      },
+    } satisfies Extension;
+
+    const config: Resolver<ConfigContext> = createProjectConfig({
       root: project.root,
-      raw: {},
+      raw: { extensions: [extension] },
       configFile: undefined,
     });
 
-    expect(await config.resolve(nameSection)).toBe("before");
+    expect(await config.resolve("name")).toBe("before");
 
     await config.context.filesystem.write(
       config.context.path("package.json"),
       '{ "name": "after", "type": "module" }',
     );
 
-    expect(await config.resolve(nameSection)).toBe("after");
+    expect(await config.resolve("name")).toBe("after");
   });
 
   test("registers the built-ins without listed extensions", () => {

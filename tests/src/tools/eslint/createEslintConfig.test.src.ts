@@ -5,6 +5,7 @@ import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
 import { map } from "@auaust/primitive-kit/arrays";
+import { isString } from "@auaust/toolkit/isString";
 import { memoized } from "@auaust/toolkit/memoized";
 import type { Maybe } from "@auaust/toolkit/types";
 
@@ -19,6 +20,8 @@ import { infoRulesSetting } from "#tools/eslint/constants";
 import { createEslintConfig as createConfig } from "#tools/eslint/operations/createEslintConfig";
 import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
 import type { Section } from "#foundation/options/index";
+import type { ConfigKey } from "#project/config/types/ConfigKey";
+import type { ConfigSections } from "#project/config/types/ConfigSections";
 import type { Environment } from "#project/config/types/Environment";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
@@ -40,10 +43,18 @@ function overrideSections(
   config: LoadedConfig,
   overrides: ReadonlyMap<Section, unknown>,
 ): LoadedConfig {
-  async function resolve<Output>(section: Section<Output>): Promise<Output> {
-    return overrides.has(section)
-      ? (overrides.get(section) as Output)
-      : config.resolve(section);
+  function resolve<Key extends ConfigKey>(
+    key: Key,
+  ): Promise<ConfigSections[Key]>;
+  function resolve<Output>(section: Section<Output>): Promise<Output>;
+  async function resolve(target: ConfigKey | Section): Promise<unknown> {
+    if (isString(target)) {
+      return config.resolve(target);
+    }
+
+    return overrides.has(target)
+      ? overrides.get(target)
+      : config.resolve(target);
   }
 
   return { ...config, resolve };

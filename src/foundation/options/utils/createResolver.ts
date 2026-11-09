@@ -1,29 +1,37 @@
+import { isString } from "@auaust/toolkit/isString";
 import { is, keys } from "@auaust/toolkit/object";
 
 import { validate } from "#foundation/options/utils/validate";
 import type { Declaration } from "#foundation/options/types/Declaration";
 import type { InputResolver } from "#foundation/options/types/InputResolver";
+import type { KeyedSection } from "#foundation/options/types/KeyedSection";
 import type { Resolver } from "#foundation/options/types/Resolver";
 import type { Section } from "#foundation/options/types/Section";
+import type { SectionSource } from "#foundation/options/types/SectionSource";
 
 interface Reading {
   readonly value: unknown;
-  readonly live: ReadonlyMap<Section, unknown>;
+  readonly live: ReadonlyMap<string, unknown>;
 }
 
 interface Chain {
-  readonly section: Section;
-  readonly live: Map<Section, unknown>;
+  readonly key: string;
+  readonly trail: readonly string[];
+  readonly live: Map<string, unknown>;
   settled: boolean;
 }
 
-export function createResolver<Context>(
+export function createResolver<
+  Context,
+  Sections extends object = Readonly<Record<string, unknown>>,
+>(
   input: Readonly<Record<string, unknown>>,
   context: Context,
-  { source }: { source?: string } = {},
-): InputResolver<Context> {
-  const memos = new Map<Section, Promise<Reading>>();
-  const waits = new Map<Section, Set<Section>>();
+  { source, sections }: { source?: string; sections: SectionSource },
+): InputResolver<Context, Sections> {
+  const loaded = new Map<string, Promise<KeyedSection>>();
+  const memos = new Map<string, Promise<Reading>>();
+  const waits = new Map<string, Set<string>>();
 
   const inputs = new Map<
     string,
@@ -52,21 +60,70 @@ export function createResolver<Context>(
     return value;
   }
 
-  function findPath(from: Section, to: Section): Section[] | undefined {
-    const visited = new Set<Section>();
+  async function loadSection(
+    key: string,
+    reader: string | undefined,
+  ): Promise<KeyedSection> {
+    const keyed = await sections.load(key);
 
-    function walk(section: Section, path: Section[]): Section[] | undefined {
-      if (section === to) {
+    if (keyed === undefined) {
+      throw new Error(
+        reader === undefined
+          ? `Unknown config key "${key}"`
+          : `Unknown config key "${key}", read by "${reader}"`,
+      );
+    }
+
+    if (keyed.input !== undefined && keyed.section.declaration === undefined) {
+      throw new Error(
+        `Config key "${key}" names input "${keyed.input}", but its section declares none`,
+      );
+    }
+
+    if (keyed.input === undefined && keyed.section.declaration !== undefined) {
+      throw new Error(
+        `Config key "${key}" has a declared section but names no input`,
+      );
+    }
+
+    return keyed;
+  }
+
+  function load(key: string, reader?: string): Promise<KeyedSection> {
+    const cached = loaded.get(key);
+
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const pending = loadSection(key, reader);
+
+    loaded.set(key, pending);
+
+    pending.catch(() => {
+      if (loaded.get(key) === pending) {
+        loaded.delete(key);
+      }
+    });
+
+    return pending;
+  }
+
+  function findPath(from: string, to: string): string[] | undefined {
+    const visited = new Set<string>();
+
+    function walk(key: string, path: string[]): string[] | undefined {
+      if (key === to) {
         return path;
       }
 
-      if (visited.has(section)) {
+      if (visited.has(key)) {
         return;
       }
 
-      visited.add(section);
+      visited.add(key);
 
-      for (const next of waits.get(section) ?? []) {
+      for (const next of waits.get(key) ?? []) {
         const found = walk(next, [...path, next]);
 
         if (found !== undefined) {
@@ -78,42 +135,58 @@ export function createResolver<Context>(
     return walk(from, [from]);
   }
 
-  function track(section: Section, dependent: Section) {
-    const cycle = findPath(section, dependent);
+  function track(key: string, dependent: Chain) {
+    const cycle = findPath(key, dependent.key);
 
     if (cycle !== undefined) {
+      const trail = [...dependent.trail, dependent.key];
+      const entry = trail.indexOf(key);
+      const leading = entry === -1 ? [] : trail.slice(0, entry);
+
       throw new Error(
-        `Config sections depend on each other: ${[...cycle, section].map(({ name }) => name).join(" -> ")}`,
+        `Config keys depend on each other: ${[...leading, ...cycle, key].join(" -> ")}`,
       );
     }
 
-    const dependencies = waits.get(dependent) ?? new Set();
+    const dependencies = waits.get(dependent.key) ?? new Set();
 
-    dependencies.add(section);
-    waits.set(dependent, dependencies);
+    dependencies.add(key);
+    waits.set(dependent.key, dependencies);
   }
 
-  async function compute(section: Section): Promise<Reading> {
+  async function compute(
+    key: string,
+    trail: readonly string[],
+  ): Promise<Reading> {
+    const { input: name, section } = await load(key);
+
     const chain: Chain = {
-      section,
+      key,
+      trail,
       live: new Map(),
       settled: false,
     };
 
-    const config: Resolver = {
-      context,
-      async resolve<Output>(dependency: Section<Output>): Promise<Output> {
-        const { value } = await read(dependency, chain);
+    function resolve(dependency: string): Promise<unknown>;
+    function resolve<Output>(dependency: Section<Output>): Promise<Output>;
+    async function resolve(dependency: string | Section): Promise<unknown> {
+      const { value } = await read(dependency, chain);
 
-        return value as Output;
-      },
+      return value;
+    }
+
+    const config: Resolver<Context> = {
+      context,
+      resolve,
     };
 
     try {
-      const { declaration, name } = section;
+      const { declaration } = section;
 
       const value = await section.resolve(
-        declaration === undefined ? undefined : readInput(name, declaration),
+        name === undefined || declaration === undefined
+          ? undefined
+          : readInput(name, declaration),
         config,
       );
 
@@ -123,14 +196,14 @@ export function createResolver<Context>(
     }
   }
 
-  function memoize(section: Section): Promise<Reading> {
-    const pending = compute(section);
+  function memoize(key: string, trail: readonly string[]): Promise<Reading> {
+    const pending = compute(key, trail);
 
-    memos.set(section, pending);
+    memos.set(key, pending);
 
     pending.catch(() => {
-      if (memos.get(section) === pending) {
-        memos.delete(section);
+      if (memos.get(key) === pending) {
+        memos.delete(key);
       }
     });
 
@@ -138,8 +211,8 @@ export function createResolver<Context>(
   }
 
   async function isStale({ live }: Reading): Promise<boolean> {
-    for (const [section, value] of live) {
-      const fresh = await settle(section);
+    for (const [key, value] of live) {
+      const fresh = await settle(key, []);
 
       if (!is(fresh.value, value)) {
         return true;
@@ -149,12 +222,17 @@ export function createResolver<Context>(
     return false;
   }
 
-  async function settle(section: Section): Promise<Reading> {
+  async function settle(
+    key: string,
+    trail: readonly string[],
+  ): Promise<Reading> {
+    const { section } = await load(key);
+
     if (section.live) {
-      return compute(section);
+      return compute(key, trail);
     }
 
-    const pending = memos.get(section) ?? memoize(section);
+    const pending = memos.get(key) ?? memoize(key, trail);
 
     const reading = await pending;
 
@@ -162,28 +240,44 @@ export function createResolver<Context>(
       return reading;
     }
 
-    const current = memos.get(section);
+    const current = memos.get(key);
 
     return current !== undefined && current !== pending
       ? current
-      : memoize(section);
+      : memoize(key, trail);
+  }
+
+  async function keyOf(section: Section): Promise<string> {
+    const key = await sections.keyOf?.(section);
+
+    if (key === undefined) {
+      throw new Error("A section read by value is declared under no key");
+    }
+
+    return key;
   }
 
   async function read(
-    section: Section,
+    target: string | Section,
     chain: Chain | undefined,
   ): Promise<Reading> {
+    const key = isString(target) ? target : await keyOf(target);
     const active = chain === undefined || chain.settled ? undefined : chain;
 
     if (active !== undefined) {
-      track(section, active.section);
+      track(key, active);
     }
 
-    const reading = await settle(section);
+    const { section } = await load(key, active?.key);
+
+    const reading = await settle(
+      key,
+      active === undefined ? [] : [...active.trail, active.key],
+    );
 
     if (active !== undefined) {
       if (section.live) {
-        active.live.set(section, reading.value);
+        active.live.set(key, reading.value);
       } else {
         for (const [live, value] of reading.live) {
           active.live.set(live, value);
@@ -227,13 +321,19 @@ export function createResolver<Context>(
     }
   }
 
+  function resolve<Key extends keyof Sections & string>(
+    key: Key,
+  ): Promise<Sections[Key]>;
+  function resolve<Output>(section: Section<Output>): Promise<Output>;
+  async function resolve(target: string | Section): Promise<unknown> {
+    const { value } = await read(target, undefined);
+
+    return value;
+  }
+
   return {
     context,
-    async resolve<Output>(section: Section<Output>): Promise<Output> {
-      const { value } = await read(section, undefined);
-
-      return value as Output;
-    },
+    resolve,
     validate: validateSections,
   };
 }

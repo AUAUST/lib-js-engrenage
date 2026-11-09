@@ -8,7 +8,6 @@ import { sourceOptionsSection } from "#project/environments/config/sections/sour
 import { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
 import type { ConfigContext } from "#project/config/index";
 
-// @debt each environment splits into a declared options section and a derived one under the same name, so a cycle message can show the name twice
 export const sourceSection = declareSection({
   name: "src",
   async resolve(_input, config: Resolver<ConfigContext>) {

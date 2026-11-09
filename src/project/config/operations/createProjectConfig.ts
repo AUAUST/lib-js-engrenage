@@ -7,8 +7,17 @@ import {
   resolveWithin,
   type Filesystem,
 } from "#foundation/filesystem/index";
-import { createResolver, validate } from "#foundation/options/index";
+import {
+  createResolver,
+  validate,
+  type KeyedSection,
+  type Section,
+} from "#foundation/options/index";
 import { extensionsSchema } from "#project/config/config/schemas/extensionsSchema";
+import { findSectionKey } from "#project/config/operations/findSectionKey";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { ConfigKey } from "#project/config/types/ConfigKey";
+import type { ConfigSections } from "#project/config/types/ConfigSections";
 import type { Extension } from "#project/config/types/Extension";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { RawConfig } from "#project/config/types/RawConfig";
@@ -48,11 +57,26 @@ export function createProjectConfig({
     },
   );
 
+  async function load(key: string): Promise<KeyedSection | undefined> {
+    const declaration = registry.get("keys", key);
+
+    if (declaration !== undefined) {
+      return {
+        input: declaration.input,
+        section: await declaration.load(),
+      };
+    }
+  }
+
+  function keyOf(section: Section): Promise<ConfigKey | undefined> {
+    return findSectionKey(registry, section);
+  }
+
   const {
     resolve,
     context,
     validate: validateSections,
-  } = createResolver(
+  } = createResolver<ConfigContext, ConfigSections>(
     raw,
     {
       root,
@@ -65,6 +89,7 @@ export function createProjectConfig({
     },
     {
       source,
+      sections: { load, keyOf },
     },
   );
 

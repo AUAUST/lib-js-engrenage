@@ -37,6 +37,7 @@ export * from "#foundation/options/types/Default";
 export * from "#foundation/options/types/Description";
 export * from "#foundation/options/types/InputOf";
 export * from "#foundation/options/types/InputResolver";
+export * from "#foundation/options/types/KeyedSection";
 export * from "#foundation/options/types/ListAdjustment";
 export * from "#foundation/options/types/ListOption";
 export * from "#foundation/options/types/ManagedListOption";
@@ -49,4 +50,5 @@ export * from "#foundation/options/types/OutputOf";
 export * from "#foundation/options/types/ResolvedLocation";
 export * from "#foundation/options/types/Resolver";
 export * from "#foundation/options/types/Section";
+export * from "#foundation/options/types/SectionSource";
 // @end

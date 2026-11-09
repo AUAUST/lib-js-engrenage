@@ -6,13 +6,13 @@ import { keys } from "@auaust/toolkit/object";
 import { engrenage, engrenageConfigFile } from "#constants";
 import { findCurrentMonth } from "#project/baseline/index";
 import { visibilities } from "#project/package/constants";
-import { visibilitySection, type Visibility } from "#project/package/index";
 import { presetTraits } from "#project/presets/constants";
 import {
   createConfigModule,
   type Step,
   type StepContext,
 } from "#project/steps/index";
+import type { Visibility } from "#project/package/index";
 import type { Preset } from "#project/presets/index";
 
 // @debt the preset names are bare strings, unchecked against the exports of the `roles` package entry the generated config imports them from
@@ -61,7 +61,7 @@ async function selectVisibility(context: StepContext): Promise<Visibility> {
     (await isScoped(context)) ? "private" : "public",
   );
 
-  context.setSection(visibilitySection, visibility);
+  context.setKey("visibility", visibility);
 
   return visibility;
 }

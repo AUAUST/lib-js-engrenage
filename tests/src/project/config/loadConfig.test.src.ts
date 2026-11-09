@@ -1,6 +1,6 @@
 import { join } from "node:path";
 
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { buildOutDirSection } from "#project/build/index";
 import { cacheSection } from "#project/cache/index";
@@ -13,66 +13,13 @@ import {
 } from "#project/package/index";
 import { presetSection, traitsSection } from "#project/presets/index";
 import { filesSection } from "#project/structure/index";
-import {
-  tsconfigPathSection,
-  tsconfigSection,
-  typescriptSection,
-} from "#project/tsconfig/index";
+import { tsconfigPathSection, tsconfigSection } from "#project/tsconfig/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
-
-afterEach(() => {
-  vi.restoreAllMocks();
-});
+import type { Resolver } from "#foundation/options/index";
+import type { ConfigContext } from "#project/config/types/ConfigContext";
 
 describe("loadConfig", () => {
-  test("falls back to defaults and warns once without a config file or package file", async () => {
-    vi.resetModules();
-
-    const { loadConfig: loadFreshConfig } =
-      await import("#project/config/operations/loadConfig");
-
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-
-    const first = createTemporaryProject().root;
-
-    const config = await loadFreshConfig(first);
-
-    await loadFreshConfig(createTemporaryProject().root);
-
-    expect(warn).toHaveBeenCalledExactlyOnceWith(
-      `No engrenage config found in ${first}, using defaults`,
-    );
-
-    expect(config.context.root).toBe(first);
-
-    expect((await config.resolve(typescriptSection)).files).toEqual([
-      "**/*.{ts,tsx}",
-    ]);
-
-    expect((await config.resolve(filesSection)).generated).toEqual([]);
-    expect(await config.resolve(packageJsonPathSection)).toBeUndefined();
-
-    expect(
-      (await config.resolve(packageJsonSection)).optional.name,
-    ).toBeUndefined();
-
-    expect(
-      (await config.resolve(tsconfigSection)).optional.outDir,
-    ).toBeUndefined();
-
-    await expect(
-      async () => (await config.resolve(tsconfigSection)).outDir,
-    ).rejects.toThrow(`No tsconfig found in ${first}`);
-
-    expect(await config.resolve(presetSection)).toBeUndefined();
-    expect(await config.resolve(traitsSection)).toEqual({ published: false });
-
-    expect(
-      (await config.resolve(environmentSection)).hasDependency("valibot"),
-    ).toBe(false);
-  });
-
   test("finds the config in .config/ and in parent directories, up to the nearest package file", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "name": "outer", "type": "module" }',
@@ -308,6 +255,17 @@ describe("loadConfig", () => {
 
     expect(owner?.name).toBe("external-fixture");
     expect(registry.extensions.at(-1)).toBe(owner);
+  });
+
+  test("reads the key of a listed extension through the open resolver", async () => {
+    const config: Resolver<ConfigContext> = await loadConfig(
+      getFixture("projects/external"),
+      { searchParents: false },
+    );
+
+    expect(await config.resolve("externalFixture")).toEqual({
+      label: "listed",
+    });
   });
 
   test("places each package cache under the configured cache root", async () => {

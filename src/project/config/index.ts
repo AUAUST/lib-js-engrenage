@@ -1,20 +1,27 @@
 // @barrel types/*.ts all
 export * from "#project/config/types/ConfigContext";
+export * from "#project/config/types/ConfigKey";
+export * from "#project/config/types/ConfigResolver";
+export * from "#project/config/types/ConfigSections";
 export * from "#project/config/types/Definition";
 export * from "#project/config/types/DefinitionOptions";
 export * from "#project/config/types/EngrenageSlots";
 export * from "#project/config/types/Environment";
 export * from "#project/config/types/Extension";
+export * from "#project/config/types/ExtensionSections";
 export * from "#project/config/types/GlobalScope";
+export * from "#project/config/types/KeyDeclaration";
 export * from "#project/config/types/LoadedConfig";
 export * from "#project/config/types/RawConfig";
 export * from "#project/config/types/ResolvedGlobal";
 export * from "#project/config/types/ResolvedGlobals";
 export * from "#project/config/types/ResolvedRuntimeSettings";
+export * from "#project/config/types/SectionsOf";
 // @end
 
 // @barrel operations/*.ts named
 export { createProjectConfig } from "#project/config/operations/createProjectConfig";
+export { findSectionKey } from "#project/config/operations/findSectionKey";
 export { loadConfig } from "#project/config/operations/loadConfig";
 export { readRawConfig } from "#project/config/operations/readRawConfig";
 // @end

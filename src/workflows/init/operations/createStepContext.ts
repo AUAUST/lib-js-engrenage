@@ -1,29 +1,28 @@
 import type { JSONPath } from "jsonc-parser";
 
+import { isString } from "@auaust/toolkit/isString";
 import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { engrenage, packageJsonFile } from "#constants";
 import { readJsonValue, type JsonValue } from "#foundation/json/index";
+import {
+  findSectionKey,
+  type ConfigKey,
+  type ConfigSections,
+  type LoadedConfig,
+} from "#project/config/index";
 import { jsonIndentation } from "#project/format/constants";
+import { writePackageJsonValue } from "#project/package/index";
 import {
-  environmentSection,
-  packageJsonPathSection,
-  writePackageJsonValue,
-} from "#project/package/index";
-import {
-  presetSection,
   resolveTraits,
-  traitAdjustmentsSection,
-  traitsSection,
   type Preset,
   type ResolvedTraits,
 } from "#project/presets/index";
 import { agentNames } from "#tools/agents/constants";
-import { agentsSection, type Agent } from "#tools/agents/index";
 import { createPnpmInvocation } from "#tools/pnpm/index";
 import type { Section } from "#foundation/options/index";
-import type { LoadedConfig } from "#project/config/index";
 import type { Invocation, Prompter, StepContext } from "#project/steps/index";
+import type { Agent } from "#tools/agents/index";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
 
@@ -69,7 +68,7 @@ export async function createStepContext({
   let installs = false;
 
   async function requirePackageJson(): Promise<File> {
-    const path = await config.resolve(packageJsonPathSection);
+    const path = await config.resolve("packageJsonPath");
 
     // @debt the "No package.json found" guard is repeated in createTsdownConfig, syncChangesetConfig and createPackageJson's describeMissing; the resolved config could expose a required package.json path
     if (path === undefined) {
@@ -114,7 +113,7 @@ export async function createStepContext({
   }
 
   async function hasDependency(name: PackageName): Promise<boolean> {
-    const environment = await config.resolve(environmentSection);
+    const environment = await config.resolve("environment");
 
     return environment.hasDependency(name);
   }
@@ -147,35 +146,50 @@ export async function createStepContext({
     return [createPnpmInvocation(["install"]), ...invocations];
   }
 
-  let preset: Preset | undefined = await config.resolve(presetSection);
+  let preset: Preset | undefined = await config.resolve("preset");
 
-  const resolvedAgents = await config.resolve(agentsSection);
+  const resolvedAgents = await config.resolve("agents");
 
   let agents: readonly Agent[] | undefined = resolvedAgents.preferred;
 
-  const overrides = new Map<Section, () => unknown>();
+  const overrides = new Map<ConfigKey, () => unknown>();
 
-  function override<Output>(
-    section: Section<Output>,
-    resolve: () => Output | Promise<Output>,
+  function override<Key extends ConfigKey>(
+    key: Key,
+    resolve: () => ConfigSections[Key] | Promise<ConfigSections[Key]>,
   ) {
-    overrides.set(section, resolve);
+    overrides.set(key, resolve);
   }
 
-  override(presetSection, () => {
+  override("preset", () => {
     return preset;
   });
 
-  override(traitsSection, getTraits);
+  override("traits", getTraits);
 
-  override(agentsSection, async () => {
-    return { ...(await config.resolve(agentsSection)), preferred: agents };
+  override("agents", async () => {
+    return { ...(await config.resolve("agents")), preferred: agents };
   });
 
-  async function resolve<Output>(section: Section<Output>): Promise<Output> {
-    const overridden = (await overrides.get(section)?.()) as Output | undefined;
+  // @debt an override resolving to undefined falls back to the config value, so `setPreset(undefined)` cannot clear a configured preset
+  async function resolveKey(key: ConfigKey): Promise<unknown> {
+    const overridden: unknown = await overrides.get(key)?.();
 
-    return overridden ?? config.resolve(section);
+    return overridden ?? config.resolve(key);
+  }
+
+  function resolve<Key extends ConfigKey>(
+    key: Key,
+  ): Promise<ConfigSections[Key]>;
+  function resolve<Output>(section: Section<Output>): Promise<Output>;
+  async function resolve(target: ConfigKey | Section): Promise<unknown> {
+    if (isString(target)) {
+      return resolveKey(target);
+    }
+
+    const key = await findSectionKey(config.context.registry, target);
+
+    return key === undefined ? config.resolve(target) : resolveKey(key);
   }
 
   function getPreset(): Preset | undefined {
@@ -183,15 +197,15 @@ export async function createStepContext({
   }
 
   async function getTraits(): Promise<ResolvedTraits> {
-    return resolveTraits(preset, await config.resolve(traitAdjustmentsSection));
+    return resolveTraits(preset, await config.resolve("traits.adjustments"));
   }
 
   function setPreset(chosen: Preset | undefined) {
     preset = chosen;
   }
 
-  function setSection<Output>(section: Section<Output>, value: Output) {
-    override(section, () => {
+  function setKey<Key extends ConfigKey>(key: Key, value: ConfigSections[Key]) {
+    override(key, () => {
       return value;
     });
   }
@@ -214,7 +228,7 @@ export async function createStepContext({
     getPreset,
     getTraits,
     setPreset,
-    setSection,
+    setKey,
     confirm: prompter.confirm,
     select: prompter.select,
     multiselect: prompter.multiselect,
