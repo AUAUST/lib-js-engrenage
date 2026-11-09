@@ -74,7 +74,7 @@ export const agentsSchema = declareObject(
       {
         commands: declare(array(string()), {
           description:
-            "Shell commands the gate runs from the project root after its built-in checks.",
+            "Shell commands the gate runs from the project root alongside its built-in checks.",
           optional: { value: [] },
         }),
         hook: declare(boolean(), {

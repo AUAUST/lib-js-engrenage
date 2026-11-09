@@ -89,6 +89,18 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     expect(failures).toEqual([{ step: "fixture", output: "fixture failed" }]);
   });
 
+  test("reports a failing check before a failing command", async () => {
+    const { project } = await createGateRepository(["exit 3"]);
+
+    project.write("src/index.ts", 'export const value: number = "text";\n');
+
+    const { failures } = await runGate(await loadConfig(project.root), {
+      mode: "worktree",
+    });
+
+    expect(failures.map(({ step }) => step)).toEqual(["typecheck", "exit 3"]);
+  });
+
   test("runs no ESLint fix in a project without ESLint installed", async () => {
     const { project, git } = await createGateRepository();
 

@@ -321,12 +321,13 @@ async function verify(
 
   const verified = await readTreeIdentity(config, mode);
 
-  const [checkFailures, duplicates] = await Promise.all([
+  const [checkFailures, commandFailures, duplicates] = await Promise.all([
     runConcurrentSteps(checks, files),
+    runSteps(commands, files),
     runConcurrentSteps(warnings, files),
   ]);
 
-  failures.push(...checkFailures, ...(await runSteps(commands, files)));
+  failures.push(...checkFailures, ...commandFailures);
 
   const current = await readTreeIdentity(config, mode);
 
