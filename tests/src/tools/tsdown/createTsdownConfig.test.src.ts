@@ -239,6 +239,17 @@ describe("createTsdownConfig", () => {
     });
   });
 
+  test("fails on warnings outside CI too", async () => {
+    expect(
+      await createTsdownConfig(await loadConfig(root), {
+        ci: false,
+      }),
+    ).toMatchObject({
+      failOnWarn: true,
+      minify: false,
+    });
+  });
+
   test("takes the output directory and its cleaning from the engrenage config over the tsconfig", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":

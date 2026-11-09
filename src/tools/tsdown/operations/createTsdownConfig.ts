@@ -238,7 +238,7 @@ export async function createTsdownConfig(
         mainFields: [...mainFields],
       },
     },
-    failOnWarn: ci,
+    failOnWarn: true,
     minify: ci,
     hooks: {
       async "build:done"() {
