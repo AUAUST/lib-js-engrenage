@@ -38,6 +38,8 @@ export function createImportPresets({
         ],
       },
       rules: {
+        "import-x/default": "off",
+        "import-x/export": "off",
         "import-x/namespace": ["error", { allowComputed: true }],
         "import-x/no-empty-named-blocks": "error",
         "import-x/no-extraneous-dependencies": "error",
