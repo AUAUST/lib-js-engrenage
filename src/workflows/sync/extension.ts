@@ -1,6 +1,6 @@
+import { syncDoneEntry, syncTargetEntry } from "#workflows/sync/constants";
 import type { Extension } from "#project/config/index";
 import type { SyncStage } from "#project/sync/index";
-import { syncDoneEntry, syncTargetEntry } from "#workflows/sync/constants";
 
 export default {
   name: "workflows/sync",

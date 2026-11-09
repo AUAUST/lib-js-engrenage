@@ -1,3 +1,5 @@
+import type { StandardSchemaV1 } from "@standard-schema/spec";
+
 import { isFunction } from "@auaust/toolkit/isFunction";
 import { isObject } from "@auaust/toolkit/isObject";
 import { isPromise } from "@auaust/toolkit/isPromise";
@@ -8,13 +10,11 @@ import { orderListSlot } from "#foundation/extensions/utils/orderListSlot";
 import type { Contribution } from "#foundation/extensions/types/Contribution";
 import type { EdgeDeclaration } from "#foundation/extensions/types/EdgeDeclaration";
 import type { EntryShape } from "#foundation/extensions/types/EntryShape";
-import type { EntryValidator } from "#foundation/extensions/types/EntryValidator";
 import type { ExtensionShape } from "#foundation/extensions/types/ExtensionShape";
 import type { KindOf } from "#foundation/extensions/types/KindOf";
 import type { OwnedDeclaration } from "#foundation/extensions/types/OwnedDeclaration";
 import type { Registry } from "#foundation/extensions/types/Registry";
 import type { SlotDeclaration } from "#foundation/extensions/types/SlotDeclaration";
-import type { ValidationIssue } from "#foundation/extensions/types/ValidationIssue";
 
 type Owned = Readonly<Record<string, Readonly<Record<string, unknown>>>>;
 
@@ -36,7 +36,7 @@ interface SlotRecord<Extension extends ExtensionShape> {
   readonly policy: "list" | "bucket" | "hook";
   readonly stages: readonly string[] | undefined;
   readonly edges: boolean | EdgeDeclaration;
-  readonly validator: EntryValidator | undefined;
+  readonly validator: StandardSchemaV1 | undefined;
   readonly registered: Registered<Extension>[];
 }
 
@@ -303,7 +303,7 @@ function checkEntry<Extension extends ExtensionShape>(
   }
 }
 
-function formatPath(path: ValidationIssue["path"]): string {
+function formatPath(path: StandardSchemaV1.Issue["path"]): string {
   const keys = (path ?? []).map((segment) => {
     return String(isObject(segment) ? segment.key : segment);
   });
@@ -333,7 +333,9 @@ function validateEntries<Extension extends ExtensionShape>(
     }
 
     for (const { message, path } of result.issues ?? []) {
-      findings.push(`${label} in slot "${slot}": ${message}${formatPath(path)}`);
+      findings.push(
+        `${label} in slot "${slot}": ${message}${formatPath(path)}`,
+      );
     }
   }
 }

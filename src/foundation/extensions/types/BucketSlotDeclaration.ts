@@ -1,7 +1,7 @@
-import type { EntryValidator } from "#foundation/extensions/types/EntryValidator";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 export interface BucketSlotDeclaration {
   readonly kind?: "data";
   readonly cardinality: "one";
-  readonly entry?: EntryValidator;
+  readonly entry?: StandardSchemaV1;
 }

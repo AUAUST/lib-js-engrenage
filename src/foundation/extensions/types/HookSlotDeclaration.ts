@@ -1,6 +1,6 @@
-import type { EntryValidator } from "#foundation/extensions/types/EntryValidator";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 export interface HookSlotDeclaration {
   readonly kind: "hook";
-  readonly entry?: EntryValidator;
+  readonly entry?: StandardSchemaV1;
 }

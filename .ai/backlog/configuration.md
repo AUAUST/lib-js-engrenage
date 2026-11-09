@@ -19,7 +19,7 @@ Project configuration contract: environments, option shapes and list options.
 
 ## 3. Host presets are missing for the projects adopting engrenage.
 
-- why: projects where engrenage is the JavaScript part of a host (a Shopify theme, a Shopify extensions app, Laravel) need presets resolving to the traits of #153 (`published`; owned directories in `configuration.5`), so environment defaults never land in host directories. Related: `configuration.1`. A `shopify-extensions` preset would hold: the `extensions/*` workspace globs and their environments (Preact JSX, Polaris types, no Node built-ins, bundled `src`), the discovered `pages/` role, the host's files (`shopify.*.toml`, locales, GraphQL codegen output) as foreign or generated, one build entry per extension, not published.
+- why: projects where engrenage is the JavaScript part of a host (a Shopify theme, a Shopify extensions app, Laravel) need presets resolving to the traits of #153 (`published`; owned directories through an environment's `owns`, #376), so environment defaults never land in host directories. Related: `configuration.1`. A `shopify-extensions` preset would hold: the `extensions/*` workspace globs and their environments (Preact JSX, Polaris types, no Node built-ins, bundled `src`), the discovered `pages/` role, the host's files (`shopify.*.toml`, locales, GraphQL codegen output) as foreign or generated, one build entry per extension, not published.
 - done: each adopting project has its preset, added when that project adopts engrenage; obsolete if the project never does.
 
 ## 4. `listDiscoveredGlobs` widens `files.discovered` with role-discovered globs, without a changeset.
@@ -27,13 +27,7 @@ Project configuration contract: environments, option shapes and list options.
 - why: #141 added it, so `files.discovered` now includes role globs (for this repository `tests/**/setup.ts`). No changeset was added; consumers may see new discovered files.
 - want: check whether consumers are affected and add a changeset if so.
 
-## 5. Owned directories have no trait yet; deferred with host presets (#153)
-
-- why: #153 step 3 lists "owned directories" as a first trait and a test of a host preset owning `tests/`; the issue does not say what the trait carries or how a preset declares it, and no host preset exists. Decided: deferred; #153 adds only `published`.
-- want: a data-carrying trait or option (`ownedDirectories`) that environment `dirs` defaults skip, designed with the first host preset.
-- done: a host preset declaring a directory as owned keeps the environment default out of it.
-
-## 6. Option declarers and helpers sit in the wrong modules
+## 5. Option declarers and helpers sit in the wrong modules
 
 - sites: `src/foundation/options/config/declareLocation.ts:9` (declarers split by imports, not concern), `src/foundation/options/index.ts:52` (`globsSchema.ts` also default-exports `globSchema`, which no barrel exposes), `src/foundation/options/utils/createAccessors.ts:7` (generic factory used by the tsconfig and package.json models), `src/project/structure/config/schemas/structureOptions.ts:12` (spreadable record of declarations in `schemas`). Related: role contracts in #227.
 - want: each declarer and schema in the module its concern names; `globSchema` in its own module.
