@@ -269,7 +269,7 @@ While an issue's design is open, write what is settled and put the rest under **
 - Make each task complete through its ancestors: read with them, it names exact files, functions and options and leaves nothing to design.
 - Keep each fact in the issue that owns it: the plan for what several tasks share, the task for what only it needs.
 - Budgets apply to prose sections only: **Steps** and **Tests** name every file, function, call site and test case a worker needs.
-- End a group of **Steps** with a line `Checkpoint: <expected state>` only when the steps up to it leave the codebase coherent with checks passing and already change several files. State what now holds and which checks pass, never a commit message. A trivial or regular task gets no checkpoint and is committed once.
+- Put a line `Checkpoint: <expected state>` between two groups of **Steps**, never after the last step, and only when the steps up to it leave the codebase coherent with checks passing and already change several files. State what now holds and which checks pass, never a commit message. A trivial or regular task gets no checkpoint and is committed once.
 - List under **Prerequisites** only the issues tree order does not imply, and set each as a blocked-by relation.
 - Drop **Done when** when it would only say the Steps are done and the checks pass.
 - Once an issue you create or edit tracks the work of an entry in the backlog or the debt backlog, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
