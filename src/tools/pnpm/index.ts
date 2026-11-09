@@ -1,4 +1,5 @@
 // @barrel utils/*.ts named
+export { addWorkspaceSettings } from "#tools/pnpm/utils/addWorkspaceSettings";
 export { createPnpmInvocation } from "#tools/pnpm/utils/createPnpmInvocation";
 export { listPnpmWarnings } from "#tools/pnpm/utils/listPnpmWarnings";
 export { parseWorkspaceDocument } from "#tools/pnpm/utils/parseWorkspaceDocument";

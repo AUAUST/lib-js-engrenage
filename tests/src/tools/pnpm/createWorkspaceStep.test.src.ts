@@ -62,7 +62,7 @@ describe("createWorkspaceStep", () => {
           "esbuild": builds === "",
           "unrs-resolver": true,
         },
-        minimumReleaseAgeExclude: ["internal-package"],
+        minimumReleaseAgeExclude: ["internal-package", "@auaust/*"],
       });
 
       if (builds !== "") {
@@ -75,7 +75,7 @@ describe("createWorkspaceStep", () => {
 
   test("leaves explicit approvals and denials byte-for-byte unchanged", async () => {
     const content =
-      "allowBuilds: {esbuild: false, unrs-resolver: true, custom: true}\n";
+      'allowBuilds: {esbuild: false, unrs-resolver: true, custom: true}\nminimumReleaseAgeExclude: ["@auaust/*"]\n';
 
     const context = await createContext(content);
 
