@@ -8,6 +8,10 @@ export const sourceDomains = freeze({
   "foundation/data": {
     purpose: "Resolve files shipped with the package.",
   },
+  "foundation/extensions": {
+    purpose:
+      "Collect extensions, check their ownership and order their contributions.",
+  },
   "foundation/filesystem": {
     internals: true,
     purpose: "Read, stage and write project files.",
