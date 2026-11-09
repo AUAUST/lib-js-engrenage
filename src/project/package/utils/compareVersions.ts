@@ -1,11 +1,16 @@
-import { find, map } from "@auaust/primitive-kit/arrays";
+import { parseVersion } from "#project/package/utils/parseVersion";
 
 export function compareVersions(a: string, b: string): number {
-  const second = map(b.split("."), Number);
+  const first = parseVersion(a);
+  const second = parseVersion(b);
 
-  const difference = map(a.split("."), (part, index) => {
-    return Number(part) - (second[index] ?? 0);
-  });
+  if (first === undefined || second === undefined) {
+    throw new Error(`Cannot compare ${a} with ${b}: one has no version`);
+  }
 
-  return find(difference, (part) => part !== 0) ?? 0;
+  return (
+    first.major - second.major ||
+    first.minor - second.minor ||
+    first.patch - second.patch
+  );
 }

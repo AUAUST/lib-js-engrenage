@@ -15,7 +15,7 @@ export { visibilitySchema } from "#project/package/config/schemas/visibilitySche
 
 // @barrel utils/*.ts named
 export { compareVersions } from "#project/package/utils/compareVersions";
-export { parseMajorVersion } from "#project/package/utils/parseMajorVersion";
+export { parseVersion } from "#project/package/utils/parseVersion";
 export { readDeclaredVersion } from "#project/package/utils/readDeclaredVersion";
 export { readProjectPnpmMajor } from "#project/package/utils/readProjectPnpmMajor";
 export { readProjectPnpmVersion } from "#project/package/utils/readProjectPnpmVersion";
@@ -30,6 +30,7 @@ export * from "#project/package/types/PackageType";
 export * from "#project/package/types/Person";
 export * from "#project/package/types/PublishAccess";
 export * from "#project/package/types/SubpathImports";
+export * from "#project/package/types/Version";
 export * from "#project/package/types/Visibility";
 // @end
 

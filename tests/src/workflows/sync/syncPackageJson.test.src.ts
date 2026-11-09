@@ -1,9 +1,12 @@
 import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 import { syncPackageJson } from "#workflows/sync/setup/syncPackageJson";
+
+vi.mock(import("#project/package/utils/readSharedPnpmRange"), { spy: true });
 
 const versions = readTestPnpmVersions();
 
@@ -270,5 +273,22 @@ describe("syncPackageJson pnpm warnings", () => {
     });
 
     expect(messages).toHaveLength(3);
+  });
+
+  test("fails on an unparseable project specifier", async () => {
+    await expect(warnings(declare("latest"))).rejects.toThrow(
+      "pnpm latest cannot be compared",
+    );
+  });
+
+  test("fails on an unparseable shared specifier", async () => {
+    vi.mocked(readSharedPnpmRange).mockReturnValue({
+      range: "latest",
+      floor: "latest",
+    });
+
+    await expect(warnings(declare(`^${versions.floor}`))).rejects.toThrow(
+      "engrenage's pnpm latest",
+    );
   });
 });

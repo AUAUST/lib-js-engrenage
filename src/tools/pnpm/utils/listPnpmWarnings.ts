@@ -15,6 +15,12 @@ export function listPnpmWarnings(packageJson: PackageJson): string[] {
   const version = readProjectPnpmVersion(packageJson);
   const { range } = readSharedPnpmRange();
 
+  if (status === "invalid") {
+    throw new Error(
+      `pnpm ${version} cannot be compared with engrenage's pnpm ${range}: one has no version`,
+    );
+  }
+
   if (status === "missing") {
     warnings.push(
       `devEngines.packageManager does not declare pnpm: run \`${upgradeCommand}\``,

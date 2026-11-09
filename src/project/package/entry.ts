@@ -1,6 +1,6 @@
 export {
   compareVersions,
-  parseMajorVersion,
+  parseVersion,
   readDeclaredVersion,
   readProjectPnpmMajor,
   readProjectPnpmVersion,
@@ -14,5 +14,6 @@ export type {
   Person,
   PublishAccess,
   SubpathImports,
+  Version,
   Visibility,
 } from "#project/package/index";

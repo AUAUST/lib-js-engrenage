@@ -1,10 +1,10 @@
-import { parseMajorVersion } from "#project/package/utils/parseMajorVersion";
+import { parseVersion } from "#project/package/utils/parseVersion";
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
 
 export function readTestPnpmVersions() {
   const { floor } = readSharedPnpmRange();
 
-  const major = parseMajorVersion(floor);
+  const major = parseVersion(floor)?.major;
 
   if (major === undefined) {
     throw new Error(`engrenage's pnpm floor has no major: ${floor}`);

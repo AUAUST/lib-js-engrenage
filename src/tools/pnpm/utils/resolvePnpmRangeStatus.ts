@@ -1,6 +1,6 @@
 import {
   compareVersions,
-  parseMajorVersion,
+  parseVersion,
   readDeclaredVersion,
   readProjectPnpmVersion,
   readSharedPnpmRange,
@@ -9,7 +9,7 @@ import {
 
 export function resolvePnpmRangeStatus(
   packageJson: PackageJson,
-): "missing" | "below" | "within" | "above" {
+): "missing" | "invalid" | "below" | "within" | "above" {
   const specifier = readProjectPnpmVersion(packageJson);
 
   if (specifier === undefined) {
@@ -18,16 +18,15 @@ export function resolvePnpmRangeStatus(
 
   const { floor } = readSharedPnpmRange();
 
-  const sharedMajor = parseMajorVersion(floor);
-  const major = parseMajorVersion(specifier);
+  const shared = parseVersion(floor);
+  const declared = parseVersion(specifier);
 
-  // @debt an unparseable project or shared pnpm specifier counts as within the range instead of being reported
-  if (major === undefined || sharedMajor === undefined) {
-    return "within";
+  if (declared === undefined || shared === undefined) {
+    return "invalid";
   }
 
-  if (major !== sharedMajor) {
-    return major < sharedMajor ? "below" : "above";
+  if (declared.major !== shared.major) {
+    return declared.major < shared.major ? "below" : "above";
   }
 
   const version = readDeclaredVersion(specifier);
