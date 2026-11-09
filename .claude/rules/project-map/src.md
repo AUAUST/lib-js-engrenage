@@ -15,7 +15,7 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ json  Read and edit JSON while preserving its formatting.
 │  ├─ options  Declare and validate configuration options.
 │  └─ processes  Run external processes.
-├─ project/  #project/…  config < roles < baseline < format < presets < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
+├─ project/  #project/…  config < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
 │  ├─ baseline*{editions}  Resolve browser support targets from Baseline editions.
 │  │  └─ editions  Browser targets for each Baseline edition.
 │  ├─ build  Resolve build outputs and the emitted package manifest.
@@ -37,7 +37,8 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  │  ├─ claude*  Configure Claude instructions, settings and hooks.
 │  │  └─ codex*  Configure Codex instructions, profiles, skills and hooks.
 │  ├─ changesets*  Configure release versioning and changelogs.
-│  ├─ eslint*  Configure lint rules and project-aware checks.
+│  ├─ eslint*{roles*}  Configure lint rules and project-aware checks.
+│  │  └─ roles*  Role presets carrying ESLint rules, loadable without ESLint.
 │  ├─ git*  Configure Git conventions and repository files.
 │  ├─ github*  Generate GitHub repository workflows.
 │  ├─ jscpd  Detect duplicate code.

@@ -10,7 +10,12 @@ import type { RoleRuleModule } from "#project/roles/index";
 import type { EntityIndex, ResolvedStructure } from "#project/structure/index";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Plugin } from "#tools/eslint/types/Plugin";
+import type { RoleRule } from "#tools/eslint/types/RoleRule";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
+
+function isRoleRule(module: RoleRuleModule): module is RoleRule {
+  return module.tool === "eslint" && "rule" in module;
+}
 
 export async function createRoleRules(
   structure: ResolvedStructure,
@@ -19,17 +24,19 @@ export async function createRoleRules(
   readonly plugin: Plugin;
   readonly configs: readonly Config[];
 }> {
-  const originals: Record<string, RoleRuleModule> = {};
-  const wrapped = new Map<RoleRuleModule, RuleModule>();
+  const originals: Record<string, RoleRule> = {};
+  const wrapped = new Map<RoleRule, RuleModule>();
   const modules: Record<string, RuleModule> = {};
   const configs: Config[] = [];
 
-  function wrap(rule: RoleRuleModule): RuleModule {
-    const existing = wrapped.get(rule);
+  function wrap(roleRule: RoleRule): RuleModule {
+    const existing = wrapped.get(roleRule);
 
     if (existing !== undefined) {
       return existing;
     }
+
+    const { rule } = roleRule;
 
     const module: RuleModule = {
       ...(rule.meta === undefined ? {} : { meta: rule.meta }),
@@ -53,7 +60,7 @@ export async function createRoleRules(
       },
     };
 
-    wrapped.set(rule, module);
+    wrapped.set(roleRule, module);
 
     return module;
   }
@@ -79,7 +86,11 @@ export async function createRoleRules(
           continue;
         }
 
-        const rule = "create" in entry ? entry : await entry();
+        const rule = "tool" in entry ? entry : await entry();
+
+        if (!isRoleRule(rule)) {
+          continue;
+        }
 
         const name = `${role}/${key}`;
         const registered = originals[name];

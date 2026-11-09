@@ -18,8 +18,12 @@ export * from "#project/roles/types/RoleLocation";
 export * from "#project/roles/types/RoleLocationMember";
 export * from "#project/roles/types/RolePreset";
 export * from "#project/roles/types/RoleRuleLoader";
-export * from "#project/roles/types/RoleRuleModule";
 export * from "#project/roles/types/RoleRules";
+// @end
+
+// @barrel ports/*.ts all
+export * from "#project/roles/ports/RolePresetEntry";
+export * from "#project/roles/ports/RoleRuleModule";
 // @end
 
 // @barrel utils/*.ts named

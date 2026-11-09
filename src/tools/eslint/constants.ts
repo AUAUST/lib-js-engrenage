@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import { engrenage } from "#constants";
 import type { BoundaryCause } from "#project/structure/index";
 import type { CoreRules } from "#tools/eslint/types/rules/CoreRules";
 import type { StylisticRules } from "#tools/eslint/types/rules/StylisticRules";
@@ -11,6 +12,8 @@ import type { Glob } from "#types/Glob";
 export const anyFile = "**" satisfies Glob;
 
 export const typescriptFiles = "**/*.{ts,tsx,mts,cts}" satisfies Glob;
+
+export const rolePresetsEntry = `${engrenage}/eslint/roles`;
 
 export const pluginName = "auaust";
 

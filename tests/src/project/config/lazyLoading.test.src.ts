@@ -63,6 +63,20 @@ describe("lazy loading", () => {
     expect(files.filter((file) => engines.test(file))).toEqual([]);
   });
 
+  test("loads no ESLint module while importing the ESLint role presets", async () => {
+    const files = await recordLoadedFiles(
+      `await import("#tools/eslint/roles/entry");`,
+    );
+
+    expect(files).toContain("src/tools/eslint/roles/operations/extension.ts");
+
+    expect(
+      files.filter((file) => {
+        return /(?:^|\/)node_modules\/(?:[^/]+\/)?eslint[^/]*\//u.test(file);
+      }),
+    ).toEqual([]);
+  });
+
   test("loads no gate run while listing the gate steps", async () => {
     const files = await recordLoadedFiles(
       `const { loadConfig } = await import("#project/config/index");\nconst config = await loadConfig(${JSON.stringify(getFixture("projects/external"))}, { searchParents: false });\nawait config.context.registry.contributions("gate.steps", config);`,

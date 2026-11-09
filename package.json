@@ -70,6 +70,7 @@
     "./constants": "./dist/constants.mjs",
     "./eslint": "./dist/eslint.mjs",
     "./eslint/constants": "./dist/eslint/constants.mjs",
+    "./eslint/roles": "./dist/eslint/roles.mjs",
     "./filesystem/internals": "./dist/filesystem/internals.mjs",
     "./format": "./dist/format.mjs",
     "./git": "./dist/git.mjs",

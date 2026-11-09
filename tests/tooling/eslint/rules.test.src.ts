@@ -7,12 +7,9 @@ import { loadConfig } from "#project/config/index";
 import { entrypoint } from "#project/roles/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
-import {
-  definerEntries,
-  extensionImports,
-  sectionDeclarations,
-} from "#tooling/eslint/index";
+import { definerEntries, sectionDeclarations } from "#tooling/eslint/index";
 import { createEslintConfig } from "#tools/eslint/index";
+import { extensionImports } from "#tools/eslint/rules/extensionImports";
 
 const rulesKey = "__engrenageToolingRules";
 

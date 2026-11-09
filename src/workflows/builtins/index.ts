@@ -7,6 +7,7 @@ export { default as projectEnvironments } from "#project/environments/extension"
 export { default as projectFormat } from "#project/format/extension";
 export { default as projectPackage } from "#project/package/extension";
 export { default as projectPresets } from "#project/presets/extension";
+export { default as projectRoles } from "#project/roles/extension";
 export { default as projectStructure } from "#project/structure/extension";
 export { default as projectSync } from "#project/sync/extension";
 export { default as projectTsconfig } from "#project/tsconfig/extension";

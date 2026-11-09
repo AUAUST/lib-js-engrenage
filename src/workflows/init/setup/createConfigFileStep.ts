@@ -1,4 +1,11 @@
-import { map, sort } from "@auaust/primitive-kit/arrays";
+import {
+  deduplicate,
+  every,
+  filterMap,
+  flatMap,
+  map,
+  sort,
+} from "@auaust/primitive-kit/arrays";
 import { startsWith } from "@auaust/primitive-kit/strings";
 import { isString } from "@auaust/toolkit/isString";
 
@@ -11,38 +18,121 @@ import {
   type StepContext,
 } from "#project/steps/index";
 import type { Visibility } from "#project/package/index";
-
-// @debt the preset names are bare strings, unchecked against the exports of the `roles` package entry the generated config imports them from
-const sharedPresets = [
-  "index",
-  "constants",
-  "declarations",
-  "types",
-  "utils",
-  "errors",
-  "enums",
-  "ports",
-  "adapters",
-] as const;
-
-const testsPresets = ["fixtures", "testsetup"] as const;
-
-const publishedPresets = ["entry"] as const;
+import type { RolePresetEntry } from "#project/roles/index";
 
 const operationsPreset = `const operations = createRolePreset({ name: "operations", exports: "named-match" });`;
+
+const presetFactory = "createRolePreset";
+
+const sourceEnvironment = "src";
+
+interface RolePresets {
+  readonly shared: readonly string[];
+  readonly environments: ReadonlyMap<string, readonly string[]>;
+}
 
 function callPresets(names: readonly string[]): string {
   return map(names, (name) => `${name}()`).join(", ");
 }
 
-function renderRoles(published: boolean): string {
-  const roles = `const roles = [${callPresets(sharedPresets)}, operations()];`;
+function listEnvironments(
+  presets: readonly RolePresetEntry[],
+): readonly string[] {
+  return deduplicate(flatMap(presets, ({ environments }) => environments));
+}
 
-  const source = published
-    ? `const sourceRoles = [...roles, ${callPresets(publishedPresets)}];`
-    : "const sourceRoles = roles;";
+function groupPresets(presets: readonly RolePresetEntry[]): RolePresets {
+  const environments = listEnvironments(presets);
 
-  return `${roles}\n\n${source}`;
+  const shared = filterMap(presets, (preset) => {
+    const everywhere = every(environments, (environment) => {
+      return preset.environments.includes(environment);
+    });
+
+    return everywhere ? preset : undefined;
+  });
+
+  const extras = new Map(
+    map(environments, (environment) => {
+      const names = filterMap(presets, (preset) => {
+        return !shared.includes(preset) &&
+          preset.environments.includes(environment)
+          ? preset.name
+          : undefined;
+      });
+
+      return [environment, names] as const;
+    }),
+  );
+
+  return { shared: map(shared, ({ name }) => name), environments: extras };
+}
+
+function renderEnvironmentRoles(extras: readonly string[]): string {
+  return extras.length === 0 ? "roles" : `[...roles, ${callPresets(extras)}]`;
+}
+
+function renderRoles({ shared, environments }: RolePresets): string {
+  const roles = `const roles = [${callPresets([...shared, "operations"])}];`;
+
+  const source = renderEnvironmentRoles(
+    environments.get(sourceEnvironment) ?? [],
+  );
+
+  return `${roles}\n\nconst sourceRoles = ${source};`;
+}
+
+function renderEnvironments({ environments }: RolePresets): string {
+  const rendered = filterMap([...environments], ([environment, extras]) => {
+    if (environment === sourceEnvironment) {
+      return;
+    }
+
+    const roles = renderEnvironmentRoles(extras);
+
+    return `  ${environment}: { ${roles === "roles" ? roles : `roles: ${roles}`} },\n`;
+  });
+
+  return rendered.join("");
+}
+
+function renderImports(presets: readonly RolePresetEntry[]): readonly {
+  readonly names: readonly string[];
+  readonly entry: string;
+}[] {
+  const groups = new Map<string, string[]>([
+    [`${engrenage}/roles`, [presetFactory]],
+  ]);
+
+  for (const { name, from } of presets) {
+    const names = groups.get(from) ?? [];
+
+    names.push(name);
+    groups.set(from, names);
+  }
+
+  return map([...groups], ([entry, names]) => {
+    return { names: sort(names), entry };
+  });
+}
+
+async function selectRolePresets(
+  context: StepContext,
+): Promise<readonly RolePresetEntry[]> {
+  const traits = await context.getTraits();
+
+  const contributions = await context.context.registry.contributions(
+    "roles",
+    context,
+  );
+
+  return filterMap(contributions, ({ entry }) => {
+    const enabled =
+      entry.environments.length > 0 &&
+      every(entry.traits ?? [], (trait) => traits[trait]);
+
+    return enabled ? entry : undefined;
+  });
 }
 
 async function isScoped(context: StepContext): Promise<boolean> {
@@ -67,6 +157,7 @@ function renderOptions(
   chosen: string | undefined,
   visibility: Visibility | undefined,
   agents: readonly string[] | undefined,
+  presets: RolePresets,
 ): string {
   const preset =
     chosen === undefined ? "" : `  preset: ${JSON.stringify(chosen)},\n`;
@@ -81,13 +172,9 @@ function renderOptions(
 
   const source = `  src: { baseline: ${JSON.stringify(findCurrentMonth())}, roles: sourceRoles },\n`;
 
-  const environments = [
-    `  tests: { roles: [...roles, ${callPresets(testsPresets)}] },\n`,
-    "  scripts: { roles },\n",
-    "  tooling: { roles },\n",
-  ];
+  const environments = renderEnvironments(presets);
 
-  return `{\n${preset}${declaredVisibility}${source}${environments.join("")}  agents: { ${preferred}attribution: false },\n}`;
+  return `{\n${preset}${declaredVisibility}${source}${environments}  agents: { ${preferred}attribution: false },\n}`;
 }
 
 export function createConfigFileStep(): Step {
@@ -120,6 +207,10 @@ export function createConfigFileStep(): Step {
 
       const { published } = await context.getTraits();
 
+      const rolePresets = await selectRolePresets(context);
+
+      const groups = groupPresets(rolePresets);
+
       const visibility = published
         ? await selectVisibility(context)
         : undefined;
@@ -129,19 +220,14 @@ export function createConfigFileStep(): Step {
         createConfigModule({
           entry: `${engrenage}/config`,
           definer: "defineConfig",
-          imports: [
-            {
-              names: sort([
-                "createRolePreset",
-                ...sharedPresets,
-                ...testsPresets,
-                ...(published ? publishedPresets : []),
-              ]),
-              entry: `${engrenage}/roles`,
-            },
-          ],
-          declarations: [operationsPreset, renderRoles(published)],
-          options: renderOptions(chosen, visibility, context.getAgents()),
+          imports: renderImports(rolePresets),
+          declarations: [operationsPreset, renderRoles(groups)],
+          options: renderOptions(
+            chosen,
+            visibility,
+            context.getAgents(),
+            groups,
+          ),
         }),
       );
     },

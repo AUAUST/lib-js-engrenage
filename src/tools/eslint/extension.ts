@@ -1,4 +1,8 @@
-import { defaultSuppressionsFile, eslint } from "#tools/eslint/constants";
+import {
+  defaultSuppressionsFile,
+  eslint,
+  rolePresetsEntry,
+} from "#tools/eslint/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
@@ -16,6 +20,13 @@ export default {
     },
   },
   contributes: {
+    "roles": [
+      {
+        name: "extension",
+        from: rolePresetsEntry,
+        environments: [],
+      },
+    ],
     "gate.steps": [
       {
         name: eslint,

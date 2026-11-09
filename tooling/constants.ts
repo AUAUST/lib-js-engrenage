@@ -90,6 +90,9 @@ export const sourceDomains = freeze({
   "tools/eslint": {
     purpose: "Configure lint rules and project-aware checks.",
   },
+  "tools/eslint/roles": {
+    purpose: "Role presets carrying ESLint rules, loadable without ESLint.",
+  },
   "tools/git": {
     purpose: "Configure Git conventions and repository files.",
   },

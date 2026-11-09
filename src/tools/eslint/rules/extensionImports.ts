@@ -6,11 +6,9 @@ import type { Rule } from "eslint";
 
 import { isObject } from "@auaust/toolkit/isObject";
 
-import {
-  defineRoleRule,
-  isTypeOnlyNode,
-  visitImportSources,
-} from "#tools/eslint/index";
+import { defineRoleRule } from "#tools/eslint/utils/defineRoleRule";
+import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
+import { visitImportSources } from "#tools/eslint/utils/visitImportSources";
 import type { File } from "#types/File";
 
 function resolveSpecifier(from: File, specifier: string): File | undefined {

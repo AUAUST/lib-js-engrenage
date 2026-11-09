@@ -23,6 +23,7 @@ import {
   sourceDomains,
   toolingDomains,
 } from "#tooling/constants";
+import { extension } from "#tools/eslint/roles/index";
 import { defineConfig } from "#workflows/config/index";
 
 function definerFile({ lineage }: RoleLocation): string {
@@ -100,25 +101,6 @@ const setup = createRolePreset({
   purpose: "Init steps and sync targets of the domain.",
   exports: "named-match",
   effects: "effectful",
-});
-
-const extension = createRolePreset({
-  name: "extension",
-  purpose:
-    "The domain's extension: data and lazy loaders, read without loading the domain.",
-  file: ["extension.ts"],
-  unique: true,
-  exports: "default",
-  discovered: true,
-  public: true,
-  effects: "effectful",
-  rules: {
-    "extension-imports": async () => {
-      const { extensionImports } = await import("#tooling/eslint/index");
-
-      return extensionImports;
-    },
-  },
 });
 
 const plugins = createRolePreset({
@@ -229,10 +211,10 @@ export default defineConfig({
         purpose: "Tool-agnostic project models and contract domains.",
         layers: [
           "config",
-          "roles",
           "baseline",
           "format",
           "presets",
+          "roles",
           "steps",
           "sync",
           "gate",

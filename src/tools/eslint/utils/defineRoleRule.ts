@@ -1,8 +1,8 @@
 import type { Rule } from "eslint";
 
 import { createRuleMeta } from "#tools/eslint/utils/createRuleMeta";
-import type { RoleRuleModule } from "#project/roles/index";
 import type { Entity, EnvironmentFileNames } from "#project/structure/index";
+import type { RoleRule } from "#tools/eslint/types/RoleRule";
 
 export function defineRoleRule({
   description,
@@ -16,9 +16,12 @@ export function defineRoleRule({
     entity: Entity,
     files: EnvironmentFileNames,
   ): Rule.RuleListener;
-}): RoleRuleModule {
+}): RoleRule {
   return {
-    meta: createRuleMeta({ description, messages }),
-    create,
+    tool: "eslint",
+    rule: {
+      meta: createRuleMeta({ description, messages }),
+      create,
+    },
   };
 }

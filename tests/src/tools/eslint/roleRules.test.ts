@@ -31,9 +31,11 @@ const sectionsRule = defineRoleRule({
 });
 
 const ownRule =
-  "{ create(context) { return { Program(node) { context.report({ node, message: 'own' }); } }; } }";
+  "{ tool: 'eslint', rule: { create(context) { return { Program(node) { context.report({ node, message: 'own' }); } }; } } }";
 
-const checkedRole = `{ name: "checked", rules: { "no-console": "error", own: ${ownRule} }, roles: [{ name: "inner", rules: { "no-alert": "error" } }] }`;
+const stylelintRule = "{ tool: 'stylelint', rule: {} }";
+
+const checkedRole = `{ name: "checked", rules: { "no-console": "error", own: ${ownRule}, styles: ${stylelintRule} }, roles: [{ name: "inner", rules: { "no-alert": "error" } }] }`;
 
 const configRole = `{ name: "config", roles: [{ name: "sections", rules: { entity: globalThis.${sectionsRuleKey} } }] }`;
 
@@ -105,6 +107,14 @@ describe("role rules", () => {
     ]);
   });
 
+  test("ignore a role rule module of another tool", async () => {
+    const lint = await createRuleLinter();
+
+    expect(await lint("src/project/feature/checked/one.ts")).not.toContain(
+      "roles/checked/styles",
+    );
+  });
+
   test("register a role's rule modules as roles/<role>/<rule>", async () => {
     const lint = await createRuleLinter();
 
@@ -124,5 +134,18 @@ describe("role rules", () => {
     ]);
 
     expect(await lint("src/project/feature/config/four.ts")).toEqual([]);
+  });
+
+  test("reject a raw rule module, naming defineRoleRule", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({ name: "library", type: "module" }),
+      "engrenage.config.ts": `export default { src: { roles: [{ name: "raw", rules: { own: { create() { return {}; } } } }] } };\n`,
+    });
+
+    const config = await loadConfig(project.root);
+
+    await expect(
+      createEslintConfig(config, { typeAware: false }),
+    ).rejects.toThrow("defineRoleRule");
   });
 });

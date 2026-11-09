@@ -8,6 +8,7 @@ import { sort } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
+import { findCurrentMonth } from "#project/baseline/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
@@ -691,6 +692,49 @@ describe("engrenage init", () => {
       license: "UNLICENSED",
     });
   });
+});
+
+test("renders the role presets of an empty library's config from their contributions", async () => {
+  const project = createProject({
+    "package.json": '{\n  "name": "library",\n  "type": "module"\n}\n',
+  });
+
+  await init({ yes: true });
+
+  expect(project.read("engrenage.config.ts"))
+    .toBe(`import { defineConfig } from "@auaust/engrenage/config";
+import {
+  adapters,
+  constants,
+  createRolePreset,
+  declarations,
+  entry,
+  enums,
+  errors,
+  fixtures,
+  index,
+  ports,
+  testsetup,
+  types,
+  utils,
+} from "@auaust/engrenage/roles";
+
+const operations = createRolePreset({ name: "operations", exports: "named-match" });
+
+const roles = [index(), constants(), declarations(), types(), utils(), errors(), enums(), ports(), adapters(), operations()];
+
+const sourceRoles = [...roles, entry()];
+
+export default defineConfig({
+  preset: "library",
+  visibility: "public",
+  src: { baseline: "${findCurrentMonth()}", roles: sourceRoles },
+  tests: { roles: [...roles, fixtures(), testsetup()] },
+  scripts: { roles },
+  tooling: { roles },
+  agents: { preferred: [], attribution: false },
+});
+`);
 });
 
 test("does not generate agent setup without selected agents", async () => {

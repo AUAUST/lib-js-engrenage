@@ -29,6 +29,7 @@
       "@auaust/engrenage/agents/codex": ["./src/tools/agents/codex/entry.ts"],
       "@auaust/engrenage/changesets": ["./src/tools/changesets/entry.ts"],
       "@auaust/engrenage/eslint": ["./src/tools/eslint/entry.ts"],
+      "@auaust/engrenage/eslint/roles": ["./src/tools/eslint/roles/entry.ts"],
       "@auaust/engrenage/git": ["./src/tools/git/entry.ts"],
       "@auaust/engrenage/github": ["./src/tools/github/entry.ts"],
       "@auaust/engrenage/pnpm": ["./src/tools/pnpm/entry.ts"],

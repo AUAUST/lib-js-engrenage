@@ -36,6 +36,7 @@ export * from "#tools/eslint/types/Options";
 export * from "#tools/eslint/types/Plugin";
 export * from "#tools/eslint/types/ReportDescriptor";
 export * from "#tools/eslint/types/ResolvedSections";
+export * from "#tools/eslint/types/RoleRule";
 export * from "#tools/eslint/types/Rule";
 export * from "#tools/eslint/types/RuleModule";
 export * from "#tools/eslint/types/RuleOptions";
