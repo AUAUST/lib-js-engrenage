@@ -5,6 +5,25 @@ import { syncPrettierignoreFile } from "@auaust/engrenage/prettier";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
+async function syncProjectGroup(engrenageConfig: string): Promise<string> {
+  const project = createTemporaryProject({
+    "engrenage.config.ts": engrenageConfig,
+    "package.json": JSON.stringify({
+      type: "module",
+      devDependencies: { prettier: "*" },
+    }),
+    ".prettierignore": "# @ignore project\n# @end\n",
+  });
+
+  const config = await loadConfig(project.root);
+
+  await syncPrettierignoreFile(config);
+
+  await config.context.filesystem.flush();
+
+  return project.read(".prettierignore");
+}
+
 describe("syncPrettierignoreFile", () => {
   test("writes the default and project groups, with the changelog of changesets projects and the Codex instructions", async () => {
     const project = createTemporaryProject({
@@ -72,26 +91,19 @@ describe("syncPrettierignoreFile", () => {
   });
 
   test("leaves out the changelog without changesets and the Codex instructions when Codex is not preferred", async () => {
-    const project = createTemporaryProject({
-      "engrenage.config.ts": "export default {};\n",
-      "package.json": JSON.stringify({
-        type: "module",
-        devDependencies: { prettier: "*" },
-      }),
-      ".prettierignore": "# @ignore project\n# @end\n",
-    });
-
-    const config = await loadConfig(project.root);
-
-    await syncPrettierignoreFile(config);
-
-    await config.context.filesystem.flush();
-
-    const content = project.read(".prettierignore");
+    const content = await syncProjectGroup("export default {};\n");
 
     expect(content).not.toContain("# Changelog");
     expect(content).not.toContain("/AGENTS.override.md");
     expect(content).toContain("# pnpm\n/pnpm-lock.yaml");
+  });
+
+  test("ignores a custom cache directory", async () => {
+    const content = await syncProjectGroup(
+      'export default { cache: { dir: ".cache" } };\n',
+    );
+
+    expect(content).toContain("# Cache\n/.cache\n");
   });
 
   test("leaves a file without markers untouched", async () => {
