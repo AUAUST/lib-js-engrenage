@@ -12,20 +12,19 @@ import { isBoolean } from "@auaust/toolkit/isBoolean";
 import { isObject } from "@auaust/toolkit/isObject";
 import { isString } from "@auaust/toolkit/isString";
 import { mappedValues } from "@auaust/toolkit/mappedValues";
-import { entries, record } from "@auaust/toolkit/object";
 
 import { globsSchema } from "#foundation/options/index";
 import { extensionSchema, type LoadedConfig } from "#project/config/index";
 import { roleFileResolverSchema, roleRulesSchema } from "#project/roles/index";
 import { effectModuleResolverSchema } from "#project/structure/index";
 import { collectConfigInputs } from "#scripts/codegen/operations/collectConfigInputs";
+import { composeInputSchemas } from "#scripts/codegen/operations/composeInputSchemas";
 import { findConfigTypeImports } from "#scripts/codegen/utils/findConfigTypeImports";
 import { getCoreConfigSchema } from "#scripts/codegen/utils/getCoreConfigSchema";
 import { getLazyConfigSchema } from "#scripts/codegen/utils/getLazyConfigSchema";
 import { isConfigSchema } from "#scripts/codegen/utils/isConfigSchema";
 import { isListAdjustmentSchema } from "#scripts/codegen/utils/isListAdjustmentSchema";
 import { isUnionConfigSchema } from "#scripts/codegen/utils/isUnionConfigSchema";
-import { listConfigSections } from "#workflows/config/index";
 import type { ConfigSchema } from "#scripts/codegen/types/ConfigSchema";
 import type { ObjectConfigSchema } from "#scripts/codegen/types/ObjectConfigSchema";
 import type { TypeSource } from "#scripts/codegen/types/TypeSource";
@@ -34,7 +33,9 @@ import type { File } from "#types/File";
 
 const composedDomain: Directory = "workflows/config";
 
-const composedName = "ConfigInput";
+const composedName = "BuiltinConfigInput";
+
+const composedFile: File = "src/workflows/config/types/ConfigInput.ts";
 
 const namedReference = "#named/";
 
@@ -200,18 +201,6 @@ function descriptionOf(schema: ConfigSchema): string | undefined {
   );
 }
 
-function composeSectionSchemas(): Record<string, ConfigSchema> {
-  return record(
-    entries(listConfigSections()).map(([name, { declaration }]) => {
-      if (declaration === undefined) {
-        throw new Error(`Config section ${name} has no declaration`);
-      }
-
-      return [name, declaration.schema] as const;
-    }),
-  );
-}
-
 function createOverride(names: ReadonlyMap<ConfigSchema, string>) {
   return ({ valibotSchema, jsonSchema }: OverrideSchemaContext) => {
     const target = getLazyConfigSchema(valibotSchema);
@@ -315,7 +304,8 @@ export async function generateConfigTypes(
   config: LoadedConfig,
   modules: ReadonlyMap<File, Readonly<Record<string, unknown>>>,
 ) {
-  const sections = composeSectionSchemas();
+  const sections = await composeInputSchemas(config);
+
   const root = strictObject(sections);
   const inputs = collectConfigInputs(modules, sections, root);
 
@@ -334,30 +324,42 @@ export async function generateConfigTypes(
       return {
         name,
         domain,
+        file: `src/${domain}/types/${name}.ts`,
         core,
         description: descriptionOf(declaration.schema),
+        trailer: [],
       };
     }),
     {
       name: composedName,
       domain: composedDomain,
+      file: composedFile,
       core: root,
       description: undefined,
+      trailer: [
+        "declare global {",
+        `  interface EngrenageConfigInput extends ${composedName} {}`,
+        "}",
+        "",
+        "export type ConfigInput = EngrenageConfigInput;",
+        "",
+      ],
     },
   ];
 
-  for (const { name, domain, core, description } of files) {
+  for (const { name, domain, file, core, description, trailer } of files) {
     const declarations = await render(core, name, names, description);
 
     const filesystem = config.context.filesystem;
 
     await filesystem.write(
-      `src/${domain}/types/${name}.ts`,
+      file,
       [
         generatedHeader,
         ...findConfigTypeImports(declarations, name, domain, sources),
         "",
         declarations,
+        ...trailer,
       ].join("\n"),
     );
   }

@@ -1,3 +1,4 @@
+// @debt `eslint`, `vite`, `vitest` and `tsdown` own no key, so their options come only from definer arguments
 // @barrel /src/*/*/extension.ts default
 export { default as projectBuild } from "#project/build/extension";
 export { default as projectCache } from "#project/cache/extension";

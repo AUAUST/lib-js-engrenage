@@ -9,10 +9,6 @@ export {
 export type { LoadedConfig } from "#project/config/index";
 export type { Resolvable } from "#types/Resolvable";
 
-// @barrel operations/*.ts named
-export { listConfigSections } from "#workflows/config/operations/listConfigSections";
-// @end
-
 // @barrel types/*.ts all
 export * from "#workflows/config/types/ConfigInput";
 // @end

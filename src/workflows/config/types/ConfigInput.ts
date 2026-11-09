@@ -15,21 +15,9 @@ import type { GithubInput } from "#tools/github/index";
 import type { PrettierInput } from "#tools/prettier/index";
 import type { VscodeInput } from "#tools/vscode/index";
 
-export interface ConfigInput {
-  /**
-   * Aliases generated into `package.json#imports` (and, for bundled sources, the tsconfig `paths`) by `engrenage sync`, in one flat `#` namespace.
-   * `false` turns them off.
-   */
-  aliases?: ((false | AliasesInput) | undefined)
+export interface BuiltinConfigInput {
   build?: (BuildInput | undefined)
   cache?: (CacheInput | undefined)
-  /**
-   * Whether commands print the stack of an error and its causes.
-   * Also enabled by the `--debug` flag and `ENGRENAGE_DEBUG=1`; any one of them enables it.
-   * @default false
-   */
-  debug?: (boolean | undefined)
-  define?: (DefineInput | undefined)
   /**
    * Extensions to register beside the built-ins, in this order.
    * An installed package does nothing until listed here.
@@ -37,41 +25,10 @@ export interface ConfigInput {
    */
   extensions?: (Extension[] | undefined)
   /**
-   * Formatting conventions and complexity limits of the project, mapped by each formatter or linter at its boundary (Prettier options, ESLint rules, and conventions no tool covers).
-   */
-  format?: (FormatInput | undefined)
-  /**
-   * Kind of project the configuration builds on, bundling traits.
-   * `library` bundles `published`: it extends the library tsconfig, syncs the published `package.json` fields (`files`, `bin`, `engines.node`), tests the built package and selects the library GitHub workflows.
-   * Options and `traits` override it.
-   * @default no preset: no trait is bundled
-   */
-  preset?: ("library" | undefined)
-  /**
-   * Structure settings shared by every environment.
-   */
-  structure?: (StructureInput | undefined)
-  /**
-   * Traits of the project, adjusting those of the preset.
-   */
-  traits?: (TraitsInput | undefined)
-  agents?: (AgentsInput | undefined)
-  git?: (GitInput | undefined)
-  github?: (GithubInput | undefined)
-  prettier?: (PrettierInput | undefined)
-  typescript?: (TypescriptInput | undefined)
-  vscode?: (VscodeInput | undefined)
-  /**
    * The environment of the command-line entries of the package.
    * `false` disables it.
    */
   bin?: ((false | BinInput) | undefined)
-  /**
-   * The data environment.
-   * `false` ships no data directory.
-   */
-  data?: ((false | DataInput) | undefined)
-  runtime?: (RuntimeInput | undefined)
   /**
    * The environment of the maintenance scripts of the project, never published.
    * `false` disables it.
@@ -92,6 +49,44 @@ export interface ConfigInput {
    * `false` disables it.
    */
   tooling?: ((false | ToolingInput) | undefined)
+  /**
+   * The data environment.
+   * `false` ships no data directory.
+   */
+  data?: ((false | DataInput) | undefined)
+  define?: (DefineInput | undefined)
+  runtime?: (RuntimeInput | undefined)
+  /**
+   * Formatting conventions and complexity limits of the project, mapped by each formatter or linter at its boundary (Prettier options, ESLint rules, and conventions no tool covers).
+   */
+  format?: (FormatInput | undefined)
+  /**
+   * Who may install the published package from npm: `public` for anyone, `private` for members of its scope (`restricted` access).
+   * Applies only under the `published` trait; an unpublished package has no visibility.
+   * @default the `publishConfig.access` of `package.json` (`public` or `restricted`), else `private`
+   */
+  visibility?: (("public" | "private") | undefined)
+  /**
+   * Kind of project the configuration builds on, bundling traits.
+   * `library` bundles `published`: it extends the library tsconfig, syncs the published `package.json` fields (`files`, `bin`, `engines.node`), tests the built package and selects the library GitHub workflows.
+   * Options and `traits` override it.
+   * @default no preset: no trait is bundled
+   */
+  preset?: ("library" | undefined)
+  /**
+   * Traits of the project, adjusting those of the preset.
+   */
+  traits?: (TraitsInput | undefined)
+  /**
+   * Structure settings shared by every environment.
+   */
+  structure?: (StructureInput | undefined)
+  /**
+   * Aliases generated into `package.json#imports` (and, for bundled sources, the tsconfig `paths`) by `engrenage sync`, in one flat `#` namespace.
+   * `false` turns them off.
+   */
+  aliases?: ((false | AliasesInput) | undefined)
+  typescript?: (TypescriptInput | undefined)
   /**
    * Workspaces of the project, by the glob matching their directories (`extensions/*`).
    * Each glob is one environment; workspaces needing another structure or runtime get a glob of their own.
@@ -167,10 +162,21 @@ export interface ConfigInput {
       } | undefined)
     }
   } | undefined)
+  agents?: (AgentsInput | undefined)
+  git?: (GitInput | undefined)
+  github?: (GithubInput | undefined)
+  prettier?: (PrettierInput | undefined)
+  vscode?: (VscodeInput | undefined)
   /**
-   * Who may install the published package from npm: `public` for anyone, `private` for members of its scope (`restricted` access).
-   * Applies only under the `published` trait; an unpublished package has no visibility.
-   * @default the `publishConfig.access` of `package.json` (`public` or `restricted`), else `private`
+   * Whether commands print the stack of an error and its causes.
+   * Also enabled by the `--debug` flag and `ENGRENAGE_DEBUG=1`; any one of them enables it.
+   * @default false
    */
-  visibility?: (("public" | "private") | undefined)
+  debug?: (boolean | undefined)
 }
+
+declare global {
+  interface EngrenageConfigInput extends BuiltinConfigInput {}
+}
+
+export type ConfigInput = EngrenageConfigInput;
