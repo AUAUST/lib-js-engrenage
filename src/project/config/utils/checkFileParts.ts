@@ -1,7 +1,10 @@
 import type { Registry } from "#foundation/extensions/index";
+import type { ConfigResolver } from "#project/config/types/ConfigResolver";
 import type { Extension } from "#project/config/types/Extension";
 
-export function checkFileParts(registry: Registry<Extension>): void {
+export function checkFileParts(
+  registry: Registry<Extension, ConfigResolver>,
+): void {
   const findings: string[] = [];
 
   for (const { key: part, owner } of registry.list("parts")) {

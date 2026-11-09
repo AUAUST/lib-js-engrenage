@@ -35,7 +35,10 @@ interface SlotRecord<Extension extends ExtensionShape> {
   readonly registered: Registered<Extension>[];
 }
 
-export function collectExtensions<Extension extends ExtensionShape>(
+export function collectExtensions<
+  Extension extends ExtensionShape,
+  Scope = unknown,
+>(
   extensions: readonly Extension[],
   {
     slotKind,
@@ -43,11 +46,11 @@ export function collectExtensions<Extension extends ExtensionShape>(
     ...activation
   }: {
     slotKind: KindOf<Extension>;
-    isActive(extension: Extension): boolean | Promise<boolean>;
+    isActive(extension: Extension, scope: Scope): boolean | Promise<boolean>;
     explainInactive?(extension: Extension): string | undefined;
     matches?(read: string, produced: string): boolean;
   },
-): Registry<Extension> {
+): Registry<Extension, Scope> {
   const findings: string[] = [];
   const names = new Set<string>();
 

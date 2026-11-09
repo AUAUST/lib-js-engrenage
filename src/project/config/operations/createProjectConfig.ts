@@ -1,7 +1,7 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { isNotEmpty, map } from "@auaust/primitive-kit/arrays";
 import { freeze, values } from "@auaust/toolkit/object";
 
-import { collectExtensions, type Registry } from "#foundation/extensions/index";
+import { collectExtensions } from "#foundation/extensions/index";
 import {
   createFilesystem,
   resolveWithin,
@@ -15,6 +15,7 @@ import {
 import { extensionsSchema } from "#project/config/config/schemas/extensionsSchema";
 import { checkFileParts } from "#project/config/utils/checkFileParts";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { ConfigResolver } from "#project/config/types/ConfigResolver";
 import type { ConfigSections } from "#project/config/types/ConfigSections";
 import type { Extension } from "#project/config/types/Extension";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
@@ -47,17 +48,16 @@ export function createProjectConfig({
     "extensions",
   );
 
-  // @debt the registry's activation reads the resolver built from that same registry, a circular dependency that forces explicit annotations
-  const registry: Registry<Extension> = collectExtensions<Extension>(
+  const registry = collectExtensions<Extension, ConfigResolver>(
     [...values(builtins).flat(), ...listed],
     {
       slotKind: "slots",
-      async isActive({ when }): Promise<boolean> {
+      async isActive({ when }, config): Promise<boolean> {
         if (when === undefined) {
           return true;
         }
 
-        const environment = await resolve("environment");
+        const environment = await config.resolve("environment");
 
         return environment.hasDependency(when.installed);
       },
@@ -74,11 +74,29 @@ export function createProjectConfig({
     return when === undefined ? undefined : `install ${when.installed}`;
   }
 
-  async function refuse(key: string): Promise<string | undefined> {
+  async function refuse(
+    key: string,
+    reader: ConfigResolver,
+  ): Promise<string | undefined> {
     const owner = registry.owner("keys", key);
 
-    if (owner?.when === undefined || (await registry.isActive(owner.name))) {
+    const requires = owner?.requires ?? [];
+
+    if (
+      owner === undefined ||
+      (owner.when === undefined && !isNotEmpty(requires))
+    ) {
       return;
+    }
+
+    try {
+      if (await registry.isActive(owner.name, reader)) {
+        return;
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+
+      return `Config key "${key}" belongs to ${owner.name}, whose requirements are unmet: ${message}`;
     }
 
     const explanation = explainInactive(owner);

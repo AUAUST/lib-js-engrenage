@@ -12,7 +12,7 @@ import type { PayloadOf } from "#foundation/extensions/types/PayloadOf";
 import type { Registry } from "#foundation/extensions/types/Registry";
 import type { SlotOf } from "#foundation/extensions/types/SlotOf";
 
-export function createRegistry<Extension extends ExtensionShape>(
+export function createRegistry<Extension extends ExtensionShape, Scope>(
   {
     extensions,
     kinds,
@@ -36,10 +36,10 @@ export function createRegistry<Extension extends ExtensionShape>(
     isActive: evaluateActivation,
     explainInactive,
   }: {
-    isActive(extension: Extension): boolean | Promise<boolean>;
+    isActive(extension: Extension, scope: Scope): boolean | Promise<boolean>;
     explainInactive?(extension: Extension): string | undefined;
   },
-): Registry<Extension> {
+): Registry<Extension, Scope> {
   const names = new Map(
     extensions.map((extension) => [extension.name, extension]),
   );
@@ -60,12 +60,16 @@ export function createRegistry<Extension extends ExtensionShape>(
     return explanation === undefined ? "" : `: ${explanation}`;
   }
 
-  async function evaluate(extension: Extension): Promise<boolean> {
-    return evaluateActivation(extension);
+  async function evaluate(
+    extension: Extension,
+    scope: Scope,
+  ): Promise<boolean> {
+    return evaluateActivation(extension, scope);
   }
 
   async function activate(
     roots: readonly Extension[],
+    scope: Scope,
   ): Promise<ReadonlySet<Extension>> {
     const evaluations = new Map<Extension, Promise<boolean>>();
     const visited = new Set<Extension>();
@@ -73,7 +77,8 @@ export function createRegistry<Extension extends ExtensionShape>(
     const failures: string[] = [];
 
     function evaluateOnce(extension: Extension): Promise<boolean> {
-      const evaluation = evaluations.get(extension) ?? evaluate(extension);
+      const evaluation =
+        evaluations.get(extension) ?? evaluate(extension, scope);
 
       evaluations.set(extension, evaluation);
 
@@ -119,6 +124,7 @@ export function createRegistry<Extension extends ExtensionShape>(
 
   async function activeOrder(
     slot: string,
+    scope: Scope,
     policy?: "bucket" | "hook",
   ): Promise<readonly Contribution<Extension, EntryShape>[]> {
     const record = slots.get(slot);
@@ -135,7 +141,7 @@ export function createRegistry<Extension extends ExtensionShape>(
       record.order.map(({ extension }) => extension),
     );
 
-    const active = await activate([...contributors]);
+    const active = await activate([...contributors], scope);
 
     return record.order.filter(({ extension }) => active.has(extension));
   }
@@ -168,8 +174,9 @@ export function createRegistry<Extension extends ExtensionShape>(
 
   async function contributions<Slot extends SlotOf<Extension>>(
     slot: Slot,
+    scope: Scope,
   ): Promise<readonly Contribution<Extension, EntryOf<Extension, Slot>>[]> {
-    const order = await activeOrder(slot);
+    const order = await activeOrder(slot, scope);
 
     return freeze(
       order as readonly Contribution<Extension, EntryOf<Extension, Slot>>[],
@@ -179,8 +186,9 @@ export function createRegistry<Extension extends ExtensionShape>(
   async function select<Slot extends SlotOf<Extension>>(
     slot: Slot,
     name: string,
+    scope: Scope,
   ): Promise<Contribution<Extension, EntryOf<Extension, Slot>>> {
-    const order = await activeOrder(slot, "bucket");
+    const order = await activeOrder(slot, scope, "bucket");
 
     const selected = slots
       .get(slot)
@@ -206,8 +214,9 @@ export function createRegistry<Extension extends ExtensionShape>(
   async function emit<Slot extends SlotOf<Extension>>(
     slot: Slot,
     payload: PayloadOf<EntryOf<Extension, Slot>>,
+    scope: Scope,
   ): Promise<void> {
-    const order = await activeOrder(slot, "hook");
+    const order = await activeOrder(slot, scope, "hook");
 
     for (const { entry } of order) {
       const subscriber = await (entry as HookEntry<typeof payload>).load();
@@ -216,10 +225,10 @@ export function createRegistry<Extension extends ExtensionShape>(
     }
   }
 
-  async function isActive(name: string): Promise<boolean> {
+  async function isActive(name: string, scope: Scope): Promise<boolean> {
     const extension = named(name);
 
-    const active = await activate([extension]);
+    const active = await activate([extension], scope);
 
     return active.has(extension);
   }

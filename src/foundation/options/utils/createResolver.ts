@@ -12,10 +12,11 @@ interface Reading {
   readonly live: ReadonlyMap<string, unknown>;
 }
 
-interface Chain {
+interface Chain<Context> {
   readonly key: string;
   readonly trail: readonly string[];
   readonly live: Map<string, unknown>;
+  readonly reader: Resolver<Context>;
   settled: boolean;
 }
 
@@ -29,7 +30,11 @@ export function createResolver<
     source,
     sections,
     unknownNote,
-  }: { source?: string; sections: SectionSource; unknownNote?: string },
+  }: {
+    source?: string;
+    sections: SectionSource<Context>;
+    unknownNote?: string;
+  },
 ): InputResolver<Context, Sections> {
   const loaded = new Map<string, Promise<KeyedSection>>();
   const memos = new Map<string, Promise<Reading>>();
@@ -137,7 +142,7 @@ export function createResolver<
     return walk(from, [from]);
   }
 
-  function track(key: string, dependent: Chain) {
+  function track(key: string, dependent: Chain<Context>) {
     const cycle = findPath(key, dependent.key);
 
     if (cycle !== undefined) {
@@ -162,23 +167,24 @@ export function createResolver<
   ): Promise<Reading> {
     const { input: name, section } = await load(key);
 
-    const chain: Chain = {
-      key,
-      trail,
-      live: new Map(),
-      settled: false,
-    };
-
     async function resolve(dependency: string): Promise<unknown> {
       const { value } = await read(dependency, chain);
 
       return value;
     }
 
-    // @debt sections receive the open `Resolver<Context>`, not `Resolver<Context, Sections>`: a generic `Sections` is not assignable to `Section.resolve`'s open resolver, so key reads inside sections are untyped
+    // @debt sections and refusals receive the open `Resolver<Context>`, not `Resolver<Context, Sections>`: a generic `Sections` is not assignable to `Section.resolve`'s open resolver, so key reads inside sections are untyped
     const config: Resolver<Context> = {
       context,
       resolve,
+    };
+
+    const chain: Chain<Context> = {
+      key,
+      trail,
+      live: new Map(),
+      reader: config,
+      settled: false,
     };
 
     try {
@@ -248,10 +254,13 @@ export function createResolver<
       : memoize(key, trail);
   }
 
-  async function read(key: string, chain: Chain | undefined): Promise<Reading> {
+  async function read(
+    key: string,
+    chain: Chain<Context> | undefined,
+  ): Promise<Reading> {
     const active = chain === undefined || chain.settled ? undefined : chain;
 
-    const refusal = await sections.refuse?.(key);
+    const refusal = await sections.refuse?.(key, active?.reader ?? reader);
 
     if (refusal !== undefined) {
       throw new Error(
@@ -324,13 +333,22 @@ export function createResolver<
     }
   }
 
+  async function readValue(key: string): Promise<unknown> {
+    const { value } = await read(key, undefined);
+
+    return value;
+  }
+
+  const reader: Resolver<Context> = {
+    context,
+    resolve: readValue,
+  };
+
   function resolve<Key extends keyof Sections & string>(
     key: Key,
   ): Promise<Sections[Key]>;
   async function resolve(key: string): Promise<unknown> {
-    const { value } = await read(key, undefined);
-
-    return value;
+    return readValue(key);
   }
 
   return {

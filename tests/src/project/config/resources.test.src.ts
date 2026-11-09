@@ -104,6 +104,58 @@ describe("file resources", () => {
     expect(resources.list({ generated: true })).toEqual([]);
   });
 
+  test("locates the resources of an owner its staged manifest activates", async () => {
+    const config = createConfig([]);
+
+    const before = await config.resolve("resources");
+
+    expect(before.get("CHANGELOG.md")).toBeUndefined();
+
+    await config.context.filesystem.write(
+      config.context.path("package.json"),
+      JSON.stringify({
+        name: "resources",
+        devDependencies: { "@changesets/cli": "1.0.0" },
+      }),
+    );
+
+    const after = await config.resolve("resources");
+
+    expect(after.get("CHANGELOG.md")?.owner).toBe("tools/changesets");
+  });
+
+  test("fails only the resources of an owner with unmet requirements", async () => {
+    const config = createConfig([
+      {
+        name: "needs-eslint",
+        requires: ["tools/eslint"],
+        owns: {
+          files: {
+            "needs.out": {
+              committed: false,
+              locate: () => {
+                return Promise.resolve({ file: "needs.out" });
+              },
+            },
+          },
+        },
+      },
+    ]);
+
+    const resources = await config.resolve("resources");
+
+    const failure = expect.objectContaining({
+      message:
+        'File resource "needs.out" of needs-eslint cannot be located: needs-eslint requires tools/eslint, which is inactive: install eslint',
+      cause: expect.any(Error),
+    });
+
+    expect(() => resources.get("needs.out")).toThrow(failure);
+    expect(() => resources.list({ committed: false })).toThrow(failure);
+    expect(() => resources.get("gitignore")).not.toThrow();
+    expect(() => resources.list({ generated: true })).not.toThrow();
+  });
+
   test("fails on a part of a file closed to parts", () => {
     expect(() => {
       return createConfig([

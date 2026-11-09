@@ -23,7 +23,7 @@ function collect(
     matches?(read: string, produced: string): boolean;
   } = {},
 ) {
-  return collectExtensions(extensions, {
+  return collectExtensions<TestExtension, undefined>(extensions, {
     slotKind: "slots",
     isActive: ({ when }) => when !== false,
     ...options,
@@ -187,7 +187,7 @@ describe("collectExtensions", () => {
       },
     ]);
 
-    const contributions = await registry.contributions("targets");
+    const contributions = await registry.contributions("targets", undefined);
 
     expect(contributions.map(({ entry }) => entry.name)).toEqual([
       "second-write",
@@ -225,7 +225,7 @@ describe("collectExtensions", () => {
       },
     );
 
-    const contributions = await registry.contributions("targets");
+    const contributions = await registry.contributions("targets", undefined);
 
     expect(contributions.map(({ extension }) => extension.name)).toEqual([
       "producer",
@@ -389,11 +389,51 @@ describe("collectExtensions", () => {
       inactive,
     ]);
 
-    const contributions = await registry.contributions("targets");
+    const contributions = await registry.contributions("targets", undefined);
 
     expect(contributions.map(({ extension }) => extension.name)).toEqual([
       "reader",
     ]);
+  });
+
+  test("evaluates activation in the scope each read passes", async () => {
+    const isActive = vi.fn(
+      (extension: TestExtension, installed: ReadonlySet<string>) => {
+        return extension.when !== true || installed.has(extension.name);
+      },
+    );
+
+    const registry = collectExtensions<TestExtension, ReadonlySet<string>>(
+      [
+        {
+          name: "host",
+          owns: {
+            slots: {
+              targets: {},
+            },
+          },
+        },
+        {
+          name: "scoped",
+          when: true,
+          contributes: { targets: [{ name: "target" }] },
+        },
+      ],
+      {
+        slotKind: "slots",
+        isActive,
+      },
+    );
+
+    const installed = new Set(["scoped"]);
+
+    const active = await registry.contributions("targets", installed);
+
+    const inactive = await registry.contributions("targets", new Set());
+
+    expect(active.map(({ entry }) => entry.name)).toEqual(["target"]);
+    expect(inactive).toEqual([]);
+    expect(isActive).toHaveBeenCalledWith(active[0]?.extension, installed);
   });
 
   test("fails on an active contributor requiring an inactive extension", async () => {
@@ -422,11 +462,11 @@ describe("collectExtensions", () => {
       },
     );
 
-    await expect(registry.contributions("targets")).rejects.toThrow(
+    await expect(registry.contributions("targets", undefined)).rejects.toThrow(
       "first requires missing, which is inactive: missing is not installed",
     );
 
-    await expect(registry.isActive("unknown")).rejects.toThrow(
+    await expect(registry.isActive("unknown", undefined)).rejects.toThrow(
       'Unknown extension "unknown"',
     );
   });
@@ -437,7 +477,7 @@ describe("collectExtensions", () => {
       { name: "second", requires: ["first"] },
     ]);
 
-    expect(await registry.isActive("first")).toBe(true);
+    expect(await registry.isActive("first", undefined)).toBe(true);
   });
 
   test("selects the named active entry of a bucket", async () => {
@@ -465,15 +505,17 @@ describe("collectExtensions", () => {
       },
     ]);
 
-    const selected = await registry.select("adapter", "deno");
+    const selected = await registry.select("adapter", "deno", undefined);
 
     expect(selected.extension.name).toBe("deno");
 
-    await expect(registry.select("adapter", "missing")).rejects.toThrow(
+    await expect(
+      registry.select("adapter", "missing", undefined),
+    ).rejects.toThrow(
       'Slot "adapter" has no entry "missing"; active entries: node, deno',
     );
 
-    await expect(registry.select("adapter", "bun")).rejects.toThrow(
+    await expect(registry.select("adapter", "bun", undefined)).rejects.toThrow(
       'Entry "bun" of slot "adapter" belongs to bun, which is inactive',
     );
   });
@@ -516,7 +558,7 @@ describe("collectExtensions", () => {
       },
     ]);
 
-    await registry.emit("done", "sync");
+    await registry.emit("done", "sync", undefined);
 
     expect(events).toEqual([
       "first loaded",
@@ -556,7 +598,7 @@ describe("collectExtensions", () => {
       },
     ]);
 
-    await expect(registry.emit("done", "sync")).rejects.toBe(error);
+    await expect(registry.emit("done", "sync", undefined)).rejects.toBe(error);
 
     expect(second).not.toHaveBeenCalled();
   });

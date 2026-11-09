@@ -7,7 +7,7 @@ import type { OwnedDeclaration } from "#foundation/extensions/types/OwnedDeclara
 import type { PayloadOf } from "#foundation/extensions/types/PayloadOf";
 import type { SlotOf } from "#foundation/extensions/types/SlotOf";
 
-export interface Registry<Extension extends ExtensionShape> {
+export interface Registry<Extension extends ExtensionShape, Scope = unknown> {
   readonly extensions: readonly Extension[];
   owner(kind: KindOf<Extension>, key: string): Extension | undefined;
   get<Kind extends KindOf<Extension>>(
@@ -19,14 +19,17 @@ export interface Registry<Extension extends ExtensionShape> {
   ): readonly OwnedDeclaration<Extension, DeclarationOf<Extension, Kind>>[];
   contributions<Slot extends SlotOf<Extension>>(
     slot: Slot,
+    scope: Scope,
   ): Promise<readonly Contribution<Extension, EntryOf<Extension, Slot>>[]>;
   select<Slot extends SlotOf<Extension>>(
     slot: Slot,
     name: string,
+    scope: Scope,
   ): Promise<Contribution<Extension, EntryOf<Extension, Slot>>>;
   emit<Slot extends SlotOf<Extension>>(
     slot: Slot,
     payload: PayloadOf<EntryOf<Extension, Slot>>,
+    scope: Scope,
   ): Promise<void>;
-  isActive(name: string): Promise<boolean>;
+  isActive(name: string, scope: Scope): Promise<boolean>;
 }

@@ -23,10 +23,6 @@ export const resourcesSection = declareSection({
     const paths = new Map<string, LocatedResource>();
 
     for (const { key: name, declaration, owner } of registry.list("files")) {
-      if (!(await registry.isActive(owner.name))) {
-        continue;
-      }
-
       const location = await locate(config, name, owner, declaration);
 
       if (location === undefined) {
@@ -141,9 +137,13 @@ async function locate(
   owner: Extension,
   declaration: FileResource,
 ): Promise<FileLocation | Error | undefined> {
-  const { root } = config.context;
+  const { root, registry } = config.context;
 
   try {
+    if (!(await registry.isActive(owner.name, config))) {
+      return;
+    }
+
     const location = await declaration.locate(config);
 
     if (location === undefined || "globs" in location) {

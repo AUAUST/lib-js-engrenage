@@ -10,8 +10,10 @@ export async function listSyncOptions(config: LoadedConfig): Promise<{
   targets: readonly string[];
   options: readonly SyncOption[];
 }> {
-  const contributions =
-    await config.context.registry.contributions("sync.targets");
+  const contributions = await config.context.registry.contributions(
+    "sync.targets",
+    config,
+  );
 
   const targets = map(contributions, ({ entry }) => entry.name);
 

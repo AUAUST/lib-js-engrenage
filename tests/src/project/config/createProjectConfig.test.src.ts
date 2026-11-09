@@ -149,13 +149,38 @@ describe("createProjectConfig", () => {
 
     const open: Resolver<ConfigContext> = config;
 
-    expect(await registry.contributions("test.entries")).toEqual([]);
+    expect(await registry.contributions("test.entries", config)).toEqual([]);
 
     await expect(open.resolve("gated")).rejects.toThrow(
       'Config key "gated" belongs to gated-fixture, which is inactive: install absent-package',
     );
 
     await expect(validateConfig(config)).resolves.toBe(config);
+  });
+
+  test("refuses the keys of an owner with unmet requirements", async () => {
+    const open: Resolver<ConfigContext> = createConfig({
+      extensions: [
+        {
+          name: "needs-eslint",
+          requires: ["tools/eslint"],
+          owns: {
+            keys: {
+              needsEslint: {
+                input: "needsEslint",
+                load() {
+                  return Promise.resolve(gatedSection);
+                },
+              },
+            },
+          },
+        },
+      ],
+    });
+
+    await expect(open.resolve("needsEslint")).rejects.toThrow(
+      'Config key "needsEslint" belongs to needs-eslint, whose requirements are unmet: needs-eslint requires tools/eslint, which is inactive: install eslint',
+    );
   });
 
   test("resolves the keys of an owner whose package is installed", async () => {

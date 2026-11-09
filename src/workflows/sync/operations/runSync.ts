@@ -15,7 +15,7 @@ export async function runSync(
 ) {
   const { registry } = config.context;
 
-  const contributions = await registry.contributions("sync.targets");
+  const contributions = await registry.contributions("sync.targets", config);
 
   const active = map(contributions, ({ entry }) => entry.name);
 
@@ -41,8 +41,12 @@ export async function runSync(
     targets.push(entry.name);
   }
 
-  await registry.emit("sync.done", {
+  await registry.emit(
+    "sync.done",
+    {
+      config,
+      targets,
+    },
     config,
-    targets,
-  });
+  );
 }
