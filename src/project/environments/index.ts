@@ -12,6 +12,7 @@ export { readInputDirs } from "#project/environments/utils/readInputDirs";
 
 // @barrel ports/*.ts all
 export * from "#project/environments/ports/EnvironmentEntry";
+export * from "#project/environments/ports/LanguageEntry";
 export * from "#project/environments/ports/ResolvedEnvironment";
 // @end
 

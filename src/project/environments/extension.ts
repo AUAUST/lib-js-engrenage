@@ -1,4 +1,7 @@
-import { environmentEntry } from "#project/environments/constants";
+import {
+  environmentEntry,
+  languageEntry,
+} from "#project/environments/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
@@ -6,6 +9,7 @@ export default {
   owns: {
     slots: {
       environments: { entry: environmentEntry },
+      languages: { entry: languageEntry },
     },
     keys: {
       "environments": {
@@ -195,6 +199,13 @@ export default {
         name: "data",
         title: "the data environment's files",
         level: "enforced",
+      },
+    ],
+    languages: [
+      {
+        name: "javascript",
+        extensions: [".js", ".mjs", ".cjs"],
+        modules: true,
       },
     ],
   },

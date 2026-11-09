@@ -5,6 +5,7 @@ import { flat, map } from "@auaust/primitive-kit/arrays";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import { pathExists } from "#foundation/filesystem/index";
+import type { LanguageEntry } from "#project/environments/index";
 import type { Alias } from "#project/structure/types/Alias";
 import type { AliasesOption } from "#project/structure/types/AliasesOption";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
@@ -14,6 +15,23 @@ import type { Directory } from "#types/Directory";
 
 const projectRoot = ".";
 const bundlerPrefix = "#";
+
+interface AliasedFiles {
+  readonly extension: string;
+  readonly declarations: string | undefined;
+}
+
+function readAliasedFiles({
+  name,
+  extensions: [extension],
+  declarations,
+}: LanguageEntry): AliasedFiles {
+  if (extension === undefined) {
+    throw new Error(`The ${name} language lists no file extension to alias`);
+  }
+
+  return { extension, declarations };
+}
 
 const packageJsonAlias: Alias = {
   key: "#package.json",
@@ -27,11 +45,12 @@ async function createDirectoryAliases(
   path: Directory,
   source: string,
   indexFile: string,
+  extension: string,
 ): Promise<Alias[]> {
   return [
     {
       key: `#${name}/*`,
-      target: `./${path}/*.ts`,
+      target: `./${path}/*${extension}`,
       source,
     },
     ...((await pathExists(join(root, path, indexFile)))
@@ -49,6 +68,7 @@ async function createDirectoryAliases(
 async function createSourceAliases(
   root: Directory,
   { dirs, root: tree, indexFile, entryFile }: EnvironmentStructure,
+  { extension, declarations }: AliasedFiles,
 ): Promise<Alias[]> {
   const directories = flat(
     await Promise.all(
@@ -59,6 +79,7 @@ async function createSourceAliases(
           child.path,
           `src entry ${child.path}`,
           indexFile,
+          extension,
         );
 
         return aliases.map((alias) => {
@@ -81,15 +102,16 @@ async function createSourceAliases(
           .filter((entry) => {
             return (
               entry.isFile() &&
-              entry.name.endsWith(".ts") &&
-              !entry.name.endsWith(".d.ts") &&
+              entry.name.endsWith(extension) &&
+              (declarations === undefined ||
+                !entry.name.endsWith(declarations)) &&
               entry.name !== indexFile &&
               entry.name !== entryFile
             );
           })
           .map((entry): Alias => {
             return {
-              key: `#${entry.name.slice(0, -".ts".length)}`,
+              key: `#${entry.name.slice(0, -extension.length)}`,
               target: `./${join(dir, entry.name)}`,
               source: `src entry ${join(dir, entry.name)}`,
               path: join(dir, entry.name),
@@ -147,6 +169,7 @@ export async function resolveAliases({
   published,
   outDir,
   structure,
+  language,
 }: {
   root: Directory;
   options: { global: AliasesOption; src: AliasesOption };
@@ -156,6 +179,7 @@ export async function resolveAliases({
   published: boolean;
   outDir: Directory | undefined;
   structure: EnvironmentStructure | undefined;
+  language: LanguageEntry;
 }): Promise<ResolvedAliases> {
   if (!options.global.enabled) {
     return freeze({
@@ -164,6 +188,8 @@ export async function resolveAliases({
       src: [],
     });
   }
+
+  const files = readAliasedFiles(language);
 
   const generatedSource =
     options.src.enabled && options.src.generated && structure !== undefined;
@@ -183,7 +209,7 @@ export async function resolveAliases({
             : [
                 {
                   key: `#${dir}/*`,
-                  target: `./${dir}/*.ts`,
+                  target: `./${dir}/*${files.extension}`,
                   source: `${name} environment`,
                 },
               ];
@@ -219,7 +245,9 @@ export async function resolveAliases({
 
   const sourceAliases = options.src.enabled
     ? [
-        ...(generatedSource ? await createSourceAliases(root, structure) : []),
+        ...(generatedSource
+          ? await createSourceAliases(root, structure, files)
+          : []),
         ...createDefinedAliases(options.src, "src.aliases.define", bundled),
       ]
     : [];

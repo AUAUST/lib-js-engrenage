@@ -11,29 +11,46 @@ import {
   transpileModule,
 } from "typescript";
 
-import { flat, flatMap } from "@auaust/primitive-kit/arrays";
+import { flat, flatMap, map } from "@auaust/primitive-kit/arrays";
 import { values } from "@auaust/toolkit/object";
 
 import { isMissingError } from "#foundation/filesystem/index";
 import { createImportResolver } from "#project/structure/utils/createImportResolver";
+import type { LanguageEntry } from "#project/environments/index";
 import type { ImportCycle } from "#project/structure/types/ImportCycle";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { Directory } from "#types/Directory";
 
-const codeExtensions = [".ts", ".tsx", ".mts", ".cts", ".js", ".mjs", ".cjs"];
 const ignoredDirectories = new Set(["node_modules", "dist"]);
 
-function isCodeFile(name: string): boolean {
+interface ModuleFiles {
+  readonly extensions: readonly string[];
+  readonly declarations: readonly string[];
+}
+
+function readModuleFiles(languages: readonly LanguageEntry[]): ModuleFiles {
+  const modules = languages.filter((language) => language.modules === true);
+
+  return {
+    extensions: flatMap(modules, (language) => language.extensions),
+    declarations: flatMap(modules, (language) => {
+      return language.declarations === undefined ? [] : [language.declarations];
+    }),
+  };
+}
+
+function isCodeFile(name: string, { extensions, declarations }: ModuleFiles) {
   return (
-    codeExtensions.some((extension) => name.endsWith(extension)) &&
-    !name.endsWith(".d.ts")
+    extensions.some((extension) => name.endsWith(extension)) &&
+    !declarations.some((declaration) => name.endsWith(declaration))
   );
 }
 
 async function listCodeFiles(
   root: Directory,
   directory: Directory,
+  modules: ModuleFiles,
 ): Promise<string[]> {
   const path = join(root, directory);
 
@@ -56,10 +73,10 @@ async function listCodeFiles(
       if (entry.isDirectory()) {
         return entry.name.startsWith(".") || ignoredDirectories.has(entry.name)
           ? []
-          : listCodeFiles(root, child);
+          : listCodeFiles(root, child, modules);
       }
 
-      return entry.isFile() && isCodeFile(entry.name) ? [child] : [];
+      return entry.isFile() && isCodeFile(entry.name, modules) ? [child] : [];
     }),
   );
 
@@ -105,16 +122,20 @@ async function readRuntimeSpecifiers(
   });
 }
 
-function candidatesOf(path: string): string[] {
-  const withoutExtension = path.replace(/\.(?:[cm]?js|[cm]?ts|tsx)$/, "");
+function candidatesOf(path: string, { extensions }: ModuleFiles): string[] {
+  const stripped = extensions
+    .filter((extension) => path.endsWith(extension))
+    .reduce((longest, extension) => {
+      return extension.length > longest.length ? extension : longest;
+    }, "");
+
+  const withoutExtension = path.slice(0, path.length - stripped.length);
 
   return [
     path,
-    ...[".ts", ".tsx", ".mts", ".cts"].map((extension) => {
-      return `${withoutExtension}${extension}`;
-    }),
-    ...[".ts", ".tsx"].map((extension) => `${path}${extension}`),
-    ...["index.ts", "index.tsx"].map((index) => posix.join(path, index)),
+    ...map(extensions, (extension) => `${withoutExtension}${extension}`),
+    ...map(extensions, (extension) => `${path}${extension}`),
+    ...map(extensions, (extension) => posix.join(path, `index${extension}`)),
   ];
 }
 
@@ -220,12 +241,16 @@ export async function findImportCycles({
   structure,
   aliases,
   verbatimModuleSyntax,
+  languages,
 }: {
   root: Directory;
   structure: ResolvedStructure;
   aliases: ResolvedAliases;
   verbatimModuleSyntax: boolean;
+  languages: readonly LanguageEntry[];
 }): Promise<ImportCycle[]> {
+  const modules = readModuleFiles(languages);
+
   const directories = new Set(
     flatMap(values(structure), (environment) => {
       return environment?.dirs ?? [];
@@ -235,7 +260,9 @@ export async function findImportCycles({
   const files = new Set(
     flat(
       await Promise.all(
-        [...directories].map((directory) => listCodeFiles(root, directory)),
+        [...directories].map((directory) => {
+          return listCodeFiles(root, directory, modules);
+        }),
       ),
     ),
   );
@@ -246,7 +273,9 @@ export async function findImportCycles({
     const resolved = resolveImport(specifier, from);
 
     return resolved?.kind === "relative" || resolved?.kind === "alias"
-      ? candidatesOf(resolved.path).find((candidate) => files.has(candidate))
+      ? candidatesOf(resolved.path, modules).find((candidate) => {
+          return files.has(candidate);
+        })
       : undefined;
   }
 

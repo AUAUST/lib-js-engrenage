@@ -1,10 +1,17 @@
 import { describe, expect, test } from "vitest";
 
+import { map } from "@auaust/primitive-kit/arrays";
+
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import type { LanguageEntry } from "#project/environments/index";
 
-async function cyclesOf(files: Record<string, string>, typescript = "{}") {
+async function cyclesOf(
+  files: Record<string, string>,
+  typescript = "{}",
+  fixtures: readonly LanguageEntry[] = [],
+) {
   const project = createTemporaryProject({
     "package.json": '{ "name": "project", "type": "module" }',
     "tsconfig.json": "{}",
@@ -22,6 +29,13 @@ async function cyclesOf(files: Record<string, string>, typescript = "{}") {
     structure: await config.resolve("structure"),
     aliases: await config.resolve("aliases"),
     verbatimModuleSyntax,
+    languages: [
+      ...map(
+        await config.context.registry.contributions("languages", config),
+        ({ entry }) => entry,
+      ),
+      ...fixtures,
+    ],
   });
 }
 
@@ -89,5 +103,20 @@ describe("findImportCycles", () => {
         "src/feature/sub/index.ts",
       ],
     ]);
+  });
+
+  test("resolves no import to a file of a language without modules", async () => {
+    const files = {
+      "src/a.ts": 'import { b } from "./b";\nexport const a = b;\n',
+      "src/b.liquid": 'import { a } from "./a";\nexport const b = a;\n',
+    };
+
+    const liquid = { name: "liquid", extensions: [".liquid"] };
+
+    expect(await cyclesOf(files, "{}", [liquid])).toEqual([]);
+
+    expect(await cyclesOf(files, "{}", [{ ...liquid, modules: true }])).toEqual(
+      [["src/a.ts", "src/b.liquid", "src/a.ts"]],
+    );
   });
 });

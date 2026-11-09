@@ -24,6 +24,14 @@ export default [
       },
     },
     contributes: {
+      "languages": [
+        {
+          name: "typescript",
+          extensions: [".ts", ".tsx", ".mts", ".cts"],
+          modules: true,
+          declarations: ".d.ts",
+        },
+      ],
       "sync.targets": [
         {
           name: "tsconfig",

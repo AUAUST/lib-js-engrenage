@@ -20,6 +20,10 @@ export async function checkStructure(
     structure,
     aliases: await config.resolve("aliases"),
     verbatimModuleSyntax,
+    languages: map(
+      await config.context.registry.contributions("languages", config),
+      ({ entry }) => entry,
+    ),
   });
 
   return {

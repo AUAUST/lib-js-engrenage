@@ -2,8 +2,10 @@ import {
   array,
   boolean,
   looseObject,
+  minLength,
   optional,
   picklist,
+  pipe,
   string,
 } from "valibot";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
@@ -80,4 +82,12 @@ export const environmentEntry: StandardSchemaV1 = looseObject({
   imports: optional(array(string())),
   tsconfig: optional(boolean()),
   owns: optional(array(string())),
+});
+
+// @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
+export const languageEntry: StandardSchemaV1 = looseObject({
+  name: string(),
+  extensions: pipe(array(string()), minLength(1)),
+  modules: optional(boolean()),
+  declarations: optional(string()),
 });
