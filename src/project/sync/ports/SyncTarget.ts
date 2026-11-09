@@ -12,7 +12,6 @@ export interface SyncTarget extends EntryShape {
   load(): Promise<SyncRun>;
 }
 
-// @debt this global slot augmentation is declared twice when source and dist declarations meet in one program, as in the dist type-check, which then fails
 declare global {
   interface EngrenageSlots {
     "sync.targets": SyncTarget;

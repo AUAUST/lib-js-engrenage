@@ -48,7 +48,7 @@ describe("produceTsconfigInclude", () => {
     ]);
   });
 
-  test("follows a custom tests.dirs in the tests include, which the dist variant inherits", async () => {
+  test("follows a custom tests.dirs in the tests and dist includes", async () => {
     const read = await syncProject(
       {
         tests: {
@@ -66,7 +66,18 @@ describe("produceTsconfigInclude", () => {
     const expected = ["spec/**/*.ts", "spec/**/*.tsx", "env.d.ts"];
 
     expect(read("tsconfig.tests.json").include).toEqual(expected);
-    expect(read("tsconfig.tests.dist.json").include).toBeUndefined();
+
+    expect(read("tsconfig.tests.dist.json").include).toEqual([
+      "spec/**/*.spec.ts",
+      "spec/**/*.spec.tsx",
+      "spec/**/*.test.ts",
+      "spec/**/*.test.tsx",
+      "spec/**/*.spec.dist.ts",
+      "spec/**/*.spec.dist.tsx",
+      "spec/**/*.test.dist.ts",
+      "spec/**/*.test.dist.tsx",
+      "env.d.ts",
+    ]);
   });
 
   test("adds the globs of an inheriting environment", async () => {

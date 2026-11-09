@@ -50,7 +50,7 @@ function toTarget(
       };
 }
 
-// @debt "tests.dist" does not fit the config shape, so it is special-cased here and in createResolvedConfig, resolveTsconfigEnvironments and the extends, paths and skipLibCheck producers; a single lookup from tsconfig key to its environment would remove the branches
+// @debt "tests.dist" does not fit the config shape, so it is special-cased here and in createResolvedConfig, resolveTsconfigEnvironments and the extends, include, paths and skipLibCheck producers; a single lookup from tsconfig key to its environment would remove the branches
 async function isActive(
   config: LoadedConfig,
   key: TsconfigKey,
@@ -163,7 +163,6 @@ async function listInheritedPaths(
   }
 
   const inheritedLists = [
-    [["include"], target.include],
     [["exclude"], target.exclude],
     [["compilerOptions", "target"], undefined],
     [["compilerOptions", "lib"], target.lib],

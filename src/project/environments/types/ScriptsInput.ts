@@ -84,7 +84,7 @@ export interface ScriptsInput {
     /**
      * Value of `include`.
      * `false` leaves the field to the file.
-     * @default the TypeScript files of the environments that share this tsconfig, plus the env file when they define globals
+     * @default the TypeScript files of the environments that share this tsconfig, plus the env file when they define globals; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations, so no `.src` test brings source into the dist check
      */
     include?: (ManagedListOption<string> | undefined)
     /**

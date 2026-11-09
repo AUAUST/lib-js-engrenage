@@ -192,6 +192,7 @@ describe("syncTsconfigFiles", () => {
 
     expect(JSON.parse(project.read("tsconfig.tests.dist.json"))).toEqual({
       extends: "./tsconfig.tests.json",
+      include: expect.not.arrayContaining(["stale/**/*.ts"]),
       compilerOptions: {
         strict: true,
         paths: {},
@@ -219,11 +220,10 @@ describe("syncTsconfigFiles", () => {
 
     await config.context.filesystem.flush();
 
-    const { include, compilerOptions } = JSON.parse(
+    const { compilerOptions } = JSON.parse(
       project.read("tsconfig.tests.dist.json"),
     );
 
-    expect(include).toBeUndefined();
     expect(compilerOptions.lib).toEqual(["ES2025", "DOM"]);
   });
 
