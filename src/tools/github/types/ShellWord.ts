@@ -1,6 +1,6 @@
-import type { ParseEntry } from "shell-quote";
+import type { ShellToken } from "#tools/github/types/ShellToken";
 
 export type ShellWord =
   | string
   | { readonly op: string }
-  | { readonly process: readonly ParseEntry[] };
+  | { readonly process: readonly ShellToken[] };

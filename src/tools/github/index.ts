@@ -52,6 +52,7 @@ export * from "#tools/github/types/RelatedIssue";
 export * from "#tools/github/types/ResolvedGithub";
 export * from "#tools/github/types/ShellCommand";
 export * from "#tools/github/types/ShellPipeline";
+export * from "#tools/github/types/ShellToken";
 export * from "#tools/github/types/ShellWord";
 export * from "#tools/github/types/WorkflowSet";
 export * from "#tools/github/types/WorkflowSetName";

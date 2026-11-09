@@ -1,5 +1,3 @@
-import type { ParseEntry as Token } from "shell-quote";
-
 import { isString } from "@auaust/toolkit/isString";
 
 import { parseShellPipelines } from "#tools/github/utils/parseShellPipelines";
@@ -8,6 +6,7 @@ import type { GithubBodySource } from "#tools/github/types/GithubBodySource";
 import type { GithubWrite } from "#tools/github/types/GithubWrite";
 import type { ShellCommand as Command } from "#tools/github/types/ShellCommand";
 import type { ShellPipeline as Pipeline } from "#tools/github/types/ShellPipeline";
+import type { ShellToken as Token } from "#tools/github/types/ShellToken";
 import type { ShellWord as Word } from "#tools/github/types/ShellWord";
 
 const actions = [
