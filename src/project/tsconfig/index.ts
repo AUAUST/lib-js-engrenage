@@ -26,7 +26,6 @@ export * from "#project/tsconfig/types/ResolvedEnvironmentTsconfig";
 export * from "#project/tsconfig/types/ResolvedEnvironmentTsconfigOption";
 export * from "#project/tsconfig/types/ResolvedTypescript";
 export * from "#project/tsconfig/types/Tsconfig";
-export * from "#project/tsconfig/types/TsconfigEnvironment";
 export * from "#project/tsconfig/types/TsconfigGroups";
 export * from "#project/tsconfig/types/TsconfigKey";
 export * from "#project/tsconfig/types/TsconfigOwner";
@@ -36,12 +35,10 @@ export * from "#project/tsconfig/types/TypescriptInput";
 export * from "#project/tsconfig/types/UnmanagedEnvironmentTsconfig";
 // @end
 
-export {
-  tsconfigEnvironments,
-  unmanagedTsconfig,
-} from "#project/tsconfig/constants";
+export { unmanagedTsconfig } from "#project/tsconfig/constants";
 
 // @barrel config/schemas/*.ts named
+export { inheritsSchema } from "#project/tsconfig/config/schemas/inheritsSchema";
 export { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
 // @end
 

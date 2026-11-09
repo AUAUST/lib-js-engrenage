@@ -1,21 +1,63 @@
-import { freeze } from "@auaust/toolkit/object";
+import { freeze, record } from "@auaust/toolkit/object";
 
+import {
+  dataEnvironment,
+  sourceEnvironment,
+} from "#project/structure/constants";
+import type { EnvironmentEntry } from "#project/environments/index";
 import type { ImportGrants } from "#project/structure/types/ImportGrants";
 
 export function resolveEnvironmentGrants(
   published: boolean,
-): Pick<ImportGrants, "environments" | "data" | "variants"> {
+  environments: readonly EnvironmentEntry[],
+): Pick<
+  ImportGrants,
+  "environments" | "data" | "elements" | "consumers" | "variants"
+> {
+  const categories = environments
+    .map(({ name }) => name)
+    .filter((name) => name !== sourceEnvironment);
+
+  const forbidden = environments.map(({ name, imports = [] }) => {
+    const granted = new Set([
+      name,
+      ...imports,
+      ...(name === sourceEnvironment && !published ? [dataEnvironment] : []),
+    ]);
+
+    return [
+      name,
+      freeze(categories.filter((category) => !granted.has(category))),
+    ] as const;
+  });
+
   return freeze({
-    environments: freeze({
-      src: freeze(["bin", "scripts", "tests"] as const),
-      bin: freeze(["scripts", "tests"] as const),
-      scripts: freeze(["bin", "tests"] as const),
-      tooling: freeze(["bin", "scripts", "tests"] as const),
-    }),
+    environments: freeze(
+      record(
+        forbidden.map(([name, categories]) => {
+          return [
+            name,
+            freeze(
+              categories.filter((category) => category !== dataEnvironment),
+            ),
+          ] as const;
+        }),
+      ),
+    ),
     data: freeze(
-      published
-        ? (["bin", "tooling", "src"] as const)
-        : (["bin", "tooling"] as const),
+      forbidden
+        .filter(([, categories]) => categories.includes(dataEnvironment))
+        .map(([name]) => name),
+    ),
+    elements: freeze(
+      environments
+        .filter(({ structure }) => structure === "domains")
+        .map(({ name }) => name),
+    ),
+    consumers: freeze(
+      environments
+        .filter(({ consumesSource }) => consumesSource === true)
+        .map(({ name }) => name),
     ),
     variants: published
       ? freeze({

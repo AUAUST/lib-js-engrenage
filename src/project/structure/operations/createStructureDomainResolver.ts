@@ -10,7 +10,6 @@ import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles"
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
-import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -27,7 +26,7 @@ export function createStructureDomainResolver({
   internals,
   rolesFor,
 }: {
-  name: StructureEnvironmentName;
+  name: string;
   root: Directory;
   options: StructureOptions;
   commands: boolean;

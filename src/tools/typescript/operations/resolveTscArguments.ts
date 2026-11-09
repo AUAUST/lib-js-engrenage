@@ -1,4 +1,4 @@
-import { tsconfigEnvironments } from "#project/tsconfig/index";
+import { listTsconfigEnvironments } from "#tools/typescript/operations/listTsconfigEnvironments";
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import { resolveTscProjectArguments } from "#tools/typescript/operations/resolveTscProjectArguments";
 import type { LoadedConfig } from "#project/config/index";
@@ -6,7 +6,7 @@ import type { LoadedConfig } from "#project/config/index";
 async function hasReferencedEnvironment(
   config: LoadedConfig,
 ): Promise<boolean> {
-  for (const name of tsconfigEnvironments) {
+  for (const name of await listTsconfigEnvironments(config)) {
     const { active, tsconfig } = await resolveTsconfigEnvironment(config, name);
 
     const { owner, check } = tsconfig;

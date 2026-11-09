@@ -1,6 +1,6 @@
-import { boolean, picklist, record, string, unknown } from "valibot";
+import { boolean, record, string, unknown } from "valibot";
 
-import { entries } from "@auaust/toolkit/object";
+import { entries, getOwn } from "@auaust/toolkit/object";
 
 import {
   declare,
@@ -11,17 +11,9 @@ import {
   unset,
   type Description,
 } from "#foundation/options/index";
-import {
-  defaultTsconfigCheck,
-  defaultTsconfigInherits,
-  tsconfigEnvironments,
-} from "#project/tsconfig/constants";
-import type { TsconfigEnvironment } from "#project/tsconfig/types/TsconfigEnvironment";
+import { inheritsSchema } from "#project/tsconfig/config/schemas/inheritsSchema";
+import { defaultTsconfigInherits } from "#project/tsconfig/constants";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
-
-const inheritedDefaults: Readonly<
-  Partial<Record<TsconfigKey, TsconfigEnvironment>>
-> = defaultTsconfigInherits;
 
 // @debt `Context` reaches the declaration only through the inferred return type, so no-unnecessary-type-parameters warns that it is used once; given this is a valid use for "unused" type parameters, an heuristic could be added to the rule that allows them on functions without return type annotations
 export function declareEnvironmentTsconfig<Context = unknown>(
@@ -30,9 +22,12 @@ export function declareEnvironmentTsconfig<Context = unknown>(
     description: Description;
     explain: string;
     managed?(context: Context): boolean;
+    checked?: boolean;
   },
 ) {
-  const inherits = inheritedDefaults[key];
+  const inherits = getOwn(defaultTsconfigInherits, key);
+
+  const { checked = true } = options;
 
   return declareObject(
     {
@@ -44,7 +39,7 @@ export function declareEnvironmentTsconfig<Context = unknown>(
             "`tsconfig.<environment>.json`, named after the environment that owns it",
         },
       }),
-      inherits: declare(picklist(tsconfigEnvironments), {
+      inherits: declare(inheritsSchema, {
         description:
           "Environment whose tsconfig this one shares instead of having its own: its files and options apply here, so no other tsconfig option can be set alongside.",
         optional: unset("none, except `scripts` for `tooling`"),
@@ -106,7 +101,7 @@ export function declareEnvironmentTsconfig<Context = unknown>(
         optional: {
           explain: "`true`, except for `tests.dist`",
           compute() {
-            return defaultTsconfigCheck[key];
+            return checked;
           },
         },
       }),

@@ -1,3 +1,4 @@
+import { sourceEnvironment } from "#project/structure/constants";
 import { isEntryReference } from "#project/structure/utils/isEntryReference";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportEdge } from "#project/structure/types/ImportEdge";
@@ -11,8 +12,10 @@ export function getImportCategory(
     return "public-entries";
   }
 
-  switch (target?.environment) {
-    case "src": {
+  const environment = target?.environment;
+
+  switch (environment) {
+    case sourceEnvironment: {
       return "internal-aliases";
     }
 
@@ -20,17 +23,13 @@ export function getImportCategory(
       return "dist-artefacts";
     }
 
-    case "bin":
-    case "scripts":
-    case "data":
-    case "tests": {
-      return target.environment;
-    }
-
-    case "tooling":
     case "workspace":
     case undefined: {
-      break;
+      return;
+    }
+
+    default: {
+      return environment;
     }
   }
 }

@@ -6,7 +6,13 @@ export { declareStructureOptions } from "#project/environments/config/declarers/
 // @end
 
 // @barrel utils/*.ts named
+export { getOptionsKey } from "#project/environments/utils/getOptionsKey";
+export { readInputDirs } from "#project/environments/utils/readInputDirs";
+// @end
 
+// @barrel ports/*.ts all
+export * from "#project/environments/ports/EnvironmentEntry";
+export * from "#project/environments/ports/ResolvedEnvironment";
 // @end
 
 // @barrel types/*.ts all
@@ -16,6 +22,7 @@ export * from "#project/environments/types/DataInput";
 export * from "#project/environments/types/DefineContext";
 export * from "#project/environments/types/DefineInput";
 export * from "#project/environments/types/DomainInput";
+export * from "#project/environments/types/EnvironmentClaim";
 export * from "#project/environments/types/GlobalsFactory";
 export * from "#project/environments/types/NamespaceInput";
 export * from "#project/environments/types/ResolvedBin";
@@ -51,8 +58,10 @@ export { toolingSchema } from "#project/environments/config/schemas/toolingSchem
 
 // @barrel operations/*.ts named
 export { createDefine } from "#project/environments/operations/createDefine";
+export { readEnvironment } from "#project/environments/operations/readEnvironment";
 export { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
 export { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
+export { resolveEnvironmentDirs } from "#project/environments/operations/resolveEnvironmentDirs";
 export { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
 // @end
 
@@ -61,6 +70,8 @@ export { binOptionsSection } from "#project/environments/config/sections/binOpti
 export { binSection } from "#project/environments/config/sections/binSection";
 export { dataSection } from "#project/environments/config/sections/dataSection";
 export { defineSection } from "#project/environments/config/sections/defineSection";
+export { environmentClaimsSection } from "#project/environments/config/sections/environmentClaimsSection";
+export { environmentsSection } from "#project/environments/config/sections/environmentsSection";
 export { runtimeSection } from "#project/environments/config/sections/runtimeSection";
 export { scriptsOptionsSection } from "#project/environments/config/sections/scriptsOptionsSection";
 export { scriptsSection } from "#project/environments/config/sections/scriptsSection";

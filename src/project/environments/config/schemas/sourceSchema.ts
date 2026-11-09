@@ -39,7 +39,10 @@ function describeApiGroups(): string {
 
 export const sourceSchema = declareObject(
   {
-    ...declareCodeEnvironment("src", defaultSourceDirectories),
+    ...declareCodeEnvironment("src", {
+      dirs: defaultSourceDirectories,
+      defines: true,
+    }),
     roles: rolesSchema,
     aliases: aliasesSchema,
     bundled: declare(boolean(), {

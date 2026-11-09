@@ -1,7 +1,7 @@
 import { extname, matchesGlob, posix, relative } from "node:path";
 
 import { memoized } from "@auaust/toolkit/memoized";
-import { entries, freeze } from "@auaust/toolkit/object";
+import { entries, freeze, getOwn, values } from "@auaust/toolkit/object";
 
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import { entryRoleName, indexRoleName } from "#project/roles/constants";
@@ -21,7 +21,6 @@ import type { NamedFileRole } from "#project/structure/types/NamedFileRole";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
-import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { TestVariant } from "#project/structure/types/TestVariant";
 import type { Directories } from "#types/Directories";
@@ -53,10 +52,8 @@ export function createEntityIndex({
 }: {
   root: Directory;
   structure: ResolvedStructure;
-  environments: Readonly<
-    Record<StructureEnvironmentName | "data", CodeEnvironment>
-  >;
-  roles: Readonly<Record<StructureEnvironmentName, ResolvedRoles>>;
+  environments: Readonly<Record<string, CodeEnvironment>>;
+  roles: Readonly<Record<string, ResolvedRoles>>;
   testPatterns: {
     readonly plain: Globs;
     readonly source: Globs;
@@ -86,8 +83,8 @@ export function createEntityIndex({
     ["plain", testPatterns.plain],
   ];
 
-  function rolesOf(name: StructureEnvironmentName | "data"): ResolvedRoles {
-    return name === "data" ? noRoles : environmentRoles[name];
+  function rolesOf(name: string): ResolvedRoles {
+    return getOwn(environmentRoles, name) ?? noRoles;
   }
 
   function register(path: Directory, located: LocatedEntity) {
@@ -107,7 +104,7 @@ export function createEntityIndex({
         return (
           child.kind === "role" &&
           child.role !== undefined &&
-          environmentRoles[environment.name].roles[child.role]?.public
+          rolesOf(environment.name).roles[child.role]?.public
         );
       })
       .map((child) =>
@@ -135,7 +132,7 @@ export function createEntityIndex({
     directory: Directory,
   ) {
     const role = node.kind === "role" ? node.role : undefined;
-    const roles = environmentRoles[environment.name];
+    const roles = rolesOf(environment.name);
 
     const contract =
       role === undefined ? undefined : environment.roles[role]?.contract;
@@ -180,13 +177,7 @@ export function createEntityIndex({
     }
   }
 
-  for (const environment of [
-    structure.src,
-    structure.tests,
-    structure.bin,
-    structure.scripts,
-    structure.tooling,
-  ]) {
+  for (const environment of values(structure)) {
     if (environment === undefined) {
       continue;
     }
@@ -203,7 +194,7 @@ export function createEntityIndex({
 
       register(directory, {
         entity,
-        roles: environmentRoles[name],
+        roles: rolesOf(name),
         named: noNamedFileRoles,
         covers: false,
       });

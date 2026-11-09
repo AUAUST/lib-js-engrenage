@@ -1,10 +1,10 @@
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 
-import { tsconfigEnvironments } from "#project/tsconfig/constants";
 import {
   toTsconfigSpecifier,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
+import { listTsconfigEnvironments } from "#tools/typescript/operations/listTsconfigEnvironments";
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
@@ -15,7 +15,7 @@ async function listReferencedFiles(
 ): Promise<readonly File[]> {
   const files: File[] = [];
 
-  for (const name of tsconfigEnvironments) {
+  for (const name of await listTsconfigEnvironments(config)) {
     const { active, tsconfig } = await resolveTsconfigEnvironment(config, name);
 
     const { owner, file, check } = tsconfig;

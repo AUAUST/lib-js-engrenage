@@ -7,18 +7,9 @@ import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 
 export const defaultIndexFile = "index.ts";
 
-export const elementEnvironments = freeze([
-  "src",
-  "scripts",
-  "tooling",
-] as const);
+export const sourceEnvironment = "src";
 
-// @debt the environments consuming `src` through its surfaces are listed here rather than declared by the environments config
-export const consumerEnvironments = freeze([
-  "bin",
-  "scripts",
-  "tooling",
-] as const);
+export const dataEnvironment = "data";
 
 export const defaultEffectLevels = freeze([
   "pure",
@@ -46,12 +37,6 @@ export const noRoles = freeze({
   }),
 }) satisfies DeepReadonly<ResolvedRoles>;
 
-export const structureEnvironmentNames = freeze([
-  ...elementEnvironments,
-  "tests",
-  "bin",
-] as const);
-
 export const importRelations = freeze({
   "own-roles": "its own roles and files, excluding its index and entry",
   "global-roles": "the global roles of the environment root",
@@ -69,9 +54,5 @@ export const importRelations = freeze({
 export const importCategories = freeze({
   "public-entries": "the package name and its subpaths",
   "internal-aliases": "`#…` aliases into `src`",
-  "bin": "the bin environment's files",
-  "scripts": "the scripts environment's files",
-  "data": "the data environment's files",
-  "tests": "the tests environment's files",
   "dist-artefacts": "the build output",
 } as const satisfies Record<ImportCategory, string>);

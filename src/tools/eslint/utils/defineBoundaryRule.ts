@@ -1,6 +1,6 @@
 import { relative } from "node:path";
 
-import { freeze } from "@auaust/toolkit/object";
+import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import { analyzeImports } from "#tools/eslint/utils/analyzeImports";
@@ -19,15 +19,15 @@ import type { Directory } from "#types/Directory";
 
 const projectRoot = ".";
 
-const categoryLabels = freeze({
+const categoryLabels: Readonly<Record<ImportCategory, string>> = freeze({
   "public-entries": "the package name",
   "internal-aliases": "`src` modules",
-  "bin": "`bin` modules",
-  "scripts": "`scripts` modules",
-  "data": "data directories",
-  "tests": "tests",
   "dist-artefacts": "the build output",
-} as const satisfies Record<ImportCategory, string>);
+});
+
+function labelCategory(category: ImportCategory): string {
+  return getOwn(categoryLabels, category) ?? `\`${category}\` files`;
+}
 
 const variantGuidance = freeze({
   plain: {
@@ -108,7 +108,7 @@ export function defineBoundaryRule({
       path,
       targetPath,
       environment: importer?.environment ?? "",
-      category: category === undefined ? "" : categoryLabels[category],
+      category: category === undefined ? "" : labelCategory(category),
       workspace: environment,
       targetWorkspace: target?.path ?? targetPath,
       variantReach: guidance?.reach ?? "",

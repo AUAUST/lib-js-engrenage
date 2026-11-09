@@ -1,9 +1,29 @@
+import { environmentEntry } from "#project/environments/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "project/environments",
   owns: {
+    slots: {
+      environments: { entry: environmentEntry },
+    },
     keys: {
+      "environments": {
+        async load() {
+          const { environmentsSection } =
+            await import("#project/environments/config/sections/environmentsSection");
+
+          return environmentsSection;
+        },
+      },
+      "environments.claims": {
+        async load() {
+          const { environmentClaimsSection } =
+            await import("#project/environments/config/sections/environmentClaimsSection");
+
+          return environmentClaimsSection;
+        },
+      },
       "bin": {
         async load() {
           const { binSection } =
@@ -129,4 +149,64 @@ export default {
       },
     },
   },
+  contributes: {
+    environments: [
+      {
+        name: "src",
+        title: "the src environment's files",
+        level: "enforced",
+        structure: "domains",
+        tsconfig: true,
+      },
+      {
+        name: "tests",
+        title: "the tests environment's files",
+        level: "enforced",
+        structure: "roles",
+        imports: ["bin", "scripts", "data", "tooling"],
+        tsconfig: true,
+      },
+      {
+        name: "bin",
+        title: "the bin environment's files",
+        level: "enforced",
+        structure: "roles",
+        consumesSource: true,
+        tsconfig: true,
+      },
+      {
+        name: "scripts",
+        title: "the scripts environment's files",
+        level: "enforced",
+        structure: "domains",
+        consumesSource: true,
+        imports: ["data"],
+        tsconfig: true,
+      },
+      {
+        name: "tooling",
+        title: "the tooling environment's files",
+        level: "enforced",
+        structure: "domains",
+        consumesSource: true,
+        tsconfig: true,
+      },
+      {
+        name: "data",
+        title: "the data environment's files",
+        level: "enforced",
+      },
+    ],
+  },
 } satisfies Extension;
+
+declare global {
+  interface EngrenageEnvironments {
+    src: true;
+    tests: true;
+    bin: true;
+    scripts: true;
+    tooling: true;
+    data: true;
+  }
+}

@@ -1,43 +1,31 @@
-import { freeze } from "@auaust/toolkit/object";
+import { freeze, record } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
+import {
+  readEnvironment,
+  type ResolvedEnvironment,
+} from "#project/environments/index";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
+import { readStructureOption } from "#project/structure/operations/readStructureOption";
 import { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
 import { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";
 import { normalizeNamespaces } from "#project/structure/utils/normalizeNamespaces";
 import type { ConfigResolver } from "#project/config/index";
-import type { Role } from "#project/roles/index";
+import type { EnvironmentStructureOption } from "#project/structure/ports/EnvironmentStructureOption";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
-import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
-import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
-import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { TestsContext } from "#project/structure/types/TestsContext";
-import type { Directories } from "#types/Directories";
 
-type StructureOption =
-  | { readonly enabled: false }
-  | ({
-      readonly enabled: true;
-      readonly roles?: readonly Role[];
-    } & StructureOptions<string | Role>);
-
-function treeOf(option: {
-  readonly enabled: boolean;
-  readonly tree?: ProgramLayout;
-}): ProgramLayout | undefined {
-  return option.enabled ? option.tree : undefined;
+interface StructuredEnvironment {
+  readonly name: string;
+  readonly environment: ResolvedEnvironment;
+  readonly option: EnvironmentStructureOption;
 }
 
 async function resolveStructure(
   config: ConfigResolver,
-  name: StructureEnvironmentName,
-  environment: { active: boolean; dirs: Directories },
-  option: StructureOption,
-  extra: {
-    tests?: TestsContext;
-    tree?: ProgramLayout | undefined;
-  } = {},
+  { name, environment, option }: StructuredEnvironment,
+  tests?: TestsContext,
 ): Promise<EnvironmentStructure | undefined> {
   if (!option.enabled || !environment.active) {
     return;
@@ -45,7 +33,7 @@ async function resolveStructure(
 
   const { internals } = await config.resolve("structure.options");
 
-  const roles = listEnvironmentRoles({ tree: extra.tree, roles: option.roles });
+  const roles = listEnvironmentRoles(option);
 
   const { namespaces, defined } = normalizeNamespaces({
     environment: name,
@@ -62,91 +50,70 @@ async function resolveStructure(
       : { roles: await readEnvironmentRoles(config, roles) }),
     defined,
     internals,
-    ...extra,
+    tree: option.tree,
+    ...(tests === undefined ? {} : { tests }),
   });
+}
+
+function mirrorOf({ option }: StructuredEnvironment): boolean | undefined {
+  return option.enabled ? option.mirror : undefined;
 }
 
 export const structureSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ResolvedStructure> {
-    const [source, bin, scripts, tests, tooling] = await Promise.all([
-      config.resolve("src"),
-      config.resolve("bin"),
-      config.resolve("scripts"),
-      config.resolve("tests"),
-      config.resolve("tooling"),
-    ]);
+    const environments = await config.resolve("environments");
 
-    const [sourceOption, binOption, scriptsOption, testsOption, toolingOption] =
-      await Promise.all([
-        config.resolve("src.options"),
-        config.resolve("bin.options"),
-        config.resolve("scripts.options"),
-        config.resolve("tests.options"),
-        config.resolve("tooling.options"),
-      ]);
-
-    const sourceStructure = await resolveStructure(
-      config,
-      "src",
-      source,
-      sourceOption,
+    const structured = await Promise.all(
+      environments
+        .filter(({ structure }) => structure !== undefined)
+        .map(async ({ name }): Promise<StructuredEnvironment> => {
+          return {
+            name,
+            environment: await readEnvironment(config, name),
+            option: await readStructureOption(config, name),
+          };
+        }),
     );
 
-    const binStructure = await resolveStructure(config, "bin", bin, binOption, {
-      tree: treeOf(binOption),
+    const counterparts = structured.filter((entry) => {
+      return mirrorOf(entry) === undefined;
     });
 
-    const scriptsStructure = await resolveStructure(
-      config,
-      "scripts",
-      scripts,
-      scriptsOption,
-      { tree: treeOf(scriptsOption) },
+    const structures = new Map<string, EnvironmentStructure | undefined>();
+
+    for (const entry of counterparts) {
+      structures.set(entry.name, await resolveStructure(config, entry));
+    }
+
+    const tests = record(
+      counterparts.map(({ name, environment }) => {
+        return [
+          name,
+          { dirs: environment.dirs, structure: structures.get(name) },
+        ] as const;
+      }),
     );
 
-    const toolingStructure = await resolveStructure(
-      config,
-      "tooling",
-      tooling,
-      toolingOption,
-    );
+    for (const entry of structured) {
+      const mirror = mirrorOf(entry);
 
-    return freeze({
-      src: sourceStructure,
-      tests: await resolveStructure(
-        config,
-        "tests",
-        tests,
-        testsOption,
-        testsOption.enabled
-          ? {
-              tests: {
-                mirror: testsOption.mirror,
-                environments: {
-                  src: {
-                    dirs: source.dirs,
-                    structure: sourceStructure,
-                  },
-                  bin: {
-                    dirs: bin.dirs,
-                    structure: binStructure,
-                  },
-                  scripts: {
-                    dirs: scripts.dirs,
-                    structure: scriptsStructure,
-                  },
-                  tooling: {
-                    dirs: tooling.dirs,
-                    structure: toolingStructure,
-                  },
-                },
-              },
-            }
-          : {},
+      if (mirror !== undefined) {
+        structures.set(
+          entry.name,
+          await resolveStructure(config, entry, {
+            mirror,
+            environments: tests,
+          }),
+        );
+      }
+    }
+
+    return freeze(
+      record(
+        structured.map(({ name }) => {
+          return [name, structures.get(name)] as const;
+        }),
       ),
-      bin: binStructure,
-      scripts: scriptsStructure,
-      tooling: toolingStructure,
-    });
+    );
   },
 });

@@ -4,7 +4,6 @@ import { entries } from "@auaust/toolkit/object";
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits, type JsonEdit } from "#foundation/json/index";
 import { jsonIndentation } from "#project/format/constants";
-import { tsconfigEnvironments } from "#project/tsconfig/constants";
 import {
   isLeftAlone,
   toJsonValue,
@@ -12,15 +11,11 @@ import {
   type TsconfigKey,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
+import { listTsconfigEnvironments } from "#tools/typescript/operations/listTsconfigEnvironments";
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import { tsconfigProducers } from "#tools/typescript/operations/tsconfigProducers";
 import type { ManagedListOption } from "#foundation/options/index";
 import type { LoadedConfig } from "#project/config/index";
-
-const variantKeys: readonly TsconfigKey[] = [
-  ...tsconfigEnvironments,
-  "tests.dist",
-];
 
 function toTarget(
   key: TsconfigKey,
@@ -98,6 +93,11 @@ async function collectTargets(config: LoadedConfig): Promise<PlannedTarget[]> {
       },
       create: true,
     },
+  ];
+
+  const variantKeys: readonly TsconfigKey[] = [
+    ...(await listTsconfigEnvironments(config)),
+    "tests.dist",
   ];
 
   for (const key of variantKeys) {

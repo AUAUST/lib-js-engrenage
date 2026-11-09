@@ -4,7 +4,6 @@ import { findDirectories } from "#foundation/filesystem/index";
 import { projectMapDirectory } from "#tools/agents/constants";
 import { renderProjectMap } from "#tools/agents/utils/renderProjectMap";
 import type { LoadedConfig } from "#project/config/index";
-import type { StructureEnvironmentName } from "#project/structure/index";
 import type { Globs } from "#types/Globs";
 
 export async function syncProjectMap({ resolve, context }: LoadedConfig) {
@@ -15,6 +14,7 @@ export async function syncProjectMap({ resolve, context }: LoadedConfig) {
     aliases,
     grants,
     roles,
+    environments,
     tests,
     tooling,
   ] = await Promise.all([
@@ -24,6 +24,7 @@ export async function syncProjectMap({ resolve, context }: LoadedConfig) {
     resolve("aliases"),
     resolve("importGrants"),
     resolve("environmentRoles"),
+    resolve("environments"),
     resolve("tests"),
     resolve("tooling"),
   ]);
@@ -36,13 +37,14 @@ export async function syncProjectMap({ resolve, context }: LoadedConfig) {
   }
 
   const mapped = { ...structure };
-  const paths: Partial<Record<StructureEnvironmentName, Globs>> = {};
+  const paths: Partial<Record<string, Globs>> = {};
 
   for (const [name, environment] of entries(structure)) {
     if (environment === undefined) {
       continue;
     }
 
+    // @debt the tooling environment's root files are read by its name; the environment contract could carry the root files of any environment
     const files = name === "tooling" ? tooling.files : [];
 
     const directories = await findDirectories(filesystem, environment.dirs);
@@ -66,14 +68,9 @@ export async function syncProjectMap({ resolve, context }: LoadedConfig) {
   const maps = renderProjectMap({
     structure: freeze(mapped),
     paths: freeze(paths),
+    environments,
     grants,
-    roles: {
-      src: roles.src,
-      bin: roles.bin,
-      scripts: roles.scripts,
-      tooling: roles.tooling,
-      tests: roles.tests,
-    },
+    roles,
     aliases: [...aliases.global, ...aliases.src],
     patterns: tests.patterns,
   });

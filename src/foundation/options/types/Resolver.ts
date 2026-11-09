@@ -6,4 +6,5 @@ export interface Resolver<
   resolve<Key extends keyof Sections & string>(
     key: Key,
   ): Promise<Sections[Key]>;
+  input(key: string): Promise<unknown>;
 }

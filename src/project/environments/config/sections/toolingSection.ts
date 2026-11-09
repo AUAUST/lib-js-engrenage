@@ -5,6 +5,7 @@ import { freeze } from "@auaust/toolkit/object";
 import { filesIn, findDirectories } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
 import { resolveNodeRuntime } from "#project/baseline/index";
+import { resolveEnvironmentDirs } from "#project/environments/operations/resolveEnvironmentDirs";
 import { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
 import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedTooling } from "#project/environments/types/ResolvedTooling";
@@ -17,15 +18,17 @@ export const toolingSection = declareSection({
 
     const typescript = await config.resolve("typescript.options");
 
+    const dirs = await resolveEnvironmentDirs(config, "tooling", option.dirs);
+
     const { files } = option;
-    const walked = option.dirs.filter((directory) => directory !== ".");
-    const rootFiles = walked.length === option.dirs.length ? [] : files;
+    const walked = dirs.filter((directory) => directory !== ".");
+    const rootFiles = walked.length === dirs.length ? [] : files;
 
     return freeze(
       compose(
         {
           active: isNotEmpty(
-            await findDirectories(config.context.filesystem, option.dirs),
+            await findDirectories(config.context.filesystem, dirs),
           ),
           dirs: walked,
           files: rootFiles,

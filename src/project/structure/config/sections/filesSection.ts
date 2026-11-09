@@ -9,6 +9,7 @@ import type { ResolvedFiles } from "#project/structure/types/ResolvedFiles";
 
 export const filesSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ResolvedFiles> {
+    // @debt the environments are read by their built-in names, so a contributed environment's generated, discovered, published and private files are left out
     const [source, tests, bin, scripts, groups, roles, resources] =
       await Promise.all([
         config.resolve("src"),

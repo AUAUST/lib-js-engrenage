@@ -1,14 +1,12 @@
 import type { LineageMember } from "#project/structure/types/LineageMember";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
-import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureKind } from "#project/structure/types/StructureKind";
 import type { TestVariant } from "#project/structure/types/TestVariant";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
 
 export interface Entity {
-  readonly environment:
-    StructureEnvironmentName | "data" | "dist" | "workspace";
+  readonly environment: string;
   readonly workspace: Glob | undefined;
   readonly path: Directory;
   readonly kind: StructureKind | undefined;

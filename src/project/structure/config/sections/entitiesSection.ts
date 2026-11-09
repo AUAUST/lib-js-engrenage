@@ -16,6 +16,7 @@ async function readOutDir(
 
 export const entitiesSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<EntityIndex> {
+    // @debt the environments are read by their built-in names, so the files of a contributed environment without a structure are never located
     const [
       structure,
       source,

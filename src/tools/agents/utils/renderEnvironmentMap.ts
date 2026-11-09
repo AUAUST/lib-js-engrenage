@@ -8,7 +8,6 @@ import {
   listStaticFileGlobs,
   type EnvironmentStructure,
   type ResolvedRoles,
-  type StructureEnvironmentName,
   type StructureNode,
 } from "#project/structure/index";
 import type { Globs } from "#types/Globs";
@@ -97,7 +96,7 @@ export function renderEnvironmentMap({
   aliases,
   paths,
 }: {
-  name: StructureEnvironmentName;
+  name: string;
   environment: EnvironmentStructure;
   roles: ResolvedRoles | undefined;
   aliases: ReadonlyMap<string, string>;

@@ -20,6 +20,7 @@ import { formatterNameSchema } from "#project/format/index";
 import { presetNameSchema } from "#project/presets/index";
 import { roleFileResolverSchema, roleRulesSchema } from "#project/roles/index";
 import { effectModuleResolverSchema } from "#project/structure/index";
+import { inheritsSchema } from "#project/tsconfig/index";
 import { collectConfigInputs } from "#scripts/codegen/operations/collectConfigInputs";
 import { composeInputSchemas } from "#scripts/codegen/operations/composeInputSchemas";
 import { findConfigTypeImports } from "#scripts/codegen/utils/findConfigTypeImports";
@@ -115,6 +116,7 @@ const namedTypes = new Map<unknown, string>([
   [buildToolNameSchema, "keyof EngrenageBuildTools"],
   [formatterNameSchema, "keyof EngrenageFormatters"],
   [presetNameSchema, "keyof EngrenagePresets"],
+  [inheritsSchema, "keyof EngrenageEnvironments"],
   [preferredSchema, "(keyof EngrenageAgentRuntimes)[]"],
 ]);
 

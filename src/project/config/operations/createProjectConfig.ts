@@ -169,6 +169,7 @@ export function createProjectConfig({
 
   const {
     resolve,
+    input: readInput,
     context,
     validate: validateKeys,
   } = createResolver<ConfigContext, ConfigSections>(
@@ -195,6 +196,7 @@ export function createProjectConfig({
 
   return freeze({
     resolve,
+    input: readInput,
     context,
     validate: validateKeys,
   });

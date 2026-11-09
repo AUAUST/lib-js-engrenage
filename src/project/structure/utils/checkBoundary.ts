@@ -2,13 +2,10 @@ import { min } from "@auaust/toolkit/math";
 import { freeze } from "@auaust/toolkit/object";
 
 import { entryRoleName, indexRoleName } from "#project/roles/constants";
-import {
-  consumerEnvironments,
-  elementEnvironments,
-} from "#project/structure/constants";
 import type { BoundaryCause } from "#project/structure/types/BoundaryCause";
 import type { BoundaryViolation } from "#project/structure/types/BoundaryViolation";
 import type { Entity } from "#project/structure/types/Entity";
+import type { ImportGrants } from "#project/structure/types/ImportGrants";
 import type { ImportKind } from "#project/structure/types/ImportKind";
 import type { LineageMember } from "#project/structure/types/LineageMember";
 
@@ -95,9 +92,10 @@ export function checkBoundary(
   importer: Entity,
   target: Entity,
   kind: ImportKind,
+  { elements, consumers }: ImportGrants,
 ): BoundaryViolation | undefined {
   if (
-    consumerEnvironments.some((name) => name === importer.environment) &&
+    consumers.includes(importer.environment) &&
     target.environment === "src"
   ) {
     return checkConsumerReach(importer, target, kind);
@@ -112,7 +110,7 @@ export function checkBoundary(
 
   // @debt a file at an environment root outside the global roles and the root entry is never checked, and neither is an import between two directories of one environment
   if (
-    !elementEnvironments.some((name) => name === importer.environment) ||
+    !elements.includes(importer.environment) ||
     owner === undefined ||
     targetOwner === undefined ||
     importerLineage[0] !== targetLineage[0] ||

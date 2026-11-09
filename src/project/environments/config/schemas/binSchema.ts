@@ -18,7 +18,10 @@ import type { ResolvedRuntimeSettings } from "#project/config/index";
 
 export const binSchema = declareObject(
   {
-    ...declareCodeEnvironment("bin", defaultBinDirectories),
+    ...declareCodeEnvironment("bin", {
+      dirs: defaultBinDirectories,
+      defines: false,
+    }),
     tree: declareProgramLayout(),
     roles: rolesSchema,
     entries: declare(record(string(), fileSchema), {

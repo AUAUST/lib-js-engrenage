@@ -25,7 +25,10 @@ import {
 
 export const testsSchema = declareObject(
   {
-    ...declareCodeEnvironment("tests", defaultTestsDirectories),
+    ...declareCodeEnvironment("tests", {
+      dirs: defaultTestsDirectories,
+      defines: true,
+    }),
     roles: rolesSchema,
     mirror: declare(boolean(), {
       description: [
@@ -78,6 +81,7 @@ export const testsSchema = declareObject(
           managed(context: { readonly published: boolean }) {
             return context.published;
           },
+          checked: false,
         }),
       },
       {

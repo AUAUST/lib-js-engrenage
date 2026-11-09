@@ -9,7 +9,10 @@ import { rolesSchema } from "#project/roles/index";
 
 export const scriptsSchema = declareObject(
   {
-    ...declareCodeEnvironment("scripts", defaultScriptsDirectories),
+    ...declareCodeEnvironment("scripts", {
+      dirs: defaultScriptsDirectories,
+      defines: false,
+    }),
     tree: declareProgramLayout(),
     roles: rolesSchema,
   },

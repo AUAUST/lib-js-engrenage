@@ -17,7 +17,6 @@ import type { EnvironmentStructure } from "#project/structure/types/EnvironmentS
 import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
-import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { TestsContext } from "#project/structure/types/TestsContext";
@@ -38,7 +37,7 @@ export async function resolveEnvironmentStructure({
   tree,
   internals = false,
 }: {
-  name: StructureEnvironmentName;
+  name: string;
   root: Directory;
   dirs: Directories;
   options: StructureOptions;

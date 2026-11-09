@@ -19,6 +19,7 @@ export { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpe
 
 // @barrel types/*.ts all
 export * from "#tools/typescript/types/BarrelMode";
+export * from "#tools/typescript/types/TsconfigEnvironment";
 // @end
 export type { ApiGroup } from "#project/baseline/index";
 export type { SubpathImports } from "#project/package/index";

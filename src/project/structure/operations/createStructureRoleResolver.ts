@@ -22,7 +22,6 @@ import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
-import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureParent } from "#project/structure/types/StructureParent";
 import type { Directory } from "#types/Directory";
@@ -36,7 +35,7 @@ export function createStructureRoleResolver({
   roles,
   defined,
 }: {
-  name: StructureEnvironmentName;
+  name: string;
   root: Directory;
   roles: EnvironmentRoles | undefined;
   defined: RoleRegistry | undefined;

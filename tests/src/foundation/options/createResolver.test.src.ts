@@ -1,7 +1,9 @@
+import { string } from "valibot";
 import { describe, expect, test } from "vitest";
 
 import { getOwn } from "@auaust/toolkit/object";
 
+import { declare } from "#foundation/options/config/declarers/declare";
 import { declareSection } from "#foundation/options/config/declarers/declareSection";
 import { createResolver } from "#foundation/options/utils/createResolver";
 import type { Resolver } from "#foundation/options/types/Resolver";
@@ -172,5 +174,46 @@ describe("createResolver", () => {
     await resolve("derived");
 
     expect(calls).toBe(1);
+  });
+
+  test("reads the validated input of a key without running its section", async () => {
+    let calls = 0;
+
+    const named = declareSection({
+      declaration: declare(string(), {
+        optional: { value: "fallback" },
+      }),
+      resolve(input = "fallback"): string {
+        calls += 1;
+
+        return input;
+      },
+    });
+
+    function load(key: string) {
+      return Promise.resolve(
+        key === "named" ? { input: "name", section: named } : undefined,
+      );
+    }
+
+    const unset = createResolver({}, undefined, {
+      sections: { load },
+    });
+
+    const set = createResolver(
+      {
+        name: "given",
+      },
+      undefined,
+      {
+        sections: { load },
+      },
+    );
+
+    expect(await unset.input("named")).toBeUndefined();
+
+    expect(await set.input("named")).toBe("given");
+
+    expect(calls).toBe(0);
   });
 });

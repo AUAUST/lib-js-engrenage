@@ -71,7 +71,7 @@ async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
 
   const files = deduplicate([
     directory,
-    ...(data.active ? data.dirs : []),
+    ...data.dirs,
     ...(sourcemap ? source.dirs : []),
   ]);
 

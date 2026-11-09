@@ -10,6 +10,8 @@ export interface ImportGrants {
     Partial<Record<Entity["environment"], readonly ImportCategory[]>>
   >;
   readonly data: readonly Entity["environment"][];
+  readonly elements: readonly Entity["environment"][];
+  readonly consumers: readonly Entity["environment"][];
   readonly variants: Readonly<
     Partial<Record<TestVariant, readonly ImportCategory[]>>
   >;

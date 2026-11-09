@@ -11,25 +11,10 @@ export const defaultTypescriptFiles = freeze([
   "**/*.{ts,tsx}",
 ] as const) satisfies Globs;
 
-export const tsconfigEnvironments = freeze([
-  "src",
-  "tests",
-  "bin",
-  "scripts",
-  "tooling",
-] as const);
-
-export const defaultTsconfigInherits = freeze({
-  tooling: "scripts",
-} as const);
+export const defaultTsconfigInherits: Readonly<Record<string, string>> = freeze(
+  {
+    tooling: "scripts",
+  },
+);
 
 export const unmanagedTsconfig = freeze({ enabled: false } as const);
-
-export const defaultTsconfigCheck = freeze({
-  "src": true,
-  "tests": true,
-  "bin": true,
-  "scripts": true,
-  "tooling": true,
-  "tests.dist": false,
-} as const);

@@ -9,8 +9,8 @@ import { declareEnvironmentTsconfig } from "#project/tsconfig/index";
 import type { Directories } from "#types/Directories";
 
 export function declareCodeEnvironment(
-  name: "src" | "tests" | "bin" | "scripts",
-  defaultDirs: Directories,
+  name: string,
+  defaults: { dirs: Directories; defines: boolean },
 ) {
   return {
     ...declareStructureOptions(),
@@ -19,7 +19,7 @@ export function declareCodeEnvironment(
         `Directories of the ${name} environment: its TypeScript files (\`typescript.files\`) are included in its tsconfig, linted with its rules and, for \`src\` and \`bin\`, published.`,
         "The environment is inactive when none exists.",
       ],
-      optional: { value: defaultDirs },
+      optional: { value: defaults.dirs },
     }),
     generated: declareList(globSchema, {
       description: [
@@ -35,7 +35,7 @@ export function declareCodeEnvironment(
       ],
       optional: { value: [] },
     }),
-    defines: declareDefines(name),
+    defines: declareDefines(name, defaults.defines),
     tsconfig: declareEnvironmentTsconfig(name, {
       description: [
         `Options of the tsconfig that sync writes for the ${name} environment.`,

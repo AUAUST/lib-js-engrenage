@@ -1,7 +1,8 @@
 import { basename, extname } from "node:path";
 
+import { getOwn } from "@auaust/toolkit/object";
+
 import { indexRoleName } from "#project/roles/constants";
-import { isStructureEnvironment } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
@@ -45,9 +46,7 @@ export default defineConvention({
 
         const name = basename(file, extname(file));
 
-        const structure = isStructureEnvironment(environment)
-          ? structures[environment]
-          : undefined;
+        const structure = getOwn(structures, environment);
 
         const hint = file === structure?.indexFile ? barrelHint : "";
 

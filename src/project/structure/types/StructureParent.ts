@@ -1,5 +1,4 @@
 import type { RoleLocationMember } from "#project/roles/index";
-import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureKind } from "#project/structure/types/StructureKind";
 
 export interface StructureParent {
@@ -11,7 +10,7 @@ export interface StructureParent {
   readonly lineage: readonly RoleLocationMember[];
   readonly enclosing: readonly string[];
   readonly mirrored?: {
-    readonly environment: StructureEnvironmentName;
+    readonly environment: string;
     readonly subpath: string;
   };
 }

@@ -22,6 +22,7 @@ export const aliasesSection = declareSection({
 
     const global = aliasesSchema.resolve(input, undefined, "aliases");
 
+    // @debt the environments are read by their built-in names, so a contributed environment's directories get no alias
     const [source, tests, bin, scripts, tooling, data, traits, trees] =
       await Promise.all([
         config.resolve("src"),

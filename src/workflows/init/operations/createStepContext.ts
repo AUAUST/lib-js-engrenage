@@ -223,6 +223,7 @@ export async function createStepContext({
 
   return freeze<StepContext>({
     resolve,
+    input: config.input,
     context: config.context,
     validate: config.validate,
     getAgents,

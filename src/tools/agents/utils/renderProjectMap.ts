@@ -1,21 +1,21 @@
-import { entries, keys, values } from "@auaust/toolkit/object";
+import { entries, values } from "@auaust/toolkit/object";
 
 import {
-  consumerEnvironments,
-  elementEnvironments,
+  dataEnvironment,
   importCategories,
   importRelations,
+  sourceEnvironment,
 } from "#project/structure/constants";
 import { projectMapDirectory, projectMapFile } from "#tools/agents/constants";
 import { renderEnvironmentMap } from "#tools/agents/utils/renderEnvironmentMap";
 import { renderProjectMapRoles } from "#tools/agents/utils/renderProjectMapRoles";
+import type { EnvironmentEntry } from "#project/environments/index";
 import type {
   Alias,
   ImportCategory,
   ImportGrants,
   ResolvedRoles,
   ResolvedStructure,
-  StructureEnvironmentName,
   TestVariant,
 } from "#project/structure/index";
 import type { File } from "#types/File";
@@ -29,17 +29,17 @@ function list(values: readonly string[]): string {
   return values.map(code).join(", ");
 }
 
-function mapFile(name: StructureEnvironmentName): File {
+function mapFile(name: string): File {
   return `${projectMapDirectory}/${name}.md`;
 }
 
 function renderCell(
-  name: StructureEnvironmentName,
+  name: string,
   category: ImportCategory,
   grants: ImportGrants,
 ): string {
   const forbidden =
-    category === "data"
+    category === dataEnvironment
       ? grants.data.includes(name)
       : grants.environments[name]?.includes(category) === true;
 
@@ -64,22 +64,39 @@ function renderCell(
   return "yes";
 }
 
+function listCategories(
+  environments: readonly EnvironmentEntry[],
+): readonly (readonly [ImportCategory, string])[] {
+  return [
+    ["public-entries", importCategories["public-entries"]],
+    ["internal-aliases", importCategories["internal-aliases"]],
+    ...environments
+      .filter(({ name }) => name !== sourceEnvironment)
+      .map(({ name, title }) => [name, title] as const),
+    ["dist-artefacts", importCategories["dist-artefacts"]],
+  ];
+}
+
 function renderOverview({
   structure,
+  environments,
   grants,
   patterns,
   roles,
 }: {
   structure: ResolvedStructure;
+  environments: readonly EnvironmentEntry[];
   grants: ImportGrants;
   patterns: { plain: Globs; source: Globs; dist: Globs };
-  roles: Readonly<Partial<Record<StructureEnvironmentName, ResolvedRoles>>>;
+  roles: Readonly<Partial<Record<string, ResolvedRoles>>>;
 }): string {
   const mapped = entries(structure)
     .filter(([, environment]) => environment !== undefined)
     .map(([name]) => name);
 
-  const columns = keys(importCategories);
+  const categories = listCategories(environments);
+
+  const columns = categories.map(([category]) => category);
 
   const variants: readonly TestVariant[] = ["plain", "src", "dist"];
 
@@ -119,11 +136,11 @@ function renderOverview({
     "",
     "## Environments",
     "",
-    `The matrix states environment grants; domain and role boundaries still apply. No importer but its environment's root \`executable.ts\` may import a root index or entry file of ${list(elementEnvironments)}. ${list(consumerEnvironments)} import \`src\` only through a domain's \`index.ts\`, \`entry.ts\` and public roles.`,
+    `The matrix states environment grants; domain and role boundaries still apply. No importer but its environment's root \`executable.ts\` may import a root index or entry file of ${list(grants.elements)}. ${list(grants.consumers)} import \`src\` only through a domain's \`index.ts\`, \`entry.ts\` and public roles.`,
     "",
     "| Category | Meaning |",
     "| --- | --- |",
-    ...entries(importCategories).map(([category, meaning]) => {
+    ...categories.map(([category, meaning]) => {
       return `| ${code(category)} | ${meaning} |`;
     }),
     "",
@@ -186,6 +203,7 @@ function findAliases(
 
 export function renderProjectMap({
   structure,
+  environments,
   grants,
   roles,
   aliases,
@@ -193,11 +211,12 @@ export function renderProjectMap({
   paths,
 }: {
   structure: ResolvedStructure;
+  environments: readonly EnvironmentEntry[];
   grants: ImportGrants;
-  roles: Readonly<Partial<Record<StructureEnvironmentName, ResolvedRoles>>>;
+  roles: Readonly<Partial<Record<string, ResolvedRoles>>>;
   aliases: readonly Alias[];
   patterns: { plain: Globs; source: Globs; dist: Globs };
-  paths: Readonly<Partial<Record<StructureEnvironmentName, Globs>>>;
+  paths: Readonly<Partial<Record<string, Globs>>>;
 }): { file: File; content: string }[] {
   const found = findAliases(structure, aliases);
 
@@ -206,6 +225,7 @@ export function renderProjectMap({
       file: projectMapFile,
       content: `${renderOverview({
         structure,
+        environments,
         grants,
         patterns,
         roles,

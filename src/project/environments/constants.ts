@@ -1,3 +1,13 @@
+import {
+  array,
+  boolean,
+  looseObject,
+  optional,
+  picklist,
+  string,
+} from "valibot";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
+
 import { freeze } from "@auaust/toolkit/object";
 
 import { unmanagedTsconfig } from "#project/tsconfig/constants";
@@ -56,13 +66,18 @@ export const disabledCodeEnvironment = freeze({
   tsconfig: unmanagedTsconfig,
 } as const);
 
-export const defaultDefines = freeze({
-  src: true,
-  tests: true,
-  bin: false,
-  scripts: false,
-} as const);
-
 export const sourceTestsVariant = ".src";
 
 export const distTestsVariant = ".dist";
+
+// @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
+export const environmentEntry: StandardSchemaV1 = looseObject({
+  name: string(),
+  title: string(),
+  level: picklist(["foreign", "described", "enforced"]),
+  structure: optional(picklist(["domains", "roles"])),
+  consumesSource: optional(boolean()),
+  imports: optional(array(string())),
+  tsconfig: optional(boolean()),
+  owns: optional(array(string())),
+});

@@ -144,6 +144,17 @@ export function createResolver<
     return pending;
   }
 
+  async function readKeyInput(
+    key: string,
+    reader: Resolver<Context>,
+  ): Promise<unknown> {
+    const { input: name, section } = await load(key);
+
+    return name === undefined || section.declaration === undefined
+      ? undefined
+      : readInput(name, section.declaration, reader);
+  }
+
   function findPath(from: string, to: string): string[] | undefined {
     const visited = new Set<string>();
 
@@ -202,9 +213,14 @@ export function createResolver<
     }
 
     // @debt sections and refusals receive the open `Resolver<Context>`, not `Resolver<Context, Sections>`: a generic `Sections` is not assignable to `Section.resolve`'s open resolver, so key reads inside sections are untyped
+    function input(dependency: string): Promise<unknown> {
+      return readKeyInput(dependency, config);
+    }
+
     const config: Resolver<Context> = {
       context,
       resolve,
+      input,
     };
 
     const chain: Chain<Context> = {
@@ -367,9 +383,14 @@ export function createResolver<
     return value;
   }
 
+  function readValueInput(key: string): Promise<unknown> {
+    return readKeyInput(key, reader);
+  }
+
   const reader: Resolver<Context> = {
     context,
     resolve: readValue,
+    input: readValueInput,
   };
 
   function resolve<Key extends keyof Sections & string>(
@@ -382,6 +403,7 @@ export function createResolver<
   return {
     context,
     resolve,
+    input: readValueInput,
     validate: validateKeys,
   };
 }

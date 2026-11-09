@@ -12,13 +12,12 @@ import {
   type ResolvedRoleContract,
   type ResolvedRoles,
   type ResolvedStructure,
-  type StructureEnvironmentName,
 } from "#project/structure/index";
 
 interface RoleRow {
   name: string;
   contract: ResolvedRoleContract;
-  environments: StructureEnvironmentName[];
+  environments: string[];
 }
 
 function code(value: string): string {
@@ -27,7 +26,7 @@ function code(value: string): string {
 
 export function renderProjectMapRoles(
   structure: ResolvedStructure,
-  roles: Readonly<Partial<Record<StructureEnvironmentName, ResolvedRoles>>>,
+  roles: Readonly<Partial<Record<string, ResolvedRoles>>>,
 ): string[] {
   const rows: RoleRow[] = [];
 

@@ -3,14 +3,13 @@ import { entries, freeze, record } from "@auaust/toolkit/object";
 import { registerRoles } from "#project/structure/utils/registerRoles";
 import type { Role } from "#project/roles/index";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
-import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 
 export function normalizeNamespaces({
   environment,
   namespaces,
 }: {
-  environment: StructureEnvironmentName;
+  environment: string;
   namespaces: StructureOptions<string | Role>["namespaces"];
 }): {
   readonly namespaces: StructureOptions["namespaces"];

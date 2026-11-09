@@ -10,12 +10,11 @@ import type { ResolvedEffects } from "#project/structure/types/ResolvedEffects";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleEffects } from "#project/structure/types/RoleEffects";
-import type { RoleEnvironment } from "#project/structure/types/RoleEnvironment";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
 
 function resolveEffects(
   effects: RoleEffects,
-  environment: RoleEnvironment,
+  environment: string,
   defaults: EffectModules | undefined,
 ): ResolvedEffects {
   const levels = effects.levels ?? defaultEffectLevels;
@@ -70,7 +69,7 @@ export function resolveRoles({
   defined,
   scopes = [],
 }: EnvironmentRoles & {
-  environment: RoleEnvironment;
+  environment: string;
   defined?: RoleRegistry;
   scopes?: readonly string[];
 }): ResolvedRoles {

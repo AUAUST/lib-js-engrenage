@@ -5,16 +5,18 @@ import {
   executableRoleName,
   indexRoleName,
 } from "#project/roles/constants";
-import { elementEnvironments } from "#project/structure/constants";
 import { getImportCategory } from "#project/structure/utils/getImportCategory";
 import type { BoundaryViolation } from "#project/structure/types/BoundaryViolation";
 import type { Entity } from "#project/structure/types/Entity";
 import type { ImportEdge } from "#project/structure/types/ImportEdge";
 import type { ImportGrants } from "#project/structure/types/ImportGrants";
 
-function isRootFile({ environment, lineage, path, role }: Entity): boolean {
+function isRootFile(
+  { environment, lineage, path, role }: Entity,
+  elements: ImportGrants["elements"],
+): boolean {
   return (
-    elementEnvironments.some((name) => name === environment) &&
+    elements.includes(environment) &&
     lineage.length === 1 &&
     lineage[0]?.path === path &&
     (role === indexRoleName || role === entryRoleName)
@@ -23,7 +25,7 @@ function isRootFile({ environment, lineage, path, role }: Entity): boolean {
 
 export function checkEnvironments(
   edge: ImportEdge,
-  { environments }: ImportGrants,
+  { environments, elements }: ImportGrants,
 ): BoundaryViolation | undefined {
   const { importer, target } = edge;
 
@@ -37,7 +39,11 @@ export function checkEnvironments(
     importer.environment === target.environment &&
     importer.path === target.path;
 
-  if (target !== undefined && isRootFile(target) && !isOwnExecutable) {
+  if (
+    target !== undefined &&
+    isRootFile(target, elements) &&
+    !isOwnExecutable
+  ) {
     return freeze({
       cause: "rootEntry",
       boundary: undefined,

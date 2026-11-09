@@ -75,7 +75,7 @@ export interface SourceInput {
      * Environment whose tsconfig this one shares instead of having its own: its files and options apply here, so no other tsconfig option can be set alongside.
      * @default none, except `scripts` for `tooling`
      */
-    inherits?: (("src" | "tests" | "bin" | "scripts" | "tooling") | undefined)
+    inherits?: (keyof EngrenageEnvironments | undefined)
     /**
      * Value of `extends`.
      * `false` leaves the field to the file.

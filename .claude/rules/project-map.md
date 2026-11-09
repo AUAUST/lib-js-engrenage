@@ -24,27 +24,28 @@ The matrix states environment grants; domain and role boundaries still apply. No
 | ------------------ | --------------------------------- |
 | `public-entries`   | the package name and its subpaths |
 | `internal-aliases` | `#…` aliases into `src`           |
+| `tests`            | the tests environment's files     |
 | `bin`              | the bin environment's files       |
 | `scripts`          | the scripts environment's files   |
+| `tooling`          | the tooling environment's files   |
 | `data`             | the data environment's files      |
-| `tests`            | the tests environment's files     |
 | `dist-artefacts`   | the build output                  |
 
-| from / to | public-entries | internal-aliases | bin         | scripts | data  | tests | dist-artefacts | map                                    |
-| --------- | -------------- | ---------------- | ----------- | ------- | ----- | ----- | -------------- | -------------------------------------- |
-| `src`     | yes            | yes              | never       | never   | never | never | yes            | `.claude/rules/project-map/src.md`     |
-| `tests`   | per variant    | per variant      | per variant | yes     | yes   | yes   | yes            | `.claude/rules/project-map/tests.md`   |
-| `bin`     | yes            | yes              | yes         | never   | never | never | yes            | `.claude/rules/project-map/bin.md`     |
-| `scripts` | yes            | yes              | never       | yes     | yes   | never | yes            | `.claude/rules/project-map/scripts.md` |
-| `tooling` | yes            | yes              | never       | never   | never | never | yes            | `.claude/rules/project-map/tooling.md` |
+| from / to | public-entries | internal-aliases | tests | bin         | scripts | tooling | data  | dist-artefacts | map                                    |
+| --------- | -------------- | ---------------- | ----- | ----------- | ------- | ------- | ----- | -------------- | -------------------------------------- |
+| `src`     | yes            | yes              | never | never       | never   | never   | never | yes            | `.claude/rules/project-map/src.md`     |
+| `tests`   | per variant    | per variant      | yes   | per variant | yes     | yes     | yes   | yes            | `.claude/rules/project-map/tests.md`   |
+| `bin`     | yes            | yes              | never | yes         | never   | never   | never | yes            | `.claude/rules/project-map/bin.md`     |
+| `scripts` | yes            | yes              | never | never       | yes     | never   | yes   | yes            | `.claude/rules/project-map/scripts.md` |
+| `tooling` | yes            | yes              | never | never       | never   | yes     | never | yes            | `.claude/rules/project-map/tooling.md` |
 
 ## Test files
 
-| Files                            | Runs against    | May import                                                              | Never                     |
-| -------------------------------- | --------------- | ----------------------------------------------------------------------- | ------------------------- |
-| `**/*.{spec,test}.{ts,tsx}`      | source and dist | `public-entries`, `scripts`, `data`, `tests`, `dist-artefacts`          | `internal-aliases`, `bin` |
-| `**/*.{spec,test}.src.{ts,tsx}`  | source          | `internal-aliases`, `bin`, `scripts`, `data`, `tests`, `dist-artefacts` | `public-entries`          |
-| `**/*.{spec,test}.dist.{ts,tsx}` | dist            | `public-entries`, `scripts`, `data`, `tests`, `dist-artefacts`          | `internal-aliases`, `bin` |
+| Files                            | Runs against    | May import                                                                         | Never                     |
+| -------------------------------- | --------------- | ---------------------------------------------------------------------------------- | ------------------------- |
+| `**/*.{spec,test}.{ts,tsx}`      | source and dist | `public-entries`, `tests`, `scripts`, `tooling`, `data`, `dist-artefacts`          | `internal-aliases`, `bin` |
+| `**/*.{spec,test}.src.{ts,tsx}`  | source          | `internal-aliases`, `tests`, `bin`, `scripts`, `tooling`, `data`, `dist-artefacts` | `public-entries`          |
+| `**/*.{spec,test}.dist.{ts,tsx}` | dist            | `public-entries`, `tests`, `scripts`, `tooling`, `data`, `dist-artefacts`          | `internal-aliases`, `bin` |
 
 ## Roles
 
@@ -57,30 +58,30 @@ Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A 
 
 | Role               | Purpose                                                                                            | Files                     | Level     | Imports           | Environments                                |
 | ------------------ | -------------------------------------------------------------------------------------------------- | ------------------------- | --------- | ----------------- | ------------------------------------------- |
-| `index`            | The domain's public surface.                                                                       | `index.ts`                |           |                   | `src`, `bin`, `scripts`, `tooling`, `tests` |
+| `index`            | The domain's public surface.                                                                       | `index.ts`                |           |                   | `src`, `tests`, `bin`, `scripts`, `tooling` |
 | `entrypoint`       | The package entry of a public domain, re-exporting the public subset of its surface.               | `entry.ts`                |           |                   | `src`                                       |
 | `extension`        | The domain's extension: data and lazy loaders, read without loading the domain.                    | `extension.ts`            | effectful | public            | `src`                                       |
-| `constants`        | Deeply read-only constants of the domain.                                                          | `constants.ts`            | pure      | public            | `src`, `scripts`, `tooling`, `tests`        |
-| `declarations`     | Ambient type declarations.                                                                         | `*.d.ts`                  |           |                   | `src`, `scripts`, `tooling`, `tests`        |
-| `types`            | Types only, one per module.                                                                        |                           |           | type-only         | `src`, `scripts`, `tooling`, `tests`        |
+| `constants`        | Deeply read-only constants of the domain.                                                          | `constants.ts`            | pure      | public            | `src`, `tests`, `scripts`, `tooling`        |
+| `declarations`     | Ambient type declarations.                                                                         | `*.d.ts`                  |           |                   | `src`, `tests`, `scripts`, `tooling`        |
+| `types`            | Types only, one per module.                                                                        |                           |           | type-only         | `src`, `tests`, `scripts`, `tooling`        |
 | `utils`            | Confined functions, one per module.                                                                |                           | confined  |                   | `src`, `scripts`, `tooling`                 |
-| `errors`           | Error classes, importable module by module.                                                        |                           | pure      | public            | `src`, `scripts`, `tooling`, `tests`        |
-| `enums`            | Enumerations, one per module.                                                                      |                           | pure      |                   | `src`, `scripts`, `tooling`, `tests`        |
-| `ports`            | Interfaces other domains implement, importable module by module.                                   |                           | pure      | type-only, public | `src`, `scripts`, `tooling`, `tests`        |
-| `adapters`         | Implementations of other domains' ports, importable module by module.                              |                           | effectful | public            | `src`, `scripts`, `tooling`, `tests`        |
-| `config`           | Everything that configures the domain: its definer, option declarations and sections.              |                           |           |                   | `src`, `scripts`, `tooling`, `tests`        |
+| `errors`           | Error classes, importable module by module.                                                        |                           | pure      | public            | `src`, `tests`, `scripts`, `tooling`        |
+| `enums`            | Enumerations, one per module.                                                                      |                           | pure      |                   | `src`, `tests`, `scripts`, `tooling`        |
+| `ports`            | Interfaces other domains implement, importable module by module.                                   |                           | pure      | type-only, public | `src`, `tests`, `scripts`, `tooling`        |
+| `adapters`         | Implementations of other domains' ports, importable module by module.                              |                           | effectful | public            | `src`, `tests`, `scripts`, `tooling`        |
+| `config`           | Everything that configures the domain: its definer, option declarations and sections.              |                           |           |                   | `src`, `tests`, `scripts`, `tooling`        |
 | `setup`            | Init steps and sync targets of the domain.                                                         |                           | effectful |                   | `src`, `scripts`, `tooling`                 |
-| `plugins`          | The tool's own plugins, one per module.                                                            |                           | effectful |                   | `src`, `scripts`, `tooling`, `tests`        |
-| `operations`       | Effectful logic of the domain.                                                                     |                           | effectful |                   | `src`, `scripts`, `tooling`, `tests`        |
-| `conventions`      | Formatting conventions, discovered by category.                                                    |                           | effectful |                   | `src`, `scripts`, `tooling`, `tests`        |
+| `plugins`          | The tool's own plugins, one per module.                                                            |                           | effectful |                   | `src`, `tests`, `scripts`, `tooling`        |
+| `operations`       | Effectful logic of the domain.                                                                     |                           | effectful |                   | `src`, `tests`, `scripts`, `tooling`        |
+| `conventions`      | Formatting conventions, discovered by category.                                                    |                           | effectful |                   | `src`, `tests`, `scripts`, `tooling`        |
 | `rules`            | ESLint rules a role preset carries, one per module.                                                |                           | effectful |                   | `src`, `scripts`, `tooling`                 |
 | `config/definers`  | The domain's `define…Config` definer.                                                              | `define<Domain>Config.ts` | effectful |                   | `src`                                       |
 | `config/declarers` | Functions creating option declarations.                                                            |                           | confined  |                   | `src`                                       |
 | `config/schemas`   | Validation schemas of the option declarations.                                                     |                           | confined  |                   | `src`                                       |
 | `config/sections`  | Section values the domain contributes to the loaded config.                                        |                           | effectful |                   | `src`                                       |
-| `executable`       | A program's executable: it loads the program's root group and runs it.                             | `executable.ts`           |           |                   | `bin`, `scripts`                            |
-| `commands`         | One command's description, arguments and options, and the glue to its action.                      | `*.ts`                    |           |                   | `bin`, `scripts`                            |
-| `actions`          | The behavior of one command, without its name, aliases or argument structure, loaded when it runs. |                           | effectful |                   | `bin`, `scripts`                            |
 | `testutils`        | Reusable test utilities.                                                                           |                           | effectful |                   | `tests`                                     |
 | `fixtures`         | Static test inputs.                                                                                |                           | pure      |                   | `tests`                                     |
 | `testsetup`        | Test runner setup file.                                                                            | `setup.ts`                |           |                   | `tests`                                     |
+| `executable`       | A program's executable: it loads the program's root group and runs it.                             | `executable.ts`           |           |                   | `bin`, `scripts`                            |
+| `commands`         | One command's description, arguments and options, and the glue to its action.                      | `*.ts`                    |           |                   | `bin`, `scripts`                            |
+| `actions`          | The behavior of one command, without its name, aliases or argument structure, loaded when it runs. |                           | effectful |                   | `bin`, `scripts`                            |

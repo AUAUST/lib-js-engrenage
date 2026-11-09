@@ -4,7 +4,6 @@ import { memoized } from "@auaust/toolkit/memoized";
 import { entries } from "@auaust/toolkit/object";
 
 import { collectStructureNodes } from "#project/structure/utils/collectStructureNodes";
-import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureKind } from "#project/structure/types/StructureKind";
 import type { StructureMirror } from "#project/structure/types/StructureMirror";
 import type { StructureNode } from "#project/structure/types/StructureNode";
@@ -22,9 +21,7 @@ interface Mirror {
 
 export function createMirrorClassifier(tests: TestsContext) {
   const counterparts = memoized(
-    (
-      environment: StructureEnvironmentName,
-    ): ReadonlyMap<string, StructureNode> => {
+    (environment: string): ReadonlyMap<string, StructureNode> => {
       const structure = tests.environments[environment]?.structure;
 
       return new Map(

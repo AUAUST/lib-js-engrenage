@@ -1,3 +1,5 @@
+import { getOwn, keys } from "@auaust/toolkit/object";
+
 import type { TsconfigGroups } from "#project/tsconfig/types/TsconfigGroups";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 import type { TsconfigOwner } from "#project/tsconfig/types/TsconfigOwner";
@@ -14,7 +16,18 @@ export function resolveTsconfigOwner(
   for (;;) {
     chain.push(current);
 
-    const group = groups[current];
+    const group = getOwn(groups, current);
+
+    if (group === undefined) {
+      const subject =
+        previous === undefined
+          ? current
+          : `${previous}.tsconfig inherits ${current}, which`;
+
+      throw new Error(
+        `${subject} is not an environment with a tsconfig: ${keys(groups).join(", ")}`,
+      );
+    }
 
     if (!group.enabled) {
       if (previous === undefined) {

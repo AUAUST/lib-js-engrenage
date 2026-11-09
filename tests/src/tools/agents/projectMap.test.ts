@@ -181,17 +181,26 @@ describe("project map", () => {
   test.each([true, false])(
     "renders enforced grants for published=%s",
     async (published) => {
-      const { project } = await sync(0, published);
+      const project = createProject(0, published);
+
+      project.write("data/.gitkeep", "");
+
+      await syncProject(project);
 
       const overview = project.read(overviewFile);
 
-      const sourceRow = overview
-        .split("\n")
-        .find((line) => line.startsWith("| `src` |"));
+      const lines = overview.split("\n");
 
-      expect(sourceRow?.split("|")[6]?.trim()).toBe(
-        published ? "never" : "yes",
-      );
+      function cells(prefix: string) {
+        return lines
+          .find((line) => line.startsWith(prefix))
+          ?.split("|")
+          .map((cell) => cell.trim());
+      }
+
+      const column = cells("| from / to |")?.indexOf("data") ?? -1;
+
+      expect(cells("| `src` |")?.[column]).toBe(published ? "never" : "yes");
 
       expect(overview.includes("## Test files")).toBe(published);
       expect(overview).toContain("the package name and its subpaths");

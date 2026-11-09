@@ -42,10 +42,8 @@ export * from "#project/structure/types/ResolvedSpecifier";
 export * from "#project/structure/types/ResolvedStructure";
 export * from "#project/structure/types/RoleDefinition";
 export * from "#project/structure/types/RoleEffects";
-export * from "#project/structure/types/RoleEnvironment";
 export * from "#project/structure/types/RoleRegistry";
 export * from "#project/structure/types/StructureCheck";
-export * from "#project/structure/types/StructureEnvironmentName";
 export * from "#project/structure/types/StructureInput";
 export * from "#project/structure/types/StructureKind";
 export * from "#project/structure/types/StructureMirror";
@@ -97,7 +95,6 @@ export { getStructureCardinality } from "#project/structure/utils/getStructureCa
 export { getStructureLayer } from "#project/structure/utils/getStructureLayer";
 export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 export { isEntryReference } from "#project/structure/utils/isEntryReference";
-export { isStructureEnvironment } from "#project/structure/utils/isStructureEnvironment";
 export { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
 export { listDomainsWithoutPurpose } from "#project/structure/utils/listDomainsWithoutPurpose";
 export { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";

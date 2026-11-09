@@ -3,15 +3,11 @@ import type { Linter } from "eslint";
 import { isArray } from "@auaust/toolkit/isArray";
 import { isNumber } from "@auaust/toolkit/isNumber";
 import { isString } from "@auaust/toolkit/isString";
-import { entries, values } from "@auaust/toolkit/object";
+import { entries, getOwn, values } from "@auaust/toolkit/object";
 
-import {
-  isStructureEnvironment,
-  type EntityIndex,
-  type ResolvedStructure,
-} from "#project/structure/index";
 import { pluginName, rolesPluginName } from "#tools/eslint/constants";
 import type { RoleRuleModule } from "#project/roles/index";
+import type { EntityIndex, ResolvedStructure } from "#project/structure/index";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Plugin } from "#tools/eslint/types/Plugin";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
@@ -44,9 +40,7 @@ export async function createRoleRules(
           return {};
         }
 
-        const environment = isStructureEnvironment(entity.environment)
-          ? structure[entity.environment]
-          : undefined;
+        const environment = getOwn(structure, entity.environment);
 
         if (environment === undefined) {
           return {};

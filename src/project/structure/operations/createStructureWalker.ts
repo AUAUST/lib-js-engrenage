@@ -9,7 +9,6 @@ import type { RoleLocationMember } from "#project/roles/index";
 import type { createStructureDomainResolver } from "#project/structure/operations/createStructureDomainResolver";
 import type { createStructureRoleResolver } from "#project/structure/operations/createStructureRoleResolver";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
-import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureKind } from "#project/structure/types/StructureKind";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
@@ -31,7 +30,7 @@ export function createStructureWalker({
   domainResolver,
   classifyMirror,
 }: {
-  name: StructureEnvironmentName;
+  name: string;
   root: Directory;
   options: StructureOptions;
   commands: boolean;

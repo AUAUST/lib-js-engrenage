@@ -8,14 +8,15 @@ import type { ImportGrants } from "#project/structure/types/ImportGrants";
 
 export const importGrantsSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ImportGrants> {
-    const [traits, groups] = await Promise.all([
+    const [traits, groups, environments] = await Promise.all([
       config.resolve("traits"),
       config.resolve("workspaces"),
+      config.resolve("environments"),
     ]);
 
     return freeze({
       published: traits.published,
-      ...resolveEnvironmentGrants(traits.published),
+      ...resolveEnvironmentGrants(traits.published, environments),
       workspaces: new Map(
         flatMap(groups, (group) => {
           return group.workspaces.map(({ dir, dependencies }) => {
