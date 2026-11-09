@@ -1,5 +1,4 @@
 import { settlePreset, syncIgnoreFile } from "#foundation/blocks/index";
-import { gitSection } from "#tools/git/config/sections/gitSection";
 import {
   defaultIgnores,
   editorIgnores,
@@ -17,7 +16,7 @@ export async function syncGitignoreFile(config: LoadedConfig) {
     config.context.root,
     config.context.filesystem,
     config.context.path,
-    config.resolve(gitSection),
+    config.resolve("git"),
     settlePreset(createProjectIgnores(config)),
   ]);
 

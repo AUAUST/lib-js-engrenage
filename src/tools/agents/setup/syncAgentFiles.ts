@@ -5,7 +5,6 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { syncBlocks, syncFiles } from "#foundation/blocks/index";
 import { codexFile } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/index";
-import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import { attributionRules, markdownBlocks } from "#tools/agents/constants";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
@@ -60,7 +59,7 @@ export async function syncAgentFiles({ resolve, context }: LoadedConfig) {
   const config = {
     filesystem: context.filesystem,
     resolve: context.path,
-    agents: await resolve(agentsSection),
+    agents: await resolve("agents"),
   };
 
   if ((config.agents.preferred?.length ?? 0) === 0) {

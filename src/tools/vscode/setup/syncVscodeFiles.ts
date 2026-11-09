@@ -17,8 +17,6 @@ import {
 } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
-import { environmentSection } from "#project/package/index";
-import { vscodeSection } from "#tools/vscode/config/sections/vscodeSection";
 import {
   eslintIntegration,
   extensionsFile,
@@ -123,8 +121,8 @@ export async function syncVscodeFiles(
     config.context.root,
     config.context.filesystem,
     config.context.path,
-    config.resolve(environmentSection),
-    config.resolve(vscodeSection),
+    config.resolve("environment"),
+    config.resolve("vscode"),
   ]);
 
   const applicable = findIntegrations(environment.hasDependency);

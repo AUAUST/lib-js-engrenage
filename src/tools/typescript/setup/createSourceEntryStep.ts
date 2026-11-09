@@ -1,4 +1,3 @@
-import { sourceSection } from "#project/environments/index";
 import type { Step } from "#project/steps/index";
 
 export function createSourceEntryStep(): Step {
@@ -6,14 +5,14 @@ export function createSourceEntryStep(): Step {
     name: "source entry",
     message: "Create the source entry of the library?",
     async isMissing({ resolve, getTraits }) {
-      const source = await resolve(sourceSection);
+      const source = await resolve("src");
 
       const traits = await getTraits();
 
       return traits.published && source.dirs.length > 0 && !source.active;
     },
     async plan({ resolve, filesystem }) {
-      const source = await resolve(sourceSection);
+      const source = await resolve("src");
 
       const [directory] = source.dirs;
 

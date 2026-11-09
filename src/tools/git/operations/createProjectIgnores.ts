@@ -1,5 +1,3 @@
-import { buildOutDirSection } from "#project/build/index";
-import { testsSection } from "#project/environments/index";
 import { coverageTitle, outputTitle } from "#tools/git/constants";
 import type { LoadedConfig } from "#project/config/index";
 import type { GlobGroup } from "#types/GlobGroup";
@@ -7,9 +5,9 @@ import type { GlobGroup } from "#types/GlobGroup";
 export async function createProjectIgnores(
   config: LoadedConfig,
 ): Promise<readonly GlobGroup[]> {
-  const outDir = await config.resolve(buildOutDirSection);
+  const outDir = await config.resolve("build.outDir");
 
-  const { coverageDir } = await config.resolve(testsSection);
+  const { coverageDir } = await config.resolve("tests");
 
   return [
     ...(outDir === undefined

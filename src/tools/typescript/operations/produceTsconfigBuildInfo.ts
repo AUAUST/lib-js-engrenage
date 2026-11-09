@@ -3,7 +3,6 @@ import { basename } from "node:path/posix";
 
 import { typescript } from "#constants";
 import { toPosixPath } from "#foundation/filesystem/index";
-import { cacheSection } from "#project/cache/index";
 import {
   toTsconfigSpecifier,
   type TsconfigTarget,
@@ -19,7 +18,7 @@ export async function produceTsconfigBuildInfo(
     return [];
   }
 
-  const cache = await config.resolve(cacheSection);
+  const cache = await config.resolve("cache");
 
   const cacheDirectory = toPosixPath(
     relative(config.context.root, cache.for(typescript)),

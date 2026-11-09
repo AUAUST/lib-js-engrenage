@@ -1,15 +1,15 @@
 import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
-import { declareSection, type Resolver } from "#foundation/options/index";
-import { locateFile, type ConfigContext } from "#project/config/index";
+import { declareSection } from "#foundation/options/index";
+import { locateFile, type ConfigResolver } from "#project/config/index";
 import { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
 import type { ResolvedPrettier } from "#tools/prettier/types/ResolvedPrettier";
 
 export const prettierSection = declareSection({
   name: "prettier",
   declaration: prettierSchema,
-  resolve(input, config: Resolver<ConfigContext>): ResolvedPrettier {
+  resolve(input, config: ConfigResolver): ResolvedPrettier {
     const { root, filesystem } = config.context;
 
     const { prettierignore } = prettierSchema.resolve(

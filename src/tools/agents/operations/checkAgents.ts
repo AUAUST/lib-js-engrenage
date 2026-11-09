@@ -6,7 +6,6 @@ import {
 } from "#tools/agents/claude/constants";
 import { codexFile, codexSkillsDir } from "#tools/agents/codex/constants";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
-import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import { agentsFile } from "#tools/agents/constants";
 import { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
@@ -18,7 +17,7 @@ import type { AgentCheckFinding } from "#tools/agents/types/AgentCheckFinding";
 export async function checkAgents(
   config: LoadedConfig,
 ): Promise<AgentCheckFinding[]> {
-  const agents = await config.resolve(agentsSection);
+  const agents = await config.resolve("agents");
 
   const preferred = agents.preferred ?? [];
   const { filesystem, root } = config.context;

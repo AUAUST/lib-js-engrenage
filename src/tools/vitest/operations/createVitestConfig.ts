@@ -7,16 +7,6 @@ import type { Maybe } from "@auaust/toolkit/types";
 
 import { filesIn, resolve } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
-import { buildOutDirSection } from "#project/build/index";
-import { sourceSection, testsSection } from "#project/environments/index";
-import { packageJsonSection } from "#project/package/index";
-import { traitsSection } from "#project/presets/index";
-import {
-  environmentRolesSection,
-  filesSection,
-} from "#project/structure/index";
-import { tsconfigPathSection } from "#project/tsconfig/index";
-import { workspacesSection } from "#project/workspaces/index";
 import { optionsSchema } from "#tools/vitest/config/schemas/optionsSchema";
 import {
   buildMode,
@@ -37,9 +27,9 @@ async function createSourcePlugins(
   config: LoadedConfig,
   guardOutDir: boolean,
 ): Promise<Plugin[]> {
-  const outDir = await config.resolve(buildOutDirSection);
+  const outDir = await config.resolve("build.outDir");
 
-  const packageJson = await config.resolve(packageJsonSection);
+  const packageJson = await config.resolve("packageJson");
 
   const packageName = packageJson.optional.name;
 
@@ -56,7 +46,7 @@ async function createSourcePlugins(
 }
 
 async function createDistPlugins(config: LoadedConfig): Promise<Plugin[]> {
-  const traits = await config.resolve(traitsSection);
+  const traits = await config.resolve("traits");
 
   if (!traits.published) {
     return [];
@@ -64,7 +54,7 @@ async function createDistPlugins(config: LoadedConfig): Promise<Plugin[]> {
 
   const root = await realpath(config.context.root);
 
-  const source = await config.resolve(sourceSection);
+  const source = await config.resolve("src");
 
   return [
     createSourceGuard(`${pluginPrefix}:${sourceGuard}`, {
@@ -77,14 +67,14 @@ async function createTestsInclude(
   config: LoadedConfig,
   testsBuild: boolean,
 ): Promise<string[] | undefined> {
-  const traits = await config.resolve(traitsSection);
+  const traits = await config.resolve("traits");
 
   if (!traits.published) {
     return;
   }
 
   // @debt `include` replaces Vitest's default, so `.js` and `.mjs` tests are no longer collected
-  const tests = await config.resolve(testsSection);
+  const tests = await config.resolve("tests");
 
   const { plain, source, dist } = tests.patterns;
 
@@ -92,7 +82,7 @@ async function createTestsInclude(
 
   return [
     ...patterns,
-    ...flatMap(await config.resolve(workspacesSection), ({ dirs }) =>
+    ...flatMap(await config.resolve("workspaces"), ({ dirs }) =>
       filesIn(dirs, patterns),
     ),
   ];
@@ -103,14 +93,14 @@ export async function createVitestConfig(
   { mode }: ConfigEnv,
   options?: Maybe<Options>,
 ): Promise<Config> {
-  const roles = await config.resolve(environmentRolesSection);
+  const roles = await config.resolve("environmentRoles");
 
   const {
     guardOutDir,
     isolate,
     restoreMocks = !isolate,
     setupFiles = await findSetupFiles({
-      tests: await config.resolve(testsSection),
+      tests: await config.resolve("tests"),
       roles: roles.tests,
       filesystem: config.context.filesystem,
     }),
@@ -118,7 +108,7 @@ export async function createVitestConfig(
 
   const testsBuild = mode === buildMode;
 
-  const tests = await config.resolve(testsSection);
+  const tests = await config.resolve("tests");
 
   if (testsBuild && tests.active) {
     const { owner, file } = tests.dist.tsconfig;
@@ -136,7 +126,7 @@ export async function createVitestConfig(
 
   const tsconfig = await (testsBuild
     ? tests.dist.tsconfig.path
-    : config.resolve(tsconfigPathSection));
+    : config.resolve("tsconfigPath"));
 
   const typecheckTsconfig = await (testsBuild
     ? tests.dist.tsconfig.path
@@ -144,7 +134,7 @@ export async function createVitestConfig(
 
   const include = await createTestsInclude(config, testsBuild);
 
-  const { fixtures } = await config.resolve(filesSection);
+  const { fixtures } = await config.resolve("files");
 
   return {
     ...(tsconfig === undefined

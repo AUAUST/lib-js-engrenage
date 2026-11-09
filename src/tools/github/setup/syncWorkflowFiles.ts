@@ -5,12 +5,6 @@ import { hasOwn } from "@auaust/toolkit/object";
 
 import { syncFiles } from "#foundation/blocks/index";
 import { resolveWithin, toPosixPath } from "#foundation/filesystem/index";
-import {
-  packageJsonPathSection,
-  packageJsonSection,
-} from "#project/package/index";
-import { gitSection } from "#tools/git/index";
-import { githubSection } from "#tools/github/config/sections/githubSection";
 import { workflowsDirectory, workflowSets } from "#tools/github/constants";
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 import type { LoadedConfig } from "#project/config/index";
@@ -21,21 +15,21 @@ async function assertScripts(
   name: WorkflowSetName,
   required: readonly string[],
 ) {
-  const packageJson = await config.resolve(packageJsonSection);
+  const packageJson = await config.resolve("packageJson");
 
   const scripts = packageJson.optional.scripts ?? {};
 
   for (const script of required) {
     if (!hasOwn(scripts, script)) {
       throw new Error(
-        `${await config.resolve(packageJsonPathSection)} does not declare the "${script}" script that the ${name} workflows run`,
+        `${await config.resolve("packageJsonPath")} does not declare the "${script}" script that the ${name} workflows run`,
       );
     }
   }
 }
 
 export async function syncWorkflowFiles(config: LoadedConfig) {
-  const { workflows: name } = await config.resolve(githubSection);
+  const { workflows: name } = await config.resolve("github");
 
   if (name === false) {
     return;
@@ -43,7 +37,7 @@ export async function syncWorkflowFiles(config: LoadedConfig) {
 
   const { files, scripts } = workflowSets[name];
 
-  const { root, filesystem } = await config.resolve(gitSection);
+  const { root, filesystem } = await config.resolve("git");
 
   const directory = toPosixPath(relative(root, config.context.root)) || ".";
 

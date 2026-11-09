@@ -2,8 +2,8 @@ import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
 import { createFilesystem } from "#foundation/filesystem/index";
-import { declareSection, type Resolver } from "#foundation/options/index";
-import { locateFile, type ConfigContext } from "#project/config/index";
+import { declareSection } from "#foundation/options/index";
+import { locateFile, type ConfigResolver } from "#project/config/index";
 import { gitSchema } from "#tools/git/config/schemas/gitSchema";
 import { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
 import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
@@ -11,7 +11,7 @@ import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 export const gitSection = declareSection({
   name: "git",
   declaration: gitSchema,
-  async resolve(input, config: Resolver<ConfigContext>): Promise<ResolvedGit> {
+  async resolve(input, config: ConfigResolver): Promise<ResolvedGit> {
     const { root, filesystem } = config.context;
 
     const { gitignore, local } = gitSchema.resolve(input, config, "git");

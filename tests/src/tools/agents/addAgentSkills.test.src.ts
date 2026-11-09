@@ -2,7 +2,6 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { agentsSection } from "#tools/agents/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 
 describe("addAgentSkills", () => {
@@ -18,7 +17,7 @@ describe("addAgentSkills", () => {
     await addAgentSkills(
       {
         filesystem: config.context.filesystem,
-        agents: await config.resolve(agentsSection),
+        agents: await config.resolve("agents"),
       },
       ["debugging"],
     );
@@ -62,7 +61,7 @@ describe("addAgentSkills", () => {
     await addAgentSkills(
       {
         filesystem: config.context.filesystem,
-        agents: await config.resolve(agentsSection),
+        agents: await config.resolve("agents"),
       },
       ["issue-implementation"],
     );
@@ -86,7 +85,7 @@ describe("addAgentSkills", () => {
     await addAgentSkills(
       {
         filesystem: config.context.filesystem,
-        agents: await config.resolve(agentsSection),
+        agents: await config.resolve("agents"),
       },
       ["scratchpad"],
     );
@@ -119,7 +118,7 @@ describe("addAgentSkills", () => {
 
     const sections = {
       filesystem: config.context.filesystem,
-      agents: await config.resolve(agentsSection),
+      agents: await config.resolve("agents"),
     };
 
     await addAgentSkills(sections, ["issue-implementation"]);
@@ -177,7 +176,7 @@ describe("addAgentSkills", () => {
 
     const sections = {
       filesystem: config.context.filesystem,
-      agents: await config.resolve(agentsSection),
+      agents: await config.resolve("agents"),
     };
 
     await expect(
@@ -199,7 +198,7 @@ describe("addAgentSkills", () => {
 
     const sections = {
       filesystem: config.context.filesystem,
-      agents: await config.resolve(agentsSection),
+      agents: await config.resolve("agents"),
     };
 
     await expect(addAgentSkills(sections, ["issue-planning"])).rejects.toThrow(

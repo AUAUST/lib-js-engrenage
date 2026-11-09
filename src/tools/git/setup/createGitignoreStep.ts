@@ -2,7 +2,6 @@ import { flat, pluck } from "@auaust/primitive-kit/arrays";
 
 import { gitignoreFile } from "#constants";
 import { relativeWithin } from "#foundation/filesystem/index";
-import { gitSection } from "#tools/git/config/sections/gitSection";
 import { defaultIgnores, ignoreBlocks } from "#tools/git/constants";
 import type { Step } from "#project/steps/index";
 import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
@@ -48,13 +47,13 @@ export function createGitignoreStep(): Step {
     message: `Add the engrenage ignore blocks to ${gitignoreFile}?`,
     async isMissing({ resolve, context, filesystem }) {
       const content = await filesystem.read(
-        await resolveFile(context.root, await resolve(gitSection)),
+        await resolveFile(context.root, await resolve("git")),
       );
 
       return content === undefined || !ignoreMarker.test(content);
     },
     async plan({ resolve, context, filesystem }) {
-      const file = await resolveFile(context.root, await resolve(gitSection));
+      const file = await resolveFile(context.root, await resolve("git"));
 
       const covered = new Set(flat(pluck(defaultIgnores, "globs")));
 

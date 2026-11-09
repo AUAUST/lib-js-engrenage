@@ -1,7 +1,5 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { testsSection } from "#project/environments/index";
-import { packageJsonSection } from "#project/package/index";
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { defineTsdownConfig } from "#tools/tsdown/config/defineTsdownConfig";
@@ -19,7 +17,7 @@ describe("defineTsdownConfig", () => {
 
     const callback = vi.fn(async (config: LoadedConfig) => {
       return {
-        bundle: [(await config.resolve(packageJsonSection)).name],
+        bundle: [(await config.resolve("packageJson")).name],
       };
     });
 
@@ -31,7 +29,7 @@ describe("defineTsdownConfig", () => {
       async (config) => {
         return {
           exports: {
-            exclude: [...(await config.resolve(testsSection)).dirs],
+            exclude: [...(await config.resolve("tests")).dirs],
           },
         };
       },

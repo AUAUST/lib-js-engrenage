@@ -1,9 +1,4 @@
-import {
-  createPackageJson,
-  packageJsonPathSection,
-  packageJsonSection,
-  readSharedPnpmRange,
-} from "#project/package/index";
+import { createPackageJson, readSharedPnpmRange } from "#project/package/index";
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 import { writePnpmDeclaration } from "#tools/pnpm/operations/writePnpmDeclaration";
 import { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus";
@@ -14,14 +9,12 @@ export function createPnpmStep(): Step {
     name: "pnpm version",
     message: "Declare the pnpm version of the project in devEngines?",
     async isMissing({ resolve }) {
-      return (
-        resolvePnpmRangeStatus(await resolve(packageJsonSection)) === "missing"
-      );
+      return resolvePnpmRangeStatus(await resolve("packageJson")) === "missing";
     },
     async plan({ resolve, context, filesystem }) {
       const root = context.root;
 
-      const path = await resolve(packageJsonPathSection);
+      const path = await resolve("packageJsonPath");
 
       const content =
         path === undefined ? undefined : await filesystem.read(path);

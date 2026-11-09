@@ -15,27 +15,22 @@ import {
 import { jsonIndentation } from "#project/format/constants";
 import { accessByVisibility } from "#project/package/constants";
 import {
-  packageJsonSection,
-  visibilitySection,
   writePackageJsonValue,
   type PackageJson,
   type PublishAccess,
 } from "#project/package/index";
-import { traitsSection } from "#project/presets/index";
 import {
   isLeftAlone,
   toJsonValue,
   toTsconfigGlobs,
   toTsconfigSpecifier,
-  typescriptSection,
 } from "#project/tsconfig/index";
 import { selfImports } from "#project/workspaces/constants";
-import {
-  workspacesSection,
-  type ResolvedWorkspace,
-  type ResolvedWorkspaceGroup,
-} from "#project/workspaces/index";
 import type { LoadedConfig } from "#project/config/index";
+import type {
+  ResolvedWorkspace,
+  ResolvedWorkspaceGroup,
+} from "#project/workspaces/index";
 
 interface Field {
   location: readonly [string] | readonly [string, string];
@@ -83,7 +78,7 @@ async function createTsconfigEdits(
   { tsconfig: option }: ResolvedWorkspaceGroup,
   { tsconfig, globs }: ResolvedWorkspace,
 ): Promise<JsonEdit[]> {
-  const typescript = await config.resolve(typescriptSection);
+  const typescript = await config.resolve("typescript");
 
   const base = typescript.tsconfig.file;
 
@@ -139,12 +134,12 @@ async function createTsconfigEdits(
 export async function syncWorkspaceFiles(config: LoadedConfig) {
   const [groups, filesystem, resolvePath, packageJson, traits, visibility] =
     await Promise.all([
-      config.resolve(workspacesSection),
+      config.resolve("workspaces"),
       config.context.filesystem,
       config.context.path,
-      config.resolve(packageJsonSection),
-      config.resolve(traitsSection),
-      config.resolve(visibilitySection),
+      config.resolve("packageJson"),
+      config.resolve("traits"),
+      config.resolve("visibility"),
     ]);
 
   const access = traits.published ? accessByVisibility[visibility] : undefined;

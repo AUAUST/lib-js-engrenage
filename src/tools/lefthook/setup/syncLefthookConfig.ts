@@ -2,7 +2,7 @@ import { isDeepStrictEqual } from "node:util";
 
 import { isMap, isNode, parseDocument } from "yaml";
 
-import { agentsSection, listLocalFilePatterns } from "#tools/agents/index";
+import { listLocalFilePatterns } from "#tools/agents/index";
 import {
   gateCommandName,
   hookName,
@@ -24,7 +24,7 @@ export async function syncLefthookConfig(config: LoadedConfig) {
     return;
   }
 
-  const variables = listGateVariables(await resolve(agentsSection));
+  const variables = listGateVariables(await resolve("agents"));
 
   const local = await listLocalFilePatterns(config);
 

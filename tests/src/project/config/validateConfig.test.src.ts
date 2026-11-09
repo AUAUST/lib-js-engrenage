@@ -4,14 +4,10 @@ import { describe, expect, test } from "vitest";
 
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { buildSection } from "#project/build/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { validateConfig } from "#project/config/operations/validateConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
-import { agentsSection } from "#tools/agents/index";
-import { gitSection } from "#tools/git/index";
-import { prettierSection } from "#tools/prettier/index";
 
 describe("validateConfig", () => {
   test("rejects an unknown key of a section, naming the file and the section", async () => {
@@ -89,7 +85,7 @@ describe("validateConfig", () => {
       'Unknown key "unknown"',
     );
 
-    expect((await partial.resolve(buildSection)).sourcemap).toBe(true);
+    expect((await partial.resolve("build")).sourcemap).toBe(true);
   });
 
   test("reports every failing section at once", async () => {
@@ -119,14 +115,14 @@ describe("validateConfig", () => {
 
     const config = await validateConfig(await loadConfig(project.root));
 
-    expect((await config.resolve(agentsSection)).preferred).toEqual(["claude"]);
+    expect((await config.resolve("agents")).preferred).toEqual(["claude"]);
 
     await expect(
-      (await config.resolve(gitSection)).gitignore,
+      (await config.resolve("git")).gitignore,
     ).resolves.toBeUndefined();
 
     await expect(
-      (await config.resolve(prettierSection)).prettierignore,
+      (await config.resolve("prettier")).prettierignore,
     ).resolves.toBeUndefined();
   });
 });

@@ -3,8 +3,6 @@ import { entries } from "@auaust/toolkit/object";
 
 import { syncBlocks } from "#foundation/blocks/index";
 import { relativeWithin } from "#foundation/filesystem/index";
-import { defineSection } from "#project/environments/index";
-import { typescriptSection } from "#project/tsconfig/index";
 import {
   identifierPattern,
   typescriptBlocks,
@@ -52,13 +50,13 @@ function appendBlock(content: string): string {
 }
 
 export async function syncEnvFile(config: LoadedConfig) {
-  const { types, values } = await config.resolve(defineSection);
+  const { types, values } = await config.resolve("define");
 
   if (!types) {
     return;
   }
 
-  const typescript = await config.resolve(typescriptSection);
+  const typescript = await config.resolve("typescript");
 
   const file = relativeWithin(config.context.root, typescript.envFile);
 

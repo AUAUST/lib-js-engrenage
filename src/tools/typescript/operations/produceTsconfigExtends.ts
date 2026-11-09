@@ -1,10 +1,7 @@
 import { engrenage } from "#constants";
 import { resolveListOption } from "#foundation/options/index";
-import { testsSection } from "#project/environments/index";
-import { traitsSection } from "#project/presets/index";
 import {
   toTsconfigSpecifier,
-  typescriptSection,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
 import type { JsonEdit } from "#foundation/json/index";
@@ -15,7 +12,7 @@ async function createDefaultExtends(
   { key, file }: TsconfigTarget,
 ): Promise<() => readonly string[]> {
   if (key === "base") {
-    const { published } = await config.resolve(traitsSection);
+    const { published } = await config.resolve("traits");
 
     return () => {
       return published
@@ -24,9 +21,9 @@ async function createDefaultExtends(
     };
   }
 
-  const tests = await config.resolve(testsSection);
+  const tests = await config.resolve("tests");
 
-  const typescript = await config.resolve(typescriptSection);
+  const typescript = await config.resolve("typescript");
 
   const parent =
     key === "tests.dist" ? tests.tsconfig.file : typescript.tsconfig.file;

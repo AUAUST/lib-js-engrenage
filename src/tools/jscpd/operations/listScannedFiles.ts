@@ -1,11 +1,10 @@
 import { matchesGlob } from "node:path";
 
-import { filesSection } from "#project/structure/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Files } from "#types/Files";
 
 export async function listScannedFiles(config: LoadedConfig): Promise<Files> {
-  const files = await config.resolve(filesSection);
+  const files = await config.resolve("files");
 
   const excluded = [...files.generated, ...files.fixtures];
 

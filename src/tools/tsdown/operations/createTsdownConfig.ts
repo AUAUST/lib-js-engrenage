@@ -15,32 +15,7 @@ import {
 import { readJsonFile, resolveWithin } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
 import { emittedManifestFile } from "#project/build/constants";
-import { buildOutDirSection, buildSection } from "#project/build/index";
-import { cacheSection } from "#project/cache/index";
-import {
-  binSection,
-  createDefine,
-  dataSection,
-  sourceSection,
-} from "#project/environments/index";
-import {
-  environmentSection,
-  packageJsonPathSection,
-  packageJsonSection,
-} from "#project/package/index";
-import {
-  environmentRolesSection,
-  sourceExportsSection,
-} from "#project/structure/index";
-import {
-  tsconfigPathSection,
-  tsconfigSection,
-  type PathAliases,
-} from "#project/tsconfig/index";
-import {
-  workspacesSection,
-  type ResolvedWorkspaceGroup,
-} from "#project/workspaces/index";
+import { createDefine } from "#project/environments/index";
 import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
 import {
   emptyNamespaces,
@@ -59,6 +34,8 @@ import { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
 import { resolveDataExports } from "#tools/tsdown/utils/resolveDataExports";
 import { resolveTsdownTarget } from "#tools/tsdown/utils/resolveTsdownTarget";
 import type { LoadedConfig } from "#project/config/index";
+import type { PathAliases } from "#project/tsconfig/index";
+import type { ResolvedWorkspaceGroup } from "#project/workspaces/index";
 import type { Config } from "#tools/tsdown/types/Config";
 import type { Entries } from "#tools/tsdown/types/Entries";
 import type { Options } from "#tools/tsdown/types/Options";
@@ -129,13 +106,13 @@ export async function createTsdownConfig(
 
   const root = config.context.root;
 
-  const packageJson = await config.resolve(packageJsonSection);
+  const packageJson = await config.resolve("packageJson");
 
-  const packageJsonPath = await config.resolve(packageJsonPathSection);
+  const packageJsonPath = await config.resolve("packageJsonPath");
 
-  const source = await config.resolve(sourceSection);
+  const source = await config.resolve("src");
 
-  const tsconfigPath = await config.resolve(tsconfigPathSection);
+  const tsconfigPath = await config.resolve("tsconfigPath");
 
   const declarationsTsconfigPath = await source.tsconfig.path;
 
@@ -150,9 +127,9 @@ export async function createTsdownConfig(
     );
   }
 
-  const { typed, sourcemap, clean } = await config.resolve(buildSection);
+  const { typed, sourcemap, clean } = await config.resolve("build");
 
-  const outDir = await config.resolve(buildOutDirSection);
+  const outDir = await config.resolve("build.outDir");
 
   if (outDir === undefined) {
     throw new Error(
@@ -163,32 +140,32 @@ export async function createTsdownConfig(
   const sourceEntries = await resolveSourceEntries({
     packageJson,
     root,
-    exposed: await config.resolve(sourceExportsSection),
-    tsconfig: await config.resolve(tsconfigSection),
+    exposed: await config.resolve("src.exports"),
+    tsconfig: await config.resolve("tsconfig"),
   });
 
-  const roles = await config.resolve(environmentRolesSection);
+  const roles = await config.resolve("environmentRoles");
 
   const bins = await resolveCommandEntries({
-    bin: await config.resolve(binSection),
+    bin: await config.resolve("bin"),
     roles: roles.bin,
     filesystem: config.context.filesystem,
   });
 
   const workspaceEntries = resolveWorkspaceEntries(
-    await config.resolve(workspacesSection),
+    await config.resolve("workspaces"),
   );
 
   const customExports = resolveDataExports(
-    { data: await config.resolve(dataSection) },
+    { data: await config.resolve("data") },
     sourceEntries,
   );
 
   const packageSnapshot = await readPackageSnapshot(packageJsonPath);
 
-  const environment = await config.resolve(environmentSection);
+  const environment = await config.resolve("environment");
 
-  const cache = await config.resolve(cacheSection);
+  const cache = await config.resolve("cache");
 
   return {
     cwd: root,

@@ -2,7 +2,6 @@ import { join } from "node:path";
 
 import { describe, expect, test, vi } from "vitest";
 
-import { agentsSection } from "@auaust/engrenage";
 import {
   resolveAgentReference,
   syncAgentFiles,
@@ -20,7 +19,7 @@ async function resolveSections({
   resolve,
   context,
 }: Awaited<ReturnType<typeof loadConfig>>) {
-  return { resolve: context.path, agents: await resolve(agentsSection) };
+  return { resolve: context.path, agents: await resolve("agents") };
 }
 
 describe("syncAgentFiles", () => {

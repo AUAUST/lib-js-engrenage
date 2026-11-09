@@ -9,7 +9,6 @@ import { describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { validateConfig } from "#project/config/operations/validateConfig";
-import { sourceSection } from "#project/environments/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
@@ -316,7 +315,7 @@ describe("runtime tsconfig fields", () => {
       }),
     );
 
-    await expect(config.resolve(sourceSection)).rejects.toThrow(
+    await expect(config.resolve("src")).rejects.toThrow(
       /src\.apis only applies to a baseline runtime/,
     );
   });

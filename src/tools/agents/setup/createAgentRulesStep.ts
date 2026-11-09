@@ -1,6 +1,5 @@
 import { filterMap, pluck } from "@auaust/primitive-kit/arrays";
 
-import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import type { Step } from "#project/steps/index";
@@ -10,7 +9,7 @@ export function createAgentRulesStep(): Step {
     name: "agent rules",
     message: "Choose shared coding rules for .claude/rules/?",
     async isMissing({ resolve, filesystem }) {
-      const agents = await resolve(agentsSection);
+      const agents = await resolve("agents");
 
       if ((agents.preferred?.length ?? 0) === 0) {
         return false;
@@ -32,7 +31,7 @@ export function createAgentRulesStep(): Step {
       );
 
       await addAgentRules(
-        { filesystem, agents: await resolve(agentsSection) },
+        { filesystem, agents: await resolve("agents") },
         names,
       );
     },

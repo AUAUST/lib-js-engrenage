@@ -4,7 +4,7 @@ import { isString } from "@auaust/toolkit/isString";
 import { keys } from "@auaust/toolkit/object";
 
 import { lefthook } from "#constants";
-import { agentsSection, listLocalFilePatterns } from "#tools/agents/index";
+import { listLocalFilePatterns } from "#tools/agents/index";
 import {
   gateCommandName,
   hookName,
@@ -21,7 +21,7 @@ import type { Step, StepContext } from "#project/steps/index";
 const prepareLocation: [string, string] = ["scripts", "prepare"];
 
 async function listCommands(context: StepContext) {
-  const variables = listGateVariables(await context.resolve(agentsSection));
+  const variables = listGateVariables(await context.resolve("agents"));
 
   const local = await listLocalFilePatterns(context);
 

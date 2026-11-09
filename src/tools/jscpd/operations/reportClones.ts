@@ -6,7 +6,6 @@ import type { Maybe } from "@auaust/toolkit/types";
 import { packages } from "#constants";
 import { resolveWithin } from "#foundation/filesystem/index";
 import { resolveBinary, spawnProcess } from "#foundation/processes/index";
-import { cacheSection } from "#project/cache/index";
 import { baselineFile } from "#tools/jscpd/constants";
 import { listScannedFiles } from "#tools/jscpd/operations/listScannedFiles";
 import type { LoadedConfig } from "#project/config/index";
@@ -26,7 +25,7 @@ export async function reportClones(
     return;
   }
 
-  const cache = await config.resolve(cacheSection);
+  const cache = await config.resolve("cache");
 
   const directory = resolveWithin(root, cache.for(packages.jscpd));
 

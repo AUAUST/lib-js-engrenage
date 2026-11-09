@@ -1,14 +1,6 @@
 import { flatMap } from "@auaust/primitive-kit/arrays";
 
 import { findDirectories } from "#foundation/filesystem/index";
-import {
-  binSection,
-  dataSection,
-  scriptsSection,
-  sourceSection,
-  testsSection,
-  toolingSection,
-} from "#project/environments/index";
 import { resolvePrettierArguments } from "#tools/prettier/operations/resolvePrettierArguments";
 import type { LoadedConfig } from "#project/config/index";
 
@@ -18,12 +10,12 @@ export async function resolvePrettierAllArguments(
 ): Promise<string[]> {
   const [source, bin, scripts, tests, data, tooling, filesystem, resolve] =
     await Promise.all([
-      config.resolve(sourceSection),
-      config.resolve(binSection),
-      config.resolve(scriptsSection),
-      config.resolve(testsSection),
-      config.resolve(dataSection),
-      config.resolve(toolingSection),
+      config.resolve("src"),
+      config.resolve("bin"),
+      config.resolve("scripts"),
+      config.resolve("tests"),
+      config.resolve("data"),
+      config.resolve("tooling"),
       config.context.filesystem,
       config.context.path,
     ]);

@@ -4,7 +4,6 @@ import {
   codexHooksFile,
 } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
-import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import { syncHooks } from "#tools/agents/operations/syncHooks";
 import type { LoadedConfig } from "#project/config/index";
 
@@ -15,7 +14,7 @@ export async function syncCodexFiles(
   const config = {
     filesystem: context.filesystem,
     resolve: context.path,
-    agents: await resolve(agentsSection),
+    agents: await resolve("agents"),
   };
 
   if (config.agents.preferred?.includes("codex") !== true) {

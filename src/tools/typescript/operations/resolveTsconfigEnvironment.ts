@@ -1,10 +1,3 @@
-import {
-  binSection,
-  scriptsSection,
-  sourceSection,
-  testsSection,
-  toolingSection,
-} from "#project/environments/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { TsconfigEnvironment } from "#project/tsconfig/index";
 
@@ -14,19 +7,19 @@ export async function resolveTsconfigEnvironment(
 ) {
   switch (environment) {
     case "src": {
-      return config.resolve(sourceSection);
+      return config.resolve("src");
     }
     case "tests": {
-      return config.resolve(testsSection);
+      return config.resolve("tests");
     }
     case "bin": {
-      return config.resolve(binSection);
+      return config.resolve("bin");
     }
     case "scripts": {
-      return config.resolve(scriptsSection);
+      return config.resolve("scripts");
     }
     case "tooling": {
-      return config.resolve(toolingSection);
+      return config.resolve("tooling");
     }
   }
 }

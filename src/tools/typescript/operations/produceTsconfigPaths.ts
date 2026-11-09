@@ -1,8 +1,7 @@
 import { map } from "@auaust/primitive-kit/arrays";
 import { entries, record } from "@auaust/toolkit/object";
 
-import { packageJsonSection, resolveExportPaths } from "#project/package/index";
-import { sourceExportsSection } from "#project/structure/index";
+import { resolveExportPaths } from "#project/package/index";
 import {
   isPackageAlias,
   readTsconfigPaths,
@@ -31,13 +30,13 @@ export async function produceTsconfigPaths(
     return [];
   }
 
-  const exposed = await config.resolve(sourceExportsSection);
+  const exposed = await config.resolve("src.exports");
 
   if (exposed === undefined) {
     return [];
   }
 
-  const { name } = await config.resolve(packageJsonSection);
+  const { name } = await config.resolve("packageJson");
 
   const generated = entries(resolveExportPaths(name, exposed)).map(
     ([alias, targets]) => {

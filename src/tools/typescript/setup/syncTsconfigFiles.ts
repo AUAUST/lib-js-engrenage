@@ -3,13 +3,11 @@ import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits, type JsonEdit } from "#foundation/json/index";
-import { testsSection } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
 import { tsconfigEnvironments } from "#project/tsconfig/constants";
 import {
   isLeftAlone,
   toJsonValue,
-  typescriptSection,
   type ResolvedEnvironmentTsconfig,
   type TsconfigKey,
   type TsconfigTarget,
@@ -67,7 +65,7 @@ async function isActive(
 
 async function findTsconfig(config: LoadedConfig, key: TsconfigKey) {
   if (key === "tests.dist") {
-    const { dist } = await config.resolve(testsSection);
+    const { dist } = await config.resolve("tests");
 
     return dist.tsconfig;
   }
@@ -83,7 +81,7 @@ interface PlannedTarget {
 }
 
 async function collectTargets(config: LoadedConfig): Promise<PlannedTarget[]> {
-  const { tsconfig } = await config.resolve(typescriptSection);
+  const { tsconfig } = await config.resolve("typescript");
 
   const targets: PlannedTarget[] = [
     {
@@ -147,7 +145,7 @@ async function inheritsTestsTsconfig(
   config: LoadedConfig,
   target: TsconfigTarget,
 ): Promise<boolean> {
-  const tests = await config.resolve(testsSection);
+  const tests = await config.resolve("tests");
 
   return (
     target.key === "tests.dist" &&

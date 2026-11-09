@@ -2,7 +2,6 @@ import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { agentsSection } from "#tools/agents/index";
 import { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 import { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
@@ -13,7 +12,7 @@ const words = (count: number) =>
 async function loadBudgets(root: string) {
   const config = await loadConfig(root);
 
-  const { budgets } = await config.resolve(agentsSection);
+  const { budgets } = await config.resolve("agents");
 
   return budgets;
 }

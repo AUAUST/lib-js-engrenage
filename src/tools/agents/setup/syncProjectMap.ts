@@ -1,18 +1,10 @@
 import { entries, freeze, values } from "@auaust/toolkit/object";
 
 import { findDirectories } from "#foundation/filesystem/index";
-import { testsSection, toolingSection } from "#project/environments/index";
-import {
-  aliasesSection,
-  environmentRolesSection,
-  importGrantsSection,
-  structureSection,
-  type StructureEnvironmentName,
-} from "#project/structure/index";
-import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import { projectMapDirectory } from "#tools/agents/constants";
 import { renderProjectMap } from "#tools/agents/utils/renderProjectMap";
 import type { LoadedConfig } from "#project/config/index";
+import type { StructureEnvironmentName } from "#project/structure/index";
 import type { Globs } from "#types/Globs";
 
 export async function syncProjectMap({ resolve, context }: LoadedConfig) {
@@ -27,13 +19,13 @@ export async function syncProjectMap({ resolve, context }: LoadedConfig) {
     tooling,
   ] = await Promise.all([
     context.filesystem,
-    resolve(agentsSection),
-    resolve(structureSection),
-    resolve(aliasesSection),
-    resolve(importGrantsSection),
-    resolve(environmentRolesSection),
-    resolve(testsSection),
-    resolve(toolingSection),
+    resolve("agents"),
+    resolve("structure"),
+    resolve("aliases"),
+    resolve("importGrants"),
+    resolve("environmentRoles"),
+    resolve("tests"),
+    resolve("tooling"),
   ]);
 
   if (

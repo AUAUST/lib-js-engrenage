@@ -1,7 +1,4 @@
-import {
-  tsconfigEnvironments,
-  tsconfigPathSection,
-} from "#project/tsconfig/index";
+import { tsconfigEnvironments } from "#project/tsconfig/index";
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import { resolveTscProjectArguments } from "#tools/typescript/operations/resolveTscProjectArguments";
 import type { LoadedConfig } from "#project/config/index";
@@ -26,7 +23,7 @@ export async function resolveTscArguments(
   config: LoadedConfig,
   args: readonly string[],
 ): Promise<string[]> {
-  const project = await config.resolve(tsconfigPathSection);
+  const project = await config.resolve("tsconfigPath");
 
   if (!(await hasReferencedEnvironment(config))) {
     throw new Error(

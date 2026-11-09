@@ -2,11 +2,8 @@ import { includes, map } from "@auaust/primitive-kit/arrays";
 
 import { changesetsCli } from "#constants";
 import { settlePreset, syncIgnoreFile } from "#foundation/blocks/index";
-import { environmentSection } from "#project/package/index";
-import { filesSection } from "#project/structure/index";
-import { agentsSection, codexFile } from "#tools/agents/index";
+import { codexFile } from "#tools/agents/index";
 import { createProjectIgnores } from "#tools/git/index";
-import { prettierSection } from "#tools/prettier/config/sections/prettierSection";
 import {
   changelogIgnores,
   codegenTitle,
@@ -23,16 +20,16 @@ function anchor(glob: Glob): Glob {
 async function createProjectPrettierIgnores(
   config: LoadedConfig,
 ): Promise<readonly GlobGroup[]> {
-  const files = await config.resolve(filesSection);
+  const files = await config.resolve("files");
 
-  const agents = await config.resolve(agentsSection);
+  const agents = await config.resolve("agents");
 
   const generated = [
     ...map(files.generated, anchor),
     ...(includes(agents.preferred ?? [], "codex") ? [`/${codexFile}`] : []),
   ];
 
-  const environment = await config.resolve(environmentSection);
+  const environment = await config.resolve("environment");
 
   return [
     ...(await createProjectIgnores(config)),
@@ -53,7 +50,7 @@ export async function syncPrettierignoreFile(config: LoadedConfig) {
     config.context.root,
     config.context.filesystem,
     config.context.path,
-    config.resolve(prettierSection),
+    config.resolve("prettier"),
     settlePreset(createProjectPrettierIgnores(config)),
   ]);
 

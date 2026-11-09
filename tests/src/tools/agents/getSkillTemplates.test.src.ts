@@ -4,7 +4,6 @@ import { describe, expect, test, vi } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { claudeStopHook } from "#tools/agents/claude/constants";
-import { agentsSection } from "#tools/agents/index";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { createHookCommand } from "#tools/agents/utils/createHookCommand";
 
@@ -50,7 +49,7 @@ async function renderSkills(preferred = ["claude"]) {
 
   const config = await loadConfig(project.root);
 
-  const agents = await config.resolve(agentsSection);
+  const agents = await config.resolve("agents");
 
   return getSkillTemplates({ agents });
 }

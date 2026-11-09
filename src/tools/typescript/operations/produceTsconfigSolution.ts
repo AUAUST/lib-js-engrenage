@@ -5,7 +5,6 @@ import {
   toTsconfigSpecifier,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
-import { workspacesSection } from "#project/workspaces/index";
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
@@ -28,7 +27,7 @@ async function listReferencedFiles(
 
   return [
     ...files,
-    ...flatMap(await config.resolve(workspacesSection), ({ workspaces }) => {
+    ...flatMap(await config.resolve("workspaces"), ({ workspaces }) => {
       return map(workspaces, ({ tsconfig }) => tsconfig);
     }),
   ];

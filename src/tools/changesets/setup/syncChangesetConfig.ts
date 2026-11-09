@@ -9,12 +9,6 @@ import { applyJsonEdits, flattenJsonObject } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
 import { accessByVisibility } from "#project/package/constants";
-import {
-  environmentSection,
-  packageJsonPathSection,
-  visibilitySection,
-} from "#project/package/index";
-import { traitsSection } from "#project/presets/index";
 import { configFile } from "#tools/changesets/constants";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
@@ -50,7 +44,7 @@ async function resolveConfigVersion(packageJsonPath: File): Promise<string> {
 export async function syncChangesetConfig(config: LoadedConfig) {
   const filesystem = config.context.filesystem;
 
-  const environment = await config.resolve(environmentSection);
+  const environment = await config.resolve("environment");
 
   if (
     !environment.hasDependency(changesetsCli) ||
@@ -59,7 +53,7 @@ export async function syncChangesetConfig(config: LoadedConfig) {
     return;
   }
 
-  const packageJsonPath = await config.resolve(packageJsonPathSection);
+  const packageJsonPath = await config.resolve("packageJsonPath");
 
   // @debt repeats the "No package.json found" guard of createStepContext and createTsdownConfig
   if (packageJsonPath === undefined) {
@@ -68,12 +62,12 @@ export async function syncChangesetConfig(config: LoadedConfig) {
 
   const version = await resolveConfigVersion(packageJsonPath);
 
-  const traits = await config.resolve(traitsSection);
+  const traits = await config.resolve("traits");
 
   const options = flattenJsonObject({
     $schema: `https://unpkg.com/${changesetsConfig}@${version}/schema.json`,
     ...(traits.published && {
-      access: accessByVisibility[await config.resolve(visibilitySection)],
+      access: accessByVisibility[await config.resolve("visibility")],
     }),
   });
 

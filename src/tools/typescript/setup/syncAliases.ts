@@ -5,17 +5,15 @@ import { packageJsonFile } from "#constants";
 import { syncFiles } from "#foundation/blocks/index";
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits, readJsonValue } from "#foundation/json/index";
-import { sourceSection } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/index";
-import { aliasesSection, type Alias } from "#project/structure/index";
 import {
   readTsconfigPaths,
   toTsconfigSpecifier,
-  typescriptSection,
 } from "#project/tsconfig/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";
+import type { Alias } from "#project/structure/index";
 
 const importPrefix = "#";
 
@@ -64,7 +62,7 @@ async function syncImports(
 }
 
 async function syncPaths(config: LoadedConfig, aliases: readonly Alias[]) {
-  const typescript = await config.resolve(typescriptSection);
+  const typescript = await config.resolve("typescript");
 
   const { file } = typescript.tsconfig;
   const filesystem = config.context.filesystem;
@@ -96,7 +94,7 @@ async function syncPaths(config: LoadedConfig, aliases: readonly Alias[]) {
 }
 
 export async function syncAliases(config: LoadedConfig) {
-  const { enabled, global, src } = await config.resolve(aliasesSection);
+  const { enabled, global, src } = await config.resolve("aliases");
 
   if (!enabled) {
     return;
@@ -110,7 +108,7 @@ export async function syncAliases(config: LoadedConfig) {
     [...global, ...src],
   );
 
-  const source = await config.resolve(sourceSection);
+  const source = await config.resolve("src");
 
   if (source.bundled) {
     // @debt bundler aliases removed from the config stay in the tsconfig `paths`, since only `#` keys are known to be generated

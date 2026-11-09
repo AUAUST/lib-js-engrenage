@@ -4,7 +4,6 @@ import { random } from "@auaust/primitive-kit/arrays";
 
 import { engrenage } from "#constants";
 import { resolveDataFile } from "#foundation/data/index";
-import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import {
   agentsFile,
   backlogIndex,
@@ -45,7 +44,7 @@ export function createBacklogStep(): Step {
         return true;
       }
 
-      const agents = await resolve(agentsSection);
+      const agents = await resolve("agents");
 
       const [missingRules, skillTemplates] = await Promise.all([
         getMissingRuleTemplates({ filesystem }),
@@ -73,7 +72,7 @@ export function createBacklogStep(): Step {
     async plan(context) {
       const { filesystem, resolve } = context;
 
-      const agents = await resolve(agentsSection);
+      const agents = await resolve("agents");
 
       if (!(await filesystem.exists(backlogIndex))) {
         await filesystem.write(

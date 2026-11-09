@@ -1,4 +1,3 @@
-import { formatSection } from "#project/format/index";
 import { fixedOptions } from "#tools/prettier/constants";
 import { mapConventions } from "#tools/prettier/utils/mapConventions";
 import type { LoadedConfig } from "#project/config/index";
@@ -10,7 +9,7 @@ export async function createPrettierConfig(
 ): Promise<Config> {
   return {
     ...fixedOptions,
-    ...mapConventions(await resolve(formatSection)),
+    ...mapConventions(await resolve("format")),
     ...options,
   };
 }

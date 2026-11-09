@@ -2,7 +2,6 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createGitRepository } from "#tests/utils/createGitRepository";
-import { gitSection } from "#tools/git/config/sections/gitSection";
 import { listLocalFiles } from "#tools/git/operations/listLocalFiles";
 
 describe("listLocalFiles", () => {
@@ -18,7 +17,7 @@ describe("listLocalFiles", () => {
 
     git("add", "--force", ".ai/issues/1.md", ".env.local", ".env.example");
 
-    const resolved = await (await loadConfig(project.root)).resolve(gitSection);
+    const resolved = await (await loadConfig(project.root)).resolve("git");
 
     expect(
       await listLocalFiles(
@@ -70,7 +69,7 @@ describe("listLocalFiles", () => {
 
     const base = project.resolve("packages/app");
 
-    const resolved = await (await loadConfig(base)).resolve(gitSection);
+    const resolved = await (await loadConfig(base)).resolve("git");
 
     expect(
       await listLocalFiles(

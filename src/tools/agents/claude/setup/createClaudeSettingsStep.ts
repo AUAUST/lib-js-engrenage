@@ -4,7 +4,6 @@ import {
   claudeSettingsFile,
 } from "#tools/agents/claude/constants";
 import { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSettings";
-import { agentsSection } from "#tools/agents/config/sections/agentsSection";
 import type { Step } from "#project/steps/index";
 import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 
@@ -17,7 +16,7 @@ export function createClaudeSettingsStep(): Step {
       })
       .join(", ")} commands with a Claude Code hook?`,
     async isMissing({ resolve, filesystem }) {
-      const agents = await resolve(agentsSection);
+      const agents = await resolve("agents");
 
       return (
         agents.preferred?.includes("claude") === true &&

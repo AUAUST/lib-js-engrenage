@@ -1,9 +1,6 @@
 import { describe, expect, test } from "vitest";
 
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
-import { packageJsonSection } from "#project/package/index";
-import { sourceExportsSection } from "#project/structure/index";
-import { tsconfigSection } from "#project/tsconfig/index";
 import { resolvePathAliases } from "#project/tsconfig/operations/resolvePathAliases";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
@@ -101,10 +98,10 @@ describe("produceTsconfigPaths", () => {
       ),
     ).toEqual(
       await resolveSourceEntries({
-        packageJson: await config.resolve(packageJsonSection),
+        packageJson: await config.resolve("packageJson"),
         root: config.context.root,
-        exposed: await config.resolve(sourceExportsSection),
-        tsconfig: await config.resolve(tsconfigSection),
+        exposed: await config.resolve("src.exports"),
+        tsconfig: await config.resolve("tsconfig"),
       }),
     );
   });

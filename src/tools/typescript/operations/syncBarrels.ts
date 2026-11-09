@@ -7,15 +7,6 @@ import { toCamelCase } from "@auaust/primitive-kit/strings";
 import { syncBlocks, syncFiles } from "#foundation/blocks/index";
 import { filesIn, relativeWithin, resolve } from "#foundation/filesystem/index";
 import {
-  binSection,
-  scriptsSection,
-  sourceSection,
-} from "#project/environments/index";
-import {
-  packageJsonSection,
-  type SubpathImports,
-} from "#project/package/index";
-import {
   barrelFiles,
   declarationExtension,
   identifierPattern,
@@ -23,6 +14,7 @@ import {
 } from "#tools/typescript/constants";
 import { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
 import type { LoadedConfig } from "#project/config/index";
+import type { SubpathImports } from "#project/package/index";
 import type { BarrelMode } from "#tools/typescript/types/BarrelMode";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -228,10 +220,10 @@ export async function syncBarrels(
   const [rootPath, { imports }, source, bin, scripts, filesystem, resolve] =
     await Promise.all([
       config.context.root,
-      config.resolve(packageJsonSection),
-      config.resolve(sourceSection),
-      config.resolve(binSection),
-      config.resolve(scriptsSection),
+      config.resolve("packageJson"),
+      config.resolve("src"),
+      config.resolve("bin"),
+      config.resolve("scripts"),
       config.context.filesystem,
       config.context.path,
     ]);

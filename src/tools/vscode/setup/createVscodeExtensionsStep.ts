@@ -1,5 +1,3 @@
-import { environmentSection } from "#project/package/index";
-import { vscodeSection } from "#tools/vscode/config/sections/vscodeSection";
 import { extensionsFile } from "#tools/vscode/constants";
 import { syncVscodeFiles } from "#tools/vscode/setup/syncVscodeFiles";
 import { findIntegrations } from "#tools/vscode/utils/findIntegrations";
@@ -10,9 +8,9 @@ export function createVscodeExtensionsStep(): Step {
     name: extensionsFile,
     message: "Recommend the VS Code extensions of the project tools?",
     async isMissing({ resolve, filesystem }) {
-      const { hasDependency } = await resolve(environmentSection);
+      const { hasDependency } = await resolve("environment");
 
-      const vscode = await resolve(vscodeSection);
+      const vscode = await resolve("vscode");
 
       return (
         vscode.extensions !== false &&

@@ -5,7 +5,6 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 import { resolveListOption } from "#foundation/options/index";
 import {
   toTsconfigGlobs,
-  typescriptSection,
   type TsconfigKey,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
@@ -33,7 +32,7 @@ async function createDefaultInclude(
 
   const root = config.context.root;
 
-  const { envFile } = await config.resolve(typescriptSection);
+  const { envFile } = await config.resolve("typescript");
 
   return () => {
     const globs = flatMap(resolved, ({ globs }) => globs);

@@ -5,7 +5,6 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncClaudeSettings } from "#tools/agents/claude/index";
 import { syncCodexFiles } from "#tools/agents/codex/index";
-import { agentsSection } from "#tools/agents/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
 
@@ -41,7 +40,7 @@ async function fixture() {
   await addAgentSkills(
     {
       filesystem: config.context.filesystem,
-      agents: await config.resolve(agentsSection),
+      agents: await config.resolve("agents"),
     },
     ["issue-implementation"],
   );

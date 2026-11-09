@@ -1,10 +1,9 @@
-import { testsSection } from "#project/environments/index";
 import { resolveTscProjectArguments } from "#tools/typescript/operations/resolveTscProjectArguments";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 
 async function resolveDistProject(config: LoadedConfig): Promise<File> {
-  const tests = await config.resolve(testsSection);
+  const tests = await config.resolve("tests");
 
   const { owner, file } = tests.dist.tsconfig;
 

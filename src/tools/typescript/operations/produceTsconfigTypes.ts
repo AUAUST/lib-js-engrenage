@@ -6,7 +6,6 @@ import { engrenage } from "#constants";
 import { resolveListOption } from "#foundation/options/index";
 import { apiLibraryGroups } from "#project/baseline/constants";
 import { includesEsLibrary, type Runtime } from "#project/baseline/index";
-import { sourceSection } from "#project/environments/index";
 import {
   readTsconfigValue,
   type TsconfigTarget,
@@ -35,7 +34,7 @@ async function createDefaultTypes(
     (await resolveTsconfigLibrary(config, target)) || runtime.lib
   ).map((name) => name.toLowerCase());
 
-  const { apis } = await config.resolve(sourceSection);
+  const { apis } = await config.resolve("src");
 
   return () => listBaselineTypes(target, apis, library);
 }

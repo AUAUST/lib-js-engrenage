@@ -1,7 +1,6 @@
 import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
 import { resolveListOption } from "#foundation/options/index";
-import { filesSection } from "#project/structure/index";
 import {
   toTsconfigGlobs,
   type TsconfigKey,
@@ -21,7 +20,7 @@ async function createDefaultExclude(
 
   const includesTests = environments.includes("tests");
 
-  const { fixtures } = await config.resolve(filesSection);
+  const { fixtures } = await config.resolve("files");
 
   return () => {
     return includesTests ? toTsconfigGlobs(file, fixtures) : [];
