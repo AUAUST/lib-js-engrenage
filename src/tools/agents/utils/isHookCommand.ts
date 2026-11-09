@@ -1,3 +1,4 @@
+// @debt brittle hardcoded check
 export function isHookCommand(argv: readonly string[]): boolean {
   const agents = argv.indexOf("agents");
 

@@ -6,7 +6,6 @@ export interface RoleDefinition extends Omit<
   | "index"
   | "public"
   | "discovered"
-  | "lazy"
   | "scoped"
   | "strict"
   | "typeOnly"
@@ -17,7 +16,6 @@ export interface RoleDefinition extends Omit<
   readonly index: boolean | undefined;
   readonly public: boolean | undefined;
   readonly discovered: boolean | undefined;
-  readonly lazy: boolean | undefined;
   readonly scoped: boolean | undefined;
   readonly strict: boolean | undefined;
   readonly typeOnly: boolean | undefined;

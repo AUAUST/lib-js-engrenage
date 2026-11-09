@@ -103,10 +103,6 @@ export function declareRoleContractEntries<Nested>(
         "Whether a consumer discovers its files, so they may export defaults.",
       optional: describedDefault(roleContractDefaults.discovered),
     }),
-    lazy: declare(boolean(), {
-      description: "Whether other modules may load its files with `import()`.",
-      optional: describedDefault(roleContractDefaults.lazy),
-    }),
     scoped: declare(boolean(), {
       description:
         "Whether the role is active only where a structured role or a namespace enables it.",

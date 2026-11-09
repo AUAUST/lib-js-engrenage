@@ -3,20 +3,12 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage/config";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
-import { actions, createRolePreset, entry } from "@auaust/engrenage/roles";
+import { entry } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
-const operations = createRolePreset({
-  name: "operations",
-  exports: "named-match",
-  effects: "effectful",
-});
-
-const command = "src/feature/operations/command.ts";
-const action = "#feature/actions/run";
-const other = "#feature/actions/other";
+const importer = "src/feature/utils/importer.ts";
 const helper = "#feature/utils/helper";
 
 async function createLinter() {
@@ -25,10 +17,8 @@ async function createLinter() {
       name: "library",
       type: "module",
       imports: { "#feature/*": "./src/feature/*.ts" },
-      peerDependencies: { optional: "*", required: "*" },
-      peerDependenciesMeta: { optional: { optional: true } },
     }),
-    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry(), operations(), actions())} } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry())} } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",
@@ -40,10 +30,8 @@ async function createLinter() {
       include: ["src"],
     }),
     "src/feature/index.ts": "export {};\n",
-    [command]: "export {};\n",
-    "src/feature/actions/run.ts": "export default function () {}\n",
-    "src/feature/actions/other.ts": "export default function () {}\n",
     "src/feature/utils/helper.ts": "export function helper() {}\n",
+    [importer]: "export {};\n",
   });
 
   const eslint = new ESLint({
@@ -54,8 +42,10 @@ async function createLinter() {
 
   return async (source: string) => {
     const [result] = await eslint.lintText(source, {
-      filePath: project.resolve(command),
+      filePath: project.resolve(importer),
     });
+
+    expect(result?.fatalErrorCount).toBe(0);
 
     return (result?.messages ?? [])
       .filter(({ ruleId }) => ruleId === "auaust/no-pointless-dynamic-import")
@@ -63,53 +53,24 @@ async function createLinter() {
   };
 }
 
-function loading(...specifiers: readonly string[]) {
-  const imports = specifiers.map((specifier) => `import(${specifier});`);
-
-  return `export function command() {\n  ${imports.join("\n  ")}\n}\n`;
-}
+const loading = `export const loaded = import("${helper}");\n`;
 
 describe("no-pointless-dynamic-import", () => {
-  test("allows a lazy role and an optional peer", async () => {
-    const lint = await createLinter();
-
-    expect(await lint(loading(`"${action}"`))).toEqual([]);
-    expect(await lint(loading(`"optional"`))).toEqual([]);
-  });
-
-  test("reports a target that is neither lazy nor an optional peer", async () => {
-    const lint = await createLinter();
-
-    expect(await lint(loading(`"${helper}"`))).toEqual([
-      expect.stringContaining("neither a lazy role"),
-    ]);
-
-    expect(await lint(loading(`"required"`))).toEqual([
-      expect.stringContaining("neither a lazy role"),
-    ]);
-  });
-
-  test("reports a second import() in the same function", async () => {
-    const lint = await createLinter();
-
-    expect(await lint(loading(`"${action}"`, `"${other}"`))).toEqual([
-      expect.stringContaining("already has an import()"),
-    ]);
-  });
-
   test("reports a module the file also imports statically", async () => {
     const lint = await createLinter();
 
     expect(
-      await lint(`import run from "${action}";\n\n${loading(`"${action}"`)}`),
+      await lint(`import { helper } from "${helper}";\n\n${loading}`),
     ).toEqual([expect.stringContaining("already imported statically")]);
   });
 
-  test("reports a computed specifier outside a discovered role", async () => {
+  test("allows a module imported statically only for its types", async () => {
     const lint = await createLinter();
 
-    expect(await lint(loading("`#feature/${name}`"))).toEqual([
-      expect.stringContaining("discovered role"),
-    ]);
+    expect(await lint(loading)).toEqual([]);
+
+    expect(
+      await lint(`import type { helper } from "${helper}";\n\n${loading}`),
+    ).toEqual([]);
   });
 });

@@ -2,6 +2,5 @@
 "@auaust/engrenage": minor
 ---
 
-- Replace `auaust/no-dynamic-import` with `auaust/no-pointless-dynamic-import`: `import()` may target a `lazy` role or an optional peer, computes its specifier only in a discovered role, and appears once per function
-- Add the `lazy` role contract option, set on the `actions` preset
+- Replace `auaust/no-dynamic-import` with `auaust/no-pointless-dynamic-import`, which reports `import()` of a module the file already imports statically
 - Check `import()` in `auaust/import-effects`

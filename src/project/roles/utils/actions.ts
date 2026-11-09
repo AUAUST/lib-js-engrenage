@@ -6,6 +6,5 @@ export const actions = createRolePreset({
   purpose:
     "The behavior of one command, without its name, aliases or argument structure, loaded when it runs.",
   exports: "default",
-  lazy: true,
   effects: "effectful",
 });

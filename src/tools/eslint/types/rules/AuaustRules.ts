@@ -243,7 +243,7 @@ export interface AuaustRules {
    */
   "auaust/no-object-statics"?: Rule<[]>;
   /**
-   * A dynamic import() targets a lazy role or an optional peer, computes its specifier only in a discovered role, and is the only one of its function.
+   * A dynamic import() never targets a module its file already imports statically.
    */
   "auaust/no-pointless-dynamic-import"?: Rule<[]>;
   /**

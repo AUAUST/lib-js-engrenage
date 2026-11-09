@@ -18,7 +18,6 @@ function contract(
     index: false,
     public: false,
     discovered: false,
-    lazy: false,
     scoped: false,
     typeOnly: false,
     strict: false,

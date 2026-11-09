@@ -85,11 +85,6 @@ export interface RoleInput {
    */
   discovered?: (boolean | undefined)
   /**
-   * Whether other modules may load its files with `import()`.
-   * @default false
-   */
-  lazy?: (boolean | undefined)
-  /**
    * Whether the role is active only where a structured role or a namespace enables it.
    * @default false
    */
