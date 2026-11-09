@@ -7,7 +7,7 @@ import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
 
 type ToolAction = (
   args: string[],
-) => readonly string[] | Promise<readonly string[]>;
+) => readonly string[] | undefined | Promise<readonly string[] | undefined>;
 
 export function defineToolCommand({
   packageName,
@@ -45,6 +45,10 @@ export function defineToolCommand({
           loaded === undefined
             ? args
             : await ("default" in loaded ? loaded.default : loaded)(args);
+
+        if (resolved === undefined) {
+          return;
+        }
 
         await runTool(
           {

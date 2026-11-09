@@ -1,6 +1,8 @@
 import { resolveTscArguments } from "#tools/typescript/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
-export default async function (args: string[]): Promise<readonly string[]> {
+export default async function (
+  args: string[],
+): Promise<readonly string[] | undefined> {
   return resolveTscArguments(await loadValidatedConfig(), args);
 }

@@ -22,14 +22,14 @@ async function hasReferencedEnvironment(
 export async function resolveTscArguments(
   config: LoadedConfig,
   args: readonly string[],
-): Promise<string[]> {
-  const project = await config.resolve("tsconfigPath");
-
+): Promise<string[] | undefined> {
   if (!(await hasReferencedEnvironment(config))) {
-    throw new Error(
-      "No environment is referenced by the base tsconfig: every active environment has `check: false`",
-    );
+    return;
   }
 
-  return resolveTscProjectArguments(config, args, project);
+  return resolveTscProjectArguments(
+    config,
+    args,
+    await config.resolve("tsconfigPath"),
+  );
 }

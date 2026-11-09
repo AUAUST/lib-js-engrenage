@@ -157,7 +157,7 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
     expect(process.exitCode).toBe(0);
   });
 
-  test("fails when no environment is referenced", async () => {
+  test("passes when no environment is checked", async () => {
     vi.spyOn(console, "info").mockImplementation(() => {});
 
     createSolution("export {};\n", {
@@ -169,7 +169,9 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
       }),
     });
 
-    await expect(tsc([])).rejects.toThrow("No environment is referenced");
+    await runDefinition(engrenage, "typecheck");
+
+    expect(process.exitCode ?? 0).toBe(0);
   });
 });
 
