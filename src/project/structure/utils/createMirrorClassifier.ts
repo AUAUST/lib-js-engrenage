@@ -27,10 +27,9 @@ export function createMirrorClassifier(tests: TestsContext) {
       return new Map(
         structure === undefined
           ? []
-          : collectStructureNodes(structure.root).map((node) => [
-              node.path,
-              node,
-            ]),
+          : collectStructureNodes(structure.root).map((node) => {
+              return [node.path, node];
+            }),
       );
     },
   );

@@ -70,8 +70,9 @@ describe("declare", () => {
 
   test("validates with the schema narrowed by the context", () => {
     const limited = declare(number(), {
-      schema: (context: { max: number }) =>
-        pipe(number(), maxValue(context.max)),
+      schema: (context: { max: number }) => {
+        return pipe(number(), maxValue(context.max));
+      },
       optional: { value: 1 },
     });
 

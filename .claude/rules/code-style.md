@@ -28,7 +28,6 @@ Write these correctly from the start, since no tool fixes them:
 - camelCase for functions and variables, PascalCase for classes, components and types. Keep the `create…`, `use…`, `define…`, `get…`, `is…`, `has…` prefixes. Never rename platform-defined identifiers.
 - Separate sibling statements with one blank line; only a run of two or three declarations of the same kind may stay together, and only when each fits on one line with no callback, conditional or template of several interpolations.
 - Put substantial computation, awaited calls, method chains and mapped or filtered arrays on their own lines when they are distinct steps.
-- A concise arrow body that Prettier would wrap becomes a block with an explicit `return`.
 - Module-level named functions are `function` declarations; a `const` arrow is only for a logic-free wrapper.
 - Factories returning APIs define methods as named local functions and expose them through shorthand properties.
 - No statement-spacing blank lines inside object literals, arrays or argument lists.

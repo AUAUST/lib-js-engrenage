@@ -10,15 +10,15 @@ import { checkAgents } from "#tools/agents/operations/checkAgents";
 
 vi.mock("#foundation/processes/operations/spawnProcess", () => {
   return {
-    spawnProcess: vi.fn(() =>
-      Promise.resolve({
+    spawnProcess: vi.fn(() => {
+      return Promise.resolve({
         status: 0,
         stdout: "codex-cli 0.159.2\n",
         stderr: "",
         error: undefined,
         signal: null,
-      }),
-    ),
+      });
+    }),
   };
 });
 

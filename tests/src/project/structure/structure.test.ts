@@ -67,10 +67,9 @@ async function describeSource(options: string) {
   const config = await loadConfig(createProject(options).root);
 
   const nodes = new Map(
-    flatten((await config.resolve("structure")).src!.root).map((node) => [
-      node.path,
-      node,
-    ]),
+    flatten((await config.resolve("structure")).src!.root).map((node) => {
+      return [node.path, node];
+    }),
   );
 
   return { structure: (await config.resolve("structure")).src!, nodes };
@@ -340,10 +339,9 @@ describe("inline roles", () => {
     const config = await loadConfig(project.root);
 
     return new Map(
-      flatten((await config.resolve("structure")).src!.root).map((node) => [
-        node.path,
-        node,
-      ]),
+      flatten((await config.resolve("structure")).src!.root).map((node) => {
+        return [node.path, node];
+      }),
     );
   }
 

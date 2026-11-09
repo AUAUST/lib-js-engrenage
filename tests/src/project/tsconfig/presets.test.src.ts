@@ -154,9 +154,9 @@ describe("tsconfig presets", () => {
       groups,
     );
 
-    expect(() =>
-      runTsc("-p", project, "--skipLibCheck", "false"),
-    ).not.toThrow();
+    expect(() => {
+      return runTsc("-p", project, "--skipLibCheck", "false");
+    }).not.toThrow();
   });
 
   test("type-checks tests and env declarations in dist mode", () => {

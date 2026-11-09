@@ -136,13 +136,14 @@ describe("syncHooks", () => {
 
     expect(
       hooks.PreToolUse.slice(1).every(
-        (group: { hooks: { command: string; onFailure: string }[] }) =>
-          group.hooks.every((entry) => {
+        (group: { hooks: { command: string; onFailure: string }[] }) => {
+          return group.hooks.every((entry) => {
             return (
               entry.command.startsWith("engrenage_hook_root=") &&
               entry.onFailure === "block"
             );
-          }),
+          });
+        },
       ),
     ).toBe(true);
 

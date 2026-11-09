@@ -107,9 +107,9 @@ export function createEntityIndex({
           rolesOf(environment.name).roles[child.role]?.public
         );
       })
-      .map((child) =>
-        getAliasSpecifier(specifiers, `${child.path}/*${extension}`),
-      );
+      .map((child) => {
+        return getAliasSpecifier(specifiers, `${child.path}/*${extension}`);
+      });
 
     return freeze(
       [

@@ -25,13 +25,18 @@ describe("module effect levels", () => {
       ]),
     ).toContain("custom");
 
-    expect(() =>
-      parse(effectLevelsSchema, ["pure", "confined", "effectful"]),
-    ).toThrow("observing");
+    expect(() => {
+      return parse(effectLevelsSchema, ["pure", "confined", "effectful"]);
+    }).toThrow("observing");
 
-    expect(() =>
-      parse(effectLevelsSchema, ["pure", "observing", "confined", "effectful"]),
-    ).toThrow("in that order");
+    expect(() => {
+      return parse(effectLevelsSchema, [
+        "pure",
+        "observing",
+        "confined",
+        "effectful",
+      ]);
+    }).toThrow("in that order");
   });
 
   test("uses the shipped defaults and symbol overrides", async () => {
@@ -79,8 +84,8 @@ describe("module effect levels", () => {
     expect(rankModule(effects, "custom/pure")).toBe("pure");
     expect(rankModule(effects, "unknown")).toBe("confined");
 
-    expect(() =>
-      rankModule(
+    expect(() => {
+      return rankModule(
         {
           ...effects,
           modules: [
@@ -94,7 +99,7 @@ describe("module effect levels", () => {
         },
         "custom",
         "default",
-      ),
-    ).toThrow("missing");
+      );
+    }).toThrow("missing");
   });
 });

@@ -116,9 +116,9 @@ export function checkIssueReadiness(
     }
   }
 
-  const openSections = [planningSection, questionsSection].filter((name) =>
-    hasSection(parsed, name),
-  );
+  const openSections = [planningSection, questionsSection].filter((name) => {
+    return hasSection(parsed, name);
+  });
 
   for (const name of openSections) {
     if (name === planningSection || audience === "worker") {

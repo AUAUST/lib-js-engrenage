@@ -13,9 +13,9 @@ export async function runDefinition(
     controller.abort();
   });
 
-  await runContext.run({ signal: controller.signal }, () =>
-    createProgram("program", definition).parseAsync(args, {
+  await runContext.run({ signal: controller.signal }, () => {
+    return createProgram("program", definition).parseAsync(args, {
       from: "user",
-    }),
-  );
+    });
+  });
 }

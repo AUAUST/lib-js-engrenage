@@ -16,9 +16,9 @@ vi.mock("#tools/agents/operations/readHookPayload", () => {
 
 vi.mock("#workflows/gate/index", () => {
   return {
-    checkAgentStop: vi.fn(() =>
-      Promise.resolve("failing command\nactual output\n"),
-    ),
+    checkAgentStop: vi.fn(() => {
+      return Promise.resolve("failing command\nactual output\n");
+    }),
   };
 });
 

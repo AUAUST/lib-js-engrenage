@@ -27,9 +27,7 @@ export function findConfigTypeImports(
     specifiers.set(specifier, [...(specifiers.get(specifier) ?? []), used]);
   }
 
-  return map(
-    sort([...specifiers.keys()]),
-    (specifier) =>
-      `import type { ${sort(specifiers.get(specifier) ?? []).join(", ")} } from "${specifier}";`,
-  );
+  return map(sort([...specifiers.keys()]), (specifier) => {
+    return `import type { ${sort(specifiers.get(specifier) ?? []).join(", ")} } from "${specifier}";`;
+  });
 }

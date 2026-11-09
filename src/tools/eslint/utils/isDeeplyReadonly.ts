@@ -28,9 +28,9 @@ export function isDeeplyReadonly(
   seen.add(type);
 
   if (type.isUnionOrIntersection()) {
-    return type.types.every((member) =>
-      isDeeplyReadonly(member, checker, seen),
-    );
+    return type.types.every((member) => {
+      return isDeeplyReadonly(member, checker, seen);
+    });
   }
 
   if (

@@ -147,9 +147,9 @@ function renderOverview({
     `| from / to | ${columns.join(" | ")} | map |`,
     `| --- |${columns.map(() => " --- |").join("")} --- |`,
     ...mapped.map((name) => {
-      const cells = columns.map((category) =>
-        renderCell(name, category, grants),
-      );
+      const cells = columns.map((category) => {
+        return renderCell(name, category, grants);
+      });
 
       return `| ${code(name)} | ${cells.join(" | ")} | ${code(mapFile(name))} |`;
     }),

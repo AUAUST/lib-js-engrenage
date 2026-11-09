@@ -83,9 +83,9 @@ async function createTestsInclude(
 
   return [
     ...patterns,
-    ...flatMap(await config.resolve("workspaces"), ({ dirs }) =>
-      filesIn(dirs, patterns),
-    ),
+    ...flatMap(await config.resolve("workspaces"), ({ dirs }) => {
+      return filesIn(dirs, patterns);
+    }),
   ];
 }
 

@@ -4,8 +4,8 @@ The commit gate and its process locks.
 
 ## 1. Gate checks leave unchecked paths
 
-- sites: `src/workflows/gate/operations/runGate.ts:97`, `:266`, `:309`; `src/tools/prettier/extension.ts:45`; `src/tools/jscpd/extension.ts:22`; `src/tools/jscpd/operations/reportClones.ts:34`
-- why: staged mode reads the worktree, not the index; ESLint checks changed files only, so a dependent's type-aware rule passes until CI (related #284); `eslint --fix` runs before `prettier --write`; jscpd only warns and reports clones of every changed file; a stamped tree hides budget warnings.
+- sites: `src/workflows/gate/operations/runGate.ts:97`, `:266`, `:309`; `src/tools/prettier/extension.ts:45`; `src/tools/eslint/conventions/stylistic/noComplexConciseArrows.ts`; `src/tools/jscpd/extension.ts:22`; `src/tools/jscpd/operations/reportClones.ts:34`
+- why: staged mode reads the worktree, not the index; ESLint checks changed files only, so a dependent's type-aware rule passes until CI (related #284); `eslint --fix` runs before `prettier --write`, so layout rules miss Prettier's rewrites; jscpd only warns and reports clones of every changed file; a stamped tree hides budget warnings.
 - want: each gap checked by the gate, or recorded as an accepted limit (planning).
 
 ## 2. Process locks and gate state leave stale or double holders

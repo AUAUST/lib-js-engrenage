@@ -32,9 +32,9 @@ export async function listLocalFiles(
             : `${prefix}/${directory}/**/${pattern}`;
         });
 
-  const paths = map(files, (file) =>
-    relativeWithin(git.root, resolveWithin(base, file)),
-  );
+  const paths = map(files, (file) => {
+    return relativeWithin(git.root, resolveWithin(base, file));
+  });
 
   const output = await runGit(git.root, [
     "ls-files",

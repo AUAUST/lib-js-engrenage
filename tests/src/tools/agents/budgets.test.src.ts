@@ -6,8 +6,9 @@ import { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 import { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
 
-const words = (count: number) =>
-  Array.from({ length: count }, () => "word").join(" ");
+const words = (count: number) => {
+  return Array.from({ length: count }, () => "word").join(" ");
+};
 
 async function loadBudgets(root: string) {
   const config = await loadConfig(root);

@@ -21,14 +21,14 @@ vi.mock("#tools/agents/operations/readHookPayload", () => {
 
 vi.mock("#tools/github/operations/checkIssue", () => {
   return {
-    checkIssue: vi.fn(() =>
-      Promise.resolve({
+    checkIssue: vi.fn(() => {
+      return Promise.resolve({
         findings: [],
         subIssues: [],
         blockedBy: [],
         towards: [],
-      }),
-    ),
+      });
+    }),
   };
 });
 

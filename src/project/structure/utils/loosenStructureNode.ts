@@ -7,9 +7,9 @@ export function loosenStructureNode(
   node: StructureNode,
   unclassified: StructureKind,
 ): StructureNode {
-  const children = node.children.map((child) =>
-    loosenStructureNode(child, unclassified),
-  );
+  const children = node.children.map((child) => {
+    return loosenStructureNode(child, unclassified);
+  });
 
   if (node.kind !== "unclassified") {
     return freeze({ ...node, children });

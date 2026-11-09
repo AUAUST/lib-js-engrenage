@@ -65,11 +65,12 @@ export async function checkAgents(
     }
 
     for (const template of templates) {
-      const skillFile = template.files.find(
-        (entry) =>
+      const skillFile = template.files.find((entry) => {
+        return (
           entry.file ===
-          `${agent === "codex" ? codexSkillsDir : claudeSkillsDir}/${template.name}/SKILL.md`,
-      );
+          `${agent === "codex" ? codexSkillsDir : claudeSkillsDir}/${template.name}/SKILL.md`
+        );
+      });
 
       if (skillFile === undefined) {
         continue;

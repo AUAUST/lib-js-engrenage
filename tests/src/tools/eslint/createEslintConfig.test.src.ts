@@ -1261,6 +1261,56 @@ export const nested = (value: number) => {
     );
   });
 
+  test("fixes concise arrows Prettier wraps into blocks, one-line ones kept", async () => {
+    const eslint = await getLinter(
+      {
+        typeAware: false,
+      },
+      true,
+    );
+
+    const source = `declare function describeEntry(name: string, value: number): string;
+
+export const short = (name: string) => describeEntry(name, 1);
+
+export const wrapped = (entries: [string, number][]) =>
+  entries.map(([name, value]) => describeEntry(\`\${name}:\`, value));
+
+export const spread = (first: string, second: string) => [
+  first,
+  second,
+  "a long enough literal to break the array across lines",
+];
+`;
+
+    const [result] = await eslint.lintText(source, {
+      filePath: "src/arrows.ts",
+    });
+
+    expect(result?.messages).toEqual([]);
+
+    const options = { ...prettierOptions, parser: "typescript" };
+
+    expect(await format(result?.output ?? source, options)).toBe(
+      `declare function describeEntry(name: string, value: number): string;
+
+export const short = (name: string) => describeEntry(name, 1);
+
+export const wrapped = (entries: [string, number][]) => {
+  return entries.map(([name, value]) => describeEntry(\`\${name}:\`, value));
+};
+
+export const spread = (first: string, second: string) => {
+  return [
+    first,
+    second,
+    "a long enough literal to break the array across lines",
+  ];
+};
+`,
+    );
+  });
+
   test("allows object literal assertions while enforcing as syntax", async () => {
     const eslint = await getLinter({
       typeAware: false,

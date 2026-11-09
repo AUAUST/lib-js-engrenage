@@ -132,9 +132,9 @@ describe("loadConfig", () => {
       }).root,
     );
 
-    await expect(async () =>
-      explicitDefault.resolve("tsconfigPath"),
-    ).rejects.toThrow("The configured tsconfig.json does not exist");
+    await expect(async () => {
+      return explicitDefault.resolve("tsconfigPath");
+    }).rejects.toThrow("The configured tsconfig.json does not exist");
   });
 
   test("uses tsconfig.tests.dist.json when present, is undefined when missing and rejects a missing configured dist tsconfig", async () => {

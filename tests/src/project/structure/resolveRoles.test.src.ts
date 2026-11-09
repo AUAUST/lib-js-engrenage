@@ -89,9 +89,9 @@ describe("resolveRoles", () => {
 
     const nested = createRolePreset({ name: "nested" });
 
-    expect(() =>
-      resolve({ roles: [utils({ roles: [nested(), nested()] })] }),
-    ).toThrow(
+    expect(() => {
+      return resolve({ roles: [utils({ roles: [nested(), nested()] })] });
+    }).toThrow(
       "src.roles[0].roles[0] and src.roles[0].roles[1] are both named nested",
     );
   });
@@ -101,14 +101,14 @@ describe("resolveRoles", () => {
       resolve({ roles: [utils({ aliases: ["helpers"] })] }).aliases,
     ).toEqual({ helpers: "utils" });
 
-    expect(() =>
-      resolve({
+    expect(() => {
+      return resolve({
         roles: [
           utils({ aliases: ["helpers"] }),
           constants({ aliases: ["helpers"] }),
         ],
-      }),
-    ).toThrow("helpers");
+      });
+    }).toThrow("helpers");
   });
 
   test("reads the index file name from the index role", () => {
@@ -154,14 +154,14 @@ describe("resolveRoles", () => {
         symbols: { read: "shaky" },
       },
     ]) {
-      expect(() =>
-        resolve({
+      expect(() => {
+        return resolve({
           roles: [],
           effects: {
             modules: { custom: entry },
           },
-        }),
-      ).toThrow("shaky");
+        });
+      }).toThrow("shaky");
     }
   });
 });

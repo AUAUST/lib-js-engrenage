@@ -18,9 +18,9 @@ vi.mock("#tools/agents/operations/readHookPayload", () => {
 
 vi.mock("#tools/github/operations/checkIssue", () => {
   return {
-    checkIssue: vi.fn(() =>
-      Promise.reject(new Error("GitHub request failed with 503")),
-    ),
+    checkIssue: vi.fn(() => {
+      return Promise.reject(new Error("GitHub request failed with 503"));
+    }),
   };
 });
 
