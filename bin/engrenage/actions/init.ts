@@ -1,9 +1,10 @@
 import { flat } from "@auaust/primitive-kit/arrays";
 
 import { packageJsonFile } from "#constants";
-import { spawnProcess } from "#foundation/processes/index";
+import { runProcess } from "#foundation/processes/index";
 import { loadConfig, type LoadedConfig } from "#project/config/index";
 import { packageJsonPathSection } from "#project/package/index";
+import { createPnpmInvocation } from "#tools/pnpm/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import { createPrompter, listInitSteps, runSteps } from "#workflows/init/index";
 import {
@@ -20,25 +21,15 @@ function describe({ command, args }: Invocation): string {
 }
 
 async function invokeCommand(root: Directory, invocation: Invocation) {
-  const { status, error } = await spawnProcess(
-    invocation.command,
-    invocation.args,
-    {
+  try {
+    await runProcess(invocation.command, invocation.args, {
       cwd: root,
       stdio: "inherit",
-    },
-  );
-
-  if (error !== undefined) {
-    throw new Error(`Cannot run ${describe(invocation)}`, {
+    });
+  } catch (error) {
+    throw new Error("Fix the error above, then run engrenage init again", {
       cause: error,
     });
-  }
-
-  if (status !== 0) {
-    throw new Error(
-      `${describe(invocation)} exited with code ${status}: fix the error above, then run engrenage init again`,
-    );
   }
 }
 
@@ -61,12 +52,10 @@ async function readPackage(
     return;
   }
 
-  // @debt hand-written pnpm invocation, like those in createStepContext and createChangesetConfigStep
-  await invokeCommand(config.context.root, {
-    command: "pnpm",
-    args: ["init", "--bare"],
-    interactive: false,
-  });
+  await invokeCommand(
+    config.context.root,
+    createPnpmInvocation(["init", "--bare"]),
+  );
 
   loadConfig.refresh(config.context.root);
 

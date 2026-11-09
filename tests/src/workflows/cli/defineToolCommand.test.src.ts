@@ -3,7 +3,8 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
-import { defineToolCommand } from "#workflows/cli/index";
+import { createProgram, defineToolCommand } from "#workflows/cli/index";
+import { runProgram } from "#workflows/cli/operations/runProgram";
 
 function defineFakeCommand(
   action: (args: string[]) => readonly string[],
@@ -45,6 +46,27 @@ const fakeTool = {
   "node_modules/fake-tool/bin.mjs": recordingBinary,
 };
 
+const hangingTool = {
+  "node_modules/fake-tool/package.json":
+    fakeTool["node_modules/fake-tool/package.json"],
+  "node_modules/fake-tool/bin.mjs": [
+    'import { writeFileSync } from "node:fs";',
+    'writeFileSync(new URL("./pid", import.meta.url), String(process.pid));',
+    "setInterval(() => {}, 1000);",
+    "",
+  ].join("\n"),
+};
+
+function isRunning(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function readRecordedArgs(project: ReturnType<typeof createProject>): unknown {
   return JSON.parse(project.read("node_modules/fake-tool/args.json"));
 }
@@ -65,6 +87,8 @@ function createProject(files: Record<string, string> = {}) {
 
 afterEach(() => {
   vi.restoreAllMocks();
+
+  process.exitCode = undefined;
 });
 
 describe("defineToolCommand", () => {
@@ -115,5 +139,28 @@ describe("defineToolCommand", () => {
     await expect(runDefinition(commands.fake)).rejects.toThrow(
       "Install fake-tool in",
     );
+  });
+
+  test("kills the binary when the run aborts, leaving the exit code unset", async () => {
+    const project = createProject(hangingTool);
+
+    const controller = new AbortController();
+
+    const running = runProgram(
+      createProgram("program", commands.fake),
+      ["node", "program"],
+      { signal: controller.signal },
+    );
+
+    await vi.waitFor(() => project.read("node_modules/fake-tool/pid"));
+
+    const pid = Number(project.read("node_modules/fake-tool/pid"));
+
+    controller.abort();
+
+    await running;
+
+    expect(isRunning(pid)).toBe(false);
+    expect(process.exitCode).toBeUndefined();
   });
 });

@@ -1,5 +1,6 @@
 import { changesetsCli } from "#constants";
 import { configFile } from "#tools/changesets/constants";
+import { createPnpmInvocation } from "#tools/pnpm/index";
 import type { Step } from "#project/steps/index";
 
 export function createChangesetConfigStep(): Step {
@@ -12,12 +13,9 @@ export function createChangesetConfigStep(): Step {
     async plan({ addDevDependency, invoke }) {
       await addDevDependency(changesetsCli);
 
-      // @debt hand-written pnpm invocation, like those in createStepContext and bin/engrenage/actions/init.ts
-      invoke({
-        command: "pnpm",
-        args: ["changeset", "init"],
-        interactive: true,
-      });
+      invoke(
+        createPnpmInvocation(["changeset", "init"], { interactive: true }),
+      );
     },
   };
 }

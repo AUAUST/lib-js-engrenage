@@ -176,6 +176,7 @@ function release(file: File, token: string): void {
   }
 }
 
+// @debt a signal arriving after the lock file exists but before the release listeners are registered leaves the lock behind
 export async function withProcessLock<T>(
   file: File,
   {

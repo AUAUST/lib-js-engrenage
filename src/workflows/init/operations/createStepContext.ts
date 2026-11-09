@@ -20,6 +20,7 @@ import {
 } from "#project/presets/index";
 import { agentNames } from "#tools/agents/constants";
 import { agentsSection, type Agent } from "#tools/agents/index";
+import { createPnpmInvocation } from "#tools/pnpm/index";
 import type { Section } from "#foundation/options/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Invocation, Prompter, StepContext } from "#project/steps/index";
@@ -143,15 +144,7 @@ export async function createStepContext({
       return [...invocations];
     }
 
-    return [
-      // @debt pnpm invocations are hand-written here, in createChangesetConfigStep and in bin/engrenage/actions/init.ts; the pnpm entry could own them
-      {
-        command: "pnpm",
-        args: ["install"],
-        interactive: false,
-      },
-      ...invocations,
-    ];
+    return [createPnpmInvocation(["install"]), ...invocations];
   }
 
   let preset: Preset | undefined = await config.resolve(presetSection);

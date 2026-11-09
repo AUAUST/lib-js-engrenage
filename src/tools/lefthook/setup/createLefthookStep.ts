@@ -15,6 +15,7 @@ import {
 import { listGateVariables } from "#tools/lefthook/utils/listGateVariables";
 import { renderGateCommand } from "#tools/lefthook/utils/renderGateCommand";
 import { renderMessageGateCommand } from "#tools/lefthook/utils/renderMessageGateCommand";
+import { createPnpmInvocation } from "#tools/pnpm/index";
 import type { Step, StepContext } from "#project/steps/index";
 
 const prepareLocation: [string, string] = ["scripts", "prepare"];
@@ -78,11 +79,9 @@ export function createLefthookStep(): Step {
         }).toString(),
       );
 
-      context.invoke({
-        command: "pnpm",
-        args: ["exec", ...installCommand.split(" ")],
-        interactive: false,
-      });
+      context.invoke(
+        createPnpmInvocation(["exec", ...installCommand.split(" ")]),
+      );
     },
   };
 }

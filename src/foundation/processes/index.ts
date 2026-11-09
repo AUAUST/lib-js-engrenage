@@ -5,6 +5,7 @@ export * from "#foundation/processes/types/ProcessResult";
 
 // @barrel operations/*.ts named
 export { resolveBinary } from "#foundation/processes/operations/resolveBinary";
+export { runProcess } from "#foundation/processes/operations/runProcess";
 export { spawnProcess } from "#foundation/processes/operations/spawnProcess";
 export { withProcessLock } from "#foundation/processes/operations/withProcessLock";
 // @end
