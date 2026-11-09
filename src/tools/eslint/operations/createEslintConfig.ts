@@ -76,10 +76,6 @@ export async function createEslintConfig(
   if (ignore) {
     const resources = await config.resolve("resources");
 
-    const uncommitted = resources.list().filter(({ committed }) => {
-      return !committed;
-    });
-
     configs.push(
       createIgnoreRules({
         gitignorePath:
@@ -87,7 +83,7 @@ export async function createEslintConfig(
             ? undefined
             : resources.path("gitignore"),
         ignored: [
-          ...flatMap(uncommitted, ({ location }) => {
+          ...flatMap(resources.list({ committed: false }), ({ location }) => {
             return listLocationGlobs(location);
           }),
           ...scopes.files.generated,

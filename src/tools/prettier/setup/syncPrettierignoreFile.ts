@@ -1,4 +1,4 @@
-import { filter, flatMap, includes, map } from "@auaust/primitive-kit/arrays";
+import { flatMap, includes, map } from "@auaust/primitive-kit/arrays";
 
 import {
   anchorGlob,
@@ -25,12 +25,8 @@ async function createProjectPrettierIgnores(
     config.resolve("files"),
   ]);
 
-  const located = resources.list();
-
-  const unformatted = located.filter(({ formatted }) => !formatted);
-
   const generatedResources = flatMap(
-    filter(located, "generated"),
+    resources.list({ generated: true }),
     ({ location }) => listLocationGlobs(location),
   );
 
@@ -40,7 +36,9 @@ async function createProjectPrettierIgnores(
   );
 
   return [
-    ...createResourceIgnores(unformatted, { covered: prettierDefaultIgnores }),
+    ...createResourceIgnores(resources.list({ formatted: false }), {
+      covered: prettierDefaultIgnores,
+    }),
     ...(codegen.length === 0 ? [] : [{ title: codegenTitle, globs: codegen }]),
   ];
 }

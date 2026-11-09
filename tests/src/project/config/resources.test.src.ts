@@ -71,6 +71,7 @@ describe("file resources", () => {
         owns: {
           files: {
             broken: {
+              committed: false,
               locate: async () => {
                 throw rejection;
               },
@@ -99,6 +100,8 @@ describe("file resources", () => {
     expect(() => resources.get("broken")).toThrow(failure);
     expect(() => resources.path("broken")).toThrow(failure);
     expect(() => resources.list()).toThrow(failure);
+    expect(() => resources.list({ committed: false })).toThrow(failure);
+    expect(resources.list({ generated: true })).toEqual([]);
   });
 
   test("fails on a part of a file closed to parts", () => {

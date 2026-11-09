@@ -1,4 +1,4 @@
-import { freeze } from "@auaust/toolkit/object";
+import { entries, freeze } from "@auaust/toolkit/object";
 
 import { relativeWithin, resolveWithin } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
@@ -9,12 +9,17 @@ import type { FileResource } from "#project/config/types/FileResource";
 import type { LocatedResource } from "#project/config/types/LocatedResource";
 import type { ResolvedResources } from "#project/config/types/ResolvedResources";
 
+type ResourceFlags = Pick<
+  LocatedResource,
+  "committed" | "generated" | "formatted"
+>;
+
 export const resourcesSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ResolvedResources> {
     const { root, registry } = config.context;
 
     const located = new Map<string, LocatedResource>();
-    const failures = new Map<string, Error>();
+    const failures = new Map<string, { error: Error; flags: ResourceFlags }>();
     const paths = new Map<string, LocatedResource>();
 
     for (const { key: name, declaration, owner } of registry.list("files")) {
@@ -28,23 +33,27 @@ export const resourcesSection = declareSection({
         continue;
       }
 
+      const committed = declaration.committed ?? true;
+      const generated = declaration.generated ?? false;
+
+      const flags: ResourceFlags = {
+        committed,
+        generated,
+        formatted: declaration.formatted ?? (committed && !generated),
+      };
+
       if (location instanceof Error) {
-        failures.set(name, location);
+        failures.set(name, { error: location, flags });
 
         continue;
       }
-
-      const committed = declaration.committed ?? true;
-      const generated = declaration.generated ?? false;
 
       const resource: LocatedResource = freeze({
         name,
         owner: owner.name,
         title: declaration.title ?? owner.title ?? owner.name,
         location,
-        committed,
-        generated,
-        formatted: declaration.formatted ?? (committed && !generated),
+        ...flags,
         parts: declaration.parts ?? false,
       });
 
@@ -67,14 +76,16 @@ export const resourcesSection = declareSection({
 
     const resources = freeze([...located.values()]);
 
-    const [firstFailure] = failures.values();
-
-    function list(): readonly LocatedResource[] {
-      if (firstFailure !== undefined) {
-        throw firstFailure;
+    function list(
+      flags: Partial<ResourceFlags> = {},
+    ): readonly LocatedResource[] {
+      for (const failure of failures.values()) {
+        if (matches(failure.flags, flags)) {
+          throw failure.error;
+        }
       }
 
-      return resources;
+      return freeze(resources.filter((resource) => matches(resource, flags)));
     }
 
     function get(name: string): LocatedResource | undefined {
@@ -85,7 +96,7 @@ export const resourcesSection = declareSection({
       const failure = failures.get(name);
 
       if (failure !== undefined) {
-        throw failure;
+        throw failure.error;
       }
 
       return located.get(name);
@@ -114,6 +125,15 @@ export const resourcesSection = declareSection({
     });
   },
 });
+
+function matches(
+  subject: ResourceFlags,
+  flags: Partial<ResourceFlags>,
+): boolean {
+  return entries(flags).every(([flag, value]) => {
+    return value === undefined || subject[flag] === value;
+  });
+}
 
 async function locate(
   config: ConfigResolver,

@@ -21,9 +21,7 @@ async function createUncommittedIgnores(
 ): Promise<readonly GlobGroup[]> {
   const resources = await config.resolve("resources");
 
-  const uncommitted = resources.list().filter(({ committed }) => !committed);
-
-  return createResourceIgnores(uncommitted, {
+  return createResourceIgnores(resources.list({ committed: false }), {
     covered: flatMap(defaultIgnores, ({ globs }) => globs),
   });
 }

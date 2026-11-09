@@ -3,20 +3,22 @@ import { freeze } from "@auaust/toolkit/object";
 
 import { filesIn } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
+import { listLocationGlobs, type ConfigResolver } from "#project/config/index";
 import { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
-import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedFiles } from "#project/structure/types/ResolvedFiles";
 
 export const filesSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ResolvedFiles> {
-    const [source, tests, bin, scripts, groups, roles] = await Promise.all([
-      config.resolve("src"),
-      config.resolve("tests"),
-      config.resolve("bin"),
-      config.resolve("scripts"),
-      config.resolve("workspaces"),
-      config.resolve("environmentRoles"),
-    ]);
+    const [source, tests, bin, scripts, groups, roles, resources] =
+      await Promise.all([
+        config.resolve("src"),
+        config.resolve("tests"),
+        config.resolve("bin"),
+        config.resolve("scripts"),
+        config.resolve("workspaces"),
+        config.resolve("environmentRoles"),
+        config.resolve("resources"),
+      ]);
 
     const environments = [
       { ...source, roles: roles.src },
@@ -31,6 +33,9 @@ export const filesSection = declareSection({
           return filesIn(dirs, generated);
         }),
         ...flatMap(groups, ({ dirs, generated }) => filesIn(dirs, generated)),
+        ...flatMap(resources.list({ generated: true }), ({ location }) => {
+          return listLocationGlobs(location);
+        }),
       ],
       discovered: [
         ...flatMap(environments, ({ dirs, discovered, roles }) => {
