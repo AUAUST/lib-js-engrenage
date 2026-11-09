@@ -82,6 +82,7 @@ export const environmentEntry: StandardSchemaV1 = looseObject({
   imports: optional(array(string())),
   tsconfig: optional(boolean()),
   owns: optional(array(string())),
+  code: optional(picklist(["published", "private"])),
 });
 
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type

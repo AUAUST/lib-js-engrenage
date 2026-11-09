@@ -6,6 +6,6 @@ export interface ResolvedTooling extends Omit<
   ResolvedCodeEnvironment,
   "generated" | "discovered"
 > {
-  readonly files: Globs;
+  readonly rootFiles: Globs;
   readonly runtime: Extract<Runtime, { kind: "node" }>;
 }

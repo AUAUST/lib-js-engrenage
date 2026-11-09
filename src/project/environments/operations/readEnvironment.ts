@@ -1,21 +1,18 @@
-import { custom, is } from "valibot";
-
-import { isArray } from "@auaust/toolkit/isArray";
-import { isBoolean } from "@auaust/toolkit/isBoolean";
-import { isObject } from "@auaust/toolkit/isObject";
+import { array, boolean, exactOptional, is, object, string } from "valibot";
 
 import type { Resolver } from "#foundation/options/index";
 import type { ConfigContext } from "#project/config/index";
 import type { ResolvedEnvironment } from "#project/environments/ports/ResolvedEnvironment";
 
-const resolvedEnvironment = custom<ResolvedEnvironment>((value) => {
-  return (
-    isObject(value) &&
-    "active" in value &&
-    isBoolean(value.active) &&
-    "dirs" in value &&
-    isArray(value.dirs)
-  );
+const globs = exactOptional(array(string()));
+
+const resolvedEnvironment = object({
+  active: boolean(),
+  dirs: array(string()),
+  globs,
+  generated: globs,
+  discovered: globs,
+  rootFiles: globs,
 });
 
 export async function readEnvironment(
@@ -26,7 +23,7 @@ export async function readEnvironment(
 
   if (!is(resolvedEnvironment, resolved)) {
     throw new Error(
-      `Config key "${name}" resolves to no environment: it lacks a boolean \`active\` or a \`dirs\` list`,
+      `Config key "${name}" resolves to no environment: it lacks a boolean \`active\` or a \`dirs\` list, or holds a \`globs\`, \`generated\`, \`discovered\` or \`rootFiles\` that is not a list`,
     );
   }
 

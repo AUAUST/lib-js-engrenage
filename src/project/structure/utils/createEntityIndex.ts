@@ -53,7 +53,7 @@ export function createEntityIndex({
   root: Directory;
   structure: ResolvedStructure;
   environments: Readonly<Record<string, CodeEnvironment>>;
-  roles: Readonly<Record<string, ResolvedRoles>>;
+  roles: Readonly<Partial<Record<string, ResolvedRoles>>>;
   testPatterns: {
     readonly plain: Globs;
     readonly source: Globs;

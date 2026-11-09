@@ -11,7 +11,6 @@ import {
 import { createPackageJson } from "#project/package/index";
 import {
   directoryPlaceholder,
-  workspaceEntryGlob,
   workspaceTsconfigFile,
 } from "#project/workspaces/constants";
 import type { OutputOf } from "#foundation/options/index";
@@ -34,11 +33,13 @@ export async function resolveWorkspaces({
   filesystem,
   options,
   typescriptFiles,
+  entryGlob,
 }: {
   root: Directory;
   filesystem: Filesystem;
   options: OutputOf<typeof workspacesSchema>;
   typescriptFiles: Globs;
+  entryGlob: Glob;
 }): Promise<readonly ResolvedWorkspaceGroup[]> {
   const claimed = new Map<Directory, Glob>();
 
@@ -88,7 +89,7 @@ export async function resolveWorkspaces({
 
     const [content, entries] = await Promise.all([
       filesystem.read(packageJson),
-      filesystem.glob(`${dir}/${workspaceEntryGlob}`),
+      filesystem.glob(`${dir}/${entryGlob}`),
     ]);
 
     const dependencies = createPackageJson({

@@ -64,7 +64,7 @@ describe("environments", () => {
     expect(await config.resolve("tooling")).toMatchObject({
       active: true,
       dirs: ["tooling"],
-      files: ["*.config.ts", ".*.ts"],
+      rootFiles: ["*.config.ts", ".*.ts"],
       globs: ["*.config.ts", ".*.ts", "tooling/**/*.{ts,tsx}"],
     });
 
@@ -113,7 +113,7 @@ describe("environments", () => {
     expect(await config.resolve("tooling")).toMatchObject({
       active: false,
       dirs: [],
-      files: [],
+      rootFiles: [],
       globs: [],
     });
 
@@ -173,7 +173,7 @@ describe("environments", () => {
 
     expect((await config.resolve("typescript")).files).toEqual(["**/*.ts"]);
 
-    expect((await config.resolve("tooling")).files).toEqual([
+    expect((await config.resolve("tooling")).rootFiles).toEqual([
       "a.ts",
       "*.config.ts",
     ]);

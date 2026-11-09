@@ -25,6 +25,7 @@ function toSource(subpath: string, file: string): string {
   return paths[key]?.[0] ?? file;
 }
 
+// @debt Every repository root entry is linked, `.git`, `node_modules` and `dist` included, so `git add -A` in a test repository records the package as an embedded repository and warns on every call.
 export function linkSourcePackage(target: string) {
   mkdirSync(target, {
     recursive: true,

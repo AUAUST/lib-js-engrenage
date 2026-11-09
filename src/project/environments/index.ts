@@ -19,6 +19,7 @@ export * from "#project/environments/ports/ResolvedEnvironment";
 // @barrel types/*.ts all
 export * from "#project/environments/types/AliasesInput";
 export * from "#project/environments/types/BinInput";
+export * from "#project/environments/types/ContributedEnvironment";
 export * from "#project/environments/types/DataInput";
 export * from "#project/environments/types/DefineContext";
 export * from "#project/environments/types/DefineInput";
@@ -60,6 +61,7 @@ export { toolingSchema } from "#project/environments/config/schemas/toolingSchem
 // @barrel operations/*.ts named
 export { createDefine } from "#project/environments/operations/createDefine";
 export { readEnvironment } from "#project/environments/operations/readEnvironment";
+export { readEnvironments } from "#project/environments/operations/readEnvironments";
 export { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
 export { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
 export { resolveEnvironmentDirs } from "#project/environments/operations/resolveEnvironmentDirs";

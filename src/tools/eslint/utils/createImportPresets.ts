@@ -2,16 +2,18 @@ import { createTypeScriptImportResolver } from "eslint-import-resolver-typescrip
 import { importX } from "eslint-plugin-import-x";
 import { defineConfig } from "eslint/config";
 
-import { typescriptFiles } from "#tools/eslint/constants";
 import type { Config } from "#tools/eslint/types/Config";
 import type { File } from "#types/File";
+import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
 export function createImportPresets({
   codeFiles,
+  typescriptFiles,
   tsconfig,
 }: {
   codeFiles: Globs;
+  typescriptFiles: Glob;
   tsconfig: File | undefined;
 }): Config[] {
   return defineConfig([

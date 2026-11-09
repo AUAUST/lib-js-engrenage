@@ -1,12 +1,15 @@
 import { entries, freeze, values } from "@auaust/toolkit/object";
 
 import { findDirectories } from "#foundation/filesystem/index";
+import { readEnvironment } from "#project/environments/index";
 import { projectMapDirectory } from "#tools/agents/constants";
 import { renderProjectMap } from "#tools/agents/utils/renderProjectMap";
 import type { LoadedConfig } from "#project/config/index";
 import type { Globs } from "#types/Globs";
 
-export async function syncProjectMap({ resolve, context }: LoadedConfig) {
+export async function syncProjectMap(config: LoadedConfig) {
+  const { resolve, context } = config;
+
   const [
     filesystem,
     agents,
@@ -16,7 +19,6 @@ export async function syncProjectMap({ resolve, context }: LoadedConfig) {
     roles,
     environments,
     tests,
-    tooling,
   ] = await Promise.all([
     context.filesystem,
     resolve("agents"),
@@ -26,7 +28,6 @@ export async function syncProjectMap({ resolve, context }: LoadedConfig) {
     resolve("environmentRoles"),
     resolve("environments"),
     resolve("tests"),
-    resolve("tooling"),
   ]);
 
   if (
@@ -44,8 +45,7 @@ export async function syncProjectMap({ resolve, context }: LoadedConfig) {
       continue;
     }
 
-    // @debt the tooling environment's root files are read by its name; the environment contract could carry the root files of any environment
-    const files = name === "tooling" ? tooling.files : [];
+    const { rootFiles: files = [] } = await readEnvironment(config, name);
 
     const directories = await findDirectories(filesystem, environment.dirs);
 

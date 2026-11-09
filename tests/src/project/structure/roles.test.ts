@@ -25,13 +25,13 @@ describe("roles", () => {
 
     const roles = await config.resolve("environmentRoles");
 
-    expect(roles.src.roles).toEqual({
+    expect(roles.src?.roles).toEqual({
       utils: expect.objectContaining({ nesting: 1 }),
     });
 
-    expect(roles.tests.roles).toEqual({});
+    expect(roles.tests?.roles).toEqual({});
 
-    expect(keys(roles.bin.roles)).toEqual([
+    expect(keys(roles.bin?.roles ?? {})).toEqual([
       "index",
       "executable",
       "commands",
@@ -44,7 +44,7 @@ describe("roles", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.resolve("environmentRoles")).tests.roles).toEqual({});
+    expect((await config.resolve("environmentRoles")).tests?.roles).toEqual({});
   });
 
   test("report two roles named alike in one list and nest a built preset", async () => {
@@ -64,7 +64,7 @@ describe("roles", () => {
 
     expect(
       (await (await loadConfig(nested.root)).resolve("environmentRoles")).src
-        .roles.utils,
+        ?.roles.utils,
     ).toMatchObject({ roles: ["utils/helpers"] });
   });
 });

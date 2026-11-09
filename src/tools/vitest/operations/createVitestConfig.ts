@@ -7,6 +7,7 @@ import type { Maybe } from "@auaust/toolkit/types";
 
 import { filesIn, resolve } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
+import { noRoles } from "#project/structure/constants";
 import { optionsSchema } from "#tools/vitest/config/schemas/optionsSchema";
 import {
   buildMode,
@@ -101,7 +102,7 @@ export async function createVitestConfig(
     restoreMocks = !isolate,
     setupFiles = await findSetupFiles({
       tests: await config.resolve("tests"),
-      roles: roles.tests,
+      roles: roles.tests ?? noRoles,
       filesystem: config.context.filesystem,
     }),
   } = validate(optionsSchema, options ?? {}, "Vitest options");

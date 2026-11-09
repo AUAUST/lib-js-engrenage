@@ -1,21 +1,14 @@
 export type ScopeReference =
   | "files.code"
-  | "files.tooling"
   | "files.discovered"
   | "files.generated"
   | "files.test"
   | "files.test.public"
   | "files.test.src"
-  | "files.src"
-  | "files.bin"
-  | "files.scripts"
-  | "files.tests"
   | "files.workspaces"
   | "files.code.published"
   | "files.code.private"
-  | "dir.src"
-  | "dir.bin"
-  | "dir.scripts"
-  | "dir.tests"
   | "dir.published"
-  | "dir.private";
+  | "dir.private"
+  | `files.${string}`
+  | `dir.${string}`;

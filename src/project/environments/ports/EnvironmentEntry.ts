@@ -10,6 +10,7 @@ export interface EnvironmentEntry extends EntryShape {
   readonly imports?: readonly string[];
   readonly tsconfig?: boolean;
   readonly owns?: Directories;
+  readonly code?: "published" | "private";
 }
 
 declare global {

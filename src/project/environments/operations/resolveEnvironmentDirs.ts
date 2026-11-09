@@ -16,7 +16,7 @@ export async function resolveEnvironmentDirs(
 
   const claimed = new Set(
     entries(claims).flatMap(([owner, claim]) => {
-      return owner === name ? [] : [...claim.owns, ...(claim.dirs ?? [])];
+      return owner === name ? [] : [...claim.owns, ...claim.named];
     }),
   );
 

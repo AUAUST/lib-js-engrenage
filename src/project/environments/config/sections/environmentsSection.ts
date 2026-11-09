@@ -1,7 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
-import { readEnvironment } from "#project/environments/operations/readEnvironment";
+import { readEnvironments } from "#project/environments/operations/readEnvironments";
 import type { ConfigResolver } from "#project/config/index";
 import type { EnvironmentEntry } from "#project/environments/ports/EnvironmentEntry";
 
@@ -10,21 +10,12 @@ export const environmentsSection = declareSection({
     _input,
     config: ConfigResolver,
   ): Promise<readonly EnvironmentEntry[]> {
-    const contributions = await config.context.registry.contributions(
-      "environments",
-      config,
-    );
-
-    const resolved = await Promise.all(
-      contributions.map(async ({ entry }) => {
-        const { active } = await readEnvironment(config, entry.name);
-
-        return { entry, active };
-      }),
-    );
+    const environments = await readEnvironments(config);
 
     return freeze(
-      resolved.filter(({ active }) => active).map(({ entry }) => entry),
+      environments
+        .filter(({ environment }) => environment.active)
+        .map(({ entry }) => entry),
     );
   },
 });

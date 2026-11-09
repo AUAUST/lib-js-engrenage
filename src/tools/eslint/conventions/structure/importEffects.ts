@@ -8,6 +8,8 @@ import {
 } from "typescript";
 import type { Rule } from "eslint";
 
+import { getOwn } from "@auaust/toolkit/object";
+
 import { relativeWithin } from "#foundation/filesystem/index";
 import { entryRoleName } from "#project/roles/constants";
 import { rankModule } from "#project/structure/index";
@@ -31,10 +33,10 @@ export default defineConvention({
       create(context, { environment, role: roleName, effects: level }) {
         const services = context.sourceCode.parserServices;
 
+        const environmentRoles = getOwn(roles, environment);
+
         if (
-          environment === "dist" ||
-          environment === "workspace" ||
-          environment === "data" ||
+          environmentRoles === undefined ||
           roleName === undefined ||
           level === undefined ||
           services?.program == null ||
@@ -45,7 +47,7 @@ export default defineConvention({
 
         const { program, esTreeNodeToTSNodeMap } = services;
         const checker: TypeChecker = program.getTypeChecker();
-        const { effects } = roles[environment];
+        const { effects } = environmentRoles;
         const allowed = effects.levels.indexOf(level);
 
         function declaringFile(symbol: Symbol | undefined) {

@@ -2,6 +2,8 @@ import { extname } from "node:path";
 
 import type { Rule, SourceCode } from "eslint";
 
+import { getOwn } from "@auaust/toolkit/object";
+
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 import type { Entity, EntityIndex, ImportEdge } from "#project/structure/index";
 import type { ImportGraph } from "#tools/eslint/types/ImportGraph";
@@ -16,21 +18,15 @@ const analyses = new WeakMap<
   WeakMap<SourceCode, ImportAnalysis>
 >();
 
-// @debt lists the environments without a structure by name instead of deriving them from the structure configuration
 function sourceExtensionOf(
   graph: ImportGraph,
   importer: Entity | undefined,
   filename: string,
 ): string {
-  const environment = importer?.environment;
-
   const structure =
-    environment === undefined ||
-    environment === "data" ||
-    environment === "dist" ||
-    environment === "workspace"
+    importer === undefined
       ? undefined
-      : graph.structure[environment];
+      : getOwn(graph.structure, importer.environment);
 
   return extname(structure?.indexFile ?? filename);
 }

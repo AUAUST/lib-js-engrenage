@@ -27,7 +27,7 @@ export async function resolvePrettierAllArguments(
 
   const paths = [
     ...(await findDirectories(filesystem, directories)),
-    ...(await filesystem.glob(tooling.files)),
+    ...(await filesystem.glob(tooling.rootFiles)),
   ];
 
   return [

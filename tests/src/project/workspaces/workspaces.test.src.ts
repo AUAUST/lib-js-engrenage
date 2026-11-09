@@ -161,6 +161,21 @@ describe("workspaces", () => {
     process.exitCode = undefined;
   });
 
+  test("detects the entry of a workspace holding only JavaScript", async () => {
+    const project = createTemporaryProject({
+      ...files,
+      "extensions/action-d/src/index.js": "",
+    });
+
+    const groups = await (await loadConfig(project.root)).resolve("workspaces");
+
+    expect(
+      groups
+        .flatMap(({ workspaces }) => workspaces)
+        .find(({ dir }) => dir === "extensions/action-d")?.entry,
+    ).toBe("extensions/action-d/src/index.js");
+  });
+
   test("derives the lint scope and the solution references from the declaration", async () => {
     const project = createProject();
 

@@ -1,3 +1,5 @@
+import { array, is, object, optional, string, union } from "valibot";
+
 import { freeze, record } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
@@ -5,6 +7,23 @@ import { getOptionsKey } from "#project/environments/utils/getOptionsKey";
 import { readInputDirs } from "#project/environments/utils/readInputDirs";
 import type { ConfigResolver } from "#project/config/index";
 import type { EnvironmentClaim } from "#project/environments/types/EnvironmentClaim";
+import type { Directories } from "#types/Directories";
+
+const adjustedItems = optional(union([string(), array(string())]));
+
+const adjustedDirs = object({
+  dirs: object({ prepend: adjustedItems, append: adjustedItems }),
+});
+
+function readAdjustedDirs(input: unknown): Directories {
+  if (!is(adjustedDirs, input)) {
+    return [];
+  }
+
+  const { prepend = [], append = [] } = input.dirs;
+
+  return [prepend, append].flat();
+}
 
 export const environmentClaimsSection = declareSection({
   async resolve(
@@ -20,9 +39,12 @@ export const environmentClaimsSection = declareSection({
       contributions.map(async ({ entry }) => {
         const input = await config.input(getOptionsKey(entry));
 
+        const dirs = readInputDirs(input);
+
         const claim: EnvironmentClaim = freeze({
           owns: entry.owns ?? [],
-          dirs: readInputDirs(input),
+          dirs,
+          named: dirs ?? readAdjustedDirs(input),
         });
 
         return [entry.name, claim] as const;

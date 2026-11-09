@@ -1,5 +1,11 @@
+import { record } from "@auaust/toolkit/object";
+
 import { declareSection } from "#foundation/options/index";
-import { aliasesSchema, type LanguageEntry } from "#project/environments/index";
+import {
+  aliasesSchema,
+  readEnvironments,
+  type LanguageEntry,
+} from "#project/environments/index";
 import { resolveAliases } from "#project/structure/operations/resolveAliases";
 import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
@@ -46,30 +52,28 @@ export const aliasesSection = declareSection({
 
     const global = aliasesSchema.resolve(input, undefined, "aliases");
 
-    // @debt the environments are read by their built-in names, so a contributed environment's directories get no alias
-    const [source, tests, bin, scripts, tooling, data, traits, trees] =
-      await Promise.all([
-        config.resolve("src"),
-        config.resolve("tests"),
-        config.resolve("bin"),
-        config.resolve("scripts"),
-        config.resolve("tooling"),
-        config.resolve("data"),
-        config.resolve("traits"),
-        config.resolve("structure"),
-      ]);
+    const [environments, data, traits, trees] = await Promise.all([
+      readEnvironments(config),
+      config.resolve("data"),
+      config.resolve("traits"),
+      config.resolve("structure"),
+    ]);
 
     return resolveAliases({
       root: config.context.root,
       options: { global, src: option.aliases },
       bundled: option.bundled,
-      environments: {
-        src: source.dirs,
-        tests: tests.dirs,
-        bin: bin.dirs,
-        scripts: scripts.dirs,
-        tooling: tooling.dirs,
-      },
+      environments: record(
+        environments
+          .filter(({ entry, environment }) => {
+            return (
+              environment.active &&
+              entry.level === "enforced" &&
+              entry.structure !== undefined
+            );
+          })
+          .map(({ entry, environment }) => [entry.name, environment.dirs]),
+      ),
       data: data.active ? data.dirs : [],
       published: traits.published,
       outDir: await readOutDir(config),

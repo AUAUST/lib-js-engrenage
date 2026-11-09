@@ -31,7 +31,7 @@ export const toolingSection = declareSection({
             await findDirectories(config.context.filesystem, dirs),
           ),
           dirs: walked,
-          files: rootFiles,
+          rootFiles,
           defines: false,
           globs: [...rootFiles, ...filesIn(walked, typescript.files)],
           tsconfig: await resolveEnvironmentTsconfig(config, "tooling"),

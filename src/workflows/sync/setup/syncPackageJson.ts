@@ -10,6 +10,7 @@ import {
   createPackageJson,
   writePackageJsonValue,
 } from "#project/package/index";
+import { noRoles } from "#project/structure/constants";
 import { listPnpmWarnings } from "#tools/pnpm/index";
 import { resolveCommandFiles } from "#tools/tsdown/index";
 import type { JsonValue } from "#foundation/json/index";
@@ -79,7 +80,7 @@ async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
     await resolveCommandFiles(
       {
         bin,
-        roles: roles.bin,
+        roles: roles.bin ?? noRoles,
         filesystem,
       },
       directory,

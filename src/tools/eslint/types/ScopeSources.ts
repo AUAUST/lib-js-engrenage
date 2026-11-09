@@ -1,19 +1,15 @@
 import type {
-  ResolvedBin,
-  ResolvedScripts,
-  ResolvedSource,
+  ContributedEnvironment,
   ResolvedTests,
-  ResolvedTooling,
 } from "#project/environments/index";
 import type { ResolvedFiles } from "#project/structure/index";
 import type { ResolvedWorkspaceGroup } from "#project/workspaces/index";
 
 export interface ScopeSources {
-  readonly src: ResolvedSource;
+  readonly environments: Readonly<
+    Partial<Record<string, ContributedEnvironment>>
+  >;
   readonly tests: ResolvedTests;
-  readonly bin: ResolvedBin;
-  readonly scripts: ResolvedScripts;
-  readonly tooling: ResolvedTooling;
   readonly files: ResolvedFiles;
   readonly workspaces: readonly ResolvedWorkspaceGroup[];
 }

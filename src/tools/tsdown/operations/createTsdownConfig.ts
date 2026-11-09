@@ -11,6 +11,7 @@ import { readJsonFile, resolveWithin } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
 import { emittedManifestFile } from "#project/build/constants";
 import { createDefine } from "#project/environments/index";
+import { noRoles } from "#project/structure/constants";
 import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
 import {
   emptyNamespaces,
@@ -143,7 +144,7 @@ export async function createTsdownConfig(
 
   const bins = await resolveCommandEntries({
     bin: await config.resolve("bin"),
-    roles: roles.bin,
+    roles: roles.bin ?? noRoles,
     filesystem: config.context.filesystem,
   });
 

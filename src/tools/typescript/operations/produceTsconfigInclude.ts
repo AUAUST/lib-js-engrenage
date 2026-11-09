@@ -63,7 +63,7 @@ async function createDistTestsInclude(
 
     // @debt role files are matched only at the root of the tests directories, as in findSetupFiles, so declarations placed deeper stay out of the dist check
     const roleFiles = flatMap([testsetup(), declarations()], ({ name }) => {
-      return listStaticFileGlobs(roles.tests.roles[name]?.file);
+      return listStaticFileGlobs(roles.tests?.roles[name]?.file);
     });
 
     const globs = filesIn(tests.dirs, [...plain, ...dist, ...roleFiles]);

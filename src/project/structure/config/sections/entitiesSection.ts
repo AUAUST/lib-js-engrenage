@@ -1,4 +1,7 @@
+import { record } from "@auaust/toolkit/object";
+
 import { declareSection } from "#foundation/options/index";
+import { readEnvironments } from "#project/environments/index";
 import { createEntityIndex } from "#project/structure/utils/createEntityIndex";
 import type { ConfigResolver } from "#project/config/index";
 import type { EntityIndex } from "#project/structure/types/EntityIndex";
@@ -16,15 +19,10 @@ async function readOutDir(
 
 export const entitiesSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<EntityIndex> {
-    // @debt the environments are read by their built-in names, so the files of a contributed environment without a structure are never located
     const [
       structure,
-      source,
+      environments,
       tests,
-      bin,
-      scripts,
-      tooling,
-      data,
       roles,
       workspaces,
       aliases,
@@ -32,12 +30,8 @@ export const entitiesSection = declareSection({
       outDir,
     ] = await Promise.all([
       config.resolve("structure"),
-      config.resolve("src"),
+      readEnvironments(config),
       config.resolve("tests"),
-      config.resolve("bin"),
-      config.resolve("scripts"),
-      config.resolve("tooling"),
-      config.resolve("data"),
       config.resolve("environmentRoles"),
       config.resolve("workspaces"),
       config.resolve("aliases"),
@@ -48,14 +42,11 @@ export const entitiesSection = declareSection({
     return createEntityIndex({
       root: config.context.root,
       structure,
-      environments: {
-        src: source,
-        tests,
-        bin,
-        scripts,
-        tooling,
-        data,
-      },
+      environments: record(
+        environments.map(({ entry, environment }) => {
+          return [entry.name, environment];
+        }),
+      ),
       roles,
       testPatterns: tests.patterns,
       workspaces,

@@ -26,11 +26,10 @@ async function resolveEnvironmentRoles(
 }
 
 export const environmentRolesSection = declareSection({
-  // @debt typed as a total record so readers index a built-in environment directly, though only the contributed environments with a structure hold roles
   async resolve(
     _input,
     config: ConfigResolver,
-  ): Promise<Readonly<Record<string, ResolvedRoles>>> {
+  ): Promise<Readonly<Partial<Record<string, ResolvedRoles>>>> {
     const contributions = await config.context.registry.contributions(
       "environments",
       config,

@@ -11,4 +11,4 @@ export const selfImports = freeze({
   } as const),
 } as const);
 
-export const workspaceEntryGlob = "src/index.{ts,tsx}";
+export const workspaceEntryStem = "src/index";

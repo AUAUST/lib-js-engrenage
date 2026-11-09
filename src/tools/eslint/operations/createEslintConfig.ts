@@ -10,10 +10,15 @@ import { configs as typescriptConfigs } from "typescript-eslint";
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
+import { withExtensions } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
 import { listLocationGlobs, type LoadedConfig } from "#project/config/index";
 import { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
-import { pluginName, rolesPluginName } from "#tools/eslint/constants";
+import {
+  pluginName,
+  rolesPluginName,
+  typescriptLanguage,
+} from "#tools/eslint/constants";
 import { createConventionRules } from "#tools/eslint/operations/createConventionRules";
 import { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";
 import { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
@@ -28,8 +33,28 @@ import { createRoleRules } from "#tools/eslint/utils/createRoleRules";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Options } from "#tools/eslint/types/Options";
+import type { Glob } from "#types/Glob";
 
 import * as conventionCategories from "#tools/eslint/conventions/index";
+
+async function readTypescriptFiles(config: LoadedConfig): Promise<Glob> {
+  const languages = await config.context.registry.contributions(
+    "languages",
+    config,
+  );
+
+  const typescript = languages.find(({ entry }) => {
+    return entry.name === typescriptLanguage;
+  });
+
+  if (typescript === undefined) {
+    throw new Error(
+      `ESLint targets the ${typescriptLanguage} language, which no active extension contributes`,
+    );
+  }
+
+  return withExtensions("**/*", typescript.entry.extensions);
+}
 
 export async function createEslintConfig(
   config: LoadedConfig,
@@ -111,6 +136,7 @@ export async function createEslintConfig(
     configs.push(
       createImportPresets({
         codeFiles: resolveScope(scopes, ["files.code"]),
+        typescriptFiles: await readTypescriptFiles(config),
         tsconfig: await config.resolve("tsconfigPath"),
       }),
     );
