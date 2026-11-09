@@ -90,6 +90,7 @@
     "./typescript": "./dist/typescript.mjs",
     "./typescript/constants": "./dist/typescript/constants.mjs",
     "./vite": "./dist/vite.mjs",
+    "./vite/constants": "./dist/vite/constants.mjs",
     "./vitest": "./dist/vitest.mjs",
     "./vitest/constants": "./dist/vitest/constants.mjs",
     "./vscode": "./dist/vscode.mjs",

@@ -8,8 +8,8 @@ import type {
   LoadedConfig,
 } from "#project/config/index";
 import type { Preset, ResolvedTraits } from "#project/presets/index";
+import type { Prompter } from "#project/steps/ports/Prompter";
 import type { Invocation } from "#project/steps/types/Invocation";
-import type { Prompter } from "#project/steps/types/Prompter";
 import type { PackageName } from "#types/PackageName";
 
 export interface StepContext

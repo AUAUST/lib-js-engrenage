@@ -1,4 +1,4 @@
-import type { StepContext } from "#project/steps/types/StepContext";
+import type { StepContext } from "#project/steps/ports/StepContext";
 
 export interface Step {
   name: string;
