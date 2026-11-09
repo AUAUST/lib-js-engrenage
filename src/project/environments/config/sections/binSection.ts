@@ -1,15 +1,15 @@
 import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
-import { declareSection, type Resolver } from "#foundation/options/index";
-import { binOptionsSection } from "#project/environments/config/sections/binOptionsSection";
+import { declareSection } from "#foundation/options/index";
 import { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
+import type { ResolvedBin } from "#project/environments/types/ResolvedBin";
 
 export const binSection = declareSection({
   name: "bin",
-  async resolve(_input, config: Resolver<ConfigContext>) {
-    const option = await config.resolve(binOptionsSection);
+  async resolve(_input, config: ConfigResolver): Promise<ResolvedBin> {
+    const option = await config.resolve("bin.options");
 
     return freeze(
       compose(

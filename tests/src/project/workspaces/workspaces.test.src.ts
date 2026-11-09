@@ -5,11 +5,7 @@ import { build } from "vite";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
-import {
-  checkWorkspaces,
-  entitiesSection,
-  importGrantsSection,
-} from "#project/structure/index";
+import { checkWorkspaces } from "#project/structure/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
@@ -201,9 +197,9 @@ describe("workspaces", () => {
 
     const config = await loadConfig(project.root);
 
-    const grants = await config.resolve(importGrantsSection);
+    const grants = await config.resolve("importGrants");
 
-    const entities = await config.resolve(entitiesSection);
+    const entities = await config.resolve("entities");
 
     function check(file: string, targetFile: string) {
       const importer = entities.entityOf(project.resolve(file));

@@ -1,25 +1,24 @@
 import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
-import { declareSection, type Resolver } from "#foundation/options/index";
+import { declareSection } from "#foundation/options/index";
 import { resolveNodeRuntime } from "#project/baseline/index";
-import { runtimeSection } from "#project/environments/config/sections/runtimeSection";
-import { testsOptionsSection } from "#project/environments/config/sections/testsOptionsSection";
 import {
   distTestsVariant,
   sourceTestsVariant,
 } from "#project/environments/constants";
 import { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
 import { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
+import type { ResolvedTests } from "#project/environments/types/ResolvedTests";
 import type { Globs } from "#types/Globs";
 
 export const testsSection = declareSection({
   name: "tests",
-  async resolve(_input, config: Resolver<ConfigContext>) {
-    const { node } = await config.resolve(runtimeSection);
+  async resolve(_input, config: ConfigResolver): Promise<ResolvedTests> {
+    const { node } = await config.resolve("runtime");
 
-    const option = await config.resolve(testsOptionsSection);
+    const option = await config.resolve("tests.options");
 
     function pattern(variant: string): Globs {
       return option.enabled

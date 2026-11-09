@@ -2,17 +2,16 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
-import { traitsSection } from "#project/presets/index";
 import { resolveEnvironmentGrants } from "#project/structure/utils/resolveEnvironmentGrants";
-import { workspacesSection } from "#project/workspaces/index";
+import type { ConfigResolver } from "#project/config/index";
 import type { ImportGrants } from "#project/structure/types/ImportGrants";
 
 export const importGrantsSection = declareSection({
   name: "importGrants",
-  async resolve(_input, config): Promise<ImportGrants> {
+  async resolve(_input, config: ConfigResolver): Promise<ImportGrants> {
     const [traits, groups] = await Promise.all([
-      config.resolve(traitsSection),
-      config.resolve(workspacesSection),
+      config.resolve("traits"),
+      config.resolve("workspaces"),
     ]);
 
     return freeze({

@@ -1,30 +1,24 @@
 import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
-import { locateFile, type ConfigContext } from "#project/config/index";
-import { binOptionsSection } from "#project/environments/config/sections/binOptionsSection";
-import { scriptsOptionsSection } from "#project/environments/config/sections/scriptsOptionsSection";
-import { sourceOptionsSection } from "#project/environments/config/sections/sourceOptionsSection";
-import { testsOptionsSection } from "#project/environments/config/sections/testsOptionsSection";
-import { toolingOptionsSection } from "#project/environments/config/sections/toolingOptionsSection";
+import { locateFile, type ConfigResolver } from "#project/config/index";
 import {
   resolveTsconfig,
   type ResolvedEnvironmentTsconfig,
   type TsconfigKey,
 } from "#project/tsconfig/index";
-import type { Resolver } from "#foundation/options/index";
 import type { File } from "#types/File";
 
 export async function resolveEnvironmentTsconfig(
-  config: Resolver<ConfigContext>,
+  config: ConfigResolver,
   key: TsconfigKey,
 ): Promise<ResolvedEnvironmentTsconfig> {
   const [source, tests, bin, scripts, tooling] = await Promise.all([
-    config.resolve(sourceOptionsSection),
-    config.resolve(testsOptionsSection),
-    config.resolve(binOptionsSection),
-    config.resolve(scriptsOptionsSection),
-    config.resolve(toolingOptionsSection),
+    config.resolve("src.options"),
+    config.resolve("tests.options"),
+    config.resolve("bin.options"),
+    config.resolve("scripts.options"),
+    config.resolve("tooling.options"),
   ]);
 
   const { location, ...resolved } = resolveTsconfig(key, {

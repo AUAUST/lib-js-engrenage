@@ -10,7 +10,6 @@ import {
 } from "#foundation/options/index";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { validateConfig } from "#project/config/operations/validateConfig";
-import { packageJsonSection } from "#project/package/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import type {
   EntryShape,
@@ -18,6 +17,7 @@ import type {
   Registry,
 } from "#foundation/extensions/index";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
+import type { ConfigResolver } from "#project/config/types/ConfigResolver";
 import type { Extension } from "#project/config/types/Extension";
 
 import * as builtins from "#workflows/builtins/entry";
@@ -87,8 +87,11 @@ describe("createProjectConfig", () => {
 
     const nameSection = declareSection({
       name: "name",
-      async resolve(_input, config) {
-        return (await config.resolve(packageJsonSection)).optional.name;
+      async resolve(
+        _input,
+        config: ConfigResolver,
+      ): Promise<string | undefined> {
+        return (await config.resolve("packageJson")).optional.name;
       },
     });
 

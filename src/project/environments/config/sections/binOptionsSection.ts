@@ -1,14 +1,17 @@
-import { declareSection } from "#foundation/options/index";
+import { declareSection, type OutputOf } from "#foundation/options/index";
 import { binSchema } from "#project/environments/config/schemas/binSchema";
-import { runtimeSection } from "#project/environments/config/sections/runtimeSection";
+import type { ConfigResolver } from "#project/config/index";
 
 export const binOptionsSection = declareSection({
   name: "bin",
   declaration: binSchema,
-  async resolve(input, config) {
+  async resolve(
+    input,
+    config: ConfigResolver,
+  ): Promise<OutputOf<typeof binSchema>> {
     return binSchema.resolve(
       input,
-      { runtime: await config.resolve(runtimeSection) },
+      { runtime: await config.resolve("runtime") },
       "bin",
     );
   },

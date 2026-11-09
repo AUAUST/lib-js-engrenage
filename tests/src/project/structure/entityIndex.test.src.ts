@@ -4,14 +4,6 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import {
-  binSection,
-  dataSection,
-  scriptsSection,
-  sourceSection,
-  testsSection,
-  toolingSection,
-} from "#project/environments/index";
-import {
   constants,
   createRolePreset,
   entrypoint,
@@ -19,11 +11,6 @@ import {
   index,
   utils,
 } from "#project/roles/index";
-import {
-  aliasesSection,
-  environmentRolesSection,
-  structureSection,
-} from "#project/structure/index";
 import { createEntityIndex } from "#project/structure/utils/createEntityIndex";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
@@ -107,15 +94,15 @@ async function indexProject(root: string) {
     aliases,
     roles,
   ] = await Promise.all([
-    config.resolve(structureSection),
-    config.resolve(sourceSection),
-    config.resolve(testsSection),
-    config.resolve(binSection),
-    config.resolve(scriptsSection),
-    config.resolve(toolingSection),
-    config.resolve(dataSection),
-    config.resolve(aliasesSection),
-    config.resolve(environmentRolesSection),
+    config.resolve("structure"),
+    config.resolve("src"),
+    config.resolve("tests"),
+    config.resolve("bin"),
+    config.resolve("scripts"),
+    config.resolve("tooling"),
+    config.resolve("data"),
+    config.resolve("aliases"),
+    config.resolve("environmentRoles"),
   ]);
 
   return createEntityIndex({

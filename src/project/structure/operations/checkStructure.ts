@@ -1,27 +1,24 @@
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { aliasesSection } from "#project/structure/config/sections/aliasesSection";
-import { structureSection } from "#project/structure/config/sections/structureSection";
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
 import { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 import { listDomainsWithoutPurpose } from "#project/structure/utils/listDomainsWithoutPurpose";
 import { renderImportCycles } from "#project/structure/utils/renderImportCycles";
 import { renderStructure } from "#project/structure/utils/renderStructure";
-import { typescriptSection } from "#project/tsconfig/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { StructureCheck } from "#project/structure/types/StructureCheck";
 
 export async function checkStructure(
   config: LoadedConfig,
 ): Promise<StructureCheck> {
-  const structure = await config.resolve(structureSection);
+  const structure = await config.resolve("structure");
 
-  const { verbatimModuleSyntax } = await config.resolve(typescriptSection);
+  const { verbatimModuleSyntax } = await config.resolve("typescript");
 
   const cycles = await findImportCycles({
     root: config.context.root,
     structure,
-    aliases: await config.resolve(aliasesSection),
+    aliases: await config.resolve("aliases"),
     verbatimModuleSyntax,
   });
 

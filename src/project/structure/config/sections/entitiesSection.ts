@@ -1,28 +1,14 @@
-import { declareSection, type Resolver } from "#foundation/options/index";
-import { buildOutDirSection } from "#project/build/index";
-import {
-  binSection,
-  dataSection,
-  scriptsSection,
-  sourceSection,
-  testsSection,
-  toolingSection,
-} from "#project/environments/index";
-import { packageJsonSection } from "#project/package/index";
-import { aliasesSection } from "#project/structure/config/sections/aliasesSection";
-import { environmentRolesSection } from "#project/structure/config/sections/environmentRolesSection";
-import { structureSection } from "#project/structure/config/sections/structureSection";
+import { declareSection } from "#foundation/options/index";
 import { createEntityIndex } from "#project/structure/utils/createEntityIndex";
-import { workspacesSection } from "#project/workspaces/index";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
 import type { EntityIndex } from "#project/structure/types/EntityIndex";
 import type { Directory } from "#types/Directory";
 
 async function readOutDir(
-  config: Resolver<ConfigContext>,
+  config: ConfigResolver,
 ): Promise<Directory | undefined> {
   try {
-    return await config.resolve(buildOutDirSection);
+    return await config.resolve("build.outDir");
   } catch {
     // @debt an unreadable tsconfig hides the output directory, so the index skips it instead of failing; the output directory should resolve without parsing the tsconfig
   }
@@ -30,7 +16,7 @@ async function readOutDir(
 
 export const entitiesSection = declareSection({
   name: "entities",
-  async resolve(_input, config: Resolver<ConfigContext>): Promise<EntityIndex> {
+  async resolve(_input, config: ConfigResolver): Promise<EntityIndex> {
     const [
       structure,
       source,
@@ -45,17 +31,17 @@ export const entitiesSection = declareSection({
       packageJson,
       outDir,
     ] = await Promise.all([
-      config.resolve(structureSection),
-      config.resolve(sourceSection),
-      config.resolve(testsSection),
-      config.resolve(binSection),
-      config.resolve(scriptsSection),
-      config.resolve(toolingSection),
-      config.resolve(dataSection),
-      config.resolve(environmentRolesSection),
-      config.resolve(workspacesSection),
-      config.resolve(aliasesSection),
-      config.resolve(packageJsonSection),
+      config.resolve("structure"),
+      config.resolve("src"),
+      config.resolve("tests"),
+      config.resolve("bin"),
+      config.resolve("scripts"),
+      config.resolve("tooling"),
+      config.resolve("data"),
+      config.resolve("environmentRoles"),
+      config.resolve("workspaces"),
+      config.resolve("aliases"),
+      config.resolve("packageJson"),
       readOutDir(config),
     ]);
 

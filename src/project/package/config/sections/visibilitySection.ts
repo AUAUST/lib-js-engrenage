@@ -1,16 +1,16 @@
-import { declareSection, type Resolver } from "#foundation/options/index";
+import { declareSection } from "#foundation/options/index";
 import { visibilitySchema } from "#project/package/config/schemas/visibilitySchema";
-import { packageJsonSection } from "#project/package/config/sections/packageJsonSection";
 import { resolveVisibility } from "#project/package/operations/resolveVisibility";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
+import type { Visibility } from "#project/package/types/Visibility";
 
 export const visibilitySection = declareSection({
   name: "visibility",
   declaration: visibilitySchema,
-  async resolve(input, config: Resolver<ConfigContext>) {
+  async resolve(input, config: ConfigResolver): Promise<Visibility> {
     return resolveVisibility(
       visibilitySchema.resolve(input, undefined, "visibility"),
-      await config.resolve(packageJsonSection),
+      await config.resolve("packageJson"),
     );
   },
 });

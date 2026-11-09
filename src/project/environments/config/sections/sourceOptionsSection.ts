@@ -1,10 +1,10 @@
-import { declareSection } from "#foundation/options/index";
+import { declareSection, type OutputOf } from "#foundation/options/index";
 import { sourceSchema } from "#project/environments/config/schemas/sourceSchema";
 
 export const sourceOptionsSection = declareSection({
   name: "src",
   declaration: sourceSchema,
-  resolve(input) {
+  resolve(input): OutputOf<typeof sourceSchema> {
     return sourceSchema.resolve(input, undefined, "src");
   },
 });

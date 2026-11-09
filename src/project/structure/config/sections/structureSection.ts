@@ -1,27 +1,15 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { declareSection, type Resolver } from "#foundation/options/index";
-import {
-  binOptionsSection,
-  binSection,
-  scriptsOptionsSection,
-  scriptsSection,
-  sourceOptionsSection,
-  sourceSection,
-  testsOptionsSection,
-  testsSection,
-  toolingOptionsSection,
-  toolingSection,
-} from "#project/environments/index";
-import { structureOptionsSection } from "#project/structure/config/sections/structureOptionsSection";
+import { declareSection } from "#foundation/options/index";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
 import { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
 import { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";
 import { normalizeNamespaces } from "#project/structure/utils/normalizeNamespaces";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
 import type { Role } from "#project/roles/index";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
+import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { StructureEnvironmentName } from "#project/structure/types/StructureEnvironmentName";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { TestsContext } from "#project/structure/types/TestsContext";
@@ -42,7 +30,7 @@ function treeOf(option: {
 }
 
 async function resolveStructure(
-  config: Resolver<ConfigContext>,
+  config: ConfigResolver,
   name: StructureEnvironmentName,
   environment: { active: boolean; dirs: Directories },
   option: StructureOption,
@@ -55,7 +43,7 @@ async function resolveStructure(
     return;
   }
 
-  const { internals } = await config.resolve(structureOptionsSection);
+  const { internals } = await config.resolve("structure.options");
 
   const roles = listEnvironmentRoles({ tree: extra.tree, roles: option.roles });
 
@@ -80,22 +68,22 @@ async function resolveStructure(
 
 export const structureSection = declareSection({
   name: "structure",
-  async resolve(_input, config: Resolver<ConfigContext>) {
+  async resolve(_input, config: ConfigResolver): Promise<ResolvedStructure> {
     const [source, bin, scripts, tests, tooling] = await Promise.all([
-      config.resolve(sourceSection),
-      config.resolve(binSection),
-      config.resolve(scriptsSection),
-      config.resolve(testsSection),
-      config.resolve(toolingSection),
+      config.resolve("src"),
+      config.resolve("bin"),
+      config.resolve("scripts"),
+      config.resolve("tests"),
+      config.resolve("tooling"),
     ]);
 
     const [sourceOption, binOption, scriptsOption, testsOption, toolingOption] =
       await Promise.all([
-        config.resolve(sourceOptionsSection),
-        config.resolve(binOptionsSection),
-        config.resolve(scriptsOptionsSection),
-        config.resolve(testsOptionsSection),
-        config.resolve(toolingOptionsSection),
+        config.resolve("src.options"),
+        config.resolve("bin.options"),
+        config.resolve("scripts.options"),
+        config.resolve("tests.options"),
+        config.resolve("tooling.options"),
       ]);
 
     const sourceStructure = await resolveStructure(

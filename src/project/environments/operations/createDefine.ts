@@ -1,6 +1,5 @@
 import { entries } from "@auaust/toolkit/object";
 
-import { defineSection } from "#project/environments/config/sections/defineSection";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function createDefine(
@@ -11,7 +10,7 @@ export async function createDefine(
 
   const expressions: Record<string, string> = {};
 
-  const define = await resolve(defineSection);
+  const define = await resolve("define");
 
   for (const [name, { expression, scope }] of entries(define.values)) {
     if (scope !== excludedScope) {

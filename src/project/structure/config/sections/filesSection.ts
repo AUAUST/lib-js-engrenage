@@ -3,27 +3,20 @@ import { freeze } from "@auaust/toolkit/object";
 
 import { filesIn } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
-import {
-  binSection,
-  scriptsSection,
-  sourceSection,
-  testsSection,
-} from "#project/environments/index";
-import { environmentRolesSection } from "#project/structure/config/sections/environmentRolesSection";
 import { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
-import { workspacesSection } from "#project/workspaces/index";
+import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedFiles } from "#project/structure/types/ResolvedFiles";
 
 export const filesSection = declareSection({
   name: "files",
-  async resolve(_input, config): Promise<ResolvedFiles> {
+  async resolve(_input, config: ConfigResolver): Promise<ResolvedFiles> {
     const [source, tests, bin, scripts, groups, roles] = await Promise.all([
-      config.resolve(sourceSection),
-      config.resolve(testsSection),
-      config.resolve(binSection),
-      config.resolve(scriptsSection),
-      config.resolve(workspacesSection),
-      config.resolve(environmentRolesSection),
+      config.resolve("src"),
+      config.resolve("tests"),
+      config.resolve("bin"),
+      config.resolve("scripts"),
+      config.resolve("workspaces"),
+      config.resolve("environmentRoles"),
     ]);
 
     const environments = [

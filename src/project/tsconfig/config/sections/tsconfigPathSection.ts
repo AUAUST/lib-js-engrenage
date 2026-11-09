@@ -1,11 +1,12 @@
-import { declareSection, type Resolver } from "#foundation/options/index";
+import { declareSection } from "#foundation/options/index";
 import { locateTsconfigPath } from "#project/tsconfig/operations/locateTsconfigPath";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
+import type { File } from "#types/File";
 
 export const tsconfigPathSection = declareSection({
   name: "tsconfigPath",
   live: true,
-  resolve(_input, config: Resolver<ConfigContext>) {
+  resolve(_input, config: ConfigResolver): Promise<File | undefined> {
     return locateTsconfigPath(config);
   },
 });

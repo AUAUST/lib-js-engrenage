@@ -1,11 +1,12 @@
 import { packageJsonFile } from "#constants";
-import { declareSection, type Resolver } from "#foundation/options/index";
-import { locateFile, type ConfigContext } from "#project/config/index";
+import { declareSection } from "#foundation/options/index";
+import { locateFile, type ConfigResolver } from "#project/config/index";
+import type { File } from "#types/File";
 
 export const packageJsonPathSection = declareSection({
   name: "packageJsonPath",
   live: true,
-  resolve(_input, config: Resolver<ConfigContext>) {
+  resolve(_input, config: ConfigResolver): Promise<File | undefined> {
     return locateFile(config.context, packageJsonFile, false);
   },
 });

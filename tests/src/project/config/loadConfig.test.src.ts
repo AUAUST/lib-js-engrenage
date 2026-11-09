@@ -2,21 +2,10 @@ import { join } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
-import { buildOutDirSection } from "#project/build/index";
-import { cacheSection } from "#project/cache/index";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { readRawConfig } from "#project/config/operations/readRawConfig";
 import { validateConfig } from "#project/config/operations/validateConfig";
-import { testsSection } from "#project/environments/index";
-import {
-  environmentSection,
-  packageJsonPathSection,
-  packageJsonSection,
-} from "#project/package/index";
-import { presetSection, traitsSection } from "#project/presets/index";
-import { filesSection } from "#project/structure/index";
-import { tsconfigPathSection, tsconfigSection } from "#project/tsconfig/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import type { Resolver } from "#foundation/options/index";
@@ -35,13 +24,13 @@ describe("loadConfig", () => {
     const config = await loadConfig(project.resolve("src/nested"));
 
     expect(config.context.root).toBe(project.root);
-    expect(await config.resolve(presetSection)).toBe("library");
-    expect(await config.resolve(traitsSection)).toEqual({ published: true });
+    expect(await config.resolve("preset")).toBe("library");
+    expect(await config.resolve("traits")).toEqual({ published: true });
 
     const inner = await loadConfig(project.resolve("packages/inner/src"));
 
     expect(inner.context.root).toBe(project.resolve("packages/inner"));
-    expect(await inner.resolve(presetSection)).toBeUndefined();
+    expect(await inner.resolve("preset")).toBeUndefined();
   });
 
   test("resolves a callback config, replaces defaults, appends generated files and infers project values", async () => {
@@ -49,45 +38,39 @@ describe("loadConfig", () => {
 
     const config = await loadConfig(root);
 
-    expect(await config.resolve(presetSection)).toBe("library");
-    expect(await config.resolve(traitsSection)).toEqual({ published: true });
-    expect((await config.resolve(testsSection)).dirs).toEqual(["test"]);
+    expect(await config.resolve("preset")).toBe("library");
+    expect(await config.resolve("traits")).toEqual({ published: true });
+    expect((await config.resolve("tests")).dirs).toEqual(["test"]);
 
-    expect((await config.resolve(filesSection)).fixtures).toEqual([
+    expect((await config.resolve("files")).fixtures).toEqual([
       "test/**/fixtures/**",
     ]);
 
-    expect((await config.resolve(filesSection)).generated).toEqual([
+    expect((await config.resolve("files")).generated).toEqual([
       "src/generated/**",
     ]);
 
-    expect(await config.resolve(buildOutDirSection)).toBe("dist");
+    expect(await config.resolve("build.outDir")).toBe("dist");
 
-    expect((await config.resolve(packageJsonSection)).name).toBe(
-      "custom-fixture",
+    expect((await config.resolve("packageJson")).name).toBe("custom-fixture");
+
+    expect(
+      (await config.resolve("environment")).hasDependency("custom-fixture"),
+    ).toBe(true);
+
+    expect((await config.resolve("environment")).hasDependency("valibot")).toBe(
+      true,
+    );
+
+    expect((await config.resolve("environment")).hasDependency("zod")).toBe(
+      true,
     );
 
     expect(
-      (await config.resolve(environmentSection)).hasDependency(
-        "custom-fixture",
-      ),
-    ).toBe(true);
-
-    expect(
-      (await config.resolve(environmentSection)).hasDependency("valibot"),
-    ).toBe(true);
-
-    expect(
-      (await config.resolve(environmentSection)).hasDependency("zod"),
-    ).toBe(true);
-
-    expect(
-      (await config.resolve(environmentSection)).hasDependency(
-        "@auaust/toolkit",
-      ),
+      (await config.resolve("environment")).hasDependency("@auaust/toolkit"),
     ).toBe(false);
 
-    expect((await config.resolve(tsconfigSection)).outDir).toBe("dist");
+    expect((await config.resolve("tsconfig")).outDir).toBe("dist");
     expect(loadConfig(root)).toBe(loadConfig(root));
   });
 
@@ -108,8 +91,8 @@ describe("loadConfig", () => {
 
     const config = await loadConfig(root);
 
-    expect((await config.resolve(tsconfigSection)).outDir).toBe("build");
-    expect(await config.resolve(buildOutDirSection)).toBe("build");
+    expect((await config.resolve("tsconfig")).outDir).toBe("build");
+    expect(await config.resolve("build.outDir")).toBe("build");
 
     const outside = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
@@ -122,7 +105,7 @@ describe("loadConfig", () => {
 
     const outsideConfig = await loadConfig(outside.root);
 
-    expect(await outsideConfig.resolve(buildOutDirSection)).toBeUndefined();
+    expect(await outsideConfig.resolve("build.outDir")).toBeUndefined();
 
     const missing = await loadConfig(
       createTemporaryProject({
@@ -130,19 +113,17 @@ describe("loadConfig", () => {
       }).root,
     );
 
-    await expect(async () =>
-      missing.resolve(tsconfigPathSection),
-    ).rejects.toThrow(
+    await expect(async () => missing.resolve("tsconfigPath")).rejects.toThrow(
       `The configured tsconfig.app.json does not exist in ${missing.context.root}`,
     );
 
     await missing.context.filesystem.write("tsconfig.app.json", tsconfig);
 
-    expect(await missing.resolve(tsconfigPathSection)).toBe(
+    expect(await missing.resolve("tsconfigPath")).toBe(
       join(missing.context.root, "tsconfig.app.json"),
     );
 
-    expect((await missing.resolve(tsconfigSection)).outDir).toBe("build");
+    expect((await missing.resolve("tsconfig")).outDir).toBe("build");
 
     const explicitDefault = await loadConfig(
       createTemporaryProject({
@@ -152,7 +133,7 @@ describe("loadConfig", () => {
     );
 
     await expect(async () =>
-      explicitDefault.resolve(tsconfigPathSection),
+      explicitDefault.resolve("tsconfigPath"),
     ).rejects.toThrow("The configured tsconfig.json does not exist");
   });
 
@@ -162,7 +143,7 @@ describe("loadConfig", () => {
     const config = await loadConfig(root);
 
     await expect(
-      (await config.resolve(testsSection)).dist.tsconfig.path,
+      (await config.resolve("tests")).dist.tsconfig.path,
     ).resolves.toBeUndefined();
 
     const implicit = createTemporaryProject({
@@ -174,7 +155,7 @@ describe("loadConfig", () => {
 
     expect(
       await (
-        await implicitConfig.resolve(testsSection)
+        await implicitConfig.resolve("tests")
       ).dist.tsconfig.path,
     ).toBe(join(implicit, "tsconfig.tests.dist.json"));
 
@@ -186,7 +167,7 @@ describe("loadConfig", () => {
     );
 
     await expect(
-      async () => (await missing.resolve(testsSection)).dist.tsconfig.path,
+      async () => (await missing.resolve("tests")).dist.tsconfig.path,
     ).rejects.toThrow(
       `The configured tsconfig.build.json does not exist in ${missing.context.root}`,
     );
@@ -197,11 +178,11 @@ describe("loadConfig", () => {
 
     const config = await loadConfig(root);
 
-    expect(await config.resolve(packageJsonPathSection)).toBe(
+    expect(await config.resolve("packageJsonPath")).toBe(
       join(root, "package.json"),
     );
 
-    expect(await config.resolve(tsconfigPathSection)).toBe(
+    expect(await config.resolve("tsconfigPath")).toBe(
       join(root, "tsconfig.json"),
     );
 
@@ -244,7 +225,7 @@ describe("loadConfig", () => {
 
     expect(refreshed).not.toBe(config);
     expect(refreshed.context.filesystem).not.toBe(config.context.filesystem);
-    expect(await refreshed.resolve(presetSection)).toBe("library");
+    expect(await refreshed.resolve("preset")).toBe("library");
   });
 
   test("registers a listed extension after every built-in", async () => {
@@ -309,11 +290,11 @@ describe("loadConfig", () => {
 
     const movedConfig = await loadConfig(moved.root);
 
-    expect((await defaultsConfig.resolve(cacheSection)).for("eslint")).toBe(
+    expect((await defaultsConfig.resolve("cache")).for("eslint")).toBe(
       defaults.resolve("node_modules/.cache/eslint"),
     );
 
-    expect((await movedConfig.resolve(cacheSection)).for("@scope/tool")).toBe(
+    expect((await movedConfig.resolve("cache")).for("@scope/tool")).toBe(
       moved.resolve(".cache/@scope/tool"),
     );
   });
@@ -335,17 +316,15 @@ describe("traits", () => {
 
     const app = await resolve("");
 
-    expect(await library.resolve(traitsSection)).toEqual({ published: true });
+    expect(await library.resolve("traits")).toEqual({ published: true });
 
-    expect((await library.resolve(testsSection)).dist.tsconfig.owner).toBe(
+    expect((await library.resolve("tests")).dist.tsconfig.owner).toBe(
       "tests.dist",
     );
 
-    expect(await app.resolve(traitsSection)).toEqual({ published: false });
+    expect(await app.resolve("traits")).toEqual({ published: false });
 
-    expect(
-      (await app.resolve(testsSection)).dist.tsconfig.owner,
-    ).toBeUndefined();
+    expect((await app.resolve("tests")).dist.tsconfig.owner).toBeUndefined();
   });
 
   test("lets traits adjust the preset, enabling winning over disabling", async () => {
@@ -355,13 +334,13 @@ describe("traits", () => {
 
     const enabled = await resolve('traits: { enable: ["published"] }');
 
-    expect(await disabled.resolve(traitsSection)).toEqual({ published: false });
+    expect(await disabled.resolve("traits")).toEqual({ published: false });
 
     expect(
-      (await disabled.resolve(testsSection)).dist.tsconfig.owner,
+      (await disabled.resolve("tests")).dist.tsconfig.owner,
     ).toBeUndefined();
 
-    expect(await enabled.resolve(traitsSection)).toEqual({ published: true });
+    expect(await enabled.resolve("traits")).toEqual({ published: true });
   });
 
   test("manages no tests.dist tsconfig set to false, even when published", async () => {
@@ -369,8 +348,6 @@ describe("traits", () => {
       'preset: "library", tests: { dist: { tsconfig: false } }',
     );
 
-    expect(
-      (await config.resolve(testsSection)).dist.tsconfig.owner,
-    ).toBeUndefined();
+    expect((await config.resolve("tests")).dist.tsconfig.owner).toBeUndefined();
   });
 });

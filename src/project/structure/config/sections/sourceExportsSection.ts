@@ -1,20 +1,19 @@
 import { freeze, keys } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
-import { sourceOptionsSection } from "#project/environments/index";
-import { structureSection } from "#project/structure/config/sections/structureSection";
 import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
+import type { ConfigResolver } from "#project/config/index";
 import type { File } from "#types/File";
 
 export const sourceExportsSection = declareSection({
   name: "src.exports",
   async resolve(
     _input,
-    config,
+    config: ConfigResolver,
   ): Promise<Readonly<Record<string, File>> | undefined> {
-    const { exports: configured } = await config.resolve(sourceOptionsSection);
+    const { exports: configured } = await config.resolve("src.options");
 
-    const { src } = await config.resolve(structureSection);
+    const { src } = await config.resolve("structure");
 
     const derived = resolveDomainEntries(src);
 

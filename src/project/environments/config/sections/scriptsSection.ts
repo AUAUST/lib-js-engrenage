@@ -1,19 +1,18 @@
 import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
-import { declareSection, type Resolver } from "#foundation/options/index";
+import { declareSection } from "#foundation/options/index";
 import { resolveNodeRuntime } from "#project/baseline/index";
-import { runtimeSection } from "#project/environments/config/sections/runtimeSection";
-import { scriptsOptionsSection } from "#project/environments/config/sections/scriptsOptionsSection";
 import { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
+import type { ResolvedScripts } from "#project/environments/types/ResolvedScripts";
 
 export const scriptsSection = declareSection({
   name: "scripts",
-  async resolve(_input, config: Resolver<ConfigContext>) {
-    const { node } = await config.resolve(runtimeSection);
+  async resolve(_input, config: ConfigResolver): Promise<ResolvedScripts> {
+    const { node } = await config.resolve("runtime");
 
-    const option = await config.resolve(scriptsOptionsSection);
+    const option = await config.resolve("scripts.options");
 
     return freeze(
       compose(

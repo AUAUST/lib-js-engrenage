@@ -1,12 +1,10 @@
-import { locateFile, type ConfigContext } from "#project/config/index";
-import { typescriptOptionsSection } from "#project/tsconfig/config/sections/typescriptOptionsSection";
-import type { Resolver } from "#foundation/options/index";
+import { locateFile, type ConfigResolver } from "#project/config/index";
 import type { File } from "#types/File";
 
 export async function locateTsconfigPath(
-  config: Resolver<ConfigContext>,
+  config: ConfigResolver,
 ): Promise<File | undefined> {
-  const { tsconfig } = await config.resolve(typescriptOptionsSection);
+  const { tsconfig } = await config.resolve("typescript.options");
 
   const { file, configured } = tsconfig.path;
 

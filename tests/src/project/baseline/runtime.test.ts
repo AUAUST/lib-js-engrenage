@@ -1,13 +1,5 @@
 import { describe, expect, test } from "vitest";
 
-import {
-  binSection,
-  runtimeSection,
-  scriptsSection,
-  sourceSection,
-  testsSection,
-  toolingSection,
-} from "@auaust/engrenage";
 import { loadConfig } from "@auaust/engrenage/config";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -25,7 +17,7 @@ describe("runtime", () => {
       createProject('{ src: { baseline: "2026-10" } }').root,
     );
 
-    expect((await config.resolve(sourceSection)).runtime).toMatchObject({
+    expect((await config.resolve("src")).runtime).toMatchObject({
       kind: "baseline",
       snapshot: "2026-10",
       browsers: { chrome: "123" },
@@ -38,19 +30,19 @@ describe("runtime", () => {
       createProject('{ src: { baseline: "2026-10" } }').root,
     );
 
-    expect((await config.resolve(runtimeSection)).node).toBe(24);
+    expect((await config.resolve("runtime")).node).toBe(24);
 
-    expect((await config.resolve(testsSection)).runtime).toEqual({
+    expect((await config.resolve("tests")).runtime).toEqual({
       kind: "node",
       major: 24,
     });
 
-    expect((await config.resolve(scriptsSection)).runtime).toEqual({
+    expect((await config.resolve("scripts")).runtime).toEqual({
       kind: "node",
       major: 24,
     });
 
-    expect((await config.resolve(toolingSection)).runtime).toEqual({
+    expect((await config.resolve("tooling")).runtime).toEqual({
       kind: "node",
       major: 24,
     });
@@ -61,7 +53,7 @@ describe("runtime", () => {
       createProject('{ src: { baseline: "2026-10" } }').root,
     );
 
-    expect((await config.resolve(binSection)).runtime).toEqual({
+    expect((await config.resolve("bin")).runtime).toEqual({
       kind: "node",
       major: 24,
     });
@@ -70,7 +62,7 @@ describe("runtime", () => {
       createProject("{ bin: { node: 22 } }").root,
     );
 
-    expect((await configured.resolve(binSection)).runtime).toEqual({
+    expect((await configured.resolve("bin")).runtime).toEqual({
       kind: "node",
       major: 22,
     });
@@ -81,7 +73,7 @@ describe("runtime", () => {
       createProject("{ src: { node: 24 } }").root,
     );
 
-    expect((await config.resolve(sourceSection)).runtime).toEqual({
+    expect((await config.resolve("src")).runtime).toEqual({
       kind: "node",
       major: 24,
     });
@@ -93,7 +85,7 @@ describe("runtime", () => {
     );
 
     await expect(
-      async () => (await config.resolve(sourceSection)).runtime,
+      async () => (await config.resolve("src")).runtime,
     ).rejects.toThrow("mutually exclusive");
   });
 
@@ -103,7 +95,7 @@ describe("runtime", () => {
     );
 
     await expect(
-      async () => (await config.resolve(sourceSection)).runtime,
+      async () => (await config.resolve("src")).runtime,
     ).rejects.toThrow("the earliest accepted snapshot is 2022-08");
   });
 
@@ -113,7 +105,7 @@ describe("runtime", () => {
     );
 
     await expect(
-      async () => (await config.resolve(sourceSection)).runtime,
+      async () => (await config.resolve("src")).runtime,
     ).rejects.toThrow("node-releases does not list");
   });
 });

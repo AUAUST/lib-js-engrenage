@@ -1,8 +1,7 @@
 import { memoized } from "@auaust/toolkit/memoized";
 
-import { declareSection, type Resolver } from "#foundation/options/index";
-import { memoizeByContext, type ConfigContext } from "#project/config/index";
-import { tsconfigPathSection } from "#project/tsconfig/config/sections/tsconfigPathSection";
+import { declareSection } from "#foundation/options/index";
+import { memoizeByContext, type ConfigResolver } from "#project/config/index";
 import { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
 import type { File } from "#types/File";
@@ -28,10 +27,10 @@ const parserFor = memoizeByContext(({ root, filesystem }) => {
 export const tsconfigSection = declareSection({
   name: "tsconfig",
   live: true,
-  async resolve(_input, config: Resolver<ConfigContext>): Promise<Tsconfig> {
+  async resolve(_input, config: ConfigResolver): Promise<Tsconfig> {
     const { context } = config;
 
-    const path = await config.resolve(tsconfigPathSection);
+    const path = await config.resolve("tsconfigPath");
 
     return parserFor(context)(
       path,

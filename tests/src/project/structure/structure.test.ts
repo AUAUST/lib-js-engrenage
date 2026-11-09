@@ -2,7 +2,6 @@ import { mkdirSync } from "node:fs";
 
 import { describe, expect, test } from "vitest";
 
-import { structureSection } from "@auaust/engrenage";
 import { loadConfig } from "@auaust/engrenage/config";
 import {
   components,
@@ -53,7 +52,7 @@ function createProject(options: string) {
 async function loadStructure(root: string) {
   const config = await loadConfig(root);
 
-  return config.resolve(structureSection);
+  return config.resolve("structure");
 }
 
 type StructureNode = NonNullable<
@@ -68,13 +67,13 @@ async function describeSource(options: string) {
   const config = await loadConfig(createProject(options).root);
 
   const nodes = new Map(
-    flatten((await config.resolve(structureSection)).src!.root).map((node) => [
+    flatten((await config.resolve("structure")).src!.root).map((node) => [
       node.path,
       node,
     ]),
   );
 
-  return { structure: (await config.resolve(structureSection)).src!, nodes };
+  return { structure: (await config.resolve("structure")).src!, nodes };
 }
 
 const declaration = `{
@@ -197,9 +196,9 @@ describe("structure", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(
-      (await config.resolve(structureSection)).tooling?.root.children,
-    ).toEqual([]);
+    expect((await config.resolve("structure")).tooling?.root.children).toEqual(
+      [],
+    );
   });
 
   describe("tests mirror", () => {
@@ -218,7 +217,7 @@ describe("structure", () => {
 
       const config = await loadConfig(project.root);
 
-      const structure = (await config.resolve(structureSection)).tests!;
+      const structure = (await config.resolve("structure")).tests!;
 
       return {
         structure,
@@ -341,9 +340,10 @@ describe("inline roles", () => {
     const config = await loadConfig(project.root);
 
     return new Map(
-      flatten((await config.resolve(structureSection)).src!.root).map(
-        (node) => [node.path, node],
-      ),
+      flatten((await config.resolve("structure")).src!.root).map((node) => [
+        node.path,
+        node,
+      ]),
     );
   }
 

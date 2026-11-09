@@ -1,26 +1,15 @@
-import { declareSection, type Resolver } from "#foundation/options/index";
-import { buildOutDirSection } from "#project/build/index";
-import {
-  aliasesSchema,
-  binSection,
-  dataSection,
-  scriptsSection,
-  sourceOptionsSection,
-  sourceSection,
-  testsSection,
-  toolingSection,
-} from "#project/environments/index";
-import { traitsSection } from "#project/presets/index";
-import { structureSection } from "#project/structure/config/sections/structureSection";
+import { declareSection } from "#foundation/options/index";
+import { aliasesSchema } from "#project/environments/index";
 import { resolveAliases } from "#project/structure/operations/resolveAliases";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
+import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
 import type { Directory } from "#types/Directory";
 
 async function readOutDir(
-  config: Resolver<ConfigContext>,
+  config: ConfigResolver,
 ): Promise<Directory | undefined> {
   try {
-    return await config.resolve(buildOutDirSection);
+    return await config.resolve("build.outDir");
   } catch {
     // @debt an unreadable tsconfig hides the output directory, so its alias is generated instead of skipped; the output directory should resolve without parsing the tsconfig
   }
@@ -29,21 +18,21 @@ async function readOutDir(
 export const aliasesSection = declareSection({
   name: "aliases",
   declaration: aliasesSchema,
-  async resolve(input, config: Resolver<ConfigContext>) {
-    const option = await config.resolve(sourceOptionsSection);
+  async resolve(input, config: ConfigResolver): Promise<ResolvedAliases> {
+    const option = await config.resolve("src.options");
 
     const global = aliasesSchema.resolve(input, undefined, "aliases");
 
     const [source, tests, bin, scripts, tooling, data, traits, trees] =
       await Promise.all([
-        config.resolve(sourceSection),
-        config.resolve(testsSection),
-        config.resolve(binSection),
-        config.resolve(scriptsSection),
-        config.resolve(toolingSection),
-        config.resolve(dataSection),
-        config.resolve(traitsSection),
-        config.resolve(structureSection),
+        config.resolve("src"),
+        config.resolve("tests"),
+        config.resolve("bin"),
+        config.resolve("scripts"),
+        config.resolve("tooling"),
+        config.resolve("data"),
+        config.resolve("traits"),
+        config.resolve("structure"),
       ]);
 
     return resolveAliases({

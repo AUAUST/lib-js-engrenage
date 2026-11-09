@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 
-import { sourceExportsSection } from "@auaust/engrenage";
 import { loadConfig } from "@auaust/engrenage/config";
 import { entry } from "@auaust/engrenage/roles";
 
@@ -34,7 +33,7 @@ async function exposed(
 
   const config = await loadConfig(project.root);
 
-  return config.resolve(sourceExportsSection);
+  return config.resolve("src.exports");
 }
 
 describe("domain entries", () => {

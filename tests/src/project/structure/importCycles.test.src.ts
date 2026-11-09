@@ -1,9 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
-import { aliasesSection, structureSection } from "#project/structure/index";
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
-import { typescriptSection } from "#project/tsconfig/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 async function cyclesOf(files: Record<string, string>, typescript = "{}") {
@@ -17,12 +15,12 @@ async function cyclesOf(files: Record<string, string>, typescript = "{}") {
 
   const config = await loadConfig(project.root);
 
-  const { verbatimModuleSyntax } = await config.resolve(typescriptSection);
+  const { verbatimModuleSyntax } = await config.resolve("typescript");
 
   return findImportCycles({
     root: config.context.root,
-    structure: await config.resolve(structureSection),
-    aliases: await config.resolve(aliasesSection),
+    structure: await config.resolve("structure"),
+    aliases: await config.resolve("aliases"),
     verbatimModuleSyntax,
   });
 }

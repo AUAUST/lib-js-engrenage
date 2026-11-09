@@ -1,16 +1,16 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { resolveWithin } from "#foundation/filesystem/index";
-import { declareSection, type Resolver } from "#foundation/options/index";
+import { declareSection } from "#foundation/options/index";
 import { cacheSchema } from "#project/cache/config/schemas/cacheSchema";
 import type { ResolvedCache } from "#project/cache/types/ResolvedCache";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
 import type { PackageName } from "#types/PackageName";
 
 export const cacheSection = declareSection({
   name: "cache",
   declaration: cacheSchema,
-  resolve(input, config: Resolver<ConfigContext>): ResolvedCache {
+  resolve(input, config: ConfigResolver): ResolvedCache {
     const { root } = config.context;
 
     const { dir } = cacheSchema.resolve(input, { root }, "cache");

@@ -2,16 +2,16 @@ import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
-import { declareSection, type Resolver } from "#foundation/options/index";
+import { declareSection } from "#foundation/options/index";
 import { resolveSourceRuntime } from "#project/baseline/index";
-import { sourceOptionsSection } from "#project/environments/config/sections/sourceOptionsSection";
 import { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
+import type { ResolvedSource } from "#project/environments/types/ResolvedSource";
 
 export const sourceSection = declareSection({
   name: "src",
-  async resolve(_input, config: Resolver<ConfigContext>) {
-    const option = await config.resolve(sourceOptionsSection);
+  async resolve(_input, config: ConfigResolver): Promise<ResolvedSource> {
+    const option = await config.resolve("src.options");
 
     const environment = await resolveEnvironment(config, option, "src");
 

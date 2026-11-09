@@ -2,16 +2,6 @@ import { join } from "node:path";
 
 import { describe, expect, test, vi } from "vitest";
 
-import {
-  binSection,
-  filesSection,
-  scriptsSection,
-  sourceSection,
-  testsSection,
-  toolingSection,
-  tsconfigPathSection,
-  typescriptSection,
-} from "@auaust/engrenage";
 import { loadConfig } from "@auaust/engrenage/config";
 import { testsetup } from "@auaust/engrenage/roles";
 
@@ -34,7 +24,7 @@ describe("environments", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(await config.resolve(sourceSection)).toMatchObject({
+    expect(await config.resolve("src")).toMatchObject({
       active: true,
       dirs: ["src"],
       generated: [],
@@ -43,7 +33,7 @@ describe("environments", () => {
       globs: ["src/**/*.{ts,tsx}"],
     });
 
-    expect(await config.resolve(testsSection)).toMatchObject({
+    expect(await config.resolve("tests")).toMatchObject({
       active: true,
       dirs: ["tests"],
       generated: [],
@@ -59,35 +49,35 @@ describe("environments", () => {
       coverageDir: "coverage",
     });
 
-    expect(await config.resolve(binSection)).toMatchObject({
+    expect(await config.resolve("bin")).toMatchObject({
       active: false,
       dirs: ["bin"],
       defines: false,
     });
 
-    expect(await config.resolve(scriptsSection)).toMatchObject({
+    expect(await config.resolve("scripts")).toMatchObject({
       active: false,
       dirs: ["scripts"],
       defines: false,
     });
 
-    expect(await config.resolve(toolingSection)).toMatchObject({
+    expect(await config.resolve("tooling")).toMatchObject({
       active: true,
       dirs: ["tooling"],
       files: ["*.config.ts", ".*.ts"],
       globs: ["*.config.ts", ".*.ts", "tooling/**/*.{ts,tsx}"],
     });
 
-    expect((await config.resolve(filesSection)).fixtures).toEqual([
+    expect((await config.resolve("files")).fixtures).toEqual([
       "tests/**/fixtures/**",
     ]);
 
-    expect((await config.resolve(filesSection)).published).toEqual([
+    expect((await config.resolve("files")).published).toEqual([
       "src/**/*.{ts,tsx}",
       "bin/**/*.{ts,tsx}",
     ]);
 
-    expect((await config.resolve(filesSection)).private).toEqual([
+    expect((await config.resolve("files")).private).toEqual([
       "tests/**/*.{ts,tsx}",
       "scripts/**/*.{ts,tsx}",
     ]);
@@ -104,7 +94,7 @@ describe("environments", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(await config.resolve(binSection)).toMatchObject({
+    expect(await config.resolve("bin")).toMatchObject({
       active: false,
       dirs: [],
       generated: [],
@@ -113,21 +103,21 @@ describe("environments", () => {
       globs: [],
     });
 
-    expect(await config.resolve(testsSection)).toMatchObject({
+    expect(await config.resolve("tests")).toMatchObject({
       active: false,
       dirs: [],
       files: [],
       fixtures: [],
     });
 
-    expect(await config.resolve(toolingSection)).toMatchObject({
+    expect(await config.resolve("tooling")).toMatchObject({
       active: false,
       dirs: [],
       files: [],
       globs: [],
     });
 
-    expect((await config.resolve(filesSection)).published).toEqual([
+    expect((await config.resolve("files")).published).toEqual([
       "src/**/*.{ts,tsx}",
     ]);
   });
@@ -143,13 +133,13 @@ describe("environments", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.resolve(filesSection)).generated).toEqual([
+    expect((await config.resolve("files")).generated).toEqual([
       "lib/types/**",
       "src/types/**",
       "tests/snapshots/**",
     ]);
 
-    expect((await config.resolve(filesSection)).discovered).toEqual([
+    expect((await config.resolve("files")).discovered).toEqual([
       "tests/**/setup.ts",
       "scripts/**/*.ts",
     ]);
@@ -162,15 +152,15 @@ describe("environments", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.resolve(sourceSection)).active).toBe(true);
-    expect((await config.resolve(binSection)).active).toBe(false);
+    expect((await config.resolve("src")).active).toBe(true);
+    expect((await config.resolve("bin")).active).toBe(false);
 
     const missing = await loadConfig(
       createProject('{ src: { dirs: "missing" } }').root,
     );
 
-    expect((await missing.resolve(sourceSection)).active).toBe(false);
-    expect((await missing.resolve(sourceSection)).dirs).toEqual(["missing"]);
+    expect((await missing.resolve("src")).active).toBe(false);
+    expect((await missing.resolve("src")).dirs).toEqual(["missing"]);
   });
 
   test("adjust a default list and the TypeScript files", async () => {
@@ -181,18 +171,14 @@ describe("environments", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.resolve(typescriptSection)).files).toEqual([
-      "**/*.ts",
-    ]);
+    expect((await config.resolve("typescript")).files).toEqual(["**/*.ts"]);
 
-    expect((await config.resolve(toolingSection)).files).toEqual([
+    expect((await config.resolve("tooling")).files).toEqual([
       "a.ts",
       "*.config.ts",
     ]);
 
-    expect((await config.resolve(sourceSection)).globs).toEqual([
-      "src/**/*.ts",
-    ]);
+    expect((await config.resolve("src")).globs).toEqual(["src/**/*.ts"]);
   });
 });
 
@@ -204,22 +190,22 @@ describe("environment tsconfigs", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.resolve(sourceSection)).tsconfig).toMatchObject({
+    expect((await config.resolve("src")).tsconfig).toMatchObject({
       owner: "src",
       file: "tsconfig.src.json",
       check: true,
     });
 
-    expect((await config.resolve(scriptsSection)).tsconfig).toMatchObject({
+    expect((await config.resolve("scripts")).tsconfig).toMatchObject({
       owner: "bin",
       file: "tsconfig.bin.json",
     });
 
-    expect((await config.resolve(toolingSection)).tsconfig).toMatchObject({
+    expect((await config.resolve("tooling")).tsconfig).toMatchObject({
       owner: "bin",
     });
 
-    expect((await config.resolve(testsSection)).dist.tsconfig).toMatchObject({
+    expect((await config.resolve("tests")).dist.tsconfig).toMatchObject({
       owner: "tests.dist",
       file: "tsconfig.tests.dist.json",
       check: false,
@@ -231,10 +217,10 @@ describe("environment tsconfigs", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.resolve(binSection)).tsconfig.owner).toBeUndefined();
+    expect((await config.resolve("bin")).tsconfig.owner).toBeUndefined();
 
     await expect(
-      (await config.resolve(binSection)).tsconfig.path,
+      (await config.resolve("bin")).tsconfig.path,
     ).resolves.toBeUndefined();
   });
 
@@ -245,7 +231,7 @@ describe("environment tsconfigs", () => {
       ).root,
     );
 
-    await expect(cycle.resolve(binSection)).rejects.toThrow(
+    await expect(cycle.resolve("bin")).rejects.toThrow(
       "inherits in a cycle: bin → scripts → bin",
     );
 
@@ -255,7 +241,7 @@ describe("environment tsconfigs", () => {
       ).root,
     );
 
-    await expect(conflict.resolve(scriptsSection)).rejects.toThrow(
+    await expect(conflict.resolve("scripts")).rejects.toThrow(
       "scripts.tsconfig inherits bin and cannot also set lib",
     );
   });
@@ -270,11 +256,11 @@ describe("environment tsconfigs", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(await config.resolve(tsconfigPathSection)).toBe(
+    expect(await config.resolve("tsconfigPath")).toBe(
       join(project.root, "tsconfig.base.json"),
     );
 
-    void (await config.resolve(tsconfigPathSection));
+    void (await config.resolve("tsconfigPath"));
 
     expect(warn).toHaveBeenCalledTimes(1);
 

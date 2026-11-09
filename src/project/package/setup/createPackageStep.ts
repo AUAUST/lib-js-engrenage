@@ -1,7 +1,6 @@
 import { basename } from "node:path";
 
 import { packageJsonFile } from "#constants";
-import { visibilitySection } from "#project/package/config/sections/visibilitySection";
 import {
   initialVersion,
   privateLicense,
@@ -18,7 +17,7 @@ async function isUnset(context: StepContext, field: string): Promise<boolean> {
 async function isPublic(context: StepContext): Promise<boolean> {
   const { published } = await context.getTraits();
 
-  return published && (await context.resolve(visibilitySection)) === "public";
+  return published && (await context.resolve("visibility")) === "public";
 }
 
 export function createPackageStep(): Step {

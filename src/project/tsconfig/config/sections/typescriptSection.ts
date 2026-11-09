@@ -3,18 +3,14 @@ import { freeze, get as getProperty } from "@auaust/toolkit/object";
 import { once } from "@auaust/toolkit/once";
 
 import { resolveWithin } from "#foundation/filesystem/index";
-import { declareSection, type Resolver } from "#foundation/options/index";
-import { typescriptOptionsSection } from "#project/tsconfig/config/sections/typescriptOptionsSection";
-import type { ConfigContext } from "#project/config/index";
+import { declareSection } from "#foundation/options/index";
+import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
 
 export const typescriptSection = declareSection({
   name: "typescript",
-  async resolve(
-    _input,
-    config: Resolver<ConfigContext>,
-  ): Promise<ResolvedTypescript> {
-    const option = await config.resolve(typescriptOptionsSection);
+  async resolve(_input, config: ConfigResolver): Promise<ResolvedTypescript> {
+    const option = await config.resolve("typescript.options");
 
     const { tsconfig, verbatimModuleSyntax } = option;
 

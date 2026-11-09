@@ -1,15 +1,16 @@
-import { declareSection, type Resolver } from "#foundation/options/index";
-import { packageJsonSection } from "#project/package/index";
-import { aliasesSection } from "#project/structure/config/sections/aliasesSection";
+import { declareSection } from "#foundation/options/index";
 import { createImportResolver } from "#project/structure/utils/createImportResolver";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
 
 export const importResolverSection = declareSection({
   name: "importResolver",
-  async resolve(_input, config: Resolver<ConfigContext>) {
+  async resolve(
+    _input,
+    config: ConfigResolver,
+  ): Promise<ReturnType<typeof createImportResolver>> {
     const [aliases, packageJson] = await Promise.all([
-      config.resolve(aliasesSection),
-      config.resolve(packageJsonSection),
+      config.resolve("aliases"),
+      config.resolve("packageJson"),
     ]);
 
     return createImportResolver({

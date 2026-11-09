@@ -3,22 +3,20 @@ import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
 import { filesIn, findDirectories } from "#foundation/filesystem/index";
-import { declareSection, type Resolver } from "#foundation/options/index";
+import { declareSection } from "#foundation/options/index";
 import { resolveNodeRuntime } from "#project/baseline/index";
-import { runtimeSection } from "#project/environments/config/sections/runtimeSection";
-import { toolingOptionsSection } from "#project/environments/config/sections/toolingOptionsSection";
 import { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
-import { typescriptOptionsSection } from "#project/tsconfig/index";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
+import type { ResolvedTooling } from "#project/environments/types/ResolvedTooling";
 
 export const toolingSection = declareSection({
   name: "tooling",
-  async resolve(_input, config: Resolver<ConfigContext>) {
-    const { node } = await config.resolve(runtimeSection);
+  async resolve(_input, config: ConfigResolver): Promise<ResolvedTooling> {
+    const { node } = await config.resolve("runtime");
 
-    const option = await config.resolve(toolingOptionsSection);
+    const option = await config.resolve("tooling.options");
 
-    const typescript = await config.resolve(typescriptOptionsSection);
+    const typescript = await config.resolve("typescript.options");
 
     const { files } = option;
     const walked = option.dirs.filter((directory) => directory !== ".");

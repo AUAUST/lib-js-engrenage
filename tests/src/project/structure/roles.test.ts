@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 
-import { environmentRolesSection } from "@auaust/engrenage";
 import { loadConfig } from "@auaust/engrenage/config";
 import { createRolePreset, utils } from "@auaust/engrenage/roles";
 import { keys } from "@auaust/toolkit/object";
@@ -24,7 +23,7 @@ describe("roles", () => {
 
     const config = await loadConfig(project.root);
 
-    const roles = await config.resolve(environmentRolesSection);
+    const roles = await config.resolve("environmentRoles");
 
     expect(roles.src.roles).toEqual({
       utils: expect.objectContaining({ nesting: 1 }),
@@ -45,9 +44,7 @@ describe("roles", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.resolve(environmentRolesSection)).tests.roles).toEqual(
-      {},
-    );
+    expect((await config.resolve("environmentRoles")).tests.roles).toEqual({});
   });
 
   test("report two roles named alike in one list and nest a built preset", async () => {
@@ -56,7 +53,7 @@ describe("roles", () => {
     });
 
     await expect(
-      (await loadConfig(duplicated.root)).resolve(environmentRolesSection),
+      (await loadConfig(duplicated.root)).resolve("environmentRoles"),
     ).rejects.toThrow("src.roles[0] and src.roles[1] are both named utils");
 
     const helpers = createRolePreset({ name: "helpers", purpose: "Helpers." });
@@ -66,8 +63,8 @@ describe("roles", () => {
     });
 
     expect(
-      (await (await loadConfig(nested.root)).resolve(environmentRolesSection))
-        .src.roles.utils,
+      (await (await loadConfig(nested.root)).resolve("environmentRoles")).src
+        .roles.utils,
     ).toMatchObject({ roles: ["utils/helpers"] });
   });
 });
