@@ -64,6 +64,7 @@ describe("syncTsconfigFiles", () => {
         module: "NodeNext",
         moduleResolution: "NodeNext",
         paths: { "#a": ["./a.ts"] },
+        incremental: true,
         tsBuildInfoFile: buildInfoFile,
       },
     });
@@ -105,6 +106,7 @@ describe("syncTsconfigFiles", () => {
       module: "NodeNext",
       moduleResolution: "NodeNext",
       paths: { "#a": ["./a.ts"] },
+      incremental: true,
     });
   });
 
@@ -134,6 +136,7 @@ describe("syncTsconfigFiles", () => {
       module: "NodeNext",
       moduleResolution: "NodeNext",
       paths: { "#a": ["./a.ts"] },
+      incremental: true,
       tsBuildInfoFile: "./custom.tsbuildinfo",
       customFlag: { a: 1 },
     });
@@ -197,6 +200,7 @@ describe("syncTsconfigFiles", () => {
         strict: true,
         paths: {},
         skipLibCheck: false,
+        incremental: true,
         tsBuildInfoFile:
           "./node_modules/.cache/typescript/tsconfig.tests.dist.tsbuildinfo",
       },

@@ -42,6 +42,7 @@ function createSolution(
     "tsconfig.src.json": JSON.stringify({
       extends: "./tsconfig.json",
       compilerOptions: {
+        incremental: true,
         tsBuildInfoFile: "./.cache/tsconfig/src.tsbuildinfo",
       },
       include: ["src"],
@@ -49,6 +50,7 @@ function createSolution(
     "tsconfig.tests.json": JSON.stringify({
       extends: "./tsconfig.json",
       compilerOptions: {
+        incremental: true,
         tsBuildInfoFile: "./.cache/tsconfig/tests.tsbuildinfo",
       },
       include: ["tests"],
@@ -91,6 +93,30 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
     await runDefinition(engrenage, "typecheck");
 
     expect(process.exitCode).toBe(0);
+  });
+
+  test("reports a type error introduced after a passing incremental run", async () => {
+    vi.spyOn(console, "info").mockImplementation(() => {});
+
+    const output = await captureBinaryOutput();
+
+    const project = createSolution(
+      'import { value } from "../src/index.ts";\n\nexport const number: number = value;\n',
+    );
+
+    await runDefinition(engrenage, "typecheck");
+
+    expect(process.exitCode).toBe(0);
+
+    project.write(
+      "tests/index.ts",
+      'import { value } from "../src/index.ts";\n\nexport const text: string = value;\n',
+    );
+
+    await runDefinition(engrenage, "typecheck");
+
+    expect(process.exitCode).not.toBe(0);
+    expect(output()).toContain("tests/index.ts(3,14): error TS2322");
   });
 
   test("builds a solution tsconfig without emitting", async () => {

@@ -4,7 +4,8 @@
     "paths": {},
     "tsBuildInfoFile": "./node_modules/.cache/typescript/tsconfig.tests.dist.tsbuildinfo",
     "skipLibCheck": false,
-    "exactOptionalPropertyTypes": false
+    "exactOptionalPropertyTypes": false,
+    "incremental": true
   },
   "include": [
     "tests/**/*.spec.ts",

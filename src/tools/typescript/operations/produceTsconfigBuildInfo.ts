@@ -27,6 +27,10 @@ export async function produceTsconfigBuildInfo(
 
   return [
     {
+      path: ["compilerOptions", "incremental"],
+      value: true,
+    },
+    {
       path: ["compilerOptions", "tsBuildInfoFile"],
       value: toTsconfigSpecifier(file, buildInfo),
     },

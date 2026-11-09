@@ -12,6 +12,7 @@
     "tsBuildInfoFile": "./node_modules/.cache/typescript/tsconfig.scripts.tsbuildinfo",
     "target": "ESNext",
     "lib": ["ESNext"],
-    "types": ["node"]
+    "types": ["node"],
+    "incremental": true
   }
 }

@@ -112,6 +112,13 @@ describe("tsconfig build info", () => {
     expect(read("tsconfig.json").compilerOptions).toBeUndefined();
   });
 
+  test("enables incremental checks beside the build info", async () => {
+    const { read } = await syncProject({});
+
+    expect(read("tsconfig.src.json").compilerOptions.incremental).toBe(true);
+    expect(read("tsconfig.json").compilerOptions).toBeUndefined();
+  });
+
   test("follows a custom cache.dir", async () => {
     const { read } = await syncProject({
       cache: { dir: ".cache" },
