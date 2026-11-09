@@ -255,7 +255,7 @@ describe("structure boundaries", () => {
     ).toEqual([]);
   });
 
-  test("lets only the root entry import a domain entry", async () => {
+  test("lets a module import another domain's entry as a public entry", async () => {
     const lint = await createLinter();
 
     expect(
@@ -263,7 +263,21 @@ describe("structure boundaries", () => {
         "src/project/feature/index.ts",
         'export { value } from "#project/other/entry";\n',
       ),
-    ).toEqual(["auaust/import-surfaces"]);
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        "src/foundation/base/index.ts",
+        'export { value } from "#project/other/entry";\n',
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        "src/foundation/base/index.ts",
+        'import type * as other from "#project/other/entry";\n\nexport type Other = typeof other;\n',
+      ),
+    ).toEqual([]);
 
     expect(
       await lint(

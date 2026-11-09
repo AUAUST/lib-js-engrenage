@@ -1,11 +1,13 @@
+import { isEntryReference } from "#project/structure/utils/isEntryReference";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportEdge } from "#project/structure/types/ImportEdge";
 
-export function getImportCategory({
-  resolved,
-  target,
-}: ImportEdge): ImportCategory | undefined {
-  if (resolved?.kind === "self") {
+export function getImportCategory(
+  edge: ImportEdge,
+): ImportCategory | undefined {
+  const { resolved, target } = edge;
+
+  if (isEntryReference(edge) || resolved?.kind === "self") {
     return "public-entries";
   }
 

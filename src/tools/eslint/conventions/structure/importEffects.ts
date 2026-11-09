@@ -9,6 +9,7 @@ import {
 import type { Rule } from "eslint";
 
 import { relativeWithin } from "#foundation/filesystem/index";
+import { entryRoleName } from "#project/roles/constants";
 import {
   entitiesSection,
   environmentRolesSection,
@@ -144,6 +145,43 @@ export default defineConvention({
           });
         }
 
+        function checkExports({
+          reported,
+          specifier,
+          module,
+        }: {
+          reported: Rule.Node;
+          specifier: string;
+          module: Symbol;
+        }) {
+          for (const exported of checker.getExportsOfModule(module)) {
+            check({
+              reported,
+              specifier,
+              binding: exported.name,
+              imported: exported.name,
+              symbol: exported,
+            });
+          }
+        }
+
+        function entryModuleOf(symbol: Symbol | undefined) {
+          if (
+            symbol === undefined ||
+            (symbol.flags & SymbolFlags.Alias) === 0
+          ) {
+            return;
+          }
+
+          const module = checker.getAliasedSymbol(symbol);
+          const file = module.declarations?.[0]?.getSourceFile();
+
+          return file !== undefined &&
+            entities.entityOf(file.fileName)?.role === entryRoleName
+            ? module
+            : undefined;
+        }
+
         // @debt the ESTree-to-TS node map is untyped here, so nodes are cast `as TsNode` and `as never` with no stated invariant
         function symbolOf(node: object): Symbol | undefined {
           return checker.getSymbolAtLocation(
@@ -174,6 +212,22 @@ export default defineConvention({
                 continue;
               }
 
+              const symbol = symbolOf(imported.local);
+
+              if (imported.type === "ImportNamespaceSpecifier") {
+                const entry = entryModuleOf(symbol);
+
+                if (entry !== undefined) {
+                  checkExports({
+                    reported: declaration,
+                    specifier,
+                    module: entry,
+                  });
+
+                  continue;
+                }
+              }
+
               check({
                 reported: declaration,
                 specifier,
@@ -188,7 +242,7 @@ export default defineConvention({
                   : imported.type === "ImportDefaultSpecifier"
                     ? { imported: "default" }
                     : {}),
-                symbol: symbolOf(imported.local),
+                symbol,
               });
             }
           },
@@ -204,15 +258,11 @@ export default defineConvention({
               return;
             }
 
-            for (const exported of checker.getExportsOfModule(loaded)) {
-              check({
-                reported: expression,
-                specifier,
-                binding: exported.name,
-                imported: exported.name,
-                symbol: exported,
-              });
-            }
+            checkExports({
+              reported: expression,
+              specifier,
+              module: loaded,
+            });
           },
           ExportAllDeclaration(declaration) {
             if (!isTypeOnlyNode(declaration)) {

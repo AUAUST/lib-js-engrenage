@@ -96,6 +96,7 @@ export { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 export { getStructureCardinality } from "#project/structure/utils/getStructureCardinality";
 export { getStructureLayer } from "#project/structure/utils/getStructureLayer";
 export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
+export { isEntryReference } from "#project/structure/utils/isEntryReference";
 export { isStructureEnvironment } from "#project/structure/utils/isStructureEnvironment";
 export { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
 export { listDomainsWithoutPurpose } from "#project/structure/utils/listDomainsWithoutPurpose";

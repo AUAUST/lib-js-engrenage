@@ -64,6 +64,7 @@ async function createLinter({
     "node_modules/valibot/index.d.ts": "export declare const string: number;\n",
     "src/foundation/base/index.ts":
       'export { helper } from "#foundation/base/utils/helper";\nexport { act } from "#foundation/base/operations/act";\n',
+    "src/foundation/base/entry.ts": 'export * from "#foundation/base/index";\n',
     "src/foundation/base/utils/helper.ts": "export const helper = 1;\n",
     "src/foundation/base/operations/act.ts": "export const act = 1;\n",
     "src/project/feature/index.ts": "export {};\n",
@@ -129,6 +130,23 @@ describe("import effects", () => {
 
     expect(message).toContain("`act`");
     expect(message).toContain("effectful");
+  });
+
+  test("rank a namespace import of an entry by the roles declaring its exports", async () => {
+    const lint = await createLinter();
+
+    const source =
+      'import * as base from "#foundation/base/entry";\n\nexport const run = base;\n';
+
+    expect(await lint("src/project/feature/operations/run.ts", source)).toEqual(
+      [],
+    );
+
+    const messages = await lint(utility, source);
+
+    expect(messages).toHaveLength(1);
+    expect(messages[0]).toContain("`act`");
+    expect(messages[0]).toContain("effectful");
   });
 
   test("follow bindings through a lower layer's index.ts and rank node builtins", async () => {
