@@ -4,8 +4,8 @@ Project configuration contract: environments, option shapes and list options.
 
 ## 1. Liquid and CSS are not languages engrenage knows.
 
-- why: #350 supports Shopify themes with Liquid formatted and theme directories outside every environment. Settled model: an environment is a runtime context and never nests; a language is a file kind inside environments, its files an environment's `dirs` × the language's globs, so CSS under `src/styles/` is `src` code.
-- want: a `liquid` environment mapping theme directories for agents (#347's remaining work: #378, #390), and a CSS language domain (Stylelint or `@eslint/css`) owning its rules as the ESLint entry owns TypeScript's.
+- why: #350 formats Liquid but keeps theme directories outside every environment. Model: environments are runtime contexts and never nest; languages are file kinds inside them.
+- want: a `liquid` environment mapping theme directories (#378, #390), and a CSS language domain (Stylelint or `@eslint/css`).
 - done: both exist, or obsolete once themes need neither.
 
 ## 2. CI and test timeouts are not configurable, nor per environment.
@@ -16,8 +16,8 @@ Project configuration contract: environments, option shapes and list options.
 
 ## 3. Host presets are missing for non-Shopify hosts.
 
-- why: projects where engrenage is the JavaScript part of a host need presets resolving to the traits of #153 so environment defaults never land in host directories. Shopify's are #350; Laravel has none.
-- done: each adopting project has its preset, added when that project adopts engrenage; obsolete if the project never does.
+- why: a host project (Laravel) needs a preset keeping environment defaults out of host directories (#153 traits); Shopify's are #350.
+- done: each adopting project has its preset, or the entry is obsolete.
 
 ## 4. `listDiscoveredGlobs` widens `files.discovered` with role-discovered globs, without a changeset.
 
