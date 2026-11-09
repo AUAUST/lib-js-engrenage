@@ -4,16 +4,24 @@ import type { Declaration } from "#foundation/options/types/Declaration";
 import type { Resolver } from "#foundation/options/types/Resolver";
 import type { Section } from "#foundation/options/types/Section";
 
-export function declareSection<Input, Output>(options: {
+// @debt `Config` comes from the section's own annotation, unchecked against the resolver `createResolver` passes
+export function declareSection<
+  Input,
+  Output,
+  Config extends Resolver<unknown, object> = Resolver,
+>(options: {
   name: string;
   declaration: Declaration<Input, unknown, unknown>;
   live?: boolean;
-  resolve(input: Input, config: Resolver): Output | Promise<Output>;
+  resolve(input: Input, config: Config): Output | Promise<Output>;
 }): Section<Output>;
-export function declareSection<Output>(options: {
+export function declareSection<
+  Output,
+  Config extends Resolver<unknown, object> = Resolver,
+>(options: {
   name: string;
   live?: boolean;
-  resolve(input: undefined, config: Resolver): Output | Promise<Output>;
+  resolve(input: undefined, config: Config): Output | Promise<Output>;
 }): Section<Output>;
 export function declareSection({
   name,
