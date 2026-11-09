@@ -175,6 +175,7 @@ export function createResolver<
       return value;
     }
 
+    // @debt sections receive the open `Resolver<Context>`, not `Resolver<Context, Sections>`: a generic `Sections` is not assignable to `Section.resolve`'s open resolver, so key reads inside sections are untyped
     const config: Resolver<Context> = {
       context,
       resolve,
