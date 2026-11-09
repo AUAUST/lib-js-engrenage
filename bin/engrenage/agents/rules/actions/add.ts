@@ -1,10 +1,6 @@
 import { cancel, isCancel, multiselect } from "@clack/prompts";
 
-import {
-  addAgentRules,
-  agentsSection,
-  getMissingRuleTemplates,
-} from "#tools/agents/index";
+import { addAgentRules, getMissingRuleTemplates } from "#tools/agents/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import { settleChanges } from "#workflows/sync/index";
 
@@ -64,7 +60,7 @@ export default async function (name?: string): Promise<void> {
   await addAgentRules(
     {
       filesystem: config.context.filesystem,
-      agents: await config.resolve(agentsSection),
+      agents: await config.resolve("agents"),
     },
     names,
   );

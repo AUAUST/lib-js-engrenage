@@ -3,7 +3,6 @@ import { join } from "node:path";
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { cacheSection } from "#project/cache/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
@@ -69,7 +68,7 @@ async function runStop() {
 }
 
 async function hasMarker(root: string): Promise<boolean> {
-  const cache = await (await loadConfig(root)).resolve(cacheSection);
+  const cache = await (await loadConfig(root)).resolve("cache");
 
   const directory = join(cache.for("gate"), "stops");
 

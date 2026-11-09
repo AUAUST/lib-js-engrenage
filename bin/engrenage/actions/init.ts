@@ -3,7 +3,6 @@ import { flat } from "@auaust/primitive-kit/arrays";
 import { packageJsonFile } from "#constants";
 import { runProcess } from "#foundation/processes/index";
 import { loadConfig, type LoadedConfig } from "#project/config/index";
-import { packageJsonPathSection } from "#project/package/index";
 import { createPnpmInvocation } from "#tools/pnpm/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import { createPrompter, listInitSteps, runSteps } from "#workflows/init/index";
@@ -40,7 +39,7 @@ async function readPackage(
     searchParents: false,
   });
 
-  if ((await config.resolve(packageJsonPathSection)) !== undefined) {
+  if ((await config.resolve("packageJsonPath")) !== undefined) {
     return config;
   }
 

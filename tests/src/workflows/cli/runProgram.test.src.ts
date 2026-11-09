@@ -48,7 +48,6 @@ beforeEach(() => {
 afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllEnvs();
-  vi.doUnmock("#workflows/cli/config/sections/debugSection");
   vi.doUnmock("#project/config/index");
   vi.doUnmock("#workflows/config/index");
 
@@ -66,10 +65,6 @@ describe("runProgram", () => {
 
   test("runs a succeeding command without loading the config modules", async () => {
     vi.resetModules();
-
-    vi.doMock("#workflows/cli/config/sections/debugSection", () => {
-      throw new Error("config modules loaded");
-    });
 
     vi.doMock("#project/config/index", () => {
       throw new Error("config modules loaded");
@@ -105,10 +100,19 @@ describe("runProgram", () => {
     expect(printed()).toContain("    at ");
   });
 
-  test("prints the stack with the environment variable", async () => {
+  test("prints the stack with the environment variable without loading the config", async () => {
     vi.stubEnv("ENGRENAGE_DEBUG", "1");
 
-    await run(createProgram(), "failing");
+    vi.resetModules();
+
+    vi.doMock("#workflows/config/index", () => {
+      throw new Error("config modules loaded");
+    });
+
+    const { runProgram: runFreshProgram } =
+      await import("#workflows/cli/operations/runProgram");
+
+    await runFreshProgram(createProgram(), ["node", "program", "failing"]);
 
     expect(printed()).toContain("    at ");
   });

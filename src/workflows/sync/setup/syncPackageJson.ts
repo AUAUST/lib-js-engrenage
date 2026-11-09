@@ -4,29 +4,18 @@ import { entries } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
 import { syncFiles } from "#foundation/blocks/index";
-import { buildOutDirSection, buildSection } from "#project/build/index";
-import {
-  binSection,
-  dataSection,
-  runtimeSection,
-  sourceSection,
-  type ResolvedBin,
-  type ResolvedSource,
-} from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
 import { accessByVisibility } from "#project/package/constants";
 import {
   createPackageJson,
-  visibilitySection,
   writePackageJsonValue,
 } from "#project/package/index";
-import { traitsSection } from "#project/presets/index";
-import { environmentRolesSection } from "#project/structure/index";
 import { listPnpmWarnings } from "#tools/pnpm/index";
 import { resolveCommandFiles } from "#tools/tsdown/index";
 import type { JsonValue } from "#foundation/json/index";
 import type { Runtime } from "#project/baseline/index";
 import type { LoadedConfig } from "#project/config/index";
+import type { ResolvedBin, ResolvedSource } from "#project/environments/index";
 
 interface Field {
   location: readonly [string] | readonly [string, string];
@@ -64,19 +53,19 @@ function createEnginesFields({
 async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
   const { resolve, context } = config;
 
-  const { sourcemap } = await resolve(buildSection);
+  const { sourcemap } = await resolve("build");
 
-  const directory = await resolve(buildOutDirSection);
+  const directory = await resolve("build.outDir");
 
   if (directory === undefined) {
     return [];
   }
 
   const [data, source, bin, roles, filesystem] = await Promise.all([
-    resolve(dataSection),
-    resolve(sourceSection),
-    resolve(binSection),
-    resolve(environmentRolesSection),
+    resolve("data"),
+    resolve("src"),
+    resolve("bin"),
+    resolve("environmentRoles"),
     context.filesystem,
   ]);
 
@@ -108,7 +97,7 @@ async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
 async function createFields(config: LoadedConfig): Promise<Field[]> {
   const { resolve } = config;
 
-  const { node } = await resolve(runtimeSection);
+  const { node } = await resolve("runtime");
 
   const runtime: Field = {
     location: ["devEngines", "runtime"],
@@ -119,7 +108,7 @@ async function createFields(config: LoadedConfig): Promise<Field[]> {
     },
   };
 
-  const traits = await resolve(traitsSection);
+  const traits = await resolve("traits");
 
   if (!traits.published) {
     return [runtime, { location: ["private"], value: true }];
@@ -129,11 +118,11 @@ async function createFields(config: LoadedConfig): Promise<Field[]> {
     runtime,
     {
       location: ["publishConfig", "access"],
-      value: accessByVisibility[await resolve(visibilitySection)],
+      value: accessByVisibility[await resolve("visibility")],
     },
     ...createEnginesFields({
-      bin: await resolve(binSection),
-      src: await resolve(sourceSection),
+      bin: await resolve("bin"),
+      src: await resolve("src"),
     }),
     ...(await createPublishedFields(config)),
   ];

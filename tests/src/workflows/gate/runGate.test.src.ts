@@ -8,7 +8,6 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { cacheSection } from "#project/cache/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
@@ -69,7 +68,7 @@ function createRepository(commands: readonly string[] = ["echo run >> .runs"]) {
 }
 
 async function readLockFile(root: string): Promise<string> {
-  const cache = await (await loadConfig(root)).resolve(cacheSection);
+  const cache = await (await loadConfig(root)).resolve("cache");
 
   return `${cache.for("gate")}/lock`;
 }

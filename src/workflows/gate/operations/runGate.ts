@@ -6,15 +6,12 @@ import { deduplicate, filter, map } from "@auaust/primitive-kit/arrays";
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { LockTimeoutError } from "#foundation/processes/errors/LockTimeoutError";
 import { withProcessLock } from "#foundation/processes/index";
-import { cacheSection } from "#project/cache/index";
 import {
-  agentsSection,
   formatBudgetFinding,
   listLocalFilePatterns,
   measureEditedFile,
 } from "#tools/agents/index";
 import {
-  gitSection,
   listChangedFiles,
   listLocalFiles,
   listPartiallyStagedFiles,
@@ -103,7 +100,7 @@ async function measureEntries(
 ): Promise<GateWarning[]> {
   const { root } = config.context;
 
-  const { budgets } = await config.resolve(agentsSection);
+  const { budgets } = await config.resolve("agents");
 
   const findings = await Promise.all(
     files.map((file) => {
@@ -204,7 +201,7 @@ async function checkLocalFiles(
 
   const { root } = config.context;
 
-  const git = await config.resolve(gitSection);
+  const git = await config.resolve("git");
 
   const globs = await listLocalFilePatterns(config);
 
@@ -259,7 +256,7 @@ async function verify(
     return { failures: [], warnings: [] };
   }
 
-  const cache = await config.resolve(cacheSection);
+  const cache = await config.resolve("cache");
 
   const stamp = resolveWithin(root, cache.for(cacheName), stampFile);
 
@@ -330,7 +327,7 @@ export async function runGate(
     };
   }
 
-  const cache = await config.resolve(cacheSection);
+  const cache = await config.resolve("cache");
 
   const lock = resolveWithin(root, cache.for(cacheName), lockFile);
 

@@ -1,7 +1,6 @@
 import { literal, object, string } from "valibot";
 
 import {
-  agentsSection,
   denyToolUse,
   measureGithubCommand,
   readHookPayload,
@@ -33,7 +32,7 @@ export default async function (): Promise<void> {
 
   const config = await loadValidatedConfig(cwd);
 
-  const agents = await config.resolve(agentsSection);
+  const agents = await config.resolve("agents");
 
   const { budgets } = agents;
 

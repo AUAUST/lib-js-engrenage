@@ -9,8 +9,6 @@ import {
   vitest,
 } from "#constants";
 import { resolveBinary, spawnProcess } from "#foundation/processes/index";
-import { environmentSection } from "#project/package/index";
-import { agentsSection } from "#tools/agents/index";
 import { reportClones } from "#tools/jscpd/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
@@ -75,9 +73,9 @@ export async function createGateSteps(config: LoadedConfig): Promise<{
 }> {
   const { root } = config.context;
 
-  const environment = await config.resolve(environmentSection);
+  const environment = await config.resolve("environment");
 
-  const { gate } = await config.resolve(agentsSection);
+  const { gate } = await config.resolve("agents");
 
   const fixes: GateStep[] = [];
   const checks: GateStep[] = [];

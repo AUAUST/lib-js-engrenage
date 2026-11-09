@@ -3,7 +3,6 @@ import { mkdir, rm, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
-import { cacheSection } from "#project/cache/index";
 import { hashTree } from "#tools/git/index";
 import { runGate } from "#workflows/gate/operations/runGate";
 import { formatGateEntry } from "#workflows/gate/utils/formatGateEntry";
@@ -17,7 +16,7 @@ export async function checkAgentStop(
 
   const { root } = config.context;
 
-  const cache = await config.resolve(cacheSection);
+  const cache = await config.resolve("cache");
 
   const key = createHash("sha256")
     .update(

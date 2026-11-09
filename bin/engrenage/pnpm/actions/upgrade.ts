@@ -1,6 +1,5 @@
 import { packageJsonFile } from "#constants";
 import {
-  packageJsonSection,
   readProjectPnpmVersion,
   readSharedPnpmRange,
 } from "#project/package/index";
@@ -21,11 +20,9 @@ export default async function ({ yes }: { yes: boolean }): Promise<void> {
 
   const version = await resolveLatestPnpm(config.context.root, range);
 
-  if (
-    resolvePnpmRangeStatus(await config.resolve(packageJsonSection)) === "above"
-  ) {
+  if (resolvePnpmRangeStatus(await config.resolve("packageJson")) === "above") {
     console.warn(
-      `pnpm ${readProjectPnpmVersion(await config.resolve(packageJsonSection))} is above engrenage's pnpm ${range}: update engrenage to support it`,
+      `pnpm ${readProjectPnpmVersion(await config.resolve("packageJson"))} is above engrenage's pnpm ${range}: update engrenage to support it`,
     );
 
     const proceeds = await createPrompter({ yes }).confirm(
@@ -49,7 +46,7 @@ export default async function ({ yes }: { yes: boolean }): Promise<void> {
   const upgraded = upgradePnpmManifest(
     content,
     config.context.path(packageJsonFile),
-    await config.resolve(packageJsonSection),
+    await config.resolve("packageJson"),
     version,
   );
 

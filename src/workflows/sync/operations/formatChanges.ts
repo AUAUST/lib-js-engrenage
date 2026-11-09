@@ -1,4 +1,3 @@
-import { gitSection } from "#tools/git/index";
 import { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";
@@ -7,7 +6,7 @@ export async function formatChanges({
   resolve,
   context,
 }: LoadedConfig): Promise<Filesystem[]> {
-  const git = await resolve(gitSection);
+  const git = await resolve("git");
 
   const filesystems = [...new Set([context.filesystem, git.filesystem])];
 

@@ -1,6 +1,5 @@
 import { listLocalFilePatterns } from "#tools/agents/index";
 import {
-  gitSection,
   hashTree,
   listChangedFiles,
   listLocalFiles,
@@ -16,7 +15,7 @@ export async function readTreeIdentity(
 ): Promise<TreeIdentity> {
   const { root } = config.context;
 
-  const git = await config.resolve(gitSection);
+  const git = await config.resolve("git");
 
   const local = await listLocalFiles(
     git,

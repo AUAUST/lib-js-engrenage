@@ -9,12 +9,9 @@ import { validate } from "#foundation/options/index";
 import { accessByVisibility } from "#project/package/constants";
 import {
   createPackageJson,
-  visibilitySection,
   type PublishAccess,
   type Visibility,
 } from "#project/package/index";
-import { traitsSection } from "#project/presets/index";
-import { workspacesSection } from "#project/workspaces/index";
 import { configFile } from "#tools/changesets/constants";
 import { npmrcFile } from "#tools/pnpm/constants";
 import type { LoadedConfig } from "#project/config/index";
@@ -145,9 +142,9 @@ export async function checkPublishing(config: LoadedConfig) {
   const { filesystem, root } = config.context;
 
   const [traits, visibility, groups] = await Promise.all([
-    config.resolve(traitsSection),
-    config.resolve(visibilitySection),
-    config.resolve(workspacesSection),
+    config.resolve("traits"),
+    config.resolve("visibility"),
+    config.resolve("workspaces"),
   ]);
 
   const publishing: Publishing = {

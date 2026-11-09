@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { defineSection } from "@auaust/engrenage";
 import { define, loadConfig } from "@auaust/engrenage/config";
 import { defineViteConfig } from "@auaust/engrenage/vite";
 
@@ -27,7 +26,7 @@ async function resolveConfig(input: Record<string, unknown>) {
 
   const config = await loadConfig(project.root);
 
-  void (await config.resolve(defineSection));
+  void (await config.resolve("define"));
 
   return { config, root: project.root };
 }
@@ -90,16 +89,12 @@ describe("define", () => {
       },
     });
 
-    expect(
-      (await config.resolve(defineSection)).values.__BUILT_AT__,
-    ).toMatchObject({
+    expect((await config.resolve("define")).values.__BUILT_AT__).toMatchObject({
       expression: '"2026-01-01T00:00:00.000Z"',
       value: "2026-01-01T00:00:00.000Z",
     });
 
-    expect(
-      (await config.resolve(defineSection)).values.__OPTIONS__?.value,
-    ).toEqual({
+    expect((await config.resolve("define")).values.__OPTIONS__?.value).toEqual({
       url: "https://auaust.ch/",
     });
 
@@ -137,9 +132,9 @@ describe("define", () => {
       },
     });
 
-    expect(
-      (await config.resolve(defineSection)).values.__NAME__?.expression,
-    ).toBe('"@scope/package"');
+    expect((await config.resolve("define")).values.__NAME__?.expression).toBe(
+      '"@scope/package"',
+    );
 
     await expect(async () => {
       return await resolveConfig({

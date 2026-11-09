@@ -2,11 +2,7 @@ import { cancel, isCancel, multiselect } from "@clack/prompts";
 
 import { empty } from "@auaust/toolkit/empty";
 
-import {
-  addAgentSkills,
-  agentsSection,
-  getSkillTemplates,
-} from "#tools/agents/index";
+import { addAgentSkills, getSkillTemplates } from "#tools/agents/index";
 import {
   loadValidatedConfig,
   type LoadedConfig,
@@ -20,7 +16,7 @@ async function getNames(config: LoadedConfig, name: string | undefined) {
 
   const filesystem = config.context.filesystem;
 
-  const agents = await config.resolve(agentsSection);
+  const agents = await config.resolve("agents");
 
   const templates = await getSkillTemplates({ agents });
 
@@ -84,7 +80,7 @@ export default async function (name?: string): Promise<void> {
   await addAgentSkills(
     {
       filesystem: config.context.filesystem,
-      agents: await config.resolve(agentsSection),
+      agents: await config.resolve("agents"),
     },
     names,
   );
