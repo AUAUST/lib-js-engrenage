@@ -143,17 +143,55 @@ describe("createProjectConfig", () => {
   test("rejects a listed extension whose slot entries are not a list, naming the path", () => {
     expect(() => {
       return createConfig({
-        extensions: [{ name: "x", contributes: { "sync.targets": {} } }],
+        extensions: [
+          {
+            name: "x",
+            contributes: {
+              "sync.targets": {},
+            },
+          },
+        ],
       });
-    }).toThrow(/Invalid extensions config[\s\S]*at 0\.contributes\.sync\.targets/u);
+    }).toThrow(
+      /Invalid extensions config[\s\S]*at 0\.contributes\.sync\.targets/u,
+    );
   });
 
   test("rejects a listed extension owning a key without load, naming the path", () => {
     expect(() => {
       return createConfig({
-        extensions: [{ name: "x", owns: { keys: { x: {} } } }],
+        extensions: [
+          {
+            name: "x",
+            owns: {
+              keys: {
+                x: {},
+              },
+            },
+          },
+        ],
       });
     }).toThrow(/Invalid extensions config[\s\S]*at 0\.owns\.keys\.x\.load/u);
+  });
+
+  test("keeps every field of a listed extension's contributed entries", () => {
+    const entry = {
+      name: "entry",
+      flags: { mode: "strict" },
+      load() {
+        return Promise.resolve(undefined);
+      },
+    };
+
+    const extension = {
+      name: "x",
+      contributes: { "test.entries": [entry] },
+    };
+
+    expect(
+      createConfig({ extensions: [slotOwner, extension] }).context.registry
+        .extensions,
+    ).toContainEqual(extension);
   });
 
   test("refuses the keys of an inactive owner on read, still validating their input", async () => {

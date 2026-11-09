@@ -1,10 +1,12 @@
 import {
   array,
+  check,
   custom,
+  exactOptional,
+  intersect,
   literal,
   looseObject,
   objectWithRest,
-  optional,
   pipe,
   record,
   string,
@@ -13,7 +15,6 @@ import {
 
 import { isFunction } from "@auaust/toolkit/isFunction";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
-import { isString } from "@auaust/toolkit/isString";
 
 import type { SlotDeclaration } from "#foundation/extensions/index";
 import type { Extension } from "#project/config/types/Extension";
@@ -28,19 +29,19 @@ function isCallable(input: unknown): boolean {
   return isFunction(input);
 }
 
-function isPartKey(input: unknown): boolean {
-  return isString(input) && input.includes("#");
+function isPartKey(input: string): boolean {
+  return input.includes("#");
 }
 
 const objectSchema = looseObject({});
 
 const ownsSchema: GenericSchema<unknown, Owned> = objectWithRest(
   {
-    keys: optional(
+    keys: exactOptional(
       record(
         string(),
         looseObject({
-          input: optional(string()),
+          input: exactOptional(string()),
           load: custom<KeyDeclaration["load"]>(
             isCallable,
             "Expected a load function",
@@ -48,13 +49,13 @@ const ownsSchema: GenericSchema<unknown, Owned> = objectWithRest(
         }),
       ),
     ),
-    slots: optional(
+    slots: exactOptional(
       record(
         string(),
         custom<SlotDeclaration>(isPlainObject, "Expected a slot declaration"),
       ),
     ),
-    files: optional(
+    files: exactOptional(
       record(
         string(),
         looseObject({
@@ -65,9 +66,9 @@ const ownsSchema: GenericSchema<unknown, Owned> = objectWithRest(
         }),
       ),
     ),
-    parts: optional(
+    parts: exactOptional(
       record(
-        custom<`${string}#${string}`>(isPartKey, "Expected a key holding #"),
+        pipe(string(), check(isPartKey, "Expected a key holding #")),
         literal(true),
       ),
     ),
@@ -76,25 +77,28 @@ const ownsSchema: GenericSchema<unknown, Owned> = objectWithRest(
 );
 
 // @debt contributed entries are typed as their slot's entries although only their `load` is checked here; the slot's entry validator checks the rest at collection
-const contributesSchema = pipe(
+const contributesSchema = intersect([
+  custom<Contributed>(isPlainObject),
   record(
     string(),
     array(
       looseObject({
-        load: optional(
-          custom<() => Promise<unknown>>(isCallable, "Expected a load function"),
+        load: exactOptional(
+          custom<() => Promise<unknown>>(
+            isCallable,
+            "Expected a load function",
+          ),
         ),
       }),
     ),
   ),
-  custom<Contributed>(isPlainObject),
-);
+]);
 
 export const extensionSchema: GenericSchema<unknown, Extension> = looseObject({
   name: string(),
-  title: optional(string()),
-  requires: optional(array(string())),
-  when: optional(looseObject({ installed: string() })),
-  owns: optional(ownsSchema),
-  contributes: optional(contributesSchema),
+  title: exactOptional(string()),
+  requires: exactOptional(array(string())),
+  when: exactOptional(looseObject({ installed: string() })),
+  owns: exactOptional(ownsSchema),
+  contributes: exactOptional(contributesSchema),
 });

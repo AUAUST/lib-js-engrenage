@@ -2,5 +2,5 @@ import type { ValidationIssue } from "#foundation/extensions/types/ValidationIss
 
 export interface ValidationResult {
   readonly value?: unknown;
-  readonly issues?: readonly ValidationIssue[];
+  readonly issues?: readonly ValidationIssue[] | undefined;
 }
