@@ -7,14 +7,14 @@ export default {
   contributes: {
     "gate.steps": [
       {
-        name: "vitest related",
+        name: "vitest",
         stage: "checks",
         audience: "agents",
         async load() {
-          const { runRelatedTests } =
-            await import("#tools/vitest/operations/runRelatedTests");
+          const { runGateTests } =
+            await import("#tools/vitest/operations/runGateTests");
 
-          return runRelatedTests;
+          return runGateTests;
         },
       },
     ],
