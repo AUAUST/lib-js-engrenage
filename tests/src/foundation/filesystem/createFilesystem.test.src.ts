@@ -28,6 +28,11 @@ describe("createFilesystem", () => {
       "unchanged.txt",
     ]);
 
+    expect(await filesystem.glob("**/*.txt", { exclude: ["nested"] })).toEqual([
+      "existing.txt",
+      "unchanged.txt",
+    ]);
+
     expect(existsSync(project.resolve("nested/created.txt"))).toBe(false);
 
     expect(await filesystem.flush()).toEqual([

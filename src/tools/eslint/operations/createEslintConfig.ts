@@ -99,14 +99,14 @@ export async function createEslintConfig(
   const configs: MaybeArray<Config>[] = [];
 
   if (ignore) {
-    const resources = await config.resolve("resources");
+    const [resources, git] = await Promise.all([
+      config.resolve("resources"),
+      config.resolve("git"),
+    ]);
 
     configs.push(
       createIgnoreRules({
-        gitignorePath:
-          resources.get("gitignore") === undefined
-            ? undefined
-            : resources.path("gitignore"),
+        ignoreFiles: await git.ignoreFiles,
         ignored: [
           ...flatMap(resources.list({ committed: false }), ({ location }) => {
             return listLocationGlobs(location);

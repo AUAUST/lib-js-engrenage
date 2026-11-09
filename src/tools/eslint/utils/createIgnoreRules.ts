@@ -1,17 +1,15 @@
 import { defineConfig, globalIgnores, includeIgnoreFile } from "eslint/config";
 
 import type { Config } from "#tools/eslint/types/Config";
-import type { File } from "#types/File";
+import type { Files } from "#types/Files";
 import type { Globs } from "#types/Globs";
 
 export function createIgnoreRules(config: {
-  gitignorePath: File | undefined;
+  ignoreFiles: Files;
   ignored: Globs;
 }): Config[] {
   return defineConfig([
-    ...(config.gitignorePath === undefined
-      ? []
-      : [includeIgnoreFile(config.gitignorePath)]),
+    includeIgnoreFile([...config.ignoreFiles], { gitignoreResolution: true }),
     globalIgnores([...config.ignored]),
   ]);
 }

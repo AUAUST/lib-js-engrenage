@@ -1823,6 +1823,27 @@ export async function run(): Promise<unknown> {
     expect(await unignored.isPathIgnored("src/ignored.ts")).toBe(false);
   });
 
+  test("scopes nested gitignore patterns to their own directory", async () => {
+    const project = createTemporaryProject({
+      "engrenage.config.ts": "export default {};\n",
+      "package.json": JSON.stringify({ type: "module" }),
+      ".gitignore": "/root.ts\n*.local.ts\n",
+      "src/nested/.gitignore": "/skipped.ts\n",
+    });
+
+    const eslint = new ESLint({
+      cwd: project.root,
+      overrideConfigFile: true,
+      overrideConfig: await createEslintConfig(await loadConfig(project.root)),
+    });
+
+    expect(await eslint.isPathIgnored("src/nested/skipped.ts")).toBe(true);
+    expect(await eslint.isPathIgnored("src/skipped.ts")).toBe(false);
+    expect(await eslint.isPathIgnored("root.ts")).toBe(true);
+    expect(await eslint.isPathIgnored("src/nested/root.ts")).toBe(false);
+    expect(await eslint.isPathIgnored("src/nested/a.local.ts")).toBe(true);
+  });
+
   test("ignores the resolved tests.fixtures globs", async () => {
     const config = await loadConfig(root);
 

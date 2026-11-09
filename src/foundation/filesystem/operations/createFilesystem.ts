@@ -39,6 +39,16 @@ async function restore({ path, original }: Backup) {
   }
 }
 
+function isExcluded(file: File, exclude: Globs): boolean {
+  const segments = file.split("/");
+
+  return segments.some((_, index) => {
+    const path = segments.slice(0, index + 1).join("/");
+
+    return exclude.some((pattern) => matchesGlob(path, pattern));
+  });
+}
+
 export function createFilesystem(root: Directory) {
   const contents = new Map<File, string | undefined>();
   const originals = new Map<File, string | undefined>();
@@ -105,20 +115,28 @@ export function createFilesystem(root: Directory) {
     return stage(file, undefined);
   }
 
-  async function glob(patterns: Glob | Globs): Promise<Files> {
+  async function glob(
+    patterns: Glob | Globs,
+    options?: { exclude?: Globs },
+  ): Promise<Files> {
     const globs = wrap(patterns);
+    const exclude = options?.exclude ?? [];
 
     const found = map(
       await Array.fromAsync(
         globFiles(globs, {
           cwd: root,
+          exclude: [...exclude],
         }),
       ),
       toPosixPath,
     );
 
     const created = originals.keys().filter((file) => {
-      return globs.some((pattern) => matchesGlob(file, pattern));
+      return (
+        globs.some((pattern) => matchesGlob(file, pattern)) &&
+        !isExcluded(file, exclude)
+      );
     });
 
     return sort(deduplicate([...found, ...created])).filter((file) => {
