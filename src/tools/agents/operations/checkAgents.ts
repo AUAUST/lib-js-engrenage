@@ -20,8 +20,12 @@ export async function checkAgents(
   const agents = await config.resolve("agents");
 
   const preferred = agents.preferred ?? [];
-  const { filesystem, root } = config.context;
+
   const findings: AgentCheckFinding[] = [];
+
+  if (preferred.length === 0) {
+    return findings;
+  }
 
   function add(
     agent: Agent,
@@ -35,9 +39,7 @@ export async function checkAgents(
     });
   }
 
-  if (preferred.length === 0) {
-    return findings;
-  }
+  const { filesystem, root } = config.context;
 
   const templates = await getSkillTemplates({ agents });
 
