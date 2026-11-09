@@ -6,12 +6,7 @@ import { flatMap } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
-import {
-  arethetypeswrongCore,
-  packageJsonFile,
-  publint,
-  tsdown,
-} from "#constants";
+import { arethetypeswrongCore, packageJsonFile, publint } from "#constants";
 import { readJsonFile, resolveWithin } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
 import { emittedManifestFile } from "#project/build/constants";
@@ -165,7 +160,7 @@ export async function createTsdownConfig(
 
   const environment = await config.resolve("environment");
 
-  const cache = await config.resolve("cache");
+  const resources = await config.resolve("resources");
 
   return {
     cwd: root,
@@ -219,7 +214,7 @@ export async function createTsdownConfig(
       ),
       ...(clean === "emitted"
         ? createEmittedManifestPlugins(`${pluginPrefix}:emitted-manifest`, {
-            manifest: join(cache.for(tsdown), emittedManifestFile),
+            manifest: join(resources.path("cache.tsdown"), emittedManifestFile),
             outDir: resolveWithin(root, outDir),
           })
         : []),

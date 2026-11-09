@@ -1,4 +1,4 @@
-import type { Extension } from "#project/config/index";
+import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "project/build",
@@ -20,6 +20,17 @@ export default {
             await import("#project/build/config/sections/buildOutDirSection");
 
           return buildOutDirSection;
+        },
+      },
+    },
+    files: {
+      "build.outDir": {
+        title: "Output",
+        committed: false,
+        async locate(config): Promise<FileLocation | undefined> {
+          const directory = await config.resolve("build.outDir");
+
+          return directory === undefined ? undefined : { directory };
         },
       },
     },

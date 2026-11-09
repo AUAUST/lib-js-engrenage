@@ -16,7 +16,7 @@ export async function checkAgentStop(
 
   const { root } = config.context;
 
-  const cache = await config.resolve("cache");
+  const resources = await config.resolve("resources");
 
   const key = createHash("sha256")
     .update(
@@ -24,7 +24,7 @@ export async function checkAgentStop(
     )
     .digest("hex");
 
-  const marker = resolveWithin(root, cache.for("gate"), "stops", key);
+  const marker = resolveWithin(resources.path("cache.gate"), "stops", key);
 
   if (failures.length === 0) {
     return void (await rm(marker, { force: true }));

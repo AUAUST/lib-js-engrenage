@@ -1,4 +1,4 @@
-import type { Extension } from "#project/config/index";
+import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "project/environments",
@@ -114,6 +114,17 @@ export default {
             await import("#project/environments/config/sections/runtimeSection");
 
           return runtimeSection;
+        },
+      },
+    },
+    files: {
+      coverage: {
+        title: "Coverage",
+        committed: false,
+        async locate(config): Promise<FileLocation> {
+          const { coverageDir } = await config.resolve("tests");
+
+          return { directory: coverageDir };
         },
       },
     },

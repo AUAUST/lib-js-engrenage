@@ -21,4 +21,4 @@ export const targetBrowsers: Readonly<Record<string, string>> = freeze({
   safari_ios: "ios",
 });
 
-export { project as pluginPrefix } from "#constants";
+export { project as pluginPrefix, tsdown } from "#constants";

@@ -1,4 +1,5 @@
-import type { Extension } from "#project/config/index";
+import { packageJsonFile } from "#project/package/constants";
+import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "project/package",
@@ -35,6 +36,14 @@ export default {
             await import("#project/package/config/sections/visibilitySection");
 
           return visibilitySection;
+        },
+      },
+    },
+    files: {
+      "package.json": {
+        parts: true,
+        async locate(): Promise<FileLocation> {
+          return { file: packageJsonFile };
         },
       },
     },

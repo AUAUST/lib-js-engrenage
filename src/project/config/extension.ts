@@ -13,6 +13,14 @@ export default {
           return extensionsSection;
         },
       },
+      resources: {
+        async load() {
+          const { resourcesSection } =
+            await import("#project/config/config/sections/resourcesSection");
+
+          return resourcesSection;
+        },
+      },
     },
   },
 } satisfies Extension;

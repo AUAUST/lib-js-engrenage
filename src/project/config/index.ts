@@ -9,12 +9,16 @@ export * from "#project/config/types/EngrenageSlots";
 export * from "#project/config/types/Environment";
 export * from "#project/config/types/Extension";
 export * from "#project/config/types/ExtensionSections";
+export * from "#project/config/types/FileLocation";
+export * from "#project/config/types/FileResource";
 export * from "#project/config/types/GlobalScope";
 export * from "#project/config/types/KeyDeclaration";
 export * from "#project/config/types/LoadedConfig";
+export * from "#project/config/types/LocatedResource";
 export * from "#project/config/types/RawConfig";
 export * from "#project/config/types/ResolvedGlobal";
 export * from "#project/config/types/ResolvedGlobals";
+export * from "#project/config/types/ResolvedResources";
 export * from "#project/config/types/ResolvedRuntimeSettings";
 export * from "#project/config/types/SectionsOf";
 // @end
@@ -29,6 +33,7 @@ export { validateConfig } from "#project/config/operations/validateConfig";
 
 // @barrel utils/*.ts named
 export { assertSerializable } from "#project/config/utils/assertSerializable";
+export { checkFileParts } from "#project/config/utils/checkFileParts";
 export { isDefinition } from "#project/config/utils/isDefinition";
 export { isValidDefinition } from "#project/config/utils/isValidDefinition";
 export { locateFile } from "#project/config/utils/locateFile";
@@ -39,6 +44,7 @@ export { serialize } from "#project/config/utils/serialize";
 
 // @barrel config/sections/*.ts named
 export { extensionsSection } from "#project/config/config/sections/extensionsSection";
+export { resourcesSection } from "#project/config/config/sections/resourcesSection";
 // @end
 
 // @barrel config/schemas/*.ts named

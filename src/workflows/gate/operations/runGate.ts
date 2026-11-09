@@ -30,8 +30,6 @@ import type { GateStep } from "#workflows/gate/types/GateStep";
 import type { GateWarning } from "#workflows/gate/types/GateWarning";
 import type { TreeIdentity } from "#workflows/gate/types/TreeIdentity";
 
-const cacheName = "gate";
-
 const stampFile = "passed";
 
 const stampLimit = 20;
@@ -256,9 +254,9 @@ async function verify(
     return { failures: [], warnings: [] };
   }
 
-  const cache = await config.resolve("cache");
+  const resources = await config.resolve("resources");
 
-  const stamp = resolveWithin(root, cache.for(cacheName), stampFile);
+  const stamp = resolveWithin(resources.path("cache.gate"), stampFile);
 
   const stamps = await readStamps(stamp);
 
@@ -327,9 +325,9 @@ export async function runGate(
     };
   }
 
-  const cache = await config.resolve("cache");
+  const resources = await config.resolve("resources");
 
-  const lock = resolveWithin(root, cache.for(cacheName), lockFile);
+  const lock = resolveWithin(resources.path("cache.gate"), lockFile);
 
   const label = lockLabels[mode];
 

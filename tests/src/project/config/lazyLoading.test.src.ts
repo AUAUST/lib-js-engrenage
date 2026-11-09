@@ -52,6 +52,17 @@ describe("lazy loading", () => {
     expect(checked.filter((file) => !allowed.test(file))).toEqual([]);
   });
 
+  test("loads no tool engine while locating the file resources", async () => {
+    const files = await recordLoadedFiles(
+      `const { loadConfig } = await import("#project/config/index");\nconst config = await loadConfig(${JSON.stringify(getFixture("projects/external"))}, { searchParents: false });\nawait config.resolve("resources");`,
+    );
+
+    const engines =
+      /^src\/tools\/[^/]+\/(?:setup|adapters|plugins|conventions|rules)\/|(?:^|\/)node_modules\/(?:eslint|prettier|tsdown|vite|jscpd)\//u;
+
+    expect(files.filter((file) => engines.test(file))).toEqual([]);
+  });
+
   test.each(entries(definers))(
     "loads no other tool's engine with the %s definer",
     async (tool, definer) => {

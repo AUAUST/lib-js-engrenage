@@ -15,6 +15,7 @@ export default {
   extensions: [
     {
       name: "external-fixture",
+      title: "External fixture",
       owns: {
         keys: {
           externalFixture: {
@@ -23,6 +24,12 @@ export default {
           },
         },
         slots: { "externalFixture.entries": {} },
+        files: {
+          "externalFixture.output": {
+            committed: false,
+            locate: async () => ({ directory: "external-output" }),
+          },
+        },
       },
     },
   ],

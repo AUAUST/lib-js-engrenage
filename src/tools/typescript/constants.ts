@@ -14,3 +14,5 @@ export const typescriptBlocks = freeze({
   close: "",
   padding: "\n",
 } as const) satisfies BlockSyntax;
+
+export { typescript } from "#constants";

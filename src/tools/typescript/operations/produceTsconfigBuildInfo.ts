@@ -1,7 +1,6 @@
 import { relative } from "node:path";
 import { basename } from "node:path/posix";
 
-import { typescript } from "#constants";
 import { toPosixPath } from "#foundation/filesystem/index";
 import {
   toTsconfigSpecifier,
@@ -18,10 +17,10 @@ export async function produceTsconfigBuildInfo(
     return [];
   }
 
-  const cache = await config.resolve("cache");
+  const resources = await config.resolve("resources");
 
   const cacheDirectory = toPosixPath(
-    relative(config.context.root, cache.for(typescript)),
+    relative(config.context.root, resources.path("cache.typescript")),
   );
 
   const buildInfo = `${cacheDirectory}/${basename(file, ".json")}.tsbuildinfo`;

@@ -1,6 +1,6 @@
 import { join } from "node:path";
 
-import { project as pluginPrefix, vite } from "#constants";
+import { project as pluginPrefix } from "#constants";
 import { resolveWithin } from "#foundation/filesystem/index";
 import { emittedManifestFile } from "#project/build/constants";
 import { createDefine } from "#project/environments/index";
@@ -20,7 +20,7 @@ export async function createViteConfig(
 
   const tsconfig = await config.resolve("tsconfigPath");
 
-  const cache = await config.resolve("cache");
+  const resources = await config.resolve("resources");
 
   return {
     root,
@@ -36,7 +36,7 @@ export async function createViteConfig(
       ? {
           plugins: [
             createEmittedManifestPlugin(`${pluginPrefix}:emitted-manifest`, {
-              manifest: join(cache.for(vite), emittedManifestFile),
+              manifest: join(resources.path("cache.vite"), emittedManifestFile),
               outDir: resolveWithin(root, outDir),
             }),
           ],

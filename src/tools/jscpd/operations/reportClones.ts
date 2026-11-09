@@ -25,9 +25,9 @@ export async function reportClones(
     return;
   }
 
-  const cache = await config.resolve("cache");
+  const resources = await config.resolve("resources");
 
-  const directory = resolveWithin(root, cache.for(packages.jscpd));
+  const directory = resources.path("cache.jscpd");
 
   await mkdir(directory, { recursive: true });
 

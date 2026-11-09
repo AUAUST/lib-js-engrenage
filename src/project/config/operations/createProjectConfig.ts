@@ -13,6 +13,7 @@ import {
   type KeyedSection,
 } from "#foundation/options/index";
 import { extensionsSchema } from "#project/config/config/schemas/extensionsSchema";
+import { checkFileParts } from "#project/config/utils/checkFileParts";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { ConfigSections } from "#project/config/types/ConfigSections";
 import type { Extension } from "#project/config/types/Extension";
@@ -63,6 +64,8 @@ export function createProjectConfig({
       explainInactive,
     },
   );
+
+  checkFileParts(registry);
 
   function explainInactive({ when }: Extension): string | undefined {
     return when === undefined ? undefined : `install ${when.installed}`;

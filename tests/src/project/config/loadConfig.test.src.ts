@@ -252,6 +252,24 @@ describe("loadConfig", () => {
     });
   });
 
+  test("locates the file resources of a listed extension and of the built-ins", async () => {
+    const fixture = getFixture("projects/external");
+
+    const config = await loadConfig(fixture, { searchParents: false });
+
+    const resources = await config.resolve("resources");
+
+    expect(resources.get("externalFixture.output")).toMatchObject({
+      owner: "external-fixture",
+      title: "External fixture",
+      committed: false,
+    });
+
+    expect(resources.path("cache.gate")).toBe(
+      join(fixture, "node_modules/.cache/gate"),
+    );
+  });
+
   test("validates the input of a listed extension's key", async () => {
     const fixture = getFixture("projects/external");
 

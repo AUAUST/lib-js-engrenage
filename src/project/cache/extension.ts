@@ -1,4 +1,4 @@
-import type { Extension } from "#project/config/index";
+import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "project/cache",
@@ -11,6 +11,17 @@ export default {
             await import("#project/cache/config/sections/cacheSection");
 
           return cacheSection;
+        },
+      },
+    },
+    files: {
+      cache: {
+        title: "Cache",
+        committed: false,
+        async locate(config): Promise<FileLocation> {
+          const { dir } = await config.resolve("cache");
+
+          return { directory: dir };
         },
       },
     },
