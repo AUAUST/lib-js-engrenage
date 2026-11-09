@@ -24,13 +24,13 @@ describe("loadConfig", () => {
     const config = await loadConfig(project.resolve("src/nested"));
 
     expect(config.context.root).toBe(project.root);
-    expect(await config.resolve("preset")).toBe("library");
+    expect(await config.resolve("preset")).toMatchObject({ name: "library" });
     expect(await config.resolve("traits")).toEqual({ published: true });
 
     const inner = await loadConfig(project.resolve("packages/inner/src"));
 
     expect(inner.context.root).toBe(project.resolve("packages/inner"));
-    expect(await inner.resolve("preset")).toBeUndefined();
+    expect(await inner.resolve("preset")).toBe(false);
   });
 
   test("resolves a callback config, replaces defaults, appends generated files and infers project values", async () => {
@@ -38,7 +38,7 @@ describe("loadConfig", () => {
 
     const config = await loadConfig(root);
 
-    expect(await config.resolve("preset")).toBe("library");
+    expect(await config.resolve("preset")).toMatchObject({ name: "library" });
     expect(await config.resolve("traits")).toEqual({ published: true });
     expect((await config.resolve("tests")).dirs).toEqual(["test"]);
 
@@ -225,7 +225,10 @@ describe("loadConfig", () => {
 
     expect(refreshed).not.toBe(config);
     expect(refreshed.context.filesystem).not.toBe(config.context.filesystem);
-    expect(await refreshed.resolve("preset")).toBe("library");
+
+    expect(await refreshed.resolve("preset")).toMatchObject({
+      name: "library",
+    });
   });
 
   test("registers a listed extension after every built-in", async () => {

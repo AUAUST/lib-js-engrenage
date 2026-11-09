@@ -49,7 +49,7 @@ describe("filesystem.format", () => {
     await config.context.filesystem.format((path, content) => {
       return formatWithPrettier(content, {
         path,
-        root: project.root,
+        config,
       });
     });
 
@@ -73,6 +73,12 @@ describe("filesystem.format", () => {
 
     const filesystem = createFilesystem(project.root);
 
+    const config = createProjectConfig({
+      root: project.root,
+      raw: {},
+      configFile: undefined,
+    });
+
     project.write("data.json", '{\n  "list": ["a"]\n}\n');
 
     await filesystem.write("data.json", '{\n  "list": [\n    "a"\n  ]\n}\n');
@@ -80,7 +86,7 @@ describe("filesystem.format", () => {
     await filesystem.format((path, content) => {
       return formatWithPrettier(content, {
         path,
-        root: project.root,
+        config,
       });
     });
 
@@ -92,12 +98,18 @@ describe("filesystem.format", () => {
 
     const filesystem = createFilesystem(project.root);
 
+    const config = createProjectConfig({
+      root: project.root,
+      raw: {},
+      configFile: undefined,
+    });
+
     await filesystem.write("data.json", '{\n  "list": [\n    "a"\n  ]\n}\n');
 
     await filesystem.format((path, content) => {
       return formatWithPrettier(content, {
         path,
-        root: project.root,
+        config,
       });
     });
 

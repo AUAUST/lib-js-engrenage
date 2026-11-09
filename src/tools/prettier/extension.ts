@@ -1,3 +1,4 @@
+import { prettier } from "#tools/prettier/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
@@ -27,6 +28,18 @@ export default {
     },
   },
   contributes: {
+    "format.formatters": [
+      {
+        name: prettier,
+        package: prettier,
+        async load() {
+          const { formatWithPrettier } =
+            await import("#tools/prettier/adapters/formatWithPrettier");
+
+          return formatWithPrettier;
+        },
+      },
+    ],
     "sync.targets": [
       {
         name: "prettierignore",
@@ -42,3 +55,9 @@ export default {
     ],
   },
 } satisfies Extension;
+
+declare global {
+  interface EngrenageFormatters {
+    prettier: true;
+  }
+}

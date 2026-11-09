@@ -4,7 +4,7 @@ import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
 import type { LoadedConfig } from "#project/config/index";
-import type { SyncOption } from "#workflows/sync/types/SyncOption";
+import type { SyncOption } from "#project/sync/types/SyncOption";
 
 export async function listSyncOptions(config: LoadedConfig): Promise<{
   targets: readonly string[];

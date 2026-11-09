@@ -1,4 +1,5 @@
-import { agentNames } from "#tools/agents/constants";
+import { map } from "@auaust/primitive-kit/arrays";
+
 import type { Step } from "#project/steps/index";
 
 export function createPreferredAgentsStep(): Step {
@@ -7,19 +8,24 @@ export function createPreferredAgentsStep(): Step {
     isMissing({ getAgents }) {
       return getAgents() === undefined;
     },
-    async plan({ context, multiselect, setAgents }) {
-      const configFile = context.configFile;
+    async plan(step) {
+      const { context, multiselect, setAgents } = step;
+
+      const runtimes = await context.registry.contributions(
+        "agents.runtimes",
+        step,
+      );
 
       const chosen = await multiselect(
         "Which coding agents do you use?",
-        agentNames,
+        map(runtimes, ({ entry }) => entry.name),
       );
 
       setAgents(chosen);
 
-      if (configFile !== undefined) {
+      if (context.configFile !== undefined) {
         console.info(
-          `Add agents.preferred: ${JSON.stringify(chosen)} to ${configFile} to persist the preferences.`,
+          `Add agents.preferred: ${JSON.stringify(chosen)} to ${context.configFile} to persist the preferences.`,
         );
       }
     },

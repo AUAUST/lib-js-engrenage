@@ -1,9 +1,8 @@
 import { describe, expect, test } from "vitest";
 
 import { createProjectConfig } from "#project/config/index";
+import { runSync, type SyncDone } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { runSync } from "#workflows/sync/index";
-import type { SyncDone } from "#project/sync/index";
 
 function createTarget(
   name: string,

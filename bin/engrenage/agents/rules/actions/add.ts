@@ -1,8 +1,8 @@
 import { cancel, isCancel, multiselect } from "@clack/prompts";
 
+import { settleChanges } from "#project/sync/index";
 import { addAgentRules, getMissingRuleTemplates } from "#tools/agents/index";
 import { loadValidatedConfig } from "#workflows/config/index";
-import { settleChanges } from "#workflows/sync/index";
 
 export default async function (name?: string): Promise<void> {
   const config = await loadValidatedConfig();

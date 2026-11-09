@@ -5,8 +5,10 @@ import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
 
 export const traitsSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ResolvedTraits> {
+    const preset = await config.resolve("preset");
+
     return resolveTraits(
-      await config.resolve("preset"),
+      preset === false ? [] : preset.traits,
       await config.resolve("traits.adjustments"),
     );
   },

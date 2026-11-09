@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 
+import { successMessage } from "#constants";
 import { resolveBinary } from "#foundation/processes/index";
-import { successMessage } from "#workflows/cli/constants";
 import { runContext } from "#workflows/cli/operations/runContext";
 import { loadValidatedConfig } from "#workflows/config/index";
 import type { File } from "#types/File";

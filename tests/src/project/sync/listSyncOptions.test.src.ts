@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/index";
+import { listSyncOptions } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { listSyncOptions } from "#workflows/sync/index";
 
 async function listTargets(
   devDependencies: Readonly<Record<string, string>>,

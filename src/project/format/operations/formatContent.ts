@@ -1,15 +1,15 @@
+import type { LoadedConfig } from "#project/config/index";
 import type { Formatter } from "#project/format/ports/Formatter";
-import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
-// @debt callers must pass the formatter because `project` cannot import `tools`; the plan's `formatContent(content, { path, root })` needs the adapter bound somewhere
+// @debt callers pass the formatter although `format.formatter` selects one from the config
 export async function formatContent(
   content: string,
   {
     path,
-    root,
+    config,
     formatter,
-  }: { path: File; root: Directory; formatter: Formatter },
+  }: { path: File; config: LoadedConfig; formatter: Formatter },
 ): Promise<string> {
-  return (await formatter(content, { path, root })) ?? content;
+  return (await formatter(content, { path, config })) ?? content;
 }

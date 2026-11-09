@@ -28,7 +28,7 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ roles*  Declare role contracts and presets.
 │  ├─ steps  Contracts and helpers for project initialization steps.
 │  ├─ structure  Resolve project structure and enforce its boundaries.
-│  ├─ sync  Contract of the targets sync runs.
+│  ├─ sync  Run the sync targets and settle the files they change.
 │  ├─ tsconfig  Compose TypeScript project configurations.
 │  └─ workspaces  Resolve workspace groups and their projects.
 ├─ tools/  #tools/…  One domain per external tool, holding its adapters.
@@ -54,5 +54,5 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
    ├─ config*  Compose and validate the complete project configuration.
    ├─ gate  Coordinate commit and agent verification gates.
    ├─ init  Initialize projects through ordered setup steps.
-   └─ sync  Synchronize generated project files.
+   └─ sync  Sync the package manifest and check its publishing.
 ```

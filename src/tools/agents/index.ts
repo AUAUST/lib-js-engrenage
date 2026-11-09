@@ -10,6 +10,7 @@ export {
   syncCodexFiles,
 } from "#tools/agents/codex/index";
 export { agentShellVariables } from "#tools/agents/constants";
+export { filterAgents } from "#tools/agents/utils/filterAgents";
 export { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 export { isHookCommand } from "#tools/agents/utils/isHookCommand";
 export { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
@@ -53,6 +54,10 @@ export { reportSyncedAgentChecks } from "#tools/agents/operations/reportSyncedAg
 export { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 export { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 export { syncHooks } from "#tools/agents/operations/syncHooks";
+// @end
+
+// @barrel ports/*.ts all
+export * from "#tools/agents/ports/AgentRuntime";
 // @end
 
 // @barrel config/schemas/*.ts named

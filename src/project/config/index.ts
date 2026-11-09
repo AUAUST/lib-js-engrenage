@@ -28,6 +28,7 @@ export { createProjectConfig } from "#project/config/operations/createProjectCon
 export { loadConfig } from "#project/config/operations/loadConfig";
 export { loadValidatedConfig } from "#project/config/operations/loadValidatedConfig";
 export { readRawConfig } from "#project/config/operations/readRawConfig";
+export { selectEntry } from "#project/config/operations/selectEntry";
 export { validateConfig } from "#project/config/operations/validateConfig";
 // @end
 

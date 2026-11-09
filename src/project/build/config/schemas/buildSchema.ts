@@ -5,7 +5,9 @@ import {
   declare,
   declareObject,
   directorySchema,
+  unset,
 } from "#foundation/options/index";
+import { buildToolNameSchema } from "#project/build/config/schemas/buildToolNameSchema";
 import { defaultBuildClean, defaultSourcemap } from "#project/build/constants";
 import type { ResolvedDefine } from "#project/environments/index";
 import type { Tsconfig } from "#project/tsconfig/index";
@@ -18,6 +20,16 @@ interface OutDirContext {
 
 export const buildSchema = declareObject(
   {
+    tool: declare(buildToolNameSchema, {
+      description: [
+        "Build tool of the project, among those its extensions contribute (`tsdown` and `vite` when installed).",
+        "`false` selects none.",
+      ],
+      optional: unset(
+        "the only active build tool, none when no build tool is active; resolving it fails when several are",
+      ),
+      disable: { value: false },
+    }),
     outDir: declare(directorySchema, {
       description:
         "Output directory of tsdown and Vite, ignored by Git and ESLint and listed in the published `files` of `package.json`.",

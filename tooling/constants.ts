@@ -64,7 +64,7 @@ export const sourceDomains = freeze({
     purpose: "Resolve project structure and enforce its boundaries.",
   },
   "project/sync": {
-    purpose: "Contract of the targets sync runs.",
+    purpose: "Run the sync targets and settle the files they change.",
   },
   "project/tsconfig": {
     purpose: "Compose TypeScript project configurations.",
@@ -136,7 +136,7 @@ export const sourceDomains = freeze({
     purpose: "Initialize projects through ordered setup steps.",
   },
   "workflows/sync": {
-    purpose: "Synchronize generated project files.",
+    purpose: "Sync the package manifest and check its publishing.",
   },
 } as const);
 

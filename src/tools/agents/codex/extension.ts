@@ -19,6 +19,7 @@ export default {
     },
   },
   contributes: {
+    "agents.runtimes": [{ name: "codex", title: "Codex" }],
     "sync.targets": [
       {
         name: codexTarget,
@@ -37,3 +38,9 @@ export default {
     ],
   },
 } satisfies Extension;
+
+declare global {
+  interface EngrenageAgentRuntimes {
+    codex: true;
+  }
+}

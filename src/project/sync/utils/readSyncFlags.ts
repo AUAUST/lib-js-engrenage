@@ -1,8 +1,8 @@
 import { boolean, optional } from "valibot";
 
 import { validate } from "#foundation/options/index";
-import type { SyncOption } from "#workflows/sync/types/SyncOption";
-import type { SyncTargetFlags } from "#workflows/sync/types/SyncTargetFlags";
+import type { SyncOption } from "#project/sync/types/SyncOption";
+import type { SyncTargetFlags } from "#project/sync/types/SyncTargetFlags";
 
 export function readSyncFlags(
   options: readonly SyncOption[],

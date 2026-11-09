@@ -7,6 +7,8 @@ export const organization = "@auaust";
 
 export const project = "engrenage" as const;
 
+export const successMessage = "All good!";
+
 export const arethetypeswrongCore = "@arethetypeswrong/core";
 
 export const baselineBrowserMapping = "baseline-browser-mapping";

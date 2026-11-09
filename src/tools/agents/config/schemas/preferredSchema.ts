@@ -1,5 +1,3 @@
-import { array, picklist } from "valibot";
+import { array, string } from "valibot";
 
-import { agentNames } from "#tools/agents/constants";
-
-export const preferredSchema = array(picklist(agentNames));
+export const preferredSchema = array(string());

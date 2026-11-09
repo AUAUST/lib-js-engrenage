@@ -1,8 +1,12 @@
+import { buildToolEntry } from "#project/build/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "project/build",
   owns: {
+    slots: {
+      "build.tools": { cardinality: "one", entry: buildToolEntry },
+    },
     keys: {
       "build": {
         input: "build",
@@ -20,6 +24,15 @@ export default {
             await import("#project/build/config/sections/buildOutDirSection");
 
           return buildOutDirSection;
+        },
+      },
+      "build.tool": {
+        input: "build",
+        async load() {
+          const { buildToolSection } =
+            await import("#project/build/config/sections/buildToolSection");
+
+          return buildToolSection;
         },
       },
     },

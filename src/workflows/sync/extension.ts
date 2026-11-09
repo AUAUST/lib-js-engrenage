@@ -1,19 +1,7 @@
-import { syncDoneEntry, syncTargetEntry } from "#workflows/sync/constants";
 import type { Extension } from "#project/config/index";
-import type { SyncStage } from "#project/sync/index";
 
 export default {
   name: "workflows/sync",
-  owns: {
-    slots: {
-      "sync.targets": {
-        stages: ["write", "check"] satisfies readonly SyncStage[],
-        edges: { kinds: ["files", "parts"] },
-        entry: syncTargetEntry,
-      },
-      "sync.done": { kind: "hook", entry: syncDoneEntry },
-    },
-  },
   contributes: {
     "sync.targets": [
       {

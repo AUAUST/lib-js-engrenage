@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { runSync } from "#workflows/sync/index";
 
 const placeholder = "{dir}";
 

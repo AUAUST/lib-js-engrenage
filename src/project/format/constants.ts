@@ -1,3 +1,6 @@
+import { function_, looseObject, string } from "valibot";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
+
 import { freeze } from "@auaust/toolkit/object";
 
 import type { Conventions } from "#project/format/types/Conventions";
@@ -23,3 +26,10 @@ export const jsonIndentation = freeze({
   insertSpaces: conventions.indent === "spaces",
   tabSize: conventions.indentWidth,
 } as const);
+
+// @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
+export const formatterEntry: StandardSchemaV1 = looseObject({
+  name: string(),
+  package: string(),
+  load: function_(),
+});

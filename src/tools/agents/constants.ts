@@ -1,3 +1,6 @@
+import { looseObject, optional, string } from "valibot";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
+
 import { freeze } from "@auaust/toolkit/object";
 
 import { engrenage } from "#constants";
@@ -19,12 +22,16 @@ export const agentsTemplate = `${engrenage}/agents/templates/${agentsFile}`;
 
 export const agentsTarget = "agents";
 
-export const agentNames = freeze(["claude", "codex"] as const);
-
 // @debt Codex has no shell detector here, so its commits select only local-file checks instead of the full agent gate
 export const agentShellVariables = freeze({
   claude: claudeShellVariable,
 } as const) satisfies Partial<Record<Agent, string>>;
+
+// @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
+export const agentRuntimeEntry: StandardSchemaV1 = looseObject({
+  name: string(),
+  title: optional(string()),
+});
 
 export const backlogIndex = ".ai/backlog/index.md" satisfies File;
 

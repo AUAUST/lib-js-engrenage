@@ -1,7 +1,7 @@
 import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
+import { listSyncOptions } from "#project/sync/index";
 import { loadValidatedConfig } from "#workflows/config/index";
-import { listSyncOptions } from "#workflows/sync/index";
 
 export default async function (command: CommandUnknownOpts): Promise<void> {
   const argument = command.registeredArguments.find((candidate) => {

@@ -5,6 +5,7 @@ export * from "#project/build/types/ResolvedBuild";
 
 // @barrel config/schemas/*.ts named
 export { buildSchema } from "#project/build/config/schemas/buildSchema";
+export { buildToolNameSchema } from "#project/build/config/schemas/buildToolNameSchema";
 // @end
 
 // @barrel operations/*.ts named
@@ -18,4 +19,5 @@ export { createBuildToolStep } from "#project/build/setup/createBuildToolStep";
 // @barrel config/sections/*.ts named
 export { buildOutDirSection } from "#project/build/config/sections/buildOutDirSection";
 export { buildSection } from "#project/build/config/sections/buildSection";
+export { buildToolSection } from "#project/build/config/sections/buildToolSection";
 // @end

@@ -8,6 +8,7 @@ export { default as projectFormat } from "#project/format/extension";
 export { default as projectPackage } from "#project/package/extension";
 export { default as projectPresets } from "#project/presets/extension";
 export { default as projectStructure } from "#project/structure/extension";
+export { default as projectSync } from "#project/sync/extension";
 export { default as projectTsconfig } from "#project/tsconfig/extension";
 export { default as projectWorkspaces } from "#project/workspaces/extension";
 export { default as toolsAgents } from "#tools/agents/extension";

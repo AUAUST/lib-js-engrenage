@@ -3,6 +3,12 @@
 
 export interface BuildInput {
   /**
+   * Build tool of the project, among those its extensions contribute (`tsdown` and `vite` when installed).
+   * `false` selects none.
+   * @default the only active build tool, none when no build tool is active; resolving it fails when several are
+   */
+  tool?: ((false | keyof EngrenageBuildTools) | undefined)
+  /**
    * Output directory of tsdown and Vite, ignored by Git and ESLint and listed in the published `files` of `package.json`.
    * @default `compilerOptions.outDir` of the base tsconfig; building fails when neither is set
    */

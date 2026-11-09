@@ -1,7 +1,7 @@
 import { includes, map } from "@auaust/primitive-kit/arrays";
 
 import type { LoadedConfig } from "#project/config/index";
-import type { SyncTargetFlags } from "#workflows/sync/types/SyncTargetFlags";
+import type { SyncTargetFlags } from "#project/sync/types/SyncTargetFlags";
 
 export async function runSync(
   config: LoadedConfig,

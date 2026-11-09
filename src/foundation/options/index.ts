@@ -18,6 +18,7 @@ export { managedListOptionSchema } from "#foundation/options/config/schemas/mana
 // @end
 
 // @barrel utils/*.ts named
+export { applyInputDefaults } from "#foundation/options/utils/applyInputDefaults";
 export { createAccessors } from "#foundation/options/utils/createAccessors";
 export { createOptionSchema } from "#foundation/options/utils/createOptionSchema";
 export { createResolver } from "#foundation/options/utils/createResolver";

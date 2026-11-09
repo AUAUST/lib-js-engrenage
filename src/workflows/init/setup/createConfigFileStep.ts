@@ -1,19 +1,16 @@
 import { map, sort } from "@auaust/primitive-kit/arrays";
 import { startsWith } from "@auaust/primitive-kit/strings";
 import { isString } from "@auaust/toolkit/isString";
-import { keys } from "@auaust/toolkit/object";
 
 import { engrenage, engrenageConfigFile } from "#constants";
 import { findCurrentMonth } from "#project/baseline/index";
 import { visibilities } from "#project/package/constants";
-import { presetTraits } from "#project/presets/constants";
 import {
   createConfigModule,
   type Step,
   type StepContext,
 } from "#project/steps/index";
 import type { Visibility } from "#project/package/index";
-import type { Preset } from "#project/presets/index";
 
 // @debt the preset names are bare strings, unchecked against the exports of the `roles` package entry the generated config imports them from
 const sharedPresets = [
@@ -67,7 +64,7 @@ async function selectVisibility(context: StepContext): Promise<Visibility> {
 }
 
 function renderOptions(
-  chosen: Preset | undefined,
+  chosen: string | undefined,
   visibility: Visibility | undefined,
   agents: readonly string[] | undefined,
 ): string {
@@ -104,13 +101,17 @@ export function createConfigFileStep(): Step {
       );
     },
     async plan(context) {
-      const presets = keys(presetTraits);
-      const [fallback] = presets;
+      const contributions = await context.context.registry.contributions(
+        "presets",
+        context,
+      );
+
+      const presets = map(contributions, ({ entry }) => entry.name);
 
       const projectType = await context.select(
         "What kind of project is this?",
         [...presets, "other"],
-        context.getPreset() ?? fallback,
+        context.getPreset() ?? presets[0] ?? "other",
       );
 
       const chosen = presets.find((preset) => preset === projectType);

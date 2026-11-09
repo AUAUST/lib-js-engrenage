@@ -17,4 +17,13 @@ export default {
       },
     },
   },
+  contributes: {
+    "build.tools": [{ name: vite, package: vite }],
+  },
 } satisfies Extension;
+
+declare global {
+  interface EngrenageBuildTools {
+    vite: true;
+  }
+}

@@ -1,5 +1,5 @@
-import { isNotEmpty, map } from "@auaust/primitive-kit/arrays";
-import { freeze, values } from "@auaust/toolkit/object";
+import { includes, isNotEmpty, map } from "@auaust/primitive-kit/arrays";
+import { freeze, keys, values } from "@auaust/toolkit/object";
 
 import { collectExtensions } from "#foundation/extensions/index";
 import {
@@ -13,10 +13,12 @@ import {
   type KeyedSection,
 } from "#foundation/options/index";
 import { extensionsSchema } from "#project/config/config/schemas/extensionsSchema";
+import { unpresettable } from "#project/config/constants";
 import { checkFileParts } from "#project/config/utils/checkFileParts";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { ConfigResolver } from "#project/config/types/ConfigResolver";
 import type { ConfigSections } from "#project/config/types/ConfigSections";
+import type { EngrenageSlots } from "#project/config/types/EngrenageSlots";
 import type { Extension } from "#project/config/types/Extension";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { RawConfig } from "#project/config/types/RawConfig";
@@ -118,6 +120,53 @@ export function createProjectConfig({
 
   const names = map(registry.extensions, ({ name }) => name);
 
+  const presetValues = new WeakMap<
+    object,
+    Promise<Readonly<Record<string, unknown>>>
+  >();
+
+  async function loadPresetValues({
+    name,
+    load: loadValues,
+  }: EngrenageSlots["presets"]): Promise<Readonly<Record<string, unknown>>> {
+    const loaded = (await loadValues?.()) ?? {};
+
+    const reserved = keys(loaded).filter((path) => {
+      return unpresettable.some((input) => {
+        return path === input || path.startsWith(`${input}.`);
+      });
+    });
+
+    if (isNotEmpty(reserved)) {
+      throw new Error(
+        `Preset "${name}" sets ${reserved.join(", ")}, which presets never set`,
+      );
+    }
+
+    return loaded;
+  }
+
+  async function defaults(
+    input: string,
+    reader: ConfigResolver,
+  ): Promise<Readonly<Record<string, unknown>>> {
+    if (includes(unpresettable, input)) {
+      return {};
+    }
+
+    const preset = await reader.resolve("preset");
+
+    if (preset === false) {
+      return {};
+    }
+
+    const pending = presetValues.get(preset) ?? loadPresetValues(preset);
+
+    presetValues.set(preset, pending);
+
+    return pending;
+  }
+
   const {
     resolve,
     context,
@@ -139,6 +188,7 @@ export function createProjectConfig({
         load,
         refuse,
       },
+      defaults,
       unknownNote: `Registered extensions: ${names.join(", ")}`,
     },
   );

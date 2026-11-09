@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, test } from "vitest";
 
+import { loadConfig } from "@auaust/engrenage/config";
 import { formatContent, formatFile } from "@auaust/engrenage/format";
 import { formatWithPrettier } from "@auaust/engrenage/prettier";
 
@@ -33,7 +34,7 @@ describe("formatContent", () => {
 
     const formatted = await formatContent('export const a = "x"\n', {
       path: project.resolve("a.ts"),
-      root: project.root,
+      config: await loadConfig(project.root),
       formatter: formatWithPrettier,
     });
 
@@ -45,7 +46,7 @@ describe("formatContent", () => {
 
     const formatted = await formatContent("a  b", {
       path: project.resolve("a.unknown"),
-      root: project.root,
+      config: await loadConfig(project.root),
       formatter: formatWithPrettier,
     });
 
@@ -60,7 +61,7 @@ describe("formatFile", () => {
     project.write("a.ts", 'export const a = "x"\n');
 
     await formatFile("a.ts", {
-      root: project.root,
+      config: await loadConfig(project.root),
       formatter: formatWithPrettier,
     });
 

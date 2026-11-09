@@ -3,4 +3,5 @@ export type {
   Conventions,
   FormatInput,
   Formatter,
+  FormatterEntry,
 } from "#project/format/index";

@@ -14,7 +14,10 @@ import { isString } from "@auaust/toolkit/isString";
 import { mappedValues } from "@auaust/toolkit/mappedValues";
 
 import { globsSchema } from "#foundation/options/index";
+import { buildToolNameSchema } from "#project/build/index";
 import { extensionSchema, type LoadedConfig } from "#project/config/index";
+import { formatterNameSchema } from "#project/format/index";
+import { presetNameSchema } from "#project/presets/index";
 import { roleFileResolverSchema, roleRulesSchema } from "#project/roles/index";
 import { effectModuleResolverSchema } from "#project/structure/index";
 import { collectConfigInputs } from "#scripts/codegen/operations/collectConfigInputs";
@@ -25,6 +28,7 @@ import { getLazyConfigSchema } from "#scripts/codegen/utils/getLazyConfigSchema"
 import { isConfigSchema } from "#scripts/codegen/utils/isConfigSchema";
 import { isListAdjustmentSchema } from "#scripts/codegen/utils/isListAdjustmentSchema";
 import { isUnionConfigSchema } from "#scripts/codegen/utils/isUnionConfigSchema";
+import { preferredSchema } from "#tools/agents/index";
 import type { ConfigSchema } from "#scripts/codegen/types/ConfigSchema";
 import type { ObjectConfigSchema } from "#scripts/codegen/types/ObjectConfigSchema";
 import type { TypeSource } from "#scripts/codegen/types/TypeSource";
@@ -107,7 +111,20 @@ const readonlyListTypes = new Map<unknown, string>([
   [optionsOf(globsSchema), "Glob | Globs"],
 ]);
 
+const namedTypes = new Map<unknown, string>([
+  [buildToolNameSchema, "keyof EngrenageBuildTools"],
+  [formatterNameSchema, "keyof EngrenageFormatters"],
+  [presetNameSchema, "keyof EngrenagePresets"],
+  [preferredSchema, "(keyof EngrenageAgentRuntimes)[]"],
+]);
+
 function resolveType(schema: ConfigSchema): string | undefined {
+  const named = namedTypes.get(schema);
+
+  if (named !== undefined) {
+    return named;
+  }
+
   if (schema === effectModuleResolverSchema) {
     return "EffectModuleResolver";
   }

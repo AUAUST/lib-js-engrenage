@@ -6,11 +6,11 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { checkWorkspaces } from "#project/structure/index";
+import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
-import { runSync } from "#workflows/sync/index";
 
 import sync from "#bin/engrenage/actions/sync";
 

@@ -1,17 +1,14 @@
 import type { JSONPath } from "jsonc-parser";
 
+import { map } from "@auaust/primitive-kit/arrays";
 import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { engrenage, packageJsonFile } from "#constants";
 import { readJsonValue, type JsonValue } from "#foundation/json/index";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/index";
-import {
-  resolveTraits,
-  type Preset,
-  type ResolvedTraits,
-} from "#project/presets/index";
-import { agentNames } from "#tools/agents/constants";
+import { resolveTraits, type ResolvedTraits } from "#project/presets/index";
+import { filterAgents, type Agent } from "#tools/agents/index";
 import { createPnpmInvocation } from "#tools/pnpm/index";
 import type {
   ConfigKey,
@@ -19,7 +16,6 @@ import type {
   LoadedConfig,
 } from "#project/config/index";
 import type { Invocation, Prompter, StepContext } from "#project/steps/index";
-import type { Agent } from "#tools/agents/index";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
 
@@ -143,9 +139,17 @@ export async function createStepContext({
     return [createPnpmInvocation(["install"]), ...invocations];
   }
 
-  let preset: Preset | undefined = await config.resolve("preset");
+  const { registry } = config.context;
+
+  const configured = await config.resolve("preset");
+
+  let preset = configured === false ? undefined : configured.name;
 
   const resolvedAgents = await config.resolve("agents");
+
+  const runtimes = await registry.contributions("agents.runtimes", config);
+
+  const runtimeNames = map(runtimes, ({ entry }) => entry.name);
 
   let agents: readonly Agent[] | undefined = resolvedAgents.preferred;
 
@@ -158,9 +162,7 @@ export async function createStepContext({
     overrides.set(key, resolve);
   }
 
-  override("preset", () => {
-    return preset;
-  });
+  override("preset", selectPreset);
 
   override("traits", getTraits);
 
@@ -168,7 +170,7 @@ export async function createStepContext({
     return { ...(await config.resolve("agents")), preferred: agents };
   });
 
-  // @debt an override resolving to undefined falls back to the config value, so `setPreset(undefined)` cannot clear a configured preset
+  // @debt an override resolving to undefined falls back to the config value, so an override cannot clear a configured key
   function resolve<Key extends ConfigKey>(
     key: Key,
   ): Promise<ConfigSections[Key]>;
@@ -178,15 +180,30 @@ export async function createStepContext({
     return overridden ?? config.resolve(key);
   }
 
-  function getPreset(): Preset | undefined {
+  async function selectPreset(): Promise<ConfigSections["preset"]> {
+    if (preset === undefined) {
+      return false;
+    }
+
+    const { entry } = await registry.select("presets", preset, config);
+
+    return entry;
+  }
+
+  function getPreset(): string | undefined {
     return preset;
   }
 
   async function getTraits(): Promise<ResolvedTraits> {
-    return resolveTraits(preset, await config.resolve("traits.adjustments"));
+    const selected = await selectPreset();
+
+    return resolveTraits(
+      selected === false ? [] : selected.traits,
+      await config.resolve("traits.adjustments"),
+    );
   }
 
-  function setPreset(chosen: Preset | undefined) {
+  function setPreset(chosen: string | undefined) {
     preset = chosen;
   }
 
@@ -201,7 +218,7 @@ export async function createStepContext({
   }
 
   function setAgents(chosen: readonly string[]) {
-    agents = agentNames.filter((name) => chosen.includes(name));
+    agents = filterAgents(chosen, runtimeNames);
   }
 
   return freeze<StepContext>({

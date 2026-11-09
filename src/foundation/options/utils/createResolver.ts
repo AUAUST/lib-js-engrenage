@@ -1,5 +1,6 @@
 import { is, keys } from "@auaust/toolkit/object";
 
+import { applyInputDefaults } from "#foundation/options/utils/applyInputDefaults";
 import { validate } from "#foundation/options/utils/validate";
 import type { Declaration } from "#foundation/options/types/Declaration";
 import type { InputResolver } from "#foundation/options/types/InputResolver";
@@ -29,10 +30,15 @@ export function createResolver<
   {
     source,
     sections,
+    defaults,
     unknownNote,
   }: {
     source?: string;
     sections: SectionSource<Context>;
+    defaults?(
+      name: string,
+      reader: Resolver<Context>,
+    ): Promise<Readonly<Record<string, unknown>>>;
     unknownNote?: string;
   },
 ): InputResolver<Context, Sections> {
@@ -42,29 +48,51 @@ export function createResolver<
 
   const inputs = new Map<
     string,
-    Map<Declaration<unknown, unknown, unknown>, unknown>
+    Map<Declaration<unknown, unknown, unknown>, Promise<unknown>>
   >();
+
+  async function validateInput(
+    name: string,
+    declaration: Declaration<unknown, unknown, unknown>,
+    reader: Resolver<Context>,
+  ): Promise<unknown> {
+    const value =
+      defaults === undefined
+        ? input[name]
+        : applyInputDefaults(input[name], name, await defaults(name, reader));
+
+    return validate(
+      declaration.schema,
+      value,
+      source === undefined ? `${name} config` : `${name} config in ${source}`,
+    );
+  }
 
   function readInput(
     name: string,
     declaration: Declaration<unknown, unknown, unknown>,
-  ): unknown {
+    reader: Resolver<Context>,
+  ): Promise<unknown> {
     const validated = inputs.get(name) ?? new Map();
 
-    if (validated.has(declaration)) {
-      return validated.get(declaration);
+    const cached = validated.get(declaration);
+
+    if (cached !== undefined) {
+      return cached;
     }
 
-    const value = validate(
-      declaration.schema,
-      input[name],
-      source === undefined ? `${name} config` : `${name} config in ${source}`,
-    );
+    const pending = validateInput(name, declaration, reader);
 
-    validated.set(declaration, value);
+    validated.set(declaration, pending);
     inputs.set(name, validated);
 
-    return value;
+    pending.catch(() => {
+      if (validated.get(declaration) === pending) {
+        validated.delete(declaration);
+      }
+    });
+
+    return pending;
   }
 
   async function loadSection(
@@ -193,7 +221,7 @@ export function createResolver<
       const value = await section.resolve(
         name === undefined || declaration === undefined
           ? undefined
-          : readInput(name, declaration),
+          : await readInput(name, declaration, config),
         config,
       );
 
@@ -306,7 +334,7 @@ export function createResolver<
       known.add(name);
 
       try {
-        readInput(name, section.declaration);
+        await readInput(name, section.declaration, reader);
       } catch (error) {
         if (!(error instanceof Error)) {
           throw error;

@@ -17,4 +17,13 @@ export default {
       },
     },
   },
+  contributes: {
+    "build.tools": [{ name: tsdown, package: tsdown }],
+  },
 } satisfies Extension;
+
+declare global {
+  interface EngrenageBuildTools {
+    tsdown: true;
+  }
+}

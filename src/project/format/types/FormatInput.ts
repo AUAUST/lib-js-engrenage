@@ -6,6 +6,12 @@
  */
 export interface FormatInput {
   /**
+   * Formatter of the files engrenage writes, among those its extensions contribute (`prettier`).
+   * `false` writes them unformatted.
+   * @default the only active formatter, none when no formatter is active; resolving it fails when several are
+   */
+  formatter?: ((false | keyof EngrenageFormatters) | undefined)
+  /**
    * Whether indentation uses spaces or tabs.
    * @default `spaces`
    */
@@ -52,7 +58,7 @@ export interface FormatInput {
   maxFunctionLines?: (number | undefined)
   /**
    * Most lines a module may span, blank lines and comments excluded.
-   * @default 300
+   * @default 350
    */
   maxFileLines?: (number | undefined)
 }

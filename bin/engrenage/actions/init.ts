@@ -3,15 +3,15 @@ import { flat } from "@auaust/primitive-kit/arrays";
 import { packageJsonFile } from "#constants";
 import { runProcess } from "#foundation/processes/index";
 import { loadConfig, type LoadedConfig } from "#project/config/index";
-import { createPnpmInvocation } from "#tools/pnpm/index";
-import { loadValidatedConfig } from "#workflows/config/index";
-import { createPrompter, listInitSteps, runSteps } from "#workflows/init/index";
 import {
   formatChanges,
   reportSyncResults,
   runSync,
   settleChanges,
-} from "#workflows/sync/index";
+} from "#project/sync/index";
+import { createPnpmInvocation } from "#tools/pnpm/index";
+import { loadValidatedConfig } from "#workflows/config/index";
+import { createPrompter, listInitSteps, runSteps } from "#workflows/init/index";
 import type { Invocation, Prompter } from "#project/steps/index";
 import type { Directory } from "#types/Directory";
 

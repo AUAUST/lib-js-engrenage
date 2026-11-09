@@ -4,6 +4,7 @@ import type { Extension } from "#project/config/index";
 export default {
   name: "tools/agents/claude",
   contributes: {
+    "agents.runtimes": [{ name: "claude", title: "Claude" }],
     "sync.targets": [
       {
         name: claudeTarget,
@@ -21,3 +22,9 @@ export default {
     ],
   },
 } satisfies Extension;
+
+declare global {
+  interface EngrenageAgentRuntimes {
+    claude: true;
+  }
+}

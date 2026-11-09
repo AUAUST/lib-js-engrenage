@@ -13,3 +13,8 @@ export const definitionKey = "~definition";
 export const globalNamePattern = freeze(
   /^(?:import\.meta|[$A-Z_a-z][\w$]*)(?:\.[$A-Z_a-z][\w$]*)*$/,
 );
+
+export const unpresettable: readonly string[] = freeze([
+  "preset",
+  "extensions",
+]);

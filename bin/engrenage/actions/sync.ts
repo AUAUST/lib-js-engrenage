@@ -1,10 +1,10 @@
-import { loadValidatedConfig } from "#workflows/config/index";
 import {
   listSyncOptions,
   readSyncFlags,
   runSync,
   settleChanges,
-} from "#workflows/sync/index";
+} from "#project/sync/index";
+import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (
   targets: readonly string[],

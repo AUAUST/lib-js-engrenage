@@ -3,6 +3,7 @@ import {
   readProjectPnpmVersion,
   readSharedPnpmRange,
 } from "#project/package/index";
+import { settleChanges } from "#project/sync/index";
 import {
   installDependencies,
   resolveLatestPnpm,
@@ -11,7 +12,6 @@ import {
 } from "#tools/pnpm/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import { createPrompter } from "#workflows/init/index";
-import { settleChanges } from "#workflows/sync/index";
 
 export default async function ({ yes }: { yes: boolean }): Promise<void> {
   const config = await loadValidatedConfig();

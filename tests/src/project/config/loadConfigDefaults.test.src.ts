@@ -42,7 +42,7 @@ describe("loadConfig", () => {
       async () => (await config.resolve("tsconfig")).outDir,
     ).rejects.toThrow(`No tsconfig found in ${first}`);
 
-    expect(await config.resolve("preset")).toBeUndefined();
+    expect(await config.resolve("preset")).toBe(false);
     expect(await config.resolve("traits")).toEqual({ published: false });
 
     expect((await config.resolve("environment")).hasDependency("valibot")).toBe(

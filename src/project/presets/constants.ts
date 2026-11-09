@@ -1,9 +1,20 @@
-import { freeze } from "@auaust/toolkit/object";
+import {
+  array,
+  function_,
+  looseObject,
+  optional,
+  picklist,
+  string,
+} from "valibot";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
 
-import type { Trait } from "#project/presets/types/Trait";
+import { freeze } from "@auaust/toolkit/object";
 
 export const traits = freeze(["published"] as const);
 
-export const presetTraits = freeze({
-  library: freeze(["published"] as const),
-} as const) satisfies Record<string, readonly Trait[]>;
+// @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
+export const presetEntry: StandardSchemaV1 = looseObject({
+  name: string(),
+  traits: array(picklist(traits)),
+  load: optional(function_()),
+});

@@ -6,10 +6,10 @@ import { fileURLToPath } from "node:url";
 import { vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { runSync } from "#project/sync/index";
+import { settleChanges } from "#project/sync/operations/settleChanges";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
-import { runSync } from "#workflows/sync/index";
-import { settleChanges } from "#workflows/sync/operations/settleChanges";
 
 const repositoryModules = fileURLToPath(
   new URL("../../node_modules", import.meta.url),

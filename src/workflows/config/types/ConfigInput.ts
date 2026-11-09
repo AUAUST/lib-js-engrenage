@@ -67,12 +67,12 @@ export interface BuiltinConfigInput {
    */
   visibility?: (("public" | "private") | undefined)
   /**
-   * Kind of project the configuration builds on, bundling traits.
+   * Kind of project the configuration builds on, among the presets extensions contribute, bundling traits and option values.
    * `library` bundles `published`: it extends the library tsconfig, syncs the published `package.json` fields (`files`, `bin`, `engines.node`), tests the built package and selects the library GitHub workflows.
-   * Options and `traits` override it.
+   * Options and `traits` override it; `false` selects none.
    * @default no preset: no trait is bundled
    */
-  preset?: ("library" | undefined)
+  preset?: ((false | keyof EngrenagePresets) | undefined)
   /**
    * Traits of the project, adjusting those of the preset.
    */

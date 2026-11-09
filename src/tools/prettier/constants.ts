@@ -36,3 +36,5 @@ export const prettierDefaultIgnores = freeze([
   ".hg",
   "node_modules",
 ] as const) satisfies Globs;
+
+export { prettier } from "#constants";

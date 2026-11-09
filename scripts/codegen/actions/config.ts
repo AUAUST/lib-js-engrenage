@@ -1,9 +1,9 @@
 import { glob } from "node:fs/promises";
 import { join } from "node:path";
 
+import { settleChanges } from "#project/sync/index";
 import { generateConfigTypes } from "#scripts/codegen/operations/generateConfigTypes";
 import { loadValidatedConfig } from "#workflows/config/index";
-import { settleChanges } from "#workflows/sync/index";
 import type { File } from "#types/File";
 
 export default async function ({ check }: { check: boolean }): Promise<void> {

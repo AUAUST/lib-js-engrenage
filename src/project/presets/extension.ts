@@ -1,8 +1,12 @@
+import { presetEntry } from "#project/presets/constants";
 import type { Extension } from "#project/config/index";
 
 export default {
   name: "project/presets",
   owns: {
+    slots: {
+      presets: { cardinality: "one", entry: presetEntry },
+    },
     keys: {
       "preset": {
         input: "preset",
@@ -32,4 +36,13 @@ export default {
       },
     },
   },
+  contributes: {
+    presets: [{ name: "library", traits: ["published"] }],
+  },
 } satisfies Extension;
+
+declare global {
+  interface EngrenagePresets {
+    library: true;
+  }
+}

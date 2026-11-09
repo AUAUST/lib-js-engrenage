@@ -1,6 +1,7 @@
 import { tsdown, vite } from "#constants";
 import { hasConfigFile, type Step } from "#project/steps/index";
 
+// @debt the build tools are listed by hand instead of read from the contributions to `build.tools`
 export function createBuildToolStep(): Step {
   return {
     name: "build tool",

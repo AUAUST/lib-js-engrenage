@@ -1,20 +1,23 @@
-import { join } from "node:path";
-
 import { loadPrettier } from "#tools/prettier/operations/loadPrettier";
 import type { Formatter } from "#project/format/ports/Formatter";
 
 export const formatWithPrettier: Formatter = async (
   content,
-  { path, root },
+  { path, config },
 ) => {
-  const prettier = loadPrettier(root);
+  const prettier = loadPrettier(config.context.root);
 
   if (prettier === undefined) {
     return;
   }
 
+  const resources = await config.resolve("resources");
+
   const { ignored, inferredParser } = await prettier.getFileInfo(path, {
-    ignorePath: join(root, ".prettierignore"),
+    ignorePath:
+      resources.get("prettierignore") === undefined
+        ? undefined
+        : resources.path("prettierignore"),
     resolveConfig: true,
   });
 

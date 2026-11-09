@@ -2,12 +2,12 @@ import { cancel, isCancel, multiselect } from "@clack/prompts";
 
 import { empty } from "@auaust/toolkit/empty";
 
+import { settleChanges } from "#project/sync/index";
 import { addAgentSkills, getSkillTemplates } from "#tools/agents/index";
 import {
   loadValidatedConfig,
   type LoadedConfig,
 } from "#workflows/config/index";
-import { settleChanges } from "#workflows/sync/index";
 
 async function getNames(config: LoadedConfig, name: string | undefined) {
   if (name !== undefined) {

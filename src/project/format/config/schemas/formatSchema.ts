@@ -1,10 +1,21 @@
 import { boolean, integer, minValue, number, picklist, pipe } from "valibot";
 
-import { declare, declareObject } from "#foundation/options/index";
+import { declare, declareObject, unset } from "#foundation/options/index";
+import { formatterNameSchema } from "#project/format/config/schemas/formatterNameSchema";
 import { complexityLimits, conventions } from "#project/format/constants";
 
 export const formatSchema = declareObject(
   {
+    formatter: declare(formatterNameSchema, {
+      description: [
+        "Formatter of the files engrenage writes, among those its extensions contribute (`prettier`).",
+        "`false` writes them unformatted.",
+      ],
+      optional: unset(
+        "the only active formatter, none when no formatter is active; resolving it fails when several are",
+      ),
+      disable: { value: false },
+    }),
     indent: declare(picklist(["spaces", "tabs"]), {
       description: "Whether indentation uses spaces or tabs.",
       optional: { value: conventions.indent },

@@ -7,7 +7,7 @@ import type {
   ConfigSections,
   LoadedConfig,
 } from "#project/config/index";
-import type { Preset, ResolvedTraits } from "#project/presets/index";
+import type { ResolvedTraits } from "#project/presets/index";
 import type { Prompter } from "#project/steps/ports/Prompter";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { PackageName } from "#types/PackageName";
@@ -19,9 +19,9 @@ export interface StepContext
   readonly filesystem: Filesystem;
   getAgents(): readonly string[] | undefined;
   setAgents(chosen: readonly string[]): void;
-  getPreset(): Preset | undefined;
+  getPreset(): string | undefined;
   getTraits(): Promise<ResolvedTraits>;
-  setPreset(chosen: Preset | undefined): void;
+  setPreset(chosen: string | undefined): void;
   // @debt `setKey("preset", …)` bypasses the preset `getPreset` reads; overriding one key should never desync another accessor
   setKey<Key extends ConfigKey>(
     key: Key,

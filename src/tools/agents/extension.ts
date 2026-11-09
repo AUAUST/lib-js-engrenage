@@ -1,4 +1,4 @@
-import { agentsTarget } from "#tools/agents/constants";
+import { agentRuntimeEntry, agentsTarget } from "#tools/agents/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 import claude from "#tools/agents/claude/extension";
@@ -9,6 +9,9 @@ export default [
   {
     name: "tools/agents",
     owns: {
+      slots: {
+        "agents.runtimes": { entry: agentRuntimeEntry },
+      },
       keys: {
         agents: {
           input: "agents",
