@@ -190,6 +190,7 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 - Before delivery, review the work against architectural boundaries and quality requirements, not only behavior.
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
 - Run targeted checks during implementation and the gate once at delivery, adding checks only for coverage it lacks.
+- Lint by hand only the files you name, always with `--fix`; leave linting the whole project to the gate.
 - Pass the commit gate with every commit you make; never bypass it.
 - Report actual results and blockers, including unavailable integrations and skipped checks. Never weaken compiler or lint settings to hide failures.
 
@@ -197,7 +198,7 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 
 ## Commands
 
-- The commit gate (`pnpm engrenage gate`) formats, lints and checks the changed files; never run format or lint by hand before a commit.
+- The commit gate (`pnpm engrenage gate`) formats, lints and checks the changed files; never run format by hand before a commit.
 - `pnpm test` runs tests in source mode and type checking.
 - `pnpm build` for entries, exports, imports or bundling changes. It builds, validates packaging with publint and attw, and reruns the tests against `dist/`.
 - `pnpm engrenage sync` after changing agent fragments or anything else engrenage syncs; CI checks it with `--check`.
