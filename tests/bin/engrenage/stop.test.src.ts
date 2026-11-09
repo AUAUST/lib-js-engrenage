@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
-import { getExecutable } from "#tests/utils/getExecutable";
+import { mockExecutableArgv } from "#tests/utils/mockExecutableArgv";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 
 import stop from "#bin/engrenage/agents/claude/hook/actions/stop";
@@ -15,14 +15,9 @@ vi.mock("#tools/agents/operations/readHookPayload", () => {
   return { readHookPayload: vi.fn() };
 });
 
-const argv = process.argv;
-
-beforeEach(() => {
-  process.argv = [argv[0] ?? "node", getExecutable()];
-});
+beforeEach(mockExecutableArgv);
 
 afterEach(() => {
-  process.argv = argv;
   vi.restoreAllMocks();
 });
 
