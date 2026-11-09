@@ -1,3 +1,4 @@
+import { function_, looseObject } from "valibot";
 import { describe, expect, test, vi } from "vitest";
 
 import { collectExtensions } from "#foundation/extensions/utils/collectExtensions";
@@ -61,6 +62,52 @@ describe("collectExtensions", () => {
       ]);
     }).toThrow(
       'Invalid extensions:\nExtension "first" is registered twice\nfirst requires missing, which is not registered',
+    );
+  });
+
+  test("fails on an entry its slot's validator rejects, naming the entry, the slot and the path", () => {
+    expect(() => {
+      return collect([
+        {
+          name: "owner",
+          owns: {
+            slots: {
+              targets: { entry: looseObject({ load: function_() }) },
+            },
+          },
+          contributes: { targets: [{ name: "target" }] },
+        },
+      ]);
+    }).toThrow(
+      /^Invalid extensions:\n"target" from owner in slot "targets": .+ at load$/u,
+    );
+  });
+
+  test("fails on a slot whose validator is asynchronous, naming the slot", () => {
+    expect(() => {
+      return collect([
+        {
+          name: "owner",
+          owns: {
+            slots: {
+              targets: {
+                entry: {
+                  "~standard": {
+                    version: 1,
+                    vendor: "test",
+                    validate(value) {
+                      return Promise.resolve({ value });
+                    },
+                  },
+                },
+              },
+            },
+          },
+          contributes: { targets: [{ name: "target" }] },
+        },
+      ]);
+    }).toThrow(
+      'Invalid extensions:\nSlot "targets" of owner validates entries asynchronously, which collection cannot',
     );
   });
 

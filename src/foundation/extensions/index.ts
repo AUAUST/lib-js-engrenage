@@ -6,6 +6,7 @@ export * from "#foundation/extensions/types/EdgeDeclaration";
 export * from "#foundation/extensions/types/EdgeSort";
 export * from "#foundation/extensions/types/EntryOf";
 export * from "#foundation/extensions/types/EntryShape";
+export * from "#foundation/extensions/types/EntryValidator";
 export * from "#foundation/extensions/types/ExtensionShape";
 export * from "#foundation/extensions/types/HookEntry";
 export * from "#foundation/extensions/types/HookSlotDeclaration";
@@ -16,6 +17,8 @@ export * from "#foundation/extensions/types/PayloadOf";
 export * from "#foundation/extensions/types/Registry";
 export * from "#foundation/extensions/types/SlotDeclaration";
 export * from "#foundation/extensions/types/SlotOf";
+export * from "#foundation/extensions/types/ValidationIssue";
+export * from "#foundation/extensions/types/ValidationResult";
 // @end
 
 export { collectExtensions } from "#foundation/extensions/utils/collectExtensions";

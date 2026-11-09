@@ -1,3 +1,4 @@
+import type { EntryValidator } from "#foundation/extensions/types/EntryValidator";
 import type { EdgeDeclaration } from "#foundation/extensions/types/EdgeDeclaration";
 
 export interface ListSlotDeclaration {
@@ -5,4 +6,5 @@ export interface ListSlotDeclaration {
   readonly cardinality?: "many";
   readonly stages?: readonly string[];
   readonly edges?: boolean | EdgeDeclaration;
+  readonly entry?: EntryValidator;
 }

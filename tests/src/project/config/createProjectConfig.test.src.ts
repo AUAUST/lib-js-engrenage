@@ -140,6 +140,22 @@ describe("createProjectConfig", () => {
     );
   });
 
+  test("rejects a listed extension whose slot entries are not a list, naming the path", () => {
+    expect(() => {
+      return createConfig({
+        extensions: [{ name: "x", contributes: { "sync.targets": {} } }],
+      });
+    }).toThrow(/Invalid extensions config[\s\S]*at 0\.contributes\.sync\.targets/u);
+  });
+
+  test("rejects a listed extension owning a key without load, naming the path", () => {
+    expect(() => {
+      return createConfig({
+        extensions: [{ name: "x", owns: { keys: { x: {} } } }],
+      });
+    }).toThrow(/Invalid extensions config[\s\S]*at 0\.owns\.keys\.x\.load/u);
+  });
+
   test("refuses the keys of an inactive owner on read, still validating their input", async () => {
     const config = createGatedConfig({});
 
