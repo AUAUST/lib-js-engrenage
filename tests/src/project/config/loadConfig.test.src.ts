@@ -4,7 +4,10 @@ import { describe, expect, test } from "vitest";
 
 import { buildOutDirSection } from "#project/build/index";
 import { cacheSection } from "#project/cache/index";
+import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { readRawConfig } from "#project/config/operations/readRawConfig";
+import { validateConfig } from "#project/config/operations/validateConfig";
 import { testsSection } from "#project/environments/index";
 import {
   environmentSection,
@@ -266,6 +269,29 @@ describe("loadConfig", () => {
     expect(await config.resolve("externalFixture")).toEqual({
       label: "listed",
     });
+  });
+
+  test("validates the input of a listed extension's key", async () => {
+    const fixture = getFixture("projects/external");
+
+    const config = await loadConfig(fixture, { searchParents: false });
+
+    await expect(validateConfig(config)).resolves.toBe(config);
+
+    const { root, raw } = await readRawConfig(fixture, {
+      searchParents: false,
+    });
+
+    const invalid = createProjectConfig({
+      root,
+      raw: {
+        ...raw,
+        externalFixture: { label: 1 },
+      },
+      configFile: undefined,
+    });
+
+    await expect(validateConfig(invalid)).rejects.toThrow("externalFixture");
   });
 
   test("places each package cache under the configured cache root", async () => {

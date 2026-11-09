@@ -8,11 +8,11 @@ import {
 import { describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
+import { validateConfig } from "#project/config/operations/validateConfig";
 import { sourceSection } from "#project/environments/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
-import { validateConfig } from "#workflows/config/operations/validateConfig";
 
 async function syncCompilerOptions(
   input: Record<string, unknown>,
@@ -306,7 +306,7 @@ describe("runtime tsconfig fields", () => {
   });
 
   test("rejects src.apis without src.baseline", async () => {
-    const config = validateConfig(
+    const config = await validateConfig(
       createProjectConfig({
         root: createTemporaryProject().root,
         raw: {

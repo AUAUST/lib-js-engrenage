@@ -1,12 +1,12 @@
 import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { loadValidatedConfig } from "#project/config/operations/loadValidatedConfig";
+import { validateConfig } from "#project/config/operations/validateConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { loadValidatedConfig } from "#workflows/config/operations/loadValidatedConfig";
-import { validateConfig } from "#workflows/config/operations/validateConfig";
 
 vi.mock(
-  import("#workflows/config/operations/validateConfig"),
+  import("#project/config/operations/validateConfig"),
   async (importOriginal) => {
     const original = await importOriginal();
 

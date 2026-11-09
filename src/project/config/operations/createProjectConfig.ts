@@ -1,3 +1,4 @@
+import { map } from "@auaust/primitive-kit/arrays";
 import { constant } from "@auaust/toolkit/constant";
 import { freeze, values } from "@auaust/toolkit/object";
 
@@ -72,10 +73,12 @@ export function createProjectConfig({
     return findSectionKey(registry, section);
   }
 
+  const names = map(registry.extensions, ({ name }) => name);
+
   const {
     resolve,
     context,
-    validate: validateSections,
+    validate: validateKeys,
   } = createResolver<ConfigContext, ConfigSections>(
     raw,
     {
@@ -90,12 +93,13 @@ export function createProjectConfig({
     {
       source,
       sections: { load, keyOf },
+      unknownNote: `Registered extensions: ${names.join(", ")}`,
     },
   );
 
   return freeze({
     resolve,
     context,
-    validate: validateSections,
+    validate: validateKeys,
   });
 }

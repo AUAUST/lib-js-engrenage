@@ -1,5 +1,6 @@
-import { loadConfig, type LoadedConfig } from "#project/config/index";
-import { validateConfig } from "#workflows/config/operations/validateConfig";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { validateConfig } from "#project/config/operations/validateConfig";
+import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { Directory } from "#types/Directory";
 
 const validated = new WeakSet<LoadedConfig>();
@@ -11,7 +12,8 @@ export async function loadValidatedConfig(
   const config = await loadConfig(cwd, options);
 
   if (!validated.has(config)) {
-    validateConfig(config);
+    await validateConfig(config);
+
     validated.add(config);
   }
 

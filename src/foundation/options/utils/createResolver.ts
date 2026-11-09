@@ -27,7 +27,11 @@ export function createResolver<
 >(
   input: Readonly<Record<string, unknown>>,
   context: Context,
-  { source, sections }: { source?: string; sections: SectionSource },
+  {
+    source,
+    sections,
+    unknownNote,
+  }: { source?: string; sections: SectionSource; unknownNote?: string },
 ): InputResolver<Context, Sections> {
   const loaded = new Map<string, Promise<KeyedSection>>();
   const memos = new Map<string, Promise<Reading>>();
@@ -289,16 +293,21 @@ export function createResolver<
     return reading;
   }
 
-  function validateSections(sections: readonly Section[]): void {
+  async function validateKeys(names: readonly string[]): Promise<void> {
     const failures: string[] = [];
+    const known = new Set<string>();
 
-    for (const { name, declaration } of sections) {
-      if (declaration === undefined) {
-        throw new Error(`Config section ${name} has no declaration`);
+    for (const key of names) {
+      const { input: name, section } = await load(key);
+
+      if (name === undefined || section.declaration === undefined) {
+        continue;
       }
 
+      known.add(name);
+
       try {
-        readInput(name, declaration);
+        readInput(name, section.declaration);
       } catch (error) {
         if (!(error instanceof Error)) {
           throw error;
@@ -308,13 +317,16 @@ export function createResolver<
       }
     }
 
-    const known = new Set(sections.map(({ name }) => name));
     const unknown = keys(input).filter((key) => !known.has(key));
 
     if (unknown.length > 0) {
-      failures.push(
-        `Invalid ${source ?? "config"}:\n${unknown.map((key) => `Unknown key "${key}"`).join("\n")}`,
-      );
+      const lines = unknown.map((key) => `Unknown key "${key}"`);
+
+      if (unknownNote !== undefined) {
+        lines.push(unknownNote);
+      }
+
+      failures.push(`Invalid ${source ?? "config"}:\n${lines.join("\n")}`);
     }
 
     if (failures.length > 0) {
@@ -335,6 +347,6 @@ export function createResolver<
   return {
     context,
     resolve,
-    validate: validateSections,
+    validate: validateKeys,
   };
 }
