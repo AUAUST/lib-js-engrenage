@@ -25,6 +25,7 @@ Deferred questions, bugs, tasks and improvements.
 - [c12](c12.md): Upstream c12 configuration loader issues.
 - [eslint-import-context](eslint-import-context.md): Upstream eslint-import-context dependency and type issues.
 - [eslint](eslint.md): Upstream ESLint API limitations.
+- [eslint-commands](eslint-commands.md): engrenage's ESLint commands and the arguments they pass.
 - [toolkit](toolkit.md): Upstream @auaust/toolkit decisions that may affect engrenage.
 - [configuration](configuration.md): Project configuration contract: environments, option shapes and list options.
 - [typescript](typescript.md): Generated tsconfigs: checks, variant resolution and shipped type declarations.

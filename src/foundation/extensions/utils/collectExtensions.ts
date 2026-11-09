@@ -1,25 +1,53 @@
-import { entries, freeze, keys } from "@auaust/toolkit/object";
+import { isFunction } from "@auaust/toolkit/isFunction";
+import { entries, freeze } from "@auaust/toolkit/object";
 
-import type { DeclarationOf } from "#foundation/extensions/types/DeclarationOf";
+import { createRegistry } from "#foundation/extensions/utils/createRegistry";
+import { orderListSlot } from "#foundation/extensions/utils/orderListSlot";
+import type { Contribution } from "#foundation/extensions/types/Contribution";
+import type { EdgeDeclaration } from "#foundation/extensions/types/EdgeDeclaration";
+import type { EntryShape } from "#foundation/extensions/types/EntryShape";
 import type { ExtensionShape } from "#foundation/extensions/types/ExtensionShape";
 import type { KindOf } from "#foundation/extensions/types/KindOf";
 import type { OwnedDeclaration } from "#foundation/extensions/types/OwnedDeclaration";
 import type { Registry } from "#foundation/extensions/types/Registry";
+import type { SlotDeclaration } from "#foundation/extensions/types/SlotDeclaration";
 
 type Owned = Readonly<Record<string, Readonly<Record<string, unknown>>>>;
 
-type Contributed = Readonly<Record<string, readonly unknown[]>>;
+type Contributed = Readonly<Record<string, readonly EntryShape[]>>;
+
+type Kinds<Extension> = ReadonlyMap<
+  string,
+  ReadonlyMap<string, OwnedDeclaration<Extension, unknown>>
+>;
+
+interface Registered<Extension extends ExtensionShape> {
+  readonly contribution: Contribution<Extension, EntryShape>;
+  readonly label: string;
+}
+
+interface SlotRecord<Extension extends ExtensionShape> {
+  readonly slot: string;
+  readonly owner: Extension;
+  readonly policy: "list" | "bucket" | "hook";
+  readonly stages: readonly string[] | undefined;
+  readonly edges: boolean | EdgeDeclaration;
+  readonly registered: Registered<Extension>[];
+}
 
 export function collectExtensions<Extension extends ExtensionShape>(
   extensions: readonly Extension[],
-  options: {
+  {
+    slotKind,
+    matches = (read, produced) => read === produced,
+    ...activation
+  }: {
     slotKind: KindOf<Extension>;
     isActive(extension: Extension): boolean | Promise<boolean>;
     explainInactive?(extension: Extension): string | undefined;
     matches?(read: string, produced: string): boolean;
   },
 ): Registry<Extension> {
-  const { slotKind } = options;
   const findings: string[] = [];
   const names = new Set<string>();
 
@@ -35,7 +63,7 @@ export function collectExtensions<Extension extends ExtensionShape>(
 
     names.add(extension.name);
 
-    // @debt `ExtensionShape` types `owns` and `contributes` as `object`, so collection reads their documented record shapes through casts
+    // @debt `ExtensionShape` types `owns` and `contributes` as `object`, so collection reads their declarations and entries through casts
     const owns = (extension.owns ?? {}) as Owned;
 
     for (const [kind, owned] of entries(owns)) {
@@ -68,7 +96,19 @@ export function collectExtensions<Extension extends ExtensionShape>(
     }
   }
 
-  const slots = kinds.get(slotKind);
+  const slots = new Map<string, SlotRecord<Extension>>();
+  const slotDeclarations = kinds.get(slotKind)?.values() ?? [];
+
+  for (const { key, declaration, owner } of slotDeclarations) {
+    const record = readSlot(
+      key,
+      owner,
+      declaration as SlotDeclaration,
+      findings,
+    );
+
+    slots.set(key, record);
+  }
 
   for (const extension of extensions) {
     for (const required of extension.requires ?? []) {
@@ -81,49 +121,198 @@ export function collectExtensions<Extension extends ExtensionShape>(
 
     const contributes = (extension.contributes ?? {}) as Contributed;
 
-    for (const slot of keys(contributes)) {
-      if (slots?.has(slot) !== true) {
+    for (const [slot, slotEntries] of entries(contributes)) {
+      const record = slots.get(slot);
+
+      if (record === undefined) {
         findings.push(
           `${extension.name} contributes to slot "${slot}", which no extension owns`,
         );
+
+        continue;
+      }
+
+      for (const [index, entry] of slotEntries.entries()) {
+        record.registered.push({
+          contribution: freeze({ entry, extension }),
+          label:
+            entry.name == null
+              ? `${extension.name}'s entry ${index}`
+              : `"${entry.name}" from ${extension.name}`,
+        });
       }
     }
+  }
+
+  const orders = new Map<
+    string,
+    {
+      readonly policy: SlotRecord<Extension>["policy"];
+      readonly order: readonly Contribution<Extension, EntryShape>[];
+    }
+  >();
+
+  for (const record of slots.values()) {
+    for (const registered of record.registered) {
+      checkEntry(record, registered, kinds, findings);
+    }
+
+    checkNames(record, findings);
+
+    const { order, findings: orderFindings } =
+      record.policy === "list"
+        ? orderListSlot({
+            slot: record.slot,
+            stages: record.stages,
+            edges: record.edges,
+            items: record.registered,
+            matches,
+          })
+        : { order: record.registered, findings: [] };
+
+    findings.push(...orderFindings);
+
+    orders.set(record.slot, {
+      policy: record.policy,
+      order: order.map(({ contribution }) => contribution),
+    });
   }
 
   if (findings.length > 0) {
     throw new Error(`Invalid extensions:\n${findings.join("\n")}`);
   }
 
-  function owner(kind: KindOf<Extension>, key: string): Extension | undefined {
-    return kinds.get(kind)?.get(key)?.owner;
+  return createRegistry(
+    {
+      extensions,
+      kinds,
+      slots: orders,
+    },
+    activation,
+  );
+}
+
+function readSlot<Extension extends ExtensionShape>(
+  slot: string,
+  owner: Extension,
+  declaration: SlotDeclaration,
+  findings: string[],
+): SlotRecord<Extension> {
+  if (declaration.kind === "hook" || declaration.cardinality === "one") {
+    if ("stages" in declaration || "edges" in declaration) {
+      findings.push(
+        `Slot "${slot}" of ${owner.name} declares stages or edges, which only a list slot can`,
+      );
+    }
+
+    return {
+      slot,
+      owner,
+      policy: declaration.kind === "hook" ? "hook" : "bucket",
+      stages: undefined,
+      edges: false,
+      registered: [],
+    };
   }
 
-  // @debt the per-kind maps erase each kind's declaration type, so declaration reads cast it back
-  function get<Kind extends KindOf<Extension>>(
-    kind: Kind,
-    key: string,
-  ): DeclarationOf<Extension, Kind> | undefined {
-    return kinds.get(kind)?.get(key)?.declaration as
-      DeclarationOf<Extension, Kind> | undefined;
+  const { stages, edges = false } = declaration;
+
+  for (const [index, stage] of (stages ?? []).entries()) {
+    if (stages?.indexOf(stage) !== index) {
+      findings.push(
+        `Slot "${slot}" of ${owner.name} declares stage "${stage}" twice`,
+      );
+    }
   }
 
-  function list<Kind extends KindOf<Extension>>(
-    kind: Kind,
-  ): readonly OwnedDeclaration<Extension, DeclarationOf<Extension, Kind>>[] {
-    const declarations = [...(kinds.get(kind)?.values() ?? [])];
+  return {
+    slot,
+    owner,
+    policy: "list",
+    stages,
+    edges,
+    registered: [],
+  };
+}
 
-    return freeze(
-      declarations as OwnedDeclaration<
-        Extension,
-        DeclarationOf<Extension, Kind>
-      >[],
+function listStages(stages: readonly string[] | undefined): string {
+  return stages === undefined || stages.length === 0
+    ? "none"
+    : stages.join(", ");
+}
+
+function checkEntry<Extension extends ExtensionShape>(
+  { slot, policy, stages, edges }: SlotRecord<Extension>,
+  { contribution: { entry }, label }: Registered<Extension>,
+  kinds: Kinds<Extension>,
+  findings: string[],
+): void {
+  if (entry.stage == null) {
+    if (stages !== undefined) {
+      findings.push(
+        `${label} in slot "${slot}" names no stage: ${listStages(stages)}`,
+      );
+    }
+  } else if (stages?.includes(entry.stage) !== true) {
+    findings.push(
+      `${label} in slot "${slot}" names stage "${entry.stage}", not one of: ${listStages(stages)}`,
     );
   }
 
-  return freeze({
-    extensions: freeze([...extensions]),
-    owner,
-    get,
-    list,
-  });
+  if (edges === false) {
+    if (entry.reads != null || entry.produces != null) {
+      findings.push(
+        `${label} in slot "${slot}" declares reads or produces, but the slot has no edges`,
+      );
+    }
+  } else if (edges !== true) {
+    const edgeNames = [...(entry.reads ?? []), ...(entry.produces ?? [])];
+
+    for (const name of edgeNames) {
+      const declared = edges.kinds.some((kind) => {
+        return kinds.get(kind)?.has(name) === true;
+      });
+
+      if (!declared) {
+        findings.push(
+          `${label} in slot "${slot}" names "${name}", which no extension declares in ${edges.kinds.join(" or ")}`,
+        );
+      }
+    }
+  }
+
+  if (policy === "bucket" && entry.name == null) {
+    findings.push(
+      `${label} in slot "${slot}" has no name, which a bucket requires`,
+    );
+  }
+
+  if (policy === "hook" && !isFunction(entry, "load")) {
+    findings.push(`${label} in hook slot "${slot}" has no load function`);
+  }
+}
+
+function checkNames<Extension extends ExtensionShape>(
+  { slot, registered }: SlotRecord<Extension>,
+  findings: string[],
+): void {
+  const firsts = new Map<string, Extension>();
+
+  for (const { contribution } of registered) {
+    const { entry, extension } = contribution;
+
+    if (entry.name == null) {
+      continue;
+    }
+
+    const first = firsts.get(entry.name);
+
+    if (first === undefined) {
+      firsts.set(entry.name, extension);
+    } else {
+      findings.push(
+        `Slot "${slot}" has two entries named "${entry.name}", from ${first.name} and ${extension.name}`,
+      );
+    }
+  }
 }
