@@ -112,6 +112,13 @@ const extension = createRolePreset({
   discovered: true,
   public: true,
   effects: "effectful",
+  rules: {
+    "extension-imports": async () => {
+      const { extensionImports } = await import("#tooling/eslint/index");
+
+      return extensionImports;
+    },
+  },
 });
 
 const plugins = createRolePreset({

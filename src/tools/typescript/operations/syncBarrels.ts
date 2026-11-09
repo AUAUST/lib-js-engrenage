@@ -236,6 +236,7 @@ export async function syncBarrels(
       config.context.path,
     ]);
 
+  // @debt barrels of the tooling and tests environments are never discovered, so their `@barrel` blocks are filled by hand
   const allFiles = await filesystem.glob(
     filesIn([...source.dirs, ...bin.dirs, ...scripts.dirs], barrelFiles),
   );
