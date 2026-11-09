@@ -7,6 +7,11 @@ import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { LockTimeoutError } from "#foundation/processes/errors/LockTimeoutError";
 import { withProcessLock } from "#foundation/processes/index";
 import {
+  runGateProcess,
+  type GateResult,
+  type GateStage,
+} from "#project/gate/index";
+import {
   formatBudgetFinding,
   listLocalFilePatterns,
   measureEditedFile,
@@ -18,14 +23,12 @@ import {
   runGit,
   type ChangeMode,
 } from "#tools/git/index";
-import { createGateSteps } from "#workflows/gate/operations/createGateSteps";
 import { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { Files } from "#types/Files";
 import type { GateFailure } from "#workflows/gate/types/GateFailure";
 import type { GateReport } from "#workflows/gate/types/GateReport";
-import type { GateResult } from "#workflows/gate/types/GateResult";
 import type { GateStep } from "#workflows/gate/types/GateStep";
 import type { GateWarning } from "#workflows/gate/types/GateWarning";
 import type { TreeIdentity } from "#workflows/gate/types/TreeIdentity";
@@ -116,6 +119,47 @@ async function measureEntries(
           output: map(flattened, formatBudgetFinding).join("\n"),
         },
       ];
+}
+
+async function listSteps(
+  config: LoadedConfig,
+): Promise<Record<GateStage, GateStep[]>> {
+  const { root, registry } = config.context;
+
+  const contributions = await registry.contributions("gate.steps", config);
+
+  const steps: Record<GateStage, GateStep[]> = {
+    fixes: [],
+    checks: [],
+    commands: [],
+    warnings: [],
+  };
+
+  for (const { entry } of contributions) {
+    steps[entry.stage].push({
+      audience: entry.audience,
+      name: entry.name,
+      async run(files) {
+        const run = await entry.load();
+
+        return run(config, files);
+      },
+    });
+  }
+
+  const { gate } = await config.resolve("agents");
+
+  for (const command of gate.commands) {
+    steps.commands.push({
+      audience: "agents",
+      name: command,
+      run() {
+        return runGateProcess(root, "sh", ["-c", command]);
+      },
+    });
+  }
+
+  return steps;
 }
 
 async function readStamps(file: string): Promise<readonly string[]> {
@@ -267,7 +311,7 @@ async function verify(
     return { failures: [], warnings: [] };
   }
 
-  const { fixes, checks, commands, warnings } = await createGateSteps(config);
+  const { fixes, checks, commands, warnings } = await listSteps(config);
 
   const failures = await runSteps(fixes, files);
 

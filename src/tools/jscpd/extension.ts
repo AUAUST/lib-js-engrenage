@@ -17,4 +17,20 @@ export default {
       },
     },
   },
+  contributes: {
+    "gate.steps": [
+      // @debt duplicated code only warns until the project's existing clones are cleaned up; it should then fail the gate like the other checks
+      {
+        name: jscpd,
+        stage: "warnings",
+        audience: "agents",
+        async load() {
+          const { warnClones } =
+            await import("#tools/jscpd/operations/warnClones");
+
+          return warnClones;
+        },
+      },
+    ],
+  },
 } satisfies Extension;

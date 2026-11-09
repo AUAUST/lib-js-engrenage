@@ -63,6 +63,22 @@ describe("lazy loading", () => {
     expect(files.filter((file) => engines.test(file))).toEqual([]);
   });
 
+  test("loads no gate run while listing the gate steps", async () => {
+    const files = await recordLoadedFiles(
+      `const { loadConfig } = await import("#project/config/index");\nconst config = await loadConfig(${JSON.stringify(getFixture("projects/external"))}, { searchParents: false });\nawait config.context.registry.contributions("gate.steps", config);`,
+    );
+
+    const contributors = [
+      ...within(files, "src/tools/"),
+      ...within(files, "src/workflows/"),
+      ...within(files, "src/project/structure/"),
+    ];
+
+    expect(
+      contributors.filter((file) => file.includes("/operations/")),
+    ).toEqual([]);
+  });
+
   test.each(entries(definers))(
     "loads no other tool's engine with the %s definer",
     async (tool, definer) => {

@@ -11,7 +11,11 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 const unformatted = '{\n  "list": [\n    "a"\n  ]\n}\n';
 
 async function stage(format: Readonly<Record<string, unknown>> | undefined) {
-  const project = createTemporaryProject({ "package.json": "{}" });
+  const project = createTemporaryProject({
+    "package.json": JSON.stringify({
+      devDependencies: { prettier: "*" },
+    }),
+  });
 
   const prettier = project.resolve("node_modules/prettier");
 

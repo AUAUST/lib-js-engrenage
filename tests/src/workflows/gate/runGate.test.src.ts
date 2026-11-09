@@ -7,6 +7,7 @@ import { setTimeout } from "node:timers/promises";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { map } from "@auaust/primitive-kit/arrays";
+import { record } from "@auaust/toolkit/object";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
@@ -33,13 +34,16 @@ const identity = {
   agent: "agent",
 };
 
-function createRepository(commands: readonly string[] = ["echo run >> .runs"]) {
+function createRepository(
+  commands: readonly string[] = ["echo run >> .runs"],
+  modules: readonly string[] = ["prettier", "typescript"],
+) {
   return createGitRepository(
     {
       "package.json": JSON.stringify({
         name: "project",
         type: "module",
-        devDependencies: { prettier: "*", typescript: "*" },
+        devDependencies: record(map(modules, (name) => [name, "*"])),
       }),
       "engrenage.config.ts": `export default { src: { baseline: "2026-10" }, agents: { gate: { commands: ${JSON.stringify(commands)} } } };\n`,
       ".gitignore": "node_modules\n.runs*\n.env.*\n!.env.example\n",
@@ -63,7 +67,7 @@ function createRepository(commands: readonly string[] = ["echo run >> .runs"]) {
       }),
       "src/index.ts": "export const value: number = 1;\n",
     },
-    ["prettier", "typescript"],
+    modules,
   );
 }
 
@@ -239,6 +243,85 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     expect(failures.map(({ step }) => step)).toEqual(["typecheck"]);
     expect(failures[0]?.output).toContain("src/index.ts(1,14): error TS2322");
+  });
+
+  test("fails the gate with the output of a contributed check", async () => {
+    const { project } = await createRepository();
+
+    project.write(
+      "engrenage.config.ts",
+      `export default {
+  src: { baseline: "2026-10" },
+  extensions: [
+    {
+      name: "gate-fixture",
+      contributes: {
+        "gate.steps": [
+          {
+            name: "fixture",
+            stage: "checks",
+            audience: "agents",
+            async load() {
+              return async () => ({ ok: false, output: "fixture failed" });
+            },
+          },
+        ],
+      },
+    },
+  ],
+};
+`,
+    );
+
+    project.write("src/index.ts", "export const value: number = 2;\n");
+
+    loadConfig.refresh(project.root);
+
+    const { failures } = await runGate(await loadConfig(project.root), {
+      mode: "worktree",
+    });
+
+    expect(failures).toEqual([{ step: "fixture", output: "fixture failed" }]);
+  });
+
+  test("runs no ESLint fix in a project without ESLint installed", async () => {
+    const { project, git } = await createRepository();
+
+    project.write("src/index.ts", "export const value: number = 2;\n");
+
+    git("add", "src/index.ts");
+
+    const config = await loadConfig(project.root);
+
+    const contributions = await config.context.registry.contributions(
+      "gate.steps",
+      config,
+    );
+
+    expect(map(contributions, ({ entry }) => entry.name)).not.toContain(
+      "eslint",
+    );
+
+    expect(await runGate(config, { mode: "staged" })).toEqual({
+      failures: [],
+      warnings: [],
+    });
+  });
+
+  test("runs no Prettier fix in a project without Prettier installed", async () => {
+    const { project, git } = await createRepository(undefined, ["typescript"]);
+
+    project.write("src/index.ts", "export const value: number = 2\n");
+
+    git("add", "src/index.ts");
+
+    expect(
+      await runGate(await loadConfig(project.root), { mode: "staged" }),
+    ).toEqual({ failures: [], warnings: [] });
+
+    expect(project.read("src/index.ts")).toBe(
+      "export const value: number = 2\n",
+    );
   });
 
   test("fails a partially staged file before any fix", async () => {

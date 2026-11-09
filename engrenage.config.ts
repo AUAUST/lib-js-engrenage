@@ -235,6 +235,7 @@ export default defineConfig({
           "presets",
           "steps",
           "sync",
+          "gate",
           "cache",
           "tsconfig",
           "package",

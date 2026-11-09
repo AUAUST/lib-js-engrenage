@@ -6,4 +6,4 @@ export const outDirGuard = "out-dir-guard";
 
 export const sourceGuard = "source-guard";
 
-export { project as pluginPrefix } from "#constants";
+export { project as pluginPrefix, vitest } from "#constants";

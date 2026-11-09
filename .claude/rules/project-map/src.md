@@ -15,7 +15,7 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ json  Read and edit JSON while preserving its formatting.
 │  ├─ options  Declare and validate configuration options.
 │  └─ processes  Run external processes.
-├─ project/  #project/…  config < roles < baseline < format < presets < steps < sync < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
+├─ project/  #project/…  config < roles < baseline < format < presets < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
 │  ├─ baseline*{editions}  Resolve browser support targets from Baseline editions.
 │  │  └─ editions  Browser targets for each Baseline edition.
 │  ├─ build  Resolve build outputs and the emitted package manifest.
@@ -23,6 +23,7 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ config  Load and resolve declarative configuration sections.
 │  ├─ environments  Configure source, tests, commands, tooling and data environments.
 │  ├─ format*  Formatting contracts shared by tool adapters.
+│  ├─ gate  Contract of the steps the gate runs.
 │  ├─ package*  Read and synchronize the project package manifest.
 │  ├─ presets  Project presets and their resolved traits.
 │  ├─ roles*  Declare role contracts and presets.
@@ -44,7 +45,8 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ pnpm*  Configure package management and dependency policies.
 │  ├─ prettier*  Configure code formatting.
 │  ├─ tsdown*  Configure package bundling and packaging validation.
-│  ├─ typescript*  Configure and run TypeScript checks.
+│  ├─ typescript*{tsc}  Configure and run TypeScript checks.
+│  │  └─ tsc  Run the TypeScript compiler.
 │  ├─ vite*  Configure application builds and development servers.
 │  ├─ vitest*  Configure and run source and distribution tests.
 │  └─ vscode*  Configure editor settings and extension recommendations.

@@ -1,8 +1,8 @@
+import type { GateResult, GateStepEntry } from "#project/gate/index";
 import type { Files } from "#types/Files";
-import type { GateResult } from "#workflows/gate/types/GateResult";
 
 export interface GateStep {
-  readonly audience: "everyone" | "agents";
+  readonly audience: GateStepEntry["audience"];
   readonly name: string;
   run(files: Files): Promise<GateResult>;
 }

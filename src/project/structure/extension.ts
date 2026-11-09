@@ -88,4 +88,19 @@ export default {
       },
     },
   },
+  contributes: {
+    "gate.steps": [
+      {
+        name: "structure --check",
+        stage: "checks",
+        audience: "agents",
+        async load() {
+          const { runStructureCheck } =
+            await import("#project/structure/operations/runStructureCheck");
+
+          return runStructureCheck;
+        },
+      },
+    ],
+  },
 } satisfies Extension;

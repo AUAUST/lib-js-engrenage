@@ -23,6 +23,7 @@ export { default as toolsPrettier } from "#tools/prettier/extension";
 export { default as toolsTsdown } from "#tools/tsdown/extension";
 export { default as toolsTypescript } from "#tools/typescript/extension";
 export { default as toolsVite } from "#tools/vite/extension";
+export { default as toolsVitest } from "#tools/vitest/extension";
 export { default as toolsVscode } from "#tools/vscode/extension";
 export { default as workflowsCli } from "#workflows/cli/extension";
 export { default as workflowsGate } from "#workflows/gate/extension";

@@ -15,6 +15,7 @@ describe("syncPrettierignoreFile", () => {
         devDependencies: {
           "@changesets/cli": "*",
           "eslint": "*",
+          "prettier": "*",
         },
       }),
       "tsconfig.json": JSON.stringify({
@@ -73,7 +74,10 @@ describe("syncPrettierignoreFile", () => {
   test("leaves out the changelog without changesets and the Codex instructions when Codex is not preferred", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
-      "package.json": '{ "type": "module" }',
+      "package.json": JSON.stringify({
+        type: "module",
+        devDependencies: { prettier: "*" },
+      }),
       ".prettierignore": "# @ignore project\n# @end\n",
     });
 
@@ -93,7 +97,10 @@ describe("syncPrettierignoreFile", () => {
   test("leaves a file without markers untouched", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
-      "package.json": '{ "type": "module" }',
+      "package.json": JSON.stringify({
+        type: "module",
+        devDependencies: { prettier: "*" },
+      }),
       ".prettierignore": "pnpm-lock.yaml\n",
     });
 

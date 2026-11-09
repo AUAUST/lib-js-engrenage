@@ -109,7 +109,9 @@ describe("validateConfig", () => {
 
   test("resolves the tool sections lazily next to the project sections", async () => {
     const project = createTemporaryProject({
-      "package.json": "{}",
+      "package.json": JSON.stringify({
+        devDependencies: { prettier: "*" },
+      }),
       "engrenage.config.ts": `export default { src: { baseline: "2026-10" }, agents: { preferred: ["claude"] } };\n`,
     });
 

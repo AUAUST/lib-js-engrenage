@@ -3,6 +3,7 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/prettier",
+  when: { installed: prettier },
   owns: {
     keys: {
       prettier: {
@@ -37,6 +38,20 @@ export default {
             await import("#tools/prettier/adapters/formatWithPrettier");
 
           return formatWithPrettier;
+        },
+      },
+    ],
+    "gate.steps": [
+      // @debt the only lint verdict is `eslint --fix`, which runs before `prettier --write` rewrites the files, so a formatting change that breaks a lint rule passes the gate
+      {
+        name: prettier,
+        stage: "fixes",
+        audience: "agents",
+        async load() {
+          const { fixWithPrettier } =
+            await import("#tools/prettier/operations/fixWithPrettier");
+
+          return fixWithPrettier;
         },
       },
     ],

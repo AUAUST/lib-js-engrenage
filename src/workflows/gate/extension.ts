@@ -1,5 +1,6 @@
-import { gateCache } from "#workflows/gate/constants";
+import { gateCache, gateStepEntry } from "#workflows/gate/constants";
 import type { Extension, FileLocation } from "#project/config/index";
+import type { GateStage } from "#project/gate/index";
 
 export default {
   name: "workflows/gate",
@@ -13,6 +14,17 @@ export default {
 
           return { directory: cache.for(gateCache) };
         },
+      },
+    },
+    slots: {
+      "gate.steps": {
+        stages: [
+          "fixes",
+          "checks",
+          "commands",
+          "warnings",
+        ] satisfies readonly GateStage[],
+        entry: gateStepEntry,
       },
     },
   },

@@ -51,6 +51,9 @@ export const sourceDomains = freeze({
   "project/package": {
     purpose: "Read and synchronize the project package manifest.",
   },
+  "project/gate": {
+    purpose: "Contract of the steps the gate runs.",
+  },
   "project/presets": {
     purpose: "Project presets and their resolved traits.",
   },
@@ -110,6 +113,9 @@ export const sourceDomains = freeze({
   },
   "tools/typescript": {
     purpose: "Configure and run TypeScript checks.",
+  },
+  "tools/typescript/tsc": {
+    purpose: "Run the TypeScript compiler.",
   },
   "tools/vite": {
     purpose: "Configure application builds and development servers.",

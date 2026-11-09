@@ -3,6 +3,19 @@ import type { Extension } from "#project/config/index";
 export default {
   name: "workflows/sync",
   contributes: {
+    "gate.steps": [
+      {
+        name: "sync --check",
+        stage: "checks",
+        audience: "agents",
+        async load() {
+          const { runSyncCheck } =
+            await import("#workflows/sync/operations/runSyncCheck");
+
+          return runSyncCheck;
+        },
+      },
+    ],
     "sync.targets": [
       {
         name: "package",
