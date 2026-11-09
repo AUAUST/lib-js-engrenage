@@ -1,17 +1,75 @@
+import { boolean } from "valibot";
 import { describe, expect, test } from "vitest";
 
 import { values } from "@auaust/toolkit/object";
 
-import { declareSection, type Resolver } from "#foundation/options/index";
+import {
+  declare,
+  declareSection,
+  type Resolver,
+} from "#foundation/options/index";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
+import { validateConfig } from "#project/config/operations/validateConfig";
 import { packageJsonSection } from "#project/package/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import type {
+  EntryShape,
+  ExtensionShape,
+  Registry,
+} from "#foundation/extensions/index";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { Extension } from "#project/config/types/Extension";
 
 import * as builtins from "#workflows/builtins/entry";
 
 const fixture = { name: "external-fixture" };
+
+const gatedSchema = declare(boolean(), {
+  optional: { value: false },
+});
+
+const gatedSection = declareSection({
+  name: "gated",
+  declaration: gatedSchema,
+  resolve(input): boolean {
+    return gatedSchema.resolve(input, undefined, "gated");
+  },
+});
+
+const gated = {
+  name: "gated-fixture",
+  when: { installed: "absent-package" },
+  owns: {
+    keys: {
+      gated: {
+        input: "gated",
+        load() {
+          return Promise.resolve(gatedSection);
+        },
+      },
+    },
+  },
+  contributes: { "test.entries": [{ name: "gated-entry" }] },
+};
+
+const slotOwner = {
+  name: "slot-fixture",
+  owns: {
+    slots: {
+      "test.entries": {},
+    },
+  },
+};
+
+function createGatedConfig(packageJson: Readonly<Record<string, unknown>>) {
+  return createProjectConfig({
+    root: createTemporaryProject({
+      "package.json": JSON.stringify({ name: "gated", ...packageJson }),
+    }).root,
+    raw: { extensions: [gated, slotOwner], gated: true },
+    configFile: undefined,
+  });
+}
 
 function createConfig(raw: Readonly<Record<string, unknown>>) {
   return createProjectConfig({
@@ -79,5 +137,31 @@ describe("createProjectConfig", () => {
     expect(() => createConfig({ extensions: [1] })).toThrow(
       /Invalid extensions config[\s\S]*at 0/u,
     );
+  });
+
+  test("refuses the keys of an inactive owner on read, still validating their input", async () => {
+    const config = createGatedConfig({});
+
+    const registry: Registry<
+      ExtensionShape<object, Readonly<Record<string, readonly EntryShape[]>>>
+    > = config.context.registry;
+
+    const open: Resolver<ConfigContext> = config;
+
+    expect(await registry.contributions("test.entries")).toEqual([]);
+
+    await expect(open.resolve("gated")).rejects.toThrow(
+      'Config key "gated" belongs to gated-fixture, which is inactive: install absent-package',
+    );
+
+    await expect(validateConfig(config)).resolves.toBe(config);
+  });
+
+  test("resolves the keys of an owner whose package is installed", async () => {
+    const open: Resolver<ConfigContext> = createGatedConfig({
+      devDependencies: { "absent-package": "1.0.0" },
+    });
+
+    expect(await open.resolve("gated")).toBe(true);
   });
 });

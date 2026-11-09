@@ -269,6 +269,14 @@ export function createResolver<
     const key = isString(target) ? target : await keyOf(target);
     const active = chain === undefined || chain.settled ? undefined : chain;
 
+    const refusal = await sections.refuse?.(key);
+
+    if (refusal !== undefined) {
+      throw new Error(
+        active === undefined ? refusal : `${refusal}, read by "${active.key}"`,
+      );
+    }
+
     if (active !== undefined) {
       track(key, active);
     }

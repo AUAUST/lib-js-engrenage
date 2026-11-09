@@ -1,8 +1,7 @@
 import { map } from "@auaust/primitive-kit/arrays";
-import { constant } from "@auaust/toolkit/constant";
 import { freeze, values } from "@auaust/toolkit/object";
 
-import { collectExtensions } from "#foundation/extensions/index";
+import { collectExtensions, type Registry } from "#foundation/extensions/index";
 import {
   createFilesystem,
   resolveWithin,
@@ -50,13 +49,40 @@ export function createProjectConfig({
     "extensions",
   );
 
-  const registry = collectExtensions<Extension>(
+  // @debt the registry's activation reads the resolver built from that same registry, a circular dependency that forces explicit annotations
+  const registry: Registry<Extension> = collectExtensions<Extension>(
     [...values(builtins).flat(), ...listed],
     {
       slotKind: "slots",
-      isActive: constant(true),
+      async isActive({ when }): Promise<boolean> {
+        if (when === undefined) {
+          return true;
+        }
+
+        const environment = await resolve("environment");
+
+        return environment.hasDependency(when.installed);
+      },
+      explainInactive,
     },
   );
+
+  function explainInactive({ when }: Extension): string | undefined {
+    return when === undefined ? undefined : `install ${when.installed}`;
+  }
+
+  async function refuse(key: string): Promise<string | undefined> {
+    const owner = registry.owner("keys", key);
+
+    if (owner?.when === undefined || (await registry.isActive(owner.name))) {
+      return;
+    }
+
+    const explanation = explainInactive(owner);
+    const refusal = `Config key "${key}" belongs to ${owner.name}, which is inactive`;
+
+    return explanation === undefined ? refusal : `${refusal}: ${explanation}`;
+  }
 
   async function load(key: string): Promise<KeyedSection | undefined> {
     const declaration = registry.get("keys", key);
@@ -92,7 +118,11 @@ export function createProjectConfig({
     },
     {
       source,
-      sections: { load, keyOf },
+      sections: {
+        load,
+        keyOf,
+        refuse,
+      },
       unknownNote: `Registered extensions: ${names.join(", ")}`,
     },
   );
