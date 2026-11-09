@@ -17,6 +17,8 @@ export const agentsFile = "AGENTS.md" satisfies File;
 
 export const agentsTemplate = `${engrenage}/agents/templates/${agentsFile}`;
 
+export const agentsTarget = "agents";
+
 export const agentNames = freeze(["claude", "codex"] as const);
 
 // @debt Codex has no shell detector here, so its commits select only local-file checks instead of the full agent gate

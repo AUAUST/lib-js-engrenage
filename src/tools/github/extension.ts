@@ -15,4 +15,18 @@ export default {
       },
     },
   },
+  contributes: {
+    "sync.targets": [
+      {
+        name: "workflows",
+        stage: "write",
+        async load() {
+          const { syncWorkflowFiles } =
+            await import("#tools/github/setup/syncWorkflowFiles");
+
+          return syncWorkflowFiles;
+        },
+      },
+    ],
+  },
 } satisfies Extension;

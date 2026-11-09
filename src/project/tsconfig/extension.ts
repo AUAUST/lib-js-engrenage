@@ -1,4 +1,4 @@
-import type { Extension } from "#project/config/index";
+import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "project/tsconfig",
@@ -35,6 +35,16 @@ export default {
             await import("#project/tsconfig/config/sections/tsconfigPathSection");
 
           return tsconfigPathSection;
+        },
+      },
+    },
+    files: {
+      tsconfig: {
+        parts: true,
+        async locate(config): Promise<FileLocation | undefined> {
+          const file = await config.resolve("tsconfigPath");
+
+          return file === undefined ? undefined : { file };
         },
       },
     },

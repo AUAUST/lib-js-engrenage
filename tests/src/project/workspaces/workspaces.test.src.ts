@@ -69,7 +69,7 @@ describe("workspaces", () => {
 
     await sync(["workspaces", "pnpm"], {
       check: false,
-      flags: {},
+      values: {},
     });
 
     expect(project.read("pnpm-workspace.yaml")).toContain(
@@ -113,7 +113,7 @@ describe("workspaces", () => {
 
     await sync(["workspaces", "pnpm"], {
       check: true,
-      flags: {},
+      values: {},
     });
 
     expect(process.exitCode).toBeUndefined();
@@ -132,7 +132,7 @@ describe("workspaces", () => {
 
     await sync(["workspaces"], {
       check: false,
-      flags: {},
+      values: {},
     });
 
     expect(
@@ -149,7 +149,7 @@ describe("workspaces", () => {
 
     await sync(["workspaces"], {
       check: true,
-      flags: {},
+      values: {},
     });
 
     expect(process.exitCode).toBe(1);

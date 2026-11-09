@@ -26,4 +26,19 @@ export default {
       },
     },
   },
+  contributes: {
+    "sync.targets": [
+      {
+        name: "prettierignore",
+        stage: "write",
+        reads: ["tsconfig"],
+        async load() {
+          const { syncPrettierignoreFile } =
+            await import("#tools/prettier/setup/syncPrettierignoreFile");
+
+          return syncPrettierignoreFile;
+        },
+      },
+    ],
+  },
 } satisfies Extension;

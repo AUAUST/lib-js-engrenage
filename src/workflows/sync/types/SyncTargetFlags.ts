@@ -1,5 +1,3 @@
-import type { SyncTargetName } from "#workflows/sync/types/SyncTargetName";
+import type { SyncFlags } from "#project/sync/index";
 
-export type SyncTargetFlags = Partial<
-  Record<SyncTargetName, Record<string, boolean>>
->;
+export type SyncTargetFlags = Readonly<Partial<Record<string, SyncFlags>>>;

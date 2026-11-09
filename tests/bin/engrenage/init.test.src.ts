@@ -14,7 +14,6 @@ import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 import { scratchpadPlaceholders } from "#tools/agents/constants";
-import { syncTargetFlags } from "#workflows/sync/constants";
 import type { Prompter } from "#project/steps/index";
 
 import * as prompts from "#workflows/init/operations/createPrompter";
@@ -563,9 +562,9 @@ describe("engrenage init", () => {
 
       vi.mocked(console.warn).mockClear();
 
-      await sync(keys(syncTargetFlags), {
+      await sync([], {
         check: true,
-        flags: {},
+        values: {},
       });
 
       expect(process.exitCode ?? 0).toBe(0);

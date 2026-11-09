@@ -15,4 +15,18 @@ export default {
       },
     },
   },
+  contributes: {
+    "sync.targets": [
+      {
+        name: "changesets",
+        stage: "write",
+        async load() {
+          const { syncChangesetConfig } =
+            await import("#tools/changesets/setup/syncChangesetConfig");
+
+          return syncChangesetConfig;
+        },
+      },
+    ],
+  },
 } satisfies Extension;

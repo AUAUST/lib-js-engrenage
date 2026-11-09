@@ -31,6 +31,35 @@ export default {
           },
         },
       },
+      contributes: {
+        "sync.targets": [
+          {
+            name: "external-fixture",
+            stage: "write",
+            flags: { create: "create external-output/created.txt" },
+            produces: ["externalFixture.output"],
+            load: async () => {
+              return async (
+                config: {
+                  context: {
+                    filesystem: {
+                      write(path: string, content: string): Promise<void>;
+                    };
+                  };
+                },
+                flags: { create?: boolean },
+              ) => {
+                if (flags.create === true) {
+                  await config.context.filesystem.write(
+                    "external-output/created.txt",
+                    "created\n",
+                  );
+                }
+              };
+            },
+          },
+        ],
+      },
     },
   ],
   externalFixture: { label: "listed" },

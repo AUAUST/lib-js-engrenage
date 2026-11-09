@@ -66,3 +66,5 @@ export const claudeRulesGlob = ".claude/rules/**/*.md";
 export const claudeSkillsDir = ".claude/skills" satisfies Directory;
 
 export const claudeAgentsDir = ".claude/agents" satisfies Directory;
+
+export const claudeTarget = "claude";

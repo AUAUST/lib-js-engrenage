@@ -1,4 +1,4 @@
-import { codexFile } from "#tools/agents/codex/constants";
+import { codexFile, codexTarget } from "#tools/agents/codex/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
@@ -17,5 +17,23 @@ export default {
         },
       },
     },
+  },
+  contributes: {
+    "sync.targets": [
+      {
+        name: codexTarget,
+        stage: "write",
+        flags: {
+          hooks: "create .codex/hooks.json when it is missing",
+        },
+        reads: ["agents.instructions"],
+        async load() {
+          const { syncCodexFiles } =
+            await import("#tools/agents/codex/setup/syncCodexFiles");
+
+          return syncCodexFiles;
+        },
+      },
+    ],
   },
 } satisfies Extension;

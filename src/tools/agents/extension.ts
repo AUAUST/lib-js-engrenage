@@ -1,4 +1,5 @@
-import type { Extension } from "#project/config/index";
+import { agentsTarget } from "#tools/agents/constants";
+import type { Extension, FileLocation } from "#project/config/index";
 
 import claude from "#tools/agents/claude/extension";
 import codex from "#tools/agents/codex/extension";
@@ -20,6 +21,41 @@ export default [
           },
         },
       },
+      files: {
+        "agents.instructions": {
+          async locate(config): Promise<FileLocation | undefined> {
+            const { instructionFiles } = await config.resolve("agents");
+
+            return { globs: instructionFiles };
+          },
+        },
+      },
+    },
+    contributes: {
+      "sync.targets": [
+        {
+          name: agentsTarget,
+          stage: "write",
+          reads: ["tsconfig"],
+          produces: ["agents.instructions"],
+          async load() {
+            const { syncAgents } =
+              await import("#tools/agents/setup/syncAgents");
+
+            return syncAgents;
+          },
+        },
+      ],
+      "sync.done": [
+        {
+          async load() {
+            const { reportSyncedAgentChecks } =
+              await import("#tools/agents/operations/reportSyncedAgentChecks");
+
+            return reportSyncedAgentChecks;
+          },
+        },
+      ],
     },
   },
   claude,

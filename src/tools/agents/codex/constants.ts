@@ -36,3 +36,5 @@ export const codexHooks = freeze([
 export const codexAgentsDir = ".codex/agents" satisfies Directory;
 
 export const codexSkillsDir = ".agents/skills" satisfies Directory;
+
+export const codexTarget = "codex";

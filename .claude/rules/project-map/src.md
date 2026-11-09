@@ -15,7 +15,7 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ json  Read and edit JSON while preserving its formatting.
 │  ├─ options  Declare and validate configuration options.
 │  └─ processes  Run external processes.
-├─ project/  #project/…  config < roles < baseline < format < presets < steps < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
+├─ project/  #project/…  config < roles < baseline < format < presets < steps < sync < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
 │  ├─ baseline*{editions}  Resolve browser support targets from Baseline editions.
 │  │  └─ editions  Browser targets for each Baseline edition.
 │  ├─ build  Resolve build outputs and the emitted package manifest.
@@ -28,6 +28,7 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ roles*  Declare role contracts and presets.
 │  ├─ steps  Contracts and helpers for project initialization steps.
 │  ├─ structure  Resolve project structure and enforce its boundaries.
+│  ├─ sync  Contract of the targets sync runs.
 │  ├─ tsconfig  Compose TypeScript project configurations.
 │  └─ workspaces  Resolve workspace groups and their projects.
 ├─ tools/  #tools/…  One domain per external tool, holding its adapters.

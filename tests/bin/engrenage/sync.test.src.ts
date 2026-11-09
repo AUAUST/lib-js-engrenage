@@ -2,16 +2,11 @@ import { existsSync } from "node:fs";
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { keys } from "@auaust/toolkit/object";
-
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { syncTargetFlags } from "#workflows/sync/constants";
 
 import sync from "#bin/engrenage/actions/sync";
-
-const everyTarget = keys(syncTargetFlags);
 
 const emptyBlock = [
   "<!-- @reference ./.claude/shared.md -->",
@@ -51,9 +46,9 @@ describe("engrenage sync", () => {
   test("syncs every target so a later check passes", async () => {
     const project = createProject();
 
-    await sync(everyTarget, {
+    await sync([], {
       check: false,
-      flags: {},
+      values: {},
     });
 
     expect(project.read("AGENTS.md")).toContain("## Shared section");
@@ -64,9 +59,9 @@ describe("engrenage sync", () => {
 
     vi.mocked(console.info).mockClear();
 
-    await sync(everyTarget, {
+    await sync([], {
       check: true,
-      flags: {},
+      values: {},
     });
 
     expect(process.exitCode).toBeUndefined();
@@ -85,7 +80,7 @@ describe("engrenage sync", () => {
 
     await sync(["vscode"], {
       check: true,
-      flags: {},
+      values: {},
     });
 
     expect(process.exitCode).toBe(1);
@@ -110,16 +105,14 @@ describe("engrenage sync", () => {
 
     await sync(["vscode"], {
       check: false,
-      flags: {},
+      values: {},
     });
 
     expect(existsSync(project.resolve(".vscode/settings.json"))).toBe(false);
 
     await sync(["vscode"], {
       check: false,
-      flags: {
-        vscode: { settings: true },
-      },
+      values: { vscodeSettings: true },
     });
 
     expect(JSON.parse(project.read(".vscode/settings.json"))).toMatchObject({
@@ -142,9 +135,9 @@ describe("engrenage sync", () => {
 
     mockCwd(project.root);
 
-    await sync(everyTarget, {
+    await sync([], {
       check: false,
-      flags: {},
+      values: {},
     });
 
     expect(existsSync(project.resolve("tsconfig.json"))).toBe(true);

@@ -49,6 +49,7 @@ export { parseInstruction } from "#tools/agents/operations/parseInstruction";
 export { readHookPayload } from "#tools/agents/operations/readHookPayload";
 export { reportAgentChecks } from "#tools/agents/operations/reportAgentChecks";
 export { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
+export { reportSyncedAgentChecks } from "#tools/agents/operations/reportSyncedAgentChecks";
 export { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 export { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 export { syncHooks } from "#tools/agents/operations/syncHooks";

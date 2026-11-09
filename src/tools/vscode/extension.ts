@@ -15,4 +15,22 @@ export default {
       },
     },
   },
+  contributes: {
+    "sync.targets": [
+      {
+        name: "vscode",
+        stage: "write",
+        flags: {
+          settings: "create .vscode/settings.json when it is missing",
+          extensions: "create .vscode/extensions.json when it is missing",
+        },
+        async load() {
+          const { syncVscodeFiles } =
+            await import("#tools/vscode/setup/syncVscodeFiles");
+
+          return syncVscodeFiles;
+        },
+      },
+    ],
+  },
 } satisfies Extension;

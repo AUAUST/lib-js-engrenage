@@ -1,24 +1,29 @@
 import { loadValidatedConfig } from "#workflows/config/index";
 import {
+  listSyncOptions,
+  readSyncFlags,
   runSync,
   settleChanges,
-  type SyncTargetFlags,
-  type SyncTargetName,
 } from "#workflows/sync/index";
 
 export default async function (
-  targets: readonly SyncTargetName[],
-  { check, flags }: { check: boolean; flags: SyncTargetFlags },
+  targets: readonly string[],
+  {
+    check,
+    values,
+  }: { check: boolean; values: Readonly<Record<string, unknown>> },
 ): Promise<void> {
   const config = await loadValidatedConfig();
+
+  const { options } = await listSyncOptions(config);
 
   if (check) {
     console.info("Checking synced files...");
   }
 
   await runSync(config, {
-    names: targets,
-    flags,
+    ...(targets.length > 0 && { names: targets }),
+    flags: readSyncFlags(options, values),
   });
 
   await settleChanges(config, {

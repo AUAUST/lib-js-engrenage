@@ -26,4 +26,20 @@ export default {
       },
     },
   },
+  contributes: {
+    "sync.targets": [
+      {
+        name: "gitignore",
+        stage: "write",
+        reads: ["tsconfig"],
+        produces: ["gitignore"],
+        async load() {
+          const { syncGitignoreFile } =
+            await import("#tools/git/setup/syncGitignoreFile");
+
+          return syncGitignoreFile;
+        },
+      },
+    ],
+  },
 } satisfies Extension;

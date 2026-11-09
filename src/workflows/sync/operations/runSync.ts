@@ -1,33 +1,48 @@
-import { includes } from "@auaust/primitive-kit/arrays";
-import { keys } from "@auaust/toolkit/object";
+import { includes, map } from "@auaust/primitive-kit/arrays";
 
-import { reportAgentChecks } from "#tools/agents/index";
-import { syncTargets } from "#workflows/sync/operations/syncTargets";
 import type { LoadedConfig } from "#project/config/index";
 import type { SyncTargetFlags } from "#workflows/sync/types/SyncTargetFlags";
-import type { SyncTargetName } from "#workflows/sync/types/SyncTargetName";
 
 export async function runSync(
   config: LoadedConfig,
   {
-    names = keys(syncTargets),
+    names,
     flags = {},
   }: {
-    names?: readonly SyncTargetName[];
+    names?: readonly string[];
     flags?: SyncTargetFlags;
   } = {},
 ) {
-  for (const name of keys(syncTargets)) {
-    if (includes(names, name)) {
-      await syncTargets[name].sync(config, flags[name] ?? {});
-    }
+  const { registry } = config.context;
+
+  const contributions = await registry.contributions("sync.targets");
+
+  const active = map(contributions, ({ entry }) => entry.name);
+
+  const unknown = names?.find((name) => !includes(active, name));
+
+  if (unknown !== undefined) {
+    throw new Error(
+      `Unknown sync target "${unknown}"; active targets: ${active.join(", ")}`,
+    );
   }
 
-  if (
-    names.some((name) => {
-      return name === "agents" || name === "claude" || name === "codex";
-    })
-  ) {
-    await reportAgentChecks(config);
+  const targets: string[] = [];
+
+  for (const { entry } of contributions) {
+    if (names !== undefined && !includes(names, entry.name)) {
+      continue;
+    }
+
+    const run = await entry.load();
+
+    await run(config, flags[entry.name] ?? {});
+
+    targets.push(entry.name);
   }
+
+  await registry.emit("sync.done", {
+    config,
+    targets,
+  });
 }

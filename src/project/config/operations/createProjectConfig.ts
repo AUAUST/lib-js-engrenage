@@ -62,6 +62,9 @@ export function createProjectConfig({
         return environment.hasDependency(when.installed);
       },
       explainInactive,
+      matches(read, produced): boolean {
+        return produced === read || produced.startsWith(`${read}#`);
+      },
     },
   );
 

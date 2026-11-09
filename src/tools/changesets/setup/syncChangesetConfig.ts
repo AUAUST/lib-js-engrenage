@@ -44,12 +44,7 @@ async function resolveConfigVersion(packageJsonPath: File): Promise<string> {
 export async function syncChangesetConfig(config: LoadedConfig) {
   const filesystem = config.context.filesystem;
 
-  const environment = await config.resolve("environment");
-
-  if (
-    !environment.hasDependency(changesetsCli) ||
-    !(await filesystem.exists(configFile))
-  ) {
+  if (!(await filesystem.exists(configFile))) {
     return;
   }
 

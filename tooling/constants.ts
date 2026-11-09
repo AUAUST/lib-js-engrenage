@@ -63,6 +63,9 @@ export const sourceDomains = freeze({
   "project/structure": {
     purpose: "Resolve project structure and enforce its boundaries.",
   },
+  "project/sync": {
+    purpose: "Contract of the targets sync runs.",
+  },
   "project/tsconfig": {
     purpose: "Compose TypeScript project configurations.",
   },
