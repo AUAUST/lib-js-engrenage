@@ -67,7 +67,6 @@ async function resolveStructure(
 }
 
 export const structureSection = declareSection({
-  name: "structure",
   async resolve(_input, config: ConfigResolver): Promise<ResolvedStructure> {
     const [source, bin, scripts, tests, tooling] = await Promise.all([
       config.resolve("src"),

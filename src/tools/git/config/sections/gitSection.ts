@@ -9,7 +9,6 @@ import { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
 import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 
 export const gitSection = declareSection({
-  name: "git",
   declaration: gitSchema,
   async resolve(input, config: ConfigResolver): Promise<ResolvedGit> {
     const { root, filesystem } = config.context;

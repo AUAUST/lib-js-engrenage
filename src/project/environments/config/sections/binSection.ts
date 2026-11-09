@@ -7,7 +7,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedBin } from "#project/environments/types/ResolvedBin";
 
 export const binSection = declareSection({
-  name: "bin",
   async resolve(_input, config: ConfigResolver): Promise<ResolvedBin> {
     const option = await config.resolve("bin.options");
 

@@ -5,7 +5,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";
 
 export const workspacesSection = declareSection({
-  name: "workspaces",
   declaration: workspacesSchema,
   async resolve(
     input,

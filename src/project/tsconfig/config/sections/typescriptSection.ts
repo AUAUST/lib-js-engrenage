@@ -8,7 +8,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
 
 export const typescriptSection = declareSection({
-  name: "typescript",
   async resolve(_input, config: ConfigResolver): Promise<ResolvedTypescript> {
     const option = await config.resolve("typescript.options");
 

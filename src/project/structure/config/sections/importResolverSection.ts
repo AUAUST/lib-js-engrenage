@@ -3,7 +3,6 @@ import { createImportResolver } from "#project/structure/utils/createImportResol
 import type { ConfigResolver } from "#project/config/index";
 
 export const importResolverSection = declareSection({
-  name: "importResolver",
   async resolve(
     _input,
     config: ConfigResolver,

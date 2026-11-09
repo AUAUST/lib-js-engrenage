@@ -1,9 +1,10 @@
 import { describe, expect, test } from "vitest";
 
-import { entries, getOwn } from "@auaust/toolkit/object";
+import { getOwn } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/config/declarers/declareSection";
 import { createResolver } from "#foundation/options/utils/createResolver";
+import type { Resolver } from "#foundation/options/types/Resolver";
 import type { Section } from "#foundation/options/types/Section";
 import type { SectionSource } from "#foundation/options/types/SectionSource";
 
@@ -16,11 +17,7 @@ function createSource(
     return section === undefined ? undefined : { input: undefined, section };
   }
 
-  async function keyOf(section: Section) {
-    return entries(sections).find(([, value]) => value === section)?.[0];
-  }
-
-  return { load, keyOf };
+  return { load };
 }
 
 function createSourceResolver(sections: Readonly<Record<string, Section>>) {
@@ -32,7 +29,6 @@ describe("createResolver", () => {
     let calls = 0;
 
     const base = declareSection({
-      name: "base",
       async resolve() {
         calls += 1;
 
@@ -43,14 +39,12 @@ describe("createResolver", () => {
     });
 
     const left = declareSection({
-      name: "left",
       async resolve(_input, config): Promise<number> {
         return Number(await config.resolve("base")) + 1;
       },
     });
 
     const right = declareSection({
-      name: "right",
       async resolve(_input, config): Promise<number> {
         return Number(await config.resolve("base")) + 2;
       },
@@ -71,21 +65,18 @@ describe("createResolver", () => {
 
   test("fails with the path of keys depending on each other", async () => {
     const first = declareSection({
-      name: "first",
       resolve(_input, config): Promise<unknown> {
         return config.resolve("second");
       },
     });
 
     const second = declareSection({
-      name: "second",
       resolve(_input, config): Promise<unknown> {
         return config.resolve("third");
       },
     });
 
     const third = declareSection({
-      name: "third",
       resolve(_input, config): Promise<unknown> {
         return config.resolve("second");
       },
@@ -104,7 +95,6 @@ describe("createResolver", () => {
 
   test("fails on an unknown key read by a section, naming both", async () => {
     const reader = declareSection({
-      name: "reader",
       resolve(_input, config): Promise<unknown> {
         return config.resolve("missing");
       },
@@ -115,25 +105,6 @@ describe("createResolver", () => {
     await expect(resolve("reader")).rejects.toThrow(
       'Unknown config key "missing", read by "reader"',
     );
-  });
-
-  test("computes a section read by value and by key once", async () => {
-    let calls = 0;
-
-    const counted = declareSection({
-      name: "counted",
-      resolve() {
-        calls += 1;
-
-        return calls;
-      },
-    });
-
-    const { resolve } = createSourceResolver({ counted });
-
-    expect(await resolve(counted)).toBe(1);
-    expect(await resolve("counted")).toBe(1);
-    expect(calls).toBe(1);
   });
 
   test("re-resolves a memoized key when a live key it read changes", async () => {
@@ -147,7 +118,6 @@ describe("createResolver", () => {
     let calls = 0;
 
     const live = declareSection({
-      name: "live",
       live: true,
       resolve() {
         return current;
@@ -155,11 +125,13 @@ describe("createResolver", () => {
     });
 
     const derived = declareSection({
-      name: "derived",
-      async resolve(_input, config): Promise<unknown> {
+      async resolve(
+        _input,
+        config: Resolver<unknown, { live: { content: string } }>,
+      ): Promise<string> {
         calls += 1;
 
-        return (await config.resolve(live)).content;
+        return (await config.resolve("live")).content;
       },
     });
 
@@ -179,7 +151,6 @@ describe("createResolver", () => {
     let calls = 0;
 
     const live = declareSection({
-      name: "live",
       live: true,
       resolve() {
         return file;
@@ -187,7 +158,6 @@ describe("createResolver", () => {
     });
 
     const derived = declareSection({
-      name: "derived",
       async resolve(_input, config): Promise<unknown> {
         calls += 1;
 
@@ -199,7 +169,7 @@ describe("createResolver", () => {
 
     await resolve("derived");
 
-    await resolve(derived);
+    await resolve("derived");
 
     expect(calls).toBe(1);
   });

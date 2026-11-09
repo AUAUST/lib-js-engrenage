@@ -14,7 +14,6 @@ import type { ResolvedTests } from "#project/environments/types/ResolvedTests";
 import type { Globs } from "#types/Globs";
 
 export const testsSection = declareSection({
-  name: "tests",
   async resolve(_input, config: ConfigResolver): Promise<ResolvedTests> {
     const { node } = await config.resolve("runtime");
 

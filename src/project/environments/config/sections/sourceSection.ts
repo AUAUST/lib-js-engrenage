@@ -9,7 +9,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedSource } from "#project/environments/types/ResolvedSource";
 
 export const sourceSection = declareSection({
-  name: "src",
   async resolve(_input, config: ConfigResolver): Promise<ResolvedSource> {
     const option = await config.resolve("src.options");
 

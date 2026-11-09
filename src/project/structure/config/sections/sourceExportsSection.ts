@@ -6,7 +6,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { File } from "#types/File";
 
 export const sourceExportsSection = declareSection({
-  name: "src.exports",
   async resolve(
     _input,
     config: ConfigResolver,

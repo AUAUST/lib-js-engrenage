@@ -29,7 +29,6 @@ const gatedSchema = declare(boolean(), {
 });
 
 const gatedSection = declareSection({
-  name: "gated",
   declaration: gatedSchema,
   resolve(input): boolean {
     return gatedSchema.resolve(input, undefined, "gated");
@@ -86,7 +85,6 @@ describe("createProjectConfig", () => {
     });
 
     const nameSection = declareSection({
-      name: "name",
       async resolve(
         _input,
         config: ConfigResolver,

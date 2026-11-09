@@ -21,7 +21,6 @@ export * from "#project/config/types/SectionsOf";
 
 // @barrel operations/*.ts named
 export { createProjectConfig } from "#project/config/operations/createProjectConfig";
-export { findSectionKey } from "#project/config/operations/findSectionKey";
 export { loadConfig } from "#project/config/operations/loadConfig";
 export { loadValidatedConfig } from "#project/config/operations/loadValidatedConfig";
 export { readRawConfig } from "#project/config/operations/readRawConfig";

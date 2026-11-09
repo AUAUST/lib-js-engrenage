@@ -25,7 +25,6 @@ const parserFor = memoizeByContext(({ root, filesystem }) => {
 });
 
 export const tsconfigSection = declareSection({
-  name: "tsconfig",
   live: true,
   async resolve(_input, config: ConfigResolver): Promise<Tsconfig> {
     const { context } = config;

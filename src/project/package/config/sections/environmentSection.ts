@@ -27,7 +27,6 @@ function createEnvironment(packageJson: PackageJson): Environment {
 }
 
 export const environmentSection = declareSection({
-  name: "environment",
   live: true,
   async resolve(_input, config: ConfigResolver): Promise<Environment> {
     const packageJson = await config.resolve("packageJson");

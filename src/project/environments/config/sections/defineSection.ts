@@ -4,7 +4,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedDefine } from "#project/environments/types/ResolvedDefine";
 
 export const defineSection = declareSection({
-  name: "define",
   declaration: defineSchema,
   async resolve(input, config: ConfigResolver): Promise<ResolvedDefine> {
     const { root, configFile, filesystem } = config.context;

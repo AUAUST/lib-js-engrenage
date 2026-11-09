@@ -3,7 +3,6 @@ import { testsSchema } from "#project/environments/config/schemas/testsSchema";
 import type { ConfigResolver } from "#project/config/index";
 
 export const testsOptionsSection = declareSection({
-  name: "tests",
   declaration: testsSchema,
   async resolve(
     input,

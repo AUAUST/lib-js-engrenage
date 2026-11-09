@@ -10,7 +10,6 @@ import { effectModuleSchema } from "#project/structure/config/schemas/effectModu
 import type { EffectModule } from "#project/structure/types/EffectModule";
 
 export const effectModulesSection = declareSection({
-  name: "effectModules",
   async resolve(): Promise<Readonly<Record<string, EffectModule>>> {
     const file = resolveDataFile(`${engrenage}/effects/modules.json`);
 

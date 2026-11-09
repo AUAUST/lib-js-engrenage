@@ -7,7 +7,6 @@ import { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
 import type { ResolvedPrettier } from "#tools/prettier/types/ResolvedPrettier";
 
 export const prettierSection = declareSection({
-  name: "prettier",
   declaration: prettierSchema,
   resolve(input, config: ConfigResolver): ResolvedPrettier {
     const { root, filesystem } = config.context;

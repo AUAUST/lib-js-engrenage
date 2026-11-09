@@ -1,4 +1,3 @@
-import { isString } from "@auaust/toolkit/isString";
 import { is, keys } from "@auaust/toolkit/object";
 
 import { validate } from "#foundation/options/utils/validate";
@@ -6,7 +5,6 @@ import type { Declaration } from "#foundation/options/types/Declaration";
 import type { InputResolver } from "#foundation/options/types/InputResolver";
 import type { KeyedSection } from "#foundation/options/types/KeyedSection";
 import type { Resolver } from "#foundation/options/types/Resolver";
-import type { Section } from "#foundation/options/types/Section";
 import type { SectionSource } from "#foundation/options/types/SectionSource";
 
 interface Reading {
@@ -171,9 +169,7 @@ export function createResolver<
       settled: false,
     };
 
-    function resolve(dependency: string): Promise<unknown>;
-    function resolve<Output>(dependency: Section<Output>): Promise<Output>;
-    async function resolve(dependency: string | Section): Promise<unknown> {
+    async function resolve(dependency: string): Promise<unknown> {
       const { value } = await read(dependency, chain);
 
       return value;
@@ -252,21 +248,7 @@ export function createResolver<
       : memoize(key, trail);
   }
 
-  async function keyOf(section: Section): Promise<string> {
-    const key = await sections.keyOf?.(section);
-
-    if (key === undefined) {
-      throw new Error("A section read by value is declared under no key");
-    }
-
-    return key;
-  }
-
-  async function read(
-    target: string | Section,
-    chain: Chain | undefined,
-  ): Promise<Reading> {
-    const key = isString(target) ? target : await keyOf(target);
+  async function read(key: string, chain: Chain | undefined): Promise<Reading> {
     const active = chain === undefined || chain.settled ? undefined : chain;
 
     const refusal = await sections.refuse?.(key);
@@ -345,9 +327,8 @@ export function createResolver<
   function resolve<Key extends keyof Sections & string>(
     key: Key,
   ): Promise<Sections[Key]>;
-  function resolve<Output>(section: Section<Output>): Promise<Output>;
-  async function resolve(target: string | Section): Promise<unknown> {
-    const { value } = await read(target, undefined);
+  async function resolve(key: string): Promise<unknown> {
+    const { value } = await read(key, undefined);
 
     return value;
   }

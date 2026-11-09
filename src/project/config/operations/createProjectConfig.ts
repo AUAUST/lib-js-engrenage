@@ -11,12 +11,9 @@ import {
   createResolver,
   validate,
   type KeyedSection,
-  type Section,
 } from "#foundation/options/index";
 import { extensionsSchema } from "#project/config/config/schemas/extensionsSchema";
-import { findSectionKey } from "#project/config/operations/findSectionKey";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
-import type { ConfigKey } from "#project/config/types/ConfigKey";
 import type { ConfigSections } from "#project/config/types/ConfigSections";
 import type { Extension } from "#project/config/types/Extension";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
@@ -95,10 +92,6 @@ export function createProjectConfig({
     }
   }
 
-  function keyOf(section: Section): Promise<ConfigKey | undefined> {
-    return findSectionKey(registry, section);
-  }
-
   const names = map(registry.extensions, ({ name }) => name);
 
   const {
@@ -120,7 +113,6 @@ export function createProjectConfig({
       source,
       sections: {
         load,
-        keyOf,
         refuse,
       },
       unknownNote: `Registered extensions: ${names.join(", ")}`,

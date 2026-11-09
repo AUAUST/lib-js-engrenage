@@ -20,7 +20,6 @@ const parserFor = memoizeByContext(({ root }) => {
 });
 
 export const packageJsonSection = declareSection({
-  name: "packageJson",
   live: true,
   async resolve(_input, config: ConfigResolver): Promise<PackageJson> {
     const { context } = config;

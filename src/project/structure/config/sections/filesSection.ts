@@ -8,7 +8,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedFiles } from "#project/structure/types/ResolvedFiles";
 
 export const filesSection = declareSection({
-  name: "files",
   async resolve(_input, config: ConfigResolver): Promise<ResolvedFiles> {
     const [source, tests, bin, scripts, groups, roles] = await Promise.all([
       config.resolve("src"),

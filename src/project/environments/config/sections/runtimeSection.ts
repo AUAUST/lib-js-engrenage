@@ -5,7 +5,6 @@ import { runtimeSchema } from "#project/environments/config/schemas/runtimeSchem
 import type { ResolvedRuntimeSettings } from "#project/config/index";
 
 export const runtimeSection = declareSection({
-  name: "runtime",
   declaration: runtimeSchema,
   resolve(input): ResolvedRuntimeSettings {
     const { node } = runtimeSchema.resolve(input, undefined, "runtime");

@@ -8,7 +8,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedScripts } from "#project/environments/types/ResolvedScripts";
 
 export const scriptsSection = declareSection({
-  name: "scripts",
   async resolve(_input, config: ConfigResolver): Promise<ResolvedScripts> {
     const { node } = await config.resolve("runtime");
 

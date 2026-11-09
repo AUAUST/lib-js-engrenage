@@ -4,7 +4,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { File } from "#types/File";
 
 export const tsconfigPathSection = declareSection({
-  name: "tsconfigPath",
   live: true,
   resolve(_input, config: ConfigResolver): Promise<File | undefined> {
     return locateTsconfigPath(config);

@@ -15,7 +15,6 @@ async function readOutDir(
 }
 
 export const entitiesSection = declareSection({
-  name: "entities",
   async resolve(_input, config: ConfigResolver): Promise<EntityIndex> {
     const [
       structure,

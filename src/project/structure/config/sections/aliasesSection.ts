@@ -16,7 +16,6 @@ async function readOutDir(
 }
 
 export const aliasesSection = declareSection({
-  name: "aliases",
   declaration: aliasesSchema,
   async resolve(input, config: ConfigResolver): Promise<ResolvedAliases> {
     const option = await config.resolve("src.options");

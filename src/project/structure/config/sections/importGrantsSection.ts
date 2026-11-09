@@ -7,7 +7,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { ImportGrants } from "#project/structure/types/ImportGrants";
 
 export const importGrantsSection = declareSection({
-  name: "importGrants",
   async resolve(_input, config: ConfigResolver): Promise<ImportGrants> {
     const [traits, groups] = await Promise.all([
       config.resolve("traits"),

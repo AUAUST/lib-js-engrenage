@@ -8,7 +8,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { PackageName } from "#types/PackageName";
 
 export const cacheSection = declareSection({
-  name: "cache",
   declaration: cacheSchema,
   resolve(input, config: ConfigResolver): ResolvedCache {
     const { root } = config.context;

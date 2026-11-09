@@ -6,7 +6,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
 
 export const githubSection = declareSection({
-  name: "github",
   declaration: githubSchema,
   async resolve(input, config: ConfigResolver): Promise<ResolvedGithub> {
     const [traits, { hasDependency }] = await Promise.all([

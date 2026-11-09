@@ -6,7 +6,6 @@ import type { ResolvedBuild } from "#project/build/types/ResolvedBuild";
 import type { ConfigResolver } from "#project/config/index";
 
 export const buildSection = declareSection({
-  name: "build",
   declaration: buildSchema,
   async resolve(input, config: ConfigResolver): Promise<ResolvedBuild> {
     const { entries } = buildSchema;

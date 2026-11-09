@@ -32,7 +32,6 @@ async function resolveEnvironmentRoles(
 }
 
 export const environmentRolesSection = declareSection({
-  name: "environmentRoles",
   async resolve(
     _input,
     config: ConfigResolver,

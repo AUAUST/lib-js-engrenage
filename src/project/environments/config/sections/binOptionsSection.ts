@@ -3,7 +3,6 @@ import { binSchema } from "#project/environments/config/schemas/binSchema";
 import type { ConfigResolver } from "#project/config/index";
 
 export const binOptionsSection = declareSection({
-  name: "bin",
   declaration: binSchema,
   async resolve(
     input,

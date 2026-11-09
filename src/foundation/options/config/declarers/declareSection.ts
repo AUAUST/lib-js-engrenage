@@ -10,7 +10,6 @@ export function declareSection<
   Output,
   Config extends Resolver<unknown, object> = Resolver,
 >(options: {
-  name: string;
   declaration: Declaration<Input, unknown, unknown>;
   live?: boolean;
   resolve(input: Input, config: Config): Output | Promise<Output>;
@@ -19,23 +18,19 @@ export function declareSection<
   Output,
   Config extends Resolver<unknown, object> = Resolver,
 >(options: {
-  name: string;
   live?: boolean;
   resolve(input: undefined, config: Config): Output | Promise<Output>;
 }): Section<Output>;
 export function declareSection({
-  name,
   declaration,
   live = false,
   resolve,
 }: {
-  name: string;
   declaration?: Declaration<unknown, unknown, unknown>;
   live?: boolean;
   resolve(input: unknown, config: Resolver): unknown;
 }): Section {
   return freeze({
-    name,
     declaration,
     live,
     resolve,

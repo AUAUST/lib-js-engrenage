@@ -1,16 +1,9 @@
 import type { JSONPath } from "jsonc-parser";
 
-import { isString } from "@auaust/toolkit/isString";
 import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { engrenage, packageJsonFile } from "#constants";
 import { readJsonValue, type JsonValue } from "#foundation/json/index";
-import {
-  findSectionKey,
-  type ConfigKey,
-  type ConfigSections,
-  type LoadedConfig,
-} from "#project/config/index";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/index";
 import {
@@ -20,7 +13,11 @@ import {
 } from "#project/presets/index";
 import { agentNames } from "#tools/agents/constants";
 import { createPnpmInvocation } from "#tools/pnpm/index";
-import type { Section } from "#foundation/options/index";
+import type {
+  ConfigKey,
+  ConfigSections,
+  LoadedConfig,
+} from "#project/config/index";
 import type { Invocation, Prompter, StepContext } from "#project/steps/index";
 import type { Agent } from "#tools/agents/index";
 import type { File } from "#types/File";
@@ -172,24 +169,13 @@ export async function createStepContext({
   });
 
   // @debt an override resolving to undefined falls back to the config value, so `setPreset(undefined)` cannot clear a configured preset
-  async function resolveKey(key: ConfigKey): Promise<unknown> {
-    const overridden: unknown = await overrides.get(key)?.();
-
-    return overridden ?? config.resolve(key);
-  }
-
   function resolve<Key extends ConfigKey>(
     key: Key,
   ): Promise<ConfigSections[Key]>;
-  function resolve<Output>(section: Section<Output>): Promise<Output>;
-  async function resolve(target: ConfigKey | Section): Promise<unknown> {
-    if (isString(target)) {
-      return resolveKey(target);
-    }
+  async function resolve(key: ConfigKey): Promise<unknown> {
+    const overridden: unknown = await overrides.get(key)?.();
 
-    const key = await findSectionKey(config.context.registry, target);
-
-    return key === undefined ? config.resolve(target) : resolveKey(key);
+    return overridden ?? config.resolve(key);
   }
 
   function getPreset(): Preset | undefined {

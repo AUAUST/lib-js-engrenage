@@ -10,7 +10,6 @@ import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedTooling } from "#project/environments/types/ResolvedTooling";
 
 export const toolingSection = declareSection({
-  name: "tooling",
   async resolve(_input, config: ConfigResolver): Promise<ResolvedTooling> {
     const { node } = await config.resolve("runtime");
 
