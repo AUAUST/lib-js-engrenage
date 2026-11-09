@@ -72,10 +72,6 @@ export const defaultIgnores: readonly GlobGroup[] = freeze([
   editorIgnores,
 ] as const) satisfies readonly GlobGroup[];
 
-export const outputTitle = "Output";
-
-export const coverageTitle = "Coverage";
-
 export const ignoreBlocks =
   "# @ignore defaults\n\n# @ignore project\n\n# @end\n";
 

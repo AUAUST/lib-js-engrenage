@@ -7,10 +7,11 @@ import unusedImports from "eslint-plugin-unused-imports";
 import { defineConfig } from "eslint/config";
 import { configs as typescriptConfigs } from "typescript-eslint";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
 import { validate } from "#foundation/options/index";
+import { listLocationGlobs, type LoadedConfig } from "#project/config/index";
 import { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
 import { pluginName, rolesPluginName } from "#tools/eslint/constants";
 import { createConventionRules } from "#tools/eslint/operations/createConventionRules";
@@ -25,22 +26,10 @@ import { createImportPresets } from "#tools/eslint/utils/createImportPresets";
 import { createPlugin } from "#tools/eslint/utils/createPlugin";
 import { createRoleRules } from "#tools/eslint/utils/createRoleRules";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
-import type { LoadedConfig } from "#project/config/index";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Options } from "#tools/eslint/types/Options";
-import type { Directory } from "#types/Directory";
 
 import * as conventionCategories from "#tools/eslint/conventions/index";
-
-async function readOutDir(
-  config: LoadedConfig,
-): Promise<Directory | undefined> {
-  try {
-    return await config.resolve("build.outDir");
-  } catch {
-    // @debt an unreadable tsconfig hides the output directory, so the ignore rules skip it instead of failing the creator; the output directory should resolve without parsing the tsconfig
-  }
-}
 
 export async function createEslintConfig(
   config: LoadedConfig,
@@ -85,15 +74,25 @@ export async function createEslintConfig(
   const configs: MaybeArray<Config>[] = [];
 
   if (ignore) {
-    const git = await config.resolve("git");
+    const resources = await config.resolve("resources");
+
+    const uncommitted = resources.list().filter(({ committed }) => {
+      return !committed;
+    });
 
     configs.push(
       createIgnoreRules({
-        gitignorePath: await git.gitignore,
-        generatedFiles: scopes.files.generated,
-        outputDirectory: await readOutDir(config),
-        coverageDirectory: scopes.tests.coverageDir,
-        fixtureFiles: scopes.files.fixtures,
+        gitignorePath:
+          resources.get("gitignore") === undefined
+            ? undefined
+            : resources.path("gitignore"),
+        ignored: [
+          ...flatMap(uncommitted, ({ location }) => {
+            return listLocationGlobs(location);
+          }),
+          ...scopes.files.generated,
+          ...scopes.files.fixtures,
+        ],
       }),
     );
   }

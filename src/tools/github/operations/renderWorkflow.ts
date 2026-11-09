@@ -7,6 +7,7 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 // @debt relocating a nested project's workflows by string substitution on the templates silently stops matching when a template changes; template the YAML instead
+// @debt the pnpm lockfile name repeats `tools/pnpm`'s `pnpm-lock.yaml` resource instead of reading its location
 function relocate(template: string, directory: Directory): string {
   return template
     .replace(/^jobs:/m, () => {

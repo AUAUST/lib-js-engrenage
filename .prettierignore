@@ -1,14 +1,10 @@
 # @ignore defaults
 
 # Package locks
-pnpm-lock.yaml
 package-lock.json
 yarn.lock
 bun.lock
 bun.lockb
-
-# ESLint
-eslint-suppressions.json
 
 # @ignore project
 
@@ -18,8 +14,17 @@ eslint-suppressions.json
 # Coverage
 /coverage
 
+# Codex
+/AGENTS.override.md
+
 # Changelog
-CHANGELOG.md
+/**/CHANGELOG.md
+
+# ESLint
+/eslint-suppressions.json
+
+# pnpm
+/pnpm-lock.yaml
 
 # Codegen
 /src/tools/eslint/types/Rules.ts
@@ -48,6 +53,5 @@ CHANGELOG.md
 /src/tools/prettier/types/PrettierInput.ts
 /src/tools/vscode/types/VscodeInput.ts
 /src/workflows/config/types/ConfigInput.ts
-/AGENTS.override.md
 
 # @end

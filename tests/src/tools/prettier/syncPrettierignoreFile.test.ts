@@ -14,6 +14,7 @@ describe("syncPrettierignoreFile", () => {
         type: "module",
         devDependencies: {
           "@changesets/cli": "*",
+          "eslint": "*",
         },
       }),
       "tsconfig.json": JSON.stringify({
@@ -35,14 +36,10 @@ describe("syncPrettierignoreFile", () => {
         "# @ignore defaults",
         "",
         "# Package locks",
-        "pnpm-lock.yaml",
         "package-lock.json",
         "yarn.lock",
         "bun.lock",
         "bun.lockb",
-        "",
-        "# ESLint",
-        "eslint-suppressions.json",
         "",
         "# @ignore project",
         "",
@@ -52,17 +49,45 @@ describe("syncPrettierignoreFile", () => {
         "# Coverage",
         "/coverage",
         "",
+        "# Codex",
+        "/AGENTS.override.md",
+        "",
         "# Changelog",
-        "CHANGELOG.md",
+        "/**/CHANGELOG.md",
+        "",
+        "# ESLint",
+        "/eslint-suppressions.json",
+        "",
+        "# pnpm",
+        "/pnpm-lock.yaml",
         "",
         "# Codegen",
         "/src/generated/**",
-        "/AGENTS.override.md",
         "",
         "# @end",
         "",
       ].join("\n"),
     );
+  });
+
+  test("leaves out the changelog without changesets and the Codex instructions when Codex is not preferred", async () => {
+    const project = createTemporaryProject({
+      "engrenage.config.ts": "export default {};\n",
+      "package.json": '{ "type": "module" }',
+      ".prettierignore": "# @ignore project\n# @end\n",
+    });
+
+    const config = await loadConfig(project.root);
+
+    await syncPrettierignoreFile(config);
+
+    await config.context.filesystem.flush();
+
+    const content = project.read(".prettierignore");
+
+    expect(content).not.toContain("# Changelog");
+    expect(content).not.toContain("/AGENTS.override.md");
+    expect(content).toContain("# pnpm\n/pnpm-lock.yaml");
   });
 
   test("leaves a file without markers untouched", async () => {

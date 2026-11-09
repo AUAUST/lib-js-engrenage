@@ -13,7 +13,6 @@ export { gitSection } from "#tools/git/config/sections/gitSection";
 // @end
 
 // @barrel operations/*.ts named
-export { createProjectIgnores } from "#tools/git/operations/createProjectIgnores";
 export { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
 export { hashTree } from "#tools/git/operations/hashTree";
 export { listChangedFiles } from "#tools/git/operations/listChangedFiles";

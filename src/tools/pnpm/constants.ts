@@ -8,6 +8,8 @@ export const workspaceFile = "pnpm-workspace.yaml" satisfies File;
 
 export const npmrcFile = ".npmrc" satisfies File;
 
+export const lockfile = "pnpm-lock.yaml" satisfies File;
+
 export const workspaceSettings = freeze({
   // @debt consumers running the lefthook init step hit ERR_PNPM_IGNORED_BUILDS until `lefthook: false` is listed here; init and workspace tests pin the exact entries
   allowBuilds: freeze({

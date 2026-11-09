@@ -1,56 +1,56 @@
-import { includes, map } from "@auaust/primitive-kit/arrays";
+import { filter, flatMap, includes, map } from "@auaust/primitive-kit/arrays";
 
-import { changesetsCli } from "#constants";
-import { settlePreset, syncIgnoreFile } from "#foundation/blocks/index";
-import { codexFile } from "#tools/agents/index";
-import { createProjectIgnores } from "#tools/git/index";
 import {
-  changelogIgnores,
+  anchorGlob,
+  settlePreset,
+  syncIgnoreFile,
+} from "#foundation/blocks/index";
+import {
+  createResourceIgnores,
+  listLocationGlobs,
+  type LoadedConfig,
+} from "#project/config/index";
+import {
   codegenTitle,
   defaultIgnores,
+  prettierDefaultIgnores,
 } from "#tools/prettier/constants";
-import type { LoadedConfig } from "#project/config/index";
-import type { Glob } from "#types/Glob";
 import type { GlobGroup } from "#types/GlobGroup";
-
-function anchor(glob: Glob): Glob {
-  return glob.startsWith("!") ? `!/${glob.slice(1)}` : `/${glob}`;
-}
 
 async function createProjectPrettierIgnores(
   config: LoadedConfig,
 ): Promise<readonly GlobGroup[]> {
-  const files = await config.resolve("files");
+  const [resources, files] = await Promise.all([
+    config.resolve("resources"),
+    config.resolve("files"),
+  ]);
 
-  const agents = await config.resolve("agents");
+  const located = resources.list();
 
-  const generated = [
-    ...map(files.generated, anchor),
-    ...(includes(agents.preferred ?? [], "codex") ? [`/${codexFile}`] : []),
-  ];
+  const unformatted = located.filter(({ formatted }) => !formatted);
 
-  const environment = await config.resolve("environment");
+  const generatedResources = flatMap(
+    filter(located, "generated"),
+    ({ location }) => listLocationGlobs(location),
+  );
+
+  const codegen = map(
+    files.generated.filter((glob) => !includes(generatedResources, glob)),
+    anchorGlob,
+  );
 
   return [
-    ...(await createProjectIgnores(config)),
-    ...(environment.hasDependency(changesetsCli) ? [changelogIgnores] : []),
-    ...(generated.length === 0
-      ? []
-      : [
-          {
-            title: codegenTitle,
-            globs: generated,
-          },
-        ]),
+    ...createResourceIgnores(unformatted, { covered: prettierDefaultIgnores }),
+    ...(codegen.length === 0 ? [] : [{ title: codegenTitle, globs: codegen }]),
   ];
 }
 
 export async function syncPrettierignoreFile(config: LoadedConfig) {
-  const [root, filesystem, resolve, prettier, project] = await Promise.all([
+  const [root, filesystem, resolve, resources, project] = await Promise.all([
     config.context.root,
     config.context.filesystem,
     config.context.path,
-    config.resolve("prettier"),
+    config.resolve("resources"),
     settlePreset(createProjectPrettierIgnores(config)),
   ]);
 
@@ -61,7 +61,10 @@ export async function syncPrettierignoreFile(config: LoadedConfig) {
       resolve,
     },
     {
-      path: await prettier.prettierignore,
+      path:
+        resources.get("prettierignore") === undefined
+          ? undefined
+          : resources.path("prettierignore"),
       presets: {
         defaults: () => defaultIgnores,
         project,

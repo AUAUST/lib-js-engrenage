@@ -34,8 +34,10 @@ export { validateConfig } from "#project/config/operations/validateConfig";
 // @barrel utils/*.ts named
 export { assertSerializable } from "#project/config/utils/assertSerializable";
 export { checkFileParts } from "#project/config/utils/checkFileParts";
+export { createResourceIgnores } from "#project/config/utils/createResourceIgnores";
 export { isDefinition } from "#project/config/utils/isDefinition";
 export { isValidDefinition } from "#project/config/utils/isValidDefinition";
+export { listLocationGlobs } from "#project/config/utils/listLocationGlobs";
 export { locateFile } from "#project/config/utils/locateFile";
 export { memoizeByContext } from "#project/config/utils/memoizeByContext";
 export { resolveGlobal } from "#project/config/utils/resolveGlobal";

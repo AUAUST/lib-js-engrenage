@@ -1,8 +1,9 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { lockfileIgnores as gitLockfileIgnores } from "#tools/git/constants";
+import { lockfileIgnores } from "#tools/git/constants";
 import type { Options } from "#tools/prettier/types/Options";
 import type { GlobGroup } from "#types/GlobGroup";
+import type { Globs } from "#types/Globs";
 
 export const fixedOptions = freeze({
   arrowParens: "always",
@@ -21,24 +22,17 @@ export const fixedOptions = freeze({
   vueIndentScriptAndStyle: false,
 } as const satisfies Options);
 
-export const lockfileIgnores = freeze({
-  ...gitLockfileIgnores,
-  globs: freeze(["pnpm-lock.yaml", ...gitLockfileIgnores.globs]),
-} as const) satisfies GlobGroup;
-
-export const eslintIgnores = freeze({
-  title: "ESLint",
-  globs: freeze(["eslint-suppressions.json"]),
-} as const) satisfies GlobGroup;
-
-export const changelogIgnores = freeze({
-  title: "Changelog",
-  globs: freeze(["CHANGELOG.md"]),
-} as const) satisfies GlobGroup;
-
 export const codegenTitle = "Codegen";
 
 export const defaultIgnores = freeze([
   lockfileIgnores,
-  eslintIgnores,
 ] as const) satisfies readonly GlobGroup[];
+
+export const prettierDefaultIgnores = freeze([
+  ".git",
+  ".jj",
+  ".sl",
+  ".svn",
+  ".hg",
+  "node_modules",
+] as const) satisfies Globs;

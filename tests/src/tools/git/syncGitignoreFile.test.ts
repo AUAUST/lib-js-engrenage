@@ -6,6 +6,7 @@ import { defaultIgnores } from "@auaust/engrenage/git/constants";
 import { map } from "@auaust/primitive-kit/arrays";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { getFixture } from "#tests/utils/getFixture";
 
 describe("syncGitignoreFile", () => {
   test("writes each preset as a titled group and keeps the lines around the blocks", async () => {
@@ -66,6 +67,75 @@ describe("syncGitignoreFile", () => {
     await syncGitignoreFile(config);
 
     expect(config.context.filesystem.discard()).toEqual([]);
+  });
+
+  test("ignores a custom cache directory, covering the caches inside it", async () => {
+    const project = createTemporaryProject({
+      "engrenage.config.ts": 'export default { cache: { dir: ".cache" } };\n',
+      "package.json": JSON.stringify({
+        type: "module",
+        devDependencies: {
+          jscpd: "*",
+        },
+      }),
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          outDir: "dist",
+        },
+      }),
+      ".gitignore": "# @ignore project\n# @end\n",
+    });
+
+    const config = await loadConfig(project.root);
+
+    await syncGitignoreFile(config);
+
+    await config.context.filesystem.flush();
+
+    expect(project.read(".gitignore")).toBe(
+      [
+        "# @ignore project",
+        "",
+        "# Output",
+        "/dist",
+        "",
+        "# Cache",
+        "/.cache",
+        "",
+        "# Coverage",
+        "/coverage",
+        "",
+        "# @end",
+        "",
+      ].join("\n"),
+    );
+  });
+
+  test("ignores the uncommitted files of a listed extension after the built-ins", async () => {
+    const config = await loadConfig(getFixture("projects/external"), {
+      searchParents: false,
+    });
+
+    await syncGitignoreFile(config);
+
+    const staged = await config.context.filesystem.read(".gitignore");
+
+    config.context.filesystem.discard();
+
+    expect(staged).toBe(
+      [
+        "# @ignore project",
+        "",
+        "# Coverage",
+        "/coverage",
+        "",
+        "# External fixture",
+        "/external-output",
+        "",
+        "# @end",
+        "",
+      ].join("\n"),
+    );
   });
 
   test("expands defaults into every fixed group, in order", async () => {

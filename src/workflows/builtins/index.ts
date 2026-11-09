@@ -12,6 +12,7 @@ export { default as projectTsconfig } from "#project/tsconfig/extension";
 export { default as projectWorkspaces } from "#project/workspaces/extension";
 export { default as toolsAgents } from "#tools/agents/extension";
 export { default as toolsChangesets } from "#tools/changesets/extension";
+export { default as toolsEslint } from "#tools/eslint/extension";
 export { default as toolsGit } from "#tools/git/extension";
 export { default as toolsGithub } from "#tools/github/extension";
 export { default as toolsJscpd } from "#tools/jscpd/extension";

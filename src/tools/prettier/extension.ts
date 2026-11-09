@@ -1,4 +1,4 @@
-import type { Extension } from "#project/config/index";
+import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/prettier",
@@ -11,6 +11,17 @@ export default {
             await import("#tools/prettier/config/sections/prettierSection");
 
           return prettierSection;
+        },
+      },
+    },
+    files: {
+      prettierignore: {
+        async locate(config): Promise<FileLocation | undefined> {
+          const { prettierignore } = await config.resolve("prettier");
+
+          const file = await prettierignore;
+
+          return file === undefined ? undefined : { file };
         },
       },
     },

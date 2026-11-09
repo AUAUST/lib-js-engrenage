@@ -1,4 +1,4 @@
-import type { Extension } from "#project/config/index";
+import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/git",
@@ -11,6 +11,17 @@ export default {
             await import("#tools/git/config/sections/gitSection");
 
           return gitSection;
+        },
+      },
+    },
+    files: {
+      gitignore: {
+        async locate(config): Promise<FileLocation | undefined> {
+          const { gitignore } = await config.resolve("git");
+
+          const file = await gitignore;
+
+          return file === undefined ? undefined : { file };
         },
       },
     },
