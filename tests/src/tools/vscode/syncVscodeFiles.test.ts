@@ -121,6 +121,71 @@ export default defineEslintConfig({}, {
     expect(rules).not.toContain("auaust/naming-convention");
   });
 
+  test("keeps the project's own rule customizations beside the synced ones", async () => {
+    const project = createTemporaryProject({
+      "engrenage.config.ts": "export default {};\n",
+      "eslint.config.ts": `import { defineEslintConfig } from ${JSON.stringify(eslintEntry)};
+
+export default defineEslintConfig({}, {
+  rules: {
+    "no-console": "info",
+  },
+});
+`,
+      "package.json": packageJson,
+      ".vscode/settings.json": `{
+  "eslint.rules.customizations": [
+    { "rule": "no-console", "severity": "warn" },
+    { "rule": "project/own", "severity": "off" }
+  ]
+}
+`,
+    });
+
+    mockCwd(project.root);
+
+    const config = await loadConfig(project.root);
+
+    await syncVscodeFiles(config);
+
+    await config.context.filesystem.flush();
+
+    const settings = validate(
+      looseObject({
+        "eslint.rules.customizations": array(
+          strictObject({
+            rule: string(),
+            severity: string(),
+          }),
+        ),
+      }),
+      JSON.parse(project.read(".vscode/settings.json")),
+      "VS Code settings",
+    );
+
+    const customizations = settings["eslint.rules.customizations"];
+
+    expect(customizations.slice(0, 2)).toEqual([
+      {
+        rule: "no-console",
+        severity: "warn",
+      },
+      {
+        rule: "project/own",
+        severity: "off",
+      },
+    ]);
+
+    expect(customizations).toContainEqual({
+      rule: "auaust/no-unused-vars",
+      severity: "info",
+    });
+
+    await syncVscodeFiles(config);
+
+    expect(config.context.filesystem.discard()).toEqual([]);
+  });
+
   test("updates existing enabled files and skips disabled or missing ones", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts":

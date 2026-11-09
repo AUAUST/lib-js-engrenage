@@ -1,11 +1,16 @@
+import { isDeepStrictEqual } from "node:util";
+
 import { array, optional, string } from "valibot";
 
 import {
   deduplicate,
+  every,
   flatMap,
   includes,
   map,
 } from "@auaust/primitive-kit/arrays";
+import { isArray } from "@auaust/toolkit/isArray";
+import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 
 import { emptyObjectFile } from "#foundation/json/constants";
 import {
@@ -29,6 +34,11 @@ import type { Integration } from "#tools/vscode/types/Integration";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
+interface SettingEdit extends JsonEdit {
+  identifier?: string;
+}
+
+// @debt addRecommendations repeats mergeSetting's array insertion; one array merge could serve both files.
 function addRecommendations(
   content: string,
   path: File,
@@ -49,6 +59,58 @@ function addRecommendations(
         path,
         ["recommendations", -1],
         extension,
+        jsonIndentation,
+        { isArrayInsertion: true },
+      );
+    }
+  }
+
+  return synced;
+}
+
+function identify(entry: unknown, identifier: string | undefined): unknown {
+  if (identifier === undefined) {
+    return entry;
+  }
+
+  return isPlainObject(entry) ? entry[identifier] : undefined;
+}
+
+function mergeSetting(
+  content: string,
+  path: File,
+  { path: location, value, identifier }: SettingEdit,
+): string {
+  const existing = readJsonValue(content, path, location);
+
+  if (!isArray(value) || !isArray(existing)) {
+    return applyJsonEdits(
+      content,
+      path,
+      [{ path: location, value }],
+      jsonIndentation,
+    );
+  }
+
+  const identities = map(existing, (entry) => {
+    return identify(entry, identifier);
+  });
+
+  let synced = content;
+
+  for (const entry of value) {
+    const identity = identify(entry, identifier);
+
+    const isMissing = every(identities, (existingIdentity) => {
+      return !isDeepStrictEqual(existingIdentity, identity);
+    });
+
+    if (isMissing) {
+      synced = writeJsonValue(
+        synced,
+        path,
+        [...location, -1],
+        entry,
         jsonIndentation,
         { isArrayInsertion: true },
       );
@@ -80,7 +142,7 @@ async function loadEslintInfoRules(root: Directory): Promise<string[]> {
 async function createSettingsEdits(
   root: Directory,
   applicable: readonly Integration[],
-): Promise<JsonEdit[]> {
+): Promise<SettingEdit[]> {
   const infoRules = includes(applicable, eslintIntegration)
     ? await loadEslintInfoRules(root)
     : [];
@@ -96,6 +158,7 @@ async function createSettingsEdits(
       ...edits,
       {
         path: ["eslint.rules.customizations"],
+        identifier: "rule",
         value: map(infoRules, (rule) => {
           return {
             rule,
@@ -134,15 +197,17 @@ export async function syncVscodeFiles(
   );
 
   if (await isEnabled(filesystem, settingsFile, vscode.settings, settings)) {
-    await filesystem.write(
-      settingsFile,
-      applyJsonEdits(
-        (await filesystem.read(settingsFile)) ?? emptyObjectFile,
-        resolve(settingsFile),
-        await createSettingsEdits(root, applicable),
-        jsonIndentation,
-      ),
-    );
+    const path = resolve(settingsFile);
+
+    const edits = await createSettingsEdits(root, applicable);
+
+    let synced = (await filesystem.read(settingsFile)) ?? emptyObjectFile;
+
+    for (const edit of edits) {
+      synced = mergeSetting(synced, path, edit);
+    }
+
+    await filesystem.write(settingsFile, synced);
   }
 
   if (
