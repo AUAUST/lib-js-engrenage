@@ -11,9 +11,6 @@ import type { Maybe } from "@auaust/toolkit/types";
 
 import { packageJsonFile } from "#constants";
 import { loadConfig } from "#project/config/operations/loadConfig";
-import { environmentSection } from "#project/package/index";
-import { traitsSection } from "#project/presets/index";
-import { filesSection } from "#project/structure/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { infoRulesSetting } from "#tools/eslint/constants";
@@ -41,14 +38,14 @@ const contractsOff = {
 
 function overrideSections(
   config: LoadedConfig,
-  overrides: ReadonlyMap<Section, unknown>,
+  overrides: ReadonlyMap<ConfigKey, unknown>,
 ): LoadedConfig {
   function resolve<Key extends ConfigKey>(
     key: Key,
   ): Promise<ConfigSections[Key]>;
   function resolve<Output>(section: Section<Output>): Promise<Output>;
   async function resolve(target: ConfigKey | Section): Promise<unknown> {
-    if (isString(target)) {
+    if (!isString(target)) {
       return config.resolve(target);
     }
 
@@ -121,12 +118,9 @@ async function lintedPerformanceRules(
     overrideConfig: await createEslintConfig(
       overrideSections(
         config,
-        new Map<Section, unknown>([
-          [traitsSection, traits],
-          [
-            environmentSection,
-            environment ?? (await config.resolve(environmentSection)),
-          ],
+        new Map<ConfigKey, unknown>([
+          ["traits", traits],
+          ["environment", environment ?? (await config.resolve("environment"))],
         ]),
       ),
       {
@@ -1847,11 +1841,11 @@ export async function run(): Promise<unknown> {
       overrideConfig: await createEslintConfig(
         overrideSections(
           config,
-          new Map<Section, unknown>([
+          new Map<ConfigKey, unknown>([
             [
-              filesSection,
+              "files",
               {
-                ...(await config.resolve(filesSection)),
+                ...(await config.resolve("files")),
                 fixtures: ["tests/**/data/**"],
               },
             ],

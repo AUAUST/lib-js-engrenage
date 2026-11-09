@@ -1,7 +1,6 @@
 import { relative } from "node:path";
 
 import { eslint } from "#constants";
-import { environmentSection } from "#project/package/index";
 import { pluginName } from "#tools/eslint/constants";
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
 import type { LoadedConfig } from "#project/config/index";
@@ -19,7 +18,7 @@ export async function listDebtMarkers({
   resolve,
   context,
 }: LoadedConfig): Promise<DebtMarker[]> {
-  const environment = await resolve(environmentSection);
+  const environment = await resolve("environment");
 
   if (!environment.hasDependency(eslint)) {
     throw new Error(

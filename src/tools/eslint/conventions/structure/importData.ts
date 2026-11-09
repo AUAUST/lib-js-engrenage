@@ -1,20 +1,14 @@
-import {
-  checkData,
-  entitiesSection,
-  importGrantsSection,
-  importResolverSection,
-  structureSection,
-} from "#project/structure/index";
+import { checkData } from "#project/structure/index";
 import { boundaryMessages } from "#tools/eslint/constants";
 import { defineBoundaryRule } from "#tools/eslint/utils/defineBoundaryRule";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 
 export default defineConvention({
   sections: {
-    structure: structureSection,
-    entities: entitiesSection,
-    resolveImport: importResolverSection,
-    grants: importGrantsSection,
+    structure: "structure",
+    entities: "entities",
+    resolveImport: "importResolver",
+    grants: "importGrants",
   },
   rule: ({ grants, ...graph }, { root }) => {
     return defineBoundaryRule({

@@ -3,18 +3,14 @@ import { relative } from "node:path";
 import { freeze } from "@auaust/toolkit/object";
 
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
-import {
-  entitiesSection,
-  importGrantsSection,
-  importResolverSection,
-  structureSection,
-  type BoundaryCause,
-  type BoundaryViolation,
-  type ImportEdge,
-} from "#project/structure/index";
 import { boundaryMessages } from "#tools/eslint/constants";
 import { defineBoundaryRule } from "#tools/eslint/utils/defineBoundaryRule";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
+import type {
+  BoundaryCause,
+  BoundaryViolation,
+  ImportEdge,
+} from "#project/structure/index";
 
 function violation(cause: BoundaryCause, fix?: string): BoundaryViolation {
   return freeze({
@@ -26,10 +22,10 @@ function violation(cause: BoundaryCause, fix?: string): BoundaryViolation {
 
 export default defineConvention({
   sections: {
-    structure: structureSection,
-    entities: entitiesSection,
-    resolveImport: importResolverSection,
-    grants: importGrantsSection,
+    structure: "structure",
+    entities: "entities",
+    resolveImport: "importResolver",
+    grants: "importGrants",
   },
   rule: ({ grants, ...graph }, { root }) => {
     const { entities } = graph;

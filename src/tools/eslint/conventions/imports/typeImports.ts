@@ -1,9 +1,8 @@
-import { typescriptSection } from "#project/tsconfig/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { delegateRule } from "#tools/eslint/utils/delegateRule";
 
 export default defineConvention({
-  sections: { typescript: typescriptSection },
+  sections: { typescript: "typescript" },
   delegates: ({ typescript }) => {
     return typescript.verbatimModuleSyntax
       ? [

@@ -1,5 +1,4 @@
-import type { Section } from "#foundation/options/index";
-import type { ConfigContext } from "#project/config/index";
+import type { ConfigContext, ConfigKey } from "#project/config/index";
 import type { Trait } from "#project/presets/index";
 import type { Delegate } from "#tools/eslint/types/Delegate";
 import type { ResolvedSections } from "#tools/eslint/types/ResolvedSections";
@@ -15,7 +14,7 @@ export interface Convention {
   ignores: ScopeReferences;
   typeAware: boolean;
   severity: "error" | "warn" | "info";
-  sections: readonly Section[];
+  sections: readonly ConfigKey[];
   delegates(
     sections: ResolvedSections,
     context: ConfigContext,

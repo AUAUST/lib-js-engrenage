@@ -3,9 +3,7 @@ import { basename, dirname, join, matchesGlob } from "node:path";
 import { relativeWithin } from "#foundation/filesystem/index";
 import { indexRoleName } from "#project/roles/constants";
 import {
-  entitiesSection,
   listNamedFileRoles,
-  structureSection,
   type StructureNode,
 } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
@@ -27,7 +25,7 @@ function findNode(
 
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
-  sections: { entities: entitiesSection, structure: structureSection },
+  sections: { entities: "entities", structure: "structure" },
   rule: ({ entities, structure: structures }, { root }) => {
     return defineStructureRule({
       entities,

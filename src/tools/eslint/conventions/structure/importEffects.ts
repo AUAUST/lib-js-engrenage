@@ -10,11 +10,7 @@ import type { Rule } from "eslint";
 
 import { relativeWithin } from "#foundation/filesystem/index";
 import { entryRoleName } from "#project/roles/constants";
-import {
-  entitiesSection,
-  environmentRolesSection,
-  rankModule,
-} from "#project/structure/index";
+import { rankModule } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
@@ -22,7 +18,7 @@ import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
   typeAware: true,
-  sections: { entities: entitiesSection, roles: environmentRolesSection },
+  sections: { entities: "entities", roles: "environmentRoles" },
   rule: ({ entities, roles }, { root }) => {
     return defineStructureRule({
       entities,

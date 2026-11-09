@@ -3,7 +3,6 @@ import { relative } from "node:path";
 import { map } from "@auaust/primitive-kit/arrays";
 
 import { organization } from "#constants";
-import { tsconfigPathSection } from "#project/tsconfig/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { delegateRule } from "#tools/eslint/utils/delegateRule";
 
@@ -42,7 +41,7 @@ function createProjectGroup(
 }
 
 export default defineConvention({
-  sections: { tsconfigPath: tsconfigPathSection },
+  sections: { tsconfigPath: "tsconfigPath" },
   delegates({ tsconfigPath }, { root }) {
     return [
       delegateRule("perfectionist/sort-imports", [

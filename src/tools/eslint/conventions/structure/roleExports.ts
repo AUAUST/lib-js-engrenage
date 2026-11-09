@@ -1,11 +1,7 @@
 import { basename, extname } from "node:path";
 
 import { indexRoleName } from "#project/roles/constants";
-import {
-  entitiesSection,
-  isStructureEnvironment,
-  structureSection,
-} from "#project/structure/index";
+import { isStructureEnvironment } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
@@ -21,7 +17,7 @@ interface Exports {
 export default defineConvention({
   /** @debt `bin` has no lint scope, so its command modules are classified but never checked; a command group without an index.ts is accepted too */
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
-  sections: { entities: entitiesSection, structure: structureSection },
+  sections: { entities: "entities", structure: "structure" },
   rule: ({ entities, structure: structures }) => {
     return defineStructureRule({
       entities,

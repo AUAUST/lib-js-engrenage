@@ -11,11 +11,6 @@ import { map } from "@auaust/primitive-kit/arrays";
 import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
 import { validate } from "#foundation/options/index";
-import { buildOutDirSection } from "#project/build/index";
-import { environmentSection } from "#project/package/index";
-import { traitsSection } from "#project/presets/index";
-import { entitiesSection, structureSection } from "#project/structure/index";
-import { tsconfigPathSection } from "#project/tsconfig/index";
 import { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
 import { pluginName, rolesPluginName } from "#tools/eslint/constants";
 import { createConventionRules } from "#tools/eslint/operations/createConventionRules";
@@ -30,7 +25,6 @@ import { createImportPresets } from "#tools/eslint/utils/createImportPresets";
 import { createPlugin } from "#tools/eslint/utils/createPlugin";
 import { createRoleRules } from "#tools/eslint/utils/createRoleRules";
 import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
-import { gitSection } from "#tools/git/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Options } from "#tools/eslint/types/Options";
@@ -42,7 +36,7 @@ async function readOutDir(
   config: LoadedConfig,
 ): Promise<Directory | undefined> {
   try {
-    return await config.resolve(buildOutDirSection);
+    return await config.resolve("build.outDir");
   } catch {
     // @debt an unreadable tsconfig hides the output directory, so the ignore rules skip it instead of failing the creator; the output directory should resolve without parsing the tsconfig
   }
@@ -64,8 +58,8 @@ export async function createEslintConfig(
 
   const [scopes, traits, environment] = await Promise.all([
     resolveScopeSources(config),
-    config.resolve(traitsSection),
-    config.resolve(environmentSection),
+    config.resolve("traits"),
+    config.resolve("environment"),
   ]);
 
   const selected = selectConventions({
@@ -91,7 +85,7 @@ export async function createEslintConfig(
   const configs: MaybeArray<Config>[] = [];
 
   if (ignore) {
-    const git = await config.resolve(gitSection);
+    const git = await config.resolve("git");
 
     configs.push(
       createIgnoreRules({
@@ -122,14 +116,14 @@ export async function createEslintConfig(
     configs.push(
       createImportPresets({
         codeFiles: resolveScope(scopes, ["files.code"]),
-        tsconfig: await config.resolve(tsconfigPathSection),
+        tsconfig: await config.resolve("tsconfigPath"),
       }),
     );
   }
 
   const [structure, entities] = await Promise.all([
-    config.resolve(structureSection),
-    config.resolve(entitiesSection),
+    config.resolve("structure"),
+    config.resolve("entities"),
   ]);
 
   const roleRules = await createRoleRules(structure, entities);

@@ -1,4 +1,3 @@
-import { entitiesSection } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 import { isDeeplyReadonly } from "#tools/eslint/utils/isDeeplyReadonly";
@@ -6,7 +5,7 @@ import { isDeeplyReadonly } from "#tools/eslint/utils/isDeeplyReadonly";
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling"],
   typeAware: true,
-  sections: { entities: entitiesSection },
+  sections: { entities: "entities" },
   rule: ({ entities }) => {
     return defineStructureRule({
       entities,

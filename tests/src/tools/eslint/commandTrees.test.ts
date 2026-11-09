@@ -1,7 +1,6 @@
 import { ESLint } from "eslint";
 import { describe, expect, test } from "vitest";
 
-import { structureSection } from "@auaust/engrenage";
 import { loadConfig } from "@auaust/engrenage/config";
 import { createEslintConfig } from "@auaust/engrenage/eslint";
 
@@ -57,9 +56,9 @@ describe("command trees", () => {
 
     const config = await loadConfig(project.root);
 
-    expect(
-      (await config.resolve(structureSection)).scripts?.unclassified,
-    ).toEqual([]);
+    expect((await config.resolve("structure")).scripts?.unclassified).toEqual(
+      [],
+    );
 
     for (const file of [
       "scripts/index.ts",

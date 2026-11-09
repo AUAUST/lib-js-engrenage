@@ -3,7 +3,6 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { map } from "@auaust/primitive-kit/arrays";
 
-import { sourceSection } from "#project/environments/index";
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { defineEslintConfig } from "#tools/eslint/config/defineEslintConfig";
@@ -31,12 +30,9 @@ describe("defineEslintConfig", () => {
       overrideConfigFile: true,
       overrideConfig: await defineEslintConfig(callback, async (config) => {
         return {
-          files: map(
-            (await config.resolve(sourceSection)).dirs,
-            (directory) => {
-              return `${directory}/restricted.ts`;
-            },
-          ),
+          files: map((await config.resolve("src")).dirs, (directory) => {
+            return `${directory}/restricted.ts`;
+          }),
           rules: {
             "auaust/no-array-is-array": "off",
           },

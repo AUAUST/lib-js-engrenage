@@ -1,5 +1,4 @@
 import { indexRoleName } from "#project/roles/constants";
-import { entitiesSection } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
@@ -7,7 +6,7 @@ const metadata = /^[A-Z][A-Z0-9_]*$/;
 
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling"],
-  sections: { entities: entitiesSection },
+  sections: { entities: "entities" },
   rule: ({ entities }) => {
     return defineStructureRule({
       entities,

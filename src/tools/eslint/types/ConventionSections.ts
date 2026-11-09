@@ -1,3 +1,4 @@
-import type { Section } from "#foundation/options/index";
+import type { ConfigKey } from "#project/config/index";
 
-export type ConventionSections = Readonly<Record<string, Section>>;
+// @debt conventions name their config keys `sections`, a name left from section reads
+export type ConventionSections = Readonly<Record<string, ConfigKey>>;

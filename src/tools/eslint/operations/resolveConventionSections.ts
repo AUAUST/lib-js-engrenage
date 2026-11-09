@@ -1,8 +1,7 @@
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, freeze, record } from "@auaust/toolkit/object";
 
-import type { Section } from "#foundation/options/index";
-import type { LoadedConfig } from "#project/config/index";
+import type { ConfigKey, LoadedConfig } from "#project/config/index";
 import type { Convention } from "#tools/eslint/types/Convention";
 import type { ConventionSections } from "#tools/eslint/types/ConventionSections";
 import type { ConventionValues } from "#tools/eslint/types/ConventionValues";
@@ -12,28 +11,28 @@ export async function resolveConventionSections(
   config: LoadedConfig,
   conventions: readonly Convention[],
 ): Promise<ResolvedSections> {
-  const sections = new Set(flatMap(conventions, ({ sections }) => sections));
+  const keys = new Set(flatMap(conventions, ({ sections }) => sections));
 
-  const resolved = new Map<Section, unknown>(
+  const resolved = new Map<ConfigKey, unknown>(
     await Promise.all(
-      map([...sections], async (section) => {
-        return [section, await config.resolve(section)] as const;
+      map([...keys], async (key) => {
+        return [key, await config.resolve(key)] as const;
       }),
     ),
   );
 
-  function has(section: Section): boolean {
-    return resolved.has(section);
+  function has(key: ConfigKey): boolean {
+    return resolved.has(key);
   }
 
-  function read(section: Section): unknown {
-    if (!resolved.has(section)) {
+  function read(key: ConfigKey): unknown {
+    if (!resolved.has(key)) {
       throw new Error(
-        `Config section ${section.name} was not resolved for the enabled conventions`,
+        `Config key "${key}" was not resolved for the enabled conventions`,
       );
     }
 
-    return resolved.get(section);
+    return resolved.get(key);
   }
 
   function pick<Sections extends ConventionSections>(
@@ -41,8 +40,8 @@ export async function resolveConventionSections(
   ): ConventionValues<Sections> {
     const picked = map(
       entries<ConventionSections>(declared ?? {}),
-      ([name, section]) => {
-        return [name, read(section)] as const;
+      ([name, key]) => {
+        return [name, read(key)] as const;
       },
     );
 
