@@ -15,14 +15,14 @@ Project structure description, its report and the tooling generated from it.
   - `defineConvention` and other convention `define*` builders (`tools/eslint/utils/`) break "`define…Config` for definers only".
   - `sync…` is for sync targets only, yet `syncBlocks`, `syncFiles`, `syncIgnoreFile`, `syncFrontmatter`, `syncEditHook`, `syncCodexInstructions` and `syncBarrels` are not targets; `syncBarrels` is public API of `@auaust/engrenage/typescript`, so renaming it is breaking.
   - `TsconfigEnvironment` (exported by `project/config`) still permutes `EnvironmentTsconfig`; renaming it is breaking.
-- also: `src/foundation/data/index.ts`: a one-function domain named like the `data` environment it resolves files of.
 - want: a decision per group: amend the naming rule or rename.
 - done: names and rules agree.
 
-## 3. The `conventions` role in `engrenage.config.ts` is unscoped.
+## 3. The `conventions` role in `engrenage.config.ts` is unscoped and misnamed
 
-- why: namespace `roles.enable` only accepts catalogue roles.
-- want: scope the role to its namespace, or document why it cannot be.
+- sites: `engrenage.config.ts:128`, `:134`
+- why: namespace `roles.enable` only accepts catalogue roles; it imports section values only the creator resolves; `conventions` names ESLint rule conventions and collides with `project/format`'s `Conventions`.
+- want: scope the role to its namespace (or state why not); a decision on the name (planning).
 
 ## 4. Roles for step adapters and non-tool sync targets are undefined (#143)
 
@@ -45,7 +45,7 @@ Project structure description, its report and the tooling generated from it.
 ## 7. Generator wiring is hand-listed (#147)
 
 - why: the `generated` globs list `Rules.ts` and `rules/**` by hand while `ConfigInput.ts` and `editions/constants.ts` are generated but not listed (the generators format them); `scripts/codegen/index.ts` runs generators in a hard-coded order (`editions, apis, config, rules, barrels`) derived from nothing.
-- also: `engrenage.config.ts` generated-files list: may mean a missing pattern for generated files, or be unnecessary once generated files are formatted.
+- also: `engrenage.config.ts:246` generated-files list: a missing pattern for generated files, or unneeded once they are formatted.
 - want: derive the globs and the order from the generators.
 - done: adding a generator needs no second list.
 
@@ -60,12 +60,55 @@ Project structure description, its report and the tooling generated from it.
 - why: #150 step 3 removes `noDefaultExport`, the sole reader, and enforces `exports`; `discovered` then only feeds the project map, duplicating `exports: "default"` (`setup.ts`, loaded by path, is the exception). `configuration.4` concerns the widening. `stylistic/naming`, `padded*` and `debtMarkers` derive from no structure.
 - want: decide whether `discovered` goes from roles and config; state a reason for each non-structure rule.
 
-## 10. Terms carry the wrong domain's meaning
-
-- sites: `src/project/config/constants.ts:22` (test-variant suffixes belong to `project/environments`), `src/project/structure/operations/resolveImportRules.ts:72` (environment-sourced rules labelled `test-variant` instead of `environment`). `liveSections` and the `layout` option: #225.
-- want: each term and constant owned by its domain, one meaning per name.
-
-## 11. Packages built with engrenage publish no effect levels for their exports
+## 10. Packages built with engrenage publish no effect levels for their exports
 
 - why: #234 ranks other packages' imports through the `structure.effects` config map only, though an engrenage-built package's roles already carry a level per export.
 - want: such packages publish levels derived from their roles, read when another project imports them, so consumers stop declaring them by hand.
+
+## 11. Global modules own domain vocabulary
+
+- sites: `src/constants.ts:5`, `src/entry.ts:1`
+- why: global constants carry tool knowledge (package names, config file names); the global types role holds block types, sync results, `IgnorePresets` and `GlobGroup`.
+- want: each value and type moved to its owning domain.
+
+## 12. Role and domain names are hardcoded or collide
+
+- sites: `src/project/roles/constants.ts:9`, `src/tools/eslint/conventions/structure/readonlyConstants.ts:20`, `src/tools/eslint/constants.ts:232`, `src/foundation/data/index.ts:1`
+- why: index and entry roles found by fixed names though a preset's `name` renames them; the constants role found by preset name; the index key repeats `project/roles`, which a utility cannot import at runtime; `data` names a one-function domain like the environment.
+- want: roles resolved from declared names; a domain name not colliding with an environment.
+
+## 13. Structure declaration in `engrenage.config.ts` mixes concerns
+
+- sites: `engrenage.config.ts:113`, `:140`, `:237`
+- why: the `config` role holds the identity definer `defineConfig` beside I/O, while lint ranks roles by imports only; scripts and tooling list roles none of their modules use; `./config` resolves to `workflows/config` but `./config/constants` to `project/config`, and constants subpaths are hand-listed.
+- want: a decision on the role split (planning); subpaths derived.
+
+## 14. Role presets sit among utils and rank wrongly
+
+- sites: `src/project/roles/utils/*.ts` (one preset per file, 25 markers), `engrenage.config.ts:96`
+- why: each file is a role preset, not a utility; `adapters` is the only preset without an effect level, so projects override it; `schemas` is pure though `foundation/options` declarer schemas import confined utils; `testutils` should be observing once its type exists.
+- want: presets in their own role directory; `adapters` ranked by the preset (planning for the rest).
+
+## 15. Structure resolvers and index hold loose rules
+
+- sites: `src/project/structure/operations/createStructureDomainResolver.ts:68`, `createStructureRoleResolver.ts:131`, `src/project/structure/utils/createEntityIndex.ts:96`, `:101`, `src/project/structure/operations/findImportCycles.ts:238`
+- why: a later `undefined` overrides an earlier glob's value; a directory role passes as a file role; public file roles stay out of the surface; child visibility misses a namespace's scoped roles; without `verbatimModuleSyntax`, a value re-export of a type-only module counts as a runtime edge.
+- want: each rule fixed at its site.
+
+## 16. Structure boundary and layer rules miss cases
+
+- sites: `src/project/structure/utils/checkBoundary.ts:47`, `:111`, `checkLayers.ts:7`, `checkSurfaces.ts:8`
+- why: the fix reads the index specifier as the first surface entry; files at an environment root outside global roles and root entry, and imports between two directories of one environment, are never checked; layer and surface rules split by target kind.
+- want: index specifier read directly; every environment file checked; rules split by broken relation.
+
+## 17. Structure reads tsconfig to find output directories
+
+- sites: `src/project/structure/config/sections/aliasesSection.ts:22`, `:26`, `entitiesSection.ts:16`
+- why: an unreadable tsconfig hides the output directory, so the alias is generated and the index skips instead of failing; aliases target the language named `typescript` only.
+- want: output directory resolved without the tsconfig; aliases not keyed by one language name.
+
+## 18. Structure and map renderers are ad hoc
+
+- sites: `src/project/structure/utils/renderStructure.ts:55`, `:83`, `src/tools/agents/utils/renderEnvironmentMap.ts:15`
+- why: path segments recomposed by hand though the node provides them; map renderers repeat code.
+- want: segments from the node; one structured renderer shared by the map renderers.

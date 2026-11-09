@@ -9,7 +9,7 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 2. The reference marker syntax is hand-written and conflicts go unreported
 
-- sites: `src/tools/agents/setup/createBacklogStep.ts:69`, `src/tools/agents/setup/syncAgentFiles.ts:35`, `createAgentsStep`, `createInstructionFile`, `getMissingRuleTemplates` (regex re-parse).
+- sites: `src/tools/agents/setup/createBacklogStep.ts:69`, `src/tools/agents/setup/syncAgentFiles.ts:35`, `:40`, `src/foundation/blocks/utils/syncBlocks.ts:35` (skips `@debt` comments the marker regex reads as directives), `createAgentsStep`, `createInstructionFile`, `getMissingRuleTemplates` (regex re-parse).
 - why: `markdownBlocks` already describes the syntax; a rule file at the wanted path without its reference silently drops the rule. #9 ("Markers fail silently", marker grammar) covers it.
 - want: folded into #9: one marker grammar from `markdownBlocks`; sync reports the conflict.
 
@@ -22,8 +22,3 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: the final-report, worktree-gate and stop-gate lines in the Finishing sections of `issue-implementation.md` and `debugging.md` are identical and must change together.
 - want: one source for agents with `gate: true`, generated into each, once the copies start to drift.
-
-## 5. "Serialize verification in a shared worktree" cannot be followed by instruction alone
-
-- why: in `data/agents/sections/verification.md`, a walker cannot see a gate running in an agent's stop hook; only a per-worktree gate lock (#319, "Coordinate gates per worktree") makes overlap impossible.
-- done: delete the rule once that lock lands.

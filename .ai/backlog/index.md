@@ -27,7 +27,7 @@ Deferred questions, bugs, tasks and improvements.
 - [eslint](eslint.md): Upstream ESLint API limitations.
 - [eslint-commands](eslint-commands.md): engrenage's ESLint commands and the arguments they pass.
 - [toolkit](toolkit.md): Upstream @auaust/toolkit decisions that may affect engrenage.
-- [configuration](configuration.md): Project configuration contract: environments, option shapes and list options.
+- [configuration](configuration.md): Project configuration contract: loading, environments, option shapes and list options.
 - [typescript](typescript.md): Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - [tsdown](tsdown.md): Generated tsdown build configuration: entries, outputs and declaration files.
 - [package-json](package-json.md): Published package contents and fields derived by the sync `package` target.
@@ -40,3 +40,15 @@ Deferred questions, bugs, tasks and improvements.
 - [changesets](changesets.md): Changesets configuration and presets.
 - [github](github.md): Generated GitHub workflows and templates.
 - [agent-instructions](agent-instructions.md): Shared agent instructions, skills and backlog conventions.
+- [gate](gate.md): The commit gate and its process locks.
+- [processes](processes.md): Spawned processes, binary and module resolution.
+- [extensions](extensions.md): The extension registry and extension declarations.
+- [cli](cli.md): Command definitions, registration and program runs.
+- [tests](tests.md): Test infrastructure and coverage gaps.
+- [format](format.md): The `format` section, formatter selection and formatting vocabulary.
+- [agents](agents.md): Agent runtime integrations: hooks and runtime names.
+- [vscode](vscode.md): Synced VS Code files.
+- [lefthook](lefthook.md): Lefthook integration.
+- [pnpm](pnpm.md): pnpm integration and package-manager scripts.
+- [init](init.md): Init steps and their step context.
+- [eslint-conventions](eslint-conventions.md): ESLint rules and conventions engrenage ships.

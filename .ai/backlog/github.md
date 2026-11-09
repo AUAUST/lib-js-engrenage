@@ -4,6 +4,6 @@ Generated GitHub workflows and templates.
 
 ## 1. Nested workflows are relocated by string substitution
 
-- site: `src/tools/github/operations/renderWorkflow.ts:9`
-- why: regex replacements on templates silently stop matching when a template changes.
-- want: template the YAML instead.
+- sites: `src/tools/github/operations/renderWorkflow.ts:9`, `:10`
+- why: regex replacements silently stop matching when a template changes; the lockfile name repeats `tools/pnpm`'s resource.
+- want: templated YAML; the lockfile location read from its owner.

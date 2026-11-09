@@ -1,6 +1,6 @@
 # configuration
 
-Project configuration contract: environments, option shapes and list options.
+Project configuration contract: loading, environments, option shapes and list options.
 
 ## 1. Liquid and CSS are not languages engrenage knows.
 
@@ -24,7 +24,49 @@ Project configuration contract: environments, option shapes and list options.
 - why: #141 added it, so `files.discovered` now includes role globs (for this repository `tests/**/setup.ts`). No changeset was added; consumers may see new discovered files.
 - want: check whether consumers are affected and add a changeset if so.
 
-## 5. Option declarers and helpers sit in the wrong modules
+## 5. Generic accessor factory sits in the options domain
 
-- sites: `src/foundation/options/config/declareLocation.ts:9` (declarers split by imports, not concern), `src/foundation/options/index.ts:52` (`globsSchema.ts` also default-exports `globSchema`, which no barrel exposes), `src/foundation/options/utils/createAccessors.ts:7` (generic factory used by the tsconfig and package.json models), `src/project/structure/config/schemas/structureOptions.ts:12` (spreadable record of declarations in `schemas`). Related: role contracts in #227.
-- want: each declarer and schema in the module its concern names; `globSchema` in its own module.
+- site: `src/foundation/options/utils/createAccessors.ts:7`
+- why: used by `createTsconfig` and the package.json model.
+- want: its own `foundation` home.
+
+## 6. Config loads do avoidable work and keep past results
+
+- sites: `src/project/tsconfig/operations/createTsconfig.ts:1`, `src/tools/git/config/sections/gitSection.ts:15`, `src/project/config/operations/loadConfig.ts:78`
+- why: the static `typescript` import costs ~0.2 s on every load; the git section globs the whole tree where `git ls-files` lists the tracked set; `refresh` rides on `loadConfig` because an operations module exports one name.
+- want: lazy compiler import; git section asks Git; a role for module-level state (planning).
+
+## 7. Option sections and tsconfig paths are cast or unchecked
+
+- sites: `src/foundation/options/config/declarers/declareSection.ts:7`, `src/foundation/options/types/Section.ts:4`, `src/foundation/options/utils/createResolver.ts:215`, `src/foundation/options/utils/createAccessors.ts:40`, `src/project/tsconfig/utils/readTsconfigPaths.ts:19`
+- why: `Config` comes from the annotation, unchecked against the resolver; the resolver context is `unknown`, narrowed bivariantly; sections get the open resolver, so key reads are untyped; compose cannot type getters from a dynamic map; hand-written paths are cast.
+- want: section context typed through `Resolver<Context, Sections>`; paths validated against a schema.
+
+## 8. Options infer meaning from shape or wording, and defaults live elsewhere
+
+- sites: `src/foundation/options/utils/applyInputDefaults.ts:26`, `:57`, `src/foundation/options/utils/validate.ts:37`, `src/foundation/options/config/declarers/declareManagedList.ts:21`, `src/tools/git/config/schemas/gitSchema.ts:25`
+- why: a list adjustment is recognised by shape; creating a parent object skips an object option's computed default; valibot's default message detected by wording; some defaults are computed elsewhere and only documented.
+- want: the declared option decides; no wording matches; defaults computed at the declaration.
+
+## 9. Contributed environments are trusted past their checks
+
+- sites: `src/project/config/config/schemas/extensionSchema.ts:79`, `src/project/environments/operations/resolveEnvironmentTsconfig.ts:22`, `src/project/structure/operations/readStructureOption.ts:11`, `src/tools/typescript/operations/resolveTsconfigEnvironment.ts:11`
+- why: entries are typed as their slot's though only `load`, `enabled`, structure fields or tsconfig shape are checked.
+- want: boundary validation for every field a contributed environment resolves.
+
+## 10. Config codegen asserts what it could type
+
+- sites: `scripts/codegen/operations/generateConfigTypes.ts:146`, `:309`, `scripts/codegen/operations/composeInputSchemas.ts:9`
+- why: every custom schema but one reads as `GlobalsFactory`; the draft 07 schema is asserted to the draft 04 type; `Section` erases its declaration type, so readers assert presence.
+- want: each custom schema mapped to its type; `ConfigInput` type-checked against the sections (planning).
+
+## 11. Workflow builtins own no config key
+
+- site: `src/workflows/builtins/index.ts:1`
+- why: `eslint`, `vite`, `vitest`, `tsdown` options come only from definer arguments.
+- want: a decision on which builtins own a key (planning).
+
+## 12. Sections and schemas state intent indirectly
+
+- sites: `src/tools/git/config/sections/gitSection.ts:50` (composing adds nothing over the plain object), `src/project/build/config/schemas/buildSchema.ts:50` (`resolveWithin` called only for its throw, also in `cache()`).
+- want: the object written directly; an explicit containment assertion.

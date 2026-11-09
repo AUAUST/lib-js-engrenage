@@ -4,16 +4,17 @@ Local coding conventions and linting.
 
 ## 1. Type casts remain in source.
 
-- why: `AGENTS.md` forbids casts and assertions without a supported invariant, and none of these carries a marker or a justification: `scripts/codegen/generateEditions.ts` (`esInterfaceAliases` and `esMemberCompatKeys` cast `as Record<string, string | undefined>`, lines 299 and 321), `src/project/config/utils/createAccessors.ts` (`as unknown as Accessors<Fields>`), `src/tools/eslint/conventions/imports/noExternalNamespace.ts` (`context as unknown as ImportContext`), `src/tools/eslint/conventions/structure/importEffects.ts` (untyped ESTree-to-TS node map: `as TsNode`, `as never`).
-- want: each site typed without the cast (for example a lookup helper over a frozen table, a typed accessor factory) or marked with `@debt` stating the invariant it depends on.
-- done: each site is cast-free or carries a `@debt` marker.
+- sites: `scripts/codegen/operations/generateEditions.ts:60`, `:85` (`as Record<string, string | undefined>`), `src/foundation/options/utils/createAccessors.ts:41` (`as unknown as Accessors<Fields>`). ESLint rule casts: `eslint-conventions.1`.
+- want: each site typed without the cast or marked with `@debt` stating its invariant.
 
-## 2. ESLint convention internals have local gaps
+## 2. Complexity limits sit above their targets
 
-- sites: `src/tools/eslint/conventions/stylistic/naming.ts:27` (splits words by hand; primitive-kit `splitWords`), `preferValuedReturn.ts:142` (fix hardcodes two-space indent), `src/tools/eslint/constants.ts:203` (index role key repeats the one in `project/structure`; needs a shared home: decision).
-- want: fix the first two directly; place the key.
+- sites: `eslint.config.ts:5`, `:6`, `src/project/format/constants.ts:19`, `:20`
+- why: `functionLines` and `cognitiveComplexity` are disabled for the stylistic rules; the format limits are 20 and 125 against targets of 15 and 100.
+- want: functions refactored under the targets, then limits lowered (planning for the refactor scope).
 
-## 3. Comments explain code instead of naming it
+## 3. Repeated types and converters
 
-- sites: `src/workflows/registry/config/schemas/configDeclaration.ts:24` (`Core`, `Tooling`, `Environments`), `tests/utils/binaryTimeout.ts:1`.
-- want: names carry the meaning; comments removed.
+- sites: `src/project/roles/types/Role.ts:1`, `src/project/tsconfig/utils/toJsonValue.ts:3`
+- why: `Role` duplicates the generated `RoleInput`; the JSON-value round trip repeats `serialize` in `defineSchema`.
+- want: `RoleInput` used directly; one shared JSON-value converter.
