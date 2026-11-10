@@ -88,11 +88,9 @@ export async function checkAgents(
           if (
             agent === "codex"
               ? !output.file.startsWith(`${codexSkillsDir}/`)
-              : (
-                  !(
-                    output.file.startsWith(`${claudeSkillsDir}/`) ||
-                    output.file.startsWith(`${claudeAgentsDir}/`)
-                  )
+              : !(
+                  output.file.startsWith(`${claudeSkillsDir}/`) ||
+                  output.file.startsWith(`${claudeAgentsDir}/`)
                 )
           ) {
             continue;

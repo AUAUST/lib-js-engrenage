@@ -1,5 +1,8 @@
 import type { Doc } from "prettier";
 
+import { isArray } from "@auaust/toolkit/isArray";
+import { isObject } from "@auaust/toolkit/isObject";
+
 import { isAstNode } from "#tools/prettier/utils/isAstNode";
 import { isParenthesized } from "#tools/prettier/utils/isParenthesized";
 import type { AstNode } from "#tools/prettier/types/AstNode";
@@ -33,21 +36,49 @@ const wrapperKeys = new Map([
   ["TSSatisfiesExpression", "expression"],
 ]);
 
-function unwrap(node: AstNode): AstNode {
-  const key = wrapperKeys.get(node.type);
+const prefixWrapperTypes = new Set([
+  "AwaitExpression",
+  "UnaryExpression",
+  "YieldExpression",
+]);
 
-  const inner = key === undefined ? undefined : node[key];
+// @debt the operand's doc is found as the last part of the doc Prettier prints a prefix wrapper in, a shape no API exposes
+function lastPart(target: Doc): Doc | undefined {
+  if (isArray(target)) {
+    return target.at(-1);
+  }
 
-  return isAstNode(inner) ? unwrap(inner) : node;
+  return isObject(target) && target.type === "label"
+    ? lastPart(target.contents)
+    : undefined;
 }
 
-// @debt a wrapper whose operand Prettier parenthesizes (`!(a || b)`, `await (a || b)`) is classified by its operand, so it takes a second pair of parentheses around Prettier's
-export function keepsOwnBreak(node: AstNode, printed: Doc): boolean {
-  const { type } = unwrap(node);
+function keepsBreak(node: AstNode, printed: Doc | undefined): boolean {
+  if (printed !== undefined && isParenthesized(printed)) {
+    return true;
+  }
+
+  const key = wrapperKeys.get(node.type);
+
+  const operand = key === undefined ? undefined : node[key];
+
+  if (isAstNode(operand)) {
+    return keepsBreak(
+      operand,
+      prefixWrapperTypes.has(node.type) && printed !== undefined
+        ? lastPart(printed)
+        : undefined,
+    );
+  }
+
+  const { type } = node;
 
   return (
     ownBreakTypes.has(type) ||
-    (type.startsWith("TS") && !type.endsWith("Expression")) ||
-    isParenthesized(printed)
+    (type.startsWith("TS") && !type.endsWith("Expression"))
   );
+}
+
+export function keepsOwnBreak(node: AstNode, printed: Doc): boolean {
+  return keepsBreak(node, printed);
 }

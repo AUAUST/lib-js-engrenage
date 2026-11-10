@@ -8,3 +8,8 @@
 - PreToolUse Bash hook (`gh issue create`): pipe a draft through a shell variable path — hook needs the literal `.draft.md` path in the pipeline, resolved from the shell cwd; wrote one literal absolute path per command
 - drafts flush: strip frontmatter with awk — left a leading blank line, so `engrenage issues check` saw no header; trimmed leading blank lines and republished
 - git stash -u: stashing a tree with `git add -N` entries to test HEAD — stash refused, chained pop then half-applied an older stash's untracked files; removed them after cmp against stash^3, used a temporary worktree instead
+- `gh issue create` hook: piped a body from a shell function, then from a relative `.draft.md` path outside the repository root — the hook accepts only a draft path relative to the root; reran from the root
+- `engrenage issues check`: published draft bodies keeping the blank line after the frontmatter — the header check fails on a leading blank line; stripped it and republished
+- node scratch scripts: imported `prettier` from a scratchpad `.mjs` — ESM resolves packages from the script directory, not the cwd; imported `node_modules/prettier/index.mjs` by absolute path
+- PreToolUse Bash hook (`gh issue edit`): redirected a body file with `<`, then a draft without frontmatter — the hook accepts only a pipe from a `.draft.md` file and blocks the whole compound command; piped with `cat` in its own command
+- `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the run shows no test console output; wrote it to a file instead

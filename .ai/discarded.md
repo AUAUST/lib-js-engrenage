@@ -7,3 +7,7 @@
 - structure flat declarations: keeping `namespaces` and `domains` beside `structure` (#322) — two shapes for one concept and a merge check between them
 - lazy declaration declarer: recursive option declarations in `foundation/options` (#322) — one consumer; kept private in `declareStructureNodes`
 - optional structure wrapper: `structure` optional without child records accepting `undefined` (#322) — no declarer wraps an object declaration with its own optionality; debt marker instead
+- layout plugin text edits: assignments kept beside `=` (#418) — joining `=⏎` cannot break the `rhs` again; printer override instead
+- `operator-linebreak`: assignments kept beside `=` (#418) — no working fix, fights Prettier
+- `dprint-plugin-typescript`: assignments kept beside `=` (#418) — formatter swap, no assignment option found
+- Prettier fork: assignments kept beside `=` (#418) — maintenance cost; printer override instead
