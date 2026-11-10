@@ -19,7 +19,7 @@ function sharedFile(name: string) {
     owns: {
       files: {
         [`${name}.shared`]: {
-          locate: async () => {
+          locate: () => {
             return { file: "shared.txt" };
           },
         },
@@ -47,7 +47,7 @@ describe("file resources", () => {
         owns: {
           files: {
             gated: {
-              locate: async () => {
+              locate: () => {
                 return { file: "gated.txt" };
               },
             },
@@ -74,12 +74,12 @@ describe("file resources", () => {
           files: {
             broken: {
               committed: false,
-              locate: async () => {
+              locate: () => {
                 throw rejection;
               },
             },
             fine: {
-              locate: async () => {
+              locate: () => {
                 return { file: "fine.txt" };
               },
             },
@@ -164,7 +164,7 @@ describe("file resources", () => {
           owns: {
             files: {
               closed: {
-                locate: async () => {
+                locate: () => {
                   return { file: "closed.json" };
                 },
               },

@@ -42,8 +42,10 @@ function overrideSections(
   function resolve<Key extends ConfigKey>(
     key: Key,
   ): Promise<ConfigSections[Key]>;
-  async function resolve(key: ConfigKey): Promise<unknown> {
-    return overrides.has(key) ? overrides.get(key) : config.resolve(key);
+  function resolve(key: ConfigKey): Promise<unknown> {
+    return overrides.has(key)
+      ? Promise.resolve(overrides.get(key))
+      : config.resolve(key);
   }
 
   return { ...config, resolve };

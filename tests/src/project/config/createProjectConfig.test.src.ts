@@ -102,7 +102,7 @@ describe("createProjectConfig", () => {
       owns: {
         keys: {
           name: {
-            async load() {
+            load() {
               return nameSection;
             },
           },

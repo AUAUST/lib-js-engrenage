@@ -13,7 +13,7 @@ import type { SectionSource } from "#foundation/options/types/SectionSource";
 function createSource(
   sections: Readonly<Record<string, Section>>,
 ): SectionSource {
-  async function load(key: string) {
+  function load(key: string) {
     const section = getOwn(sections, key);
 
     return section === undefined ? undefined : { input: undefined, section };

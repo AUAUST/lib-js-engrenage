@@ -1,1 +1,1 @@
-export type ImportCategory = string;
+export type ImportCategory = string & {};

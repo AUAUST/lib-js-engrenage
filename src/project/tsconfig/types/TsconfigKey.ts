@@ -1,1 +1,1 @@
-export type TsconfigKey = string;
+export type TsconfigKey = string & {};
