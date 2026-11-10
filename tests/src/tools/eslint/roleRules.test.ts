@@ -51,7 +51,7 @@ async function createLinter() {
 
   const project = createTemporaryProject({
     "package.json": JSON.stringify({ name: "library", type: "module" }),
-    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${roles}, ${checkedRole}, ${configRole}], namespaces: { ".": { layers: ["project"] } } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${roles}, ${checkedRole}, ${configRole}], structure: { layers: ["project"] } } };\n`,
     "src/project/feature/index.ts": "export {};\n",
     "src/project/feature/checked/one.ts": "export {};\n",
     "src/project/feature/checked/inner/two.ts": "export {};\n",

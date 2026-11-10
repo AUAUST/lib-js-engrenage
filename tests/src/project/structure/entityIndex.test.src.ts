@@ -59,7 +59,7 @@ async function createIndex(indexFile = "index.ts", definers = staticDefiners) {
   const project = createTemporaryProject({
     "package.json": '{ "name": "library", "type": "module" }',
     "tsconfig.json": "{}",
-    "engrenage.config.ts": `export default { preset: "library", src: { node: 24, roles: ${renderRoles(indexFile, definers)}, namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", src: { node: 24, roles: ${renderRoles(indexFile, definers)}, structure: { layers: ["foundation", "project"] } } };\n`,
     "src/entry.ts": "",
     "src/foundation/base/index.ts": "",
     "src/project/feature/index.ts": "",

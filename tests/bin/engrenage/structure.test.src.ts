@@ -49,7 +49,7 @@ describe("engrenage structure", () => {
 
   test("does not warn on a domain with a purpose", async () => {
     createProject(
-      '{ src: { strictness: "loose", domains: { feature: { purpose: "A configured feature." }, mystery: { purpose: "Additional fixture files." } } } }',
+      '{ src: { strictness: "loose", structure: { domains: { feature: { purpose: "A configured feature." }, mystery: { purpose: "Additional fixture files." } } } } }',
     );
 
     await structure({ check: true });

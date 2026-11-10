@@ -40,7 +40,7 @@ describe("domain entries", () => {
   test("a domain holding an entry exposes it by its path without namespaces, one without nothing", async () => {
     expect(
       await exposed(`{
-        namespaces: { tools: {}, project: {} },
+        structure: { namespaces: { tools: {}, project: {} } },
       }`),
     ).toEqual({
       "./alpha": "src/tools/alpha/entry.ts",
@@ -52,7 +52,7 @@ describe("domain entries", () => {
   test("the entry role's file names the entry of a domain", async () => {
     expect(
       await exposed(
-        `{ namespaces: { tools: {}, project: {} } }`,
+        `{ structure: { namespaces: { tools: {}, project: {} } } }`,
         { "src/tools/beta/exports.ts": "" },
         renderCodeRoles(entry({ purpose: "Entry.", file: ["exports.ts"] })),
       ),
@@ -62,8 +62,9 @@ describe("domain entries", () => {
   test("a declared specifier replaces the derived one", async () => {
     expect(
       await exposed(`{
-        namespaces: { tools: {} },
-        domains: { "tools/alpha": { specifier: "./first" } },
+        structure: {
+          namespaces: { tools: { domains: { alpha: { specifier: "./first" } } } },
+        },
       }`),
     ).toMatchObject({ "./first": "src/tools/alpha/entry.ts" });
   });
@@ -71,10 +72,15 @@ describe("domain entries", () => {
   test("two public domains with one specifier fail", async () => {
     await expect(
       exposed(`{
-        namespaces: { tools: {} },
-        domains: {
-          "tools/alpha": { specifier: "./same" },
-          "tools/beta": { specifier: "./same" },
+        structure: {
+          namespaces: {
+            tools: {
+              domains: {
+                alpha: { specifier: "./same" },
+                beta: { specifier: "./same" },
+              },
+            },
+          },
         },
       }`),
     ).rejects.toThrow("share the specifier './same'");
@@ -83,7 +89,7 @@ describe("domain entries", () => {
   test("a subpath both derived from a public domain and listed in src.exports fails", async () => {
     await expect(
       exposed(`{
-        namespaces: { tools: {} },
+        structure: { namespaces: { tools: {} } },
         exports: { "./alpha": "src/hidden/index.ts" },
       }`),
     ).rejects.toThrow("Subpath './alpha' is exposed by src.exports");
@@ -93,8 +99,12 @@ describe("domain entries", () => {
     expect(
       await exposed(
         `{
-          namespaces: { tools: {}, project: {} },
-          domains: { "project/model": { internals: false } },
+          structure: {
+            namespaces: {
+              tools: {},
+              project: { domains: { model: { internals: false } } },
+            },
+          },
         }`,
         {},
         renderCodeRoles(entry()),
@@ -115,8 +125,11 @@ describe("domain entries", () => {
     await expect(
       exposed(
         `{
-          namespaces: { tools: {} },
-          domains: { "tools/beta": { specifier: "./alpha/internals" } },
+          structure: {
+            namespaces: {
+              tools: { domains: { beta: { specifier: "./alpha/internals" } } },
+            },
+          },
         }`,
         {},
         renderCodeRoles(entry()),

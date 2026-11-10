@@ -84,6 +84,7 @@ export { createImportResolver } from "#project/structure/utils/createImportResol
 export { createMirrorClassifier } from "#project/structure/utils/createMirrorClassifier";
 export { createStructureEntity } from "#project/structure/utils/createStructureEntity";
 export { extendEntityLineage } from "#project/structure/utils/extendEntityLineage";
+export { flattenStructure } from "#project/structure/utils/flattenStructure";
 export { getAliasSpecifier } from "#project/structure/utils/getAliasSpecifier";
 export { getEntryFile } from "#project/structure/utils/getEntryFile";
 export { getEnvironmentRootRole } from "#project/structure/utils/getEnvironmentRootRole";
@@ -103,7 +104,6 @@ export { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlob
 export { listStructureRoles } from "#project/structure/utils/listStructureRoles";
 export { loosenStructureNode } from "#project/structure/utils/loosenStructureNode";
 export { matchFileRole } from "#project/structure/utils/matchFileRole";
-export { normalizeNamespaces } from "#project/structure/utils/normalizeNamespaces";
 export { rankModule } from "#project/structure/utils/rankModule";
 export { registerRoles } from "#project/structure/utils/registerRoles";
 export { renderImportCycles } from "#project/structure/utils/renderImportCycles";

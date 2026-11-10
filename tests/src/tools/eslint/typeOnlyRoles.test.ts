@@ -15,7 +15,7 @@ async function createLinter(config = "", roles: readonly Role[] = []) {
       type: "module",
       imports: { "#project/*": "./src/project/*.ts" },
     }),
-    "engrenage.config.ts": `export default { preset: "library", ${config} src: { roles: ${renderCodeRoles(entry(), ...roles)}, namespaces: { ".": { layers: ["project"] } } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", ${config} src: { roles: ${renderCodeRoles(entry(), ...roles)}, structure: { layers: ["project"] } } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",

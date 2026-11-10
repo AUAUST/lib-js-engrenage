@@ -8,8 +8,8 @@ import {
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
 import { readStructureOption } from "#project/structure/operations/readStructureOption";
 import { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
+import { flattenStructure } from "#project/structure/utils/flattenStructure";
 import { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";
-import { normalizeNamespaces } from "#project/structure/utils/normalizeNamespaces";
 import type { ConfigResolver } from "#project/config/index";
 import type { EnvironmentStructureOption } from "#project/structure/ports/EnvironmentStructureOption";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
@@ -35,16 +35,21 @@ async function resolveStructure(
 
   const roles = listEnvironmentRoles(option);
 
-  const { namespaces, defined } = normalizeNamespaces({
+  const { namespaces, domains, defined } = flattenStructure({
     environment: name,
-    namespaces: option.namespaces,
+    structure: option.structure,
   });
 
   return resolveEnvironmentStructure({
     name,
     root: config.context.root,
     dirs: environment.dirs,
-    options: { ...option, namespaces },
+    options: {
+      namespaces,
+      domains,
+      optOut: option.optOut,
+      strictness: option.strictness,
+    },
     ...(roles === undefined
       ? {}
       : { roles: await readEnvironmentRoles(config, roles) }),

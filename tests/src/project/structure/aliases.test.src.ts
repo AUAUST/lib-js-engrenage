@@ -66,7 +66,7 @@ describe("aliases", () => {
 
   test("gives a namespace holding domains its own alias only", async () => {
     const { read } = await sync(
-      `{ preset: "library", src: { node: 24, namespaces: { ".": {}, tools: {} } } }`,
+      `{ preset: "library", src: { node: 24, structure: { namespaces: { tools: {} } } } }`,
       { "src/tools/git/index.ts": "", "src/tools/git/constants.ts": "" },
     );
 

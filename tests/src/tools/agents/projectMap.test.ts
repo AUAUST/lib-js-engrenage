@@ -33,11 +33,11 @@ function createProject(peers = 0, published = true) {
   agents: { preferred: ["claude"] },
   src: {
     roles: ${renderCodeRoles(entry(), handlers())},
-    namespaces: {
-      ".": { layers: ["base", "*"] },
-      "isolated": { relation: "isolated" },
+    structure: {
+      layers: ["base", "*"],
+      namespaces: { isolated: { relation: "isolated" } },
+      domains: { feature: { purpose: "The feature." } },
     },
-    domains: { "feature": { purpose: "The feature." } },
   },
 };\n`,
     "src/base/core/index.ts": "",

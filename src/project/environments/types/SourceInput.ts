@@ -2,7 +2,6 @@
 
 import type { ListOption, ManagedListOption } from "#foundation/options/index";
 import type { AliasesInput } from "#project/environments/types/AliasesInput";
-import type { DomainInput } from "#project/environments/types/DomainInput";
 import type { NamespaceInput } from "#project/environments/types/NamespaceInput";
 import type { RoleInput } from "#project/roles/index";
 
@@ -12,21 +11,11 @@ import type { RoleInput } from "#project/roles/index";
  */
 export interface SourceInput {
   /**
-   * Grouping directories, by path relative to the environment directory (`.` is the environment directory itself).
-   * A namespace has no `index.ts` and no roles, holds domains and namespaces, and orders them with `layers`.
-   * @default none, so namespaces are inferred
+   * A grouping directory: no `index.ts` and no roles, it holds domains and namespaces and orders them with `layers`.
+   * An environment's `structure` is its root namespace, the environment directory itself.
+   * @default an empty namespace, so the tree is inferred
    */
-  namespaces?: ({
-    [k: string]: NamespaceInput
-  } | undefined)
-  /**
-   * Metadata of domains, by path or glob relative to the environment directory.
-   * A path declaration also makes a directory a domain, even a role-named one; a glob only adds metadata.
-   * @default none
-   */
-  domains?: ({
-    [k: string]: DomainInput
-  } | undefined)
+  structure?: (NamespaceInput | undefined)
   /**
    * Directories, relative to the environment directory, that are never read as roles even though their name is one.
    * @default none

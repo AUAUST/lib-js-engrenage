@@ -17,7 +17,6 @@ import type { File } from "#types/File";
 type DomainDeclaration = StructureOptions["domains"][string];
 
 export function createStructureDomainResolver({
-  name,
   root,
   options,
   commands,
@@ -26,7 +25,6 @@ export function createStructureDomainResolver({
   internals,
   rolesFor,
 }: {
-  name: string;
   root: Directory;
   options: StructureOptions;
   commands: boolean;
@@ -38,7 +36,7 @@ export function createStructureDomainResolver({
   const { namespaces } = options;
   const domains = entries(options.domains);
 
-  function describe(subpath: string, path: Directory) {
+  function describe(subpath: string) {
     const directory = subpath.slice(subpath.lastIndexOf("/") + 1);
     const namespace = namespaces[subpath];
     const exact = domains.find(([glob]) => glob === subpath)?.[1];
@@ -51,12 +49,6 @@ export function createStructureDomainResolver({
         .map(([, declared]) => declared),
       ...(exact === undefined ? [] : [exact]),
     ];
-
-    if (namespace !== undefined && exact !== undefined) {
-      throw new Error(
-        `${path} is declared as a namespace and as a domain in the ${name} environment`,
-      );
-    }
 
     return {
       directory,

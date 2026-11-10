@@ -2,6 +2,7 @@
 export { declareCodeEnvironment } from "#project/environments/config/declarers/declareCodeEnvironment";
 export { declareDefines } from "#project/environments/config/declarers/declareDefines";
 export { declareProgramLayout } from "#project/environments/config/declarers/declareProgramLayout";
+export { declareStructureNodes } from "#project/environments/config/declarers/declareStructureNodes";
 export { declareStructureOptions } from "#project/environments/config/declarers/declareStructureOptions";
 // @end
 
@@ -23,9 +24,11 @@ export type * from "#project/environments/types/ContributedEnvironment";
 export type * from "#project/environments/types/DataInput";
 export type * from "#project/environments/types/DefineContext";
 export type * from "#project/environments/types/DefineInput";
+export type * from "#project/environments/types/DomainDeclaration";
 export type * from "#project/environments/types/DomainInput";
 export type * from "#project/environments/types/EnvironmentClaim";
 export type * from "#project/environments/types/GlobalsFactory";
+export type * from "#project/environments/types/NamespaceDeclaration";
 export type * from "#project/environments/types/NamespaceInput";
 export type * from "#project/environments/types/ResolvedBin";
 export type * from "#project/environments/types/ResolvedCodeEnvironment";
@@ -54,6 +57,7 @@ export { namespaceSchema } from "#project/environments/config/schemas/namespaceS
 export { runtimeSchema } from "#project/environments/config/schemas/runtimeSchema";
 export { scriptsSchema } from "#project/environments/config/schemas/scriptsSchema";
 export { sourceSchema } from "#project/environments/config/schemas/sourceSchema";
+export { structureKeySchema } from "#project/environments/config/schemas/structureKeySchema";
 export { testsSchema } from "#project/environments/config/schemas/testsSchema";
 export { toolingSchema } from "#project/environments/config/schemas/toolingSchema";
 // @end

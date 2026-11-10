@@ -16,10 +16,8 @@ const structureOption = custom<EnvironmentStructureOption>((value) => {
 
   return (
     !value.enabled ||
-    ("namespaces" in value &&
-      isObject(value.namespaces) &&
-      "domains" in value &&
-      isObject(value.domains) &&
+    ("structure" in value &&
+      isObject(value.structure) &&
       "optOut" in value &&
       isArray(value.optOut) &&
       "strictness" in value &&

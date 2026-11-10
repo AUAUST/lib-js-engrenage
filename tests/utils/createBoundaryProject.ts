@@ -17,7 +17,7 @@ export function createBoundaryProject() {
         "#project/*": "./src/project/*.ts",
       },
     }),
-    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry())}, namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry())}, structure: { layers: ["foundation", "project"] } } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",

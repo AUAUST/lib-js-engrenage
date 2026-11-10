@@ -38,9 +38,10 @@ const files = {
   "src/ui/button/components/Button.tsx": "",
 };
 
-function createProject(options: string) {
+function createProject(options: string, extra: Record<string, string> = {}) {
   const project = createTemporaryProject({
     ...files,
+    ...extra,
     "engrenage.config.ts": `export default ${options};\n`,
   });
 
@@ -63,8 +64,11 @@ function flatten(node: StructureNode): StructureNode[] {
   return [node, ...node.children.flatMap(flatten)];
 }
 
-async function describeSource(options: string) {
-  const config = await loadConfig(createProject(options).root);
+async function describeSource(
+  options: string,
+  extra: Record<string, string> = {},
+) {
+  const config = await loadConfig(createProject(options, extra).root);
 
   const nodes = new Map(
     flatten((await config.resolve("structure")).src!.root).map((node) => {
@@ -79,13 +83,15 @@ const declaration = `{
   preset: "library",
   src: {
     roles: ${sourceRoles},
-    namespaces: {
-      ".": { layers: ["zone", "*"] },
-      zone: { layers: ["base", "*", "top"] },
-      ui: { roles: { enable: ["components"] } },
-    },
-    domains: {
-      errors: { purpose: "Error classes." },
+    structure: {
+      layers: ["zone", "*"],
+      namespaces: {
+        zone: { layers: ["base", "*", "top"] },
+        ui: { roles: { enable: ["components"] } },
+      },
+      domains: {
+        errors: { purpose: "Error classes." },
+      },
     },
     optOut: ["types"],
   },
@@ -157,6 +163,82 @@ describe("structure", () => {
 
     expect(nodes.get("src/feature/utils")?.purpose).toBe(
       "Confined functions, one per module.",
+    );
+  });
+
+  test("resolves namespaces and sub-domains declared under a domain", async () => {
+    const { nodes } = await describeSource(
+      `{
+        preset: "library",
+        src: {
+          roles: ${sourceRoles},
+          structure: {
+            domains: {
+              feature: {
+                purpose: "The feature.",
+                namespaces: { parts: { purpose: "Its parts.", layers: ["low", "*"] } },
+                domains: { sub: { purpose: "Its sub-domain.", specifier: "./subfeature" } },
+              },
+            },
+          },
+        },
+      }`,
+      {
+        "src/feature/parts/low/index.ts": "",
+        "src/feature/parts/high/index.ts": "",
+      },
+    );
+
+    expect(nodes.get("src/feature")).toMatchObject({
+      kind: "domain",
+      source: "config",
+      purpose: "The feature.",
+    });
+
+    expect(nodes.get("src/feature/parts")).toMatchObject({
+      kind: "namespace",
+      source: "config",
+      purpose: "Its parts.",
+    });
+
+    expect(
+      ["low", "high"].map((name) => {
+        return nodes.get(`src/feature/parts/${name}`)?.layer;
+      }),
+    ).toEqual([0, 1]);
+
+    expect(nodes.get("src/feature/sub")).toMatchObject({
+      kind: "domain",
+      source: "config",
+      purpose: "Its sub-domain.",
+      specifier: "./subfeature",
+    });
+  });
+
+  test("adds the metadata of a glob under a namespace to its domains only", async () => {
+    const { nodes } = await describeSource(
+      declaration.replace(
+        'zone: { layers: ["base", "*", "top"] },',
+        'zone: { layers: ["base", "*", "top"], domains: { "*": { purpose: "A zone domain." } } },',
+      ),
+    );
+
+    expect(nodes.get("src/zone/base")).toMatchObject({
+      kind: "domain",
+      source: "inferred",
+      purpose: "A zone domain.",
+    });
+
+    expect(nodes.get("src/feature")?.purpose).toBeUndefined();
+  });
+
+  test("fails on a name declared as a namespace and as a domain of one node", async () => {
+    await expect(
+      describeSource(
+        "{ src: { structure: { namespaces: { zone: { namespaces: { base: {} }, domains: { base: {} } } } } } }",
+      ),
+    ).rejects.toThrow(
+      "zone/base is declared as a namespace and as a domain in the src environment",
     );
   });
 
@@ -404,8 +486,10 @@ describe("inline roles", () => {
     const nodes = await describeProject(`{
       src: {
         roles: ${renderCodeRoles()},
-        namespaces: {
-          ui: { roles: { enable: [{ name: "widgets", exports: "named-match" }] } },
+        structure: {
+          namespaces: {
+            ui: { roles: { enable: [{ name: "widgets", exports: "named-match" }] } },
+          },
         },
       },
     }`);
@@ -537,7 +621,7 @@ describe("required roles", () => {
     const roles = renderCodeRoles(readme({ required: true, scoped: true }));
 
     const nodes = await describeProject(
-      `{ roles: ${roles}, namespaces: { docs: { roles: { enable: ["readme"] } } } }`,
+      `{ roles: ${roles}, structure: { namespaces: { docs: { roles: { enable: ["readme"] } } } } }`,
       {
         "src/docs/missing/index.ts": "",
         "src/docs/held/index.ts": "",

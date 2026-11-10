@@ -54,10 +54,8 @@ export function createStructureWalker({
   ): Promise<StructureNode> {
     const path = join(envDirectory, subpath);
 
-    const { directory, namespace, exact, declared, metadata } = describe(
-      subpath,
-      path,
-    );
+    const { directory, namespace, exact, declared, metadata } =
+      describe(subpath);
 
     function extendLineage(kind: StructureKind): readonly RoleLocationMember[] {
       return kind === "namespace" || kind === "domain"

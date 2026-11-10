@@ -63,7 +63,6 @@ export async function resolveEnvironmentStructure({
   const entryFile = getEntryFile(rolesFor([]));
 
   const domainResolver = createStructureDomainResolver({
-    name,
     root,
     options,
     commands,

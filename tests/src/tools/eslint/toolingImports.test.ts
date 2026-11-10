@@ -14,7 +14,7 @@ test("tooling imports src internals like scripts do, but never bin", async () =>
       imports: { "#project/*": "./src/project/*.ts" },
     }),
     "engrenage.config.ts":
-      'export default { preset: "library", src: { namespaces: { ".": { layers: ["project"] } } }, tooling: { dirs: ["tooling"] } };\n',
+      'export default { preset: "library", src: { structure: { layers: ["project"] } }, tooling: { dirs: ["tooling"] } };\n',
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",

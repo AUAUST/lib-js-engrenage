@@ -2,3 +2,5 @@
 
 - `gh api issue-field-values`: clear the `Drafting` blocker by posting an empty multi-select array — 422 "must contain at least one option"; `DELETE repos/{owner}/{repo}/issues/<n>/issue-field-values/<field id>` works, undocumented in the drafts flush mechanics
 - `gh issue view --repo`: read issues from `AUAUST/engrenage` — repository is `AUAUST/lib-js-engrenage`; had to read the git remote
+- PreToolUse Bash hook: run any command after changing the config schema before `engrenage.config.ts` — the hook loads the project config and blocked every Bash call; migrated the config with Edit first
+- `pnpm support codegen barrels`: regenerate a barrel after deleting a module it exports — the generator imports that barrel and fails on the missing module; fixed the stale line by hand, then reran

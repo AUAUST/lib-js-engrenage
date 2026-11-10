@@ -27,7 +27,7 @@ async function createLinter({
         "#project/*": "./src/project/*.ts",
       },
     }),
-    "engrenage.config.ts": `export default { preset: "library", structure: { effects: { ${effects} } }, src: { roles: ${renderCodeRoles(entry(), operations(), ...roles)}, namespaces: { ".": { layers: ["foundation", "project"] } } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", structure: { effects: { ${effects} } }, src: { roles: ${renderCodeRoles(entry(), operations(), ...roles)}, structure: { layers: ["foundation", "project"] } } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",

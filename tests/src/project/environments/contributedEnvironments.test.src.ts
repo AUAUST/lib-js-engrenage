@@ -59,8 +59,14 @@ const liquidOptionsSection = declareSection({
     return {
       enabled: true,
       roles: [],
-      namespaces: {},
-      domains: {},
+      structure: {
+        layers: undefined,
+        relation: "peers",
+        purpose: undefined,
+        roles: { enable: [] },
+        namespaces: {},
+        domains: {},
+      },
       optOut: [],
       strictness: "loose",
     };

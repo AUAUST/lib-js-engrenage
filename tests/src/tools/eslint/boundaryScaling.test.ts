@@ -39,7 +39,7 @@ function createProject(domains: number) {
         }),
       ),
     }),
-    "engrenage.config.ts": `export default { preset: "library", src: { namespaces: { ".": { layers: ${JSON.stringify(namespaces)} } } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", src: { structure: { layers: ${JSON.stringify(namespaces)} } } };\n`,
     "tsconfig.json": "{}",
     ...record(files),
   });
