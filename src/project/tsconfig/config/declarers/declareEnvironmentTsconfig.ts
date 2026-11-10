@@ -15,7 +15,6 @@ import { inheritsSchema } from "#project/tsconfig/config/schemas/inheritsSchema"
 import { defaultTsconfigInherits } from "#project/tsconfig/constants";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 
-// @debt `Context` reaches the declaration only through the inferred return type, so no-unnecessary-type-parameters warns that it is used once; given this is a valid use for "unused" type parameters, an heuristic could be added to the rule that allows them on functions without return type annotations
 export function declareEnvironmentTsconfig<Context = unknown>(
   key: TsconfigKey,
   options: {

@@ -20,22 +20,17 @@ ESLint rules and conventions engrenage ships.
 - why: `analyzeImports` is keyed by the entity index alone; it forces the importer's extension on targets (`.json`, `.tsx` wrong); a disabled convention reading sections registers no rule; a boundary in another environment renders as `../src/…`; the fix hardcodes a two-space indent.
 - want: inputs tied to one loaded config; target extensions from the target; disabled conventions reported; indent from the source.
 
-## 4. `no-unnecessary-type-parameters` flags a type parameter used only through the inferred return type
-
-- site: `src/project/tsconfig/config/declarers/declareEnvironmentTsconfig.ts:18` (rule: `src/tools/eslint/conventions/stylistic/noUnnecessaryTypeParameters.ts`)
-- want: a heuristic for that case (planning).
-
-## 5. `readonly-constants` forces schemas to `StandardSchemaV1`, erasing output types
+## 4. `readonly-constants` forces schemas to `StandardSchemaV1`, erasing output types
 
 - sites: `src/project/build/constants.ts:10`, `src/project/environments/constants.ts:75`, `:88`, `src/project/format/constants.ts:30`, `src/project/presets/constants.ts:15`, `src/project/roles/constants.ts:30`, `src/project/sync/constants.ts:11`, `:21`, `src/tools/agents/constants.ts:30`, `src/workflows/gate/constants.ts:8`
 - want: a readonly-constants form keeping the schema's output type (planning: the rule is shared).
 
-## 6. The naming rule splits words by hand
+## 5. The naming rule splits words by hand
 
 - site: `src/tools/eslint/conventions/stylistic/naming.ts:27`
 - want: primitive-kit `splitWords`.
 
-## 7. `projectService` spends ~5 s of a full lint matching files to tsconfigs
+## 6. `projectService` spends ~5 s of a full lint matching files to tsconfigs
 
 - site: `src/tools/eslint/utils/createTypeAwareLanguageOptions.ts`
 - why: TypeScript's `isMatchedByConfig` scans every solution reference's file names per opened file, quadratic in project size; per-environment `parserOptions.project` cut a full lint from 30.5 s to 23.9 s.

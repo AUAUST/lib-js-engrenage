@@ -22,19 +22,21 @@ import type { ObjectResolution } from "#foundation/options/types/ObjectResolutio
 
 export function declareObject<
   const Entries extends DeclarationEntries,
-  Optional extends
-    | true
-    | Default<
-        ObjectInput<Entries> | ([Disabled] extends [never] ? never : false),
-        DefaultContext
-      > = never,
+  Optional = never,
   const Disabled extends object = never,
   DefaultContext = unknown,
 >(
   entries: Entries,
   options?: {
     description?: Description;
-    optional?: Optional;
+    optional?: Optional &
+      (
+        | true
+        | Default<
+            ObjectInput<Entries> | ([Disabled] extends [never] ? never : false),
+            DefaultContext
+          >
+      );
     disable?: { readonly value: Disabled };
     assert?(input: ObjectInput<Entries>, path: string): void;
     renamed?: Readonly<Record<string, keyof Entries & string>>;

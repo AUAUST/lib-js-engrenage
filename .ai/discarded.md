@@ -11,3 +11,5 @@
 - `operator-linebreak`: assignments kept beside `=` (#418) — no working fix, fights Prettier
 - `dprint-plugin-typescript`: assignments kept beside `=` (#418) — formatter swap, no assignment option found
 - Prettier fork: assignments kept beside `=` (#418) — maintenance cost; printer override instead
+- no-unnecessary-type-parameters: skip reports on functions without a return annotation — silences single-use parameters the inferred return never uses; the rule now reads the checker's return type instead
+- declareSection `Config` removal: silence its single-use report — a `config: Resolver` parameter makes `ConfigResolver` annotations circular and loses the default for unannotated sections

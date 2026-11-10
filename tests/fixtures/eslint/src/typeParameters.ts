@@ -11,3 +11,11 @@ export function discard<Value = any>(target: {}): null {
 export function consume<Value>(target: Value): void {
   void target;
 }
+
+function hold<Value>(value: Value): { readonly value: NoInfer<Value> } {
+  return { value };
+}
+
+export function wrap<Value>(read: () => Value) {
+  return hold(read());
+}
