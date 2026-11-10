@@ -8,9 +8,10 @@ export async function runGateBinary(
   root: Directory,
   packageName: KnownPackageName,
   args: readonly string[],
+  binary: string = packageName,
 ): Promise<GateResult> {
   return runGateProcess(root, process.execPath, [
-    await resolveBinary(root, packageName, packageName),
+    await resolveBinary(root, packageName, binary),
     ...args,
   ]);
 }

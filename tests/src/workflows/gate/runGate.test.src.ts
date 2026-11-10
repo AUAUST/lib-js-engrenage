@@ -50,6 +50,25 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     expect(failures[0]?.output).toContain("src/index.ts(1,14): error TS2322");
   });
 
+  test("fails a staged import cycle under structure --check", async () => {
+    const { project, git } = await createGateRepository();
+
+    project.write("src/a.ts", 'export { b } from "./b.ts";\n');
+    project.write("src/b.ts", 'export { a } from "./a.ts";\n');
+
+    git("add", "src");
+
+    const { failures } = await runGate(await loadConfig(project.root), {
+      mode: "staged",
+    });
+
+    expect(failures.map(({ step }) => step)).toContain("structure --check");
+
+    expect(
+      failures.find(({ step }) => step === "structure --check")?.output,
+    ).toContain("import cycles (1)");
+  });
+
   test("fails the gate with the output of a contributed check", async () => {
     const { project } = await createGateRepository();
 
