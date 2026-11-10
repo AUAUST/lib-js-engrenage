@@ -1,7 +1,18 @@
-import type { Extension } from "#project/config/index";
+import { lefthookFile } from "#tools/lefthook/constants";
+import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/lefthook",
+  owns: {
+    files: {
+      "lefthook.yml": {
+        title: "Lefthook",
+        async locate(): Promise<FileLocation> {
+          return { file: lefthookFile };
+        },
+      },
+    },
+  },
   contributes: {
     "sync.targets": [
       {

@@ -1,8 +1,23 @@
-import type { Extension } from "#project/config/index";
+import { extensionsFile, settingsFile } from "#tools/vscode/constants";
+import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/vscode",
   owns: {
+    files: {
+      "vscode.settings": {
+        title: "VS Code",
+        async locate(): Promise<FileLocation> {
+          return { file: settingsFile };
+        },
+      },
+      "vscode.extensions": {
+        title: "VS Code",
+        async locate(): Promise<FileLocation> {
+          return { file: extensionsFile };
+        },
+      },
+    },
     keys: {
       vscode: {
         input: "vscode",

@@ -1,8 +1,28 @@
-import { claudeTarget } from "#tools/agents/claude/constants";
-import type { Extension } from "#project/config/index";
+import {
+  claudeFile,
+  claudeSettingsFile,
+  claudeTarget,
+} from "#tools/agents/claude/constants";
+import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/agents/claude",
+  owns: {
+    files: {
+      "CLAUDE.md": {
+        title: "Claude",
+        async locate(): Promise<FileLocation> {
+          return { file: claudeFile };
+        },
+      },
+      "claude.settings": {
+        title: "Claude",
+        async locate(): Promise<FileLocation> {
+          return { file: claudeSettingsFile };
+        },
+      },
+    },
+  },
   contributes: {
     "agents.runtimes": [
       {

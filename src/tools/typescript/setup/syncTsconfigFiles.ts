@@ -7,115 +7,12 @@ import { jsonIndentation } from "#project/format/constants";
 import {
   isLeftAlone,
   toJsonValue,
-  type ResolvedEnvironmentTsconfig,
-  type TsconfigKey,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
-import { listTsconfigEnvironments } from "#tools/typescript/operations/listTsconfigEnvironments";
-import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
+import { listTsconfigTargets } from "#tools/typescript/operations/listTsconfigTargets";
 import { tsconfigProducers } from "#tools/typescript/operations/tsconfigProducers";
 import type { ManagedListOption } from "#foundation/options/index";
 import type { LoadedConfig } from "#project/config/index";
-
-function toTarget(
-  key: TsconfigKey,
-  {
-    file,
-    extends: extended,
-    include,
-    exclude,
-    lib,
-    types,
-    compilerOptions,
-    unmanaged,
-  }: ResolvedEnvironmentTsconfig,
-): TsconfigTarget | undefined {
-  return file === undefined
-    ? undefined
-    : {
-        key,
-        file,
-        extends: extended,
-        include,
-        exclude,
-        lib,
-        types,
-        compilerOptions,
-        unmanaged,
-      };
-}
-
-// @debt "tests.dist" does not fit the config shape, so it is special-cased here and in createResolvedConfig, resolveTsconfigEnvironments and the extends, include, paths and skipLibCheck producers; a single lookup from tsconfig key to its environment would remove the branches
-async function isActive(
-  config: LoadedConfig,
-  key: TsconfigKey,
-): Promise<boolean> {
-  const { active } = await resolveTsconfigEnvironment(
-    config,
-    key === "tests.dist" ? "tests" : key,
-  );
-
-  return active;
-}
-
-async function findTsconfig(config: LoadedConfig, key: TsconfigKey) {
-  if (key === "tests.dist") {
-    const { dist } = await config.resolve("tests");
-
-    return dist.tsconfig;
-  }
-
-  const { tsconfig } = await resolveTsconfigEnvironment(config, key);
-
-  return tsconfig;
-}
-
-interface PlannedTarget {
-  target: TsconfigTarget;
-  create: boolean;
-}
-
-async function collectTargets(config: LoadedConfig): Promise<PlannedTarget[]> {
-  const { tsconfig } = await config.resolve("typescript");
-
-  const targets: PlannedTarget[] = [
-    {
-      target: {
-        key: "base",
-        file: tsconfig.file,
-        extends: tsconfig.extends,
-        include: undefined,
-        exclude: undefined,
-        lib: undefined,
-        types: undefined,
-        compilerOptions: tsconfig.compilerOptions,
-        unmanaged: tsconfig.unmanaged,
-      },
-      create: true,
-    },
-  ];
-
-  const variantKeys: readonly TsconfigKey[] = [
-    ...(await listTsconfigEnvironments(config)),
-    "tests.dist",
-  ];
-
-  for (const key of variantKeys) {
-    const resolved = await findTsconfig(config, key);
-
-    if (resolved.owner !== key || !(await isActive(config, key))) {
-      continue;
-    }
-
-    const target = toTarget(key, resolved);
-
-    if (target !== undefined) {
-      targets.push({ target, create: true });
-    }
-  }
-
-  return targets;
-}
 
 function listPaths({
   extends: extended,
@@ -220,12 +117,8 @@ async function createEdits(
 export async function syncTsconfigFiles(config: LoadedConfig) {
   const filesystem = config.context.filesystem;
 
-  for (const { target, create } of await collectTargets(config)) {
+  for (const target of await listTsconfigTargets(config)) {
     const current = await filesystem.read(target.file);
-
-    if (current === undefined && !create) {
-      continue;
-    }
 
     await filesystem.write(
       target.file,

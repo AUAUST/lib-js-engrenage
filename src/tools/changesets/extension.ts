@@ -1,4 +1,8 @@
-import { changelogGlob, changesetsCli } from "#tools/changesets/constants";
+import {
+  changelogGlob,
+  changesetDirectory,
+  changesetsCli,
+} from "#tools/changesets/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
@@ -13,6 +17,12 @@ export default {
         generated: true,
         async locate(): Promise<FileLocation> {
           return { globs: [changelogGlob] };
+        },
+      },
+      "changesets": {
+        title: "Changesets",
+        async locate(): Promise<FileLocation> {
+          return { directory: changesetDirectory };
         },
       },
     },

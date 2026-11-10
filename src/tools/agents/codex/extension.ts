@@ -1,4 +1,9 @@
-import { codexFile, codexTarget } from "#tools/agents/codex/constants";
+import {
+  codexAgentsDir,
+  codexFile,
+  codexHooksFile,
+  codexTarget,
+} from "#tools/agents/codex/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
@@ -14,6 +19,18 @@ export default {
           return preferred?.includes("codex") === true
             ? { file: codexFile }
             : undefined;
+        },
+      },
+      "codex.hooks": {
+        title: "Codex",
+        async locate(): Promise<FileLocation> {
+          return { file: codexHooksFile };
+        },
+      },
+      "codex.agents": {
+        title: "Codex",
+        async locate(): Promise<FileLocation> {
+          return { directory: codexAgentsDir };
         },
       },
     },

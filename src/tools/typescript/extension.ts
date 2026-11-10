@@ -17,6 +17,27 @@ export default [
             return { directory: cache.for(typescript) };
           },
         },
+        "typescript.env": {
+          title: "TypeScript",
+          async locate(config): Promise<FileLocation | undefined> {
+            const [{ types }, { envFile }] = await Promise.all([
+              config.resolve("define"),
+              config.resolve("typescript"),
+            ]);
+
+            return types ? { file: envFile } : undefined;
+          },
+        },
+        "tsconfig.environments": {
+          title: "TypeScript",
+          async locate(config): Promise<FileLocation | undefined> {
+            const {
+              locateEnvironmentTsconfigs,
+            } = await import("#tools/typescript/operations/locateEnvironmentTsconfigs");
+
+            return locateEnvironmentTsconfigs(config);
+          },
+        },
       },
       parts: {
         "package.json#imports": true,

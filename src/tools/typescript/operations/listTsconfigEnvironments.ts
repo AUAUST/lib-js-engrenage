@@ -1,7 +1,7 @@
-import type { LoadedConfig } from "#project/config/index";
+import type { ConfigResolver } from "#project/config/index";
 
 export async function listTsconfigEnvironments(
-  config: LoadedConfig,
+  config: ConfigResolver,
 ): Promise<readonly string[]> {
   const environments = await config.resolve("environments");
 

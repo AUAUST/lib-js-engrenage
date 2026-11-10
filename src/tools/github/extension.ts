@@ -1,4 +1,4 @@
-import type { Extension } from "#project/config/index";
+import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/github",
@@ -12,6 +12,18 @@ export default {
           } = await import("#tools/github/config/sections/githubSection");
 
           return githubSection;
+        },
+      },
+    },
+    files: {
+      "github.workflows": {
+        title: "GitHub",
+        async locate(config): Promise<FileLocation | undefined> {
+          const {
+            locateWorkflowFiles,
+          } = await import("#tools/github/operations/locateWorkflowFiles");
+
+          return locateWorkflowFiles(config);
         },
       },
     },

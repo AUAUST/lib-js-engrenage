@@ -1,6 +1,6 @@
 import { toJsonSchema } from "@valibot/to-json-schema";
 import { boolean, maxValue, number, pipe, safeParse } from "valibot";
-import { describe, expect, test } from "vitest";
+import { describe, expect, expectTypeOf, test } from "vitest";
 
 import { declare } from "#foundation/options/config/declarers/declare";
 import { declareObject } from "#foundation/options/config/declarers/declareObject";
@@ -66,6 +66,47 @@ describe("declare", () => {
     expect(
       JSON.stringify(toJsonSchema(section.schema, { errorMode: "ignore" })),
     ).toContain("Typed.\\n@default `other.flag`");
+  });
+
+  test("requires the contexts of its entries and of its own default", () => {
+    const section = declareObject(
+      {
+        plain: declare(boolean()),
+        flagged: declare(boolean(), {
+          optional: {
+            explain: "`flag`",
+            compute(context: { readonly flag: boolean }) {
+              return context.flag;
+            },
+          },
+        }),
+      },
+      {
+        optional: {
+          explain: "`enabled`",
+          compute(context: { readonly enabled: boolean }) {
+            return context.enabled ? { plain: true } : false;
+          },
+        },
+        disable: {
+          value: { flagged: false },
+        },
+      },
+    );
+
+    expectTypeOf(section.resolve)
+      .parameter(1)
+      .toEqualTypeOf<
+        { readonly flag: boolean } & { readonly enabled: boolean }
+      >();
+  });
+
+  test("requires no context when no entry reads one", () => {
+    const section = declareObject({
+      plain: declare(boolean()),
+    });
+
+    expectTypeOf(section.resolve).parameter(1).toBeUnknown();
   });
 
   test("validates with the schema narrowed by the context", () => {

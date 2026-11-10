@@ -11,6 +11,7 @@ export { githubSection } from "#tools/github/config/sections/githubSection";
 export { checkGithubWrite } from "#tools/github/operations/checkGithubWrite";
 export { checkIssue } from "#tools/github/operations/checkIssue";
 export { fetchIssue } from "#tools/github/operations/fetchIssue";
+export { locateWorkflowFiles } from "#tools/github/operations/locateWorkflowFiles";
 export { readGithubBody } from "#tools/github/operations/readGithubBody";
 export { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 export { requestGithub } from "#tools/github/operations/requestGithub";

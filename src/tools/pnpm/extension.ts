@@ -1,4 +1,4 @@
-import { lockfile } from "#tools/pnpm/constants";
+import { lockfile, workspaceFile } from "#tools/pnpm/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
@@ -10,6 +10,12 @@ export default {
         formatted: false,
         async locate(): Promise<FileLocation> {
           return { file: lockfile };
+        },
+      },
+      "pnpm-workspace.yaml": {
+        title: "pnpm",
+        async locate(): Promise<FileLocation> {
+          return { file: workspaceFile };
         },
       },
     },
