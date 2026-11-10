@@ -1,10 +1,15 @@
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { isString } from "@auaust/toolkit/isString";
 
 import { fixedOptions } from "#tools/prettier/constants";
+import { createLayoutPlugin } from "#tools/prettier/plugins/createLayoutPlugin";
 import { mapConventions } from "#tools/prettier/utils/mapConventions";
 import type { LoadedConfig } from "#project/config/index";
 import type { PrettierPlugin } from "#tools/prettier/ports/PrettierPlugin";
 import type { Config } from "#tools/prettier/types/Config";
+import type { Plugin } from "#tools/prettier/types/Plugin";
+
+import * as layoutConventions from "#tools/prettier/conventions/layout/index";
 
 function createOverrides(
   plugins: readonly PrettierPlugin[],
@@ -31,13 +36,20 @@ export async function createPrettierConfig(
 
   const entries = map(contributions, ({ entry }) => entry);
 
-  const plugins = await Promise.all(map(entries, (entry) => entry.load()));
+  const contributed = await Promise.all(map(entries, (entry) => entry.load()));
+
+  const plugins = [...(options.plugins ?? []), ...contributed];
+
+  // @debt plugins named by a string or URL are loaded by Prettier, so the layout plugin cannot wrap their parsers and shadows them with Prettier's own
+  const loaded = plugins.filter((plugin): plugin is Plugin => {
+    return !isString(plugin) && !(plugin instanceof URL);
+  });
 
   return {
     ...fixedOptions,
     ...mapConventions(conventions),
     ...options,
-    plugins: [...(options.plugins ?? []), ...plugins],
+    plugins: [...plugins, createLayoutPlugin(loaded, layoutConventions)],
     overrides: [...createOverrides(entries), ...(options.overrides ?? [])],
   };
 }

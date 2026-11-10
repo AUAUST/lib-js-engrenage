@@ -35,6 +35,8 @@ export type * from "#tools/prettier/ports/PrettierPlugin";
 
 // @barrel types/*.ts types
 export type * from "#tools/prettier/types/Config";
+export type * from "#tools/prettier/types/LayoutConvention";
+export type * from "#tools/prettier/types/LayoutEdit";
 export type * from "#tools/prettier/types/Options";
 export type * from "#tools/prettier/types/Plugin";
 export type * from "#tools/prettier/types/PrettierInput";

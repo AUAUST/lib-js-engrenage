@@ -80,7 +80,12 @@ describe("definePrettierConfig", () => {
 
     const config = await definePrettierConfig({ plugins: [upperCase] });
 
-    expect(config.plugins).toEqual([upperCase]);
+    expect(config.plugins).toEqual([
+      upperCase,
+      expect.objectContaining({
+        parsers: expect.any(Object),
+      }),
+    ]);
 
     expect(await format("abc", { ...config, parser: "text" })).toBe("ABC");
   });
