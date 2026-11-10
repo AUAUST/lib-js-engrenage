@@ -1570,6 +1570,7 @@ type AccessorPairs =
         enforceForTSTypes?: boolean;
       },
     ];
+
 // ----- array-bracket-newline -----
 type ArrayBracketNewline =
   | []
@@ -1580,6 +1581,7 @@ type ArrayBracketNewline =
           minItems?: number | null;
         },
     ];
+
 // ----- array-bracket-spacing -----
 type ArrayBracketSpacing =
   | []
@@ -1592,6 +1594,7 @@ type ArrayBracketSpacing =
         arraysInArrays?: boolean;
       },
     ];
+
 // ----- array-callback-return -----
 type ArrayCallbackReturn =
   | []
@@ -1602,6 +1605,7 @@ type ArrayCallbackReturn =
         allowVoid?: boolean;
       },
     ];
+
 // ----- array-element-newline -----
 type ArrayElementNewline =
   | []
@@ -1612,12 +1616,14 @@ type ArrayElementNewline =
           ArrayPattern?: _ArrayElementNewlineBasicConfig;
         },
     ];
+
 type _ArrayElementNewlineBasicConfig =
   | ("always" | "never" | "consistent")
   | {
       multiline?: boolean;
       minItems?: number | null;
     };
+
 // ----- arrow-body-style -----
 type ArrowBodyStyle =
   | []
@@ -1630,6 +1636,7 @@ type ArrowBodyStyle =
         requireReturnForObjectLiteral?: boolean;
       },
     ];
+
 // ----- arrow-parens -----
 type ArrowParens =
   | []
@@ -1640,6 +1647,7 @@ type ArrowParens =
         requireForBlockBody?: boolean;
       },
     ];
+
 // ----- arrow-spacing -----
 type ArrowSpacing =
   | []
@@ -1649,8 +1657,10 @@ type ArrowSpacing =
         after?: boolean;
       },
     ];
+
 // ----- block-spacing -----
 type BlockSpacing = [] | ["always" | "never"];
+
 // ----- brace-style -----
 type BraceStyle =
   | []
@@ -1661,8 +1671,10 @@ type BraceStyle =
         allowSingleLine?: boolean;
       },
     ];
+
 // ----- callback-return -----
 type CallbackReturn = [] | [string[]];
+
 // ----- camelcase -----
 type Camelcase =
   | []
@@ -1676,6 +1688,7 @@ type Camelcase =
         allow?: string[];
       },
     ];
+
 // ----- capitalized-comments -----
 type CapitalizedComments =
   | []
@@ -1702,6 +1715,7 @@ type CapitalizedComments =
           }
       ),
     ];
+
 // ----- class-methods-use-this -----
 type ClassMethodsUseThis =
   | []
@@ -1713,6 +1727,7 @@ type ClassMethodsUseThis =
         ignoreClassesWithImplements?: "all" | "public-fields";
       },
     ];
+
 // ----- comma-dangle -----
 type CommaDangle =
   | []
@@ -1726,10 +1741,13 @@ type CommaDangle =
           functions?: _CommaDangleValueWithIgnore;
         },
     ];
+
 type _CommaDangleValue =
   "always-multiline" | "always" | "never" | "only-multiline";
+
 type _CommaDangleValueWithIgnore =
   "always-multiline" | "always" | "ignore" | "never" | "only-multiline";
+
 // ----- comma-spacing -----
 type CommaSpacing =
   | []
@@ -1739,6 +1757,7 @@ type CommaSpacing =
         after?: boolean;
       },
     ];
+
 // ----- comma-style -----
 type CommaStyle =
   | []
@@ -1751,6 +1770,7 @@ type CommaStyle =
         };
       },
     ];
+
 // ----- complexity -----
 type Complexity =
   | []
@@ -1762,6 +1782,7 @@ type Complexity =
           variant?: "classic" | "modified";
         },
     ];
+
 // ----- computed-property-spacing -----
 type ComputedPropertySpacing =
   | []
@@ -1772,6 +1793,7 @@ type ComputedPropertySpacing =
         enforceForClassMembers?: boolean;
       },
     ];
+
 // ----- consistent-return -----
 type ConsistentReturn =
   | []
@@ -1780,8 +1802,10 @@ type ConsistentReturn =
         treatUndefinedAsUnspecified?: boolean;
       },
     ];
+
 // ----- consistent-this -----
 type ConsistentThis = string[];
+
 // ----- curly -----
 type Curly =
   | []
@@ -1789,6 +1813,7 @@ type Curly =
   | []
   | ["multi" | "multi-line" | "multi-or-nest"]
   | ["multi" | "multi-line" | "multi-or-nest", "consistent"];
+
 // ----- default-case -----
 type DefaultCase =
   | []
@@ -1797,8 +1822,10 @@ type DefaultCase =
         commentPattern?: string;
       },
     ];
+
 // ----- dot-location -----
 type DotLocation = [] | ["object" | "property"];
+
 // ----- dot-notation -----
 type DotNotation =
   | []
@@ -1808,8 +1835,10 @@ type DotNotation =
         allowPattern?: string;
       },
     ];
+
 // ----- eol-last -----
 type EolLast = [] | ["always" | "never" | "unix" | "windows"];
+
 // ----- eqeqeq -----
 type Eqeqeq =
   | []
@@ -1822,6 +1851,7 @@ type Eqeqeq =
     ]
   | []
   | ["smart" | "allow-null"];
+
 // ----- func-call-spacing -----
 type FuncCallSpacing =
   | []
@@ -1834,6 +1864,7 @@ type FuncCallSpacing =
         allowNewlines?: boolean;
       },
     ];
+
 // ----- func-name-matching -----
 type FuncNameMatching =
   | []
@@ -1852,6 +1883,7 @@ type FuncNameMatching =
         includeCommonJSModuleExports?: boolean;
       },
     ];
+
 // ----- func-names -----
 type FuncNames =
   | []
@@ -1862,7 +1894,9 @@ type FuncNames =
         generators?: _FuncNamesValue;
       },
     ];
+
 type _FuncNamesValue = "always" | "as-needed" | "never";
+
 // ----- func-style -----
 type FuncStyle =
   | []
@@ -1877,8 +1911,10 @@ type FuncStyle =
         };
       },
     ];
+
 // ----- function-call-argument-newline -----
 type FunctionCallArgumentNewline = [] | ["always" | "never" | "consistent"];
+
 // ----- function-paren-newline -----
 type FunctionParenNewline =
   | []
@@ -1894,6 +1930,7 @@ type FunctionParenNewline =
           minItems?: number;
         },
     ];
+
 // ----- generator-star-spacing -----
 type GeneratorStarSpacing =
   | []
@@ -1922,6 +1959,7 @@ type GeneratorStarSpacing =
               };
         },
     ];
+
 // ----- getter-return -----
 type GetterReturn =
   | []
@@ -1930,6 +1968,7 @@ type GetterReturn =
         allowImplicit?: boolean;
       },
     ];
+
 // ----- grouped-accessor-pairs -----
 type GroupedAccessorPairs =
   | []
@@ -1940,12 +1979,16 @@ type GroupedAccessorPairs =
         enforceForTSTypes?: boolean;
       },
     ];
+
 // ----- handle-callback-err -----
 type HandleCallbackErr = [] | [string];
+
 // ----- id-blacklist -----
 type IdBlacklist = string[];
+
 // ----- id-denylist -----
 type IdDenylist = string[];
+
 // ----- id-length -----
 type IdLength =
   | []
@@ -1958,6 +2001,7 @@ type IdLength =
         properties?: "always" | "never";
       },
     ];
+
 // ----- id-match -----
 type IdMatch =
   | []
@@ -1971,8 +2015,10 @@ type IdMatch =
         ignoreDestructuring?: boolean;
       },
     ];
+
 // ----- implicit-arrow-linebreak -----
 type ImplicitArrowLinebreak = [] | ["beside" | "below"];
+
 // ----- indent -----
 type Indent =
   | []
@@ -2013,6 +2059,7 @@ type Indent =
         ignoreComments?: boolean;
       },
     ];
+
 // ----- indent-legacy -----
 type IndentLegacy =
   | []
@@ -2049,6 +2096,7 @@ type IndentLegacy =
         ObjectExpression?: number | "first";
       },
     ];
+
 // ----- init-declarations -----
 type InitDeclarations =
   | []
@@ -2061,8 +2109,10 @@ type InitDeclarations =
         ignoreForLoopInit?: boolean;
       },
     ];
+
 // ----- jsx-quotes -----
 type JsxQuotes = [] | ["prefer-single" | "prefer-double"];
+
 // ----- key-spacing -----
 type KeySpacing =
   | []
@@ -2119,6 +2169,7 @@ type KeySpacing =
           };
         },
     ];
+
 // ----- keyword-spacing -----
 type KeywordSpacing =
   | []
@@ -2402,6 +2453,7 @@ type KeywordSpacing =
         };
       },
     ];
+
 // ----- line-comment-position -----
 type LineCommentPosition =
   | []
@@ -2414,8 +2466,10 @@ type LineCommentPosition =
           applyDefaultIgnorePatterns?: boolean;
         },
     ];
+
 // ----- linebreak-style -----
 type LinebreakStyle = [] | ["unix" | "windows"];
+
 // ----- lines-around-comment -----
 type LinesAroundComment =
   | []
@@ -2438,6 +2492,7 @@ type LinesAroundComment =
         afterHashbangComment?: boolean;
       },
     ];
+
 // ----- lines-around-directive -----
 type LinesAroundDirective =
   | []
@@ -2448,6 +2503,7 @@ type LinesAroundDirective =
           after?: "always" | "never";
         },
     ];
+
 // ----- lines-between-class-members -----
 type LinesBetweenClassMembers =
   | []
@@ -2490,6 +2546,7 @@ type LinesBetweenClassMembers =
         exceptAfterSingleLine?: boolean;
       },
     ];
+
 // ----- logical-assignment-operators -----
 type LogicalAssignmentOperators = (
   | []
@@ -2503,6 +2560,7 @@ type LogicalAssignmentOperators = (
   | ["never"]
 ) &
   unknown[];
+
 // ----- max-classes-per-file -----
 type MaxClassesPerFile =
   | []
@@ -2513,6 +2571,7 @@ type MaxClassesPerFile =
           max?: number;
         },
     ];
+
 // ----- max-depth -----
 type MaxDepth =
   | []
@@ -2523,6 +2582,7 @@ type MaxDepth =
           max?: number;
         },
     ];
+
 // ----- max-len -----
 type MaxLen =
   | []
@@ -2617,6 +2677,7 @@ type MaxLen =
         ignoreTrailingComments?: boolean;
       },
     ];
+
 // ----- max-lines -----
 type MaxLines =
   | []
@@ -2628,6 +2689,7 @@ type MaxLines =
           skipBlankLines?: boolean;
         },
     ];
+
 // ----- max-lines-per-function -----
 type MaxLinesPerFunction =
   | []
@@ -2640,6 +2702,7 @@ type MaxLinesPerFunction =
         }
       | number,
     ];
+
 // ----- max-nested-callbacks -----
 type MaxNestedCallbacks =
   | []
@@ -2651,6 +2714,7 @@ type MaxNestedCallbacks =
           checkConstructorCallCallbacks?: boolean;
         },
     ];
+
 // ----- max-params -----
 type MaxParams =
   | []
@@ -2665,6 +2729,7 @@ type MaxParams =
           countThis?: "never" | "except-void" | "always";
         },
     ];
+
 // ----- max-statements -----
 type MaxStatements =
   | []
@@ -2687,6 +2752,7 @@ type MaxStatements =
         ignoreTopLevelFunctions?: boolean;
       },
     ];
+
 // ----- max-statements-per-line -----
 type MaxStatementsPerLine =
   | []
@@ -2695,6 +2761,7 @@ type MaxStatementsPerLine =
         max?: number;
       },
     ];
+
 // ----- multiline-comment-style -----
 type MultilineCommentStyle =
   | []
@@ -2707,8 +2774,10 @@ type MultilineCommentStyle =
         checkJSDoc?: boolean;
       },
     ];
+
 // ----- multiline-ternary -----
 type MultilineTernary = [] | ["always" | "always-multiline" | "never"];
+
 // ----- new-cap -----
 type NewCap =
   | []
@@ -2723,10 +2792,13 @@ type NewCap =
         properties?: boolean;
       },
     ];
+
 // ----- new-parens -----
 type NewParens = [] | ["always" | "never"];
+
 // ----- newline-after-var -----
 type NewlineAfterVar = [] | ["never" | "always"];
+
 // ----- newline-per-chained-call -----
 type NewlinePerChainedCall =
   | []
@@ -2735,6 +2807,7 @@ type NewlinePerChainedCall =
         ignoreChainWithDepth?: number;
       },
     ];
+
 // ----- no-bitwise -----
 type NoBitwise =
   | []
@@ -2758,8 +2831,10 @@ type NoBitwise =
         int32Hint?: boolean;
       },
     ];
+
 // ----- no-cond-assign -----
 type NoCondAssign = [] | ["except-parens" | "always"];
+
 // ----- no-confusing-arrow -----
 type NoConfusingArrow =
   | []
@@ -2769,6 +2844,7 @@ type NoConfusingArrow =
         onlyOneSimpleParam?: boolean;
       },
     ];
+
 // ----- no-console -----
 type NoConsole =
   | []
@@ -2777,6 +2853,7 @@ type NoConsole =
         allow?: [string, ...string[]];
       },
     ];
+
 // ----- no-constant-binary-expression -----
 type NoConstantBinaryExpression =
   | []
@@ -2785,6 +2862,7 @@ type NoConstantBinaryExpression =
         checkRelationalComparisons?: boolean;
       },
     ];
+
 // ----- no-constant-condition -----
 type NoConstantCondition =
   | []
@@ -2793,6 +2871,7 @@ type NoConstantCondition =
         checkLoops?: "all" | "allExceptWhileTrue" | "none" | true | false;
       },
     ];
+
 // ----- no-duplicate-imports -----
 type NoDuplicateImports =
   | []
@@ -2802,6 +2881,7 @@ type NoDuplicateImports =
         allowSeparateTypeImports?: boolean;
       },
     ];
+
 // ----- no-else-return -----
 type NoElseReturn =
   | []
@@ -2810,6 +2890,7 @@ type NoElseReturn =
         allowElseIf?: boolean;
       },
     ];
+
 // ----- no-empty -----
 type NoEmpty =
   | []
@@ -2818,6 +2899,7 @@ type NoEmpty =
         allowEmptyCatch?: boolean;
       },
     ];
+
 // ----- no-empty-function -----
 type NoEmptyFunction =
   | []
@@ -2841,6 +2923,7 @@ type NoEmptyFunction =
         )[];
       },
     ];
+
 // ----- no-empty-pattern -----
 type NoEmptyPattern =
   | []
@@ -2849,6 +2932,7 @@ type NoEmptyPattern =
         allowObjectPatternsAsParameters?: boolean;
       },
     ];
+
 // ----- no-eval -----
 type NoEval =
   | []
@@ -2857,6 +2941,7 @@ type NoEval =
         allowIndirect?: boolean;
       },
     ];
+
 // ----- no-extend-native -----
 type NoExtendNative =
   | []
@@ -2865,6 +2950,7 @@ type NoExtendNative =
         exceptions?: string[];
       },
     ];
+
 // ----- no-extra-boolean-cast -----
 type NoExtraBooleanCast =
   | []
@@ -2876,6 +2962,7 @@ type NoExtraBooleanCast =
           enforceForLogicalOperands?: boolean;
         },
     ];
+
 // ----- no-extra-parens -----
 type NoExtraParens =
   | []
@@ -2897,6 +2984,7 @@ type NoExtraParens =
         allowParensAfterCommentPattern?: string;
       },
     ];
+
 // ----- no-fallthrough -----
 type NoFallthrough =
   | []
@@ -2907,6 +2995,7 @@ type NoFallthrough =
         reportUnusedFallthroughComment?: boolean;
       },
     ];
+
 // ----- no-global-assign -----
 type NoGlobalAssign =
   | []
@@ -2915,6 +3004,7 @@ type NoGlobalAssign =
         exceptions?: string[];
       },
     ];
+
 // ----- no-implicit-coercion -----
 type NoImplicitCoercion =
   | []
@@ -2927,6 +3017,7 @@ type NoImplicitCoercion =
         allow?: ("~" | "!!" | "+" | "- -" | "-" | "*")[];
       },
     ];
+
 // ----- no-implicit-globals -----
 type NoImplicitGlobals =
   | []
@@ -2935,6 +3026,7 @@ type NoImplicitGlobals =
         lexicalBindings?: boolean;
       },
     ];
+
 // ----- no-inline-comments -----
 type NoInlineComments =
   | []
@@ -2943,6 +3035,7 @@ type NoInlineComments =
         ignorePattern?: string;
       },
     ];
+
 // ----- no-inner-declarations -----
 type NoInnerDeclarations =
   | []
@@ -2953,6 +3046,7 @@ type NoInnerDeclarations =
         blockScopedFunctions?: "allow" | "disallow";
       },
     ];
+
 // ----- no-invalid-regexp -----
 type NoInvalidRegexp =
   | []
@@ -2961,6 +3055,7 @@ type NoInvalidRegexp =
         allowConstructorFlags?: string[];
       },
     ];
+
 // ----- no-invalid-this -----
 type NoInvalidThis =
   | []
@@ -2969,6 +3064,7 @@ type NoInvalidThis =
         capIsConstructor?: boolean;
       },
     ];
+
 // ----- no-irregular-whitespace -----
 type NoIrregularWhitespace =
   | []
@@ -2981,6 +3077,7 @@ type NoIrregularWhitespace =
         skipJSXText?: boolean;
       },
     ];
+
 // ----- no-labels -----
 type NoLabels =
   | []
@@ -2990,6 +3087,7 @@ type NoLabels =
         allowSwitch?: boolean;
       },
     ];
+
 // ----- no-magic-numbers -----
 type NoMagicNumbers =
   | []
@@ -3007,6 +3105,7 @@ type NoMagicNumbers =
         ignoreTypeIndexes?: boolean;
       },
     ];
+
 // ----- no-misleading-character-class -----
 type NoMisleadingCharacterClass =
   | []
@@ -3015,6 +3114,7 @@ type NoMisleadingCharacterClass =
         allowEscape?: boolean;
       },
     ];
+
 // ----- no-mixed-operators -----
 type NoMixedOperators =
   | []
@@ -3112,6 +3212,7 @@ type NoMixedOperators =
         allowSamePrecedence?: boolean;
       },
     ];
+
 // ----- no-mixed-requires -----
 type NoMixedRequires =
   | []
@@ -3122,8 +3223,10 @@ type NoMixedRequires =
           allowCall?: boolean;
         },
     ];
+
 // ----- no-mixed-spaces-and-tabs -----
 type NoMixedSpacesAndTabs = [] | ["smart-tabs" | true | false];
+
 // ----- no-multi-assign -----
 type NoMultiAssign =
   | []
@@ -3132,6 +3235,7 @@ type NoMultiAssign =
         ignoreNonDeclaration?: boolean;
       },
     ];
+
 // ----- no-multi-spaces -----
 type NoMultiSpaces =
   | []
@@ -3143,6 +3247,7 @@ type NoMultiSpaces =
         ignoreEOLComments?: boolean;
       },
     ];
+
 // ----- no-multiple-empty-lines -----
 type NoMultipleEmptyLines =
   | []
@@ -3153,6 +3258,7 @@ type NoMultipleEmptyLines =
         maxBOF?: number;
       },
     ];
+
 // ----- no-native-reassign -----
 type NoNativeReassign =
   | []
@@ -3161,6 +3267,7 @@ type NoNativeReassign =
         exceptions?: string[];
       },
     ];
+
 // ----- no-param-reassign -----
 type NoParamReassign =
   | []
@@ -3174,6 +3281,7 @@ type NoParamReassign =
           ignorePropertyModificationsForRegex?: string[];
         },
     ];
+
 // ----- no-plusplus -----
 type NoPlusplus =
   | []
@@ -3182,6 +3290,7 @@ type NoPlusplus =
         allowForLoopAfterthoughts?: boolean;
       },
     ];
+
 // ----- no-promise-executor-return -----
 type NoPromiseExecutorReturn =
   | []
@@ -3190,6 +3299,7 @@ type NoPromiseExecutorReturn =
         allowVoid?: boolean;
       },
     ];
+
 // ----- no-redeclare -----
 type NoRedeclare =
   | []
@@ -3198,6 +3308,7 @@ type NoRedeclare =
         builtinGlobals?: boolean;
       },
     ];
+
 // ----- no-restricted-exports -----
 type NoRestrictedExports =
   | []
@@ -3218,6 +3329,7 @@ type NoRestrictedExports =
           };
         },
     ];
+
 // ----- no-restricted-globals -----
 type NoRestrictedGlobals =
   | (
@@ -3241,6 +3353,7 @@ type NoRestrictedGlobals =
         globalObjects?: string[];
       },
     ];
+
 // ----- no-restricted-imports -----
 type NoRestrictedImports =
   | (
@@ -3302,6 +3415,7 @@ type NoRestrictedImports =
             )[];
       },
     ];
+
 // ----- no-restricted-modules -----
 type NoRestrictedModules =
   | (
@@ -3321,6 +3435,7 @@ type NoRestrictedModules =
       )[];
       patterns?: string[];
     }[];
+
 // ----- no-restricted-properties -----
 type NoRestrictedProperties = (
   | {
@@ -3338,6 +3453,7 @@ type NoRestrictedProperties = (
       message?: string;
     }
 )[];
+
 // ----- no-restricted-syntax -----
 type NoRestrictedSyntax = (
   | string
@@ -3346,8 +3462,10 @@ type NoRestrictedSyntax = (
       message?: string;
     }
 )[];
+
 // ----- no-return-assign -----
 type NoReturnAssign = [] | ["except-parens" | "always"];
+
 // ----- no-self-assign -----
 type NoSelfAssign =
   | []
@@ -3356,6 +3474,7 @@ type NoSelfAssign =
         props?: boolean;
       },
     ];
+
 // ----- no-sequences -----
 type NoSequences =
   | []
@@ -3364,6 +3483,7 @@ type NoSequences =
         allowInParentheses?: boolean;
       },
     ];
+
 // ----- no-shadow -----
 type NoShadow =
   | []
@@ -3377,6 +3497,7 @@ type NoShadow =
         ignoreFunctionTypeParameterNameValueShadow?: boolean;
       },
     ];
+
 // ----- no-shadow-restricted-names -----
 type NoShadowRestrictedNames =
   | []
@@ -3385,6 +3506,7 @@ type NoShadowRestrictedNames =
         reportGlobalThis?: boolean;
       },
     ];
+
 // ----- no-sync -----
 type NoSync =
   | []
@@ -3393,6 +3515,7 @@ type NoSync =
         allowAtRootLevel?: boolean;
       },
     ];
+
 // ----- no-tabs -----
 type NoTabs =
   | []
@@ -3401,6 +3524,7 @@ type NoTabs =
         allowIndentationTabs?: boolean;
       },
     ];
+
 // ----- no-trailing-spaces -----
 type NoTrailingSpaces =
   | []
@@ -3410,6 +3534,7 @@ type NoTrailingSpaces =
         ignoreComments?: boolean;
       },
     ];
+
 // ----- no-undef -----
 type NoUndef =
   | []
@@ -3418,6 +3543,7 @@ type NoUndef =
         typeof?: boolean;
       },
     ];
+
 // ----- no-underscore-dangle -----
 type NoUnderscoreDangle =
   | []
@@ -3434,6 +3560,7 @@ type NoUnderscoreDangle =
         allowInObjectDestructuring?: boolean;
       },
     ];
+
 // ----- no-unmodified-loop-condition -----
 type NoUnmodifiedLoopCondition =
   | []
@@ -3442,6 +3569,7 @@ type NoUnmodifiedLoopCondition =
         checkConditionalExpressions?: boolean;
       },
     ];
+
 // ----- no-unneeded-ternary -----
 type NoUnneededTernary =
   | []
@@ -3450,6 +3578,7 @@ type NoUnneededTernary =
         defaultAssignment?: boolean;
       },
     ];
+
 // ----- no-unreachable-loop -----
 type NoUnreachableLoop =
   | []
@@ -3464,6 +3593,7 @@ type NoUnreachableLoop =
         )[];
       },
     ];
+
 // ----- no-unsafe-negation -----
 type NoUnsafeNegation =
   | []
@@ -3472,6 +3602,7 @@ type NoUnsafeNegation =
         enforceForOrderingRelations?: boolean;
       },
     ];
+
 // ----- no-unsafe-optional-chaining -----
 type NoUnsafeOptionalChaining =
   | []
@@ -3480,6 +3611,7 @@ type NoUnsafeOptionalChaining =
         disallowArithmeticOperators?: boolean;
       },
     ];
+
 // ----- no-unused-expressions -----
 type NoUnusedExpressions =
   | []
@@ -3492,6 +3624,7 @@ type NoUnusedExpressions =
         ignoreDirectives?: boolean;
       },
     ];
+
 // ----- no-unused-vars -----
 type NoUnusedVars =
   | []
@@ -3511,6 +3644,7 @@ type NoUnusedVars =
           reportUsedIgnorePattern?: boolean;
         },
     ];
+
 // ----- no-use-before-define -----
 type NoUseBeforeDefine =
   | []
@@ -3526,6 +3660,7 @@ type NoUseBeforeDefine =
           ignoreTypeReferences?: boolean;
         },
     ];
+
 // ----- no-useless-computed-key -----
 type NoUselessComputedKey =
   | []
@@ -3534,6 +3669,7 @@ type NoUselessComputedKey =
         enforceForClassMembers?: boolean;
       },
     ];
+
 // ----- no-useless-escape -----
 type NoUselessEscape =
   | []
@@ -3542,6 +3678,7 @@ type NoUselessEscape =
         allowRegexCharacters?: string[];
       },
     ];
+
 // ----- no-useless-rename -----
 type NoUselessRename =
   | []
@@ -3552,6 +3689,7 @@ type NoUselessRename =
         ignoreExport?: boolean;
       },
     ];
+
 // ----- no-void -----
 type NoVoid =
   | []
@@ -3560,6 +3698,7 @@ type NoVoid =
         allowAsStatement?: boolean;
       },
     ];
+
 // ----- no-warning-comments -----
 type NoWarningComments =
   | []
@@ -3571,6 +3710,7 @@ type NoWarningComments =
         decoration?: [string, ...string[]];
       },
     ];
+
 // ----- nonblock-statement-body-position -----
 type NonblockStatementBodyPosition =
   | []
@@ -3587,6 +3727,7 @@ type NonblockStatementBodyPosition =
         };
       },
     ];
+
 // ----- object-curly-newline -----
 type ObjectCurlyNewline =
   | []
@@ -3630,6 +3771,7 @@ type ObjectCurlyNewline =
               };
         },
     ];
+
 // ----- object-curly-spacing -----
 type ObjectCurlySpacing =
   | []
@@ -3641,6 +3783,7 @@ type ObjectCurlySpacing =
         objectsInObjects?: boolean;
       },
     ];
+
 // ----- object-property-newline -----
 type ObjectPropertyNewline =
   | []
@@ -3650,6 +3793,7 @@ type ObjectPropertyNewline =
         allowMultiplePropertiesPerLine?: boolean;
       },
     ];
+
 // ----- object-shorthand -----
 type ObjectShorthand =
   | []
@@ -3680,6 +3824,7 @@ type ObjectShorthand =
         avoidExplicitReturnArrows?: boolean;
       },
     ];
+
 // ----- one-var -----
 type OneVar =
   | []
@@ -3698,10 +3843,13 @@ type OneVar =
           uninitialized?: "always" | "never" | "consecutive";
         },
     ];
+
 // ----- one-var-declaration-per-line -----
 type OneVarDeclarationPerLine = [] | ["always" | "initializations"];
+
 // ----- operator-assignment -----
 type OperatorAssignment = [] | ["always" | "never"];
+
 // ----- operator-linebreak -----
 type OperatorLinebreak =
   | []
@@ -3714,6 +3862,7 @@ type OperatorLinebreak =
         };
       },
     ];
+
 // ----- padded-blocks -----
 type PaddedBlocks =
   | []
@@ -3738,8 +3887,10 @@ type PaddedBlocks =
         allowSingleLineBlocks?: boolean;
       },
     ];
+
 // ----- padding-line-between-statements -----
 type _PaddingLineBetweenStatementsPaddingType = "any" | "never" | "always";
+
 type _PaddingLineBetweenStatementsStatementType =
   | (
       | "*"
@@ -3863,11 +4014,13 @@ type _PaddingLineBetweenStatementsStatementType =
         | "with"
       )[],
     ];
+
 type PaddingLineBetweenStatements = {
   blankLine: _PaddingLineBetweenStatementsPaddingType;
   prev: _PaddingLineBetweenStatementsStatementType;
   next: _PaddingLineBetweenStatementsStatementType;
 }[];
+
 // ----- prefer-arrow-callback -----
 type PreferArrowCallback =
   | []
@@ -3877,6 +4030,7 @@ type PreferArrowCallback =
         allowUnboundThis?: boolean;
       },
     ];
+
 // ----- prefer-const -----
 type PreferConst =
   | []
@@ -3886,6 +4040,7 @@ type PreferConst =
         ignoreReadBeforeAssign?: boolean;
       },
     ];
+
 // ----- prefer-destructuring -----
 type PreferDestructuring =
   | []
@@ -3926,6 +4081,7 @@ type PreferDestructuring =
         enforceForRenamedProperties?: boolean;
       },
     ];
+
 // ----- prefer-promise-reject-errors -----
 type PreferPromiseRejectErrors =
   | []
@@ -3934,6 +4090,7 @@ type PreferPromiseRejectErrors =
         allowEmptyReject?: boolean;
       },
     ];
+
 // ----- prefer-reflect -----
 type PreferReflect =
   | []
@@ -3953,6 +4110,7 @@ type PreferReflect =
         )[];
       },
     ];
+
 // ----- prefer-regex-literals -----
 type PreferRegexLiterals =
   | []
@@ -3961,6 +4119,7 @@ type PreferRegexLiterals =
         disallowRedundantWrapping?: boolean;
       },
     ];
+
 // ----- preserve-caught-error -----
 type PreserveCaughtError =
   | []
@@ -3977,6 +4136,7 @@ type PreserveCaughtError =
         )[];
       },
     ];
+
 // ----- quote-props -----
 type QuoteProps =
   | []
@@ -3991,6 +4151,7 @@ type QuoteProps =
         numbers?: boolean;
       },
     ];
+
 // ----- quotes -----
 type Quotes =
   | []
@@ -4005,8 +4166,10 @@ type Quotes =
           }
       ),
     ];
+
 // ----- radix -----
 type Radix = [] | ["always" | "as-needed"];
+
 // ----- require-atomic-updates -----
 type RequireAtomicUpdates =
   | []
@@ -4015,6 +4178,7 @@ type RequireAtomicUpdates =
         allowProperties?: boolean;
       },
     ];
+
 // ----- require-unicode-regexp -----
 type RequireUnicodeRegexp =
   | []
@@ -4023,8 +4187,10 @@ type RequireUnicodeRegexp =
         requireFlag?: "u" | "v";
       },
     ];
+
 // ----- rest-spread-spacing -----
 type RestSpreadSpacing = [] | ["always" | "never"];
+
 // ----- semi -----
 type Semi =
   | []
@@ -4044,6 +4210,7 @@ type Semi =
         omitLastInOneLineClassBody?: boolean;
       },
     ];
+
 // ----- semi-spacing -----
 type SemiSpacing =
   | []
@@ -4053,8 +4220,10 @@ type SemiSpacing =
         after?: boolean;
       },
     ];
+
 // ----- semi-style -----
 type SemiStyle = [] | ["last" | "first"];
+
 // ----- sort-imports -----
 type SortImports =
   | []
@@ -4073,6 +4242,7 @@ type SortImports =
         allowSeparatedGroups?: boolean;
       },
     ];
+
 // ----- sort-keys -----
 type SortKeys =
   | []
@@ -4087,6 +4257,7 @@ type SortKeys =
         ignoreComputedKeys?: boolean;
       },
     ];
+
 // ----- sort-vars -----
 type SortVars =
   | []
@@ -4095,6 +4266,7 @@ type SortVars =
         ignoreCase?: boolean;
       },
     ];
+
 // ----- space-before-blocks -----
 type SpaceBeforeBlocks =
   | []
@@ -4106,6 +4278,7 @@ type SpaceBeforeBlocks =
           classes?: "always" | "never" | "off";
         },
     ];
+
 // ----- space-before-function-paren -----
 type SpaceBeforeFunctionParen =
   | []
@@ -4117,6 +4290,7 @@ type SpaceBeforeFunctionParen =
           asyncArrow?: "always" | "never" | "ignore";
         },
     ];
+
 // ----- space-in-parens -----
 type SpaceInParens =
   | []
@@ -4127,6 +4301,7 @@ type SpaceInParens =
         exceptions?: ("{}" | "[]" | "()" | "empty")[];
       },
     ];
+
 // ----- space-infix-ops -----
 type SpaceInfixOps =
   | []
@@ -4135,6 +4310,7 @@ type SpaceInfixOps =
         int32Hint?: boolean;
       },
     ];
+
 // ----- space-unary-ops -----
 type SpaceUnaryOps =
   | []
@@ -4147,6 +4323,7 @@ type SpaceUnaryOps =
         };
       },
     ];
+
 // ----- spaced-comment -----
 type SpacedComment =
   | []
@@ -4167,8 +4344,10 @@ type SpacedComment =
         };
       },
     ];
+
 // ----- strict -----
 type Strict = [] | ["never" | "global" | "function" | "safe"];
+
 // ----- switch-colon-spacing -----
 type SwitchColonSpacing =
   | []
@@ -4178,12 +4357,16 @@ type SwitchColonSpacing =
         after?: boolean;
       },
     ];
+
 // ----- template-curly-spacing -----
 type TemplateCurlySpacing = [] | ["always" | "never"];
+
 // ----- template-tag-spacing -----
 type TemplateTagSpacing = [] | ["always" | "never"];
+
 // ----- unicode-bom -----
 type UnicodeBom = [] | ["always" | "never"];
+
 // ----- use-isnan -----
 type UseIsnan =
   | []
@@ -4193,6 +4376,7 @@ type UseIsnan =
         enforceForIndexOf?: boolean;
       },
     ];
+
 // ----- valid-typeof -----
 type ValidTypeof =
   | []
@@ -4201,6 +4385,7 @@ type ValidTypeof =
         requireStringLiterals?: boolean;
       },
     ];
+
 // ----- wrap-iife -----
 type WrapIife =
   | []
@@ -4211,6 +4396,7 @@ type WrapIife =
         functionPrototypeMethods?: boolean;
       },
     ];
+
 // ----- yield-star-spacing -----
 type YieldStarSpacing =
   | []
@@ -4221,6 +4407,7 @@ type YieldStarSpacing =
           after?: boolean;
         },
     ];
+
 // ----- yoda -----
 type Yoda =
   | []

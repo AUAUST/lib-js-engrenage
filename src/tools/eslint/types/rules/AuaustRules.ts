@@ -47,10 +47,6 @@ export interface AuaustRules {
    */
   "auaust/domain-content"?: Rule<[]>;
   /**
-   * Keep function overloads and their implementation together, without blank lines.
-   */
-  "auaust/grouped-overloads"?: Rule<[]>;
-  /**
    * bin, tooling and a published package's src never import data directories.
    */
   "auaust/import-data"?: Rule<[]>;
@@ -346,46 +342,6 @@ export interface AuaustRules {
    */
   "auaust/operator-assignment"?: Rule<AuaustOperatorAssignment>;
   /**
-   * Surround awaited statements and assignments with blank lines.
-   */
-  "auaust/padded-awaits"?: Rule<[]>;
-  /**
-   * Surround types, interfaces, functions, classes, enums, namespaces and block statements with blank lines.
-   */
-  "auaust/padded-blocks"?: Rule<[]>;
-  /**
-   * Surround `break` statements with blank lines.
-   */
-  "auaust/padded-breaks"?: Rule<[]>;
-  /**
-   * Surround `continue` statements with blank lines.
-   */
-  "auaust/padded-continues"?: Rule<[]>;
-  /**
-   * Separate the exports from the preceding code with a blank line.
-   */
-  "auaust/padded-exports"?: Rule<[]>;
-  /**
-   * Separate the imports from the following code with a blank line.
-   */
-  "auaust/padded-imports"?: Rule<[]>;
-  /**
-   * Add a blank line before a `return` that follows other statements.
-   */
-  "auaust/padded-returns"?: Rule<[]>;
-  /**
-   * Add a blank line before a `throw` that follows other statements.
-   */
-  "auaust/padded-throws"?: Rule<[]>;
-  /**
-   * Separate variable declarations from other statements with blank lines, except declarations of the same kind.
-   */
-  "auaust/padded-variable-declarations"?: Rule<[]>;
-  /**
-   * Surround yield statements and assignments with blank lines.
-   */
-  "auaust/padded-yields"?: Rule<[]>;
-  /**
    * Require `const` declarations for variables that are never reassigned after declared
    * @see https://eslint.org/docs/latest/rules/prefer-const
    */
@@ -519,14 +475,17 @@ type AuaustAwaitThenable =
         allowMixedPromiseArrays?: boolean;
       },
     ];
+
 // ----- auaust/cognitive-complexity -----
 type AuaustCognitiveComplexity =
   | []
   | [number | "silence-issues"]
   | [number | "silence-issues", "silence-issues"];
+
 // ----- auaust/consistent-generic-constructors -----
 type AuaustConsistentGenericConstructors =
   [] | ["type-annotation" | "constructor"];
+
 // ----- auaust/consistent-type-assertions -----
 type AuaustConsistentTypeAssertions =
   | []
@@ -543,6 +502,7 @@ type AuaustConsistentTypeAssertions =
             "allow" | "allow-as-parameter" | "never";
         },
     ];
+
 // ----- auaust/consistent-type-imports -----
 type AuaustConsistentTypeImports =
   | []
@@ -555,6 +515,7 @@ type AuaustConsistentTypeImports =
         prefer?: "type-imports" | "no-type-imports";
       },
     ];
+
 // ----- auaust/curly -----
 type AuaustCurly =
   | []
@@ -562,6 +523,7 @@ type AuaustCurly =
   | []
   | ["multi" | "multi-line" | "multi-or-nest"]
   | ["multi" | "multi-line" | "multi-or-nest", "consistent"];
+
 // ----- auaust/debt-markers -----
 type AuaustDebtMarkers =
   | []
@@ -570,6 +532,7 @@ type AuaustDebtMarkers =
         list?: boolean;
       },
     ];
+
 // ----- auaust/logical-assignment-operators -----
 type AuaustLogicalAssignmentOperators = (
   | []
@@ -583,6 +546,7 @@ type AuaustLogicalAssignmentOperators = (
   | ["never"]
 ) &
   unknown[];
+
 // ----- auaust/max-lines -----
 type AuaustMaxLines =
   | []
@@ -594,6 +558,7 @@ type AuaustMaxLines =
           skipBlankLines?: boolean;
         },
     ];
+
 // ----- auaust/max-lines-per-function -----
 type AuaustMaxLinesPerFunction =
   | []
@@ -606,8 +571,10 @@ type AuaustMaxLinesPerFunction =
         }
       | number,
     ];
+
 // ----- auaust/method-signature-style -----
 type AuaustMethodSignatureStyle = [] | ["property" | "method"];
+
 // ----- auaust/name-replacements -----
 type AuaustNameReplacements =
   | []
@@ -639,17 +606,22 @@ type AuaustNameReplacements =
         )[];
       },
     ];
+
 type _AuaustNameReplacementsReplacements =
   (false | _AuaustNameReplacements_BooleanObject) | undefined;
+
 interface _AuaustNameReplacements_NameReplacements {
   [k: string]: _AuaustNameReplacementsReplacements | undefined;
 }
+
 interface _AuaustNameReplacements_BooleanObject {
   [k: string]: boolean | undefined;
 }
+
 // ----- auaust/naming-convention -----
 type _AuaustNamingConventionFormatOptionsConfig =
   _AuaustNamingConventionPredefinedFormats[] | null;
+
 type _AuaustNamingConventionPredefinedFormats =
   | "camelCase"
   | "strictCamelCase"
@@ -657,6 +629,7 @@ type _AuaustNamingConventionPredefinedFormats =
   | "StrictPascalCase"
   | "snake_case"
   | "UPPER_CASE";
+
 type _AuaustNamingConventionUnderscoreOptions =
   | "forbid"
   | "allow"
@@ -664,9 +637,12 @@ type _AuaustNamingConventionUnderscoreOptions =
   | "requireDouble"
   | "allowDouble"
   | "allowSingleOrDouble";
+
 type _AuaustNamingConvention_PrefixSuffixConfig = string[];
+
 type _AuaustNamingConventionTypeModifiers =
   "boolean" | "string" | "number" | "function" | "array";
+
 type AuaustNamingConvention = (
   | {
       custom?: _AuaustNamingConvention_MatchRegexConfig;
@@ -1145,10 +1121,12 @@ type AuaustNamingConvention = (
       modifiers?: ("default" | "namespace")[];
     }
 )[];
+
 interface _AuaustNamingConvention_MatchRegexConfig {
   match: boolean;
   regex: string;
 }
+
 // ----- auaust/no-commonjs -----
 type AuaustNoCommonjs =
   | []
@@ -1161,6 +1139,7 @@ type AuaustNoCommonjs =
         allowConditionalRequire?: boolean;
       },
     ];
+
 // ----- auaust/no-confusing-void-expression -----
 type AuaustNoConfusingVoidExpression =
   | []
@@ -1173,6 +1152,7 @@ type AuaustNoConfusingVoidExpression =
         ignoreVoidReturningFunctions?: boolean;
       },
     ];
+
 // ----- auaust/no-duplicates -----
 type AuaustNoDuplicates =
   | []
@@ -1182,6 +1162,7 @@ type AuaustNoDuplicates =
         "prefer-inline"?: boolean;
       },
     ];
+
 // ----- auaust/no-else-return -----
 type AuaustNoElseReturn =
   | []
@@ -1190,6 +1171,7 @@ type AuaustNoElseReturn =
         allowElseIf?: boolean;
       },
     ];
+
 // ----- auaust/no-extraneous-class -----
 type AuaustNoExtraneousClass =
   | []
@@ -1204,6 +1186,7 @@ type AuaustNoExtraneousClass =
         allowWithDecorator?: boolean;
       },
     ];
+
 // ----- auaust/no-fallthrough -----
 type AuaustNoFallthrough =
   | []
@@ -1214,6 +1197,7 @@ type AuaustNoFallthrough =
         reportUnusedFallthroughComment?: boolean;
       },
     ];
+
 // ----- auaust/no-floating-promises -----
 type AuaustNoFloatingPromises =
   | []
@@ -1262,8 +1246,10 @@ type AuaustNoFloatingPromises =
         ignoreVoid?: boolean;
       },
     ];
+
 // ----- auaust/no-identical-functions -----
 type AuaustNoIdenticalFunctions = [] | [number];
+
 // ----- auaust/no-inferrable-types -----
 type AuaustNoInferrableTypes =
   | []
@@ -1274,6 +1260,7 @@ type AuaustNoInferrableTypes =
         ignoreProperties?: boolean;
       },
     ];
+
 // ----- auaust/no-invalid-void-type -----
 type AuaustNoInvalidVoidType =
   | []
@@ -1284,6 +1271,7 @@ type AuaustNoInvalidVoidType =
         allowInGenericTypeArguments?: boolean | [string, ...string[]];
       },
     ];
+
 // ----- auaust/no-loose-equal -----
 type AuaustNoLooseEqual =
   | []
@@ -1296,6 +1284,7 @@ type AuaustNoLooseEqual =
     ]
   | []
   | ["smart" | "allow-null"];
+
 // ----- auaust/no-misused-promises -----
 type AuaustNoMisusedPromises =
   | []
@@ -1326,6 +1315,7 @@ type AuaustNoMisusedPromises =
             };
       },
     ];
+
 // ----- auaust/no-promise-executor-return -----
 type AuaustNoPromiseExecutorReturn =
   | []
@@ -1334,6 +1324,7 @@ type AuaustNoPromiseExecutorReturn =
         allowVoid?: boolean;
       },
     ];
+
 // ----- auaust/no-typeof-undefined -----
 type AuaustNoTypeofUndefined =
   | []
@@ -1342,6 +1333,7 @@ type AuaustNoTypeofUndefined =
         checkGlobalVariables?: boolean;
       },
     ];
+
 // ----- auaust/no-unneeded-ternary -----
 type AuaustNoUnneededTernary =
   | []
@@ -1350,6 +1342,7 @@ type AuaustNoUnneededTernary =
         defaultAssignment?: boolean;
       },
     ];
+
 // ----- auaust/no-unused-imports -----
 type AuaustNoUnusedImports =
   | []
@@ -1383,6 +1376,7 @@ type AuaustNoUnusedImports =
           varsIgnorePattern?: string;
         },
     ];
+
 // ----- auaust/no-unused-vars -----
 type AuaustNoUnusedVars =
   | []
@@ -1416,6 +1410,7 @@ type AuaustNoUnusedVars =
           varsIgnorePattern?: string;
         },
     ];
+
 // ----- auaust/no-useless-undefined -----
 type AuaustNoUselessUndefined =
   | []
@@ -1426,6 +1421,7 @@ type AuaustNoUselessUndefined =
         checkArrowFunctionBody?: boolean;
       },
     ];
+
 // ----- auaust/numeric-separators-style -----
 type AuaustNumericSeparatorsStyle =
   | []
@@ -1465,6 +1461,7 @@ type AuaustNumericSeparatorsStyle =
         onlyIfContainsSeparator?: boolean;
       },
     ];
+
 // ----- auaust/object-shorthand -----
 type AuaustObjectShorthand =
   | []
@@ -1495,8 +1492,10 @@ type AuaustObjectShorthand =
         avoidExplicitReturnArrows?: boolean;
       },
     ];
+
 // ----- auaust/operator-assignment -----
 type AuaustOperatorAssignment = [] | ["always" | "never"];
+
 // ----- auaust/prefer-const -----
 type AuaustPreferConst =
   | []
@@ -1506,6 +1505,7 @@ type AuaustPreferConst =
         ignoreReadBeforeAssign?: boolean;
       },
     ];
+
 // ----- auaust/prefer-function-declaration -----
 type AuaustPreferFunctionDeclaration =
   | []
@@ -1520,6 +1520,7 @@ type AuaustPreferFunctionDeclaration =
         };
       },
     ];
+
 // ----- auaust/prefer-optional-chain -----
 type AuaustPreferOptionalChain =
   | []
@@ -1542,6 +1543,7 @@ type AuaustPreferOptionalChain =
         requireNullish?: boolean;
       },
     ];
+
 // ----- auaust/prefer-readonly -----
 type AuaustPreferReadonly =
   | []
@@ -1550,6 +1552,7 @@ type AuaustPreferReadonly =
         onlyInlineLambdas?: boolean;
       },
     ];
+
 // ----- auaust/return-await -----
 type AuaustReturnAwait =
   | []
@@ -1559,6 +1562,7 @@ type AuaustReturnAwait =
       ) &
         string,
     ];
+
 // ----- auaust/sort-exports -----
 type AuaustSortExports = {
   fallbackSort?: {
@@ -1837,6 +1841,7 @@ type AuaustSortExports = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- auaust/sort-imports -----
 type AuaustSortImports = {
   fallbackSort?: {
@@ -2218,6 +2223,7 @@ type AuaustSortImports = {
     filename?: string;
   };
 }[];
+
 // ----- auaust/sort-named-exports -----
 type AuaustSortNamedExports = {
   fallbackSort?: {
@@ -2504,6 +2510,7 @@ type AuaustSortNamedExports = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- auaust/sort-named-imports -----
 type AuaustSortNamedImports = {
   fallbackSort?: {
@@ -2790,8 +2797,10 @@ type AuaustSortNamedImports = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- auaust/switch-case-braces -----
 type AuaustSwitchCaseBraces = [] | ["always" | "avoid" | "single-statement"];
+
 // ----- auaust/switch-exhaustiveness-check -----
 type AuaustSwitchExhaustivenessCheck =
   | []
@@ -2806,6 +2815,7 @@ type AuaustSwitchExhaustivenessCheck =
         requireDefaultForNonUnion?: boolean;
       },
     ];
+
 // ----- auaust/text-encoding-identifier-case -----
 type AuaustTextEncodingIdentifierCase =
   | []
@@ -2814,6 +2824,7 @@ type AuaustTextEncodingIdentifierCase =
         withDash?: boolean;
       },
     ];
+
 // ----- auaust/unified-signatures -----
 type AuaustUnifiedSignatures =
   | []

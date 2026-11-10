@@ -735,20 +735,11 @@ export function tail(ready: boolean, log: () => void) {
     ]);
   });
 
-  test("reports each layout convention under its own rule", async () => {
-    const source = `type Value = string;
-export function pick(value: Value): number;
-
-export function pick(value: Value): number {
+  test("reports unbraced case statements unless disabled", async () => {
+    const source = `export function pick(value: string): number {
   switch (value) {
-
     case "a":
       return 1;
-    case "b":
-    case "c": {
-      return 2;
-    }
-
     default: {
       return 3;
     }
@@ -769,216 +760,15 @@ export function pick(value: Value): number {
       return map(result?.messages ?? [], (message) => message.ruleId);
     }
 
-    const defaultRules = await lintedLayoutRules();
+    expect(await lintedLayoutRules()).toEqual(["auaust/switch-case-braces"]);
 
-    expect(defaultRules).toEqual(
-      expect.arrayContaining([
-        "auaust/padded-exports",
-        "auaust/padded-blocks",
-        "auaust/grouped-overloads",
-        "auaust/switch-case-braces",
-      ]),
-    );
-
-    expect(defaultRules).toHaveLength(4);
-
-    const reducedRules = await lintedLayoutRules({
-      stylistic: {
-        paddedBlocks: false,
-        switches: false,
-      },
-    });
-
-    expect(reducedRules).toEqual(
-      expect.arrayContaining([
-        "auaust/padded-exports",
-        "auaust/grouped-overloads",
-      ]),
-    );
-
-    expect(reducedRules).toHaveLength(2);
-  });
-
-  test.each([
-    ["let foo;\nlet bar;", 0],
-    ["const foo = 1;\nconst bar = 2;", 0],
-    ["let foo;\nconst bar = 1;", 1],
-    ["const foo = 1;\nlet bar;", 1],
-    ["const bar = {};\nbar.foo();", 1],
-    ["let bar;\nbar = 1;", 1],
-    ["syncClaudeSettings(config);\nconst content = read();", 1],
-    ["await run();\nlet value;", 1],
-    ["await run();\n\nconst value = 1;", 0],
-    ["function run() {\nconst value = 1;\n}", 0],
-    ["function run() {\nlet value;\n}", 0],
-    ["let foo;\n\nconst bar = 1;", 0],
-    ["let foo; // trailing comment\nconst bar = 1;", 1],
-    ["for (let index = 0; index < 2; index++) {}", 0],
-  ])("pads variable declaration groups in %s", async (source, count) => {
-    const eslint = await getLinter({
-      typeAware: false,
-    });
-
-    const [result] = await eslint.lintText(source, {
-      filePath: "src/declarations.ts",
-    });
-
-    const messages = (result?.messages ?? []).filter((message) => {
-      return message.ruleId === "auaust/padded-variable-declarations";
-    });
-
-    expect(messages).toHaveLength(count);
-
-    for (const message of messages) {
-      expect(message.fix?.text).toBe("\n");
-    }
-  });
-
-  test.each([
-    [
-      "awaits",
-      "async function run() { before();\nawait work();\nafter(); }",
-      2,
-    ],
-    [
-      "awaits",
-      "const before = 1;\nconst result = await work();\nconst after = 2;",
-      2,
-    ],
-    ["awaits", "before();\nresult = await work();\nafter();", 2],
-    ["awaits", "const before = 1;\nexport const result = await work();", 1],
-    [
-      "awaits",
-      "const before = 1;\nconst first = 1, result = await work();\nconst after = 2;",
-      2,
-    ],
-    [
-      "awaits",
-      "const before = 1;\nexport const first = 1, result = await work();",
-      1,
-    ],
-    ["awaits", "before();\nrun(async () => { await work(); });\nafter();", 0],
-    ["awaits", "async function run() { await work(); }", 0],
-    ["awaits", "await first();\nawait second();", 1],
-    ["awaits", "before();\n\nawait work();\n\nafter();", 0],
-    [
-      "awaits",
-      "before();\nexpect(await runGate(await loadConfig(root), { mode: 'staged' })).toEqual();\nafter();",
-      0,
-    ],
-    [
-      "awaits",
-      "const before = 1;\nconst result = wrap(await work());\nconst after = 2;",
-      0,
-    ],
-    ["breaks", "while (ready) { before();\nbreak;\nafter(); }", 2],
-    ["breaks", "while (ready) { break; }", 0],
-    ["breaks", "while (ready) { break;\nbreak; }", 1],
-    ["breaks", "outer: while (ready) { before();\nbreak outer; }", 1],
-    ["continues", "while (ready) { before();\ncontinue;\nafter(); }", 2],
-    ["continues", "while (ready) { continue; }", 0],
-    ["continues", "while (ready) { continue;\ncontinue; }", 1],
-    ["yields", "function* run() { before();\nyield work();\nafter(); }", 2],
-    ["yields", "function* run() { yield work(); }", 0],
-    ["yields", "function* run() { yield first();\nyield* second(); }", 1],
-    [
-      "yields",
-      "function* run() { const before = 1;\nconst result = yield work();\nconst after = 2; }",
-      2,
-    ],
-  ])("pads %s in %s", async (kind, source, count) => {
-    const eslint = await getLinter({ typeAware: false });
-
-    const [result] = await eslint.lintText(source, {
-      filePath: "src/padding.ts",
-    });
-
-    const messages = (result?.messages ?? []).filter((message) => {
-      return message.ruleId === `auaust/padded-${kind}`;
-    });
-
-    expect(messages).toHaveLength(count);
-
-    for (const message of messages) {
-      expect(message.fix?.text).toBe("\n");
-    }
-  });
-
-  test.each([
-    ["blocks", "const before = 1;\nexport class Foo {}", 1],
-    ["blocks", "const before = 1;\nexport const foo = 1;", 0],
-    [
-      "blocks",
-      "export function run(a: string): void;\nexport function run(a: unknown): void {}\nconst after = 1;",
-      1,
-    ],
-    [
-      "overloads",
-      "export function run(a: string): void;\nexport function run(a: unknown): void {}",
-      0,
-    ],
-    [
-      "overloads",
-      "export function run(a: string): void;\n\nexport function run(a: unknown): void {}",
-      1,
-    ],
-  ])("groups or pads %s in %s", async (kind, source, count) => {
-    const eslint = await getLinter({ typeAware: false });
-
-    const [result] = await eslint.lintText(source, {
-      filePath: "src/padding.ts",
-    });
-
-    const ruleId =
-      kind === "blocks" ? "auaust/padded-blocks" : "auaust/grouped-overloads";
-
-    const messages = (result?.messages ?? []).filter((message) => {
-      return message.ruleId === ruleId;
-    });
-
-    expect(messages).toHaveLength(count);
-  });
-
-  test("fixes awaited declarations without disrupting declaration groups", async () => {
-    const eslint = await getLinter({ typeAware: false }, true);
-
-    const source = `export async function run() {
-  const first = 1;
-  const result = await Promise.resolve(first);
-  const second = result;
-  const third = second;
-
-  return third;
-}
-`;
-
-    const fixed = `export async function run() {
-  const first = 1;
-
-  const result = await Promise.resolve(first);
-
-  const second = result;
-  const third = second;
-
-  return third;
-}
-`;
-
-    const [result] = await eslint.lintText(source, {
-      filePath: "src/padding.ts",
-    });
-
-    expect(result?.output).toBe(fixed);
-
-    expect(result?.messages).toEqual([]);
-
-    const [rechecked] = await eslint.lintText(fixed, {
-      filePath: "src/padding.ts",
-    });
-
-    expect(rechecked?.output).toBeUndefined();
-
-    expect(rechecked?.messages).toEqual([]);
+    expect(
+      await lintedLayoutRules({
+        stylistic: {
+          switches: false,
+        },
+      }),
+    ).toEqual([]);
   });
 
   test("wraps case statements in a block, declarations included", async () => {

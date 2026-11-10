@@ -250,4 +250,157 @@ export function partlyPadded(value: string) {
 }
 `);
   });
+
+  test.each([
+    [
+      "kept declaration groups",
+      "let foo;\nlet bar;\nconst baz = 1;\nconst qux = 2;\n",
+      "let foo;\nlet bar;\n\nconst baz = 1;\nconst qux = 2;\n",
+    ],
+    [
+      "a declaration before a statement",
+      "const bar = {};\nbar.foo();\n",
+      "const bar = {};\n\nbar.foo();\n",
+    ],
+    [
+      "a declaration after a statement",
+      "let bar;\nbar = 1;\n",
+      "let bar;\n\nbar = 1;\n",
+    ],
+    [
+      "a declaration with a trailing comment",
+      "let foo; // trailing comment\nconst bar = 1;\n",
+      "let foo; // trailing comment\n\nconst bar = 1;\n",
+    ],
+    [
+      "a loop declaration",
+      "for (let index = 0; index < 2; index++) {}\n",
+      "for (let index = 0; index < 2; index++) {}\n",
+    ],
+    [
+      "awaited statements",
+      "async function run() { before();\nawait work();\nafter(); }\n",
+      "async function run() {\n  before();\n\n  await work();\n\n  after();\n}\n",
+    ],
+    [
+      "awaited declarations",
+      "async function run() {\n  const first = 1;\n  const result = await Promise.resolve(first);\n  const second = result;\n  const third = second;\n  return third;\n}\n",
+      "async function run() {\n  const first = 1;\n\n  const result = await Promise.resolve(first);\n\n  const second = result;\n  const third = second;\n\n  return third;\n}\n",
+    ],
+    [
+      "awaited assignments",
+      "before();\nresult = await work();\nafter();\n",
+      "before();\n\nresult = await work();\n\nafter();\n",
+    ],
+    [
+      "consecutive awaits",
+      "await first();\nawait second();\n",
+      "await first();\n\nawait second();\n",
+    ],
+    [
+      "nested awaits",
+      "before();\nexpect(await runGate(config)).toEqual(1);\nconst result = wrap(await work());\n",
+      "before();\nexpect(await runGate(config)).toEqual(1);\n\nconst result = wrap(await work());\n",
+    ],
+    [
+      "yields",
+      "function* run() { before();\nyield first();\nyield* second(); }\n",
+      "function* run() {\n  before();\n\n  yield first();\n\n  yield* second();\n}\n",
+    ],
+    [
+      "yielded declarations",
+      "function* run() { const before = 1;\nconst result = yield work();\nconst after = 2; }\n",
+      "function* run() {\n  const before = 1;\n\n  const result = yield work();\n\n  const after = 2;\n}\n",
+    ],
+    [
+      "breaks",
+      "while (ready) { before();\nbreak;\nbreak; }\n",
+      "while (ready) {\n  before();\n\n  break;\n\n  break;\n}\n",
+    ],
+    [
+      "labeled breaks",
+      "outer: while (ready) { before();\nbreak outer; }\n",
+      "outer: while (ready) {\n  before();\n\n  break outer;\n}\n",
+    ],
+    [
+      "continues",
+      "while (ready) { before();\ncontinue;\nafter(); }\n",
+      "while (ready) {\n  before();\n\n  continue;\n\n  after();\n}\n",
+    ],
+    [
+      "returns",
+      "function run() { before();\nreturn 1; }\n",
+      "function run() {\n  before();\n\n  return 1;\n}\n",
+    ],
+    [
+      "throws",
+      "function run() { before();\nthrow error; }\n",
+      "function run() {\n  before();\n\n  throw error;\n}\n",
+    ],
+    [
+      "a return after a statement Prettier wraps",
+      'function run() {\n  report("a deliberately long message that forces Prettier to wrap this call", value);\n  return value;\n}\n',
+      'function run() {\n  report(\n    "a deliberately long message that forces Prettier to wrap this call",\n    value,\n  );\n\n  return value;\n}\n',
+    ],
+    [
+      "blocks",
+      "const before = 1;\nif (before) run();\nexport class Foo {}\n",
+      "const before = 1;\n\nif (before) run();\n\nexport class Foo {}\n",
+    ],
+    [
+      "imports",
+      'import { a } from "a";\nimport { b } from "b";\nrun(a, b);\n',
+      'import { a } from "a";\nimport { b } from "b";\n\nrun(a, b);\n',
+    ],
+    [
+      "exports",
+      "run();\nexport const a = 1;\nexport const b = 2;\n",
+      "run();\n\nexport const a = 1;\nexport const b = 2;\n",
+    ],
+    [
+      "an implementation after its overload",
+      "export function run(a: string): void;\nexport function run(a: unknown): void {}\nconst after = 1;\n",
+      "export function run(a: string): void;\nexport function run(a: unknown): void {}\n\nconst after = 1;\n",
+    ],
+  ])("pads %s", async (_name, input, output) => {
+    const formatted = await formatWith(input);
+
+    expect(formatted).toBe(output);
+
+    expect(await formatWith(formatted)).toBe(formatted);
+  });
+
+  test("groups overloads with their implementation, keeping comments attached to the implementation", async () => {
+    const output =
+      await formatWith(`export function pick(value: string): string;
+
+export function pick(value: number): number;
+
+// Picks the value.
+export function pick(value: unknown): unknown {
+  return value;
+}
+
+function other(value: string): string;
+/* Other implementation. */
+
+function other(value: unknown): unknown {
+  return value;
+}
+`);
+
+    expect(output).toBe(`export function pick(value: string): string;
+export function pick(value: number): number;
+// Picks the value.
+export function pick(value: unknown): unknown {
+  return value;
+}
+
+function other(value: string): string;
+/* Other implementation. */
+function other(value: unknown): unknown {
+  return value;
+}
+`);
+  });
 });

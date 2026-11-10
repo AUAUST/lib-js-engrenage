@@ -519,6 +519,7 @@ type PackageJsonConsistentPackageManagerDeclaration =
         prefer?: "devEngines" | "packageManager";
       },
     ];
+
 // ----- package-json/consistent-property-aliases -----
 type PackageJsonConsistentPropertyAliases =
   | []
@@ -532,6 +533,7 @@ type PackageJsonConsistentPropertyAliases =
         };
       },
     ];
+
 // ----- package-json/exports-subpaths-style -----
 type PackageJsonExportsSubpathsStyle =
   | []
@@ -540,6 +542,7 @@ type PackageJsonExportsSubpathsStyle =
         prefer?: "implicit" | "explicit";
       },
     ];
+
 // ----- package-json/no-empty-fields -----
 type PackageJsonNoEmptyFields =
   | []
@@ -548,6 +551,7 @@ type PackageJsonNoEmptyFields =
         ignoreProperties?: string[];
       },
     ];
+
 // ----- package-json/no-local-dependencies -----
 type PackageJsonNoLocalDependencies =
   | []
@@ -556,6 +560,7 @@ type PackageJsonNoLocalDependencies =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/order-properties -----
 type PackageJsonOrderProperties =
   | []
@@ -564,6 +569,7 @@ type PackageJsonOrderProperties =
         order?: "sort-package-json" | string[];
       },
     ];
+
 // ----- package-json/prefer-rolling-workspace-spec -----
 type PackageJsonPreferRollingWorkspaceSpec =
   | []
@@ -574,6 +580,7 @@ type PackageJsonPreferRollingWorkspaceSpec =
         ignorePatterns?: string[];
       },
     ];
+
 // ----- package-json/repository-shorthand -----
 type PackageJsonRepositoryShorthand =
   | []
@@ -582,6 +589,7 @@ type PackageJsonRepositoryShorthand =
         form?: "object" | "shorthand";
       },
     ];
+
 // ----- package-json/require-attribution -----
 type PackageJsonRequireAttribution =
   | []
@@ -592,6 +600,7 @@ type PackageJsonRequireAttribution =
         preferContributorsOnly?: boolean;
       },
     ];
+
 // ----- package-json/require-author -----
 type PackageJsonRequireAuthor =
   | []
@@ -600,6 +609,7 @@ type PackageJsonRequireAuthor =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-bin -----
 type PackageJsonRequireBin =
   | []
@@ -608,6 +618,7 @@ type PackageJsonRequireBin =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-browser -----
 type PackageJsonRequireBrowser =
   | []
@@ -616,6 +627,7 @@ type PackageJsonRequireBrowser =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-bugs -----
 type PackageJsonRequireBugs =
   | []
@@ -624,6 +636,7 @@ type PackageJsonRequireBugs =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-bundleDependencies -----
 type PackageJsonRequireBundleDependencies =
   | []
@@ -632,6 +645,7 @@ type PackageJsonRequireBundleDependencies =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-config -----
 type PackageJsonRequireConfig =
   | []
@@ -640,6 +654,7 @@ type PackageJsonRequireConfig =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-contributors -----
 type PackageJsonRequireContributors =
   | []
@@ -648,6 +663,7 @@ type PackageJsonRequireContributors =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-cpu -----
 type PackageJsonRequireCpu =
   | []
@@ -656,6 +672,7 @@ type PackageJsonRequireCpu =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-dependencies -----
 type PackageJsonRequireDependencies =
   | []
@@ -664,6 +681,7 @@ type PackageJsonRequireDependencies =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-description -----
 type PackageJsonRequireDescription =
   | []
@@ -672,6 +690,7 @@ type PackageJsonRequireDescription =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-devDependencies -----
 type PackageJsonRequireDevDependencies =
   | []
@@ -680,6 +699,7 @@ type PackageJsonRequireDevDependencies =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-devEngines -----
 type PackageJsonRequireDevEngines =
   | []
@@ -688,6 +708,7 @@ type PackageJsonRequireDevEngines =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-directories -----
 type PackageJsonRequireDirectories =
   | []
@@ -696,6 +717,7 @@ type PackageJsonRequireDirectories =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-engines -----
 type PackageJsonRequireEngines =
   | []
@@ -704,6 +726,7 @@ type PackageJsonRequireEngines =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-exports -----
 type PackageJsonRequireExports =
   | []
@@ -712,6 +735,7 @@ type PackageJsonRequireExports =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-files -----
 type PackageJsonRequireFiles =
   | []
@@ -720,6 +744,7 @@ type PackageJsonRequireFiles =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-funding -----
 type PackageJsonRequireFunding =
   | []
@@ -728,6 +753,7 @@ type PackageJsonRequireFunding =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-gypfile -----
 type PackageJsonRequireGypfile =
   | []
@@ -736,6 +762,7 @@ type PackageJsonRequireGypfile =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-homepage -----
 type PackageJsonRequireHomepage =
   | []
@@ -744,6 +771,7 @@ type PackageJsonRequireHomepage =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-keywords -----
 type PackageJsonRequireKeywords =
   | []
@@ -752,6 +780,7 @@ type PackageJsonRequireKeywords =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-libc -----
 type PackageJsonRequireLibc =
   | []
@@ -760,6 +789,7 @@ type PackageJsonRequireLibc =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-license -----
 type PackageJsonRequireLicense =
   | []
@@ -768,6 +798,7 @@ type PackageJsonRequireLicense =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-main -----
 type PackageJsonRequireMain =
   | []
@@ -776,6 +807,7 @@ type PackageJsonRequireMain =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-man -----
 type PackageJsonRequireMan =
   | []
@@ -784,6 +816,7 @@ type PackageJsonRequireMan =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-module -----
 type PackageJsonRequireModule =
   | []
@@ -792,6 +825,7 @@ type PackageJsonRequireModule =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-name -----
 type PackageJsonRequireName =
   | []
@@ -800,6 +834,7 @@ type PackageJsonRequireName =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-optionalDependencies -----
 type PackageJsonRequireOptionalDependencies =
   | []
@@ -808,6 +843,7 @@ type PackageJsonRequireOptionalDependencies =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-os -----
 type PackageJsonRequireOs =
   | []
@@ -816,6 +852,7 @@ type PackageJsonRequireOs =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-packageManager -----
 type PackageJsonRequirePackageManager =
   | []
@@ -824,6 +861,7 @@ type PackageJsonRequirePackageManager =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-peerDependencies -----
 type PackageJsonRequirePeerDependencies =
   | []
@@ -832,6 +870,7 @@ type PackageJsonRequirePeerDependencies =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-peerDependenciesMeta -----
 type PackageJsonRequirePeerDependenciesMeta =
   | []
@@ -840,6 +879,7 @@ type PackageJsonRequirePeerDependenciesMeta =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-publishConfig -----
 type PackageJsonRequirePublishConfig =
   | []
@@ -848,6 +888,7 @@ type PackageJsonRequirePublishConfig =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-repository -----
 type PackageJsonRequireRepository =
   | []
@@ -856,6 +897,7 @@ type PackageJsonRequireRepository =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-scripts -----
 type PackageJsonRequireScripts =
   | []
@@ -864,6 +906,7 @@ type PackageJsonRequireScripts =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-sideEffects -----
 type PackageJsonRequireSideEffects =
   | []
@@ -872,6 +915,7 @@ type PackageJsonRequireSideEffects =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-type -----
 type PackageJsonRequireType =
   | []
@@ -880,6 +924,7 @@ type PackageJsonRequireType =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-types -----
 type PackageJsonRequireTypes =
   | []
@@ -888,6 +933,7 @@ type PackageJsonRequireTypes =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/require-version -----
 type PackageJsonRequireVersion =
   | []
@@ -896,6 +942,7 @@ type PackageJsonRequireVersion =
         ignorePrivate?: boolean;
       },
     ];
+
 // ----- package-json/restrict-dependency-ranges -----
 type PackageJsonRestrictDependencyRanges =
   | []
@@ -989,6 +1036,7 @@ type PackageJsonRestrictDependencyRanges =
               )[];
         }[],
     ];
+
 // ----- package-json/restrict-dist-tags -----
 type PackageJsonRestrictDistTags =
   | []
@@ -1004,6 +1052,7 @@ type PackageJsonRestrictDistTags =
         )[];
       },
     ];
+
 // ----- package-json/restrict-private-properties -----
 type PackageJsonRestrictPrivateProperties =
   | []
@@ -1012,6 +1061,7 @@ type PackageJsonRestrictPrivateProperties =
         blockedProperties?: string[];
       },
     ];
+
 // ----- package-json/restrict-top-level-properties -----
 type PackageJsonRestrictTopLevelProperties =
   | []
@@ -1027,6 +1077,7 @@ type PackageJsonRestrictTopLevelProperties =
         )[];
       },
     ];
+
 // ----- package-json/scripts-name-casing -----
 type PackageJsonScriptsNameCasing =
   | []
@@ -1037,6 +1088,7 @@ type PackageJsonScriptsNameCasing =
         ignorePatterns?: string[];
       },
     ];
+
 // ----- package-json/sort-collections -----
 type PackageJsonSortCollections =
   | []

@@ -487,6 +487,7 @@ interface Float16ArrayConstructor {
     thisArg?: any,
   ): Float16Array<ArrayBuffer>;
 }
+
 declare var Float16Array: Float16ArrayConstructor;
 
 interface Math {

@@ -404,6 +404,7 @@ type PerfectionistSortArrayIncludes = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-arrays -----
 type PerfectionistSortArrays = [
   {
@@ -961,6 +962,7 @@ type PerfectionistSortArrays = [
     partitionByNewLine?: boolean;
   }[],
 ];
+
 // ----- perfectionist/sort-classes -----
 type PerfectionistSortClasses = {
   fallbackSort?: {
@@ -1437,6 +1439,7 @@ type PerfectionistSortClasses = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-constructor-parameters -----
 type PerfectionistSortConstructorParameters = [
   {
@@ -2156,6 +2159,7 @@ type PerfectionistSortConstructorParameters = [
     partitionByNewLine?: boolean;
   }[],
 ];
+
 // ----- perfectionist/sort-decorators -----
 type PerfectionistSortDecorators = {
   fallbackSort?: {
@@ -2416,6 +2420,7 @@ type PerfectionistSortDecorators = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-enums -----
 type PerfectionistSortEnums = {
   fallbackSort?: {
@@ -2746,6 +2751,7 @@ type PerfectionistSortEnums = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-export-attributes -----
 type PerfectionistSortExportAttributes = {
   fallbackSort?: {
@@ -3018,6 +3024,7 @@ type PerfectionistSortExportAttributes = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-exports -----
 type PerfectionistSortExports = {
   fallbackSort?: {
@@ -3296,6 +3303,7 @@ type PerfectionistSortExports = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-heritage-clauses -----
 type PerfectionistSortHeritageClauses = {
   fallbackSort?: {
@@ -3568,6 +3576,7 @@ type PerfectionistSortHeritageClauses = {
             );
       };
 }[];
+
 // ----- perfectionist/sort-import-attributes -----
 type PerfectionistSortImportAttributes = {
   fallbackSort?: {
@@ -3840,6 +3849,7 @@ type PerfectionistSortImportAttributes = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-imports -----
 type PerfectionistSortImports = {
   fallbackSort?: {
@@ -4221,6 +4231,7 @@ type PerfectionistSortImports = {
     filename?: string;
   };
 }[];
+
 // ----- perfectionist/sort-interfaces -----
 type PerfectionistSortInterfaces = {
   fallbackSort?: {
@@ -4613,6 +4624,7 @@ type PerfectionistSortInterfaces = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-intersection-types -----
 type PerfectionistSortIntersectionTypes = {
   fallbackSort?: {
@@ -4928,6 +4940,7 @@ type PerfectionistSortIntersectionTypes = {
   partitionByNewLine?: boolean;
   ignoreCallableTypes?: boolean;
 }[];
+
 // ----- perfectionist/sort-jsx-props -----
 type PerfectionistSortJsxProps = {
   fallbackSort?: {
@@ -5220,6 +5233,7 @@ type PerfectionistSortJsxProps = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-maps -----
 type PerfectionistSortMaps = {
   fallbackSort?: {
@@ -5492,6 +5506,7 @@ type PerfectionistSortMaps = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-modules -----
 type PerfectionistSortModules =
   | []
@@ -5838,6 +5853,7 @@ type PerfectionistSortModules =
         };
       },
     ];
+
 // ----- perfectionist/sort-named-exports -----
 type PerfectionistSortNamedExports = {
   fallbackSort?: {
@@ -6124,6 +6140,7 @@ type PerfectionistSortNamedExports = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-named-imports -----
 type PerfectionistSortNamedImports = {
   fallbackSort?: {
@@ -6410,6 +6427,7 @@ type PerfectionistSortNamedImports = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-object-types -----
 type PerfectionistSortObjectTypes = {
   fallbackSort?: {
@@ -6802,6 +6820,7 @@ type PerfectionistSortObjectTypes = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-objects -----
 type PerfectionistSortObjects = {
   fallbackSort?: {
@@ -7242,6 +7261,7 @@ type PerfectionistSortObjects = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-sets -----
 type PerfectionistSortSets = {
   fallbackSort?: {
@@ -7520,6 +7540,7 @@ type PerfectionistSortSets = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-switch-case -----
 type PerfectionistSortSwitchCase =
   | []
@@ -7556,6 +7577,7 @@ type PerfectionistSortSwitchCase =
         order?: "asc" | "desc";
       },
     ];
+
 // ----- perfectionist/sort-union-types -----
 type PerfectionistSortUnionTypes = {
   fallbackSort?: {
@@ -7870,6 +7892,7 @@ type PerfectionistSortUnionTypes = {
 
   partitionByNewLine?: boolean;
 }[];
+
 // ----- perfectionist/sort-variable-declarations -----
 type PerfectionistSortVariableDeclarations = {
   fallbackSort?: {

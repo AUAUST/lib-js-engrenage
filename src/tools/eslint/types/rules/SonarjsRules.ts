@@ -1503,6 +1503,7 @@ type SonarjsArrowFunctionConvention =
         requireBodyBraces?: boolean;
       },
     ];
+
 // ----- sonarjs/class-name -----
 type SonarjsClassName =
   | []
@@ -1511,11 +1512,13 @@ type SonarjsClassName =
         format?: string;
       },
     ];
+
 // ----- sonarjs/cognitive-complexity -----
 type SonarjsCognitiveComplexity =
   | []
   | [number | "silence-issues"]
   | [number | "silence-issues", "silence-issues"];
+
 // ----- sonarjs/comment-regex -----
 type SonarjsCommentRegex =
   | []
@@ -1526,6 +1529,7 @@ type SonarjsCommentRegex =
         flags?: string;
       },
     ];
+
 // ----- sonarjs/content-length -----
 type SonarjsContentLength =
   | []
@@ -1535,6 +1539,7 @@ type SonarjsContentLength =
         standardSizeLimit?: number;
       },
     ];
+
 // ----- sonarjs/cyclomatic-complexity -----
 type SonarjsCyclomaticComplexity =
   | []
@@ -1543,6 +1548,7 @@ type SonarjsCyclomaticComplexity =
         threshold?: number;
       },
     ];
+
 // ----- sonarjs/expression-complexity -----
 type SonarjsExpressionComplexity =
   | []
@@ -1551,6 +1557,7 @@ type SonarjsExpressionComplexity =
         max?: number;
       },
     ];
+
 // ----- sonarjs/file-header -----
 type SonarjsFileHeader =
   | []
@@ -1560,6 +1567,7 @@ type SonarjsFileHeader =
         isRegularExpression?: boolean;
       },
     ];
+
 // ----- sonarjs/function-name -----
 type SonarjsFunctionName =
   | []
@@ -1568,6 +1576,7 @@ type SonarjsFunctionName =
         format?: string;
       },
     ];
+
 // ----- sonarjs/max-lines -----
 type SonarjsMaxLines =
   | []
@@ -1576,6 +1585,7 @@ type SonarjsMaxLines =
         maximum?: number;
       },
     ];
+
 // ----- sonarjs/max-lines-per-function -----
 type SonarjsMaxLinesPerFunction =
   | []
@@ -1584,8 +1594,10 @@ type SonarjsMaxLinesPerFunction =
         maximum?: number;
       },
     ];
+
 // ----- sonarjs/max-switch-cases -----
 type SonarjsMaxSwitchCases = [] | [number];
+
 // ----- sonarjs/max-union-size -----
 type SonarjsMaxUnionSize =
   | []
@@ -1594,6 +1606,7 @@ type SonarjsMaxUnionSize =
         threshold?: number;
       },
     ];
+
 // ----- sonarjs/nested-control-flow -----
 type SonarjsNestedControlFlow =
   | []
@@ -1602,6 +1615,7 @@ type SonarjsNestedControlFlow =
         maximumNestingLevel?: number;
       },
     ];
+
 // ----- sonarjs/new-operator-misuse -----
 type SonarjsNewOperatorMisuse =
   | []
@@ -1610,6 +1624,7 @@ type SonarjsNewOperatorMisuse =
         considerJSDoc?: boolean;
       },
     ];
+
 // ----- sonarjs/no-duplicate-string -----
 type SonarjsNoDuplicateString =
   | []
@@ -1619,6 +1634,7 @@ type SonarjsNoDuplicateString =
         ignoreStrings?: string;
       },
     ];
+
 // ----- sonarjs/no-hardcoded-passwords -----
 type SonarjsNoHardcodedPasswords =
   | []
@@ -1627,6 +1643,7 @@ type SonarjsNoHardcodedPasswords =
         passwordWords?: string[];
       },
     ];
+
 // ----- sonarjs/no-hardcoded-secrets -----
 type SonarjsNoHardcodedSecrets =
   | []
@@ -1636,8 +1653,10 @@ type SonarjsNoHardcodedSecrets =
         randomnessSensibility?: number;
       },
     ];
+
 // ----- sonarjs/no-identical-functions -----
 type SonarjsNoIdenticalFunctions = [] | [number];
+
 // ----- sonarjs/no-implicit-dependencies -----
 type SonarjsNoImplicitDependencies =
   | []
@@ -1646,6 +1665,7 @@ type SonarjsNoImplicitDependencies =
         whitelist?: string[];
       },
     ];
+
 // ----- sonarjs/no-intrusive-permissions -----
 type SonarjsNoIntrusivePermissions =
   | []
@@ -1654,6 +1674,7 @@ type SonarjsNoIntrusivePermissions =
         permissions?: string[];
       },
     ];
+
 // ----- sonarjs/no-nested-functions -----
 type SonarjsNoNestedFunctions =
   | []
@@ -1662,6 +1683,7 @@ type SonarjsNoNestedFunctions =
         threshold?: number;
       },
     ];
+
 // ----- sonarjs/regex-complexity -----
 type SonarjsRegexComplexity =
   | []
@@ -1670,6 +1692,7 @@ type SonarjsRegexComplexity =
         threshold?: number;
       },
     ];
+
 // ----- sonarjs/variable-name -----
 type SonarjsVariableName =
   | []

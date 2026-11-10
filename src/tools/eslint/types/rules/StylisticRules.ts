@@ -504,6 +504,7 @@ type StylisticArrayBracketNewline =
           minItems?: number | null;
         },
     ];
+
 // ----- @stylistic/array-bracket-spacing -----
 type StylisticArrayBracketSpacing =
   | []
@@ -516,6 +517,7 @@ type StylisticArrayBracketSpacing =
         arraysInArrays?: boolean;
       },
     ];
+
 // ----- @stylistic/array-element-newline -----
 type StylisticArrayElementNewline =
   | []
@@ -526,6 +528,7 @@ type StylisticArrayElementNewline =
           ArrayPattern?: _StylisticArrayElementNewlineBasicConfig;
         },
     ];
+
 type _StylisticArrayElementNewlineBasicConfig =
   | ("always" | "never" | "consistent")
   | {
@@ -533,6 +536,7 @@ type _StylisticArrayElementNewlineBasicConfig =
       multiline?: boolean;
       minItems?: number | null;
     };
+
 // ----- @stylistic/arrow-parens -----
 type StylisticArrowParens =
   | []
@@ -543,6 +547,7 @@ type StylisticArrowParens =
         requireForBlockBody?: boolean;
       },
     ];
+
 // ----- @stylistic/arrow-spacing -----
 type StylisticArrowSpacing =
   | []
@@ -552,8 +557,10 @@ type StylisticArrowSpacing =
         after?: boolean;
       },
     ];
+
 // ----- @stylistic/block-spacing -----
 type StylisticBlockSpacing = [] | ["always" | "never"];
+
 // ----- @stylistic/brace-style -----
 type StylisticBraceStyle =
   | []
@@ -564,6 +571,7 @@ type StylisticBraceStyle =
         allowSingleLine?: boolean;
       },
     ];
+
 // ----- @stylistic/comma-dangle -----
 type StylisticCommaDangle =
   | []
@@ -582,10 +590,13 @@ type StylisticCommaDangle =
           tuples?: _StylisticCommaDangleValueWithIgnore;
         },
     ];
+
 type _StylisticCommaDangleValue =
   "always-multiline" | "always" | "never" | "only-multiline";
+
 type _StylisticCommaDangleValueWithIgnore =
   "always-multiline" | "always" | "never" | "only-multiline" | "ignore";
+
 // ----- @stylistic/comma-spacing -----
 type StylisticCommaSpacing =
   | []
@@ -595,6 +606,7 @@ type StylisticCommaSpacing =
         after?: boolean;
       },
     ];
+
 // ----- @stylistic/comma-style -----
 type StylisticCommaStyle =
   | []
@@ -607,6 +619,7 @@ type StylisticCommaStyle =
         };
       },
     ];
+
 // ----- @stylistic/computed-property-spacing -----
 type StylisticComputedPropertySpacing =
   | []
@@ -617,6 +630,7 @@ type StylisticComputedPropertySpacing =
         enforceForClassMembers?: boolean;
       },
     ];
+
 // ----- @stylistic/curly-newline -----
 type StylisticCurlyNewline =
   | []
@@ -775,10 +789,13 @@ type StylisticCurlyNewline =
           consistent?: boolean;
         },
     ];
+
 // ----- @stylistic/dot-location -----
 type StylisticDotLocation = [] | ["object" | "property"];
+
 // ----- @stylistic/eol-last -----
 type StylisticEolLast = [] | ["always" | "never" | "unix" | "windows"];
+
 // ----- @stylistic/exp-jsx-props-style -----
 type StylisticExpJsxPropsStyle =
   | []
@@ -793,6 +810,7 @@ type StylisticExpJsxPropsStyle =
         };
       },
     ];
+
 // ----- @stylistic/exp-list-style -----
 type StylisticExpListStyle =
   | []
@@ -833,20 +851,25 @@ type StylisticExpListStyle =
         };
       },
     ];
+
 interface _StylisticExpListStyle_SingleLineConfig {
   spacing?: "always" | "never";
   maxItems?: number;
 }
+
 interface _StylisticExpListStyle_MultiLineConfig {
   minItems?: number;
 }
+
 interface _StylisticExpListStyle_BaseConfig {
   singleLine?: _StylisticExpListStyle_SingleLineConfig;
   multiline?: _StylisticExpListStyle_MultiLineConfig;
 }
+
 // ----- @stylistic/function-call-argument-newline -----
 type StylisticFunctionCallArgumentNewline =
   [] | ["always" | "never" | "consistent"];
+
 // ----- @stylistic/function-call-spacing -----
 type StylisticFunctionCallSpacing =
   | []
@@ -863,6 +886,7 @@ type StylisticFunctionCallSpacing =
         };
       },
     ];
+
 // ----- @stylistic/function-paren-newline -----
 type StylisticFunctionParenNewline =
   | []
@@ -878,6 +902,7 @@ type StylisticFunctionParenNewline =
           minItems?: number;
         },
     ];
+
 // ----- @stylistic/generator-star-spacing -----
 type StylisticGeneratorStarSpacing =
   | []
@@ -912,8 +937,10 @@ type StylisticGeneratorStarSpacing =
               };
         },
     ];
+
 // ----- @stylistic/implicit-arrow-linebreak -----
 type StylisticImplicitArrowLinebreak = [] | ["beside" | "below"];
+
 // ----- @stylistic/indent -----
 type StylisticIndent =
   | []
@@ -966,8 +993,10 @@ type StylisticIndent =
         tabLength?: number;
       },
     ];
+
 // ----- @stylistic/indent-binary-ops -----
 type StylisticIndentBinaryOps = [] | [number | "tab"];
+
 // ----- @stylistic/jsx-closing-bracket-location -----
 type StylisticJsxClosingBracketLocation =
   | []
@@ -986,8 +1015,10 @@ type StylisticJsxClosingBracketLocation =
             | false;
         },
     ];
+
 // ----- @stylistic/jsx-closing-tag-location -----
 type StylisticJsxClosingTagLocation = [] | ["tag-aligned" | "line-aligned"];
+
 // ----- @stylistic/jsx-curly-brace-presence -----
 type StylisticJsxCurlyBracePresence =
   | []
@@ -999,6 +1030,7 @@ type StylisticJsxCurlyBracePresence =
         }
       | ("always" | "never" | "ignore"),
     ];
+
 // ----- @stylistic/jsx-curly-newline -----
 type StylisticJsxCurlyNewline =
   | []
@@ -1009,6 +1041,7 @@ type StylisticJsxCurlyNewline =
           multiline?: "consistent" | "require" | "forbid";
         },
     ];
+
 // ----- @stylistic/jsx-curly-spacing -----
 type StylisticJsxCurlySpacing =
   | []
@@ -1076,13 +1109,17 @@ type StylisticJsxCurlySpacing =
         };
       },
     ];
+
 // ----- @stylistic/jsx-equals-spacing -----
 type StylisticJsxEqualsSpacing = [] | ["always" | "never"];
+
 // ----- @stylistic/jsx-first-prop-new-line -----
 type StylisticJsxFirstPropNewLine =
   [] | ["always" | "never" | "multiline" | "multiline-multiprop" | "multiprop"];
+
 // ----- @stylistic/jsx-function-call-newline -----
 type StylisticJsxFunctionCallNewline = [] | ["always" | "multiline"];
+
 // ----- @stylistic/jsx-indent -----
 type StylisticJsxIndent =
   | []
@@ -1094,6 +1131,7 @@ type StylisticJsxIndent =
         indentLogicalExpressions?: boolean;
       },
     ];
+
 // ----- @stylistic/jsx-indent-props -----
 type StylisticJsxIndentProps =
   | []
@@ -1105,6 +1143,7 @@ type StylisticJsxIndentProps =
           ignoreTernaryOperator?: boolean;
         },
     ];
+
 // ----- @stylistic/jsx-max-props-per-line -----
 type StylisticJsxMaxPropsPerLine =
   | []
@@ -1120,6 +1159,7 @@ type StylisticJsxMaxPropsPerLine =
           when?: "always" | "multiline";
         },
     ];
+
 // ----- @stylistic/jsx-newline -----
 type StylisticJsxNewline =
   | []
@@ -1129,6 +1169,7 @@ type StylisticJsxNewline =
         allowMultilines?: boolean;
       },
     ];
+
 // ----- @stylistic/jsx-one-expression-per-line -----
 type StylisticJsxOneExpressionPerLine =
   | []
@@ -1137,6 +1178,7 @@ type StylisticJsxOneExpressionPerLine =
         allow?: "none" | "literal" | "single-child" | "single-line" | "non-jsx";
       },
     ];
+
 // ----- @stylistic/jsx-pascal-case -----
 type StylisticJsxPascalCase =
   | []
@@ -1148,8 +1190,10 @@ type StylisticJsxPascalCase =
         ignore?: string[];
       },
     ];
+
 // ----- @stylistic/jsx-quotes -----
 type StylisticJsxQuotes = [] | ["prefer-single" | "prefer-double"];
+
 // ----- @stylistic/jsx-self-closing-comp -----
 type StylisticJsxSelfClosingComp =
   | []
@@ -1159,6 +1203,7 @@ type StylisticJsxSelfClosingComp =
         html?: boolean;
       },
     ];
+
 // ----- @stylistic/jsx-sort-props -----
 type StylisticJsxSortProps =
   | []
@@ -1175,6 +1220,7 @@ type StylisticJsxSortProps =
         locale?: string;
       },
     ];
+
 // ----- @stylistic/jsx-tag-spacing -----
 type StylisticJsxTagSpacing =
   | []
@@ -1187,6 +1233,7 @@ type StylisticJsxTagSpacing =
         beforeClosing?: "always" | "proportional-always" | "never" | "allow";
       },
     ];
+
 // ----- @stylistic/jsx-wrap-multilines -----
 type StylisticJsxWrapMultilines =
   | []
@@ -1218,6 +1265,7 @@ type StylisticJsxWrapMultilines =
           | (true | false | "ignore" | "parens" | "parens-new-line");
       },
     ];
+
 // ----- @stylistic/key-spacing -----
 type StylisticKeySpacing =
   | []
@@ -1284,6 +1332,7 @@ type StylisticKeySpacing =
           };
         },
     ];
+
 // ----- @stylistic/keyword-spacing -----
 type StylisticKeywordSpacing =
   | []
@@ -1591,6 +1640,7 @@ type StylisticKeywordSpacing =
         };
       },
     ];
+
 // ----- @stylistic/line-comment-position -----
 type StylisticLineCommentPosition =
   | []
@@ -1603,8 +1653,10 @@ type StylisticLineCommentPosition =
           applyDefaultIgnorePatterns?: boolean;
         },
     ];
+
 // ----- @stylistic/linebreak-style -----
 type StylisticLinebreakStyle = [] | ["unix" | "windows"];
+
 // ----- @stylistic/lines-around-comment -----
 type StylisticLinesAroundComment =
   | []
@@ -1635,6 +1687,7 @@ type StylisticLinesAroundComment =
         afterHashbangComment?: boolean;
       },
     ];
+
 // ----- @stylistic/lines-between-class-members -----
 type StylisticLinesBetweenClassMembers =
   | []
@@ -1678,6 +1731,7 @@ type StylisticLinesBetweenClassMembers =
         exceptAfterOverload?: boolean;
       },
     ];
+
 // ----- @stylistic/max-len -----
 type StylisticMaxLen =
   | []
@@ -1772,6 +1826,7 @@ type StylisticMaxLen =
         ignoreTrailingComments?: boolean;
       },
     ];
+
 // ----- @stylistic/max-statements-per-line -----
 type StylisticMaxStatementsPerLine =
   | []
@@ -1805,6 +1860,7 @@ type StylisticMaxStatementsPerLine =
         )[];
       },
     ];
+
 // ----- @stylistic/member-delimiter-style -----
 type StylisticMemberDelimiterStyle =
   | []
@@ -1825,6 +1881,7 @@ type StylisticMemberDelimiterStyle =
         multilineDetection?: "brackets" | "last-member";
       },
     ];
+
 interface _StylisticMemberDelimiterStyle_DelimiterConfig {
   multiline?: {
     delimiter?: "none" | "semi" | "comma";
@@ -1835,6 +1892,7 @@ interface _StylisticMemberDelimiterStyle_DelimiterConfig {
     requireLast?: boolean;
   };
 }
+
 // ----- @stylistic/multiline-comment-style -----
 type StylisticMultilineCommentStyle =
   | []
@@ -1848,6 +1906,7 @@ type StylisticMultilineCommentStyle =
         checkExclamation?: boolean;
       },
     ];
+
 // ----- @stylistic/multiline-ternary -----
 type StylisticMultilineTernary =
   | []
@@ -1858,8 +1917,10 @@ type StylisticMultilineTernary =
         ignoreJSX?: boolean;
       },
     ];
+
 // ----- @stylistic/new-parens -----
 type StylisticNewParens = [] | ["always" | "never"];
+
 // ----- @stylistic/newline-per-chained-call -----
 type StylisticNewlinePerChainedCall =
   | []
@@ -1868,6 +1929,7 @@ type StylisticNewlinePerChainedCall =
         ignoreChainWithDepth?: number;
       },
     ];
+
 // ----- @stylistic/no-confusing-arrow -----
 type StylisticNoConfusingArrow =
   | []
@@ -1877,6 +1939,7 @@ type StylisticNoConfusingArrow =
         onlyOneSimpleParam?: boolean;
       },
     ];
+
 // ----- @stylistic/no-extra-parens -----
 type StylisticNoExtraParens =
   | []
@@ -1905,6 +1968,7 @@ type StylisticNoExtraParens =
         ignoredNodes?: string[];
       },
     ];
+
 // ----- @stylistic/no-mixed-operators -----
 type StylisticNoMixedOperators =
   | []
@@ -2002,8 +2066,10 @@ type StylisticNoMixedOperators =
         allowSamePrecedence?: boolean;
       },
     ];
+
 // ----- @stylistic/no-mixed-spaces-and-tabs -----
 type StylisticNoMixedSpacesAndTabs = [] | ["smart-tabs" | boolean];
+
 // ----- @stylistic/no-multi-spaces -----
 type StylisticNoMultiSpaces =
   | []
@@ -2016,6 +2082,7 @@ type StylisticNoMultiSpaces =
         includeTabs?: boolean;
       },
     ];
+
 // ----- @stylistic/no-multiple-empty-lines -----
 type StylisticNoMultipleEmptyLines =
   | []
@@ -2026,6 +2093,7 @@ type StylisticNoMultipleEmptyLines =
         maxBOF?: number;
       },
     ];
+
 // ----- @stylistic/no-tabs -----
 type StylisticNoTabs =
   | []
@@ -2034,6 +2102,7 @@ type StylisticNoTabs =
         allowIndentationTabs?: boolean;
       },
     ];
+
 // ----- @stylistic/no-trailing-spaces -----
 type StylisticNoTrailingSpaces =
   | []
@@ -2043,6 +2112,7 @@ type StylisticNoTrailingSpaces =
         ignoreComments?: boolean;
       },
     ];
+
 // ----- @stylistic/nonblock-statement-body-position -----
 type StylisticNonblockStatementBodyPosition =
   | []
@@ -2059,6 +2129,7 @@ type StylisticNonblockStatementBodyPosition =
         };
       },
     ];
+
 // ----- @stylistic/object-curly-newline -----
 type StylisticObjectCurlyNewline =
   | []
@@ -2123,6 +2194,7 @@ type StylisticObjectCurlyNewline =
               };
         },
     ];
+
 // ----- @stylistic/object-curly-spacing -----
 type StylisticObjectCurlySpacing =
   | []
@@ -2147,6 +2219,7 @@ type StylisticObjectCurlySpacing =
         emptyObjects?: "ignore" | "always" | "never";
       },
     ];
+
 // ----- @stylistic/object-property-newline -----
 type StylisticObjectPropertyNewline =
   | []
@@ -2155,8 +2228,10 @@ type StylisticObjectPropertyNewline =
         allowAllPropertiesOnSameLine?: boolean;
       },
     ];
+
 // ----- @stylistic/one-var-declaration-per-line -----
 type StylisticOneVarDeclarationPerLine = [] | ["always" | "initializations"];
+
 // ----- @stylistic/operator-linebreak -----
 type StylisticOperatorLinebreak =
   | []
@@ -2169,6 +2244,7 @@ type StylisticOperatorLinebreak =
         };
       },
     ];
+
 // ----- @stylistic/padded-blocks -----
 type StylisticPaddedBlocks =
   | []
@@ -2193,18 +2269,22 @@ type StylisticPaddedBlocks =
         allowSingleLineBlocks?: boolean;
       },
     ];
+
 // ----- @stylistic/padding-line-between-statements -----
 type _StylisticPaddingLineBetweenStatementsPaddingType =
   "any" | "never" | "always";
+
 type _StylisticPaddingLineBetweenStatementsStatementOption =
   | _StylisticPaddingLineBetweenStatementsStatementMatcher
   | [
       _StylisticPaddingLineBetweenStatementsStatementMatcher,
       ..._StylisticPaddingLineBetweenStatementsStatementMatcher[],
     ];
+
 type _StylisticPaddingLineBetweenStatementsStatementMatcher =
   | _StylisticPaddingLineBetweenStatementsStatementType
   | _StylisticPaddingLineBetweenStatements_SelectorOption;
+
 type _StylisticPaddingLineBetweenStatementsStatementType =
   | "*"
   | "exports"
@@ -2262,15 +2342,18 @@ type _StylisticPaddingLineBetweenStatementsStatementType =
   | "type"
   | "singleline-type"
   | "multiline-type";
+
 type StylisticPaddingLineBetweenStatements = {
   blankLine: _StylisticPaddingLineBetweenStatementsPaddingType;
   prev: _StylisticPaddingLineBetweenStatementsStatementOption;
   next: _StylisticPaddingLineBetweenStatementsStatementOption;
 }[];
+
 interface _StylisticPaddingLineBetweenStatements_SelectorOption {
   selector: string;
   lineMode?: "any" | "singleline" | "multiline";
 }
+
 // ----- @stylistic/quote-props -----
 type StylisticQuoteProps =
   | []
@@ -2285,6 +2368,7 @@ type StylisticQuoteProps =
         numbers?: boolean;
       },
     ];
+
 // ----- @stylistic/quotes -----
 type StylisticQuotes =
   | []
@@ -2301,8 +2385,10 @@ type StylisticQuotes =
           }
       ),
     ];
+
 // ----- @stylistic/rest-spread-spacing -----
 type StylisticRestSpreadSpacing = [] | ["always" | "never"];
+
 // ----- @stylistic/semi -----
 type StylisticSemi =
   | []
@@ -2322,6 +2408,7 @@ type StylisticSemi =
         omitLastInOneLineClassBody?: boolean;
       },
     ];
+
 // ----- @stylistic/semi-spacing -----
 type StylisticSemiSpacing =
   | []
@@ -2331,8 +2418,10 @@ type StylisticSemiSpacing =
         after?: boolean;
       },
     ];
+
 // ----- @stylistic/semi-style -----
 type StylisticSemiStyle = [] | ["last" | "first"];
+
 // ----- @stylistic/space-before-blocks -----
 type StylisticSpaceBeforeBlocks =
   | []
@@ -2345,6 +2434,7 @@ type StylisticSpaceBeforeBlocks =
           modules?: "always" | "never" | "off";
         },
     ];
+
 // ----- @stylistic/space-before-function-paren -----
 type StylisticSpaceBeforeFunctionParen =
   | []
@@ -2357,6 +2447,7 @@ type StylisticSpaceBeforeFunctionParen =
           catch?: "always" | "never" | "ignore";
         },
     ];
+
 // ----- @stylistic/space-in-parens -----
 type StylisticSpaceInParens =
   | []
@@ -2367,6 +2458,7 @@ type StylisticSpaceInParens =
         exceptions?: ("{}" | "[]" | "()" | "empty")[];
       },
     ];
+
 // ----- @stylistic/space-infix-ops -----
 type StylisticSpaceInfixOps =
   | []
@@ -2376,6 +2468,7 @@ type StylisticSpaceInfixOps =
         ignoreTypes?: boolean;
       },
     ];
+
 // ----- @stylistic/space-unary-ops -----
 type StylisticSpaceUnaryOps =
   | []
@@ -2388,6 +2481,7 @@ type StylisticSpaceUnaryOps =
         };
       },
     ];
+
 // ----- @stylistic/spaced-comment -----
 type StylisticSpacedComment =
   | []
@@ -2408,6 +2502,7 @@ type StylisticSpacedComment =
         };
       },
     ];
+
 // ----- @stylistic/switch-colon-spacing -----
 type StylisticSwitchColonSpacing =
   | []
@@ -2417,10 +2512,13 @@ type StylisticSwitchColonSpacing =
         after?: boolean;
       },
     ];
+
 // ----- @stylistic/template-curly-spacing -----
 type StylisticTemplateCurlySpacing = [] | ["always" | "never"];
+
 // ----- @stylistic/template-tag-spacing -----
 type StylisticTemplateTagSpacing = [] | ["always" | "never"];
+
 // ----- @stylistic/type-annotation-spacing -----
 type StylisticTypeAnnotationSpacing =
   | []
@@ -2438,10 +2536,12 @@ type StylisticTypeAnnotationSpacing =
         };
       },
     ];
+
 interface _StylisticTypeAnnotationSpacing_SpacingConfig {
   before?: boolean;
   after?: boolean;
 }
+
 // ----- @stylistic/wrap-iife -----
 type StylisticWrapIife =
   | []
@@ -2452,6 +2552,7 @@ type StylisticWrapIife =
         functionPrototypeMethods?: boolean;
       },
     ];
+
 // ----- @stylistic/yield-star-spacing -----
 type StylisticYieldStarSpacing =
   | []

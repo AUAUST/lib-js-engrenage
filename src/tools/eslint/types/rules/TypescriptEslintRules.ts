@@ -704,6 +704,7 @@ type TypescriptEslintArrayType =
         readonly?: "array" | "generic" | "array-simple";
       },
     ];
+
 // ----- @typescript-eslint/await-thenable -----
 type TypescriptEslintAwaitThenable =
   | []
@@ -712,6 +713,7 @@ type TypescriptEslintAwaitThenable =
         allowMixedPromiseArrays?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/ban-ts-comment -----
 type TypescriptEslintBanTsComment =
   | []
@@ -744,8 +746,10 @@ type TypescriptEslintBanTsComment =
             };
       },
     ];
+
 // ----- @typescript-eslint/class-literal-property-style -----
 type TypescriptEslintClassLiteralPropertyStyle = [] | ["fields" | "getters"];
+
 // ----- @typescript-eslint/class-methods-use-this -----
 type TypescriptEslintClassMethodsUseThis =
   | []
@@ -760,12 +764,15 @@ type TypescriptEslintClassMethodsUseThis =
         ignoreOverrideMethods?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/consistent-generic-constructors -----
 type TypescriptEslintConsistentGenericConstructors =
   [] | ["type-annotation" | "constructor"];
+
 // ----- @typescript-eslint/consistent-indexed-object-style -----
 type TypescriptEslintConsistentIndexedObjectStyle =
   [] | ["record" | "index-signature"];
+
 // ----- @typescript-eslint/consistent-return -----
 type TypescriptEslintConsistentReturn =
   | []
@@ -774,6 +781,7 @@ type TypescriptEslintConsistentReturn =
         treatUndefinedAsUnspecified?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/consistent-type-assertions -----
 type TypescriptEslintConsistentTypeAssertions =
   | []
@@ -790,8 +798,10 @@ type TypescriptEslintConsistentTypeAssertions =
             "allow" | "allow-as-parameter" | "never";
         },
     ];
+
 // ----- @typescript-eslint/consistent-type-definitions -----
 type TypescriptEslintConsistentTypeDefinitions = [] | ["interface" | "type"];
+
 // ----- @typescript-eslint/consistent-type-exports -----
 type TypescriptEslintConsistentTypeExports =
   | []
@@ -800,6 +810,7 @@ type TypescriptEslintConsistentTypeExports =
         fixMixedExportsWithInlineTypeSpecifier?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/consistent-type-imports -----
 type TypescriptEslintConsistentTypeImports =
   | []
@@ -812,6 +823,7 @@ type TypescriptEslintConsistentTypeImports =
         prefer?: "type-imports" | "no-type-imports";
       },
     ];
+
 // ----- @typescript-eslint/dot-notation -----
 type TypescriptEslintDotNotation =
   | []
@@ -828,6 +840,7 @@ type TypescriptEslintDotNotation =
         allowProtectedClassPropertyAccess?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/explicit-function-return-type -----
 type TypescriptEslintExplicitFunctionReturnType =
   | []
@@ -850,6 +863,7 @@ type TypescriptEslintExplicitFunctionReturnType =
         allowTypedFunctionExpressions?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/explicit-member-accessibility -----
 type TypescriptEslintExplicitMemberAccessibility =
   | []
@@ -868,6 +882,7 @@ type TypescriptEslintExplicitMemberAccessibility =
         };
       },
     ];
+
 // ----- @typescript-eslint/explicit-module-boundary-types -----
 type TypescriptEslintExplicitModuleBoundaryTypes =
   | []
@@ -886,6 +901,7 @@ type TypescriptEslintExplicitModuleBoundaryTypes =
         allowTypedFunctionExpressions?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/init-declarations -----
 type TypescriptEslintInitDeclarations =
   | []
@@ -898,6 +914,7 @@ type TypescriptEslintInitDeclarations =
         ignoreForLoopInit?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/max-params -----
 type TypescriptEslintMaxParams =
   | []
@@ -910,6 +927,7 @@ type TypescriptEslintMaxParams =
         maximum?: number;
       },
     ];
+
 // ----- @typescript-eslint/member-ordering -----
 type TypescriptEslintMemberOrdering =
   | []
@@ -2926,11 +2944,14 @@ type TypescriptEslintMemberOrdering =
             };
       },
     ];
+
 // ----- @typescript-eslint/method-signature-style -----
 type TypescriptEslintMethodSignatureStyle = [] | ["property" | "method"];
+
 // ----- @typescript-eslint/naming-convention -----
 type _TypescriptEslintNamingConventionFormatOptionsConfig =
   _TypescriptEslintNamingConventionPredefinedFormats[] | null;
+
 type _TypescriptEslintNamingConventionPredefinedFormats =
   | "camelCase"
   | "strictCamelCase"
@@ -2938,6 +2959,7 @@ type _TypescriptEslintNamingConventionPredefinedFormats =
   | "StrictPascalCase"
   | "snake_case"
   | "UPPER_CASE";
+
 type _TypescriptEslintNamingConventionUnderscoreOptions =
   | "forbid"
   | "allow"
@@ -2945,9 +2967,12 @@ type _TypescriptEslintNamingConventionUnderscoreOptions =
   | "requireDouble"
   | "allowDouble"
   | "allowSingleOrDouble";
+
 type _TypescriptEslintNamingConvention_PrefixSuffixConfig = string[];
+
 type _TypescriptEslintNamingConventionTypeModifiers =
   "boolean" | "string" | "number" | "function" | "array";
+
 type TypescriptEslintNamingConvention = (
   | {
       custom?: _TypescriptEslintNamingConvention_MatchRegexConfig;
@@ -3426,10 +3451,12 @@ type TypescriptEslintNamingConvention = (
       modifiers?: ("default" | "namespace")[];
     }
 )[];
+
 interface _TypescriptEslintNamingConvention_MatchRegexConfig {
   match: boolean;
   regex: string;
 }
+
 // ----- @typescript-eslint/no-base-to-string -----
 type TypescriptEslintNoBaseToString =
   | []
@@ -3440,6 +3467,7 @@ type TypescriptEslintNoBaseToString =
         ignoredTypeNames?: string[];
       },
     ];
+
 // ----- @typescript-eslint/no-confusing-void-expression -----
 type TypescriptEslintNoConfusingVoidExpression =
   | []
@@ -3452,6 +3480,7 @@ type TypescriptEslintNoConfusingVoidExpression =
         ignoreVoidReturningFunctions?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-deprecated -----
 type TypescriptEslintNoDeprecated =
   | []
@@ -3476,6 +3505,7 @@ type TypescriptEslintNoDeprecated =
         )[];
       },
     ];
+
 // ----- @typescript-eslint/no-duplicate-type-constituents -----
 type TypescriptEslintNoDuplicateTypeConstituents =
   | []
@@ -3486,6 +3516,7 @@ type TypescriptEslintNoDuplicateTypeConstituents =
         ignoreUnions?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-empty-function -----
 type TypescriptEslintNoEmptyFunction =
   | []
@@ -3509,6 +3540,7 @@ type TypescriptEslintNoEmptyFunction =
         )[];
       },
     ];
+
 // ----- @typescript-eslint/no-empty-interface -----
 type TypescriptEslintNoEmptyInterface =
   | []
@@ -3517,6 +3549,7 @@ type TypescriptEslintNoEmptyInterface =
         allowSingleExtends?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-empty-object-type -----
 type TypescriptEslintNoEmptyObjectType =
   | []
@@ -3529,6 +3562,7 @@ type TypescriptEslintNoEmptyObjectType =
         allowWithName?: string;
       },
     ];
+
 // ----- @typescript-eslint/no-explicit-any -----
 type TypescriptEslintNoExplicitAny =
   | []
@@ -3539,6 +3573,7 @@ type TypescriptEslintNoExplicitAny =
         ignoreRestArgs?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-extraneous-class -----
 type TypescriptEslintNoExtraneousClass =
   | []
@@ -3553,6 +3588,7 @@ type TypescriptEslintNoExtraneousClass =
         allowWithDecorator?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-floating-promises -----
 type TypescriptEslintNoFloatingPromises =
   | []
@@ -3601,6 +3637,7 @@ type TypescriptEslintNoFloatingPromises =
         ignoreVoid?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-inferrable-types -----
 type TypescriptEslintNoInferrableTypes =
   | []
@@ -3611,6 +3648,7 @@ type TypescriptEslintNoInferrableTypes =
         ignoreProperties?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-invalid-this -----
 type TypescriptEslintNoInvalidThis =
   | []
@@ -3619,6 +3657,7 @@ type TypescriptEslintNoInvalidThis =
         capIsConstructor?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-invalid-void-type -----
 type TypescriptEslintNoInvalidVoidType =
   | []
@@ -3629,6 +3668,7 @@ type TypescriptEslintNoInvalidVoidType =
         allowInGenericTypeArguments?: boolean | [string, ...string[]];
       },
     ];
+
 // ----- @typescript-eslint/no-magic-numbers -----
 type TypescriptEslintNoMagicNumbers =
   | []
@@ -3650,6 +3690,7 @@ type TypescriptEslintNoMagicNumbers =
         ignoreTypeIndexes?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-meaningless-void-operator -----
 type TypescriptEslintNoMeaninglessVoidOperator =
   | []
@@ -3658,6 +3699,7 @@ type TypescriptEslintNoMeaninglessVoidOperator =
         checkNever?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-misused-promises -----
 type TypescriptEslintNoMisusedPromises =
   | []
@@ -3688,6 +3730,7 @@ type TypescriptEslintNoMisusedPromises =
             };
       },
     ];
+
 // ----- @typescript-eslint/no-misused-spread -----
 type TypescriptEslintNoMisusedSpread =
   | []
@@ -3712,6 +3755,7 @@ type TypescriptEslintNoMisusedSpread =
         )[];
       },
     ];
+
 // ----- @typescript-eslint/no-namespace -----
 type TypescriptEslintNoNamespace =
   | []
@@ -3722,6 +3766,7 @@ type TypescriptEslintNoNamespace =
         allowDefinitionFiles?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-redeclare -----
 type TypescriptEslintNoRedeclare =
   | []
@@ -3732,6 +3777,7 @@ type TypescriptEslintNoRedeclare =
         ignoreDeclarationMerge?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-require-imports -----
 type TypescriptEslintNoRequireImports =
   | []
@@ -3742,6 +3788,7 @@ type TypescriptEslintNoRequireImports =
         allowAsImport?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-restricted-imports -----
 type TypescriptEslintNoRestrictedImports =
   | (
@@ -3787,6 +3834,7 @@ type TypescriptEslintNoRestrictedImports =
             }[];
       },
     ];
+
 // ----- @typescript-eslint/no-restricted-types -----
 type TypescriptEslintNoRestrictedTypes =
   | []
@@ -3809,6 +3857,7 @@ type TypescriptEslintNoRestrictedTypes =
         };
       },
     ];
+
 // ----- @typescript-eslint/no-shadow -----
 type TypescriptEslintNoShadow =
   | []
@@ -3827,6 +3876,7 @@ type TypescriptEslintNoShadow =
         ignoreTypeValueShadow?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-this-alias -----
 type TypescriptEslintNoThisAlias =
   | []
@@ -3837,6 +3887,7 @@ type TypescriptEslintNoThisAlias =
         allowedNames?: string[];
       },
     ];
+
 // ----- @typescript-eslint/no-type-alias -----
 type TypescriptEslintNoTypeAlias =
   | []
@@ -3872,6 +3923,7 @@ type TypescriptEslintNoTypeAlias =
           | "in-unions-and-intersections";
       },
     ];
+
 // ----- @typescript-eslint/no-unnecessary-boolean-literal-compare -----
 type TypescriptEslintNoUnnecessaryBooleanLiteralCompare =
   | []
@@ -3884,6 +3936,7 @@ type TypescriptEslintNoUnnecessaryBooleanLiteralCompare =
         allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-unnecessary-condition -----
 type TypescriptEslintNoUnnecessaryCondition =
   | []
@@ -3897,6 +3950,7 @@ type TypescriptEslintNoUnnecessaryCondition =
         checkTypePredicates?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-unnecessary-type-assertion -----
 type TypescriptEslintNoUnnecessaryTypeAssertion =
   | []
@@ -3907,6 +3961,7 @@ type TypescriptEslintNoUnnecessaryTypeAssertion =
         typesToIgnore?: string[];
       },
     ];
+
 // ----- @typescript-eslint/no-unsafe-member-access -----
 type TypescriptEslintNoUnsafeMemberAccess =
   | []
@@ -3915,6 +3970,7 @@ type TypescriptEslintNoUnsafeMemberAccess =
         allowOptionalChaining?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-unused-expressions -----
 type TypescriptEslintNoUnusedExpressions =
   | []
@@ -3927,6 +3983,7 @@ type TypescriptEslintNoUnusedExpressions =
         ignoreDirectives?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-unused-vars -----
 type TypescriptEslintNoUnusedVars =
   | []
@@ -3960,6 +4017,7 @@ type TypescriptEslintNoUnusedVars =
           varsIgnorePattern?: string;
         },
     ];
+
 // ----- @typescript-eslint/no-use-before-define -----
 type TypescriptEslintNoUseBeforeDefine =
   | []
@@ -3981,6 +4039,7 @@ type TypescriptEslintNoUseBeforeDefine =
           variables?: boolean;
         },
     ];
+
 // ----- @typescript-eslint/no-useless-default-assignment -----
 type TypescriptEslintNoUselessDefaultAssignment =
   | []
@@ -3989,6 +4048,7 @@ type TypescriptEslintNoUselessDefaultAssignment =
         allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/no-var-requires -----
 type TypescriptEslintNoVarRequires =
   | []
@@ -3997,6 +4057,7 @@ type TypescriptEslintNoVarRequires =
         allow?: string[];
       },
     ];
+
 // ----- @typescript-eslint/only-throw-error -----
 type TypescriptEslintOnlyThrowError =
   | []
@@ -4027,6 +4088,7 @@ type TypescriptEslintOnlyThrowError =
         allowThrowingUnknown?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/parameter-properties -----
 type TypescriptEslintParameterProperties =
   | []
@@ -4045,6 +4107,7 @@ type TypescriptEslintParameterProperties =
         prefer?: "class-property" | "parameter-property";
       },
     ];
+
 // ----- @typescript-eslint/prefer-destructuring -----
 type TypescriptEslintPreferDestructuring =
   | []
@@ -4087,6 +4150,7 @@ type TypescriptEslintPreferDestructuring =
         enforceForRenamedProperties?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/prefer-literal-enum-member -----
 type TypescriptEslintPreferLiteralEnumMember =
   | []
@@ -4095,6 +4159,7 @@ type TypescriptEslintPreferLiteralEnumMember =
         allowBitwiseExpressions?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/prefer-nullish-coalescing -----
 type TypescriptEslintPreferNullishCoalescing =
   | []
@@ -4125,6 +4190,7 @@ type TypescriptEslintPreferNullishCoalescing =
         ignoreTernaryTests?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/prefer-optional-chain -----
 type TypescriptEslintPreferOptionalChain =
   | []
@@ -4147,6 +4213,7 @@ type TypescriptEslintPreferOptionalChain =
         requireNullish?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/prefer-promise-reject-errors -----
 type TypescriptEslintPreferPromiseRejectErrors =
   | []
@@ -4177,6 +4244,7 @@ type TypescriptEslintPreferPromiseRejectErrors =
         allowThrowingUnknown?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/prefer-readonly -----
 type TypescriptEslintPreferReadonly =
   | []
@@ -4185,6 +4253,7 @@ type TypescriptEslintPreferReadonly =
         onlyInlineLambdas?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/prefer-readonly-parameter-types -----
 type TypescriptEslintPreferReadonlyParameterTypes =
   | []
@@ -4215,6 +4284,7 @@ type TypescriptEslintPreferReadonlyParameterTypes =
         treatMethodsAsReadonly?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/prefer-string-starts-ends-with -----
 type TypescriptEslintPreferStringStartsEndsWith =
   | []
@@ -4223,6 +4293,7 @@ type TypescriptEslintPreferStringStartsEndsWith =
         allowSingleElementEquality?: "always" | "never";
       },
     ];
+
 // ----- @typescript-eslint/promise-function-async -----
 type TypescriptEslintPromiseFunctionAsync =
   | []
@@ -4241,6 +4312,7 @@ type TypescriptEslintPromiseFunctionAsync =
         checkMethodDeclarations?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/require-array-sort-compare -----
 type TypescriptEslintRequireArraySortCompare =
   | []
@@ -4249,6 +4321,7 @@ type TypescriptEslintRequireArraySortCompare =
         ignoreStringArrays?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/restrict-plus-operands -----
 type TypescriptEslintRestrictPlusOperands =
   | []
@@ -4267,6 +4340,7 @@ type TypescriptEslintRestrictPlusOperands =
         skipCompoundAssignments?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/restrict-template-expressions -----
 type TypescriptEslintRestrictTemplateExpressions =
   | []
@@ -4305,6 +4379,7 @@ type TypescriptEslintRestrictTemplateExpressions =
         )[];
       },
     ];
+
 // ----- @typescript-eslint/return-await -----
 type TypescriptEslintReturnAwait =
   | []
@@ -4314,6 +4389,7 @@ type TypescriptEslintReturnAwait =
       ) &
         string,
     ];
+
 // ----- @typescript-eslint/sort-type-constituents -----
 type TypescriptEslintSortTypeConstituents =
   | []
@@ -4341,6 +4417,7 @@ type TypescriptEslintSortTypeConstituents =
         )[];
       },
     ];
+
 // ----- @typescript-eslint/strict-boolean-expressions -----
 type TypescriptEslintStrictBooleanExpressions =
   | []
@@ -4365,6 +4442,7 @@ type TypescriptEslintStrictBooleanExpressions =
         allowString?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/strict-void-return -----
 type TypescriptEslintStrictVoidReturn =
   | []
@@ -4373,6 +4451,7 @@ type TypescriptEslintStrictVoidReturn =
         allowReturnAny?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/switch-exhaustiveness-check -----
 type TypescriptEslintSwitchExhaustivenessCheck =
   | []
@@ -4387,6 +4466,7 @@ type TypescriptEslintSwitchExhaustivenessCheck =
         requireDefaultForNonUnion?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/triple-slash-reference -----
 type TypescriptEslintTripleSlashReference =
   | []
@@ -4399,6 +4479,7 @@ type TypescriptEslintTripleSlashReference =
         types?: "always" | "never" | "prefer-import";
       },
     ];
+
 // ----- @typescript-eslint/typedef -----
 type TypescriptEslintTypedef =
   | []
@@ -4421,6 +4502,7 @@ type TypescriptEslintTypedef =
         variableDeclarationIgnoreFunction?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/unbound-method -----
 type TypescriptEslintUnboundMethod =
   | []
@@ -4429,6 +4511,7 @@ type TypescriptEslintUnboundMethod =
         ignoreStatic?: boolean;
       },
     ];
+
 // ----- @typescript-eslint/unified-signatures -----
 type TypescriptEslintUnifiedSignatures =
   | []

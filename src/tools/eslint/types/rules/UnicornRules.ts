@@ -2021,6 +2021,7 @@ type UnicornCatchErrorName =
         )[];
       },
     ];
+
 // ----- unicorn/class-reference-in-static-methods -----
 type UnicornClassReferenceInStaticMethods =
   | []
@@ -2031,6 +2032,7 @@ type UnicornClassReferenceInStaticMethods =
         preferSuper?: boolean;
       },
     ];
+
 // ----- unicorn/comment-content -----
 type UnicornCommentContent =
   | []
@@ -2061,6 +2063,7 @@ type UnicornCommentContent =
         };
       },
     ];
+
 // ----- unicorn/consistent-boolean-name -----
 type UnicornConsistentBooleanName =
   | []
@@ -2088,6 +2091,7 @@ type UnicornConsistentBooleanName =
         [k: string]: unknown;
       },
     ];
+
 // ----- unicorn/consistent-class-member-order -----
 type UnicornConsistentClassMemberOrder =
   | []
@@ -2177,6 +2181,7 @@ type UnicornConsistentClassMemberOrder =
         ];
       },
     ];
+
 // ----- unicorn/consistent-compound-words -----
 type UnicornConsistentCompoundWords =
   | []
@@ -2197,17 +2202,22 @@ type UnicornConsistentCompoundWords =
         allowList?: _UnicornConsistentCompoundWords_TrueObject;
       },
     ];
+
 interface _UnicornConsistentCompoundWords_Replacements {
   [k: string]: (false | string) | undefined;
 }
+
 interface _UnicornConsistentCompoundWords_TrueObject {
   [k: string]: true | undefined;
 }
+
 // ----- unicorn/consistent-conditional-object-spread -----
 type UnicornConsistentConditionalObjectSpread = [] | ["logical" | "ternary"];
+
 // ----- unicorn/consistent-export-decorator-position -----
 type UnicornConsistentExportDecoratorPosition =
   [] | ["above" | "before" | "after"];
+
 // ----- unicorn/consistent-function-scoping -----
 type UnicornConsistentFunctionScoping =
   | []
@@ -2216,6 +2226,7 @@ type UnicornConsistentFunctionScoping =
         checkArrowFunctions?: boolean;
       },
     ];
+
 // ----- unicorn/consistent-function-style -----
 type UnicornConsistentFunctionStyle =
   | []
@@ -2237,8 +2248,10 @@ type UnicornConsistentFunctionStyle =
         typedVariables?: "function-expression" | "arrow-function" | "ignore";
       },
     ];
+
 // ----- unicorn/consistent-json-file-read -----
 type UnicornConsistentJsonFileRead = [] | ["string" | "buffer"];
+
 // ----- unicorn/default-export-style -----
 type UnicornDefaultExportStyle =
   | []
@@ -2248,6 +2261,7 @@ type UnicornDefaultExportStyle =
         classes?: "inline" | "separate" | "ignore";
       },
     ];
+
 // ----- unicorn/dom-node-dataset -----
 type UnicornDomNodeDataset =
   | []
@@ -2256,8 +2270,10 @@ type UnicornDomNodeDataset =
         preferAttributes?: boolean;
       },
     ];
+
 // ----- unicorn/escape-case -----
 type UnicornEscapeCase = [] | ["uppercase" | "lowercase"];
+
 // ----- unicorn/expiring-todo-comments -----
 type UnicornExpiringTodoComments =
   | []
@@ -2281,6 +2297,7 @@ type UnicornExpiringTodoComments =
         date?: string;
       },
     ];
+
 // ----- unicorn/explicit-length-check -----
 type UnicornExplicitLengthCheck =
   | []
@@ -2289,8 +2306,10 @@ type UnicornExplicitLengthCheck =
         "non-zero"?: "greater-than" | "not-equal";
       },
     ];
+
 // ----- unicorn/explicit-timer-delay -----
 type UnicornExplicitTimerDelay = [] | ["always" | "never"];
+
 // ----- unicorn/filename-case -----
 type UnicornFilenameCase =
   | []
@@ -2353,6 +2372,7 @@ type UnicornFilenameCase =
           )[];
         },
     ];
+
 // ----- unicorn/id-match -----
 type UnicornIdMatch =
   | []
@@ -2368,6 +2388,7 @@ type UnicornIdMatch =
         checkNamedSpecifiers?: boolean;
       },
     ];
+
 // ----- unicorn/import-style -----
 type UnicornImportStyle =
   | []
@@ -2385,14 +2406,18 @@ type UnicornImportStyle =
         styles?: _UnicornImportStyle_ModuleStyles;
       },
     ];
+
 type _UnicornImportStyleStyles =
   (false | _UnicornImportStyle_BooleanObject) | undefined;
+
 interface _UnicornImportStyle_ModuleStyles {
   [k: string]: _UnicornImportStyleStyles | undefined;
 }
+
 interface _UnicornImportStyle_BooleanObject {
   [k: string]: boolean | undefined;
 }
+
 // ----- unicorn/indent -----
 type UnicornIndent =
   | []
@@ -2403,6 +2428,7 @@ type UnicornIndent =
         tabWidth?: number;
       },
     ];
+
 // ----- unicorn/isolated-functions -----
 type UnicornIsolatedFunctions =
   | []
@@ -2421,8 +2447,10 @@ type UnicornIsolatedFunctions =
         comments?: string[];
       },
     ];
+
 // ----- unicorn/iteration-fallback-style -----
 type UnicornIterationFallbackStyle = [] | ["guard" | "fallback"];
+
 // ----- unicorn/key-name-casing -----
 type UnicornKeyNameCasing =
   | []
@@ -2441,6 +2469,7 @@ type UnicornKeyNameCasing =
         "ignore"?: string[];
       },
     ];
+
 // ----- unicorn/logical-assignment-operators -----
 type UnicornLogicalAssignmentOperators = (
   | []
@@ -2454,6 +2483,7 @@ type UnicornLogicalAssignmentOperators = (
   | ["never"]
 ) &
   unknown[];
+
 // ----- unicorn/max-nested-calls -----
 type UnicornMaxNestedCalls =
   | []
@@ -2462,6 +2492,7 @@ type UnicornMaxNestedCalls =
         max?: number;
       },
     ];
+
 // ----- unicorn/name-replacements -----
 type UnicornNameReplacements =
   | []
@@ -2493,14 +2524,18 @@ type UnicornNameReplacements =
         )[];
       },
     ];
+
 type _UnicornNameReplacementsReplacements =
   (false | _UnicornNameReplacements_BooleanObject) | undefined;
+
 interface _UnicornNameReplacements_NameReplacements {
   [k: string]: _UnicornNameReplacementsReplacements | undefined;
 }
+
 interface _UnicornNameReplacements_BooleanObject {
   [k: string]: boolean | undefined;
 }
+
 // ----- unicorn/no-array-callback-reference -----
 type UnicornNoArrayCallbackReference =
   | []
@@ -2509,6 +2544,7 @@ type UnicornNoArrayCallbackReference =
         ignore?: string[];
       },
     ];
+
 // ----- unicorn/no-array-reduce -----
 type UnicornNoArrayReduce =
   | []
@@ -2517,6 +2553,7 @@ type UnicornNoArrayReduce =
         allowSimpleOperations?: boolean;
       },
     ];
+
 // ----- unicorn/no-array-reverse -----
 type UnicornNoArrayReverse =
   | []
@@ -2525,6 +2562,7 @@ type UnicornNoArrayReverse =
         allowExpressionStatement?: boolean;
       },
     ];
+
 // ----- unicorn/no-array-sort -----
 type UnicornNoArraySort =
   | []
@@ -2533,6 +2571,7 @@ type UnicornNoArraySort =
         allowExpressionStatement?: boolean;
       },
     ];
+
 // ----- unicorn/no-break-in-nested-loop -----
 type UnicornNoBreakInNestedLoop =
   | []
@@ -2541,6 +2580,7 @@ type UnicornNoBreakInNestedLoop =
         checkContinue?: boolean;
       },
     ];
+
 // ----- unicorn/no-empty-file -----
 type UnicornNoEmptyFile =
   | []
@@ -2549,6 +2589,7 @@ type UnicornNoEmptyFile =
         allowComments?: boolean;
       },
     ];
+
 // ----- unicorn/no-immediate-mutation -----
 type UnicornNoImmediateMutation =
   | []
@@ -2557,6 +2598,7 @@ type UnicornNoImmediateMutation =
         checkConditionals?: boolean;
       },
     ];
+
 // ----- unicorn/no-instanceof-builtins -----
 type UnicornNoInstanceofBuiltins =
   | []
@@ -2568,6 +2610,7 @@ type UnicornNoInstanceofBuiltins =
         exclude?: string[];
       },
     ];
+
 // ----- unicorn/no-invalid-argument-count -----
 type UnicornNoInvalidArgumentCount =
   | []
@@ -2585,6 +2628,7 @@ type UnicornNoInvalidArgumentCount =
           | undefined;
       },
     ];
+
 // ----- unicorn/no-keyword-prefix -----
 type UnicornNoKeywordPrefix =
   | []
@@ -2597,6 +2641,7 @@ type UnicornNoKeywordPrefix =
         onlyCamelCase?: boolean;
       },
     ];
+
 // ----- unicorn/no-negated-comparison -----
 type UnicornNoNegatedComparison =
   | []
@@ -2605,6 +2650,7 @@ type UnicornNoNegatedComparison =
         checkLogicalExpressions?: boolean;
       },
     ];
+
 // ----- unicorn/no-non-function-verb-prefix -----
 type UnicornNoNonFunctionVerbPrefix =
   | []
@@ -2620,6 +2666,7 @@ type UnicornNoNonFunctionVerbPrefix =
         )[];
       },
     ];
+
 // ----- unicorn/no-null -----
 type UnicornNoNull =
   | []
@@ -2630,6 +2677,7 @@ type UnicornNoNull =
         checkStrictEquality?: boolean;
       },
     ];
+
 // ----- unicorn/no-top-level-side-effects -----
 type UnicornNoTopLevelSideEffects =
   | []
@@ -2642,6 +2690,7 @@ type UnicornNoTopLevelSideEffects =
         };
       },
     ];
+
 // ----- unicorn/no-typeof-undefined -----
 type UnicornNoTypeofUndefined =
   | []
@@ -2650,6 +2699,7 @@ type UnicornNoTypeofUndefined =
         checkGlobalVariables?: boolean;
       },
     ];
+
 // ----- unicorn/no-unnecessary-parameters -----
 type UnicornNoUnnecessaryParameters =
   | []
@@ -2658,6 +2708,7 @@ type UnicornNoUnnecessaryParameters =
         minimumCallCount?: number;
       },
     ];
+
 // ----- unicorn/no-unnecessary-polyfills -----
 type UnicornNoUnnecessaryPolyfills =
   | []
@@ -2671,6 +2722,7 @@ type UnicornNoUnnecessaryPolyfills =
             };
       },
     ];
+
 // ----- unicorn/no-unreadable-array-destructuring -----
 type UnicornNoUnreadableArrayDestructuring =
   | []
@@ -2679,6 +2731,7 @@ type UnicornNoUnreadableArrayDestructuring =
         maximumIgnoredElements?: number;
       },
     ];
+
 // ----- unicorn/no-useless-undefined -----
 type UnicornNoUselessUndefined =
   | []
@@ -2689,6 +2742,7 @@ type UnicornNoUselessUndefined =
         checkArrowFunctionBody?: boolean;
       },
     ];
+
 // ----- unicorn/number-literal-case -----
 type UnicornNumberLiteralCase =
   | []
@@ -2697,6 +2751,7 @@ type UnicornNumberLiteralCase =
         hexadecimalValue?: "uppercase" | "lowercase";
       },
     ];
+
 // ----- unicorn/numeric-separators-style -----
 type UnicornNumericSeparatorsStyle =
   | []
@@ -2736,8 +2791,10 @@ type UnicornNumericSeparatorsStyle =
         onlyIfContainsSeparator?: boolean;
       },
     ];
+
 // ----- unicorn/operator-assignment -----
 type UnicornOperatorAssignment = [] | ["always" | "never"];
+
 // ----- unicorn/prefer-add-event-listener -----
 type UnicornPreferAddEventListener =
   | []
@@ -2746,6 +2803,7 @@ type UnicornPreferAddEventListener =
         excludedPackages?: string[];
       },
     ];
+
 // ----- unicorn/prefer-array-find -----
 type UnicornPreferArrayFind =
   | []
@@ -2754,6 +2812,7 @@ type UnicornPreferArrayFind =
         checkFromLast?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-array-flat -----
 type UnicornPreferArrayFlat =
   | []
@@ -2762,6 +2821,7 @@ type UnicornPreferArrayFlat =
         functions?: string[];
       },
     ];
+
 // ----- unicorn/prefer-at -----
 type UnicornPreferAt =
   | []
@@ -2772,6 +2832,7 @@ type UnicornPreferAt =
         checkAllIndexAccess?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-combined-guards -----
 type UnicornPreferCombinedGuards =
   | []
@@ -2782,6 +2843,7 @@ type UnicornPreferCombinedGuards =
         checkMultiStatementBodies?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-continue -----
 type UnicornPreferContinue =
   | []
@@ -2792,6 +2854,7 @@ type UnicornPreferContinue =
         checkShortBodies?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-default-parameters -----
 type UnicornPreferDefaultParameters =
   | []
@@ -2800,6 +2863,7 @@ type UnicornPreferDefaultParameters =
         checkFallbackExpressions?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-dom-node-html-methods -----
 type UnicornPreferDomNodeHtmlMethods =
   | []
@@ -2810,6 +2874,7 @@ type UnicornPreferDomNodeHtmlMethods =
         checkSetHTML?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-early-return -----
 type UnicornPreferEarlyReturn =
   | []
@@ -2820,6 +2885,7 @@ type UnicornPreferEarlyReturn =
         checkShortBodies?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-export-from -----
 type UnicornPreferExportFrom =
   | []
@@ -2828,6 +2894,7 @@ type UnicornPreferExportFrom =
         checkUsedVariables?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-https -----
 type UnicornPreferHttps =
   | []
@@ -2841,6 +2908,7 @@ type UnicornPreferHttps =
         )[];
       },
     ];
+
 // ----- unicorn/prefer-includes-over-repeated-comparisons -----
 type UnicornPreferIncludesOverRepeatedComparisons =
   | []
@@ -2849,6 +2917,7 @@ type UnicornPreferIncludesOverRepeatedComparisons =
         minimumComparisons?: number;
       },
     ];
+
 // ----- unicorn/prefer-minimal-ternary -----
 type UnicornPreferMinimalTernary =
   | []
@@ -2859,6 +2928,7 @@ type UnicornPreferMinimalTernary =
         checkComputedMemberAccess?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-number-properties -----
 type UnicornPreferNumberProperties =
   | []
@@ -2869,6 +2939,7 @@ type UnicornPreferNumberProperties =
         checkNaN?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-object-from-entries -----
 type UnicornPreferObjectFromEntries =
   | []
@@ -2877,6 +2948,7 @@ type UnicornPreferObjectFromEntries =
         functions?: string[];
       },
     ];
+
 // ----- unicorn/prefer-query-selector -----
 type UnicornPreferQuerySelector =
   | []
@@ -2885,6 +2957,7 @@ type UnicornPreferQuerySelector =
         allowWithVariables?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-queue-microtask -----
 type UnicornPreferQueueMicrotask =
   | []
@@ -2895,6 +2968,7 @@ type UnicornPreferQueueMicrotask =
         checkSetTimeout?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-set-has -----
 type UnicornPreferSetHas =
   | []
@@ -2903,8 +2977,10 @@ type UnicornPreferSetHas =
         minimumItems?: number;
       },
     ];
+
 // ----- unicorn/prefer-short-arrow-method -----
 type UnicornPreferShortArrowMethod = [] | ["always" | "consistent-as-needed"];
+
 // ----- unicorn/prefer-simplified-conditions -----
 type UnicornPreferSimplifiedConditions =
   | []
@@ -2913,6 +2989,7 @@ type UnicornPreferSimplifiedConditions =
         negatedConditions?: "simplify" | "expand";
       },
     ];
+
 // ----- unicorn/prefer-single-call -----
 type UnicornPreferSingleCall =
   | []
@@ -2921,6 +2998,7 @@ type UnicornPreferSingleCall =
         ignore?: string[];
       },
     ];
+
 // ----- unicorn/prefer-string-repeat -----
 type UnicornPreferStringRepeat =
   | []
@@ -2929,6 +3007,7 @@ type UnicornPreferStringRepeat =
         minimumRepetitions?: number;
       },
     ];
+
 // ----- unicorn/prefer-structured-clone -----
 type UnicornPreferStructuredClone =
   | []
@@ -2937,6 +3016,7 @@ type UnicornPreferStructuredClone =
         functions?: string[];
       },
     ];
+
 // ----- unicorn/prefer-switch -----
 type UnicornPreferSwitch =
   | []
@@ -2948,6 +3028,7 @@ type UnicornPreferSwitch =
           "no-default-comment" | "do-nothing-comment" | "no-default-case";
       },
     ];
+
 // ----- unicorn/prefer-temporal -----
 type UnicornPreferTemporal =
   | []
@@ -2960,6 +3041,7 @@ type UnicornPreferTemporal =
         checkMethods?: boolean;
       },
     ];
+
 // ----- unicorn/prefer-ternary -----
 type UnicornPreferTernary =
   | []
@@ -2972,8 +3054,10 @@ type UnicornPreferTernary =
         checkComputedMemberAccess?: boolean;
       },
     ];
+
 // ----- unicorn/relative-url-style -----
 type UnicornRelativeUrlStyle = [] | ["never" | "always"];
+
 // ----- unicorn/require-css-escape -----
 type UnicornRequireCssEscape =
   | []
@@ -2982,6 +3066,7 @@ type UnicornRequireCssEscape =
         checkAllSelectors?: boolean;
       },
     ];
+
 // ----- unicorn/require-frontmatter-fields -----
 type UnicornRequireFrontmatterFields =
   | []
@@ -2990,6 +3075,7 @@ type UnicornRequireFrontmatterFields =
         fields?: string[];
       },
     ];
+
 // ----- unicorn/single-line-block-comment-style -----
 type UnicornSingleLineBlockCommentStyle =
   | []
@@ -3005,6 +3091,7 @@ type UnicornSingleLineBlockCommentStyle =
         )[];
       },
     ];
+
 // ----- unicorn/string-content -----
 type UnicornStringContent =
   | []
@@ -3027,8 +3114,10 @@ type UnicornStringContent =
         selectors?: string[];
       },
     ];
+
 // ----- unicorn/switch-case-braces -----
 type UnicornSwitchCaseBraces = [] | ["always" | "avoid" | "single-statement"];
+
 // ----- unicorn/template-indent -----
 type UnicornTemplateIndent =
   | []
@@ -3045,6 +3134,7 @@ type UnicornTemplateIndent =
         comments?: string[];
       },
     ];
+
 // ----- unicorn/text-encoding-identifier-case -----
 type UnicornTextEncodingIdentifierCase =
   | []
@@ -3053,6 +3143,7 @@ type UnicornTextEncodingIdentifierCase =
         withDash?: boolean;
       },
     ];
+
 // ----- unicorn/try-complexity -----
 type UnicornTryComplexity =
   | []

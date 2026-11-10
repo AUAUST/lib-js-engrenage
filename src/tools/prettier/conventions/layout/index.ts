@@ -1,6 +1,17 @@
 // @barrel *.ts default
+export { default as groupedOverloads } from "#tools/prettier/conventions/layout/groupedOverloads";
 export { default as objectCurlyNewline } from "#tools/prettier/conventions/layout/objectCurlyNewline";
+export { default as paddedAwaits } from "#tools/prettier/conventions/layout/paddedAwaits";
+export { default as paddedBlocks } from "#tools/prettier/conventions/layout/paddedBlocks";
+export { default as paddedBreaks } from "#tools/prettier/conventions/layout/paddedBreaks";
 export { default as paddedCases } from "#tools/prettier/conventions/layout/paddedCases";
+export { default as paddedContinues } from "#tools/prettier/conventions/layout/paddedContinues";
+export { default as paddedExports } from "#tools/prettier/conventions/layout/paddedExports";
+export { default as paddedImports } from "#tools/prettier/conventions/layout/paddedImports";
 export { default as paddedMultilineDeclarations } from "#tools/prettier/conventions/layout/paddedMultilineDeclarations";
 export { default as paddedMultilineExpressions } from "#tools/prettier/conventions/layout/paddedMultilineExpressions";
+export { default as paddedReturns } from "#tools/prettier/conventions/layout/paddedReturns";
+export { default as paddedThrows } from "#tools/prettier/conventions/layout/paddedThrows";
+export { default as paddedVariableDeclarations } from "#tools/prettier/conventions/layout/paddedVariableDeclarations";
+export { default as paddedYields } from "#tools/prettier/conventions/layout/paddedYields";
 // @end

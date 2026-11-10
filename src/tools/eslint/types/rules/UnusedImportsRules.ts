@@ -49,6 +49,7 @@ type UnusedImportsNoUnusedImports =
           varsIgnorePattern?: string;
         },
     ];
+
 // ----- unused-imports/no-unused-vars -----
 type UnusedImportsNoUnusedVars =
   | []

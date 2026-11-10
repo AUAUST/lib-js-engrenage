@@ -245,6 +245,7 @@ export interface ImportXRules {
 // ----- import-x/consistent-type-specifier-style -----
 type ImportXConsistentTypeSpecifierStyle =
   [] | ["prefer-top-level" | "prefer-inline"];
+
 // ----- import-x/dynamic-import-chunkname -----
 type ImportXDynamicImportChunkname =
   | []
@@ -256,6 +257,7 @@ type ImportXDynamicImportChunkname =
         [k: string]: unknown | undefined;
       },
     ];
+
 // ----- import-x/extensions -----
 type ImportXExtensions =
   | []
@@ -314,10 +316,13 @@ type ImportXExtensions =
         [k: string]: "always" | "ignorePackages" | "never";
       },
     ];
+
 // ----- import-x/first -----
 type ImportXFirst = [] | ["absolute-first" | "disable-absolute-first"];
+
 // ----- import-x/imports-first -----
 type ImportXImportsFirst = [] | ["absolute-first" | "disable-absolute-first"];
+
 // ----- import-x/max-dependencies -----
 type ImportXMaxDependencies =
   | []
@@ -327,6 +332,7 @@ type ImportXMaxDependencies =
         ignoreTypeImports?: boolean;
       },
     ];
+
 // ----- import-x/named -----
 type ImportXNamed =
   | []
@@ -335,6 +341,7 @@ type ImportXNamed =
         commonjs?: boolean;
       },
     ];
+
 // ----- import-x/namespace -----
 type ImportXNamespace =
   | []
@@ -343,6 +350,7 @@ type ImportXNamespace =
         allowComputed?: boolean;
       },
     ];
+
 // ----- import-x/newline-after-import -----
 type ImportXNewlineAfterImport =
   | []
@@ -353,6 +361,7 @@ type ImportXNewlineAfterImport =
         considerComments?: boolean;
       },
     ];
+
 // ----- import-x/no-absolute-path -----
 type ImportXNoAbsolutePath =
   | []
@@ -365,6 +374,7 @@ type ImportXNoAbsolutePath =
         ignore?: [unknown, ...unknown[]];
       },
     ];
+
 // ----- import-x/no-anonymous-default-export -----
 type ImportXNoAnonymousDefaultExport =
   | []
@@ -387,6 +397,7 @@ type ImportXNoAnonymousDefaultExport =
         allowNew?: boolean;
       },
     ];
+
 // ----- import-x/no-commonjs -----
 type ImportXNoCommonjs =
   | []
@@ -399,6 +410,7 @@ type ImportXNoCommonjs =
         allowConditionalRequire?: boolean;
       },
     ];
+
 // ----- import-x/no-cycle -----
 type ImportXNoCycle =
   | []
@@ -416,6 +428,7 @@ type ImportXNoCycle =
         allowUnsafeDynamicCyclicDependency?: boolean;
       },
     ];
+
 // ----- import-x/no-duplicates -----
 type ImportXNoDuplicates =
   | []
@@ -425,6 +438,7 @@ type ImportXNoDuplicates =
         "prefer-inline"?: boolean;
       },
     ];
+
 // ----- import-x/no-dynamic-require -----
 type ImportXNoDynamicRequire =
   | []
@@ -433,6 +447,7 @@ type ImportXNoDynamicRequire =
         esmodule?: boolean;
       },
     ];
+
 // ----- import-x/no-extraneous-dependencies -----
 type ImportXNoExtraneousDependencies =
   | []
@@ -448,6 +463,7 @@ type ImportXNoExtraneousDependencies =
         whitelist?: unknown[];
       },
     ];
+
 // ----- import-x/no-import-module-exports -----
 type ImportXNoImportModuleExports =
   | []
@@ -456,6 +472,7 @@ type ImportXNoImportModuleExports =
         exceptions?: unknown[];
       },
     ];
+
 // ----- import-x/no-internal-modules -----
 type ImportXNoInternalModules =
   | []
@@ -467,6 +484,7 @@ type ImportXNoInternalModules =
           forbid?: string[];
         },
     ];
+
 // ----- import-x/no-namespace -----
 type ImportXNoNamespace =
   | []
@@ -476,6 +494,7 @@ type ImportXNoNamespace =
         [k: string]: unknown | undefined;
       },
     ];
+
 // ----- import-x/no-nodejs-modules -----
 type ImportXNoNodejsModules =
   | []
@@ -484,6 +503,7 @@ type ImportXNoNodejsModules =
         allow?: string[];
       },
     ];
+
 // ----- import-x/no-relative-packages -----
 type ImportXNoRelativePackages =
   | []
@@ -496,6 +516,7 @@ type ImportXNoRelativePackages =
         ignore?: [unknown, ...unknown[]];
       },
     ];
+
 // ----- import-x/no-relative-parent-imports -----
 type ImportXNoRelativeParentImports =
   | []
@@ -508,6 +529,7 @@ type ImportXNoRelativeParentImports =
         ignore?: [unknown, ...unknown[]];
       },
     ];
+
 // ----- import-x/no-rename-default -----
 type ImportXNoRenameDefault =
   | []
@@ -517,6 +539,7 @@ type ImportXNoRenameDefault =
         preventRenamingBindings?: boolean;
       },
     ];
+
 // ----- import-x/no-restricted-paths -----
 type ImportXNoRestrictedPaths =
   | []
@@ -539,6 +562,7 @@ type ImportXNoRestrictedPaths =
         basePath?: string;
       },
     ];
+
 // ----- import-x/no-unassigned-import -----
 type ImportXNoUnassignedImport =
   | []
@@ -550,6 +574,7 @@ type ImportXNoUnassignedImport =
         allow?: string[];
       },
     ];
+
 // ----- import-x/no-unresolved -----
 type ImportXNoUnresolved =
   | []
@@ -564,6 +589,7 @@ type ImportXNoUnresolved =
         caseSensitiveStrict?: boolean;
       },
     ];
+
 // ----- import-x/no-unused-modules -----
 type ImportXNoUnusedModules =
   | []
@@ -579,6 +605,7 @@ type ImportXNoUnusedModules =
           [k: string]: unknown | undefined;
         },
     ];
+
 // ----- import-x/no-useless-path-segments -----
 type ImportXNoUselessPathSegments =
   | []
@@ -588,6 +615,7 @@ type ImportXNoUselessPathSegments =
         noUselessIndex?: boolean;
       },
     ];
+
 // ----- import-x/order -----
 type ImportXOrder =
   | []
@@ -637,6 +665,7 @@ type ImportXOrder =
         "warnOnUnassignedImports"?: boolean;
       },
     ];
+
 // ----- import-x/prefer-default-export -----
 type ImportXPreferDefaultExport =
   | []
@@ -645,6 +674,7 @@ type ImportXPreferDefaultExport =
         target?: "single" | "any";
       },
     ];
+
 // ----- import-x/prefer-namespace-import -----
 type ImportXPreferNamespaceImport =
   | []

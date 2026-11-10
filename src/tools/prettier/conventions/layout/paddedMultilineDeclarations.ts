@@ -1,9 +1,6 @@
 import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/types";
 
-import { filterMap } from "@auaust/primitive-kit/arrays";
-
-import { collectStatementPairs } from "#tools/prettier/utils/collectStatementPairs";
-import { createPaddingEdit } from "#tools/prettier/utils/createPaddingEdit";
+import { collectPaddingEdits } from "#tools/prettier/utils/collectPaddingEdits";
 import { isMultiline } from "#tools/prettier/utils/isMultiline";
 import { unwrapLabels } from "#tools/prettier/utils/unwrapLabels";
 import type { LayoutConvention } from "#tools/prettier/types/LayoutConvention";
@@ -28,10 +25,8 @@ function isMultilineDeclaration(node: TSESTree.Node): boolean {
 }
 
 const paddedMultilineDeclarations: LayoutConvention = (program, text) => {
-  return filterMap(collectStatementPairs(program), ({ previous, next }) => {
-    if (isMultilineDeclaration(previous) || isMultilineDeclaration(next)) {
-      return createPaddingEdit(program, text, previous, next);
-    }
+  return collectPaddingEdits(program, text, (previous, next) => {
+    return isMultilineDeclaration(previous) || isMultilineDeclaration(next);
   });
 };
 

@@ -8,7 +8,5 @@ export { default as noExternalNamespace } from "#tools/eslint/conventions/import
 export { default as noPointlessDynamicImport } from "#tools/eslint/conventions/imports/noPointlessDynamicImport";
 export { default as noUnused } from "#tools/eslint/conventions/imports/noUnused";
 export { default as noUnusedVariables } from "#tools/eslint/conventions/imports/noUnusedVariables";
-export { default as paddedExports } from "#tools/eslint/conventions/imports/paddedExports";
-export { default as paddedImports } from "#tools/eslint/conventions/imports/paddedImports";
 export { default as typeImports } from "#tools/eslint/conventions/imports/typeImports";
 // @end
