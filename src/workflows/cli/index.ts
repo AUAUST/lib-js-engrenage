@@ -6,12 +6,12 @@ export { defineToolCommand } from "#workflows/cli/operations/defineToolCommand";
 export { launch } from "#workflows/cli/operations/launch";
 export { runProgram } from "#workflows/cli/operations/runProgram";
 
-// @barrel types/*.ts all
-export * from "#workflows/cli/types/CommandDefinition";
-export * from "#workflows/cli/types/CommandParameters";
-export * from "#workflows/cli/types/DefaultActionParameters";
-export * from "#workflows/cli/types/ExtendModule";
-export * from "#workflows/cli/types/RunContext";
+// @barrel types/*.ts types
+export type * from "#workflows/cli/types/CommandDefinition";
+export type * from "#workflows/cli/types/CommandParameters";
+export type * from "#workflows/cli/types/DefaultActionParameters";
+export type * from "#workflows/cli/types/ExtendModule";
+export type * from "#workflows/cli/types/RunContext";
 // @end
 
 // @barrel config/sections/*.ts named

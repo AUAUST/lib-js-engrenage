@@ -3,7 +3,7 @@ import { freeze } from "@auaust/toolkit/object";
 import type { BlockSyntax } from "#types/BlockSyntax";
 import type { Glob } from "#types/Glob";
 
-export const barrelFiles = "**/index.ts" satisfies Glob;
+export const barrelFiles = "**/{index,entry}.ts" satisfies Glob;
 
 export const declarationExtension = ".d.ts";
 

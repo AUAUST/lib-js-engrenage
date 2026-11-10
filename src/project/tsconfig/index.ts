@@ -15,24 +15,24 @@ export { toTsconfigGlobs } from "#project/tsconfig/utils/toTsconfigGlobs";
 export { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
 // @end
 
-// @barrel types/*.ts all
-export * from "#project/tsconfig/types/EnvironmentTsconfig";
-export * from "#project/tsconfig/types/ManagedEnvironmentTsconfig";
-export * from "#project/tsconfig/types/PathAlias";
-export * from "#project/tsconfig/types/PathAliases";
-export * from "#project/tsconfig/types/Paths";
-export * from "#project/tsconfig/types/ResolvedBaseTsconfig";
-export * from "#project/tsconfig/types/ResolvedEnvironmentTsconfig";
-export * from "#project/tsconfig/types/ResolvedEnvironmentTsconfigOption";
-export * from "#project/tsconfig/types/ResolvedTypescript";
-export * from "#project/tsconfig/types/Tsconfig";
-export * from "#project/tsconfig/types/TsconfigGroups";
-export * from "#project/tsconfig/types/TsconfigKey";
-export * from "#project/tsconfig/types/TsconfigOwner";
-export * from "#project/tsconfig/types/TsconfigProducer";
-export * from "#project/tsconfig/types/TsconfigTarget";
-export * from "#project/tsconfig/types/TypescriptInput";
-export * from "#project/tsconfig/types/UnmanagedEnvironmentTsconfig";
+// @barrel types/*.ts types
+export type * from "#project/tsconfig/types/EnvironmentTsconfig";
+export type * from "#project/tsconfig/types/ManagedEnvironmentTsconfig";
+export type * from "#project/tsconfig/types/PathAlias";
+export type * from "#project/tsconfig/types/PathAliases";
+export type * from "#project/tsconfig/types/Paths";
+export type * from "#project/tsconfig/types/ResolvedBaseTsconfig";
+export type * from "#project/tsconfig/types/ResolvedEnvironmentTsconfig";
+export type * from "#project/tsconfig/types/ResolvedEnvironmentTsconfigOption";
+export type * from "#project/tsconfig/types/ResolvedTypescript";
+export type * from "#project/tsconfig/types/Tsconfig";
+export type * from "#project/tsconfig/types/TsconfigGroups";
+export type * from "#project/tsconfig/types/TsconfigKey";
+export type * from "#project/tsconfig/types/TsconfigOwner";
+export type * from "#project/tsconfig/types/TsconfigProducer";
+export type * from "#project/tsconfig/types/TsconfigTarget";
+export type * from "#project/tsconfig/types/TypescriptInput";
+export type * from "#project/tsconfig/types/UnmanagedEnvironmentTsconfig";
 // @end
 
 export { unmanagedTsconfig } from "#project/tsconfig/constants";

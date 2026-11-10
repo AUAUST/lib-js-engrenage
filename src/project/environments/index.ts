@@ -10,37 +10,37 @@ export { getOptionsKey } from "#project/environments/utils/getOptionsKey";
 export { readInputDirs } from "#project/environments/utils/readInputDirs";
 // @end
 
-// @barrel ports/*.ts all
-export * from "#project/environments/ports/EnvironmentEntry";
-export * from "#project/environments/ports/LanguageEntry";
-export * from "#project/environments/ports/ResolvedEnvironment";
+// @barrel ports/*.ts types
+export type * from "#project/environments/ports/EnvironmentEntry";
+export type * from "#project/environments/ports/LanguageEntry";
+export type * from "#project/environments/ports/ResolvedEnvironment";
 // @end
 
-// @barrel types/*.ts all
-export * from "#project/environments/types/AliasesInput";
-export * from "#project/environments/types/BinInput";
-export * from "#project/environments/types/ContributedEnvironment";
-export * from "#project/environments/types/DataInput";
-export * from "#project/environments/types/DefineContext";
-export * from "#project/environments/types/DefineInput";
-export * from "#project/environments/types/DomainInput";
-export * from "#project/environments/types/EnvironmentClaim";
-export * from "#project/environments/types/GlobalsFactory";
-export * from "#project/environments/types/NamespaceInput";
-export * from "#project/environments/types/ResolvedBin";
-export * from "#project/environments/types/ResolvedCodeEnvironment";
-export * from "#project/environments/types/ResolvedData";
-export * from "#project/environments/types/ResolvedDefine";
-export * from "#project/environments/types/ResolvedScripts";
-export * from "#project/environments/types/ResolvedSource";
-export * from "#project/environments/types/ResolvedTests";
-export * from "#project/environments/types/ResolvedTestsPatterns";
-export * from "#project/environments/types/ResolvedTooling";
-export * from "#project/environments/types/RuntimeInput";
-export * from "#project/environments/types/ScriptsInput";
-export * from "#project/environments/types/SourceInput";
-export * from "#project/environments/types/TestsInput";
-export * from "#project/environments/types/ToolingInput";
+// @barrel types/*.ts types
+export type * from "#project/environments/types/AliasesInput";
+export type * from "#project/environments/types/BinInput";
+export type * from "#project/environments/types/ContributedEnvironment";
+export type * from "#project/environments/types/DataInput";
+export type * from "#project/environments/types/DefineContext";
+export type * from "#project/environments/types/DefineInput";
+export type * from "#project/environments/types/DomainInput";
+export type * from "#project/environments/types/EnvironmentClaim";
+export type * from "#project/environments/types/GlobalsFactory";
+export type * from "#project/environments/types/NamespaceInput";
+export type * from "#project/environments/types/ResolvedBin";
+export type * from "#project/environments/types/ResolvedCodeEnvironment";
+export type * from "#project/environments/types/ResolvedData";
+export type * from "#project/environments/types/ResolvedDefine";
+export type * from "#project/environments/types/ResolvedScripts";
+export type * from "#project/environments/types/ResolvedSource";
+export type * from "#project/environments/types/ResolvedTests";
+export type * from "#project/environments/types/ResolvedTestsPatterns";
+export type * from "#project/environments/types/ResolvedTooling";
+export type * from "#project/environments/types/RuntimeInput";
+export type * from "#project/environments/types/ScriptsInput";
+export type * from "#project/environments/types/SourceInput";
+export type * from "#project/environments/types/TestsInput";
+export type * from "#project/environments/types/ToolingInput";
 // @end
 
 // @barrel config/schemas/*.ts named

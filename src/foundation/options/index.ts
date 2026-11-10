@@ -30,26 +30,26 @@ export { unset } from "#foundation/options/utils/unset";
 export { validate } from "#foundation/options/utils/validate";
 // @end
 
-// @barrel types/*.ts all
-export * from "#foundation/options/types/Accessors";
-export * from "#foundation/options/types/Declaration";
-export * from "#foundation/options/types/DeclarationEntries";
-export * from "#foundation/options/types/Default";
-export * from "#foundation/options/types/Description";
-export * from "#foundation/options/types/InputOf";
-export * from "#foundation/options/types/InputResolver";
-export * from "#foundation/options/types/KeyedSection";
-export * from "#foundation/options/types/ListAdjustment";
-export * from "#foundation/options/types/ListOption";
-export * from "#foundation/options/types/ManagedListOption";
-export * from "#foundation/options/types/ObjectContext";
-export * from "#foundation/options/types/ObjectDeclaration";
-export * from "#foundation/options/types/ObjectInput";
-export * from "#foundation/options/types/ObjectOutput";
-export * from "#foundation/options/types/ObjectResolution";
-export * from "#foundation/options/types/OutputOf";
-export * from "#foundation/options/types/ResolvedLocation";
-export * from "#foundation/options/types/Resolver";
-export * from "#foundation/options/types/Section";
-export * from "#foundation/options/types/SectionSource";
+// @barrel types/*.ts types
+export type * from "#foundation/options/types/Accessors";
+export type * from "#foundation/options/types/Declaration";
+export type * from "#foundation/options/types/DeclarationEntries";
+export type * from "#foundation/options/types/Default";
+export type * from "#foundation/options/types/Description";
+export type * from "#foundation/options/types/InputOf";
+export type * from "#foundation/options/types/InputResolver";
+export type * from "#foundation/options/types/KeyedSection";
+export type * from "#foundation/options/types/ListAdjustment";
+export type * from "#foundation/options/types/ListOption";
+export type * from "#foundation/options/types/ManagedListOption";
+export type * from "#foundation/options/types/ObjectContext";
+export type * from "#foundation/options/types/ObjectDeclaration";
+export type * from "#foundation/options/types/ObjectInput";
+export type * from "#foundation/options/types/ObjectOutput";
+export type * from "#foundation/options/types/ObjectResolution";
+export type * from "#foundation/options/types/OutputOf";
+export type * from "#foundation/options/types/ResolvedLocation";
+export type * from "#foundation/options/types/Resolver";
+export type * from "#foundation/options/types/Section";
+export type * from "#foundation/options/types/SectionSource";
 // @end

@@ -10,20 +10,20 @@ export { rolesSchema } from "#project/roles/config/schemas/rolesSchema";
 export { declareRoleContractEntries } from "#project/roles/config/declarers/declareRoleContractEntries";
 // @end
 
-// @barrel types/*.ts all
-export * from "#project/roles/types/Role";
-export * from "#project/roles/types/RoleFileResolver";
-export * from "#project/roles/types/RoleInput";
-export * from "#project/roles/types/RoleLocation";
-export * from "#project/roles/types/RoleLocationMember";
-export * from "#project/roles/types/RolePreset";
-export * from "#project/roles/types/RoleRuleLoader";
-export * from "#project/roles/types/RoleRules";
+// @barrel types/*.ts types
+export type * from "#project/roles/types/Role";
+export type * from "#project/roles/types/RoleFileResolver";
+export type * from "#project/roles/types/RoleInput";
+export type * from "#project/roles/types/RoleLocation";
+export type * from "#project/roles/types/RoleLocationMember";
+export type * from "#project/roles/types/RolePreset";
+export type * from "#project/roles/types/RoleRuleLoader";
+export type * from "#project/roles/types/RoleRules";
 // @end
 
-// @barrel ports/*.ts all
-export * from "#project/roles/ports/RolePresetEntry";
-export * from "#project/roles/ports/RoleRuleModule";
+// @barrel ports/*.ts types
+export type * from "#project/roles/ports/RolePresetEntry";
+export type * from "#project/roles/ports/RoleRuleModule";
 // @end
 
 // @barrel utils/*.ts named

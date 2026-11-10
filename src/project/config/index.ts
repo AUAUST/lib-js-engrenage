@@ -1,26 +1,26 @@
-// @barrel types/*.ts all
-export * from "#project/config/types/ConfigContext";
-export * from "#project/config/types/ConfigKey";
-export * from "#project/config/types/ConfigResolver";
-export * from "#project/config/types/ConfigSections";
-export * from "#project/config/types/Definition";
-export * from "#project/config/types/DefinitionOptions";
-export * from "#project/config/types/EngrenageSlots";
-export * from "#project/config/types/Environment";
-export * from "#project/config/types/Extension";
-export * from "#project/config/types/ExtensionSections";
-export * from "#project/config/types/FileLocation";
-export * from "#project/config/types/FileResource";
-export * from "#project/config/types/GlobalScope";
-export * from "#project/config/types/KeyDeclaration";
-export * from "#project/config/types/LoadedConfig";
-export * from "#project/config/types/LocatedResource";
-export * from "#project/config/types/RawConfig";
-export * from "#project/config/types/ResolvedGlobal";
-export * from "#project/config/types/ResolvedGlobals";
-export * from "#project/config/types/ResolvedResources";
-export * from "#project/config/types/ResolvedRuntimeSettings";
-export * from "#project/config/types/SectionsOf";
+// @barrel types/*.ts types
+export type * from "#project/config/types/ConfigContext";
+export type * from "#project/config/types/ConfigKey";
+export type * from "#project/config/types/ConfigResolver";
+export type * from "#project/config/types/ConfigSections";
+export type * from "#project/config/types/Definition";
+export type * from "#project/config/types/DefinitionOptions";
+export type * from "#project/config/types/EngrenageSlots";
+export type * from "#project/config/types/Environment";
+export type * from "#project/config/types/Extension";
+export type * from "#project/config/types/ExtensionSections";
+export type * from "#project/config/types/FileLocation";
+export type * from "#project/config/types/FileResource";
+export type * from "#project/config/types/GlobalScope";
+export type * from "#project/config/types/KeyDeclaration";
+export type * from "#project/config/types/LoadedConfig";
+export type * from "#project/config/types/LocatedResource";
+export type * from "#project/config/types/RawConfig";
+export type * from "#project/config/types/ResolvedGlobal";
+export type * from "#project/config/types/ResolvedGlobals";
+export type * from "#project/config/types/ResolvedResources";
+export type * from "#project/config/types/ResolvedRuntimeSettings";
+export type * from "#project/config/types/SectionsOf";
 // @end
 
 // @barrel operations/*.ts named

@@ -16,11 +16,11 @@ export { resolveTsdownArguments } from "#tools/tsdown/operations/resolveTsdownAr
 
 export { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
 
-// @barrel types/*.ts all
-export * from "#tools/tsdown/types/Config";
-export * from "#tools/tsdown/types/ConfigContext";
-export * from "#tools/tsdown/types/ConfigFn";
-export * from "#tools/tsdown/types/Entries";
-export * from "#tools/tsdown/types/InlineConfig";
-export * from "#tools/tsdown/types/Options";
+// @barrel types/*.ts types
+export type * from "#tools/tsdown/types/Config";
+export type * from "#tools/tsdown/types/ConfigContext";
+export type * from "#tools/tsdown/types/ConfigFn";
+export type * from "#tools/tsdown/types/Entries";
+export type * from "#tools/tsdown/types/InlineConfig";
+export type * from "#tools/tsdown/types/Options";
 // @end

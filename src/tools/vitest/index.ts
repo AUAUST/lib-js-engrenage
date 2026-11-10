@@ -17,8 +17,8 @@ export { resolveVitestWatchArguments } from "#tools/vitest/operations/resolveVit
 export { createOutDirGuard } from "#tools/vitest/plugins/createOutDirGuard";
 export { createSourceGuard } from "#tools/vitest/plugins/createSourceGuard";
 
-// @barrel types/*.ts all
-export * from "#tools/vitest/types/Config";
-export * from "#tools/vitest/types/ConfigFn";
-export * from "#tools/vitest/types/Options";
+// @barrel types/*.ts types
+export type * from "#tools/vitest/types/Config";
+export type * from "#tools/vitest/types/ConfigFn";
+export type * from "#tools/vitest/types/Options";
 // @end

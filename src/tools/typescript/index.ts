@@ -17,9 +17,9 @@ export { syncBarrels } from "#tools/typescript/operations/syncBarrels";
 export { inferType } from "#tools/typescript/utils/inferType";
 export { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
 
-// @barrel types/*.ts all
-export * from "#tools/typescript/types/BarrelMode";
-export * from "#tools/typescript/types/TsconfigEnvironment";
+// @barrel types/*.ts types
+export type * from "#tools/typescript/types/BarrelMode";
+export type * from "#tools/typescript/types/TsconfigEnvironment";
 // @end
 export type { ApiGroup } from "#project/baseline/index";
 export type { SubpathImports } from "#project/package/index";

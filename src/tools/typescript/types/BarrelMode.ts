@@ -1,1 +1,1 @@
-export type BarrelMode = "default" | "named" | "all";
+export type BarrelMode = "default" | "named" | "all" | "types";

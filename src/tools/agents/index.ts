@@ -56,8 +56,8 @@ export { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 export { syncHooks } from "#tools/agents/operations/syncHooks";
 // @end
 
-// @barrel ports/*.ts all
-export * from "#tools/agents/ports/AgentRuntime";
+// @barrel ports/*.ts types
+export type * from "#tools/agents/ports/AgentRuntime";
 // @end
 
 // @barrel config/schemas/*.ts named
@@ -67,20 +67,20 @@ export { preferredSchema } from "#tools/agents/config/schemas/preferredSchema";
 export { skillSchema } from "#tools/agents/config/schemas/skillSchema";
 // @end
 
-// @barrel types/*.ts all
-export * from "#tools/agents/types/Agent";
-export * from "#tools/agents/types/AgentCheckFinding";
-export * from "#tools/agents/types/AgentSections";
-export * from "#tools/agents/types/AgentsInput";
-export * from "#tools/agents/types/BudgetFinding";
-export * from "#tools/agents/types/BudgetKind";
-export * from "#tools/agents/types/BudgetMode";
-export * from "#tools/agents/types/Budgets";
-export * from "#tools/agents/types/Gate";
-export * from "#tools/agents/types/GeneratedFrontmatter";
-export * from "#tools/agents/types/HookDefinition";
-export * from "#tools/agents/types/HookEvent";
-export * from "#tools/agents/types/ResolvedAgents";
-export * from "#tools/agents/types/SkillDefinition";
-export * from "#tools/agents/types/SubagentCacheTtl";
+// @barrel types/*.ts types
+export type * from "#tools/agents/types/Agent";
+export type * from "#tools/agents/types/AgentCheckFinding";
+export type * from "#tools/agents/types/AgentSections";
+export type * from "#tools/agents/types/AgentsInput";
+export type * from "#tools/agents/types/BudgetFinding";
+export type * from "#tools/agents/types/BudgetKind";
+export type * from "#tools/agents/types/BudgetMode";
+export type * from "#tools/agents/types/Budgets";
+export type * from "#tools/agents/types/Gate";
+export type * from "#tools/agents/types/GeneratedFrontmatter";
+export type * from "#tools/agents/types/HookDefinition";
+export type * from "#tools/agents/types/HookEvent";
+export type * from "#tools/agents/types/ResolvedAgents";
+export type * from "#tools/agents/types/SkillDefinition";
+export type * from "#tools/agents/types/SubagentCacheTtl";
 // @end

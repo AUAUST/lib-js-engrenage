@@ -12,10 +12,10 @@ export { vscodeSection } from "#tools/vscode/config/sections/vscodeSection";
 export { vscodeSchema } from "#tools/vscode/config/schemas/vscodeSchema";
 // @end
 
-// @barrel types/*.ts all
-export * from "#tools/vscode/types/Integration";
-export * from "#tools/vscode/types/ResolvedVscode";
-export * from "#tools/vscode/types/Setting";
-export * from "#tools/vscode/types/Settings";
-export * from "#tools/vscode/types/VscodeInput";
+// @barrel types/*.ts types
+export type * from "#tools/vscode/types/Integration";
+export type * from "#tools/vscode/types/ResolvedVscode";
+export type * from "#tools/vscode/types/Setting";
+export type * from "#tools/vscode/types/Settings";
+export type * from "#tools/vscode/types/VscodeInput";
 // @end

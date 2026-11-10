@@ -18,7 +18,7 @@ export { resolveNodeRuntime } from "#project/baseline/utils/resolveNodeRuntime";
 export { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
 // @end
 
-// @barrel types/*.ts all
-export * from "#project/baseline/types/ApiGroup";
-export * from "#project/baseline/types/Runtime";
+// @barrel types/*.ts types
+export type * from "#project/baseline/types/ApiGroup";
+export type * from "#project/baseline/types/Runtime";
 // @end

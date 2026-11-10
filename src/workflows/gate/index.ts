@@ -5,12 +5,12 @@ export { runGate } from "#workflows/gate/operations/runGate";
 export { runMessageGate } from "#workflows/gate/operations/runMessageGate";
 // @end
 
-// @barrel types/*.ts all
-export * from "#workflows/gate/types/GateFailure";
-export * from "#workflows/gate/types/GateReport";
-export * from "#workflows/gate/types/GateStep";
-export * from "#workflows/gate/types/GateWarning";
-export * from "#workflows/gate/types/TreeIdentity";
+// @barrel types/*.ts types
+export type * from "#workflows/gate/types/GateFailure";
+export type * from "#workflows/gate/types/GateReport";
+export type * from "#workflows/gate/types/GateStep";
+export type * from "#workflows/gate/types/GateWarning";
+export type * from "#workflows/gate/types/TreeIdentity";
 // @end
 
 // @barrel utils/*.ts named

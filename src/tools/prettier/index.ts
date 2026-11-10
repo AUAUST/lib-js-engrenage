@@ -29,10 +29,10 @@ export { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
 export { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
 // @end
 
-// @barrel types/*.ts all
-export * from "#tools/prettier/types/Config";
-export * from "#tools/prettier/types/Options";
-export * from "#tools/prettier/types/Plugin";
-export * from "#tools/prettier/types/PrettierInput";
-export * from "#tools/prettier/types/ResolvedPrettier";
+// @barrel types/*.ts types
+export type * from "#tools/prettier/types/Config";
+export type * from "#tools/prettier/types/Options";
+export type * from "#tools/prettier/types/Plugin";
+export type * from "#tools/prettier/types/PrettierInput";
+export type * from "#tools/prettier/types/ResolvedPrettier";
 // @end

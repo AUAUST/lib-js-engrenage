@@ -10,11 +10,11 @@ export { defineViteConfig } from "#tools/vite/config/defineViteConfig";
 export { createViteConfig } from "#tools/vite/operations/createViteConfig";
 // @end
 
-// @barrel types/*.ts all
-export * from "#tools/vite/types/Config";
-export * from "#tools/vite/types/ConfigEnv";
-export * from "#tools/vite/types/ConfigFn";
-export * from "#tools/vite/types/ConfigLayer";
-export * from "#tools/vite/types/Options";
-export * from "#tools/vite/types/Plugin";
+// @barrel types/*.ts types
+export type * from "#tools/vite/types/Config";
+export type * from "#tools/vite/types/ConfigEnv";
+export type * from "#tools/vite/types/ConfigFn";
+export type * from "#tools/vite/types/ConfigLayer";
+export type * from "#tools/vite/types/Options";
+export type * from "#tools/vite/types/Plugin";
 // @end

@@ -1,14 +1,14 @@
 export { resolveTraits } from "#project/presets/utils/resolveTraits";
 
-// @barrel types/*.ts all
-export * from "#project/presets/types/ResolvedTraitAdjustments";
-export * from "#project/presets/types/ResolvedTraits";
-export * from "#project/presets/types/Trait";
-export * from "#project/presets/types/TraitsInput";
+// @barrel types/*.ts types
+export type * from "#project/presets/types/ResolvedTraitAdjustments";
+export type * from "#project/presets/types/ResolvedTraits";
+export type * from "#project/presets/types/Trait";
+export type * from "#project/presets/types/TraitsInput";
 // @end
 
-// @barrel ports/*.ts all
-export * from "#project/presets/ports/PresetEntry";
+// @barrel ports/*.ts types
+export type * from "#project/presets/ports/PresetEntry";
 // @end
 
 // @barrel config/schemas/*.ts named

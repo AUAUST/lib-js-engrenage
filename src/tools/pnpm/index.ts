@@ -19,6 +19,6 @@ export { createWorkspaceStep } from "#tools/pnpm/setup/createWorkspaceStep";
 export { syncWorkspaceFile } from "#tools/pnpm/setup/syncWorkspaceFile";
 // @end
 
-// @barrel types/*.ts all
-export * from "#tools/pnpm/types/WorkspaceSettings";
+// @barrel types/*.ts types
+export type * from "#tools/pnpm/types/WorkspaceSettings";
 // @end

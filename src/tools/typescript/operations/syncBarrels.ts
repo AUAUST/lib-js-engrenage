@@ -47,6 +47,10 @@ function createExport(
     case "all": {
       return `export * from "${specifier}";`;
     }
+
+    case "types": {
+      return `export type * from "${specifier}";`;
+    }
   }
 }
 
@@ -54,13 +58,14 @@ function assertMode(mode: string | undefined, barrel: File): BarrelMode {
   switch (mode) {
     case "default":
     case "named":
-    case "all": {
+    case "all":
+    case "types": {
       return mode;
     }
 
     default: {
       throw new Error(
-        `Expected a barrel mode (default, named or all) in ${barrel}, got "${mode ?? ""}"`,
+        `Expected a barrel mode (default, named, all or types) in ${barrel}, got "${mode ?? ""}"`,
       );
     }
   }
@@ -167,7 +172,7 @@ function createBarrel({
   const exportedNames = new Set<string>();
 
   const exports = map(sortedNames, ([specifier, name]) => {
-    if (mode !== "all") {
+    if (mode === "default" || mode === "named") {
       if (!identifierPattern.test(name)) {
         throw new Error(
           `"${specifier}" cannot be exported as "${name}" in ${barrel}`,
@@ -204,9 +209,11 @@ function selectBarrels(files: Files, name: string): Files {
     throw new Error(`Unknown barrel "${name}"`);
   }
 
-  if (byName.length > 1) {
+  const directories = new Set(map(byName, dirname));
+
+  if (directories.size > 1) {
     throw new Error(
-      `Barrel "${name}" is ambiguous (${byName.join(", ")}): name its directory instead`,
+      `Barrel "${name}" is ambiguous (${[...directories].join(", ")}): name its directory instead`,
     );
   }
 

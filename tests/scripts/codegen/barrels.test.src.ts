@@ -68,6 +68,7 @@ describe("support codegen barrels", () => {
       "src/tool/index.ts": [
         "// @barrel /config/tool/*.ts all",
         "// @barrel /config/tool/*.ts named",
+        "// @barrel /config/tool/*.ts types",
         "// @end",
         "",
       ].join("\n"),
@@ -81,6 +82,8 @@ describe("support codegen barrels", () => {
         'export * from "#config/tool/preset";',
         "// @barrel /config/tool/*.ts named",
         'export { preset } from "#config/tool/preset";',
+        "// @barrel /config/tool/*.ts types",
+        'export type * from "#config/tool/preset";',
         "// @end",
         "",
       ].join("\n"),
@@ -118,6 +121,24 @@ describe("support codegen barrels", () => {
         'export { default as first } from "#rules/first";',
         'export { default as index } from "#rules/index";',
         'export { default as second } from "#rules/second";',
+        "// @end",
+        "",
+      ].join("\n"),
+    );
+  });
+
+  test("fills entry barrels beside the index of the named directory", async () => {
+    const project = createProject({
+      "src/tool/index.ts": "// @barrel /config/tool/*.ts named\n// @end\n",
+      "src/tool/entry.ts": "// @barrel /config/tool/*.ts types\n// @end\n",
+    });
+
+    await barrels(["tool"], { check: false });
+
+    expect(project.read("src/tool/entry.ts")).toBe(
+      [
+        "// @barrel /config/tool/*.ts types",
+        'export type * from "#config/tool/preset";',
         "// @end",
         "",
       ].join("\n"),
@@ -199,7 +220,7 @@ describe("support codegen barrels", () => {
     );
 
     await expect(barrels(["mode"], { check: false })).rejects.toThrow(
-      "Expected a barrel mode (default, named or all) in",
+      "Expected a barrel mode (default, named, all or types) in",
     );
 
     await expect(barrels(["tool"], { check: false })).rejects.toThrow(

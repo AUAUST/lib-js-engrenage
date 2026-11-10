@@ -35,25 +35,25 @@ export { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 export { githubSchema } from "#tools/github/config/schemas/githubSchema";
 // @end
 
-// @barrel types/*.ts all
-export * from "#tools/github/types/GithubAccess";
-export * from "#tools/github/types/GithubBodySource";
-export * from "#tools/github/types/GithubInput";
-export * from "#tools/github/types/GithubIssue";
-export * from "#tools/github/types/GithubWrite";
-export * from "#tools/github/types/IssueAudience";
-export * from "#tools/github/types/IssueCheck";
-export * from "#tools/github/types/IssueContract";
-export * from "#tools/github/types/IssueFinding";
-export * from "#tools/github/types/IssueListItem";
-export * from "#tools/github/types/IssueType";
-export * from "#tools/github/types/ParsedIssueBody";
-export * from "#tools/github/types/RelatedIssue";
-export * from "#tools/github/types/ResolvedGithub";
-export * from "#tools/github/types/ShellCommand";
-export * from "#tools/github/types/ShellPipeline";
-export * from "#tools/github/types/ShellToken";
-export * from "#tools/github/types/ShellWord";
-export * from "#tools/github/types/WorkflowSet";
-export * from "#tools/github/types/WorkflowSetName";
+// @barrel types/*.ts types
+export type * from "#tools/github/types/GithubAccess";
+export type * from "#tools/github/types/GithubBodySource";
+export type * from "#tools/github/types/GithubInput";
+export type * from "#tools/github/types/GithubIssue";
+export type * from "#tools/github/types/GithubWrite";
+export type * from "#tools/github/types/IssueAudience";
+export type * from "#tools/github/types/IssueCheck";
+export type * from "#tools/github/types/IssueContract";
+export type * from "#tools/github/types/IssueFinding";
+export type * from "#tools/github/types/IssueListItem";
+export type * from "#tools/github/types/IssueType";
+export type * from "#tools/github/types/ParsedIssueBody";
+export type * from "#tools/github/types/RelatedIssue";
+export type * from "#tools/github/types/ResolvedGithub";
+export type * from "#tools/github/types/ShellCommand";
+export type * from "#tools/github/types/ShellPipeline";
+export type * from "#tools/github/types/ShellToken";
+export type * from "#tools/github/types/ShellWord";
+export type * from "#tools/github/types/WorkflowSet";
+export type * from "#tools/github/types/WorkflowSetName";
 // @end

@@ -9,9 +9,9 @@ export { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
 export { withExtensions } from "#foundation/filesystem/utils/withExtensions";
 // @end
 
-// @barrel types/*.ts all
-export * from "#foundation/filesystem/types/FileFormatter";
-export * from "#foundation/filesystem/types/Filesystem";
+// @barrel types/*.ts types
+export type * from "#foundation/filesystem/types/FileFormatter";
+export type * from "#foundation/filesystem/types/Filesystem";
 // @end
 
 // @barrel operations/*.ts named

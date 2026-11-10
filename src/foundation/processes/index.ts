@@ -1,6 +1,6 @@
-// @barrel types/*.ts all
-export * from "#foundation/processes/types/LockHolder";
-export * from "#foundation/processes/types/ProcessResult";
+// @barrel types/*.ts types
+export type * from "#foundation/processes/types/LockHolder";
+export type * from "#foundation/processes/types/ProcessResult";
 // @end
 
 // @barrel operations/*.ts named

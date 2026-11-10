@@ -1,9 +1,9 @@
-// @barrel ports/*.ts all
-export * from "#project/sync/ports/SyncDone";
-export * from "#project/sync/ports/SyncFlags";
-export * from "#project/sync/ports/SyncRun";
-export * from "#project/sync/ports/SyncStage";
-export * from "#project/sync/ports/SyncTarget";
+// @barrel ports/*.ts types
+export type * from "#project/sync/ports/SyncDone";
+export type * from "#project/sync/ports/SyncFlags";
+export type * from "#project/sync/ports/SyncRun";
+export type * from "#project/sync/ports/SyncStage";
+export type * from "#project/sync/ports/SyncTarget";
 // @end
 
 // @barrel operations/*.ts named
@@ -18,7 +18,7 @@ export { settleChanges } from "#project/sync/operations/settleChanges";
 export { readSyncFlags } from "#project/sync/utils/readSyncFlags";
 // @end
 
-// @barrel types/*.ts all
-export * from "#project/sync/types/SyncOption";
-export * from "#project/sync/types/SyncTargetFlags";
+// @barrel types/*.ts types
+export type * from "#project/sync/types/SyncOption";
+export type * from "#project/sync/types/SyncTargetFlags";
 // @end

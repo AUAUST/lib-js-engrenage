@@ -28,9 +28,9 @@ export { runGit } from "#tools/git/operations/runGit";
 export { gitSchema } from "#tools/git/config/schemas/gitSchema";
 // @end
 
-// @barrel types/*.ts all
-export * from "#tools/git/types/ChangeMode";
-export * from "#tools/git/types/GitInput";
-export * from "#tools/git/types/IssueCommit";
-export * from "#tools/git/types/ResolvedGit";
+// @barrel types/*.ts types
+export type * from "#tools/git/types/ChangeMode";
+export type * from "#tools/git/types/GitInput";
+export type * from "#tools/git/types/IssueCommit";
+export type * from "#tools/git/types/ResolvedGit";
 // @end

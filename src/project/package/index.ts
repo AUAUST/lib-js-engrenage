@@ -23,15 +23,15 @@ export { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange"
 export { resolveExportPaths } from "#project/package/utils/resolveExportPaths";
 // @end
 
-// @barrel types/*.ts all
-export * from "#project/package/types/DevEngine";
-export * from "#project/package/types/PackageJson";
-export * from "#project/package/types/PackageType";
-export * from "#project/package/types/Person";
-export * from "#project/package/types/PublishAccess";
-export * from "#project/package/types/SubpathImports";
-export * from "#project/package/types/Version";
-export * from "#project/package/types/Visibility";
+// @barrel types/*.ts types
+export type * from "#project/package/types/DevEngine";
+export type * from "#project/package/types/PackageJson";
+export type * from "#project/package/types/PackageType";
+export type * from "#project/package/types/Person";
+export type * from "#project/package/types/PublishAccess";
+export type * from "#project/package/types/SubpathImports";
+export type * from "#project/package/types/Version";
+export type * from "#project/package/types/Visibility";
 // @end
 
 // @barrel config/sections/*.ts named

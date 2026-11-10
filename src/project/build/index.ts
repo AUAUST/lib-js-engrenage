@@ -1,6 +1,6 @@
-// @barrel types/*.ts all
-export * from "#project/build/types/BuildInput";
-export * from "#project/build/types/ResolvedBuild";
+// @barrel types/*.ts types
+export type * from "#project/build/types/BuildInput";
+export type * from "#project/build/types/ResolvedBuild";
 // @end
 
 // @barrel config/schemas/*.ts named

@@ -6,7 +6,7 @@ export { cacheSection } from "#project/cache/config/sections/cacheSection";
 export { cacheSchema } from "#project/cache/config/schemas/cacheSchema";
 // @end
 
-// @barrel types/*.ts all
-export * from "#project/cache/types/CacheInput";
-export * from "#project/cache/types/ResolvedCache";
+// @barrel types/*.ts types
+export type * from "#project/cache/types/CacheInput";
+export type * from "#project/cache/types/ResolvedCache";
 // @end
