@@ -1,7 +1,10 @@
-import { describe, expect, test } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+import { describe, expect, test, vi } from "vitest";
 
 import { createProjectConfig } from "#project/config/index";
-import { runSync, type SyncDone } from "#project/sync/index";
+import { runSync, settleChanges, type SyncDone } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 function createTarget(
@@ -128,5 +131,98 @@ describe("runSync", () => {
     await runSync(config, { names: ["reader"] });
 
     expect(runs).toEqual(["reader"]);
+  });
+
+  test("flushes the written files when a check fails, then reports every failed check", async () => {
+    const config = createConfig([
+      {
+        name: "checked-fixture",
+        contributes: {
+          "sync.targets": [
+            ...["first", "second"].map((name) => {
+              return {
+                name,
+                stage: "check",
+                load() {
+                  return Promise.resolve(() => {
+                    throw new Error(`${name} violation`);
+                  });
+                },
+              };
+            }),
+            {
+              name: "writer",
+              stage: "write",
+              load() {
+                return Promise.resolve(async ({ context }: typeof config) => {
+                  await context.filesystem.write("written.txt", "content\n");
+                });
+              },
+            },
+          ],
+        },
+      },
+    ]);
+
+    const failures = await runSync(config);
+
+    expect(failures.map(({ target }) => target)).toEqual(["first", "second"]);
+
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
+
+    try {
+      await settleChanges(config, { check: false, failures });
+
+      expect(error.mock.calls).toEqual([
+        ["failed: first\nfirst violation"],
+        ["failed: second\nsecond violation"],
+      ]);
+
+      expect(process.exitCode).toBe(1);
+    } finally {
+      error.mockRestore();
+      info.mockRestore();
+    }
+
+    expect(
+      readFileSync(join(config.context.root, "written.txt"), "utf-8"),
+    ).toBe("content\n");
+  });
+
+  test("rejects a failing write target without running the targets after it", async () => {
+    const runs: string[] = [];
+
+    const config = createConfig([
+      {
+        name: "failing-fixture",
+        contributes: {
+          "sync.targets": [
+            {
+              name: "broken",
+              stage: "write",
+              load() {
+                return Promise.resolve(() => {
+                  throw new Error("broken write");
+                });
+              },
+            },
+            {
+              name: "later",
+              stage: "check",
+              load() {
+                return Promise.resolve(() => {
+                  runs.push("later");
+                });
+              },
+            },
+          ],
+        },
+      },
+    ]);
+
+    await expect(runSync(config)).rejects.toThrow("broken write");
+
+    expect(runs).toEqual([]);
   });
 });

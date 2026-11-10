@@ -1,6 +1,7 @@
 import { includes, map } from "@auaust/primitive-kit/arrays";
 
 import type { LoadedConfig } from "#project/config/index";
+import type { SyncFailure } from "#project/sync/types/SyncFailure";
 import type { SyncTargetFlags } from "#project/sync/types/SyncTargetFlags";
 
 export async function runSync(
@@ -12,7 +13,7 @@ export async function runSync(
     names?: readonly string[];
     flags?: SyncTargetFlags;
   } = {},
-) {
+): Promise<readonly SyncFailure[]> {
   const { registry } = config.context;
 
   const contributions = await registry.contributions("sync.targets", config);
@@ -29,6 +30,8 @@ export async function runSync(
 
   const targets: string[] = [];
 
+  const failures: SyncFailure[] = [];
+
   for (const { entry } of contributions) {
     if (names !== undefined && !includes(names, entry.name)) {
       continue;
@@ -36,7 +39,20 @@ export async function runSync(
 
     const run = await entry.load();
 
-    await run(config, flags[entry.name] ?? {});
+    const settings = flags[entry.name] ?? {};
+
+    if (entry.stage === "check") {
+      try {
+        await run(config, settings);
+      } catch (error) {
+        failures.push({
+          target: entry.name,
+          error,
+        });
+      }
+    } else {
+      await run(config, settings);
+    }
 
     targets.push(entry.name);
   }
@@ -49,4 +65,6 @@ export async function runSync(
     },
     config,
   );
+
+  return failures;
 }

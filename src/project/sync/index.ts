@@ -16,11 +16,13 @@ export { settleChanges } from "#project/sync/operations/settleChanges";
 // @end
 
 // @barrel utils/*.ts named
+export { formatSyncFailure } from "#project/sync/utils/formatSyncFailure";
 export { formatSyncResult } from "#project/sync/utils/formatSyncResult";
 export { readSyncFlags } from "#project/sync/utils/readSyncFlags";
 // @end
 
 // @barrel types/*.ts types
+export type * from "#project/sync/types/SyncFailure";
 export type * from "#project/sync/types/SyncOption";
 export type * from "#project/sync/types/SyncTargetFlags";
 // @end

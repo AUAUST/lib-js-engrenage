@@ -21,12 +21,13 @@ export default async function (
     console.info("Checking synced files...");
   }
 
-  await runSync(config, {
+  const failures = await runSync(config, {
     ...(targets.length > 0 && { names: targets }),
     flags: readSyncFlags(options, values),
   });
 
   await settleChanges(config, {
     check,
+    failures,
   });
 }

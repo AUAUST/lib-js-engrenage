@@ -25,3 +25,5 @@
 - `timeout`: bounded `engrenage init -y` — not installed on macOS; ran without it and relied on the tool timeout
 - `grep --include=*.ts`: unquoted glob in zsh — zsh aborts with "no matches found"; quoted the pattern
 - `gh issue create` hook: piped a draft by its root-relative path after a `cd` into `.ai/issues/` had moved the shell cwd — the hook resolves the path against the shell cwd and reported the file missing; reran with the path relative to that cwd
+- shared checkout: ran `engrenage gate --worktree` while another session edited `src/workflows/builtins/index.ts` — its half-done barrel registered every extension twice, breaking config load for gate, vitest, eslint and the Bash hook; stopped with checks unverified
+- vitest:dist in pnpm build: runs the dist suite — collects tests under `.claude/worktrees/*`, whose dist is missing; reran with `--exclude ".claude/**"`

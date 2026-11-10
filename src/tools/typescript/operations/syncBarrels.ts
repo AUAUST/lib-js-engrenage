@@ -1,4 +1,4 @@
-import { glob as globFiles } from "node:fs/promises";
+import { glob as globFiles, readdir } from "node:fs/promises";
 import { basename, dirname, extname, relative, sep } from "node:path";
 
 import { flatMap, map, toSorted } from "@auaust/primitive-kit/arrays";
@@ -123,7 +123,19 @@ async function listModules(
 ): Promise<readonly string[]> {
   const { cwd, pattern } = locateModules(root, barrel, glob);
 
-  return Array.fromAsync(globFiles(pattern, { cwd }));
+  const modules = await Array.fromAsync(globFiles(pattern, { cwd }));
+
+  const cased = await Promise.all(
+    modules.map(async (module) => {
+      const siblings = await readdir(resolve(cwd, dirname(module)));
+
+      return siblings.includes(basename(module));
+    }),
+  );
+
+  return modules.filter((_, index) => {
+    return cased[index];
+  });
 }
 
 function createBarrel({

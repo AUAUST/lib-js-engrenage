@@ -106,9 +106,10 @@ export default async function ({ yes }: { yes: boolean }): Promise<void> {
     searchParents: false,
   });
 
-  await runSync(installed);
+  const failures = await runSync(installed);
 
   await settleChanges(installed, {
     check: false,
+    failures,
   });
 }

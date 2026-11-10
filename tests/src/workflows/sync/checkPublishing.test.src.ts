@@ -27,9 +27,13 @@ async function check(
     ...files,
   });
 
-  await runSync(await loadConfig(project.root), {
+  const [failure] = await runSync(await loadConfig(project.root), {
     names: ["package", "publishing"],
   });
+
+  if (failure !== undefined) {
+    throw failure.error;
+  }
 }
 
 function createWorkspace(manifest: object) {

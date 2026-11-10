@@ -21,9 +21,9 @@ async function syncProject(root: string) {
   const info = vi.spyOn(console, "info").mockImplementation(() => {});
 
   try {
-    await runSync(config);
+    const failures = await runSync(config);
 
-    await settleChanges(config, { check: false });
+    await settleChanges(config, { check: false, failures });
   } finally {
     info.mockRestore();
     loadConfig.refresh(root);
