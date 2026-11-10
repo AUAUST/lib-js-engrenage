@@ -69,7 +69,12 @@ export async function syncLefthookConfig(config: LoadedConfig) {
         }
       }
 
-      document.setIn(path, document.createNode(command));
+      document.setIn(
+        path,
+        document.createNode(command, {
+          aliasDuplicateObjects: false,
+        }),
+      );
     }
 
     changed = true;

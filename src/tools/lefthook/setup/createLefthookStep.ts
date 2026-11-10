@@ -65,18 +65,24 @@ export function createLefthookStep(): Step {
 
       await context.filesystem.write(
         lefthookFile,
-        new Document({
-          [hookName]: {
-            commands,
+        new Document(
+          {
+            [hookName]: {
+              commands,
+            },
+            ...(message === undefined
+              ? {}
+              : {
+                  [messageHookName]: {
+                    commands: { [gateCommandName]: message },
+                  },
+                }),
           },
-          ...(message === undefined
-            ? {}
-            : {
-                [messageHookName]: {
-                  commands: { [gateCommandName]: message },
-                },
-              }),
-        }).toString(),
+          null,
+          {
+            aliasDuplicateObjects: false,
+          },
+        ).toString(),
       );
 
       context.invoke(

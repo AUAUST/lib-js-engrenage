@@ -19,6 +19,7 @@ export {
   schemas,
   styles,
   testsetup,
+  testutils,
   types,
   utils,
 } from "#project/roles/index";

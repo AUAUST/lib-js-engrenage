@@ -115,6 +115,21 @@ describe("syncLefthookConfig", () => {
     expect(config.context.filesystem.changes()).toEqual([]);
   });
 
+  test("writes a shared condition in full, without anchors or aliases", async () => {
+    const project = createProject("pre-commit:\n  commands: {}\n");
+
+    const config = await loadConfig(project.root);
+
+    await syncLefthookConfig(config);
+
+    await config.context.filesystem.flush();
+
+    const content = project.read("lefthook.yml");
+
+    expect(content).not.toMatch(/&\w|\*\w/);
+    expect(content.match(/CLAUDECODE/g)).toHaveLength(3);
+  });
+
   test("rewrites a changed condition", async () => {
     const project = createProject(
       'pre-commit:\n  commands:\n    engrenage:\n      only:\n        - run: test -n "$OTHER"\n      run: pnpm --silent engrenage gate --staged\n',

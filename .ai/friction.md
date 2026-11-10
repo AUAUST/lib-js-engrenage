@@ -28,3 +28,4 @@
 - shared checkout: ran `engrenage gate --worktree` while another session edited `src/workflows/builtins/index.ts` — its half-done barrel registered every extension twice, breaking config load for gate, vitest, eslint and the Bash hook; stopped with checks unverified
 - vitest:dist in pnpm build: runs the dist suite — collects tests under `.claude/worktrees/*`, whose dist is missing; reran with `--exclude ".claude/**"`
 - engrenage gate --worktree: vitest step — collects `.claude/worktrees/*` tests, whose stale code checks this checkout's generated files and fails; verified with `vitest run --exclude ".claude/**"`
+- gh issue view --repo: guessed AUAUST/engrenage — repo is AUAUST/lib-js-engrenage, read from git remote
