@@ -10,5 +10,6 @@ declare module "type-fest" {
   export type KebabCase<Value extends string> = Value;
 
   export type LiteralUnion<Literal, Base> =
-    Literal | (Base & Record<never, never>);
+    | Literal
+    | (Base & Record<never, never>);
 }

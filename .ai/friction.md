@@ -13,3 +13,7 @@
 - node scratch scripts: imported `prettier` from a scratchpad `.mjs` — ESM resolves packages from the script directory, not the cwd; imported `node_modules/prettier/index.mjs` by absolute path
 - PreToolUse Bash hook (`gh issue edit`): redirected a body file with `<`, then a draft without frontmatter — the hook accepts only a pipe from a `.draft.md` file and blocks the whole compound command; piped with `cat` in its own command
 - `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the run shows no test console output; wrote it to a file instead
+- `gh issue view --repo`: read issue 160 from `AUAUST/engrenage` — repository is `AUAUST/lib-js-engrenage`; read the git remote
+- `grep --include=*.ts`: unquoted glob in zsh — zsh aborts with "no matches found"; quoted the pattern
+- node scratch scripts: imported `prettier` from a scratchpad `.mjs` — ESM resolves packages from the script directory; ran the code with `node --input-type=module -e` from the repository root
+- `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the default reporter hid it; reran with `--silent=false --reporter=verbose`
