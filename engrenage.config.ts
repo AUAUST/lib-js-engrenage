@@ -151,6 +151,9 @@ const codeRoles = [
 export default defineConfig({
   preset: "library",
   visibility: "private",
+  github: {
+    testShards: 4,
+  },
   agents: {
     preferred: ["claude", "codex"],
     attribution: false,

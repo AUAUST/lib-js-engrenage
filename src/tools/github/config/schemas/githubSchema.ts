@@ -1,4 +1,4 @@
-import { picklist } from "valibot";
+import { integer, minValue, number, picklist, pipe } from "valibot";
 
 import { declare, declareObject } from "#foundation/options/index";
 import { workflowSetNames } from "#tools/github/constants";
@@ -25,6 +25,13 @@ export const githubSchema = declareObject(
           return resolveWorkflowSet(context);
         },
       },
+    }),
+    testShards: declare(pipe(number(), integer(), minValue(1)), {
+      description: [
+        "Parallel CI jobs the workflows split the tests into.",
+        "Above 1, `ci:test` receives Vitest's `--shard` option.",
+      ],
+      optional: { value: 1 },
     }),
   },
   {

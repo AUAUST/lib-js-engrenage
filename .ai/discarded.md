@@ -13,3 +13,6 @@
 - Prettier fork: assignments kept beside `=` (#418) — maintenance cost; printer override instead
 - no-unnecessary-type-parameters: skip reports on functions without a return annotation — silences single-use parameters the inferred return never uses; the rule now reads the checker's return type instead
 - declareSection `Config` removal: silence its single-use report — a `config: Resolver` parameter makes `ConfigResolver` annotations circular and loses the default for unannotated sections
+- reusable checks workflow: share the jobs between ci.yml and publish.yml — sync only updates existing workflow files, so consumers would never receive a new one
+- build.outDir artifact path: pass only the build output to the release job — unreadable before engrenage is installed, which breaks init; the whole built tree is uploaded instead
+- tests sharding as the fix for slow tests: CI under 2 minutes — hides the engrenage test suite's own slowness, which toolkit's 2k tests in under 1 minute show; sharding kept only as a config option

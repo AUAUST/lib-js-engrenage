@@ -14,6 +14,7 @@ export { fetchIssue } from "#tools/github/operations/fetchIssue";
 export { locateWorkflowFiles } from "#tools/github/operations/locateWorkflowFiles";
 export { readGithubBody } from "#tools/github/operations/readGithubBody";
 export { renderWorkflow } from "#tools/github/operations/renderWorkflow";
+export { renderWorkflowSet } from "#tools/github/operations/renderWorkflowSet";
 export { requestGithub } from "#tools/github/operations/requestGithub";
 export { resolveGithubToken } from "#tools/github/operations/resolveGithubToken";
 export { resolveRepository } from "#tools/github/operations/resolveRepository";

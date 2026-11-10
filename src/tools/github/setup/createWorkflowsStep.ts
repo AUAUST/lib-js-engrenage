@@ -1,8 +1,5 @@
-import { relative } from "node:path";
-
-import { toPosixPath } from "#foundation/filesystem/index";
-import { workflowsDirectory, workflowSets } from "#tools/github/constants";
-import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
+import { workflowsDirectory } from "#tools/github/constants";
+import { renderWorkflowSet } from "#tools/github/operations/renderWorkflowSet";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 import type { Step, StepContext } from "#project/steps/index";
 import type { File } from "#types/File";
@@ -12,19 +9,17 @@ interface MissingWorkflow {
   content: string;
 }
 
-async function findMissingWorkflows({
-  resolve,
-  context,
-  getTraits,
-}: StepContext): Promise<readonly MissingWorkflow[]> {
-  const github = await resolve("github");
+async function findMissingWorkflows(
+  context: StepContext,
+): Promise<readonly MissingWorkflow[]> {
+  const github = await context.resolve("github");
 
-  const { hasDependency } = await resolve("environment");
+  const { hasDependency } = await context.resolve("environment");
 
   const name = github.workflowsConfigured
     ? github.workflows
     : resolveWorkflowSet({
-        traits: await getTraits(),
+        traits: await context.getTraits(),
         hasDependency,
       });
 
@@ -32,25 +27,15 @@ async function findMissingWorkflows({
     return [];
   }
 
-  const { root, filesystem } = await resolve("git");
+  const { filesystem } = await context.resolve("git");
 
-  const directory = relative(root, context.root) || ".";
-  const missing: MissingWorkflow[] = [];
+  const workflows = await renderWorkflowSet(context, name);
 
-  await Promise.all(
-    workflowSets[name].files.map(async (file) => {
-      const path = `${workflowsDirectory}/${file}`;
-
-      if (!(await filesystem.exists(path))) {
-        missing.push({
-          file: path,
-          content: await renderWorkflow(name, file, toPosixPath(directory)),
-        });
-      }
-    }),
+  const exist = await Promise.all(
+    workflows.map(({ file }) => filesystem.exists(file)),
   );
 
-  return missing;
+  return workflows.filter((_, index) => !exist[index]);
 }
 
 export function createWorkflowsStep(): Step {

@@ -8,4 +8,10 @@ export interface GithubInput {
    * @default the set whose trait is active (`library`: `published`) when its required packages (`@changesets/cli`) are dependencies
    */
   workflows?: ((false | "library") | undefined)
+  /**
+   * Parallel CI jobs the workflows split the tests into.
+   * Above 1, `ci:test` receives Vitest's `--shard` option.
+   * @default 1
+   */
+  testShards?: (number | undefined)
 }

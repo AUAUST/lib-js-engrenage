@@ -17,3 +17,4 @@
 - `grep --include=*.ts`: unquoted glob in zsh — zsh aborts with "no matches found"; quoted the pattern
 - node scratch scripts: imported `prettier` from a scratchpad `.mjs` — ESM resolves packages from the script directory; ran the code with `node --input-type=module -e` from the repository root
 - `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the default reporter hid it; reran with `--silent=false --reporter=verbose`
+- `npm view` in the repository: queried the registry for the package — `devEngines.packageManager` (pnpm) makes npm abort with EBADDEVENGINES; reran from the scratchpad
