@@ -33,13 +33,15 @@ export function createCodexAgentProfiles({
       gate: agent.gate === true,
       file: `${codexAgentsDir}/${name}.toml`,
       provenance,
-      content: provenance +
-      stringifyTOML({
-        name,
-        description: agent.description,
-        ...(effort !== undefined && { model_reasoning_effort: effort }),
-        developer_instructions: bootstrap + body,
-      }),
+      content: (
+        provenance +
+        stringifyTOML({
+          name,
+          description: agent.description,
+          ...(effort !== undefined && { model_reasoning_effort: effort }),
+          developer_instructions: bootstrap + body,
+        })
+      ),
     };
   });
 }

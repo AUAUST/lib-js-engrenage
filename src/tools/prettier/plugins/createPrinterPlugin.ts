@@ -5,6 +5,7 @@ import { findLast } from "@auaust/primitive-kit/arrays";
 
 import { printAssignedConditional } from "#tools/prettier/utils/printAssignedConditional";
 import { printAssignment } from "#tools/prettier/utils/printAssignment";
+import { printConditional } from "#tools/prettier/utils/printConditional";
 import type { AstNode } from "#tools/prettier/types/AstNode";
 import type { Plugin } from "#tools/prettier/types/Plugin";
 
@@ -23,14 +24,12 @@ const rightKeys = new Map([
   ["TSTypeAliasDeclaration", "typeAnnotation"],
 ]);
 
-function isAssignedConditional(path: AstPath<AstNode>): boolean {
-  const { node, parent, key } = path;
+function isRightSide(path: AstPath<AstNode>): boolean {
+  const { parent, key } = path;
 
   const parentRight = parent == null ? undefined : rightKeys.get(parent.type);
 
-  return (
-    node.type === "ConditionalExpression" && key != null && parentRight === key
-  );
+  return key != null && parentRight === key;
 }
 
 function printNode(
@@ -41,15 +40,28 @@ function printNode(
     return printAssignment(path, options, print, args, base);
   }
 
-  return isAssignedConditional(path)
-    ? printAssignedConditional(path, options, print, args, base)
-    : base.print(path, options, print, args);
+  if (path.node.type !== "ConditionalExpression") {
+    return base.print(path, options, print, args);
+  }
+
+  const conditionalBase: Printer<AstNode> = isRightSide(path)
+    ? {
+        ...base,
+        print(...printArguments) {
+          return printAssignedConditional(...printArguments, base);
+        },
+      }
+    : base;
+
+  return printConditional(path, options, print, args, conditionalBase);
 }
 
 export function createPrinterPlugin(plugins: readonly Plugin[]): Plugin {
-  const base: Printer<AstNode> = findLast(plugins, (plugin) => {
-    return plugin.printers?.estree !== undefined;
-  })?.printers?.estree ?? printers.estree;
+  const base: Printer<AstNode> = (
+    findLast(plugins, (plugin) => {
+      return plugin.printers?.estree !== undefined;
+    })?.printers?.estree ?? printers.estree
+  );
 
   const printer: Printer<AstNode> = {
     ...base,

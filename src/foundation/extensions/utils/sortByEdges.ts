@@ -30,10 +30,12 @@ export function sortByEdges<Item>(
 
   for (const node of nodes) {
     for (const producer of nodes) {
-      const depends = producer !== node &&
-      node.reads.some((read) => {
-        return producer.produces.some((produced) => matches(read, produced));
-      });
+      const depends = (
+        producer !== node &&
+        node.reads.some((read) => {
+          return producer.produces.some((produced) => matches(read, produced));
+        })
+      );
 
       if (depends) {
         node.dependencies.push(producer);

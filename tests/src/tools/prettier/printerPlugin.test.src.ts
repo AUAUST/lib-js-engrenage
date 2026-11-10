@@ -80,6 +80,41 @@ describe("printerPlugin", () => {
       "const foo =\n  // comment\n  someValue;\n",
       "const foo =\n  // comment\n  someValue;\n",
     ],
+    [
+      "a logical right side whose operand breaks in parentheses",
+      "const depends = producer !== node && node.reads.some((read) => {\n  return producer.produces.some((produced) => matches(read, produced));\n});\n",
+      "const depends = (\n  producer !== node &&\n  node.reads.some((read) => {\n    return producer.produces.some((produced) => matches(read, produced));\n  })\n);\n",
+    ],
+    [
+      "a logical branch missing its line in parentheses",
+      'function isSkill() {\n  return agent === "codex" ? entry.file.startsWith(`${codexSkillsDir}/`) : entry.file.startsWith(`${claudeSkillsDir}/`) || entry.file.startsWith(`${claudeAgentsDir}/`);\n}\n',
+      'function isSkill() {\n  return agent === "codex"\n    ? entry.file.startsWith(`${codexSkillsDir}/`)\n    : (\n        entry.file.startsWith(`${claudeSkillsDir}/`) ||\n        entry.file.startsWith(`${claudeAgentsDir}/`)\n      );\n}\n',
+    ],
+    [
+      "a logical branch of a right side missing its line in parentheses",
+      'const isSkill = agent === "codex" ? entry.file.startsWith(`${codexSkillsDir}/`) : entry.file.startsWith(`${claudeSkillsDir}/`) || entry.file.startsWith(`${claudeAgentsDir}/`);\n',
+      'const isSkill = agent === "codex"\n  ? entry.file.startsWith(`${codexSkillsDir}/`)\n  : (\n      entry.file.startsWith(`${claudeSkillsDir}/`) ||\n      entry.file.startsWith(`${claudeAgentsDir}/`)\n    );\n',
+    ],
+    [
+      "a logical branch fitting its line without parentheses",
+      "const value = someCondition ? firstOperand || secondOperand : someOtherLongValueThatMakesTheConditionalBreak;\n",
+      "const value = someCondition\n  ? firstOperand || secondOperand\n  : someOtherLongValueThatMakesTheConditionalBreak;\n",
+    ],
+    [
+      "a branch without a broken form overflowing its line",
+      'const message = someCondition ? "A long message that cannot break and overflows the print width of the line" : other;\n',
+      'const message = someCondition\n  ? "A long message that cannot break and overflows the print width of the line"\n  : other;\n',
+    ],
+    [
+      "a call branch with its own break",
+      "const value = someCondition ? someFunctionCall(firstArgumentOfTheCall, secondArgumentOfTheCallThatIsLonger) : other;\n",
+      "const value = someCondition\n  ? someFunctionCall(\n      firstArgumentOfTheCall,\n      secondArgumentOfTheCallThatIsLonger,\n    )\n  : other;\n",
+    ],
+    [
+      "branches Prettier parenthesizes with one pair",
+      "const value = someCondition ? (assignedVariable = someLongValueThatIsAssignedToTheVariableInTheBranch) : (firstValue, secondValueOfTheSequenceExpression, thirdValueOfTheSequenceExpression);\n",
+      "const value = someCondition\n  ? (assignedVariable = someLongValueThatIsAssignedToTheVariableInTheBranch)\n  : (firstValue,\n    secondValueOfTheSequenceExpression,\n    thirdValueOfTheSequenceExpression);\n",
+    ],
   ])("prints %s", async (_name, input, output) => {
     const formatted = await formatWithPrettierConfig(input);
 

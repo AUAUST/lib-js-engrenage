@@ -88,9 +88,11 @@ export async function checkAgents(
           if (
             agent === "codex"
               ? !output.file.startsWith(`${codexSkillsDir}/`)
-              : !(
-                  output.file.startsWith(`${claudeSkillsDir}/`) ||
-                  output.file.startsWith(`${claudeAgentsDir}/`)
+              : (
+                  !(
+                    output.file.startsWith(`${claudeSkillsDir}/`) ||
+                    output.file.startsWith(`${claudeAgentsDir}/`)
+                  )
                 )
           ) {
             continue;
@@ -121,8 +123,10 @@ export async function checkAgents(
       for (const output of template.files.filter((entry) => {
         return agent === "codex"
           ? entry.file.startsWith(`${codexSkillsDir}/`)
-          : entry.file.startsWith(`${claudeSkillsDir}/`) ||
-              entry.file.startsWith(`${claudeAgentsDir}/`);
+          : (
+              entry.file.startsWith(`${claudeSkillsDir}/`) ||
+              entry.file.startsWith(`${claudeAgentsDir}/`)
+            );
       })) {
         const current = await filesystem.read(output.file);
 

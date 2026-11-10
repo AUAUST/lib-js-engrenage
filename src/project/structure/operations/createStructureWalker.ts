@@ -111,17 +111,19 @@ export function createStructureWalker({
         source,
         ...(layer === undefined ? {} : { layer }),
         ...extra,
-        children: children ??
-        (await walk(envDirectory, subpath, {
-          kind,
-          layers: extra.layers,
-          scopes,
-          owned,
-          structured,
-          lineage: extendLineage(kind),
-          enclosing,
-          ...(mirrored === undefined ? {} : { mirrored }),
-        })),
+        children: (
+          children ??
+          (await walk(envDirectory, subpath, {
+            kind,
+            layers: extra.layers,
+            scopes,
+            owned,
+            structured,
+            lineage: extendLineage(kind),
+            enclosing,
+            ...(mirrored === undefined ? {} : { mirrored }),
+          }))
+        ),
       });
 
       rolesIn.set(built, rolesFor(scopes));
@@ -268,10 +270,12 @@ export function createStructureWalker({
       enclosing: parent.enclosing,
     });
 
-    const holdsOnlyNamespacesAndDomains = probed.length > 0 &&
-    probed.every(({ kind }) => {
-      return kind === "domain" || kind === "namespace";
-    });
+    const holdsOnlyNamespacesAndDomains = (
+      probed.length > 0 &&
+      probed.every(({ kind }) => {
+        return kind === "domain" || kind === "namespace";
+      })
+    );
 
     return holdsOnlyNamespacesAndDomains
       ? node("namespace", "inferred", {}, { children: probed })

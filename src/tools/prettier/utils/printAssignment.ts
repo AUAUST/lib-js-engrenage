@@ -12,7 +12,9 @@ import { isObject } from "@auaust/toolkit/isObject";
 import { isString } from "@auaust/toolkit/isString";
 import { max } from "@auaust/toolkit/math";
 
-import { isParenthesized } from "#tools/prettier/utils/isParenthesized";
+import { isAstNode } from "#tools/prettier/utils/isAstNode";
+import { keepsOwnBreak } from "#tools/prettier/utils/keepsOwnBreak";
+import { printLines } from "#tools/prettier/utils/printLines";
 import type { AstNode } from "#tools/prettier/types/AstNode";
 
 type Print = Parameters<Printer<AstNode>["print"]>[2];
@@ -44,38 +46,9 @@ const rightSteps = new Map<string, readonly DocumentStep[]>([
   ["break-lhs", [3, "contents"]],
 ]);
 
-const ownBreakTypes = new Set([
-  "ArrayExpression",
-  "ArrowFunctionExpression",
-  "CallExpression",
-  "ClassExpression",
-  "ConditionalExpression",
-  "FunctionExpression",
-  "ImportExpression",
-  "JSXElement",
-  "JSXFragment",
-  "MemberExpression",
-  "NewExpression",
-  "ObjectExpression",
-  "OptionalCallExpression",
-  "OptionalMemberExpression",
-  "TaggedTemplateExpression",
-  "TemplateLiteral",
-]);
-
 const leftKeys = new Map([
   ["VariableDeclarator", "id"],
   ["AssignmentExpression", "left"],
-]);
-
-const wrapperKeys = new Map([
-  ["AwaitExpression", "argument"],
-  ["UnaryExpression", "argument"],
-  ["YieldExpression", "argument"],
-  ["ChainExpression", "expression"],
-  ["TSNonNullExpression", "expression"],
-  ["TSAsExpression", "expression"],
-  ["TSSatisfiesExpression", "expression"],
 ]);
 
 const statementContainers = new Set([
@@ -85,21 +58,6 @@ const statementContainers = new Set([
   "SwitchCase",
   "TSModuleBlock",
 ]);
-
-function isAstNode(value: unknown): value is AstNode {
-  return isObject(value) && "type" in value && isString(value.type);
-}
-
-// @debt sub-docs are printed to text while the doc is built, to measure widths `fits` cannot reach
-function printLines(
-  target: Doc,
-  options: ParserOptions<AstNode>,
-  printWidth: number,
-): readonly string[] {
-  return doc.printer
-    .printDocToString(target, { ...options, printWidth })
-    .formatted.split("\n");
-}
 
 function measureWidth(line = ""): number {
   return util.getStringWidth(line);
@@ -183,16 +141,9 @@ function measurePrefix(path: AstPath<AstNode>): number {
   return keywords.join("").length;
 }
 
-function unwrapRight(node: AstNode): AstNode {
-  const key = wrapperKeys.get(node.type);
-
-  const inner = key === undefined ? undefined : node[key];
-
-  return isAstNode(inner) ? unwrapRight(inner) : node;
-}
-
 function breakRight(
   right: Capture,
+  parenthesized: boolean,
   options: ParserOptions<AstNode>,
 ): Doc | undefined {
   if (printLines(right.doc, options, 0).length === 1) {
@@ -212,19 +163,11 @@ function breakRight(
     return group(indent([softline, members]), { shouldBreak: true });
   }
 
-  const { type } = unwrapRight(right.node);
-
-  const ownBreak = (
-    ownBreakTypes.has(type) ||
-    (type.startsWith("TS") && !type.endsWith("Expression")) ||
-    isParenthesized(right.doc)
-  );
-
-  return ownBreak
-    ? group(right.doc, { shouldBreak: true })
-    : group(["(", indent([softline, right.doc]), softline, ")"], {
+  return parenthesized
+    ? group(["(", indent([softline, right.doc]), softline, ")"], {
         shouldBreak: true,
-      });
+      })
+    : group(right.doc, { shouldBreak: true });
 }
 
 function measureLine(offset: number, lines: readonly string[]): Doc {
@@ -251,9 +194,15 @@ function printCandidates(
   operator: Doc,
   right: Capture,
 ): Doc {
-  const flat = [left, operator, " ", right.doc];
+  const rightLines = printLines(right.doc, options, Infinity);
 
-  const broken = breakRight(right, options);
+  const parenthesized = (
+    right.members === undefined && !keepsOwnBreak(right.node, right.doc)
+  );
+
+  const broken = breakRight(right, parenthesized, options);
+
+  const breaksBare = parenthesized && rightLines.length > 1;
 
   const leftLines = hasBrokenLeftForm(path.node)
     ? printLines(left, options, 0)
@@ -270,13 +219,15 @@ function printCandidates(
     measurePrefix(path)
   );
 
-  const candidates: Doc[] = [flat];
+  const candidates: Doc[] = breaksBare
+    ? []
+    : [[left, operator, " ", right.doc]];
 
-  if (brokenLeft !== undefined) {
+  if (brokenLeft !== undefined && !breaksBare) {
     candidates.push(
       withMeasure(
         [brokenLeft, operator, " ", right.doc],
-        measureLine(offset, printLines(right.doc, options, Infinity)),
+        measureLine(offset, rightLines),
       ),
     );
   }

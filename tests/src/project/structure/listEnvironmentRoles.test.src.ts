@@ -10,10 +10,12 @@ describe("listEnvironmentRoles", () => {
   test("lets a listed role replace the layout's role of the same name", () => {
     const resolved = resolveRoles({
       environment: "scripts",
-      roles: listEnvironmentRoles({
-        tree: "commands",
-        roles: [index({ purpose: "The group." })],
-      }) ?? [],
+      roles: (
+        listEnvironmentRoles({
+          tree: "commands",
+          roles: [index({ purpose: "The group." })],
+        }) ?? []
+      ),
       effects: {
         levels: undefined,
         modules: undefined,

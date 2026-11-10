@@ -58,11 +58,15 @@ export default defineConvention({
                 "VariableDeclaration",
               ].includes(declaration.type);
 
-              const isMetadata = declaration.type === "VariableDeclaration" &&
-              declaration.kind === "const" &&
-              (declaration.declarations ?? []).every(({ id }) => {
-                return id.type === "Identifier" && metadata.test(id.name ?? "");
-              });
+              const isMetadata = (
+                declaration.type === "VariableDeclaration" &&
+                declaration.kind === "const" &&
+                (declaration.declarations ?? []).every(({ id }) => {
+                  return (
+                    id.type === "Identifier" && metadata.test(id.name ?? "")
+                  );
+                })
+              );
 
               if (isValue && !isMetadata) {
                 context.report({ node: statement, messageId: "value" });

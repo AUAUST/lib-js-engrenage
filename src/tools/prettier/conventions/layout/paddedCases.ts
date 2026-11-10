@@ -55,10 +55,12 @@ function padCases(
     }
   });
 
-  const requiresPadding = node.cases.some(hasMultilineBody) ||
-  pairs.some(({ previous, next }) => {
-    return isPadded(text, previous, next);
-  });
+  const requiresPadding = (
+    node.cases.some(hasMultilineBody) ||
+    pairs.some(({ previous, next }) => {
+      return isPadded(text, previous, next);
+    })
+  );
 
   if (!requiresPadding) {
     return [];
