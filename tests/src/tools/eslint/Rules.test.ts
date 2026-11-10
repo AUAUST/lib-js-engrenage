@@ -25,7 +25,6 @@ describe("Rules", () => {
           "prefer-inline": true;
         },
       ];
-      "@stylistic/semi": ["error", "always"];
     }>().toExtend<Rules>();
 
     expectTypeOf<{

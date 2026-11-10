@@ -2,7 +2,6 @@
 
 import type { CoreRules } from "#tools/eslint/types/rules/CoreRules";
 import type { AuaustRules } from "#tools/eslint/types/rules/AuaustRules";
-import type { StylisticRules } from "#tools/eslint/types/rules/StylisticRules";
 import type { PackageJsonRules } from "#tools/eslint/types/rules/PackageJsonRules";
 import type { PerfectionistRules } from "#tools/eslint/types/rules/PerfectionistRules";
 import type { SonarjsRules } from "#tools/eslint/types/rules/SonarjsRules";
@@ -17,7 +16,6 @@ export interface Rules
     Partial<Record<string, Rule>>,
     CoreRules,
     AuaustRules,
-    StylisticRules,
     PackageJsonRules,
     PerfectionistRules,
     SonarjsRules,

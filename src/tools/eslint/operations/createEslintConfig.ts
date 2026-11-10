@@ -1,4 +1,3 @@
-import stylistic from "@stylistic/eslint-plugin";
 import packageJson from "eslint-plugin-package-json";
 import perfectionist from "eslint-plugin-perfectionist";
 import sonarjs from "eslint-plugin-sonarjs";
@@ -157,7 +156,6 @@ export async function createEslintConfig(
         ...(roleRules.configs.length === 0
           ? {}
           : { [rolesPluginName]: roleRules.plugin }),
-        "@stylistic": stylistic,
         "package-json": packageJson,
         perfectionist,
         sonarjs,

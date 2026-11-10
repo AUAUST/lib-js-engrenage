@@ -1,4 +1,3 @@
-import stylistic from "@stylistic/eslint-plugin";
 import { importX } from "eslint-plugin-import-x";
 import perfectionist from "eslint-plugin-perfectionist";
 import sonarjs from "eslint-plugin-sonarjs";
@@ -11,7 +10,6 @@ import type { Plugin } from "#tools/eslint/types/Plugin";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 
 const upstreamPlugins: Record<string, Plugin> = {
-  "@stylistic": stylistic,
   "@typescript-eslint": typescript,
   "import-x": importX,
   perfectionist,

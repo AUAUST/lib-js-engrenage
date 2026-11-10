@@ -30,7 +30,6 @@ export type {
   Rules,
   ScopeReference,
   ScopeReferences,
-  StylisticRules,
   TypescriptEslintRules,
   UnicornRules,
   UnusedImportsRules,

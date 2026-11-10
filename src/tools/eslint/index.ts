@@ -52,7 +52,6 @@ export type * from "#tools/eslint/types/rules/ImportXRules";
 export type * from "#tools/eslint/types/rules/PackageJsonRules";
 export type * from "#tools/eslint/types/rules/PerfectionistRules";
 export type * from "#tools/eslint/types/rules/SonarjsRules";
-export type * from "#tools/eslint/types/rules/StylisticRules";
 export type * from "#tools/eslint/types/rules/TypescriptEslintRules";
 export type * from "#tools/eslint/types/rules/UnicornRules";
 export type * from "#tools/eslint/types/rules/UnusedImportsRules";

@@ -1170,16 +1170,16 @@ export const longform = {
     ).toEqual(["24:auaust/object-shorthand"]);
   });
 
-  test("leaves arrow parentheses and key quotes to Prettier", async () => {
-    const rules = flatMap(
-      await createEslintConfig(await loadConfig(root), {
-        typeAware: false,
-      }),
-      (config) => keys(config.rules ?? {}),
-    );
+  test("leaves layout rules to Prettier", async () => {
+    const configs = await createEslintConfig(await loadConfig(root), {
+      typeAware: false,
+    });
 
-    expect(rules).not.toContain("@stylistic/arrow-parens");
-    expect(rules).not.toContain("@stylistic/quote-props");
+    const plugins = flatMap(configs, (config) => keys(config.plugins ?? {}));
+
+    const rules = flatMap(configs, (config) => keys(config.rules ?? {}));
+
+    expect(plugins).not.toContain("@stylistic");
     expect(rules).not.toContain("auaust/quote-props");
   });
 
