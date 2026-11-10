@@ -1,8 +1,9 @@
+import { formatSyncResult } from "#project/sync/utils/formatSyncResult";
 import type { SyncResults } from "#types/SyncResults";
 
 export function reportSyncResults(results: SyncResults) {
-  for (const { file, status } of results) {
-    console.info(`${status}: ${file}`);
+  for (const result of results) {
+    console.info(formatSyncResult(result));
   }
 
   if (results.some(({ status }) => status === "outdated")) {

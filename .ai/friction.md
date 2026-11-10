@@ -19,3 +19,4 @@
 - `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the default reporter hid it; reran with `--silent=false --reporter=verbose`
 - `npm view` in the repository: queried the registry for the package — `devEngines.packageManager` (pnpm) makes npm abort with EBADDEVENGINES; reran from the scratchpad
 - zsh `/usr/bin/time -p node …`: timed CLI runs — reported ~0.12s regardless of command; got real timings by spawning from `node -e` with `performance.now()`
+- `support codegen barrels`: regenerated a barrel after deleting a module it exports — fails loading the deleted module; removed the export line by hand first

@@ -7,6 +7,7 @@ export type * from "#project/sync/ports/SyncTarget";
 // @end
 
 // @barrel operations/*.ts named
+export { collectChanges } from "#project/sync/operations/collectChanges";
 export { formatChanges } from "#project/sync/operations/formatChanges";
 export { listSyncOptions } from "#project/sync/operations/listSyncOptions";
 export { reportSyncResults } from "#project/sync/operations/reportSyncResults";
@@ -15,6 +16,7 @@ export { settleChanges } from "#project/sync/operations/settleChanges";
 // @end
 
 // @barrel utils/*.ts named
+export { formatSyncResult } from "#project/sync/utils/formatSyncResult";
 export { readSyncFlags } from "#project/sync/utils/readSyncFlags";
 // @end
 

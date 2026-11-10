@@ -1,12 +1,11 @@
 import { existsSync, readdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
-import { mockExecutableArgv } from "#tests/utils/mockExecutableArgv";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 
 import stop from "#bin/engrenage/agents/claude/hook/actions/stop";
@@ -14,8 +13,6 @@ import stop from "#bin/engrenage/agents/claude/hook/actions/stop";
 vi.mock("#tools/agents/operations/readHookPayload", () => {
   return { readHookPayload: vi.fn() };
 });
-
-beforeEach(mockExecutableArgv);
 
 afterEach(() => {
   vi.restoreAllMocks();

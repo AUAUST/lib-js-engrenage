@@ -1,14 +1,11 @@
-import { beforeEach, describe, expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { map } from "@auaust/primitive-kit/arrays";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGateRepository } from "#tests/utils/createGateRepository";
-import { mockExecutableArgv } from "#tests/utils/mockExecutableArgv";
 import { runGate } from "#workflows/gate/operations/runGate";
-
-beforeEach(mockExecutableArgv);
 
 describe("runGate", { timeout: binaryTimeout }, () => {
   test("rewrites, re-stages and passes an unformatted staged file", async () => {
@@ -67,6 +64,30 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     expect(
       failures.find(({ step }) => step === "structure --check")?.output,
     ).toContain("import cycles (1)");
+  });
+
+  test("fails a staged outdated synced file under sync --check without rewriting it", async () => {
+    const { project, git } = await createGateRepository();
+
+    project.write("tsconfig.src.json", "{}\n");
+
+    git("add", "tsconfig.src.json");
+
+    const config = await loadConfig(project.root);
+
+    const { failures } = await runGate(config, {
+      mode: "staged",
+    });
+
+    expect(failures.find(({ step }) => step === "sync --check")?.output).toBe(
+      "outdated: tsconfig.src.json",
+    );
+
+    expect(project.read("tsconfig.src.json")).toBe("{}\n");
+
+    expect(await config.context.filesystem.read("tsconfig.src.json")).toBe(
+      "{}\n",
+    );
   });
 
   test("fails the gate with the output of a contributed check", async () => {

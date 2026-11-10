@@ -1,14 +1,11 @@
-import { beforeEach, describe, expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { gateIdentity } from "#tests/constants";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGateRepository } from "#tests/utils/createGateRepository";
-import { mockExecutableArgv } from "#tests/utils/mockExecutableArgv";
 import { checkAgentStop } from "#workflows/gate/operations/checkAgentStop";
 import { runGate } from "#workflows/gate/operations/runGate";
-
-beforeEach(mockExecutableArgv);
 
 describe("runGate", { timeout: binaryTimeout }, () => {
   test("keeps failing-stop escapes separate for runtime, session and agent", async () => {

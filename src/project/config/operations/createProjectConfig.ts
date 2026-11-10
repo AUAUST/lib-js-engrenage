@@ -182,6 +182,13 @@ export function createProjectConfig({
       path(...paths: string[]) {
         return resolveWithin(root, ...paths);
       },
+      copy() {
+        return createProjectConfig({
+          root,
+          raw,
+          configFile,
+        });
+      },
     },
     {
       source,

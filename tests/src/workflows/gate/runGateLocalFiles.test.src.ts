@@ -1,14 +1,11 @@
 import { writeFileSync } from "node:fs";
 
-import { beforeEach, describe, expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGateRepository } from "#tests/utils/createGateRepository";
-import { mockExecutableArgv } from "#tests/utils/mockExecutableArgv";
 import { runGate } from "#workflows/gate/operations/runGate";
-
-beforeEach(mockExecutableArgv);
 
 describe("runGate", { timeout: binaryTimeout }, () => {
   test("rejects local additions and modifications, but accepts deletions", async () => {

@@ -7,6 +7,5 @@ export type * from "#project/gate/ports/GateStepEntry";
 
 // @barrel operations/*.ts named
 export { runGateBinary } from "#project/gate/operations/runGateBinary";
-export { runGateCli } from "#project/gate/operations/runGateCli";
 export { runGateProcess } from "#project/gate/operations/runGateProcess";
 // @end

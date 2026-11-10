@@ -4,7 +4,7 @@ import { existsSync } from "node:fs";
 import { relative } from "node:path";
 import { setTimeout } from "node:timers/promises";
 
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { map } from "@auaust/primitive-kit/arrays";
 
@@ -13,11 +13,8 @@ import { gateIdentity } from "#tests/constants";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGateRepository } from "#tests/utils/createGateRepository";
 import { getExecutable } from "#tests/utils/getExecutable";
-import { mockExecutableArgv } from "#tests/utils/mockExecutableArgv";
 import { checkAgentStop } from "#workflows/gate/operations/checkAgentStop";
 import { runGate } from "#workflows/gate/operations/runGate";
-
-beforeEach(mockExecutableArgv);
 
 const slowCommand = "echo start >> .runs && sleep 1 && echo end >> .runs";
 
