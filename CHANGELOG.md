@@ -1,5 +1,20 @@
 # @auaust/engrenage
 
+## 0.9.0
+
+### Minor Changes
+
+- [`1b41ec7`](https://github.com/AUAUST/lib-js-engrenage/commit/1b41ec79e25d34b49fefaf703ffc168c06586a32) Thanks [@apademide](https://github.com/apademide)! - - Run the library workflows' check, test and build as parallel jobs; the publish workflow releases in a final job that waits for all three and reuses the build job's output. Upgrade: run `engrenage sync` to regenerate the workflows, and update any required status checks to the new job names.
+  - Add the `github.testShards` option, splitting the tests into that many parallel CI jobs through Vitest's `--shard`
+  - Fix the publish step looking up a private package anonymously, which made changesets retry the published version on every push to the base branch: the release step now receives `NPM_READ_TOKEN`
+  - Serialize the publish workflow runs of a branch
+
+### Patch Changes
+
+- [`f1078f9`](https://github.com/AUAUST/lib-js-engrenage/commit/f1078f997bba248d6617f1019504ea0f974279b8) Thanks [@apademide](https://github.com/apademide)! - - Speed up every `engrenage` run, the gate's checks included, by caching compiled modules through Node's compile cache
+
+- [`96241d0`](https://github.com/AUAUST/lib-js-engrenage/commit/96241d0e8e359b5f78add8edc5f8eeaf7ed29a9c) Thanks [@apademide](https://github.com/apademide)! - - Speed up the gate: `typecheck`, `structure --check` and `sync --check` run in the gate's process instead of a new `engrenage` process each, so only `tsc` is spawned; `sync --check` runs on its own copy of the config, so its staged files never reach the other checks
+
 ## 0.8.0
 
 ### Minor Changes
