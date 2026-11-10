@@ -17,7 +17,7 @@ Apply the project's Analysis rules at full depth, record what they find in issue
 - Read everything sharing the concern, not only what the request names: code, configuration, instructions, skills, issues, backlog and debt entries.
 - Look for conflicts, duplication and drift between the request and what it touches: sources contradicting each other, one fact stated in several places, copies that diverged.
 - Search beyond the current dependencies for libraries providing the capability, comparing their size, maintenance, adoption and maturity.
-- Read the discarded-solutions log for every subject the analysis meets, and report the recurring ones as candidates.
+- Read the discarded-solutions and agent-friction logs for every subject the analysis meets, and report the recurring ones as candidates.
 
 ## Outcome
 

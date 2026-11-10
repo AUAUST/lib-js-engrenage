@@ -110,7 +110,12 @@ describe("agents rules", () => {
 
     expect(multiselect).toHaveBeenCalledWith(
       expect.objectContaining({
-        initialValues: ["git", "debt-markers", "discarded-solutions"],
+        initialValues: [
+          "git",
+          "debt-markers",
+          "discarded-solutions",
+          "agent-friction",
+        ],
         options: [
           expect.objectContaining({
             value: "git",
@@ -126,6 +131,9 @@ describe("agents rules", () => {
           }),
           expect.objectContaining({
             value: "discarded-solutions",
+          }),
+          expect.objectContaining({
+            value: "agent-friction",
           }),
           expect.objectContaining({
             value: "prefer-toolkit",
