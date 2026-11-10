@@ -5,7 +5,6 @@ import { configs as typescriptConfigs } from "typescript-eslint";
 import {
   coreRules,
   pluginName,
-  stylisticRules,
   testRules,
   typescriptRules,
   typescriptTypeAwareRules,
@@ -42,7 +41,6 @@ export function createRecommendedRules({
       rules: {
         ...coreRules,
         ...typescriptRules,
-        ...stylisticRules,
         ...unicornRules,
       },
     }),

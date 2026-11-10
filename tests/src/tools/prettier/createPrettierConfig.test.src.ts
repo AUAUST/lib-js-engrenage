@@ -27,6 +27,7 @@ describe("createPrettierConfig", () => {
     });
 
     expect(output).toBe('const value = { a: "b", c: [1, 2] };\n');
+    expect(await config).toMatchObject({ quoteProps: "consistent" });
   });
 
   test("follows the configured conventions and lets a project override individual options", async () => {

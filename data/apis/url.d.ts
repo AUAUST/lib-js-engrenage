@@ -16,9 +16,9 @@ and limitations under the License.
 /// <reference path="shared/common.d.ts" />
 
 interface MediaSourceEventMap {
-  "sourceclose": Event;
-  "sourceended": Event;
-  "sourceopen": Event;
+  sourceclose: Event;
+  sourceended: Event;
+  sourceopen: Event;
 }
 
 /**
@@ -127,11 +127,11 @@ declare var MediaSource: {
 };
 
 interface SourceBufferEventMap {
-  "abort": Event;
-  "error": Event;
-  "update": Event;
-  "updateend": Event;
-  "updatestart": Event;
+  abort: Event;
+  error: Event;
+  update: Event;
+  updateend: Event;
+  updatestart: Event;
 }
 
 /**
@@ -238,8 +238,8 @@ declare var SourceBuffer: {
 };
 
 interface SourceBufferListEventMap {
-  "addsourcebuffer": Event;
-  "removesourcebuffer": Event;
+  addsourcebuffer: Event;
+  removesourcebuffer: Event;
 }
 
 /**

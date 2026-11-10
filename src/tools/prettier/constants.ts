@@ -19,7 +19,7 @@ export const fixedOptions = freeze({
   jsxSingleQuote: false,
   objectWrap: "preserve",
   proseWrap: "preserve",
-  quoteProps: "preserve",
+  quoteProps: "consistent",
   requirePragma: false,
   singleAttributePerLine: false,
   vueIndentScriptAndStyle: false,

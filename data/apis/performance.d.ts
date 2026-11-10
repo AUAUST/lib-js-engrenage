@@ -16,7 +16,7 @@ and limitations under the License.
 /// <reference path="shared/common.d.ts" />
 
 interface PerformanceEventMap {
-  "resourcetimingbufferfull": Event;
+  resourcetimingbufferfull: Event;
 }
 
 /**

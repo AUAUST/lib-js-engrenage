@@ -16,6 +16,5 @@ export default defineConvention({
       },
     ),
     delegateRule("prefer-object-spread"),
-    delegateRule("@stylistic/quote-props", ["consistent-as-needed"]),
   ],
 });

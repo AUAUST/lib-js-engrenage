@@ -38,7 +38,6 @@ export { default as switches } from "#tools/eslint/conventions/stylistic/switche
 export { default as textEncodingCase } from "#tools/eslint/conventions/stylistic/textEncodingCase";
 export { default as typeChecks } from "#tools/eslint/conventions/stylistic/typeChecks";
 export { default as typeStyle } from "#tools/eslint/conventions/stylistic/typeStyle";
-export { default as unpaddedSwitches } from "#tools/eslint/conventions/stylistic/unpaddedSwitches";
 export { default as voidPlacement } from "#tools/eslint/conventions/stylistic/voidPlacement";
 export { default as voidReturns } from "#tools/eslint/conventions/stylistic/voidReturns";
 // @end

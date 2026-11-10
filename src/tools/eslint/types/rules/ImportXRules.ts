@@ -421,7 +421,7 @@ type ImportXNoDuplicates =
   | []
   | [
       {
-        considerQueryString?: boolean;
+        "considerQueryString"?: boolean;
         "prefer-inline"?: boolean;
       },
     ];
@@ -593,10 +593,10 @@ type ImportXOrder =
   | []
   | [
       {
-        groups?: unknown[];
-        pathGroupsExcludedImportTypes?: unknown[];
-        distinctGroup?: boolean;
-        pathGroups?: {
+        "groups"?: unknown[];
+        "pathGroupsExcludedImportTypes"?: unknown[];
+        "distinctGroup"?: boolean;
+        "pathGroups"?: {
           pattern: string;
           patternOptions?: {
             [k: string]: unknown | undefined;
@@ -617,9 +617,9 @@ type ImportXOrder =
           "ignore" | "always" | "always-and-inside-groups" | "never";
         "newlines-between-types"?:
           "ignore" | "always" | "always-and-inside-groups" | "never";
-        consolidateIslands?: "inside-groups" | "never";
-        sortTypesGroup?: boolean;
-        named?:
+        "consolidateIslands"?: "inside-groups" | "never";
+        "sortTypesGroup"?: boolean;
+        "named"?:
           | boolean
           | {
               enabled?: boolean;
@@ -629,12 +629,12 @@ type ImportXOrder =
               cjsExports?: boolean;
               types?: "mixed" | "types-first" | "types-last";
             };
-        alphabetize?: {
+        "alphabetize"?: {
           caseInsensitive?: boolean;
           order?: "ignore" | "asc" | "desc";
           orderImportKind?: "ignore" | "asc" | "desc";
         };
-        warnOnUnassignedImports?: boolean;
+        "warnOnUnassignedImports"?: boolean;
       },
     ];
 // ----- import-x/prefer-default-export -----

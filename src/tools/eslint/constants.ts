@@ -3,7 +3,6 @@ import { freeze } from "@auaust/toolkit/object";
 import { engrenage } from "#constants";
 import type { BoundaryCause } from "#project/structure/index";
 import type { CoreRules } from "#tools/eslint/types/rules/CoreRules";
-import type { StylisticRules } from "#tools/eslint/types/rules/StylisticRules";
 import type { TypescriptEslintRules } from "#tools/eslint/types/rules/TypescriptEslintRules";
 import type { UnicornRules } from "#tools/eslint/types/rules/UnicornRules";
 import type { File } from "#types/File";
@@ -101,10 +100,6 @@ export const typescriptTypeAwareRules = freeze({
   "@typescript-eslint/restrict-template-expressions": "off",
   "@typescript-eslint/unbound-method": "off",
 } as const satisfies TypescriptEslintRules);
-
-export const stylisticRules = freeze({
-  "@stylistic/arrow-parens": "error",
-} as const satisfies StylisticRules);
 
 export const unicornRules = freeze({
   "unicorn/better-dom-traversing": "info",

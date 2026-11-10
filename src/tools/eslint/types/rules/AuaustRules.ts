@@ -461,11 +461,6 @@ export interface AuaustRules {
    */
   "auaust/prefer-valued-return"?: Rule<[]>;
   /**
-   * Require quotes around object literal, type literal, interfaces and enums property names
-   * @see https://eslint.style/rules/quote-props
-   */
-  "auaust/quote-props"?: Rule<AuaustQuoteProps>;
-  /**
    * The constants file exports deeply read-only values.
    */
   "auaust/readonly-constants"?: Rule<[]>;
@@ -526,11 +521,6 @@ export interface AuaustRules {
    * @see https://typescript-eslint.io/rules/unified-signatures
    */
   "auaust/unified-signatures"?: Rule<AuaustUnifiedSignatures>;
-  /**
-   * Require or disallow padding within blocks
-   * @see https://eslint.style/rules/padded-blocks
-   */
-  "auaust/unpadded-switches"?: Rule<AuaustUnpaddedSwitches>;
   /**
    * Use `void` only as a standalone statement or to discard the value of a returned action, as in `void promise`, `return void call()` or `() => void call()`.
    */
@@ -1205,7 +1195,7 @@ type AuaustNoDuplicates =
   | []
   | [
       {
-        considerQueryString?: boolean;
+        "considerQueryString"?: boolean;
         "prefer-inline"?: boolean;
       },
     ];
@@ -1639,20 +1629,6 @@ type AuaustPreferReadonly =
   | [
       {
         onlyInlineLambdas?: boolean;
-      },
-    ];
-// ----- auaust/quote-props -----
-type AuaustQuoteProps =
-  | []
-  | ["always" | "as-needed" | "consistent" | "consistent-as-needed"]
-  | []
-  | ["always" | "as-needed" | "consistent" | "consistent-as-needed"]
-  | [
-      "always" | "as-needed" | "consistent" | "consistent-as-needed",
-      {
-        keywords?: boolean;
-        unnecessary?: boolean;
-        numbers?: boolean;
       },
     ];
 // ----- auaust/return-await -----
@@ -2927,29 +2903,5 @@ type AuaustUnifiedSignatures =
         ignoreDifferentlyNamedParameters?: boolean;
 
         ignoreOverloadsWithDifferentJSDoc?: boolean;
-      },
-    ];
-// ----- auaust/unpadded-switches -----
-type AuaustUnpaddedSwitches =
-  | []
-  | [
-      | ("always" | "never" | "start" | "end")
-      | {
-          blocks?: "always" | "never" | "start" | "end";
-          switches?: "always" | "never" | "start" | "end";
-          classes?: "always" | "never" | "start" | "end";
-        },
-    ]
-  | [
-      (
-        | ("always" | "never" | "start" | "end")
-        | {
-            blocks?: "always" | "never" | "start" | "end";
-            switches?: "always" | "never" | "start" | "end";
-            classes?: "always" | "never" | "start" | "end";
-          }
-      ),
-      {
-        allowSingleLineBlocks?: boolean;
       },
     ];

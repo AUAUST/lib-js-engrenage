@@ -57,7 +57,7 @@ export default defineConvention({
         };
 
         return {
-          ExportNamedDeclaration(statement) {
+          "ExportNamedDeclaration"(statement) {
             const { declaration } = statement;
 
             if (declaration == null) {
@@ -81,10 +81,10 @@ export default defineConvention({
               found.names.push(declaration.id.name);
             }
           },
-          ExportDefaultDeclaration() {
+          "ExportDefaultDeclaration"() {
             found.defaults += 1;
           },
-          ExportAllDeclaration() {
+          "ExportAllDeclaration"() {
             found.star = true;
           },
           "Program:exit"(program) {

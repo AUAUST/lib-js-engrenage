@@ -617,7 +617,7 @@ interface UnderlyingSource<R = any> {
 }
 
 interface AbortSignalEventMap {
-  "abort": Event;
+  abort: Event;
 }
 
 /**

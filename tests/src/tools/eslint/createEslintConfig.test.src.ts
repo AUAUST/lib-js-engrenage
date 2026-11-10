@@ -4,8 +4,9 @@ import { ESLint } from "eslint";
 import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
+import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { packageJsonFile } from "#constants";
@@ -888,13 +889,12 @@ export function pick(value: Value): number {
         "auaust/padded-exports",
         "auaust/padded-blocks",
         "auaust/grouped-overloads",
-        "auaust/unpadded-switches",
         "auaust/switch-case-braces",
         "auaust/padded-cases",
       ]),
     );
 
-    expect(defaultRules).toHaveLength(6);
+    expect(defaultRules).toHaveLength(5);
 
     const reducedRules = await lintedLayoutRules({
       stylistic: {
@@ -907,12 +907,11 @@ export function pick(value: Value): number {
       expect.arrayContaining([
         "auaust/padded-exports",
         "auaust/grouped-overloads",
-        "auaust/unpadded-switches",
         "auaust/padded-cases",
       ]),
     );
 
-    expect(reducedRules).toHaveLength(4);
+    expect(reducedRules).toHaveLength(3);
   });
 
   test.each([
@@ -1509,7 +1508,7 @@ export function partlyPadded(value: string) {
     ).toEqual(["17:auaust/padded-cases", "34:auaust/padded-cases"]);
   });
 
-  test("quotes all keys or none, leaving shorthand and methods alone", async () => {
+  test("reports longform properties, leaving quoted keys, shorthand and methods alone", async () => {
     const eslint = await getLinter({
       typeAware: false,
     });
@@ -1550,11 +1549,20 @@ export const longform = {
       map(result?.messages ?? [], (message) => {
         return `${message.line}:${message.ruleId}`;
       }),
-    ).toEqual([
-      "16:auaust/quote-props",
-      "20:auaust/quote-props",
-      "24:auaust/object-shorthand",
-    ]);
+    ).toEqual(["24:auaust/object-shorthand"]);
+  });
+
+  test("leaves arrow parentheses and key quotes to Prettier", async () => {
+    const rules = flatMap(
+      await createEslintConfig(await loadConfig(root), {
+        typeAware: false,
+      }),
+      (config) => keys(config.rules ?? {}),
+    );
+
+    expect(rules).not.toContain("@stylistic/arrow-parens");
+    expect(rules).not.toContain("@stylistic/quote-props");
+    expect(rules).not.toContain("auaust/quote-props");
   });
 
   test("reports literals widened in the union itself, but not through a referenced type", async () => {
