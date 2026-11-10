@@ -39,7 +39,11 @@ test("sync adds missing shared workspace settings and keeps explicit denials", a
   });
 
   expect(parse(project.read("pnpm-workspace.yaml"))).toEqual({
-    allowBuilds: { "esbuild": false, "unrs-resolver": true },
+    allowBuilds: {
+      "esbuild": false,
+      "lefthook": false,
+      "unrs-resolver": true,
+    },
     minimumReleaseAgeExclude: ["@auaust/*"],
   });
 

@@ -20,3 +20,8 @@
 - `npm view` in the repository: queried the registry for the package — `devEngines.packageManager` (pnpm) makes npm abort with EBADDEVENGINES; reran from the scratchpad
 - zsh `/usr/bin/time -p node …`: timed CLI runs — reported ~0.12s regardless of command; got real timings by spawning from `node -e` with `performance.now()`
 - `support codegen barrels`: regenerated a barrel after deleting a module it exports — fails loading the deleted module; removed the export line by hand first
+- PreToolUse Bash hook (`git commit --no-verify`): committed a baseline in a scratch copy of another repository — the hook denies it everywhere; used the git index as the baseline and diffed against it
+- `engrenage eslint --format json`: parsed the report — `Linting...` printed on stdout before the JSON; sliced from the first `[{`
+- `timeout`: bounded `engrenage init -y` — not installed on macOS; ran without it and relied on the tool timeout
+- `grep --include=*.ts`: unquoted glob in zsh — zsh aborts with "no matches found"; quoted the pattern
+- `gh issue create` hook: piped a draft by its root-relative path after a `cd` into `.ai/issues/` had moved the shell cwd — the hook resolves the path against the shell cwd and reported the file missing; reran with the path relative to that cwd

@@ -267,7 +267,7 @@ describe("engrenage init", () => {
     );
 
     expect(project.read("pnpm-workspace.yaml")).toBe(
-      'allowBuilds:\n  "esbuild": true\n  "unrs-resolver": true\nminimumReleaseAgeExclude:\n  - "@auaust/*"\n',
+      'allowBuilds:\n  "esbuild": true\n  "lefthook": false\n  "unrs-resolver": true\nminimumReleaseAgeExclude:\n  - "@auaust/*"\n',
     );
 
     expect(project.read("eslint.config.ts")).toContain(

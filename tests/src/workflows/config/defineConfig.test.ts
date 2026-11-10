@@ -29,6 +29,20 @@ describe("defineConfig", () => {
     expectTypeOf<["unknown"]>().not.toExtend<Apis>();
   });
 
+  test("types names that sub-domain extensions contribute", () => {
+    expectTypeOf(defineConfig).toBeCallableWith({
+      preset: "shopify-theme",
+      agents: { preferred: ["claude", "codex"] },
+    });
+
+    defineConfig({
+      agents: {
+        // @ts-expect-error: unknown agent runtime
+        preferred: ["unknown"],
+      },
+    });
+  });
+
   test("accepts sync and async callbacks", () => {
     expectTypeOf(defineConfig).toBeCallableWith(() => {
       return {

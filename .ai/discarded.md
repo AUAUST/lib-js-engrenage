@@ -16,3 +16,4 @@
 - reusable checks workflow: share the jobs between ci.yml and publish.yml — sync only updates existing workflow files, so consumers would never receive a new one
 - build.outDir artifact path: pass only the build output to the release job — unreadable before engrenage is installed, which breaks init; the whole built tree is uploaded instead
 - tests sharding as the fix for slow tests: CI under 2 minutes — hides the engrenage test suite's own slowness, which toolkit's 2k tests in under 1 minute show; sharding kept only as a config option
+- side-effect import of sub-domain extensions: keep their `declare global` in dist declarations — duplicates the value import, fails `auaust/no-duplicates`, and every parent must remember it
