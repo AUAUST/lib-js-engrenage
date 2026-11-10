@@ -16,6 +16,6 @@ order: 40
 - Change repository-wide configuration only after trying an alternative inside the code you own. Report any configuration change with its reason separately from general code changes.
 - Delete obsolete and commented-out code. Add no feature READMEs or `docs/` directory.
 - Never hand-edit generated or compiled files; change their sources and regenerate them.
-- When work would build on or deepen an architectural violation, fixing it comes first: stop under the decision protocol with what exists and the smallest coherent fix with its scope, never a temporary bypass. Correct violations you touch; report other nearby inconsistencies without fixing them.
+- When work would build on or deepen an architectural violation, fixing it comes first: stop under the decision protocol with what exists and the smallest coherent fix with its scope, never a temporary bypass. Correct violations in the code your change rewrites; record the others as debt markers, discarded solutions or backlog entries.
 - Keep secrets in `.env`, documented by `.env.example`, never in source, logs or runtime code.
 - Propose missing or outdated skills, MCP servers, scripts or abstractions when they would help; add, remove or upgrade them only with the user's approval.
