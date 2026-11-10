@@ -1,4 +1,7 @@
+import { AST_NODE_TYPES } from "@typescript-eslint/types";
 import type { Rule, Scope } from "eslint";
+
+import { isObject } from "@auaust/toolkit/isObject";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 
@@ -19,6 +22,26 @@ function findEnclosingFunction(node: Rule.Node) {
 
     current = current.parent;
   }
+}
+
+// @debt the skipped return types mirror `isUndefinedOrVoidReturnType` in `unicorn/no-useless-undefined`, so a change to that rule reopens a gap or a double report
+const delegatedReturnTypes: ReadonlySet<unknown> = new Set([
+  AST_NODE_TYPES.TSUndefinedKeyword,
+  AST_NODE_TYPES.TSVoidKeyword,
+]);
+
+function isDelegatedReturnType(returnType: unknown): boolean {
+  if (!isObject(returnType) || !("typeAnnotation" in returnType)) {
+    return false;
+  }
+
+  const { typeAnnotation } = returnType;
+
+  return (
+    isObject(typeAnnotation) &&
+    "type" in typeAnnotation &&
+    delegatedReturnTypes.has(typeAnnotation.type)
+  );
 }
 
 function isGlobalUndefined(scope: Scope.Scope | null) {
@@ -72,6 +95,7 @@ export default defineConvention({
             fn.generator ||
             !("returnType" in fn) ||
             fn.returnType == null ||
+            isDelegatedReturnType(fn.returnType) ||
             !isGlobalUndefined(sourceCode.getScope(node))
           ) {
             return;

@@ -1641,6 +1641,12 @@ export async function run(): Promise<unknown> {
         0,
       ],
       [
+        "leaves a void function to unicorn",
+        "export function f(): void {\n  return undefined;\n}\n",
+        undefined,
+        0,
+      ],
+      [
         "ignores a shadowed undefined",
         "export function f(undefined: string): string | undefined {\n  return undefined;\n}\n",
         undefined,
