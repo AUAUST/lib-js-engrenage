@@ -137,6 +137,7 @@
     "@changesets/cli": "^3.0.3",
     "@clack/prompts": "^1.8.1",
     "@commander-js/extra-typings": "^15.0.0",
+    "@shopify/cli": "^5.0.1",
     "@types/node": "^26.6.5",
     "@types/shell-quote": "^1.7.5",
     "@valibot/to-json-schema": "^1.8.0",
@@ -163,6 +164,7 @@
   },
   "peerDependencies": {
     "@changesets/cli": "^3.0.0",
+    "@shopify/cli": "^5.0.0",
     "@vitest/coverage-istanbul": "^5.0.0",
     "baseline-browser-mapping": "^2.11.0",
     "eslint": "^10.0.0",
@@ -178,6 +180,9 @@
   },
   "peerDependenciesMeta": {
     "@changesets/cli": {
+      "optional": true
+    },
+    "@shopify/cli": {
       "optional": true
     },
     "@vitest/coverage-istanbul": {

@@ -111,6 +111,9 @@ export const sourceDomains = freeze({
   "tools/prettier": {
     purpose: "Configure code formatting.",
   },
+  "tools/shopify": {
+    purpose: "Configure Shopify apps and themes.",
+  },
   "tools/tsdown": {
     purpose: "Configure package bundling and packaging validation.",
   },

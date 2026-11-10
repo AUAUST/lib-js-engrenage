@@ -21,6 +21,7 @@ export { default as toolsJscpd } from "#tools/jscpd/extension";
 export { default as toolsLefthook } from "#tools/lefthook/extension";
 export { default as toolsPnpm } from "#tools/pnpm/extension";
 export { default as toolsPrettier } from "#tools/prettier/extension";
+export { default as toolsShopify } from "#tools/shopify/extension";
 export { default as toolsTsdown } from "#tools/tsdown/extension";
 export { default as toolsTypescript } from "#tools/typescript/extension";
 export { default as toolsVite } from "#tools/vite/extension";

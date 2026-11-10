@@ -35,6 +35,8 @@ export const primitiveKit = "@auaust/primitive-kit";
 
 export const publint = "publint";
 
+export const shopifyCli = "@shopify/cli";
+
 export const toolkit = "@auaust/toolkit";
 
 export const tsdown = "tsdown";
@@ -67,6 +69,7 @@ export const packages = freeze({
   prettier,
   primitiveKit,
   publint,
+  shopifyCli,
   toolkit,
   tsdown,
   tsx,
