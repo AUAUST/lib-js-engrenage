@@ -1,12 +1,27 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { eslint, prettier, typescript } from "#constants";
+import { engrenage, eslint, prettier, typescript } from "#constants";
+import {
+  domainMetadataFile,
+  namespaceMetadataFile,
+} from "#project/structure/constants";
 import type { Integration } from "#tools/vscode/types/Integration";
 import type { File } from "#types/File";
 
 export const extensionsFile = ".vscode/extensions.json" satisfies File;
 
 export const settingsFile = ".vscode/settings.json" satisfies File;
+
+export const metadataSchemas = freeze([
+  {
+    file: namespaceMetadataFile,
+    schema: `${engrenage}/schemas/namespace.schema.json`,
+  },
+  {
+    file: domainMetadataFile,
+    schema: `${engrenage}/schemas/domain.schema.json`,
+  },
+] as const);
 
 export const eslintIntegration = freeze({
   requires: [eslint],

@@ -251,6 +251,7 @@ export default defineConfig({
       "./agents/skills/*.md": "data/agents/skills/*.md",
       "./github/workflows/*.yml": "data/github/workflows/*.yml",
       "./tsconfig/*.json": "data/tsconfig/*.json",
+      "./schemas/*.json": "data/schemas/*.json",
     },
   },
 });

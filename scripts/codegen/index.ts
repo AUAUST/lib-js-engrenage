@@ -5,6 +5,7 @@ import barrels from "#scripts/codegen/barrels";
 import config from "#scripts/codegen/config";
 import editions from "#scripts/codegen/editions";
 import rules from "#scripts/codegen/rules";
+import schemas from "#scripts/codegen/schemas";
 
 export default defineGroup({
   configure(command) {
@@ -19,6 +20,7 @@ export default defineGroup({
     apis,
     config,
     rules,
+    schemas,
     barrels,
   },
   command: defineCommand({

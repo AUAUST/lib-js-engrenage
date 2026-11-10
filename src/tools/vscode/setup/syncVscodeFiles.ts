@@ -1,3 +1,4 @@
+import { relative } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 
 import { array, optional, string } from "valibot";
@@ -12,6 +13,8 @@ import {
 import { isArray } from "@auaust/toolkit/isArray";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 
+import { resolveDataFile } from "#foundation/data/index";
+import { toPosixPath, type Filesystem } from "#foundation/filesystem/index";
 import { emptyObjectFile } from "#foundation/json/constants";
 import {
   applyJsonEdits,
@@ -25,10 +28,10 @@ import { jsonIndentation } from "#project/format/constants";
 import {
   eslintIntegration,
   extensionsFile,
+  metadataSchemas,
   settingsFile,
 } from "#tools/vscode/constants";
 import { findIntegrations } from "#tools/vscode/utils/findIntegrations";
-import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Integration } from "#tools/vscode/types/Integration";
 import type { Directory } from "#types/Directory";
@@ -147,7 +150,18 @@ async function createSettingsEdits(
     ? await loadEslintInfoRules(root)
     : [];
 
-  return flatMap(applicable, (integration) => {
+  const schemas: SettingEdit = {
+    path: ["json.schemas"],
+    identifier: "url",
+    value: map(metadataSchemas, ({ file, schema }) => {
+      return {
+        fileMatch: [`**/${file}`],
+        url: `./${toPosixPath(relative(root, resolveDataFile(schema)))}`,
+      };
+    }),
+  };
+
+  const integrationEdits = flatMap(applicable, (integration): SettingEdit[] => {
     const edits = flattenJsonObject(integration.settings);
 
     if (integration !== eslintIntegration) {
@@ -168,6 +182,8 @@ async function createSettingsEdits(
       },
     ];
   });
+
+  return [...integrationEdits, schemas];
 }
 
 export async function syncVscodeFiles(

@@ -1,3 +1,4 @@
+import { relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { array, literal, looseObject, strictObject, string } from "valibot";
@@ -14,6 +15,10 @@ import { mockCwd } from "#tests/utils/mockCwd";
 const eslintEntry = fileURLToPath(
   new URL("../../../../src/tools/eslint/index.ts", import.meta.url),
 );
+
+function schemaUrl(root: string, name: string): string {
+  return `./${relative(root, fileURLToPath(new URL(`../../../../data/schemas/${name}.schema.json`, import.meta.url)))}`;
+}
 
 const packageJson = JSON.stringify({
   type: "module",
@@ -53,7 +58,7 @@ describe("syncVscodeFiles", () => {
       },
     ]);
 
-    expect(project.read(".vscode/settings.json")).toBe(`{
+    expect(project.read(".vscode/settings.json")).toBe(String.raw`{
   // Kept by the project.
   "editor.codeActionsOnSave": {
     "source.addMissingImports": "explicit",
@@ -61,10 +66,24 @@ describe("syncVscodeFiles", () => {
     "source.organizeImports": "never",
     "source.sortImports": "never"
   },
-  "files.eol": "\\n",
+  "files.eol": "\n",
   "eslint.rules.customizations": [],
   "js/ts.preferences.importModuleSpecifier": "non-relative",
-  "js/ts.tsdk.path": "node_modules/typescript/lib"
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "**/.namespace.json"
+      ],
+      "url": "${schemaUrl(project.root, "namespace")}"
+    },
+    {
+      "fileMatch": [
+        "**/.domain.json"
+      ],
+      "url": "${schemaUrl(project.root, "domain")}"
+    }
+  ]
 }
 `);
 
@@ -185,6 +204,44 @@ export default defineEslintConfig({}, {
     await syncVscodeFiles(config);
 
     expect(config.context.filesystem.discard()).toEqual([]);
+  });
+
+  test("maps the metadata files to their schemas beside the project's own", async () => {
+    const own = { fileMatch: ["*.own.json"], url: "./own.schema.json" };
+
+    const project = createTemporaryProject({
+      "engrenage.config.ts": "export default {};\n",
+      "package.json": packageJson,
+      ".vscode/settings.json": JSON.stringify({ "json.schemas": [own] }),
+    });
+
+    const config = await loadConfig(project.root);
+
+    await syncVscodeFiles(config);
+
+    await config.context.filesystem.flush();
+
+    const settings = validate(
+      looseObject({
+        "json.schemas": array(
+          strictObject({ fileMatch: array(string()), url: string() }),
+        ),
+      }),
+      JSON.parse(project.read(".vscode/settings.json")),
+      "VS Code settings",
+    );
+
+    expect(settings["json.schemas"]).toEqual([
+      own,
+      {
+        fileMatch: ["**/.namespace.json"],
+        url: schemaUrl(project.root, "namespace"),
+      },
+      {
+        fileMatch: ["**/.domain.json"],
+        url: schemaUrl(project.root, "domain"),
+      },
+    ]);
   });
 
   test("updates existing enabled files and skips disabled or missing ones", async () => {
