@@ -192,6 +192,30 @@ describe("support codegen barrels", () => {
     );
   });
 
+  test("matches file names case-sensitively on every filesystem", async () => {
+    const project = createProject({
+      "package.json": JSON.stringify({
+        imports: {
+          "#tools/*": "./src/tools/*.ts",
+        },
+      }),
+      "src/tools/git/extension.ts": "export default 1;\n",
+      "src/tools/git/types/Extension.ts": "export type Extension = 1;\n",
+      "src/all/index.ts": "// @barrel /src/tools/{*/,*/*/}extension.ts default\n// @end\n",
+    });
+
+    await barrels(["src/all"], { check: false });
+
+    expect(project.read("src/all/index.ts")).toBe(
+      [
+        "// @barrel /src/tools/{*/,*/*/}extension.ts default",
+        'export { default as git } from "#tools/git/extension";',
+        "// @end",
+        "",
+      ].join("\n"),
+    );
+  });
+
   test("rejects a file name repeated among default exports of different file names", async () => {
     createProject({
       "package.json": JSON.stringify({

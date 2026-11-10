@@ -49,7 +49,7 @@ The matrix states environment grants; domain and role boundaries still apply. No
 
 ## Roles
 
-Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other.
+Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other. Other domains import a `collected` role's modules inside sub-domains too, past their parent domains' surfaces.
 
 - `pure`: Compute from arguments only, without observable changes.
 - `confined`: Mutate caller-owned values or maintain a private memo cache.
@@ -60,7 +60,7 @@ Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A 
 | ------------------ | -------------------------------------------------------------------------------------------------- | ------------------------- | --------- | ----------------- | ------------------------------------------- |
 | `index`            | The domain's public surface.                                                                       | `index.ts`                |           |                   | `src`, `tests`, `bin`, `scripts`, `tooling` |
 | `entrypoint`       | The package entry of a public domain, re-exporting the public subset of its surface.               | `entry.ts`                |           |                   | `src`                                       |
-| `extension`        | The domain's extension: data and lazy loaders, read without loading the domain.                    | `extension.ts`            | effectful | public            | `src`                                       |
+| `extension`        | The domain's extension: data and lazy loaders, read without loading the domain.                    | `extension.ts`            | effectful | public, collected | `src`                                       |
 | `constants`        | Deeply read-only constants of the domain.                                                          | `constants.ts`            | pure      | public            | `src`, `tests`, `scripts`, `tooling`        |
 | `declarations`     | Ambient type declarations.                                                                         | `*.d.ts`                  |           |                   | `src`, `tests`, `scripts`, `tooling`        |
 | `types`            | Types only, one per module.                                                                        |                           |           | type-only         | `src`, `tests`, `scripts`, `tooling`        |

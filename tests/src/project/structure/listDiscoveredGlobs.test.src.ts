@@ -17,6 +17,7 @@ function contract(
     exports: undefined,
     index: false,
     public: false,
+    collected: false,
     discovered: false,
     scoped: false,
     typeOnly: false,

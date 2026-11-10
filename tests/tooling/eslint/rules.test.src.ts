@@ -126,7 +126,7 @@ describe("tooling role rules", () => {
     ).toEqual([]);
   });
 
-  test("let an extension import statically only types, its constants and its sub-domains' extensions, and load only its own modules", async () => {
+  test("let an extension import statically only types and its constants, and load only its own modules", async () => {
     const { messageIds } = await createLinter();
 
     const file = "src/project/listed/extension.ts";
@@ -139,9 +139,16 @@ describe("tooling role rules", () => {
     expect(
       await messageIds(
         file,
-        `import type { listedSection } from "${section}";\nimport { listed } from "#project/listed/constants";\nimport inner from "./inner/extension.ts";\n\nexport default { listed, inner };\n`,
+        `import type { listedSection } from "${section}";\nimport { listed } from "#project/listed/constants";\n\nexport default { listed };\n`,
       ),
     ).toEqual([]);
+
+    expect(
+      await messageIds(
+        file,
+        'import inner from "./inner/extension.ts";\n\nexport default inner;\n',
+      ),
+    ).toEqual(["staticImport"]);
 
     expect(
       await messageIds(

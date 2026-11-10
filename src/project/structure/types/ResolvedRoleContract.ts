@@ -12,6 +12,7 @@ export interface ResolvedRoleContract {
   readonly exports: "named-match" | "named" | "default" | undefined;
   readonly index: boolean;
   readonly public: boolean;
+  readonly collected: boolean;
   readonly discovered: boolean;
   readonly scoped: boolean;
   readonly strict: boolean;

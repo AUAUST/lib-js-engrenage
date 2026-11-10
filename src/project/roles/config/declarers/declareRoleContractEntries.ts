@@ -74,6 +74,10 @@ export function declareRoleContractEntries<Nested>(
       ],
       optional: describedDefault(roleContractDefaults.public),
     }),
+    collected: declare(boolean(), {
+      description: "Whether its public modules stay importable inside sub-domains, without going through their parent domains' surfaces, so one module can collect them all.",
+      optional: describedDefault(roleContractDefaults.collected),
+    }),
     typeOnly: declare(boolean(), {
       description: "Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.",
       optional: describedDefault(roleContractDefaults.typeOnly),

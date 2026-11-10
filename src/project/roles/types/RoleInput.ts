@@ -65,6 +65,11 @@ export interface RoleInput {
    */
   public?: (boolean | undefined)
   /**
+   * Whether its public modules stay importable inside sub-domains, without going through their parent domains' surfaces, so one module can collect them all.
+   * @default false
+   */
+  collected?: (boolean | undefined)
+  /**
    * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
    * @default false
    */

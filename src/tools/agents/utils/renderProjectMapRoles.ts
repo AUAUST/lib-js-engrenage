@@ -63,7 +63,7 @@ export function renderProjectMapRoles(
     "",
     "## Roles",
     "",
-    `Effect levels, purest first: ${defaultEffectLevels.map(code).join(" < ")}. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other.`,
+    `Effect levels, purest first: ${defaultEffectLevels.map(code).join(" < ")}. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other. Other domains import a \`collected\` role's modules inside sub-domains too, past their parent domains' surfaces.`,
     "",
     ...defaultEffectLevels.map((level) => {
       return `- ${code(level)}: ${effectLevelPurposes[level]}`;
@@ -79,6 +79,7 @@ export function renderProjectMapRoles(
       const imports = [
         contract.typeOnly ? "type-only" : undefined,
         contract.public ? "public" : undefined,
+        contract.collected ? "collected" : undefined,
       ]
         .filter((value) => value !== undefined)
         .join(", ");

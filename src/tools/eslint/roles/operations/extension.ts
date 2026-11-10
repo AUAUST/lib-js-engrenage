@@ -8,6 +8,7 @@ export const extension = createRolePreset({
   exports: "default",
   discovered: true,
   public: true,
+  collected: true,
   effects: "effectful",
   rules: {
     "extension-imports": async () => {

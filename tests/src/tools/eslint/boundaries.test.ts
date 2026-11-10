@@ -102,6 +102,33 @@ function createBarrelProject() {
   });
 }
 
+function createCollectedProject() {
+  const collected = createRolePreset({
+    name: "collected",
+    file: "collected.ts",
+    exports: "default",
+    public: true,
+    collected: true,
+  });
+
+  const shared = createRolePreset({ name: "shared", public: true });
+
+  return createTemporaryProject({
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+      imports: { "#project/*": "./src/project/*.ts" },
+    }),
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry(), collected(), shared())}, structure: { layers: ["project"] } } };\n`,
+    "tsconfig.json": "{}",
+    "src/project/feature/index.ts": exported,
+    "src/project/other/index.ts": exported,
+    "src/project/other/inner/index.ts": exported,
+    "src/project/other/inner/collected.ts": "export default 1;\n",
+    "src/project/other/inner/shared/value.ts": exported,
+  });
+}
+
 function createConsumerProject() {
   const operations = createRolePreset({ name: "operations" });
 
@@ -183,6 +210,24 @@ describe("structure boundaries", () => {
         'export { value } from "#project/feature/utils/own";\n',
       ),
     ).toEqual([]);
+  });
+
+  test("reaches a collected role inside a sub-domain past its parent's surface", async () => {
+    const lint = await createLinter("auaust/import-", createCollectedProject());
+
+    expect(
+      await lint(
+        "src/project/feature/index.ts",
+        'export { default } from "#project/other/inner/collected";\n',
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        "src/project/feature/index.ts",
+        'export { value } from "#project/other/inner/shared/value";\n',
+      ),
+    ).toEqual(["auaust/import-surfaces"]);
   });
 
   test("names the index.ts of the target domain in a surfaces message", async () => {

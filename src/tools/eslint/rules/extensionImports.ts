@@ -1,6 +1,6 @@
 import { realpathSync } from "node:fs";
 import { createRequire } from "node:module";
-import { basename, dirname, join, sep } from "node:path";
+import { dirname, join, sep } from "node:path";
 
 import type { Rule } from "eslint";
 
@@ -28,7 +28,7 @@ function resolveSpecifier(from: File, specifier: string): File | undefined {
 }
 
 export const extensionImports = defineRoleRule({
-  description: "An extension imports statically only types, its domain's constants and its sub-domains' extensions, and loads only its own domain's modules.",
+  description: "An extension imports statically only types and its domain's constants, and loads only its own domain's modules.",
   messages: {
     staticImport: "An extension imports statically only types and its domain's `constants.ts`; load `{{specifier}}` behind `import()`.",
     foreignImport: "An extension loads only modules of its own domain; `{{specifier}}` is outside it.",
@@ -38,11 +38,7 @@ export const extensionImports = defineRoleRule({
     const directory = realpathSync(dirname(context.filename));
 
     function isStaticallyAllowed(file: File | undefined): boolean {
-      return (
-        file === join(directory, "constants.ts") ||
-        (basename(file ?? "") === "extension.ts" &&
-          dirname(dirname(file ?? "")) === directory)
-      );
+      return file === join(directory, "constants.ts");
     }
 
     function isInside(file: File | undefined): boolean {

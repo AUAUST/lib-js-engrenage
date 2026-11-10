@@ -10,7 +10,7 @@ import * as builtins from "#workflows/builtins/entry";
 export async function composeInputSchemas(
   config: LoadedConfig,
 ): Promise<Record<string, ConfigSchema>> {
-  const owners = new Set<unknown>(values(builtins).flat());
+  const owners = new Set<unknown>(values(builtins));
 
   const declared = await Promise.all(
     config.context.registry

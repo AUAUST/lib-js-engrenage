@@ -51,7 +51,7 @@ export function createProjectConfig({
   );
 
   const registry = collectExtensions<Extension, ConfigResolver>(
-    [...values(builtins).flat(), ...listed],
+    [...values(builtins), ...listed],
     {
       slotKind: "slots",
       async isActive({ when }, config): Promise<boolean> {

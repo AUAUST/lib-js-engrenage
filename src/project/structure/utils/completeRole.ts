@@ -20,6 +20,7 @@ export function completeRole(
     nesting: definition.nesting ?? roleContractDefaults.nesting,
     index: definition.index ?? roleContractDefaults.index,
     public: definition.public ?? roleContractDefaults.public,
+    collected: definition.collected ?? roleContractDefaults.collected,
     discovered: definition.discovered ?? roleContractDefaults.discovered,
     scoped: definition.scoped ?? roleContractDefaults.scoped,
     strict: definition.strict ?? roleContractDefaults.strict,
