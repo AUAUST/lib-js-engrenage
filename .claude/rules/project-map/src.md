@@ -45,7 +45,8 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ lefthook  Configure local Git hooks.
 │  ├─ pnpm*  Configure package management and dependency policies.
 │  ├─ prettier*  Configure code formatting.
-│  ├─ shopify  Configure Shopify apps and themes.
+│  ├─ shopify{theme}  Configure Shopify apps and themes.
+│  │  └─ theme  Format and ignore Shopify theme files.
 │  ├─ tsdown*  Configure package bundling and packaging validation.
 │  ├─ typescript*{tsc}  Configure and run TypeScript checks.
 │  │  └─ tsc  Run the TypeScript compiler.

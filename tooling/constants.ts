@@ -114,6 +114,9 @@ export const sourceDomains = freeze({
   "tools/shopify": {
     purpose: "Configure Shopify apps and themes.",
   },
+  "tools/shopify/theme": {
+    purpose: "Format and ignore Shopify theme files.",
+  },
   "tools/tsdown": {
     purpose: "Configure package bundling and packaging validation.",
   },

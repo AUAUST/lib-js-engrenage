@@ -6,6 +6,8 @@ import {
 } from "#tools/shopify/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
+import theme from "#tools/shopify/theme/extension";
+
 export default [
   {
     name: "tools/shopify",
@@ -63,6 +65,7 @@ export default [
       ],
     },
   },
+  theme,
 ] satisfies readonly Extension[];
 
 declare global {

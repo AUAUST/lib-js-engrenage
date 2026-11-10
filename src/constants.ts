@@ -37,6 +37,8 @@ export const publint = "publint";
 
 export const shopifyCli = "@shopify/cli";
 
+export const shopifyPrettierPluginLiquid = "@shopify/prettier-plugin-liquid";
+
 export const toolkit = "@auaust/toolkit";
 
 export const tsdown = "tsdown";
@@ -70,6 +72,7 @@ export const packages = freeze({
   primitiveKit,
   publint,
   shopifyCli,
+  shopifyPrettierPluginLiquid,
   toolkit,
   tsdown,
   tsx,
