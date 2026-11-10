@@ -232,6 +232,52 @@ describe("structure", () => {
     expect(nodes.get("src/feature")?.purpose).toBeUndefined();
   });
 
+  test("reads metadata files beside the directories they describe", async () => {
+    const { nodes } = await describeSource(declaration, {
+      "src/feature/.domain.json": '{ "purpose": "The feature." }',
+      "src/group/.namespace.json": '{ "layers": ["one", "*"] }',
+    });
+
+    expect(nodes.get("src/feature")).toMatchObject({
+      kind: "domain",
+      source: "metadata",
+      purpose: "The feature.",
+    });
+
+    expect(nodes.get("src/feature")?.strays).toBeUndefined();
+
+    expect(nodes.get("src/group")).toMatchObject({
+      kind: "namespace",
+      source: "metadata",
+      layers: ["one", "*"],
+    });
+  });
+
+  test("lets a domain file override the fields of a matching config glob", async () => {
+    const { nodes } = await describeSource(
+      declaration.replace(
+        'zone: { layers: ["base", "*", "top"] },',
+        'zone: { layers: ["base", "*", "top"], domains: { "*": { specifier: "./zoned" } } },',
+      ),
+      { "src/zone/base/.domain.json": '{ "purpose": "The base." }' },
+    );
+
+    expect(nodes.get("src/zone/base")).toMatchObject({
+      specifier: "./zoned",
+      purpose: "The base.",
+    });
+  });
+
+  test("fails on a field set by both the config and a metadata file", async () => {
+    await expect(
+      describeSource(declaration, {
+        "src/errors/.domain.json": '{ "purpose": "Errors." }',
+      }),
+    ).rejects.toThrow(
+      "src:errors sets purpose in both the config and src/errors/.domain.json",
+    );
+  });
+
   test("fails on a name declared as a namespace and as a domain of one node", async () => {
     await expect(
       describeSource(
@@ -360,6 +406,21 @@ describe("structure", () => {
         kind: "role",
         role: "utils",
       });
+    });
+
+    test("fails on a metadata file in the mirrored environment", async () => {
+      const project = createTemporaryProject({
+        "package.json": '{ "name": "project", "type": "module" }',
+        "src/entry.ts": "",
+        "src/a/index.ts": "",
+        "tests/src/a/x.test.ts": "",
+        "tests/src/a/.domain.json": '{ "purpose": "Tests of a." }',
+        "engrenage.config.ts": `export default { src: { roles: ${sourceRoles} }, tests: { mirror: true, roles: ${testsRoles} } };\n`,
+      });
+
+      await expect(loadStructure(project.root)).rejects.toThrow(
+        "tests/src/a/.domain.json describes the mirrored tests environment",
+      );
     });
 
     test("roots accepts any directory below a root key", async () => {

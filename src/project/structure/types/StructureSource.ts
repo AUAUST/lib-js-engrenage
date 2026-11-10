@@ -1,1 +1,1 @@
-export type StructureSource = "config" | "preset" | "inferred";
+export type StructureSource = "config" | "metadata" | "preset" | "inferred";

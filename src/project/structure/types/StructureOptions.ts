@@ -1,4 +1,5 @@
 import type { StructureRelation } from "#project/structure/types/StructureRelation";
+import type { StructureSource } from "#project/structure/types/StructureSource";
 import type { Directory } from "#types/Directory";
 
 export interface StructureOptions {
@@ -10,6 +11,7 @@ export interface StructureOptions {
         readonly relation: StructureRelation;
         readonly purpose: string | undefined;
         readonly roles: { readonly enable: readonly string[] };
+        readonly source: StructureSource;
       }
     >
   >;
@@ -20,6 +22,7 @@ export interface StructureOptions {
         readonly specifier: string | undefined;
         readonly purpose: string | undefined;
         readonly internals: boolean | undefined;
+        readonly source: StructureSource;
       }
     >
   >;

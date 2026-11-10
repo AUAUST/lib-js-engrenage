@@ -1,4 +1,4 @@
-import { entries, freeze, record } from "@auaust/toolkit/object";
+import { freeze, record } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
 import {
@@ -6,10 +6,12 @@ import {
   type ResolvedEnvironment,
 } from "#project/environments/index";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
+import { readStructureMetadata } from "#project/structure/operations/readStructureMetadata";
 import { readStructureOption } from "#project/structure/operations/readStructureOption";
 import { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
 import { flattenStructure } from "#project/structure/utils/flattenStructure";
 import { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";
+import { mergeStructureMetadata } from "#project/structure/utils/mergeStructureMetadata";
 import type { ConfigResolver } from "#project/config/index";
 import type { EnvironmentStructureOption } from "#project/structure/ports/EnvironmentStructureOption";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
@@ -35,9 +37,28 @@ async function resolveStructure(
 
   const roles = listEnvironmentRoles(option);
 
-  const { namespaces, domains, defined } = flattenStructure({
+  const { defined, ...declared } = flattenStructure({
     environment: name,
     structure: option.structure,
+  });
+
+  const metadata = await readStructureMetadata({
+    root: config.context.root,
+    dirs: environment.dirs,
+  });
+
+  const [mirrored] = tests === undefined ? [] : metadata;
+
+  if (mirrored !== undefined) {
+    throw new Error(
+      `${mirrored.files.join(", ")} describes the mirrored ${name} environment, whose structure follows its counterparts`,
+    );
+  }
+
+  const { namespaces, domains } = mergeStructureMetadata({
+    environment: name,
+    declared,
+    metadata,
   });
 
   return resolveEnvironmentStructure({
@@ -45,14 +66,7 @@ async function resolveStructure(
     root: config.context.root,
     dirs: environment.dirs,
     options: {
-      namespaces: record(
-        entries(namespaces).map(([path, namespace]) => {
-          return [
-            path,
-            { ...namespace, relation: namespace.relation ?? "peers" },
-          ] as const;
-        }),
-      ),
+      namespaces,
       domains,
       optOut: option.optOut,
       strictness: option.strictness,

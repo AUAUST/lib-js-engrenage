@@ -7,6 +7,10 @@ import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 
 export const defaultIndexFile = "index.ts";
 
+export const namespaceMetadataFile = ".namespace.json";
+
+export const domainMetadataFile = ".domain.json";
+
 export const sourceEnvironment = "src";
 
 export const dataEnvironment = "data";

@@ -125,6 +125,12 @@ export async function checkAgents(
       })) {
         const current = await filesystem.read(output.file);
 
+        const foo =
+          current.includes(`<!-- @reference ${template.reference} -->`) &&
+          (output.frontmatter === undefined ||
+            syncFrontmatter(current, output.frontmatter, output.file) ===
+              current);
+
         const valid =
           current !== undefined &&
           current.includes(`<!-- @reference ${template.reference} -->`) &&

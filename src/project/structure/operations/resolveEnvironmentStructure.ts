@@ -116,7 +116,7 @@ export async function resolveEnvironmentStructure({
     path: environmentRoot,
     name,
     kind: "namespace",
-    source: rootDeclaration === undefined ? "inferred" : "config",
+    source: rootDeclaration?.source ?? "inferred",
     ...(commands ? { commands: true as const } : {}),
     ...(rootDeclaration?.layers === undefined
       ? {}

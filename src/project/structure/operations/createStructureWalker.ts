@@ -144,7 +144,7 @@ export function createStructureWalker({
     if (namespace !== undefined) {
       return node(
         "namespace",
-        "config",
+        namespace.source,
         {
           ...(namespace.layers === undefined
             ? {}
@@ -162,7 +162,7 @@ export function createStructureWalker({
     }
 
     if (exact !== undefined) {
-      return domain("config");
+      return domain(exact.source);
     }
 
     if (parent.kind === "role") {

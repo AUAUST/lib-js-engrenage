@@ -3,6 +3,10 @@ import { extname, join, matchesGlob } from "node:path";
 import { entries, keys, values } from "@auaust/toolkit/object";
 
 import { pathExists } from "#foundation/filesystem/index";
+import {
+  domainMetadataFile,
+  namespaceMetadataFile,
+} from "#project/structure/constants";
 import { listStructureFiles } from "#project/structure/operations/listStructureFiles";
 import { constrainsFileRole } from "#project/structure/utils/constrainsFileRole";
 import { getStructureCardinality } from "#project/structure/utils/getStructureCardinality";
@@ -57,8 +61,18 @@ export function createStructureDomainResolver({
       declared: metadata.length > 0,
       metadata: metadata.reduce<Partial<DomainDeclaration>>(
         (merged, declared) => {
-          // @debt a later declaration's resolved `undefined` overrides a value an earlier glob set (`specifier`, `purpose`, `internals`)
-          return { ...merged, ...declared };
+          return {
+            ...merged,
+            ...(declared.specifier === undefined
+              ? {}
+              : { specifier: declared.specifier }),
+            ...(declared.purpose === undefined
+              ? {}
+              : { purpose: declared.purpose }),
+            ...(declared.internals === undefined
+              ? {}
+              : { internals: declared.internals }),
+          };
         },
         {},
       ),
@@ -83,7 +97,11 @@ export function createStructureDomainResolver({
         : await listStructureFiles(join(root, path));
 
     const strays = files.filter((file) => {
-      return !fileGlobs.some((glob) => matchesGlob(file, glob));
+      return (
+        file !== namespaceMetadataFile &&
+        file !== domainMetadataFile &&
+        !fileGlobs.some((glob) => matchesGlob(file, glob))
+      );
     });
 
     const owned = listNamedFileRoles(

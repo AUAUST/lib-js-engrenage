@@ -17,7 +17,7 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 ```
 
 - The generated project maps (`.claude/rules/project-map.md`, `project-map/<environment>.md`) carry the layout, visibility, aliases, roles and imports lint enforces: read the map of each environment you edit, and never restate it.
-- Change the structure only in the project's structure description, then run `engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
+- Change the structure only in its description, the config and the `.namespace.json` and `.domain.json` files beside the directories they describe, then run `engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
 - Give each declared namespace, domain and role a one-line `purpose`; one that is hard to state or overlaps another reveals a design problem.
 - Place code in the domain owning its concern, in the role whose contract fits it. A concern several domains share gets its own domain in the lowest layer holding everything it needs.
 - Order sub-domains by inserting a namespace with layers; a domain never orders its children.
