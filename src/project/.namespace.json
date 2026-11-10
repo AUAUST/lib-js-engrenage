@@ -1,0 +1,20 @@
+{
+  "purpose": "Tool-agnostic project models and contract domains.",
+  "layers": [
+    "config",
+    "baseline",
+    "format",
+    "presets",
+    "roles",
+    "steps",
+    "sync",
+    "gate",
+    "cache",
+    "tsconfig",
+    "package",
+    "environments",
+    "build",
+    "workspaces",
+    "structure"
+  ]
+}
