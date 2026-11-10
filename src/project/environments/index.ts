@@ -51,8 +51,10 @@ export { aliasesSchema } from "#project/environments/config/schemas/aliasesSchem
 export { binSchema } from "#project/environments/config/schemas/binSchema";
 export { dataSchema } from "#project/environments/config/schemas/dataSchema";
 export { defineSchema } from "#project/environments/config/schemas/defineSchema";
+export { domainMetadataSchema } from "#project/environments/config/schemas/domainMetadataSchema";
 export { domainSchema } from "#project/environments/config/schemas/domainSchema";
 export { globalsSchema } from "#project/environments/config/schemas/globalsSchema";
+export { namespaceMetadataSchema } from "#project/environments/config/schemas/namespaceMetadataSchema";
 export { namespaceSchema } from "#project/environments/config/schemas/namespaceSchema";
 export { runtimeSchema } from "#project/environments/config/schemas/runtimeSchema";
 export { scriptsSchema } from "#project/environments/config/schemas/scriptsSchema";

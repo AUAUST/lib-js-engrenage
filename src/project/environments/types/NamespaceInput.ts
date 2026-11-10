@@ -15,8 +15,8 @@ export interface NamespaceInput {
    */
   layers?: (string[] | undefined)
   /**
-   * How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer.
-   * @default `peers`
+   * How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer. Unset, `peers`.
+   * @default none
    */
   relation?: (("peers" | "isolated") | undefined)
   /**

@@ -15,6 +15,7 @@ export type * from "#project/structure/types/AliasesOption";
 export type * from "#project/structure/types/BoundaryCause";
 export type * from "#project/structure/types/BoundaryViolation";
 export type * from "#project/structure/types/CardinalityViolation";
+export type * from "#project/structure/types/DeclaredStructure";
 export type * from "#project/structure/types/EffectModule";
 export type * from "#project/structure/types/EffectModuleResolver";
 export type * from "#project/structure/types/EffectModules";

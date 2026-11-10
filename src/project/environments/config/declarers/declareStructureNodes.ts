@@ -65,23 +65,42 @@ function declareChildren() {
   };
 }
 
+const fields = freeze({
+  layers: declare(array(string()), {
+    description:
+      "Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.",
+    optional: { value: undefined },
+  }),
+  relation: declare(picklist(["peers", "isolated"]), {
+    description:
+      "How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer. Unset, `peers`.",
+    optional: { value: undefined },
+  }),
+  namespacePurpose: declare(string(), {
+    description: "One line stating what the namespace groups.",
+    optional: { value: undefined },
+  }),
+  domainPurpose: declare(string(), {
+    description: "One line stating the domain's concern.",
+    optional: { value: undefined },
+  }),
+  specifier: declare(string(), {
+    description:
+      "Public specifier of the domain, overriding the one derived from its path.",
+    optional: { value: undefined },
+  }),
+  internals: declare(boolean(), {
+    description: "Overrides `structure.internals` for this domain.",
+    optional: { value: undefined },
+  }),
+});
+
 // @debt the root `structure` needs the optionality, so child records also accept `undefined` values, resolved as empty namespaces
 const namespaceNode = declareObject(
   {
-    layers: declare(array(string()), {
-      description:
-        "Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.",
-      optional: { value: undefined },
-    }),
-    relation: declare(picklist(["peers", "isolated"]), {
-      description:
-        "How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer.",
-      optional: { value: "peers" },
-    }),
-    purpose: declare(string(), {
-      description: "One line stating what the namespace groups.",
-      optional: { value: undefined },
-    }),
+    layers: fields.layers,
+    relation: fields.relation,
+    purpose: fields.namespacePurpose,
     roles: declareObject(
       {
         enable: declare(array(union([string(), roleSchema.schema])), {
@@ -115,23 +134,17 @@ const namespaceNode = declareObject(
 );
 
 const domainNode = declareObject({
-  specifier: declare(string(), {
-    description:
-      "Public specifier of the domain, overriding the one derived from its path.",
-    optional: { value: undefined },
-  }),
-  purpose: declare(string(), {
-    description: "One line stating the domain's concern.",
-    optional: { value: undefined },
-  }),
-  internals: declare(boolean(), {
-    description: "Overrides `structure.internals` for this domain.",
-    optional: { value: undefined },
-  }),
+  specifier: fields.specifier,
+  purpose: fields.domainPurpose,
+  internals: fields.internals,
   ...declareChildren(),
 });
 
-const nodes = freeze({ namespace: namespaceNode, domain: domainNode });
+const nodes = freeze({
+  namespace: namespaceNode,
+  domain: domainNode,
+  fields,
+});
 
 export function declareStructureNodes() {
   return nodes;

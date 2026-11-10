@@ -5,8 +5,8 @@ import type {
   DomainDeclaration,
   NamespaceDeclaration,
 } from "#project/environments/index";
+import type { DeclaredStructure } from "#project/structure/types/DeclaredStructure";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
-import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { Directory } from "#types/Directory";
 
 const environmentRoot = ".";
@@ -17,20 +17,16 @@ export function flattenStructure({
 }: {
   environment: string;
   structure: NamespaceDeclaration;
-}): {
-  readonly namespaces: StructureOptions["namespaces"];
-  readonly domains: StructureOptions["domains"];
-  readonly defined: RoleRegistry;
-} {
+}): DeclaredStructure & { readonly defined: RoleRegistry } {
   const defined: RoleRegistry = {
     contracts: {},
     aliases: {},
   };
 
-  const namespaces: Record<Directory, StructureOptions["namespaces"][string]> =
+  const namespaces: Record<Directory, DeclaredStructure["namespaces"][string]> =
     {};
 
-  const domains: Record<string, StructureOptions["domains"][string]> = {};
+  const domains: Record<string, DeclaredStructure["domains"][string]> = {};
 
   function childPath(parent: Directory, name: string): Directory {
     return parent === environmentRoot ? name : `${parent}/${name}`;

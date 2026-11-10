@@ -1,4 +1,4 @@
-import { freeze, record } from "@auaust/toolkit/object";
+import { entries, freeze, record } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
 import {
@@ -45,7 +45,14 @@ async function resolveStructure(
     root: config.context.root,
     dirs: environment.dirs,
     options: {
-      namespaces,
+      namespaces: record(
+        entries(namespaces).map(([path, namespace]) => {
+          return [
+            path,
+            { ...namespace, relation: namespace.relation ?? "peers" },
+          ] as const;
+        }),
+      ),
       domains,
       optOut: option.optOut,
       strictness: option.strictness,
