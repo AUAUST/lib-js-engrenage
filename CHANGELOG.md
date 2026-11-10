@@ -1,5 +1,352 @@
 # @auaust/engrenage
 
+## 0.8.0
+
+### Minor Changes
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Replace the `agents.budgets` keys `plan`, `block` and `task` with `goal`, `context`, `doneWhen`, `comment`, `backlogEntry` and `debtEntry`, beside a `warn | deny` mode. Upgrade: rename the keys you set.
+  - **Breaking**: Remove the `edit` hooks and commands; `engrenage sync` drops them from `.claude/settings.json` and `.codex/hooks.json` and removes stale engrenage hooks, leaving the project's own. Upgrade: run `engrenage sync`.
+  - Add `engrenage gate [--staged | --worktree]`, fixing and checking the changed files (ESLint, Prettier, types, structure, sync, related tests, `agents.gate.commands`) and warning on over-budget backlog or debt entries; the `agents.gate` option; and the lefthook init step with `engrenage sync lefthook`, running the gate before agent commits
+  - Add `engrenage issues check <number>`, checking an issue against the issue contract; untyped bodies with neither **Goal** nor **Steps** get no structure check
+  - Add `engrenage agents claude|codex hook github`, checking every `gh issue create|edit|comment` of a shell command, bodies piped from `.draft.md` files included, against the issue contract and the **Goal**, **Context** and **Done when** budgets
+  - Add `engrenage agents claude hook dispatch`, denying `worker` or `debugger` dispatches whose issue is not ready
+  - Add `engrenage agents claude hook git` and matching settings rules, denying `--no-verify`, `LEFTHOOK=0` and `core.hooksPath` bypasses of the commit gate
+  - Add `gate: true` to skill `agent:` blocks, syncing a `Stop` hook that sends a subagent back once with the gate's failures
+  - Exit hook commands with code 2 and a message when they cannot load the CLI
+  - Add `effort` to skill `agent:` blocks and the `agents.subagentCacheTtl` option (`1h`, synced into `subagentPromptCacheTtl`), and fit each shipped agent's model and effort to its role
+  - Generate a project map overview in `.claude/rules/project-map.md` and one map per environment, loaded only for its files, pointed to by the default `structure` AGENTS.md section
+  - Add the `writing` AGENTS.md section, on by default, with density, structure and length rules for everything agents write
+  - Add the `issue-walking` skill, walking a planned issue tree and dispatching each task to a worker before reviewing and committing it
+  - Write plans as indexes and tasks as deltas naming their ancestors, with nested plans bounding what workers read
+  - Draft planner and debugger issue edits in `.ai/issues/` and publish them in one flush, weigh user requests in the decision protocol, and dispatch Complexity `Trivial` issues at low effort
+  - Remove links to engrenage repository documents from the shared skills
+
+- [`86bd0b3`](https://github.com/AUAUST/lib-js-engrenage/commit/86bd0b30b1621dd1e45ff6d8600de82ec64681dc) Thanks [@apademide](https://github.com/apademide)! - - Name `default` barrel exports after their directories below the glob's static base when every matched module shares one file name
+
+- [`690f393`](https://github.com/AUAUST/lib-js-engrenage/commit/690f393ab79fc09397aa1156c22fdcdf73bea2a1) Thanks [@apademide](https://github.com/apademide)! - - Select the build tool (`build.tool`), the formatter (`format.formatter`) and the preset (`preset`) among the engines extensions contribute; `false` selects none, and an unset `build.tool` or `format.formatter` selects the only active engine
+  - Let a preset contribute option values by input path, replacing the defaults of those options; the config's own input wins
+  - Check `agents.preferred` against the agent runtimes extensions contribute
+  - Pass the loaded config to a `Formatter`, and to `formatContent` and `formatFile`, instead of the project root
+  - Resolve `preset` to the selected preset entry, or `false`
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Write the GitHub workflows at the repository root, with the project directory as `working-directory`. Upgrade: run `engrenage sync`, then delete workflows left in a nested project's `.github/`.
+  - Write `preset` from `engrenage init`, except for the `other` project type
+  - Start commands without loading the config modules, and load the ESLint engine only when the VS Code sync reads its info rules: hooks that never read the config start in about 0.1s instead of 1.1s
+  - Stop shipping `.d.mts` declarations for bin entries
+
+- [`07a0471`](https://github.com/AUAUST/lib-js-engrenage/commit/07a0471c1d914ad19f26ab37e57f25bae7f49606) Thanks [@apademide](https://github.com/apademide)! - - Give every `commands` environment, `bin` included, the `index`, `executable`, `commands` and `actions` roles; a listed role of the same name replaces the layout's
+  - Accept `roles` on `bin`
+  - Fail `structure --check` on a module beside the command group of its name
+  - Check command modules against the `commands` role's default export
+
+- [`738d5e1`](https://github.com/AUAUST/lib-js-engrenage/commit/738d5e1f4becc50af6371119fd4bcd6b78308511) Thanks [@apademide](https://github.com/apademide)! - - Report functions above a cognitive complexity of 20 (`sonarjs/cognitive-complexity`) or longer than 125 lines (`max-lines-per-function`), and modules longer than 300 lines (`max-lines`), blank lines and comments excluded and test files exempt from the line limits, as the `stylistic` conventions `cognitiveComplexity`, `functionLines` and `fileLines`. Upgrade: refactor the reported code, raise the limits, or disable the conventions.
+  - Report functions with identical implementations (`sonarjs/no-identical-functions`) as the `stylistic` convention `noIdenticalFunctions`.
+  - Add the `format.maxCognitiveComplexity`, `format.maxFunctionLines` and `format.maxFileLines` options.
+
+- [`49c8d22`](https://github.com/AUAUST/lib-js-engrenage/commit/49c8d224c03a163a9eb953682be9c48d491b1d61) Thanks [@apademide](https://github.com/apademide)! - `config.resolve` reads a section by its key (`config.resolve("git")`), typed by the global `EngrenageSections`; extensions declare their keys in `owns.keys`.
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Pass `loadConfig` and the callbacks of `defineEslintConfig`, `defineViteConfig`, `defineTsdownConfig`, `defineVitestConfig` and `definePrettierConfig` a `LoadedConfig` read section by section, instead of the flat config. Upgrade: replace each `config.<key>` with `await config.resolve(<key>Section)`, imported from `@auaust/engrenage` (`sourceSection`, `buildSection`, `gitSection`…); read `src.exports` through `sourceExportsSection`, `typescript.tsconfig.path` through `tsconfigPathSection` and `build.outDir` through `buildOutDirSection`.
+  - **Breaking**: Stop validating in `loadConfig` and replace `validateConfig` with `loadValidatedConfig(cwd?, options?)`, which validates once and reports every failing section and unknown top-level key. Upgrade: call `loadValidatedConfig` where the config must be valid.
+  - **Breaking**: Limit `@auaust/engrenage/config` to `defineConfig`, `define`, `loadConfig`, `loadValidatedConfig`, `ConfigInput`, `LoadedConfig` and `Resolvable`. Upgrade: rename the `Config` type to `ConfigInput` and the value-or-function helper to `Resolvable`; import `ResolvedAgents`, `ResolvedGit`, `ResolvedGithub`, `ResolvedPrettier` and `ResolvedVscode` from their tool entries and `PackageJson` from `@auaust/engrenage/package`; drop `createContext`, `ResolvedConfig`, `InlineRole`, `sourceTestsVariant` and `distTestsVariant`.
+  - **Breaking**: Move `root`, `filesystem` and `configFile` to `config.context` and remove `raw` from `LoadedConfig` and the ESLint convention config. Upgrade: `resolve(...paths)` becomes `config.context.path(...paths)`, `cacheFor(name)` becomes `(await config.resolve(cacheSection)).for(name)`.
+  - **Breaking**: Make `createEslintConfig`, `createPrettierConfig`, `createTsdownConfig`, `createViteConfig` and `createVitestConfig` async, taking the `LoadedConfig` first. Upgrade: `await createViteConfig(config, …)`.
+  - **Breaking**: Make `formatFile` and every file read, write, glob and process of config loading, `init`, `sync` and the CLI async, and the `gitignore`, `prettierignore` and per-environment `tsconfig.path` fields promise-valued. Upgrade: `await` them.
+  - **Breaking**: Reject a config file whose default export is neither an object nor a function returning one. Upgrade: export the config object or its function.
+  - Load the config once per project root, shared by the CLI and the definers; `loadConfig.refresh(root)` reloads `engrenage.config.ts`
+  - Declare every option's default, shown as `@default` in the generated JSDoc and filled in the loaded config; fail `src.apis` and `inherits` conflicts when their section is read
+  - Add the `format` section (`indent`, `indentWidth`, `lineWidth`, `quotes`, `semicolons`, `trailingCommas`, `endOfLine`), defaulting to the former fixed conventions
+  - Resolve the `github.workflows` and `tests.dist.tsconfig` defaults in the config, with `ResolvedGithub.workflowsConfigured` and `ResolvedBuild.configuredOutDir` exposing what was set
+
+- [`44efb48`](https://github.com/AUAUST/lib-js-engrenage/commit/44efb4851a0dc5b9f282f8b36915c0c9ce5c9218) Thanks [@apademide](https://github.com/apademide)! - - Breaking: `config.resolve` takes config keys only, and `@auaust/engrenage` no longer exports sections; a section no longer carries a `name`
+
+- [`c4ac9d9`](https://github.com/AUAUST/lib-js-engrenage/commit/c4ac9d91773b7174cc1cb2e6e23b8483773a987b) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Ship effect levels for Node built-ins only; third-party imports such as `typescript`, `eslint` or `c12` are now unranked and never reported. Upgrade: rank the packages you rely on through `structure.effects.modules`
+
+- [`cf67edc`](https://github.com/AUAUST/lib-js-engrenage/commit/cf67edc98a61b7da648af5699aeb149281c2c157) Thanks [@apademide](https://github.com/apademide)! - - Give contributed environments aliases, located entities, generated and discovered files, published or private code (`code`), project-map root files and ESLint scopes (`files.<name>`, `dir.<name>`)
+  - Rename the resolved `tooling.files` to `tooling.rootFiles`
+  - Keep the directories an environment's `dirs` adjustment prepends or appends out of every other environment's default `dirs`
+  - Detect a workspace entry with any extension of a `modules` language, and target the `typescript` language's extensions in ESLint's TypeScript-only import rules
+
+- [`3c87fe1`](https://github.com/AUAUST/lib-js-engrenage/commit/3c87fe1572c5de39eca0fc745d62424c8cf14742) Thanks [@apademide](https://github.com/apademide)! - - Let extensions contribute environments (`environments`) with their level, structure, import grants, tsconfig and owned directories; the project maps, import boundaries and tsconfigs list every active environment in registration order
+  - Make `tooling` an import category that only `tests` imports, so `src`, `bin` and `scripts` now fail on importing tooling files
+  - Keep the directories an environment owns or lists in `dirs` out of every other environment's default `dirs`
+  - Mark the data environment inactive when none of its directories exists
+  - Add `input(key)` to the config resolver, reading a key's validated input without resolving it
+
+- [`0c0cee9`](https://github.com/AUAUST/lib-js-engrenage/commit/0c0cee96d18525b400562a37b7387c3ef89a2a43) Thanks [@apademide](https://github.com/apademide)! - - Run `engrenage eslint`, `eslint:fix` and `eslint:suppress` without a cache, which kept type-aware rules passing after imported types changed; pass `--cache` to opt back in
+  - Drop the redundant `--no-cache` from the generated `ci:check` script
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Remove `eslint.boundaries` and the `eslint-plugin-boundaries` dependency; `auaust/import-environments`, `auaust/import-tests`, `auaust/import-data`, `auaust/import-workspaces`, `auaust/import-layers` and `auaust/import-surfaces` decide from the structure. Upgrade: drop `eslint.boundaries`, and switch a structure rule off through the ESLint `structure` option (`structure: { importLayers: false }`).
+  - **Breaking**: Add `auaust/import-specifiers`, reporting relative specifiers an alias covers, self-imports and paths missing from the structure map, in place of `import-x/no-self-import` and `import-x/no-useless-path-segments`. Upgrade: import through the `#…` aliases.
+  - **Breaking**: Forbid tests importing an environment's root file, and check each test variant's imports: `x.test.ts` and `x.test.dist.ts` import public specifiers, `x.test.src.ts` internals. Upgrade: import the public entry, or rename the test `.src`.
+  - **Breaking**: Replace `no-default-export`, `no-internal-imports-in-public-tests` and `no-package-imports-in-source-tests` with the structure rules, and `typesDeclarations` with `typeOnlyRoles`. Upgrade: rename those rules in your overrides.
+  - **Breaking**: Make a `Convention` declare the `sections` it reads, its `rule` and `delegates` receiving them with the config context, and rename its `presets` option `traits`. Upgrade: declare `sections` and read them instead of the flat config.
+  - **Breaking**: Make `Delegate` describe the upstream rule and its options instead of holding the resolved rule. Upgrade: pass the rule's name and options.
+  - **Breaking**: Remove `StructureLocation` from `@auaust/engrenage/eslint`. Upgrade: use `Entity`.
+  - Add `defineRoleRule`, role rule modules (`roles/<role>/<key>`) receiving the file's `Entity` and its environment's file names
+  - Add the `importEffects` convention, following each runtime binding through re-exports to check it against the effect levels
+  - Report runtime imports from global type-only roles in `auaust/import-surfaces` and `auaust/import-layers`, whose messages name the broken relation and its fix
+  - Lint import boundaries several times faster, leaving `import-x/namespace` to the TypeScript checker on TypeScript files
+
+- [`efd54fe`](https://github.com/AUAUST/lib-js-engrenage/commit/efd54fef79361de1644108895f700449e6b26d41) Thanks [@apademide](https://github.com/apademide)! - - Remove the `@stylistic` ESLint plugin, its dependency and the `StylisticRules` type: Prettier owns layout, so configure or disable `@stylistic/*` rules by registering `@stylistic/eslint-plugin` yourself
+
+- [`6444116`](https://github.com/AUAUST/lib-js-engrenage/commit/6444116275fa53ac89b442c49cdd017dcbc14460) Thanks [@apademide](https://github.com/apademide)! - Add the `extensions` config key, listing extensions to register beside the built-ins, and the `@auaust/engrenage/builtins` entry, listing every built-in extension.
+
+- [`74f0a74`](https://github.com/AUAUST/lib-js-engrenage/commit/74f0a745bf86dc0ef12caa32897d152ae400b3b3) Thanks [@apademide](https://github.com/apademide)! - - Let extensions contribute gate steps (`gate.steps`) to the `fixes`, `checks`, `commands` and `warnings` stages; the built-in steps run only while their extension is active, so the gate runs no ESLint, Prettier, Vitest or jscpd step and no `typecheck` when that tool is not installed
+  - Activate the Prettier extension only when Prettier is installed: without it, no formatter is selected, sync leaves `.prettierignore` alone and the `prettier` key is refused
+
+- [`39f0521`](https://github.com/AUAUST/lib-js-engrenage/commit/39f0521f3b5471f0ae28f94cf5f2b6c07a19b215) Thanks [@apademide](https://github.com/apademide)! - - Activate an extension declaring `when: { installed }` only while the project depends on that package; `config.resolve` refuses its keys while it is inactive, and its config input still validates
+
+- [`eb26798`](https://github.com/AUAUST/lib-js-engrenage/commit/eb2679824b65ae07a074f259fb38a6d1861140a2) Thanks [@apademide](https://github.com/apademide)! - - Let extensions contribute languages (`languages`) with their file extensions; import cycles follow every language marked `modules`, and aliases target the `typescript` language's first extension
+
+- [`edeee8c`](https://github.com/AUAUST/lib-js-engrenage/commit/edeee8c3af9e10f51ec128332e694309de05e0ee) Thanks [@apademide](https://github.com/apademide)! - - Add the observing effect level between confined and effectful.
+  - Rank external imports by export name using shipped Node and dependency levels and configurable symbol overrides.
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Replace `presets: ["library"]` with `preset: "library"` (at most one) and `traits: { enable, disable }`; the `library` preset bundles the `published` trait, which drives the published `package.json` fields, the library tsconfig, dist-mode tests, the library workflows and the library lint conventions. Upgrade: `presets: ["library"]` becomes `preset: "library"`.
+  - **Breaking**: Replace `tests.files` with `tests.location`, `tests.suffix` and `tests.extension`. Upgrade: split the glob into those three options.
+  - **Breaking**: Replace `tests.layout` with the boolean `tests.mirror` (default `false`). Upgrade: `layout: "mirror"` becomes `mirror: true`.
+  - **Breaking**: Rename `bin.layout` and `scripts.layout` to `tree` (default `commands`: the environment root and every non-role directory are command groups, their modules subcommands named after their file), and `bin.commands` to `bin.entries`. Upgrade: rename the keys.
+  - **Breaking**: Replace `build.emptyOutDir` with `build.clean`: `"all"`, `"emitted"` (only the files the previous build emitted) or `false`. Upgrade: `emptyOutDir: true` becomes `clean: "all"`.
+  - **Breaking**: Remove the `public` domain option. Upgrade: give each public domain an `entry.ts`.
+  - Reject each removed key with a message naming its replacement
+  - Add `typescript.verbatimModuleSyntax` (default `true`); `false` is written into the base tsconfig, resolves every role `typeOnly: false` and turns the type import convention off, and a contradicting `compilerOptions.verbatimModuleSyntax` fails
+  - Add `setupFiles` to the tests environment, defaulting to the `setup.ts` of the tests root
+
+- [`d16d662`](https://github.com/AUAUST/lib-js-engrenage/commit/d16d662176fb5656fb2ba72a01ca73690f230895) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Replace `parseMajorVersion` with `parseVersion` in `@auaust/engrenage/package`, yielding a `Version` with major, minor and patch. Upgrade: read `parseVersion(specifier)?.major`.
+  - Fail `engrenage sync` on a pnpm specifier without a version instead of accepting it as within engrenage's range
+
+- [`6744dd3`](https://github.com/AUAUST/lib-js-engrenage/commit/6744dd305f8db5e27acbe46e6aa6023fe292dfeb) Thanks [@apademide](https://github.com/apademide)! - - Replace `auaust/no-dynamic-import` with `auaust/no-pointless-dynamic-import`, which reports `import()` of a module the file already imports statically
+  - Check `import()` in `auaust/import-effects`
+
+- [`1ec3f9a`](https://github.com/AUAUST/lib-js-engrenage/commit/1ec3f9ab069b46914dd0e0a84c5ad0b171112106) Thanks [@apademide](https://github.com/apademide)! - - Keep assigned values beside `=` and `:` in Prettier output: break a destructuring pattern or type annotation first, keep a conditional's test beside the operator, wrap a logical or arithmetic value in parentheses, give a union leading pipes, and let a single value overflow
+  - **Breaking:** raise the `prettier` peer range to `^3.9.0`
+
+- [`14e318a`](https://github.com/AUAUST/lib-js-engrenage/commit/14e318a680c00d40c255e21fb0bdbff4c7b40da4) Thanks [@apademide](https://github.com/apademide)! - - Prettier now owns multiline declaration and expression padding, case padding and object brace newlines, through a layout plugin `createPrettierConfig` appends after every other plugin; padding now also follows lines Prettier wraps
+  - **Breaking:** removed the `stylistic.paddedMultilineDeclarations`, `stylistic.paddedMultilineExpressions`, `stylistic.paddedCases` and `stylistic.objectCurlyNewline` ESLint toggles
+
+- [`bce74dc`](https://github.com/AUAUST/lib-js-engrenage/commit/bce74dcf651189be5043ec66a39dcfd1735125df) Thanks [@apademide](https://github.com/apademide)! - - **Breaking:** removed the `stylistic.unpaddedSwitches` ESLint toggle; Prettier already strips blank lines at a switch's edges
+  - Prettier's `quoteProps` is now `"consistent"`, replacing the `@stylistic/quote-props` ESLint convention; `@stylistic/arrow-parens` is dropped too
+
+- [`52e4dd0`](https://github.com/AUAUST/lib-js-engrenage/commit/52e4dd08b4ced5962511888469afb49fee0156ab) Thanks [@apademide](https://github.com/apademide)! - - Wrap a breaking logical or arithmetic expression in parentheses in Prettier output as a conditional branch, and as an assigned value whose operand breaks, instead of breaking it bare
+
+- [`3c3e5d4`](https://github.com/AUAUST/lib-js-engrenage/commit/3c3e5d403070399aa13ec0b938291a717c31b1f3) Thanks [@apademide](https://github.com/apademide)! - - Prettier now owns statement padding around returns, throws, awaits, yields, breaks, continues, blocks, variable declarations, imports and exports, and the grouping of function overloads, through its layout plugin
+  - **Breaking:** removed the `stylistic.paddedReturns`, `stylistic.paddedThrows`, `stylistic.paddedAwaits`, `stylistic.paddedYields`, `stylistic.paddedBreaks`, `stylistic.paddedContinues`, `stylistic.paddedBlocks`, `stylistic.paddedVariableDeclarations`, `stylistic.groupedOverloads`, `imports.paddedImports` and `imports.paddedExports` ESLint toggles
+
+- [`2ebdfc9`](https://github.com/AUAUST/lib-js-engrenage/commit/2ebdfc9b875e15fd220c57aee5426e310a756f4c) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Remove `importRulesSection` from the root entry.
+  - State the boundary checks' import grants in project maps.
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Remove `loadConfig`, `loadValidatedConfig`, `LoadedConfig`, `PackageType` and `PublishAccess` from the root entry, which exports the config section values and shared path and sync types. Upgrade: import the loaders from `@auaust/engrenage/config` and `PackageType` and `PublishAccess` from `@auaust/engrenage/package`.
+  - **Breaking**: Move `syncBlocks`, `syncFiles` and `syncIgnoreFile` to `@auaust/engrenage/blocks/internals`, `filesIn` to `@auaust/engrenage/filesystem/internals` and `validate` to `@auaust/engrenage/options/internals`, with no stability guarantee. Upgrade: import them from there, or stop depending on them.
+  - Derive package entries from the public domains, adding `format`, `package`, `baseline` and `roles`; tools format through the `Formatter` port
+  - Add `structure.internals` and `<environment>.domains.<path>.internals`, exposing a domain's `index.ts` under `<subpath>/internals` with no stability guarantee
+  - Add `definePrettierConfig` to `@auaust/engrenage/prettier`, mapping the `format` section with the project's plugins and overrides; the default export stays the defaults-only config, and `engrenage init` writes `prettier.config.ts` only for custom rules
+  - Build entries to `dist/<specifier>.mjs`, public specifiers unchanged
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Make `@auaust/engrenage` private and `UNLICENSED`, so every install needs an npm account of the `@auaust` organization. Upgrade: complete steps 2–5 of [#199 §Manual steps](https://github.com/AUAUST/lib-js-engrenage/issues/199#manual-steps-outside-the-repository) (read token, GitHub secrets, hand-written workflows, other install environments) before upgrading.
+  - **Breaking**: Install with the `NPM_READ_TOKEN` secret in the synced library workflows (`registry-url` on `actions/setup-node`, `NODE_AUTH_TOKEN` on the install step only), publishing staying tokenless OIDC. Upgrade: give every consumer repository `NPM_READ_TOKEN` before its CI runs the upgraded workflows.
+  - **Breaking**: Resolve a published project with neither `visibility` nor `publishConfig.access` as `private`. Upgrade: set `visibility: "public"` to keep publishing publicly, and rename unscoped private packages under a scope.
+  - **Breaking**: Add the `publishing` sync target, failing `engrenage sync` and `sync --check` on a configuration that could publish a private package publicly: `"private": true` on a published root, a `publishConfig.access` or changesets `access` off the visibility, an unscoped or provenance-enabled private package, or credentials in a project `.npmrc`. Upgrade: fix what it lists.
+  - Add the top-level `visibility` option (`public` or `private`), falling back to `publishConfig.access`, then `private`; `engrenage init` asks it and derives the license from it
+  - Sync `publishConfig.access` from the visibility at the root and in every workspace of a published project, `"private": true` at the root of an unpublished one, and the changesets `access`
+  - Add the `workspaces` option (globs, a package name pattern such as `@scope/app-{dir}`, tsconfig options), syncing `pnpm-workspace.yaml#packages` and each workspace's managed `package.json` keys and `tsconfig.json`, included by tsdown, Vitest, ESLint and the base tsconfig, a workspace importing another only as a declared dependency
+  - Test libraries' built package through public specifiers in dist mode, failing on any resolution into the sources; skip the managed `tsconfig.tests.dist.json` without the `published` trait
+
+- [`9ccc700`](https://github.com/AUAUST/lib-js-engrenage/commit/9ccc70059afab12c9ece28216f5e59eea8d98fb2) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Stop generating `#src/*` beside source namespace aliases and root index or entry file aliases such as `#entry`; import through namespace aliases.
+
+- [`fcb7767`](https://github.com/AUAUST/lib-js-engrenage/commit/fcb7767b930a79ed5ff8a4c8e616d2625ca919e7) Thanks [@apademide](https://github.com/apademide)! - - Derive `.gitignore`, `.prettierignore`, ESLint's ignores and `files.generated` from file resources, so a custom `cache.dir` and an extension's uncommitted files are ignored
+  - Remove `createProjectIgnores` from `@auaust/engrenage/git`, and `lockfileIgnores`, `eslintIgnores` and `changelogIgnores` from `@auaust/engrenage/prettier/constants`
+  - Fail `defineEslintConfig` on an unreadable tsconfig instead of leaving the build output unignored
+
+- [`802855e`](https://github.com/AUAUST/lib-js-engrenage/commit/802855eefe8d54f4715b1e300b286535fa6adb2b) Thanks [@apademide](https://github.com/apademide)! - - Let extensions contribute role presets (`roles`) with the subpath exporting them, their environments and needed traits; `engrenage init` renders the generated config's role imports and lists from them
+  - Make role rule modules tool-agnostic `{ tool, rule }` modules, so ESLint applies only `tool: "eslint"` ones; a raw rule module (`{ create }`) is now rejected: wrap it with `defineRoleRule` from `@auaust/engrenage/eslint`
+  - Ship the `extension` role preset, carrying its `extension-imports` rule, from `@auaust/engrenage/eslint/roles`, which loads without ESLint
+
+- [`bc36ac8`](https://github.com/AUAUST/lib-js-engrenage/commit/bc36ac8fa0a7791fcce6ac338e3cd673f9b2a33d) Thanks [@apademide](https://github.com/apademide)! - - Build a bin directory's entry from its `executable.ts` instead of its `index.ts`
+  - Show every option of a root command in `engrenage help <name>`
+  - Stop claiming an ESLint cache in the `eslint` command's description
+
+- [`42f3b8a`](https://github.com/AUAUST/lib-js-engrenage/commit/42f3b8a0c537b79ddcf6d1811b253abb1ba72183) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Remove the `EntryValidator`, `ValidationResult` and `ValidationIssue` types; slot `entry` validators are typed by `StandardSchemaV1` from `@standard-schema/spec`. Upgrade: import `StandardSchemaV1` from `@standard-schema/spec` instead.
+
+- [`9ec9d89`](https://github.com/AUAUST/lib-js-engrenage/commit/9ec9d897097178cbf7a5d7b9226d6aba1476599c) Thanks [@apademide](https://github.com/apademide)! - - Read `.namespace.json` and `.domain.json` beside structure directories as namespace and domain declarations, merged with the config's `structure`; nodes they alone declare resolve with source `metadata`
+  - Let a domain's own declaration override only the fields it sets of a matching domain glob
+
+- [`cfb7090`](https://github.com/AUAUST/lib-js-engrenage/commit/cfb70908de0e019feba5716e37bf4ad170390c10) Thanks [@apademide](https://github.com/apademide)! - - Ship JSON Schemas for `.namespace.json` and `.domain.json` under `@auaust/engrenage/schemas/*.json`
+  - Map both metadata files to their schemas in `.vscode/settings.json` `json.schemas`
+
+- [`7173743`](https://github.com/AUAUST/lib-js-engrenage/commit/7173743daba8a268ecf0573279822db925829916) Thanks [@apademide](https://github.com/apademide)! - - **Breaking**: Give each environment only the roles it lists in `roles`, built from presets (`src: { roles: [index(), entry(), utils({ nesting: 1 })] }`). Upgrade: add the `roles` of `src`, `tests`, `scripts` and `tooling` to `engrenage.config.ts`, with `entry()` when published; `engrenage init` writes them for new projects.
+  - **Breaking**: Make a domain public by its `entry.ts` (the renamable `entry` role), which re-exports the public subset of its `index.ts`; the root package entry is `src/entry.ts`. Upgrade: move each public domain's exports into an `entry.ts`.
+  - **Breaking**: Scope ESLint, `prettier:all` and the `tooling` environment to the declared environments instead of `**`, `tooling` defaulting to the root config files and `tooling/`. Upgrade: declare any other directory to keep it checked.
+  - Describe the structure per environment (`namespaces`, `domains`, `optOut`, `strictness`), exposed as `structureSection` with its import rules as `importRulesSection`
+  - Add the `@auaust/engrenage/roles` entry with `createRolePreset` and the presets `index`, `entry`, `constants`, `declarations`, `types`, `utils`, `errors`, `enums`, `ports`, `adapters`, `fixtures`, `setup`, `schemas`, `components`, `hooks`, `contexts`, `pages` and `styles`, each call overriding any default (nested `roles`, `aliases`, the `constants` and `index` file names)
+  - Add the role field `effects` and `structure.effects` (`levels`, `modules`, `fallback`): a ranked module imports at runtime only from roles and modules of its level or purer (`pure`, `confined`, `effectful`); `utils/` is confined and may import other domains' `utils/` through their `index.ts`
+  - Add the role field `typeOnly` (on for `types` and `ports`): such modules declare no runtime value and import anything their domain may, type-only
+  - Add the role property `rules`: ESLint rule entries applied to the role's own files
+  - Add the role options `strict`, `required` and `unique`: only the files nested roles name at the role's root, at least one, at most one file per owning location
+  - Classify files at a role's root that a nested role's `file` globs match with that nested role, `file` accepting a callback over the owning location and `fileDescription` for maps
+  - Treat a file named like the index file as an ordinary module in a role with `index` off
+  - Make `constants` a public role peers and lower layers may import
+  - Let `tooling` import `src` like `scripts` does, never `bin`, `scripts`, `data/` or `tests`
+  - Add `aliases`, `src.aliases` and `src.bundled`; `engrenage sync aliases` generates `package.json#imports` and the bundled tsconfig `paths`, and `src.bundled` sets the src tsconfig `module` and `moduleResolution`
+  - Add `engrenage structure`, printing each directory's classification, each role's effect level and runtime import cycles; `--check` fails on unclassified directories of strict environments, cycles and broken `required` or `unique` roles, type-only imports never counting toward a cycle
+  - Fix tests mirror directories read as the role their name matches
+
+- [`001dbcf`](https://github.com/AUAUST/lib-js-engrenage/commit/001dbcf98e4979132d37f9265f84501fb070e5f4) Thanks [@apademide](https://github.com/apademide)! - - Declare each environment's structure as one nested tree under `<environment>.structure`, replacing the flat `namespaces` and `domains` records keyed by path: the root namespace takes `layers`, `relation`, `purpose` and `roles`, and every namespace and domain nests its children under `namespaces` and `domains`, keyed by directory name or, for domains, a one-segment glob
+  
+    ```ts
+    // Before
+    src: {
+      namespaces: { ".": { layers: ["core", "*"] }, core: { purpose: "Core." } },
+      domains: { "core/model": { purpose: "The model." } },
+    }
+  
+    // After
+    src: {
+      structure: {
+        layers: ["core", "*"],
+        namespaces: {
+          core: { purpose: "Core.", domains: { model: { purpose: "The model." } } },
+        },
+      },
+    }
+    ```
+
+- [`aa29d40`](https://github.com/AUAUST/lib-js-engrenage/commit/aa29d4015d6f153b01e208351b1e735cea3d0414) Thanks [@apademide](https://github.com/apademide)! - - Let extensions, built-in or listed, contribute sync targets, run in order of the files they read and produce
+  - List the active sync targets in run order, with their flags, in `engrenage sync --help`
+  - Reject `changesets` as an `engrenage sync` target when `@changesets/cli` is not installed
+
+- [`98f0c84`](https://github.com/AUAUST/lib-js-engrenage/commit/98f0c84ea4516929b3592033a1114f3752193022) Thanks [@apademide](https://github.com/apademide)! - - Fail tsdown builds on warnings locally too, as CI already did
+
+### Patch Changes
+
+- [`a304cef`](https://github.com/AUAUST/lib-js-engrenage/commit/a304cef5cb530255204291ee8c2fa7a3130deddf) Thanks [@apademide](https://github.com/apademide)! - - Complete walked leaves on the agent's final report
+  - Keep walkers inactive between agent events and limit workers, debuggers and consultants to their final report
+  - Report from workers and debuggers only once the worktree gate passes
+
+- [`bf131d6`](https://github.com/AUAUST/lib-js-engrenage/commit/bf131d60c3191c3dd8c241b079d781a4c2f37952) Thanks [@apademide](https://github.com/apademide)! - - Isolate Codex task contexts and bound agent coordination, verification and tool output
+  - Allow scoped corrections required by project rules without consultant escalation
+
+- [`1c5dfe6`](https://github.com/AUAUST/lib-js-engrenage/commit/1c5dfe675087317b2c76399d514f967635d39dd3) Thanks [@apademide](https://github.com/apademide)! - - Make the analyser record its findings, without being asked, in Resource issues (Material `Report`, `Specification` or `Reference`) and Idea issues, drafted in `.ai/issues/` and published in one flush
+  - Fix the planner's field mechanics, which posted single-select values as arrays
+
+- [`68fb234`](https://github.com/AUAUST/lib-js-engrenage/commit/68fb2348b0d5d46905f48c6a998f5d16a2bb9d2d) Thanks [@apademide](https://github.com/apademide)! - - Add the `analysis` AGENTS.md section, on by default: agents read each request as a hypothesis, work out its ideal solution, map it onto the codebase and adopt only the reach their role allows, and weigh dependencies by size, use and maturity instead of avoiding them
+  - Add the `discarded-solutions` rule, on by default: agents log each solution they set aside in `.ai/discarded.md`, so recurring ones surface as candidates
+  - Add the `analysis` skill and its `analyser` agent, analysing a request or part of the project in depth and reporting its ideal, reach and a recommendation
+  - Make planners pause on every costly reach of a request, however it is worded
+
+- [`ace5160`](https://github.com/AUAUST/lib-js-engrenage/commit/ace51600ed1d25527fea18f8cede52792afe49db) Thanks [@apademide](https://github.com/apademide)! - - Add the `agent-friction` rule, on by default: agents log in `.ai/friction.md` each retry, workaround or lookup their tools and workflow cost them, so recurring stumbles surface as fix candidates
+  - Make the analyser read the agent-friction log alongside the discarded-solutions log
+
+- [`3b57e13`](https://github.com/AUAUST/lib-js-engrenage/commit/3b57e135e94f6b16fbe9873a75247237d7c0b3ac) Thanks [@apademide](https://github.com/apademide)! - Agents lint by hand only named files, with `--fix`
+
+- [`39f0716`](https://github.com/AUAUST/lib-js-engrenage/commit/39f071673141ff24700690d3f7388c4e36e04440) Thanks [@apademide](https://github.com/apademide)! - - Make agents correct architectural violations only in the code their change rewrites, recording the others as debt markers, discarded solutions or backlog entries
+
+- [`1c5a1e0`](https://github.com/AUAUST/lib-js-engrenage/commit/1c5a1e091d97b825a1e826ce521d55eae7c4f96d) Thanks [@apademide](https://github.com/apademide)! - - Show every option of the `agents` and `pnpm` subcommands in `engrenage help`
+
+- [`27cf1c8`](https://github.com/AUAUST/lib-js-engrenage/commit/27cf1c83c7d559926861c21ef9da97f520419659) Thanks [@apademide](https://github.com/apademide)! - - Treat a `#…` alias import of another domain's public entry as a public entry in the structure lint rules
+  - Rank a namespace import of an entry in `auaust/import-effects` by the roles declaring its exports
+
+- [`df7de28`](https://github.com/AUAUST/lib-js-engrenage/commit/df7de2821a64bdd5bcca513ab7748ff1f8d2f1a9) Thanks [@apademide](https://github.com/apademide)! - - Add a `types` barrel mode re-exporting matched modules with `export type * from`
+  - Fill `@barrel` blocks of `entry.ts` files as well as `index.ts` ones
+
+- [`9b95888`](https://github.com/AUAUST/lib-js-engrenage/commit/9b958889cd87fa9fd4629a7c03caa2abc0cc5c9d) Thanks [@apademide](https://github.com/apademide)! - - Check every Claude worker and debugger dispatch: the generated hook now runs on all `Agent` calls, since Claude Code never applied its `Agent(worker)` and `Agent(debugger)` filters
+
+- [`2e15974`](https://github.com/AUAUST/lib-js-engrenage/commit/2e1597456adb1530b835ba0f91548741efbe9ad8) Thanks [@apademide](https://github.com/apademide)! - - Kill tool commands' child processes when their run is interrupted
+
+- [`1df13fa`](https://github.com/AUAUST/lib-js-engrenage/commit/1df13fab51251fbd2665aafa7bd2f292de784268) Thanks [@apademide](https://github.com/apademide)! - - Generate Codex workflow roles with inherited models and Complexity effort profiles
+  - Sync installed skill invocation policies and workflow dispatch instructions
+
+- [`af06ef9`](https://github.com/AUAUST/lib-js-engrenage/commit/af06ef983fcb80c9adc9885a7ef8e1a5e050bbe1) Thanks [@apademide](https://github.com/apademide)! - - Let `defineCommand` and `defineLazyCommand` take an `extend` loader adding project-dependent arguments and options to a command before it parses or shows its help
+
+- [`fae6fae`](https://github.com/AUAUST/lib-js-engrenage/commit/fae6fae35501e61b4330461f56e22f4d6e3c5f81) Thanks [@apademide](https://github.com/apademide)! - - Reject agent commits whose `Closes` and `Towards` lines are separated by blank lines, through a new `commit-msg` hook
+
+- [`f642b7e`](https://github.com/AUAUST/lib-js-engrenage/commit/f642b7e302eeaf4908bc573a365f589e99e6027e) Thanks [@apademide](https://github.com/apademide)! - - Autofix complex concise arrow bodies into blocks with an explicit `return`
+
+- [`2147ce3`](https://github.com/AUAUST/lib-js-engrenage/commit/2147ce35857846517338123c171229bc9637a387) Thanks [@apademide](https://github.com/apademide)! - - Type `ConfigInput` as the global `EngrenageConfigInput`, generated from the built-in extensions' keys and augmentable by other extensions
+
+- [`40c8579`](https://github.com/AUAUST/lib-js-engrenage/commit/40c8579386334f6c761ded6451f28060f3255050) Thanks [@apademide](https://github.com/apademide)! - - Validate the config input of every registered extension's key in `loadValidatedConfig`
+  - List the registered extensions in the error for an unknown config key
+
+- [`92109fa`](https://github.com/AUAUST/lib-js-engrenage/commit/92109faf8081b3630cf66150cdbfa3dd855b48d0) Thanks [@apademide](https://github.com/apademide)! - - Type-check only the plain and `.dist` tests, the setup file and the declarations in the `tests.dist` tsconfig, so `.src` tests no longer bring source into `typecheck:dist`
+
+- [`60f00e2`](https://github.com/AUAUST/lib-js-engrenage/commit/60f00e25f09908ffef562a397d126b14969e0da5) Thanks [@apademide](https://github.com/apademide)! - Drop `import-x/export` and `import-x/default`, which TypeScript already checks
+
+- [`d86a389`](https://github.com/AUAUST/lib-js-engrenage/commit/d86a3897cc684e0f1b68063ef2e838de5f801f52) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage jscpd`, detecting duplicated code in the project's code files outside fixtures and generated files
+  - Warn in `engrenage gate` about clones the changed files add, when the project depends on jscpd
+  - Add the jscpd init step, installing jscpd as a dev dependency
+  - Group the gate's budget warnings under a `budgets` heading
+
+- [`6298d44`](https://github.com/AUAUST/lib-js-engrenage/commit/6298d448d26a771a4bd8b62de9aefb994cb8737b) Thanks [@apademide](https://github.com/apademide)! - - Read ESLint conventions' sections by config key: `Convention.sections` lists `ConfigKey`s, and `defineEslintConfig` no longer loads the Git tool
+
+- [`c5cf3d6`](https://github.com/AUAUST/lib-js-engrenage/commit/c5cf3d6d53e95d5ed447f2bd4790c8a47d1d3dac) Thanks [@apademide](https://github.com/apademide)! - - Apply nested `.gitignore` files to `engrenage eslint`, each scoped to its own directory as Git does
+
+- [`7dd8c3a`](https://github.com/AUAUST/lib-js-engrenage/commit/7dd8c3a340b9f2cad71ee06939240fbdf1a5063b) Thanks [@apademide](https://github.com/apademide)! - - Stop `auaust/no-unnecessary-type-parameters` from reporting type parameters that reach an inferred return type through `NoInfer`
+
+- [`7b9b600`](https://github.com/AUAUST/lib-js-engrenage/commit/7b9b600846d236af9fbd449d8398a274386cc29b) Thanks [@apademide](https://github.com/apademide)! - - Report `return undefined;` once in functions typed `void` or `undefined`, through `auaust/no-useless-undefined` only
+
+- [`73762b4`](https://github.com/AUAUST/lib-js-engrenage/commit/73762b46d4d89d9abbd74ea47f53c1ba74db0588) Thanks [@apademide](https://github.com/apademide)! - - Refuse a config key whose extension's `requires` are unmet, naming the unmet requirement
+  - Fail only the file resources of an extension with unmet `requires`, instead of every resource
+  - Pick up the file resources of a tool once a staged `package.json` adds its package
+
+- [`aade1dd`](https://github.com/AUAUST/lib-js-engrenage/commit/aade1dddf3146de92535fbf02dfaf0962c98b732) Thanks [@apademide](https://github.com/apademide)! - - Reject a malformed listed extension or slot entry when the config loads, naming its path, instead of failing later on first read
+
+- [`e0a19cb`](https://github.com/AUAUST/lib-js-engrenage/commit/e0a19cb9a523195178a02b329cbfd183cc7d555c) Thanks [@apademide](https://github.com/apademide)! - - Add file resources: extensions declare the files they own under `owns.files`, located through the `resources` config key, and open them to other extensions' `owns.parts`
+
+- [`5845ba7`](https://github.com/AUAUST/lib-js-engrenage/commit/5845ba79cfb9b6927fdb62103ac07fe942568fb4) Thanks [@apademide](https://github.com/apademide)! - Gate commands run alongside the built-in checks.
+
+- [`24b8c69`](https://github.com/AUAUST/lib-js-engrenage/commit/24b8c69dbeed49a6c850520cf9aa1088c672504c) Thanks [@apademide](https://github.com/apademide)! - - Run the changed domains' tests in the agent gate instead of every related test, when the tests mirror the source
+
+- [`36e43b4`](https://github.com/AUAUST/lib-js-engrenage/commit/36e43b4e6a5d34ab5e4d113ba790d870e89e56fb) Thanks [@apademide](https://github.com/apademide)! - - Make gates in one worktree wait for each other
+  - Reuse an unchanged stop pass at commit
+  - Fail a gate whose files change while it verifies them
+
+- [`8ae0bb8`](https://github.com/AUAUST/lib-js-engrenage/commit/8ae0bb817947bac8b62c1ee3f75d1f2c6294c6aa) Thanks [@apademide](https://github.com/apademide)! - - Count issues closed by a local `Closes` commit as closed in `engrenage issues check` and the dispatch hook
+  - Report sub-issues and blocking issues as open, closed by a local commit or closed on GitHub, and list the local commits `Towards` the checked issue
+  - Brief walked workers with the commits `Towards` their issue, and read local closes from `engrenage issues check`
+
+- [`3ca8560`](https://github.com/AUAUST/lib-js-engrenage/commit/3ca85605deb79036a3c75536c3dbac7106d2537a) Thanks [@apademide](https://github.com/apademide)! - - List an issue's open sub-issues to walk first in `engrenage issues check`, apart from the issue's own findings
+  - Let walkers walk open sub-issues while handling their parent's own findings
+  - Remove repeated rules from the walking, implementation, debugging and planning skills
+
+- [`917510c`](https://github.com/AUAUST/lib-js-engrenage/commit/917510cea0e40f0bb84bdd86aa12eb7a50e577bc) Thanks [@apademide](https://github.com/apademide)! - - Protect local files from commit additions and modifications while allowing deletions.
+  - Run the local-file safeguard for human commits through Lefthook.
+
+- [`28b0779`](https://github.com/AUAUST/lib-js-engrenage/commit/28b0779fef525cd53a4fe327db8805f3c8ce3584) Thanks [@apademide](https://github.com/apademide)! - - Expand inline object values of `auaust/object-curly-newline` when a sibling property value needs newlines
+
+- [`a4f6c92`](https://github.com/AUAUST/lib-js-engrenage/commit/a4f6c92392ac8521a66f9437d19a58b074c06fdd) Thanks [@apademide](https://github.com/apademide)! - - Surround standalone and assigned awaits with blank lines.
+  - Surround break, continue and yield statements with blank lines.
+
+- [`344847d`](https://github.com/AUAUST/lib-js-engrenage/commit/344847de07cca5054dd961a1c2f0c149a995f975) Thanks [@apademide](https://github.com/apademide)! - - Match statements by attribute instead of subtree search in the concise-arrow convention, cutting its selector cost
+
+- [`6bc2f57`](https://github.com/AUAUST/lib-js-engrenage/commit/6bc2f579fc42f44a4b991333d5308fc2a3d95078) Thanks [@apademide](https://github.com/apademide)! - Planners place checkpoints only between groups of Steps
+
+- [`c9defe1`](https://github.com/AUAUST/lib-js-engrenage/commit/c9defe1194068a6c912a2cc4f799a502a3f1cb88) Thanks [@apademide](https://github.com/apademide)! - - Add missing shared pnpm workspace settings on `engrenage sync`, keeping project entries and explicit denials
+
+- [`d2b3503`](https://github.com/AUAUST/lib-js-engrenage/commit/d2b35037d410bfe24e14175c97d476b44770f059) Thanks [@apademide](https://github.com/apademide)! - - Format the workspaces and the files engrenage owns with `prettier:all`, beside the declared environments
+
+- [`2075058`](https://github.com/AUAUST/lib-js-engrenage/commit/2075058eaa36c30e8449bf76a7df76ba91f37c22) Thanks [@apademide](https://github.com/apademide)! - - Add the `prettier.plugins` slot: extensions contribute Prettier plugins, loaded into every Prettier configuration engrenage builds, with options for the files each plugin covers
+
+- [`36e7227`](https://github.com/AUAUST/lib-js-engrenage/commit/36e72278ff12330fdd1c32fc58502793cfa76578) Thanks [@apademide](https://github.com/apademide)! - - Consolidate role contracts and effect levels in the project map overview.
+  - Include root tooling files in map selectors and omit empty environment maps.
+
+- [`8dc1dd9`](https://github.com/AUAUST/lib-js-engrenage/commit/8dc1dd92111b811eaf0fbe762415a1558580269c) Thanks [@apademide](https://github.com/apademide)! - - Check worker and debugger dispatch readiness in Claude and Codex
+  - Return verification failures through both runtimes and clean passing stop state
+  - Diagnose local agent configuration and unresolved runtime trust
+
+- [`73e0257`](https://github.com/AUAUST/lib-js-engrenage/commit/73e0257739206c18afc0910a89e891267153ddad) Thanks [@apademide](https://github.com/apademide)! - `shopify-app` preset: `extensions/*` workspaces with Preact and Polaris types, Shopify host files left unformatted
+
+- [`dadb727`](https://github.com/AUAUST/lib-js-engrenage/commit/dadb727442ccd013aaf611c9fbe1bf3f8d1f7c89) Thanks [@apademide](https://github.com/apademide)! - `shopify-theme` preset: Liquid formatted through `@shopify/prettier-plugin-liquid`, Vite's output in `assets/` ignored
+
+- [`56349e8`](https://github.com/AUAUST/lib-js-engrenage/commit/56349e80db785107583f936cd42c56c938200d1b) Thanks [@apademide](https://github.com/apademide)! - - Warn on each domain without a purpose in `engrenage structure`.
+
+- [`7407541`](https://github.com/AUAUST/lib-js-engrenage/commit/7407541e2121f2ce223da1a259a5c04e5140080a) Thanks [@apademide](https://github.com/apademide)! - - Enable `incremental` in the synced environment tsconfigs, so `engrenage typecheck` reuses its previous build
+
+- [`0d6666e`](https://github.com/AUAUST/lib-js-engrenage/commit/0d6666e6833fb7f6448b80f44140be0de199ada6) Thanks [@apademide](https://github.com/apademide)! - - Pass `engrenage typecheck` when every environment sets `check: false`, instead of failing
+
+- [`950972f`](https://github.com/AUAUST/lib-js-engrenage/commit/950972fc651df85efadce09b07d03e2b556d904d) Thanks [@apademide](https://github.com/apademide)! - - Keep a project's own entries in VS Code setting arrays sync writes, such as `eslint.rules.customizations`
+
+- [`7cf641e`](https://github.com/AUAUST/lib-js-engrenage/commit/7cf641e4ca83e5d79b294db172191b109e95f7c7) Thanks [@apademide](https://github.com/apademide)! - - Make VS Code propose non-relative import paths, such as the `#…` aliases, instead of relative ones
+
+- [`99d75cf`](https://github.com/AUAUST/lib-js-engrenage/commit/99d75cfb32e138a8d07d1fcddc3a76e01251a724) Thanks [@apademide](https://github.com/apademide)! - - Report and fix concise arrow bodies that do not stay on the line of their `=>` in `auaust/no-complex-concise-arrows`
+
 ## 0.7.0
 
 ### Minor Changes
