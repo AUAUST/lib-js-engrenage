@@ -8,10 +8,10 @@ import { parseWorkspaceDocument } from "#tools/pnpm/utils/parseWorkspaceDocument
 import type { LoadedConfig } from "#project/config/index";
 
 export async function syncWorkspaceFile({ resolve, context }: LoadedConfig) {
-  const [workspaces, filesystem] = await Promise.all([
-    resolve("workspaces"),
-    context.filesystem,
-  ]);
+  const [
+    workspaces,
+    filesystem,
+  ] = await Promise.all([resolve("workspaces"), context.filesystem]);
 
   const content = await filesystem.read(workspaceFile);
 
@@ -19,8 +19,9 @@ export async function syncWorkspaceFile({ resolve, context }: LoadedConfig) {
     return;
   }
 
-  const document =
-    content === undefined ? new Document() : parseWorkspaceDocument(content);
+  const document = content === undefined
+    ? new Document()
+    : parseWorkspaceDocument(content);
 
   if (workspaces.length > 0) {
     const packages = map(workspaces, ({ glob }) => glob);

@@ -18,11 +18,12 @@ export function findConfigTypeImports(
       continue;
     }
 
-    const specifier =
+    const specifier = (
       source.specifier ??
       (source.domain === domain
         ? `#${source.domain}/types/${used}`
-        : `#${source.domain}/index`);
+        : `#${source.domain}/index`)
+    );
 
     specifiers.set(specifier, [...(specifiers.get(specifier) ?? []), used]);
   }

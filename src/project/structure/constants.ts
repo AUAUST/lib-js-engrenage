@@ -25,10 +25,8 @@ export const defaultEffectLevels = freeze([
 export const effectLevelPurposes = freeze({
   pure: "Compute from arguments only, without observable changes.",
   confined: "Mutate caller-owned values or maintain a private memo cache.",
-  observing:
-    "Read the context or write diagnostics without changing state later operations read.",
-  effectful:
-    "Change state later operations can read, including staged writes and spawned processes.",
+  observing: "Read the context or write diagnostics without changing state later operations read.",
+  effectful: "Change state later operations can read, including staged writes and spawned processes.",
 }) satisfies Readonly<Record<(typeof defaultEffectLevels)[number], string>>;
 
 export const noRoles = freeze({
@@ -45,12 +43,9 @@ export const importRelations = freeze({
   "own-roles": "its own roles and files, excluding its index and entry",
   "global-roles": "the global roles of the environment root",
   "ancestor-roles": "the roles of its ancestor domains, as a sub-domain",
-  "sub-domain":
-    "the target's `index.ts` and public roles, through its nearest sub-domain's surface",
-  "lower-layer":
-    "the target's `index.ts` and public roles, through a domain in a lower layer",
-  "peer":
-    "the target's `index.ts` and public roles, through a peer domain (same layer, unless isolated)",
+  "sub-domain": "the target's `index.ts` and public roles, through its nearest sub-domain's surface",
+  "lower-layer": "the target's `index.ts` and public roles, through a domain in a lower layer",
+  "peer": "the target's `index.ts` and public roles, through a peer domain (same layer, unless isolated)",
   "root-entry": "any public surface, from the environment root file",
   "workspace": "another workspace, only through a declared dependency",
 } as const satisfies Record<ImportRelation, string>);

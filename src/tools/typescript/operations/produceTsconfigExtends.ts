@@ -25,8 +25,9 @@ async function createDefaultExtends(
 
   const typescript = await config.resolve("typescript");
 
-  const parent =
-    key === "tests.dist" ? tests.tsconfig.file : typescript.tsconfig.file;
+  const parent = key === "tests.dist"
+    ? tests.tsconfig.file
+    : typescript.tsconfig.file;
 
   return () => {
     return parent === undefined ? [] : [toTsconfigSpecifier(file, parent)];

@@ -50,8 +50,7 @@ const repositoryPattern = /([\w.-]+\/[\w.-]+)$/;
 
 const expansionPattern = /\$[({\w]|\$$|`/;
 
-const draftPattern =
-  /(?<![^\s"'()|;&<>])[^\s"'()|;&<>`$]+\.draft\.md(?![\w.-])/;
+const draftPattern = /(?<![^\s"'()|;&<>])[^\s"'()|;&<>`$]+\.draft\.md(?![\w.-])/;
 
 function findDraft(words: readonly (Token | Word)[]): string | undefined {
   for (const word of words) {
@@ -237,10 +236,9 @@ function readWrite(
   return {
     action,
     number: action === "create" ? undefined : readNumber(words),
-    repository:
-      repository === undefined
-        ? undefined
-        : repositoryPattern.exec(repository)?.[1],
+    repository: repository === undefined
+      ? undefined
+      : repositoryPattern.exec(repository)?.[1],
     title: readString(readFlag(words, ["--title", "-t"])),
     body: readBody(pipeline, position, heredocs),
   };

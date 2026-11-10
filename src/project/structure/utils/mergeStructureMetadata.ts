@@ -51,10 +51,9 @@ export function mergeStructureMetadata({
       return configured ?? located?.value;
     }
 
-    const conflicting =
-      kind === "namespace"
-        ? hasOwn(declared.domains, path)
-        : hasOwn(declared.namespaces, path);
+    const conflicting = kind === "namespace"
+      ? hasOwn(declared.domains, path)
+      : hasOwn(declared.namespaces, path);
 
     if (conflicting) {
       throw new Error(

@@ -31,8 +31,9 @@ export const agentsSection = declareSection({
 
     return freeze({
       ...agents,
-      preferred:
-        preferred === undefined ? undefined : filterAgents(preferred, names),
+      preferred: preferred === undefined
+        ? undefined
+        : filterAgents(preferred, names),
     });
   },
 });

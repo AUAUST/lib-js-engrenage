@@ -65,10 +65,9 @@ export async function fetchIssue(
     type: checked.type?.name,
     blockers,
     subIssues: validate(relatedSchema, subIssues, `sub-issues of #${number}`),
-    parent:
-      parent === undefined
-        ? undefined
-        : validate(parentSchema, parent, `parent of #${number}`).number,
+    parent: parent === undefined
+      ? undefined
+      : validate(parentSchema, parent, `parent of #${number}`).number,
     blockedBy: validate(relatedSchema, blockedBy, `blockers of #${number}`),
   };
 }

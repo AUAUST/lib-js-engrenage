@@ -13,10 +13,9 @@ export async function listLocalFilePatterns(
 
   const file = await git.gitignore;
 
-  const ignored =
-    git.local.gitignore && file !== undefined
-      ? await readIgnorePatterns(config.context.filesystem, file)
-      : [];
+  const ignored = git.local.gitignore && file !== undefined
+    ? await readIgnorePatterns(config.context.filesystem, file)
+    : [];
 
   return resolveListOption(
     git.local.files,

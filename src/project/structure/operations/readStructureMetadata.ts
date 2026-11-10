@@ -41,11 +41,11 @@ async function readFileMetadata(
   const path = posix.dirname(match);
 
   if (posix.basename(match) === namespaceMetadataFile) {
-    const { purpose, layers, relation } = validate(
-      namespaceMetadataSchema,
-      content,
-      file,
-    );
+    const {
+      purpose,
+      layers,
+      relation,
+    } = validate(namespaceMetadataSchema, content, file);
 
     return {
       path,
@@ -61,11 +61,11 @@ async function readFileMetadata(
     };
   }
 
-  const { purpose, specifier, internals } = validate(
-    domainMetadataSchema,
-    content,
-    file,
-  );
+  const {
+    purpose,
+    specifier,
+    internals,
+  } = validate(domainMetadataSchema, content, file);
 
   return {
     path,

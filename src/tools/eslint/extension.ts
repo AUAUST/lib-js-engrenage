@@ -35,8 +35,9 @@ export default {
         stage: "fixes",
         audience: "agents",
         async load() {
-          const { fixWithEslint } =
-            await import("#tools/eslint/operations/fixWithEslint");
+          const {
+            fixWithEslint,
+          } = await import("#tools/eslint/operations/fixWithEslint");
 
           return fixWithEslint;
         },

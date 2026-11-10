@@ -44,8 +44,7 @@ test.each([
   async (name) => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["codex"] } };',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
     });
 
     const config = await loadConfig(project.root);

@@ -6,8 +6,9 @@ export default {
     keys: {
       "typescript": {
         async load() {
-          const { typescriptSection } =
-            await import("#project/tsconfig/config/sections/typescriptSection");
+          const {
+            typescriptSection,
+          } = await import("#project/tsconfig/config/sections/typescriptSection");
 
           return typescriptSection;
         },
@@ -15,24 +16,27 @@ export default {
       "typescript.options": {
         input: "typescript",
         async load() {
-          const { typescriptOptionsSection } =
-            await import("#project/tsconfig/config/sections/typescriptOptionsSection");
+          const {
+            typescriptOptionsSection,
+          } = await import("#project/tsconfig/config/sections/typescriptOptionsSection");
 
           return typescriptOptionsSection;
         },
       },
       "tsconfig": {
         async load() {
-          const { tsconfigSection } =
-            await import("#project/tsconfig/config/sections/tsconfigSection");
+          const {
+            tsconfigSection,
+          } = await import("#project/tsconfig/config/sections/tsconfigSection");
 
           return tsconfigSection;
         },
       },
       "tsconfigPath": {
         async load() {
-          const { tsconfigPathSection } =
-            await import("#project/tsconfig/config/sections/tsconfigPathSection");
+          const {
+            tsconfigPathSection,
+          } = await import("#project/tsconfig/config/sections/tsconfigPathSection");
 
           return tsconfigPathSection;
         },

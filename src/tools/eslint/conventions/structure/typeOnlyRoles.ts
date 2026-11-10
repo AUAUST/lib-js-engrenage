@@ -18,8 +18,7 @@ export default defineConvention({
       entities,
       description: "A module of a type-only role declares types only.",
       messages: {
-        value:
-          "A module of a type-only role declares no runtime value; move this declaration into a role that holds values.",
+        value: "A module of a type-only role declares no runtime value; move this declaration into a role that holds values.",
       },
       create(context, { kind, contract }) {
         if (kind !== "role" || contract?.typeOnly !== true) {
@@ -65,10 +64,11 @@ export default defineConvention({
                 continue;
               }
 
-              const inner: { type: string } | null | undefined =
+              const inner: { type: string } | null | undefined = (
                 type === "ExportNamedDeclaration" && "declaration" in statement
-                  ? statement.declaration
-                  : statement;
+              )
+                ? statement.declaration
+                : statement;
 
               if (
                 inner == null ||

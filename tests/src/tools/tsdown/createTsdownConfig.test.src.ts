@@ -87,8 +87,7 @@ describe("createTsdownConfig", () => {
 
   test("declares the namespace of an empty module entry", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { src: { baseline: "2026-10" } };\n',
+      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",
@@ -133,8 +132,7 @@ describe("createTsdownConfig", () => {
 
   test("builds no declarations for bin entries", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { src: { baseline: "2026-10" }, bin: { entries: { tool: "bin/tool.ts" } } };\n',
+      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" }, bin: { entries: { tool: "bin/tool.ts" } } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",
@@ -206,8 +204,7 @@ describe("createTsdownConfig", () => {
 
   test("enables publint and attw when the project depends on them", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { src: { baseline: "2026-10" } };\n',
+      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",
@@ -254,8 +251,7 @@ describe("createTsdownConfig", () => {
 
   test("takes the output directory and its cleaning from the engrenage config over the tsconfig", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { src: { baseline: "2026-10" }, build: { outDir: "build", clean: false } };\n',
+      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" }, build: { outDir: "build", clean: false } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",
@@ -285,8 +281,7 @@ describe("createTsdownConfig", () => {
 
   test("rejects two bin files that build the same entry", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { src: { baseline: "2026-10" } };\n',
+      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",
@@ -315,8 +310,7 @@ describe("createTsdownConfig", () => {
 
   test("rejects a package that is not an ES module", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { src: { baseline: "2026-10" } };\n',
+      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
       "package.json": '{ "name": "@scope/package" }',
     });
 
@@ -537,8 +531,7 @@ describe("createTsdownConfig", () => {
 
   test("builds declarations with the src tsconfig on a solution base", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { src: { baseline: "2026-10" } };\n',
+      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
       "package.json": JSON.stringify({
         name: "@scope/package",
         type: "module",

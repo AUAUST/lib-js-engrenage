@@ -10,8 +10,9 @@ describe("loadConfig", () => {
   test("falls back to defaults and warns once without a config file or package file", async () => {
     vi.resetModules();
 
-    const { loadConfig: loadFreshConfig } =
-      await import("#project/config/operations/loadConfig");
+    const {
+      loadConfig: loadFreshConfig,
+    } = await import("#project/config/operations/loadConfig");
 
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 

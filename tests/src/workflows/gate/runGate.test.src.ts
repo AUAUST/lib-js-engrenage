@@ -126,9 +126,10 @@ describe("runGate", { timeout: binaryTimeout }, () => {
   });
 
   test("runs no Prettier fix in a project without Prettier installed", async () => {
-    const { project, git } = await createGateRepository(undefined, [
-      "typescript",
-    ]);
+    const {
+      project,
+      git,
+    } = await createGateRepository(undefined, ["typescript"]);
 
     project.write("src/index.ts", "export const value: number = 2\n");
 
@@ -151,10 +152,10 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       `# Debt\n\n## Long entry\n\n${Array.from({ length: 80 }, () => "word").join(" ")}\n`,
     );
 
-    const { failures, warnings } = await runGate(
-      await loadConfig(project.root),
-      { mode: "worktree" },
-    );
+    const {
+      failures,
+      warnings,
+    } = await runGate(await loadConfig(project.root), { mode: "worktree" });
 
     expect(failures).toEqual([]);
 

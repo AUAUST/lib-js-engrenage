@@ -19,10 +19,10 @@ const loadedConfigsSchema = array(
 );
 
 async function loadEslintConfigs(root: Directory) {
-  const { config: loaded, _configFile } = await importConfigFile(
-    root,
-    `${eslint}.config`,
-  );
+  const {
+    config: loaded,
+    _configFile,
+  } = await importConfigFile(root, `${eslint}.config`);
 
   if (_configFile === undefined) {
     return createEslintConfig(await loadConfig(root), {
@@ -37,12 +37,13 @@ export async function loadInfoRules(root: Directory): Promise<string[]> {
   const infoRules = new Set<string>();
 
   for (const { rules = {}, settings = {} } of await loadEslintConfigs(root)) {
-    const declared =
+    const declared = (
       validate(
         optional(array(string())),
         settings[infoRulesSetting],
         `${infoRulesSetting} setting`,
-      ) ?? [];
+      ) ?? []
+    );
 
     for (const name of keys(rules)) {
       if (includes(declared, name)) {

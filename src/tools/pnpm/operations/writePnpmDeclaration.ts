@@ -13,9 +13,10 @@ export function writePnpmDeclaration(
   packageJson: PackageJson,
   version: string,
 ): string {
-  const [declared, ...others] = wrap(
-    packageJson.optional.devEngines?.packageManager,
-  );
+  const [
+    declared,
+    ...others
+  ] = wrap(packageJson.optional.devEngines?.packageManager);
 
   if (others.length > 0) {
     throw new Error(

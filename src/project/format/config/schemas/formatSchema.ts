@@ -46,24 +46,20 @@ export const formatSchema = declareObject(
     }),
     // @debt complexity limits are not formatting conventions; consider a broader section on how code is written, covering formatting primitives, complexity constraints and the other rules that shape the look and feel of code
     maxCognitiveComplexity: declare(pipe(number(), integer(), minValue(0)), {
-      description:
-        "Highest cognitive complexity a function may reach, as SonarSource defines it.",
+      description: "Highest cognitive complexity a function may reach, as SonarSource defines it.",
       optional: { value: complexityLimits.cognitiveComplexity },
     }),
     maxFunctionLines: declare(pipe(number(), integer(), minValue(1)), {
-      description:
-        "Most lines a function may span, blank lines and comments excluded.",
+      description: "Most lines a function may span, blank lines and comments excluded.",
       optional: { value: complexityLimits.functionLines },
     }),
     maxFileLines: declare(pipe(number(), integer(), minValue(1)), {
-      description:
-        "Most lines a module may span, blank lines and comments excluded.",
+      description: "Most lines a module may span, blank lines and comments excluded.",
       optional: { value: complexityLimits.fileLines },
     }),
   },
   {
-    description:
-      "Formatting conventions and complexity limits of the project, mapped by each formatter or linter at its boundary (Prettier options, ESLint rules, and conventions no tool covers).",
+    description: "Formatting conventions and complexity limits of the project, mapped by each formatter or linter at its boundary (Prettier options, ESLint rules, and conventions no tool covers).",
     optional: true,
   },
 );

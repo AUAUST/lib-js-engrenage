@@ -13,27 +13,26 @@ export function reportBudgetFindings(
 
   const message = findings.map(formatBudgetFinding).join("\n");
 
-  const output =
-    mode === "warn"
+  const output = mode === "warn"
+    ? {
+        systemMessage: message,
+        hookSpecificOutput: {
+          hookEventName: event,
+          additionalContext: message,
+        },
+      }
+    : event === "PreToolUse"
       ? {
-          systemMessage: message,
           hookSpecificOutput: {
             hookEventName: event,
-            additionalContext: message,
+            permissionDecision: "deny",
+            permissionDecisionReason: message,
           },
         }
-      : event === "PreToolUse"
-        ? {
-            hookSpecificOutput: {
-              hookEventName: event,
-              permissionDecision: "deny",
-              permissionDecisionReason: message,
-            },
-          }
-        : {
-            decision: "block",
-            reason: message,
-          };
+      : {
+          decision: "block",
+          reason: message,
+        };
 
   process.stdout.write(`${JSON.stringify(output)}\n`);
 }

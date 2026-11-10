@@ -26,8 +26,7 @@ afterEach(() => {
 function createProject(files: Record<string, string> = {}) {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
-    "engrenage.config.ts":
-      'export default { agents: { preferred: ["codex"] } };',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
     "AGENTS.md": "# Project instructions\n",
     "AGENTS.override.md": "<!-- @rules -->\n<!-- @end -->\n",
     ...files,
@@ -84,8 +83,7 @@ describe("agents rules", () => {
 
   test("offers only missing rules, including non-default choices, and detects renamed references", async () => {
     const project = createProject({
-      ".claude/rules/renamed.md":
-        "<!-- @reference @auaust/engrenage/agents/rules/code-style.md -->\n<!-- @end -->\n",
+      ".claude/rules/renamed.md": "<!-- @reference @auaust/engrenage/agents/rules/code-style.md -->\n<!-- @end -->\n",
       ".claude/rules/changesets.md": "Project-owned rule\n",
     });
 

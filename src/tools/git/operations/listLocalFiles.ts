@@ -19,18 +19,17 @@ export async function listLocalFiles(
 
   const directory = relativeWithin(git.root, base);
 
-  const patterns =
-    base === git.root
-      ? globs
-      : map(globs, (glob) => {
-          const negative = glob.startsWith("!");
-          const pattern = negative ? glob.slice(1) : glob;
-          const prefix = negative ? "!" : "";
+  const patterns = base === git.root
+    ? globs
+    : map(globs, (glob) => {
+        const negative = glob.startsWith("!");
+        const pattern = negative ? glob.slice(1) : glob;
+        const prefix = negative ? "!" : "";
 
-          return pattern.slice(0, -1).includes("/")
-            ? `${prefix}/${directory}/${pattern.replace(/^\//u, "")}`
-            : `${prefix}/${directory}/**/${pattern}`;
-        });
+        return pattern.slice(0, -1).includes("/")
+          ? `${prefix}/${directory}/${pattern.replace(/^\//u, "")}`
+          : `${prefix}/${directory}/**/${pattern}`;
+      });
 
   const paths = map(files, (file) => {
     return relativeWithin(git.root, resolveWithin(base, file));

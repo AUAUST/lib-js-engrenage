@@ -7,8 +7,9 @@ export default {
       vscode: {
         input: "vscode",
         async load() {
-          const { vscodeSection } =
-            await import("#tools/vscode/config/sections/vscodeSection");
+          const {
+            vscodeSection,
+          } = await import("#tools/vscode/config/sections/vscodeSection");
 
           return vscodeSection;
         },
@@ -25,8 +26,9 @@ export default {
           extensions: "create .vscode/extensions.json when it is missing",
         },
         async load() {
-          const { syncVscodeFiles } =
-            await import("#tools/vscode/setup/syncVscodeFiles");
+          const {
+            syncVscodeFiles,
+          } = await import("#tools/vscode/setup/syncVscodeFiles");
 
           return syncVscodeFiles;
         },

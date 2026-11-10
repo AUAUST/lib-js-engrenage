@@ -76,23 +76,22 @@ export function defineBoundaryRule({
       target,
     }: ImportEdge,
   ): Record<string, string> {
-    const environment =
-      importer?.lineage[0]?.path ?? importer?.path ?? projectRoot;
+    const environment = (
+      importer?.lineage[0]?.path ?? importer?.path ?? projectRoot
+    );
 
     const owner = importer?.lineage.at(-1)?.path ?? environment;
     const boundaryPath = boundary?.path ?? environment;
     const path = within(projectRoot, file);
 
     // @debt a boundary in another environment renders relative to the importer's environment, as `../src/…`
-    const boundaryName =
-      boundaryPath === environment
-        ? environment
-        : within(environment, boundaryPath);
+    const boundaryName = boundaryPath === environment
+      ? environment
+      : within(environment, boundaryPath);
 
-    const guidance =
-      importer?.variant === undefined
-        ? undefined
-        : variantGuidance[importer.variant];
+    const guidance = importer?.variant === undefined
+      ? undefined
+      : variantGuidance[importer.variant];
 
     return {
       file: within(environment, file),
@@ -103,8 +102,9 @@ export function defineBoundaryRule({
       boundary: boundaryName,
       order: boundary?.layers?.join(" < ") ?? "",
       specifier,
-      fix:
-        fix === undefined ? `the index of \`${boundaryName}\`` : `\`${fix}\``,
+      fix: fix === undefined
+        ? `the index of \`${boundaryName}\``
+        : `\`${fix}\``,
       path,
       targetPath,
       environment: importer?.environment ?? "",

@@ -34,8 +34,9 @@ export function writeJsonValue(
 
       const parent = findNodeAtLocation(tree, location.slice(0, -1));
 
-      const member =
-        parent?.type === "array" ? parent.children?.[index] : undefined;
+      const member = parent?.type === "array"
+        ? parent.children?.[index]
+        : undefined;
 
       if (member !== undefined) {
         const edits = [

@@ -2,8 +2,7 @@ import { join } from "@auaust/primitive-kit/arrays";
 
 import { defineRestriction } from "#tools/eslint/utils/defineRestriction";
 
-const returned =
-  ":matches(ReturnStatement, ArrowFunctionExpression) > UnaryExpression";
+const returned = ":matches(ReturnStatement, ArrowFunctionExpression) > UnaryExpression";
 
 const inertOperands = join(
   [
@@ -24,6 +23,5 @@ const inertOperands = join(
 
 export default defineRestriction({
   selector: `UnaryExpression[operator='void']:not(ExpressionStatement > UnaryExpression):not(${returned}), ${returned}[operator='void'][argument.type=/^(${inertOperands})$/]`,
-  message:
-    "Use `void` only as a standalone statement or to discard the value of a returned action, as in `void promise`, `return void call()` or `() => void call()`.",
+  message: "Use `void` only as a standalone statement or to discard the value of a returned action, as in `void promise`, `return void call()` or `() => void call()`.",
 });

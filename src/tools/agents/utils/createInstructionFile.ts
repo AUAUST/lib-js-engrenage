@@ -9,8 +9,9 @@ export function createInstructionFile({
   reference: string;
   body: string;
 }): string {
-  const header =
-    frontmatter === undefined ? "" : `---\n${stringify(frontmatter)}---\n\n`;
+  const header = frontmatter === undefined
+    ? ""
+    : `---\n${stringify(frontmatter)}---\n\n`;
 
   return `${header}<!-- @reference ${reference} -->\n\n${body.trim()}\n\n<!-- @end -->\n`;
 }

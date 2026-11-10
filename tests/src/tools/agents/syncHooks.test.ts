@@ -55,8 +55,7 @@ const settings = JSON.stringify({
 describe("syncHooks", () => {
   test("keeps only the produced hooks and the user's own, idempotently", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude"] } };\n',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };\n',
       "package.json": '{"type":"module"}',
       ".claude/settings.json": settings,
     });
@@ -156,8 +155,7 @@ describe("syncHooks", () => {
 test("resolves generated commands from a nested consumer directory", async () => {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
-    "engrenage.config.ts":
-      'export default { agents: { preferred: ["claude"] } };',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
     ".claude/settings.json": "{}",
     "nested/deeper/keep": "",
     "bin/pnpm": "#!/bin/sh\npwd\nprintf '%s\\n' \"$@\"\n",
@@ -193,8 +191,7 @@ test("resolves generated commands from a nested consumer directory", async () =>
 test("syncs Codex SubagentStop and preserves unrelated custom hooks", async () => {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
-    "engrenage.config.ts":
-      'export default { agents: { preferred: ["codex"], codexHooks: true } };',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["codex"], codexHooks: true } };',
     ".codex/hooks.json": JSON.stringify({
       hooks: {
         PreToolUse: [
@@ -261,8 +258,7 @@ test("syncs Codex SubagentStop and preserves unrelated custom hooks", async () =
 test("package-resolution failure exits 2 before running a successful child command", async () => {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
-    "engrenage.config.ts":
-      'export default { agents: { preferred: ["claude"] } };',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
     ".claude/settings.json": "{}",
   });
 

@@ -12,10 +12,9 @@ import manifest from "#package.json" with { type: "json" };
 const run = promisify(execFile);
 
 test("the executable prints its version", async () => {
-  const { stdout } = await run(process.execPath, [
-    getExecutable(),
-    "--version",
-  ]);
+  const {
+    stdout,
+  } = await run(process.execPath, [getExecutable(), "--version"]);
 
   expect(stdout.trim()).toBe(manifest.version);
 });
@@ -38,11 +37,9 @@ test(
   "the executable lists every option of a lazy command in its help",
   { timeout: binaryTimeout },
   async () => {
-    const { stdout } = await run(process.execPath, [
-      getExecutable(),
-      "help",
-      "sync",
-    ]);
+    const {
+      stdout,
+    } = await run(process.execPath, [getExecutable(), "help", "sync"]);
 
     expect(stdout).toContain("--check");
     expect(stdout).toContain("--vscode-settings");

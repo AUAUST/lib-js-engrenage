@@ -9,8 +9,9 @@ export default {
         stage: "write",
         reads: ["gitignore"],
         async load() {
-          const { syncLefthookConfig } =
-            await import("#tools/lefthook/setup/syncLefthookConfig");
+          const {
+            syncLefthookConfig,
+          } = await import("#tools/lefthook/setup/syncLefthookConfig");
 
           return syncLefthookConfig;
         },

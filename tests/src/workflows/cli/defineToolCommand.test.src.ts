@@ -47,8 +47,9 @@ const fakeTool = {
 };
 
 const hangingTool = {
-  "node_modules/fake-tool/package.json":
-    fakeTool["node_modules/fake-tool/package.json"],
+  "node_modules/fake-tool/package.json": fakeTool[
+    "node_modules/fake-tool/package.json"
+  ],
   "node_modules/fake-tool/bin.mjs": [
     'import { writeFileSync } from "node:fs";',
     'writeFileSync(new URL("./pid", import.meta.url), String(process.pid));',

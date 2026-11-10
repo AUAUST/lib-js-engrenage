@@ -18,8 +18,7 @@ async function createLinter() {
     "scripts/codegen/index.ts": "export default 1;\n",
     "scripts/codegen/apis.ts": command,
     "scripts/codegen/actions/apis.ts": command,
-    "scripts/codegen/operations/generateThing.ts":
-      "export const generateThing = 1;\n",
+    "scripts/codegen/operations/generateThing.ts": "export const generateThing = 1;\n",
   });
 
   const eslint = new ESLint({

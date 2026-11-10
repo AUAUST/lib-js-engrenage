@@ -246,8 +246,7 @@ export default defineEslintConfig({}, {
 
   test("updates existing enabled files and skips disabled or missing ones", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        "export default { vscode: { settings: false } };\n",
+      "engrenage.config.ts": "export default { vscode: { settings: false } };\n",
       "package.json": packageJson,
       ".vscode/settings.json": settings,
       ".vscode/extensions.json": "{}\n",

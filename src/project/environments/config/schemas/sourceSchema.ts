@@ -46,8 +46,7 @@ export const sourceSchema = declareObject(
     roles: rolesSchema,
     aliases: aliasesSchema,
     bundled: declare(boolean(), {
-      description:
-        "Whether the source only runs through a bundler. It sets the src tsconfig `module` and `moduleResolution` to the bundler ones, writes the src aliases to the tsconfig `paths` and allows bundler aliases in `aliases.define`.",
+      description: "Whether the source only runs through a bundler. It sets the src tsconfig `module` and `moduleResolution` to the bundler ones, writes the src aliases to the tsconfig `paths` and allows bundler aliases in `aliases.define`.",
       optional: { value: false },
     }),
     exports: declare(exposedFilesSchema, {

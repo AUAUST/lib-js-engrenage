@@ -97,9 +97,9 @@ describe("runSync", () => {
   });
 
   test("rejects a target reading a name no extension declares", () => {
-    const { extension } = createFixture(
-      createTarget("orphan", [], { reads: ["missing"] }),
-    );
+    const {
+      extension,
+    } = createFixture(createTarget("orphan", [], { reads: ["missing"] }));
 
     expect(() => createConfig([extension])).toThrow(
       `"orphan" from sync-fixture in slot "sync.targets" names "missing", which no extension declares in files or parts`,

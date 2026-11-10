@@ -15,8 +15,7 @@ export default defineConvention({
       root,
       graph,
       grants,
-      description:
-        "A module imports only the environments and categories its environment reaches, and never the root file of an environment.",
+      description: "A module imports only the environments and categories its environment reaches, and never the root file of an environment.",
       check: checkEnvironments,
       messages: boundaryMessages,
     });

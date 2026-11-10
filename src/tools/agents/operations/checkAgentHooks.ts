@@ -65,8 +65,9 @@ export async function checkAgentHooks(
   const findings: AgentCheckFinding[] = [];
   const file = agent === "codex" ? codexHooksFile : claudeSettingsFile;
 
-  const hooks: readonly HookDefinition[] =
-    agent === "codex" ? codexHooks : claudeHooks;
+  const hooks: readonly HookDefinition[] = agent === "codex"
+    ? codexHooks
+    : claudeHooks;
 
   function add(
     agent: Agent,
@@ -86,12 +87,13 @@ export async function checkAgentHooks(
     if (content === undefined) {
       add(agent, "conflicting", `${file}: missing required hooks`);
     } else {
-      const present =
+      const present = (
         validate(
           hooksSchema,
           readJsonValue(content, file, ["hooks"]),
           `${file} hooks`,
-        ) ?? {};
+        ) ?? {}
+      );
 
       for (const hook of hooks) {
         const found = present[hook.event]?.some((group) => {

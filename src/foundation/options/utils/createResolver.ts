@@ -56,10 +56,9 @@ export function createResolver<
     declaration: Declaration<unknown, unknown, unknown>,
     reader: Resolver<Context>,
   ): Promise<unknown> {
-    const value =
-      defaults === undefined
-        ? input[name]
-        : applyInputDefaults(input[name], name, await defaults(name, reader));
+    const value = defaults === undefined
+      ? input[name]
+      : applyInputDefaults(input[name], name, await defaults(name, reader));
 
     return validate(
       declaration.schema,

@@ -42,8 +42,7 @@ function declareChildren() {
       structureKeySchema,
       refer((): NodeDeclaration<NamespaceDeclaration> => namespaceNode),
       {
-        description:
-          "Namespaces inside this node, keyed by directory name relative to it.",
+        description: "Namespaces inside this node, keyed by directory name relative to it.",
         optional: {
           value: {},
         },
@@ -67,13 +66,11 @@ function declareChildren() {
 
 const fields = freeze({
   layers: declare(array(string()), {
-    description:
-      "Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.",
+    description: "Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.",
     optional: { value: undefined },
   }),
   relation: declare(picklist(["peers", "isolated"]), {
-    description:
-      "How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer. Unset, `peers`.",
+    description: "How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer. Unset, `peers`.",
     optional: { value: undefined },
   }),
   namespacePurpose: declare(string(), {
@@ -85,8 +82,7 @@ const fields = freeze({
     optional: { value: undefined },
   }),
   specifier: declare(string(), {
-    description:
-      "Public specifier of the domain, overriding the one derived from its path.",
+    description: "Public specifier of the domain, overriding the one derived from its path.",
     optional: { value: undefined },
   }),
   internals: declare(boolean(), {
@@ -104,8 +100,7 @@ const namespaceNode = declareObject(
     roles: declareObject(
       {
         enable: declare(array(union([string(), roleSchema.schema])), {
-          description:
-            "Scoped roles to turn on for the whole subtree of the namespace, each the name of a role of the environment or a role of its own.",
+          description: "Scoped roles to turn on for the whole subtree of the namespace, each the name of a role of the environment or a role of its own.",
         }),
       },
       {

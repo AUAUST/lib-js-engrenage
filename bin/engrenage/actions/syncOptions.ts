@@ -12,9 +12,10 @@ export default async function (command: CommandUnknownOpts): Promise<void> {
     throw new Error(`The ${command.name()} command has no targets argument`);
   }
 
-  const { targets, options } = await listSyncOptions(
-    await loadValidatedConfig(),
-  );
+  const {
+    targets,
+    options,
+  } = await listSyncOptions(await loadValidatedConfig());
 
   argument.choices(targets);
 

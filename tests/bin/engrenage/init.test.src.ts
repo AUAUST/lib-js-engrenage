@@ -177,8 +177,7 @@ describe("engrenage init", () => {
 
   test("fills the gaps of a configured project, installs added dependencies and syncs", async () => {
     const project = createProject({
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude"] } };\n',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };\n',
       "package.json": '{\n  "name": "project",\n  "type": "module"\n}\n',
       ".gitignore": "node_modules\n.DS_Store\n\n# Scratch\n/scratch\n",
     });
@@ -195,8 +194,7 @@ describe("engrenage init", () => {
       author: manifest.author,
       scripts: {
         "ci": "pnpm run ci:check && pnpm run ci:test",
-        "ci:check":
-          "engrenage sync --check && engrenage typecheck && engrenage eslint",
+        "ci:check": "engrenage sync --check && engrenage typecheck && engrenage eslint",
         "test": "engrenage vitest && engrenage typecheck",
         "typecheck": "engrenage typecheck",
         "coverage": "engrenage vitest:coverage",
@@ -205,12 +203,12 @@ describe("engrenage init", () => {
         "lint:check": "engrenage eslint",
         "lint:fix": "engrenage eslint:fix",
         "lint:suppress": "engrenage eslint:suppress",
-        "ready":
-          "pnpm install --frozen-lockfile && engrenage sync && pnpm run ci",
+        "ready": "pnpm install --frozen-lockfile && engrenage sync && pnpm run ci",
       },
       devDependencies: {
-        "@vitest/coverage-istanbul":
-          manifest.peerDependencies["@vitest/coverage-istanbul"],
+        "@vitest/coverage-istanbul": manifest.peerDependencies[
+          "@vitest/coverage-istanbul"
+        ],
         "@auaust/engrenage": `^${manifest.version}`,
         "eslint": manifest.peerDependencies.eslint,
         "prettier": manifest.peerDependencies.prettier,
@@ -299,8 +297,7 @@ describe("engrenage init", () => {
     async (declined) => {
       const project = createProject({
         "package.json": '{"name":"project","type":"module"}',
-        "engrenage.config.ts":
-          "export default { agents: { preferred: [] } };\n",
+        "engrenage.config.ts": "export default { agents: { preferred: [] } };\n",
       });
 
       const confirm = vi.fn((message: string) => {
@@ -339,8 +336,7 @@ describe("engrenage init", () => {
           type: "module",
           [dependencies]: { "@vitest/coverage-istanbul": "*" },
         }),
-        "engrenage.config.ts":
-          "export default { agents: { preferred: [] } };\n",
+        "engrenage.config.ts": "export default { agents: { preferred: [] } };\n",
         ".changeset/config.json": "{}\n",
       });
 
@@ -379,8 +375,7 @@ describe("engrenage init", () => {
 
   test("leaves a complete project untouched", async () => {
     const project = createProject({
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude"] } };\n',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };\n',
       "package.json": '{\n  "name": "project",\n  "type": "module"\n}\n',
       ".changeset/config.json": "{}\n",
     });
@@ -428,8 +423,7 @@ describe("engrenage init", () => {
                 extends: "@auaust/engrenage/tsconfig/library.json",
               }),
               ".gitignore": "node_modules\n\n# Custom output\n/custom-output\n",
-              "pnpm-workspace.yaml":
-                "# Existing workspace\nallowBuilds:\n  unrs-resolver: true\n",
+              "pnpm-workspace.yaml": "# Existing workspace\nallowBuilds:\n  unrs-resolver: true\n",
             }
           : {},
       );
@@ -518,8 +512,7 @@ describe("engrenage init", () => {
         version: "0.0.0",
         license: "GPL-3.0-only",
         scripts: {
-          "build":
-            "engrenage tsdown && engrenage typecheck:dist && engrenage vitest:dist",
+          "build": "engrenage tsdown && engrenage typecheck:dist && engrenage vitest:dist",
           "ci:build": "pnpm run build",
           "ci:publish": "changeset publish",
           "ci:test": "engrenage vitest",
@@ -858,8 +851,7 @@ test("uses an interactive selection for this init without rewriting an existing 
 test("declining backlog setup leaves no backlog instructions or files", async () => {
   const project = createProject({
     "package.json": '{"name":"project","type":"module"}',
-    "engrenage.config.ts":
-      'export default { agents: { preferred: ["codex"] } };\n',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };\n',
   });
 
   const confirm = vi.fn((message: string) => {
@@ -894,13 +886,10 @@ test("declining backlog setup leaves no backlog instructions or files", async ()
 test("adds a scratchpad to an existing backlog setup", async () => {
   const project = createProject({
     "package.json": '{"name":"project","type":"module"}',
-    "engrenage.config.ts":
-      'export default { agents: { preferred: ["codex"] } };\n',
-    "AGENTS.md":
-      "# Agents\n\n<!-- @reference @auaust/engrenage/agents/sections/backlog.md -->\n<!-- @end -->\n",
+    "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };\n',
+    "AGENTS.md": "# Agents\n\n<!-- @reference @auaust/engrenage/agents/sections/backlog.md -->\n<!-- @end -->\n",
     ".ai/backlog/index.md": "# Backlog\n\nKeep project guidance.\n",
-    ".claude/rules/backlog.md":
-      "<!-- @reference @auaust/engrenage/agents/rules/backlog.md -->\n<!-- @end -->\n",
+    ".claude/rules/backlog.md": "<!-- @reference @auaust/engrenage/agents/rules/backlog.md -->\n<!-- @end -->\n",
   });
 
   await init({ yes: true });

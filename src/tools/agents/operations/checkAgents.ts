@@ -78,9 +78,10 @@ export async function checkAgents(
 
       const installed = await filesystem.read(skillFile.file);
 
-      let owned =
+      let owned = (
         installed?.includes(`<!-- @reference ${template.reference} -->`) ===
-        true;
+        true
+      );
 
       if (!owned) {
         for (const output of template.files) {
@@ -125,13 +126,14 @@ export async function checkAgents(
       })) {
         const current = await filesystem.read(output.file);
 
-        const valid =
+        const valid = (
           current !== undefined &&
           current.includes(`<!-- @reference ${template.reference} -->`) &&
           (output.frontmatter === undefined ||
             syncFrontmatter(current, output.frontmatter, output.file) ===
               current) &&
-          current.includes(template.body.trim());
+          current.includes(template.body.trim())
+        );
 
         add(
           agent,
@@ -172,10 +174,9 @@ export async function checkAgents(
         `${agent}: client version unavailable (${version.error?.message ?? version.stderr.trim()}); install a supported local client`,
       );
     } else {
-      const inspected =
-        agent === "codex"
-          ? /\b0\.159\.2\b/.test(version.stdout)
-          : /\b2\.1\.318\b/.test(version.stdout);
+      const inspected = agent === "codex"
+        ? /\b0\.159\.2\b/.test(version.stdout)
+        : /\b2\.1\.318\b/.test(version.stdout);
 
       add(
         agent,

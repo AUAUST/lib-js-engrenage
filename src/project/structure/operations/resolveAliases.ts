@@ -191,8 +191,9 @@ export async function resolveAliases({
 
   const files = readAliasedFiles(language);
 
-  const generatedSource =
-    options.src.enabled && options.src.generated && structure !== undefined;
+  const generatedSource = (
+    options.src.enabled && options.src.generated && structure !== undefined
+  );
 
   const roots = flat(
     await Promise.all(

@@ -10,11 +10,9 @@ export default defineConvention({
   rule: ({ entities }) => {
     return defineStructureRule({
       entities,
-      description:
-        "A domain index or an enabled role barrel only re-exports: it declares no local value, except a SCREAMING_CASE constant of metadata, and default-exports no expression; the index.ts of a command group declares its command.",
+      description: "A domain index or an enabled role barrel only re-exports: it declares no local value, except a SCREAMING_CASE constant of metadata, and default-exports no expression; the index.ts of a command group declares its command.",
       messages: {
-        value:
-          "An index.ts only re-exports; move this code into a module of the domain's roles, or into its entry.ts if consumers need it at import.",
+        value: "An index.ts only re-exports; move this code into a module of the domain's roles, or into its entry.ts if consumers need it at import.",
       },
       create(context, { fileRole, commands }) {
         if (fileRole !== indexRoleName || commands) {
@@ -46,10 +44,7 @@ export default defineConvention({
                     declarations?: { id: { type: string; name?: string } }[];
                   }
                 | null
-                | undefined =
-                type === "ExportNamedDeclaration" && "declaration" in statement
-                  ? statement.declaration
-                  : statement;
+                | undefined = type === "ExportNamedDeclaration" && "declaration" in statement ? statement.declaration : statement;
 
               if (declaration == null) {
                 continue;
@@ -63,14 +58,11 @@ export default defineConvention({
                 "VariableDeclaration",
               ].includes(declaration.type);
 
-              const isMetadata =
-                declaration.type === "VariableDeclaration" &&
-                declaration.kind === "const" &&
-                (declaration.declarations ?? []).every(({ id }) => {
-                  return (
-                    id.type === "Identifier" && metadata.test(id.name ?? "")
-                  );
-                });
+              const isMetadata = declaration.type === "VariableDeclaration" &&
+              declaration.kind === "const" &&
+              (declaration.declarations ?? []).every(({ id }) => {
+                return id.type === "Identifier" && metadata.test(id.name ?? "");
+              });
 
               if (isValue && !isMetadata) {
                 context.report({ node: statement, messageId: "value" });

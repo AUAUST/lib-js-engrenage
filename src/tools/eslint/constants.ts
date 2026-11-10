@@ -19,31 +19,20 @@ export const pluginName = "auaust";
 export const rolesPluginName = "roles";
 
 export const boundaryMessages = freeze({
-  higherLayer:
-    "`{{domain}}` imports `{{targetDomain}}`; {{order}}. Move the code down, or inject it.",
-  isolatedPeer:
-    "`{{domain}}` imports `{{targetDomain}}`; peers of the isolated `{{boundary}}` never import each other. Move the shared code to `{{boundary}}` or lower.",
-  privateRole:
-    "`{{file}}` imports `{{target}}`, private to `{{boundary}}`. Import it from {{fix}}.",
-  ownIndex:
-    "A module of `{{domain}}` imports `{{specifier}}`. Import the role module directly.",
+  higherLayer: "`{{domain}}` imports `{{targetDomain}}`; {{order}}. Move the code down, or inject it.",
+  isolatedPeer: "`{{domain}}` imports `{{targetDomain}}`; peers of the isolated `{{boundary}}` never import each other. Move the shared code to `{{boundary}}` or lower.",
+  privateRole: "`{{file}}` imports `{{target}}`, private to `{{boundary}}`. Import it from {{fix}}.",
+  ownIndex: "A module of `{{domain}}` imports `{{specifier}}`. Import the role module directly.",
   typeOnly: "`{{module}}` is type-only; use `import type`.",
-  globalRole:
-    "`{{file}}` belongs to a global role; global roles import only each other.",
-  entrySurface:
-    "`{{file}}` is a package entry; it re-exports only the index and public roles of `{{domain}}`.",
-  environment:
-    "`{{path}}` imports `{{targetPath}}`; `{{environment}}` never imports {{category}}.",
-  rootEntry:
-    "`{{path}}` imports `{{targetPath}}`; only the environment's root executable imports its root file.",
-  testVariant:
-    "`{{path}}` imports `{{specifier}}`; {{variantReach}}. Move the case to {{variantMove}}.",
-  workspace:
-    "`{{workspace}}` imports `{{targetWorkspace}}`, not a declared dependency of `{{workspace}}`.",
+  globalRole: "`{{file}}` belongs to a global role; global roles import only each other.",
+  entrySurface: "`{{file}}` is a package entry; it re-exports only the index and public roles of `{{domain}}`.",
+  environment: "`{{path}}` imports `{{targetPath}}`; `{{environment}}` never imports {{category}}.",
+  rootEntry: "`{{path}}` imports `{{targetPath}}`; only the environment's root executable imports its root file.",
+  testVariant: "`{{path}}` imports `{{specifier}}`; {{variantReach}}. Move the case to {{variantMove}}.",
+  workspace: "`{{workspace}}` imports `{{targetWorkspace}}`, not a declared dependency of `{{workspace}}`.",
   selfImport: "`{{path}}` imports itself.",
   relativePath: "Import {{fix}} instead of `{{specifier}}`.",
-  unknownPath:
-    "`{{unknown}}` is not in the structure map; if you just created it, reload the editor window.",
+  unknownPath: "`{{unknown}}` is not in the structure map; if you just created it, reload the editor window.",
 } as const satisfies Record<BoundaryCause, string>);
 
 export const infoRulesSetting = `${pluginName}/info-rules`;
@@ -219,8 +208,7 @@ export const unicornRules = freeze({
   "unicorn/throw-new-error": "error",
 } as const satisfies UnicornRules);
 
-export const defaultSuppressionsFile =
-  "eslint-suppressions.json" satisfies File;
+export const defaultSuppressionsFile = "eslint-suppressions.json" satisfies File;
 
 export { eslint } from "#constants";
 

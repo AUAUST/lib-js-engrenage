@@ -53,8 +53,9 @@ export function listStructureRoles(
   function visit(node: StructureNode) {
     const roles = rolesIn.get(node);
 
-    const contract =
-      node.role === undefined ? undefined : roles?.roles[node.role];
+    const contract = node.role === undefined
+      ? undefined
+      : roles?.roles[node.role];
 
     if (node.role !== undefined && contract !== undefined) {
       contracts.set(node.role, contract);

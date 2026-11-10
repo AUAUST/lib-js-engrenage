@@ -45,10 +45,9 @@ function expandBraces(glob: Glob): readonly Glob[] {
   const prefix = glob.slice(0, open);
   const suffixes = expandBraces(glob.slice(close + 1));
 
-  const expanded =
-    alternatives.length === 1
-      ? [glob.slice(open, close + 1)]
-      : flatMap(alternatives, expandBraces);
+  const expanded = alternatives.length === 1
+    ? [glob.slice(open, close + 1)]
+    : flatMap(alternatives, expandBraces);
 
   return flatMap(expanded, (alternative) => {
     return map(suffixes, (suffix) => `${prefix}${alternative}${suffix}`);

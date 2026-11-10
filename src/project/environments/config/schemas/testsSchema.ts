@@ -38,13 +38,11 @@ export const testsSchema = declareObject(
       optional: { value: false },
     }),
     location: declare(globSchema, {
-      description:
-        "Glob of the directories holding test files, the first part of the test file patterns.",
+      description: "Glob of the directories holding test files, the first part of the test file patterns.",
       optional: { value: defaultTestsLocation },
     }),
     suffix: declare(globSchema, {
-      description:
-        "Glob of the suffix that marks a test file, the second part of the test file patterns.",
+      description: "Glob of the suffix that marks a test file, the second part of the test file patterns.",
       optional: { value: defaultTestsSuffix },
     }),
     extension: declare(globSchema, {
@@ -55,8 +53,7 @@ export const testsSchema = declareObject(
       optional: { value: defaultTestsExtension },
     }),
     fixtures: declareList(globSchema, {
-      description:
-        "Globs of fixture files inside the tests directories, excluded from Vitest, from the tests tsconfig and from the test rules of ESLint.",
+      description: "Globs of fixture files inside the tests directories, excluded from Vitest, from the tests tsconfig and from the test rules of ESLint.",
       optional: {
         explain: "everything under a `fixtures` directory",
         compute() {
@@ -65,8 +62,7 @@ export const testsSchema = declareObject(
       },
     }),
     coverageDir: declare(directorySchema, {
-      description:
-        "Directory of the Vitest coverage reports, ignored by Git and ESLint.",
+      description: "Directory of the Vitest coverage reports, ignored by Git and ESLint.",
       optional: { value: defaultTestsCoverageDirectory },
     }),
     dist: declareObject(
@@ -76,8 +72,7 @@ export const testsSchema = declareObject(
             "Options of the tsconfig that checks the tests against the built output (`engrenage typecheck:dist`).",
             "`false` manages none.",
           ],
-          explain:
-            "`tsconfig.tests.dist.json` extending the tests tsconfig, not referenced by the base one; none without the `published` trait",
+          explain: "`tsconfig.tests.dist.json` extending the tests tsconfig, not referenced by the base one; none without the `published` trait",
           managed(context: { readonly published: boolean }) {
             return context.published;
           },

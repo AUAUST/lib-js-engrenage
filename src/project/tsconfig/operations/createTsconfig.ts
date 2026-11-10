@@ -144,15 +144,14 @@ export async function createTsconfig({
   filesystem: Filesystem;
   content?: string | undefined;
 }): Promise<Tsconfig> {
-  const files =
-    path === undefined
-      ? undefined
-      : await loadTsconfigFiles({
-          root,
-          path,
-          filesystem,
-          content,
-        });
+  const files = path === undefined
+    ? undefined
+    : await loadTsconfigFiles({
+        root,
+        path,
+        filesystem,
+        content,
+      });
 
   const parsed = once(() => {
     return path === undefined || files === undefined

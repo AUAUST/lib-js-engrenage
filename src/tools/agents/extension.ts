@@ -17,8 +17,9 @@ export default [
           input: "agents",
           // @debt consider a more concise way to load sections given all sections follow a similar import pattern; defineLazyCommand() might serve as a ref; maybe a shared small lazy loader utility is worth it so formalise the pattern
           async load() {
-            const { agentsSection } =
-              await import("#tools/agents/config/sections/agentsSection");
+            const {
+              agentsSection,
+            } = await import("#tools/agents/config/sections/agentsSection");
 
             return agentsSection;
           },
@@ -42,8 +43,9 @@ export default [
           reads: ["tsconfig"],
           produces: ["agents.instructions"],
           async load() {
-            const { syncAgents } =
-              await import("#tools/agents/setup/syncAgents");
+            const {
+              syncAgents,
+            } = await import("#tools/agents/setup/syncAgents");
 
             return syncAgents;
           },
@@ -52,8 +54,9 @@ export default [
       "sync.done": [
         {
           async load() {
-            const { reportSyncedAgentChecks } =
-              await import("#tools/agents/operations/reportSyncedAgentChecks");
+            const {
+              reportSyncedAgentChecks,
+            } = await import("#tools/agents/operations/reportSyncedAgentChecks");
 
             return reportSyncedAgentChecks;
           },

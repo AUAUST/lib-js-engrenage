@@ -13,9 +13,10 @@ export function resolveTraits(
   const resolved = {} as Record<Trait, boolean>;
 
   for (const trait of traits) {
-    resolved[trait] =
+    resolved[trait] = (
       includes(enable, trait) ||
-      (includes(bundled, trait) && !includes(disable, trait));
+      (includes(bundled, trait) && !includes(disable, trait))
+    );
   }
 
   return freeze(resolved);

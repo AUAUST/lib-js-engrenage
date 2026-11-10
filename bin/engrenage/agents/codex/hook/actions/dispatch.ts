@@ -20,10 +20,10 @@ const payloadSchema = object({
 });
 
 export default async function (): Promise<void> {
-  const { cwd, tool_input: input } = await readHookPayload(
-    payloadSchema,
-    "Codex",
-  );
+  const {
+    cwd,
+    tool_input: input,
+  } = await readHookPayload(payloadSchema, "Codex");
 
   const config = await loadValidatedConfig(cwd);
 

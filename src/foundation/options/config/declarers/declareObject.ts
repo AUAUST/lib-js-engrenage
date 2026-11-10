@@ -65,12 +65,13 @@ export function declareObject(
   const { optional, disable, assert, renamed = {} } = options;
 
   function describe(issue: StrictObjectIssue): string {
-    const replacement =
+    const replacement = (
       issue.expected === "never" &&
       isString(issue.input) &&
       hasOwn(renamed, issue.input)
-        ? renamed[issue.input]
-        : undefined;
+    )
+      ? renamed[issue.input]
+      : undefined;
 
     return replacement === undefined
       ? issue.message
@@ -99,12 +100,11 @@ export function declareObject(
       throw new Error(`${path} is required`);
     }
 
-    const source =
-      input === undefined && optional !== undefined
-        ? optional === true
-          ? {}
-          : resolveDefault(optional, context)
-        : input;
+    const source = input === undefined && optional !== undefined
+      ? optional === true
+        ? {}
+        : resolveDefault(optional, context)
+      : input;
 
     if (disable !== undefined && source === false) {
       return freeze({ ...disable.value, enabled: false });

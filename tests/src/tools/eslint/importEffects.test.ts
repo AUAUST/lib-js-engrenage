@@ -54,16 +54,14 @@ async function createLinter({
       version: "1.0.0",
       types: "index.d.ts",
     }),
-    "node_modules/my-db/index.d.ts":
-      "export declare const connect: number;\nexport declare const readFileSync: number;\nexport default connect;\n",
+    "node_modules/my-db/index.d.ts": "export declare const connect: number;\nexport declare const readFileSync: number;\nexport default connect;\n",
     "node_modules/valibot/package.json": JSON.stringify({
       name: "valibot",
       version: "1.0.0",
       types: "index.d.ts",
     }),
     "node_modules/valibot/index.d.ts": "export declare const string: number;\n",
-    "src/foundation/base/index.ts":
-      'export { helper } from "#foundation/base/utils/helper";\nexport { act } from "#foundation/base/operations/act";\n',
+    "src/foundation/base/index.ts": 'export { helper } from "#foundation/base/utils/helper";\nexport { act } from "#foundation/base/operations/act";\n',
     "src/foundation/base/entry.ts": 'export * from "#foundation/base/index";\n',
     "src/foundation/base/utils/helper.ts": "export const helper = 1;\n",
     "src/foundation/base/operations/act.ts": "export const act = 1;\n",
@@ -74,8 +72,7 @@ async function createLinter({
     "src/project/feature/observing/read.ts": "export const read = 1;\n",
     "src/project/feature/constants.ts": "export const value = 1;\n",
     "src/project/feature/config/featureSchema.ts": "export const value = 1;\n",
-    "src/project/feature/config/defineFeatureConfig.ts":
-      "export const value = 1;\n",
+    "src/project/feature/config/defineFeatureConfig.ts": "export const value = 1;\n",
   });
 
   const eslint = new ESLint({
@@ -135,8 +132,7 @@ describe("import effects", () => {
   test("rank a namespace import of an entry by the roles declaring its exports", async () => {
     const lint = await createLinter();
 
-    const source =
-      'import * as base from "#foundation/base/entry";\n\nexport const run = base;\n';
+    const source = 'import * as base from "#foundation/base/entry";\n\nexport const run = base;\n';
 
     expect(await lint("src/project/feature/operations/run.ts", source)).toEqual(
       [],
@@ -156,10 +152,9 @@ describe("import effects", () => {
       await lint(utility, importing("#foundation/base/index", "helper")),
     ).toEqual([]);
 
-    const [message] = await lint(
-      utility,
-      importing("#foundation/base/index", "act"),
-    );
+    const [
+      message,
+    ] = await lint(utility, importing("#foundation/base/index", "act"));
 
     expect(message).toContain("confined");
     expect(message).toContain("effectful");
@@ -190,8 +185,7 @@ describe("import effects", () => {
     ).toHaveLength(1);
 
     const inserted = await createLinter({
-      effects:
-        'levels: ["pure", "logging", "confined", "observing", "effectful"]',
+      effects: 'levels: ["pure", "logging", "confined", "observing", "effectful"]',
       roles: [
         createRolePreset({
           name: "logging",
@@ -216,8 +210,7 @@ describe("import effects", () => {
 
   test("rank external modules by function, with an opt-in fallback", async () => {
     const ranked = await createLinter({
-      effects:
-        'modules: (specifier) => specifier === "my-db" ? "effectful" : undefined',
+      effects: 'modules: (specifier) => specifier === "my-db" ? "effectful" : undefined',
     });
 
     expect(await ranked(utility, importing("my-db", "connect"))).toHaveLength(
@@ -273,8 +266,7 @@ describe("import effects", () => {
 
     const configured = await createLinter({
       roles,
-      effects:
-        'modules: { "my-db": { default: "effectful", symbols: { default: "pure", readFileSync: "observing" } } }',
+      effects: 'modules: { "my-db": { default: "effectful", symbols: { default: "pure", readFileSync: "observing" } } }',
     });
 
     expect(

@@ -273,10 +273,8 @@ describe("workspace modules", () => {
       "tsconfig.json": "{}",
       "src/index.ts": "",
       "shared/greeting.ts": 'export const greeting: string = "hello";\n',
-      "extensions/action-a/src/helper.ts":
-        "export const helper: string = 'helped';\n",
-      "extensions/action-a/src/index.ts":
-        "import { greeting } from '$shared/greeting';\nimport { helper } from '#self/helper';\n\nexport const message: string = `${greeting} ${helper}`;\n",
+      "extensions/action-a/src/helper.ts": "export const helper: string = 'helped';\n",
+      "extensions/action-a/src/index.ts": "import { greeting } from '$shared/greeting';\nimport { helper } from '#self/helper';\n\nexport const message: string = `${greeting} ${helper}`;\n",
     });
 
     const resolved = await loadConfig(project.root);

@@ -48,8 +48,7 @@ async function sync(root: string) {
 describe("agents.attribution", () => {
   test("false hides attribution in new settings and adds the no-attribution rule", async () => {
     const project = createProject(", attribution: false", {
-      [attributionRule]:
-        "<!-- @reference @auaust/engrenage/agents/rules/attribution.md -->\n<!-- @end -->\n",
+      [attributionRule]: "<!-- @reference @auaust/engrenage/agents/rules/attribution.md -->\n<!-- @end -->\n",
     });
 
     await (await sync(project.root)).flush();
@@ -104,8 +103,7 @@ describe("agents.attribution", () => {
         model: "opus",
         attribution: hidden,
       }),
-      [noAttributionRule]:
-        "<!-- @reference @auaust/engrenage/agents/rules/no-attribution.md -->\n<!-- @end -->\n",
+      [noAttributionRule]: "<!-- @reference @auaust/engrenage/agents/rules/no-attribution.md -->\n<!-- @end -->\n",
     });
 
     await (await sync(project.root)).flush();
@@ -147,8 +145,7 @@ describe("agents.attribution", () => {
                 hooks: [
                   {
                     type: "command",
-                    command:
-                      "pnpm --silent engrenage agents claude hook github",
+                    command: "pnpm --silent engrenage agents claude hook github",
                     if: `Bash(gh issue ${verb} *)`,
                   },
                 ],
@@ -171,8 +168,7 @@ describe("agents.attribution", () => {
               hooks: [
                 {
                   type: "command",
-                  command:
-                    "pnpm --silent engrenage agents claude hook dispatch",
+                  command: "pnpm --silent engrenage agents claude hook dispatch",
                 },
               ],
             },
@@ -191,8 +187,7 @@ describe("agents.attribution", () => {
         attribution: hidden,
         subagentPromptCacheTtl: "1h",
       }),
-      [noAttributionRule]:
-        "<!-- @reference @auaust/engrenage/agents/rules/no-attribution.md -->\n<!-- @end -->\n",
+      [noAttributionRule]: "<!-- @reference @auaust/engrenage/agents/rules/no-attribution.md -->\n<!-- @end -->\n",
       [attributionRule]: "Project attribution note.\n",
     };
 

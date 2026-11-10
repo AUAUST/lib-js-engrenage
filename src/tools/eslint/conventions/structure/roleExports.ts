@@ -6,8 +6,7 @@ import { indexRoleName } from "#project/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 
-const barrelHint =
-  " If this file is intended as a barrel, enable `index` on the role.";
+const barrelHint = " If this file is intended as a barrel, enable `index` on the role.";
 
 interface Exports {
   names: string[];
@@ -22,15 +21,11 @@ export default defineConvention({
   rule: ({ entities, structure: structures }) => {
     return defineStructureRule({
       entities,
-      description:
-        "A module exports what its role's exports contract states: one named export matching the file, named exports, or one default export.",
+      description: "A module exports what its role's exports contract states: one named export matching the file, named exports, or one default export.",
       messages: {
-        match:
-          "A module of {{role}} exports only `{{name}}`, named after the file.{{hint}}",
-        named:
-          "A module of {{role}} uses named exports, never a default export.{{hint}}",
-        default:
-          "A module of {{role}} has one default export and no named export.{{hint}}",
+        match: "A module of {{role}} exports only `{{name}}`, named after the file.{{hint}}",
+        named: "A module of {{role}} uses named exports, never a default export.{{hint}}",
+        default: "A module of {{role}} has one default export and no named export.{{hint}}",
       },
       create(context, { environment, role, contract, fileRole }) {
         const file = basename(context.filename);

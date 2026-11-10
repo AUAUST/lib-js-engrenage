@@ -15,8 +15,7 @@ export default defineConvention({
       root,
       graph,
       grants,
-      description:
-        "bin, tooling and a published package's src never import data directories.",
+      description: "bin, tooling and a published package's src never import data directories.",
       check: checkData,
       messages: boundaryMessages,
     });

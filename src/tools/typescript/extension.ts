@@ -38,8 +38,9 @@ export default [
           stage: "write",
           produces: ["tsconfig"],
           async load() {
-            const { syncTsconfigFiles } =
-              await import("#tools/typescript/setup/syncTsconfigFiles");
+            const {
+              syncTsconfigFiles,
+            } = await import("#tools/typescript/setup/syncTsconfigFiles");
 
             return syncTsconfigFiles;
           },
@@ -50,8 +51,9 @@ export default [
           reads: ["tsconfig"],
           produces: ["package.json#imports", "tsconfig#paths"],
           async load() {
-            const { syncAliases } =
-              await import("#tools/typescript/setup/syncAliases");
+            const {
+              syncAliases,
+            } = await import("#tools/typescript/setup/syncAliases");
 
             return syncAliases;
           },
@@ -61,8 +63,9 @@ export default [
           stage: "write",
           reads: ["tsconfig"],
           async load() {
-            const { syncEnvFile } =
-              await import("#tools/typescript/setup/syncEnvFile");
+            const {
+              syncEnvFile,
+            } = await import("#tools/typescript/setup/syncEnvFile");
 
             return syncEnvFile;
           },
@@ -72,8 +75,9 @@ export default [
           stage: "write",
           reads: ["tsconfig"],
           async load() {
-            const { syncWorkspaceFiles } =
-              await import("#tools/typescript/setup/syncWorkspaceFiles");
+            const {
+              syncWorkspaceFiles,
+            } = await import("#tools/typescript/setup/syncWorkspaceFiles");
 
             return syncWorkspaceFiles;
           },

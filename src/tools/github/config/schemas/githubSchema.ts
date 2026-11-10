@@ -17,8 +17,7 @@ export const githubSchema = declareObject(
         value: false,
       },
       optional: {
-        explain:
-          "the set whose trait is active (`library`: `published`) when its required packages (`@changesets/cli`) are dependencies",
+        explain: "the set whose trait is active (`library`: `published`) when its required packages (`@changesets/cli`) are dependencies",
         compute(context: {
           readonly traits: ResolvedTraits;
           hasDependency(name: PackageName): boolean;

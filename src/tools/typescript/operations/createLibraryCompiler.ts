@@ -35,8 +35,9 @@ export function createLibraryCompiler(libraries?: Directory) {
 
   const { getSourceFile } = host;
 
-  const location =
-    libraries ?? posix.dirname(getDefaultLibFilePath(compilerOptions));
+  const location = (
+    libraries ?? posix.dirname(getDefaultLibFilePath(compilerOptions))
+  );
 
   // @debt the sources of the running compilation reach the shared host through this mutable binding, which holds only while compilations stay synchronous and never interleave.
   let current: ReadonlyMap<File, string> = new Map();

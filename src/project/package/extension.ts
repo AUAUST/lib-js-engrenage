@@ -7,24 +7,27 @@ export default {
     keys: {
       environment: {
         async load() {
-          const { environmentSection } =
-            await import("#project/package/config/sections/environmentSection");
+          const {
+            environmentSection,
+          } = await import("#project/package/config/sections/environmentSection");
 
           return environmentSection;
         },
       },
       packageJsonPath: {
         async load() {
-          const { packageJsonPathSection } =
-            await import("#project/package/config/sections/packageJsonPathSection");
+          const {
+            packageJsonPathSection,
+          } = await import("#project/package/config/sections/packageJsonPathSection");
 
           return packageJsonPathSection;
         },
       },
       packageJson: {
         async load() {
-          const { packageJsonSection } =
-            await import("#project/package/config/sections/packageJsonSection");
+          const {
+            packageJsonSection,
+          } = await import("#project/package/config/sections/packageJsonSection");
 
           return packageJsonSection;
         },
@@ -32,8 +35,9 @@ export default {
       visibility: {
         input: "visibility",
         async load() {
-          const { visibilitySection } =
-            await import("#project/package/config/sections/visibilitySection");
+          const {
+            visibilitySection,
+          } = await import("#project/package/config/sections/visibilitySection");
 
           return visibilitySection;
         },

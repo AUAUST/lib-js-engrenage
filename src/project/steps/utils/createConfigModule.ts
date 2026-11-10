@@ -6,10 +6,9 @@ interface NamedImports {
 }
 
 function renderImport({ names, entry }: NamedImports): string {
-  const list =
-    names.length === 1
-      ? ` ${names.join("")} `
-      : `\n${map(names, (name) => `  ${name},\n`).join("")}`;
+  const list = names.length === 1
+    ? ` ${names.join("")} `
+    : `\n${map(names, (name) => `  ${name},\n`).join("")}`;
 
   return `import {${list}} from "${entry}";\n`;
 }

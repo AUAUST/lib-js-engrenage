@@ -20,8 +20,7 @@ export async function runMessageGate(file: File): Promise<GateReport> {
       ? [
           {
             step,
-            output:
-              "Put the Closes and Towards lines on consecutive lines, in a single -m value: each -m starts a new paragraph.",
+            output: "Put the Closes and Towards lines on consecutive lines, in a single -m value: each -m starts a new paragraph.",
           },
         ]
       : [],

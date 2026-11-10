@@ -30,8 +30,7 @@ const editionFilePattern = /^lib\.(es20\d\d)\.d\.ts$/;
 
 const editionPattern = /^es20\d\d$/;
 
-const typedArrayPattern =
-  /^(?:Big)?(?:Float|Int|Uint)(?:8|16|32|64)(?:Clamped)?Array$/;
+const typedArrayPattern = /^(?:Big)?(?:Float|Int|Uint)(?:8|16|32|64)(?:Clamped)?Array$/;
 
 const intlOptionsPattern = /^Intl\.(?:Resolved)?(\w+)Options$/;
 
@@ -211,8 +210,9 @@ export async function generateEditions(
     const dates: Maybe<string>[] = [];
 
     for (const declaration of library.declarations) {
-      const isFirst =
-        declaration.type !== "value" && !earlier.has(declaration.owner);
+      const isFirst = (
+        declaration.type !== "value" && !earlier.has(declaration.owner)
+      );
 
       const known = listCandidates(declaration, isFirst)
         .map((key) => compat.get(key))
@@ -226,10 +226,11 @@ export async function generateEditions(
         continue;
       }
 
-      const isTypeOnly =
+      const isTypeOnly = (
         declaration.type !== "value" &&
         isFirst &&
-        !runtimeValues.has(toRuntimeName(declaration.owner));
+        !runtimeValues.has(toRuntimeName(declaration.owner))
+      );
 
       if (!isTypeOnly) {
         failures.push(

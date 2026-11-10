@@ -11,14 +11,13 @@ export async function syncCodexSkill(
 ) {
   const { name, reference, invocation, agent, body } = template;
 
-  const profiles =
-    agent === undefined
-      ? []
-      : createCodexAgentProfiles({
-          agent,
-          reference,
-          body,
-        });
+  const profiles = agent === undefined
+    ? []
+    : createCodexAgentProfiles({
+        agent,
+        reference,
+        body,
+      });
 
   const skill = await filesystem.read(`${codexSkillsDir}/${name}/SKILL.md`);
 

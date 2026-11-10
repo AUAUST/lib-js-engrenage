@@ -6,11 +6,9 @@ export default defineConvention({
   files: ["files.code.published", "files.scripts"],
   rule: {
     meta: createRuleMeta({
-      description:
-        "A dynamic import() never targets a module its file already imports statically.",
+      description: "A dynamic import() never targets a module its file already imports statically.",
       messages: {
-        imported:
-          "`{{specifier}}` is already imported statically; use that binding.",
+        imported: "`{{specifier}}` is already imported statically; use that binding.",
       },
     }),
     create(context) {

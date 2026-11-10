@@ -74,8 +74,7 @@ test("deletes a sole member including its optional trailing separator", () => {
 test.each([0, 1, 2])(
   "retains JSONC comments and unknown fields around deleted member %i",
   (index) => {
-    const content =
-      '{"nested":[/* first */{"first":true},/* middle */{"middle":true},/* last */{"last":true}/* retained tail */],/* outside */"custom":true}';
+    const content = '{"nested":[/* first */{"first":true},/* middle */{"middle":true},/* last */{"last":true}/* retained tail */],/* outside */"custom":true}';
 
     const output = writeJsonValue(
       content,

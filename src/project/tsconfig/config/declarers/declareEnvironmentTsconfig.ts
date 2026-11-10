@@ -35,13 +35,11 @@ export function declareEnvironmentTsconfig<Context = unknown>(
         description: "File of this tsconfig.",
         optional: {
           value: `tsconfig.${key}.json`,
-          explain:
-            "`tsconfig.<environment>.json`, named after the environment that owns it",
+          explain: "`tsconfig.<environment>.json`, named after the environment that owns it",
         },
       }),
       inherits: declare(inheritsSchema, {
-        description:
-          "Environment whose tsconfig this one shares instead of having its own: its files and options apply here, so no other tsconfig option can be set alongside.",
+        description: "Environment whose tsconfig this one shares instead of having its own: its files and options apply here, so no other tsconfig option can be set alongside.",
         optional: unset("none, except `scripts` for `tooling`"),
       }),
       extends: declareManagedList(string(), {
@@ -56,48 +54,41 @@ export function declareEnvironmentTsconfig<Context = unknown>(
           "Value of `include`.",
           "`false` leaves the field to the file.",
         ],
-        explain:
-          "the TypeScript files of the environments that share this tsconfig, plus the env file when they define globals; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations, so no `.src` test brings source into the dist check",
+        explain: "the TypeScript files of the environments that share this tsconfig, plus the env file when they define globals; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations, so no `.src` test brings source into the dist check",
       }),
       exclude: declareManagedList(string(), {
         description: [
           "Value of `exclude`.",
           "`false` leaves the field to the file.",
         ],
-        explain:
-          "the test fixtures for a tsconfig that includes tests, nothing otherwise",
+        explain: "the test fixtures for a tsconfig that includes tests, nothing otherwise",
       }),
       lib: declareManagedList(string(), {
         description: [
           "Value of `compilerOptions.lib`.",
           "`false` leaves the field to the file.",
         ],
-        explain:
-          "the ES libs selected from `src.baseline` for a baseline runtime, `ESNext` for a Node runtime",
+        explain: "the ES libs selected from `src.baseline` for a baseline runtime, `ESNext` for a Node runtime",
       }),
       types: declareManagedList(string(), {
         description: [
           "Value of `compilerOptions.types`.",
           "`false` leaves the field to the file.",
         ],
-        explain:
-          "`node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each `src.apis` group, except library groups whose lib is already in `lib`, which are left out with a warning",
+        explain: "`node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each `src.apis` group, except library groups whose lib is already in `lib`, which are left out with a warning",
       }),
       compilerOptions: declare(record(string(), unknown()), {
-        description:
-          "Options written into `compilerOptions` after the ones engrenage derives; it wins over them.",
+        description: "Options written into `compilerOptions` after the ones engrenage derives; it wins over them.",
         optional: {
           value: {},
         },
       }),
       unmanaged: declareList(string(), {
-        description:
-          "Dotted paths in this tsconfig (such as `compilerOptions.paths`) that sync never writes.",
+        description: "Dotted paths in this tsconfig (such as `compilerOptions.paths`) that sync never writes.",
         optional: { value: [] },
       }),
       check: declare(boolean(), {
-        description:
-          "Whether the base tsconfig references this tsconfig, so `engrenage typecheck` checks it.",
+        description: "Whether the base tsconfig references this tsconfig, so `engrenage typecheck` checks it.",
         optional: {
           explain: "`true`, except for `tests.dist`",
           compute() {

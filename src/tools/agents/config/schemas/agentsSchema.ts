@@ -30,16 +30,14 @@ export const agentsSchema = declareObject(
       optional: { value: undefined },
     }),
     instructionFiles: declare(globsSchema, {
-      description:
-        "Globs of the agent instruction files whose `@reference` blocks sync fills.",
+      description: "Globs of the agent instruction files whose `@reference` blocks sync fills.",
       optional: { value: defaultInstructionFiles },
       adjust(input) {
         return wrap(input);
       },
     }),
     snippetsDir: declare(directorySchema, {
-      description:
-        "Directory of project snippets that a non-relative `@reference` resolves to before the shared ones of engrenage.",
+      description: "Directory of project snippets that a non-relative `@reference` resolves to before the shared ones of engrenage.",
       optional: unset("none, so only the shared ones resolve"),
     }),
     claudeSettings: declare(boolean(), {
@@ -73,8 +71,7 @@ export const agentsSchema = declareObject(
     gate: declareObject(
       {
         commands: declare(array(string()), {
-          description:
-            "Shell commands the gate runs from the project root alongside its built-in checks.",
+          description: "Shell commands the gate runs from the project root alongside its built-in checks.",
           optional: { value: [] },
         }),
         hook: declare(boolean(), {
@@ -86,16 +83,14 @@ export const agentsSchema = declareObject(
         }),
       },
       {
-        description:
-          "The gate that fixes and checks the files an agent changed (`engrenage gate`).",
+        description: "The gate that fixes and checks the files an agent changed (`engrenage gate`).",
         optional: true,
       },
     ),
     budgets: declareObject(
       {
         mode: declare(picklist(budgetModes), {
-          description:
-            "`warn` reports a text over budget to the agent; `deny` also blocks the GitHub write it would make. The gate only ever warns.",
+          description: "`warn` reports a text over budget to the agent; `deny` also blocks the GitHub write it would make. The gate only ever warns.",
           optional: { value: defaultBudgetMode },
         }),
         goal: declare(budgetSchema, {

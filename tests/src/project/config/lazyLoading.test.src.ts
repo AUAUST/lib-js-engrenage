@@ -57,8 +57,7 @@ describe("lazy loading", () => {
       `const { loadConfig } = await import("#project/config/index");\nconst config = await loadConfig(${JSON.stringify(getFixture("projects/external"))}, { searchParents: false });\nawait config.resolve("resources");`,
     );
 
-    const engines =
-      /^src\/tools\/[^/]+\/(?:setup|adapters|plugins|conventions|rules)\/|(?:^|\/)node_modules\/(?:eslint|prettier|tsdown|vite|jscpd)\//u;
+    const engines = /^src\/tools\/[^/]+\/(?:setup|adapters|plugins|conventions|rules)\/|(?:^|\/)node_modules\/(?:eslint|prettier|tsdown|vite|jscpd)\//u;
 
     expect(files.filter((file) => engines.test(file))).toEqual([]);
   });

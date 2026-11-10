@@ -155,10 +155,11 @@ function applyEdits(
       previous?.start !== replacement.start ||
       previous.end !== replacement.end
     ) {
-      result =
+      result = (
         result.slice(0, replacement.start) +
         replacement.text +
-        result.slice(replacement.end);
+        result.slice(replacement.end)
+      );
     }
 
     previous = replacement;
@@ -188,10 +189,9 @@ export function createLayoutPlugin(
         ...parser,
         // @debt the whole text is reformatted before Prettier reads `rangeStart`, `rangeEnd` and `cursorOffset`, which still point into the unformatted text
         async preprocess(text, options) {
-          const source =
-            parser.preprocess === undefined
-              ? text
-              : await parser.preprocess(text, options);
+          const source = parser.preprocess === undefined
+            ? text
+            : await parser.preprocess(text, options);
 
           const formatted = await format(source, {
             ...options,

@@ -98,10 +98,10 @@ export async function createEslintConfig(
   const configs: MaybeArray<Config>[] = [];
 
   if (ignore) {
-    const [resources, git] = await Promise.all([
-      config.resolve("resources"),
-      config.resolve("git"),
-    ]);
+    const [
+      resources,
+      git,
+    ] = await Promise.all([config.resolve("resources"), config.resolve("git")]);
 
     configs.push(
       createIgnoreRules({

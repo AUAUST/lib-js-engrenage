@@ -30,8 +30,9 @@ export function orderListSlot<Item extends Registered>({
   const findings: string[] = [];
 
   if (stages === undefined) {
-    const order =
-      edges === false ? items : sortGroup(slot, items, matches, findings);
+    const order = edges === false
+      ? items
+      : sortGroup(slot, items, matches, findings);
 
     return { order, findings };
   }

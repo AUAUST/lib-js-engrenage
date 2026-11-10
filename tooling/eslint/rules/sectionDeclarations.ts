@@ -24,11 +24,9 @@ function initializerOf(variable: Scope.Variable | undefined): Initializer {
 }
 
 export const sectionDeclarations = defineRoleRule({
-  description:
-    "A section module's export is initialized with a `declareSection(…)` call.",
+  description: "A section module's export is initialized with a `declareSection(…)` call.",
   messages: {
-    notDeclared:
-      "Initialize the export `{{name}}` with a `declareSection(…)` call.",
+    notDeclared: "Initialize the export `{{name}}` with a `declareSection(…)` call.",
   },
   create(context) {
     function report(node: Rule.Node, name: string) {
@@ -66,10 +64,9 @@ export const sectionDeclarations = defineRoleRule({
         const scope = context.sourceCode.getScope(node);
 
         for (const { local, exported } of specifiers) {
-          const init =
-            source == null && local.type === "Identifier"
-              ? initializerOf(scope.set.get(local.name))
-              : undefined;
+          const init = source == null && local.type === "Identifier"
+            ? initializerOf(scope.set.get(local.name))
+            : undefined;
 
           if (!isDeclaration(init)) {
             report(

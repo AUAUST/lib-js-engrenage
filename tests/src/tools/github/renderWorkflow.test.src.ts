@@ -2,8 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 
-const installStep =
-  "      - name: Install dependencies\n        run: pnpm install --frozen-lockfile\n        env:\n          NODE_AUTH_TOKEN: ${{ secrets.NPM_READ_TOKEN }}\n";
+const installStep = "      - name: Install dependencies\n        run: pnpm install --frozen-lockfile\n        env:\n          NODE_AUTH_TOKEN: ${{ secrets.NPM_READ_TOKEN }}\n";
 
 describe("renderWorkflow", () => {
   test.each([

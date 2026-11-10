@@ -8,17 +8,25 @@ export async function resolvePrettierAllArguments(
   config: LoadedConfig,
   args: readonly string[],
 ): Promise<string[]> {
-  const [source, bin, scripts, tests, data, tooling, filesystem, resolve] =
-    await Promise.all([
-      config.resolve("src"),
-      config.resolve("bin"),
-      config.resolve("scripts"),
-      config.resolve("tests"),
-      config.resolve("data"),
-      config.resolve("tooling"),
-      config.context.filesystem,
-      config.context.path,
-    ]);
+  const [
+    source,
+    bin,
+    scripts,
+    tests,
+    data,
+    tooling,
+    filesystem,
+    resolve,
+  ] = await Promise.all([
+    config.resolve("src"),
+    config.resolve("bin"),
+    config.resolve("scripts"),
+    config.resolve("tests"),
+    config.resolve("data"),
+    config.resolve("tooling"),
+    config.context.filesystem,
+    config.context.path,
+  ]);
 
   const directories = flatMap(
     [source, bin, scripts, tests, data, tooling],

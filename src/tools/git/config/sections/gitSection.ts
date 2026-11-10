@@ -53,10 +53,9 @@ export const gitSection = declareSection({
         {
           local,
           root: repositoryRoot,
-          filesystem:
-            repositoryRoot === root
-              ? filesystem
-              : createFilesystem(repositoryRoot),
+          filesystem: repositoryRoot === root
+            ? filesystem
+            : createFilesystem(repositoryRoot),
         },
         compose.getters({
           gitignore: locateGitignore,

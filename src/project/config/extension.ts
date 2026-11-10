@@ -7,16 +7,18 @@ export default {
       extensions: {
         input: "extensions",
         async load() {
-          const { extensionsSection } =
-            await import("#project/config/config/sections/extensionsSection");
+          const {
+            extensionsSection,
+          } = await import("#project/config/config/sections/extensionsSection");
 
           return extensionsSection;
         },
       },
       resources: {
         async load() {
-          const { resourcesSection } =
-            await import("#project/config/config/sections/resourcesSection");
+          const {
+            resourcesSection,
+          } = await import("#project/config/config/sections/resourcesSection");
 
           return resourcesSection;
         },

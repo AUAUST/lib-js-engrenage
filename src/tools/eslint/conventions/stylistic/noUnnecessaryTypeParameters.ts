@@ -37,15 +37,13 @@ function isReturnTypeCast(
 ): boolean {
   const typeParameter = findTypeParameter(sourceCode, descriptor);
 
-  const declaration =
-    typeParameter === undefined
-      ? undefined
-      : last(sourceCode.getAncestors(typeParameter));
+  const declaration = typeParameter === undefined
+    ? undefined
+    : last(sourceCode.getAncestors(typeParameter));
 
-  const owner =
-    declaration === undefined
-      ? undefined
-      : last(sourceCode.getAncestors(declaration));
+  const owner = declaration === undefined
+    ? undefined
+    : last(sourceCode.getAncestors(declaration));
 
   if (
     typeParameter === undefined ||

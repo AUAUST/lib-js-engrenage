@@ -20,47 +20,29 @@ export const esMemberCompatKeys = freeze({
   "WeakKeyTypes.symbol": "javascript.builtins.WeakMap.symbol_as_keys",
   "RegExpMatchArray.indices": "javascript.builtins.RegExp.hasIndices",
   "RegExpExecArray.indices": "javascript.builtins.RegExp.hasIndices",
-  "RegExpMatchArray.groups":
-    "javascript.regular_expressions.named_capturing_group",
-  "RegExpExecArray.groups":
-    "javascript.regular_expressions.named_capturing_group",
+  "RegExpMatchArray.groups": "javascript.regular_expressions.named_capturing_group",
+  "RegExpExecArray.groups": "javascript.regular_expressions.named_capturing_group",
   "IArguments.@@iterator": "javascript.functions.arguments.@@iterator",
   "ArrayBufferTypes.SharedArrayBuffer": "javascript.builtins.SharedArrayBuffer",
-  "Intl.NumberFormatOptionsSignDisplayRegistry.negative":
-    "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_signDisplay_parameter.negative",
-  "Intl.DateTimeFormatPartTypesRegistry.fractionalSecond":
-    "javascript.builtins.Intl.DateTimeFormat.DateTimeFormat.options_parameter.options_fractionalSecondDigits_parameter",
+  "Intl.NumberFormatOptionsSignDisplayRegistry.negative": "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_signDisplay_parameter.negative",
+  "Intl.DateTimeFormatPartTypesRegistry.fractionalSecond": "javascript.builtins.Intl.DateTimeFormat.DateTimeFormat.options_parameter.options_fractionalSecondDigits_parameter",
   "PromiseConstructor.prototype": "javascript.builtins.Promise",
   "SymbolConstructor.prototype": "javascript.builtins.Symbol",
   "IteratorObject.@@toStringTag": "javascript.builtins.Iterator.Iterator",
-  "Intl.DateTimeFormatPartTypesRegistry.unknown":
-    "javascript.builtins.Intl.DateTimeFormat.formatToParts",
-  "Intl.NumberFormatOptionsStyleRegistry.unit":
-    "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_unit_parameter",
-  "Intl.NumberFormatOptionsCurrencyDisplayRegistry.narrowSymbol":
-    "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_currencyDisplay_parameter",
-  "Intl.NumberFormatPartTypeRegistry.compact":
-    "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_notation_parameter",
-  "Intl.NumberFormatPartTypeRegistry.exponentInteger":
-    "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_notation_parameter",
-  "Intl.NumberFormatPartTypeRegistry.exponentMinusSign":
-    "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_notation_parameter",
-  "Intl.NumberFormatPartTypeRegistry.exponentSeparator":
-    "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_notation_parameter",
-  "Intl.NumberFormatPartTypeRegistry.unit":
-    "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_unit_parameter",
-  "Intl.NumberFormatPartTypeRegistry.unknown":
-    "javascript.builtins.Intl.NumberFormat.formatToParts",
-  "Intl.DateTimeFormatOptions.formatMatcher":
-    "javascript.builtins.Intl.DateTimeFormat.DateTimeFormat",
-  "Intl.ResolvedDateTimeFormatOptions.formatMatcher":
-    "javascript.builtins.Intl.DateTimeFormat.DateTimeFormat",
-  "Intl.NumberFormatOptionsUseGroupingRegistry.min2":
-    "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_useGrouping_parameter.string_values",
-  "Intl.NumberFormatOptionsUseGroupingRegistry.auto":
-    "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_useGrouping_parameter.string_values",
-  "Intl.NumberFormatOptionsUseGroupingRegistry.always":
-    "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_useGrouping_parameter.string_values",
+  "Intl.DateTimeFormatPartTypesRegistry.unknown": "javascript.builtins.Intl.DateTimeFormat.formatToParts",
+  "Intl.NumberFormatOptionsStyleRegistry.unit": "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_unit_parameter",
+  "Intl.NumberFormatOptionsCurrencyDisplayRegistry.narrowSymbol": "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_currencyDisplay_parameter",
+  "Intl.NumberFormatPartTypeRegistry.compact": "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_notation_parameter",
+  "Intl.NumberFormatPartTypeRegistry.exponentInteger": "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_notation_parameter",
+  "Intl.NumberFormatPartTypeRegistry.exponentMinusSign": "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_notation_parameter",
+  "Intl.NumberFormatPartTypeRegistry.exponentSeparator": "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_notation_parameter",
+  "Intl.NumberFormatPartTypeRegistry.unit": "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_unit_parameter",
+  "Intl.NumberFormatPartTypeRegistry.unknown": "javascript.builtins.Intl.NumberFormat.formatToParts",
+  "Intl.DateTimeFormatOptions.formatMatcher": "javascript.builtins.Intl.DateTimeFormat.DateTimeFormat",
+  "Intl.ResolvedDateTimeFormatOptions.formatMatcher": "javascript.builtins.Intl.DateTimeFormat.DateTimeFormat",
+  "Intl.NumberFormatOptionsUseGroupingRegistry.min2": "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_useGrouping_parameter.string_values",
+  "Intl.NumberFormatOptionsUseGroupingRegistry.auto": "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_useGrouping_parameter.string_values",
+  "Intl.NumberFormatOptionsUseGroupingRegistry.always": "javascript.builtins.Intl.NumberFormat.NumberFormat.options_parameter.options_useGrouping_parameter.string_values",
   "Symbol.@@toStringTag": "javascript.builtins.Symbol.toStringTag",
   "Map.@@toStringTag": "javascript.builtins.Symbol.toStringTag",
   "WeakMap.@@toStringTag": "javascript.builtins.Symbol.toStringTag",

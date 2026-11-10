@@ -44,8 +44,7 @@ const files = {
   }),
 };
 
-const buildInfoFile =
-  "./node_modules/.cache/typescript/tsconfig.src.tsbuildinfo";
+const buildInfoFile = "./node_modules/.cache/typescript/tsconfig.src.tsbuildinfo";
 
 describe("syncTsconfigFiles", () => {
   test("writes managed fields and keeps every other field", async () => {
@@ -143,10 +142,10 @@ describe("syncTsconfigFiles", () => {
   });
 
   test("creates the tsconfig of an active environment only", async () => {
-    const { project, config } = await createProject(
-      {},
-      { "src/index.ts": "", "tsconfig.json": "{}" },
-    );
+    const {
+      project,
+      config,
+    } = await createProject({}, { "src/index.ts": "", "tsconfig.json": "{}" });
 
     await config.context.filesystem.flush();
 
@@ -201,8 +200,7 @@ describe("syncTsconfigFiles", () => {
         paths: {},
         skipLibCheck: false,
         incremental: true,
-        tsBuildInfoFile:
-          "./node_modules/.cache/typescript/tsconfig.tests.dist.tsbuildinfo",
+        tsBuildInfoFile: "./node_modules/.cache/typescript/tsconfig.tests.dist.tsbuildinfo",
       },
     });
   });
@@ -224,9 +222,9 @@ describe("syncTsconfigFiles", () => {
 
     await config.context.filesystem.flush();
 
-    const { compilerOptions } = JSON.parse(
-      project.read("tsconfig.tests.dist.json"),
-    );
+    const {
+      compilerOptions,
+    } = JSON.parse(project.read("tsconfig.tests.dist.json"));
 
     expect(compilerOptions.lib).toEqual(["ES2025", "DOM"]);
   });

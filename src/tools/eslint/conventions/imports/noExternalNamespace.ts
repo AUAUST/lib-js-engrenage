@@ -19,12 +19,10 @@ export default defineConvention({
     meta: {
       type: "problem",
       docs: {
-        description:
-          "Namespace imports and exports are reserved for project modules.",
+        description: "Namespace imports and exports are reserved for project modules.",
       },
       messages: {
-        external:
-          "Import named bindings from `{{ source }}`; namespace imports and exports are reserved for project modules.",
+        external: "Import named bindings from `{{ source }}`; namespace imports and exports are reserved for project modules.",
       },
       schema: [],
     },

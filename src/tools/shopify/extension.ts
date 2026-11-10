@@ -20,8 +20,9 @@ export default [
           title: "Shopify",
           formatted: false,
           async locate(config): Promise<FileLocation | undefined> {
-            const appConfigs =
-              await config.context.filesystem.glob(appConfigGlob);
+            const appConfigs = await config.context.filesystem.glob(
+              appConfigGlob,
+            );
 
             if (appConfigs.length === 0) {
               return;
@@ -55,10 +56,8 @@ export default [
               [`workspaces.${extensionsGlob}.tsconfig.types`]: [
                 "@shopify/polaris-types",
               ],
-              [`workspaces.${extensionsGlob}.tsconfig.compilerOptions.jsx`]:
-                "react-jsx",
-              [`workspaces.${extensionsGlob}.tsconfig.compilerOptions.jsxImportSource`]:
-                "preact",
+              [`workspaces.${extensionsGlob}.tsconfig.compilerOptions.jsx`]: "react-jsx",
+              [`workspaces.${extensionsGlob}.tsconfig.compilerOptions.jsxImportSource`]: "preact",
             });
           },
         },

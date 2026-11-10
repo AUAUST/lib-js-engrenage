@@ -107,8 +107,7 @@ export function checkIssueBody(
     if (!parsed.steps.numbered) {
       findings.push({
         rule: "steps-numbered",
-        message:
-          "**Steps** must be a numbered list with only `Checkpoint:` lines between items: rewrite it as numbered steps.",
+        message: "**Steps** must be a numbered list with only `Checkpoint:` lines between items: rewrite it as numbered steps.",
       });
     }
 

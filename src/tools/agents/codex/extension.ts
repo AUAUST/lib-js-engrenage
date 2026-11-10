@@ -34,8 +34,9 @@ export default {
         },
         reads: ["agents.instructions"],
         async load() {
-          const { syncCodexFiles } =
-            await import("#tools/agents/codex/setup/syncCodexFiles");
+          const {
+            syncCodexFiles,
+          } = await import("#tools/agents/codex/setup/syncCodexFiles");
 
           return syncCodexFiles;
         },

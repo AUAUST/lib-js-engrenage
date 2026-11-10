@@ -14,10 +14,9 @@ export const formatWithPrettier: Formatter = async (
   const resources = await config.resolve("resources");
 
   const { ignored, inferredParser } = await prettier.getFileInfo(path, {
-    ignorePath:
-      resources.get("prettierignore") === undefined
-        ? undefined
-        : resources.path("prettierignore"),
+    ignorePath: resources.get("prettierignore") === undefined
+      ? undefined
+      : resources.path("prettierignore"),
     resolveConfig: true,
   });
 

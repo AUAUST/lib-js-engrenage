@@ -37,11 +37,7 @@ function listPackageViolations(
     return [];
   }
 
-  const {
-    name,
-    private: unpublished,
-    publishConfig,
-  } = createPackageJson({
+  const { name, private: unpublished, publishConfig } = createPackageJson({
     root,
     path: file,
     content,

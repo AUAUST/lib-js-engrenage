@@ -7,8 +7,9 @@ export default {
       git: {
         input: "git",
         async load() {
-          const { gitSection } =
-            await import("#tools/git/config/sections/gitSection");
+          const {
+            gitSection,
+          } = await import("#tools/git/config/sections/gitSection");
 
           return gitSection;
         },
@@ -34,8 +35,9 @@ export default {
         reads: ["tsconfig"],
         produces: ["gitignore"],
         async load() {
-          const { syncGitignoreFile } =
-            await import("#tools/git/setup/syncGitignoreFile");
+          const {
+            syncGitignoreFile,
+          } = await import("#tools/git/setup/syncGitignoreFile");
 
           return syncGitignoreFile;
         },

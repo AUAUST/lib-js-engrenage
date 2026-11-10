@@ -21,11 +21,9 @@ export function defineViteConfig(
 
     const resolvedOptions = await value(options, config, env);
 
-    const { test } = validate(
-      optionsSchema,
-      resolvedOptions ?? {},
-      "Vite options",
-    );
+    const {
+      test,
+    } = validate(optionsSchema, resolvedOptions ?? {}, "Vite options");
 
     let merged: Config = await createViteConfig(config, {
       isTesting: process.env.VITEST === "true",

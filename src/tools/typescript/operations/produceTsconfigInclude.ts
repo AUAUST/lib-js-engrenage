@@ -22,10 +22,10 @@ async function createDefaultInclude(
   key: TsconfigKey,
   file: File,
 ): Promise<() => readonly string[]> {
-  const { owner, environments } = await resolveTsconfigEnvironments(
-    config,
-    key,
-  );
+  const {
+    owner,
+    environments,
+  } = await resolveTsconfigEnvironments(config, key);
 
   const resolved = await Promise.all(
     environments.map((name) => resolveTsconfigEnvironment(config, name)),

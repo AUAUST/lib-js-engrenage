@@ -15,8 +15,7 @@ export default defineConvention({
       root,
       graph,
       grants,
-      description:
-        "A workspace imports another only when it declares it as a dependency, and the root src never imports a workspace.",
+      description: "A workspace imports another only when it declares it as a dependency, and the root src never imports a workspace.",
       check: checkWorkspaces,
       messages: boundaryMessages,
     });

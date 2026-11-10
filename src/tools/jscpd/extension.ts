@@ -27,8 +27,9 @@ export default {
         stage: "warnings",
         audience: "agents",
         async load() {
-          const { warnClones } =
-            await import("#tools/jscpd/operations/warnClones");
+          const {
+            warnClones,
+          } = await import("#tools/jscpd/operations/warnClones");
 
           return warnClones;
         },

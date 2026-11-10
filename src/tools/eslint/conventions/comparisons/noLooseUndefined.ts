@@ -1,8 +1,7 @@
 import { defineReplacement } from "#tools/eslint/utils/defineReplacement";
 
 export default defineReplacement({
-  selector:
-    "BinaryExpression[operator=/^[!=]=$/]:matches([right.type='Identifier'][right.name='undefined'], [left.type='Identifier'][left.name='undefined'])",
+  selector: "BinaryExpression[operator=/^[!=]=$/]:matches([right.type='Identifier'][right.name='undefined'], [left.type='Identifier'][left.name='undefined'])",
   target: "loose comparisons with `undefined`",
   replacement: "`x == null`",
 });

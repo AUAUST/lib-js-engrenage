@@ -46,10 +46,9 @@ export async function runProgram(
 
   const controller = new AbortController();
 
-  const runSignal =
-    signal === undefined
-      ? controller.signal
-      : AbortSignal.any([controller.signal, signal]);
+  const runSignal = signal === undefined
+    ? controller.signal
+    : AbortSignal.any([controller.signal, signal]);
 
   function stopListening() {
     for (const aborting of abortingSignals) {

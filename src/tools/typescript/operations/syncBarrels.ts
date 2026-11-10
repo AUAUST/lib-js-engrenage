@@ -224,28 +224,34 @@ export async function syncBarrels(
   config: LoadedConfig,
   barrels: readonly string[] = [],
 ) {
-  const [rootPath, { imports }, source, bin, scripts, filesystem, resolve] =
-    await Promise.all([
-      config.context.root,
-      config.resolve("packageJson"),
-      config.resolve("src"),
-      config.resolve("bin"),
-      config.resolve("scripts"),
-      config.context.filesystem,
-      config.context.path,
-    ]);
+  const [
+    rootPath,
+    { imports },
+    source,
+    bin,
+    scripts,
+    filesystem,
+    resolve,
+  ] = await Promise.all([
+    config.context.root,
+    config.resolve("packageJson"),
+    config.resolve("src"),
+    config.resolve("bin"),
+    config.resolve("scripts"),
+    config.context.filesystem,
+    config.context.path,
+  ]);
 
   // @debt barrels of the tooling and tests environments are never discovered, so their `@barrel` blocks are filled by hand
   const allFiles = await filesystem.glob(
     filesIn([...source.dirs, ...bin.dirs, ...scripts.dirs], barrelFiles),
   );
 
-  const files =
-    barrels.length === 0
-      ? allFiles
-      : flatMap(barrels, (name) => {
-          return selectBarrels(allFiles, name);
-        });
+  const files = barrels.length === 0
+    ? allFiles
+    : flatMap(barrels, (name) => {
+        return selectBarrels(allFiles, name);
+      });
 
   const listed = new Map<string, readonly string[]>();
 

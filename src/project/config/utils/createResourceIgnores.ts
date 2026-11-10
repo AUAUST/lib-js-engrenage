@@ -32,10 +32,9 @@ export function createResourceIgnores(
   const emitted = new Set<Glob>();
 
   for (const { title, location } of resources) {
-    const lines =
-      "globs" in location
-        ? map(location.globs, anchorGlob)
-        : listPathLine("file" in location ? location.file : location.directory);
+    const lines = "globs" in location
+      ? map(location.globs, anchorGlob)
+      : listPathLine("file" in location ? location.file : location.directory);
 
     const group = groups.get(title) ?? [];
 

@@ -96,10 +96,11 @@ async function collectScripts({
     "ci:check": chain(["engrenage sync --check", typecheck, lint]),
     "ci:publish": publishes && "changeset publish",
     "ci:test": test,
-    "coverage":
+    "coverage": (
       hasDependency(vitest) &&
       hasDependency(vitestCoverageIstanbul) &&
-      "engrenage vitest:coverage",
+      "engrenage vitest:coverage"
+    ),
     "format": hasDependency(prettier) && "engrenage prettier",
     "lint": lint,
     "lint:check": lint,

@@ -347,8 +347,7 @@ describe("structure boundaries", () => {
   test("lets bin reach src only through domain surfaces, tests through their variant", async () => {
     const lint = await createLinter("auaust/import-", createConsumerProject());
 
-    const internal =
-      'export { value } from "#workflows/cli/operations/runProgram";\n';
+    const internal = 'export { value } from "#workflows/cli/operations/runProgram";\n';
 
     expect(await lint("bin/command.ts", internal)).toEqual([
       "auaust/import-surfaces",
@@ -419,8 +418,7 @@ describe("structure boundaries", () => {
   });
 
   test("treats a file named like the index file as a module of a role without index", async () => {
-    const barrel =
-      "If this file is intended as a barrel, enable `index` on the role.";
+    const barrel = "If this file is intended as a barrel, enable `index` on the role.";
 
     const lint = await createLinter("auaust/", createBarrelProject());
 

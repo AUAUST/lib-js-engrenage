@@ -23,8 +23,9 @@ export async function resolveCommandFiles(
       throw new Error(`Command '${command}' is declared more than once`);
     }
 
-    commandFiles[command] =
-      `./${posix.join(outDir, `${toEntryName(file, executableFile)}${builtExtension}`)}`;
+    commandFiles[
+      command
+    ] = `./${posix.join(outDir, `${toEntryName(file, executableFile)}${builtExtension}`)}`;
   }
 
   return commandFiles;

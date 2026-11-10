@@ -193,12 +193,9 @@ describe("createVitestConfig type checking", () => {
     const project = createTemporaryProject({
       "package.json": '{ "name": "project", "type": "module" }',
       "engrenage.config.ts": "export default {};\n",
-      "tsconfig.json":
-        '{ "files": [], "references": [{ "path": "./tsconfig.tests.json" }] }',
-      "tsconfig.tests.json":
-        '{ "compilerOptions": { "strict": true, "noEmit": true, "composite": true, "noEmitOnError": false, "types": [] }, "include": ["tests"] }',
-      "tests/example.test-d.ts":
-        'const value: number = "text";\nexport { value };\n',
+      "tsconfig.json": '{ "files": [], "references": [{ "path": "./tsconfig.tests.json" }] }',
+      "tsconfig.tests.json": '{ "compilerOptions": { "strict": true, "noEmit": true, "composite": true, "noEmitOnError": false, "types": [] }, "include": ["tests"] }',
+      "tests/example.test-d.ts": 'const value: number = "text";\nexport { value };\n',
     });
 
     mkdirSync(project.resolve("node_modules/.bin"), { recursive: true });
@@ -256,8 +253,7 @@ describe("createVitestConfig with a renamed base tsconfig", () => {
   test("receives the configured base tsconfig", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "name": "project", "type": "module" }',
-      "engrenage.config.ts":
-        'export default { typescript: { tsconfig: { path: "tsconfig.base.json" } } };\n',
+      "engrenage.config.ts": 'export default { typescript: { tsconfig: { path: "tsconfig.base.json" } } };\n',
       "tsconfig.base.json": "{}",
     });
 

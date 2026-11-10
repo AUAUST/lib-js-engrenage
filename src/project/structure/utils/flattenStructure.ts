@@ -23,8 +23,10 @@ export function flattenStructure({
     aliases: {},
   };
 
-  const namespaces: Record<Directory, DeclaredStructure["namespaces"][string]> =
-    {};
+  const namespaces: Record<
+    Directory,
+    DeclaredStructure["namespaces"][string]
+  > = {};
 
   const domains: Record<string, DeclaredStructure["domains"][string]> = {};
 

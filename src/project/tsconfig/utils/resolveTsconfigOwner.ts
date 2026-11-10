@@ -19,10 +19,9 @@ export function resolveTsconfigOwner(
     const group = getOwn(groups, current);
 
     if (group === undefined) {
-      const subject =
-        previous === undefined
-          ? current
-          : `${previous}.tsconfig inherits ${current}, which`;
+      const subject = previous === undefined
+        ? current
+        : `${previous}.tsconfig inherits ${current}, which`;
 
       throw new Error(
         `${subject} is not an environment with a tsconfig: ${keys(groups).join(", ")}`,

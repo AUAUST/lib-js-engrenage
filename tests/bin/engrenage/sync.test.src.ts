@@ -16,8 +16,7 @@ const emptyBlock = [
 
 function createProject() {
   const project = createTemporaryProject({
-    "engrenage.config.ts":
-      'export default { src: { baseline: "2026-10" }, agents: { preferred: ["claude"] } };\n',
+    "engrenage.config.ts": 'export default { src: { baseline: "2026-10" }, agents: { preferred: ["claude"] } };\n',
     "package.json": JSON.stringify({
       type: "module",
       devDependencies: {
@@ -95,10 +94,8 @@ describe("engrenage sync", () => {
 
   test("creates a missing VS Code file only when its flag is passed", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { src: { baseline: "2026-10" }, agents: { preferred: ["claude"] } };\n',
-      "package.json":
-        '{ "type": "module", "devDependencies": { "prettier": "*" } }',
+      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" }, agents: { preferred: ["claude"] } };\n',
+      "package.json": '{ "type": "module", "devDependencies": { "prettier": "*" } }',
     });
 
     mockCwd(project.root);
@@ -124,8 +121,7 @@ describe("engrenage sync", () => {
 
   test("writes the output directory of a tsconfig created in the same pass", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { preset: "library", src: { baseline: "2026-10" }, agents: { preferred: [] } };\n',
+      "engrenage.config.ts": 'export default { preset: "library", src: { baseline: "2026-10" }, agents: { preferred: [] } };\n',
       "package.json": JSON.stringify({
         name: "@scope/library",
         type: "module",

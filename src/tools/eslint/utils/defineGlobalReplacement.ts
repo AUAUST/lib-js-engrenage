@@ -13,16 +13,17 @@ function createSelector(
     return `[${path}.type='Identifier'][${path}.name='${name}']`;
   }
 
-  const pattern =
-    properties === undefined ? undefined : `/^(${join(properties, "|")})$/`;
+  const pattern = properties === undefined
+    ? undefined
+    : `/^(${join(properties, "|")})$/`;
 
-  const accessed =
-    pattern === undefined
-      ? ""
-      : `:matches([computed=false][property.name=${pattern}], [computed=true][property.value=${pattern}])`;
+  const accessed = pattern === undefined
+    ? ""
+    : `:matches([computed=false][property.name=${pattern}], [computed=true][property.value=${pattern}])`;
 
-  const destructured =
-    pattern === undefined ? "" : ` > Property[key.name=${pattern}]`;
+  const destructured = pattern === undefined
+    ? ""
+    : ` > Property[key.name=${pattern}]`;
 
   return [
     `MemberExpression${identifier("object")}${accessed}`,

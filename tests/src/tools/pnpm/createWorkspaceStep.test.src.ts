@@ -74,8 +74,7 @@ describe("createWorkspaceStep", () => {
   );
 
   test("leaves explicit approvals and denials byte-for-byte unchanged", async () => {
-    const content =
-      'allowBuilds: {esbuild: false, unrs-resolver: true, custom: true}\nminimumReleaseAgeExclude: ["@auaust/*"]\n';
+    const content = 'allowBuilds: {esbuild: false, unrs-resolver: true, custom: true}\nminimumReleaseAgeExclude: ["@auaust/*"]\n';
 
     const context = await createContext(content);
 

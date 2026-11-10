@@ -2,8 +2,7 @@ import type { Rule } from "eslint";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 
-const message =
-  "Wrap the valued return in the negated check instead of guarding it with an empty `return;`.";
+const message = "Wrap the valued return in the negated check instead of guarding it with an empty `return;`.";
 
 const negatedOperators = {
   "===": "!==",
@@ -85,9 +84,10 @@ export default defineConvention({
     create(context) {
       const { sourceCode } = context;
 
-      const skipped =
+      const skipped = (
         sourceCode.parserServices?.program?.getCompilerOptions()
-          .noImplicitReturns === true;
+          .noImplicitReturns === true
+      );
 
       return {
         BlockStatement(node: Rule.Node) {
@@ -121,30 +121,31 @@ export default defineConvention({
           context.report({
             node: statement,
             messageId: "preferValuedReturn",
-            fix:
+            fix: (
               sourceCode.commentsExistBetween(statement, last) ||
               sourceCode.getCommentsInside(statement).length > 0 ||
               sourceCode.getCommentsInside(last).length > 0
-                ? null
-                : (fixer) => {
-                    const [start] = sourceCode.getRange(statement);
+            )
+              ? null
+              : (fixer) => {
+                  const [start] = sourceCode.getRange(statement);
 
-                    const [, end] = sourceCode.getRange(last);
+                  const [, end] = sourceCode.getRange(last);
 
-                    const left = sourceCode.getText(test.left);
+                  const left = sourceCode.getText(test.left);
 
-                    const right = sourceCode.getText(test.right);
+                  const right = sourceCode.getText(test.right);
 
-                    const { column } = sourceCode.getLocFromIndex(start);
+                  const { column } = sourceCode.getLocFromIndex(start);
 
-                    const indent = sourceCode.text.slice(start - column, start);
+                  const indent = sourceCode.text.slice(start - column, start);
 
-                    // @debt the fix hardcodes a two-space indent for the wrapped return instead of deriving the indent unit from the source
-                    return fixer.replaceTextRange(
-                      [start, end],
-                      `if (${left} ${negated} ${right}) {\n${indent}  return ${sourceCode.getText(argument)};\n${indent}}`,
-                    );
-                  },
+                  // @debt the fix hardcodes a two-space indent for the wrapped return instead of deriving the indent unit from the source
+                  return fixer.replaceTextRange(
+                    [start, end],
+                    `if (${left} ${negated} ${right}) {\n${indent}  return ${sourceCode.getText(argument)};\n${indent}}`,
+                  );
+                },
           });
         },
       };

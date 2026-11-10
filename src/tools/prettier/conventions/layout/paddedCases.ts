@@ -11,11 +11,12 @@ import type { LayoutEdit } from "#tools/prettier/types/LayoutEdit";
 function hasMultilineBody(node: TSESTree.SwitchCase): boolean {
   const [first] = node.consequent;
 
-  const body =
+  const body = (
     node.consequent.length === 1 &&
     first?.type === AST_NODE_TYPES.BlockStatement
-      ? first.body
-      : node.consequent;
+  )
+    ? first.body
+    : node.consequent;
 
   const [statement, ...others] = body;
 
@@ -54,11 +55,10 @@ function padCases(
     }
   });
 
-  const requiresPadding =
-    node.cases.some(hasMultilineBody) ||
-    pairs.some(({ previous, next }) => {
-      return isPadded(text, previous, next);
-    });
+  const requiresPadding = node.cases.some(hasMultilineBody) ||
+  pairs.some(({ previous, next }) => {
+    return isPadded(text, previous, next);
+  });
 
   if (!requiresPadding) {
     return [];

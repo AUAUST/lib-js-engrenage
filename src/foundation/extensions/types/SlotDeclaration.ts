@@ -3,4 +3,6 @@ import type { HookSlotDeclaration } from "#foundation/extensions/types/HookSlotD
 import type { ListSlotDeclaration } from "#foundation/extensions/types/ListSlotDeclaration";
 
 export type SlotDeclaration =
-  ListSlotDeclaration | BucketSlotDeclaration | HookSlotDeclaration;
+  | ListSlotDeclaration
+  | BucketSlotDeclaration
+  | HookSlotDeclaration;

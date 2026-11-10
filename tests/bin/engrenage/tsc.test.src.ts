@@ -142,8 +142,7 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
     createSolution(
       'import { value } from "../src/index.ts";\n\nexport const text: string = value;\n',
       {
-        "engrenage.config.ts":
-          "export default { tests: { tsconfig: { check: false } } };\n",
+        "engrenage.config.ts": "export default { tests: { tsconfig: { check: false } } };\n",
         "tsconfig.json": JSON.stringify({
           compilerOptions: { noEmit: true },
           files: [],
@@ -161,8 +160,7 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
     vi.spyOn(console, "info").mockImplementation(() => {});
 
     createSolution("export {};\n", {
-      "engrenage.config.ts":
-        "export default { src: { tsconfig: { check: false } }, tests: { tsconfig: { check: false } } };\n",
+      "engrenage.config.ts": "export default { src: { tsconfig: { check: false } }, tests: { tsconfig: { check: false } } };\n",
       "tsconfig.json": JSON.stringify({
         compilerOptions: { noEmit: true },
         files: [],
@@ -196,8 +194,7 @@ describe("engrenage typecheck:dist", { timeout: binaryTimeout }, () => {
 
   test("fails clearly when the variant is disabled", async () => {
     createSolution("export {};\n", {
-      "engrenage.config.ts":
-        "export default { tests: { dist: { tsconfig: false } } };\n",
+      "engrenage.config.ts": "export default { tests: { dist: { tsconfig: false } } };\n",
     });
 
     await expect(tscDist([])).rejects.toThrow("dist tsconfig is disabled");

@@ -127,9 +127,10 @@ async function selectRolePresets(
   );
 
   return filterMap(contributions, ({ entry }) => {
-    const enabled =
+    const enabled = (
       entry.environments.length > 0 &&
-      every(entry.traits ?? [], (trait) => traits[trait]);
+      every(entry.traits ?? [], (trait) => traits[trait])
+    );
 
     return enabled ? entry : undefined;
   });
@@ -159,16 +160,17 @@ function renderOptions(
   agents: readonly string[] | undefined,
   presets: RolePresets,
 ): string {
-  const preset =
-    chosen === undefined ? "" : `  preset: ${JSON.stringify(chosen)},\n`;
+  const preset = chosen === undefined
+    ? ""
+    : `  preset: ${JSON.stringify(chosen)},\n`;
 
-  const declaredVisibility =
-    visibility === undefined
-      ? ""
-      : `  visibility: ${JSON.stringify(visibility)},\n`;
+  const declaredVisibility = visibility === undefined
+    ? ""
+    : `  visibility: ${JSON.stringify(visibility)},\n`;
 
-  const preferred =
-    agents === undefined ? "" : `preferred: ${JSON.stringify(agents)}, `;
+  const preferred = agents === undefined
+    ? ""
+    : `preferred: ${JSON.stringify(agents)}, `;
 
   const source = `  src: { baseline: ${JSON.stringify(findCurrentMonth())}, roles: sourceRoles },\n`;
 

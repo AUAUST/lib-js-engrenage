@@ -30,10 +30,11 @@ export function classifyEntityFile(
   }
 
   if (entity.role !== undefined) {
-    const isBarrel =
+    const isBarrel = (
       entity.contract?.index === true &&
       roles !== undefined &&
-      name === getIndexFile(roles);
+      name === getIndexFile(roles)
+    );
 
     return {
       role: entity.role,

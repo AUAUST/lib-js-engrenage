@@ -34,10 +34,11 @@ export async function resolveRepository(
   root: Directory,
   explicit?: string,
 ): Promise<string> {
-  const repository =
+  const repository = (
     explicit ??
     (await readManifestRepository(root)) ??
-    parseRepository(await runGit(root, ["remote", "get-url", "origin"]));
+    parseRepository(await runGit(root, ["remote", "get-url", "origin"]))
+  );
 
   if (repository === undefined) {
     throw new Error(

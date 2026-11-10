@@ -11,8 +11,9 @@ export default {
       "build": {
         input: "build",
         async load() {
-          const { buildSection } =
-            await import("#project/build/config/sections/buildSection");
+          const {
+            buildSection,
+          } = await import("#project/build/config/sections/buildSection");
 
           return buildSection;
         },
@@ -20,8 +21,9 @@ export default {
       "build.outDir": {
         input: "build",
         async load() {
-          const { buildOutDirSection } =
-            await import("#project/build/config/sections/buildOutDirSection");
+          const {
+            buildOutDirSection,
+          } = await import("#project/build/config/sections/buildOutDirSection");
 
           return buildOutDirSection;
         },
@@ -29,8 +31,9 @@ export default {
       "build.tool": {
         input: "build",
         async load() {
-          const { buildToolSection } =
-            await import("#project/build/config/sections/buildToolSection");
+          const {
+            buildToolSection,
+          } = await import("#project/build/config/sections/buildToolSection");
 
           return buildToolSection;
         },

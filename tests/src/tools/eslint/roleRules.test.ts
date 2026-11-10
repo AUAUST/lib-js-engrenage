@@ -30,8 +30,7 @@ const sectionsRule = defineRoleRule({
   },
 });
 
-const ownRule =
-  "{ tool: 'eslint', rule: { create(context) { return { Program(node) { context.report({ node, message: 'own' }); } }; } } }";
+const ownRule = "{ tool: 'eslint', rule: { create(context) { return { Program(node) { context.report({ node, message: 'own' }); } }; } } }";
 
 const stylelintRule = "{ tool: 'stylelint', rule: {} }";
 

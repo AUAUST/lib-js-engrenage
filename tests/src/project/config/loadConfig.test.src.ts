@@ -75,8 +75,7 @@ describe("loadConfig", () => {
   });
 
   test("reads the configured tsconfig, rejects a missing configured file when read, even under the default name, and follows pending writes", async () => {
-    const appConfig =
-      'export default { typescript: { tsconfig: { path: "tsconfig.app.json" } } };\n';
+    const appConfig = 'export default { typescript: { tsconfig: { path: "tsconfig.app.json" } } };\n';
 
     const tsconfig = JSON.stringify({
       compilerOptions: {
@@ -127,8 +126,7 @@ describe("loadConfig", () => {
 
     const explicitDefault = await loadConfig(
       createTemporaryProject({
-        "engrenage.config.ts":
-          'export default { typescript: { tsconfig: { path: "tsconfig.json" } } };\n',
+        "engrenage.config.ts": 'export default { typescript: { tsconfig: { path: "tsconfig.json" } } };\n',
       }).root,
     );
 
@@ -161,8 +159,7 @@ describe("loadConfig", () => {
 
     const missing = await loadConfig(
       createTemporaryProject({
-        "engrenage.config.ts":
-          'export default { tests: { dist: { tsconfig: { path: "tsconfig.build.json" } } } };\n',
+        "engrenage.config.ts": 'export default { tests: { dist: { tsconfig: { path: "tsconfig.build.json" } } } };\n',
       }).root,
     );
 

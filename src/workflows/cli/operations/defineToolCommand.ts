@@ -41,10 +41,9 @@ export function defineToolCommand({
       ]);
 
       return async (args: string[]) => {
-        const resolved =
-          loaded === undefined
-            ? args
-            : await ("default" in loaded ? loaded.default : loaded)(args);
+        const resolved = loaded === undefined
+          ? args
+          : await ("default" in loaded ? loaded.default : loaded)(args);
 
         if (resolved === undefined) {
           return;

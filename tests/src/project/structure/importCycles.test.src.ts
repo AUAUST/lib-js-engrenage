@@ -53,10 +53,8 @@ describe("findImportCycles", () => {
 
   test("ignores the same pair with type-only imports", async () => {
     const cycles = await cyclesOf({
-      "src/a/index.ts":
-        'export type { B } from "#b/index";\nexport type A = 1;\n',
-      "src/b/index.ts":
-        'import type { A } from "#a/index";\nexport type B = A;\n',
+      "src/a/index.ts": 'export type { B } from "#b/index";\nexport type A = 1;\n',
+      "src/b/index.ts": 'import type { A } from "#a/index";\nexport type B = A;\n',
     });
 
     expect(cycles).toEqual([]);
@@ -74,8 +72,7 @@ describe("findImportCycles", () => {
   test("counts an import used only as a type, without `import type`, as a runtime edge only under verbatimModuleSyntax", async () => {
     const files = {
       "src/a.ts": 'import { B } from "./b";\nexport type A = B;\n',
-      "src/b.ts":
-        'import { a } from "./a";\nexport type B = typeof a;\nexport const b = 1;\n',
+      "src/b.ts": 'import { a } from "./a";\nexport type B = typeof a;\nexport const b = 1;\n',
     };
 
     expect(await cyclesOf(files, "{ verbatimModuleSyntax: false }")).toEqual(
@@ -90,10 +87,8 @@ describe("findImportCycles", () => {
   test("reports a sub-domain reaching its ancestor's module that imports the sub-domain's index", async () => {
     const cycles = await cyclesOf({
       "src/feature/index.ts": 'export { helper } from "./utils/helper";\n',
-      "src/feature/utils/helper.ts":
-        'import { child } from "../sub/index";\nexport const helper = child;\n',
-      "src/feature/sub/index.ts":
-        'import { helper } from "../utils/helper";\nexport const child = helper;\n',
+      "src/feature/utils/helper.ts": 'import { child } from "../sub/index";\nexport const helper = child;\n',
+      "src/feature/sub/index.ts": 'import { helper } from "../utils/helper";\nexport const child = helper;\n',
     });
 
     expect(cycles).toEqual([

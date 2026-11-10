@@ -75,9 +75,10 @@ export function collectExtensions<
     const owns = (extension.owns ?? {}) as Owned;
 
     for (const [kind, owned] of entries(owns)) {
-      const declarations =
+      const declarations = (
         kinds.get(kind) ??
-        new Map<string, OwnedDeclaration<Extension, unknown>>();
+        new Map<string, OwnedDeclaration<Extension, unknown>>()
+      );
 
       kinds.set(kind, declarations);
 
@@ -143,10 +144,9 @@ export function collectExtensions<
       for (const [index, entry] of slotEntries.entries()) {
         record.registered.push({
           contribution: freeze({ entry, extension }),
-          label:
-            entry.name == null
-              ? `${extension.name}'s entry ${index}`
-              : `"${entry.name}" from ${extension.name}`,
+          label: entry.name == null
+            ? `${extension.name}'s entry ${index}`
+            : `"${entry.name}" from ${extension.name}`,
         });
       }
     }
@@ -168,16 +168,15 @@ export function collectExtensions<
     validateEntries(record, findings);
     checkNames(record, findings);
 
-    const { order, findings: orderFindings } =
-      record.policy === "list"
-        ? orderListSlot({
-            slot: record.slot,
-            stages: record.stages,
-            edges: record.edges,
-            items: record.registered,
-            matches,
-          })
-        : { order: record.registered, findings: [] };
+    const { order, findings: orderFindings } = record.policy === "list"
+      ? orderListSlot({
+          slot: record.slot,
+          stages: record.stages,
+          edges: record.edges,
+          items: record.registered,
+          matches,
+        })
+      : { order: record.registered, findings: [] };
 
     findings.push(...orderFindings);
 

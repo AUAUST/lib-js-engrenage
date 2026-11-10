@@ -18,12 +18,9 @@ function createLibrary(config = "{ preset: 'library' }") {
     "tsconfig.tests.dist.json": "{}",
     "src/index.ts": "export const value = 1;\n",
     "dist/index.mjs": "export const value = 1;\n",
-    "tests/plain.test.ts":
-      'import { value } from "library";\nimport { test, expect } from "vitest";\ntest("plain", () => { expect(value).toBe(1); });\n',
-    "tests/internal.test.src.ts":
-      'import { value } from "../src/index.ts";\nimport { test, expect } from "vitest";\ntest("internal", () => { expect(value).toBe(1); });\n',
-    "tests/built.test.dist.ts":
-      'import { value } from "library";\nimport { test, expect } from "vitest";\ntest("built", () => { expect(value).toBe(1); });\n',
+    "tests/plain.test.ts": 'import { value } from "library";\nimport { test, expect } from "vitest";\ntest("plain", () => { expect(value).toBe(1); });\n',
+    "tests/internal.test.src.ts": 'import { value } from "../src/index.ts";\nimport { test, expect } from "vitest";\ntest("internal", () => { expect(value).toBe(1); });\n',
+    "tests/built.test.dist.ts": 'import { value } from "library";\nimport { test, expect } from "vitest";\ntest("built", () => { expect(value).toBe(1); });\n',
   });
 }
 

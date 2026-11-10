@@ -37,11 +37,9 @@ export function parseInstruction(content: string, file: File) {
     });
   }
 
-  const { paths } = validate(
-    metadataSchema,
-    input ?? {},
-    `${file} frontmatter`,
-  );
+  const {
+    paths,
+  } = validate(metadataSchema, input ?? {}, `${file} frontmatter`);
 
   return {
     body: content.slice(frontmatter.length).trimStart(),

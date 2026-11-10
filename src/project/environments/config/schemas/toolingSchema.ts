@@ -19,13 +19,11 @@ export const toolingSchema = declareObject(
   {
     ...declareStructureOptions(),
     dirs: declareList(directorySchema, {
-      description:
-        "Directories of the tooling environment: all their TypeScript files are included and walked like `src`. `.` contributes only the files matched by `files`.",
+      description: "Directories of the tooling environment: all their TypeScript files are included and walked like `src`. `.` contributes only the files matched by `files`.",
       optional: { value: defaultToolingDirectories },
     }),
     files: declareList(globSchema, {
-      description:
-        "Globs, matched at the project root only, of the root files of the tooling environment, such as configuration files. They apply when `dirs` includes `.`.",
+      description: "Globs, matched at the project root only, of the root files of the tooling environment, such as configuration files. They apply when `dirs` includes `.`.",
       optional: { value: defaultToolingFiles },
     }),
     roles: rolesSchema,

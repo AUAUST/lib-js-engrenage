@@ -68,6 +68,16 @@ const leftKeys = new Map([
   ["AssignmentExpression", "left"],
 ]);
 
+const wrapperKeys = new Map([
+  ["AwaitExpression", "argument"],
+  ["UnaryExpression", "argument"],
+  ["YieldExpression", "argument"],
+  ["ChainExpression", "expression"],
+  ["TSNonNullExpression", "expression"],
+  ["TSAsExpression", "expression"],
+  ["TSSatisfiesExpression", "expression"],
+]);
+
 const statementContainers = new Set([
   "BlockStatement",
   "Program",
@@ -80,6 +90,7 @@ function isAstNode(value: unknown): value is AstNode {
   return isObject(value) && "type" in value && isString(value.type);
 }
 
+// @debt sub-docs are printed to text while the doc is built, to measure widths `fits` cannot reach
 function printLines(
   target: Doc,
   options: ParserOptions<AstNode>,
@@ -173,17 +184,9 @@ function measurePrefix(path: AstPath<AstNode>): number {
 }
 
 function unwrapRight(node: AstNode): AstNode {
-  const inner = (
-    node.type === "AwaitExpression" ||
-    node.type === "UnaryExpression" ||
-    node.type === "YieldExpression"
-  )
-    ? node.argument
-    : node.type === "TSNonNullExpression" ||
-        node.type === "TSAsExpression" ||
-        node.type === "TSSatisfiesExpression"
-      ? node.expression
-      : undefined;
+  const key = wrapperKeys.get(node.type);
+
+  const inner = key === undefined ? undefined : node[key];
 
   return isAstNode(inner) ? unwrapRight(inner) : node;
 }
@@ -291,7 +294,7 @@ function printCandidates(
     );
   }
 
-  candidates.push(withMeasure(flat, hardlineWithoutBreakParent), flat);
+  candidates.push([left, operator, " ", broken ?? right.doc]);
 
   return conditionalGroup(candidates);
 }

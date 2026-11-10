@@ -77,10 +77,9 @@ function renderTree(
   return flatMap(rows, (child, index) => {
     const last = index === rows.length - 1;
 
-    const line =
-      child.kind === "namespace"
-        ? renderLine(child, aliases)
-        : `${inline(child)}  ${child.purpose}`;
+    const line = child.kind === "namespace"
+      ? renderLine(child, aliases)
+      : `${inline(child)}  ${child.purpose}`;
 
     return [
       `${prefix}${last ? "└─ " : "├─ "}${line}`,

@@ -13,8 +13,9 @@ export default {
         stage: "checks",
         audience: "agents",
         async load() {
-          const { checkTypes } =
-            await import("#tools/typescript/tsc/operations/checkTypes");
+          const {
+            checkTypes,
+          } = await import("#tools/typescript/tsc/operations/checkTypes");
 
           return checkTypes;
         },

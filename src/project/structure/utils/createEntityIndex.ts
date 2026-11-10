@@ -134,8 +134,9 @@ export function createEntityIndex({
     const role = node.kind === "role" ? node.role : undefined;
     const roles = rolesOf(environment.name);
 
-    const contract =
-      role === undefined ? undefined : environment.roles[role]?.contract;
+    const contract = role === undefined
+      ? undefined
+      : environment.roles[role]?.contract;
 
     const named = freeze(
       listNamedFileRoles(
@@ -153,12 +154,12 @@ export function createEntityIndex({
       kind: node.kind,
       commands: node.commands === true,
       lineage: extendEntityLineage(parent.lineage, node, node.path),
-      domain:
-        node.kind === "domain"
-          ? node.path.slice(directory.length + 1)
-          : parent.domain,
-      surface:
-        node.kind === "domain" ? surfaceOf(node, environment) : parent.surface,
+      domain: node.kind === "domain"
+        ? node.path.slice(directory.length + 1)
+        : parent.domain,
+      surface: node.kind === "domain"
+        ? surfaceOf(node, environment)
+        : parent.surface,
       role,
       contract,
       effects: role === undefined ? undefined : node.effects,
@@ -286,11 +287,12 @@ export function createEntityIndex({
 
     const { entity } = located;
 
-    const { role, fileRole, contract, effects } = classifyEntityFile(
-      posix.basename(path),
-      directory,
-      located,
-    );
+    const {
+      role,
+      fileRole,
+      contract,
+      effects,
+    } = classifyEntityFile(posix.basename(path), directory, located);
 
     return freeze({
       ...entity,
@@ -298,16 +300,16 @@ export function createEntityIndex({
       fileRole,
       contract,
       effects,
-      public:
+      public: (
         contract?.public === true ||
         role === indexRoleName ||
-        role === entryRoleName,
-      variant:
-        entity.environment === "tests"
-          ? variants.find(([, globs]) => {
-              return globs.some((glob) => matchesGlob(path, glob));
-            })?.[0]
-          : undefined,
+        role === entryRoleName
+      ),
+      variant: entity.environment === "tests"
+        ? variants.find(([, globs]) => {
+            return globs.some((glob) => matchesGlob(path, glob));
+          })?.[0]
+        : undefined,
     });
   });
 

@@ -1,2 +1,6 @@
 export type StructureKind =
-  "namespace" | "domain" | "role" | "mirror" | "unclassified";
+  | "namespace"
+  | "domain"
+  | "role"
+  | "mirror"
+  | "unclassified";

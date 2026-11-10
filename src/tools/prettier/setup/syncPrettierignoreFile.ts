@@ -20,10 +20,10 @@ import type { GlobGroup } from "#types/GlobGroup";
 async function createProjectPrettierIgnores(
   config: LoadedConfig,
 ): Promise<readonly GlobGroup[]> {
-  const [resources, files] = await Promise.all([
-    config.resolve("resources"),
-    config.resolve("files"),
-  ]);
+  const [
+    resources,
+    files,
+  ] = await Promise.all([config.resolve("resources"), config.resolve("files")]);
 
   const generatedResources = flatMap(
     resources.list({ generated: true }),
@@ -59,10 +59,9 @@ export async function syncPrettierignoreFile(config: LoadedConfig) {
       resolve,
     },
     {
-      path:
-        resources.get("prettierignore") === undefined
-          ? undefined
-          : resources.path("prettierignore"),
+      path: resources.get("prettierignore") === undefined
+        ? undefined
+        : resources.path("prettierignore"),
       presets: {
         defaults: () => defaultIgnores,
         project,

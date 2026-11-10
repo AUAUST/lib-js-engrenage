@@ -17,8 +17,9 @@ function toEntryName(
   alias: string,
   isDirectoryEntry: boolean,
 ): string {
-  const publicName =
-    alias === packageName ? "index" : alias.slice(packageName.length + 1);
+  const publicName = alias === packageName
+    ? "index"
+    : alias.slice(packageName.length + 1);
 
   return isDirectoryEntry ? `${publicName}/index` : publicName;
 }

@@ -164,12 +164,11 @@ export function createFilesystem(root: Directory) {
     return map(originals, ([file, original]) => {
       return {
         file,
-        status:
-          contents.get(file) === undefined
-            ? "deleted"
-            : original === undefined
-              ? "created"
-              : "synced",
+        status: contents.get(file) === undefined
+          ? "deleted"
+          : original === undefined
+            ? "created"
+            : "synced",
       };
     });
   }

@@ -11,10 +11,9 @@ export async function readTsconfigPaths(
 
   const current = await filesystem.read(file);
 
-  const paths =
-    current === undefined
-      ? undefined
-      : readJsonValue(current, file, ["compilerOptions", "paths"]);
+  const paths = current === undefined
+    ? undefined
+    : readJsonValue(current, file, ["compilerOptions", "paths"]);
 
   // @debt hand-written paths are cast instead of validated against a schema
   return paths === undefined ? {} : (paths as Paths);

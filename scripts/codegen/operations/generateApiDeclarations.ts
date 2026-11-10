@@ -240,10 +240,11 @@ export async function generateApiDeclarations(
   const root = config.context.root;
 
   for (const [file, content] of modules) {
-    const isRequested =
+    const isRequested = (
       file === sharedFile ||
       groups.length === 0 ||
-      groups.some((group) => file === `${apisDirectory}/${group}.d.ts`);
+      groups.some((group) => file === `${apisDirectory}/${group}.d.ts`)
+    );
 
     if (isRequested) {
       await filesystem.write(

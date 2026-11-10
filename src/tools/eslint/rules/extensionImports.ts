@@ -28,13 +28,10 @@ function resolveSpecifier(from: File, specifier: string): File | undefined {
 }
 
 export const extensionImports = defineRoleRule({
-  description:
-    "An extension imports statically only types, its domain's constants and its sub-domains' extensions, and loads only its own domain's modules.",
+  description: "An extension imports statically only types, its domain's constants and its sub-domains' extensions, and loads only its own domain's modules.",
   messages: {
-    staticImport:
-      "An extension imports statically only types and its domain's `constants.ts`; load `{{specifier}}` behind `import()`.",
-    foreignImport:
-      "An extension loads only modules of its own domain; `{{specifier}}` is outside it.",
+    staticImport: "An extension imports statically only types and its domain's `constants.ts`; load `{{specifier}}` behind `import()`.",
+    foreignImport: "An extension loads only modules of its own domain; `{{specifier}}` is outside it.",
     dynamicSource: "An extension loads only literal specifiers.",
   },
   create(context) {

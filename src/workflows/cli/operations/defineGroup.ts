@@ -68,8 +68,10 @@ export function defineGroup({
       const extensions = new Map<CommandUnknownOpts, () => Promise<void>>();
 
       for (const [name, entry] of entries(commands)) {
-        const { command: definition, aliases = [] } =
-          "command" in entry ? entry : { command: entry };
+        const {
+          command: definition,
+          aliases = [],
+        } = "command" in entry ? entry : { command: entry };
 
         const subcommand = new Command(name).aliases(aliases);
 

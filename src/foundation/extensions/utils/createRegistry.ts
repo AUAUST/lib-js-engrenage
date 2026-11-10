@@ -77,8 +77,9 @@ export function createRegistry<Extension extends ExtensionShape, Scope>(
     const failures: string[] = [];
 
     function evaluateOnce(extension: Extension): Promise<boolean> {
-      const evaluation =
-        evaluations.get(extension) ?? evaluate(extension, scope);
+      const evaluation = (
+        evaluations.get(extension) ?? evaluate(extension, scope)
+      );
 
       evaluations.set(extension, evaluation);
 

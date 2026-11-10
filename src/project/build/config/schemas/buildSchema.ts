@@ -31,11 +31,9 @@ export const buildSchema = declareObject(
       disable: { value: false },
     }),
     outDir: declare(directorySchema, {
-      description:
-        "Output directory of tsdown and Vite, ignored by Git and ESLint and listed in the published `files` of `package.json`.",
+      description: "Output directory of tsdown and Vite, ignored by Git and ESLint and listed in the published `files` of `package.json`.",
       optional: {
-        explain:
-          "`compilerOptions.outDir` of the base tsconfig; building fails when neither is set",
+        explain: "`compilerOptions.outDir` of the base tsconfig; building fails when neither is set",
         async compute(context: OutDirContext) {
           const { optional } = await context.tsconfig();
 
@@ -61,8 +59,7 @@ export const buildSchema = declareObject(
       optional: { value: defaultBuildClean },
     }),
     sourcemap: declare(boolean(), {
-      description:
-        "Whether builds emit source maps and the source directories are published with them.",
+      description: "Whether builds emit source maps and the source directories are published with them.",
       optional: { value: defaultSourcemap },
     }),
     typed: declare(boolean(), {

@@ -98,8 +98,7 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
 async function installed() {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
-    "engrenage.config.ts":
-      'export default { agents: { preferred: ["codex"] } };',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
   });
 
   const config = await loadConfig(project.root);

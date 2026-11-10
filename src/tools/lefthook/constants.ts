@@ -9,8 +9,7 @@ export const gateCommand = "pnpm --silent engrenage gate --staged";
 
 export const localCommandName = "engrenage-local";
 
-export const localGateCommand =
-  "pnpm --silent engrenage gate --staged --everyone";
+export const localGateCommand = "pnpm --silent engrenage gate --staged --everyone";
 
 export const hookName = "pre-commit";
 

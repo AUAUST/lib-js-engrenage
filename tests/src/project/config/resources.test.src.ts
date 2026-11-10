@@ -94,8 +94,7 @@ describe("file resources", () => {
     expect(resources.path("fine")).toBe(config.context.path("fine.txt"));
 
     const failure = expect.objectContaining({
-      message:
-        'File resource "broken" of broken-fixture cannot be located: unreadable',
+      message: 'File resource "broken" of broken-fixture cannot be located: unreadable',
       cause: rejection,
     });
 
@@ -147,8 +146,7 @@ describe("file resources", () => {
     const resources = await config.resolve("resources");
 
     const failure = expect.objectContaining({
-      message:
-        'File resource "needs.out" of needs-eslint cannot be located: needs-eslint requires tools/eslint, which is inactive: install eslint',
+      message: 'File resource "needs.out" of needs-eslint cannot be located: needs-eslint requires tools/eslint, which is inactive: install eslint',
       cause: expect.any(Error),
     });
 

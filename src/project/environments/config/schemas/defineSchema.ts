@@ -14,8 +14,7 @@ import type { File } from "#types/File";
 export const defineSchema = declareObject(
   {
     types: declare(boolean(), {
-      description:
-        "Whether sync declares the `define.values` globals in the env file (`typescript.envFile`) and `build.typed` follows.",
+      description: "Whether sync declares the `define.values` globals in the env file (`typescript.envFile`) and `build.typed` follows.",
       optional: { value: defaultDefineTypes },
     }),
     values: declare(

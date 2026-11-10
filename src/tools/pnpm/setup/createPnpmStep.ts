@@ -16,8 +16,9 @@ export function createPnpmStep(): Step {
 
       const path = await resolve("packageJsonPath");
 
-      const content =
-        path === undefined ? undefined : await filesystem.read(path);
+      const content = path === undefined
+        ? undefined
+        : await filesystem.read(path);
 
       // @debt repeats the "No package.json found" guard of upgrade, createTsdownConfig, createStepContext and syncChangesetConfig
       if (path === undefined || content === undefined) {

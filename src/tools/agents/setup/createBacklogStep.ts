@@ -24,8 +24,7 @@ const skills = ["scratchpad", "backlog-handling", "debt-harvesting"];
 export function createBacklogStep(): Step {
   return {
     name: "shared backlog",
-    message:
-      "Set up the shared backlog in .ai/backlog/ and scratchpad in .ai/scratchpad.md?",
+    message: "Set up the shared backlog in .ai/backlog/ and scratchpad in .ai/scratchpad.md?",
     async isMissing({ resolve, filesystem, getAgents }) {
       if (
         (getAgents()?.length ?? 0) === 0 ||

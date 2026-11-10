@@ -30,8 +30,9 @@ async function syncAttribution(
   const path = config.resolve(claudeSettingsFile);
   const location = ["attribution"];
 
-  const content =
-    (await config.filesystem.read(claudeSettingsFile)) ?? emptyObjectFile;
+  const content = (
+    (await config.filesystem.read(claudeSettingsFile)) ?? emptyObjectFile
+  );
 
   const hidden = isDeepStrictEqual(
     readJsonValue(content, path, location),
@@ -63,16 +64,18 @@ async function syncPermissions(config: {
 }) {
   const path = config.resolve(claudeSettingsFile);
 
-  let content =
-    (await config.filesystem.read(claudeSettingsFile)) ?? emptyObjectFile;
+  let content = (
+    (await config.filesystem.read(claudeSettingsFile)) ?? emptyObjectFile
+  );
 
   for (const [list, wanted] of entries(claudePermissions)) {
-    const present =
+    const present = (
       validate(
         optional(array(string())),
         readJsonValue(content, path, ["permissions", list]),
         `${claudeSettingsFile} permissions.${list}`,
-      ) ?? [];
+      ) ?? []
+    );
 
     for (const rule of wanted) {
       if (!present.includes(rule)) {
@@ -101,8 +104,9 @@ async function syncSubagentCacheTtl(
   const path = config.resolve(claudeSettingsFile);
   const location = ["subagentPromptCacheTtl"];
 
-  const content =
-    (await config.filesystem.read(claudeSettingsFile)) ?? emptyObjectFile;
+  const content = (
+    (await config.filesystem.read(claudeSettingsFile)) ?? emptyObjectFile
+  );
 
   if (readJsonValue(content, path, location) !== ttl) {
     await config.filesystem.write(

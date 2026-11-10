@@ -11,16 +11,18 @@ export default {
       "preset": {
         input: "preset",
         async load() {
-          const { presetSection } =
-            await import("#project/presets/config/sections/presetSection");
+          const {
+            presetSection,
+          } = await import("#project/presets/config/sections/presetSection");
 
           return presetSection;
         },
       },
       "traits": {
         async load() {
-          const { traitsSection } =
-            await import("#project/presets/config/sections/traitsSection");
+          const {
+            traitsSection,
+          } = await import("#project/presets/config/sections/traitsSection");
 
           return traitsSection;
         },
@@ -28,8 +30,9 @@ export default {
       "traits.adjustments": {
         input: "traits",
         async load() {
-          const { traitAdjustmentsSection } =
-            await import("#project/presets/config/sections/traitAdjustmentsSection");
+          const {
+            traitAdjustmentsSection,
+          } = await import("#project/presets/config/sections/traitAdjustmentsSection");
 
           return traitAdjustmentsSection;
         },

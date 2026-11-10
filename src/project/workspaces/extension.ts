@@ -7,8 +7,9 @@ export default {
       workspaces: {
         input: "workspaces",
         async load() {
-          const { workspacesSection } =
-            await import("#project/workspaces/config/sections/workspacesSection");
+          const {
+            workspacesSection,
+          } = await import("#project/workspaces/config/sections/workspacesSection");
 
           return workspacesSection;
         },

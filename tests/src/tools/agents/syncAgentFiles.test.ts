@@ -102,8 +102,7 @@ describe("syncAgentFiles", () => {
 
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude"], instructionFiles: ["AGENTS.md"] } };',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], instructionFiles: ["AGENTS.md"] } };',
       "AGENTS.md": instructions,
     });
 
@@ -124,13 +123,11 @@ describe("syncAgentFiles", () => {
     const planning = "@auaust/engrenage/agents/skills/issue-planning.md";
     const debugging = "@auaust/engrenage/agents/skills/debugging.md";
 
-    const metadata =
-      "# Keep metadata\ninterface:\n  display_name: My skill\npolicy:\n  # Keep policy comment\n  allow_implicit_invocation: false # Keep inline comment\ndependencies:\n  tools: []\n";
+    const metadata = "# Keep metadata\ninterface:\n  display_name: My skill\npolicy:\n  # Keep policy comment\n  allow_implicit_invocation: false # Keep inline comment\ndependencies:\n  tools: []\n";
 
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["codex"] } };',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
       ".agents/skills/issue-planning/SKILL.md": `<!-- @reference ${planning} -->\n<!-- @end -->\n`,
       ".agents/skills/issue-planning/agents/openai.yaml": metadata,
       ".agents/skills/debugging/SKILL.md": `<!-- @reference ${debugging} -->\n<!-- @end -->\n`,
@@ -197,8 +194,7 @@ describe("syncAgentFiles", () => {
     async function load(files: Record<string, string>) {
       const project = createTemporaryProject({
         "package.json": '{"type":"module"}',
-        "engrenage.config.ts":
-          'export default { agents: { preferred: ["claude"], instructionFiles: [] } };',
+        "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], instructionFiles: [] } };',
         ...files,
       });
 

@@ -16,8 +16,7 @@ const settings = `{
 describe("syncClaudeSettings", () => {
   test("adds the hooks to existing settings once", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude"] } };\n',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };\n',
       "package.json": '{"type":"module"}',
       ".claude/settings.json": settings,
     });
@@ -183,8 +182,7 @@ describe("syncClaudeSettings", () => {
 
   test("writes the configured subagent cache lifetime over another one", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude"], subagentCacheTtl: "5m" } };\n',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], subagentCacheTtl: "5m" } };\n',
       "package.json": '{"type":"module"}',
       ".claude/settings.json": '{\n  "subagentPromptCacheTtl": "1h"\n}\n',
     });
@@ -202,8 +200,7 @@ describe("syncClaudeSettings", () => {
 
   test("creates missing settings only when asked, unless disabled", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude"], claudeSettings: false } };\n',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], claudeSettings: false } };\n',
       "package.json": '{"type":"module"}',
     });
 
@@ -217,8 +214,7 @@ describe("syncClaudeSettings", () => {
 
     const enabled = await loadConfig(
       createTemporaryProject({
-        "engrenage.config.ts":
-          'export default { agents: { preferred: ["claude"] } };\n',
+        "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };\n',
         "package.json": '{"type":"module"}',
       }).root,
     );

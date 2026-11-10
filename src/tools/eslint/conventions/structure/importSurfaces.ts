@@ -15,8 +15,7 @@ export default defineConvention({
       root,
       graph,
       grants,
-      description:
-        "An element imports its own, ancestor and global roles, and other domains only through their public roles; a type-only role imports with `import type`.",
+      description: "An element imports its own, ancestor and global roles, and other domains only through their public roles; a type-only role imports with `import type`.",
       check: checkSurfaces,
       messages: boundaryMessages,
     });

@@ -6,10 +6,8 @@ import { loadConfig } from "@auaust/engrenage/config";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 const installedPackages = {
-  "node_modules/@changesets/cli/package.json":
-    '{ "name": "@changesets/cli", "version": "3.0.0" }',
-  "node_modules/@changesets/config/package.json":
-    '{ "name": "@changesets/config", "version": "4.0.1" }',
+  "node_modules/@changesets/cli/package.json": '{ "name": "@changesets/cli", "version": "3.0.0" }',
+  "node_modules/@changesets/config/package.json": '{ "name": "@changesets/config", "version": "4.0.1" }',
 };
 
 const changesetsProject = {
@@ -54,8 +52,7 @@ describe("syncChangesetConfig", () => {
   test("writes the access of a published project's visibility", async () => {
     const project = createTemporaryProject({
       ...changesetsProject,
-      "engrenage.config.ts":
-        'export default { preset: "library", visibility: "private" };\n',
+      "engrenage.config.ts": 'export default { preset: "library", visibility: "private" };\n',
       ".changeset/config.json": JSON.stringify({
         access: "public",
         baseBranch: "main",

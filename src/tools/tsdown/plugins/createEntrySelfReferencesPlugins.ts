@@ -11,8 +11,9 @@ const declarationFile = /\.d\.[cm]?ts$/;
 
 // @debt the package specifier is rebuilt from the tsdown entry name here; PathAlias should carry it so both stay in sync
 function toSpecifier(packageName: PackageName, entryName: string): string {
-  const subpath =
-    entryName === "index" ? "" : entryName.replace(/\/index$/, "");
+  const subpath = entryName === "index"
+    ? ""
+    : entryName.replace(/\/index$/, "");
 
   return subpath === "" ? packageName : `${packageName}/${subpath}`;
 }

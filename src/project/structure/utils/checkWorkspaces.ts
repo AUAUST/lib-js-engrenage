@@ -12,11 +12,12 @@ export function checkWorkspaces(
     return;
   }
 
-  const crosses =
+  const crosses = (
     importer.environment === "src" ||
     (importer.environment === "workspace" &&
       importer.path !== target.path &&
-      workspaces.get(importer.path)?.includes(target.path) !== true);
+      workspaces.get(importer.path)?.includes(target.path) !== true)
+  );
 
   return crosses
     ? freeze({

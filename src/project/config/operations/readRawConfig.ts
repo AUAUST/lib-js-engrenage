@@ -27,10 +27,11 @@ const warnMissingConfig = memoized(function (root: Directory) {
 async function findConfigFile(
   directory: Directory,
 ): Promise<FoundConfig | undefined> {
-  const { layers, cwd, _configFile } = await importConfigFile(
-    directory,
-    files.engrenageConfig,
-  );
+  const {
+    layers,
+    cwd,
+    _configFile,
+  } = await importConfigFile(directory, files.engrenageConfig);
 
   if (_configFile === undefined) {
     return;
@@ -92,9 +93,11 @@ export async function readRawConfig(
   start: Directory,
   { searchParents = true }: { searchParents?: boolean } = {},
 ): Promise<{ root: Directory; configFile: File | undefined; raw: RawConfig }> {
-  const { root, configFile, input } = searchParents
-    ? await findConfig(start)
-    : await findConfigIn(start);
+  const {
+    root,
+    configFile,
+    input,
+  } = searchParents ? await findConfig(start) : await findConfigIn(start);
 
   if (configFile === undefined) {
     warnMissingConfig(root);

@@ -24,11 +24,9 @@ export default defineConvention({
   rule: ({ entities, roles }, { root }) => {
     return defineStructureRule({
       entities,
-      description:
-        "A module of a ranked role imports at runtime only bindings declared in roles of its effect level or purer, and external modules ranked likewise.",
+      description: "A module of a ranked role imports at runtime only bindings declared in roles of its effect level or purer, and external modules ranked likewise.",
       messages: {
-        effects:
-          "A module of {{role}} ({{level}}) imports `{{binding}}` from {{target}} ({{targetLevel}}); import only {{level}} or purer bindings, or move the code.",
+        effects: "A module of {{role}} ({{level}}) imports `{{binding}}` from {{target}} ({{targetLevel}}); import only {{level}} or purer bindings, or move the code.",
       },
       create(context, { environment, role: roleName, effects: level }) {
         const services = context.sourceCode.parserServices;
@@ -55,10 +53,9 @@ export default defineConvention({
             return;
           }
 
-          const target =
-            (symbol.flags & SymbolFlags.Alias) === 0
-              ? symbol
-              : checker.getAliasedSymbol(symbol);
+          const target = (symbol.flags & SymbolFlags.Alias) === 0
+            ? symbol
+            : checker.getAliasedSymbol(symbol);
 
           if (
             target.declarations?.length === 0 ||
@@ -114,10 +111,9 @@ export default defineConvention({
               file.fileName,
             );
 
-            target =
-              declaring.role === undefined
-                ? relativePath
-                : `${declaring.role} (${relativePath})`;
+            target = declaring.role === undefined
+              ? relativePath
+              : `${declaring.role} (${relativePath})`;
 
             targetLevel = declaring.effects;
           }
@@ -232,10 +228,9 @@ export default defineConvention({
                 binding: imported.local.name,
                 ...(imported.type === "ImportSpecifier"
                   ? {
-                      imported:
-                        imported.imported.type === "Identifier"
-                          ? imported.imported.name
-                          : String(imported.imported.value),
+                      imported: imported.imported.type === "Identifier"
+                        ? imported.imported.name
+                        : String(imported.imported.value),
                     }
                   : imported.type === "ImportDefaultSpecifier"
                     ? { imported: "default" }
@@ -287,14 +282,12 @@ export default defineConvention({
               check({
                 reported: declaration,
                 specifier: String(declaration.source.value),
-                binding:
-                  exported.local.type === "Identifier"
-                    ? exported.local.name
-                    : String(exported.local.value),
-                imported:
-                  exported.local.type === "Identifier"
-                    ? exported.local.name
-                    : String(exported.local.value),
+                binding: exported.local.type === "Identifier"
+                  ? exported.local.name
+                  : String(exported.local.value),
+                imported: exported.local.type === "Identifier"
+                  ? exported.local.name
+                  : String(exported.local.value),
                 symbol: checker.getExportSpecifierLocalTargetSymbol(
                   tsNode as never,
                 ),

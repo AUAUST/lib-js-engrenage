@@ -17,15 +17,18 @@ export async function listSyncOptions(config: LoadedConfig): Promise<{
 
   const targets = map(contributions, ({ entry }) => entry.name);
 
-  const options = flatMap(contributions, ({ entry: { name, flags = {} } }) => {
-    return map(entries(flags), ([flag, description]): SyncOption => {
-      return {
-        target: name,
-        flag,
-        option: new Option(`--${name}-${flag}`, description),
-      };
-    });
-  });
+  const options = flatMap(
+    contributions,
+    ({ entry: { name, flags = {} } }) => {
+      return map(entries(flags), ([flag, description]): SyncOption => {
+        return {
+          target: name,
+          flag,
+          option: new Option(`--${name}-${flag}`, description),
+        };
+      });
+    },
+  );
 
   return {
     targets,

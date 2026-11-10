@@ -7,11 +7,11 @@ export async function resolveGithubToken(): Promise<string> {
     return token;
   }
 
-  const { status, stdout, error } = await spawnProcess(
-    "gh",
-    ["auth", "token"],
-    {},
-  );
+  const {
+    status,
+    stdout,
+    error,
+  } = await spawnProcess("gh", ["auth", "token"], {});
 
   const fromCli = stdout.trim();
 

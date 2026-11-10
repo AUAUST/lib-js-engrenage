@@ -29,8 +29,7 @@ afterEach(() => {
 async function fixture() {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
-    "engrenage.config.ts":
-      'export default { agents: { preferred: ["codex"], codexHooks: true } };',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["codex"], codexHooks: true } };',
     "AGENTS.md": "Instructions\n",
     "AGENTS.override.md": "<!-- @rules -->\n<!-- @end -->\n",
   });
@@ -148,8 +147,7 @@ test("distinguishes an unavailable client from another unverified version", asyn
 test("recognizes inspected Claude capabilities while leaving effective overrides unverified", async () => {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
-    "engrenage.config.ts":
-      'export default { agents: { preferred: ["claude"] } };',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
     "AGENTS.md": "Instructions",
     "CLAUDE.md": "@AGENTS.md",
     ".claude/settings.json": '{"disableAllHooks":true}',

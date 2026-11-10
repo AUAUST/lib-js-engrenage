@@ -74,8 +74,9 @@ export function createMirrorClassifier(tests: TestsContext) {
           .find((candidate) => counterparts(environment).has(candidate))
       : join(dirs[0] ?? environment, subpath);
 
-    const counterpart =
-      path === undefined ? undefined : counterparts(environment).get(path);
+    const counterpart = path === undefined
+      ? undefined
+      : counterparts(environment).get(path);
 
     return path === undefined
       ? { kind: "unclassified", reason: "missing counterpart" }

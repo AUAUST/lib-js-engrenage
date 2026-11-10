@@ -27,10 +27,11 @@ function matchSpecifier(
     );
   }
 
-  const fits =
+  const fits = (
     file.length >= targetPrefix.length + targetSuffix.length &&
     file.startsWith(targetPrefix) &&
-    file.endsWith(targetSuffix);
+    file.endsWith(targetSuffix)
+  );
 
   if (!fits) {
     return null;

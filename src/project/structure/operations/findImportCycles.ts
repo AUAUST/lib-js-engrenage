@@ -88,17 +88,16 @@ async function readRuntimeSpecifiers(
   file: string,
   verbatimModuleSyntax: boolean,
 ): Promise<string[]> {
-  const { outputText } = transpileModule(
-    await readFile(join(root, file), "utf-8"),
-    {
-      fileName: file,
-      compilerOptions: {
-        module: ModuleKind.ESNext,
-        target: ScriptTarget.Latest,
-        verbatimModuleSyntax,
-      },
+  const {
+    outputText,
+  } = transpileModule(await readFile(join(root, file), "utf-8"), {
+    fileName: file,
+    compilerOptions: {
+      module: ModuleKind.ESNext,
+      target: ScriptTarget.Latest,
+      verbatimModuleSyntax,
     },
-  );
+  });
 
   const emitted = createSourceFile(file, outputText, ScriptTarget.Latest);
 

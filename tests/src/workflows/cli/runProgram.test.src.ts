@@ -74,8 +74,9 @@ describe("runProgram", () => {
       throw new Error("config modules loaded");
     });
 
-    const { runProgram: runFreshProgram } =
-      await import("#workflows/cli/operations/runProgram");
+    const {
+      runProgram: runFreshProgram,
+    } = await import("#workflows/cli/operations/runProgram");
 
     await runFreshProgram(
       createDefinedProgram(
@@ -109,8 +110,9 @@ describe("runProgram", () => {
       throw new Error("config modules loaded");
     });
 
-    const { runProgram: runFreshProgram } =
-      await import("#workflows/cli/operations/runProgram");
+    const {
+      runProgram: runFreshProgram,
+    } = await import("#workflows/cli/operations/runProgram");
 
     await runFreshProgram(createProgram(), ["node", "program", "failing"]);
 

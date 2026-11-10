@@ -45,10 +45,9 @@ export function declareRecord(
   });
 
   function resolve(input: unknown, context: unknown, path: string): unknown {
-    const source =
-      input === undefined && optional !== undefined
-        ? resolveDefault(optional, context)
-        : input;
+    const source = input === undefined && optional !== undefined
+      ? resolveDefault(optional, context)
+      : input;
 
     if (!isPlainObject(source)) {
       throw new TypeError(`${path} must be an object`);

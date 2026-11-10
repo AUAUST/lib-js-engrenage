@@ -2,4 +2,5 @@ import type { ManagedEnvironmentTsconfig } from "#project/tsconfig/types/Managed
 import type { UnmanagedEnvironmentTsconfig } from "#project/tsconfig/types/UnmanagedEnvironmentTsconfig";
 
 export type ResolvedEnvironmentTsconfigOption =
-  ManagedEnvironmentTsconfig | UnmanagedEnvironmentTsconfig;
+  | ManagedEnvironmentTsconfig
+  | UnmanagedEnvironmentTsconfig;

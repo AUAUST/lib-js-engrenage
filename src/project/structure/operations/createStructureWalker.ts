@@ -42,8 +42,13 @@ export function createStructureWalker({
 }) {
   const optOut = new Set(options.optOut);
 
-  const { rolesFor, roleOf, metadataOf, resolveFileNames, roleCardinality } =
-    roleResolver;
+  const {
+    rolesFor,
+    roleOf,
+    metadataOf,
+    resolveFileNames,
+    roleCardinality,
+  } = roleResolver;
 
   const { describe, metadataForDomain } = domainResolver;
 
@@ -54,8 +59,13 @@ export function createStructureWalker({
   ): Promise<StructureNode> {
     const path = join(envDirectory, subpath);
 
-    const { directory, namespace, exact, declared, metadata } =
-      describe(subpath);
+    const {
+      directory,
+      namespace,
+      exact,
+      declared,
+      metadata,
+    } = describe(subpath);
 
     function extendLineage(kind: StructureKind): readonly RoleLocationMember[] {
       return kind === "namespace" || kind === "domain"
@@ -90,10 +100,9 @@ export function createStructureWalker({
         children?: readonly StructureNode[];
       } = {},
     ): Promise<StructureNode> {
-      const layer =
-        kind === "role"
-          ? undefined
-          : getStructureLayer(directory, parent.layers);
+      const layer = kind === "role"
+        ? undefined
+        : getStructureLayer(directory, parent.layers);
 
       const built: StructureNode = freeze({
         path,
@@ -102,18 +111,17 @@ export function createStructureWalker({
         source,
         ...(layer === undefined ? {} : { layer }),
         ...extra,
-        children:
-          children ??
-          (await walk(envDirectory, subpath, {
-            kind,
-            layers: extra.layers,
-            scopes,
-            owned,
-            structured,
-            lineage: extendLineage(kind),
-            enclosing,
-            ...(mirrored === undefined ? {} : { mirrored }),
-          })),
+        children: children ??
+        (await walk(envDirectory, subpath, {
+          kind,
+          layers: extra.layers,
+          scopes,
+          owned,
+          structured,
+          lineage: extendLineage(kind),
+          enclosing,
+          ...(mirrored === undefined ? {} : { mirrored }),
+        })),
       });
 
       rolesIn.set(built, rolesFor(scopes));
@@ -129,17 +137,19 @@ export function createStructureWalker({
       );
     }
 
-    const mirrorClass =
+    const mirrorClass = (
       classifyMirror === undefined || declared || parent.kind === "role"
-        ? undefined
-        : classifyMirror(directory, parent);
+    )
+      ? undefined
+      : classifyMirror(directory, parent);
 
-    const role =
+    const role = (
       parent.mirrored === undefined ||
       mirrorClass === undefined ||
       mirrorClass.counterpart?.kind === "role"
-        ? roleOf(directory, parent)
-        : undefined;
+    )
+      ? roleOf(directory, parent)
+      : undefined;
 
     if (namespace !== undefined) {
       return node(
@@ -258,11 +268,10 @@ export function createStructureWalker({
       enclosing: parent.enclosing,
     });
 
-    const holdsOnlyNamespacesAndDomains =
-      probed.length > 0 &&
-      probed.every(({ kind }) => {
-        return kind === "domain" || kind === "namespace";
-      });
+    const holdsOnlyNamespacesAndDomains = probed.length > 0 &&
+    probed.every(({ kind }) => {
+      return kind === "domain" || kind === "namespace";
+    });
 
     return holdsOnlyNamespacesAndDomains
       ? node("namespace", "inferred", {}, { children: probed })

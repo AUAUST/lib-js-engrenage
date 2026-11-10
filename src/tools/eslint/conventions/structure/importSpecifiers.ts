@@ -59,10 +59,9 @@ export default defineConvention({
         return violation("unknownPath");
       }
 
-      const fix =
-        resolved.kind === "relative"
-          ? entities.specifierOf(targetFile)
-          : undefined;
+      const fix = resolved.kind === "relative"
+        ? entities.specifierOf(targetFile)
+        : undefined;
 
       return fix === undefined ? undefined : violation("relativePath", fix);
     }
@@ -71,8 +70,7 @@ export default defineConvention({
       root,
       graph,
       grants,
-      description:
-        "A specifier names a path the structure map knows, through its alias rather than a relative path, and never the importing file itself.",
+      description: "A specifier names a path the structure map knows, through its alias rather than a relative path, and never the importing file itself.",
       check,
       messages: boundaryMessages,
     });

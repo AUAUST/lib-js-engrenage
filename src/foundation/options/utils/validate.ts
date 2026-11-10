@@ -19,8 +19,9 @@ function expandUnionIssue(issue: BaseIssue<unknown>): BaseIssue<unknown>[] {
       continue;
     }
 
-    const path: [IssuePathItem, ...IssuePathItem[]] =
-      issue.path === undefined ? nested.path : [...issue.path, ...nested.path];
+    const path: [IssuePathItem, ...IssuePathItem[]] = issue.path === undefined
+      ? nested.path
+      : [...issue.path, ...nested.path];
 
     branchIssues.push(
       ...expandUnionIssue({
@@ -59,9 +60,10 @@ export function validate<Schema extends GenericSchema>(
   if (!result.success) {
     const [issue, ...issues] = result.issues;
 
-    const [first = issue, ...others] = [issue, ...issues]
-      .flatMap(expandUnionIssue)
-      .map(describeIssue);
+    const [
+      first = issue,
+      ...others
+    ] = [issue, ...issues].flatMap(expandUnionIssue).map(describeIssue);
 
     throw new Error(`Invalid ${subject}:\n${summarize([first, ...others])}`);
   }

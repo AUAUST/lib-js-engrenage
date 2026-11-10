@@ -49,9 +49,10 @@ export default defineConvention({
 
             const isMention = text.toLowerCase().includes(debtMarker);
 
-            const isMarker =
+            const isMarker = (
               text.startsWith(debtMarker) &&
-              /^\s\S/.test(text.slice(debtMarker.length));
+              /^\s\S/.test(text.slice(debtMarker.length))
+            );
 
             if (list && isMarker) {
               context.report({

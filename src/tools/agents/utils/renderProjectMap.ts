@@ -38,10 +38,9 @@ function renderCell(
   category: ImportCategory,
   grants: ImportGrants,
 ): string {
-  const forbidden =
-    category === dataEnvironment
-      ? grants.data.includes(name)
-      : grants.environments[name]?.includes(category) === true;
+  const forbidden = category === dataEnvironment
+    ? grants.data.includes(name)
+    : grants.environments[name]?.includes(category) === true;
 
   if (forbidden) {
     return "never";

@@ -5,8 +5,7 @@ import { isString } from "@auaust/toolkit/isString";
 
 const declarationChunk = /\.d\.[cm]?ts$/;
 
-const emptyNamespace =
-  /\bvar\s+([$\w]+)\s*=\s*(?:\/\*\s*@__PURE__\s*\*\/\s*)?__exportAll\(\s*\{\s*\}\s*\);?/g;
+const emptyNamespace = /\bvar\s+([$\w]+)\s*=\s*(?:\/\*\s*@__PURE__\s*\*\/\s*)?__exportAll\(\s*\{\s*\}\s*\);?/g;
 
 export function createEmptyNamespacesPlugins(name: string): TsdownPlugin[] {
   const emptyNamespaces = new Map<string, string[]>();

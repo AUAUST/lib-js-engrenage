@@ -7,8 +7,7 @@ export const structureSchema = declareObject(
   {
     effects: effectsSchema,
     internals: declare(boolean(), {
-      description:
-        "Whether every domain exposes its index under `<subpath>/internals`, with no stability guarantee.",
+      description: "Whether every domain exposes its index under `<subpath>/internals`, with no stability guarantee.",
       optional: { value: false },
     }),
   },

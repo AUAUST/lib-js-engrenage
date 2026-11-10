@@ -39,8 +39,7 @@ async function createLinter() {
     }),
     "engrenage.config.ts": `export default { preset: "library", src: { roles: ${roles}, ${configRole}, ${extensionRole}], structure: { layers: ["project"] } } };\n`,
     "src/project/listed/index.ts": "export {};\n",
-    "src/project/listed/entry.ts":
-      'export { defineListedConfig } from "./config/defineListedConfig.ts";\n',
+    "src/project/listed/entry.ts": 'export { defineListedConfig } from "./config/defineListedConfig.ts";\n',
     "src/project/listed/config/sections/listedSection.ts": "export {};\n",
     "src/project/listed/constants.ts": "export const listed = 1;\n",
     "src/project/listed/inner/extension.ts": "export default {};\n",

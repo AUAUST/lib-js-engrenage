@@ -11,8 +11,7 @@ export default defineConvention({
       entities,
       description: "The constants file exports deeply read-only values.",
       messages: {
-        mutable:
-          "`{{name}}` is not deeply read-only; declare it `as const` or wrap it in `freeze`, or move it out of the constants file.",
+        mutable: "`{{name}}` is not deeply read-only; declare it `as const` or wrap it in `freeze`, or move it out of the constants file.",
       },
       create(context, { fileRole }) {
         const services = context.sourceCode.parserServices;

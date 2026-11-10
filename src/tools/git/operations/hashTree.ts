@@ -26,10 +26,9 @@ async function unstage(
     return;
   }
 
-  const args =
-    (await readHead(root)) === undefined
-      ? ["rm", "--cached", "-q", "--ignore-unmatch", "--", ...paths]
-      : ["reset", "-q", "HEAD", "--", ...paths];
+  const args = (await readHead(root)) === undefined
+    ? ["rm", "--cached", "-q", "--ignore-unmatch", "--", ...paths]
+    : ["reset", "-q", "HEAD", "--", ...paths];
 
   await runGit(root, args, env);
 }

@@ -2,8 +2,7 @@ import { createRolePreset } from "#project/roles/index";
 
 export const extension = createRolePreset({
   name: "extension",
-  purpose:
-    "The domain's extension: data and lazy loaders, read without loading the domain.",
+  purpose: "The domain's extension: data and lazy loaders, read without loading the domain.",
   file: ["extension.ts"],
   unique: true,
   exports: "default",
@@ -12,8 +11,9 @@ export const extension = createRolePreset({
   effects: "effectful",
   rules: {
     "extension-imports": async () => {
-      const { extensionImports } =
-        await import("#tools/eslint/rules/extensionImports");
+      const {
+        extensionImports,
+      } = await import("#tools/eslint/rules/extensionImports");
 
       return extensionImports;
     },

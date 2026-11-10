@@ -122,14 +122,13 @@ export async function getSkillTemplates({
       ...template,
       invocation,
       agent,
-      profiles:
-        preferred.includes("codex") && agent !== undefined
-          ? createCodexAgentProfiles({
-              agent,
-              reference,
-              body,
-            })
-          : [],
+      profiles: preferred.includes("codex") && agent !== undefined
+        ? createCodexAgentProfiles({
+            agent,
+            reference,
+            body,
+          })
+        : [],
       files,
     };
   });

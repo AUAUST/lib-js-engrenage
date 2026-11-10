@@ -82,10 +82,9 @@ export function declare(
   }
 
   function resolve(input: unknown, context: unknown, path: string): unknown {
-    const value =
-      narrow === undefined
-        ? input
-        : validate(create(narrow(context)), input, path);
+    const value = narrow === undefined
+      ? input
+      : validate(create(narrow(context)), input, path);
 
     if (disable !== undefined && value === false) {
       return disable.value;

@@ -18,10 +18,9 @@ export function createCodexDispatch(
   for (const template of installed) {
     const { name, description, agent } = template;
 
-    const handling =
-      agent === undefined || agent.name === "planner"
-        ? "Run its skill in the main session."
-        : `Delegate to \`${agent.name}\`.`;
+    const handling = agent === undefined || agent.name === "planner"
+      ? "Run its skill in the main session."
+      : `Delegate to \`${agent.name}\`.`;
 
     lines.push(
       `| \`${name}\` | ${handling} ${(agent === undefined || agent.name === "planner" ? description : agent.description).replaceAll("|", "&#124;")} |`,

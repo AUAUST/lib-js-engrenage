@@ -8,8 +8,7 @@ describe("addAgentSkills", () => {
   test("installs an explicit skill and its agent for every preferred agent", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude", "codex"] } };',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude", "codex"] } };',
     });
 
     const config = await loadConfig(project.root);
@@ -52,8 +51,7 @@ describe("addAgentSkills", () => {
   test("writes the agent model and effort to the Claude Code agent", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude"] } };',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
     });
 
     const config = await loadConfig(project.root);
@@ -76,8 +74,7 @@ describe("addAgentSkills", () => {
   test("lets the scratchpad skill be invoked implicitly", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["claude", "codex"] } };',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude", "codex"] } };',
     });
 
     const config = await loadConfig(project.root);
@@ -110,8 +107,7 @@ describe("addAgentSkills", () => {
   test("installs six canonical roles selectively with only the gated effort variants", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["codex"] } };',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
     });
 
     const config = await loadConfig(project.root);
@@ -167,8 +163,7 @@ describe("addAgentSkills", () => {
   test("preserves and reports an unowned profile collision", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
-      "engrenage.config.ts":
-        'export default { agents: { preferred: ["codex"] } };',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
       ".codex/agents/worker.toml": 'name = "custom"\n',
     });
 

@@ -164,12 +164,11 @@ export async function createVitestConfig(
         ],
         reportsDirectory: tests.coverageDir,
       },
-      typecheck:
-        typecheckTsconfig === undefined
-          ? {}
-          : {
-              tsconfig: typecheckTsconfig,
-            },
+      typecheck: typecheckTsconfig === undefined
+        ? {}
+        : {
+            tsconfig: typecheckTsconfig,
+          },
     },
   };
 }

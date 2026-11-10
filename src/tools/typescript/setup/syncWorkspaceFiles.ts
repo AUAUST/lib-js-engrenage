@@ -110,8 +110,9 @@ async function createTsconfigEdits(
     return [
       {
         path: [...path],
-        value:
-          path[0] === "extends" && items.length === 1 ? items[0] : [...items],
+        value: path[0] === "extends" && items.length === 1
+          ? items[0]
+          : [...items],
       },
     ];
   });
@@ -132,15 +133,21 @@ async function createTsconfigEdits(
 }
 
 export async function syncWorkspaceFiles(config: LoadedConfig) {
-  const [groups, filesystem, resolvePath, packageJson, traits, visibility] =
-    await Promise.all([
-      config.resolve("workspaces"),
-      config.context.filesystem,
-      config.context.path,
-      config.resolve("packageJson"),
-      config.resolve("traits"),
-      config.resolve("visibility"),
-    ]);
+  const [
+    groups,
+    filesystem,
+    resolvePath,
+    packageJson,
+    traits,
+    visibility,
+  ] = await Promise.all([
+    config.resolve("workspaces"),
+    config.context.filesystem,
+    config.context.path,
+    config.resolve("packageJson"),
+    config.resolve("traits"),
+    config.resolve("visibility"),
+  ]);
 
   const access = traits.published ? accessByVisibility[visibility] : undefined;
 

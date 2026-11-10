@@ -10,13 +10,11 @@ import { exposedFilesSchema } from "#project/package/index";
 export const dataSchema = declareObject(
   {
     dirs: declareList(directorySchema, {
-      description:
-        "Directories of static data files shipped with the package, listed in the `files` of `package.json`.",
+      description: "Directories of static data files shipped with the package, listed in the `files` of `package.json`.",
       optional: { value: defaultDataDirectories },
     }),
     exports: declare(exposedFilesSchema, {
-      description:
-        "Subpaths the package exposes, mapped to a data file; both sides use the same single `*` or none. tsdown adds them to the `exports` of `package.json`, and a subpath that `src.exports` also exposes fails.",
+      description: "Subpaths the package exposes, mapped to a data file; both sides use the same single `*` or none. tsdown adds them to the `exports` of `package.json`, and a subpath that `src.exports` also exposes fails.",
       optional: {
         value: {},
       },

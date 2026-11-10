@@ -44,10 +44,9 @@ const compatSchema = object({
 export async function readEditionCompat(
   featuresFile: File,
 ): Promise<Map<string, Compat>> {
-  const { features } = parse(
-    compatSchema,
-    JSON.parse(await readFile(featuresFile, "utf-8")),
-  );
+  const {
+    features,
+  } = parse(compatSchema, JSON.parse(await readFile(featuresFile, "utf-8")));
 
   const compat = new Map<string, Compat>();
 
@@ -57,10 +56,9 @@ export async function readEditionCompat(
     }
 
     for (const [key, status] of entries(feature.status?.by_compat_key ?? {})) {
-      const date =
-        status.baseline === false || status.baseline_low_date == null
-          ? null
-          : status.baseline_low_date.replace("≤", "");
+      const date = status.baseline === false || status.baseline_low_date == null
+        ? null
+        : status.baseline_low_date.replace("≤", "");
 
       const discouraged = feature.discouraged != null;
       const known = compat.get(key);

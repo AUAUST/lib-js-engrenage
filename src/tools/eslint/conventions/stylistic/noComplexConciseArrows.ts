@@ -4,11 +4,9 @@ import { join } from "@auaust/primitive-kit/arrays";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 
-const complexMessage =
-  "Use a block body with an explicit return; concise bodies are only for a short identifier, literal, member access, negation, comparison, call, template literal, array of identifiers, literals or member accesses, or one of those asserted `as const`.";
+const complexMessage = "Use a block body with an explicit return; concise bodies are only for a short identifier, literal, member access, negation, comparison, call, template literal, array of identifiers, literals or member accesses, or one of those asserted `as const`.";
 
-const wrappedMessage =
-  "Use a block body with an explicit return; a concise body stays whole on the line of its `=>`.";
+const wrappedMessage = "Use a block body with an explicit return; a concise body stays whole on the line of its `=>`.";
 
 const conciseBodies = join(
   [
@@ -31,8 +29,7 @@ const constAssertedBodies = join(
   "|",
 );
 
-const complexArray =
-  "ArrayExpression:has(> :not(Identifier, Literal, MemberExpression))";
+const complexArray = "ArrayExpression:has(> :not(Identifier, Literal, MemberExpression))";
 
 const complexBodies = join(
   [

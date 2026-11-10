@@ -118,8 +118,7 @@ describe("syncWorkflowFiles", () => {
     const project = createTemporaryProject({
       ".git/HEAD": "",
       ".github/workflows/ci.yml": "",
-      "packages/app/engrenage.config.ts":
-        'export default { preset: "library" };\n',
+      "packages/app/engrenage.config.ts": 'export default { preset: "library" };\n',
       "packages/app/package.json": JSON.stringify({
         type: "module",
         scripts: libraryScripts,

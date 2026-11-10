@@ -34,8 +34,7 @@ function definerFile({ lineage }: RoleLocation): string {
 
 const config = createRolePreset({
   name: "config",
-  purpose:
-    "Everything that configures the domain: its definer, option declarations and sections.",
+  purpose: "Everything that configures the domain: its definer, option declarations and sections.",
   strict: true,
   exports: "named-match",
   roles: [

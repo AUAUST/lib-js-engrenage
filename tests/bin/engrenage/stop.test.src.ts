@@ -29,8 +29,7 @@ async function createRepository() {
         type: "module",
         devDependencies: { prettier: "*" },
       }),
-      "engrenage.config.ts":
-        'export default { src: { baseline: "2026-10" }, agents: { gate: { commands: ["test ! -f fail"] } } };\n',
+      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" }, agents: { gate: { commands: ["test ! -f fail"] } } };\n',
       ".gitignore": "node_modules\n",
     },
     ["prettier"],

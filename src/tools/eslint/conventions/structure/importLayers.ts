@@ -15,8 +15,7 @@ export default defineConvention({
       root,
       graph,
       grants,
-      description:
-        "An element imports only the index.ts of a domain in a lower layer, of a non-isolated peer or of its own sub-domain.",
+      description: "An element imports only the index.ts of a domain in a lower layer, of a non-isolated peer or of its own sub-domain.",
       check: checkLayers,
       messages: boundaryMessages,
     });

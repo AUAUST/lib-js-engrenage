@@ -25,7 +25,9 @@ const ruleEntrySchema = union([
 ]);
 
 type RoleRule =
-  InferInput<typeof ruleEntrySchema> | RoleRuleModule | RoleRuleLoader;
+  | InferInput<typeof ruleEntrySchema>
+  | RoleRuleModule
+  | RoleRuleLoader;
 
 function isRuleModule(value: unknown): value is RoleRuleModule {
   return isObject(value) && "tool" in value && isString(value.tool);

@@ -32,10 +32,10 @@ async function syncAttributionRules(config: {
   const wanted = attributionRules[`${attribution}`];
   const unwanted = attributionRules[`${!attribution}`];
 
-  const [references, templates] = await Promise.all([
-    getRuleReferences(config),
-    getRuleTemplates(),
-  ]);
+  const [
+    references,
+    templates,
+  ] = await Promise.all([getRuleReferences(config), getRuleTemplates()]);
 
   // @debt a project file at the wanted rule's path without its reference silently keeps the rule out; sync could report the conflict
   for (const { name, file, reference, content } of templates) {

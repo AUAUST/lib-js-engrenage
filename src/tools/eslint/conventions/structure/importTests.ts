@@ -15,8 +15,7 @@ export default defineConvention({
       root,
       graph,
       grants,
-      description:
-        "In a published package, a test that runs against source and dist imports the package name, a source-only test imports internals, and a dist-only test imports the package name and the build output.",
+      description: "In a published package, a test that runs against source and dist imports the package name, a source-only test imports internals, and a dist-only test imports the package name and the build output.",
       check: checkTests,
       messages: boundaryMessages,
     });

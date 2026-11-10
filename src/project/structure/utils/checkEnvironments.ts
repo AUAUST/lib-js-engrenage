@@ -33,11 +33,12 @@ export function checkEnvironments(
     return;
   }
 
-  const isOwnExecutable =
+  const isOwnExecutable = (
     target !== undefined &&
     importer.role === executableRoleName &&
     importer.environment === target.environment &&
-    importer.path === target.path;
+    importer.path === target.path
+  );
 
   if (
     target !== undefined &&

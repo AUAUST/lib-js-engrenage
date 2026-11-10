@@ -42,10 +42,9 @@ export async function syncGitignoreFile(config: LoadedConfig) {
       resolve,
     },
     {
-      path:
-        resources.get("gitignore") === undefined
-          ? undefined
-          : resources.path("gitignore"),
+      path: resources.get("gitignore") === undefined
+        ? undefined
+        : resources.path("gitignore"),
       presets: {
         javascript() {
           return [javascriptIgnores];

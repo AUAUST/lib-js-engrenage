@@ -81,8 +81,9 @@ export async function resolveEnvironmentStructure({
     rolesIn,
     roleResolver,
     domainResolver,
-    classifyMirror:
-      tests === undefined ? undefined : createMirrorClassifier(tests),
+    classifyMirror: tests === undefined
+      ? undefined
+      : createMirrorClassifier(tests),
   });
 
   const rootDeclaration = namespaces[environmentRoot];
@@ -138,13 +139,9 @@ export async function resolveEnvironmentStructure({
     rolesIn,
   );
 
-  const rootNode =
-    strictness === "loose"
-      ? loosenStructureNode(
-          resolvedRoot,
-          name === "tests" ? "mirror" : "domain",
-        )
-      : resolvedRoot;
+  const rootNode = strictness === "loose"
+    ? loosenStructureNode(resolvedRoot, name === "tests" ? "mirror" : "domain")
+    : resolvedRoot;
 
   return freeze({
     name,

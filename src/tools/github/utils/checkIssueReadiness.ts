@@ -57,10 +57,9 @@ export function checkIssueReadiness(
     });
   }
 
-  const contract =
-    issue.type !== undefined && issue.type in issueContracts
-      ? issueContracts[issue.type as keyof typeof issueContracts]
-      : undefined;
+  const contract = issue.type !== undefined && issue.type in issueContracts
+    ? issueContracts[issue.type as keyof typeof issueContracts]
+    : undefined;
 
   if (audience === "debugger" && !ancestor) {
     if (issue.type !== "Problem") {

@@ -1448,8 +1448,7 @@ export async function run(): Promise<unknown> {
   test("lints Error subclasses clean in a baseline environment", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "name": "baseline", "type": "module" }',
-      "engrenage.config.ts":
-        'export default { src: { baseline: "2026-10" } };\n',
+      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
       "tsconfig.json": JSON.stringify({
         compilerOptions: { strict: true, module: "nodenext" },
         files: [],
@@ -1782,8 +1781,7 @@ describe("complexity limits", () => {
 
   test("apply the limits of the format section", async () => {
     const reported = await lintedProjectRules(source, {
-      engrenageConfig:
-        "export default { format: { maxCognitiveComplexity: 0, maxFunctionLines: 2, maxFileLines: 2 } };\n",
+      engrenageConfig: "export default { format: { maxCognitiveComplexity: 0, maxFunctionLines: 2, maxFileLines: 2 } };\n",
     });
 
     expect(reported).toEqual(expect.arrayContaining(rules));

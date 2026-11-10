@@ -55,10 +55,7 @@ const pluginFactories = {
       root,
     );
   },
-} satisfies Record<
-  (typeof pluginNames)[number],
-  (name: string, context: PluginContext) => TsdownPlugin[]
->;
+} satisfies Record<(typeof pluginNames)[number], (name: string, context: PluginContext) => TsdownPlugin[]>;
 
 function resolveWorkspaceEntries(
   groups: readonly ResolvedWorkspaceGroup[],
@@ -94,11 +91,10 @@ export async function createTsdownConfig(
   { ci }: { ci: boolean },
   options?: Maybe<Options>,
 ): Promise<Config> {
-  const { bundle, plugins } = validate(
-    optionsSchema,
-    options ?? {},
-    "tsdown options",
-  );
+  const {
+    bundle,
+    plugins,
+  } = validate(optionsSchema, options ?? {}, "tsdown options");
 
   const root = config.context.root;
 

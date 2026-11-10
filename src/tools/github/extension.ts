@@ -7,8 +7,9 @@ export default {
       github: {
         input: "github",
         async load() {
-          const { githubSection } =
-            await import("#tools/github/config/sections/githubSection");
+          const {
+            githubSection,
+          } = await import("#tools/github/config/sections/githubSection");
 
           return githubSection;
         },
@@ -21,8 +22,9 @@ export default {
         name: "workflows",
         stage: "write",
         async load() {
-          const { syncWorkflowFiles } =
-            await import("#tools/github/setup/syncWorkflowFiles");
+          const {
+            syncWorkflowFiles,
+          } = await import("#tools/github/setup/syncWorkflowFiles");
 
           return syncWorkflowFiles;
         },

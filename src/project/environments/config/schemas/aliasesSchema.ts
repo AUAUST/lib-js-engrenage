@@ -9,13 +9,11 @@ import {
 export const aliasesSchema = declareObject(
   {
     generated: declare(boolean(), {
-      description:
-        "Whether the aliases derived from the project structure are generated. `false` with `define` replaces the generated set.",
+      description: "Whether the aliases derived from the project structure are generated. `false` with `define` replaces the generated set.",
       optional: { value: true },
     }),
     define: declareRecord(string(), declare(string()), {
-      description:
-        "Aliases to add, mapped to their target. A key not starting with `#` is a bundler alias, valid only with `src.bundled`.",
+      description: "Aliases to add, mapped to their target. A key not starting with `#` is a bundler alias, valid only with `src.bundled`.",
       optional: {
         value: {},
       },

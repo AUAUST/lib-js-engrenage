@@ -126,12 +126,11 @@ describe("syncPackageJson", () => {
   });
 
   test("writes the access of a private library to publishConfig", async () => {
-    const { manifest } = await sync(
-      library.replace("{", '{ visibility: "private",'),
-      {
-        publishConfig: { access: "public" },
-      },
-    );
+    const {
+      manifest,
+    } = await sync(library.replace("{", '{ visibility: "private",'), {
+      publishConfig: { access: "public" },
+    });
 
     expect((await manifest()).publishConfig).toEqual({ access: "restricted" });
   });
@@ -233,9 +232,10 @@ describe("syncPackageJson pnpm warnings", () => {
   }
 
   test("suggests the upgrade command below the range without failing the check", async () => {
-    const { resolved, messages } = await warnings(
-      declare(`^${versions.previousMajor}`),
-    );
+    const {
+      resolved,
+      messages,
+    } = await warnings(declare(`^${versions.previousMajor}`));
 
     expect(messages).toEqual([
       expect.stringContaining("engrenage pnpm upgrade"),

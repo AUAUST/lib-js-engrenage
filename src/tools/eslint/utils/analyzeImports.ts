@@ -23,10 +23,9 @@ function sourceExtensionOf(
   importer: Entity | undefined,
   filename: string,
 ): string {
-  const structure =
-    importer === undefined
-      ? undefined
-      : getOwn(graph.structure, importer.environment);
+  const structure = importer === undefined
+    ? undefined
+    : getOwn(graph.structure, importer.environment);
 
   return extname(structure?.indexFile ?? filename);
 }
@@ -50,10 +49,11 @@ function createAnalysis(graph: ImportGraph, filename: string): ImportAnalysis {
 
     const resolved = graph.resolveImport(specifier, filename);
 
-    const targetFile =
+    const targetFile = (
       resolved?.kind === "relative" || resolved?.kind === "alias"
-        ? withExtension(resolved.path, extension)
-        : undefined;
+    )
+      ? withExtension(resolved.path, extension)
+      : undefined;
 
     const edge: ImportEdge = {
       file: filename,
@@ -61,10 +61,9 @@ function createAnalysis(graph: ImportGraph, filename: string): ImportAnalysis {
       specifier,
       resolved,
       targetFile,
-      target:
-        targetFile === undefined
-          ? undefined
-          : graph.entities.entityOf(targetFile),
+      target: targetFile === undefined
+        ? undefined
+        : graph.entities.entityOf(targetFile),
       kind: isTypeOnlyNode(node) ? "type" : "runtime",
     };
 

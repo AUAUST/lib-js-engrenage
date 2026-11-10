@@ -68,8 +68,9 @@ function countObjects(root: ConfigSchema): Map<ConfigSchema, number> {
   const counts = new Map<ConfigSchema, number>();
 
   function visit(schema: ConfigSchema) {
-    const members =
-      isUnionConfigSchema(schema) && !("pipe" in schema) ? schema.options : [];
+    const members = isUnionConfigSchema(schema) && !("pipe" in schema)
+      ? schema.options
+      : [];
 
     if (isObjectConfigSchema(schema) && !("pipe" in schema)) {
       const seen = counts.has(schema);

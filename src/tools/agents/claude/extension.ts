@@ -18,8 +18,9 @@ export default {
           settings: "create .claude/settings.json when it is missing",
         },
         async load() {
-          const { syncClaudeSettings } =
-            await import("#tools/agents/claude/setup/syncClaudeSettings");
+          const {
+            syncClaudeSettings,
+          } = await import("#tools/agents/claude/setup/syncClaudeSettings");
 
           return syncClaudeSettings;
         },

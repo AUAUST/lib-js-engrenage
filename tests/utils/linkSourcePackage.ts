@@ -19,8 +19,9 @@ const { paths } = JSON.parse(
 ).compilerOptions as { paths: Record<string, readonly string[]> };
 
 function toSource(subpath: string, file: string): string {
-  const key =
-    subpath === "." ? manifest.name : `${manifest.name}/${subpath.slice(2)}`;
+  const key = subpath === "."
+    ? manifest.name
+    : `${manifest.name}/${subpath.slice(2)}`;
 
   return paths[key]?.[0] ?? file;
 }

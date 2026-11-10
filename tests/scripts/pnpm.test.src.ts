@@ -13,9 +13,11 @@ afterEach(() => {
 });
 
 function bump(part: "major" | "minor" | "patch", by = 1): string {
-  const [major = 0, minor = 0, patch = 0] = readSharedPnpmRange()
-    .floor.split(".")
-    .map(Number);
+  const [
+    major = 0,
+    minor = 0,
+    patch = 0,
+  ] = readSharedPnpmRange().floor.split(".").map(Number);
 
   if (part === "major") {
     return `${major + by}.0.0`;

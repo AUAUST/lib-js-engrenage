@@ -130,10 +130,11 @@ function renamedText(
 
   const parent = last(ancestors);
 
-  const property =
+  const property = (
     parent?.type === "AssignmentPattern" && parent.left === identifier
-      ? ancestors.at(-2)
-      : parent;
+  )
+    ? ancestors.at(-2)
+    : parent;
 
   if (property?.type === "Property" && property.shorthand) {
     return `${from}: ${to}`;

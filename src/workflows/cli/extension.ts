@@ -7,8 +7,9 @@ export default {
       debug: {
         input: "debug",
         async load() {
-          const { debugSection } =
-            await import("#workflows/cli/config/sections/debugSection");
+          const {
+            debugSection,
+          } = await import("#workflows/cli/config/sections/debugSection");
 
           return debugSection;
         },

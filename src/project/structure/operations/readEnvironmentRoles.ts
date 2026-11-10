@@ -6,12 +6,15 @@ export async function readEnvironmentRoles(
   config: ConfigResolver,
   roles: readonly Role[],
 ): Promise<EnvironmentRoles> {
-  const [{ effects }, { verbatimModuleSyntax }, defaultModules] =
-    await Promise.all([
-      config.resolve("structure.options"),
-      config.resolve("typescript.options"),
-      config.resolve("effectModules"),
-    ]);
+  const [
+    { effects },
+    { verbatimModuleSyntax },
+    defaultModules,
+  ] = await Promise.all([
+    config.resolve("structure.options"),
+    config.resolve("typescript.options"),
+    config.resolve("effectModules"),
+  ]);
 
   return {
     roles,

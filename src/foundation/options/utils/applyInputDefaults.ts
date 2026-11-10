@@ -78,8 +78,9 @@ export function applyInputDefaults(
       continue;
     }
 
-    const segments =
-      path === name ? [] : path.slice(name.length + 1).split(".");
+    const segments = path === name
+      ? []
+      : path.slice(name.length + 1).split(".");
 
     applied = place(applied, segments, fallback, path);
   }

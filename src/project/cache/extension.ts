@@ -7,8 +7,9 @@ export default {
       cache: {
         input: "cache",
         async load() {
-          const { cacheSection } =
-            await import("#project/cache/config/sections/cacheSection");
+          const {
+            cacheSection,
+          } = await import("#project/cache/config/sections/cacheSection");
 
           return cacheSection;
         },

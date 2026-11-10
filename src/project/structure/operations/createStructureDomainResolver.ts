@@ -91,10 +91,9 @@ export function createStructureDomainResolver({
       return listStaticFileGlobs(file);
     });
 
-    const files =
-      commands || fileGlobs.length === 0
-        ? []
-        : await listStructureFiles(join(root, path));
+    const files = commands || fileGlobs.length === 0
+      ? []
+      : await listStructureFiles(join(root, path));
 
     const strays = files.filter((file) => {
       return (
@@ -135,9 +134,10 @@ export function createStructureDomainResolver({
         ? {}
         : { strays: strays.map((file) => join(path, file)) }),
       ...cardinality,
-      public:
+      public: (
         entryFile !== undefined &&
-        (await pathExists(join(root, path, entryFile))),
+        (await pathExists(join(root, path, entryFile)))
+      ),
       ...(metadata.specifier === undefined
         ? {}
         : { specifier: metadata.specifier }),

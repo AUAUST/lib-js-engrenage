@@ -4,9 +4,9 @@ import { describe, expect, test } from "vitest";
 import { getFixture } from "#tests/utils/getFixture";
 import { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
 
-const { compile } = createLibraryCompiler(
-  getFixture("typescript/compiler/libs"),
-);
+const {
+  compile,
+} = createLibraryCompiler(getFixture("typescript/compiler/libs"));
 
 function compileLibraries(
   library: readonly string[],

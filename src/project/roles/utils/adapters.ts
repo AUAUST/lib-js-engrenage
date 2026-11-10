@@ -4,8 +4,7 @@ import { createRolePreset } from "#project/roles/utils/createRolePreset";
 // @debt the only preset without an effect level, so every project overrides it to rank it; should likely be observing rather than effectful
 export const adapters = createRolePreset({
   name: "adapters",
-  purpose:
-    "Implementations of other domains' ports, importable module by module.",
+  purpose: "Implementations of other domains' ports, importable module by module.",
   exports: "named-match",
   public: true,
 });

@@ -8,13 +8,11 @@ const traitSchema = picklist(traits);
 export const traitsSchema = declareObject(
   {
     enable: declare(array(traitSchema), {
-      description:
-        "Traits to turn on, whatever the preset bundles. `published`: the project is distributed (a library) and tested as built.",
+      description: "Traits to turn on, whatever the preset bundles. `published`: the project is distributed (a library) and tested as built.",
       optional: { value: [] },
     }),
     disable: declare(array(traitSchema), {
-      description:
-        "Traits the preset bundles to turn off; `enable` wins over it.",
+      description: "Traits the preset bundles to turn off; `enable` wins over it.",
       optional: { value: [] },
     }),
   },

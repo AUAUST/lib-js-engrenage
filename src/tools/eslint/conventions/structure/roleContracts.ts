@@ -29,17 +29,12 @@ export default defineConvention({
   rule: ({ entities, structure: structures }, { root }) => {
     return defineStructureRule({
       entities,
-      description:
-        "A file in a role directory follows the role's nesting, categories and accepted files; a strict role holds at its root only the files its nested roles name.",
+      description: "A file in a role directory follows the role's nesting, categories and accepted files; a strict role holds at its root only the files its nested roles name.",
       messages: {
-        nesting:
-          "The role {{role}} allows {{depth}} levels of directories; move this file up.",
-        category:
-          "The role {{role}} sorts its modules into category directories; move this file into one.",
-        accepts:
-          "The role {{role}} accepts only {{accepts}}; move this file out.",
-        strict:
-          "The strict role {{role}} accepts at its root only {{accepts}}; rename this file or move it into a nested role's directory.",
+        nesting: "The role {{role}} allows {{depth}} levels of directories; move this file up.",
+        category: "The role {{role}} sorts its modules into category directories; move this file into one.",
+        accepts: "The role {{role}} accepts only {{accepts}}; move this file out.",
+        strict: "The strict role {{role}} accepts at its root only {{accepts}}; rename this file or move it into a nested role's directory.",
       },
       create(context, { environment, kind, role, contract, path, fileRole }) {
         if (
@@ -60,15 +55,13 @@ export default defineConvention({
         const file = basename(relativePath);
         const isIndex = fileRole === indexRoleName;
 
-        const depth =
-          dirname(relativePath) === "."
-            ? 0
-            : relativePath.split("/").length - 1;
+        const depth = dirname(relativePath) === "."
+          ? 0
+          : relativePath.split("/").length - 1;
 
-        const allowed =
-          contract.nesting === "any"
-            ? Infinity
-            : contract.nesting + (contract.categories === true ? 1 : 0);
+        const allowed = contract.nesting === "any"
+          ? Infinity
+          : contract.nesting + (contract.categories === true ? 1 : 0);
 
         return {
           Program(program) {
@@ -89,10 +82,9 @@ export default defineConvention({
                 data: { role },
               });
             } else if (!isIndex && contract.strict && depth === 0) {
-              const owner =
-                structure === undefined
-                  ? undefined
-                  : findNode(structure.root, path);
+              const owner = structure === undefined
+                ? undefined
+                : findNode(structure.root, path);
 
               const accepted = listNamedFileRoles(
                 contract.roles ?? [],
@@ -107,8 +99,9 @@ export default defineConvention({
                 messageId: "strict",
                 data: {
                   role,
-                  accepts:
-                    accepted.length === 0 ? "no file" : accepted.join(", "),
+                  accepts: accepted.length === 0
+                    ? "no file"
+                    : accepted.join(", "),
                 },
               });
             } else if (

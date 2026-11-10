@@ -32,8 +32,9 @@ export default {
         name: shopifyPrettierPluginLiquid,
         files: ["*.liquid"],
         async load() {
-          const { liquidPlugin } =
-            await import("#tools/shopify/theme/adapters/liquidPlugin");
+          const {
+            liquidPlugin,
+          } = await import("#tools/shopify/theme/adapters/liquidPlugin");
 
           return liquidPlugin;
         },

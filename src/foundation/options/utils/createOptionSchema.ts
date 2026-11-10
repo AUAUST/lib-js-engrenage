@@ -29,8 +29,9 @@ export function createOptionSchema(
 
   const flagged = options.disabled ? union([literal(false), core]) : core;
 
-  const described =
-    lines.length === 0 ? flagged : pipe(flagged, description(lines.join("\n")));
+  const described = lines.length === 0
+    ? flagged
+    : pipe(flagged, description(lines.join("\n")));
 
   return options.optional ? optional(described) : described;
 }

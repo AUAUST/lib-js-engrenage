@@ -30,8 +30,9 @@ function splitSections(lines: readonly string[]) {
   for (const line of lines) {
     const opensFence = fencePattern.test(line);
 
-    const name =
-      fenced || opensFence ? undefined : sectionPattern.exec(line)?.[1];
+    const name = fenced || opensFence
+      ? undefined
+      : sectionPattern.exec(line)?.[1];
 
     if (opensFence) {
       fenced = !fenced;
@@ -114,12 +115,11 @@ export function parseIssueBody(body: string): ParsedIssueBody {
     header: hasHeader ? parseHeader(first) : undefined,
     sections,
     steps: steps === undefined ? undefined : parseList(steps.content),
-    roadmap:
-      roadmap === undefined
-        ? []
-        : parseList(roadmap.content).items.flatMap(({ text }) => {
-            return findReferences(text).slice(0, 1);
-          }),
+    roadmap: roadmap === undefined
+      ? []
+      : parseList(roadmap.content).items.flatMap(({ text }) => {
+          return findReferences(text).slice(0, 1);
+        }),
     references: findReferences(body),
   };
 }

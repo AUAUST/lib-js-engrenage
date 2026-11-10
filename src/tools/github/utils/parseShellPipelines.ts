@@ -51,9 +51,8 @@ function readComment(token: Token | undefined): string | undefined {
 function tokenize(text: string): Token[] {
   const tokens: Token[] = [];
 
-  let rest: string | undefined = text
-    .replaceAll("\\\n", "")
-    .replaceAll("\n", "\n;");
+  let rest:
+    string | undefined = text.replaceAll("\\\n", "").replaceAll("\n", "\n;");
 
   while (rest !== undefined) {
     const parsed = parse(rest, (key) => `$${key}`);

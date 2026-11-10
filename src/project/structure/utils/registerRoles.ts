@@ -49,17 +49,16 @@ export function registerRoles({
       );
     }
 
-    const nested =
-      declared.roles === undefined
-        ? undefined
-        : freeze(
-            registerRoles({
-              owner: registered,
-              path: `${path}[${position}].roles`,
-              roles: declared.roles,
-              registry,
-            }),
-          );
+    const nested = declared.roles === undefined
+      ? undefined
+      : freeze(
+          registerRoles({
+            owner: registered,
+            path: `${path}[${position}].roles`,
+            roles: declared.roles,
+            registry,
+          }),
+        );
 
     registry.contracts[registered] = completeRole({
       ...declared,

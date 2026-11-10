@@ -5,8 +5,7 @@ import { isObject } from "@auaust/toolkit/isObject";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 
-const message =
-  "Use a bare `return;` instead of `return undefined;` in a function with a return type annotation.";
+const message = "Use a bare `return;` instead of `return undefined;` in a function with a return type annotation.";
 
 function findEnclosingFunction(node: Rule.Node) {
   let current: Rule.Node | null = node.parent;
@@ -113,10 +112,9 @@ export default defineConvention({
                 return null;
               }
 
-              const argumentEnd =
-                lastToken.value === ";"
-                  ? sourceCode.getTokenBefore(lastToken)
-                  : lastToken;
+              const argumentEnd = lastToken.value === ";"
+                ? sourceCode.getTokenBefore(lastToken)
+                : lastToken;
 
               if (
                 argumentEnd == null ||

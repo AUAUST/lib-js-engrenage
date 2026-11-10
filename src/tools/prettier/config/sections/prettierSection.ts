@@ -11,11 +11,9 @@ export const prettierSection = declareSection({
   resolve(input, config: ConfigResolver): ResolvedPrettier {
     const { root, filesystem } = config.context;
 
-    const { prettierignore } = prettierSchema.resolve(
-      input,
-      config,
-      "prettier",
-    );
+    const {
+      prettierignore,
+    } = prettierSchema.resolve(input, config, "prettier");
 
     return freeze(
       compose(
