@@ -1743,10 +1743,17 @@ type CommaDangle =
     ];
 
 type _CommaDangleValue =
-  "always-multiline" | "always" | "never" | "only-multiline";
+  | "always-multiline"
+  | "always"
+  | "never"
+  | "only-multiline";
 
 type _CommaDangleValueWithIgnore =
-  "always-multiline" | "always" | "ignore" | "never" | "only-multiline";
+  | "always-multiline"
+  | "always"
+  | "ignore"
+  | "never"
+  | "only-multiline";
 
 // ----- comma-spacing -----
 type CommaSpacing =

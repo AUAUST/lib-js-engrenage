@@ -474,13 +474,16 @@ type DOMHighResTimeStamp = number;
 type EventListenerOrEventListenerObject = EventListener | EventListenerObject;
 
 type ReadableStreamController<T> =
-  ReadableStreamDefaultController<T> | ReadableByteStreamController;
+  | ReadableStreamDefaultController<T>
+  | ReadableByteStreamController;
 
 type ReadableStreamReadResult<T> =
-  ReadableStreamReadValueResult<T> | ReadableStreamReadDoneResult<T>;
+  | ReadableStreamReadValueResult<T>
+  | ReadableStreamReadDoneResult<T>;
 
 type ReadableStreamReader<T> =
-  ReadableStreamDefaultReader<T> | ReadableStreamBYOBReader;
+  | ReadableStreamDefaultReader<T>
+  | ReadableStreamBYOBReader;
 
 type EndingType = "native" | "transparent";
 

@@ -767,11 +767,13 @@ type TypescriptEslintClassMethodsUseThis =
 
 // ----- @typescript-eslint/consistent-generic-constructors -----
 type TypescriptEslintConsistentGenericConstructors =
-  [] | ["type-annotation" | "constructor"];
+  | []
+  | ["type-annotation" | "constructor"];
 
 // ----- @typescript-eslint/consistent-indexed-object-style -----
 type TypescriptEslintConsistentIndexedObjectStyle =
-  [] | ["record" | "index-signature"];
+  | []
+  | ["record" | "index-signature"];
 
 // ----- @typescript-eslint/consistent-return -----
 type TypescriptEslintConsistentReturn =
@@ -2950,7 +2952,8 @@ type TypescriptEslintMethodSignatureStyle = [] | ["property" | "method"];
 
 // ----- @typescript-eslint/naming-convention -----
 type _TypescriptEslintNamingConventionFormatOptionsConfig =
-  _TypescriptEslintNamingConventionPredefinedFormats[] | null;
+  | _TypescriptEslintNamingConventionPredefinedFormats[]
+  | null;
 
 type _TypescriptEslintNamingConventionPredefinedFormats =
   | "camelCase"
@@ -2971,7 +2974,11 @@ type _TypescriptEslintNamingConventionUnderscoreOptions =
 type _TypescriptEslintNamingConvention_PrefixSuffixConfig = string[];
 
 type _TypescriptEslintNamingConventionTypeModifiers =
-  "boolean" | "string" | "number" | "function" | "array";
+  | "boolean"
+  | "string"
+  | "number"
+  | "function"
+  | "array";
 
 type TypescriptEslintNamingConvention = (
   | {

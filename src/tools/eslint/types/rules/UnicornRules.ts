@@ -2216,7 +2216,8 @@ type UnicornConsistentConditionalObjectSpread = [] | ["logical" | "ternary"];
 
 // ----- unicorn/consistent-export-decorator-position -----
 type UnicornConsistentExportDecoratorPosition =
-  [] | ["above" | "before" | "after"];
+  | []
+  | ["above" | "before" | "after"];
 
 // ----- unicorn/consistent-function-scoping -----
 type UnicornConsistentFunctionScoping =
@@ -2408,7 +2409,8 @@ type UnicornImportStyle =
     ];
 
 type _UnicornImportStyleStyles =
-  (false | _UnicornImportStyle_BooleanObject) | undefined;
+  | (false | _UnicornImportStyle_BooleanObject)
+  | undefined;
 
 interface _UnicornImportStyle_ModuleStyles {
   [k: string]: _UnicornImportStyleStyles | undefined;
@@ -2526,7 +2528,8 @@ type UnicornNameReplacements =
     ];
 
 type _UnicornNameReplacementsReplacements =
-  (false | _UnicornNameReplacements_BooleanObject) | undefined;
+  | (false | _UnicornNameReplacements_BooleanObject)
+  | undefined;
 
 interface _UnicornNameReplacements_NameReplacements {
   [k: string]: _UnicornNameReplacementsReplacements | undefined;

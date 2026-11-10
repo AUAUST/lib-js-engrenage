@@ -85,6 +85,11 @@ describe("definePrettierConfig", () => {
       expect.objectContaining({
         parsers: expect.any(Object),
       }),
+      expect.objectContaining({
+        printers: {
+          estree: expect.any(Object),
+        },
+      }),
     ]);
 
     expect(await format("abc", { ...config, parser: "text" })).toBe("ABC");

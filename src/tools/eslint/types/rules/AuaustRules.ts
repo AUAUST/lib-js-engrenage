@@ -484,7 +484,8 @@ type AuaustCognitiveComplexity =
 
 // ----- auaust/consistent-generic-constructors -----
 type AuaustConsistentGenericConstructors =
-  [] | ["type-annotation" | "constructor"];
+  | []
+  | ["type-annotation" | "constructor"];
 
 // ----- auaust/consistent-type-assertions -----
 type AuaustConsistentTypeAssertions =
@@ -608,7 +609,8 @@ type AuaustNameReplacements =
     ];
 
 type _AuaustNameReplacementsReplacements =
-  (false | _AuaustNameReplacements_BooleanObject) | undefined;
+  | (false | _AuaustNameReplacements_BooleanObject)
+  | undefined;
 
 interface _AuaustNameReplacements_NameReplacements {
   [k: string]: _AuaustNameReplacementsReplacements | undefined;
@@ -620,7 +622,8 @@ interface _AuaustNameReplacements_BooleanObject {
 
 // ----- auaust/naming-convention -----
 type _AuaustNamingConventionFormatOptionsConfig =
-  _AuaustNamingConventionPredefinedFormats[] | null;
+  | _AuaustNamingConventionPredefinedFormats[]
+  | null;
 
 type _AuaustNamingConventionPredefinedFormats =
   | "camelCase"
@@ -641,7 +644,11 @@ type _AuaustNamingConventionUnderscoreOptions =
 type _AuaustNamingConvention_PrefixSuffixConfig = string[];
 
 type _AuaustNamingConventionTypeModifiers =
-  "boolean" | "string" | "number" | "function" | "array";
+  | "boolean"
+  | "string"
+  | "number"
+  | "function"
+  | "array";
 
 type AuaustNamingConvention = (
   | {

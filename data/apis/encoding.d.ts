@@ -68,7 +68,8 @@ declare function atob(data: string): string;
 declare function btoa(data: string): string;
 
 type AllowSharedBufferSource =
-  ArrayBufferLike | ArrayBufferView<ArrayBufferLike>;
+  | ArrayBufferLike
+  | ArrayBufferView<ArrayBufferLike>;
 
 interface TextDecodeOptions {
   stream?: boolean;

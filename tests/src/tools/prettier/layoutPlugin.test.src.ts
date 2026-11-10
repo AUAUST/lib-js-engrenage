@@ -1,28 +1,7 @@
-import { format } from "prettier";
 import { parsers } from "prettier/plugins/typescript";
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "#project/config/operations/loadConfig";
-import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
-import type { Config } from "#tools/prettier/types/Config";
-
-async function formatWith(source: string, options?: Config): Promise<string> {
-  const project = createTemporaryProject({
-    "package.json": '{ "type": "module" }',
-    "engrenage.config.ts": "export default {};\n",
-  });
-
-  const config = await createPrettierConfig(
-    await loadConfig(project.root),
-    options,
-  );
-
-  return format(source, {
-    ...config,
-    parser: "typescript",
-  });
-}
+import { formatWithPrettierConfig } from "#tests/utils/formatWithPrettierConfig";
 
 describe("layoutPlugin", () => {
   test("pads a declaration Prettier wraps past the print width, and formats its output unchanged", async () => {
@@ -31,7 +10,7 @@ const wrapped = [firstArgumentValue, secondArgumentValue, thirdArgumentValue, fo
 const after = 2;
 `;
 
-    const output = await formatWith(source);
+    const output = await formatWithPrettierConfig(source);
 
     expect(output).toBe(`const before = 1;
 
@@ -45,7 +24,7 @@ const wrapped = [
 const after = 2;
 `);
 
-    expect(await formatWith(output)).toBe(output);
+    expect(await formatWithPrettierConfig(output)).toBe(output);
   });
 
   test("keeps the preprocess of a plugin overriding the same parser", async () => {
@@ -60,7 +39,7 @@ const after = 2;
       },
     };
 
-    const output = await formatWith(
+    const output = await formatWithPrettierConfig(
       "const original = {\n  value: 1,\n};\nconst after = original;\n",
       { plugins: [renaming] },
     );
@@ -80,7 +59,7 @@ const kept = [
 ];
 `;
 
-    expect(await formatWith(source)).toBe(source);
+    expect(await formatWithPrettierConfig(source)).toBe(source);
   });
 
   test.each([
@@ -155,20 +134,22 @@ const kept = [
       "await run(\n  {},\n  {\n    enabled: true,\n  },\n)",
     ],
     [
-      "Prettier wrapping",
+      "an overflowing value",
       'await run({ short: true }, { longProperty: "a deliberately long value that forces the object to wrap beyond the configured print width" })',
-      'await run(\n  {\n    short: true,\n  },\n  {\n    longProperty:\n      "a deliberately long value that forces the object to wrap beyond the configured print width",\n  },\n)',
+      'await run(\n  {\n    short: true,\n  },\n  {\n    longProperty: "a deliberately long value that forces the object to wrap beyond the configured print width",\n  },\n)',
     ],
   ])("breaks object braces with %s", async (_name, input, output) => {
-    const formatted = await formatWith(`export const result = ${input};\n`);
+    const formatted = await formatWithPrettierConfig(
+      `export const result = ${input};\n`,
+    );
 
     expect(formatted).toBe(`export const result = ${output};\n`);
 
-    expect(await formatWith(formatted)).toBe(formatted);
+    expect(await formatWithPrettierConfig(formatted)).toBe(formatted);
   });
 
   test("pads cases once a case body spans several lines or a case is padded", async () => {
-    const output = await formatWith(`export function inline(value: string) {
+    const output = await formatWithPrettierConfig(`export function inline(value: string) {
   switch (value) {
     case "a": {
       return 1;
@@ -363,16 +344,15 @@ export function partlyPadded(value: string) {
       "export function run(a: string): void;\nexport function run(a: unknown): void {}\n\nconst after = 1;\n",
     ],
   ])("pads %s", async (_name, input, output) => {
-    const formatted = await formatWith(input);
+    const formatted = await formatWithPrettierConfig(input);
 
     expect(formatted).toBe(output);
 
-    expect(await formatWith(formatted)).toBe(formatted);
+    expect(await formatWithPrettierConfig(formatted)).toBe(formatted);
   });
 
   test("groups overloads with their implementation, keeping comments attached to the implementation", async () => {
-    const output =
-      await formatWith(`export function pick(value: string): string;
+    const output = await formatWithPrettierConfig(`export function pick(value: string): string;
 
 export function pick(value: number): number;
 

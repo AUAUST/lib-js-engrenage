@@ -244,7 +244,8 @@ export interface ImportXRules {
 /* ======= Declarations ======= */
 // ----- import-x/consistent-type-specifier-style -----
 type ImportXConsistentTypeSpecifierStyle =
-  [] | ["prefer-top-level" | "prefer-inline"];
+  | []
+  | ["prefer-top-level" | "prefer-inline"];
 
 // ----- import-x/dynamic-import-chunkname -----
 type ImportXDynamicImportChunkname =
