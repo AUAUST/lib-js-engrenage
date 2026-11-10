@@ -15,13 +15,13 @@ export default {
       "CHANGELOG.md": {
         title: "Changelog",
         generated: true,
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { globs: [changelogGlob] };
         },
       },
       "changesets": {
         title: "Changesets",
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { directory: changesetDirectory };
         },
       },

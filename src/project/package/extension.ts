@@ -46,7 +46,7 @@ export default {
     files: {
       "package.json": {
         parts: true,
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { file: packageJsonFile };
         },
       },

@@ -7,7 +7,7 @@ export default {
     files: {
       "lefthook.yml": {
         title: "Lefthook",
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { file: lefthookFile };
         },
       },

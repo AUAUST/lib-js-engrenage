@@ -8,13 +8,13 @@ export default {
       "pnpm-lock.yaml": {
         title: "pnpm",
         formatted: false,
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { file: lockfile };
         },
       },
       "pnpm-workspace.yaml": {
         title: "pnpm",
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { file: workspaceFile };
         },
       },

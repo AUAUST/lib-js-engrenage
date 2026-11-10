@@ -7,13 +7,13 @@ export default {
     files: {
       "vscode.settings": {
         title: "VS Code",
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { file: settingsFile };
         },
       },
       "vscode.extensions": {
         title: "VS Code",
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { file: extensionsFile };
         },
       },

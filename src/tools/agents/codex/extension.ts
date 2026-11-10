@@ -23,13 +23,13 @@ export default {
       },
       "codex.hooks": {
         title: "Codex",
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { file: codexHooksFile };
         },
       },
       "codex.agents": {
         title: "Codex",
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { directory: codexAgentsDir };
         },
       },

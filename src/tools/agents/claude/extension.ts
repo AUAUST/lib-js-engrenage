@@ -11,13 +11,13 @@ export default {
     files: {
       "CLAUDE.md": {
         title: "Claude",
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { file: claudeFile };
         },
       },
       "claude.settings": {
         title: "Claude",
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { file: claudeSettingsFile };
         },
       },

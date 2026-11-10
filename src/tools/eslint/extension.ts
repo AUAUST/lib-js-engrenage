@@ -15,7 +15,7 @@ export default {
       "eslint-suppressions.json": {
         title: "ESLint",
         formatted: false,
-        async locate(): Promise<FileLocation> {
+        locate(): FileLocation {
           return { file: defaultSuppressionsFile };
         },
       },
