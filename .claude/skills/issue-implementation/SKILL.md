@@ -28,6 +28,7 @@ Read the issue, then only the ancestors and plan sections its header line names.
 
 Everything in the issue binds you: follow the **Steps** in order and write the listed test cases; never substitute your own.
 
+- Analyse only from the issue and the code its **Steps** touch: the issue settles every outcome beyond your local choices.
 - Decide only local choices no other code, contract or issue can observe: local names, how a private function is split, fixture data.
 - Correct an unambiguous mismatch with authoritative project rules when the correction preserves planned behavior, contracts and scope; report the correction.
 - Stop and report any other mismatch, open section, needed deviation or work belonging to another issue.

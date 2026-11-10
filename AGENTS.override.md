@@ -25,6 +25,7 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | <code>tests/**</code> | <code>.claude/rules/project-map/tests.md</code> |
 | <code>tooling/**</code> | <code>.claude/rules/project-map/tooling.md</code> |
 | All files | <code>.claude/rules/debt-markers.md</code> |
+| All files | <code>.claude/rules/discarded-solutions.md</code> |
 | All files | <code>.claude/rules/git.md</code> |
 | All files | <code>.claude/rules/no-attribution.md</code> |
 | All files | <code>.claude/rules/project-map.md</code> |
@@ -39,6 +40,7 @@ Use the installed workflows below when their descriptions match the request.
 
 | Skill | Handling |
 | --- | --- |
+| `analysis` | Delegate to `analyser`. Analyser that works out the concern behind a request, its ideal solution and its reach across the project, applies the change when it stays within the request, and otherwise reports a recommendation. Use proactively when the user asks to analyse, assess or rethink something that is neither a defect nor planned work. Its report ends with what remains and the kind of work it needs; continue that with the agent suited to it. |
 | `issue-planning` | Run its skill in the main session. Plan work as a tree of GitHub issues (a plan, ordered items, and segments grouping independent ones) without implementing it. Use proactively in the main session, or as the walker's consultant, when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues, so its questions reach the user directly. |
 | `debugging` | Delegate to `debugger`. Debugger that investigates a bug, issue, backlog entry, debt marker or reported failure, fixes it at its root when the fix is contained, and otherwise writes the fix into a GitHub issue for a worker. Use proactively when the user asks to investigate, debug or fix something, unless they ask to apply a fix an issue already describes, which is the worker's. Its report ends with what remains and the kind of work it needs; continue that with the agent suited to it. |
 | `issue-implementation` | Delegate to `worker`. Worker that implements one GitHub issue as written and stops to report what the issue leaves unclear. Use proactively when the user asks to implement, work on or resume a specific GitHub issue whose fix or steps are already written; investigating or fixing a problem is the debugger's. |
@@ -49,6 +51,7 @@ Use the installed workflows below when their descriptions match the request.
 
 | Profile | Canonical role | Effort |
 | --- | --- | --- |
+| `analyser` | `analyser` | high |
 | `planner` | `planner` | high |
 | `debugger` | `debugger` | medium |
 | `debugger_low` | `debugger` | low |

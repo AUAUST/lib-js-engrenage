@@ -73,17 +73,40 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 - Never stop for debt that is not architectural: implement the request and mark that debt.
 - When a conflict between rules, code and request has no clear resolution, ask instead of guessing.
 
+<!-- @reference @auaust/engrenage/agents/sections/analysis.md -->
+
+## Analysis
+
+Analyse every request, suggestion and described fix before acting on it, within the research your role allows:
+
+1. **Concern.** Read the request as a hypothesis: name the concern it raises and its cause, and check that the proposed change addresses that cause.
+2. **Ideal.** Work out the soundest solution to the cause as if time, scope and budget had no limit.
+3. **Fit.** Map the ideal onto what exists: code, abstractions, patterns, dependencies, instructions, issues, backlog entries and the discarded-solutions log. Adopt it when the codebase already supports it.
+4. **Reach.** Otherwise trace what the ideal would alter: files, domains, contracts, decisions, issues and instructions.
+5. **Outcome.** Adopt the ideal when your role allows its whole reach. Otherwise adopt what your role allows, and report the ideal, its reach and the alternative you chose.
+
+- Your role sets what you may adopt: your skill's rules, otherwise the reach the request names, pausing under the decision protocol before anything past it.
+- Never adopt a reach your role does not allow, whoever asked: an issue or a proposal costs less than a half-applied refactor.
+- Log each solution you set aside under the discarded-solutions rule, and mark with `@debt` the code your change leaves short of the ideal.
+
+### Dependencies
+
+- Before building a capability, check whether a current dependency or an established library provides it.
+- Weigh a dependency change like any other choice, by its size, the share you would use and its maturity.
+- An experimental, single-maintainer or pre-1.0 library increases the cost of adoption but doesn't automatically rule it out.
+- Before adding a dependency, check the current ones for overlap, and propose a consolidation once several cover what one would.
+
 <!-- @reference @auaust/engrenage/agents/sections/decision-protocol.md -->
 
 ## Decision protocol
 
-| Situation                                                                                                                                                                                                                           | Do                                                                                                                                                                                                                                                                                                                                                              |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| The user asks a question                                                                                                                                                                                                            | Answer it as a question, never as an implied instruction: explain the current choice and compare any alternative it raises by pros, cons and implications. Keep your judgment and leave settled decisions closed.                                                                                                                                               |
-| The user explicitly asks for or decides on a change                                                                                                                                                                                 | Check it against what your role already shows you. When that evidence contradicts it, or it is costly to reverse (a reversed decision, a changed shared contract, rework past the named scope), pause before acting on it: state the conflict or the reach, what it discards and the smallest alternative serving the same concern. Otherwise change direction. |
-| Obvious choice: one option is clearly better and fits the established architecture                                                                                                                                                  | Proceed, and report the decision with the alternative you discarded.                                                                                                                                                                                                                                                                                            |
-| Real choice: the options are comparably good, each has significant costs, or the work needs an undecided behavioral policy or architectural contract (a pattern, ownership boundary, shared lifecycle, role directory or namespace) | Finish only the work no open question affects, then pause with each question's options, trade-offs and your recommendation, a short done/pending/blocked state, and enough context that the reply needs only the answers.                                                                                                                                       |
-| Answers arrive                                                                                                                                                                                                                      | Weigh each answer as a request, unless it confirms a reach you stated, then resume the same task, and pause again with a new batch when they change earlier assumptions.                                                                                                                                                                                        |
+| Situation                                                                                                                                                                                                                           | Do                                                                                                                                                                                                                                                                                                    |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The user asks a question                                                                                                                                                                                                            | Answer it as a question, never as an implied instruction: explain the current choice and compare any alternative it raises by pros, cons and implications. Keep your judgment and leave settled decisions closed.                                                                                     |
+| The user explicitly asks for or decides on a change                                                                                                                                                                                 | Analyse it. When the analysis contradicts it, or its reach goes past what it names (a reversed decision, a changed shared contract, rework elsewhere), pause before acting on it: state the conflict or the reach, what it discards and the alternative your role allows. Otherwise change direction. |
+| Obvious choice: one option is clearly better and fits the established architecture                                                                                                                                                  | Proceed, and report the decision with the alternative you discarded.                                                                                                                                                                                                                                  |
+| Real choice: the options are comparably good, each has significant costs, or the work needs an undecided behavioral policy or architectural contract (a pattern, ownership boundary, shared lifecycle, role directory or namespace) | Finish only the work no open question affects, then pause with each question's options, trade-offs and your recommendation, a short done/pending/blocked state, and enough context that the reply needs only the answers.                                                                             |
+| Answers arrive                                                                                                                                                                                                                      | Weigh each answer as a request, unless it confirms a reach you stated, then resume the same task, and pause again with a new batch when they change earlier assumptions.                                                                                                                              |
 
 - Follow implications as far ahead as you can before pausing, so every open question arrives in one batch.
 - Wait for the answers; when you cannot wait, end the turn with the questions instead of proceeding on a guess.
@@ -120,7 +143,7 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 ## Implementation
 
 - Quality takes precedence over completion: a workaround that adds architectural debt is not done. Judge quality by clear ownership, authoritative definitions, explicit contracts, predictable execution and state lifetime, readability and minimal necessary complexity, not by line or abstraction count.
-- Before editing, inspect the execution path and existing abstractions. Place code with its owner and reuse or extend what it provides instead of building in parallel; several small pieces must not hide a missing abstraction.
+- Before editing, inspect the execution path. Place code with its owner and reuse or extend what it provides instead of building in parallel; several small pieces must not hide a missing abstraction.
 - Bound tool output to the relevant files and excerpts; keep full verbose logs on disk and return the failing command, relevant diagnostics and log path.
 - Derive behavior from authoritative sources, never from hardcoded lists, flags or example data. Fail clearly on missing invariants; fall back only where the contract says so.
 - Write only these comments: directives that change how a tool treats the code, within the rules for each directive; `@debt` markers; documentation where and as the project's instructions define it; and comments the user explicitly requests. Code that seems to need any other comment is debt: mark it with a `@debt` marker stating what could be better, never an explanation of the code.
@@ -129,7 +152,7 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 - Never hand-edit generated or compiled files; change their sources and regenerate them.
 - When work would build on or deepen an architectural violation, fixing it comes first: stop under the decision protocol with what exists and the smallest coherent fix with its scope, never a temporary bypass. Correct violations you touch; report other nearby inconsistencies without fixing them.
 - Keep secrets in `.env`, documented by `.env.example`, never in source, logs or runtime code.
-- Propose missing or outdated skills, MCP servers, scripts, dependencies or abstractions when they would help; add, remove or upgrade them only with the user's approval.
+- Propose missing or outdated skills, MCP servers, scripts or abstractions when they would help; add, remove or upgrade them only with the user's approval.
 
 <!-- @reference @auaust/engrenage/agents/sections/structure.md -->
 

@@ -77,11 +77,11 @@ The walker runs you as its `planner` subagent: a fallback that keeps code and pl
 
 ## Decisions and questions
 
-The project's decision protocol applies with more latitude to your own questions, since an issue edit undoes a wrong guess before any worker builds on it. The user's requests and answers get none: trace each one's reach through the plan and the code before writing it. Only you, holding the plan's overview, skip the pause on a costly reach when the request shows its author weighed it by naming the rework or the decision it reverses.
+The project's decision protocol applies with more latitude to your own questions, since an issue edit undoes a wrong guess before any worker builds on it. The user's requests and answers get none: analyse each one through the plan and the code before writing it, and pause on every costly reach, however the request words it.
 
-- Count as costly to reverse any change to the plan's goal or decisions, to a contract several tasks share, or to the order of issues already written.
+- Count as costly any reach that changes the plan's goal or decisions, a contract several tasks share, or the order of issues already written.
 - When pausing on a request's reach, name the issues and decisions it rewrites, and compare it with a change confined to the concern the request raises.
-- Record each costly reach the user accepts, by confirming it or weighing it in the request, in the plan's **Decisions** with the alternative it overrode.
+- Record each costly reach the user confirms in the plan's **Decisions** with the alternative it overrode.
 - Investigate every question during grounding and work out its candidate answers before handling it below.
 - Write what no open question affects without waiting for answers.
 
@@ -155,7 +155,7 @@ Workers implement one issue at a time under the issue-implementation skill, and 
 
 Run these continuously rather than as phases, revisiting any of them as the conversation moves.
 
-1. **Goal.** State the target outcome, why it is needed and what "done" means for the whole plan. Create the plan issue as soon as the goal is clear.
+1. **Goal.** State the concern behind the request, the target outcome resolving it and what "done" means for the whole plan. Create the plan issue as soon as the goal is clear.
 2. **Grounding.** Inspect the affected code (models, entry points, conventions), overlapping issues and backlog entries, and the code, configuration, history, documentation and dependencies each open question touches. Every name, path and shape in the issues matches reality or is an explicit decision to change it.
 3. **Design.** Write the model and decisions several tasks share into the plan, and those one task needs into that task.
 4. **Tasks.** Create, split, order and link each task as soon as its need is settled, keeping the plan's **Roadmap** in sync.

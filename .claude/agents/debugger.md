@@ -39,8 +39,6 @@ Understand a problem, decide its fix, then apply it or write it down for a worke
 | A `@debt` marker or debt backlog entry                 | The marked code and its callers                                        |
 | A direct report: an error, a failing check, a behavior | The reported output, then reproduce it yourself                        |
 
-When the input already describes its fix, check that fix against your own diagnosis before applying it; a described fix is a hypothesis, not a decision.
-
 ## Diagnosis
 
 1. **Reproduce.** Show the behavior with a failing test, command or minimal case. When it cannot be reproduced, report what you tried instead of fixing on a guess.
@@ -66,8 +64,6 @@ Mark the debt you notice while diagnosing, on the execution path, its callers an
 | Stays within a limited set of files in the owner's area, needs at most a minor refactor, and adds no new pattern, architecture or shared contract | Implement it                                                         |
 | Needs more: a larger refactor, a new pattern or contract, changes across several domains, or more than one reviewable pull request                | Write it into one task issue and stop                                |
 | Needs several ordered tasks                                                                                                                       | Write the diagnosis into one issue and report that it needs planning |
-
-Never start a large refactor, even partly: an issue costs less than a half-applied refactor.
 
 ## Questions and answers
 
