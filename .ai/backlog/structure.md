@@ -112,3 +112,9 @@ Project structure description, its report and the tooling generated from it.
 - sites: `src/project/structure/utils/renderStructure.ts:55`, `:83`, `src/tools/agents/utils/renderEnvironmentMap.ts:15`
 - why: path segments recomposed by hand though the node provides them; map renderers repeat code.
 - want: segments from the node; one structured renderer shared by the map renderers.
+
+## 19. Namespaces declared under a domain glob are ignored
+
+- sites: `src/project/structure/utils/flattenStructure.ts:75`, `src/project/structure/operations/createStructureDomainResolver.ts:38`
+- why: `flattenStructure` keys a namespace under a glob domain by its glob path (`a/*/ns`); `describe` looks namespaces up by exact path, so none matches.
+- want: namespaces under globs matched like domains, or rejected by the schema.

@@ -4,3 +4,6 @@
 - `gh issue view --repo`: read issues from `AUAUST/engrenage` — repository is `AUAUST/lib-js-engrenage`; had to read the git remote
 - PreToolUse Bash hook: run any command after changing the config schema before `engrenage.config.ts` — the hook loads the project config and blocked every Bash call; migrated the config with Edit first
 - `pnpm support codegen barrels`: regenerate a barrel after deleting a module it exports — the generator imports that barrel and fails on the missing module; fixed the stale line by hand, then reran
+- `engrenage issues check`: validate local drafts before a flush — takes issue numbers only; checks deferred to after the flush
+- PreToolUse Bash hook (`gh issue create`): pipe a draft through a shell variable path — hook needs the literal `.draft.md` path in the pipeline, resolved from the shell cwd; wrote one literal absolute path per command
+- drafts flush: strip frontmatter with awk — left a leading blank line, so `engrenage issues check` saw no header; trimmed leading blank lines and republished
