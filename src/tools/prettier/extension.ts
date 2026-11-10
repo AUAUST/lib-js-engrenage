@@ -1,4 +1,4 @@
-import { prettier } from "#tools/prettier/constants";
+import { prettier, prettierPluginEntry } from "#tools/prettier/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
@@ -7,6 +7,9 @@ export default {
     installed: prettier,
   },
   owns: {
+    slots: {
+      "prettier.plugins": { entry: prettierPluginEntry },
+    },
     keys: {
       prettier: {
         input: "prettier",

@@ -1,12 +1,9 @@
-import { mkdirSync, symlinkSync } from "node:fs";
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-
 import { describe, expect, test } from "vitest";
 
 import { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { linkPrettier } from "#tests/utils/linkPrettier";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
@@ -17,16 +14,7 @@ function createProject(files: Record<string, string>) {
     ...files,
   });
 
-  const prettier = project.resolve("node_modules/prettier");
-
-  mkdirSync(dirname(prettier), {
-    recursive: true,
-  });
-
-  symlinkSync(
-    dirname(fileURLToPath(import.meta.resolve("prettier/package.json"))),
-    prettier,
-  );
+  linkPrettier(project.resolve("node_modules/prettier"));
 
   return project;
 }

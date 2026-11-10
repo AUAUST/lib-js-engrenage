@@ -1,3 +1,6 @@
+import { array, function_, looseObject, optional, string } from "valibot";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
+
 import { freeze } from "@auaust/toolkit/object";
 
 import { lockfileIgnores } from "#tools/git/constants";
@@ -36,5 +39,13 @@ export const prettierDefaultIgnores = freeze([
   ".hg",
   "node_modules",
 ] as const) satisfies Globs;
+
+// @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
+export const prettierPluginEntry: StandardSchemaV1 = looseObject({
+  name: string(),
+  files: optional(array(string())),
+  options: optional(looseObject({})),
+  load: function_(),
+});
 
 export { prettier } from "#constants";

@@ -29,6 +29,10 @@ export { prettierSchema } from "#tools/prettier/config/schemas/prettierSchema";
 export { formatWithPrettier } from "#tools/prettier/adapters/formatWithPrettier";
 // @end
 
+// @barrel ports/*.ts types
+export type * from "#tools/prettier/ports/PrettierPlugin";
+// @end
+
 // @barrel types/*.ts types
 export type * from "#tools/prettier/types/Config";
 export type * from "#tools/prettier/types/Options";

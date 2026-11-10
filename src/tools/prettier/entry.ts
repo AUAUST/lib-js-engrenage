@@ -13,5 +13,6 @@ export type {
   Options,
   Plugin,
   PrettierInput,
+  PrettierPlugin,
   ResolvedPrettier,
 } from "#tools/prettier/index";
