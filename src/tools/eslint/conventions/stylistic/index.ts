@@ -18,15 +18,11 @@ export { default as noReturnUndefined } from "#tools/eslint/conventions/stylisti
 export { default as noUnnecessaryTypeParameters } from "#tools/eslint/conventions/stylistic/noUnnecessaryTypeParameters";
 export { default as noUselessUndefined } from "#tools/eslint/conventions/stylistic/noUselessUndefined";
 export { default as numericSeparators } from "#tools/eslint/conventions/stylistic/numericSeparators";
-export { default as objectCurlyNewline } from "#tools/eslint/conventions/stylistic/objectCurlyNewline";
 export { default as objects } from "#tools/eslint/conventions/stylistic/objects";
 export { default as paddedAwaits } from "#tools/eslint/conventions/stylistic/paddedAwaits";
 export { default as paddedBlocks } from "#tools/eslint/conventions/stylistic/paddedBlocks";
 export { default as paddedBreaks } from "#tools/eslint/conventions/stylistic/paddedBreaks";
-export { default as paddedCases } from "#tools/eslint/conventions/stylistic/paddedCases";
 export { default as paddedContinues } from "#tools/eslint/conventions/stylistic/paddedContinues";
-export { default as paddedMultilineDeclarations } from "#tools/eslint/conventions/stylistic/paddedMultilineDeclarations";
-export { default as paddedMultilineExpressions } from "#tools/eslint/conventions/stylistic/paddedMultilineExpressions";
 export { default as paddedReturns } from "#tools/eslint/conventions/stylistic/paddedReturns";
 export { default as paddedThrows } from "#tools/eslint/conventions/stylistic/paddedThrows";
 export { default as paddedVariableDeclarations } from "#tools/eslint/conventions/stylistic/paddedVariableDeclarations";

@@ -241,119 +241,6 @@ async function lintedProjectRules(
 }
 
 describe("createEslintConfig", () => {
-  describe("object newlines", () => {
-    test.each([
-      [
-        "one property",
-        "getLinter({ typeAware: false })",
-        "getLinter({ typeAware: false })",
-      ],
-      [
-        "two properties",
-        "{ first: true, second: false }",
-        "{ first: true, second: false }",
-      ],
-      [
-        "existing newlines",
-        "{\n typeAware: false,\n}",
-        "{\n typeAware: false,\n}",
-      ],
-      [
-        "three properties",
-        "{ first: true, second: false, third: true }",
-        "{\n first: true, second: false, third: true,\n}",
-      ],
-      [
-        "nested objects",
-        "{ value: { nested: true } }",
-        "{\n value: { nested: true },\n}",
-      ],
-      [
-        "existing nested newlines",
-        "{\n value: {\n nested: true,\n },\n}",
-        "{\n value: {\n nested: true,\n },\n}",
-      ],
-      [
-        "inline arguments",
-        "await run({ first: true }, { second: false })",
-        "await run({ first: true }, { second: false })",
-      ],
-      [
-        "multiline arguments",
-        "await run({ presets: [] }, {\n performance: { noZodClassic: true },\n})",
-        "await run({\n presets: [],\n}, {\n performance: { noZodClassic: true },\n})",
-      ],
-      [
-        "three-property sibling",
-        "[{ short: true }, { a: 1, b: 2, c: 3 }]",
-        "[{\n short: true,\n}, {\n a: 1, b: 2, c: 3,\n}]",
-      ],
-      [
-        "nested arrays",
-        "[[{ short: true }, true], [{\n other: false,\n}, false]]",
-        "[[{\n short: true,\n}, true], [{\n other: false,\n}, false]]",
-      ],
-      [
-        "constructor arguments",
-        "new Config({ first: true }, {\n second: false,\n})",
-        "new Config({\n first: true,\n}, {\n second: false,\n})",
-      ],
-      [
-        "unrelated calls",
-        "[first({ short: true }), second({\n other: false,\n})]",
-        "[first({ short: true }), second({\n other: false,\n})]",
-      ],
-      [
-        "multiline property value siblings",
-        "{\n short: { a: 1 },\n long: { b: 1, c: 2, d: 3 },\n}",
-        "{\n short: {\n a: 1,\n },\n long: {\n b: 1, c: 2, d: 3,\n },\n}",
-      ],
-      [
-        "inline property value siblings",
-        "{\n first: { a: 1 },\n second: { b: 2 },\n}",
-        "{\n first: { a: 1 },\n second: { b: 2 },\n}",
-      ],
-      [
-        "empty objects",
-        "await run({}, {\n enabled: true,\n})",
-        "await run({}, {\n enabled: true,\n})",
-      ],
-      [
-        "Prettier wrapping",
-        'await run({ short: true }, { longProperty: "a deliberately long value that forces the object to wrap beyond the configured print width" })',
-        'await run({\n short: true,\n}, {\n longProperty: "a deliberately long value that forces the object to wrap beyond the configured print width",\n})',
-      ],
-    ])("%s", async (_name, input, expected) => {
-      const eslint = await getLinter({ typeAware: false }, true);
-
-      const options = { ...prettierOptions, parser: "typescript" };
-
-      const source = await format(`export const result = ${input};`, options);
-
-      const [result] = await eslint.lintText(source, {
-        filePath: "src/objects.ts",
-      });
-
-      const output = await format(result?.output ?? source, options);
-
-      expect(output).toBe(
-        await format(`export const result = ${expected};`, options),
-      );
-
-      const [repeated] = await eslint.lintText(output, {
-        filePath: "src/objects.ts",
-      });
-
-      expect(await format(repeated?.output ?? output, options)).toBe(output);
-
-      expect(
-        repeated?.messages.filter(
-          (message) => message.ruleId === "auaust/object-curly-newline",
-        ),
-      ).toEqual([]);
-    });
-  });
-
   test.each([
     [{ typeAware: true }, true],
     [{ typeAware: false }, false],
@@ -890,11 +777,10 @@ export function pick(value: Value): number {
         "auaust/padded-blocks",
         "auaust/grouped-overloads",
         "auaust/switch-case-braces",
-        "auaust/padded-cases",
       ]),
     );
 
-    expect(defaultRules).toHaveLength(5);
+    expect(defaultRules).toHaveLength(4);
 
     const reducedRules = await lintedLayoutRules({
       stylistic: {
@@ -907,11 +793,10 @@ export function pick(value: Value): number {
       expect.arrayContaining([
         "auaust/padded-exports",
         "auaust/grouped-overloads",
-        "auaust/padded-cases",
       ]),
     );
 
-    expect(reducedRules).toHaveLength(3);
+    expect(reducedRules).toHaveLength(2);
   });
 
   test.each([
@@ -1449,63 +1334,6 @@ export async function run(): Promise<number> {
       ],
       [],
     ]);
-  });
-
-  test("pads cases once a case body spans several lines or a case is padded", async () => {
-    const eslint = await getLinter({
-      typeAware: false,
-    });
-
-    const [result] = await eslint.lintText(
-      `export function inline(value: string) {
-  switch (value) {
-    case "a": {
-      return 1;
-    }
-    default: {
-      return 2;
-    }
-  }
-}
-
-export function multiline(value: string) {
-  switch (value) {
-    case "a": {
-      return 1;
-    }
-    default: {
-      const doubled = value + value;
-
-      return doubled.length;
-    }
-  }
-}
-
-export function partlyPadded(value: string) {
-  switch (value) {
-    case "a": {
-      return 1;
-    }
-
-    case "b": {
-      return 2;
-    }
-    default: {
-      return 3;
-    }
-  }
-}
-`,
-      {
-        filePath: "src/cases.ts",
-      },
-    );
-
-    expect(
-      map(result?.messages ?? [], (message) => {
-        return `${message.line}:${message.ruleId}`;
-      }),
-    ).toEqual(["17:auaust/padded-cases", "34:auaust/padded-cases"]);
   });
 
   test("reports longform properties, leaving quoted keys, shorthand and methods alone", async () => {

@@ -17,6 +17,7 @@ function isNode(value: unknown): value is TSESTree.Node {
   return isObject(value) && "type" in value && isString(value.type);
 }
 
+// @debt walks every enumerable key but known metadata instead of the parser's visitor keys
 export function visitNodes(
   node: TSESTree.Node,
   visit: (node: TSESTree.Node, ancestors: readonly TSESTree.Node[]) => void,

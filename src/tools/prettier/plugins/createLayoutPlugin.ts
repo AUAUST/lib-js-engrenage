@@ -46,7 +46,9 @@ function isProgram(value: unknown): value is TSESTree.Program {
   );
 }
 
+// @debt the ignored node is the outermost one starting after the comment, an approximation of Prettier's own comment attachment
 function findIgnoredRanges(program: TSESTree.Program): readonly Range[] {
+  // @debt native `filter`, since primitive-kit's `filter` types a predicate's result as an array of arrays
   const comments = (program.comments ?? []).filter((comment) => {
     return comment.value.trim() === "prettier-ignore";
   });
@@ -193,6 +195,7 @@ export function createLayoutPlugin(
 
           const formatted = await format(source, {
             ...options,
+            // @debt native `filter`, since primitive-kit's `filter` types a predicate's result as an array of arrays
             plugins: options.plugins.filter((plugin) => {
               return plugin !== layoutPlugin;
             }),

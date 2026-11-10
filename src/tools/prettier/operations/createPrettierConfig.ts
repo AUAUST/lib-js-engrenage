@@ -1,4 +1,4 @@
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { filter, flatMap, map } from "@auaust/primitive-kit/arrays";
 import { isString } from "@auaust/toolkit/isString";
 
 import { fixedOptions } from "#tools/prettier/constants";
@@ -41,7 +41,7 @@ export async function createPrettierConfig(
   const plugins = [...(options.plugins ?? []), ...contributed];
 
   // @debt plugins named by a string or URL are loaded by Prettier, so the layout plugin cannot wrap their parsers and shadows them with Prettier's own
-  const loaded = plugins.filter((plugin): plugin is Plugin => {
+  const loaded = filter(plugins, (plugin): plugin is Plugin => {
     return !isString(plugin) && !(plugin instanceof URL);
   });
 

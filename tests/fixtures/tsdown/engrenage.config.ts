@@ -1,1 +1,3 @@
-export default { src: { baseline: "2026-10" } };
+export default {
+  src: { baseline: "2026-10" },
+};

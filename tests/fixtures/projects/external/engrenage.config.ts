@@ -23,7 +23,9 @@ export default {
             load: async () => section,
           },
         },
-        slots: { "externalFixture.entries": {} },
+        slots: {
+          "externalFixture.entries": {},
+        },
         files: {
           "externalFixture.output": {
             committed: false,
@@ -62,5 +64,7 @@ export default {
       },
     },
   ],
-  externalFixture: { label: "listed" },
+  externalFixture: {
+    label: "listed",
+  },
 };

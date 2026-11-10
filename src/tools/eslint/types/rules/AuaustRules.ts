@@ -336,11 +336,6 @@ export interface AuaustRules {
    */
   "auaust/numeric-separators-style"?: Rule<AuaustNumericSeparatorsStyle>;
   /**
-   * Enforce consistent line breaks after opening and before closing braces
-   * @see https://eslint.style/rules/object-curly-newline
-   */
-  "auaust/object-curly-newline"?: Rule<AuaustObjectCurlyNewline>;
-  /**
    * Require or disallow method and property shorthand syntax for object literals
    * @see https://eslint.org/docs/latest/rules/object-shorthand
    */
@@ -363,10 +358,6 @@ export interface AuaustRules {
    */
   "auaust/padded-breaks"?: Rule<[]>;
   /**
-   * Separate a `case` that has statements from the next `case` with a blank line once a case body spans several lines or the `switch` already uses blank lines.
-   */
-  "auaust/padded-cases"?: Rule<[]>;
-  /**
    * Surround `continue` statements with blank lines.
    */
   "auaust/padded-continues"?: Rule<[]>;
@@ -378,14 +369,6 @@ export interface AuaustRules {
    * Separate the imports from the following code with a blank line.
    */
   "auaust/padded-imports"?: Rule<[]>;
-  /**
-   * Surround multiline variable declarations with blank lines.
-   */
-  "auaust/padded-multiline-declarations"?: Rule<[]>;
-  /**
-   * Surround multiline expression statements with blank lines.
-   */
-  "auaust/padded-multiline-expressions"?: Rule<[]>;
   /**
    * Add a blank line before a `return` that follows other statements.
    */
@@ -1481,70 +1464,6 @@ type AuaustNumericSeparatorsStyle =
 
         onlyIfContainsSeparator?: boolean;
       },
-    ];
-// ----- auaust/object-curly-newline -----
-type AuaustObjectCurlyNewline =
-  | []
-  | [
-      | (
-          | ("always" | "never")
-          | {
-              multiline?: boolean;
-              minProperties?: number;
-              consistent?: boolean;
-            }
-        )
-      | {
-          ObjectExpression?:
-            | ("always" | "never")
-            | {
-                multiline?: boolean;
-                minProperties?: number;
-                consistent?: boolean;
-              };
-          ObjectPattern?:
-            | ("always" | "never")
-            | {
-                multiline?: boolean;
-                minProperties?: number;
-                consistent?: boolean;
-              };
-          ImportDeclaration?:
-            | ("always" | "never")
-            | {
-                multiline?: boolean;
-                minProperties?: number;
-                consistent?: boolean;
-              };
-          ExportDeclaration?:
-            | ("always" | "never")
-            | {
-                multiline?: boolean;
-                minProperties?: number;
-                consistent?: boolean;
-              };
-          TSTypeLiteral?:
-            | ("always" | "never")
-            | {
-                multiline?: boolean;
-                minProperties?: number;
-                consistent?: boolean;
-              };
-          TSInterfaceBody?:
-            | ("always" | "never")
-            | {
-                multiline?: boolean;
-                minProperties?: number;
-                consistent?: boolean;
-              };
-          TSEnumBody?:
-            | ("always" | "never")
-            | {
-                multiline?: boolean;
-                minProperties?: number;
-                consistent?: boolean;
-              };
-        },
     ];
 // ----- auaust/object-shorthand -----
 type AuaustObjectShorthand =
