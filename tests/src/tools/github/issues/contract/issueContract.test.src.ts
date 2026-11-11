@@ -599,7 +599,6 @@ describe("fetchIssue", () => {
 
 describe("parseGithubCommand", () => {
   const body = "## Context\n\nhello world";
-  const draft = ".ai/issues/5.draft.md";
 
   function readBody(command: string) {
     const writes = parseGithubCommand(command);
@@ -646,19 +645,6 @@ describe("parseGithubCommand", () => {
     ).toEqual({ kind: "unreadable" });
   });
 
-  test.each([
-    `sed '1,/^---$/d' ${draft} | gh issue edit 5 --body-file -`,
-    `tail -n +4 < ${draft} | gh issue edit 5 --body-file -`,
-    `(sed '1,/^---$/d' ${draft} | gh issue edit 5 --body-file -)`,
-    `sed '1,/^---$/d' ${draft} \\\n  | gh issue edit 5 \\\n    --body-file -`,
-    `sed '1,/^---$/d' ${draft} |\n  gh issue edit 5 --body-file -`,
-    `gh issue edit 5 --body-file <(sed '1,/^---$/d' ${draft})`,
-    `gh issue edit 5 --body-file - < <(sed '1,/^---$/d' ${draft})`,
-    `gh issue edit 5 --body-file - <<<"$(sed '1,/^---$/d' ${draft})"`,
-  ])("reads a body piped from a draft in %s", (command) => {
-    expect(readBody(command)).toEqual({ kind: "draft", path: draft });
-  });
-
   test("reads every write of a command", () => {
     const writes = parseGithubCommand(
       [
@@ -673,7 +659,7 @@ describe("parseGithubCommand", () => {
       expect.objectContaining({
         action: "edit",
         number: 4,
-        body: { kind: "draft", path: ".ai/issues/4.draft.md" },
+        body: { kind: "unreadable" },
       }),
       expect.objectContaining({
         action: "edit",
@@ -803,7 +789,7 @@ describe("formatIssueCheck", () => {
 
 describe("checkGithubWrite", () => {
   const draft = ".ai/issues/5.draft.md";
-  const command = `sed '1,/^---$/d' ${draft} | gh issue edit 5 --repo o/r --body-file -`;
+  const command = `gh issue edit 5 --repo o/r --body-file ${draft}`;
 
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -818,18 +804,18 @@ describe("checkGithubWrite", () => {
     });
   }
 
-  test("checks the body of a piped draft without its frontmatter against the issue's type", async () => {
+  test("checks a draft file as a direct write of its content against the issue's type", async () => {
     mockProblem();
 
     const project = createTemporaryProject({
-      [draft]: `---\ntitle: x\n---\n\n${task}\n## Scope\n\nx\n`,
+      [draft]: `${task}\n## Scope\n\nx\n`,
     });
 
     await expect(
       checkGithubWrite(command, project.root, registry, protocol),
     ).resolves.toContain("Scope");
 
-    project.write(draft, `---\ntitle: x\n---\n\n${task}`);
+    project.write(draft, task);
 
     await expect(
       checkGithubWrite(command, project.root, registry, protocol),
@@ -840,7 +826,7 @@ describe("checkGithubWrite", () => {
     mockProblem();
 
     const project = createTemporaryProject({
-      [draft]: `---\ntitle: x\n---\n\n${task}\n## Scope\n\nx\n`,
+      [draft]: `${task}\n## Scope\n\nx\n`,
     });
 
     await expect(
@@ -860,17 +846,6 @@ describe("checkGithubWrite", () => {
         protocol,
       ),
     ).resolves.toContain("Scope");
-  });
-
-  test("rejects a draft passed whole, frontmatter included", async () => {
-    await expect(
-      checkGithubWrite(
-        `gh issue create --title x --body-file ${draft}`,
-        createTemporaryProject().root,
-        registry,
-        protocol,
-      ),
-    ).resolves.toContain("frontmatter");
   });
 
   test("names a missing draft", async () => {

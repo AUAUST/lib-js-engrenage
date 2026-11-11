@@ -13,9 +13,9 @@ Shared agent instructions, skills and the backlog conventions.
 - why: `markdownBlocks` already describes the syntax; a rule file at the wanted path without its reference silently drops the rule. #9 ("Markers fail silently", marker grammar) covers it.
 - want: folded into #9: one marker grammar from `markdownBlocks`; sync reports the conflict.
 
-## 3. The issue-drafts protocol and GitHub mechanics are copied in three skills and have drifted
+## 3. The issue-drafts protocol is copied in three skills
 
-- why: the Drafts sections of `debugging.md`, `issue-planning.md` and `analysis.md` differ only in flush triggers and creation order; AUAUST/lib-js-engrenage#461 shrinks them to the planning commands and drops their GitHub mechanics.
+- why: since AUAUST/lib-js-engrenage#461, the Drafts sections of `debugging.md`, `issue-planning.md` and `analysis.md` share their file, manifest and reference tables and their rules word for word; only the opening sentence differs, and every change must be made three times.
 - want: one source each skill opts into, per #277 (skill traits).
 
 ## 4. The worker and debugger skills repeat their gated finishing lines word for word

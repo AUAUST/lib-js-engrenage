@@ -46,3 +46,4 @@
 - `gh` PreToolUse hook: `--body-file $S/207.md` with a shell variable — hook reads the path unexpanded and denies it; passed the literal absolute path
 - `engrenage sync`: ran it after adding a module importing a new export through its barrel — sync crashed loading the missing export; added the barrel line by hand, then synced
 - PreToolUse git hook: deleted source modules mid-refactor — hook loads src and fails every Bash call; restored files via git checkout until consumers were rewritten
+- `git add` by path list: staged paths from `git status --porcelain` — a deletion already staged by `git rm` failed the pathspec; staged with `git add -A -- . ':!.ai/issues'`

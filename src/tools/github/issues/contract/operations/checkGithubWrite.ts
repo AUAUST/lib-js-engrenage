@@ -21,10 +21,6 @@ async function checkWrite(
     return;
   }
 
-  if (write.body.kind === "file" && write.body.path.endsWith(".draft.md")) {
-    return "publish a draft without its frontmatter: pipe its body to `--body-file -`";
-  }
-
   const body = await readGithubBody(write.body, cwd);
 
   if (body === undefined && "path" in write.body) {
@@ -32,7 +28,7 @@ async function checkWrite(
   }
 
   if (body === undefined) {
-    return "pass the body with `--body-file -` and a heredoc, or pipe it from a `.draft.md` file";
+    return "pass the body with `--body`, `--body-file <file>`, or `--body-file -` and a heredoc";
   }
 
   // @debt `gh issue create` declares no type, so its body is checked against no contract until the issue is edited or dispatched.

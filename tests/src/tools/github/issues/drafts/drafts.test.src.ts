@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { assert, describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -214,6 +214,52 @@ describe("checkIssues", () => {
         /^new-x: `#\{new-missing\}` names the draft `new-missing`, outside the checked drafts/,
       ),
     ]);
+  });
+
+  test("fails once per empty section of a fresh Task, and passes it filled without Planning and Questions", async () => {
+    const config = await createProject({});
+
+    const { filesystem } = config.context;
+
+    const file = await createDraft(config, "task", { slug: "fresh" });
+
+    const empty = await checkIssues(config, ["new-fresh"], "worker");
+
+    expect(empty.passed).toBe(false);
+
+    expect(empty.lines.filter((line) => line.includes("is empty"))).toEqual(
+      [
+        "Context",
+        "Prerequisites",
+        "Steps",
+        "Tests",
+        "Done when",
+        "Planning",
+        "Questions",
+      ].map((name) => `new-fresh: **${name}** is empty: fill it or remove it.`),
+    );
+
+    const content = await filesystem.read(file);
+
+    assert(content !== undefined);
+
+    await filesystem.write(
+      file,
+      content
+        .replace('title: ""', "title: Fresh")
+        .replace("Nature: null", "Nature: Chore")
+        .replace("<sections>: <gist>", "Goal: fresh")
+        .replace("## Context\n", "## Context\n\nc\n")
+        .replace("## Prerequisites\n", "## Prerequisites\n\n- #12: x.\n")
+        .replace("## Steps\n", "## Steps\n\n1. Do.\n")
+        .replace("## Tests\n", "## Tests\n\n- t\n")
+        .replace("## Done when\n", "## Done when\n\nd\n")
+        .replace("\n## Planning\n\n## Questions\n", ""),
+    );
+
+    await expect(checkIssues(config, ["new-fresh"], "worker")).resolves.toEqual(
+      { lines: ["new-fresh: ready"], passed: true },
+    );
   });
 
   test("fails a plan whose body holds its generated Roadmap, and passes a closed set", async () => {

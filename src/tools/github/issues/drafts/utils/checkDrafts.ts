@@ -189,10 +189,19 @@ function checkBody(
 
   const generated = contract?.generated ?? [];
 
-  const names = new Set(parseIssueBody(body).sections.map(({ name }) => name));
+  const { sections } = parseIssueBody(body);
+  const names = new Set(sections.map(({ name }) => name));
 
   return [
     ...checkIssueBody(body, meaning, protocol),
+    ...sections
+      .filter(({ content }) => content === "")
+      .map(({ name }) => {
+        return {
+          rule: "empty-section",
+          message: `**${name}** is empty: fill it or remove it.`,
+        };
+      }),
     ...generated
       .filter((name) => names.has(name))
       .map((name) => {

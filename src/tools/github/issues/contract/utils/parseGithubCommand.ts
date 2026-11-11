@@ -6,7 +6,6 @@ import type { GithubBodySource } from "#tools/github/issues/contract/types/Githu
 import type { GithubWrite } from "#tools/github/issues/contract/types/GithubWrite";
 import type { ShellCommand as Command } from "#tools/github/issues/contract/types/ShellCommand";
 import type { ShellPipeline as Pipeline } from "#tools/github/issues/contract/types/ShellPipeline";
-import type { ShellToken as Token } from "#tools/github/issues/contract/types/ShellToken";
 import type { ShellWord as Word } from "#tools/github/issues/contract/types/ShellWord";
 
 const actions = [
@@ -49,28 +48,6 @@ const numberPattern = /^(?:\S*\/issues\/|#)?(\d+)$/;
 const repositoryPattern = /([\w.-]+\/[\w.-]+)$/;
 
 const expansionPattern = /\$[({\w]|\$$|`/;
-
-const draftPattern = /(?<![^\s"'()|;&<>])[^\s"'()|;&<>`$]+\.draft\.md(?![\w.-])/;
-
-function findDraft(words: readonly (Token | Word)[]): string | undefined {
-  for (const word of words) {
-    const draft = isString(word)
-      ? draftPattern.exec(word)?.[0]
-      : "process" in word
-        ? findDraft(word.process)
-        : undefined;
-
-    if (draft !== undefined) {
-      return draft;
-    }
-  }
-}
-
-function readDraft(words: readonly (Token | Word)[]): GithubBodySource {
-  const path = findDraft(words);
-
-  return path === undefined ? { kind: "unreadable" } : { kind: "draft", path };
-}
 
 function readFlag(words: Command, names: readonly string[]): Word | undefined {
   for (const [index, word] of words.entries()) {
@@ -129,7 +106,7 @@ function readStandardInput(
 
       const text = readText(target, heredocs);
 
-      return text.kind === "unreadable" ? readDraft([target]) : text;
+      return text;
     }
 
     if (operator === "<") {
@@ -137,11 +114,7 @@ function readStandardInput(
         return { kind: "unreadable" };
       }
 
-      if (!isString(target)) {
-        return readDraft([target]);
-      }
-
-      return expansionPattern.test(target)
+      return !isString(target) || expansionPattern.test(target)
         ? { kind: "unreadable" }
         : { kind: "file", path: target };
     }
@@ -157,7 +130,7 @@ function readStandardInput(
     }
   }
 
-  return readDraft(pipeline.slice(0, position).flat());
+  return { kind: "unreadable" };
 }
 
 function readBody(
@@ -181,7 +154,7 @@ function readBody(
   }
 
   if (!isString(file)) {
-    return readDraft([file]);
+    return { kind: "unreadable" };
   }
 
   if (file === "-") {
