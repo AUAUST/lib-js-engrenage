@@ -2,7 +2,6 @@ import { extname, join, matchesGlob } from "node:path";
 
 import { entries, keys, values } from "@auaust/toolkit/object";
 
-import { pathExists } from "#foundation/filesystem/index";
 import {
   domainMetadataFile,
   namespaceMetadataFile,
@@ -13,6 +12,7 @@ import { getStructureCardinality } from "#project/structure/utils/getStructureCa
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { Directory } from "#types/Directory";
@@ -21,7 +21,7 @@ import type { File } from "#types/File";
 type DomainDeclaration = StructureOptions["domains"][string];
 
 export function createStructureDomainResolver({
-  root,
+  filesystem,
   options,
   commands,
   indexFile,
@@ -29,7 +29,7 @@ export function createStructureDomainResolver({
   internals,
   rolesFor,
 }: {
-  root: Directory;
+  filesystem: Filesystem;
   options: StructureOptions;
   commands: boolean;
   indexFile: File;
@@ -93,7 +93,7 @@ export function createStructureDomainResolver({
 
     const files = commands || fileGlobs.length === 0
       ? []
-      : await listStructureFiles(join(root, path));
+      : await listStructureFiles(filesystem, path);
 
     const strays = files.filter((file) => {
       return (
@@ -129,14 +129,14 @@ export function createStructureDomainResolver({
 
     return {
       ...(commands ? { commands: true as const } : {}),
-      ...(commands && (await pathExists(join(root, twin))) ? { twin } : {}),
+      ...(commands && (await filesystem.exists(twin)) ? { twin } : {}),
       ...(strays.length === 0
         ? {}
         : { strays: strays.map((file) => join(path, file)) }),
       ...cardinality,
       public: (
         entryFile !== undefined &&
-        (await pathExists(join(root, path, entryFile)))
+        (await filesystem.exists(join(path, entryFile)))
       ),
       ...(metadata.specifier === undefined
         ? {}

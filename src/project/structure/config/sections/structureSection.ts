@@ -43,7 +43,7 @@ async function resolveStructure(
   });
 
   const metadata = await readStructureMetadata({
-    root: config.context.root,
+    filesystem: config.context.filesystem,
     dirs: environment.dirs,
   });
 
@@ -63,7 +63,7 @@ async function resolveStructure(
 
   return resolveEnvironmentStructure({
     name,
-    root: config.context.root,
+    filesystem: config.context.filesystem,
     dirs: environment.dirs,
     options: {
       namespaces,

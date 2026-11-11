@@ -1,13 +1,20 @@
 import {
   glob as globFiles,
   mkdir,
+  readdir,
   rm,
   stat,
   writeFile,
 } from "node:fs/promises";
 import { dirname, matchesGlob } from "node:path";
 
-import { deduplicate, map, sort, wrap } from "@auaust/primitive-kit/arrays";
+import {
+  deduplicate,
+  flat,
+  map,
+  sort,
+  wrap,
+} from "@auaust/primitive-kit/arrays";
 import { freeze } from "@auaust/toolkit/object";
 
 import { readTextFile } from "#foundation/filesystem/operations/readTextFile";
@@ -49,6 +56,18 @@ function isExcluded(file: File, exclude: Globs): boolean {
   });
 }
 
+function isBelow(directory: File, file: File): boolean {
+  return directory === "" || file.startsWith(`${directory}/`);
+}
+
+function isSkipped(path: File, skip: Globs): boolean {
+  return skip.some((pattern) => matchesGlob(path, pattern));
+}
+
+function joinLocated(directory: File, name: string): File {
+  return directory === "" ? name : `${directory}/${name}`;
+}
+
 export function createFilesystem(root: Directory) {
   const contents = new Map<File, string | undefined>();
   const originals = new Map<File, string | undefined>();
@@ -77,7 +96,19 @@ export function createFilesystem(root: Directory) {
     return (await read(file)) !== undefined;
   }
 
+  function holdsStaged(directory: File): boolean {
+    return contents.entries().some(([file, content]) => {
+      return content !== undefined && isBelow(directory, file);
+    });
+  }
+
   async function isDirectory(directory: Directory): Promise<boolean> {
+    const located = locate(directory);
+
+    if (holdsStaged(located)) {
+      return true;
+    }
+
     try {
       const stats = await stat(resolveWithin(root, directory));
 
@@ -140,6 +171,89 @@ export function createFilesystem(root: Directory) {
     });
 
     return sort(deduplicate([...found, ...created])).filter((file) => {
+      return !contents.has(file) || contents.get(file) !== undefined;
+    });
+  }
+
+  async function listOnDisk(
+    directory: File,
+    { skip, recursive }: { skip: Globs; recursive: boolean },
+  ): Promise<Files> {
+    let entries;
+
+    try {
+      entries = await readdir(resolveWithin(root, directory), {
+        withFileTypes: true,
+      });
+    } catch (error) {
+      if (isMissingError(error)) {
+        return [];
+      }
+
+      throw error;
+    }
+
+    const listed = await Promise.all(
+      entries.map(async (entry): Promise<Files> => {
+        const path = joinLocated(directory, entry.name);
+
+        if (!entry.isDirectory()) {
+          return [path];
+        }
+
+        return !recursive || isSkipped(path, skip)
+          ? []
+          : listOnDisk(path, { skip, recursive });
+      }),
+    );
+
+    return flat(listed);
+  }
+
+  function isListed(
+    directory: File,
+    file: File,
+    { skip, recursive }: { skip: Globs; recursive: boolean },
+  ): boolean {
+    if (!isBelow(directory, file)) {
+      return false;
+    }
+
+    const nested = file
+      .slice(directory === "" ? 0 : directory.length + 1)
+      .split("/")
+      .slice(0, -1);
+
+    if (!recursive) {
+      return nested.length === 0;
+    }
+
+    return nested.every((_, index) => {
+      return !isSkipped(
+        joinLocated(directory, nested.slice(0, index + 1).join("/")),
+        skip,
+      );
+    });
+  }
+
+  async function list(
+    directory: Directory,
+    options?: { skip?: Globs; recursive?: boolean },
+  ): Promise<Files> {
+    const located = locate(directory);
+
+    const listing = {
+      skip: options?.skip ?? [],
+      recursive: options?.recursive ?? true,
+    };
+
+    const found = await listOnDisk(located, listing);
+
+    const staged = contents.keys().filter((file) => {
+      return isListed(located, file, listing);
+    });
+
+    return sort(deduplicate([...found, ...staged])).filter((file) => {
       return !contents.has(file) || contents.get(file) !== undefined;
     });
   }
@@ -232,6 +346,7 @@ export function createFilesystem(root: Directory) {
     write,
     remove,
     glob,
+    list,
     format,
     changes,
     discard,

@@ -1,5 +1,4 @@
-import { readdir, readFile } from "node:fs/promises";
-import { join, posix } from "node:path";
+import { posix } from "node:path";
 
 import {
   createSourceFile,
@@ -14,15 +13,15 @@ import {
 import { flat, flatMap, map } from "@auaust/primitive-kit/arrays";
 import { values } from "@auaust/toolkit/object";
 
-import { isMissingError } from "#foundation/filesystem/index";
 import { createImportResolver } from "#project/structure/utils/createImportResolver";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { LanguageEntry } from "#project/environments/index";
 import type { ImportCycle } from "#project/structure/types/ImportCycle";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { Directory } from "#types/Directory";
 
-const ignoredDirectories = new Set(["node_modules", "dist"]);
+const ignoredDirectories = ["**/.*", "**/node_modules", "**/dist"];
 
 interface ModuleFiles {
   readonly extensions: readonly string[];
@@ -48,49 +47,27 @@ function isCodeFile(name: string, { extensions, declarations }: ModuleFiles) {
 }
 
 async function listCodeFiles(
-  root: Directory,
+  filesystem: Filesystem,
   directory: Directory,
   modules: ModuleFiles,
 ): Promise<string[]> {
-  const path = join(root, directory);
+  const files = await filesystem.list(directory, { skip: ignoredDirectories });
 
-  let entries;
-
-  try {
-    entries = await readdir(path, { withFileTypes: true });
-  } catch (error) {
-    if (isMissingError(error)) {
-      return [];
-    }
-
-    throw error;
-  }
-
-  const listed = await Promise.all(
-    entries.map(async (entry): Promise<string[]> => {
-      const child = posix.join(directory, entry.name);
-
-      if (entry.isDirectory()) {
-        return entry.name.startsWith(".") || ignoredDirectories.has(entry.name)
-          ? []
-          : listCodeFiles(root, child, modules);
-      }
-
-      return entry.isFile() && isCodeFile(entry.name, modules) ? [child] : [];
-    }),
-  );
-
-  return listed.flat();
+  return files.filter((file) => isCodeFile(posix.basename(file), modules));
 }
 
 async function readRuntimeSpecifiers(
-  root: Directory,
+  filesystem: Filesystem,
   file: string,
   verbatimModuleSyntax: boolean,
 ): Promise<string[]> {
-  const {
-    outputText,
-  } = transpileModule(await readFile(join(root, file), "utf-8"), {
+  const content = await filesystem.read(file);
+
+  if (content === undefined) {
+    throw new Error(`${file} was listed but cannot be read`);
+  }
+
+  const { outputText } = transpileModule(content, {
     fileName: file,
     compilerOptions: {
       module: ModuleKind.ESNext,
@@ -237,12 +214,14 @@ function shortestCycle(
 /** @debt without `verbatimModuleSyntax`, elision is decided per file as under `isolatedModules`, so a value-style re-export of a type-only module still counts as a runtime edge */
 export async function findImportCycles({
   root,
+  filesystem,
   structure,
   aliases,
   verbatimModuleSyntax,
   languages,
 }: {
   root: Directory;
+  filesystem: Filesystem;
   structure: ResolvedStructure;
   aliases: ResolvedAliases;
   verbatimModuleSyntax: boolean;
@@ -260,7 +239,7 @@ export async function findImportCycles({
     flat(
       await Promise.all(
         [...directories].map((directory) => {
-          return listCodeFiles(root, directory, modules);
+          return listCodeFiles(filesystem, directory, modules);
         }),
       ),
     ),
@@ -283,7 +262,7 @@ export async function findImportCycles({
       [...files].sort().map(async (file): Promise<[string, string[]]> => {
         const targets = new Set(
           flatMap(
-            await readRuntimeSpecifiers(root, file, verbatimModuleSyntax),
+            await readRuntimeSpecifiers(filesystem, file, verbatimModuleSyntax),
             (specifier) => {
               const target = resolve(file, specifier);
 

@@ -3,9 +3,16 @@ import { join } from "node:path";
 
 import { describe, expect, test, vi } from "vitest";
 
-import { createProjectConfig } from "#project/config/index";
-import { runSync, settleChanges, type SyncDone } from "#project/sync/index";
+import { createProjectConfig, type LoadedConfig } from "#project/config/index";
+import { entrypoint, index } from "#project/roles/index";
+import {
+  collectChanges,
+  runSync,
+  settleChanges,
+  type SyncDone,
+} from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 
 function createTarget(
   name: string,
@@ -224,5 +231,135 @@ describe("runSync", () => {
     await expect(runSync(config)).rejects.toThrow("broken write");
 
     expect(runs).toEqual([]);
+  });
+});
+
+describe("runSync with generated sources", () => {
+  function createSourceProject(
+    files: Record<string, string>,
+    targets: readonly unknown[],
+  ) {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "@fixture/project", "type": "module" }',
+      "tsconfig.json": "{}",
+      ...files,
+    });
+
+    linkSourcePackage(project.resolve("node_modules/@auaust/engrenage"));
+
+    return createProjectConfig({
+      root: project.root,
+      raw: {
+        preset: "library",
+        agents: {
+          preferred: ["claude"],
+        },
+        src: {
+          node: 24,
+          roles: [index(), entrypoint()],
+        },
+        extensions: [
+          {
+            name: "generated-fixture",
+            contributes: { "sync.targets": targets },
+          },
+        ],
+      },
+      configFile: undefined,
+    });
+  }
+
+  function createGenerator(generate: (config: LoadedConfig) => Promise<void>) {
+    return {
+      name: "generator",
+      stage: "generate",
+      load() {
+        return Promise.resolve(async (config: LoadedConfig) => {
+          await config.resolve("structure");
+
+          await generate(config);
+        });
+      },
+    };
+  }
+
+  test("settles the files derived from a generated source in one sync", async () => {
+    const config = createSourceProject(
+      { "src/modules/a/index.ts": "export const a = 1;\n" },
+      [
+        createGenerator(({ context }) => {
+          return context.filesystem.write(
+            "src/modules/a/entry.ts",
+            "export const a = 1;\n",
+          );
+        }),
+      ],
+    );
+
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
+
+    try {
+      await settleChanges(config, {
+        check: false,
+        failures: await runSync(config),
+      });
+
+      const { root } = config.context;
+
+      expect(readFileSync(join(root, "src/modules/a/entry.ts"), "utf-8")).toBe(
+        "export const a = 1;\n",
+      );
+
+      expect(
+        JSON.parse(readFileSync(join(root, "tsconfig.json"), "utf-8"))
+          .compilerOptions.paths,
+      ).toEqual({ "@fixture/project/a": ["./src/modules/a/entry.ts"] });
+
+      expect(
+        readFileSync(join(root, ".claude/rules/project-map/src.md"), "utf-8"),
+      ).toContain("└─ modules/  #modules/…  a*");
+
+      const copy = config.context.copy();
+
+      expect(await runSync(copy)).toEqual([]);
+      expect(await collectChanges(copy, { check: true })).toEqual([]);
+    } finally {
+      info.mockRestore();
+    }
+  });
+
+  test("drops a domain whose last file a generator removes from the structure later targets read", async () => {
+    const domains: string[][] = [];
+
+    const config = createSourceProject(
+      {
+        "src/modules/a/index.ts": "export const a = 1;\n",
+        "src/modules/b/index.ts": "export const b = 1;\n",
+      },
+      [
+        createGenerator(({ context }) => {
+          return context.filesystem.remove("src/modules/b/index.ts");
+        }),
+        {
+          name: "reader",
+          stage: "write",
+          load() {
+            return Promise.resolve(async (loaded: LoadedConfig) => {
+              const { src } = await loaded.resolve("structure");
+
+              domains.push(
+                (src?.root.children ?? []).flatMap(({ children }) => {
+                  return children.map(({ name }) => name);
+                }),
+              );
+            });
+          },
+        },
+      ],
+    );
+
+    await runSync(config, { names: ["generator", "reader"] });
+
+    expect(domains).toEqual([["a"]]);
   });
 });

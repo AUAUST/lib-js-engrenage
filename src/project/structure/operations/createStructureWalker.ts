@@ -2,9 +2,9 @@ import { join } from "node:path";
 
 import { freeze } from "@auaust/toolkit/object";
 
-import { pathExists } from "#foundation/filesystem/index";
 import { listStructureDirectories } from "#project/structure/operations/listStructureDirectories";
 import { getStructureLayer } from "#project/structure/utils/getStructureLayer";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { RoleLocationMember } from "#project/roles/index";
 import type { createStructureDomainResolver } from "#project/structure/operations/createStructureDomainResolver";
 import type { createStructureRoleResolver } from "#project/structure/operations/createStructureRoleResolver";
@@ -21,7 +21,7 @@ const environmentRoot = ".";
 
 export function createStructureWalker({
   name,
-  root,
+  filesystem,
   options,
   commands,
   indexFile,
@@ -31,7 +31,7 @@ export function createStructureWalker({
   classifyMirror,
 }: {
   name: string;
-  root: Directory;
+  filesystem: Filesystem;
   options: StructureOptions;
   commands: boolean;
   indexFile: File;
@@ -252,7 +252,7 @@ export function createStructureWalker({
       );
     }
 
-    if (commands || (await pathExists(join(root, path, indexFile)))) {
+    if (commands || (await filesystem.exists(join(path, indexFile)))) {
       return domain("inferred");
     }
 
@@ -294,7 +294,8 @@ export function createStructureWalker({
     const base = subpath === environmentRoot ? "" : `${subpath}/`;
 
     const directories = await listStructureDirectories(
-      join(root, envDirectory, subpath),
+      filesystem,
+      join(envDirectory, subpath),
     );
 
     return Promise.all(

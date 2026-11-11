@@ -19,6 +19,7 @@ import { getStructureCardinality } from "#project/structure/utils/getStructureCa
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
@@ -31,12 +32,12 @@ const anyFile: Glob = "**";
 
 export function createStructureRoleResolver({
   name,
-  root,
+  filesystem,
   roles,
   defined,
 }: {
   name: string;
-  root: Directory;
+  filesystem: Filesystem;
   roles: EnvironmentRoles | undefined;
   defined: RoleRegistry | undefined;
 }) {
@@ -142,11 +143,9 @@ export function createStructureRoleResolver({
       return {};
     }
 
-    const directory = join(root, path);
-
     const files = structured
-      ? await listStructureFiles(directory)
-      : await listStructureFilesAtAnyDepth(directory);
+      ? await listStructureFiles(filesystem, path)
+      : await listStructureFilesAtAnyDepth(filesystem, path);
 
     return getStructureCardinality(
       files.map((file) => {

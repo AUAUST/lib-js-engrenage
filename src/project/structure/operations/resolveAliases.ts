@@ -1,10 +1,9 @@
-import { readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { join, posix } from "node:path";
 
 import { flat, map } from "@auaust/primitive-kit/arrays";
 import { entries, freeze } from "@auaust/toolkit/object";
 
-import { pathExists } from "#foundation/filesystem/index";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { LanguageEntry } from "#project/environments/index";
 import type { Alias } from "#project/structure/types/Alias";
 import type { AliasesOption } from "#project/structure/types/AliasesOption";
@@ -40,7 +39,7 @@ const packageJsonAlias: Alias = {
 };
 
 async function createDirectoryAliases(
-  root: Directory,
+  filesystem: Filesystem,
   name: string,
   path: Directory,
   source: string,
@@ -53,7 +52,7 @@ async function createDirectoryAliases(
       target: `./${path}/*${extension}`,
       source,
     },
-    ...((await pathExists(join(root, path, indexFile)))
+    ...((await filesystem.exists(join(path, indexFile)))
       ? [
           {
             key: `#${name}`,
@@ -66,7 +65,7 @@ async function createDirectoryAliases(
 }
 
 async function createSourceAliases(
-  root: Directory,
+  filesystem: Filesystem,
   { dirs, root: tree, indexFile, entryFile }: EnvironmentStructure,
   { extension, declarations }: AliasedFiles,
 ): Promise<Alias[]> {
@@ -74,7 +73,7 @@ async function createSourceAliases(
     await Promise.all(
       tree.children.map(async (child) => {
         const aliases = await createDirectoryAliases(
-          root,
+          filesystem,
           child.name,
           child.path,
           `src entry ${child.path}`,
@@ -92,29 +91,24 @@ async function createSourceAliases(
   const files = flat(
     await Promise.all(
       dirs.map(async (dir): Promise<Alias[]> => {
-        if (!(await pathExists(join(root, dir)))) {
-          return [];
-        }
+        const listed = await filesystem.list(dir, { recursive: false });
 
-        const entries = await readdir(join(root, dir), { withFileTypes: true });
-
-        return entries
-          .filter((entry) => {
+        return listed
+          .map((file) => posix.basename(file))
+          .filter((name) => {
             return (
-              entry.isFile() &&
-              entry.name.endsWith(extension) &&
-              (declarations === undefined ||
-                !entry.name.endsWith(declarations)) &&
-              entry.name !== indexFile &&
-              entry.name !== entryFile
+              name.endsWith(extension) &&
+              (declarations === undefined || !name.endsWith(declarations)) &&
+              name !== indexFile &&
+              name !== entryFile
             );
           })
-          .map((entry): Alias => {
+          .map((name): Alias => {
             return {
-              key: `#${entry.name.slice(0, -extension.length)}`,
-              target: `./${join(dir, entry.name)}`,
-              source: `src entry ${join(dir, entry.name)}`,
-              path: join(dir, entry.name),
+              key: `#${name.slice(0, -extension.length)}`,
+              target: `./${join(dir, name)}`,
+              source: `src entry ${join(dir, name)}`,
+              path: join(dir, name),
             };
           });
       }),
@@ -161,7 +155,7 @@ function assertUnique(aliases: readonly Alias[]) {
 }
 
 export async function resolveAliases({
-  root,
+  filesystem,
   options,
   bundled,
   environments,
@@ -171,7 +165,7 @@ export async function resolveAliases({
   structure,
   language,
 }: {
-  root: Directory;
+  filesystem: Filesystem;
   options: { global: AliasesOption; src: AliasesOption };
   bundled: boolean;
   environments: Readonly<Record<string, Directories>>;
@@ -205,7 +199,7 @@ export async function resolveAliases({
         return dirs.map(async (dir): Promise<Alias[]> => {
           return dir === projectRoot ||
             dir === outDir ||
-            !(await pathExists(join(root, dir)))
+            !(await filesystem.isDirectory(dir))
             ? []
             : [
                 {
@@ -224,7 +218,7 @@ export async function resolveAliases({
     : flat(
         await Promise.all(
           data.map(async (dir): Promise<Alias[]> => {
-            return (await pathExists(join(root, dir)))
+            return (await filesystem.isDirectory(dir))
               ? [
                   {
                     key: `#${dir}/*`,
@@ -247,7 +241,7 @@ export async function resolveAliases({
   const sourceAliases = options.src.enabled
     ? [
         ...(generatedSource
-          ? await createSourceAliases(root, structure, files)
+          ? await createSourceAliases(filesystem, structure, files)
           : []),
         ...createDefinedAliases(options.src, "src.aliases.define", bundled),
       ]

@@ -172,6 +172,7 @@ export function createProjectConfig({
     input: readInput,
     context,
     validate: validateKeys,
+    forget,
   } = createResolver<ConfigContext, ConfigSections>(
     raw,
     {
@@ -206,5 +207,6 @@ export function createProjectConfig({
     input: readInput,
     context,
     validate: validateKeys,
+    forget,
   });
 }

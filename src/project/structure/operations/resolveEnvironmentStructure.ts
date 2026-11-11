@@ -12,6 +12,7 @@ import { getEntryFile } from "#project/structure/utils/getEntryFile";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { listStructureRoles } from "#project/structure/utils/listStructureRoles";
 import { loosenStructureNode } from "#project/structure/utils/loosenStructureNode";
+import type { Filesystem } from "#foundation/filesystem/index";
 import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
@@ -21,14 +22,13 @@ import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { TestsContext } from "#project/structure/types/TestsContext";
 import type { Directories } from "#types/Directories";
-import type { Directory } from "#types/Directory";
 
 const environmentRoot = ".";
 const projectRoot = ".";
 
 export async function resolveEnvironmentStructure({
   name,
-  root,
+  filesystem,
   dirs,
   options,
   roles,
@@ -38,7 +38,7 @@ export async function resolveEnvironmentStructure({
   internals = false,
 }: {
   name: string;
-  root: Directory;
+  filesystem: Filesystem;
   dirs: Directories;
   options: StructureOptions;
   internals?: boolean;
@@ -52,7 +52,7 @@ export async function resolveEnvironmentStructure({
 
   const roleResolver = createStructureRoleResolver({
     name,
-    root,
+    filesystem,
     roles,
     defined,
   });
@@ -63,7 +63,7 @@ export async function resolveEnvironmentStructure({
   const entryFile = getEntryFile(rolesFor([]));
 
   const domainResolver = createStructureDomainResolver({
-    root,
+    filesystem,
     options,
     commands,
     indexFile,
@@ -74,7 +74,7 @@ export async function resolveEnvironmentStructure({
 
   const walk = createStructureWalker({
     name,
-    root,
+    filesystem,
     options,
     commands,
     indexFile,

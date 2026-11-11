@@ -226,6 +226,7 @@ export async function createStepContext({
     input: config.input,
     context: config.context,
     validate: config.validate,
+    forget: config.forget,
     getAgents,
     setAgents,
     filesystem,

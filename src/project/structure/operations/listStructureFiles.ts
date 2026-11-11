@@ -1,10 +1,13 @@
-import { readdir } from "node:fs/promises";
+import { posix } from "node:path";
 
-export async function listStructureFiles(directory: string): Promise<string[]> {
-  const entries = await readdir(directory, { withFileTypes: true });
+import type { Filesystem } from "#foundation/filesystem/index";
+import type { Directory } from "#types/Directory";
 
-  return entries
-    .filter((entry) => !entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort();
+export async function listStructureFiles(
+  filesystem: Filesystem,
+  directory: Directory,
+): Promise<string[]> {
+  const files = await filesystem.list(directory, { recursive: false });
+
+  return files.map((file) => posix.basename(file));
 }

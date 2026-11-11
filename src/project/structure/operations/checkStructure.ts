@@ -17,6 +17,7 @@ export async function checkStructure(
 
   const cycles = await findImportCycles({
     root: config.context.root,
+    filesystem: config.context.filesystem,
     structure,
     aliases: await config.resolve("aliases"),
     verbatimModuleSyntax,

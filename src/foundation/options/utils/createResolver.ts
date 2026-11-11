@@ -386,6 +386,11 @@ export function createResolver<
     return readKeyInput(key, reader);
   }
 
+  function forget() {
+    memos.clear();
+    waits.clear();
+  }
+
   const reader: Resolver<Context> = {
     context,
     resolve: readValue,
@@ -404,5 +409,6 @@ export function createResolver<
     resolve,
     input: readValueInput,
     validate: validateKeys,
+    forget,
   };
 }

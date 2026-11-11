@@ -5,4 +5,5 @@ export interface InputResolver<
   Sections extends object = Readonly<Record<string, unknown>>,
 > extends Resolver<Context, Sections> {
   validate(keys: readonly string[]): Promise<void>;
+  forget(): void;
 }

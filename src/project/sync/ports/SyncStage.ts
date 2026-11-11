@@ -1,1 +1,3 @@
-export type SyncStage = "write" | "check";
+import type { syncStages } from "#project/sync/constants";
+
+export type SyncStage = (typeof syncStages)[number];

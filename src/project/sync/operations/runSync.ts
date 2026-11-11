@@ -28,15 +28,19 @@ export async function runSync(
     );
   }
 
+  const selected = contributions.filter(({ entry }) => {
+    return names === undefined || includes(names, entry.name);
+  });
+
+  const lastGenerator = selected.findLastIndex(({ entry }) => {
+    return entry.stage === "generate";
+  });
+
   const targets: string[] = [];
 
   const failures: SyncFailure[] = [];
 
-  for (const { entry } of contributions) {
-    if (names !== undefined && !includes(names, entry.name)) {
-      continue;
-    }
-
+  for (const [index, { entry }] of selected.entries()) {
     const run = await entry.load();
 
     const settings = flags[entry.name] ?? {};
@@ -55,6 +59,10 @@ export async function runSync(
     }
 
     targets.push(entry.name);
+
+    if (index === lastGenerator) {
+      config.forget();
+    }
   }
 
   await registry.emit(

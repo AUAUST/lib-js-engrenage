@@ -1,47 +1,26 @@
-import { readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { posix } from "node:path";
 
-import { pathExists } from "#foundation/filesystem/index";
+import { deduplicate, flatMap, sort } from "@auaust/primitive-kit/arrays";
 
-const ignoredDirectory = "node_modules";
+import { toPosixPath, type Filesystem } from "#foundation/filesystem/index";
+import type { Directory } from "#types/Directory";
 
-async function holdsFiles(directory: string): Promise<boolean> {
-  const entries = await readdir(directory, { withFileTypes: true });
-
-  const holds = await Promise.all(
-    entries.map(async (entry) => {
-      return (
-        !entry.isDirectory() ||
-        (entry.name !== ignoredDirectory &&
-          (await holdsFiles(join(directory, entry.name))))
-      );
-    }),
-  );
-
-  return holds.some(Boolean);
-}
+const ignoredDirectories = ["**/node_modules"];
 
 export async function listStructureDirectories(
-  directory: string,
+  filesystem: Filesystem,
+  directory: Directory,
 ): Promise<string[]> {
-  if (!(await pathExists(directory))) {
-    return [];
-  }
+  const files = await filesystem.list(directory, { skip: ignoredDirectories });
 
-  const entries = await readdir(directory, { withFileTypes: true });
+  const holding = flatMap(files, (file) => {
+    const [
+      name,
+      ...nested
+    ] = posix.relative(toPosixPath(directory), file).split("/");
 
-  const listed = await Promise.all(
-    entries.map(async (entry) => {
-      return (
-        entry.isDirectory() &&
-        entry.name !== ignoredDirectory &&
-        (await holdsFiles(join(directory, entry.name)))
-      );
-    }),
-  );
+    return name === undefined || nested.length === 0 ? [] : [name];
+  });
 
-  return entries
-    .filter((_, index) => listed[index])
-    .map((entry) => entry.name)
-    .sort();
+  return sort(deduplicate(holding));
 }

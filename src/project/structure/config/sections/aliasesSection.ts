@@ -60,7 +60,7 @@ export const aliasesSection = declareSection({
     ]);
 
     return resolveAliases({
-      root: config.context.root,
+      filesystem: config.context.filesystem,
       options: { global, src: option.aliases },
       bundled: option.bundled,
       environments: record(

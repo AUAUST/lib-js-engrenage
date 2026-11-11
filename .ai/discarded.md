@@ -26,3 +26,4 @@
 - ctix: barrel generation — derives from the tsconfig, duplicating the resolved structure
 - source-tree sync products: one-pass sync with generated sources (#436) — every config key would declare its file dependencies; generate stage instead
 - classify role-holding directories as domains: entry-only domains (#430) — a misplaced role directory silently becomes a domain; namespace option instead
+- config key reset registry: hide `forget` from every LoadedConfig holder but project/sync — needs module-level state shared by createProjectConfig and a second export, beyond the issue

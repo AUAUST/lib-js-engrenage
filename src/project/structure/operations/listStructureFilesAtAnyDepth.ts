@@ -1,32 +1,19 @@
-import { readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { posix } from "node:path";
 
-import { flat } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/primitive-kit/arrays";
 
-const ignoredDirectory = "node_modules";
+import { toPosixPath, type Filesystem } from "#foundation/filesystem/index";
+import type { Directory } from "#types/Directory";
+
+const ignoredDirectories = ["**/node_modules"];
 
 export async function listStructureFilesAtAnyDepth(
-  directory: string,
+  filesystem: Filesystem,
+  directory: Directory,
 ): Promise<string[]> {
-  const entries = await readdir(directory, { withFileTypes: true });
+  const files = await filesystem.list(directory, { skip: ignoredDirectories });
 
-  const listed = await Promise.all(
-    entries.map(async (entry) => {
-      if (!entry.isDirectory()) {
-        return [entry.name];
-      }
-
-      if (entry.name === ignoredDirectory) {
-        return [];
-      }
-
-      const nested = await listStructureFilesAtAnyDepth(
-        join(directory, entry.name),
-      );
-
-      return nested.map((file) => join(entry.name, file));
-    }),
+  return sort(
+    files.map((file) => posix.relative(toPosixPath(directory), file)),
   );
-
-  return flat(listed).sort();
 }

@@ -1,10 +1,13 @@
-import { glob, readFile } from "node:fs/promises";
-import { join, posix } from "node:path";
+import { posix } from "node:path";
 
 import { sort } from "@auaust/primitive-kit/arrays";
 import { entries, freeze } from "@auaust/toolkit/object";
 
-import { toPosixPath } from "#foundation/filesystem/index";
+import {
+  filesIn,
+  toPosixPath,
+  type Filesystem,
+} from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import {
@@ -32,12 +35,18 @@ function locate<Value>(
 }
 
 async function readFileMetadata(
-  root: Directory,
+  filesystem: Filesystem,
   directory: Directory,
-  match: File,
+  file: File,
 ): Promise<StructureMetadata> {
-  const file = posix.join(toPosixPath(directory), match);
-  const content = parseJson(await readFile(join(root, file), "utf-8"), file);
+  const text = await filesystem.read(file);
+
+  if (text === undefined) {
+    throw new Error(`${file} was listed but cannot be read`);
+  }
+
+  const content = parseJson(text, file);
+  const match = posix.relative(toPosixPath(directory), file);
   const path = posix.dirname(match);
 
   if (posix.basename(match) === namespaceMetadataFile) {
@@ -117,25 +126,26 @@ function mergeAtPath(
 }
 
 export async function readStructureMetadata({
-  root,
+  filesystem,
   dirs,
 }: {
-  root: Directory;
+  filesystem: Filesystem;
   dirs: Directories;
 }): Promise<readonly StructureMetadata[]> {
   const byPath = new Map<Directory, StructureMetadata>();
 
   for (const directory of dirs.filter((dir) => dir !== projectRoot)) {
-    const matches = await Array.fromAsync(
-      glob(`**/{${namespaceMetadataFile},${domainMetadataFile}}`, {
-        cwd: join(root, directory),
-        exclude: ["**/node_modules"],
-      }),
+    const matches = await filesystem.glob(
+      filesIn(
+        toPosixPath(directory),
+        `**/{${namespaceMetadataFile},${domainMetadataFile}}`,
+      ),
+      { exclude: ["**/node_modules"] },
     );
 
     const read = await Promise.all(
-      sort(matches.map(toPosixPath)).map((match) => {
-        return readFileMetadata(root, directory, match);
+      matches.map((file) => {
+        return readFileMetadata(filesystem, directory, file);
       }),
     );
 
