@@ -308,8 +308,8 @@ describe("loadConfig", () => {
 
     const movedConfig = await loadConfig(moved.root);
 
-    expect((await defaultsConfig.resolve("cache")).for("eslint")).toBe(
-      defaults.resolve("node_modules/.cache/eslint"),
+    expect((await defaultsConfig.resolve("cache")).for("tool")).toBe(
+      defaults.resolve("node_modules/.cache/tool"),
     );
 
     expect((await movedConfig.resolve("cache")).for("@scope/tool")).toBe(

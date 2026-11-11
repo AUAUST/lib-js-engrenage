@@ -10,7 +10,6 @@ export const javascriptIgnores = freeze({
     ".pnpm-store",
     "*.tgz",
     "*.tsbuildinfo",
-    ".eslintcache",
     "npm-debug.log*",
     "pnpm-debug.log*",
   ] as const),
