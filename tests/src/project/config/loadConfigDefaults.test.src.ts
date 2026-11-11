@@ -32,7 +32,10 @@ describe("loadConfig", () => {
       "**/*.{ts,tsx}",
     ]);
 
-    expect((await config.resolve("files")).generated).toEqual([]);
+    expect((await config.resolve("files")).generated).toEqual([
+      ".engrenage/github.json",
+    ]);
+
     expect(await config.resolve("packageJsonPath")).toBeUndefined();
 
     expect((await config.resolve("packageJson")).optional.name).toBeUndefined();
