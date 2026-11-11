@@ -1,7 +1,7 @@
 import { listIssueCommits, type IssueCommit } from "#tools/git/index";
 import {
   isMissingResource,
-  resolveRepository,
+  resolveCurrentRepository,
   splitRepository,
   type GithubAccess,
 } from "#tools/github/issues/api/index";
@@ -85,16 +85,9 @@ async function findMissingReferences(
 }
 
 async function listLocalCommits(root: Directory, repository: string) {
-  let local: string;
+  const local = await resolveCurrentRepository(root);
 
-  try {
-    local = await resolveRepository(root);
-  } catch {
-    // @debt treats any failure to resolve the working copy's repository as a foreign repository instead of telling a missing remote from a git failure
-    return [];
-  }
-
-  return local.toLowerCase() === repository.toLowerCase()
+  return local?.toLowerCase() === repository.toLowerCase()
     ? listIssueCommits(root)
     : [];
 }

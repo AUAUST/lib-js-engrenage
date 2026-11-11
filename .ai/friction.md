@@ -31,3 +31,6 @@
 - zsh `grep --include=*.ts`: unquoted glob — zsh "no matches found" aborts the command; dropped the flag
 - Claude PreToolUse Bash hook: removed agents constants mid-refactor — the hook loads engrenage from source, so every Bash call failed until the importers were fixed with Write/Edit
 - pnpm test type checking: changed exported signatures, `pnpm test` reported "Type Errors no errors" while test files still used the old ones — `pnpm exec tsc -b` found them
+- zsh `grep --include=*.ts`: unquoted glob in a search for callers — zsh "no matches found" aborted it; dropped the flag
+- Claude PreToolUse Bash hook: imported a new barrel export before syncing barrels — the hook loads engrenage from source, so `pnpm engrenage sync` itself was blocked; added the barrel lines with Edit
+- Claude PreToolUse Bash hook: user asked to commit skipping the gate — the hook denies gate-skipping commits, and any Bash command whose text names that flag; left the commit to the user

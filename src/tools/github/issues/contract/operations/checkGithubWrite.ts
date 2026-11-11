@@ -12,6 +12,7 @@ import type { Directory } from "#types/Directory";
 async function checkWrite(
   write: GithubWrite,
   cwd: Directory,
+  repositories: ReadonlyMap<string, string>,
 ): Promise<string | undefined> {
   if (write.action === "comment" || write.body === undefined) {
     return;
@@ -36,7 +37,10 @@ async function checkWrite(
   if (write.action === "edit" && write.number !== undefined) {
     const issue = await fetchIssue(
       {
-        repository: await resolveRepository(cwd, write.repository),
+        repository: await resolveRepository(
+          { root: cwd, repositories },
+          write.repository,
+        ),
         client: await createGithubClient(),
       },
       write.number,
@@ -59,12 +63,13 @@ async function checkWrite(
 export async function checkGithubWrite(
   command: string,
   cwd: Directory,
+  repositories: ReadonlyMap<string, string>,
 ): Promise<string | undefined> {
   const writes = parseGithubCommand(command);
 
   const reasons = await Promise.all(
     writes.map(async (write) => {
-      const reason = await checkWrite(write, cwd);
+      const reason = await checkWrite(write, cwd, repositories);
 
       return reason === undefined
         ? undefined

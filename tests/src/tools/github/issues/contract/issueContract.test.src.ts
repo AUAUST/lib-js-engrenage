@@ -765,14 +765,14 @@ describe("checkGithubWrite", () => {
       [draft]: `---\ntitle: x\ntype: Problem\n---\n\n${task}\n## Scope\n\nx\n`,
     });
 
-    await expect(checkGithubWrite(command, project.root)).resolves.toContain(
+    await expect(checkGithubWrite(command, project.root, new Map())).resolves.toContain(
       "Scope",
     );
 
     project.write(draft, `---\ntitle: x\n---\n\n${task}`);
 
     await expect(
-      checkGithubWrite(command, project.root),
+      checkGithubWrite(command, project.root, new Map()),
     ).resolves.toBeUndefined();
   });
 
@@ -785,6 +785,7 @@ describe("checkGithubWrite", () => {
       checkGithubWrite(
         `gh issue create --title y --body 'free'\n${command}`,
         project.root,
+        new Map(),
       ),
     ).resolves.toContain("Scope");
   });
@@ -794,13 +795,14 @@ describe("checkGithubWrite", () => {
       checkGithubWrite(
         `gh issue create --title x --body-file ${draft}`,
         createTemporaryProject().root,
+        new Map(),
       ),
     ).resolves.toContain("frontmatter");
   });
 
   test("names a missing draft", async () => {
     await expect(
-      checkGithubWrite(command, createTemporaryProject().root),
+      checkGithubWrite(command, createTemporaryProject().root, new Map()),
     ).resolves.toContain(`\`${draft}\` does not exist`);
   });
 });

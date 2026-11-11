@@ -14,4 +14,13 @@ export interface GithubInput {
    * @default 1
    */
   testShards?: (number | undefined)
+  /**
+   * Repositories reached by short name, as `owner/repo`; `false` drops one.
+   * Adds to or replaces the current package and its installed same-scope dependencies, each registered under its unscoped name.
+   * Every `--repo` option accepts a short name.
+   * @default none
+   */
+  repositories?: ({
+    [k: string]: (string | false)
+  } | undefined)
 }

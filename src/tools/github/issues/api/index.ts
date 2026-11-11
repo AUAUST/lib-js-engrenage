@@ -1,6 +1,9 @@
 // @barrel operations
 export { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
+export { readManifestRepository } from "#tools/github/issues/api/operations/readManifestRepository";
+export { resolveCurrentRepository } from "#tools/github/issues/api/operations/resolveCurrentRepository";
 export { resolveGithubToken } from "#tools/github/issues/api/operations/resolveGithubToken";
+export { resolveRegisteredRepositories } from "#tools/github/issues/api/operations/resolveRegisteredRepositories";
 export { resolveRepository } from "#tools/github/issues/api/operations/resolveRepository";
 // @end
 

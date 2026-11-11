@@ -18,6 +18,7 @@ export function createAgentRulesStep(): Step {
 
       const missing = await getMissingRuleTemplates({
         filesystem: context.filesystem,
+        // @debt consider caching the fillers to avoid recomputing them in plan()
         fillers: await createAgentFillers(context),
       });
 

@@ -22,13 +22,15 @@ export default async function (): Promise<void> {
     tool_input: { command: shellCommand },
   } = await readHookPayload(payloadSchema, "Claude Code");
 
-  const reason = await checkGithubWrite(shellCommand, cwd);
+  const config = await loadValidatedConfig(cwd);
+
+  const { repositories } = await config.resolve("github");
+
+  const reason = await checkGithubWrite(shellCommand, cwd, repositories);
 
   if (reason !== undefined) {
     return void denyToolUse(reason);
   }
-
-  const config = await loadValidatedConfig(cwd);
 
   const agents = await config.resolve("agents");
 

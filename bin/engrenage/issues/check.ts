@@ -9,7 +9,10 @@ export default defineLazyCommand({
         "Check that an issue meets the issue contract, reporting its sub-issues and blocking issues as open, closed by a local `Closes` commit or closed on GitHub, and the local commits `Towards` it; exit 1 with one line per finding otherwise.",
       )
       .argument("<number>", "issue number", Number)
-      .option("--repo <owner/repo>", "repository, else package.json or origin")
+      .option(
+        "--repo <repo>",
+        "repository as `owner/repo` or a registered short name, else package.json or origin",
+      )
       .addOption(
         new Option("--for <role>", "who the issue is checked for")
           .choices(["worker", "debugger"] as const)

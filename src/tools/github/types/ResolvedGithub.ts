@@ -4,4 +4,5 @@ export interface ResolvedGithub {
   readonly workflows: WorkflowSetName | false;
   readonly testShards: number;
   readonly workflowsConfigured: boolean;
+  readonly repositories: ReadonlyMap<string, string>;
 }

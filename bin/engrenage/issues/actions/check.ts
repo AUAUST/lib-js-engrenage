@@ -4,6 +4,7 @@ import {
   formatIssueCheck,
   resolveRepository,
 } from "#tools/github/index";
+import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (
   number: number,
@@ -14,9 +15,13 @@ export default async function (
 ): Promise<void> {
   const root = process.cwd();
 
+  const config = await loadValidatedConfig(root);
+
+  const { repositories } = await config.resolve("github");
+
   const check = await checkIssue(
     {
-      repository: await resolveRepository(root, repo),
+      repository: await resolveRepository({ root, repositories }, repo),
       client: await createGithubClient(),
     },
     number,

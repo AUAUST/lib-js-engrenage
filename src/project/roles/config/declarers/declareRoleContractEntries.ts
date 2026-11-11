@@ -64,6 +64,7 @@ export function declareRoleContractEntries<Nested>(
     }),
     exports: declare(
       union([
+        // @debt repeated options
         picklist(["named-match", "named", "default"]),
         strictObject({
           values: optional(

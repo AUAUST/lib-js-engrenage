@@ -1,4 +1,15 @@
-import { integer, minValue, number, picklist, pipe } from "valibot";
+import {
+  integer,
+  literal,
+  minValue,
+  number,
+  picklist,
+  pipe,
+  record,
+  regex,
+  string,
+  union,
+} from "valibot";
 
 import { declare, declareObject } from "#foundation/options/index";
 import { workflowSetNames } from "#tools/github/constants";
@@ -33,6 +44,20 @@ export const githubSchema = declareObject(
       ],
       optional: { value: 1 },
     }),
+    repositories: declare(
+      record(
+        pipe(string(), regex(/^[^/]+$/u)),
+        union([pipe(string(), regex(/^[\w.-]+\/[\w.-]+$/u)), literal(false)]),
+      ),
+      {
+        description: [
+          "Repositories reached by short name, as `owner/repo`; `false` drops one.",
+          "Adds to or replaces the current package and its installed same-scope dependencies, each registered under its unscoped name.",
+          "Every `--repo` option accepts a short name.",
+        ],
+        optional: { value: {} },
+      },
+    ),
   },
   {
     optional: true,
