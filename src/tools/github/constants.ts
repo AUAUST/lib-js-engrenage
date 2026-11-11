@@ -1,8 +1,12 @@
 import { freeze, keys } from "@auaust/toolkit/object";
 
 import { changesetsCli, engrenage } from "#constants";
+import { stateDirectory } from "#project/config/constants";
 import type { WorkflowSet } from "#tools/github/types/WorkflowSet";
 import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
+
+export const githubSnapshotFile = `${stateDirectory}/github.json` satisfies File;
 
 export const workflowsDirectory = ".github/workflows" satisfies Directory;
 

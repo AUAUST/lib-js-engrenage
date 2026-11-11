@@ -1,3 +1,4 @@
+import { githubSnapshotFile } from "#tools/github/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
@@ -24,6 +25,13 @@ export default {
           } = await import("#tools/github/operations/locateWorkflowFiles");
 
           return locateWorkflowFiles(config);
+        },
+      },
+      "state.github": {
+        title: "GitHub snapshot",
+        generated: true,
+        locate(): FileLocation {
+          return { file: githubSnapshotFile };
         },
       },
     },

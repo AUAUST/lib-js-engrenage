@@ -6,6 +6,7 @@ import eslint from "#bin/engrenage/eslint";
 import eslintFix from "#bin/engrenage/eslintFix";
 import eslintSuppress from "#bin/engrenage/eslintSuppress";
 import gate from "#bin/engrenage/gate";
+import github from "#bin/engrenage/github/index";
 import init from "#bin/engrenage/init";
 import issues from "#bin/engrenage/issues/index";
 import jscpd from "#bin/engrenage/jscpd";
@@ -40,6 +41,7 @@ export default defineGroup({
     "issues": issues,
     "debt": debt,
     "agents": agents,
+    "github": github,
     "pnpm": pnpm,
     "tsc": {
       command: tsc,

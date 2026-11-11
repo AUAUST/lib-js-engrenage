@@ -1,7 +1,10 @@
 // @debt should provide a way to generate re-exports for subdomains
 export {
   createGithubClient,
+  fetchGithubSnapshot,
+  readGithubSnapshot,
   resolveRepository,
+  type GithubSnapshot,
 } from "#tools/github/issues/api/index";
 export {
   checkGithubWrite,

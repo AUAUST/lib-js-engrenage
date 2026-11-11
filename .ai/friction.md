@@ -34,3 +34,4 @@
 - zsh `grep --include=*.ts`: unquoted glob in a search for callers — zsh "no matches found" aborted it; dropped the flag
 - Claude PreToolUse Bash hook: imported a new barrel export before syncing barrels — the hook loads engrenage from source, so `pnpm engrenage sync` itself was blocked; added the barrel lines with Edit
 - Claude PreToolUse Bash hook: user asked to commit skipping the gate — the hook denies gate-skipping commits, and any Bash command whose text names that flag; left the commit to the user
+- `engrenage sync` barrels: re-exported a new operation from the parent `index.ts` before syncing the sub-domain barrel — sync crashed loading the missing export; reverted the re-export, synced, restored it
