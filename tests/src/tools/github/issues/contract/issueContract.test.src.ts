@@ -18,6 +18,10 @@ const access = { repository: "o/r", client: await createGithubClient() };
 
 vi.unstubAllEnvs();
 
+function registry(): Promise<ReadonlyMap<string, string>> {
+  return Promise.resolve(new Map());
+}
+
 function respond(
   json: unknown,
   status = 200,
@@ -765,14 +769,14 @@ describe("checkGithubWrite", () => {
       [draft]: `---\ntitle: x\ntype: Problem\n---\n\n${task}\n## Scope\n\nx\n`,
     });
 
-    await expect(checkGithubWrite(command, project.root, new Map())).resolves.toContain(
-      "Scope",
-    );
+    await expect(
+      checkGithubWrite(command, project.root, registry),
+    ).resolves.toContain("Scope");
 
     project.write(draft, `---\ntitle: x\n---\n\n${task}`);
 
     await expect(
-      checkGithubWrite(command, project.root, new Map()),
+      checkGithubWrite(command, project.root, registry),
     ).resolves.toBeUndefined();
   });
 
@@ -785,7 +789,7 @@ describe("checkGithubWrite", () => {
       checkGithubWrite(
         `gh issue create --title y --body 'free'\n${command}`,
         project.root,
-        new Map(),
+        registry,
       ),
     ).resolves.toContain("Scope");
   });
@@ -795,14 +799,14 @@ describe("checkGithubWrite", () => {
       checkGithubWrite(
         `gh issue create --title x --body-file ${draft}`,
         createTemporaryProject().root,
-        new Map(),
+        registry,
       ),
     ).resolves.toContain("frontmatter");
   });
 
   test("names a missing draft", async () => {
     await expect(
-      checkGithubWrite(command, createTemporaryProject().root, new Map()),
+      checkGithubWrite(command, createTemporaryProject().root, registry),
     ).resolves.toContain(`\`${draft}\` does not exist`);
   });
 });

@@ -7,7 +7,7 @@ export async function resolveRepository(
     repositories,
   }: {
     root: Directory;
-    repositories: ReadonlyMap<string, string>;
+    repositories(): Promise<ReadonlyMap<string, string>>;
   },
   explicit?: string,
 ): Promise<string> {
@@ -16,11 +16,13 @@ export async function resolveRepository(
   }
 
   if (explicit !== undefined) {
-    const registered = repositories.get(explicit);
+    const registry = await repositories();
+
+    const registered = registry.get(explicit);
 
     if (registered === undefined) {
       throw new Error(
-        `Unknown repository short name \`${explicit}\`; registered: ${[...repositories.keys()].join(", ") || "none"}`,
+        `Unknown repository short name \`${explicit}\`; registered: ${[...registry.keys()].join(", ") || "none"}`,
       );
     }
 

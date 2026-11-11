@@ -1,4 +1,5 @@
 import { freeze } from "@auaust/toolkit/object";
+import { once } from "@auaust/toolkit/once";
 
 import { declareSection } from "#foundation/options/index";
 import { githubSchema } from "#tools/github/config/schemas/githubSchema";
@@ -9,23 +10,25 @@ import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
 export const githubSection = declareSection({
   declaration: githubSchema,
   async resolve(input, config: ConfigResolver): Promise<ResolvedGithub> {
-    const [traits, { hasDependency }, { optional }] = await Promise.all([
+    const [traits, { hasDependency }] = await Promise.all([
       config.resolve("traits"),
       config.resolve("environment"),
-      config.resolve("packageJson"),
     ]);
 
-    const resolved = githubSchema.resolve(
-      input,
-      { traits, hasDependency },
-      "github",
-    );
+    const {
+      repositories: configured,
+      ...resolved
+    } = githubSchema.resolve(input, { traits, hasDependency }, "github");
 
-    const repositories = await resolveRegisteredRepositories({
-      root: config.context.root,
-      name: optional.name,
-      dependencies: optional.dependencies,
-      configured: resolved.repositories,
+    const repositories = once(async () => {
+      const { optional } = await config.resolve("packageJson");
+
+      return resolveRegisteredRepositories({
+        root: config.context.root,
+        name: optional.name,
+        dependencies: optional.dependencies,
+        configured,
+      });
     });
 
     return freeze({

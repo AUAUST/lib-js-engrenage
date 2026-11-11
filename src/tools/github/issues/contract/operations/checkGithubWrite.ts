@@ -12,7 +12,7 @@ import type { Directory } from "#types/Directory";
 async function checkWrite(
   write: GithubWrite,
   cwd: Directory,
-  repositories: ReadonlyMap<string, string>,
+  repositories: () => Promise<ReadonlyMap<string, string>>,
 ): Promise<string | undefined> {
   if (write.action === "comment" || write.body === undefined) {
     return;
@@ -63,7 +63,7 @@ async function checkWrite(
 export async function checkGithubWrite(
   command: string,
   cwd: Directory,
-  repositories: ReadonlyMap<string, string>,
+  repositories: () => Promise<ReadonlyMap<string, string>>,
 ): Promise<string | undefined> {
   const writes = parseGithubCommand(command);
 

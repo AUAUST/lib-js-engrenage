@@ -23,7 +23,9 @@ function createRegistry(repositories?: Record<string, string | false>) {
 
   const config = createProjectConfig({
     root,
-    raw: { github: { repositories } },
+    raw: {
+      github: { repositories },
+    },
     configFile: undefined,
   });
 
@@ -36,7 +38,7 @@ describe("repository registry", () => {
 
     const { repositories } = await config.resolve("github");
 
-    expect([...repositories]).toEqual([
+    expect([...(await repositories())]).toEqual([
       ["app", "scope/app"],
       ["lib", "scope/lib-js-lib"],
     ]);
@@ -47,7 +49,7 @@ describe("repository registry", () => {
 
     const { repositories } = await config.resolve("github");
 
-    expect([...repositories]).toEqual([
+    expect([...(await repositories())]).toEqual([
       ["app", "scope/app"],
       ["extra", "o/r"],
     ]);
@@ -65,5 +67,21 @@ describe("repository registry", () => {
     await expect(
       resolveRepository({ root, repositories }, "nope"),
     ).rejects.toThrow("registered: app, lib");
+  });
+
+  test("resolves a full repository without building the registry", async () => {
+    const { root } = createRegistry();
+
+    await expect(
+      resolveRepository(
+        {
+          root,
+          repositories: () => {
+            throw new Error("registry built");
+          },
+        },
+        "o/r",
+      ),
+    ).resolves.toBe("o/r");
   });
 });
