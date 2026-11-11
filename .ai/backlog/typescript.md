@@ -70,13 +70,7 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - why: removed bundler aliases stay in `paths` (only `#` keys are known generated); a removed compiler option stays and `sync --check` passes.
 - want: generated keys recorded, so removals are deleted and checked.
 
-## 13. Barrels are hand-filled and read by index
-
-- sites: `src/tools/typescript/operations/syncBarrels.ts:147`, `:231`
-- why: names travel in a parallel array read by index with a `""` fallback; tooling and tests barrels are never discovered.
-- want: `nameModules` returns module–name pairs; barrels discovered in every environment.
-
-## 14. Tsconfig include misses nested role files
+## 13. Tsconfig include misses nested role files
 
 - site: `src/tools/typescript/operations/produceTsconfigInclude.ts:64`
 - why: role files matched only at the root of tests directories, so deeper declarations miss the dist check.
