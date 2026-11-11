@@ -14,8 +14,12 @@ import {
   type IssueFinding,
   type IssueProtocol,
 } from "#tools/github/issues/contract/index";
+import { headerPlaceholder } from "#tools/github/issues/drafts/constants";
 import { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
+import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
+import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
+import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
 import type { Draft } from "#tools/github/issues/drafts/types/Draft";
 import type { DraftManifest } from "#tools/github/issues/drafts/types/DraftManifest";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
@@ -147,6 +151,45 @@ function checkBody(
   ];
 }
 
+function checkHeader(
+  body: string,
+  contract: IssueContract | undefined,
+  parent: string | undefined,
+): IssueFinding[] {
+  const header = readDraftHeader(body);
+
+  if (header !== undefined && /^#(?:\d|\{)/.test(header)) {
+    return [
+      {
+        rule: "header",
+        message: `The header starts with a reference: \`publish\` generates the ancestor chain \`#<plan> › … › #<parent> · \`, so keep only \`${headerPlaceholder}\`.`,
+      },
+    ];
+  }
+
+  if (contract?.hasHeader !== true || parent === undefined) {
+    return [];
+  }
+
+  if (header === undefined) {
+    return [
+      {
+        rule: "header",
+        message: `\`${parent}\` lists the draft in \`subIssues\` but it has no header line: write \`${headerPlaceholder}\` before the first section.`,
+      },
+    ];
+  }
+
+  return header === headerPlaceholder
+    ? [
+        {
+          rule: "header",
+          message: `The header line is still the placeholder \`${headerPlaceholder}\`: fill in its sections and gist.`,
+        },
+      ]
+    : [];
+}
+
 function findCycles(
   edges: ReadonlyMap<string, readonly string[]>,
 ): readonly (readonly string[])[] {
@@ -186,13 +229,24 @@ export function checkDrafts(
   const findings = new Map<string, IssueFinding[]>();
   const edges = new Map<string, string[]>();
 
-  for (const [stem, draft] of drafts) {
-    const {
-      findings: manifestFindings,
-      meaning,
-      manifest,
-    } = checkManifest(draft, context);
+  const checked = new Map(
+    [...drafts].map(([stem, draft]) => {
+      return [stem, { draft, ...checkManifest(draft, context) }] as const;
+    }),
+  );
 
+  const parents = new Map(
+    [...checked].flatMap(([stem, { manifest }]) => {
+      return listDraftReferences(manifest?.subIssues).map((reference) => {
+        return [reference, stem] as const;
+      });
+    }),
+  );
+
+  for (const [
+    stem,
+    { draft, findings: manifestFindings, meaning, manifest },
+  ] of checked) {
     const references = [
       ...(manifest === undefined ? [] : listRelations(manifest)),
       ...[...stripCode(draft.body).matchAll(/#\{[^{}\s]*\}/g)].map(
@@ -205,6 +259,11 @@ export function checkDrafts(
     findings.set(stem, [
       ...manifestFindings,
       ...checkBody(draft.body, meaning, context.protocol),
+      ...checkHeader(
+        draft.body,
+        meaning === undefined ? undefined : issueContracts[meaning],
+        parents.get(toDraftReference(stem)),
+      ),
       ...references
         .map((reference) => checkReference(reference, stems))
         .filter((finding): finding is IssueFinding => {

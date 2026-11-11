@@ -13,6 +13,7 @@ export { publishIssues } from "#tools/github/issues/drafts/operations/publishIss
 export { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
 export { renderPublishedBody } from "#tools/github/issues/drafts/operations/renderPublishedBody";
 export { resolveDraftsContext } from "#tools/github/issues/drafts/operations/resolveDraftsContext";
+export { resolvePublishedAncestors } from "#tools/github/issues/drafts/operations/resolvePublishedAncestors";
 export { updatePublishedIssue } from "#tools/github/issues/drafts/operations/updatePublishedIssue";
 export { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFieldValue";
 // @end
@@ -34,13 +35,16 @@ export { locateFetchedIssue } from "#tools/github/issues/drafts/utils/locateFetc
 export { mergeDraftBody } from "#tools/github/issues/drafts/utils/mergeDraftBody";
 export { mergeDraftManifest } from "#tools/github/issues/drafts/utils/mergeDraftManifest";
 export { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
+export { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
 export { readIssueManifest } from "#tools/github/issues/drafts/utils/readIssueManifest";
 export { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
+export { renderHeader } from "#tools/github/issues/drafts/utils/renderHeader";
 export { renderRoadmap } from "#tools/github/issues/drafts/utils/renderRoadmap";
 export { resolveDraftNumber } from "#tools/github/issues/drafts/utils/resolveDraftNumber";
 export { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
 export { splitBodySections } from "#tools/github/issues/drafts/utils/splitBodySections";
 export { toDraftBody } from "#tools/github/issues/drafts/utils/toDraftBody";
+export { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
 // @end
 
 // @barrel types

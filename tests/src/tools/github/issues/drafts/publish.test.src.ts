@@ -388,7 +388,7 @@ type: Task
 Nature: Feature
 ---
 
-${taskBody}
+${taskBody.replace("#10 · ", "")}
 `;
 
 async function claimPlanWithExtra(root: string) {
@@ -549,7 +549,7 @@ type: Segment
 subIssues: ["#13"]
 ---
 
-#10 · Goal: the group
+Goal: the group
 `,
     });
 
@@ -601,5 +601,115 @@ subIssues: ["#13"]
     expect(
       listIssueFiles(root, ["10.md", "10.draft.md", "14.md", "14.draft.md"]),
     ).toEqual([]);
+  });
+
+  test("claims a Task without its chain and publishes the same header back", async () => {
+    const published = taskBody.replace(
+      "#10 · Goal: the extra",
+      "#10 › #11 · Pipeline: gist",
+    );
+
+    findIssue(13).body = published;
+
+    const root = createProject();
+
+    await claimIssues(await loadConfig(root), ["13"]);
+
+    expect(read(root, "13.draft.md")).toContain(
+      "---\n\nPipeline: gist\n\n## Context",
+    );
+
+    const { passed } = await publishIssues(await loadConfig(root), ["13"]);
+
+    expect(passed).toBe(true);
+
+    expect(findIssue(13).body).toBe(published);
+  });
+
+  test("renders the chain of a new Task listed in a new Segment under a claimed Plan", async () => {
+    const root = createProject();
+
+    const config = await loadConfig(root);
+
+    await claimIssues(config, ["10"]);
+
+    await config.context.filesystem.write(
+      ".ai/issues/10.draft.md",
+      read(root, "10.draft.md").replace(
+        '  - ref: "#12"',
+        '  - ref: "#{new-group}"\n    gist: the group\n    sections: []\n  - ref: "#12"',
+      ),
+    );
+
+    await config.context.filesystem.write(
+      ".ai/issues/new-group.draft.md",
+      `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nGoal: the group\n`,
+    );
+
+    await config.context.filesystem.write(
+      ".ai/issues/new-step.draft.md",
+      `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the step")}\n`,
+    );
+
+    await config.context.filesystem.flush();
+
+    const { lines, passed } = await publishIssues(await loadConfig(root), [
+      "10",
+      "new-group",
+      "new-step",
+    ]);
+
+    expect({ lines, passed }).toMatchObject({ passed: true });
+
+    const group = [...issues.values()].find(({ title }) => title === "Group");
+    const step = [...issues.values()].find(({ title }) => title === "Step");
+
+    expect(group?.body).toBe("#10 · Goal: the group");
+
+    expect(step?.body.split("\n")[0]).toBe(
+      `#10 › #${group?.number} · Goal: the step`,
+    );
+  });
+
+  test("fails moving a Segment to another Plan without its members' drafts before any request", async () => {
+    const root = createProject();
+
+    const config = await loadConfig(root);
+
+    await claimIssues(config, ["10", "11"]);
+
+    await config.context.filesystem.write(
+      ".ai/issues/10.draft.md",
+      read(root, "10.draft.md").replace(
+        '  - ref: "#11"\n    gist: the segment\n    sections:\n      - Goal\n      - done\n',
+        "",
+      ),
+    );
+
+    await config.context.filesystem.write(
+      ".ai/issues/new-other.draft.md",
+      `---\ntitle: Other\ntype: Plan\nsubIssues:\n  - ref: "#11"\n    gist: the segment\n    sections: []\n---\n\n## Goal\n\ng\n\n## Decisions\n\nd\n`,
+    );
+
+    await config.context.filesystem.flush();
+
+    requests = [];
+
+    const {
+      lines,
+      passed,
+    } = await publishIssues(await loadConfig(root), ["10", "11", "new-other"]);
+
+    expect(passed).toBe(false);
+
+    expect(lines).toEqual([
+      expect.stringMatching(
+        /^11: changes the ancestors of #13 outside the set: claim them/,
+      ),
+    ]);
+
+    expect(requests.filter((request) => !request.startsWith("GET"))).toEqual(
+      [],
+    );
   });
 });

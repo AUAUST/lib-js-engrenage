@@ -6,8 +6,11 @@ import { parseIssueBody } from "#tools/github/issues/contract/index";
 import { findPublishedNumber } from "#tools/github/issues/drafts/utils/findPublishedNumber";
 import { insertSection } from "#tools/github/issues/drafts/utils/insertSection";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
+import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
+import { renderHeader } from "#tools/github/issues/drafts/utils/renderHeader";
 import { renderRoadmap } from "#tools/github/issues/drafts/utils/renderRoadmap";
 import { resolveDraftNumber } from "#tools/github/issues/drafts/utils/resolveDraftNumber";
+import { splitBodySections } from "#tools/github/issues/drafts/utils/splitBodySections";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 import type { RoadmapEntry } from "#tools/github/issues/drafts/types/RoadmapEntry";
@@ -42,11 +45,41 @@ async function listMembers(
   return children.map((child) => `#${child.number}`);
 }
 
+function renderBodyHeader(
+  { body, contract, ancestors }: PublishedDraft,
+  numbers: ReadonlyMap<string, number>,
+) {
+  const header = readDraftHeader(body);
+
+  if (
+    contract?.hasHeader !== true ||
+    header === undefined ||
+    ancestors.length === 0
+  ) {
+    return body;
+  }
+
+  const [, ...sections] = splitBodySections(body);
+
+  return [
+    renderHeader(
+      ancestors.map((reference) => resolveDraftNumber(reference, numbers)),
+      header,
+    ),
+    "",
+    ...sections.flatMap(({ lines }) => lines),
+  ]
+    .join("\n")
+    .trimEnd();
+}
+
 export async function renderPublishedBody(
   publication: Publication,
   draft: PublishedDraft,
 ): Promise<string> {
-  const { contract, manifest, body } = draft;
+  const { contract, manifest } = draft;
+
+  const body = renderBodyHeader(draft, publication.numbers);
 
   if (contract?.subIssues !== "roadmap" || manifest.subIssues === undefined) {
     return body;

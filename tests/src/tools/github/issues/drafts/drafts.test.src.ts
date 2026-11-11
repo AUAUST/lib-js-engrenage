@@ -88,6 +88,8 @@ title: First
 type: Task
 ---
 
+Goal: the first step
+
 ## Context
 
 c
@@ -139,6 +141,8 @@ Nature: null
 subIssues: []
 blockedBy: []
 ---
+
+<sections>: <gist>
 
 ## Context
 
@@ -232,6 +236,24 @@ describe("checkIssues", () => {
       expect.stringMatching(/^new-plan: \*\*Roadmap\*\* is generated/),
       "new-first: ready",
     ]);
+  });
+
+  test("fails a header starting with a reference, naming the generated chain", async () => {
+    const config = await createProject({
+      ".ai/issues/new-plan.draft.md": plan,
+      ".ai/issues/new-first.draft.md": first.replace(
+        "Goal: the first step",
+        "#207 › #212 · Goal: the first step",
+      ),
+    });
+
+    const {
+      lines,
+    } = await checkIssues(config, ["new-plan", "new-first"], "worker");
+
+    expect(lines).toContain(
+      "new-first: The header starts with a reference: `publish` generates the ancestor chain `#<plan> › … › #<parent> · `, so keep only `<sections>: <gist>`.",
+    );
   });
 
   test("reports a cycle through subIssues and blockedBy", async () => {

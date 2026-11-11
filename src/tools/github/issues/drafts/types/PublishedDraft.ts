@@ -10,6 +10,7 @@ export interface PublishedDraft {
   stem: string;
   body: string;
   remote: FetchedIssue | undefined;
+  ancestors: readonly string[];
   readonly draft: Draft;
   manifest: DraftManifest;
   readonly meaning: ContractMeaning | undefined;

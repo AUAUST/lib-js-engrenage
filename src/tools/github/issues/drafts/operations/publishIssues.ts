@@ -18,6 +18,7 @@ import { linkPublishedIssue } from "#tools/github/issues/drafts/operations/linkP
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
 import { renderPublishedBody } from "#tools/github/issues/drafts/operations/renderPublishedBody";
 import { resolveDraftsContext } from "#tools/github/issues/drafts/operations/resolveDraftsContext";
+import { resolvePublishedAncestors } from "#tools/github/issues/drafts/operations/resolvePublishedAncestors";
 import { updatePublishedIssue } from "#tools/github/issues/drafts/operations/updatePublishedIssue";
 import { checkDrafts } from "#tools/github/issues/drafts/utils/checkDrafts";
 import { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
@@ -82,6 +83,7 @@ function toPublished(
     draft,
     body: draft.body,
     remote: undefined,
+    ancestors: [],
     meaning,
     contract,
     manifest: parse(
@@ -183,6 +185,12 @@ export async function publishIssues(
 
   if (conflicts.length > 0) {
     return failed(conflicts);
+  }
+
+  const chains = await resolvePublishedAncestors(publication);
+
+  if (chains.length > 0) {
+    return failed(chains);
   }
 
   for (const draft of drafts.filter(({ stem }) => !isClaimedStem(stem))) {

@@ -1,4 +1,5 @@
 import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
+import { findAncestors } from "#tools/github/issues/contract/operations/findAncestors";
 import { findMissingReferences } from "#tools/github/issues/contract/operations/findMissingReferences";
 import { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
@@ -11,53 +12,8 @@ import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssu
 import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
 import type { IssueAudience } from "#tools/github/issues/contract/types/IssueAudience";
 import type { IssueCheck } from "#tools/github/issues/contract/types/IssueCheck";
-import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
 import type { RelatedIssue } from "#tools/github/issues/contract/types/RelatedIssue";
 import type { Directory } from "#types/Directory";
-
-async function findAncestors(access: IssueAccess, issue: GithubIssue) {
-  const chain: GithubIssue[] = [];
-  const findings: IssueFinding[] = [];
-  const seen = new Set([issue.number]);
-
-  let parent = issue.parent;
-
-  while (parent !== undefined) {
-    if (seen.has(parent)) {
-      findings.push({
-        rule: "ancestor-cycle",
-        message: `Ancestor #${parent}: cyclic nearest-plan chain.`,
-      });
-
-      break;
-    }
-
-    seen.add(parent);
-
-    let ancestor: GithubIssue;
-
-    try {
-      ancestor = await fetchIssue(access, parent);
-    } catch (error) {
-      findings.push({
-        rule: "ancestor-unavailable",
-        message: `Ancestor #${parent}: ${error instanceof Error ? error.message : String(error)}`,
-      });
-
-      break;
-    }
-
-    chain.unshift(ancestor);
-
-    if (ancestor.type === access.protocol.types.plan) {
-      break;
-    }
-
-    parent = ancestor.parent;
-  }
-
-  return { chain, findings };
-}
 
 function relate(
   related: GithubIssue["subIssues"],

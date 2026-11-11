@@ -8,6 +8,7 @@ export { checkIssue } from "#tools/github/issues/contract/operations/checkIssue"
 export { checkIssueTree } from "#tools/github/issues/contract/operations/checkIssueTree";
 export { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
 export { fetchIssueTree } from "#tools/github/issues/contract/operations/fetchIssueTree";
+export { findAncestors } from "#tools/github/issues/contract/operations/findAncestors";
 export { findMissingReferences } from "#tools/github/issues/contract/operations/findMissingReferences";
 export { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
 export { readGithubBody } from "#tools/github/issues/contract/operations/readGithubBody";

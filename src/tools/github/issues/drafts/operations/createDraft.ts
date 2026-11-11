@@ -12,7 +12,10 @@ import {
   type IssueContract,
   type IssueProtocol,
 } from "#tools/github/issues/contract/index";
-import { newDraftPrefix } from "#tools/github/issues/drafts/constants";
+import {
+  headerPlaceholder,
+  newDraftPrefix,
+} from "#tools/github/issues/drafts/constants";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
 import { resolveDraftsContext } from "#tools/github/issues/drafts/operations/resolveDraftsContext";
 import { isSlug } from "#tools/github/issues/drafts/utils/isSlug";
@@ -20,6 +23,7 @@ import { listManifestOptions } from "#tools/github/issues/drafts/utils/listManif
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
 import { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
+import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { RoadmapEntry } from "#tools/github/issues/drafts/types/RoadmapEntry";
@@ -28,10 +32,6 @@ import type { File } from "#types/File";
 interface Placement {
   readonly parent?: string | undefined;
   readonly after?: string | undefined;
-}
-
-function toReference(stem: string) {
-  return /^\d+$/.test(stem) ? `#${stem}` : `#{${stem}}`;
 }
 
 function findMeaning(type: string) {
@@ -93,7 +93,7 @@ function findInsertion(
     return items.length;
   }
 
-  const reference = toReference(after);
+  const reference = toDraftReference(after);
 
   const index = items.findIndex((item) => {
     return readEntryReference(item) === reference;
@@ -143,7 +143,7 @@ async function listInParent(
     isString(type) ? type : undefined,
   );
 
-  const reference = toReference(stem);
+  const reference = toDraftReference(stem);
 
   const entry: RoadmapEntry | string = (
     meaning !== undefined && issueContracts[meaning].subIssues === "roadmap"
@@ -222,10 +222,16 @@ export async function createDraft(
 
   const options = listManifestOptions(target.labels, fields);
 
-  const body = (contract?.sections ?? [])
-    .filter((section) => !(contract?.generated ?? []).includes(section))
-    .map((section) => `## ${section}`)
-    .join("\n\n");
+  const header = placement.parent !== undefined && contract?.hasHeader === true
+    ? [headerPlaceholder]
+    : [];
+
+  const body = [
+    ...header,
+    ...(contract?.sections ?? [])
+      .filter((section) => !(contract?.generated ?? []).includes(section))
+      .map((section) => `## ${section}`),
+  ].join("\n\n");
 
   await listInParent(filesystem, protocol, stem, placement);
 

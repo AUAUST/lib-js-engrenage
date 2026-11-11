@@ -2,7 +2,15 @@ import {
   replaceOutsideCode,
   type IssueContract,
 } from "#tools/github/issues/contract/index";
+import {
+  chainSeparator,
+  headerSeparator,
+} from "#tools/github/issues/drafts/constants";
 import { splitBodySections } from "#tools/github/issues/drafts/utils/splitBodySections";
+
+const chainPattern = new RegExp(
+  String.raw`^#\d+(?:${RegExp.escape(chainSeparator)}#\d+)*(?:${RegExp.escape(headerSeparator)}|[ \t]*(?:\n|$))`,
+);
 
 function rewriteFullReferences(text: string, repository: string) {
   const name = RegExp.escape(repository);
@@ -31,5 +39,8 @@ export function toDraftBody(
     .flatMap(({ lines }) => lines)
     .join("\n");
 
-  return rewriteFullReferences(kept, repository).trim();
+  return rewriteFullReferences(kept, repository)
+    .trim()
+    .replace(chainPattern, "")
+    .trim();
 }

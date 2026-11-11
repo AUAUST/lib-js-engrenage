@@ -43,3 +43,5 @@
 - issue-planning skill §GitHub mechanics: posted `"value":["Improvement"]` for single-select Nature as the example shows — GitHub answers 422 "must be a string option name"; posted a bare string
 - `gh` PreToolUse hook: wrote the body file and ran `gh issue create --body-file` in one command — hook checks the file before the command runs and denies it as missing; wrote the file in a separate call
 - `engrenage sync` barrels: exported new drafts operations from `src/tools/github/index.ts` before sync — sync and the Bash hook (which runs engrenage) crashed on the missing barrel export; added the barrel lines with Edit, then reran sync
+- `gh` PreToolUse hook: `--body-file $S/207.md` with a shell variable — hook reads the path unexpanded and denies it; passed the literal absolute path
+- `engrenage sync`: ran it after adding a module importing a new export through its barrel — sync crashed loading the missing export; added the barrel line by hand, then synced
