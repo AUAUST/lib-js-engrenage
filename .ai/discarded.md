@@ -45,3 +45,4 @@
 - walk check computing the issue-walking handling-table row (#452) — restates the skill's table in code; findings carry their rule instead
 - `parent` and `after` on child drafts: sub-issue order (#323) — order scattered across children; parents' `subIssues` decided in #207
 - `tools/github/drafts` sub-domain only: placement of the planner code (#207) — leaves the mixed domain to a later split; layered `tools/github/issues` namespace chosen
+- @octokit/plugin-paginate-graphql: paginate issue-tree connections (#452) — new bundled dependency for one cursor loop; local loop as in the snapshot fetch

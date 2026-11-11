@@ -10,6 +10,7 @@ import github from "#bin/engrenage/github/index";
 import init from "#bin/engrenage/init";
 import issues from "#bin/engrenage/issues/index";
 import jscpd from "#bin/engrenage/jscpd";
+import planning from "#bin/engrenage/planning/index";
 import pnpm from "#bin/engrenage/pnpm/index";
 import prettier from "#bin/engrenage/prettier";
 import prettierAll from "#bin/engrenage/prettierAll";
@@ -39,6 +40,7 @@ export default defineGroup({
     "structure": structure,
     "gate": gate,
     "issues": issues,
+    "planning": planning,
     "debt": debt,
     "agents": agents,
     "github": github,

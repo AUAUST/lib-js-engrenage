@@ -1,14 +1,12 @@
-import { listIssueCommits, type IssueCommit } from "#tools/git/index";
-import {
-  isMissingResource,
-  resolveCurrentRepository,
-  splitRepository,
-  type GithubAccess,
-} from "#tools/github/issues/api/index";
 import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
+import { findMissingReferences } from "#tools/github/issues/contract/operations/findMissingReferences";
+import { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
+import { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
+import type { IssueCommit } from "#tools/git/index";
+import type { GithubAccess } from "#tools/github/issues/api/index";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
 import type { IssueAudience } from "#tools/github/issues/contract/types/IssueAudience";
 import type { IssueCheck } from "#tools/github/issues/contract/types/IssueCheck";
@@ -58,52 +56,6 @@ async function findAncestors(access: GithubAccess, issue: GithubIssue) {
   }
 
   return { chain, findings };
-}
-
-async function findMissingReferences(
-  { repository, client }: GithubAccess,
-  numbers: readonly number[],
-) {
-  const found = await Promise.all(
-    numbers.map(async (number) => {
-      try {
-        await client.request(
-          "GET /repos/{owner}/{repo}/issues/{issue_number}",
-          { ...splitRepository(repository), issue_number: number },
-        );
-      } catch (error) {
-        if (isMissingResource(error)) {
-          return number;
-        }
-
-        throw error;
-      }
-    }),
-  );
-
-  return found.filter((number) => number !== undefined);
-}
-
-async function listLocalCommits(root: Directory, repository: string) {
-  const local = await resolveCurrentRepository(root);
-
-  return local?.toLowerCase() === repository.toLowerCase()
-    ? listIssueCommits(root)
-    : [];
-}
-
-function findClosingCommits(commits: readonly IssueCommit[]) {
-  const closes = new Map<number, IssueCommit>();
-
-  for (const commit of commits) {
-    for (const number of commit.closes) {
-      if (!closes.has(number)) {
-        closes.set(number, commit);
-      }
-    }
-  }
-
-  return closes;
 }
 
 function relate(

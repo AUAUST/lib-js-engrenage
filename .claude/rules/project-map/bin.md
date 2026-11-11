@@ -7,7 +7,7 @@ paths:
 
 ```
 bin/  (global roles: executable.ts *.ts)
-└─ engrenage{agents{claude{hook} codex{hook} rules skills} github issues pnpm}  Project tooling commands.
+└─ engrenage{agents{claude{hook} codex{hook} rules skills} github issues planning{walk} pnpm}  Project tooling commands.
    ├─ agents{claude{hook} codex{hook} rules skills}  Agent lifecycle and instruction commands.
    │  ├─ claude{hook}  Claude lifecycle commands.
    │  │  └─ hook  Handle Claude lifecycle hook events.
@@ -17,6 +17,8 @@ bin/  (global roles: executable.ts *.ts)
    │  └─ skills  Install shared agent skills.
    ├─ github  Snapshot GitHub metadata of the registered repositories.
    ├─ issues  Check GitHub issues against the issue contract.
+   ├─ planning{walk}  Draft, publish and walk planned GitHub issues.
+   │  └─ walk  Check a walked issue tree.
    └─ pnpm  Package manager maintenance commands.
 ```
 

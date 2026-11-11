@@ -9,8 +9,10 @@ export {
 export {
   checkGithubWrite,
   checkIssue,
+  checkIssueTree,
   findBriefedIssue,
   formatIssueCheck,
+  formatIssueTreeCheck,
   parseGithubCommand,
   parseIssueBody,
   type GithubWrite,
