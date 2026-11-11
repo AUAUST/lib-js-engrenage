@@ -5,6 +5,7 @@ export interface ManifestTarget {
   readonly labels: readonly string[];
   readonly types: readonly {
     readonly name: string;
+    readonly nodeId: string;
     readonly fields: readonly GithubSnapshot["organizations"][string]["fields"][number][];
   }[];
 }

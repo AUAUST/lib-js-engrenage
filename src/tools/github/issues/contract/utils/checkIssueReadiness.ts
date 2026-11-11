@@ -202,10 +202,12 @@ export function checkIssueReadiness(
     if (type === "plan") {
       const expected = issue.subIssues.map(({ number }) => number);
 
-      if (formatChain(parsed.roadmap) !== formatChain(expected)) {
+      const listed = parsed.roadmap.map(({ number }) => number);
+
+      if (formatChain(listed) !== formatChain(expected)) {
         findings.push({
           rule: "roadmap-order",
-          message: `**Roadmap** references ${formatChain(parsed.roadmap)} but the sub-issues are ${formatChain(expected)}: reorder it.`,
+          message: `**Roadmap** references ${formatChain(listed)} but the sub-issues are ${formatChain(expected)}: reorder it.`,
         });
       }
     }

@@ -11,6 +11,9 @@ const sectionPattern = /^## (.+?)\s*$/;
 const itemPattern = /^\d+\.\s+(.*)$/;
 const fencePattern = /^\s*(```|~~~)/;
 const referencePattern = /(?<![\w/&])#(\d+)\b/g;
+const roadmapLinePattern = /^#\d+(?::\s*(.*))?$/;
+const sectionLinkPattern = /^\[(.*)\]\(#[^)]*\)$/;
+const roadmapSeparator = " · ";
 
 function parseHeader(line: string): ParsedIssueBody["header"] {
   const [ancestors = "", ...sections] = line.split(" · ");
@@ -100,6 +103,31 @@ function findReferences(text: string) {
   ];
 }
 
+function parseRoadmapLine(text: string) {
+  const [first = ""] = text.split("\n");
+
+  const rest = roadmapLinePattern.exec(first.trim())?.[1]?.trim() ?? "";
+
+  const separator = rest.lastIndexOf(roadmapSeparator);
+
+  if (separator === -1) {
+    return { gist: rest, sections: [] };
+  }
+
+  return {
+    gist: rest.slice(0, separator).trim(),
+    sections: rest
+      .slice(separator + roadmapSeparator.length)
+      .split(",")
+      .map((section) => {
+        const name = section.trim();
+
+        return sectionLinkPattern.exec(name)?.[1] ?? name;
+      })
+      .filter((name) => name !== ""),
+  };
+}
+
 export function parseIssueBody(body: string): ParsedIssueBody {
   const lines = body.replaceAll("\r\n", "\n").split("\n");
   const [first = "", ...rest] = lines;
@@ -115,7 +143,11 @@ export function parseIssueBody(body: string): ParsedIssueBody {
     roadmap: roadmap === undefined
       ? []
       : parseList(roadmap.content).items.flatMap(({ text }) => {
-          return findReferences(text).slice(0, 1);
+          return findReferences(text)
+            .slice(0, 1)
+            .map((number) => {
+              return { number, ...parseRoadmapLine(text) };
+            });
         }),
     references: findReferences(body),
   };

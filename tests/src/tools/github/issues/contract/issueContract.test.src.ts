@@ -171,6 +171,8 @@ function mockGithub(
         status = 404;
       } else if (rest === "") {
         json = {
+          id: Number(number),
+          node_id: `I${number}`,
           number: Number(number),
           title: "t",
           body: issue.body,
@@ -187,9 +189,13 @@ function mockGithub(
           },
         ];
       } else if (rest === "/sub_issues") {
-        json = issue.subIssues ?? [];
+        json = (issue.subIssues ?? []).map((child) => {
+          return { id: child.number, ...child };
+        });
       } else if (rest === "/dependencies/blocked_by") {
-        json = issue.blockedBy ?? [];
+        json = (issue.blockedBy ?? []).map((blocker) => {
+          return { id: blocker.number, ...blocker };
+        });
       } else if (rest === "/parent") {
         if (issue.parent === undefined) {
           status = 404;
@@ -510,6 +516,8 @@ describe("fetchIssue", () => {
       vi.fn((url: string) => {
         if (url === base) {
           return respond({
+            id: 10,
+            node_id: "I10",
             number: 10,
             title: "t",
             body: task,
@@ -522,6 +530,7 @@ describe("fetchIssue", () => {
           return respond(
             [
               {
+                id: 11,
                 number: 11,
                 state: "open",
               },
@@ -534,7 +543,13 @@ describe("fetchIssue", () => {
         }
 
         if (url === `${base}/sub_issues?page=2`) {
-          return respond([{ number: 12, state: "closed" }]);
+          return respond([
+            {
+              id: 12,
+              number: 12,
+              state: "closed",
+            },
+          ]);
         }
 
         if (url === `${base}/parent`) {

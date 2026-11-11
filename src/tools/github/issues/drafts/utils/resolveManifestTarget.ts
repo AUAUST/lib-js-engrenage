@@ -40,9 +40,10 @@ export function resolveManifestTarget(
     labels: fetched.labels.map(({ name }) => name),
     types: organization.types
       .filter(({ enabled }) => enabled)
-      .map(({ name, pinnedFields }) => {
+      .map(({ name, nodeId, pinnedFields }) => {
         return {
           name,
+          nodeId,
           fields: pinnedFields.map((pinned) => {
             const field = organization.fields.find((candidate) => {
               return candidate.name === pinned;

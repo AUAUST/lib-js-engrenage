@@ -17,7 +17,7 @@ bin/  (global roles: executable.ts *.ts)
    │  └─ skills  Install shared agent skills.
    ├─ github  Snapshot GitHub metadata of the registered repositories.
    ├─ planning{issue walk}  Draft, publish and walk planned GitHub issues.
-   │  ├─ issue  Create and check issue drafts, and check published issues.
+   │  ├─ issue  Create, claim, check and publish issue drafts, and check published issues.
    │  └─ walk  Check a walked issue tree.
    └─ pnpm  Package manager maintenance commands.
 ```

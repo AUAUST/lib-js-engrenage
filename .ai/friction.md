@@ -39,3 +39,7 @@
 - `engrenage sync` barrels: renamed a module a barrel exports — sync crashed importing the stale barrel; renamed the barrel entries by hand, then reran sync
 - `engrenage eslint:fix`: `auaust/name-replacements` autofix renamed `ref`/`refs` to `reference`/`references` — collided into `references_` and shadowed names; renamed by hand
 - `engrenage tsc`: ran after changing a function signature its tests call — reported "All good" while `tsc -b tsconfig.json` reported the test errors; used `tsc -b`
+- `gh` PreToolUse hook: `gh issue edit --body-file 461.md` after `cd` to the scratchpad, then `cat file | gh issue edit --body-file -` — hook resolves relative paths from the project root and rejects piped files; passed an absolute `--body-file` path
+- issue-planning skill §GitHub mechanics: posted `"value":["Improvement"]` for single-select Nature as the example shows — GitHub answers 422 "must be a string option name"; posted a bare string
+- `gh` PreToolUse hook: wrote the body file and ran `gh issue create --body-file` in one command — hook checks the file before the command runs and denies it as missing; wrote the file in a separate call
+- `engrenage sync` barrels: exported new drafts operations from `src/tools/github/index.ts` before sync — sync and the Bash hook (which runs engrenage) crashed on the missing barrel export; added the barrel lines with Edit, then reran sync

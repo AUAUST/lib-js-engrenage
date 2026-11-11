@@ -17,6 +17,10 @@ export interface ParsedIssueBody {
         readonly items: readonly IssueListItem[];
       }
     | undefined;
-  readonly roadmap: readonly number[];
+  readonly roadmap: readonly {
+    readonly number: number;
+    readonly gist: string;
+    readonly sections: readonly string[];
+  }[];
   readonly references: readonly number[];
 }

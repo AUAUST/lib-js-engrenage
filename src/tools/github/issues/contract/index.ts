@@ -28,11 +28,13 @@ export { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBo
 export { parseShellPipelines } from "#tools/github/issues/contract/utils/parseShellPipelines";
 export { readShellOperator } from "#tools/github/issues/contract/utils/readShellOperator";
 export { renderPlanningSheet } from "#tools/github/issues/contract/utils/renderPlanningSheet";
+export { replaceOutsideCode } from "#tools/github/issues/contract/utils/replaceOutsideCode";
 export { stripCode } from "#tools/github/issues/contract/utils/stripCode";
 // @end
 
 // @barrel types
 export type * from "#tools/github/issues/contract/types/ContractMeaning";
+export type * from "#tools/github/issues/contract/types/FetchedIssue";
 export type * from "#tools/github/issues/contract/types/GithubBodySource";
 export type * from "#tools/github/issues/contract/types/GithubIssue";
 export type * from "#tools/github/issues/contract/types/GithubWrite";

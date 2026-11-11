@@ -19,7 +19,12 @@ export {
   type IssueProtocol,
 } from "#tools/github/issues/contract/index";
 export { issueDraftsDirectory } from "#tools/github/issues/drafts/constants";
-export { checkIssues, createDraft } from "#tools/github/issues/drafts/index";
+export {
+  checkIssues,
+  claimIssues,
+  createDraft,
+  publishIssues,
+} from "#tools/github/issues/drafts/index";
 
 // @barrel setup
 export { createWorkflowsStep } from "#tools/github/setup/createWorkflowsStep";

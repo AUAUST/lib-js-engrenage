@@ -8,6 +8,8 @@ export const issueDraftsDirectory = ".ai/issues/" satisfies Directory;
 
 export const draftExtension = ".draft.md";
 
+export const fetchedExtension = ".md";
+
 export const newDraftPrefix = "new-";
 
 export const reservedKeys = freeze([
@@ -26,3 +28,15 @@ export const draftStates = freeze([
 ] as const);
 
 export const claimStates = freeze(["existing"] as const);
+
+export const closeReasonParameters = freeze({
+  "completed": "completed",
+  "not planned": "not_planned",
+  "duplicate": "duplicate",
+} as const) satisfies Readonly<Record<Exclude<(typeof draftStates)[number], "open">, string>>;
+
+export const issueTypeMutation = `mutation($issueId: ID!, $issueTypeId: ID!) {
+  updateIssueIssueType(input: { issueId: $issueId, issueTypeId: $issueTypeId }) {
+    issue { number }
+  }
+}`;

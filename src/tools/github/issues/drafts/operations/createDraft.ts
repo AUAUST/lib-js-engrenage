@@ -16,6 +16,7 @@ import { newDraftPrefix } from "#tools/github/issues/drafts/constants";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
 import { resolveDraftsContext } from "#tools/github/issues/drafts/operations/resolveDraftsContext";
 import { isSlug } from "#tools/github/issues/drafts/utils/isSlug";
+import { listManifestOptions } from "#tools/github/issues/drafts/utils/listManifestOptions";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
 import { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
@@ -219,14 +220,7 @@ export async function createDraft(
     blockedBy: [],
   });
 
-  const options = new Map<string, readonly string[]>([
-    ["labels", target.labels],
-    ...fields
-      .filter(({ options: listed }) => listed.length > 0)
-      .map(({ name, options: listed }) => {
-        return [name, listed.map((option) => option.name)] as const;
-      }),
-  ]);
+  const options = listManifestOptions(target.labels, fields);
 
   const body = (contract?.sections ?? [])
     .filter((section) => !(contract?.generated ?? []).includes(section))
