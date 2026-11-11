@@ -23,4 +23,210 @@ export interface GithubInput {
   repositories?: ({
     [k: string]: (string | false)
   } | undefined)
+  /**
+   * GitHub names of the issue protocol's meanings, which skills and checks name instead.
+   * `engrenage sync agents` fails when the snapshot of `engrenage github fetch` lacks a mapped type, field or option.
+   */
+  protocol?: ({
+    /**
+     * GitHub issue type of each type meaning.
+     */
+    types?: ({
+      /**
+       * Goal, design, decisions and roadmap of a tree of issues.
+       * @default `Plan`
+       */
+      plan?: (string | undefined)
+      /**
+       * Organisational wrapper for items sharing a context, with no work of its own.
+       * @default `Segment`
+       */
+      segment?: (string | undefined)
+      /**
+       * Positive work: something added or improved.
+       * @default `Task`
+       */
+      task?: (string | undefined)
+      /**
+       * Negative work: something wrong, to fix.
+       * @default `Problem`
+       */
+      problem?: (string | undefined)
+      /**
+       * Material kept for its content, never actionable.
+       * @default `Resource`
+       */
+      resource?: (string | undefined)
+      /**
+       * Something to consider, not specified or accepted yet.
+       * @default `Idea`
+       */
+      idea?: (string | undefined)
+    } | undefined)
+    /**
+     * GitHub issue field of each field meaning.
+     */
+    fields?: ({
+      /**
+       * Kind of a task; unset means a generic task.
+       * @default `Nature`
+       */
+      nature?: (string | undefined)
+      /**
+       * Kind of a problem; unset means a generic problem.
+       * @default `Defect`
+       */
+      defect?: (string | undefined)
+      /**
+       * Order against normal work; unset means normal.
+       * @default `Priority`
+       */
+      priority?: (string | undefined)
+      /**
+       * Effort an item takes; unset means normal.
+       * @default `Complexity`
+       */
+      complexity?: (string | undefined)
+      /**
+       * Kind of a resource; unset means unclassified.
+       * @default `Material`
+       */
+      material?: (string | undefined)
+      /**
+       * Reasons not to start an issue, several at once; unset means actionable.
+       * @default `Blockers`
+       */
+      blockers?: (string | undefined)
+    } | undefined)
+    /**
+     * GitHub option of each option meaning, within the field its meaning belongs to.
+     */
+    options?: ({
+      /**
+       * A capability that did not exist.
+       * @default `Feature`
+       */
+      feature?: (string | undefined)
+      /**
+       * Existing behavior made better.
+       * @default `Improvement`
+       */
+      improvement?: (string | undefined)
+      /**
+       * No product change: dependencies, CI, docs, cleanup.
+       * @default `Chore`
+       */
+      chore?: (string | undefined)
+      /**
+       * Behavior is broken.
+       * @default `Bug`
+       */
+      bug?: (string | undefined)
+      /**
+       * Works, but could be cleaner: names, comments, design.
+       * @default `Debt`
+       */
+      debt?: (string | undefined)
+      /**
+       * Works, but too slow or too costly.
+       * @default `Performance`
+       */
+      performance?: (string | undefined)
+      /**
+       * Before any other work.
+       * @default `Urgent`
+       */
+      urgent?: (string | undefined)
+      /**
+       * Before normal work.
+       * @default `High priority`
+       */
+      highPriority?: (string | undefined)
+      /**
+       * After normal work.
+       * @default `Low priority`
+       */
+      lowPriority?: (string | undefined)
+      /**
+       * Small and mechanical, with little context needed.
+       * @default `Trivial`
+       */
+      trivial?: (string | undefined)
+      /**
+       * Requires analysis and consideration, but remains reasonably contained.
+       * @default `Involved`
+       */
+      involved?: (string | undefined)
+      /**
+       * Substantial uncertainty, interacting constraints or dependencies.
+       * @default `Complex`
+       */
+      complex?: (string | undefined)
+      /**
+       * Outside material worth reading: sites, docs, threads.
+       * @default `Reference`
+       */
+      reference?: (string | undefined)
+      /**
+       * Our own normative content: contracts, protocols, formats; kept current.
+       * @default `Specification`
+       */
+      specification?: (string | undefined)
+      /**
+       * An analysis later work draws on: study, comparison, audit, recommendation.
+       * @default `Report`
+       */
+      report?: (string | undefined)
+      /**
+       * Snapshot kept for history; never updated.
+       * @default `Archive`
+       */
+      archive?: (string | undefined)
+      /**
+       * Has **Planning** or **Questions**.
+       * @default `Open questions`
+       */
+      openQuestions?: (string | undefined)
+      /**
+       * Written against code or decisions that changed; refresh before use.
+       * @default `Outdated`
+       */
+      outdated?: (string | undefined)
+      /**
+       * Waits on a person or party outside the tracker.
+       * @default `Awaiting others`
+       */
+      awaitingOthers?: (string | undefined)
+      /**
+       * Postponed on purpose.
+       * @default `Delayed`
+       */
+      delayed?: (string | undefined)
+      /**
+       * Claimed by a session drafting it locally.
+       * @default `Drafting`
+       */
+      drafting?: (string | undefined)
+    } | undefined)
+    /**
+     * GitHub close reason of each close meaning.
+     */
+    closeReasons?: ({
+      /**
+       * Done, usually by a pull request.
+       * @default `completed`
+       */
+      completed?: (("completed" | "not planned" | "duplicate") | undefined)
+      /**
+       * Not done: rejected, obsolete or irrelevant.
+       * @default `not planned`
+       */
+      notPlanned?: (("completed" | "not planned" | "duplicate") | undefined)
+      /**
+       * Duplicate of another issue, linked as its duplicate-of.
+       * @default `duplicate`
+       */
+      duplicate?: (("completed" | "not planned" | "duplicate") | undefined)
+    } | undefined)
+  } | undefined)
 }

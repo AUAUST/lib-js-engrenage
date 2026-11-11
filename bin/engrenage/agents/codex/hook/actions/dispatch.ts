@@ -40,10 +40,13 @@ export default async function (): Promise<void> {
     return;
   }
 
+  const { protocol } = await config.resolve("github");
+
   const reason = await checkAgentDispatch(
     profile.role,
     input.message ?? input.prompt ?? "",
     cwd,
+    protocol,
   );
 
   if (reason !== undefined) {

@@ -1,4 +1,4 @@
-import { githubSnapshotFile } from "#tools/github/constants";
+import { githubSnapshotFile, planningSheetRule } from "#tools/github/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
@@ -37,6 +37,30 @@ export default {
     },
   },
   contributes: {
+    "agents.fillers": [
+      {
+        name: planningSheetRule,
+        async load() {
+          const {
+            fillPlanningSheet,
+          } = await import("#tools/github/operations/fillPlanningSheet");
+
+          return fillPlanningSheet;
+        },
+      },
+    ],
+    "agents.rules": [
+      {
+        name: planningSheetRule,
+        async load() {
+          const {
+            generatePlanningSheetRules,
+          } = await import("#tools/github/operations/generatePlanningSheetRules");
+
+          return generatePlanningSheetRules;
+        },
+      },
+    ],
     "sync.targets": [
       {
         name: "workflows",

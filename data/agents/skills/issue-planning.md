@@ -41,8 +41,8 @@ Outside consultant mode, create and edit issues as local drafts in `.ai/issues/`
 - Start by reading `.ai/issues/`. Other sessions draft there too: resume only the drafts of your task, those the user names or those of the issues you were given.
 - Your drafts are those you created, claimed or resumed. Edit, publish and delete only them, never another session's.
 - Read an issue from `.ai/issues/` when it holds a copy, and fetch it from GitHub only otherwise or when flushing.
-- Claim an issue on its first edit: fetch its body into `<n>.md`, copy it to `<n>.draft.md` and add `Drafting` to its Blockers.
-- When Blockers already has `Drafting` and `.ai/issues/` holds no draft of the issue, another maintainer is drafting it: report it, record `claim: existing` in the draft's frontmatter and keep planning.
+- Claim an issue on its first edit: fetch its body into `<n>.md`, copy it to `<n>.draft.md` and add `drafting` to its `blockers`.
+- When `blockers` already has `drafting` and `.ai/issues/` holds no draft of the issue, another maintainer is drafting it: report it, record `claim: existing` in the draft's frontmatter and keep planning.
 - Reference an issue still to create as `#new-<slug>`.
 - End each round with the drafts it changed and the changes waiting on each open question.
 - Flush when none of your drafts holds a change waiting on an open question, or when the user asks; publish all your drafts in the same flush.
@@ -52,7 +52,7 @@ To flush:
 1. Fetch each claimed issue again. When its body differs from `<n>.md`, merge the remote change into the draft, or ask when the two conflict.
 2. Create the new issues in tree order, replacing each `#new-<slug>` in every draft with its number.
 3. Publish each `<n>.draft.md` body without its frontmatter, with its title.
-4. Remove `Drafting` from each issue you claimed, never from one marked `claim: existing`.
+4. Remove `drafting` from each issue you claimed, never from one marked `claim: existing`.
 5. Report each issue's change from `git diff --no-index <n>.md <n>.draft.md`, then delete each of its files by exact path, never the directory or a pattern.
 
 ## Consultant mode
@@ -64,11 +64,11 @@ The walker runs you as its `planner` subagent: a fallback that keeps code and pl
 - Use the code only to see what exists; answer from what the plan and its issues settle.
 - Judge each deviation before updating any issue:
 
-| Deviation                                                                                          | Handling                                                                                                                                                   |
-| -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Follows the plan's design and decisions, only earlier or elsewhere than the tree says              | Accept it: fold the pulled-forward work out of later issues, edit the issues it makes wrong, and set Blockers `Outdated` on any you cannot refresh at once |
-| Contradicts a decision, shape or contract of the plan or an issue, or decides what they leave open | Reject it: give the walker the gap and what the issue requires, to send back to the worker                                                                 |
-| Seems better than the plan, or shows the plan is wrong                                             | Ask: batch it to the user with your findings and recommendation, and change neither the plan nor the code meanwhile                                        |
+| Deviation                                                                                          | Handling                                                                                                                                                            |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Follows the plan's design and decisions, only earlier or elsewhere than the tree says              | Accept it: fold the pulled-forward work out of later issues, edit the issues it makes wrong, and add `outdated` to the `blockers` of any you cannot refresh at once |
+| Contradicts a decision, shape or contract of the plan or an issue, or decides what they leave open | Reject it: give the walker the gap and what the issue requires, to send back to the worker                                                                          |
+| Seems better than the plan, or shows the plan is wrong                                             | Ask: batch it to the user with your findings and recommendation, and change neither the plan nor the code meanwhile                                                 |
 
 - Send what the plan does not settle back to the walker, batched with your findings and recommendations for the user.
 - Return the answer and become idle; the walker resumes you for the next question.
@@ -94,18 +94,18 @@ The project's decision protocol applies with more latitude to your own questions
 
 ## The tree
 
-| Issue   | What it is                                                             | Its sub-issues                                     |
-| ------- | ---------------------------------------------------------------------- | -------------------------------------------------- |
-| Plan    | A standalone tree's root: goal, design and decisions                   | Its steps, in order                                |
-| Segment | A wrapper with no work of its own, grouping items that share a context | Its members, in any order                          |
-| Task    | Item: positive work, one feature taken from nothing to finished        | When split, its inner steps in order, at any depth |
-| Problem | Item: negative work, something wrong to fix                            | When split, its inner steps in order, at any depth |
+| Issue     | What it is                                                             | Its sub-issues                                     |
+| --------- | ---------------------------------------------------------------------- | -------------------------------------------------- |
+| `plan`    | A standalone tree's root: goal, design and decisions                   | Its steps, in order                                |
+| `segment` | A wrapper with no work of its own, grouping items that share a context | Its members, in any order                          |
+| `task`    | Item: positive work, one feature taken from nothing to finished        | When split, its inner steps in order, at any depth |
+| `problem` | Item: negative work, something wrong to fix                            | When split, its inner steps in order, at any depth |
 
-The issue type says what an issue is: titles carry no prefix. A Task or Problem title is its result: `<area>: <what it does>`.
+The issue type says what an issue is: titles carry no prefix. A `task` or `problem` title is its result: `<area>: <what it does>`.
 
 An issue with open sub-issues is worked through them: its open sub-issues first, then its own work, then it closes.
 
-Proposals are Idea issues the plan relates to, never sub-issues. Before a plan or item closes, move the facts worth keeping to their owner, a Specification or an Archive the plan relates to.
+Proposals are `idea` issues the plan relates to, never sub-issues. Before a plan or item closes, move the facts worth keeping to their owner, a `specification` or an `archive` the plan relates to.
 
 ## Contract
 
@@ -165,7 +165,7 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 
 **Planning** holds breakdown or design you have not finished; **Questions** holds what the user owes. Both are the only places uncertainty lives: drop each once empty. **Steps** hold actionable work only.
 
-### Plan
+### `plan`
 
 ```markdown
 ## Goal
@@ -201,7 +201,7 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 - <What investigation could not settle for the whole plan: the findings and the candidate answers.>
 ```
 
-### Segment
+### `segment`
 
 ```markdown
 #<plan> › … › #<parent> · <section>: <gist>
@@ -227,7 +227,7 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 - <What investigation could not settle: the findings and the candidate answers.>
 ```
 
-### Task and Problem
+### `task` and `problem`
 
 ```markdown
 #<plan> › … › #<parent> · <section>: <gist>
@@ -281,16 +281,16 @@ While an issue's design is open, write what is settled and put the rest under **
 
 ## Fields
 
-| Field                     | Set when                                                                                  | Effect                       |
-| ------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------- |
-| Blockers `Open questions` | Written together with a **Planning** or **Questions** section; cleared once both are gone | The walker refuses the issue |
-| Complexity `Complex`      | The work is broad or delicate                                                             | Higher dispatch effort       |
-| Complexity `Trivial`      | The work is small and mechanical                                                          | Lower dispatch effort        |
+| Field                      | Set when                                                                                  | Effect                       |
+| -------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------- |
+| `blockers` `openQuestions` | Written together with a **Planning** or **Questions** section; cleared once both are gone | The walker refuses the issue |
+| `complexity` `complex`     | The work is broad or delicate                                                             | Higher dispatch effort       |
+| `complexity` `trivial`     | The work is small and mechanical                                                          | Lower dispatch effort        |
 
 ## GitHub mechanics
 
 - Create issues with `gh issue create` and edit them with `gh issue edit <n>`, passing bodies on standard input (`--body-file -`).
 - Set the type through GraphQL once the issue exists: `gh api graphql -f query='mutation{updateIssueIssueType(input:{issueId:"<issue node id>",issueTypeId:"<type node id>"}){issue{number}}}'`, with the type ids from `organization(login:"<org>"){issueTypes(first:20){nodes{id name}}}`. The REST `PATCH … -f type=` is ignored silently.
-- Set a field with `gh api -X POST repos/{owner}/{repo}/issues/<n>/issue-field-values --input -` and `{"issue_field_values":[{"field_id":<id>,"value":["Open questions"]}]}` on standard input, values being option names, never option ids: one name for a single-select field such as Complexity, an array of names for a multi-select one such as Blockers; the field id comes from `gh api orgs/{org}/issue-fields`. Post every value the field must keep, read from `gh api repos/{owner}/{repo}/issues/<n>/issue-field-values`. Clear it with `gh api -X DELETE repos/{owner}/{repo}/issues/<n>/issue-field-values/<id>`; to remove one value, clear the field and post the values left, if any.
+- Set a field with `gh api -X POST repos/{owner}/{repo}/issues/<n>/issue-field-values --input -` and `{"issue_field_values":[{"field_id":<id>,"value":["<option name>"]}]}` on standard input, values being option names, never option ids: one name for a single-select field such as `complexity`, an array of names for a multi-select one such as `blockers`; the field id comes from `gh api orgs/{org}/issue-fields`. Post every value the field must keep, read from `gh api repos/{owner}/{repo}/issues/<n>/issue-field-values`. Clear it with `gh api -X DELETE repos/{owner}/{repo}/issues/<n>/issue-field-values/<id>`; to remove one value, clear the field and post the values left, if any.
 - Sub-issues take the child's database `id`, not its number, and keep insertion order, so attach them in order: `gh api repos/{owner}/{repo}/issues/<parent>/sub_issues -F sub_issue_id=$(gh api repos/{owner}/{repo}/issues/<child> --jq .id)`.
 - Set a prerequisite outside tree order with `gh api -X POST repos/{owner}/{repo}/issues/<n>/dependencies/blocked_by -F issue_id=<database id>`.

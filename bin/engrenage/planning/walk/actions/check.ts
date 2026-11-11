@@ -14,12 +14,13 @@ export default async function (
 
   const config = await loadValidatedConfig(root);
 
-  const { repositories } = await config.resolve("github");
+  const { repositories, protocol } = await config.resolve("github");
 
   const check = await checkIssueTree(
     {
       repository: await resolveRepository({ root, repositories }, repo),
       client: await createGithubClient(),
+      protocol,
     },
     number,
     {

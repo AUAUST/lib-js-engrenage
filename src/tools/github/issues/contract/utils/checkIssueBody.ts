@@ -2,9 +2,12 @@ import {
   issueContracts,
   segmentForbiddenSections,
 } from "#tools/github/issues/contract/constants";
+import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import type { IssueContract } from "#tools/github/issues/contract/types/IssueContract";
 import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
+import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
+import type { IssueType } from "#tools/github/issues/contract/types/IssueType";
 
 const pendingPlanningPatterns = [
   /^settle\b/i,
@@ -13,17 +16,17 @@ const pendingPlanningPatterns = [
 
 type ContractType = keyof typeof issueContracts;
 
-function isContractType(type: string): type is ContractType {
+function isContractType(type: IssueType): type is ContractType {
   return type in issueContracts;
 }
 
 function guessType(sectionNames: readonly string[]) {
   if (sectionNames.includes("Goal")) {
-    return "Plan" satisfies ContractType;
+    return "plan" satisfies ContractType;
   }
 
   return sectionNames.includes("Steps")
-    ? ("Task" satisfies ContractType)
+    ? ("task" satisfies ContractType)
     : undefined;
 }
 
@@ -41,9 +44,9 @@ function getRank(contract: IssueContract, name: string) {
 
 function resolveContractType(
   sectionNames: readonly string[],
-  type: string | undefined,
+  type: IssueType | undefined,
 ) {
-  if (type === "Resource" || type === "Idea") {
+  if (type === "resource" || type === "idea") {
     return;
   }
 
@@ -55,28 +58,34 @@ function resolveContractType(
 export function checkIssueBody(
   body: string,
   type: string | undefined,
+  protocol: IssueProtocol,
 ): IssueFinding[] {
   const parsed = parseIssueBody(body);
   const names = parsed.sections.map(({ name }) => name);
-  const contractType = resolveContractType(names, type);
+
+  const contractType = resolveContractType(
+    names,
+    findTypeMeaning(protocol, type),
+  );
 
   if (contractType === undefined) {
     return [];
   }
 
   const contract: IssueContract = issueContracts[contractType];
+  const typeName = protocol.types[contractType];
   const findings: IssueFinding[] = [];
 
   let highest: { rank: number; name: string } | undefined;
 
   for (const name of names) {
     if (
-      contractType === "Segment" &&
+      contractType === "segment" &&
       (segmentForbiddenSections as readonly string[]).includes(name)
     ) {
       findings.push({
         rule: "segment-section",
-        message: `A Segment has no **${name}**: remove it and write it in the sub-issue that owns it.`,
+        message: `A ${typeName} has no **${name}**: remove it and write it in the sub-issue that owns it.`,
       });
 
       continue;
@@ -87,7 +96,7 @@ export function checkIssueBody(
     if (rank === undefined) {
       findings.push({
         rule: "unknown-section",
-        message: `**${name}** is not a section of a ${contractType}: remove it, or move its content into ${contract.sections
+        message: `**${name}** is not a section of a ${typeName}: remove it, or move its content into ${contract.sections
           .map((section) => {
             return `**${section}**`;
           })
@@ -100,7 +109,7 @@ export function checkIssueBody(
     if (highest !== undefined && rank < highest.rank) {
       findings.push({
         rule: "section-order",
-        message: `**${name}** comes after **${highest.name}**: order the sections of a ${contractType} as ${contract.sections.join(", ")}.`,
+        message: `**${name}** comes after **${highest.name}**: order the sections of a ${typeName} as ${contract.sections.join(", ")}.`,
       });
     } else {
       highest = { rank, name };

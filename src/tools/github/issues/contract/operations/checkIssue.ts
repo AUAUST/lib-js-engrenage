@@ -6,15 +6,15 @@ import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIs
 import { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import type { IssueCommit } from "#tools/git/index";
-import type { GithubAccess } from "#tools/github/issues/api/index";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
+import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
 import type { IssueAudience } from "#tools/github/issues/contract/types/IssueAudience";
 import type { IssueCheck } from "#tools/github/issues/contract/types/IssueCheck";
 import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
 import type { RelatedIssue } from "#tools/github/issues/contract/types/RelatedIssue";
 import type { Directory } from "#types/Directory";
 
-async function findAncestors(access: GithubAccess, issue: GithubIssue) {
+async function findAncestors(access: IssueAccess, issue: GithubIssue) {
   const chain: GithubIssue[] = [];
   const findings: IssueFinding[] = [];
   const seen = new Set([issue.number]);
@@ -48,7 +48,7 @@ async function findAncestors(access: GithubAccess, issue: GithubIssue) {
 
     chain.unshift(ancestor);
 
-    if (ancestor.type === "Plan") {
+    if (ancestor.type === access.protocol.types.plan) {
       break;
     }
 
@@ -72,7 +72,7 @@ function relate(
 }
 
 export async function checkIssue(
-  access: GithubAccess,
+  access: IssueAccess,
   number: number,
   audience: IssueAudience = "worker",
   { dispatch = false, root }: { dispatch?: boolean; root?: Directory } = {},
@@ -96,6 +96,7 @@ export async function checkIssue(
     const findings = checkIssueReadiness(
       {
         issue,
+        protocol: access.protocol,
         parsed,
         ancestors: [],
         missingReferences: [],
@@ -117,10 +118,13 @@ export async function checkIssue(
   );
 
   findings.push(
-    ...(audience === "worker" ? checkIssueBody(issue.body, issue.type) : []),
+    ...(audience === "worker"
+      ? checkIssueBody(issue.body, issue.type, access.protocol)
+      : []),
     ...checkIssueReadiness(
       {
         issue,
+        protocol: access.protocol,
         parsed,
         ancestors,
         missingReferences,
@@ -141,10 +145,11 @@ export async function checkIssue(
       );
 
       const blocked = [
-        ...checkIssueBody(ancestor.body, ancestor.type),
+        ...checkIssueBody(ancestor.body, ancestor.type, access.protocol),
         ...checkIssueReadiness(
           {
             issue: ancestor,
+            protocol: access.protocol,
             parsed: body,
             ancestors: ancestors.slice(0, index),
             missingReferences: missing,

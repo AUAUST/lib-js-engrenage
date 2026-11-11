@@ -35,3 +35,4 @@
 - Claude PreToolUse Bash hook: imported a new barrel export before syncing barrels — the hook loads engrenage from source, so `pnpm engrenage sync` itself was blocked; added the barrel lines with Edit
 - Claude PreToolUse Bash hook: user asked to commit skipping the gate — the hook denies gate-skipping commits, and any Bash command whose text names that flag; left the commit to the user
 - `engrenage sync` barrels: re-exported a new operation from the parent `index.ts` before syncing the sub-domain barrel — sync crashed loading the missing export; reverted the re-export, synced, restored it
+- Claude PreToolUse Bash hook: removed contract constants mid-refactor — the hook runs engrenage from source, so a Bash call naming GitHub paths failed on the missing export; finished the importers with Write/Edit

@@ -16,6 +16,7 @@ export {
   parseGithubCommand,
   parseIssueBody,
   type GithubWrite,
+  type IssueProtocol,
 } from "#tools/github/issues/contract/index";
 
 // @barrel setup
@@ -28,6 +29,8 @@ export { githubSection } from "#tools/github/config/sections/githubSection";
 // @end
 
 // @barrel operations
+export { fillPlanningSheet } from "#tools/github/operations/fillPlanningSheet";
+export { generatePlanningSheetRules } from "#tools/github/operations/generatePlanningSheetRules";
 export { locateWorkflowFiles } from "#tools/github/operations/locateWorkflowFiles";
 export { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 export { renderWorkflowSet } from "#tools/github/operations/renderWorkflowSet";

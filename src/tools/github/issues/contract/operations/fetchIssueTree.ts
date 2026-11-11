@@ -17,10 +17,9 @@ import {
 import { validate } from "#foundation/options/index";
 import {
   splitRepository,
-  type GithubAccess,
   type GithubClient,
 } from "#tools/github/issues/api/index";
-import { blockersField } from "#tools/github/issues/contract/constants";
+import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
 import type { IssueTree } from "#tools/github/issues/contract/types/IssueTree";
 
 const pageSize = 25;
@@ -159,7 +158,11 @@ async function readConnection(
   return nodes;
 }
 
-function readAncestors(parent: unknown, number: number): readonly number[] {
+function readAncestors(
+  parent: unknown,
+  number: number,
+  plan: string,
+): readonly number[] {
   const chain: number[] = [];
 
   let next = parent;
@@ -169,7 +172,7 @@ function readAncestors(parent: unknown, number: number): readonly number[] {
 
     chain.unshift(ancestor.number);
 
-    if (ancestor.issueType?.name === "Plan") {
+    if (ancestor.issueType?.name === plan) {
       break;
     }
 
@@ -181,7 +184,7 @@ function readAncestors(parent: unknown, number: number): readonly number[] {
 
 // @debt sub-issues and blocking issues from another repository are identified by their number alone, as in this repository
 async function buildTree(
-  access: GithubAccess,
+  access: IssueAccess,
   raw: unknown,
   parent: number | undefined,
 ): Promise<IssueTree> {
@@ -209,7 +212,7 @@ async function buildTree(
 
   const blockers = fieldValues
     .map((value) => validate(fieldValueSchema, value, `fields of ${label}`))
-    .filter(({ field }) => field?.name === blockersField)
+    .filter(({ field }) => field?.name === access.protocol.fields.blockers)
     .flatMap(({ options = [] }) => options.map(({ name }) => name));
 
   return {
@@ -238,7 +241,7 @@ async function buildTree(
 }
 
 async function buildSubIssues(
-  access: GithubAccess,
+  access: IssueAccess,
   node: InferOutput<typeof issueSchema>,
 ): Promise<readonly IssueTree[]> {
   if (node.subIssues === undefined) {
@@ -278,7 +281,7 @@ async function buildSubIssues(
 }
 
 export async function fetchIssueTree(
-  access: GithubAccess,
+  access: IssueAccess,
   number: number,
 ): Promise<{
   readonly tree: IssueTree;
@@ -295,7 +298,11 @@ export async function fetchIssueTree(
   const raw = validate(treeSchema, response, `issue tree of #${number}`)
     .repository.issue;
 
-  const ancestors = readAncestors(raw.parent, number);
+  const ancestors = readAncestors(
+    raw.parent,
+    number,
+    access.protocol.types.plan,
+  );
 
   return {
     tree: await buildTree(access, raw, ancestors.at(-1)),

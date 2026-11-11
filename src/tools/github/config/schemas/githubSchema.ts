@@ -13,6 +13,7 @@ import {
 
 import { declare, declareObject } from "#foundation/options/index";
 import { workflowSetNames } from "#tools/github/constants";
+import { issueProtocolSchema } from "#tools/github/issues/contract/index";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 import type { ResolvedTraits } from "#project/presets/index";
 import type { PackageName } from "#types/PackageName";
@@ -55,9 +56,12 @@ export const githubSchema = declareObject(
           "Adds to or replaces the current package and its installed same-scope dependencies, each registered under its unscoped name.",
           "Every `--repo` option accepts a short name.",
         ],
-        optional: { value: {} },
+        optional: {
+          value: {},
+        },
       },
     ),
+    protocol: issueProtocolSchema,
   },
   {
     optional: true,

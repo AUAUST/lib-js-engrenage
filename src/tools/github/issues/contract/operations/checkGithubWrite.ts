@@ -7,12 +7,14 @@ import { readGithubBody } from "#tools/github/issues/contract/operations/readGit
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { parseGithubCommand } from "#tools/github/issues/contract/utils/parseGithubCommand";
 import type { GithubWrite } from "#tools/github/issues/contract/types/GithubWrite";
+import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
 import type { Directory } from "#types/Directory";
 
 async function checkWrite(
   write: GithubWrite,
   cwd: Directory,
   repositories: () => Promise<ReadonlyMap<string, string>>,
+  protocol: IssueProtocol,
 ): Promise<string | undefined> {
   if (write.action === "comment" || write.body === undefined) {
     return;
@@ -42,6 +44,7 @@ async function checkWrite(
           write.repository,
         ),
         client: await createGithubClient(),
+        protocol,
       },
       write.number,
     );
@@ -49,7 +52,7 @@ async function checkWrite(
     type = issue.type;
   }
 
-  const findings = checkIssueBody(body, type);
+  const findings = checkIssueBody(body, type, protocol);
 
   return findings.length === 0
     ? undefined
@@ -64,12 +67,13 @@ export async function checkGithubWrite(
   command: string,
   cwd: Directory,
   repositories: () => Promise<ReadonlyMap<string, string>>,
+  protocol: IssueProtocol,
 ): Promise<string | undefined> {
   const writes = parseGithubCommand(command);
 
   const reasons = await Promise.all(
     writes.map(async (write) => {
-      const reason = await checkWrite(write, cwd, repositories);
+      const reason = await checkWrite(write, cwd, repositories, protocol);
 
       return reason === undefined
         ? undefined

@@ -5,12 +5,19 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
+import { issueProtocolSchema } from "#tools/github/issues/contract/config/schemas/issueProtocolSchema";
 import { checkIssueTree } from "#tools/github/issues/contract/operations/checkIssueTree";
 import { formatIssueTreeCheck } from "#tools/github/issues/contract/utils/formatIssueTreeCheck";
 
 vi.stubEnv("GH_TOKEN", "t");
 
-const access = { repository: "o/r", client: await createGithubClient() };
+const protocol = issueProtocolSchema.resolve(undefined, {}, "protocol");
+
+const access = {
+  repository: "o/r",
+  client: await createGithubClient(),
+  protocol,
+};
 
 vi.unstubAllEnvs();
 

@@ -79,10 +79,17 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
   await dispatch();
 
   expect(checkIssue).toHaveBeenCalledWith(
-    { repository: "o/r", client: expect.anything() },
+    {
+      repository: "o/r",
+      client: expect.anything(),
+      protocol: expect.anything(),
+    },
     1,
     "worker",
-    { dispatch: true, root: process.cwd() },
+    {
+      dispatch: true,
+      root: process.cwd(),
+    },
   );
 
   vi.mocked(readHookPayload).mockResolvedValue({

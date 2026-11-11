@@ -1,3 +1,3 @@
-import type { issueTypes } from "#tools/github/issues/contract/constants";
+import type { typeMeanings } from "#tools/github/issues/contract/constants";
 
-export type IssueType = (typeof issueTypes)[number];
+export type IssueType = keyof typeof typeMeanings;

@@ -24,9 +24,14 @@ export default async function (): Promise<void> {
 
   const config = await loadValidatedConfig(cwd);
 
-  const { repositories } = await config.resolve("github");
+  const { repositories, protocol } = await config.resolve("github");
 
-  const reason = await checkGithubWrite(shellCommand, cwd, repositories);
+  const reason = await checkGithubWrite(
+    shellCommand,
+    cwd,
+    repositories,
+    protocol,
+  );
 
   if (reason !== undefined) {
     return void denyToolUse(reason);

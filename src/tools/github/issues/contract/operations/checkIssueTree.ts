@@ -10,7 +10,7 @@ import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIs
 import { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import type { IssueCommit } from "#tools/git/index";
-import type { GithubAccess } from "#tools/github/issues/api/index";
+import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
 import type { IssueTree } from "#tools/github/issues/contract/types/IssueTree";
 import type { IssueTreeCheck } from "#tools/github/issues/contract/types/IssueTreeCheck";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
@@ -27,14 +27,17 @@ interface PlacedIssue {
 function placeInWalkOrder(
   tree: IssueTree,
   ancestors: readonly number[],
+  plan: string,
   depth = 0,
 ): PlacedIssue[] {
-  const below = tree.issue.type === "Plan"
+  const below = tree.issue.type === plan
     ? [tree.issue.number]
     : [...ancestors, tree.issue.number];
 
   return [
-    ...tree.subIssues.flatMap((sub) => placeInWalkOrder(sub, below, depth + 1)),
+    ...tree.subIssues.flatMap((sub) => {
+      return placeInWalkOrder(sub, below, plan, depth + 1);
+    }),
     {
       tree,
       parsed: parseIssueBody(tree.issue.body),
@@ -52,7 +55,7 @@ function isClosed(
 }
 
 export async function checkIssueTree(
-  access: GithubAccess,
+  access: IssueAccess,
   number: number,
   { root }: { root?: Directory } = {},
 ): Promise<IssueTreeCheck> {
@@ -63,7 +66,7 @@ export async function checkIssueTree(
 
   const closes = findClosingCommits(commits);
 
-  const placed = placeInWalkOrder(tree, ancestors);
+  const placed = placeInWalkOrder(tree, ancestors, access.protocol.types.plan);
 
   const known = new Set([
     ...ancestors,
@@ -96,10 +99,11 @@ export async function checkIssueTree(
         findings: isClosed(issue, closes)
           ? []
           : [
-              ...checkIssueBody(issue.body, issue.type),
+              ...checkIssueBody(issue.body, issue.type, access.protocol),
               ...checkIssueReadiness(
                 {
                   issue,
+                  protocol: access.protocol,
                   parsed,
                   ancestors: chain,
                   missingReferences: parsed.references.filter((reference) => {

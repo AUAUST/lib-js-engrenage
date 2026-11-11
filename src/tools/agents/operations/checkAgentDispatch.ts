@@ -2,6 +2,7 @@ import {
   checkIssue,
   createGithubClient,
   findBriefedIssue,
+  type IssueProtocol,
 } from "#tools/github/index";
 import type { Directory } from "#types/Directory";
 
@@ -9,6 +10,7 @@ export async function checkAgentDispatch(
   role: string,
   brief: string,
   root: Directory,
+  protocol: IssueProtocol,
 ): Promise<string | undefined> {
   if (role !== "worker" && role !== "debugger") {
     return;
@@ -26,6 +28,7 @@ export async function checkAgentDispatch(
     {
       repository: issue.repository,
       client: await createGithubClient(),
+      protocol,
     },
     issue.number,
     role,

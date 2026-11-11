@@ -12,11 +12,10 @@ import { validate } from "#foundation/options/index";
 import {
   isMissingResource,
   splitRepository,
-  type GithubAccess,
   type GithubClient,
 } from "#tools/github/issues/api/index";
-import { blockersField } from "#tools/github/issues/contract/constants";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
+import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
 
 const stateSchema = picklist(["open", "closed"]);
 
@@ -60,7 +59,7 @@ async function fetchParent(
 }
 
 export async function fetchIssue(
-  { repository, client }: GithubAccess,
+  { repository, client, protocol }: IssueAccess,
   number: number,
 ): Promise<GithubIssue> {
   const route = { ...splitRepository(repository), issue_number: number };
@@ -85,7 +84,9 @@ export async function fetchIssue(
   const checked = validate(issueSchema, issue.data, `issue #${number}`);
 
   const blockers = validate(fieldValuesSchema, fields, `fields of #${number}`)
-    .filter(({ issue_field_name }) => issue_field_name === blockersField)
+    .filter(({ issue_field_name }) => {
+      return issue_field_name === protocol.fields.blockers;
+    })
     .flatMap(({ multi_select_options = [] }) => {
       return multi_select_options.map(({ name }) => name);
     });

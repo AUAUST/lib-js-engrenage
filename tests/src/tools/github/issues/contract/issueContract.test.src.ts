@@ -4,6 +4,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
+import { issueProtocolSchema } from "#tools/github/issues/contract/config/schemas/issueProtocolSchema";
 import { checkGithubWrite } from "#tools/github/issues/contract/operations/checkGithubWrite";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
@@ -14,7 +15,13 @@ import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBo
 
 vi.stubEnv("GH_TOKEN", "t");
 
-const access = { repository: "o/r", client: await createGithubClient() };
+const protocol = issueProtocolSchema.resolve(undefined, {}, "protocol");
+
+const access = {
+  repository: "o/r",
+  client: await createGithubClient(),
+  protocol,
+};
 
 vi.unstubAllEnvs();
 
@@ -73,11 +80,15 @@ describe("parseIssueBody", () => {
 
 describe("checkIssueBody", () => {
   test("accepts a task", () => {
-    expect(checkIssueBody(task, "Task")).toEqual([]);
+    expect(checkIssueBody(task, "Task", protocol)).toEqual([]);
   });
 
   test("rejects a Scope section on a task, naming it", () => {
-    const findings = checkIssueBody(`${task}\n## Scope\n\nx\n`, "Task");
+    const findings = checkIssueBody(
+      `${task}\n## Scope\n\nx\n`,
+      "Task",
+      protocol,
+    );
 
     expect(findings).toMatchObject([
       { rule: "unknown-section", message: expect.stringContaining("Scope") },
@@ -86,16 +97,20 @@ describe("checkIssueBody", () => {
 
   test("rejects steps on a segment", () => {
     expect(
-      checkIssueBody("## Context\n\nx\n\n## Steps\n\n1. Do.\n", "Segment"),
+      checkIssueBody(
+        "## Context\n\nx\n\n## Steps\n\n1. Do.\n",
+        "Segment",
+        protocol,
+      ),
     ).toMatchObject([{ rule: "segment-section" }]);
   });
 
   test("leaves an untyped free-form body unchecked, unlike a Segment", () => {
     const body = "## Context\n\nx\n\n## Direction\n\ny\n";
 
-    expect(checkIssueBody(body, undefined)).toEqual([]);
+    expect(checkIssueBody(body, undefined, protocol)).toEqual([]);
 
-    expect(checkIssueBody(body, "Segment")).toMatchObject([
+    expect(checkIssueBody(body, "Segment", protocol)).toMatchObject([
       {
         rule: "unknown-section",
         message: expect.stringContaining("Direction"),
@@ -104,7 +119,11 @@ describe("checkIssueBody", () => {
   });
 
   test("still checks an untyped body with steps as an item", () => {
-    const findings = checkIssueBody(`${task}\n## Scope\n\nx\n`, undefined);
+    const findings = checkIssueBody(
+      `${task}\n## Scope\n\nx\n`,
+      undefined,
+      protocol,
+    );
 
     expect(findings).toMatchObject([
       { rule: "unknown-section", message: expect.stringContaining("Scope") },
@@ -115,6 +134,7 @@ describe("checkIssueBody", () => {
     const findings = checkIssueBody(
       "## Context\n\nx\n\n## Steps\n\n1. Create the tasks as sub-issues.\n\n## Tests\n\n- t\n",
       undefined,
+      protocol,
     );
 
     expect(findings).toMatchObject([
@@ -770,13 +790,13 @@ describe("checkGithubWrite", () => {
     });
 
     await expect(
-      checkGithubWrite(command, project.root, registry),
+      checkGithubWrite(command, project.root, registry, protocol),
     ).resolves.toContain("Scope");
 
     project.write(draft, `---\ntitle: x\n---\n\n${task}`);
 
     await expect(
-      checkGithubWrite(command, project.root, registry),
+      checkGithubWrite(command, project.root, registry, protocol),
     ).resolves.toBeUndefined();
   });
 
@@ -790,6 +810,7 @@ describe("checkGithubWrite", () => {
         `gh issue create --title y --body 'free'\n${command}`,
         project.root,
         registry,
+        protocol,
       ),
     ).resolves.toContain("Scope");
   });
@@ -800,13 +821,19 @@ describe("checkGithubWrite", () => {
         `gh issue create --title x --body-file ${draft}`,
         createTemporaryProject().root,
         registry,
+        protocol,
       ),
     ).resolves.toContain("frontmatter");
   });
 
   test("names a missing draft", async () => {
     await expect(
-      checkGithubWrite(command, createTemporaryProject().root, registry),
+      checkGithubWrite(
+        command,
+        createTemporaryProject().root,
+        registry,
+        protocol,
+      ),
     ).resolves.toContain(`\`${draft}\` does not exist`);
   });
 });

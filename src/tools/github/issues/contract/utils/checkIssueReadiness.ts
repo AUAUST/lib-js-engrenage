@@ -1,19 +1,22 @@
+import { keys } from "@auaust/toolkit/object";
+
 import {
-  blockersField,
   debuggerBlockingOptions,
   issueContracts,
-  openQuestionsOption,
   planningSection,
   questionsSection,
 } from "#tools/github/issues/contract/constants";
+import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
 import type { IssueCommit } from "#tools/git/index";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
 import type { IssueAudience } from "#tools/github/issues/contract/types/IssueAudience";
 import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
+import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
 interface ReadinessContext {
   readonly issue: GithubIssue;
+  readonly protocol: IssueProtocol;
   readonly parsed: ParsedIssueBody;
   readonly ancestors: readonly number[];
   readonly missingReferences: readonly number[];
@@ -35,6 +38,7 @@ function hasSection(parsed: ParsedIssueBody, name: string) {
 export function checkIssueReadiness(
   {
     issue,
+    protocol,
     parsed,
     ancestors,
     missingReferences,
@@ -57,33 +61,38 @@ export function checkIssueReadiness(
     });
   }
 
-  const contract = issue.type !== undefined && issue.type in issueContracts
-    ? issueContracts[issue.type as keyof typeof issueContracts]
+  const { types, fields, options } = protocol;
+  const type = findTypeMeaning(protocol, issue.type);
+  const blockersField = fields.blockers;
+  const openQuestionsOption = options.openQuestions;
+
+  const contract = type !== undefined && type in issueContracts
+    ? issueContracts[type as keyof typeof issueContracts]
     : undefined;
 
   if (audience === "debugger" && !ancestor) {
-    if (issue.type !== "Problem") {
+    if (type !== "problem") {
       findings.push({
         rule: "type",
-        message: `#${issue.number} is ${issue.type === undefined ? "untyped" : `a ${issue.type}`}: a debugger takes a Problem.`,
+        message: `#${issue.number} is ${issue.type === undefined ? "untyped" : `a ${issue.type}`}: a debugger takes a ${types.problem}.`,
       });
     }
   } else if (contract === undefined) {
     findings.push({
       rule: "type",
-      message: `#${issue.number} is ${issue.type === undefined ? "untyped" : `a ${issue.type}`}: expected a Plan, Segment, Task or Problem.`,
+      message: `#${issue.number} is ${issue.type === undefined ? "untyped" : `a ${issue.type}`}: expected a ${keys(
+        issueContracts,
+      )
+        .map((meaning) => types[meaning])
+        .join(", ")}.`,
     });
   }
 
   if (dispatch && !ancestor) {
-    if (
-      audience === "worker" &&
-      issue.type !== "Task" &&
-      issue.type !== "Problem"
-    ) {
+    if (audience === "worker" && type !== "task" && type !== "problem") {
       findings.push({
         rule: "dispatch-type",
-        message: `#${issue.number} is a ${issue.type}: a worker takes a Task or Problem leaf.`,
+        message: `#${issue.number} is a ${issue.type}: a worker takes a ${types.task} or ${types.problem} leaf.`,
       });
     }
 
@@ -107,10 +116,10 @@ export function checkIssueReadiness(
       }
     }
 
-    if (issue.type === "Segment" && issue.subIssues.length === 0) {
+    if (type === "segment" && issue.subIssues.length === 0) {
       findings.push({
         rule: "sub-issues",
-        message: "A Segment needs at least one sub-issue: create them.",
+        message: `A ${types.segment} needs at least one sub-issue: create them.`,
       });
     }
   }
@@ -156,7 +165,9 @@ export function checkIssueReadiness(
             option === openQuestionsOption &&
             openSections.length === 0))) ||
       (audience === "debugger" &&
-        debuggerBlockingOptions.some((blocking) => blocking === option))
+        debuggerBlockingOptions.some((blocking) => {
+          return options[blocking] === option;
+        }))
     ) {
       findings.push({
         rule: "blockers",
@@ -186,7 +197,7 @@ export function checkIssueReadiness(
       }
     }
 
-    if (issue.type === "Plan") {
+    if (type === "plan") {
       const expected = issue.subIssues.map(({ number }) => number);
 
       if (formatChain(parsed.roadmap) !== formatChain(expected)) {
