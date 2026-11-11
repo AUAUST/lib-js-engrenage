@@ -55,6 +55,7 @@ function renderLine(
     alias,
     node.layers === undefined ? undefined : node.layers.join(" < "),
     node.relation === "isolated" ? "[isolated]" : undefined,
+    node.childKind === "domains" ? "[domains]" : undefined,
     plain.length === 0 ? undefined : plain.map(inline).join(" "),
     node.purpose,
     globalRoles.length === 0

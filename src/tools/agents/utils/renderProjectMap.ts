@@ -125,7 +125,7 @@ function renderOverview({
     "",
     "## Notation",
     "",
-    "Trees: `name*` public domain, `{…}` sub-domains, `#alias/…` import alias, `[isolated]` peers never import each other.",
+    "Trees: `name*` public domain, `{…}` sub-domains, `#alias/…` import alias, `[isolated]` peers never import each other, `[domains]` every child directory is a domain.",
     "",
     "| Relation | A domain may import |",
     "| --- | --- |",

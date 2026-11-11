@@ -310,6 +310,29 @@ describe("structure", () => {
     });
   });
 
+  test('classifies every child of a `children: "domains"` namespace as a domain', async () => {
+    const extra = { "src/ui/bare/utils/isString.ts": "" };
+
+    const declared = await describeSource(
+      declaration.replace("ui: {", 'ui: { children: "domains",'),
+      extra,
+    );
+
+    expect(declared.nodes.get("src/ui")).toMatchObject({
+      kind: "namespace",
+      childKind: "domains",
+    });
+
+    expect(declared.nodes.get("src/ui/bare")).toMatchObject({
+      kind: "domain",
+      source: "config",
+    });
+
+    const { nodes } = await describeSource(declaration, extra);
+
+    expect(nodes.get("src/ui/bare")).toMatchObject({ kind: "unclassified" });
+  });
+
   test("reads role-named directories as domains and namespaces without roles", async () => {
     const { nodes } = await describeSource("{}");
 

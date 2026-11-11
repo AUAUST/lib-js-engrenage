@@ -97,6 +97,9 @@ export async function resolveEnvironmentStructure({
         return walk(directory, environmentRoot, {
           kind: "root",
           layers: rootDeclaration?.layers,
+          ...(rootDeclaration?.children === undefined
+            ? {}
+            : { childKind: rootDeclaration.children }),
           scopes: rootScopes,
           owned: rootScopes,
           structured: false,
@@ -125,6 +128,9 @@ export async function resolveEnvironmentStructure({
     ...(rootDeclaration === undefined
       ? {}
       : { relation: rootDeclaration.relation }),
+    ...(rootDeclaration?.children === undefined
+      ? {}
+      : { childKind: rootDeclaration.children }),
     ...(rootDeclaration?.purpose === undefined
       ? {}
       : { purpose: rootDeclaration.purpose }),

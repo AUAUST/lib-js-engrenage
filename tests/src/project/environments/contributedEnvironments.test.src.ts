@@ -62,6 +62,7 @@ const liquidOptionsSection = declareSection({
       structure: {
         layers: undefined,
         relation: "peers",
+        children: undefined,
         purpose: undefined,
         roles: { enable: [] },
         namespaces: {},

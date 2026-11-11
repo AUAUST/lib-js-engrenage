@@ -8,6 +8,7 @@ export interface DeclaredStructure {
       {
         readonly layers: readonly string[] | undefined;
         readonly relation: StructureRelation | undefined;
+        readonly children: "domains" | undefined;
         readonly purpose: string | undefined;
         readonly roles: { readonly enable: readonly string[] };
       }

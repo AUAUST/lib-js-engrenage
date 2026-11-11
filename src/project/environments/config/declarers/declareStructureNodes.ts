@@ -73,6 +73,10 @@ const fields = freeze({
     description: "How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer. Unset, `peers`.",
     optional: { value: undefined },
   }),
+  children: declare(picklist(["domains"]), {
+    description: "What every child directory of the namespace is: `domains` makes each one a domain, without an `index.ts` or a `domains` entry. Unset, children are classified from their contents.",
+    optional: { value: undefined },
+  }),
   namespacePurpose: declare(string(), {
     description: "One line stating what the namespace groups.",
     optional: { value: undefined },
@@ -96,6 +100,7 @@ const namespaceNode = declareObject(
   {
     layers: fields.layers,
     relation: fields.relation,
+    children: fields.children,
     purpose: fields.namespacePurpose,
     roles: declareObject(
       {

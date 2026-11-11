@@ -83,6 +83,7 @@ export function flattenStructure({
     namespaces[path] = freeze({
       layers: namespace.layers,
       relation: namespace.relation,
+      children: namespace.children,
       purpose: namespace.purpose,
       roles: freeze({ enable: freeze(enable) }),
     });

@@ -116,6 +116,9 @@ export function createStructureWalker({
           (await walk(envDirectory, subpath, {
             kind,
             layers: extra.layers,
+            ...(extra.childKind === undefined
+              ? {}
+              : { childKind: extra.childKind }),
             scopes,
             owned,
             structured,
@@ -162,6 +165,9 @@ export function createStructureWalker({
             ? {}
             : { layers: namespace.layers }),
           relation: namespace.relation,
+          ...(namespace.children === undefined
+            ? {}
+            : { childKind: namespace.children }),
           ...(namespace.purpose === undefined
             ? {}
             : { purpose: namespace.purpose }),
@@ -256,7 +262,7 @@ export function createStructureWalker({
       return domain("inferred");
     }
 
-    if (declared) {
+    if (declared || parent.childKind === "domains") {
       return domain("config");
     }
 

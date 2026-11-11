@@ -9,6 +9,7 @@ export interface StructureOptions {
       {
         readonly layers: readonly string[] | undefined;
         readonly relation: StructureRelation;
+        readonly children: "domains" | undefined;
         readonly purpose: string | undefined;
         readonly roles: { readonly enable: readonly string[] };
         readonly source: StructureSource;

@@ -77,6 +77,7 @@ export function mergeStructureMetadata({
       namespaces.set(path, {
         layers: pick("layers", existing?.layers, fields.layers),
         relation: pick("relation", existing?.relation, fields.relation),
+        children: existing?.children,
         purpose: pick("purpose", existing?.purpose, fields.purpose),
         roles: existing?.roles ?? freeze({ enable: freeze([]) }),
         source: existing?.source ?? "metadata",

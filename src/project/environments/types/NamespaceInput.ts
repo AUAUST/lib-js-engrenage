@@ -20,6 +20,11 @@ export interface NamespaceInput {
    */
   relation?: (("peers" | "isolated") | undefined)
   /**
+   * What every child directory of the namespace is: `domains` makes each one a domain, without an `index.ts` or a `domains` entry. Unset, children are classified from their contents.
+   * @default none
+   */
+  children?: ("domains" | undefined)
+  /**
    * One line stating what the namespace groups.
    * @default none
    */
