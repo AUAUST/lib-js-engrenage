@@ -7,13 +7,11 @@ import {
   defaultEffectLevels,
   effectLevelPurposes,
 } from "#project/structure/constants";
-import {
-  listStaticFileGlobs,
-  type ResolvedRoleContract,
-  type ResolvedRoleExports,
-  type ResolvedRoles,
-  type ResolvedStructure,
-} from "#project/structure/index";
+import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
+import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
+import type { ResolvedRoleExports } from "#project/structure/types/ResolvedRoleExports";
+import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 
 interface RoleRow {
   name: string;

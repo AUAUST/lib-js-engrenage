@@ -1,3 +1,4 @@
+import { projectMapRule } from "#project/structure/constants";
 import type { Extension } from "#project/config/index";
 
 export default {
@@ -99,6 +100,40 @@ export default {
     },
   },
   contributes: {
+    "agents.fillers": [
+      {
+        name: "project-map",
+        async load() {
+          const {
+            fillProjectMap,
+          } = await import("#project/structure/operations/fillProjectMap");
+
+          return fillProjectMap;
+        },
+      },
+      {
+        name: "environment-map",
+        async load() {
+          const {
+            fillEnvironmentMap,
+          } = await import("#project/structure/operations/fillEnvironmentMap");
+
+          return fillEnvironmentMap;
+        },
+      },
+    ],
+    "agents.rules": [
+      {
+        name: projectMapRule,
+        async load() {
+          const {
+            generateProjectMapRules,
+          } = await import("#project/structure/operations/generateProjectMapRules");
+
+          return generateProjectMapRules;
+        },
+      },
+    ],
     "gate.steps": [
       {
         name: "structure --check",

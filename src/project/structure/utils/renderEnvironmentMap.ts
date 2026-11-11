@@ -1,16 +1,12 @@
-import { stringify } from "yaml";
-
 import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
 import { entryRoleName, indexRoleName } from "#project/roles/constants";
-import {
-  listStaticFileGlobs,
-  type EnvironmentStructure,
-  type ResolvedRoles,
-  type StructureNode,
-} from "#project/structure/index";
-import type { Globs } from "#types/Globs";
+import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
+import type { Alias } from "#project/structure/types/Alias";
+import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
+import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import type { StructureNode } from "#project/structure/types/StructureNode";
 
 // @debt map renderers repeat code and list text formatting helpers
 function code(value: string): string {
@@ -89,20 +85,39 @@ function renderTree(
   });
 }
 
+function findAliases(
+  { root }: EnvironmentStructure,
+  aliases: readonly Alias[],
+): Map<string, string> {
+  const found = new Map<string, string>();
+
+  for (const child of root.children) {
+    const alias = aliases.find(({ key, path }) => {
+      return key === `#${child.name}/*` && path === child.path;
+    });
+
+    if (alias !== undefined) {
+      found.set(child.path, `#${child.name}/…`);
+    }
+  }
+
+  return found;
+}
+
 export function renderEnvironmentMap({
   name,
   environment,
   roles,
-  aliases,
-  paths,
+  aliases: declared,
 }: {
   name: string;
   environment: EnvironmentStructure;
   roles: ResolvedRoles | undefined;
-  aliases: ReadonlyMap<string, string>;
-  paths: Globs;
+  aliases: readonly Alias[];
 }): string {
   const { root } = environment;
+
+  const aliases = findAliases(environment, declared);
 
   const mirrors = root.children.filter(({ kind }) => kind === "mirror");
 
@@ -130,10 +145,6 @@ export function renderEnvironmentMap({
   ];
 
   return [
-    "---",
-    stringify({ paths }).trimEnd(),
-    "---",
-    "",
     `# Project map: ${name}`,
     "",
     ...(environment.strictness === "loose"

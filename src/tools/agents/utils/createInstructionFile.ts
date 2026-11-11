@@ -1,5 +1,6 @@
 import { stringify } from "yaml";
 
+// @debt writes the fragment body unrendered: a fragment holding filler directives nests their markers inside its `@reference` block, which the next sync rejects; creators lack the loaded config the fillers need
 export function createInstructionFile({
   frontmatter,
   reference,

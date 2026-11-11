@@ -7,9 +7,10 @@ export async function syncBlocks(
   content: string,
   { open, close, padding }: BlockSyntax,
   fillers: BlockFillers,
+  { markers: mode = "keep" }: { markers?: "keep" | "drop" } = {},
 ): Promise<string> {
   const marker = new RegExp(
-    String.raw`^${RegExp.escape(open)}@(\w+)((?: \S+)*)${RegExp.escape(close)}$`,
+    String.raw`^${RegExp.escape(open)}@([\w-]+)((?: \S+)*)${RegExp.escape(close)}$`,
     "gm",
   );
 
@@ -29,6 +30,10 @@ export async function syncBlocks(
 
       isBlockOpen = false;
 
+      if (mode === "drop") {
+        cursor = match.index + line.length;
+      }
+
       continue;
     }
 
@@ -47,17 +52,25 @@ export async function syncBlocks(
 
     const next = markers[index + 1];
 
-    if (next === undefined) {
+    if (next === undefined || (mode === "drop" && next[1] !== "end")) {
       throw new Error(`Missing "@end" marker after "${line}"`);
     }
 
     const returned = await fill(...argumentList.split(" ").slice(1));
+
+    const blockStart = match.index + line.length;
 
     const filled = returned?.trim();
 
     isBlockOpen = true;
 
     if (filled === undefined) {
+      if (mode === "drop") {
+        result += `${content.slice(cursor, match.index)}${content.slice(blockStart, next.index).trim()}`;
+
+        cursor = next.index;
+      }
+
       continue;
     }
 
@@ -65,9 +78,9 @@ export async function syncBlocks(
       throw new Error(`Content of "${line}" contains a block marker`);
     }
 
-    const blockStart = match.index + line.length;
-
-    result += `${content.slice(cursor, blockStart)}${padding}${filled}${padding}`;
+    result += mode === "drop"
+      ? `${content.slice(cursor, match.index)}${filled}`
+      : `${content.slice(cursor, blockStart)}${padding}${filled}${padding}`;
 
     cursor = next.index;
   }

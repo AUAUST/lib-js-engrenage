@@ -6,6 +6,7 @@ import { syncBlocks, syncFiles } from "#foundation/blocks/index";
 import { codexFile } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/index";
 import { attributionRules, markdownBlocks } from "#tools/agents/constants";
+import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
@@ -106,6 +107,24 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     }
   }
 
+  const fillers = await createAgentFillers(loaded);
+
+  async function renderFragment(source: File): Promise<string> {
+    const { body } = parseInstruction(await readFile(source, "utf-8"), source);
+
+    try {
+      return await syncBlocks(body, markdownBlocks, fillers, {
+        markers: "drop",
+      });
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        throw error;
+      }
+
+      throw new Error(`${source}: ${error.message}`, { cause: error });
+    }
+  }
+
   async function readReferences(): Promise<ReadonlyMap<string, string>> {
     const bodies = new Map<string, string>();
 
@@ -135,10 +154,7 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
             const source = await findReference(reference, path);
 
             if (source !== undefined) {
-              bodies.set(
-                `${path}\0${reference}`,
-                parseInstruction(await readFile(source, "utf-8"), source).body,
-              );
+              bodies.set(`${path}\0${reference}`, await renderFragment(source));
             }
           }),
         );

@@ -14,8 +14,6 @@ export { filterAgents } from "#tools/agents/utils/filterAgents";
 export { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 export { isHookCommand } from "#tools/agents/utils/isHookCommand";
 export { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
-export { renderEnvironmentMap } from "#tools/agents/utils/renderEnvironmentMap";
-export { renderProjectMapRoles } from "#tools/agents/utils/renderProjectMapRoles";
 
 // @barrel setup
 export { createAgentRulesStep } from "#tools/agents/setup/createAgentRulesStep";
@@ -24,7 +22,7 @@ export { createBacklogStep } from "#tools/agents/setup/createBacklogStep";
 export { createPreferredAgentsStep } from "#tools/agents/setup/createPreferredAgentsStep";
 export { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 export { syncAgents } from "#tools/agents/setup/syncAgents";
-export { syncProjectMap } from "#tools/agents/setup/syncProjectMap";
+export { syncGeneratedRules } from "#tools/agents/setup/syncGeneratedRules";
 // @end
 
 // @barrel config/sections
@@ -37,6 +35,7 @@ export { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 export { checkAgentDispatch } from "#tools/agents/operations/checkAgentDispatch";
 export { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
 export { checkAgents } from "#tools/agents/operations/checkAgents";
+export { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 export { denyToolUse } from "#tools/agents/operations/denyToolUse";
 export { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 export { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
@@ -57,7 +56,10 @@ export { syncHooks } from "#tools/agents/operations/syncHooks";
 // @end
 
 // @barrel ports
+export type * from "#tools/agents/ports/AgentFiller";
+export type * from "#tools/agents/ports/AgentRuleGenerator";
 export type * from "#tools/agents/ports/AgentRuntime";
+export type * from "#tools/agents/ports/GeneratedRule";
 // @end
 
 // @barrel config/schemas

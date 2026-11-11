@@ -58,3 +58,5 @@ export const importCategories = freeze({
   "internal-aliases": "`#…` aliases into `src`",
   "dist-artefacts": "the build output",
 } as const satisfies Record<ImportCategory, string>);
+
+export const projectMapRule = "project-map";

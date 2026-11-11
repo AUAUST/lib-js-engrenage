@@ -1,4 +1,8 @@
-import { agentRuntimeEntry, agentsTarget } from "#tools/agents/constants";
+import {
+  agentLoaderEntry,
+  agentRuntimeEntry,
+  agentsTarget,
+} from "#tools/agents/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
@@ -6,6 +10,8 @@ export default {
   owns: {
     slots: {
       "agents.runtimes": { entry: agentRuntimeEntry },
+      "agents.fillers": { entry: agentLoaderEntry },
+      "agents.rules": { entry: agentLoaderEntry },
     },
     keys: {
       agents: {

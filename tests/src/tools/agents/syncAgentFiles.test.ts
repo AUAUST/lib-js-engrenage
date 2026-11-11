@@ -252,3 +252,40 @@ describe("syncAgentFiles", () => {
     });
   });
 });
+
+describe("fragment fillers", () => {
+  function createProject(fragment: string) {
+    return createTemporaryProject({
+      "package.json": '{"type":"module"}',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], instructionFiles: ["AGENTS.md"] } };',
+      "src/feature/index.ts": "",
+      "fragment.md": fragment,
+      "AGENTS.md": "<!-- @reference ./fragment.md -->\n<!-- @end -->\n",
+    });
+  }
+
+  test("renders a filler directive inside the referenced fragment", async () => {
+    const project = createProject(
+      "# Shared\n\n<!-- @environment-map src -->\n<!-- @end -->\n\nAfter.\n",
+    );
+
+    const config = await loadConfig(project.root);
+
+    await syncAgentFiles(config);
+
+    const content = await config.context.filesystem.read("AGENTS.md");
+
+    expect(content).toContain("# Shared\n\n# Project map: src\n");
+    expect(content).toContain("feature");
+    expect(content).toContain("\n\nAfter.\n");
+    expect(content).not.toContain("@environment-map");
+  });
+
+  test("fails on an unknown directive, naming it", async () => {
+    const project = createProject("<!-- @unknown-table -->\n<!-- @end -->\n");
+
+    await expect(
+      syncAgentFiles(await loadConfig(project.root)),
+    ).rejects.toThrow('Unknown directive in "<!-- @unknown-table -->"');
+  });
+});

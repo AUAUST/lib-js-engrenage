@@ -1,4 +1,4 @@
-import { ruleFrontmatterKeys } from "#tools/agents/constants";
+import { ruleFrontmatterKeys, rulesDirectory } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
 import type { Extension } from "#project/config/index";
@@ -16,7 +16,7 @@ export async function getRuleTemplates(extensions?: readonly Extension[]) {
 
     return {
       ...template,
-      file: `.claude/rules/${name}.md`,
+      file: `${rulesDirectory}/${name}.md`,
       frontmatter,
       content: createInstructionFile({
         frontmatter: paths === undefined ? undefined : frontmatter.values,

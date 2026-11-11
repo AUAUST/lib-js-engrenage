@@ -6,19 +6,14 @@ import {
   importRelations,
   sourceEnvironment,
 } from "#project/structure/constants";
-import { projectMapDirectory, projectMapFile } from "#tools/agents/constants";
-import { renderEnvironmentMap } from "#tools/agents/utils/renderEnvironmentMap";
-import { renderProjectMapRoles } from "#tools/agents/utils/renderProjectMapRoles";
+import { renderProjectMapRoles } from "#project/structure/utils/renderProjectMapRoles";
 import type { EnvironmentEntry } from "#project/environments/index";
-import type {
-  Alias,
-  ImportCategory,
-  ImportGrants,
-  ResolvedRoles,
-  ResolvedStructure,
-  TestVariant,
-} from "#project/structure/index";
-import type { File } from "#types/File";
+import type { ImportCategory } from "#project/structure/types/ImportCategory";
+import type { ImportGrants } from "#project/structure/types/ImportGrants";
+import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
+import type { TestVariant } from "#project/structure/types/TestVariant";
+import type { Directory } from "#types/Directory";
 import type { Globs } from "#types/Globs";
 
 function code(value: string): string {
@@ -27,10 +22,6 @@ function code(value: string): string {
 
 function list(values: readonly string[]): string {
   return values.map(code).join(", ");
-}
-
-function mapFile(name: string): File {
-  return `${projectMapDirectory}/${name}.md`;
 }
 
 function renderCell(
@@ -76,18 +67,20 @@ function listCategories(
   ];
 }
 
-function renderOverview({
+export function renderProjectMap({
   structure,
   environments,
   grants,
   patterns,
   roles,
+  directory,
 }: {
   structure: ResolvedStructure;
   environments: readonly EnvironmentEntry[];
   grants: ImportGrants;
   patterns: { plain: Globs; source: Globs; dist: Globs };
   roles: Readonly<Partial<Record<string, ResolvedRoles>>>;
+  directory: Directory;
 }): string {
   const mapped = entries(structure)
     .filter(([, environment]) => environment !== undefined)
@@ -150,7 +143,7 @@ function renderOverview({
         return renderCell(name, category, grants);
       });
 
-      return `| ${code(name)} | ${cells.join(" | ")} | ${code(mapFile(name))} |`;
+      return `| ${code(name)} | ${cells.join(" | ")} | ${code(`${directory}/${name}.md`)} |`;
     }),
     ...(grants.published
       ? [
@@ -177,75 +170,4 @@ function renderOverview({
         ]),
     ...renderProjectMapRoles(structure, roles),
   ].join("\n");
-}
-
-function findAliases(
-  structure: ResolvedStructure,
-  aliases: readonly Alias[],
-): Map<string, string> {
-  const found = new Map<string, string>();
-
-  for (const [, environment] of entries(structure)) {
-    for (const child of environment?.root.children ?? []) {
-      const alias = aliases.find(({ key, path }) => {
-        return key === `#${child.name}/*` && path === child.path;
-      });
-
-      if (alias !== undefined) {
-        found.set(child.path, `#${child.name}/…`);
-      }
-    }
-  }
-
-  return found;
-}
-
-export function renderProjectMap({
-  structure,
-  environments,
-  grants,
-  roles,
-  aliases,
-  patterns,
-  paths,
-}: {
-  structure: ResolvedStructure;
-  environments: readonly EnvironmentEntry[];
-  grants: ImportGrants;
-  roles: Readonly<Partial<Record<string, ResolvedRoles>>>;
-  aliases: readonly Alias[];
-  patterns: { plain: Globs; source: Globs; dist: Globs };
-  paths: Readonly<Partial<Record<string, Globs>>>;
-}): { file: File; content: string }[] {
-  const found = findAliases(structure, aliases);
-
-  const files = [
-    {
-      file: projectMapFile,
-      content: `${renderOverview({
-        structure,
-        environments,
-        grants,
-        patterns,
-        roles,
-      })}\n`,
-    },
-  ];
-
-  for (const [name, environment] of entries(structure)) {
-    if (environment !== undefined) {
-      files.push({
-        file: mapFile(name),
-        content: `${renderEnvironmentMap({
-          name,
-          environment,
-          roles: roles[name],
-          aliases: found,
-          paths: paths[name] ?? [],
-        })}\n`,
-      });
-    }
-  }
-
-  return files;
 }

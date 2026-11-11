@@ -33,7 +33,7 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ tsconfig  Compose TypeScript project configurations.
 │  └─ workspaces  Resolve workspace groups and their projects.
 ├─ tools/  #tools/…  One domain per external tool, holding its adapters.
-│  ├─ agents*{claude* codex*}  Generate shared agent instructions, skills and project maps.
+│  ├─ agents*{claude* codex*}  Generate shared agent instructions, skills and contributed rule files.
 │  │  ├─ claude*  Configure Claude instructions, settings and hooks.
 │  │  └─ codex*  Configure Codex instructions, profiles, skills and hooks.
 │  ├─ changesets*  Configure release versioning and changelogs.

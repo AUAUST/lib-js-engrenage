@@ -25,3 +25,8 @@
 - zsh `echo ====WALK`: printed a separator starting with `=` — zsh expands `=word` as a command path and aborts with "not found"; used a separator not starting with `=`
 - zsh `grep --include=*.ts` and `find -o` globs: unquoted patterns in Bash calls, twice — zsh "no matches found" aborts the command; quoted or dropped the flag
 - Claude PreToolUse Bash hook: ran a Bash command after moving `src` modules — the hook runs engrenage from source, so a broken barrel blocked every Bash call; fixed the barrel with Write first
+- Agent worker brief: launched worker without an `Issue: <owner>/<repo>#<n>` first line — PreToolUse hook refused it; retried with that line
+- gh issue edit hook: piped the body from a scratch file, then a `.draft.md` file — hook demands a heredoc and rejects a Decisions section in a Task; used a heredoc and folded decisions into Steps
+- Claude PreToolUse Bash hook: ran eslint and the build while another session edited `src/tools/agents/constants.ts` — its missing export broke the hook for every pnpm call; stopped with lint and build unverified
+- zsh `grep --include=*.ts`: unquoted glob — zsh "no matches found" aborts the command; dropped the flag
+- Claude PreToolUse Bash hook: removed agents constants mid-refactor — the hook loads engrenage from source, so every Bash call failed until the importers were fixed with Write/Edit

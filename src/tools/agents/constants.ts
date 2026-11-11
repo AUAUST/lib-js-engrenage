@@ -1,4 +1,4 @@
-import { looseObject, optional, string } from "valibot";
+import { function_, looseObject, optional, string } from "valibot";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 import { freeze } from "@auaust/toolkit/object";
@@ -7,6 +7,7 @@ import { engrenage } from "#constants";
 import { claudeShellVariable } from "#tools/agents/claude/constants";
 import type { Agent } from "#tools/agents/types/Agent";
 import type { BlockSyntax } from "#types/BlockSyntax";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
 
@@ -31,6 +32,12 @@ export const agentShellVariables = freeze({
 export const agentRuntimeEntry: StandardSchemaV1 = looseObject({
   name: string(),
   title: optional(string()),
+});
+
+// @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
+export const agentLoaderEntry: StandardSchemaV1 = looseObject({
+  name: string(),
+  load: function_(),
 });
 
 export const backlogIndex = ".ai/backlog/index.md" satisfies File;
@@ -81,9 +88,7 @@ export const attributionRules = freeze({
   false: "no-attribution",
 } as const);
 
-export const projectMapFile = ".claude/rules/project-map.md" satisfies File;
-
-export const projectMapDirectory = ".claude/rules/project-map" satisfies File;
+export const rulesDirectory = ".claude/rules" satisfies Directory;
 
 export const debtFile = ".ai/debt.md" satisfies File;
 
