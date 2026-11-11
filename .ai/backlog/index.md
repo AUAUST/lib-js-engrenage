@@ -52,4 +52,5 @@ Deferred questions, bugs, tasks and improvements.
 - [lefthook](lefthook.md): Lefthook integration.
 - [pnpm](pnpm.md): pnpm integration and package-manager scripts.
 - [init](init.md): Init steps and their step context.
+- [sync](sync.md): `project/sync` target ordering and sync products.
 - [eslint-conventions](eslint-conventions.md): ESLint rules and conventions engrenage ships.
