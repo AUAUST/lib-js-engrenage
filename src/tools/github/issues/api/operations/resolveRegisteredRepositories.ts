@@ -9,9 +9,10 @@ import type { PackageName } from "#types/PackageName";
 import type { PackageNames } from "#types/PackageNames";
 
 function splitPackageName(name: PackageName) {
-  const [scope, unscoped] = name.startsWith("@")
-    ? name.split("/", 2)
-    : [undefined, name];
+  const [
+    scope,
+    unscoped,
+  ] = name.startsWith("@") ? name.split("/", 2) : [undefined, name];
 
   return { scope, unscoped: unscoped ?? name };
 }
@@ -38,12 +39,11 @@ export async function resolveRegisteredRepositories({
 
     const { scope } = splitPackageName(name);
 
-    const siblings =
-      scope === undefined
-        ? []
-        : (dependencies ?? []).filter((dependency) => {
-            return splitPackageName(dependency).scope === scope;
-          });
+    const siblings = scope === undefined
+      ? []
+      : (dependencies ?? []).filter((dependency) => {
+          return splitPackageName(dependency).scope === scope;
+        });
 
     const resolved = await Promise.all(
       siblings.map(async (dependency) => {
