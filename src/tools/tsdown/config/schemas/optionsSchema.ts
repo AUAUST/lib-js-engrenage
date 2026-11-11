@@ -13,6 +13,6 @@ import {
 import { pluginNames } from "#tools/tsdown/constants";
 
 export const optionsSchema = strictObject({
-  bundle: optional(pipe(array(string()), readonly()), []),
+  bundle: optional(pipe(array(string()), readonly())),
   plugins: optional(record(picklist(pluginNames), boolean()), {}),
 });

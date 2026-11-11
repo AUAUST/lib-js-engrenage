@@ -35,6 +35,7 @@ export type PackageJson = Accessors<{
   files: Globs | undefined;
   workspaces: Globs | undefined;
   dependencies: PackageNames | undefined;
+  inlinedDependencies: PackageNames | undefined;
   sideEffects: boolean | Globs | undefined;
   packageManager: string | undefined;
   engines: Partial<Record<string, string>> | undefined;

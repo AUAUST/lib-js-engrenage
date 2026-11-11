@@ -165,6 +165,11 @@ export function createPackageJson({
           });
         }
       },
+      inlinedDependencies() {
+        const versions = read("inlinedDependencies", record(string(), string()));
+
+        return versions === undefined ? undefined : keys(versions);
+      },
       sideEffects() {
         return read("sideEffects", union([boolean(), array(string())]));
       },

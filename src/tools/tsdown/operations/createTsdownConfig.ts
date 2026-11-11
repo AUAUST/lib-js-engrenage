@@ -227,7 +227,8 @@ export async function createTsdownConfig(
       ignoreRules: ["cjs-resolves-to-esm"],
     },
     deps: {
-      onlyBundle: [...bundle],
+      // @debt bundling a new dependency means hand-adding it and its dependency closure to the generated `inlinedDependencies` field; bundling a package should bring its own dependency closure
+      onlyBundle: [...(bundle ?? packageJson.optional.inlinedDependencies ?? [])],
     },
     inputOptions: {
       resolve: {

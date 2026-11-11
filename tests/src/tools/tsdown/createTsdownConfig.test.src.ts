@@ -202,6 +202,57 @@ describe("createTsdownConfig", () => {
     });
   });
 
+  test("bundles the manifest's inlined dependencies unless the options list them", async () => {
+    const project = createTemporaryProject({
+      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
+      "package.json": JSON.stringify({
+        name: "@scope/package",
+        type: "module",
+        inlinedDependencies: {
+          "@auaust/toolkit": "0.5.1",
+          "commander": "15.0.0",
+        },
+      }),
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          outDir: "dist",
+          paths: {
+            "@scope/package": ["./src/index.ts"],
+          },
+        },
+      }),
+      "src/index.ts": "export {};\n",
+    });
+
+    const config = await loadConfig(project.root);
+
+    expect(
+      await createTsdownConfig(config, {
+        ci: false,
+      }),
+    ).toMatchObject({
+      deps: {
+        onlyBundle: ["@auaust/toolkit", "commander"],
+      },
+    });
+
+    expect(
+      await createTsdownConfig(
+        config,
+        {
+          ci: false,
+        },
+        {
+          bundle: [],
+        },
+      ),
+    ).toMatchObject({
+      deps: {
+        onlyBundle: [],
+      },
+    });
+  });
+
   test("enables publint and attw when the project depends on them", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
