@@ -39,6 +39,7 @@ Deferred questions, bugs, tasks and improvements.
 - [structure](structure.md): Project structure description, its report and the tooling generated from it.
 - [changesets](changesets.md): Changesets configuration and presets.
 - [github](github.md): Generated GitHub workflows and templates.
+- [git](git.md): Git integration: ignore sources and repository files.
 - [agent-instructions](agent-instructions.md): Shared agent instructions, skills and backlog conventions.
 - [gate](gate.md): The commit gate and its process locks.
 - [processes](processes.md): Spawned processes, binary and module resolution.

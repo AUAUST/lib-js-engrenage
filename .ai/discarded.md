@@ -27,3 +27,4 @@
 - source-tree sync products: one-pass sync with generated sources (#436) — every config key would declare its file dependencies; generate stage instead
 - classify role-holding directories as domains: entry-only domains (#430) — a misplaced role directory silently becomes a domain; namespace option instead
 - config key reset registry: hide `forget` from every LoadedConfig holder but project/sync — needs module-level state shared by createProjectConfig and a second export, beyond the issue
+- eslint cache: speed up repo-wide lint with `--cache` — type-aware and cross-file structure rules make cached results stale; dropped for good

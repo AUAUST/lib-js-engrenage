@@ -21,17 +21,17 @@
 - zsh `/usr/bin/time -p node …`: timed CLI runs — reported ~0.12s regardless of command; got real timings by spawning from `node -e` with `performance.now()`
 - `support codegen barrels`: regenerated a barrel after deleting a module it exports — fails loading the deleted module; removed the export line by hand first
 - PreToolUse Bash hook (`git commit --no-verify`): committed a baseline in a scratch copy of another repository — the hook denies it everywhere; used the git index as the baseline and diffed against it
-- `engrenage eslint --format json`: parsed the report — `Linting...` printed on stdout before the JSON; sliced from the first `[{`
 - `timeout`: bounded `engrenage init -y` — not installed on macOS; ran without it and relied on the tool timeout
 - `grep --include=*.ts`: unquoted glob in zsh — zsh aborts with "no matches found"; quoted the pattern
 - `gh issue create` hook: piped a draft by its root-relative path after a `cd` into `.ai/issues/` had moved the shell cwd — the hook resolves the path against the shell cwd and reported the file missing; reran with the path relative to that cwd
 - shared checkout: ran `engrenage gate --worktree` while another session edited `src/workflows/builtins/index.ts` — its half-done barrel registered every extension twice, breaking config load for gate, vitest, eslint and the Bash hook; stopped with checks unverified
-- vitest:dist in pnpm build: runs the dist suite — collects tests under `.claude/worktrees/*`, whose dist is missing; reran with `--exclude ".claude/**"`
-- engrenage gate --worktree: vitest step — collects `.claude/worktrees/*` tests, whose stale code checks this checkout's generated files and fails; verified with `vitest run --exclude ".claude/**"`
 - gh issue view --repo: guessed AUAUST/engrenage — repo is AUAUST/lib-js-engrenage, read from git remote
 - zsh `grep --include=*.ts`: unquoted glob in a Bash call — zsh "no matches found" aborts the command; dropped the flag
 - PreToolUse Bash hook (`gh issue edit`): piped a frontmatter-free body from a scratchpad `.md` — blocked; piping the draft published its frontmatter; renamed the stripped body to `.draft.md` and piped it
 - zsh word splitting: `set -- $ids` to split two GraphQL ids — zsh passes one word; inlined the ids
 - zsh for loop: set -- $p to split a pair — zsh does not word-split unquoted params; call a function with explicit args
-- engrenage gate --worktree: vitest step — collected `.claude/worktrees/fervent-greider-10c401` tests, whose stale code rejects `roles.2.collected` in this checkout's config; verified with `vitest --exclude ".claude/**"` and `vitest:dist --exclude ".claude/**"`
 - eslint `-f unix`: listed repo-wide lint findings with the unix formatter — not bundled in ESLint 9+, used `-f json -o <file>` instead
+- gh issue edit hook: edit a non-draft issue body from a scratchpad file, then from a `.draft.md` written in the same command — hook demands heredoc or a pre-existing `.ai/issues/*.draft.md` piped via `cat`; wrote the draft in a separate call
+- PreToolUse Bash hook (`gh issue edit`): wrote the body with a heredoc and ran `gh issue edit --body-file -` in one command — the PreToolUse hook checks the body file exists before the command runs; wrote it first with Write
+- zsh `grep --include=*.ts`: unquoted glob in Bash calls, twice — zsh "no matches found" aborts the command; quoted the pattern
+- `git ls-files --others --ignored --directory`: list ignored paths — skips untracked directories and fails inside a nested ignored base; used `git status --porcelain --ignored=matching --untracked-files=normal` from the repository root
