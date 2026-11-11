@@ -146,7 +146,11 @@ export function renderEnvironmentMap({
       ? []
       : [
           "",
-          `Unclassified: ${list(environment.unclassified.map(({ path }) => path))}`,
+          `Unclassified: ${list(
+            environment.unclassified.map(({ path }) => {
+              return path;
+            }),
+          )}`,
         ]),
     ...(name === "bin" && root.commands === true
       ? [

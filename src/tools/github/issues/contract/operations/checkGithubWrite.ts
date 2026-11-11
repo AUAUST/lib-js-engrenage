@@ -49,7 +49,11 @@ async function checkWrite(
 
   return findings.length === 0
     ? undefined
-    : `the issue body breaks the issue contract:\n${findings.map(({ message }) => `- ${message}`).join("\n")}`;
+    : `the issue body breaks the issue contract:\n${findings
+        .map(({ message }) => {
+          return `- ${message}`;
+        })
+        .join("\n")}`;
 }
 
 export async function checkGithubWrite(

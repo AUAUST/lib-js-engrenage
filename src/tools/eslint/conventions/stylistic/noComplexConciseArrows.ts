@@ -8,6 +8,8 @@ const complexMessage = "Use a block body with an explicit return; concise bodies
 
 const wrappedMessage = "Use a block body with an explicit return; a concise body stays whole on the line of its `=>`.";
 
+const longMessage = "Use a block body with an explicit return; a concise arrow stays on a line within the line width.";
+
 const conciseBodies = join(
   [
     "ArrayExpression",
@@ -42,95 +44,131 @@ const complexBodies = join(
 );
 
 export default defineConvention({
-  rule: {
-    meta: {
-      type: "suggestion",
-      fixable: "code",
-      docs: {
-        description: `${complexMessage} ${wrappedMessage}`,
+  sections: { format: "format" },
+  rule({ format }) {
+    return {
+      meta: {
+        type: "suggestion",
+        fixable: "code",
+        docs: {
+          description: `${complexMessage} ${wrappedMessage} ${longMessage}`,
+        },
+        messages: {
+          complexConciseArrow: complexMessage,
+          wrappedConciseArrow: wrappedMessage,
+          longConciseArrow: longMessage,
+        },
+        schema: [],
       },
-      messages: {
-        complexConciseArrow: complexMessage,
-        wrappedConciseArrow: wrappedMessage,
-      },
-      schema: [],
-    },
-    create(context) {
-      const { sourceCode } = context;
+      create(context) {
+        const { sourceCode } = context;
 
-      const reported = new WeakSet<Rule.Node>();
+        const reported = new WeakSet<Rule.Node>();
 
-      function findArrow(
-        node: Rule.Node & { type: "ArrowFunctionExpression" },
-      ) {
-        const arrow = sourceCode.getTokenBefore(node.body, {
-          filter(token) {
-            return token.value === "=>";
-          },
-        });
+        function findArrow(
+          node: Rule.Node & { type: "ArrowFunctionExpression" },
+        ) {
+          const arrow = sourceCode.getTokenBefore(node.body, {
+            filter(token) {
+              return token.value === "=>";
+            },
+          });
 
-        if (arrow === null) {
-          throw new Error("Cannot find the arrow of a concise arrow body");
+          if (arrow === null) {
+            throw new Error("Cannot find the arrow of a concise arrow body");
+          }
+
+          return arrow;
         }
 
-        return arrow;
-      }
+        function report(
+          node: Rule.Node & { type: "ArrowFunctionExpression" },
+          messageId:
+            "complexConciseArrow" | "wrappedConciseArrow" | "longConciseArrow",
+        ): void {
+          const arrow = findArrow(node);
 
-      function report(
-        node: Rule.Node & { type: "ArrowFunctionExpression" },
-        messageId: "complexConciseArrow" | "wrappedConciseArrow",
-      ): void {
-        const arrow = findArrow(node);
+          const [, start] = sourceCode.getRange(arrow);
 
-        const [, start] = sourceCode.getRange(arrow);
+          const [, end] = sourceCode.getRange(node);
 
-        const [, end] = sourceCode.getRange(node);
+          const text = sourceCode.text.slice(start, end).trim();
 
-        const text = sourceCode.text.slice(start, end).trim();
+          const body = sourceCode.commentsExistBetween(arrow, node.body)
+            ? `(${text})`
+            : text;
 
-        const body = sourceCode.commentsExistBetween(arrow, node.body)
-          ? `(${text})`
-          : text;
+          const line = sourceCode.lines[sourceCode.getLoc(node).start.line - 1];
 
-        const line = sourceCode.lines[sourceCode.getLoc(node).start.line - 1];
+          const indent = /^\s*/u.exec(line ?? "")?.[0] ?? "";
 
-        const indent = /^\s*/u.exec(line ?? "")?.[0] ?? "";
+          reported.add(node);
 
-        reported.add(node);
+          context.report({
+            node,
+            messageId,
+            fix(fixer) {
+              return fixer.replaceTextRange(
+                [start, end],
+                ` {\n${indent}  return ${body};\n${indent}}`,
+              );
+            },
+          });
+        }
 
-        context.report({
-          node,
-          messageId,
-          fix(fixer) {
-            return fixer.replaceTextRange(
-              [start, end],
-              ` {\n${indent}  return ${body};\n${indent}}`,
-            );
-          },
-        });
-      }
+        function lineWidth(line: number): number {
+          const text = sourceCode.lines[line - 1] ?? "";
 
-      return {
-        [complexBodies](node: Rule.Node) {
-          if (node.type === "ArrowFunctionExpression") {
-            report(node, "complexConciseArrow");
-          }
-        },
-        // @debt the wrapped check reads the source layout, so a one-line body Prettier wraps later passes until the next lint of the formatted file
-        "ArrowFunctionExpression[body.type!='BlockStatement']:exit"(
+          return text.replaceAll("\t", " ".repeat(format.indentWidth)).length;
+        }
+
+        function sharesLineWithConciseAncestor(
           node: Rule.Node,
-        ) {
-          if (node.type !== "ArrowFunctionExpression" || reported.has(node)) {
-            return;
+          line: number,
+        ): boolean {
+          let ancestor: Rule.Node | null = node.parent;
+
+          while (ancestor !== null) {
+            if (
+              ancestor.type === "ArrowFunctionExpression" &&
+              ancestor.body.type !== "BlockStatement"
+            ) {
+              return sourceCode.getLoc(findArrow(ancestor)).end.line === line;
+            }
+
+            ancestor = ancestor.parent;
           }
 
-          const arrowLine = sourceCode.getLoc(findArrow(node)).end.line;
+          return false;
+        }
 
-          if (arrowLine !== sourceCode.getLoc(node).end.line) {
-            report(node, "wrappedConciseArrow");
-          }
-        },
-      };
-    },
+        return {
+          [complexBodies](node: Rule.Node) {
+            if (node.type === "ArrowFunctionExpression") {
+              report(node, "complexConciseArrow");
+            }
+          },
+          // @debt the wrapped and width checks read the source layout, not the formatted one, so a line Prettier rewraps passes or fails until the next lint of the formatted file
+          "ArrowFunctionExpression[body.type!='BlockStatement']:exit"(
+            node: Rule.Node,
+          ) {
+            if (node.type !== "ArrowFunctionExpression" || reported.has(node)) {
+              return;
+            }
+
+            const arrowLine = sourceCode.getLoc(findArrow(node)).end.line;
+
+            if (arrowLine !== sourceCode.getLoc(node).end.line) {
+              report(node, "wrappedConciseArrow");
+            } else if (
+              lineWidth(arrowLine) > format.lineWidth &&
+              !sharesLineWithConciseAncestor(node, arrowLine)
+            ) {
+              report(node, "longConciseArrow");
+            }
+          },
+        };
+      },
+    };
   },
 });

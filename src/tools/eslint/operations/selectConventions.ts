@@ -60,7 +60,12 @@ export function selectConventions({
 
       if (unknown.length > 0) {
         throw new Error(
-          `Invalid ESLint options: unknown ${category} conventions ${map(unknown, (name) => `"${name}"`).join(", ")}`,
+          `Invalid ESLint options: unknown ${category} conventions ${map(
+            unknown,
+            (name) => {
+              return `"${name}"`;
+            },
+          ).join(", ")}`,
         );
       }
     }

@@ -87,7 +87,11 @@ export function checkIssueBody(
     if (rank === undefined) {
       findings.push({
         rule: "unknown-section",
-        message: `**${name}** is not a section of a ${contractType}: remove it, or move its content into ${contract.sections.map((section) => `**${section}**`).join(", ")}.`,
+        message: `**${name}** is not a section of a ${contractType}: remove it, or move its content into ${contract.sections
+          .map((section) => {
+            return `**${section}**`;
+          })
+          .join(", ")}.`,
       });
 
       continue;

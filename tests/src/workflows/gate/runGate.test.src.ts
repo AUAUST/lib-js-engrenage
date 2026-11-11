@@ -189,7 +189,9 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     project.write(
       ".ai/debt.md",
-      `# Debt\n\n## Long entry\n\n${Array.from({ length: 80 }, () => "word").join(" ")}\n`,
+      `# Debt\n\n## Long entry\n\n${Array.from({ length: 80 }, () => {
+        return "word";
+      }).join(" ")}\n`,
     );
 
     const {

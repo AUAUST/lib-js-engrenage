@@ -134,7 +134,11 @@ export function checkIssueReadiness(
     if (openSections.length > 0 && !asksQuestions) {
       findings.push({
         rule: "stale-field",
-        message: `${blockersField} lacks \`${openQuestionsOption}\` although ${openSections.map((name) => `**${name}**`).join(" and ")} is open: set the field.`,
+        message: `${blockersField} lacks \`${openQuestionsOption}\` although ${openSections
+          .map((name) => {
+            return `**${name}**`;
+          })
+          .join(" and ")} is open: set the field.`,
       });
     } else if (openSections.length === 0 && asksQuestions) {
       findings.push({

@@ -142,7 +142,7 @@ export interface AuaustRules {
    */
   "auaust/no-commonjs"?: Rule<AuaustNoCommonjs>;
   /**
-   * Use a block body with an explicit return; concise bodies are only for a short identifier, literal, member access, negation, comparison, call, template literal, array of identifiers, literals or member accesses, or one of those asserted `as const`. Use a block body with an explicit return; a concise body stays whole on the line of its `=>`.
+   * Use a block body with an explicit return; concise bodies are only for a short identifier, literal, member access, negation, comparison, call, template literal, array of identifiers, literals or member accesses, or one of those asserted `as const`. Use a block body with an explicit return; a concise body stays whole on the line of its `=>`. Use a block body with an explicit return; a concise arrow stays on a line within the line width.
    */
   "auaust/no-complex-concise-arrows"?: Rule<[]>;
   /**

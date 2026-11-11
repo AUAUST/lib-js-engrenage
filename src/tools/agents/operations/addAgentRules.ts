@@ -30,7 +30,11 @@ export async function addAgentRules(
 
     if (!templates.some((template) => template.name === name)) {
       throw new Error(
-        `Unknown agent rule "${name}". Available rules: ${templates.map((template) => template.name).join(", ")}`,
+        `Unknown agent rule "${name}". Available rules: ${templates
+          .map((template) => {
+            return template.name;
+          })
+          .join(", ")}`,
       );
     }
   }

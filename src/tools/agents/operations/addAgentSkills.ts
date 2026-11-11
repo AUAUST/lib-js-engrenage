@@ -18,7 +18,11 @@ export async function addAgentSkills(
   for (const name of names) {
     if (!templates.some((template) => template.name === name)) {
       throw new Error(
-        `Unknown agent skill "${name}". Available skills: ${templates.map((template) => template.name).join(", ")}`,
+        `Unknown agent skill "${name}". Available skills: ${templates
+          .map((template) => {
+            return template.name;
+          })
+          .join(", ")}`,
       );
     }
   }

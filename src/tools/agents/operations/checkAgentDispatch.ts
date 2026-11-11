@@ -37,5 +37,9 @@ export async function checkAgentDispatch(
 
   return findings.length === 0
     ? undefined
-    : `#${issue.number} is not ready for a ${role}:\n${findings.map(({ message }) => `- ${message}`).join("\n")}`;
+    : `#${issue.number} is not ready for a ${role}:\n${findings
+        .map(({ message }) => {
+          return `- ${message}`;
+        })
+        .join("\n")}`;
 }
