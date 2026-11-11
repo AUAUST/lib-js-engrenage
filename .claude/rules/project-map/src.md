@@ -57,6 +57,7 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
    ├─ builtins*  List every built-in extension.
    ├─ cli  Compose command definitions and their execution context.
    ├─ config*  Compose and validate the complete project configuration.
+   ├─ extensions*  The extension author's surface: `defineExtension` and the contracts extensions implement and read.
    ├─ gate  Coordinate commit and agent verification gates.
    ├─ init  Initialize projects through ordered setup steps.
    └─ sync  Sync the package manifest and check its publishing.

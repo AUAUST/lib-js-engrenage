@@ -3,6 +3,7 @@ import {
   check,
   custom,
   exactOptional,
+  instance,
   intersect,
   literal,
   looseObject,
@@ -99,6 +100,8 @@ export const extensionSchema: GenericSchema<unknown, Extension> = looseObject({
   title: exactOptional(string()),
   requires: exactOptional(array(string())),
   when: exactOptional(looseObject({ installed: string() })),
+  root: exactOptional(instance(URL)),
+  compatibility: exactOptional(looseObject({ engrenage: string() })),
   owns: exactOptional(ownsSchema),
   contributes: exactOptional(contributesSchema),
 });

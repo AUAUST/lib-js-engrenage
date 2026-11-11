@@ -13,7 +13,7 @@ import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { LoadedConfig } from "#project/config/index";
+import type { Extension, LoadedConfig } from "#project/config/index";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { File } from "#types/File";
@@ -55,11 +55,28 @@ async function syncAttributionRules(config: {
   }
 }
 
-export async function syncAgentFiles({ resolve, context }: LoadedConfig) {
+async function listActiveExtensions(
+  config: LoadedConfig,
+): Promise<readonly Extension[]> {
+  const { extensions } = config.context.registry;
+
+  const active = await Promise.all(
+    extensions.map(({ name }) => {
+      return config.context.registry.isActive(name, config);
+    }),
+  );
+
+  return extensions.filter((_, index) => active[index]);
+}
+
+export async function syncAgentFiles(loaded: LoadedConfig) {
+  const { resolve, context } = loaded;
+
   const config = {
     filesystem: context.filesystem,
     resolve: context.path,
     agents: await resolve("agents"),
+    extensions: await listActiveExtensions(loaded),
   };
 
   if ((config.agents.preferred?.length ?? 0) === 0) {
@@ -181,7 +198,9 @@ export async function syncAgentFiles({ resolve, context }: LoadedConfig) {
     }
   }
 
-  for (const { file, reference, frontmatter } of await getRuleTemplates()) {
+  for (const { file, reference, frontmatter } of await getRuleTemplates(
+    config.extensions,
+  )) {
     generate(file, reference, frontmatter);
   }
 

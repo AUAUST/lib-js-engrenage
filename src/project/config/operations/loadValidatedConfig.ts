@@ -5,6 +5,7 @@ import type { Directory } from "#types/Directory";
 
 const validated = new WeakSet<LoadedConfig>();
 
+/** @stable */
 export async function loadValidatedConfig(
   cwd?: Directory | URL,
   options?: { searchParents?: boolean },

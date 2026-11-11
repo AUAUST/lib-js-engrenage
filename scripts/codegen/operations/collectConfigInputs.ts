@@ -66,6 +66,7 @@ function childrenOf(schema: ConfigSchema): ConfigSchema[] {
 
 function countObjects(root: ConfigSchema): Map<ConfigSchema, number> {
   const counts = new Map<ConfigSchema, number>();
+  const ancestors = new Set<ConfigSchema>();
 
   function visit(schema: ConfigSchema) {
     const members = isUnionConfigSchema(schema) && !("pipe" in schema)
@@ -82,9 +83,17 @@ function countObjects(root: ConfigSchema): Map<ConfigSchema, number> {
       }
     }
 
+    if (ancestors.has(schema)) {
+      return;
+    }
+
+    ancestors.add(schema);
+
     for (const child of [...childrenOf(schema), ...members]) {
       visit(child);
     }
+
+    ancestors.delete(schema);
   }
 
   visit(root);

@@ -6,6 +6,7 @@ import type { FileResource } from "#project/config/types/FileResource";
 import type { KeyDeclaration } from "#project/config/types/KeyDeclaration";
 import type { PackageName } from "#types/PackageName";
 
+/** @stable */
 export interface Extension extends ExtensionShape<
   {
     readonly keys?: Readonly<Record<string, KeyDeclaration>>;
@@ -17,4 +18,7 @@ export interface Extension extends ExtensionShape<
     readonly [Slot in keyof Engrenage.Slots]?: readonly Engrenage.Slots[Slot][];
   },
   { readonly installed: PackageName }
-> {}
+> {
+  readonly root?: URL;
+  readonly compatibility?: { readonly engrenage: string };
+}

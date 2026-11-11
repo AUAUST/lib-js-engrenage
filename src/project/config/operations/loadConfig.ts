@@ -76,6 +76,7 @@ function refresh(root: Directory): void {
 }
 
 // @debt `refresh` rides on `loadConfig` because an operations module exports one name and both need the cache; a role for module-level state would let it stand alone
+/** @stable */
 export const loadConfig = assign(load, {
   refresh,
 });

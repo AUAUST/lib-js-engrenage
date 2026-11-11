@@ -2,6 +2,7 @@ import type { EntryShape } from "#foundation/extensions/index";
 import type { GateRun } from "#project/gate/ports/GateRun";
 import type { GateStage } from "#project/gate/ports/GateStage";
 
+/** @experimental */
 export interface GateStepEntry extends EntryShape {
   readonly name: string;
   readonly stage: GateStage;

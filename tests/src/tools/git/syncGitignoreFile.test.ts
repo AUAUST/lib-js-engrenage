@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage/extensions";
 import { syncGitignoreFile } from "@auaust/engrenage/git";
 import { defaultIgnores } from "@auaust/engrenage/git/constants";
 import { map } from "@auaust/primitive-kit/arrays";

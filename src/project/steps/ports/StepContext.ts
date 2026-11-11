@@ -12,6 +12,7 @@ import type { Prompter } from "#project/steps/ports/Prompter";
 import type { Invocation } from "#project/steps/types/Invocation";
 import type { PackageName } from "#types/PackageName";
 
+/** @experimental */
 export interface StepContext
   extends
     LoadedConfig,

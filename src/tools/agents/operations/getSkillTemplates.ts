@@ -13,14 +13,17 @@ import {
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { createHookCommand } from "#tools/agents/utils/createHookCommand";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
+import type { Extension } from "#project/config/index";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { File } from "#types/File";
 
 export async function getSkillTemplates({
   agents,
+  extensions,
 }: {
   agents: ResolvedAgents;
+  extensions?: readonly Extension[];
 }) {
   const preferred = agents.preferred ?? [];
 
@@ -28,7 +31,7 @@ export async function getSkillTemplates({
     throw new Error("Skills need agents.preferred in engrenage.config.ts");
   }
 
-  const templates = await getSkillDefinitions();
+  const templates = await getSkillDefinitions(extensions);
 
   return templates.map((template) => {
     const { invocation, agent, name, description, reference, body } = template;

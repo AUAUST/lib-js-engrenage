@@ -8,6 +8,7 @@ export type * from "#project/config/types/Definition";
 export type * from "#project/config/types/DefinitionOptions";
 export type * from "#project/config/types/Environment";
 export type * from "#project/config/types/Extension";
+export type * from "#project/config/types/ExtensionOption";
 export type * from "#project/config/types/ExtensionSections";
 export type * from "#project/config/types/FileLocation";
 export type * from "#project/config/types/FileResource";
@@ -51,6 +52,7 @@ export { resourcesSection } from "#project/config/config/sections/resourcesSecti
 // @end
 
 // @barrel config/schemas/*.ts named
+export { extensionOptionSchema } from "#project/config/config/schemas/extensionOptionSchema";
 export { extensionSchema } from "#project/config/config/schemas/extensionSchema";
 export { extensionsSchema } from "#project/config/config/schemas/extensionsSchema";
 // @end

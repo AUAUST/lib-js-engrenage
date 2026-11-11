@@ -7,6 +7,7 @@ import type { Declaration } from "#foundation/options/types/Declaration";
 import type { Description } from "#foundation/options/types/Description";
 import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
 
+/** @stable */
 export function declareManagedList<Item extends string>(
   item: GenericSchema<Item>,
   options: {

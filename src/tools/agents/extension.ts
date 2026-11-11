@@ -1,7 +1,6 @@
 import { agentRuntimeEntry, agentsTarget } from "#tools/agents/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
-// @debt should consider a `declareExtension` utility that simplifies the declaration
 export default {
   name: "tools/agents",
   owns: {
@@ -11,7 +10,6 @@ export default {
     keys: {
       agents: {
         input: "agents",
-        // @debt consider a more concise way to load sections given all sections follow a similar import pattern; defineLazyCommand() might serve as a ref; maybe a shared small lazy loader utility is worth it so formalise the pattern
         async load() {
           const {
             agentsSection,

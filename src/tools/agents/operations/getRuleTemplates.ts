@@ -1,9 +1,10 @@
 import { ruleFrontmatterKeys } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
+import type { Extension } from "#project/config/index";
 
-export async function getRuleTemplates() {
-  const templates = await getInstructionTemplates("rules");
+export async function getRuleTemplates(extensions?: readonly Extension[]) {
+  const templates = await getInstructionTemplates("rules", extensions);
 
   return templates.map((template) => {
     const { name, paths, reference, body } = template;

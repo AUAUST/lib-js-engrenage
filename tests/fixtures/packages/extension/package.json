@@ -1,0 +1,11 @@
+{
+  "name": "@fixtures/engrenage-extension",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./agents/rules/*.md": "./agents/rules/*.md"
+  },
+  "peerDependencies": {
+    "@auaust/engrenage": "*"
+  }
+}

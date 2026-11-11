@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "target": "esnext",
+    "lib": ["esnext"],
+    "types": ["node"],
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    // @debt c12 type-imports its optional peer giget, which fails `skipLibCheck: false` (`.ai/backlog/c12.md` §1)
+    "skipLibCheck": true
+  },
+  "files": ["index.ts"]
+}

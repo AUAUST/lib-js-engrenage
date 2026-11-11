@@ -2,7 +2,7 @@ import { mkdirSync } from "node:fs";
 
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage/extensions";
 import {
   components,
   createRolePreset,

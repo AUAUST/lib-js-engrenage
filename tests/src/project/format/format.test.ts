@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage/extensions";
 import { formatContent, formatFile } from "@auaust/engrenage/format";
 import { formatWithPrettier } from "@auaust/engrenage/prettier";
 

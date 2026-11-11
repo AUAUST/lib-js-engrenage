@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { array, literal, looseObject, strictObject, string } from "valibot";
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage/extensions";
 import { validate } from "@auaust/engrenage/options/internals";
 import { syncVscodeFiles } from "@auaust/engrenage/vscode";
 import { map } from "@auaust/primitive-kit/arrays";

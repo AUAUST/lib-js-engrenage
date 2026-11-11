@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { syncAgentFiles } from "@auaust/engrenage/agents";
 import { syncCodexFiles } from "@auaust/engrenage/agents/codex";
-import { loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage/extensions";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 

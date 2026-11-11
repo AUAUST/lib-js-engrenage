@@ -15,7 +15,10 @@ import { mappedValues } from "@auaust/toolkit/mappedValues";
 
 import { globsSchema } from "#foundation/options/index";
 import { buildToolNameSchema } from "#project/build/index";
-import { extensionSchema, type LoadedConfig } from "#project/config/index";
+import {
+  extensionOptionSchema,
+  type LoadedConfig,
+} from "#project/config/index";
 import { formatterNameSchema } from "#project/format/index";
 import { presetNameSchema } from "#project/presets/index";
 import { roleFileResolverSchema, roleRulesSchema } from "#project/roles/index";
@@ -50,7 +53,7 @@ const externalTypes = new Map<string, TypeSource>([
   ["ListOption", { domain: "foundation/options", specifier: undefined }],
   ["ManagedListOption", { domain: "foundation/options", specifier: undefined }],
   ["GlobalsFactory", { domain: "project/environments", specifier: undefined }],
-  ["Extension", { domain: "project/config", specifier: undefined }],
+  ["ExtensionOption", { domain: "project/config", specifier: undefined }],
   [
     "EffectModuleResolver",
     { domain: "project/structure", specifier: undefined },
@@ -136,10 +139,6 @@ function resolveType(schema: ConfigSchema): string | undefined {
 
   if (schema === roleRulesSchema) {
     return "RoleRules";
-  }
-
-  if (schema === extensionSchema) {
-    return "Extension";
   }
 
   // @debt every other custom schema is read as `GlobalsFactory`; each named custom schema should map to its own type
@@ -239,6 +238,10 @@ function overrideSchema({
   valibotSchema,
   jsonSchema,
 }: Pick<OverrideSchemaContext, "valibotSchema" | "jsonSchema">) {
+  if (valibotSchema === extensionOptionSchema) {
+    return withType({}, "ExtensionOption");
+  }
+
   const tsType = resolveType(valibotSchema);
 
   if (tsType !== undefined) {
@@ -290,6 +293,10 @@ async function render(
       typeMode: "input",
       overrideSchema: createOverride(names),
       overrideRef({ valibotSchema }) {
+        if (valibotSchema === extensionOptionSchema) {
+          return `${namedReference}ExtensionOption`;
+        }
+
         const referenced = names.get(getCoreConfigSchema(valibotSchema));
 
         return referenced === undefined

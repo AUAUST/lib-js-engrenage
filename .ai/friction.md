@@ -35,3 +35,6 @@
 - PreToolUse Bash hook (`gh issue edit`): wrote the body with a heredoc and ran `gh issue edit --body-file -` in one command — the PreToolUse hook checks the body file exists before the command runs; wrote it first with Write
 - zsh `grep --include=*.ts`: unquoted glob in Bash calls, twice — zsh "no matches found" aborts the command; quoted the pattern
 - `git ls-files --others --ignored --directory`: list ignored paths — skips untracked directories and fails inside a nested ignored base; used `git status --porcelain --ignored=matching --untracked-files=normal` from the repository root
+- `timeout`: bounded `pnpm view` — not installed on macOS; ran without it
+- `npx tsc`: type-check one tsconfig — npm refuses the repo's pnpm `devEngines` (EBADDEVENGINES); ran `node node_modules/typescript/bin/tsc`
+- zsh `grep --include=*.ts`: unquoted glob — zsh "no matches found" aborts the command; dropped the flag

@@ -20,6 +20,7 @@ import type { ObjectDeclaration } from "#foundation/options/types/ObjectDeclarat
 import type { ObjectInput } from "#foundation/options/types/ObjectInput";
 import type { ObjectResolution } from "#foundation/options/types/ObjectResolution";
 
+/** @stable */
 export function declareObject<
   const Entries extends DeclarationEntries,
   Optional = never,

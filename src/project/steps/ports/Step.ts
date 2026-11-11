@@ -1,5 +1,6 @@
 import type { StepContext } from "#project/steps/ports/StepContext";
 
+/** @experimental */
 export interface Step {
   name: string;
   message?: string;

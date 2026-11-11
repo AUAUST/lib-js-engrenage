@@ -8,8 +8,8 @@ The extension registry and extension declarations.
 - why: `ExtensionShape` types `owns` and `contributes` as `object`, so reads cast them; the slot policy union is restated twice; per-kind and per-slot maps erase declaration and entry types. Related: #331.
 - want: typed declarations and entries through the registry; one slot policy union.
 
-## 2. Extension declarations repeat boilerplate
+## 2. The tsc constant is re-exported only for its extension
 
-- sites: `src/tools/agents/extension.ts:7`, `:18`, `src/tools/typescript/tsc/constants.ts:1`
-- why: no `declareExtension` helper for one or many definitions; section loading repeats one import pattern; the tsc constant is re-exported only so the extension can import it.
-- want: a shared declaration helper and lazy section loader; the extension imports the constant from its owner.
+- sites: `src/tools/typescript/tsc/constants.ts:1`
+- why: `roles/extension/extension-imports` keeps the extension from importing `typescript` from `#constants`, so the domain re-exports it.
+- want: the extension imports the constant from its owner.

@@ -9,6 +9,7 @@ import type { Description } from "#foundation/options/types/Description";
 import type { ListOption } from "#foundation/options/types/ListOption";
 
 // @debt resolveListOption warns on the console, which a pure `utils/` function should not do
+/** @stable */
 export function declareList<Item extends string, Context = unknown>(
   item: GenericSchema<Item>,
   options: {

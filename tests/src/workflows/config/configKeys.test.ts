@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, test } from "vitest";
 
-import type { LoadedConfig } from "@auaust/engrenage/config";
+import type { LoadedConfig } from "@auaust/engrenage/extensions";
 
 function readKeys(config: LoadedConfig) {
   expectTypeOf(config.resolve("git")).resolves.toHaveProperty("gitignore");

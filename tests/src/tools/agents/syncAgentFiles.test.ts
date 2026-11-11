@@ -6,7 +6,7 @@ import {
   resolveAgentReference,
   syncAgentFiles,
 } from "@auaust/engrenage/agents";
-import { loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage/extensions";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";

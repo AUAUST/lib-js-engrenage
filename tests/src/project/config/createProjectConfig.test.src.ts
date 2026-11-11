@@ -22,6 +22,8 @@ import type { Extension } from "#project/config/types/Extension";
 
 import * as builtins from "#workflows/builtins/entry";
 
+import manifest from "#package.json" with { type: "json" };
+
 const fixture = { name: "external-fixture" };
 
 const gatedSchema = declare(boolean(), {
@@ -129,6 +131,33 @@ describe("createProjectConfig", () => {
   test("registers the built-ins without listed extensions", () => {
     expect(createConfig({}).context.registry.extensions).toEqual(
       values(builtins).flat(),
+    );
+  });
+
+  test("collects nested extension lists flattened in listed order", () => {
+    const [a, b, c] = ["a", "b", "c"].map((name) => {
+      return { name };
+    });
+
+    const listed = createConfig({
+      extensions: [[a, b], c],
+    }).context.registry.extensions.slice(-3);
+
+    expect(listed).toEqual([a, b, c]);
+  });
+
+  test("rejects an extension incompatible with the running engrenage, naming both versions", () => {
+    expect(() => {
+      return createConfig({
+        extensions: [
+          {
+            name: "future",
+            compatibility: { engrenage: "^99" },
+          },
+        ],
+      });
+    }).toThrow(
+      `future requires engrenage ^99, but ${manifest.version} is installed`,
     );
   });
 

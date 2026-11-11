@@ -1,4 +1,13 @@
-import { includes, isNotEmpty, map } from "@auaust/primitive-kit/arrays";
+import satisfies from "semver/functions/satisfies.js";
+import validRange from "semver/ranges/valid.js";
+
+import {
+  flatMap,
+  includes,
+  isNotEmpty,
+  map,
+} from "@auaust/primitive-kit/arrays";
+import { isArray } from "@auaust/toolkit/isArray";
 import { freeze, keys, values } from "@auaust/toolkit/object";
 
 import { collectExtensions } from "#foundation/extensions/index";
@@ -20,12 +29,54 @@ import type { ConfigResolver } from "#project/config/types/ConfigResolver";
 import type { ConfigSections } from "#project/config/types/ConfigSections";
 import type { ConfigSlots } from "#project/config/types/ConfigSlots";
 import type { Extension } from "#project/config/types/Extension";
+import type { ExtensionOption } from "#project/config/types/ExtensionOption";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { RawConfig } from "#project/config/types/RawConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 import * as builtins from "#workflows/builtins/entry";
+
+import manifest from "#package.json" with { type: "json" };
+
+// @debt toolkit's `isArray` narrows to `any[]`, which a readonly list is not assignable to, so a local guard restates it
+function isExtensionList(
+  option: ExtensionOption,
+): option is readonly ExtensionOption[] {
+  return isArray(option);
+}
+
+function checkCompatibility(extensions: readonly Extension[]): void {
+  const findings = flatMap(extensions, ({ name, compatibility }) => {
+    if (compatibility === undefined) {
+      return [];
+    }
+
+    const range = compatibility.engrenage;
+
+    if (validRange(range) === null) {
+      return [`${name} declares the invalid engrenage range "${range}"`];
+    }
+
+    return satisfies(manifest.version, range, { includePrerelease: true })
+      ? []
+      : [
+          `${name} requires engrenage ${range}, but ${manifest.version} is installed`,
+        ];
+  });
+
+  if (isNotEmpty(findings)) {
+    throw new Error(`Incompatible extensions:\n${findings.join("\n")}`);
+  }
+}
+
+function flattenExtensions(
+  options: readonly ExtensionOption[],
+): readonly Extension[] {
+  return flatMap(options, (option) => {
+    return isExtensionList(option) ? flattenExtensions(option) : [option];
+  });
+}
 
 export function createProjectConfig({
   root,
@@ -50,8 +101,12 @@ export function createProjectConfig({
     "extensions",
   );
 
+  const extensions = flattenExtensions(listed);
+
+  checkCompatibility(extensions);
+
   const registry = collectExtensions<Extension, ConfigResolver>(
-    [...values(builtins), ...listed],
+    [...values(builtins), ...extensions],
     {
       slotKind: "slots",
       async isActive({ when }, config): Promise<boolean> {

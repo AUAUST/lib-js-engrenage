@@ -28,3 +28,5 @@
 - classify role-holding directories as domains: entry-only domains (#430) — a misplaced role directory silently becomes a domain; namespace option instead
 - config key reset registry: hide `forget` from every LoadedConfig holder but project/sync — needs module-level state shared by createProjectConfig and a second export, beyond the issue
 - eslint cache: speed up repo-wide lint with `--cache` — type-aware and cross-file structure rules make cached results stale; dropped for good
+- fixed fragment layout `<root>/data/agents/<kind>`: list an extension's agent fragments — its references must resolve through the package's exports, so the `./agents/<kind>/*.md` export is the authoritative location
+- hand-rolled semver range matching: extension `compatibility` check — `semver` is already installed through typescript-eslint

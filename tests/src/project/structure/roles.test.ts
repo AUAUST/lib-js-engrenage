@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
+import { loadConfig } from "@auaust/engrenage/extensions";
 import { createRolePreset, utils } from "@auaust/engrenage/roles";
 import { keys } from "@auaust/toolkit/object";
 

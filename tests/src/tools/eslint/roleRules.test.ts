@@ -1,8 +1,8 @@
 import { ESLint } from "eslint";
 import { describe, expect, onTestFinished, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/config";
 import { createEslintConfig, defineRoleRule } from "@auaust/engrenage/eslint";
+import { loadConfig } from "@auaust/engrenage/extensions";
 import { entry } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

@@ -77,7 +77,8 @@
       "@auaust/engrenage/vscode": ["./src/tools/vscode/entry.ts"],
       "@auaust/engrenage/vscode/constants": ["./src/tools/vscode/constants.ts"],
       "@auaust/engrenage/builtins": ["./src/workflows/builtins/entry.ts"],
-      "@auaust/engrenage/config": ["./src/workflows/config/entry.ts"]
+      "@auaust/engrenage/config": ["./src/workflows/config/entry.ts"],
+      "@auaust/engrenage/extensions": ["./src/workflows/extensions/entry.ts"]
     }
   },
   "files": [],

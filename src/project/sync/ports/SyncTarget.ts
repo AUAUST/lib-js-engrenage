@@ -3,6 +3,7 @@ import type { SyncDone } from "#project/sync/ports/SyncDone";
 import type { SyncRun } from "#project/sync/ports/SyncRun";
 import type { SyncStage } from "#project/sync/ports/SyncStage";
 
+/** @experimental */
 export interface SyncTarget extends EntryShape {
   readonly name: string;
   readonly stage: SyncStage;
