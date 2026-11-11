@@ -8,6 +8,7 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
 
+/** @experimental */
 export interface StructureNode {
   readonly path: Directory;
   readonly name: string;

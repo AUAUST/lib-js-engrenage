@@ -24,7 +24,30 @@ export type {
   GateStage,
   GateStepEntry,
 } from "#project/gate/index";
+export type {
+  RoleFileResolver,
+  RoleLocation,
+  RoleLocationMember,
+  RoleRuleLoader,
+  RoleRuleModule,
+  RoleRules,
+} from "#project/roles/index";
 export type { Prompter, Step, StepContext } from "#project/steps/index";
+export type {
+  CardinalityViolation,
+  EnvironmentFileNames,
+  EnvironmentStructure,
+  ResolvedRoleContract,
+  ResolvedRoleExports,
+  ResolvedStructure,
+  StructureKind,
+  StructureMirror,
+  StructureNode,
+  StructureRelation,
+  StructureRole,
+  StructureSource,
+  UnclassifiedReason,
+} from "#project/structure/index";
 export type {
   SyncDone,
   SyncFlags,

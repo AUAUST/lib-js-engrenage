@@ -3,6 +3,7 @@ import type { ResolvedRoleExports } from "#project/structure/types/ResolvedRoleE
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
+/** @experimental */
 export interface ResolvedRoleContract {
   readonly file: Glob | Globs | RoleFileResolver | undefined;
   readonly fileDescription: string | undefined;

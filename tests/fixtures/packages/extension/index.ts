@@ -6,6 +6,7 @@ import {
   defineExtension,
   type FileLocation,
   type LoadedConfig,
+  type StructureNode,
   type SyncFlags,
   type SyncRun,
 } from "@auaust/engrenage/extensions";
@@ -49,6 +50,40 @@ async function writeLabel(config: LoadedConfig, flags: SyncFlags) {
   }
 }
 
+function listPublicDomains(node: StructureNode): readonly StructureNode[] {
+  const nested = node.children.flatMap(listPublicDomains);
+
+  return node.kind === "domain" && node.public === true
+    ? [node, ...nested]
+    : nested;
+}
+
+async function writeDomains(config: LoadedConfig) {
+  const structure = await config.resolve("structure");
+
+  const source = structure.src;
+
+  if (source === undefined) {
+    return;
+  }
+
+  const collected = Object.entries(source.roles)
+    .filter(([, role]) => role.contract.collected)
+    .map(([name]) => name);
+
+  const domains = listPublicDomains(source.root).map((domain) => {
+    return {
+      path: domain.path,
+      roles: collected.filter((role) => domain.roleFiles?.[role] !== undefined),
+    };
+  });
+
+  await config.context.filesystem.write(
+    "fixture-output/domains.json",
+    `${JSON.stringify(domains)}\n`,
+  );
+}
+
 const input = {
   fixture: { label: "typed" },
 } satisfies Engrenage.ConfigInput;
@@ -89,6 +124,12 @@ export default defineExtension({
         flags: { write: "write fixture-output/label.txt" },
         produces: ["fixture.output"],
         load: async (): Promise<SyncRun> => writeLabel,
+      },
+      {
+        name: "fixture-structure",
+        stage: "write",
+        produces: ["fixture.output"],
+        load: async (): Promise<SyncRun> => writeDomains,
       },
     ],
   },

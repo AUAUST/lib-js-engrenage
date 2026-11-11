@@ -1,3 +1,4 @@
+/** @experimental */
 export type StructureKind =
   | "namespace"
   | "domain"

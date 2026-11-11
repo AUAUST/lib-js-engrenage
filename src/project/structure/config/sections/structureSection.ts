@@ -1,4 +1,4 @@
-import { freeze, record } from "@auaust/toolkit/object";
+import { freeze, record, values } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
 import {
@@ -16,6 +16,7 @@ import type { ConfigResolver } from "#project/config/index";
 import type { EnvironmentStructureOption } from "#project/structure/ports/EnvironmentStructureOption";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
+import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { TestsContext } from "#project/structure/types/TestsContext";
 
 interface StructuredEnvironment {
@@ -81,6 +82,65 @@ async function resolveStructure(
   });
 }
 
+function freezeNode(node: StructureNode): StructureNode {
+  for (const child of node.children) {
+    freezeNode(child);
+  }
+
+  for (const files of values(node.roleFiles ?? {})) {
+    freeze(files);
+  }
+
+  for (const globs of values(node.fileNames ?? {})) {
+    freeze(globs);
+  }
+
+  for (const violation of node.cardinality ?? []) {
+    freeze(violation.files);
+    freeze(violation.globs);
+    freeze(violation);
+  }
+
+  for (const nested of [
+    node.children,
+    node.layers,
+    node.mirror,
+    node.strays,
+    node.roleFiles,
+    node.fileNames,
+    node.cardinality,
+  ]) {
+    if (nested !== undefined) {
+      freeze(nested);
+    }
+  }
+
+  return freeze(node);
+}
+
+// @debt the role contracts keep the `file`, `accepts`, `roles` and `rules` values of their definitions unfrozen, since freezing them in place would freeze caller-owned preset values
+function freezeEnvironment(
+  structure: EnvironmentStructure | undefined,
+): EnvironmentStructure | undefined {
+  if (structure === undefined) {
+    return;
+  }
+
+  freezeNode(structure.root);
+
+  for (const role of values(structure.roles)) {
+    freeze(role.files);
+    freeze(role.ignores);
+    freeze(role);
+  }
+
+  freeze(structure.dirs);
+  freeze(structure.unclassified);
+  freeze(structure.roles);
+
+  return freeze(structure);
+}
+
 function mirrorOf({ option }: StructuredEnvironment): boolean | undefined {
   return option.enabled ? option.mirror : undefined;
 }
@@ -137,7 +197,7 @@ export const structureSection = declareSection({
     return freeze(
       record(
         structured.map(({ name }) => {
-          return [name, structures.get(name)] as const;
+          return [name, freezeEnvironment(structures.get(name))] as const;
         }),
       ),
     );
