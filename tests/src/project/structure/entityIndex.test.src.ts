@@ -151,6 +151,8 @@ describe("createEntityIndex", () => {
       surface: [
         "#project/feature/index",
         "#project/feature/errors/*",
+        "#project/feature/constants",
+        "library/feature/constants",
         "library/feature",
       ],
     });

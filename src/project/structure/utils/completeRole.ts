@@ -2,6 +2,7 @@ import { isString } from "@auaust/toolkit/isString";
 import { freeze } from "@auaust/toolkit/object";
 
 import { roleContractDefaults } from "#project/roles/constants";
+import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoleExports } from "#project/structure/types/ResolvedRoleExports";
 import type { RoleDefinition } from "#project/structure/types/RoleDefinition";
@@ -37,6 +38,21 @@ export function completeRole(
     );
   }
 
+  const visible = definition.public ?? roleContractDefaults.public;
+  const subpath = definition.subpath ?? roleContractDefaults.subpath;
+
+  if (subpath && listStaticFileGlobs(definition.file).length === 0) {
+    throw new Error(
+      `The role ${name} sets \`subpath\` without static \`file\` names or globs: only those match files at a domain's root`,
+    );
+  }
+
+  if (subpath && !visible) {
+    throw new Error(
+      `The role ${name} sets \`subpath\` but is not public: a package subpath is a public import`,
+    );
+  }
+
   return freeze({
     file: definition.file,
     fileDescription: definition.fileDescription,
@@ -49,7 +65,8 @@ export function completeRole(
     rules: definition.rules,
     nesting: definition.nesting ?? roleContractDefaults.nesting,
     index: definition.index ?? roleContractDefaults.index,
-    public: definition.public ?? roleContractDefaults.public,
+    public: visible,
+    subpath,
     collected: definition.collected ?? roleContractDefaults.collected,
     discovered: definition.discovered ?? roleContractDefaults.discovered,
     scoped: definition.scoped ?? roleContractDefaults.scoped,

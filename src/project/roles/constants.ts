@@ -26,6 +26,7 @@ export const roleContractDefaults = freeze({
   strict: false,
   unique: false,
   required: false,
+  subpath: false,
 } as const);
 
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type

@@ -557,6 +557,20 @@ describe("inline roles", () => {
     ).rejects.toThrow("The type-only role shapes exports values");
   });
 
+  test("fail when exposed as subpaths without being public", async () => {
+    const roles = renderCodeRoles(
+      createRolePreset({
+        name: "symbols",
+        file: ["symbols.ts"],
+        subpath: true,
+      })(),
+    );
+
+    await expect(
+      describeProject(`{ src: { roles: ${roles} } }`),
+    ).rejects.toThrow("The role symbols sets `subpath` but is not public");
+  });
+
   test("of a namespace are active only in its subtree", async () => {
     const nodes = await describeProject(`{
       src: {

@@ -7,4 +7,5 @@ export const constants = createRolePreset({
   file: ["constants.ts"],
   effects: "pure",
   public: true,
+  subpath: true,
 });

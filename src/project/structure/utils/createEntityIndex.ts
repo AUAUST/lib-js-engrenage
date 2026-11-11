@@ -93,7 +93,6 @@ export function createEntityIndex({
     }
   }
 
-  // @debt public file roles (`constants.ts`) are left out of the surface, since the structure does not record which of them a domain holds
   function surfaceOf(node: StructureNode, environment: EnvironmentStructure) {
     const extension = extname(environment.indexFile);
     const entry = publicEntries.get(`${node.path}/${environment.entryFile}`);
@@ -111,6 +110,18 @@ export function createEntityIndex({
         return getAliasSpecifier(specifiers, `${child.path}/*${extension}`);
       });
 
+    const roleFiles = entries(node.roleFiles ?? {}).flatMap(([role, files]) => {
+      return rolesOf(environment.name).roles[role]?.public ? files : [];
+    });
+
+    const packaged = roleFiles.map((file) => {
+      const subpath = publicEntries.get(file);
+
+      return subpath === undefined || packageName === undefined
+        ? undefined
+        : `${packageName}${subpath.slice(selfSubpath.length)}`;
+    });
+
     return freeze(
       [
         getAliasSpecifier(
@@ -118,6 +129,8 @@ export function createEntityIndex({
           posix.join(node.path, environment.indexFile),
         ),
         ...roles,
+        ...roleFiles.map((file) => getAliasSpecifier(specifiers, file)),
+        ...packaged,
         entry === undefined || packageName === undefined
           ? undefined
           : `${packageName}${entry.slice(selfSubpath.length)}`,

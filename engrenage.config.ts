@@ -201,13 +201,14 @@ export default defineConfig({
   src: {
     node: 24,
     roles: [index(), entrypoint(), extension(), ...codeRoles],
-    // @debt `./config` resolves to `workflows/config` but `./config/constants` to `project/config`, and the constants subpaths are hand-listed beside the derived domain entries
+    // @debt `./config/constants` resolves to `project/config` while `./config` is `workflows/config`, and the constants of the internal domains jscpd, lefthook and shopify are hand-listed
     exports: {
       ".": "src/entry.ts",
       "./constants": "src/constants.ts",
-      "./*/constants": "src/tools/*/constants.ts",
-      "./agents/*/constants": "src/tools/agents/*/constants.ts",
       "./config/constants": "src/project/config/constants.ts",
+      "./jscpd/constants": "src/tools/jscpd/constants.ts",
+      "./lefthook/constants": "src/tools/lefthook/constants.ts",
+      "./shopify/constants": "src/tools/shopify/constants.ts",
     },
     generated: [
       // @debt this list of generated files is a signal we miss a pattern to describe generated files, *or* that declaring them isn't necessary if the only effect is to disable prettier but we already generate them properly formatted.

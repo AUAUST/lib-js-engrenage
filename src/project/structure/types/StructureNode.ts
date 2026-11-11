@@ -26,6 +26,7 @@ export interface StructureNode {
   readonly mirror?: StructureMirror;
   readonly reason?: UnclassifiedReason;
   readonly strays?: readonly Directory[];
+  readonly roleFiles?: Readonly<Record<string, readonly File[]>>;
   readonly cardinality?: readonly CardinalityViolation[];
   readonly twin?: File;
   readonly fileNames?: Readonly<Record<string, Globs>>;

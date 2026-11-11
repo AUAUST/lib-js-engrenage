@@ -90,6 +90,10 @@ export function declareRoleContractEntries<Nested>(
       ],
       optional: describedDefault(roleContractDefaults.public),
     }),
+    subpath: declare(boolean(), {
+      description: "Whether each of its files at a public domain's root is a package subpath, `<domain subpath>/<file name without extension>`. Needs a public role with static `file` names or globs.",
+      optional: describedDefault(roleContractDefaults.subpath),
+    }),
     collected: declare(boolean(), {
       description: "Whether its public modules stay importable inside sub-domains, without going through their parent domains' surfaces, so one module can collect them all.",
       optional: describedDefault(roleContractDefaults.collected),

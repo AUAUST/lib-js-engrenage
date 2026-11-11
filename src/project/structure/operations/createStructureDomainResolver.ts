@@ -1,6 +1,6 @@
 import { extname, join, matchesGlob } from "node:path";
 
-import { entries, keys, values } from "@auaust/toolkit/object";
+import { entries, freeze, keys, values } from "@auaust/toolkit/object";
 
 import {
   domainMetadataFile,
@@ -19,6 +19,21 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 type DomainDeclaration = StructureOptions["domains"][string];
+
+// @debt `getStructureCardinality` groups the same assignments by role again; it could take these groups instead
+function groupRoleFiles(
+  assigned: readonly (readonly [File, string | undefined])[],
+): Readonly<Record<string, readonly File[]>> {
+  const grouped: Record<string, File[]> = {};
+
+  for (const [file, role] of assigned) {
+    if (role !== undefined) {
+      (grouped[role] ??= []).push(file);
+    }
+  }
+
+  return freeze(grouped);
+}
 
 export function createStructureDomainResolver({
   filesystem,
@@ -109,21 +124,22 @@ export function createStructureDomainResolver({
       undefined,
     ).filter(constrainsFileRole);
 
+    const assigned = files.map((file) => {
+      return [
+        join(path, file),
+        matchFileRole(file, {
+          named: [],
+          enclosing: undefined,
+          roles,
+        }),
+      ] as const;
+    });
+
     const cardinality = commands
       ? {}
-      : getStructureCardinality(
-          files.map((file) => {
-            return [
-              join(path, file),
-              matchFileRole(file, {
-                named: [],
-                enclosing: undefined,
-                roles,
-              }),
-            ] as const;
-          }),
-          owned,
-        );
+      : getStructureCardinality(assigned, owned);
+
+    const roleFiles = groupRoleFiles(assigned);
 
     const twin = `${path}${extname(indexFile)}`;
 
@@ -134,6 +150,7 @@ export function createStructureDomainResolver({
         ? {}
         : { strays: strays.map((file) => join(path, file)) }),
       ...cardinality,
+      ...(keys(roleFiles).length === 0 ? {} : { roleFiles }),
       public: (
         entryFile !== undefined &&
         (await filesystem.exists(join(path, entryFile)))

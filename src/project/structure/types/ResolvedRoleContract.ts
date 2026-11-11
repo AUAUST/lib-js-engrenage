@@ -13,6 +13,7 @@ export interface ResolvedRoleContract {
   readonly exports: ResolvedRoleExports;
   readonly index: boolean;
   readonly public: boolean;
+  readonly subpath: boolean;
   readonly collected: boolean;
   readonly discovered: boolean;
   readonly scoped: boolean;

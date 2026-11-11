@@ -95,6 +95,37 @@ describe("domain entries", () => {
     ).rejects.toThrow("Subpath './alpha' is exposed by src.exports");
   });
 
+  test("a subpath role exposes each of its files in a public domain only", async () => {
+    expect(
+      await exposed(
+        `{ structure: { namespaces: { tools: {}, project: {} } } }`,
+        {
+          "src/tools/alpha/constants.ts": "",
+          "src/hidden/constants.ts": "",
+        },
+      ),
+    ).toEqual({
+      "./alpha": "src/tools/alpha/entry.ts",
+      "./alpha/constants": "src/tools/alpha/constants.ts",
+      "./beta": "src/tools/beta/entry.ts",
+      "./model": "src/project/model/entry.ts",
+    });
+  });
+
+  test("a src.exports line naming a role subpath fails naming both files", async () => {
+    await expect(
+      exposed(
+        `{
+          structure: { namespaces: { tools: {} } },
+          exports: { "./alpha/constants": "src/hidden/index.ts" },
+        }`,
+        { "src/tools/alpha/constants.ts": "" },
+      ),
+    ).rejects.toThrow(
+      "Subpath './alpha/constants' is exposed by src.exports, as src/hidden/index.ts, and by src/tools/alpha/constants.ts",
+    );
+  });
+
   test("structure.internals exposes every domain's index under /internals unless the domain opts out", async () => {
     expect(
       await exposed(

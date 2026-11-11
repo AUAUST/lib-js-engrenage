@@ -1,4 +1,4 @@
-import { freeze, keys } from "@auaust/toolkit/object";
+import { entries, freeze, getOwn, keys } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
 import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
@@ -16,10 +16,12 @@ export const sourceExportsSection = declareSection({
 
     const derived = resolveDomainEntries(src);
 
-    for (const subpath of keys(configured ?? {})) {
-      if (subpath in derived) {
+    for (const [subpath, file] of entries(configured ?? {})) {
+      const exposer = getOwn(derived, subpath);
+
+      if (exposer !== undefined) {
         throw new Error(
-          `Subpath '${subpath}' is exposed by src.exports and by the domain ${derived[subpath]}: remove it from src.exports`,
+          `Subpath '${subpath}' is exposed by src.exports, as ${file}, and by ${exposer}: remove it from src.exports`,
         );
       }
     }
