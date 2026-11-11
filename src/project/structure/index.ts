@@ -39,6 +39,7 @@ export type * from "#project/structure/types/ResolvedAliases";
 export type * from "#project/structure/types/ResolvedEffects";
 export type * from "#project/structure/types/ResolvedFiles";
 export type * from "#project/structure/types/ResolvedRoleContract";
+export type * from "#project/structure/types/ResolvedRoleExports";
 export type * from "#project/structure/types/ResolvedRoles";
 export type * from "#project/structure/types/ResolvedSpecifier";
 export type * from "#project/structure/types/ResolvedStructure";

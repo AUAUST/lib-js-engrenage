@@ -543,6 +543,20 @@ describe("inline roles", () => {
     ).rejects.toThrow("gives the role setup a `file` callback");
   });
 
+  test("fail when type-only with exported values", async () => {
+    const roles = renderCodeRoles(
+      createRolePreset({
+        name: "shapes",
+        typeOnly: true,
+        exports: { values: "named" },
+      })(),
+    );
+
+    await expect(
+      describeProject(`{ src: { roles: ${roles} } }`),
+    ).rejects.toThrow("The type-only role shapes exports values");
+  });
+
   test("of a namespace are active only in its subtree", async () => {
     const nodes = await describeProject(`{
       src: {

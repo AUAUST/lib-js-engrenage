@@ -116,11 +116,11 @@ describe("project map", () => {
     expect(rows).toHaveLength(2);
 
     expect(rows).toContain(
-      "| `handlers` | Request handlers. |  | confined |  | `src`, `scripts` |",
+      "| `handlers` | Request handlers. |  | values `named-match`, types `named-match` | confined |  | `src`, `scripts` |",
     );
 
     expect(rows).toContain(
-      "| `handlers` | Request handlers. |  | effectful |  | `tests` |",
+      "| `handlers` | Request handlers. |  | values `named-match`, types `named-match` | effectful |  | `tests` |",
     );
   });
 
@@ -147,7 +147,7 @@ describe("project map", () => {
     );
 
     expect(project.read(overviewFile)).toContain(
-      "| `config/definers` |  | `define<Domain>Config.ts` | effectful |",
+      "| `config/definers` |  | `define<Domain>Config.ts` |  | effectful |",
     );
 
     expect(project.read(sourceFile)).toContain("(global roles: constants.ts)");

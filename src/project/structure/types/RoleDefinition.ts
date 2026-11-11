@@ -1,7 +1,9 @@
+import type { RoleInput } from "#project/roles/index";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 
 export interface RoleDefinition extends Omit<
   ResolvedRoleContract,
+  | "exports"
   | "nesting"
   | "index"
   | "public"
@@ -13,6 +15,7 @@ export interface RoleDefinition extends Omit<
   | "unique"
   | "required"
 > {
+  readonly exports: RoleInput["exports"];
   readonly nesting: ResolvedRoleContract["nesting"] | undefined;
   readonly index: boolean | undefined;
   readonly public: boolean | undefined;

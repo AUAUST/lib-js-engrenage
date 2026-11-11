@@ -60,7 +60,7 @@ export function registerRoles({
           }),
         );
 
-    registry.contracts[registered] = completeRole({
+    registry.contracts[registered] = completeRole(registered, {
       ...declared,
       roles: nested,
       scoped: owner === undefined ? declared.scoped : true,

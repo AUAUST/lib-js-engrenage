@@ -135,7 +135,9 @@ const codeRoles = [
   constants(),
   declarations(),
   types(),
-  utils(),
+  utils({
+    exports: { values: "named-match", types: "none" },
+  }),
   errors(),
   enums(),
   ports(),

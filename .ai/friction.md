@@ -34,3 +34,4 @@
 - zsh word splitting: `set -- $ids` to split two GraphQL ids — zsh passes one word; inlined the ids
 - zsh for loop: set -- $p to split a pair — zsh does not word-split unquoted params; call a function with explicit args
 - engrenage gate --worktree: vitest step — collected `.claude/worktrees/fervent-greider-10c401` tests, whose stale code rejects `roles.2.collected` in this checkout's config; verified with `vitest --exclude ".claude/**"` and `vitest:dist --exclude ".claude/**"`
+- eslint `-f unix`: listed repo-wide lint findings with the unix formatter — not bundled in ESLint 9+, used `-f json -o <file>` instead

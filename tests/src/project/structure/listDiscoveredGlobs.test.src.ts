@@ -14,7 +14,7 @@ function contract(
     nesting: 0,
     roles: undefined,
     categories: undefined,
-    exports: undefined,
+    exports: { values: undefined, types: undefined },
     index: false,
     public: false,
     collected: false,

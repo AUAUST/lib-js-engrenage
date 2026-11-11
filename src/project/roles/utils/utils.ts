@@ -4,6 +4,6 @@ import { createRolePreset } from "#project/roles/utils/createRolePreset";
 export const utils = createRolePreset({
   name: "utils",
   purpose: "Confined functions, one per module.",
-  exports: "named-match",
+  exports: { values: "named-match", types: "named" },
   effects: "confined",
 });

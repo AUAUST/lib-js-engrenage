@@ -460,6 +460,22 @@ describe("structure boundaries", () => {
         "export const one = 1;\nexport const two = 2;\n",
       ),
     ).toEqual(["auaust/role-exports"]);
+
+    expect(
+      await lint(
+        "src/project/feature/utils/isString.ts",
+        'export interface IsStringOptions {\n  strict: boolean;\n}\n\nexport function isString(value: unknown): value is string {\n  return typeof value === "string";\n}\n',
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint.messages(
+        "src/project/feature/utils/isString.ts",
+        "export const isString = 1;\nexport const other = 2;\n",
+      ),
+    ).toEqual([
+      "A module of utils exports only the value `isString`, named after the file, and no default export.",
+    ]);
   });
 
   test("treats a file named like the index file as a module of a role without index", async () => {

@@ -10,6 +10,7 @@ import {
 import {
   listStaticFileGlobs,
   type ResolvedRoleContract,
+  type ResolvedRoleExports,
   type ResolvedRoles,
   type ResolvedStructure,
 } from "#project/structure/index";
@@ -22,6 +23,15 @@ interface RoleRow {
 
 function code(value: string): string {
   return `\`${value}\``;
+}
+
+function renderExports({ values, types }: ResolvedRoleExports): string {
+  return [
+    values === undefined ? undefined : `values ${code(values)}`,
+    types === undefined ? undefined : `types ${code(types)}`,
+  ]
+    .filter((value) => value !== undefined)
+    .join(", ");
 }
 
 export function renderProjectMapRoles(
@@ -69,8 +79,8 @@ export function renderProjectMapRoles(
       return `- ${code(level)}: ${effectLevelPurposes[level]}`;
     }),
     "",
-    "| Role | Purpose | Files | Level | Imports | Environments |",
-    "| --- | --- | --- | --- | --- | --- |",
+    "| Role | Purpose | Files | Exports | Level | Imports | Environments |",
+    "| --- | --- | --- | --- | --- | --- | --- |",
     ...rows.map(({ name, contract, environments }) => {
       const files = isFunction(contract.file)
         ? code(contract.fileDescription ?? "")
@@ -86,7 +96,7 @@ export function renderProjectMapRoles(
 
       const purpose = (contract.purpose ?? "").replaceAll("|", String.raw`\|`);
 
-      return `| ${code(name)} | ${purpose} | ${files} | ${contract.effects ?? ""} | ${imports} | ${environments.map(code).join(", ")} |`;
+      return `| ${code(name)} | ${purpose} | ${files} | ${renderExports(contract.exports)} | ${contract.effects ?? ""} | ${imports} | ${environments.map(code).join(", ")} |`;
     }),
   ];
 }

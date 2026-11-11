@@ -48,7 +48,7 @@ describe("resolveRoles", () => {
 
     expect(resolved.roles.utils).toMatchObject({
       nesting: "any",
-      exports: "named-match",
+      exports: { values: "named-match", types: "named" },
       effects: "confined",
     });
 

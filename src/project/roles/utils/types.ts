@@ -4,6 +4,6 @@ import { createRolePreset } from "#project/roles/utils/createRolePreset";
 export const types = createRolePreset({
   name: "types",
   purpose: "Types only, one per module.",
-  exports: "named-match",
+  exports: { values: "none", types: "named-match" },
   typeOnly: true,
 });

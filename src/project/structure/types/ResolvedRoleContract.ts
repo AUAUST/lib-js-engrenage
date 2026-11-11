@@ -1,4 +1,5 @@
 import type { RoleFileResolver, RoleRules } from "#project/roles/index";
+import type { ResolvedRoleExports } from "#project/structure/types/ResolvedRoleExports";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
@@ -9,7 +10,7 @@ export interface ResolvedRoleContract {
   readonly nesting: number | "any";
   readonly roles: readonly string[] | undefined;
   readonly categories: boolean | undefined;
-  readonly exports: "named-match" | "named" | "default" | undefined;
+  readonly exports: ResolvedRoleExports;
   readonly index: boolean;
   readonly public: boolean;
   readonly collected: boolean;

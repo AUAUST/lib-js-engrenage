@@ -3,9 +3,11 @@ import {
   boolean,
   literal,
   number,
+  optional,
   picklist,
   pipe,
   readonly,
+  strictObject,
   string,
   union,
   type GenericSchema,
@@ -59,10 +61,24 @@ export function declareRoleContractEntries<Nested>(
       description: "Semi-structured role: it requires category subdirectories whose names are free.",
       optional: { value: undefined },
     }),
-    exports: declare(picklist(["named-match", "named", "default"]), {
-      description: "Export style of its TypeScript and JavaScript modules: one named export matching the file name, named exports, or a default export.",
-      optional: { value: undefined },
-    }),
+    exports: declare(
+      union([
+        picklist(["named-match", "named", "default"]),
+        strictObject({
+          values: optional(
+            picklist(["named-match", "named", "default", "none"]),
+          ),
+          types: optional(picklist(["named-match", "named", "none"])),
+        }),
+      ]),
+      {
+        description: [
+          "Export style of its TypeScript and JavaScript modules, for runtime values and types apart: `named-match` exports only the file's name and needs it exported, `named` takes named exports, `default` one default export and no named value, `none` no export of the kind.",
+          "A string sets both: `named-match` and `named` each axis, `default` the values with no type export. `typeOnly` sets `values` to `none` and accepts no other.",
+        ],
+        optional: { value: undefined },
+      },
+    ),
     index: declare(boolean(), {
       description: "Whether a file named like the environment's index file is the role's barrel, re-exporting its modules; otherwise that file is an ordinary module of the role.",
       optional: describedDefault(roleContractDefaults.index),

@@ -1,17 +1,34 @@
 import { basename, extname } from "node:path";
 
+import type { Scope } from "eslint";
+
 import { getOwn } from "@auaust/toolkit/object";
 
 import { indexRoleName } from "#project/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
+import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 
 const barrelHint = " If this file is intended as a barrel, enable `index` on the role.";
 
-interface Exports {
-  names: string[];
-  defaults: number;
+const typeDeclarations = new Set([
+  "TSInterfaceDeclaration",
+  "TSTypeAliasDeclaration",
+]);
+
+interface KindExports {
+  names: Set<string>;
   star: boolean;
+}
+
+function isTypeBinding(scope: Scope.Scope, name: string): boolean {
+  const variable = scope.set.get(name);
+
+  return (
+    variable !== undefined &&
+    "isValueVariable" in variable &&
+    variable.isValueVariable === false
+  );
 }
 
 export default defineConvention({
@@ -21,23 +38,32 @@ export default defineConvention({
   rule: ({ entities, structure: structures }) => {
     return defineStructureRule({
       entities,
-      description: "A module exports what its role's exports contract states: one named export matching the file, named exports, or one default export.",
+      description: "A module exports what its role's exports contract states, for values and types apart: only the file's name, named exports, one default export, or none.",
       messages: {
-        match: "A module of {{role}} exports only `{{name}}`, named after the file.{{hint}}",
-        named: "A module of {{role}} uses named exports, never a default export.{{hint}}",
-        default: "A module of {{role}} has one default export and no named export.{{hint}}",
+        "values-match": "A module of {{role}} exports only the value `{{name}}`, named after the file, and no default export.{{hint}}",
+        "values-named": "A module of {{role}} exports named values, never a default export.{{hint}}",
+        "values-default": "A module of {{role}} has one default export and no named value.{{hint}}",
+        "values-none": "A module of {{role}} exports no value.{{hint}}",
+        "types-match": "A module of {{role}} exports only the type `{{name}}`, named after the file.{{hint}}",
+        "types-none": "A module of {{role}} exports no type.{{hint}}",
+        "missing": "A module of {{role}} exports `{{name}}`, named after the file, as a value or a type.{{hint}}",
       },
       create(context, { environment, role, contract, fileRole }) {
-        const file = basename(context.filename);
-        const style = contract?.exports;
-
         if (
           role === undefined ||
-          style === undefined ||
+          contract === undefined ||
           fileRole === indexRoleName
         ) {
           return {};
         }
+
+        const { values: valueStyle, types: typeStyle } = contract.exports;
+
+        if (valueStyle === undefined && typeStyle === undefined) {
+          return {};
+        }
+
+        const file = basename(context.filename);
 
         const name = basename(file, extname(file));
 
@@ -45,80 +71,133 @@ export default defineConvention({
 
         const hint = file === structure?.indexFile ? barrelHint : "";
 
-        const found: Exports = {
-          names: [],
-          defaults: 0,
-          star: false,
-        };
+        const values: KindExports = { names: new Set(), star: false };
+        const types: KindExports = { names: new Set(), star: false };
+
+        let defaults = 0;
+
+        function onlyNamed({ names, star }: KindExports): boolean {
+          return !star && [...names].every((exported) => exported === name);
+        }
+
+        function isEmpty({ names, star }: KindExports): boolean {
+          return !star && names.size === 0;
+        }
+
+        function checkValues(): string[] {
+          if (valueStyle === "named-match") {
+            return defaults > 0 || !onlyNamed(values) ? ["values-match"] : [];
+          }
+
+          if (valueStyle === "named") {
+            return defaults > 0 ? ["values-named"] : [];
+          }
+
+          if (valueStyle === "default") {
+            return defaults !== 1 || !isEmpty(values) ? ["values-default"] : [];
+          }
+
+          if (valueStyle === "none") {
+            return defaults > 0 || !isEmpty(values) ? ["values-none"] : [];
+          }
+
+          return [];
+        }
+
+        function checkTypes(): string[] {
+          if (typeStyle === "named-match") {
+            return onlyNamed(types) ? [] : ["types-match"];
+          }
+
+          if (typeStyle === "none") {
+            return isEmpty(types) ? [] : ["types-none"];
+          }
+
+          return [];
+        }
 
         return {
           "ExportNamedDeclaration"(statement) {
             const { declaration } = statement;
 
             if (declaration == null) {
-              found.names.push(
-                ...statement.specifiers.map(({ exported }) => {
-                  return exported.type === "Identifier"
-                    ? exported.name
-                    : String(exported.value);
-                }),
-              );
-            } else if (declaration.type === "VariableDeclaration") {
+              const scope = context.sourceCode.getScope(statement);
+
+              for (const specifier of statement.specifiers) {
+                const { exported, local } = specifier;
+
+                const exportedName = exported.type === "Identifier"
+                  ? exported.name
+                  : String(exported.value);
+
+                // @debt a binding re-exported from another module without `type` counts as a value, since only type information could tell its kind
+                const isType = (
+                  isTypeOnlyNode(statement) ||
+                  isTypeOnlyNode(specifier) ||
+                  (statement.source == null &&
+                    local.type === "Identifier" &&
+                    isTypeBinding(scope, local.name))
+                );
+
+                (isType ? types : values).names.add(exportedName);
+              }
+
+              return;
+            }
+
+            const type: string = declaration.type;
+            const kind = typeDeclarations.has(type) ? types : values;
+
+            if (declaration.type === "VariableDeclaration") {
               for (const { id } of declaration.declarations) {
                 if (id.type === "Identifier") {
-                  found.names.push(id.name);
+                  kind.names.add(id.name);
                 }
               }
             } else if (
               "id" in declaration &&
               declaration.id?.type === "Identifier"
             ) {
-              found.names.push(declaration.id.name);
+              kind.names.add(declaration.id.name);
             }
           },
           "ExportDefaultDeclaration"() {
-            found.defaults += 1;
+            defaults += 1;
           },
-          "ExportAllDeclaration"() {
-            found.star = true;
+          "ExportAllDeclaration"(statement) {
+            (isTypeOnlyNode(statement) ? types : values).star = true;
           },
           "Program:exit"(program) {
-            const distinct = [...new Set(found.names)];
+            const failures = [...checkValues(), ...checkTypes()];
 
-            if (style === "named-match") {
-              if (
-                found.defaults > 0 ||
-                found.star ||
-                distinct.length !== 1 ||
-                distinct[0] !== name
-              ) {
-                context.report({
-                  node: program,
-                  messageId: "match",
-                  data: {
-                    role,
-                    name,
-                    hint,
-                  },
-                });
-              }
-            } else if (style === "named") {
-              if (found.defaults > 0) {
-                context.report({
-                  node: program,
-                  messageId: "named",
-                  data: { role, hint },
-                });
-              }
-            } else if (
-              found.defaults !== 1 ||
-              distinct.length > 0 ||
-              found.star
+            const matched = [
+              valueStyle === "named-match" ? values : undefined,
+              typeStyle === "named-match" ? types : undefined,
+            ].filter((kind) => kind !== undefined);
+
+            if (
+              failures.length === 0 &&
+              matched.length > 0 &&
+              matched.every((kind) => !kind.names.has(name))
             ) {
+              failures.push(
+                matched.length === 2
+                  ? "missing"
+                  : matched[0] === values
+                    ? "values-match"
+                    : "types-match",
+              );
+            }
+
+            for (const messageId of failures) {
               context.report({
                 node: program,
-                messageId: "default",
-                data: { role, hint },
+                messageId,
+                data: {
+                  role,
+                  name,
+                  hint,
+                },
               });
             }
           },
