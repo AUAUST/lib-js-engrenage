@@ -35,7 +35,7 @@ async function checkWrite(
     return "pass the body with `--body-file -` and a heredoc, or pipe it from a `.draft.md` file";
   }
 
-  // @debt `gh issue create` declares no type, so its body is checked against no contract; read the type from the piped draft's manifest.
+  // @debt `gh issue create` declares no type, so its body is checked against no contract until the issue is edited or dispatched.
   let type: string | undefined;
 
   if (write.action === "edit" && write.number !== undefined) {
