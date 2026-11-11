@@ -25,7 +25,9 @@ export default {
 } satisfies Extension;
 
 declare global {
-  interface EngrenageBuildTools {
-    tsdown: true;
+  namespace Engrenage {
+    interface BuildTools {
+      tsdown: true;
+    }
   }
 }

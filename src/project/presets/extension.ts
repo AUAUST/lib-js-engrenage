@@ -45,7 +45,9 @@ export default {
 } satisfies Extension;
 
 declare global {
-  interface EngrenagePresets {
-    library: true;
+  namespace Engrenage {
+    interface Presets {
+      library: true;
+    }
   }
 }

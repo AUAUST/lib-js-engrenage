@@ -14,7 +14,7 @@ export interface Extension extends ExtensionShape<
     readonly parts?: Readonly<Record<`${string}#${string}`, true>>;
   },
   {
-    readonly [Slot in keyof EngrenageSlots]?: readonly EngrenageSlots[Slot][];
+    readonly [Slot in keyof Engrenage.Slots]?: readonly Engrenage.Slots[Slot][];
   },
   { readonly installed: PackageName }
 > {}

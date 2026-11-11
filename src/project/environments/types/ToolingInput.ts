@@ -56,7 +56,7 @@ export interface ToolingInput {
      * Environment whose tsconfig this one shares instead of having its own: its files and options apply here, so no other tsconfig option can be set alongside.
      * @default none, except `scripts` for `tooling`
      */
-    inherits?: (keyof EngrenageEnvironments | undefined)
+    inherits?: (keyof Engrenage.Environments | undefined)
     /**
      * Value of `extends`.
      * `false` leaves the field to the file.

@@ -18,7 +18,7 @@ import { checkFileParts } from "#project/config/utils/checkFileParts";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { ConfigResolver } from "#project/config/types/ConfigResolver";
 import type { ConfigSections } from "#project/config/types/ConfigSections";
-import type { EngrenageSlots } from "#project/config/types/EngrenageSlots";
+import type { ConfigSlots } from "#project/config/types/ConfigSlots";
 import type { Extension } from "#project/config/types/Extension";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { RawConfig } from "#project/config/types/RawConfig";
@@ -128,7 +128,7 @@ export function createProjectConfig({
   async function loadPresetValues({
     name,
     load: loadValues,
-  }: EngrenageSlots["presets"]): Promise<Readonly<Record<string, unknown>>> {
+  }: ConfigSlots["presets"]): Promise<Readonly<Record<string, unknown>>> {
     const loaded = (await loadValues?.()) ?? {};
 
     const reserved = keys(loaded).filter((path) => {

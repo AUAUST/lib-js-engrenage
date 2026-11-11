@@ -11,7 +11,9 @@ export interface PrettierPlugin extends EntryShape {
 }
 
 declare global {
-  interface EngrenageSlots {
-    "prettier.plugins": PrettierPlugin;
+  namespace Engrenage {
+    interface Slots {
+      "prettier.plugins": PrettierPlugin;
+    }
   }
 }

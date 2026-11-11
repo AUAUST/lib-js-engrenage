@@ -50,7 +50,9 @@ export default {
 } satisfies Extension;
 
 declare global {
-  interface EngrenagePresets {
-    "shopify-theme": true;
+  namespace Engrenage {
+    interface Presets {
+      "shopify-theme": true;
+    }
   }
 }

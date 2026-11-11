@@ -63,7 +63,9 @@ export default {
 } satisfies Extension;
 
 declare global {
-  interface EngrenagePresets {
-    "shopify-app": true;
+  namespace Engrenage {
+    interface Presets {
+      "shopify-app": true;
+    }
   }
 }

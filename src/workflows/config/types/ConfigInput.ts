@@ -72,7 +72,7 @@ export interface BuiltinConfigInput {
    * Options and `traits` override it; `false` selects none.
    * @default no preset: no trait is bundled
    */
-  preset?: ((false | keyof EngrenagePresets) | undefined)
+  preset?: ((false | keyof Engrenage.Presets) | undefined)
   /**
    * Traits of the project, adjusting those of the preset.
    */
@@ -176,7 +176,9 @@ export interface BuiltinConfigInput {
 }
 
 declare global {
-  interface EngrenageConfigInput extends BuiltinConfigInput {}
+  namespace Engrenage {
+    interface ConfigInput extends BuiltinConfigInput {}
+  }
 }
 
-export type ConfigInput = EngrenageConfigInput;
+export type ConfigInput = Engrenage.ConfigInput;

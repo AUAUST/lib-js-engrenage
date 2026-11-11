@@ -13,8 +13,10 @@ export interface SyncTarget extends EntryShape {
 }
 
 declare global {
-  interface EngrenageSlots {
-    "sync.targets": SyncTarget;
-    "sync.done": HookEntry<SyncDone>;
+  namespace Engrenage {
+    interface Slots {
+      "sync.targets": SyncTarget;
+      "sync.done": HookEntry<SyncDone>;
+    }
   }
 }

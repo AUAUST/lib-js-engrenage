@@ -29,3 +29,8 @@
 - vitest:dist in pnpm build: runs the dist suite — collects tests under `.claude/worktrees/*`, whose dist is missing; reran with `--exclude ".claude/**"`
 - engrenage gate --worktree: vitest step — collects `.claude/worktrees/*` tests, whose stale code checks this checkout's generated files and fails; verified with `vitest run --exclude ".claude/**"`
 - gh issue view --repo: guessed AUAUST/engrenage — repo is AUAUST/lib-js-engrenage, read from git remote
+- zsh `grep --include=*.ts`: unquoted glob in a Bash call — zsh "no matches found" aborts the command; dropped the flag
+- PreToolUse Bash hook (`gh issue edit`): piped a frontmatter-free body from a scratchpad `.md` — blocked; piping the draft published its frontmatter; renamed the stripped body to `.draft.md` and piped it
+- zsh word splitting: `set -- $ids` to split two GraphQL ids — zsh passes one word; inlined the ids
+- zsh for loop: set -- $p to split a pair — zsh does not word-split unquoted params; call a function with explicit args
+- engrenage gate --worktree: vitest step — collected `.claude/worktrees/fervent-greider-10c401` tests, whose stale code rejects `roles.2.collected` in this checkout's config; verified with `vitest --exclude ".claude/**"` and `vitest:dist --exclude ".claude/**"`

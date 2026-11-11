@@ -1,1 +1,1 @@
-export type Agent = keyof EngrenageAgentRuntimes;
+export type Agent = keyof Engrenage.AgentRuntimes;

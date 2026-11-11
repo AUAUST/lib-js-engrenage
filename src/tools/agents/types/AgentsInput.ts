@@ -9,7 +9,7 @@ export interface AgentsInput {
    * `engrenage sync agents` runs only when at least one is listed, and writes their files.
    * @default none
    */
-  preferred?: ((keyof EngrenageAgentRuntimes)[] | undefined)
+  preferred?: ((keyof Engrenage.AgentRuntimes)[] | undefined)
   /**
    * Globs of the agent instruction files whose `@reference` blocks sync fills.
    * @default `AGENTS.md`, `.claude/rules/** /*.md`, `.claude/skills/* /SKILL.md`, `.claude/agents/*.md`, `.agents/skills/* /SKILL.md`

@@ -6,9 +6,11 @@ export interface AgentRuntime extends EntryShape {
 }
 
 declare global {
-  interface EngrenageSlots {
-    "agents.runtimes": AgentRuntime;
-  }
+  namespace Engrenage {
+    interface Slots {
+      "agents.runtimes": AgentRuntime;
+    }
 
-  interface EngrenageAgentRuntimes {}
+    interface AgentRuntimes {}
+  }
 }

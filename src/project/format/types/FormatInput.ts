@@ -10,7 +10,7 @@ export interface FormatInput {
    * `false` writes them unformatted.
    * @default the only active formatter, none when no formatter is active; resolving it fails when several are
    */
-  formatter?: ((false | keyof EngrenageFormatters) | undefined)
+  formatter?: ((false | keyof Engrenage.Formatters) | undefined)
   /**
    * Whether indentation uses spaces or tabs.
    * @default `spaces`

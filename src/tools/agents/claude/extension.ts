@@ -50,7 +50,9 @@ export default {
 } satisfies Extension;
 
 declare global {
-  interface EngrenageAgentRuntimes {
-    claude: true;
+  namespace Engrenage {
+    interface AgentRuntimes {
+      claude: true;
+    }
   }
 }

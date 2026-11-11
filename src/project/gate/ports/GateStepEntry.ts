@@ -10,7 +10,9 @@ export interface GateStepEntry extends EntryShape {
 }
 
 declare global {
-  interface EngrenageSlots {
-    "gate.steps": GateStepEntry;
+  namespace Engrenage {
+    interface Slots {
+      "gate.steps": GateStepEntry;
+    }
   }
 }

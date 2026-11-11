@@ -81,7 +81,9 @@ export default {
 } satisfies Extension;
 
 declare global {
-  interface EngrenageFormatters {
-    prettier: true;
+  namespace Engrenage {
+    interface Formatters {
+      prettier: true;
+    }
   }
 }

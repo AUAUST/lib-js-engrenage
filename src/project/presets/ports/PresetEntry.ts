@@ -8,9 +8,11 @@ export interface PresetEntry extends EntryShape {
 }
 
 declare global {
-  interface EngrenageSlots {
-    presets: PresetEntry;
-  }
+  namespace Engrenage {
+    interface Slots {
+      presets: PresetEntry;
+    }
 
-  interface EngrenagePresets {}
+    interface Presets {}
+  }
 }

@@ -231,12 +231,14 @@ export default {
 } satisfies Extension;
 
 declare global {
-  interface EngrenageEnvironments {
-    src: true;
-    tests: true;
-    bin: true;
-    scripts: true;
-    tooling: true;
-    data: true;
+  namespace Engrenage {
+    interface Environments {
+      src: true;
+      tests: true;
+      bin: true;
+      scripts: true;
+      tooling: true;
+      data: true;
+    }
   }
 }

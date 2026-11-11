@@ -9,7 +9,9 @@ export interface RolePresetEntry extends EntryShape {
 }
 
 declare global {
-  interface EngrenageSlots {
-    roles: RolePresetEntry;
+  namespace Engrenage {
+    interface Slots {
+      roles: RolePresetEntry;
+    }
   }
 }

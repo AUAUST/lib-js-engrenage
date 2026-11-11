@@ -9,9 +9,11 @@ export interface FormatterEntry extends EntryShape {
 }
 
 declare global {
-  interface EngrenageSlots {
-    "format.formatters": FormatterEntry;
-  }
+  namespace Engrenage {
+    interface Slots {
+      "format.formatters": FormatterEntry;
+    }
 
-  interface EngrenageFormatters {}
+    interface Formatters {}
+  }
 }

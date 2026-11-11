@@ -63,7 +63,9 @@ export default {
 } satisfies Extension;
 
 declare global {
-  interface EngrenageAgentRuntimes {
-    codex: true;
+  namespace Engrenage {
+    interface AgentRuntimes {
+      codex: true;
+    }
   }
 }

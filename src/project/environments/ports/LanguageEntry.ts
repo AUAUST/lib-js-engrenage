@@ -8,7 +8,9 @@ export interface LanguageEntry extends EntryShape {
 }
 
 declare global {
-  interface EngrenageSlots {
-    languages: LanguageEntry;
+  namespace Engrenage {
+    interface Slots {
+      languages: LanguageEntry;
+    }
   }
 }

@@ -3,6 +3,14 @@ import { describe, expect, expectTypeOf, test } from "vitest";
 import { defineConfig, type ConfigInput } from "@auaust/engrenage/config";
 import type { Resolvable } from "@auaust/engrenage";
 
+declare global {
+  namespace Engrenage {
+    interface Slots {
+      "test.entries": { readonly name: string };
+    }
+  }
+}
+
 describe("defineConfig", () => {
   test("returns the config it receives", () => {
     const config = {
@@ -40,6 +48,29 @@ describe("defineConfig", () => {
         // @ts-expect-error: unknown agent runtime
         preferred: ["unknown"],
       },
+    });
+  });
+
+  test("types entries contributed to an augmented slot", () => {
+    expectTypeOf(defineConfig).toBeCallableWith({
+      extensions: [
+        {
+          name: "test",
+          contributes: { "test.entries": [{ name: "entry" }] },
+        },
+      ],
+    });
+
+    defineConfig({
+      extensions: [
+        {
+          name: "test",
+          contributes: {
+            // @ts-expect-error: entry of the wrong shape
+            "test.entries": [{ title: "entry" }],
+          },
+        },
+      ],
     });
   });
 

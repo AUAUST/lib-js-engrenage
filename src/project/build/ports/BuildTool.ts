@@ -7,9 +7,11 @@ export interface BuildTool extends EntryShape {
 }
 
 declare global {
-  interface EngrenageSlots {
-    "build.tools": BuildTool;
-  }
+  namespace Engrenage {
+    interface Slots {
+      "build.tools": BuildTool;
+    }
 
-  interface EngrenageBuildTools {}
+    interface BuildTools {}
+  }
 }

@@ -2,7 +2,7 @@ import { includes } from "@auaust/primitive-kit/arrays";
 
 import type { Agent } from "#tools/agents/types/Agent";
 
-// @debt narrowing a contributed name to `Agent` holds only while every contribution to `agents.runtimes` augments `EngrenageAgentRuntimes`
+// @debt narrowing a contributed name to `Agent` holds only while every contribution to `agents.runtimes` augments `Engrenage.AgentRuntimes`
 export function filterAgents(
   names: readonly string[],
   runtimes: readonly string[],

@@ -18,3 +18,11 @@
 - tests sharding as the fix for slow tests: CI under 2 minutes — hides the engrenage test suite's own slowness, which toolkit's 2k tests in under 1 minute show; sharding kept only as a config option
 - side-effect import of sub-domain extensions: keep their `declare global` in dist declarations — duplicates the value import, fails `auaust/no-duplicates`, and every parent must remember it
 - named-match-values export style: helper types beside helpers (#433) — type axis could not be constrained anywhere
+- `@barrel <glob> <mode>` as built-in directive: barrels in marker blocks — restates role files and export contracts the structure holds
+- per-consumer barrel generators (#435 only): barrels — every project re-implements rendering and export modes
+- automd: directive blocks with custom generators — Markdown only, no structure context
+- markdown-magic: comment-block transforms — Markdown-centred, own option parser; engrenage's parser is 74 lines
+- barrelsby: barrel generation — derives from globs, duplicating the resolved structure
+- ctix: barrel generation — derives from the tsconfig, duplicating the resolved structure
+- source-tree sync products: one-pass sync with generated sources (#436) — every config key would declare its file dependencies; generate stage instead
+- classify role-holding directories as domains: entry-only domains (#430) — a misplaced role directory silently becomes a domain; namespace option instead

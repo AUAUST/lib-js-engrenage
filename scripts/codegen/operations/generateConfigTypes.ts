@@ -112,11 +112,11 @@ const readonlyListTypes = new Map<unknown, string>([
 ]);
 
 const namedTypes = new Map<unknown, string>([
-  [buildToolNameSchema, "keyof EngrenageBuildTools"],
-  [formatterNameSchema, "keyof EngrenageFormatters"],
-  [presetNameSchema, "keyof EngrenagePresets"],
-  [inheritsSchema, "keyof EngrenageEnvironments"],
-  [preferredSchema, "(keyof EngrenageAgentRuntimes)[]"],
+  [buildToolNameSchema, "keyof Engrenage.BuildTools"],
+  [formatterNameSchema, "keyof Engrenage.Formatters"],
+  [presetNameSchema, "keyof Engrenage.Presets"],
+  [inheritsSchema, "keyof Engrenage.Environments"],
+  [preferredSchema, "(keyof Engrenage.AgentRuntimes)[]"],
 ]);
 
 function resolveType(schema: ConfigSchema): string | undefined {
@@ -356,10 +356,12 @@ export async function generateConfigTypes(
       description: undefined,
       trailer: [
         "declare global {",
-        `  interface EngrenageConfigInput extends ${composedName} {}`,
+        "  namespace Engrenage {",
+        `    interface ConfigInput extends ${composedName} {}`,
+        "  }",
         "}",
         "",
-        "export type ConfigInput = EngrenageConfigInput;",
+        "export type ConfigInput = Engrenage.ConfigInput;",
         "",
       ],
     },

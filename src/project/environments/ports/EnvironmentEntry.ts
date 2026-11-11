@@ -14,9 +14,11 @@ export interface EnvironmentEntry extends EntryShape {
 }
 
 declare global {
-  interface EngrenageSlots {
-    environments: EnvironmentEntry;
-  }
+  namespace Engrenage {
+    interface Slots {
+      environments: EnvironmentEntry;
+    }
 
-  interface EngrenageEnvironments {}
+    interface Environments {}
+  }
 }

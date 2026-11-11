@@ -41,6 +41,11 @@ export function createRecommendedRules({
       rules: {
         ...coreRules,
         ...typescriptRules,
+        // @debt this option-bearing rule stays out of `typescriptRules` because `Rule` types options as mutable tuples, which the constants role rejects
+        "@typescript-eslint/no-namespace": [
+          "error",
+          { allowDeclarations: true },
+        ],
         ...unicornRules,
       },
     }),

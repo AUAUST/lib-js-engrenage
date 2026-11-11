@@ -25,7 +25,9 @@ export default {
 } satisfies Extension;
 
 declare global {
-  interface EngrenageBuildTools {
-    vite: true;
+  namespace Engrenage {
+    interface BuildTools {
+      vite: true;
+    }
   }
 }
