@@ -2,24 +2,30 @@ import {
   splitRepository,
   type GithubAccess,
 } from "#tools/github/issues/api/index";
+import { isSameIssue } from "#tools/github/issues/drafts/utils/isSameIssue";
+import type { IssueLocation } from "#tools/github/issues/drafts/types/IssueLocation";
 import type { IssueLookup } from "#tools/github/issues/drafts/types/IssueLookup";
+
+function includes(list: readonly IssueLocation[], location: IssueLocation) {
+  return list.some((entry) => isSameIssue(entry, location));
+}
 
 export async function linkSubIssues(
   { repository, client }: GithubAccess,
   lookup: IssueLookup,
   parent: number,
-  current: readonly number[],
-  desired: readonly number[],
+  current: readonly IssueLocation[],
+  desired: readonly IssueLocation[],
 ): Promise<void> {
   const route = { ...splitRepository(repository), issue_number: parent };
 
   const actual = [
-    ...current.filter((number) => desired.includes(number)),
-    ...desired.filter((number) => !current.includes(number)),
+    ...current.filter((location) => includes(desired, location)),
+    ...desired.filter((location) => !includes(current, location)),
   ];
 
-  for (const number of desired.filter((child) => !current.includes(child))) {
-    const { id } = await lookup.find(number);
+  for (const location of desired.filter((child) => !includes(current, child))) {
+    const { id } = await lookup.find(location);
 
     await client.request(
       "POST /repos/{owner}/{repo}/issues/{issue_number}/sub_issues",
@@ -27,8 +33,10 @@ export async function linkSubIssues(
     );
   }
 
-  for (const [index, number] of desired.entries()) {
-    if (actual[index] === number) {
+  for (const [index, location] of desired.entries()) {
+    const placed = actual[index];
+
+    if (placed !== undefined && isSameIssue(placed, location)) {
       continue;
     }
 
@@ -41,7 +49,7 @@ export async function linkSubIssues(
     const [
       { id },
       { id: neighbourId },
-    ] = await Promise.all([lookup.find(number), lookup.find(neighbour)]);
+    ] = await Promise.all([lookup.find(location), lookup.find(neighbour)]);
 
     await client.request(
       "PATCH /repos/{owner}/{repo}/issues/{issue_number}/sub_issues/priority",
@@ -54,8 +62,11 @@ export async function linkSubIssues(
       },
     );
 
-    actual.splice(actual.indexOf(number), 1);
+    actual.splice(
+      actual.findIndex((entry) => isSameIssue(entry, location)),
+      1,
+    );
 
-    actual.splice(index, 0, number);
+    actual.splice(index, 0, location);
   }
 }

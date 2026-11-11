@@ -11,8 +11,10 @@ export { resolveRepository } from "#tools/github/issues/api/operations/resolveRe
 
 // @barrel utils
 export { checkTokenScopes } from "#tools/github/issues/api/utils/checkTokenScopes";
+export { findRegisteredRepository } from "#tools/github/issues/api/utils/findRegisteredRepository";
 export { isMissingResource } from "#tools/github/issues/api/utils/isMissingResource";
 export { parseRepository } from "#tools/github/issues/api/utils/parseRepository";
+export { readApiRepository } from "#tools/github/issues/api/utils/readApiRepository";
 export { splitRepository } from "#tools/github/issues/api/utils/splitRepository";
 // @end
 

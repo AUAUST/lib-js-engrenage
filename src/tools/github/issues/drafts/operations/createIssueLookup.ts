@@ -3,8 +3,9 @@ import { nullish, number, object, string } from "valibot";
 import { validate } from "#foundation/options/index";
 import {
   splitRepository,
-  type GithubAccess,
+  type GithubClient,
 } from "#tools/github/issues/api/index";
+import type { IssueLocation } from "#tools/github/issues/drafts/types/IssueLocation";
 import type { IssueLookup } from "#tools/github/issues/drafts/types/IssueLookup";
 
 const issueSchema = object({
@@ -12,39 +13,49 @@ const issueSchema = object({
   type: nullish(object({ name: string() })),
 });
 
-export function createIssueLookup({
-  repository,
-  client,
-}: GithubAccess): IssueLookup {
-  const ids = new Map<number, number>();
-  const types = new Map<number, string | undefined>();
+function toKey({ repository, number }: IssueLocation) {
+  return `${repository.toLowerCase()}#${number}`;
+}
+
+export function createIssueLookup(client: GithubClient): IssueLookup {
+  const ids = new Map<string, number>();
+  const types = new Map<string, string | undefined>();
 
   function remember(
-    number: number,
+    location: IssueLocation,
     issue: { readonly id: number; readonly type?: string | undefined },
   ) {
-    ids.set(number, issue.id);
+    ids.set(toKey(location), issue.id);
 
     if ("type" in issue) {
-      types.set(number, issue.type);
+      types.set(toKey(location), issue.type);
     }
   }
 
-  async function find(number: number) {
-    const id = ids.get(number);
+  async function find(location: IssueLocation) {
+    const key = toKey(location);
 
-    if (id !== undefined && types.has(number)) {
-      return { id, type: types.get(number) };
+    const id = ids.get(key);
+
+    if (id !== undefined && types.has(key)) {
+      return { id, type: types.get(key) };
     }
 
     const { data } = await client.request(
       "GET /repos/{owner}/{repo}/issues/{issue_number}",
-      { ...splitRepository(repository), issue_number: number },
+      {
+        ...splitRepository(location.repository),
+        issue_number: location.number,
+      },
     );
 
-    const issue = validate(issueSchema, data, `issue #${number}`);
+    const issue = validate(
+      issueSchema,
+      data,
+      `issue ${location.repository}#${location.number}`,
+    );
 
-    remember(number, { id: issue.id, type: issue.type?.name });
+    remember(location, { id: issue.id, type: issue.type?.name });
 
     return { id: issue.id, type: issue.type?.name };
   }

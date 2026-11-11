@@ -7,6 +7,7 @@ import { validate } from "#foundation/options/index";
 import { fetchIssue } from "#tools/github/issues/contract/index";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
 import { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
+import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { locateFetchedIssue } from "#tools/github/issues/drafts/utils/locateFetchedIssue";
 import { mergeDraftBody } from "#tools/github/issues/drafts/utils/mergeDraftBody";
@@ -60,17 +61,19 @@ export async function fetchPublishedDraft(
   publication: Publication,
   draft: PublishedDraft,
 ): Promise<readonly string[]> {
-  const { config, context, access, target } = publication;
+  const { config, context, numbers } = publication;
 
-  const number = Number(draft.stem);
+  const { access, target } = draft;
 
-  const file = locateFetchedIssue(number);
+  const { number } = findPublishedLocation(draft, context, numbers);
+
+  const file = locateFetchedIssue(draft.stem);
 
   const fetched = await readDraft(config.context.filesystem, file);
 
   if (fetched === undefined) {
     return [
-      `${draft.stem}: no fetched copy at ${file}: claim #${number} again`,
+      `${draft.stem}: no fetched copy at ${file}: claim ${draft.stem} again`,
     ];
   }
 
@@ -86,14 +89,15 @@ export async function fetchPublishedDraft(
       remote: remote.body,
       local: draft.draft.body,
     },
-    context.repository,
+    access.repository,
+    context,
     draft.contract,
   );
 
   const { manifest, conflicts } = mergeDraftManifest(
     {
       base,
-      remote: readIssueManifest(remote, target, context.protocol),
+      remote: readIssueManifest(remote, target, context),
       local: toManifest(draft.draft.manifest.toJS()),
     },
     context.protocol,
@@ -101,7 +105,7 @@ export async function fetchPublishedDraft(
 
   const lines = [...(body === undefined ? ["body"] : []), ...conflicts].map(
     (key) => {
-      return `${draft.stem}: \`${key}\` changed both in the draft and on GitHub since the claim: merge #${number}'s change into the draft`;
+      return `${draft.stem}: \`${key}\` changed both in the draft and on GitHub since the claim: merge ${draft.stem}'s change into the draft`;
     },
   );
 
@@ -116,7 +120,7 @@ export async function fetchPublishedDraft(
   }
 
   draft.manifest = validate(
-    createManifestSchema(context.snapshot, context.repository, draft.contract),
+    createManifestSchema(context.snapshot, access.repository, draft.contract),
     manifest,
     `merged manifest of ${draft.stem}`,
   );

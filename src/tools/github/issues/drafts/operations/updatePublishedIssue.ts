@@ -4,7 +4,7 @@ import {
   issueTypeMutation,
 } from "#tools/github/issues/drafts/constants";
 import { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFieldValue";
-import { findPublishedNumber } from "#tools/github/issues/drafts/utils/findPublishedNumber";
+import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
 import { findTypeNodeId } from "#tools/github/issues/drafts/utils/findTypeNodeId";
 import { listPublishedFieldValues } from "#tools/github/issues/drafts/utils/listPublishedFieldValues";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
@@ -15,11 +15,11 @@ export async function updatePublishedIssue(
   draft: PublishedDraft,
   body: string,
 ): Promise<void> {
-  const { access, target } = publication;
+  const { manifest, remote, access, target } = draft;
 
-  const { manifest, remote } = draft;
-
-  const number = findPublishedNumber(draft, publication.numbers);
+  const {
+    number,
+  } = findPublishedLocation(draft, publication.context, publication.numbers);
 
   const { state } = manifest;
 

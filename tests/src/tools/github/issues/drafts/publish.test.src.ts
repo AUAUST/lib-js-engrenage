@@ -8,10 +8,14 @@ import { max } from "@auaust/toolkit/math";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { checkIssues } from "#tools/github/issues/drafts/operations/checkIssues";
 import { claimIssues } from "#tools/github/issues/drafts/operations/claimIssues";
 import { publishIssues } from "#tools/github/issues/drafts/operations/publishIssues";
 
+type MockRepository = "app" | "toolkit";
+
 interface MockIssue {
+  repository: MockRepository;
   number: number;
   title: string;
   body: string;
@@ -61,6 +65,12 @@ const snapshot = {
       id: 3,
       nodeId: "R",
       labels: [entity(4, "Tooling")],
+    },
+    toolkit: {
+      repository: "AUAUST/toolkit",
+      id: 5,
+      nodeId: "R2",
+      labels: [entity(6, "Tests")],
     },
   },
   organizations: {
@@ -115,11 +125,13 @@ c
 - t`;
 
 let issues: Map<number, MockIssue>;
+let toolkitIssues: Map<number, MockIssue>;
 let requests: string[];
 let failing: string | undefined;
 
 function createIssue(number: number, values: Partial<MockIssue>): MockIssue {
   return {
+    repository: "app",
     number,
     title: `Issue ${number}`,
     body: taskBody,
@@ -133,11 +145,15 @@ function createIssue(number: number, values: Partial<MockIssue>): MockIssue {
   };
 }
 
-function findIssue(number: number) {
-  const issue = issues.get(number);
+function store(repository: MockRepository) {
+  return repository === "app" ? issues : toolkitIssues;
+}
+
+function findIssue(number: number, repository: MockRepository = "app") {
+  const issue = store(repository).get(number);
 
   if (issue === undefined) {
-    throw new Error(`no mock issue #${number}`);
+    throw new Error(`no mock issue ${repository}#${number}`);
   }
 
   return issue;
@@ -145,9 +161,10 @@ function findIssue(number: number) {
 
 function renderIssue(issue: MockIssue) {
   return {
-    id: 1000 + issue.number,
-    node_id: `I${issue.number}`,
+    id: (issue.repository === "app" ? 1000 : 2000) + issue.number,
+    node_id: `${issue.repository === "app" ? "I" : "J"}${issue.number}`,
     number: issue.number,
+    repository_url: `https://api.github.com/repos/AUAUST/${issue.repository}`,
     title: issue.title,
     body: issue.body,
     state: issue.state,
@@ -196,7 +213,10 @@ function route(method: string, path: string, body: Record<string, unknown>) {
   if (method === "POST" && path === "/graphql") {
     const variables = body.variables as Record<string, string>;
 
-    findIssue(Number(variables.issueId?.slice(1))).type = (
+    findIssue(
+      Number(variables.issueId?.slice(1)),
+      variables.issueId?.startsWith("J") ? "toolkit" : "app",
+    ).type = (
       variables.issueTypeId?.slice(2) ?? ""
     );
 
@@ -205,23 +225,32 @@ function route(method: string, path: string, body: Record<string, unknown>) {
     });
   }
 
-  if (method === "POST" && path === "/repos/AUAUST/app/issues") {
-    const number = max(...issues.keys()) + 1;
+  const created = /^\/repos\/AUAUST\/(app|toolkit)\/issues$/.exec(path)?.[1];
 
-    const issue = createIssue(number, { title: String(body.title), body: "" });
+  if (method === "POST" && created !== undefined) {
+    const repository = created as MockRepository;
 
-    issues.set(number, issue);
+    const number = max(0, ...store(repository).keys()) + 1;
+
+    const issue = createIssue(number, {
+      repository,
+      title: String(body.title),
+      body: "",
+    });
+
+    store(repository).set(number, issue);
 
     return respond(renderIssue(issue), 201);
   }
 
   const [
     ,
+    repository = "app",
     number = "",
     rest = "",
-  ] = /^\/repos\/AUAUST\/app\/issues\/(\d+)(.*)$/.exec(path) ?? [];
+  ] = /^\/repos\/AUAUST\/(app|toolkit)\/issues\/(\d+)(.*)$/.exec(path) ?? [];
 
-  const issue = findIssue(Number(number));
+  const issue = findIssue(Number(number), repository as MockRepository);
 
   switch (`${method} ${rest.replace(/\/\d+$/, "/:id")}`) {
     case "GET ": {
@@ -295,6 +324,10 @@ function route(method: string, path: string, body: Record<string, unknown>) {
         : respond(renderIssue(parent));
     }
 
+    case "POST /dependencies/blocked_by": {
+      return respond(renderIssue(issue), 201);
+    }
+
     case "GET /dependencies/blocked_by": {
       return respond(
         issue.blockedBy.map((blocker) => {
@@ -336,6 +369,16 @@ beforeEach(() => {
     [13, createIssue(13, {})],
   ]);
 
+  toolkitIssues = new Map([
+    [
+      45,
+      createIssue(45, {
+        repository: "toolkit",
+        body: taskBody.replace("#10 · ", ""),
+      }),
+    ],
+  ]);
+
   vi.stubGlobal(
     "fetch",
     vi.fn((url: string, init: RequestInit) => {
@@ -368,6 +411,11 @@ function createProject(files: Record<string, string> = {}) {
       name: "@auaust/app",
       type: "module",
       repository: "github:AUAUST/app",
+      dependencies: { "@auaust/toolkit": "1.0.0" },
+    }),
+    "node_modules/@auaust/toolkit/package.json": JSON.stringify({
+      name: "@auaust/toolkit",
+      repository: "github:AUAUST/toolkit",
     }),
     ".engrenage/github.json": JSON.stringify(snapshot),
     ...files,
@@ -711,5 +759,112 @@ Goal: the group
     expect(requests.filter((request) => !request.startsWith("GET"))).toEqual(
       [],
     );
+  });
+});
+
+describe("registered repositories", () => {
+  test("renders references relative to each draft's target repository", async () => {
+    const root = createProject({
+      ".ai/issues/toolkit.new-port.draft.md": `---
+title: Port
+type: Task
+Nature: Feature
+---
+
+## Context
+
+Follows #12 and #{toolkit.45}.
+
+## Steps
+
+1. Do.
+
+## Tests
+
+- t
+`,
+      ".ai/issues/new-local.draft.md": `---
+title: Local
+type: Task
+Nature: Feature
+blockedBy: ["#{toolkit.new-port}"]
+---
+
+## Context
+
+Follows #{app.7}.
+
+## Steps
+
+1. Do.
+
+## Tests
+
+- t
+`,
+    });
+
+    const { lines, passed } = await publishIssues(await loadConfig(root), [
+      "toolkit.new-port",
+      "new-local",
+    ]);
+
+    expect({ lines, passed }).toMatchObject({ passed: true });
+
+    expect(findIssue(46, "toolkit").body).toContain(
+      "Follows AUAUST/app#12 and #45.",
+    );
+
+    expect(findIssue(14).body).toContain("Follows #7.");
+
+    expect(requests).toContain(
+      "POST /repos/AUAUST/app/issues/14/dependencies/blocked_by",
+    );
+  });
+
+  test("refuses claiming another repository's issue and lists the registered names for an unknown one", async () => {
+    const root = createProject({
+      ".ai/issues/new-lost.draft.md": `---
+title: Lost
+type: Task
+Nature: Feature
+---
+
+## Context
+
+See #{unknown.1}.
+
+## Steps
+
+1. Do.
+
+## Tests
+
+- t
+`,
+    });
+
+    await expect(
+      claimIssues(await loadConfig(root), ["toolkit.45"]),
+    ).rejects.toThrow("stays with that repository's sessions");
+
+    const {
+      lines,
+      passed,
+    } = await checkIssues(await loadConfig(root), ["new-lost"], "worker");
+
+    expect(passed).toBe(false);
+
+    expect(lines).toContainEqual(
+      expect.stringContaining("registered: app, toolkit"),
+    );
+  });
+
+  test("checks a published issue of a registered repository", async () => {
+    const root = createProject();
+
+    await checkIssues(await loadConfig(root), ["toolkit.45"], "worker");
+
+    expect(requests).toContain("GET /repos/AUAUST/toolkit/issues/45");
   });
 });

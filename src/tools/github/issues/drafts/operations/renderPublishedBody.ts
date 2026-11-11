@@ -1,37 +1,47 @@
 import { isString } from "@auaust/toolkit/isString";
 
-import { splitRepository } from "#tools/github/issues/api/index";
+import {
+  readApiRepository,
+  splitRepository,
+} from "#tools/github/issues/api/index";
 import { roadmapSection } from "#tools/github/issues/contract/constants";
 import { parseIssueBody } from "#tools/github/issues/contract/index";
-import { findPublishedNumber } from "#tools/github/issues/drafts/utils/findPublishedNumber";
+import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
 import { insertSection } from "#tools/github/issues/drafts/utils/insertSection";
+import { isSameIssue } from "#tools/github/issues/drafts/utils/isSameIssue";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
+import { renderDraftReferences } from "#tools/github/issues/drafts/utils/renderDraftReferences";
 import { renderHeader } from "#tools/github/issues/drafts/utils/renderHeader";
+import { renderReference } from "#tools/github/issues/drafts/utils/renderReference";
 import { renderRoadmap } from "#tools/github/issues/drafts/utils/renderRoadmap";
-import { resolveDraftNumber } from "#tools/github/issues/drafts/utils/resolveDraftNumber";
+import { resolveIssueLocation } from "#tools/github/issues/drafts/utils/resolveIssueLocation";
 import { splitBodySections } from "#tools/github/issues/drafts/utils/splitBodySections";
+import type { IssueLocation } from "#tools/github/issues/drafts/types/IssueLocation";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 import type { RoadmapEntry } from "#tools/github/issues/drafts/types/RoadmapEntry";
 
 async function listMembers(
   { context, access, lookup, drafts, numbers }: Publication,
-  number: number,
-) {
+  location: IssueLocation,
+): Promise<readonly IssueLocation[]> {
   const local = drafts.find((draft) => {
-    return findPublishedNumber(draft, numbers) === number;
+    return isSameIssue(
+      findPublishedLocation(draft, context, numbers),
+      location,
+    );
   });
 
   if (local !== undefined) {
     return local.meaning === "segment"
       ? listDraftReferences(local.manifest.subIssues).map((reference) => {
-          return `#${resolveDraftNumber(reference, numbers)}`;
+          return resolveIssueLocation(reference, context, numbers);
         })
       : [];
   }
 
-  const { type } = await lookup.find(number);
+  const { type } = await lookup.find(location);
 
   if (type !== context.protocol.types.segment) {
     return [];
@@ -39,31 +49,48 @@ async function listMembers(
 
   const children = await access.client.paginate(
     "GET /repos/{owner}/{repo}/issues/{issue_number}/sub_issues",
-    { ...splitRepository(access.repository), issue_number: number },
+    { ...splitRepository(location.repository), issue_number: location.number },
   );
 
-  return children.map((child) => `#${child.number}`);
+  return children.map((child) => {
+    return {
+      repository: readApiRepository(child.repository_url),
+      number: child.number,
+    };
+  });
 }
 
 function renderBodyHeader(
-  { body, contract, ancestors }: PublishedDraft,
-  numbers: ReadonlyMap<string, number>,
+  { body, contract, ancestors, access }: PublishedDraft,
+  { context, numbers }: Publication,
 ) {
-  const header = readDraftHeader(body);
+  const rendered = renderDraftReferences(
+    body,
+    access.repository,
+    context,
+    numbers,
+  );
+
+  const header = readDraftHeader(rendered);
 
   if (
     contract?.hasHeader !== true ||
     header === undefined ||
     ancestors.length === 0
   ) {
-    return body;
+    return rendered;
   }
 
-  const [, ...sections] = splitBodySections(body);
+  const [, ...sections] = splitBodySections(rendered);
 
   return [
     renderHeader(
-      ancestors.map((reference) => resolveDraftNumber(reference, numbers)),
+      ancestors.map((reference) => {
+        return renderReference(
+          resolveIssueLocation(reference, context, numbers),
+          access.repository,
+        );
+      }),
       header,
     ),
     "",
@@ -77,29 +104,39 @@ export async function renderPublishedBody(
   publication: Publication,
   draft: PublishedDraft,
 ): Promise<string> {
-  const { contract, manifest } = draft;
+  const { contract, manifest, access } = draft;
 
-  const body = renderBodyHeader(draft, publication.numbers);
+  const { context, numbers } = publication;
+
+  const body = renderBodyHeader(draft, publication);
 
   if (contract?.subIssues !== "roadmap" || manifest.subIssues === undefined) {
     return body;
   }
 
-  const entries = manifest.subIssues
+  const located = manifest.subIssues
     .filter((entry): entry is RoadmapEntry => !isString(entry))
     .map((entry) => {
       return {
-        ...entry,
-        ref: `#${resolveDraftNumber(entry.ref, publication.numbers)}`,
+        entry,
+        location: resolveIssueLocation(entry.ref, context, numbers),
       };
     });
 
+  const entries = located.map(({ entry, location }) => {
+    return { ...entry, ref: renderReference(location, access.repository) };
+  });
+
   const members = new Map(
     await Promise.all(
-      entries.map(async ({ ref }) => {
+      located.map(async ({ location }) => {
+        const children = await listMembers(publication, location);
+
         return [
-          ref,
-          await listMembers(publication, Number(ref.slice(1))),
+          renderReference(location, access.repository),
+          children.map((child) => {
+            return renderReference(child, access.repository);
+          }),
         ] as const;
       }),
     ),

@@ -2,8 +2,11 @@ import { splitRepository } from "#tools/github/issues/api/index";
 import { findAncestors } from "#tools/github/issues/contract/index";
 import { headerPlaceholder } from "#tools/github/issues/drafts/constants";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
+import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
 import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
+import { resolveIssueStem } from "#tools/github/issues/drafts/utils/resolveIssueStem";
 import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
+import { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 
@@ -45,7 +48,11 @@ async function listDescendants(
 export async function resolvePublishedAncestors(
   publication: Publication,
 ): Promise<readonly string[]> {
-  const { drafts, access } = publication;
+  const { drafts, access, context } = publication;
+
+  function normalize(reference: string) {
+    return toDraftReference(resolveIssueStem(reference, context));
+  }
 
   const byReference = new Map(
     drafts.map((draft) => {
@@ -57,7 +64,7 @@ export async function resolvePublishedAncestors(
 
   for (const draft of drafts) {
     for (const reference of listDraftReferences(draft.manifest.subIssues)) {
-      const child = byReference.get(reference);
+      const child = byReference.get(normalize(reference));
 
       if (child !== undefined) {
         parents.set(child, draft);
@@ -69,7 +76,11 @@ export async function resolvePublishedAncestors(
   const remoteChains = new Map<PublishedDraft, readonly string[]>();
 
   for (const draft of drafts) {
-    if (!(draft.remote !== undefined)) {
+    // @debt the ancestor chain of an issue in another repository is read only from the drafts, since `findAncestors` follows parents within one repository
+    if (
+      draft.remote === undefined ||
+      draft.access.repository !== context.repository
+    ) {
       continue;
     }
 
@@ -145,14 +156,14 @@ export async function resolvePublishedAncestors(
 
   for (const draft of drafts) {
     const listed = new Set(
-      listDraftReferences(draft.manifest.subIssues).filter((reference) => {
-        return !byReference.has(reference);
-      }),
+      listDraftReferences(draft.manifest.subIssues)
+        .map(normalize)
+        .filter((reference) => !byReference.has(reference)),
     );
 
     const attached = new Set(
       (draft.remote?.subIssues ?? [])
-        .map(({ number }) => `#${number}`)
+        .map((child) => toDraftReference(toLocalStem(child, context)))
         .filter((reference) => !byReference.has(reference)),
     );
 
@@ -172,7 +183,13 @@ export async function resolvePublishedAncestors(
 
     const outside = await listDescendants(
       publication,
-      new Set([...changed].map((reference) => Number(reference.slice(1)))),
+      new Set(
+        [...changed]
+          .map((reference) => parseStem(reference.slice(1)))
+          .filter((parsed) => parsed?.kind === "issue")
+          .filter(({ short }) => short === undefined)
+          .map(({ number }) => number),
+      ),
     );
 
     lines.push(

@@ -1,31 +1,30 @@
 import { splitRepository } from "#tools/github/issues/api/index";
 import { linkSubIssues } from "#tools/github/issues/drafts/operations/linkSubIssues";
-import { findPublishedNumber } from "#tools/github/issues/drafts/utils/findPublishedNumber";
+import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
+import { isSameIssue } from "#tools/github/issues/drafts/utils/isSameIssue";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
-import { resolveDraftNumber } from "#tools/github/issues/drafts/utils/resolveDraftNumber";
+import { resolveIssueLocation } from "#tools/github/issues/drafts/utils/resolveIssueLocation";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 
 export async function linkPublishedIssue(
-  publication: Publication,
+  { context, lookup, numbers }: Publication,
   draft: PublishedDraft,
 ): Promise<void> {
-  const { access, lookup, numbers } = publication;
+  const { manifest, remote, access } = draft;
 
-  const { manifest, remote } = draft;
-
-  const number = findPublishedNumber(draft, numbers);
+  const { number } = findPublishedLocation(draft, context, numbers);
 
   const route = { ...splitRepository(access.repository), issue_number: number };
 
   if (manifest.subIssues !== undefined) {
     const desired = listDraftReferences(manifest.subIssues).map((reference) => {
-      return resolveDraftNumber(reference, numbers);
+      return resolveIssueLocation(reference, context, numbers);
     });
 
-    const current = (remote?.subIssues ?? [])
-      .map((child) => child.number)
-      .filter((child) => desired.includes(child));
+    const current = (remote?.subIssues ?? []).filter((child) => {
+      return desired.some((location) => isSameIssue(location, child));
+    });
 
     await linkSubIssues(access, lookup, number, current, desired);
   }
@@ -35,26 +34,22 @@ export async function linkPublishedIssue(
   }
 
   const blocking = manifest.blockedBy.map((reference) => {
-    return resolveDraftNumber(reference, numbers);
+    return resolveIssueLocation(reference, context, numbers);
   });
 
-  for (const { id, number: blocker } of remote?.blockedBy ?? []) {
-    if (!blocking.includes(blocker)) {
+  for (const blocker of remote?.blockedBy ?? []) {
+    if (!blocking.some((location) => isSameIssue(location, blocker))) {
       await access.client.request(
         "DELETE /repos/{owner}/{repo}/issues/{issue_number}/dependencies/blocked_by/{issue_id}",
-        { ...route, issue_id: id },
+        { ...route, issue_id: blocker.id },
       );
     }
   }
 
-  const blocked = new Set(
-    (remote?.blockedBy ?? []).map((blocker) => {
-      return blocker.number;
-    }),
-  );
-
-  for (const blocker of blocking.filter((candidate) => {
-    return !blocked.has(candidate);
+  for (const blocker of blocking.filter((location) => {
+    return !(remote?.blockedBy ?? []).some((entry) => {
+      return isSameIssue(entry, location);
+    });
   })) {
     const { id } = await lookup.find(blocker);
 

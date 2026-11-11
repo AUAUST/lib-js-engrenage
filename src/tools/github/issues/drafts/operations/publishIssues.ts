@@ -1,8 +1,12 @@
+import { RequestError } from "@octokit/request-error";
 import { parse } from "valibot";
 
 import { isString } from "@auaust/toolkit/isString";
 
-import { createGithubClient } from "#tools/github/issues/api/index";
+import {
+  createGithubClient,
+  type GithubClient,
+} from "#tools/github/issues/api/index";
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
   findContractMeaning,
@@ -25,7 +29,9 @@ import { createManifestSchema } from "#tools/github/issues/drafts/utils/createMa
 import { isClaimedStem } from "#tools/github/issues/drafts/utils/isClaimedStem";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
+import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
 import { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
+import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Draft } from "#tools/github/issues/drafts/types/Draft";
@@ -64,7 +70,15 @@ function toPublished(
   stem: string,
   draft: Draft,
   context: DraftsContext,
+  client: GithubClient,
 ): PublishedDraft {
+  const parsed = parseStem(stem);
+
+  if (parsed === undefined) {
+    throw new Error(`${stem} is not a draft stem`);
+  }
+
+  const { repository } = resolveStem(parsed, context);
   const value: unknown = draft.manifest.toJS();
 
   const type = draft.manifest.get("type");
@@ -86,8 +100,14 @@ function toPublished(
     ancestors: [],
     meaning,
     contract,
+    target: resolveManifestTarget(context.snapshot, repository),
+    access: {
+      repository,
+      client,
+      protocol: context.protocol,
+    },
     manifest: parse(
-      createManifestSchema(context.snapshot, context.repository, contract),
+      createManifestSchema(context.snapshot, repository, contract),
       value,
     ),
   };
@@ -138,8 +158,10 @@ export async function publishIssues(
     return failed(findings);
   }
 
+  const client = await createGithubClient();
+
   const drafts = [...read.drafts].map(([stem, draft]) => {
-    return toPublished(stem, draft, context);
+    return toPublished(stem, draft, context, client);
   });
 
   const segments = checkNewSegments(drafts);
@@ -150,7 +172,7 @@ export async function publishIssues(
 
   const access: IssueAccess = {
     repository: context.repository,
-    client: await createGithubClient(),
+    client,
     protocol: context.protocol,
   };
 
@@ -159,8 +181,7 @@ export async function publishIssues(
     context,
     access,
     drafts,
-    target: resolveManifestTarget(context.snapshot, context.repository),
-    lookup: createIssueLookup(access),
+    lookup: createIssueLookup(client),
     numbers: new Map(),
   };
 
@@ -169,17 +190,20 @@ export async function publishIssues(
   for (const draft of drafts.filter(({ stem }) => isClaimedStem(stem))) {
     conflicts.push(...(await fetchPublishedDraft(publication, draft)));
 
-    if (!(draft.remote !== undefined)) {
+    if (draft.remote === undefined) {
       continue;
     }
 
-    publication.lookup.remember(draft.remote.number, draft.remote);
+    publication.lookup.remember(
+      { repository: draft.access.repository, number: draft.remote.number },
+      draft.remote,
+    );
 
     for (const related of [
       ...draft.remote.subIssues,
       ...draft.remote.blockedBy,
     ]) {
-      publication.lookup.remember(related.number, { id: related.id });
+      publication.lookup.remember(related, { id: related.id });
     }
   }
 
@@ -192,6 +216,52 @@ export async function publishIssues(
   if (chains.length > 0) {
     return failed(chains);
   }
+
+  try {
+    return await writeDrafts(publication);
+  } catch (error) {
+    throw explainRefusal(error, context.repository);
+  }
+}
+
+function explainRefusal(error: unknown, current: string) {
+  if (!(error instanceof RequestError)) {
+    return error;
+  }
+
+  const repository = /\/repos\/([\w.-]+\/[\w.-]+)\//.exec(
+    new URL(error.request.url).pathname,
+  )?.[1];
+
+  if (repository === undefined) {
+    return error;
+  }
+
+  if (
+    (error.status === 403 || error.status === 404) &&
+    repository.toLowerCase() !== current.toLowerCase()
+  ) {
+    return new Error(
+      `${repository} refused the write (${error.status}): publishing there needs \`repo\` on a classic or \`gh\` token, or Issues read and write on ${repository} for a fine-grained token`,
+      { cause: error },
+    );
+  }
+
+  if (
+    error.status === 422 &&
+    /\/(?:sub_issues|dependencies\/blocked_by)$/.test(error.request.url)
+  ) {
+    return new Error(
+      `GitHub refused a link on an issue of ${repository} (422): a sub-issue must share its parent's owner, and GitHub does not document blocked-by across repositories; ${error.message}`,
+      { cause: error },
+    );
+  }
+
+  return error;
+}
+
+async function writeDrafts(publication: Publication): Promise<IssuesCheck> {
+  const { drafts } = publication;
 
   for (const draft of drafts.filter(({ stem }) => !isClaimedStem(stem))) {
     await createPublishedIssue(publication, draft);

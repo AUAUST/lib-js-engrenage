@@ -19,12 +19,15 @@ export async function resolveDraftsContext(
     );
   }
 
+  const [repository, registry] = await Promise.all([
+    resolveRepository({ root: config.context.root, repositories }),
+    repositories(),
+  ]);
+
   return {
     snapshot,
     protocol,
-    repository: await resolveRepository({
-      root: config.context.root,
-      repositories,
-    }),
+    repository,
+    registry,
   };
 }

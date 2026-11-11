@@ -12,10 +12,12 @@ export interface FetchedIssue extends GithubIssue {
     readonly id: number;
     readonly number: number;
     readonly state: "open" | "closed";
+    readonly repository: string;
   }[];
   readonly blockedBy: readonly {
     readonly id: number;
     readonly number: number;
     readonly state: "open" | "closed";
+    readonly repository: string;
   }[];
 }

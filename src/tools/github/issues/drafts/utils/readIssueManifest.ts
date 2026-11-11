@@ -6,9 +6,11 @@ import {
   parseIssueBody,
   type FetchedIssue,
   type IssueContract,
-  type IssueProtocol,
 } from "#tools/github/issues/contract/index";
 import { closeReasonParameters } from "#tools/github/issues/drafts/constants";
+import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
+import { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
+import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
 import type { ManifestTarget } from "#tools/github/issues/drafts/types/ManifestTarget";
 import type { RoadmapEntry } from "#tools/github/issues/drafts/types/RoadmapEntry";
 
@@ -24,21 +26,25 @@ function readState({ state, stateReason }: FetchedIssue) {
   return name;
 }
 
+// @debt the roadmap parser reads only `#<n>` lines, so a Plan's sub-issue in another repository is claimed without its gist and sections
 function listSubIssues(
   issue: FetchedIssue,
   contract: IssueContract | undefined,
+  context: DraftsContext,
 ) {
   const roadmap = parseIssueBody(issue.body).roadmap;
 
-  return issue.subIssues.map(({ number }): RoadmapEntry | string => {
+  return issue.subIssues.map((child): RoadmapEntry | string => {
+    const reference = toDraftReference(toLocalStem(child, context));
+
     if (contract?.subIssues !== "roadmap") {
-      return `#${number}`;
+      return reference;
     }
 
-    const line = roadmap.find((entry) => entry.number === number);
+    const line = roadmap.find((entry) => reference === `#${entry.number}`);
 
     return {
-      ref: `#${number}`,
+      ref: reference,
       gist: line?.gist ?? "",
       sections: line?.sections ?? [],
     };
@@ -48,13 +54,15 @@ function listSubIssues(
 export function readIssueManifest(
   issue: FetchedIssue,
   target: ManifestTarget,
-  protocol: IssueProtocol,
+  context: DraftsContext,
 ): Readonly<Record<string, unknown>> {
   const fields = (
     target.types.find(({ name }) => {
       return name === issue.type;
     })?.fields ?? []
   );
+
+  const { protocol } = context;
 
   const meaning = findContractMeaning(protocol, issue.type);
 
@@ -74,8 +82,10 @@ export function readIssueManifest(
         ] as const;
       }),
     ),
-    subIssues: listSubIssues(issue, contract),
-    blockedBy: issue.blockedBy.map(({ number }) => `#${number}`),
+    subIssues: listSubIssues(issue, contract, context),
+    blockedBy: issue.blockedBy.map((blocker) => {
+      return toDraftReference(toLocalStem(blocker, context));
+    }),
     state: readState(issue),
     ...(issue.blockers.includes(protocol.options.drafting)
       ? { claim: "existing" }

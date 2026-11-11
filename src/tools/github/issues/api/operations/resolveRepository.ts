@@ -1,4 +1,5 @@
 import { resolveCurrentRepository } from "#tools/github/issues/api/operations/resolveCurrentRepository";
+import { findRegisteredRepository } from "#tools/github/issues/api/utils/findRegisteredRepository";
 import type { Directory } from "#types/Directory";
 
 export async function resolveRepository(
@@ -16,17 +17,7 @@ export async function resolveRepository(
   }
 
   if (explicit !== undefined) {
-    const registry = await repositories();
-
-    const registered = registry.get(explicit);
-
-    if (registered === undefined) {
-      throw new Error(
-        `Unknown repository short name \`${explicit}\`; registered: ${[...registry.keys()].join(", ") || "none"}`,
-      );
-    }
-
-    return registered;
+    return findRegisteredRepository(await repositories(), explicit);
   }
 
   const current = await resolveCurrentRepository(root);

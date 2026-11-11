@@ -40,7 +40,7 @@ const referenceSchema = pipe(
   string(),
   check((text) => {
     return parseReference(text) !== undefined;
-  }, "write a reference as `#123` or `#{new-<slug>}`"),
+  }, "write a reference as `#123`, `#{new-<slug>}`, `#{<repo>.123}` or `#{<repo>.new-<slug>}`"),
 );
 
 const roadmapEntrySchema = strictObject({

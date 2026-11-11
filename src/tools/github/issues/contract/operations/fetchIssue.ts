@@ -15,6 +15,7 @@ import { record } from "@auaust/toolkit/object";
 import { validate } from "#foundation/options/index";
 import {
   isMissingResource,
+  readApiRepository,
   splitRepository,
   type GithubClient,
 } from "#tools/github/issues/api/index";
@@ -28,8 +29,22 @@ const relatedSchema = array(
     id: number(),
     number: number(),
     state: stateSchema,
+    repository_url: string(),
   }),
 );
+
+function toRelated(
+  related: InferOutput<typeof relatedSchema>,
+): FetchedIssue["subIssues"] {
+  return related.map(({ id, number, state, repository_url }) => {
+    return {
+      id,
+      number,
+      state,
+      repository: readApiRepository(repository_url),
+    };
+  });
+}
 
 const issueSchema = object({
   id: number(),
@@ -139,10 +154,14 @@ export async function fetchIssue(
     labels: checked.labels.map(({ name }) => name),
     fields: record([...values]),
     blockers: isArray(blockers) ? blockers : [],
-    subIssues: validate(relatedSchema, subIssues, `sub-issues of #${number}`),
+    subIssues: toRelated(
+      validate(relatedSchema, subIssues, `sub-issues of #${number}`),
+    ),
     parent: parent === undefined
       ? undefined
       : validate(parentSchema, parent, `parent of #${number}`).number,
-    blockedBy: validate(relatedSchema, blockedBy, `blockers of #${number}`),
+    blockedBy: toRelated(
+      validate(relatedSchema, blockedBy, `blockers of #${number}`),
+    ),
   };
 }

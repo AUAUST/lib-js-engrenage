@@ -3,6 +3,7 @@ import { getDotPath, safeParse } from "valibot";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { isString } from "@auaust/toolkit/isString";
 
+import { splitRepository } from "#tools/github/issues/api/index";
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
   checkIssueBody,
@@ -18,8 +19,9 @@ import { headerPlaceholder } from "#tools/github/issues/drafts/constants";
 import { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
+import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
 import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
-import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
+import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 import type { Draft } from "#tools/github/issues/drafts/types/Draft";
 import type { DraftManifest } from "#tools/github/issues/drafts/types/DraftManifest";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
@@ -33,46 +35,97 @@ function listRelations({ subIssues = [], blockedBy = [] }: DraftManifest) {
   ];
 }
 
-function findTarget(reference: string) {
+function resolveReference(reference: string, context: DraftsContext) {
   const parsed = parseReference(reference);
 
-  return parsed?.kind === "draft"
-    ? parsed.stem
-    : parsed?.kind === "issue"
-      ? String(parsed.number)
-      : undefined;
+  if (parsed === undefined) {
+    return;
+  }
+
+  try {
+    return { parsed, ...resolveStem(parsed, context) };
+  } catch (error) {
+    return {
+      parsed,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+function findTarget(reference: string, context: DraftsContext) {
+  const resolved = resolveReference(reference, context);
+
+  return resolved === undefined || "error" in resolved
+    ? undefined
+    : resolved.stem;
 }
 
 function checkReference(
   reference: string,
   stems: ReadonlySet<string>,
+  context: DraftsContext,
 ): IssueFinding | undefined {
-  const parsed = parseReference(reference);
+  const resolved = resolveReference(reference, context);
 
-  if (parsed === undefined) {
+  if (resolved === undefined) {
     return {
       rule: "reference",
-      message: `\`${reference}\` is not a reference: write \`#123\` or \`#{new-<slug>}\`.`,
+      message: `\`${reference}\` is not a reference: write \`#123\`, \`#{new-<slug>}\`, \`#{<repo>.123}\` or \`#{<repo>.new-<slug>}\`.`,
     };
   }
 
-  if (parsed.kind === "registered") {
+  if ("error" in resolved) {
     return {
-      rule: "unsupported-reference",
-      message: `\`${reference}\` references the registered repository \`${parsed.repository}\`, which drafts do not support yet.`,
+      rule: "reference",
+      message: `\`${reference}\`: ${resolved.error}.`,
     };
   }
 
-  if (parsed.kind === "draft" && !stems.has(parsed.stem)) {
+  if (resolved.parsed.kind === "draft" && !stems.has(resolved.stem)) {
     return {
       rule: "outside-draft",
-      message: `\`${reference}\` names the draft \`${parsed.stem}\`, outside the checked drafts: check it with them, or create it.`,
+      message: `\`${reference}\` names the draft \`${resolved.stem}\`, outside the checked drafts: check it with them, or create it.`,
     };
   }
 }
 
+function checkOwners(
+  manifest: DraftManifest,
+  repository: string,
+  context: DraftsContext,
+): IssueFinding[] {
+  const { owner } = splitRepository(repository);
+
+  return listDraftReferences(manifest.subIssues)
+    .map((reference) => {
+      return { reference, resolved: resolveReference(reference, context) };
+    })
+    .filter(({ resolved }) => {
+      return (
+        resolved !== undefined &&
+        !("error" in resolved) &&
+        splitRepository(resolved.repository).owner !== owner
+      );
+    })
+    .map(({ reference }) => {
+      return {
+        rule: "sub-issue-owner",
+        message: `\`${reference}\` is in another owner's repository: GitHub links a sub-issue only within its parent's owner, ${owner}.`,
+      };
+    });
+}
+
+function findDraftRepository(stem: string, context: DraftsContext) {
+  const parsed = parseStem(stem);
+
+  return parsed === undefined
+    ? context.repository
+    : resolveStem(parsed, context).repository;
+}
+
 function checkManifest(
   draft: Draft,
+  repository: string,
   context: DraftsContext,
 ): {
   findings: IssueFinding[];
@@ -100,7 +153,7 @@ function checkManifest(
   const contract = meaning === undefined ? undefined : issueContracts[meaning];
 
   const result = safeParse(
-    createManifestSchema(context.snapshot, context.repository, contract),
+    createManifestSchema(context.snapshot, repository, contract),
     value,
   );
 
@@ -120,7 +173,7 @@ function checkManifest(
 
   return {
     meaning,
-    findings: [],
+    findings: checkOwners(result.output, repository, context),
     manifest: result.output,
   };
 }
@@ -231,14 +284,19 @@ export function checkDrafts(
 
   const checked = new Map(
     [...drafts].map(([stem, draft]) => {
-      return [stem, { draft, ...checkManifest(draft, context) }] as const;
+      const repository = findDraftRepository(stem, context);
+
+      return [
+        stem,
+        { draft, ...checkManifest(draft, repository, context) },
+      ] as const;
     }),
   );
 
   const parents = new Map(
     [...checked].flatMap(([stem, { manifest }]) => {
       return listDraftReferences(manifest?.subIssues).map((reference) => {
-        return [reference, stem] as const;
+        return [findTarget(reference, context) ?? reference, stem] as const;
       });
     }),
   );
@@ -262,10 +320,10 @@ export function checkDrafts(
       ...checkHeader(
         draft.body,
         meaning === undefined ? undefined : issueContracts[meaning],
-        parents.get(toDraftReference(stem)),
+        parents.get(stem),
       ),
       ...references
-        .map((reference) => checkReference(reference, stems))
+        .map((reference) => checkReference(reference, stems, context))
         .filter((finding): finding is IssueFinding => {
           if (finding === undefined || messages.has(finding.message)) {
             return false;
@@ -282,7 +340,7 @@ export function checkDrafts(
       manifest === undefined
         ? []
         : listRelations(manifest)
-            .map(findTarget)
+            .map((reference) => findTarget(reference, context))
             .filter((target): target is string => {
               return target !== undefined && stems.has(target);
             }),

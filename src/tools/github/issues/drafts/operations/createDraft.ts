@@ -3,6 +3,7 @@ import { Document, isMap, isScalar, isSeq } from "yaml";
 import { isString } from "@auaust/toolkit/isString";
 import { keys, record } from "@auaust/toolkit/object";
 
+import { findRegisteredRepository } from "#tools/github/issues/api/index";
 import {
   issueContracts,
   typeMeanings,
@@ -48,6 +49,7 @@ function findMeaning(type: string) {
 
 async function chooseSlug(
   filesystem: Filesystem,
+  prefix: string,
   type: string,
   slug: string | undefined,
 ) {
@@ -58,8 +60,8 @@ async function chooseSlug(
       );
     }
 
-    if (await filesystem.exists(locateDraft(`${newDraftPrefix}${slug}`))) {
-      throw new Error(`${locateDraft(`${newDraftPrefix}${slug}`)} exists`);
+    if (await filesystem.exists(locateDraft(`${prefix}${slug}`))) {
+      throw new Error(`${locateDraft(`${prefix}${slug}`)} exists`);
     }
 
     return slug;
@@ -68,9 +70,7 @@ async function chooseSlug(
   for (let index = 1; ; index++) {
     const candidate = `${type}-${index}`.toLowerCase();
 
-    if (
-      !(await filesystem.exists(locateDraft(`${newDraftPrefix}${candidate}`)))
-    ) {
+    if (!(await filesystem.exists(locateDraft(`${prefix}${candidate}`)))) {
       return candidate;
     }
   }
@@ -179,13 +179,28 @@ async function listInParent(
 export async function createDraft(
   config: LoadedConfig,
   type: string,
-  { slug, ...placement }: Placement & { readonly slug?: string | undefined },
+  {
+    slug,
+    repo,
+    ...placement
+  }: Placement & {
+    readonly slug?: string | undefined;
+    readonly repo?: string | undefined;
+  },
 ): Promise<File> {
   const meaning = findMeaning(type);
 
   const { filesystem } = config.context;
 
-  const { snapshot, repository, protocol } = await resolveDraftsContext(config);
+  const context = await resolveDraftsContext(config);
+
+  const { snapshot, protocol } = context;
+
+  const repository = repo === undefined
+    ? context.repository
+    : findRegisteredRepository(context.registry, repo);
+
+  const prefix = `${repository === context.repository || repo === undefined ? "" : `${repo}.`}${newDraftPrefix}`;
 
   const target = resolveManifestTarget(snapshot, repository);
 
@@ -199,7 +214,7 @@ export async function createDraft(
     );
   }
 
-  const stem = `${newDraftPrefix}${await chooseSlug(filesystem, type, slug)}`;
+  const stem = `${prefix}${await chooseSlug(filesystem, prefix, type, slug)}`;
 
   const contractMeaning = findContractMeaning(protocol, typeName);
 

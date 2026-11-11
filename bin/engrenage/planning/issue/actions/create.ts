@@ -6,6 +6,7 @@ export default async function (
   type: string,
   options: {
     slug?: string | undefined;
+    repo?: string | undefined;
     parent?: string | undefined;
     after?: string | undefined;
   },

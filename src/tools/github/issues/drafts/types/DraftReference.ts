@@ -1,8 +1,11 @@
 export type DraftReference =
-  | { readonly kind: "issue"; readonly number: number }
-  | { readonly kind: "draft"; readonly stem: string }
   | {
-      readonly kind: "registered";
-      readonly repository: string;
-      readonly target: string;
+      readonly kind: "issue";
+      readonly short: string | undefined;
+      readonly number: number;
+    }
+  | {
+      readonly kind: "draft";
+      readonly short: string | undefined;
+      readonly stem: string;
     };

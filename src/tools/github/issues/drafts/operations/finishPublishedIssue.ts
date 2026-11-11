@@ -8,37 +8,32 @@ import { isArray } from "@auaust/toolkit/isArray";
 
 import { spawnProcess } from "#foundation/processes/index";
 import { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFieldValue";
-import { findPublishedNumber } from "#tools/github/issues/drafts/utils/findPublishedNumber";
+import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
 import { listPublishedFieldValues } from "#tools/github/issues/drafts/utils/listPublishedFieldValues";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { locateFetchedIssue } from "#tools/github/issues/drafts/utils/locateFetchedIssue";
 import { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
+import { renderReference } from "#tools/github/issues/drafts/utils/renderReference";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 import type { Directory } from "#types/Directory";
 
-async function diffPublished(root: Directory, number: number, body: string) {
+async function diffPublished(root: Directory, stem: string, body: string) {
   const directory = await mkdtemp(join(tmpdir(), "engrenage-publish-"));
 
-  const published = join(directory, `${number}.md`);
+  const published = join(directory, `${stem}.md`);
 
   try {
     await writeFile(published, body);
 
     const { status, stdout, stderr, error } = await spawnProcess(
       "git",
-      [
-        "diff",
-        "--no-index",
-        "--no-color",
-        locateFetchedIssue(number),
-        published,
-      ],
+      ["diff", "--no-index", "--no-color", locateFetchedIssue(stem), published],
       { cwd: root },
     );
 
     if (error !== undefined || (status !== 0 && status !== 1)) {
-      throw new Error(`git diff of #${number} failed: ${stderr.trim()}`, {
+      throw new Error(`git diff of ${stem} failed: ${stderr.trim()}`, {
         cause: error,
       });
     }
@@ -54,11 +49,11 @@ export async function finishPublishedIssue(
   draft: PublishedDraft,
   body: string,
 ): Promise<readonly string[]> {
-  const { config, access, numbers } = publication;
+  const { config, context, numbers } = publication;
 
   const { filesystem, root } = config.context;
 
-  const number = findPublishedNumber(draft, numbers);
+  const location = findPublishedLocation(draft, context, numbers);
 
   if (draft.manifest.claim !== "existing") {
     const [blockers] = listPublishedFieldValues(
@@ -71,8 +66,8 @@ export async function finishPublishedIssue(
 
     if (blockers !== undefined) {
       await writeFieldValue(
-        access,
-        number,
+        draft.access,
+        location.number,
         blockers.field,
         [
           ...(isArray(blockers.value) ? blockers.value : []),
@@ -85,15 +80,18 @@ export async function finishPublishedIssue(
 
   const diff = await diffPublished(
     root,
-    number,
+    draft.stem,
     renderDraft(new Document(draft.draft.manifest.toJS()), body),
   );
 
   await filesystem.remove(locateDraft(draft.stem));
 
-  await filesystem.remove(locateFetchedIssue(number));
+  await filesystem.remove(locateFetchedIssue(draft.stem));
 
   await filesystem.flush();
 
-  return [`#${number}: published`, ...(diff === "" ? [] : diff.split("\n"))];
+  return [
+    `${renderReference(location, context.repository)}: published`,
+    ...(diff === "" ? [] : diff.split("\n")),
+  ];
 }

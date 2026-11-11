@@ -22,10 +22,12 @@ export { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFie
 export { checkDrafts } from "#tools/github/issues/drafts/utils/checkDrafts";
 export { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
 export { findBlockersField } from "#tools/github/issues/drafts/utils/findBlockersField";
-export { findPublishedNumber } from "#tools/github/issues/drafts/utils/findPublishedNumber";
+export { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
+export { findShortName } from "#tools/github/issues/drafts/utils/findShortName";
 export { findTypeNodeId } from "#tools/github/issues/drafts/utils/findTypeNodeId";
 export { insertSection } from "#tools/github/issues/drafts/utils/insertSection";
 export { isClaimedStem } from "#tools/github/issues/drafts/utils/isClaimedStem";
+export { isSameIssue } from "#tools/github/issues/drafts/utils/isSameIssue";
 export { isSlug } from "#tools/github/issues/drafts/utils/isSlug";
 export { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 export { listManifestOptions } from "#tools/github/issues/drafts/utils/listManifestOptions";
@@ -35,16 +37,22 @@ export { locateFetchedIssue } from "#tools/github/issues/drafts/utils/locateFetc
 export { mergeDraftBody } from "#tools/github/issues/drafts/utils/mergeDraftBody";
 export { mergeDraftManifest } from "#tools/github/issues/drafts/utils/mergeDraftManifest";
 export { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
+export { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
 export { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
 export { readIssueManifest } from "#tools/github/issues/drafts/utils/readIssueManifest";
 export { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
+export { renderDraftReferences } from "#tools/github/issues/drafts/utils/renderDraftReferences";
 export { renderHeader } from "#tools/github/issues/drafts/utils/renderHeader";
+export { renderReference } from "#tools/github/issues/drafts/utils/renderReference";
 export { renderRoadmap } from "#tools/github/issues/drafts/utils/renderRoadmap";
-export { resolveDraftNumber } from "#tools/github/issues/drafts/utils/resolveDraftNumber";
+export { resolveIssueLocation } from "#tools/github/issues/drafts/utils/resolveIssueLocation";
+export { resolveIssueStem } from "#tools/github/issues/drafts/utils/resolveIssueStem";
 export { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
+export { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 export { splitBodySections } from "#tools/github/issues/drafts/utils/splitBodySections";
 export { toDraftBody } from "#tools/github/issues/drafts/utils/toDraftBody";
 export { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
+export { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
 // @end
 
 // @barrel types
@@ -54,6 +62,7 @@ export type * from "#tools/github/issues/drafts/types/DraftManifest";
 export type * from "#tools/github/issues/drafts/types/DraftReference";
 export type * from "#tools/github/issues/drafts/types/DraftsContext";
 export type * from "#tools/github/issues/drafts/types/FieldValue";
+export type * from "#tools/github/issues/drafts/types/IssueLocation";
 export type * from "#tools/github/issues/drafts/types/IssueLookup";
 export type * from "#tools/github/issues/drafts/types/IssuesCheck";
 export type * from "#tools/github/issues/drafts/types/ManifestTarget";

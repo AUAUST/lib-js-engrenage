@@ -14,11 +14,32 @@ import { findBlockersField } from "#tools/github/issues/drafts/utils/findBlocker
 import { listManifestOptions } from "#tools/github/issues/drafts/utils/listManifestOptions";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { locateFetchedIssue } from "#tools/github/issues/drafts/utils/locateFetchedIssue";
+import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
 import { readIssueManifest } from "#tools/github/issues/drafts/utils/readIssueManifest";
 import { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
 import { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
+import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 import { toDraftBody } from "#tools/github/issues/drafts/utils/toDraftBody";
 import type { LoadedConfig } from "#project/config/index";
+import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
+
+function toClaimedNumber(stem: string, context: DraftsContext) {
+  const parsed = parseStem(stem);
+
+  if (parsed?.kind !== "issue") {
+    throw new Error(`${stem}: claim takes the numbers of published issues`);
+  }
+
+  const { repository } = resolveStem(parsed, context);
+
+  if (repository !== context.repository) {
+    throw new Error(
+      `${stem}: ${repository} is another repository, and claiming and editing its issues stays with that repository's sessions`,
+    );
+  }
+
+  return parsed.number;
+}
 
 // @debt Claim and publish write drafts straight to disk, bypassing `settleChanges` so prettier cannot reformat the merge base; a filesystem write that skips formatting would keep them on the staged path.
 export async function claimIssues(
@@ -27,13 +48,9 @@ export async function claimIssues(
 ): Promise<readonly number[]> {
   const { filesystem } = config.context;
 
-  const numbers = stems.map((stem) => {
-    if (!/^\d+$/.test(stem)) {
-      throw new Error(`${stem}: claim takes the numbers of published issues`);
-    }
+  const context = await resolveDraftsContext(config);
 
-    return Number(stem);
-  });
+  const numbers = stems.map((stem) => toClaimedNumber(stem, context));
 
   for (const number of numbers) {
     if (await filesystem.exists(locateDraft(String(number)))) {
@@ -42,8 +59,6 @@ export async function claimIssues(
       );
     }
   }
-
-  const context = await resolveDraftsContext(config);
 
   const access: IssueAccess = {
     repository: context.repository,
@@ -72,10 +87,10 @@ export async function claimIssues(
       | IssueContract
       | undefined = meaning === undefined ? undefined : issueContracts[meaning];
 
-    const manifest = readIssueManifest(issue, target, context.protocol);
+    const manifest = readIssueManifest(issue, target, context);
 
     await filesystem.write(
-      locateFetchedIssue(number),
+      locateFetchedIssue(String(number)),
       renderDraft(new Document(manifest), issue.body),
     );
 
@@ -83,7 +98,7 @@ export async function claimIssues(
       locateDraft(String(number)),
       renderDraft(
         new Document(manifest),
-        toDraftBody(issue.body, context.repository, contract),
+        toDraftBody(issue.body, context.repository, context, contract),
         listManifestOptions(target.labels, fields),
       ),
     );

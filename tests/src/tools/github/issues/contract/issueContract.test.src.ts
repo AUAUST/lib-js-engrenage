@@ -17,6 +17,8 @@ vi.stubEnv("GH_TOKEN", "t");
 
 const protocol = issueProtocolSchema.resolve(undefined, {}, "protocol");
 
+const repositoryUrl = "https://api.github.com/repos/o/r";
+
 const access = {
   repository: "o/r",
   client: await createGithubClient(),
@@ -190,11 +192,19 @@ function mockGithub(
         ];
       } else if (rest === "/sub_issues") {
         json = (issue.subIssues ?? []).map((child) => {
-          return { id: child.number, ...child };
+          return {
+            id: child.number,
+            repository_url: repositoryUrl,
+            ...child,
+          };
         });
       } else if (rest === "/dependencies/blocked_by") {
         json = (issue.blockedBy ?? []).map((blocker) => {
-          return { id: blocker.number, ...blocker };
+          return {
+            id: blocker.number,
+            repository_url: repositoryUrl,
+            ...blocker,
+          };
         });
       } else if (rest === "/parent") {
         if (issue.parent === undefined) {
@@ -533,6 +543,7 @@ describe("fetchIssue", () => {
                 id: 11,
                 number: 11,
                 state: "open",
+                repository_url: "https://api.github.com/repos/o/r",
               },
             ],
             200,
@@ -548,6 +559,7 @@ describe("fetchIssue", () => {
               id: 12,
               number: 12,
               state: "closed",
+              repository_url: "https://api.github.com/repos/o/r",
             },
           ]);
         }

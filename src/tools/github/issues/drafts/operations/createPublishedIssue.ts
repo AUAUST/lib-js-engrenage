@@ -1,6 +1,8 @@
 import { nullish, number, object, string } from "valibot";
 import { Document, visit } from "yaml";
 
+import { isString } from "@auaust/toolkit/isString";
+
 import { validate } from "#foundation/options/index";
 import { splitRepository } from "#tools/github/issues/api/index";
 import { replaceOutsideCode } from "#tools/github/issues/contract/index";
@@ -10,8 +12,13 @@ import { findBlockersField } from "#tools/github/issues/drafts/utils/findBlocker
 import { findTypeNodeId } from "#tools/github/issues/drafts/utils/findTypeNodeId";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { locateFetchedIssue } from "#tools/github/issues/drafts/utils/locateFetchedIssue";
+import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
 import { readIssueManifest } from "#tools/github/issues/drafts/utils/readIssueManifest";
 import { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
+import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
+import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
+import { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
+import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 
@@ -23,37 +30,42 @@ const createdSchema = object({
   body: nullish(string()),
 });
 
-function rewriteReference(draft: PublishedDraft, from: string, to: string) {
+function rewriteReference(
+  draft: PublishedDraft,
+  context: DraftsContext,
+  stem: string,
+  to: string,
+) {
+  function names(reference: string) {
+    const parsed = parseReference(reference);
+
+    return (
+      parsed?.kind === "draft" && resolveStem(parsed, context).stem === stem
+    );
+  }
+
   visit(draft.draft.manifest, {
     Scalar(_, node) {
-      if (node.value === from) {
+      if (isString(node.value) && names(node.value)) {
         node.value = to;
       }
     },
   });
 
-  draft.body = replaceOutsideCode(
-    draft.body,
-    new RegExp(RegExp.escape(from), "g"),
-    () => to,
-  );
+  draft.body = replaceOutsideCode(draft.body, /#\{[^{}\s]+\}/g, (match) => {
+    return names(match) ? to : match;
+  });
 }
 
 export async function createPublishedIssue(
   publication: Publication,
   draft: PublishedDraft,
 ): Promise<void> {
-  const {
-    config,
-    context,
-    target,
-    access,
-    lookup,
-    drafts,
-    numbers,
-  } = publication;
+  const { config, context, lookup, drafts, numbers } = publication;
 
   const { filesystem } = config.context;
+
+  const { access, target } = draft;
 
   const drafting = context.protocol.options.drafting;
 
@@ -75,17 +87,21 @@ export async function createPublishedIssue(
 
   const body = data.body ?? "";
 
-  numbers.set(draft.stem, data.number);
+  const location = { repository: access.repository, number: data.number };
 
-  lookup.remember(data.number, { id: data.id, type: draft.manifest.type });
+  const stem = toLocalStem(location, context);
+
+  numbers.set(draft.stem, location);
+
+  lookup.remember(location, { id: data.id, type: draft.manifest.type });
 
   for (const other of drafts) {
-    rewriteReference(other, `#{${draft.stem}}`, `#${data.number}`);
+    rewriteReference(other, context, draft.stem, toDraftReference(stem));
   }
 
   await filesystem.remove(locateDraft(draft.stem));
 
-  draft.stem = String(data.number);
+  draft.stem = stem;
 
   draft.remote = {
     id: data.id,
@@ -105,9 +121,9 @@ export async function createPublishedIssue(
   };
 
   await filesystem.write(
-    locateFetchedIssue(data.number),
+    locateFetchedIssue(stem),
     renderDraft(
-      new Document(readIssueManifest(draft.remote, target, context.protocol)),
+      new Document(readIssueManifest(draft.remote, target, context)),
       body,
     ),
   );

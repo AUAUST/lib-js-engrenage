@@ -15,8 +15,8 @@ function readFieldValue(value: unknown): FieldValue {
 }
 
 export function listPublishedFieldValues(
-  { context, target }: Publication,
-  { manifest }: PublishedDraft,
+  { context }: Publication,
+  { manifest, target }: PublishedDraft,
   drafting: boolean,
 ) {
   const fields = (
