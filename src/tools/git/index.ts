@@ -16,6 +16,7 @@ export { gitSection } from "#tools/git/config/sections/gitSection";
 export { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
 export { hashTree } from "#tools/git/operations/hashTree";
 export { listChangedFiles } from "#tools/git/operations/listChangedFiles";
+export { listIgnoredGlobs } from "#tools/git/operations/listIgnoredGlobs";
 export { listIssueCommits } from "#tools/git/operations/listIssueCommits";
 export { listLocalFiles } from "#tools/git/operations/listLocalFiles";
 export { listPartiallyStagedFiles } from "#tools/git/operations/listPartiallyStagedFiles";

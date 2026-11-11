@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { mkdirSync, symlinkSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -267,5 +268,31 @@ describe("createVitestConfig with a renamed base tsconfig", () => {
     expect((await vitestConfig).tsconfig).toBe(
       join(project.root, "tsconfig.base.json"),
     );
+  });
+});
+
+describe("createVitestConfig in a Git repository", () => {
+  test("excludes what Git ignores, through info/exclude too", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts": "export default {};\n",
+      "tests/a.test.ts": "\n",
+      "worktrees/copy/tests/a.test.ts": "\n",
+    });
+
+    execFileSync("git", ["init", "--quiet"], { cwd: project.root });
+
+    project.write(".git/info/exclude", "worktrees/\n");
+
+    const vitestConfig = await createVitestConfig(
+      await loadConfig(project.root),
+      {
+        command: "serve",
+        mode: "test",
+      },
+    );
+
+    expect(vitestConfig.test?.exclude).toContain("worktrees/**");
+    expect(vitestConfig.test?.exclude).not.toContain("tests/**");
   });
 });

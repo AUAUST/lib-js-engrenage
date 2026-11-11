@@ -4,6 +4,7 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Files } from "#types/Files";
 import type { Glob } from "#types/Glob";
+import type { Globs } from "#types/Globs";
 
 export interface ResolvedGit {
   readonly local: {
@@ -12,6 +13,7 @@ export interface ResolvedGit {
   };
   readonly gitignore: Promise<File | undefined>;
   readonly ignoreFiles: Promise<Files>;
+  readonly ignored: Promise<Globs>;
   readonly root: Directory;
   readonly filesystem: Filesystem;
 }
