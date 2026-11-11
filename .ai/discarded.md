@@ -30,3 +30,10 @@
 - eslint cache: speed up repo-wide lint with `--cache` — type-aware and cross-file structure rules make cached results stale; dropped for good
 - fixed fragment layout `<root>/data/agents/<kind>`: list an extension's agent fragments — its references must resolve through the package's exports, so the `./agents/<kind>/*.md` export is the authoritative location
 - hand-rolled semver range matching: extension `compatibility` check — `semver` is already installed through typescript-eslint
+- `gh-issue-sync`: local issue drafts published with placeholder ids (#323) — Go binary, one repository, no issue types, org fields or sub-issues, creates missing labels
+- `git-bug`: offline issue drafting with a GitHub bridge (#323) — issues in git objects, no Markdown files, types or fields
+- `gh-md`, `kup`, `issync`: Markdown issue sync (#323) — title, body and labels only; no types, org fields or sub-issues
+- spawning `gh` from the publisher: publish drafts (#323) — keeps the shell quoting behind the hook friction; Octokit decided in #316
+- denying agents direct issue writes: steer agents to the publisher (#323) — the user keeps GitHub open to agents
+- per-repository GitHub snapshot files: cross-repository metadata (#323) — org types and fields repeated in each file
+- hand-kept AUAUST repository list or whole-org listing: repository registry (#323) — a list to maintain, or short names guessed from naming conventions

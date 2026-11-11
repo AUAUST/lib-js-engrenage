@@ -37,3 +37,5 @@
 - `npx tsc`: type-check one tsconfig — npm refuses the repo's pnpm `devEngines` (EBADDEVENGINES); ran `node node_modules/typescript/bin/tsc`
 - zsh `grep --include=*.ts`: unquoted glob — zsh "no matches found" aborts the command; dropped the flag
 - PreToolUse Bash hook (`gh issue edit`): ran several `gh issue edit --body-file - < file` in one loop — blocked as a whole; one edit per command passes
+- zsh `echo ====WALK`: printed a separator starting with `=` — zsh expands `=word` as a command path and aborts with "not found"; used a separator not starting with `=`
+- `gh issue create` hook: piped a body by its root-relative path after a `cd` into `.ai/issues/` — the hook resolves paths against the session cwd, which the `cd` had moved; reran with the cwd-relative path
