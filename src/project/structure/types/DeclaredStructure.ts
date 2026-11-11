@@ -1,3 +1,4 @@
+import type { ReexportMode } from "#project/roles/index";
 import type { StructureRelation } from "#project/structure/types/StructureRelation";
 import type { Directory } from "#types/Directory";
 
@@ -21,6 +22,8 @@ export interface DeclaredStructure {
         readonly specifier: string | undefined;
         readonly purpose: string | undefined;
         readonly internals: boolean | undefined;
+        readonly reexport: ReexportMode | readonly ReexportMode[] | undefined;
+        readonly public: boolean | undefined;
       }
     >
   >;

@@ -1,9 +1,17 @@
-import { typescript } from "#tools/typescript/constants";
+import {
+  barrelExportsEntry,
+  barrelsTarget,
+  typescript,
+  typescriptExtensions,
+} from "#tools/typescript/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 export default {
   name: "tools/typescript",
   owns: {
+    slots: {
+      "barrels.exports": { entry: barrelExportsEntry },
+    },
     files: {
       "cache.typescript": {
         title: "Cache",
@@ -35,6 +43,21 @@ export default {
           return locateEnvironmentTsconfigs(config);
         },
       },
+      // @debt the barrels are located as literal paths passed as globs, so a path holding glob syntax (`[id]`) matches other files or none
+      "typescript.barrels": {
+        title: "TypeScript",
+        async locate(config): Promise<FileLocation | undefined> {
+          const {
+            planBarrels,
+          } = await import("#tools/typescript/operations/planBarrels");
+
+          const plans = await planBarrels(config);
+
+          return plans.length === 0
+            ? undefined
+            : { globs: plans.map(({ file }) => file) };
+        },
+      },
     },
     parts: {
       "package.json#imports": true,
@@ -45,12 +68,24 @@ export default {
     "languages": [
       {
         name: "typescript",
-        extensions: [".ts", ".tsx", ".mts", ".cts"],
+        extensions: typescriptExtensions,
         modules: true,
         declarations: ".d.ts",
       },
     ],
     "sync.targets": [
+      {
+        name: barrelsTarget,
+        stage: "generate",
+        produces: ["typescript.barrels"],
+        async load() {
+          const {
+            syncBarrelFiles,
+          } = await import("#tools/typescript/setup/syncBarrelFiles");
+
+          return syncBarrelFiles;
+        },
+      },
       {
         name: "tsconfig",
         stage: "write",

@@ -1,4 +1,5 @@
 // @barrel config/schemas/*.ts named
+export { reexportSchema } from "#project/roles/config/schemas/reexportSchema";
 export { roleFileResolverSchema } from "#project/roles/config/schemas/roleFileResolverSchema";
 export { roleNameSchema } from "#project/roles/config/schemas/roleNameSchema";
 export { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
@@ -11,6 +12,7 @@ export { declareRoleContractEntries } from "#project/roles/config/declarers/decl
 // @end
 
 // @barrel types/*.ts types
+export type * from "#project/roles/types/ReexportMode";
 export type * from "#project/roles/types/Role";
 export type * from "#project/roles/types/RoleFileResolver";
 export type * from "#project/roles/types/RoleInput";

@@ -25,6 +25,7 @@ export type {
   GateStepEntry,
 } from "#project/gate/index";
 export type {
+  ReexportMode,
   RoleFileResolver,
   RoleLocation,
   RoleLocationMember,
@@ -54,6 +55,11 @@ export type {
   SyncRun,
   SyncTarget,
 } from "#project/sync/index";
+export type {
+  BarrelExport,
+  BarrelExportsEntry,
+  BarrelExportsResolver,
+} from "#tools/typescript/index";
 
 // @barrel utils/*.ts named
 export { defineExtension } from "#workflows/extensions/utils/defineExtension";

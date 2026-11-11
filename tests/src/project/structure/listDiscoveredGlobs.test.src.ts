@@ -18,6 +18,7 @@ function contract(
     index: false,
     public: false,
     subpath: false,
+    reexport: undefined,
     collected: false,
     discovered: false,
     scoped: false,

@@ -16,6 +16,27 @@
     "internals": {
       "type": "boolean",
       "description": "Overrides `structure.internals` for this domain.\n@default none"
+    },
+    "reexport": {
+      "anyOf": [
+        {
+          "enum": ["namespace", "flat"],
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "enum": ["namespace", "flat"],
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      ],
+      "description": "How the environment's generated root entry re-exports the domain's entry: as a `namespace` named after its package subpath, `flat`, its names spread among the root's, or both as a list. Unset, `namespace`.\n@default none"
+    },
+    "public": {
+      "type": "boolean",
+      "description": "Whether the domain is a package entry, so `engrenage sync` creates the `entry.ts` of a domain without `index.ts`. Unset, whether its `entry.ts` exists; `false` fails when it does.\n@default none"
     }
   },
   "required": [],

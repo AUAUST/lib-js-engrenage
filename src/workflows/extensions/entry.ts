@@ -11,6 +11,9 @@ export {
   loadValidatedConfig,
 } from "#workflows/extensions/index";
 export type {
+  BarrelExport,
+  BarrelExportsEntry,
+  BarrelExportsResolver,
   CardinalityViolation,
   EnvironmentFileNames,
   EnvironmentStructure,
@@ -26,6 +29,7 @@ export type {
   HookEntry,
   LoadedConfig,
   Prompter,
+  ReexportMode,
   ResolvedRoleContract,
   ResolvedRoleExports,
   ResolvedStructure,

@@ -1,4 +1,8 @@
-import type { RoleFileResolver, RoleRules } from "#project/roles/index";
+import type {
+  ReexportMode,
+  RoleFileResolver,
+  RoleRules,
+} from "#project/roles/index";
 import type { ResolvedRoleExports } from "#project/structure/types/ResolvedRoleExports";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
@@ -15,6 +19,7 @@ export interface ResolvedRoleContract {
   readonly index: boolean;
   readonly public: boolean;
   readonly subpath: boolean;
+  readonly reexport: readonly ReexportMode[] | undefined;
   readonly collected: boolean;
   readonly discovered: boolean;
   readonly scoped: boolean;

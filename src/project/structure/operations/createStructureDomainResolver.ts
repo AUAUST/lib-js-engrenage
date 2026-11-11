@@ -3,6 +3,7 @@ import { extname, join, matchesGlob } from "node:path";
 import { entries, freeze, keys, values } from "@auaust/toolkit/object";
 
 import {
+  defaultReexport,
   domainMetadataFile,
   namespaceMetadataFile,
 } from "#project/structure/constants";
@@ -10,6 +11,7 @@ import { listStructureFiles } from "#project/structure/operations/listStructureF
 import { constrainsFileRole } from "#project/structure/utils/constrainsFileRole";
 import { getStructureCardinality } from "#project/structure/utils/getStructureCardinality";
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
+import { listReexportModes } from "#project/structure/utils/listReexportModes";
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import type { Filesystem } from "#foundation/filesystem/index";
@@ -87,11 +89,34 @@ export function createStructureDomainResolver({
             ...(declared.internals === undefined
               ? {}
               : { internals: declared.internals }),
+            ...(declared.reexport === undefined
+              ? {}
+              : { reexport: declared.reexport }),
+            ...(declared.public === undefined
+              ? {}
+              : { public: declared.public }),
           };
         },
         {},
       ),
     };
+  }
+
+  async function resolvePublic(
+    path: Directory,
+    declared: boolean | undefined,
+  ): Promise<boolean> {
+    const entry = entryFile === undefined ? undefined : join(path, entryFile);
+
+    const exists = entry !== undefined && (await filesystem.exists(entry));
+
+    if (declared === false && exists) {
+      throw new Error(
+        `${entry} exists, but its domain is declared \`public: false\``,
+      );
+    }
+
+    return declared ?? exists;
   }
 
   async function metadataForDomain(
@@ -151,14 +176,12 @@ export function createStructureDomainResolver({
         : { strays: strays.map((file) => join(path, file)) }),
       ...cardinality,
       ...(keys(roleFiles).length === 0 ? {} : { roleFiles }),
-      public: (
-        entryFile !== undefined &&
-        (await filesystem.exists(join(path, entryFile)))
-      ),
+      public: await resolvePublic(path, metadata.public),
       ...(metadata.specifier === undefined
         ? {}
         : { specifier: metadata.specifier }),
       internals: metadata.internals ?? internals,
+      reexport: listReexportModes(metadata.reexport ?? defaultReexport),
       ...(metadata.purpose === undefined ? {} : { purpose: metadata.purpose }),
     };
   }

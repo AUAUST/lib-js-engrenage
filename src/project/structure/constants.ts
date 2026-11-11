@@ -1,6 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 import type { DeepReadonly } from "@auaust/toolkit/types";
 
+import type { ReexportMode } from "#project/roles/index";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportRelation } from "#project/structure/types/ImportRelation";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
@@ -10,6 +11,8 @@ export const defaultIndexFile = "index.ts";
 export const namespaceMetadataFile = ".namespace.json";
 
 export const domainMetadataFile = ".domain.json";
+
+export const defaultReexport = "namespace" satisfies ReexportMode;
 
 export const sourceEnvironment = "src";
 

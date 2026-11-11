@@ -1,3 +1,4 @@
+import type { ReexportMode } from "#project/roles/index";
 import type { MetadataField } from "#project/structure/types/MetadataField";
 import type { StructureRelation } from "#project/structure/types/StructureRelation";
 import type { Directory } from "#types/Directory";
@@ -12,6 +13,9 @@ export interface StructureMetadata {
     readonly relation: MetadataField<StructureRelation> | undefined;
     readonly specifier: MetadataField<string> | undefined;
     readonly internals: MetadataField<boolean> | undefined;
+    readonly reexport:
+      MetadataField<ReexportMode | readonly ReexportMode[]> | undefined;
+    readonly public: MetadataField<boolean> | undefined;
   };
   readonly files: readonly File[];
 }

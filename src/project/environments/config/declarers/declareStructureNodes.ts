@@ -17,7 +17,7 @@ import {
   type Declaration,
 } from "#foundation/options/index";
 import { structureKeySchema } from "#project/environments/config/schemas/structureKeySchema";
-import { roleSchema } from "#project/roles/index";
+import { reexportSchema, roleSchema } from "#project/roles/index";
 import type { DomainDeclaration } from "#project/environments/types/DomainDeclaration";
 import type { NamespaceDeclaration } from "#project/environments/types/NamespaceDeclaration";
 
@@ -93,6 +93,14 @@ const fields = freeze({
     description: "Overrides `structure.internals` for this domain.",
     optional: { value: undefined },
   }),
+  reexport: declare(reexportSchema, {
+    description: "How the environment's generated root entry re-exports the domain's entry: as a `namespace` named after its package subpath, `flat`, its names spread among the root's, or both as a list. Unset, `namespace`.",
+    optional: { value: undefined },
+  }),
+  public: declare(boolean(), {
+    description: "Whether the domain is a package entry, so `engrenage sync` creates the `entry.ts` of a domain without `index.ts`. Unset, whether its `entry.ts` exists; `false` fails when it does.",
+    optional: { value: undefined },
+  }),
 });
 
 // @debt the root `structure` needs the optionality, so child records also accept `undefined` values, resolved as empty namespaces
@@ -137,6 +145,8 @@ const domainNode = declareObject({
   specifier: fields.specifier,
   purpose: fields.domainPurpose,
   internals: fields.internals,
+  reexport: fields.reexport,
+  public: fields.public,
   ...declareChildren(),
 });
 

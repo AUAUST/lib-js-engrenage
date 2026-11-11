@@ -1,3 +1,4 @@
+import type { ReexportMode } from "#project/roles/index";
 import type { CardinalityViolation } from "#project/structure/types/CardinalityViolation";
 import type { StructureKind } from "#project/structure/types/StructureKind";
 import type { StructureMirror } from "#project/structure/types/StructureMirror";
@@ -24,6 +25,7 @@ export interface StructureNode {
   readonly public?: boolean;
   readonly specifier?: string;
   readonly internals?: boolean;
+  readonly reexport?: readonly ReexportMode[];
   readonly purpose?: string;
   readonly effects?: string;
   readonly mirror?: StructureMirror;

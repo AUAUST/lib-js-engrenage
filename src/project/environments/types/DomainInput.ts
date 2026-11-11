@@ -19,6 +19,16 @@ export interface DomainInput {
    */
   internals?: (boolean | undefined)
   /**
+   * How the environment's generated root entry re-exports the domain's entry: as a `namespace` named after its package subpath, `flat`, its names spread among the root's, or both as a list. Unset, `namespace`.
+   * @default none
+   */
+  reexport?: ((("namespace" | "flat") | [("namespace" | "flat"), ...(("namespace" | "flat"))[]]) | undefined)
+  /**
+   * Whether the domain is a package entry, so `engrenage sync` creates the `entry.ts` of a domain without `index.ts`. Unset, whether its `entry.ts` exists; `false` fails when it does.
+   * @default none
+   */
+  public?: (boolean | undefined)
+  /**
    * Namespaces inside this node, keyed by directory name relative to it.
    * @default none
    */

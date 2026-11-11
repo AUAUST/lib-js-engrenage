@@ -11,11 +11,11 @@ import {
   readTsconfigPaths,
   toTsconfigSpecifier,
 } from "#project/tsconfig/index";
+import { importPrefix } from "#tools/typescript/constants";
+import { listSubpathImports } from "#tools/typescript/utils/listSubpathImports";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Alias } from "#project/structure/index";
-
-const importPrefix = "#";
 
 function sortByKey<Item extends readonly [string, unknown]>(items: Item[]) {
   return sort(items, ([a], [b]) => {
@@ -30,13 +30,7 @@ async function syncImports(
   },
   aliases: readonly Alias[],
 ) {
-  const imports = record(
-    sortByKey(
-      aliases
-        .filter(({ key }) => key.startsWith(importPrefix))
-        .map(({ key, target }) => [key, target] as const),
-    ),
-  );
+  const imports = listSubpathImports(aliases);
 
   await syncFiles(config, [
     {

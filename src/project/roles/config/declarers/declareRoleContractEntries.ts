@@ -19,6 +19,7 @@ import {
   globsSchema,
   unset,
 } from "#foundation/options/index";
+import { reexportSchema } from "#project/roles/config/schemas/reexportSchema";
 import { roleFileResolverSchema } from "#project/roles/config/schemas/roleFileResolverSchema";
 import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
 import { roleContractDefaults } from "#project/roles/constants";
@@ -93,6 +94,10 @@ export function declareRoleContractEntries<Nested>(
     subpath: declare(boolean(), {
       description: "Whether each of its files at a public domain's root is a package subpath, `<domain subpath>/<file name without extension>`. Needs a public role with static `file` names or globs.",
       optional: describedDefault(roleContractDefaults.subpath),
+    }),
+    reexport: declare(reexportSchema, {
+      description: "How the environment's generated root entry re-exports the role's barrel: as a `namespace` named after its directory, `flat`, its names spread among the root's, or both as a list. Only a global role with `index` takes it; unset, the root entry does not re-export the barrel.",
+      optional: { value: undefined },
     }),
     collected: declare(boolean(), {
       description: "Whether its public modules stay importable inside sub-domains, without going through their parent domains' surfaces, so one module can collect them all.",

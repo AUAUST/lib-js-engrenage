@@ -65,6 +65,8 @@ async function readFileMetadata(
         relation: locate(relation, file),
         specifier: undefined,
         internals: undefined,
+        reexport: undefined,
+        public: undefined,
       },
       files: [file],
     };
@@ -74,6 +76,8 @@ async function readFileMetadata(
     purpose,
     specifier,
     internals,
+    reexport,
+    public: isPublic,
   } = validate(domainMetadataSchema, content, file);
 
   return {
@@ -85,6 +89,8 @@ async function readFileMetadata(
       relation: undefined,
       specifier: locate(specifier, file),
       internals: locate(internals, file),
+      reexport: locate(reexport, file),
+      public: locate(isPublic, file),
     },
     files: [file],
   };
@@ -120,6 +126,8 @@ function mergeAtPath(
       relation: fields.relation ?? next.fields.relation,
       specifier: fields.specifier ?? next.fields.specifier,
       internals: fields.internals ?? next.fields.internals,
+      reexport: fields.reexport ?? next.fields.reexport,
+      public: fields.public ?? next.fields.public,
     },
     files: [...merged.files, ...next.files],
   };

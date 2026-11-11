@@ -12,6 +12,7 @@ import {
   identifierPattern,
   typescriptBlocks,
 } from "#tools/typescript/constants";
+import { compareNaturally } from "#tools/typescript/utils/compareNaturally";
 import { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
 import type { LoadedConfig } from "#project/config/index";
 import type { SubpathImports } from "#project/package/index";
@@ -20,15 +21,6 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Files } from "#types/Files";
 import type { Glob } from "#types/Glob";
-
-const collator = new Intl.Collator("en-US", {
-  numeric: true,
-  sensitivity: "base",
-});
-
-function compareNaturally(left: string, right: string): number {
-  return collator.compare(left, right);
-}
 
 function createExport(
   mode: BarrelMode,

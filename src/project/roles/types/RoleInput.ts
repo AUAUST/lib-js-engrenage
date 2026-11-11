@@ -74,6 +74,11 @@ export interface RoleInput {
    */
   subpath?: (boolean | undefined)
   /**
+   * How the environment's generated root entry re-exports the role's barrel: as a `namespace` named after its directory, `flat`, its names spread among the root's, or both as a list. Only a global role with `index` takes it; unset, the root entry does not re-export the barrel.
+   * @default none
+   */
+  reexport?: ((("namespace" | "flat") | [("namespace" | "flat"), ...(("namespace" | "flat"))[]]) | undefined)
+  /**
    * Whether its public modules stay importable inside sub-domains, without going through their parent domains' surfaces, so one module can collect them all.
    * @default false
    */

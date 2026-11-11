@@ -104,6 +104,7 @@ export { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlob
 export { listDomainsWithoutPurpose } from "#project/structure/utils/listDomainsWithoutPurpose";
 export { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";
 export { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
+export { listReexportModes } from "#project/structure/utils/listReexportModes";
 export { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 export { listStructureRoles } from "#project/structure/utils/listStructureRoles";
 export { loosenStructureNode } from "#project/structure/utils/loosenStructureNode";

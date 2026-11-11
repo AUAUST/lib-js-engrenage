@@ -268,6 +268,16 @@ describe("structure", () => {
     });
   });
 
+  test("fails on a domain declared `public: false` beside its entry file", async () => {
+    await expect(
+      describeSource(declaration, {
+        "src/feature/sub/.domain.json": '{ "public": false }',
+      }),
+    ).rejects.toThrow(
+      "src/feature/sub/entry.ts exists, but its domain is declared `public: false`",
+    );
+  });
+
   test("fails on a field set by both the config and a metadata file", async () => {
     await expect(
       describeSource(declaration, {

@@ -285,7 +285,10 @@ describe("runSync with generated sources", () => {
 
   test("settles the files derived from a generated source in one sync", async () => {
     const config = createSourceProject(
-      { "src/modules/a/index.ts": "export const a = 1;\n" },
+      {
+        "src/entry.ts": "export const root = 1;\n",
+        "src/modules/a/index.ts": "export const a = 1;\n",
+      },
       [
         createGenerator(({ context }) => {
           return context.filesystem.write(

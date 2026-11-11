@@ -62,6 +62,8 @@ export function flattenStructure({
         specifier: domain.specifier,
         purpose: domain.purpose,
         internals: domain.internals,
+        reexport: domain.reexport,
+        public: domain.public,
       });
 
       visitChildren(child, domain, `${option}.domains.${name}`);
