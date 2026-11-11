@@ -41,11 +41,11 @@ The matrix states environment grants; domain and role boundaries still apply. No
 
 ## Test files
 
-| Files                            | Runs against    | May import                                                                         | Never                     |
-| -------------------------------- | --------------- | ---------------------------------------------------------------------------------- | ------------------------- |
-| `**/*.{spec,test}.{ts,tsx}`      | source and dist | `public-entries`, `tests`, `scripts`, `tooling`, `data`, `dist-artefacts`          | `internal-aliases`, `bin` |
-| `**/*.{spec,test}.src.{ts,tsx}`  | source          | `internal-aliases`, `tests`, `bin`, `scripts`, `tooling`, `data`, `dist-artefacts` | `public-entries`          |
-| `**/*.{spec,test}.dist.{ts,tsx}` | dist            | `public-entries`, `tests`, `scripts`, `tooling`, `data`, `dist-artefacts`          | `internal-aliases`, `bin` |
+| Files                     | Runs against    | May import                                                                         | Never                     |
+| ------------------------- | --------------- | ---------------------------------------------------------------------------------- | ------------------------- |
+| `**/*.test.{ts,tsx}`      | source and dist | `public-entries`, `tests`, `scripts`, `tooling`, `data`, `dist-artefacts`          | `internal-aliases`, `bin` |
+| `**/*.test.src.{ts,tsx}`  | source          | `internal-aliases`, `tests`, `bin`, `scripts`, `tooling`, `data`, `dist-artefacts` | `public-entries`          |
+| `**/*.test.dist.{ts,tsx}` | dist            | `public-entries`, `tests`, `scripts`, `tooling`, `data`, `dist-artefacts`          | `internal-aliases`, `bin` |
 
 ## Roles
 

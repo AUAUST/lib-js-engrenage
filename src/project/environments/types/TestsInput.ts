@@ -131,7 +131,7 @@ export interface TestsInput {
   location?: (string | undefined)
   /**
    * Glob of the suffix that marks a test file, the second part of the test file patterns.
-   * @default `.{spec,test}`
+   * @default `.test`
    */
   suffix?: (string | undefined)
   /**

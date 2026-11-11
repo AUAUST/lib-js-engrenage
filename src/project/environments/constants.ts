@@ -50,7 +50,7 @@ export const defaultToolingFiles = freeze([
 
 export const defaultTestsLocation = "**/*" satisfies Glob;
 
-export const defaultTestsSuffix = ".{spec,test}" satisfies Glob;
+export const defaultTestsSuffix = ".test" satisfies Glob;
 
 export const defaultTestsExtension = ".{ts,tsx}" satisfies Glob;
 

@@ -68,12 +68,8 @@ describe("produceTsconfigInclude", () => {
     expect(read("tsconfig.tests.json").include).toEqual(expected);
 
     expect(read("tsconfig.tests.dist.json").include).toEqual([
-      "spec/**/*.spec.ts",
-      "spec/**/*.spec.tsx",
       "spec/**/*.test.ts",
       "spec/**/*.test.tsx",
-      "spec/**/*.spec.dist.ts",
-      "spec/**/*.spec.dist.tsx",
       "spec/**/*.test.dist.ts",
       "spec/**/*.test.dist.tsx",
       "env.d.ts",

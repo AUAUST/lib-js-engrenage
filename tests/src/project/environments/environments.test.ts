@@ -41,9 +41,9 @@ describe("environments", () => {
       defines: true,
       globs: ["tests/**/*.{ts,tsx}"],
       files: [
-        "**/*.{spec,test}.{ts,tsx}",
-        "**/*.{spec,test}.src.{ts,tsx}",
-        "**/*.{spec,test}.dist.{ts,tsx}",
+        "**/*.test.{ts,tsx}",
+        "**/*.test.src.{ts,tsx}",
+        "**/*.test.dist.{ts,tsx}",
       ],
       fixtures: ["**/fixtures/**"],
       coverageDir: "coverage",

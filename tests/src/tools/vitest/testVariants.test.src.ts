@@ -62,9 +62,9 @@ describe("test variants", () => {
     const config = await loadConfig(project.root);
 
     expect((await config.resolve("tests")).patterns).toEqual({
-      plain: ["**/*.{spec,test}.{ts,tsx}"],
-      source: ["**/*.{spec,test}.src.{ts,tsx}"],
-      dist: ["**/*.{spec,test}.dist.{ts,tsx}"],
+      plain: ["**/*.test.{ts,tsx}"],
+      source: ["**/*.test.src.{ts,tsx}"],
+      dist: ["**/*.test.dist.{ts,tsx}"],
     });
 
     expect(
@@ -74,7 +74,7 @@ describe("test variants", () => {
           mode: "test",
         })
       ).test?.include,
-    ).toEqual(["**/*.{spec,test}.{ts,tsx}", "**/*.{spec,test}.src.{ts,tsx}"]);
+    ).toEqual(["**/*.test.{ts,tsx}", "**/*.test.src.{ts,tsx}"]);
 
     expect(
       (
@@ -83,7 +83,7 @@ describe("test variants", () => {
           mode: "build",
         })
       ).test?.include,
-    ).toEqual(["**/*.{spec,test}.{ts,tsx}", "**/*.{spec,test}.dist.{ts,tsx}"]);
+    ).toEqual(["**/*.test.{ts,tsx}", "**/*.test.dist.{ts,tsx}"]);
   });
 
   test("derives the patterns from custom location, suffix and extension parts", async () => {
