@@ -25,11 +25,17 @@
         },
         {
           "type": "array",
-          "items": {
+          "items": [
+            {
+              "enum": ["namespace", "flat"],
+              "type": "string"
+            }
+          ],
+          "minItems": 1,
+          "additionalItems": {
             "enum": ["namespace", "flat"],
             "type": "string"
-          },
-          "minItems": 1
+          }
         }
       ],
       "description": "How the environment's generated root entry re-exports the domain's entry: as a `namespace` named after its package subpath, `flat`, its names spread among the root's, or both as a list. Unset, `namespace`.\n@default none"

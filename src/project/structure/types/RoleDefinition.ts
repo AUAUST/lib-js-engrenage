@@ -1,4 +1,4 @@
-import type { ReexportMode, RoleInput } from "#project/roles/index";
+import type { RoleInput } from "#project/roles/index";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 
 export interface RoleDefinition extends Omit<
@@ -18,8 +18,7 @@ export interface RoleDefinition extends Omit<
   | "required"
 > {
   readonly exports: RoleInput["exports"];
-  // @debt restated by hand because the generated `RoleInput["reexport"]` is a non-empty tuple the schema output does not satisfy
-  readonly reexport: ReexportMode | readonly ReexportMode[] | undefined;
+  readonly reexport: RoleInput["reexport"];
   readonly nesting: ResolvedRoleContract["nesting"] | undefined;
   readonly index: boolean | undefined;
   readonly public: boolean | undefined;
