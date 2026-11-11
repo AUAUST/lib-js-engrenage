@@ -1,7 +1,7 @@
 import {
   checkIssue,
+  createGithubClient,
   findBriefedIssue,
-  resolveGithubToken,
 } from "#tools/github/index";
 import type { Directory } from "#types/Directory";
 
@@ -23,10 +23,16 @@ export async function checkAgentDispatch(
   }
 
   const { findings } = await checkIssue(
-    { repository: issue.repository, token: await resolveGithubToken() },
+    {
+      repository: issue.repository,
+      client: await createGithubClient(),
+    },
     issue.number,
     role,
-    { dispatch: true, root },
+    {
+      dispatch: true,
+      root,
+    },
   );
 
   return findings.length === 0

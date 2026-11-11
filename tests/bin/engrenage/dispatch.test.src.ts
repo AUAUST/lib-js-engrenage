@@ -79,7 +79,7 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
   await dispatch();
 
   expect(checkIssue).toHaveBeenCalledWith(
-    { repository: "o/r", token: "token" },
+    { repository: "o/r", client: expect.anything() },
     1,
     "worker",
     { dispatch: true, root: process.cwd() },

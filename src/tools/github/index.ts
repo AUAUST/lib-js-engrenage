@@ -1,6 +1,6 @@
 // @debt should provide a way to generate re-exports for subdomains
 export {
-  resolveGithubToken,
+  createGithubClient,
   resolveRepository,
 } from "#tools/github/issues/api/index";
 export {

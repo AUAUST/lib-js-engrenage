@@ -1,7 +1,8 @@
 import { listIssueCommits, type IssueCommit } from "#tools/git/index";
 import {
-  requestGithub,
+  isMissingResource,
   resolveRepository,
+  splitRepository,
   type GithubAccess,
 } from "#tools/github/issues/api/index";
 import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
@@ -60,18 +61,23 @@ async function findAncestors(access: GithubAccess, issue: GithubIssue) {
 }
 
 async function findMissingReferences(
-  { repository, token }: GithubAccess,
+  { repository, client }: GithubAccess,
   numbers: readonly number[],
 ) {
   const found = await Promise.all(
     numbers.map(async (number) => {
-      const issue = await requestGithub(
-        token,
-        `/repos/${repository}/issues/${number}`,
-        { missing: "undefined" },
-      );
+      try {
+        await client.request(
+          "GET /repos/{owner}/{repo}/issues/{issue_number}",
+          { ...splitRepository(repository), issue_number: number },
+        );
+      } catch (error) {
+        if (isMissingResource(error)) {
+          return number;
+        }
 
-      return issue === undefined ? number : undefined;
+        throw error;
+      }
     }),
   );
 

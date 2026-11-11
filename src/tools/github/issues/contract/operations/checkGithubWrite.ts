@@ -1,5 +1,5 @@
 import {
-  resolveGithubToken,
+  createGithubClient,
   resolveRepository,
 } from "#tools/github/issues/api/index";
 import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
@@ -37,7 +37,7 @@ async function checkWrite(
     const issue = await fetchIssue(
       {
         repository: await resolveRepository(cwd, write.repository),
-        token: await resolveGithubToken(),
+        client: await createGithubClient(),
       },
       write.number,
     );

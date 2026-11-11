@@ -1,7 +1,7 @@
 import {
   checkIssue,
+  createGithubClient,
   formatIssueCheck,
-  resolveGithubToken,
   resolveRepository,
 } from "#tools/github/index";
 
@@ -17,7 +17,7 @@ export default async function (
   const check = await checkIssue(
     {
       repository: await resolveRepository(root, repo),
-      token: await resolveGithubToken(),
+      client: await createGithubClient(),
     },
     number,
     audience,

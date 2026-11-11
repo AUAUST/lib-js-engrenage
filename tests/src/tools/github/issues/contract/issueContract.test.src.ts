@@ -3,12 +3,33 @@ import { execFileSync } from "node:child_process";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
 import { checkGithubWrite } from "#tools/github/issues/contract/operations/checkGithubWrite";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
+import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssueCheck";
 import { parseGithubCommand } from "#tools/github/issues/contract/utils/parseGithubCommand";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
+
+vi.stubEnv("GH_TOKEN", "t");
+
+const access = { repository: "o/r", client: await createGithubClient() };
+
+vi.unstubAllEnvs();
+
+function respond(
+  json: unknown,
+  status = 200,
+  headers: Record<string, string> = {},
+) {
+  return Promise.resolve(
+    new Response(JSON.stringify(json), {
+      status,
+      headers: { "content-type": "application/json", ...headers },
+    }),
+  );
+}
 
 const task = `#10 · [Gates](https://example.com/10#gates)
 
@@ -117,7 +138,11 @@ function mockGithub(
   vi.stubGlobal(
     "fetch",
     vi.fn((url: string) => {
-      const [, number, rest = ""] = /issues\/(\d+)(\/.*)?$/.exec(url) ?? [];
+      const [
+        ,
+        number,
+        rest = "",
+      ] = /issues\/(\d+)(\/[^?]*)?(?:\?.*)?$/.exec(url) ?? [];
 
       const issue = issues[Number(number)];
 
@@ -155,7 +180,7 @@ function mockGithub(
         }
       }
 
-      return Promise.resolve(new Response(JSON.stringify(json), { status }));
+      return respond(json, status);
     }),
   );
 }
@@ -165,7 +190,6 @@ describe("checkIssue", () => {
     vi.unstubAllGlobals();
   });
 
-  const access = { repository: "o/r", token: "t" };
   const plan = { body: "## Goal\n\nx\n", type: "Plan" };
 
   const validPlan = {
@@ -455,6 +479,79 @@ describe("checkIssue", () => {
   });
 });
 
+describe("fetchIssue", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  const base = "https://api.github.com/repos/o/r/issues/10";
+
+  test("merges the pages of a list route and resolves a missing parent to none", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((url: string) => {
+        if (url === base) {
+          return respond({
+            number: 10,
+            title: "t",
+            body: task,
+            state: "open",
+            type: { name: "Task" },
+          });
+        }
+
+        if (url === `${base}/sub_issues`) {
+          return respond(
+            [
+              {
+                number: 11,
+                state: "open",
+              },
+            ],
+            200,
+            {
+              link: `<${base}/sub_issues?page=2>; rel="next"`,
+            },
+          );
+        }
+
+        if (url === `${base}/sub_issues?page=2`) {
+          return respond([{ number: 12, state: "closed" }]);
+        }
+
+        if (url === `${base}/parent`) {
+          return respond({ message: "Not Found" }, 404);
+        }
+
+        return respond([]);
+      }),
+    );
+
+    await expect(fetchIssue(access, 10)).resolves.toMatchObject({
+      subIssues: [
+        { number: 11, state: "open" },
+        { number: 12, state: "closed" },
+      ],
+      parent: undefined,
+    });
+  });
+
+  test("fails on a missing issue, naming its route", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((url: string) => {
+        return url === base
+          ? respond({ message: "Not Found" }, 404)
+          : respond([]);
+      }),
+    );
+
+    await expect(fetchIssue(access, 10)).rejects.toThrow(
+      "/repos/o/r/issues/10 failed with 404",
+    );
+  });
+});
+
 describe("parseGithubCommand", () => {
   const body = "## Context\n\nhello world";
   const draft = ".ai/issues/5.draft.md";
@@ -561,8 +658,6 @@ describe("formatIssueCheck", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
-
-  const access = { repository: "o/r", token: "t" };
 
   function commitIn(root: string, message: string) {
     execFileSync(

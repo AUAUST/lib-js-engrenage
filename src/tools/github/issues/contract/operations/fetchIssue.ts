@@ -10,8 +10,10 @@ import {
 
 import { validate } from "#foundation/options/index";
 import {
-  requestGithub,
+  isMissingResource,
+  splitRepository,
   type GithubAccess,
+  type GithubClient,
 } from "#tools/github/issues/api/index";
 import { blockersField } from "#tools/github/issues/contract/constants";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
@@ -37,21 +39,50 @@ const fieldValuesSchema = array(
 
 const parentSchema = object({ number: number() });
 
+async function fetchParent(
+  client: GithubClient,
+  issue: { owner: string; repo: string; issue_number: number },
+) {
+  try {
+    const { data } = await client.request(
+      "GET /repos/{owner}/{repo}/issues/{issue_number}/parent",
+      issue,
+    );
+
+    return data;
+  } catch (error) {
+    if (isMissingResource(error)) {
+      return;
+    }
+
+    throw error;
+  }
+}
+
 export async function fetchIssue(
-  { repository, token }: GithubAccess,
+  { repository, client }: GithubAccess,
   number: number,
 ): Promise<GithubIssue> {
-  const base = `/repos/${repository}/issues/${number}`;
+  const route = { ...splitRepository(repository), issue_number: number };
 
   const [issue, fields, subIssues, parent, blockedBy] = await Promise.all([
-    requestGithub(token, base),
-    requestGithub(token, `${base}/issue-field-values`),
-    requestGithub(token, `${base}/sub_issues`),
-    requestGithub(token, `${base}/parent`, { missing: "undefined" }),
-    requestGithub(token, `${base}/dependencies/blocked_by`),
+    client.request("GET /repos/{owner}/{repo}/issues/{issue_number}", route),
+    client.paginate(
+      "GET /repos/{owner}/{repo}/issues/{issue_number}/issue-field-values",
+      route,
+    ),
+    client.paginate(
+      "GET /repos/{owner}/{repo}/issues/{issue_number}/sub_issues",
+      route,
+    ),
+    fetchParent(client, route),
+    client.paginate(
+      "GET /repos/{owner}/{repo}/issues/{issue_number}/dependencies/blocked_by",
+      route,
+    ),
   ]);
 
-  const checked = validate(issueSchema, issue, `issue #${number}`);
+  const checked = validate(issueSchema, issue.data, `issue #${number}`);
 
   const blockers = validate(fieldValuesSchema, fields, `fields of #${number}`)
     .filter(({ issue_field_name }) => issue_field_name === blockersField)
