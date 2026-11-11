@@ -37,3 +37,11 @@
 - denying agents direct issue writes: steer agents to the publisher (#323) — the user keeps GitHub open to agents
 - per-repository GitHub snapshot files: cross-repository metadata (#323) — org types and fields repeated in each file
 - hand-kept AUAUST repository list or whole-org listing: repository registry (#323) — a list to maintain, or short names guessed from naming conventions
+- `structure --check` reporting role companions: missing companion files (#455) — reads no file contents, would report lint's finding twice; lint preferred by the user
+- `// @barrel guards` block in toolkit's `guard` entry: one entry collecting a role from every domain (#454) — an entry-only domain's entry is a whole generated file, blocks cannot sit in it
+- toolkit `barrels.exports` contribution for the `guard` entry: one entry collecting a role from every domain (#454) — re-derives the structure in toolkit, and lands after toolkit#203, whose names would drop meanwhile
+- ids in the planning sheet: direct GitHub calls without reading the snapshot (#207) — every agent would load them; the snapshot holds them
+- publish re-rendering an unclaimed Plan's Roadmap: segment members expanded when only the segment changes (#207) — writes an issue without its claim; the set must include the Plan instead
+- walk check computing the issue-walking handling-table row (#452) — restates the skill's table in code; findings carry their rule instead
+- `parent` and `after` on child drafts: sub-issue order (#323) — order scattered across children; parents' `subIssues` decided in #207
+- `tools/github/drafts` sub-domain only: placement of the planner code (#207) — leaves the mixed domain to a later split; layered `tools/github/issues` namespace chosen

@@ -15,7 +15,7 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 3. The issue-drafts protocol and GitHub mechanics are copied in three skills and have drifted
 
-- why: the Drafts sections of `debugging.md`, `issue-planning.md` and `analysis.md` differ only in flush triggers and creation order; field mechanics repeat.
+- why: the Drafts sections of `debugging.md`, `issue-planning.md` and `analysis.md` differ only in flush triggers and creation order; AUAUST/lib-js-engrenage#461 shrinks them to the planning commands and drops their GitHub mechanics.
 - want: one source each skill opts into, per #277 (skill traits).
 
 ## 4. The worker and debugger skills repeat their gated finishing lines word for word

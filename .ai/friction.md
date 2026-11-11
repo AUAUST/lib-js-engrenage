@@ -1,18 +1,9 @@
 # Agent friction
 
-- `gh api issue-field-values`: clear the `Drafting` blocker by posting an empty multi-select array — 422 "must contain at least one option"; `DELETE repos/{owner}/{repo}/issues/<n>/issue-field-values/<field id>` works, undocumented in the drafts flush mechanics
-- `gh issue view --repo`: read issues from `AUAUST/engrenage` — repository is `AUAUST/lib-js-engrenage`; had to read the git remote
 - PreToolUse Bash hook: run any command after changing the config schema before `engrenage.config.ts` — the hook loads the project config and blocked every Bash call; migrated the config with Edit first
-- `engrenage issues check`: validate local drafts before a flush — takes issue numbers only; checks deferred to after the flush
-- PreToolUse Bash hook (`gh issue create`): pipe a draft through a shell variable path — hook needs the literal `.draft.md` path in the pipeline, resolved from the shell cwd; wrote one literal absolute path per command
-- drafts flush: strip frontmatter with awk — left a leading blank line, so `engrenage issues check` saw no header; trimmed leading blank lines and republished
 - git stash -u: stashing a tree with `git add -N` entries to test HEAD — stash refused, chained pop then half-applied an older stash's untracked files; removed them after cmp against stash^3, used a temporary worktree instead
-- `gh issue create` hook: piped a body from a shell function, then from a relative `.draft.md` path outside the repository root — the hook accepts only a draft path relative to the root; reran from the root
-- `engrenage issues check`: published draft bodies keeping the blank line after the frontmatter — the header check fails on a leading blank line; stripped it and republished
 - node scratch scripts: imported `prettier` from a scratchpad `.mjs` — ESM resolves packages from the script directory, not the cwd; imported `node_modules/prettier/index.mjs` by absolute path
-- PreToolUse Bash hook (`gh issue edit`): redirected a body file with `<`, then a draft without frontmatter — the hook accepts only a pipe from a `.draft.md` file and blocks the whole compound command; piped with `cat` in its own command
 - `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the run shows no test console output; wrote it to a file instead
-- `gh issue view --repo`: read issue 160 from `AUAUST/engrenage` — repository is `AUAUST/lib-js-engrenage`; read the git remote
 - `grep --include=*.ts`: unquoted glob in zsh — zsh aborts with "no matches found"; quoted the pattern
 - node scratch scripts: imported `prettier` from a scratchpad `.mjs` — ESM resolves packages from the script directory; ran the code with `node --input-type=module -e` from the repository root
 - `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the default reporter hid it; reran with `--silent=false --reporter=verbose`
@@ -21,21 +12,15 @@
 - PreToolUse Bash hook (`git commit --no-verify`): committed a baseline in a scratch copy of another repository — the hook denies it everywhere; used the git index as the baseline and diffed against it
 - `timeout`: bounded `engrenage init -y` — not installed on macOS; ran without it and relied on the tool timeout
 - `grep --include=*.ts`: unquoted glob in zsh — zsh aborts with "no matches found"; quoted the pattern
-- `gh issue create` hook: piped a draft by its root-relative path after a `cd` into `.ai/issues/` had moved the shell cwd — the hook resolves the path against the shell cwd and reported the file missing; reran with the path relative to that cwd
 - shared checkout: ran `engrenage gate --worktree` while another session edited `src/workflows/builtins/index.ts` — its half-done barrel registered every extension twice, breaking config load for gate, vitest, eslint and the Bash hook; stopped with checks unverified
-- gh issue view --repo: guessed AUAUST/engrenage — repo is AUAUST/lib-js-engrenage, read from git remote
 - zsh `grep --include=*.ts`: unquoted glob in a Bash call — zsh "no matches found" aborts the command; dropped the flag
-- PreToolUse Bash hook (`gh issue edit`): piped a frontmatter-free body from a scratchpad `.md` — blocked; piping the draft published its frontmatter; renamed the stripped body to `.draft.md` and piped it
 - zsh word splitting: `set -- $ids` to split two GraphQL ids — zsh passes one word; inlined the ids
 - zsh for loop: set -- $p to split a pair — zsh does not word-split unquoted params; call a function with explicit args
 - eslint `-f unix`: listed repo-wide lint findings with the unix formatter — not bundled in ESLint 9+, used `-f json -o <file>` instead
-- gh issue edit hook: edit a non-draft issue body from a scratchpad file, then from a `.draft.md` written in the same command — hook demands heredoc or a pre-existing `.ai/issues/*.draft.md` piped via `cat`; wrote the draft in a separate call
-- PreToolUse Bash hook (`gh issue edit`): wrote the body with a heredoc and ran `gh issue edit --body-file -` in one command — the PreToolUse hook checks the body file exists before the command runs; wrote it first with Write
 - zsh `grep --include=*.ts`: unquoted glob in Bash calls, twice — zsh "no matches found" aborts the command; quoted the pattern
 - `git ls-files --others --ignored --directory`: list ignored paths — skips untracked directories and fails inside a nested ignored base; used `git status --porcelain --ignored=matching --untracked-files=normal` from the repository root
 - `timeout`: bounded `pnpm view` — not installed on macOS; ran without it
 - `npx tsc`: type-check one tsconfig — npm refuses the repo's pnpm `devEngines` (EBADDEVENGINES); ran `node node_modules/typescript/bin/tsc`
 - zsh `grep --include=*.ts`: unquoted glob — zsh "no matches found" aborts the command; dropped the flag
-- PreToolUse Bash hook (`gh issue edit`): ran several `gh issue edit --body-file - < file` in one loop — blocked as a whole; one edit per command passes
 - zsh `echo ====WALK`: printed a separator starting with `=` — zsh expands `=word` as a command path and aborts with "not found"; used a separator not starting with `=`
-- `gh issue create` hook: piped a body by its root-relative path after a `cd` into `.ai/issues/` — the hook resolves paths against the session cwd, which the `cd` had moved; reran with the cwd-relative path
+- zsh `grep --include=*.ts` and `find -o` globs: unquoted patterns in Bash calls, twice — zsh "no matches found" aborts the command; quoted or dropped the flag
