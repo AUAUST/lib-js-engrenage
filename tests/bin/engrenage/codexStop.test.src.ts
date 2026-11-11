@@ -53,6 +53,7 @@ test.each([
       {
         filesystem: config.context.filesystem,
         agents: await config.resolve("agents"),
+        fillers: {},
       },
       [
         "issue-implementation",

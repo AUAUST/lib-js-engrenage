@@ -18,7 +18,9 @@ import { listDataFiles, resolveDataFile } from "#foundation/data/index";
 import { validate } from "#foundation/options/index";
 import { agentsTemplate } from "#tools/agents/constants";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
+import { renderFragment } from "#tools/agents/utils/renderFragment";
 import type { Extension } from "#project/config/index";
+import type { BlockFillers } from "#types/BlockFillers";
 import type { File } from "#types/File";
 
 type InstructionKind = "rules" | "sections" | "skills";
@@ -59,7 +61,13 @@ async function listOwnTemplateFiles(
 // @debt only `engrenage sync agents` passes the active extensions; init steps, agent checks and codex profile resolution read engrenage's own fragments
 export async function getInstructionTemplates(
   kind: InstructionKind,
-  extensions: readonly Extension[] = [],
+  {
+    extensions = [],
+    fillers,
+  }: {
+    extensions?: readonly Extension[] | undefined;
+    fillers?: BlockFillers;
+  } = {},
 ) {
   const shipped = await Promise.all([
     listOwnTemplateFiles(kind),
@@ -88,7 +96,9 @@ export async function getInstructionTemplates(
         name: basename(source, ".md"),
         source,
         reference: specifier,
-        body: instruction.body,
+        body: fillers === undefined
+          ? instruction.body
+          : await renderFragment(instruction.body, source, fillers),
         paths: instruction.paths,
       };
     }),

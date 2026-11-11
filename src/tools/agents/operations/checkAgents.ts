@@ -8,6 +8,7 @@ import { codexFile, codexSkillsDir } from "#tools/agents/codex/constants";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
 import { agentsFile } from "#tools/agents/constants";
 import { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
+import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import type { LoadedConfig } from "#project/config/index";
@@ -41,7 +42,9 @@ export async function checkAgents(
 
   const { filesystem, root } = config.context;
 
-  const templates = await getSkillTemplates({ agents });
+  const fillers = await createAgentFillers(config);
+
+  const templates = await getSkillTemplates({ agents, fillers });
 
   for (const agent of preferred) {
     const instructions = agent === "codex" ? codexFile : claudeFile;
@@ -147,7 +150,7 @@ export async function checkAgents(
       if (agent === "codex") {
         for (const profile of template.profiles) {
           try {
-            await resolveCodexProfile(filesystem, profile.name);
+            await resolveCodexProfile({ filesystem, fillers }, profile.name);
 
             add(
               agent,

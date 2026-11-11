@@ -13,6 +13,7 @@ import {
 } from "#tools/agents/constants";
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
@@ -25,7 +26,9 @@ export function createBacklogStep(): Step {
   return {
     name: "shared backlog",
     message: "Set up the shared backlog in .ai/backlog/ and scratchpad in .ai/scratchpad.md?",
-    async isMissing({ resolve, filesystem, getAgents }) {
+    async isMissing(context) {
+      const { resolve, filesystem, getAgents } = context;
+
       if (
         (getAgents()?.length ?? 0) === 0 ||
         !(await filesystem.exists(agentsFile))
@@ -45,9 +48,11 @@ export function createBacklogStep(): Step {
 
       const agents = await resolve("agents");
 
+      const fillers = await createAgentFillers(context);
+
       const [missingRules, skillTemplates] = await Promise.all([
-        getMissingRuleTemplates({ filesystem }),
-        getSkillTemplates({ agents }),
+        getMissingRuleTemplates({ filesystem, fillers }),
+        getSkillTemplates({ agents, fillers }),
       ]);
 
       if (missingRules.some(({ name }) => name === "backlog")) {
@@ -101,9 +106,25 @@ export function createBacklogStep(): Step {
         );
       }
 
-      await addAgentRules({ filesystem, agents }, ["backlog"]);
+      const fillers = await createAgentFillers(context);
 
-      await addAgentSkills({ filesystem, agents }, skills);
+      await addAgentRules(
+        {
+          filesystem,
+          agents,
+          fillers,
+        },
+        ["backlog"],
+      );
+
+      await addAgentSkills(
+        {
+          filesystem,
+          agents,
+          fillers,
+        },
+        skills,
+      );
 
       await syncAgentFiles(context);
     },

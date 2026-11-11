@@ -1,7 +1,7 @@
 import { object, string } from "valibot";
 
 import { resolveCodexProfile } from "#tools/agents/codex/index";
-import { readHookPayload } from "#tools/agents/index";
+import { createAgentFillers, readHookPayload } from "#tools/agents/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import { checkAgentStop } from "#workflows/gate/index";
 
@@ -22,7 +22,13 @@ export default async function (): Promise<void> {
 
   const config = await loadValidatedConfig(cwd);
 
-  const profile = await resolveCodexProfile(config.context.filesystem, name);
+  const profile = await resolveCodexProfile(
+    {
+      filesystem: config.context.filesystem,
+      fillers: await createAgentFillers(config),
+    },
+    name,
+  );
 
   if (profile?.gate !== true) {
     return;

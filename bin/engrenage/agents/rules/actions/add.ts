@@ -1,11 +1,17 @@
 import { cancel, isCancel, multiselect } from "@clack/prompts";
 
 import { settleChanges } from "#project/sync/index";
-import { addAgentRules, getMissingRuleTemplates } from "#tools/agents/index";
+import {
+  addAgentRules,
+  createAgentFillers,
+  getMissingRuleTemplates,
+} from "#tools/agents/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (name?: string): Promise<void> {
   const config = await loadValidatedConfig();
+
+  const fillers = await createAgentFillers(config);
 
   let names: string[];
 
@@ -14,6 +20,7 @@ export default async function (name?: string): Promise<void> {
   } else {
     const missing = await getMissingRuleTemplates({
       filesystem: config.context.filesystem,
+      fillers,
     });
 
     if (missing.length === 0) {
@@ -61,6 +68,7 @@ export default async function (name?: string): Promise<void> {
     {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
+      fillers,
     },
     names,
   );

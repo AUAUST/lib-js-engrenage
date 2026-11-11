@@ -13,16 +13,19 @@ import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
+import { renderFragment } from "#tools/agents/utils/renderFragment";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension, LoadedConfig } from "#project/config/index";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
+import type { BlockFillers } from "#types/BlockFillers";
 import type { File } from "#types/File";
 import type { FileSync } from "#types/FileSync";
 
 async function syncAttributionRules(config: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
+  fillers: BlockFillers;
 }) {
   const { attribution } = config.agents;
 
@@ -36,7 +39,7 @@ async function syncAttributionRules(config: {
   const [
     references,
     templates,
-  ] = await Promise.all([getRuleReferences(config), getRuleTemplates()]);
+  ] = await Promise.all([getRuleReferences(config), getRuleTemplates(config)]);
 
   // @debt a project file at the wanted rule's path without its reference silently keeps the rule out; sync could report the conflict
   for (const { name, file, reference, content } of templates) {
@@ -78,6 +81,7 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     resolve: context.path,
     agents: await resolve("agents"),
     extensions: await listActiveExtensions(loaded),
+    fillers: await createAgentFillers(loaded),
   };
 
   if ((config.agents.preferred?.length ?? 0) === 0) {
@@ -104,24 +108,6 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
       }
 
       console.warn(`${error.message}: its block is left untouched`);
-    }
-  }
-
-  const fillers = await createAgentFillers(loaded);
-
-  async function renderFragment(source: File): Promise<string> {
-    const { body } = parseInstruction(await readFile(source, "utf-8"), source);
-
-    try {
-      return await syncBlocks(body, markdownBlocks, fillers, {
-        markers: "drop",
-      });
-    } catch (error) {
-      if (!(error instanceof Error)) {
-        throw error;
-      }
-
-      throw new Error(`${source}: ${error.message}`, { cause: error });
     }
   }
 
@@ -154,7 +140,15 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
             const source = await findReference(reference, path);
 
             if (source !== undefined) {
-              bodies.set(`${path}\0${reference}`, await renderFragment(source));
+              bodies.set(
+                `${path}\0${reference}`,
+                await renderFragment(
+                  parseInstruction(await readFile(source, "utf-8"), source)
+                    .body,
+                  source,
+                  config.fillers,
+                ),
+              );
             }
           }),
         );
@@ -215,7 +209,7 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   }
 
   for (const { file, reference, frontmatter } of await getRuleTemplates(
-    config.extensions,
+    config,
   )) {
     generate(file, reference, frontmatter);
   }

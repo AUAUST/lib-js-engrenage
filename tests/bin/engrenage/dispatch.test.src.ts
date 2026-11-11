@@ -107,6 +107,7 @@ async function installed() {
     {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
+      fillers: {},
     },
     ["issue-implementation", "debugging"],
   );
@@ -151,31 +152,57 @@ test("rejects missing/conflicting generated output and ignores unowned custom na
 
   await filesystem.remove(".codex/agents/worker_high.toml");
 
-  await expect(resolveCodexProfile(filesystem, "worker_high")).rejects.toThrow(
-    ".codex/agents/worker_high.toml",
-  );
+  await expect(
+    resolveCodexProfile(
+      {
+        filesystem,
+        fillers: {},
+      },
+      "worker_high",
+    ),
+  ).rejects.toThrow(".codex/agents/worker_high.toml");
 
   await filesystem.write(".codex/agents/worker.toml", 'name = "mine"');
 
-  await expect(resolveCodexProfile(filesystem, "worker")).rejects.toThrow(
-    ".codex/agents/worker.toml",
-  );
+  await expect(
+    resolveCodexProfile(
+      {
+        filesystem,
+        fillers: {},
+      },
+      "worker",
+    ),
+  ).rejects.toThrow(".codex/agents/worker.toml");
 
   await filesystem.remove(".agents/skills/debugging/SKILL.md");
 
-  await expect(resolveCodexProfile(filesystem, "debugger")).rejects.toThrow(
-    ".agents/skills/debugging/SKILL.md",
-  );
+  await expect(
+    resolveCodexProfile(
+      {
+        filesystem,
+        fillers: {},
+      },
+      "debugger",
+    ),
+  ).rejects.toThrow(".agents/skills/debugging/SKILL.md");
 
   await expect(
-    resolveCodexProfile(filesystem, "worker_custom"),
+    resolveCodexProfile(
+      {
+        filesystem,
+        fillers: {},
+      },
+      "worker_custom",
+    ),
   ).resolves.toBeUndefined();
 });
 
 test("rejects an unsupported canonical gated role from exact metadata", async () => {
   const { filesystem } = await installed();
 
-  const templates = await definitions.getSkillDefinitions();
+  const templates = await definitions.getSkillDefinitions({
+    fillers: {},
+  });
 
   const template = templates.find(({ agent }) => agent?.name === "worker");
 
@@ -194,7 +221,13 @@ test("rejects an unsupported canonical gated role from exact metadata", async ()
     },
   ]);
 
-  await expect(resolveCodexProfile(filesystem, "custom_high")).rejects.toThrow(
-    "Unsupported canonical gated Codex role custom",
-  );
+  await expect(
+    resolveCodexProfile(
+      {
+        filesystem,
+        fillers: {},
+      },
+      "custom_high",
+    ),
+  ).rejects.toThrow("Unsupported canonical gated Codex role custom");
 });

@@ -9,15 +9,18 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension } from "#project/config/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
+import type { BlockFillers } from "#types/BlockFillers";
 
 export async function syncCodexInstructions({
   filesystem,
   agents,
   extensions,
+  fillers,
 }: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
   extensions?: readonly Extension[];
+  fillers: BlockFillers;
 }) {
   if (agents.preferred?.includes("codex") !== true) {
     return;
@@ -25,7 +28,7 @@ export async function syncCodexInstructions({
 
   const installed: SkillDefinition[] = [];
 
-  for (const template of await getSkillDefinitions(extensions)) {
+  for (const template of await getSkillDefinitions({ extensions, fillers })) {
     const skill = await filesystem.read(
       `${codexSkillsDir}/${template.name}/SKILL.md`,
     );

@@ -51,7 +51,10 @@ async function renderSkills(preferred = ["claude"]) {
 
   const agents = await config.resolve("agents");
 
-  return getSkillTemplates({ agents });
+  return getSkillTemplates({
+    agents,
+    fillers: {},
+  });
 }
 
 async function renderAgentFrontmatter() {

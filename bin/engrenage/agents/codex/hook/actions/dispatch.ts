@@ -3,6 +3,7 @@ import { object, optional, picklist, string } from "valibot";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
 import {
   checkAgentDispatch,
+  createAgentFillers,
   denyToolUse,
   readHookPayload,
 } from "#tools/agents/index";
@@ -28,7 +29,10 @@ export default async function (): Promise<void> {
   const config = await loadValidatedConfig(cwd);
 
   const profile = await resolveCodexProfile(
-    config.context.filesystem,
+    {
+      filesystem: config.context.filesystem,
+      fillers: await createAgentFillers(config),
+    },
     input.agent_type ?? input.subagent_type ?? "default",
   );
 

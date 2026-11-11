@@ -17,6 +17,7 @@ describe("addAgentSkills", () => {
       {
         filesystem: config.context.filesystem,
         agents: await config.resolve("agents"),
+        fillers: {},
       },
       ["debugging"],
     );
@@ -60,6 +61,7 @@ describe("addAgentSkills", () => {
       {
         filesystem: config.context.filesystem,
         agents: await config.resolve("agents"),
+        fillers: {},
       },
       ["issue-implementation"],
     );
@@ -83,6 +85,7 @@ describe("addAgentSkills", () => {
       {
         filesystem: config.context.filesystem,
         agents: await config.resolve("agents"),
+        fillers: {},
       },
       ["scratchpad"],
     );
@@ -115,6 +118,7 @@ describe("addAgentSkills", () => {
     const sections = {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
+      fillers: {},
     };
 
     await addAgentSkills(sections, ["issue-implementation"]);
@@ -172,6 +176,7 @@ describe("addAgentSkills", () => {
     const sections = {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
+      fillers: {},
     };
 
     await expect(
@@ -194,6 +199,7 @@ describe("addAgentSkills", () => {
     const sections = {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
+      fillers: {},
     };
 
     await expect(addAgentSkills(sections, ["issue-planning"])).rejects.toThrow(

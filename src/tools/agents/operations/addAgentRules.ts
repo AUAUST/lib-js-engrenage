@@ -6,18 +6,21 @@ import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRule
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
+import type { BlockFillers } from "#types/BlockFillers";
 
 export async function addAgentRules(
   {
     filesystem,
     agents,
+    fillers,
   }: {
     filesystem: Filesystem;
     agents: ResolvedAgents;
+    fillers: BlockFillers;
   },
   names: readonly string[],
 ) {
-  const templates = await getRuleTemplates();
+  const templates = await getRuleTemplates({ fillers });
 
   const owned = new Set<string>(values(attributionRules));
 
@@ -39,7 +42,7 @@ export async function addAgentRules(
     }
   }
 
-  const missing = await getMissingRuleTemplates({ filesystem });
+  const missing = await getMissingRuleTemplates({ filesystem, fillers });
 
   for (const { name, file, content } of missing) {
     if (names.includes(name)) {
@@ -47,5 +50,9 @@ export async function addAgentRules(
     }
   }
 
-  await syncCodexInstructions({ filesystem, agents });
+  await syncCodexInstructions({
+    filesystem,
+    agents,
+    fillers,
+  });
 }

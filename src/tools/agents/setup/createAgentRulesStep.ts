@@ -1,6 +1,7 @@
 import { filterMap, pluck } from "@auaust/primitive-kit/arrays";
 
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
+import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import type { Step } from "#project/steps/index";
 
@@ -8,19 +9,26 @@ export function createAgentRulesStep(): Step {
   return {
     name: "agent rules",
     message: "Choose shared coding rules for .claude/rules/?",
-    async isMissing({ resolve, filesystem }) {
-      const agents = await resolve("agents");
+    async isMissing(context) {
+      const agents = await context.resolve("agents");
 
       if ((agents.preferred?.length ?? 0) === 0) {
         return false;
       }
 
-      const missing = await getMissingRuleTemplates({ filesystem });
+      const missing = await getMissingRuleTemplates({
+        filesystem: context.filesystem,
+        fillers: await createAgentFillers(context),
+      });
 
       return missing.some((template) => template.default);
     },
-    async plan({ resolve, filesystem, multiselect }) {
-      const templates = await getMissingRuleTemplates({ filesystem });
+    async plan(context) {
+      const { resolve, filesystem, multiselect } = context;
+
+      const fillers = await createAgentFillers(context);
+
+      const templates = await getMissingRuleTemplates({ filesystem, fillers });
 
       const missing = templates.filter(({ name }) => name !== "backlog");
 
@@ -31,7 +39,11 @@ export function createAgentRulesStep(): Step {
       );
 
       await addAgentRules(
-        { filesystem, agents: await resolve("agents") },
+        {
+          filesystem,
+          agents: await resolve("agents"),
+          fillers,
+        },
         names,
       );
     },

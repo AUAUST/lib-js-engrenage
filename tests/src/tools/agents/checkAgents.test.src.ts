@@ -40,6 +40,7 @@ async function fixture() {
     {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
+      fillers: {},
     },
     ["issue-implementation"],
   );

@@ -16,14 +16,17 @@ import { createInstructionFile } from "#tools/agents/utils/createInstructionFile
 import type { Extension } from "#project/config/index";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
+import type { BlockFillers } from "#types/BlockFillers";
 import type { File } from "#types/File";
 
 export async function getSkillTemplates({
   agents,
   extensions,
+  fillers,
 }: {
   agents: ResolvedAgents;
   extensions?: readonly Extension[];
+  fillers: BlockFillers;
 }) {
   const preferred = agents.preferred ?? [];
 
@@ -31,7 +34,7 @@ export async function getSkillTemplates({
     throw new Error("Skills need agents.preferred in engrenage.config.ts");
   }
 
-  const templates = await getSkillDefinitions(extensions);
+  const templates = await getSkillDefinitions({ extensions, fillers });
 
   return templates.map((template) => {
     const { invocation, agent, name, description, reference, body } = template;

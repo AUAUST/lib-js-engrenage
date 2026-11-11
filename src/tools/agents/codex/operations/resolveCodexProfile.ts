@@ -2,12 +2,13 @@ import { parseDocument } from "yaml";
 
 import { getCodexProfiles } from "#tools/agents/codex/operations/getCodexProfiles";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { BlockFillers } from "#types/BlockFillers";
 
 export async function resolveCodexProfile(
-  filesystem: Filesystem,
+  { filesystem, fillers }: { filesystem: Filesystem; fillers: BlockFillers },
   name: string,
 ) {
-  const profiles = await getCodexProfiles();
+  const profiles = await getCodexProfiles(fillers);
 
   const profile = profiles.find((candidate) => candidate.name === name);
 

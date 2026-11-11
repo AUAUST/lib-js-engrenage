@@ -4,13 +4,16 @@ import {
   codexHooksFile,
 } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
+import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { syncHooks } from "#tools/agents/operations/syncHooks";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function syncCodexFiles(
-  { resolve, context }: LoadedConfig,
+  loaded: LoadedConfig,
   { hooks = false }: { hooks?: boolean } = {},
 ) {
+  const { resolve, context } = loaded;
+
   const config = {
     filesystem: context.filesystem,
     resolve: context.path,
@@ -21,7 +24,10 @@ export async function syncCodexFiles(
     return;
   }
 
-  await syncCodexInstructions(config);
+  await syncCodexInstructions({
+    ...config,
+    fillers: await createAgentFillers(loaded),
+  });
 
   const configured = config.agents.codexHooks;
 

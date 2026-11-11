@@ -30,3 +30,4 @@
 - Claude PreToolUse Bash hook: ran eslint and the build while another session edited `src/tools/agents/constants.ts` — its missing export broke the hook for every pnpm call; stopped with lint and build unverified
 - zsh `grep --include=*.ts`: unquoted glob — zsh "no matches found" aborts the command; dropped the flag
 - Claude PreToolUse Bash hook: removed agents constants mid-refactor — the hook loads engrenage from source, so every Bash call failed until the importers were fixed with Write/Edit
+- pnpm test type checking: changed exported signatures, `pnpm test` reported "Type Errors no errors" while test files still used the old ones — `pnpm exec tsc -b` found them
