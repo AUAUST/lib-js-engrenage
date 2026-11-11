@@ -19,6 +19,7 @@ export function defineTsdownConfig(
   >[]
 ): ConfigFn {
   return async function tsdownConfig(inlineConfig, context) {
+    // @debt loads the config of `process.cwd()`, not of the project owning this tool config file (backlog configuration.13)
     const config = await loadConfig();
 
     const resolvedOptions = await value(options, config, inlineConfig, context);

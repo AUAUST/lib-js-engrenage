@@ -41,20 +41,41 @@ export default defineGroup({
     "debt": debt,
     "agents": agents,
     "pnpm": pnpm,
-    "tsc": { command: tsc, aliases: ["typecheck"] },
-    "tsc:dist": { command: tscDist, aliases: ["typecheck:dist"] },
+    "tsc": {
+      command: tsc,
+      aliases: ["typecheck"],
+    },
+    "tsc:dist": {
+      command: tscDist,
+      aliases: ["typecheck:dist"],
+    },
     "vitest": vitest,
     "vitest:watch": vitestWatch,
     "vitest:coverage": vitestCoverage,
     "vitest:dist": vitestDist,
     "tsdown": tsdown,
     "vite": vite,
-    "eslint": { command: eslint, aliases: ["lint"] },
-    "eslint:fix": { command: eslintFix, aliases: ["lint:fix"] },
-    "eslint:suppress": { command: eslintSuppress, aliases: ["lint:suppress"] },
+    "eslint": {
+      command: eslint,
+      aliases: ["lint"],
+    },
+    "eslint:fix": {
+      command: eslintFix,
+      aliases: ["lint:fix"],
+    },
+    "eslint:suppress": {
+      command: eslintSuppress,
+      aliases: ["lint:suppress"],
+    },
     "jscpd": jscpd,
-    "prettier": { command: prettier, aliases: ["format"] },
+    "prettier": {
+      command: prettier,
+      aliases: ["format"],
+    },
     "prettier:check": prettierCheck,
-    "prettier:all": { command: prettierAll, aliases: ["format:all"] },
+    "prettier:all": {
+      command: prettierAll,
+      aliases: ["format:all"],
+    },
   },
 });

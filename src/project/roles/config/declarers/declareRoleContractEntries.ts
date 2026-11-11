@@ -3,11 +3,8 @@ import {
   boolean,
   literal,
   number,
-  optional,
-  picklist,
   pipe,
   readonly,
-  strictObject,
   string,
   union,
   type GenericSchema,
@@ -20,6 +17,7 @@ import {
   unset,
 } from "#foundation/options/index";
 import { reexportSchema } from "#project/roles/config/schemas/reexportSchema";
+import { roleExportsSchema } from "#project/roles/config/schemas/roleExportsSchema";
 import { roleFileResolverSchema } from "#project/roles/config/schemas/roleFileResolverSchema";
 import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
 import { roleContractDefaults } from "#project/roles/constants";
@@ -62,25 +60,13 @@ export function declareRoleContractEntries<Nested>(
       description: "Semi-structured role: it requires category subdirectories whose names are free.",
       optional: { value: undefined },
     }),
-    exports: declare(
-      union([
-        // @debt repeated options
-        picklist(["named-match", "named", "default"]),
-        strictObject({
-          values: optional(
-            picklist(["named-match", "named", "default", "none"]),
-          ),
-          types: optional(picklist(["named-match", "named", "none"])),
-        }),
-      ]),
-      {
-        description: [
-          "Export style of its TypeScript and JavaScript modules, for runtime values and types apart: `named-match` exports only the file's name and needs it exported, `named` takes named exports, `default` one default export and no named value, `none` no export of the kind.",
-          "A string sets both: `named-match` and `named` each axis, `default` the values with no type export. `typeOnly` sets `values` to `none` and accepts no other.",
-        ],
-        optional: { value: undefined },
-      },
-    ),
+    exports: declare(roleExportsSchema, {
+      description: [
+        "Export style of its TypeScript and JavaScript modules, for runtime values and types apart: `named-match` exports only the file's name and needs it exported, `named` takes named exports, `default` one default export and no named value, `none` no export of the kind.",
+        "A string sets both: `named-match` and `named` each axis, `default` the values with no type export. `typeOnly` sets `values` to `none` and accepts no other.",
+      ],
+      optional: { value: undefined },
+    }),
     index: declare(boolean(), {
       description: "Whether a file named like the environment's index file is the role's barrel, re-exporting its modules; otherwise that file is an ordinary module of the role.",
       optional: describedDefault(roleContractDefaults.index),

@@ -1,5 +1,6 @@
 // @barrel config/schemas
 export { reexportSchema } from "#project/roles/config/schemas/reexportSchema";
+export { roleExportsSchema } from "#project/roles/config/schemas/roleExportsSchema";
 export { roleFileResolverSchema } from "#project/roles/config/schemas/roleFileResolverSchema";
 export { roleNameSchema } from "#project/roles/config/schemas/roleNameSchema";
 export { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";

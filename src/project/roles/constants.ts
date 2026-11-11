@@ -17,6 +17,23 @@ export const executableRoleName = "executable";
 
 export const reexportModes = freeze(["namespace", "flat"] as const);
 
+export const roleExportStyles = freeze([
+  "named-match",
+  "named",
+  "default",
+] as const);
+
+export const roleValueExportStyles = freeze([
+  ...roleExportStyles,
+  "none",
+] as const);
+
+export const roleTypeExportStyles = freeze([
+  "named-match",
+  "named",
+  "none",
+] as const);
+
 export const roleContractDefaults = freeze({
   nesting: 0,
   index: false,

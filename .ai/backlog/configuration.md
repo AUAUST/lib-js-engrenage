@@ -70,3 +70,8 @@ Project configuration contract: loading, environments, option shapes and list op
 
 - sites: `src/tools/git/config/sections/gitSection.ts:50` (composing adds nothing over the plain object), `src/project/build/config/schemas/buildSchema.ts:50` (`resolveWithin` called only for its throw, also in `cache()`).
 - want: the object written directly; an explicit containment assertion.
+
+## 13. Tool definers load the engrenage config of `process.cwd()`, not of the project owning their config file
+
+- why: ESLint and Prettier pick the config file nearest each linted file, so with the editor at the repository root, a file in `.claude/worktrees/<name>/` runs that checkout's `defineEslintConfig` against the root's `engrenage.config.ts` and fails validation when the schemas differ. Same in nested packages. Sites: `define{Eslint,Prettier,Vite,Tsdown}Config`; the git.1 gap also lets project-wide lint reach worktrees.
+- want: each definer resolves its project from its config file's directory, e.g. `import.meta.dirname` passed by the generated config module (definer contract and `createConfigModule` change, needs a decision).

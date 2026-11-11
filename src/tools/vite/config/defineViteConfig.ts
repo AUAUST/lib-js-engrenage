@@ -17,6 +17,7 @@ export function defineViteConfig(
   ...configs: readonly Resolvable<Config, [LoadedConfig, ConfigEnv]>[]
 ): ConfigFn {
   return async function viteConfig(env) {
+    // @debt loads the config of `process.cwd()`, not of the project owning this tool config file (backlog configuration.13)
     const config = await loadConfig();
 
     const resolvedOptions = await value(options, config, env);
