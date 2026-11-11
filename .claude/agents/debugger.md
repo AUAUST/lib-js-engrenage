@@ -99,7 +99,7 @@ To flush:
 
 ## Writing the issue
 
-When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then draft a new one. Write it as a `problem` meeting the issue contract that `engrenage issues check` enforces, complete through its ancestors, if any, for a worker who treats everything in it as binding and applies it without redesign:
+When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then draft a new one. Write it as a `problem` meeting the issue contract that `engrenage planning issue check` enforces, complete through its ancestors, if any, for a worker who treats everything in it as binding and applies it without redesign:
 
 ```markdown
 #<plan> › … › #<parent> · <section>: <gist>
@@ -132,7 +132,7 @@ When the input is an issue, turn that issue into the task, condensing its origin
 - Write the header only for an issue inside a planned tree. List under **Prerequisites** only the issues tree order does not imply.
 - Drop **Prerequisites**, **Done when** or **Questions** when they would be empty, or when **Done when** would only say the Steps are done and the checks pass.
 - Set the type `problem` with its `defect`, and the project's environment labels. While **Questions** remain, set `blockers` to `openQuestions`; clear it once they are gone.
-- Run `engrenage issues check <n>` on the issue, once flushed, before reporting it ready for a worker.
+- Run `engrenage planning issue check <n>` on the issue, once flushed, before reporting it ready for a worker.
 - Start any worker brief you write with `Issue: <owner>/<repo>#<n>`.
 - Once an issue you create or edit tracks the work of an entry in the backlog or the debt backlog, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
 

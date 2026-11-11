@@ -80,13 +80,13 @@ describe("parseIssueBody", () => {
 
 describe("checkIssueBody", () => {
   test("accepts a task", () => {
-    expect(checkIssueBody(task, "Task", protocol)).toEqual([]);
+    expect(checkIssueBody(task, "task", protocol)).toEqual([]);
   });
 
   test("rejects a Scope section on a task, naming it", () => {
     const findings = checkIssueBody(
       `${task}\n## Scope\n\nx\n`,
-      "Task",
+      "task",
       protocol,
     );
 
@@ -99,18 +99,24 @@ describe("checkIssueBody", () => {
     expect(
       checkIssueBody(
         "## Context\n\nx\n\n## Steps\n\n1. Do.\n",
-        "Segment",
+        "segment",
         protocol,
       ),
     ).toMatchObject([{ rule: "segment-section" }]);
   });
 
-  test("leaves an untyped free-form body unchecked, unlike a Segment", () => {
-    const body = "## Context\n\nx\n\n## Direction\n\ny\n";
+  test("checks a body only against its declared type's contract, never a guessed one", () => {
+    expect(
+      checkIssueBody(`${task}\n## Scope\n\nx\n`, undefined, protocol),
+    ).toEqual([]);
 
-    expect(checkIssueBody(body, undefined, protocol)).toEqual([]);
-
-    expect(checkIssueBody(body, "Segment", protocol)).toMatchObject([
+    expect(
+      checkIssueBody(
+        "## Context\n\nx\n\n## Direction\n\ny\n",
+        "segment",
+        protocol,
+      ),
+    ).toMatchObject([
       {
         rule: "unknown-section",
         message: expect.stringContaining("Direction"),
@@ -118,22 +124,10 @@ describe("checkIssueBody", () => {
     ]);
   });
 
-  test("still checks an untyped body with steps as an item", () => {
-    const findings = checkIssueBody(
-      `${task}\n## Scope\n\nx\n`,
-      undefined,
-      protocol,
-    );
-
-    expect(findings).toMatchObject([
-      { rule: "unknown-section", message: expect.stringContaining("Scope") },
-    ]);
-  });
-
   test("reports pending planning in steps", () => {
     const findings = checkIssueBody(
       "## Context\n\nx\n\n## Steps\n\n1. Create the tasks as sub-issues.\n\n## Tests\n\n- t\n",
-      undefined,
+      "task",
       protocol,
     );
 
@@ -781,12 +775,27 @@ describe("formatIssueCheck", () => {
 });
 
 describe("checkGithubWrite", () => {
-  const draft = ".ai/issues/new-x.draft.md";
-  const command = `sed '1,/^---$/d' ${draft} | gh issue create --title x --body-file -`;
+  const draft = ".ai/issues/5.draft.md";
+  const command = `sed '1,/^---$/d' ${draft} | gh issue edit 5 --repo o/r --body-file -`;
 
-  test("checks the body of a piped draft without its frontmatter", async () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  function mockProblem() {
+    vi.stubEnv("GH_TOKEN", "t");
+
+    mockGithub({
+      5: { body: "", type: "Problem" },
+    });
+  }
+
+  test("checks the body of a piped draft without its frontmatter against the issue's type", async () => {
+    mockProblem();
+
     const project = createTemporaryProject({
-      [draft]: `---\ntitle: x\ntype: Problem\n---\n\n${task}\n## Scope\n\nx\n`,
+      [draft]: `---\ntitle: x\n---\n\n${task}\n## Scope\n\nx\n`,
     });
 
     await expect(
@@ -800,10 +809,21 @@ describe("checkGithubWrite", () => {
     ).resolves.toBeUndefined();
   });
 
-  test("checks every write of a command", async () => {
+  test("checks every write of a command, leaving a created body without a declared type unchecked", async () => {
+    mockProblem();
+
     const project = createTemporaryProject({
       [draft]: `---\ntitle: x\n---\n\n${task}\n## Scope\n\nx\n`,
     });
+
+    await expect(
+      checkGithubWrite(
+        `gh issue create --title y --body '## Scope'`,
+        project.root,
+        registry,
+        protocol,
+      ),
+    ).resolves.toBeUndefined();
 
     await expect(
       checkGithubWrite(

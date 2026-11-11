@@ -8,6 +8,7 @@ import { listLocalCommits } from "#tools/github/issues/contract/operations/listL
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
 import { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
+import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import type { IssueCommit } from "#tools/git/index";
 import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
@@ -99,7 +100,11 @@ export async function checkIssueTree(
         findings: isClosed(issue, closes)
           ? []
           : [
-              ...checkIssueBody(issue.body, issue.type, access.protocol),
+              ...checkIssueBody(
+                issue.body,
+                findContractMeaning(access.protocol, issue.type),
+                access.protocol,
+              ),
               ...checkIssueReadiness(
                 {
                   issue,

@@ -217,6 +217,7 @@ const itemContract = freeze({
   ] as const),
   required: freeze(["Context", "Steps", "Tests"] as const),
   hasHeader: true,
+  subIssues: "references",
 } as const) satisfies IssueContract;
 
 export const issueContracts = freeze({
@@ -232,6 +233,7 @@ export const issueContracts = freeze({
     ] as const),
     required: freeze([] as const),
     hasHeader: true,
+    subIssues: "references",
   } as const),
   plan: freeze({
     sections: freeze([
@@ -245,5 +247,7 @@ export const issueContracts = freeze({
     required: freeze(["Goal", "Roadmap", "Decisions"] as const),
     modelsAfter: "Roadmap",
     hasHeader: false,
+    generated: freeze([roadmapSection] as const),
+    subIssues: "roadmap",
   } as const),
 } as const) satisfies Partial<Record<IssueType, IssueContract>>;

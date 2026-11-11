@@ -2,33 +2,16 @@ import {
   issueContracts,
   segmentForbiddenSections,
 } from "#tools/github/issues/contract/constants";
-import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
+import type { ContractMeaning } from "#tools/github/issues/contract/types/ContractMeaning";
 import type { IssueContract } from "#tools/github/issues/contract/types/IssueContract";
 import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
 import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
-import type { IssueType } from "#tools/github/issues/contract/types/IssueType";
 
 const pendingPlanningPatterns = [
   /^settle\b/i,
   /^(?:create|write|file|open|plan|split|break)\b.*\b(?:sub-?issues?|tasks)\b/i,
 ] as const;
-
-type ContractType = keyof typeof issueContracts;
-
-function isContractType(type: IssueType): type is ContractType {
-  return type in issueContracts;
-}
-
-function guessType(sectionNames: readonly string[]) {
-  if (sectionNames.includes("Goal")) {
-    return "plan" satisfies ContractType;
-  }
-
-  return sectionNames.includes("Steps")
-    ? ("task" satisfies ContractType)
-    : undefined;
-}
 
 function getRank(contract: IssueContract, name: string) {
   const index = contract.sections.indexOf(name);
@@ -42,45 +25,26 @@ function getRank(contract: IssueContract, name: string) {
     : contract.sections.indexOf(contract.modelsAfter) + 0.5;
 }
 
-function resolveContractType(
-  sectionNames: readonly string[],
-  type: IssueType | undefined,
-) {
-  if (type === "resource" || type === "idea") {
-    return;
-  }
-
-  return type !== undefined && isContractType(type)
-    ? type
-    : guessType(sectionNames);
-}
-
 export function checkIssueBody(
   body: string,
-  type: string | undefined,
+  meaning: ContractMeaning | undefined,
   protocol: IssueProtocol,
 ): IssueFinding[] {
-  const parsed = parseIssueBody(body);
-  const names = parsed.sections.map(({ name }) => name);
-
-  const contractType = resolveContractType(
-    names,
-    findTypeMeaning(protocol, type),
-  );
-
-  if (contractType === undefined) {
+  if (meaning === undefined) {
     return [];
   }
 
-  const contract: IssueContract = issueContracts[contractType];
-  const typeName = protocol.types[contractType];
+  const parsed = parseIssueBody(body);
+  const names = parsed.sections.map(({ name }) => name);
+  const contract: IssueContract = issueContracts[meaning];
+  const typeName = protocol.types[meaning];
   const findings: IssueFinding[] = [];
 
   let highest: { rank: number; name: string } | undefined;
 
   for (const name of names) {
     if (
-      contractType === "segment" &&
+      meaning === "segment" &&
       (segmentForbiddenSections as readonly string[]).includes(name)
     ) {
       findings.push({

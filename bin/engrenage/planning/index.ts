@@ -1,5 +1,6 @@
 import { defineGroup } from "#workflows/cli/index";
 
+import issue from "#bin/engrenage/planning/issue/index";
 import walk from "#bin/engrenage/planning/walk/index";
 
 export default defineGroup({
@@ -9,6 +10,7 @@ export default defineGroup({
     );
   },
   commands: {
+    issue,
     walk,
   },
 });

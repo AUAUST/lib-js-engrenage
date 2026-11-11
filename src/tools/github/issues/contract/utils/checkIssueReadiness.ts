@@ -6,6 +6,7 @@ import {
   planningSection,
   questionsSection,
 } from "#tools/github/issues/contract/constants";
+import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
 import type { IssueCommit } from "#tools/git/index";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
@@ -63,12 +64,13 @@ export function checkIssueReadiness(
 
   const { types, fields, options } = protocol;
   const type = findTypeMeaning(protocol, issue.type);
+  const contractMeaning = findContractMeaning(protocol, issue.type);
   const blockersField = fields.blockers;
   const openQuestionsOption = options.openQuestions;
 
-  const contract = type !== undefined && type in issueContracts
-    ? issueContracts[type as keyof typeof issueContracts]
-    : undefined;
+  const contract = contractMeaning === undefined
+    ? undefined
+    : issueContracts[contractMeaning];
 
   if (audience === "debugger" && !ancestor) {
     if (type !== "problem") {

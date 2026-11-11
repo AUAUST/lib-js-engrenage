@@ -3,6 +3,7 @@ import {
   roadmapSection,
   stepsSection,
 } from "#tools/github/issues/contract/constants";
+import { stripCode } from "#tools/github/issues/contract/utils/stripCode";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
 const headerPattern = /^#\d+/;
@@ -90,13 +91,9 @@ function parseList(content: string) {
 }
 
 function findReferences(text: string) {
-  const withoutCode = text
-    .replaceAll(/^[ \t]*(```|~~~)[\s\S]*?^[ \t]*\1.*$/gm, "")
-    .replaceAll(/(`+)[^`]*?\1/g, "");
-
   return [
     ...new Set(
-      [...withoutCode.matchAll(referencePattern)].map(([, number]) => {
+      [...stripCode(text).matchAll(referencePattern)].map(([, number]) => {
         return Number(number);
       }),
     ),

@@ -4,6 +4,7 @@ import { listLocalCommits } from "#tools/github/issues/contract/operations/listL
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
 import { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
+import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import type { IssueCommit } from "#tools/git/index";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
@@ -119,7 +120,11 @@ export async function checkIssue(
 
   findings.push(
     ...(audience === "worker"
-      ? checkIssueBody(issue.body, issue.type, access.protocol)
+      ? checkIssueBody(
+          issue.body,
+          findContractMeaning(access.protocol, issue.type),
+          access.protocol,
+        )
       : []),
     ...checkIssueReadiness(
       {
@@ -145,7 +150,11 @@ export async function checkIssue(
       );
 
       const blocked = [
-        ...checkIssueBody(ancestor.body, ancestor.type, access.protocol),
+        ...checkIssueBody(
+          ancestor.body,
+          findContractMeaning(access.protocol, ancestor.type),
+          access.protocol,
+        ),
         ...checkIssueReadiness(
           {
             issue: ancestor,

@@ -36,3 +36,6 @@
 - Claude PreToolUse Bash hook: user asked to commit skipping the gate — the hook denies gate-skipping commits, and any Bash command whose text names that flag; left the commit to the user
 - `engrenage sync` barrels: re-exported a new operation from the parent `index.ts` before syncing the sub-domain barrel — sync crashed loading the missing export; reverted the re-export, synced, restored it
 - Claude PreToolUse Bash hook: removed contract constants mid-refactor — the hook runs engrenage from source, so a Bash call naming GitHub paths failed on the missing export; finished the importers with Write/Edit
+- `engrenage sync` barrels: renamed a module a barrel exports — sync crashed importing the stale barrel; renamed the barrel entries by hand, then reran sync
+- `engrenage eslint:fix`: `auaust/name-replacements` autofix renamed `ref`/`refs` to `reference`/`references` — collided into `references_` and shadowed names; renamed by hand
+- `engrenage tsc`: ran after changing a function signature its tests call — reported "All good" while `tsc -b tsconfig.json` reported the test errors; used `tsc -b`

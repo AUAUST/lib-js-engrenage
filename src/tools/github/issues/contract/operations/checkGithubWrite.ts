@@ -5,6 +5,7 @@ import {
 import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
 import { readGithubBody } from "#tools/github/issues/contract/operations/readGithubBody";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
+import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { parseGithubCommand } from "#tools/github/issues/contract/utils/parseGithubCommand";
 import type { GithubWrite } from "#tools/github/issues/contract/types/GithubWrite";
 import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
@@ -34,6 +35,7 @@ async function checkWrite(
     return "pass the body with `--body-file -` and a heredoc, or pipe it from a `.draft.md` file";
   }
 
+  // @debt `gh issue create` declares no type, so its body is checked against no contract; read the type from the piped draft's manifest.
   let type: string | undefined;
 
   if (write.action === "edit" && write.number !== undefined) {
@@ -52,7 +54,11 @@ async function checkWrite(
     type = issue.type;
   }
 
-  const findings = checkIssueBody(body, type, protocol);
+  const findings = checkIssueBody(
+    body,
+    findContractMeaning(protocol, type),
+    protocol,
+  );
 
   return findings.length === 0
     ? undefined

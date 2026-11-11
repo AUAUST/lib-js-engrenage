@@ -108,7 +108,7 @@ Proposals are `idea` issues the plan relates to, never sub-issues. Before a plan
 
 ## Contract
 
-An issue is ready when `engrenage issues check <n>` passes. Run it on every issue of the tree before reporting the tree ready.
+An issue is ready when `engrenage planning issue check <n>` passes. Run it on every issue of the tree before reporting the tree ready.
 
 ## Splitting a task
 

@@ -3,4 +3,6 @@ export interface IssueContract {
   readonly required: readonly string[];
   readonly modelsAfter?: string;
   readonly hasHeader: boolean;
+  readonly generated?: readonly string[];
+  readonly subIssues: "roadmap" | "references";
 }

@@ -1,8 +1,8 @@
 import { deduplicate } from "@auaust/primitive-kit/arrays";
 
 import { resolveListOption } from "#foundation/options/index";
-import { issueDraftsDirectory } from "#tools/agents/constants";
 import { readIgnorePatterns } from "#tools/git/index";
+import { issueDraftsDirectory } from "#tools/github/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Globs } from "#types/Globs";
 

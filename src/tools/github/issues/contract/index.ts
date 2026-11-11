@@ -19,6 +19,7 @@ export { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIs
 export { checkProtocolNames } from "#tools/github/issues/contract/utils/checkProtocolNames";
 export { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
 export { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
+export { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 export { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
 export { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssueCheck";
 export { formatIssueTreeCheck } from "#tools/github/issues/contract/utils/formatIssueTreeCheck";
@@ -27,9 +28,11 @@ export { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBo
 export { parseShellPipelines } from "#tools/github/issues/contract/utils/parseShellPipelines";
 export { readShellOperator } from "#tools/github/issues/contract/utils/readShellOperator";
 export { renderPlanningSheet } from "#tools/github/issues/contract/utils/renderPlanningSheet";
+export { stripCode } from "#tools/github/issues/contract/utils/stripCode";
 // @end
 
 // @barrel types
+export type * from "#tools/github/issues/contract/types/ContractMeaning";
 export type * from "#tools/github/issues/contract/types/GithubBodySource";
 export type * from "#tools/github/issues/contract/types/GithubIssue";
 export type * from "#tools/github/issues/contract/types/GithubWrite";

@@ -40,10 +40,11 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ eslint*{roles*}  Configure lint rules and project-aware checks.
 │  │  └─ roles*  Role presets carrying ESLint rules, loadable without ESLint.
 │  ├─ git*  Configure Git conventions and repository files.
-│  ├─ github*{issues/{api contract}}  Generate GitHub repository workflows; holds the GitHub issue namespace.
-│  │  └─ issues/  api < contract  GitHub issues: API access, the issue contract and local drafts.
+│  ├─ github*{issues/{api contract drafts}}  Generate GitHub repository workflows; holds the GitHub issue namespace.
+│  │  └─ issues/  api < contract < drafts  GitHub issues: API access, the issue contract and local drafts.
 │  │     ├─ api  Reach GitHub's API: token, repositories and requests.
-│  │     └─ contract  Parse, fetch and check issues against the issue protocol, including direct `gh` writes.
+│  │     ├─ contract  Parse, fetch and check issues against the issue protocol, including direct `gh` writes.
+│  │     └─ drafts  Read, check and publish local issue drafts.
 │  ├─ jscpd  Detect duplicate code.
 │  ├─ lefthook  Configure local Git hooks.
 │  ├─ pnpm*  Configure package management and dependency policies.
