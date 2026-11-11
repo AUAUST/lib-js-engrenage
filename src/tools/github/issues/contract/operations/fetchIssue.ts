@@ -81,7 +81,14 @@ function readFieldValue({
   return single_select_option?.name ?? value ?? undefined;
 }
 
-const parentSchema = object({ number: number() });
+const parentSchema = object({ number: number(), repository_url: string() });
+
+function readParent({
+  number,
+  repository_url,
+}: InferOutput<typeof parentSchema>) {
+  return { repository: readApiRepository(repository_url), number };
+}
 
 async function fetchParent(
   client: GithubClient,
@@ -159,7 +166,7 @@ export async function fetchIssue(
     ),
     parent: parent === undefined
       ? undefined
-      : validate(parentSchema, parent, `parent of #${number}`).number,
+      : readParent(validate(parentSchema, parent, `parent of #${number}`)),
     blockedBy: toRelated(
       validate(relatedSchema, blockedBy, `blockers of #${number}`),
     ),

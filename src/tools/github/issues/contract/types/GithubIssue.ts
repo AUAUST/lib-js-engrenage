@@ -1,3 +1,5 @@
+import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
+
 export interface GithubIssue {
   readonly number: number;
   readonly title: string;
@@ -5,13 +7,11 @@ export interface GithubIssue {
   readonly state: "open" | "closed";
   readonly type: string | undefined;
   readonly blockers: readonly string[];
-  readonly subIssues: readonly {
-    readonly number: number;
+  readonly subIssues: readonly (IssueLocation & {
     readonly state: "open" | "closed";
-  }[];
-  readonly parent?: number | undefined;
-  readonly blockedBy: readonly {
-    readonly number: number;
+  })[];
+  readonly parent?: IssueLocation | undefined;
+  readonly blockedBy: readonly (IssueLocation & {
     readonly state: "open" | "closed";
-  }[];
+  })[];
 }

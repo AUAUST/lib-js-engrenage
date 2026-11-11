@@ -7,13 +7,13 @@ import { Document } from "yaml";
 import { isArray } from "@auaust/toolkit/isArray";
 
 import { spawnProcess } from "#foundation/processes/index";
+import { renderReference } from "#tools/github/issues/contract/index";
 import { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFieldValue";
 import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
 import { listPublishedFieldValues } from "#tools/github/issues/drafts/utils/listPublishedFieldValues";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { locateFetchedIssue } from "#tools/github/issues/drafts/utils/locateFetchedIssue";
 import { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
-import { renderReference } from "#tools/github/issues/drafts/utils/renderReference";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 import type { Directory } from "#types/Directory";

@@ -1,8 +1,8 @@
 import type { IssueCommit } from "#tools/git/index";
 import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
+import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
 
-export interface WalkedIssue {
-  readonly number: number;
+export interface WalkedIssue extends IssueLocation {
   readonly depth: number;
   readonly type: string | undefined;
   readonly state: "open" | "closed";

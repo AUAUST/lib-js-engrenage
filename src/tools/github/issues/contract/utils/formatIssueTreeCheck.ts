@@ -1,3 +1,4 @@
+import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
 import type { IssueTreeCheck } from "#tools/github/issues/contract/types/IssueTreeCheck";
 import type { WalkedIssue } from "#tools/github/issues/contract/types/WalkedIssue";
 
@@ -7,7 +8,10 @@ function formatState({ state, closedBy }: WalkedIssue) {
     : `closed by local commit ${closedBy.hash}`;
 }
 
-function formatIssue(issue: WalkedIssue): readonly string[] {
+function formatIssue(
+  issue: WalkedIssue,
+  repository: string,
+): readonly string[] {
   const indent = "  ".repeat(issue.depth);
 
   const details = [
@@ -23,19 +27,20 @@ function formatIssue(issue: WalkedIssue): readonly string[] {
   ];
 
   return [
-    `${indent}#${issue.number} ${issue.type ?? "untyped"}: ${formatState(issue)}`,
+    `${indent}${renderReference(issue, repository)} ${issue.type ?? "untyped"}: ${formatState(issue)}`,
     ...details.map((line) => `${indent}  ${line}`),
   ];
 }
 
 export function formatIssueTreeCheck({
+  repository,
   issues,
   next,
 }: IssueTreeCheck): readonly string[] {
   return [
-    ...issues.flatMap(formatIssue),
+    ...issues.flatMap((issue) => formatIssue(issue, repository)),
     next === undefined
       ? "Next: none, no open issue has its sub-issues closed and no finding"
-      : `Next: #${next}`,
+      : `Next: ${renderReference(next, repository)}`,
   ];
 }

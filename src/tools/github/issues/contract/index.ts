@@ -24,11 +24,13 @@ export { findContractMeaning } from "#tools/github/issues/contract/utils/findCon
 export { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
 export { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssueCheck";
 export { formatIssueTreeCheck } from "#tools/github/issues/contract/utils/formatIssueTreeCheck";
+export { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
 export { parseGithubCommand } from "#tools/github/issues/contract/utils/parseGithubCommand";
 export { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 export { parseShellPipelines } from "#tools/github/issues/contract/utils/parseShellPipelines";
 export { readShellOperator } from "#tools/github/issues/contract/utils/readShellOperator";
 export { renderPlanningSheet } from "#tools/github/issues/contract/utils/renderPlanningSheet";
+export { renderReference } from "#tools/github/issues/contract/utils/renderReference";
 export { replaceOutsideCode } from "#tools/github/issues/contract/utils/replaceOutsideCode";
 export { stripCode } from "#tools/github/issues/contract/utils/stripCode";
 // @end
@@ -45,6 +47,7 @@ export type * from "#tools/github/issues/contract/types/IssueCheck";
 export type * from "#tools/github/issues/contract/types/IssueContract";
 export type * from "#tools/github/issues/contract/types/IssueFinding";
 export type * from "#tools/github/issues/contract/types/IssueListItem";
+export type * from "#tools/github/issues/contract/types/IssueLocation";
 export type * from "#tools/github/issues/contract/types/IssueProtocol";
 export type * from "#tools/github/issues/contract/types/IssueTree";
 export type * from "#tools/github/issues/contract/types/IssueTreeCheck";

@@ -1,7 +1,7 @@
 import { splitRepository } from "#tools/github/issues/api/index";
+import { isSameIssue } from "#tools/github/issues/contract/index";
 import { linkSubIssues } from "#tools/github/issues/drafts/operations/linkSubIssues";
 import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
-import { isSameIssue } from "#tools/github/issues/drafts/utils/isSameIssue";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { resolveIssueLocation } from "#tools/github/issues/drafts/utils/resolveIssueLocation";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";

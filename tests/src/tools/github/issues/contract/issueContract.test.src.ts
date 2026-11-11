@@ -66,7 +66,9 @@ describe("parseIssueBody", () => {
   test("reads header, sections, steps and references outside code", () => {
     const parsed = parseIssueBody(`${task}\n\`#99\`\n`);
 
-    expect(parsed.header?.ancestors).toEqual([10]);
+    expect(parsed.header?.ancestors).toEqual([
+      { repository: undefined, number: 10 },
+    ]);
 
     expect(parsed.sections.map(({ name }) => name)).toEqual([
       "Context",
@@ -210,7 +212,7 @@ function mockGithub(
         if (issue.parent === undefined) {
           status = 404;
         } else {
-          json = { number: issue.parent };
+          json = { number: issue.parent, repository_url: repositoryUrl };
         }
       }
 

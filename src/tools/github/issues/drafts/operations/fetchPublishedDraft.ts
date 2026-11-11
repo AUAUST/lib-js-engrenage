@@ -4,7 +4,7 @@ import { isString } from "@auaust/toolkit/isString";
 import { entries } from "@auaust/toolkit/object";
 
 import { validate } from "#foundation/options/index";
-import { fetchIssue } from "#tools/github/issues/contract/index";
+import { fetchIssue, isSameIssue } from "#tools/github/issues/contract/index";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
 import { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
 import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
@@ -12,7 +12,9 @@ import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraft
 import { locateFetchedIssue } from "#tools/github/issues/drafts/utils/locateFetchedIssue";
 import { mergeDraftBody } from "#tools/github/issues/drafts/utils/mergeDraftBody";
 import { mergeDraftManifest } from "#tools/github/issues/drafts/utils/mergeDraftManifest";
+import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
 import { readIssueManifest } from "#tools/github/issues/drafts/utils/readIssueManifest";
+import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 
@@ -33,7 +35,7 @@ function listClaimedReferences(value: unknown) {
 }
 
 function checkSegment(
-  { drafts }: Publication,
+  { drafts, context }: Publication,
   draft: PublishedDraft,
   base: Manifest,
 ) {
@@ -47,7 +49,21 @@ function checkSegment(
   const parent = draft.remote?.parent;
 
   const outside = (
-    parent === undefined || !drafts.some(({ stem }) => stem === String(parent))
+    parent === undefined ||
+    !drafts.some(({ stem }) => {
+      const parsed = parseStem(stem);
+
+      return (
+        parsed?.kind === "issue" &&
+        isSameIssue(
+          {
+            repository: resolveStem(parsed, context).repository,
+            number: parsed.number,
+          },
+          parent,
+        )
+      );
+    })
   );
 
   return changes && outside

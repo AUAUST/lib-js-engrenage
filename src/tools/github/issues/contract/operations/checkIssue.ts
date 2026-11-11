@@ -7,6 +7,7 @@ import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIs
 import { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
+import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
 import type { IssueCommit } from "#tools/git/index";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
 import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
@@ -18,12 +19,18 @@ import type { Directory } from "#types/Directory";
 function relate(
   related: GithubIssue["subIssues"],
   closes: ReadonlyMap<number, IssueCommit>,
+  repository: string,
 ): readonly RelatedIssue[] {
-  return related.map(({ number, state }) => {
+  return related.map((issue) => {
+    const local = issue.repository.toLowerCase() === repository.toLowerCase();
+
     return {
-      number,
-      state,
-      closedBy: state === "open" ? closes.get(number) : undefined,
+      repository: issue.repository,
+      number: issue.number,
+      state: issue.state,
+      closedBy: issue.state === "open" && local
+        ? closes.get(issue.number)
+        : undefined,
     };
   });
 }
@@ -43,9 +50,12 @@ export async function checkIssue(
 
   const closes = findClosingCommits(commits);
 
+  const { repository } = access;
+
   const report = {
-    subIssues: relate(issue.subIssues, closes),
-    blockedBy: relate(issue.blockedBy, closes),
+    repository,
+    subIssues: relate(issue.subIssues, closes, repository),
+    blockedBy: relate(issue.blockedBy, closes, repository),
     towards: commits.filter(({ towards }) => towards.includes(number)),
   };
 
@@ -53,6 +63,8 @@ export async function checkIssue(
     const findings = checkIssueReadiness(
       {
         issue,
+        repository,
+        localRepository: repository,
         protocol: access.protocol,
         parsed,
         ancestors: [],
@@ -66,8 +78,6 @@ export async function checkIssue(
   }
 
   const { chain, findings } = await findAncestors(access, issue);
-
-  const ancestors = chain.map(({ number }) => number);
 
   const missingReferences = await findMissingReferences(
     access,
@@ -85,9 +95,11 @@ export async function checkIssue(
     ...checkIssueReadiness(
       {
         issue,
+        repository,
+        localRepository: repository,
         protocol: access.protocol,
         parsed,
-        ancestors,
+        ancestors: chain,
         missingReferences,
         closes,
         dispatch,
@@ -101,7 +113,7 @@ export async function checkIssue(
       const body = parseIssueBody(ancestor.body);
 
       const missing = await findMissingReferences(
-        access,
+        { ...access, repository: ancestor.repository },
         body.references.filter((reference) => reference !== ancestor.number),
       );
 
@@ -114,9 +126,11 @@ export async function checkIssue(
         ...checkIssueReadiness(
           {
             issue: ancestor,
+            repository: ancestor.repository,
+            localRepository: repository,
             protocol: access.protocol,
             parsed: body,
-            ancestors: ancestors.slice(0, index),
+            ancestors: chain.slice(0, index),
             missingReferences: missing,
             closes,
             dispatch: true,
@@ -130,7 +144,7 @@ export async function checkIssue(
         ...blocked.map((finding) => {
           return {
             ...finding,
-            message: `Ancestor #${ancestor.number}: ${finding.message}`,
+            message: `Ancestor ${renderReference(ancestor, repository)}: ${finding.message}`,
           };
         }),
       );

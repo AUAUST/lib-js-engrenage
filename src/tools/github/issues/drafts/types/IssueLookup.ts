@@ -1,4 +1,4 @@
-import type { IssueLocation } from "#tools/github/issues/drafts/types/IssueLocation";
+import type { IssueLocation } from "#tools/github/issues/contract/index";
 
 export interface IssueLookup {
   remember(

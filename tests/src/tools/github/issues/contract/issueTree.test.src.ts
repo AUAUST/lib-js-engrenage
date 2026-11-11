@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 
-import { number, object, parse } from "valibot";
+import { number, object, optional, parse, string } from "valibot";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -71,6 +71,7 @@ function renderIssue(number: number, levels: number): Record<string, unknown> {
   return {
     id: `I${number}`,
     number,
+    repository: { nameWithOwner: "o/r" },
     title: "t",
     body: issue.body,
     state: issue.state ?? "OPEN",
@@ -179,6 +180,160 @@ describe("checkIssueTree", () => {
       "    #13 Task: open",
     ]);
 
-    expect(check.next).toBe(13);
+    expect(check.next).toEqual({ repository: "o/r", number: 13 });
+  });
+});
+
+const engrenage = "AUAUST/lib-js-engrenage";
+const toolkit = "AUAUST/lib-js-toolkit";
+
+const crossRequestSchema = object({
+  variables: object({
+    owner: optional(string()),
+    name: optional(string()),
+    number: optional(number()),
+    id: optional(string()),
+  }),
+});
+
+function renderCrossIssue(
+  repository: string,
+  number: number,
+  children: readonly unknown[],
+  hasNextPage = false,
+) {
+  const body = repository === toolkit
+    ? `${engrenage}#10 › ${engrenage}#11 · Roadmap\n\n## Context\n\nx\n\n## Steps\n\n1. Do it.\n\n## Tests\n\n- works\n`
+    : (tree[number]?.body ?? "");
+
+  return {
+    id: `${repository}#${number}`,
+    number,
+    repository: {
+      nameWithOwner: repository,
+    },
+    title: "t",
+    body,
+    state: "OPEN",
+    issueType: {
+      name: tree[number]?.type ?? "Task",
+    },
+    issueFieldValues: connection([]),
+    blockedBy: connection([]),
+    subIssuesSummary: {
+      total: children.length + (hasNextPage ? 1 : 0),
+    },
+    subIssues: {
+      pageInfo: { hasNextPage, endCursor: hasNextPage ? "c" : null },
+      nodes: children,
+    },
+  };
+}
+
+function mockCrossRepositoryGraphql() {
+  const queried: string[] = [];
+
+  vi.stubGlobal(
+    "fetch",
+    vi.fn((_url: string, { body }: { body: string }) => {
+      const { variables } = parse(crossRequestSchema, JSON.parse(body));
+
+      if (variables.id !== undefined) {
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              data: {
+                node: {
+                  connection: connection([
+                    {
+                      number: 45,
+                      repository: { nameWithOwner: toolkit },
+                    },
+                  ]),
+                },
+              },
+            }),
+            {
+              headers: { "content-type": "application/json" },
+            },
+          ),
+        );
+      }
+
+      const repository = `${variables.owner ?? ""}/${variables.name ?? ""}`;
+
+      queried.push(`${repository}#${variables.number ?? 0}`);
+
+      const issue = repository === toolkit
+        ? {
+            ...renderCrossIssue(toolkit, 45, []),
+            parent: {
+              number: 11,
+              repository: {
+                nameWithOwner: engrenage,
+              },
+              issueType: {
+                name: "Segment",
+              },
+              parent: {
+                number: 10,
+                repository: { nameWithOwner: engrenage },
+                issueType: { name: "Plan" },
+                parent: null,
+              },
+            },
+          }
+        : {
+            ...renderCrossIssue(engrenage, 10, [
+              renderCrossIssue(
+                engrenage,
+                11,
+                [renderCrossIssue(engrenage, 12, [])],
+                true,
+              ),
+            ]),
+            parent: null,
+          };
+
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            data: {
+              repository: { issue },
+            },
+          }),
+          {
+            headers: { "content-type": "application/json" },
+          },
+        ),
+      );
+    }),
+  );
+
+  return queried;
+}
+
+describe("checkIssueTree across repositories", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  test("fetches a toolkit sub-issue from toolkit and passes its header chain", async () => {
+    const queried = mockCrossRepositoryGraphql();
+
+    const check = await checkIssueTree(
+      { ...access, repository: engrenage },
+      10,
+    );
+
+    expect(queried).toContain(`${toolkit}#45`);
+
+    expect(formatIssueTreeCheck(check)).toEqual([
+      "    #12 Task: open",
+      `    ${toolkit}#45 Task: open`,
+      "  #11 Segment: open",
+      "#10 Plan: open",
+      "Next: #12",
+    ]);
   });
 });

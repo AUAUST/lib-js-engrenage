@@ -6,22 +6,36 @@ import {
 import { stripCode } from "#tools/github/issues/contract/utils/stripCode";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
-const headerPattern = /^#\d+/;
+const qualifiedReference = String.raw`(?:([\w.-]+\/[\w.-]+))?#(\d+)`;
+const headerPattern = new RegExp(`^${qualifiedReference}`);
+const chainPattern = new RegExp(qualifiedReference, "g");
+
+const roadmapReferencePattern = new RegExp(
+  String.raw`(?<![\w/&])${qualifiedReference}\b`,
+  "g",
+);
+
 const sectionPattern = /^## (.+?)\s*$/;
 const itemPattern = /^\d+\.\s+(.*)$/;
 const fencePattern = /^\s*(```|~~~)/;
 const referencePattern = /(?<![\w/&])#(\d+)\b/g;
-const roadmapLinePattern = /^#\d+(?::\s*(.*))?$/;
+
+const roadmapLinePattern = new RegExp(
+  String.raw`^${qualifiedReference}(?::\s*(.*))?$`,
+);
+
 const sectionLinkPattern = /^\[(.*)\]\(#[^)]*\)$/;
 const roadmapSeparator = " · ";
+
+function toLocation([, repository, number]: RegExpMatchArray) {
+  return { repository, number: Number(number) };
+}
 
 function parseHeader(line: string): ParsedIssueBody["header"] {
   const [ancestors = "", ...sections] = line.split(" · ");
 
   return {
-    ancestors: [...ancestors.matchAll(/#(\d+)/g)].map(([, number]) => {
-      return Number(number);
-    }),
+    ancestors: [...ancestors.matchAll(chainPattern)].map(toLocation),
     sections,
   };
 }
@@ -106,7 +120,7 @@ function findReferences(text: string) {
 function parseRoadmapLine(text: string) {
   const [first = ""] = text.split("\n");
 
-  const rest = roadmapLinePattern.exec(first.trim())?.[1]?.trim() ?? "";
+  const rest = roadmapLinePattern.exec(first.trim())?.[3]?.trim() ?? "";
 
   const separator = rest.lastIndexOf(roadmapSeparator);
 
@@ -143,10 +157,10 @@ export function parseIssueBody(body: string): ParsedIssueBody {
     roadmap: roadmap === undefined
       ? []
       : parseList(roadmap.content).items.flatMap(({ text }) => {
-          return findReferences(text)
+          return [...stripCode(text).matchAll(roadmapReferencePattern)]
             .slice(0, 1)
-            .map((number) => {
-              return { number, ...parseRoadmapLine(text) };
+            .map((match) => {
+              return { ...toLocation(match), ...parseRoadmapLine(text) };
             });
         }),
     references: findReferences(body),

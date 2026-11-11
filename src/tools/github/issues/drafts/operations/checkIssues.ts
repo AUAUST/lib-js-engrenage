@@ -8,6 +8,7 @@ import {
   checkIssue,
   formatIssueCheck,
   type IssueAudience,
+  type IssueLocation,
 } from "#tools/github/issues/contract/index";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
 import { resolveDraftsContext } from "#tools/github/issues/drafts/operations/resolveDraftsContext";
@@ -18,7 +19,6 @@ import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 import type { LoadedConfig } from "#project/config/index";
 import type { Draft } from "#tools/github/issues/drafts/types/Draft";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
-import type { IssueLocation } from "#tools/github/issues/drafts/types/IssueLocation";
 import type { IssuesCheck } from "#tools/github/issues/drafts/types/IssuesCheck";
 
 async function checkPublished(

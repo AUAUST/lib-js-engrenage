@@ -1,7 +1,7 @@
 import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
 import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
+import type { IssueLocation } from "#tools/github/issues/contract/index";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
-import type { IssueLocation } from "#tools/github/issues/drafts/types/IssueLocation";
 
 export function resolveIssueLocation(
   reference: string,

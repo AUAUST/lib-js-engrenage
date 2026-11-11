@@ -48,7 +48,7 @@ async function listDescendants(
 export async function resolvePublishedAncestors(
   publication: Publication,
 ): Promise<readonly string[]> {
-  const { drafts, access, context } = publication;
+  const { drafts, context } = publication;
 
   function normalize(reference: string) {
     return toDraftReference(resolveIssueStem(reference, context));
@@ -76,21 +76,17 @@ export async function resolvePublishedAncestors(
   const remoteChains = new Map<PublishedDraft, readonly string[]>();
 
   for (const draft of drafts) {
-    // @debt the ancestor chain of an issue in another repository is read only from the drafts, since `findAncestors` follows parents within one repository
-    if (
-      draft.remote === undefined ||
-      draft.access.repository !== context.repository
-    ) {
+    if (draft.remote === undefined) {
       continue;
     }
 
-    const { chain, findings } = await findAncestors(access, draft.remote);
+    const { chain, findings } = await findAncestors(draft.access, draft.remote);
 
     lines.push(...findings.map(({ message }) => `${draft.stem}: ${message}`));
 
     remoteChains.set(
       draft,
-      chain.map(({ number }) => `#${number}`),
+      chain.map((ancestor) => toDraftReference(toLocalStem(ancestor, context))),
     );
   }
 
@@ -187,6 +183,7 @@ export async function resolvePublishedAncestors(
         [...changed]
           .map((reference) => parseStem(reference.slice(1)))
           .filter((parsed) => parsed?.kind === "issue")
+          // @debt only descendants in the current repository are listed, so a change moving issues of another repository outside the set goes unreported
           .filter(({ short }) => short === undefined)
           .map(({ number }) => number),
       ),

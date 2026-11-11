@@ -2,8 +2,10 @@ import {
   splitRepository,
   type GithubAccess,
 } from "#tools/github/issues/api/index";
-import { isSameIssue } from "#tools/github/issues/drafts/utils/isSameIssue";
-import type { IssueLocation } from "#tools/github/issues/drafts/types/IssueLocation";
+import {
+  isSameIssue,
+  type IssueLocation,
+} from "#tools/github/issues/contract/index";
 import type { IssueLookup } from "#tools/github/issues/drafts/types/IssueLookup";
 
 function includes(list: readonly IssueLocation[], location: IssueLocation) {

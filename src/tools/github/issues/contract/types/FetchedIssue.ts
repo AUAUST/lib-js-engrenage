@@ -8,16 +8,10 @@ export interface FetchedIssue extends GithubIssue {
     Record<string, string | number | readonly string[]>
   >;
   readonly stateReason: string | undefined;
-  readonly subIssues: readonly {
+  readonly subIssues: readonly (GithubIssue["subIssues"][number] & {
     readonly id: number;
-    readonly number: number;
-    readonly state: "open" | "closed";
-    readonly repository: string;
-  }[];
-  readonly blockedBy: readonly {
+  })[];
+  readonly blockedBy: readonly (GithubIssue["blockedBy"][number] & {
     readonly id: number;
-    readonly number: number;
-    readonly state: "open" | "closed";
-    readonly repository: string;
-  }[];
+  })[];
 }

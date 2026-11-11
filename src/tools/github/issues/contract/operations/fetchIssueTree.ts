@@ -20,6 +20,7 @@ import {
   type GithubClient,
 } from "#tools/github/issues/api/index";
 import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
+import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
 import type { IssueTree } from "#tools/github/issues/contract/types/IssueTree";
 
 const pageSize = 25;
@@ -29,9 +30,18 @@ const ancestorLevels = 8;
 
 const stateSchema = picklist(["OPEN", "CLOSED"]);
 
-const numberedSchema = object({ number: number() });
+const repositorySchema = object({ nameWithOwner: string() });
 
-const relatedSchema = object({ number: number(), state: stateSchema });
+const locatedSchema = object({
+  number: number(),
+  repository: repositorySchema,
+});
+
+const relatedSchema = object({
+  number: number(),
+  state: stateSchema,
+  repository: repositorySchema,
+});
 
 const fieldValueSchema = object({
   field: nullish(object({ name: optional(string()) })),
@@ -51,6 +61,7 @@ function connectionSchema<Node extends GenericSchema>(node: Node) {
 const issueSchema = object({
   id: string(),
   number: number(),
+  repository: repositorySchema,
   title: string(),
   body: nullish(string()),
   state: stateSchema,
@@ -63,6 +74,7 @@ const issueSchema = object({
 
 const ancestorSchema = object({
   number: number(),
+  repository: repositorySchema,
   issueType: nullable(object({ name: string() })),
   parent: nullish(unknown()),
 });
@@ -79,14 +91,18 @@ const nodeSchema = object({
 
 const pageInfo = "pageInfo { hasNextPage endCursor }";
 
+const locationSelection = "number repository { nameWithOwner }";
+
+const relatedSelection = `${locationSelection} state`;
+
 const fieldValueSelection = `... on IssueFieldMultiSelectValue {
   field { ... on IssueFieldMultiSelect { name } }
   options { name }
 }`;
 
-const issueSelection = `id number title body state issueType { name }
+const issueSelection = `id ${locationSelection} title body state issueType { name }
 issueFieldValues(first: ${pageSize}) { ${pageInfo} nodes { ${fieldValueSelection} } }
-blockedBy(first: ${pageSize}) { ${pageInfo} nodes { number state } }
+blockedBy(first: ${pageSize}) { ${pageInfo} nodes { ${relatedSelection} } }
 subIssuesSummary { total }`;
 
 function selectSubIssues(levels: number): string {
@@ -98,8 +114,8 @@ subIssues(first: ${pageSize}) { ${pageInfo} nodes { ${selectSubIssues(levels - 1
 
 function selectAncestors(levels: number): string {
   return levels === 0
-    ? "number issueType { name }"
-    : `number issueType { name } parent { ${selectAncestors(levels - 1)} }`;
+    ? `${locationSelection} issueType { name }`
+    : `${locationSelection} issueType { name } parent { ${selectAncestors(levels - 1)} }`;
 }
 
 const treeQuery = `query ($owner: String!, $name: String!, $number: Int!) {
@@ -160,17 +176,20 @@ async function readConnection(
 
 function readAncestors(
   parent: unknown,
-  number: number,
+  label: string,
   plan: string,
-): readonly number[] {
-  const chain: number[] = [];
+): readonly IssueLocation[] {
+  const chain: IssueLocation[] = [];
 
   let next = parent;
 
   while (next != null) {
-    const ancestor = validate(ancestorSchema, next, `ancestors of #${number}`);
+    const ancestor = validate(ancestorSchema, next, `ancestors of ${label}`);
 
-    chain.unshift(ancestor.number);
+    chain.unshift({
+      repository: ancestor.repository.nameWithOwner,
+      number: ancestor.number,
+    });
 
     if (ancestor.issueType?.name === plan) {
       break;
@@ -182,15 +201,16 @@ function readAncestors(
   return chain;
 }
 
-// @debt sub-issues and blocking issues from another repository are identified by their number alone, as in this repository
 async function buildTree(
   access: IssueAccess,
   raw: unknown,
-  parent: number | undefined,
+  parent: IssueLocation | undefined,
 ): Promise<IssueTree> {
   const node = validate(issueSchema, raw, "issue tree");
 
-  const label = `#${node.number}`;
+  const repository = node.repository.nameWithOwner;
+
+  const label = `${repository}#${node.number}`;
 
   const [fieldValues, blockedBy, subIssues] = await Promise.all([
     readConnection(
@@ -204,10 +224,10 @@ async function buildTree(
       access.client,
       node.id,
       "blockedBy",
-      "number state",
+      relatedSelection,
       node.blockedBy,
     ),
-    buildSubIssues(access, node),
+    buildSubIssues({ ...access, repository }, node),
   ]);
 
   const blockers = fieldValues
@@ -216,6 +236,7 @@ async function buildTree(
     .flatMap(({ options = [] }) => options.map(({ name }) => name));
 
   return {
+    repository,
     issue: {
       number: node.number,
       title: node.title,
@@ -223,17 +244,26 @@ async function buildTree(
       state: readState(node.state),
       type: node.issueType?.name,
       blockers,
-      subIssues: subIssues.map(({ issue }) => {
-        return { number: issue.number, state: issue.state };
+      subIssues: subIssues.map((sub) => {
+        return {
+          repository: sub.repository,
+          number: sub.issue.number,
+          state: sub.issue.state,
+        };
       }),
       parent,
       blockedBy: blockedBy.map((related) => {
-        const {
-          number,
-          state,
-        } = validate(relatedSchema, related, `blockers of ${label}`);
+        const blocker = validate(
+          relatedSchema,
+          related,
+          `blockers of ${label}`,
+        );
 
-        return { number, state: readState(state) };
+        return {
+          repository: blocker.repository.nameWithOwner,
+          number: blocker.number,
+          state: readState(blocker.state),
+        };
       }),
     },
     subIssues,
@@ -260,20 +290,25 @@ async function buildSubIssues(
     access.client,
     node.id,
     "subIssues",
-    "number",
+    locationSelection,
     { ...node.subIssues, nodes: [] },
   );
 
+  const parent = { repository: access.repository, number: node.number };
+
   return Promise.all([
-    ...fetched.map((raw) => buildTree(access, raw, node.number)),
+    ...fetched.map((raw) => buildTree(access, raw, parent)),
     ...rest.map(async (raw) => {
       const child = validate(
-        numberedSchema,
+        locatedSchema,
         raw,
-        `sub-issues of #${node.number}`,
+        `sub-issues of ${access.repository}#${node.number}`,
       );
 
-      const { tree } = await fetchIssueTree(access, child.number);
+      const { tree } = await fetchIssueTree(
+        { ...access, repository: child.repository.nameWithOwner },
+        child.number,
+      );
 
       return tree;
     }),
@@ -285,7 +320,7 @@ export async function fetchIssueTree(
   number: number,
 ): Promise<{
   readonly tree: IssueTree;
-  readonly ancestors: readonly number[];
+  readonly ancestors: readonly IssueLocation[];
 }> {
   const { owner, repo } = splitRepository(access.repository);
 
@@ -295,12 +330,14 @@ export async function fetchIssueTree(
     number,
   });
 
-  const raw = validate(treeSchema, response, `issue tree of #${number}`)
+  const label = `${access.repository}#${number}`;
+
+  const raw = validate(treeSchema, response, `issue tree of ${label}`)
     .repository.issue;
 
   const ancestors = readAncestors(
     raw.parent,
-    number,
+    label,
     access.protocol.types.plan,
   );
 

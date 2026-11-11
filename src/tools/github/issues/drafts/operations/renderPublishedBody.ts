@@ -5,19 +5,21 @@ import {
   splitRepository,
 } from "#tools/github/issues/api/index";
 import { roadmapSection } from "#tools/github/issues/contract/constants";
-import { parseIssueBody } from "#tools/github/issues/contract/index";
+import {
+  isSameIssue,
+  parseIssueBody,
+  renderReference,
+  type IssueLocation,
+} from "#tools/github/issues/contract/index";
 import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
 import { insertSection } from "#tools/github/issues/drafts/utils/insertSection";
-import { isSameIssue } from "#tools/github/issues/drafts/utils/isSameIssue";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
 import { renderDraftReferences } from "#tools/github/issues/drafts/utils/renderDraftReferences";
 import { renderHeader } from "#tools/github/issues/drafts/utils/renderHeader";
-import { renderReference } from "#tools/github/issues/drafts/utils/renderReference";
 import { renderRoadmap } from "#tools/github/issues/drafts/utils/renderRoadmap";
 import { resolveIssueLocation } from "#tools/github/issues/drafts/utils/resolveIssueLocation";
 import { splitBodySections } from "#tools/github/issues/drafts/utils/splitBodySections";
-import type { IssueLocation } from "#tools/github/issues/drafts/types/IssueLocation";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 import type { RoadmapEntry } from "#tools/github/issues/drafts/types/RoadmapEntry";

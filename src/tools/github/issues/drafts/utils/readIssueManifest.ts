@@ -3,6 +3,7 @@ import { entries, record } from "@auaust/toolkit/object";
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
   findContractMeaning,
+  isSameIssue,
   parseIssueBody,
   type FetchedIssue,
   type IssueContract,
@@ -26,10 +27,10 @@ function readState({ state, stateReason }: FetchedIssue) {
   return name;
 }
 
-// @debt the roadmap parser reads only `#<n>` lines, so a Plan's sub-issue in another repository is claimed without its gist and sections
 function listSubIssues(
   issue: FetchedIssue,
   contract: IssueContract | undefined,
+  repository: string,
   context: DraftsContext,
 ) {
   const roadmap = parseIssueBody(issue.body).roadmap;
@@ -41,7 +42,12 @@ function listSubIssues(
       return reference;
     }
 
-    const line = roadmap.find((entry) => reference === `#${entry.number}`);
+    const line = roadmap.find((entry) => {
+      return isSameIssue(
+        { repository: entry.repository ?? repository, number: entry.number },
+        child,
+      );
+    });
 
     return {
       ref: reference,
@@ -82,7 +88,7 @@ export function readIssueManifest(
         ] as const;
       }),
     ),
-    subIssues: listSubIssues(issue, contract, context),
+    subIssues: listSubIssues(issue, contract, target.repository, context),
     blockedBy: issue.blockedBy.map((blocker) => {
       return toDraftReference(toLocalStem(blocker, context));
     }),

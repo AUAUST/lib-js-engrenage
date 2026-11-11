@@ -24,6 +24,7 @@ interface MockIssue {
   labels: string[];
   fields: Map<string, string | string[]>;
   subIssues: number[];
+  toolkitSubIssues: number[];
   blockedBy: number[];
 }
 
@@ -140,6 +141,7 @@ function createIssue(number: number, values: Partial<MockIssue>): MockIssue {
     labels: [],
     fields: new Map(),
     subIssues: [],
+    toolkitSubIssues: [],
     blockedBy: [],
     ...values,
   };
@@ -287,15 +289,22 @@ function route(method: string, path: string, body: Record<string, unknown>) {
     }
 
     case "GET /sub_issues": {
-      return respond(
-        issue.subIssues.map((child) => {
-          return renderIssue(findIssue(child));
+      return respond([
+        ...issue.subIssues.map((child) => renderIssue(findIssue(child))),
+        ...issue.toolkitSubIssues.map((child) => {
+          return renderIssue(findIssue(child, "toolkit"));
         }),
-      );
+      ]);
     }
 
     case "POST /sub_issues": {
-      issue.subIssues.push(toNumber(body.sub_issue_id));
+      const child = Number(body.sub_issue_id);
+
+      if (child > 2000) {
+        issue.toolkitSubIssues.push(child - 2000);
+      } else {
+        issue.subIssues.push(toNumber(child));
+      }
 
       return respond(renderIssue(issue), 201);
     }
@@ -316,7 +325,11 @@ function route(method: string, path: string, body: Record<string, unknown>) {
 
     case "GET /parent": {
       const parent = [...issues.values()].find((candidate) => {
-        return candidate.subIssues.includes(issue.number);
+        return (
+          issue.repository === "app"
+            ? candidate.subIssues
+            : candidate.toolkitSubIssues
+        ).includes(issue.number);
       });
 
       return parent === undefined
@@ -858,6 +871,77 @@ See #{unknown.1}.
     expect(lines).toContainEqual(
       expect.stringContaining("registered: app, toolkit"),
     );
+  });
+
+  test("claims a Plan's roadmap line naming a toolkit sub-issue and publishes it back unchanged", async () => {
+    const body = planBody.replace(
+      "2. #12: the task",
+      "2. #12: the task\n3. AUAUST/toolkit#45: the port · [Decisions](#decisions)",
+    );
+
+    findIssue(10).body = body;
+
+    findIssue(10).toolkitSubIssues = [45];
+
+    const root = createProject();
+
+    await claimIssues(await loadConfig(root), ["10"]);
+
+    expect(read(root, "10.draft.md")).toContain(`  - ref: "#{toolkit.45}"
+    gist: the port
+    sections:
+      - Decisions`);
+
+    const { passed } = await publishIssues(await loadConfig(root), ["10"]);
+
+    expect(passed).toBe(true);
+
+    expect(findIssue(10).body).toBe(body);
+  });
+
+  test("renders the chain of a toolkit Task under a Segment and passes its header check", async () => {
+    const root = createProject();
+
+    const config = await loadConfig(root);
+
+    await claimIssues(config, ["10", "11"]);
+
+    await config.context.filesystem.write(
+      ".ai/issues/11.draft.md",
+      read(root, "11.draft.md").replace(
+        '  - "#13"',
+        '  - "#13"\n  - "#{toolkit.new-port}"',
+      ),
+    );
+
+    await config.context.filesystem.write(
+      ".ai/issues/toolkit.new-port.draft.md",
+      `---\ntitle: Port\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the port")}\n`,
+    );
+
+    await config.context.filesystem.flush();
+
+    const { lines, passed } = await publishIssues(await loadConfig(root), [
+      "10",
+      "11",
+      "toolkit.new-port",
+    ]);
+
+    expect({ lines, passed }).toMatchObject({ passed: true });
+
+    expect(findIssue(11).toolkitSubIssues).toEqual([46]);
+
+    expect(findIssue(46, "toolkit").body.split("\n")[0]).toBe(
+      "AUAUST/app#10 › AUAUST/app#11 · Goal: the port",
+    );
+
+    const check = await checkIssues(
+      await loadConfig(root),
+      ["toolkit.46"],
+      "worker",
+    );
+
+    expect(check.lines).toEqual(["#46 ready"]);
   });
 
   test("checks a published issue of a registered repository", async () => {

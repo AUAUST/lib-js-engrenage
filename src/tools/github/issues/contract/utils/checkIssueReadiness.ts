@@ -8,28 +8,61 @@ import {
 } from "#tools/github/issues/contract/constants";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
+import { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
+import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
 import type { IssueCommit } from "#tools/git/index";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
 import type { IssueAudience } from "#tools/github/issues/contract/types/IssueAudience";
 import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
+import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
 import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
 interface ReadinessContext {
   readonly issue: GithubIssue;
+  readonly repository: string;
+  readonly localRepository: string;
   readonly protocol: IssueProtocol;
   readonly parsed: ParsedIssueBody;
-  readonly ancestors: readonly number[];
+  readonly ancestors: readonly IssueLocation[];
   readonly missingReferences: readonly number[];
   readonly closes: ReadonlyMap<number, IssueCommit>;
   readonly dispatch?: boolean;
   readonly ancestor?: boolean;
 }
 
-function formatChain(chain: readonly number[]) {
+function formatChain(chain: readonly IssueLocation[], repository: string) {
   return chain.length === 0
     ? "none"
-    : chain.map((number) => `#${number}`).join(" › ");
+    : chain
+        .map((location) => renderReference(location, repository))
+        .join(" › ");
+}
+
+function isSameChain(
+  left: readonly IssueLocation[],
+  right: readonly IssueLocation[],
+) {
+  return (
+    left.length === right.length &&
+    left.every((location, index) => {
+      const other = right[index];
+
+      return other !== undefined && isSameIssue(location, other);
+    })
+  );
+}
+
+function resolveWritten(
+  written: readonly {
+    readonly repository: string | undefined;
+    readonly number: number;
+  }[],
+  repository: string,
+): readonly IssueLocation[] {
+  return written.map(({ repository: owner, number }) => {
+    return { repository: owner ?? repository, number };
+  });
 }
 
 function hasSection(parsed: ParsedIssueBody, name: string) {
@@ -39,6 +72,8 @@ function hasSection(parsed: ParsedIssueBody, name: string) {
 export function checkIssueReadiness(
   {
     issue,
+    repository,
+    localRepository,
     protocol,
     parsed,
     ancestors,
@@ -51,14 +86,25 @@ export function checkIssueReadiness(
 ): IssueFinding[] {
   const findings: IssueFinding[] = [];
 
-  const closedBy = closes.get(issue.number);
+  function findClosure(location: IssueLocation) {
+    return location.repository.toLowerCase() === localRepository.toLowerCase()
+      ? closes.get(location.number)
+      : undefined;
+  }
+
+  const self = renderReference(
+    { repository, number: issue.number },
+    localRepository,
+  );
+
+  const closedBy = findClosure({ repository, number: issue.number });
 
   if (issue.state !== "open") {
-    findings.push({ rule: "state", message: `#${issue.number} is closed.` });
+    findings.push({ rule: "state", message: `${self} is closed.` });
   } else if (closedBy !== undefined) {
     findings.push({
       rule: "state",
-      message: `#${issue.number} is closed by local commit ${closedBy.hash}.`,
+      message: `${self} is closed by local commit ${closedBy.hash}.`,
     });
   }
 
@@ -76,13 +122,13 @@ export function checkIssueReadiness(
     if (type !== "problem") {
       findings.push({
         rule: "type",
-        message: `#${issue.number} is ${issue.type === undefined ? "untyped" : `a ${issue.type}`}: a debugger takes a ${types.problem}.`,
+        message: `${self} is ${issue.type === undefined ? "untyped" : `a ${issue.type}`}: a debugger takes a ${types.problem}.`,
       });
     }
   } else if (contract === undefined) {
     findings.push({
       rule: "type",
-      message: `#${issue.number} is ${issue.type === undefined ? "untyped" : `a ${issue.type}`}: expected a ${keys(
+      message: `${self} is ${issue.type === undefined ? "untyped" : `a ${issue.type}`}: expected a ${keys(
         issueContracts,
       )
         .map((meaning) => types[meaning])
@@ -94,15 +140,15 @@ export function checkIssueReadiness(
     if (audience === "worker" && type !== "task" && type !== "problem") {
       findings.push({
         rule: "dispatch-type",
-        message: `#${issue.number} is a ${issue.type}: a worker takes a ${types.task} or ${types.problem} leaf.`,
+        message: `${self} is a ${issue.type}: a worker takes a ${types.task} or ${types.problem} leaf.`,
       });
     }
 
-    for (const { number, state } of issue.subIssues) {
-      if (state === "open" && !closes.has(number)) {
+    for (const sub of issue.subIssues) {
+      if (sub.state === "open" && findClosure(sub) === undefined) {
         findings.push({
           rule: "sub-issues",
-          message: `#${issue.number} has open sub-issue #${number}: finish it first.`,
+          message: `${self} has open sub-issue ${renderReference(sub, localRepository)}: finish it first.`,
         });
       }
     }
@@ -179,35 +225,33 @@ export function checkIssueReadiness(
   }
 
   if (audience === "worker" || dispatch) {
-    for (const { number, state } of issue.blockedBy) {
-      if (state === "open" && !closes.has(number)) {
+    for (const blocker of issue.blockedBy) {
+      if (blocker.state === "open" && findClosure(blocker) === undefined) {
         findings.push({
           rule: "blocked-by",
-          message: `Blocked by the open #${number}: settle it first.`,
+          message: `Blocked by the open ${renderReference(blocker, localRepository)}: settle it first.`,
         });
       }
     }
 
     if (contract?.hasHeader === true) {
-      const actual = parsed.header?.ancestors ?? [];
+      const actual = resolveWritten(parsed.header?.ancestors ?? [], repository);
 
-      if (formatChain(actual) !== formatChain(ancestors)) {
+      if (!isSameChain(actual, ancestors)) {
         findings.push({
           rule: "header-chain",
-          message: `The header line names ${formatChain(actual)} but the ancestors from the nearest plan are ${formatChain(ancestors)}: rewrite it.`,
+          message: `The header line names ${formatChain(actual, repository)} but the ancestors from the nearest plan are ${formatChain(ancestors, repository)}: rewrite it.`,
         });
       }
     }
 
     if (type === "plan") {
-      const expected = issue.subIssues.map(({ number }) => number);
+      const listed = resolveWritten(parsed.roadmap, repository);
 
-      const listed = parsed.roadmap.map(({ number }) => number);
-
-      if (formatChain(listed) !== formatChain(expected)) {
+      if (!isSameChain(listed, issue.subIssues)) {
         findings.push({
           rule: "roadmap-order",
-          message: `**Roadmap** references ${formatChain(listed)} but the sub-issues are ${formatChain(expected)}: reorder it.`,
+          message: `**Roadmap** references ${formatChain(listed, repository)} but the sub-issues are ${formatChain(issue.subIssues, repository)}: reorder it.`,
         });
       }
     }
@@ -215,7 +259,7 @@ export function checkIssueReadiness(
     for (const number of missingReferences) {
       findings.push({
         rule: "missing-reference",
-        message: `#${number} does not exist: fix the reference.`,
+        message: `${renderReference({ repository, number }, localRepository)} does not exist: fix the reference.`,
       });
     }
   }

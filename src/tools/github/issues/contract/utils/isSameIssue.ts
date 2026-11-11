@@ -1,4 +1,4 @@
-import type { IssueLocation } from "#tools/github/issues/drafts/types/IssueLocation";
+import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
 
 export function isSameIssue(
   left: IssueLocation,

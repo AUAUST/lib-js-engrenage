@@ -1,5 +1,6 @@
 import { entries } from "@auaust/toolkit/object";
 
+import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
 import type { IssueCheck } from "#tools/github/issues/contract/types/IssueCheck";
 import type { RelatedIssue } from "#tools/github/issues/contract/types/RelatedIssue";
 
@@ -11,6 +12,7 @@ interface RelatedLabels {
 
 function formatRelated(
   number: number,
+  repository: string,
   related: readonly RelatedIssue[],
   labels: RelatedLabels,
 ) {
@@ -20,11 +22,13 @@ function formatRelated(
     closed: [],
   };
 
-  for (const { number: other, state, closedBy } of related) {
-    if (closedBy !== undefined) {
-      groups.local.push(`#${other} (${closedBy.hash})`);
+  for (const other of related) {
+    const reference = renderReference(other, repository);
+
+    if (other.closedBy !== undefined) {
+      groups.local.push(`${reference} (${other.closedBy.hash})`);
     } else {
-      groups[state].push(`#${other}`);
+      groups[other.state].push(reference);
     }
   }
 
@@ -37,15 +41,15 @@ function formatRelated(
 
 export function formatIssueCheck(
   number: number,
-  { findings, subIssues, blockedBy, towards }: IssueCheck,
+  { repository, findings, subIssues, blockedBy, towards }: IssueCheck,
 ): readonly string[] {
   const context = [
-    ...formatRelated(number, subIssues, {
+    ...formatRelated(number, repository, subIssues, {
       open: "has open sub-issues to walk first",
       local: "has sub-issues closed by local commits",
       closed: "has sub-issues closed on GitHub",
     }),
-    ...formatRelated(number, blockedBy, {
+    ...formatRelated(number, repository, blockedBy, {
       open: "is blocked by the open",
       local: "was blocked by issues closed by local commits",
       closed: "was blocked by issues closed on GitHub",

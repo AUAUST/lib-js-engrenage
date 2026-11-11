@@ -1,8 +1,10 @@
-import { replaceOutsideCode } from "#tools/github/issues/contract/index";
-import { renderReference } from "#tools/github/issues/drafts/utils/renderReference";
+import {
+  renderReference,
+  replaceOutsideCode,
+  type IssueLocation,
+} from "#tools/github/issues/contract/index";
 import { resolveIssueLocation } from "#tools/github/issues/drafts/utils/resolveIssueLocation";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
-import type { IssueLocation } from "#tools/github/issues/drafts/types/IssueLocation";
 
 export function renderDraftReferences(
   text: string,

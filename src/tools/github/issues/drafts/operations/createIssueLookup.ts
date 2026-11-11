@@ -5,7 +5,7 @@ import {
   splitRepository,
   type GithubClient,
 } from "#tools/github/issues/api/index";
-import type { IssueLocation } from "#tools/github/issues/drafts/types/IssueLocation";
+import type { IssueLocation } from "#tools/github/issues/contract/index";
 import type { IssueLookup } from "#tools/github/issues/drafts/types/IssueLookup";
 
 const issueSchema = object({
