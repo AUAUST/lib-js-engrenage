@@ -5,12 +5,12 @@ import {
   openQuestionsOption,
   planningSection,
   questionsSection,
-} from "#tools/github/constants";
+} from "#tools/github/issues/contract/constants";
 import type { IssueCommit } from "#tools/git/index";
-import type { GithubIssue } from "#tools/github/types/GithubIssue";
-import type { IssueAudience } from "#tools/github/types/IssueAudience";
-import type { IssueFinding } from "#tools/github/types/IssueFinding";
-import type { ParsedIssueBody } from "#tools/github/types/ParsedIssueBody";
+import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
+import type { IssueAudience } from "#tools/github/issues/contract/types/IssueAudience";
+import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
+import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
 interface ReadinessContext {
   readonly issue: GithubIssue;

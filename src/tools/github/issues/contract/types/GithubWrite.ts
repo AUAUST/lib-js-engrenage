@@ -1,4 +1,4 @@
-import type { GithubBodySource } from "#tools/github/types/GithubBodySource";
+import type { GithubBodySource } from "#tools/github/issues/contract/types/GithubBodySource";
 
 export interface GithubWrite {
   readonly action: "create" | "edit" | "comment";

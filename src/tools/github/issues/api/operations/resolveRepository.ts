@@ -7,7 +7,7 @@ import { isString } from "@auaust/toolkit/isString";
 import { readJsonFile } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
 import { runGit } from "#tools/git/index";
-import { parseRepository } from "#tools/github/utils/parseRepository";
+import { parseRepository } from "#tools/github/issues/api/utils/parseRepository";
 import type { Directory } from "#types/Directory";
 
 const manifestSchema = object({

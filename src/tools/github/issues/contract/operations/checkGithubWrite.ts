@@ -1,10 +1,12 @@
-import { fetchIssue } from "#tools/github/operations/fetchIssue";
-import { readGithubBody } from "#tools/github/operations/readGithubBody";
-import { resolveGithubToken } from "#tools/github/operations/resolveGithubToken";
-import { resolveRepository } from "#tools/github/operations/resolveRepository";
-import { checkIssueBody } from "#tools/github/utils/checkIssueBody";
-import { parseGithubCommand } from "#tools/github/utils/parseGithubCommand";
-import type { GithubWrite } from "#tools/github/types/GithubWrite";
+import {
+  resolveGithubToken,
+  resolveRepository,
+} from "#tools/github/issues/api/index";
+import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
+import { readGithubBody } from "#tools/github/issues/contract/operations/readGithubBody";
+import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
+import { parseGithubCommand } from "#tools/github/issues/contract/utils/parseGithubCommand";
+import type { GithubWrite } from "#tools/github/issues/contract/types/GithubWrite";
 import type { Directory } from "#types/Directory";
 
 async function checkWrite(

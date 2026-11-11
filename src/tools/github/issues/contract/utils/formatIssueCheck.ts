@@ -1,7 +1,7 @@
 import { entries } from "@auaust/toolkit/object";
 
-import type { IssueCheck } from "#tools/github/types/IssueCheck";
-import type { RelatedIssue } from "#tools/github/types/RelatedIssue";
+import type { IssueCheck } from "#tools/github/issues/contract/types/IssueCheck";
+import type { RelatedIssue } from "#tools/github/issues/contract/types/RelatedIssue";
 
 interface RelatedLabels {
   readonly open: string;

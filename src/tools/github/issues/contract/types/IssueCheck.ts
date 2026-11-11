@@ -1,6 +1,6 @@
 import type { IssueCommit } from "#tools/git/index";
-import type { IssueFinding } from "#tools/github/types/IssueFinding";
-import type { RelatedIssue } from "#tools/github/types/RelatedIssue";
+import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
+import type { RelatedIssue } from "#tools/github/issues/contract/types/RelatedIssue";
 
 export interface IssueCheck {
   readonly findings: readonly IssueFinding[];

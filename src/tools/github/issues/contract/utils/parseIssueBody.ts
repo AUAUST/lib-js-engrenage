@@ -2,8 +2,8 @@ import {
   checkpointPrefix,
   roadmapSection,
   stepsSection,
-} from "#tools/github/constants";
-import type { ParsedIssueBody } from "#tools/github/types/ParsedIssueBody";
+} from "#tools/github/issues/contract/constants";
+import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
 const headerPattern = /^#\d+/;
 const sectionPattern = /^## (.+?)\s*$/;

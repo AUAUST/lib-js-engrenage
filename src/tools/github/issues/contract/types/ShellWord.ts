@@ -1,4 +1,4 @@
-import type { ShellToken } from "#tools/github/types/ShellToken";
+import type { ShellToken } from "#tools/github/issues/contract/types/ShellToken";
 
 export type ShellWord =
   | string

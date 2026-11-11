@@ -1,0 +1,4 @@
+{
+  "purpose": "GitHub issues: API access, the issue contract and local drafts.",
+  "layers": ["api", "contract"]
+}

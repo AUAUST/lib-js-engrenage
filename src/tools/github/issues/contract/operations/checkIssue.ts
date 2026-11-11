@@ -1,16 +1,18 @@
 import { listIssueCommits, type IssueCommit } from "#tools/git/index";
-import { fetchIssue } from "#tools/github/operations/fetchIssue";
-import { requestGithub } from "#tools/github/operations/requestGithub";
-import { resolveRepository } from "#tools/github/operations/resolveRepository";
-import { checkIssueBody } from "#tools/github/utils/checkIssueBody";
-import { checkIssueReadiness } from "#tools/github/utils/checkIssueReadiness";
-import { parseIssueBody } from "#tools/github/utils/parseIssueBody";
-import type { GithubAccess } from "#tools/github/types/GithubAccess";
-import type { GithubIssue } from "#tools/github/types/GithubIssue";
-import type { IssueAudience } from "#tools/github/types/IssueAudience";
-import type { IssueCheck } from "#tools/github/types/IssueCheck";
-import type { IssueFinding } from "#tools/github/types/IssueFinding";
-import type { RelatedIssue } from "#tools/github/types/RelatedIssue";
+import {
+  requestGithub,
+  resolveRepository,
+  type GithubAccess,
+} from "#tools/github/issues/api/index";
+import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
+import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
+import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
+import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
+import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
+import type { IssueAudience } from "#tools/github/issues/contract/types/IssueAudience";
+import type { IssueCheck } from "#tools/github/issues/contract/types/IssueCheck";
+import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
+import type { RelatedIssue } from "#tools/github/issues/contract/types/RelatedIssue";
 import type { Directory } from "#types/Directory";
 
 async function findAncestors(access: GithubAccess, issue: GithubIssue) {

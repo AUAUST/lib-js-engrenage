@@ -3,12 +3,12 @@ import { execFileSync } from "node:child_process";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { checkGithubWrite } from "#tools/github/operations/checkGithubWrite";
-import { checkIssue } from "#tools/github/operations/checkIssue";
-import { checkIssueBody } from "#tools/github/utils/checkIssueBody";
-import { formatIssueCheck } from "#tools/github/utils/formatIssueCheck";
-import { parseGithubCommand } from "#tools/github/utils/parseGithubCommand";
-import { parseIssueBody } from "#tools/github/utils/parseIssueBody";
+import { checkGithubWrite } from "#tools/github/issues/contract/operations/checkGithubWrite";
+import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
+import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
+import { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssueCheck";
+import { parseGithubCommand } from "#tools/github/issues/contract/utils/parseGithubCommand";
+import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 
 const task = `#10 · [Gates](https://example.com/10#gates)
 

@@ -24,3 +24,4 @@
 - zsh `grep --include=*.ts`: unquoted glob — zsh "no matches found" aborts the command; dropped the flag
 - zsh `echo ====WALK`: printed a separator starting with `=` — zsh expands `=word` as a command path and aborts with "not found"; used a separator not starting with `=`
 - zsh `grep --include=*.ts` and `find -o` globs: unquoted patterns in Bash calls, twice — zsh "no matches found" aborts the command; quoted or dropped the flag
+- Claude PreToolUse Bash hook: ran a Bash command after moving `src` modules — the hook runs engrenage from source, so a broken barrel blocked every Bash call; fixed the barrel with Write first

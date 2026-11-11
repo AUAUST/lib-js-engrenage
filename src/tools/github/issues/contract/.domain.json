@@ -1,0 +1,3 @@
+{
+  "purpose": "Parse, fetch and check issues against the issue protocol, including direct `gh` writes."
+}

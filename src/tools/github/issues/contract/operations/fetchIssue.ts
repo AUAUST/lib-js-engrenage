@@ -9,10 +9,12 @@ import {
 } from "valibot";
 
 import { validate } from "#foundation/options/index";
-import { blockersField } from "#tools/github/constants";
-import { requestGithub } from "#tools/github/operations/requestGithub";
-import type { GithubAccess } from "#tools/github/types/GithubAccess";
-import type { GithubIssue } from "#tools/github/types/GithubIssue";
+import {
+  requestGithub,
+  type GithubAccess,
+} from "#tools/github/issues/api/index";
+import { blockersField } from "#tools/github/issues/contract/constants";
+import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
 
 const stateSchema = picklist(["open", "closed"]);
 

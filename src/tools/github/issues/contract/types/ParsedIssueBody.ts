@@ -1,4 +1,4 @@
-import type { IssueListItem } from "#tools/github/types/IssueListItem";
+import type { IssueListItem } from "#tools/github/issues/contract/types/IssueListItem";
 
 export interface ParsedIssueBody {
   readonly header?:

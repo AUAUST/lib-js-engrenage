@@ -2,10 +2,10 @@ import { parse, type ParseEntry as Token } from "shell-quote";
 
 import { isString } from "@auaust/toolkit/isString";
 
-import { readShellOperator as readOperator } from "#tools/github/utils/readShellOperator";
-import type { ShellCommand as Command } from "#tools/github/types/ShellCommand";
-import type { ShellPipeline as Pipeline } from "#tools/github/types/ShellPipeline";
-import type { ShellWord as Word } from "#tools/github/types/ShellWord";
+import { readShellOperator as readOperator } from "#tools/github/issues/contract/utils/readShellOperator";
+import type { ShellCommand as Command } from "#tools/github/issues/contract/types/ShellCommand";
+import type { ShellPipeline as Pipeline } from "#tools/github/issues/contract/types/ShellPipeline";
+import type { ShellWord as Word } from "#tools/github/issues/contract/types/ShellWord";
 
 const separators = new Set(["||", "&&", ";;", "&", ";", "(", ")"]);
 

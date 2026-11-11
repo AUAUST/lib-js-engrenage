@@ -1,6 +1,9 @@
 import { isArray } from "@auaust/toolkit/isArray";
 
-import { githubApiUrl, githubApiVersion } from "#tools/github/constants";
+import {
+  githubApiUrl,
+  githubApiVersion,
+} from "#tools/github/issues/api/constants";
 
 function findNextUrl(link: string | null) {
   return /<([^>]+)>;\s*rel="next"/.exec(link ?? "")?.[1];

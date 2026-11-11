@@ -5,7 +5,7 @@ import { afterEach, expect, test, vi } from "vitest";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getExecutable } from "#tests/utils/getExecutable";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
-import { checkIssue } from "#tools/github/operations/checkIssue";
+import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { createProgram, runProgram } from "#workflows/cli/index";
 
 import engrenage from "#bin/engrenage/index";
@@ -16,7 +16,7 @@ vi.mock("#tools/agents/operations/readHookPayload", () => {
   };
 });
 
-vi.mock("#tools/github/operations/checkIssue", () => {
+vi.mock("#tools/github/issues/contract/operations/checkIssue", () => {
   return {
     checkIssue: vi.fn(() => {
       return Promise.reject(new Error("GitHub request failed with 503"));
@@ -24,7 +24,7 @@ vi.mock("#tools/github/operations/checkIssue", () => {
   };
 });
 
-vi.mock("#tools/github/operations/resolveGithubToken", () => {
+vi.mock("#tools/github/issues/api/operations/resolveGithubToken", () => {
   return {
     resolveGithubToken: vi.fn(() => Promise.resolve("token")),
   };

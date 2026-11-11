@@ -1,10 +1,10 @@
 import {
   issueContracts,
   segmentForbiddenSections,
-} from "#tools/github/constants";
-import { parseIssueBody } from "#tools/github/utils/parseIssueBody";
-import type { IssueContract } from "#tools/github/types/IssueContract";
-import type { IssueFinding } from "#tools/github/types/IssueFinding";
+} from "#tools/github/issues/contract/constants";
+import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
+import type { IssueContract } from "#tools/github/issues/contract/types/IssueContract";
+import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
 
 const pendingPlanningPatterns = [
   /^settle\b/i,

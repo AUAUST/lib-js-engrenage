@@ -1,13 +1,13 @@
 import { isString } from "@auaust/toolkit/isString";
 
-import { parseShellPipelines } from "#tools/github/utils/parseShellPipelines";
-import { readShellOperator as readOperator } from "#tools/github/utils/readShellOperator";
-import type { GithubBodySource } from "#tools/github/types/GithubBodySource";
-import type { GithubWrite } from "#tools/github/types/GithubWrite";
-import type { ShellCommand as Command } from "#tools/github/types/ShellCommand";
-import type { ShellPipeline as Pipeline } from "#tools/github/types/ShellPipeline";
-import type { ShellToken as Token } from "#tools/github/types/ShellToken";
-import type { ShellWord as Word } from "#tools/github/types/ShellWord";
+import { parseShellPipelines } from "#tools/github/issues/contract/utils/parseShellPipelines";
+import { readShellOperator as readOperator } from "#tools/github/issues/contract/utils/readShellOperator";
+import type { GithubBodySource } from "#tools/github/issues/contract/types/GithubBodySource";
+import type { GithubWrite } from "#tools/github/issues/contract/types/GithubWrite";
+import type { ShellCommand as Command } from "#tools/github/issues/contract/types/ShellCommand";
+import type { ShellPipeline as Pipeline } from "#tools/github/issues/contract/types/ShellPipeline";
+import type { ShellToken as Token } from "#tools/github/issues/contract/types/ShellToken";
+import type { ShellWord as Word } from "#tools/github/issues/contract/types/ShellWord";
 
 const actions = [
   "create",

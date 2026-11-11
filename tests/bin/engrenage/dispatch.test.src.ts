@@ -5,8 +5,8 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
-import { checkIssue } from "#tools/github/operations/checkIssue";
-import { findBriefedIssue } from "#tools/github/utils/findBriefedIssue";
+import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
+import { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
 
 import * as definitions from "#tools/agents/operations/getSkillDefinitions";
 
@@ -19,7 +19,7 @@ vi.mock("#tools/agents/operations/readHookPayload", () => {
   };
 });
 
-vi.mock("#tools/github/operations/checkIssue", () => {
+vi.mock("#tools/github/issues/contract/operations/checkIssue", () => {
   return {
     checkIssue: vi.fn(() => {
       return Promise.resolve({
@@ -32,7 +32,7 @@ vi.mock("#tools/github/operations/checkIssue", () => {
   };
 });
 
-vi.mock("#tools/github/operations/resolveGithubToken", () => {
+vi.mock("#tools/github/issues/api/operations/resolveGithubToken", () => {
   return {
     resolveGithubToken: vi.fn(() => Promise.resolve("token")),
   };

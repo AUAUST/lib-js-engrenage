@@ -1,7 +1,7 @@
 import { isAbsolute, resolve } from "node:path";
 
 import { readTextFile } from "#foundation/filesystem/index";
-import type { GithubBodySource } from "#tools/github/types/GithubBodySource";
+import type { GithubBodySource } from "#tools/github/issues/contract/types/GithubBodySource";
 import type { Directory } from "#types/Directory";
 
 // @debt duplicates the frontmatter matching of `parseInstruction` in the agents domain instead of sharing one frontmatter parser.
