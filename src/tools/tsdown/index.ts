@@ -1,12 +1,12 @@
-// @barrel setup/*.ts named
+// @barrel setup
 export { createTsdownConfigStep } from "#tools/tsdown/setup/createTsdownConfigStep";
 // @end
 
-// @barrel config/define*Config.ts named
+// @barrel config/definers
 export { defineTsdownConfig } from "#tools/tsdown/config/defineTsdownConfig";
 // @end
 
-// @barrel operations/*.ts named
+// @barrel operations
 export { createTsdownConfig } from "#tools/tsdown/operations/createTsdownConfig";
 export { resolveCommandEntries } from "#tools/tsdown/operations/resolveCommandEntries";
 export { resolveCommandFiles } from "#tools/tsdown/operations/resolveCommandFiles";
@@ -16,7 +16,7 @@ export { resolveTsdownArguments } from "#tools/tsdown/operations/resolveTsdownAr
 
 export { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#tools/tsdown/types/Config";
 export type * from "#tools/tsdown/types/ConfigContext";
 export type * from "#tools/tsdown/types/ConfigFn";

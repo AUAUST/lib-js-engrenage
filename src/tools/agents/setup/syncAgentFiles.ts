@@ -120,7 +120,7 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
         const path = config.resolve(file);
         const referenced = new Set<string>();
 
-        syncBlocks(content, markdownBlocks, {
+        await syncBlocks(content, markdownBlocks, {
           reference(reference) {
             if (reference === undefined) {
               throw new Error(`Expected a reference in a marker of ${path}`);
@@ -149,7 +149,7 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   }
 
   function createUpdate(bodies: ReadonlyMap<string, string>) {
-    return function update(content: string, path: File): string {
+    return async function update(content: string, path: File): Promise<string> {
       return syncBlocks(content, markdownBlocks, {
         reference(reference) {
           if (reference === undefined) {

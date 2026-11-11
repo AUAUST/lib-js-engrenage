@@ -1,5 +1,5 @@
 // @debt the global types role holds domain vocabulary: block types belong to `foundation/blocks`, sync results to the sync contract, `IgnorePresets` and `GlobGroup` to the ignore-file owner
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#types/BlockFillers";
 export type * from "#types/BlockSyntax";
 export type * from "#types/Directories";

@@ -1,8 +1,9 @@
-// @barrel setup/*.ts named
+// @barrel setup
 export { createRuntimeDataStep } from "#tools/typescript/setup/createRuntimeDataStep";
 export { createSourceEntryStep } from "#tools/typescript/setup/createSourceEntryStep";
 export { createTypescriptStep } from "#tools/typescript/setup/createTypescriptStep";
 export { syncAliases } from "#tools/typescript/setup/syncAliases";
+export { syncBarrelBlocks } from "#tools/typescript/setup/syncBarrelBlocks";
 export { syncBarrelFiles } from "#tools/typescript/setup/syncBarrelFiles";
 export { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
 export { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
@@ -14,18 +15,16 @@ export { createLibraryCompiler } from "#tools/typescript/operations/createLibrar
 export { formatModule } from "#tools/typescript/operations/formatModule";
 export { resolveTscArguments } from "#tools/typescript/operations/resolveTscArguments";
 export { resolveTscDistArguments } from "#tools/typescript/operations/resolveTscDistArguments";
-export { syncBarrels } from "#tools/typescript/operations/syncBarrels";
 export { inferType } from "#tools/typescript/utils/inferType";
 export { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
 
-// @barrel ports/*.ts types
+// @barrel ports
 export type * from "#tools/typescript/ports/BarrelExportsEntry";
 export type * from "#tools/typescript/ports/BarrelExportsResolver";
 // @end
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#tools/typescript/types/BarrelExport";
-export type * from "#tools/typescript/types/BarrelMode";
 export type * from "#tools/typescript/types/BarrelModule";
 export type * from "#tools/typescript/types/BarrelPlan";
 export type * from "#tools/typescript/types/TsconfigEnvironment";

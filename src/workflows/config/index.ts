@@ -1,4 +1,4 @@
-// @barrel config/define*Config.ts named
+// @barrel config/definers
 export { defineConfig } from "#workflows/config/config/defineConfig";
 // @end
 export {
@@ -9,10 +9,10 @@ export {
 export type { LoadedConfig } from "#project/config/index";
 export type { Resolvable } from "#types/Resolvable";
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#workflows/config/types/ConfigInput";
 // @end
 
-// @barrel utils/*.ts named
+// @barrel utils
 export { define } from "#workflows/config/utils/define";
 // @end

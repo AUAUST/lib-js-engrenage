@@ -1,12 +1,12 @@
-// @barrel config/sections/*.ts named
+// @barrel config/sections
 export { cacheSection } from "#project/cache/config/sections/cacheSection";
 // @end
 
-// @barrel config/schemas/*.ts named
+// @barrel config/schemas
 export { cacheSchema } from "#project/cache/config/schemas/cacheSchema";
 // @end
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#project/cache/types/CacheInput";
 export type * from "#project/cache/types/ResolvedCache";
 // @end

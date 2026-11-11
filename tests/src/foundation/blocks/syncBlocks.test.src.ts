@@ -12,7 +12,7 @@ const fillers = {
 };
 
 describe("syncBlocks", () => {
-  test("fills each block up to the next marker, ignoring inline mentions", () => {
+  test("fills each block up to the next marker, ignoring inline mentions", async () => {
     const content = [
       "# Local title",
       "<!-- @reference ./first.md -->",
@@ -23,7 +23,7 @@ describe("syncBlocks", () => {
       "",
     ].join("\n");
 
-    expect(syncBlocks(content, markdownBlocks, fillers)).toBe(
+    expect(await syncBlocks(content, markdownBlocks, fillers)).toBe(
       [
         "# Local title",
         "<!-- @reference ./first.md -->",
@@ -41,11 +41,11 @@ describe("syncBlocks", () => {
     );
   });
 
-  test("uses the filler of each directive", () => {
+  test("uses the filler of each directive", async () => {
     const content = ["<!-- @list ./*.md -->", "<!-- @end -->", ""].join("\n");
 
     expect(
-      syncBlocks(content, markdownBlocks, {
+      await syncBlocks(content, markdownBlocks, {
         list(glob: string) {
           return `list ${glob}`;
         },
@@ -62,35 +62,39 @@ describe("syncBlocks", () => {
     );
   });
 
-  test("rejects a misspelled directive and an end marker that closes no block", () => {
-    expect(() => {
-      return syncBlocks(
+  test("rejects a misspelled directive and an end marker that closes no block", async () => {
+    await expect(async () => {
+      return await syncBlocks(
         "<!-- @refrence ./first.md -->\n<!-- @end -->\n",
         markdownBlocks,
         fillers,
       );
-    }).toThrow('Unknown directive in "<!-- @refrence ./first.md -->"');
+    }).rejects.toThrow('Unknown directive in "<!-- @refrence ./first.md -->"');
 
-    expect(() => {
-      return syncBlocks(
+    await expect(async () => {
+      return await syncBlocks(
         "<!-- @reference ./first.md -->\n<!-- @end -->\n<!-- @end -->\n",
         markdownBlocks,
         fillers,
       );
-    }).toThrow('"<!-- @end -->" closes no block');
+    }).rejects.toThrow('"<!-- @end -->" closes no block');
   });
 
-  test("passes every argument of the marker to its filler", () => {
+  test("passes every argument of the marker to its filler", async () => {
     expect(
-      syncBlocks("<!-- @list ./*.md all -->\n<!-- @end -->\n", markdownBlocks, {
-        list(glob: string, mode: string) {
-          return `${mode} ${glob}`;
+      await syncBlocks(
+        "<!-- @list ./*.md all -->\n<!-- @end -->\n",
+        markdownBlocks,
+        {
+          list(glob: string, mode: string) {
+            return `${mode} ${glob}`;
+          },
         },
-      }),
+      ),
     ).toBe("<!-- @list ./*.md all -->\n\nall ./*.md\n\n<!-- @end -->\n");
   });
 
-  test("keeps a block whose filler returns undefined", () => {
+  test("keeps a block whose filler returns undefined", async () => {
     const content = [
       "<!-- @reference ./kept.md -->",
       "local text",
@@ -100,7 +104,7 @@ describe("syncBlocks", () => {
     ].join("\n");
 
     expect(
-      syncBlocks(content, markdownBlocks, {
+      await syncBlocks(content, markdownBlocks, {
         reference(reference: string) {
           return reference === "./kept.md" ? undefined : `## ${reference}`;
         },
@@ -119,13 +123,13 @@ describe("syncBlocks", () => {
     );
   });
 
-  test("rejects a last block without an end marker", () => {
-    expect(() => {
-      return syncBlocks(
+  test("rejects a last block without an end marker", async () => {
+    await expect(async () => {
+      return await syncBlocks(
         "<!-- @reference ./first.md -->\nlocal text\n",
         markdownBlocks,
         fillers,
       );
-    }).toThrow('Missing "@end" marker');
+    }).rejects.toThrow('Missing "@end" marker');
   });
 });

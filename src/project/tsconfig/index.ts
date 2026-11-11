@@ -1,8 +1,8 @@
-// @barrel config/declarers/*.ts named
+// @barrel config/declarers
 export { declareEnvironmentTsconfig } from "#project/tsconfig/config/declarers/declareEnvironmentTsconfig";
 // @end
 
-// @barrel utils/*.ts named
+// @barrel utils
 export { isLeftAlone } from "#project/tsconfig/utils/isLeftAlone";
 export { isPackageAlias } from "#project/tsconfig/utils/isPackageAlias";
 export { readTsconfigPaths } from "#project/tsconfig/utils/readTsconfigPaths";
@@ -15,7 +15,7 @@ export { toTsconfigGlobs } from "#project/tsconfig/utils/toTsconfigGlobs";
 export { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
 // @end
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#project/tsconfig/types/EnvironmentTsconfig";
 export type * from "#project/tsconfig/types/ManagedEnvironmentTsconfig";
 export type * from "#project/tsconfig/types/PathAlias";
@@ -37,19 +37,19 @@ export type * from "#project/tsconfig/types/UnmanagedEnvironmentTsconfig";
 
 export { unmanagedTsconfig } from "#project/tsconfig/constants";
 
-// @barrel config/schemas/*.ts named
+// @barrel config/schemas
 export { inheritsSchema } from "#project/tsconfig/config/schemas/inheritsSchema";
 export { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
 // @end
 
-// @barrel config/sections/*.ts named
+// @barrel config/sections
 export { tsconfigPathSection } from "#project/tsconfig/config/sections/tsconfigPathSection";
 export { tsconfigSection } from "#project/tsconfig/config/sections/tsconfigSection";
 export { typescriptOptionsSection } from "#project/tsconfig/config/sections/typescriptOptionsSection";
 export { typescriptSection } from "#project/tsconfig/config/sections/typescriptSection";
 // @end
 
-// @barrel operations/*.ts named
+// @barrel operations
 export { createTsconfig } from "#project/tsconfig/operations/createTsconfig";
 export { locateTsconfigPath } from "#project/tsconfig/operations/locateTsconfigPath";
 export { resolvePathAliases } from "#project/tsconfig/operations/resolvePathAliases";

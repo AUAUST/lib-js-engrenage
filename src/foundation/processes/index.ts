@@ -1,16 +1,16 @@
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#foundation/processes/types/LockHolder";
 export type * from "#foundation/processes/types/ProcessResult";
 // @end
 
-// @barrel operations/*.ts named
+// @barrel operations
 export { resolveBinary } from "#foundation/processes/operations/resolveBinary";
 export { runProcess } from "#foundation/processes/operations/runProcess";
 export { spawnProcess } from "#foundation/processes/operations/spawnProcess";
 export { withProcessLock } from "#foundation/processes/operations/withProcessLock";
 // @end
 
-// @barrel utils/*.ts named
+// @barrel utils
 export { ensureAnyOf } from "#foundation/processes/utils/ensureAnyOf";
 export { ensureIncludes } from "#foundation/processes/utils/ensureIncludes";
 export { ensureIncludesAll } from "#foundation/processes/utils/ensureIncludesAll";

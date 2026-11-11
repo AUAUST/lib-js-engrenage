@@ -1,10 +1,10 @@
-// @barrel setup/*.ts named
+// @barrel setup
 export { createVitestConfigStep } from "#tools/vitest/setup/createVitestConfigStep";
 export { createVitestCoverageStep } from "#tools/vitest/setup/createVitestCoverageStep";
 export { createVitestStep } from "#tools/vitest/setup/createVitestStep";
 // @end
 
-// @barrel config/define*Config.ts named
+// @barrel config/definers
 export { defineVitestConfig } from "#tools/vitest/config/defineVitestConfig";
 // @end
 
@@ -17,7 +17,7 @@ export { resolveVitestWatchArguments } from "#tools/vitest/operations/resolveVit
 export { createOutDirGuard } from "#tools/vitest/plugins/createOutDirGuard";
 export { createSourceGuard } from "#tools/vitest/plugins/createSourceGuard";
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#tools/vitest/types/Config";
 export type * from "#tools/vitest/types/ConfigFn";
 export type * from "#tools/vitest/types/Options";

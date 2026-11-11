@@ -1,10 +1,10 @@
-// @barrel setup/*.ts named
+// @barrel setup
 export { createCodexHooksStep } from "#tools/agents/codex/setup/createCodexHooksStep";
 export { createCodexStep } from "#tools/agents/codex/setup/createCodexStep";
 export { syncCodexFiles } from "#tools/agents/codex/setup/syncCodexFiles";
 // @end
 
-// @barrel operations/*.ts named
+// @barrel operations
 export { createCodexAgentProfiles } from "#tools/agents/codex/operations/createCodexAgentProfiles";
 export { createCodexDispatch } from "#tools/agents/codex/operations/createCodexDispatch";
 export { createCodexRuleMapping } from "#tools/agents/codex/operations/createCodexRuleMapping";

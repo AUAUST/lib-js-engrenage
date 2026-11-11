@@ -224,6 +224,5 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 - The commit gate (`pnpm engrenage gate`) formats, lints and checks the changed files; never run format by hand before a commit.
 - `pnpm test` runs tests in source mode and type checking.
 - `pnpm build` for entries, exports, imports or bundling changes. It builds, validates packaging with publint and attw, and reruns the tests against `dist/`.
-- `pnpm engrenage sync` after changing agent fragments or anything else engrenage syncs; CI checks it with `--check`.
-- `pnpm support codegen barrels [barrels…]` after adding, renaming or removing a module matched by a barrel's `// @barrel <glob> <default|named|all|types>` block (glob relative to the barrel, or to the root with a leading `/`); barrels are named by directory. CI checks it with `--check`.
+- `pnpm engrenage sync` after adding, renaming or removing a module, changing agent fragments, or anything else engrenage syncs; CI checks it with `--check`.
 - Add a changeset for any change that should be released.

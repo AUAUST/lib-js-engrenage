@@ -1,4 +1,4 @@
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#foundation/extensions/types/BucketSlotDeclaration";
 export type * from "#foundation/extensions/types/Contribution";
 export type * from "#foundation/extensions/types/DeclarationOf";

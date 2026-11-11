@@ -1,14 +1,14 @@
-// @barrel utils/*.ts named
+// @barrel utils
 export { createConfigModule } from "#project/steps/utils/createConfigModule";
 export { hasConfigFile } from "#project/steps/utils/hasConfigFile";
 // @end
 
-// @barrel ports/*.ts types
+// @barrel ports
 export type * from "#project/steps/ports/Prompter";
 export type * from "#project/steps/ports/Step";
 export type * from "#project/steps/ports/StepContext";
 // @end
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#project/steps/types/Invocation";
 // @end

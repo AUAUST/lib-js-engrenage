@@ -80,7 +80,7 @@ export async function syncEnvFile(config: LoadedConfig) {
 
   await filesystem.write(
     file,
-    syncBlocks(content, typescriptBlocks, {
+    await syncBlocks(content, typescriptBlocks, {
       [directive](...args) {
         if (isNotEmpty(args)) {
           throw new Error(`"${marker}" takes no arguments in ${file}`);

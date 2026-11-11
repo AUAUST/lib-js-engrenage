@@ -61,6 +61,6 @@ export type {
   BarrelExportsResolver,
 } from "#tools/typescript/index";
 
-// @barrel utils/*.ts named
+// @barrel utils
 export { defineExtension } from "#workflows/extensions/utils/defineExtension";
 // @end

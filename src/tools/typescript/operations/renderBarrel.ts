@@ -11,9 +11,10 @@ import {
 } from "valibot";
 
 import { toSorted } from "@auaust/primitive-kit/arrays";
+import { toCamelCase } from "@auaust/primitive-kit/strings";
 
 import { validate } from "#foundation/options/index";
-import { barrelHeader, identifierPattern } from "#tools/typescript/constants";
+import { identifierPattern } from "#tools/typescript/constants";
 import { compareNaturally } from "#tools/typescript/utils/compareNaturally";
 import { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
 import type { LoadedConfig } from "#project/config/index";
@@ -43,12 +44,40 @@ interface NameClaim {
   readonly file: File;
 }
 
-function exportModule({ file, contract }: BarrelModule): BarrelExport[] {
+function getModuleName(file: File): string {
+  return basename(file, extname(file));
+}
+
+function isDefaultExport({ contract }: BarrelModule): boolean {
+  return !contract.typeOnly && contract.exports.values === "default";
+}
+
+function listCollidingDefaults(modules: readonly BarrelModule[]): Set<string> {
+  const seen = new Set<string>();
+  const colliding = new Set<string>();
+
+  for (const module of modules.filter(isDefaultExport)) {
+    const name = getModuleName(module.file);
+
+    if (seen.has(name)) {
+      colliding.add(name);
+    }
+
+    seen.add(name);
+  }
+
+  return colliding;
+}
+
+function exportModule(
+  { file, contract, domain }: BarrelModule,
+  colliding: ReadonlySet<string>,
+): BarrelExport[] {
   if (contract.typeOnly) {
     return [{ file, typeOnly: true }];
   }
 
-  const name = basename(file, extname(file));
+  const name = getModuleName(file);
   const { values, types } = contract.exports;
   const listed: BarrelExport[] = [];
 
@@ -57,7 +86,9 @@ function exportModule({ file, contract }: BarrelModule): BarrelExport[] {
       listed.push({
         file,
         binding: defaultBinding,
-        name,
+        name: colliding.has(name)
+          ? toCamelCase(domain.replaceAll("/", " "))
+          : name,
       });
 
       break;
@@ -201,9 +232,14 @@ export async function renderBarrel({
     readonly resolve: BarrelExportsResolver;
   }[];
   spreads: ReadonlyMap<File, readonly BarrelExport[]>;
-}): Promise<{ content: string; exports: readonly BarrelExport[] }> {
+}): Promise<{
+  lines: readonly string[];
+  exports: readonly BarrelExport[];
+}> {
+  const colliding = listCollidingDefaults(plan.modules);
+
   let exports: readonly BarrelExport[] = [
-    ...plan.modules.flatMap(exportModule),
+    ...plan.modules.flatMap((module) => exportModule(module, colliding)),
     ...plan.reexports,
   ];
 
@@ -239,14 +275,10 @@ export async function renderBarrel({
     );
   });
 
-  const lines = sorted.length === 0
-    ? ["export {};"]
-    : sorted.map(({ exported, specifier }) => {
-        return renderExport(exported, specifier);
-      });
-
   return {
-    content: `${barrelHeader}\n\n${lines.join("\n")}\n`,
+    lines: sorted.map(({ exported, specifier }) => {
+      return renderExport(exported, specifier);
+    }),
     exports,
   };
 }

@@ -1,3 +1,3 @@
-// @barrel operations/*.ts named
+// @barrel operations
 export { extension } from "#tools/eslint/roles/operations/extension";
 // @end

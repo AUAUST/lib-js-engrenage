@@ -1,4 +1,4 @@
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#project/config/types/ConfigContext";
 export type * from "#project/config/types/ConfigKey";
 export type * from "#project/config/types/ConfigResolver";
@@ -24,7 +24,7 @@ export type * from "#project/config/types/ResolvedRuntimeSettings";
 export type * from "#project/config/types/SectionsOf";
 // @end
 
-// @barrel operations/*.ts named
+// @barrel operations
 export { createProjectConfig } from "#project/config/operations/createProjectConfig";
 export { loadConfig } from "#project/config/operations/loadConfig";
 export { loadValidatedConfig } from "#project/config/operations/loadValidatedConfig";
@@ -33,7 +33,7 @@ export { selectEntry } from "#project/config/operations/selectEntry";
 export { validateConfig } from "#project/config/operations/validateConfig";
 // @end
 
-// @barrel utils/*.ts named
+// @barrel utils
 export { assertSerializable } from "#project/config/utils/assertSerializable";
 export { checkFileParts } from "#project/config/utils/checkFileParts";
 export { createResourceIgnores } from "#project/config/utils/createResourceIgnores";
@@ -46,12 +46,12 @@ export { resolveGlobal } from "#project/config/utils/resolveGlobal";
 export { serialize } from "#project/config/utils/serialize";
 // @end
 
-// @barrel config/sections/*.ts named
+// @barrel config/sections
 export { extensionsSection } from "#project/config/config/sections/extensionsSection";
 export { resourcesSection } from "#project/config/config/sections/resourcesSection";
 // @end
 
-// @barrel config/schemas/*.ts named
+// @barrel config/schemas
 export { extensionOptionSchema } from "#project/config/config/schemas/extensionOptionSchema";
 export { extensionSchema } from "#project/config/config/schemas/extensionSchema";
 export { extensionsSchema } from "#project/config/config/schemas/extensionsSchema";

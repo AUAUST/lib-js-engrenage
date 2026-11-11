@@ -1,6 +1,5 @@
 // @debt `eslint`, `vite`, `vitest` and `tsdown` own no key, so their options come only from definer arguments
-// @debt the glob reaches extensions one sub-domain deep and could match a role file named `extension.ts`; the structure's `extension` role is the authoritative list
-// @barrel /src/*/*/{,*/}extension.ts default
+// @barrel extension
 export { default as projectBuild } from "#project/build/extension";
 export { default as projectCache } from "#project/cache/extension";
 export { default as projectConfig } from "#project/config/extension";

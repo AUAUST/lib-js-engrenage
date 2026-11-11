@@ -1,12 +1,12 @@
-// @barrel operations/*.ts named
+// @barrel operations
 export { resolveSourceRuntime } from "#project/baseline/operations/resolveSourceRuntime";
 // @end
 
-// @barrel config/schemas/*.ts named
+// @barrel config/schemas
 export { nodeMajorSchema } from "#project/baseline/config/schemas/nodeMajorSchema";
 // @end
 
-// @barrel utils/*.ts named
+// @barrel utils
 export { addMonths } from "#project/baseline/utils/addMonths";
 export { assertBaselineSnapshot } from "#project/baseline/utils/assertBaselineSnapshot";
 export { findCurrentMonth } from "#project/baseline/utils/findCurrentMonth";
@@ -18,7 +18,7 @@ export { resolveNodeRuntime } from "#project/baseline/utils/resolveNodeRuntime";
 export { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
 // @end
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#project/baseline/types/ApiGroup";
 export type * from "#project/baseline/types/Runtime";
 // @end

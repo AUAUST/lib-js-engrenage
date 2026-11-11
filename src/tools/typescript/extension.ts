@@ -1,4 +1,5 @@
 import {
+  barrelBlocksTarget,
   barrelExportsEntry,
   barrelsTarget,
   typescript,
@@ -84,6 +85,17 @@ export default {
           } = await import("#tools/typescript/setup/syncBarrelFiles");
 
           return syncBarrelFiles;
+        },
+      },
+      {
+        name: barrelBlocksTarget,
+        stage: "write",
+        async load() {
+          const {
+            syncBarrelBlocks,
+          } = await import("#tools/typescript/setup/syncBarrelBlocks");
+
+          return syncBarrelBlocks;
         },
       },
       {

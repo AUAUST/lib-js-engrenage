@@ -1,13 +1,13 @@
-// @barrel setup/*.ts named
+// @barrel setup
 export { createWorkflowsStep } from "#tools/github/setup/createWorkflowsStep";
 export { syncWorkflowFiles } from "#tools/github/setup/syncWorkflowFiles";
 // @end
 
-// @barrel config/sections/*.ts named
+// @barrel config/sections
 export { githubSection } from "#tools/github/config/sections/githubSection";
 // @end
 
-// @barrel operations/*.ts named
+// @barrel operations
 export { checkGithubWrite } from "#tools/github/operations/checkGithubWrite";
 export { checkIssue } from "#tools/github/operations/checkIssue";
 export { fetchIssue } from "#tools/github/operations/fetchIssue";
@@ -20,7 +20,7 @@ export { resolveGithubToken } from "#tools/github/operations/resolveGithubToken"
 export { resolveRepository } from "#tools/github/operations/resolveRepository";
 // @end
 
-// @barrel utils/*.ts named
+// @barrel utils
 export { checkIssueBody } from "#tools/github/utils/checkIssueBody";
 export { checkIssueReadiness } from "#tools/github/utils/checkIssueReadiness";
 export { findBriefedIssue } from "#tools/github/utils/findBriefedIssue";
@@ -33,11 +33,11 @@ export { readShellOperator } from "#tools/github/utils/readShellOperator";
 export { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 // @end
 
-// @barrel config/schemas/*.ts named
+// @barrel config/schemas
 export { githubSchema } from "#tools/github/config/schemas/githubSchema";
 // @end
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#tools/github/types/GithubAccess";
 export type * from "#tools/github/types/GithubBodySource";
 export type * from "#tools/github/types/GithubInput";

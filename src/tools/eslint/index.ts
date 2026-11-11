@@ -1,12 +1,12 @@
-// @barrel setup/*.ts named
+// @barrel setup
 export { createEslintConfigStep } from "#tools/eslint/setup/createEslintConfigStep";
 // @end
 
-// @barrel config/define*Config.ts named
+// @barrel config/definers
 export { defineEslintConfig } from "#tools/eslint/config/defineEslintConfig";
 // @end
 
-// @barrel operations/*.ts named
+// @barrel operations
 export { createConventionRules } from "#tools/eslint/operations/createConventionRules";
 export { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
 export { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";
@@ -22,7 +22,7 @@ export { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSource
 export { selectConventions } from "#tools/eslint/operations/selectConventions";
 // @end
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#tools/eslint/types/Config";
 export type * from "#tools/eslint/types/ConfigObject";
 export type * from "#tools/eslint/types/ConfigWithExtends";
@@ -41,11 +41,6 @@ export type * from "#tools/eslint/types/Rule";
 export type * from "#tools/eslint/types/RuleModule";
 export type * from "#tools/eslint/types/RuleOptions";
 export type * from "#tools/eslint/types/Rules";
-export type * from "#tools/eslint/types/ScopeReference";
-export type * from "#tools/eslint/types/ScopeReferences";
-export type * from "#tools/eslint/types/ScopeSources";
-export type * from "#tools/eslint/types/SelectedConvention";
-// @barrel types/rules/*.ts types
 export type * from "#tools/eslint/types/rules/AuaustRules";
 export type * from "#tools/eslint/types/rules/CoreRules";
 export type * from "#tools/eslint/types/rules/ImportXRules";
@@ -55,6 +50,10 @@ export type * from "#tools/eslint/types/rules/SonarjsRules";
 export type * from "#tools/eslint/types/rules/TypescriptEslintRules";
 export type * from "#tools/eslint/types/rules/UnicornRules";
 export type * from "#tools/eslint/types/rules/UnusedImportsRules";
+export type * from "#tools/eslint/types/ScopeReference";
+export type * from "#tools/eslint/types/ScopeReferences";
+export type * from "#tools/eslint/types/ScopeSources";
+export type * from "#tools/eslint/types/SelectedConvention";
 // @end
 
 export { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";

@@ -17,7 +17,7 @@ export { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
 export { renderEnvironmentMap } from "#tools/agents/utils/renderEnvironmentMap";
 export { renderProjectMapRoles } from "#tools/agents/utils/renderProjectMapRoles";
 
-// @barrel setup/*.ts named
+// @barrel setup
 export { createAgentRulesStep } from "#tools/agents/setup/createAgentRulesStep";
 export { createAgentsStep } from "#tools/agents/setup/createAgentsStep";
 export { createBacklogStep } from "#tools/agents/setup/createBacklogStep";
@@ -27,11 +27,11 @@ export { syncAgents } from "#tools/agents/setup/syncAgents";
 export { syncProjectMap } from "#tools/agents/setup/syncProjectMap";
 // @end
 
-// @barrel config/sections/*.ts named
+// @barrel config/sections
 export { agentsSection } from "#tools/agents/config/sections/agentsSection";
 // @end
 
-// @barrel operations/*.ts named
+// @barrel operations
 export { addAgentRules } from "#tools/agents/operations/addAgentRules";
 export { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 export { checkAgentDispatch } from "#tools/agents/operations/checkAgentDispatch";
@@ -56,18 +56,18 @@ export { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 export { syncHooks } from "#tools/agents/operations/syncHooks";
 // @end
 
-// @barrel ports/*.ts types
+// @barrel ports
 export type * from "#tools/agents/ports/AgentRuntime";
 // @end
 
-// @barrel config/schemas/*.ts named
+// @barrel config/schemas
 export { agentsSchema } from "#tools/agents/config/schemas/agentsSchema";
 export { budgetSchema } from "#tools/agents/config/schemas/budgetSchema";
 export { preferredSchema } from "#tools/agents/config/schemas/preferredSchema";
 export { skillSchema } from "#tools/agents/config/schemas/skillSchema";
 // @end
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#tools/agents/types/Agent";
 export type * from "#tools/agents/types/AgentCheckFinding";
 export type * from "#tools/agents/types/AgentSections";

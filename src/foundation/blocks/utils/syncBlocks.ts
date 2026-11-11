@@ -3,11 +3,11 @@ import { keys } from "@auaust/toolkit/object";
 import type { BlockFillers } from "#types/BlockFillers";
 import type { BlockSyntax } from "#types/BlockSyntax";
 
-export function syncBlocks(
+export async function syncBlocks(
   content: string,
   { open, close, padding }: BlockSyntax,
   fillers: BlockFillers,
-): string {
+): Promise<string> {
   const marker = new RegExp(
     String.raw`^${RegExp.escape(open)}@(\w+)((?: \S+)*)${RegExp.escape(close)}$`,
     "gm",
@@ -51,7 +51,9 @@ export function syncBlocks(
       throw new Error(`Missing "@end" marker after "${line}"`);
     }
 
-    const filled = fill(...argumentList.split(" ").slice(1))?.trim();
+    const returned = await fill(...argumentList.split(" ").slice(1));
+
+    const filled = returned?.trim();
 
     isBlockOpen = true;
 

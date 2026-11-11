@@ -1,3 +1,3 @@
-// @barrel operations/*.ts named
+// @barrel operations
 export { checkTypes } from "#tools/typescript/tsc/operations/checkTypes";
 // @end

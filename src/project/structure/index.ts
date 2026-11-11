@@ -9,7 +9,7 @@ export { listStructureFilesAtAnyDepth } from "#project/structure/operations/list
 export { resolveAliases } from "#project/structure/operations/resolveAliases";
 export { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#project/structure/types/Alias";
 export type * from "#project/structure/types/AliasesOption";
 export type * from "#project/structure/types/BoundaryCause";
@@ -62,7 +62,7 @@ export type * from "#project/structure/types/TestVariant";
 export type * from "#project/structure/types/UnclassifiedReason";
 // @end
 
-// @barrel config/schemas/*.ts named
+// @barrel config/schemas
 export { effectLevelsSchema } from "#project/structure/config/schemas/effectLevelsSchema";
 export { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModuleResolverSchema";
 export { effectModuleSchema } from "#project/structure/config/schemas/effectModuleSchema";
@@ -71,7 +71,7 @@ export { effectsSchema } from "#project/structure/config/schemas/effectsSchema";
 export { structureSchema } from "#project/structure/config/schemas/structureSchema";
 // @end
 
-// @barrel utils/*.ts named
+// @barrel utils
 export { checkBoundary } from "#project/structure/utils/checkBoundary";
 export { checkData } from "#project/structure/utils/checkData";
 export { checkEnvironments } from "#project/structure/utils/checkEnvironments";
@@ -119,7 +119,7 @@ export { resolveEnvironmentGrants } from "#project/structure/utils/resolveEnviro
 export { resolveRoles } from "#project/structure/utils/resolveRoles";
 // @end
 
-// @barrel config/sections/*.ts named
+// @barrel config/sections
 export { aliasesSection } from "#project/structure/config/sections/aliasesSection";
 export { effectModulesSection } from "#project/structure/config/sections/effectModulesSection";
 export { entitiesSection } from "#project/structure/config/sections/entitiesSection";

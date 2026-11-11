@@ -16,7 +16,7 @@ export async function syncFiles(
       const current = await filesystem.read(file);
 
       if (current !== undefined) {
-        await filesystem.write(file, update(current, resolve(file)));
+        await filesystem.write(file, await update(current, resolve(file)));
       }
     }),
   );

@@ -1,4 +1,4 @@
-// @barrel utils/*.ts named
+// @barrel utils
 export { filesIn } from "#foundation/filesystem/utils/filesIn";
 export { isMissingError } from "#foundation/filesystem/utils/isMissingError";
 export { isWithin } from "#foundation/filesystem/utils/isWithin";
@@ -9,12 +9,12 @@ export { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
 export { withExtensions } from "#foundation/filesystem/utils/withExtensions";
 // @end
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#foundation/filesystem/types/FileFormatter";
 export type * from "#foundation/filesystem/types/Filesystem";
 // @end
 
-// @barrel operations/*.ts named
+// @barrel operations
 export { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
 export { findDirectories } from "#foundation/filesystem/operations/findDirectories";
 export { importConfigFile } from "#foundation/filesystem/operations/importConfigFile";

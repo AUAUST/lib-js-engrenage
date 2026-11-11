@@ -1,7 +1,6 @@
 import { defineCommand, defineGroup } from "#workflows/cli/index";
 
 import apis from "#scripts/codegen/apis";
-import barrels from "#scripts/codegen/barrels";
 import config from "#scripts/codegen/config";
 import editions from "#scripts/codegen/editions";
 import rules from "#scripts/codegen/rules";
@@ -21,7 +20,6 @@ export default defineGroup({
     config,
     rules,
     schemas,
-    barrels,
   },
   command: defineCommand({
     configure(command) {

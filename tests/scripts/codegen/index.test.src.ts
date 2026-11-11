@@ -36,10 +36,8 @@ vi.mock("#scripts/codegen/config", () => createGenerator("config"));
 
 vi.mock("#scripts/codegen/rules", () => createGenerator("rules"));
 
-vi.mock("#scripts/codegen/barrels", () => createGenerator("barrels"));
-
 describe("support codegen", () => {
-  test("runs every generator, rules before barrels, forwarding the check", async () => {
+  test("runs every generator in order, forwarding the check", async () => {
     runs.length = 0;
 
     await runDefinition(codegen, "--check");
@@ -49,15 +47,14 @@ describe("support codegen", () => {
       { name: "apis", check: true },
       { name: "config", check: true },
       { name: "rules", check: true },
-      { name: "barrels", check: true },
     ]);
   });
 
   test("leaves the check of a named generator to that generator", async () => {
     runs.length = 0;
 
-    await runDefinition(codegen, "barrels", "--check");
+    await runDefinition(codegen, "rules", "--check");
 
-    expect(runs).toEqual([{ name: "barrels", check: true }]);
+    expect(runs).toEqual([{ name: "rules", check: true }]);
   });
 });

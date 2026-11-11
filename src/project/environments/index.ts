@@ -1,4 +1,4 @@
-// @barrel config/declarers/*.ts named
+// @barrel config/declarers
 export { declareCodeEnvironment } from "#project/environments/config/declarers/declareCodeEnvironment";
 export { declareDefines } from "#project/environments/config/declarers/declareDefines";
 export { declareProgramLayout } from "#project/environments/config/declarers/declareProgramLayout";
@@ -6,18 +6,18 @@ export { declareStructureNodes } from "#project/environments/config/declarers/de
 export { declareStructureOptions } from "#project/environments/config/declarers/declareStructureOptions";
 // @end
 
-// @barrel utils/*.ts named
+// @barrel utils
 export { getOptionsKey } from "#project/environments/utils/getOptionsKey";
 export { readInputDirs } from "#project/environments/utils/readInputDirs";
 // @end
 
-// @barrel ports/*.ts types
+// @barrel ports
 export type * from "#project/environments/ports/EnvironmentEntry";
 export type * from "#project/environments/ports/LanguageEntry";
 export type * from "#project/environments/ports/ResolvedEnvironment";
 // @end
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#project/environments/types/AliasesInput";
 export type * from "#project/environments/types/BinInput";
 export type * from "#project/environments/types/ContributedEnvironment";
@@ -46,7 +46,7 @@ export type * from "#project/environments/types/TestsInput";
 export type * from "#project/environments/types/ToolingInput";
 // @end
 
-// @barrel config/schemas/*.ts named
+// @barrel config/schemas
 export { aliasesSchema } from "#project/environments/config/schemas/aliasesSchema";
 export { binSchema } from "#project/environments/config/schemas/binSchema";
 export { dataSchema } from "#project/environments/config/schemas/dataSchema";
@@ -64,7 +64,7 @@ export { testsSchema } from "#project/environments/config/schemas/testsSchema";
 export { toolingSchema } from "#project/environments/config/schemas/toolingSchema";
 // @end
 
-// @barrel operations/*.ts named
+// @barrel operations
 export { createDefine } from "#project/environments/operations/createDefine";
 export { readEnvironment } from "#project/environments/operations/readEnvironment";
 export { readEnvironments } from "#project/environments/operations/readEnvironments";
@@ -74,7 +74,7 @@ export { resolveEnvironmentDirs } from "#project/environments/operations/resolve
 export { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
 // @end
 
-// @barrel config/sections/*.ts named
+// @barrel config/sections
 export { binOptionsSection } from "#project/environments/config/sections/binOptionsSection";
 export { binSection } from "#project/environments/config/sections/binSection";
 export { dataSection } from "#project/environments/config/sections/dataSection";

@@ -1,18 +1,18 @@
-// @barrel utils/*.ts named
+// @barrel utils
 export { findHookBypass } from "#tools/git/utils/findHookBypass";
 export { hasSeparatedIssueReferences } from "#tools/git/utils/hasSeparatedIssueReferences";
 // @end
 
-// @barrel setup/*.ts named
+// @barrel setup
 export { createGitignoreStep } from "#tools/git/setup/createGitignoreStep";
 export { syncGitignoreFile } from "#tools/git/setup/syncGitignoreFile";
 // @end
 
-// @barrel config/sections/*.ts named
+// @barrel config/sections
 export { gitSection } from "#tools/git/config/sections/gitSection";
 // @end
 
-// @barrel operations/*.ts named
+// @barrel operations
 export { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
 export { hashTree } from "#tools/git/operations/hashTree";
 export { listChangedFiles } from "#tools/git/operations/listChangedFiles";
@@ -25,11 +25,11 @@ export { readIgnorePatterns } from "#tools/git/operations/readIgnorePatterns";
 export { runGit } from "#tools/git/operations/runGit";
 // @end
 
-// @barrel config/schemas/*.ts named
+// @barrel config/schemas
 export { gitSchema } from "#tools/git/config/schemas/gitSchema";
 // @end
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#tools/git/types/ChangeMode";
 export type * from "#tools/git/types/GitInput";
 export type * from "#tools/git/types/IssueCommit";

@@ -49,7 +49,7 @@ export async function syncCodexInstructions({
 
   await filesystem.write(
     codexFile,
-    syncBlocks(
+    await syncBlocks(
       content.includes("<!-- @dispatch -->")
         ? content
         : `${content.trimEnd()}\n\n## Dispatch\n\n<!-- @dispatch -->\n<!-- @end -->\n`,

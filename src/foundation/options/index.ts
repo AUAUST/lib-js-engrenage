@@ -1,4 +1,4 @@
-// @barrel config/declarers/*.ts named
+// @barrel config/declarers
 export { declare } from "#foundation/options/config/declarers/declare";
 export { declareList } from "#foundation/options/config/declarers/declareList";
 export { declareLocation } from "#foundation/options/config/declarers/declareLocation";
@@ -8,7 +8,7 @@ export { declareRecord } from "#foundation/options/config/declarers/declareRecor
 export { declareSection } from "#foundation/options/config/declarers/declareSection";
 // @end
 
-// @barrel config/schemas/*.ts named
+// @barrel config/schemas
 export { directorySchema } from "#foundation/options/config/schemas/directorySchema";
 export { fileSchema } from "#foundation/options/config/schemas/fileSchema";
 export { globSchema } from "#foundation/options/config/schemas/globSchema";
@@ -17,7 +17,7 @@ export { listOptionSchema } from "#foundation/options/config/schemas/listOptionS
 export { managedListOptionSchema } from "#foundation/options/config/schemas/managedListOptionSchema";
 // @end
 
-// @barrel utils/*.ts named
+// @barrel utils
 export { applyInputDefaults } from "#foundation/options/utils/applyInputDefaults";
 export { createAccessors } from "#foundation/options/utils/createAccessors";
 export { createOptionSchema } from "#foundation/options/utils/createOptionSchema";
@@ -30,7 +30,7 @@ export { unset } from "#foundation/options/utils/unset";
 export { validate } from "#foundation/options/utils/validate";
 // @end
 
-// @barrel types/*.ts types
+// @barrel types
 export type * from "#foundation/options/types/Accessors";
 export type * from "#foundation/options/types/Declaration";
 export type * from "#foundation/options/types/DeclarationEntries";

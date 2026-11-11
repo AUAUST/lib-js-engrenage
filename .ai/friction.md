@@ -3,7 +3,6 @@
 - `gh api issue-field-values`: clear the `Drafting` blocker by posting an empty multi-select array — 422 "must contain at least one option"; `DELETE repos/{owner}/{repo}/issues/<n>/issue-field-values/<field id>` works, undocumented in the drafts flush mechanics
 - `gh issue view --repo`: read issues from `AUAUST/engrenage` — repository is `AUAUST/lib-js-engrenage`; had to read the git remote
 - PreToolUse Bash hook: run any command after changing the config schema before `engrenage.config.ts` — the hook loads the project config and blocked every Bash call; migrated the config with Edit first
-- `pnpm support codegen barrels`: regenerate a barrel after deleting a module it exports — the generator imports that barrel and fails on the missing module; fixed the stale line by hand, then reran
 - `engrenage issues check`: validate local drafts before a flush — takes issue numbers only; checks deferred to after the flush
 - PreToolUse Bash hook (`gh issue create`): pipe a draft through a shell variable path — hook needs the literal `.draft.md` path in the pipeline, resolved from the shell cwd; wrote one literal absolute path per command
 - drafts flush: strip frontmatter with awk — left a leading blank line, so `engrenage issues check` saw no header; trimmed leading blank lines and republished
@@ -19,7 +18,6 @@
 - `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the default reporter hid it; reran with `--silent=false --reporter=verbose`
 - `npm view` in the repository: queried the registry for the package — `devEngines.packageManager` (pnpm) makes npm abort with EBADDEVENGINES; reran from the scratchpad
 - zsh `/usr/bin/time -p node …`: timed CLI runs — reported ~0.12s regardless of command; got real timings by spawning from `node -e` with `performance.now()`
-- `support codegen barrels`: regenerated a barrel after deleting a module it exports — fails loading the deleted module; removed the export line by hand first
 - PreToolUse Bash hook (`git commit --no-verify`): committed a baseline in a scratch copy of another repository — the hook denies it everywhere; used the git index as the baseline and diffed against it
 - `timeout`: bounded `engrenage init -y` — not installed on macOS; ran without it and relied on the tool timeout
 - `grep --include=*.ts`: unquoted glob in zsh — zsh aborts with "no matches found"; quoted the pattern
@@ -38,3 +36,4 @@
 - `timeout`: bounded `pnpm view` — not installed on macOS; ran without it
 - `npx tsc`: type-check one tsconfig — npm refuses the repo's pnpm `devEngines` (EBADDEVENGINES); ran `node node_modules/typescript/bin/tsc`
 - zsh `grep --include=*.ts`: unquoted glob — zsh "no matches found" aborts the command; dropped the flag
+- PreToolUse Bash hook (`gh issue edit`): ran several `gh issue edit --body-file - < file` in one loop — blocked as a whole; one edit per command passes
