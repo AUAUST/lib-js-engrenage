@@ -1,7 +1,11 @@
+import { existsSync } from "node:fs";
+
 import { describe, expect, test } from "vitest";
 
+import { stateDirectory } from "#project/config/constants";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { syncGitignoreFile } from "#tools/git/setup/syncGitignoreFile";
 
 function createConfig(extensions: readonly unknown[]) {
   return createProjectConfig({
@@ -195,6 +199,86 @@ describe("file resources", () => {
       ]);
     }).toThrow(
       'writer-fixture owns part "missing#field" of "missing", which no extension owns',
+    );
+  });
+});
+
+describe("state resources", () => {
+  function createStateProject() {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({ name: "state" }),
+      ".gitignore": "# @ignore project\n# @end\n",
+    });
+
+    const config = createProjectConfig({
+      root: project.root,
+      raw: {
+        extensions: [
+          {
+            name: "state-fixture",
+            owns: {
+              files: {
+                "state.snapshot": {
+                  locate: () => {
+                    return { file: `${stateDirectory}/snapshot.json` };
+                  },
+                },
+                "state.manifest": {
+                  committed: false,
+                  locate: () => {
+                    return { file: `${stateDirectory}/manifest.json` };
+                  },
+                },
+              },
+            },
+          },
+        ],
+      },
+      configFile: undefined,
+    });
+
+    return { project, config };
+  }
+
+  test("a staged write of an artefact creates the state directory", async () => {
+    const { project, config } = createStateProject();
+
+    const resources = await config.resolve("resources");
+
+    expect(existsSync(project.resolve(stateDirectory))).toBe(false);
+
+    await config.context.filesystem.write(
+      resources.path("state.snapshot"),
+      "{}\n",
+    );
+
+    await config.context.filesystem.flush();
+
+    expect(project.read(`${stateDirectory}/snapshot.json`)).toBe("{}\n");
+  });
+
+  test("ignores the local-only artefacts only", async () => {
+    const { config } = createStateProject();
+
+    await syncGitignoreFile(config);
+
+    const staged = await config.context.filesystem.read(".gitignore");
+
+    config.context.filesystem.discard();
+
+    expect(staged).toBe(
+      [
+        "# @ignore project",
+        "",
+        "# Coverage",
+        "/coverage",
+        "",
+        "# state-fixture",
+        `/${stateDirectory}/manifest.json`,
+        "",
+        "# @end",
+        "",
+      ].join("\n"),
     );
   });
 });

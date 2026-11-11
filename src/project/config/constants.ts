@@ -1,6 +1,9 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import type { GlobalScope } from "#project/config/types/GlobalScope";
+import type { Directory } from "#types/Directory";
+
+export const stateDirectory = ".engrenage" satisfies Directory;
 
 export const defaultDefineTypes = true;
 
