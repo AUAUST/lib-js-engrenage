@@ -1,4 +1,4 @@
-import { defineLazyCommand } from "#workflows/cli/index";
+import { collectListArgument, defineLazyCommand } from "#workflows/cli/index";
 
 export default defineLazyCommand({
   configure(command) {
@@ -7,14 +7,9 @@ export default defineLazyCommand({
         "For each issue number, write `.ai/issues/<n>.md` with the manifest and body as fetched and `.ai/issues/<n>.draft.md` with its manifest and body, then add `Drafting` to its Blockers; fails when a draft exists already.",
       )
       .argument(
-        "<refs>",
-        "comma-separated issue numbers, such as `123,124`",
-        (value) => {
-          return value
-            .split(",")
-            .map((stem) => stem.trim())
-            .filter((stem) => stem !== "");
-        },
+        "<refs...>",
+        "issue numbers, comma- or space-separated, such as `123,124` or `123 124`",
+        collectListArgument,
       );
   },
   action() {

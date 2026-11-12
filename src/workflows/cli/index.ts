@@ -6,6 +6,10 @@ export { defineToolCommand } from "#workflows/cli/operations/defineToolCommand";
 export { launch } from "#workflows/cli/operations/launch";
 export { runProgram } from "#workflows/cli/operations/runProgram";
 
+// @barrel utils
+export { collectListArgument } from "#workflows/cli/utils/collectListArgument";
+// @end
+
 // @barrel types
 export type * from "#workflows/cli/types/CommandDefinition";
 export type * from "#workflows/cli/types/CommandParameters";

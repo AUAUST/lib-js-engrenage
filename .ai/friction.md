@@ -51,4 +51,4 @@
 - `pnpm engrenage vitest run`: ran the full suite — `run` became a file filter and only 12 files ran; dropped `run`
 - zsh word splitting: passed an unquoted `$files` list to eslint — zsh passed one word; fed the list through `xargs`
 - `engrenage planning issue publish`: read its tail for the issue number — the tail is the body diff, so it looked unpublished; rerun failed on the removed draft, found #473 with `gh issue list`
-- `engrenage planning issue claim`: passed refs space-separated as the skill's `<refs>` suggests — it takes one comma-separated argument; ran one claim per issue
+- zsh `grep --include=*.md`: unquoted glob in a Bash call — zsh "no matches found" aborts the command; quoted the pattern
