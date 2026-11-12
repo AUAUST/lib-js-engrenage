@@ -22,7 +22,7 @@ export interface RoleDefinition extends Omit<
   readonly nesting: ResolvedRoleContract["nesting"] | undefined;
   readonly index: boolean | undefined;
   readonly public: boolean | undefined;
-  readonly subpath: boolean | undefined;
+  readonly subpath: ResolvedRoleContract["subpath"] | undefined;
   readonly collected: boolean | undefined;
   readonly discovered: boolean | undefined;
   readonly scoped: boolean | undefined;

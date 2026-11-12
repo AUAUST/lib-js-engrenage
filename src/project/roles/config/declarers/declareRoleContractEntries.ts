@@ -83,8 +83,8 @@ export function declareRoleContractEntries<Nested>(
       ],
       optional: describedDefault(roleContractDefaults.public),
     }),
-    subpath: declare(boolean(), {
-      description: "Whether each of its files at a public domain's root is a package subpath, `<domain subpath>/<file name without extension>`. Needs a public role with static `file` names or globs.",
+    subpath: declare(union([boolean(), literal("root")]), {
+      description: 'Whether the role is a package subpath: each of its files at a domain\'s root as `<domain subpath>/<file name without extension>`, or its barrel with `index` as `<domain subpath>/<role directory>`, from the environment root (`./…`) and every public domain with `true`, from the environment root only with `"root"`. Needs a public role with static `file` names or globs, or `index`.',
       optional: describedDefault(roleContractDefaults.subpath),
     }),
     reexport: declare(reexportSchema, {

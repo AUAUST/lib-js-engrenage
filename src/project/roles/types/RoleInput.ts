@@ -75,10 +75,10 @@ export interface RoleInput {
    */
   public?: (boolean | undefined)
   /**
-   * Whether each of its files at a public domain's root is a package subpath, `<domain subpath>/<file name without extension>`. Needs a public role with static `file` names or globs.
+   * Whether the role is a package subpath: each of its files at a domain's root as `<domain subpath>/<file name without extension>`, or its barrel with `index` as `<domain subpath>/<role directory>`, from the environment root (`./…`) and every public domain with `true`, from the environment root only with `"root"`. Needs a public role with static `file` names or globs, or `index`.
    * @default false
    */
-  subpath?: (boolean | undefined)
+  subpath?: ((boolean | "root") | undefined)
   /**
    * How the environment's generated root entry re-exports the role's barrel: as a `namespace` named after its directory, `flat`, its names spread among the root's, or both as a list. Only a global role with `index` takes it; unset, the root entry does not re-export the barrel.
    * @default none

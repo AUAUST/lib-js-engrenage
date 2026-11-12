@@ -44,13 +44,17 @@ export function completeRole(
   const subpath = definition.subpath ?? roleContractDefaults.subpath;
   const index = definition.index ?? roleContractDefaults.index;
 
-  if (subpath && !index && listStaticFileGlobs(definition.file).length === 0) {
+  if (
+    subpath !== false &&
+    !index &&
+    listStaticFileGlobs(definition.file).length === 0
+  ) {
     throw new Error(
       `The role ${name} sets \`subpath\` without static \`file\` names or globs or \`index\`: only files at a domain's root or a role's barrel take a subpath`,
     );
   }
 
-  if (subpath && !visible) {
+  if (subpath !== false && !visible) {
     throw new Error(
       `The role ${name} sets \`subpath\` but is not public: a package subpath is a public import`,
     );

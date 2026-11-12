@@ -7,6 +7,6 @@ export function isCollected(
     contract !== undefined &&
     contract.collected &&
     contract.public &&
-    !contract.subpath
+    contract.subpath !== true
   );
 }

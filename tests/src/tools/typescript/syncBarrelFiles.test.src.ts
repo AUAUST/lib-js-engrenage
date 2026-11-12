@@ -275,6 +275,29 @@ export type * from "#modules/a/utils/isA";
     );
   });
 
+  test("lists the modules of a collected role with a root-only subpath in its domain's entry", async () => {
+    const { project, sync } = createKit({
+      files: {
+        "src/modules/d/models/shape.ts": "export function shape() {}\n",
+      },
+      roles: [
+        createRolePreset({
+          name: "models",
+          index: true,
+          public: true,
+          collected: true,
+          subpath: "root",
+        })(),
+      ],
+    });
+
+    await sync();
+
+    expect(project.read("src/modules/d/entry.ts")).toContain(
+      'from "#modules/d/models/shape";',
+    );
+  });
+
   test("lists in an entry declaring `collects` a collected role enabled only by another namespace", async () => {
     const { project, sync } = createKit({
       files: {

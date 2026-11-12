@@ -20,7 +20,7 @@ export interface ResolvedRoleContract {
   readonly exports: ResolvedRoleExports;
   readonly index: boolean;
   readonly public: boolean;
-  readonly subpath: boolean;
+  readonly subpath: boolean | "root";
   readonly reexport: readonly ReexportMode[] | undefined;
   readonly collected: boolean;
   readonly discovered: boolean;

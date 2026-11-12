@@ -37,12 +37,12 @@ async function exposed(
   return config.resolve("src.exports");
 }
 
-function barrelRole() {
+function barrelRole(subpath: boolean | "root" = true) {
   return createRolePreset({
     name: "models",
     index: true,
     public: true,
-    subpath: true,
+    subpath,
   })();
 }
 
@@ -173,6 +173,49 @@ describe("domain entries", () => {
     ).rejects.toThrow(
       "Subpath './models' is exposed by src.exports, as src/hidden/index.ts, and by src/models/index.ts",
     );
+  });
+
+  test("a root subpath role exposes its barrel at the environment root only", async () => {
+    const found = await exposed(
+      `{ structure: { domains: { d: { public: true } } } }`,
+      {
+        "src/models/index.ts": "",
+        "src/d/index.ts": "",
+        "src/d/entry.ts": "",
+        "src/d/models/index.ts": "",
+      },
+      renderCodeRoles(entry(), barrelRole("root")),
+    );
+
+    expect(found).toMatchObject({
+      "./d": "src/d/entry.ts",
+      "./models": "src/models/index.ts",
+    });
+
+    expect(found).not.toHaveProperty(["./d/models"]);
+  });
+
+  test("a subpath file role exposes its file at the environment root", async () => {
+    expect(await exposed("{}", { "src/constants.ts": "" })).toMatchObject({
+      "./constants": "src/constants.ts",
+    });
+  });
+
+  test("a root subpath role that is not public fails naming the role", async () => {
+    await expect(
+      exposed(
+        "{}",
+        {},
+        renderCodeRoles(
+          entry(),
+          createRolePreset({
+            name: "models",
+            index: true,
+            subpath: "root",
+          })(),
+        ),
+      ),
+    ).rejects.toThrow("The role models sets `subpath` but is not public");
   });
 
   test("the environment root's entry is exposed as the package root without a src.exports line", async () => {
