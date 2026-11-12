@@ -12,8 +12,8 @@ import {
 } from "valibot";
 
 import { declare, declareObject } from "#foundation/options/index";
+import { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolSchema";
 import { workflowSetNames } from "#tools/github/constants";
-import { issueProtocolSchema } from "#tools/github/issues/contract/index";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 import type { ResolvedTraits } from "#project/presets/index";
 import type { PackageName } from "#types/PackageName";

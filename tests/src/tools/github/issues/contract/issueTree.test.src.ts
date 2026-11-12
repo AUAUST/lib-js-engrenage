@@ -4,8 +4,8 @@ import { number, object, optional, parse, string } from "valibot";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolSchema";
 import { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
-import { issueProtocolSchema } from "#tools/github/issues/contract/config/schemas/issueProtocolSchema";
 import { checkIssueTree } from "#tools/github/issues/contract/operations/checkIssueTree";
 import { formatIssueTreeCheck } from "#tools/github/issues/contract/utils/formatIssueTreeCheck";
 

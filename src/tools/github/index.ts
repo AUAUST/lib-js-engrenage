@@ -49,6 +49,7 @@ export { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 
 // @barrel config/schemas
 export { githubSchema } from "#tools/github/config/schemas/githubSchema";
+export { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolSchema";
 // @end
 
 // @barrel types

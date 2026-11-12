@@ -10,7 +10,7 @@ import {
   optionMeanings,
   typeMeanings,
 } from "#tools/github/issues/contract/constants";
-import type { ProtocolMeaning } from "#tools/github/issues/contract/types/ProtocolMeaning";
+import type { ProtocolMeaning } from "#tools/github/issues/contract/index";
 
 const closeReasonSchema = picklist(
   map(values(closeReasonMeanings), ({ name }) => name),

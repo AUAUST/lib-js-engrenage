@@ -3,7 +3,6 @@ import { once } from "@auaust/toolkit/once";
 
 import { declareSection } from "#foundation/options/index";
 import { githubSchema } from "#tools/github/config/schemas/githubSchema";
-import { resolveRegisteredRepositories } from "#tools/github/issues/api/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
 
@@ -21,7 +20,13 @@ export const githubSection = declareSection({
     } = githubSchema.resolve(input, { traits, hasDependency }, "github");
 
     const repositories = once(async () => {
-      const { optional } = await config.resolve("packageJson");
+      const [
+        { optional },
+        { resolveRegisteredRepositories },
+      ] = await Promise.all([
+        config.resolve("packageJson"),
+        import("#tools/github/issues/api/index"),
+      ]);
 
       return resolveRegisteredRepositories({
         root: config.context.root,

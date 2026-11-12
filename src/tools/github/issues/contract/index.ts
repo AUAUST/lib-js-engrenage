@@ -1,5 +1,5 @@
 // @barrel config/schemas
-export { issueProtocolSchema } from "#tools/github/issues/contract/config/schemas/issueProtocolSchema";
+
 // @end
 
 // @barrel operations

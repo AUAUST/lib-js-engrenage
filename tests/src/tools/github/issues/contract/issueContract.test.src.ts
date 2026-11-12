@@ -3,8 +3,8 @@ import { execFileSync } from "node:child_process";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolSchema";
 import { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
-import { issueProtocolSchema } from "#tools/github/issues/contract/config/schemas/issueProtocolSchema";
 import { checkGithubWrite } from "#tools/github/issues/contract/operations/checkGithubWrite";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
