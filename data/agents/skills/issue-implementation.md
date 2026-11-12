@@ -23,6 +23,8 @@ Implement one GitHub issue as written. The issue and its plan carry the design: 
 
 ## Before starting
 
+When dispatched in a worktree, first check out the briefed commit, detached, when the worktree starts elsewhere, then install dependencies offline from the lockfile.
+
 Read the issue, then only the ancestors and plan sections its header line names. Your context ends at the nearest plan above the issue: read any other plan only when you believe it holds information the issue needs. Then stop and report instead of implementing when:
 
 | Check                                               | Stop when                                                                                                                                                  |

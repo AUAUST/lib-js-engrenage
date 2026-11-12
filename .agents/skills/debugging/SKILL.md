@@ -13,6 +13,8 @@ Understand a problem, decide its fix, then apply it or write it down for a worke
 
 ## Input
 
+When dispatched in a worktree, first check out the briefed commit, detached, when the worktree starts elsewhere, then install dependencies offline from the lockfile.
+
 | Given                                                  | Read first                                                             |
 | ------------------------------------------------------ | ---------------------------------------------------------------------- |
 | A GitHub issue                                         | Its body, comments, linked issues and ancestors up to the nearest plan |
