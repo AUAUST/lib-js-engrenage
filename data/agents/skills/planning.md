@@ -151,15 +151,19 @@ Extract a part of a plan into its own plan when the Roadmap grows too long to sc
 
 ## Ordering
 
-Order expresses urgency, not importance: a task comes first because later work stands on it.
+Order expresses urgency, not importance: a task comes first because later work stands on it. The walker runs a segment's members at once and a sequence's items one at a time, so place an item after another only for a dependency you can name.
 
-| Situation                                                     | Placement                                                                         |
-| ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| B depends on A                                                | B after all of its dependencies                                                   |
-| Later work depends on a task and nothing can run alongside it | Alone in the sequence; never a single-item segment                                |
-| Two or more tasks can be done at the same point               | One segment. Touching the same files is fine; needing each other's output is not. |
-| A segment member needs another member's result                | Moved after the segment, or merged with it if they are one feature                |
-| Adjacent segments, the later one independent of the earlier   | Merged, to keep the sequence short                                                |
+| Situation                                                                      | Placement                                                                                                      |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| B depends on A                                                                 | B after all of its dependencies                                                                                |
+| B needs from A only a piece A does not use itself: a helper, a type, an option | The piece moved into B, both in one segment                                                                    |
+| Later work depends on a task and nothing can run alongside it                  | Alone in the sequence; never a single-item segment                                                             |
+| Two or more tasks can be done at the same point                                | One segment. Touching the same files is fine; needing each other's output is not.                              |
+| A segment member needs another member's result                                 | Reshaped as above when it can be; otherwise moved after the segment, or merged with it if they are one feature |
+| Adjacent segments, the later one independent of the earlier                    | Merged, to keep the sequence short                                                                             |
+
+- Move a piece between tasks only when each stays one coherent feature, verifiable without the other.
+- Never add or split an item only to run work concurrently: each leaf adds a dispatch, a merge and a review.
 
 ## How workers read issues
 

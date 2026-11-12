@@ -65,3 +65,9 @@
 - one consultant-merger agent (#516): fewer agents — one judges against the plan, the other against the code
 - shared draft manifest field reader (#511): `checkDrafts` `readBlockers` and `listPublishedFieldValues` `readFieldValue` both read manifest field values — one Blockers read, outside the leaf's scope
 - Blockers-only issue fetch (#512): `releaseIssues` needs one field but `fetchIssue` sends five requests — a second fetcher for one command run by hand, outside the leaf's scope
+- option on `engrenage jscpd` (#518): new clones of a range by name — the command forwards every argument to jscpd, so an engrenage option collides with its flags
+- gate range scope (#518): new clones of a range by name — reaches every gate step for one jscpd use
+- jscpd --ignore-identifiers (#518): twin helpers across concurrent leaves — no new clone on #499 and #500's range at project thresholds, import-line noise below them
+- jscpd --dead-code (#516): exports a range leaves unused, for the merger — resolves no `#` alias, so lists every aliased module as unused
+- concurrency as a split reason (#505): more segment members — each leaf adds a dispatch, merger and review round small items never repay
+- blockedBy between segment members: finer concurrency than segment order — the walker stops on any open blocked-by; reshaping or sequencing covers it
