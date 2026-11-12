@@ -1,11 +1,11 @@
 ---
 title: Backlog handling
-description: Bring backlog entries up to date with new findings, context or answers, and convert actionable ones into GitHub issues. Use when the user asks to record, update, answer or settle backlog entries. Prefer the backlogger agent; invoke this skill directly only in a throwaway session.
+description: Bring backlog entries up to date with new findings, context or answers, and convert actionable ones into GitHub issues. Use when the user asks to record, update, answer or settle backlog entries.
 category: workflow
 order: 40
 agent:
   name: backlogger
-  description: Backlogger that brings backlog entries up to date with new findings, context or answers, and converts actionable ones to GitHub issues. Use proactively for any work on backlog entries. Its report ends with what remains and the kind of work it needs; continue that with the agent suited to it.
+  description: Backlogger that brings backlog entries up to date with new findings, context or answers, and converts actionable ones to GitHub issues. Dispatch it only when a skill you follow or the user asks for a backlogger; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs.
   model: opus
   effort: low
   disallowedTools:

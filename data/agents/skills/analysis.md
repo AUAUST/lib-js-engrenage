@@ -5,7 +5,7 @@ category: workflow
 order: 5
 agent:
   name: analyser
-  description: Analyser that works out the concern behind a request, its ideal solution and its reach across the project, applies the change when it stays within the request, and otherwise records its findings in issues of the type each calls for. Use proactively when the user asks to analyse, assess or rethink something that is neither a defect nor planned work. Its report ends with what remains and the kind of work it needs; continue that with the agent suited to it.
+  description: Analyser that works out the concern behind a request, its ideal solution and its reach across the project, applies the change when it stays within the request, and otherwise records its findings in issues of the type each calls for. Dispatch it only when a skill you follow or the user asks for an analyser; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs.
   model: opus
   effort: high
   disallowedTools:

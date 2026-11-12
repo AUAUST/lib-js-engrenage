@@ -5,7 +5,7 @@ category: workflow
 order: 50
 agent:
   name: banker
-  description: Banker that harvests in-code `@debt` markers into the debt backlog `.ai/debt.md`. Use proactively for any work on debt markers. Its report ends with what remains and the kind of work it needs; continue that with the agent suited to it.
+  description: Banker that harvests in-code `@debt` markers into the debt backlog `.ai/debt.md`. Dispatch it only when a skill you follow or the user asks for a banker; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs.
   model: haiku
   effort: low
   disallowedTools:
