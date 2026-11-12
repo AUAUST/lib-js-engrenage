@@ -176,7 +176,13 @@ export function checkBoundary(
   ): BoundaryViolation | undefined {
     if (atRoot) {
       if (importer.kind === "role") {
-        return global ? undefined : violation("globalRole");
+        if (global) {
+          return;
+        }
+
+        return kind === "type"
+          ? reachSurface(divergence(importerLineage, targetLineage))
+          : violation("globalRole");
       }
 
       return global || target.public ? undefined : privateTo(targetDomain);

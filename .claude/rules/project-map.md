@@ -49,7 +49,7 @@ The matrix states environment grants; domain and role boundaries still apply. No
 
 ## Roles
 
-Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A role with a level imports at runtime only roles of its level or a purer one. Global roles import only each other. Other domains import a `collected` role's modules inside sub-domains too, past their parent domains' surfaces.
+Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A role with a level imports at runtime only roles of its level or a purer one. Global roles import each other, and domains only with `import type`. Other domains import a `collected` role's modules inside sub-domains too, past their parent domains' surfaces.
 
 - `pure`: Compute from arguments only, without observable changes.
 - `confined`: Mutate caller-owned values or maintain a private memo cache.

@@ -666,4 +666,35 @@ describe("structure boundaries", () => {
       await strict("src/tools/vite/config/defineviteConfig.ts", exported),
     ).toEqual([]);
   });
+
+  test("lets a global role reach domains' surfaces only with import type", async () => {
+    const project = createBoundaryProject();
+
+    project.write("src/types/Shape.ts", "export type Shape = 1;\n");
+
+    const lint = await createLinter("auaust/import-", project);
+
+    expect(
+      await lint(
+        "src/types/Shape.ts",
+        'import type { value as a } from "#project/other/index";\nimport type { value as b } from "#project/other/constants";\nexport type Shape = [typeof a, typeof b];\n',
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint.messages(
+        "src/types/Shape.ts",
+        'import { value } from "#project/other/index";\nexport type Shape = typeof value;\n',
+      ),
+    ).toEqual([
+      "`types/Shape.ts` belongs to a global role; global roles import domains only with `import type`.",
+    ]);
+
+    expect(
+      await lint(
+        "src/types/Shape.ts",
+        'import type { value } from "#project/other/utils/priv";\nexport type Shape = typeof value;\n',
+      ),
+    ).toEqual(["auaust/import-surfaces"]);
+  });
 });

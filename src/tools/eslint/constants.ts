@@ -24,7 +24,7 @@ export const boundaryMessages = freeze({
   privateRole: "`{{file}}` imports `{{target}}`, private to `{{boundary}}`. Import it from {{fix}}.",
   ownIndex: "A module of `{{domain}}` imports `{{specifier}}`. Import the role module directly.",
   typeOnly: "`{{module}}` is type-only; use `import type`.",
-  globalRole: "`{{file}}` belongs to a global role; global roles import only each other.",
+  globalRole: "`{{file}}` belongs to a global role; global roles import domains only with `import type`.",
   entrySurface: "`{{file}}` is a package entry; it re-exports only the index and public roles of `{{domain}}`.",
   environment: "`{{path}}` imports `{{targetPath}}`; `{{environment}}` never imports {{category}}.",
   rootEntry: "`{{path}}` imports `{{targetPath}}`; only the environment's root executable imports its root file.",
