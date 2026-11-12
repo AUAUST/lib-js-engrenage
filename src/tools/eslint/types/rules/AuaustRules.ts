@@ -409,6 +409,10 @@ export interface AuaustRules {
    */
   "auaust/return-await"?: Rule<AuaustReturnAwait>;
   /**
+   * A module of a role with `companions` has each file they name beside it.
+   */
+  "auaust/role-companions"?: Rule<[]>;
+  /**
    * A file in a role directory follows the role's nesting, categories and accepted files; a strict role holds at its root only the files its nested roles name.
    */
   "auaust/role-contracts"?: Rule<[]>;

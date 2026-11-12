@@ -17,6 +17,7 @@ import {
   unset,
 } from "#foundation/options/index";
 import { reexportSchema } from "#project/roles/config/schemas/reexportSchema";
+import { roleCompanionResolverSchema } from "#project/roles/config/schemas/roleCompanionResolverSchema";
 import { roleExportsSchema } from "#project/roles/config/schemas/roleExportsSchema";
 import { roleFileResolverSchema } from "#project/roles/config/schemas/roleFileResolverSchema";
 import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
@@ -40,6 +41,10 @@ export function declareRoleContractEntries<Nested>(
     }),
     fileDescription: declare(string(), {
       description: "How a `file` callback names the role's files, shown in maps instead of globs.",
+      optional: { value: undefined },
+    }),
+    companions: declare(roleCompanionResolverSchema, {
+      description: "Files each module of the role requires, as project-relative paths a callback returns for the module; lint reports each one missing on the module, so a deleted companion is reported once its module is linted again.",
       optional: { value: undefined },
     }),
     accepts: declare(globsSchema, {

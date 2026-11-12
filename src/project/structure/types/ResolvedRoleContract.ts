@@ -1,5 +1,6 @@
 import type {
   ReexportMode,
+  RoleCompanionResolver,
   RoleFileResolver,
   RoleRules,
 } from "#project/roles/index";
@@ -11,6 +12,7 @@ import type { Globs } from "#types/Globs";
 export interface ResolvedRoleContract {
   readonly file: Glob | Globs | RoleFileResolver | undefined;
   readonly fileDescription: string | undefined;
+  readonly companions: RoleCompanionResolver | undefined;
   readonly accepts: Glob | Globs | undefined;
   readonly nesting: number | "any";
   readonly roles: readonly string[] | undefined;

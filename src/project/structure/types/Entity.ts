@@ -1,3 +1,4 @@
+import type { RoleLocation } from "#project/roles/index";
 import type { LineageMember } from "#project/structure/types/LineageMember";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { StructureKind } from "#project/structure/types/StructureKind";
@@ -12,6 +13,7 @@ export interface Entity {
   readonly kind: StructureKind | undefined;
   readonly commands: boolean;
   readonly lineage: readonly LineageMember[];
+  readonly location: RoleLocation;
   readonly domain: string | undefined;
   readonly surface: readonly string[];
   readonly role: string | undefined;

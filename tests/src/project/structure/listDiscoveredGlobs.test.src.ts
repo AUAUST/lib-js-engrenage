@@ -10,6 +10,7 @@ function contract(
   return {
     file: undefined,
     fileDescription: undefined,
+    companions: undefined,
     accepts: undefined,
     nesting: 0,
     roles: undefined,

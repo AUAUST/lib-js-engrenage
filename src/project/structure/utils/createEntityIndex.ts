@@ -9,6 +9,7 @@ import { noRoles } from "#project/structure/constants";
 import { classifyEntityFile } from "#project/structure/utils/classifyEntityFile";
 import { createStructureEntity } from "#project/structure/utils/createStructureEntity";
 import { extendEntityLineage } from "#project/structure/utils/extendEntityLineage";
+import { extendRoleLocation } from "#project/structure/utils/extendRoleLocation";
 import { getAliasSpecifier } from "#project/structure/utils/getAliasSpecifier";
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
@@ -172,6 +173,7 @@ export function createEntityIndex({
       kind: node.kind,
       commands: node.commands === true,
       lineage: extendEntityLineage(parent.lineage, node, node.path),
+      location: extendRoleLocation(parent.location, node),
       domain: node.kind === "domain"
         ? node.path.slice(directory.length + 1)
         : parent.domain,
@@ -209,6 +211,14 @@ export function createEntityIndex({
         kind: tree.kind,
         commands: tree.commands === true,
         lineage: extendEntityLineage(noLineage, tree, directory),
+        location: extendRoleLocation(
+          createStructureEntity(name, directory).location,
+          {
+            kind: "namespace",
+            name: posix.basename(directory),
+            path: directory,
+          },
+        ),
       });
 
       register(directory, {

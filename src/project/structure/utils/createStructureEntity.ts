@@ -19,6 +19,11 @@ export function createStructureEntity(
     kind: undefined,
     commands: false,
     lineage: noLineage,
+    location: freeze({
+      environment,
+      lineage: freeze([]),
+      roles: freeze([]),
+    }),
     domain: undefined,
     surface: freeze([]),
     role: undefined,

@@ -21,7 +21,11 @@ import {
 } from "#project/config/index";
 import { formatterNameSchema } from "#project/format/index";
 import { presetNameSchema } from "#project/presets/index";
-import { roleFileResolverSchema, roleRulesSchema } from "#project/roles/index";
+import {
+  roleCompanionResolverSchema,
+  roleFileResolverSchema,
+  roleRulesSchema,
+} from "#project/roles/index";
 import { effectModuleResolverSchema } from "#project/structure/index";
 import { inheritsSchema } from "#project/tsconfig/index";
 import { collectConfigInputs } from "#scripts/codegen/operations/collectConfigInputs";
@@ -60,6 +64,7 @@ const externalTypes = new Map<string, TypeSource>([
   ],
   ["RoleRules", { domain: "project/roles", specifier: undefined }],
   ["RoleFileResolver", { domain: "project/roles", specifier: undefined }],
+  ["RoleCompanionResolver", { domain: "project/roles", specifier: undefined }],
   ["Glob", { domain: undefined, specifier: "#types/Glob" }],
   ["Globs", { domain: undefined, specifier: "#types/Globs" }],
 ]);
@@ -135,6 +140,10 @@ function resolveType(schema: ConfigSchema): string | undefined {
 
   if (schema === roleFileResolverSchema) {
     return "RoleFileResolver";
+  }
+
+  if (schema === roleCompanionResolverSchema) {
+    return "RoleCompanionResolver";
   }
 
   if (schema === roleRulesSchema) {

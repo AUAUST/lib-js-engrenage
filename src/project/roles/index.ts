@@ -1,5 +1,6 @@
 // @barrel config/schemas
 export { reexportSchema } from "#project/roles/config/schemas/reexportSchema";
+export { roleCompanionResolverSchema } from "#project/roles/config/schemas/roleCompanionResolverSchema";
 export { roleExportsSchema } from "#project/roles/config/schemas/roleExportsSchema";
 export { roleFileResolverSchema } from "#project/roles/config/schemas/roleFileResolverSchema";
 export { roleNameSchema } from "#project/roles/config/schemas/roleNameSchema";
@@ -15,10 +16,12 @@ export { declareRoleContractEntries } from "#project/roles/config/declarers/decl
 // @barrel types
 export type * from "#project/roles/types/ReexportMode";
 export type * from "#project/roles/types/Role";
+export type * from "#project/roles/types/RoleCompanionResolver";
 export type * from "#project/roles/types/RoleFileResolver";
 export type * from "#project/roles/types/RoleInput";
 export type * from "#project/roles/types/RoleLocation";
 export type * from "#project/roles/types/RoleLocationMember";
+export type * from "#project/roles/types/RoleModule";
 export type * from "#project/roles/types/RolePreset";
 export type * from "#project/roles/types/RoleRuleLoader";
 export type * from "#project/roles/types/RoleRules";
