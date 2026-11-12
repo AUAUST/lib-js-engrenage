@@ -51,21 +51,20 @@ Use the installed workflows below when their descriptions match the request.
 | `backlog-handling` | Delegate to `backlogger`. Backlogger that brings backlog entries up to date with new findings, context or answers, and converts actionable ones to GitHub issues. Use proactively for any work on backlog entries. Its report ends with what remains and the kind of work it needs; continue that with the agent suited to it. |
 | `debt-harvesting` | Delegate to `banker`. Banker that harvests in-code `@debt` markers into the debt backlog `.ai/debt.md`. Use proactively for any work on debt markers. Its report ends with what remains and the kind of work it needs; continue that with the agent suited to it. |
 
-| Profile | Canonical role | Effort |
-| --- | --- | --- |
-| `analyser` | `analyser` | high |
-| `planner` | `planner` | high |
-| `debugger` | `debugger` | medium |
-| `debugger_low` | `debugger` | low |
-| `debugger_high` | `debugger` | high |
-| `worker` | `worker` | medium |
-| `worker_low` | `worker` | low |
-| `worker_high` | `worker` | high |
-| `scratcher` | `scratcher` | low |
-| `backlogger` | `backlogger` | low |
-| `banker` | `banker` | low |
+| Profile | Canonical role | Effort | Complexity |
+| --- | --- | --- | --- |
+| `analyser` | `analyser` | high | any other |
+| `planner` | `planner` | high | any other |
+| `debugger` | `debugger` | medium | any other |
+| `debugger_low` | `debugger` | low | `trivial` |
+| `debugger_high` | `debugger` | high | `complex` |
+| `worker` | `worker` | low | any other |
+| `worker_medium` | `worker` | medium | `involved`, `complex` |
+| `scratcher` | `scratcher` | low | any other |
+| `backlogger` | `backlogger` | low | any other |
+| `banker` | `banker` | low | any other |
 
-Spawn the named profile with Codex's spawn_agent tool (agent_type). Profiles inherit the session's selected model; do not supply another model. For a leaf with Complexity Trivial select the role's _low profile; for Complex select _high; otherwise select its unsuffixed profile. A profile's effort takes precedence over a spawn effort override.
+Spawn the named profile with Codex's spawn_agent tool (agent_type). Profiles inherit the session's selected model; do not supply another model. For a leaf, select the role's profile whose Complexity lists the leaf's `complexity`; otherwise its unsuffixed profile. A profile's effort takes precedence over a spawn effort override.
 Spawn each leaf and the consultant with fork_turns: "none" and a brief containing only task references, relevant decisions and the requested outcome. Use send_input with its id to return questions, review gaps and gate failures to that same agent; use resume_agent first if it is closed. In clients exposing collaboration tools, use spawn_agent with the named role when supported, send_message for a running agent and followup_task for an idle agent. A client without named-profile selection cannot establish profile loading; report that unsupported path.
 
 Use the planner profile only as the walker's consultant, and resume it with its existing id.

@@ -5,7 +5,7 @@ description: Worker that implements one GitHub issue as written and stops to
   implement, work on or resume a specific GitHub issue whose fix or steps are
   already written; investigating or fixing a problem is the debugger's.
 model: opus
-effort: medium
+effort: low
 hooks:
   Stop:
     - hooks:

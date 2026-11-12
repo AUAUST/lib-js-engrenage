@@ -88,8 +88,7 @@ describe("syncCodexFiles", () => {
     expect(filesystem.changes()).toEqual(
       expect.arrayContaining([
         { file: ".codex/agents/worker.toml", status: "synced" },
-        { file: ".codex/agents/worker_low.toml", status: "created" },
-        { file: ".codex/agents/worker_high.toml", status: "created" },
+        { file: ".codex/agents/worker_medium.toml", status: "created" },
         { file: ".codex/agents/worker_old.toml", status: "deleted" },
       ]),
     );
@@ -101,7 +100,7 @@ describe("syncCodexFiles", () => {
     expect(await filesystem.exists(".codex/agents/debugger.toml")).toBe(false);
 
     expect(await filesystem.read("AGENTS.override.md")).toMatch(
-      /worker_low[\s\S]*worker_high[\s\S]*send_input/,
+      /worker_medium[\s\S]*`involved`, `complex`[\s\S]*send_input/,
     );
 
     expect(await filesystem.read("AGENTS.override.md")).not.toContain(
@@ -114,13 +113,16 @@ describe("syncCodexFiles", () => {
 
     expect(filesystem.changes()).toEqual([]);
 
-    await filesystem.write(".codex/agents/worker_high.toml", 'name = "mine"\n');
-
-    await expect(syncCodexFiles(config)).rejects.toThrow(
-      ".codex/agents/worker_high.toml",
+    await filesystem.write(
+      ".codex/agents/worker_medium.toml",
+      'name = "mine"\n',
     );
 
-    expect(await filesystem.read(".codex/agents/worker_high.toml")).toBe(
+    await expect(syncCodexFiles(config)).rejects.toThrow(
+      ".codex/agents/worker_medium.toml",
+    );
+
+    expect(await filesystem.read(".codex/agents/worker_medium.toml")).toBe(
       'name = "mine"\n',
     );
   });

@@ -128,8 +128,7 @@ async function installed() {
 
 test.each([
   "worker",
-  "worker_low",
-  "worker_high",
+  "worker_medium",
   "debugger",
   "debugger_low",
   "debugger_high",
@@ -157,7 +156,7 @@ test.each([
 test("rejects missing/conflicting generated output and ignores unowned custom names", async () => {
   const { filesystem } = await installed();
 
-  await filesystem.remove(".codex/agents/worker_high.toml");
+  await filesystem.remove(".codex/agents/worker_medium.toml");
 
   await expect(
     resolveCodexProfile(
@@ -165,9 +164,9 @@ test("rejects missing/conflicting generated output and ignores unowned custom na
         filesystem,
         fillers: {},
       },
-      "worker_high",
+      "worker_medium",
     ),
-  ).rejects.toThrow(".codex/agents/worker_high.toml");
+  ).rejects.toThrow(".codex/agents/worker_medium.toml");
 
   await filesystem.write(".codex/agents/worker.toml", 'name = "mine"');
 
@@ -234,7 +233,7 @@ test("rejects an unsupported canonical gated role from exact metadata", async ()
         filesystem,
         fillers: {},
       },
-      "custom_high",
+      "custom_medium",
     ),
   ).rejects.toThrow("Unsupported canonical gated Codex role custom");
 });

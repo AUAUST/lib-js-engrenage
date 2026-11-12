@@ -29,7 +29,7 @@ Start at the issue the user names and run `engrenage planning walk check <n>` on
 | Has **Questions** open                                        | Stop; batch the questions to the user                                                                                                                       |
 | `problem` without **Steps**                                   | Debugger                                                                                                                                                    |
 | `task` or `problem` with **Steps**                            | Worker                                                                                                                                                      |
-| `complexity` `complex` or `trivial`                           | Dispatched with `effort: high` (`complex`) or `effort: low` (`trivial`); otherwise the agent's defaults                                                     |
+| `complexity` set                                              | Worker: `effort: medium` for `involved` or `complex`. Debugger: `effort: low` for `trivial`, `effort: high` for `complex`. Otherwise the agent's default    |
 | `resource` or `idea` in a tree                                | Never dispatched; report it to the consultant                                                                                                               |
 
 `priority` never reorders a tree: order states dependencies.

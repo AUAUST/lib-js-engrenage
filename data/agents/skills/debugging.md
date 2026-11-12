@@ -9,6 +9,9 @@ agent:
   description: Debugger that investigates a bug, issue, backlog entry, debt marker or reported failure, fixes it at its root when the fix is contained, and otherwise writes the fix into a GitHub issue for a worker. Use proactively when the user asks to investigate, debug or fix something, unless they ask to apply a fix an issue already describes, which is the worker's. Its report ends with what remains and the kind of work it needs; continue that with the agent suited to it.
   model: opus
   effort: medium
+  efforts:
+    trivial: low
+    complex: high
   gate: true
   disallowedTools:
     - SendMessage

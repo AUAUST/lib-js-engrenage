@@ -69,7 +69,7 @@ export async function getSkillTemplates({
       });
 
       if (agent !== undefined) {
-        const { gate, ...definition } = agent;
+        const { gate, efforts: _efforts, ...definition } = agent;
 
         const values = {
           ...definition,

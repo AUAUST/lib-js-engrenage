@@ -69,7 +69,7 @@ describe("addAgentSkills", () => {
     expect(
       await config.context.filesystem.read(".claude/agents/worker.md"),
     ).toMatch(
-      /name: worker[\s\S]*model: opus\neffort: medium[\s\S]*# Issue implementation/,
+      /name: worker[\s\S]*model: opus\neffort: low[\s\S]*# Issue implementation/,
     );
   });
 
@@ -107,7 +107,7 @@ describe("addAgentSkills", () => {
     ).toBe(true);
   });
 
-  test("installs six canonical roles selectively with only the gated effort variants", async () => {
+  test("installs six canonical roles selectively with their complexity effort variants", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
@@ -125,8 +125,7 @@ describe("addAgentSkills", () => {
 
     expect(await sections.filesystem.glob(".codex/agents/*.toml")).toEqual([
       ".codex/agents/worker.toml",
-      ".codex/agents/worker_high.toml",
-      ".codex/agents/worker_low.toml",
+      ".codex/agents/worker_medium.toml",
     ]);
 
     await addAgentSkills(sections, [
@@ -146,8 +145,7 @@ describe("addAgentSkills", () => {
       ".codex/agents/planner.toml",
       ".codex/agents/scratcher.toml",
       ".codex/agents/worker.toml",
-      ".codex/agents/worker_high.toml",
-      ".codex/agents/worker_low.toml",
+      ".codex/agents/worker_medium.toml",
     ]);
 
     await sections.filesystem.flush();

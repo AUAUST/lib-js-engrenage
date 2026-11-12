@@ -66,12 +66,17 @@ async function renderAgentFrontmatter() {
 }
 
 describe("getSkillTemplates", () => {
-  test("retains canonical metadata and renders inherited-model effort variants", async () => {
+  test("retains canonical metadata and renders one profile per distinct complexity effort", async () => {
     mockSkill("issue-implementation", {
       name: "worker",
       description: "Canonical worker",
       model: "opus",
-      effort: "medium",
+      effort: "low",
+      efforts: {
+        trivial: "low",
+        involved: "medium",
+        complex: "medium",
+      },
       gate: true,
     });
 
@@ -92,19 +97,13 @@ describe("getSkillTemplates", () => {
       {
         name: "worker",
         role: "worker",
-        effort: "medium",
-        gate: true,
-      },
-      {
-        name: "worker_low",
-        role: "worker",
         effort: "low",
         gate: true,
       },
       {
-        name: "worker_high",
+        name: "worker_medium",
         role: "worker",
-        effort: "high",
+        effort: "medium",
         gate: true,
       },
     ]);
@@ -142,10 +141,11 @@ describe("getSkillTemplates", () => {
     );
   });
 
-  test("renders the stop hook for a gated agent, without its gate key", async () => {
+  test("renders the stop hook for a gated agent, without its gate and efforts keys", async () => {
     mockSkill("gated", {
       name: "worker",
       description: "Worker",
+      efforts: { complex: "high" },
       gate: true,
     });
 

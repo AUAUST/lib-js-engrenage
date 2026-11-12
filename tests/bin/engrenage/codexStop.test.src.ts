@@ -30,8 +30,7 @@ afterEach(() => {
 
 test.each([
   "worker",
-  "worker_low",
-  "worker_high",
+  "worker_medium",
   "debugger",
   "debugger_low",
   "debugger_high",
