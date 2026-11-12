@@ -31,7 +31,11 @@ function renderExports({
   return [
     values === undefined ? undefined : `values ${code(values)}`,
     types === undefined ? undefined : `types ${code(types)}`,
-    index ? code("index") : undefined,
+    index === "root"
+      ? `index ${code(index)}`
+      : index
+        ? code("index")
+        : undefined,
     subpath === "root"
       ? `subpath ${code(subpath)}`
       : subpath

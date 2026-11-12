@@ -2,17 +2,18 @@ import { basename, matchesGlob, posix } from "node:path";
 
 import { entries, getOwn } from "@auaust/toolkit/object";
 
+import {
+  isPlaced,
+  type EnvironmentStructure,
+  type ResolvedRoleContract,
+  type StructureNode,
+} from "#project/structure/index";
 import { isGeneratedBarrel } from "#tools/typescript/operations/isGeneratedBarrel";
 import { listRoleModules } from "#tools/typescript/operations/listRoleModules";
 import { collectRoleNodes } from "#tools/typescript/utils/collectRoleNodes";
 import { isModule } from "#tools/typescript/utils/isModule";
 import { locateDomain } from "#tools/typescript/utils/locateDomain";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type {
-  EnvironmentStructure,
-  ResolvedRoleContract,
-  StructureNode,
-} from "#project/structure/index";
 import type { BarrelModule } from "#tools/typescript/types/BarrelModule";
 import type { File } from "#types/File";
 
@@ -52,7 +53,10 @@ export async function listDomainModules(
     const isListed = (
       accepts(role, contract) &&
       isModule(file) &&
-      !(contract.index && basename(file) === indexFile)
+      !(
+        isPlaced(contract.index, domain === environment.root) &&
+        basename(file) === indexFile
+      )
     );
 
     return isListed

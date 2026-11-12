@@ -195,6 +195,32 @@ describe("domain entries", () => {
     expect(found).not.toHaveProperty(["./d/models"]);
   });
 
+  test("a root index role exposes its root barrel only", async () => {
+    const found = await exposed(
+      `{ structure: { domains: { d: { public: true } } } }`,
+      {
+        "src/models/index.ts": "",
+        "src/d/index.ts": "",
+        "src/d/entry.ts": "",
+        "src/d/models/shape.ts": "",
+      },
+      renderCodeRoles(
+        entry(),
+        createRolePreset({
+          name: "models",
+          index: "root",
+          public: true,
+          collected: true,
+          subpath: "root",
+        })(),
+      ),
+    );
+
+    expect(found).toMatchObject({ "./models": "src/models/index.ts" });
+
+    expect(found).not.toHaveProperty(["./d/models"]);
+  });
+
   test("a subpath file role exposes its file at the environment root", async () => {
     expect(await exposed("{}", { "src/constants.ts": "" })).toMatchObject({
       "./constants": "src/constants.ts",

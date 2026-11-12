@@ -1,5 +1,6 @@
 import { indexRoleName } from "#project/roles/constants";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
+import { isPlaced } from "#project/structure/utils/isPlaced";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import type { Entity } from "#project/structure/types/Entity";
 import type { LocatedEntity } from "#project/structure/types/LocatedEntity";
@@ -31,7 +32,8 @@ export function classifyEntityFile(
 
   if (entity.role !== undefined) {
     const isBarrel = (
-      entity.contract?.index === true &&
+      entity.contract !== undefined &&
+      isPlaced(entity.contract.index, entity.domain === undefined) &&
       roles !== undefined &&
       name === getIndexFile(roles)
     );

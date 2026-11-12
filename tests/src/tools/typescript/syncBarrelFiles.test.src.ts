@@ -298,6 +298,38 @@ export type * from "#modules/a/utils/isA";
     );
   });
 
+  test("generates a root-only index role's barrel at the environment root only, listing a domain's modules in its entry", async () => {
+    const { project, sync } = createKit({
+      files: {
+        "src/models/point.ts": "export function point() {}\n",
+        "src/modules/d/models/shape.ts": "export function shape() {}\n",
+      },
+      roles: [
+        createRolePreset({
+          name: "models",
+          index: "root",
+          public: true,
+          collected: true,
+          subpath: "root",
+        })(),
+      ],
+    });
+
+    await sync();
+
+    expect(project.read("src/models/index.ts")).toContain(
+      'from "#models/point";',
+    );
+
+    expect(existsSync(project.resolve("src/modules/d/models/index.ts"))).toBe(
+      false,
+    );
+
+    expect(project.read("src/modules/d/entry.ts")).toContain(
+      'from "#modules/d/models/shape";',
+    );
+  });
+
   test("lists in an entry declaring `collects` a collected role enabled only by another namespace", async () => {
     const { project, sync } = createKit({
       files: {

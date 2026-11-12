@@ -618,6 +618,23 @@ describe("inline roles", () => {
     ).rejects.toThrow("The role symbols sets `subpath` but is not public");
   });
 
+  test("fail when exposed in every domain with a root-only index and no static file", async () => {
+    const roles = renderCodeRoles(
+      createRolePreset({
+        name: "models",
+        index: "root",
+        public: true,
+        subpath: true,
+      })(),
+    );
+
+    await expect(
+      describeProject(`{ src: { roles: ${roles} } }`),
+    ).rejects.toThrow(
+      'The role models sets `subpath` true with `index` "root"',
+    );
+  });
+
   test("of a namespace are active only in its subtree", async () => {
     const nodes = await describeProject(`{
       src: {

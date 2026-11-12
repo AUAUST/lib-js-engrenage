@@ -3,9 +3,9 @@ import { basename, extname } from "node:path";
 import { entries, getOwn, record } from "@auaust/toolkit/object";
 
 import { entryRoleName } from "#project/roles/constants";
+import { isPlaced } from "#project/structure/utils/isPlaced";
 import type { EnvironmentFileNames } from "#project/structure/types/EnvironmentFileNames";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureRole } from "#project/structure/types/StructureRole";
 import type { File } from "#types/File";
@@ -27,12 +27,6 @@ function toSubpath(segments: readonly string[], node: StructureNode): string {
 
 type Roles = Readonly<Record<string, StructureRole>>;
 
-function isExposed(subpath: string, contract: ResolvedRoleContract): boolean {
-  return subpath === "."
-    ? contract.subpath !== false
-    : contract.subpath === true;
-}
-
 function collectRoleSubpaths(
   subpath: string,
   node: StructureNode,
@@ -41,7 +35,10 @@ function collectRoleSubpaths(
   return entries(node.roleFiles ?? {}).flatMap(([role, files]) => {
     const contract = getOwn(roles, role)?.contract;
 
-    if (contract === undefined || !isExposed(subpath, contract)) {
+    if (
+      contract === undefined ||
+      !isPlaced(contract.subpath, subpath === ".")
+    ) {
       return [];
     }
 
@@ -62,7 +59,13 @@ function collectRoleBarrels(
       ? getOwn(roles, child.role)?.contract
       : undefined;
 
-    if (contract?.index !== true || !isExposed(subpath, contract)) {
+    const atRoot = subpath === ".";
+
+    if (
+      contract === undefined ||
+      !isPlaced(contract.index, atRoot) ||
+      !isPlaced(contract.subpath, atRoot)
+    ) {
       return [];
     }
 

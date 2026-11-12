@@ -6,6 +6,7 @@ import { getOwn } from "@auaust/toolkit/object";
 
 import {
   collectStructureNodes,
+  isPlaced,
   type EnvironmentStructure,
   type ResolvedRoleContract,
   type StructureNode,
@@ -92,17 +93,21 @@ export async function planIndexBarrels(
     const domain = locateDomain(environment, owner);
 
     return collectRoleNodes(owner).map((node) => {
-      return { node, domain };
+      return {
+        node,
+        domain,
+        atRoot: owner === root,
+      };
     });
   });
 
   const barrels = await Promise.all(
-    roleNodes.map(async ({ node, domain }) => {
+    roleNodes.map(async ({ node, domain, atRoot }) => {
       const contract = node.role === undefined
         ? undefined
         : getOwn(roles, node.role)?.contract;
 
-      if (contract?.index !== true) {
+      if (contract === undefined || !isPlaced(contract.index, atRoot)) {
         return [];
       }
 

@@ -76,8 +76,8 @@ export function declareRoleContractEntries<Nested>(
       ],
       optional: { value: undefined },
     }),
-    index: declare(boolean(), {
-      description: "Whether a file named like the environment's index file is the role's barrel, re-exporting its modules; otherwise that file is an ordinary module of the role.",
+    index: declare(union([boolean(), literal("root")]), {
+      description: "Whether a file named like the environment's index file is the role's barrel, re-exporting its modules: in every directory of the role with `true`, only in those the environment root owns with `\"root\"`; elsewhere that file is an ordinary module of the role.",
       optional: describedDefault(roleContractDefaults.index),
     }),
     public: declare(boolean(), {

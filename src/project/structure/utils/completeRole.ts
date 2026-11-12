@@ -44,14 +44,18 @@ export function completeRole(
   const subpath = definition.subpath ?? roleContractDefaults.subpath;
   const index = definition.index ?? roleContractDefaults.index;
 
-  if (
-    subpath !== false &&
-    !index &&
-    listStaticFileGlobs(definition.file).length === 0
-  ) {
-    throw new Error(
-      `The role ${name} sets \`subpath\` without static \`file\` names or globs or \`index\`: only files at a domain's root or a role's barrel take a subpath`,
-    );
+  if (subpath !== false && listStaticFileGlobs(definition.file).length === 0) {
+    if (index === false) {
+      throw new Error(
+        `The role ${name} sets \`subpath\` without static \`file\` names or globs or \`index\`: only files at a domain's root or a role's barrel take a subpath`,
+      );
+    }
+
+    if (index === "root" && subpath === true) {
+      throw new Error(
+        `The role ${name} sets \`subpath\` true with \`index\` "root": a domain's role directory has no barrel to expose; set \`subpath\` "root"`,
+      );
+    }
   }
 
   if (subpath !== false && !visible) {
@@ -63,7 +67,7 @@ export function completeRole(
   const scoped = definition.scoped ?? roleContractDefaults.scoped;
 
   // @debt a contract cannot see where its directory sits, so a root role never placed at an environment root passes this check
-  if (definition.reexport !== undefined && (!index || scoped)) {
+  if (definition.reexport !== undefined && (index === false || scoped)) {
     throw new Error(
       `The role ${name} sets \`reexport\` without being a global role with \`index\`: only such a role's barrel sits at an environment root, where the root entry re-exports it`,
     );

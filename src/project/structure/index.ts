@@ -102,6 +102,7 @@ export { getStructureLayer } from "#project/structure/utils/getStructureLayer";
 export { groupRoleFiles } from "#project/structure/utils/groupRoleFiles";
 export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 export { isEntryReference } from "#project/structure/utils/isEntryReference";
+export { isPlaced } from "#project/structure/utils/isPlaced";
 export { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
 export { listDomainsWithoutPurpose } from "#project/structure/utils/listDomainsWithoutPurpose";
 export { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";

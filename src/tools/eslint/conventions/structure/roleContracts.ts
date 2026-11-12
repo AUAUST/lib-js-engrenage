@@ -74,7 +74,7 @@ export default defineConvention({
             } else if (
               contract.categories === true &&
               depth === 0 &&
-              !(isIndex && contract.index)
+              (!isIndex || contract.index === false)
             ) {
               context.report({
                 node: program,

@@ -69,10 +69,10 @@ export interface RoleInput {
     types?: (("named-match" | "named" | "none") | undefined)
   }) | undefined)
   /**
-   * Whether a file named like the environment's index file is the role's barrel, re-exporting its modules; otherwise that file is an ordinary module of the role.
+   * Whether a file named like the environment's index file is the role's barrel, re-exporting its modules: in every directory of the role with `true`, only in those the environment root owns with `"root"`; elsewhere that file is an ordinary module of the role.
    * @default false
    */
-  index?: (boolean | undefined)
+  index?: ((boolean | "root") | undefined)
   /**
    * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
    * Package exports come only from the domain's visibility.
