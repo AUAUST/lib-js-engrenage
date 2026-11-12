@@ -182,6 +182,39 @@ blockedBy: []
     expect(parent?.body).toContain("## Goal");
   });
 
+  test("resolves a type by its meaning or its GitHub name, in any case", async () => {
+    const config = await createProject({
+      "engrenage.config.ts": `export default ${JSON.stringify({
+        github: { protocol: { types: { idea: "Suggestion" } } },
+      })};`,
+      ".engrenage/github.json": JSON.stringify({
+        ...snapshot,
+        organizations: {
+          AUAUST: {
+            ...snapshot.organizations.AUAUST,
+            types: snapshot.organizations.AUAUST.types.map((candidate) => {
+              return candidate.name === "Idea"
+                ? type("Suggestion", ["Blockers"])
+                : candidate;
+            }),
+          },
+        },
+      }),
+    });
+
+    await expect(createDraft(config, "Resource", {})).resolves.toBe(
+      ".ai/issues/new-resource-1.draft.md",
+    );
+
+    await expect(createDraft(config, "suggestion", {})).resolves.toBe(
+      ".ai/issues/new-idea-1.draft.md",
+    );
+
+    await expect(createDraft(config, "Feature", {})).rejects.toThrow(
+      "idea (Suggestion)",
+    );
+  });
+
   test("names the claim command when the parent has no draft", async () => {
     const config = await createProject({});
 

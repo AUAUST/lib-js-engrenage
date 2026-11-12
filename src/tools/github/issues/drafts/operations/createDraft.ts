@@ -35,12 +35,22 @@ interface Placement {
   readonly after?: string | undefined;
 }
 
-function findMeaning(type: string) {
-  const meaning = keys(typeMeanings).find((candidate) => candidate === type);
+function findMeaning(protocol: IssueProtocol, type: string) {
+  const input = type.toLowerCase();
+
+  const meanings = keys(typeMeanings);
+
+  const meaning =
+    meanings.find((candidate) => candidate.toLowerCase() === input) ??
+    meanings.find((candidate) => {
+      return protocol.types[candidate].toLowerCase() === input;
+    });
 
   if (meaning === undefined) {
     throw new Error(
-      `Unknown issue type \`${type}\`: use ${keys(typeMeanings).join(", ")}`,
+      `Unknown issue type \`${type}\`: use a meaning or its GitHub name, ${meanings
+        .map((candidate) => `${candidate} (${protocol.types[candidate]})`)
+        .join(", ")}`,
     );
   }
 
@@ -188,13 +198,13 @@ export async function createDraft(
     readonly repo?: string | undefined;
   },
 ): Promise<File> {
-  const meaning = findMeaning(type);
-
   const { filesystem } = config.context;
 
   const context = await resolveDraftsContext(config);
 
   const { snapshot, protocol } = context;
+
+  const meaning = findMeaning(protocol, type);
 
   const repository = repo === undefined
     ? context.repository
@@ -214,7 +224,7 @@ export async function createDraft(
     );
   }
 
-  const stem = `${prefix}${await chooseSlug(filesystem, prefix, type, slug)}`;
+  const stem = `${prefix}${await chooseSlug(filesystem, prefix, meaning, slug)}`;
 
   const contractMeaning = findContractMeaning(protocol, typeName);
 

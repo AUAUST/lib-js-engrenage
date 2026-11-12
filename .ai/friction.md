@@ -48,3 +48,5 @@
 - PreToolUse git hook: deleted source modules mid-refactor — hook loads src and fails every Bash call; restored files via git checkout until consumers were rewritten
 - `git add` by path list: staged paths from `git status --porcelain` — a deletion already staged by `git rm` failed the pathspec; staged with `git add -A -- . ':!.ai/issues'`
 - engrenage agents claude hook git: moved a module with git mv — the PreToolUse hook loads src and failed on every Bash call until imports were fixed through Edit
+- `pnpm engrenage vitest run`: ran the full suite — `run` became a file filter and only 12 files ran; dropped `run`
+- zsh word splitting: passed an unquoted `$files` list to eslint — zsh passed one word; fed the list through `xargs`

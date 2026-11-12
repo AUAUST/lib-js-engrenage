@@ -6,7 +6,7 @@ export default defineLazyCommand({
       .description(
         "Write `.ai/issues/new-<slug>.draft.md`, or `<repo>.new-<slug>.draft.md` with --repo, with the type's manifest, each option listed as a comment, and its contract's body skeleton; with --parent, list it in the parent draft's `subIssues`.",
       )
-      .argument("<type>", "the issue type's meaning, such as `task`")
+      .argument("<type>", "the issue type's meaning or GitHub name, in any case, such as `task` or `Task`")
       .option(
         "--slug <slug>",
         "draft slug; defaults to `<type>-<k>` with the first free `k`",
