@@ -52,3 +52,5 @@
 - `github-label-sync`: label sync with rename aliases (#320) — #320 derives labels from the structure and Octokit is already bundled; reuse its alias model
 - structure tree row builders: separate node-to-row builder per output over a shared drawing helper — labels would stay in two places
 - namespace role shadow: `subpath` at the environment root only (#483) — re-declares every option of the global role and drifts once it changes
+- namespace role shadow: toolkit's modules without a types barrel — re-declares the global role and drifts (#483); index "root" instead (#493)
+- unused role barrel in toolkit protocol: drop the types shadow as is — contradicts toolkit #186, a module's entry is its only barrel
