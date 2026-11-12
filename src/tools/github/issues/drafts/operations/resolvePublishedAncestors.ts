@@ -20,6 +20,7 @@ import { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 
+// @debt Pages an issue's sub-issues into locations as `renderPublishedBody` and `fetchIssue` do; a contract operation fetching sub-issue locations would own the request.
 async function listDescendants(
   publication: Publication,
   references: Iterable<string>,

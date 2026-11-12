@@ -66,5 +66,5 @@
 - worktree guard: compound Bash commands and heredoc scripts naming `github` paths in an agent worktree — refused as "names git in a form too complex"; split commands and moved the script into a scratch file
 - worktree guard: inline Python heredoc editing files under `src/tools/github/` and a `python3 … && pnpm …` chain — refused as too complex to verify; wrote the scripts to the scratchpad and ran each command alone
 - zsh `grep --include=*.ts`: unquoted glob in a search for callers — zsh "no matches found" aborted it; listed directories instead
-- dispatch hook (checkAgentDispatch): debugger briefed with `Issue: …#505` for a merger's direct report — the plan is refused as not a Problem; dropped the Issue line, which the hook allows for debuggers
 - `engrenage sync agents`: expected it to generate a new skill's outputs, as #516 Step 4 states — sync only updates installed skills; installed it with `engrenage agents skills add merging`
+- zsh `grep --include=*.ts`: unquoted glob in a merger's search for twins — zsh "no matches found" aborted it; grepped without the flag

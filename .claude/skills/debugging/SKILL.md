@@ -136,6 +136,7 @@ When the input is an issue, turn that issue into the task, condensing its origin
 
 - Send no message before your final report, your only message: a completion or a blocker, sent once every command you started has finished and `engrenage gate --worktree` passes, so the stop gate reuses that pass.
 - The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again on that unchanged tree.
+- When resumed with a merger's findings, fix each one your input's reach covers, and report the rest with the reason.
 - When asked for a branch, create `debugger/<topic>` from the current commit, `debugger/issue-<n>` when the input is an issue.
 - After a fix, remove the backlog entries, debt backlog entries and debt markers it resolves. Never close an issue you fixed: merging the fix closes it.
 - Report by outcome:

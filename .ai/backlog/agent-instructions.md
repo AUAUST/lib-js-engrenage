@@ -20,5 +20,5 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 4. The worker and debugger skills repeat their gated finishing lines word for word
 
-- why: the final-report, worktree-gate and stop-gate lines in the Finishing sections of `issue-implementation.md` and `debugging.md` are identical and must change together.
+- why: the final-report, worktree-gate and stop-gate lines in the Finishing sections of `issue-implementation.md` and `debugging.md`, their worktree setup line and their merger-findings resume line, are near-identical and must change together.
 - want: one source for agents with `gate: true`, generated into each, once the copies start to drift.
