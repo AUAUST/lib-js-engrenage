@@ -1,9 +1,10 @@
 ---
 name: analysis
 description: Analyse a request, concern or part of the project in depth and
-  record its ideal solution, its reach and a recommendation in `resource` or
-  `idea` issues. Use when the user asks to analyse, assess, review or rethink
-  something, or when a request is neither a defect to debug nor work to plan.
+  record its ideal solution, its reach and a recommendation in issues of the
+  type each finding calls for. Use when the user asks to analyse, assess, review
+  or rethink something, or when a request is neither a defect to debug nor work
+  to plan.
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/analysis.md -->
@@ -32,17 +33,19 @@ Apply the project's Analysis rules at full depth, record what they find in issue
 
 Record every finding worth keeping in an issue, without being asked, so it outlives the session. Answer in chat alone only a narrow question whose request expects a short answer.
 
-| Finding                                                                            | Issue                                                             |
-| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| An analysis later work draws on: a study, a comparison, an audit, a recommendation | `resource`, `material` `report`                                   |
-| An internal behavior or contract the project keeps track of                        | `resource`, `material` `specification`                            |
-| Outside documentation the project relies on                                        | `resource`, `material` `reference`                                |
-| Work worth considering, with or without a solution                                 | `idea`, with the `nature` or `defect` a `task` or `problem` takes |
+| Finding                                                                            | Issue                                  |
+| ---------------------------------------------------------------------------------- | -------------------------------------- |
+| A defect the analysis establishes, settled fix or not                              | `problem`, with its `defect`           |
+| Positive work the request or the user accepted, that you do not apply              | `task`, with its `nature`              |
+| Positive work worth considering, not accepted yet                                  | `idea`, with its `nature`              |
+| An analysis later work draws on: a study, a comparison, an audit, a recommendation | `resource`, `material` `report`        |
+| An internal behavior or contract the project keeps track of                        | `resource`, `material` `specification` |
+| Outside documentation the project relies on                                        | `resource`, `material` `reference`     |
 
-- Create and edit only `resource` and `idea` issues.
+- Write a `problem` or `task` complete for a worker who applies it without redesign, and put what the analysis leaves unsettled under **Questions**.
 - Search for an existing issue on the concern and extend it before creating one.
 - Title each issue by its subject, without prefix, in sentence case without trailing punctuation, and set the repository's labels whose description fits the issue.
-- Write a `report` with the parts of your report as `##` sections, and link from it each `idea` it leads to.
+- Write a `report` with the parts of your report as `##` sections, and link from it each issue it leads to.
 
 ## Drafts
 
