@@ -50,3 +50,5 @@
 - engrenage agents claude hook git: moved a module with git mv — the PreToolUse hook loads src and failed on every Bash call until imports were fixed through Edit
 - `pnpm engrenage vitest run`: ran the full suite — `run` became a file filter and only 12 files ran; dropped `run`
 - zsh word splitting: passed an unquoted `$files` list to eslint — zsh passed one word; fed the list through `xargs`
+- `engrenage gate`: ran it on unstaged edits before the user committed — it formatted nothing, so unformatted files reached the commit; caught by `ci:check` and formatted by name
+- `engrenage planning issue publish`: read its tail for the issue number — the tail is the body diff, so it looked unpublished; rerun failed on the removed draft, found #473 with `gh issue list`

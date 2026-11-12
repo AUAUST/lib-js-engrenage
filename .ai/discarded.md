@@ -46,3 +46,4 @@
 - `parent` and `after` on child drafts: sub-issue order (#323) — order scattered across children; parents' `subIssues` decided in #207
 - `tools/github/drafts` sub-domain only: placement of the planner code (#207) — leaves the mixed domain to a later split; layered `tools/github/issues` namespace chosen
 - @octokit/plugin-paginate-graphql: paginate issue-tree connections (#452) — new bundled dependency for one cursor loop; local loop as in the snapshot fetch
+- lazy git imports in issue operations: keep config loading free of git setup — the schema moved to its owner instead, removing the barrel edge
