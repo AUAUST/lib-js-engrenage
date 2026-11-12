@@ -7,7 +7,7 @@ import {
   collectStructureNodes,
   type EnvironmentStructure,
 } from "#project/structure/index";
-import { barrelHeader } from "#tools/typescript/constants";
+import { isGeneratedBarrel } from "#tools/typescript/operations/isGeneratedBarrel";
 import { listCollectedModules } from "#tools/typescript/operations/listCollectedModules";
 import { listDomainModules } from "#tools/typescript/operations/listDomainModules";
 import { planIndexBarrels } from "#tools/typescript/operations/planIndexBarrels";
@@ -29,9 +29,12 @@ async function planRootEntries(
   for (const directory of environment.dirs) {
     const file = posix.join(directory, entryFile);
 
-    const content = await filesystem.read(file);
+    const isHandWritten = (
+      (await filesystem.exists(file)) &&
+      !(await isGeneratedBarrel(filesystem, file))
+    );
 
-    if (content !== undefined && !content.startsWith(barrelHeader)) {
+    if (isHandWritten) {
       continue;
     }
 

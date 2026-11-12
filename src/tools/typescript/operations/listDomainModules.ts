@@ -2,6 +2,7 @@ import { basename, matchesGlob, posix } from "node:path";
 
 import { entries, getOwn } from "@auaust/toolkit/object";
 
+import { isGeneratedBarrel } from "#tools/typescript/operations/isGeneratedBarrel";
 import { listRoleModules } from "#tools/typescript/operations/listRoleModules";
 import { collectRoleNodes } from "#tools/typescript/utils/collectRoleNodes";
 import { isModule } from "#tools/typescript/utils/isModule";
@@ -77,7 +78,18 @@ export async function listDomainModules(
 
       const roleOf = nameRoleFiles(node);
 
-      return files.flatMap((file) => toModule(file, roleOf(file)));
+      const modules = await Promise.all(
+        files.map(async (file) => {
+          const isStaleBarrel = (
+            basename(file) === indexFile &&
+            (await isGeneratedBarrel(filesystem, file))
+          );
+
+          return isStaleBarrel ? [] : toModule(file, roleOf(file));
+        }),
+      );
+
+      return modules.flat();
     }),
   );
 

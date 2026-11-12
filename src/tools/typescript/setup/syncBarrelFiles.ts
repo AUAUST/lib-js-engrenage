@@ -1,5 +1,6 @@
 import { barrelHeader } from "#tools/typescript/constants";
 import { createBarrelRenderer } from "#tools/typescript/operations/createBarrelRenderer";
+import { isGeneratedBarrel } from "#tools/typescript/operations/isGeneratedBarrel";
 import { listBarrelCandidates } from "#tools/typescript/operations/listBarrelCandidates";
 import { planBarrels } from "#tools/typescript/operations/planBarrels";
 import type { LoadedConfig } from "#project/config/index";
@@ -33,9 +34,7 @@ export async function syncBarrelFiles(config: LoadedConfig) {
       continue;
     }
 
-    const content = await filesystem.read(file);
-
-    if (content?.startsWith(barrelHeader) === true) {
+    if (await isGeneratedBarrel(filesystem, file)) {
       await filesystem.remove(file);
     }
   }

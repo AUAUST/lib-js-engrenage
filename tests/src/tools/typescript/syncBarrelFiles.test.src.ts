@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+
 import { ESLint } from "eslint";
 import { describe, expect, test } from "vitest";
 
@@ -230,6 +232,46 @@ export type * from "#modules/guard/utils/isNull";
       `${header}export { isA } from "#modules/a/utils/isA";
 export type * from "#modules/a/utils/isA";
 `,
+    );
+  });
+
+  test("removes a generated barrel in a role without `index` and leaves it out of the domain's entry in one sync", async () => {
+    const { project, sync } = createKit({
+      files: {
+        "src/modules/a/utils/isA.ts": "export function isA() {}\n",
+        "src/modules/a/utils/index.ts": `${header}export { isA } from "#modules/a/utils/isA";\n`,
+      },
+    });
+
+    await sync();
+
+    expect(existsSync(project.resolve("src/modules/a/utils/index.ts"))).toBe(
+      false,
+    );
+
+    expect(project.read("src/modules/a/entry.ts")).toBe(
+      `${header}export { isA } from "#modules/a/utils/isA";
+export type * from "#modules/a/utils/isA";
+`,
+    );
+  });
+
+  test("keeps a hand-written `index.ts` in a role without `index` as a module of the domain's entry", async () => {
+    const { project, sync } = createKit({
+      files: {
+        "src/modules/a/utils/isA.ts": "export function isA() {}\n",
+        "src/modules/a/utils/index.ts": "export function index() {}\n",
+      },
+    });
+
+    await sync();
+
+    expect(project.read("src/modules/a/utils/index.ts")).toBe(
+      "export function index() {}\n",
+    );
+
+    expect(project.read("src/modules/a/entry.ts")).toContain(
+      'from "#modules/a/utils/index";',
     );
   });
 
