@@ -91,7 +91,10 @@ describe("engrenage pnpm upgrade", () => {
   test("warns for a project ahead of the range and moves it back with --yes", async () => {
     const project = createProject({
       devEngines: {
-        packageManager: { name: "pnpm", version: `^${versions.nextMajor}` },
+        packageManager: {
+          name: "pnpm",
+          version: `^${versions.nextMajor}`,
+        },
       },
     });
 

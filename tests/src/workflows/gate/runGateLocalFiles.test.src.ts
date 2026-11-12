@@ -143,7 +143,10 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     });
 
     expect(failures).toEqual([
-      { step: "staging", output: expect.stringContaining("src/index.ts") },
+      {
+        step: "staging",
+        output: expect.stringContaining("src/index.ts"),
+      },
     ]);
 
     expect(project.read("src/index.ts")).toBe(
@@ -168,7 +171,10 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     });
 
     expect(failures).toEqual([
-      { step: "staging", output: expect.stringContaining("src/index.ts") },
+      {
+        step: "staging",
+        output: expect.stringContaining("src/index.ts"),
+      },
     ]);
 
     expect(project.read("src/index.ts")).toBe(
@@ -189,7 +195,10 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     const { failures } = await runGate(config, { mode: "worktree" });
 
     expect(failures).toEqual([
-      { step: "verification", output: expect.stringContaining("src/index.ts") },
+      {
+        step: "verification",
+        output: expect.stringContaining("src/index.ts"),
+      },
     ]);
 
     expect(await runGate(config, { mode: "worktree" })).toEqual({

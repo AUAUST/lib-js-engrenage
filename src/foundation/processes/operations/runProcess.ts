@@ -14,7 +14,9 @@ export async function runProcess(
   const commandLine = [command, ...args].join(" ");
 
   if (result.error !== undefined) {
-    throw new Error(`Cannot run ${commandLine}`, { cause: result.error });
+    throw new Error(`Cannot run ${commandLine}`, {
+      cause: result.error,
+    });
   }
 
   if (result.signal !== null) {

@@ -328,7 +328,9 @@ export function printAssignment(
         node,
         doc: print(selector, { assignmentLayout: "break-lhs" }),
         members: node.type === "TSUnionType"
-          ? print(selector, { assignmentLayout: "break-after-operator" })
+          ? print(selector, {
+              assignmentLayout: "break-after-operator",
+            })
           : undefined,
       });
 

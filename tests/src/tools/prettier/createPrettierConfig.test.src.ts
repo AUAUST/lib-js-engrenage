@@ -35,7 +35,9 @@ describe("createPrettierConfig", () => {
       "{ format: { quotes: 'single', semicolons: false, lineWidth: 100 } }",
     );
 
-    const config = await createPrettierConfig(context, { tabWidth: 4 });
+    const config = await createPrettierConfig(context, {
+      tabWidth: 4,
+    });
 
     expectTypeOf(config).toEqualTypeOf<Config>();
 
@@ -78,7 +80,9 @@ describe("definePrettierConfig", () => {
       },
     };
 
-    const config = await definePrettierConfig({ plugins: [upperCase] });
+    const config = await definePrettierConfig({
+      plugins: [upperCase],
+    });
 
     expect(config.plugins).toEqual([
       upperCase,

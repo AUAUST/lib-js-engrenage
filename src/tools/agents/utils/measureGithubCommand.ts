@@ -21,6 +21,7 @@ function measureWrite(
 ): BudgetFinding[] {
   // @debt a body passed with `--body-file <path>`, piped from a draft or unreadable is not read here, so the whole command's text stands in for it.
   const body = write.body?.kind === "text" ? write.body.text : command;
+
   const subject = `gh issue ${write.action}`;
 
   if (write.action === "comment") {

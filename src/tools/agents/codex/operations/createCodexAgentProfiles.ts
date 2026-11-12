@@ -57,7 +57,9 @@ export function createCodexAgentProfiles({
         stringifyTOML({
           name,
           description: agent.description,
-          ...(effort !== undefined && { model_reasoning_effort: effort }),
+          ...(effort !== undefined && {
+            model_reasoning_effort: effort,
+          }),
           developer_instructions: bootstrap + body,
         })
       ),

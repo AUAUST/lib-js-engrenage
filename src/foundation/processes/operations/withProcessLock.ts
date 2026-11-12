@@ -183,7 +183,11 @@ export async function withProcessLock<T>(
     label,
     timeout,
     onWait,
-  }: { label: string; timeout: number; onWait(holder: LockHolder): void },
+  }: {
+    label: string;
+    timeout: number;
+    onWait(holder: LockHolder): void;
+  },
   run: () => Promise<T>,
 ): Promise<T> {
   const holder: LockHolder = {

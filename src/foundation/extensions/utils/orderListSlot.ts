@@ -26,7 +26,10 @@ export function orderListSlot<Item extends Registered>({
   edges: boolean | EdgeDeclaration;
   items: readonly Item[];
   matches(read: string, produced: string): boolean;
-}): { readonly order: readonly Item[]; readonly findings: readonly string[] } {
+}): {
+  readonly order: readonly Item[];
+  readonly findings: readonly string[];
+} {
   const findings: string[] = [];
 
   if (stages === undefined) {
@@ -46,7 +49,10 @@ export function orderListSlot<Item extends Registered>({
   });
 
   if (edges === false) {
-    return { order: staged.flatMap(({ members }) => members), findings };
+    return {
+      order: staged.flatMap(({ members }) => members),
+      findings,
+    };
   }
 
   checkLaterStages(slot, staged, matches, findings);

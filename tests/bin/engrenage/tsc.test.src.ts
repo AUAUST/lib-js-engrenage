@@ -189,6 +189,7 @@ describe("engrenage typecheck:dist", { timeout: binaryTimeout }, () => {
     await runDefinition(engrenage, "typecheck:dist");
 
     expect(process.exitCode).not.toBe(0);
+
     expect(output()).toContain("tests/index.ts(1,14): error TS2322");
   });
 

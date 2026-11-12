@@ -24,12 +24,19 @@ describe("loadConfig", () => {
     const config = await loadConfig(project.resolve("src/nested"));
 
     expect(config.context.root).toBe(project.root);
-    expect(await config.resolve("preset")).toMatchObject({ name: "library" });
-    expect(await config.resolve("traits")).toEqual({ published: true });
+
+    expect(await config.resolve("preset")).toMatchObject({
+      name: "library",
+    });
+
+    expect(await config.resolve("traits")).toEqual({
+      published: true,
+    });
 
     const inner = await loadConfig(project.resolve("packages/inner/src"));
 
     expect(inner.context.root).toBe(project.resolve("packages/inner"));
+
     expect(await inner.resolve("preset")).toBe(false);
   });
 
@@ -38,8 +45,14 @@ describe("loadConfig", () => {
 
     const config = await loadConfig(root);
 
-    expect(await config.resolve("preset")).toMatchObject({ name: "library" });
-    expect(await config.resolve("traits")).toEqual({ published: true });
+    expect(await config.resolve("preset")).toMatchObject({
+      name: "library",
+    });
+
+    expect(await config.resolve("traits")).toEqual({
+      published: true,
+    });
+
     expect((await config.resolve("tests")).dirs).toEqual(["test"]);
 
     expect((await config.resolve("files")).fixtures).toEqual([
@@ -223,6 +236,7 @@ describe("loadConfig", () => {
     const refreshed = await loadConfig(project.root);
 
     expect(refreshed).not.toBe(config);
+
     expect(refreshed.context.filesystem).not.toBe(config.context.filesystem);
 
     expect(await refreshed.resolve("preset")).toMatchObject({
@@ -257,7 +271,9 @@ describe("loadConfig", () => {
   test("locates the file resources of a listed extension and of the built-ins", async () => {
     const fixture = getFixture("projects/external");
 
-    const config = await loadConfig(fixture, { searchParents: false });
+    const config = await loadConfig(fixture, {
+      searchParents: false,
+    });
 
     const resources = await config.resolve("resources");
 
@@ -275,7 +291,9 @@ describe("loadConfig", () => {
   test("validates the input of a listed extension's key", async () => {
     const fixture = getFixture("projects/external");
 
-    const config = await loadConfig(fixture, { searchParents: false });
+    const config = await loadConfig(fixture, {
+      searchParents: false,
+    });
 
     await expect(validateConfig(config)).resolves.toBe(config);
 
@@ -336,7 +354,9 @@ describe("traits", () => {
 
     const app = await resolve("");
 
-    expect(await library.resolve("traits")).toEqual({ published: true });
+    expect(await library.resolve("traits")).toEqual({
+      published: true,
+    });
 
     expect((await library.resolve("tests")).dist.tsconfig.owner).toBe(
       "tests.dist",
@@ -354,13 +374,17 @@ describe("traits", () => {
 
     const enabled = await resolve('traits: { enable: ["published"] }');
 
-    expect(await disabled.resolve("traits")).toEqual({ published: false });
+    expect(await disabled.resolve("traits")).toEqual({
+      published: false,
+    });
 
     expect(
       (await disabled.resolve("tests")).dist.tsconfig.owner,
     ).toBeUndefined();
 
-    expect(await enabled.resolve("traits")).toEqual({ published: true });
+    expect(await enabled.resolve("traits")).toEqual({
+      published: true,
+    });
   });
 
   test("manages no tests.dist tsconfig set to false, even when published", async () => {

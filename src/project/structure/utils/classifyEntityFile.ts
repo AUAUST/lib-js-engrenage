@@ -45,6 +45,7 @@ export function classifyEntityFile(
   }
 
   const role = atRoot ? matched : undefined;
+
   const contract = role === undefined ? undefined : roles?.roles[role];
 
   return {

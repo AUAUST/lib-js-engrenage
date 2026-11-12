@@ -57,7 +57,9 @@ function connection(nodes: readonly unknown[]) {
   };
 }
 
-const requestSchema = object({ variables: object({ number: number() }) });
+const requestSchema = object({
+  variables: object({ number: number() }),
+});
 
 function renderIssue(number: number, levels: number): Record<string, unknown> {
   const issue = tree[number];
@@ -100,7 +102,10 @@ function mockGraphql() {
           JSON.stringify({
             data: {
               repository: {
-                issue: { ...renderIssue(variables.number, 2), parent: null },
+                issue: {
+                  ...renderIssue(variables.number, 2),
+                  parent: null,
+                },
               },
             },
           }),

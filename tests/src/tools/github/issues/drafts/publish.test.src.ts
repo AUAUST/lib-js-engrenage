@@ -262,6 +262,7 @@ function route(method: string, path: string, body: Record<string, unknown>) {
     case "PATCH ": {
       issue.title = String(body.title);
       issue.body = String(body.body);
+
       issue.labels = (body.labels as string[] | undefined) ?? issue.labels;
 
       return respond(renderIssue(issue));
@@ -723,6 +724,7 @@ Goal: the group
     expect({ lines, passed }).toMatchObject({ passed: true });
 
     const group = [...issues.values()].find(({ title }) => title === "Group");
+
     const step = [...issues.values()].find(({ title }) => title === "Step");
 
     expect(group?.body).toBe("#10 · Goal: the group");

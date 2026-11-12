@@ -19,7 +19,10 @@ export async function linkSubIssues(
   current: readonly IssueLocation[],
   desired: readonly IssueLocation[],
 ): Promise<void> {
-  const route = { ...splitRepository(repository), issue_number: parent };
+  const route = {
+    ...splitRepository(repository),
+    issue_number: parent,
+  };
 
   const actual = [
     ...current.filter((location) => includes(desired, location)),

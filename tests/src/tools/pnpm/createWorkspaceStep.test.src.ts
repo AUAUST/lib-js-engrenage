@@ -80,7 +80,9 @@ describe("createWorkspaceStep", () => {
     const context = await createContext(content);
 
     expect(await createWorkspaceStep().isMissing(context)).toBe(false);
+
     expect(await context.filesystem.read("pnpm-workspace.yaml")).toBe(content);
+
     expect(context.filesystem.changes()).toEqual([]);
   });
 

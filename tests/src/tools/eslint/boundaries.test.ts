@@ -43,7 +43,10 @@ function createConfigRoleProject(strict: boolean) {
   });
 
   return createTemporaryProject({
-    "package.json": JSON.stringify({ name: "library", type: "module" }),
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+    }),
     "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry(), config())} } };\n`,
     "tsconfig.json": "{}",
     "src/feature/index.ts": exported,
@@ -65,7 +68,10 @@ function createDerivedDefinerProject() {
   );
 
   return createTemporaryProject({
-    "package.json": JSON.stringify({ name: "library", type: "module" }),
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+    }),
     "engrenage.config.ts": `export default { preset: "library", src: { roles: ${roles} } };\n`,
     "tsconfig.json": "{}",
     "src/tools/vite/index.ts": exported,
@@ -80,7 +86,10 @@ function createBarrelProject() {
     index: true,
   });
 
-  const assets = createRolePreset({ name: "assets", accepts: "*.json" });
+  const assets = createRolePreset({
+    name: "assets",
+    accepts: "*.json",
+  });
 
   return createTemporaryProject({
     "package.json": JSON.stringify({
@@ -239,6 +248,7 @@ describe("structure boundaries", () => {
     );
 
     expect(message).toContain("private to `project/other`");
+
     expect(message).toContain("Import it from `#project/other/index`");
   });
 
@@ -554,6 +564,7 @@ describe("structure boundaries", () => {
     ]);
 
     expect(await lint("src/project/feature/entry.ts", work)).toEqual([]);
+
     expect(await lint("src/project/feature/entry.ts", exported)).toEqual([]);
 
     expect(

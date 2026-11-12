@@ -37,7 +37,10 @@ function placeInWalkOrder(
   plan: string,
   depth = 0,
 ): PlacedIssue[] {
-  const location = { repository: tree.repository, number: tree.issue.number };
+  const location = {
+    repository: tree.repository,
+    number: tree.issue.number,
+  };
 
   const below = tree.issue.type === plan
     ? [location]

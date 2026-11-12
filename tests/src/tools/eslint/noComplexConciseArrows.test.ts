@@ -11,7 +11,10 @@ const file = "src/feature/utils/render.ts";
 // @debt the temporary project and ESLint instance repeat noPointlessDynamicImport.test.ts; a shared test utility would own them
 async function createLinter() {
   const project = createTemporaryProject({
-    "package.json": JSON.stringify({ name: "library", type: "module" }),
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+    }),
     "engrenage.config.ts": `export default { preset: "library", format: { lineWidth: 60 } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {

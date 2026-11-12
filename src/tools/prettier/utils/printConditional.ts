@@ -63,7 +63,10 @@ function withoutOwnIndent(target: Doc): Doc {
   const last = target.contents.at(-1);
 
   return isObject(last) && !isArray(last) && last.type === "indent"
-    ? { ...target, contents: [...target.contents.slice(0, -1), last.contents] }
+    ? {
+        ...target,
+        contents: [...target.contents.slice(0, -1), last.contents],
+      }
     : target;
 }
 

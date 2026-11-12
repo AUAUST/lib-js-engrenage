@@ -51,7 +51,9 @@ async function listCodeFiles(
   directory: Directory,
   modules: ModuleFiles,
 ): Promise<string[]> {
-  const files = await filesystem.list(directory, { skip: ignoredDirectories });
+  const files = await filesystem.list(directory, {
+    skip: ignoredDirectories,
+  });
 
   return files.filter((file) => isCodeFile(posix.basename(file), modules));
 }

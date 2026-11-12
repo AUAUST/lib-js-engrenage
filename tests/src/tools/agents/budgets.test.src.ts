@@ -126,8 +126,16 @@ describe("budgets", () => {
       },
     ] as const;
 
-    reportBudgetFindings(findings, { mode: "warn", event: "PreToolUse" });
-    reportBudgetFindings(findings, { mode: "deny", event: "PreToolUse" });
+    reportBudgetFindings(findings, {
+      mode: "warn",
+      event: "PreToolUse",
+    });
+
+    reportBudgetFindings(findings, {
+      mode: "deny",
+      event: "PreToolUse",
+    });
+
     reportBudgetFindings([], { mode: "deny", event: "PreToolUse" });
 
     const [warn, deny] = write.mock.calls.map(([chunk]) => {
@@ -139,7 +147,9 @@ describe("budgets", () => {
     write.mockRestore();
 
     expect(warn?.hookSpecificOutput.additionalContext).toContain("300 words");
+
     expect(warn?.hookSpecificOutput.permissionDecision).toBeUndefined();
+
     expect(deny?.hookSpecificOutput.permissionDecision).toBe("deny");
   });
 });

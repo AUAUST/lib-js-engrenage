@@ -19,7 +19,9 @@ export function mergeStructureMetadata({
 }): Pick<StructureOptions, "namespaces" | "domains"> {
   const namespaces = new Map<
     string,
-    DeclaredStructure["namespaces"][string] & { source: StructureSource }
+    DeclaredStructure["namespaces"][string] & {
+      source: StructureSource;
+    }
   >(
     entries(declared.namespaces).map(([path, namespace]) => {
       return [path, { ...namespace, source: "config" }];
@@ -102,7 +104,10 @@ export function mergeStructureMetadata({
   const resolvedNamespaces = [...namespaces].map(([path, namespace]) => {
     return [
       path,
-      freeze({ ...namespace, relation: namespace.relation ?? "peers" }),
+      freeze({
+        ...namespace,
+        relation: namespace.relation ?? "peers",
+      }),
     ] as const;
   });
 

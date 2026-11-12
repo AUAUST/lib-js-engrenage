@@ -77,7 +77,9 @@ describe("parseIssueBody", () => {
     ]);
 
     expect(parsed.steps?.numbered).toBe(true);
+
     expect(parsed.steps?.items[0]?.checkpoints).toEqual(["a exists."]);
+
     expect(parsed.references).toEqual([10, 11]);
   });
 });
@@ -95,7 +97,10 @@ describe("checkIssueBody", () => {
     );
 
     expect(findings).toMatchObject([
-      { rule: "unknown-section", message: expect.stringContaining("Scope") },
+      {
+        rule: "unknown-section",
+        message: expect.stringContaining("Scope"),
+      },
     ]);
   });
 
@@ -212,7 +217,10 @@ function mockGithub(
         if (issue.parent === undefined) {
           status = 404;
         } else {
-          json = { number: issue.parent, repository_url: repositoryUrl };
+          json = {
+            number: issue.parent,
+            repository_url: repositoryUrl,
+          };
         }
       }
 

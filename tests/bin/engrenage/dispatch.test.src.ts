@@ -73,7 +73,10 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
   });
 
   vi.mocked(readHookPayload).mockResolvedValue({
-    tool_input: { subagent_type: "worker", prompt: "Issue: o/r#1\r\nContext" },
+    tool_input: {
+      subagent_type: "worker",
+      prompt: "Issue: o/r#1\r\nContext",
+    },
   });
 
   await dispatch();
@@ -93,7 +96,10 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
   );
 
   vi.mocked(readHookPayload).mockResolvedValue({
-    tool_input: { subagent_type: "debugger", prompt: "A direct user failure" },
+    tool_input: {
+      subagent_type: "debugger",
+      prompt: "A direct user failure",
+    },
   });
 
   await dispatch();
@@ -140,7 +146,10 @@ test.each([
   vi.mocked(readHookPayload).mockResolvedValue({
     cwd: project.root,
     tool_name: "spawn_agent",
-    tool_input: { agent_type: name, message: "Issue: o/r#1\nContext" },
+    tool_input: {
+      agent_type: name,
+      message: "Issue: o/r#1\nContext",
+    },
   });
 
   await codexDispatch();

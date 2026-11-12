@@ -50,6 +50,7 @@ export async function syncHooks(
   });
 
   const wrapped = createHookCommand(prefix);
+
   const ownedPrefix = wrapped.slice(0, wrapped.indexOf(prefix) + prefix.length);
 
   const path = resolve(file);

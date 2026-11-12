@@ -4,5 +4,8 @@ import { renderGateCondition } from "#tools/lefthook/utils/renderGateCondition";
 export function renderMessageGateCommand(variables: readonly string[]) {
   return variables.length === 0
     ? undefined
-    : { only: [renderGateCondition(variables)], run: messageGateCommand };
+    : {
+        only: [renderGateCondition(variables)],
+        run: messageGateCommand,
+      };
 }

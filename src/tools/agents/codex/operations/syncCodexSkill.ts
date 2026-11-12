@@ -26,6 +26,7 @@ export async function syncCodexSkill(
   }
 
   const policyFile = `${codexSkillsDir}/${name}/agents/openai.yaml`;
+
   const policy = parseDocument((await filesystem.read(policyFile)) ?? "");
 
   if (policy.errors.length > 0) {

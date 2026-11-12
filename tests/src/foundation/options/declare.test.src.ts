@@ -21,6 +21,7 @@ describe("declare", () => {
     });
 
     expect(safeParse(gitSchema.schema, { gitignore: 1 }).success).toBe(false);
+
     expect(safeParse(gitSchema.schema, { other: 1 }).success).toBe(false);
 
     expect(
@@ -118,6 +119,7 @@ describe("declare", () => {
     });
 
     expect(limited.resolve(5, { max: 9 }, "n")).toBe(5);
+
     expect(() => limited.resolve(5, { max: 3 }, "n")).toThrow("Invalid n");
   });
 });

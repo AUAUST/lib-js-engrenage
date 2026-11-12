@@ -122,7 +122,9 @@ describe("defineGroup", () => {
     async (args) => {
       const { output, run } = createExtendedProgram();
 
-      await expect(run(...args)).rejects.toMatchObject({ exitCode: 0 });
+      await expect(run(...args)).rejects.toMatchObject({
+        exitCode: 0,
+      });
 
       expect(output.join("")).toContain("--extra");
     },

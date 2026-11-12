@@ -96,6 +96,7 @@ export function createEntityIndex({
 
   function surfaceOf(node: StructureNode, environment: EnvironmentStructure) {
     const extension = extname(environment.indexFile);
+
     const entry = publicEntries.get(`${node.path}/${environment.entryFile}`);
 
     // @debt reads a child role's visibility from the environment's roles, which miss the scoped roles a namespace enables; `environment.roles` holds every role the walk met

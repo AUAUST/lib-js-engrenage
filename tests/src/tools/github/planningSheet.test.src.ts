@@ -112,7 +112,9 @@ describe("planning sheet", () => {
     const content = await config.context.filesystem.read(sheet);
 
     expect(content).toContain("| `app` | `AUAUST/app` |");
+
     expect(content).toContain("| `toolkit` | `AUAUST/lib-js-toolkit` |");
+
     expect(content).toContain("### `app`\n\n| Label | Description |");
     expect(content).toContain("| Tooling | Scripts and bins. |");
     expect(content).toContain("| Tests | Test suites. |");

@@ -56,7 +56,10 @@ describe("roles", () => {
       (await loadConfig(duplicated.root)).resolve("environmentRoles"),
     ).rejects.toThrow("src.roles[0] and src.roles[1] are both named utils");
 
-    const helpers = createRolePreset({ name: "helpers", purpose: "Helpers." });
+    const helpers = createRolePreset({
+      name: "helpers",
+      purpose: "Helpers.",
+    });
 
     const nested = createProject({
       src: { roles: [utils({ roles: [helpers()] })] },

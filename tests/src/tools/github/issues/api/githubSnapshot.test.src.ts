@@ -104,7 +104,10 @@ const responses: Record<string, unknown> = {
 
 function createRegistry() {
   const project = createTemporaryProject({
-    "package.json": JSON.stringify({ name: "@o/b", repository: "github:o/b" }),
+    "package.json": JSON.stringify({
+      name: "@o/b",
+      repository: "github:o/b",
+    }),
   });
 
   const config = createProjectConfig({

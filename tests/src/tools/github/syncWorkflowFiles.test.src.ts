@@ -68,6 +68,7 @@ describe("syncWorkflowFiles", () => {
     );
 
     expect(publish).toContain("run: pnpm run ci:check\n");
+
     expect(publish).toContain("publish-script: pnpm run ci:publish\n");
 
     project.write(".github/workflows/ci.yml", "name: Edited\n");

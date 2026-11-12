@@ -46,7 +46,10 @@ function localizeReferences(
       return known
         ? toDraftReference(
             toLocalStem(
-              { repository, number: Number(urlNumber || fullNumber || plain) },
+              {
+                repository,
+                number: Number(urlNumber || fullNumber || plain),
+              },
               context,
             ),
           )

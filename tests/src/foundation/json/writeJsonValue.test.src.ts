@@ -46,7 +46,9 @@ test.each([0, 1, 2])(
     expect(JSON.parse(output)).toEqual({
       hooks: {
         PreToolUse: [
-          { hooks: members.filter((_member, position) => position !== index) },
+          {
+            hooks: members.filter((_member, position) => position !== index),
+          },
         ],
       },
       custom: true,

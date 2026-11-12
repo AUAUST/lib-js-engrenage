@@ -148,6 +148,7 @@ export function parseIssueBody(body: string): ParsedIssueBody {
   const hasHeader = headerPattern.test(first);
   const sections = splitSections(hasHeader ? rest : lines);
   const steps = sections.find(({ name }) => name === stepsSection);
+
   const roadmap = sections.find(({ name }) => name === roadmapSection);
 
   return {
@@ -160,7 +161,10 @@ export function parseIssueBody(body: string): ParsedIssueBody {
           return [...stripCode(text).matchAll(roadmapReferencePattern)]
             .slice(0, 1)
             .map((match) => {
-              return { ...toLocation(match), ...parseRoadmapLine(text) };
+              return {
+                ...toLocation(match),
+                ...parseRoadmapLine(text),
+              };
             });
         }),
     references: findReferences(body),

@@ -199,7 +199,11 @@ describe("withProcessLock", () => {
 
     const [code, signal] = await once(child, "exit");
 
-    expect({ code, signal }).toEqual({ code: null, signal: "SIGTERM" });
+    expect({ code, signal }).toEqual({
+      code: null,
+      signal: "SIGTERM",
+    });
+
     expect(existsSync(file)).toBe(false);
   });
 });

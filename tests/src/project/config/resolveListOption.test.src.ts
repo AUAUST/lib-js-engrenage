@@ -16,6 +16,7 @@ function getDefaults(): readonly string[] {
 describe("resolveListOption", () => {
   test("returns the defaults when the option is omitted or true", () => {
     expect(resolveListOption(undefined, getDefaults, "list")).toBe(defaults);
+
     expect(resolveListOption(true, getDefaults, "list")).toBe(defaults);
   });
 

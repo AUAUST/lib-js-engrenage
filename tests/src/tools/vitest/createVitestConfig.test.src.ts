@@ -199,7 +199,9 @@ describe("createVitestConfig type checking", () => {
       "tests/example.test-d.ts": 'const value: number = "text";\nexport { value };\n',
     });
 
-    mkdirSync(project.resolve("node_modules/.bin"), { recursive: true });
+    mkdirSync(project.resolve("node_modules/.bin"), {
+      recursive: true,
+    });
 
     symlinkSync(typescriptPackage, project.resolve("node_modules/typescript"));
 

@@ -19,7 +19,9 @@ const valibot = fileURLToPath(
 function createExternalProject() {
   const project = createTemporaryProject();
 
-  cpSync(getFixture("projects/external"), project.root, { recursive: true });
+  cpSync(getFixture("projects/external"), project.root, {
+    recursive: true,
+  });
 
   project.write("node_modules/.keep", "");
 

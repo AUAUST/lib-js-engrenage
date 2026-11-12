@@ -92,7 +92,11 @@ async function findConfig(
 export async function readRawConfig(
   start: Directory,
   { searchParents = true }: { searchParents?: boolean } = {},
-): Promise<{ root: Directory; configFile: File | undefined; raw: RawConfig }> {
+): Promise<{
+  root: Directory;
+  configFile: File | undefined;
+  raw: RawConfig;
+}> {
   const {
     root,
     configFile,

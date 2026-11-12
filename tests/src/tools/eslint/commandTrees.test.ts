@@ -10,7 +10,10 @@ const command = "export default 1;\n";
 
 async function createLinter() {
   const project = createTemporaryProject({
-    "package.json": JSON.stringify({ name: "library", type: "module" }),
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+    }),
     "engrenage.config.ts": 'export default { preset: "library" };\n',
     "scripts/index.ts": "export default 1;\n",
     "scripts/executable.ts": "await Promise.resolve();\n",

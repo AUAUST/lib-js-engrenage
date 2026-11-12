@@ -49,7 +49,10 @@ async function createLinter() {
   const roles = renderCodeRoles(entry()).slice(0, -1);
 
   const project = createTemporaryProject({
-    "package.json": JSON.stringify({ name: "library", type: "module" }),
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+    }),
     "engrenage.config.ts": `export default { preset: "library", src: { roles: ${roles}, ${checkedRole}, ${configRole}], structure: { layers: ["project"] } } };\n`,
     "src/project/feature/index.ts": "export {};\n",
     "src/project/feature/checked/one.ts": "export {};\n",
@@ -137,7 +140,10 @@ describe("role rules", () => {
 
   test("reject a raw rule module, naming defineRoleRule", async () => {
     const project = createTemporaryProject({
-      "package.json": JSON.stringify({ name: "library", type: "module" }),
+      "package.json": JSON.stringify({
+        name: "library",
+        type: "module",
+      }),
       "engrenage.config.ts": `export default { src: { roles: [{ name: "raw", rules: { own: { create() { return {}; } } } }] } };\n`,
     });
 

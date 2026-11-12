@@ -15,7 +15,10 @@ export async function linkPublishedIssue(
 
   const { number } = findPublishedLocation(draft, context, numbers);
 
-  const route = { ...splitRepository(access.repository), issue_number: number };
+  const route = {
+    ...splitRepository(access.repository),
+    issue_number: number,
+  };
 
   if (manifest.subIssues !== undefined) {
     const desired = listDraftReferences(manifest.subIssues).map((reference) => {

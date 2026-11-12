@@ -9,7 +9,10 @@ async function listTargets(
 ): Promise<readonly string[]> {
   const project = createTemporaryProject({
     "engrenage.config.ts": "export default {};\n",
-    "package.json": JSON.stringify({ type: "module", devDependencies }),
+    "package.json": JSON.stringify({
+      type: "module",
+      devDependencies,
+    }),
   });
 
   const { targets } = await listSyncOptions(await loadConfig(project.root));

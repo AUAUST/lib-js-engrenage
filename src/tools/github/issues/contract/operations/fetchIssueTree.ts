@@ -294,7 +294,10 @@ async function buildSubIssues(
     { ...node.subIssues, nodes: [] },
   );
 
-  const parent = { repository: access.repository, number: node.number };
+  const parent = {
+    repository: access.repository,
+    number: node.number,
+  };
 
   return Promise.all([
     ...fetched.map((raw) => buildTree(access, raw, parent)),

@@ -91,7 +91,9 @@ function renderLabel(
 function listDiagnostics(node: StructureNode): TreeRow[] {
   return [
     ...(node.strays ?? []).map((file) => {
-      return { line: `${file}  unclassified (file outside any role)` };
+      return {
+        line: `${file}  unclassified (file outside any role)`,
+      };
     }),
     ...(node.cardinality ?? []).map(({ role, reason, files, globs }) => {
       return {
@@ -198,7 +200,10 @@ export function renderStructureTree({
 }): string[] {
   const { root } = environment;
 
-  const options = { aliases: findAliases(environment, aliases), detailed };
+  const options = {
+    aliases: findAliases(environment, aliases),
+    detailed,
+  };
 
   return [
     renderLabel(root, options, `${environment.dirs.join("/ ")}/`, [

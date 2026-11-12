@@ -58,7 +58,9 @@ function checkCompatibility(extensions: readonly Extension[]): void {
       return [`${name} declares the invalid engrenage range "${range}"`];
     }
 
-    return satisfies(manifest.version, range, { includePrerelease: true })
+    return satisfies(manifest.version, range, {
+      includePrerelease: true,
+    })
       ? []
       : [
           `${name} requires engrenage ${range}, but ${manifest.version} is installed`,

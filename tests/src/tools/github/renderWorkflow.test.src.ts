@@ -16,7 +16,10 @@ interface WorkflowStep {
 interface WorkflowJob {
   name: string;
   needs?: readonly string[];
-  strategy?: { "fail-fast": boolean; "matrix": { shard: readonly number[] } };
+  strategy?: {
+    "fail-fast": boolean;
+    "matrix": { shard: readonly number[] };
+  };
   steps: readonly WorkflowStep[];
 }
 
@@ -100,7 +103,9 @@ describe("renderWorkflow", () => {
   });
 
   test("relocates a nested project's commands and files", async () => {
-    const workflow = await render("publish.yml", { directory: "packages/app" });
+    const workflow = await render("publish.yml", {
+      directory: "packages/app",
+    });
 
     expect(workflow.defaults?.run["working-directory"]).toBe("packages/app");
 

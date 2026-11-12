@@ -116,6 +116,7 @@ describe("tsconfig build info", () => {
     const { read } = await syncProject({});
 
     expect(read("tsconfig.src.json").compilerOptions.incremental).toBe(true);
+
     expect(read("tsconfig.json").compilerOptions).toBeUndefined();
   });
 
@@ -211,6 +212,7 @@ describe(
       );
 
       expect(process.exitCode).not.toBe(0);
+
       expect(output()).toContain("tests/index.ts(3,14): error TS2322");
     });
   },

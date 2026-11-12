@@ -71,7 +71,10 @@ export async function createPublishedIssue(
 
   const created = await access.client.request(
     "POST /repos/{owner}/{repo}/issues",
-    { ...splitRepository(access.repository), title: draft.manifest.title },
+    {
+      ...splitRepository(access.repository),
+      title: draft.manifest.title,
+    },
   );
 
   const data = validate(createdSchema, created.data, `issue ${draft.stem}`);
@@ -87,13 +90,19 @@ export async function createPublishedIssue(
 
   const body = data.body ?? "";
 
-  const location = { repository: access.repository, number: data.number };
+  const location = {
+    repository: access.repository,
+    number: data.number,
+  };
 
   const stem = toLocalStem(location, context);
 
   numbers.set(draft.stem, location);
 
-  lookup.remember(location, { id: data.id, type: draft.manifest.type });
+  lookup.remember(location, {
+    id: data.id,
+    type: draft.manifest.type,
+  });
 
   for (const other of drafts) {
     rewriteReference(other, context, draft.stem, toDraftReference(stem));

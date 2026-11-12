@@ -11,7 +11,11 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedBin } from "#project/environments/index";
 
 export async function resolveCommandFiles(
-  config: { bin: ResolvedBin; roles: ResolvedRoles; filesystem: Filesystem },
+  config: {
+    bin: ResolvedBin;
+    roles: ResolvedRoles;
+    filesystem: Filesystem;
+  },
   outDir: string,
 ): Promise<Record<string, string>> {
   const commandFiles: Record<string, string> = {};

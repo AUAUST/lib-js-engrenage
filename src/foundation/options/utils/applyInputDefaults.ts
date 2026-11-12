@@ -63,7 +63,10 @@ function place(
     return current;
   }
 
-  return { ...current, [head]: place(current[head], rest, fallback, path) };
+  return {
+    ...current,
+    [head]: place(current[head], rest, fallback, path),
+  };
 }
 
 export function applyInputDefaults(

@@ -18,6 +18,7 @@ describe("createTsconfig", () => {
     });
 
     expect(tsconfig.outDir).toBe("dist");
+
     expect(tsconfig.compilerOptions).toBe(tsconfig.optional.compilerOptions);
   });
 
@@ -82,6 +83,7 @@ describe("createTsconfig", () => {
     });
 
     expect(tsconfig.optional.outDir).toBeUndefined();
+
     expect(() => tsconfig.paths).toThrow(`No tsconfig found in ${root}`);
   });
 

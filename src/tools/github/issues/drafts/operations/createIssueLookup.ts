@@ -23,7 +23,10 @@ export function createIssueLookup(client: GithubClient): IssueLookup {
 
   function remember(
     location: IssueLocation,
-    issue: { readonly id: number; readonly type?: string | undefined },
+    issue: {
+      readonly id: number;
+      readonly type?: string | undefined;
+    },
   ) {
     ids.set(toKey(location), issue.id);
 

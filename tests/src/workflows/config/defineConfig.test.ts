@@ -23,6 +23,7 @@ describe("defineConfig", () => {
     };
 
     expect(defineConfig(config)).toBe(config);
+
     expectTypeOf(defineConfig).returns.toEqualTypeOf<Resolvable<ConfigInput>>();
   });
 

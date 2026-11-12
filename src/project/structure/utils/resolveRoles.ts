@@ -94,6 +94,7 @@ export function resolveRoles({
   }
 
   const resolvedEffects = resolveEffects(effects, environment, defaultModules);
+
   const resolved: Record<string, ResolvedRoleContract> = {};
 
   for (const [name, contract] of entries(registry.contracts)) {

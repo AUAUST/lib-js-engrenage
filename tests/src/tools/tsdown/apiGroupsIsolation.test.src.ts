@@ -23,7 +23,9 @@ function runTsc(project: string): string {
 }
 
 function link(project: { resolve(path: string): string }) {
-  mkdirSync(project.resolve("node_modules/@auaust"), { recursive: true });
+  mkdirSync(project.resolve("node_modules/@auaust"), {
+    recursive: true,
+  });
 
   linkSourcePackage(project.resolve("node_modules/@auaust/engrenage"));
 }
@@ -35,7 +37,10 @@ async function buildLibrary() {
       version: "1.0.0",
       type: "module",
       exports: {
-        ".": { types: "./dist/index.d.mts", default: "./dist/index.mjs" },
+        ".": {
+          types: "./dist/index.d.mts",
+          default: "./dist/index.mjs",
+        },
       },
     }),
     "tsconfig.json": JSON.stringify({
@@ -101,7 +106,9 @@ function createConsumer(
     "index.ts": source,
   });
 
-  mkdirSync(consumer.resolve("node_modules/@scope"), { recursive: true });
+  mkdirSync(consumer.resolve("node_modules/@scope"), {
+    recursive: true,
+  });
 
   symlinkSync(
     library.resolve(""),

@@ -40,6 +40,7 @@ describe("syncCodexFiles", () => {
     );
 
     expect(result).toContain("Keep this project note.");
+
     expect(project.read(".codex/hooks.json")).toContain("custom-check");
 
     expect(project.read(".codex/hooks.json")).toContain(
@@ -87,9 +88,18 @@ describe("syncCodexFiles", () => {
 
     expect(filesystem.changes()).toEqual(
       expect.arrayContaining([
-        { file: ".codex/agents/worker.toml", status: "synced" },
-        { file: ".codex/agents/worker_medium.toml", status: "created" },
-        { file: ".codex/agents/worker_old.toml", status: "deleted" },
+        {
+          file: ".codex/agents/worker.toml",
+          status: "synced",
+        },
+        {
+          file: ".codex/agents/worker_medium.toml",
+          status: "created",
+        },
+        {
+          file: ".codex/agents/worker_old.toml",
+          status: "deleted",
+        },
       ]),
     );
 

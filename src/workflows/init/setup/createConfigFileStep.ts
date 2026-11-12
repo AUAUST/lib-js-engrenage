@@ -65,7 +65,10 @@ function groupPresets(presets: readonly RolePresetEntry[]): RolePresets {
     }),
   );
 
-  return { shared: map(shared, ({ name }) => name), environments: extras };
+  return {
+    shared: map(shared, ({ name }) => name),
+    environments: extras,
+  };
 }
 
 function renderEnvironmentRoles(extras: readonly string[]): string {

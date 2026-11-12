@@ -17,7 +17,10 @@ import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 function createTarget(
   name: string,
   runs: string[],
-  edges: { reads?: readonly string[]; produces?: readonly string[] } = {},
+  edges: {
+    reads?: readonly string[];
+    produces?: readonly string[];
+  } = {},
 ) {
   return {
     name,
@@ -176,6 +179,7 @@ describe("runSync", () => {
     expect(failures.map(({ target }) => target)).toEqual(["first", "second"]);
 
     const error = vi.spyOn(console, "error").mockImplementation(() => {});
+
     const info = vi.spyOn(console, "info").mockImplementation(() => {});
 
     try {
@@ -316,7 +320,9 @@ describe("runSync with generated sources", () => {
       expect(
         JSON.parse(readFileSync(join(root, "tsconfig.json"), "utf-8"))
           .compilerOptions.paths,
-      ).toEqual({ "@fixture/project/a": ["./src/modules/a/entry.ts"] });
+      ).toEqual({
+        "@fixture/project/a": ["./src/modules/a/entry.ts"],
+      });
 
       expect(
         readFileSync(join(root, ".claude/rules/project-map/src.md"), "utf-8"),

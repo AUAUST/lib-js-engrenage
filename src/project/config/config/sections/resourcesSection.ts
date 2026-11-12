@@ -19,7 +19,9 @@ export const resourcesSection = declareSection({
     const { root, registry } = config.context;
 
     const located = new Map<string, LocatedResource>();
+
     const failures = new Map<string, { error: Error; flags: ResourceFlags }>();
+
     const paths = new Map<string, LocatedResource>();
 
     for (const { key: name, declaration, owner } of registry.list("files")) {
@@ -152,7 +154,9 @@ async function locate(
 
     return "file" in location
       ? freeze({ file: relativeWithin(root, location.file) })
-      : freeze({ directory: relativeWithin(root, location.directory) });
+      : freeze({
+          directory: relativeWithin(root, location.directory),
+        });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
 

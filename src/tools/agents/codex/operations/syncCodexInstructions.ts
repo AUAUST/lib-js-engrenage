@@ -28,7 +28,10 @@ export async function syncCodexInstructions({
 
   const installed: SkillDefinition[] = [];
 
-  for (const template of await getSkillDefinitions({ extensions, fillers })) {
+  for (const template of await getSkillDefinitions({
+    extensions,
+    fillers,
+  })) {
     const skill = await filesystem.read(
       `${codexSkillsDir}/${template.name}/SKILL.md`,
     );

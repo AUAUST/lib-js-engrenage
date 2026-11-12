@@ -43,7 +43,9 @@ function createApisProject(source: string, groups?: string[]): string {
     }),
   });
 
-  mkdirSync(project.resolve("node_modules/@auaust"), { recursive: true });
+  mkdirSync(project.resolve("node_modules/@auaust"), {
+    recursive: true,
+  });
 
   symlinkSync(
     fileURLToPath(new URL("../../../..", import.meta.url)),
@@ -87,7 +89,9 @@ describe("tsconfig presets", () => {
     );
 
     expect(() => runTsc("-p", project)).toThrow(
-      expect.objectContaining({ stdout: expect.stringContaining("TS2550") }),
+      expect.objectContaining({
+        stdout: expect.stringContaining("TS2550"),
+      }),
     );
   });
 
@@ -138,7 +142,9 @@ describe("tsconfig presets", () => {
     expect(() => runTsc("-p", createApisProject(source))).not.toThrow();
 
     expect(() => runTsc("-p", createApisProject(source, []))).toThrow(
-      expect.objectContaining({ stdout: expect.stringContaining("TS2304") }),
+      expect.objectContaining({
+        stdout: expect.stringContaining("TS2304"),
+      }),
     );
   });
 

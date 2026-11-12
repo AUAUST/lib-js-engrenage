@@ -225,7 +225,9 @@ describe("import effects", () => {
 
     expect(await open(utility, importing("my-db", "connect"))).toEqual([]);
 
-    const strict = await createLinter({ effects: 'fallback: "effectful"' });
+    const strict = await createLinter({
+      effects: 'fallback: "effectful"',
+    });
 
     expect(await strict(utility, importing("my-db", "connect"))).toHaveLength(
       1,

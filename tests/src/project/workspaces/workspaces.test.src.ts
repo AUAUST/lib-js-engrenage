@@ -279,7 +279,9 @@ describe("workspace modules", () => {
 
     const resolved = await loadConfig(project.root);
 
-    await runSync(resolved, { names: ["tsconfig", "aliases", "workspaces"] });
+    await runSync(resolved, {
+      names: ["tsconfig", "aliases", "workspaces"],
+    });
 
     await resolved.context.filesystem.flush();
 

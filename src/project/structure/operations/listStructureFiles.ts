@@ -7,7 +7,9 @@ export async function listStructureFiles(
   filesystem: Filesystem,
   directory: Directory,
 ): Promise<string[]> {
-  const files = await filesystem.list(directory, { recursive: false });
+  const files = await filesystem.list(directory, {
+    recursive: false,
+  });
 
   return files.map((file) => posix.basename(file));
 }

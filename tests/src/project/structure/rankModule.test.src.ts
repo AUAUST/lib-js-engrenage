@@ -54,9 +54,12 @@ describe("module effect levels", () => {
     };
 
     expect(rankModule(effects, "node:fs", "readFileSync")).toBe("observing");
+
     expect(rankModule(effects, "node:fs", "writeFileSync")).toBe("effectful");
+
     expect(rankModule(effects, "node:fs")).toBe("effectful");
     expect(rankModule(effects, "node:path", "join")).toBe("pure");
+
     expect(rankModule(effects, "unknown-package", "read")).toBeUndefined();
   });
 
@@ -78,8 +81,11 @@ describe("module effect levels", () => {
     };
 
     expect(rankModule(effects, "custom", "default")).toBe("pure");
+
     expect(rankModule(effects, "custom", "readFileSync")).toBe("observing");
+
     expect(rankModule(effects, "custom", "unlisted")).toBe("effectful");
+
     expect(rankModule(effects, "custom")).toBe("effectful");
     expect(rankModule(effects, "custom/pure")).toBe("pure");
     expect(rankModule(effects, "unknown")).toBe("confined");

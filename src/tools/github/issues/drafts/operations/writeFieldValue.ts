@@ -33,7 +33,10 @@ export async function writeFieldValue(
     return;
   }
 
-  const route = { ...splitRepository(repository), issue_number: number };
+  const route = {
+    ...splitRepository(repository),
+    issue_number: number,
+  };
 
   const removes = (
     isArray(current) &&

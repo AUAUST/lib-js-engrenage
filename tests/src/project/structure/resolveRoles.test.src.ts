@@ -69,6 +69,7 @@ describe("resolveRoles", () => {
 
   test("registers nested roles under their owner, active inside it only", () => {
     const queries = createRolePreset({ name: "queries", nesting: 2 });
+
     const roles = [createRolePreset({ name: "gql" })({ roles: [queries()] })];
 
     expect(resolve({ roles }).roles.gql).toMatchObject({
@@ -90,7 +91,9 @@ describe("resolveRoles", () => {
     const nested = createRolePreset({ name: "nested" });
 
     expect(() => {
-      return resolve({ roles: [utils({ roles: [nested(), nested()] })] });
+      return resolve({
+        roles: [utils({ roles: [nested(), nested()] })],
+      });
     }).toThrow(
       "src.roles[0].roles[0] and src.roles[0].roles[1] are both named nested",
     );
@@ -127,8 +130,14 @@ describe("resolveRoles", () => {
       },
     });
 
-    expect(resolved.roles.utils).toMatchObject({ effects: "logging" });
-    expect(resolved.roles.adapters).toMatchObject({ effects: undefined });
+    expect(resolved.roles.utils).toMatchObject({
+      effects: "logging",
+    });
+
+    expect(resolved.roles.adapters).toMatchObject({
+      effects: undefined,
+    });
+
     expect(resolved.effects.levels).toContain("logging");
   });
 

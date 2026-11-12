@@ -29,7 +29,10 @@ export function mergeDraftManifest(
     readonly local: Manifest;
   },
   protocol: IssueProtocol,
-): { readonly manifest: Manifest; readonly conflicts: readonly string[] } {
+): {
+  readonly manifest: Manifest;
+  readonly conflicts: readonly string[];
+} {
   const merged: Record<string, unknown> = { ...local };
   const conflicts: string[] = [];
 

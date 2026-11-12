@@ -67,7 +67,10 @@ describe("aliases", () => {
   test("gives a namespace holding domains its own alias only", async () => {
     const { read } = await sync(
       `{ preset: "library", src: { node: 24, structure: { namespaces: { tools: {} } } } }`,
-      { "src/tools/git/index.ts": "", "src/tools/git/constants.ts": "" },
+      {
+        "src/tools/git/index.ts": "",
+        "src/tools/git/constants.ts": "",
+      },
     );
 
     const imports = (await read("package.json")).imports;
@@ -79,7 +82,9 @@ describe("aliases", () => {
 
   test("fails on a src entry colliding with a root alias", async () => {
     await expect(
-      sync(`{ preset: "library", ${source} }`, { "src/tests/a.ts": "" }),
+      sync(`{ preset: "library", ${source} }`, {
+        "src/tests/a.ts": "",
+      }),
     ).rejects.toThrow(/#tests\/\*.*src entry src\/tests/);
   });
 

@@ -65,7 +65,9 @@ describe("agents.attribution", () => {
     );
 
     expect(existsSync(project.resolve(attributionRule))).toBe(false);
+
     expect(project.read("AGENTS.override.md")).toContain(noAttributionRule);
+
     expect((await sync(project.root)).discard()).toEqual([]);
 
     const { filesystem } = (await loadConfig(project.root)).context;
@@ -94,6 +96,7 @@ describe("agents.attribution", () => {
     await (await sync(project.root)).flush();
 
     expect(existsSync(project.resolve(".claude/settings.json"))).toBe(false);
+
     expect(existsSync(project.resolve(noAttributionRule))).toBe(true);
   });
 
@@ -115,7 +118,9 @@ describe("agents.attribution", () => {
     });
 
     expect(settings).not.toHaveProperty("attribution");
+
     expect(existsSync(project.resolve(noAttributionRule))).toBe(false);
+
     expect(project.read(attributionRule)).toContain("Attribution");
 
     const custom = { commit: "Co-Authored-By: Agent", pr: "" };
@@ -203,6 +208,7 @@ describe("agents.attribution", () => {
     });
 
     expect(project.read(attributionRule)).toBe(files[attributionRule]);
+
     expect(existsSync(project.resolve(noAttributionRule))).toBe(true);
   });
 });

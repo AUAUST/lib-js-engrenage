@@ -13,7 +13,10 @@ const anyFile: Glob = "**";
 
 export function listStructureRoles(
   root: StructureNode,
-  rootFiles: readonly { directory: Directory; roles: ResolvedRoles }[],
+  rootFiles: readonly {
+    directory: Directory;
+    roles: ResolvedRoles;
+  }[],
   rolesIn: ReadonlyMap<StructureNode, ResolvedRoles>,
 ): Readonly<Record<string, StructureRole>> {
   const files = new Map<string, Set<Glob>>();

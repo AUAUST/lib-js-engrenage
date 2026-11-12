@@ -33,7 +33,12 @@ describe("applyJsonEdits", () => {
       applyJsonEdits(
         content,
         "tsconfig.json",
-        [{ path: ["references"], value: [{ path: "./tsconfig.src.json" }] }],
+        [
+          {
+            path: ["references"],
+            value: [{ path: "./tsconfig.src.json" }],
+          },
+        ],
         jsonIndentation,
       ),
     ).toBe(content);

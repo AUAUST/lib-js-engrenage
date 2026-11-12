@@ -28,7 +28,10 @@ test(
   { timeout: binaryTimeout },
   async () => {
     const project = createTemporaryProject({
-      "package.json": JSON.stringify({ name: "project", type: "module" }),
+      "package.json": JSON.stringify({
+        name: "project",
+        type: "module",
+      }),
       "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
     });
 

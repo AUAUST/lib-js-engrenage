@@ -48,7 +48,10 @@ test("lists the files of a discovered file role and skips undiscovered roles", (
   expect(
     listDiscoveredGlobs({
       roles: {
-        "setup.ts": contract({ discovered: true, file: ["setup.ts"] }),
+        "setup.ts": contract({
+          discovered: true,
+          file: ["setup.ts"],
+        }),
         "utils": contract({}),
       },
       aliases: {},

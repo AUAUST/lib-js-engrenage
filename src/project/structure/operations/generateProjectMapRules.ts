@@ -10,7 +10,11 @@ export async function generateProjectMapRules(
   config: LoadedConfig,
   directory: Directory,
 ): Promise<
-  readonly { name: string; paths?: Globs; directives: readonly string[] }[]
+  readonly {
+    name: string;
+    paths?: Globs;
+    directives: readonly string[];
+  }[]
 > {
   const { structure, paths } = await listMappedEnvironments(config);
 

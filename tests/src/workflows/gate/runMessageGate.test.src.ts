@@ -15,7 +15,10 @@ describe("runMessageGate", () => {
     "fix: thing\n\nCloses #1\n",
     "fix: thing\n\nCloses #1\nCloses #2\nTowards #3\n",
   ])("accepts %j", async (message) => {
-    expect(await checkMessage(message)).toEqual({ failures: [], warnings: [] });
+    expect(await checkMessage(message)).toEqual({
+      failures: [],
+      warnings: [],
+    });
   });
 
   test.each([

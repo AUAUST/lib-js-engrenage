@@ -1541,6 +1541,7 @@ export async function run(): Promise<unknown> {
     const eslint = await getLinter();
 
     expect(await eslint.isPathIgnored("src/ignored.ts")).toBe(true);
+
     expect(await eslint.isPathIgnored("coverage/report.ts")).toBe(true);
 
     expect(await eslint.isPathIgnored("tests/unit/fixtures/case.ts")).toBe(
@@ -1571,9 +1572,12 @@ export async function run(): Promise<unknown> {
     });
 
     expect(await eslint.isPathIgnored("src/nested/skipped.ts")).toBe(true);
+
     expect(await eslint.isPathIgnored("src/skipped.ts")).toBe(false);
     expect(await eslint.isPathIgnored("root.ts")).toBe(true);
+
     expect(await eslint.isPathIgnored("src/nested/root.ts")).toBe(false);
+
     expect(await eslint.isPathIgnored("src/nested/a.local.ts")).toBe(true);
   });
 

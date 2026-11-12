@@ -267,6 +267,7 @@ describe("engrenage init", () => {
     );
 
     expect(packageJson).toHaveProperty("scripts.prepare", "lefthook install");
+
     expect(project.read("lefthook.yml")).toContain("$CLAUDECODE");
 
     expect(console.info).toHaveBeenCalledWith(
@@ -282,7 +283,9 @@ describe("engrenage init", () => {
     );
 
     expect(project.read("CLAUDE.md")).toBe("@AGENTS.md\n");
+
     expect(project.read("AGENTS.md")).toContain("## Precedence and conflicts");
+
     expect(project.read(".prettierignore")).toContain("# @ignore defaults");
 
     expect(JSON.parse(project.read(".vscode/settings.json"))).toMatchObject({
@@ -369,6 +372,7 @@ describe("engrenage init", () => {
       await init({ yes: false });
 
       expect(confirm).toHaveBeenCalledWith("Add the standard scripts?", true);
+
       expect(confirm).not.toHaveBeenCalledWith("Want coverage?", true);
 
       expect(JSON.parse(project.read("package.json"))).toMatchObject({
@@ -544,7 +548,9 @@ describe("engrenage init", () => {
       });
 
       expect(existsSync(project.resolve("vite.config.ts"))).toBe(false);
+
       expect(project.read("tsdown.config.ts")).toContain("defineTsdownConfig");
+
       expect(project.read("vitest.config.ts")).toContain("defineVitestConfig");
 
       expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
@@ -587,6 +593,7 @@ describe("engrenage init", () => {
       );
 
       expect(project.read(".gitignore")).toContain("# Output\n/dist");
+
       expect(project.read(".prettierignore")).toContain("# Output\n/dist");
 
       if (hasTsconfig) {
@@ -815,6 +822,7 @@ test("sets up Codex with backlog guidance without installing coding rules", asyn
   );
 
   expect(existsSync(project.resolve("CLAUDE.md"))).toBe(false);
+
   expect(existsSync(project.resolve(".claude/settings.json"))).toBe(false);
 
   expect(existsSync(project.resolve(".claude/rules/code-style.md"))).toBe(
@@ -842,6 +850,7 @@ test("uses an interactive selection for this init without rewriting an existing 
   await init({ yes: true });
 
   expect(project.read("engrenage.config.ts")).toBe("export default {};\n");
+
   expect(project.read("CLAUDE.md")).toBe("@AGENTS.md\n");
 
   expect(project.read("AGENTS.override.md")).toContain(
@@ -884,7 +893,9 @@ test("declining backlog setup leaves no backlog instructions or files", async ()
   );
 
   expect(existsSync(project.resolve(".ai/backlog/index.md"))).toBe(false);
+
   expect(existsSync(project.resolve(".claude/rules/backlog.md"))).toBe(false);
+
   expect(existsSync(project.resolve(".ai/scratchpad.md"))).toBe(false);
 
   expect(existsSync(project.resolve(".agents/skills/scratchpad"))).toBe(false);

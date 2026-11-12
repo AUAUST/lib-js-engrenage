@@ -41,7 +41,9 @@ export function checkProtocolNames(
 
     for (const meaning of keys(optionMeanings)) {
       const name = protocol.options[meaning];
+
       const fieldName = protocol.fields[optionMeanings[meaning].field];
+
       const field = fields.find((candidate) => candidate.name === fieldName);
 
       if (

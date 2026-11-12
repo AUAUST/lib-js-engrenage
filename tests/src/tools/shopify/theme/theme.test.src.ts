@@ -100,12 +100,15 @@ describe("shopify-theme", { timeout: binaryTimeout }, () => {
     execFileSync("git", ["init", "--quiet"], { cwd: project.root });
 
     expect(isGitIgnored(project, "assets/d-x.js")).toBe(true);
+
     expect(isGitIgnored(project, "assets/.vite/manifest.json")).toBe(true);
+
     expect(isGitIgnored(project, "assets/base.css")).toBe(false);
 
     await runEngrenage(project, ["prettier", "assets"]);
 
     expect(project.read("assets/d-x.js")).toBe(unformattedScript);
+
     expect(project.read("assets/base.css")).not.toBe(unformattedStyle);
 
     const eslint = new ESLint({

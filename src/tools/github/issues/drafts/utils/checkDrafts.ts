@@ -98,7 +98,10 @@ function checkOwners(
 
   return listDraftReferences(manifest.subIssues)
     .map((reference) => {
-      return { reference, resolved: resolveReference(reference, context) };
+      return {
+        reference,
+        resolved: resolveReference(reference, context),
+      };
     })
     .filter(({ resolved }) => {
       return (

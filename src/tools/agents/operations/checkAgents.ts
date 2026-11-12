@@ -170,7 +170,9 @@ export async function checkAgents(
 
     findings.push(...(await checkAgentHooks(filesystem, agent)));
 
-    const version = await spawnProcess(agent, ["--version"], { cwd: root });
+    const version = await spawnProcess(agent, ["--version"], {
+      cwd: root,
+    });
 
     if (version.status !== 0) {
       add(

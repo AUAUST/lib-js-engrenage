@@ -11,7 +11,9 @@ export async function listStructureDirectories(
   filesystem: Filesystem,
   directory: Directory,
 ): Promise<string[]> {
-  const files = await filesystem.list(directory, { skip: ignoredDirectories });
+  const files = await filesystem.list(directory, {
+    skip: ignoredDirectories,
+  });
 
   const holding = flatMap(files, (file) => {
     const [

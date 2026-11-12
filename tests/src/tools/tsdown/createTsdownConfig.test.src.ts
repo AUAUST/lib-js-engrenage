@@ -161,7 +161,9 @@ describe("createTsdownConfig", () => {
     });
 
     expect(existsSync(project.resolve("dist/bin/tool.mjs"))).toBe(true);
+
     expect(existsSync(project.resolve("dist/bin/tool.d.mts"))).toBe(false);
+
     expect(existsSync(project.resolve("dist/index.d.mts"))).toBe(true);
   });
 
@@ -510,7 +512,9 @@ describe("createTsdownConfig", () => {
         }),
       ).toMatchObject({
         exports: {
-          customExports: { "./presets/*.json": "./data/presets/*.json" },
+          customExports: {
+            "./presets/*.json": "./data/presets/*.json",
+          },
         },
       });
     });

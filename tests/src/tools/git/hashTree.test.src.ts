@@ -9,7 +9,10 @@ import { hashTree } from "#tools/git/operations/hashTree";
 describe("hashTree", () => {
   test("hashes the worktree without its excluded files", async () => {
     const { project, git } = await createGitRepository(
-      { "package.json": '{"type":"module"}', ".gitignore": "node_modules\n" },
+      {
+        "package.json": '{"type":"module"}',
+        ".gitignore": "node_modules\n",
+      },
       [],
     );
 
@@ -25,6 +28,7 @@ describe("hashTree", () => {
     );
 
     expect(await hashTree(project.root, { mode: "worktree" })).not.toBe(tree);
+
     expect(git("status", "--porcelain")).toContain("?? draft.md");
   });
 
@@ -38,7 +42,10 @@ describe("hashTree", () => {
     project.write("draft.md", "draft\n");
 
     expect(
-      await hashTree(project.root, { mode: "worktree", exclude: ["draft.md"] }),
+      await hashTree(project.root, {
+        mode: "worktree",
+        exclude: ["draft.md"],
+      }),
     ).toBe(tree);
   });
 });

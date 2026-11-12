@@ -34,6 +34,7 @@ describe("support codegen config", () => {
     await config({ check: true });
 
     expect(process.exitCode).toBe(1);
+
     expect(project.read(file)).toBe("export interface ConfigInput {}\n");
   });
 });

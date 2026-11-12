@@ -23,6 +23,7 @@ describe("resolvePathAliases", () => {
     );
 
     expectTypeOf(resolvePathAliases).parameter(1).toEqualTypeOf<Paths>();
+
     expectTypeOf(resolving).toEqualTypeOf<Promise<PathAliases>>();
 
     const aliases = await resolving;

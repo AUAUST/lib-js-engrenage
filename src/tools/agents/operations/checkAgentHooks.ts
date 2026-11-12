@@ -63,6 +63,7 @@ export async function checkAgentHooks(
   agent: Agent,
 ): Promise<AgentCheckFinding[]> {
   const findings: AgentCheckFinding[] = [];
+
   const file = agent === "codex" ? codexHooksFile : claudeSettingsFile;
 
   const hooks: readonly HookDefinition[] = agent === "codex"

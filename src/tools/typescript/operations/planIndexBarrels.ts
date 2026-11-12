@@ -108,7 +108,10 @@ export async function planIndexBarrels(
 
       const files = await listRoleModules(filesystem, node);
 
-      return planRoleBarrels(node, contract, files, { indexFile, domain });
+      return planRoleBarrels(node, contract, files, {
+        indexFile,
+        domain,
+      });
     }),
   );
 

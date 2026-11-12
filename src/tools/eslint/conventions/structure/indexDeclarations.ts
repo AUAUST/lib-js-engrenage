@@ -29,7 +29,10 @@ export default defineConvention({
                   exportedType !== "Identifier" &&
                   exportedType !== "TSInterfaceDeclaration"
                 ) {
-                  context.report({ node: statement, messageId: "value" });
+                  context.report({
+                    node: statement,
+                    messageId: "value",
+                  });
                 }
 
                 continue;
@@ -41,7 +44,9 @@ export default defineConvention({
                 | {
                     type: string;
                     kind?: string;
-                    declarations?: { id: { type: string; name?: string } }[];
+                    declarations?: {
+                      id: { type: string; name?: string };
+                    }[];
                   }
                 | null
                 | undefined = type === "ExportNamedDeclaration" && "declaration" in statement ? statement.declaration : statement;
@@ -69,7 +74,10 @@ export default defineConvention({
               );
 
               if (isValue && !isMetadata) {
-                context.report({ node: statement, messageId: "value" });
+                context.report({
+                  node: statement,
+                  messageId: "value",
+                });
               }
             }
           },

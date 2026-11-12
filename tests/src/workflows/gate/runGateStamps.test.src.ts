@@ -16,18 +16,28 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     const config = await loadConfig(project.root);
 
     expect(await checkAgentStop(config, gateIdentity)).toContain("typecheck");
+
     expect(await checkAgentStop(config, gateIdentity)).toBeUndefined();
 
     expect(
-      await checkAgentStop(config, { ...gateIdentity, runtime: "claude" }),
+      await checkAgentStop(config, {
+        ...gateIdentity,
+        runtime: "claude",
+      }),
     ).toContain("typecheck");
 
     expect(
-      await checkAgentStop(config, { ...gateIdentity, session: "another" }),
+      await checkAgentStop(config, {
+        ...gateIdentity,
+        session: "another",
+      }),
     ).toContain("typecheck");
 
     expect(
-      await checkAgentStop(config, { ...gateIdentity, agent: "another" }),
+      await checkAgentStop(config, {
+        ...gateIdentity,
+        agent: "another",
+      }),
     ).toContain("typecheck");
   });
 

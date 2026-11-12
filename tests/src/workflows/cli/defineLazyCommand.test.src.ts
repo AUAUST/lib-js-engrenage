@@ -44,7 +44,9 @@ describe("defineLazyCommand", () => {
 
     expect(load).not.toHaveBeenCalled();
 
-    await program.parseAsync(["command", "3", "--loud"], { from: "user" });
+    await program.parseAsync(["command", "3", "--loud"], {
+      from: "user",
+    });
 
     expect(load).toHaveBeenCalledOnce();
     expect(action).toHaveBeenCalledWith(3, { loud: true });

@@ -31,6 +31,7 @@ export function completeRole(
   definition: Partial<RoleDefinition>,
 ): ResolvedRoleContract {
   const typeOnly = definition.typeOnly ?? roleContractDefaults.typeOnly;
+
   const resolved = resolveExports(definition.exports, typeOnly);
 
   if (typeOnly && resolved.values !== "none") {

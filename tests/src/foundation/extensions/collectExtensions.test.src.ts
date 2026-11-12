@@ -220,7 +220,9 @@ describe("collectExtensions", () => {
       },
       {
         name: "second",
-        contributes: { targets: [{ name: "second-write", stage: "write" }] },
+        contributes: {
+          targets: [{ name: "second-write", stage: "write" }],
+        },
       },
       {
         name: "third",
@@ -268,7 +270,9 @@ describe("collectExtensions", () => {
         },
         {
           name: "producer",
-          contributes: { targets: [{ produces: ["package.json#imports"] }] },
+          contributes: {
+            targets: [{ produces: ["package.json#imports"] }],
+          },
         },
       ],
       {
@@ -488,6 +492,7 @@ describe("collectExtensions", () => {
 
     expect(active.map(({ entry }) => entry.name)).toEqual(["target"]);
     expect(inactive).toEqual([]);
+
     expect(isActive).toHaveBeenCalledWith(active[0]?.extension, installed);
   });
 

@@ -48,7 +48,10 @@ function createPackageFields(
   ];
 
   if (access !== undefined) {
-    fields.push({ location: ["publishConfig", "access"], value: access });
+    fields.push({
+      location: ["publishConfig", "access"],
+      value: access,
+    });
   }
 
   if (version !== undefined) {

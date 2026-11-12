@@ -156,6 +156,7 @@ describe("syncTsconfigFiles", () => {
     ]);
 
     expect(() => project.read("tsconfig.tests.json")).toThrow("ENOENT");
+
     expect(() => project.read("tsconfig.scripts.json")).toThrow("ENOENT");
   });
 

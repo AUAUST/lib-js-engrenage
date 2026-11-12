@@ -85,6 +85,7 @@ test.each([
       });
 
       expect(write).toHaveBeenCalledWith("failing command\nactual output\n");
+
       expect(process.exitCode).toBe(2);
     } else {
       expect(checkAgentStop).not.toHaveBeenCalled();

@@ -78,7 +78,9 @@ describe("project map", () => {
     expect(overview).toContain(".claude/rules/project-map/src.md");
     expect(map).toContain("paths:\n  - src/**");
     expect(map).toContain("base < *");
+
     expect(map).toContain("isolated/  #isolated/…  [isolated]  one two");
+
     expect(map).toContain("feature*  The feature.");
     expect(overview).toContain("| `handlers` | Request handlers. |");
     expect(map).not.toContain("| Role |");
@@ -204,7 +206,9 @@ describe("project map", () => {
 
       expect(overview.includes("## Test files")).toBe(published);
       expect(overview).toContain("the package name and its subpaths");
+
       expect(overview).toContain("the target's `index.ts` and public roles");
+
       expect(overview).not.toContain("⚠");
       expect(overview).not.toContain("Lint enforces every rule");
 
@@ -271,8 +275,14 @@ describe("project map", () => {
 
     expect(await config.context.filesystem.flush()).toEqual(
       expect.arrayContaining([
-        { file: sourceFile, status: "synced" },
-        { file: ".claude/rules/project-map/gone.md", status: "deleted" },
+        {
+          file: sourceFile,
+          status: "synced",
+        },
+        {
+          file: ".claude/rules/project-map/gone.md",
+          status: "deleted",
+        },
       ]),
     );
 

@@ -192,7 +192,10 @@ function createConfig(
 
   const config = createProjectConfig({
     root: project.root,
-    raw: withSourceRuntime({ extensions: [createLiquid(owns)], ...input }),
+    raw: withSourceRuntime({
+      extensions: [createLiquid(owns)],
+      ...input,
+    }),
     configFile: undefined,
   });
 

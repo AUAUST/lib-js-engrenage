@@ -207,12 +207,17 @@ export default defineEslintConfig({}, {
   });
 
   test("maps the metadata files to their schemas beside the project's own", async () => {
-    const own = { fileMatch: ["*.own.json"], url: "./own.schema.json" };
+    const own = {
+      fileMatch: ["*.own.json"],
+      url: "./own.schema.json",
+    };
 
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
       "package.json": packageJson,
-      ".vscode/settings.json": JSON.stringify({ "json.schemas": [own] }),
+      ".vscode/settings.json": JSON.stringify({
+        "json.schemas": [own],
+      }),
     });
 
     const config = await loadConfig(project.root);

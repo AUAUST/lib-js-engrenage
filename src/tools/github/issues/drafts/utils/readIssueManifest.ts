@@ -44,7 +44,10 @@ function listSubIssues(
 
     const line = roadmap.find((entry) => {
       return isSameIssue(
-        { repository: entry.repository ?? repository, number: entry.number },
+        {
+          repository: entry.repository ?? repository,
+          number: entry.number,
+        },
         child,
       );
     });

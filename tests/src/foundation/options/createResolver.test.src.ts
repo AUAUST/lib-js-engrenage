@@ -23,7 +23,9 @@ function createSource(
 }
 
 function createSourceResolver(sections: Readonly<Record<string, Section>>) {
-  return createResolver({}, undefined, { sections: createSource(sections) });
+  return createResolver({}, undefined, {
+    sections: createSource(sections),
+  });
 }
 
 describe("createResolver", () => {

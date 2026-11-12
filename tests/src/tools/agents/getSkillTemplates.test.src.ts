@@ -82,7 +82,10 @@ describe("getSkillTemplates", () => {
 
     const [template] = await renderSkills(["codex"]);
 
-    expect(template?.agent).toMatchObject({ model: "opus", gate: true });
+    expect(template?.agent).toMatchObject({
+      model: "opus",
+      gate: true,
+    });
 
     expect(
       template?.profiles.map(({ name, role, effort, gate }) => {

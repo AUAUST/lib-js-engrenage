@@ -14,7 +14,9 @@ export function createChangesetConfigStep(): Step {
       await addDevDependency(changesetsCli);
 
       invoke(
-        createPnpmInvocation(["changeset", "init"], { interactive: true }),
+        createPnpmInvocation(["changeset", "init"], {
+          interactive: true,
+        }),
       );
     },
   };

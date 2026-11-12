@@ -51,7 +51,10 @@ async function listMembers(
 
   const children = await access.client.paginate(
     "GET /repos/{owner}/{repo}/issues/{issue_number}/sub_issues",
-    { ...splitRepository(location.repository), issue_number: location.number },
+    {
+      ...splitRepository(location.repository),
+      issue_number: location.number,
+    },
   );
 
   return children.map((child) => {
@@ -126,7 +129,10 @@ export async function renderPublishedBody(
     });
 
   const entries = located.map(({ entry, location }) => {
-    return { ...entry, ref: renderReference(location, access.repository) };
+    return {
+      ...entry,
+      ref: renderReference(location, access.repository),
+    };
   });
 
   const members = new Map(

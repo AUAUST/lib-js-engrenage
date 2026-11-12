@@ -63,6 +63,7 @@ describe("file resources", () => {
     const resources = await config.resolve("resources");
 
     expect(resources.list().map(({ name }) => name)).not.toContain("gated");
+
     expect(resources.get("gated")).toBeUndefined();
 
     expect(() => resources.get("nope")).toThrow('Unknown file resource "nope"');
@@ -94,7 +95,10 @@ describe("file resources", () => {
 
     const resources = await config.resolve("resources");
 
-    expect(resources.get("fine")?.location).toEqual({ file: "fine.txt" });
+    expect(resources.get("fine")?.location).toEqual({
+      file: "fine.txt",
+    });
+
     expect(resources.path("fine")).toBe(config.context.path("fine.txt"));
 
     const failure = expect.objectContaining({
@@ -105,6 +109,7 @@ describe("file resources", () => {
     expect(() => resources.get("broken")).toThrow(failure);
     expect(() => resources.path("broken")).toThrow(failure);
     expect(() => resources.list()).toThrow(failure);
+
     expect(() => resources.list({ committed: false })).toThrow(failure);
 
     expect(
@@ -158,7 +163,9 @@ describe("file resources", () => {
     });
 
     expect(() => resources.get("needs.out")).toThrow(failure);
+
     expect(() => resources.list({ committed: false })).toThrow(failure);
+
     expect(() => resources.get("gitignore")).not.toThrow();
     expect(() => resources.list({ generated: true })).not.toThrow();
   });
@@ -223,13 +230,17 @@ describe("state resources", () => {
               files: {
                 "state.snapshot": {
                   locate: () => {
-                    return { file: `${stateDirectory}/snapshot.json` };
+                    return {
+                      file: `${stateDirectory}/snapshot.json`,
+                    };
                   },
                 },
                 "state.manifest": {
                   committed: false,
                   locate: () => {
-                    return { file: `${stateDirectory}/manifest.json` };
+                    return {
+                      file: `${stateDirectory}/manifest.json`,
+                    };
                   },
                 },
               },

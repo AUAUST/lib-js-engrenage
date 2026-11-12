@@ -42,7 +42,10 @@ export async function addAgentRules(
     }
   }
 
-  const missing = await getMissingRuleTemplates({ filesystem, fillers });
+  const missing = await getMissingRuleTemplates({
+    filesystem,
+    fillers,
+  });
 
   for (const { name, file, content } of missing) {
     if (names.includes(name)) {

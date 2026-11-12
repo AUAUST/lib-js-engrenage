@@ -5,7 +5,10 @@ export default {
   name: "project/format",
   owns: {
     slots: {
-      "format.formatters": { cardinality: "one", entry: formatterEntry },
+      "format.formatters": {
+        cardinality: "one",
+        entry: formatterEntry,
+      },
     },
     keys: {
       "format": {

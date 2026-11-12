@@ -54,6 +54,7 @@ describe("reportClones", { timeout: binaryTimeout }, () => {
     ]);
 
     expect(report).toMatch(/(first|second)\.ts:1-15 ~ third\.ts:1-15/);
+
     expect(report).not.toMatch(/first\.ts:1-15 ~ second\.ts:1-15/);
   });
 

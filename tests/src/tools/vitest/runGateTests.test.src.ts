@@ -25,7 +25,10 @@ describe("runGateTests", () => {
   test("runs only the tests under the changed domain's mirror directory", async () => {
     const project = createProject(true);
 
-    vi.mocked(runGateBinary).mockResolvedValue({ ok: true, output: "" });
+    vi.mocked(runGateBinary).mockResolvedValue({
+      ok: true,
+      output: "",
+    });
 
     const result = await runGateTests(await loadConfig(project.root), [
       "src/tools/lefthook/setup/syncLefthookConfig.ts",
@@ -45,7 +48,10 @@ describe("runGateTests", () => {
   test("passes the changed files to vitest related when tests are not mirrored", async () => {
     const project = createProject(false);
 
-    vi.mocked(runGateBinary).mockResolvedValue({ ok: true, output: "" });
+    vi.mocked(runGateBinary).mockResolvedValue({
+      ok: true,
+      output: "",
+    });
 
     await runGateTests(await loadConfig(project.root), [
       "src/tools/lefthook/setup/syncLefthookConfig.ts",

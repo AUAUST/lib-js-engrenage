@@ -44,6 +44,7 @@ describe("includesEsLibrary", () => {
     const selection = selectEsLibraries("2027-11") ?? [];
 
     expect(includesEsLibrary(selection, "es2025.float16")).toBe(true);
+
     expect(includesEsLibrary(["es2025"], "es2025.float16")).toBe(true);
 
     expect(

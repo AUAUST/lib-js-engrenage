@@ -19,6 +19,7 @@ describe("createPackageJson", () => {
     expect(packageJson.name).toBe("fixture");
     expect(packageJson.dependencies).toEqual([]);
     expect(packageJson.optional.imports).toBeUndefined();
+
     expect(() => packageJson.imports).toThrow('does not declare "imports"');
   });
 
@@ -31,6 +32,7 @@ describe("createPackageJson", () => {
     });
 
     expect(() => packageJson.optional.name).toThrow("name");
+
     expect(() => packageJson.dependencies).toThrow("peerDependencies");
   });
 

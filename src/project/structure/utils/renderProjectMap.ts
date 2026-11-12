@@ -94,6 +94,7 @@ export function renderProjectMap({
 
   const variantRows = variants.map((variant) => {
     const forbidden = grants.variants[variant] ?? [];
+
     const allowed = columns.filter((category) => !forbidden.includes(category));
 
     const globs = {

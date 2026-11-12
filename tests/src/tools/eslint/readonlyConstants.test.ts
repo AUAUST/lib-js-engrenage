@@ -10,7 +10,10 @@ import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
 test("readonly-constants follows the file of the constants role", async () => {
   const project = createTemporaryProject({
-    "package.json": JSON.stringify({ name: "library", type: "module" }),
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+    }),
     "engrenage.config.ts": `export default { preset: "library", src: { roles: ${JSON.stringify([constants({ file: ["consts.ts"] })])} } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
@@ -48,7 +51,10 @@ test("readonly-constants follows the file of the constants role", async () => {
 
 test("readonly-constants accepts frozen values and reports mutable ones", async () => {
   const project = createTemporaryProject({
-    "package.json": JSON.stringify({ name: "library", type: "module" }),
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+    }),
     "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry())} } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {

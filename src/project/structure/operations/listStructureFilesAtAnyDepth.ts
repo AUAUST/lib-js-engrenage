@@ -11,7 +11,9 @@ export async function listStructureFilesAtAnyDepth(
   filesystem: Filesystem,
   directory: Directory,
 ): Promise<string[]> {
-  const files = await filesystem.list(directory, { skip: ignoredDirectories });
+  const files = await filesystem.list(directory, {
+    skip: ignoredDirectories,
+  });
 
   return sort(
     files.map((file) => posix.relative(toPosixPath(directory), file)),

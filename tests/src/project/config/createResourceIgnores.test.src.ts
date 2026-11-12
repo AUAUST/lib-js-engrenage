@@ -31,7 +31,9 @@ describe("createResourceIgnores", () => {
           resource("first", "Cache", { directory: ".first" }),
           resource("output", "Output", { directory: "dist" }),
           resource("second", "Cache", { file: ".second.json" }),
-          resource("logs", "Logs", { globs: ["**/*.log", "!keep.log"] }),
+          resource("logs", "Logs", {
+            globs: ["**/*.log", "!keep.log"],
+          }),
         ],
         { covered: [] },
       ),

@@ -76,7 +76,10 @@ async function describeSource(
     }),
   );
 
-  return { structure: (await config.resolve("structure")).src!, nodes };
+  return {
+    structure: (await config.resolve("structure")).src!,
+    nodes,
+  };
 }
 
 const declaration = `{
@@ -141,7 +144,10 @@ describe("structure", () => {
 
     expect(nodes.get("src/zone")?.layer).toBe(0);
     expect(nodes.get("src/feature")).toMatchObject({ public: false });
-    expect(nodes.get("src/feature/sub")).toMatchObject({ public: true });
+
+    expect(nodes.get("src/feature/sub")).toMatchObject({
+      public: true,
+    });
 
     expect(nodes.get("src/errors")).toMatchObject({
       purpose: "Error classes.",
@@ -303,7 +309,10 @@ describe("structure", () => {
       declaration.replace("optOut:", 'strictness: "loose", optOut:'),
     );
 
-    expect(nodes.get("src/mystery")).toMatchObject({ kind: "domain" });
+    expect(nodes.get("src/mystery")).toMatchObject({
+      kind: "domain",
+    });
+
     expect(structure.unclassified).toEqual([]);
   });
 
@@ -340,7 +349,9 @@ describe("structure", () => {
 
     const { nodes } = await describeSource(declaration, extra);
 
-    expect(nodes.get("src/ui/bare")).toMatchObject({ kind: "unclassified" });
+    expect(nodes.get("src/ui/bare")).toMatchObject({
+      kind: "unclassified",
+    });
   });
 
   test("reads role-named directories as domains and namespaces without roles", async () => {
@@ -403,7 +414,9 @@ describe("structure", () => {
         mirror: { environment: "src", path: "src/a" },
       });
 
-      expect(nodes.get("tests/fixtures")).toMatchObject({ kind: "role" });
+      expect(nodes.get("tests/fixtures")).toMatchObject({
+        kind: "role",
+      });
 
       expect(
         structure.unclassified.map(({ path, reason }) => [path, reason]),
@@ -487,6 +500,7 @@ describe("tooling structure", () => {
     const names = structure.tooling?.root.children.map(({ name }) => name);
 
     expect(names).toEqual(["eslint"]);
+
     expect(structure.tooling?.root.children.at(0)?.kind).toBe("domain");
   });
 });
@@ -718,7 +732,10 @@ describe("unique roles", () => {
 });
 
 describe("required roles", () => {
-  const readme = createRolePreset({ name: "readme", file: "README.md" });
+  const readme = createRolePreset({
+    name: "readme",
+    file: "README.md",
+  });
 
   const config = createRolePreset({ name: "config" });
 

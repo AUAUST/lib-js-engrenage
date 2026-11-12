@@ -40,7 +40,9 @@ export type PackageJson = Accessors<{
   packageManager: string | undefined;
   engines: Partial<Record<string, string>> | undefined;
   devEngines:
-    | { packageManager?: DevEngine | readonly DevEngine[] | undefined }
+    | {
+        packageManager?: DevEngine | readonly DevEngine[] | undefined;
+      }
     | undefined;
   publishConfig:
     | {

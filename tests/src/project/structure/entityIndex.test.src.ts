@@ -181,7 +181,10 @@ describe("createEntityIndex", () => {
 
     expect(
       index.entityOf("src/project/feature/config/defineFeatureConfig.ts"),
-    ).toMatchObject({ role: "config/definers", effects: "effectful" });
+    ).toMatchObject({
+      role: "config/definers",
+      effects: "effectful",
+    });
 
     expect(
       index.entityOf("src/project/feature/config/helper.ts"),

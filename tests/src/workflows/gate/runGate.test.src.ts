@@ -44,6 +44,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     });
 
     expect(failures.map(({ step }) => step)).toEqual(["typecheck"]);
+
     expect(failures[0]?.output).toContain("src/index.ts(1,14): error TS2322");
   });
 
@@ -176,7 +177,9 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     git("add", "src/index.ts");
 
     expect(
-      await runGate(await loadConfig(project.root), { mode: "staged" }),
+      await runGate(await loadConfig(project.root), {
+        mode: "staged",
+      }),
     ).toEqual({ failures: [], warnings: [] });
 
     expect(project.read("src/index.ts")).toBe(

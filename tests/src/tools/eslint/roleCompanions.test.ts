@@ -15,7 +15,10 @@ async function createLinter(
   files: Readonly<Record<string, string>> = {},
 ) {
   const project = createTemporaryProject({
-    "package.json": JSON.stringify({ name: "library", type: "module" }),
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+    }),
     "engrenage.config.ts": `const extra = ${JSON.stringify(extra)};\n\nexport default { preset: "library", src: { roles: [...${renderCodeRoles()}, ${guardsRole}, { name: "assert" }, { name: "notes" }] } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {

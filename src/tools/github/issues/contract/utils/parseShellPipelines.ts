@@ -24,7 +24,9 @@ function liftHeredocs(command: string) {
     const operator = `<<< \0heredoc:${heredocs.length}\0`;
     const opening = text.slice(match.index + match[0].length);
     const lineEnd = opening.indexOf("\n");
+
     const lines = lineEnd === -1 ? [] : opening.slice(lineEnd + 1).split("\n");
+
     const end = lines.findIndex((line) => line.trim() === delimiter);
 
     heredocs.push((end === -1 ? lines : lines.slice(0, end)).join("\n"));

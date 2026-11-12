@@ -38,8 +38,11 @@ describe("defineVitestConfig", () => {
     });
 
     expect(nativeConfig).toHaveBeenCalledOnce();
+
     expect(vitestConfig.tsconfig).toBe(join(root, "tsconfig.custom.json"));
+
     expect(vitestConfig.test?.exclude).toContain("tests/**/fixtures/**");
+
     expect(vitestConfig.test?.exclude).toContain("test");
     expect(vitestConfig.plugins).toEqual([]);
   });

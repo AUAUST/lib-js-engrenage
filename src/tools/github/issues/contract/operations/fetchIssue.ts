@@ -81,7 +81,10 @@ function readFieldValue({
   return single_select_option?.name ?? value ?? undefined;
 }
 
-const parentSchema = object({ number: number(), repository_url: string() });
+const parentSchema = object({
+  number: number(),
+  repository_url: string(),
+});
 
 function readParent({
   number,
@@ -114,7 +117,10 @@ export async function fetchIssue(
   { repository, client, protocol }: IssueAccess,
   number: number,
 ): Promise<FetchedIssue> {
-  const route = { ...splitRepository(repository), issue_number: number };
+  const route = {
+    ...splitRepository(repository),
+    issue_number: number,
+  };
 
   const [issue, fields, subIssues, parent, blockedBy] = await Promise.all([
     client.request("GET /repos/{owner}/{repo}/issues/{issue_number}", route),

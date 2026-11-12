@@ -49,7 +49,9 @@ describe("createCodexRuleMapping", () => {
     });
 
     await expect(
-      createCodexRuleMapping({ filesystem: createFilesystem(project.root) }),
+      createCodexRuleMapping({
+        filesystem: createFilesystem(project.root),
+      }),
     ).rejects.toThrow(".claude/rules/broken.md frontmatter");
   });
 });

@@ -195,7 +195,10 @@ export async function publishIssues(
     }
 
     publication.lookup.remember(
-      { repository: draft.access.repository, number: draft.remote.number },
+      {
+        repository: draft.access.repository,
+        number: draft.remote.number,
+      },
       draft.remote,
     );
 

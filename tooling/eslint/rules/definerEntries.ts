@@ -87,6 +87,7 @@ export const definerEntries = defineRoleRule({
     }
 
     const name = basename(context.filename, extname(context.filename));
+
     const entry = resolve(context.cwd, domain.path, entryFile);
 
     return {

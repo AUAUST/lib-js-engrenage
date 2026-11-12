@@ -60,6 +60,7 @@ export { keys } from "#modules/object/utils/keys";
     const copy = config.context.copy();
 
     expect(await runSync(copy)).toEqual([]);
+
     expect(await collectChanges(copy, { check: true })).not.toEqual([]);
   });
 

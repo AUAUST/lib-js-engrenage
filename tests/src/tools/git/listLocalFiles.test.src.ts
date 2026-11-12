@@ -7,7 +7,10 @@ import { listLocalFiles } from "#tools/git/operations/listLocalFiles";
 describe("listLocalFiles", () => {
   test("uses ordered Git patterns for drafts and ignored files", async () => {
     const { project, git } = await createGitRepository(
-      { "package.json": '{"type":"module"}', ".gitignore": "node_modules\n" },
+      {
+        "package.json": '{"type":"module"}',
+        ".gitignore": "node_modules\n",
+      },
       [],
     );
 
@@ -50,7 +53,10 @@ describe("listLocalFiles", () => {
 
   test("anchors a subproject's dist pattern to that subproject", async () => {
     const { project, git } = await createGitRepository(
-      { "package.json": '{"type":"module"}', ".gitignore": "node_modules\n" },
+      {
+        "package.json": '{"type":"module"}',
+        ".gitignore": "node_modules\n",
+      },
       [],
     );
 

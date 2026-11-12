@@ -70,6 +70,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     const { project, git } = await createGateRepository([slowCommand]);
 
     project.write("src/index.ts", "export const value: number = 2;\n");
+
     project.write(".ai/issues/1.md", "draft\n");
 
     const config = await loadConfig(project.root);
@@ -115,7 +116,11 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     const [code, signal] = await once(child, "exit");
 
-    expect({ code, signal }).toEqual({ code: null, signal: "SIGTERM" });
+    expect({ code, signal }).toEqual({
+      code: null,
+      signal: "SIGTERM",
+    });
+
     expect(existsSync(lock)).toBe(false);
 
     const { pid } = spawnSync(process.execPath, ["-e", ""]);
@@ -131,7 +136,9 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     );
 
     expect(
-      await runGate(await loadConfig(project.root), { mode: "worktree" }),
+      await runGate(await loadConfig(project.root), {
+        mode: "worktree",
+      }),
     ).toEqual({ failures: [], warnings: [] });
   });
 });

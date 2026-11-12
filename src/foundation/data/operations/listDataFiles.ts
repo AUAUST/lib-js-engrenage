@@ -49,6 +49,7 @@ export async function listDataFiles(
   }
 
   const [subpathPrefix, subpathSuffix] = splitPattern(subpath, manifestFile);
+
   const [targetPrefix, targetSuffix] = splitPattern(target, manifestFile);
 
   const directoryUrl = new URL(targetPrefix, root);
@@ -59,7 +60,9 @@ export async function listDataFiles(
     );
   }
 
-  const entries = await readdir(directoryUrl, { withFileTypes: true });
+  const entries = await readdir(directoryUrl, {
+    withFileTypes: true,
+  });
 
   return entries
     .filter((entry) => {

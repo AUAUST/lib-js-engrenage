@@ -112,6 +112,7 @@ function collectDeclarations(
       });
     } else if (isModuleDeclaration(statement) && statement.body != null) {
       const name = isIdentifier(statement.name) ? statement.name.text : "";
+
       const inner = name === "global" ? prefix : `${prefix}${name}.`;
       const body: Node = statement.body;
 

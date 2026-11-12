@@ -30,7 +30,10 @@ function createExtensionProject(
   files: Readonly<Record<string, string>> = {},
 ) {
   const project = createTemporaryProject({
-    "package.json": JSON.stringify({ name: "consumer", type: "module" }),
+    "package.json": JSON.stringify({
+      name: "consumer",
+      type: "module",
+    }),
     "engrenage.config.ts": [
       `import extension from "${packageName}";`,
       "",

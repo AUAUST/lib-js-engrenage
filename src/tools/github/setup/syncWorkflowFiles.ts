@@ -56,7 +56,10 @@ export async function syncWorkflowFiles(config: LoadedConfig) {
   await assertScripts(config, name, workflowSets[name].scripts);
 
   await syncFiles(
-    { filesystem, resolve: (...paths) => resolveWithin(root, ...paths) },
+    {
+      filesystem,
+      resolve: (...paths) => resolveWithin(root, ...paths),
+    },
     syncs,
   );
 }

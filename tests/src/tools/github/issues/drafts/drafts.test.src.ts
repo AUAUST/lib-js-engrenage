@@ -123,7 +123,9 @@ describe("createDraft", () => {
       ".ai/issues/new-plan.draft.md": plan,
     });
 
-    const file = await createDraft(config, "task", { parent: "new-plan" });
+    const file = await createDraft(config, "task", {
+      parent: "new-plan",
+    });
 
     expect(file).toBe(".ai/issues/new-task-1.draft.md");
 

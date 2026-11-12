@@ -9,7 +9,9 @@ export function createIgnoreRules(config: {
   ignored: Globs;
 }): Config[] {
   return defineConfig([
-    includeIgnoreFile([...config.ignoreFiles], { gitignoreResolution: true }),
+    includeIgnoreFile([...config.ignoreFiles], {
+      gitignoreResolution: true,
+    }),
     globalIgnores([...config.ignored]),
   ]);
 }

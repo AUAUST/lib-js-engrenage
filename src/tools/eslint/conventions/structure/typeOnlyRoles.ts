@@ -32,7 +32,10 @@ export default defineConvention({
 
               if (type === "ExportAllDeclaration") {
                 if (!isTypeOnlyNode(statement)) {
-                  context.report({ node: statement, messageId: "value" });
+                  context.report({
+                    node: statement,
+                    messageId: "value",
+                  });
                 }
 
                 continue;
@@ -46,7 +49,10 @@ export default defineConvention({
                   !isTypeOnlyNode(statement) &&
                   !statement.specifiers.every(isTypeOnlyNode)
                 ) {
-                  context.report({ node: statement, messageId: "value" });
+                  context.report({
+                    node: statement,
+                    messageId: "value",
+                  });
                 }
 
                 continue;

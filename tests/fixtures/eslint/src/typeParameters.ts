@@ -12,7 +12,9 @@ export function consume<Value>(target: Value): void {
   void target;
 }
 
-function hold<Value>(value: Value): { readonly value: NoInfer<Value> } {
+function hold<Value>(value: Value): {
+  readonly value: NoInfer<Value>;
+} {
   return { value };
 }
 

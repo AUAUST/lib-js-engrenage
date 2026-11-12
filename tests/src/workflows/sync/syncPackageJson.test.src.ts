@@ -6,7 +6,9 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 import { syncPackageJson } from "#workflows/sync/setup/syncPackageJson";
 
-vi.mock(import("#project/package/utils/readSharedPnpmRange"), { spy: true });
+vi.mock(import("#project/package/utils/readSharedPnpmRange"), {
+  spy: true,
+});
 
 const versions = readTestPnpmVersions();
 
@@ -132,7 +134,9 @@ describe("syncPackageJson", () => {
       publishConfig: { access: "public" },
     });
 
-    expect((await manifest()).publishConfig).toEqual({ access: "restricted" });
+    expect((await manifest()).publishConfig).toEqual({
+      access: "restricted",
+    });
   });
 
   test("only writes devEngines.runtime and private outside the library preset", async () => {

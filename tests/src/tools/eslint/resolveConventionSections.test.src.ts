@@ -13,7 +13,9 @@ describe("resolveConventionSections", () => {
       "package.json": '{ "type": "module" }',
     });
 
-    const config = await loadConfig(project.root, { searchParents: false });
+    const config = await loadConfig(project.root, {
+      searchParents: false,
+    });
 
     const spied = { ...config };
     const resolve = vi.spyOn(spied, "resolve");

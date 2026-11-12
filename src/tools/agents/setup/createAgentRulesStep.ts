@@ -29,7 +29,10 @@ export function createAgentRulesStep(): Step {
 
       const fillers = await createAgentFillers(context);
 
-      const templates = await getMissingRuleTemplates({ filesystem, fillers });
+      const templates = await getMissingRuleTemplates({
+        filesystem,
+        fillers,
+      });
 
       const missing = templates.filter(({ name }) => name !== "backlog");
 

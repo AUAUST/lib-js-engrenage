@@ -112,7 +112,10 @@ export default defineConvention({
               context.report({
                 node: program,
                 messageId: "accepts",
-                data: { role, accepts: [contract.accepts].flat().join(", ") },
+                data: {
+                  role,
+                  accepts: [contract.accepts].flat().join(", "),
+                },
               });
             }
           },

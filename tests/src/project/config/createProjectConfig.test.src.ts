@@ -69,7 +69,10 @@ const slotOwner = {
 function createGatedConfig(packageJson: Readonly<Record<string, unknown>>) {
   return createProjectConfig({
     root: createTemporaryProject({
-      "package.json": JSON.stringify({ name: "gated", ...packageJson }),
+      "package.json": JSON.stringify({
+        name: "gated",
+        ...packageJson,
+      }),
     }).root,
     raw: { extensions: [gated, slotOwner], gated: true },
     configFile: undefined,

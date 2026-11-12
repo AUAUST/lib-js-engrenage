@@ -91,7 +91,9 @@ async function createSourceAliases(
   const files = flat(
     await Promise.all(
       dirs.map(async (dir): Promise<Alias[]> => {
-        const listed = await filesystem.list(dir, { recursive: false });
+        const listed = await filesystem.list(dir, {
+          recursive: false,
+        });
 
         return listed
           .map((file) => posix.basename(file))
