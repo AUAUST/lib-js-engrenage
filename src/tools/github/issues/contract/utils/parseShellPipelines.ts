@@ -108,7 +108,7 @@ function splitPipelines(tokens: readonly Token[]): Pipeline[] {
   let index = 0;
 
   function closeCommand() {
-    if (!(command.length > 0)) {
+    if (command.length === 0) {
       return;
     }
 
@@ -117,7 +117,7 @@ function splitPipelines(tokens: readonly Token[]): Pipeline[] {
   }
 
   function closePipeline() {
-    if (!(pipeline.length > 0)) {
+    if (pipeline.length === 0) {
       return;
     }
 

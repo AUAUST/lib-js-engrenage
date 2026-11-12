@@ -25,7 +25,7 @@ export default async function (): Promise<void> {
     agent,
   });
 
-  if (!(reason !== undefined)) {
+  if (reason === undefined) {
     return;
   }
 

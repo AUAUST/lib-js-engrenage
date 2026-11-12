@@ -78,7 +78,7 @@ async function moveDirectory(
   for (const file of await filesystem.list(from)) {
     const content = await filesystem.read(file);
 
-    if (!(content !== undefined)) {
+    if (content === undefined) {
       continue;
     }
 

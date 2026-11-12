@@ -200,6 +200,11 @@ export interface AuaustRules {
    */
   "auaust/no-invalid-void-type"?: Rule<AuaustNoInvalidVoidType>;
   /**
+   * Boolean checks should not be inverted
+   * @see https://sonarsource.github.io/rspec/#/rspec/S1940/javascript
+   */
+  "auaust/no-inverted-boolean-check"?: Rule<[]>;
+  /**
    * Use `x === null` instead of `isNull(x)` calls (keep `isNull` for callbacks such as `filter(items, isNull)`).
    */
   "auaust/no-is-null"?: Rule<[]>;
