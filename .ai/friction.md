@@ -60,3 +60,5 @@
 - `git add <paths>`: staged by name a deletion already in the index — "pathspec did not match" aborted the whole add, and the next commit took the staged deletion; staged with `git add -A -- . ':(exclude)…'` or left staged deletions out of the list
 - zsh `grep --include=*.ts`: unquoted glob in a Bash call — zsh "no matches found" aborted it; dropped the flag
 - zsh word splitting: ran `$E create …` with E holding a multi-word command — zsh ran it as one command name; used a function
+- worktree guard: compound Bash commands in an agent worktree whose paths contain `github` — refused as "names git in a form too complex"; split into separate commands
+- Agent `isolation: "worktree"`: dispatched workers expecting a worktree at `HEAD` — each branch started at `6b1506b8`, an older commit; workers checked out the briefed commit detached
