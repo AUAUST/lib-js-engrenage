@@ -231,6 +231,34 @@ blockedBy: []
 });
 
 describe("checkIssues", () => {
+  test("reports the quoting hint for an unquoted reference in a block list", async () => {
+    const config = await createProject({
+      ".ai/issues/new-x.draft.md": first.replace(
+        "type: Task",
+        "type: Task\nblockedBy:\n  - #{new-foo}",
+      ),
+    });
+
+    const { lines } = await checkIssues(config, ["new-x"], "worker");
+
+    expect(lines).toContainEqual(
+      expect.stringContaining("YAML reads an unquoted `#` as a comment"),
+    );
+  });
+
+  test("reports the quoting hint for an unquoted reference in a flow list", async () => {
+    const config = await createProject({
+      ".ai/issues/new-x.draft.md": first.replace(
+        "type: Task",
+        "type: Task\nblockedBy: [#{new-foo}]",
+      ),
+    });
+
+    await expect(checkIssues(config, ["new-x"], "worker")).rejects.toThrow(
+      "YAML reads an unquoted `#` as a comment",
+    );
+  });
+
   test("reports one line per manifest, contract and reference finding of a draft", async () => {
     const config = await createProject({
       ".ai/issues/new-x.draft.md": first

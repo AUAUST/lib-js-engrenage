@@ -19,6 +19,7 @@ import { record } from "@auaust/toolkit/object";
 import {
   claimStates,
   draftStates,
+  quoteReferenceHint,
 } from "#tools/github/issues/drafts/constants";
 import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
 import { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
@@ -37,7 +38,7 @@ function filled(message: string) {
 }
 
 const referenceSchema = pipe(
-  string(),
+  string(quoteReferenceHint),
   check((text) => {
     return parseReference(text) !== undefined;
   }, "write a reference as `#123`, `#{new-<slug>}`, `#{<repo>.123}` or `#{<repo>.new-<slug>}`"),

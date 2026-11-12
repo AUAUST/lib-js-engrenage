@@ -12,6 +12,8 @@ export const fetchedExtension = ".md";
 
 export const newDraftPrefix = "new-";
 
+export const quoteReferenceHint = 'write the reference quoted, as `"#{new-<slug>}"` or `"#123"`: YAML reads an unquoted `#` as a comment';
+
 export const reservedKeys = freeze([
   "title",
   "type",

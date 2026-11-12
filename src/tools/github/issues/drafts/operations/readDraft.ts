@@ -1,5 +1,6 @@
 import { parseDocument } from "yaml";
 
+import { quoteReferenceHint } from "#tools/github/issues/drafts/constants";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Draft } from "#tools/github/issues/drafts/types/Draft";
 import type { File } from "#types/File";
@@ -24,7 +25,14 @@ export async function readDraft(
   const [error] = manifest.errors;
 
   if (error !== undefined) {
-    throw new Error(`Invalid manifest in ${file}: ${error.message}`, {
+    // @debt Detects the comment-separation error by `yaml`'s message wording, which a `yaml` release may change.
+    const hint = (
+      error.code === "MISSING_CHAR" && error.message.startsWith("Comments")
+    )
+      ? `\n${quoteReferenceHint}`
+      : "";
+
+    throw new Error(`Invalid manifest in ${file}: ${error.message}${hint}`, {
       cause: error,
     });
   }
