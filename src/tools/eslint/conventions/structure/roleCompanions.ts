@@ -14,9 +14,9 @@ export default defineConvention({
   rule: ({ entities }, { root }) => {
     return defineStructureRule({
       entities,
-      description: "A module of a role with `companions` has each file they name beside it.",
+      description: "A module of a role with `companions` has each file they name.",
       messages: {
-        missing: "The {{role}} role requires {{companion}} beside this module; create it.",
+        missing: "The {{role}} role requires {{companion}} for this module; create it.",
       },
       create(context, { role, fileRole, contract, location }) {
         const companions = contract?.companions;

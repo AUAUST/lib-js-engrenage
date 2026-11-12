@@ -118,11 +118,11 @@ describe("project map", () => {
     expect(rows).toHaveLength(2);
 
     expect(rows).toContain(
-      "| `handlers` | Request handlers. |  | values `named-match`, types `named-match` | confined |  | `src`, `scripts` |",
+      "| `handlers` | Request handlers. |  |  | values `named-match`, types `named-match` | confined |  | `src`, `scripts` |",
     );
 
     expect(rows).toContain(
-      "| `handlers` | Request handlers. |  | values `named-match`, types `named-match` | effectful |  | `tests` |",
+      "| `handlers` | Request handlers. |  |  | values `named-match`, types `named-match` | effectful |  | `tests` |",
     );
   });
 
@@ -149,7 +149,7 @@ describe("project map", () => {
     );
 
     expect(project.read(overviewFile)).toContain(
-      "| `config/definers` |  | `define<Domain>Config.ts` |  | effectful |",
+      "| `config/definers` |  | `define<Domain>Config.ts` |  |  | effectful |",
     );
 
     expect(project.read(sourceFile)).toContain("(global roles: constants.ts)");
@@ -157,6 +157,36 @@ describe("project map", () => {
     expect(project.read(".claude/rules/project-map/tooling.md")).toContain(
       "  - engrenage.config.ts",
     );
+  });
+
+  test("renders companion descriptions and barrel options", async () => {
+    const { project } = await syncProject(
+      createTemporaryProject({
+        "package.json": '{ "name": "project", "type": "module" }',
+        "engrenage.config.ts": `export default {
+        preset: "library",
+        agents: { preferred: ["claude"] },
+        src: { roles: [
+          { name: "guards", companions: ({ name }) => [\`src/assert/assert\${name}.ts\`], companionsDescription: "src/assert/assert<Name>.ts" },
+          { name: "models", index: true, public: true, subpath: "root" },
+          { name: "notes" },
+        ] },
+      };`,
+        "src/feature/index.ts": "",
+      }),
+    );
+
+    const overview = project.read(overviewFile);
+
+    expect(overview).toContain(
+      "| `guards` |  |  | `src/assert/assert<Name>.ts` |  |",
+    );
+
+    expect(overview).toContain(
+      "| `models` |  |  |  | `index`, subpath `root` |",
+    );
+
+    expect(overview).toContain("| `notes` |  |  |  |  |");
   });
 
   test("omits a tooling map and link when neither directories nor root files match", async () => {

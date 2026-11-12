@@ -28,7 +28,7 @@ async function createLinter(
 describe("role companions", () => {
   test("report a missing companion until it exists", async () => {
     expect(await (await createLinter())("src/guards/isString.ts")).toEqual([
-      "1:The guards role requires src/assert/assertString.ts beside this module; create it.",
+      "1:The guards role requires src/assert/assertString.ts for this module; create it.",
     ]);
 
     expect(
@@ -48,7 +48,7 @@ describe("role companions", () => {
         })
       )("src/guards/isString.ts"),
     ).toEqual([
-      "1:The guards role requires src/assert/assertString.ts beside this module; create it.",
+      "1:The guards role requires src/assert/assertString.ts for this module; create it.",
     ]);
   });
 

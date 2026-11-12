@@ -13,6 +13,7 @@ export interface ResolvedRoleContract {
   readonly file: Glob | Globs | RoleFileResolver | undefined;
   readonly fileDescription: string | undefined;
   readonly companions: RoleCompanionResolver | undefined;
+  readonly companionsDescription: string | undefined;
   readonly accepts: Glob | Globs | undefined;
   readonly nesting: number | "any";
   readonly roles: readonly string[] | undefined;

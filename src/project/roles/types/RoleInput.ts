@@ -35,6 +35,11 @@ export interface RoleInput {
    */
   companions?: (RoleCompanionResolver | undefined)
   /**
+   * How a `companions` callback names each module's companions, shown in maps.
+   * @default none
+   */
+  companionsDescription?: (string | undefined)
+  /**
    * Files a directory role takes, as names or globs.
    * @default the modules of its environment
    */

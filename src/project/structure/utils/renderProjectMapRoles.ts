@@ -9,7 +9,6 @@ import {
 } from "#project/structure/constants";
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
-import type { ResolvedRoleExports } from "#project/structure/types/ResolvedRoleExports";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 
@@ -23,10 +22,24 @@ function code(value: string): string {
   return `\`${value}\``;
 }
 
-function renderExports({ values, types }: ResolvedRoleExports): string {
+function renderExports({
+  exports: { values, types },
+  index,
+  subpath,
+  reexport,
+}: ResolvedRoleContract): string {
   return [
     values === undefined ? undefined : `values ${code(values)}`,
     types === undefined ? undefined : `types ${code(types)}`,
+    index ? code("index") : undefined,
+    subpath === "root"
+      ? `subpath ${code(subpath)}`
+      : subpath
+        ? code("subpath")
+        : undefined,
+    reexport === undefined
+      ? undefined
+      : `reexport ${reexport.map(code).join("/")}`,
   ]
     .filter((value) => value !== undefined)
     .join(", ");
@@ -77,12 +90,16 @@ export function renderProjectMapRoles(
       return `- ${code(level)}: ${effectLevelPurposes[level]}`;
     }),
     "",
-    "| Role | Purpose | Files | Exports | Level | Imports | Environments |",
-    "| --- | --- | --- | --- | --- | --- | --- |",
+    "| Role | Purpose | Files | Companions | Exports | Level | Imports | Environments |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- |",
     ...rows.map(({ name, contract, environments }) => {
       const files = isFunction(contract.file)
         ? code(contract.fileDescription ?? "")
         : listStaticFileGlobs(contract.file).map(code).join(", ");
+
+      const companions = contract.companionsDescription === undefined
+        ? ""
+        : code(contract.companionsDescription);
 
       const imports = [
         contract.typeOnly ? "type-only" : undefined,
@@ -94,7 +111,7 @@ export function renderProjectMapRoles(
 
       const purpose = (contract.purpose ?? "").replaceAll("|", String.raw`\|`);
 
-      return `| ${code(name)} | ${purpose} | ${files} | ${renderExports(contract.exports)} | ${contract.effects ?? ""} | ${imports} | ${environments.map(code).join(", ")} |`;
+      return `| ${code(name)} | ${purpose} | ${files} | ${companions} | ${renderExports(contract)} | ${contract.effects ?? ""} | ${imports} | ${environments.map(code).join(", ")} |`;
     }),
   ];
 }

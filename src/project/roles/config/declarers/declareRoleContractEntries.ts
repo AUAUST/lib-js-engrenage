@@ -47,6 +47,10 @@ export function declareRoleContractEntries<Nested>(
       description: "Files each module of the role requires, as project-relative paths a callback returns for the module; lint reports each one missing on the module, so a deleted companion is reported once its module is linted again.",
       optional: { value: undefined },
     }),
+    companionsDescription: declare(string(), {
+      description: "How a `companions` callback names each module's companions, shown in maps.",
+      optional: { value: undefined },
+    }),
     accepts: declare(globsSchema, {
       description: "Files a directory role takes, as names or globs.",
       optional: unset("the modules of its environment"),
