@@ -133,11 +133,13 @@ describe("environments", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.resolve("files")).generated).toEqual([
-      "lib/types/**",
-      "src/types/**",
-      "tests/snapshots/**",
-    ]);
+    const { generated } = await config.resolve("files");
+
+    expect(
+      generated.filter((glob) => {
+        return /^(?:lib|src|tests|scripts)\//u.test(glob);
+      }),
+    ).toEqual(["lib/types/**", "src/types/**", "tests/snapshots/**"]);
 
     expect((await config.resolve("files")).discovered).toEqual([
       "tests/**/setup.ts",

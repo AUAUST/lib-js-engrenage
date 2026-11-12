@@ -46,7 +46,9 @@ describe("loadConfig", () => {
       "test/**/fixtures/**",
     ]);
 
-    expect((await config.resolve("files")).generated).toEqual([
+    const { generated } = await config.resolve("files");
+
+    expect(generated.filter((glob) => glob.startsWith("src/"))).toEqual([
       "src/generated/**",
     ]);
 

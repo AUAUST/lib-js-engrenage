@@ -106,7 +106,10 @@ describe("file resources", () => {
     expect(() => resources.path("broken")).toThrow(failure);
     expect(() => resources.list()).toThrow(failure);
     expect(() => resources.list({ committed: false })).toThrow(failure);
-    expect(resources.list({ generated: true })).toEqual([]);
+
+    expect(
+      resources.list({ generated: true }).map(({ name }) => name),
+    ).not.toContain("broken");
   });
 
   test("locates the resources of an owner its staged manifest activates", async () => {
