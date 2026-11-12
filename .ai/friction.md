@@ -56,3 +56,5 @@
 - `engrenage planning issue publish`: published drafts whose `type` changed (Idea → Task, Problem) — merged manifest kept the old type's field and failed; set the type through GraphQL `updateIssue` and dropped the field from the fetched `<ref>.md`
 - engrenage planning issue claim: claimed `toolkit.<n>` from engrenage — refused as another repository's issues; claimed from toolkit's working tree instead
 - zsh `grep --include=*.src.ts`: unquoted glob in a Bash call — zsh "no matches found" aborted the command; dropped the filter
+- engrenage planning issue publish: published a claimed plan unchanged on GitHub — reported `body` changed both sides, the claim's base being Prettier-formatted while GitHub held unformatted tables; replaced the base body with GitHub's
+- engrenage planning issue publish: changed a claimed Idea to Problem — merged manifest kept `Nature: null` and failed; set the type through GraphQL `updateIssue` and dropped `Nature` from the fetched `<ref>.md`
