@@ -10,6 +10,7 @@ import type { ManifestTarget } from "#tools/github/issues/drafts/types/ManifestT
 
 export interface PublishedDraft {
   stem: string;
+  readonly origin: string;
   body: string;
   remote: FetchedIssue | undefined;
   ancestors: readonly string[];

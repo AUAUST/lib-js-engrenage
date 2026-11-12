@@ -590,7 +590,7 @@ ${planBody}
     } = await publishIssues(await loadConfig(root), ["10"]);
 
     expect({ lines, passed }).toEqual({
-      lines: ["#10: published"],
+      lines: ["10: published as #10"],
       passed: true,
     });
 
@@ -607,10 +607,16 @@ ${planBody}
     await claimPlanWithExtra(root);
 
     const {
+      lines,
       passed,
     } = await publishIssues(await loadConfig(root), ["10", "new-extra"]);
 
     expect(passed).toBe(true);
+
+    expect(lines.slice(-2)).toEqual([
+      "10: published as #10",
+      "new-extra: published as #14",
+    ]);
 
     expect(findIssue(10).subIssues).toEqual([11, 14, 12]);
 
@@ -668,7 +674,7 @@ ${planBody}
 
     expect(passed).toBe(true);
 
-    expect(lines).toContain("#20: published");
+    expect(lines).toContain("20: published as #20");
 
     expect(requests).toContain("POST /graphql");
 
@@ -900,8 +906,8 @@ Goal: the group
 
     const { lines, passed } = await claimTable(root, undefined);
 
-    expect({ first: lines[0], passed }).toEqual({
-      first: "#13: published",
+    expect({ last: lines.at(-1), passed }).toEqual({
+      last: "13: published as #13",
       passed: true,
     });
 

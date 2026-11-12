@@ -94,6 +94,7 @@ function toPublished(
 
   return {
     stem,
+    origin: stem,
     draft,
     body: draft.body,
     remote: undefined,
@@ -288,17 +289,21 @@ async function writeDrafts(publication: Publication): Promise<IssuesCheck> {
     await linkPublishedIssue(publication, draft);
   }
 
-  const lines: string[] = [];
+  const diffs: string[] = [];
+
+  const summaries: string[] = [];
 
   for (const draft of drafts) {
-    lines.push(
-      ...(await finishPublishedIssue(
-        publication,
-        draft,
-        bodies.get(draft) ?? draft.body,
-      )),
+    const { diff, summary } = await finishPublishedIssue(
+      publication,
+      draft,
+      bodies.get(draft) ?? draft.body,
     );
+
+    diffs.push(...diff);
+
+    summaries.push(summary);
   }
 
-  return { lines, passed: true };
+  return { lines: [...diffs, ...summaries], passed: true };
 }

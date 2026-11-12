@@ -18,6 +18,11 @@ import type { Publication } from "#tools/github/issues/drafts/types/Publication"
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 import type { Directory } from "#types/Directory";
 
+interface PublishedIssueReport {
+  readonly diff: readonly string[];
+  readonly summary: string;
+}
+
 async function diffPublished(root: Directory, stem: string, body: string) {
   const directory = await mkdtemp(join(tmpdir(), "engrenage-publish-"));
 
@@ -48,7 +53,7 @@ export async function finishPublishedIssue(
   publication: Publication,
   draft: PublishedDraft,
   body: string,
-): Promise<readonly string[]> {
+): Promise<PublishedIssueReport> {
   const { config, context, numbers } = publication;
 
   const { filesystem, root } = config.context;
@@ -90,8 +95,8 @@ export async function finishPublishedIssue(
 
   await filesystem.flush();
 
-  return [
-    `${renderReference(location, context.repository)}: published`,
-    ...(diff === "" ? [] : diff.split("\n")),
-  ];
+  return {
+    diff: diff === "" ? [] : diff.split("\n"),
+    summary: `${draft.origin}: published as ${renderReference(location, context.repository)}`,
+  };
 }
