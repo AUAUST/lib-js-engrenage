@@ -41,10 +41,11 @@ export function completeRole(
 
   const visible = definition.public ?? roleContractDefaults.public;
   const subpath = definition.subpath ?? roleContractDefaults.subpath;
+  const index = definition.index ?? roleContractDefaults.index;
 
-  if (subpath && listStaticFileGlobs(definition.file).length === 0) {
+  if (subpath && !index && listStaticFileGlobs(definition.file).length === 0) {
     throw new Error(
-      `The role ${name} sets \`subpath\` without static \`file\` names or globs: only those match files at a domain's root`,
+      `The role ${name} sets \`subpath\` without static \`file\` names or globs or \`index\`: only files at a domain's root or a role's barrel take a subpath`,
     );
   }
 
@@ -54,7 +55,6 @@ export function completeRole(
     );
   }
 
-  const index = definition.index ?? roleContractDefaults.index;
   const scoped = definition.scoped ?? roleContractDefaults.scoped;
 
   // @debt a contract cannot see where its directory sits, so a root role never placed at an environment root passes this check

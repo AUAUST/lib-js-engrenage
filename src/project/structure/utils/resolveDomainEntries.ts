@@ -41,6 +41,27 @@ function collectRoleSubpaths(
   });
 }
 
+function collectRoleBarrels(
+  subpath: string,
+  node: StructureNode,
+  files: EnvironmentFileNames,
+  roles: Roles,
+): (readonly [string, File])[] {
+  return node.children.flatMap((child) => {
+    const contract = child.kind === "role" && child.role !== undefined
+      ? getOwn(roles, child.role)?.contract
+      : undefined;
+
+    if (contract?.index !== true || !contract.subpath) {
+      return [];
+    }
+
+    return [
+      [`${subpath}/${child.name}`, `${child.path}/${files.indexFile}`] as const,
+    ];
+  });
+}
+
 function collectEntries(
   node: StructureNode,
   segments: readonly string[],
@@ -64,6 +85,7 @@ function collectEntries(
         ? [
             [subpath, `${child.path}/${files.entryFile}`] as const,
             ...collectRoleSubpaths(subpath, child, roles),
+            ...collectRoleBarrels(subpath, child, files, roles),
           ]
         : []),
       ...(child.internals === true
@@ -88,12 +110,12 @@ export function resolveDomainEntries(
 
   const found = new Map<string, File>();
 
-  for (const [subpath, file] of collectEntries(
-    structure.root,
-    [],
-    structure,
-    structure.roles,
-  )) {
+  const { root, roles } = structure;
+
+  for (const [subpath, file] of [
+    ...collectRoleBarrels(".", root, structure, roles),
+    ...collectEntries(root, [], structure, roles),
+  ]) {
     const previous = found.get(subpath);
 
     if (previous !== undefined) {

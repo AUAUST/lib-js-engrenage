@@ -114,7 +114,12 @@ export function createEntityIndex({
       return rolesOf(environment.name).roles[role]?.public ? files : [];
     });
 
-    const packaged = roleFiles.map((file) => {
+    // @debt `surfaceOf` runs for domains only, so an environment-root role barrel exposed as a subpath gets no package specifier in any surface
+    const barrels = node.children
+      .filter((child) => child.kind === "role")
+      .map((child) => posix.join(child.path, environment.indexFile));
+
+    const packaged = [...roleFiles, ...barrels].map((file) => {
       const subpath = publicEntries.get(file);
 
       return subpath === undefined || packageName === undefined

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage/extensions";
-import { entry } from "@auaust/engrenage/roles";
+import { createRolePreset, entry } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
@@ -34,6 +34,15 @@ async function exposed(
   const config = await loadConfig(project.root);
 
   return config.resolve("src.exports");
+}
+
+function barrelRole() {
+  return createRolePreset({
+    name: "models",
+    index: true,
+    public: true,
+    subpath: true,
+  })();
 }
 
 describe("domain entries", () => {
@@ -123,6 +132,45 @@ describe("domain entries", () => {
       ),
     ).rejects.toThrow(
       "Subpath './alpha/constants' is exposed by src.exports, as src/hidden/index.ts, and by src/tools/alpha/constants.ts",
+    );
+  });
+
+  test("a subpath role with an index exposes its barrel", async () => {
+    expect(
+      await exposed(
+        `{ structure: { namespaces: { tools: {}, project: {} } } }`,
+        { "src/models/index.ts": "" },
+        renderCodeRoles(entry(), barrelRole()),
+      ),
+    ).toMatchObject({ "./models": "src/models/index.ts" });
+  });
+
+  test("a subpath directory role without an index fails naming the role", async () => {
+    await expect(
+      exposed(
+        "{}",
+        {},
+        renderCodeRoles(
+          entry(),
+          createRolePreset({
+            name: "shapes",
+            public: true,
+            subpath: true,
+          })(),
+        ),
+      ),
+    ).rejects.toThrow("The role shapes sets `subpath` without");
+  });
+
+  test("a src.exports line naming a role barrel subpath fails naming both", async () => {
+    await expect(
+      exposed(
+        `{ exports: { "./models": "src/hidden/index.ts" } }`,
+        { "src/models/index.ts": "" },
+        renderCodeRoles(entry(), barrelRole()),
+      ),
+    ).rejects.toThrow(
+      "Subpath './models' is exposed by src.exports, as src/hidden/index.ts, and by src/models/index.ts",
     );
   });
 

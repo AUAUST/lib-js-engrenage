@@ -5,6 +5,7 @@ import { createProgram, getPreEmitDiagnostics } from "typescript";
 import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { createRolePreset, index } from "#project/roles/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
@@ -442,6 +443,35 @@ describe("createTsdownConfig", () => {
         "index": "src/index.ts",
         "alpha/constants": "src/alpha/constants.ts",
       });
+    });
+
+    test("builds the barrel of a subpath role with an index", async () => {
+      const project = createProject(
+        {
+          src: {
+            roles: [
+              index(),
+              createRolePreset({
+                name: "models",
+                index: true,
+                public: true,
+                subpath: true,
+              })(),
+            ],
+          },
+        },
+        {
+          "src/models/index.ts": "export {};\n",
+        },
+      );
+
+      expect(
+        (
+          await createTsdownConfig(await loadConfig(project.root), {
+            ci: false,
+          })
+        ).entry,
+      ).toMatchObject({ models: "src/models/index.ts" });
     });
 
     test("builds the commands from bin.entries", async () => {
