@@ -37,7 +37,7 @@ Start at the issue the user names and run `engrenage planning walk check <n>` on
 ## Dispatching
 
 - Dispatch every leaf to a new agent: a worker under the issue-implementation skill, a debugger under the debugging skill.
-- Resume the same agent to answer its question or return review gaps and the failing commands and output from its stop or commit gate.
+- Resume the same agent to answer its question, return review gaps and the failing commands and output from its stop or commit gate, or pass on a merger's findings.
 - Brief with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then the header chain, the plan sections the issue names and the commits the check lists towards the issue, for reference. Never paste issue or plan content: the agent reads it itself.
 - Complete a leaf on the agent's final report, a completion or a blocker; never wait for a later agent-finished event, which may never wake you.
 - Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress only when a decision depends on it.
@@ -47,8 +47,8 @@ Start at the issue the user names and run `engrenage planning walk check <n>` on
 - Keep up to K leaves of the ready set in flight: K = 4 unless the walk request sets it ("pool 2"; "no pool" or "sequential" mean K = 1), and K = 1 under Codex.
 - At K = 1, dispatch in the main checkout, and finish review, repairs and the passing commit gate before dispatching the next leaf; past it, the rules below apply.
 - Dispatch each leaf in the background with `isolation: "worktree"`, briefing the walked branch's `HEAD` commit.
-- Integrate finished leaves one at a time, in report order: review as in After each leaf and Checkpoints, cherry-pick the checkpoint commits in order, apply the uncommitted rest, then make the closing commit.
-- Resolve integration conflicts by file kind: regenerate a generated file with `engrenage sync`, keep both sides of an append-only agent log, and send a hand-written file back to the agent, resumed to rebase its worktree onto the walked branch.
+- Integrate finished leaves one at a time, in report order. First dispatch a new merger under the merging skill, briefed as its §Brief states for a concurrent walk, then resume the leaf's worker with the merger's leaf findings, or none, so its stop gate checks the worktree the merger left. Then review as §After each leaf and §Checkpoints, cherry-pick the checkpoint commits, apply the uncommitted rest, and make the closing commit. Last, brief a new debugger with the merger's walk findings and the leaf findings the worker declined, when any, and handle the outcome by §After a debugger.
+- Leave integration conflicts to the merger's rebase; when it reports a conflict needing design, resume the leaf's worker to rebase its worktree onto the walked branch, then dispatch a new merger.
 - Remove a leaf's worktree after its closing commit, then refill the pool from a fresh `walk check`.
 
 ## After a debugger
@@ -65,6 +65,12 @@ Start at the issue the user names and run `engrenage planning walk check <n>` on
 2. Add the `@debt` markers the diff calls for and the agent missed.
 3. Commit under the project's git rules, closing the issue and every segment or parent it completes. Do not run the checks: the commit gate runs them.
 4. Report one row to the user: issue · consequences · decisions and deviations.
+
+## Boundary reviews
+
+- With K = 1, when a segment closes and at the walk's end, dispatch a new merger under the merging skill in the main checkout, briefed as its §Brief states for a sequential walk, with the range since the previous merger run or the walk's start.
+- Brief a new debugger with its findings, when any, and handle the outcome by §After a debugger.
+- Commit the debt markers, backlog entries and discarded-solutions lines the merger added with the debugger's fix, or alone when there is none.
 
 ## Checkpoints
 
@@ -83,4 +89,4 @@ A worker commits at each `Checkpoint:` line of its issue; your final commit clos
 
 ## Report
 
-End at the end of the tree or at a stop, with the table of walked leaves, then what is pending or blocked and why.
+End at the end of the tree or at a stop, with the table of walked leaves, then each merger run's findings and where each went, then what is pending or blocked and why.
