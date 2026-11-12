@@ -20,7 +20,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 3. The `conventions` role in `engrenage.config.ts` is unscoped and misnamed
 
-- sites: `engrenage.config.ts:128`, `:134`
+- sites: `engrenage.config.ts:123`, `:129`
 - why: namespace `roles.enable` only accepts catalogue roles; it imports section values only the creator resolves; `conventions` names ESLint rule conventions and collides with `project/format`'s `Conventions`.
 - want: scope the role to its namespace (or state why not); a decision on the name (planning).
 
@@ -45,7 +45,7 @@ Project structure description, its report and the tooling generated from it.
 ## 7. Generator wiring is hand-listed (#147)
 
 - why: the `generated` globs list `Rules.ts` and `rules/**` by hand while `ConfigInput.ts` and `editions/constants.ts` are generated but not listed (the generators format them); `scripts/codegen/index.ts` runs generators in a hard-coded order (`editions, apis, config, rules, barrels`) derived from nothing.
-- also: `engrenage.config.ts:246` generated-files list: a missing pattern for generated files, or unneeded once they are formatted.
+- also: `engrenage.config.ts:214` generated-files list: a missing pattern for generated files, or unneeded once they are formatted.
 - want: derive the globs and the order from the generators.
 - done: adding a generator needs no second list.
 
@@ -79,13 +79,13 @@ Project structure description, its report and the tooling generated from it.
 
 ## 13. Structure declaration in `engrenage.config.ts` mixes concerns
 
-- sites: `engrenage.config.ts:113`, `:140`, `:237`
+- sites: `engrenage.config.ts:108`, `:135`, `:206`
 - why: the `config` role holds the identity definer `defineConfig` beside I/O, while lint ranks roles by imports only; scripts and tooling list roles none of their modules use; `./config` resolves to `workflows/config` but `./config/constants` to `project/config`, and constants subpaths are hand-listed.
 - want: a decision on the role split (planning); subpaths derived.
 
 ## 14. Role presets sit among utils and rank wrongly
 
-- sites: `src/project/roles/utils/*.ts` (one preset per file, 25 markers), `engrenage.config.ts:96`
+- sites: `src/project/roles/utils/*.ts` (one preset per file, 25 markers), `engrenage.config.ts:91`
 - why: each file is a role preset, not a utility; `adapters` is the only preset without an effect level, so projects override it; `schemas` is pure though `foundation/options` declarer schemas import confined utils; `testutils` should be observing once its type exists.
 - want: presets in their own role directory; `adapters` ranked by the preset (planning for the rest).
 

@@ -4,6 +4,6 @@ Local issue drafts: claim, check and publish.
 
 ## 1. Publishing a draft whose type changed fails on the old type's fields
 
-- why: `mergeDraftManifest` sets every key of the base or the remote manifest, so a field the new type lacks (`Nature` after Idea → Problem) is set again, and the merged manifest fails validation.
-- want: a key the draft dropped stays dropped when the base and remote agree; publish changes the type before its fields.
+- why: seen in the #476 walk (Idea → Problem, `Nature` kept). Cause unlocated: `mergeDraftManifest` keeps a dropped key dropped when base and remote agree, and `updatePublishedIssue` already sets the type before the fields; suspects: the draft or `readIssueManifest` still carrying `Nature`, the manifest check, or `listPublishedFieldValues`.
+- want: a type change publishes, the old type's fields dropped.
 - done: claiming an `idea`, changing it to `problem` and publishing succeeds.
