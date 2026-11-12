@@ -58,3 +58,4 @@
 - zsh `grep --include=*.src.ts`: unquoted glob in a Bash call — zsh "no matches found" aborted the command; dropped the filter
 - engrenage planning issue publish: published a claimed plan unchanged on GitHub — reported `body` changed both sides, the claim's base being Prettier-formatted while GitHub held unformatted tables; replaced the base body with GitHub's
 - engrenage planning issue publish: changed a claimed Idea to Problem — merged manifest kept `Nature: null` and failed; set the type through GraphQL `updateIssue` and dropped `Nature` from the fetched `<ref>.md`
+- vitest toHaveProperty: asserted a missing "." key with a string path — the string parses as a property path and throws; passed ["."] instead
