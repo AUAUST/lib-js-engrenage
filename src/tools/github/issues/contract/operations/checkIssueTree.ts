@@ -13,6 +13,7 @@ import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBo
 import type { IssueCommit } from "#tools/git/index";
 import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
 import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
+import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
 import type { IssueTree } from "#tools/github/issues/contract/types/IssueTree";
 import type { IssueTreeCheck } from "#tools/github/issues/contract/types/IssueTreeCheck";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
@@ -25,6 +26,7 @@ interface PlacedIssue {
   readonly parsed: ParsedIssueBody;
   readonly ancestors: readonly IssueLocation[];
   readonly depth: number;
+  readonly inTurn: boolean;
 }
 
 function toKey({ repository, number }: IssueLocation) {
@@ -34,7 +36,14 @@ function toKey({ repository, number }: IssueLocation) {
 function placeInWalkOrder(
   tree: IssueTree,
   ancestors: readonly IssueLocation[],
-  plan: string,
+  {
+    types,
+    isClosed,
+  }: {
+    types: IssueProtocol["types"];
+    isClosed(issue: IssueLocation & { readonly state: string }): boolean;
+  },
+  inTurn = true,
   depth = 0,
 ): PlacedIssue[] {
   const location = {
@@ -42,13 +51,31 @@ function placeInWalkOrder(
     number: tree.issue.number,
   };
 
-  const below = tree.issue.type === plan
+  const below = tree.issue.type === types.plan
     ? [location]
     : [...ancestors, location];
 
   return [
-    ...tree.subIssues.flatMap((sub) => {
-      return placeInWalkOrder(sub, below, plan, depth + 1);
+    ...tree.subIssues.flatMap((sub, index) => {
+      const subInTurn = (
+        inTurn &&
+        (tree.issue.type === types.segment ||
+          tree.subIssues.slice(0, index).every((earlier) => {
+            return isClosed({
+              repository: earlier.repository,
+              number: earlier.issue.number,
+              state: earlier.issue.state,
+            });
+          }))
+      );
+
+      return placeInWalkOrder(
+        sub,
+        below,
+        { types, isClosed },
+        subInTurn,
+        depth + 1,
+      );
     }),
     {
       tree,
@@ -56,6 +83,7 @@ function placeInWalkOrder(
       parsed: parseIssueBody(tree.issue.body),
       ancestors,
       depth,
+      inTurn,
     },
   ];
 }
@@ -127,7 +155,10 @@ export async function checkIssueTree(
       : [];
   }
 
-  const placed = placeInWalkOrder(tree, ancestors, access.protocol.types.plan);
+  const placed = placeInWalkOrder(tree, ancestors, {
+    types: access.protocol.types,
+    isClosed,
+  });
 
   const missing = await findMissing(
     access,
@@ -143,7 +174,14 @@ export async function checkIssueTree(
   );
 
   const walked = placed.map(
-    ({ tree: { issue }, location, parsed, ancestors: chain, depth }) => {
+    ({
+      tree: { issue },
+      location,
+      parsed,
+      ancestors: chain,
+      depth,
+      inTurn,
+    }) => {
       const closed = isClosed({ ...location, state: issue.state });
 
       const closedBy = issue.state === "open" && isLocal(location)
@@ -193,23 +231,24 @@ export async function checkIssueTree(
         closes: listCommits(location, ({ closes: closed }) => closed),
       };
 
-      const actionable = (
+      const ready = (
+        inTurn &&
         !closed &&
         issue.subIssues.every(isClosed) &&
         report.findings.length === 0
       );
 
-      return { report, actionable };
+      return { report, ready };
     },
   );
-
-  const next = walked.find(({ actionable }) => actionable)?.report;
 
   return {
     repository,
     issues: walked.map(({ report }) => report),
-    next: next === undefined
-      ? undefined
-      : { repository: next.repository, number: next.number },
+    ready: walked
+      .filter(({ ready }) => ready)
+      .map(({ report }) => {
+        return { repository: report.repository, number: report.number };
+      }),
   };
 }

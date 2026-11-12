@@ -4,5 +4,5 @@ import type { WalkedIssue } from "#tools/github/issues/contract/types/WalkedIssu
 export interface IssueTreeCheck {
   readonly repository: string;
   readonly issues: readonly WalkedIssue[];
-  readonly next: IssueLocation | undefined;
+  readonly ready: readonly IssueLocation[];
 }

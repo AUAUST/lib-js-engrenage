@@ -14,7 +14,7 @@ Walk an issue tree in the main session: route each issue by the handling table, 
 
 ## Handling table
 
-Start at the issue the user names and run `engrenage planning walk check <n>` on it once per routing decision: it reports every issue of the tree in walk order with its state (open, closed, or closed by a local commit), `blockers`, findings, open **Planning** and **Questions** and local commits, then the next actionable issue. Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches.
+Start at the issue the user names and run `engrenage planning walk check <n>` on it once per routing decision: it reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by a local commit), `blockers`, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn, and the next issue. Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches.
 
 | Issue                                                         | Walker                                                                                                                                                      |
 | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |

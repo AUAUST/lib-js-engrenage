@@ -28,10 +28,10 @@ interface MockIssue {
   readonly subIssues?: readonly number[];
 }
 
-const task = (number: number) => {
+const task = (number: number, header = "#10 › #11 · Roadmap") => {
   return {
     type: "Task",
-    body: `#10 › #11 · Roadmap\n\n## Context\n\nx\n\n## Steps\n\n1. Do #${number}.\n\n## Tests\n\n- works\n`,
+    body: `${header}\n\n## Context\n\nx\n\n## Steps\n\n1. Do #${number}.\n\n## Tests\n\n- works\n`,
   };
 };
 
@@ -44,10 +44,18 @@ const tree: Record<number, MockIssue> = {
   11: {
     type: "Segment",
     body: "#10 · Roadmap\n\n## Context\n\nx\n",
-    subIssues: [12, 13],
+    subIssues: [12, 13, 14],
   },
   12: task(12),
   13: task(13),
+  14: task(14),
+  20: {
+    type: "Plan",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #21\n2. #22\n\n## Decisions\n\nx\n",
+    subIssues: [21, 22],
+  },
+  21: task(21, "#20 · Roadmap"),
+  22: task(22, "#20 · Roadmap"),
 };
 
 function connection(nodes: readonly unknown[]) {
@@ -151,7 +159,37 @@ describe("checkIssueTree", () => {
     vi.unstubAllGlobals();
   });
 
-  test("reports the tree in walk order and names the first open task next", async () => {
+  test("lists every open leaf of a segment as ready", async () => {
+    mockGraphql();
+
+    const check = await checkIssueTree(access, 10, {
+      root: createWorkingCopy(),
+    });
+
+    expect(check.ready).toEqual([
+      { repository: "o/r", number: 12 },
+      { repository: "o/r", number: 13 },
+      { repository: "o/r", number: 14 },
+    ]);
+  });
+
+  test("lists only the first open task of a plan as ready until a local commit closes it", async () => {
+    mockGraphql();
+
+    const open = await checkIssueTree(access, 20, {
+      root: createWorkingCopy(),
+    });
+
+    expect(open.ready).toEqual([{ repository: "o/r", number: 21 }]);
+
+    const closed = await checkIssueTree(access, 20, {
+      root: createWorkingCopy("feat: twenty-one\n\nCloses #21"),
+    });
+
+    expect(closed.ready).toEqual([{ repository: "o/r", number: 22 }]);
+  });
+
+  test("prints each parent above its sub-issues, then the ready set and the next issue", async () => {
     mockGraphql();
 
     const check = await checkIssueTree(access, 10, {
@@ -159,15 +197,17 @@ describe("checkIssueTree", () => {
     });
 
     expect(formatIssueTreeCheck(check)).toEqual([
+      "#10 Plan: open",
+      "  #11 Segment: open",
       "    #12 Task: open",
       "    #13 Task: open",
-      "  #11 Segment: open",
-      "#10 Plan: open",
+      "    #14 Task: open",
+      "Ready: #12, #13, #14",
       "Next: #12",
     ]);
   });
 
-  test("reports a task closed by a local commit and skips it for the next issue", async () => {
+  test("reports a task closed by a local commit and leaves it out of the ready set", async () => {
     mockGraphql();
 
     const root = createWorkingCopy("feat: twelve\n\nCloses #12");
@@ -179,13 +219,16 @@ describe("checkIssueTree", () => {
       encoding: "utf-8",
     }).trim();
 
-    expect(formatIssueTreeCheck(check).slice(0, 3)).toEqual([
+    expect(formatIssueTreeCheck(check).slice(2, 5)).toEqual([
       `    #12 Task: closed by local commit ${hash}`,
       `      Closes: ${hash} feat: twelve`,
       "    #13 Task: open",
     ]);
 
-    expect(check.next).toEqual({ repository: "o/r", number: 13 });
+    expect(check.ready).toEqual([
+      { repository: "o/r", number: 13 },
+      { repository: "o/r", number: 14 },
+    ]);
   });
 });
 
@@ -334,10 +377,11 @@ describe("checkIssueTree across repositories", () => {
     expect(queried).toContain(`${toolkit}#45`);
 
     expect(formatIssueTreeCheck(check)).toEqual([
+      "#10 Plan: open",
+      "  #11 Segment: open",
       "    #12 Task: open",
       `    ${toolkit}#45 Task: open`,
-      "  #11 Segment: open",
-      "#10 Plan: open",
+      `Ready: #12, ${toolkit}#45`,
       "Next: #12",
     ]);
   });

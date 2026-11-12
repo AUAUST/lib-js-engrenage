@@ -32,7 +32,7 @@ export default async function (
     console.log(line);
   }
 
-  if (check.next === undefined) {
+  if (check.ready.length === 0) {
     process.exitCode = 1;
   }
 }

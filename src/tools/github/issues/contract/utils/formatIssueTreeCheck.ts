@@ -32,15 +32,43 @@ function formatIssue(
   ];
 }
 
+// @debt Rebuilds tree order from `depth` after `checkIssueTree` flattened the tree to walk order; the check could return both orders from the tree it holds.
+function toTreeOrder(issues: readonly WalkedIssue[]): readonly WalkedIssue[] {
+  const subtrees: { depth: number; issues: readonly WalkedIssue[] }[] = [];
+
+  for (const issue of issues) {
+    const start = subtrees.findIndex(({ depth }) => depth > issue.depth);
+
+    const children = start === -1 ? [] : subtrees.splice(start);
+
+    subtrees.push({
+      depth: issue.depth,
+      issues: [issue, ...children.flatMap((child) => child.issues)],
+    });
+  }
+
+  return subtrees.flatMap((subtree) => subtree.issues);
+}
+
 export function formatIssueTreeCheck({
   repository,
   issues,
-  next,
+  ready,
 }: IssueTreeCheck): readonly string[] {
+  const [next] = ready;
+
   return [
-    ...issues.flatMap((issue) => formatIssue(issue, repository)),
-    next === undefined
-      ? "Next: none, no open issue has its sub-issues closed and no finding"
-      : `Next: ${renderReference(next, repository)}`,
+    ...toTreeOrder(issues).flatMap((issue) => formatIssue(issue, repository)),
+    ...(next === undefined
+      ? // @debt The none message omits the in-turn condition: an open issue with closed sub-issues and no finding can still be out of turn.
+        ["Next: none, no open issue has its sub-issues closed and no finding"]
+      : [
+          `Ready: ${ready
+            .map((issue) => {
+              return renderReference(issue, repository);
+            })
+            .join(", ")}`,
+          `Next: ${renderReference(next, repository)}`,
+        ]),
   ];
 }
