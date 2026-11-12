@@ -230,43 +230,37 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 - why: a block cannot read the names a hand-written flat entry spreads, so collisions surface only in TypeScript.
 - done: needs planning: read names from the flat entry or forbid collisions.
 
-## 39. Collected roles scope differently in blocks and whole files
-
-- sites: `src/tools/typescript/operations/planBarrelBlock.ts:57`
-- why: a block lists a collected role across the environment; a generated entry of an entry-only domain lists it in that domain only.
-- done: needs planning: one scope for `collected`.
-
-## 40. Role of each domain file re-derived from names
+## 39. Role of each domain file re-derived from names
 
 - sites: `src/tools/typescript/operations/listDomainModules.ts:20`
 - why: the structure walker already classifies each file; this re-derives roles from `fileNames`.
 - want: the resolved structure carries each role node's files with their roles.
 
-## 41. Test project builders repeated across lint tests
+## 40. Test project builders repeated across lint tests
 
 - sites: `tests/src/tools/eslint/boundaries.test.ts:141`, `tests/src/tools/eslint/noComplexConciseArrows.test.ts:11`
 - why: the boundary and concise-arrow tests clone the temporary project and ESLint setup of other tests.
 - want: one shared builder in test utilities.
 
-## 42. Agent fragments listed beside the template
+## 41. Agent fragments listed beside the template
 
 - sites: `src/tools/agents/operations/getInstructionTemplates.ts:36`
 - why: fragments are listed beside the AGENTS.md template instead of through `listDataFiles`, which needs a package root URL.
 - done: needs planning: how engrenage's own fragments get a package root.
 
-## 43. Agent rule fillers recomputed in plan
+## 42. Agent rule fillers recomputed in plan
 
 - sites: `src/tools/agents/setup/createAgentRulesStep.ts:21`
 - why: the fillers are recomputed on each `plan()`.
 - want: cache them.
 
-## 44. Readonly list in a schema is not readonly in its JSON Schema
+## 43. Readonly list in a schema is not readonly in its JSON Schema
 
 - sites: `src/project/roles/config/schemas/reexportSchema.ts:5`
 - why: the list lacks `readonly()` because the JSON Schema codegen cannot convert it, so the output is mutable and the types restate it as readonly.
 - done: needs the codegen to convert readonly lists, or a planned workaround.
 
-## 45. Local guard restates toolkit's isArray for readonly lists
+## 44. Local guard restates toolkit's isArray for readonly lists
 
 - sites: `src/project/config/operations/createProjectConfig.ts:42`
 - why: toolkit's `isArray` narrows to `any[]`, which a readonly list is not assignable to.

@@ -62,7 +62,7 @@ Project configuration contract: loading, environments, option shapes and list op
 
 ## 11. Workflow builtins own no config key
 
-- site: `src/workflows/builtins/index.ts:1`
+- sites: `src/tools/eslint/extension.ts:8`, `src/tools/vite/extension.ts:4`, `src/tools/vitest/extension.ts:4`, `src/tools/tsdown/extension.ts:4`
 - why: `eslint`, `vite`, `vitest`, `tsdown` options come only from definer arguments.
 - want: a decision on which builtins own a key (planning).
 
