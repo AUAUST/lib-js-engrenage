@@ -1,12 +1,11 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
 import { entries } from "@auaust/toolkit/object";
 
 import { entryRoleName, indexRoleName } from "#project/roles/constants";
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
+import { renderStructureTree } from "#project/structure/utils/renderStructureTree";
 import type { Alias } from "#project/structure/types/Alias";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
-import type { StructureNode } from "#project/structure/types/StructureNode";
 
 // @debt map renderers repeat code and list text formatting helpers
 function code(value: string): string {
@@ -17,102 +16,11 @@ function list(values: readonly string[]): string {
   return values.map(code).join(", ");
 }
 
-function members(node: StructureNode): StructureNode[] {
-  return node.children.filter(({ kind }) => {
-    return kind === "domain" || kind === "namespace";
-  });
-}
-
-function inline(node: StructureNode): string {
-  const children = members(node);
-
-  const collects = node.collects === undefined || node.collects.length === 0
-    ? ""
-    : `[collects: ${node.collects.join(" ")}]`;
-
-  const name = `${node.name}${node.kind === "namespace" ? "/" : ""}${node.public === true ? "*" : ""}${collects}`;
-
-  return children.length === 0
-    ? name
-    : `${name}{${children.map(inline).join(" ")}}`;
-}
-
-function renderLine(
-  node: StructureNode,
-  aliases: ReadonlyMap<string, string>,
-  globalRoles: readonly string[] = [],
-): string {
-  const children = members(node);
-
-  const plain = children.filter(({ kind, purpose }) => {
-    return kind === "domain" && purpose === undefined;
-  });
-
-  const alias = aliases.get(node.path);
-
-  return [
-    `${node.name}/`,
-    alias,
-    node.layers === undefined ? undefined : node.layers.join(" < "),
-    node.relation === "isolated" ? "[isolated]" : undefined,
-    node.childKind === "domains" ? "[domains]" : undefined,
-    plain.length === 0 ? undefined : plain.map(inline).join(" "),
-    node.purpose,
-    globalRoles.length === 0
-      ? undefined
-      : `(global roles: ${globalRoles.join(" ")})`,
-  ]
-    .filter((part) => part !== undefined)
-    .join("  ");
-}
-
-function renderTree(
-  node: StructureNode,
-  aliases: ReadonlyMap<string, string>,
-  prefix: string,
-): string[] {
-  const rows = members(node).filter(({ kind, purpose }) => {
-    return kind === "namespace" || purpose !== undefined;
-  });
-
-  return flatMap(rows, (child, index) => {
-    const last = index === rows.length - 1;
-
-    const line = child.kind === "namespace"
-      ? renderLine(child, aliases)
-      : `${inline(child)}  ${child.purpose}`;
-
-    return [
-      `${prefix}${last ? "└─ " : "├─ "}${line}`,
-      ...renderTree(child, aliases, `${prefix}${last ? "   " : "│  "}`),
-    ];
-  });
-}
-
-function findAliases(
-  { root }: EnvironmentStructure,
-  aliases: readonly Alias[],
-): Map<string, string> {
-  const found = new Map<string, string>();
-
-  for (const child of root.children) {
-    const alias = aliases.find(({ key, path }) => {
-      return key === `#${child.name}/*` && path === child.path;
-    });
-
-    if (alias !== undefined) {
-      found.set(child.path, `#${child.name}/…`);
-    }
-  }
-
-  return found;
-}
-
 export function renderEnvironmentMap({
   name,
   environment,
   roles,
-  aliases: declared,
+  aliases,
 }: {
   name: string;
   environment: EnvironmentStructure;
@@ -120,10 +28,6 @@ export function renderEnvironmentMap({
   aliases: readonly Alias[];
 }): string {
   const { root } = environment;
-
-  const aliases = findAliases(environment, declared);
-
-  const mirrors = root.children.filter(({ kind }) => kind === "mirror");
 
   const globalRoles = [
     ...root.children
@@ -136,17 +40,11 @@ export function renderEnvironmentMap({
     }),
   ];
 
-  const tree = [
-    renderLine(
-      { ...root, name: environment.dirs.join("/ ") },
-      aliases,
-      globalRoles,
-    ),
-    ...renderTree(root, aliases, ""),
-    ...mirrors.map(({ name: key, mirror }, index) => {
-      return `${index === mirrors.length - 1 ? "└─" : "├─"} ${key}/  mirrors ${mirror === undefined ? key : mirror.path}`;
-    }),
-  ];
+  const tree = renderStructureTree({
+    environment,
+    aliases,
+    globalRoles,
+  });
 
   return [
     `# Project map: ${name}`,

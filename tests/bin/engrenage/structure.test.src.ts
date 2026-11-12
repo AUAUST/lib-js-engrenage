@@ -33,8 +33,23 @@ afterEach(() => {
   process.exitCode = undefined;
 });
 
-// @debt the structure output is untested: asserting printed lines enforces a display, and a useful way to test what it reports is still to be found
 describe("engrenage structure", () => {
+  test("prints each environment as the project map's tree, with classification details", async () => {
+    createProject(
+      '{ src: { strictness: "loose", structure: { domains: { feature: { purpose: "A configured feature." } } } } }',
+    );
+
+    await structure({ check: false });
+
+    expect(vi.mocked(console.info).mock.calls.flat().slice(0, 3)).toStrictEqual(
+      [
+        "src/  [config]  (loose)",
+        "├─ feature  #feature/…  domain  [config]  A configured feature.",
+        "└─ mystery  #mystery/…  domain  [inferred]",
+      ],
+    );
+  });
+
   test("warns on a domain without a purpose without failing the check", async () => {
     createProject('{ src: { strictness: "loose" } }');
 

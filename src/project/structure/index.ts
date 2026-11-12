@@ -118,6 +118,7 @@ export { renderImportCycles } from "#project/structure/utils/renderImportCycles"
 export { renderProjectMap } from "#project/structure/utils/renderProjectMap";
 export { renderProjectMapRoles } from "#project/structure/utils/renderProjectMapRoles";
 export { renderStructure } from "#project/structure/utils/renderStructure";
+export { renderStructureTree } from "#project/structure/utils/renderStructureTree";
 export { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
 export { resolveEnvironmentGrants } from "#project/structure/utils/resolveEnvironmentGrants";
 export { resolveRoles } from "#project/structure/utils/resolveRoles";

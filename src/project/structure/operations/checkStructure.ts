@@ -15,11 +15,13 @@ export async function checkStructure(
 
   const { verbatimModuleSyntax } = await config.resolve("typescript");
 
+  const aliases = await config.resolve("aliases");
+
   const cycles = await findImportCycles({
     root: config.context.root,
     filesystem: config.context.filesystem,
     structure,
-    aliases: await config.resolve("aliases"),
+    aliases,
     verbatimModuleSyntax,
     languages: map(
       await config.context.registry.contributions("languages", config),
@@ -28,7 +30,10 @@ export async function checkStructure(
   });
 
   return {
-    lines: [...renderStructure(structure), ...renderImportCycles(cycles)],
+    lines: [
+      ...renderStructure(structure, [...aliases.global, ...aliases.src]),
+      ...renderImportCycles(cycles),
+    ],
     warnings: map(listDomainsWithoutPurpose(structure), (path) => {
       return `${path} has no purpose: set one on its \`domains\` entry.`;
     }),
