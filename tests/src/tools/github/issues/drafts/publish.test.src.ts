@@ -247,6 +247,7 @@ function route(method: string, path: string, body: Record<string, unknown>) {
     const issue = createIssue(number, {
       repository,
       title: String(body.title),
+      type: String(body.type),
       body: "",
     });
 
@@ -606,6 +607,8 @@ ${planBody}
 
     await claimPlanWithExtra(root);
 
+    requests = [];
+
     const {
       lines,
       passed,
@@ -617,6 +620,8 @@ ${planBody}
       "10: published as #10",
       "new-extra: published as #14",
     ]);
+
+    expect(requests).not.toContain("POST /graphql");
 
     expect(findIssue(10).subIssues).toEqual([11, 14, 12]);
 
@@ -756,12 +761,12 @@ Goal: the group
     expect(requests).toEqual([]);
   });
 
-  test("leaves a created issue as a claim when a request fails, and a second publish completes the set", async () => {
+  async function failCreatingExtra(request: string) {
     const root = createProject();
 
     await claimPlanWithExtra(root);
 
-    failing = "PATCH /repos/AUAUST/app/issues/14";
+    failing = request;
 
     await expect(
       publishIssues(await loadConfig(root), ["10", "new-extra"]),
@@ -770,6 +775,36 @@ Goal: the group
     expect(
       listIssueFiles(root, ["14.md", "14.draft.md", "new-extra.draft.md"]),
     ).toEqual(["14.md", "14.draft.md"]);
+
+    return root;
+  }
+
+  test("records a created issue before its Blockers write, so a second publish updates it", async () => {
+    const root = await failCreatingExtra(
+      "POST /repos/AUAUST/app/issues/14/issue-field-values",
+    );
+
+    expect(read(root, "14.draft.md")).toContain("title: Extra");
+
+    failing = undefined;
+
+    const {
+      passed,
+    } = await publishIssues(await loadConfig(root), ["10", "14"]);
+
+    expect(passed).toBe(true);
+
+    expect(
+      requests.filter((request) => {
+        return request === "POST /repos/AUAUST/app/issues";
+      }),
+    ).toHaveLength(1);
+
+    expect(findIssue(14)).toMatchObject({ title: "Extra", type: "Task" });
+  });
+
+  test("leaves a created issue as a claim when a request fails, and a second publish completes the set", async () => {
+    const root = await failCreatingExtra("PATCH /repos/AUAUST/app/issues/14");
 
     expect(read(root, "10.draft.md")).toContain('ref: "#14"');
 

@@ -5,11 +5,12 @@ import { isString } from "@auaust/toolkit/isString";
 
 import { validate } from "#foundation/options/index";
 import { splitRepository } from "#tools/github/issues/api/index";
-import { replaceOutsideCode } from "#tools/github/issues/contract/index";
-import { issueTypeMutation } from "#tools/github/issues/drafts/constants";
+import {
+  replaceOutsideCode,
+  type FetchedIssue,
+} from "#tools/github/issues/contract/index";
 import { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFieldValue";
 import { findBlockersField } from "#tools/github/issues/drafts/utils/findBlockersField";
-import { findTypeNodeId } from "#tools/github/issues/drafts/utils/findTypeNodeId";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { locateFetchedIssue } from "#tools/github/issues/drafts/utils/locateFetchedIssue";
 import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
@@ -74,19 +75,13 @@ export async function createPublishedIssue(
     {
       ...splitRepository(access.repository),
       title: draft.manifest.title,
+      type: draft.manifest.type,
     },
   );
 
   const data = validate(createdSchema, created.data, `issue ${draft.stem}`);
 
-  await access.client.graphql(issueTypeMutation, {
-    issueId: data.node_id,
-    issueTypeId: findTypeNodeId(target, draft.manifest.type),
-  });
-
   const blockers = findBlockersField(target, context.protocol);
-
-  await writeFieldValue(access, data.number, blockers, [], [drafting]);
 
   const body = data.body ?? "";
 
@@ -112,7 +107,7 @@ export async function createPublishedIssue(
 
   draft.stem = stem;
 
-  draft.remote = {
+  const remote: FetchedIssue = {
     id: data.id,
     nodeId: data.node_id,
     number: data.number,
@@ -122,19 +117,18 @@ export async function createPublishedIssue(
     stateReason: undefined,
     type: draft.manifest.type,
     labels: [],
-    fields: { [blockers.name]: [drafting] },
-    blockers: [drafting],
+    fields: { [blockers.name]: [] },
+    blockers: [],
     subIssues: [],
     parent: undefined,
     blockedBy: [],
   };
 
+  draft.remote = remote;
+
   await filesystem.write(
     locateFetchedIssue(stem),
-    renderDraft(
-      new Document(readIssueManifest(draft.remote, target, context)),
-      body,
-    ),
+    renderDraft(new Document(readIssueManifest(remote, target, context)), body),
   );
 
   for (const other of drafts) {
@@ -145,4 +139,12 @@ export async function createPublishedIssue(
   }
 
   await filesystem.flush();
+
+  await writeFieldValue(access, data.number, blockers, [], [drafting]);
+
+  draft.remote = {
+    ...remote,
+    fields: { [blockers.name]: [drafting] },
+    blockers: [drafting],
+  };
 }
