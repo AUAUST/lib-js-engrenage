@@ -28,7 +28,9 @@ function toClaimedIssue(stem: string, context: DraftsContext) {
   const parsed = parseStem(stem);
 
   if (parsed?.kind !== "issue") {
-    throw new Error(`${stem}: claim takes the numbers of published issues`);
+    throw new Error(
+      `${stem}: claim takes published issues, such as 123 or <repo>.123`,
+    );
   }
 
   const resolved = resolveStem(parsed, context);
