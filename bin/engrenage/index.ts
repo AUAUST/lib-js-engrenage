@@ -9,6 +9,7 @@ import gate from "#bin/engrenage/gate";
 import github from "#bin/engrenage/github/index";
 import init from "#bin/engrenage/init";
 import jscpd from "#bin/engrenage/jscpd";
+import jscpdNew from "#bin/engrenage/jscpdNew";
 import planning from "#bin/engrenage/planning/index";
 import pnpm from "#bin/engrenage/pnpm/index";
 import prettier from "#bin/engrenage/prettier";
@@ -70,6 +71,7 @@ export default defineGroup({
       aliases: ["lint:suppress"],
     },
     "jscpd": jscpd,
+    "jscpd:new": jscpdNew,
     "prettier": {
       command: prettier,
       aliases: ["format"],

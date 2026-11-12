@@ -49,11 +49,11 @@ describe("reportClones", { timeout: binaryTimeout }, () => {
 
     project.write("src/third.ts", createSource("third"));
 
-    const report = await reportClones(await loadConfig(project.root), [
-      "src/third.ts",
-    ]);
+    const report = await reportClones(await loadConfig(project.root), {
+      files: ["src/third.ts"],
+    });
 
-    expect(report).toMatch(/(first|second)\.ts:1-15 ~ third\.ts:1-15/);
+    expect(report).toMatch(/(first|second)\.ts:1-15 ~ src\/third\.ts:1-15/);
 
     expect(report).not.toMatch(/first\.ts:1-15 ~ second\.ts:1-15/);
   });
@@ -63,9 +63,9 @@ describe("reportClones", { timeout: binaryTimeout }, () => {
 
     project.write("tests/third.test.ts", createSource("third"));
 
-    const report = await reportClones(await loadConfig(project.root), [
-      "tests/third.test.ts",
-    ]);
+    const report = await reportClones(await loadConfig(project.root), {
+      files: ["tests/third.test.ts"],
+    });
 
     expect(report).toMatch(/third\.test\.ts:1-15/);
   });
@@ -76,9 +76,52 @@ describe("reportClones", { timeout: binaryTimeout }, () => {
     project.write("tests/fixtures/third.ts", createSource("third"));
 
     expect(
-      await reportClones(await loadConfig(project.root), [
-        "tests/fixtures/third.ts",
-      ]),
+      await reportClones(await loadConfig(project.root), {
+        files: ["tests/fixtures/third.ts"],
+      }),
     ).toBeUndefined();
+  });
+
+  test("reports only the gate's files among the new clones", async () => {
+    const { project } = await createRepository();
+
+    project.write("src/third.ts", createSource("third"));
+
+    project.write("tests/third.test.ts", createSource("test"));
+
+    const report = await reportClones(await loadConfig(project.root), {
+      files: ["src/third.ts"],
+    });
+
+    expect(report).toMatch(/third\.ts:1-15/);
+
+    expect(report).not.toMatch(/third\.test\.ts/);
+  });
+
+  test("reports the clones added since a ref", async () => {
+    const { project, git } = await createRepository();
+
+    project.write("src/third.ts", createSource("third"));
+
+    git("add", "-A");
+
+    git(
+      "-c",
+      "user.name=Test",
+      "-c",
+      "user.email=test@example.com",
+      "commit",
+      "--quiet",
+      "-m",
+      "third",
+    );
+
+    const report = await reportClones(await loadConfig(project.root), {
+      since: "HEAD~1",
+    });
+
+    expect(report).toMatch(/third\.ts:1-15/);
+
+    expect(report).not.toMatch(/first\.ts:1-15 ~ second\.ts:1-15/);
   });
 });

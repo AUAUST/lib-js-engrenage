@@ -7,7 +7,7 @@ export async function warnClones(
   config: LoadedConfig,
   files: Files,
 ): Promise<GateResult> {
-  const report = await reportClones(config, files);
+  const report = await reportClones(config, { files });
 
   return { ok: report === undefined, output: report ?? "" };
 }
