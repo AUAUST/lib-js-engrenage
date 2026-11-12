@@ -9,10 +9,10 @@ import {
   type StructureNode,
 } from "#project/structure/index";
 import { domainsBlock } from "#tools/typescript/constants";
+import { listCollectedModules } from "#tools/typescript/operations/listCollectedModules";
 import { listDomainModules } from "#tools/typescript/operations/listDomainModules";
 import { planIndexBarrels } from "#tools/typescript/operations/planIndexBarrels";
 import { isBelow } from "#tools/typescript/utils/isBelow";
-import { isCollected } from "#tools/typescript/utils/isCollected";
 import { listRootReexports } from "#tools/typescript/utils/listRootReexports";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { ConfigResolver } from "#project/config/index";
@@ -73,24 +73,7 @@ async function listBlockModules(
     return modules.filter((module) => isBelow(directory, module.file));
   }
 
-  const domains = collectStructureNodes(environment.root).filter((node) => {
-    return node.kind === "domain";
-  });
-
-  const modules = await Promise.all(
-    domains.map((domain) => {
-      return listDomainModules(
-        filesystem,
-        domain,
-        environment,
-        (name, candidate) => {
-          return name === role && isCollected(candidate);
-        },
-      );
-    }),
-  );
-
-  return modules.flat();
+  return listCollectedModules(filesystem, environment, [role]);
 }
 
 export async function planBarrelBlock(

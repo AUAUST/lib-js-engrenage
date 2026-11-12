@@ -26,6 +26,7 @@ export interface StructureNode {
   readonly specifier?: string;
   readonly internals?: boolean;
   readonly reexport?: readonly ReexportMode[];
+  readonly collects?: readonly string[];
   readonly purpose?: string;
   readonly effects?: string;
   readonly mirror?: StructureMirror;

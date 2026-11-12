@@ -40,6 +40,13 @@
       ],
       "description": "How the environment's generated root entry re-exports the domain's entry: as a `namespace` named after its package subpath, `flat`, its names spread among the root's, or both as a list. Unset, `namespace`.\n@default none"
     },
+    "collects": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Roles whose collected modules, from every domain of the environment, the domain's generated entry re-exports besides its own modules. Each must be a public collected role of the environment.\n@default none"
+    },
     "public": {
       "type": "boolean",
       "description": "Whether the domain is a package entry, so `engrenage sync` creates the `entry.ts` of a domain without `index.ts`. Unset, whether its `entry.ts` exists; `false` fails when it does.\n@default none"

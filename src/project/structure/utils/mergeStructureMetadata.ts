@@ -93,6 +93,7 @@ export function mergeStructureMetadata({
       purpose: pick("purpose", existing?.purpose, fields.purpose),
       internals: pick("internals", existing?.internals, fields.internals),
       reexport: pick("reexport", existing?.reexport, fields.reexport),
+      collects: pick("collects", existing?.collects, fields.collects),
       public: pick("public", existing?.public, fields.public),
       source: existing?.source ?? "metadata",
     });

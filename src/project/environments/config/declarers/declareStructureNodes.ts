@@ -97,6 +97,10 @@ const fields = freeze({
     description: "How the environment's generated root entry re-exports the domain's entry: as a `namespace` named after its package subpath, `flat`, its names spread among the root's, or both as a list. Unset, `namespace`.",
     optional: { value: undefined },
   }),
+  collects: declare(array(string()), {
+    description: "Roles whose collected modules, from every domain of the environment, the domain's generated entry re-exports besides its own modules. Each must be a public collected role of the environment.",
+    optional: { value: undefined },
+  }),
   public: declare(boolean(), {
     description: "Whether the domain is a package entry, so `engrenage sync` creates the `entry.ts` of a domain without `index.ts`. Unset, whether its `entry.ts` exists; `false` fails when it does.",
     optional: { value: undefined },
@@ -146,6 +150,7 @@ const domainNode = declareObject({
   purpose: fields.domainPurpose,
   internals: fields.internals,
   reexport: fields.reexport,
+  collects: fields.collects,
   public: fields.public,
   ...declareChildren(),
 });

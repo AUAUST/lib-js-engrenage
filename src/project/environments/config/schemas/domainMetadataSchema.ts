@@ -10,5 +10,6 @@ export const domainMetadataSchema = strictObject({
   specifier: fields.specifier.schema,
   internals: fields.internals.schema,
   reexport: fields.reexport.schema,
+  collects: fields.collects.schema,
   public: fields.public.schema,
 });

@@ -134,6 +134,53 @@ export type * from "#types/index";
     );
   });
 
+  test("lists a role collected from every domain in an entry declaring `collects`, besides its own modules", async () => {
+    const { project, sync } = createKit({
+      files: {
+        "src/modules/a/utils/isA.ts": "export function isA() {}\n",
+        "src/modules/b/utils/isB.ts": "export function isB() {}\n",
+        "src/modules/guard/utils/isNull.ts": "export function isNull() {}\n",
+      },
+      guard: {
+        collects: ["utils"],
+      },
+    });
+
+    await sync();
+
+    expect(project.read("src/modules/guard/entry.ts")).toBe(
+      `${header}export { isA } from "#modules/a/utils/isA";
+export type * from "#modules/a/utils/isA";
+export { isB } from "#modules/b/utils/isB";
+export type * from "#modules/b/utils/isB";
+export { isNull } from "#modules/guard/utils/isNull";
+export type * from "#modules/guard/utils/isNull";
+`,
+    );
+
+    expect(project.read("src/modules/a/entry.ts")).toBe(
+      `${header}export { isA } from "#modules/a/utils/isA";
+export type * from "#modules/a/utils/isA";
+`,
+    );
+  });
+
+  test("fails resolution when `collects` names a private role, naming the role", async () => {
+    const { config } = createKit({
+      files: {
+        "src/modules/guard/types/Guard.ts": "export type Guard = unknown;\n",
+      },
+      guard: {
+        collects: ["types"],
+      },
+      roles: [types({ public: false })],
+    });
+
+    await expect(runSync(config)).rejects.toThrow(
+      "src/modules/guard collects the role types, which is not a public collected role of its environment",
+    );
+  });
+
   test("adds the aliases a contribution returns to the module's entry", async () => {
     const { project, sync } = createKit({
       files: {

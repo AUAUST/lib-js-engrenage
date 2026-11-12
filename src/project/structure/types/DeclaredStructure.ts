@@ -23,6 +23,7 @@ export interface DeclaredStructure {
         readonly purpose: string | undefined;
         readonly internals: boolean | undefined;
         readonly reexport: ReexportMode | readonly ReexportMode[] | undefined;
+        readonly collects: readonly string[] | undefined;
         readonly public: boolean | undefined;
       }
     >

@@ -63,6 +63,7 @@ export function flattenStructure({
         purpose: domain.purpose,
         internals: domain.internals,
         reexport: domain.reexport,
+        collects: domain.collects,
         public: domain.public,
       });
 

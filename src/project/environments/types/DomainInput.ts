@@ -24,6 +24,11 @@ export interface DomainInput {
    */
   reexport?: ((("namespace" | "flat") | [("namespace" | "flat"), ...(("namespace" | "flat"))[]]) | undefined)
   /**
+   * Roles whose collected modules, from every domain of the environment, the domain's generated entry re-exports besides its own modules. Each must be a public collected role of the environment.
+   * @default none
+   */
+  collects?: (string[] | undefined)
+  /**
    * Whether the domain is a package entry, so `engrenage sync` creates the `entry.ts` of a domain without `index.ts`. Unset, whether its `entry.ts` exists; `false` fails when it does.
    * @default none
    */

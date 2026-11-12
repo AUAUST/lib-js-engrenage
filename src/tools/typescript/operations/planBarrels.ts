@@ -7,6 +7,7 @@ import {
   type EnvironmentStructure,
 } from "#project/structure/index";
 import { barrelHeader } from "#tools/typescript/constants";
+import { listCollectedModules } from "#tools/typescript/operations/listCollectedModules";
 import { listDomainModules } from "#tools/typescript/operations/listDomainModules";
 import { planIndexBarrels } from "#tools/typescript/operations/planIndexBarrels";
 import { isCollected } from "#tools/typescript/utils/isCollected";
@@ -79,15 +80,25 @@ async function planEnvironment(
 
   const domainEntries = await Promise.all(
     entryOnly.flat().map(async (domain): Promise<BarrelPlan> => {
+      const own = await listDomainModules(
+        filesystem,
+        domain,
+        environment,
+        (_, contract) => isCollected(contract),
+      );
+
+      const collected = await listCollectedModules(
+        filesystem,
+        environment,
+        domain.collects ?? [],
+      );
+
+      const listed = new Set(own.map(({ file }) => file));
+
       return {
         file: posix.join(domain.path, entryFile),
         node: domain,
-        modules: await listDomainModules(
-          filesystem,
-          domain,
-          environment,
-          (_, contract) => isCollected(contract),
-        ),
+        modules: [...own, ...collected.filter(({ file }) => !listed.has(file))],
         reexports: [],
       };
     }),
