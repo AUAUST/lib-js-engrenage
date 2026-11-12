@@ -16,7 +16,7 @@ interface WorkflowStep {
 interface WorkflowJob {
   name: string;
   needs?: readonly string[];
-  strategy?: { matrix: { shard: readonly number[] } };
+  strategy?: { "fail-fast": boolean; "matrix": { shard: readonly number[] } };
   steps: readonly WorkflowStep[];
 }
 
@@ -79,10 +79,13 @@ describe("renderWorkflow", () => {
     expect(artifacts).toEqual(["build-output", "build-output"]);
   });
 
-  test("splits the tests into the configured shards", async () => {
+  test("splits the tests into the configured shards, each run to completion", async () => {
     const { jobs } = await render("ci.yml", { testShards: 3 });
 
-    expect(jobs.test?.strategy?.matrix.shard).toEqual([1, 2, 3]);
+    expect(jobs.test?.strategy).toEqual({
+      "fail-fast": false,
+      "matrix": { shard: [1, 2, 3] },
+    });
 
     expect(jobs.test?.steps.at(-1)?.run).toBe(
       "pnpm run ci:test --shard=${{ matrix.shard }}/${{ strategy.job-total }}",

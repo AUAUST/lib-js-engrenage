@@ -80,7 +80,8 @@ function shardTests(document: Document, jobs: YAMLMap, shards: number): void {
   insertBefore(document, job, "runs-on", {
     key: "strategy",
     value: {
-      matrix: {
+      "fail-fast": false,
+      "matrix": {
         shard: Array.from({ length: shards }, (_, index) => index + 1),
       },
     },
