@@ -60,3 +60,4 @@
 - engrenage planning issue publish: changed a claimed Idea to Problem — merged manifest kept `Nature: null` and failed; set the type through GraphQL `updateIssue` and dropped `Nature` from the fetched `<ref>.md`
 - vitest toHaveProperty: asserted a missing "." key with a string path — the string parses as a property path and throws; passed ["."] instead
 - engrenage planning CLI: pnpm exec engrenage in engrenage itself — binary not linked; pnpm engrenage (package script) works
+- `engrenage sync` barrels: added `isPlaced` to `#project/structure` imported by other domains — sync crashed loading the missing export; added the barrel line by hand, then sync confirmed it
