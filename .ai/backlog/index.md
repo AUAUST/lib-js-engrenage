@@ -54,4 +54,3 @@ Deferred questions, bugs, tasks and improvements.
 - [init](init.md): Init steps and their step context.
 - [sync](sync.md): `project/sync` target ordering and sync products.
 - [eslint-conventions](eslint-conventions.md): ESLint rules and conventions engrenage ships.
-- [issue-drafts](issue-drafts.md): Local issue drafts: claim, check and publish.

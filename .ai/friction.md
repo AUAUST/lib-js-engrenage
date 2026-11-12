@@ -64,4 +64,5 @@
 - Agent `isolation: "worktree"`: dispatched workers expecting a worktree at `HEAD` — each branch started at `6b1506b8`, an older commit; workers checked out the briefed commit detached
 - Claude PreToolUse Bash hook: ran `engrenage sync` to generate a new contract barrel export already imported — the hook loads engrenage from source and failed; added the barrel line with Edit, then synced
 - worktree guard: compound Bash commands and heredoc scripts naming `github` paths in an agent worktree — refused as "names git in a form too complex"; split commands and moved the script into a scratch file
+- engrenage jscpd: `--baseline-from-ref` with the ai reporter to name new clones — it lists every clone and only counts new ones; read `isNew` from `--reporters json`
 - worktree guard: inline Python heredoc editing files under `src/tools/github/` and a `python3 … && pnpm …` chain — refused as too complex to verify; wrote the scripts to the scratchpad and ran each command alone
