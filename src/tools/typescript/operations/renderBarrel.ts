@@ -14,6 +14,7 @@ import { toSorted } from "@auaust/primitive-kit/arrays";
 import { toCamelCase } from "@auaust/primitive-kit/strings";
 
 import { validate } from "#foundation/options/index";
+import { exportGroups } from "#project/format/index";
 import { identifierPattern } from "#tools/typescript/constants";
 import { compareNaturally } from "#tools/typescript/utils/compareNaturally";
 import { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
@@ -200,6 +201,15 @@ function assertDistinctNames(claims: readonly NameClaim[], barrel: File) {
   }
 }
 
+function getGroupIndex({ binding, typeOnly }: BarrelExport): number {
+  return exportGroups.findIndex((group) => {
+    return (
+      group.typeOnly === (typeOnly === true) &&
+      group.wildcard === (binding === undefined)
+    );
+  });
+}
+
 function renderExport(exported: BarrelExport, specifier: string): string {
   const type = exported.typeOnly === true ? "type " : "";
   const { binding, name } = exported;
@@ -264,9 +274,8 @@ export async function renderBarrel({
 
   const sorted = toSorted(rendered, (left, right) => {
     return (
+      getGroupIndex(left.exported) - getGroupIndex(right.exported) ||
       compareNaturally(left.specifier, right.specifier) ||
-      Number(left.exported.typeOnly === true) -
-        Number(right.exported.typeOnly === true) ||
       compareNaturally(
         left.exported.binding ?? "",
         right.exported.binding ?? "",

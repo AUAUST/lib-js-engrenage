@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { utils } from "#project/roles/index";
+import { schemas, types, utils, type Role } from "#project/roles/index";
 import { collectChanges, runSync } from "#project/sync/index";
 import { createBarrelProject } from "#tests/utils/createBarrelProject";
 import { createBarrelRenderer } from "#tools/typescript/operations/createBarrelRenderer";
@@ -12,17 +12,19 @@ const builtinsBarrel = "src/workflows/builtins/index.ts";
 function createKit({
   files,
   isPublic = false,
+  roles = [
+    utils({
+      exports: { values: "named-match", types: "none" },
+    }),
+  ],
 }: {
   files: Record<string, string>;
   isPublic?: boolean;
+  roles?: readonly Role[];
 }) {
   return createBarrelProject({
     files,
-    roles: [
-      utils({
-        exports: { values: "named-match", types: "none" },
-      }),
-    ],
+    roles,
     domains: {
       "*": { public: isPublic },
     },
@@ -62,6 +64,39 @@ export { keys } from "#modules/object/utils/keys";
     expect(await runSync(copy)).toEqual([]);
 
     expect(await collectChanges(copy, { check: true })).not.toEqual([]);
+  });
+
+  test("orders a block mixing export groups as the export order lint wants", async () => {
+    const { project, sync } = createKit({
+      files: {
+        "src/modules/object/index.ts": "// @barrel utils\n// @end\n\n// @barrel schemas\n// @end\n\n// @barrel types\n// @end\n",
+        "src/modules/object/utils/keys10.ts": "export function keys10() {}\n",
+        "src/modules/object/utils/keys2.ts": "export function keys2() {}\n",
+        "src/modules/object/schemas/shape.ts": "export const shape = {};\n",
+        "src/modules/object/types/Entry.ts": "export interface Entry {}\n",
+      },
+      roles: [utils(), schemas({ exports: "named" }), types()],
+    });
+
+    await sync();
+
+    expect(project.read("src/modules/object/index.ts")).toBe(
+      `// @barrel utils
+export { keys2 } from "#modules/object/utils/keys2";
+export { keys10 } from "#modules/object/utils/keys10";
+export type * from "#modules/object/utils/keys2";
+export type * from "#modules/object/utils/keys10";
+// @end
+
+// @barrel schemas
+export * from "#modules/object/schemas/shape";
+// @end
+
+// @barrel types
+export type * from "#modules/object/types/Entry";
+// @end
+`,
+    );
   });
 
   test("fails on a marker naming an unknown role, naming the file and the role", async () => {

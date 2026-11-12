@@ -21,6 +21,29 @@ export const complexityLimits = freeze({
   fileLines: 350,
 } as const);
 
+export const exportGroups = freeze([
+  freeze({
+    name: "value-export",
+    typeOnly: false,
+    wildcard: false,
+  }),
+  freeze({
+    name: "type-export",
+    typeOnly: true,
+    wildcard: false,
+  }),
+  freeze({
+    name: "value-wildcard-export",
+    typeOnly: false,
+    wildcard: true,
+  }),
+  freeze({
+    name: "type-wildcard-export",
+    typeOnly: true,
+    wildcard: true,
+  }),
+] as const);
+
 // @debt maps conventions onto jsonc-parser input, yet JSON has no tool domain to map at its boundary; thirteen callers import it and pass it on, so JSON files ignore the configurable `format` section
 export const jsonIndentation = freeze({
   insertSpaces: conventions.indent === "spaces",

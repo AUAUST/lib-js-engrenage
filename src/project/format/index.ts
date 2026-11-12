@@ -3,6 +3,8 @@ export { formatContent } from "#project/format/operations/formatContent";
 export { formatFile } from "#project/format/operations/formatFile";
 // @end
 
+export { exportGroups } from "#project/format/constants";
+
 // @barrel config/schemas
 export { formatSchema } from "#project/format/config/schemas/formatSchema";
 export { formatterNameSchema } from "#project/format/config/schemas/formatterNameSchema";
