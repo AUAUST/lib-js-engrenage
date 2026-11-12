@@ -1,5 +1,157 @@
 # @auaust/engrenage
 
+## 0.10.0
+
+### Minor Changes
+
+- [`3680d89`](https://github.com/AUAUST/lib-js-engrenage/commit/3680d89599e9660e8f23cc3a8cd22b71f8faeda7) Thanks [@apademide](https://github.com/apademide)! - - Fill directives inside agent fragments from the `agents.fillers` slot before `@reference` blocks are synced, and generate whole rule files from the `agents.rules` slot; the project map now comes from these slots
+  - Block directive names may contain hyphens
+
+- [`1238a32`](https://github.com/AUAUST/lib-js-engrenage/commit/1238a32ebd15c19e26bcceaae351d9845bfc538e) Thanks [@apademide](https://github.com/apademide)! - - Add the `barrel-blocks` sync target, which fills each `// @barrel <role>` block in the `index.ts` and `entry.ts` files of every environment, keeping the hand-written lines around it, and which `sync --check` checks. A block lists the role's modules per its export contract: those of the barrel's own domain or, for a `collected` role, its public modules across the environment, where default exports sharing a file name take the camelCase of their domain path. `// @barrel domains` in an environment's root entry re-exports what the generated root entry would. An unknown role fails sync
+  - Stop filling `// @barrel <glob> <mode>` blocks: name the role instead
+  - Remove `syncBarrels` and the `BarrelMode` type from `@auaust/engrenage/typescript`
+  - Let `syncBlocks` fillers and `FileSync.update` return a promise; `syncBlocks` now returns one
+
+- [`4ec1db1`](https://github.com/AUAUST/lib-js-engrenage/commit/4ec1db1a0c9ceeeee76853f47ea3af523d51acc4) Thanks [@apademide](https://github.com/apademide)! - - Workers run at `low` effort by default and `medium` for `involved` or `complex` leaves; debuggers keep `medium`, `low` for `trivial` and `high` for `complex`
+  - Skill agents declare their effort per `complexity` in `agent.efforts`; Codex gets one `<agent>_<effort>` profile per effort it names besides the default, replacing the fixed `_low` and `_high` profiles of gated agents
+
+- [`9f97dd4`](https://github.com/AUAUST/lib-js-engrenage/commit/9f97dd4d5b3a317a81bb4fc3f9535dea38730bed) Thanks [@apademide](https://github.com/apademide)! - - Issue relations, Roadmap lines and header chains carry their repository: `planning issue claim` keeps the gist and sections of a Roadmap line naming `<owner>/<repo>#<n>`, header chains follow parents into other repositories, and `planning walk check` fetches each sub-issue and blocker from its own repository and names another repository's issue as `<owner>/<repo>#<n>`
+
+- [`95787de`](https://github.com/AUAUST/lib-js-engrenage/commit/95787de8ec9f228870ac4ef6fa96c64951ed1072) Thanks [@apademide](https://github.com/apademide)! - - Replace a role's `file` callback and `fileDescription` with `file: { resolve, description }`. Upgrade: move the callback into `resolve` and its `fileDescription` into `description`
+
+- [`02cd314`](https://github.com/AUAUST/lib-js-engrenage/commit/02cd314d96273e2f2b5437e7cf182ef816790c16) Thanks [@apademide](https://github.com/apademide)! - - Add the collects domain field: an entry re-exporting a role from every domain
+
+- [`1261a89`](https://github.com/AUAUST/lib-js-engrenage/commit/1261a89310f80e374c2a03192118813e3eaf20c6) Thanks [@apademide](https://github.com/apademide)! - - Move the global maps extensions augment into the type-only `Engrenage` namespace: `EngrenageConfigInput`, `EngrenageSections`, `EngrenageSlots`, `EngrenageFormatters`, `EngrenagePresets`, `EngrenageEnvironments`, `EngrenageBuildTools` and `EngrenageAgentRuntimes` become `Engrenage.ConfigInput`, `Engrenage.Sections`, `Engrenage.Slots`, `Engrenage.Formatters`, `Engrenage.Presets`, `Engrenage.Environments`, `Engrenage.BuildTools` and `Engrenage.AgentRuntimes`
+  - Rename the exported `EngrenageSlots` type to `ConfigSlots`
+  - Allow declaration-only namespaces in the shared ESLint preset's `@typescript-eslint/no-namespace`
+
+- [`f2a8355`](https://github.com/AUAUST/lib-js-engrenage/commit/f2a8355712211c50ae6553c165200ea8fb178efa) Thanks [@apademide](https://github.com/apademide)! - - Add the `@auaust/engrenage/extensions` entry for extension authors: `defineExtension`, the option declarers, and the extension, section, file, sync, gate and init contracts, each marked stable or experimental; experimental contracts may break in a minor release before 1.0
+  - Move `loadConfig`, `loadValidatedConfig` and `LoadedConfig` from `@auaust/engrenage/config` to `@auaust/engrenage/extensions`
+  - Accept nested lists in `extensions`, flattened in listed order
+  - Add `root` to extensions: `engrenage sync agents` reads the agent fragments an active extension's package exports under `./agents/<kind>/*.md`
+  - Add `compatibility.engrenage` to extensions: a semver range the running engrenage must satisfy
+
+- [`9a1db32`](https://github.com/AUAUST/lib-js-engrenage/commit/9a1db32e19ae905624100a0a7a33950b17269584) Thanks [@apademide](https://github.com/apademide)! - - Export the resolved structure types from `@auaust/engrenage/extensions`, marked experimental: `ResolvedStructure`, `EnvironmentStructure`, `ResolvedRoleContract` and the types they reference, so an extension reads `await config.resolve("structure")` instead of re-deriving domains and roles
+  - Deep-freeze the resolved structure: its nodes, role files, file names and roles are read-only at runtime
+
+- [`cc50547`](https://github.com/AUAUST/lib-js-engrenage/commit/cc5054720cfe8a604149b3ec984fa2c3269ca326) Thanks [@apademide](https://github.com/apademide)! - - Add the `barrels` sync target, which writes from the project structure, with a generated header: the `entry.ts` of each public domain without `index.ts`, re-exporting its `collected` public roles; one `index.ts` per directory of each `index: true` role; and the environment's root entry unless it exists without that header, re-exporting each public domain's entry, as a namespace named after its package subpath by default, and each global `index: true` role's barrel declaring `reexport`. It deletes the barrels it generated once their domain or role disappears, and `sync --check` checks them
+  - Add the domain options `reexport` (`namespace`, `flat` or both as a list: how the root entry re-exports the domain) and `public` (whether the domain is a package entry before its `entry.ts` exists; `false` fails beside an existing `entry.ts`), on `domains` entries and `.domain.json`
+  - Add the role contract entry `reexport`, taken only by a global role with `index: true`: how the root entry re-exports the role's barrel; unset, it does not
+  - Add the `barrels.exports` slot, through which an extension adds or renames the exports of each generated barrel (aliases, derived names); its `BarrelExport`, `BarrelExportsEntry` and `BarrelExportsResolver` contracts and `ReexportMode` are exported from `@auaust/engrenage/extensions`, marked experimental
+
+- [`8c89769`](https://github.com/AUAUST/lib-js-engrenage/commit/8c89769226604c8c1bbb3945a0f4fca7977de832) Thanks [@apademide](https://github.com/apademide)! - - `engrenage github fetch` writes `.engrenage/github.json`: labels of every registered repository and issue types, fields and pinned fields of their organizations, with GitHub's ids; it fails first on a token missing the `repo` or `read:org` scope
+
+- [`5314172`](https://github.com/AUAUST/lib-js-engrenage/commit/53141722f7338e06f17211987b5a26207cf8117d) Thanks [@apademide](https://github.com/apademide)! - - Let global roles import other domains' public roles with import type
+
+- [`06593fe`](https://github.com/AUAUST/lib-js-engrenage/commit/06593fee960cd556bab856f9d37b2dcd7fea6f26) Thanks [@apademide](https://github.com/apademide)! - - Report a concise arrow on a line wider than `format.lineWidth` under `auaust/no-complex-concise-arrows`, fixed into a block body so Prettier can break the line; on nested arrows, only the outermost of the line
+
+- [`15d1363`](https://github.com/AUAUST/lib-js-engrenage/commit/15d13636d56be8561f027e2b4173f537239430e5) Thanks [@apademide](https://github.com/apademide)! - - Add the namespace option `children: "domains"`, which classifies every child directory of the namespace as a domain without an `index.ts` or a `domains` entry; project maps mark such namespaces `[domains]`
+
+- [`5cf1434`](https://github.com/AUAUST/lib-js-engrenage/commit/5cf1434f91fb0de87d498cdd4196339c80664e33) Thanks [@apademide](https://github.com/apademide)! - Planning drafts reference and create issues in registered repositories: `#{<repo>.<n>}` and `#{<repo>.new-<slug>}` resolve through the registry, `planning issue create --repo <repo>` drafts an issue there, `check` checks issues of registered repositories, and `publish` renders every reference relative to the issue's repository. `claim` refuses issues of other repositories.
+
+- [`01c8443`](https://github.com/AUAUST/lib-js-engrenage/commit/01c844377ad98ded9da1606951ce38a521a02045) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage planning issue create <type>`, writing `.ai/issues/new-<slug>.draft.md` with the type's manifest (title, type, labels, pinned fields with their options as comments, `subIssues`, `blockedBy`) and its contract's body skeleton; `--parent` lists it in the parent draft's `subIssues`
+  - Add `engrenage planning issue check <refs>`: a draft is checked locally for its manifest against the GitHub snapshot, its body against its type's contract, generated sections, references outside the checked drafts and cycles; an issue number is checked on GitHub as before
+  - Remove `engrenage issues`: `engrenage issues check <n>` is now `engrenage planning issue check <n>`
+  - Issue bodies are checked only against their declared type's contract, never a type guessed from their sections: the `gh` hook no longer checks the body of `gh issue create`
+
+- [`afc4a15`](https://github.com/AUAUST/lib-js-engrenage/commit/afc4a158962620a63803cceaafb2a53e6a3aa885) Thanks [@apademide](https://github.com/apademide)! - - Render issue header chains at `engrenage planning issue publish` from the tree: a draft's header holds only `<sections>: <gist>`, and `claim` strips the chain
+  - Fail `engrenage planning issue check` on a draft header starting with a reference, and on a listed child draft without a header line or with the placeholder left as written
+  - Fail `engrenage planning issue publish` on an issue whose header line does not match its ancestors, and on a set that changes the ancestors of issues outside it
+  - Write the `<sections>: <gist>` header placeholder in `engrenage planning issue create --parent` drafts of types with a header
+
+- [`ea0055e`](https://github.com/AUAUST/lib-js-engrenage/commit/ea0055ea5a3d9c6eb625bcf7b0a3add366d982ba) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage planning issue claim <refs>`: writes `.ai/issues/<n>.md` with the manifest and body as fetched and `<n>.draft.md` with the issue's manifest and body, a Plan's **Roadmap** turned into `subIssues`, then adds `Drafting` to its Blockers
+  - Add `engrenage planning issue publish <refs>`: validates the set, merges each claimed issue three-way, per manifest key and for the body, with its GitHub changes since the claim, creates new issues, sets title, body, type, labels, fields, state, sub-issues and blocked-by, renders Plan roadmaps, clears `Drafting`, prints each issue's diff and deletes its files; an interrupted publish resumes from the created issues' drafts
+
+- [`d3fb9e0`](https://github.com/AUAUST/lib-js-engrenage/commit/d3fb9e00df573398af2f401223c7d6ac3c7ac7d3) Thanks [@apademide](https://github.com/apademide)! - - `github.protocol` maps each meaning of the issue protocol (types, fields, options, close reasons) to its GitHub name; issue checks and the walk check read names through it
+  - `engrenage sync agents` generates `.claude/rules/planning-sheet.md` from `.engrenage/github.json`: registered repositories, their labels, and every type, field and option with its meaning and description; it fails on a mapped name the snapshot lacks, and without a snapshot it warns and describes each meaning's intent
+  - Shared skills name protocol meanings instead of GitHub names
+
+- [`bd92762`](https://github.com/AUAUST/lib-js-engrenage/commit/bd92762a38f8e2e3bc74287fb6ad8e67dfdc7f3f) Thanks [@apademide](https://github.com/apademide)! - The planning, debugging and analysis skills draft issues through `planning issue create`, `claim`, `check` and `publish`, with no GitHub API mechanics; the planner in consultant mode claims and publishes each update at once. `planning issue check` fails on an empty draft section. The `gh` hook checks a `.draft.md` body file like any other body file and no longer reads bodies piped from drafts.
+
+- [`f12d1e2`](https://github.com/AUAUST/lib-js-engrenage/commit/f12d1e2f040d335e89aa1cf756410579f0886a13) Thanks [@apademide](https://github.com/apademide)! - - Rename the `openQuestions` blocker meaning to `questions`: set its GitHub option under `questions` in the issue protocol options; its default GitHub name stays `Open questions`
+
+- [`599ad25`](https://github.com/AUAUST/lib-js-engrenage/commit/599ad2553d74de9fbd19896a5a81512eecf9faf4) Thanks [@apademide](https://github.com/apademide)! - - `--repo` and `gh` issue writes accept a repository short name: the current package and its installed same-scope dependencies register under their unscoped names, and `github.repositories` adds, replaces or drops entries
+
+- [`27215be`](https://github.com/AUAUST/lib-js-engrenage/commit/27215bed56bd94428a65a1fb7aa119b0ead95e81) Thanks [@apademide](https://github.com/apademide)! - `subpath: true` also exposes the barrel of a public `index: true` role, as `./<role directory>` from the environment root or `<domain subpath>/<role directory>` from a public domain.
+
+- [`bc5c7b9`](https://github.com/AUAUST/lib-js-engrenage/commit/bc5c7b986e5fc85b3c339ecb3ecb6dc24b19d523) Thanks [@apademide](https://github.com/apademide)! - - Add the companions role option: files each module of a role requires, declared as `{ resolve, description }`, reported by lint and described in the project map
+
+- [`f80c183`](https://github.com/AUAUST/lib-js-engrenage/commit/f80c1837fd9371af28204929fceab09044e949d3) Thanks [@apademide](https://github.com/apademide)! - - A role's `exports` takes `{ values, types }` to check value and type exports apart; a string still sets both
+  - The `utils` preset accepts named type exports beside its value, and the `types` preset exports no value
+  - A type-only role fails at config resolution when it exports values
+  - Project maps list each role's export axes
+
+- [`615c4df`](https://github.com/AUAUST/lib-js-engrenage/commit/615c4dfa8a1675e4e416e1201fa8b804e9f0fcf2) Thanks [@apademide](https://github.com/apademide)! - - Show companions and barrel options in the project map
+
+- [`c83eda5`](https://github.com/AUAUST/lib-js-engrenage/commit/c83eda517a2202ec4d945c0e9b8781b52ba281a2) Thanks [@apademide](https://github.com/apademide)! - - A file role's `subpath: true` exposes each of its files at a public domain's root as `<domain subpath>/<file name>`, without a `src.exports` line; it needs a public role with static `file` names or globs
+  - The `constants` preset sets `subpath: true`, newly exposing `./baseline/constants`, `./format/constants`, `./package/constants` and `./roles/constants`
+  - A domain's import surface lists its public file roles' modules
+
+- [`d08a4d1`](https://github.com/AUAUST/lib-js-engrenage/commit/d08a4d1d42c82d7a0fcf4255d1a5b1a8acaa602c) Thanks [@apademide](https://github.com/apademide)! - - Expose the environment root's entry as the package root without a src.exports line
+
+- [`303aeed`](https://github.com/AUAUST/lib-js-engrenage/commit/303aeede91ff5e55dffe550519948046c68ecec7) Thanks [@apademide](https://github.com/apademide)! - - Add index "root", generating a role's barrels at the environment root only
+
+- [`a3eb66e`](https://github.com/AUAUST/lib-js-engrenage/commit/a3eb66e4425dd43f0d2ce4605c042b5967754376) Thanks [@apademide](https://github.com/apademide)! - - Add subpath "root", exposing a role at the environment root only, and expose root file roles with subpath
+
+- [`9632100`](https://github.com/AUAUST/lib-js-engrenage/commit/963210054cb86edd98cdd247746bb83690cd71fa) Thanks [@apademide](https://github.com/apademide)! - - Fix the `claude` and `codex` agent runtimes and the `shopify-theme` preset typed as unknown against the published declarations
+  - Export each built-in extension on its own from `@auaust/engrenage/builtins`, sub-domain extensions included
+  - Add the `collected` role option, letting other domains import a role's modules inside sub-domains without going through their parent domains' surfaces; the `extension` role sets it
+  - Reject an extension importing its sub-domains' extensions in the `extension-imports` rule
+
+- [`3597574`](https://github.com/AUAUST/lib-js-engrenage/commit/359757459d70cdf783f73c7f4819ed041a1dbec6) Thanks [@apademide](https://github.com/apademide)! - - Add the `generate` sync stage, run before `write` and `check`: targets after it read the structure, aliases and source exports afresh, so one `sync` settles the files derived from generated sources
+  - Resolve the structure from the staged files, so it sees files written or removed earlier in the same run
+  - Add `forget` to loaded configs, dropping their resolved keys
+
+- [`821cf2a`](https://github.com/AUAUST/lib-js-engrenage/commit/821cf2a87c508d217051ca6a862bade51165789a) Thanks [@apademide](https://github.com/apademide)! - - Test files match `.test` alone by default; a project using `.spec` files must set `tests.suffix` (`.spec` or `.{spec,test}`)
+
+### Patch Changes
+
+- [`e63f161`](https://github.com/AUAUST/lib-js-engrenage/commit/e63f1611dc14b4e1e79d996bac3ea79971fc83bc) Thanks [@apademide](https://github.com/apademide)! - - The analysis skill and analyser agent record each finding as the issue type it calls for: `problem` for a defect, `task` for accepted work, `idea` for work not accepted yet, `resource` for reports, specifications and references
+
+- [`b1af76f`](https://github.com/AUAUST/lib-js-engrenage/commit/b1af76fb4a1e14cdcc980da956f0c91f140a1ce1) Thanks [@apademide](https://github.com/apademide)! - - Fix generated barrels' export order to match the export order lint
+
+- [`9632100`](https://github.com/AUAUST/lib-js-engrenage/commit/963210054cb86edd98cdd247746bb83690cd71fa) Thanks [@apademide](https://github.com/apademide)! - - Fix barrel globs matching file names case-insensitively on case-insensitive filesystems
+
+- [`ac5085b`](https://github.com/AUAUST/lib-js-engrenage/commit/ac5085b1639150c68b6d6086b717d78390e93644) Thanks [@apademide](https://github.com/apademide)! - - Add the `brain` commit type for agentic programming: instructions, settings and agents' records no longer go under `imp`, `docs` or `config`
+
+- [`51d5604`](https://github.com/AUAUST/lib-js-engrenage/commit/51d56042f9e545a657450d6cdefa954e8725066d) Thanks [@apademide](https://github.com/apademide)! - - Fix collecting entries failing the import-surfaces lint, and collected roles enabled in another namespace
+
+- [`74499d7`](https://github.com/AUAUST/lib-js-engrenage/commit/74499d7b7c7ce938b2ce786b0d70b7197bbab8a0) Thanks [@apademide](https://github.com/apademide)! - Agent skills title issues without prefix, in sentence case without trailing punctuation, and label them with the repository's labels whose description fits the issue.
+
+- [`287e16c`](https://github.com/AUAUST/lib-js-engrenage/commit/287e16cc62f8ca5d278bacd591e77ca59ac7846b) Thanks [@apademide](https://github.com/apademide)! - - Loading the config no longer loads the GitHub issue and Git engines
+
+- [`b78f05f`](https://github.com/AUAUST/lib-js-engrenage/commit/b78f05fc8eb305c7ce30e71f85b6e904c8ec2ca6) Thanks [@apademide](https://github.com/apademide)! - - Format every commit's staged files: `engrenage gate --everyone` runs the gate steps contributed for everyone, Prettier among them, restages their fixes and refuses partially staged files; Lefthook always installs the human command
+
+- [`964c3d9`](https://github.com/AUAUST/lib-js-engrenage/commit/964c3d95f0e770481ebe13b586860298ab00d6a7) Thanks [@apademide](https://github.com/apademide)! - Vitest no longer collects tests from paths Git ignores, including those ignored only through `.git/info/exclude` or the global excludes file, such as agent worktrees
+
+- [`fd4cd21`](https://github.com/AUAUST/lib-js-engrenage/commit/fd4cd21945c2c63c20647bdffc038333b32136ec) Thanks [@apademide](https://github.com/apademide)! - `engrenage planning issue claim`, `check` and `publish` accept refs space-separated as well as comma-separated.
+
+- [`7bf3141`](https://github.com/AUAUST/lib-js-engrenage/commit/7bf3141771e27dfa7b0aa175067f3e7a043ef87f) Thanks [@apademide](https://github.com/apademide)! - - `planning issue create` takes a type's meaning or its GitHub name, in any case
+
+- [`a87edd9`](https://github.com/AUAUST/lib-js-engrenage/commit/a87edd91d1a27c2747a15831ad0b4a8c30c78e0d) Thanks [@apademide](https://github.com/apademide)! - Init no longer fails with `ERR_PNPM_IGNORED_BUILDS` after adding lefthook: the workspace settings now deny lefthook's build script, whose hook install the lefthook step runs itself.
+
+- [`49b063b`](https://github.com/AUAUST/lib-js-engrenage/commit/49b063b6d2edde85eff901f33327e81ca1bfacc4) Thanks [@apademide](https://github.com/apademide)! - - Fix generated `lefthook.yml` leaving a dangling YAML anchor when a condition is shared between commands
+
+- [`750792b`](https://github.com/AUAUST/lib-js-engrenage/commit/750792b52979090f26335ec2a9d34bfa7767914f) Thanks [@apademide](https://github.com/apademide)! - The generated `.gitignore` no longer lists `.eslintcache`
+
+- [`554d7b7`](https://github.com/AUAUST/lib-js-engrenage/commit/554d7b7317338a131bd8f74f1643034f90f636f7) Thanks [@apademide](https://github.com/apademide)! - - Reach GitHub through Octokit in `engrenage issues check` and the agent hooks, bundled into `dist`, so installs are unchanged. A failed request now names its method and URL along with GitHub's message
+
+- [`10f5700`](https://github.com/AUAUST/lib-js-engrenage/commit/10f57005b64d55fae9c380647e3297c8a0ed140a) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage planning walk check <n>`, reporting a whole issue tree in walk order and its next actionable issue in one run
+
+- [`f047f44`](https://github.com/AUAUST/lib-js-engrenage/commit/f047f44adb94d694e0cf9e21af48da213c2ccece) Thanks [@apademide](https://github.com/apademide)! - - Sharded test jobs of the generated workflows run to completion, so one CI run reports every failing shard
+
+- [`a0356ba`](https://github.com/AUAUST/lib-js-engrenage/commit/a0356ba1dd828a9b68a3bd23ce9e160ebc766de5) Thanks [@apademide](https://github.com/apademide)! - - Fix a role barrel deleted by sync still listed in its domain's entry until the next sync
+
+- [`2ea0c36`](https://github.com/AUAUST/lib-js-engrenage/commit/2ea0c36debecfb696eeda551ccaf21ef01926c93) Thanks [@apademide](https://github.com/apademide)! - - Add the `state` file resource, locating the `.engrenage/` directory that holds engrenage's project state
+
+- [`0309554`](https://github.com/AUAUST/lib-js-engrenage/commit/0309554e72eeb0b7ed1107d61c3289dc10c0dda9) Thanks [@apademide](https://github.com/apademide)! - `engrenage structure` draws each environment as the project map's box-drawing tree, adding each node's kind, role, effects and classification source.
+
+- [`d9b1ecb`](https://github.com/AUAUST/lib-js-engrenage/commit/d9b1ecbb2863c4bf4d88c9ac8007ea31046a1393) Thanks [@apademide](https://github.com/apademide)! - A failing sync check, such as `publishing`, no longer discards the files `engrenage sync` writes: sync writes them, reports every failed check and exits with code 1.
+
+- [`688762b`](https://github.com/AUAUST/lib-js-engrenage/commit/688762b76e347630e37ccd28c06c269ee673874c) Thanks [@apademide](https://github.com/apademide)! - Tool commands print their status and success messages on stderr, so machine-readable output like `engrenage eslint --format json` stays parseable
+
+- [`2654f21`](https://github.com/AUAUST/lib-js-engrenage/commit/2654f21c6579b80d2a28e17487a65b0781184c69) Thanks [@apademide](https://github.com/apademide)! - - Bundle the manifest's `inlinedDependencies` by default in `defineTsdownConfig`
+
 ## 0.9.0
 
 ### Minor Changes
