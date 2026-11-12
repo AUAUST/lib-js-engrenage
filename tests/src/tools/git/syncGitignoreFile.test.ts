@@ -164,6 +164,14 @@ describe("syncGitignoreFile", () => {
     );
   });
 
+  test("ignores agent worktrees by default", () => {
+    expect(
+      defaultIgnores.flatMap(({ globs }) => {
+        return globs;
+      }),
+    ).toContain(".claude/worktrees");
+  });
+
   test("rejects an unknown preset, naming the marker and the file", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",

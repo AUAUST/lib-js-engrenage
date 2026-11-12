@@ -52,6 +52,8 @@ export const editorIgnores = freeze({
   globs: freeze([
     ".idea",
     ".fleet",
+    // @debt Agent worktrees are not editor files; an agents group, or the agents domain contributing its own ignores, would own this glob.
+    ".claude/worktrees",
     ".nova",
     "*.sublime-workspace",
     "*.sw?",

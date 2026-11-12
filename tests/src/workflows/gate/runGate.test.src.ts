@@ -3,6 +3,8 @@ import { describe, expect, test } from "vitest";
 import { map } from "@auaust/primitive-kit/arrays";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { runSync } from "#project/sync/index";
+import { settleChanges } from "#project/sync/operations/settleChanges";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGateRepository } from "#tests/utils/createGateRepository";
 import { runGate } from "#workflows/gate/operations/runGate";
@@ -140,6 +142,58 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     });
 
     expect(failures.map(({ step }) => step)).toEqual(["typecheck", "exit 3"]);
+  });
+
+  test("passes a failing file inside an agent worktree under the ignore defaults", async () => {
+    const {
+      project,
+      git,
+    } = await createGateRepository([], ["eslint", "prettier", "typescript"]);
+
+    project.write(
+      "eslint.config.ts",
+      'import { defineEslintConfig } from "@auaust/engrenage/eslint";\n\nexport default defineEslintConfig();\n',
+    );
+
+    project.write(
+      ".gitignore",
+      "# @ignore defaults\n\n# @ignore project\n\n# @end\n",
+    );
+
+    const config = await loadConfig(project.root);
+
+    await settleChanges(config, {
+      check: false,
+      failures: await runSync(config),
+    });
+
+    git("add", "-A");
+
+    git(
+      "-c",
+      "user.name=Test",
+      "-c",
+      "user.email=test@example.com",
+      "commit",
+      "--quiet",
+      "-m",
+      "fixture",
+    );
+
+    project.write(".claude/worktrees/x/src/a.ts", "export var a: any = 1\n");
+    loadConfig.refresh(project.root);
+
+    expect(git("check-ignore", ".claude/worktrees/x/src/a.ts")).toBe(
+      ".claude/worktrees/x/src/a.ts\n",
+    );
+
+    expect(
+      await runGate(await loadConfig(project.root), { mode: "worktree" }),
+    ).toEqual({ failures: [], warnings: [] });
+
+    expect(project.read(".claude/worktrees/x/src/a.ts")).toBe(
+      "export var a: any = 1\n",
+    );
   });
 
   test("runs no ESLint fix in a project without ESLint installed", async () => {
