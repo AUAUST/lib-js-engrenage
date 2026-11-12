@@ -65,3 +65,4 @@
 - engrenage planning CLI: pnpm exec engrenage planning issue claim in engrenage itself — binary not linked; pnpm engrenage (package script) works
 - engrenage planning issue publish: published a claimed plan with Prettier-formatted claim base — reported `body` changed both sides on table padding alone; replaced the base body with GitHub's
 - `engrenage sync` barrels: imported new `#foundation/options` exports before syncing its barrel — sync crashed loading the missing export; added the barrel lines by hand, then synced
+- `git add <paths>`: staged by name a deletion already in the index — "pathspec did not match" aborted the whole add, and the next commit took the staged deletion; staged with `git add -A -- . ':(exclude)…'` or left staged deletions out of the list
