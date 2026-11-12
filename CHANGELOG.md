@@ -1,5 +1,49 @@
 # @auaust/engrenage
 
+## 0.11.0
+
+### Minor Changes
+
+- [`141bf58`](https://github.com/AUAUST/lib-js-engrenage/commit/141bf58525bccca232cda22741823a9cd32614fb) Thanks [@apademide](https://github.com/apademide)! - - Report inverted comparisons such as `!(a !== b)` with `sonarjs/no-inverted-boolean-check`, and autofix negated equalities to the opposite operator; negated relations stay unfixed since inverting them changes results with `NaN`
+
+- [`24ab536`](https://github.com/AUAUST/lib-js-engrenage/commit/24ab536d07ad9490c31e9de8e097b8104bdf6720) Thanks [@apademide](https://github.com/apademide)! - - Rename the `issue-planning` and `issue-walking` skills to `planning` and `walking`; `sync agents` moves the former skill directories and rewrites references to their former fragments, from a skill's new `formerly` frontmatter list
+
+- [`58bd25b`](https://github.com/AUAUST/lib-js-engrenage/commit/58bd25ba734cb75ebfc31c3982cc0673c2bd867e) Thanks [@apademide](https://github.com/apademide)! - - `planning walk check` prints the tree parent first and reports the ready set, every issue actionable in turn (all of a segment's open leaves, the first open item of a sequence), before the next issue
+
+### Patch Changes
+
+- [`c637c49`](https://github.com/AUAUST/lib-js-engrenage/commit/c637c49eb429af6446f98e24b895d3a5e2fdab78) Thanks [@apademide](https://github.com/apademide)! - Ignore `.claude/worktrees` by default, so agent worktrees inside a checkout stay out of git, lint, format and test runs.
+
+- [`731f745`](https://github.com/AUAUST/lib-js-engrenage/commit/731f7457897636e452f03db140f93ff00d152cdc) Thanks [@apademide](https://github.com/apademide)! - - Claim a registered repository's issue as `<repo>.<n>` with `planning issue claim`, without the `drafting` lock, and write every reference in its draft as `#{<repo>.<n>}`
+  - Fail `planning issue check` on a bare `#<n>` in a draft of another repository
+  - Report issues of other repositories that a publish set re-parents without claiming them
+
+- [`c1ff71e`](https://github.com/AUAUST/lib-js-engrenage/commit/c1ff71ee8f953b7c29c5afd7c03e9bf098f14686) Thanks [@apademide](https://github.com/apademide)! - - Walk up to four independent leaves at once, each worker or debugger in its own worktree, integrating finished leaves one at a time; "pool <n>", "no pool" or "sequential" in the walk request sets the pool size
+
+- [`eaf38f0`](https://github.com/AUAUST/lib-js-engrenage/commit/eaf38f0444a040b049140f827567ecd60b6dab7c) Thanks [@apademide](https://github.com/apademide)! - - Report a stale `Open questions` Blockers value once at dispatch, and describe registered-repository refs in `planning issue claim`
+
+- [`064dee8`](https://github.com/AUAUST/lib-js-engrenage/commit/064dee86924e0d8da3e2decd6083c4052b7a722c) Thanks [@apademide](https://github.com/apademide)! - - Dispatch the worker, debugger, analyser, backlogger, banker and scratcher agents only when a skill or the user asks for them, and do requested work in the session otherwise
+
+- [`1e09ca9`](https://github.com/AUAUST/lib-js-engrenage/commit/1e09ca90847cf6356e1fddcb3fa28e5b27117549) Thanks [@apademide](https://github.com/apademide)! - - Apply the published check's Blockers rule in the draft check and publish
+
+- [`1fbe866`](https://github.com/AUAUST/lib-js-engrenage/commit/1fbe866d0bfd11246c77a15bdc4b396b2594eb8f) Thanks [@apademide](https://github.com/apademide)! - - `planning issue publish` no longer reports a `body` conflict when a claimed draft or its merge base differs from GitHub only by formatting; `planning issue claim` writes both files already formatted
+
+- [`e27f946`](https://github.com/AUAUST/lib-js-engrenage/commit/e27f94689e5a34e8b07e1b4cbd716fc6a0e337b2) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage jscpd:new <ref>` to list by name the clones added since a git ref
+  - Report in the gate only the new clones of the gate's files
+
+- [`18b72c5`](https://github.com/AUAUST/lib-js-engrenage/commit/18b72c537900b6e024686b85d5eeb42ac20009e1) Thanks [@apademide](https://github.com/apademide)! - - Explain how to quote a manifest reference that YAML reads as a comment
+
+- [`8eeff8a`](https://github.com/AUAUST/lib-js-engrenage/commit/8eeff8a4a942e6d537bd578788aaa3a8d33b95b2) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage planning issue release` to clear a stale `Drafting` claim
+
+- [`d011e00`](https://github.com/AUAUST/lib-js-engrenage/commit/d011e0003e724437ec78e70ef037e0c16def3d42) Thanks [@apademide](https://github.com/apademide)! - - Record a created issue on disk before its Blockers write in `planning issue publish`, so a failed publish never creates it twice
+
+- [`2d81de9`](https://github.com/AUAUST/lib-js-engrenage/commit/2d81de9dfab0e878761c5d7c244ec1c0df1f6843) Thanks [@apademide](https://github.com/apademide)! - - Fix `planning issue publish` failing half-way when a draft's `subIssues` takes an issue from a parent outside the set
+  - Fail `planning issue publish` before any write when that parent is a Plan, naming the `planning issue claim` command
+
+- [`d8cdf68`](https://github.com/AUAUST/lib-js-engrenage/commit/d8cdf682e09d8828aff944f8c21976665830f2a2) Thanks [@apademide](https://github.com/apademide)! - - End `planning issue publish` output with one `<stem>: published as <reference>` line per draft, after all body diffs
+
+- [`af6aa73`](https://github.com/AUAUST/lib-js-engrenage/commit/af6aa73f06496b69168e978c65136b3dcf76c081) Thanks [@apademide](https://github.com/apademide)! - - Add the `merging` skill and its `merger` agent: walks review each concurrent leaf before integration, rebasing it when siblings landed first, and each closed segment of a sequential walk
+
 ## 0.10.0
 
 ### Minor Changes
