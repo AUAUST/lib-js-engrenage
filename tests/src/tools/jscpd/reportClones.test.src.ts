@@ -99,22 +99,11 @@ describe("reportClones", { timeout: binaryTimeout }, () => {
   });
 
   test("reports the clones added since a ref", async () => {
-    const { project, git } = await createRepository();
+    const { project, commit } = await createRepository();
 
     project.write("src/third.ts", createSource("third"));
 
-    git("add", "-A");
-
-    git(
-      "-c",
-      "user.name=Test",
-      "-c",
-      "user.email=test@example.com",
-      "commit",
-      "--quiet",
-      "-m",
-      "third",
-    );
+    commit("third");
 
     const report = await reportClones(await loadConfig(project.root), {
       since: "HEAD~1",
@@ -123,5 +112,28 @@ describe("reportClones", { timeout: binaryTimeout }, () => {
     expect(report).toMatch(/third\.ts:1-15/);
 
     expect(report).not.toMatch(/first\.ts:1-15 ~ second\.ts:1-15/);
+  });
+
+  test("reports nothing since a ref when no file is scanned", async () => {
+    const { project, commit } = await createGitRepository(
+      {
+        "package.json": JSON.stringify({
+          name: "project",
+          type: "module",
+          devDependencies: { jscpd: "*" },
+        }),
+        "engrenage.config.ts": "export default {};\n",
+        "notes/first.ts": createSource("first"),
+      },
+      ["jscpd"],
+    );
+
+    project.write("notes/second.ts", createSource("second"));
+
+    commit("second");
+
+    expect(
+      await reportClones(await loadConfig(project.root), { since: "HEAD~1" }),
+    ).toBeUndefined();
   });
 });

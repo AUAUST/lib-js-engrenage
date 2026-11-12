@@ -9,7 +9,7 @@ import { runGate } from "#workflows/gate/operations/runGate";
 
 describe("runGate", { timeout: binaryTimeout }, () => {
   test("rejects local additions and modifications, but accepts deletions", async () => {
-    const { project, git } = await createGateRepository();
+    const { project, git, commit } = await createGateRepository();
 
     project.write(".ai/issues/1.md", "draft\n");
     project.write(".env.local", "SECRET=value\n");
@@ -33,16 +33,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     expect(failures[0]?.output).toContain("git restore --staged");
     expect(failures[0]?.output).toContain("git rm --cached");
 
-    git(
-      "-c",
-      "user.name=Test",
-      "-c",
-      "user.email=test@example.com",
-      "commit",
-      "--quiet",
-      "-m",
-      "fixture",
-    );
+    commit("fixture");
 
     project.write(".ai/issues/1.md", "modified\n");
 

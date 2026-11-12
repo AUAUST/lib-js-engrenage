@@ -148,6 +148,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     const {
       project,
       git,
+      commit,
     } = await createGateRepository([], ["eslint", "prettier", "typescript"]);
 
     project.write(
@@ -167,18 +168,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       failures: await runSync(config),
     });
 
-    git("add", "-A");
-
-    git(
-      "-c",
-      "user.name=Test",
-      "-c",
-      "user.email=test@example.com",
-      "commit",
-      "--quiet",
-      "-m",
-      "fixture",
-    );
+    commit("fixture");
 
     project.write(".claude/worktrees/x/src/a.ts", "export var a: any = 1\n");
     loadConfig.refresh(project.root);

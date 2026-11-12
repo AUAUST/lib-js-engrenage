@@ -44,8 +44,8 @@ export async function reportClones(
   const scanned = await listScannedFiles(config);
 
   if (
-    "files" in scope &&
-    !scope.files.some((file) => includes(scanned, file))
+    scanned.length === 0 ||
+    ("files" in scope && !scope.files.some((file) => includes(scanned, file)))
   ) {
     return;
   }

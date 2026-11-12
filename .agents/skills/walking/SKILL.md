@@ -39,14 +39,13 @@ Start at the issue the user names and run `engrenage planning walk check <n>` on
 - Resume the same agent to answer its question or return review gaps and the failing commands and output from its stop or commit gate.
 - Brief with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then the header chain, the plan sections the issue names and the commits the check lists towards the issue, for reference. Never paste issue or plan content: the agent reads it itself.
 - Complete a leaf on the agent's final report, a completion or a blocker; never wait for a later agent-finished event, which may never wake you.
-- At K = 1, finish review, repairs and the passing commit gate before dispatching the next leaf.
 - Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress only when a decision depends on it.
 
 ## Concurrency
 
 - Keep up to K leaves of the ready set in flight: K = 4 unless the walk request sets it ("pool 2"; "no pool" or "sequential" mean K = 1), and K = 1 under Codex.
-- At K = 1, dispatch in the main checkout as above; past it, the rules below apply.
-- Dispatch each leaf in the background with `isolation: "worktree"`, briefing the walked branch's `HEAD` commit: the agent checks out that commit detached when its worktree starts elsewhere, then installs dependencies offline from the lockfile.
+- At K = 1, dispatch in the main checkout, and finish review, repairs and the passing commit gate before dispatching the next leaf; past it, the rules below apply.
+- Dispatch each leaf in the background with `isolation: "worktree"`, briefing the walked branch's `HEAD` commit.
 - Integrate finished leaves one at a time, in report order: review as in After each leaf and Checkpoints, cherry-pick the checkpoint commits in order, apply the uncommitted rest, then make the closing commit.
 - Resolve integration conflicts by file kind: regenerate a generated file with `engrenage sync`, keep both sides of an append-only agent log, and send a hand-written file back to the agent, resumed to rebase its worktree onto the walked branch.
 - Remove a leaf's worktree after its closing commit, then refill the pool from a fresh `walk check`.
