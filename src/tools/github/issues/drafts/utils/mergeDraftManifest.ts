@@ -1,6 +1,6 @@
 import { sort } from "@auaust/primitive-kit/arrays";
 import { isArray } from "@auaust/toolkit/isArray";
-import { keys } from "@auaust/toolkit/object";
+import { hasOwn, keys } from "@auaust/toolkit/object";
 
 import type { IssueProtocol } from "#tools/github/issues/contract/index";
 
@@ -48,7 +48,9 @@ export function mergeDraftManifest(
     );
 
     if (drafted === fetched) {
-      merged[key] = withoutDrafting(remote, key, protocol);
+      if (hasOwn(local, key) || published !== fetched) {
+        merged[key] = withoutDrafting(remote, key, protocol);
+      }
     } else if (published !== fetched && published !== drafted) {
       conflicts.push(key);
     }

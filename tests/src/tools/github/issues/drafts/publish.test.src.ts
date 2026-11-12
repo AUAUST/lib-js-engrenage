@@ -57,6 +57,7 @@ function option(name: string) {
 const fieldNames = new Map([
   [21, "Blockers"],
   [22, "Nature"],
+  [23, "Defect"],
 ]);
 
 const snapshot = {
@@ -80,6 +81,8 @@ const snapshot = {
         type(1, "Plan", ["Blockers"]),
         type(2, "Segment", ["Blockers"]),
         type(3, "Task", ["Blockers", "Nature"]),
+        type(4, "Problem", ["Blockers", "Defect"]),
+        type(5, "Idea", ["Blockers", "Nature"]),
       ],
       fields: [
         {
@@ -91,6 +94,11 @@ const snapshot = {
           ...entity(22, "Nature"),
           dataType: "single_select",
           options: [option("Feature"), option("Chore")],
+        },
+        {
+          ...entity(23, "Defect"),
+          dataType: "single_select",
+          options: [option("Bug")],
         },
       ],
     },
@@ -566,6 +574,59 @@ ${planBody}
         "new-extra.draft.md",
       ]),
     ).toEqual([]);
+  });
+
+  async function claimIdeaAsProblem(root: string) {
+    const config = await loadConfig(root);
+
+    issues.set(
+      20,
+      createIssue(20, {
+        type: "Idea",
+        body: "## Context\n\nc",
+      }),
+    );
+
+    await claimIssues(config, ["20"]);
+
+    await config.context.filesystem.write(
+      ".ai/issues/20.draft.md",
+      read(root, "20.draft.md")
+        .replace("type: Idea", "type: Problem\nDefect: Bug")
+        .replace(/^Nature:.*\n/m, ""),
+    );
+
+    await config.context.filesystem.flush();
+
+    return config;
+  }
+
+  test("publishes a claimed Idea retyped to a Problem with the new type's fields only", async () => {
+    const config = await claimIdeaAsProblem(createProject());
+
+    requests = [];
+
+    const { lines, passed } = await publishIssues(config, ["20"]);
+
+    expect(passed).toBe(true);
+
+    expect(lines).toContain("#20: published");
+
+    expect(requests).toContain("POST /graphql");
+
+    expect(findIssue(20).type).toBe("Problem");
+
+    expect(findIssue(20).fields.get("Defect")).toBe("Bug");
+  });
+
+  test("keeps a key the draft removed when GitHub changed it since the claim", async () => {
+    const config = await claimIdeaAsProblem(createProject());
+
+    findIssue(20).fields.set("Nature", "Feature");
+
+    await expect(publishIssues(config, ["20"])).rejects.toThrow(
+      /"Nature" is not a key of a Problem manifest/,
+    );
   });
 
   test("stops naming the issue and the key changed both in the draft and on GitHub", async () => {
