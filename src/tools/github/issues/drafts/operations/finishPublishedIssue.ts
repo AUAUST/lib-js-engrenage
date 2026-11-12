@@ -60,7 +60,10 @@ export async function finishPublishedIssue(
 
   const location = findPublishedLocation(draft, context, numbers);
 
-  if (draft.manifest.claim !== "existing") {
+  if (
+    draft.access.repository === context.repository &&
+    draft.manifest.claim !== "existing"
+  ) {
     const [blockers] = listPublishedFieldValues(
       publication,
       draft,

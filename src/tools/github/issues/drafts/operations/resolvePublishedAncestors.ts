@@ -1,4 +1,7 @@
-import { splitRepository } from "#tools/github/issues/api/index";
+import {
+  readApiRepository,
+  splitRepository,
+} from "#tools/github/issues/api/index";
 import {
   fetchIssueParent,
   findAncestors,
@@ -7,10 +10,11 @@ import {
 } from "#tools/github/issues/contract/index";
 import { headerPlaceholder } from "#tools/github/issues/drafts/constants";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
-import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
+import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
 import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
 import { resolveIssueLocation } from "#tools/github/issues/drafts/utils/resolveIssueLocation";
 import { resolveIssueStem } from "#tools/github/issues/drafts/utils/resolveIssueStem";
+import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
 import { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
@@ -18,37 +22,67 @@ import type { PublishedDraft } from "#tools/github/issues/drafts/types/Published
 
 async function listDescendants(
   publication: Publication,
-  numbers: ReadonlySet<number>,
+  references: Iterable<string>,
 ) {
-  const { access } = publication;
+  const { access, context, drafts } = publication;
 
-  const found = new Set<number>();
-  const pending = [...numbers];
+  const found = new Map<string, IssueLocation>();
+
+  const pending = [...references].flatMap((reference): IssueLocation[] => {
+    const parsed = parseReference(reference);
+
+    return parsed?.kind === "issue"
+      ? [
+          {
+            repository: resolveStem(parsed, context).repository,
+            number: parsed.number,
+          },
+        ]
+      : [];
+  });
 
   for (
-    let number = pending.pop();
-    number !== undefined;
-    number = pending.pop()
+    let location = pending.pop();
+    location !== undefined;
+    location = pending.pop()
   ) {
-    if (found.has(number)) {
+    const stem = toLocalStem(location, context.repository, context);
+
+    if (found.has(stem)) {
       continue;
     }
 
-    found.add(number);
+    found.set(stem, location);
 
     const children = await access.client.paginate(
       "GET /repos/{owner}/{repo}/issues/{issue_number}/sub_issues",
-      { ...splitRepository(access.repository), issue_number: number },
+      {
+        ...splitRepository(location.repository),
+        issue_number: location.number,
+      },
     );
 
-    pending.push(...children.map((child) => child.number));
+    pending.push(
+      ...children.map((child) => {
+        return {
+          repository: readApiRepository(child.repository_url),
+          number: child.number,
+        };
+      }),
+    );
   }
 
   return [...found]
-    .filter((number) => {
-      return !publication.drafts.some(({ stem }) => stem === String(number));
+    .filter(([stem]) => {
+      return !drafts.some((draft) => draft.stem === stem);
     })
-    .toSorted((left, right) => left - right);
+    .toSorted(([, left], [, right]) => {
+      return (
+        left.repository.localeCompare(right.repository) ||
+        left.number - right.number
+      );
+    })
+    .map(([stem]) => stem);
 }
 
 async function findCurrentParent(
@@ -88,7 +122,7 @@ async function checkPlanParent(
     return [];
   }
 
-  const stem = toLocalStem(parent, context);
+  const stem = toLocalStem(parent, context.repository, context);
 
   const { type } = await lookup.find(parent);
 
@@ -141,7 +175,11 @@ export async function resolvePublishedAncestors(
 
     remoteChains.set(
       draft,
-      chain.map((ancestor) => toDraftReference(toLocalStem(ancestor, context))),
+      chain.map((ancestor) => {
+        return toDraftReference(
+          toLocalStem(ancestor, context.repository, context),
+        );
+      }),
     );
   }
 
@@ -212,7 +250,9 @@ export async function resolvePublishedAncestors(
 
     const allAttached = new Set(
       (draft.remote?.subIssues ?? []).map((child) => {
-        return toDraftReference(toLocalStem(child, context));
+        return toDraftReference(
+          toLocalStem(child, context.repository, context),
+        );
       }),
     );
 
@@ -242,22 +282,12 @@ export async function resolvePublishedAncestors(
       continue;
     }
 
-    const outside = await listDescendants(
-      publication,
-      new Set(
-        [...changed]
-          .map((reference) => parseStem(reference.slice(1)))
-          .filter((parsed) => parsed?.kind === "issue")
-          // @debt only descendants in the current repository are listed, so a change moving issues of another repository outside the set goes unreported
-          .filter(({ short }) => short === undefined)
-          .map(({ number }) => number),
-      ),
-    );
+    const outside = await listDescendants(publication, changed);
 
     lines.push(
       `${draft.stem}: changes the ancestors of ${outside
-        .map((number) => {
-          return `#${number}`;
+        .map((stem) => {
+          return /^\d+$/.test(stem) ? `#${stem}` : stem;
         })
         .join(
           ", ",

@@ -4,9 +4,15 @@ import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsCont
 
 export function toLocalStem(
   { repository, number }: IssueLocation,
+  source: string,
   context: Pick<DraftsContext, "repository" | "registry">,
 ): string {
-  if (repository.toLowerCase() === context.repository.toLowerCase()) {
+  const current = context.repository.toLowerCase();
+
+  if (
+    repository.toLowerCase() === current &&
+    source.toLowerCase() === current
+  ) {
     return String(number);
   }
 

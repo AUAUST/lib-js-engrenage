@@ -51,10 +51,16 @@ export async function updatePublishedIssue(
     });
   }
 
+  const drafting = (
+    access.repository === publication.context.repository ||
+    remote?.blockers.includes(publication.context.protocol.options.drafting) ===
+      true
+  );
+
   for (const { field, value } of listPublishedFieldValues(
     publication,
     draft,
-    true,
+    drafting,
   )) {
     await writeFieldValue(
       access,

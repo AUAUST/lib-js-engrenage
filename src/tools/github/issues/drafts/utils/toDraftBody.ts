@@ -38,8 +38,11 @@ function localizeReferences(
     ) => {
       const repository = url || full || source;
 
+      const current = context.repository.toLowerCase();
+
       const known = (
-        repository.toLowerCase() === context.repository.toLowerCase() ||
+        (repository.toLowerCase() === current &&
+          source.toLowerCase() === current) ||
         findShortName(repository, context) !== undefined
       );
 
@@ -50,6 +53,7 @@ function localizeReferences(
                 repository,
                 number: Number(urlNumber || fullNumber || plain),
               },
+              source,
               context,
             ),
           )

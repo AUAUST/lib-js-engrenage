@@ -66,6 +66,7 @@ function findTarget(reference: string, context: DraftsContext) {
 function checkReference(
   reference: string,
   stems: ReadonlySet<string>,
+  repository: string,
   context: DraftsContext,
 ): IssueFinding | undefined {
   const resolved = resolveReference(reference, context);
@@ -81,6 +82,13 @@ function checkReference(
     return {
       rule: "reference",
       message: `\`${reference}\`: ${resolved.error}.`,
+    };
+  }
+
+  if (repository !== context.repository && /^#\d+$/.test(reference)) {
+    return {
+      rule: "bare-reference",
+      message: `\`${reference}\` is bare in a draft of ${repository}: write \`#{<repo>.${reference.slice(1)}}\` with the registered name of the issue's repository, ${repository}'s included.`,
     };
   }
 
@@ -332,11 +340,13 @@ export function checkDrafts(
     stem,
     { draft, findings: manifestFindings, meaning, manifest },
   ] of checked) {
+    const repository = findDraftRepository(stem, context);
+
     const references = [
       ...(manifest === undefined ? [] : listRelations(manifest)),
-      ...[...stripCode(draft.body).matchAll(/#\{[^{}\s]*\}/g)].map(
-        ([match]) => match,
-      ),
+      ...[
+        ...stripCode(draft.body).matchAll(/#\{[^{}\s]*\}|(?<![\w/&])#\d+\b/g),
+      ].map(([match]) => match),
     ];
 
     const messages = new Set<string>();
@@ -355,7 +365,9 @@ export function checkDrafts(
         parents.get(stem),
       ),
       ...references
-        .map((reference) => checkReference(reference, stems, context))
+        .map((reference) => {
+          return checkReference(reference, stems, repository, context);
+        })
         .filter((finding): finding is IssueFinding => {
           if (finding === undefined || messages.has(finding.message)) {
             return false;

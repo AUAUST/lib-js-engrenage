@@ -14,7 +14,7 @@ import type { LoadedConfig } from "#project/config/index";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
 import type { ReleasedIssue } from "#tools/github/issues/drafts/types/ReleasedIssue";
 
-// @debt duplicates `claimIssues`' reference resolution and draft refusal; a shared resolver would own both.
+// @debt duplicates `claimIssues`' stem resolution and existing-draft check, which already differ from `toClaimedIssue`'s; a shared resolver would own both.
 function toReleasedNumber(stem: string, context: DraftsContext) {
   const parsed = parseStem(stem);
 
@@ -26,7 +26,7 @@ function toReleasedNumber(stem: string, context: DraftsContext) {
 
   if (repository !== context.repository) {
     throw new Error(
-      `${stem}: ${repository} is another repository, and releasing its issues stays with that repository's sessions`,
+      `${stem}: ${repository} is another repository, whose claims hold no \`drafting\` to release`,
     );
   }
 

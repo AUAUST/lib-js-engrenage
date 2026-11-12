@@ -460,6 +460,28 @@ function listIssueFiles(root: string, files: readonly string[]) {
   return files.filter((file) => existsSync(join(root, ".ai/issues", file)));
 }
 
+async function claimEdited(
+  stems: readonly string[],
+  stem: string,
+  from: string,
+  to: string,
+) {
+  const root = createProject();
+
+  const config = await loadConfig(root);
+
+  await claimIssues(config, stems);
+
+  await config.context.filesystem.write(
+    `.ai/issues/${stem}.draft.md`,
+    read(root, `${stem}.draft.md`).replace(from, () => to),
+  );
+
+  await config.context.filesystem.flush();
+
+  return { root, config };
+}
+
 const extraDraft = `---
 title: Extra
 type: Task
@@ -704,18 +726,9 @@ ${planBody}
   });
 
   test("stops naming the issue and the key changed both in the draft and on GitHub", async () => {
-    const root = createProject();
-
-    const config = await loadConfig(root);
-
-    await claimIssues(config, ["10"]);
-
-    await config.context.filesystem.write(
-      ".ai/issues/10.draft.md",
-      read(root, "10.draft.md").replace("title: Issue 10", "title: Local"),
-    );
-
-    await config.context.filesystem.flush();
+    const {
+      config,
+    } = await claimEdited(["10"], "10", "title: Issue 10", "title: Local");
 
     findIssue(10).title = "Remote";
 
@@ -854,18 +867,11 @@ Goal: the group
   });
 
   test("renders the chain of a new Task listed in a new Segment under a claimed Plan", async () => {
-    const root = createProject();
-
-    const config = await loadConfig(root);
-
-    await claimIssues(config, ["10"]);
-
-    await config.context.filesystem.write(
-      ".ai/issues/10.draft.md",
-      read(root, "10.draft.md").replace(
-        '  - ref: "#12"',
-        '  - ref: "#{new-group}"\n    gist: the group\n    sections: []\n  - ref: "#12"',
-      ),
+    const { root, config } = await claimEdited(
+      ["10"],
+      "10",
+      '  - ref: "#12"',
+      '  - ref: "#{new-group}"\n    gist: the group\n    sections: []\n  - ref: "#12"',
     );
 
     await config.context.filesystem.write(
@@ -1062,7 +1068,7 @@ Nature: Feature
 
 ## Context
 
-Follows #12 and #{toolkit.45}.
+Follows #{app.12} and #{toolkit.45}.
 
 ## Steps
 
@@ -1111,7 +1117,7 @@ Follows #{app.7}.
     );
   });
 
-  test("refuses claiming another repository's issue and lists the registered names for an unknown one", async () => {
+  test("lists the registered names for an unknown repository", async () => {
     const root = createProject({
       ".ai/issues/new-lost.draft.md": `---
 title: Lost
@@ -1133,10 +1139,6 @@ See #{unknown.1}.
 `,
     });
 
-    await expect(
-      claimIssues(await loadConfig(root), ["toolkit.45"]),
-    ).rejects.toThrow("stays with that repository's sessions");
-
     const {
       lines,
       passed,
@@ -1147,6 +1149,148 @@ See #{unknown.1}.
     expect(lines).toContainEqual(
       expect.stringContaining("registered: app, toolkit"),
     );
+  });
+
+  function listBlockersWrites() {
+    return requests.filter((request) => {
+      return (
+        request.includes("issue-field-values") && !request.startsWith("GET")
+      );
+    });
+  }
+
+  test("claims another repository's issue without the lock, its references qualified", async () => {
+    findIssue(
+      45,
+      "toolkit",
+    ).body = "## Context\n\nAfter #186 and AUAUST/app#5.\n\n## Steps\n\n1. Do.\n\n## Tests\n\n- t";
+
+    const root = createProject();
+
+    expect(await claimIssues(await loadConfig(root), ["toolkit.45"])).toEqual([
+      "toolkit.45",
+    ]);
+
+    expect(
+      listIssueFiles(root, ["toolkit.45.md", "toolkit.45.draft.md"]),
+    ).toEqual(["toolkit.45.md", "toolkit.45.draft.md"]);
+
+    expect(read(root, "toolkit.45.draft.md")).toContain(
+      "After #{toolkit.186} and #{app.5}.",
+    );
+
+    expect(listBlockersWrites()).toEqual([]);
+  });
+
+  test("publishes another repository's claimed issue merged with a GitHub edit, without the lock", async () => {
+    findIssue(45, "toolkit").body = taskBody.replace(
+      "#10 · Goal: the extra\n\n",
+      "",
+    );
+
+    const root = createProject();
+
+    const config = await loadConfig(root);
+
+    await claimIssues(config, ["toolkit.45"]);
+
+    await config.context.filesystem.write(
+      ".ai/issues/toolkit.45.draft.md",
+      read(root, "toolkit.45.draft.md").replace("1. Do.", "1. Do more."),
+    );
+
+    await config.context.filesystem.flush();
+
+    findIssue(45, "toolkit").title = "Remote";
+
+    const {
+      lines,
+      passed,
+    } = await publishIssues(await loadConfig(root), ["toolkit.45"]);
+
+    expect({ last: lines.at(-1), passed }).toEqual({
+      last: "toolkit.45: published as AUAUST/toolkit#45",
+      passed: true,
+    });
+
+    expect(findIssue(45, "toolkit").title).toBe("Remote");
+
+    expect(findIssue(45, "toolkit").body).toContain("1. Do more.");
+
+    expect(listBlockersWrites()).toEqual([]);
+  });
+
+  test("fails a set re-parenting another repository's issue it does not claim", async () => {
+    const { root } = await claimEdited(
+      ["10", "11"],
+      "11",
+      '  - "#13"',
+      '  - "#13"\n  - "#{toolkit.45}"',
+    );
+
+    requests = [];
+
+    const {
+      lines,
+      passed,
+    } = await publishIssues(await loadConfig(root), ["10", "11"]);
+
+    expect(passed).toBe(false);
+
+    expect(lines).toEqual([
+      expect.stringContaining(
+        "11: changes the ancestors of toolkit.45 outside the set: claim them with `engrenage planning issue claim toolkit.45`",
+      ),
+    ]);
+
+    expect(requests.filter((request) => !request.startsWith("GET"))).toEqual(
+      [],
+    );
+  });
+
+  function createForeignDraft(reference: string) {
+    return createProject({
+      ".ai/issues/toolkit.new-foo.draft.md": `---
+title: Foo
+type: Task
+Nature: Feature
+---
+
+## Context
+
+After ${reference}.
+
+## Steps
+
+1. Do.
+
+## Tests
+
+- t
+`,
+    });
+  }
+
+  test("fails a bare reference in a draft of another repository and passes its qualified form", async () => {
+    const bare = await checkIssues(
+      await loadConfig(createForeignDraft("#186")),
+      ["toolkit.new-foo"],
+      "worker",
+    );
+
+    expect(bare.passed).toBe(false);
+
+    expect(bare.lines).toContainEqual(
+      expect.stringContaining("`#186` is bare in a draft of AUAUST/toolkit"),
+    );
+
+    const qualified = await checkIssues(
+      await loadConfig(createForeignDraft("#{toolkit.186}")),
+      ["toolkit.new-foo"],
+      "worker",
+    );
+
+    expect(qualified.passed).toBe(true);
   });
 
   test("claims a Plan's roadmap line naming a toolkit sub-issue and publishes it back unchanged", async () => {
@@ -1176,18 +1320,11 @@ See #{unknown.1}.
   });
 
   test("renders the chain of a toolkit Task under a Segment and passes its header check", async () => {
-    const root = createProject();
-
-    const config = await loadConfig(root);
-
-    await claimIssues(config, ["10", "11"]);
-
-    await config.context.filesystem.write(
-      ".ai/issues/11.draft.md",
-      read(root, "11.draft.md").replace(
-        '  - "#13"',
-        '  - "#13"\n  - "#{toolkit.new-port}"',
-      ),
+    const { root, config } = await claimEdited(
+      ["10", "11"],
+      "11",
+      '  - "#13"',
+      '  - "#13"\n  - "#{toolkit.new-port}"',
     );
 
     await config.context.filesystem.write(

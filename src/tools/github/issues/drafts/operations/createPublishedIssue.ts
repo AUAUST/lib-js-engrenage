@@ -90,7 +90,7 @@ export async function createPublishedIssue(
     number: data.number,
   };
 
-  const stem = toLocalStem(location, context);
+  const stem = toLocalStem(location, context.repository, context);
 
   numbers.set(draft.stem, location);
 
@@ -139,6 +139,10 @@ export async function createPublishedIssue(
   }
 
   await filesystem.flush();
+
+  if (access.repository !== context.repository) {
+    return;
+  }
 
   await writeFieldValue(access, data.number, blockers, [], [drafting]);
 

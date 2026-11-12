@@ -36,7 +36,7 @@ function listSubIssues(
   const roadmap = parseIssueBody(issue.body).roadmap;
 
   return issue.subIssues.map((child): RoadmapEntry | string => {
-    const reference = toDraftReference(toLocalStem(child, context));
+    const reference = toDraftReference(toLocalStem(child, repository, context));
 
     if (contract?.subIssues !== "roadmap") {
       return reference;
@@ -93,7 +93,7 @@ export function readIssueManifest(
     ),
     subIssues: listSubIssues(issue, contract, target.repository, context),
     blockedBy: issue.blockedBy.map((blocker) => {
-      return toDraftReference(toLocalStem(blocker, context));
+      return toDraftReference(toLocalStem(blocker, target.repository, context));
     }),
     state: readState(issue),
     ...(issue.blockers.includes(protocol.options.drafting)
