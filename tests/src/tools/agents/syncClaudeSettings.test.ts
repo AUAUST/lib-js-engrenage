@@ -37,9 +37,6 @@ describe("syncClaudeSettings", () => {
       "Bash(LEFTHOOK=0 *)",
       "Bash(LEFTHOOK=false *)",
       "Bash(git config core.hooksPath*)"
-    ],
-    "allow": [
-      "Bash(gh api *issue-field-values*)"
     ]
   },
   "hooks": {

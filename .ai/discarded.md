@@ -60,3 +60,4 @@
 - resumed merger per segment (#516): walk merger reuse — re-reading carried context costs more than a cold start; fresh merger briefed with the previous report instead
 - context-share freshness threshold (#516): consultant replacement — a window share means different sizes per model; twice the starting context instead
 - shared draft manifest field reader (#511): `checkDrafts` `readBlockers` and `listPublishedFieldValues` `readFieldValue` both read manifest field values — one Blockers read, outside the leaf's scope
+- Blockers-only issue fetch (#512): `releaseIssues` needs one field but `fetchIssue` sends five requests — a second fetcher for one command run by hand, outside the leaf's scope

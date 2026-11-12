@@ -24,6 +24,7 @@ export {
   claimIssues,
   createDraft,
   publishIssues,
+  releaseIssues,
 } from "#tools/github/issues/drafts/index";
 
 // @barrel setup

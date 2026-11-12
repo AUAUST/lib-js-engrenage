@@ -23,7 +23,7 @@ Start at the issue the user names and run `engrenage planning walk check <n>` on
 | Open sub-issues                                               | Walk them in order (a `segment`'s in any order), meanwhile handling the issue's own findings by the rows below without stopping the walk; then its own work |
 | `plan` or `segment` with no open sub-issue                    | Closes with its last leaf's commit                                                                                                                          |
 | `blockers` `drafting`, with `.ai/issues/<n>.draft.md` present | Stop: it is being planned                                                                                                                                   |
-| `blockers` `drafting`, with no local draft                    | Ask the user whether to clear the claim and walk it; on yes, remove `drafting` and handle it by the next rows                                               |
+| `blockers` `drafting`, with no local draft                    | Ask the user whether to clear the claim and walk it; on yes, run `engrenage planning issue release <n>` and handle it by the next rows                      |
 | Any `blockers`, or an open blocked-by issue                   | Stop and report                                                                                                                                             |
 | Has findings for **Planning**, `outdated` or structure        | Stop; send it to the consultant                                                                                                                             |
 | Has **Questions** open                                        | Stop; batch the questions to the user                                                                                                                       |
@@ -76,7 +76,3 @@ A worker commits at each `Checkpoint:` line of its issue; your final commit clos
 ## Report
 
 End at the end of the tree or at a stop, with the table of walked leaves, then what is pending or blocked and why.
-
-## GitHub mechanics
-
-- Remove `drafting` by clearing `blockers` with `gh api -X DELETE repos/{owner}/{repo}/issues/<n>/issue-field-values/<id>`, then posting its other values, if any, with `gh api -X POST repos/{owner}/{repo}/issues/<n>/issue-field-values --input -` and `{"issue_field_values":[{"field_id":<id>,"value":["<option>"]}]}` on standard input; the field id comes from `gh api orgs/{org}/issue-fields`.

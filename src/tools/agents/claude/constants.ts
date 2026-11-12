@@ -52,7 +52,6 @@ export const claudePermissions = freeze({
     "Bash(LEFTHOOK=false *)",
     "Bash(git config core.hooksPath*)",
   ],
-  allow: ["Bash(gh api *issue-field-values*)"],
 } as const);
 
 export const claudeHiddenAttribution = freeze({

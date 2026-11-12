@@ -11,6 +11,7 @@ export { linkPublishedIssue } from "#tools/github/issues/drafts/operations/linkP
 export { linkSubIssues } from "#tools/github/issues/drafts/operations/linkSubIssues";
 export { publishIssues } from "#tools/github/issues/drafts/operations/publishIssues";
 export { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
+export { releaseIssues } from "#tools/github/issues/drafts/operations/releaseIssues";
 export { renderPublishedBody } from "#tools/github/issues/drafts/operations/renderPublishedBody";
 export { resolveDraftsContext } from "#tools/github/issues/drafts/operations/resolveDraftsContext";
 export { resolvePublishedAncestors } from "#tools/github/issues/drafts/operations/resolvePublishedAncestors";
@@ -65,5 +66,6 @@ export type * from "#tools/github/issues/drafts/types/IssuesCheck";
 export type * from "#tools/github/issues/drafts/types/ManifestTarget";
 export type * from "#tools/github/issues/drafts/types/Publication";
 export type * from "#tools/github/issues/drafts/types/PublishedDraft";
+export type * from "#tools/github/issues/drafts/types/ReleasedIssue";
 export type * from "#tools/github/issues/drafts/types/RoadmapEntry";
 // @end

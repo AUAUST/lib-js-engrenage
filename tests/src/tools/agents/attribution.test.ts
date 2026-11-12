@@ -187,7 +187,6 @@ describe("agents.attribution", () => {
             "Bash(LEFTHOOK=false *)",
             "Bash(git config core.hooksPath*)",
           ],
-          allow: ["Bash(gh api *issue-field-values*)"],
         },
         attribution: hidden,
         subagentPromptCacheTtl: "1h",

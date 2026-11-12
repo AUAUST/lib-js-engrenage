@@ -13,6 +13,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { checkIssues } from "#tools/github/issues/drafts/operations/checkIssues";
 import { claimIssues } from "#tools/github/issues/drafts/operations/claimIssues";
 import { publishIssues } from "#tools/github/issues/drafts/operations/publishIssues";
+import { releaseIssues } from "#tools/github/issues/drafts/operations/releaseIssues";
 
 type MockRepository = "app" | "toolkit";
 
@@ -1225,5 +1226,32 @@ See #{unknown.1}.
     await checkIssues(await loadConfig(root), ["toolkit.45"], "worker");
 
     expect(requests).toContain("GET /repos/AUAUST/toolkit/issues/45");
+  });
+});
+
+describe("releaseIssues", () => {
+  test("removes Drafting from Blockers, keeping the other options", async () => {
+    findIssue(12).fields.set("Blockers", ["Drafting", "Delayed"]);
+
+    const config = await loadConfig(createProject());
+
+    expect(await releaseIssues(config, ["12", "13"])).toEqual([
+      { number: 12, released: true },
+      { number: 13, released: false },
+    ]);
+
+    expect(findIssue(12).fields.get("Blockers")).toEqual(["Delayed"]);
+  });
+
+  test("refuses an issue with a local draft before any request", async () => {
+    const config = await loadConfig(
+      createProject({ ".ai/issues/12.draft.md": extraDraft }),
+    );
+
+    await expect(releaseIssues(config, ["12"])).rejects.toThrow(
+      ".ai/issues/12.draft.md exists",
+    );
+
+    expect(requests).toEqual([]);
   });
 });
