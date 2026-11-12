@@ -139,7 +139,7 @@ export const optionMeanings = freeze({
     name: "Archive",
     intent: "Snapshot kept for history; never updated.",
   }),
-  openQuestions: freeze({
+  questions: freeze({
     field: "blockers",
     name: "Open questions",
     intent: "Has **Planning** or **Questions**.",

@@ -97,7 +97,7 @@ Labels are each repository's own: pick them by their description.
 | `material`   | `specification`  | Specification   | Our own rules for how something must be.                                                     |
 | `material`   | `report`         | Report          | The result of an analysis kept for reference.                                                |
 | `material`   | `archive`        | Archive         | A snapshot kept for history or a record of past decisions.                                   |
-| `blockers`   | `openQuestions`  | Open questions  | Intent accepted but decisions, answers or context are missing.                               |
+| `blockers`   | `questions`      | Open questions  | Intent accepted but decisions, answers or context are missing.                               |
 | `blockers`   | `outdated`       | Outdated        | Written against code or decisions that changed and needs a refresh before work.              |
 | `blockers`   | `awaitingOthers` | Awaiting others | Waits on a person or party outside the tracker.                                              |
 | `blockers`   | `delayed`        | Delayed         | Postponed on purpose.                                                                        |

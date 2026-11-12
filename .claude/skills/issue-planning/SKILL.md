@@ -282,11 +282,11 @@ While an issue's design is open, write what is settled and put the rest under **
 
 ## Fields
 
-| Field                      | Set when                                                                                  | Effect                         |
-| -------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------ |
-| `blockers` `openQuestions` | Written together with a **Planning** or **Questions** section; cleared once both are gone | The walker refuses the issue   |
-| `complexity` `complex`     | The work is broad or delicate                                                             | Higher dispatch effort         |
-| `complexity` `involved`    | The work needs analysis but stays contained                                               | Higher worker dispatch effort  |
-| `complexity` `trivial`     | The work is small and mechanical                                                          | Lower debugger dispatch effort |
+| Field                   | Set when                                                                                  | Effect                         |
+| ----------------------- | ----------------------------------------------------------------------------------------- | ------------------------------ |
+| `blockers` `questions`  | Written together with a **Planning** or **Questions** section; cleared once both are gone | The walker refuses the issue   |
+| `complexity` `complex`  | The work is broad or delicate                                                             | Higher dispatch effort         |
+| `complexity` `involved` | The work needs analysis but stays contained                                               | Higher worker dispatch effort  |
+| `complexity` `trivial`  | The work is small and mechanical                                                          | Lower debugger dispatch effort |
 
 <!-- @end -->

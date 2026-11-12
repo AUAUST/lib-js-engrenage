@@ -112,7 +112,7 @@ export function checkIssueReadiness(
   const type = findTypeMeaning(protocol, issue.type);
   const contractMeaning = findContractMeaning(protocol, issue.type);
   const blockersField = fields.blockers;
-  const openQuestionsOption = options.openQuestions;
+  const questionsOption = options.questions;
 
   const contract = contractMeaning === undefined
     ? undefined
@@ -186,12 +186,12 @@ export function checkIssueReadiness(
   }
 
   if (audience === "worker" || dispatch) {
-    const asksQuestions = issue.blockers.includes(openQuestionsOption);
+    const asksQuestions = issue.blockers.includes(questionsOption);
 
     if (openSections.length > 0 && !asksQuestions) {
       findings.push({
         rule: "stale-field",
-        message: `${blockersField} lacks \`${openQuestionsOption}\` although ${openSections
+        message: `${blockersField} lacks \`${questionsOption}\` although ${openSections
           .map((name) => {
             return `**${name}**`;
           })
@@ -200,7 +200,7 @@ export function checkIssueReadiness(
     } else if (openSections.length === 0 && asksQuestions) {
       findings.push({
         rule: "stale-field",
-        message: `${blockersField} has \`${openQuestionsOption}\` although no **${planningSection}** or **${questionsSection}** is open: clear the field.`,
+        message: `${blockersField} has \`${questionsOption}\` although no **${planningSection}** or **${questionsSection}** is open: clear the field.`,
       });
     }
   }
@@ -208,9 +208,9 @@ export function checkIssueReadiness(
   for (const option of issue.blockers) {
     if (
       (audience === "worker" &&
-        (option !== openQuestionsOption ||
+        (option !== questionsOption ||
           (dispatch &&
-            option === openQuestionsOption &&
+            option === questionsOption &&
             openSections.length === 0))) ||
       (audience === "debugger" &&
         debuggerBlockingOptions.some((blocking) => {

@@ -79,7 +79,7 @@ export const issueProtocolSchema = declareObject(
         specification: declareName(optionMeanings.specification),
         report: declareName(optionMeanings.report),
         archive: declareName(optionMeanings.archive),
-        openQuestions: declareName(optionMeanings.openQuestions),
+        questions: declareName(optionMeanings.questions),
         outdated: declareName(optionMeanings.outdated),
         awaitingOthers: declareName(optionMeanings.awaitingOthers),
         delayed: declareName(optionMeanings.delayed),

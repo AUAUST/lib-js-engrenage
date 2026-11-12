@@ -186,7 +186,7 @@ export interface GithubInput {
        * Has **Planning** or **Questions**.
        * @default `Open questions`
        */
-      openQuestions?: (string | undefined)
+      questions?: (string | undefined)
       /**
        * Written against code or decisions that changed; refresh before use.
        * @default `Outdated`

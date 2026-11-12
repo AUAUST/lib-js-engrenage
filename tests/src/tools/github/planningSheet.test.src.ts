@@ -124,7 +124,7 @@ describe("planning sheet", () => {
     expect(content).toContain("| `blockers` | Blockers | Blockers field. |");
 
     expect(content).toContain(
-      "| `blockers` | `openQuestions` | Open questions | Open questions option. |",
+      "| `blockers` | `questions` | Open questions | Open questions option. |",
     );
 
     expect(content).toContain("| `notPlanned` | not planned |");
