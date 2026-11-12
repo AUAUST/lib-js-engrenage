@@ -68,6 +68,7 @@ A worker commits at each `Checkpoint:` line of its issue; your final commit clos
 ## Consultant
 
 - Start the `planner` subagent on first need with the plan number, and resume the same agent through the client’s messaging or resume tool.
+- Start a new consultant instead when a segment closes, when the current one has been idle longer than the prompt-cache lifetime, or once its reported context exceeds twice what it started with: past that, every resumed turn re-reads more history than a fresh start costs. Brief the new one with the plan number and the decisions taken so far.
 - Call it only for an unresolved worker stop, a deviation changing planned behavior, contracts, scope or tree order, or an issue fitting no handling row; answer nothing from code yourself.
 - Batch what it sends back to the user with its findings and recommendations; meanwhile walk only the leaves it does not affect.
 

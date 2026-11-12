@@ -57,3 +57,5 @@
 - calling a role callback on a placeholder module for its map description: `companions` shown in maps — callbacks compute on real names (`name.slice(2)`), a placeholder yields garbage
 - bare callback or `{ resolve, description }` union for `file` and `companions`: lighter declaration — a bare callback leaves its map cell empty, the gap #485 fixed
 - gate skipping `.ai/issues/` formatting: stop false body conflicts at publish (#500) — editors and hooks still format drafts; normalizing the merge covers every formatter
+- resumed merger per segment (#516): walk merger reuse — re-reading carried context costs more than a cold start; fresh merger briefed with the previous report instead
+- context-share freshness threshold (#516): consultant replacement — a window share means different sizes per model; twice the starting context instead
