@@ -16,6 +16,7 @@ export { readGithubBody } from "#tools/github/issues/contract/operations/readGit
 // @end
 
 // @barrel utils
+export { checkBlockersField } from "#tools/github/issues/contract/utils/checkBlockersField";
 export { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 export { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
 export { checkProtocolNames } from "#tools/github/issues/contract/utils/checkProtocolNames";
@@ -26,6 +27,7 @@ export { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMea
 export { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssueCheck";
 export { formatIssueTreeCheck } from "#tools/github/issues/contract/utils/formatIssueTreeCheck";
 export { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
+export { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 export { parseGithubCommand } from "#tools/github/issues/contract/utils/parseGithubCommand";
 export { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 export { parseShellPipelines } from "#tools/github/issues/contract/utils/parseShellPipelines";

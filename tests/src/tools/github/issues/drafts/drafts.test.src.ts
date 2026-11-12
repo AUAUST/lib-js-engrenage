@@ -329,6 +329,41 @@ describe("checkIssues", () => {
     );
   });
 
+  test("fails an Idea asking questions without a Questions section, and passes it with one", async () => {
+    const idea = `---
+title: Idea
+type: Idea
+Blockers:
+  - Open questions
+---
+
+## Open
+
+o
+`;
+
+    const config = await createProject({
+      ".ai/issues/new-idea.draft.md": idea,
+    });
+
+    await expect(checkIssues(config, ["new-idea"], "worker")).resolves.toEqual({
+      lines: [
+        "new-idea: Blockers has `Open questions` although no **Planning** or **Questions** is open: clear the field.",
+      ],
+      passed: false,
+    });
+
+    await config.context.filesystem.write(
+      ".ai/issues/new-idea.draft.md",
+      `${idea}\n## Questions\n\nq\n`,
+    );
+
+    await expect(checkIssues(config, ["new-idea"], "worker")).resolves.toEqual({
+      lines: ["new-idea: ready"],
+      passed: true,
+    });
+  });
+
   test("fails a plan whose body holds its generated Roadmap, and passes a closed set", async () => {
     const config = await createProject({
       ".ai/issues/new-plan.draft.md": plan.replace(

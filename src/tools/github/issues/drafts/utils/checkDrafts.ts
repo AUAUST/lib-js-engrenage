@@ -1,13 +1,16 @@
 import { getDotPath, safeParse } from "valibot";
 
+import { isArray } from "@auaust/toolkit/isArray";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { isString } from "@auaust/toolkit/isString";
 
 import { splitRepository } from "#tools/github/issues/api/index";
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
+  checkBlockersField,
   checkIssueBody,
   findContractMeaning,
+  listOpenSections,
   parseIssueBody,
   stripCode,
   type ContractMeaning,
@@ -184,6 +187,7 @@ function checkManifest(
 function checkBody(
   body: string,
   meaning: ContractMeaning | undefined,
+  blockers: readonly string[],
   protocol: IssueProtocol,
 ): IssueFinding[] {
   const contract:
@@ -192,11 +196,13 @@ function checkBody(
 
   const generated = contract?.generated ?? [];
 
-  const { sections } = parseIssueBody(body);
+  const parsed = parseIssueBody(body);
+  const { sections } = parsed;
   const names = new Set(sections.map(({ name }) => name));
 
   return [
     ...checkIssueBody(body, meaning, protocol),
+    ...checkBlockersField(listOpenSections(parsed), blockers, protocol),
     ...sections
       .filter(({ content }) => content === "")
       .map(({ name }) => {
@@ -253,6 +259,15 @@ function checkHeader(
         },
       ]
     : [];
+}
+
+function readBlockers(
+  manifest: DraftManifest | undefined,
+  protocol: IssueProtocol,
+): readonly string[] {
+  const value = manifest?.[protocol.fields.blockers];
+
+  return isArray(value) ? value.filter(isString) : [];
 }
 
 function findCycles(
@@ -328,7 +343,12 @@ export function checkDrafts(
 
     findings.set(stem, [
       ...manifestFindings,
-      ...checkBody(draft.body, meaning, context.protocol),
+      ...checkBody(
+        draft.body,
+        meaning,
+        readBlockers(manifest, context.protocol),
+        context.protocol,
+      ),
       ...checkHeader(
         draft.body,
         meaning === undefined ? undefined : issueContracts[meaning],

@@ -4,11 +4,12 @@ import {
   debuggerBlockingOptions,
   issueContracts,
   planningSection,
-  questionsSection,
 } from "#tools/github/issues/contract/constants";
+import { checkBlockersField } from "#tools/github/issues/contract/utils/checkBlockersField";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
 import { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
+import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
 import type { IssueCommit } from "#tools/git/index";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
@@ -172,9 +173,7 @@ export function checkIssueReadiness(
     }
   }
 
-  const openSections = [planningSection, questionsSection].filter((name) => {
-    return hasSection(parsed, name);
-  });
+  const openSections = listOpenSections(parsed);
 
   for (const name of openSections) {
     if (name === planningSection || audience === "worker") {
@@ -186,23 +185,9 @@ export function checkIssueReadiness(
   }
 
   if (audience === "worker" || dispatch) {
-    const asksQuestions = issue.blockers.includes(questionsOption);
-
-    if (openSections.length > 0 && !asksQuestions) {
-      findings.push({
-        rule: "stale-field",
-        message: `${blockersField} lacks \`${questionsOption}\` although ${openSections
-          .map((name) => {
-            return `**${name}**`;
-          })
-          .join(" and ")} is open: set the field.`,
-      });
-    } else if (openSections.length === 0 && asksQuestions) {
-      findings.push({
-        rule: "stale-field",
-        message: `${blockersField} has \`${questionsOption}\` although no **${planningSection}** or **${questionsSection}** is open: clear the field.`,
-      });
-    }
+    findings.push(
+      ...checkBlockersField(openSections, issue.blockers, protocol),
+    );
   }
 
   for (const option of issue.blockers) {

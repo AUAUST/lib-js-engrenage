@@ -59,3 +59,4 @@
 - gate skipping `.ai/issues/` formatting: stop false body conflicts at publish (#500) — editors and hooks still format drafts; normalizing the merge covers every formatter
 - resumed merger per segment (#516): walk merger reuse — re-reading carried context costs more than a cold start; fresh merger briefed with the previous report instead
 - context-share freshness threshold (#516): consultant replacement — a window share means different sizes per model; twice the starting context instead
+- shared draft manifest field reader (#511): `checkDrafts` `readBlockers` and `listPublishedFieldValues` `readFieldValue` both read manifest field values — one Blockers read, outside the leaf's scope
