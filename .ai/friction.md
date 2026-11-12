@@ -68,3 +68,5 @@
 - zsh `grep --include=*.ts`: unquoted glob in a search for callers — zsh "no matches found" aborted it; listed directories instead
 - `engrenage sync agents`: expected it to generate a new skill's outputs, as #516 Step 4 states — sync only updates installed skills; installed it with `engrenage agents skills add merging`
 - zsh `grep --include=*.ts`: unquoted glob in a merger's search for twins — zsh "no matches found" aborted it; grepped without the flag
+- Agent tool: dispatched a `.claude/agents` file written mid-session — not loaded until restart; probed with `claude -p --agents` instead.
+- claude -p: passed the prompt after `--allowedTools Agent` — the variadic flag swallowed it; piped the prompt on stdin.

@@ -13,8 +13,13 @@ agent:
     trivial: low
     complex: high
   gate: true
-  disallowedTools:
-    - SendMessage
+  tools:
+    - Bash
+    - Read
+    - Edit
+    - Write
+    - Skill
+    - ToolSearch
 ---
 
 # Debugging

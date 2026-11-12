@@ -16,8 +16,13 @@ hooks:
             found");d=n}process.stdout.write(d)')" && cd --
             "$engrenage_hook_root" && pnpm --silent engrenage agents claude hook
             stop || exit 2
-disallowedTools:
-  - SendMessage
+tools:
+  - Bash
+  - Read
+  - Edit
+  - Write
+  - Skill
+  - ToolSearch
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/issue-implementation.md -->

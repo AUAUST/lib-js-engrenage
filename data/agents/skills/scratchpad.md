@@ -8,9 +8,11 @@ agent:
   description: Scratcher that triages the user's notes in .ai/scratchpad.md into backlog entries and never implements them or acts outside the repository. Dispatch it only when a skill you follow or the user asks for a scratcher; otherwise do the work yourself.
   model: haiku
   effort: low
-  disallowedTools:
-    - WebFetch
-    - WebSearch
+  tools:
+    - Bash
+    - Read
+    - Edit
+    - Write
 ---
 
 # Scratchpad

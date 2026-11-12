@@ -7,8 +7,13 @@ description: Merger that rebases a walked leaf onto the walked branch, resolves
   report ends with what remains and the kind of work it needs.
 model: opus
 effort: medium
-disallowedTools:
-  - SendMessage
+tools:
+  - Bash
+  - Read
+  - Edit
+  - Write
+  - Skill
+  - ToolSearch
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/merging.md -->

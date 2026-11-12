@@ -178,4 +178,38 @@ describe("getSkillTemplates", () => {
       description: "Helper",
     });
   });
+
+  test("renders the tool allowlist into the Claude agent only", async () => {
+    mockSkill("allowlisted", {
+      name: "helper",
+      description: "Helper",
+      tools: ["Bash", "Read"],
+    });
+
+    expect(await renderAgentFrontmatter()).toEqual({
+      name: "helper",
+      description: "Helper",
+      tools: ["Bash", "Read"],
+    });
+
+    const [template] = await renderSkills(["codex"]);
+
+    for (const profile of template?.profiles ?? []) {
+      expect(
+        parseTOML<Record<string, unknown>>(profile.content),
+      ).not.toHaveProperty("tools");
+    }
+  });
+
+  test("rejects a non-string tool, naming the skill source", async () => {
+    mockSkill("broken", {
+      name: "breaker",
+      description: "Breaker",
+      tools: ["Bash", 1],
+    });
+
+    await expect(renderSkills()).rejects.toThrow(
+      /\/skills\/broken\.md skill metadata[\s\S]*agent\.tools/,
+    );
+  });
 });

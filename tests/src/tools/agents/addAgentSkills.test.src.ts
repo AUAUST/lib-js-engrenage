@@ -98,7 +98,7 @@ describe("addAgentSkills", () => {
 
     expect(
       await config.context.filesystem.read(".claude/agents/scratcher.md"),
-    ).toMatch(/name: scratcher[\s\S]*disallowedTools:[\s\S]*# Scratchpad/);
+    ).toMatch(/name: scratcher[\s\S]*tools:[\s\S]*# Scratchpad/);
 
     expect(
       await config.context.filesystem.exists(

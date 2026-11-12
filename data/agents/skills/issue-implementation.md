@@ -13,8 +13,13 @@ agent:
     involved: medium
     complex: medium
   gate: true
-  disallowedTools:
-    - SendMessage
+  tools:
+    - Bash
+    - Read
+    - Edit
+    - Write
+    - Skill
+    - ToolSearch
 ---
 
 # Issue implementation

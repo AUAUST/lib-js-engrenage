@@ -9,8 +9,13 @@ agent:
   description: Merger that rebases a walked leaf onto the walked branch, resolves its conflicts and reviews it against what its siblings landed and the code around it, without implementing its findings. Dispatch it only when a skill you follow or the user asks for a merger; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs.
   model: opus
   effort: medium
-  disallowedTools:
-    - SendMessage
+  tools:
+    - Bash
+    - Read
+    - Edit
+    - Write
+    - Skill
+    - ToolSearch
 ---
 
 # Merging

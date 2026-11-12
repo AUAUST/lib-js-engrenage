@@ -8,9 +8,11 @@ agent:
   description: Backlogger that brings backlog entries up to date with new findings, context or answers, and converts actionable ones to GitHub issues. Dispatch it only when a skill you follow or the user asks for a backlogger; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs.
   model: opus
   effort: low
-  disallowedTools:
-    - WebFetch
-    - WebSearch
+  tools:
+    - Bash
+    - Read
+    - Edit
+    - Write
 ---
 
 # Backlog handling
