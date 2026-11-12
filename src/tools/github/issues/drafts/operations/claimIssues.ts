@@ -1,5 +1,6 @@
 import { Document } from "yaml";
 
+import { formatChanges } from "#project/sync/index";
 import { createGithubClient } from "#tools/github/issues/api/index";
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
@@ -41,7 +42,6 @@ function toClaimedNumber(stem: string, context: DraftsContext) {
   return parsed.number;
 }
 
-// @debt Claim and publish write drafts straight to disk, bypassing `settleChanges` so prettier cannot reformat the merge base; a filesystem write that skips formatting would keep them on the staged path.
 export async function claimIssues(
   config: LoadedConfig,
   stems: readonly string[],
@@ -109,6 +109,8 @@ export async function claimIssues(
         drafting,
       ]);
     }
+
+    await formatChanges(config);
 
     await filesystem.flush();
   }

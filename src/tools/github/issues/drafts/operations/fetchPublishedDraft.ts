@@ -4,17 +4,20 @@ import { isString } from "@auaust/toolkit/isString";
 import { entries } from "@auaust/toolkit/object";
 
 import { validate } from "#foundation/options/index";
+import { formatContent } from "#project/format/index";
 import { fetchIssue, isSameIssue } from "#tools/github/issues/contract/index";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
 import { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
 import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
+import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { locateFetchedIssue } from "#tools/github/issues/drafts/utils/locateFetchedIssue";
 import { mergeDraftBody } from "#tools/github/issues/drafts/utils/mergeDraftBody";
 import { mergeDraftManifest } from "#tools/github/issues/drafts/utils/mergeDraftManifest";
 import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
 import { readIssueManifest } from "#tools/github/issues/drafts/utils/readIssueManifest";
 import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
+import { toDraftBody } from "#tools/github/issues/drafts/utils/toDraftBody";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 
@@ -32,6 +35,31 @@ function listClaimedReferences(value: unknown) {
 
     return isPlainObject(entry) && isString(entry.ref) ? entry.ref : "";
   });
+}
+
+async function createBodyNormalizer(
+  { config }: Publication,
+  draft: PublishedDraft,
+) {
+  const selected = await config.resolve("format.formatter");
+
+  const formatter = selected === false ? undefined : await selected.load();
+
+  const path = locateDraft(draft.stem);
+
+  return async (body: string) => {
+    if (formatter === undefined) {
+      return body;
+    }
+
+    const formatted = await formatContent(body, {
+      path,
+      config,
+      formatter,
+    });
+
+    return formatted.trim();
+  };
 }
 
 function checkSegment(
@@ -99,16 +127,19 @@ export async function fetchPublishedDraft(
 
   const base = toManifest(fetched.manifest.toJS());
 
-  const body = mergeDraftBody(
-    {
-      base: fetched.body,
-      remote: remote.body,
-      local: draft.draft.body,
-    },
-    access.repository,
-    context,
-    draft.contract,
-  );
+  const normalize = await createBodyNormalizer(publication, draft);
+
+  // @debt The merge returns the formatted remote body, so publishing a draft whose body is unchanged can rewrite GitHub's body with formatter-only changes.
+
+  const body = mergeDraftBody({
+    base: await normalize(
+      toDraftBody(fetched.body, access.repository, context, draft.contract),
+    ),
+    remote: await normalize(
+      toDraftBody(remote.body, access.repository, context, draft.contract),
+    ),
+    local: await normalize(draft.draft.body),
+  });
 
   const { manifest, conflicts } = mergeDraftManifest(
     {

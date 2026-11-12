@@ -1,6 +1,8 @@
-import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, mkdirSync, readFileSync, symlinkSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
+import { format } from "prettier";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { isString } from "@auaust/toolkit/isString";
@@ -483,6 +485,62 @@ async function claimPlanWithExtra(root: string) {
   await filesystem.flush();
 }
 
+function createFormattedProject() {
+  const root = createProject({
+    "package.json": JSON.stringify({
+      name: "@auaust/app",
+      type: "module",
+      repository: "github:AUAUST/app",
+      dependencies: { "@auaust/toolkit": "1.0.0" },
+      devDependencies: { prettier: "*" },
+    }),
+  });
+
+  const prettier = join(root, "node_modules/prettier");
+
+  mkdirSync(dirname(prettier), { recursive: true });
+
+  symlinkSync(
+    dirname(fileURLToPath(import.meta.resolve("prettier/package.json"))),
+    prettier,
+  );
+
+  return root;
+}
+
+const tableBody = taskBody.replace(
+  "\n\nc\n",
+  "\n\n| Name | Value |\n|---|---|\n| a | b |\n",
+);
+
+async function claimTable(root: string, remote: string | undefined) {
+  findIssue(13).body = tableBody;
+
+  const config = await loadConfig(root);
+
+  const { filesystem } = config.context;
+
+  await claimIssues(config, ["13"]);
+
+  await filesystem.write(
+    ".ai/issues/13.md",
+    await format(read(root, "13.md"), { parser: "markdown" }),
+  );
+
+  await filesystem.write(
+    ".ai/issues/13.draft.md",
+    read(root, "13.draft.md").replace("1. Do.", "1. Do more."),
+  );
+
+  await filesystem.flush();
+
+  if (remote !== undefined) {
+    findIssue(13).body = tableBody.replace("- t", () => remote);
+  }
+
+  return publishIssues(await loadConfig(root), ["13"]);
+}
+
 describe("claimIssues and publishIssues", () => {
   test("claims a Plan's roadmap into subIssues and publishes it back unchanged", async () => {
     const root = createProject();
@@ -835,6 +893,47 @@ Goal: the group
     expect(requests.filter((request) => !request.startsWith("GET"))).toEqual(
       [],
     );
+  });
+
+  test("publishes a draft edit when the claimed base differs from GitHub only by formatting", async () => {
+    const root = createFormattedProject();
+
+    const { lines, passed } = await claimTable(root, undefined);
+
+    expect({ first: lines[0], passed }).toEqual({
+      first: "#13: published",
+      passed: true,
+    });
+
+    expect(findIssue(13).body).toContain("1. Do more.");
+  });
+
+  test("still reports a body conflict when GitHub changed another section", async () => {
+    const root = createFormattedProject();
+
+    const { lines, passed } = await claimTable(root, "- remote");
+
+    expect(passed).toBe(false);
+
+    expect(lines).toEqual([
+      expect.stringMatching(
+        /^13: `body` changed both in the draft and on GitHub since the claim/,
+      ),
+    ]);
+  });
+
+  test("claims an issue's files already formatted", async () => {
+    findIssue(13).body = tableBody;
+
+    const root = createFormattedProject();
+
+    await claimIssues(await loadConfig(root), ["13"]);
+
+    for (const file of ["13.md", "13.draft.md"]) {
+      const content = read(root, file);
+
+      expect(await format(content, { parser: "markdown" })).toBe(content);
+    }
   });
 });
 
