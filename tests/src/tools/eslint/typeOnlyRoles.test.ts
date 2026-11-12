@@ -1,57 +1,35 @@
-import { ESLint } from "eslint";
 import { describe, expect, test } from "vitest";
 
-import { createEslintConfig } from "@auaust/engrenage/eslint";
-import { loadConfig } from "@auaust/engrenage/extensions";
 import { createRolePreset, entry, type Role } from "@auaust/engrenage/roles";
 
-import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createProjectLinter } from "#tests/utils/createProjectLinter";
 import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
 async function createLinter(config = "", roles: readonly Role[] = []) {
-  const project = createTemporaryProject({
-    "package.json": JSON.stringify({
-      name: "library",
-      type: "module",
-      imports: { "#project/*": "./src/project/*.ts" },
-    }),
-    "engrenage.config.ts": `export default { preset: "library", ${config} src: { roles: ${renderCodeRoles(entry(), ...roles)}, structure: { layers: ["project"] } } };\n`,
-    "tsconfig.json": JSON.stringify({
-      compilerOptions: {
-        module: "nodenext",
-        moduleResolution: "nodenext",
-        allowImportingTsExtensions: true,
-        noEmit: true,
-      },
-    }),
-    "src/project/feature/index.ts": "export {};\n",
-    "src/project/feature/utils/own.ts": "export const own = 1;\n",
-    "src/project/feature/types/Seed.ts": "export type Seed = 1;\n",
-    "src/project/feature/shapes/Seed.ts": "export type Seed = 1;\n",
-  });
-
-  const eslint = new ESLint({
-    cwd: project.root,
-    overrideConfigFile: true,
-    overrideConfig: await createEslintConfig(await loadConfig(project.root), {
-      typeAware: false,
-    }),
-  });
+  const { lint } = await createProjectLinter(
+    `export default { preset: "library", ${config} src: { roles: ${renderCodeRoles(entry(), ...roles)}, structure: { layers: ["project"] } } };\n`,
+    {
+      "src/project/feature/index.ts": "export {};\n",
+      "src/project/feature/utils/own.ts": "export const own = 1;\n",
+      "src/project/feature/types/Seed.ts": "export type Seed = 1;\n",
+      "src/project/feature/shapes/Seed.ts": "export type Seed = 1;\n",
+    },
+  );
 
   return async (filePath: string, source: string) => {
-    const [result] = await eslint.lintText(source, {
-      filePath: project.resolve(filePath),
-    });
-
-    return (result?.messages ?? [])
-      .map(({ ruleId }) => ruleId)
-      .filter((ruleId) => {
+    const messages = await lint(
+      filePath,
+      (ruleId) => {
         return (
-          ruleId?.startsWith("auaust/import-") === true ||
+          ruleId.startsWith("auaust/import-") ||
           ruleId === "auaust/type-only-roles" ||
           ruleId === "@typescript-eslint/no-import-type-side-effects"
         );
-      });
+      },
+      source,
+    );
+
+    return messages.map(({ ruleId }) => ruleId);
   };
 }
 

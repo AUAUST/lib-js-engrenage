@@ -3,9 +3,10 @@ import { join } from "node:path";
 import { freeze } from "@auaust/toolkit/object";
 
 import { listStructureDirectories } from "#project/structure/operations/listStructureDirectories";
+import { extendRoleLocation } from "#project/structure/utils/extendRoleLocation";
 import { getStructureLayer } from "#project/structure/utils/getStructureLayer";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { RoleLocationMember } from "#project/roles/index";
+import type { RoleLocation } from "#project/roles/index";
 import type { createStructureDomainResolver } from "#project/structure/operations/createStructureDomainResolver";
 import type { createStructureRoleResolver } from "#project/structure/operations/createStructureRoleResolver";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
@@ -20,7 +21,6 @@ import type { File } from "#types/File";
 const environmentRoot = ".";
 
 export function createStructureWalker({
-  name,
   filesystem,
   options,
   commands,
@@ -30,7 +30,6 @@ export function createStructureWalker({
   domainResolver,
   classifyMirror,
 }: {
-  name: string;
   filesystem: Filesystem;
   options: StructureOptions;
   commands: boolean;
@@ -67,17 +66,13 @@ export function createStructureWalker({
       metadata,
     } = describe(subpath);
 
-    function extendLineage(kind: StructureKind): readonly RoleLocationMember[] {
-      return kind === "namespace" || kind === "domain"
-        ? freeze([
-            ...parent.lineage,
-            freeze({
-              name: directory,
-              path,
-              kind,
-            }),
-          ])
-        : parent.lineage;
+    function locate(kind: StructureKind, role?: string): RoleLocation {
+      return extendRoleLocation(parent.location, {
+        kind,
+        name: directory,
+        path,
+        ...(role === undefined ? {} : { role }),
+      });
     }
 
     async function node(
@@ -88,14 +83,14 @@ export function createStructureWalker({
         scopes = parent.scopes,
         owned = parent.owned,
         structured = false,
-        enclosing = parent.enclosing,
+        location = locate(kind, extra.role),
         mirrored,
         children,
       }: {
         scopes?: readonly string[];
         owned?: readonly string[];
         structured?: boolean;
-        enclosing?: readonly string[];
+        location?: RoleLocation;
         mirrored?: StructureParent["mirrored"];
         children?: readonly StructureNode[];
       } = {},
@@ -122,8 +117,7 @@ export function createStructureWalker({
             scopes,
             owned,
             structured,
-            lineage: extendLineage(kind),
-            enclosing,
+            location,
             ...(mirrored === undefined ? {} : { mirrored }),
           }))
         ),
@@ -186,21 +180,14 @@ export function createStructureWalker({
     if (parent.kind === "role") {
       return role === undefined || !parent.structured
         ? node("unclassified", "inferred", {})
-        : node(
-            "role",
-            "inferred",
-            {
-              role,
-              ...metadataOf(role, parent.scopes),
-              ...(await roleCardinality(path, role, {
-                scopes: parent.scopes,
-                structured: false,
-              })),
-            },
-            {
-              enclosing: [...parent.enclosing, role],
-            },
-          );
+        : node("role", "inferred", {
+            role,
+            ...metadataOf(role, parent.scopes),
+            ...(await roleCardinality(path, role, {
+              scopes: parent.scopes,
+              structured: false,
+            })),
+          });
     }
 
     if (
@@ -211,13 +198,9 @@ export function createStructureWalker({
       const contained = rolesFor(parent.scopes).roles[role]?.roles;
       const scopes = [...parent.scopes, ...(contained ?? [])];
       const structured = contained !== undefined;
-      const enclosing = [...parent.enclosing, role];
+      const location = locate("role", role);
 
-      const { fileNames } = resolveFileNames(role, scopes, {
-        environment: name,
-        lineage: parent.lineage,
-        roles: enclosing,
-      });
+      const { fileNames } = resolveFileNames(role, scopes, location);
 
       return node(
         "role",
@@ -236,7 +219,7 @@ export function createStructureWalker({
           scopes,
           owned: [...(contained ?? []), ...parent.owned],
           structured,
-          enclosing,
+          location,
         },
       );
     }
@@ -272,8 +255,7 @@ export function createStructureWalker({
       scopes: parent.scopes,
       owned: parent.owned,
       structured: false,
-      lineage: extendLineage("namespace"),
-      enclosing: parent.enclosing,
+      location: locate("namespace"),
     });
 
     const holdsOnlyNamespacesAndDomains = (

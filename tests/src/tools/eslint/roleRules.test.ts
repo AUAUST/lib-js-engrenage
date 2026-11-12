@@ -1,10 +1,10 @@
-import { ESLint } from "eslint";
 import { describe, expect, onTestFinished, test } from "vitest";
 
 import { createEslintConfig, defineRoleRule } from "@auaust/engrenage/eslint";
 import { loadConfig } from "@auaust/engrenage/extensions";
 import { entry } from "@auaust/engrenage/roles";
 
+import { createProjectLinter } from "#tests/utils/createProjectLinter";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
@@ -48,40 +48,30 @@ async function createLinter() {
 
   const roles = renderCodeRoles(entry()).slice(0, -1);
 
-  const project = createTemporaryProject({
-    "package.json": JSON.stringify({
-      name: "library",
-      type: "module",
-    }),
-    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${roles}, ${checkedRole}, ${configRole}], structure: { layers: ["project"] } } };\n`,
-    "src/project/feature/index.ts": "export {};\n",
-    "src/project/feature/checked/one.ts": "export {};\n",
-    "src/project/feature/checked/inner/two.ts": "export {};\n",
-    "src/project/feature/utils/three.ts": "export {};\n",
-    "src/project/feature/config/four.ts": "export {};\n",
-    "src/project/feature/config/sections/five.ts": "export {};\n",
-  });
-
-  const eslint = new ESLint({
-    cwd: project.root,
-    overrideConfigFile: true,
-    overrideConfig: await createEslintConfig(await loadConfig(project.root), {
-      typeAware: false,
-    }),
-  });
+  const { lint } = await createProjectLinter(
+    `export default { preset: "library", src: { roles: ${roles}, ${checkedRole}, ${configRole}], structure: { layers: ["project"] } } };\n`,
+    {
+      "src/project/feature/index.ts": "export {};\n",
+      "src/project/feature/checked/one.ts": "export {};\n",
+      "src/project/feature/checked/inner/two.ts": "export {};\n",
+      "src/project/feature/utils/three.ts": "export {};\n",
+      "src/project/feature/config/four.ts": "export {};\n",
+      "src/project/feature/config/sections/five.ts": "export {};\n",
+    },
+  );
 
   return async (filePath: string) => {
-    const [result] = await eslint.lintText("console.log(1);\nalert(1);\n", {
-      filePath: project.resolve(filePath),
-    });
-
-    return (result?.messages ?? []).filter(({ ruleId }) => {
-      return (
-        ruleId === "no-console" ||
-        ruleId === "no-alert" ||
-        ruleId?.startsWith("roles/") === true
-      );
-    });
+    return lint(
+      filePath,
+      (ruleId) => {
+        return (
+          ruleId === "no-console" ||
+          ruleId === "no-alert" ||
+          ruleId.startsWith("roles/")
+        );
+      },
+      "console.log(1);\nalert(1);\n",
+    );
   };
 }
 

@@ -75,7 +75,6 @@ export async function resolveEnvironmentStructure({
   });
 
   const walk = createStructureWalker({
-    name,
     filesystem,
     options,
     commands,
@@ -105,14 +104,17 @@ export async function resolveEnvironmentStructure({
           scopes: rootScopes,
           owned: rootScopes,
           structured: false,
-          lineage: freeze([
-            freeze({
-              name: basename(directory),
-              path: directory,
-              kind: "namespace" as const,
-            }),
-          ]),
-          enclosing: [],
+          location: freeze({
+            environment: name,
+            lineage: freeze([
+              freeze({
+                name: basename(directory),
+                path: directory,
+                kind: "namespace" as const,
+              }),
+            ]),
+            roles: freeze([]),
+          }),
         });
       }),
     ),
