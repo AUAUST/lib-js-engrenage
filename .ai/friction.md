@@ -54,3 +54,5 @@
 - zsh `grep --include=*.md`: unquoted glob in a Bash call — zsh "no matches found" aborts the command; quoted the pattern
 - engrenage planning issue publish: wrote bare `#186` in a `toolkit.new-…` draft meaning a toolkit issue — publish resolved it against engrenage; `claim` refuses another repository's issues, so reclaimed and republished from toolkit's checkout
 - `engrenage planning issue publish`: published drafts whose `type` changed (Idea → Task, Problem) — merged manifest kept the old type's field and failed; set the type through GraphQL `updateIssue` and dropped the field from the fetched `<ref>.md`
+- engrenage planning issue claim: claimed `toolkit.<n>` from engrenage — refused as another repository's issues; claimed from toolkit's working tree instead
+- zsh `grep --include=*.src.ts`: unquoted glob in a Bash call — zsh "no matches found" aborted the command; dropped the filter
