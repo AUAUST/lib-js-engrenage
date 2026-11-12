@@ -1,3 +1,4 @@
 {
-  "purpose": "List every built-in extension."
+  "purpose": "List every built-in extension.",
+  "collects": ["extension"]
 }

@@ -58,7 +58,7 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ vitest*  Configure and run source and distribution tests.
 │  └─ vscode*  Configure editor settings and extension recommendations.
 └─ workflows/  #workflows/…  Composition of tools into the config and commands.
-   ├─ builtins*  List every built-in extension.
+   ├─ builtins*[collects: extension]  List every built-in extension.
    ├─ cli  Compose command definitions and their execution context.
    ├─ config*  Compose and validate the complete project configuration.
    ├─ extensions*  The extension author's surface: `defineExtension` and the contracts extensions implement and read.

@@ -5,6 +5,7 @@ import {
 } from "#tools/eslint/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
+// @debt the extension owns no config key, so its options come only from definer arguments
 export default {
   name: "tools/eslint",
   when: {

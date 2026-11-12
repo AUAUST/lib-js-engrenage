@@ -1,6 +1,7 @@
 import { vitest } from "#tools/vitest/constants";
 import type { Extension } from "#project/config/index";
 
+// @debt the extension owns no config key, so its options come only from definer arguments
 export default {
   name: "tools/vitest",
   when: {

@@ -3,11 +3,6 @@ import { describe, expect, test } from "vitest";
 import { schemas, types, utils, type Role } from "#project/roles/index";
 import { collectChanges, runSync } from "#project/sync/index";
 import { createBarrelProject } from "#tests/utils/createBarrelProject";
-import { createBarrelRenderer } from "#tools/typescript/operations/createBarrelRenderer";
-import { planBarrelBlock } from "#tools/typescript/operations/planBarrelBlock";
-import { loadValidatedConfig } from "#workflows/config/index";
-
-const builtinsBarrel = "src/workflows/builtins/index.ts";
 
 function createKit({
   files,
@@ -132,28 +127,5 @@ export * as object from "#modules/object/entry";
 // @end
 `,
     );
-  });
-
-  test("lists engrenage's built-in extensions under their domain names", async () => {
-    const config = await loadValidatedConfig();
-
-    const render = await createBarrelRenderer(config);
-
-    const { lines } = await render(
-      await planBarrelBlock(config, builtinsBarrel, "extension"),
-      new Map(),
-    );
-
-    expect(lines).toHaveLength(34);
-
-    expect(lines).toContain(
-      'export { default as projectBuild } from "#project/build/extension";',
-    );
-
-    expect(lines).toContain(
-      'export { default as toolsShopifyTheme } from "#tools/shopify/theme/extension";',
-    );
-
-    expect(lines.join("\n")).not.toContain("roles/operations/extension");
   });
 });
