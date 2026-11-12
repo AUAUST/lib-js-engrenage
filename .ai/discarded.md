@@ -54,3 +54,5 @@
 - namespace role shadow: `subpath` at the environment root only (#483) — re-declares every option of the global role and drifts once it changes
 - namespace role shadow: toolkit's modules without a types barrel — re-declares the global role and drifts (#483); index "root" instead (#493)
 - unused role barrel in toolkit protocol: drop the types shadow as is — contradicts toolkit #186, a module's entry is its only barrel
+- calling a role callback on a placeholder module for its map description: `companions` shown in maps — callbacks compute on real names (`name.slice(2)`), a placeholder yields garbage
+- bare callback or `{ resolve, description }` union for `file` and `companions`: lighter declaration — a bare callback leaves its map cell empty, the gap #485 fixed

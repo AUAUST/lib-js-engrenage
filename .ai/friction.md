@@ -61,3 +61,6 @@
 - vitest toHaveProperty: asserted a missing "." key with a string path — the string parses as a property path and throws; passed ["."] instead
 - engrenage planning CLI: pnpm exec engrenage in engrenage itself — binary not linked; pnpm engrenage (package script) works
 - `engrenage sync` barrels: added `isPlaced` to `#project/structure` imported by other domains — sync crashed loading the missing export; added the barrel line by hand, then sync confirmed it
+- engrenage planning issue claim: claiming a toolkit issue (toolkit.206) from engrenage to refresh its snippet — refused, other repositories' issues stay with their sessions; carried the override in #492 instead
+- engrenage planning CLI: pnpm exec engrenage planning issue claim in engrenage itself — binary not linked; pnpm engrenage (package script) works
+- engrenage planning issue publish: published a claimed plan with Prettier-formatted claim base — reported `body` changed both sides on table padding alone; replaced the base body with GitHub's
