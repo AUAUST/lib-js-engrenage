@@ -26,7 +26,11 @@ function members(node: StructureNode): StructureNode[] {
 function inline(node: StructureNode): string {
   const children = members(node);
 
-  const name = `${node.name}${node.kind === "namespace" ? "/" : ""}${node.public === true ? "*" : ""}`;
+  const collects = node.collects === undefined || node.collects.length === 0
+    ? ""
+    : `[collects: ${node.collects.join(" ")}]`;
+
+  const name = `${node.name}${node.kind === "namespace" ? "/" : ""}${node.public === true ? "*" : ""}${collects}`;
 
   return children.length === 0
     ? name

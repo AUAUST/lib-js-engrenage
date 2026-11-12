@@ -1,5 +1,6 @@
 import { posix } from "node:path";
 
+import { filterMap } from "@auaust/primitive-kit/arrays";
 import { values } from "@auaust/toolkit/object";
 
 import {
@@ -117,10 +118,10 @@ export async function planBarrels(
   const structure = await config.resolve("structure");
 
   const plans = await Promise.all(
-    values(structure).map((environment) => {
-      return environment === undefined
-        ? []
-        : planEnvironment(config.context.filesystem, environment);
+    filterMap(values(structure), (environment) => {
+      if (environment !== undefined) {
+        return planEnvironment(config.context.filesystem, environment);
+      }
     }),
   );
 

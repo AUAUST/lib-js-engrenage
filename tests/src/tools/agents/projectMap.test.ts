@@ -232,6 +232,29 @@ describe("project map", () => {
     );
   });
 
+  test("tags a domain collecting roles in the src map", async () => {
+    const { project } = await syncProject(
+      createTemporaryProject({
+        "package.json": '{ "name": "project", "type": "module" }',
+        "engrenage.config.ts": `export default {
+  preset: "library",
+  agents: { preferred: ["claude"] },
+  src: {
+    roles: ${renderCodeRoles(entry(), handlers({ collected: true, public: true }))},
+    structure: {
+      domains: { guard: { purpose: "The guards.", public: true, collects: ["handlers"] } },
+    },
+  },
+};\n`,
+        "src/guard/handlers/run.ts": "",
+      }),
+    );
+
+    expect(project.read(sourceFile)).toContain(
+      "guard*[collects: handlers]  The guards.",
+    );
+  });
+
   test("reports a stale or extra map as synced and a fresh one as unchanged", async () => {
     const { project, config } = await sync();
 
