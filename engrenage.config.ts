@@ -203,7 +203,6 @@ export default defineConfig({
     roles: [index(), entrypoint(), extension(), ...codeRoles],
     // @debt `./config/constants` resolves to `project/config` while `./config` is `workflows/config`, and the constants of the internal domains jscpd, lefthook and shopify are hand-listed
     exports: {
-      ".": "src/entry.ts",
       "./constants": "src/constants.ts",
       "./config/constants": "src/project/config/constants.ts",
       "./jscpd/constants": "src/tools/jscpd/constants.ts",

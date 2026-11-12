@@ -1,8 +1,9 @@
 import { basename } from "node:path";
 
 import { flat } from "@auaust/primitive-kit/arrays";
-import { freeze, getOwn } from "@auaust/toolkit/object";
+import { freeze, getOwn, keys } from "@auaust/toolkit/object";
 
+import { assignRoleFiles } from "#project/structure/operations/assignRoleFiles";
 import { createStructureDomainResolver } from "#project/structure/operations/createStructureDomainResolver";
 import { createStructureRoleResolver } from "#project/structure/operations/createStructureRoleResolver";
 import { createStructureWalker } from "#project/structure/operations/createStructureWalker";
@@ -10,6 +11,7 @@ import { collectStructureNodes } from "#project/structure/utils/collectStructure
 import { createMirrorClassifier } from "#project/structure/utils/createMirrorClassifier";
 import { getEntryFile } from "#project/structure/utils/getEntryFile";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
+import { groupRoleFiles } from "#project/structure/utils/groupRoleFiles";
 import { listStructureRoles } from "#project/structure/utils/listStructureRoles";
 import { loosenStructureNode } from "#project/structure/utils/loosenStructureNode";
 import type { Filesystem } from "#foundation/filesystem/index";
@@ -116,6 +118,16 @@ export async function resolveEnvironmentStructure({
     ),
   );
 
+  const rootRoleFiles = groupRoleFiles(
+    flat(
+      await Promise.all(
+        walked.map((directory) => {
+          return assignRoleFiles(filesystem, directory, rolesFor(rootScopes));
+        }),
+      ),
+    ),
+  );
+
   const resolvedRoot: StructureNode = freeze({
     path: environmentRoot,
     name,
@@ -134,6 +146,7 @@ export async function resolveEnvironmentStructure({
     ...(rootDeclaration?.purpose === undefined
       ? {}
       : { purpose: rootDeclaration.purpose }),
+    ...(keys(rootRoleFiles).length === 0 ? {} : { roleFiles: rootRoleFiles }),
     children,
   });
 

@@ -8,7 +8,6 @@ import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',
-  "src/entry.ts": "",
   "src/tools/alpha/index.ts": "",
   "src/tools/alpha/entry.ts": "",
   "src/tools/beta/index.ts": "",
@@ -18,6 +17,8 @@ const files = {
   "src/project/model/entry.ts": "",
   "src/hidden/index.ts": "",
 };
+
+const rootEntry = { "src/entry.ts": "" };
 
 async function exposed(
   source: string,
@@ -172,6 +173,26 @@ describe("domain entries", () => {
     ).rejects.toThrow(
       "Subpath './models' is exposed by src.exports, as src/hidden/index.ts, and by src/models/index.ts",
     );
+  });
+
+  test("the environment root's entry is exposed as the package root without a src.exports line", async () => {
+    expect(await exposed("{}", rootEntry)).toMatchObject({
+      ".": "src/entry.ts",
+    });
+  });
+
+  test("a src.exports line naming the package root beside the root entry fails", async () => {
+    await expect(
+      exposed(`{ exports: { ".": "src/hidden/index.ts" } }`, rootEntry),
+    ).rejects.toThrow(
+      "Subpath '.' is exposed by src.exports, as src/hidden/index.ts, and by src/entry.ts",
+    );
+  });
+
+  test("an environment root without an entry exposes no package root", async () => {
+    expect(
+      await exposed(`{ structure: { namespaces: { tools: {} } } }`),
+    ).not.toHaveProperty(["."]);
   });
 
   test("structure.internals exposes every domain's index under /internals unless the domain opts out", async () => {

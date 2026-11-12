@@ -321,6 +321,7 @@ describe("runSync with generated sources", () => {
         JSON.parse(readFileSync(join(root, "tsconfig.json"), "utf-8"))
           .compilerOptions.paths,
       ).toEqual({
+        "@fixture/project": ["./src/entry.ts"],
         "@fixture/project/a": ["./src/modules/a/entry.ts"],
       });
 

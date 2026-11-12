@@ -1,19 +1,19 @@
-import { extname, join, matchesGlob } from "node:path";
+import { basename, extname, join, matchesGlob } from "node:path";
 
-import { entries, freeze, keys, values } from "@auaust/toolkit/object";
+import { entries, keys, values } from "@auaust/toolkit/object";
 
 import {
   defaultReexport,
   domainMetadataFile,
   namespaceMetadataFile,
 } from "#project/structure/constants";
-import { listStructureFiles } from "#project/structure/operations/listStructureFiles";
+import { assignRoleFiles } from "#project/structure/operations/assignRoleFiles";
 import { constrainsFileRole } from "#project/structure/utils/constrainsFileRole";
 import { getStructureCardinality } from "#project/structure/utils/getStructureCardinality";
+import { groupRoleFiles } from "#project/structure/utils/groupRoleFiles";
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 import { listReexportModes } from "#project/structure/utils/listReexportModes";
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
-import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
@@ -21,21 +21,6 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 type DomainDeclaration = StructureOptions["domains"][string];
-
-// @debt `getStructureCardinality` groups the same assignments by role again; it could take these groups instead
-function groupRoleFiles(
-  assigned: readonly (readonly [File, string | undefined])[],
-): Readonly<Record<string, readonly File[]>> {
-  const grouped: Record<string, File[]> = {};
-
-  for (const [file, role] of assigned) {
-    if (role !== undefined) {
-      (grouped[role] ??= []).push(file);
-    }
-  }
-
-  return freeze(grouped);
-}
 
 export function createStructureDomainResolver({
   filesystem,
@@ -134,34 +119,28 @@ export function createStructureDomainResolver({
       return listStaticFileGlobs(file);
     });
 
-    const files = commands || fileGlobs.length === 0
+    // @debt `assignRoleFiles` computes the same static file globs again; it could return them with its assignments
+    const assigned = commands
       ? []
-      : await listStructureFiles(filesystem, path);
+      : await assignRoleFiles(filesystem, path, roles);
 
-    const strays = files.filter((file) => {
-      return (
-        file !== namespaceMetadataFile &&
-        file !== domainMetadataFile &&
-        !fileGlobs.some((glob) => matchesGlob(file, glob))
-      );
-    });
+    const strays = assigned
+      .map(([file]) => file)
+      .filter((file) => {
+        const name = basename(file);
+
+        return (
+          name !== namespaceMetadataFile &&
+          name !== domainMetadataFile &&
+          !fileGlobs.some((glob) => matchesGlob(name, glob))
+        );
+      });
 
     const owned = listNamedFileRoles(
       keys(contracts),
       (role) => contracts[role],
       undefined,
     ).filter(constrainsFileRole);
-
-    const assigned = files.map((file) => {
-      return [
-        join(path, file),
-        matchFileRole(file, {
-          named: [],
-          enclosing: undefined,
-          roles,
-        }),
-      ] as const;
-    });
 
     const cardinality = commands
       ? {}
@@ -174,9 +153,7 @@ export function createStructureDomainResolver({
     return {
       ...(commands ? { commands: true as const } : {}),
       ...(commands && (await filesystem.exists(twin)) ? { twin } : {}),
-      ...(strays.length === 0
-        ? {}
-        : { strays: strays.map((file) => join(path, file)) }),
+      ...(strays.length === 0 ? {} : { strays }),
       ...cardinality,
       ...(keys(roleFiles).length === 0 ? {} : { roleFiles }),
       public: await resolvePublic(path, metadata.public),

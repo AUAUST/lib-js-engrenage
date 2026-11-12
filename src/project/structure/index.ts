@@ -99,6 +99,7 @@ export { getIndexFile } from "#project/structure/utils/getIndexFile";
 export { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 export { getStructureCardinality } from "#project/structure/utils/getStructureCardinality";
 export { getStructureLayer } from "#project/structure/utils/getStructureLayer";
+export { groupRoleFiles } from "#project/structure/utils/groupRoleFiles";
 export { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";
 export { isEntryReference } from "#project/structure/utils/isEntryReference";
 export { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";

@@ -2,6 +2,7 @@ import { basename, extname } from "node:path";
 
 import { entries, getOwn, record } from "@auaust/toolkit/object";
 
+import { entryRoleName } from "#project/roles/constants";
 import type { EnvironmentFileNames } from "#project/structure/types/EnvironmentFileNames";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { StructureNode } from "#project/structure/types/StructureNode";
@@ -113,6 +114,9 @@ export function resolveDomainEntries(
   const { root, roles } = structure;
 
   for (const [subpath, file] of [
+    ...(getOwn(root.roleFiles ?? {}, entryRoleName) ?? []).map((file) => {
+      return [".", file] as const;
+    }),
     ...collectRoleBarrels(".", root, structure, roles),
     ...collectEntries(root, [], structure, roles),
   ]) {
