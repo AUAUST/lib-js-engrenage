@@ -113,7 +113,7 @@ The project's decision protocol applies with more latitude to your own questions
 | `task`    | Item: positive work, one feature taken from nothing to finished        | When split, its inner steps in order, at any depth |
 | `problem` | Item: negative work, something wrong to fix                            | When split, its inner steps in order, at any depth |
 
-The issue type says what an issue is: titles carry no prefix. A `task` or `problem` title is its result: `<area>: <what it does>`.
+The issue type says what an issue is: titles carry no prefix, in sentence case without trailing punctuation. A `task` or `problem` title states its result.
 
 An issue with open sub-issues is worked through them: its open sub-issues first, then its own work, then it closes.
 
@@ -281,7 +281,7 @@ While an issue's design is open, write what is settled and put the rest under **
 - Drop **Done when** when it would only say the Steps are done and the checks pass.
 - Once an issue you create or edit tracks the work of an entry in the backlog or the debt backlog, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
 - Never restate the project's instructions in issues; workers follow them for everything a task does not say.
-- Apply the protocol's types and fields and the project's environment labels; invent none.
+- Apply the protocol's types and fields and the repository's labels whose description fits the issue; invent none.
 
 ## Fields
 

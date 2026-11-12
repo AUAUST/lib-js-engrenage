@@ -45,7 +45,7 @@ Record every finding worth keeping in an issue, without being asked, so it outli
 
 - Create and edit only `resource` and `idea` issues.
 - Search for an existing issue on the concern and extend it before creating one.
-- Title each issue `<area>: <subject>`, and set the project's environment labels.
+- Title each issue by its subject, without prefix, in sentence case without trailing punctuation, and set the repository's labels whose description fits the issue.
 - Write a `report` with the parts of your report as `##` sections, and link from it each `idea` it leads to.
 
 ## Drafts
