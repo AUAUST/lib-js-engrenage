@@ -194,7 +194,7 @@ describe("createEntityIndex", () => {
   test("matches a nested role's root files against the names its callback returns for the location", async () => {
     const index = await createIndex(
       "index.ts",
-      '({ lineage }) => [`define${lineage.at(-1).name}Config.ts`, "setupFeature.ts"]',
+      '{ resolve: ({ lineage }) => [`define${lineage.at(-1).name}Config.ts`, "setupFeature.ts"], description: "define<Domain>Config.ts" }',
     );
 
     expect(

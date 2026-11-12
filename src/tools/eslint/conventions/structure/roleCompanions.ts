@@ -32,7 +32,7 @@ export default defineConvention({
         const file = relativeWithin(root, context.filename);
 
         const missing = wrap(
-          companions({
+          companions.resolve({
             file,
             name: basename(file, extname(file)),
             location,

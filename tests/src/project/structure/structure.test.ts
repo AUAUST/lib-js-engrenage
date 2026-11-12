@@ -583,11 +583,24 @@ describe("inline roles", () => {
   test("take a `file` callback only as nested file roles", async () => {
     const roles = renderCodeRoles(
       createRolePreset({ name: "setup", file: "<setup>" })(),
-    ).replace(JSON.stringify("<setup>"), '() => "setup.ts"');
+    ).replace(
+      JSON.stringify("<setup>"),
+      '{ resolve: () => "setup.ts", description: "setup.ts" }',
+    );
 
     await expect(
       describeProject(`{ src: { roles: ${roles} } }`),
     ).rejects.toThrow("gives the role setup a `file` callback");
+  });
+
+  test("reject `companions` without a description", async () => {
+    const guards = '{ name: "guards", companions: { resolve: () => "src/assert.ts" } }';
+
+    await expect(
+      describeProject(
+        `{ src: { roles: [...${renderCodeRoles()}, ${guards}] } }`,
+      ),
+    ).rejects.toThrow("at roles.9.companions.description");
   });
 
   test("fail when type-only with exported values", async () => {

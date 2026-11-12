@@ -41,8 +41,10 @@ const config = createRolePreset({
     {
       name: "definers",
       purpose: "The domain's `define…Config` definer.",
-      file: definerFile,
-      fileDescription: "define<Domain>Config.ts",
+      file: {
+        resolve: definerFile,
+        description: "define<Domain>Config.ts",
+      },
       unique: true,
       exports: "named-match",
       effects: "effectful",

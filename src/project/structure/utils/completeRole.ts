@@ -75,9 +75,7 @@ export function completeRole(
 
   return freeze({
     file: definition.file,
-    fileDescription: definition.fileDescription,
     companions: definition.companions,
-    companionsDescription: definition.companionsDescription,
     accepts: definition.accepts,
     roles: definition.roles,
     categories: definition.categories,

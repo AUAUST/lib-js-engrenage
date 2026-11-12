@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import { createProjectLinter } from "#tests/utils/createProjectLinter";
 import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
-const guardsRole = '{ name: "guards", companions: ({ name }) => [`src/assert/assert${name.slice(2)}.ts`, ...extra] }';
+const guardsRole = '{ name: "guards", companions: { resolve: ({ name }) => [`src/assert/assert${name.slice(2)}.ts`, ...extra], description: "src/assert/assert<Name>.ts" } }';
 
 async function createLinter(
   extra: readonly string[] = [],

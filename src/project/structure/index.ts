@@ -89,6 +89,7 @@ export { createMirrorClassifier } from "#project/structure/utils/createMirrorCla
 export { createStructureEntity } from "#project/structure/utils/createStructureEntity";
 export { extendEntityLineage } from "#project/structure/utils/extendEntityLineage";
 export { extendRoleLocation } from "#project/structure/utils/extendRoleLocation";
+export { findFileResolver } from "#project/structure/utils/findFileResolver";
 export { flattenStructure } from "#project/structure/utils/flattenStructure";
 export { getAliasSpecifier } from "#project/structure/utils/getAliasSpecifier";
 export { getEntryFile } from "#project/structure/utils/getEntryFile";

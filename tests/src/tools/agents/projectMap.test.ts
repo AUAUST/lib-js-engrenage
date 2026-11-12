@@ -136,8 +136,9 @@ describe("project map", () => {
         src: { roles: [
           { name: "constants", file: "constants.ts", effects: "pure", public: true },
           { name: "config", roles: [{
-            name: "definers", file: () => "defineFeatureConfig.ts",
-            fileDescription: "define<Domain>Config.ts", effects: "effectful"
+            name: "definers",
+            file: { resolve: () => "defineFeatureConfig.ts", description: "define<Domain>Config.ts" },
+            effects: "effectful"
           }] }
         ] },
         tooling: { dirs: ["."], files: ["engrenage.config.ts"] },
@@ -167,7 +168,7 @@ describe("project map", () => {
         preset: "library",
         agents: { preferred: ["claude"] },
         src: { roles: [
-          { name: "guards", companions: ({ name }) => [\`src/assert/assert\${name}.ts\`], companionsDescription: "src/assert/assert<Name>.ts" },
+          { name: "guards", companions: { resolve: ({ name }) => [\`src/assert/assert\${name}.ts\`], description: "src/assert/assert<Name>.ts" } },
           { name: "models", index: true, public: true, subpath: "root" },
           { name: "notes" },
         ] },

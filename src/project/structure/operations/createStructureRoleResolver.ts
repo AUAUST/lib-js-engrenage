@@ -1,25 +1,21 @@
 import { join } from "node:path";
 
-import { is } from "valibot";
-
 import { wrap } from "@auaust/primitive-kit/arrays";
 import { memoized } from "@auaust/toolkit/memoized";
 import { freeze, record } from "@auaust/toolkit/object";
 
-import {
-  roleFileResolverSchema,
-  type RoleLocation,
-} from "#project/roles/index";
 import { noRoles } from "#project/structure/constants";
 import { listStructureFiles } from "#project/structure/operations/listStructureFiles";
 import { listStructureFilesAtAnyDepth } from "#project/structure/operations/listStructureFilesAtAnyDepth";
 import { constrainsFileRole } from "#project/structure/utils/constrainsFileRole";
+import { findFileResolver } from "#project/structure/utils/findFileResolver";
 import { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 import { getStructureCardinality } from "#project/structure/utils/getStructureCardinality";
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { RoleLocation } from "#project/roles/index";
 import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
@@ -91,11 +87,11 @@ export function createStructureRoleResolver({
     const { roles: contracts } = rolesFor(scopes);
 
     const resolved = (contracts[owner]?.roles ?? []).flatMap((nested) => {
-      const file = contracts[nested]?.file;
+      const resolver = findFileResolver(contracts[nested]?.file);
 
-      return is(roleFileResolverSchema, file)
-        ? [[nested, freeze(wrap(file(location)))] as const]
-        : [];
+      return resolver === undefined
+        ? []
+        : [[nested, freeze(wrap(resolver.resolve(location)))] as const];
     });
 
     return resolved.length === 0 ? {} : { fileNames: freeze(record(resolved)) };

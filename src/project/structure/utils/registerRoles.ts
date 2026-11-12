@@ -1,9 +1,9 @@
-import { isFunction } from "@auaust/toolkit/isFunction";
 import { isString } from "@auaust/toolkit/isString";
 import { freeze } from "@auaust/toolkit/object";
 
 import { roleSchema, type Role } from "#project/roles/index";
 import { completeRole } from "#project/structure/utils/completeRole";
+import { findFileResolver } from "#project/structure/utils/findFileResolver";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
 
 export function registerRoles({
@@ -43,7 +43,7 @@ export function registerRoles({
 
     const registered = owner === undefined ? name : `${owner}/${name}`;
 
-    if (owner === undefined && isFunction(declared.file)) {
+    if (owner === undefined && findFileResolver(declared.file) !== undefined) {
       throw new Error(
         `${path}[${position}] gives the role ${registered} a \`file\` callback, which only a nested file role takes`,
       );

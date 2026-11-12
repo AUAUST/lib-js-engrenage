@@ -64,7 +64,7 @@ function createDerivedDefinerProject() {
 
   const roles = renderCodeRoles(entry(), config()).replace(
     JSON.stringify("<definers>"),
-    "({ lineage }) => `define${lineage.at(-1).name}Config.ts`",
+    '{ resolve: ({ lineage }) => `define${lineage.at(-1).name}Config.ts`, description: "define<Domain>Config.ts" }',
   );
 
   return createTemporaryProject({

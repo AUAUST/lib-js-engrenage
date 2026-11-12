@@ -13,6 +13,7 @@ import {
 import {
   declare,
   describeDefault,
+  describedResolverSchema,
   globsSchema,
   unset,
 } from "#foundation/options/index";
@@ -35,20 +36,15 @@ export function declareRoleContractEntries<Nested>(
       description: "One line stating what the role holds.",
       optional: { value: undefined },
     }),
-    file: declare(union([globsSchema, roleFileResolverSchema]), {
-      description: "Makes the role a file role, matched by these names or globs, or by those a callback returns for each owning location; a nested role's also match files at its owner's root.",
-      optional: { value: undefined },
-    }),
-    fileDescription: declare(string(), {
-      description: "How a `file` callback names the role's files, shown in maps instead of globs.",
-      optional: { value: undefined },
-    }),
-    companions: declare(roleCompanionResolverSchema, {
-      description: "Files each module of the role requires, as project-relative paths a callback returns for the module; lint reports each one missing on the module, so a deleted companion is reported once its module is linted again.",
-      optional: { value: undefined },
-    }),
-    companionsDescription: declare(string(), {
-      description: "How a `companions` callback names each module's companions, shown in maps.",
+    file: declare(
+      union([globsSchema, describedResolverSchema(roleFileResolverSchema)]),
+      {
+        description: "Makes the role a file role, matched by these names or globs, or by those `resolve` returns for each owning location, shown in maps as `description`; a nested role's also match files at its owner's root.",
+        optional: { value: undefined },
+      },
+    ),
+    companions: declare(describedResolverSchema(roleCompanionResolverSchema), {
+      description: "Files each module of the role requires: `resolve` returns them as project-relative paths for the module, and maps show `description`; lint reports each one missing on the module, so a deleted companion is reported once its module is linted again.",
       optional: { value: undefined },
     }),
     accepts: declare(globsSchema, {

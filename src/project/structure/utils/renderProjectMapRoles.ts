@@ -1,12 +1,12 @@
 import { isDeepStrictEqual } from "node:util";
 
-import { isFunction } from "@auaust/toolkit/isFunction";
 import { entries } from "@auaust/toolkit/object";
 
 import {
   defaultEffectLevels,
   effectLevelPurposes,
 } from "#project/structure/constants";
+import { findFileResolver } from "#project/structure/utils/findFileResolver";
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
@@ -97,13 +97,15 @@ export function renderProjectMapRoles(
     "| Role | Purpose | Files | Companions | Exports | Level | Imports | Environments |",
     "| --- | --- | --- | --- | --- | --- | --- | --- |",
     ...rows.map(({ name, contract, environments }) => {
-      const files = isFunction(contract.file)
-        ? code(contract.fileDescription ?? "")
-        : listStaticFileGlobs(contract.file).map(code).join(", ");
+      const resolver = findFileResolver(contract.file);
 
-      const companions = contract.companionsDescription === undefined
+      const files = resolver === undefined
+        ? listStaticFileGlobs(contract.file).map(code).join(", ")
+        : code(resolver.description);
+
+      const companions = contract.companions === undefined
         ? ""
-        : code(contract.companionsDescription);
+        : code(contract.companions.description);
 
       const imports = [
         contract.typeOnly ? "type-only" : undefined,

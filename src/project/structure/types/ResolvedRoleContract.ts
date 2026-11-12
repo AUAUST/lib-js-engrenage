@@ -1,3 +1,4 @@
+import type { DescribedResolver } from "#foundation/options/index";
 import type {
   ReexportMode,
   RoleCompanionResolver,
@@ -10,10 +11,8 @@ import type { Globs } from "#types/Globs";
 
 /** @experimental */
 export interface ResolvedRoleContract {
-  readonly file: Glob | Globs | RoleFileResolver | undefined;
-  readonly fileDescription: string | undefined;
-  readonly companions: RoleCompanionResolver | undefined;
-  readonly companionsDescription: string | undefined;
+  readonly file: Glob | Globs | DescribedResolver<RoleFileResolver> | undefined;
+  readonly companions: DescribedResolver<RoleCompanionResolver> | undefined;
   readonly accepts: Glob | Globs | undefined;
   readonly nesting: number | "any";
   readonly roles: readonly string[] | undefined;
