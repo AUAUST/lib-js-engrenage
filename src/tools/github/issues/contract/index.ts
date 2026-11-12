@@ -26,6 +26,7 @@ export { findContractMeaning } from "#tools/github/issues/contract/utils/findCon
 export { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
 export { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssueCheck";
 export { formatIssueTreeCheck } from "#tools/github/issues/contract/utils/formatIssueTreeCheck";
+export { hasSection } from "#tools/github/issues/contract/utils/hasSection";
 export { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
 export { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 export { parseGithubCommand } from "#tools/github/issues/contract/utils/parseGithubCommand";

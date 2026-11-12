@@ -8,6 +8,7 @@ import {
 import { checkBlockersField } from "#tools/github/issues/contract/utils/checkBlockersField";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
+import { hasSection } from "#tools/github/issues/contract/utils/hasSection";
 import { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
 import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
@@ -64,10 +65,6 @@ function resolveWritten(
   return written.map(({ repository: owner, number }) => {
     return { repository: owner ?? repository, number };
   });
-}
-
-function hasSection(parsed: ParsedIssueBody, name: string) {
-  return parsed.sections.some((section) => section.name === name);
 }
 
 export function checkIssueReadiness(
@@ -192,11 +189,7 @@ export function checkIssueReadiness(
 
   for (const option of issue.blockers) {
     if (
-      (audience === "worker" &&
-        (option !== questionsOption ||
-          (dispatch &&
-            option === questionsOption &&
-            openSections.length === 0))) ||
+      (audience === "worker" && option !== questionsOption) ||
       (audience === "debugger" &&
         debuggerBlockingOptions.some((blocking) => {
           return options[blocking] === option;

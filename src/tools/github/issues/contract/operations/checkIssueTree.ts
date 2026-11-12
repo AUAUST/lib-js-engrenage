@@ -1,7 +1,3 @@
-import {
-  planningSection,
-  questionsSection,
-} from "#tools/github/issues/contract/constants";
 import { fetchIssueTree } from "#tools/github/issues/contract/operations/fetchIssueTree";
 import { findMissingReferences } from "#tools/github/issues/contract/operations/findMissingReferences";
 import { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
@@ -9,6 +5,7 @@ import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBo
 import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
 import { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
+import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import type { IssueCommit } from "#tools/git/index";
 import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
@@ -224,9 +221,7 @@ export async function checkIssueTree(
                 "worker",
               ),
             ],
-        openSections: [planningSection, questionsSection].filter((name) => {
-          return parsed.sections.some((section) => section.name === name);
-        }),
+        openSections: listOpenSections(parsed),
         towards: listCommits(location, ({ towards }) => towards),
         closes: listCommits(location, ({ closes: closed }) => closed),
       };

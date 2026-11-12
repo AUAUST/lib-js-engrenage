@@ -486,6 +486,28 @@ describe("checkIssue", () => {
     expect(rules).toContain("stale-field");
   });
 
+  test("Blockers asking questions without an open section reports one finding at dispatch", async () => {
+    mockGithub({
+      10: plan,
+      11: {
+        body: task,
+        type: "Task",
+        blockers: ["Open questions"],
+        parent: 10,
+      },
+    });
+
+    const rules = (
+      await checkIssue(access, 11, "worker", { dispatch: true })
+    ).findings.map(({ rule }) => rule);
+
+    expect(
+      rules.filter((rule) => {
+        return rule === "stale-field" || rule === "blockers";
+      }),
+    ).toEqual(["stale-field"]);
+  });
+
   test("a header chain naming a non-ancestor is not ready", async () => {
     mockGithub({
       10: plan,
