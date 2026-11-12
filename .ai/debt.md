@@ -128,139 +128,133 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 - why: the index lists its subdomains' exports by hand.
 - done: needs planning: generated re-exports for subdomains.
 
-## 22. Claim and publish write drafts bypassing formatting
-
-- sites: `src/tools/github/issues/drafts/operations/claimIssues.ts:44`
-- why: writes skip `settleChanges`, so Prettier cannot reformat the merge base and the drafts stay on the staged path.
-- want: write drafts through `settleChanges`.
-
-## 23. Published ancestors ignore other repositories
+## 22. Published ancestors ignore other repositories
 
 - sites: `src/tools/github/issues/drafts/operations/resolvePublishedAncestors.ts:186`
 - why: only descendants in the current repository are listed, so a move of issues from another repository goes unreported.
 - want: list descendants across repositories.
 
-## 24. Roadmap links miss repeated-heading anchors
+## 23. Roadmap links miss repeated-heading anchors
 
 - sites: `src/tools/github/issues/drafts/utils/renderRoadmap.ts:3`
 - why: GitHub suffixes a repeated heading's anchor with `-<k>`, which links miss.
 - want: link the suffixed anchor.
 
-## 25. gh body from a file is not measured
+## 24. gh body from a file is not measured
 
 - sites: `src/tools/agents/utils/measureGithubCommand.ts:22`
 - why: a body passed with `--body-file` is not read, so the whole command text stands in for it.
 - want: read the body file.
 
-## 26. Lefthook key still named "local"
+## 25. Lefthook key still named "local"
 
 - sites: `src/tools/lefthook/constants.ts:10`
 - why: the command runs every `everyone` gate step; the key name is stale.
 - done: needs planning: renaming makes sync remove the old key from existing `lefthook.yml` files.
 
-## 27. groupedOverloads joins signatures of different functions
+## 26. groupedOverloads joins signatures of different functions
 
 - sites: `src/tools/prettier/conventions/layout/groupedOverloads.ts:20`
 - why: it groups consecutive signatures of differently named functions, as ESLint's `function-overload` matcher did.
 - want: group only overloads of one function.
 
-## 28. Prettier plugins named by string bypass the layout plugin
+## 27. Prettier plugins named by string bypass the layout plugin
 
 - sites: `src/tools/prettier/operations/createPrettierConfig.ts:44`
 - why: plugins named by a string or URL are loaded by Prettier, so the layout plugin cannot wrap their parsers or printers.
 - done: needs planning: wrap named plugins or change the plugin contract.
 
-## 29. Prettier formats only changed files and every changed file
+## 28. Prettier formats only changed files and every changed file
 
 - sites: `src/tools/prettier/operations/fixWithPrettier.ts:6`, `:7`
 - why: a Prettier config or plugin change leaves unchanged files for CI to reject; changed files outside the declared environments are formatted too.
 - done: needs planning: formatting scope.
 
-## 30. Layout plugin copies Prettier's internal shapes
+## 29. Layout plugin copies Prettier's internal shapes
 
 - sites: `src/tools/prettier/utils/isParenthesized.ts:6`, `src/tools/prettier/utils/keepsOwnBreak.ts:45`, `src/tools/prettier/utils/printAssignment.ts:41`, `:105`, `:154`, `:180`, `src/tools/prettier/utils/printConditional.ts:52`, `:80`, `src/tools/prettier/utils/printLines.ts:5`
 - why: parentheses, assignment layout, conditional indent and JSX mode are found by the shape of Prettier's private printers, which no API exposes; sub-docs are printed to text to measure widths.
 - done: needs planning: keep the copies, use an own printer, or drop the layout plugin.
 
-## 31. Layout plugin approximates comment attachment and range offsets
+## 30. Layout plugin approximates comment attachment and range offsets
 
 - sites: `src/tools/prettier/plugins/createLayoutPlugin.ts:49`, `:190`
 - why: the ignored node is an approximation of Prettier's comment attachment; the whole text is reformatted before `rangeStart`, `rangeEnd` and `cursorOffset` are read, so they point into the unformatted text.
 - want: map offsets through the reformat and use Prettier's attachment.
 
-## 32. Layout parser fails on Flow files
+## 31. Layout parser fails on Flow files
 
 - sites: `src/tools/prettier/plugins/createLayoutPlugin.ts:204`
 - why: the `typescript` parser cannot read Flow syntax the `babel` parser accepts, so such files fail to format.
 - want: choose the parser by the file's syntax.
 
-## 33. Prettier visitor walks metadata keys
+## 32. Prettier visitor walks metadata keys
 
 - sites: `src/tools/prettier/utils/visitNodes.ts:20`
 - why: it walks every enumerable key except known metadata instead of the parser's visitor keys.
 - want: walk the parser's visitor keys.
 
-## 34. Tooling definer entries memoized per process
+## 33. Tooling definer entries memoized per process
 
 - sites: `tooling/eslint/rules/definerEntries.ts:59`
 - why: a long-lived ESLint, such as an editor server, keeps an entry's first reading after the config changes.
 - want: memoize per lint run.
 
-## 35. Mirror directories reach Vitest as substring filters
+## 34. Mirror directories reach Vitest as substring filters
 
 - sites: `src/tools/vitest/operations/runGateTests.ts:71`
 - why: a trailing `/` keeps sibling directories from matching; `owned` mixes these filters with test files as plain strings.
 - want: match exact directories.
 
-## 36. Stamped tree drops budget warnings
+## 35. Stamped tree drops budget warnings
 
 - sites: `src/workflows/gate/operations/runGate.ts:322`
 - why: a stamped tree reports no budget warnings, so the commit after a passing stop never shows them again.
 - done: needs planning: whether a stamp replays its warnings.
 
-## 37. Sync and config code warns through console instead of returning results
+## 36. Sync and config code warns through console instead of returning results
 
 - sites: `src/workflows/sync/operations/runSyncCheck.ts:12`, `src/workflows/sync/setup/syncPackageJson.ts:155`, `src/project/config/operations/readRawConfig.ts:24`, `src/tools/typescript/operations/produceTsconfigTypes.ts:60`, `src/tools/agents/setup/syncAgentFiles.ts:110`, `src/project/baseline/operations/resolveSourceRuntime.ts:23`
 - why: warnings print beside the gate's output instead of being returned in the result.
 - want: return warnings in the result; the gate prints them.
 
-## 38. Barrel blocks and flat entries hide name collisions
+## 37. Barrel blocks and flat entries hide name collisions
 
 - sites: `src/tools/typescript/setup/syncBarrelBlocks.ts:8`, `src/tools/typescript/setup/syncBarrelFiles.ts:11`
 - why: a block cannot read the names a hand-written flat entry spreads, so collisions surface only in TypeScript.
 - done: needs planning: read names from the flat entry or forbid collisions.
 
-## 39. Role of each domain file re-derived from names
+## 38. Role of each domain file re-derived from names
 
 - sites: `src/tools/typescript/operations/listDomainModules.ts:20`
 - why: the structure walker already classifies each file; this re-derives roles from `fileNames`.
 - want: the resolved structure carries each role node's files with their roles.
 
-## 40. Test project builders repeated across lint tests
+## 39. Test project builders repeated across lint tests
 
 - sites: `tests/src/tools/eslint/boundaries.test.ts:141`, `tests/src/tools/eslint/noComplexConciseArrows.test.ts:11`
 - why: the boundary and concise-arrow tests clone the temporary project and ESLint setup of other tests.
 - want: one shared builder in test utilities.
 
-## 41. Agent fragments listed beside the template
+## 40. Agent fragments listed beside the template
 
 - sites: `src/tools/agents/operations/getInstructionTemplates.ts:36`
 - why: fragments are listed beside the AGENTS.md template instead of through `listDataFiles`, which needs a package root URL.
 - done: needs planning: how engrenage's own fragments get a package root.
 
-## 42. Agent rule fillers recomputed in plan
+## 41. Agent rule fillers recomputed in plan
 
 - sites: `src/tools/agents/setup/createAgentRulesStep.ts:21`
 - why: the fillers are recomputed on each `plan()`.
 - want: cache them.
 
-## 43. Readonly list in a schema is not readonly in its JSON Schema
+## 42. Readonly list in a schema is not readonly in its JSON Schema
 
 - sites: `src/project/roles/config/schemas/reexportSchema.ts:5`
 - why: the list lacks `readonly()` because the JSON Schema codegen cannot convert it, so the output is mutable and the types restate it as readonly.
 - done: needs the codegen to convert readonly lists, or a planned workaround.
 
-## 44. Local guard restates toolkit's isArray for readonly lists
+## 43. Local guard restates toolkit's isArray for readonly lists
 
 - sites: `src/project/config/operations/createProjectConfig.ts:42`
 - why: toolkit's `isArray` narrows to `any[]`, which a readonly list is not assignable to.

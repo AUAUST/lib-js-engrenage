@@ -2,8 +2,7 @@
 
 Local issue drafts: claim, check and publish.
 
-## 1. Publishing a draft whose type changed fails on the old type's fields
+## 1. Draft check and published check disagree on an Idea's blockers
 
-- why: seen in the #476 walk (Idea → Problem, `Nature` kept). Cause unlocated: `mergeDraftManifest` keeps a dropped key dropped when base and remote agree, and `updatePublishedIssue` already sets the type before the fields; suspects: the draft or `readIssueManifest` still carrying `Nature`, the manifest check, or `listPublishedFieldValues`.
-- want: a type change publishes, the old type's fields dropped.
-- done: claiming an `idea`, changing it to `problem` and publishing succeeds.
+- why: `planning issue check new-<slug>` passed an Idea with Blockers `Open questions` and an `## Open` section; `check <n>` on the published issue then failed it ("no **Planning** or **Questions** is open"). Seen publishing #502.
+- want: both checks apply the same Blockers rule to a draft and its published issue.

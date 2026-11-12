@@ -56,3 +56,4 @@
 - unused role barrel in toolkit protocol: drop the types shadow as is — contradicts toolkit #186, a module's entry is its only barrel
 - calling a role callback on a placeholder module for its map description: `companions` shown in maps — callbacks compute on real names (`name.slice(2)`), a placeholder yields garbage
 - bare callback or `{ resolve, description }` union for `file` and `companions`: lighter declaration — a bare callback leaves its map cell empty, the gap #485 fixed
+- gate skipping `.ai/issues/` formatting: stop false body conflicts at publish (#500) — editors and hooks still format drafts; normalizing the merge covers every formatter
