@@ -64,3 +64,4 @@
 - engrenage planning issue claim: claiming a toolkit issue (toolkit.206) from engrenage to refresh its snippet — refused, other repositories' issues stay with their sessions; carried the override in #492 instead
 - engrenage planning CLI: pnpm exec engrenage planning issue claim in engrenage itself — binary not linked; pnpm engrenage (package script) works
 - engrenage planning issue publish: published a claimed plan with Prettier-formatted claim base — reported `body` changed both sides on table padding alone; replaced the base body with GitHub's
+- `engrenage sync` barrels: imported new `#foundation/options` exports before syncing its barrel — sync crashed loading the missing export; added the barrel lines by hand, then synced
