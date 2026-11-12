@@ -53,7 +53,7 @@ export default {
       {
         name: prettier,
         stage: "fixes",
-        audience: "agents",
+        audience: "everyone",
         async load() {
           const {
             fixWithPrettier,

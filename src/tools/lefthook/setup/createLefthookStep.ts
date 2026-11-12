@@ -1,10 +1,8 @@
 import { Document } from "yaml";
 
 import { isString } from "@auaust/toolkit/isString";
-import { keys } from "@auaust/toolkit/object";
 
 import { lefthook } from "#constants";
-import { listLocalFilePatterns } from "#tools/agents/index";
 import {
   gateCommandName,
   hookName,
@@ -23,10 +21,8 @@ const prepareLocation: [string, string] = ["scripts", "prepare"];
 async function listCommands(context: StepContext) {
   const variables = listGateVariables(await context.resolve("agents"));
 
-  const local = await listLocalFilePatterns(context);
-
   return {
-    commands: renderGateCommand(variables, local.length > 0),
+    commands: renderGateCommand(variables),
     message: renderMessageGateCommand(variables),
   };
 }
@@ -49,12 +45,7 @@ export function createLefthookStep(): Step {
     name: lefthookFile,
     message: `Run the commit gate with lefthook (${lefthookFile})?`,
     async isMissing(context) {
-      const { commands } = await listCommands(context);
-
-      return (
-        keys(commands).length > 0 &&
-        !(await context.filesystem.exists(lefthookFile))
-      );
+      return !(await context.filesystem.exists(lefthookFile));
     },
     async plan(context) {
       const { commands, message } = await listCommands(context);

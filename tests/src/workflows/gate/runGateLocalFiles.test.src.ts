@@ -104,13 +104,12 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     ).toContain("x");
   });
 
-  test("everyone skips agent steps, partial staging, stamps and warnings", async () => {
+  test("everyone formats and restages the staged files, skipping agent steps, stamps and warnings", async () => {
     const { project, git } = await createGateRepository();
 
     project.write("src/index.ts", 'export const value: number = "text"\n');
 
     git("add", "src/index.ts");
-    project.write("src/index.ts", 'export const value: number = "unstaged"\n');
 
     expect(
       await runGate(await loadConfig(project.root), {
@@ -119,11 +118,37 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       }),
     ).toEqual({ failures: [], warnings: [] });
 
+    expect(git("show", ":src/index.ts")).toBe(
+      'export const value: number = "text";\n',
+    );
+
+    expect(git("diff", "--name-only")).toBe("");
+
     expect(
       await (await loadConfig(project.root)).context.filesystem.exists(".runs"),
     ).toBe(false);
+  });
 
-    expect(project.read("src/index.ts")).toContain('"unstaged"');
+  test("everyone fails a partially staged file before formatting it", async () => {
+    const { project, git } = await createGateRepository();
+
+    project.write("src/index.ts", "export const value: number = 2\n");
+
+    git("add", "src/index.ts");
+    project.write("src/index.ts", "export const value: number = 3\n");
+
+    const { failures } = await runGate(await loadConfig(project.root), {
+      mode: "staged",
+      audience: "everyone",
+    });
+
+    expect(failures).toEqual([
+      { step: "staging", output: expect.stringContaining("src/index.ts") },
+    ]);
+
+    expect(project.read("src/index.ts")).toBe(
+      "export const value: number = 3\n",
+    );
   });
 
   test("fails a partially staged file before any fix", async () => {

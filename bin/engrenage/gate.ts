@@ -23,7 +23,7 @@ export default defineLazyCommand({
       .addOption(
         new Option(
           "--everyone",
-          "run only the checks every commit must pass",
+          "run only the fixes and checks every commit must pass",
         ).conflicts("worktree"),
       )
       .addOption(

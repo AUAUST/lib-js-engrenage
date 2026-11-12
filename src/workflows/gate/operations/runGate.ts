@@ -123,6 +123,7 @@ async function measureEntries(
 
 async function listSteps(
   config: LoadedConfig,
+  audience: GateStep["audience"],
 ): Promise<Record<GateStage, GateStep[]>> {
   const { root, registry } = config.context;
 
@@ -136,6 +137,10 @@ async function listSteps(
   };
 
   for (const { entry } of contributions) {
+    if (audience === "everyone" && entry.audience !== "everyone") {
+      continue;
+    }
+
     steps[entry.stage].push({
       audience: entry.audience,
       name: entry.name,
@@ -145,6 +150,10 @@ async function listSteps(
         return run(config, files);
       },
     });
+  }
+
+  if (audience === "everyone") {
+    return steps;
   }
 
   const { gate } = await config.resolve("agents");
@@ -267,6 +276,7 @@ async function checkLocalFiles(
 async function verify(
   config: LoadedConfig,
   mode: ChangeMode,
+  audience: GateStep["audience"],
 ): Promise<GateReport> {
   const { root } = config.context;
 
@@ -298,20 +308,29 @@ async function verify(
     return { failures: [], warnings: [] };
   }
 
+  const agents = audience === "agents";
+
   const resources = await config.resolve("resources");
 
   const stamp = resolveWithin(resources.path("cache.gate"), stampFile);
 
-  const stamps = await readStamps(stamp);
+  const stamps = agents ? await readStamps(stamp) : [];
 
-  const initial = await readTreeIdentity(config, mode);
+  if (stamps.length > 0) {
+    const initial = await readTreeIdentity(config, mode);
 
-  // @debt a stamped tree reports no budget warnings, so the commit after a passing stop never shows them again.
-  if (stamps.some((line) => isReusable(line, mode, initial))) {
-    return { failures: [], warnings: [] };
+    // @debt a stamped tree reports no budget warnings, so the commit after a passing stop never shows them again.
+    if (stamps.some((line) => isReusable(line, mode, initial))) {
+      return { failures: [], warnings: [] };
+    }
   }
 
-  const { fixes, checks, commands, warnings } = await listSteps(config);
+  const {
+    fixes,
+    checks,
+    commands,
+    warnings,
+  } = await listSteps(config, audience);
 
   const failures = await runSteps(fixes, files);
 
@@ -337,6 +356,10 @@ async function verify(
     failures.push(changed);
   }
 
+  if (!agents) {
+    return { failures, warnings: duplicates };
+  }
+
   if (failures.length === 0) {
     await mkdir(dirname(stamp), { recursive: true });
 
@@ -359,17 +382,6 @@ export async function runGate(
     audience = "agents",
   }: { mode: ChangeMode; audience?: GateStep["audience"] },
 ): Promise<GateReport> {
-  const { root } = config.context;
-
-  if (audience === "everyone") {
-    const files = await listChangedFiles(root, mode);
-
-    return {
-      failures: await checkLocalFiles(config, mode, files),
-      warnings: [],
-    };
-  }
-
   const resources = await config.resolve("resources");
 
   const lock = resolveWithin(resources.path("cache.gate"), lockFile);
@@ -389,7 +401,7 @@ export async function runGate(
           );
         },
       },
-      () => verify(config, mode),
+      () => verify(config, mode, audience),
     );
   } catch (error) {
     if (!(error instanceof LockTimeoutError)) {

@@ -1,15 +1,12 @@
 import {
+  everyoneCommandName,
+  everyoneGateCommand,
   gateCommand,
   gateCommandName,
-  localCommandName,
-  localGateCommand,
 } from "#tools/lefthook/constants";
 import { renderGateCondition } from "#tools/lefthook/utils/renderGateCondition";
 
-export function renderGateCommand(
-  variables: readonly string[],
-  local: boolean,
-) {
+export function renderGateCommand(variables: readonly string[]) {
   const condition = renderGateCondition(variables);
 
   return {
@@ -18,13 +15,9 @@ export function renderGateCommand(
       : {
           [gateCommandName]: { only: [condition], run: gateCommand },
         }),
-    ...(local
-      ? {
-          [localCommandName]: {
-            ...(variables.length === 0 ? {} : { skip: [condition] }),
-            run: localGateCommand,
-          },
-        }
-      : {}),
+    [everyoneCommandName]: {
+      ...(variables.length === 0 ? {} : { skip: [condition] }),
+      run: everyoneGateCommand,
+    },
   };
 }

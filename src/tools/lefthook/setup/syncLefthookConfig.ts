@@ -2,12 +2,11 @@ import { isDeepStrictEqual } from "node:util";
 
 import { isMap, isNode, parseDocument } from "yaml";
 
-import { listLocalFilePatterns } from "#tools/agents/index";
 import {
+  everyoneCommandName,
   gateCommandName,
   hookName,
   lefthookFile,
-  localCommandName,
   messageHookName,
 } from "#tools/lefthook/constants";
 import { listGateVariables } from "#tools/lefthook/utils/listGateVariables";
@@ -26,8 +25,6 @@ export async function syncLefthookConfig(config: LoadedConfig) {
 
   const variables = listGateVariables(await resolve("agents"));
 
-  const local = await listLocalFilePatterns(config);
-
   const document = parseDocument(content);
 
   if (document.errors.length > 0) {
@@ -40,11 +37,11 @@ export async function syncLefthookConfig(config: LoadedConfig) {
     throw new Error(`${lefthookFile} must contain a YAML mapping`);
   }
 
-  const commands = renderGateCommand(variables, local.length > 0);
+  const commands = renderGateCommand(variables);
 
   const targets = [
     [hookName, gateCommandName, commands[gateCommandName]],
-    [hookName, localCommandName, commands[localCommandName]],
+    [hookName, everyoneCommandName, commands[everyoneCommandName]],
     [messageHookName, gateCommandName, renderMessageGateCommand(variables)],
   ] as const;
 

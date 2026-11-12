@@ -21,7 +21,7 @@ describe("syncLefthookConfig", () => {
     'export default { agents: { preferred: ["codex"] } };\n',
     'export default { agents: { preferred: ["claude"], gate: { hook: false } } };\n',
   ])(
-    "keeps only the unconditional local command without agent variables: %s",
+    "keeps only the unconditional everyone command without agent variables: %s",
     async (input) => {
       const project = createProject(
         "pre-commit:\n  commands:\n    engrenage:\n      run: stale\n",
@@ -46,7 +46,7 @@ describe("syncLefthookConfig", () => {
     },
   );
 
-  test("removes a local command when its resolved patterns are empty", async () => {
+  test("keeps the everyone command when local file patterns are empty", async () => {
     const project = createProject(
       "pre-commit:\n  commands:\n    engrenage-local:\n      run: stale\n",
       'export default { agents: { preferred: ["claude"] }, git: { local: { files: [] } } };\n',
@@ -61,9 +61,13 @@ describe("syncLefthookConfig", () => {
     expect(parse(project.read("lefthook.yml"))).toEqual({
       "pre-commit": {
         commands: {
-          engrenage: {
+          "engrenage": {
             only: [{ run: 'test -n "$CLAUDECODE"' }],
             run: "pnpm --silent engrenage gate --staged",
+          },
+          "engrenage-local": {
+            skip: [{ run: 'test -n "$CLAUDECODE"' }],
+            run: "pnpm --silent engrenage gate --staged --everyone",
           },
         },
       },

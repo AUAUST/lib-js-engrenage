@@ -7,9 +7,10 @@ export const gateCommandName = "engrenage";
 
 export const gateCommand = "pnpm --silent engrenage gate --staged";
 
-export const localCommandName = "engrenage-local";
+// @debt the key still says "local" though the command runs every `everyone` gate step; renaming it needs sync to remove the old key from existing `lefthook.yml` files
+export const everyoneCommandName = "engrenage-local";
 
-export const localGateCommand = "pnpm --silent engrenage gate --staged --everyone";
+export const everyoneGateCommand = "pnpm --silent engrenage gate --staged --everyone";
 
 export const hookName = "pre-commit";
 
