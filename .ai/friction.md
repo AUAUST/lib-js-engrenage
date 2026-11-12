@@ -58,3 +58,5 @@
 - engrenage planning CLI: pnpm exec engrenage planning issue claim in engrenage itself — binary not linked; pnpm engrenage (package script) works
 - `engrenage sync` barrels: imported new `#foundation/options` exports before syncing its barrel — sync crashed loading the missing export; added the barrel lines by hand, then synced
 - `git add <paths>`: staged by name a deletion already in the index — "pathspec did not match" aborted the whole add, and the next commit took the staged deletion; staged with `git add -A -- . ':(exclude)…'` or left staged deletions out of the list
+- zsh `grep --include=*.ts`: unquoted glob in a Bash call — zsh "no matches found" aborted it; dropped the flag
+- zsh word splitting: ran `$E create …` with E holding a multi-word command — zsh ran it as one command name; used a function

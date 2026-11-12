@@ -130,7 +130,7 @@ describe("addAgentSkills", () => {
 
     await addAgentSkills(sections, [
       "debugging",
-      "issue-planning",
+      "planning",
       "backlog-handling",
       "debt-harvesting",
       "scratchpad",
@@ -153,7 +153,7 @@ describe("addAgentSkills", () => {
     await addAgentSkills(sections, [
       "issue-implementation",
       "debugging",
-      "issue-planning",
+      "planning",
       "backlog-handling",
       "debt-harvesting",
       "scratchpad",
@@ -200,7 +200,7 @@ describe("addAgentSkills", () => {
       fillers: {},
     };
 
-    await expect(addAgentSkills(sections, ["issue-planning"])).rejects.toThrow(
+    await expect(addAgentSkills(sections, ["planning"])).rejects.toThrow(
       "agents.preferred",
     );
   });

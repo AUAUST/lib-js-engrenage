@@ -12,6 +12,7 @@ const effortSchema = picklist(["low", "medium", "high", "xhigh", "max"]);
 
 export const skillSchema = looseObject({
   invocation: optional(picklist(["explicit", "implicit"]), "implicit"),
+  formerly: optional(array(string())),
   agent: optional(
     strictObject({
       name: string(),

@@ -1,13 +1,13 @@
 ---
-name: issue-walking
+name: walking
 description: Walk a planned tree of GitHub issues in order, dispatching each
   leaf to a worker or debugger, then reviewing and committing it. Use only when
   the user asks to walk an issue tree.
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/issue-walking.md -->
+<!-- @reference @auaust/engrenage/agents/skills/walking.md -->
 
-# Issue walking
+# Walking
 
 Walk an issue tree in the main session: route each issue by the handling table, review each leaf's diff, commit it and report. You own sequencing, routing, review and commits; you design and implement nothing.
 

@@ -3,22 +3,26 @@ import { readFile } from "node:fs/promises";
 import { map } from "@auaust/primitive-kit/arrays";
 
 import { syncBlocks, syncFiles } from "#foundation/blocks/index";
-import { codexFile } from "#tools/agents/codex/constants";
+import { claudeSkillsDir } from "#tools/agents/claude/constants";
+import { codexFile, codexSkillsDir } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/index";
 import { attributionRules, markdownBlocks } from "#tools/agents/constants";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
+import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
+import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
 import { renderFragment } from "#tools/agents/utils/renderFragment";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension, LoadedConfig } from "#project/config/index";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { BlockFillers } from "#types/BlockFillers";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { FileSync } from "#types/FileSync";
 
@@ -59,6 +63,83 @@ async function syncAttributionRules(config: {
   }
 }
 
+async function moveDirectory(
+  filesystem: Filesystem,
+  from: Directory,
+  to: Directory,
+) {
+  if (
+    !(await filesystem.isDirectory(from)) ||
+    (await filesystem.isDirectory(to))
+  ) {
+    return;
+  }
+
+  for (const file of await filesystem.list(from)) {
+    const content = await filesystem.read(file);
+
+    if (!(content !== undefined)) {
+      continue;
+    }
+
+    await filesystem.write(`${to}${file.slice(from.length)}`, content);
+
+    await filesystem.remove(file);
+  }
+}
+
+async function migrateFormerSkills(config: {
+  filesystem: Filesystem;
+  agents: ResolvedAgents;
+  extensions: readonly Extension[];
+  fillers: BlockFillers;
+}) {
+  const renames: { from: string; to: string }[] = [];
+
+  for (const definition of await getSkillDefinitions(config)) {
+    const { name, reference, formerly = [] } = definition;
+
+    for (const former of formerly) {
+      for (const directory of [claudeSkillsDir, codexSkillsDir]) {
+        await moveDirectory(
+          config.filesystem,
+          `${directory}/${former}`,
+          `${directory}/${name}`,
+        );
+      }
+    }
+
+    for (const former of listFormerReferences(definition)) {
+      renames.push({
+        from: `<!-- @reference ${former} -->`,
+        to: `<!-- @reference ${reference} -->`,
+      });
+    }
+  }
+
+  if (renames.length === 0) {
+    return;
+  }
+
+  for (const file of await config.filesystem.glob(
+    config.agents.instructionFiles,
+  )) {
+    const content = await config.filesystem.read(file);
+
+    if (content === undefined) {
+      continue;
+    }
+
+    const rewritten = renames.reduce((current, { from, to }) => {
+      return current.split(from).join(to);
+    }, content);
+
+    if (rewritten !== content) {
+      await config.filesystem.write(file, rewritten);
+    }
+  }
+}
+
 async function listActiveExtensions(
   config: LoadedConfig,
 ): Promise<readonly Extension[]> {
@@ -87,6 +168,8 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   if ((config.agents.preferred?.length ?? 0) === 0) {
     return;
   }
+
+  await migrateFormerSkills(config);
 
   await syncAttributionRules(config);
 

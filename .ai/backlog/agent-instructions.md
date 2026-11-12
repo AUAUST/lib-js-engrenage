@@ -15,7 +15,7 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 3. The issue-drafts protocol is copied in three skills
 
-- why: since AUAUST/lib-js-engrenage#461, the Drafts sections of `debugging.md`, `issue-planning.md` and `analysis.md` share their file, manifest and reference tables and their rules word for word; only the opening sentence differs, and every change must be made three times.
+- why: since AUAUST/lib-js-engrenage#461, the Drafts sections of `debugging.md`, `planning.md` and `analysis.md` share their file, manifest and reference tables and their rules word for word; only the opening sentence differs, and every change must be made three times.
 - want: one source each skill opts into, per #277 (skill traits).
 
 ## 4. The worker and debugger skills repeat their gated finishing lines word for word

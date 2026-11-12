@@ -120,7 +120,7 @@ describe("syncAgentFiles", () => {
   });
 
   test("repairs stale planning policy and toggles the owned YAML key while preserving metadata and comments", async () => {
-    const planning = "@auaust/engrenage/agents/skills/issue-planning.md";
+    const planning = "@auaust/engrenage/agents/skills/planning.md";
     const debugging = "@auaust/engrenage/agents/skills/debugging.md";
 
     const metadata = "# Keep metadata\ninterface:\n  display_name: My skill\npolicy:\n  # Keep policy comment\n  allow_implicit_invocation: false # Keep inline comment\ndependencies:\n  tools: []\n";
@@ -128,8 +128,8 @@ describe("syncAgentFiles", () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
-      ".agents/skills/issue-planning/SKILL.md": `<!-- @reference ${planning} -->\n<!-- @end -->\n`,
-      ".agents/skills/issue-planning/agents/openai.yaml": metadata,
+      ".agents/skills/planning/SKILL.md": `<!-- @reference ${planning} -->\n<!-- @end -->\n`,
+      ".agents/skills/planning/agents/openai.yaml": metadata,
       ".agents/skills/debugging/SKILL.md": `<!-- @reference ${debugging} -->\n<!-- @end -->\n`,
       ".agents/skills/debugging/agents/openai.yaml": metadata.replace(
         "false",
@@ -146,7 +146,7 @@ describe("syncAgentFiles", () => {
     await syncAgentFiles(config);
 
     expect(
-      await filesystem.read(".agents/skills/issue-planning/agents/openai.yaml"),
+      await filesystem.read(".agents/skills/planning/agents/openai.yaml"),
     ).toBe(metadata.replace("false", "true"));
 
     expect(
@@ -158,7 +158,7 @@ describe("syncAgentFiles", () => {
     ).toBe("keep: untouched\n");
 
     await filesystem.write(
-      ".agents/skills/issue-planning/agents/openai.yaml",
+      ".agents/skills/planning/agents/openai.yaml",
       metadata,
     );
 
@@ -170,7 +170,7 @@ describe("syncAgentFiles", () => {
     await syncAgentFiles(config);
 
     expect(
-      await filesystem.read(".agents/skills/issue-planning/agents/openai.yaml"),
+      await filesystem.read(".agents/skills/planning/agents/openai.yaml"),
     ).toBe(metadata.replace("false", "true"));
 
     expect(
@@ -287,5 +287,62 @@ describe("fragment fillers", () => {
     await expect(
       syncAgentFiles(await loadConfig(project.root)),
     ).rejects.toThrow('Unknown directive in "<!-- @unknown-table -->"');
+  });
+
+  test("moves a former skill directory and rewrites references to its former fragment", async () => {
+    const former = "@auaust/engrenage/agents/skills/issue-planning.md";
+    const current = "@auaust/engrenage/agents/skills/planning.md";
+
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module"}',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
+      ".claude/skills/issue-planning/SKILL.md": `<!-- @reference ${former} -->\n<!-- @end -->\n`,
+      ".claude/agents/planner.md": `<!-- @reference ${former} -->\n<!-- @end -->\n`,
+    });
+
+    const config = await loadConfig(project.root);
+
+    const { filesystem } = config.context;
+
+    await syncAgentFiles(config);
+
+    expect(
+      await filesystem.exists(".claude/skills/issue-planning/SKILL.md"),
+    ).toBe(false);
+
+    expect(await filesystem.read(".claude/skills/planning/SKILL.md")).toContain(
+      `<!-- @reference ${current} -->`,
+    );
+
+    expect(await filesystem.read(".claude/agents/planner.md")).toContain(
+      `<!-- @reference ${current} -->`,
+    );
+  });
+
+  test("leaves a former skill directory when the new one exists", async () => {
+    const former = "@auaust/engrenage/agents/skills/issue-planning.md";
+    const current = "@auaust/engrenage/agents/skills/planning.md";
+
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module"}',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
+      ".claude/skills/issue-planning/SKILL.md": `<!-- @reference ${former} -->\n<!-- @end -->\n`,
+      ".claude/skills/issue-planning/notes.md": "keep\n",
+      ".claude/skills/planning/SKILL.md": `<!-- @reference ${current} -->\n<!-- @end -->\n`,
+    });
+
+    const config = await loadConfig(project.root);
+
+    const { filesystem } = config.context;
+
+    await syncAgentFiles(config);
+
+    expect(
+      await filesystem.read(".claude/skills/issue-planning/notes.md"),
+    ).toBe("keep\n");
+
+    expect(
+      await filesystem.read(".claude/skills/issue-planning/SKILL.md"),
+    ).toContain(`<!-- @reference ${current} -->`);
   });
 });

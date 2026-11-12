@@ -1,18 +1,15 @@
 ---
-title: Issue planning
-description: Plan work as a tree of GitHub issues (a plan, ordered items, and segments grouping independent ones) without implementing it. Use proactively in the main session, or as the walker's consultant, when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues, so its questions reach the user directly.
-category: workflow
-order: 10
-agent:
-  name: planner
-  description: Planner in consultant mode, for the walker's use only. The walker starts it on first need during a walk and resumes it to settle what the code and the plan settle and to update issues after a deviation.
-  model: opus
-  effort: high
-  disallowedTools:
-    - SendMessage
+name: planning
+description: Plan work as a tree of GitHub issues (a plan, ordered items, and
+  segments grouping independent ones) without implementing it. Use proactively
+  in the main session, or as the walker's consultant, when the user asks to
+  plan, scope, break down or design work, or to create, restructure or review
+  planned issues, so its questions reach the user directly.
 ---
 
-# Issue planning
+<!-- @reference @auaust/engrenage/agents/skills/planning.md -->
+
+# Planning
 
 Turn a goal into a tree of GitHub issues that workers walk in order and implement without further design. Design happens here, in issues; implementation follows the tree.
 
@@ -161,7 +158,7 @@ Order expresses urgency, not importance: a task comes first because later work s
 
 ## How workers read issues
 
-Workers implement one issue at a time under the issue-implementation skill, and the walker routes each issue by the issue-walking skill's handling table. Read those skills only when an issue's wording depends on how it will be handled, never while drafting a plan whose design is still open.
+Workers implement one issue at a time under the issue-implementation skill, and the walker routes each issue by the walking skill's handling table. Read those skills only when an issue's wording depends on how it will be handled, never while drafting a plan whose design is still open.
 
 ## Procedure
 
@@ -291,3 +288,5 @@ While an issue's design is open, write what is settled and put the rest under **
 | `complexity` `complex`  | The work is broad or delicate                                                             | Higher dispatch effort         |
 | `complexity` `involved` | The work needs analysis but stays contained                                               | Higher worker dispatch effort  |
 | `complexity` `trivial`  | The work is small and mechanical                                                          | Lower debugger dispatch effort |
+
+<!-- @end -->

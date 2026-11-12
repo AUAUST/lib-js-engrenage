@@ -57,7 +57,7 @@ test.each([
       [
         "issue-implementation",
         "debugging",
-        "issue-planning",
+        "planning",
         "debt-harvesting",
         "scratchpad",
         "backlog-handling",

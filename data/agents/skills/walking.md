@@ -1,14 +1,14 @@
 ---
-name: issue-walking
-description: Walk a planned tree of GitHub issues in order, dispatching each
-  leaf to a worker or debugger, then reviewing and committing it. Use only when
-  the user asks to walk an issue tree.
-disable-model-invocation: true
+title: Walking
+description: Walk a planned tree of GitHub issues in order, dispatching each leaf to a worker or debugger, then reviewing and committing it. Use only when the user asks to walk an issue tree.
+category: workflow
+order: 25
+invocation: explicit
+formerly:
+  - issue-walking
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/issue-walking.md -->
-
-# Issue walking
+# Walking
 
 Walk an issue tree in the main session: route each issue by the handling table, review each leaf's diff, commit it and report. You own sequencing, routing, review and commits; you design and implement nothing.
 
@@ -79,5 +79,3 @@ End at the end of the tree or at a stop, with the table of walked leaves, then w
 ## GitHub mechanics
 
 - Remove `drafting` by clearing `blockers` with `gh api -X DELETE repos/{owner}/{repo}/issues/<n>/issue-field-values/<id>`, then posting its other values, if any, with `gh api -X POST repos/{owner}/{repo}/issues/<n>/issue-field-values --input -` and `{"issue_field_values":[{"field_id":<id>,"value":["<option>"]}]}` on standard input; the field id comes from `gh api orgs/{org}/issue-fields`.
-
-<!-- @end -->

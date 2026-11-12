@@ -1,5 +1,5 @@
 ---
-name: issue-planning
+name: planning
 description: Plan work as a tree of GitHub issues (a plan, ordered items, and
   segments grouping independent ones) without implementing it. Use proactively
   in the main session, or as the walker's consultant, when the user asks to
@@ -7,9 +7,9 @@ description: Plan work as a tree of GitHub issues (a plan, ordered items, and
   planned issues, so its questions reach the user directly.
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/issue-planning.md -->
+<!-- @reference @auaust/engrenage/agents/skills/planning.md -->
 
-# Issue planning
+# Planning
 
 Turn a goal into a tree of GitHub issues that workers walk in order and implement without further design. Design happens here, in issues; implementation follows the tree.
 
@@ -158,7 +158,7 @@ Order expresses urgency, not importance: a task comes first because later work s
 
 ## How workers read issues
 
-Workers implement one issue at a time under the issue-implementation skill, and the walker routes each issue by the issue-walking skill's handling table. Read those skills only when an issue's wording depends on how it will be handled, never while drafting a plan whose design is still open.
+Workers implement one issue at a time under the issue-implementation skill, and the walker routes each issue by the walking skill's handling table. Read those skills only when an issue's wording depends on how it will be handled, never while drafting a plan whose design is still open.
 
 ## Procedure
 
