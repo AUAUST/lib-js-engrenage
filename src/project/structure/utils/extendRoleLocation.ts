@@ -28,6 +28,9 @@ export function extendRoleLocation(
   }
 
   return kind === "role" && role !== undefined
-    ? freeze({ ...location, roles: freeze([...location.roles, role]) })
+    ? freeze({
+        ...location,
+        roles: freeze([...location.roles, role]),
+      })
     : location;
 }

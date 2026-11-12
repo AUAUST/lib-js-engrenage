@@ -51,3 +51,4 @@
 - Prettier on staged blobs: format partially staged files in the gate (#472) — refusing them matches the agent gate; checking the index content needs a stdin pipeline per file
 - `github-label-sync`: label sync with rename aliases (#320) — #320 derives labels from the structure and Octokit is already bundled; reuse its alias model
 - structure tree row builders: separate node-to-row builder per output over a shared drawing helper — labels would stay in two places
+- namespace role shadow: `subpath` at the environment root only (#483) — re-declares every option of the global role and drifts once it changes

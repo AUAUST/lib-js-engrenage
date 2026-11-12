@@ -52,3 +52,5 @@
 - zsh word splitting: passed an unquoted `$files` list to eslint — zsh passed one word; fed the list through `xargs`
 - `engrenage planning issue publish`: read its tail for the issue number — the tail is the body diff, so it looked unpublished; rerun failed on the removed draft, found #473 with `gh issue list`
 - zsh `grep --include=*.md`: unquoted glob in a Bash call — zsh "no matches found" aborts the command; quoted the pattern
+- engrenage planning issue publish: wrote bare `#186` in a `toolkit.new-…` draft meaning a toolkit issue — publish resolved it against engrenage; `claim` refuses another repository's issues, so reclaimed and republished from toolkit's checkout
+- `engrenage planning issue publish`: published drafts whose `type` changed (Idea → Task, Problem) — merged manifest kept the old type's field and failed; set the type through GraphQL `updateIssue` and dropped the field from the fetched `<ref>.md`
