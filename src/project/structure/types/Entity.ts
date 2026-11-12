@@ -16,6 +16,7 @@ export interface Entity {
   readonly location: RoleLocation;
   readonly domain: string | undefined;
   readonly surface: readonly string[];
+  readonly collects: readonly string[];
   readonly role: string | undefined;
   readonly fileRole: string | undefined;
   readonly contract: ResolvedRoleContract | undefined;

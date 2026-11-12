@@ -1,7 +1,14 @@
 import { ESLint } from "eslint";
 import { describe, expect, test } from "vitest";
 
-import { enums, schemas, types, utils, type Role } from "#project/roles/index";
+import {
+  createRolePreset,
+  enums,
+  schemas,
+  types,
+  utils,
+  type Role,
+} from "#project/roles/index";
 import { collectChanges, runSync } from "#project/sync/index";
 import { createBarrelProject } from "#tests/utils/createBarrelProject";
 import { createEslintConfig } from "#tools/eslint/index";
@@ -14,12 +21,14 @@ function createKit({
   guard = { reexport: "flat" },
   object = {},
   roles = [],
+  namespaces = {},
   extensions = [],
 }: {
   files: Record<string, string>;
   guard?: Record<string, unknown>;
   object?: Record<string, unknown>;
   roles?: readonly Role[];
+  namespaces?: Record<string, Record<string, unknown>>;
   extensions?: readonly unknown[];
 }) {
   return createBarrelProject({
@@ -30,6 +39,7 @@ function createKit({
       guard,
       object,
     },
+    namespaces,
     extensions,
   });
 }
@@ -219,6 +229,48 @@ export type * from "#modules/guard/utils/isNull";
     expect(project.read("src/modules/a/entry.ts")).toBe(
       `${header}export { isA } from "#modules/a/utils/isA";
 export type * from "#modules/a/utils/isA";
+`,
+    );
+  });
+
+  test("lists in an entry declaring `collects` a collected role enabled only by another namespace", async () => {
+    const { project, sync } = createKit({
+      files: {
+        "src/x/a/guards/isA.ts": "export function isA() {}\n",
+        "src/x/b/guards/isB.ts": "export function isB() {}\n",
+        "src/modules/guard/utils/isNull.ts": "export function isNull() {}\n",
+      },
+      guard: {
+        collects: ["guards"],
+      },
+      roles: [
+        createRolePreset({
+          name: "guards",
+          public: true,
+          collected: true,
+          scoped: true,
+        })(),
+      ],
+      namespaces: {
+        x: {
+          children: "domains",
+          roles: {
+            enable: ["guards"],
+          },
+          domains: {
+            "*": { public: true },
+          },
+        },
+      },
+    });
+
+    await sync();
+
+    expect(project.read("src/modules/guard/entry.ts")).toBe(
+      `${header}export { isNull } from "#modules/guard/utils/isNull";
+export * from "#x/a/guards/isA";
+export * from "#x/b/guards/isB";
+export type * from "#modules/guard/utils/isNull";
 `,
     );
   });

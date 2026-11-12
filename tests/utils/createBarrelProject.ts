@@ -10,11 +10,13 @@ export function createBarrelProject({
   files,
   roles,
   domains,
+  namespaces = {},
   extensions = [],
 }: {
   files: Record<string, string>;
   roles: readonly Role[];
   domains: Record<string, Record<string, unknown>>;
+  namespaces?: Record<string, Record<string, unknown>>;
   extensions?: readonly unknown[];
 }) {
   const project = createTemporaryProject({
@@ -41,6 +43,7 @@ export function createBarrelProject({
               children: "domains",
               domains,
             },
+            ...namespaces,
           },
         },
       },

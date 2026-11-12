@@ -190,6 +190,16 @@ export function checkBoundary(
         return isOnSurface(target) ? undefined : privateTo(domain);
       }
 
+      // @debt the lineage condition never decides: lineages from different environment directories already returned earlier
+      if (
+        target.role !== undefined &&
+        importer.collects.includes(target.role) &&
+        target.public &&
+        targetLineage[0] === importerLineage[0]
+      ) {
+        return;
+      }
+
       return violation("entrySurface");
     }
 

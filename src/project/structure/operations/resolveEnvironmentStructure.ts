@@ -1,7 +1,7 @@
 import { basename } from "node:path";
 
 import { flat } from "@auaust/primitive-kit/arrays";
-import { freeze } from "@auaust/toolkit/object";
+import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { createStructureDomainResolver } from "#project/structure/operations/createStructureDomainResolver";
 import { createStructureRoleResolver } from "#project/structure/operations/createStructureRoleResolver";
@@ -144,6 +144,19 @@ export async function resolveEnvironmentStructure({
     }),
     rolesIn,
   );
+
+  for (const { path, collects } of collectStructureNodes(resolvedRoot)) {
+    // @debt the error names the domain path, not the `.domain.json` or config declaring `collects`, since resolved domain options drop their source file
+    for (const role of collects ?? []) {
+      const contract = getOwn(structureRoles, role)?.contract;
+
+      if (contract === undefined || !contract.public || !contract.collected) {
+        throw new Error(
+          `${path} collects the role ${role}, which is not a public collected role of its environment`,
+        );
+      }
+    }
+  }
 
   const rootNode = strictness === "loose"
     ? loosenStructureNode(resolvedRoot, name === "tests" ? "mirror" : "domain")

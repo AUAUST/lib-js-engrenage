@@ -1,6 +1,6 @@
 import { extname, join, matchesGlob } from "node:path";
 
-import { entries, freeze, getOwn, keys, values } from "@auaust/toolkit/object";
+import { entries, freeze, keys, values } from "@auaust/toolkit/object";
 
 import {
   defaultReexport,
@@ -129,17 +129,6 @@ export function createStructureDomainResolver({
   ) {
     const roles = rolesFor(scopes);
     const { roles: contracts } = roles;
-
-    // @debt the error names the domain path, not the `.domain.json` or config declaring `collects`, since resolved domain options drop their source file; roles are checked in the domain's own scope, not every scope of the environment
-    for (const role of metadata.collects ?? []) {
-      const contract = getOwn(contracts, role);
-
-      if (contract === undefined || !contract.public || !contract.collected) {
-        throw new Error(
-          `${path} collects the role ${role}, which is not a public collected role of its environment`,
-        );
-      }
-    }
 
     const fileGlobs = values(contracts).flatMap(({ file }) => {
       return listStaticFileGlobs(file);

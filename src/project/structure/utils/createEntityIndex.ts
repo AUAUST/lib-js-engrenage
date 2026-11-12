@@ -181,6 +181,9 @@ export function createEntityIndex({
       surface: node.kind === "domain"
         ? surfaceOf(node, environment)
         : parent.surface,
+      collects: node.kind === "domain"
+        ? freeze([...(node.collects ?? [])])
+        : parent.collects,
       role,
       contract,
       effects: role === undefined ? undefined : node.effects,

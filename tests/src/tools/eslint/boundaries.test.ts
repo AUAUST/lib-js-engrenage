@@ -138,6 +138,33 @@ function createCollectedProject() {
   });
 }
 
+// @debt clones `createCollectedProject`'s project setup (jscpd); the boundary fixtures want a shared builder taking roles and files
+function createCollectingEntryProject() {
+  const guards = createRolePreset({
+    name: "guards",
+    public: true,
+    collected: true,
+  });
+
+  const shared = createRolePreset({ name: "shared", public: true });
+
+  return createTemporaryProject({
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+      imports: { "#modules/*": "./src/modules/*.ts" },
+    }),
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry(), guards(), shared())}, structure: { namespaces: { modules: { children: "domains", domains: { guard: { collects: ["guards"] } } } } } } };\n`,
+    "tsconfig.json": "{}",
+    "src/modules/a/index.ts": exported,
+    "src/modules/a/guards/isA.ts": exported,
+    "src/modules/a/shared/value.ts": exported,
+    "src/modules/b/index.ts": exported,
+    "src/modules/b/guards/isB.ts": exported,
+    "src/modules/guard/entry.ts": exported,
+  });
+}
+
 function createConsumerProject() {
   const operations = createRolePreset({ name: "operations" });
 
@@ -237,6 +264,27 @@ describe("structure boundaries", () => {
         'export { value } from "#project/other/inner/shared/value";\n',
       ),
     ).toEqual(["auaust/import-surfaces"]);
+  });
+
+  test("lets an entry re-export the roles its domain collects from every domain, and only those", async () => {
+    const lint = await createLinter(
+      "auaust/import-",
+      createCollectingEntryProject(),
+    );
+
+    expect(
+      await lint(
+        "src/modules/guard/entry.ts",
+        'export * from "#modules/a/guards/isA";\nexport * from "#modules/b/guards/isB";\n',
+      ),
+    ).toEqual([]);
+
+    const [message] = await lint.messages(
+      "src/modules/guard/entry.ts",
+      'export * from "#modules/a/shared/value";\n',
+    );
+
+    expect(message).toContain("is a package entry");
   });
 
   test("names the index.ts of the target domain in a surfaces message", async () => {
