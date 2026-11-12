@@ -40,11 +40,12 @@ function findMeaning(protocol: IssueProtocol, type: string) {
 
   const meanings = keys(typeMeanings);
 
-  const meaning =
+  const meaning = (
     meanings.find((candidate) => candidate.toLowerCase() === input) ??
     meanings.find((candidate) => {
       return protocol.types[candidate].toLowerCase() === input;
-    });
+    })
+  );
 
   if (meaning === undefined) {
     throw new Error(

@@ -185,7 +185,11 @@ blockedBy: []
   test("resolves a type by its meaning or its GitHub name, in any case", async () => {
     const config = await createProject({
       "engrenage.config.ts": `export default ${JSON.stringify({
-        github: { protocol: { types: { idea: "Suggestion" } } },
+        github: {
+          protocol: {
+            types: { idea: "Suggestion" },
+          },
+        },
       })};`,
       ".engrenage/github.json": JSON.stringify({
         ...snapshot,
