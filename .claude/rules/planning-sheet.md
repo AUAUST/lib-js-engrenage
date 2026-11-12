@@ -18,12 +18,29 @@ Labels are each repository's own: pick them by their description.
 
 ### `engrenage`
 
-| Label         | Description                                          |
-| ------------- | ---------------------------------------------------- |
-| Documentation | Improvements or additions to the documentation.      |
-| Metalbrain    | Related to agent instructions, skills and behaviour. |
-| Tests         | Related to test suites.                              |
-| Tooling       | Tooling, scripts, bin and related.                   |
+| Label         | Description                                                                         |
+| ------------- | ----------------------------------------------------------------------------------- |
+| Agents        | Agent runtimes: Claude and Codex settings, hooks, gates, dispatch, models, efforts. |
+| CLI           | Commands, actions and process handling.                                             |
+| Configuration | Config loading, options, sections and definers.                                     |
+| Dependencies  | pnpm, dependency policies, peer and bundled dependencies.                           |
+| Documentation | Public documentation: README, JSDoc and contract docs.                              |
+| Editor        | Editor settings, integrations and JSON Schemas.                                     |
+| Extensions    | The extension registry and the surfaces extensions contribute.                      |
+| Formatting    | Formatting conventions and their enforcement: Prettier, editor and synced files.    |
+| Gate          | The commit and agent gates.                                                         |
+| Git           | Commit conventions, Git hooks and repository files.                                 |
+| Init          | Project initialization steps.                                                       |
+| Linting       | Lint rules and conventions, other than structure boundaries.                        |
+| Metalbrain    | Instruction content: AGENTS.md sections, rule files and skills.                     |
+| Packaging     | Build outputs, entries and exports, the emitted manifest and bundling.              |
+| Planning      | The issue protocol, drafts, planning commands and the GitHub snapshot.              |
+| Presets       | Project and platform presets.                                                       |
+| Release       | Changesets, versions, changelogs and publishing workflows.                          |
+| Structure     | Namespaces, domains, roles, aliases, barrels, project maps and import boundaries.   |
+| Sync          | Sync targets, synced and generated files.                                           |
+| Tests         | The test runner, test selection and the test suites.                                |
+| TypeScript    | tsconfig composition, type checking and declarations.                               |
 
 ### `primitive-kit`
 

@@ -6,28 +6,130 @@
       "nodeId": "R_kgDOVVz2VA",
       "labels": [
         {
+          "id": 13054394305,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho_wQ",
+          "name": "Agents",
+          "description": "Agent runtimes: Claude and Codex settings, hooks, gates, dispatch, models, efforts."
+        },
+        {
+          "id": 13054393869,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho-DQ",
+          "name": "CLI",
+          "description": "Commands, actions and process handling."
+        },
+        {
+          "id": 13054392507,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho4uw",
+          "name": "Configuration",
+          "description": "Config loading, options, sections and definers."
+        },
+        {
+          "id": 13054393336,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho7-A",
+          "name": "Dependencies",
+          "description": "pnpm, dependency policies, peer and bundled dependencies."
+        },
+        {
           "id": 12818979854,
           "nodeId": "LA_kwDOVVz2VM8AAAAC_BIcDg",
           "name": "Documentation",
-          "description": "Improvements or additions to the documentation."
+          "description": "Public documentation: README, JSDoc and contract docs."
+        },
+        {
+          "id": 13054393992,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho-iA",
+          "name": "Editor",
+          "description": "Editor settings, integrations and JSON Schemas."
+        },
+        {
+          "id": 13054392615,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho5Jw",
+          "name": "Extensions",
+          "description": "The extension registry and the surfaces extensions contribute."
+        },
+        {
+          "id": 13054392208,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho3kA",
+          "name": "Formatting",
+          "description": "Formatting conventions and their enforcement: Prettier, editor and synced files."
+        },
+        {
+          "id": 13054393545,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho8yQ",
+          "name": "Gate",
+          "description": "The commit and agent gates."
+        },
+        {
+          "id": 13054393445,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho8ZQ",
+          "name": "Git",
+          "description": "Commit conventions, Git hooks and repository files."
+        },
+        {
+          "id": 13054393741,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho9jQ",
+          "name": "Init",
+          "description": "Project initialization steps."
+        },
+        {
+          "id": 13054392298,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho36g",
+          "name": "Linting",
+          "description": "Lint rules and conventions, other than structure boundaries."
         },
         {
           "id": 13017319571,
           "nodeId": "LA_kwDOVVz2VM8AAAADB-SIkw",
           "name": "Metalbrain",
-          "description": "Related to agent instructions, skills and behaviour."
+          "description": "Instruction content: AGENTS.md sections, rule files and skills."
+        },
+        {
+          "id": 13054393059,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho64w",
+          "name": "Packaging",
+          "description": "Build outputs, entries and exports, the emitted manifest and bundling."
+        },
+        {
+          "id": 13054394237,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho_fQ",
+          "name": "Planning",
+          "description": "The issue protocol, drafts, planning commands and the GitHub snapshot."
+        },
+        {
+          "id": 13054394128,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho_EA",
+          "name": "Presets",
+          "description": "Project and platform presets."
+        },
+        {
+          "id": 13054393189,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho7ZQ",
+          "name": "Release",
+          "description": "Changesets, versions, changelogs and publishing workflows."
+        },
+        {
+          "id": 13054392410,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho4Wg",
+          "name": "Structure",
+          "description": "Namespaces, domains, roles, aliases, barrels, project maps and import boundaries."
+        },
+        {
+          "id": 13054393630,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho9Hg",
+          "name": "Sync",
+          "description": "Sync targets, synced and generated files."
         },
         {
           "id": 12818979867,
           "nodeId": "LA_kwDOVVz2VM8AAAAC_BIcGw",
           "name": "Tests",
-          "description": "Related to test suites."
+          "description": "The test runner, test selection and the test suites."
         },
         {
-          "id": 12971003217,
-          "nodeId": "LA_kwDOVVz2VM8AAAADBSHNUQ",
-          "name": "Tooling",
-          "description": "Tooling, scripts, bin and related."
+          "id": 13054392726,
+          "nodeId": "LA_kwDOVVz2VM8AAAADCho5lg",
+          "name": "TypeScript",
+          "description": "tsconfig composition, type checking and declarations."
         }
       ]
     },
