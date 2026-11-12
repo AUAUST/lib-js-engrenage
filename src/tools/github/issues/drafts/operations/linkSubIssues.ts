@@ -34,7 +34,11 @@ export async function linkSubIssues(
 
     await client.request(
       "POST /repos/{owner}/{repo}/issues/{issue_number}/sub_issues",
-      { ...route, sub_issue_id: id },
+      {
+        ...route,
+        sub_issue_id: id,
+        replace_parent: true,
+      },
     );
   }
 

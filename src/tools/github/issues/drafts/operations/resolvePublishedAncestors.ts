@@ -1,9 +1,15 @@
 import { splitRepository } from "#tools/github/issues/api/index";
-import { findAncestors } from "#tools/github/issues/contract/index";
+import {
+  fetchIssueParent,
+  findAncestors,
+  renderReference,
+  type IssueLocation,
+} from "#tools/github/issues/contract/index";
 import { headerPlaceholder } from "#tools/github/issues/drafts/constants";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
 import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
+import { resolveIssueLocation } from "#tools/github/issues/drafts/utils/resolveIssueLocation";
 import { resolveIssueStem } from "#tools/github/issues/drafts/utils/resolveIssueStem";
 import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
 import { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
@@ -43,6 +49,55 @@ async function listDescendants(
       return !publication.drafts.some(({ stem }) => stem === String(number));
     })
     .toSorted((left, right) => left - right);
+}
+
+async function findCurrentParent(
+  publication: Publication,
+  reference: string,
+): Promise<IssueLocation | undefined> {
+  const { drafts, context, access, numbers } = publication;
+
+  const child = drafts.find(({ stem }) => {
+    return toDraftReference(stem) === reference;
+  });
+
+  if (child !== undefined) {
+    return child.remote?.parent;
+  }
+
+  const location = resolveIssueLocation(reference, context, numbers);
+
+  const parent = await fetchIssueParent(
+    { ...access, repository: location.repository },
+    location.number,
+  );
+
+  return parent;
+}
+
+async function checkPlanParent(
+  publication: Publication,
+  draft: PublishedDraft,
+  reference: string,
+): Promise<readonly string[]> {
+  const { drafts, context, access, lookup } = publication;
+
+  const parent = await findCurrentParent(publication, reference);
+
+  if (parent === undefined) {
+    return [];
+  }
+
+  const stem = toLocalStem(parent, context);
+
+  const { type } = await lookup.find(parent);
+
+  return type !== access.protocol.types.plan ||
+    drafts.some((candidate) => candidate.stem === stem)
+    ? []
+    : [
+        `${draft.stem}: moves ${reference} out of the Plan ${renderReference(parent, access.repository)}, outside the set, whose Roadmap would go stale: claim it with \`engrenage planning issue claim ${stem}\` and publish them together`,
+      ];
 }
 
 export async function resolvePublishedAncestors(
@@ -151,16 +206,26 @@ export async function resolvePublishedAncestors(
   }
 
   for (const draft of drafts) {
+    const allListed = new Set(
+      listDraftReferences(draft.manifest.subIssues).map(normalize),
+    );
+
+    const allAttached = new Set(
+      (draft.remote?.subIssues ?? []).map((child) => {
+        return toDraftReference(toLocalStem(child, context));
+      }),
+    );
+
+    for (const reference of allListed.difference(allAttached)) {
+      lines.push(...(await checkPlanParent(publication, draft, reference)));
+    }
+
     const listed = new Set(
-      listDraftReferences(draft.manifest.subIssues)
-        .map(normalize)
-        .filter((reference) => !byReference.has(reference)),
+      [...allListed].filter((reference) => !byReference.has(reference)),
     );
 
     const attached = new Set(
-      (draft.remote?.subIssues ?? [])
-        .map((child) => toDraftReference(toLocalStem(child, context)))
-        .filter((reference) => !byReference.has(reference)),
+      [...allAttached].filter((reference) => !byReference.has(reference)),
     );
 
     const moved = (

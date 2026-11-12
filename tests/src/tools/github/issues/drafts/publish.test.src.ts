@@ -138,6 +138,7 @@ c
 let issues: Map<number, MockIssue>;
 let toolkitIssues: Map<number, MockIssue>;
 let requests: string[];
+let links: Record<string, unknown>[];
 let failing: string | undefined;
 
 function createIssue(number: number, values: Partial<MockIssue>): MockIssue {
@@ -310,6 +311,8 @@ function route(method: string, path: string, body: Record<string, unknown>) {
     }
 
     case "POST /sub_issues": {
+      links.push(body);
+
       const child = Number(body.sub_issue_id);
 
       if (child > 2000) {
@@ -371,6 +374,7 @@ beforeEach(() => {
   vi.stubEnv("GH_TOKEN", "t");
 
   requests = [];
+  links = [];
   failing = undefined;
 
   issues = new Map([
@@ -928,6 +932,74 @@ Goal: the group
     expect(lines).toEqual([
       expect.stringMatching(
         /^11: changes the ancestors of #13 outside the set: claim them/,
+      ),
+    ]);
+
+    expect(requests.filter((request) => !request.startsWith("GET"))).toEqual(
+      [],
+    );
+  });
+
+  async function moveIntoPlan(parent: MockIssue) {
+    parent.subIssues.push(20);
+
+    issues.set(parent.number, parent);
+
+    issues.set(
+      20,
+      createIssue(20, {
+        body: taskBody.replace("#10 · ", () => {
+          return parent.type === "Plan"
+            ? `#${parent.number} · `
+            : "#10 › #12 · ";
+        }),
+      }),
+    );
+
+    const root = createProject();
+
+    const config = await loadConfig(root);
+
+    await claimIssues(config, ["10", "20"]);
+
+    await config.context.filesystem.write(
+      ".ai/issues/10.draft.md",
+      read(root, "10.draft.md").replace(
+        '  - ref: "#12"',
+        '  - ref: "#20"\n    gist: the moved\n    sections: []\n  - ref: "#12"',
+      ),
+    );
+
+    await config.context.filesystem.flush();
+
+    requests = [];
+
+    return publishIssues(await loadConfig(root), ["10", "20"]);
+  }
+
+  test("moves an issue out of a Task outside the set by replacing its parent", async () => {
+    const { lines, passed } = await moveIntoPlan(findIssue(12));
+
+    expect({ lines, passed }).toMatchObject({ passed: true });
+
+    expect(links).toEqual([
+      expect.objectContaining({ sub_issue_id: 1020, replace_parent: true }),
+    ]);
+
+    expect(findIssue(20).body.split("\n")[0]).toBe("#10 · Goal: the extra");
+  });
+
+  test("fails moving an issue out of a Plan outside the set before any write", async () => {
+    const {
+      lines,
+      passed,
+    } = await moveIntoPlan(createIssue(30, { type: "Plan", body: planBody }));
+
+    expect(passed).toBe(false);
+
+    expect(lines).toEqual([
+      expect.stringMatching(
+        /^10: moves #20 out of the Plan #30, .*`engrenage planning issue claim 30`/,
       ),
     ]);
 

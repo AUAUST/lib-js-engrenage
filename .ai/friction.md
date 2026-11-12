@@ -62,3 +62,5 @@
 - zsh word splitting: ran `$E create …` with E holding a multi-word command — zsh ran it as one command name; used a function
 - worktree guard: compound Bash commands in an agent worktree whose paths contain `github` — refused as "names git in a form too complex"; split into separate commands
 - Agent `isolation: "worktree"`: dispatched workers expecting a worktree at `HEAD` — each branch started at `6b1506b8`, an older commit; workers checked out the briefed commit detached
+- Claude PreToolUse Bash hook: ran `engrenage sync` to generate a new contract barrel export already imported — the hook loads engrenage from source and failed; added the barrel line with Edit, then synced
+- worktree guard: compound Bash commands and heredoc scripts naming `github` paths in an agent worktree — refused as "names git in a form too complex"; split commands and moved the script into a scratch file

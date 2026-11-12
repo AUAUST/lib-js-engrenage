@@ -7,6 +7,7 @@ export { checkGithubWrite } from "#tools/github/issues/contract/operations/check
 export { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 export { checkIssueTree } from "#tools/github/issues/contract/operations/checkIssueTree";
 export { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
+export { fetchIssueParent } from "#tools/github/issues/contract/operations/fetchIssueParent";
 export { fetchIssueTree } from "#tools/github/issues/contract/operations/fetchIssueTree";
 export { findAncestors } from "#tools/github/issues/contract/operations/findAncestors";
 export { findMissingReferences } from "#tools/github/issues/contract/operations/findMissingReferences";

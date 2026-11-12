@@ -14,11 +14,10 @@ import { record } from "@auaust/toolkit/object";
 
 import { validate } from "#foundation/options/index";
 import {
-  isMissingResource,
   readApiRepository,
   splitRepository,
-  type GithubClient,
 } from "#tools/github/issues/api/index";
+import { fetchIssueParent } from "#tools/github/issues/contract/operations/fetchIssueParent";
 import type { FetchedIssue } from "#tools/github/issues/contract/types/FetchedIssue";
 import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
 
@@ -81,42 +80,12 @@ function readFieldValue({
   return single_select_option?.name ?? value ?? undefined;
 }
 
-const parentSchema = object({
-  number: number(),
-  repository_url: string(),
-});
-
-function readParent({
-  number,
-  repository_url,
-}: InferOutput<typeof parentSchema>) {
-  return { repository: readApiRepository(repository_url), number };
-}
-
-async function fetchParent(
-  client: GithubClient,
-  issue: { owner: string; repo: string; issue_number: number },
-) {
-  try {
-    const { data } = await client.request(
-      "GET /repos/{owner}/{repo}/issues/{issue_number}/parent",
-      issue,
-    );
-
-    return data;
-  } catch (error) {
-    if (isMissingResource(error)) {
-      return;
-    }
-
-    throw error;
-  }
-}
-
 export async function fetchIssue(
-  { repository, client, protocol }: IssueAccess,
+  access: IssueAccess,
   number: number,
 ): Promise<FetchedIssue> {
+  const { repository, client, protocol } = access;
+
   const route = {
     ...splitRepository(repository),
     issue_number: number,
@@ -132,7 +101,7 @@ export async function fetchIssue(
       "GET /repos/{owner}/{repo}/issues/{issue_number}/sub_issues",
       route,
     ),
-    fetchParent(client, route),
+    fetchIssueParent(access, number),
     client.paginate(
       "GET /repos/{owner}/{repo}/issues/{issue_number}/dependencies/blocked_by",
       route,
@@ -170,9 +139,7 @@ export async function fetchIssue(
     subIssues: toRelated(
       validate(relatedSchema, subIssues, `sub-issues of #${number}`),
     ),
-    parent: parent === undefined
-      ? undefined
-      : readParent(validate(parentSchema, parent, `parent of #${number}`)),
+    parent,
     blockedBy: toRelated(
       validate(relatedSchema, blockedBy, `blockers of #${number}`),
     ),
