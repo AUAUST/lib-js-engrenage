@@ -75,3 +75,22 @@
 - pnpm: sandboxed package-manager bootstrap stalled on registry access — ran authorized pnpm commands with network access.
 - npm pack: inspected a formatter from the repository — devEngines requires pnpm; packed from /private/tmp.
 - repository lookup: guessed config and plugin paths — read the file inventory and installed package sources instead.
+- timeout: wrapped npm view in `timeout 60` — macOS has no `timeout`; ran without it
+- zsh `grep --include=*.ts`: unquoted glob in a Bash call — zsh "no matches found" aborted it; quoted the glob
+- engrenage planning issue create: `--after "#532"` as written in subIssues — the flag takes the draft stem `532`, found from the error message
+- zsh `grep --include=*.ts`: unquoted glob again in a Bash call — "no matches found"; quoted the glob
+- zsh `src/**/generators`: unmatched glob in a grep path list — zsh "no matches found" aborted the command; dropped the path
+- zsh `$R` word splitting: unquoted variable holding refs passed as one argument — zsh does not split words; listed refs inline
+- engrenage planning CLI: bare `engrenage planning issue --help` in engrenage itself — binary not on PATH; pnpm engrenage (package script) works
+- Claude PreToolUse Bash hook: imported a new barrel export in `engrenage.config.ts` before syncing barrels — the hook loads the config from source and blocked `pnpm engrenage sync`; added the barrel line with Edit
+- worktree isolation guard: chained `cd`, git and heredocs in one Bash call — refused as too complex to verify; split into separate calls
+- zsh `grep --include=*.ts`: unquoted glob in a review-run caller search — "no matches found"; quoted the glob
+- worktree guard: `git mv` loop, heredoc script and `cd … && git status` chain in an agent worktree — refused as too complex to verify; wrote the script with Write, moved files with plain `mv`, ran each command alone
+- `engrenage gate --worktree`: gate and `pnpm test` while concurrent agents held load average near 40 — `listDebtMarkers` and `syncVscodeFiles` tests hit the 5s timeout; passed alone, reran the gate once load fell below 12
+- `engrenage sync` barrels: deleted a module a barrel exports — sync and codegen crashed importing the stale barrel; removed the barrel line by hand, then reran sync
+- commit gate: committed while load averaged ~28 from parallel sessions — vitest 5s timeouts failed unrelated tests twice; they passed alone, retried the commit
+- `timeout` command: wrapped tsc in `timeout 300` — not installed on macOS zsh; ran without it
+- worktree guard: compound Bash commands with `git status`/`mkdir -p a/{b,c}` or `&&` chains after `pnpm` in an agent worktree — refused as too complex to verify; split into separate commands
+- timeout: wrapped vitest in timeout to bound it — not installed on macOS, so the chained cleanup ran early; reran without it
+- worktree isolation: chained `git diff` after other commands in one Bash call — refused as unverifiable; split into separate calls
+- `engrenage gate --worktree`: first gate run in a worktree — printed a vitest failure (`listDebtMarkers` timeout) run from another agent worktree yet exited 0; reran the gate, which passed silently

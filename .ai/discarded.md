@@ -72,3 +72,10 @@
 - boundary-only merger at K > 1 (#522): fewer agents per leaf — leaves rebases and conflicts to the walker or the workers
 - merger fixing every finding (#522): no worker resume — it would review its own non-mechanical fixes; the review run still sees mechanical ones
 - prettier-plugin-jsdoc: canonical JSDoc layout without deciding tag order — sorts tags and rewrites content beyond this pass; targeted eslint-plugin-jsdoc rules instead.
+- prettier-plugin-jsdoc: balanced JSDoc wrapping — its "balance" style only keeps existing breaks, and it rewrites descriptions as Markdown
+- hint lint level beside info: advisory messages for agents only — differs from info by audience alone; info messages reach agents instead (#526)
+- comment scanner in foundation/jsdoc: locating JSDoc blocks in source — every consumer already runs a parser listing comments
+- extension-owned doc tags (`owns.tags`): declaring JSDoc tags — presets in one adjustable list let projects override, extend and order them
+- `@throws {@link Type}`: canonical throws form — TypeScript 6.0.3 does not rename through it, only through `@throws {Type}`
+- jsdoc/informative-docs: comments restating their name — leaves with eslint-plugin-jsdoc; judging added value stays with review
+- inlining readDocumentedSignature/readOverload into docTags: single-consumer helpers — exceeds the file-line limit, and #368 needs the block lookup

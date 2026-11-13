@@ -14,7 +14,9 @@ export default {
   },
   owns: {
     slots: {
-      "eslint.conventions": { entry: conventionEntry },
+      "eslint.conventions": {
+        entry: conventionEntry,
+      },
     },
     files: {
       "eslint-suppressions.json": {

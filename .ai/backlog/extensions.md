@@ -13,3 +13,9 @@ The extension registry and extension declarations.
 - sites: `src/tools/typescript/tsc/constants.ts:1`
 - why: `roles/extension/extension-imports` keeps the extension from importing `typescript` from `#constants`, so the domain re-exports it.
 - want: the extension imports the constant from its owner.
+
+## 3. Doc tag values cannot reference globals checked against the baseline
+
+- why: toolkit's `@native Array.prototype.map` targets must exist in the configured baseline's lib declarations (AUAUST/lib-js-toolkit#183, #221); tag value schemas (#439) are static and see no config.
+- want: a way for a tag's validation to resolve a global path against the baseline libs `createLibraryCompiler` loads.
+- done: toolkit's `@native` vocabulary is settled and a reference check is designed or rejected.
