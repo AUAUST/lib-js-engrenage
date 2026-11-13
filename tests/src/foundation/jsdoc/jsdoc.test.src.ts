@@ -56,6 +56,43 @@ describe("parseJsdoc", () => {
     );
   });
 
+  test("finds a tag after text on a line of a multiline block", () => {
+    const text = "/**\n * Text. @deprecated\n */";
+    const parsed = parseJsdoc(text);
+
+    expect(parsed.description).toBe("Text.");
+
+    expect(
+      parsed.tags.map(({ name, text }) => {
+        return { name, text };
+      }),
+    ).toEqual([{ name: "deprecated", text: "" }]);
+
+    expect(parsed.tags.map((tag) => text.slice(...tag.range))).toEqual([
+      "@deprecated",
+    ]);
+
+    expect(printJsdoc(parsed)).toBe("/**\n * Text.\n *\n * @deprecated\n */");
+  });
+
+  test("starts no tag inside inline code, inline tags, words or fences", () => {
+    const text = `/**
+ * Uses \`a @b\`, {@link X} and a@b.c.
+ *
+ * \`\`\`ts
+ * const x = 1; @y
+ * \`\`\`
+ */`;
+
+    const parsed = parseJsdoc(text);
+
+    expect(parsed.tags).toEqual([]);
+
+    expect(parsed.description).toBe(
+      "Uses `a @b`, {@link X} and a@b.c.\n\n```ts\nconst x = 1; @y\n```",
+    );
+  });
+
   test("rejects text other than one JSDoc comment", () => {
     expect(() => parseJsdoc("/** a */ /** b */")).toThrow();
     expect(() => parseJsdoc("/* a */")).toThrow();
