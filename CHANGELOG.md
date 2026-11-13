@@ -1,5 +1,11 @@
 # @auaust/engrenage
 
+## 0.11.2
+
+### Patch Changes
+
+- [`28de7f3`](https://github.com/AUAUST/lib-js-engrenage/commit/28de7f3fbd89b802b405a2aedc6d124ecf49c26b) Thanks [@apademide](https://github.com/apademide)! - - Enforce multiline JSDoc, a blank line before tags, and description tags before other tags.
+
 ## 0.11.1
 
 ### Patch Changes
