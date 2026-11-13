@@ -70,3 +70,5 @@
 - zsh `grep --include=*.ts`: unquoted glob in a merger's search for twins — zsh "no matches found" aborted it; grepped without the flag
 - Agent tool: dispatched a `.claude/agents` file written mid-session — not loaded until restart; probed with `claude -p --agents` instead.
 - claude -p: passed the prompt after `--allowedTools Agent` — the variadic flag swallowed it; piped the prompt on stdin.
+- `engrenage gate --worktree`: gate after `sync agents` on edited fragments — its format step rewrote the fragment tables, leaving `.codex/agents/merger.toml` outdated for `sync --check`; reran `sync agents` then the gate
+- engrenage's own Claude hooks: a half-written barrel export in `src/` — every hooked Bash call failed loading the CLI from source; added the export by hand before syncing

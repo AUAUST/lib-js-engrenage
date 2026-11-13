@@ -57,10 +57,8 @@
 - calling a role callback on a placeholder module for its map description: `companions` shown in maps — callbacks compute on real names (`name.slice(2)`), a placeholder yields garbage
 - bare callback or `{ resolve, description }` union for `file` and `companions`: lighter declaration — a bare callback leaves its map cell empty, the gap #485 fixed
 - gate skipping `.ai/issues/` formatting: stop false body conflicts at publish (#500) — editors and hooks still format drafts; normalizing the merge covers every formatter
-- resumed merger per segment (#516): walk merger reuse — re-reading carried context costs more than a cold start; fresh merger briefed with the previous report instead
 - context-share freshness threshold (#516): consultant replacement — a window share means different sizes per model; twice the starting context instead
 - widened walker review (#516): cross-leaf review — fills the context the consultant keeps small
-- merger fixing its findings (#516): fewer agents per leaf — it would review its own work; the worker holds the leaf's context
 - code-review skill as merger (#516): cross-leaf review reuse — no view of sibling leaves, no rebase, no Codex equivalent
 - one consultant-merger agent (#516): fewer agents — one judges against the plan, the other against the code
 - shared draft manifest field reader (#511): `checkDrafts` `readBlockers` and `listPublishedFieldValues` `readFieldValue` both read manifest field values — one Blockers read, outside the leaf's scope
@@ -71,3 +69,5 @@
 - jscpd --dead-code (#516): exports a range leaves unused, for the merger — resolves no `#` alias, so lists every aliased module as unused
 - concurrency as a split reason (#505): more segment members — each leaf adds a dispatch, merger and review round small items never repay
 - blockedBy between segment members: finer concurrency than segment order — the walker stops on any open blocked-by; reshaping or sequencing covers it
+- boundary-only merger at K > 1 (#522): fewer agents per leaf — leaves rebases and conflicts to the walker or the workers
+- merger fixing every finding (#522): no worker resume — it would review its own non-mechanical fixes; the review run still sees mechanical ones
