@@ -8,7 +8,12 @@ import {
 
 import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
-import { parseJsdoc, printJsdoc } from "#foundation/jsdoc/index";
+import {
+  findCommentLines,
+  isJsdocComment,
+  parseJsdoc,
+  printJsdoc,
+} from "#foundation/jsdoc/index";
 
 const lineSpacing = /^[\t ]*$/;
 
@@ -30,9 +35,7 @@ function findJsdocRanges(code: string): [start: number, end: number][] {
     token = scanner.scan()
   ) {
     if (token === SyntaxKind.MultiLineCommentTrivia) {
-      const text = scanner.getTokenText();
-
-      if (text.startsWith("/**") && text !== "/**/") {
+      if (isJsdocComment(scanner.getTokenText())) {
         ranges.push([scanner.getTokenStart(), scanner.getTokenEnd()]);
       }
     } else if (
@@ -52,16 +55,6 @@ function findJsdocRanges(code: string): [start: number, end: number][] {
   return ranges;
 }
 
-function findLineStart(code: string, index: number): number {
-  return code.lastIndexOf("\n", index - 1) + 1;
-}
-
-function findLineEnd(code: string, index: number): number {
-  const end = code.indexOf("\n", index);
-
-  return end === -1 ? code.length : end;
-}
-
 function findSpacingEnd(code: string, index: number): number {
   let end = index;
 
@@ -78,15 +71,8 @@ function trimTags(
   [start, end]: [start: number, end: number],
   internal: ReadonlySet<string>,
 ) {
-  const lineStart = findLineStart(code, start);
-  const lineEnd = findLineEnd(code, end);
-
-  const alone = (
-    lineSpacing.test(code.slice(lineStart, start)) &&
-    lineSpacing.test(code.slice(end, lineEnd))
-  );
-
-  const from = alone ? lineStart : start;
+  const lines = findCommentLines(code, [start, end]);
+  const from = lines?.[0] ?? start;
   const block = parseJsdoc(code.slice(from, end), from);
   const tags = block.tags.filter(({ name }) => !internal.has(name));
 
@@ -95,8 +81,8 @@ function trimTags(
   }
 
   if (block.description === "" && !isNotEmpty(tags)) {
-    if (alone) {
-      output.remove(lineStart, Math.min(lineEnd + 1, code.length));
+    if (lines !== undefined) {
+      output.remove(lines[0], Math.min(lines[1] + 1, code.length));
     } else {
       output.remove(start, end);
     }
@@ -104,7 +90,7 @@ function trimTags(
     return;
   }
 
-  if (!alone && !code.slice(start, end).includes("\n")) {
+  if (lines === undefined && !code.slice(start, end).includes("\n")) {
     for (const tag of block.tags) {
       if (!internal.has(tag.name)) {
         continue;

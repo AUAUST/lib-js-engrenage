@@ -153,9 +153,12 @@ function createChecker(
     group(holder);
   }
 
-  function checkSubject(tag: JsdocTag, subject: string, block: Range) {
-    const kind = byName.get(tag.name)?.subject;
-
+  function checkSubject(
+    tag: JsdocTag,
+    subject: string,
+    { subject: kind }: TagDeclaration,
+    block: Range,
+  ) {
     if (kind !== "parameter" && kind !== "typeParameter") {
       return;
     }
@@ -181,8 +184,12 @@ function createChecker(
     }
   }
 
-  function findExcluded(tags: readonly JsdocTag[], tag: JsdocTag) {
-    const excludes = byName.get(tag.name)?.excludes ?? [];
+  function findExcluded(
+    tags: readonly JsdocTag[],
+    tag: JsdocTag,
+    declaration: TagDeclaration,
+  ) {
+    const excludes = declaration.excludes ?? [];
 
     return tags.find(({ name }) => {
       return (
@@ -207,20 +214,24 @@ function createChecker(
         continue;
       }
 
-      if (seen.has(tag.name) && byName.get(tag.name)?.multiple !== true) {
+      if (seen.has(tag.name) && read.declaration.multiple !== true) {
         report(tag.range, "duplicate", { name: tag.name });
       }
 
       seen.add(tag.name);
 
-      const excluded = findExcluded(tags.slice(0, index), tag);
+      const excluded = findExcluded(
+        tags.slice(0, index),
+        tag,
+        read.declaration,
+      );
 
       if (excluded !== undefined) {
         report(tag.range, "excluded", { name: tag.name, other: excluded.name });
       }
 
       if (read.tag.subject !== undefined) {
-        checkSubject(tag, read.tag.subject, block);
+        checkSubject(tag, read.tag.subject, read.declaration, block);
       }
     }
   }

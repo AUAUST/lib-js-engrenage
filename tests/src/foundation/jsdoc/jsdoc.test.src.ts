@@ -1,6 +1,11 @@
 import { describe, expect, test } from "vitest";
 
-import { parseJsdoc, printJsdoc } from "#foundation/jsdoc/index";
+import {
+  findCommentLines,
+  isJsdocComment,
+  parseJsdoc,
+  printJsdoc,
+} from "#foundation/jsdoc/index";
 
 const block = `  /**
    * Parses a value.
@@ -115,5 +120,26 @@ describe("printJsdoc", () => {
         return text.slice(...tag.range);
       }),
     ).toEqual(["@tag value"]);
+  });
+});
+
+describe("isJsdocComment", () => {
+  test("accepts a JSDoc opening and rejects empty or plain block comments", () => {
+    expect(isJsdocComment("/** Doc. */")).toBe(true);
+    expect(isJsdocComment("/***/")).toBe(true);
+    expect(isJsdocComment("/**/")).toBe(false);
+    expect(isJsdocComment("/* Plain. */")).toBe(false);
+  });
+});
+
+describe("findCommentLines", () => {
+  test("spans the whole lines of a comment alone on them", () => {
+    const text = "a;\n  /**\n   * Doc.\n   */\t\r\nb;";
+
+    expect(findCommentLines(text, [5, 24])).toEqual([3, 26]);
+  });
+
+  test("returns nothing when code shares a line with the comment", () => {
+    expect(findCommentLines("a; /** Doc. */", [3, 14])).toBeUndefined();
   });
 });

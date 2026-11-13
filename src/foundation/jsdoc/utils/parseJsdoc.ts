@@ -1,8 +1,9 @@
 import { parse, tokenizers, type Block, type Line } from "comment-parser";
 
+import { isJsdocComment } from "#foundation/jsdoc/utils/isJsdocComment";
 import type { JsdocBlock } from "#foundation/jsdoc/types/JsdocBlock";
 
-const openingPattern = /^[\t ]*\/\*\*(?!\/)/;
+const indentPattern = /^[\t ]*/;
 const tagStartPattern = /`[^`]*`|(?<!\S)@[^\s@]/g;
 
 interface SplitTag {
@@ -13,10 +14,10 @@ interface SplitTag {
 }
 
 export function parseJsdoc(text: string, offset = 0): JsdocBlock {
-  const indent = text.match(openingPattern)?.[0].slice(0, -3);
+  const indent = text.match(indentPattern)?.[0] ?? "";
 
   if (
-    indent == null ||
+    !isJsdocComment(text.slice(indent.length)) ||
     text.indexOf("*/", indent.length + 3) !== text.length - 2
   ) {
     throw new Error(`Expected one JSDoc comment, got: ${text}`);

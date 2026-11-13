@@ -136,6 +136,86 @@ describe("declarations section", () => {
     ] satisfies SourceDeclaration[]);
   });
 
+  test("resolves local export specifiers, default expressions and destructured constants", async () => {
+    const config = createConfig({
+      "src/local.ts": `/**
+ * Doubles a number.
+ */
+function double(value: number): number {
+  return value * 2;
+}
+
+/**
+ * Bounds.
+ */
+export const { min, max: [ceiling] } = { min: 0, max: [1] };
+
+/**
+ * The default settings.
+ */
+export default { verbose: false };
+
+export { double, double as twice };
+export { imported } from "./other";
+`,
+      "src/default.ts": `/**
+ * Halves a number.
+ */
+const half = (value: number): number => value / 2;
+
+export default half;
+`,
+    });
+
+    const declarations = await config.resolve("declarations");
+
+    const doubled = {
+      kind: "function",
+      tags: [],
+      signatures: [{ description: "Doubles a number.", tags: [] }],
+    } as const;
+
+    const bounds = {
+      kind: "const",
+      tags: [],
+      signatures: [{ description: "Bounds.", tags: [] }],
+    } as const;
+
+    expect(await declarations.of("src/local.ts")).toEqual([
+      {
+        name: "min",
+        ...bounds,
+      },
+      {
+        name: "ceiling",
+        ...bounds,
+      },
+      {
+        name: "default",
+        kind: "const",
+        tags: [],
+        signatures: [{ description: "The default settings.", tags: [] }],
+      },
+      {
+        name: "double",
+        ...doubled,
+      },
+      {
+        name: "twice",
+        ...doubled,
+      },
+    ] satisfies SourceDeclaration[]);
+
+    expect(await declarations.of("src/default.ts")).toEqual([
+      {
+        name: "default",
+        kind: "const",
+        tags: [],
+        signatures: [{ description: "Halves a number.", tags: [] }],
+      },
+    ] satisfies SourceDeclaration[]);
+  });
+
   test("rejects an invalid tag value naming the file and the tag", async () => {
     const config = createConfig({
       "src/invalid.ts": "/**\n * @native unknown\n */\nexport const a = 1;\n",

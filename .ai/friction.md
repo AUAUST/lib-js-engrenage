@@ -96,3 +96,6 @@
 - `engrenage gate --worktree`: first gate run in a worktree — printed a vitest failure (`listDebtMarkers` timeout) run from another agent worktree yet exited 0; reran the gate, which passed silently
 - npx tsc: ran to type check — devEngines rejects npm; used pnpm exec tsc
 - `engrenage planning issue publish`: published a root Segment with no parent Plan — refused as "parent Plan outside the set"; rooted it under a new Plan
+- timeout: bounded an eslint run with timeout — not installed on macOS; ran without it
+- listInfoMessages: listed a file's `info` lint messages — no command exposes them; wrote a scratch script importing it
+- engrenage sync: ran it after adding a utils module imported through its barrel — sync loads the source, so the missing barrel export crashed it; added the barrel lines by hand first

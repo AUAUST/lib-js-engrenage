@@ -55,3 +55,4 @@ Deferred questions, bugs, tasks and improvements.
 - [sync](sync.md): `project/sync` target ordering and sync products.
 - [eslint-conventions](eslint-conventions.md): ESLint rules and conventions engrenage ships.
 - [prettier](prettier.md): Prettier conventions and the layout plugin engrenage ships.
+- [docs](docs.md): Doc tag declarations and the readers of tagged source.

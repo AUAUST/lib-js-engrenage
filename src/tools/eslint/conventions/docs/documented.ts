@@ -1,5 +1,6 @@
 import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/types";
 import {
+  isExportSpecifier,
   SymbolFlags,
   type Program,
   type Symbol,
@@ -71,6 +72,40 @@ function isDocumented(
   );
 }
 
+function listBoundNames(pattern: TSESTree.Node): TSESTree.Identifier[] {
+  switch (pattern.type) {
+    case AST_NODE_TYPES.Identifier: {
+      return [pattern];
+    }
+
+    case AST_NODE_TYPES.ArrayPattern: {
+      return pattern.elements.flatMap((element) => {
+        return element == null ? [] : listBoundNames(element);
+      });
+    }
+
+    case AST_NODE_TYPES.ObjectPattern: {
+      return pattern.properties.flatMap((property) => {
+        return property.type === AST_NODE_TYPES.RestElement
+          ? listBoundNames(property.argument)
+          : listBoundNames(property.value);
+      });
+    }
+
+    case AST_NODE_TYPES.RestElement: {
+      return listBoundNames(pattern.argument);
+    }
+
+    case AST_NODE_TYPES.AssignmentPattern: {
+      return listBoundNames(pattern.left);
+    }
+
+    default: {
+      return [];
+    }
+  }
+}
+
 function listDeclaredNames(
   declaration: TSESTree.ExportNamedDeclaration["declaration"],
 ): TSESTree.Identifier[] {
@@ -79,9 +114,7 @@ function listDeclaredNames(
   }
 
   if (declaration.type === AST_NODE_TYPES.VariableDeclaration) {
-    return declaration.declarations.flatMap(({ id }) => {
-      return id.type === AST_NODE_TYPES.Identifier ? [id] : [];
-    });
+    return declaration.declarations.flatMap(({ id }) => listBoundNames(id));
   }
 
   return declaration.id?.type === AST_NODE_TYPES.Identifier
@@ -93,12 +126,15 @@ function listOverloaded(program: TSESTree.Program): Set<string> {
   const names = new Set<string>();
 
   for (const statement of program.body) {
+    const declaration = statement.type === AST_NODE_TYPES.ExportNamedDeclaration
+      ? statement.declaration
+      : statement;
+
     if (
-      statement.type === AST_NODE_TYPES.ExportNamedDeclaration &&
-      statement.declaration?.type === AST_NODE_TYPES.TSDeclareFunction &&
-      statement.declaration.id != null
+      declaration?.type === AST_NODE_TYPES.TSDeclareFunction &&
+      declaration.id != null
     ) {
-      names.add(statement.declaration.id.name);
+      names.add(declaration.id.name);
     }
   }
 
@@ -111,13 +147,22 @@ function isOverloadImplementation(
 ): boolean {
   const declaration = statement.type === AST_NODE_TYPES.ExportNamedDeclaration
     ? statement.declaration
-    : undefined;
+    : statement;
 
   return (
     declaration?.type === AST_NODE_TYPES.FunctionDeclaration &&
     declaration.id != null &&
     overloaded.has(declaration.id.name)
   );
+}
+
+function statementOf(
+  program: TSESTree.Program,
+  [start, end]: TSESTree.Range,
+): TSESTree.ProgramStatement | undefined {
+  return program.body.find(({ range }) => {
+    return range[0] <= start && end <= range[1];
+  });
 }
 
 function memberName(
@@ -215,14 +260,98 @@ export default defineConvention({
               });
         }
 
+        // @debt the ESTree-to-TS node map is untyped here, so nodes are cast `as TsNode` with no stated invariant
+        function localTargetOf(node: TSESTree.Node): Symbol | undefined {
+          const target = esTreeNodeToTSNodeMap.get(node) as TsNode;
+
+          const symbol = isExportSpecifier(target)
+            ? checker.getExportSpecifierLocalTargetSymbol(target)
+            : checker.getSymbolAtLocation(target);
+
+          return symbol === undefined
+            ? undefined
+            : checker.getExportSymbolOfSymbol(symbol);
+        }
+
+        function isLocalDocumented(
+          symbol: Symbol,
+          overloaded: ReadonlySet<string>,
+        ): boolean {
+          const file = esTreeNodeToTSNodeMap.get(root);
+
+          const statements = (symbol.declarations ?? []).flatMap(
+            (declaration) => {
+              const statement = declaration.getSourceFile() === file
+                ? statementOf(root, [declaration.getStart(), declaration.end])
+                : undefined;
+
+              return statement === undefined ? [] : [statement];
+            },
+          );
+
+          return statements.every((statement) => {
+            return (
+              isOverloadImplementation(statement, overloaded) ||
+              isDocumented(sourceCode, statement)
+            );
+          });
+        }
+
+        function checkLocal(
+          node: TSESTree.Node,
+          name: string,
+          exported: ReadonlySet<Symbol>,
+          overloaded: ReadonlySet<string>,
+        ) {
+          const symbol = localTargetOf(node);
+
+          if (
+            symbol !== undefined &&
+            exported.has(symbol) &&
+            !isLocalDocumented(symbol, overloaded)
+          ) {
+            report(node, "export", name);
+          }
+        }
+
+        function checkLocalExports(
+          statement: TSESTree.ProgramStatement,
+          exported: ReadonlySet<Symbol>,
+          overloaded: ReadonlySet<string>,
+        ): boolean {
+          if (
+            statement.type === AST_NODE_TYPES.ExportDefaultDeclaration &&
+            statement.declaration.type === AST_NODE_TYPES.Identifier
+          ) {
+            checkLocal(statement.declaration, "default", exported, overloaded);
+
+            return true;
+          }
+
+          if (
+            statement.type !== AST_NODE_TYPES.ExportNamedDeclaration ||
+            statement.declaration != null ||
+            statement.source != null
+          ) {
+            return false;
+          }
+
+          for (const specifier of statement.specifiers) {
+            const name = specifier.exported.type === AST_NODE_TYPES.Identifier
+              ? specifier.exported.name
+              : specifier.exported.value;
+
+            checkLocal(specifier, name, exported, overloaded);
+          }
+
+          return true;
+        }
+
         function check(
           statement: TSESTree.ProgramStatement,
           exported: ReadonlySet<Symbol>,
         ) {
-          if (
-            statement.type === AST_NODE_TYPES.ExportDefaultDeclaration &&
-            statement.declaration.type !== AST_NODE_TYPES.Identifier
-          ) {
+          if (statement.type === AST_NODE_TYPES.ExportDefaultDeclaration) {
             const symbol = defaultSymbol();
 
             if (symbol !== undefined && exported.has(symbol)) {
@@ -251,6 +380,10 @@ export default defineConvention({
             const overloaded = listOverloaded(root);
 
             for (const statement of root.body) {
+              if (checkLocalExports(statement, exported, overloaded)) {
+                continue;
+              }
+
               if (
                 !isOverloadImplementation(statement, overloaded) &&
                 !isDocumented(sourceCode, statement)

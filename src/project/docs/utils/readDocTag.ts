@@ -6,7 +6,11 @@ import type { DocTag } from "#project/docs/types/DocTag";
 import type { TagDeclaration } from "#project/docs/types/TagDeclaration";
 
 type ReadDocTag =
-  | { readonly ok: true; readonly tag: DocTag }
+  | {
+      readonly ok: true;
+      readonly tag: DocTag;
+      readonly declaration: TagDeclaration;
+    }
   | { readonly ok: false; readonly message: string };
 
 function readValue(
@@ -70,5 +74,6 @@ export function readDocTag(
       ...(subject === undefined ? {} : { subject }),
       value: read.value,
     },
+    declaration,
   };
 }

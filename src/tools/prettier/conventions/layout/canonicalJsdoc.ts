@@ -2,7 +2,13 @@ import type { TSESTree } from "@typescript-eslint/types";
 
 import { filterMap, sort } from "@auaust/primitive-kit/arrays";
 
-import { parseJsdoc, printJsdoc, type JsdocTag } from "#foundation/jsdoc/index";
+import {
+  findCommentLines,
+  isJsdocComment,
+  parseJsdoc,
+  printJsdoc,
+  type JsdocTag,
+} from "#foundation/jsdoc/index";
 import { splitDocTag, type TagDeclaration } from "#project/docs/index";
 import { wrapParagraph } from "#tools/prettier/utils/wrapParagraph";
 import type { LayoutConvention } from "#tools/prettier/types/LayoutConvention";
@@ -209,19 +215,6 @@ function getRank(tags: readonly TagDeclaration[], tag: JsdocTag): number {
   return index === -1 ? tags.length : index;
 }
 
-function isAloneOnItsLines(
-  text: string,
-  lineStart: number,
-  comment: TSESTree.Comment,
-): boolean {
-  const lineEnd = text.indexOf("\n", comment.range[1]);
-
-  return (
-    isBlank(text.slice(lineStart, comment.range[0])) &&
-    isBlank(text.slice(comment.range[1], lineEnd === -1 ? undefined : lineEnd))
-  );
-}
-
 const canonicalJsdoc: LayoutConvention = (
   program,
   text,
@@ -230,17 +223,18 @@ const canonicalJsdoc: LayoutConvention = (
   const comments: readonly TSESTree.Comment[] = program.comments ?? [];
 
   return filterMap(comments, (comment): LayoutEdit | undefined => {
-    const lineStart = text.lastIndexOf("\n", comment.range[0] - 1) + 1;
+    const [start, end] = comment.range;
 
-    if (
-      comment.type !== "Block" ||
-      !comment.value.startsWith("*") ||
-      !isAloneOnItsLines(text, lineStart, comment)
-    ) {
+    const lines = isJsdocComment(text.slice(start, end))
+      ? findCommentLines(text, comment.range)
+      : undefined;
+
+    if (lines === undefined) {
       return;
     }
 
-    const source = text.slice(lineStart, comment.range[1]);
+    const [lineStart] = lines;
+    const source = text.slice(lineStart, end);
     const block = parseJsdoc(source, lineStart);
     const width = printWidth - getColumns(block.indent, tabWidth) - prefixWidth;
 
@@ -260,7 +254,7 @@ const canonicalJsdoc: LayoutConvention = (
     return {
       kind: "replace",
       start: lineStart,
-      end: comment.range[1],
+      end,
       text: printed,
     };
   });

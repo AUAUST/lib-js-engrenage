@@ -6,9 +6,12 @@ import {
   isArrayBindingPattern,
   isClassDeclaration,
   isEnumDeclaration,
+  isExportAssignment,
+  isExportDeclaration,
   isFunctionDeclaration,
   isIdentifier,
   isInterfaceDeclaration,
+  isNamedExports,
   isOmittedExpression,
   isTypeAliasDeclaration,
   isVariableStatement,
@@ -23,9 +26,10 @@ import {
   type TypeAliasDeclaration,
 } from "typescript";
 
+import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 import { freeze } from "@auaust/toolkit/object";
 
-import { parseJsdoc } from "#foundation/jsdoc/index";
+import { isJsdocComment, parseJsdoc } from "#foundation/jsdoc/index";
 import { declareSection } from "#foundation/options/index";
 import {
   readDocTag,
@@ -50,6 +54,17 @@ interface DocumentedBlock {
   readonly exported: readonly DocTag[];
 }
 
+interface Local {
+  readonly kind: SourceDeclaration["kind"];
+  readonly names: readonly string[];
+  readonly statements: Statement[];
+}
+
+interface Locals {
+  readonly byName: ReadonlyMap<string, readonly Local[]>;
+  readonly byStatement: ReadonlyMap<Statement, readonly Local[]>;
+}
+
 function hasModifier(statement: Statement, modifier: SyntaxKind): boolean {
   return (
     canHaveModifiers(statement) &&
@@ -69,12 +84,6 @@ function isNamedStatement(statement: Statement): statement is NamedStatement {
     isInterfaceDeclaration(statement) ||
     isEnumDeclaration(statement)
   );
-}
-
-function nameOf(statement: NamedStatement): string | undefined {
-  return hasModifier(statement, SyntaxKind.DefaultKeyword)
-    ? "default"
-    : statement.name?.text;
 }
 
 function kindOf(statement: NamedStatement): SourceDeclaration["kind"] {
@@ -114,13 +123,7 @@ function readBlock(
   tags: readonly TagDeclaration[],
 ): DocumentedBlock[] {
   const comment = (getLeadingCommentRanges(text, statement.pos) ?? [])
-    .filter(({ kind, pos, end }) => {
-      return (
-        kind === SyntaxKind.MultiLineCommentTrivia &&
-        text.startsWith("/**", pos) &&
-        end - pos > 4
-      );
-    })
+    .filter(({ pos, end }) => isJsdocComment(text.slice(pos, end)))
     .at(-1);
 
   if (comment === undefined) {
@@ -139,9 +142,7 @@ function readBlock(
       throw new Error(`\`${file}\`: \`@${tag.name}\` ${read.message}`);
     }
 
-    const scope = tags.find(({ name }) => name === tag.name)?.scope;
-
-    (scope === "export" ? exported : signature).push(read.tag);
+    (read.declaration.scope === "export" ? exported : signature).push(read.tag);
   }
 
   return [
@@ -152,59 +153,27 @@ function readBlock(
   ];
 }
 
-function declare(
-  name: string,
-  kind: SourceDeclaration["kind"],
-  blocks: readonly DocumentedBlock[],
-): SourceDeclaration {
-  return {
-    name,
-    kind,
-    tags: blocks[0]?.exported ?? [],
-    signatures: blocks.map(({ signature }) => signature),
-  };
-}
+function listLocals(statements: readonly Statement[]): Locals {
+  const byName = new Map<string, Local[]>();
+  const byStatement = new Map<Statement, Local[]>();
 
-function takeOverloads(
-  statements: readonly Statement[],
-  first: FunctionDeclaration,
-): FunctionDeclaration[] {
-  const group = [first];
+  function add(statement: Statement, name: string | undefined, local: Local) {
+    byStatement.set(statement, [...(byStatement.get(statement) ?? []), local]);
 
-  for (const next of statements.slice(statements.indexOf(first) + 1)) {
-    if (!isFunctionDeclaration(next) || nameOf(next) !== nameOf(first)) {
-      break;
+    if (name !== undefined) {
+      byName.set(name, [...(byName.get(name) ?? []), local]);
     }
-
-    group.push(next);
   }
 
-  return group;
-}
-
-function readDeclarations(
-  file: File,
-  text: string,
-  tags: readonly TagDeclaration[],
-): SourceDeclaration[] {
-  const source = createSourceFile(file, text, ScriptTarget.Latest, true);
-
-  const statements = source.statements.filter(isExported);
-
-  const declarations: SourceDeclaration[] = [];
-  const grouped = new Set<Statement>();
-
   for (const statement of statements) {
-    if (grouped.has(statement)) {
-      continue;
-    }
-
     if (isVariableStatement(statement)) {
-      const blocks = readBlock(file, text, statement, tags);
-
       for (const { name } of statement.declarationList.declarations) {
         for (const bound of bindingNames(name)) {
-          declarations.push(declare(bound, "const", blocks));
+          add(statement, bound, {
+            kind: "const",
+            names: [bound],
+            statements: [statement],
+          });
         }
       }
 
@@ -215,44 +184,118 @@ function readDeclarations(
       continue;
     }
 
-    const name = nameOf(statement);
+    const name = statement.name?.text;
 
-    if (name === undefined) {
-      continue;
+    const overloaded = isFunctionDeclaration(statement) && name !== undefined
+      ? byName.get(name)?.find(({ kind }) => kind === "function")
+      : undefined;
+
+    if (overloaded === undefined) {
+      add(statement, name, {
+        kind: kindOf(statement),
+        names: name === undefined ? [] : [name],
+        statements: [statement],
+      });
+    } else {
+      overloaded.statements.push(statement);
     }
-
-    if (!isFunctionDeclaration(statement)) {
-      declarations.push(
-        declare(
-          name,
-          kindOf(statement),
-          readBlock(file, text, statement, tags),
-        ),
-      );
-
-      continue;
-    }
-
-    const group = takeOverloads(statements, statement);
-
-    for (const overload of group) {
-      grouped.add(overload);
-    }
-
-    const signatures = group.length > 1
-      ? group.filter(({ body }) => body === undefined)
-      : group;
-
-    declarations.push(
-      declare(
-        name,
-        "function",
-        signatures.flatMap((overload) => readBlock(file, text, overload, tags)),
-      ),
-    );
   }
 
-  return declarations;
+  return { byName, byStatement };
+}
+
+function signaturesOf({ kind, statements }: Local): Statement[] {
+  return kind === "function" && statements.length > 1
+    ? statements.filter((statement) => {
+        return isFunctionDeclaration(statement) && statement.body === undefined;
+      })
+    : statements;
+}
+
+function listExports(
+  statement: Statement,
+  locals: Locals,
+): [name: string, local: Local][] {
+  if (isExportDeclaration(statement)) {
+    const { exportClause, moduleSpecifier } = statement;
+
+    if (
+      moduleSpecifier !== undefined ||
+      exportClause === undefined ||
+      !isNamedExports(exportClause)
+    ) {
+      return [];
+    }
+
+    return exportClause.elements.flatMap(({ name, propertyName = name }) => {
+      const found = locals.byName.get(propertyName.text) ?? [];
+
+      return found.map((local): [string, Local] => [name.text, local]);
+    });
+  }
+
+  if (isExportAssignment(statement)) {
+    if (statement.isExportEquals === true) {
+      return [];
+    }
+
+    const { expression } = statement;
+
+    const found = isIdentifier(expression)
+      ? (locals.byName.get(expression.text) ?? [])
+      : [];
+
+    // @debt `SourceDeclaration.kind` has no member for a default-exported expression, so it is reported as `const`
+    return isNotEmpty(found)
+      ? found.map((local): [string, Local] => ["default", local])
+      : [
+          [
+            "default",
+            {
+              kind: "const",
+              names: [],
+              statements: [statement],
+            },
+          ],
+        ];
+  }
+
+  if (!isExported(statement)) {
+    return [];
+  }
+
+  const isDefault = hasModifier(statement, SyntaxKind.DefaultKeyword);
+
+  return (locals.byStatement.get(statement) ?? []).flatMap((local) => {
+    return isDefault
+      ? [["default", local] as [string, Local]]
+      : local.names.map((name): [string, Local] => [name, local]);
+  });
+}
+
+function readDeclarations(
+  file: File,
+  text: string,
+  tags: readonly TagDeclaration[],
+): SourceDeclaration[] {
+  const source = createSourceFile(file, text, ScriptTarget.Latest, true);
+
+  const locals = listLocals(source.statements);
+
+  return source.statements.flatMap((statement) => {
+    return listExports(statement, locals).map(([name, local]) => {
+      const blocks = signaturesOf(local).flatMap((signature) => {
+        return readBlock(file, text, signature, tags);
+      });
+
+      return {
+        name,
+        kind: local.kind,
+        tags: blocks[0]?.exported ?? [],
+        signatures: blocks.map(({ signature }) => signature),
+      };
+    });
+  });
 }
 
 export const declarationsSection = declareSection({

@@ -28,8 +28,11 @@ async function createProject() {
     }),
     "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entrypoint())}, structure: { layers: ["project"] } } };\n`,
     "eslint.config.ts": `import { defineEslintConfig } from ${JSON.stringify(sourcePath("src/tools/eslint/index.ts"))};\n\nexport default defineEslintConfig();\n`,
-    "src/project/feature/index.ts": 'export { exposed } from "#project/feature/utils/exposed";\nexport type * from "#project/feature/ports/Store";\n',
-    "src/project/feature/entry.ts": 'export { exposed } from "#project/feature/index";\nexport type { Store } from "#project/feature/index";\n',
+    "src/project/feature/index.ts": 'export { exposed } from "#project/feature/utils/exposed";\nexport { local, renamed } from "#project/feature/utils/local";\nexport { bounds, upper } from "#project/feature/utils/bounds";\nexport { default as fallback } from "#project/feature/utils/fallback";\nexport type * from "#project/feature/ports/Store";\n',
+    "src/project/feature/entry.ts": 'export { exposed, local, renamed, bounds, upper, fallback } from "#project/feature/index";\nexport type { Store } from "#project/feature/index";\n',
+    "src/project/feature/utils/local.ts": "function local(): number {\n  return 1;\n}\n\n/**\n * Returns two.\n */\nfunction documented(): number {\n  return 2;\n}\n\nexport { local, documented as renamed };\n",
+    "src/project/feature/utils/bounds.ts": "export const { bounds, limits: [upper] } = { bounds: 0, limits: [1] };\n",
+    "src/project/feature/utils/fallback.ts": "const fallback = 1;\n\nexport default fallback;\n",
     "src/project/feature/ports/Store.ts": "export interface Store {\n  /**\n   * Returns `undefined` when the key is missing.\n   */\n  get(key: string): string | undefined;\n  set(key: string, value: string): void;\n}\n",
     "src/project/feature/utils/exposed.ts": "export function exposed(): number {\n  return 1;\n}\n",
     "src/project/feature/utils/hidden.ts": "export function hidden(): number {\n  return 1;\n}\n",
@@ -71,6 +74,31 @@ describe("docs.documented", () => {
       ]);
 
       expect(await list("src/project/feature/utils/hidden.ts")).toEqual([]);
+
+      expect(await list("src/project/feature/utils/local.ts")).toEqual([
+        {
+          line: 12,
+          message: "Document `local`: a package entry exports it and consumers never see its source, so state the behavior its name and signature leave open.",
+        },
+      ]);
+
+      expect(
+        (await list("src/project/feature/utils/bounds.ts")).map(
+          ({ message }) => {
+            return message;
+          },
+        ),
+      ).toEqual([
+        "Document `bounds`: a package entry exports it and consumers never see its source, so state the behavior its name and signature leave open.",
+        "Document `upper`: a package entry exports it and consumers never see its source, so state the behavior its name and signature leave open.",
+      ]);
+
+      expect(await list("src/project/feature/utils/fallback.ts")).toEqual([
+        {
+          line: 3,
+          message: "Document `default`: a package entry exports it and consumers never see its source, so state the behavior its name and signature leave open.",
+        },
+      ]);
     },
     binaryTimeout,
   );

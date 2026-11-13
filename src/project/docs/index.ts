@@ -45,7 +45,6 @@ export { virtual } from "#project/docs/utils/virtual";
 // @end
 
 // @barrel types
-export type * from "#project/docs/types/Declarations";
 export type * from "#project/docs/types/DocSignature";
 export type * from "#project/docs/types/DocsInput";
 export type * from "#project/docs/types/DocTag";
@@ -55,6 +54,7 @@ export type * from "#project/docs/types/TagPreset";
 // @end
 
 // @barrel ports
+export type * from "#project/docs/ports/Declarations";
 export type * from "#project/docs/ports/TagSetEntry";
 // @end
 
