@@ -5,6 +5,9 @@ import type { ReportDescriptor } from "#tools/eslint/types/ReportDescriptor";
 import type { RuleOptions } from "#tools/eslint/types/RuleOptions";
 import type { Rules } from "#tools/eslint/types/Rules";
 
+/**
+ * @experimental
+ */
 export function delegateRule<Id extends keyof Rules & string>(
   upstream: Id,
   options?: RuleOptions<Id>,

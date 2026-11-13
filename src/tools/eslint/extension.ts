@@ -1,4 +1,5 @@
 import {
+  conventionEntry,
   defaultSuppressionsFile,
   eslint,
   rolePresetsEntry,
@@ -12,6 +13,9 @@ export default {
     installed: eslint,
   },
   owns: {
+    slots: {
+      "eslint.conventions": { entry: conventionEntry },
+    },
     files: {
       "eslint-suppressions.json": {
         title: "ESLint",

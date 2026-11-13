@@ -4,6 +4,9 @@ import type { Convention } from "#tools/eslint/types/Convention";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
+/**
+ * @experimental
+ */
 export function defineReplacement({
   target,
   replacement,

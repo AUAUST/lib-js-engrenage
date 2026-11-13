@@ -87,6 +87,9 @@ function createTarget(
   return `${importList.format(map(imports, describeImport))} from \`${source}\``;
 }
 
+/**
+ * @experimental
+ */
 export function defineImportReplacement({
   source,
   imports,

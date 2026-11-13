@@ -22,6 +22,7 @@ import {
 import { createConventionRules } from "#tools/eslint/operations/createConventionRules";
 import { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";
 import { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
+import { loadConventionCategories } from "#tools/eslint/operations/loadConventionCategories";
 import { resolveConventionSections } from "#tools/eslint/operations/resolveConventionSections";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
@@ -34,8 +35,6 @@ import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Options } from "#tools/eslint/types/Options";
 import type { Glob } from "#types/Glob";
-
-import * as conventionCategories from "#tools/eslint/conventions/index";
 
 async function readTypescriptFiles(config: LoadedConfig): Promise<Glob> {
   const languages = await config.context.registry.contributions(
@@ -70,11 +69,14 @@ export async function createEslintConfig(
     ...categories
   } = validate(optionsSchema, options ?? {}, "ESLint options");
 
-  const [scopes, traits, environment] = await Promise.all([
-    resolveScopeSources(config),
-    config.resolve("traits"),
-    config.resolve("environment"),
-  ]);
+  const [scopes, traits, environment, conventionCategories] = await Promise.all(
+    [
+      resolveScopeSources(config),
+      config.resolve("traits"),
+      config.resolve("environment"),
+      loadConventionCategories(config),
+    ],
+  );
 
   const selected = selectConventions({
     categories: conventionCategories,

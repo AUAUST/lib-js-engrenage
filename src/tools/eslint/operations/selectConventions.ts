@@ -44,6 +44,21 @@ export function selectConventions({
   traits: ResolvedTraits;
   environment: Environment;
 }): SelectedConvention[] {
+  const unknownCategories = filter(keys(settings), (category) => {
+    return !hasOwn(categories, category);
+  });
+
+  if (unknownCategories.length > 0) {
+    throw new Error(
+      `Invalid ESLint options: unknown convention categories ${map(
+        unknownCategories,
+        (name) => {
+          return `"${name}"`;
+        },
+      ).join(", ")}`,
+    );
+  }
+
   const selected: SelectedConvention[] = [];
 
   for (const [category, conventions] of entries(categories)) {

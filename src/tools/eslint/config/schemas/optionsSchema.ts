@@ -1,4 +1,4 @@
-import { boolean, custom, optional, strictObject, union } from "valibot";
+import { boolean, custom, objectWithRest, optional, union } from "valibot";
 
 import { every } from "@auaust/primitive-kit/arrays";
 import { isBoolean } from "@auaust/toolkit/isBoolean";
@@ -25,15 +25,18 @@ function categorySchema<Category extends object>() {
   );
 }
 
-export const optionsSchema = strictObject({
-  ignore: optional(boolean(), true),
-  recommended: optional(boolean(), true),
-  packageJson: optional(boolean(), true),
-  typeAware: optional(boolean(), true),
-  comparisons: categorySchema<typeof conventionCategories.comparisons>(),
-  stylistic: categorySchema<typeof conventionCategories.stylistic>(),
-  imports: categorySchema<typeof conventionCategories.imports>(),
-  promises: categorySchema<typeof conventionCategories.promises>(),
-  structure: categorySchema<typeof conventionCategories.structure>(),
-  performance: categorySchema<typeof conventionCategories.performance>(),
-});
+export const optionsSchema = objectWithRest(
+  {
+    ignore: optional(boolean(), true),
+    recommended: optional(boolean(), true),
+    packageJson: optional(boolean(), true),
+    typeAware: optional(boolean(), true),
+    comparisons: categorySchema<typeof conventionCategories.comparisons>(),
+    stylistic: categorySchema<typeof conventionCategories.stylistic>(),
+    imports: categorySchema<typeof conventionCategories.imports>(),
+    promises: categorySchema<typeof conventionCategories.promises>(),
+    structure: categorySchema<typeof conventionCategories.structure>(),
+    performance: categorySchema<typeof conventionCategories.performance>(),
+  },
+  categorySchema<Record<string, unknown>>(),
+);

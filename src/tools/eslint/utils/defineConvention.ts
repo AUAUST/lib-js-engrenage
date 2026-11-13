@@ -12,6 +12,9 @@ import type { RuleModule } from "#tools/eslint/types/RuleModule";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
+/**
+ * @experimental
+ */
 export function defineConvention<
   Sections extends ConventionSections = Record<never, never>,
 >({

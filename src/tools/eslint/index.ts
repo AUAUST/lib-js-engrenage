@@ -13,6 +13,7 @@ export { createPackageJsonRules } from "#tools/eslint/operations/createPackageJs
 export { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
 export { fixWithEslint } from "#tools/eslint/operations/fixWithEslint";
 export { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";
+export { loadConventionCategories } from "#tools/eslint/operations/loadConventionCategories";
 export { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
 export { resolveConventionSections } from "#tools/eslint/operations/resolveConventionSections";
 export { resolveEslintFixArguments } from "#tools/eslint/operations/resolveEslintFixArguments";
@@ -20,6 +21,10 @@ export { resolveEslintSuppressArguments } from "#tools/eslint/operations/resolve
 export { resolveScope } from "#tools/eslint/operations/resolveScope";
 export { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
 export { selectConventions } from "#tools/eslint/operations/selectConventions";
+// @end
+
+// @barrel ports
+export type * from "#tools/eslint/ports/ConventionEntry";
 // @end
 
 // @barrel types
@@ -58,7 +63,12 @@ export type * from "#tools/eslint/types/SelectedConvention";
 // @end
 
 export { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
+export { defineConvention } from "#tools/eslint/utils/defineConvention";
+export { defineGlobalReplacement } from "#tools/eslint/utils/defineGlobalReplacement";
+export { defineImportReplacement } from "#tools/eslint/utils/defineImportReplacement";
+export { defineReplacement } from "#tools/eslint/utils/defineReplacement";
 export { defineRoleRule } from "#tools/eslint/utils/defineRoleRule";
+export { delegateRule } from "#tools/eslint/utils/delegateRule";
 export { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 export { normalizeRuleSchema } from "#tools/eslint/utils/normalizeRuleSchema";
 export { visitImportSources } from "#tools/eslint/utils/visitImportSources";

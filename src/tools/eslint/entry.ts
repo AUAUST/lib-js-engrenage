@@ -1,8 +1,13 @@
 export {
   createEslintConfig,
   createEslintConfigStep,
+  defineConvention,
   defineEslintConfig,
+  defineGlobalReplacement,
+  defineImportReplacement,
+  defineReplacement,
   defineRoleRule,
+  delegateRule,
   loadInfoRules,
   optionsSchema,
 } from "#tools/eslint/index";
@@ -12,6 +17,7 @@ export type {
   ConfigObject,
   ConfigWithExtends,
   Convention,
+  ConventionEntry,
   CoreRules,
   DebtMarker,
   Delegate,

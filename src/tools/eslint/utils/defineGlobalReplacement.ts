@@ -43,6 +43,9 @@ function createTarget(
     : `\`${name}.${property}\``;
 }
 
+/**
+ * @experimental
+ */
 export function defineGlobalReplacement({
   global,
   properties,

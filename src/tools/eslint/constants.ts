@@ -1,3 +1,6 @@
+import { function_, looseObject, string } from "valibot";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
+
 import { freeze } from "@auaust/toolkit/object";
 
 import { engrenage } from "#constants";
@@ -207,6 +210,13 @@ export const unicornRules = freeze({
   "unicorn/require-proxy-trap-boolean-return": "error",
   "unicorn/throw-new-error": "error",
 } as const satisfies UnicornRules);
+
+// @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
+export const conventionEntry: StandardSchemaV1 = looseObject({
+  name: string(),
+  category: string(),
+  load: function_(),
+});
 
 export const defaultSuppressionsFile = "eslint-suppressions.json" satisfies File;
 
