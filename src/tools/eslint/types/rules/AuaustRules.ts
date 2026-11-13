@@ -57,6 +57,11 @@ export interface AuaustRules {
    */
   "auaust/doc-tags"?: Rule<[]>;
   /**
+   * Each member of a `ports` or `apis` interface and each declaration a package
+   * entry exports has a JSDoc description.
+   */
+  "auaust/documented"?: Rule<[]>;
+  /**
    * A domain holds only roles, sub-domains and namespaces, and a namespace only
    * domains and namespaces; a command group also holds command modules.
    */

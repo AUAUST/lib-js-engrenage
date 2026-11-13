@@ -110,6 +110,10 @@
     {
       "rule": "unicorn/require-css-escape",
       "severity": "info"
+    },
+    {
+      "rule": "auaust/documented",
+      "severity": "info"
     }
   ],
   "js/ts.tsdk.path": "node_modules/typescript/lib",

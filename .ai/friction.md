@@ -94,3 +94,4 @@
 - timeout: wrapped vitest in timeout to bound it — not installed on macOS, so the chained cleanup ran early; reran without it
 - worktree isolation: chained `git diff` after other commands in one Bash call — refused as unverifiable; split into separate calls
 - `engrenage gate --worktree`: first gate run in a worktree — printed a vitest failure (`listDebtMarkers` timeout) run from another agent worktree yet exited 0; reran the gate, which passed silently
+- npx tsc: ran to type check — devEngines rejects npm; used pnpm exec tsc
