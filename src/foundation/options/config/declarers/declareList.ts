@@ -3,8 +3,8 @@ import type { GenericSchema } from "valibot";
 import { declare } from "#foundation/options/config/declarers/declare";
 import { listOptionSchema } from "#foundation/options/config/schemas/listOptionSchema";
 import { resolveListOption } from "#foundation/options/utils/resolveListOption";
-import type { Declaration } from "#foundation/options/types/Declaration";
-import type { Default } from "#foundation/options/types/Default";
+import type { Declaration } from "#foundation/options/ports/Declaration";
+import type { Default } from "#foundation/options/ports/Default";
 import type { Description } from "#foundation/options/types/Description";
 import type { ListOption } from "#foundation/options/types/ListOption";
 

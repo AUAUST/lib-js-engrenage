@@ -1,6 +1,6 @@
 import type { Rule } from "eslint";
 
-import type { Delegate } from "#tools/eslint/types/Delegate";
+import type { Delegate } from "#tools/eslint/ports/Delegate";
 import type { ReportDescriptor } from "#tools/eslint/types/ReportDescriptor";
 import type { RuleOptions } from "#tools/eslint/types/RuleOptions";
 import type { Rules } from "#tools/eslint/types/Rules";

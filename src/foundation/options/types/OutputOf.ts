@@ -1,4 +1,4 @@
-import type { Declaration } from "#foundation/options/types/Declaration";
+import type { Declaration } from "#foundation/options/ports/Declaration";
 
 export type OutputOf<Source> = Source extends Declaration<
   unknown,

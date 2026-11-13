@@ -8,7 +8,7 @@ import {
 } from "valibot";
 
 import { describeDefault } from "#foundation/options/utils/describeDefault";
-import type { Default } from "#foundation/options/types/Default";
+import type { Default } from "#foundation/options/ports/Default";
 import type { Description } from "#foundation/options/types/Description";
 
 export function createOptionSchema(

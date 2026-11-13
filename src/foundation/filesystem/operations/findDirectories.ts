@@ -1,4 +1,4 @@
-import type { Filesystem } from "#foundation/filesystem/types/Filesystem";
+import type { Filesystem } from "#foundation/filesystem/apis/Filesystem";
 import type { Directories } from "#types/Directories";
 
 export async function findDirectories(

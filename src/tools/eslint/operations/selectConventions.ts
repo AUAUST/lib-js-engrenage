@@ -4,7 +4,7 @@ import { entries, hasOwn, keys } from "@auaust/toolkit/object";
 
 import type { Environment } from "#project/config/index";
 import type { ResolvedTraits } from "#project/presets/index";
-import type { Convention } from "#tools/eslint/types/Convention";
+import type { Convention } from "#tools/eslint/ports/Convention";
 import type { SelectedConvention } from "#tools/eslint/types/SelectedConvention";
 
 function isEnabledByDefault(

@@ -5,8 +5,8 @@ import { entries, freeze } from "@auaust/toolkit/object";
 
 import { createOptionSchema } from "#foundation/options/utils/createOptionSchema";
 import { resolveDefault } from "#foundation/options/utils/resolveDefault";
-import type { Declaration } from "#foundation/options/types/Declaration";
-import type { Default } from "#foundation/options/types/Default";
+import type { Declaration } from "#foundation/options/ports/Declaration";
+import type { Default } from "#foundation/options/ports/Default";
 import type { Description } from "#foundation/options/types/Description";
 
 /**

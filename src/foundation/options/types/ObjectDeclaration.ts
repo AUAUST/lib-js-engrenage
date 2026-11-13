@@ -1,4 +1,4 @@
-import type { Declaration } from "#foundation/options/types/Declaration";
+import type { Declaration } from "#foundation/options/ports/Declaration";
 import type { DeclarationEntries } from "#foundation/options/types/DeclarationEntries";
 
 export interface ObjectDeclaration<

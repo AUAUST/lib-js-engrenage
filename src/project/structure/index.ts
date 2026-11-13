@@ -9,6 +9,10 @@ export { listStructureFilesAtAnyDepth } from "#project/structure/operations/list
 export { resolveAliases } from "#project/structure/operations/resolveAliases";
 export { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
 
+// @barrel apis
+export type * from "#project/structure/apis/EntityIndex";
+// @end
+
 // @barrel types
 export type * from "#project/structure/types/Alias";
 export type * from "#project/structure/types/AliasesOption";
@@ -20,7 +24,6 @@ export type * from "#project/structure/types/EffectModule";
 export type * from "#project/structure/types/EffectModuleResolver";
 export type * from "#project/structure/types/EffectModules";
 export type * from "#project/structure/types/Entity";
-export type * from "#project/structure/types/EntityIndex";
 export type * from "#project/structure/types/EnvironmentFileNames";
 export type * from "#project/structure/types/EnvironmentRoles";
 export type * from "#project/structure/types/EnvironmentStructure";

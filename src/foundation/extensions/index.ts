@@ -1,3 +1,7 @@
+// @barrel apis
+export type * from "#foundation/extensions/apis/Registry";
+// @end
+
 // @barrel types
 export type * from "#foundation/extensions/types/BucketSlotDeclaration";
 export type * from "#foundation/extensions/types/Contribution";
@@ -13,7 +17,6 @@ export type * from "#foundation/extensions/types/KindOf";
 export type * from "#foundation/extensions/types/ListSlotDeclaration";
 export type * from "#foundation/extensions/types/OwnedDeclaration";
 export type * from "#foundation/extensions/types/PayloadOf";
-export type * from "#foundation/extensions/types/Registry";
 export type * from "#foundation/extensions/types/SlotDeclaration";
 export type * from "#foundation/extensions/types/SlotOf";
 // @end

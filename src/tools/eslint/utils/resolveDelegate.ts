@@ -6,7 +6,7 @@ import { max } from "@auaust/toolkit/math";
 import { create, entries } from "@auaust/toolkit/object";
 
 import { findUpstreamRule } from "#tools/eslint/utils/findUpstreamRule";
-import type { Delegate } from "#tools/eslint/types/Delegate";
+import type { Delegate } from "#tools/eslint/ports/Delegate";
 import type { ReportDescriptor } from "#tools/eslint/types/ReportDescriptor";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 

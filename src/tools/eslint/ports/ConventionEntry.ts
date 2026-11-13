@@ -1,5 +1,5 @@
 import type { EntryShape } from "#foundation/extensions/index";
-import type { Convention } from "#tools/eslint/types/Convention";
+import type { Convention } from "#tools/eslint/ports/Convention";
 
 /**
  * @experimental

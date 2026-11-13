@@ -1,4 +1,4 @@
-import type { Declaration } from "#foundation/options/types/Declaration";
+import type { Declaration } from "#foundation/options/ports/Declaration";
 
 export type InputOf<Source> = Source extends Declaration<
   infer Input,

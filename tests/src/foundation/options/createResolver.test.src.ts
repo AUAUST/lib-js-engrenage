@@ -6,8 +6,8 @@ import { getOwn } from "@auaust/toolkit/object";
 import { declare } from "#foundation/options/config/declarers/declare";
 import { declareSection } from "#foundation/options/config/declarers/declareSection";
 import { createResolver } from "#foundation/options/utils/createResolver";
-import type { Resolver } from "#foundation/options/types/Resolver";
-import type { Section } from "#foundation/options/types/Section";
+import type { Resolver } from "#foundation/options/apis/Resolver";
+import type { Section } from "#foundation/options/ports/Section";
 import type { SectionSource } from "#foundation/options/types/SectionSource";
 
 function createSource(

@@ -2,7 +2,7 @@ import { map } from "@auaust/primitive-kit/arrays";
 import { hasOwn } from "@auaust/toolkit/object";
 
 import type { LoadedConfig } from "#project/config/index";
-import type { Convention } from "#tools/eslint/types/Convention";
+import type { Convention } from "#tools/eslint/ports/Convention";
 
 import * as builtInCategories from "#tools/eslint/conventions/index";
 

@@ -3,8 +3,8 @@ import type {
   IssueAccess,
   IssueLocation,
 } from "#tools/github/issues/contract/index";
+import type { IssueLookup } from "#tools/github/issues/drafts/apis/IssueLookup";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
-import type { IssueLookup } from "#tools/github/issues/drafts/types/IssueLookup";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 
 export interface Publication {

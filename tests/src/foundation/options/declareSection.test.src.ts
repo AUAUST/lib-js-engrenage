@@ -1,7 +1,7 @@
 import { describe, expectTypeOf, test } from "vitest";
 
 import { declareSection } from "#foundation/options/config/declarers/declareSection";
-import type { Section } from "#foundation/options/types/Section";
+import type { Section } from "#foundation/options/ports/Section";
 import type { ConfigResolver } from "#project/config/types/ConfigResolver";
 
 describe("declareSection", () => {

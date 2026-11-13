@@ -7,13 +7,13 @@ import { entries, freeze } from "@auaust/toolkit/object";
 
 import { createRegistry } from "#foundation/extensions/utils/createRegistry";
 import { orderListSlot } from "#foundation/extensions/utils/orderListSlot";
+import type { Registry } from "#foundation/extensions/apis/Registry";
 import type { Contribution } from "#foundation/extensions/types/Contribution";
 import type { EdgeDeclaration } from "#foundation/extensions/types/EdgeDeclaration";
 import type { EntryShape } from "#foundation/extensions/types/EntryShape";
 import type { ExtensionShape } from "#foundation/extensions/types/ExtensionShape";
 import type { KindOf } from "#foundation/extensions/types/KindOf";
 import type { OwnedDeclaration } from "#foundation/extensions/types/OwnedDeclaration";
-import type { Registry } from "#foundation/extensions/types/Registry";
 import type { SlotDeclaration } from "#foundation/extensions/types/SlotDeclaration";
 
 type Owned = Readonly<Record<string, Readonly<Record<string, unknown>>>>;

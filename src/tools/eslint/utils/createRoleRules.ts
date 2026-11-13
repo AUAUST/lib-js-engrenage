@@ -8,9 +8,9 @@ import { entries, getOwn, values } from "@auaust/toolkit/object";
 import { pluginName, rolesPluginName } from "#tools/eslint/constants";
 import type { RoleRuleModule } from "#project/roles/index";
 import type { EntityIndex, ResolvedStructure } from "#project/structure/index";
+import type { RoleRule } from "#tools/eslint/ports/RoleRule";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Plugin } from "#tools/eslint/types/Plugin";
-import type { RoleRule } from "#tools/eslint/types/RoleRule";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 
 function isRoleRule(module: RoleRuleModule): module is RoleRule {

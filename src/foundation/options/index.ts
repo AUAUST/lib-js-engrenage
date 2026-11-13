@@ -31,15 +31,23 @@ export { unset } from "#foundation/options/utils/unset";
 export { validate } from "#foundation/options/utils/validate";
 // @end
 
+// @barrel apis
+export type * from "#foundation/options/apis/InputResolver";
+export type * from "#foundation/options/apis/Resolver";
+// @end
+
+// @barrel ports
+export type * from "#foundation/options/ports/Declaration";
+export type * from "#foundation/options/ports/Default";
+export type * from "#foundation/options/ports/Section";
+// @end
+
 // @barrel types
 export type * from "#foundation/options/types/Accessors";
-export type * from "#foundation/options/types/Declaration";
 export type * from "#foundation/options/types/DeclarationEntries";
-export type * from "#foundation/options/types/Default";
 export type * from "#foundation/options/types/DescribedResolver";
 export type * from "#foundation/options/types/Description";
 export type * from "#foundation/options/types/InputOf";
-export type * from "#foundation/options/types/InputResolver";
 export type * from "#foundation/options/types/KeyedSection";
 export type * from "#foundation/options/types/ListAdjustment";
 export type * from "#foundation/options/types/ListOption";
@@ -51,7 +59,5 @@ export type * from "#foundation/options/types/ObjectOutput";
 export type * from "#foundation/options/types/ObjectResolution";
 export type * from "#foundation/options/types/OutputOf";
 export type * from "#foundation/options/types/ResolvedLocation";
-export type * from "#foundation/options/types/Resolver";
-export type * from "#foundation/options/types/Section";
 export type * from "#foundation/options/types/SectionSource";
 // @end

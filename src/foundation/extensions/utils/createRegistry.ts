@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import type { Registry } from "#foundation/extensions/apis/Registry";
 import type { Contribution } from "#foundation/extensions/types/Contribution";
 import type { DeclarationOf } from "#foundation/extensions/types/DeclarationOf";
 import type { EntryOf } from "#foundation/extensions/types/EntryOf";
@@ -9,7 +10,6 @@ import type { HookEntry } from "#foundation/extensions/types/HookEntry";
 import type { KindOf } from "#foundation/extensions/types/KindOf";
 import type { OwnedDeclaration } from "#foundation/extensions/types/OwnedDeclaration";
 import type { PayloadOf } from "#foundation/extensions/types/PayloadOf";
-import type { Registry } from "#foundation/extensions/types/Registry";
 import type { SlotOf } from "#foundation/extensions/types/SlotOf";
 
 export function createRegistry<Extension extends ExtensionShape, Scope>(

@@ -6,7 +6,7 @@ import {
   isSameIssue,
   type IssueLocation,
 } from "#tools/github/issues/contract/index";
-import type { IssueLookup } from "#tools/github/issues/drafts/types/IssueLookup";
+import type { IssueLookup } from "#tools/github/issues/drafts/apis/IssueLookup";
 
 function includes(list: readonly IssueLocation[], location: IssueLocation) {
   return list.some((entry) => isSameIssue(entry, location));

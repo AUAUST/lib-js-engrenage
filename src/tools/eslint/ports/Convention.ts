@@ -1,6 +1,6 @@
 import type { ConfigContext, ConfigKey } from "#project/config/index";
 import type { Trait } from "#project/presets/index";
-import type { Delegate } from "#tools/eslint/types/Delegate";
+import type { Delegate } from "#tools/eslint/ports/Delegate";
 import type { ResolvedSections } from "#tools/eslint/types/ResolvedSections";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";

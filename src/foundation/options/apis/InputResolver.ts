@@ -1,4 +1,4 @@
-import type { Resolver } from "#foundation/options/types/Resolver";
+import type { Resolver } from "#foundation/options/apis/Resolver";
 
 export interface InputResolver<
   Context = unknown,

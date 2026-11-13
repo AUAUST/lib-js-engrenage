@@ -2,7 +2,7 @@ import type { Rule } from "eslint";
 
 import { createRuleMeta } from "#tools/eslint/utils/createRuleMeta";
 import type { Entity, EnvironmentFileNames } from "#project/structure/index";
-import type { RoleRule } from "#tools/eslint/types/RoleRule";
+import type { RoleRule } from "#tools/eslint/ports/RoleRule";
 
 export function defineRoleRule({
   description,

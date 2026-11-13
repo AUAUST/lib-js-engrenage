@@ -6,7 +6,7 @@ import { getOwn } from "@auaust/toolkit/object";
 
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 import type { Entity, EntityIndex, ImportEdge } from "#project/structure/index";
-import type { ImportGraph } from "#tools/eslint/types/ImportGraph";
+import type { ImportGraph } from "#tools/eslint/apis/ImportGraph";
 
 interface ImportAnalysis {
   edgeOf(node: Rule.Node, specifier: string): ImportEdge;

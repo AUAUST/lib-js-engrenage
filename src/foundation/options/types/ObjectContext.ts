@@ -1,4 +1,4 @@
-import type { Declaration } from "#foundation/options/types/Declaration";
+import type { Declaration } from "#foundation/options/ports/Declaration";
 import type { DeclarationEntries } from "#foundation/options/types/DeclarationEntries";
 
 // @debt a declaration contextually typed by the `DeclarationEntries` constraint infers a `never` context, read here as no requirement instead of inferring `unknown` at its declarer

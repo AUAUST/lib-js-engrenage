@@ -27,9 +27,9 @@ import { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { Files } from "#types/Files";
+import type { GateStep } from "#workflows/gate/apis/GateStep";
 import type { GateFailure } from "#workflows/gate/types/GateFailure";
 import type { GateReport } from "#workflows/gate/types/GateReport";
-import type { GateStep } from "#workflows/gate/types/GateStep";
 import type { GateWarning } from "#workflows/gate/types/GateWarning";
 import type { TreeIdentity } from "#workflows/gate/types/TreeIdentity";
 

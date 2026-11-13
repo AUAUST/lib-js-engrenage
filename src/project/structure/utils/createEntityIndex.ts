@@ -13,8 +13,8 @@ import { extendRoleLocation } from "#project/structure/utils/extendRoleLocation"
 import { getAliasSpecifier } from "#project/structure/utils/getAliasSpecifier";
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
+import type { EntityIndex } from "#project/structure/apis/EntityIndex";
 import type { Entity } from "#project/structure/types/Entity";
-import type { EntityIndex } from "#project/structure/types/EntityIndex";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { LineageMember } from "#project/structure/types/LineageMember";
 import type { LocatedEntity } from "#project/structure/types/LocatedEntity";

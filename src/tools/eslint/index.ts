@@ -26,25 +26,28 @@ export { selectConventions } from "#tools/eslint/operations/selectConventions";
 // @end
 
 // @barrel ports
+export type * from "#tools/eslint/ports/Convention";
 export type * from "#tools/eslint/ports/ConventionEntry";
+export type * from "#tools/eslint/ports/Delegate";
+export type * from "#tools/eslint/ports/RoleRule";
+// @end
+
+// @barrel apis
+export type * from "#tools/eslint/apis/ImportGraph";
 // @end
 
 // @barrel types
 export type * from "#tools/eslint/types/Config";
 export type * from "#tools/eslint/types/ConfigObject";
 export type * from "#tools/eslint/types/ConfigWithExtends";
-export type * from "#tools/eslint/types/Convention";
 export type * from "#tools/eslint/types/ConventionSections";
 export type * from "#tools/eslint/types/ConventionValues";
 export type * from "#tools/eslint/types/DebtMarker";
-export type * from "#tools/eslint/types/Delegate";
-export type * from "#tools/eslint/types/ImportGraph";
 export type * from "#tools/eslint/types/InfoMessage";
 export type * from "#tools/eslint/types/Options";
 export type * from "#tools/eslint/types/Plugin";
 export type * from "#tools/eslint/types/ReportDescriptor";
 export type * from "#tools/eslint/types/ResolvedSections";
-export type * from "#tools/eslint/types/RoleRule";
 export type * from "#tools/eslint/types/Rule";
 export type * from "#tools/eslint/types/RuleModule";
 export type * from "#tools/eslint/types/RuleOptions";

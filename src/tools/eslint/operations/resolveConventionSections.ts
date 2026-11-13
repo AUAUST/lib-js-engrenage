@@ -2,7 +2,7 @@ import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { entries, freeze, record } from "@auaust/toolkit/object";
 
 import type { ConfigKey, LoadedConfig } from "#project/config/index";
-import type { Convention } from "#tools/eslint/types/Convention";
+import type { Convention } from "#tools/eslint/ports/Convention";
 import type { ConventionSections } from "#tools/eslint/types/ConventionSections";
 import type { ConventionValues } from "#tools/eslint/types/ConventionValues";
 import type { ResolvedSections } from "#tools/eslint/types/ResolvedSections";

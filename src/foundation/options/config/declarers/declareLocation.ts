@@ -1,7 +1,7 @@
 import { declare } from "#foundation/options/config/declarers/declare";
 import { fileSchema } from "#foundation/options/config/schemas/fileSchema";
 import { describeDefault } from "#foundation/options/utils/describeDefault";
-import type { Declaration } from "#foundation/options/types/Declaration";
+import type { Declaration } from "#foundation/options/ports/Declaration";
 import type { Description } from "#foundation/options/types/Description";
 import type { ResolvedLocation } from "#foundation/options/types/ResolvedLocation";
 import type { File } from "#types/File";

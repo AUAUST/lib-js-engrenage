@@ -1,5 +1,5 @@
-import type { Declaration } from "#foundation/options/types/Declaration";
-import type { Resolver } from "#foundation/options/types/Resolver";
+import type { Resolver } from "#foundation/options/apis/Resolver";
+import type { Declaration } from "#foundation/options/ports/Declaration";
 
 // @debt the resolver context is typed `unknown`, so sections narrow it by annotating their `config` parameter, which method bivariance accepts unchecked
 /**

@@ -4,7 +4,7 @@ import { entries, values } from "@auaust/toolkit/object";
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
 import { resolveDelegate } from "#tools/eslint/utils/resolveDelegate";
 import type { ConfigContext } from "#project/config/index";
-import type { Convention } from "#tools/eslint/types/Convention";
+import type { Convention } from "#tools/eslint/ports/Convention";
 import type { Plugin } from "#tools/eslint/types/Plugin";
 import type { ResolvedSections } from "#tools/eslint/types/ResolvedSections";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";

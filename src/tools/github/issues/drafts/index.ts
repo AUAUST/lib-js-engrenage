@@ -54,6 +54,10 @@ export { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftRefer
 export { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
 // @end
 
+// @barrel apis
+export type * from "#tools/github/issues/drafts/apis/IssueLookup";
+// @end
+
 // @barrel types
 export type * from "#tools/github/issues/drafts/types/BodySection";
 export type * from "#tools/github/issues/drafts/types/Draft";
@@ -61,7 +65,6 @@ export type * from "#tools/github/issues/drafts/types/DraftManifest";
 export type * from "#tools/github/issues/drafts/types/DraftReference";
 export type * from "#tools/github/issues/drafts/types/DraftsContext";
 export type * from "#tools/github/issues/drafts/types/FieldValue";
-export type * from "#tools/github/issues/drafts/types/IssueLookup";
 export type * from "#tools/github/issues/drafts/types/IssuesCheck";
 export type * from "#tools/github/issues/drafts/types/ManifestTarget";
 export type * from "#tools/github/issues/drafts/types/Publication";

@@ -2,10 +2,10 @@ import { is, keys } from "@auaust/toolkit/object";
 
 import { applyInputDefaults } from "#foundation/options/utils/applyInputDefaults";
 import { validate } from "#foundation/options/utils/validate";
-import type { Declaration } from "#foundation/options/types/Declaration";
-import type { InputResolver } from "#foundation/options/types/InputResolver";
+import type { InputResolver } from "#foundation/options/apis/InputResolver";
+import type { Resolver } from "#foundation/options/apis/Resolver";
+import type { Declaration } from "#foundation/options/ports/Declaration";
 import type { KeyedSection } from "#foundation/options/types/KeyedSection";
-import type { Resolver } from "#foundation/options/types/Resolver";
 import type { SectionSource } from "#foundation/options/types/SectionSource";
 
 interface Reading {

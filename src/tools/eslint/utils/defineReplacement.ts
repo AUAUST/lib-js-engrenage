@@ -1,6 +1,6 @@
 import { defineRestriction } from "#tools/eslint/utils/defineRestriction";
 import type { Trait } from "#project/presets/index";
-import type { Convention } from "#tools/eslint/types/Convention";
+import type { Convention } from "#tools/eslint/ports/Convention";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 

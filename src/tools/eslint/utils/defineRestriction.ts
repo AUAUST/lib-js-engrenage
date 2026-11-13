@@ -2,7 +2,7 @@ import type { Rule } from "eslint";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import type { Trait } from "#project/presets/index";
-import type { Convention } from "#tools/eslint/types/Convention";
+import type { Convention } from "#tools/eslint/ports/Convention";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 

@@ -6,7 +6,7 @@ import {
   type GithubClient,
 } from "#tools/github/issues/api/index";
 import type { IssueLocation } from "#tools/github/issues/contract/index";
-import type { IssueLookup } from "#tools/github/issues/drafts/types/IssueLookup";
+import type { IssueLookup } from "#tools/github/issues/drafts/apis/IssueLookup";
 
 const issueSchema = object({
   id: number(),

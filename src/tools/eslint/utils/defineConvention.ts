@@ -3,10 +3,10 @@ import { value, type ResolvableValue } from "@auaust/toolkit/value";
 
 import type { ConfigContext } from "#project/config/index";
 import type { Trait } from "#project/presets/index";
-import type { Convention } from "#tools/eslint/types/Convention";
+import type { Convention } from "#tools/eslint/ports/Convention";
+import type { Delegate } from "#tools/eslint/ports/Delegate";
 import type { ConventionSections } from "#tools/eslint/types/ConventionSections";
 import type { ConventionValues } from "#tools/eslint/types/ConventionValues";
-import type { Delegate } from "#tools/eslint/types/Delegate";
 import type { ResolvedSections } from "#tools/eslint/types/ResolvedSections";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";

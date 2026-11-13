@@ -22,6 +22,7 @@ import { isMissingError } from "#foundation/filesystem/utils/isMissingError";
 import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
 import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
 import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
+import type { Filesystem } from "#foundation/filesystem/apis/Filesystem";
 import type { FileFormatter } from "#foundation/filesystem/types/FileFormatter";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -68,7 +69,7 @@ function joinLocated(directory: File, name: string): File {
   return directory === "" ? name : `${directory}/${name}`;
 }
 
-export function createFilesystem(root: Directory) {
+export function createFilesystem(root: Directory): Filesystem {
   const contents = new Map<File, string | undefined>();
   const originals = new Map<File, string | undefined>();
 

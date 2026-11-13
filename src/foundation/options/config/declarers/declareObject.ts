@@ -11,9 +11,9 @@ import {
 
 import { createOptionSchema } from "#foundation/options/utils/createOptionSchema";
 import { resolveDefault } from "#foundation/options/utils/resolveDefault";
-import type { Declaration } from "#foundation/options/types/Declaration";
+import type { Declaration } from "#foundation/options/ports/Declaration";
+import type { Default } from "#foundation/options/ports/Default";
 import type { DeclarationEntries } from "#foundation/options/types/DeclarationEntries";
-import type { Default } from "#foundation/options/types/Default";
 import type { Description } from "#foundation/options/types/Description";
 import type { ObjectContext } from "#foundation/options/types/ObjectContext";
 import type { ObjectDeclaration } from "#foundation/options/types/ObjectDeclaration";

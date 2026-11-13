@@ -1,4 +1,4 @@
-import type { Convention } from "#tools/eslint/types/Convention";
+import type { Convention } from "#tools/eslint/ports/Convention";
 
 export interface SelectedConvention {
   readonly category: string;
