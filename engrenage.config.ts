@@ -17,7 +17,7 @@ import {
   utils,
   type RoleLocation,
 } from "#project/roles/index";
-import { extension } from "#tools/eslint/roles/index";
+import { apis, extension } from "#tools/eslint/roles/index";
 import { defineConfig } from "#workflows/config/index";
 
 function definerFile({ lineage }: RoleLocation): string {
@@ -143,6 +143,7 @@ const codeRoles = [
   errors(),
   enums(),
   ports(),
+  apis(),
   rankedAdapters(),
   config(),
   setup(),
@@ -179,6 +180,7 @@ export default defineConfig({
       errors(),
       enums(),
       ports(),
+      apis(),
       rankedAdapters(),
       fixtures(),
       testsetup(),

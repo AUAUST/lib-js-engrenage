@@ -29,6 +29,11 @@ export default {
   contributes: {
     "roles": [
       {
+        name: "apis",
+        from: rolePresetsEntry,
+        environments: ["src", "tests", "scripts", "tooling"],
+      },
+      {
         name: "extension",
         from: rolePresetsEntry,
         environments: [],
