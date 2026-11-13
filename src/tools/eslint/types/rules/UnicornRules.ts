@@ -12,8 +12,8 @@ export interface UnicornRules {
   /**
    * Removed. Prefer `eslint-plugin-regexp`
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#better-regex
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#better-regex
    */
   "unicorn/better-regex"?: Rule<[]>;
   /**
@@ -327,8 +327,8 @@ export interface UnicornRules {
   /**
    * Replaced by `unicorn/prefer-single-call` which covers more cases.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-array-push-push
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-array-push-push
    */
   "unicorn/no-array-push-push"?: Rule<[]>;
   /**
@@ -481,8 +481,8 @@ export interface UnicornRules {
   /**
    * Moved to `eslint-cssicorn` as `cssicorn/no-deprecated-features`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-deprecated-css-features
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-deprecated-css-features
    */
   "unicorn/no-deprecated-css-features"?: Rule<[]>;
   /**
@@ -500,15 +500,15 @@ export interface UnicornRules {
   /**
    * Moved to `eslint-cssicorn` as `cssicorn/no-duplicate-selectors`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-duplicate-css-selectors
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-duplicate-css-selectors
    */
   "unicorn/no-duplicate-css-selectors"?: Rule<[]>;
   /**
    * Moved to `eslint-cssicorn` as `cssicorn/no-duplicate-font-family-names`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-duplicate-font-family-names
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-duplicate-font-family-names
    */
   "unicorn/no-duplicate-font-family-names"?: Rule<[]>;
   /**
@@ -582,8 +582,8 @@ export interface UnicornRules {
    * Replaced by `unicorn/prefer-literal-ascii` and
    * `unicorn/prefer-unicode-code-point-escapes`, which cover more cases.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-hex-escape
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-hex-escape
    */
   "unicorn/no-hex-escape"?: Rule<[]>;
   /**
@@ -626,8 +626,8 @@ export interface UnicornRules {
   /**
    * Replaced by `unicorn/no-instanceof-builtins` which covers more cases.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-instanceof-array
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-instanceof-array
    */
   "unicorn/no-instanceof-array"?: Rule<[]>;
   /**
@@ -689,8 +689,8 @@ export interface UnicornRules {
   /**
    * Moved to `eslint-cssicorn` as `cssicorn/no-invalid-media-features`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-invalid-media-features
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-invalid-media-features
    */
   "unicorn/no-invalid-media-features"?: Rule<[]>;
   /**
@@ -772,8 +772,8 @@ export interface UnicornRules {
   /**
    * Replaced by `unicorn/no-unnecessary-slice-end` which covers more cases.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-length-as-slice-end
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-length-as-slice-end
    */
   "unicorn/no-length-as-slice-end"?: Rule<[]>;
   /**
@@ -872,8 +872,8 @@ export interface UnicornRules {
   /**
    * Moved to `eslint-cssicorn` as `cssicorn/no-nesting-with-mixed-specificity`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-nesting-with-mixed-specificity
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-nesting-with-mixed-specificity
    */
   "unicorn/no-nesting-with-mixed-specificity"?: Rule<[]>;
   /**
@@ -947,8 +947,8 @@ export interface UnicornRules {
   /**
    * Moved to `eslint-cssicorn` as `cssicorn/no-redundant-nested-style-rules`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-redundant-nested-style-rules
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-redundant-nested-style-rules
    */
   "unicorn/no-redundant-nested-style-rules"?: Rule<[]>;
   /**
@@ -1050,15 +1050,15 @@ export interface UnicornRules {
   /**
    * Moved to `eslint-cssicorn` as `cssicorn/no-unknown-annotations`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-unknown-css-annotations
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-unknown-css-annotations
    */
   "unicorn/no-unknown-css-annotations"?: Rule<[]>;
   /**
    * Moved to `eslint-cssicorn` as `cssicorn/no-unknown-pseudo-selectors`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-unknown-pseudo-selectors
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-unknown-pseudo-selectors
    */
   "unicorn/no-unknown-pseudo-selectors"?: Rule<[]>;
   /**
@@ -1225,16 +1225,16 @@ export interface UnicornRules {
   /**
    * Moved to `eslint-cssicorn` as `cssicorn/no-unscoped-nesting-selector`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-unscoped-css-nesting-selector
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-unscoped-css-nesting-selector
    */
   "unicorn/no-unscoped-css-nesting-selector"?: Rule<[]>;
   /**
    * Replaced by `unicorn/no-unused-builtin-method-return` which covers more
    * cases.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-unused-array-method-return
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-unused-array-method-return
    */
   "unicorn/no-unused-array-method-return"?: Rule<[]>;
   /**
@@ -1641,8 +1641,8 @@ export interface UnicornRules {
   /**
    * Renamed to `unicorn/dom-node-dataset`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#prefer-dom-node-dataset
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#prefer-dom-node-dataset
    */
   "unicorn/prefer-dom-node-dataset"?: Rule<[]>;
   /**
@@ -1703,8 +1703,8 @@ export interface UnicornRules {
   /**
    * Moved to `eslint-cssicorn` as `cssicorn/prefer-explicit-viewport-units`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#prefer-explicit-viewport-units
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#prefer-explicit-viewport-units
    */
   "unicorn/prefer-explicit-viewport-units"?: Rule<[]>;
   /**
@@ -1834,8 +1834,8 @@ export interface UnicornRules {
   /**
    * Renamed to `unicorn/consistent-json-file-read`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#prefer-json-parse-buffer
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#prefer-json-parse-buffer
    */
   "unicorn/prefer-json-parse-buffer"?: Rule<[]>;
   /**
@@ -1897,8 +1897,8 @@ export interface UnicornRules {
   /**
    * Moved to `eslint-cssicorn` as `cssicorn/prefer-media-feature-range-syntax`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#prefer-media-feature-range-syntax
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#prefer-media-feature-range-syntax
    */
   "unicorn/prefer-media-feature-range-syntax"?: Rule<[]>;
   /**
@@ -2343,8 +2343,8 @@ export interface UnicornRules {
   /**
    * Renamed to `unicorn/name-replacements`.
    *
-   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#prevent-abbreviations
    * @deprecated
+   * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#prevent-abbreviations
    */
   "unicorn/prevent-abbreviations"?: Rule<[]>;
   /**

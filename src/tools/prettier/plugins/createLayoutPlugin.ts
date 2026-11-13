@@ -16,6 +16,7 @@ import { mappedValues } from "@auaust/toolkit/mappedValues";
 import { values } from "@auaust/toolkit/object";
 
 import { visitNodes } from "#tools/prettier/utils/visitNodes";
+import type { TagDeclaration } from "#project/docs/index";
 import type { LayoutConvention } from "#tools/prettier/types/LayoutConvention";
 import type { LayoutEdit } from "#tools/prettier/types/LayoutEdit";
 import type { Plugin } from "#tools/prettier/types/Plugin";
@@ -192,6 +193,7 @@ function findParser(
 export function createLayoutPlugin(
   plugins: readonly Plugin[],
   conventions: Readonly<Record<string, LayoutConvention>>,
+  tags: readonly TagDeclaration[],
 ): Plugin {
   const layoutPlugin: Plugin = {
     parsers: mappedValues(stockParsers, (stock, name): Parser => {
@@ -229,6 +231,7 @@ export function createLayoutPlugin(
             return convention(program, formatted, {
               printWidth: options.printWidth,
               tabWidth: options.tabWidth,
+              tags,
             });
           });
 

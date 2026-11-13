@@ -985,9 +985,8 @@ interface Event {
    * implementations, setting this to false does nothing. See Browser compatibility
    * for details.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/cancelBubble)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/Event/cancelBubble)
    */
   cancelBubble: boolean;
   /**
@@ -1045,18 +1044,16 @@ interface Event {
    * The Event property **`returnValue`** indicates whether the default action
    * for this event has been prevented or not.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/returnValue)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/Event/returnValue)
    */
   returnValue: boolean;
   /**
    * The deprecated **`Event.srcElement`** is an alias for the Event.target
    * property. Use Event.target instead.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/srcElement)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/Event/srcElement)
    */
   readonly srcElement: EventTarget | null;
   /**
@@ -1097,9 +1094,8 @@ interface Event {
    * The **`Event.initEvent()`** method is used to initialize the value of an
    * event created using Document.createEvent().
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/initEvent)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/Event/initEvent)
    */
   initEvent(type: string, bubbles?: boolean, cancelable?: boolean): void;
   /**

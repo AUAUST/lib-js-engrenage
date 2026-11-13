@@ -33,9 +33,8 @@ interface CustomEvent<T = any> extends Event {
    * The **`CustomEvent.initCustomEvent()`** method initializes a CustomEvent
    * object. If the event has already been dispatched, this method does nothing.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/CustomEvent/initCustomEvent)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/CustomEvent/initCustomEvent)
    */
   initCustomEvent(
     type: string,

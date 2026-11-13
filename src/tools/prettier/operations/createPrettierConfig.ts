@@ -30,8 +30,9 @@ export async function createPrettierConfig(
   config: LoadedConfig,
   options: Config = {},
 ): Promise<Config> {
-  const [conventions, contributions] = await Promise.all([
+  const [conventions, docs, contributions] = await Promise.all([
     config.resolve("format"),
+    config.resolve("docs"),
     config.context.registry.contributions("prettier.plugins", config),
   ]);
 
@@ -52,7 +53,7 @@ export async function createPrettierConfig(
     ...options,
     plugins: [
       ...plugins,
-      createLayoutPlugin(loaded, layoutConventions),
+      createLayoutPlugin(loaded, layoutConventions, docs.tags),
       createPrinterPlugin(loaded),
     ],
     overrides: [...createOverrides(entries), ...(options.overrides ?? [])],

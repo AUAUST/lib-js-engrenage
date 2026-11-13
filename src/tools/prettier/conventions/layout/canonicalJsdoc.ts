@@ -3,6 +3,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 import { filterMap, sort } from "@auaust/primitive-kit/arrays";
 
 import { parseJsdoc, printJsdoc, type JsdocTag } from "#foundation/jsdoc/index";
+import { splitDocTag, type TagDeclaration } from "#project/docs/index";
 import { wrapParagraph } from "#tools/prettier/utils/wrapParagraph";
 import type { LayoutConvention } from "#tools/prettier/types/LayoutConvention";
 import type { LayoutEdit } from "#tools/prettier/types/LayoutEdit";
@@ -11,12 +12,6 @@ interface Paragraph {
   prefix: string;
   words: string[];
 }
-
-const descriptionTags: ReadonlySet<string> = new Set([
-  "description",
-  "desc",
-  "classdesc",
-]);
 
 const prefixWidth = " * ".length;
 const listItemPattern = /^(\s*(?:[-*+]|\d+[.)])\s+)(.*)$/;
@@ -62,11 +57,16 @@ function printParagraph({ prefix, words }: Paragraph, width: number): string[] {
 }
 
 // @debt list items, verbatim lines and paragraphs are told apart by line prefixes instead of a Markdown parser, so nested structures such as indented code blocks or lazy continuation lines are approximated
-function wrapDescription(description: string, width: number): string {
+function wrapDescription(
+  description: string,
+  width: number,
+  head?: string,
+): string {
   const lines: string[] = [];
 
   let paragraph: Paragraph | undefined;
   let fenced = false;
+  let pendingHead = head;
 
   function flush(): void {
     if (paragraph == null) {
@@ -114,10 +114,16 @@ function wrapDescription(description: string, width: number): string {
     if (paragraph != null) {
       paragraph.words.push(...getWords(line));
     } else if (content === line) {
+      const [first = "", ...rest] = getWords(line);
+
       paragraph = {
         prefix: "",
-        words: getWords(line),
+        words: lines.length === 0 && pendingHead !== undefined
+          ? [`${pendingHead} ${first}`, ...rest]
+          : [first, ...rest],
       };
+
+      pendingHead = undefined;
     } else {
       lines.push(line);
     }
@@ -125,11 +131,82 @@ function wrapDescription(description: string, width: number): string {
 
   flush();
 
-  return lines.join("\n");
+  return (pendingHead === undefined ? lines : [pendingHead, ...lines]).join(
+    "\n",
+  );
 }
 
-function getRank(tag: JsdocTag): number {
-  return descriptionTags.has(tag.name) ? 0 : 1;
+function printTagBody(
+  declaration: TagDeclaration,
+  text: string,
+  head: string,
+  body: string,
+  width: number,
+): string {
+  if (body === "") {
+    return head;
+  }
+
+  if (declaration.body === "inline") {
+    return `${head} ${body.replaceAll(/\s+/g, " ")}`;
+  }
+
+  if (declaration.body === "text") {
+    return wrapDescription(body, width, head);
+  }
+
+  // @debt a code body's raw lines are recovered by slicing the tag text, which holds only while `splitDocTag` returns the body as the text's unmodified tail; it could return the body's offset instead
+  const headText = text.slice(0, text.length - body.length);
+  const lineBreak = headText.lastIndexOf("\n");
+
+  return lineBreak === -1
+    ? `${head} ${body}`
+    : `${head}\n${text.slice(lineBreak + 1)}`;
+}
+
+function formatTag(
+  tags: readonly TagDeclaration[],
+  tag: JsdocTag,
+  width: number,
+): JsdocTag {
+  const declaration = tags.find(({ name }) => name === tag.name);
+
+  if (declaration === undefined) {
+    return tag;
+  }
+
+  const split = splitDocTag(declaration, tag.text);
+
+  if (!split.ok) {
+    return tag;
+  }
+
+  const name = `@${tag.name}`;
+
+  const head = [
+    name,
+    ...(split.type === undefined ? [] : [`{${split.type}}`]),
+    ...(split.subject === undefined ? [] : [split.subject]),
+  ].join(" ");
+
+  const printed = printTagBody(
+    declaration,
+    tag.text,
+    split.subject === undefined || split.body === "" ? head : `${head} -`,
+    split.body,
+    width,
+  );
+
+  return {
+    ...tag,
+    text: printed.slice(name.length).replace(/^ /, ""),
+  };
+}
+
+function getRank(tags: readonly TagDeclaration[], tag: JsdocTag): number {
+  const index = tags.findIndex(({ name }) => name === tag.name);
+
+  return index === -1 ? tags.length : index;
 }
 
 function isAloneOnItsLines(
@@ -148,7 +225,7 @@ function isAloneOnItsLines(
 const canonicalJsdoc: LayoutConvention = (
   program,
   text,
-  { printWidth, tabWidth },
+  { printWidth, tabWidth, tags },
 ) => {
   const comments: readonly TSESTree.Comment[] = program.comments ?? [];
 
@@ -170,9 +247,10 @@ const canonicalJsdoc: LayoutConvention = (
     const printed = printJsdoc({
       ...block,
       description: wrapDescription(block.description, width),
-      tags: sort([...block.tags], (first, second) => {
-        return getRank(first) - getRank(second);
-      }),
+      tags: sort(
+        block.tags.map((tag) => formatTag(tags, tag, width)),
+        (first, second) => getRank(tags, first) - getRank(tags, second),
+      ),
     });
 
     if (printed === source) {

@@ -26,9 +26,8 @@ interface DOMException extends Error {
    * The **`code`** read-only property of the DOMException interface returns one
    * of the legacy error code constants, or 0 if none match.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/DOMException/code)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/DOMException/code)
    */
   readonly code: number;
   /**

@@ -424,11 +424,11 @@ describe("canonicalJsdoc", () => {
     ],
     [
       "/**\n * Foo.\n * @param value Input.\n */\nfunction foo(value: string): void {}\n",
-      "/**\n * Foo.\n *\n * @param value Input.\n */\nfunction foo(value: string): void {}\n",
+      "/**\n * Foo.\n *\n * @param value - Input.\n */\nfunction foo(value: string): void {}\n",
     ],
     [
       "/**\n * @param value Input.\n * @description Foo.\n */\nfunction foo(value: string): void {}\n",
-      "/**\n * @description Foo.\n * @param value Input.\n */\nfunction foo(value: string): void {}\n",
+      "/**\n * @description Foo.\n * @param value - Input.\n */\nfunction foo(value: string): void {}\n",
     ],
   ])("lays out %s", async (source, expected) => {
     const output = await formatWithPrettierConfig(source);
@@ -501,26 +501,84 @@ const ignored = 1;
     expect(await formatWithPrettierConfig(source)).toBe(source);
   });
 
-  test("keeps multiline tag bodies and custom tags as written", async () => {
+  test("wraps a long text body without hanging indent, the head shortening its first line", async () => {
+    const words = "some long text describing the value passed to the function, which runs well past the print width of the block".split(
+      " ",
+    );
+
+    const source = `/**\n * @param   value   ${words.join(" ")}\n */\nfunction foo(value: string): void {}\n`;
+
+    const output = await formatWithPrettierConfig(source);
+
+    const lines = output
+      .split("\n")
+      .slice(1, output.split("\n").indexOf(" */"))
+      .map((line) => line.slice(3));
+
+    expect(lines.length).toBeGreaterThan(1);
+    expect(lines[0]).toMatch(/^@param value - some long/);
+    expect(lines.slice(1).every((line) => !line.startsWith(" "))).toBe(true);
+    expect(lines.join(" ")).toBe(`@param value - ${words.join(" ")}`);
+
+    for (const line of output.split("\n")) {
+      expect(line.length).toBeLessThanOrEqual(83);
+    }
+
+    expect(await formatWithPrettierConfig(output)).toBe(output);
+  });
+
+  test("collapses an inline body and keeps a code body verbatim", async () => {
     const source = [
       "/**",
-      " * Parse a value.",
-      " *",
       " * @example",
-      " * ```ts",
-      ' * parse("value");',
-      " * ```",
-      " *",
-      " * Another paragraph belonging to the example.",
-      " * @customTool Some library metadata.",
-      " * @param value Text.",
-      " * @returns Parsed text.",
+      ' *   parse("value");',
+      " * parse(",
+      ' *       "other");',
+      " * @see  https://example.com",
       " */",
       "export function parse(value: string): string {",
       "  return value;",
       "}",
       "",
     ].join("\n");
+
+    expect(await formatWithPrettierConfig(source)).toBe(
+      source.replace("@see  https", "@see https"),
+    );
+  });
+
+  test("orders tags by their declarations, undeclared tags last", async () => {
+    const source = [
+      "/**",
+      " * @returns Sum.",
+      " * @param b - Second.",
+      " * @foo Metadata.",
+      " * @param a - First.",
+      " */",
+      "export function add(a: number, b: number): number {",
+      "  return a + b;",
+      "}",
+      "",
+    ].join("\n");
+
+    expect(await formatWithPrettierConfig(source)).toBe(
+      [
+        "/**",
+        " * @param b - Second.",
+        " * @param a - First.",
+        " * @returns Sum.",
+        " * @foo Metadata.",
+        " */",
+        "export function add(a: number, b: number): number {",
+        "  return a + b;",
+        "}",
+        "",
+      ].join("\n"),
+    );
+  });
+
+  test("keeps a tag its declaration rejects as written", async () => {
+    const source = "/**\n * @stable trailing\n */\nexport const foo = 1;\n";
 
     expect(await formatWithPrettierConfig(source)).toBe(source);
   });

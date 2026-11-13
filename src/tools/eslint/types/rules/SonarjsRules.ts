@@ -259,15 +259,15 @@ export interface SonarjsRules {
   /**
    * A conditionally executed single line should be denoted by indentation
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S3973/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S3973/javascript
    */
   "sonarjs/conditional-indentation"?: Rule<[]>;
   /**
    * Confidential information should not be logged
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S5757/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S5757/javascript
    */
   "sonarjs/confidential-information-logging"?: Rule<[]>;
   /**
@@ -455,8 +455,8 @@ export interface SonarjsRules {
   /**
    * Content Security Policy frame-ancestors directive should not be disabled
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S5732/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S5732/javascript
    */
   "sonarjs/frame-ancestors"?: Rule<[]>;
   /**
@@ -504,8 +504,8 @@ export interface SonarjsRules {
   /**
    * Hidden files should not be served statically
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S5691/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S5691/javascript
    */
   "sonarjs/hidden-files"?: Rule<[]>;
   /**
@@ -1005,8 +1005,8 @@ export interface SonarjsRules {
   /**
    * Sensitive permissions should not be requested unnecessarily
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S5604/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S5604/javascript
    */
   "sonarjs/no-intrusive-permissions"?: Rule<SonarjsNoIntrusivePermissions>;
   /**
@@ -1030,8 +1030,8 @@ export interface SonarjsRules {
   /**
    * Client IP address should not be forwarded to proxies
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S5759/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S5759/javascript
    */
   "sonarjs/no-ip-forward"?: Rule<[]>;
   /**
@@ -1073,8 +1073,8 @@ export interface SonarjsRules {
   /**
    * Content Security Policy should block mixed-content
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S5730/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S5730/javascript
    */
   "sonarjs/no-mixed-content"?: Rule<[]>;
   /**
@@ -1173,8 +1173,8 @@ export interface SonarjsRules {
   /**
    * Redundant pairs of parentheses should be removed
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S1110/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S1110/javascript
    */
   "sonarjs/no-redundant-parentheses"?: Rule<[]>;
   /**
@@ -1252,8 +1252,8 @@ export interface SonarjsRules {
   /**
    * Tabulation characters should not be used
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S105/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S105/javascript
    */
   "sonarjs/no-tab"?: Rule<[]>;
   /**
@@ -1302,8 +1302,8 @@ export interface SonarjsRules {
    * Expanding archive files should not be done without controlling resource
    * consumption
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S5042/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S5042/javascript
    */
   "sonarjs/no-unsafe-unzip"?: Rule<[]>;
   /**
@@ -1432,8 +1432,8 @@ export interface SonarjsRules {
   /**
    * OS commands should not be executed using a shell interpreter
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S4721/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S4721/javascript
    */
   "sonarjs/os-command"?: Rule<[]>;
   /**
@@ -1757,8 +1757,8 @@ export interface SonarjsRules {
   /**
    * Results of operations on strings should not be ignored
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S1154/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S1154/javascript
    */
   "sonarjs/useless-string-operation"?: Rule<[]>;
   /**
@@ -1794,8 +1794,8 @@ export interface SonarjsRules {
   /**
    * Web SQL databases should not be used
    *
-   * @see https://sonarsource.github.io/rspec/#/rspec/S2817/javascript
    * @deprecated
+   * @see https://sonarsource.github.io/rspec/#/rspec/S2817/javascript
    */
   "sonarjs/web-sql-database"?: Rule<[]>;
   /**

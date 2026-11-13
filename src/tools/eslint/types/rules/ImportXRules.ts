@@ -54,8 +54,8 @@ export interface ImportXRules {
   /**
    * Replaced by `import-x/first`.
    *
-   * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/imports-first.md
    * @deprecated
+   * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/imports-first.md
    */
   "import-x/imports-first"?: Rule<ImportXImportsFirst>;
   /**

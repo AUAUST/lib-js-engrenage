@@ -12,15 +12,15 @@ export interface CoreRules {
   /**
    * Enforce linebreaks after opening and before closing array brackets
    *
-   * @see https://eslint.org/docs/latest/rules/array-bracket-newline
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/array-bracket-newline
    */
   "array-bracket-newline"?: Rule<ArrayBracketNewline>;
   /**
    * Enforce consistent spacing inside array brackets
    *
-   * @see https://eslint.org/docs/latest/rules/array-bracket-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/array-bracket-spacing
    */
   "array-bracket-spacing"?: Rule<ArrayBracketSpacing>;
   /**
@@ -32,8 +32,8 @@ export interface CoreRules {
   /**
    * Enforce line breaks after each array element
    *
-   * @see https://eslint.org/docs/latest/rules/array-element-newline
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/array-element-newline
    */
   "array-element-newline"?: Rule<ArrayElementNewline>;
   /**
@@ -45,15 +45,15 @@ export interface CoreRules {
   /**
    * Require parentheses around arrow function arguments
    *
-   * @see https://eslint.org/docs/latest/rules/arrow-parens
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/arrow-parens
    */
   "arrow-parens"?: Rule<ArrowParens>;
   /**
    * Enforce consistent spacing before and after the arrow in arrow functions
    *
-   * @see https://eslint.org/docs/latest/rules/arrow-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/arrow-spacing
    */
   "arrow-spacing"?: Rule<ArrowSpacing>;
   /**
@@ -66,22 +66,22 @@ export interface CoreRules {
    * Disallow or enforce spaces inside of blocks after opening block and before
    * closing block
    *
-   * @see https://eslint.org/docs/latest/rules/block-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/block-spacing
    */
   "block-spacing"?: Rule<BlockSpacing>;
   /**
    * Enforce consistent brace style for blocks
    *
-   * @see https://eslint.org/docs/latest/rules/brace-style
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/brace-style
    */
   "brace-style"?: Rule<BraceStyle>;
   /**
    * Require `return` statements after callbacks
    *
-   * @see https://eslint.org/docs/latest/rules/callback-return
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/callback-return
    */
   "callback-return"?: Rule<CallbackReturn>;
   /**
@@ -105,22 +105,22 @@ export interface CoreRules {
   /**
    * Require or disallow trailing commas
    *
-   * @see https://eslint.org/docs/latest/rules/comma-dangle
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/comma-dangle
    */
   "comma-dangle"?: Rule<CommaDangle>;
   /**
    * Enforce consistent spacing before and after commas
    *
-   * @see https://eslint.org/docs/latest/rules/comma-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/comma-spacing
    */
   "comma-spacing"?: Rule<CommaSpacing>;
   /**
    * Enforce consistent comma style
    *
-   * @see https://eslint.org/docs/latest/rules/comma-style
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/comma-style
    */
   "comma-style"?: Rule<CommaStyle>;
   /**
@@ -132,8 +132,8 @@ export interface CoreRules {
   /**
    * Enforce consistent spacing inside computed property brackets
    *
-   * @see https://eslint.org/docs/latest/rules/computed-property-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/computed-property-spacing
    */
   "computed-property-spacing"?: Rule<ComputedPropertySpacing>;
   /**
@@ -181,8 +181,8 @@ export interface CoreRules {
   /**
    * Enforce consistent newlines before and after dots
    *
-   * @see https://eslint.org/docs/latest/rules/dot-location
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/dot-location
    */
   "dot-location"?: Rule<DotLocation>;
   /**
@@ -194,8 +194,8 @@ export interface CoreRules {
   /**
    * Require or disallow newline at the end of files
    *
-   * @see https://eslint.org/docs/latest/rules/eol-last
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/eol-last
    */
   "eol-last"?: Rule<EolLast>;
   /**
@@ -213,8 +213,8 @@ export interface CoreRules {
   /**
    * Require or disallow spacing between function identifiers and their invocations
    *
-   * @see https://eslint.org/docs/latest/rules/func-call-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/func-call-spacing
    */
   "func-call-spacing"?: Rule<FuncCallSpacing>;
   /**
@@ -240,22 +240,22 @@ export interface CoreRules {
   /**
    * Enforce line breaks between arguments of a function call
    *
-   * @see https://eslint.org/docs/latest/rules/function-call-argument-newline
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/function-call-argument-newline
    */
   "function-call-argument-newline"?: Rule<FunctionCallArgumentNewline>;
   /**
    * Enforce consistent line breaks inside function parentheses
    *
-   * @see https://eslint.org/docs/latest/rules/function-paren-newline
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/function-paren-newline
    */
   "function-paren-newline"?: Rule<FunctionParenNewline>;
   /**
    * Enforce consistent spacing around `*` operators in generator functions
    *
-   * @see https://eslint.org/docs/latest/rules/generator-star-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/generator-star-spacing
    */
   "generator-star-spacing"?: Rule<GeneratorStarSpacing>;
   /**
@@ -267,8 +267,8 @@ export interface CoreRules {
   /**
    * Require `require()` calls to be placed at top-level module scope
    *
-   * @see https://eslint.org/docs/latest/rules/global-require
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/global-require
    */
   "global-require"?: Rule<[]>;
   /**
@@ -286,15 +286,15 @@ export interface CoreRules {
   /**
    * Require error handling in callbacks
    *
-   * @see https://eslint.org/docs/latest/rules/handle-callback-err
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/handle-callback-err
    */
   "handle-callback-err"?: Rule<HandleCallbackErr>;
   /**
    * Disallow specified identifiers
    *
-   * @see https://eslint.org/docs/latest/rules/id-blacklist
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/id-blacklist
    */
   "id-blacklist"?: Rule<IdBlacklist>;
   /**
@@ -318,22 +318,22 @@ export interface CoreRules {
   /**
    * Enforce the location of arrow function bodies
    *
-   * @see https://eslint.org/docs/latest/rules/implicit-arrow-linebreak
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/implicit-arrow-linebreak
    */
   "implicit-arrow-linebreak"?: Rule<ImplicitArrowLinebreak>;
   /**
    * Enforce consistent indentation
    *
-   * @see https://eslint.org/docs/latest/rules/indent
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/indent
    */
   "indent"?: Rule<Indent>;
   /**
    * Enforce consistent indentation
    *
-   * @see https://eslint.org/docs/latest/rules/indent-legacy
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/indent-legacy
    */
   "indent-legacy"?: Rule<IndentLegacy>;
   /**
@@ -345,58 +345,58 @@ export interface CoreRules {
   /**
    * Enforce the consistent use of either double or single quotes in JSX attributes
    *
-   * @see https://eslint.org/docs/latest/rules/jsx-quotes
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/jsx-quotes
    */
   "jsx-quotes"?: Rule<JsxQuotes>;
   /**
    * Enforce consistent spacing between keys and values in object literal
    * properties
    *
-   * @see https://eslint.org/docs/latest/rules/key-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/key-spacing
    */
   "key-spacing"?: Rule<KeySpacing>;
   /**
    * Enforce consistent spacing before and after keywords
    *
-   * @see https://eslint.org/docs/latest/rules/keyword-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/keyword-spacing
    */
   "keyword-spacing"?: Rule<KeywordSpacing>;
   /**
    * Enforce position of line comments
    *
-   * @see https://eslint.org/docs/latest/rules/line-comment-position
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/line-comment-position
    */
   "line-comment-position"?: Rule<LineCommentPosition>;
   /**
    * Enforce consistent linebreak style
    *
-   * @see https://eslint.org/docs/latest/rules/linebreak-style
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/linebreak-style
    */
   "linebreak-style"?: Rule<LinebreakStyle>;
   /**
    * Require empty lines around comments
    *
-   * @see https://eslint.org/docs/latest/rules/lines-around-comment
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/lines-around-comment
    */
   "lines-around-comment"?: Rule<LinesAroundComment>;
   /**
    * Require or disallow newlines around directives
    *
-   * @see https://eslint.org/docs/latest/rules/lines-around-directive
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/lines-around-directive
    */
   "lines-around-directive"?: Rule<LinesAroundDirective>;
   /**
    * Require or disallow an empty line between class members
    *
-   * @see https://eslint.org/docs/latest/rules/lines-between-class-members
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/lines-between-class-members
    */
   "lines-between-class-members"?: Rule<LinesBetweenClassMembers>;
   /**
@@ -420,8 +420,8 @@ export interface CoreRules {
   /**
    * Enforce a maximum line length
    *
-   * @see https://eslint.org/docs/latest/rules/max-len
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/max-len
    */
   "max-len"?: Rule<MaxLen>;
   /**
@@ -457,22 +457,22 @@ export interface CoreRules {
   /**
    * Enforce a maximum number of statements allowed per line
    *
-   * @see https://eslint.org/docs/latest/rules/max-statements-per-line
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/max-statements-per-line
    */
   "max-statements-per-line"?: Rule<MaxStatementsPerLine>;
   /**
    * Enforce a particular style for multiline comments
    *
-   * @see https://eslint.org/docs/latest/rules/multiline-comment-style
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/multiline-comment-style
    */
   "multiline-comment-style"?: Rule<MultilineCommentStyle>;
   /**
    * Enforce newlines between operands of ternary expressions
    *
-   * @see https://eslint.org/docs/latest/rules/multiline-ternary
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/multiline-ternary
    */
   "multiline-ternary"?: Rule<MultilineTernary>;
   /**
@@ -484,29 +484,29 @@ export interface CoreRules {
   /**
    * Enforce or disallow parentheses when invoking a constructor with no arguments
    *
-   * @see https://eslint.org/docs/latest/rules/new-parens
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/new-parens
    */
   "new-parens"?: Rule<NewParens>;
   /**
    * Require or disallow an empty line after variable declarations
    *
-   * @see https://eslint.org/docs/latest/rules/newline-after-var
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/newline-after-var
    */
   "newline-after-var"?: Rule<NewlineAfterVar>;
   /**
    * Require an empty line before `return` statements
    *
-   * @see https://eslint.org/docs/latest/rules/newline-before-return
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/newline-before-return
    */
   "newline-before-return"?: Rule<[]>;
   /**
    * Require a newline after each call in a method chain
    *
-   * @see https://eslint.org/docs/latest/rules/newline-per-chained-call
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/newline-per-chained-call
    */
   "newline-per-chained-call"?: Rule<NewlinePerChainedCall>;
   /**
@@ -542,8 +542,8 @@ export interface CoreRules {
   /**
    * Disallow use of the `Buffer()` constructor
    *
-   * @see https://eslint.org/docs/latest/rules/no-buffer-constructor
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-buffer-constructor
    */
   "no-buffer-constructor"?: Rule<[]>;
   /**
@@ -562,8 +562,8 @@ export interface CoreRules {
    * Disallow `catch` clause parameters from shadowing variables in the outer
    * scope
    *
-   * @see https://eslint.org/docs/latest/rules/no-catch-shadow
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-catch-shadow
    */
   "no-catch-shadow"?: Rule<[]>;
   /**
@@ -587,8 +587,8 @@ export interface CoreRules {
   /**
    * Disallow arrow functions where they could be confused with comparisons
    *
-   * @see https://eslint.org/docs/latest/rules/no-confusing-arrow
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-confusing-arrow
    */
   "no-confusing-arrow"?: Rule<NoConfusingArrow>;
   /**
@@ -768,15 +768,15 @@ export interface CoreRules {
   /**
    * Disallow unnecessary parentheses
    *
-   * @see https://eslint.org/docs/latest/rules/no-extra-parens
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-extra-parens
    */
   "no-extra-parens"?: Rule<NoExtraParens>;
   /**
    * Disallow unnecessary semicolons
    *
-   * @see https://eslint.org/docs/latest/rules/no-extra-semi
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-extra-semi
    */
   "no-extra-semi"?: Rule<[]>;
   /**
@@ -788,8 +788,8 @@ export interface CoreRules {
   /**
    * Disallow leading or trailing decimal points in numeric literals
    *
-   * @see https://eslint.org/docs/latest/rules/no-floating-decimal
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-floating-decimal
    */
   "no-floating-decimal"?: Rule<[]>;
   /**
@@ -917,22 +917,22 @@ export interface CoreRules {
   /**
    * Disallow mixed binary operators
    *
-   * @see https://eslint.org/docs/latest/rules/no-mixed-operators
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-mixed-operators
    */
   "no-mixed-operators"?: Rule<NoMixedOperators>;
   /**
    * Disallow `require` calls to be mixed with regular variable declarations
    *
-   * @see https://eslint.org/docs/latest/rules/no-mixed-requires
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-mixed-requires
    */
   "no-mixed-requires"?: Rule<NoMixedRequires>;
   /**
    * Disallow mixed spaces and tabs for indentation
    *
-   * @see https://eslint.org/docs/latest/rules/no-mixed-spaces-and-tabs
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-mixed-spaces-and-tabs
    */
   "no-mixed-spaces-and-tabs"?: Rule<NoMixedSpacesAndTabs>;
   /**
@@ -944,8 +944,8 @@ export interface CoreRules {
   /**
    * Disallow multiple spaces
    *
-   * @see https://eslint.org/docs/latest/rules/no-multi-spaces
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-multi-spaces
    */
   "no-multi-spaces"?: Rule<NoMultiSpaces>;
   /**
@@ -957,15 +957,15 @@ export interface CoreRules {
   /**
    * Disallow multiple empty lines
    *
-   * @see https://eslint.org/docs/latest/rules/no-multiple-empty-lines
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-multiple-empty-lines
    */
   "no-multiple-empty-lines"?: Rule<NoMultipleEmptyLines>;
   /**
    * Disallow assignments to native objects or read-only global variables
    *
-   * @see https://eslint.org/docs/latest/rules/no-native-reassign
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-native-reassign
    */
   "no-native-reassign"?: Rule<NoNativeReassign>;
   /**
@@ -977,8 +977,8 @@ export interface CoreRules {
   /**
    * Disallow negating the left operand in `in` expressions
    *
-   * @see https://eslint.org/docs/latest/rules/no-negated-in-lhs
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-negated-in-lhs
    */
   "no-negated-in-lhs"?: Rule<[]>;
   /**
@@ -1008,22 +1008,22 @@ export interface CoreRules {
   /**
    * Disallow `Object` constructors
    *
-   * @see https://eslint.org/docs/latest/rules/no-new-object
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-new-object
    */
   "no-new-object"?: Rule<[]>;
   /**
    * Disallow `new` operators with calls to `require`
    *
-   * @see https://eslint.org/docs/latest/rules/no-new-require
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-new-require
    */
   "no-new-require"?: Rule<[]>;
   /**
    * Disallow `new` operators with the `Symbol` object
    *
-   * @see https://eslint.org/docs/latest/rules/no-new-symbol
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-new-symbol
    */
   "no-new-symbol"?: Rule<[]>;
   /**
@@ -1071,8 +1071,8 @@ export interface CoreRules {
   /**
    * Disallow string concatenation with `__dirname` and `__filename`
    *
-   * @see https://eslint.org/docs/latest/rules/no-path-concat
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-path-concat
    */
   "no-path-concat"?: Rule<[]>;
   /**
@@ -1084,15 +1084,15 @@ export interface CoreRules {
   /**
    * Disallow the use of `process.env`
    *
-   * @see https://eslint.org/docs/latest/rules/no-process-env
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-process-env
    */
   "no-process-env"?: Rule<[]>;
   /**
    * Disallow the use of `process.exit()`
    *
-   * @see https://eslint.org/docs/latest/rules/no-process-exit
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-process-exit
    */
   "no-process-exit"?: Rule<[]>;
   /**
@@ -1146,8 +1146,8 @@ export interface CoreRules {
   /**
    * Disallow specified modules when loaded by `require`
    *
-   * @see https://eslint.org/docs/latest/rules/no-restricted-modules
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-restricted-modules
    */
   "no-restricted-modules"?: Rule<NoRestrictedModules>;
   /**
@@ -1171,8 +1171,8 @@ export interface CoreRules {
   /**
    * Disallow unnecessary `return await`
    *
-   * @see https://eslint.org/docs/latest/rules/no-return-await
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-return-await
    */
   "no-return-await"?: Rule<[]>;
   /**
@@ -1222,8 +1222,8 @@ export interface CoreRules {
    * Disallow spacing between function identifiers and their applications
    * (deprecated)
    *
-   * @see https://eslint.org/docs/latest/rules/no-spaced-func
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-spaced-func
    */
   "no-spaced-func"?: Rule<[]>;
   /**
@@ -1235,15 +1235,15 @@ export interface CoreRules {
   /**
    * Disallow synchronous methods
    *
-   * @see https://eslint.org/docs/latest/rules/no-sync
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-sync
    */
   "no-sync"?: Rule<NoSync>;
   /**
    * Disallow all tabs
    *
-   * @see https://eslint.org/docs/latest/rules/no-tabs
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-tabs
    */
   "no-tabs"?: Rule<NoTabs>;
   /**
@@ -1273,8 +1273,8 @@ export interface CoreRules {
   /**
    * Disallow trailing whitespace at the end of lines
    *
-   * @see https://eslint.org/docs/latest/rules/no-trailing-spaces
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-trailing-spaces
    */
   "no-trailing-spaces"?: Rule<NoTrailingSpaces>;
   /**
@@ -1470,8 +1470,8 @@ export interface CoreRules {
   /**
    * Disallow whitespace before properties
    *
-   * @see https://eslint.org/docs/latest/rules/no-whitespace-before-property
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/no-whitespace-before-property
    */
   "no-whitespace-before-property"?: Rule<[]>;
   /**
@@ -1483,29 +1483,29 @@ export interface CoreRules {
   /**
    * Enforce the location of single-line statements
    *
-   * @see https://eslint.org/docs/latest/rules/nonblock-statement-body-position
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/nonblock-statement-body-position
    */
   "nonblock-statement-body-position"?: Rule<NonblockStatementBodyPosition>;
   /**
    * Enforce consistent line breaks after opening and before closing braces
    *
-   * @see https://eslint.org/docs/latest/rules/object-curly-newline
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/object-curly-newline
    */
   "object-curly-newline"?: Rule<ObjectCurlyNewline>;
   /**
    * Enforce consistent spacing inside braces
    *
-   * @see https://eslint.org/docs/latest/rules/object-curly-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/object-curly-spacing
    */
   "object-curly-spacing"?: Rule<ObjectCurlySpacing>;
   /**
    * Enforce placing object properties on separate lines
    *
-   * @see https://eslint.org/docs/latest/rules/object-property-newline
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/object-property-newline
    */
   "object-property-newline"?: Rule<ObjectPropertyNewline>;
   /**
@@ -1523,8 +1523,8 @@ export interface CoreRules {
   /**
    * Require or disallow newlines around variable declarations
    *
-   * @see https://eslint.org/docs/latest/rules/one-var-declaration-per-line
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/one-var-declaration-per-line
    */
   "one-var-declaration-per-line"?: Rule<OneVarDeclarationPerLine>;
   /**
@@ -1536,22 +1536,22 @@ export interface CoreRules {
   /**
    * Enforce consistent linebreak style for operators
    *
-   * @see https://eslint.org/docs/latest/rules/operator-linebreak
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/operator-linebreak
    */
   "operator-linebreak"?: Rule<OperatorLinebreak>;
   /**
    * Require or disallow padding within blocks
    *
-   * @see https://eslint.org/docs/latest/rules/padded-blocks
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/padded-blocks
    */
   "padded-blocks"?: Rule<PaddedBlocks>;
   /**
    * Require or disallow padding lines between statements
    *
-   * @see https://eslint.org/docs/latest/rules/padding-line-between-statements
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/padding-line-between-statements
    */
   "padding-line-between-statements"?: Rule<PaddingLineBetweenStatements>;
   /**
@@ -1615,8 +1615,8 @@ export interface CoreRules {
   /**
    * Require `Reflect` methods where applicable
    *
-   * @see https://eslint.org/docs/latest/rules/prefer-reflect
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/prefer-reflect
    */
   "prefer-reflect"?: Rule<PreferReflect>;
   /**
@@ -1653,15 +1653,15 @@ export interface CoreRules {
   /**
    * Require quotes around object literal property names
    *
-   * @see https://eslint.org/docs/latest/rules/quote-props
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/quote-props
    */
   "quote-props"?: Rule<QuoteProps>;
   /**
    * Enforce the consistent use of either backticks, double, or single quotes
    *
-   * @see https://eslint.org/docs/latest/rules/quotes
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/quotes
    */
   "quotes"?: Rule<Quotes>;
   /**
@@ -1698,29 +1698,29 @@ export interface CoreRules {
   /**
    * Enforce spacing between rest and spread operators and their expressions
    *
-   * @see https://eslint.org/docs/latest/rules/rest-spread-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/rest-spread-spacing
    */
   "rest-spread-spacing"?: Rule<RestSpreadSpacing>;
   /**
    * Require or disallow semicolons instead of ASI
    *
-   * @see https://eslint.org/docs/latest/rules/semi
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/semi
    */
   "semi"?: Rule<Semi>;
   /**
    * Enforce consistent spacing before and after semicolons
    *
-   * @see https://eslint.org/docs/latest/rules/semi-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/semi-spacing
    */
   "semi-spacing"?: Rule<SemiSpacing>;
   /**
    * Enforce location of semicolons
    *
-   * @see https://eslint.org/docs/latest/rules/semi-style
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/semi-style
    */
   "semi-style"?: Rule<SemiStyle>;
   /**
@@ -1744,43 +1744,43 @@ export interface CoreRules {
   /**
    * Enforce consistent spacing before blocks
    *
-   * @see https://eslint.org/docs/latest/rules/space-before-blocks
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/space-before-blocks
    */
   "space-before-blocks"?: Rule<SpaceBeforeBlocks>;
   /**
    * Enforce consistent spacing before `function` definition opening parenthesis
    *
-   * @see https://eslint.org/docs/latest/rules/space-before-function-paren
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/space-before-function-paren
    */
   "space-before-function-paren"?: Rule<SpaceBeforeFunctionParen>;
   /**
    * Enforce consistent spacing inside parentheses
    *
-   * @see https://eslint.org/docs/latest/rules/space-in-parens
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/space-in-parens
    */
   "space-in-parens"?: Rule<SpaceInParens>;
   /**
    * Require spacing around infix operators
    *
-   * @see https://eslint.org/docs/latest/rules/space-infix-ops
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/space-infix-ops
    */
   "space-infix-ops"?: Rule<SpaceInfixOps>;
   /**
    * Enforce consistent spacing before or after unary operators
    *
-   * @see https://eslint.org/docs/latest/rules/space-unary-ops
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/space-unary-ops
    */
   "space-unary-ops"?: Rule<SpaceUnaryOps>;
   /**
    * Enforce consistent spacing after the `//` or `/*` in a comment
    *
-   * @see https://eslint.org/docs/latest/rules/spaced-comment
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/spaced-comment
    */
   "spaced-comment"?: Rule<SpacedComment>;
   /**
@@ -1792,8 +1792,8 @@ export interface CoreRules {
   /**
    * Enforce spacing around colons of switch statements
    *
-   * @see https://eslint.org/docs/latest/rules/switch-colon-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/switch-colon-spacing
    */
   "switch-colon-spacing"?: Rule<SwitchColonSpacing>;
   /**
@@ -1805,15 +1805,15 @@ export interface CoreRules {
   /**
    * Require or disallow spacing around embedded expressions of template strings
    *
-   * @see https://eslint.org/docs/latest/rules/template-curly-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/template-curly-spacing
    */
   "template-curly-spacing"?: Rule<TemplateCurlySpacing>;
   /**
    * Require or disallow spacing between template tags and their literals
    *
-   * @see https://eslint.org/docs/latest/rules/template-tag-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/template-tag-spacing
    */
   "template-tag-spacing"?: Rule<TemplateTagSpacing>;
   /**
@@ -1843,22 +1843,22 @@ export interface CoreRules {
   /**
    * Require parentheses around immediate `function` invocations
    *
-   * @see https://eslint.org/docs/latest/rules/wrap-iife
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/wrap-iife
    */
   "wrap-iife"?: Rule<WrapIife>;
   /**
    * Require parenthesis around regex literals
    *
-   * @see https://eslint.org/docs/latest/rules/wrap-regex
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/wrap-regex
    */
   "wrap-regex"?: Rule<[]>;
   /**
    * Require or disallow spacing around the `*` in `yield*` expressions
    *
-   * @see https://eslint.org/docs/latest/rules/yield-star-spacing
    * @deprecated
+   * @see https://eslint.org/docs/latest/rules/yield-star-spacing
    */
   "yield-star-spacing"?: Rule<YieldStarSpacing>;
   /**

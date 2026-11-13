@@ -50,9 +50,8 @@ interface Performance extends EventTarget {
    * in the given browsing context, such as the number of redirections needed to
    * fetch the resource.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/navigation)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/navigation)
    */
   readonly navigation: PerformanceNavigation;
   /**
@@ -73,9 +72,8 @@ interface Performance extends EventTarget {
    * The legacy **`Performance.timing`** read-only property returns a
    * PerformanceTiming object containing latency-related performance information.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/timing)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/timing)
    */
   readonly timing: PerformanceTiming;
   /**
@@ -309,9 +307,11 @@ declare var PerformanceMeasure: {
  * The legacy **`PerformanceNavigation`** interface represents information about
  * how the navigation to the current document was done.
  *
- * @deprecated This interface is deprecated in the Navigation Timing Level 2 specification. Please use the PerformanceNavigationTiming interface instead.
+ * @deprecated This interface is deprecated in the Navigation Timing Level 2
+ * specification. Please use the PerformanceNavigationTiming interface instead.
  *
- * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation)
+ * [MDN
+ * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation)
  */
 interface PerformanceNavigation {
   /**
@@ -319,9 +319,8 @@ interface PerformanceNavigation {
    * returns an unsigned short representing the number of REDIRECTs done before
    * reaching the page.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation/redirectCount)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation/redirectCount)
    */
   readonly redirectCount: number;
   /**
@@ -329,9 +328,8 @@ interface PerformanceNavigation {
    * unsigned short containing a constant describing how the navigation to this
    * page was done.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation/type)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation/type)
    */
   readonly type: number;
   /**
@@ -339,9 +337,8 @@ interface PerformanceNavigation {
    * serializer; it returns a JSON representation of the PerformanceNavigation
    * object.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation/toJSON)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation/toJSON)
    */
   toJSON(): any;
   readonly TYPE_NAVIGATE: 0;
@@ -369,7 +366,8 @@ declare var PerformanceNavigation: {
  * page. You get a PerformanceTiming object describing your page using the
  * window.performance.timing property.
  *
- * @deprecated This interface is deprecated in the Navigation Timing Level 2 specification. Please use the PerformanceNavigationTiming interface instead.
+ * @deprecated This interface is deprecated in the Navigation Timing Level 2
+ * specification. Please use the PerformanceNavigationTiming interface instead.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming)
  */
@@ -384,9 +382,8 @@ interface PerformanceTiming {
    * connection is considered as opened when all secure connection handshake, or
    * SOCKS authentication, is terminated.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/connectEnd)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/connectEnd)
    */
   readonly connectEnd: number;
   /**
@@ -398,9 +395,8 @@ interface PerformanceTiming {
    * If a persistent connection is used, the value will be the same as
    * PerformanceTiming.fetchStart.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/connectStart)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/connectStart)
    */
   readonly connectStart: number;
   /**
@@ -410,9 +406,8 @@ interface PerformanceTiming {
    * when its Document.readyState changes to 'complete' and the corresponding
    * readystatechange event is thrown.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domComplete)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domComplete)
    */
   readonly domComplete: number;
   /**
@@ -421,9 +416,8 @@ interface PerformanceTiming {
    * the UNIX epoch, right after all the scripts that need to be executed as soon
    * as possible, in order or not, has been executed.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domContentLoadedEventEnd)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domContentLoadedEventEnd)
    */
   readonly domContentLoadedEventEnd: number;
   /**
@@ -433,9 +427,8 @@ interface PerformanceTiming {
    * DOMContentLoaded event, that is right after all the scripts that need to be
    * executed right after parsing has been executed.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domContentLoadedEventStart)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domContentLoadedEventStart)
    */
   readonly domContentLoadedEventStart: number;
   /**
@@ -445,9 +438,8 @@ interface PerformanceTiming {
    * when its Document.readyState changes to 'interactive' and the corresponding
    * readystatechange event is thrown.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domInteractive)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domInteractive)
    */
   readonly domInteractive: number;
   /**
@@ -456,9 +448,8 @@ interface PerformanceTiming {
    * epoch, when the parser started its work, that is when its Document.readyState
    * changes to 'loading' and the corresponding readystatechange event is thrown.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domLoading)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domLoading)
    */
   readonly domLoading: number;
   /**
@@ -468,9 +459,8 @@ interface PerformanceTiming {
    * is used, or the information is stored in a cache or a local resource, the
    * value will be the same as PerformanceTiming.fetchStart.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domainLookupEnd)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domainLookupEnd)
    */
   readonly domainLookupEnd: number;
   /**
@@ -480,9 +470,8 @@ interface PerformanceTiming {
    * is used, or the information is stored in a cache or a local resource, the
    * value will be the same as PerformanceTiming.fetchStart.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domainLookupStart)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domainLookupStart)
    */
   readonly domainLookupStart: number;
   /**
@@ -491,9 +480,8 @@ interface PerformanceTiming {
    * epoch, the browser is ready to fetch the document using an HTTP request.
    * This moment is before the check to any application cache.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/fetchStart)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/fetchStart)
    */
   readonly fetchStart: number;
   /**
@@ -503,9 +491,8 @@ interface PerformanceTiming {
    * is completed. If this event has not yet been sent, or is not yet completed,
    * it returns 0.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/loadEventEnd)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/loadEventEnd)
    */
   readonly loadEventEnd: number;
   /**
@@ -514,9 +501,8 @@ interface PerformanceTiming {
    * UNIX epoch, when the load event was sent for the current document. If this
    * event has not yet been sent, it returns 0.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/loadEventStart)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/loadEventStart)
    */
   readonly loadEventStart: number;
   /**
@@ -526,9 +512,8 @@ interface PerformanceTiming {
    * in the same browsing context. If there is no previous document, this value
    * will be the same as PerformanceTiming.fetchStart.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/navigationStart)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/navigationStart)
    */
   readonly navigationStart: number;
   /**
@@ -538,9 +523,8 @@ interface PerformanceTiming {
    * the HTTP response has been received. If there is no redirect, or if one of
    * the redirect is not of the same origin, the value returned is 0.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/redirectEnd)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/redirectEnd)
    */
   readonly redirectEnd: number;
   /**
@@ -549,9 +533,8 @@ interface PerformanceTiming {
    * UNIX epoch, the first HTTP redirect starts. If there is no redirect, or if
    * one of the redirect is not of the same origin, the value returned is 0.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/redirectStart)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/redirectStart)
    */
   readonly redirectStart: number;
   /**
@@ -562,9 +545,8 @@ interface PerformanceTiming {
    * the request and the connection is reopened, this property will be set to the
    * time corresponding to the new request.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/requestStart)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/requestStart)
    */
   readonly requestStart: number;
   /**
@@ -574,9 +556,8 @@ interface PerformanceTiming {
    * connection is closed if this happened first, from the server from a cache or
    * from a local resource.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/responseEnd)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/responseEnd)
    */
   readonly responseEnd: number;
   /**
@@ -585,9 +566,8 @@ interface PerformanceTiming {
    * the UNIX epoch) when the browser received the first byte of the response
    * from the server, cache, or local resource.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/responseStart)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/responseStart)
    */
   readonly responseStart: number;
   /**
@@ -596,9 +576,8 @@ interface PerformanceTiming {
    * the UNIX epoch, where the secure connection handshake starts. If no such
    * connection is requested, it returns 0.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/secureConnectionStart)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/secureConnectionStart)
    */
   readonly secureConnectionStart: number;
   /**
@@ -608,9 +587,8 @@ interface PerformanceTiming {
    * or if the previous document, or one of the needed redirects, is not of the
    * same origin, the value returned is 0.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/unloadEventEnd)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/unloadEventEnd)
    */
   readonly unloadEventEnd: number;
   /**
@@ -620,18 +598,16 @@ interface PerformanceTiming {
    * document, or if the previous document, or one of the needed redirects, is
    * not of the same origin, the value returned is 0.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/unloadEventStart)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/unloadEventStart)
    */
   readonly unloadEventStart: number;
   /**
    * The legacy **`toJSON()`** method of the PerformanceTiming interface is a
    * serializer; it returns a JSON representation of the PerformanceTiming object.
    *
-   * @deprecated
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/toJSON)
+   * @deprecated [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/toJSON)
    */
   toJSON(): any;
 }

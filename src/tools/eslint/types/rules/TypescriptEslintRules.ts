@@ -219,8 +219,8 @@ export interface TypescriptEslintRules {
   /**
    * Disallow the declaration of empty interfaces
    *
-   * @see https://typescript-eslint.io/rules/no-empty-interface
    * @deprecated
+   * @see https://typescript-eslint.io/rules/no-empty-interface
    */
   "@typescript-eslint/no-empty-interface"?: Rule<TypescriptEslintNoEmptyInterface>;
   /**
@@ -301,15 +301,15 @@ export interface TypescriptEslintRules {
    * Disallow function declarations that contain unsafe references inside loop
    * statements
    *
-   * @see https://typescript-eslint.io/rules/no-loop-func
    * @deprecated
+   * @see https://typescript-eslint.io/rules/no-loop-func
    */
   "@typescript-eslint/no-loop-func"?: Rule<[]>;
   /**
    * Disallow literal numbers that lose precision
    *
-   * @see https://typescript-eslint.io/rules/no-loss-of-precision
    * @deprecated
+   * @see https://typescript-eslint.io/rules/no-loss-of-precision
    */
   "@typescript-eslint/no-loss-of-precision"?: Rule<[]>;
   /**
@@ -395,8 +395,8 @@ export interface TypescriptEslintRules {
   /**
    * Disallow specified modules when loaded by `import`
    *
-   * @see https://typescript-eslint.io/rules/no-restricted-imports
    * @deprecated
+   * @see https://typescript-eslint.io/rules/no-restricted-imports
    */
   "@typescript-eslint/no-restricted-imports"?: Rule<TypescriptEslintNoRestrictedImports>;
   /**
@@ -421,8 +421,8 @@ export interface TypescriptEslintRules {
   /**
    * Disallow type aliases
    *
-   * @see https://typescript-eslint.io/rules/no-type-alias
    * @deprecated
+   * @see https://typescript-eslint.io/rules/no-type-alias
    */
   "@typescript-eslint/no-type-alias"?: Rule<TypescriptEslintNoTypeAlias>;
   /**
@@ -597,8 +597,8 @@ export interface TypescriptEslintRules {
   /**
    * Disallow `require` statements except in import statements
    *
-   * @see https://typescript-eslint.io/rules/no-var-requires
    * @deprecated
+   * @see https://typescript-eslint.io/rules/no-var-requires
    */
   "@typescript-eslint/no-var-requires"?: Rule<TypescriptEslintNoVarRequires>;
   /**
@@ -744,8 +744,8 @@ export interface TypescriptEslintRules {
   /**
    * Enforce using `@ts-expect-error` over `@ts-ignore`
    *
-   * @see https://typescript-eslint.io/rules/prefer-ts-expect-error
    * @deprecated
+   * @see https://typescript-eslint.io/rules/prefer-ts-expect-error
    */
   "@typescript-eslint/prefer-ts-expect-error"?: Rule<[]>;
   /**
@@ -797,8 +797,8 @@ export interface TypescriptEslintRules {
   /**
    * Enforce constituents of a type union/intersection to be sorted alphabetically
    *
-   * @see https://typescript-eslint.io/rules/sort-type-constituents
    * @deprecated
+   * @see https://typescript-eslint.io/rules/sort-type-constituents
    */
   "@typescript-eslint/sort-type-constituents"?: Rule<TypescriptEslintSortTypeConstituents>;
   /**
@@ -830,8 +830,8 @@ export interface TypescriptEslintRules {
   /**
    * Require type annotations in certain places
    *
-   * @see https://typescript-eslint.io/rules/typedef
    * @deprecated
+   * @see https://typescript-eslint.io/rules/typedef
    */
   "@typescript-eslint/typedef"?: Rule<TypescriptEslintTypedef>;
   /**
