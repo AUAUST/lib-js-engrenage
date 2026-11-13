@@ -128,10 +128,6 @@ export interface AuaustRules {
    */
   "auaust/naming-convention"?: Rule<AuaustNamingConvention>;
   /**
-   * Use `isArray` from @auaust/toolkit instead of `Array.isArray`.
-   */
-  "auaust/no-array-is-array"?: Rule<[]>;
-  /**
    * Disallow asynchronous callbacks in synchronous iterator helpers.
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-async-iterator-callback.md
    */
@@ -220,14 +216,6 @@ export interface AuaustRules {
    */
   "auaust/no-inverted-boolean-check"?: Rule<[]>;
   /**
-   * Use `x === null` instead of `isNull(x)` calls (keep `isNull` for callbacks such as `filter(items, isNull)`).
-   */
-  "auaust/no-is-null"?: Rule<[]>;
-  /**
-   * Use `x === undefined` instead of `isUndefined(x)` calls (keep `isUndefined` for callbacks such as `filter(items, isUndefined)`).
-   */
-  "auaust/no-is-undefined"?: Rule<[]>;
-  /**
    * Require the use of `===` and `!==`
    * @see https://eslint.org/docs/latest/rules/eqeqeq
    */
@@ -236,10 +224,6 @@ export interface AuaustRules {
    * Use `x == null` instead of loose comparisons with `undefined`.
    */
   "auaust/no-loose-undefined"?: Rule<[]>;
-  /**
-   * Use the `@auaust/toolkit/math` equivalent instead of `Math.*`.
-   */
-  "auaust/no-math-statics"?: Rule<[]>;
   /**
    * Test files belong under the test directories.
    */
@@ -254,10 +238,6 @@ export interface AuaustRules {
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-multiple-promise-resolver-calls.md
    */
   "auaust/no-multiple-promise-resolver-calls"?: Rule<[]>;
-  /**
-   * Use the `@auaust/toolkit/object` equivalent instead of `Object.*`.
-   */
-  "auaust/no-object-statics"?: Rule<[]>;
   /**
    * A dynamic import() never targets a module its file already imports statically.
    */
@@ -294,10 +274,6 @@ export interface AuaustRules {
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-thenable.md
    */
   "auaust/no-thenable"?: Rule<[]>;
-  /**
-   * Use the `@auaust/toolkit/<helper>` subpath entries instead of `@auaust/toolkit`.
-   */
-  "auaust/no-toolkit-root"?: Rule<[]>;
   /**
    * Disallow comparing `undefined` using `typeof`.
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-typeof-undefined.md

@@ -86,7 +86,7 @@ const getLinter = memoized<
 const performanceSource = `import { string } from "zod";
 import z, { z as zod } from "zod/mini";
 
-import { identity } from "@auaust/toolkit";
+import { identity } from "@auaust/primitive-kit";
 import { map } from "@auaust/toolkit/object";
 
 export { object } from "zod/mini";
@@ -437,37 +437,8 @@ export const values = [path, v, things, alias];
 
   test("reports each restriction under its own rule, in every syntactic form", async () => {
     expect(await lintedRules("src/restricted.ts")).toEqual([
-      "auaust/no-array-is-array",
       "auaust/no-runtime-typeof",
-      "auaust/no-array-is-array",
-      "auaust/no-array-is-array",
       "auaust/no-typeof-undefined",
-    ]);
-  });
-
-  test("reports the Math functions toolkit replaces, but not the constants", async () => {
-    const eslint = await getLinter({
-      typeAware: false,
-    });
-
-    const [result] = await eslint.lintText(
-      `const { max } = Math;
-
-export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
-`,
-      {
-        filePath: "src/math.ts",
-      },
-    );
-
-    expect(
-      map(result?.messages ?? [], (message) => {
-        return `${message.line}:${message.ruleId}`;
-      }),
-    ).toEqual([
-      "1:auaust/no-math-statics",
-      "3:auaust/no-math-statics",
-      "3:auaust/no-math-statics",
     ]);
   });
 
@@ -482,9 +453,9 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
 
     expect(
       await lintedRules("src/restricted.ts", {
-        globals: false,
+        comparisons: false,
       }),
-    ).toEqual(["auaust/no-runtime-typeof", "auaust/no-typeof-undefined"]);
+    ).toEqual([]);
   });
 
   test("enables the performance conventions with the published trait", async () => {
@@ -502,7 +473,7 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
       "auaust/no-zod-classic",
       "auaust/no-zod-namespace",
       "auaust/no-zod-namespace",
-      "auaust/no-toolkit-root",
+      "auaust/no-primitive-kit-root",
     ]);
   });
 
@@ -558,7 +529,7 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
         },
         {
           performance: {
-            noToolkitRoot: true,
+            noPrimitiveKitRoot: true,
           },
         },
       ),
@@ -566,7 +537,7 @@ export const values = [Math.floor(1.5), Math["round"](2.5), Math.PI, max];
       "auaust/no-zod-classic",
       "auaust/no-zod-namespace",
       "auaust/no-zod-namespace",
-      "auaust/no-toolkit-root",
+      "auaust/no-primitive-kit-root",
     ]);
   });
 
@@ -1621,6 +1592,15 @@ export async function run(): Promise<unknown> {
         },
       });
     }).rejects.toThrow("noTypof");
+
+    await expect(async () => {
+      return await createEslintConfig(config, {
+        performance: {
+          // @ts-expect-error: removed convention
+          noToolkitRoot: true,
+        },
+      });
+    }).rejects.toThrow("noToolkitRoot");
   });
 
   test("exposes its contract through the local aliases", () => {

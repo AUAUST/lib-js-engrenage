@@ -30,7 +30,6 @@ export const optionsSchema = strictObject({
   recommended: optional(boolean(), true),
   packageJson: optional(boolean(), true),
   typeAware: optional(boolean(), true),
-  globals: categorySchema<typeof conventionCategories.globals>(),
   comparisons: categorySchema<typeof conventionCategories.comparisons>(),
   stylistic: categorySchema<typeof conventionCategories.stylistic>(),
   imports: categorySchema<typeof conventionCategories.imports>(),

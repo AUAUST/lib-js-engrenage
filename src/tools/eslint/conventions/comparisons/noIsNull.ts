@@ -1,9 +1,0 @@
-import { toolkit } from "#constants";
-import { defineReplacement } from "#tools/eslint/utils/defineReplacement";
-
-export default defineReplacement({
-  selector: "CallExpression[callee.name='isNull']",
-  target: "`isNull(x)` calls (keep `isNull` for callbacks such as `filter(items, isNull)`)",
-  replacement: "`x === null`",
-  requires: [toolkit],
-});
