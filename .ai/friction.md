@@ -72,3 +72,6 @@
 - claude -p: passed the prompt after `--allowedTools Agent` — the variadic flag swallowed it; piped the prompt on stdin.
 - `engrenage gate --worktree`: gate after `sync agents` on edited fragments — its format step rewrote the fragment tables, leaving `.codex/agents/merger.toml` outdated for `sync --check`; reran `sync agents` then the gate
 - engrenage's own Claude hooks: a half-written barrel export in `src/` — every hooked Bash call failed loading the CLI from source; added the export by hand before syncing
+- pnpm: sandboxed package-manager bootstrap stalled on registry access — ran authorized pnpm commands with network access.
+- npm pack: inspected a formatter from the repository — devEngines requires pnpm; packed from /private/tmp.
+- repository lookup: guessed config and plugin paths — read the file inventory and installed package sources instead.

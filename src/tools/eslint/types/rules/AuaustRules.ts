@@ -83,6 +83,21 @@ export interface AuaustRules {
    */
   "auaust/index-declarations"?: Rule<[]>;
   /**
+   * Sorts tags by a specified sequence according to tag name, optionally adding line breaks between tag groups.
+   * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/sort-tags.md#repos-sticky-header
+   */
+  "auaust/jsdoc-description-first"?: Rule<AuaustJsdocDescriptionFirst>;
+  /**
+   * Controls how and whether JSDoc blocks can be expressed as single or multiple line blocks.
+   * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/multiline-blocks.md#repos-sticky-header
+   */
+  "auaust/jsdoc-multiline-blocks"?: Rule<AuaustJsdocMultilineBlocks>;
+  /**
+   * Enforces lines (or no lines) before, after, or between tags.
+   * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/tag-lines.md#repos-sticky-header
+   */
+  "auaust/jsdoc-tag-lines"?: Rule<AuaustJsdocTagLines>;
+  /**
    * Require or disallow logical assignment operator shorthand
    * @see https://eslint.org/docs/latest/rules/logical-assignment-operators
    */
@@ -540,6 +555,82 @@ type AuaustDebtMarkers =
   | [
       {
         list?: boolean;
+      },
+    ];
+
+// ----- auaust/jsdoc-description-first -----
+type AuaustJsdocDescriptionFirst =
+  | []
+  | [
+      {
+        alphabetizeExtras?: boolean;
+
+        linesBetween?: number;
+
+        reportIntraTagGroupSpacing?: boolean;
+
+        reportTagGroupSpacing?: boolean;
+
+        tagExceptions?: {
+          [k: string]: number;
+        };
+
+        tagSequence?: {
+          tags?: string[];
+        }[];
+      },
+    ];
+
+// ----- auaust/jsdoc-multiline-blocks -----
+type AuaustJsdocMultilineBlocks =
+  | []
+  | [
+      {
+        allowMultipleTags?: boolean;
+
+        minimumLengthForMultiline?: number;
+
+        multilineTags?: "*" | string[];
+
+        noFinalLineText?: boolean;
+
+        noMultilineBlocks?: boolean;
+
+        noSingleLineBlocks?: boolean;
+
+        noZeroLineText?: boolean;
+
+        requireSingleLineUnderCount?: number;
+
+        singleLineTags?: string[];
+      },
+    ];
+
+// ----- auaust/jsdoc-tag-lines -----
+type AuaustJsdocTagLines =
+  | []
+  | ["always" | "any" | "never"]
+  | [
+      "always" | "any" | "never",
+      {
+        applyToEndTag?: boolean;
+
+        count?: number;
+
+        endLines?: number | null;
+
+        maxBlockLines?: number | null;
+
+        startLines?: number | null;
+
+        startLinesWithNoTags?: number;
+
+        tags?: {
+          [k: string]: {
+            count?: number;
+            lines?: "always" | "never" | "any";
+          };
+        };
       },
     ];
 

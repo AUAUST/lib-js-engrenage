@@ -1,9 +1,9 @@
 import { format } from "prettier";
 
-import { loadConfig } from "#project/config/operations/loadConfig";
+import { loadConfig } from "@auaust/engrenage/extensions";
+import { createPrettierConfig, type Config } from "@auaust/engrenage/prettier";
+
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
-import type { Config } from "#tools/prettier/types/Config";
 
 export async function formatWithPrettierConfig(
   source: string,

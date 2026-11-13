@@ -71,3 +71,4 @@
 - blockedBy between segment members: finer concurrency than segment order — the walker stops on any open blocked-by; reshaping or sequencing covers it
 - boundary-only merger at K > 1 (#522): fewer agents per leaf — leaves rebases and conflicts to the walker or the workers
 - merger fixing every finding (#522): no worker resume — it would review its own non-mechanical fixes; the review run still sees mechanical ones
+- prettier-plugin-jsdoc: canonical JSDoc layout without deciding tag order — sorts tags and rewrites content beyond this pass; targeted eslint-plugin-jsdoc rules instead.

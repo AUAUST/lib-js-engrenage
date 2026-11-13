@@ -125,6 +125,7 @@
     "confbox": "0.3.1",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-jsdoc": "^65.4.5",
     "eslint-plugin-package-json": "^1.11.0",
     "eslint-plugin-perfectionist": "^5.13.0",
     "eslint-plugin-sonarjs": "^4.2.2",

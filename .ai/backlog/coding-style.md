@@ -18,3 +18,8 @@ Local coding conventions and linting.
 - sites: `src/project/roles/types/Role.ts:1`, `src/project/tsconfig/utils/toJsonValue.ts:3`
 - why: `Role` duplicates the generated `RoleInput`; the JSON-value round trip repeats `serialize` in `defineSchema`.
 - want: `RoleInput` used directly; one shared JSON-value converter.
+
+## 4. Canonical JSDoc tag order remains undecided
+
+- want: a small ordered set of common tag groups, stable custom tags, and sorting within each overload only; examples before parameters, returns before throws.
+- done: agree on custom-tag placement and overload boundaries before enabling ordering beyond description tags.
