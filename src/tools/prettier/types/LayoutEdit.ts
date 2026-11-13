@@ -7,4 +7,10 @@ export type LayoutEdit =
   | {
       kind: "line-break";
       offset: number;
+    }
+  | {
+      kind: "replace";
+      start: number;
+      end: number;
+      text: string;
     };

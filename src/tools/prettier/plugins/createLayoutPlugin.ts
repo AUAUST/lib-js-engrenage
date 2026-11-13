@@ -91,6 +91,16 @@ function toReplacement(
   text: string,
   edit: LayoutEdit,
 ): Replacement | undefined {
+  if (edit.kind === "replace") {
+    return text.slice(edit.start, edit.end) === edit.text
+      ? undefined
+      : {
+          start: edit.start,
+          end: edit.end,
+          text: edit.text,
+        };
+  }
+
   if (edit.kind === "line-break") {
     const start = edit.offset + 1;
 
@@ -136,8 +146,10 @@ function applyEdits(
   const ignoredRanges = findIgnoredRanges(program);
 
   const replacements = filterMap(edits, (edit) => {
+    const offset = edit.kind === "replace" ? edit.start : edit.offset;
+
     const ignored = ignoredRanges.some(({ start, end }) => {
-      return edit.offset >= start && edit.offset < end;
+      return offset >= start && offset < end;
     });
 
     return ignored ? undefined : toReplacement(text, edit);
@@ -214,7 +226,10 @@ export function createLayoutPlugin(
           }
 
           const edits = flatMap(values(conventions), (convention) => {
-            return convention(program, formatted);
+            return convention(program, formatted, {
+              printWidth: options.printWidth,
+              tabWidth: options.tabWidth,
+            });
           });
 
           return applyEdits(formatted, program, edits);

@@ -5,36 +5,44 @@ import type { Rule } from "#tools/eslint/types/Rule";
 export interface AuaustRules {
   /**
    * Require that function overload signatures be consecutive
+   *
    * @see https://typescript-eslint.io/rules/adjacent-overload-signatures
    */
   "auaust/adjacent-overload-signatures"?: Rule<[]>;
   /**
    * Disallow awaiting a value that is not a Thenable
+   *
    * @see https://typescript-eslint.io/rules/await-thenable
    */
   "auaust/await-thenable"?: Rule<AuaustAwaitThenable>;
   /**
    * Cognitive Complexity of functions should not be too high
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3776/javascript
    */
   "auaust/cognitive-complexity"?: Rule<AuaustCognitiveComplexity>;
   /**
-   * Enforce specifying generic type arguments on type annotation or constructor name of a constructor call
+   * Enforce specifying generic type arguments on type annotation or constructor
+   * name of a constructor call
+   *
    * @see https://typescript-eslint.io/rules/consistent-generic-constructors
    */
   "auaust/consistent-generic-constructors"?: Rule<AuaustConsistentGenericConstructors>;
   /**
    * Enforce consistent usage of type assertions
+   *
    * @see https://typescript-eslint.io/rules/consistent-type-assertions
    */
   "auaust/consistent-type-assertions"?: Rule<AuaustConsistentTypeAssertions>;
   /**
    * Enforce consistent usage of type imports
+   *
    * @see https://typescript-eslint.io/rules/consistent-type-imports
    */
   "auaust/consistent-type-imports"?: Rule<AuaustConsistentTypeImports>;
   /**
    * Enforce consistent brace style for all control statements
+   *
    * @see https://eslint.org/docs/latest/rules/curly
    */
   "auaust/curly"?: Rule<AuaustCurly>;
@@ -43,7 +51,8 @@ export interface AuaustRules {
    */
   "auaust/debt-markers"?: Rule<AuaustDebtMarkers>;
   /**
-   * A domain holds only roles, sub-domains and namespaces, and a namespace only domains and namespaces; a command group also holds command modules.
+   * A domain holds only roles, sub-domains and namespaces, and a namespace only
+   * domains and namespaces; a command group also holds command modules.
    */
   "auaust/domain-content"?: Rule<[]>;
   /**
@@ -51,123 +60,137 @@ export interface AuaustRules {
    */
   "auaust/import-data"?: Rule<[]>;
   /**
-   * A module of a ranked role imports at runtime only bindings declared in roles of its effect level or purer, and external modules ranked likewise.
+   * A module of a ranked role imports at runtime only bindings declared in roles
+   * of its effect level or purer, and external modules ranked likewise.
    */
   "auaust/import-effects"?: Rule<[]>;
   /**
-   * A module imports only the environments and categories its environment reaches, and never the root file of an environment.
+   * A module imports only the environments and categories its environment reaches,
+   * and never the root file of an environment.
    */
   "auaust/import-environments"?: Rule<[]>;
   /**
-   * An element imports only the index.ts of a domain in a lower layer, of a non-isolated peer or of its own sub-domain.
+   * An element imports only the index.ts of a domain in a lower layer, of a
+   * non-isolated peer or of its own sub-domain.
    */
   "auaust/import-layers"?: Rule<[]>;
   /**
-   * A specifier names a path the structure map knows, through its alias rather than a relative path, and never the importing file itself.
+   * A specifier names a path the structure map knows, through its alias rather
+   * than a relative path, and never the importing file itself.
    */
   "auaust/import-specifiers"?: Rule<[]>;
   /**
-   * An element imports its own, ancestor and global roles, and other domains only through their public roles; a type-only role imports with `import type`.
+   * An element imports its own, ancestor and global roles, and other domains only
+   * through their public roles; a type-only role imports with `import type`.
    */
   "auaust/import-surfaces"?: Rule<[]>;
   /**
-   * In a published package, a test that runs against source and dist imports the package name, a source-only test imports internals, and a dist-only test imports the package name and the build output.
+   * In a published package, a test that runs against source and dist imports the
+   * package name, a source-only test imports internals, and a dist-only test
+   * imports the package name and the build output.
    */
   "auaust/import-tests"?: Rule<[]>;
   /**
-   * A workspace imports another only when it declares it as a dependency, and the root src never imports a workspace.
+   * A workspace imports another only when it declares it as a dependency, and
+   * the root src never imports a workspace.
    */
   "auaust/import-workspaces"?: Rule<[]>;
   /**
-   * A domain index or an enabled role barrel only re-exports: it declares no local value, except a SCREAMING_CASE constant of metadata, and default-exports no expression; the index.ts of a command group declares its command.
+   * A domain index or an enabled role barrel only re-exports: it declares no local
+   * value, except a SCREAMING_CASE constant of metadata, and default-exports no
+   * expression; the index.ts of a command group declares its command.
    */
   "auaust/index-declarations"?: Rule<[]>;
   /**
-   * Sorts tags by a specified sequence according to tag name, optionally adding line breaks between tag groups.
-   * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/sort-tags.md#repos-sticky-header
-   */
-  "auaust/jsdoc-description-first"?: Rule<AuaustJsdocDescriptionFirst>;
-  /**
-   * Controls how and whether JSDoc blocks can be expressed as single or multiple line blocks.
-   * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/multiline-blocks.md#repos-sticky-header
-   */
-  "auaust/jsdoc-multiline-blocks"?: Rule<AuaustJsdocMultilineBlocks>;
-  /**
-   * Enforces lines (or no lines) before, after, or between tags.
-   * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/tag-lines.md#repos-sticky-header
-   */
-  "auaust/jsdoc-tag-lines"?: Rule<AuaustJsdocTagLines>;
-  /**
    * Require or disallow logical assignment operator shorthand
+   *
    * @see https://eslint.org/docs/latest/rules/logical-assignment-operators
    */
   "auaust/logical-assignment-operators"?: Rule<AuaustLogicalAssignmentOperators>;
   /**
    * Enforce a maximum number of lines per file
+   *
    * @see https://eslint.org/docs/latest/rules/max-lines
    */
   "auaust/max-lines"?: Rule<AuaustMaxLines>;
   /**
    * Enforce a maximum number of lines of code in a function
+   *
    * @see https://eslint.org/docs/latest/rules/max-lines-per-function
    */
   "auaust/max-lines-per-function"?: Rule<AuaustMaxLinesPerFunction>;
   /**
    * Enforce using a particular method signature syntax
+   *
    * @see https://typescript-eslint.io/rules/method-signature-style
    */
   "auaust/method-signature-style"?: Rule<AuaustMethodSignatureStyle>;
   /**
    * Enforce replacements for variable, property, and filenames.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/name-replacements.md
    */
   "auaust/name-replacements"?: Rule<AuaustNameReplacements>;
   /**
    * Enforce naming conventions for everything across a codebase
+   *
    * @see https://typescript-eslint.io/rules/naming-convention
    */
   "auaust/naming-convention"?: Rule<AuaustNamingConvention>;
   /**
    * Disallow asynchronous callbacks in synchronous iterator helpers.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-async-iterator-callback.md
    */
   "auaust/no-async-iterator-callback"?: Rule<[]>;
   /**
    * Disallow async functions as `Promise#finally()` callbacks.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-async-promise-finally.md
    */
   "auaust/no-async-promise-finally"?: Rule<[]>;
   /**
    * Disallow member access from await expression.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-await-expression-member.md
    */
   "auaust/no-await-expression-member"?: Rule<[]>;
   /**
    * Disallow using `await` in `Promise` method parameters.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-await-in-promise-methods.md
    */
   "auaust/no-await-in-promise-methods"?: Rule<[]>;
   /**
    * Forbid CommonJS `require` calls and `module.exports` or `exports.*`.
+   *
    * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/no-commonjs.md
    */
   "auaust/no-commonjs"?: Rule<AuaustNoCommonjs>;
   /**
-   * Use a block body with an explicit return; concise bodies are only for a short identifier, literal, member access, negation, comparison, call, template literal, array of identifiers, literals or member accesses, or one of those asserted `as const`. Use a block body with an explicit return; a concise body stays whole on the line of its `=>`. Use a block body with an explicit return; a concise arrow stays on a line within the line width.
+   * Use a block body with an explicit return; concise bodies are only for a short
+   * identifier, literal, member access, negation, comparison, call, template
+   * literal, array of identifiers, literals or member accesses, or one of those
+   * asserted `as const`. Use a block body with an explicit return; a concise
+   * body stays whole on the line of its `=>`. Use a block body with an explicit
+   * return; a concise arrow stays on a line within the line width.
    */
   "auaust/no-complex-concise-arrows"?: Rule<[]>;
   /**
    * Require expressions of type void to appear in statement position
+   *
    * @see https://typescript-eslint.io/rules/no-confusing-void-expression
    */
   "auaust/no-confusing-void-expression"?: Rule<AuaustNoConfusingVoidExpression>;
   /**
    * Forbid repeated import of the same module in multiple places.
+   *
    * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/no-duplicates.md
    */
   "auaust/no-duplicates"?: Rule<AuaustNoDuplicates>;
   /**
    * Disallow `else` blocks after `return` statements in `if` statements
+   *
    * @see https://eslint.org/docs/latest/rules/no-else-return
    */
   "auaust/no-else-return"?: Rule<AuaustNoElseReturn>;
@@ -177,46 +200,57 @@ export interface AuaustRules {
   "auaust/no-external-namespace"?: Rule<[]>;
   /**
    * Disallow classes used as namespaces
+   *
    * @see https://typescript-eslint.io/rules/no-extraneous-class
    */
   "auaust/no-extraneous-class"?: Rule<AuaustNoExtraneousClass>;
   /**
    * Disallow fallthrough of `case` statements
+   *
    * @see https://eslint.org/docs/latest/rules/no-fallthrough
    */
   "auaust/no-fallthrough"?: Rule<AuaustNoFallthrough>;
   /**
    * Require Promise-like statements to be handled appropriately
+   *
    * @see https://typescript-eslint.io/rules/no-floating-promises
    */
   "auaust/no-floating-promises"?: Rule<AuaustNoFloatingPromises>;
   /**
    * Functions should not have identical implementations
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4144/javascript
    */
   "auaust/no-identical-functions"?: Rule<AuaustNoIdenticalFunctions>;
   /**
-   * Enforce the use of top-level import type qualifier when an import only has specifiers with inline type qualifiers
+   * Enforce the use of top-level import type qualifier when an import only has
+   * specifiers with inline type qualifiers
+   *
    * @see https://typescript-eslint.io/rules/no-import-type-side-effects
    */
   "auaust/no-import-type-side-effects"?: Rule<[]>;
   /**
-   * Disallow explicit type declarations for variables or parameters initialized to a number, string, or boolean
+   * Disallow explicit type declarations for variables or parameters initialized
+   * to a number, string, or boolean
+   *
    * @see https://typescript-eslint.io/rules/no-inferrable-types
    */
   "auaust/no-inferrable-types"?: Rule<AuaustNoInferrableTypes>;
   /**
    * Disallow `void` type outside of generic or return types
+   *
    * @see https://typescript-eslint.io/rules/no-invalid-void-type
    */
   "auaust/no-invalid-void-type"?: Rule<AuaustNoInvalidVoidType>;
   /**
    * Boolean checks should not be inverted
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1940/javascript
    */
   "auaust/no-inverted-boolean-check"?: Rule<[]>;
   /**
    * Require the use of `===` and `!==`
+   *
    * @see https://eslint.org/docs/latest/rules/eqeqeq
    */
   "auaust/no-loose-equal"?: Rule<AuaustNoLooseEqual>;
@@ -230,11 +264,14 @@ export interface AuaustRules {
   "auaust/no-misplaced-tests"?: Rule<[]>;
   /**
    * Disallow Promises in places not designed to handle them
+   *
    * @see https://typescript-eslint.io/rules/no-misused-promises
    */
   "auaust/no-misused-promises"?: Rule<AuaustNoMisusedPromises>;
   /**
-   * Disallow calling Promise executor resolver functions more than once on the same execution path.
+   * Disallow calling Promise executor resolver functions more than once on the
+   * same execution path.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-multiple-promise-resolver-calls.md
    */
   "auaust/no-multiple-promise-resolver-calls"?: Rule<[]>;
@@ -243,74 +280,92 @@ export interface AuaustRules {
    */
   "auaust/no-pointless-dynamic-import"?: Rule<[]>;
   /**
-   * Use the `@auaust/primitive-kit/<domain>` subpath entries instead of `@auaust/primitive-kit`.
+   * Use the `@auaust/primitive-kit/<domain>` subpath entries instead of
+   * `@auaust/primitive-kit`.
    */
   "auaust/no-primitive-kit-root"?: Rule<[]>;
   /**
    * Disallow returning values from Promise executor functions
+   *
    * @see https://eslint.org/docs/latest/rules/no-promise-executor-return
    */
   "auaust/no-promise-executor-return"?: Rule<AuaustNoPromiseExecutorReturn>;
   /**
-   * Disallow members of unions and intersections that do nothing or override type information
+   * Disallow members of unions and intersections that do nothing or override
+   * type information
+   *
    * @see https://typescript-eslint.io/rules/no-redundant-type-constituents
    */
   "auaust/no-redundant-types"?: Rule<[]>;
   /**
-   * Use a bare `return;` instead of `return undefined;` in a function with a return type annotation.
+   * Use a bare `return;` instead of `return undefined;` in a function with a
+   * return type annotation.
    */
   "auaust/no-return-undefined"?: Rule<[]>;
   /**
-   * Use `is<Type>` helpers instead of runtime `typeof` comparisons (except `typeof x === "undefined"`).
+   * Use `is<Type>` helpers instead of runtime `typeof` comparisons (except
+   * `typeof x === "undefined"`).
    */
   "auaust/no-runtime-typeof"?: Rule<[]>;
   /**
    * Disallow passing single-element arrays to `Promise` methods.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-single-promise-in-promise-methods.md
    */
   "auaust/no-single-promise-in-promise-methods"?: Rule<[]>;
   /**
    * Disallow `then` property.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-thenable.md
    */
   "auaust/no-thenable"?: Rule<[]>;
   /**
    * Disallow comparing `undefined` using `typeof`.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-typeof-undefined.md
    */
   "auaust/no-typeof-undefined"?: Rule<AuaustNoTypeofUndefined>;
   /**
    * Disallow type parameters that aren't used multiple times
+   *
    * @see https://typescript-eslint.io/rules/no-unnecessary-type-parameters
    */
   "auaust/no-unnecessary-type-parameters"?: Rule<[]>;
   /**
    * Disallow ternary operators when simpler alternatives exist
+   *
    * @see https://eslint.org/docs/latest/rules/no-unneeded-ternary
    */
   "auaust/no-unneeded-ternary"?: Rule<AuaustNoUnneededTernary>;
   /**
-   * Disallow reading `.value` from `Promise.allSettled()` results without a fulfilled status guard.
+   * Disallow reading `.value` from `Promise.allSettled()` results without a
+   * fulfilled status guard.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-unsafe-promise-all-settled-values.md
    */
   "auaust/no-unsafe-promise-all-settled-values"?: Rule<[]>;
   /**
    * Disallow unused variables
+   *
    * @see https://github.com/sweepline/eslint-plugin-unused-imports/blob/master/docs/rules/no-unused-imports.md
    */
   "auaust/no-unused-imports"?: Rule<AuaustNoUnusedImports>;
   /**
    * Disallow unused variables
+   *
    * @see https://github.com/sweepline/eslint-plugin-unused-imports/blob/master/docs/rules/no-unused-vars.md
    */
   "auaust/no-unused-vars"?: Rule<AuaustNoUnusedVars>;
   /**
-   * Disallow returning/yielding `Promise.resolve/reject()` in async functions or promise callbacks
+   * Disallow returning/yielding `Promise.resolve/reject()` in async functions or
+   * promise callbacks
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-useless-promise-resolve-reject.md
    */
   "auaust/no-useless-promise-resolve-reject"?: Rule<[]>;
   /**
    * Disallow useless `undefined`.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-useless-undefined.md
    */
   "auaust/no-useless-undefined"?: Rule<AuaustNoUselessUndefined>;
@@ -324,75 +379,96 @@ export interface AuaustRules {
   "auaust/no-zod-namespace"?: Rule<[]>;
   /**
    * Enforce the style of numeric separators by correctly grouping digits.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/numeric-separators-style.md
    */
   "auaust/numeric-separators-style"?: Rule<AuaustNumericSeparatorsStyle>;
   /**
    * Require or disallow method and property shorthand syntax for object literals
+   *
    * @see https://eslint.org/docs/latest/rules/object-shorthand
    */
   "auaust/object-shorthand"?: Rule<AuaustObjectShorthand>;
   /**
    * Require or disallow assignment operator shorthand where possible
+   *
    * @see https://eslint.org/docs/latest/rules/operator-assignment
    */
   "auaust/operator-assignment"?: Rule<AuaustOperatorAssignment>;
   /**
-   * Require `const` declarations for variables that are never reassigned after declared
+   * Require `const` declarations for variables that are never reassigned after
+   * declared
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-const
    */
   "auaust/prefer-const"?: Rule<AuaustPreferConst>;
   /**
-   * Enforce the consistent use of either `function` declarations or expressions assigned to variables
+   * Enforce the consistent use of either `function` declarations or expressions
+   * assigned to variables
+   *
    * @see https://eslint.org/docs/latest/rules/func-style
    */
   "auaust/prefer-function-declaration"?: Rule<AuaustPreferFunctionDeclaration>;
   /**
    * Enforce using function types instead of interfaces with call signatures
+   *
    * @see https://typescript-eslint.io/rules/prefer-function-type
    */
   "auaust/prefer-function-type"?: Rule<[]>;
   /**
    * Prefer using the `node:` protocol when importing Node.js builtin modules.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-node-protocol.md
    */
   "auaust/prefer-node-protocol"?: Rule<[]>;
   /**
-   * Disallow using `Object.assign` with an object literal as the first argument and prefer the use of object spread instead
+   * Disallow using `Object.assign` with an object literal as the first argument
+   * and prefer the use of object spread instead
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-object-spread
    */
   "auaust/prefer-object-spread"?: Rule<[]>;
   /**
-   * Enforce using concise optional chain expressions instead of chained logical ands, negated logical ors, or empty objects
+   * Enforce using concise optional chain expressions instead of chained logical
+   * ands, negated logical ors, or empty objects
+   *
    * @see https://typescript-eslint.io/rules/prefer-optional-chain
    */
   "auaust/prefer-optional-chain"?: Rule<AuaustPreferOptionalChain>;
   /**
-   * Prefer `Promise.resolve()` and `Promise.reject()` over trivial `new Promise()` calls.
+   * Prefer `Promise.resolve()` and `Promise.reject()` over trivial `new Promise()`
+   * calls.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-promise-static-methods.md
    */
   "auaust/prefer-promise-static-methods"?: Rule<[]>;
   /**
-   * Require private members to be marked as `readonly` if they're never modified outside of the constructor
+   * Require private members to be marked as `readonly` if they're never modified
+   * outside of the constructor
+   *
    * @see https://typescript-eslint.io/rules/prefer-readonly
    */
   "auaust/prefer-readonly"?: Rule<AuaustPreferReadonly>;
   /**
-   * Return `void` the expression instead of following it with a bare `return` in its own block.
+   * Return `void` the expression instead of following it with a bare `return` in
+   * its own block.
    */
   "auaust/prefer-return-void"?: Rule<[]>;
   /**
    * Prefer top-level await over top-level promises and async function calls.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-top-level-await.md
    */
   "auaust/prefer-top-level-await"?: Rule<[]>;
   /**
    * Require type literals to be last in union types.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-type-literal-last.md
    */
   "auaust/prefer-type-literal-last"?: Rule<[]>;
   /**
-   * Wrap the valued return in the negated check instead of guarding it with an empty `return;`.
+   * Wrap the valued return in the negated check instead of guarding it with an
+   * empty `return;`.
    */
   "auaust/prefer-valued-return"?: Rule<[]>;
   /**
@@ -401,6 +477,7 @@ export interface AuaustRules {
   "auaust/readonly-constants"?: Rule<[]>;
   /**
    * Enforce consistent awaiting of returned promises
+   *
    * @see https://typescript-eslint.io/rules/return-await
    */
   "auaust/return-await"?: Rule<AuaustReturnAwait>;
@@ -409,45 +486,56 @@ export interface AuaustRules {
    */
   "auaust/role-companions"?: Rule<[]>;
   /**
-   * A file in a role directory follows the role's nesting, categories and accepted files; a strict role holds at its root only the files its nested roles name.
+   * A file in a role directory follows the role's nesting, categories and
+   * accepted files; a strict role holds at its root only the files its nested
+   * roles name.
    */
   "auaust/role-contracts"?: Rule<[]>;
   /**
-   * A module exports what its role's exports contract states, for values and types apart: only the file's name, named exports, one default export, or none.
+   * A module exports what its role's exports contract states, for values and
+   * types apart: only the file's name, named exports, one default export, or
+   * none.
    */
   "auaust/role-exports"?: Rule<[]>;
   /**
    * Enforce sorted exports.
+   *
    * @see https://perfectionist.dev/rules/sort-exports
    */
   "auaust/sort-exports"?: Rule<AuaustSortExports>;
   /**
    * Enforce sorted imports.
+   *
    * @see https://perfectionist.dev/rules/sort-imports
    */
   "auaust/sort-imports"?: Rule<AuaustSortImports>;
   /**
    * Enforce sorted named exports.
+   *
    * @see https://perfectionist.dev/rules/sort-named-exports
    */
   "auaust/sort-named-exports"?: Rule<AuaustSortNamedExports>;
   /**
    * Enforce sorted named imports.
+   *
    * @see https://perfectionist.dev/rules/sort-named-imports
    */
   "auaust/sort-named-imports"?: Rule<AuaustSortNamedImports>;
   /**
    * Enforce consistent brace style for `case` clauses.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/switch-case-braces.md
    */
   "auaust/switch-case-braces"?: Rule<AuaustSwitchCaseBraces>;
   /**
    * Require switch-case statements to be exhaustive
+   *
    * @see https://typescript-eslint.io/rules/switch-exhaustiveness-check
    */
   "auaust/switch-exhaustiveness-check"?: Rule<AuaustSwitchExhaustivenessCheck>;
   /**
    * Enforce consistent case for text encoding identifiers.
+   *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/text-encoding-identifier-case.md
    */
   "auaust/text-encoding-identifier-case"?: Rule<AuaustTextEncodingIdentifierCase>;
@@ -456,12 +544,16 @@ export interface AuaustRules {
    */
   "auaust/type-only-roles"?: Rule<[]>;
   /**
-   * Disallow two overloads that could be unified into one with a union or an optional/rest parameter
+   * Disallow two overloads that could be unified into one with a union or an
+   * optional/rest parameter
+   *
    * @see https://typescript-eslint.io/rules/unified-signatures
    */
   "auaust/unified-signatures"?: Rule<AuaustUnifiedSignatures>;
   /**
-   * Use `void` only as a standalone statement or to discard the value of a returned action, as in `void promise`, `return void call()` or `() => void call()`.
+   * Use `void` only as a standalone statement or to discard the value
+   * of a returned action, as in `void promise`, `return void call()` or
+   * `() => void call()`.
    */
   "auaust/void-placement"?: Rule<[]>;
 }
@@ -531,82 +623,6 @@ type AuaustDebtMarkers =
   | [
       {
         list?: boolean;
-      },
-    ];
-
-// ----- auaust/jsdoc-description-first -----
-type AuaustJsdocDescriptionFirst =
-  | []
-  | [
-      {
-        alphabetizeExtras?: boolean;
-
-        linesBetween?: number;
-
-        reportIntraTagGroupSpacing?: boolean;
-
-        reportTagGroupSpacing?: boolean;
-
-        tagExceptions?: {
-          [k: string]: number;
-        };
-
-        tagSequence?: {
-          tags?: string[];
-        }[];
-      },
-    ];
-
-// ----- auaust/jsdoc-multiline-blocks -----
-type AuaustJsdocMultilineBlocks =
-  | []
-  | [
-      {
-        allowMultipleTags?: boolean;
-
-        minimumLengthForMultiline?: number;
-
-        multilineTags?: "*" | string[];
-
-        noFinalLineText?: boolean;
-
-        noMultilineBlocks?: boolean;
-
-        noSingleLineBlocks?: boolean;
-
-        noZeroLineText?: boolean;
-
-        requireSingleLineUnderCount?: number;
-
-        singleLineTags?: string[];
-      },
-    ];
-
-// ----- auaust/jsdoc-tag-lines -----
-type AuaustJsdocTagLines =
-  | []
-  | ["always" | "any" | "never"]
-  | [
-      "always" | "any" | "never",
-      {
-        applyToEndTag?: boolean;
-
-        count?: number;
-
-        endLines?: number | null;
-
-        maxBlockLines?: number | null;
-
-        startLines?: number | null;
-
-        startLinesWithNoTags?: number;
-
-        tags?: {
-          [k: string]: {
-            count?: number;
-            lines?: "always" | "never" | "any";
-          };
-        };
       },
     ];
 

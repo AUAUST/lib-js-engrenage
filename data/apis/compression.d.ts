@@ -18,14 +18,23 @@ and limitations under the License.
 type CompressionFormat = "deflate" | "deflate-raw" | "gzip";
 
 /**
- * The **`CompressionStream`** interface of the Compression Streams API compresses a stream of data. It implements the same shape as a TransformStream, allowing it to be used in ReadableStream.pipeThrough() and similar methods.
+ * The **`CompressionStream`** interface of the Compression Streams API compresses
+ * a stream of data. It implements the same shape as a TransformStream, allowing
+ * it to be used in ReadableStream.pipeThrough() and similar methods.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/CompressionStream)
  */
 interface CompressionStream extends GenericTransformStream {
-  /** The **`readable`** read-only property of the CompressionStream interface returns a ReadableStream that emits compressed data as Uint8Array chunks. */
+  /**
+   * The **`readable`** read-only property of the CompressionStream interface
+   * returns a ReadableStream that emits compressed data as Uint8Array chunks.
+   */
   readonly readable: ReadableStream<Uint8Array<ArrayBuffer>>;
-  /** The **`writable`** read-only property of the CompressionStream interface returns a WritableStream that accepts uncompressed data to be compressed, in the form of ArrayBuffer, TypedArray, or DataView chunks. */
+  /**
+   * The **`writable`** read-only property of the CompressionStream interface
+   * returns a WritableStream that accepts uncompressed data to be compressed, in
+   * the form of ArrayBuffer, TypedArray, or DataView chunks.
+   */
   readonly writable: WritableStream<BufferSource>;
 }
 
@@ -35,14 +44,24 @@ declare var CompressionStream: {
 };
 
 /**
- * The **`DecompressionStream`** interface of the Compression Streams API decompresses a stream of data. It implements the same shape as a TransformStream, allowing it to be used in ReadableStream.pipeThrough() and similar methods.
+ * The **`DecompressionStream`** interface of the Compression Streams
+ * API decompresses a stream of data. It implements the same shape as a
+ * TransformStream, allowing it to be used in ReadableStream.pipeThrough() and
+ * similar methods.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/DecompressionStream)
  */
 interface DecompressionStream extends GenericTransformStream {
-  /** The **`readable`** read-only property of the DecompressionStream interface returns a ReadableStream that emits decompressed data as Uint8Array chunks. */
+  /**
+   * The **`readable`** read-only property of the DecompressionStream interface
+   * returns a ReadableStream that emits decompressed data as Uint8Array chunks.
+   */
   readonly readable: ReadableStream<Uint8Array<ArrayBuffer>>;
-  /** The **`writable`** read-only property of the DecompressionStream interface returns a WritableStream that accepts compressed data to be decompressed, in the form of ArrayBuffer, TypedArray, or DataView chunks. */
+  /**
+   * The **`writable`** read-only property of the DecompressionStream interface
+   * returns a WritableStream that accepts compressed data to be decompressed, in
+   * the form of ArrayBuffer, TypedArray, or DataView chunks.
+   */
   readonly writable: WritableStream<BufferSource>;
 }
 

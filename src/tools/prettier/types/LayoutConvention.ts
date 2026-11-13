@@ -5,4 +5,5 @@ import type { LayoutEdit } from "#tools/prettier/types/LayoutEdit";
 export type LayoutConvention = (
   program: TSESTree.Program,
   text: string,
+  options: { printWidth: number; tabWidth: number },
 ) => readonly LayoutEdit[];

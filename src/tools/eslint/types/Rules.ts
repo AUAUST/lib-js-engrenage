@@ -3,7 +3,6 @@
 import type { CoreRules } from "#tools/eslint/types/rules/CoreRules";
 import type { AuaustRules } from "#tools/eslint/types/rules/AuaustRules";
 import type { PackageJsonRules } from "#tools/eslint/types/rules/PackageJsonRules";
-import type { JsdocRules } from "#tools/eslint/types/rules/JsdocRules";
 import type { PerfectionistRules } from "#tools/eslint/types/rules/PerfectionistRules";
 import type { SonarjsRules } from "#tools/eslint/types/rules/SonarjsRules";
 import type { UnicornRules } from "#tools/eslint/types/rules/UnicornRules";
@@ -18,7 +17,6 @@ export interface Rules
     CoreRules,
     AuaustRules,
     PackageJsonRules,
-    JsdocRules,
     PerfectionistRules,
     SonarjsRules,
     UnicornRules,

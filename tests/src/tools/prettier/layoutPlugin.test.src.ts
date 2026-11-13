@@ -2,6 +2,29 @@ import { parsers } from "prettier/plugins/typescript";
 import { describe, expect, test } from "vitest";
 
 import { formatWithPrettierConfig } from "#tests/utils/formatWithPrettierConfig";
+import { wrapParagraph } from "#tools/prettier/utils/wrapParagraph";
+
+function wrapGreedily(words: readonly string[], width: number): string[] {
+  const lines: string[] = [];
+
+  for (const word of words) {
+    const last = lines.at(-1);
+
+    if (last != null && last.length + 1 + word.length <= width) {
+      lines[lines.length - 1] = `${last} ${word}`;
+    } else {
+      lines.push(word);
+    }
+  }
+
+  return lines;
+}
+
+function getSpread(lines: readonly string[]): number {
+  const lengths = lines.slice(0, -1).map((line) => line.length);
+
+  return Math.max(...lengths) - Math.min(...lengths);
+}
 
 describe("layoutPlugin", () => {
   test("pads a declaration Prettier wraps past the print width, and formats its output unchanged", async () => {
@@ -382,5 +405,134 @@ function other(value: unknown): unknown {
   return value;
 }
 `);
+  });
+});
+
+describe("canonicalJsdoc", () => {
+  test.each([
+    [
+      "/** Text. @experimental */\nexport function foo(): void {}\n",
+      "/**\n * Text.\n *\n * @experimental\n */\nexport function foo(): void {}\n",
+    ],
+    [
+      "/** Foo */\nexport const foo = 1;\n",
+      "/**\n * Foo\n */\nexport const foo = 1;\n",
+    ],
+    [
+      "/** @type {number} */\nexport const foo = 1;\n",
+      "/**\n * @type {number}\n */\nexport const foo = 1;\n",
+    ],
+    [
+      "/**\n * Foo.\n * @param value Input.\n */\nfunction foo(value: string): void {}\n",
+      "/**\n * Foo.\n *\n * @param value Input.\n */\nfunction foo(value: string): void {}\n",
+    ],
+    [
+      "/**\n * @param value Input.\n * @description Foo.\n */\nfunction foo(value: string): void {}\n",
+      "/**\n * @description Foo.\n * @param value Input.\n */\nfunction foo(value: string): void {}\n",
+    ],
+  ])("lays out %s", async (source, expected) => {
+    const output = await formatWithPrettierConfig(source);
+
+    expect(output).toBe(expected);
+
+    expect(await formatWithPrettierConfig(output)).toBe(output);
+  });
+
+  test("wraps a long description more evenly than greedy wrapping, keeping fences and tables verbatim", async () => {
+    const description = "Each project reads its own manifest and the shared workspace configuration, overriding inherited options locally, then the resolved settings are validated against every declared schema and handed to the tools in order.";
+
+    const fence = [
+      " * ```ts",
+      " * resolveWorkspace({ root: process.cwd(), presets: [] });",
+      " * ```",
+    ];
+
+    const table = [
+      " * | Option | Meaning |",
+      " * | ------ | ------- |",
+      " * | root | The workspace root directory, read once |",
+    ];
+
+    const source = [
+      `/** ${description} */`,
+      "export function resolve(): void {}",
+      "",
+      "/**",
+      ` * ${description}`,
+      " *",
+      ...fence,
+      " *",
+      ...table,
+      " */",
+      "export function other(): void {}",
+      "",
+    ].join("\n");
+
+    const output = await formatWithPrettierConfig(source);
+
+    const lines = output.split("\n");
+
+    const wrapped = lines
+      .slice(1, lines.indexOf(" */"))
+      .map((line) => line.slice(3));
+
+    const words = description.split(" ");
+
+    expect(wrapped.join(" ")).toBe(words.join(" "));
+    expect(wrapped.length).toBeGreaterThan(2);
+    expect(getSpread(wrapped)).toBeLessThan(getSpread(wrapGreedily(words, 77)));
+
+    for (const line of lines) {
+      expect(line.length).toBeLessThanOrEqual(83);
+    }
+
+    expect(output).toContain([...fence, " *", ...table].join("\n"));
+    expect(await formatWithPrettierConfig(output)).toBe(output);
+  });
+
+  test("keeps a block sharing its line with code and a prettier-ignored block", async () => {
+    const source = `const value = foo(/** @__PURE__ */ bar());
+
+// prettier-ignore
+/** Ignored. @experimental */
+const ignored = 1;
+`;
+
+    expect(await formatWithPrettierConfig(source)).toBe(source);
+  });
+
+  test("keeps multiline tag bodies and custom tags as written", async () => {
+    const source = [
+      "/**",
+      " * Parse a value.",
+      " *",
+      " * @example",
+      " * ```ts",
+      ' * parse("value");',
+      " * ```",
+      " *",
+      " * Another paragraph belonging to the example.",
+      " * @customTool Some library metadata.",
+      " * @param value Text.",
+      " * @returns Parsed text.",
+      " */",
+      "export function parse(value: string): string {",
+      "  return value;",
+      "}",
+      "",
+    ].join("\n");
+
+    expect(await formatWithPrettierConfig(source)).toBe(source);
+  });
+
+  test("wrapParagraph keeps inline code spans and links whole", () => {
+    const words = "See `a long inline code span` and {@link Foo bar} here.".split(
+      " ",
+    );
+
+    const lines = wrapParagraph(words, 10);
+
+    expect(lines).toContain("`a long inline code span`");
+    expect(lines).toContain("{@link Foo bar}");
   });
 });

@@ -9,7 +9,6 @@ export { default as exhaustiveSwitches } from "#tools/eslint/conventions/stylist
 export { default as fileLines } from "#tools/eslint/conventions/stylistic/fileLines";
 export { default as functionDeclarations } from "#tools/eslint/conventions/stylistic/functionDeclarations";
 export { default as functionLines } from "#tools/eslint/conventions/stylistic/functionLines";
-export { default as jsdocLayout } from "#tools/eslint/conventions/stylistic/jsdocLayout";
 export { default as nameReplacements } from "#tools/eslint/conventions/stylistic/nameReplacements";
 export { default as naming } from "#tools/eslint/conventions/stylistic/naming";
 export { default as noComplexConciseArrows } from "#tools/eslint/conventions/stylistic/noComplexConciseArrows";

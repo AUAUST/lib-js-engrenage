@@ -5,1554 +5,1865 @@ import type { Rule } from "#tools/eslint/types/Rule";
 export interface CoreRules {
   /**
    * Enforce getter and setter pairs in objects and classes
+   *
    * @see https://eslint.org/docs/latest/rules/accessor-pairs
    */
   "accessor-pairs"?: Rule<AccessorPairs>;
   /**
    * Enforce linebreaks after opening and before closing array brackets
+   *
    * @see https://eslint.org/docs/latest/rules/array-bracket-newline
    * @deprecated
    */
   "array-bracket-newline"?: Rule<ArrayBracketNewline>;
   /**
    * Enforce consistent spacing inside array brackets
+   *
    * @see https://eslint.org/docs/latest/rules/array-bracket-spacing
    * @deprecated
    */
   "array-bracket-spacing"?: Rule<ArrayBracketSpacing>;
   /**
    * Enforce `return` statements in callbacks of array methods
+   *
    * @see https://eslint.org/docs/latest/rules/array-callback-return
    */
   "array-callback-return"?: Rule<ArrayCallbackReturn>;
   /**
    * Enforce line breaks after each array element
+   *
    * @see https://eslint.org/docs/latest/rules/array-element-newline
    * @deprecated
    */
   "array-element-newline"?: Rule<ArrayElementNewline>;
   /**
    * Require braces around arrow function bodies
+   *
    * @see https://eslint.org/docs/latest/rules/arrow-body-style
    */
   "arrow-body-style"?: Rule<ArrowBodyStyle>;
   /**
    * Require parentheses around arrow function arguments
+   *
    * @see https://eslint.org/docs/latest/rules/arrow-parens
    * @deprecated
    */
   "arrow-parens"?: Rule<ArrowParens>;
   /**
    * Enforce consistent spacing before and after the arrow in arrow functions
+   *
    * @see https://eslint.org/docs/latest/rules/arrow-spacing
    * @deprecated
    */
   "arrow-spacing"?: Rule<ArrowSpacing>;
   /**
    * Enforce the use of variables within the scope they are defined
+   *
    * @see https://eslint.org/docs/latest/rules/block-scoped-var
    */
   "block-scoped-var"?: Rule<[]>;
   /**
-   * Disallow or enforce spaces inside of blocks after opening block and before closing block
+   * Disallow or enforce spaces inside of blocks after opening block and before
+   * closing block
+   *
    * @see https://eslint.org/docs/latest/rules/block-spacing
    * @deprecated
    */
   "block-spacing"?: Rule<BlockSpacing>;
   /**
    * Enforce consistent brace style for blocks
+   *
    * @see https://eslint.org/docs/latest/rules/brace-style
    * @deprecated
    */
   "brace-style"?: Rule<BraceStyle>;
   /**
    * Require `return` statements after callbacks
+   *
    * @see https://eslint.org/docs/latest/rules/callback-return
    * @deprecated
    */
   "callback-return"?: Rule<CallbackReturn>;
   /**
    * Enforce camelcase naming convention
+   *
    * @see https://eslint.org/docs/latest/rules/camelcase
    */
   "camelcase"?: Rule<Camelcase>;
   /**
    * Enforce or disallow capitalization of the first letter of a comment
+   *
    * @see https://eslint.org/docs/latest/rules/capitalized-comments
    */
   "capitalized-comments"?: Rule<CapitalizedComments>;
   /**
    * Enforce that class methods utilize `this`
+   *
    * @see https://eslint.org/docs/latest/rules/class-methods-use-this
    */
   "class-methods-use-this"?: Rule<ClassMethodsUseThis>;
   /**
    * Require or disallow trailing commas
+   *
    * @see https://eslint.org/docs/latest/rules/comma-dangle
    * @deprecated
    */
   "comma-dangle"?: Rule<CommaDangle>;
   /**
    * Enforce consistent spacing before and after commas
+   *
    * @see https://eslint.org/docs/latest/rules/comma-spacing
    * @deprecated
    */
   "comma-spacing"?: Rule<CommaSpacing>;
   /**
    * Enforce consistent comma style
+   *
    * @see https://eslint.org/docs/latest/rules/comma-style
    * @deprecated
    */
   "comma-style"?: Rule<CommaStyle>;
   /**
    * Enforce a maximum cyclomatic complexity allowed in a program
+   *
    * @see https://eslint.org/docs/latest/rules/complexity
    */
   "complexity"?: Rule<Complexity>;
   /**
    * Enforce consistent spacing inside computed property brackets
+   *
    * @see https://eslint.org/docs/latest/rules/computed-property-spacing
    * @deprecated
    */
   "computed-property-spacing"?: Rule<ComputedPropertySpacing>;
   /**
    * Require `return` statements to either always or never specify values
+   *
    * @see https://eslint.org/docs/latest/rules/consistent-return
    */
   "consistent-return"?: Rule<ConsistentReturn>;
   /**
    * Enforce consistent naming when capturing the current execution context
+   *
    * @see https://eslint.org/docs/latest/rules/consistent-this
    */
   "consistent-this"?: Rule<ConsistentThis>;
   /**
    * Require `super()` calls in constructors
+   *
    * @see https://eslint.org/docs/latest/rules/constructor-super
    */
   "constructor-super"?: Rule<[]>;
   /**
    * Enforce consistent brace style for all control statements
+   *
    * @see https://eslint.org/docs/latest/rules/curly
    */
   "curly"?: Rule<Curly>;
   /**
    * Require `default` cases in `switch` statements
+   *
    * @see https://eslint.org/docs/latest/rules/default-case
    */
   "default-case"?: Rule<DefaultCase>;
   /**
    * Enforce `default` clauses in `switch` statements to be last
+   *
    * @see https://eslint.org/docs/latest/rules/default-case-last
    */
   "default-case-last"?: Rule<[]>;
   /**
    * Enforce default parameters to be last
+   *
    * @see https://eslint.org/docs/latest/rules/default-param-last
    */
   "default-param-last"?: Rule<[]>;
   /**
    * Enforce consistent newlines before and after dots
+   *
    * @see https://eslint.org/docs/latest/rules/dot-location
    * @deprecated
    */
   "dot-location"?: Rule<DotLocation>;
   /**
    * Enforce dot notation whenever possible
+   *
    * @see https://eslint.org/docs/latest/rules/dot-notation
    */
   "dot-notation"?: Rule<DotNotation>;
   /**
    * Require or disallow newline at the end of files
+   *
    * @see https://eslint.org/docs/latest/rules/eol-last
    * @deprecated
    */
   "eol-last"?: Rule<EolLast>;
   /**
    * Require the use of `===` and `!==`
+   *
    * @see https://eslint.org/docs/latest/rules/eqeqeq
    */
   "eqeqeq"?: Rule<Eqeqeq>;
   /**
    * Enforce `for` loop update clause moving the counter in the right direction
+   *
    * @see https://eslint.org/docs/latest/rules/for-direction
    */
   "for-direction"?: Rule<[]>;
   /**
    * Require or disallow spacing between function identifiers and their invocations
+   *
    * @see https://eslint.org/docs/latest/rules/func-call-spacing
    * @deprecated
    */
   "func-call-spacing"?: Rule<FuncCallSpacing>;
   /**
-   * Require function names to match the name of the variable or property to which they are assigned
+   * Require function names to match the name of the variable or property to which
+   * they are assigned
+   *
    * @see https://eslint.org/docs/latest/rules/func-name-matching
    */
   "func-name-matching"?: Rule<FuncNameMatching>;
   /**
    * Require or disallow named `function` expressions
+   *
    * @see https://eslint.org/docs/latest/rules/func-names
    */
   "func-names"?: Rule<FuncNames>;
   /**
-   * Enforce the consistent use of either `function` declarations or expressions assigned to variables
+   * Enforce the consistent use of either `function` declarations or expressions
+   * assigned to variables
+   *
    * @see https://eslint.org/docs/latest/rules/func-style
    */
   "func-style"?: Rule<FuncStyle>;
   /**
    * Enforce line breaks between arguments of a function call
+   *
    * @see https://eslint.org/docs/latest/rules/function-call-argument-newline
    * @deprecated
    */
   "function-call-argument-newline"?: Rule<FunctionCallArgumentNewline>;
   /**
    * Enforce consistent line breaks inside function parentheses
+   *
    * @see https://eslint.org/docs/latest/rules/function-paren-newline
    * @deprecated
    */
   "function-paren-newline"?: Rule<FunctionParenNewline>;
   /**
    * Enforce consistent spacing around `*` operators in generator functions
+   *
    * @see https://eslint.org/docs/latest/rules/generator-star-spacing
    * @deprecated
    */
   "generator-star-spacing"?: Rule<GeneratorStarSpacing>;
   /**
    * Enforce `return` statements in getters
+   *
    * @see https://eslint.org/docs/latest/rules/getter-return
    */
   "getter-return"?: Rule<GetterReturn>;
   /**
    * Require `require()` calls to be placed at top-level module scope
+   *
    * @see https://eslint.org/docs/latest/rules/global-require
    * @deprecated
    */
   "global-require"?: Rule<[]>;
   /**
    * Require grouped accessor pairs in object literals and classes
+   *
    * @see https://eslint.org/docs/latest/rules/grouped-accessor-pairs
    */
   "grouped-accessor-pairs"?: Rule<GroupedAccessorPairs>;
   /**
    * Require `for-in` loops to include an `if` statement
+   *
    * @see https://eslint.org/docs/latest/rules/guard-for-in
    */
   "guard-for-in"?: Rule<[]>;
   /**
    * Require error handling in callbacks
+   *
    * @see https://eslint.org/docs/latest/rules/handle-callback-err
    * @deprecated
    */
   "handle-callback-err"?: Rule<HandleCallbackErr>;
   /**
    * Disallow specified identifiers
+   *
    * @see https://eslint.org/docs/latest/rules/id-blacklist
    * @deprecated
    */
   "id-blacklist"?: Rule<IdBlacklist>;
   /**
    * Disallow specified identifiers
+   *
    * @see https://eslint.org/docs/latest/rules/id-denylist
    */
   "id-denylist"?: Rule<IdDenylist>;
   /**
    * Enforce minimum and maximum identifier lengths
+   *
    * @see https://eslint.org/docs/latest/rules/id-length
    */
   "id-length"?: Rule<IdLength>;
   /**
    * Require identifiers to match a specified regular expression
+   *
    * @see https://eslint.org/docs/latest/rules/id-match
    */
   "id-match"?: Rule<IdMatch>;
   /**
    * Enforce the location of arrow function bodies
+   *
    * @see https://eslint.org/docs/latest/rules/implicit-arrow-linebreak
    * @deprecated
    */
   "implicit-arrow-linebreak"?: Rule<ImplicitArrowLinebreak>;
   /**
    * Enforce consistent indentation
+   *
    * @see https://eslint.org/docs/latest/rules/indent
    * @deprecated
    */
   "indent"?: Rule<Indent>;
   /**
    * Enforce consistent indentation
+   *
    * @see https://eslint.org/docs/latest/rules/indent-legacy
    * @deprecated
    */
   "indent-legacy"?: Rule<IndentLegacy>;
   /**
    * Require or disallow initialization in variable declarations
+   *
    * @see https://eslint.org/docs/latest/rules/init-declarations
    */
   "init-declarations"?: Rule<InitDeclarations>;
   /**
    * Enforce the consistent use of either double or single quotes in JSX attributes
+   *
    * @see https://eslint.org/docs/latest/rules/jsx-quotes
    * @deprecated
    */
   "jsx-quotes"?: Rule<JsxQuotes>;
   /**
-   * Enforce consistent spacing between keys and values in object literal properties
+   * Enforce consistent spacing between keys and values in object literal
+   * properties
+   *
    * @see https://eslint.org/docs/latest/rules/key-spacing
    * @deprecated
    */
   "key-spacing"?: Rule<KeySpacing>;
   /**
    * Enforce consistent spacing before and after keywords
+   *
    * @see https://eslint.org/docs/latest/rules/keyword-spacing
    * @deprecated
    */
   "keyword-spacing"?: Rule<KeywordSpacing>;
   /**
    * Enforce position of line comments
+   *
    * @see https://eslint.org/docs/latest/rules/line-comment-position
    * @deprecated
    */
   "line-comment-position"?: Rule<LineCommentPosition>;
   /**
    * Enforce consistent linebreak style
+   *
    * @see https://eslint.org/docs/latest/rules/linebreak-style
    * @deprecated
    */
   "linebreak-style"?: Rule<LinebreakStyle>;
   /**
    * Require empty lines around comments
+   *
    * @see https://eslint.org/docs/latest/rules/lines-around-comment
    * @deprecated
    */
   "lines-around-comment"?: Rule<LinesAroundComment>;
   /**
    * Require or disallow newlines around directives
+   *
    * @see https://eslint.org/docs/latest/rules/lines-around-directive
    * @deprecated
    */
   "lines-around-directive"?: Rule<LinesAroundDirective>;
   /**
    * Require or disallow an empty line between class members
+   *
    * @see https://eslint.org/docs/latest/rules/lines-between-class-members
    * @deprecated
    */
   "lines-between-class-members"?: Rule<LinesBetweenClassMembers>;
   /**
    * Require or disallow logical assignment operator shorthand
+   *
    * @see https://eslint.org/docs/latest/rules/logical-assignment-operators
    */
   "logical-assignment-operators"?: Rule<LogicalAssignmentOperators>;
   /**
    * Enforce a maximum number of classes per file
+   *
    * @see https://eslint.org/docs/latest/rules/max-classes-per-file
    */
   "max-classes-per-file"?: Rule<MaxClassesPerFile>;
   /**
    * Enforce a maximum depth that blocks can be nested
+   *
    * @see https://eslint.org/docs/latest/rules/max-depth
    */
   "max-depth"?: Rule<MaxDepth>;
   /**
    * Enforce a maximum line length
+   *
    * @see https://eslint.org/docs/latest/rules/max-len
    * @deprecated
    */
   "max-len"?: Rule<MaxLen>;
   /**
    * Enforce a maximum number of lines per file
+   *
    * @see https://eslint.org/docs/latest/rules/max-lines
    */
   "max-lines"?: Rule<MaxLines>;
   /**
    * Enforce a maximum number of lines of code in a function
+   *
    * @see https://eslint.org/docs/latest/rules/max-lines-per-function
    */
   "max-lines-per-function"?: Rule<MaxLinesPerFunction>;
   /**
    * Enforce a maximum depth that callbacks can be nested
+   *
    * @see https://eslint.org/docs/latest/rules/max-nested-callbacks
    */
   "max-nested-callbacks"?: Rule<MaxNestedCallbacks>;
   /**
    * Enforce a maximum number of parameters in function definitions
+   *
    * @see https://eslint.org/docs/latest/rules/max-params
    */
   "max-params"?: Rule<MaxParams>;
   /**
    * Enforce a maximum number of statements allowed in function blocks
+   *
    * @see https://eslint.org/docs/latest/rules/max-statements
    */
   "max-statements"?: Rule<MaxStatements>;
   /**
    * Enforce a maximum number of statements allowed per line
+   *
    * @see https://eslint.org/docs/latest/rules/max-statements-per-line
    * @deprecated
    */
   "max-statements-per-line"?: Rule<MaxStatementsPerLine>;
   /**
    * Enforce a particular style for multiline comments
+   *
    * @see https://eslint.org/docs/latest/rules/multiline-comment-style
    * @deprecated
    */
   "multiline-comment-style"?: Rule<MultilineCommentStyle>;
   /**
    * Enforce newlines between operands of ternary expressions
+   *
    * @see https://eslint.org/docs/latest/rules/multiline-ternary
    * @deprecated
    */
   "multiline-ternary"?: Rule<MultilineTernary>;
   /**
    * Require constructor names to begin with a capital letter
+   *
    * @see https://eslint.org/docs/latest/rules/new-cap
    */
   "new-cap"?: Rule<NewCap>;
   /**
    * Enforce or disallow parentheses when invoking a constructor with no arguments
+   *
    * @see https://eslint.org/docs/latest/rules/new-parens
    * @deprecated
    */
   "new-parens"?: Rule<NewParens>;
   /**
    * Require or disallow an empty line after variable declarations
+   *
    * @see https://eslint.org/docs/latest/rules/newline-after-var
    * @deprecated
    */
   "newline-after-var"?: Rule<NewlineAfterVar>;
   /**
    * Require an empty line before `return` statements
+   *
    * @see https://eslint.org/docs/latest/rules/newline-before-return
    * @deprecated
    */
   "newline-before-return"?: Rule<[]>;
   /**
    * Require a newline after each call in a method chain
+   *
    * @see https://eslint.org/docs/latest/rules/newline-per-chained-call
    * @deprecated
    */
   "newline-per-chained-call"?: Rule<NewlinePerChainedCall>;
   /**
    * Disallow the use of `alert`, `confirm`, and `prompt`
+   *
    * @see https://eslint.org/docs/latest/rules/no-alert
    */
   "no-alert"?: Rule<[]>;
   /**
    * Disallow `Array` constructors
+   *
    * @see https://eslint.org/docs/latest/rules/no-array-constructor
    */
   "no-array-constructor"?: Rule<[]>;
   /**
    * Disallow using an async function as a Promise executor
+   *
    * @see https://eslint.org/docs/latest/rules/no-async-promise-executor
    */
   "no-async-promise-executor"?: Rule<[]>;
   /**
    * Disallow `await` inside of loops
+   *
    * @see https://eslint.org/docs/latest/rules/no-await-in-loop
    */
   "no-await-in-loop"?: Rule<[]>;
   /**
    * Disallow bitwise operators
+   *
    * @see https://eslint.org/docs/latest/rules/no-bitwise
    */
   "no-bitwise"?: Rule<NoBitwise>;
   /**
    * Disallow use of the `Buffer()` constructor
+   *
    * @see https://eslint.org/docs/latest/rules/no-buffer-constructor
    * @deprecated
    */
   "no-buffer-constructor"?: Rule<[]>;
   /**
    * Disallow the use of `arguments.caller` or `arguments.callee`
+   *
    * @see https://eslint.org/docs/latest/rules/no-caller
    */
   "no-caller"?: Rule<[]>;
   /**
    * Disallow lexical declarations in case clauses
+   *
    * @see https://eslint.org/docs/latest/rules/no-case-declarations
    */
   "no-case-declarations"?: Rule<[]>;
   /**
-   * Disallow `catch` clause parameters from shadowing variables in the outer scope
+   * Disallow `catch` clause parameters from shadowing variables in the outer
+   * scope
+   *
    * @see https://eslint.org/docs/latest/rules/no-catch-shadow
    * @deprecated
    */
   "no-catch-shadow"?: Rule<[]>;
   /**
    * Disallow reassigning class members
+   *
    * @see https://eslint.org/docs/latest/rules/no-class-assign
    */
   "no-class-assign"?: Rule<[]>;
   /**
    * Disallow comparing against `-0`
+   *
    * @see https://eslint.org/docs/latest/rules/no-compare-neg-zero
    */
   "no-compare-neg-zero"?: Rule<[]>;
   /**
    * Disallow assignment operators in conditional expressions
+   *
    * @see https://eslint.org/docs/latest/rules/no-cond-assign
    */
   "no-cond-assign"?: Rule<NoCondAssign>;
   /**
    * Disallow arrow functions where they could be confused with comparisons
+   *
    * @see https://eslint.org/docs/latest/rules/no-confusing-arrow
    * @deprecated
    */
   "no-confusing-arrow"?: Rule<NoConfusingArrow>;
   /**
    * Disallow the use of `console`
+   *
    * @see https://eslint.org/docs/latest/rules/no-console
    */
   "no-console"?: Rule<NoConsole>;
   /**
    * Disallow reassigning `const`, `using`, and `await using` variables
+   *
    * @see https://eslint.org/docs/latest/rules/no-const-assign
    */
   "no-const-assign"?: Rule<[]>;
   /**
    * Disallow expressions where the operation doesn't affect the value
+   *
    * @see https://eslint.org/docs/latest/rules/no-constant-binary-expression
    */
   "no-constant-binary-expression"?: Rule<NoConstantBinaryExpression>;
   /**
    * Disallow constant expressions in conditions
+   *
    * @see https://eslint.org/docs/latest/rules/no-constant-condition
    */
   "no-constant-condition"?: Rule<NoConstantCondition>;
   /**
    * Disallow returning value from constructor
+   *
    * @see https://eslint.org/docs/latest/rules/no-constructor-return
    */
   "no-constructor-return"?: Rule<[]>;
   /**
    * Disallow `continue` statements
+   *
    * @see https://eslint.org/docs/latest/rules/no-continue
    */
   "no-continue"?: Rule<[]>;
   /**
    * Disallow control characters in regular expressions
+   *
    * @see https://eslint.org/docs/latest/rules/no-control-regex
    */
   "no-control-regex"?: Rule<[]>;
   /**
    * Disallow the use of `debugger`
+   *
    * @see https://eslint.org/docs/latest/rules/no-debugger
    */
   "no-debugger"?: Rule<[]>;
   /**
    * Disallow deleting variables
+   *
    * @see https://eslint.org/docs/latest/rules/no-delete-var
    */
   "no-delete-var"?: Rule<[]>;
   /**
    * Disallow equal signs explicitly at the beginning of regular expressions
+   *
    * @see https://eslint.org/docs/latest/rules/no-div-regex
    */
   "no-div-regex"?: Rule<[]>;
   /**
    * Disallow duplicate arguments in `function` definitions
+   *
    * @see https://eslint.org/docs/latest/rules/no-dupe-args
    */
   "no-dupe-args"?: Rule<[]>;
   /**
    * Disallow duplicate class members
+   *
    * @see https://eslint.org/docs/latest/rules/no-dupe-class-members
    */
   "no-dupe-class-members"?: Rule<[]>;
   /**
    * Disallow duplicate conditions in if-else-if chains
+   *
    * @see https://eslint.org/docs/latest/rules/no-dupe-else-if
    */
   "no-dupe-else-if"?: Rule<[]>;
   /**
    * Disallow duplicate keys in object literals
+   *
    * @see https://eslint.org/docs/latest/rules/no-dupe-keys
    */
   "no-dupe-keys"?: Rule<[]>;
   /**
    * Disallow duplicate case labels
+   *
    * @see https://eslint.org/docs/latest/rules/no-duplicate-case
    */
   "no-duplicate-case"?: Rule<[]>;
   /**
    * Disallow duplicate module imports
+   *
    * @see https://eslint.org/docs/latest/rules/no-duplicate-imports
    */
   "no-duplicate-imports"?: Rule<NoDuplicateImports>;
   /**
    * Disallow `else` blocks after `return` statements in `if` statements
+   *
    * @see https://eslint.org/docs/latest/rules/no-else-return
    */
   "no-else-return"?: Rule<NoElseReturn>;
   /**
    * Disallow empty block statements
+   *
    * @see https://eslint.org/docs/latest/rules/no-empty
    */
   "no-empty"?: Rule<NoEmpty>;
   /**
    * Disallow empty character classes in regular expressions
+   *
    * @see https://eslint.org/docs/latest/rules/no-empty-character-class
    */
   "no-empty-character-class"?: Rule<[]>;
   /**
    * Disallow empty functions
+   *
    * @see https://eslint.org/docs/latest/rules/no-empty-function
    */
   "no-empty-function"?: Rule<NoEmptyFunction>;
   /**
    * Disallow empty destructuring patterns
+   *
    * @see https://eslint.org/docs/latest/rules/no-empty-pattern
    */
   "no-empty-pattern"?: Rule<NoEmptyPattern>;
   /**
    * Disallow empty static blocks
+   *
    * @see https://eslint.org/docs/latest/rules/no-empty-static-block
    */
   "no-empty-static-block"?: Rule<[]>;
   /**
    * Disallow `null` comparisons without type-checking operators
+   *
    * @see https://eslint.org/docs/latest/rules/no-eq-null
    */
   "no-eq-null"?: Rule<[]>;
   /**
    * Disallow the use of `eval()`
+   *
    * @see https://eslint.org/docs/latest/rules/no-eval
    */
   "no-eval"?: Rule<NoEval>;
   /**
    * Disallow reassigning exceptions in `catch` clauses
+   *
    * @see https://eslint.org/docs/latest/rules/no-ex-assign
    */
   "no-ex-assign"?: Rule<[]>;
   /**
    * Disallow extending native types
+   *
    * @see https://eslint.org/docs/latest/rules/no-extend-native
    */
   "no-extend-native"?: Rule<NoExtendNative>;
   /**
    * Disallow unnecessary calls to `.bind()`
+   *
    * @see https://eslint.org/docs/latest/rules/no-extra-bind
    */
   "no-extra-bind"?: Rule<[]>;
   /**
    * Disallow unnecessary boolean casts
+   *
    * @see https://eslint.org/docs/latest/rules/no-extra-boolean-cast
    */
   "no-extra-boolean-cast"?: Rule<NoExtraBooleanCast>;
   /**
    * Disallow unnecessary labels
+   *
    * @see https://eslint.org/docs/latest/rules/no-extra-label
    */
   "no-extra-label"?: Rule<[]>;
   /**
    * Disallow unnecessary parentheses
+   *
    * @see https://eslint.org/docs/latest/rules/no-extra-parens
    * @deprecated
    */
   "no-extra-parens"?: Rule<NoExtraParens>;
   /**
    * Disallow unnecessary semicolons
+   *
    * @see https://eslint.org/docs/latest/rules/no-extra-semi
    * @deprecated
    */
   "no-extra-semi"?: Rule<[]>;
   /**
    * Disallow fallthrough of `case` statements
+   *
    * @see https://eslint.org/docs/latest/rules/no-fallthrough
    */
   "no-fallthrough"?: Rule<NoFallthrough>;
   /**
    * Disallow leading or trailing decimal points in numeric literals
+   *
    * @see https://eslint.org/docs/latest/rules/no-floating-decimal
    * @deprecated
    */
   "no-floating-decimal"?: Rule<[]>;
   /**
    * Disallow reassigning `function` declarations
+   *
    * @see https://eslint.org/docs/latest/rules/no-func-assign
    */
   "no-func-assign"?: Rule<[]>;
   /**
    * Disallow assignments to native objects or read-only global variables
+   *
    * @see https://eslint.org/docs/latest/rules/no-global-assign
    */
   "no-global-assign"?: Rule<NoGlobalAssign>;
   /**
    * Disallow shorthand type conversions
+   *
    * @see https://eslint.org/docs/latest/rules/no-implicit-coercion
    */
   "no-implicit-coercion"?: Rule<NoImplicitCoercion>;
   /**
    * Disallow declarations in the global scope
+   *
    * @see https://eslint.org/docs/latest/rules/no-implicit-globals
    */
   "no-implicit-globals"?: Rule<NoImplicitGlobals>;
   /**
    * Disallow the use of `eval()`-like methods
+   *
    * @see https://eslint.org/docs/latest/rules/no-implied-eval
    */
   "no-implied-eval"?: Rule<[]>;
   /**
    * Disallow assigning to imported bindings
+   *
    * @see https://eslint.org/docs/latest/rules/no-import-assign
    */
   "no-import-assign"?: Rule<[]>;
   /**
    * Disallow inline comments after code
+   *
    * @see https://eslint.org/docs/latest/rules/no-inline-comments
    */
   "no-inline-comments"?: Rule<NoInlineComments>;
   /**
    * Disallow variable or `function` declarations in nested blocks
+   *
    * @see https://eslint.org/docs/latest/rules/no-inner-declarations
    */
   "no-inner-declarations"?: Rule<NoInnerDeclarations>;
   /**
    * Disallow invalid regular expression strings in `RegExp` constructors
+   *
    * @see https://eslint.org/docs/latest/rules/no-invalid-regexp
    */
   "no-invalid-regexp"?: Rule<NoInvalidRegexp>;
   /**
    * Disallow use of `this` in contexts where the value of `this` is `undefined`
+   *
    * @see https://eslint.org/docs/latest/rules/no-invalid-this
    */
   "no-invalid-this"?: Rule<NoInvalidThis>;
   /**
    * Disallow irregular whitespace
+   *
    * @see https://eslint.org/docs/latest/rules/no-irregular-whitespace
    */
   "no-irregular-whitespace"?: Rule<NoIrregularWhitespace>;
   /**
    * Disallow the use of the `__iterator__` property
+   *
    * @see https://eslint.org/docs/latest/rules/no-iterator
    */
   "no-iterator"?: Rule<[]>;
   /**
    * Disallow labels that share a name with a variable
+   *
    * @see https://eslint.org/docs/latest/rules/no-label-var
    */
   "no-label-var"?: Rule<[]>;
   /**
    * Disallow labeled statements
+   *
    * @see https://eslint.org/docs/latest/rules/no-labels
    */
   "no-labels"?: Rule<NoLabels>;
   /**
    * Disallow unnecessary nested blocks
+   *
    * @see https://eslint.org/docs/latest/rules/no-lone-blocks
    */
   "no-lone-blocks"?: Rule<[]>;
   /**
    * Disallow `if` statements as the only statement in `else` blocks
+   *
    * @see https://eslint.org/docs/latest/rules/no-lonely-if
    */
   "no-lonely-if"?: Rule<[]>;
   /**
-   * Disallow function declarations that contain unsafe references inside loop statements
+   * Disallow function declarations that contain unsafe references inside loop
+   * statements
+   *
    * @see https://eslint.org/docs/latest/rules/no-loop-func
    */
   "no-loop-func"?: Rule<[]>;
   /**
    * Disallow literal numbers that lose precision
+   *
    * @see https://eslint.org/docs/latest/rules/no-loss-of-precision
    */
   "no-loss-of-precision"?: Rule<[]>;
   /**
    * Disallow magic numbers
+   *
    * @see https://eslint.org/docs/latest/rules/no-magic-numbers
    */
   "no-magic-numbers"?: Rule<NoMagicNumbers>;
   /**
-   * Disallow characters which are made with multiple code points in character class syntax
+   * Disallow characters which are made with multiple code points in character
+   * class syntax
+   *
    * @see https://eslint.org/docs/latest/rules/no-misleading-character-class
    */
   "no-misleading-character-class"?: Rule<NoMisleadingCharacterClass>;
   /**
    * Disallow mixed binary operators
+   *
    * @see https://eslint.org/docs/latest/rules/no-mixed-operators
    * @deprecated
    */
   "no-mixed-operators"?: Rule<NoMixedOperators>;
   /**
    * Disallow `require` calls to be mixed with regular variable declarations
+   *
    * @see https://eslint.org/docs/latest/rules/no-mixed-requires
    * @deprecated
    */
   "no-mixed-requires"?: Rule<NoMixedRequires>;
   /**
    * Disallow mixed spaces and tabs for indentation
+   *
    * @see https://eslint.org/docs/latest/rules/no-mixed-spaces-and-tabs
    * @deprecated
    */
   "no-mixed-spaces-and-tabs"?: Rule<NoMixedSpacesAndTabs>;
   /**
    * Disallow use of chained assignment expressions
+   *
    * @see https://eslint.org/docs/latest/rules/no-multi-assign
    */
   "no-multi-assign"?: Rule<NoMultiAssign>;
   /**
    * Disallow multiple spaces
+   *
    * @see https://eslint.org/docs/latest/rules/no-multi-spaces
    * @deprecated
    */
   "no-multi-spaces"?: Rule<NoMultiSpaces>;
   /**
    * Disallow multiline strings
+   *
    * @see https://eslint.org/docs/latest/rules/no-multi-str
    */
   "no-multi-str"?: Rule<[]>;
   /**
    * Disallow multiple empty lines
+   *
    * @see https://eslint.org/docs/latest/rules/no-multiple-empty-lines
    * @deprecated
    */
   "no-multiple-empty-lines"?: Rule<NoMultipleEmptyLines>;
   /**
    * Disallow assignments to native objects or read-only global variables
+   *
    * @see https://eslint.org/docs/latest/rules/no-native-reassign
    * @deprecated
    */
   "no-native-reassign"?: Rule<NoNativeReassign>;
   /**
    * Disallow negated conditions
+   *
    * @see https://eslint.org/docs/latest/rules/no-negated-condition
    */
   "no-negated-condition"?: Rule<[]>;
   /**
    * Disallow negating the left operand in `in` expressions
+   *
    * @see https://eslint.org/docs/latest/rules/no-negated-in-lhs
    * @deprecated
    */
   "no-negated-in-lhs"?: Rule<[]>;
   /**
    * Disallow nested ternary expressions
+   *
    * @see https://eslint.org/docs/latest/rules/no-nested-ternary
    */
   "no-nested-ternary"?: Rule<[]>;
   /**
    * Disallow `new` operators outside of assignments or comparisons
+   *
    * @see https://eslint.org/docs/latest/rules/no-new
    */
   "no-new"?: Rule<[]>;
   /**
    * Disallow `new` operators with the `Function` object
+   *
    * @see https://eslint.org/docs/latest/rules/no-new-func
    */
   "no-new-func"?: Rule<[]>;
   /**
    * Disallow `new` operators with global non-constructor functions
+   *
    * @see https://eslint.org/docs/latest/rules/no-new-native-nonconstructor
    */
   "no-new-native-nonconstructor"?: Rule<[]>;
   /**
    * Disallow `Object` constructors
+   *
    * @see https://eslint.org/docs/latest/rules/no-new-object
    * @deprecated
    */
   "no-new-object"?: Rule<[]>;
   /**
    * Disallow `new` operators with calls to `require`
+   *
    * @see https://eslint.org/docs/latest/rules/no-new-require
    * @deprecated
    */
   "no-new-require"?: Rule<[]>;
   /**
    * Disallow `new` operators with the `Symbol` object
+   *
    * @see https://eslint.org/docs/latest/rules/no-new-symbol
    * @deprecated
    */
   "no-new-symbol"?: Rule<[]>;
   /**
    * Disallow `new` operators with the `String`, `Number`, and `Boolean` objects
+   *
    * @see https://eslint.org/docs/latest/rules/no-new-wrappers
    */
   "no-new-wrappers"?: Rule<[]>;
   /**
    * Disallow `\8` and `\9` escape sequences in string literals
+   *
    * @see https://eslint.org/docs/latest/rules/no-nonoctal-decimal-escape
    */
   "no-nonoctal-decimal-escape"?: Rule<[]>;
   /**
    * Disallow calling global object properties as functions
+   *
    * @see https://eslint.org/docs/latest/rules/no-obj-calls
    */
   "no-obj-calls"?: Rule<[]>;
   /**
    * Disallow calls to the `Object` constructor without an argument
+   *
    * @see https://eslint.org/docs/latest/rules/no-object-constructor
    */
   "no-object-constructor"?: Rule<[]>;
   /**
    * Disallow octal literals
+   *
    * @see https://eslint.org/docs/latest/rules/no-octal
    */
   "no-octal"?: Rule<[]>;
   /**
    * Disallow octal escape sequences in string literals
+   *
    * @see https://eslint.org/docs/latest/rules/no-octal-escape
    */
   "no-octal-escape"?: Rule<[]>;
   /**
    * Disallow reassigning function parameters
+   *
    * @see https://eslint.org/docs/latest/rules/no-param-reassign
    */
   "no-param-reassign"?: Rule<NoParamReassign>;
   /**
    * Disallow string concatenation with `__dirname` and `__filename`
+   *
    * @see https://eslint.org/docs/latest/rules/no-path-concat
    * @deprecated
    */
   "no-path-concat"?: Rule<[]>;
   /**
    * Disallow the unary operators `++` and `--`
+   *
    * @see https://eslint.org/docs/latest/rules/no-plusplus
    */
   "no-plusplus"?: Rule<NoPlusplus>;
   /**
    * Disallow the use of `process.env`
+   *
    * @see https://eslint.org/docs/latest/rules/no-process-env
    * @deprecated
    */
   "no-process-env"?: Rule<[]>;
   /**
    * Disallow the use of `process.exit()`
+   *
    * @see https://eslint.org/docs/latest/rules/no-process-exit
    * @deprecated
    */
   "no-process-exit"?: Rule<[]>;
   /**
    * Disallow returning values from Promise executor functions
+   *
    * @see https://eslint.org/docs/latest/rules/no-promise-executor-return
    */
   "no-promise-executor-return"?: Rule<NoPromiseExecutorReturn>;
   /**
    * Disallow the use of the `__proto__` property
+   *
    * @see https://eslint.org/docs/latest/rules/no-proto
    */
   "no-proto"?: Rule<[]>;
   /**
    * Disallow calling some `Object.prototype` methods directly on objects
+   *
    * @see https://eslint.org/docs/latest/rules/no-prototype-builtins
    */
   "no-prototype-builtins"?: Rule<[]>;
   /**
    * Disallow variable redeclaration
+   *
    * @see https://eslint.org/docs/latest/rules/no-redeclare
    */
   "no-redeclare"?: Rule<NoRedeclare>;
   /**
    * Disallow multiple spaces in regular expressions
+   *
    * @see https://eslint.org/docs/latest/rules/no-regex-spaces
    */
   "no-regex-spaces"?: Rule<[]>;
   /**
    * Disallow specified names in exports
+   *
    * @see https://eslint.org/docs/latest/rules/no-restricted-exports
    */
   "no-restricted-exports"?: Rule<NoRestrictedExports>;
   /**
    * Disallow specified global variables
+   *
    * @see https://eslint.org/docs/latest/rules/no-restricted-globals
    */
   "no-restricted-globals"?: Rule<NoRestrictedGlobals>;
   /**
    * Disallow specified modules when loaded by `import`
+   *
    * @see https://eslint.org/docs/latest/rules/no-restricted-imports
    */
   "no-restricted-imports"?: Rule<NoRestrictedImports>;
   /**
    * Disallow specified modules when loaded by `require`
+   *
    * @see https://eslint.org/docs/latest/rules/no-restricted-modules
    * @deprecated
    */
   "no-restricted-modules"?: Rule<NoRestrictedModules>;
   /**
    * Disallow certain properties on certain objects
+   *
    * @see https://eslint.org/docs/latest/rules/no-restricted-properties
    */
   "no-restricted-properties"?: Rule<NoRestrictedProperties>;
   /**
    * Disallow specified syntax
+   *
    * @see https://eslint.org/docs/latest/rules/no-restricted-syntax
    */
   "no-restricted-syntax"?: Rule<NoRestrictedSyntax>;
   /**
    * Disallow assignment operators in `return` statements
+   *
    * @see https://eslint.org/docs/latest/rules/no-return-assign
    */
   "no-return-assign"?: Rule<NoReturnAssign>;
   /**
    * Disallow unnecessary `return await`
+   *
    * @see https://eslint.org/docs/latest/rules/no-return-await
    * @deprecated
    */
   "no-return-await"?: Rule<[]>;
   /**
    * Disallow `javascript:` URLs
+   *
    * @see https://eslint.org/docs/latest/rules/no-script-url
    */
   "no-script-url"?: Rule<[]>;
   /**
    * Disallow assignments where both sides are exactly the same
+   *
    * @see https://eslint.org/docs/latest/rules/no-self-assign
    */
   "no-self-assign"?: Rule<NoSelfAssign>;
   /**
    * Disallow comparisons where both sides are exactly the same
+   *
    * @see https://eslint.org/docs/latest/rules/no-self-compare
    */
   "no-self-compare"?: Rule<[]>;
   /**
    * Disallow comma operators
+   *
    * @see https://eslint.org/docs/latest/rules/no-sequences
    */
   "no-sequences"?: Rule<NoSequences>;
   /**
    * Disallow returning values from setters
+   *
    * @see https://eslint.org/docs/latest/rules/no-setter-return
    */
   "no-setter-return"?: Rule<[]>;
   /**
-   * Disallow variable declarations from shadowing variables declared in the outer scope
+   * Disallow variable declarations from shadowing variables declared in the outer
+   * scope
+   *
    * @see https://eslint.org/docs/latest/rules/no-shadow
    */
   "no-shadow"?: Rule<NoShadow>;
   /**
    * Disallow identifiers from shadowing restricted names
+   *
    * @see https://eslint.org/docs/latest/rules/no-shadow-restricted-names
    */
   "no-shadow-restricted-names"?: Rule<NoShadowRestrictedNames>;
   /**
-   * Disallow spacing between function identifiers and their applications (deprecated)
+   * Disallow spacing between function identifiers and their applications
+   * (deprecated)
+   *
    * @see https://eslint.org/docs/latest/rules/no-spaced-func
    * @deprecated
    */
   "no-spaced-func"?: Rule<[]>;
   /**
    * Disallow sparse arrays
+   *
    * @see https://eslint.org/docs/latest/rules/no-sparse-arrays
    */
   "no-sparse-arrays"?: Rule<[]>;
   /**
    * Disallow synchronous methods
+   *
    * @see https://eslint.org/docs/latest/rules/no-sync
    * @deprecated
    */
   "no-sync"?: Rule<NoSync>;
   /**
    * Disallow all tabs
+   *
    * @see https://eslint.org/docs/latest/rules/no-tabs
    * @deprecated
    */
   "no-tabs"?: Rule<NoTabs>;
   /**
    * Disallow template literal placeholder syntax in regular strings
+   *
    * @see https://eslint.org/docs/latest/rules/no-template-curly-in-string
    */
   "no-template-curly-in-string"?: Rule<[]>;
   /**
    * Disallow ternary operators
+   *
    * @see https://eslint.org/docs/latest/rules/no-ternary
    */
   "no-ternary"?: Rule<[]>;
   /**
    * Disallow `this`/`super` before calling `super()` in constructors
+   *
    * @see https://eslint.org/docs/latest/rules/no-this-before-super
    */
   "no-this-before-super"?: Rule<[]>;
   /**
    * Disallow throwing literals as exceptions
+   *
    * @see https://eslint.org/docs/latest/rules/no-throw-literal
    */
   "no-throw-literal"?: Rule<[]>;
   /**
    * Disallow trailing whitespace at the end of lines
+   *
    * @see https://eslint.org/docs/latest/rules/no-trailing-spaces
    * @deprecated
    */
   "no-trailing-spaces"?: Rule<NoTrailingSpaces>;
   /**
    * Disallow `let` or `var` variables that are read but never assigned
+   *
    * @see https://eslint.org/docs/latest/rules/no-unassigned-vars
    */
   "no-unassigned-vars"?: Rule<[]>;
   /**
-   * Disallow the use of undeclared variables unless mentioned in `/*global *\/` comments
+   * Disallow the use of undeclared variables unless mentioned in `/*global *\/`
+   * comments
+   *
    * @see https://eslint.org/docs/latest/rules/no-undef
    */
   "no-undef"?: Rule<NoUndef>;
   /**
    * Disallow initializing variables to `undefined`
+   *
    * @see https://eslint.org/docs/latest/rules/no-undef-init
    */
   "no-undef-init"?: Rule<[]>;
   /**
    * Disallow the use of `undefined` as an identifier
+   *
    * @see https://eslint.org/docs/latest/rules/no-undefined
    */
   "no-undefined"?: Rule<[]>;
   /**
    * Disallow dangling underscores in identifiers
+   *
    * @see https://eslint.org/docs/latest/rules/no-underscore-dangle
    */
   "no-underscore-dangle"?: Rule<NoUnderscoreDangle>;
   /**
    * Disallow confusing multiline expressions
+   *
    * @see https://eslint.org/docs/latest/rules/no-unexpected-multiline
    */
   "no-unexpected-multiline"?: Rule<[]>;
   /**
    * Disallow unmodified loop conditions
+   *
    * @see https://eslint.org/docs/latest/rules/no-unmodified-loop-condition
    */
   "no-unmodified-loop-condition"?: Rule<NoUnmodifiedLoopCondition>;
   /**
    * Disallow ternary operators when simpler alternatives exist
+   *
    * @see https://eslint.org/docs/latest/rules/no-unneeded-ternary
    */
   "no-unneeded-ternary"?: Rule<NoUnneededTernary>;
   /**
-   * Disallow unreachable code after `return`, `throw`, `continue`, and `break` statements
+   * Disallow unreachable code after `return`, `throw`, `continue`, and `break`
+   * statements
+   *
    * @see https://eslint.org/docs/latest/rules/no-unreachable
    */
   "no-unreachable"?: Rule<[]>;
   /**
    * Disallow loops with a body that allows only one iteration
+   *
    * @see https://eslint.org/docs/latest/rules/no-unreachable-loop
    */
   "no-unreachable-loop"?: Rule<NoUnreachableLoop>;
   /**
    * Disallow control flow statements in `finally` blocks
+   *
    * @see https://eslint.org/docs/latest/rules/no-unsafe-finally
    */
   "no-unsafe-finally"?: Rule<[]>;
   /**
    * Disallow negating the left operand of relational operators
+   *
    * @see https://eslint.org/docs/latest/rules/no-unsafe-negation
    */
   "no-unsafe-negation"?: Rule<NoUnsafeNegation>;
   /**
-   * Disallow use of optional chaining in contexts where the `undefined` value is not allowed
+   * Disallow use of optional chaining in contexts where the `undefined` value is
+   * not allowed
+   *
    * @see https://eslint.org/docs/latest/rules/no-unsafe-optional-chaining
    */
   "no-unsafe-optional-chaining"?: Rule<NoUnsafeOptionalChaining>;
   /**
    * Disallow unused expressions
+   *
    * @see https://eslint.org/docs/latest/rules/no-unused-expressions
    */
   "no-unused-expressions"?: Rule<NoUnusedExpressions>;
   /**
    * Disallow unused labels
+   *
    * @see https://eslint.org/docs/latest/rules/no-unused-labels
    */
   "no-unused-labels"?: Rule<[]>;
   /**
    * Disallow unused private class members
+   *
    * @see https://eslint.org/docs/latest/rules/no-unused-private-class-members
    */
   "no-unused-private-class-members"?: Rule<[]>;
   /**
    * Disallow unused variables
+   *
    * @see https://eslint.org/docs/latest/rules/no-unused-vars
    */
   "no-unused-vars"?: Rule<NoUnusedVars>;
   /**
    * Disallow the use of variables before they are defined
+   *
    * @see https://eslint.org/docs/latest/rules/no-use-before-define
    */
   "no-use-before-define"?: Rule<NoUseBeforeDefine>;
   /**
    * Disallow variable assignments when the value is not used
+   *
    * @see https://eslint.org/docs/latest/rules/no-useless-assignment
    */
   "no-useless-assignment"?: Rule<[]>;
   /**
    * Disallow useless backreferences in regular expressions
+   *
    * @see https://eslint.org/docs/latest/rules/no-useless-backreference
    */
   "no-useless-backreference"?: Rule<[]>;
   /**
    * Disallow unnecessary calls to `.call()` and `.apply()`
+   *
    * @see https://eslint.org/docs/latest/rules/no-useless-call
    */
   "no-useless-call"?: Rule<[]>;
   /**
    * Disallow unnecessary `catch` clauses
+   *
    * @see https://eslint.org/docs/latest/rules/no-useless-catch
    */
   "no-useless-catch"?: Rule<[]>;
   /**
    * Disallow unnecessary computed property keys in objects and classes
+   *
    * @see https://eslint.org/docs/latest/rules/no-useless-computed-key
    */
   "no-useless-computed-key"?: Rule<NoUselessComputedKey>;
   /**
    * Disallow unnecessary concatenation of literals or template literals
+   *
    * @see https://eslint.org/docs/latest/rules/no-useless-concat
    */
   "no-useless-concat"?: Rule<[]>;
   /**
    * Disallow unnecessary constructors
+   *
    * @see https://eslint.org/docs/latest/rules/no-useless-constructor
    */
   "no-useless-constructor"?: Rule<[]>;
   /**
    * Disallow unnecessary escape characters
+   *
    * @see https://eslint.org/docs/latest/rules/no-useless-escape
    */
   "no-useless-escape"?: Rule<NoUselessEscape>;
   /**
-   * Disallow renaming import, export, and destructured assignments to the same name
+   * Disallow renaming import, export, and destructured assignments to the same
+   * name
+   *
    * @see https://eslint.org/docs/latest/rules/no-useless-rename
    */
   "no-useless-rename"?: Rule<NoUselessRename>;
   /**
    * Disallow redundant return statements
+   *
    * @see https://eslint.org/docs/latest/rules/no-useless-return
    */
   "no-useless-return"?: Rule<[]>;
   /**
    * Require `let` or `const` instead of `var`
+   *
    * @see https://eslint.org/docs/latest/rules/no-var
    */
   "no-var"?: Rule<[]>;
   /**
    * Disallow `void` operators
+   *
    * @see https://eslint.org/docs/latest/rules/no-void
    */
   "no-void"?: Rule<NoVoid>;
   /**
    * Disallow specified warning terms in comments
+   *
    * @see https://eslint.org/docs/latest/rules/no-warning-comments
    */
   "no-warning-comments"?: Rule<NoWarningComments>;
   /**
    * Disallow whitespace before properties
+   *
    * @see https://eslint.org/docs/latest/rules/no-whitespace-before-property
    * @deprecated
    */
   "no-whitespace-before-property"?: Rule<[]>;
   /**
    * Disallow `with` statements
+   *
    * @see https://eslint.org/docs/latest/rules/no-with
    */
   "no-with"?: Rule<[]>;
   /**
    * Enforce the location of single-line statements
+   *
    * @see https://eslint.org/docs/latest/rules/nonblock-statement-body-position
    * @deprecated
    */
   "nonblock-statement-body-position"?: Rule<NonblockStatementBodyPosition>;
   /**
    * Enforce consistent line breaks after opening and before closing braces
+   *
    * @see https://eslint.org/docs/latest/rules/object-curly-newline
    * @deprecated
    */
   "object-curly-newline"?: Rule<ObjectCurlyNewline>;
   /**
    * Enforce consistent spacing inside braces
+   *
    * @see https://eslint.org/docs/latest/rules/object-curly-spacing
    * @deprecated
    */
   "object-curly-spacing"?: Rule<ObjectCurlySpacing>;
   /**
    * Enforce placing object properties on separate lines
+   *
    * @see https://eslint.org/docs/latest/rules/object-property-newline
    * @deprecated
    */
   "object-property-newline"?: Rule<ObjectPropertyNewline>;
   /**
    * Require or disallow method and property shorthand syntax for object literals
+   *
    * @see https://eslint.org/docs/latest/rules/object-shorthand
    */
   "object-shorthand"?: Rule<ObjectShorthand>;
   /**
    * Enforce variables to be declared either together or separately in functions
+   *
    * @see https://eslint.org/docs/latest/rules/one-var
    */
   "one-var"?: Rule<OneVar>;
   /**
    * Require or disallow newlines around variable declarations
+   *
    * @see https://eslint.org/docs/latest/rules/one-var-declaration-per-line
    * @deprecated
    */
   "one-var-declaration-per-line"?: Rule<OneVarDeclarationPerLine>;
   /**
    * Require or disallow assignment operator shorthand where possible
+   *
    * @see https://eslint.org/docs/latest/rules/operator-assignment
    */
   "operator-assignment"?: Rule<OperatorAssignment>;
   /**
    * Enforce consistent linebreak style for operators
+   *
    * @see https://eslint.org/docs/latest/rules/operator-linebreak
    * @deprecated
    */
   "operator-linebreak"?: Rule<OperatorLinebreak>;
   /**
    * Require or disallow padding within blocks
+   *
    * @see https://eslint.org/docs/latest/rules/padded-blocks
    * @deprecated
    */
   "padded-blocks"?: Rule<PaddedBlocks>;
   /**
    * Require or disallow padding lines between statements
+   *
    * @see https://eslint.org/docs/latest/rules/padding-line-between-statements
    * @deprecated
    */
   "padding-line-between-statements"?: Rule<PaddingLineBetweenStatements>;
   /**
    * Require using arrow functions for callbacks
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-arrow-callback
    */
   "prefer-arrow-callback"?: Rule<PreferArrowCallback>;
   /**
-   * Require `const` declarations for variables that are never reassigned after declared
+   * Require `const` declarations for variables that are never reassigned after
+   * declared
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-const
    */
   "prefer-const"?: Rule<PreferConst>;
   /**
    * Require destructuring from arrays and/or objects
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-destructuring
    */
   "prefer-destructuring"?: Rule<PreferDestructuring>;
   /**
    * Disallow the use of `Math.pow` in favor of the `**` operator
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-exponentiation-operator
    */
   "prefer-exponentiation-operator"?: Rule<[]>;
   /**
    * Enforce using named capture group in regular expression
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-named-capture-group
    */
   "prefer-named-capture-group"?: Rule<[]>;
   /**
-   * Disallow `parseInt()` and `Number.parseInt()` in favor of binary, octal, and hexadecimal literals
+   * Disallow `parseInt()` and `Number.parseInt()` in favor of binary, octal, and
+   * hexadecimal literals
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-numeric-literals
    */
   "prefer-numeric-literals"?: Rule<[]>;
   /**
-   * Disallow use of `Object.prototype.hasOwnProperty.call()` and prefer use of `Object.hasOwn()`
+   * Disallow use of `Object.prototype.hasOwnProperty.call()` and prefer use of
+   * `Object.hasOwn()`
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-object-has-own
    */
   "prefer-object-has-own"?: Rule<[]>;
   /**
-   * Disallow using `Object.assign` with an object literal as the first argument and prefer the use of object spread instead
+   * Disallow using `Object.assign` with an object literal as the first argument
+   * and prefer the use of object spread instead
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-object-spread
    */
   "prefer-object-spread"?: Rule<[]>;
   /**
    * Require using Error objects as Promise rejection reasons
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-promise-reject-errors
    */
   "prefer-promise-reject-errors"?: Rule<PreferPromiseRejectErrors>;
   /**
    * Require `Reflect` methods where applicable
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-reflect
    * @deprecated
    */
   "prefer-reflect"?: Rule<PreferReflect>;
   /**
-   * Disallow use of the `RegExp` constructor in favor of regular expression literals
+   * Disallow use of the `RegExp` constructor in favor of regular expression
+   * literals
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-regex-literals
    */
   "prefer-regex-literals"?: Rule<PreferRegexLiterals>;
   /**
    * Require rest parameters instead of `arguments`
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-rest-params
    */
   "prefer-rest-params"?: Rule<[]>;
   /**
    * Require spread operators instead of `.apply()`
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-spread
    */
   "prefer-spread"?: Rule<[]>;
   /**
    * Require template literals instead of string concatenation
+   *
    * @see https://eslint.org/docs/latest/rules/prefer-template
    */
   "prefer-template"?: Rule<[]>;
   /**
    * Disallow losing originally caught error when re-throwing custom errors
+   *
    * @see https://eslint.org/docs/latest/rules/preserve-caught-error
    */
   "preserve-caught-error"?: Rule<PreserveCaughtError>;
   /**
    * Require quotes around object literal property names
+   *
    * @see https://eslint.org/docs/latest/rules/quote-props
    * @deprecated
    */
   "quote-props"?: Rule<QuoteProps>;
   /**
    * Enforce the consistent use of either backticks, double, or single quotes
+   *
    * @see https://eslint.org/docs/latest/rules/quotes
    * @deprecated
    */
   "quotes"?: Rule<Quotes>;
   /**
    * Enforce the use of the radix argument when using `parseInt()`
+   *
    * @see https://eslint.org/docs/latest/rules/radix
    */
   "radix"?: Rule<Radix>;
   /**
-   * Disallow assignments that can lead to race conditions due to usage of `await` or `yield`
+   * Disallow assignments that can lead to race conditions due to usage of `await`
+   * or `yield`
+   *
    * @see https://eslint.org/docs/latest/rules/require-atomic-updates
    */
   "require-atomic-updates"?: Rule<RequireAtomicUpdates>;
   /**
    * Disallow async functions which have no `await` expression
+   *
    * @see https://eslint.org/docs/latest/rules/require-await
    */
   "require-await"?: Rule<[]>;
   /**
    * Enforce the use of `u` or `v` flag on regular expressions
+   *
    * @see https://eslint.org/docs/latest/rules/require-unicode-regexp
    */
   "require-unicode-regexp"?: Rule<RequireUnicodeRegexp>;
   /**
    * Require generator functions to contain `yield`
+   *
    * @see https://eslint.org/docs/latest/rules/require-yield
    */
   "require-yield"?: Rule<[]>;
   /**
    * Enforce spacing between rest and spread operators and their expressions
+   *
    * @see https://eslint.org/docs/latest/rules/rest-spread-spacing
    * @deprecated
    */
   "rest-spread-spacing"?: Rule<RestSpreadSpacing>;
   /**
    * Require or disallow semicolons instead of ASI
+   *
    * @see https://eslint.org/docs/latest/rules/semi
    * @deprecated
    */
   "semi"?: Rule<Semi>;
   /**
    * Enforce consistent spacing before and after semicolons
+   *
    * @see https://eslint.org/docs/latest/rules/semi-spacing
    * @deprecated
    */
   "semi-spacing"?: Rule<SemiSpacing>;
   /**
    * Enforce location of semicolons
+   *
    * @see https://eslint.org/docs/latest/rules/semi-style
    * @deprecated
    */
   "semi-style"?: Rule<SemiStyle>;
   /**
    * Enforce sorted `import` declarations within modules
+   *
    * @see https://eslint.org/docs/latest/rules/sort-imports
    */
   "sort-imports"?: Rule<SortImports>;
   /**
    * Require object keys to be sorted
+   *
    * @see https://eslint.org/docs/latest/rules/sort-keys
    */
   "sort-keys"?: Rule<SortKeys>;
   /**
    * Require variables within the same declaration block to be sorted
+   *
    * @see https://eslint.org/docs/latest/rules/sort-vars
    */
   "sort-vars"?: Rule<SortVars>;
   /**
    * Enforce consistent spacing before blocks
+   *
    * @see https://eslint.org/docs/latest/rules/space-before-blocks
    * @deprecated
    */
   "space-before-blocks"?: Rule<SpaceBeforeBlocks>;
   /**
    * Enforce consistent spacing before `function` definition opening parenthesis
+   *
    * @see https://eslint.org/docs/latest/rules/space-before-function-paren
    * @deprecated
    */
   "space-before-function-paren"?: Rule<SpaceBeforeFunctionParen>;
   /**
    * Enforce consistent spacing inside parentheses
+   *
    * @see https://eslint.org/docs/latest/rules/space-in-parens
    * @deprecated
    */
   "space-in-parens"?: Rule<SpaceInParens>;
   /**
    * Require spacing around infix operators
+   *
    * @see https://eslint.org/docs/latest/rules/space-infix-ops
    * @deprecated
    */
   "space-infix-ops"?: Rule<SpaceInfixOps>;
   /**
    * Enforce consistent spacing before or after unary operators
+   *
    * @see https://eslint.org/docs/latest/rules/space-unary-ops
    * @deprecated
    */
   "space-unary-ops"?: Rule<SpaceUnaryOps>;
   /**
    * Enforce consistent spacing after the `//` or `/*` in a comment
+   *
    * @see https://eslint.org/docs/latest/rules/spaced-comment
    * @deprecated
    */
   "spaced-comment"?: Rule<SpacedComment>;
   /**
    * Require or disallow strict mode directives
+   *
    * @see https://eslint.org/docs/latest/rules/strict
    */
   "strict"?: Rule<Strict>;
   /**
    * Enforce spacing around colons of switch statements
+   *
    * @see https://eslint.org/docs/latest/rules/switch-colon-spacing
    * @deprecated
    */
   "switch-colon-spacing"?: Rule<SwitchColonSpacing>;
   /**
    * Require symbol descriptions
+   *
    * @see https://eslint.org/docs/latest/rules/symbol-description
    */
   "symbol-description"?: Rule<[]>;
   /**
    * Require or disallow spacing around embedded expressions of template strings
+   *
    * @see https://eslint.org/docs/latest/rules/template-curly-spacing
    * @deprecated
    */
   "template-curly-spacing"?: Rule<TemplateCurlySpacing>;
   /**
    * Require or disallow spacing between template tags and their literals
+   *
    * @see https://eslint.org/docs/latest/rules/template-tag-spacing
    * @deprecated
    */
   "template-tag-spacing"?: Rule<TemplateTagSpacing>;
   /**
    * Require or disallow Unicode byte order mark (BOM)
+   *
    * @see https://eslint.org/docs/latest/rules/unicode-bom
    */
   "unicode-bom"?: Rule<UnicodeBom>;
   /**
    * Require calls to `isNaN()` when checking for `NaN`
+   *
    * @see https://eslint.org/docs/latest/rules/use-isnan
    */
   "use-isnan"?: Rule<UseIsnan>;
   /**
    * Enforce comparing `typeof` expressions against valid strings
+   *
    * @see https://eslint.org/docs/latest/rules/valid-typeof
    */
   "valid-typeof"?: Rule<ValidTypeof>;
   /**
    * Require `var` declarations be placed at the top of their containing scope
+   *
    * @see https://eslint.org/docs/latest/rules/vars-on-top
    */
   "vars-on-top"?: Rule<[]>;
   /**
    * Require parentheses around immediate `function` invocations
+   *
    * @see https://eslint.org/docs/latest/rules/wrap-iife
    * @deprecated
    */
   "wrap-iife"?: Rule<WrapIife>;
   /**
    * Require parenthesis around regex literals
+   *
    * @see https://eslint.org/docs/latest/rules/wrap-regex
    * @deprecated
    */
   "wrap-regex"?: Rule<[]>;
   /**
    * Require or disallow spacing around the `*` in `yield*` expressions
+   *
    * @see https://eslint.org/docs/latest/rules/yield-star-spacing
    * @deprecated
    */
   "yield-star-spacing"?: Rule<YieldStarSpacing>;
   /**
    * Require or disallow "Yoda" conditions
+   *
    * @see https://eslint.org/docs/latest/rules/yoda
    */
   "yoda"?: Rule<Yoda>;

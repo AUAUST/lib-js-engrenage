@@ -16,21 +16,28 @@ and limitations under the License.
 /// <reference path="shared/common.d.ts" />
 
 /**
- * The **`AbortController`** interface represents a controller object that allows you to abort one or more Web requests as and when desired.
+ * The **`AbortController`** interface represents a controller object that allows
+ * you to abort one or more Web requests as and when desired.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AbortController)
  */
 interface AbortController {
   /**
-   * The **`signal`** read-only property of the AbortController interface returns an AbortSignal object instance, which can be used to communicate with/abort an asynchronous operation as desired.
+   * The **`signal`** read-only property of the AbortController interface returns
+   * an AbortSignal object instance, which can be used to communicate with/abort
+   * an asynchronous operation as desired.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AbortController/signal)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/AbortController/signal)
    */
   readonly signal: AbortSignal;
   /**
-   * The **`abort()`** method of the AbortController interface aborts an asynchronous operation before it has completed. This is able to abort fetch requests, the consumption of any response bodies, or streams.
+   * The **`abort()`** method of the AbortController interface aborts an
+   * asynchronous operation before it has completed. This is able to abort fetch
+   * requests, the consumption of any response bodies, or streams.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AbortController/abort)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/AbortController/abort)
    */
   abort(reason?: any): void;
 }

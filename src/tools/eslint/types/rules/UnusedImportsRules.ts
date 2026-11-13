@@ -5,11 +5,13 @@ import type { Rule } from "#tools/eslint/types/Rule";
 export interface UnusedImportsRules {
   /**
    * Disallow unused variables
+   *
    * @see https://github.com/sweepline/eslint-plugin-unused-imports/blob/master/docs/rules/no-unused-imports.md
    */
   "unused-imports/no-unused-imports"?: Rule<UnusedImportsNoUnusedImports>;
   /**
    * Disallow unused variables
+   *
    * @see https://github.com/sweepline/eslint-plugin-unused-imports/blob/master/docs/rules/no-unused-vars.md
    */
   "unused-imports/no-unused-vars"?: Rule<UnusedImportsNoUnusedVars>;

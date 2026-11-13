@@ -5,506 +5,623 @@ import type { Rule } from "#tools/eslint/types/Rule";
 export interface PackageJsonRules {
   /**
    * Enforce that names for bin properties are in kebab case.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/bin-name-casing
    */
   "package-json/bin-name-casing"?: Rule<[]>;
   /**
-   * Enforce that the package manager is declared in either `packageManager` or `devEngines.packageManager`.
+   * Enforce that the package manager is declared in either `packageManager` or
+   * `devEngines.packageManager`.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/consistent-package-manager-declaration
    */
   "package-json/consistent-package-manager-declaration"?: Rule<PackageJsonConsistentPackageManagerDeclaration>;
   /**
    * Enforce a consistent spelling for properties that have a well-known alias.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/consistent-property-aliases
    */
   "package-json/consistent-property-aliases"?: Rule<PackageJsonConsistentPropertyAliases>;
   /**
-   * Enforce consistent format for the exports field (implicit or explicit subpaths).
+   * Enforce consistent format for the exports field (implicit or explicit
+   * subpaths).
+   *
    * @see https://eslint-plugin-package-json.dev/rules/exports-subpaths-style
    */
   "package-json/exports-subpaths-style"?: Rule<PackageJsonExportsSubpathsStyle>;
   /**
    * Reports on unnecessary empty arrays and objects.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/no-empty-fields
    */
   "package-json/no-empty-fields"?: Rule<PackageJsonNoEmptyFields>;
   /**
-   * Requires that dependencies do not use local file paths, which will likely result in errors when installing from a registry.
+   * Requires that dependencies do not use local file paths, which will likely
+   * result in errors when installing from a registry.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/no-local-dependencies
    */
   "package-json/no-local-dependencies"?: Rule<PackageJsonNoLocalDependencies>;
   /**
    * Prevents adding unnecessary / redundant files.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/no-redundant-files
    */
   "package-json/no-redundant-files"?: Rule<[]>;
   /**
    * Warns when publishConfig.access is used in unscoped packages.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/no-redundant-publishConfig
    */
   "package-json/no-redundant-publishConfig"?: Rule<[]>;
   /**
    * Enforces that package properties are declared in a consistent order.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/order-properties
    */
   "package-json/order-properties"?: Rule<PackageJsonOrderProperties>;
   /**
-   * Require that dependencies declared with workspace protocol use a rolling workspace spec instead of a specific semver range.
+   * Require that dependencies declared with workspace protocol use a rolling
+   * workspace spec instead of a specific semver range.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/prefer-rolling-workspace-spec
    */
   "package-json/prefer-rolling-workspace-spec"?: Rule<PackageJsonPreferRollingWorkspaceSpec>;
   /**
    * Enforce either object or shorthand declaration for repository.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/repository-shorthand
    */
   "package-json/repository-shorthand"?: Rule<PackageJsonRepositoryShorthand>;
   /**
-   * Ensures that proper attribution is included, requiring that either `author` or `contributors` is defined, and that if `contributors` is present, it should include at least one contributor.
+   * Ensures that proper attribution is included, requiring that either `author`
+   * or `contributors` is defined, and that if `contributors` is present, it
+   * should include at least one contributor.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-attribution
    */
   "package-json/require-attribution"?: Rule<PackageJsonRequireAttribution>;
   /**
    * Requires the `author` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-author
    */
   "package-json/require-author"?: Rule<PackageJsonRequireAuthor>;
   /**
    * Requires the `bin` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-bin
    */
   "package-json/require-bin"?: Rule<PackageJsonRequireBin>;
   /**
    * Requires the `browser` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-browser
    */
   "package-json/require-browser"?: Rule<PackageJsonRequireBrowser>;
   /**
    * Requires the `bugs` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-bugs
    */
   "package-json/require-bugs"?: Rule<PackageJsonRequireBugs>;
   /**
-   * Requires the `bundleDependencies` property (or its alias `bundledDependencies`) to be present.
+   * Requires the `bundleDependencies` property (or its alias
+   * `bundledDependencies`) to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-bundleDependencies
    */
   "package-json/require-bundleDependencies"?: Rule<PackageJsonRequireBundleDependencies>;
   /**
    * Requires the `config` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-config
    */
   "package-json/require-config"?: Rule<PackageJsonRequireConfig>;
   /**
    * Requires the `contributors` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-contributors
    */
   "package-json/require-contributors"?: Rule<PackageJsonRequireContributors>;
   /**
    * Requires the `cpu` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-cpu
    */
   "package-json/require-cpu"?: Rule<PackageJsonRequireCpu>;
   /**
    * Requires the `dependencies` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-dependencies
    */
   "package-json/require-dependencies"?: Rule<PackageJsonRequireDependencies>;
   /**
    * Requires the `description` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-description
    */
   "package-json/require-description"?: Rule<PackageJsonRequireDescription>;
   /**
    * Requires the `devDependencies` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-devDependencies
    */
   "package-json/require-devDependencies"?: Rule<PackageJsonRequireDevDependencies>;
   /**
    * Requires the `devEngines` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-devEngines
    */
   "package-json/require-devEngines"?: Rule<PackageJsonRequireDevEngines>;
   /**
    * Requires the `directories` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-directories
    */
   "package-json/require-directories"?: Rule<PackageJsonRequireDirectories>;
   /**
    * Requires the `engines` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-engines
    */
   "package-json/require-engines"?: Rule<PackageJsonRequireEngines>;
   /**
    * Requires the `exports` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-exports
    */
   "package-json/require-exports"?: Rule<PackageJsonRequireExports>;
   /**
    * Requires the `files` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-files
    */
   "package-json/require-files"?: Rule<PackageJsonRequireFiles>;
   /**
    * Requires the `funding` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-funding
    */
   "package-json/require-funding"?: Rule<PackageJsonRequireFunding>;
   /**
    * Requires the `gypfile` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-gypfile
    */
   "package-json/require-gypfile"?: Rule<PackageJsonRequireGypfile>;
   /**
    * Requires the `homepage` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-homepage
    */
   "package-json/require-homepage"?: Rule<PackageJsonRequireHomepage>;
   /**
    * Requires the `keywords` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-keywords
    */
   "package-json/require-keywords"?: Rule<PackageJsonRequireKeywords>;
   /**
    * Requires the `libc` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-libc
    */
   "package-json/require-libc"?: Rule<PackageJsonRequireLibc>;
   /**
    * Requires the `license` property (or its alias `licence`) to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-license
    */
   "package-json/require-license"?: Rule<PackageJsonRequireLicense>;
   /**
    * Requires the `main` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-main
    */
   "package-json/require-main"?: Rule<PackageJsonRequireMain>;
   /**
    * Requires the `man` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-man
    */
   "package-json/require-man"?: Rule<PackageJsonRequireMan>;
   /**
    * Requires the `module` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-module
    */
   "package-json/require-module"?: Rule<PackageJsonRequireModule>;
   /**
    * Requires the `name` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-name
    */
   "package-json/require-name"?: Rule<PackageJsonRequireName>;
   /**
    * Requires the `optionalDependencies` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-optionalDependencies
    */
   "package-json/require-optionalDependencies"?: Rule<PackageJsonRequireOptionalDependencies>;
   /**
    * Requires the `os` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-os
    */
   "package-json/require-os"?: Rule<PackageJsonRequireOs>;
   /**
-   * Ensures that if a package specifies `exports` (or `publishConfig.exports`), an explicit `package.json` export is included.
+   * Ensures that if a package specifies `exports` (or `publishConfig.exports`),
+   * an explicit `package.json` export is included.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-package-json-export
    */
   "package-json/require-package-json-export"?: Rule<[]>;
   /**
    * Requires the `packageManager` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-packageManager
    */
   "package-json/require-packageManager"?: Rule<PackageJsonRequirePackageManager>;
   /**
    * Requires the `peerDependencies` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-peerDependencies
    */
   "package-json/require-peerDependencies"?: Rule<PackageJsonRequirePeerDependencies>;
   /**
    * Requires the `peerDependenciesMeta` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-peerDependenciesMeta
    */
   "package-json/require-peerDependenciesMeta"?: Rule<PackageJsonRequirePeerDependenciesMeta>;
   /**
    * Requires the `private` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-private
    */
   "package-json/require-private"?: Rule<[]>;
   /**
    * Requires the `publishConfig` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-publishConfig
    */
   "package-json/require-publishConfig"?: Rule<PackageJsonRequirePublishConfig>;
   /**
    * Requires the `repository` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-repository
    */
   "package-json/require-repository"?: Rule<PackageJsonRequireRepository>;
   /**
    * Requires the `scripts` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-scripts
    */
   "package-json/require-scripts"?: Rule<PackageJsonRequireScripts>;
   /**
    * Requires the `sideEffects` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-sideEffects
    */
   "package-json/require-sideEffects"?: Rule<PackageJsonRequireSideEffects>;
   /**
    * Requires the `type` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-type
    */
   "package-json/require-type"?: Rule<PackageJsonRequireType>;
   /**
    * Requires the `types` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-types
    */
   "package-json/require-types"?: Rule<PackageJsonRequireTypes>;
   /**
    * Requires the `version` property to be present.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/require-properties/require-version
    */
   "package-json/require-version"?: Rule<PackageJsonRequireVersion>;
   /**
-   * Restricts the range of dependencies to allow or disallow specific types of ranges.
+   * Restricts the range of dependencies to allow or disallow specific types of
+   * ranges.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/restrict-dependency-ranges
    */
   "package-json/restrict-dependency-ranges"?: Rule<PackageJsonRestrictDependencyRanges>;
   /**
-   * Restricts dependency dist-tags to an allowed list and selected dependency types.
+   * Restricts dependency dist-tags to an allowed list and selected dependency
+   * types.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/restrict-dist-tags
    */
   "package-json/restrict-dist-tags"?: Rule<PackageJsonRestrictDistTags>;
   /**
    * Disallows unnecessary properties in private packages.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/restrict-private-properties
    */
   "package-json/restrict-private-properties"?: Rule<PackageJsonRestrictPrivateProperties>;
   /**
    * Disallows specified top-level properties in package.json.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/restrict-top-level-properties
    */
   "package-json/restrict-top-level-properties"?: Rule<PackageJsonRestrictTopLevelProperties>;
   /**
-   * Enforce that names for `scripts` are in kebab case (optionally separated by colons).
+   * Enforce that names for `scripts` are in kebab case (optionally separated by
+   * colons).
+   *
    * @see https://eslint-plugin-package-json.dev/rules/scripts-name-casing
    */
   "package-json/scripts-name-casing"?: Rule<PackageJsonScriptsNameCasing>;
   /**
-   * Selected collections must be in a consistent order (lexicographical for most; lifecycle-aware for scripts).
+   * Selected collections must be in a consistent order (lexicographical for most;
+   * lifecycle-aware for scripts).
+   *
    * @see https://eslint-plugin-package-json.dev/rules/sort-collections
    */
   "package-json/sort-collections"?: Rule<PackageJsonSortCollections>;
   /**
    * Requires that all peer dependencies are also declared as dev dependencies
+   *
    * @see https://eslint-plugin-package-json.dev/rules/specify-peers-locally
    */
   "package-json/specify-peers-locally"?: Rule<[]>;
   /**
-   * Checks a dependency isn't specified more than once (i.e. in `dependencies` and `devDependencies`)
+   * Checks a dependency isn't specified more than once (i.e. in `dependencies`
+   * and `devDependencies`)
+   *
    * @see https://eslint-plugin-package-json.dev/rules/unique-dependencies
    */
   "package-json/unique-dependencies"?: Rule<[]>;
   /**
    * Enforce that the `author` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-author
    */
   "package-json/valid-author"?: Rule<[]>;
   /**
    * Enforce that the `bin` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-bin
    */
   "package-json/valid-bin"?: Rule<[]>;
   /**
    * Enforce that the `browser` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-browser
    */
   "package-json/valid-browser"?: Rule<[]>;
   /**
    * Enforce that the `bugs` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-bugs
    */
   "package-json/valid-bugs"?: Rule<[]>;
   /**
-   * Enforce that the `bundleDependencies` property (or its alias `bundledDependencies`) is valid.
+   * Enforce that the `bundleDependencies` property (or its alias
+   * `bundledDependencies`) is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-bundleDependencies
    */
   "package-json/valid-bundleDependencies"?: Rule<[]>;
   /**
    * Enforce that the `config` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-config
    */
   "package-json/valid-config"?: Rule<[]>;
   /**
    * Enforce that the `contributors` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-contributors
    */
   "package-json/valid-contributors"?: Rule<[]>;
   /**
    * Enforce that the `cpu` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-cpu
    */
   "package-json/valid-cpu"?: Rule<[]>;
   /**
    * Enforce that the `dependencies` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-dependencies
    */
   "package-json/valid-dependencies"?: Rule<[]>;
   /**
    * Enforce that the `description` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-description
    */
   "package-json/valid-description"?: Rule<[]>;
   /**
    * Enforce that the `devDependencies` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-devDependencies
    */
   "package-json/valid-devDependencies"?: Rule<[]>;
   /**
    * Enforce that the `devEngines` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-devEngines
    */
   "package-json/valid-devEngines"?: Rule<[]>;
   /**
    * Enforce that the `directories` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-directories
    */
   "package-json/valid-directories"?: Rule<[]>;
   /**
    * Enforce that the `engines` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-engines
    */
   "package-json/valid-engines"?: Rule<[]>;
   /**
    * Enforce that the `exports` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-exports
    */
   "package-json/valid-exports"?: Rule<[]>;
   /**
    * Enforce that the `files` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-files
    */
   "package-json/valid-files"?: Rule<[]>;
   /**
    * Enforce that the `funding` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-funding
    */
   "package-json/valid-funding"?: Rule<[]>;
   /**
    * Enforce that the `gypfile` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-gypfile
    */
   "package-json/valid-gypfile"?: Rule<[]>;
   /**
    * Enforce that the `homepage` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-homepage
    */
   "package-json/valid-homepage"?: Rule<[]>;
   /**
    * Enforce that the `keywords` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-keywords
    */
   "package-json/valid-keywords"?: Rule<[]>;
   /**
    * Enforce that the `libc` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-libc
    */
   "package-json/valid-libc"?: Rule<[]>;
   /**
    * Enforce that the `license` property (or its alias `licence`) is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-license
    */
   "package-json/valid-license"?: Rule<[]>;
   /**
    * Enforce that the `main` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-main
    */
   "package-json/valid-main"?: Rule<[]>;
   /**
    * Enforce that the `man` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-man
    */
   "package-json/valid-man"?: Rule<[]>;
   /**
    * Enforce that the `module` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-module
    */
   "package-json/valid-module"?: Rule<[]>;
   /**
    * Enforce that the `name` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-name
    */
   "package-json/valid-name"?: Rule<[]>;
   /**
    * Enforce that the `optionalDependencies` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-optionalDependencies
    */
   "package-json/valid-optionalDependencies"?: Rule<[]>;
   /**
    * Enforce that the `os` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-os
    */
   "package-json/valid-os"?: Rule<[]>;
   /**
    * Enforce that the `packageManager` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-packageManager
    */
   "package-json/valid-packageManager"?: Rule<[]>;
   /**
    * Enforce that the `peerDependencies` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-peerDependencies
    */
   "package-json/valid-peerDependencies"?: Rule<[]>;
   /**
    * Enforce that the `peerDependenciesMeta` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-peerDependenciesMeta
    */
   "package-json/valid-peerDependenciesMeta"?: Rule<[]>;
   /**
-   * Enforces that any dependencies declared in `peerDependenciesMeta` are also defined in the package's `peerDependencies`.
+   * Enforces that any dependencies declared in `peerDependenciesMeta` are also
+   * defined in the package's `peerDependencies`.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-peerDependenciesMeta-relationship
    */
   "package-json/valid-peerDependenciesMeta-relationship"?: Rule<[]>;
   /**
    * Enforce that the `private` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-private
    */
   "package-json/valid-private"?: Rule<[]>;
   /**
    * Enforce that the `publishConfig` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-publishConfig
    */
   "package-json/valid-publishConfig"?: Rule<[]>;
   /**
    * Enforce that the `repository` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-repository
    */
   "package-json/valid-repository"?: Rule<[]>;
   /**
-   * Enforce that if repository directory is specified, it matches the path to the package.json file
+   * Enforce that if repository directory is specified, it matches the path to
+   * the package.json file
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-repository-directory
    */
   "package-json/valid-repository-directory"?: Rule<[]>;
   /**
    * Enforce that the `scripts` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-scripts
    */
   "package-json/valid-scripts"?: Rule<[]>;
   /**
    * Enforce that the `sideEffects` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-sideEffects
    */
   "package-json/valid-sideEffects"?: Rule<[]>;
   /**
    * Enforce that the `type` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-type
    */
   "package-json/valid-type"?: Rule<[]>;
   /**
    * Enforce that the `version` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-version
    */
   "package-json/valid-version"?: Rule<[]>;
   /**
    * Enforce that the `workspaces` property is valid.
+   *
    * @see https://eslint-plugin-package-json.dev/rules/valid-properties/valid-workspaces
    */
   "package-json/valid-workspaces"?: Rule<[]>;

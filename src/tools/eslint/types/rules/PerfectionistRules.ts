@@ -5,121 +5,145 @@ import type { Rule } from "#tools/eslint/types/Rule";
 export interface PerfectionistRules {
   /**
    * Enforce sorted arrays before include method.
+   *
    * @see https://perfectionist.dev/rules/sort-array-includes
    */
   "perfectionist/sort-array-includes"?: Rule<PerfectionistSortArrayIncludes>;
   /**
    * Enforce sorted arrays.
+   *
    * @see https://perfectionist.dev/rules/sort-arrays
    */
   "perfectionist/sort-arrays"?: Rule<PerfectionistSortArrays>;
   /**
    * Enforce sorted classes.
+   *
    * @see https://perfectionist.dev/rules/sort-classes
    */
   "perfectionist/sort-classes"?: Rule<PerfectionistSortClasses>;
   /**
    * Enforce sorted constructor parameters.
+   *
    * @see https://perfectionist.dev/rules/sort-constructor-parameters
    */
   "perfectionist/sort-constructor-parameters"?: Rule<PerfectionistSortConstructorParameters>;
   /**
    * Enforce sorted decorators.
+   *
    * @see https://perfectionist.dev/rules/sort-decorators
    */
   "perfectionist/sort-decorators"?: Rule<PerfectionistSortDecorators>;
   /**
    * Enforce sorted TypeScript enums.
+   *
    * @see https://perfectionist.dev/rules/sort-enums
    */
   "perfectionist/sort-enums"?: Rule<PerfectionistSortEnums>;
   /**
    * Enforce sorted export attributes.
+   *
    * @see https://perfectionist.dev/rules/sort-export-attributes
    */
   "perfectionist/sort-export-attributes"?: Rule<PerfectionistSortExportAttributes>;
   /**
    * Enforce sorted exports.
+   *
    * @see https://perfectionist.dev/rules/sort-exports
    */
   "perfectionist/sort-exports"?: Rule<PerfectionistSortExports>;
   /**
    * Enforce sorted heritage clauses.
+   *
    * @see https://perfectionist.dev/rules/sort-heritage-clauses
    */
   "perfectionist/sort-heritage-clauses"?: Rule<PerfectionistSortHeritageClauses>;
   /**
    * Enforce sorted import attributes.
+   *
    * @see https://perfectionist.dev/rules/sort-import-attributes
    */
   "perfectionist/sort-import-attributes"?: Rule<PerfectionistSortImportAttributes>;
   /**
    * Enforce sorted imports.
+   *
    * @see https://perfectionist.dev/rules/sort-imports
    */
   "perfectionist/sort-imports"?: Rule<PerfectionistSortImports>;
   /**
    * Enforce sorted interface properties.
+   *
    * @see https://perfectionist.dev/rules/sort-interfaces
    */
   "perfectionist/sort-interfaces"?: Rule<PerfectionistSortInterfaces>;
   /**
    * Enforce sorted intersection types.
+   *
    * @see https://perfectionist.dev/rules/sort-intersection-types
    */
   "perfectionist/sort-intersection-types"?: Rule<PerfectionistSortIntersectionTypes>;
   /**
    * Enforce sorted JSX props.
+   *
    * @see https://perfectionist.dev/rules/sort-jsx-props
    */
   "perfectionist/sort-jsx-props"?: Rule<PerfectionistSortJsxProps>;
   /**
    * Enforce sorted Map elements.
+   *
    * @see https://perfectionist.dev/rules/sort-maps
    */
   "perfectionist/sort-maps"?: Rule<PerfectionistSortMaps>;
   /**
    * Enforce sorted modules.
+   *
    * @see https://perfectionist.dev/rules/sort-modules
    */
   "perfectionist/sort-modules"?: Rule<PerfectionistSortModules>;
   /**
    * Enforce sorted named exports.
+   *
    * @see https://perfectionist.dev/rules/sort-named-exports
    */
   "perfectionist/sort-named-exports"?: Rule<PerfectionistSortNamedExports>;
   /**
    * Enforce sorted named imports.
+   *
    * @see https://perfectionist.dev/rules/sort-named-imports
    */
   "perfectionist/sort-named-imports"?: Rule<PerfectionistSortNamedImports>;
   /**
    * Enforce sorted object types.
+   *
    * @see https://perfectionist.dev/rules/sort-object-types
    */
   "perfectionist/sort-object-types"?: Rule<PerfectionistSortObjectTypes>;
   /**
    * Enforce sorted objects.
+   *
    * @see https://perfectionist.dev/rules/sort-objects
    */
   "perfectionist/sort-objects"?: Rule<PerfectionistSortObjects>;
   /**
    * Enforce sorted sets.
+   *
    * @see https://perfectionist.dev/rules/sort-sets
    */
   "perfectionist/sort-sets"?: Rule<PerfectionistSortSets>;
   /**
    * Enforce sorted switch cases.
+   *
    * @see https://perfectionist.dev/rules/sort-switch-case
    */
   "perfectionist/sort-switch-case"?: Rule<PerfectionistSortSwitchCase>;
   /**
    * Enforce sorted union types.
+   *
    * @see https://perfectionist.dev/rules/sort-union-types
    */
   "perfectionist/sort-union-types"?: Rule<PerfectionistSortUnionTypes>;
   /**
    * Enforce sorted variable declarations.
+   *
    * @see https://perfectionist.dev/rules/sort-variable-declarations
    */
   "perfectionist/sort-variable-declarations"?: Rule<PerfectionistSortVariableDeclarations>;

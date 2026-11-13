@@ -5,1489 +5,1808 @@ import type { Rule } from "#tools/eslint/types/Rule";
 export interface SonarjsRules {
   /**
    * Alternatives in regular expressions should be grouped when used with anchors
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5850/javascript
    */
   "sonarjs/anchor-precedence"?: Rule<[]>;
   /**
    * Arguments to built-in functions should match documented types
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3782/javascript
    */
   "sonarjs/argument-type"?: Rule<[]>;
   /**
    * Parameters should be passed in the correct order
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2234/javascript
    */
   "sonarjs/arguments-order"?: Rule<[]>;
   /**
    * "arguments" should not be accessed directly
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3513/javascript
    */
   "sonarjs/arguments-usage"?: Rule<[]>;
   /**
    * Callbacks of array methods should have return statements
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3796/javascript
    */
   "sonarjs/array-callback-without-return"?: Rule<[]>;
   /**
    * Array constructors should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1528/javascript
    */
   "sonarjs/array-constructor"?: Rule<[]>;
   /**
    * Braces and parentheses should be used consistently with arrow functions
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3524/javascript
    */
   "sonarjs/arrow-function-convention"?: Rule<SonarjsArrowFunctionConvention>;
   /**
    * Assertions should be placed inside test cases or hooks
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8784/javascript
    */
   "sonarjs/assertions-in-test-cases"?: Rule<[]>;
   /**
    * Tests should include assertions
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2699/javascript
    */
   "sonarjs/assertions-in-tests"?: Rule<[]>;
   /**
    * Async test assertions should be awaited or returned
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8780/javascript
    */
   "sonarjs/async-test-assertions"?: Rule<[]>;
   /**
-   * Nested properties of Lodash and Underscore.js clone results should not be mutated
+   * Nested properties of Lodash and Underscore.js clone results should not be
+   * mutated
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9135/javascript
    */
   "sonarjs/avoid-mutating-nested-properties-of-shallow-clones"?: Rule<[]>;
   /**
    * AWS API Gateway should require authentication
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6333/javascript
    */
   "sonarjs/aws-apigateway-public-api"?: Rule<[]>;
   /**
    * Public network access to cloud resources should be disabled
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6329/javascript
    */
   "sonarjs/aws-ec2-rds-dms-public"?: Rule<[]>;
   /**
    * EBS volumes should be encrypted
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6275/javascript
    */
   "sonarjs/aws-ec2-unencrypted-ebs-volume"?: Rule<[]>;
   /**
    * Amazon EFS file systems should be encrypted
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6332/javascript
    */
   "sonarjs/aws-efs-unencrypted"?: Rule<[]>;
   /**
    * Policies should not grant all privileges
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6302/javascript
    */
   "sonarjs/aws-iam-all-privileges"?: Rule<[]>;
   /**
    * IAM policies should not grant access to all account resources
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6304/javascript
    */
   "sonarjs/aws-iam-all-resources-accessible"?: Rule<[]>;
   /**
    * AWS IAM policies should limit the scope of permissions given
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6317/javascript
    */
   "sonarjs/aws-iam-privilege-escalation"?: Rule<[]>;
   /**
    * AWS resource-based policies should not grant public access
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6270/javascript
    */
   "sonarjs/aws-iam-public-access"?: Rule<[]>;
   /**
    * OpenSearch domains should have encryption at rest enabled
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6308/javascript
    */
   "sonarjs/aws-opensearchservice-domain"?: Rule<[]>;
   /**
    * Amazon RDS resources should be encrypted at rest
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6303/javascript
    */
   "sonarjs/aws-rds-unencrypted-databases"?: Rule<[]>;
   /**
    * Administration services access should be restricted to specific IP addresses
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6321/javascript
    */
   "sonarjs/aws-restricted-ip-admin-access"?: Rule<[]>;
   /**
    * S3 buckets should not grant access to all users or authenticated users
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6265/javascript
    */
   "sonarjs/aws-s3-bucket-granted-access"?: Rule<[]>;
   /**
    * S3 buckets should enforce HTTPS-only access
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6249/javascript
    */
   "sonarjs/aws-s3-bucket-insecure-http"?: Rule<[]>;
   /**
    * Amazon S3 bucket public access should be fully blocked
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6281/javascript
    */
   "sonarjs/aws-s3-bucket-public-access"?: Rule<[]>;
   /**
    * Amazon S3 buckets should have versioning enabled
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6252/javascript
    */
   "sonarjs/aws-s3-bucket-versioning"?: Rule<[]>;
   /**
    * SageMaker notebook instances should be encrypted at rest
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6319/javascript
    */
   "sonarjs/aws-sagemaker-unencrypted-notebook"?: Rule<[]>;
   /**
    * Amazon SNS topics should be encrypted at rest
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6327/javascript
    */
   "sonarjs/aws-sns-unencrypted-topics"?: Rule<[]>;
   /**
    * SQS queues should be encrypted
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6330/javascript
    */
   "sonarjs/aws-sqs-unencrypted-queue"?: Rule<[]>;
   /**
    * Bitwise operators should not be used in boolean contexts
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1529/javascript
    */
   "sonarjs/bitwise-operators"?: Rule<[]>;
   /**
    * Variables should be used in the blocks where they are declared
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2392/javascript
    */
   "sonarjs/block-scoped-var"?: Rule<[]>;
   /**
    * Optional boolean parameters should have default value
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4798/javascript
    */
   "sonarjs/bool-param-default"?: Rule<[]>;
   /**
    * Function call arguments should not start on new lines
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1472/javascript
    */
   "sonarjs/call-argument-line"?: Rule<[]>;
   /**
    * Chai assertions should have only one reason to succeed
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6092/javascript
    */
   "sonarjs/chai-determinate-assertion"?: Rule<[]>;
   /**
    * Class names should comply with a naming convention
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S101/javascript
    */
   "sonarjs/class-name"?: Rule<SonarjsClassName>;
   /**
    * Class methods should be used instead of "prototype" assignments
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3525/javascript
    */
   "sonarjs/class-prototype"?: Rule<[]>;
   /**
    * Dynamic code execution should not use user-controlled data
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1523/javascript
    */
   "sonarjs/code-eval"?: Rule<[]>;
   /**
    * Cognitive Complexity of functions should not be too high
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3776/javascript
    */
   "sonarjs/cognitive-complexity"?: Rule<SonarjsCognitiveComplexity>;
   /**
    * Comma and logical OR operators should not be used in switch cases
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3616/javascript
    */
   "sonarjs/comma-or-logical-or-case"?: Rule<[]>;
   /**
    * Track comments matching a regular expression
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S124/javascript
    */
   "sonarjs/comment-regex"?: Rule<SonarjsCommentRegex>;
   /**
    * Composite assertions should be split
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9073/javascript
    */
   "sonarjs/composite-assertions"?: Rule<[]>;
   /**
    * Regular expression quantifiers and character classes should be used concisely
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6353/javascript
    */
   "sonarjs/concise-regex"?: Rule<[]>;
   /**
    * A conditionally executed single line should be denoted by indentation
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3973/javascript
    * @deprecated
    */
   "sonarjs/conditional-indentation"?: Rule<[]>;
   /**
    * Confidential information should not be logged
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5757/javascript
    * @deprecated
    */
   "sonarjs/confidential-information-logging"?: Rule<[]>;
   /**
    * Objects should not be created to be dropped immediately without being used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1848/javascript
    */
   "sonarjs/constructor-for-side-effects"?: Rule<[]>;
   /**
    * HTTP request content length should be limited
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5693/javascript
    */
   "sonarjs/content-length"?: Rule<SonarjsContentLength>;
   /**
    * Content security policy fetch directives should not be disabled
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5728/javascript
    */
   "sonarjs/content-security-policy"?: Rule<[]>;
   /**
    * Cookies should have the "HttpOnly" flag
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3330/javascript
    */
   "sonarjs/cookie-no-httponly"?: Rule<[]>;
   /**
-   * Cross-Origin Resource Sharing (CORS) policy should be restricted to trusted origins
+   * Cross-Origin Resource Sharing (CORS) policy should be restricted to trusted
+   * origins
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5122/javascript
    */
   "sonarjs/cors"?: Rule<[]>;
   /**
    * CSRF protections should not be disabled
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4502/javascript
    */
   "sonarjs/csrf"?: Rule<[]>;
   /**
    * Cyclomatic Complexity of functions should not be too high
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1541/javascript
    */
   "sonarjs/cyclomatic-complexity"?: Rule<SonarjsCyclomaticComplexity>;
   /**
    * Variables and functions should not be declared in the global scope
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3798/javascript
    */
   "sonarjs/declarations-in-global-scope"?: Rule<[]>;
   /**
    * Deprecated APIs should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1874/javascript
    */
   "sonarjs/deprecation"?: Rule<[]>;
   /**
    * Destructuring syntax should be used for assignments
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3514/javascript
    */
   "sonarjs/destructuring-assignment-syntax"?: Rule<[]>;
   /**
    * Strict equality operators should not be used with dissimilar types
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3403/javascript
    */
   "sonarjs/different-types-comparison"?: Rule<[]>;
   /**
    * Auto-escaping in HTML template engines should not be disabled
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5247/javascript
    */
   "sonarjs/disabled-auto-escaping"?: Rule<[]>;
   /**
    * Remote artifacts should not be used without integrity checks
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5725/javascript
    */
   "sonarjs/disabled-resource-integrity"?: Rule<[]>;
   /**
    * Disabling Mocha timeouts should be explicit
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6080/javascript
    */
   "sonarjs/disabled-timeout"?: Rule<[]>;
   /**
    * DOMPurify configuration should not be bypassable
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8479/javascript
    */
   "sonarjs/dompurify-unsafe-config"?: Rule<[]>;
   /**
-   * Character classes in regular expressions should not contain the same character twice
+   * Character classes in regular expressions should not contain the same character
+   * twice
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5869/javascript
    */
   "sonarjs/duplicates-in-character-class"?: Rule<[]>;
   /**
    * Templates should not be constructed dynamically
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S7790/javascript
    */
   "sonarjs/dynamically-constructed-templates"?: Rule<[]>;
   /**
    * "if ... else if" constructs should end with "else" clauses
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S126/javascript
    */
   "sonarjs/elseif-without-else"?: Rule<[]>;
   /**
    * Repeated patterns in regular expressions should not match the empty string
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5842/javascript
    */
   "sonarjs/empty-string-repetition"?: Rule<[]>;
   /**
    * Encryption algorithms should be used with secure mode and padding scheme
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5542/javascript
    */
   "sonarjs/encryption-secure-mode"?: Rule<[]>;
   /**
    * Replacement strings should reference existing regular expression groups
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6328/javascript
    */
   "sonarjs/existing-groups"?: Rule<[]>;
   /**
    * Tests should be skipped explicitly
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8968/javascript
    */
   "sonarjs/explicit-test-skip"?: Rule<[]>;
   /**
    * Expressions should not be too complex
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1067/javascript
    */
   "sonarjs/expression-complexity"?: Rule<SonarjsExpressionComplexity>;
   /**
    * Track lack of copyright and license headers
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1451/javascript
    */
   "sonarjs/file-header"?: Rule<SonarjsFileHeader>;
   /**
    * Default export names and file names should match
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3317/javascript
    */
   "sonarjs/file-name-differ-from-class"?: Rule<[]>;
   /**
    * File permissions should not be set to world-accessible values
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2612/javascript
    */
   "sonarjs/file-permissions"?: Rule<[]>;
   /**
    * File uploads should be restricted
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2598/javascript
    */
   "sonarjs/file-uploads"?: Rule<[]>;
   /**
    * Track uses of "FIXME" tags
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1134/javascript
    */
   "sonarjs/fixme-tag"?: Rule<[]>;
   /**
    * "for...in" loops should filter properties before acting on them
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1535/javascript
    */
   "sonarjs/for-in"?: Rule<[]>;
   /**
    * A "for" loop update clause should move the counter in the right direction
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2251/javascript
    */
   "sonarjs/for-loop-increment-sign"?: Rule<[]>;
   /**
    * Content Security Policy frame-ancestors directive should not be disabled
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5732/javascript
    * @deprecated
    */
   "sonarjs/frame-ancestors"?: Rule<[]>;
   /**
    * Functions should not be defined inside loops
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1515/javascript
    */
   "sonarjs/function-inside-loop"?: Rule<[]>;
   /**
    * Function and method names should comply with a naming convention
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S100/javascript
    */
   "sonarjs/function-name"?: Rule<SonarjsFunctionName>;
   /**
    * Functions should always return the same type
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3800/javascript
    */
   "sonarjs/function-return-type"?: Rule<[]>;
   /**
    * Future reserved words should not be used as identifiers
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1527/javascript
    */
   "sonarjs/future-reserved-words"?: Rule<[]>;
   /**
    * Generators should explicitly "yield" a value
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3531/javascript
    */
   "sonarjs/generator-without-yield"?: Rule<[]>;
   /**
    * Credentials should not be hard-coded
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6437/javascript
    */
   "sonarjs/hardcoded-secret-signatures"?: Rule<[]>;
   /**
    * Weak hashing algorithms should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4790/javascript
    */
   "sonarjs/hashing"?: Rule<[]>;
   /**
    * Hidden files should not be served statically
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5691/javascript
    * @deprecated
    */
   "sonarjs/hidden-files"?: Rule<[]>;
   /**
    * Lifecycle hooks should not be interleaved with test cases or nested suites
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8782/javascript
    */
   "sonarjs/hooks-before-test-cases"?: Rule<[]>;
   /**
    * "in" should not be used with primitive types
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3785/javascript
    */
   "sonarjs/in-operator-type-error"?: Rule<[]>;
   /**
    * Functions should be called consistently with or without "new"
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3686/javascript
    */
   "sonarjs/inconsistent-function-call"?: Rule<[]>;
   /**
    * "indexOf" checks should not be for positive numbers
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2692/javascript
    */
   "sonarjs/index-of-compare-to-positive-number"?: Rule<[]>;
   /**
    * Cookies should have the "secure" flag
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2092/javascript
    */
   "sonarjs/insecure-cookie"?: Rule<[]>;
   /**
    * JWT should be signed and verified with strong cipher algorithms
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5659/javascript
    */
   "sonarjs/insecure-jwt-token"?: Rule<[]>;
   /**
    * Assertion arguments should be passed in the correct order
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3415/javascript
    */
   "sonarjs/inverted-assertion-arguments"?: Rule<[]>;
   /**
    * React components should not render non-boolean condition values
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6439/javascript
    */
   "sonarjs/jsx-no-leaked-render"?: Rule<[]>;
   /**
    * Only "while", "do", "for" and "switch" statements should be labelled
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1439/javascript
    */
   "sonarjs/label-position"?: Rule<[]>;
   /**
    * Opened windows should not have access to the originating page
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5148/javascript
    */
   "sonarjs/link-with-target-blank"?: Rule<[]>;
   /**
    * Files should not have too many lines of code
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S104/javascript
    */
   "sonarjs/max-lines"?: Rule<SonarjsMaxLines>;
   /**
    * Functions should not have too many lines of code
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S138/javascript
    */
   "sonarjs/max-lines-per-function"?: Rule<SonarjsMaxLinesPerFunction>;
   /**
    * "switch" statements should not have too many "case" clauses
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1479/javascript
    */
   "sonarjs/max-switch-cases"?: Rule<SonarjsMaxSwitchCases>;
   /**
    * Union types should not have too many elements
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4622/javascript
    */
   "sonarjs/max-union-size"?: Rule<SonarjsMaxUnionSize>;
   /**
-   * Lodash and Underscore.js `memoize` calls on functions with multiple parameters should use an explicit cache key function
+   * Lodash and Underscore.js `memoize` calls on functions with multiple parameters
+   * should use an explicit cache key function
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8932/javascript
    */
   "sonarjs/memoize-cache-key"?: Rule<[]>;
   /**
    * "for" loop increment clauses should modify the loops' counters
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1994/javascript
    */
   "sonarjs/misplaced-loop-counter"?: Rule<[]>;
   /**
-   * Control flow statements "if", "for", "while", "switch" and "try" should not be nested too deeply
+   * Control flow statements "if", "for", "while", "switch" and "try" should not
+   * be nested too deeply
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S134/javascript
    */
   "sonarjs/nested-control-flow"?: Rule<SonarjsNestedControlFlow>;
   /**
    * "new" should only be used with functions and classes
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2999/javascript
    */
   "sonarjs/new-operator-misuse"?: Rule<SonarjsNewOperatorMisuse>;
   /**
-   * All branches in a conditional structure should not have exactly the same implementation
+   * All branches in a conditional structure should not have exactly the same
+   * implementation
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3923/javascript
    */
   "sonarjs/no-all-duplicated-branches"?: Rule<[]>;
   /**
-   * "Array.prototype.sort()" and "Array.prototype.toSorted()" should use a compare function
+   * "Array.prototype.sort()" and "Array.prototype.toSorted()" should use a
+   * compare function
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2871/javascript
    */
   "sonarjs/no-alphabetical-sort"?: Rule<[]>;
   /**
    * Angular built-in sanitization should not be disabled
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6268/javascript
    */
   "sonarjs/no-angular-bypass-sanitization"?: Rule<[]>;
   /**
    * "delete" should not be used on arrays
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2870/javascript
    */
   "sonarjs/no-array-delete"?: Rule<[]>;
   /**
    * Array indexes should be numeric
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3579/javascript
    */
   "sonarjs/no-associative-arrays"?: Rule<[]>;
   /**
    * Constructors should not contain asynchronous operations
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S7059/javascript
    */
   "sonarjs/no-async-constructor"?: Rule<[]>;
   /**
    * Built-in objects should not be overridden
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2424/javascript
    */
   "sonarjs/no-built-in-override"?: Rule<[]>;
   /**
    * "switch" statements should not contain non-case labels
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1219/javascript
    */
   "sonarjs/no-case-label-in-switch"?: Rule<[]>;
   /**
    * Clear-text protocols should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5332/javascript
    */
   "sonarjs/no-clear-text-protocols"?: Rule<[]>;
   /**
    * Tests should not execute any code after "done()" is called
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6079/javascript
    */
   "sonarjs/no-code-after-done"?: Rule<[]>;
   /**
    * Mergeable "if" statements should be combined
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1066/javascript
    */
   "sonarjs/no-collapsible-if"?: Rule<[]>;
   /**
    * Collection size and array length comparisons should make sense
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3981/javascript
    */
   "sonarjs/no-collection-size-mischeck"?: Rule<[]>;
   /**
    * Sections of code should not be commented out
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S125/javascript
    */
   "sonarjs/no-commented-code"?: Rule<[]>;
   /**
    * Regular expressions should not contain control characters
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6324/javascript
    */
   "sonarjs/no-control-regex"?: Rule<[]>;
   /**
    * Unused assignments should be removed
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1854/javascript
    */
   "sonarjs/no-dead-store"?: Rule<[]>;
   /**
-   * Lodash and Underscore.js debounced or throttled functions should not be recreated on every React render
+   * Lodash and Underscore.js debounced or throttled functions should not be
+   * recreated on every React render
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9114/javascript
    */
   "sonarjs/no-debounce-throttle-in-render"?: Rule<[]>;
   /**
    * UI test debug commands should not be committed to version control
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8959/javascript
    */
   "sonarjs/no-debug-commands-in-ui-tests"?: Rule<[]>;
   /**
    * Default imports from modular utility libraries should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8927/javascript
    */
   "sonarjs/no-default-utility-imports"?: Rule<[]>;
   /**
    * "delete" should be used only with object properties
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3001/javascript
    */
   "sonarjs/no-delete-var"?: Rule<[]>;
   /**
    * Union and intersection types should not include duplicated constituents
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4621/javascript
    */
   "sonarjs/no-duplicate-in-composite"?: Rule<[]>;
   /**
    * Parameterized tests should not contain duplicate test cases
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9078/javascript
    */
   "sonarjs/no-duplicate-parameterized-test-case"?: Rule<[]>;
   /**
    * String literals should not be duplicated
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1192/javascript
    */
   "sonarjs/no-duplicate-string"?: Rule<SonarjsNoDuplicateString>;
   /**
    * Test titles should be unique within the same suite
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8754/javascript
    */
   "sonarjs/no-duplicate-test-title"?: Rule<[]>;
   /**
-   * Two branches in a conditional structure should not have exactly the same implementation
+   * Two branches in a conditional structure should not have exactly the same
+   * implementation
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1871/javascript
    */
   "sonarjs/no-duplicated-branches"?: Rule<[]>;
   /**
    * Collection elements should not be replaced unconditionally
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4143/javascript
    */
   "sonarjs/no-element-overwrite"?: Rule<[]>;
   /**
-   * Reluctant quantifiers in regular expressions should be followed by an expression that can't match the empty string
+   * Reluctant quantifiers in regular expressions should be followed by an
+   * expression that can't match the empty string
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6019/javascript
    */
   "sonarjs/no-empty-after-reluctant"?: Rule<[]>;
   /**
    * Alternation in regular expressions should not contain empty alternatives
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6323/javascript
    */
   "sonarjs/no-empty-alternatives"?: Rule<[]>;
   /**
    * Empty character classes should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2639/javascript
    */
   "sonarjs/no-empty-character-class"?: Rule<[]>;
   /**
    * Empty collections should not be accessed or iterated
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4158/javascript
    */
   "sonarjs/no-empty-collection"?: Rule<[]>;
   /**
    * Regular expressions should not contain empty groups
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6331/javascript
    */
   "sonarjs/no-empty-group"?: Rule<[]>;
   /**
    * Parameterized tests should not have empty datasets
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8998/javascript
    */
   "sonarjs/no-empty-parameterized-test-dataset"?: Rule<[]>;
   /**
    * Test files should contain at least one test case
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2187/javascript
    */
   "sonarjs/no-empty-test-file"?: Rule<[]>;
   /**
    * Test and suite titles should not be empty or whitespace-only
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8781/javascript
    */
   "sonarjs/no-empty-test-title"?: Rule<[]>;
   /**
    * Equality operators should not be used in "for" loop termination conditions
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S888/javascript
    */
   "sonarjs/no-equals-in-for-termination"?: Rule<[]>;
   /**
    * Exclusive tests should not be committed to version control
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6426/javascript
    */
   "sonarjs/no-exclusive-tests"?: Rule<[]>;
   /**
    * Function calls should not pass extra arguments
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S930/javascript
    */
   "sonarjs/no-extra-arguments"?: Rule<[]>;
   /**
    * Switch cases should end with an unconditional "break" statement
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S128/javascript
    */
   "sonarjs/no-fallthrough"?: Rule<[]>;
   /**
    * Fixed waits should not be used in tests
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2925/javascript
    */
   "sonarjs/no-fixed-wait-in-tests"?: Rule<[]>;
   /**
    * Floating point numbers should not be tested for equality
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1244/javascript
    */
   "sonarjs/no-floating-point-equality"?: Rule<[]>;
   /**
    * "for in" should not be used with iterables
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4139/javascript
    */
   "sonarjs/no-for-in-iterable"?: Rule<[]>;
   /**
    * Forced browser interactions should not bypass actionability checks
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8783/javascript
    */
   "sonarjs/no-forced-browser-interaction"?: Rule<[]>;
   /**
    * Function declarations should not be made within blocks
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1530/javascript
    */
   "sonarjs/no-function-declaration-in-block"?: Rule<[]>;
   /**
    * The global "this" object should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2990/javascript
    */
   "sonarjs/no-global-this"?: Rule<[]>;
   /**
    * Special identifiers should not be bound or assigned
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2137/javascript
    */
   "sonarjs/no-globals-shadowing"?: Rule<[]>;
   /**
    * Boolean expressions should not be gratuitous
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2589/javascript
    */
   "sonarjs/no-gratuitous-expressions"?: Rule<[]>;
   /**
    * IP addresses should not be hardcoded
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1313/javascript
    */
   "sonarjs/no-hardcoded-ip"?: Rule<[]>;
   /**
    * Credentials should not be hard-coded
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2068/javascript
    */
   "sonarjs/no-hardcoded-passwords"?: Rule<SonarjsNoHardcodedPasswords>;
   /**
    * Secrets should not be hard-coded
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6418/javascript
    */
   "sonarjs/no-hardcoded-secrets"?: Rule<SonarjsNoHardcodedSecrets>;
   /**
-   * React's useState hook should not be used directly in the render function or body of a component
+   * React's useState hook should not be used directly in the render function or
+   * body of a component
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6442/javascript
    */
   "sonarjs/no-hook-setter-in-body"?: Rule<[]>;
   /**
    * "if/else if" chains and "switch" cases should not have the same condition
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1862/javascript
    */
   "sonarjs/no-identical-conditions"?: Rule<[]>;
   /**
    * Identical expressions should not be used on both sides of a binary operator
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1764/javascript
    */
   "sonarjs/no-identical-expressions"?: Rule<[]>;
   /**
    * Functions should not have identical implementations
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4144/javascript
    */
   "sonarjs/no-identical-functions"?: Rule<SonarjsNoIdenticalFunctions>;
   /**
    * Exceptions should not be ignored
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2486/javascript
    */
   "sonarjs/no-ignored-exceptions"?: Rule<[]>;
   /**
    * Return values from functions without side effects should not be ignored
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2201/javascript
    */
   "sonarjs/no-ignored-return"?: Rule<[]>;
   /**
    * Dependencies should be explicit
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4328/javascript
    */
   "sonarjs/no-implicit-dependencies"?: Rule<SonarjsNoImplicitDependencies>;
   /**
    * Variables should be declared explicitly
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2703/javascript
    */
   "sonarjs/no-implicit-global"?: Rule<[]>;
   /**
    * "in" should not be used on arrays
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4619/javascript
    */
   "sonarjs/no-in-misuse"?: Rule<[]>;
   /**
    * Assertions comparing incompatible types should not be made
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5845/javascript
    */
   "sonarjs/no-incompatible-assertion-types"?: Rule<[]>;
   /**
    * Assertions should be complete
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2970/javascript
    */
   "sonarjs/no-incomplete-assertions"?: Rule<[]>;
   /**
    * Functions should use "return" consistently
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3801/javascript
    */
   "sonarjs/no-inconsistent-returns"?: Rule<[]>;
   /**
    * Strings and non-strings should not be added
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3402/javascript
    */
   "sonarjs/no-incorrect-string-concat"?: Rule<[]>;
   /**
    * Users should not use internal APIs
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6627/javascript
    */
   "sonarjs/no-internal-api-use"?: Rule<[]>;
   /**
    * Inline snapshots should not contain interpolations
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8967/javascript
    */
   "sonarjs/no-interpolation-in-inline-snapshots"?: Rule<[]>;
   /**
    * Sensitive permissions should not be requested unnecessarily
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5604/javascript
    * @deprecated
    */
   "sonarjs/no-intrusive-permissions"?: Rule<SonarjsNoIntrusivePermissions>;
   /**
    * Regular expressions should be syntactically valid
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5856/javascript
    */
   "sonarjs/no-invalid-regexp"?: Rule<[]>;
   /**
    * Function returns should not be invariant
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3516/javascript
    */
   "sonarjs/no-invariant-returns"?: Rule<[]>;
   /**
    * Boolean checks should not be inverted
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1940/javascript
    */
   "sonarjs/no-inverted-boolean-check"?: Rule<[]>;
   /**
    * Client IP address should not be forwarded to proxies
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5759/javascript
    * @deprecated
    */
   "sonarjs/no-ip-forward"?: Rule<[]>;
   /**
    * Labels should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1119/javascript
    */
   "sonarjs/no-labels"?: Rule<[]>;
   /**
    * Literals should not be used as functions
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6958/javascript
    */
   "sonarjs/no-literal-call"?: Rule<[]>;
   /**
    * Browsers should not be allowed to perform MIME type sniffing
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5734/javascript
    */
   "sonarjs/no-mime-sniff"?: Rule<[]>;
   /**
    * Array-mutating methods should not be used misleadingly
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4043/javascript
    */
   "sonarjs/no-misleading-array-reverse"?: Rule<[]>;
   /**
    * Unicode Grapheme Clusters should be avoided inside regex character classes
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5868/javascript
    */
   "sonarjs/no-misleading-character-class"?: Rule<[]>;
   /**
    * Test and hook callbacks should use a single completion style
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8960/javascript
    */
   "sonarjs/no-mixed-completion-style"?: Rule<[]>;
   /**
    * Content Security Policy should block mixed-content
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5730/javascript
    * @deprecated
    */
   "sonarjs/no-mixed-content"?: Rule<[]>;
   /**
-   * Reactive state should not be unconditionally mutated inside Vue's "updated" lifecycle hook
+   * Reactive state should not be unconditionally mutated inside Vue's "updated"
+   * lifecycle hook
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9163/javascript
    */
   "sonarjs/no-mutate-reactive-state-in-updated-hook"?: Rule<[]>;
   /**
    * Assignments should not be made from within sub-expressions
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1121/javascript
    */
   "sonarjs/no-nested-assignment"?: Rule<[]>;
   /**
    * Ternary operators should not be nested
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3358/javascript
    */
   "sonarjs/no-nested-conditional"?: Rule<[]>;
   /**
    * Functions should not be nested too deeply
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2004/javascript
    */
   "sonarjs/no-nested-functions"?: Rule<SonarjsNoNestedFunctions>;
   /**
-   * Increment (++) and decrement (--) operators should not be used in a method call or mixed with other operators in an expression
+   * Increment (++) and decrement (--) operators should not be used in a method
+   * call or mixed with other operators in an expression
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S881/javascript
    */
   "sonarjs/no-nested-incdec"?: Rule<[]>;
   /**
    * "switch" statements should not be nested
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1821/javascript
    */
   "sonarjs/no-nested-switch"?: Rule<[]>;
   /**
    * Template literals should not be nested
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4624/javascript
    */
   "sonarjs/no-nested-template-literals"?: Rule<[]>;
   /**
    * Playwright "networkidle" waits should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9332/javascript
    */
   "sonarjs/no-networkidle-wait"?: Rule<[]>;
   /**
    * OS commands should not rely on PATH resolution
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4036/javascript
    */
   "sonarjs/no-os-command-from-path"?: Rule<[]>;
   /**
-   * Initial values of parameters, caught exceptions, and loop variables should not be ignored
+   * Initial values of parameters, caught exceptions, and loop variables should
+   * not be ignored
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1226/javascript
    */
   "sonarjs/no-parameter-reassignment"?: Rule<[]>;
   /**
    * Wrapper objects should not be used for primitive types
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1533/javascript
    */
   "sonarjs/no-primitive-wrappers"?: Rule<[]>;
   /**
    * Assignments should not be redundant
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4165/javascript
    */
   "sonarjs/no-redundant-assignments"?: Rule<[]>;
   /**
    * Boolean literals should not be used in comparisons
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1125/javascript
    */
   "sonarjs/no-redundant-boolean"?: Rule<[]>;
   /**
    * Jump statements should not be redundant
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3626/javascript
    */
   "sonarjs/no-redundant-jump"?: Rule<[]>;
   /**
    * Optional property declarations should not use both '?' and 'undefined' syntax
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4782/javascript
    */
   "sonarjs/no-redundant-optional"?: Rule<[]>;
   /**
    * Redundant pairs of parentheses should be removed
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1110/javascript
    * @deprecated
    */
   "sonarjs/no-redundant-parentheses"?: Rule<[]>;
   /**
    * Variables should be defined before being used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3827/javascript
    */
   "sonarjs/no-reference-error"?: Rule<[]>;
   /**
    * HTTP Referrer-Policy should not be set to an unsafe value
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5736/javascript
    */
   "sonarjs/no-referrer-policy"?: Rule<[]>;
   /**
    * Regular expressions should not contain multiple spaces
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6326/javascript
    */
   "sonarjs/no-regex-spaces"?: Rule<[]>;
   /**
    * "import" should be used to include external code
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3533/javascript
    */
   "sonarjs/no-require-or-define"?: Rule<[]>;
   /**
    * Primitive return types should be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4324/javascript
    */
   "sonarjs/no-return-type-any"?: Rule<[]>;
   /**
    * Assertions should not be given twice the same argument
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5863/javascript
    */
   "sonarjs/no-same-argument-assert"?: Rule<[]>;
   /**
    * Conditionals should start on new lines
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3972/javascript
    */
   "sonarjs/no-same-line-conditional"?: Rule<[]>;
   /**
    * Methods should not contain selector parameters
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2301/javascript
    */
   "sonarjs/no-selector-parameter"?: Rule<[]>;
   /**
    * Static Assets should not serve session cookies
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8441/javascript
    */
   "sonarjs/no-session-cookies-on-static-assets"?: Rule<[]>;
   /**
    * Tests should not be skipped without providing a reason
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1607/javascript
    */
   "sonarjs/no-skipped-tests"?: Rule<[]>;
   /**
    * "if" statements should be preferred over "switch" when simpler
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1301/javascript
    */
   "sonarjs/no-small-switch"?: Rule<[]>;
   /**
    * Track uses of "NOSONAR" comments
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1291/javascript
    */
   "sonarjs/no-sonar-comments"?: Rule<[]>;
   /**
    * Tabulation characters should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S105/javascript
    * @deprecated
    */
   "sonarjs/no-tab"?: Rule<[]>;
   /**
    * HTML "<table>" should not be used for layout purposes
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5257/javascript
    */
   "sonarjs/no-table-as-layout"?: Rule<[]>;
   /**
    * Assertions should not be trivially true
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5914/javascript
    */
   "sonarjs/no-trivial-assertions"?: Rule<[]>;
   /**
    * Promise rejections should not be caught by "try" blocks
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4822/javascript
    */
   "sonarjs/no-try-promise"?: Rule<[]>;
   /**
    * "undefined" should not be passed as the value of optional parameters
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4623/javascript
    */
   "sonarjs/no-undefined-argument"?: Rule<[]>;
   /**
    * "undefined" should not be assigned
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2138/javascript
    */
   "sonarjs/no-undefined-assignment"?: Rule<[]>;
   /**
    * Multiline blocks should be enclosed in curly braces
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2681/javascript
    */
   "sonarjs/no-unenclosed-multiline-block"?: Rule<[]>;
   /**
    * JSX list components keys should match up between renders
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6486/javascript
    */
   "sonarjs/no-uniq-key"?: Rule<[]>;
   /**
-   * Expanding archive files should not be done without controlling resource consumption
+   * Expanding archive files should not be done without controlling resource
+   * consumption
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5042/javascript
    * @deprecated
    */
   "sonarjs/no-unsafe-unzip"?: Rule<[]>;
   /**
    * Errors should not be created without being thrown
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3984/javascript
    */
   "sonarjs/no-unthrown-error"?: Rule<[]>;
   /**
    * Collection contents should be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4030/javascript
    */
   "sonarjs/no-unused-collection"?: Rule<[]>;
   /**
    * Unused function parameters should be removed
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1172/javascript
    */
   "sonarjs/no-unused-function-argument"?: Rule<[]>;
   /**
    * Unused local variables and functions should be removed
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1481/javascript
    */
   "sonarjs/no-unused-vars"?: Rule<[]>;
   /**
    * The return value of void functions should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3699/javascript
    */
   "sonarjs/no-use-of-empty-return-value"?: Rule<[]>;
   /**
    * "catch" clauses should do more than rethrow
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2737/javascript
    */
   "sonarjs/no-useless-catch"?: Rule<[]>;
   /**
    * Values should not be uselessly incremented
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2123/javascript
    */
   "sonarjs/no-useless-increment"?: Rule<[]>;
   /**
    * Type intersections should use meaningful types
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4335/javascript
    */
   "sonarjs/no-useless-intersection"?: Rule<[]>;
   /**
-   * React state setter function should not be called with its matching state variable
+   * React state setter function should not be called with its matching state
+   * variable
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6443/javascript
    */
   "sonarjs/no-useless-react-setstate"?: Rule<[]>;
   /**
    * Variables declared with "var" should be declared before they are used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1526/javascript
    */
   "sonarjs/no-variable-usage-before-declaration"?: Rule<[]>;
   /**
-   * Vue components should not use the deprecated "vue-class-component" or "vue-property-decorator" libraries
+   * Vue components should not use the deprecated "vue-class-component" or
+   * "vue-property-decorator" libraries
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9145/javascript
    */
   "sonarjs/no-vue-class-component"?: Rule<[]>;
   /**
    * Vue components should not use mixins
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9150/javascript
    */
   "sonarjs/no-vue-mixins"?: Rule<[]>;
   /**
    * Cipher algorithms should be robust
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5547/javascript
    */
   "sonarjs/no-weak-cipher"?: Rule<[]>;
   /**
    * Cryptographic keys should be robust
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4426/javascript
    */
   "sonarjs/no-weak-keys"?: Rule<[]>;
   /**
    * Wildcard imports should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2208/javascript
    */
   "sonarjs/no-wildcard-import"?: Rule<[]>;
   /**
    * Non-existent operators '=+', '=-' and '=!' should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2757/javascript
    */
   "sonarjs/non-existent-operator"?: Rule<[]>;
   /**
    * Arithmetic operators should only have numbers as operands
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3760/javascript
    */
   "sonarjs/non-number-in-arithmetic-expression"?: Rule<[]>;
   /**
-   * Properties of variables with "null" or "undefined" values should not be accessed
+   * Properties of variables with "null" or "undefined" values should not be
+   * accessed
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2259/javascript
    */
   "sonarjs/null-dereference"?: Rule<[]>;
   /**
    * "<object>" tags should provide an alternative content
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5264/javascript
    */
   "sonarjs/object-alt-content"?: Rule<[]>;
   /**
    * Arithmetic operations should not result in "NaN"
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3757/javascript
    */
   "sonarjs/operation-returning-nan"?: Rule<[]>;
   /**
    * OS commands should not be executed using a shell interpreter
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4721/javascript
    * @deprecated
    */
   "sonarjs/os-command"?: Rule<[]>;
   /**
    * Similar tests should be grouped in a single Parameterized test
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5976/javascript
    */
   "sonarjs/parameterized-tests"?: Rule<[]>;
   /**
    * Origins should be verified during cross-origin communications
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2819/javascript
    */
   "sonarjs/post-message"?: Rule<[]>;
   /**
    * Cypress assertions should be retryable
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9162/javascript
    */
   "sonarjs/prefer-cypress-should"?: Rule<[]>;
   /**
    * "default" clauses should be last
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4524/javascript
    */
   "sonarjs/prefer-default-last"?: Rule<[]>;
   /**
-   * Local variables should not be declared and then immediately returned or thrown
+   * Local variables should not be declared and then immediately returned or
+   * thrown
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1488/javascript
    */
   "sonarjs/prefer-immediate-return"?: Rule<[]>;
   /**
    * Native APIs should be preferred over Axios utility methods
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9339/javascript
    */
   "sonarjs/prefer-native-axios-alternative"?: Rule<[]>;
   /**
    * Native APIs should be preferred over jQuery utility methods
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9144/javascript
    */
   "sonarjs/prefer-native-jquery-alternative"?: Rule<[]>;
   /**
    * Native APIs should be preferred over Lodash and Underscore.js methods
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8907/javascript
    */
   "sonarjs/prefer-native-lodash-alternative"?: Rule<[]>;
   /**
    * Object literal syntax should be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2428/javascript
    */
   "sonarjs/prefer-object-literal"?: Rule<[]>;
   /**
    * Shorthand promises should be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4634/javascript
    */
   "sonarjs/prefer-promise-shorthand"?: Rule<[]>;
   /**
    * React props should be read-only
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6759/javascript
    */
   "sonarjs/prefer-read-only-props"?: Rule<[]>;
   /**
    * "RegExp.exec()" should be preferred over "String.match()"
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6594/javascript
    */
   "sonarjs/prefer-regexp-exec"?: Rule<[]>;
   /**
-   * Return of boolean expressions should not be wrapped into an "if-then-else" statement
+   * Return of boolean expressions should not be wrapped into an "if-then-else"
+   * statement
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1126/javascript
    */
   "sonarjs/prefer-single-boolean-return"?: Rule<[]>;
   /**
    * The most specific assertion should be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5906/javascript
    */
   "sonarjs/prefer-specific-assertions"?: Rule<[]>;
   /**
    * Type predicates should be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4322/javascript
    */
   "sonarjs/prefer-type-guard"?: Rule<[]>;
   /**
    * A "while" loop should be used instead of a "for" loop
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1264/javascript
    */
   "sonarjs/prefer-while"?: Rule<[]>;
   /**
    * Debugging features should not be enabled in production
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4507/javascript
    */
   "sonarjs/production-debug"?: Rule<[]>;
   /**
-   * Pseudorandom number generators (PRNGs) should not be used in security contexts
+   * Pseudorandom number generators (PRNGs) should not be used in security
+   * contexts
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2245/javascript
    */
   "sonarjs/pseudo-random"?: Rule<[]>;
   /**
    * Public "static" fields should be read-only
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1444/javascript
    */
   "sonarjs/public-static-readonly"?: Rule<[]>;
   /**
    * Temporary files should not be created in publicly writable directories
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5443/javascript
    */
   "sonarjs/publicly-writable-directories"?: Rule<[]>;
   /**
    * "Array.reduce()" calls should include an initial value
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6959/javascript
    */
   "sonarjs/reduce-initial-value"?: Rule<[]>;
   /**
    * Redundant type aliases should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6564/javascript
    */
   "sonarjs/redundant-type-aliases"?: Rule<[]>;
   /**
    * Regular expressions should not be too complicated
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5843/javascript
    */
   "sonarjs/regex-complexity"?: Rule<SonarjsRegexComplexity>;
   /**
    * Wallet phrases should not be hard-coded
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S7639/javascript
    */
   "sonarjs/review-blockchain-mnemonic"?: Rule<[]>;
   /**
    * A new session should be created during user authentication
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5876/javascript
    */
   "sonarjs/session-regeneration"?: Rule<[]>;
   /**
-   * Shorthand object properties should be grouped at the beginning or end of an object declaration
+   * Shorthand object properties should be grouped at the beginning or end of an
+   * object declaration
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3499/javascript
    */
   "sonarjs/shorthand-property-grouping"?: Rule<[]>;
   /**
    * Character classes in regular expressions should not contain only one character
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6397/javascript
    */
   "sonarjs/single-char-in-character-classes"?: Rule<[]>;
   /**
-   * Single-character alternations in regular expressions should be replaced with character classes
+   * Single-character alternations in regular expressions should be replaced with
+   * character classes
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6035/javascript
    */
   "sonarjs/single-character-alternation"?: Rule<[]>;
   /**
    * Regular expressions should not cause catastrophic backtracking
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5852/javascript
    */
   "sonarjs/slow-regex"?: Rule<[]>;
   /**
    * SQL queries should not be dynamically formatted
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2077/javascript
    */
   "sonarjs/sql-queries"?: Rule<[]>;
   /**
    * Tests should be stable
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5973/javascript
    */
   "sonarjs/stable-tests"?: Rule<[]>;
   /**
    * Regular expressions with the global flag should be used with caution
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6351/javascript
    */
   "sonarjs/stateful-regex"?: Rule<[]>;
   /**
    * HTTP Strict-Transport-Security policy should not be disabled
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5739/javascript
    */
   "sonarjs/strict-transport-security"?: Rule<[]>;
   /**
    * Comparison operators should not be used with strings
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3003/javascript
    */
   "sonarjs/strings-comparison"?: Rule<[]>;
   /**
    * Regular expressions should not cause non-linear backtracking
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8786/javascript
    */
   "sonarjs/super-linear-regex"?: Rule<[]>;
   /**
    * Synchronous exception assertions should receive synchronous callbacks
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9072/javascript
    */
   "sonarjs/synchronous-exception-assertions"?: Rule<[]>;
   /**
    * Tests should not be registered asynchronously in suite callbacks
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S8785/javascript
    */
   "sonarjs/synchronous-suite-callback"?: Rule<[]>;
   /**
    * Tables should have headers
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5256/javascript
    */
   "sonarjs/table-header"?: Rule<[]>;
   /**
    * Table cells should reference their headers
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5260/javascript
    */
   "sonarjs/table-header-reference"?: Rule<[]>;
   /**
    * Tests should check which exception is thrown
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5958/javascript
    */
   "sonarjs/test-check-exception"?: Rule<[]>;
   /**
    * Testing Library disappearance waits should use non-throwing queries
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9153/javascript
    */
   "sonarjs/testing-library-prefer-query-by-disappearance"?: Rule<[]>;
   /**
    * Testing Library queries should match presence assertions
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9027/javascript
    */
   "sonarjs/testing-library-query-assertion"?: Rule<[]>;
   /**
    * Track uses of "TODO" tags
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1135/javascript
    */
   "sonarjs/todo-tag"?: Rule<[]>;
   /**
    * Loops should not contain more than a single "break" or "continue" statement
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S135/javascript
    */
   "sonarjs/too-many-break-or-continue-in-loop"?: Rule<[]>;
   /**
-   * Regular expressions using Unicode character classes or property escapes should enable the unicode flag
+   * Regular expressions using Unicode character classes or property escapes
+   * should enable the unicode flag
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5867/javascript
    */
   "sonarjs/unicode-aware-regex"?: Rule<[]>;
   /**
    * Unnecessary imports should be removed
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1128/javascript
    */
   "sonarjs/unused-import"?: Rule<[]>;
   /**
    * Names of regular expressions named groups should be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5860/javascript
    */
   "sonarjs/unused-named-groups"?: Rule<[]>;
   /**
    * Server certificates should be verified during SSL/TLS connections
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4830/javascript
    */
   "sonarjs/unverified-certificate"?: Rule<[]>;
   /**
    * Server hostnames should be verified during SSL/TLS connections
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5527/javascript
    */
   "sonarjs/unverified-hostname"?: Rule<[]>;
   /**
    * "const" variables should not be reassigned
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3500/javascript
    */
   "sonarjs/updated-const-var"?: Rule<[]>;
   /**
    * Loop counters should not be assigned within the loop body
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2310/javascript
    */
   "sonarjs/updated-loop-counter"?: Rule<[]>;
   /**
    * Type aliases should be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4323/javascript
    */
   "sonarjs/use-type-alias"?: Rule<[]>;
   /**
    * Results of operations on strings should not be ignored
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1154/javascript
    * @deprecated
    */
   "sonarjs/useless-string-operation"?: Rule<[]>;
   /**
    * Values not convertible to numbers should not be used in numeric comparisons
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3758/javascript
    */
   "sonarjs/values-not-convertible-to-numbers"?: Rule<[]>;
   /**
    * Variable, property and parameter names should comply with a naming convention
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S117/javascript
    */
   "sonarjs/variable-name"?: Rule<SonarjsVariableName>;
   /**
    * vi.mock should be declared at module scope
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9169/javascript
    */
   "sonarjs/vitest-mock-at-module-scope"?: Rule<[]>;
   /**
    * "void" should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3735/javascript
    */
   "sonarjs/void-use"?: Rule<[]>;
   /**
    * Weak SSL/TLS protocols should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S4423/javascript
    */
   "sonarjs/weak-ssl"?: Rule<[]>;
   /**
    * Web SQL databases should not be used
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2817/javascript
    * @deprecated
    */
   "sonarjs/web-sql-database"?: Rule<[]>;
   /**
    * Web application technologies should not disclose version information
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5689/javascript
    */
   "sonarjs/x-powered-by"?: Rule<[]>;
   /**
    * XML parsers should not be vulnerable to XXE attacks
+   *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2755/javascript
    */
   "sonarjs/xml-parser-xxe"?: Rule<[]>;

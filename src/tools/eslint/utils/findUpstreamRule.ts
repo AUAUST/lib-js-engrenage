@@ -1,5 +1,4 @@
 import { importX } from "eslint-plugin-import-x";
-import jsdocPlugin from "eslint-plugin-jsdoc";
 import perfectionist from "eslint-plugin-perfectionist";
 import sonarjs from "eslint-plugin-sonarjs";
 import unicorn from "eslint-plugin-unicorn";
@@ -13,7 +12,6 @@ import type { RuleModule } from "#tools/eslint/types/RuleModule";
 const upstreamPlugins: Record<string, Plugin> = {
   "@typescript-eslint": typescript,
   "import-x": importX,
-  "jsdoc": jsdocPlugin,
   perfectionist,
   sonarjs,
   unicorn,

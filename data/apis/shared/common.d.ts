@@ -21,9 +21,15 @@ interface AddEventListenerOptions extends EventListenerOptions {
 }
 
 interface GenericTransformStream {
-  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CompressionStream/readable) */
+  /**
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/CompressionStream/readable)
+   */
   readonly readable: ReadableStream;
-  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CompressionStream/writable) */
+  /**
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/CompressionStream/writable)
+   */
   readonly writable: WritableStream;
 }
 
@@ -38,39 +44,58 @@ interface EventListenerOptions {
 }
 
 /**
- * The **`ReadableByteStreamController`** interface of the Streams API represents a controller for a readable byte stream. It allows control of the state and internal queue of a ReadableStream with an underlying byte source, and enables efficient zero-copy transfer of data from the underlying source to a consumer when the stream's internal queue is empty.
+ * The **`ReadableByteStreamController`** interface of the Streams API represents
+ * a controller for a readable byte stream. It allows control of the state and
+ * internal queue of a ReadableStream with an underlying byte source, and enables
+ * efficient zero-copy transfer of data from the underlying source to a consumer
+ * when the stream's internal queue is empty.
  *
- * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableByteStreamController)
+ * [MDN
+ * Reference](https://developer.mozilla.org/docs/Web/API/ReadableByteStreamController)
  */
 interface ReadableByteStreamController {
   /**
-   * The **`byobRequest`** read-only property of the ReadableByteStreamController interface returns the current BYOB request, or null if there are no pending requests.
+   * The **`byobRequest`** read-only property of the ReadableByteStreamController
+   * interface returns the current BYOB request, or null if there are no pending
+   * requests.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableByteStreamController/byobRequest)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableByteStreamController/byobRequest)
    */
   readonly byobRequest: ReadableStreamBYOBRequest | null;
   /**
-   * The **`desiredSize`** read-only property of the ReadableByteStreamController interface returns the number of bytes required to fill the stream's internal queue to its "desired size".
+   * The **`desiredSize`** read-only property of the ReadableByteStreamController
+   * interface returns the number of bytes required to fill the stream's internal
+   * queue to its "desired size".
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableByteStreamController/desiredSize)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableByteStreamController/desiredSize)
    */
   readonly desiredSize: number | null;
   /**
-   * The **`close()`** method of the ReadableByteStreamController interface closes the associated stream.
+   * The **`close()`** method of the ReadableByteStreamController interface closes
+   * the associated stream.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableByteStreamController/close)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableByteStreamController/close)
    */
   close(): void;
   /**
-   * The **`enqueue()`** method of the ReadableByteStreamController interface enqueues a given chunk on the associated readable byte stream (the chunk is transferred into the stream's internal queues).
+   * The **`enqueue()`** method of the ReadableByteStreamController interface
+   * enqueues a given chunk on the associated readable byte stream (the chunk is
+   * transferred into the stream's internal queues).
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableByteStreamController/enqueue)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableByteStreamController/enqueue)
    */
   enqueue(chunk: ArrayBufferView<ArrayBuffer>): void;
   /**
-   * The **`error()`** method of the ReadableByteStreamController interface causes any future interactions with the associated stream to error with the specified reason.
+   * The **`error()`** method of the ReadableByteStreamController interface
+   * causes any future interactions with the associated stream to error with the
+   * specified reason.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableByteStreamController/error)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableByteStreamController/error)
    */
   error(e?: any): void;
 }
@@ -81,51 +106,69 @@ declare var ReadableByteStreamController: {
 };
 
 /**
- * The **`ReadableStream`** interface of the Streams API represents a readable stream of byte data. The Fetch API offers a concrete instance of a ReadableStream through the body property of a Response object.
+ * The **`ReadableStream`** interface of the Streams API represents a readable
+ * stream of byte data. The Fetch API offers a concrete instance of a
+ * ReadableStream through the body property of a Response object.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStream)
  */
 interface ReadableStream<R = any> {
   /**
-   * The **`locked`** read-only property of the ReadableStream interface returns whether or not the readable stream is locked to a reader.
+   * The **`locked`** read-only property of the ReadableStream interface returns
+   * whether or not the readable stream is locked to a reader.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStream/locked)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStream/locked)
    */
   readonly locked: boolean;
   /**
-   * The **`cancel()`** method of the ReadableStream interface returns a Promise that resolves when the stream is canceled.
+   * The **`cancel()`** method of the ReadableStream interface returns a Promise
+   * that resolves when the stream is canceled.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStream/cancel)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStream/cancel)
    */
   cancel(reason?: any): Promise<void>;
   /**
-   * The **`getReader()`** method of the ReadableStream interface creates a reader and locks the stream to it. While the stream is locked, no other reader can be acquired until this one is released.
+   * The **`getReader()`** method of the ReadableStream interface creates a reader
+   * and locks the stream to it. While the stream is locked, no other reader can
+   * be acquired until this one is released.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStream/getReader)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStream/getReader)
    */
   getReader(options: { mode: "byob" }): ReadableStreamBYOBReader;
   getReader(): ReadableStreamDefaultReader<R>;
   getReader(options?: ReadableStreamGetReaderOptions): ReadableStreamReader<R>;
   /**
-   * The **`pipeThrough()`** method of the ReadableStream interface provides a chainable way of piping the current stream through a transform stream or any other writable/readable pair.
+   * The **`pipeThrough()`** method of the ReadableStream interface provides a
+   * chainable way of piping the current stream through a transform stream or any
+   * other writable/readable pair.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStream/pipeThrough)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStream/pipeThrough)
    */
   pipeThrough<T>(
     transform: ReadableWritablePair<T, R>,
     options?: StreamPipeOptions,
   ): ReadableStream<T>;
   /**
-   * The **`pipeTo()`** method of the ReadableStream interface pipes the current ReadableStream to a given WritableStream and returns a Promise that fulfills when the piping process completes successfully, or rejects if any errors were encountered.
+   * The **`pipeTo()`** method of the ReadableStream interface pipes the current
+   * ReadableStream to a given WritableStream and returns a Promise that fulfills
+   * when the piping process completes successfully, or rejects if any errors
+   * were encountered.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStream/pipeTo)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStream/pipeTo)
    */
   pipeTo(
     destination: WritableStream<R>,
     options?: StreamPipeOptions,
   ): Promise<void>;
   /**
-   * The **`tee()`** method of the ReadableStream interface tees the current readable stream, returning a two-element array containing the two resulting branches as new ReadableStream instances.
+   * The **`tee()`** method of the ReadableStream interface tees the current
+   * readable stream, returning a two-element array containing the two resulting
+   * branches as new ReadableStream instances.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStream/tee)
    */
@@ -149,24 +192,37 @@ declare var ReadableStream: {
 };
 
 /**
- * The **`ReadableStreamBYOBReader`** interface of the Streams API defines a reader for a ReadableStream that supports zero-copy reading from an underlying byte source. It is used for efficient copying from underlying sources where the data is delivered as an "anonymous" sequence of bytes, such as files.
+ * The **`ReadableStreamBYOBReader`** interface of the Streams API defines a
+ * reader for a ReadableStream that supports zero-copy reading from an underlying
+ * byte source. It is used for efficient copying from underlying sources where
+ * the data is delivered as an "anonymous" sequence of bytes, such as files.
  *
- * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader)
+ * [MDN
+ * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader)
  */
 interface ReadableStreamBYOBReader extends ReadableStreamGenericReader {
   /**
-   * The **`read()`** method of the ReadableStreamBYOBReader interface is used to read data into a view on a user-supplied buffer from an associated readable byte stream. A request for data will be satisfied from the stream's internal queues if there is any data present. If the stream queues are empty, the request may be supplied as a zero-copy transfer from the underlying byte source.
+   * The **`read()`** method of the ReadableStreamBYOBReader interface is used to
+   * read data into a view on a user-supplied buffer from an associated readable
+   * byte stream. A request for data will be satisfied from the stream's internal
+   * queues if there is any data present. If the stream queues are empty, the
+   * request may be supplied as a zero-copy transfer from the underlying byte
+   * source.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader/read)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader/read)
    */
   read<T extends Exclude<BufferSource, ArrayBuffer>>(
     view: T,
     options?: ReadableStreamBYOBReaderReadOptions,
   ): Promise<ReadableStreamReadResult<T>>;
   /**
-   * The **`releaseLock()`** method of the ReadableStreamBYOBReader interface releases the reader's lock on the stream. After the lock is released, the reader is no longer active.
+   * The **`releaseLock()`** method of the ReadableStreamBYOBReader interface
+   * releases the reader's lock on the stream. After the lock is released, the
+   * reader is no longer active.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader/releaseLock)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader/releaseLock)
    */
   releaseLock(): void;
 }
@@ -179,27 +235,38 @@ declare var ReadableStreamBYOBReader: {
 };
 
 /**
- * The **`ReadableStreamBYOBRequest`** interface of the Streams API represents a "pull request" for data from an underlying source that will made as a zero-copy transfer to a consumer (bypassing the stream's internal queues).
+ * The **`ReadableStreamBYOBRequest`** interface of the Streams API represents a
+ * "pull request" for data from an underlying source that will made as a zero-copy
+ * transfer to a consumer (bypassing the stream's internal queues).
  *
- * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBRequest)
+ * [MDN
+ * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBRequest)
  */
 interface ReadableStreamBYOBRequest {
   /**
-   * The **`view`** getter property of the ReadableStreamBYOBRequest interface returns the current view.
+   * The **`view`** getter property of the ReadableStreamBYOBRequest interface
+   * returns the current view.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBRequest/view)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBRequest/view)
    */
   readonly view: ArrayBufferView<ArrayBuffer> | null;
   /**
-   * The **`respond()`** method of the ReadableStreamBYOBRequest interface is used to signal to the associated readable byte stream that the specified number of bytes were written into the ReadableStreamBYOBRequest.view.
+   * The **`respond()`** method of the ReadableStreamBYOBRequest interface is used
+   * to signal to the associated readable byte stream that the specified number
+   * of bytes were written into the ReadableStreamBYOBRequest.view.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBRequest/respond)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBRequest/respond)
    */
   respond(bytesWritten: number): void;
   /**
-   * The **`respondWithNewView()`** method of the ReadableStreamBYOBRequest interface specifies a new view that the consumer of the associated readable byte stream should write to instead of ReadableStreamBYOBRequest.view.
+   * The **`respondWithNewView()`** method of the ReadableStreamBYOBRequest
+   * interface specifies a new view that the consumer of the associated readable
+   * byte stream should write to instead of ReadableStreamBYOBRequest.view.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBRequest/respondWithNewView)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBRequest/respondWithNewView)
    */
   respondWithNewView(view: ArrayBufferView<ArrayBuffer>): void;
 }
@@ -210,33 +277,45 @@ declare var ReadableStreamBYOBRequest: {
 };
 
 /**
- * The **`ReadableStreamDefaultController`** interface of the Streams API represents a controller allowing control of a ReadableStream's state and internal queue. Default controllers are for streams that are not byte streams.
+ * The **`ReadableStreamDefaultController`** interface of the Streams API
+ * represents a controller allowing control of a ReadableStream's state and
+ * internal queue. Default controllers are for streams that are not byte streams.
  *
- * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultController)
+ * [MDN
+ * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultController)
  */
 interface ReadableStreamDefaultController<R = any> {
   /**
-   * The **`desiredSize`** read-only property of the ReadableStreamDefaultController interface returns the desired size required to fill the stream's internal queue.
+   * The **`desiredSize`** read-only property of the
+   * ReadableStreamDefaultController interface returns the desired size required
+   * to fill the stream's internal queue.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultController/desiredSize)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultController/desiredSize)
    */
   readonly desiredSize: number | null;
   /**
-   * The **`close()`** method of the ReadableStreamDefaultController interface closes the associated stream.
+   * The **`close()`** method of the ReadableStreamDefaultController interface
+   * closes the associated stream.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultController/close)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultController/close)
    */
   close(): void;
   /**
-   * The **`enqueue()`** method of the ReadableStreamDefaultController interface enqueues a given chunk in the associated stream.
+   * The **`enqueue()`** method of the ReadableStreamDefaultController interface
+   * enqueues a given chunk in the associated stream.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultController/enqueue)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultController/enqueue)
    */
   enqueue(chunk: R): void;
   /**
-   * The **`error()`** method of the ReadableStreamDefaultController interface causes any future interactions with the associated stream to error.
+   * The **`error()`** method of the ReadableStreamDefaultController interface
+   * causes any future interactions with the associated stream to error.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultController/error)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultController/error)
    */
   error(e?: any): void;
 }
@@ -247,23 +326,30 @@ declare var ReadableStreamDefaultController: {
 };
 
 /**
- * The **`ReadableStreamDefaultReader`** interface of the Streams API represents a default reader that can be used to read stream data supplied from a network (such as a fetch request).
+ * The **`ReadableStreamDefaultReader`** interface of the Streams API represents
+ * a default reader that can be used to read stream data supplied from a network
+ * (such as a fetch request).
  *
- * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultReader)
+ * [MDN
+ * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultReader)
  */
 interface ReadableStreamDefaultReader<
   R = any,
 > extends ReadableStreamGenericReader {
   /**
-   * The **`read()`** method of the ReadableStreamDefaultReader interface returns a Promise providing access to the next chunk in the stream's internal queue.
+   * The **`read()`** method of the ReadableStreamDefaultReader interface returns
+   * a Promise providing access to the next chunk in the stream's internal queue.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultReader/read)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultReader/read)
    */
   read(): Promise<ReadableStreamReadResult<R>>;
   /**
-   * The **`releaseLock()`** method of the ReadableStreamDefaultReader interface releases the reader's lock on the stream.
+   * The **`releaseLock()`** method of the ReadableStreamDefaultReader interface
+   * releases the reader's lock on the stream.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultReader/releaseLock)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultReader/releaseLock)
    */
   releaseLock(): void;
 }
@@ -274,9 +360,15 @@ declare var ReadableStreamDefaultReader: {
 };
 
 interface ReadableStreamGenericReader {
-  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader/closed) */
+  /**
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader/closed)
+   */
   readonly closed: Promise<void>;
-  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader/cancel) */
+  /**
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader/cancel)
+   */
   cancel(reason?: any): Promise<void>;
 }
 
@@ -284,7 +376,8 @@ interface TextDecoderCommon {
   /**
    * Returns encoding's name, lowercased.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextDecoder/encoding)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/TextDecoder/encoding)
    */
   readonly encoding: string;
   /**
@@ -296,7 +389,8 @@ interface TextDecoderCommon {
   /**
    * Returns the value of ignore BOM.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextDecoder/ignoreBOM)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/TextDecoder/ignoreBOM)
    */
   readonly ignoreBOM: boolean;
 }
@@ -305,39 +399,55 @@ interface TextEncoderCommon {
   /**
    * Returns "utf-8".
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextEncoder/encoding)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/TextEncoder/encoding)
    */
   readonly encoding: string;
 }
 
 /**
- * The **`WritableStream`** interface of the Streams API provides a standard abstraction for writing streaming data to a destination, known as a sink. This object comes with built-in backpressure and queuing.
+ * The **`WritableStream`** interface of the Streams API provides a standard
+ * abstraction for writing streaming data to a destination, known as a sink. This
+ * object comes with built-in backpressure and queuing.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStream)
  */
 interface WritableStream<W = any> {
   /**
-   * The **`locked`** read-only property of the WritableStream interface returns a boolean indicating whether the WritableStream is locked to a writer.
+   * The **`locked`** read-only property of the WritableStream interface returns
+   * a boolean indicating whether the WritableStream is locked to a writer.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStream/locked)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStream/locked)
    */
   readonly locked: boolean;
   /**
-   * The **`abort()`** method of the WritableStream interface aborts the stream, signaling that the producer can no longer successfully write to the stream and it is to be immediately moved to an error state, with any queued writes discarded.
+   * The **`abort()`** method of the WritableStream interface aborts the stream,
+   * signaling that the producer can no longer successfully write to the stream
+   * and it is to be immediately moved to an error state, with any queued writes
+   * discarded.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStream/abort)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStream/abort)
    */
   abort(reason?: any): Promise<void>;
   /**
-   * The **`close()`** method of the WritableStream interface closes the associated stream. All chunks written before this method is called are sent before the returned promise is fulfilled.
+   * The **`close()`** method of the WritableStream interface closes the associated
+   * stream. All chunks written before this method is called are sent before the
+   * returned promise is fulfilled.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStream/close)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStream/close)
    */
   close(): Promise<void>;
   /**
-   * The **`getWriter()`** method of the WritableStream interface returns a new instance of WritableStreamDefaultWriter and locks the stream to that instance. While the stream is locked, no other writer can be acquired until this one is released.
+   * The **`getWriter()`** method of the WritableStream interface returns a
+   * new instance of WritableStreamDefaultWriter and locks the stream to that
+   * instance. While the stream is locked, no other writer can be acquired until
+   * this one is released.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStream/getWriter)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStream/getWriter)
    */
   getWriter(): WritableStreamDefaultWriter<W>;
 }
@@ -351,21 +461,29 @@ declare var WritableStream: {
 };
 
 /**
- * The **`WritableStreamDefaultController`** interface of the Streams API represents a controller allowing control of a WritableStream's state. When constructing a WritableStream, the underlying sink is given a corresponding WritableStreamDefaultController instance to manipulate.
+ * The **`WritableStreamDefaultController`** interface of the Streams API
+ * represents a controller allowing control of a WritableStream's state. When
+ * constructing a WritableStream, the underlying sink is given a corresponding
+ * WritableStreamDefaultController instance to manipulate.
  *
- * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultController)
+ * [MDN
+ * Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultController)
  */
 interface WritableStreamDefaultController {
   /**
-   * The read-only **`signal`** property of the WritableStreamDefaultController interface returns the AbortSignal associated with the controller.
+   * The read-only **`signal`** property of the WritableStreamDefaultController
+   * interface returns the AbortSignal associated with the controller.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultController/signal)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultController/signal)
    */
   readonly signal: AbortSignal;
   /**
-   * The **`error()`** method of the WritableStreamDefaultController interface causes any future interactions with the associated stream to error.
+   * The **`error()`** method of the WritableStreamDefaultController interface
+   * causes any future interactions with the associated stream to error.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultController/error)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultController/error)
    */
   error(e?: any): void;
 }
@@ -376,51 +494,80 @@ declare var WritableStreamDefaultController: {
 };
 
 /**
- * The **`WritableStreamDefaultWriter`** interface of the Streams API is the object returned by WritableStream.getWriter() and once created locks the writer to the WritableStream ensuring that no other streams can write to the underlying sink.
+ * The **`WritableStreamDefaultWriter`** interface of the Streams API is the object
+ * returned by WritableStream.getWriter() and once created locks the writer to
+ * the WritableStream ensuring that no other streams can write to the underlying
+ * sink.
  *
- * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter)
+ * [MDN
+ * Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter)
  */
 interface WritableStreamDefaultWriter<W = any> {
   /**
-   * The **`closed`** read-only property of the WritableStreamDefaultWriter interface returns a Promise that fulfills if the stream becomes closed, or rejects if the stream errors or the writer's lock is released.
+   * The **`closed`** read-only property of the WritableStreamDefaultWriter
+   * interface returns a Promise that fulfills if the stream becomes closed, or
+   * rejects if the stream errors or the writer's lock is released.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/closed)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/closed)
    */
   readonly closed: Promise<void>;
   /**
-   * The **`desiredSize`** read-only property of the WritableStreamDefaultWriter interface returns the desired size required to fill the stream's internal queue.
+   * The **`desiredSize`** read-only property of the WritableStreamDefaultWriter
+   * interface returns the desired size required to fill the stream's internal
+   * queue.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/desiredSize)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/desiredSize)
    */
   readonly desiredSize: number | null;
   /**
-   * The **`ready`** read-only property of the WritableStreamDefaultWriter interface returns a Promise that resolves when the desired size of the stream's internal queue transitions from non-positive to positive, signaling that it is no longer applying backpressure.
+   * The **`ready`** read-only property of the WritableStreamDefaultWriter
+   * interface returns a Promise that resolves when the desired size of the
+   * stream's internal queue transitions from non-positive to positive, signaling
+   * that it is no longer applying backpressure.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/ready)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/ready)
    */
   readonly ready: Promise<void>;
   /**
-   * The **`abort()`** method of the WritableStreamDefaultWriter interface aborts the stream, signaling that the producer can no longer successfully write to the stream and it is to be immediately moved to an error state, with any queued writes discarded.
+   * The **`abort()`** method of the WritableStreamDefaultWriter interface aborts
+   * the stream, signaling that the producer can no longer successfully write to
+   * the stream and it is to be immediately moved to an error state, with any
+   * queued writes discarded.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/abort)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/abort)
    */
   abort(reason?: any): Promise<void>;
   /**
-   * The **`close()`** method of the WritableStreamDefaultWriter interface closes the associated writable stream.
+   * The **`close()`** method of the WritableStreamDefaultWriter interface closes
+   * the associated writable stream.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/close)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/close)
    */
   close(): Promise<void>;
   /**
-   * The **`releaseLock()`** method of the WritableStreamDefaultWriter interface releases the writer's lock on the corresponding stream. After the lock is released, the writer is no longer active. If the associated stream is errored when the lock is released, the writer will appear errored in the same way from now on; otherwise, the writer will appear closed.
+   * The **`releaseLock()`** method of the WritableStreamDefaultWriter interface
+   * releases the writer's lock on the corresponding stream. After the lock is
+   * released, the writer is no longer active. If the associated stream is errored
+   * when the lock is released, the writer will appear errored in the same way
+   * from now on; otherwise, the writer will appear closed.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/releaseLock)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/releaseLock)
    */
   releaseLock(): void;
   /**
-   * The **`write()`** method of the WritableStreamDefaultWriter interface writes a passed chunk of data to a WritableStream and its underlying sink, then returns a Promise that resolves to indicate the success or failure of the write operation.
+   * The **`write()`** method of the WritableStreamDefaultWriter interface writes
+   * a passed chunk of data to a WritableStream and its underlying sink, then
+   * returns a Promise that resolves to indicate the success or failure of the
+   * write operation.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/write)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter/write)
    */
   write(chunk?: W): Promise<void>;
 }
@@ -521,7 +668,12 @@ interface ReadableStreamGetReaderOptions {
   /**
    * Creates a ReadableStreamBYOBReader and locks the stream to the new reader.
    *
-   * This call behaves the same way as the no-argument variant, except that it only works on readable byte streams, i.e. streams which were constructed specifically with the ability to handle "bring your own buffer" reading. The returned BYOB reader provides the ability to directly read individual chunks from the stream via its read() method, into developer-supplied buffers, allowing more precise control over allocation.
+   * This call behaves the same way as the no-argument variant, except that it
+   * only works on readable byte streams, i.e. streams which were constructed
+   * specifically with the ability to handle "bring your own buffer" reading. The
+   * returned BYOB reader provides the ability to directly read individual chunks
+   * from the stream via its read() method, into developer-supplied buffers,
+   * allowing more precise control over allocation.
    */
   mode?: ReadableStreamReaderMode;
 }
@@ -530,9 +682,13 @@ interface ReadableStreamIteratorOptions {
   /**
    * Asynchronously iterates over the chunks in the stream's internal queue.
    *
-   * Asynchronously iterating over the stream will lock it, preventing any other consumer from acquiring a reader. The lock will be released if the async iterator's return() method is called, e.g. by breaking out of the loop.
+   * Asynchronously iterating over the stream will lock it, preventing any other
+   * consumer from acquiring a reader. The lock will be released if the async
+   * iterator's return() method is called, e.g. by breaking out of the loop.
    *
-   * By default, calling the async iterator's return() method will also cancel the stream. To prevent this, use the stream's values() method, passing true for the preventCancel option.
+   * By default, calling the async iterator's return() method will also cancel
+   * the stream. To prevent this, use the stream's values() method, passing true
+   * for the preventCancel option.
    */
   preventCancel?: boolean;
 }
@@ -550,9 +706,13 @@ interface ReadableStreamReadValueResult<T> {
 interface ReadableWritablePair<R = any, W = any> {
   readable: ReadableStream<R>;
   /**
-   * Provides a convenient, chainable way of piping this readable stream through a transform stream (or any other { writable, readable } pair). It simply pipes the stream into the writable side of the supplied pair, and returns the readable side for further use.
+   * Provides a convenient, chainable way of piping this readable stream through
+   * a transform stream (or any other { writable, readable } pair). It simply
+   * pipes the stream into the writable side of the supplied pair, and returns
+   * the readable side for further use.
    *
-   * Piping a stream will lock it for the duration of the pipe, preventing any other consumer from acquiring a reader.
+   * Piping a stream will lock it for the duration of the pipe, preventing any
+   * other consumer from acquiring a reader.
    */
   writable: WritableStream<W>;
 }
@@ -561,21 +721,41 @@ interface StreamPipeOptions {
   preventAbort?: boolean;
   preventCancel?: boolean;
   /**
-   * Pipes this readable stream to a given writable stream destination. The way in which the piping process behaves under various error conditions can be customized with a number of passed options. It returns a promise that fulfills when the piping process completes successfully, or rejects if any errors were encountered.
+   * Pipes this readable stream to a given writable stream destination. The way
+   * in which the piping process behaves under various error conditions can
+   * be customized with a number of passed options. It returns a promise that
+   * fulfills when the piping process completes successfully, or rejects if any
+   * errors were encountered.
    *
-   * Piping a stream will lock it for the duration of the pipe, preventing any other consumer from acquiring a reader.
+   * Piping a stream will lock it for the duration of the pipe, preventing any
+   * other consumer from acquiring a reader.
    *
-   * Errors and closures of the source and destination streams propagate as follows:
+   * Errors and closures of the source and destination streams propagate as
+   * follows:
    *
-   * An error in this source readable stream will abort destination, unless preventAbort is truthy. The returned promise will be rejected with the source's error, or with any error that occurs during aborting the destination.
+   * An error in this source readable stream will abort destination, unless
+   * preventAbort is truthy. The returned promise will be rejected with the
+   * source's error, or with any error that occurs during aborting the destination.
    *
-   * An error in destination will cancel this source readable stream, unless preventCancel is truthy. The returned promise will be rejected with the destination's error, or with any error that occurs during canceling the source.
+   * An error in destination will cancel this source readable stream, unless
+   * preventCancel is truthy. The returned promise will be rejected with the
+   * destination's error, or with any error that occurs during canceling the
+   * source.
    *
-   * When this source readable stream closes, destination will be closed, unless preventClose is truthy. The returned promise will be fulfilled once this process completes, unless an error is encountered while closing the destination, in which case it will be rejected with that error.
+   * When this source readable stream closes, destination will be closed,
+   * unless preventClose is truthy. The returned promise will be fulfilled once
+   * this process completes, unless an error is encountered while closing the
+   * destination, in which case it will be rejected with that error.
    *
-   * If destination starts out closed or closing, this source readable stream will be canceled, unless preventCancel is true. The returned promise will be rejected with an error indicating piping to a closed stream failed, or with any error that occurs during canceling the source.
+   * If destination starts out closed or closing, this source readable stream
+   * will be canceled, unless preventCancel is true. The returned promise will be
+   * rejected with an error indicating piping to a closed stream failed, or with
+   * any error that occurs during canceling the source.
    *
-   * The signal option can be set to an AbortSignal to allow aborting an ongoing pipe operation via the corresponding AbortController. In this case, this source readable stream will be canceled, and destination aborted, unless the respective options preventCancel or preventAbort are set.
+   * The signal option can be set to an AbortSignal to allow aborting an ongoing
+   * pipe operation via the corresponding AbortController. In this case, this
+   * source readable stream will be canceled, and destination aborted, unless the
+   * respective options preventCancel or preventAbort are set.
    */
   preventClose?: boolean;
   signal?: AbortSignal;
@@ -624,29 +804,40 @@ interface AbortSignalEventMap {
 }
 
 /**
- * The **`AbortSignal`** interface represents a signal object that allows you to communicate with an asynchronous operation (such as a fetch request) and abort it if required via an AbortController object.
+ * The **`AbortSignal`** interface represents a signal object that allows you to
+ * communicate with an asynchronous operation (such as a fetch request) and abort
+ * it if required via an AbortController object.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal)
  */
 interface AbortSignal extends EventTarget {
   /**
-   * The **`aborted`** read-only property returns a value that indicates whether the asynchronous operations the signal is communicating with are aborted (true) or not (false).
+   * The **`aborted`** read-only property returns a value that indicates whether
+   * the asynchronous operations the signal is communicating with are aborted
+   * (true) or not (false).
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/aborted)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/aborted)
    */
   readonly aborted: boolean;
-  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/abort_event) */
+  /**
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/abort_event)
+   */
   onabort: ((this: AbortSignal, ev: Event) => any) | null;
   /**
-   * The **`reason`** read-only property returns a JavaScript value that indicates the abort reason.
+   * The **`reason`** read-only property returns a JavaScript value that indicates
+   * the abort reason.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/reason)
    */
   readonly reason: any;
   /**
-   * The **`throwIfAborted()`** method throws the signal's abort reason if the signal has been aborted; otherwise it does nothing.
+   * The **`throwIfAborted()`** method throws the signal's abort reason if the
+   * signal has been aborted; otherwise it does nothing.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/throwIfAborted)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/throwIfAborted)
    */
   throwIfAborted(): void;
   addEventListener<K extends keyof AbortSignalEventMap>(
@@ -675,21 +866,30 @@ declare var AbortSignal: {
   prototype: AbortSignal;
   new (): AbortSignal;
   /**
-   * The **`AbortSignal.abort()`** static method returns an AbortSignal that is already set as aborted (and which does not trigger an abort event).
+   * The **`AbortSignal.abort()`** static method returns an AbortSignal that is
+   * already set as aborted (and which does not trigger an abort event).
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/abort_static)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/abort_static)
    */
   abort(reason?: any): AbortSignal;
   /**
-   * The **`AbortSignal.any()`** static method takes an iterable of abort signals and returns an AbortSignal. The returned abort signal is aborted when any of the input iterable abort signals are aborted. The abort reason will be set to the reason of the first signal that is aborted. If any of the given abort signals are already aborted then so will be the returned AbortSignal.
+   * The **`AbortSignal.any()`** static method takes an iterable of abort signals
+   * and returns an AbortSignal. The returned abort signal is aborted when any of
+   * the input iterable abort signals are aborted. The abort reason will be set
+   * to the reason of the first signal that is aborted. If any of the given abort
+   * signals are already aborted then so will be the returned AbortSignal.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/any_static)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/any_static)
    */
   any(signals: AbortSignal[]): AbortSignal;
   /**
-   * The **`AbortSignal.timeout()`** static method returns an AbortSignal that will automatically abort after a specified time.
+   * The **`AbortSignal.timeout()`** static method returns an AbortSignal that
+   * will automatically abort after a specified time.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/timeout_static)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/AbortSignal/timeout_static)
    */
   timeout(milliseconds: number): AbortSignal;
 };
@@ -700,49 +900,59 @@ interface BlobPropertyBag {
 }
 
 /**
- * The **`Blob`** interface represents a blob, which is a file-like object of immutable, raw data; they can be read as text or binary data, or converted into a ReadableStream so its methods can be used for processing the data.
+ * The **`Blob`** interface represents a blob, which is a file-like object of
+ * immutable, raw data; they can be read as text or binary data, or converted
+ * into a ReadableStream so its methods can be used for processing the data.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Blob)
  */
 interface Blob {
   /**
-   * The **`size`** read-only property of the Blob interface returns the size of the Blob or File in bytes.
+   * The **`size`** read-only property of the Blob interface returns the size of
+   * the Blob or File in bytes.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Blob/size)
    */
   readonly size: number;
   /**
-   * The **`type`** read-only property of the Blob interface returns the MIME type of the file.
+   * The **`type`** read-only property of the Blob interface returns the MIME
+   * type of the file.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Blob/type)
    */
   readonly type: string;
   /**
-   * The **`arrayBuffer()`** method of the Blob interface returns a Promise that resolves with the contents of the blob as binary data contained in an ArrayBuffer.
+   * The **`arrayBuffer()`** method of the Blob interface returns a Promise
+   * that resolves with the contents of the blob as binary data contained in an
+   * ArrayBuffer.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Blob/arrayBuffer)
    */
   arrayBuffer(): Promise<ArrayBuffer>;
   /**
-   * The **`bytes()`** method of the Blob interface returns a Promise that resolves with a Uint8Array containing the contents of the blob as an array of bytes.
+   * The **`bytes()`** method of the Blob interface returns a Promise that resolves
+   * with a Uint8Array containing the contents of the blob as an array of bytes.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Blob/bytes)
    */
   bytes(): Promise<Uint8Array<ArrayBuffer>>;
   /**
-   * The **`slice()`** method of the Blob interface creates and returns a new Blob object which contains data from a subset of the blob on which it's called.
+   * The **`slice()`** method of the Blob interface creates and returns a new Blob
+   * object which contains data from a subset of the blob on which it's called.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Blob/slice)
    */
   slice(start?: number, end?: number, contentType?: string): Blob;
   /**
-   * The **`stream()`** method of the Blob interface returns a ReadableStream which upon reading returns the data contained within the Blob.
+   * The **`stream()`** method of the Blob interface returns a ReadableStream
+   * which upon reading returns the data contained within the Blob.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Blob/stream)
    */
   stream(): ReadableStream<Uint8Array<ArrayBuffer>>;
   /**
-   * The **`text()`** method of the Blob interface returns a Promise that resolves with a string containing the contents of the blob, interpreted as UTF-8.
+   * The **`text()`** method of the Blob interface returns a Promise that resolves
+   * with a string containing the contents of the blob, interpreted as UTF-8.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Blob/text)
    */
@@ -755,121 +965,171 @@ declare var Blob: {
 };
 
 /**
- * The **`Event`** interface represents an event which takes place on an EventTarget.
+ * The **`Event`** interface represents an event which takes place on an
+ * EventTarget.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event)
  */
 interface Event {
   /**
-   * The **`bubbles`** read-only property of the Event interface indicates whether the event bubbles up through the DOM tree or not.
+   * The **`bubbles`** read-only property of the Event interface indicates whether
+   * the event bubbles up through the DOM tree or not.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/bubbles)
    */
   readonly bubbles: boolean;
   /**
-   * The **`cancelBubble`** property of the Event interface is deprecated. Use Event.stopPropagation() instead. Setting its value to true before returning from an event handler prevents propagation of the event. In later implementations, setting this to false does nothing. See Browser compatibility for details.
+   * The **`cancelBubble`** property of the Event interface is deprecated.
+   * Use Event.stopPropagation() instead. Setting its value to true before
+   * returning from an event handler prevents propagation of the event. In later
+   * implementations, setting this to false does nothing. See Browser compatibility
+   * for details.
+   *
    * @deprecated
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/cancelBubble)
    */
   cancelBubble: boolean;
   /**
-   * The **`cancelable`** read-only property of the Event interface indicates whether the event can be canceled, and therefore prevented as if the event never happened.
+   * The **`cancelable`** read-only property of the Event interface indicates
+   * whether the event can be canceled, and therefore prevented as if the event
+   * never happened.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/cancelable)
    */
   readonly cancelable: boolean;
   /**
-   * The read-only **`composed`** property of the Event interface returns a boolean value which indicates whether or not the event will propagate across the shadow DOM boundary into the standard DOM.
+   * The read-only **`composed`** property of the Event interface returns a
+   * boolean value which indicates whether or not the event will propagate across
+   * the shadow DOM boundary into the standard DOM.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/composed)
    */
   readonly composed: boolean;
   /**
-   * The **`currentTarget`** read-only property of the Event interface identifies the element to which the event handler has been attached.
+   * The **`currentTarget`** read-only property of the Event interface identifies
+   * the element to which the event handler has been attached.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/currentTarget)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/Event/currentTarget)
    */
   readonly currentTarget: EventTarget | null;
   /**
-   * The **`defaultPrevented`** read-only property of the Event interface returns a boolean value indicating whether or not the call to Event.preventDefault() canceled the event.
+   * The **`defaultPrevented`** read-only property of the Event interface returns
+   * a boolean value indicating whether or not the call to Event.preventDefault()
+   * canceled the event.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/defaultPrevented)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/Event/defaultPrevented)
    */
   readonly defaultPrevented: boolean;
   /**
-   * The **`eventPhase`** read-only property of the Event interface indicates which phase of the event flow is currently being evaluated.
+   * The **`eventPhase`** read-only property of the Event interface indicates
+   * which phase of the event flow is currently being evaluated.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/eventPhase)
    */
   readonly eventPhase: number;
   /**
-   * The **`isTrusted`** read-only property of the Event interface is a boolean value that is true when the event was generated by the user agent (including via user actions and programmatic methods such as HTMLElement.focus()), and false when the event was dispatched via EventTarget.dispatchEvent(). The only exception is the click event, which initializes the isTrusted property to false in user agents.
+   * The **`isTrusted`** read-only property of the Event interface is a boolean
+   * value that is true when the event was generated by the user agent (including
+   * via user actions and programmatic methods such as HTMLElement.focus()), and
+   * false when the event was dispatched via EventTarget.dispatchEvent(). The
+   * only exception is the click event, which initializes the isTrusted property
+   * to false in user agents.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/isTrusted)
    */
   readonly isTrusted: boolean;
   /**
-   * The Event property **`returnValue`** indicates whether the default action for this event has been prevented or not.
+   * The Event property **`returnValue`** indicates whether the default action
+   * for this event has been prevented or not.
+   *
    * @deprecated
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/returnValue)
    */
   returnValue: boolean;
   /**
-   * The deprecated **`Event.srcElement`** is an alias for the Event.target property. Use Event.target instead.
+   * The deprecated **`Event.srcElement`** is an alias for the Event.target
+   * property. Use Event.target instead.
+   *
    * @deprecated
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/srcElement)
    */
   readonly srcElement: EventTarget | null;
   /**
-   * The read-only **`target`** property of the Event interface is a reference to the object onto which the event was dispatched. It is different from Event.currentTarget when the event handler is called during the bubbling or capturing phase of the event.
+   * The read-only **`target`** property of the Event interface is a reference
+   * to the object onto which the event was dispatched. It is different from
+   * Event.currentTarget when the event handler is called during the bubbling or
+   * capturing phase of the event.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/target)
    */
   readonly target: EventTarget | null;
   /**
-   * The **`timeStamp`** read-only property of the Event interface returns the time (in milliseconds) at which the event was created.
+   * The **`timeStamp`** read-only property of the Event interface returns the
+   * time (in milliseconds) at which the event was created.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/timeStamp)
    */
   readonly timeStamp: DOMHighResTimeStamp;
   /**
-   * The **`type`** read-only property of the Event interface returns a string containing the event's type. It is set when the event is constructed and is the name commonly used to refer to the specific event, such as click, load, or error.
+   * The **`type`** read-only property of the Event interface returns a string
+   * containing the event's type. It is set when the event is constructed and is
+   * the name commonly used to refer to the specific event, such as click, load,
+   * or error.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/type)
    */
   readonly type: string;
   /**
-   * The **`composedPath()`** method of the Event interface returns the event's path which is an array of the objects on which listeners will be invoked. This does not include nodes in shadow trees if the shadow root was created with its ShadowRoot.mode closed.
+   * The **`composedPath()`** method of the Event interface returns the event's
+   * path which is an array of the objects on which listeners will be invoked.
+   * This does not include nodes in shadow trees if the shadow root was created
+   * with its ShadowRoot.mode closed.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/composedPath)
    */
   composedPath(): EventTarget[];
   /**
-   * The **`Event.initEvent()`** method is used to initialize the value of an event created using Document.createEvent().
+   * The **`Event.initEvent()`** method is used to initialize the value of an
+   * event created using Document.createEvent().
+   *
    * @deprecated
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/initEvent)
    */
   initEvent(type: string, bubbles?: boolean, cancelable?: boolean): void;
   /**
-   * The **`preventDefault()`** method of the Event interface tells the user agent that the event is being explicitly handled, so its default action, such as page scrolling, link navigation, or pasting text, should not be taken.
+   * The **`preventDefault()`** method of the Event interface tells the user agent
+   * that the event is being explicitly handled, so its default action, such as
+   * page scrolling, link navigation, or pasting text, should not be taken.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/preventDefault)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/Event/preventDefault)
    */
   preventDefault(): void;
   /**
-   * The **`stopImmediatePropagation()`** method of the Event interface prevents other listeners of the same event from being called.
+   * The **`stopImmediatePropagation()`** method of the Event interface prevents
+   * other listeners of the same event from being called.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/stopImmediatePropagation)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/Event/stopImmediatePropagation)
    */
   stopImmediatePropagation(): void;
   /**
-   * The **`stopPropagation()`** method of the Event interface prevents further propagation of the current event in the capturing and bubbling phases. It does not, however, prevent any default behaviors from occurring; for instance, clicks on links are still processed. If you want to stop those behaviors, see the preventDefault() method. It also does not prevent propagation to other event-handlers of the current element. If you want to stop those, see stopImmediatePropagation().
+   * The **`stopPropagation()`** method of the Event interface prevents further
+   * propagation of the current event in the capturing and bubbling phases. It does
+   * not, however, prevent any default behaviors from occurring; for instance,
+   * clicks on links are still processed. If you want to stop those behaviors,
+   * see the preventDefault() method. It also does not prevent propagation to
+   * other event-handlers of the current element. If you want to stop those, see
+   * stopImmediatePropagation().
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Event/stopPropagation)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/Event/stopPropagation)
    */
   stopPropagation(): void;
   readonly NONE: 0;
@@ -896,15 +1156,20 @@ interface EventListenerObject {
 }
 
 /**
- * The **`EventTarget`** interface is implemented by objects that can receive events and may have listeners for them. In other words, any target of events implements the three methods associated with this interface.
+ * The **`EventTarget`** interface is implemented by objects that can receive
+ * events and may have listeners for them. In other words, any target of events
+ * implements the three methods associated with this interface.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/EventTarget)
  */
 interface EventTarget {
   /**
-   * The **`addEventListener()`** method of the EventTarget interface sets up a function that will be called whenever the specified event is delivered to the target.
+   * The **`addEventListener()`** method of the EventTarget interface sets up a
+   * function that will be called whenever the specified event is delivered to
+   * the target.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/EventTarget/addEventListener)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/EventTarget/addEventListener)
    */
   addEventListener(
     type: string,
@@ -912,15 +1177,26 @@ interface EventTarget {
     options?: AddEventListenerOptions | boolean,
   ): void;
   /**
-   * The **`dispatchEvent()`** method of the EventTarget sends an Event to the object, (synchronously) invoking the affected event listeners in the appropriate order. The normal event processing rules (including the capturing and optional bubbling phase) also apply to events dispatched manually with dispatchEvent().
+   * The **`dispatchEvent()`** method of the EventTarget sends an Event to
+   * the object, (synchronously) invoking the affected event listeners in the
+   * appropriate order. The normal event processing rules (including the capturing
+   * and optional bubbling phase) also apply to events dispatched manually with
+   * dispatchEvent().
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/EventTarget/dispatchEvent)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/EventTarget/dispatchEvent)
    */
   dispatchEvent(event: Event): boolean;
   /**
-   * The **`removeEventListener()`** method of the EventTarget interface removes an event listener previously registered with EventTarget.addEventListener() from the target. The event listener to be removed is identified using a combination of the event type, the event listener function itself, and various optional options that may affect the matching process; see Matching event listeners for removal.
+   * The **`removeEventListener()`** method of the EventTarget interface removes
+   * an event listener previously registered with EventTarget.addEventListener()
+   * from the target. The event listener to be removed is identified using a
+   * combination of the event type, the event listener function itself, and
+   * various optional options that may affect the matching process; see Matching
+   * event listeners for removal.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/EventTarget/removeEventListener)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/EventTarget/removeEventListener)
    */
   removeEventListener(
     type: string,

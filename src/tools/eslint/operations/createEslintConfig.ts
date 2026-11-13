@@ -1,4 +1,3 @@
-import jsdocPlugin from "eslint-plugin-jsdoc";
 import packageJson from "eslint-plugin-package-json";
 import perfectionist from "eslint-plugin-perfectionist";
 import sonarjs from "eslint-plugin-sonarjs";
@@ -160,7 +159,6 @@ export async function createEslintConfig(
           ? {}
           : { [rolesPluginName]: roleRules.plugin }),
         "package-json": packageJson,
-        "jsdoc": jsdocPlugin,
         perfectionist,
         sonarjs,
         unicorn,

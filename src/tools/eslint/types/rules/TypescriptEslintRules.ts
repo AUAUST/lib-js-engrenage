@@ -5,690 +5,851 @@ import type { Rule } from "#tools/eslint/types/Rule";
 export interface TypescriptEslintRules {
   /**
    * Require that function overload signatures be consecutive
+   *
    * @see https://typescript-eslint.io/rules/adjacent-overload-signatures
    */
   "@typescript-eslint/adjacent-overload-signatures"?: Rule<[]>;
   /**
    * Require consistently using either `T[]` or `Array<T>` for arrays
+   *
    * @see https://typescript-eslint.io/rules/array-type
    */
   "@typescript-eslint/array-type"?: Rule<TypescriptEslintArrayType>;
   /**
    * Disallow awaiting a value that is not a Thenable
+   *
    * @see https://typescript-eslint.io/rules/await-thenable
    */
   "@typescript-eslint/await-thenable"?: Rule<TypescriptEslintAwaitThenable>;
   /**
    * Disallow `@ts-<directive>` comments or require descriptions after directives
+   *
    * @see https://typescript-eslint.io/rules/ban-ts-comment
    */
   "@typescript-eslint/ban-ts-comment"?: Rule<TypescriptEslintBanTsComment>;
   /**
    * Disallow `// tslint:<rule-flag>` comments
+   *
    * @see https://typescript-eslint.io/rules/ban-tslint-comment
    */
   "@typescript-eslint/ban-tslint-comment"?: Rule<[]>;
   /**
    * Enforce that literals on classes are exposed in a consistent style
+   *
    * @see https://typescript-eslint.io/rules/class-literal-property-style
    */
   "@typescript-eslint/class-literal-property-style"?: Rule<TypescriptEslintClassLiteralPropertyStyle>;
   /**
    * Enforce that class methods utilize `this`
+   *
    * @see https://typescript-eslint.io/rules/class-methods-use-this
    */
   "@typescript-eslint/class-methods-use-this"?: Rule<TypescriptEslintClassMethodsUseThis>;
   /**
-   * Enforce specifying generic type arguments on type annotation or constructor name of a constructor call
+   * Enforce specifying generic type arguments on type annotation or constructor
+   * name of a constructor call
+   *
    * @see https://typescript-eslint.io/rules/consistent-generic-constructors
    */
   "@typescript-eslint/consistent-generic-constructors"?: Rule<TypescriptEslintConsistentGenericConstructors>;
   /**
    * Require or disallow the `Record` type
+   *
    * @see https://typescript-eslint.io/rules/consistent-indexed-object-style
    */
   "@typescript-eslint/consistent-indexed-object-style"?: Rule<TypescriptEslintConsistentIndexedObjectStyle>;
   /**
    * Require `return` statements to either always or never specify values
+   *
    * @see https://typescript-eslint.io/rules/consistent-return
    */
   "@typescript-eslint/consistent-return"?: Rule<TypescriptEslintConsistentReturn>;
   /**
    * Enforce consistent usage of type assertions
+   *
    * @see https://typescript-eslint.io/rules/consistent-type-assertions
    */
   "@typescript-eslint/consistent-type-assertions"?: Rule<TypescriptEslintConsistentTypeAssertions>;
   /**
    * Enforce type definitions to consistently use either `interface` or `type`
+   *
    * @see https://typescript-eslint.io/rules/consistent-type-definitions
    */
   "@typescript-eslint/consistent-type-definitions"?: Rule<TypescriptEslintConsistentTypeDefinitions>;
   /**
    * Enforce consistent usage of type exports
+   *
    * @see https://typescript-eslint.io/rules/consistent-type-exports
    */
   "@typescript-eslint/consistent-type-exports"?: Rule<TypescriptEslintConsistentTypeExports>;
   /**
    * Enforce consistent usage of type imports
+   *
    * @see https://typescript-eslint.io/rules/consistent-type-imports
    */
   "@typescript-eslint/consistent-type-imports"?: Rule<TypescriptEslintConsistentTypeImports>;
   /**
    * Enforce default parameters to be last
+   *
    * @see https://typescript-eslint.io/rules/default-param-last
    */
   "@typescript-eslint/default-param-last"?: Rule<[]>;
   /**
    * Enforce dot notation whenever possible
+   *
    * @see https://typescript-eslint.io/rules/dot-notation
    */
   "@typescript-eslint/dot-notation"?: Rule<TypescriptEslintDotNotation>;
   /**
    * Require explicit return types on functions and class methods
+   *
    * @see https://typescript-eslint.io/rules/explicit-function-return-type
    */
   "@typescript-eslint/explicit-function-return-type"?: Rule<TypescriptEslintExplicitFunctionReturnType>;
   /**
    * Require explicit accessibility modifiers on class properties and methods
+   *
    * @see https://typescript-eslint.io/rules/explicit-member-accessibility
    */
   "@typescript-eslint/explicit-member-accessibility"?: Rule<TypescriptEslintExplicitMemberAccessibility>;
   /**
-   * Require explicit return and argument types on exported functions' and classes' public class methods
+   * Require explicit return and argument types on exported functions' and classes'
+   * public class methods
+   *
    * @see https://typescript-eslint.io/rules/explicit-module-boundary-types
    */
   "@typescript-eslint/explicit-module-boundary-types"?: Rule<TypescriptEslintExplicitModuleBoundaryTypes>;
   /**
    * Require or disallow initialization in variable declarations
+   *
    * @see https://typescript-eslint.io/rules/init-declarations
    */
   "@typescript-eslint/init-declarations"?: Rule<TypescriptEslintInitDeclarations>;
   /**
    * Enforce a maximum number of parameters in function definitions
+   *
    * @see https://typescript-eslint.io/rules/max-params
    */
   "@typescript-eslint/max-params"?: Rule<TypescriptEslintMaxParams>;
   /**
    * Require a consistent member declaration order
+   *
    * @see https://typescript-eslint.io/rules/member-ordering
    */
   "@typescript-eslint/member-ordering"?: Rule<TypescriptEslintMemberOrdering>;
   /**
    * Enforce using a particular method signature syntax
+   *
    * @see https://typescript-eslint.io/rules/method-signature-style
    */
   "@typescript-eslint/method-signature-style"?: Rule<TypescriptEslintMethodSignatureStyle>;
   /**
    * Enforce naming conventions for everything across a codebase
+   *
    * @see https://typescript-eslint.io/rules/naming-convention
    */
   "@typescript-eslint/naming-convention"?: Rule<TypescriptEslintNamingConvention>;
   /**
    * Disallow generic `Array` constructors
+   *
    * @see https://typescript-eslint.io/rules/no-array-constructor
    */
   "@typescript-eslint/no-array-constructor"?: Rule<[]>;
   /**
    * Disallow using the `delete` operator on array values
+   *
    * @see https://typescript-eslint.io/rules/no-array-delete
    */
   "@typescript-eslint/no-array-delete"?: Rule<[]>;
   /**
-   * Require `.toString()` and `.toLocaleString()` to only be called on objects which provide useful information when stringified
+   * Require `.toString()` and `.toLocaleString()` to only be called on objects
+   * which provide useful information when stringified
+   *
    * @see https://typescript-eslint.io/rules/no-base-to-string
    */
   "@typescript-eslint/no-base-to-string"?: Rule<TypescriptEslintNoBaseToString>;
   /**
    * Disallow non-null assertion in locations that may be confusing
+   *
    * @see https://typescript-eslint.io/rules/no-confusing-non-null-assertion
    */
   "@typescript-eslint/no-confusing-non-null-assertion"?: Rule<[]>;
   /**
    * Require expressions of type void to appear in statement position
+   *
    * @see https://typescript-eslint.io/rules/no-confusing-void-expression
    */
   "@typescript-eslint/no-confusing-void-expression"?: Rule<TypescriptEslintNoConfusingVoidExpression>;
   /**
    * Disallow using code marked as `@deprecated`
+   *
    * @see https://typescript-eslint.io/rules/no-deprecated
    */
   "@typescript-eslint/no-deprecated"?: Rule<TypescriptEslintNoDeprecated>;
   /**
    * Disallow duplicate class members
+   *
    * @see https://typescript-eslint.io/rules/no-dupe-class-members
    */
   "@typescript-eslint/no-dupe-class-members"?: Rule<[]>;
   /**
    * Disallow duplicate enum member values
+   *
    * @see https://typescript-eslint.io/rules/no-duplicate-enum-values
    */
   "@typescript-eslint/no-duplicate-enum-values"?: Rule<[]>;
   /**
    * Disallow duplicate constituents of union or intersection types
+   *
    * @see https://typescript-eslint.io/rules/no-duplicate-type-constituents
    */
   "@typescript-eslint/no-duplicate-type-constituents"?: Rule<TypescriptEslintNoDuplicateTypeConstituents>;
   /**
    * Disallow using the `delete` operator on computed key expressions
+   *
    * @see https://typescript-eslint.io/rules/no-dynamic-delete
    */
   "@typescript-eslint/no-dynamic-delete"?: Rule<[]>;
   /**
    * Disallow empty functions
+   *
    * @see https://typescript-eslint.io/rules/no-empty-function
    */
   "@typescript-eslint/no-empty-function"?: Rule<TypescriptEslintNoEmptyFunction>;
   /**
    * Disallow the declaration of empty interfaces
+   *
    * @see https://typescript-eslint.io/rules/no-empty-interface
    * @deprecated
    */
   "@typescript-eslint/no-empty-interface"?: Rule<TypescriptEslintNoEmptyInterface>;
   /**
    * Disallow accidentally using the "empty object" type
+   *
    * @see https://typescript-eslint.io/rules/no-empty-object-type
    */
   "@typescript-eslint/no-empty-object-type"?: Rule<TypescriptEslintNoEmptyObjectType>;
   /**
    * Disallow the `any` type
+   *
    * @see https://typescript-eslint.io/rules/no-explicit-any
    */
   "@typescript-eslint/no-explicit-any"?: Rule<TypescriptEslintNoExplicitAny>;
   /**
    * Disallow extra non-null assertions
+   *
    * @see https://typescript-eslint.io/rules/no-extra-non-null-assertion
    */
   "@typescript-eslint/no-extra-non-null-assertion"?: Rule<[]>;
   /**
    * Disallow classes used as namespaces
+   *
    * @see https://typescript-eslint.io/rules/no-extraneous-class
    */
   "@typescript-eslint/no-extraneous-class"?: Rule<TypescriptEslintNoExtraneousClass>;
   /**
    * Require Promise-like statements to be handled appropriately
+   *
    * @see https://typescript-eslint.io/rules/no-floating-promises
    */
   "@typescript-eslint/no-floating-promises"?: Rule<TypescriptEslintNoFloatingPromises>;
   /**
    * Disallow iterating over an array with a for-in loop
+   *
    * @see https://typescript-eslint.io/rules/no-for-in-array
    */
   "@typescript-eslint/no-for-in-array"?: Rule<[]>;
   /**
    * Disallow type operations that resolve to the "empty object" type
+   *
    * @see https://typescript-eslint.io/rules/no-generated-empty-object-type
    */
   "@typescript-eslint/no-generated-empty-object-type"?: Rule<[]>;
   /**
    * Disallow the use of `eval()`-like functions
+   *
    * @see https://typescript-eslint.io/rules/no-implied-eval
    */
   "@typescript-eslint/no-implied-eval"?: Rule<[]>;
   /**
-   * Enforce the use of top-level import type qualifier when an import only has specifiers with inline type qualifiers
+   * Enforce the use of top-level import type qualifier when an import only has
+   * specifiers with inline type qualifiers
+   *
    * @see https://typescript-eslint.io/rules/no-import-type-side-effects
    */
   "@typescript-eslint/no-import-type-side-effects"?: Rule<[]>;
   /**
-   * Disallow explicit type declarations for variables or parameters initialized to a number, string, or boolean
+   * Disallow explicit type declarations for variables or parameters initialized
+   * to a number, string, or boolean
+   *
    * @see https://typescript-eslint.io/rules/no-inferrable-types
    */
   "@typescript-eslint/no-inferrable-types"?: Rule<TypescriptEslintNoInferrableTypes>;
   /**
    * Disallow `this` keywords outside of classes or class-like objects
+   *
    * @see https://typescript-eslint.io/rules/no-invalid-this
    */
   "@typescript-eslint/no-invalid-this"?: Rule<TypescriptEslintNoInvalidThis>;
   /**
    * Disallow `void` type outside of generic or return types
+   *
    * @see https://typescript-eslint.io/rules/no-invalid-void-type
    */
   "@typescript-eslint/no-invalid-void-type"?: Rule<TypescriptEslintNoInvalidVoidType>;
   /**
-   * Disallow function declarations that contain unsafe references inside loop statements
+   * Disallow function declarations that contain unsafe references inside loop
+   * statements
+   *
    * @see https://typescript-eslint.io/rules/no-loop-func
    * @deprecated
    */
   "@typescript-eslint/no-loop-func"?: Rule<[]>;
   /**
    * Disallow literal numbers that lose precision
+   *
    * @see https://typescript-eslint.io/rules/no-loss-of-precision
    * @deprecated
    */
   "@typescript-eslint/no-loss-of-precision"?: Rule<[]>;
   /**
    * Disallow magic numbers
+   *
    * @see https://typescript-eslint.io/rules/no-magic-numbers
    */
   "@typescript-eslint/no-magic-numbers"?: Rule<TypescriptEslintNoMagicNumbers>;
   /**
    * Disallow the `void` operator except when used to discard a value
+   *
    * @see https://typescript-eslint.io/rules/no-meaningless-void-operator
    */
   "@typescript-eslint/no-meaningless-void-operator"?: Rule<TypescriptEslintNoMeaninglessVoidOperator>;
   /**
    * Enforce valid definition of `new` and `constructor`
+   *
    * @see https://typescript-eslint.io/rules/no-misused-new
    */
   "@typescript-eslint/no-misused-new"?: Rule<[]>;
   /**
    * Disallow Promises in places not designed to handle them
+   *
    * @see https://typescript-eslint.io/rules/no-misused-promises
    */
   "@typescript-eslint/no-misused-promises"?: Rule<TypescriptEslintNoMisusedPromises>;
   /**
    * Disallow using the spread operator when it might cause unexpected behavior
+   *
    * @see https://typescript-eslint.io/rules/no-misused-spread
    */
   "@typescript-eslint/no-misused-spread"?: Rule<TypescriptEslintNoMisusedSpread>;
   /**
    * Disallow enums from having both number and string members
+   *
    * @see https://typescript-eslint.io/rules/no-mixed-enums
    */
   "@typescript-eslint/no-mixed-enums"?: Rule<[]>;
   /**
    * Disallow TypeScript namespaces
+   *
    * @see https://typescript-eslint.io/rules/no-namespace
    */
   "@typescript-eslint/no-namespace"?: Rule<TypescriptEslintNoNamespace>;
   /**
-   * Disallow non-null assertions in the left operand of a nullish coalescing operator
+   * Disallow non-null assertions in the left operand of a nullish coalescing
+   * operator
+   *
    * @see https://typescript-eslint.io/rules/no-non-null-asserted-nullish-coalescing
    */
   "@typescript-eslint/no-non-null-asserted-nullish-coalescing"?: Rule<[]>;
   /**
    * Disallow non-null assertions after an optional chain expression
+   *
    * @see https://typescript-eslint.io/rules/no-non-null-asserted-optional-chain
    */
   "@typescript-eslint/no-non-null-asserted-optional-chain"?: Rule<[]>;
   /**
    * Disallow non-null assertions using the `!` postfix operator
+   *
    * @see https://typescript-eslint.io/rules/no-non-null-assertion
    */
   "@typescript-eslint/no-non-null-assertion"?: Rule<[]>;
   /**
    * Disallow variable redeclaration
+   *
    * @see https://typescript-eslint.io/rules/no-redeclare
    */
   "@typescript-eslint/no-redeclare"?: Rule<TypescriptEslintNoRedeclare>;
   /**
-   * Disallow members of unions and intersections that do nothing or override type information
+   * Disallow members of unions and intersections that do nothing or override
+   * type information
+   *
    * @see https://typescript-eslint.io/rules/no-redundant-type-constituents
    */
   "@typescript-eslint/no-redundant-type-constituents"?: Rule<[]>;
   /**
    * Disallow invocation of `require()`
+   *
    * @see https://typescript-eslint.io/rules/no-require-imports
    */
   "@typescript-eslint/no-require-imports"?: Rule<TypescriptEslintNoRequireImports>;
   /**
    * Disallow specified modules when loaded by `import`
+   *
    * @see https://typescript-eslint.io/rules/no-restricted-imports
    * @deprecated
    */
   "@typescript-eslint/no-restricted-imports"?: Rule<TypescriptEslintNoRestrictedImports>;
   /**
    * Disallow certain types
+   *
    * @see https://typescript-eslint.io/rules/no-restricted-types
    */
   "@typescript-eslint/no-restricted-types"?: Rule<TypescriptEslintNoRestrictedTypes>;
   /**
-   * Disallow variable declarations from shadowing variables declared in the outer scope
+   * Disallow variable declarations from shadowing variables declared in the outer
+   * scope
+   *
    * @see https://typescript-eslint.io/rules/no-shadow
    */
   "@typescript-eslint/no-shadow"?: Rule<TypescriptEslintNoShadow>;
   /**
    * Disallow aliasing `this`
+   *
    * @see https://typescript-eslint.io/rules/no-this-alias
    */
   "@typescript-eslint/no-this-alias"?: Rule<TypescriptEslintNoThisAlias>;
   /**
    * Disallow type aliases
+   *
    * @see https://typescript-eslint.io/rules/no-type-alias
    * @deprecated
    */
   "@typescript-eslint/no-type-alias"?: Rule<TypescriptEslintNoTypeAlias>;
   /**
    * Disallow unnecessary equality comparisons against boolean literals
+   *
    * @see https://typescript-eslint.io/rules/no-unnecessary-boolean-literal-compare
    */
   "@typescript-eslint/no-unnecessary-boolean-literal-compare"?: Rule<TypescriptEslintNoUnnecessaryBooleanLiteralCompare>;
   /**
    * Disallow conditionals where the type is always truthy or always falsy
+   *
    * @see https://typescript-eslint.io/rules/no-unnecessary-condition
    */
   "@typescript-eslint/no-unnecessary-condition"?: Rule<TypescriptEslintNoUnnecessaryCondition>;
   /**
    * Disallow unnecessary assignment of constructor property parameter
+   *
    * @see https://typescript-eslint.io/rules/no-unnecessary-parameter-property-assignment
    */
   "@typescript-eslint/no-unnecessary-parameter-property-assignment"?: Rule<[]>;
   /**
    * Disallow unnecessary namespace qualifiers
+   *
    * @see https://typescript-eslint.io/rules/no-unnecessary-qualifier
    */
   "@typescript-eslint/no-unnecessary-qualifier"?: Rule<[]>;
   /**
    * Disallow unnecessary template expressions
+   *
    * @see https://typescript-eslint.io/rules/no-unnecessary-template-expression
    */
   "@typescript-eslint/no-unnecessary-template-expression"?: Rule<[]>;
   /**
    * Disallow type arguments that are equal to the default
+   *
    * @see https://typescript-eslint.io/rules/no-unnecessary-type-arguments
    */
   "@typescript-eslint/no-unnecessary-type-arguments"?: Rule<[]>;
   /**
    * Disallow type assertions that do not change the type of an expression
+   *
    * @see https://typescript-eslint.io/rules/no-unnecessary-type-assertion
    */
   "@typescript-eslint/no-unnecessary-type-assertion"?: Rule<TypescriptEslintNoUnnecessaryTypeAssertion>;
   /**
    * Disallow unnecessary constraints on generic types
+   *
    * @see https://typescript-eslint.io/rules/no-unnecessary-type-constraint
    */
   "@typescript-eslint/no-unnecessary-type-constraint"?: Rule<[]>;
   /**
-   * Disallow conversion idioms when they do not change the type or value of the expression
+   * Disallow conversion idioms when they do not change the type or value of the
+   * expression
+   *
    * @see https://typescript-eslint.io/rules/no-unnecessary-type-conversion
    */
   "@typescript-eslint/no-unnecessary-type-conversion"?: Rule<[]>;
   /**
    * Disallow type parameters that aren't used multiple times
+   *
    * @see https://typescript-eslint.io/rules/no-unnecessary-type-parameters
    */
   "@typescript-eslint/no-unnecessary-type-parameters"?: Rule<[]>;
   /**
    * Disallow calling a function with a value with type `any`
+   *
    * @see https://typescript-eslint.io/rules/no-unsafe-argument
    */
   "@typescript-eslint/no-unsafe-argument"?: Rule<[]>;
   /**
    * Disallow assigning a value with type `any` to variables and properties
+   *
    * @see https://typescript-eslint.io/rules/no-unsafe-assignment
    */
   "@typescript-eslint/no-unsafe-assignment"?: Rule<[]>;
   /**
    * Disallow calling a value with type `any`
+   *
    * @see https://typescript-eslint.io/rules/no-unsafe-call
    */
   "@typescript-eslint/no-unsafe-call"?: Rule<[]>;
   /**
    * Disallow unsafe declaration merging
+   *
    * @see https://typescript-eslint.io/rules/no-unsafe-declaration-merging
    */
   "@typescript-eslint/no-unsafe-declaration-merging"?: Rule<[]>;
   /**
    * Disallow assigning non-enum values to enum typed locations
+   *
    * @see https://typescript-eslint.io/rules/no-unsafe-enum-assignment
    */
   "@typescript-eslint/no-unsafe-enum-assignment"?: Rule<[]>;
   /**
    * Disallow comparing an enum value with a non-enum value
+   *
    * @see https://typescript-eslint.io/rules/no-unsafe-enum-comparison
    */
   "@typescript-eslint/no-unsafe-enum-comparison"?: Rule<[]>;
   /**
    * Disallow using the unsafe built-in Function type
+   *
    * @see https://typescript-eslint.io/rules/no-unsafe-function-type
    */
   "@typescript-eslint/no-unsafe-function-type"?: Rule<[]>;
   /**
    * Disallow member access on a value with type `any`
+   *
    * @see https://typescript-eslint.io/rules/no-unsafe-member-access
    */
   "@typescript-eslint/no-unsafe-member-access"?: Rule<TypescriptEslintNoUnsafeMemberAccess>;
   /**
    * Disallow returning a value with type `any` from a function
+   *
    * @see https://typescript-eslint.io/rules/no-unsafe-return
    */
   "@typescript-eslint/no-unsafe-return"?: Rule<[]>;
   /**
    * Disallow type assertions that narrow a type
+   *
    * @see https://typescript-eslint.io/rules/no-unsafe-type-assertion
    */
   "@typescript-eslint/no-unsafe-type-assertion"?: Rule<[]>;
   /**
    * Require unary negation to take a number
+   *
    * @see https://typescript-eslint.io/rules/no-unsafe-unary-minus
    */
   "@typescript-eslint/no-unsafe-unary-minus"?: Rule<[]>;
   /**
    * Disallow unused expressions
+   *
    * @see https://typescript-eslint.io/rules/no-unused-expressions
    */
   "@typescript-eslint/no-unused-expressions"?: Rule<TypescriptEslintNoUnusedExpressions>;
   /**
    * Disallow unused private class members
+   *
    * @see https://typescript-eslint.io/rules/no-unused-private-class-members
    */
   "@typescript-eslint/no-unused-private-class-members"?: Rule<[]>;
   /**
    * Disallow unused variables
+   *
    * @see https://typescript-eslint.io/rules/no-unused-vars
    */
   "@typescript-eslint/no-unused-vars"?: Rule<TypescriptEslintNoUnusedVars>;
   /**
    * Disallow the use of variables before they are defined
+   *
    * @see https://typescript-eslint.io/rules/no-use-before-define
    */
   "@typescript-eslint/no-use-before-define"?: Rule<TypescriptEslintNoUseBeforeDefine>;
   /**
    * Disallow unnecessary constructors
+   *
    * @see https://typescript-eslint.io/rules/no-useless-constructor
    */
   "@typescript-eslint/no-useless-constructor"?: Rule<[]>;
   /**
    * Disallow default values that will never be used
+   *
    * @see https://typescript-eslint.io/rules/no-useless-default-assignment
    */
   "@typescript-eslint/no-useless-default-assignment"?: Rule<TypescriptEslintNoUselessDefaultAssignment>;
   /**
    * Disallow empty exports that don't change anything in a module file
+   *
    * @see https://typescript-eslint.io/rules/no-useless-empty-export
    */
   "@typescript-eslint/no-useless-empty-export"?: Rule<[]>;
   /**
    * Disallow `require` statements except in import statements
+   *
    * @see https://typescript-eslint.io/rules/no-var-requires
    * @deprecated
    */
   "@typescript-eslint/no-var-requires"?: Rule<TypescriptEslintNoVarRequires>;
   /**
    * Disallow using confusing built-in primitive class wrappers
+   *
    * @see https://typescript-eslint.io/rules/no-wrapper-object-types
    */
   "@typescript-eslint/no-wrapper-object-types"?: Rule<[]>;
   /**
    * Enforce non-null assertions over explicit type assertions
+   *
    * @see https://typescript-eslint.io/rules/non-nullable-type-assertion-style
    */
   "@typescript-eslint/non-nullable-type-assertion-style"?: Rule<[]>;
   /**
    * Disallow throwing non-`Error` values as exceptions
+   *
    * @see https://typescript-eslint.io/rules/only-throw-error
    */
   "@typescript-eslint/only-throw-error"?: Rule<TypescriptEslintOnlyThrowError>;
   /**
    * Require or disallow parameter properties in class constructors
+   *
    * @see https://typescript-eslint.io/rules/parameter-properties
    */
   "@typescript-eslint/parameter-properties"?: Rule<TypescriptEslintParameterProperties>;
   /**
    * Enforce the use of `as const` over literal type
+   *
    * @see https://typescript-eslint.io/rules/prefer-as-const
    */
   "@typescript-eslint/prefer-as-const"?: Rule<[]>;
   /**
    * Require destructuring from arrays and/or objects
+   *
    * @see https://typescript-eslint.io/rules/prefer-destructuring
    */
   "@typescript-eslint/prefer-destructuring"?: Rule<TypescriptEslintPreferDestructuring>;
   /**
    * Require each enum member value to be explicitly initialized
+   *
    * @see https://typescript-eslint.io/rules/prefer-enum-initializers
    */
   "@typescript-eslint/prefer-enum-initializers"?: Rule<[]>;
   /**
-   * Enforce the use of Array.prototype.find() over Array.prototype.filter() followed by [0] when looking for a single result
+   * Enforce the use of Array.prototype.find() over Array.prototype.filter()
+   * followed by [0] when looking for a single result
+   *
    * @see https://typescript-eslint.io/rules/prefer-find
    */
   "@typescript-eslint/prefer-find"?: Rule<[]>;
   /**
    * Enforce the use of `for-of` loop over the standard `for` loop where possible
+   *
    * @see https://typescript-eslint.io/rules/prefer-for-of
    */
   "@typescript-eslint/prefer-for-of"?: Rule<[]>;
   /**
    * Enforce using function types instead of interfaces with call signatures
+   *
    * @see https://typescript-eslint.io/rules/prefer-function-type
    */
   "@typescript-eslint/prefer-function-type"?: Rule<[]>;
   /**
    * Enforce `includes` method over `indexOf` method
+   *
    * @see https://typescript-eslint.io/rules/prefer-includes
    */
   "@typescript-eslint/prefer-includes"?: Rule<[]>;
   /**
    * Require all enum members to be literal values
+   *
    * @see https://typescript-eslint.io/rules/prefer-literal-enum-member
    */
   "@typescript-eslint/prefer-literal-enum-member"?: Rule<TypescriptEslintPreferLiteralEnumMember>;
   /**
-   * Require using `namespace` keyword over `module` keyword to declare custom TypeScript modules
+   * Require using `namespace` keyword over `module` keyword to declare custom
+   * TypeScript modules
+   *
    * @see https://typescript-eslint.io/rules/prefer-namespace-keyword
    */
   "@typescript-eslint/prefer-namespace-keyword"?: Rule<[]>;
   /**
-   * Enforce using the nullish coalescing operator instead of logical assignments or chaining
+   * Enforce using the nullish coalescing operator instead of logical assignments
+   * or chaining
+   *
    * @see https://typescript-eslint.io/rules/prefer-nullish-coalescing
    */
   "@typescript-eslint/prefer-nullish-coalescing"?: Rule<TypescriptEslintPreferNullishCoalescing>;
   /**
-   * Enforce using concise optional chain expressions instead of chained logical ands, negated logical ors, or empty objects
+   * Enforce using concise optional chain expressions instead of chained logical
+   * ands, negated logical ors, or empty objects
+   *
    * @see https://typescript-eslint.io/rules/prefer-optional-chain
    */
   "@typescript-eslint/prefer-optional-chain"?: Rule<TypescriptEslintPreferOptionalChain>;
   /**
    * Require using Error objects as Promise rejection reasons
+   *
    * @see https://typescript-eslint.io/rules/prefer-promise-reject-errors
    */
   "@typescript-eslint/prefer-promise-reject-errors"?: Rule<TypescriptEslintPreferPromiseRejectErrors>;
   /**
-   * Require private members to be marked as `readonly` if they're never modified outside of the constructor
+   * Require private members to be marked as `readonly` if they're never modified
+   * outside of the constructor
+   *
    * @see https://typescript-eslint.io/rules/prefer-readonly
    */
   "@typescript-eslint/prefer-readonly"?: Rule<TypescriptEslintPreferReadonly>;
   /**
-   * Require function parameters to be typed as `readonly` to prevent accidental mutation of inputs
+   * Require function parameters to be typed as `readonly` to prevent accidental
+   * mutation of inputs
+   *
    * @see https://typescript-eslint.io/rules/prefer-readonly-parameter-types
    */
   "@typescript-eslint/prefer-readonly-parameter-types"?: Rule<TypescriptEslintPreferReadonlyParameterTypes>;
   /**
-   * Enforce using type parameter when calling `Array#reduce` instead of using a type assertion
+   * Enforce using type parameter when calling `Array#reduce` instead of using a
+   * type assertion
+   *
    * @see https://typescript-eslint.io/rules/prefer-reduce-type-parameter
    */
   "@typescript-eslint/prefer-reduce-type-parameter"?: Rule<[]>;
   /**
    * Enforce `RegExp#exec` over `String#match` if no global flag is provided
+   *
    * @see https://typescript-eslint.io/rules/prefer-regexp-exec
    */
   "@typescript-eslint/prefer-regexp-exec"?: Rule<[]>;
   /**
    * Enforce that `this` is used when only `this` type is returned
+   *
    * @see https://typescript-eslint.io/rules/prefer-return-this-type
    */
   "@typescript-eslint/prefer-return-this-type"?: Rule<[]>;
   /**
-   * Enforce using `String#startsWith` and `String#endsWith` over other equivalent methods of checking substrings
+   * Enforce using `String#startsWith` and `String#endsWith` over other equivalent
+   * methods of checking substrings
+   *
    * @see https://typescript-eslint.io/rules/prefer-string-starts-ends-with
    */
   "@typescript-eslint/prefer-string-starts-ends-with"?: Rule<TypescriptEslintPreferStringStartsEndsWith>;
   /**
    * Enforce using `@ts-expect-error` over `@ts-ignore`
+   *
    * @see https://typescript-eslint.io/rules/prefer-ts-expect-error
    * @deprecated
    */
   "@typescript-eslint/prefer-ts-expect-error"?: Rule<[]>;
   /**
    * Require any function or method that returns a Promise to be marked async
+   *
    * @see https://typescript-eslint.io/rules/promise-function-async
    */
   "@typescript-eslint/promise-function-async"?: Rule<TypescriptEslintPromiseFunctionAsync>;
   /**
-   * Enforce that `get()` types should be assignable to their equivalent `set()` type
+   * Enforce that `get()` types should be assignable to their equivalent `set()`
+   * type
+   *
    * @see https://typescript-eslint.io/rules/related-getter-setter-pairs
    */
   "@typescript-eslint/related-getter-setter-pairs"?: Rule<[]>;
   /**
-   * Require `Array#sort` and `Array#toSorted` calls to always provide a `compareFunction`
+   * Require `Array#sort` and `Array#toSorted` calls to always provide a
+   * `compareFunction`
+   *
    * @see https://typescript-eslint.io/rules/require-array-sort-compare
    */
   "@typescript-eslint/require-array-sort-compare"?: Rule<TypescriptEslintRequireArraySortCompare>;
   /**
-   * Disallow async functions which do not return promises and have no `await` expression
+   * Disallow async functions which do not return promises and have no `await`
+   * expression
+   *
    * @see https://typescript-eslint.io/rules/require-await
    */
   "@typescript-eslint/require-await"?: Rule<[]>;
   /**
-   * Require both operands of addition to be the same type and be `bigint`, `number`, or `string`
+   * Require both operands of addition to be the same type and be `bigint`,
+   * `number`, or `string`
+   *
    * @see https://typescript-eslint.io/rules/restrict-plus-operands
    */
   "@typescript-eslint/restrict-plus-operands"?: Rule<TypescriptEslintRestrictPlusOperands>;
   /**
    * Enforce template literal expressions to be of `string` type
+   *
    * @see https://typescript-eslint.io/rules/restrict-template-expressions
    */
   "@typescript-eslint/restrict-template-expressions"?: Rule<TypescriptEslintRestrictTemplateExpressions>;
   /**
    * Enforce consistent awaiting of returned promises
+   *
    * @see https://typescript-eslint.io/rules/return-await
    */
   "@typescript-eslint/return-await"?: Rule<TypescriptEslintReturnAwait>;
   /**
    * Enforce constituents of a type union/intersection to be sorted alphabetically
+   *
    * @see https://typescript-eslint.io/rules/sort-type-constituents
    * @deprecated
    */
   "@typescript-eslint/sort-type-constituents"?: Rule<TypescriptEslintSortTypeConstituents>;
   /**
    * Disallow certain types in boolean expressions
+   *
    * @see https://typescript-eslint.io/rules/strict-boolean-expressions
    */
   "@typescript-eslint/strict-boolean-expressions"?: Rule<TypescriptEslintStrictBooleanExpressions>;
   /**
-   * Disallow passing a value-returning function in a position accepting a void function
+   * Disallow passing a value-returning function in a position accepting a void
+   * function
+   *
    * @see https://typescript-eslint.io/rules/strict-void-return
    */
   "@typescript-eslint/strict-void-return"?: Rule<TypescriptEslintStrictVoidReturn>;
   /**
    * Require switch-case statements to be exhaustive
+   *
    * @see https://typescript-eslint.io/rules/switch-exhaustiveness-check
    */
   "@typescript-eslint/switch-exhaustiveness-check"?: Rule<TypescriptEslintSwitchExhaustivenessCheck>;
   /**
-   * Disallow certain triple slash directives in favor of ES6-style import declarations
+   * Disallow certain triple slash directives in favor of ES6-style import
+   * declarations
+   *
    * @see https://typescript-eslint.io/rules/triple-slash-reference
    */
   "@typescript-eslint/triple-slash-reference"?: Rule<TypescriptEslintTripleSlashReference>;
   /**
    * Require type annotations in certain places
+   *
    * @see https://typescript-eslint.io/rules/typedef
    * @deprecated
    */
   "@typescript-eslint/typedef"?: Rule<TypescriptEslintTypedef>;
   /**
    * Enforce unbound methods are called with their expected scope
+   *
    * @see https://typescript-eslint.io/rules/unbound-method
    */
   "@typescript-eslint/unbound-method"?: Rule<TypescriptEslintUnboundMethod>;
   /**
-   * Disallow two overloads that could be unified into one with a union or an optional/rest parameter
+   * Disallow two overloads that could be unified into one with a union or an
+   * optional/rest parameter
+   *
    * @see https://typescript-eslint.io/rules/unified-signatures
    */
   "@typescript-eslint/unified-signatures"?: Rule<TypescriptEslintUnifiedSignatures>;
   /**
    * Enforce typing arguments in Promise rejection callbacks as `unknown`
+   *
    * @see https://typescript-eslint.io/rules/use-unknown-in-catch-callback-variable
    */
   "@typescript-eslint/use-unknown-in-catch-callback-variable"?: Rule<[]>;

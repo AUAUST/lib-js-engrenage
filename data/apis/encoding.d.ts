@@ -16,13 +16,16 @@ and limitations under the License.
 /// <reference path="shared/common.d.ts" />
 
 /**
- * The **`TextDecoder`** interface represents a decoder for a specific text encoding, such as UTF-8, ISO-8859-2, or GBK. A decoder takes an array of bytes as input and returns a JavaScript string.
+ * The **`TextDecoder`** interface represents a decoder for a specific text
+ * encoding, such as UTF-8, ISO-8859-2, or GBK. A decoder takes an array of bytes
+ * as input and returns a JavaScript string.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextDecoder)
  */
 interface TextDecoder extends TextDecoderCommon {
   /**
-   * The **`TextDecoder.decode()`** method returns a string containing text decoded from the buffer passed as a parameter.
+   * The **`TextDecoder.decode()`** method returns a string containing text
+   * decoded from the buffer passed as a parameter.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextDecoder/decode)
    */
@@ -35,21 +38,28 @@ declare var TextDecoder: {
 };
 
 /**
- * The **`TextEncoder`** interface enables you to encode a JavaScript string using UTF-8.
+ * The **`TextEncoder`** interface enables you to encode a JavaScript string using
+ * UTF-8.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextEncoder)
  */
 interface TextEncoder extends TextEncoderCommon {
   /**
-   * The **`TextEncoder.encode()`** method takes a string as input, and returns a Uint8Array containing the string encoded using UTF-8.
+   * The **`TextEncoder.encode()`** method takes a string as input, and returns
+   * a Uint8Array containing the string encoded using UTF-8.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextEncoder/encode)
    */
   encode(input?: string): Uint8Array<ArrayBuffer>;
   /**
-   * The **`TextEncoder.encodeInto()`** method takes a string to encode and a destination Uint8Array to put resulting UTF-8 encoded text into, and returns an object indicating the progress of the encoding. This is potentially more performant than the encode() method — especially when the target buffer is a view into a Wasm heap.
+   * The **`TextEncoder.encodeInto()`** method takes a string to encode and a
+   * destination Uint8Array to put resulting UTF-8 encoded text into, and returns
+   * an object indicating the progress of the encoding. This is potentially more
+   * performant than the encode() method — especially when the target buffer is
+   * a view into a Wasm heap.
    *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextEncoder/encodeInto)
+   * [MDN
+   * Reference](https://developer.mozilla.org/docs/Web/API/TextEncoder/encodeInto)
    */
   encodeInto(
     source: string,
@@ -62,9 +72,13 @@ declare var TextEncoder: {
   new (): TextEncoder;
 };
 
-/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Window/atob) */
+/**
+ * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Window/atob)
+ */
 declare function atob(data: string): string;
-/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Window/btoa) */
+/**
+ * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Window/btoa)
+ */
 declare function btoa(data: string): string;
 
 type AllowSharedBufferSource =
