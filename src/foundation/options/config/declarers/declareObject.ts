@@ -21,6 +21,14 @@ import type { ObjectInput } from "#foundation/options/types/ObjectInput";
 import type { ObjectResolution } from "#foundation/options/types/ObjectResolution";
 
 /**
+ * Declares an object option resolving each of `entries` from its key, and
+ * rejecting unknown keys. A missing input throws at resolve unless `optional`
+ * is set: `true` resolves the entries from an empty object, a default from
+ * its value. With `disable`, a `false` input resolves to `disable.value` with
+ * `enabled: false`, and any other input adds `enabled: true`. `assert` checks
+ * the input before its entries resolve and throws to reject it; the unknown-key
+ * error of a former key in `renamed` names the key replacing it.
+ *
  * @stable
  */
 export function declareObject<

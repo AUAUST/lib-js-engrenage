@@ -10,6 +10,10 @@ import type { Default } from "#foundation/options/ports/Default";
 import type { Description } from "#foundation/options/types/Description";
 
 /**
+ * Declares a record option whose keys `key` validates and whose members `value`
+ * resolves, each with its key appended to the error path. A missing input resolves
+ * to the `optional` default, and throws at resolve without one.
+ *
  * @stable
  */
 export function declareRecord<

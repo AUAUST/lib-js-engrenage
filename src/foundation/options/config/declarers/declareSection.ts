@@ -6,6 +6,10 @@ import type { Section } from "#foundation/options/ports/Section";
 
 // @debt `Config` takes the section's `config` annotation unchecked against the resolver `createResolver` passes, so no-unnecessary-type-parameters reports its single use; typing `config` as `Resolver` instead makes annotations that read `ConfigSections` circular, and the sound fix is sections typed by the resolver they receive
 /**
+ * Declares a section reading the input `declaration` validates; `resolve`
+ * receives that validated input and the resolver. The resolver caches the value
+ * unless `live` is set, in which case it recomputes it on each read.
+ *
  * @stable
  */
 export function declareSection<
@@ -18,6 +22,10 @@ export function declareSection<
   resolve(input: Input, config: Config): Output | Promise<Output>;
 }): Section<Output>;
 /**
+ * Declares a section reading no input: `resolve` receives `undefined` and the
+ * resolver. The resolver caches the value unless `live` is set, in which case it
+ * recomputes it on each read.
+ *
  * @stable
  */
 export function declareSection<

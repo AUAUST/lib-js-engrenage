@@ -7,6 +7,10 @@ import type { ResolvedLocation } from "#foundation/options/types/ResolvedLocatio
 import type { File } from "#types/File";
 
 /**
+ * Declares a file option resolving to the file with whether the user configured
+ * it; a missing input resolves to `optional.value`, unconfigured. `assert` checks
+ * only a configured file and throws to reject it.
+ *
  * @stable
  */
 export function declareLocation(options: {

@@ -2,6 +2,11 @@ import { gateCache, gateStepEntry } from "#workflows/gate/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 import type { GateStage } from "#project/gate/index";
 
+/**
+ * The built-in extension owning the gate's uncommitted cache directory and the
+ * `gate.steps` slot, whose steps run by stage: fixes, checks, commands, then
+ * warnings.
+ */
 export default {
   name: "workflows/gate",
   owns: {

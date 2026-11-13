@@ -8,6 +8,10 @@ import type { Description } from "#foundation/options/types/Description";
 import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
 
 /**
+ * Declares a list option that its consumer resolves against its own defaults: the
+ * value is the validated input, `undefined` when missing. `explain` describes
+ * the consumer's default in the option's schema.
+ *
  * @stable
  */
 export function declareManagedList<Item extends string>(

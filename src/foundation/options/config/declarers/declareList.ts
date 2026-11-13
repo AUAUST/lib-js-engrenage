@@ -10,6 +10,11 @@ import type { ListOption } from "#foundation/options/types/ListOption";
 
 // @debt resolveListOption warns on the console, which a pure `utils/` function should not do
 /**
+ * Declares a list option: a missing input resolves to the `optional` default, an
+ * item or array replaces it, and `prepend`, `append` and `exclude` adjust it.
+ * Warns on the console about duplicated items and excluded items absent from the
+ * default.
+ *
  * @stable
  */
 export function declareList<Item extends string, Context = unknown>(

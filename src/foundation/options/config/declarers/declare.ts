@@ -12,6 +12,13 @@ import type { Description } from "#foundation/options/types/Description";
 type Unless<Flag, Value> = [Flag] extends [never] ? never : Value;
 
 /**
+ * Declares an option whose input `base` validates and `adjust` turns into
+ * its value; `fallback` returns the `optional` default for `adjust` to build
+ * on. A missing input resolves to the `optional` default, a `false` input to
+ * `disable.value` when `disable` is set. `schema` narrows the input against the
+ * resolve context, and its failure throws at resolve. `description` and the
+ * default's explanation describe the option in its schema.
+ *
  * @stable
  */
 export function declare<
@@ -39,6 +46,13 @@ export function declare<
   NoInfer<Context>
 >;
 /**
+ * Declares an option whose value is its input as `base` validates it. A missing
+ * input resolves to the `optional` default and throws at resolve without one;
+ * a `false` input resolves to `disable.value` when `disable` is set. `schema`
+ * narrows the input against the resolve context, and its failure throws at
+ * resolve. `description` and the default's explanation describe the option in
+ * its schema.
+ *
  * @stable
  */
 export function declare<

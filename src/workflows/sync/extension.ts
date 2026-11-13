@@ -1,5 +1,9 @@
 import type { Extension } from "#project/config/index";
 
+/**
+ * The built-in extension contributing the agents' `sync --check` gate step and
+ * the sync targets writing `package.json`, then checking its publishing.
+ */
 export default {
   name: "workflows/sync",
   contributes: {
