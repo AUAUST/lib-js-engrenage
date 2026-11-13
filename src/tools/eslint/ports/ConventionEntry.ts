@@ -1,6 +1,9 @@
 import type { EntryShape } from "#foundation/extensions/index";
 import type { Convention } from "#tools/eslint/types/Convention";
 
+/**
+ * @experimental
+ */
 export interface ConventionEntry extends EntryShape {
   readonly name: string;
   readonly category: string;

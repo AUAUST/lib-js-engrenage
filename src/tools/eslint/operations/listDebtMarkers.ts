@@ -1,7 +1,7 @@
 import { relative } from "node:path";
 
-import { eslint } from "#constants";
 import { pluginName } from "#tools/eslint/constants";
+import { loadEslint } from "#tools/eslint/operations/loadEslint";
 import { createRuleName } from "#tools/eslint/utils/createRuleName";
 import type { LoadedConfig } from "#project/config/index";
 import type { DebtMarker } from "#tools/eslint/types/DebtMarker";
@@ -14,27 +14,16 @@ function compareMarkers(a: DebtMarker, b: DebtMarker): number {
   return a.file < b.file ? -1 : 1;
 }
 
-export async function listDebtMarkers({
-  resolve,
-  context,
-}: LoadedConfig): Promise<DebtMarker[]> {
-  const environment = await resolve("environment");
-
-  if (!environment.hasDependency(eslint)) {
-    throw new Error(
-      `Listing debt markers requires the ${eslint} dependency. Install it, then retry.`,
-    );
-  }
-
-  const { ESLint } = await import("eslint");
-
-  const root = context.root;
+export async function listDebtMarkers(
+  config: LoadedConfig,
+): Promise<DebtMarker[]> {
+  const root = config.context.root;
 
   const ruleId = `${pluginName}/${createRuleName("debtMarkers")}`;
 
-  const results = await new ESLint({
-    cwd: root,
-    cache: false,
+  const createLinter = await loadEslint(config);
+
+  const linter = createLinter({
     ruleFilter: (rule) => rule.ruleId === ruleId,
     overrideConfig: {
       languageOptions: {
@@ -44,7 +33,9 @@ export async function listDebtMarkers({
         [ruleId]: ["warn", { list: true }],
       },
     },
-  }).lintFiles(".");
+  });
+
+  const results = await linter.lintFiles(".");
 
   const markers: DebtMarker[] = [];
 

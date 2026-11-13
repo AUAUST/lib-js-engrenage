@@ -15,6 +15,7 @@ export { fixWithEslint } from "#tools/eslint/operations/fixWithEslint";
 export { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";
 export { listInfoMessages } from "#tools/eslint/operations/listInfoMessages";
 export { loadConventionCategories } from "#tools/eslint/operations/loadConventionCategories";
+export { loadEslint } from "#tools/eslint/operations/loadEslint";
 export { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
 export { resolveConventionSections } from "#tools/eslint/operations/resolveConventionSections";
 export { resolveEslintFixArguments } from "#tools/eslint/operations/resolveEslintFixArguments";
@@ -71,6 +72,7 @@ export { defineImportReplacement } from "#tools/eslint/utils/defineImportReplace
 export { defineReplacement } from "#tools/eslint/utils/defineReplacement";
 export { defineRoleRule } from "#tools/eslint/utils/defineRoleRule";
 export { delegateRule } from "#tools/eslint/utils/delegateRule";
+export { formatInfoMessages } from "#tools/eslint/utils/formatInfoMessages";
 export { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 export { normalizeRuleSchema } from "#tools/eslint/utils/normalizeRuleSchema";
 export { visitImportSources } from "#tools/eslint/utils/visitImportSources";

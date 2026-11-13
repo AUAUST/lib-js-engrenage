@@ -118,3 +118,8 @@ Project structure description, its report and the tooling generated from it.
 - sites: `src/project/structure/utils/flattenStructure.ts:75`, `src/project/structure/operations/createStructureDomainResolver.ts:38`
 - why: `flattenStructure` keys a namespace under a glob domain by its glob path (`a/*/ns`); `describe` looks namespaces up by exact path, so none matches.
 - want: namespaces under globs matched like domains, or rejected by the schema.
+
+## 20. A domain's index drops a role's modules silently when it has no `@barrel <role>` marker
+
+- why: `syncBarrelBlocks` (`src/tools/typescript/setup/syncBarrelBlocks.ts`) fills only existing markers, so modules moved into a role the index has no block for leave its surface while `sync --check` passes; seen moving interfaces to `apis/` and `ports/` in AUAUST/lib-js-engrenage#533. Related: #9 ("Markers fail silently").
+- want: sync adds the missing block, or `--check` reports each placed role whose modules no marker of the index covers.

@@ -6,6 +6,7 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { MissingEslintError } from "#tools/eslint/errors/MissingEslintError";
 import { listInfoMessages } from "#tools/eslint/operations/listInfoMessages";
 
 function sourcePath(path: string): string {
@@ -48,4 +49,21 @@ describe("listInfoMessages", () => {
     },
     binaryTimeout,
   );
+
+  test("rejects a project without the eslint dependency", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({ type: "module" }),
+      "engrenage.config.ts": "export default {};\n",
+      "src/edited.ts": "export const value = 1;\n",
+    });
+
+    mockCwd(project.root);
+
+    await expect(
+      listInfoMessages(
+        await loadConfig(project.root),
+        project.resolve("src/edited.ts"),
+      ),
+    ).rejects.toThrow(MissingEslintError);
+  });
 });

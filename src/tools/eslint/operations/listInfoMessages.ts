@@ -1,28 +1,19 @@
-import { eslint } from "#constants";
+import { loadEslint } from "#tools/eslint/operations/loadEslint";
 import { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
 import type { LoadedConfig } from "#project/config/index";
 import type { InfoMessage } from "#tools/eslint/types/InfoMessage";
 import type { File } from "#types/File";
 
 export async function listInfoMessages(
-  { resolve, context }: LoadedConfig,
+  config: LoadedConfig,
   file: File,
 ): Promise<InfoMessage[]> {
-  const environment = await resolve("environment");
+  const createLinter = await loadEslint(config);
 
-  if (!environment.hasDependency(eslint)) {
-    return [];
-  }
+  // @debt the ESLint config loads twice, once in `loadInfoRules` and once in the `ESLint` instance; the instance's `calculateConfigForFile` could supply the info rules
+  const infoRules = new Set(await loadInfoRules(config.context.root));
 
-  const { ESLint } = await import("eslint");
-
-  const root = context.root;
-
-  const infoRules = new Set(await loadInfoRules(root));
-
-  const results = await new ESLint({
-    cwd: root,
-    cache: false,
+  const results = await createLinter({
     warnIgnored: false,
     ruleFilter: ({ ruleId }) => infoRules.has(ruleId),
   }).lintFiles(file);

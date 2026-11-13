@@ -4,8 +4,8 @@ ESLint rules and conventions engrenage ships.
 
 ## 1. Lint rules type their nodes by cast
 
-- sites: `src/tools/eslint/conventions/stylistic/noReturnUndefined.ts:67`, `preferValuedReturn.ts:106`, `src/tools/eslint/conventions/structure/importEffects.ts:183`, `src/tools/eslint/conventions/imports/noExternalNamespace.ts:37`, `src/tools/eslint/operations/resolveConventionSections.ts:48`, `src/tools/eslint/types/ConventionSections.ts:3`
-- why: rules typed against core ESTree nodes, so TS fields are probed with `in`; listeners widened to `Rule.Node`; ESTree-to-TS map cast `as TsNode`/`as never`; `context as unknown as ImportContext`; the sections record asserted; config key `sections` is a leftover name.
+- sites: `src/tools/eslint/conventions/stylistic/noReturnUndefined.ts:67`, `preferValuedReturn.ts:106`, `src/tools/eslint/conventions/structure/importEffects.ts:183`, `src/tools/eslint/conventions/imports/noExternalNamespace.ts:37`, `src/tools/eslint/operations/resolveConventionSections.ts:48`, `src/tools/eslint/types/ConventionSections.ts:3`, `src/tools/eslint/rules/apiInterface.ts:5`
+- why: rules typed against core ESTree nodes (`defineRoleRule` takes `Rule.RuleContext`), so TS fields are probed with `in` or through `{ type: string }` guards; listeners widened to `Rule.Node`; ESTree-to-TS map cast `as TsNode`/`as never`; `context as unknown as ImportContext`; the sections record asserted; config key `sections` is a leftover name.
 - want: typed typescript-eslint listeners; a typed record mapper; the key renamed.
 
 ## 2. ESLint rules check less than they should

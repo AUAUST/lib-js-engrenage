@@ -59,6 +59,7 @@ export { resolveAgentReference } from "#tools/agents/operations/resolveAgentRefe
 export { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 export { syncHooks } from "#tools/agents/operations/syncHooks";
 export { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
+export { writeHookContext } from "#tools/agents/operations/writeHookContext";
 // @end
 
 // @barrel ports
