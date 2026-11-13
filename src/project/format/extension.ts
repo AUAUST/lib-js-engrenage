@@ -1,6 +1,10 @@
 import { formatterEntry } from "#project/format/constants";
 import type { Extension } from "#project/config/index";
 
+/**
+ * The `project/format` extension: owns the `format` and `format.formatter` keys
+ * and the `format.formatters` slot, which takes one active formatter.
+ */
 export default {
   name: "project/format",
   owns: {

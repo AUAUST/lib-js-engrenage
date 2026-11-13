@@ -6,6 +6,11 @@ import type { LoadedConfig } from "#project/config/index";
 import type { Formatter } from "#project/format/ports/Formatter";
 import type { File } from "#types/File";
 
+/**
+ * Formats the file at `path`, resolved from the project root, in place with
+ * `formatter`, writing it only when its content changes. Rejects when the file
+ * cannot be read.
+ */
 export async function formatFile(
   path: File,
   { config, formatter }: { config: LoadedConfig; formatter: Formatter },

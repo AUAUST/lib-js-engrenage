@@ -2,6 +2,10 @@ import { stateDirectory } from "#project/config/constants";
 import type { Extension } from "#project/config/types/Extension";
 import type { FileLocation } from "#project/config/types/FileLocation";
 
+/**
+ * The `project/config` extension: owns the `extensions` and `resources` keys and
+ * the `state` directory resource.
+ */
 export default {
   name: "project/config",
   owns: {

@@ -3,6 +3,11 @@ import { entries, keys } from "@auaust/toolkit/object";
 import { editions as generatedEditions } from "#project/baseline/editions/index";
 
 // @debt the `editions` parameter type is repeated in three modules, and an edition key in the selection is assumed to be its base.
+/**
+ * Whether `selection` covers `library`, an ES library or edition name: it lists
+ * it, or lists an edition at or after the one holding it. `false` for a name no
+ * edition holds.
+ */
 export function includesEsLibrary(
   selection: readonly string[],
   library: string,

@@ -16,6 +16,10 @@ function listNodeMajors(): number[] {
   return [...majors];
 }
 
+/**
+ * The frozen Node runtime of `major`. Throws, naming `subject` as the setting,
+ * when node-releases does not list that major.
+ */
 export function resolveNodeRuntime(
   major: number,
   subject: string,

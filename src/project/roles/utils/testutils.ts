@@ -1,6 +1,10 @@
 import { createRolePreset } from "#project/roles/utils/createRolePreset";
 
 // @debt a role preset, not a utility: it likely belongs in a role directory of its own rather than among `utils`
+/**
+ * Preset of the `testutils` role, also read from `utils` directories: each module
+ * exporting its file's name, at the `effectful` level.
+ */
 export const testutils = createRolePreset({
   name: "testutils",
   aliases: ["utils"],

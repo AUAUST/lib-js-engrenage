@@ -3,6 +3,11 @@ import { entries, values } from "@auaust/toolkit/object";
 import { editions as generatedEditions } from "#project/baseline/editions/index";
 import { qualifiesAtSnapshot } from "#project/baseline/utils/qualifiesAtSnapshot";
 
+/**
+ * The ES libraries widely available at `snapshot`: the latest edition whose
+ * libraries all qualify, then each qualifying library of the later editions, in
+ * edition order. `undefined` when the first edition does not qualify.
+ */
 export function selectEsLibraries(
   snapshot: string,
   editions: Readonly<

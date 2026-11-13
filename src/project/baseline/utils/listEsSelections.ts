@@ -5,6 +5,11 @@ import { editions as generatedEditions } from "#project/baseline/editions/index"
 import { addMonths } from "#project/baseline/utils/addMonths";
 import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
 
+/**
+ * Each distinct library list `selectEsLibraries` returns, with the first month
+ * it applies from, in ascending order; the first entry starts at the earliest
+ * snapshot with a selection.
+ */
 export function listEsSelections(
   editions: Readonly<
     Record<string, Readonly<Record<string, string | null>>>

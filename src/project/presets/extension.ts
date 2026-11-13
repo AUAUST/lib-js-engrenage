@@ -1,6 +1,11 @@
 import { presetEntry } from "#project/presets/constants";
 import type { Extension } from "#project/config/index";
 
+/**
+ * The `project/presets` extension: owns the `preset`, `traits` and
+ * `traits.adjustments` keys and the `presets` slot, which takes one active
+ * preset, and contributes the `library` preset with the `published` trait.
+ */
 export default {
   name: "project/presets",
   owns: {

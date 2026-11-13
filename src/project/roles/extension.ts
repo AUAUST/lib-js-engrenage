@@ -5,6 +5,11 @@ const codeEnvironments = ["src", "tests", "scripts", "tooling"];
 
 const from = rolePresetsEntry;
 
+/**
+ * The `project/roles` extension: owns the `roles` slot and contributes the
+ * generic role presets of `@auaust/engrenage/roles`, each with the environments
+ * it fits.
+ */
 export default {
   name: "project/roles",
   owns: {

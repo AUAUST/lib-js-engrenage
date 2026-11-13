@@ -6,6 +6,9 @@ import type { Directory } from "#types/Directory";
 const validated = new WeakSet<LoadedConfig>();
 
 /**
+ * Loads the config as `loadConfig` does, then validates every key the configured
+ * extensions own, once per loaded config; rejects when a section is invalid.
+ *
  * @stable
  */
 export async function loadValidatedConfig(

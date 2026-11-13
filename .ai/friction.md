@@ -101,3 +101,5 @@
 - engrenage sync: ran it after adding a utils module imported through its barrel — sync loads the source, so the missing barrel export crashed it; added the barrel lines by hand first
 - worktree isolation guard: python heredoc writing JSDoc into a source file, then `git status` after the gate in one call — refused as unverifiable; moved the script to the scratchpad and split the calls
 - pnpm lint: first run in a fresh worktree printed other worktrees' lint reports interleaved with its own — rerunning gave clean output for the named paths
+- pnpm lint: read its stylish output — lines from other worktrees' concurrent runs interleaved with its own, garbling paths; reran with `--format json -o <file>`
+- worktree isolation guard: wrote files with heredocs holding `#` or `<…>` in a Bash call — refused as too complex to verify; used the Write tool or a scratch script instead

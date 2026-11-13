@@ -77,6 +77,14 @@ function refresh(root: Directory): void {
 
 // @debt `refresh` rides on `loadConfig` because an operations module exports one name and both need the cache; a role for module-level state would let it stand alone
 /**
+ * Loads the config of the project holding `cwd`, the process's by default:
+ * the nearest directory from `cwd` upwards with an engrenage config file or a
+ * `package.json`, else `cwd`; with `searchParents: false`, `cwd` only. Warns when
+ * no config file is found and rejects when the file exports no object. Sections
+ * are validated only when resolved. Memoized per project root, concurrent loads
+ * sharing one read; `refresh(root)` drops the root's entry so the next load reads
+ * it again.
+ *
  * @stable
  */
 export const loadConfig = assign(load, {

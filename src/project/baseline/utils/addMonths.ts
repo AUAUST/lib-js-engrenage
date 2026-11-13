@@ -3,6 +3,10 @@ import { floor } from "@auaust/toolkit/math";
 import { monthsPerYear } from "#project/baseline/constants";
 
 // @debt the day is kept as is, so the result can be an impossible date such as 2026-02-31; it only compares correctly as a string.
+/**
+ * Shifts the month of a `YYYY-MM-DD` date by `months`, negative included, keeping
+ * the day even when the new month lacks it.
+ */
 export function addMonths(date: string, months: number): string {
   const [year = 0, month = 1, day = ""] = date.split("-");
 

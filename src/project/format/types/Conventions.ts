@@ -1,3 +1,7 @@
+/**
+ * The project's formatting conventions, which each formatter adapter maps onto
+ * its tool's options.
+ */
 export interface Conventions {
   indent: "spaces" | "tabs";
   indentWidth: number;
