@@ -31,6 +31,7 @@ export const codexHooks = freeze([
   },
 ] as const) satisfies readonly HookDefinition[];
 
+// @debt Codex records no agent runs: its stop payload is not yet known to carry a transcript to read usage from
 // @debt Codex has no git bypass guard; its hook entries cannot filter on the command
 // @debt Codex commits skip the gate until a variable Codex sets in its shells is known
 export const codexAgentsDir = ".codex/agents" satisfies Directory;

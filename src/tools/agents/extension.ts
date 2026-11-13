@@ -2,6 +2,7 @@ import {
   agentLoaderEntry,
   agentRuntimeEntry,
   agentsTarget,
+  agentStatsDirectory,
 } from "#tools/agents/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
@@ -26,6 +27,13 @@ export default {
       },
     },
     files: {
+      "agents.stats": {
+        title: "Agent stats",
+        committed: false,
+        locate(): FileLocation {
+          return { directory: agentStatsDirectory };
+        },
+      },
       "agents.instructions": {
         async locate(config): Promise<FileLocation | undefined> {
           const { instructionFiles } = await config.resolve("agents");

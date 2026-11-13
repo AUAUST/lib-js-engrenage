@@ -10,6 +10,8 @@ export const claudeSettingsFile = ".claude/settings.json" satisfies File;
 
 export const claudeShellVariable = "CLAUDECODE";
 
+export const claudeSessionVariable = "CLAUDE_CODE_SESSION_ID";
+
 export const claudeHookPrefix = "pnpm --silent engrenage agents claude hook ";
 
 export const claudeHooks = freeze([
@@ -37,6 +39,14 @@ export const claudeHooks = freeze([
     command: `${claudeHookPrefix}dispatch`,
     onFailure: "block",
   } as const satisfies HookDefinition,
+  ...(["Stop", "SubagentStop"] as const).map((event) => {
+    return {
+      event,
+      matcher: "*",
+      command: `${claudeHookPrefix}record`,
+      async: true,
+    } as const satisfies HookDefinition;
+  }),
 ]) satisfies readonly HookDefinition[];
 
 export const claudeStopHook = freeze({

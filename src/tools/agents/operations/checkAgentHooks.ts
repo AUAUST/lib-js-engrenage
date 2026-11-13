@@ -16,12 +16,13 @@ import {
   claudeSettingsFile,
 } from "#tools/agents/claude/constants";
 import { codexHooks, codexHooksFile } from "#tools/agents/codex/constants";
-import { createHookCommand } from "#tools/agents/utils/createHookCommand";
+import { matchesHookEntry } from "#tools/agents/utils/matchesHookEntry";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Agent } from "#tools/agents/types/Agent";
 import type { AgentCheckFinding } from "#tools/agents/types/AgentCheckFinding";
 import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 
+// @debt duplicates the hooks schema of syncHooks
 const hooksSchema = optional(
   record(
     string(),
@@ -34,6 +35,7 @@ const hooksSchema = optional(
               command: optional(string()),
               if: optional(string()),
               onFailure: optional(string()),
+              async: optional(boolean()),
             }),
           ),
         ),
@@ -100,13 +102,7 @@ export async function checkAgentHooks(
         const found = present[hook.event]?.some((group) => {
           return (
             group.matcher === hook.matcher &&
-            group.hooks?.some((entry) => {
-              return (
-                entry.command === createHookCommand(hook.command) &&
-                entry.if === hook.condition &&
-                entry.onFailure === hook.onFailure
-              );
-            })
+            group.hooks?.some((entry) => matchesHookEntry(entry, hook))
           );
         });
 

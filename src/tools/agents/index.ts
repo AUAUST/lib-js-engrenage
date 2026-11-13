@@ -1,16 +1,19 @@
+export { claudeSessionVariable } from "#tools/agents/claude/constants";
 export {
   createClaudeSettingsStep,
   createClaudeStep,
   syncClaudeSettings,
 } from "#tools/agents/claude/index";
+export { readClaudeTranscript } from "#tools/agents/claude/index";
 export { codexFile } from "#tools/agents/codex/constants";
 export {
   createCodexHooksStep,
   createCodexStep,
   syncCodexFiles,
 } from "#tools/agents/codex/index";
-export { agentShellVariables } from "#tools/agents/constants";
+export { agentShellVariables, mainAgent } from "#tools/agents/constants";
 export { filterAgents } from "#tools/agents/utils/filterAgents";
+export { formatAgentRuns } from "#tools/agents/utils/formatAgentRuns";
 export { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 export { isHookCommand } from "#tools/agents/utils/isHookCommand";
 export { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
@@ -46,6 +49,8 @@ export { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 export { listLocalFilePatterns } from "#tools/agents/operations/listLocalFilePatterns";
 export { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 export { parseInstruction } from "#tools/agents/operations/parseInstruction";
+export { readAgentRun } from "#tools/agents/operations/readAgentRun";
+export { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
 export { readHookPayload } from "#tools/agents/operations/readHookPayload";
 export { reportAgentChecks } from "#tools/agents/operations/reportAgentChecks";
 export { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
@@ -53,6 +58,7 @@ export { reportSyncedAgentChecks } from "#tools/agents/operations/reportSyncedAg
 export { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 export { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 export { syncHooks } from "#tools/agents/operations/syncHooks";
+export { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
 // @end
 
 // @barrel ports
@@ -72,8 +78,11 @@ export { skillSchema } from "#tools/agents/config/schemas/skillSchema";
 // @barrel types
 export type * from "#tools/agents/types/Agent";
 export type * from "#tools/agents/types/AgentCheckFinding";
+export type * from "#tools/agents/types/AgentRun";
 export type * from "#tools/agents/types/AgentSections";
 export type * from "#tools/agents/types/AgentsInput";
+export type * from "#tools/agents/types/AgentTokens";
+export type * from "#tools/agents/types/AgentUsage";
 export type * from "#tools/agents/types/BudgetFinding";
 export type * from "#tools/agents/types/BudgetKind";
 export type * from "#tools/agents/types/BudgetMode";

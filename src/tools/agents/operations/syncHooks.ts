@@ -1,4 +1,4 @@
-import { array, looseObject, optional, record, string } from "valibot";
+import { array, boolean, looseObject, optional, record, string } from "valibot";
 
 import { entries as toEntries } from "@auaust/toolkit/object";
 
@@ -7,6 +7,7 @@ import { readJsonValue, writeJsonValue } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
 import { createHookCommand } from "#tools/agents/utils/createHookCommand";
+import { matchesHookEntry } from "#tools/agents/utils/matchesHookEntry";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 import type { File } from "#types/File";
@@ -23,6 +24,7 @@ const hooksSchema = optional(
               command: optional(string()),
               if: optional(string()),
               onFailure: optional(string()),
+              async: optional(boolean()),
             }),
           ),
         ),
@@ -45,10 +47,6 @@ export async function syncHooks(
     prefix,
   }: { file: File; hooks: readonly HookDefinition[]; prefix: string },
 ) {
-  const produced = hooks.map((hook) => {
-    return { ...hook, command: createHookCommand(hook.command) };
-  });
-
   const wrapped = createHookCommand(prefix);
 
   const ownedPrefix = wrapped.slice(0, wrapped.indexOf(prefix) + prefix.length);
@@ -80,17 +78,13 @@ export async function syncHooks(
   function isProduced(
     event: string,
     matcher: string | undefined,
-    command: string | undefined,
-    condition: string | undefined,
-    onFailure: string | undefined,
+    entry: Parameters<typeof matchesHookEntry>[0],
   ) {
-    return produced.some((hook) => {
+    return hooks.some((hook) => {
       return (
         hook.event === event &&
         hook.matcher === matcher &&
-        hook.command === command &&
-        hook.condition === condition &&
-        hook.onFailure === onFailure
+        matchesHookEntry(entry, hook)
       );
     });
   }
@@ -107,11 +101,11 @@ export async function syncHooks(
         .map((entry, index) => {
           return { entry, index };
         })
-        .filter(({ entry: { command, if: condition, onFailure } }) => {
+        .filter(({ entry }) => {
           return (
-            (command?.startsWith(prefix) === true ||
-              command?.startsWith(ownedPrefix) === true) &&
-            !isProduced(event, matcher, command, condition, onFailure)
+            (entry.command?.startsWith(prefix) === true ||
+              entry.command?.startsWith(ownedPrefix) === true) &&
+            !isProduced(event, matcher, entry)
           );
         });
 
@@ -137,17 +131,13 @@ export async function syncHooks(
 
   const present = read();
 
-  for (const { event, matcher, command, condition, onFailure } of produced) {
+  for (const hook of hooks) {
+    const { event, matcher, command, condition, onFailure, async } = hook;
+
     const found = present[event]?.some((group) => {
       return (
         group.matcher === matcher &&
-        group.hooks?.some((entry) => {
-          return (
-            entry.command === command &&
-            entry.if === condition &&
-            entry.onFailure === onFailure
-          );
-        })
+        group.hooks?.some((entry) => matchesHookEntry(entry, hook))
       );
     });
 
@@ -161,9 +151,10 @@ export async function syncHooks(
           hooks: [
             {
               type: "command",
-              command,
+              command: createHookCommand(command),
               ...(condition === undefined ? {} : { if: condition }),
               ...(onFailure === undefined ? {} : { onFailure }),
+              ...(async === undefined ? {} : { async }),
             },
           ],
         },

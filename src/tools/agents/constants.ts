@@ -6,6 +6,7 @@ import { freeze } from "@auaust/toolkit/object";
 import { engrenage } from "#constants";
 import { claudeShellVariable } from "#tools/agents/claude/constants";
 import type { Agent } from "#tools/agents/types/Agent";
+import type { AgentTokens } from "#tools/agents/types/AgentTokens";
 import type { BlockSyntax } from "#types/BlockSyntax";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -122,8 +123,21 @@ export const defaultSubagentCacheTtl = "1h" as const;
 export const hookEvents = freeze([
   "PreToolUse",
   "PostToolUse",
+  "Stop",
   "SubagentStop",
 ] as const);
+
+export const agentStatsDirectory = ".ai/stats" satisfies Directory;
+
+export const mainAgent = "main";
+
+export const tokenWeights = freeze({
+  input: 1,
+  cacheRead: 0.1,
+  cacheWrite5m: 1.25,
+  cacheWrite1h: 2,
+  output: 5,
+} as const) satisfies Record<keyof AgentTokens, number>;
 
 export const defaultInstructionFiles = freeze([
   "AGENTS.md",
