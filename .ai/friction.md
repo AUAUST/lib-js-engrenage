@@ -95,3 +95,4 @@
 - worktree isolation: chained `git diff` after other commands in one Bash call — refused as unverifiable; split into separate calls
 - `engrenage gate --worktree`: first gate run in a worktree — printed a vitest failure (`listDebtMarkers` timeout) run from another agent worktree yet exited 0; reran the gate, which passed silently
 - npx tsc: ran to type check — devEngines rejects npm; used pnpm exec tsc
+- `engrenage planning issue publish`: published a root Segment with no parent Plan — refused as "parent Plan outside the set"; rooted it under a new Plan
