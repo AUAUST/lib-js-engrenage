@@ -11,6 +11,12 @@ import type { InlineConfig } from "#tools/tsdown/types/InlineConfig";
 import type { Options } from "#tools/tsdown/types/Options";
 import type { Resolvable } from "#types/Resolvable";
 
+/**
+ * Returns a tsdown config function building the config of the project in the
+ * current working directory, then merging `configs` over it in order. `options`
+ * and `configs` resolve with the loaded config and tsdown's inline config and
+ * context.
+ */
 export function defineTsdownConfig(
   options?: Resolvable<Options, [LoadedConfig, InlineConfig, ConfigContext]>,
   ...configs: readonly Resolvable<

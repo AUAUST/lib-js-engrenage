@@ -26,6 +26,12 @@ function createOverrides(
   });
 }
 
+/**
+ * Builds the Prettier config of a loaded config: engrenage's fixed options,
+ * then the formatting conventions, then `options`. Plugins of `options` come
+ * first, then contributed plugins, then engrenage's layout and printer plugins;
+ * contributed overrides precede those of `options`.
+ */
 export async function createPrettierConfig(
   config: LoadedConfig,
   options: Config = {},

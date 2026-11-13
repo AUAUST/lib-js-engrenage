@@ -1,6 +1,10 @@
 import { typescript } from "#tools/typescript/tsc/constants";
 import type { Extension } from "#project/config/index";
 
+/**
+ * Built-in TypeScript compiler extension, active when `typescript` is installed:
+ * runs type checking in the agents' gate.
+ */
 export default {
   name: "tools/typescript/tsc",
   when: {

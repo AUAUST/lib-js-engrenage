@@ -3,6 +3,10 @@ import type { Plugin } from "#tools/vite/index";
 import type { Directory } from "#types/Directory";
 import type { PackageName } from "#types/PackageName";
 
+/**
+ * Creates a Vite plugin failing a test run that imports the package by its own
+ * name and resolves into `outDir`, so source tests never run against built files.
+ */
 export function createOutDirGuard(
   name: string,
   {

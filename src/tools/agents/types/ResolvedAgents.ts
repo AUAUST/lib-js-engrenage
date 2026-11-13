@@ -5,6 +5,10 @@ import type { SubagentCacheTtl } from "#tools/agents/types/SubagentCacheTtl";
 import type { Directory } from "#types/Directory";
 import type { Globs } from "#types/Globs";
 
+/**
+ * The resolved `agents` config section. `preferred` is `undefined` when unset,
+ * and resolution throws when it names a runtime no active extension registers.
+ */
 export interface ResolvedAgents {
   readonly preferred: readonly Agent[] | undefined;
   readonly codexHooks: boolean | undefined;

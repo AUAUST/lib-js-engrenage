@@ -13,6 +13,11 @@ import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
 /**
+ * Creates a convention from its rule or delegates, each a value or a function
+ * of the picked `sections` values and the config context. Defaults: code files,
+ * no ignores, `error` severity, enabled with no trait or package required, not
+ * type-aware.
+ *
  * @experimental
  */
 export function defineConvention<

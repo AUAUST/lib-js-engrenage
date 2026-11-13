@@ -2,6 +2,10 @@ import { vite } from "#tools/vite/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 // @debt the extension owns no config key, so its options come only from definer arguments
+/**
+ * Built-in Vite extension, active when `vite` is installed: owns its cache and
+ * registers Vite as a build tool.
+ */
 export default {
   name: "tools/vite",
   when: {

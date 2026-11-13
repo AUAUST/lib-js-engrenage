@@ -2,6 +2,10 @@ import { isWithin } from "#foundation/filesystem/index";
 import type { Plugin } from "#tools/vite/index";
 import type { Directories } from "#types/Directories";
 
+/**
+ * Creates a Vite plugin failing a test run in which any import resolves into
+ * `sourceDirs`, so build tests never run against sources.
+ */
 export function createSourceGuard(
   name: string,
   {

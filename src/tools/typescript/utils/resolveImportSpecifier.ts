@@ -48,6 +48,12 @@ function matchSpecifier(
   };
 }
 
+/**
+ * Returns the `#` specifier importing `file` through the subpath import whose
+ * target matches it most specifically, an exact target first. Throws when no
+ * import matches, when the most specific ones tie, or when a target holds several
+ * `*`.
+ */
 export function resolveImportSpecifier(
   imports: SubpathImports,
   file: File,

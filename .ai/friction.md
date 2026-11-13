@@ -105,3 +105,5 @@
 - worktree isolation guard: wrote files with heredocs holding `#` or `<…>` in a Bash call — refused as too complex to verify; used the Write tool or a scratch script instead
 - worktree guard: `cat > file <<EOF` heredoc and inline Python heredoc writing files under `src/project/` in an agent worktree — refused as too complex to verify; used Write and a scratchpad script
 - `pnpm lint <paths>`: listed one reach's `auaust/documented` warnings — output interleaved findings from other agent worktrees' files; filtered on this worktree's path
+- scratchpad: wrote spec files under generic names in the session scratchpad — a parallel worker shares the directory and overwrote them; moved to a per-issue subdirectory
+- worktree isolation guard: ran shell commands whose text contains the word "git" (directory names, echo text) — refused as unverifiable git commands; moved them into a script file

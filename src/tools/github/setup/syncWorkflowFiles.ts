@@ -25,6 +25,11 @@ async function assertScripts(
   }
 }
 
+/**
+ * Rewrites the existing workflow files of the configured set, creating none.
+ * Does nothing when `github.workflows` is `false` or no file of the set exists;
+ * throws when `package.json` lacks a script the workflows run.
+ */
 export async function syncWorkflowFiles(config: LoadedConfig) {
   const { workflows: name } = await config.resolve("github");
 

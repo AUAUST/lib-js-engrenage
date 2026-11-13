@@ -6,6 +6,11 @@ import type { Files } from "#types/Files";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
+/**
+ * The resolved `git` config section. `root` is the repository root, which may
+ * lie above the project root, and `filesystem` is rooted there; the promised
+ * values are computed on each read.
+ */
 export interface ResolvedGit {
   readonly local: {
     readonly gitignore: boolean;

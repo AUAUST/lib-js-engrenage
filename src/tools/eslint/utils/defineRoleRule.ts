@@ -4,6 +4,10 @@ import { createRuleMeta } from "#tools/eslint/utils/createRuleMeta";
 import type { Entity, EnvironmentFileNames } from "#project/structure/index";
 import type { RoleRule } from "#tools/eslint/ports/RoleRule";
 
+/**
+ * Creates an ESLint rule a role preset carries, with `description` and `messages`
+ * as its metadata.
+ */
 export function defineRoleRule({
   description,
   messages,

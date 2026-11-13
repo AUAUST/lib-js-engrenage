@@ -5,6 +5,10 @@ import {
 } from "#tools/agents/claude/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
+/**
+ * Built-in Claude extension: owns `CLAUDE.md` and `.claude/settings.json`,
+ * registers the `claude` agent runtime and syncs Claude's settings.
+ */
 export default {
   name: "tools/agents/claude",
   owns: {

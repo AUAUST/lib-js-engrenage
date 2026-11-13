@@ -88,6 +88,10 @@ function createTarget(
 }
 
 /**
+ * Creates a convention reporting imports and re-exports from `source`, or only
+ * its listed `imports` (`default` and `*` naming default and namespace imports),
+ * with a message naming `replacement`.
+ *
  * @experimental
  */
 export function defineImportReplacement({

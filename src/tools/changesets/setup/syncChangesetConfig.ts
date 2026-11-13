@@ -41,6 +41,12 @@ async function resolveConfigVersion(packageJsonPath: File): Promise<string> {
   }
 }
 
+/**
+ * Points the `$schema` of an existing `.changeset/config.json` to the installed
+ * config version and, for a published package, sets its `access` from the package
+ * visibility. Does nothing without the file; throws without a `package.json` or
+ * when the installed version cannot be read.
+ */
 export async function syncChangesetConfig(config: LoadedConfig) {
   const filesystem = config.context.filesystem;
 

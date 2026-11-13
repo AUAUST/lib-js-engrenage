@@ -2,6 +2,10 @@ import { vitest } from "#tools/vitest/constants";
 import type { Extension } from "#project/config/index";
 
 // @debt the extension owns no config key, so its options come only from definer arguments
+/**
+ * Built-in Vitest extension, active when `vitest` is installed: runs the tests
+ * in the agents' gate.
+ */
 export default {
   name: "tools/vitest",
   when: {

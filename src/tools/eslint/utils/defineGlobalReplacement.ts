@@ -44,6 +44,9 @@ function createTarget(
 }
 
 /**
+ * Creates a convention reporting reads of `global`, or of its listed `properties`,
+ * by member access or destructuring, with a message naming `replacement`.
+ *
  * @experimental
  */
 export function defineGlobalReplacement({

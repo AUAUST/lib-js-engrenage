@@ -26,6 +26,11 @@ async function createUncommittedIgnores(
   });
 }
 
+/**
+ * Fills each `# @ignore <preset>` block of the project's `.gitignore` with that
+ * preset's globs, the `project` preset listing the uncommitted resources. Does
+ * nothing without the file; throws on an unknown preset.
+ */
 export async function syncGitignoreFile(config: LoadedConfig) {
   const [root, filesystem, resolve, resources, project] = await Promise.all([
     config.context.root,

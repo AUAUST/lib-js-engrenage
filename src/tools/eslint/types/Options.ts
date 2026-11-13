@@ -18,4 +18,8 @@ type ContributedOptions = {
       >;
 };
 
+/**
+ * Options of `defineEslintConfig`: built-in rule groups and convention categories,
+ * contributed categories included, each `true` by default.
+ */
 export type Options = BuiltInOptions & ContributedOptions;

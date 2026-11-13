@@ -186,6 +186,12 @@ async function createSettingsEdits(
   return [...integrationEdits, schemas];
 }
 
+/**
+ * Merges the settings and extension recommendations of the project's tools into
+ * `.vscode/settings.json` and `.vscode/extensions.json`. Each file is written
+ * when its option is `true`, or with the option unset when its flag is set or
+ * the file exists; never when the option is `false`.
+ */
 export async function syncVscodeFiles(
   config: LoadedConfig,
   {

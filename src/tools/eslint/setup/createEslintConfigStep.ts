@@ -5,6 +5,11 @@ import {
   type Step,
 } from "#project/steps/index";
 
+/**
+ * Init step writing an `eslint.config.ts` that calls `defineEslintConfig` and
+ * adding `eslint` and `typescript` as dev dependencies, offered when the project
+ * has no ESLint config file.
+ */
 export function createEslintConfigStep(): Step {
   const file = `${eslint}.config.ts`;
 

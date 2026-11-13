@@ -6,6 +6,11 @@ import {
 } from "#tools/agents/codex/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
+/**
+ * Built-in Codex extension: owns `AGENTS.override.md` while `codex` is a
+ * preferred agent, `.codex/hooks.json` and the Codex agents directory, registers
+ * the `codex` agent runtime and syncs Codex files.
+ */
 export default {
   name: "tools/agents/codex",
   owns: {

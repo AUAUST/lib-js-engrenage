@@ -1,6 +1,11 @@
 import { loadPrettier } from "#tools/prettier/operations/loadPrettier";
 import type { Formatter } from "#project/format/ports/Formatter";
 
+/**
+ * Formats `content` as the file at `path` with the project's Prettier config.
+ * Resolves to `undefined` when Prettier is not installed in the project, the
+ * file is ignored or Prettier infers no parser for it.
+ */
 export const formatWithPrettier: Formatter = async (
   content,
   { path, config },

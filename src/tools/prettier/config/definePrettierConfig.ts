@@ -5,6 +5,10 @@ import { createPrettierConfig } from "#tools/prettier/operations/createPrettierC
 import type { Config } from "#tools/prettier/types/Config";
 import type { Resolvable } from "#types/Resolvable";
 
+/**
+ * Builds the Prettier config of the project in the current working directory, with
+ * `options`, resolved with the loaded config, overriding engrenage's options.
+ */
 export async function definePrettierConfig(
   options?: Resolvable<Config, [LoadedConfig]>,
 ): Promise<Config> {

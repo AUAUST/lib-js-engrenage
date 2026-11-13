@@ -1,5 +1,10 @@
 import { createRolePreset } from "#project/roles/index";
 
+/**
+ * Role preset for a domain's `extension.ts`: its default-exported extension,
+ * collected across domains, with its imports checked by the `extension-imports`
+ * rule.
+ */
 export const extension = createRolePreset({
   name: "extension",
   purpose: "The domain's extension: data and lazy loaders, read without loading the domain.",

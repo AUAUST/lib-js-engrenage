@@ -89,6 +89,12 @@ async function createTestsInclude(
   ];
 }
 
+/**
+ * Builds the Vitest config of a loaded config, testing sources, or the build
+ * output in `build` mode, with guards against importing the other. Throws on
+ * invalid options, or in `build` mode when the dist tsconfig engrenage owns does
+ * not exist.
+ */
 export async function createVitestConfig(
   config: LoadedConfig,
   { mode }: ConfigEnv,

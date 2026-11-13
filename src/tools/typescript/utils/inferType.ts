@@ -60,6 +60,11 @@ function renderObject(
     : "{}";
 }
 
+/**
+ * Renders the TypeScript type of a JSON value: widened to `string`, `number`,
+ * `boolean` and arrays of their union, or, when `exact`, as readonly literal
+ * types and tuples. `indent` prefixes the lines of nested object types.
+ */
 export function inferType(
   value: JsonValue,
   exact: boolean,

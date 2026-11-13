@@ -6,6 +6,9 @@ import type { RuleOptions } from "#tools/eslint/types/RuleOptions";
 import type { Rules } from "#tools/eslint/types/Rules";
 
 /**
+ * Creates a delegate wrapping the `upstream` rule with default `options`, named
+ * by default after the upstream rule without its plugin prefix.
+ *
  * @experimental
  */
 export function delegateRule<Id extends keyof Rules & string>(

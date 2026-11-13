@@ -6,6 +6,10 @@ import type { ConfigFn } from "#tools/vitest/types/ConfigFn";
 import type { Options } from "#tools/vitest/types/Options";
 import type { Resolvable } from "#types/Resolvable";
 
+/**
+ * Returns a Vite config function adding engrenage's Vitest config to the Vite
+ * config, then merging `configs` over it in order.
+ */
 export function defineVitestConfig(
   options?: Resolvable<Options, [LoadedConfig, ConfigEnv]>,
   ...configs: readonly Resolvable<Config, [LoadedConfig, ConfigEnv]>[]

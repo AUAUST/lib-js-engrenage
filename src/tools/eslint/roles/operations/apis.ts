@@ -1,5 +1,9 @@
 import { createRolePreset } from "#project/roles/index";
 
+/**
+ * Role preset for `apis/` modules: one type-only interface per module, checked
+ * by the `api-interface` rule.
+ */
 export const apis = createRolePreset({
   name: "apis",
   purpose: "Interfaces of the objects the domain creates and hands out, one per module.",

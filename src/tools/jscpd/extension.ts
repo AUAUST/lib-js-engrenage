@@ -1,6 +1,10 @@
 import { jscpd } from "#tools/jscpd/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
+/**
+ * Built-in jscpd extension, active when `jscpd` is installed: owns its cache and
+ * runs duplicate detection in the agents' gate.
+ */
 export default {
   name: "tools/jscpd",
   when: {

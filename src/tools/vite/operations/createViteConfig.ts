@@ -8,6 +8,11 @@ import { createEmittedManifestPlugin } from "#tools/vite/plugins/createEmittedMa
 import type { LoadedConfig } from "#project/config/index";
 import type { Config } from "#tools/vite/types/Config";
 
+/**
+ * Builds the Vite config of a loaded config: root, tsconfig paths, defined
+ * globals and build output, emptying the output directory only when `build.clean`
+ * is `all`. `isTesting` drops build-only globals instead of test-only ones.
+ */
 export async function createViteConfig(
   config: LoadedConfig,
   { isTesting }: { isTesting: boolean },

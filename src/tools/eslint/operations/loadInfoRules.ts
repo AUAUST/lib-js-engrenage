@@ -33,6 +33,11 @@ async function loadEslintConfigs(root: Directory) {
   return validate(loadedConfigsSchema, loaded, _configFile);
 }
 
+/**
+ * Lists, sorted, the rules the project's ESLint config sets to `info` in its last
+ * config object setting them; without a config file, reads engrenage's default
+ * config instead.
+ */
 export async function loadInfoRules(root: Directory): Promise<string[]> {
   const infoRules = new Set<string>();
 

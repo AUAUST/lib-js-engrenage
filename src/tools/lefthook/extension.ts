@@ -1,6 +1,9 @@
 import { lefthookFile } from "#tools/lefthook/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
+/**
+ * Built-in Lefthook extension: owns `lefthook.yml` and syncs it.
+ */
 export default {
   name: "tools/lefthook",
   owns: {

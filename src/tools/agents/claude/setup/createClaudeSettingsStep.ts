@@ -7,6 +7,11 @@ import { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSetting
 import type { Step } from "#project/steps/index";
 import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 
+/**
+ * Init step creating `.claude/settings.json` with engrenage's hooks, offered
+ * when `claude` is a preferred agent, `CLAUDE.md` exists, the settings file does
+ * not and `agents.claudeSettings` is not `false`.
+ */
 export function createClaudeSettingsStep(): Step {
   return {
     name: claudeSettingsFile,

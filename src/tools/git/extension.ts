@@ -1,5 +1,9 @@
 import type { Extension, FileLocation } from "#project/config/index";
 
+/**
+ * Built-in Git extension: owns the `git` config key and `.gitignore`, and syncs
+ * its `@ignore` blocks.
+ */
 export default {
   name: "tools/git",
   owns: {

@@ -154,6 +154,12 @@ async function listActiveExtensions(
   return extensions.filter((_, index) => active[index]);
 }
 
+/**
+ * Syncs agent files when an agent is preferred: the `@reference` blocks of
+ * instruction files from their fragments, generated skill and rule files,
+ * attribution rules and Codex instructions. A reference that cannot be resolved
+ * leaves its block untouched and logs a warning.
+ */
 export async function syncAgentFiles(loaded: LoadedConfig) {
   const { resolve, context } = loaded;
 

@@ -12,6 +12,11 @@ import type { ConfigFn } from "#tools/vite/types/ConfigFn";
 import type { Options } from "#tools/vite/types/Options";
 import type { Resolvable } from "#types/Resolvable";
 
+/**
+ * Returns a Vite config function building the config of the project in the
+ * current working directory, then merging the `test` option and `configs` over
+ * it in order, each resolved with the loaded config and Vite's config env.
+ */
 export function defineViteConfig(
   options?: Resolvable<Options, [LoadedConfig, ConfigEnv]>,
   ...configs: readonly Resolvable<Config, [LoadedConfig, ConfigEnv]>[]

@@ -11,6 +11,12 @@ import type { ConfigWithExtends } from "#tools/eslint/types/ConfigWithExtends";
 import type { Options } from "#tools/eslint/types/Options";
 import type { Resolvable } from "#types/Resolvable";
 
+/**
+ * Builds the ESLint config of the project in the current working directory from
+ * engrenage's options, then appends `configs`, each resolved with the loaded
+ * config. Rule entries set to `info` in `configs` are reported as warnings and
+ * listed as info rules.
+ */
 export async function defineEslintConfig(
   options?: Resolvable<Options, [LoadedConfig]>,
   ...configs: Resolvable<ConfigWithExtends, [LoadedConfig]>[]

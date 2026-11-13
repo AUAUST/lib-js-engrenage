@@ -116,6 +116,13 @@ async function syncSubagentCacheTtl(
   }
 }
 
+/**
+ * Writes engrenage's hooks, permissions, subagent cache TTL and attribution into
+ * `.claude/settings.json`, keeping the entries it does not own. Does nothing
+ * unless `claude` is a preferred agent and `agents.claudeSettings` is not `false`;
+ * with the option unset, it writes only when the file exists, `settings` is set
+ * or attribution is disabled.
+ */
 export async function syncClaudeSettings(
   { resolve, context }: LoadedConfig,
   { settings = false }: { settings?: boolean } = {},

@@ -5,6 +5,9 @@ import type { ScopeReferences } from "#tools/eslint/types/ScopeReferences";
 import type { PackageNames } from "#types/PackageNames";
 
 /**
+ * Creates a convention reporting every node `selector` matches, with a message
+ * asking to use `replacement` instead of `target`.
+ *
  * @experimental
  */
 export function defineReplacement({

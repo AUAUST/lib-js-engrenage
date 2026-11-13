@@ -1,6 +1,10 @@
 import { extensionsFile, settingsFile } from "#tools/vscode/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
+/**
+ * Built-in VS Code extension: owns `.vscode/settings.json`,
+ * `.vscode/extensions.json` and the `vscode` config key, and syncs both files.
+ */
 export default {
   name: "tools/vscode",
   owns: {
