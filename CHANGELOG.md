@@ -1,5 +1,17 @@
 # @auaust/engrenage
 
+## 0.11.1
+
+### Patch Changes
+
+- [`d0fcbca`](https://github.com/AUAUST/lib-js-engrenage/commit/d0fcbca512a77b819530c4369dc721b9c5419629) Thanks [@apademide](https://github.com/apademide)! - Claude sessions and subagents record their runs (turns, tools, tokens, context, stops) under the gitignored `.ai/stats` on each stop, and `engrenage agents stats` reports a session's runs by role and agent in weighted units.
+
+- [`a50441c`](https://github.com/AUAUST/lib-js-engrenage/commit/a50441c8403e583a073fa16741e2bff4f598b148) Thanks [@apademide](https://github.com/apademide)! - Claude agents declare a `tools` allowlist, so they no longer inherit the client's whole tool surface.
+
+- [`aeb204e`](https://github.com/AUAUST/lib-js-engrenage/commit/aeb204ebecf07b8fe63fb75720561f2c94a9cd9d) Thanks [@apademide](https://github.com/apademide)! - Built-in extensions register in the order of their names, so their contributions, such as `.prettierignore` groups, come out in the same order from source and from the built package.
+
+- [`87862a2`](https://github.com/AUAUST/lib-js-engrenage/commit/87862a220120e3d6582977b1bd4e86e4d507d05e) Thanks [@apademide](https://github.com/apademide)! - Concurrent walks integrate leaves through one resumed, light merger per segment and run a full review merger at each segment's close, as sequential walks do.
+
 ## 0.11.0
 
 ### Minor Changes
