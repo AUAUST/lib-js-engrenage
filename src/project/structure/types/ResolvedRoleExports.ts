@@ -3,7 +3,9 @@ import type {
   roleValueExportStyles,
 } from "#project/roles/constants";
 
-/** @experimental */
+/**
+ * @experimental
+ */
 export interface ResolvedRoleExports {
   readonly values: (typeof roleValueExportStyles)[number] | undefined;
   readonly types: (typeof roleTypeExportStyles)[number] | undefined;

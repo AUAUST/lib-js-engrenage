@@ -1,7 +1,9 @@
 import type { Files } from "#types/Files";
 import type { Globs } from "#types/Globs";
 
-/** @experimental */
+/**
+ * @experimental
+ */
 export interface CardinalityViolation {
   readonly role: string;
   readonly reason: "unique" | "required";

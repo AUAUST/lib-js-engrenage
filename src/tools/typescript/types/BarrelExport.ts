@@ -1,6 +1,8 @@
 import type { File } from "#types/File";
 
-/** @experimental */
+/**
+ * @experimental
+ */
 export interface BarrelExport {
   readonly file: File;
   readonly binding?: string;

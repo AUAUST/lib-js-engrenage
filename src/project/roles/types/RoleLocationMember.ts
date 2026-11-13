@@ -1,6 +1,8 @@
 import type { Directory } from "#types/Directory";
 
-/** @experimental */
+/**
+ * @experimental
+ */
 export interface RoleLocationMember {
   readonly name: string;
   readonly path: Directory;

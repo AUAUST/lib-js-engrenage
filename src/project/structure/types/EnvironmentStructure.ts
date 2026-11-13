@@ -3,7 +3,9 @@ import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureRole } from "#project/structure/types/StructureRole";
 import type { Directories } from "#types/Directories";
 
-/** @experimental */
+/**
+ * @experimental
+ */
 export interface EnvironmentStructure extends EnvironmentFileNames {
   readonly name: string;
   readonly dirs: Directories;

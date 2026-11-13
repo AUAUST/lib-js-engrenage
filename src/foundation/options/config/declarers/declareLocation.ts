@@ -6,7 +6,9 @@ import type { Description } from "#foundation/options/types/Description";
 import type { ResolvedLocation } from "#foundation/options/types/ResolvedLocation";
 import type { File } from "#types/File";
 
-/** @stable */
+/**
+ * @stable
+ */
 export function declareLocation(options: {
   description: Description;
   optional: { readonly value: File; readonly explain?: string };

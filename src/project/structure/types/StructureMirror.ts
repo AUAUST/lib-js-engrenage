@@ -1,6 +1,8 @@
 import type { Directory } from "#types/Directory";
 
-/** @experimental */
+/**
+ * @experimental
+ */
 export interface StructureMirror {
   readonly environment: string;
   readonly path: Directory;

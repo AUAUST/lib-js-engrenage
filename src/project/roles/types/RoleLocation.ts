@@ -1,6 +1,8 @@
 import type { RoleLocationMember } from "#project/roles/types/RoleLocationMember";
 
-/** @experimental */
+/**
+ * @experimental
+ */
 export interface RoleLocation {
   readonly environment: string;
   readonly lineage: readonly RoleLocationMember[];

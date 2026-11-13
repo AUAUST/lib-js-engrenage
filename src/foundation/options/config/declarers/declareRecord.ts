@@ -9,7 +9,9 @@ import type { Declaration } from "#foundation/options/types/Declaration";
 import type { Default } from "#foundation/options/types/Default";
 import type { Description } from "#foundation/options/types/Description";
 
-/** @stable */
+/**
+ * @stable
+ */
 export function declareRecord<
   Input,
   Output,

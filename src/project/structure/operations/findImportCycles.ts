@@ -213,7 +213,7 @@ function shortestCycle(
   return [start, start];
 }
 
-/** @debt without `verbatimModuleSyntax`, elision is decided per file as under `isolatedModules`, so a value-style re-export of a type-only module still counts as a runtime edge */
+// @debt without `verbatimModuleSyntax`, elision is decided per file as under `isolatedModules`, so a value-style re-export of a type-only module still counts as a runtime edge
 export async function findImportCycles({
   root,
   filesystem,

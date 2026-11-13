@@ -11,7 +11,9 @@ import type { Description } from "#foundation/options/types/Description";
 
 type Unless<Flag, Value> = [Flag] extends [never] ? never : Value;
 
-/** @stable */
+/**
+ * @stable
+ */
 export function declare<
   Base extends GenericSchema,
   Resolved,
@@ -36,7 +38,9 @@ export function declare<
   NoInfer<Resolved> | NoInfer<Disabled>,
   NoInfer<Context>
 >;
-/** @stable */
+/**
+ * @stable
+ */
 export function declare<
   Base extends GenericSchema,
   const Fallback = never,

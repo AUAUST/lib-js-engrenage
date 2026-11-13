@@ -1,4 +1,6 @@
 import type { reexportModes } from "#project/roles/constants";
 
-/** @experimental */
+/**
+ * @experimental
+ */
 export type ReexportMode = (typeof reexportModes)[number];

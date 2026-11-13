@@ -32,7 +32,7 @@ function isTypeBinding(scope: Scope.Scope, name: string): boolean {
 }
 
 export default defineConvention({
-  /** @debt `bin` has no lint scope, so its command modules are classified but never checked; a command group without an index.ts is accepted too */
+  // @debt `bin` has no lint scope, so its command modules are classified but never checked; a command group without an index.ts is accepted too
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
   sections: { entities: "entities", structure: "structure" },
   rule: ({ entities, structure: structures }) => {

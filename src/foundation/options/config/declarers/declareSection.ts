@@ -5,7 +5,9 @@ import type { Resolver } from "#foundation/options/types/Resolver";
 import type { Section } from "#foundation/options/types/Section";
 
 // @debt `Config` takes the section's `config` annotation unchecked against the resolver `createResolver` passes, so no-unnecessary-type-parameters reports its single use; typing `config` as `Resolver` instead makes annotations that read `ConfigSections` circular, and the sound fix is sections typed by the resolver they receive
-/** @stable */
+/**
+ * @stable
+ */
 export function declareSection<
   Input,
   Output,
@@ -15,7 +17,9 @@ export function declareSection<
   live?: boolean;
   resolve(input: Input, config: Config): Output | Promise<Output>;
 }): Section<Output>;
-/** @stable */
+/**
+ * @stable
+ */
 export function declareSection<
   Output,
   Config extends Resolver<unknown, object> = Resolver,

@@ -1,4 +1,6 @@
 import type { RoleRuleModule } from "#project/roles/ports/RoleRuleModule";
 
-/** @experimental */
+/**
+ * @experimental
+ */
 export type RoleRuleLoader = () => Promise<RoleRuleModule>;

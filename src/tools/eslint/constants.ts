@@ -212,5 +212,5 @@ export const defaultSuppressionsFile = "eslint-suppressions.json" satisfies File
 
 export { eslint } from "#constants";
 
-/** @debt the key of the index role repeats the one in `project/roles`, which a utility cannot import at runtime */
+// @debt the key of the index role repeats the one in `project/roles`, which a utility cannot import at runtime
 export const indexRole = "index";

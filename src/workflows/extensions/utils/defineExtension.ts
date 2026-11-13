@@ -1,6 +1,8 @@
 import type { Extension } from "#project/config/index";
 
-/** @stable */
+/**
+ * @stable
+ */
 export function defineExtension<const Defined extends Extension>(
   extension: Defined,
 ): Defined {

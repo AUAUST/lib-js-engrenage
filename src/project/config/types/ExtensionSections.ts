@@ -1,7 +1,9 @@
 import type { Extension } from "#project/config/types/Extension";
 import type { KeyDeclaration } from "#project/config/types/KeyDeclaration";
 
-/** @stable */
+/**
+ * @stable
+ */
 export type ExtensionSections<E extends Extension> = E extends {
   readonly owns: { readonly keys: infer Keys };
 }

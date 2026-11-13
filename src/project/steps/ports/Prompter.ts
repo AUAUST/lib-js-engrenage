@@ -1,4 +1,6 @@
-/** @experimental */
+/**
+ * @experimental
+ */
 export interface Prompter {
   confirm(message: string, initial?: boolean): Promise<boolean>;
   select<Value extends string>(

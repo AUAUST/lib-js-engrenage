@@ -4,7 +4,9 @@ import type { LoadedConfig } from "#project/config/index";
 import type { StructureNode } from "#project/structure/index";
 import type { BarrelExport } from "#tools/typescript/types/BarrelExport";
 
-/** @experimental */
+/**
+ * @experimental
+ */
 export type BarrelExportsResolver = (
   node: StructureNode,
   exports: readonly BarrelExport[],

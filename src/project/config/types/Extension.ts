@@ -6,7 +6,9 @@ import type { FileResource } from "#project/config/types/FileResource";
 import type { KeyDeclaration } from "#project/config/types/KeyDeclaration";
 import type { PackageName } from "#types/PackageName";
 
-/** @stable */
+/**
+ * @stable
+ */
 export interface Extension extends ExtensionShape<
   {
     readonly keys?: Readonly<Record<string, KeyDeclaration>>;
