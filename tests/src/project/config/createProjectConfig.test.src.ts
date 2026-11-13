@@ -1,6 +1,7 @@
 import { boolean } from "valibot";
 import { describe, expect, test } from "vitest";
 
+import { map, toSorted } from "@auaust/primitive-kit/arrays";
 import { values } from "@auaust/toolkit/object";
 
 import {
@@ -131,10 +132,13 @@ describe("createProjectConfig", () => {
     expect(await config.resolve("name")).toBe("after");
   });
 
-  test("registers the built-ins without listed extensions", () => {
-    expect(createConfig({}).context.registry.extensions).toEqual(
-      values(builtins).flat(),
+  test("registers the built-ins ordered by name, whatever their module order", () => {
+    const names = map(
+      createConfig({}).context.registry.extensions,
+      ({ name }) => name,
     );
+
+    expect(names).toEqual(toSorted(map(values(builtins), ({ name }) => name)));
   });
 
   test("collects nested extension lists flattened in listed order", () => {

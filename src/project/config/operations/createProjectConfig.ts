@@ -6,6 +6,7 @@ import {
   includes,
   isNotEmpty,
   map,
+  toSorted,
 } from "@auaust/primitive-kit/arrays";
 import { isArray } from "@auaust/toolkit/isArray";
 import { freeze, keys, values } from "@auaust/toolkit/object";
@@ -107,8 +108,12 @@ export function createProjectConfig({
 
   checkCompatibility(extensions);
 
+  const builtinExtensions = toSorted(values(builtins), (left, right) => {
+    return left.name < right.name ? -1 : 1;
+  });
+
   const registry = collectExtensions<Extension, ConfigResolver>(
-    [...values(builtins), ...extensions],
+    [...builtinExtensions, ...extensions],
     {
       slotKind: "slots",
       async isActive({ when }, config): Promise<boolean> {
