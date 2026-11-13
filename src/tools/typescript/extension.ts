@@ -13,6 +13,17 @@ export default {
     slots: {
       "barrels.exports": { entry: barrelExportsEntry },
     },
+    keys: {
+      declarations: {
+        async load() {
+          const {
+            declarationsSection,
+          } = await import("#tools/typescript/config/sections/declarationsSection");
+
+          return declarationsSection;
+        },
+      },
+    },
     files: {
       "cache.typescript": {
         title: "Cache",

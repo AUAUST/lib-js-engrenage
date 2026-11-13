@@ -40,4 +40,11 @@ export {
   typeParam,
   virtual,
 } from "#project/docs/index";
-export type { DocTag, TagDeclaration, TagPreset } from "#project/docs/index";
+export type {
+  Declarations,
+  DocSignature,
+  DocTag,
+  SourceDeclaration,
+  TagDeclaration,
+  TagPreset,
+} from "#project/docs/index";
