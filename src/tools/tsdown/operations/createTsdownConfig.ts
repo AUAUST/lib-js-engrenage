@@ -237,6 +237,17 @@ export async function createTsdownConfig(
         mainFields: [...mainFields],
       },
     },
+    ...(typed
+      ? {
+          outputOptions: {
+            comments: {
+              jsdoc: false,
+              legal: true,
+              annotation: true,
+            },
+          },
+        }
+      : {}),
     failOnWarn: true,
     minify: ci,
     hooks: {

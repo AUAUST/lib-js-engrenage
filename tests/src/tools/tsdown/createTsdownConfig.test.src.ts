@@ -292,6 +292,47 @@ describe("createTsdownConfig", () => {
     });
   });
 
+  test("drops JSDoc from JavaScript output only when shipping declarations", async () => {
+    function createProject(typed: boolean) {
+      return createTemporaryProject({
+        "engrenage.config.ts": `export default { src: { baseline: "2026-10" }, build: { typed: ${typed} } };\n`,
+        "package.json": JSON.stringify({
+          name: "@scope/package",
+          type: "module",
+        }),
+        "tsconfig.json": JSON.stringify({
+          compilerOptions: {
+            outDir: "dist",
+            paths: {
+              "@scope/package": ["./src/index.ts"],
+            },
+          },
+        }),
+        "src/index.ts": "export {};\n",
+      });
+    }
+
+    expect(
+      await createTsdownConfig(await loadConfig(createProject(true).root), {
+        ci: false,
+      }),
+    ).toMatchObject({
+      outputOptions: {
+        comments: {
+          jsdoc: false,
+          legal: true,
+          annotation: true,
+        },
+      },
+    });
+
+    expect(
+      await createTsdownConfig(await loadConfig(createProject(false).root), {
+        ci: false,
+      }),
+    ).not.toHaveProperty("outputOptions");
+  });
+
   test("fails on warnings outside CI too", async () => {
     expect(
       await createTsdownConfig(await loadConfig(root), {
