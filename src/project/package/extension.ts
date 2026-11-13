@@ -1,6 +1,10 @@
 import { packageJsonFile } from "#project/package/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
+/**
+ * Owns the `environment`, `packageJsonPath`, `packageJson` and `visibility`
+ * config keys and the package manifest file, whose parts sync targets write.
+ */
 export default {
   name: "project/package",
   owns: {

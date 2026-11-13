@@ -6,6 +6,13 @@ import type { TestVariant } from "#project/structure/types/TestVariant";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
 
+/**
+ * Where a file sits in the project: its environment, `workspace` or `dist`, the
+ * directory and kind of its nearest structure node, the namespaces and domains
+ * above it, its nearest domain with that domain's public specifiers and collected
+ * roles, and the role and contract it holds, if any. `variant` is set only for
+ * test files.
+ */
 export interface Entity {
   readonly environment: string;
   readonly workspace: Glob | undefined;

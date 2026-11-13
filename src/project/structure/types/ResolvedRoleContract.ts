@@ -10,6 +10,9 @@ import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
 /**
+ * A role's contract with every option of its preset and configuration resolved,
+ * unset optional ones left `undefined`.
+ *
  * @experimental
  */
 export interface ResolvedRoleContract {

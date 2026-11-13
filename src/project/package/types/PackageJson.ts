@@ -9,6 +9,14 @@ import type { Globs } from "#types/Globs";
 import type { PackageName } from "#types/PackageName";
 import type { PackageNames } from "#types/PackageNames";
 
+/**
+ * The project's package manifest, each field read and validated on first access
+ * and throwing when invalid. A field read directly throws when the manifest is
+ * missing or leaves it unset; its counterpart under `optional` is `undefined`
+ * instead. `dependencies` lists the names `dependencies`, `devDependencies`,
+ * `optionalDependencies` and `peerDependencies` declare, and `inlinedDependencies`
+ * the names that field declares.
+ */
 export type PackageJson = Accessors<{
   manifest: Record<string, unknown> | undefined;
   name: PackageName | undefined;

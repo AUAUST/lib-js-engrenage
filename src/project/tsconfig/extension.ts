@@ -1,5 +1,10 @@
 import type { Extension, FileLocation } from "#project/config/index";
 
+/**
+ * Owns the `typescript`, `typescript.options`, `tsconfig` and `tsconfigPath`
+ * config keys and the tsconfig file, whose parts sync targets write, located
+ * only when a tsconfig path resolves.
+ */
 export default {
   name: "project/tsconfig",
   owns: {

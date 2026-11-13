@@ -4,6 +4,12 @@ import {
 } from "#project/environments/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
+/**
+ * Owns the `environments` and `languages` slots, the config keys of each built-in
+ * environment and its options, `environments.claims`, `define` and `runtime`,
+ * and the uncommitted coverage directory. Contributes the `src`, `tests`, `bin`,
+ * `scripts`, `tooling` and `data` environments and the `javascript` language.
+ */
 export default {
   name: "project/environments",
   owns: {

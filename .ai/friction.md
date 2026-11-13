@@ -103,3 +103,5 @@
 - pnpm lint: first run in a fresh worktree printed other worktrees' lint reports interleaved with its own — rerunning gave clean output for the named paths
 - pnpm lint: read its stylish output — lines from other worktrees' concurrent runs interleaved with its own, garbling paths; reran with `--format json -o <file>`
 - worktree isolation guard: wrote files with heredocs holding `#` or `<…>` in a Bash call — refused as too complex to verify; used the Write tool or a scratch script instead
+- worktree guard: `cat > file <<EOF` heredoc and inline Python heredoc writing files under `src/project/` in an agent worktree — refused as too complex to verify; used Write and a scratchpad script
+- `pnpm lint <paths>`: listed one reach's `auaust/documented` warnings — output interleaved findings from other agent worktrees' files; filtered on this worktree's path

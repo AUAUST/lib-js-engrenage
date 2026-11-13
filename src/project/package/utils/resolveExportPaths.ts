@@ -4,6 +4,11 @@ import type { Paths } from "#project/tsconfig/index";
 import type { File } from "#types/File";
 import type { PackageName } from "#types/PackageName";
 
+/**
+ * Maps each exposed subpath to the specifier consumers import it by, `.` to
+ * `packageName` and `./sub` to `packageName/sub`, targeting its file. Throws
+ * when a subpath is neither `.` nor starts with `./`.
+ */
 export function resolveExportPaths(
   packageName: PackageName,
   exposed: Readonly<Record<string, File>>,

@@ -1,5 +1,8 @@
 import type { Extension } from "#project/config/index";
 
+/**
+ * Owns the `workspaces` config key.
+ */
 export default {
   name: "project/workspaces",
   owns: {

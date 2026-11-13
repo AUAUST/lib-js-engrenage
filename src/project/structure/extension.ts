@@ -1,6 +1,13 @@
 import { projectMapRule } from "#project/structure/constants";
 import type { Extension } from "#project/config/index";
 
+/**
+ * Owns the `structure`, `structure.options`, `aliases`, `effectModules`,
+ * `entities`, `environmentRoles`, `files`, `importGrants`, `importResolver` and
+ * `src.exports` config keys. Contributes the project map and environment map
+ * agent fillers, the project map rule files, and the `structure --check` gate
+ * step run for agents only.
+ */
 export default {
   name: "project/structure",
   owns: {

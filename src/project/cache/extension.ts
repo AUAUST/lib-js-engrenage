@@ -1,5 +1,8 @@
 import type { Extension, FileLocation } from "#project/config/index";
 
+/**
+ * Owns the `cache` config key and the uncommitted cache directory it resolves.
+ */
 export default {
   name: "project/cache",
   owns: {

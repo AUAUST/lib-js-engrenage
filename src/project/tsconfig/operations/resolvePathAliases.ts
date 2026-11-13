@@ -38,6 +38,13 @@ function assertWildcards(alias: string, targets: readonly string[]) {
   }
 }
 
+/**
+ * Expands each `paths` entry naming `packageName` or one of its subpaths into
+ * one alias per file its targets match on disk, from `root`, ignoring the other
+ * entries. Throws when an entry has no target, a wildcard entry or one of its
+ * targets holds other than exactly one `*`, an exact entry matches no file, or
+ * two files claim the same specifier or entry name.
+ */
 export async function resolvePathAliases(
   packageName: PackageName,
   paths: Paths,

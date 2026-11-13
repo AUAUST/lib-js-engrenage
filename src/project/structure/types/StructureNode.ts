@@ -10,6 +10,10 @@ import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
 
 /**
+ * One directory of an environment's structure, with its classification and the
+ * options its declaration or inference sets; violations sit on the node holding
+ * them, as `cardinality`, `twin` or, for an unclassified node, `reason`.
+ *
  * @experimental
  */
 export interface StructureNode {

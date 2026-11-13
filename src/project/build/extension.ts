@@ -1,6 +1,11 @@
 import { buildToolEntry } from "#project/build/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
+/**
+ * Owns the `build.tools` slot, from which at most one tool is selected, the
+ * `build`, `build.outDir` and `build.tool` config keys, and the uncommitted
+ * output directory, located only when an output directory resolves.
+ */
 export default {
   name: "project/build",
   owns: {
