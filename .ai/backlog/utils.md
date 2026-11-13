@@ -13,3 +13,9 @@ Shared helpers and their placement.
 - why: `createTagPreset` (`src/project/docs/utils/createTagPreset.ts`) and `createRolePreset` (`src/project/roles/utils/createRolePreset.ts`) are one generic `(defaults: T) => (options?: Partial<T>) => T` that freezes the merge; a third preset family would copy it again.
 - want: one generic preset factory in the lowest domain both import, the two public names kept as typed aliases or replaced, decided with their `@experimental`/public status.
 - done: one implementation remains, or keeping two is recorded as intended.
+
+## 3. primitive-kit array helpers reject readonly arrays.
+
+- why: `@auaust/primitive-kit/arrays` typings fail on `readonly` inputs, so `createTsdownConfig` (#538) uses native `.filter`/`.map` against `.claude/rules/prefer-primitive-kit.md`; every readonly list hits the same gap.
+- want: readonly-accepting signatures upstream in primitive-kit, then native calls migrated back.
+- done: the helpers accept readonly arrays and the call sites use them.
