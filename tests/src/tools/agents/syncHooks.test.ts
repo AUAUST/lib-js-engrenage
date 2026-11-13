@@ -68,7 +68,7 @@ describe("syncHooks", () => {
 
     const { hooks } = JSON.parse(project.read(".claude/settings.json"));
 
-    expect(hooks.PostToolUse).toBeUndefined();
+    expect(JSON.stringify(hooks.PostToolUse)).not.toContain("hook edit");
 
     expect(hooks.PreToolUse[0]).toEqual({
       matcher: "Bash",

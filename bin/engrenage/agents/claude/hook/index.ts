@@ -3,6 +3,7 @@ import { defineGroup } from "#workflows/cli/index";
 import dispatch from "#bin/engrenage/agents/claude/hook/dispatch";
 import git from "#bin/engrenage/agents/claude/hook/git";
 import github from "#bin/engrenage/agents/claude/hook/github";
+import lint from "#bin/engrenage/agents/claude/hook/lint";
 import record from "#bin/engrenage/agents/claude/hook/record";
 import stop from "#bin/engrenage/agents/claude/hook/stop";
 
@@ -14,6 +15,7 @@ export default defineGroup({
     dispatch,
     git,
     github,
+    lint,
     record,
     stop,
   },

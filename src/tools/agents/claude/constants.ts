@@ -39,6 +39,12 @@ export const claudeHooks = freeze([
     command: `${claudeHookPrefix}dispatch`,
     onFailure: "block",
   } as const satisfies HookDefinition,
+  {
+    event: "PostToolUse",
+    matcher: "Edit|MultiEdit|Write",
+    command: `${claudeHookPrefix}lint`,
+    async: true,
+  } as const satisfies HookDefinition,
   ...(["Stop", "SubagentStop"] as const).map((event) => {
     return {
       event,

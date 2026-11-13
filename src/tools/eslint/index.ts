@@ -13,6 +13,7 @@ export { createPackageJsonRules } from "#tools/eslint/operations/createPackageJs
 export { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
 export { fixWithEslint } from "#tools/eslint/operations/fixWithEslint";
 export { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";
+export { listInfoMessages } from "#tools/eslint/operations/listInfoMessages";
 export { loadConventionCategories } from "#tools/eslint/operations/loadConventionCategories";
 export { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
 export { resolveConventionSections } from "#tools/eslint/operations/resolveConventionSections";
@@ -37,6 +38,7 @@ export type * from "#tools/eslint/types/ConventionValues";
 export type * from "#tools/eslint/types/DebtMarker";
 export type * from "#tools/eslint/types/Delegate";
 export type * from "#tools/eslint/types/ImportGraph";
+export type * from "#tools/eslint/types/InfoMessage";
 export type * from "#tools/eslint/types/Options";
 export type * from "#tools/eslint/types/Plugin";
 export type * from "#tools/eslint/types/ReportDescriptor";
