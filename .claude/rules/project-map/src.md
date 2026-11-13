@@ -12,6 +12,7 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ data  Resolve files shipped with the package.
 │  ├─ extensions  Collect extensions, check their ownership and order their contributions.
 │  ├─ filesystem  Read, stage and write project files.
+│  ├─ jsdoc  Parse and print JSDoc blocks.
 │  ├─ json  Read and edit JSON while preserving its formatting.
 │  ├─ options  Declare and validate configuration options.
 │  └─ processes  Run external processes.
