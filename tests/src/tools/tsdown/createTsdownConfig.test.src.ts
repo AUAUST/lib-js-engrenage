@@ -703,6 +703,7 @@ describe("createTsdownConfig plugins", () => {
       "engrenage:empty-namespaces:declare",
       "engrenage:entry-self-references",
       "engrenage:bin-declarations",
+      "engrenage:internal-tags",
     ]);
 
     expect(
@@ -722,6 +723,7 @@ describe("createTsdownConfig plugins", () => {
       ).plugins,
     ).toEqual([
       expect.objectContaining({ name: "engrenage:bin-declarations" }),
+      expect.objectContaining({ name: "engrenage:internal-tags" }),
     ]);
   });
 

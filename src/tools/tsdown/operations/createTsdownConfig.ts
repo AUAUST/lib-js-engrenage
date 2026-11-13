@@ -2,7 +2,7 @@ import { join } from "node:path";
 
 import type { TsdownPlugin } from "tsdown";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap, isNotEmpty } from "@auaust/primitive-kit/arrays";
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
@@ -25,6 +25,7 @@ import { resolveSourceEntries } from "#tools/tsdown/operations/resolveSourceEntr
 import { createEmittedManifestPlugins } from "#tools/tsdown/plugins/createEmittedManifestPlugins";
 import { createEmptyNamespacesPlugins } from "#tools/tsdown/plugins/createEmptyNamespacesPlugins";
 import { createEntrySelfReferencesPlugins } from "#tools/tsdown/plugins/createEntrySelfReferencesPlugins";
+import { createInternalTagsPlugins } from "#tools/tsdown/plugins/createInternalTagsPlugins";
 import { createOmittedDeclarationsPlugins } from "#tools/tsdown/plugins/createOmittedDeclarationsPlugins";
 import { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
 import { resolveDataExports } from "#tools/tsdown/utils/resolveDataExports";
@@ -159,6 +160,12 @@ export async function createTsdownConfig(
 
   const resources = await config.resolve("resources");
 
+  const { tags } = await config.resolve("docs");
+
+  const internalTags = tags
+    .filter(({ output }) => output === "internal")
+    .map(({ name }) => name);
+
   return {
     cwd: root,
     entry: createTsdownEntries(sourceEntries, bins, workspaceEntries),
@@ -209,6 +216,12 @@ export async function createTsdownConfig(
         `${pluginPrefix}:bin-declarations`,
         keys(bins),
       ),
+      ...(isNotEmpty(internalTags)
+        ? createInternalTagsPlugins(
+            `${pluginPrefix}:internal-tags`,
+            internalTags,
+          )
+        : []),
       ...(clean === "emitted"
         ? createEmittedManifestPlugins(`${pluginPrefix}:emitted-manifest`, {
             manifest: join(resources.path("cache.tsdown"), emittedManifestFile),
