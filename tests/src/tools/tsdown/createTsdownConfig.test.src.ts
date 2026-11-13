@@ -15,17 +15,56 @@ import { define } from "#workflows/config/index";
 
 const root = getFixture("tsdown");
 
+const declared = {
+  module: "ESNext",
+  moduleResolution: "Bundler",
+  strict: true,
+};
+
+const subpaths = {
+  paths: {
+    "@scope/package": ["./src/index.ts"],
+    "@scope/package/*": ["./src/*/index.ts"],
+  },
+};
+
+function createProject({
+  config = {},
+  files = {},
+  manifest = {},
+  tsconfig = {},
+  compilerOptions = {},
+}: {
+  config?: Record<string, unknown>;
+  files?: Readonly<Record<string, string>>;
+  manifest?: Readonly<Record<string, unknown>>;
+  tsconfig?: Readonly<Record<string, unknown>>;
+  compilerOptions?: Readonly<Record<string, unknown>>;
+} = {}) {
+  return createTemporaryProject({
+    "package.json": JSON.stringify({
+      name: "@scope/package",
+      type: "module",
+      ...manifest,
+    }),
+    "engrenage.config.ts": `export default ${JSON.stringify(withSourceRuntime(config))};\n`,
+    "tsconfig.json": JSON.stringify({
+      compilerOptions: {
+        outDir: "dist",
+        paths: { "@scope/package": ["./src/index.ts"] },
+        ...compilerOptions,
+      },
+      ...tsconfig,
+    }),
+    "src/index.ts": "export {};\n",
+    ...files,
+  });
+}
+
 describe("createTsdownConfig", () => {
   test("preserves synced global types in exported declarations", async () => {
-    const project = createTemporaryProject({
-      "package.json": JSON.stringify({
-        name: "@scope/package",
-        type: "module",
-      }),
-      "engrenage.config.ts": `export default ${JSON.stringify({
-        src: {
-          baseline: "2026-10",
-        },
+    const project = createProject({
+      config: {
         define: {
           values: {
             __NAME__: "package",
@@ -36,23 +75,19 @@ describe("createTsdownConfig", () => {
             }),
           },
         },
-      })};`,
-      "tsconfig.json": JSON.stringify({
-        compilerOptions: {
-          outDir: "dist",
-          module: "ESNext",
-          moduleResolution: "Bundler",
-          strict: true,
-          paths: { "@scope/package": ["./src/index.ts"] },
-        },
+      },
+      compilerOptions: declared,
+      tsconfig: {
         include: ["src", "env.d.ts"],
-      }),
-      "src/index.ts": [
-        "export const name = __NAME__;",
-        "export const options = __OPTIONS__;",
-        "export const exact = __EXACT__;",
-        "export function version() { return __VERSION__; }",
-      ].join("\n"),
+      },
+      files: {
+        "src/index.ts": [
+          "export const name = __NAME__;",
+          "export const options = __OPTIONS__;",
+          "export const exact = __EXACT__;",
+          "export function version() { return __VERSION__; }",
+        ].join("\n"),
+      },
     });
 
     const config = await loadConfig(project.root);
@@ -87,31 +122,22 @@ describe("createTsdownConfig", () => {
   });
 
   test("declares the namespace of an empty module entry", async () => {
-    const project = createTemporaryProject({
-      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
-      "package.json": JSON.stringify({
-        name: "@scope/package",
-        type: "module",
-      }),
-      "tsconfig.json": JSON.stringify({
-        compilerOptions: {
-          outDir: "dist",
-          module: "ESNext",
-          moduleResolution: "Bundler",
-          strict: true,
-          paths: {
-            "@scope/package/*": ["./src/*/index.ts"],
-            "@scope/package": ["./src/index.ts"],
-          },
-        },
+    const project = createProject({
+      compilerOptions: {
+        ...declared,
+        ...subpaths,
+      },
+      tsconfig: {
         include: ["src"],
-      }),
-      "src/index.ts": [
-        'export * as empty from "./empty/index.ts";',
-        'export * as filled from "./filled/index.ts";',
-      ].join("\n"),
-      "src/empty/index.ts": "export {};\n",
-      "src/filled/index.ts": "export const value = 1;\n",
+      },
+      files: {
+        "src/index.ts": [
+          'export * as empty from "./empty/index.ts";',
+          'export * as filled from "./filled/index.ts";',
+        ].join("\n"),
+        "src/empty/index.ts": "export {};\n",
+        "src/filled/index.ts": "export const value = 1;\n",
+      },
     });
 
     const config = await loadConfig(project.root);
@@ -132,24 +158,20 @@ describe("createTsdownConfig", () => {
   });
 
   test("builds no declarations for bin entries", async () => {
-    const project = createTemporaryProject({
-      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" }, bin: { entries: { tool: "bin/tool.ts" } } };\n',
-      "package.json": JSON.stringify({
-        name: "@scope/package",
-        type: "module",
-      }),
-      "tsconfig.json": JSON.stringify({
-        compilerOptions: {
-          outDir: "dist",
-          module: "ESNext",
-          moduleResolution: "Bundler",
-          strict: true,
-          paths: { "@scope/package": ["./src/index.ts"] },
+    const project = createProject({
+      config: {
+        bin: {
+          entries: { tool: "bin/tool.ts" },
         },
+      },
+      compilerOptions: declared,
+      tsconfig: {
         include: ["src", "bin"],
-      }),
-      "src/index.ts": "export const value = 1;\n",
-      "bin/tool.ts": "export const tool = 1;\n",
+      },
+      files: {
+        "src/index.ts": "export const value = 1;\n",
+        "bin/tool.ts": "export const tool = 1;\n",
+      },
     });
 
     await build({
@@ -206,25 +228,13 @@ describe("createTsdownConfig", () => {
   });
 
   test("bundles the manifest's inlined dependencies unless the options list them", async () => {
-    const project = createTemporaryProject({
-      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
-      "package.json": JSON.stringify({
-        name: "@scope/package",
-        type: "module",
+    const project = createProject({
+      manifest: {
         inlinedDependencies: {
           "@auaust/toolkit": "0.5.1",
           "commander": "15.0.0",
         },
-      }),
-      "tsconfig.json": JSON.stringify({
-        compilerOptions: {
-          outDir: "dist",
-          paths: {
-            "@scope/package": ["./src/index.ts"],
-          },
-        },
-      }),
-      "src/index.ts": "export {};\n",
+      },
     });
 
     const config = await loadConfig(project.root);
@@ -257,25 +267,13 @@ describe("createTsdownConfig", () => {
   });
 
   test("enables publint and attw when the project depends on them", async () => {
-    const project = createTemporaryProject({
-      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
-      "package.json": JSON.stringify({
-        name: "@scope/package",
-        type: "module",
+    const project = createProject({
+      manifest: {
         devDependencies: {
           "@arethetypeswrong/core": "^0.18.0",
           "publint": "^0.3.0",
         },
-      }),
-      "tsconfig.json": JSON.stringify({
-        compilerOptions: {
-          outDir: "dist",
-          paths: {
-            "@scope/package": ["./src/index.ts"],
-          },
-        },
-      }),
-      "src/index.ts": "export {};\n",
+      },
     });
 
     const config = await loadConfig(project.root);
@@ -293,29 +291,21 @@ describe("createTsdownConfig", () => {
   });
 
   test("drops JSDoc from JavaScript output only when shipping declarations", async () => {
-    function createProject(typed: boolean) {
-      return createTemporaryProject({
-        "engrenage.config.ts": `export default { src: { baseline: "2026-10" }, build: { typed: ${typed} } };\n`,
-        "package.json": JSON.stringify({
-          name: "@scope/package",
-          type: "module",
-        }),
-        "tsconfig.json": JSON.stringify({
-          compilerOptions: {
-            outDir: "dist",
-            paths: {
-              "@scope/package": ["./src/index.ts"],
-            },
-          },
-        }),
-        "src/index.ts": "export {};\n",
+    function createTypedProject(typed: boolean) {
+      return createProject({
+        config: {
+          build: { typed },
+        },
       });
     }
 
     expect(
-      await createTsdownConfig(await loadConfig(createProject(true).root), {
-        ci: false,
-      }),
+      await createTsdownConfig(
+        await loadConfig(createTypedProject(true).root),
+        {
+          ci: false,
+        },
+      ),
     ).toMatchObject({
       outputOptions: {
         comments: {
@@ -327,9 +317,12 @@ describe("createTsdownConfig", () => {
     });
 
     expect(
-      await createTsdownConfig(await loadConfig(createProject(false).root), {
-        ci: false,
-      }),
+      await createTsdownConfig(
+        await loadConfig(createTypedProject(false).root),
+        {
+          ci: false,
+        },
+      ),
     ).not.toHaveProperty("outputOptions");
   });
 
@@ -345,21 +338,10 @@ describe("createTsdownConfig", () => {
   });
 
   test("takes the output directory and its cleaning from the engrenage config over the tsconfig", async () => {
-    const project = createTemporaryProject({
-      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" }, build: { outDir: "build", clean: false } };\n',
-      "package.json": JSON.stringify({
-        name: "@scope/package",
-        type: "module",
-      }),
-      "tsconfig.json": JSON.stringify({
-        compilerOptions: {
-          outDir: "dist",
-          paths: {
-            "@scope/package": ["./src/index.ts"],
-          },
-        },
-      }),
-      "src/index.ts": "export {};\n",
+    const project = createProject({
+      config: {
+        build: { outDir: "build", clean: false },
+      },
     });
 
     const config = await loadConfig(project.root);
@@ -375,23 +357,11 @@ describe("createTsdownConfig", () => {
   });
 
   test("rejects two bin files that build the same entry", async () => {
-    const project = createTemporaryProject({
-      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
-      "package.json": JSON.stringify({
-        name: "@scope/package",
-        type: "module",
-      }),
-      "tsconfig.json": JSON.stringify({
-        compilerOptions: {
-          outDir: "dist",
-          paths: {
-            "@scope/package": ["./src/index.ts"],
-          },
-        },
-      }),
-      "src/index.ts": "export {};\n",
-      "bin/cli.ts": "export {};\n",
-      "bin/cli/executable.ts": "export {};\n",
+    const project = createProject({
+      files: {
+        "bin/cli.ts": "export {};\n",
+        "bin/cli/executable.ts": "export {};\n",
+      },
     });
 
     const config = await loadConfig(project.root);
@@ -404,9 +374,8 @@ describe("createTsdownConfig", () => {
   });
 
   test("rejects a package that is not an ES module", async () => {
-    const project = createTemporaryProject({
-      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
-      "package.json": '{ "name": "@scope/package" }',
+    const project = createProject({
+      manifest: { type: undefined },
     });
 
     const config = await loadConfig(project.root);
@@ -419,31 +388,23 @@ describe("createTsdownConfig", () => {
   });
 
   describe("exposed files", () => {
-    function createProject(config: object, files: Record<string, string> = {}) {
-      return createTemporaryProject({
-        "package.json": JSON.stringify({
-          name: "@scope/package",
-          type: "module",
-        }),
-        "engrenage.config.ts": `export default ${JSON.stringify(withSourceRuntime({ ...config }))};\n`,
-        "tsconfig.json": JSON.stringify({
-          compilerOptions: {
-            outDir: "dist",
-            paths: {
-              "@scope/package": ["./src/index.ts"],
-              "@scope/package/*": ["./src/*/index.ts"],
-            },
-          },
-        }),
-        "src/index.ts": "export {};\n",
-        "src/alpha/index.ts": "export {};\n",
-        "src/alpha/constants.ts": "export {};\n",
-        ...files,
+    function createExposingProject(
+      config: Record<string, unknown>,
+      files: Readonly<Record<string, string>> = {},
+    ) {
+      return createProject({
+        config,
+        compilerOptions: subpaths,
+        files: {
+          "src/alpha/index.ts": "export {};\n",
+          "src/alpha/constants.ts": "export {};\n",
+          ...files,
+        },
       });
     }
 
     test("builds the same entries from src.exports as from the equivalent paths", async () => {
-      const project = createProject({
+      const project = createExposingProject({
         src: {
           exports: { ".": "src/index.ts", "./*": "src/*/index.ts" },
         },
@@ -454,7 +415,7 @@ describe("createTsdownConfig", () => {
       });
 
       const fromPaths = createTsdownConfig(
-        await loadConfig(createProject({}).root),
+        await loadConfig(createExposingProject({}).root),
         { ci: false },
       );
 
@@ -467,7 +428,7 @@ describe("createTsdownConfig", () => {
     });
 
     test("restricts the entries to src.exports when declared", async () => {
-      const project = createProject({
+      const project = createExposingProject({
         src: {
           exports: {
             ".": "src/index.ts",
@@ -489,7 +450,7 @@ describe("createTsdownConfig", () => {
     });
 
     test("builds the barrel of a subpath role with an index", async () => {
-      const project = createProject(
+      const project = createExposingProject(
         {
           src: {
             roles: [
@@ -518,7 +479,7 @@ describe("createTsdownConfig", () => {
     });
 
     test("builds the commands from bin.entries", async () => {
-      const project = createProject(
+      const project = createExposingProject(
         {
           bin: {
             entries: { tool: "bin/tool/executable.ts" },
@@ -541,7 +502,7 @@ describe("createTsdownConfig", () => {
     });
 
     test("passes data.exports to tsdown's custom exports", async () => {
-      const project = createProject({
+      const project = createExposingProject({
         data: {
           exports: { "./presets/*.json": "data/presets/*.json" },
         },
@@ -561,7 +522,7 @@ describe("createTsdownConfig", () => {
     });
 
     test("rejects a subpath exposed by both src and data", async () => {
-      const project = createProject({
+      const project = createExposingProject({
         data: {
           exports: { "./alpha": "data/alpha.json" },
         },
@@ -578,27 +539,11 @@ describe("createTsdownConfig", () => {
   });
 
   describe("target", () => {
-    function createProject(config: object, engines?: object) {
-      return createTemporaryProject({
-        "package.json": JSON.stringify({
-          name: "@scope/package",
-          type: "module",
-          ...(engines === undefined ? {} : { engines }),
-        }),
-        "engrenage.config.ts": `export default ${JSON.stringify(withSourceRuntime({ ...config }))};\n`,
-        "tsconfig.json": JSON.stringify({
-          compilerOptions: {
-            outDir: "dist",
-            paths: { "@scope/package": ["./src/index.ts"] },
-          },
-        }),
-        "src/index.ts": "export {};\n",
-      });
-    }
-
     test("targets the browsers and the Node minimum of the baseline", async () => {
       const project = createProject({
-        src: { baseline: "2026-10" },
+        config: {
+          src: { baseline: "2026-10" },
+        },
       });
 
       expect(
@@ -619,7 +564,9 @@ describe("createTsdownConfig", () => {
 
     test("targets the Node major of src.node", async () => {
       const project = createProject({
-        src: { node: 24 },
+        config: {
+          src: { node: 24 },
+        },
       });
 
       expect(
@@ -636,8 +583,14 @@ describe("createTsdownConfig", () => {
         src: { node: 24 },
       };
 
-      const withEngines = createProject(config, { node: ">=18" });
-      const without = createProject(config);
+      const withEngines = createProject({
+        config,
+        manifest: {
+          engines: { node: ">=18" },
+        },
+      });
+
+      const without = createProject({ config });
 
       expect(
         (
@@ -656,33 +609,24 @@ describe("createTsdownConfig", () => {
   });
 
   test("builds declarations with the src tsconfig on a solution base", async () => {
-    const project = createTemporaryProject({
-      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
-      "package.json": JSON.stringify({
-        name: "@scope/package",
-        type: "module",
-      }),
-      "tsconfig.json": JSON.stringify({
-        compilerOptions: {
-          outDir: "dist",
-          module: "ESNext",
-          moduleResolution: "Bundler",
-          strict: true,
-          paths: { "@scope/package": ["./src/index.ts"] },
-        },
+    const project = createProject({
+      compilerOptions: declared,
+      tsconfig: {
         files: [],
         references: [
           {
             path: "./tsconfig.src.json",
           },
         ],
-      }),
-      "tsconfig.src.json": JSON.stringify({
-        extends: "./tsconfig.json",
-        compilerOptions: { composite: true },
-        include: ["src"],
-      }),
-      "src/index.ts": "export const value = 1;\n",
+      },
+      files: {
+        "tsconfig.src.json": JSON.stringify({
+          extends: "./tsconfig.json",
+          compilerOptions: { composite: true },
+          include: ["src"],
+        }),
+        "src/index.ts": "export const value = 1;\n",
+      },
     });
 
     const config = await loadConfig(project.root);
@@ -711,27 +655,17 @@ describe("createTsdownConfig", () => {
   });
 
   test("leaves the declarations tsconfig unset without a src tsconfig", async () => {
-    const project = createTemporaryProject({
-      "package.json": JSON.stringify({
-        name: "@scope/package",
-        type: "module",
-      }),
-      "engrenage.config.ts": `export default ${JSON.stringify(
-        withSourceRuntime({
-          src: { tsconfig: false },
-        }),
-      )};`,
-      "tsconfig.json": JSON.stringify({
-        compilerOptions: {
-          outDir: "dist",
-          module: "ESNext",
-          moduleResolution: "Bundler",
-          strict: true,
-          paths: { "@scope/package": ["./src/index.ts"] },
-        },
+    const project = createProject({
+      config: {
+        src: { tsconfig: false },
+      },
+      compilerOptions: declared,
+      tsconfig: {
         include: ["src"],
-      }),
-      "src/index.ts": "export const value = 1;\n",
+      },
+      files: {
+        "src/index.ts": "export const value = 1;\n",
+      },
     });
 
     const config = await loadConfig(project.root);

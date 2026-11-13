@@ -435,7 +435,7 @@ export const values = [path, v, things, alias];
     ]);
   });
 
-  test("reports each restriction under its own rule, in every syntactic form", async () => {
+  test("reports each restriction under its own rule", async () => {
     expect(await lintedRules("src/restricted.ts")).toEqual([
       "auaust/no-runtime-typeof",
       "auaust/no-typeof-undefined",

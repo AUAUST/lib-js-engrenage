@@ -34,7 +34,7 @@ describe("defineEslintConfig", () => {
             return `${directory}/restricted.ts`;
           }),
           rules: {
-            "auaust/no-array-is-array": "off",
+            "auaust/no-typeof-undefined": "off",
           },
         };
       }),
@@ -46,13 +46,6 @@ describe("defineEslintConfig", () => {
 
     const ruleIds = map(result?.messages ?? [], (message) => message.ruleId);
 
-    expect(ruleIds).toEqual(
-      expect.arrayContaining([
-        "auaust/no-runtime-typeof",
-        "auaust/no-typeof-undefined",
-      ]),
-    );
-
-    expect(ruleIds).toHaveLength(2);
+    expect(ruleIds).toEqual(["auaust/no-runtime-typeof"]);
   });
 });
