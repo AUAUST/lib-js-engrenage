@@ -7,5 +7,5 @@
 
 ## 2. Sync crashes on load when a generated barrel imports a deleted module
 
-- why: `engrenage sync` loads the ESLint conventions through their generated barrels before the `barrels` target regenerates them, so deleting a convention file crashes sync. The only way out is hand-editing generated files, against project rules. Seen in AUAUST/lib-js-engrenage#432.
+- why: `engrenage sync` loads the ESLint conventions through their generated barrels before the `barrels` target regenerates them, so deleting a convention file crashes sync, and a new convention category needs its barrel written by hand first (#439). The only way out is hand-editing generated files, against project rules. Seen in AUAUST/lib-js-engrenage#432.
 - want: sync must regenerate barrels, or discover conventions without them, before loading anything that imports them.

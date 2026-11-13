@@ -1,4 +1,9 @@
-import { difference, isNotEmpty, map } from "@auaust/primitive-kit/arrays";
+import {
+  difference,
+  intersection,
+  isNotEmpty,
+  map,
+} from "@auaust/primitive-kit/arrays";
 import { isArray } from "@auaust/toolkit/isArray";
 import { freeze } from "@auaust/toolkit/object";
 
@@ -43,6 +48,23 @@ async function collectTags(
   return sets.flatMap(({ declarations }) => declarations);
 }
 
+function assertUniqueNames(
+  declarations: readonly TagDeclaration[],
+  option: string,
+) {
+  const seen = new Set<string>();
+
+  for (const { name } of declarations) {
+    if (seen.has(name)) {
+      throw new Error(
+        `${option} declares the doc tag "@${name}" more than once`,
+      );
+    }
+
+    seen.add(name);
+  }
+}
+
 function adjustTags(
   contributed: readonly TagDeclaration[],
   {
@@ -53,6 +75,17 @@ function adjustTags(
     exclude?: readonly string[];
   },
 ): readonly TagDeclaration[] {
+  assertUniqueNames(append, "docs.tags.append");
+
+  const both = intersection(
+    map(append, ({ name }) => name),
+    exclude,
+  );
+
+  if (isNotEmpty(both)) {
+    throw new Error(`docs.tags both appends and excludes ${both.join(", ")}`);
+  }
+
   const names = map(contributed, ({ name }) => name);
 
   const unknown = difference(exclude, names);
@@ -87,6 +120,8 @@ export const docsSection = declareSection({
     const { tags } = docsSchema.resolve(input, undefined, "docs");
 
     if (isArray(tags)) {
+      assertUniqueNames(tags, "docs.tags");
+
       return freeze({ tags: freeze([...tags]) });
     }
 

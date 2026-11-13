@@ -85,7 +85,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 14. Role presets sit among utils and rank wrongly
 
-- sites: `src/project/roles/utils/*.ts` (one preset per file, 25 markers), `engrenage.config.ts:91`
+- sites: `src/project/roles/utils/*.ts` (one preset per file, 25 markers), `engrenage.config.ts:91`, `src/project/docs/utils/*.ts` (tag presets, AUAUST/lib-js-engrenage#439: their default list sits in `utils/listConventionalTags.ts` since pure `constants` cannot import them)
 - why: each file is a role preset, not a utility; `adapters` is the only preset without an effect level, so projects override it; `schemas` is pure though `foundation/options` declarer schemas import confined utils; `testutils` should be observing once its type exists.
 - want: presets in their own role directory; `adapters` ranked by the preset (planning for the rest).
 

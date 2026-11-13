@@ -12,10 +12,10 @@ type SplitDocTag =
 function findTypeEnd(text: string): number | undefined {
   let depth = 0;
 
-  for (const [index, character] of [...text].entries()) {
-    if (character === "{") {
+  for (const { 0: brace, index } of text.matchAll(/[{}]/g)) {
+    if (brace === "{") {
       depth++;
-    } else if (character === "}") {
+    } else {
       depth--;
 
       if (depth === 0) {

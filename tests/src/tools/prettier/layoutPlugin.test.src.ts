@@ -535,4 +535,16 @@ const ignored = 1;
     expect(lines).toContain("`a long inline code span`");
     expect(lines).toContain("{@link Foo bar}");
   });
+
+  test("wrapParagraph wraps the words after a lone backtick", () => {
+    const words = "See ` and then {@link Foo bar} here and a few more words.".split(
+      " ",
+    );
+
+    const lines = wrapParagraph(words, 16);
+
+    expect(lines.join(" ")).toBe(words.join(" "));
+    expect(lines).toContain("{@link Foo bar}");
+    expect(lines.every((line) => line.length <= 19)).toBe(true);
+  });
 });

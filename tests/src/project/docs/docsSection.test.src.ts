@@ -88,4 +88,30 @@ describe("docs section", () => {
       resolveTags({}, [createExtension("first"), createExtension("second")]),
     ).rejects.toThrow(/first.*second/);
   });
+
+  test.each([
+    [
+      {
+        tags: [relates, relates],
+      },
+      /docs\.tags declares.*@relates/,
+    ],
+    [
+      {
+        tags: { append: [relates, relates] },
+      },
+      /docs\.tags\.append.*@relates/,
+    ],
+    [
+      {
+        tags: { append: [relates], exclude: ["relates"] },
+      },
+      /appends and excludes relates/,
+    ],
+  ])(
+    "fails on a tag declared twice or both appended and excluded",
+    async (docs, error) => {
+      await expect(resolveTags({ docs })).rejects.toThrow(error);
+    },
+  );
 });

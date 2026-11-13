@@ -1,9 +1,11 @@
 import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/types";
-import type { Rule, SourceCode } from "eslint";
+import type { Rule } from "eslint";
 
 import { parseJsdoc, type JsdocTag } from "#foundation/jsdoc/index";
 import { readDocTag, type TagDeclaration } from "#project/docs/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
+import { findJsdocBlock } from "#tools/eslint/utils/findJsdocBlock";
+import { isJsdocBlock } from "#tools/eslint/utils/isJsdocBlock";
 import { readDocumentedSignature } from "#tools/eslint/utils/readDocumentedSignature";
 import { readOverload } from "#tools/eslint/utils/readOverload";
 
@@ -43,14 +45,6 @@ const messages = {
   exportScope: "@{{name}} states one fact about the export: write it on the first documented overload only.",
   implementation: "Document the overload signatures instead: consumers never see the block on the implementation of an overloaded function.",
 };
-
-function readBlockRange(
-  comment: ReturnType<SourceCode["getAllComments"]>[number] | undefined,
-): Range | undefined {
-  return comment?.type === "Block" && comment.value.startsWith("*")
-    ? comment.range
-    : undefined;
-}
 
 function createChecker(
   context: Rule.RuleContext,
@@ -149,10 +143,7 @@ function createChecker(
 
     const { holder, parameters, typeParameters } = signature;
 
-    // @debt ESLint types its AST as ESTree, without the TypeScript nodes the parser produces
-    const comments = sourceCode.getCommentsBefore(holder as never);
-
-    const block = readBlockRange(comments.at(-1));
+    const block = findJsdocBlock(sourceCode, holder)?.range;
 
     if (block !== undefined) {
       blocks.set(holder, block);
@@ -258,10 +249,8 @@ function createChecker(
 
   function finish() {
     for (const comment of sourceCode.getAllComments()) {
-      const block = readBlockRange(comment);
-
-      if (block !== undefined) {
-        checkBlock(block);
+      if (isJsdocBlock(comment) && comment.range !== undefined) {
+        checkBlock(comment.range);
       }
     }
 

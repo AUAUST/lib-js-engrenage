@@ -28,4 +28,12 @@ describe("splitDocTag", () => {
   ])("rejects a body its kind forbids", (declaration, text) => {
     expect(splitDocTag(declaration, text).ok).toBe(false);
   });
+
+  test("splits a type holding characters outside the basic plane", () => {
+    expect(splitDocTag(throws(), "{\u{1F600}Error} when x")).toStrictEqual({
+      ok: true,
+      type: "\u{1F600}Error",
+      body: "when x",
+    });
+  });
 });

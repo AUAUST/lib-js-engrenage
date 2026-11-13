@@ -16,21 +16,24 @@ function isOpen(atom: string): boolean {
 function collectAtoms(words: readonly string[]): string[] {
   const atoms: string[] = [];
 
-  let current: string | undefined;
+  let start = 0;
 
-  for (const word of words) {
-    current = current == null ? word : `${current} ${word}`;
+  while (start < words.length) {
+    let end = start + 1;
+    let atom = words.slice(start, end).join(" ");
 
-    if (isOpen(current)) {
-      continue;
+    while (isOpen(atom) && end < words.length) {
+      end += 1;
+      atom = words.slice(start, end).join(" ");
     }
 
-    atoms.push(current);
-    current = undefined;
-  }
+    if (isOpen(atom)) {
+      end = start + 1;
+      atom = words.slice(start, end).join(" ");
+    }
 
-  if (current != null) {
-    atoms.push(current);
+    atoms.push(atom);
+    start = end;
   }
 
   return atoms;

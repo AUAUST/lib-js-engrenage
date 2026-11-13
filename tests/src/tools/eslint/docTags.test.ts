@@ -65,4 +65,19 @@ describe("docs.docTags", () => {
 
     expect(await lintDocTags(source)).toStrictEqual([]);
   });
+
+  test("finds the block past a line comment before the declaration", async () => {
+    const source = [
+      "/**",
+      " * @param value - Input.",
+      " */",
+      "// @debt note",
+      "export function e(value: string): string {",
+      "  return value;",
+      "}",
+      "",
+    ].join("\n");
+
+    expect(await lintDocTags(source)).toStrictEqual([]);
+  });
 });
