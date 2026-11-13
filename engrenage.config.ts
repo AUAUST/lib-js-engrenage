@@ -218,6 +218,7 @@ export default defineConfig({
       "tools/eslint/types/rules/**",
       "project/build/types/BuildInput.ts",
       "project/cache/types/CacheInput.ts",
+      "project/docs/types/DocsInput.ts",
       "project/environments/types/AliasesInput.ts",
       "project/environments/types/BinInput.ts",
       "project/environments/types/DataInput.ts",

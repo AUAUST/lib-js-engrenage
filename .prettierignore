@@ -37,6 +37,7 @@ bun.lockb
 /src/tools/eslint/types/rules/**
 /src/project/build/types/BuildInput.ts
 /src/project/cache/types/CacheInput.ts
+/src/project/docs/types/DocsInput.ts
 /src/project/environments/types/AliasesInput.ts
 /src/project/environments/types/BinInput.ts
 /src/project/environments/types/DataInput.ts

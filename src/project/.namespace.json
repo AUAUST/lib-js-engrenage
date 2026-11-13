@@ -2,6 +2,7 @@
   "purpose": "Tool-agnostic project models and contract domains.",
   "layers": [
     "config",
+    "docs",
     "baseline",
     "format",
     "presets",

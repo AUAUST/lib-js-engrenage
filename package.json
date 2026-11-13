@@ -69,6 +69,8 @@
     "./config": "./dist/config.mjs",
     "./config/constants": "./dist/config/constants.mjs",
     "./constants": "./dist/constants.mjs",
+    "./docs": "./dist/docs.mjs",
+    "./docs/constants": "./dist/docs/constants.mjs",
     "./eslint": "./dist/eslint.mjs",
     "./eslint/constants": "./dist/eslint/constants.mjs",
     "./eslint/roles": "./dist/eslint/roles.mjs",

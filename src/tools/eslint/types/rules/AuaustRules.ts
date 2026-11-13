@@ -51,6 +51,12 @@ export interface AuaustRules {
    */
   "auaust/debt-markers"?: Rule<AuaustDebtMarkers>;
   /**
+   * Doc tags are declared, well formed, used once unless `multiple`, never
+   * alongside a tag they exclude, and name the documented declaration's
+   * parameters.
+   */
+  "auaust/doc-tags"?: Rule<[]>;
+  /**
    * A domain holds only roles, sub-domains and namespaces, and a namespace only
    * domains and namespaces; a command group also holds command modules.
    */

@@ -37,6 +37,7 @@ export const optionsSchema = objectWithRest(
     promises: categorySchema<typeof conventionCategories.promises>(),
     structure: categorySchema<typeof conventionCategories.structure>(),
     performance: categorySchema<typeof conventionCategories.performance>(),
+    docs: categorySchema<typeof conventionCategories.docs>(),
   },
   categorySchema<Record<string, unknown>>(),
 );

@@ -3,6 +3,7 @@
 export { default as projectBuild } from "#project/build/extension";
 export { default as projectCache } from "#project/cache/extension";
 export { default as projectConfig } from "#project/config/extension";
+export { default as projectDocs } from "#project/docs/extension";
 export { default as projectEnvironments } from "#project/environments/extension";
 export { default as projectFormat } from "#project/format/extension";
 export { default as projectPackage } from "#project/package/extension";

@@ -132,6 +132,7 @@ function selectInputs(
   declared: ReadonlyMap<ConfigSchema, DeclaredInput>,
   sections: Readonly<Record<string, ConfigSchema>>,
   root: ConfigSchema,
+  named: ReadonlySet<unknown>,
 ): Map<ConfigSchema, DeclaredInput> {
   const counts = countObjects(root);
 
@@ -147,6 +148,7 @@ function selectInputs(
 
     if (
       core === root ||
+      named.has(core) ||
       !isObjectConfigSchema(core) ||
       isListAdjustmentSchema(core)
     ) {
@@ -169,6 +171,7 @@ export function collectConfigInputs(
   modules: SchemaModules,
   sections: Readonly<Record<string, ConfigSchema>>,
   root: ConfigSchema,
+  named: ReadonlySet<unknown>,
 ) {
-  return selectInputs(collectDeclaredInputs(modules), sections, root);
+  return selectInputs(collectDeclaredInputs(modules), sections, root, named);
 }

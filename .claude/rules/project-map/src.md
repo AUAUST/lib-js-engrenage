@@ -16,12 +16,13 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ json  Read and edit JSON while preserving its formatting.
 │  ├─ options  Declare and validate configuration options.
 │  └─ processes  Run external processes.
-├─ project/  #project/…  config < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
+├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
 │  ├─ baseline*{editions}  Resolve browser support targets from Baseline editions.
 │  │  └─ editions  Browser targets for each Baseline edition.
 │  ├─ build  Resolve build outputs and the emitted package manifest.
 │  ├─ cache  Cache directory of the project's tools.
 │  ├─ config  Load and resolve declarative configuration sections.
+│  ├─ docs*  Doc tags, their presets and the documented exports of source files.
 │  ├─ environments  Configure source, tests, commands, tooling and data environments.
 │  ├─ format*  Formatting contracts shared by tool adapters.
 │  ├─ gate  Contract of the steps the gate runs.

@@ -20,6 +20,7 @@ import {
   extensionOptionSchema,
   type LoadedConfig,
 } from "#project/config/index";
+import { tagDeclarationSchema } from "#project/docs/index";
 import { formatterNameSchema } from "#project/format/index";
 import { presetNameSchema } from "#project/presets/index";
 import {
@@ -65,6 +66,7 @@ const externalTypes = new Map<string, TypeSource>([
     { domain: "project/structure", specifier: undefined },
   ],
   ["RoleRules", { domain: "project/roles", specifier: undefined }],
+  ["TagDeclaration", { domain: "project/docs", specifier: undefined }],
   ["RoleFileResolver", { domain: "project/roles", specifier: undefined }],
   ["RoleCompanionResolver", { domain: "project/roles", specifier: undefined }],
   ["Glob", { domain: undefined, specifier: "#types/Glob" }],
@@ -143,6 +145,11 @@ const namedTypes = new Map<unknown, string>([
   [presetNameSchema, "keyof Engrenage.Presets"],
   [inheritsSchema, "keyof Engrenage.Environments"],
   [preferredSchema, "(keyof Engrenage.AgentRuntimes)[]"],
+  [effectModuleResolverSchema, "EffectModuleResolver"],
+  [roleFileResolverSchema, "RoleFileResolver"],
+  [roleCompanionResolverSchema, "RoleCompanionResolver"],
+  [roleRulesSchema, "RoleRules"],
+  [tagDeclarationSchema, "TagDeclaration"],
 ]);
 
 function resolveType(schema: ConfigSchema): string | undefined {
@@ -150,22 +157,6 @@ function resolveType(schema: ConfigSchema): string | undefined {
 
   if (named !== undefined) {
     return named;
-  }
-
-  if (schema === effectModuleResolverSchema) {
-    return "EffectModuleResolver";
-  }
-
-  if (schema === roleFileResolverSchema) {
-    return "RoleFileResolver";
-  }
-
-  if (schema === roleCompanionResolverSchema) {
-    return "RoleCompanionResolver";
-  }
-
-  if (schema === roleRulesSchema) {
-    return "RoleRules";
   }
 
   const resolve = findDescribedResolve(schema);
@@ -373,7 +364,8 @@ export async function generateConfigTypes(
   const sections = await composeInputSchemas(config);
 
   const root = strictObject(sections);
-  const inputs = collectConfigInputs(modules, sections, root);
+  const named = new Set(namedTypes.keys());
+  const inputs = collectConfigInputs(modules, sections, root, named);
 
   const names = new Map(
     map([...inputs], ([core, { name }]) => [core, name] as const),

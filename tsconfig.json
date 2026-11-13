@@ -2,8 +2,6 @@
   "extends": "./data/tsconfig/library.json",
   "compilerOptions": {
     "paths": {
-      "@auaust/engrenage": ["./src/entry.ts"],
-      "@auaust/engrenage/constants": ["./src/constants.ts"],
       "@auaust/engrenage/config/constants": [
         "./src/project/config/constants.ts"
       ],
@@ -14,6 +12,8 @@
       "@auaust/engrenage/shopify/constants": [
         "./src/tools/shopify/constants.ts"
       ],
+      "@auaust/engrenage": ["./src/entry.ts"],
+      "@auaust/engrenage/constants": ["./src/constants.ts"],
       "@auaust/engrenage/blocks/internals": [
         "./src/foundation/blocks/index.ts"
       ],
@@ -27,6 +27,8 @@
       "@auaust/engrenage/baseline/constants": [
         "./src/project/baseline/constants.ts"
       ],
+      "@auaust/engrenage/docs": ["./src/project/docs/entry.ts"],
+      "@auaust/engrenage/docs/constants": ["./src/project/docs/constants.ts"],
       "@auaust/engrenage/format": ["./src/project/format/entry.ts"],
       "@auaust/engrenage/format/constants": [
         "./src/project/format/constants.ts"

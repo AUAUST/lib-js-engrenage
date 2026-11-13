@@ -4,6 +4,7 @@ import type { ListOption, ManagedListOption } from "#foundation/options/index";
 import type { BuildInput } from "#project/build/index";
 import type { CacheInput } from "#project/cache/index";
 import type { ExtensionOption } from "#project/config/index";
+import type { DocsInput } from "#project/docs/index";
 import type { AliasesInput, BinInput, DataInput, DefineInput, RuntimeInput, ScriptsInput, SourceInput, TestsInput, ToolingInput } from "#project/environments/index";
 import type { FormatInput } from "#project/format/index";
 import type { TraitsInput } from "#project/presets/index";
@@ -25,6 +26,10 @@ export interface BuiltinConfigInput {
    * @default none
    */
   extensions?: (ExtensionOption[] | undefined)
+  /**
+   * Documentation comments of the project: the doc tags they may carry.
+   */
+  docs?: (DocsInput | undefined)
   /**
    * The environment of the command-line entries of the package.
    * `false` disables it.
