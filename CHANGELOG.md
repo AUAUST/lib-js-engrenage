@@ -1,5 +1,40 @@
 # @auaust/engrenage
 
+## 0.12.0
+
+### Minor Changes
+
+- [`3a3ca2a`](https://github.com/AUAUST/lib-js-engrenage/commit/3a3ca2a4edeb509acf4e11df606fef27fcd1c4d1) Thanks [@apademide](https://github.com/apademide)! - - Return `info` lint messages of each edited file to Claude through an async `PostToolUse` hook.
+
+- [`67eac89`](https://github.com/AUAUST/lib-js-engrenage/commit/67eac89c17d58c3657e815fb6d79d17e0369ab2b) Thanks [@apademide](https://github.com/apademide)! - - Print each declared doc tag in its canonical form, `@name {Type} subject - body`, and order JSDoc tags by their declarations, undeclared tags last
+
+- [`103c2ae`](https://github.com/AUAUST/lib-js-engrenage/commit/103c2aeeb2f1d1a8e74668783e379f10a1b35304) Thanks [@apademide](https://github.com/apademide)! - - Move JSDoc layout from ESLint to Prettier, which now also wraps descriptions to the print width: `stylistic.jsdocLayout` is gone from the `defineEslintConfig` options, so options naming it now fail validation
+  - Replace `eslint-plugin-jsdoc` with `comment-parser` among the dependencies
+
+- [`c24a50d`](https://github.com/AUAUST/lib-js-engrenage/commit/c24a50d13cd3c6f87e97bd733109ddc466b38177) Thanks [@apademide](https://github.com/apademide)! - Removed the toolkit-only ESLint conventions (`globals` category, `comparisons.noIsNull`, `comparisons.noIsUndefined`, `performance.noToolkitRoot`): `defineEslintConfig` options naming them now fail validation.
+
+### Patch Changes
+
+- [`3446d02`](https://github.com/AUAUST/lib-js-engrenage/commit/3446d02bc2463cbab8cf5ccfa15df9c12b49e08b) Thanks [@apademide](https://github.com/apademide)! - - Add the `apis` role preset to `./eslint/roles`, for the interfaces a domain hands out, with a rule requiring one interface with methods per module
+
+- [`f3e4ab1`](https://github.com/AUAUST/lib-js-engrenage/commit/f3e4ab1494607d6b74d72ad9d56939283f14ce65) Thanks [@apademide](https://github.com/apademide)! - - Add `./docs`, exporting a preset per standard TSDoc and TypeScript tag and `createTagPreset`, as experimental
+  - Add the `docs.tags` option and the `docs.tags` slot for extensions to contribute ordered tag declarations
+  - Add the `docs.docTags` ESLint convention, reporting undeclared, malformed, repeated and mutually exclusive tags, `@param` and `@typeParam` names absent from the signature, and blocks on overload implementations
+  - Accept the `doc`, `docs`, `param` and `params` abbreviations in `stylistic.nameReplacements`
+
+- [`d8973a2`](https://github.com/AUAUST/lib-js-engrenage/commit/d8973a2604564aa7a4a9d5547bf876ddb1002771) Thanks [@apademide](https://github.com/apademide)! - Contracts and entry exports documented in published declarations.
+
+- [`e9dcb0e`](https://github.com/AUAUST/lib-js-engrenage/commit/e9dcb0e8f563b5a4cfa66e1c986b3856dd445f1b) Thanks [@apademide](https://github.com/apademide)! - - Add the `docs.documented` lint convention, reporting at `info` the members of `ports` and `apis` interfaces and the package entry exports without a JSDoc description
+
+- [`54a47f3`](https://github.com/AUAUST/lib-js-engrenage/commit/54a47f3b90bb10dbc5fe1b6d756cfd3f7c670617) Thanks [@apademide](https://github.com/apademide)! - - Add the `eslint.conventions` slot for extensions to contribute ESLint conventions in their own category
+  - Export `defineConvention`, `delegateRule`, `defineReplacement`, `defineGlobalReplacement` and `defineImportReplacement` from `./eslint` as experimental
+
+- [`5ebad05`](https://github.com/AUAUST/lib-js-engrenage/commit/5ebad057f3494ba170bd1c1b33cb469c71ea50c1) Thanks [@apademide](https://github.com/apademide)! - - Trim tags declared with `output: "internal"`, such as `@privateRemarks`, from built declarations, keeping declaration maps valid
+
+- [`f67fcf9`](https://github.com/AUAUST/lib-js-engrenage/commit/f67fcf949b37107eb0eeab11c467b2b020414b62) Thanks [@apademide](https://github.com/apademide)! - - Drop JSDoc from the JavaScript output of libraries shipping declarations.
+
+- [`4d69568`](https://github.com/AUAUST/lib-js-engrenage/commit/4d69568a0561bb2843ec87e460eb35525da32392) Thanks [@apademide](https://github.com/apademide)! - - Add the experimental `declarations` config key, reading a source file's exported declarations with their parsed doc tags per signature
+
 ## 0.11.2
 
 ### Patch Changes
