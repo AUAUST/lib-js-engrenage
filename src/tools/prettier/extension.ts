@@ -2,9 +2,9 @@ import { prettier, prettierPluginEntry } from "#tools/prettier/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Built-in Prettier extension, active when `prettier` is installed: owns the
- * `prettier.plugins` slot, the `prettier` config key and `.prettierignore`,
- * formats files, runs Prettier in the gate and syncs `.prettierignore`.
+ * Active when `prettier` is installed; owns the `prettier.plugins` slot, the
+ * `prettier` config key and `.prettierignore`, formats files, runs Prettier in
+ * the gate and syncs `.prettierignore`.
  */
 export default {
   name: "tools/prettier",

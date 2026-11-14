@@ -7,9 +7,9 @@ import {
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Built-in agents extension: owns the `agents` config key, the `agents.runtimes`,
- * `agents.fillers` and `agents.rules` slots, the instruction files and the agent
- * stats directory, and syncs agent files.
+ * Owns the `agents` config key, the `agents.runtimes`, `agents.fillers` and
+ * `agents.rules` slots, the instruction files and the agent stats directory, and
+ * syncs agent files.
  */
 export default {
   name: "tools/agents",

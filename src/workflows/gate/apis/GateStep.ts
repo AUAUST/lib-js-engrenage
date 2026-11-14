@@ -3,7 +3,7 @@ import type { Files } from "#types/Files";
 
 export interface GateStep {
   /**
-   * `everyone` runs the step in every gate; `agents` only in the agents' gate.
+   * The audience of the step's entry, as `GateStepEntry.audience` states.
    */
   readonly audience: GateStepEntry["audience"];
   /**
@@ -11,8 +11,9 @@ export interface GateStep {
    */
   readonly name: string;
   /**
-   * Checks or fixes the changed `files`; a result with `ok` false fails the gate
-   * with its `output`. A thrown error fails it with its message.
+   * Checks or fixes the changed `files`. A result with `ok` false fails the step
+   * with its `output`, a thrown error with its message; `GateStepEntry.stage`
+   * states whether a failing step fails the gate or only warns.
    */
   run(files: Files): Promise<GateResult>;
 }

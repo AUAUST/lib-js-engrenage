@@ -8,10 +8,9 @@ import {
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Built-in TypeScript extension: owns the `barrels.exports` slot, the
- * `declarations` config key, the TypeScript cache, env file, environment tsconfigs
- * and barrels, contributes the TypeScript language and syncs barrels, tsconfigs,
- * aliases, globals and workspaces.
+ * Owns the `barrels.exports` slot, the `declarations` config key, the TypeScript
+ * cache, env file, environment tsconfigs and barrels, contributes the TypeScript
+ * language and syncs barrels, tsconfigs, aliases, globals and workspaces.
  */
 export default {
   name: "tools/typescript",

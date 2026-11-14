@@ -6,9 +6,8 @@ import {
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Built-in Changesets extension, active when `@changesets/cli` is
- * installed: owns the changelogs and the `.changeset` directory and syncs
- * `.changeset/config.json`.
+ * Active when `@changesets/cli` is installed; owns the changelogs and the
+ * `.changeset` directory and syncs `.changeset/config.json`.
  */
 export default {
   name: "tools/changesets",

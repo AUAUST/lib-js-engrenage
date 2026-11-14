@@ -3,8 +3,8 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 // @debt the extension owns no config key, so its options come only from definer arguments
 /**
- * Built-in tsdown extension, active when `tsdown` is installed: owns its cache
- * and registers tsdown as a build tool.
+ * Active when `tsdown` is installed; owns its cache and registers tsdown as a
+ * build tool.
  */
 export default {
   name: "tools/tsdown",

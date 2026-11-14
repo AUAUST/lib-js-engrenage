@@ -1,8 +1,7 @@
 import type { Extension } from "#project/config/index";
 
 /**
- * The built-in extension owning the `debug` config key, read from the `debug`
- * input.
+ * Owns the `debug` config key, read from the `debug` input.
  */
 export default {
   name: "workflows/cli",

@@ -7,9 +7,9 @@ import {
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Built-in Shopify app extension, active when `@shopify/cli` is installed: owns
- * the app's TOML and extension locale files when an app config exists, and
- * contributes the `shopify-app` preset configuring extension workspaces.
+ * Active when `@shopify/cli` is installed; owns the app's TOML and extension
+ * locale files when an app config exists, and contributes the `shopify-app`
+ * preset configuring extension workspaces.
  */
 export default {
   name: "tools/shopify",

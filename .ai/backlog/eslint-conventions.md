@@ -35,3 +35,8 @@ ESLint rules and conventions engrenage ships.
 - site: `src/tools/eslint/utils/createTypeAwareLanguageOptions.ts`
 - why: TypeScript's `isMatchedByConfig` scans every solution reference's file names per opened file, quadratic in project size; per-environment `parserOptions.project` cut a full lint from 30.5 s to 23.9 s.
 - want: per-environment `project` (against typescript-eslint's recommendation), or an upstream TypeScript fix (question).
+
+## 7. `auaust/documented` reports aliases whose signature states their whole contract
+
+- why: #541's pass answered with filler restating the alias (`Directories`, `Files`, `Globs`, `PackageNames`, eslint `Config`, `Plugin`, `RuleModule`, vscode `Setting`), which its Decisions forbid.
+- want: the rule skips plain aliases of a list or an upstream type, or the convention names the comment they take.

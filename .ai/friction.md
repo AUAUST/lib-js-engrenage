@@ -83,7 +83,7 @@
 - zsh `$R` word splitting: unquoted variable holding refs passed as one argument — zsh does not split words; listed refs inline
 - engrenage planning CLI: bare `engrenage planning issue --help` in engrenage itself — binary not on PATH; pnpm engrenage (package script) works
 - Claude PreToolUse Bash hook: imported a new barrel export in `engrenage.config.ts` before syncing barrels — the hook loads the config from source and blocked `pnpm engrenage sync`; added the barrel line with Edit
-- worktree isolation guard: chained `cd`, git and heredocs in one Bash call — refused as too complex to verify; split into separate calls
+- worktree guard: chained `cd`, git and heredocs in one Bash call — refused as too complex to verify; split into separate calls
 - zsh `grep --include=*.ts`: unquoted glob in a review-run caller search — "no matches found"; quoted the glob
 - worktree guard: `git mv` loop, heredoc script and `cd … && git status` chain in an agent worktree — refused as too complex to verify; wrote the script with Write, moved files with plain `mv`, ran each command alone
 - `engrenage gate --worktree`: gate and `pnpm test` while concurrent agents held load average near 40 — `listDebtMarkers` and `syncVscodeFiles` tests hit the 5s timeout; passed alone, reran the gate once load fell below 12
@@ -92,18 +92,19 @@
 - `timeout` command: wrapped tsc in `timeout 300` — not installed on macOS zsh; ran without it
 - worktree guard: compound Bash commands with `git status`/`mkdir -p a/{b,c}` or `&&` chains after `pnpm` in an agent worktree — refused as too complex to verify; split into separate commands
 - timeout: wrapped vitest in timeout to bound it — not installed on macOS, so the chained cleanup ran early; reran without it
-- worktree isolation: chained `git diff` after other commands in one Bash call — refused as unverifiable; split into separate calls
+- worktree guard: chained `git diff` after other commands in one Bash call — refused as unverifiable; split into separate calls
 - `engrenage gate --worktree`: first gate run in a worktree — printed a vitest failure (`listDebtMarkers` timeout) run from another agent worktree yet exited 0; reran the gate, which passed silently
 - npx tsc: ran to type check — devEngines rejects npm; used pnpm exec tsc
 - `engrenage planning issue publish`: published a root Segment with no parent Plan — refused as "parent Plan outside the set"; rooted it under a new Plan
 - timeout: bounded an eslint run with timeout — not installed on macOS; ran without it
 - listInfoMessages: listed a file's `info` lint messages — no command exposes them; wrote a scratch script importing it
 - engrenage sync: ran it after adding a utils module imported through its barrel — sync loads the source, so the missing barrel export crashed it; added the barrel lines by hand first
-- worktree isolation guard: python heredoc writing JSDoc into a source file, then `git status` after the gate in one call — refused as unverifiable; moved the script to the scratchpad and split the calls
-- pnpm lint: first run in a fresh worktree printed other worktrees' lint reports interleaved with its own — rerunning gave clean output for the named paths
-- pnpm lint: read its stylish output — lines from other worktrees' concurrent runs interleaved with its own, garbling paths; reran with `--format json -o <file>`
-- worktree isolation guard: wrote files with heredocs holding `#` or `<…>` in a Bash call — refused as too complex to verify; used the Write tool or a scratch script instead
+- worktree guard: python heredoc writing JSDoc into a source file, then `git status` after the gate in one call — refused as unverifiable; moved the script to the scratchpad and split the calls
+- `pnpm lint`: first run in a fresh worktree printed other worktrees' lint reports interleaved with its own — rerunning gave clean output for the named paths
+- `pnpm lint`: read its stylish output — lines from other worktrees' concurrent runs interleaved with its own, garbling paths; reran with `--format json -o <file>`
+- worktree guard: wrote files with heredocs holding `#` or `<…>` in a Bash call — refused as too complex to verify; used the Write tool or a scratch script instead
 - worktree guard: `cat > file <<EOF` heredoc and inline Python heredoc writing files under `src/project/` in an agent worktree — refused as too complex to verify; used Write and a scratchpad script
-- `pnpm lint <paths>`: listed one reach's `auaust/documented` warnings — output interleaved findings from other agent worktrees' files; filtered on this worktree's path
+- `pnpm lint`: listed one reach's `auaust/documented` warnings — output interleaved findings from other agent worktrees' files; filtered on this worktree's path
 - scratchpad: wrote spec files under generic names in the session scratchpad — a parallel worker shares the directory and overwrote them; moved to a per-issue subdirectory
-- worktree isolation guard: ran shell commands whose text contains the word "git" (directory names, echo text) — refused as unverifiable git commands; moved them into a script file
+- worktree guard: ran shell commands whose text contains the word "git" (directory names, echo text) — refused as unverifiable git commands; moved them into a script file
+- zsh word splitting: passed an unquoted `$files` list to perl and sed in a review run — zsh passed one word; fed the list through `xargs`

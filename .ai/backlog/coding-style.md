@@ -18,3 +18,8 @@ Local coding conventions and linting.
 - sites: `src/project/roles/types/Role.ts:1`, `src/project/tsconfig/utils/toJsonValue.ts:3`
 - why: `Role` duplicates the generated `RoleInput`; the JSON-value round trip repeats `serialize` in `defineSchema`.
 - want: `RoleInput` used directly; one shared JSON-value converter.
+
+## 4. No convention picks `@throws` or summary prose for a contract's failures
+
+- why: #541's pass split: `foundation` ports and apis use `@throws` (9 sites), every other layer states "Throws…"/"Rejects…" in the summary (~50 sites).
+- want: one form in the documentation rule, then the other sites rewritten.

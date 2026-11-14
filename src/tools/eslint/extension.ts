@@ -8,9 +8,9 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 // @debt the extension owns no config key, so its options come only from definer arguments
 /**
- * Built-in ESLint extension, active when `eslint` is installed: owns the
- * `eslint.conventions` slot and the suppressions file, contributes the `apis`
- * and `extension` roles and runs ESLint in the gate.
+ * Active when `eslint` is installed; owns the `eslint.conventions` slot and the
+ * suppressions file, contributes the `apis` and `extension` roles and runs ESLint
+ * in the gate.
  */
 export default {
   name: "tools/eslint",

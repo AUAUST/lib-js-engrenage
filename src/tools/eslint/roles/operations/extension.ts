@@ -1,9 +1,9 @@
 import { createRolePreset } from "#project/roles/index";
 
 /**
- * Role preset for a domain's `extension.ts`: its default-exported extension,
- * collected across domains, with its imports checked by the `extension-imports`
- * rule.
+ * Preset of the `extension` role: a domain's `extension.ts` default-exporting
+ * its extension, collected across domains, with its imports checked by the
+ * `extension-imports` rule.
  */
 export const extension = createRolePreset({
   name: "extension",

@@ -2,9 +2,8 @@ import { githubSnapshotFile, planningSheetRule } from "#tools/github/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Built-in GitHub extension: owns the `github` config key, the workflow files
- * and the GitHub snapshot, generates the planning sheet rule and syncs the
- * workflows.
+ * Owns the `github` config key, the workflow files and the GitHub snapshot,
+ * generates the planning sheet rule and syncs the workflows.
  */
 export default {
   name: "tools/github",
