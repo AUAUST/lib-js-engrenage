@@ -115,3 +115,4 @@
 - engrenage sync barrel-blocks: emptied a barrel src itself imports through — the CLI crashed loading the config before regenerating it; wrote the barrel by hand
 - zsh word splitting: passed an unquoted file list to eslint — zsh passed one word; fed the list through `xargs`
 - CLAUDE_SCRATCH: redirected output to `$CLAUDE_SCRATCH` — the variable is unset; used the scratchpad's absolute path
+- `pnpm engrenage gate`: ran it on unstaged changes expecting a type check — it passed silently while tsc failed; `pnpm test` caught it, `--worktree` covers unstaged files

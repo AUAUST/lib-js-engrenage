@@ -20,6 +20,27 @@ function schemaUrl(root: string, name: string): string {
   return `./${relative(root, fileURLToPath(new URL(`../../../../data/schemas/${name}.schema.json`, import.meta.url)))}`;
 }
 
+async function syncSchemas(
+  config: Awaited<ReturnType<typeof loadConfig>>,
+  read: (path: string) => string,
+) {
+  await syncVscodeFiles(config);
+
+  await config.context.filesystem.flush();
+
+  const settings = validate(
+    looseObject({
+      "json.schemas": array(
+        strictObject({ fileMatch: array(string()), url: string() }),
+      ),
+    }),
+    JSON.parse(read(".vscode/settings.json")),
+    "VS Code settings",
+  );
+
+  return settings["json.schemas"];
+}
+
 const packageJson = JSON.stringify({
   type: "module",
   devDependencies: {
@@ -222,21 +243,7 @@ export default defineEslintConfig({}, {
 
     const config = await loadConfig(project.root);
 
-    await syncVscodeFiles(config);
-
-    await config.context.filesystem.flush();
-
-    const settings = validate(
-      looseObject({
-        "json.schemas": array(
-          strictObject({ fileMatch: array(string()), url: string() }),
-        ),
-      }),
-      JSON.parse(project.read(".vscode/settings.json")),
-      "VS Code settings",
-    );
-
-    expect(settings["json.schemas"]).toEqual([
+    expect(await syncSchemas(config, project.read)).toEqual([
       own,
       {
         fileMatch: ["**/.namespace.json"],
@@ -247,6 +254,64 @@ export default defineEslintConfig({}, {
         url: schemaUrl(project.root, "domain"),
       },
     ]);
+  });
+
+  test("points each metadata matcher at its current schema alone", async () => {
+    const stale = "./node_modules/.pnpm/stale/schemas";
+
+    const project = createTemporaryProject({
+      "engrenage.config.ts": "export default {};\n",
+      "package.json": packageJson,
+    });
+
+    project.write(
+      ".vscode/settings.json",
+      JSON.stringify({
+        "json.schemas": [
+          {
+            fileMatch: ["**/.namespace.json"],
+            url: `${stale}/namespace.schema.json`,
+          },
+          {
+            fileMatch: ["**/.domain.json", "*.own.json"],
+            url: `${stale}/domain.schema.json`,
+          },
+          {
+            fileMatch: ["*.namespace-like.json"],
+            url: schemaUrl(project.root, "namespace"),
+          },
+          {
+            fileMatch: ["**/.domain.json"],
+            url: schemaUrl(project.root, "domain"),
+          },
+          {
+            fileMatch: ["**/.domain.json"],
+            url: schemaUrl(project.root, "domain"),
+          },
+        ],
+      }),
+    );
+
+    const config = await loadConfig(project.root);
+
+    expect(await syncSchemas(config, project.read)).toEqual([
+      {
+        fileMatch: ["*.own.json"],
+        url: `${stale}/domain.schema.json`,
+      },
+      {
+        fileMatch: ["*.namespace-like.json", "**/.namespace.json"],
+        url: schemaUrl(project.root, "namespace"),
+      },
+      {
+        fileMatch: ["**/.domain.json"],
+        url: schemaUrl(project.root, "domain"),
+      },
+    ]);
+
+    await syncVscodeFiles(config);
+
+    expect(config.context.filesystem.discard()).toEqual([]);
   });
 
   test("updates existing enabled files and skips disabled or missing ones", async () => {

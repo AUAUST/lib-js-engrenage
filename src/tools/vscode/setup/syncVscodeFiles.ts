@@ -1,7 +1,7 @@
 import { relative } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 
-import { array, optional, string } from "valibot";
+import { array, is, looseObject, optional, string } from "valibot";
 
 import {
   deduplicate,
@@ -9,6 +9,7 @@ import {
   flatMap,
   includes,
   map,
+  toReversed,
 } from "@auaust/primitive-kit/arrays";
 import { isArray } from "@auaust/toolkit/isArray";
 import { isPlainObject } from "@auaust/toolkit/isPlainObject";
@@ -36,9 +37,160 @@ import type { LoadedConfig } from "#project/config/index";
 import type { Integration } from "#tools/vscode/types/Integration";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+import type { Glob } from "#types/Glob";
 
 interface SettingEdit extends JsonEdit {
   identifier?: string;
+}
+
+const schemasLocation = ["json.schemas"];
+
+const schemaAssociation = looseObject({
+  fileMatch: array(string()),
+  url: optional(string()),
+});
+
+function groupByUrl(
+  schemas: ReadonlyMap<Glob, string>,
+  matchers: Iterable<Glob>,
+): Map<string, Glob[]> {
+  const groups = new Map<string, Glob[]>();
+
+  for (const matcher of matchers) {
+    const url = schemas.get(matcher);
+
+    if (url !== undefined) {
+      groups.set(url, [...(groups.get(url) ?? []), matcher]);
+    }
+  }
+
+  return groups;
+}
+
+function mergeSchemas(
+  content: string,
+  path: File,
+  schemas: ReadonlyMap<Glob, string>,
+): string {
+  const existing = readJsonValue(content, path, schemasLocation);
+
+  if (!isArray(existing)) {
+    return applyJsonEdits(
+      content,
+      path,
+      [
+        {
+          path: schemasLocation,
+          value: map(
+            [...groupByUrl(schemas, schemas.keys())],
+            ([url, fileMatch]) => {
+              return {
+                fileMatch,
+                url,
+              };
+            },
+          ),
+        },
+      ],
+      jsonIndentation,
+    );
+  }
+
+  const placed = new Set<Glob>();
+
+  const kept = map(existing, (entry) => {
+    if (!is(schemaAssociation, entry)) {
+      return;
+    }
+
+    // @debt @auaust/primitive-kit's `filter` types a callback overload's result as `T[]`, a list of the input arrays, so these filters use the native method.
+    return entry.fileMatch.filter((matcher) => {
+      const url = schemas.get(matcher);
+
+      if (url === undefined) {
+        return true;
+      }
+
+      if (url !== entry.url || placed.has(matcher)) {
+        return false;
+      }
+
+      placed.add(matcher);
+
+      return true;
+    });
+  });
+
+  const missing = groupByUrl(
+    schemas,
+    [...schemas.keys()].filter((matcher) => {
+      return !placed.has(matcher);
+    }),
+  );
+
+  let synced = content;
+
+  const emptied: number[] = [];
+
+  for (const [index, entry] of existing.entries()) {
+    const fileMatch = kept[index];
+
+    if (fileMatch === undefined || !is(schemaAssociation, entry)) {
+      continue;
+    }
+
+    const joined = entry.url === undefined ? undefined : missing.get(entry.url);
+
+    if (
+      entry.url !== undefined &&
+      joined !== undefined &&
+      fileMatch.length > 0
+    ) {
+      fileMatch.push(...joined);
+
+      missing.delete(entry.url);
+    }
+
+    if (fileMatch.length === 0 && entry.fileMatch.length > 0) {
+      emptied.push(index);
+    } else if (!isDeepStrictEqual(fileMatch, entry.fileMatch)) {
+      synced = writeJsonValue(
+        synced,
+        path,
+        [...schemasLocation, index, "fileMatch"],
+        fileMatch,
+        jsonIndentation,
+      );
+    }
+  }
+
+  for (const [url, fileMatch] of missing) {
+    synced = writeJsonValue(
+      synced,
+      path,
+      [...schemasLocation, -1],
+      {
+        fileMatch,
+        url,
+      },
+      jsonIndentation,
+      {
+        isArrayInsertion: true,
+      },
+    );
+  }
+
+  for (const index of toReversed(emptied)) {
+    synced = writeJsonValue(
+      synced,
+      path,
+      [...schemasLocation, index],
+      undefined,
+      jsonIndentation,
+    );
+  }
+
+  return synced;
 }
 
 // @debt addRecommendations repeats mergeSetting's array insertion; one array merge could serve both files.
@@ -142,6 +294,17 @@ async function loadEslintInfoRules(root: Directory): Promise<string[]> {
   return loadInfoRules(root);
 }
 
+function createSchemas(root: Directory): Map<Glob, string> {
+  return new Map(
+    map(metadataSchemas, ({ file, schema }) => {
+      return [
+        `**/${file}`,
+        `./${toPosixPath(relative(root, resolveDataFile(schema)))}`,
+      ];
+    }),
+  );
+}
+
 async function createSettingsEdits(
   root: Directory,
   applicable: readonly Integration[],
@@ -150,18 +313,7 @@ async function createSettingsEdits(
     ? await loadEslintInfoRules(root)
     : [];
 
-  const schemas: SettingEdit = {
-    path: ["json.schemas"],
-    identifier: "url",
-    value: map(metadataSchemas, ({ file, schema }) => {
-      return {
-        fileMatch: [`**/${file}`],
-        url: `./${toPosixPath(relative(root, resolveDataFile(schema)))}`,
-      };
-    }),
-  };
-
-  const integrationEdits = flatMap(applicable, (integration): SettingEdit[] => {
+  return flatMap(applicable, (integration): SettingEdit[] => {
     const edits = flattenJsonObject(integration.settings);
 
     if (integration !== eslintIntegration) {
@@ -182,8 +334,6 @@ async function createSettingsEdits(
       },
     ];
   });
-
-  return [...integrationEdits, schemas];
 }
 
 /**
@@ -228,6 +378,8 @@ export async function syncVscodeFiles(
     for (const edit of edits) {
       synced = mergeSetting(synced, path, edit);
     }
+
+    synced = mergeSchemas(synced, path, createSchemas(root));
 
     await filesystem.write(settingsFile, synced);
   }
