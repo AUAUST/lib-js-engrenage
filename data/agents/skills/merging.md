@@ -9,6 +9,7 @@ agent:
   description: Merger that rebases a walked leaf onto the walked branch and reviews it lightly, or reviews a closed segment against its siblings and the code around it, applying only mechanical fixes. Dispatch it only when a skill you follow or the user asks for a merger; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs.
   model: opus
   effort: medium
+  freshness: 2
   tools:
     - Bash
     - Read

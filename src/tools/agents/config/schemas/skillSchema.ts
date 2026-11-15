@@ -2,8 +2,11 @@ import {
   array,
   boolean,
   looseObject,
+  minValue,
+  number,
   optional,
   picklist,
+  pipe,
   strictObject,
   string,
 } from "valibot";
@@ -31,6 +34,7 @@ export const skillSchema = looseObject({
       tools: optional(array(string())),
       disallowedTools: optional(array(string())),
       gate: optional(boolean()),
+      freshness: optional(pipe(number(), minValue(1))),
     }),
   ),
 });

@@ -12,6 +12,7 @@ import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
@@ -138,20 +139,6 @@ async function migrateFormerSkills(config: {
       await config.filesystem.write(file, rewritten);
     }
   }
-}
-
-async function listActiveExtensions(
-  config: LoadedConfig,
-): Promise<readonly Extension[]> {
-  const { extensions } = config.context.registry;
-
-  const active = await Promise.all(
-    extensions.map(({ name }) => {
-      return config.context.registry.isActive(name, config);
-    }),
-  );
-
-  return extensions.filter((_, index) => active[index]);
 }
 
 /**

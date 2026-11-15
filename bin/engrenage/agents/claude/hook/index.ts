@@ -5,6 +5,8 @@ import git from "#bin/engrenage/agents/claude/hook/git";
 import github from "#bin/engrenage/agents/claude/hook/github";
 import lint from "#bin/engrenage/agents/claude/hook/lint";
 import record from "#bin/engrenage/agents/claude/hook/record";
+import resume from "#bin/engrenage/agents/claude/hook/resume";
+import start from "#bin/engrenage/agents/claude/hook/start";
 import stop from "#bin/engrenage/agents/claude/hook/stop";
 
 export default defineGroup({
@@ -17,6 +19,8 @@ export default defineGroup({
     github,
     lint,
     record,
+    resume,
+    start,
     stop,
   },
 });

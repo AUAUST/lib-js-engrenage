@@ -1,6 +1,7 @@
 import { round } from "@auaust/toolkit/math";
 
 import { mainAgent, tokenWeights } from "#tools/agents/constants";
+import { formatCount } from "#tools/agents/utils/formatCount";
 import type { AgentRun } from "#tools/agents/types/AgentRun";
 import type { AgentTokens } from "#tools/agents/types/AgentTokens";
 
@@ -12,14 +13,6 @@ function weigh(tokens: AgentTokens): number {
     tokens.cacheWrite1h * tokenWeights.cacheWrite1h +
     tokens.output * tokenWeights.output
   );
-}
-
-function formatCount(value: number): string {
-  if (value >= 1e6) {
-    return `${(value / 1e6).toFixed(2)}M`;
-  }
-
-  return value >= 1e3 ? `${round(value / 1e3)}k` : String(value);
 }
 
 function formatMinutes({ started, ended }: AgentRun): string {

@@ -124,6 +124,7 @@ export const hookEvents = freeze([
   "PreToolUse",
   "PostToolUse",
   "Stop",
+  "SubagentStart",
   "SubagentStop",
 ] as const);
 

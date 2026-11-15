@@ -81,6 +81,7 @@ The walker runs you as its `planner` subagent: a fallback that keeps code and pl
 
 - Send what the plan does not settle back to the walker, batched with your findings and recommendations for the user.
 - Return the answer and become idle; the walker resumes you for the next question.
+- End each answer with a **Carry-over**: one line per decision, pending question and rejected deviation of the walk that the published issues do not record, replacing your previous one, so a new consultant starts from it without your history.
 - Here, the latitude of Decisions and questions covers only how issues word and split settled work: change a plan decision, a contract or the tree order only on the user's answer.
 - Never implement.
 

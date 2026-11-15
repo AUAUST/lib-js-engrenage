@@ -131,6 +131,16 @@ describe("syncHooks", () => {
           },
         ],
       },
+      {
+        matcher: "SendMessage",
+        hooks: [
+          {
+            type: "command",
+            command: "pnpm --silent engrenage agents claude hook resume",
+            onFailure: "block",
+          },
+        ],
+      },
     ]);
 
     expect(
