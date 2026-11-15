@@ -1,6 +1,7 @@
 import { stringify } from "yaml";
 
 import { syncBlocks } from "#foundation/blocks/index";
+import { loadLazy } from "#foundation/modules/index";
 import { markdownBlocks, rulesDirectory } from "#tools/agents/constants";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import type { LoadedConfig } from "#project/config/index";
@@ -33,7 +34,7 @@ export async function syncGeneratedRules(config: LoadedConfig) {
   ]);
 
   for (const { entry, extension } of generators) {
-    const generate = await entry.load();
+    const generate = await loadLazy(entry);
 
     const rules = await generate(config, rulesDirectory);
 

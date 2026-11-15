@@ -1,0 +1,3 @@
+{
+  "purpose": "Load lazily imported modules and resolve their single export."
+}

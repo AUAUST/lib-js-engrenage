@@ -1,4 +1,5 @@
 import type { EntryShape } from "#foundation/extensions/types/EntryShape";
+import type { Lazy } from "#foundation/modules/index";
 
 /**
  * An entry of a hook slot: the registry loads its subscriber on each emit to the
@@ -6,6 +7,5 @@ import type { EntryShape } from "#foundation/extensions/types/EntryShape";
  *
  * @experimental
  */
-export interface HookEntry<Payload> extends EntryShape {
-  load(): Promise<(payload: Payload) => void | Promise<void>>;
-}
+export interface HookEntry<Payload>
+  extends EntryShape, Lazy<(payload: Payload) => void | Promise<void>> {}

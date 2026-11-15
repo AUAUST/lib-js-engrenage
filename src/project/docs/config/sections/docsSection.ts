@@ -7,6 +7,7 @@ import {
 import { isArray } from "@auaust/toolkit/isArray";
 import { freeze } from "@auaust/toolkit/object";
 
+import { loadLazy } from "#foundation/modules/index";
 import { declareSection } from "#foundation/options/index";
 import { docsSchema } from "#project/docs/config/schemas/docsSchema";
 import type { ConfigResolver } from "#project/config/index";
@@ -24,7 +25,7 @@ async function collectTags(
     map(contributions, async ({ entry, extension }) => {
       return {
         source: `${extension.name} (${entry.name})`,
-        declarations: await entry.load(),
+        declarations: await loadLazy(entry),
       };
     }),
   );

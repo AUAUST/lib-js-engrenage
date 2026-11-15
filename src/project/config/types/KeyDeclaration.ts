@@ -1,8 +1,8 @@
-import type { MaybePromise } from "@auaust/toolkit/types";
-
+import type { Lazy } from "#foundation/modules/index";
 import type { Section } from "#foundation/options/index";
 
-export interface KeyDeclaration<Output = unknown> {
+export interface KeyDeclaration<Output = unknown> extends Lazy<
+  Section<Output>
+> {
   readonly input?: string;
-  load(): MaybePromise<Section<Output>>;
 }

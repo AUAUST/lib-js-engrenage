@@ -1,6 +1,7 @@
 import { map } from "@auaust/primitive-kit/arrays";
 import { record, values } from "@auaust/toolkit/object";
 
+import { loadLazy } from "#foundation/modules/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { ConfigSchema } from "#scripts/codegen/types/ConfigSchema";
 
@@ -16,12 +17,14 @@ export async function composeInputSchemas(
     config.context.registry
       .list("keys")
       .filter(({ owner }) => owners.has(owner))
-      .map(async ({ key, declaration: { input, load } }) => {
+      .map(async ({ key, declaration: keyDeclaration }) => {
+        const { input } = keyDeclaration;
+
         if (input === undefined) {
           return [];
         }
 
-        const { declaration } = await load();
+        const { declaration } = await loadLazy(keyDeclaration);
 
         if (declaration === undefined) {
           throw new Error(`Config key ${key} has no declaration`);

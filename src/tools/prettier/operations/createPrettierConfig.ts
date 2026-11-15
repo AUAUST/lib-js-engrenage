@@ -1,6 +1,7 @@
 import { filter, flatMap, map } from "@auaust/primitive-kit/arrays";
 import { isString } from "@auaust/toolkit/isString";
 
+import { loadLazy } from "#foundation/modules/index";
 import { fixedOptions } from "#tools/prettier/constants";
 import { createLayoutPlugin } from "#tools/prettier/plugins/createLayoutPlugin";
 import { createPrinterPlugin } from "#tools/prettier/plugins/createPrinterPlugin";
@@ -44,7 +45,7 @@ export async function createPrettierConfig(
 
   const entries = map(contributions, ({ entry }) => entry);
 
-  const contributed = await Promise.all(map(entries, (entry) => entry.load()));
+  const contributed = await Promise.all(map(entries, loadLazy));
 
   const plugins = [...(options.plugins ?? []), ...contributed];
 

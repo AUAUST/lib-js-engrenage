@@ -3,6 +3,7 @@ import { isPlainObject } from "@auaust/toolkit/isPlainObject";
 import { isString } from "@auaust/toolkit/isString";
 import { entries } from "@auaust/toolkit/object";
 
+import { loadLazy } from "#foundation/modules/index";
 import { validate } from "#foundation/options/index";
 import { formatContent } from "#project/format/index";
 import { fetchIssue, isSameIssue } from "#tools/github/issues/contract/index";
@@ -43,7 +44,7 @@ async function createBodyNormalizer(
 ) {
   const selected = await config.resolve("format.formatter");
 
-  const formatter = selected === false ? undefined : await selected.load();
+  const formatter = selected === false ? undefined : await loadLazy(selected);
 
   const path = locateDraft(draft.stem);
 

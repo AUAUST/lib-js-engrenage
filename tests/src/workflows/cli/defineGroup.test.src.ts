@@ -30,7 +30,7 @@ function createExtendedProgram() {
     command.option("--extra", "an extra option");
   });
 
-  const extend = vi.fn(() => Promise.resolve({ default: extension }));
+  const extend = vi.fn(() => Promise.resolve(extension));
 
   const program = createProgram(
     "program",
@@ -69,7 +69,7 @@ describe("defineGroup", () => {
   test("loads the action of its lazy command only when the group itself runs", async () => {
     const action = vi.fn();
 
-    const load = vi.fn(() => Promise.resolve({ default: action }));
+    const load = vi.fn(() => Promise.resolve(action));
 
     const leaf = vi.fn();
 
@@ -157,14 +157,13 @@ describe("defineGroup", () => {
     expect(output.join("")).toContain("Usage: program");
   });
 
-  test("rejects an extension loader resolving to neither a function nor a default export", async () => {
+  test("rejects an extension loader resolving to a plain object", async () => {
     const program = createProgram(
       "program",
       defineGroup({
         commands: {
           leaf: defineCommand({
             action() {},
-            // @ts-expect-error a module without a default export is no extension
             extend() {
               return Promise.resolve({});
             },
@@ -177,7 +176,7 @@ describe("defineGroup", () => {
       program.parseAsync(["leaf"], { from: "user" }),
     ).rejects.toThrow(
       new TypeError(
-        "The extension of the leaf command loads neither a function nor a module whose default export is one",
+        "The extension of the leaf command loads neither a function nor a module whose default or only export is one",
       ),
     );
   });

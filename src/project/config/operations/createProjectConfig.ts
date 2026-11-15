@@ -17,6 +17,7 @@ import {
   resolveWithin,
   type Filesystem,
 } from "#foundation/filesystem/index";
+import { loadLazy } from "#foundation/modules/index";
 import {
   createResolver,
   validate,
@@ -175,7 +176,7 @@ export function createProjectConfig({
     if (declaration !== undefined) {
       return {
         input: declaration.input,
-        section: await declaration.load(),
+        section: await loadLazy(declaration),
       };
     }
   }

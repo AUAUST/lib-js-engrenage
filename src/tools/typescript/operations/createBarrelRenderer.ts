@@ -1,3 +1,4 @@
+import { loadLazy } from "#foundation/modules/index";
 import { renderBarrel } from "#tools/typescript/operations/renderBarrel";
 import { listSubpathImports } from "#tools/typescript/utils/listSubpathImports";
 import type { LoadedConfig } from "#project/config/index";
@@ -28,7 +29,7 @@ export async function createBarrelRenderer(config: LoadedConfig) {
 
   const resolvers = await Promise.all(
     contributions.map(async ({ entry }) => {
-      return { name: entry.name, resolve: await entry.load() };
+      return { name: entry.name, resolve: await loadLazy(entry) };
     }),
   );
 

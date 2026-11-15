@@ -1,11 +1,15 @@
 import type { EntryShape } from "#foundation/extensions/index";
+import type { Lazy } from "#foundation/modules/index";
 import type { GateRun } from "#project/gate/ports/GateRun";
 import type { GateStage } from "#project/gate/ports/GateStage";
 
 /**
+ * A gate step, whose run is loaded only when the gate runs it; a rejection fails
+ * the step with its message.
+ *
  * @experimental
  */
-export interface GateStepEntry extends EntryShape {
+export interface GateStepEntry extends EntryShape, Lazy<GateRun> {
   /**
    * Labels the step's failures and warnings in the gate's report.
    */
@@ -22,11 +26,6 @@ export interface GateStepEntry extends EntryShape {
    * included; `agents` only in the agents' default run.
    */
   readonly audience: "everyone" | "agents";
-  /**
-   * Loads the step's run, only when the gate runs it; a rejection fails the
-   * step with its message.
-   */
-  load(): Promise<GateRun>;
 }
 
 declare global {

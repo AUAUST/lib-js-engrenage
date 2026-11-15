@@ -1,6 +1,7 @@
 import { map } from "@auaust/primitive-kit/arrays";
 import { hasOwn } from "@auaust/toolkit/object";
 
+import { loadLazy } from "#foundation/modules/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Convention } from "#tools/eslint/ports/Convention";
 
@@ -19,7 +20,7 @@ export async function loadConventionCategories(
       return {
         entry,
         extension: extension.name,
-        convention: await entry.load(),
+        convention: await loadLazy(entry),
       };
     }),
   );

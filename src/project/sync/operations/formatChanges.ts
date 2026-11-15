@@ -1,3 +1,4 @@
+import { loadLazy } from "#foundation/modules/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";
 
@@ -16,7 +17,7 @@ export async function formatChanges(
     return filesystems;
   }
 
-  const formatter = await selected.load();
+  const formatter = await loadLazy(selected);
 
   await Promise.all(
     filesystems.map((filesystem) => {

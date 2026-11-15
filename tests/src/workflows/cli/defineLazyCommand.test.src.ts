@@ -23,7 +23,7 @@ describe("defineLazyCommand", () => {
       return [count, loud];
     });
 
-    const load = vi.fn(() => Promise.resolve({ default: action }));
+    const load = vi.fn(() => Promise.resolve(action));
 
     const command = defineLazyCommand({
       configure(command) {
@@ -64,17 +64,16 @@ describe("defineLazyCommand", () => {
     expect(action).toHaveBeenCalledOnce();
   });
 
-  test("rejects a loader resolving to an object without default", async () => {
+  test("rejects a loader resolving to a plain object", async () => {
     const command = defineLazyCommand({
-      // @ts-expect-error a module without a default export is no action
       action() {
-        return Promise.resolve({ named: vi.fn() });
+        return Promise.resolve({ default: vi.fn() });
       },
     });
 
     await expect(run(command)).rejects.toThrow(
       new TypeError(
-        "The action of the command command loads neither a function nor a module whose default export is one",
+        "The action of the command command loads neither a function nor a module whose default or only export is one",
       ),
     );
   });
@@ -96,7 +95,7 @@ describe("defineLazyCommand", () => {
 
     await run(
       defineLazyCommand({
-        action: () => Promise.resolve({ default: action }),
+        action: () => Promise.resolve(action),
       }),
     );
 

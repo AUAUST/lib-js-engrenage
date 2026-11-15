@@ -14,6 +14,7 @@ src/  foundation < project < tools < workflows  (global roles: types extension.t
 │  ├─ filesystem  Read, stage and write project files.
 │  ├─ jsdoc  Parse and print JSDoc blocks.
 │  ├─ json  Read and edit JSON while preserving its formatting.
+│  ├─ modules  Load lazily imported modules and resolve their single export.
 │  ├─ options  Declare and validate configuration options.
 │  └─ processes  Run external processes.
 ├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.

@@ -1,9 +1,13 @@
 import type { EntryShape } from "#foundation/extensions/index";
+import type { Lazy } from "#foundation/modules/index";
 import type { Options } from "#tools/prettier/types/Options";
 import type { Plugin } from "#tools/prettier/types/Plugin";
 import type { Globs } from "#types/Globs";
 
-export interface PrettierPlugin extends EntryShape {
+/**
+ * A Prettier plugin, loaded when the Prettier config is built.
+ */
+export interface PrettierPlugin extends EntryShape, Lazy<Plugin> {
   /**
    * Plugin name, unique across the slot.
    */
@@ -17,10 +21,6 @@ export interface PrettierPlugin extends EntryShape {
    * Prettier options for the files `files` matches.
    */
   readonly options?: Options;
-  /**
-   * Loads the plugin when the Prettier config is built.
-   */
-  load(): Promise<Plugin>;
 }
 
 declare global {

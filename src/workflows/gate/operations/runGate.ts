@@ -4,6 +4,7 @@ import { dirname } from "node:path";
 import { deduplicate, filter, map } from "@auaust/primitive-kit/arrays";
 
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
+import { loadLazy } from "#foundation/modules/index";
 import { LockTimeoutError } from "#foundation/processes/errors/LockTimeoutError";
 import { withProcessLock } from "#foundation/processes/index";
 import {
@@ -145,7 +146,7 @@ async function listSteps(
       audience: entry.audience,
       name: entry.name,
       async run(files) {
-        const run = await entry.load();
+        const run = await loadLazy(entry);
 
         return run(config, files);
       },

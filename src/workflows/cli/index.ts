@@ -14,7 +14,7 @@ export { collectListArgument } from "#workflows/cli/utils/collectListArgument";
 export type * from "#workflows/cli/types/CommandDefinition";
 export type * from "#workflows/cli/types/CommandParameters";
 export type * from "#workflows/cli/types/DefaultActionParameters";
-export type * from "#workflows/cli/types/ExtendModule";
+export type * from "#workflows/cli/types/ExtendCommand";
 export type * from "#workflows/cli/types/RunContext";
 // @end
 

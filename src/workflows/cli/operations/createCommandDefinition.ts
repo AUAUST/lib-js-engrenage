@@ -1,9 +1,9 @@
 import type { Command, CommandUnknownOpts } from "@commander-js/extra-typings";
 
 import { isFunction } from "@auaust/toolkit/isFunction";
-import { isObject } from "@auaust/toolkit/isObject";
 import { freeze } from "@auaust/toolkit/object";
 
+import { loadLazy } from "#foundation/modules/index";
 import {
   commandExtension,
   commandRegistration,
@@ -11,24 +11,20 @@ import {
 import { configureCommand } from "#workflows/cli/operations/configureCommand";
 import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
 
-type Loaded = (...parameters: unknown[]) => unknown;
-
-function resolveLoaded(
-  loaded: unknown,
+async function loadFunction(
+  load: () => unknown,
   name: string,
   kind: "action" | "extension",
-): Loaded {
-  if (isFunction(loaded)) {
-    return loaded;
+): Promise<(...parameters: unknown[]) => unknown> {
+  const loaded = await loadLazy<unknown>({ load });
+
+  if (!isFunction(loaded)) {
+    throw new TypeError(
+      `The ${kind} of the ${name} command loads neither a function nor a module whose default or only export is one`,
+    );
   }
 
-  if (isObject(loaded) && isFunction(loaded, "default")) {
-    return loaded.default;
-  }
-
-  throw new TypeError(
-    `The ${kind} of the ${name} command loads neither a function nor a module whose default export is one`,
-  );
+  return loaded;
 }
 
 function countDeclarations(command: Command): number {
@@ -62,8 +58,8 @@ function createExtension(
 
     if (extension === undefined) {
       extension = (async () => {
-        const extendCommand = resolveLoaded(
-          await extend(),
+        const extendCommand = await loadFunction(
+          extend,
           command.name(),
           "extension",
         );
@@ -103,7 +99,7 @@ export function createCommandDefinition({
       const bare = countDeclarations(command) === declared;
 
       command.action(async (...parameters) => {
-        const action = resolveLoaded(await load(), command.name(), "action");
+        const action = await loadFunction(load, command.name(), "action");
 
         await action(...resolveParameters(parameters, { parse, bare }));
       });

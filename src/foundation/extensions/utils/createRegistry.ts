@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import { loadLazy } from "#foundation/modules/index";
 import type { Registry } from "#foundation/extensions/apis/Registry";
 import type { Contribution } from "#foundation/extensions/types/Contribution";
 import type { DeclarationOf } from "#foundation/extensions/types/DeclarationOf";
@@ -220,7 +221,7 @@ export function createRegistry<Extension extends ExtensionShape, Scope>(
     const order = await activeOrder(slot, scope, "hook");
 
     for (const { entry } of order) {
-      const subscriber = await (entry as HookEntry<typeof payload>).load();
+      const subscriber = await loadLazy(entry as HookEntry<typeof payload>);
 
       await subscriber(payload);
     }

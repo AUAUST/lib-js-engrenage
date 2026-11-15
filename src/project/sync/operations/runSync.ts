@@ -1,5 +1,6 @@
 import { includes, map } from "@auaust/primitive-kit/arrays";
 
+import { loadLazy } from "#foundation/modules/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { SyncFailure } from "#project/sync/types/SyncFailure";
 import type { SyncTargetFlags } from "#project/sync/types/SyncTargetFlags";
@@ -41,7 +42,7 @@ export async function runSync(
   const failures: SyncFailure[] = [];
 
   for (const [index, { entry }] of selected.entries()) {
-    const run = await entry.load();
+    const run = await loadLazy(entry);
 
     const settings = flags[entry.name] ?? {};
 

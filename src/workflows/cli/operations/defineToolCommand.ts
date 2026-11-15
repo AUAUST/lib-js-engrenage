@@ -1,5 +1,6 @@
 import type { Command } from "@commander-js/extra-typings";
 
+import { loadLazy, type Loadable } from "#foundation/modules/index";
 import { defineLazyCommand } from "#workflows/cli/operations/defineLazyCommand";
 import { forwardingCommands } from "#workflows/cli/operations/forwardingCommands";
 import type { KnownPackageName } from "#types/KnownPackageName";
@@ -20,7 +21,7 @@ export function defineToolCommand({
   binary?: string;
   message?: string;
   configure?(command: Command): Command;
-  action?(): Promise<ToolAction | { default: ToolAction }>;
+  action?(): Promise<Loadable<ToolAction>>;
 }): CommandDefinition {
   return defineLazyCommand({
     configure(command) {
@@ -36,14 +37,12 @@ export function defineToolCommand({
     },
     async action() {
       const [loaded, { runTool }] = await Promise.all([
-        action?.(),
+        action === undefined ? undefined : loadLazy({ load: action }),
         import("#workflows/cli/operations/runTool"),
       ]);
 
       return async (args: string[]) => {
-        const resolved = loaded === undefined
-          ? args
-          : await ("default" in loaded ? loaded.default : loaded)(args);
+        const resolved = loaded === undefined ? args : await loaded(args);
 
         if (resolved === undefined) {
           return;

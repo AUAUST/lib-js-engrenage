@@ -1,3 +1,4 @@
+import { loadLazy } from "#foundation/modules/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { BlockFillers } from "#types/BlockFillers";
 
@@ -19,7 +20,7 @@ export async function createAgentFillers(
     }
 
     fillers[entry.name] = async (...args) => {
-      const fill = await entry.load();
+      const fill = await loadLazy(entry);
 
       return fill(config, ...args);
     };

@@ -1,12 +1,15 @@
 import type { EntryShape, HookEntry } from "#foundation/extensions/index";
+import type { Lazy } from "#foundation/modules/index";
 import type { SyncDone } from "#project/sync/ports/SyncDone";
 import type { SyncRun } from "#project/sync/ports/SyncRun";
 import type { SyncStage } from "#project/sync/ports/SyncStage";
 
 /**
+ * A sync target, whose run is loaded only when the target is selected.
+ *
  * @experimental
  */
-export interface SyncTarget extends EntryShape {
+export interface SyncTarget extends EntryShape, Lazy<SyncRun> {
   /**
    * Selects the target on the command line and prefixes its flags' options.
    */
@@ -33,10 +36,6 @@ export interface SyncTarget extends EntryShape {
    * them after it.
    */
   readonly produces?: readonly string[];
-  /**
-   * Loads the target's run, only when the target is selected.
-   */
-  load(): Promise<SyncRun>;
 }
 
 declare global {

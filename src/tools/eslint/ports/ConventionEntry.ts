@@ -1,10 +1,13 @@
 import type { EntryShape } from "#foundation/extensions/index";
+import type { Lazy } from "#foundation/modules/index";
 import type { Convention } from "#tools/eslint/ports/Convention";
 
 /**
+ * A convention, loaded when the ESLint config is built.
+ *
  * @experimental
  */
-export interface ConventionEntry extends EntryShape {
+export interface ConventionEntry extends EntryShape, Lazy<Convention> {
   /**
    * Convention name within its category, the key that enables or disables it in
    * the category's option; unique within the category.
@@ -15,10 +18,6 @@ export interface ConventionEntry extends EntryShape {
    * another extension contributes to, throws.
    */
   readonly category: string;
-  /**
-   * Loads the convention when the ESLint config is built.
-   */
-  load(): Promise<Convention>;
 }
 
 declare global {
