@@ -81,3 +81,4 @@
 - inlining readDocumentedSignature/readOverload into docTags: single-consumer helpers — exceeds the file-line limit, and #368 needs the block lookup
 - balanced JSDoc wrapping: no orphan last line — equal-length lines narrow long paragraphs far below the width
 - hybrid JSDoc wrapping: balance two-line paragraphs, pretty beyond — arbitrary line-count threshold
+- planning sheet skill: load the sheet only for issue-writing agents — skill invocation is model-driven and can be skipped; a `paths`-scoped rule on drafts loads deterministically

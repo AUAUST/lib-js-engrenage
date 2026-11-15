@@ -111,6 +111,8 @@ describe("planning sheet", () => {
 
     const content = await config.context.filesystem.read(sheet);
 
+    expect(content).toMatch(/^---\npaths:\n {2}- \.ai\/issues\/\*\*\n---\n/u);
+
     expect(content).toContain("| `app` | `AUAUST/app` |");
 
     expect(content).toContain("| `toolkit` | `AUAUST/lib-js-toolkit` |");
