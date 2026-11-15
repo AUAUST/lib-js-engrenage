@@ -1,5 +1,13 @@
 # @auaust/engrenage
 
+## 0.13.1
+
+### Patch Changes
+
+- [`4bf7c27`](https://github.com/AUAUST/lib-js-engrenage/commit/4bf7c2741f0b2434909c9b729908be9a349ea911) Thanks [@apademide](https://github.com/apademide)! - `auaust/documented` accepts an overloaded export when any of its signatures is documented, and reports an undocumented one once.
+
+- [`ef7f4c0`](https://github.com/AUAUST/lib-js-engrenage/commit/ef7f4c0a0a91185fa9cc20850694c5206e5f3141) Thanks [@apademide](https://github.com/apademide)! - - `engrenage sync` points each metadata file matcher in `.vscode/settings.json` `json.schemas` at its current schema alone, replacing stale schema paths instead of appending new associations
+
 ## 0.13.0
 
 ### Minor Changes
