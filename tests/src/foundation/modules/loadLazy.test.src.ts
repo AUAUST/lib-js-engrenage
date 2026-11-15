@@ -1,3 +1,4 @@
+import { createJiti } from "jiti";
 import { describe, expect, test } from "vitest";
 
 import { loadLazy } from "#foundation/modules/index";
@@ -21,6 +22,21 @@ describe("loadLazy", () => {
     });
 
     expect(loaded()).toBe("default");
+  });
+
+  test("resolves a module jiti imports to its only export", async () => {
+    const jiti = createJiti(import.meta.url);
+
+    const loaded = await loadLazy<() => string>({
+      load() {
+        return jiti.import(
+          new URL("../../../fixtures/modules/namedExport.ts", import.meta.url)
+            .pathname,
+        );
+      },
+    });
+
+    expect(loaded()).toBe("named");
   });
 
   test("returns a plain single-key object unchanged", async () => {

@@ -1,4 +1,5 @@
-import { keys } from "@auaust/toolkit/object";
+import { isObject } from "@auaust/toolkit/isObject";
+import { getOwn, keys } from "@auaust/toolkit/object";
 
 import type { Lazy } from "#foundation/modules/types/Lazy";
 import type { Loadable } from "#foundation/modules/types/Loadable";
@@ -6,7 +7,11 @@ import type { Loadable } from "#foundation/modules/types/Loadable";
 function isModuleNamespace<T>(
   loaded: Loadable<T>,
 ): loaded is { readonly [name: string]: T } {
-  return Object.prototype.toString.call(loaded) === "[object Module]";
+  if (Object.prototype.toString.call(loaded) === "[object Module]") {
+    return true;
+  }
+
+  return isObject(loaded) && getOwn(loaded, "__esModule") === true;
 }
 
 export async function loadLazy<T>(lazy: Lazy<T>): Promise<T> {
