@@ -11,12 +11,8 @@ export default {
     keys: {
       github: {
         input: "github",
-        async load() {
-          const {
-            githubSection,
-          } = await import("#tools/github/config/sections/githubSection");
-
-          return githubSection;
+        load() {
+          return import("#tools/github/config/sections/githubSection");
         },
       },
     },
@@ -44,24 +40,16 @@ export default {
     "agents.fillers": [
       {
         name: planningSheetRule,
-        async load() {
-          const {
-            fillPlanningSheet,
-          } = await import("#tools/github/operations/fillPlanningSheet");
-
-          return fillPlanningSheet;
+        load() {
+          return import("#tools/github/operations/fillPlanningSheet");
         },
       },
     ],
     "agents.rules": [
       {
         name: planningSheetRule,
-        async load() {
-          const {
-            generatePlanningSheetRules,
-          } = await import("#tools/github/operations/generatePlanningSheetRules");
-
-          return generatePlanningSheetRules;
+        load() {
+          return import("#tools/github/operations/generatePlanningSheetRules");
         },
       },
     ],
@@ -69,12 +57,8 @@ export default {
       {
         name: "workflows",
         stage: "write",
-        async load() {
-          const {
-            syncWorkflowFiles,
-          } = await import("#tools/github/setup/syncWorkflowFiles");
-
-          return syncWorkflowFiles;
+        load() {
+          return import("#tools/github/setup/syncWorkflowFiles");
         },
       },
     ],

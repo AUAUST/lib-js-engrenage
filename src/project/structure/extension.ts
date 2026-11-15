@@ -13,95 +13,55 @@ export default {
   owns: {
     keys: {
       "structure": {
-        async load() {
-          const {
-            structureSection,
-          } = await import("#project/structure/config/sections/structureSection");
-
-          return structureSection;
+        load() {
+          return import("#project/structure/config/sections/structureSection");
         },
       },
       "structure.options": {
         input: "structure",
-        async load() {
-          const {
-            structureOptionsSection,
-          } = await import("#project/structure/config/sections/structureOptionsSection");
-
-          return structureOptionsSection;
+        load() {
+          return import("#project/structure/config/sections/structureOptionsSection");
         },
       },
       "aliases": {
         input: "aliases",
-        async load() {
-          const {
-            aliasesSection,
-          } = await import("#project/structure/config/sections/aliasesSection");
-
-          return aliasesSection;
+        load() {
+          return import("#project/structure/config/sections/aliasesSection");
         },
       },
       "effectModules": {
-        async load() {
-          const {
-            effectModulesSection,
-          } = await import("#project/structure/config/sections/effectModulesSection");
-
-          return effectModulesSection;
+        load() {
+          return import("#project/structure/config/sections/effectModulesSection");
         },
       },
       "entities": {
-        async load() {
-          const {
-            entitiesSection,
-          } = await import("#project/structure/config/sections/entitiesSection");
-
-          return entitiesSection;
+        load() {
+          return import("#project/structure/config/sections/entitiesSection");
         },
       },
       "environmentRoles": {
-        async load() {
-          const {
-            environmentRolesSection,
-          } = await import("#project/structure/config/sections/environmentRolesSection");
-
-          return environmentRolesSection;
+        load() {
+          return import("#project/structure/config/sections/environmentRolesSection");
         },
       },
       "files": {
-        async load() {
-          const {
-            filesSection,
-          } = await import("#project/structure/config/sections/filesSection");
-
-          return filesSection;
+        load() {
+          return import("#project/structure/config/sections/filesSection");
         },
       },
       "importGrants": {
-        async load() {
-          const {
-            importGrantsSection,
-          } = await import("#project/structure/config/sections/importGrantsSection");
-
-          return importGrantsSection;
+        load() {
+          return import("#project/structure/config/sections/importGrantsSection");
         },
       },
       "importResolver": {
-        async load() {
-          const {
-            importResolverSection,
-          } = await import("#project/structure/config/sections/importResolverSection");
-
-          return importResolverSection;
+        load() {
+          return import("#project/structure/config/sections/importResolverSection");
         },
       },
       "src.exports": {
-        async load() {
-          const {
-            sourceExportsSection,
-          } = await import("#project/structure/config/sections/sourceExportsSection");
-
-          return sourceExportsSection;
+        load() {
+          return import("#project/structure/config/sections/sourceExportsSection");
         },
       },
     },
@@ -110,34 +70,22 @@ export default {
     "agents.fillers": [
       {
         name: "project-map",
-        async load() {
-          const {
-            fillProjectMap,
-          } = await import("#project/structure/operations/fillProjectMap");
-
-          return fillProjectMap;
+        load() {
+          return import("#project/structure/operations/fillProjectMap");
         },
       },
       {
         name: "environment-map",
-        async load() {
-          const {
-            fillEnvironmentMap,
-          } = await import("#project/structure/operations/fillEnvironmentMap");
-
-          return fillEnvironmentMap;
+        load() {
+          return import("#project/structure/operations/fillEnvironmentMap");
         },
       },
     ],
     "agents.rules": [
       {
         name: projectMapRule,
-        async load() {
-          const {
-            generateProjectMapRules,
-          } = await import("#project/structure/operations/generateProjectMapRules");
-
-          return generateProjectMapRules;
+        load() {
+          return import("#project/structure/operations/generateProjectMapRules");
         },
       },
     ],
@@ -146,12 +94,8 @@ export default {
         name: "structure --check",
         stage: "checks",
         audience: "agents",
-        async load() {
-          const {
-            runStructureCheck,
-          } = await import("#project/structure/operations/runStructureCheck");
-
-          return runStructureCheck;
+        load() {
+          return import("#project/structure/operations/runStructureCheck");
         },
       },
     ],

@@ -28,12 +28,8 @@ export default {
       {
         name: "pnpm",
         stage: "write",
-        async load() {
-          const {
-            syncWorkspaceFile,
-          } = await import("#tools/pnpm/setup/syncWorkspaceFile");
-
-          return syncWorkspaceFile;
+        load() {
+          return import("#tools/pnpm/setup/syncWorkspaceFile");
         },
       },
     ],

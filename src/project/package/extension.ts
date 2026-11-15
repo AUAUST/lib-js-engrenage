@@ -10,40 +10,24 @@ export default {
   owns: {
     keys: {
       environment: {
-        async load() {
-          const {
-            environmentSection,
-          } = await import("#project/package/config/sections/environmentSection");
-
-          return environmentSection;
+        load() {
+          return import("#project/package/config/sections/environmentSection");
         },
       },
       packageJsonPath: {
-        async load() {
-          const {
-            packageJsonPathSection,
-          } = await import("#project/package/config/sections/packageJsonPathSection");
-
-          return packageJsonPathSection;
+        load() {
+          return import("#project/package/config/sections/packageJsonPathSection");
         },
       },
       packageJson: {
-        async load() {
-          const {
-            packageJsonSection,
-          } = await import("#project/package/config/sections/packageJsonSection");
-
-          return packageJsonSection;
+        load() {
+          return import("#project/package/config/sections/packageJsonSection");
         },
       },
       visibility: {
         input: "visibility",
-        async load() {
-          const {
-            visibilitySection,
-          } = await import("#project/package/config/sections/visibilitySection");
-
-          return visibilitySection;
+        load() {
+          return import("#project/package/config/sections/visibilitySection");
         },
       },
     },

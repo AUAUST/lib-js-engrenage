@@ -15,12 +15,8 @@ export default {
         name: "typecheck",
         stage: "checks",
         audience: "agents",
-        async load() {
-          const {
-            checkTypes,
-          } = await import("#tools/typescript/tsc/operations/checkTypes");
-
-          return checkTypes;
+        load() {
+          return import("#tools/typescript/tsc/operations/checkTypes");
         },
       },
     ],

@@ -36,12 +36,8 @@ export default {
       {
         name: "changesets",
         stage: "write",
-        async load() {
-          const {
-            syncChangesetConfig,
-          } = await import("#tools/changesets/setup/syncChangesetConfig");
-
-          return syncChangesetConfig;
+        load() {
+          return import("#tools/changesets/setup/syncChangesetConfig");
         },
       },
     ],

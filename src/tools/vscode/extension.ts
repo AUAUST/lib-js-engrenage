@@ -25,12 +25,8 @@ export default {
     keys: {
       vscode: {
         input: "vscode",
-        async load() {
-          const {
-            vscodeSection,
-          } = await import("#tools/vscode/config/sections/vscodeSection");
-
-          return vscodeSection;
+        load() {
+          return import("#tools/vscode/config/sections/vscodeSection");
         },
       },
     },
@@ -44,12 +40,8 @@ export default {
           settings: "create .vscode/settings.json when it is missing",
           extensions: "create .vscode/extensions.json when it is missing",
         },
-        async load() {
-          const {
-            syncVscodeFiles,
-          } = await import("#tools/vscode/setup/syncVscodeFiles");
-
-          return syncVscodeFiles;
+        load() {
+          return import("#tools/vscode/setup/syncVscodeFiles");
         },
       },
     ],

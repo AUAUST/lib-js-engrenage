@@ -9,12 +9,8 @@ export default {
     keys: {
       git: {
         input: "git",
-        async load() {
-          const {
-            gitSection,
-          } = await import("#tools/git/config/sections/gitSection");
-
-          return gitSection;
+        load() {
+          return import("#tools/git/config/sections/gitSection");
         },
       },
     },
@@ -37,12 +33,8 @@ export default {
         stage: "write",
         reads: ["tsconfig"],
         produces: ["gitignore"],
-        async load() {
-          const {
-            syncGitignoreFile,
-          } = await import("#tools/git/setup/syncGitignoreFile");
-
-          return syncGitignoreFile;
+        load() {
+          return import("#tools/git/setup/syncGitignoreFile");
         },
       },
     ],

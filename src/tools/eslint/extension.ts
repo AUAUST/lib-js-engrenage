@@ -51,12 +51,8 @@ export default {
         name: eslint,
         stage: "fixes",
         audience: "agents",
-        async load() {
-          const {
-            fixWithEslint,
-          } = await import("#tools/eslint/operations/fixWithEslint");
-
-          return fixWithEslint;
+        load() {
+          return import("#tools/eslint/operations/fixWithEslint");
         },
       },
     ],

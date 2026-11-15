@@ -9,12 +9,8 @@ export default {
     keys: {
       debug: {
         input: "debug",
-        async load() {
-          const {
-            debugSection,
-          } = await import("#workflows/cli/config/sections/debugSection");
-
-          return debugSection;
+        load() {
+          return import("#workflows/cli/config/sections/debugSection");
         },
       },
     },

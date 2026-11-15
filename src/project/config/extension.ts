@@ -11,21 +11,13 @@ export default {
     keys: {
       extensions: {
         input: "extensions",
-        async load() {
-          const {
-            extensionsSection,
-          } = await import("#project/config/config/sections/extensionsSection");
-
-          return extensionsSection;
+        load() {
+          return import("#project/config/config/sections/extensionsSection");
         },
       },
       resources: {
-        async load() {
-          const {
-            resourcesSection,
-          } = await import("#project/config/config/sections/resourcesSection");
-
-          return resourcesSection;
+        load() {
+          return import("#project/config/config/sections/resourcesSection");
         },
       },
     },

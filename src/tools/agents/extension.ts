@@ -22,12 +22,8 @@ export default {
     keys: {
       agents: {
         input: "agents",
-        async load() {
-          const {
-            agentsSection,
-          } = await import("#tools/agents/config/sections/agentsSection");
-
-          return agentsSection;
+        load() {
+          return import("#tools/agents/config/sections/agentsSection");
         },
       },
     },
@@ -55,21 +51,15 @@ export default {
         stage: "write",
         reads: ["tsconfig"],
         produces: ["agents.instructions"],
-        async load() {
-          const { syncAgents } = await import("#tools/agents/setup/syncAgents");
-
-          return syncAgents;
+        load() {
+          return import("#tools/agents/setup/syncAgents");
         },
       },
     ],
     "sync.done": [
       {
-        async load() {
-          const {
-            reportSyncedAgentChecks,
-          } = await import("#tools/agents/operations/reportSyncedAgentChecks");
-
-          return reportSyncedAgentChecks;
+        load() {
+          return import("#tools/agents/operations/reportSyncedAgentChecks");
         },
       },
     ],

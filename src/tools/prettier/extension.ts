@@ -18,12 +18,8 @@ export default {
     keys: {
       prettier: {
         input: "prettier",
-        async load() {
-          const {
-            prettierSection,
-          } = await import("#tools/prettier/config/sections/prettierSection");
-
-          return prettierSection;
+        load() {
+          return import("#tools/prettier/config/sections/prettierSection");
         },
       },
     },
@@ -44,12 +40,8 @@ export default {
       {
         name: prettier,
         package: prettier,
-        async load() {
-          const {
-            formatWithPrettier,
-          } = await import("#tools/prettier/adapters/formatWithPrettier");
-
-          return formatWithPrettier;
+        load() {
+          return import("#tools/prettier/adapters/formatWithPrettier");
         },
       },
     ],
@@ -59,12 +51,8 @@ export default {
         name: prettier,
         stage: "fixes",
         audience: "everyone",
-        async load() {
-          const {
-            fixWithPrettier,
-          } = await import("#tools/prettier/operations/fixWithPrettier");
-
-          return fixWithPrettier;
+        load() {
+          return import("#tools/prettier/operations/fixWithPrettier");
         },
       },
     ],
@@ -73,12 +61,8 @@ export default {
         name: "prettierignore",
         stage: "write",
         reads: ["tsconfig"],
-        async load() {
-          const {
-            syncPrettierignoreFile,
-          } = await import("#tools/prettier/setup/syncPrettierignoreFile");
-
-          return syncPrettierignoreFile;
+        load() {
+          return import("#tools/prettier/setup/syncPrettierignoreFile");
         },
       },
     ],

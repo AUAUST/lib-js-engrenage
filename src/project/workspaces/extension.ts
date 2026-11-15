@@ -9,12 +9,8 @@ export default {
     keys: {
       workspaces: {
         input: "workspaces",
-        async load() {
-          const {
-            workspacesSection,
-          } = await import("#project/workspaces/config/sections/workspacesSection");
-
-          return workspacesSection;
+        load() {
+          return import("#project/workspaces/config/sections/workspacesSection");
         },
       },
     },

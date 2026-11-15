@@ -9,12 +9,8 @@ export default {
     keys: {
       cache: {
         input: "cache",
-        async load() {
-          const {
-            cacheSection,
-          } = await import("#project/cache/config/sections/cacheSection");
-
-          return cacheSection;
+        load() {
+          return import("#project/cache/config/sections/cacheSection");
         },
       },
     },

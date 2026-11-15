@@ -19,146 +19,86 @@ export default {
     },
     keys: {
       "environments": {
-        async load() {
-          const {
-            environmentsSection,
-          } = await import("#project/environments/config/sections/environmentsSection");
-
-          return environmentsSection;
+        load() {
+          return import("#project/environments/config/sections/environmentsSection");
         },
       },
       "environments.claims": {
-        async load() {
-          const {
-            environmentClaimsSection,
-          } = await import("#project/environments/config/sections/environmentClaimsSection");
-
-          return environmentClaimsSection;
+        load() {
+          return import("#project/environments/config/sections/environmentClaimsSection");
         },
       },
       "bin": {
-        async load() {
-          const {
-            binSection,
-          } = await import("#project/environments/config/sections/binSection");
-
-          return binSection;
+        load() {
+          return import("#project/environments/config/sections/binSection");
         },
       },
       "bin.options": {
         input: "bin",
-        async load() {
-          const {
-            binOptionsSection,
-          } = await import("#project/environments/config/sections/binOptionsSection");
-
-          return binOptionsSection;
+        load() {
+          return import("#project/environments/config/sections/binOptionsSection");
         },
       },
       "scripts": {
-        async load() {
-          const {
-            scriptsSection,
-          } = await import("#project/environments/config/sections/scriptsSection");
-
-          return scriptsSection;
+        load() {
+          return import("#project/environments/config/sections/scriptsSection");
         },
       },
       "scripts.options": {
         input: "scripts",
-        async load() {
-          const {
-            scriptsOptionsSection,
-          } = await import("#project/environments/config/sections/scriptsOptionsSection");
-
-          return scriptsOptionsSection;
+        load() {
+          return import("#project/environments/config/sections/scriptsOptionsSection");
         },
       },
       "src": {
-        async load() {
-          const {
-            sourceSection,
-          } = await import("#project/environments/config/sections/sourceSection");
-
-          return sourceSection;
+        load() {
+          return import("#project/environments/config/sections/sourceSection");
         },
       },
       "src.options": {
         input: "src",
-        async load() {
-          const {
-            sourceOptionsSection,
-          } = await import("#project/environments/config/sections/sourceOptionsSection");
-
-          return sourceOptionsSection;
+        load() {
+          return import("#project/environments/config/sections/sourceOptionsSection");
         },
       },
       "tests": {
-        async load() {
-          const {
-            testsSection,
-          } = await import("#project/environments/config/sections/testsSection");
-
-          return testsSection;
+        load() {
+          return import("#project/environments/config/sections/testsSection");
         },
       },
       "tests.options": {
         input: "tests",
-        async load() {
-          const {
-            testsOptionsSection,
-          } = await import("#project/environments/config/sections/testsOptionsSection");
-
-          return testsOptionsSection;
+        load() {
+          return import("#project/environments/config/sections/testsOptionsSection");
         },
       },
       "tooling": {
-        async load() {
-          const {
-            toolingSection,
-          } = await import("#project/environments/config/sections/toolingSection");
-
-          return toolingSection;
+        load() {
+          return import("#project/environments/config/sections/toolingSection");
         },
       },
       "tooling.options": {
         input: "tooling",
-        async load() {
-          const {
-            toolingOptionsSection,
-          } = await import("#project/environments/config/sections/toolingOptionsSection");
-
-          return toolingOptionsSection;
+        load() {
+          return import("#project/environments/config/sections/toolingOptionsSection");
         },
       },
       "data": {
         input: "data",
-        async load() {
-          const {
-            dataSection,
-          } = await import("#project/environments/config/sections/dataSection");
-
-          return dataSection;
+        load() {
+          return import("#project/environments/config/sections/dataSection");
         },
       },
       "define": {
         input: "define",
-        async load() {
-          const {
-            defineSection,
-          } = await import("#project/environments/config/sections/defineSection");
-
-          return defineSection;
+        load() {
+          return import("#project/environments/config/sections/defineSection");
         },
       },
       "runtime": {
         input: "runtime",
-        async load() {
-          const {
-            runtimeSection,
-          } = await import("#project/environments/config/sections/runtimeSection");
-
-          return runtimeSection;
+        load() {
+          return import("#project/environments/config/sections/runtimeSection");
         },
       },
     },

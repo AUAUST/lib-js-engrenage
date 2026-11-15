@@ -14,12 +14,8 @@ export default {
     keys: {
       docs: {
         input: "docs",
-        async load() {
-          const {
-            docsSection,
-          } = await import("#project/docs/config/sections/docsSection");
-
-          return docsSection;
+        load() {
+          return import("#project/docs/config/sections/docsSection");
         },
       },
     },

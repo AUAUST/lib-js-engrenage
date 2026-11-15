@@ -22,12 +22,8 @@ export default {
         name: "lefthook",
         stage: "write",
         reads: ["gitignore"],
-        async load() {
-          const {
-            syncLefthookConfig,
-          } = await import("#tools/lefthook/setup/syncLefthookConfig");
-
-          return syncLefthookConfig;
+        load() {
+          return import("#tools/lefthook/setup/syncLefthookConfig");
         },
       },
     ],

@@ -15,31 +15,19 @@ export default {
     keys: {
       "preset": {
         input: "preset",
-        async load() {
-          const {
-            presetSection,
-          } = await import("#project/presets/config/sections/presetSection");
-
-          return presetSection;
+        load() {
+          return import("#project/presets/config/sections/presetSection");
         },
       },
       "traits": {
-        async load() {
-          const {
-            traitsSection,
-          } = await import("#project/presets/config/sections/traitsSection");
-
-          return traitsSection;
+        load() {
+          return import("#project/presets/config/sections/traitsSection");
         },
       },
       "traits.adjustments": {
         input: "traits",
-        async load() {
-          const {
-            traitAdjustmentsSection,
-          } = await import("#project/presets/config/sections/traitAdjustmentsSection");
-
-          return traitAdjustmentsSection;
+        load() {
+          return import("#project/presets/config/sections/traitAdjustmentsSection");
         },
       },
     },

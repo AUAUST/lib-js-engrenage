@@ -30,12 +30,8 @@ export default {
         name: jscpd,
         stage: "warnings",
         audience: "agents",
-        async load() {
-          const {
-            warnClones,
-          } = await import("#tools/jscpd/operations/warnClones");
-
-          return warnClones;
+        load() {
+          return import("#tools/jscpd/operations/warnClones");
         },
       },
     ],
