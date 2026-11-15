@@ -109,3 +109,9 @@
 - worktree guard: ran shell commands whose text contains the word "git" (directory names, echo text) — refused as unverifiable git commands; moved them into a script file
 - zsh word splitting: passed an unquoted `$files` list to perl and sed in a review run — zsh passed one word; fed the list through `xargs`
 - pnpm format:all: rewrapped JSDoc after a layout change — generated eslint rule types stayed stale and codegen --check failed in the gate; reran pnpm support codegen
+- engrenage planning issue create --slug: passed `new-module-loaders` — it prefixes `new-`, producing `new-new-module-loaders`; renamed the file
+- engrenage planning issue check: kept a **Planning** section holding a settled decision — check reads any Planning section as open and demands `Open questions`; moved the decision into Context
+- engrenage sync barrels: ran sync after declaring a new domain — it creates no `index.ts` barrel; seeded empty `@barrel` blocks and ran `sync barrel-blocks`
+- engrenage sync barrel-blocks: emptied a barrel src itself imports through — the CLI crashed loading the config before regenerating it; wrote the barrel by hand
+- zsh word splitting: passed an unquoted file list to eslint — zsh passed one word; fed the list through `xargs`
+- CLAUDE_SCRATCH: redirected output to `$CLAUDE_SCRATCH` — the variable is unset; used the scratchpad's absolute path
