@@ -1,5 +1,20 @@
 # @auaust/engrenage
 
+## 0.13.0
+
+### Minor Changes
+
+- [`f1a77d3`](https://github.com/AUAUST/lib-js-engrenage/commit/f1a77d38eddab61f913e079567632f6191ef6ec0) Thanks [@apademide](https://github.com/apademide)! - - Claude Code denies a message resuming a stopped consultant or integration merger whose context grew past twice its start; skills set the limit with `agent.freshness`
+  - The consultant ends each answer with a carry-over its replacement starts from
+
+### Patch Changes
+
+- [`9bf030c`](https://github.com/AUAUST/lib-js-engrenage/commit/9bf030ca931c5430d45c18c0259e797085e48c63) Thanks [@apademide](https://github.com/apademide)! - - Lazy loaders may return the imported module itself, resolved to its default or only export
+
+- [`e4db033`](https://github.com/AUAUST/lib-js-engrenage/commit/e4db033776c62f0c41648a4233b084e80a42eedf) Thanks [@apademide](https://github.com/apademide)! - - The planning sheet rule loads only with issue drafts, so agents that never read a draft no longer load it
+
+- [`78c6efc`](https://github.com/AUAUST/lib-js-engrenage/commit/78c6efcb790b9cd6d2f6efc0d349a849e418203c) Thanks [@apademide](https://github.com/apademide)! - - JSDoc wrapping keeps Markdown links whole and avoids a last line shorter than a third of the width
+
 ## 0.12.0
 
 ### Minor Changes
