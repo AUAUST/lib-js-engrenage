@@ -1,6 +1,8 @@
 import { parsers } from "prettier/plugins/typescript";
 import { describe, expect, test } from "vitest";
 
+import { max, min } from "@auaust/toolkit/math";
+
 import { formatWithPrettierConfig } from "#tests/utils/formatWithPrettierConfig";
 import { wrapParagraph } from "#tools/prettier/utils/wrapParagraph";
 
@@ -23,7 +25,7 @@ function wrapGreedily(words: readonly string[], width: number): string[] {
 function getSpread(lines: readonly string[]): number {
   const lengths = lines.slice(0, -1).map((line) => line.length);
 
-  return Math.max(...lengths) - Math.min(...lengths);
+  return max(...lengths) - min(...lengths);
 }
 
 describe("layoutPlugin", () => {

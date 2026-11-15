@@ -7,6 +7,7 @@ import {
 } from "typescript";
 
 import { isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { min } from "@auaust/toolkit/math";
 
 import {
   findCommentLines,
@@ -82,7 +83,7 @@ function trimTags(
 
   if (block.description === "" && !isNotEmpty(tags)) {
     if (lines !== undefined) {
-      output.remove(lines[0], Math.min(lines[1] + 1, code.length));
+      output.remove(lines[0], min(lines[1] + 1, code.length));
     } else {
       output.remove(start, end);
     }

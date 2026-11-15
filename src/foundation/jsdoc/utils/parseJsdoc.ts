@@ -1,5 +1,7 @@
 import { parse, tokenizers, type Block, type Line } from "comment-parser";
 
+import { min } from "@auaust/toolkit/math";
+
 import { isJsdocComment } from "#foundation/jsdoc/utils/isJsdocComment";
 import type { JsdocBlock } from "#foundation/jsdoc/types/JsdocBlock";
 
@@ -131,10 +133,7 @@ function getContentStart(line: Line, lineStarts: number[]): number {
   }
 
   return (
-    lineStart +
-    start.length +
-    delimiter.length +
-    Math.min(postDelimiter.length, 1)
+    lineStart + start.length + delimiter.length + min(postDelimiter.length, 1)
   );
 }
 

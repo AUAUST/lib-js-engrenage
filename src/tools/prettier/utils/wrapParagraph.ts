@@ -1,3 +1,5 @@
+import { ceil, max } from "@auaust/toolkit/math";
+
 const maximumOverflow = 3;
 const overflowWeight = 4;
 const lastLineMinimumShare = 1 / 3;
@@ -66,7 +68,7 @@ function getLineCost(
     overflow > maximumOverflow ||
     (overflow > 0 && atoms.some((atom) => atom.length > width))
   ) {
-    return Number.POSITIVE_INFINITY;
+    return Infinity;
   }
 
   if (overflow > 0) {
@@ -77,7 +79,7 @@ function getLineCost(
     return overflow ** 2;
   }
 
-  return Math.max(0, Math.ceil(width * lastLineMinimumShare) - length) ** 2;
+  return max(0, ceil(width * lastLineMinimumShare) - length) ** 2;
 }
 
 export function wrapParagraph(
@@ -89,7 +91,7 @@ export function wrapParagraph(
   const breaks = [0];
 
   for (let end = 1; end <= atoms.length; end += 1) {
-    let best = Number.POSITIVE_INFINITY;
+    let best = Infinity;
     let bestStart = end - 1;
 
     for (let start = end - 1; start >= 0; start -= 1) {
@@ -100,7 +102,7 @@ export function wrapParagraph(
       }
 
       const cost = (
-        (costs[start] ?? Number.POSITIVE_INFINITY) +
+        (costs[start] ?? Infinity) +
         getLineCost(line, width, end === atoms.length)
       );
 
