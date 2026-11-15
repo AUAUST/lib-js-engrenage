@@ -14,6 +14,7 @@ import { entryRoleName } from "#project/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 import { findJsdocBlock } from "#tools/eslint/utils/findJsdocBlock";
+import { readOverload } from "#tools/eslint/utils/readOverload";
 import type { EntityIndex } from "#project/structure/index";
 
 // @debt the contract roles are found by their preset names, while a preset's `name` option lets a project rename them
@@ -122,38 +123,22 @@ function listDeclaredNames(
     : [];
 }
 
-function listOverloaded(program: TSESTree.Program): Set<string> {
-  const names = new Set<string>();
+function listOverloadSignatures(
+  program: TSESTree.Program,
+): Map<string, TSESTree.ProgramStatement[]> {
+  const groups = new Map<string, TSESTree.ProgramStatement[]>();
 
   for (const statement of program.body) {
-    const declaration = statement.type === AST_NODE_TYPES.ExportNamedDeclaration
-      ? statement.declaration
-      : statement;
+    const overload = readOverload(statement);
 
-    if (
-      declaration?.type === AST_NODE_TYPES.TSDeclareFunction &&
-      declaration.id != null
-    ) {
-      names.add(declaration.id.name);
+    if (overload === undefined || overload.implementation) {
+      continue;
     }
+
+    groups.set(overload.key, [...(groups.get(overload.key) ?? []), statement]);
   }
 
-  return names;
-}
-
-function isOverloadImplementation(
-  statement: TSESTree.ProgramStatement,
-  overloaded: ReadonlySet<string>,
-): boolean {
-  const declaration = statement.type === AST_NODE_TYPES.ExportNamedDeclaration
-    ? statement.declaration
-    : statement;
-
-  return (
-    declaration?.type === AST_NODE_TYPES.FunctionDeclaration &&
-    declaration.id != null &&
-    overloaded.has(declaration.id.name)
-  );
+  return groups;
 }
 
 function statementOf(
@@ -239,6 +224,30 @@ export default defineConvention({
         // @debt ESLint types its AST as ESTree, without the TypeScript nodes the parser produces
         const root = sourceCode.ast as unknown as TSESTree.Program;
 
+        const overloads = listOverloadSignatures(root);
+
+        function signaturesOf(
+          statement: TSESTree.ProgramStatement,
+        ): readonly TSESTree.ProgramStatement[] | undefined {
+          const overload = readOverload(statement);
+
+          return overload === undefined
+            ? undefined
+            : overloads.get(overload.key);
+        }
+
+        function isStatementDocumented(
+          statement: TSESTree.ProgramStatement,
+        ): boolean {
+          const signatures = signaturesOf(statement);
+
+          return signatures === undefined
+            ? isDocumented(sourceCode, statement)
+            : signatures.some((signature) => {
+                return isDocumented(sourceCode, signature);
+              });
+        }
+
         // @debt the ESTree-to-TS node map is untyped here, so nodes are cast `as TsNode` with no stated invariant
         function symbolOf(node: TSESTree.Node): Symbol | undefined {
           const symbol = checker.getSymbolAtLocation(
@@ -273,10 +282,7 @@ export default defineConvention({
             : checker.getExportSymbolOfSymbol(symbol);
         }
 
-        function isLocalDocumented(
-          symbol: Symbol,
-          overloaded: ReadonlySet<string>,
-        ): boolean {
+        function isLocalDocumented(symbol: Symbol): boolean {
           const file = esTreeNodeToTSNodeMap.get(root);
 
           const statements = (symbol.declarations ?? []).flatMap(
@@ -289,26 +295,20 @@ export default defineConvention({
             },
           );
 
-          return statements.every((statement) => {
-            return (
-              isOverloadImplementation(statement, overloaded) ||
-              isDocumented(sourceCode, statement)
-            );
-          });
+          return statements.every(isStatementDocumented);
         }
 
         function checkLocal(
           node: TSESTree.Node,
           name: string,
           exported: ReadonlySet<Symbol>,
-          overloaded: ReadonlySet<string>,
         ) {
           const symbol = localTargetOf(node);
 
           if (
             symbol !== undefined &&
             exported.has(symbol) &&
-            !isLocalDocumented(symbol, overloaded)
+            !isLocalDocumented(symbol)
           ) {
             report(node, "export", name);
           }
@@ -317,13 +317,12 @@ export default defineConvention({
         function checkLocalExports(
           statement: TSESTree.ProgramStatement,
           exported: ReadonlySet<Symbol>,
-          overloaded: ReadonlySet<string>,
         ): boolean {
           if (
             statement.type === AST_NODE_TYPES.ExportDefaultDeclaration &&
             statement.declaration.type === AST_NODE_TYPES.Identifier
           ) {
-            checkLocal(statement.declaration, "default", exported, overloaded);
+            checkLocal(statement.declaration, "default", exported);
 
             return true;
           }
@@ -341,7 +340,7 @@ export default defineConvention({
               ? specifier.exported.name
               : specifier.exported.value;
 
-            checkLocal(specifier, name, exported, overloaded);
+            checkLocal(specifier, name, exported);
           }
 
           return true;
@@ -377,17 +376,15 @@ export default defineConvention({
         return {
           Program() {
             const exported = listEntryExports(program, entities);
-            const overloaded = listOverloaded(root);
 
             for (const statement of root.body) {
-              if (checkLocalExports(statement, exported, overloaded)) {
+              if (checkLocalExports(statement, exported)) {
                 continue;
               }
 
-              if (
-                !isOverloadImplementation(statement, overloaded) &&
-                !isDocumented(sourceCode, statement)
-              ) {
+              const reported = signaturesOf(statement)?.[0] ?? statement;
+
+              if (reported === statement && !isStatementDocumented(statement)) {
                 check(statement, exported);
               }
             }

@@ -28,13 +28,16 @@ async function createProject() {
     }),
     "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entrypoint())}, structure: { layers: ["project"] } } };\n`,
     "eslint.config.ts": `import { defineEslintConfig } from ${JSON.stringify(sourcePath("src/tools/eslint/index.ts"))};\n\nexport default defineEslintConfig();\n`,
-    "src/project/feature/index.ts": 'export { exposed } from "#project/feature/utils/exposed";\nexport { local, renamed } from "#project/feature/utils/local";\nexport { bounds, upper } from "#project/feature/utils/bounds";\nexport { default as fallback } from "#project/feature/utils/fallback";\nexport type * from "#project/feature/ports/Store";\n',
-    "src/project/feature/entry.ts": 'export { exposed, local, renamed, bounds, upper, fallback } from "#project/feature/index";\nexport type { Store } from "#project/feature/index";\n',
+    "src/project/feature/index.ts": 'export { exposed } from "#project/feature/utils/exposed";\nexport { local, renamed } from "#project/feature/utils/local";\nexport { bounds, upper } from "#project/feature/utils/bounds";\nexport { default as fallback } from "#project/feature/utils/fallback";\nexport { overloaded } from "#project/feature/utils/overloaded";\nexport { bare } from "#project/feature/utils/bare";\nexport { grouped } from "#project/feature/utils/grouped";\nexport type * from "#project/feature/ports/Store";\n',
+    "src/project/feature/entry.ts": 'export { exposed, local, renamed, bounds, upper, fallback, overloaded, bare, grouped } from "#project/feature/index";\nexport type { Store } from "#project/feature/index";\n',
     "src/project/feature/utils/local.ts": "function local(): number {\n  return 1;\n}\n\n/**\n * Returns two.\n */\nfunction documented(): number {\n  return 2;\n}\n\nexport { local, documented as renamed };\n",
     "src/project/feature/utils/bounds.ts": "export const { bounds, limits: [upper] } = { bounds: 0, limits: [1] };\n",
     "src/project/feature/utils/fallback.ts": "const fallback = 1;\n\nexport default fallback;\n",
     "src/project/feature/ports/Store.ts": "export interface Store {\n  /**\n   * Returns `undefined` when the key is missing.\n   */\n  get(key: string): string | undefined;\n  set(key: string, value: string): void;\n}\n",
     "src/project/feature/utils/exposed.ts": "export function exposed(): number {\n  return 1;\n}\n",
+    "src/project/feature/utils/overloaded.ts": "/**\n * Echoes its input.\n */\nexport function overloaded(value: string): string;\nexport function overloaded(value: number): number;\nexport function overloaded(value: boolean): boolean;\nexport function overloaded(value: unknown): unknown {\n  return value;\n}\n",
+    "src/project/feature/utils/bare.ts": "export function bare(value: string): string;\nexport function bare(value: number): number;\nexport function bare(value: unknown): unknown {\n  return value;\n}\n",
+    "src/project/feature/utils/grouped.ts": "/**\n * Echoes its input.\n */\nfunction grouped(value: string): string;\nfunction grouped(value: number): number;\nfunction grouped(value: unknown): unknown {\n  return value;\n}\n\nexport { grouped };\n",
     "src/project/feature/utils/hidden.ts": "export function hidden(): number {\n  return 1;\n}\n",
   });
 
@@ -74,6 +77,17 @@ describe("docs.documented", () => {
       ]);
 
       expect(await list("src/project/feature/utils/hidden.ts")).toEqual([]);
+
+      expect(await list("src/project/feature/utils/overloaded.ts")).toEqual([]);
+
+      expect(await list("src/project/feature/utils/grouped.ts")).toEqual([]);
+
+      expect(await list("src/project/feature/utils/bare.ts")).toEqual([
+        {
+          line: 1,
+          message: "Document `bare`: a package entry exports it and consumers never see its source, so state the behavior its name and signature leave open.",
+        },
+      ]);
 
       expect(await list("src/project/feature/utils/local.ts")).toEqual([
         {
