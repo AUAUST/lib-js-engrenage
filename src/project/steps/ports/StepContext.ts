@@ -30,9 +30,9 @@ export interface StepContext
    */
   getAgents(): readonly string[] | undefined;
   /**
-   * Replaces the preferred agents with the names in `chosen` that an active agent
-   * runtime contributes, dropping the others; later `resolve("agents")` calls
-   * return them.
+   * Replaces the preferred agents with the names in `chosen` that an active
+   * agent runtime contributes, dropping the others; later `resolve("agents")`
+   * calls return them.
    */
   setAgents(chosen: readonly string[]): void;
   /**
@@ -91,8 +91,8 @@ export interface StepContext
     options?: { exact?: boolean },
   ): Promise<void>;
   /**
-   * Queues a command to run once the staged writes are flushed, after the commands
-   * queued before it.
+   * Queues a command to run once the staged writes are flushed, after the
+   * commands queued before it.
    */
   invoke(invocation: Invocation): void;
   /**

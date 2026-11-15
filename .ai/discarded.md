@@ -79,3 +79,5 @@
 - `@throws {@link Type}`: canonical throws form — TypeScript 6.0.3 does not rename through it, only through `@throws {Type}`
 - jsdoc/informative-docs: comments restating their name — leaves with eslint-plugin-jsdoc; judging added value stays with review
 - inlining readDocumentedSignature/readOverload into docTags: single-consumer helpers — exceeds the file-line limit, and #368 needs the block lookup
+- balanced JSDoc wrapping: no orphan last line — equal-length lines narrow long paragraphs far below the width
+- hybrid JSDoc wrapping: balance two-line paragraphs, pretty beyond — arbitrary line-count threshold

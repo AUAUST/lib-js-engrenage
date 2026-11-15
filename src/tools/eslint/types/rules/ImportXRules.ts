@@ -71,8 +71,8 @@ export interface ImportXRules {
    */
   "import-x/named"?: Rule<ImportXNamed>;
   /**
-   * Ensure imported namespaces contain dereferenced properties as they are
-   * dereferenced.
+   * Ensure imported namespaces contain dereferenced properties as they
+   * are dereferenced.
    *
    * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/namespace.md
    */
@@ -108,8 +108,7 @@ export interface ImportXRules {
    */
   "import-x/no-commonjs"?: Rule<ImportXNoCommonjs>;
   /**
-   * Forbid a module from importing a module with a dependency path back to
-   * itself.
+   * Forbid a module from importing a module with a dependency path back to itself.
    *
    * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/no-cycle.md
    */
@@ -247,8 +246,8 @@ export interface ImportXRules {
    */
   "import-x/no-unresolved"?: Rule<ImportXNoUnresolved>;
   /**
-   * Forbid modules without exports, or exports without matching import in another
-   * module.
+   * Forbid modules without exports, or exports without matching import
+   * in another module.
    *
    * @see https://github.com/un-ts/eslint-plugin-import-x/blob/v4.17.1/docs/rules/no-unused-modules.md
    */

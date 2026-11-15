@@ -8,8 +8,8 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 /**
  * Owns the `agents` config key, the `agents.runtimes`, `agents.fillers` and
- * `agents.rules` slots, the instruction files and the agent stats directory, and
- * syncs agent files.
+ * `agents.rules` slots, the instruction files and the agent stats directory,
+ * and syncs agent files.
  */
 export default {
   name: "tools/agents",

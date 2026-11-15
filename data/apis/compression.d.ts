@@ -46,8 +46,8 @@ declare var CompressionStream: {
 /**
  * The **`DecompressionStream`** interface of the Compression Streams
  * API decompresses a stream of data. It implements the same shape as a
- * TransformStream, allowing it to be used in ReadableStream.pipeThrough() and
- * similar methods.
+ * TransformStream, allowing it to be used in ReadableStream.pipeThrough()
+ * and similar methods.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/DecompressionStream)
  */

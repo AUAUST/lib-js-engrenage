@@ -35,40 +35,34 @@ interface MediaSource extends EventTarget {
    * objects contained within sourceBuffers — the list of objects providing the
    * selected video track, enabled audio tracks, and shown/hidden text tracks.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/activeSourceBuffers)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/activeSourceBuffers)
    */
   readonly activeSourceBuffers: SourceBufferList;
   /**
    * The **`duration`** property of the MediaSource interface gets and sets the
    * duration of the current media being presented.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/duration)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/duration)
    */
   duration: number;
   /**
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/sourceclose_event)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/sourceclose_event)
    */
   onsourceclose: ((this: MediaSource, ev: Event) => any) | null;
   /**
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/sourceended_event)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/sourceended_event)
    */
   onsourceended: ((this: MediaSource, ev: Event) => any) | null;
   /**
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/sourceopen_event)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/sourceopen_event)
    */
   onsourceopen: ((this: MediaSource, ev: Event) => any) | null;
   /**
-   * The **`readyState`** read-only property of the MediaSource interface returns
-   * an enum representing the state of the current MediaSource. The three possible
-   * values are:
+   * The **`readyState`** read-only property of the MediaSource interface
+   * returns an enum representing the state of the current MediaSource. The
+   * three possible values are:
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/readyState)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/readyState)
    */
   readonly readyState: ReadyState;
   /**
@@ -76,8 +70,7 @@ interface MediaSource extends EventTarget {
    * returns a SourceBufferList object containing the list of SourceBuffer objects
    * associated with this MediaSource.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/sourceBuffers)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/sourceBuffers)
    */
   readonly sourceBuffers: SourceBufferList;
   /**
@@ -85,24 +78,21 @@ interface MediaSource extends EventTarget {
    * new SourceBuffer of the given MIME type and adds it to the MediaSource's
    * sourceBuffers list. The new SourceBuffer is also returned.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/addSourceBuffer)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/addSourceBuffer)
    */
   addSourceBuffer(type: string): SourceBuffer;
   /**
    * The **`clearLiveSeekableRange()`** method of the MediaSource interface clears
    * a seekable range previously set with a call to setLiveSeekableRange().
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/clearLiveSeekableRange)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/clearLiveSeekableRange)
    */
   clearLiveSeekableRange(): void;
   /**
-   * The **`endOfStream()`** method of the MediaSource interface signals the end
-   * of the stream.
+   * The **`endOfStream()`** method of the MediaSource interface signals the
+   * end of the stream.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/endOfStream)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/endOfStream)
    */
   endOfStream(error?: EndOfStreamError): void;
   /**
@@ -110,16 +100,14 @@ interface MediaSource extends EventTarget {
    * the given SourceBuffer from the SourceBufferList associated with this
    * MediaSource object.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/removeSourceBuffer)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/removeSourceBuffer)
    */
   removeSourceBuffer(sourceBuffer: SourceBuffer): void;
   /**
    * The **`setLiveSeekableRange()`** method of the MediaSource interface sets
    * the range that the user can seek to in the media element.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/setLiveSeekableRange)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/setLiveSeekableRange)
    */
   setLiveSeekableRange(start: number, end: number): void;
   addEventListener<K extends keyof MediaSourceEventMap>(
@@ -152,8 +140,7 @@ declare var MediaSource: {
    * interface returns true if MediaSource worker support is implemented, providing
    * a low-latency feature detection mechanism.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/canConstructInDedicatedWorker_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/canConstructInDedicatedWorker_static)
    */
   readonly canConstructInDedicatedWorker: boolean;
   /**
@@ -161,8 +148,7 @@ declare var MediaSource: {
    * which is true if the given MIME type and (optional) codec are likely to be
    * supported by the current user agent.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/isTypeSupported_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/MediaSource/isTypeSupported_static)
    */
   isTypeSupported(type: string): boolean;
 };
@@ -190,8 +176,7 @@ interface SourceBuffer extends EventTarget {
    * media frames with timestamps within this range will be appended, whereas
    * those outside the range will be filtered out.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/appendWindowEnd)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/appendWindowEnd)
    */
   appendWindowEnd: number;
   /**
@@ -201,8 +186,7 @@ interface SourceBuffer extends EventTarget {
    * media frames with timestamps within this range will be appended, whereas
    * those outside the range will be filtered out.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/appendWindowStart)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/appendWindowStart)
    */
   appendWindowStart: number;
   /**
@@ -210,50 +194,43 @@ interface SourceBuffer extends EventTarget {
    * the time ranges that are currently buffered in the SourceBuffer as a
    * normalized TimeRanges object.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/buffered)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/buffered)
    */
   readonly buffered: TimeRanges;
   /**
-   * The **`mode`** property of the SourceBuffer interface controls whether media
-   * segments can be appended to the SourceBuffer in any order, or in a strict
-   * sequence.
+   * The **`mode`** property of the SourceBuffer interface controls whether
+   * media segments can be appended to the SourceBuffer in any order, or in
+   * a strict sequence.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/mode)
    */
   mode: AppendMode;
   /**
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/abort_event)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/abort_event)
    */
   onabort: ((this: SourceBuffer, ev: Event) => any) | null;
   /**
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/error_event)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/error_event)
    */
   onerror: ((this: SourceBuffer, ev: Event) => any) | null;
   /**
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/update_event)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/update_event)
    */
   onupdate: ((this: SourceBuffer, ev: Event) => any) | null;
   /**
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/updateend_event)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/updateend_event)
    */
   onupdateend: ((this: SourceBuffer, ev: Event) => any) | null;
   /**
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/updatestart_event)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/updatestart_event)
    */
   onupdatestart: ((this: SourceBuffer, ev: Event) => any) | null;
   /**
    * The **`timestampOffset`** property of the SourceBuffer interface controls
-   * the offset applied to timestamps inside media segments that are appended to
-   * the SourceBuffer.
+   * the offset applied to timestamps inside media segments that are appended
+   * to the SourceBuffer.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/timestampOffset)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/timestampOffset)
    */
   timestampOffset: number;
   /**
@@ -261,8 +238,7 @@ interface SourceBuffer extends EventTarget {
    * whether the SourceBuffer is currently being updated — i.e., whether an
    * appendBuffer() or remove() operation is currently in progress.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/updating)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/updating)
    */
   readonly updating: boolean;
   /**
@@ -273,22 +249,20 @@ interface SourceBuffer extends EventTarget {
    */
   abort(): void;
   /**
-   * The **`appendBuffer()`** method of the SourceBuffer interface appends media
-   * segment data from an ArrayBuffer, a TypedArray or a DataView object to the
-   * SourceBuffer.
+   * The **`appendBuffer()`** method of the SourceBuffer interface appends
+   * media segment data from an ArrayBuffer, a TypedArray or a DataView object
+   * to the SourceBuffer.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/appendBuffer)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/appendBuffer)
    */
   appendBuffer(data: BufferSource): void;
   /**
    * The **`changeType()`** method of the SourceBuffer interface sets the MIME
-   * type that future calls to appendBuffer() should expect the new media data
-   * to conform to. This makes it possible to change codecs or container type
-   * mid-stream.
+   * type that future calls to appendBuffer() should expect the new media
+   * data to conform to. This makes it possible to change codecs or container
+   * type mid-stream.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/changeType)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/changeType)
    */
   changeType(type: string): void;
   /**
@@ -297,8 +271,7 @@ interface SourceBuffer extends EventTarget {
    * called when SourceBuffer.updating equals false. If SourceBuffer.updating is
    * not equal to false, call SourceBuffer.abort().
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/remove)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBuffer/remove)
    */
   remove(start: number, end: number): void;
   addEventListener<K extends keyof SourceBufferEventMap>(
@@ -344,8 +317,7 @@ interface SourceBufferList extends EventTarget {
    * The **`length`** read-only property of the SourceBufferList interface returns
    * the number of SourceBuffer objects in the list.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SourceBufferList/length)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SourceBufferList/length)
    */
   readonly length: number;
   onaddsourcebuffer: ((this: SourceBufferList, ev: Event) => any) | null;
@@ -388,8 +360,8 @@ declare var SourceBufferList: {
  */
 interface TimeRanges {
   /**
-   * The **`TimeRanges.length`** read-only property returns the number of ranges
-   * in the object.
+   * The **`TimeRanges.length`** read-only property returns the number of
+   * ranges in the object.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TimeRanges/length)
    */
@@ -451,8 +423,8 @@ interface URL {
    */
   hostname: string;
   /**
-   * The **`href`** property of the URL interface is a string containing the whole
-   * URL.
+   * The **`href`** property of the URL interface is a string containing
+   * the whole URL.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URL/href)
    */
@@ -482,10 +454,10 @@ interface URL {
    */
   pathname: string;
   /**
-   * The **`port`** property of the URL interface is a string containing the port
-   * number of the URL. If the port is the default for the protocol (80 for ws:
-   * and http:, 443 for wss: and https:, and 21 for ftp:), this property contains
-   * an empty string, "".
+   * The **`port`** property of the URL interface is a string containing the
+   * port number of the URL. If the port is the default for the protocol (80 for
+   * ws: and http:, 443 for wss: and https:, and 21 for ftp:), this property
+   * contains an empty string, "".
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URL/port)
    */
@@ -498,10 +470,10 @@ interface URL {
    */
   protocol: string;
   /**
-   * The **`search`** property of the URL interface is a search string, also called
-   * a query string, that is a string containing a "?" followed by the parameters
-   * of the URL. If the URL does not have a search query, this property contains
-   * an empty string, "".
+   * The **`search`** property of the URL interface is a search string, also
+   * called a query string, that is a string containing a "?" followed by the
+   * parameters of the URL. If the URL does not have a search query, this property
+   * contains an empty string, "".
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URL/search)
    */
@@ -540,16 +512,14 @@ declare var URL: {
    * indicating whether or not an absolute URL, or a relative URL combined with
    * a base URL, are parsable and valid.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/URL/canParse_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URL/canParse_static)
    */
   canParse(url: string | URL, base?: string | URL): boolean;
   /**
    * The **`createObjectURL()`** static method of the URL interface creates a
    * string containing a blob URL pointing to the object given in the parameter.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/URL/createObjectURL_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URL/createObjectURL_static)
    */
   createObjectURL(obj: Blob | MediaSource): string;
   /**
@@ -564,8 +534,7 @@ declare var URL: {
    * an existing object URL which was previously created by calling
    * URL.createObjectURL().
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/URL/revokeObjectURL_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URL/revokeObjectURL_static)
    */
   revokeObjectURL(url: string): void;
 };
@@ -581,50 +550,44 @@ interface URLSearchParams {
    * The **`size`** read-only property of the URLSearchParams interface indicates
    * the total number of search parameter entries.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/size)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/size)
    */
   readonly size: number;
   /**
    * The **`append()`** method of the URLSearchParams interface appends a specified
    * key/value pair as a new search parameter.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/append)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/append)
    */
   append(name: string, value: string): void;
   /**
-   * The **`delete()`** method of the URLSearchParams interface deletes specified
-   * parameters and their associated value(s) from the list of all search
-   * parameters.
+   * The **`delete()`** method of the URLSearchParams interface deletes
+   * specified parameters and their associated value(s) from the list of all
+   * search parameters.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/delete)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/delete)
    */
   delete(name: string, value?: string): void;
   /**
    * The **`get()`** method of the URLSearchParams interface returns the first
    * value associated to the given search parameter.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/get)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/get)
    */
   get(name: string): string | null;
   /**
    * The **`getAll()`** method of the URLSearchParams interface returns all the
    * values associated with a given search parameter as an array.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/getAll)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/getAll)
    */
   getAll(name: string): string[];
   /**
-   * The **`has()`** method of the URLSearchParams interface returns a boolean
-   * value that indicates whether the specified parameter is in the search
-   * parameters.
+   * The **`has()`** method of the URLSearchParams interface returns a
+   * boolean value that indicates whether the specified parameter is in the
+   * search parameters.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/has)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/has)
    */
   has(name: string, value?: string): boolean;
   /**
@@ -633,8 +596,7 @@ interface URLSearchParams {
    * several matching values, this method deletes the others. If the search
    * parameter doesn't exist, this method creates it.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/set)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/set)
    */
   set(name: string, value: string): void;
   /**
@@ -644,8 +606,7 @@ interface URLSearchParams {
    * sorting algorithm (i.e., the relative order between key/value pairs with
    * equal keys will be preserved).
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/sort)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/URLSearchParams/sort)
    */
   sort(): void;
   toString(): string;

@@ -32,8 +32,8 @@ export interface Extension extends ExtensionShape<
   readonly root?: URL;
   /**
    * The semver range of engrenage versions the extension supports, prereleases
-   * included; loading the config throws when the installed version is outside it
-   * or the range is invalid.
+   * included; loading the config throws when the installed version is outside
+   * it or the range is invalid.
    */
   readonly compatibility?: { readonly engrenage: string };
 }

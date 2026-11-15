@@ -10,8 +10,7 @@ export interface FormatterEntry extends EntryShape {
   // @debt `package` is validated but read by no consumer, so its contract beyond naming the formatter's package is unknown
   readonly package: PackageName;
   /**
-   * Loads the formatter, which resolves `undefined` for a file it does not
-   * format.
+   * Loads the formatter, which resolves `undefined` for a file it does not format.
    */
   load(): Promise<Formatter>;
 }

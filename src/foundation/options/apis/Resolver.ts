@@ -3,14 +3,14 @@ export interface Resolver<
   Sections extends object = Readonly<Record<string, unknown>>,
 > {
   /**
-   * The context the resolver was created with, shared with every section it
-   * resolves.
+   * The context the resolver was created with, shared with every section
+   * it resolves.
    */
   readonly context: Context;
   /**
-   * The value the section of `key` resolves, computed once and reused until a
-   * live section it read changes or `forget` drops it; a live section recomputes
-   * on each read.
+   * The value the section of `key` resolves, computed once and reused until
+   * a live section it read changes or `forget` drops it; a live section
+   * recomputes on each read.
    *
    * @throws When `key` is unknown or refused, keys depend on each other in a
    * cycle, the input is invalid, or the section throws.

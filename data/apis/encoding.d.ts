@@ -38,8 +38,8 @@ declare var TextDecoder: {
 };
 
 /**
- * The **`TextEncoder`** interface enables you to encode a JavaScript string using
- * UTF-8.
+ * The **`TextEncoder`** interface enables you to encode a JavaScript
+ * string using UTF-8.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextEncoder)
  */
@@ -58,8 +58,7 @@ interface TextEncoder extends TextEncoderCommon {
    * performant than the encode() method — especially when the target buffer is
    * a view into a Wasm heap.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/TextEncoder/encodeInto)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextEncoder/encodeInto)
    */
   encodeInto(
     source: string,

@@ -1,8 +1,8 @@
 import { createTagPreset } from "#project/docs/utils/createTagPreset";
 
 /**
- * Declares `@packageDocumentation`, marking the comment documenting the package:
- * no body.
+ * Declares `@packageDocumentation`, marking the comment documenting the
+ * package: no body.
  *
  * @experimental
  */

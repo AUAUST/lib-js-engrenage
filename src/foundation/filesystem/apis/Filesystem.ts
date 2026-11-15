@@ -18,13 +18,13 @@ export interface Filesystem {
    */
   read(file: File): Promise<string | undefined>;
   /**
-   * Whether `read` finds content for the file, staged writes and removals
-   * included.
+   * Whether `read` finds content for the file, staged writes and
+   * removals included.
    */
   exists(file: File): Promise<boolean>;
   /**
-   * Whether the directory exists on disk or holds a staged file; `false` when
-   * missing.
+   * Whether the directory exists on disk or holds a staged file; `false`
+   * when missing.
    */
   isDirectory(directory: Directory): Promise<boolean>;
   /**
@@ -44,10 +44,10 @@ export interface Filesystem {
    */
   glob(patterns: Glob | Globs, options?: { exclude?: Globs }): Promise<Files>;
   /**
-   * Files in the directory on disk or staged, without those staged for removal,
-   * as sorted root-relative POSIX paths; empty when the directory is missing.
-   * Recurses unless `recursive` is `false`, skipping subdirectories matching
-   * `skip`.
+   * Files in the directory on disk or staged, without those staged for
+   * removal, as sorted root-relative POSIX paths; empty when the directory is
+   * missing. Recurses unless `recursive` is `false`, skipping subdirectories
+   * matching `skip`.
    */
   list(
     directory: Directory,
@@ -68,8 +68,8 @@ export interface Filesystem {
    */
   discard(): SyncResults;
   /**
-   * Writes the staged changes to disk, creating missing directories, then clears
-   * and returns them.
+   * Writes the staged changes to disk, creating missing directories, then
+   * clears and returns them.
    *
    * @throws When a write fails, after restoring the files already written; the
    * changes stay staged.

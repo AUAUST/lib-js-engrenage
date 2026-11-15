@@ -6,8 +6,8 @@ import type { Directory } from "#types/Directory";
 export interface AgentRuleGenerator extends EntryShape {
   /**
    * Rule files the generator owns in the rules directory: `<name>.md` and
-   * `<name>/*.md`. Sync removes those it no longer returns and throws on a rule
-   * outside them.
+   * `<name>/*.md`. Sync removes those it no longer returns and throws on a
+   * rule outside them.
    */
   readonly name: string;
   /**

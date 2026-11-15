@@ -47,11 +47,11 @@ export function declare<
 >;
 /**
  * Declares an option whose value is its input as `base` validates it. A missing
- * input resolves to the `optional` default and throws at resolve without one;
- * a `false` input resolves to `disable.value` when `disable` is set. `schema`
- * narrows the input against the resolve context, and its failure throws at
- * resolve. `description` and the default's explanation describe the option in
- * its schema.
+ * input resolves to the `optional` default and throws at resolve without
+ * one; a `false` input resolves to `disable.value` when `disable` is set.
+ * `schema` narrows the input against the resolve context, and its failure
+ * throws at resolve. `description` and the default's explanation describe the
+ * option in its schema.
  *
  * @stable
  */

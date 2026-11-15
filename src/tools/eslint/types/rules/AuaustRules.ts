@@ -368,8 +368,8 @@ export interface AuaustRules {
    */
   "auaust/no-unused-vars"?: Rule<AuaustNoUnusedVars>;
   /**
-   * Disallow returning/yielding `Promise.resolve/reject()` in async functions or
-   * promise callbacks
+   * Disallow returning/yielding `Promise.resolve/reject()` in async functions
+   * or promise callbacks
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-useless-promise-resolve-reject.md
    */
@@ -407,8 +407,8 @@ export interface AuaustRules {
    */
   "auaust/operator-assignment"?: Rule<AuaustOperatorAssignment>;
   /**
-   * Require `const` declarations for variables that are never reassigned after
-   * declared
+   * Require `const` declarations for variables that are never reassigned
+   * after declared
    *
    * @see https://eslint.org/docs/latest/rules/prefer-const
    */
@@ -447,8 +447,8 @@ export interface AuaustRules {
    */
   "auaust/prefer-optional-chain"?: Rule<AuaustPreferOptionalChain>;
   /**
-   * Prefer `Promise.resolve()` and `Promise.reject()` over trivial `new Promise()`
-   * calls.
+   * Prefer `Promise.resolve()` and `Promise.reject()` over trivial
+   * `new Promise()` calls.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-promise-static-methods.md
    */
@@ -461,8 +461,8 @@ export interface AuaustRules {
    */
   "auaust/prefer-readonly"?: Rule<AuaustPreferReadonly>;
   /**
-   * Return `void` the expression instead of following it with a bare `return` in
-   * its own block.
+   * Return `void` the expression instead of following it with a bare `return`
+   * in its own block.
    */
   "auaust/prefer-return-void"?: Rule<[]>;
   /**
@@ -478,8 +478,8 @@ export interface AuaustRules {
    */
   "auaust/prefer-type-literal-last"?: Rule<[]>;
   /**
-   * Wrap the valued return in the negated check instead of guarding it with an
-   * empty `return;`.
+   * Wrap the valued return in the negated check instead of guarding it with
+   * an empty `return;`.
    */
   "auaust/prefer-valued-return"?: Rule<[]>;
   /**
@@ -497,15 +497,13 @@ export interface AuaustRules {
    */
   "auaust/role-companions"?: Rule<[]>;
   /**
-   * A file in a role directory follows the role's nesting, categories and
-   * accepted files; a strict role holds at its root only the files its nested
-   * roles name.
+   * A file in a role directory follows the role's nesting, categories and accepted
+   * files; a strict role holds at its root only the files its nested roles name.
    */
   "auaust/role-contracts"?: Rule<[]>;
   /**
-   * A module exports what its role's exports contract states, for values and
-   * types apart: only the file's name, named exports, one default export, or
-   * none.
+   * A module exports what its role's exports contract states, for values and types
+   * apart: only the file's name, named exports, one default export, or none.
    */
   "auaust/role-exports"?: Rule<[]>;
   /**

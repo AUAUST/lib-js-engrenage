@@ -42,11 +42,10 @@ interface SubtleCrypto {
    * The **`decrypt()`** method of the SubtleCrypto interface decrypts some
    * encrypted data. It takes as arguments a key to decrypt with, some optional
    * extra parameters, and the data to decrypt (also known as "ciphertext"). It
-   * returns a Promise which will be fulfilled with the decrypted data (also known
-   * as "plaintext").
+   * returns a Promise which will be fulfilled with the decrypted data (also
+   * known as "plaintext").
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/decrypt)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/decrypt)
    */
   decrypt(
     algorithm:
@@ -62,8 +61,7 @@ interface SubtleCrypto {
    * The **`deriveBits()`** method of the SubtleCrypto interface can be used to
    * derive an array of bits from a base key.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/deriveBits)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/deriveBits)
    */
   deriveBits(
     algorithm:
@@ -75,8 +73,7 @@ interface SubtleCrypto {
    * The **`deriveKey()`** method of the SubtleCrypto interface can be used to
    * derive a secret key from a master key.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/deriveKey)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/deriveKey)
    */
   deriveKey(
     algorithm:
@@ -98,8 +95,7 @@ interface SubtleCrypto {
    * digests should exhibit collision-resistance, meaning that it's hard to come
    * up with two different inputs that have the same digest value.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/digest)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/digest)
    */
   digest(
     algorithm: AlgorithmIdentifier,
@@ -108,8 +104,7 @@ interface SubtleCrypto {
   /**
    * The **`encrypt()`** method of the SubtleCrypto interface encrypts data.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/encrypt)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/encrypt)
    */
   encrypt(
     algorithm:
@@ -126,8 +121,7 @@ interface SubtleCrypto {
    * that is, it takes as input a CryptoKey object and gives you the key in an
    * external, portable format.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/exportKey)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/exportKey)
    */
   exportKey(format: "jwk", key: CryptoKey): Promise<JsonWebKey>;
   exportKey(
@@ -139,12 +133,11 @@ interface SubtleCrypto {
     key: CryptoKey,
   ): Promise<ArrayBuffer | JsonWebKey>;
   /**
-   * The **`generateKey()`** method of the SubtleCrypto interface is used to
-   * generate a new key (for symmetric algorithms) or key pair (for public-key
-   * algorithms).
+   * The **`generateKey()`** method of the SubtleCrypto interface is used
+   * to generate a new key (for symmetric algorithms) or key pair (for
+   * public-key algorithms).
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/generateKey)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/generateKey)
    */
   generateKey(
     algorithm: "Ed25519" | { name: "Ed25519" },
@@ -176,8 +169,7 @@ interface SubtleCrypto {
    * that is, it takes as input a key in an external, portable format and gives
    * you a CryptoKey object that you can use in the Web Crypto API.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/importKey)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/importKey)
    */
   importKey(
     format: "jwk",
@@ -204,8 +196,8 @@ interface SubtleCrypto {
     keyUsages: KeyUsage[],
   ): Promise<CryptoKey>;
   /**
-   * The **`sign()`** method of the SubtleCrypto interface generates a digital
-   * signature.
+   * The **`sign()`** method of the SubtleCrypto interface generates a
+   * digital signature.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/sign)
    */
@@ -220,8 +212,7 @@ interface SubtleCrypto {
    * encrypted (also called "wrapped"). It decrypts the key and then imports it,
    * returning a CryptoKey object that can be used in the Web Crypto API.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/unwrapKey)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/unwrapKey)
    */
   unwrapKey(
     format: KeyFormat,
@@ -243,11 +234,10 @@ interface SubtleCrypto {
     keyUsages: KeyUsage[],
   ): Promise<CryptoKey>;
   /**
-   * The **`verify()`** method of the SubtleCrypto interface verifies a digital
-   * signature.
+   * The **`verify()`** method of the SubtleCrypto interface verifies a
+   * digital signature.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/verify)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/verify)
    */
   verify(
     algorithm: AlgorithmIdentifier | RsaPssParams | EcdsaParams,
@@ -262,8 +252,7 @@ interface SubtleCrypto {
    * such as inside an otherwise unprotected data store or in transmission over
    * an unprotected network.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/wrapKey)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/wrapKey)
    */
   wrapKey(
     format: KeyFormat,
@@ -356,8 +345,7 @@ interface SubtleCrypto {
    * The **`deriveKey()`** method of the SubtleCrypto interface can be used to
    * derive a secret key from a master key.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/deriveKey)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/deriveKey)
    */
   deriveKey(
     algorithm:
@@ -373,12 +361,11 @@ interface SubtleCrypto {
     keyUsages: Iterable<KeyUsage>,
   ): Promise<CryptoKey>;
   /**
-   * The **`generateKey()`** method of the SubtleCrypto interface is used to
-   * generate a new key (for symmetric algorithms) or key pair (for public-key
-   * algorithms).
+   * The **`generateKey()`** method of the SubtleCrypto interface is used
+   * to generate a new key (for symmetric algorithms) or key pair (for
+   * public-key algorithms).
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/generateKey)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/generateKey)
    */
   generateKey(
     algorithm: "Ed25519" | { name: "Ed25519" },
@@ -410,8 +397,7 @@ interface SubtleCrypto {
    * that is, it takes as input a key in an external, portable format and gives
    * you a CryptoKey object that you can use in the Web Crypto API.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/importKey)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/importKey)
    */
   importKey(
     format: "jwk",
@@ -443,8 +429,7 @@ interface SubtleCrypto {
    * encrypted (also called "wrapped"). It decrypts the key and then imports it,
    * returning a CryptoKey object that can be used in the Web Crypto API.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/unwrapKey)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/SubtleCrypto/unwrapKey)
    */
   unwrapKey(
     format: KeyFormat,
@@ -532,9 +517,9 @@ interface AesKeyAlgorithm extends KeyAlgorithm {
  */
 interface Crypto {
   /**
-   * The **`Crypto.subtle`** read-only property returns a SubtleCrypto which can
-   * then be used to perform low-level cryptographic operations. Available only
-   * in secure contexts.
+   * The **`Crypto.subtle`** read-only property returns a SubtleCrypto which
+   * can then be used to perform low-level cryptographic operations. Available
+   * only in secure contexts.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Crypto/subtle)
    */
@@ -544,8 +529,7 @@ interface Crypto {
    * strong random values. The array given as the parameter is filled with random
    * numbers (random in its cryptographic meaning).
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Crypto/getRandomValues)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Crypto/getRandomValues)
    */
   getRandomValues<T extends Exclude<BufferSource, ArrayBuffer>>(array: T): T;
   /**
@@ -576,8 +560,7 @@ interface CryptoKey {
    * an object describing the algorithm for which this key can be used, and any
    * associated extra parameters.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/CryptoKey/algorithm)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/CryptoKey/algorithm)
    */
   readonly algorithm: KeyAlgorithm;
   /**
@@ -585,8 +568,7 @@ interface CryptoKey {
    * whether or not the key may be extracted using SubtleCrypto.exportKey() or
    * SubtleCrypto.wrapKey().
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/CryptoKey/extractable)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/CryptoKey/extractable)
    */
   readonly extractable: boolean;
   /**

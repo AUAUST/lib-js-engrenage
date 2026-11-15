@@ -26,10 +26,10 @@ function categorySchema<Category extends object>() {
 }
 
 /**
- * Validates `defineEslintConfig`'s options: built-in rule groups default to
- * enabled, and each convention category takes a boolean or a record of convention
- * names to booleans, unknown names being rejected later when conventions are
- * selected.
+ * Validates `defineEslintConfig`'s options: built-in rule groups default
+ * to enabled, and each convention category takes a boolean or a record of
+ * convention names to booleans, unknown names being rejected later when
+ * conventions are selected.
  */
 export const optionsSchema = objectWithRest(
   {

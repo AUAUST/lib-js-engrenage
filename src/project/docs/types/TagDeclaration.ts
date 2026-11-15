@@ -12,8 +12,8 @@ export interface TagDeclaration {
    */
   readonly name: string;
   /**
-   * Whether the tag takes a `{…}` type expression after its name; unset, a type
-   * is rejected.
+   * Whether the tag takes a `{…}` type expression after its name; unset,
+   * a type is rejected.
    */
   readonly type?: "required" | "optional";
   /**
@@ -46,8 +46,8 @@ export interface TagDeclaration {
    */
   readonly scope?: "signature" | "export";
   /**
-   * `internal` trims the tag from built declarations; `public`, the default,
-   * keeps it.
+   * `internal` trims the tag from built declarations; `public`, the
+   * default, keeps it.
    */
   readonly output?: "public" | "internal";
 }

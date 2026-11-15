@@ -55,15 +55,14 @@ interface DisposableStack {
    */
   readonly disposed: boolean;
   /**
-   * Disposes each resource in the stack in the reverse order that they were
-   * added.
+   * Disposes each resource in the stack in the reverse order that they were added.
    */
   dispose(): void;
   /**
    * Adds a disposable resource to the stack, returning the resource.
    *
-   * @param value - The resource to add. `null` and `undefined` will not be added,
-   * but will be returned.
+   * @param value - The resource to add. `null` and `undefined` will not be
+   * added, but will be returned.
    * @returns The provided {@link value}.
    */
   use<T extends Disposable | null | undefined>(value: T): T;
@@ -129,15 +128,14 @@ interface AsyncDisposableStack {
    */
   readonly disposed: boolean;
   /**
-   * Disposes each resource in the stack in the reverse order that they were
-   * added.
+   * Disposes each resource in the stack in the reverse order that they were added.
    */
   disposeAsync(): Promise<void>;
   /**
    * Adds a disposable resource to the stack, returning the resource.
    *
-   * @param value - The resource to add. `null` and `undefined` will not be added,
-   * but will be returned.
+   * @param value - The resource to add. `null` and `undefined` will not be
+   * added, but will be returned.
    * @returns The provided {@link value}.
    */
   use<T extends AsyncDisposable | Disposable | null | undefined>(value: T): T;
@@ -146,8 +144,8 @@ interface AsyncDisposableStack {
    *
    * @param value - The value to add.
    * @param onDisposeAsync - The callback to use in place of a
-   * `[Symbol.asyncDispose]()` method. Will be invoked with `value` as the first
-   * parameter.
+   * `[Symbol.asyncDispose]()` method. Will be invoked with `value` as the
+   * first parameter.
    * @returns The provided {@link value}.
    */
   adopt<T>(value: T, onDisposeAsync: (value: T) => PromiseLike<void> | void): T;

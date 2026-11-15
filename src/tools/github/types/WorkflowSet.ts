@@ -4,8 +4,8 @@ import type { PackageNames } from "#types/PackageNames";
 
 /**
  * A set of GitHub workflow files, the default when `trait` is active and
- * every package of `requires` is a dependency, needing each of `scripts` in
- * `package.json`.
+ * every package of `requires` is a dependency, needing each of `scripts`
+ * in `package.json`.
  */
 export interface WorkflowSet {
   trait: Trait;

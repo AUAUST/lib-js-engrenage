@@ -2,8 +2,8 @@ import { tagSetEntry } from "#project/docs/constants";
 import type { Extension } from "#project/config/index";
 
 /**
- * Owns the `docs` key and the `docs.tags` slot, and contributes the conventional
- * doc tags.
+ * Owns the `docs` key and the `docs.tags` slot, and contributes the
+ * conventional doc tags.
  */
 export default {
   name: "project/docs",

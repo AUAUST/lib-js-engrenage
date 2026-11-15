@@ -1,8 +1,8 @@
 import { createTagPreset } from "#project/docs/utils/createTagPreset";
 
 /**
- * Declares `@property`: an optional `{type}`, a property name and a text body,
- * repeatable.
+ * Declares `@property`: an optional `{type}`, a property name and a text
+ * body, repeatable.
  *
  * @experimental
  */

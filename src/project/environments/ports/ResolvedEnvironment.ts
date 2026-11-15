@@ -16,8 +16,8 @@ export interface ResolvedEnvironment {
    */
   readonly dirs: Directories;
   /**
-   * The environment's code files, from the project root; absent when it holds no
-   * code.
+   * The environment's code files, from the project root; absent when it
+   * holds no code.
    */
   readonly globs?: Globs;
   /**
@@ -25,8 +25,8 @@ export interface ResolvedEnvironment {
    */
   readonly generated?: Globs;
   /**
-   * Globs, inside `dirs`, of the files tools discover by path, which may export
-   * defaults.
+   * Globs, inside `dirs`, of the files tools discover by path, which may
+   * export defaults.
    */
   readonly discovered?: Globs;
   /**

@@ -63,8 +63,8 @@ export interface CoreRules {
    */
   "block-scoped-var"?: Rule<[]>;
   /**
-   * Disallow or enforce spaces inside of blocks after opening block and before
-   * closing block
+   * Disallow or enforce spaces inside of blocks after opening block and
+   * before closing block
    *
    * @deprecated
    * @see https://eslint.org/docs/latest/rules/block-spacing
@@ -218,8 +218,8 @@ export interface CoreRules {
    */
   "func-call-spacing"?: Rule<FuncCallSpacing>;
   /**
-   * Require function names to match the name of the variable or property to which
-   * they are assigned
+   * Require function names to match the name of the variable or property to
+   * which they are assigned
    *
    * @see https://eslint.org/docs/latest/rules/func-name-matching
    */
@@ -559,8 +559,7 @@ export interface CoreRules {
    */
   "no-case-declarations"?: Rule<[]>;
   /**
-   * Disallow `catch` clause parameters from shadowing variables in the outer
-   * scope
+   * Disallow `catch` clause parameters from shadowing variables in the outer scope
    *
    * @deprecated
    * @see https://eslint.org/docs/latest/rules/no-catch-shadow
@@ -889,8 +888,8 @@ export interface CoreRules {
    */
   "no-lonely-if"?: Rule<[]>;
   /**
-   * Disallow function declarations that contain unsafe references inside loop
-   * statements
+   * Disallow function declarations that contain unsafe references inside
+   * loop statements
    *
    * @see https://eslint.org/docs/latest/rules/no-loop-func
    */
@@ -908,8 +907,8 @@ export interface CoreRules {
    */
   "no-magic-numbers"?: Rule<NoMagicNumbers>;
   /**
-   * Disallow characters which are made with multiple code points in character
-   * class syntax
+   * Disallow characters which are made with multiple code points in
+   * character class syntax
    *
    * @see https://eslint.org/docs/latest/rules/no-misleading-character-class
    */
@@ -1206,8 +1205,8 @@ export interface CoreRules {
    */
   "no-setter-return"?: Rule<[]>;
   /**
-   * Disallow variable declarations from shadowing variables declared in the outer
-   * scope
+   * Disallow variable declarations from shadowing variables declared in
+   * the outer scope
    *
    * @see https://eslint.org/docs/latest/rules/no-shadow
    */
@@ -1284,8 +1283,8 @@ export interface CoreRules {
    */
   "no-unassigned-vars"?: Rule<[]>;
   /**
-   * Disallow the use of undeclared variables unless mentioned in `/*global *\/`
-   * comments
+   * Disallow the use of undeclared variables unless mentioned in
+   * `/*global *\/` comments
    *
    * @see https://eslint.org/docs/latest/rules/no-undef
    */
@@ -1327,8 +1326,8 @@ export interface CoreRules {
    */
   "no-unneeded-ternary"?: Rule<NoUnneededTernary>;
   /**
-   * Disallow unreachable code after `return`, `throw`, `continue`, and `break`
-   * statements
+   * Disallow unreachable code after `return`, `throw`, `continue`, and
+   * `break` statements
    *
    * @see https://eslint.org/docs/latest/rules/no-unreachable
    */
@@ -1352,8 +1351,8 @@ export interface CoreRules {
    */
   "no-unsafe-negation"?: Rule<NoUnsafeNegation>;
   /**
-   * Disallow use of optional chaining in contexts where the `undefined` value is
-   * not allowed
+   * Disallow use of optional chaining in contexts where the `undefined`
+   * value is not allowed
    *
    * @see https://eslint.org/docs/latest/rules/no-unsafe-optional-chaining
    */
@@ -1437,8 +1436,8 @@ export interface CoreRules {
    */
   "no-useless-escape"?: Rule<NoUselessEscape>;
   /**
-   * Disallow renaming import, export, and destructured assignments to the same
-   * name
+   * Disallow renaming import, export, and destructured assignments to
+   * the same name
    *
    * @see https://eslint.org/docs/latest/rules/no-useless-rename
    */
@@ -1561,8 +1560,8 @@ export interface CoreRules {
    */
   "prefer-arrow-callback"?: Rule<PreferArrowCallback>;
   /**
-   * Require `const` declarations for variables that are never reassigned after
-   * declared
+   * Require `const` declarations for variables that are never reassigned
+   * after declared
    *
    * @see https://eslint.org/docs/latest/rules/prefer-const
    */
@@ -1586,15 +1585,15 @@ export interface CoreRules {
    */
   "prefer-named-capture-group"?: Rule<[]>;
   /**
-   * Disallow `parseInt()` and `Number.parseInt()` in favor of binary, octal, and
-   * hexadecimal literals
+   * Disallow `parseInt()` and `Number.parseInt()` in favor of binary, octal,
+   * and hexadecimal literals
    *
    * @see https://eslint.org/docs/latest/rules/prefer-numeric-literals
    */
   "prefer-numeric-literals"?: Rule<[]>;
   /**
-   * Disallow use of `Object.prototype.hasOwnProperty.call()` and prefer use of
-   * `Object.hasOwn()`
+   * Disallow use of `Object.prototype.hasOwnProperty.call()` and prefer use
+   * of `Object.hasOwn()`
    *
    * @see https://eslint.org/docs/latest/rules/prefer-object-has-own
    */
@@ -1620,8 +1619,8 @@ export interface CoreRules {
    */
   "prefer-reflect"?: Rule<PreferReflect>;
   /**
-   * Disallow use of the `RegExp` constructor in favor of regular expression
-   * literals
+   * Disallow use of the `RegExp` constructor in favor of regular
+   * expression literals
    *
    * @see https://eslint.org/docs/latest/rules/prefer-regex-literals
    */
@@ -1671,8 +1670,8 @@ export interface CoreRules {
    */
   "radix"?: Rule<Radix>;
   /**
-   * Disallow assignments that can lead to race conditions due to usage of `await`
-   * or `yield`
+   * Disallow assignments that can lead to race conditions due to usage of
+   * `await` or `yield`
    *
    * @see https://eslint.org/docs/latest/rules/require-atomic-updates
    */

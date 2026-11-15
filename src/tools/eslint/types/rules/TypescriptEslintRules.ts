@@ -113,8 +113,8 @@ export interface TypescriptEslintRules {
    */
   "@typescript-eslint/explicit-member-accessibility"?: Rule<TypescriptEslintExplicitMemberAccessibility>;
   /**
-   * Require explicit return and argument types on exported functions' and classes'
-   * public class methods
+   * Require explicit return and argument types on exported functions' and
+   * classes' public class methods
    *
    * @see https://typescript-eslint.io/rules/explicit-module-boundary-types
    */
@@ -298,8 +298,8 @@ export interface TypescriptEslintRules {
    */
   "@typescript-eslint/no-invalid-void-type"?: Rule<TypescriptEslintNoInvalidVoidType>;
   /**
-   * Disallow function declarations that contain unsafe references inside loop
-   * statements
+   * Disallow function declarations that contain unsafe references inside
+   * loop statements
    *
    * @deprecated
    * @see https://typescript-eslint.io/rules/no-loop-func
@@ -355,8 +355,8 @@ export interface TypescriptEslintRules {
    */
   "@typescript-eslint/no-namespace"?: Rule<TypescriptEslintNoNamespace>;
   /**
-   * Disallow non-null assertions in the left operand of a nullish coalescing
-   * operator
+   * Disallow non-null assertions in the left operand of a nullish
+   * coalescing operator
    *
    * @see https://typescript-eslint.io/rules/no-non-null-asserted-nullish-coalescing
    */
@@ -406,8 +406,8 @@ export interface TypescriptEslintRules {
    */
   "@typescript-eslint/no-restricted-types"?: Rule<TypescriptEslintNoRestrictedTypes>;
   /**
-   * Disallow variable declarations from shadowing variables declared in the outer
-   * scope
+   * Disallow variable declarations from shadowing variables declared in
+   * the outer scope
    *
    * @see https://typescript-eslint.io/rules/no-shadow
    */
@@ -474,8 +474,8 @@ export interface TypescriptEslintRules {
    */
   "@typescript-eslint/no-unnecessary-type-constraint"?: Rule<[]>;
   /**
-   * Disallow conversion idioms when they do not change the type or value of the
-   * expression
+   * Disallow conversion idioms when they do not change the type or value
+   * of the expression
    *
    * @see https://typescript-eslint.io/rules/no-unnecessary-type-conversion
    */
@@ -682,8 +682,8 @@ export interface TypescriptEslintRules {
    */
   "@typescript-eslint/prefer-namespace-keyword"?: Rule<[]>;
   /**
-   * Enforce using the nullish coalescing operator instead of logical assignments
-   * or chaining
+   * Enforce using the nullish coalescing operator instead of logical
+   * assignments or chaining
    *
    * @see https://typescript-eslint.io/rules/prefer-nullish-coalescing
    */
@@ -716,8 +716,8 @@ export interface TypescriptEslintRules {
    */
   "@typescript-eslint/prefer-readonly-parameter-types"?: Rule<TypescriptEslintPreferReadonlyParameterTypes>;
   /**
-   * Enforce using type parameter when calling `Array#reduce` instead of using a
-   * type assertion
+   * Enforce using type parameter when calling `Array#reduce` instead of
+   * using a type assertion
    *
    * @see https://typescript-eslint.io/rules/prefer-reduce-type-parameter
    */
@@ -755,8 +755,8 @@ export interface TypescriptEslintRules {
    */
   "@typescript-eslint/promise-function-async"?: Rule<TypescriptEslintPromiseFunctionAsync>;
   /**
-   * Enforce that `get()` types should be assignable to their equivalent `set()`
-   * type
+   * Enforce that `get()` types should be assignable to their equivalent
+   * `set()` type
    *
    * @see https://typescript-eslint.io/rules/related-getter-setter-pairs
    */
@@ -769,8 +769,8 @@ export interface TypescriptEslintRules {
    */
   "@typescript-eslint/require-array-sort-compare"?: Rule<TypescriptEslintRequireArraySortCompare>;
   /**
-   * Disallow async functions which do not return promises and have no `await`
-   * expression
+   * Disallow async functions which do not return promises and have no
+   * `await` expression
    *
    * @see https://typescript-eslint.io/rules/require-await
    */
@@ -808,8 +808,8 @@ export interface TypescriptEslintRules {
    */
   "@typescript-eslint/strict-boolean-expressions"?: Rule<TypescriptEslintStrictBooleanExpressions>;
   /**
-   * Disallow passing a value-returning function in a position accepting a void
-   * function
+   * Disallow passing a value-returning function in a position accepting
+   * a void function
    *
    * @see https://typescript-eslint.io/rules/strict-void-return
    */

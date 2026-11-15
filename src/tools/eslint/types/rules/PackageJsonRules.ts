@@ -324,15 +324,15 @@ export interface PackageJsonRules {
    */
   "package-json/require-version"?: Rule<PackageJsonRequireVersion>;
   /**
-   * Restricts the range of dependencies to allow or disallow specific types of
-   * ranges.
+   * Restricts the range of dependencies to allow or disallow specific
+   * types of ranges.
    *
    * @see https://eslint-plugin-package-json.dev/rules/restrict-dependency-ranges
    */
   "package-json/restrict-dependency-ranges"?: Rule<PackageJsonRestrictDependencyRanges>;
   /**
-   * Restricts dependency dist-tags to an allowed list and selected dependency
-   * types.
+   * Restricts dependency dist-tags to an allowed list and selected
+   * dependency types.
    *
    * @see https://eslint-plugin-package-json.dev/rules/restrict-dist-tags
    */
@@ -350,8 +350,8 @@ export interface PackageJsonRules {
    */
   "package-json/restrict-top-level-properties"?: Rule<PackageJsonRestrictTopLevelProperties>;
   /**
-   * Enforce that names for `scripts` are in kebab case (optionally separated by
-   * colons).
+   * Enforce that names for `scripts` are in kebab case (optionally
+   * separated by colons).
    *
    * @see https://eslint-plugin-package-json.dev/rules/scripts-name-casing
    */

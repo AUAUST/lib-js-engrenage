@@ -594,6 +594,42 @@ const ignored = 1;
     expect(lines).toContain("{@link Foo bar}");
   });
 
+  test("wrapParagraph keeps Markdown links whole", () => {
+    const words = "See [MDN Reference](https://example.com) and [a b][c] now.".split(
+      " ",
+    );
+
+    const lines = wrapParagraph(words, 8);
+
+    expect(lines).toContain("[MDN Reference](https://example.com)");
+    expect(lines).toContain("[a b][c]");
+  });
+
+  test("wrapParagraph leaves no short last line", () => {
+    const words = "Active when vite is installed; owns its cache and registers Vite as a build tool.".split(
+      " ",
+    );
+
+    expect(wrapParagraph(words, 75)).toEqual([
+      "Active when vite is installed; owns its cache and registers Vite",
+      "as a build tool.",
+    ]);
+  });
+
+  test("wrapParagraph keeps a short paragraph on one line", () => {
+    expect(wrapParagraph(["Short."], 75)).toEqual(["Short."]);
+  });
+
+  test("wrapParagraph wraps the words after a lone bracket", () => {
+    const words = "See [ and then a few more words.".split(" ");
+
+    expect(wrapParagraph(words, 10)).toEqual([
+      "See [ and",
+      "then a few",
+      "more words.",
+    ]);
+  });
+
   test("wrapParagraph wraps the words after a lone backtick", () => {
     const words = "See ` and then {@link Foo bar} here and a few more words.".split(
       " ",

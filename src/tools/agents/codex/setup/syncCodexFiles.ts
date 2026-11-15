@@ -9,10 +9,9 @@ import { syncHooks } from "#tools/agents/operations/syncHooks";
 import type { LoadedConfig } from "#project/config/index";
 
 /**
- * Syncs Codex instructions and engrenage's hooks in `.codex/hooks.json`, only
- * when `codex` is a preferred agent. Hooks are written when `agents.codexHooks`
- * is `true`, `hooks` is set or the file exists, and never when the option is
- * `false`.
+ * Syncs Codex instructions and engrenage's hooks in `.codex/hooks.json`, only when
+ * `codex` is a preferred agent. Hooks are written when `agents.codexHooks` is
+ * `true`, `hooks` is set or the file exists, and never when the option is `false`.
  */
 export async function syncCodexFiles(
   loaded: LoadedConfig,

@@ -18,8 +18,8 @@ export interface Convention {
    */
   traits: readonly Trait[];
   /**
-   * Packages that must all be dependencies of the project for the convention to
-   * apply by default.
+   * Packages that must all be dependencies of the project for the convention
+   * to apply by default.
    */
   requires: PackageNames;
   /**
@@ -40,8 +40,8 @@ export interface Convention {
    */
   severity: "error" | "warn" | "info";
   /**
-   * Config sections resolved before `delegates` and `rule` are called, and passed
-   * to them.
+   * Config sections resolved before `delegates` and `rule` are called,
+   * and passed to them.
    */
   sections: readonly ConfigKey[];
   /**

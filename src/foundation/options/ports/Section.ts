@@ -7,8 +7,8 @@ import type { Declaration } from "#foundation/options/ports/Declaration";
  */
 export interface Section<Output = unknown> {
   /**
-   * The declaration validating the section's input; `undefined` when the section
-   * reads no input.
+   * The declaration validating the section's input; `undefined` when the
+   * section reads no input.
    */
   readonly declaration: Declaration<unknown, unknown, unknown> | undefined;
   /**

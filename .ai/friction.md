@@ -108,3 +108,4 @@
 - scratchpad: wrote spec files under generic names in the session scratchpad — a parallel worker shares the directory and overwrote them; moved to a per-issue subdirectory
 - worktree guard: ran shell commands whose text contains the word "git" (directory names, echo text) — refused as unverifiable git commands; moved them into a script file
 - zsh word splitting: passed an unquoted `$files` list to perl and sed in a review run — zsh passed one word; fed the list through `xargs`
+- pnpm format:all: rewrapped JSDoc after a layout change — generated eslint rule types stayed stale and codegen --check failed in the gate; reran pnpm support codegen

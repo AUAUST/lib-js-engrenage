@@ -29,31 +29,27 @@ interface Console {
    * The **`console.assert()`** static method writes an error message to the
    * console if the assertion is false. If the assertion is true, nothing happens.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/assert_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/assert_static)
    */
   assert(condition?: boolean, ...data: any[]): void;
   /**
    * The **`console.clear()`** static method clears the console if possible.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/clear_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/clear_static)
    */
   clear(): void;
   /**
    * The **`console.count()`** static method logs the number of times that this
    * particular call to count() has been called.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/count_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/count_static)
    */
   count(label?: string): void;
   /**
    * The **`console.countReset()`** static method resets counter used with
    * console.count().
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/countReset_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/countReset_static)
    */
   countReset(label?: string): void;
   /**
@@ -63,8 +59,7 @@ interface Console {
    * is configured within the console UI. This log level might correspond to the
    * Debug or Verbose log level.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/debug_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/debug_static)
    */
   debug(...data: any[]): void;
   /**
@@ -83,8 +78,7 @@ interface Console {
    * output is presented as a hierarchical listing of expandable nodes that let
    * you see the contents of child nodes.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/dirxml_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/dirxml_static)
    */
   dirxml(...data: any[]): void;
   /**
@@ -94,8 +88,7 @@ interface Console {
    * is configured within the console UI. The message may be formatted as an
    * error, with red colors and call stack information.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/error_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/error_static)
    */
   error(...data: any[]): void;
   /**
@@ -103,8 +96,7 @@ interface Console {
    * Web console log, causing any subsequent console messages to be indented by
    * an additional level, until console.groupEnd() is called.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/group_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/group_static)
    */
   group(...data: any[]): void;
   /**
@@ -113,8 +105,7 @@ interface Console {
    * collapsed. The user will need to use the disclosure button next to it to
    * expand it, revealing the entries created in the group.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/groupCollapsed_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/groupCollapsed_static)
    */
   groupCollapsed(...data: any[]): void;
   /**
@@ -122,8 +113,7 @@ interface Console {
    * the console. See Using groups in the console in the console documentation
    * for details and examples.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/groupEnd_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/groupEnd_static)
    */
   groupEnd(): void;
   /**
@@ -133,8 +123,7 @@ interface Console {
    * configured within the console UI. The message may receive special formatting,
    * such as a small "i" icon next to it.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/info_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/info_static)
    */
   info(...data: any[]): void;
   /**
@@ -146,8 +135,7 @@ interface Console {
   /**
    * The **`console.table()`** static method displays tabular data as a table.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/table_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/table_static)
    */
   table(tabularData?: any, properties?: string[]): void;
   /**
@@ -157,24 +145,21 @@ interface Console {
    * with the same name, the browser will output the time, in milliseconds, that
    * elapsed since the timer was started.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/time_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/time_static)
    */
   time(label?: string): void;
   /**
    * The **`console.timeEnd()`** static method stops a timer that was previously
    * started by calling console.time().
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/timeEnd_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/timeEnd_static)
    */
   timeEnd(label?: string): void;
   /**
    * The **`console.timeLog()`** static method logs the current value of a timer
    * that was previously started by calling console.time().
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/timeLog_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/timeLog_static)
    */
   timeLog(label?: string, ...data: any[]): void;
   /**
@@ -187,8 +172,7 @@ interface Console {
   /**
    * The **`console.trace()`** static method outputs a stack trace to the console.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/trace_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/trace_static)
    */
   trace(...data: any[]): void;
   /**
@@ -198,8 +182,7 @@ interface Console {
    * the log level is configured within the console UI. The message may receive
    * special formatting, such as yellow colors and a warning icon.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/console/warn_static)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/console/warn_static)
    */
   warn(...data: any[]): void;
 }

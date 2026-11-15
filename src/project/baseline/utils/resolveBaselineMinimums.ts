@@ -41,10 +41,10 @@ function findNodeMajor(chrome: number): number {
 }
 
 /**
- * The minimum version of each browser widely available on the first day of
- * `snapshot`, and the first Node major whose V8 reaches that Chrome's, frozen.
- * Throws on a malformed snapshot, or when no Chrome version or Node release
- * qualifies.
+ * The minimum version of each browser widely available on the first day
+ * of `snapshot`, and the first Node major whose V8 reaches that Chrome's,
+ * frozen. Throws on a malformed snapshot, or when no Chrome version or Node
+ * release qualifies.
  */
 export function resolveBaselineMinimums(snapshot: string) {
   assertBaselineSnapshot(snapshot);

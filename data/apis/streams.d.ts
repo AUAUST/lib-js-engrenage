@@ -18,9 +18,9 @@ and limitations under the License.
 /**
  * The **`TextDecoderStream`** interface of the Encoding API converts a stream
  * of text in a binary encoding, such as UTF-8 etc., to a stream of strings. It
- * is the streaming equivalent of TextDecoder. It implements the same shape as a
- * TransformStream, allowing it to be used in ReadableStream.pipeThrough() and
- * similar methods.
+ * is the streaming equivalent of TextDecoder. It implements the same shape as
+ * a TransformStream, allowing it to be used in ReadableStream.pipeThrough()
+ * and similar methods.
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextDecoderStream)
  */
@@ -60,8 +60,7 @@ interface TextEncoderStream extends GenericTransformStream, TextEncoderCommon {
   readonly readable: ReadableStream<Uint8Array<ArrayBuffer>>;
   /**
    * The **`writable`** read-only property of the TextEncoderStream interface
-   * returns a WritableStream that accepts strings to be encoded into binary
-   * data.
+   * returns a WritableStream that accepts strings to be encoded into binary data.
    */
   readonly writable: WritableStream<string>;
 }
@@ -83,18 +82,16 @@ interface TransformStream<I = any, O = any> {
    * returns the ReadableStream instance controlled by this TransformStream. This
    * stream emits the transformed output data.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/TransformStream/readable)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TransformStream/readable)
    */
   readonly readable: ReadableStream<O>;
   /**
    * The **`writable`** read-only property of the TransformStream interface
    * returns the WritableStream instance controlled by this TransformStream.
-   * This stream accepts input data that will be transformed and emitted to the
-   * readable stream.
+   * This stream accepts input data that will be transformed and emitted to
+   * the readable stream.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/TransformStream/writable)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TransformStream/writable)
    */
   readonly writable: WritableStream<I>;
 }
@@ -112,8 +109,7 @@ declare var TransformStream: {
  * The **`TransformStreamDefaultController`** interface of the Streams API provides
  * methods to manipulate the associated ReadableStream and WritableStream.
  *
- * [MDN
- * Reference](https://developer.mozilla.org/docs/Web/API/TransformStreamDefaultController)
+ * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TransformStreamDefaultController)
  */
 interface TransformStreamDefaultController<O = any> {
   /**
@@ -121,16 +117,14 @@ interface TransformStreamDefaultController<O = any> {
    * TransformStreamDefaultController interface returns the desired size to fill
    * the queue of the associated ReadableStream.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/TransformStreamDefaultController/desiredSize)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TransformStreamDefaultController/desiredSize)
    */
   readonly desiredSize: number | null;
   /**
    * The **`enqueue()`** method of the TransformStreamDefaultController interface
    * enqueues the given chunk in the readable side of the stream.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/TransformStreamDefaultController/enqueue)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TransformStreamDefaultController/enqueue)
    */
   enqueue(chunk?: O): void;
   /**
@@ -138,16 +132,14 @@ interface TransformStreamDefaultController<O = any> {
    * errors both sides of the stream. Any further interactions with it will fail
    * with the given error message, and any chunks in the queue will be discarded.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/TransformStreamDefaultController/error)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TransformStreamDefaultController/error)
    */
   error(reason?: any): void;
   /**
    * The **`terminate()`** method of the TransformStreamDefaultController interface
    * closes the readable side and errors the writable side of the stream.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/TransformStreamDefaultController/terminate)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TransformStreamDefaultController/terminate)
    */
   terminate(): void;
 }
@@ -176,10 +168,10 @@ interface QueuingStrategyInit {
   /**
    * Creates a new ByteLengthQueuingStrategy with the provided high water mark.
    *
-   * Note that the provided high water mark will not be validated ahead of
-   * time. Instead, if it is negative, NaN, or not a number, the resulting
-   * ByteLengthQueuingStrategy will cause the corresponding stream constructor to
-   * throw.
+   * Note that the provided high water mark will not be validated ahead
+   * of time. Instead, if it is negative, NaN, or not a number, the
+   * resulting ByteLengthQueuingStrategy will cause the corresponding stream
+   * constructor to throw.
    */
   highWaterMark: number;
 }
@@ -193,12 +185,11 @@ interface Transformer<I = any, O = any> {
 }
 
 /**
- * The **`ByteLengthQueuingStrategy`** interface of the Streams API provides
- * a built-in byte length queuing strategy that can be used when constructing
- * streams.
+ * The **`ByteLengthQueuingStrategy`** interface of the Streams API
+ * provides a built-in byte length queuing strategy that can be used when
+ * constructing streams.
  *
- * [MDN
- * Reference](https://developer.mozilla.org/docs/Web/API/ByteLengthQueuingStrategy)
+ * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ByteLengthQueuingStrategy)
  */
 interface ByteLengthQueuingStrategy extends QueuingStrategy<ArrayBufferView> {
   /**
@@ -206,13 +197,11 @@ interface ByteLengthQueuingStrategy extends QueuingStrategy<ArrayBufferView> {
    * the total number of bytes that can be contained in the internal queue before
    * backpressure is applied.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/ByteLengthQueuingStrategy/highWaterMark)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ByteLengthQueuingStrategy/highWaterMark)
    */
   readonly highWaterMark: number;
   /**
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/ByteLengthQueuingStrategy/size)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/ByteLengthQueuingStrategy/size)
    */
   readonly size: QueuingStrategySize<ArrayBufferView>;
 }
@@ -234,13 +223,11 @@ interface CountQueuingStrategy extends QueuingStrategy {
    * total number of chunks that can be contained in the internal queue before
    * backpressure is applied.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/CountQueuingStrategy/highWaterMark)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/CountQueuingStrategy/highWaterMark)
    */
   readonly highWaterMark: number;
   /**
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/CountQueuingStrategy/size)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/CountQueuingStrategy/size)
    */
   readonly size: QueuingStrategySize;
 }

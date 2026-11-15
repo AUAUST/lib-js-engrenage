@@ -1,8 +1,8 @@
 import type { Extension } from "#project/config/index";
 
 /**
- * Returns `extension` unchanged, typing it as an extension while keeping its
- * literal types.
+ * Returns `extension` unchanged, typing it as an extension while keeping
+ * its literal types.
  *
  * @stable
  */

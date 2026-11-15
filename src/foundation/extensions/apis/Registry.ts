@@ -38,8 +38,8 @@ export interface Registry<Extension extends ExtensionShape, Scope = unknown> {
    * keep registration order. Each extension's activation is evaluated on its
    * own: an active extension never activates the extensions it requires.
    *
-   * @throws When `slot` is unknown or an active extension requires an inactive
-   * one.
+   * @throws When `slot` is unknown or an active extension requires an
+   * inactive one.
    */
   contributions<Slot extends SlotOf<Extension>>(
     slot: Slot,
@@ -49,9 +49,9 @@ export interface Registry<Extension extends ExtensionShape, Scope = unknown> {
    * The entry named `name` in the bucket `slot`, contributed by an extension
    * active in `scope`.
    *
-   * @throws When `slot` is unknown or not a bucket, no entry has that name,
-   * its extension is inactive, or an active contributor requires an inactive
-   * extension.
+   * @throws When `slot` is unknown or not a bucket, no entry has that
+   * name, its extension is inactive, or an active contributor requires an
+   * inactive extension.
    */
   select<Slot extends SlotOf<Extension>>(
     slot: Slot,
@@ -62,9 +62,9 @@ export interface Registry<Extension extends ExtensionShape, Scope = unknown> {
    * Loads and awaits each subscriber of the hook `slot` active in `scope`, one
    * after the other in registration order, passing them `payload`.
    *
-   * @throws When `slot` is unknown or not a hook, an active contributor requires
-   * an inactive extension, or a subscriber throws, which skips the subscribers
-   * after it.
+   * @throws When `slot` is unknown or not a hook, an active contributor
+   * requires an inactive extension, or a subscriber throws, which skips the
+   * subscribers after it.
    */
   emit<Slot extends SlotOf<Extension>>(
     slot: Slot,

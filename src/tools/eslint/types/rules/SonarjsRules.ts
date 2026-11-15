@@ -64,8 +64,8 @@ export interface SonarjsRules {
    */
   "sonarjs/async-test-assertions"?: Rule<[]>;
   /**
-   * Nested properties of Lodash and Underscore.js clone results should not be
-   * mutated
+   * Nested properties of Lodash and Underscore.js clone results should
+   * not be mutated
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9135/javascript
    */
@@ -295,8 +295,8 @@ export interface SonarjsRules {
    */
   "sonarjs/cookie-no-httponly"?: Rule<[]>;
   /**
-   * Cross-Origin Resource Sharing (CORS) policy should be restricted to trusted
-   * origins
+   * Cross-Origin Resource Sharing (CORS) policy should be restricted to
+   * trusted origins
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5122/javascript
    */
@@ -362,8 +362,8 @@ export interface SonarjsRules {
    */
   "sonarjs/dompurify-unsafe-config"?: Rule<[]>;
   /**
-   * Character classes in regular expressions should not contain the same character
-   * twice
+   * Character classes in regular expressions should not contain the same
+   * character twice
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S5869/javascript
    */
@@ -606,8 +606,8 @@ export interface SonarjsRules {
    */
   "sonarjs/misplaced-loop-counter"?: Rule<[]>;
   /**
-   * Control flow statements "if", "for", "while", "switch" and "try" should not
-   * be nested too deeply
+   * Control flow statements "if", "for", "while", "switch" and "try" should
+   * not be nested too deeply
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S134/javascript
    */
@@ -619,15 +619,15 @@ export interface SonarjsRules {
    */
   "sonarjs/new-operator-misuse"?: Rule<SonarjsNewOperatorMisuse>;
   /**
-   * All branches in a conditional structure should not have exactly the same
-   * implementation
+   * All branches in a conditional structure should not have exactly the
+   * same implementation
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3923/javascript
    */
   "sonarjs/no-all-duplicated-branches"?: Rule<[]>;
   /**
-   * "Array.prototype.sort()" and "Array.prototype.toSorted()" should use a
-   * compare function
+   * "Array.prototype.sort()" and "Array.prototype.toSorted()" should use
+   * a compare function
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2871/javascript
    */
@@ -760,8 +760,8 @@ export interface SonarjsRules {
    */
   "sonarjs/no-duplicate-test-title"?: Rule<[]>;
   /**
-   * Two branches in a conditional structure should not have exactly the same
-   * implementation
+   * Two branches in a conditional structure should not have exactly the
+   * same implementation
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1871/javascript
    */
@@ -912,8 +912,8 @@ export interface SonarjsRules {
    */
   "sonarjs/no-hardcoded-secrets"?: Rule<SonarjsNoHardcodedSecrets>;
   /**
-   * React's useState hook should not be used directly in the render function or
-   * body of a component
+   * React's useState hook should not be used directly in the render function
+   * or body of a component
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6442/javascript
    */
@@ -1078,8 +1078,8 @@ export interface SonarjsRules {
    */
   "sonarjs/no-mixed-content"?: Rule<[]>;
   /**
-   * Reactive state should not be unconditionally mutated inside Vue's "updated"
-   * lifecycle hook
+   * Reactive state should not be unconditionally mutated inside Vue's
+   * "updated" lifecycle hook
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S9163/javascript
    */
@@ -1134,8 +1134,8 @@ export interface SonarjsRules {
    */
   "sonarjs/no-os-command-from-path"?: Rule<[]>;
   /**
-   * Initial values of parameters, caught exceptions, and loop variables should
-   * not be ignored
+   * Initial values of parameters, caught exceptions, and loop variables
+   * should not be ignored
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1226/javascript
    */
@@ -1299,8 +1299,8 @@ export interface SonarjsRules {
    */
   "sonarjs/no-uniq-key"?: Rule<[]>;
   /**
-   * Expanding archive files should not be done without controlling resource
-   * consumption
+   * Expanding archive files should not be done without controlling
+   * resource consumption
    *
    * @deprecated
    * @see https://sonarsource.github.io/rspec/#/rspec/S5042/javascript
@@ -1355,8 +1355,8 @@ export interface SonarjsRules {
    */
   "sonarjs/no-useless-intersection"?: Rule<[]>;
   /**
-   * React state setter function should not be called with its matching state
-   * variable
+   * React state setter function should not be called with its matching
+   * state variable
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6443/javascript
    */
@@ -1411,8 +1411,8 @@ export interface SonarjsRules {
    */
   "sonarjs/non-number-in-arithmetic-expression"?: Rule<[]>;
   /**
-   * Properties of variables with "null" or "undefined" values should not be
-   * accessed
+   * Properties of variables with "null" or "undefined" values should
+   * not be accessed
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2259/javascript
    */
@@ -1461,8 +1461,7 @@ export interface SonarjsRules {
    */
   "sonarjs/prefer-default-last"?: Rule<[]>;
   /**
-   * Local variables should not be declared and then immediately returned or
-   * thrown
+   * Local variables should not be declared and then immediately returned or thrown
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S1488/javascript
    */
@@ -1541,8 +1540,7 @@ export interface SonarjsRules {
    */
   "sonarjs/production-debug"?: Rule<[]>;
   /**
-   * Pseudorandom number generators (PRNGs) should not be used in security
-   * contexts
+   * Pseudorandom number generators (PRNGs) should not be used in security contexts
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S2245/javascript
    */
@@ -1590,8 +1588,8 @@ export interface SonarjsRules {
    */
   "sonarjs/session-regeneration"?: Rule<[]>;
   /**
-   * Shorthand object properties should be grouped at the beginning or end of an
-   * object declaration
+   * Shorthand object properties should be grouped at the beginning or end of
+   * an object declaration
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S3499/javascript
    */
@@ -1603,8 +1601,8 @@ export interface SonarjsRules {
    */
   "sonarjs/single-char-in-character-classes"?: Rule<[]>;
   /**
-   * Single-character alternations in regular expressions should be replaced with
-   * character classes
+   * Single-character alternations in regular expressions should be replaced
+   * with character classes
    *
    * @see https://sonarsource.github.io/rspec/#/rspec/S6035/javascript
    */

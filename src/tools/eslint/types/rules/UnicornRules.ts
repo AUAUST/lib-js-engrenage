@@ -472,8 +472,8 @@ export interface UnicornRules {
    */
   "unicorn/no-constant-zero-expression"?: Rule<[]>;
   /**
-   * Disallow declarations before conditional early exits when they are only used
-   * after the exit.
+   * Disallow declarations before conditional early exits when they are only
+   * used after the exit.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-declarations-before-early-exit.md
    */
@@ -524,8 +524,7 @@ export interface UnicornRules {
    */
   "unicorn/no-duplicate-logical-operands"?: Rule<[]>;
   /**
-   * Disallow `.map()` and `.filter()` in `for…of` and `for await…of` loop
-   * headers.
+   * Disallow `.map()` and `.filter()` in `for…of` and `for await…of` loop headers.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-duplicate-loops.md
    */
@@ -637,8 +636,8 @@ export interface UnicornRules {
    */
   "unicorn/no-instanceof-builtins"?: Rule<UnicornNoInstanceofBuiltins>;
   /**
-   * Disallow calling functions and constructors with an invalid number of
-   * arguments.
+   * Disallow calling functions and constructors with an invalid number
+   * of arguments.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-invalid-argument-count.md
    */
@@ -700,8 +699,8 @@ export interface UnicornRules {
    */
   "unicorn/no-invalid-property-descriptor"?: Rule<[]>;
   /**
-   * Prevent calling `EventTarget#removeEventListener()` with the result of an
-   * expression.
+   * Prevent calling `EventTarget#removeEventListener()` with the result
+   * of an expression.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-invalid-remove-event-listener.md
    */
@@ -750,15 +749,15 @@ export interface UnicornRules {
    */
   "unicorn/no-keyword-prefix"?: Rule<UnicornNoKeywordPrefix>;
   /**
-   * Disallow accessing `event.currentTarget` after the synchronous event dispatch
-   * has finished.
+   * Disallow accessing `event.currentTarget` after the synchronous event
+   * dispatch has finished.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-late-current-target-access.md
    */
   "unicorn/no-late-current-target-access"?: Rule<[]>;
   /**
-   * Disallow event-control method calls after the synchronous event dispatch has
-   * finished.
+   * Disallow event-control method calls after the synchronous event dispatch
+   * has finished.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-late-event-control.md
    */
@@ -789,8 +788,8 @@ export interface UnicornRules {
    */
   "unicorn/no-loop-iterable-mutation"?: Rule<[]>;
   /**
-   * Disallow numeric literals that lose precision when represented as IEEE 754
-   * binary64 values.
+   * Disallow numeric literals that lose precision when represented as IEEE
+   * 754 binary64 values.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-loss-of-precision.md
    */
@@ -938,8 +937,8 @@ export interface UnicornRules {
    */
   "unicorn/no-process-exit"?: Rule<[]>;
   /**
-   * Disallow comparisons made redundant by an equality check in the same logical
-   * AND.
+   * Disallow comparisons made redundant by an equality check in the
+   * same logical AND.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-redundant-comparison.md
    */
@@ -1154,8 +1153,8 @@ export interface UnicornRules {
    */
   "unicorn/no-unreadable-array-destructuring"?: Rule<UnicornNoUnreadableArrayDestructuring>;
   /**
-   * Disallow unreadable iterable expressions in `for…of` and `for await…of` loop
-   * headers.
+   * Disallow unreadable iterable expressions in `for…of` and `for await…of`
+   * loop headers.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-unreadable-for-of-expression.md
    */
@@ -1230,8 +1229,7 @@ export interface UnicornRules {
    */
   "unicorn/no-unscoped-css-nesting-selector"?: Rule<[]>;
   /**
-   * Replaced by `unicorn/no-unused-builtin-method-return` which covers more
-   * cases.
+   * Replaced by `unicorn/no-unused-builtin-method-return` which covers more cases.
    *
    * @deprecated
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/deleted-and-deprecated-rules.md#no-unused-array-method-return
@@ -1268,8 +1266,7 @@ export interface UnicornRules {
    */
   "unicorn/no-useless-boolean-cast"?: Rule<[]>;
   /**
-   * Disallow useless type coercions of values that are already of the target
-   * type.
+   * Disallow useless type coercions of values that are already of the target type.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-useless-coercion.md
    */
@@ -1335,8 +1332,8 @@ export interface UnicornRules {
    */
   "unicorn/no-useless-length-check"?: Rule<[]>;
   /**
-   * Disallow unnecessary operands in logical expressions involving boolean
-   * literals.
+   * Disallow unnecessary operands in logical expressions involving
+   * boolean literals.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-useless-logical-operand.md
    */
@@ -1348,8 +1345,8 @@ export interface UnicornRules {
    */
   "unicorn/no-useless-override"?: Rule<[]>;
   /**
-   * Disallow returning/yielding `Promise.resolve/reject()` in async functions or
-   * promise callbacks
+   * Disallow returning/yielding `Promise.resolve/reject()` in async functions
+   * or promise callbacks
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-useless-promise-resolve-reject.md
    */
@@ -1434,8 +1431,8 @@ export interface UnicornRules {
    */
   "unicorn/operator-assignment"?: Rule<UnicornOperatorAssignment>;
   /**
-   * Prefer `AbortSignal.any()` over manually forwarding abort events between
-   * signals.
+   * Prefer `AbortSignal.any()` over manually forwarding abort events
+   * between signals.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-abort-signal-any.md
    */
@@ -1466,8 +1463,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-aggregate-error"?: Rule<[]>;
   /**
-   * Prefer `.find(…)` and `.findLast(…)` over the first or last element from
-   * `.filter(…)`.
+   * Prefer `.find(…)` and `.findLast(…)` over the first or last element
+   * from `.filter(…)`.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-array-find.md
    */
@@ -1524,8 +1521,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-array-last-methods"?: Rule<[]>;
   /**
-   * Prefer `Array#slice()` over `Array#splice()` when reading from the returned
-   * array.
+   * Prefer `Array#slice()` over `Array#splice()` when reading from the
+   * returned array.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-array-slice.md
    */
@@ -1600,8 +1597,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-combined-guards"?: Rule<UnicornPreferCombinedGuards>;
   /**
-   * Prefer early continues over conditionals wrapping the remainder of the loop
-   * body.
+   * Prefer early continues over conditionals wrapping the remainder of
+   * the loop body.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-continue.md
    */
@@ -1626,8 +1623,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-direct-iteration"?: Rule<[]>;
   /**
-   * Prefer using `using`/`await using` over manual `try`/`finally` resource
-   * disposal.
+   * Prefer using `using`/`await using` over manual `try`/`finally`
+   * resource disposal.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-dispose.md
    */
@@ -1670,8 +1667,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-dom-node-text-content"?: Rule<[]>;
   /**
-   * Prefer early returns over conditionals wrapping the remainder of the function
-   * body.
+   * Prefer early returns over conditionals wrapping the remainder of the
+   * function body.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-early-return.md
    */
@@ -1750,8 +1747,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-has-check"?: Rule<[]>;
   /**
-   * Prefer moving code shared by all branches of an `if` statement out of the
-   * branches.
+   * Prefer moving code shared by all branches of an `if` statement out
+   * of the branches.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-hoisting-branch-code.md
    */
@@ -1769,8 +1766,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-identifier-import-export-specifiers"?: Rule<[]>;
   /**
-   * Prefer `import.meta.{dirname,filename}` over legacy techniques for getting
-   * file paths.
+   * Prefer `import.meta.{dirname,filename}` over legacy techniques for
+   * getting file paths.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-import-meta-properties.md
    */
@@ -1789,8 +1786,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-includes-over-repeated-comparisons"?: Rule<UnicornPreferIncludesOverRepeatedComparisons>;
   /**
-   * Prefer passing iterables directly to constructors instead of filling empty
-   * collections.
+   * Prefer passing iterables directly to constructors instead of filling
+   * empty collections.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-iterable-in-constructor.md
    */
@@ -1863,8 +1860,7 @@ export interface UnicornRules {
    */
   "unicorn/prefer-logical-operator-over-ternary"?: Rule<[]>;
   /**
-   * Prefer `new Map()` over `Object.fromEntries()` when using the result as a
-   * map.
+   * Prefer `new Map()` over `Object.fromEntries()` when using the result as a map.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-map-from-entries.md
    */
@@ -1970,15 +1966,14 @@ export interface UnicornRules {
    */
   "unicorn/prefer-object-define-properties"?: Rule<[]>;
   /**
-   * Prefer object destructuring defaults over default object literals with
-   * spread.
+   * Prefer object destructuring defaults over default object literals with spread.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-object-destructuring-defaults.md
    */
   "unicorn/prefer-object-destructuring-defaults"?: Rule<[]>;
   /**
-   * Prefer using `Object.fromEntries(…)` to transform a list of key-value pairs
-   * into an object.
+   * Prefer using `Object.fromEntries(…)` to transform a list of key-value
+   * pairs into an object.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-object-from-entries.md
    */
@@ -2014,8 +2009,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-private-class-fields"?: Rule<[]>;
   /**
-   * Prefer `Promise.resolve()` and `Promise.reject()` over trivial `new Promise()`
-   * calls.
+   * Prefer `Promise.resolve()` and `Promise.reject()` over trivial
+   * `new Promise()` calls.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-promise-static-methods.md
    */
@@ -2027,8 +2022,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-promise-try"?: Rule<[]>;
   /**
-   * Prefer `Promise.withResolvers()` when extracting resolver functions from
-   * `new Promise()`.
+   * Prefer `Promise.withResolvers()` when extracting resolver functions
+   * from `new Promise()`.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-promise-with-resolvers.md
    */
@@ -2040,15 +2035,15 @@ export interface UnicornRules {
    */
   "unicorn/prefer-prototype-methods"?: Rule<[]>;
   /**
-   * Prefer `.querySelector()` and `.querySelectorAll()` over older DOM query
-   * methods.
+   * Prefer `.querySelector()` and `.querySelectorAll()` over older DOM
+   * query methods.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-query-selector.md
    */
   "unicorn/prefer-query-selector"?: Rule<UnicornPreferQuerySelector>;
   /**
-   * Prefer `queueMicrotask()` over `process.nextTick()`, `setImmediate()`, and
-   * `setTimeout(…, 0)`.
+   * Prefer `queueMicrotask()` over `process.nextTick()`, `setImmediate()`,
+   * and `setTimeout(…, 0)`.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-queue-microtask.md
    */
@@ -2085,8 +2080,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-scoped-selector"?: Rule<[]>;
   /**
-   * Prefer `Set#has()` over `Array#includes()` when checking for existence or
-   * non-existence.
+   * Prefer `Set#has()` over `Array#includes()` when checking for existence
+   * or non-existence.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-set-has.md
    */
@@ -2223,8 +2218,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-string-starts-ends-with"?: Rule<[]>;
   /**
-   * Prefer `String#trimStart()` / `String#trimEnd()` over `String#trimLeft()` /
-   * `String#trimRight()`.
+   * Prefer `String#trimStart()` / `String#trimEnd()` over `String#trimLeft()`
+   * / `String#trimRight()`.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-string-trim-start-end.md
    */
@@ -2297,8 +2292,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-uint8array-base64"?: Rule<[]>;
   /**
-   * Prefer `Uint8Array#toHex()` and `Uint8Array.fromHex()` over manual and Buffer
-   * hex conversions.
+   * Prefer `Uint8Array#toHex()` and `Uint8Array.fromHex()` over manual and
+   * Buffer hex conversions.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-uint8array-hex.md
    */
@@ -2316,8 +2311,8 @@ export interface UnicornRules {
    */
   "unicorn/prefer-unicode-code-point-escapes"?: Rule<[]>;
   /**
-   * Prefer `URL.canParse()` over constructing a `URL` in a try/catch for
-   * validation.
+   * Prefer `URL.canParse()` over constructing a `URL` in a try/catch
+   * for validation.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/prefer-url-can-parse.md
    */
@@ -2438,8 +2433,8 @@ export interface UnicornRules {
    */
   "unicorn/switch-case-braces"?: Rule<UnicornSwitchCaseBraces>;
   /**
-   * Enforce consistent `break`/`return`/`continue`/`throw` position in `case`
-   * clauses.
+   * Enforce consistent `break`/`return`/`continue`/`throw` position in
+   * `case` clauses.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/switch-case-break-position.md
    */

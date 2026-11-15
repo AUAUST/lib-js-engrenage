@@ -6,8 +6,8 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 /**
  * Active when `@shopify/prettier-plugin-liquid` is installed; owns Vite's theme
- * assets when a theme layout exists, formats `.liquid` files and contributes the
- * `shopify-theme` preset.
+ * assets when a theme layout exists, formats `.liquid` files and contributes
+ * the `shopify-theme` preset.
  */
 export default {
   name: "tools/shopify/theme",

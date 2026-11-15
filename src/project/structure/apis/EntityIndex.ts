@@ -10,8 +10,8 @@ export interface EntityIndex {
    */
   entityOf(file: File): Entity | undefined;
   /**
-   * The `#…` alias specifier other modules import `file` by; `undefined` when no
-   * alias targets it.
+   * The `#…` alias specifier other modules import `file` by; `undefined` when
+   * no alias targets it.
    */
   specifierOf(file: File): string | undefined;
   /**

@@ -19,7 +19,6 @@ interface VoidFunction {
 }
 
 /**
- * [MDN
- * Reference](https://developer.mozilla.org/docs/Web/API/Window/queueMicrotask)
+ * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Window/queueMicrotask)
  */
 declare function queueMicrotask(callback: VoidFunction): void;

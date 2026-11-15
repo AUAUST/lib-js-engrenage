@@ -48,8 +48,7 @@ interface File extends Blob {
    * a string which specifies the file's path relative to the directory selected
    * by the user in an <input> element with its webkitdirectory attribute set.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/File/webkitRelativePath)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/File/webkitRelativePath)
    */
   readonly webkitRelativePath: string;
 }

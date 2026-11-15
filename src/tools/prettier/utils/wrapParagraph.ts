@@ -1,5 +1,6 @@
 const maximumOverflow = 3;
 const overflowWeight = 4;
+const lastLineMinimumShare = 1 / 3;
 const codeSpanPattern = /`[^`]*`/g;
 
 function isOpen(atom: string): boolean {
@@ -8,9 +9,18 @@ function isOpen(atom: string): boolean {
   }
 
   const prose = atom.replaceAll(codeSpanPattern, "");
-  const linkStart = prose.lastIndexOf("{@link");
 
-  return linkStart !== -1 && !prose.includes("}", linkStart);
+  return (
+    isUnclosed(prose, "{@link", "}") ||
+    isUnclosed(prose, "[", "]") ||
+    isUnclosed(prose, "](", ")")
+  );
+}
+
+function isUnclosed(prose: string, opening: string, closing: string): boolean {
+  const start = prose.lastIndexOf(opening);
+
+  return start !== -1 && !prose.includes(closing, start + opening.length);
 }
 
 function collectAtoms(words: readonly string[]): string[] {
@@ -63,7 +73,11 @@ function getLineCost(
     return overflowWeight * overflow ** 2;
   }
 
-  return isLast ? 0 : overflow ** 2;
+  if (!isLast) {
+    return overflow ** 2;
+  }
+
+  return Math.max(0, Math.ceil(width * lastLineMinimumShare) - length) ** 2;
 }
 
 export function wrapParagraph(

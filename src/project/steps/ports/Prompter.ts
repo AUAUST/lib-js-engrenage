@@ -18,8 +18,8 @@ export interface Prompter {
   ): Promise<Value>;
   /**
    * Asks for a non-blank answer prefilled with `initial` and resolves to it
-   * trimmed. Resolves to `initial` without asking when every question is accepted
-   * up front.
+   * trimmed. Resolves to `initial` without asking when every question is
+   * accepted up front.
    */
   text(message: string, initial: string): Promise<string>;
   /**

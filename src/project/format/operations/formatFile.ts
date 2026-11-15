@@ -8,8 +8,8 @@ import type { File } from "#types/File";
 
 /**
  * Formats the file at `path`, resolved from the project root, in place with
- * `formatter`, writing it only when its content changes. Rejects when the file
- * cannot be read.
+ * `formatter`, writing it only when its content changes. Rejects when the
+ * file cannot be read.
  */
 export async function formatFile(
   path: File,

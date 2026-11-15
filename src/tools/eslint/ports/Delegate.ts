@@ -29,8 +29,8 @@ export interface Delegate {
     context: Rule.RuleContext,
   ): boolean;
   /**
-   * Replaces the fix of every kept report, `null` removing it, and marks the
-   * rule fixable.
+   * Replaces the fix of every kept report, `null` removing it, and marks
+   * the rule fixable.
    */
   fix?(
     descriptor: ReportDescriptor,

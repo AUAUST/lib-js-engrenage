@@ -31,32 +31,28 @@ interface Performance extends EventTarget {
    * containing the number of events which have been dispatched per event type
    * since the page was loaded.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/eventCounts)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/eventCounts)
    */
   readonly eventCounts: EventCounts;
   /**
-   * The read-only **`performance.interactionCount`** property represents the
-   * number of real-user interactions that have occurred on the page since it was
-   * loaded.
+   * The read-only **`performance.interactionCount`** property represents
+   * the number of real-user interactions that have occurred on the page
+   * since it was loaded.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/interactionCount)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/interactionCount)
    */
   readonly interactionCount: number;
   /**
    * The legacy **`Performance.navigation`** read-only property returns a
    * PerformanceNavigation object representing the type of navigation that occurs
-   * in the given browsing context, such as the number of redirections needed to
-   * fetch the resource.
+   * in the given browsing context, such as the number of redirections needed
+   * to fetch the resource.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/navigation)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/navigation)
    */
   readonly navigation: PerformanceNavigation;
   /**
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/resourcetimingbufferfull_event)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/resourcetimingbufferfull_event)
    */
   onresourcetimingbufferfull: ((this: Performance, ev: Event) => any) | null;
   /**
@@ -64,32 +60,28 @@ interface Performance extends EventTarget {
    * returns the high resolution timestamp that is used as the baseline for
    * performance-related timestamps.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/timeOrigin)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/timeOrigin)
    */
   readonly timeOrigin: DOMHighResTimeStamp;
   /**
    * The legacy **`Performance.timing`** read-only property returns a
    * PerformanceTiming object containing latency-related performance information.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/timing)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/timing)
    */
   readonly timing: PerformanceTiming;
   /**
    * The **`clearMarks()`** method removes all or specific PerformanceMark objects
    * from the browser's performance timeline.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/clearMarks)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/clearMarks)
    */
   clearMarks(markName?: string): void;
   /**
    * The **`clearMeasures()`** method removes all or specific PerformanceMeasure
    * objects from the browser's performance timeline.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/clearMeasures)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/clearMeasures)
    */
   clearMeasures(measureName?: string): void;
   /**
@@ -97,33 +89,29 @@ interface Performance extends EventTarget {
    * an entryType of "resource" from the browser's performance timeline and sets
    * the size of the performance resource data buffer to zero.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/clearResourceTimings)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/clearResourceTimings)
    */
   clearResourceTimings(): void;
   /**
    * The **`getEntries()`** method returns an array of all PerformanceEntry
    * objects currently present in the performance timeline.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/getEntries)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/getEntries)
    */
   getEntries(): PerformanceEntryList;
   /**
    * The **`getEntriesByName()`** method returns an array of PerformanceEntry
-   * objects currently present in the performance timeline with the given name
-   * and type.
+   * objects currently present in the performance timeline with the given
+   * name and type.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/getEntriesByName)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/getEntriesByName)
    */
   getEntriesByName(name: string, type?: string): PerformanceEntryList;
   /**
    * The **`getEntriesByType()`** method returns an array of PerformanceEntry
    * objects currently present in the performance timeline for a given type.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/getEntriesByType)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/getEntriesByType)
    */
   getEntriesByType(type: string): PerformanceEntryList;
   /**
@@ -135,11 +123,10 @@ interface Performance extends EventTarget {
   mark(markName: string, markOptions?: PerformanceMarkOptions): PerformanceMark;
   /**
    * The **`measure()`** method creates a named PerformanceMeasure object
-   * representing a time measurement between two marks in the browser's performance
-   * timeline.
+   * representing a time measurement between two marks in the browser's
+   * performance timeline.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/measure)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/measure)
    */
   measure(
     measureName: string,
@@ -156,12 +143,11 @@ interface Performance extends EventTarget {
    */
   now(): DOMHighResTimeStamp;
   /**
-   * The **`setResourceTimingBufferSize()`** method sets the desired size of the
-   * browser's resource timing buffer which stores the "resource" performance
-   * entries.
+   * The **`setResourceTimingBufferSize()`** method sets the desired size
+   * of the browser's resource timing buffer which stores the "resource"
+   * performance entries.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/Performance/setResourceTimingBufferSize)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Performance/setResourceTimingBufferSize)
    */
   setResourceTimingBufferSize(maxSize: number): void;
   /**
@@ -210,26 +196,23 @@ interface PerformanceEntry {
    * of the performance entry. The meaning of this property depends on the value
    * of this entry's entryType.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceEntry/duration)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceEntry/duration)
    */
   readonly duration: DOMHighResTimeStamp;
   /**
    * The read-only **`entryType`** property returns a string representing the
    * type of performance metric that this entry represents.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceEntry/entryType)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceEntry/entryType)
    */
   readonly entryType: string;
   /**
-   * The read-only **`name`** property of the PerformanceEntry interface is
-   * a string representing the name for a performance entry. It acts as an
-   * identifier, but it does not have to be unique. The value depends on the
-   * subclass.
+   * The read-only **`name`** property of the PerformanceEntry interface
+   * is a string representing the name for a performance entry. It acts as
+   * an identifier, but it does not have to be unique. The value depends
+   * on the subclass.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceEntry/name)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceEntry/name)
    */
   readonly name: string;
   /**
@@ -237,16 +220,14 @@ interface PerformanceEntry {
    * for this PerformanceEntry. The meaning of this property depends on the value
    * of this entry's entryType.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceEntry/startTime)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceEntry/startTime)
    */
   readonly startTime: DOMHighResTimeStamp;
   /**
    * The **`toJSON()`** method is a serializer; it returns a JSON representation
    * of the PerformanceEntry object.
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceEntry/toJSON)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceEntry/toJSON)
    */
   toJSON(): any;
 }
@@ -268,8 +249,7 @@ interface PerformanceMark extends PerformanceEntry {
    * included in the mark upon construction (either when using performance.mark()
    * or the PerformanceMark() constructor).
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceMark/detail)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceMark/detail)
    */
   readonly detail: any;
 }
@@ -292,8 +272,7 @@ interface PerformanceMeasure extends PerformanceEntry {
    * The read-only **`detail`** property returns arbitrary metadata that was
    * included in the mark upon construction (when using performance.measure().
    *
-   * [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceMeasure/detail)
+   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceMeasure/detail)
    */
   readonly detail: any;
 }
@@ -310,8 +289,7 @@ declare var PerformanceMeasure: {
  * @deprecated This interface is deprecated in the Navigation Timing Level 2
  * specification. Please use the PerformanceNavigationTiming interface instead.
  *
- * [MDN
- * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation)
+ * [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation)
  */
 interface PerformanceNavigation {
   /**
@@ -319,17 +297,15 @@ interface PerformanceNavigation {
    * returns an unsigned short representing the number of REDIRECTs done before
    * reaching the page.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation/redirectCount)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation/redirectCount)
    */
   readonly redirectCount: number;
   /**
-   * The legacy **`PerformanceNavigation.type`** read-only property returns an
-   * unsigned short containing a constant describing how the navigation to this
-   * page was done.
+   * The legacy **`PerformanceNavigation.type`** read-only property returns
+   * an unsigned short containing a constant describing how the navigation to
+   * this page was done.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation/type)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation/type)
    */
   readonly type: number;
   /**
@@ -337,8 +313,7 @@ interface PerformanceNavigation {
    * serializer; it returns a JSON representation of the PerformanceNavigation
    * object.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation/toJSON)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceNavigation/toJSON)
    */
   toJSON(): any;
   readonly TYPE_NAVIGATE: 0;
@@ -382,8 +357,7 @@ interface PerformanceTiming {
    * connection is considered as opened when all secure connection handshake, or
    * SOCKS authentication, is terminated.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/connectEnd)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/connectEnd)
    */
   readonly connectEnd: number;
   /**
@@ -395,8 +369,7 @@ interface PerformanceTiming {
    * If a persistent connection is used, the value will be the same as
    * PerformanceTiming.fetchStart.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/connectStart)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/connectStart)
    */
   readonly connectStart: number;
   /**
@@ -406,8 +379,7 @@ interface PerformanceTiming {
    * when its Document.readyState changes to 'complete' and the corresponding
    * readystatechange event is thrown.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domComplete)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domComplete)
    */
   readonly domComplete: number;
   /**
@@ -416,8 +388,7 @@ interface PerformanceTiming {
    * the UNIX epoch, right after all the scripts that need to be executed as soon
    * as possible, in order or not, has been executed.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domContentLoadedEventEnd)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domContentLoadedEventEnd)
    */
   readonly domContentLoadedEventEnd: number;
   /**
@@ -427,8 +398,7 @@ interface PerformanceTiming {
    * DOMContentLoaded event, that is right after all the scripts that need to be
    * executed right after parsing has been executed.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domContentLoadedEventStart)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domContentLoadedEventStart)
    */
   readonly domContentLoadedEventStart: number;
   /**
@@ -438,8 +408,7 @@ interface PerformanceTiming {
    * when its Document.readyState changes to 'interactive' and the corresponding
    * readystatechange event is thrown.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domInteractive)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domInteractive)
    */
   readonly domInteractive: number;
   /**
@@ -448,8 +417,7 @@ interface PerformanceTiming {
    * epoch, when the parser started its work, that is when its Document.readyState
    * changes to 'loading' and the corresponding readystatechange event is thrown.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domLoading)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domLoading)
    */
   readonly domLoading: number;
   /**
@@ -459,8 +427,7 @@ interface PerformanceTiming {
    * is used, or the information is stored in a cache or a local resource, the
    * value will be the same as PerformanceTiming.fetchStart.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domainLookupEnd)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domainLookupEnd)
    */
   readonly domainLookupEnd: number;
   /**
@@ -470,8 +437,7 @@ interface PerformanceTiming {
    * is used, or the information is stored in a cache or a local resource, the
    * value will be the same as PerformanceTiming.fetchStart.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domainLookupStart)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/domainLookupStart)
    */
   readonly domainLookupStart: number;
   /**
@@ -480,19 +446,17 @@ interface PerformanceTiming {
    * epoch, the browser is ready to fetch the document using an HTTP request.
    * This moment is before the check to any application cache.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/fetchStart)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/fetchStart)
    */
   readonly fetchStart: number;
   /**
-   * The legacy **`PerformanceTiming.loadEventEnd`** read-only property returns an
-   * unsigned long long representing the moment, in milliseconds since the UNIX
-   * epoch, when the load event handler terminated, that is when the load event
-   * is completed. If this event has not yet been sent, or is not yet completed,
-   * it returns 0.
+   * The legacy **`PerformanceTiming.loadEventEnd`** read-only property returns
+   * an unsigned long long representing the moment, in milliseconds since the
+   * UNIX epoch, when the load event handler terminated, that is when the load
+   * event is completed. If this event has not yet been sent, or is not yet
+   * completed, it returns 0.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/loadEventEnd)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/loadEventEnd)
    */
   readonly loadEventEnd: number;
   /**
@@ -501,8 +465,7 @@ interface PerformanceTiming {
    * UNIX epoch, when the load event was sent for the current document. If this
    * event has not yet been sent, it returns 0.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/loadEventStart)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/loadEventStart)
    */
   readonly loadEventStart: number;
   /**
@@ -512,8 +475,7 @@ interface PerformanceTiming {
    * in the same browsing context. If there is no previous document, this value
    * will be the same as PerformanceTiming.fetchStart.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/navigationStart)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/navigationStart)
    */
   readonly navigationStart: number;
   /**
@@ -523,8 +485,7 @@ interface PerformanceTiming {
    * the HTTP response has been received. If there is no redirect, or if one of
    * the redirect is not of the same origin, the value returned is 0.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/redirectEnd)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/redirectEnd)
    */
   readonly redirectEnd: number;
   /**
@@ -533,8 +494,7 @@ interface PerformanceTiming {
    * UNIX epoch, the first HTTP redirect starts. If there is no redirect, or if
    * one of the redirect is not of the same origin, the value returned is 0.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/redirectStart)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/redirectStart)
    */
   readonly redirectStart: number;
   /**
@@ -545,19 +505,17 @@ interface PerformanceTiming {
    * the request and the connection is reopened, this property will be set to the
    * time corresponding to the new request.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/requestStart)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/requestStart)
    */
   readonly requestStart: number;
   /**
    * The legacy **`PerformanceTiming.responseEnd`** read-only property returns an
    * unsigned long long representing the moment, in milliseconds since the UNIX
    * epoch, when the browser received the last byte of the response, or when the
-   * connection is closed if this happened first, from the server from a cache or
-   * from a local resource.
+   * connection is closed if this happened first, from the server from a cache
+   * or from a local resource.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/responseEnd)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/responseEnd)
    */
   readonly responseEnd: number;
   /**
@@ -566,8 +524,7 @@ interface PerformanceTiming {
    * the UNIX epoch) when the browser received the first byte of the response
    * from the server, cache, or local resource.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/responseStart)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/responseStart)
    */
   readonly responseStart: number;
   /**
@@ -576,8 +533,7 @@ interface PerformanceTiming {
    * the UNIX epoch, where the secure connection handshake starts. If no such
    * connection is requested, it returns 0.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/secureConnectionStart)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/secureConnectionStart)
    */
   readonly secureConnectionStart: number;
   /**
@@ -587,8 +543,7 @@ interface PerformanceTiming {
    * or if the previous document, or one of the needed redirects, is not of the
    * same origin, the value returned is 0.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/unloadEventEnd)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/unloadEventEnd)
    */
   readonly unloadEventEnd: number;
   /**
@@ -598,16 +553,14 @@ interface PerformanceTiming {
    * document, or if the previous document, or one of the needed redirects, is
    * not of the same origin, the value returned is 0.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/unloadEventStart)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/unloadEventStart)
    */
   readonly unloadEventStart: number;
   /**
    * The legacy **`toJSON()`** method of the PerformanceTiming interface is a
    * serializer; it returns a JSON representation of the PerformanceTiming object.
    *
-   * @deprecated [MDN
-   * Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/toJSON)
+   * @deprecated [MDN Reference](https://developer.mozilla.org/docs/Web/API/PerformanceTiming/toJSON)
    */
   toJSON(): any;
 }

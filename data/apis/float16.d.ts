@@ -55,8 +55,8 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
    * length is the length of the array.
    * @param start - If start is negative, it is treated as length+start. If end
    * is negative, it is treated as length+end.
-   * @param end - If not specified, length of the this object is used as its
-   * default value.
+   * @param end - If not specified, length of the this object is used as
+   * its default value.
    */
   copyWithin(target: number, start: number, end?: number): this;
 
@@ -67,9 +67,9 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
    * method calls the predicate function for each element in the array until the
    * predicate returns a value which is coercible to the Boolean value false, or
    * until the end of the array.
-   * @param thisArg - An object to which the this keyword can refer in the
-   * predicate function. If thisArg is omitted, undefined is used as the this
-   * value.
+   * @param thisArg - An object to which the this keyword can refer in
+   * the predicate function. If thisArg is omitted, undefined is used as
+   * the this value.
    */
   every(
     predicate: (value: number, index: number, array: this) => unknown,
@@ -89,14 +89,14 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
   fill(value: number, start?: number, end?: number): this;
 
   /**
-   * Returns the elements of an array that meet the condition specified in a
-   * callback function.
+   * Returns the elements of an array that meet the condition specified in
+   * a callback function.
    *
    * @param predicate - A function that accepts up to three arguments. The filter
    * method calls the predicate function one time for each element in the array.
-   * @param thisArg - An object to which the this keyword can refer in the
-   * predicate function. If thisArg is omitted, undefined is used as the this
-   * value.
+   * @param thisArg - An object to which the this keyword can refer in
+   * the predicate function. If thisArg is omitted, undefined is used as
+   * the this value.
    */
   filter(
     predicate: (value: number, index: number, array: this) => any,
@@ -120,8 +120,8 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
   ): number | undefined;
 
   /**
-   * Returns the index of the first element in the array where predicate is true,
-   * and -1 otherwise.
+   * Returns the index of the first element in the array where predicate is
+   * true, and -1 otherwise.
    *
    * @param predicate - find calls predicate once for each element of the array,
    * in ascending order, until it finds one where predicate returns true. If
@@ -156,8 +156,8 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
   ): number | undefined;
 
   /**
-   * Returns the index of the last element in the array where predicate is true,
-   * and -1 otherwise.
+   * Returns the index of the last element in the array where predicate is
+   * true, and -1 otherwise.
    *
    * @param predicate - findLastIndex calls predicate once for each element of
    * the array, in descending order, until it finds one where predicate returns
@@ -176,9 +176,9 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
    *
    * @param callbackfn - A function that accepts up to three arguments. forEach
    * calls the callbackfn function one time for each element in the array.
-   * @param thisArg - An object to which the this keyword can refer in the
-   * callbackfn function. If thisArg is omitted, undefined is used as the this
-   * value.
+   * @param thisArg - An object to which the this keyword can refer in
+   * the callbackfn function. If thisArg is omitted, undefined is used as
+   * the this value.
    */
   forEach(
     callbackfn: (value: number, index: number, array: this) => void,
@@ -205,12 +205,11 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
   indexOf(searchElement: number, fromIndex?: number): number;
 
   /**
-   * Adds all the elements of an array separated by the specified separator
-   * string.
+   * Adds all the elements of an array separated by the specified separator string.
    *
-   * @param separator - A string used to separate one element of an array from the
-   * next in the resulting String. If omitted, the array elements are separated
-   * with a comma.
+   * @param separator - A string used to separate one element of an array from
+   * the next in the resulting String. If omitted, the array elements are
+   * separated with a comma.
    */
   join(separator?: string): string;
 
@@ -234,9 +233,9 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
    *
    * @param callbackfn - A function that accepts up to three arguments. The map
    * method calls the callbackfn function one time for each element in the array.
-   * @param thisArg - An object to which the this keyword can refer in the
-   * callbackfn function. If thisArg is omitted, undefined is used as the this
-   * value.
+   * @param thisArg - An object to which the this keyword can refer in
+   * the callbackfn function. If thisArg is omitted, undefined is used as
+   * the this value.
    */
   map(
     callbackfn: (value: number, index: number, array: this) => number,
@@ -294,14 +293,14 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
   ): U;
 
   /**
-   * Calls the specified callback function for all the elements in an array, in
-   * descending order. The return value of the callback function is the accumulated
-   * result, and is provided as an argument in the next call to the callback
-   * function.
+   * Calls the specified callback function for all the elements in an array,
+   * in descending order. The return value of the callback function is the
+   * accumulated result, and is provided as an argument in the next call to
+   * the callback function.
    *
    * @param callbackfn - A function that accepts up to four arguments. The
-   * reduceRight method calls the callbackfn function one time for each element
-   * in the array.
+   * reduceRight method calls the callbackfn function one time for each
+   * element in the array.
    * @param initialValue - If initialValue is specified, it is used as the initial
    * value to start the accumulation. The first call to the callbackfn function
    * provides this value as an argument instead of an array value.
@@ -325,14 +324,14 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
   ): number;
 
   /**
-   * Calls the specified callback function for all the elements in an array, in
-   * descending order. The return value of the callback function is the accumulated
-   * result, and is provided as an argument in the next call to the callback
-   * function.
+   * Calls the specified callback function for all the elements in an array,
+   * in descending order. The return value of the callback function is the
+   * accumulated result, and is provided as an argument in the next call to
+   * the callback function.
    *
    * @param callbackfn - A function that accepts up to four arguments. The
-   * reduceRight method calls the callbackfn function one time for each element
-   * in the array.
+   * reduceRight method calls the callbackfn function one time for each
+   * element in the array.
    * @param initialValue - If initialValue is specified, it is used as the initial
    * value to start the accumulation. The first call to the callbackfn function
    * provides this value as an argument instead of an array value.
@@ -356,8 +355,8 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
    * Sets a value or an array of values.
    *
    * @param array - A typed or untyped array of values to set.
-   * @param offset - The index in the current array at which the values are to be
-   * written.
+   * @param offset - The index in the current array at which the values
+   * are to be written.
    */
   set(array: ArrayLike<number>, offset?: number): void;
 
@@ -378,9 +377,9 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
    * method calls the predicate function for each element in the array until the
    * predicate returns a value which is coercible to the Boolean value true, or
    * until the end of the array.
-   * @param thisArg - An object to which the this keyword can refer in the
-   * predicate function. If thisArg is omitted, undefined is used as the this
-   * value.
+   * @param thisArg - An object to which the this keyword can refer in
+   * the predicate function. If thisArg is omitted, undefined is used as
+   * the this value.
    */
   some(
     predicate: (value: number, index: number, array: this) => unknown,
@@ -562,26 +561,25 @@ interface Math {
 
 interface DataView<TArrayBuffer extends ArrayBufferLike> {
   /**
-   * Gets the Float16 value at the specified byte offset from the start of the
-   * view. There is no alignment constraint; multi-byte values may be fetched
-   * from any offset.
+   * Gets the Float16 value at the specified byte offset from the start of
+   * the view. There is no alignment constraint; multi-byte values may be
+   * fetched from any offset.
    *
-   * @param byteOffset - The place in the buffer at which the value should be
-   * retrieved.
-   * @param littleEndian - If false or undefined, a big-endian value should be
-   * read.
+   * @param byteOffset - The place in the buffer at which the value should
+   * be retrieved.
+   * @param littleEndian - If false or undefined, a big-endian value
+   * should be read.
    */
   getFloat16(byteOffset: number, littleEndian?: boolean): number;
 
   /**
-   * Stores an Float16 value at the specified byte offset from the start of the
-   * view.
+   * Stores an Float16 value at the specified byte offset from the start
+   * of the view.
    *
-   * @param byteOffset - The place in the buffer at which the value should be
-   * set.
+   * @param byteOffset - The place in the buffer at which the value should be set.
    * @param value - The value to set.
-   * @param littleEndian - If false or undefined, a big-endian value should be
-   * written.
+   * @param littleEndian - If false or undefined, a big-endian value
+   * should be written.
    */
   setFloat16(byteOffset: number, value: number, littleEndian?: boolean): void;
 }
