@@ -1,5 +1,17 @@
 # @auaust/engrenage
 
+## 0.14.1
+
+### Patch Changes
+
+- [`8a80486`](https://github.com/AUAUST/lib-js-engrenage/commit/8a80486d165deac34e2a8221a90a172a50cac1b3) Thanks [@apademide](https://github.com/apademide)! - - Commit pending agent friction and discarded-solutions log lines with every agent commit
+
+- [`c1bc7af`](https://github.com/AUAUST/lib-js-engrenage/commit/c1bc7afff6eafe3c8a579c5fa47b2e8756ac7b46) Thanks [@apademide](https://github.com/apademide)! - Synced VS Code settings run one ESLint fix pass per save (`eslint.codeActionsOnSave.mode: "problems"`).
+
+- [`3903555`](https://github.com/AUAUST/lib-js-engrenage/commit/390355587f72cde36d51d431e5025c578128234b) Thanks [@apademide](https://github.com/apademide)! - ESLint loads `eslint.config.ts` natively in every engrenage invocation and the editor, and the lint hook loads it once per call.
+
+- [`4ddb5e4`](https://github.com/AUAUST/lib-js-engrenage/commit/4ddb5e448dc5c6d378263c6f62daa445f98772d8) Thanks [@apademide](https://github.com/apademide)! - Prettier layout conventions share one statement traversal per file, speeding up formatting.
+
 ## 0.14.0
 
 ### Minor Changes
