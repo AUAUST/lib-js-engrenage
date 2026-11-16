@@ -87,6 +87,22 @@ async function assertPackageUnchanged(path: File, snapshot: string) {
   }
 }
 
+// @debt rolldown's `output.keepNames` would also keep the names bundling renames, but rolldown-plugin-dts leaves its `__name` helper imported from the JS runtime chunk in declaration chunks, so the minifier keeps names instead; switch back once the plugin strips that helper
+function resolveMinify(minify: boolean | "keepNames") {
+  if (minify !== "keepNames") {
+    return minify;
+  }
+
+  return {
+    compress: {
+      keepNames: { function: true, class: true },
+    },
+    mangle: {
+      keepNames: { function: true, class: true },
+    },
+  };
+}
+
 /**
  * Builds the tsdown config of a loaded config: ESM entries from the package
  * exports, commands and workspaces, declarations, plugins and packaging checks of
@@ -257,20 +273,19 @@ export async function createTsdownConfig(
         mainFields: [...mainFields],
       },
     },
-    outputOptions: {
-      keepNames: minify === "keepNames",
-      ...(typed
-        ? {
+    ...(typed
+      ? {
+          outputOptions: {
             comments: {
               jsdoc: false,
               legal: true,
               annotation: true,
             },
-          }
-        : {}),
-    },
+          },
+        }
+      : {}),
     failOnWarn: true,
-    minify: minify !== false,
+    minify: resolveMinify(minify),
     hooks: {
       async "build:done"() {
         if (ci) {

@@ -21,3 +21,8 @@ Generated tsdown build configuration: entries, outputs and declaration files.
 
 - site: `src/tools/tsdown/plugins/createOmittedDeclarationsPlugins.ts:6`
 - want: tsdown skips bin declarations per entry.
+
+## 5. Kept names cover only the minifier because rolldown-plugin-dts leaves `__name` in declarations
+
+- site: `src/tools/tsdown/operations/createTsdownConfig.ts:90` (`build.minify: "keepNames"` maps to minifier `keepNames`; `output.keepNames` also covers bundling renames but its `__name` import survives in `.d.mts`, failing `typecheck:dist`).
+- want: an upstream fix in rolldown-plugin-dts `isHelperImport` (repository not AUAUST's: stays here, no issue), then `output.keepNames`.

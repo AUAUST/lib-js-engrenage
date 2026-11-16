@@ -346,8 +346,14 @@ describe("createTsdownConfig", () => {
 
       for (const ci of [true, false]) {
         expect(await createTsdownConfig(config, { ci })).toMatchObject({
-          minify: true,
-          outputOptions: { keepNames: true },
+          minify: {
+            compress: {
+              keepNames: { function: true, class: true },
+            },
+            mangle: {
+              keepNames: { function: true, class: true },
+            },
+          },
         });
       }
     });
@@ -377,6 +383,50 @@ describe("createTsdownConfig", () => {
       expect(namedExport.name).toBe("namedExport");
     });
 
+    test("emits declarations that resolve without the bundler runtime in a published build", async () => {
+      const project = createProject({
+        config: {
+          preset: "library",
+        },
+        compilerOptions: {
+          ...declared,
+          ...subpaths,
+        },
+        tsconfig: {
+          include: ["src"],
+        },
+        files: {
+          "src/index.ts": [
+            'export { Shared } from "./shared.ts";',
+            "export function namedExport() {}",
+          ].join("\n"),
+          "src/alpha/index.ts": [
+            'export { Shared } from "../shared.ts";',
+            "export class Alpha {}",
+          ].join("\n"),
+          "src/shared.ts": "export class Shared {}\n",
+        },
+      });
+
+      await build({
+        ...(await createTsdownConfig(await loadConfig(project.root), {
+          ci: false,
+        })),
+        config: false,
+        logLevel: "silent",
+      });
+
+      const program = createProgram(
+        [
+          project.resolve("dist/index.d.mts"),
+          project.resolve("dist/alpha/index.d.mts"),
+        ],
+        { noEmit: true, strict: true },
+      );
+
+      expect(getPreEmitDiagnostics(program)).toEqual([]);
+    });
+
     test("mangles names entirely outside published projects and disables on false", async () => {
       const unpublished = await loadConfig(createProject().root);
 
@@ -386,7 +436,6 @@ describe("createTsdownConfig", () => {
         await createTsdownConfig(unpublished, { ci: false }),
       ).toMatchObject({
         minify: true,
-        outputOptions: { keepNames: false },
       });
 
       const disabled = await loadConfig(
@@ -399,7 +448,6 @@ describe("createTsdownConfig", () => {
 
       expect(await createTsdownConfig(disabled, { ci: true })).toMatchObject({
         minify: false,
-        outputOptions: { keepNames: false },
       });
     });
   });

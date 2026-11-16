@@ -96,3 +96,5 @@
 - rolldown `experimentalInlineCommonChunks`: inline tiny shared chunks — requires `preserveEntrySignatures: false`, which empties library entry exports
 - rolldown `codeSplitting.groups` merging shared chunks: fewer files per library import — default splitting already loads ~14 files per entry; merges add bytes, leak packages and no measurable speed-up
 - declareObject async entries: await async entry defaults inside the object resolve (src.bundled) — changes the synchronous Declaration.resolve contract across foundation/options
+- tsdown declaration helper-stripping plugin: keep `output.keepNames` with declarations — rewrites rolldown-plugin-dts output and shifts declaration maps
+- rolldown-plugin-dts pnpm patch: drop `__name` from declaration chunks — fixes only this repository, not consumers of createTsdownConfig
