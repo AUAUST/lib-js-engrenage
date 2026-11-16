@@ -128,5 +128,6 @@
       "fileMatch": ["**/.domain.json"],
       "url": "./data/schemas/domain.schema.json"
     }
-  ]
+  ],
+  "eslint.codeActionsOnSave.mode": "problems"
 }

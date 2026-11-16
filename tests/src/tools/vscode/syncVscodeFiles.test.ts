@@ -88,6 +88,7 @@ describe("syncVscodeFiles", () => {
     "source.sortImports": "never"
   },
   "files.eol": "\n",
+  "eslint.codeActionsOnSave.mode": "problems",
   "eslint.rules.customizations": [],
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "js/ts.tsdk.path": "node_modules/typescript/lib",

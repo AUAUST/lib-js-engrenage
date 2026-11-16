@@ -31,6 +31,7 @@ export const eslintIntegration = freeze({
       "source.organizeImports": "never",
       "source.sortImports": "never",
     },
+    "eslint.codeActionsOnSave.mode": "problems",
   },
   extensions: ["dbaeumer.vscode-eslint"],
 } as const) satisfies Integration;
