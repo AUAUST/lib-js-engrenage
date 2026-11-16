@@ -1,10 +1,10 @@
 import { ensureAnyOf } from "#foundation/processes/index";
-import { eslintFlagArguments } from "#tools/eslint/constants";
+import { resolveEslintArguments } from "#tools/eslint/operations/resolveEslintArguments";
 
 export function resolveEslintSuppressArguments(
   args: readonly string[],
 ): string[] {
-  const resolved = [...eslintFlagArguments, ...args];
+  const resolved = resolveEslintArguments(args);
 
   ensureAnyOf(
     resolved,

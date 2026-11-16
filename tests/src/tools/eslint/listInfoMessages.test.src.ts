@@ -13,25 +13,34 @@ function sourcePath(path: string): string {
   return fileURLToPath(new URL(`../../../../${path}`, import.meta.url));
 }
 
+function createLintedProject(configArguments: string, source: string) {
+  const project = createTemporaryProject({
+    "package.json": JSON.stringify({
+      type: "module",
+      devDependencies: { eslint: "*" },
+    }),
+    "tsconfig.json": JSON.stringify({
+      extends: sourcePath("data/tsconfig/base.json"),
+      include: ["**/*.ts"],
+    }),
+    "engrenage.config.ts": "export default {};\n",
+    "eslint.config.ts": `import { defineEslintConfig } from ${JSON.stringify(sourcePath("src/tools/eslint/index.ts"))};\n\nexport default defineEslintConfig(${configArguments});\n`,
+    "src/edited.ts": source,
+  });
+
+  mockCwd(project.root);
+
+  return project;
+}
+
 describe("listInfoMessages", () => {
   test(
     "lists info messages without a fix",
     async () => {
-      const project = createTemporaryProject({
-        "package.json": JSON.stringify({
-          type: "module",
-          devDependencies: { eslint: "*" },
-        }),
-        "tsconfig.json": JSON.stringify({
-          extends: sourcePath("data/tsconfig/base.json"),
-          include: ["**/*.ts"],
-        }),
-        "engrenage.config.ts": "export default {};\n",
-        "eslint.config.ts": `import { defineEslintConfig } from ${JSON.stringify(sourcePath("src/tools/eslint/index.ts"))};\n\nexport default defineEslintConfig();\n`,
-        "src/edited.ts": "const leftover = 1;\n\nconst snake_case = 2;\n\nexport const doubled = snake_case * 2;\n",
-      });
-
-      mockCwd(project.root);
+      const project = createLintedProject(
+        "",
+        "const leftover = 1;\n\nconst snake_case = 2;\n\nexport const doubled = snake_case * 2;\n",
+      );
 
       const messages = await listInfoMessages(
         await loadConfig(project.root),
@@ -53,21 +62,10 @@ describe("listInfoMessages", () => {
   test(
     "skips a rule a later config object resets from info",
     async () => {
-      const project = createTemporaryProject({
-        "package.json": JSON.stringify({
-          type: "module",
-          devDependencies: { eslint: "*" },
-        }),
-        "tsconfig.json": JSON.stringify({
-          extends: sourcePath("data/tsconfig/base.json"),
-          include: ["**/*.ts"],
-        }),
-        "engrenage.config.ts": "export default {};\n",
-        "eslint.config.ts": `import { defineEslintConfig } from ${JSON.stringify(sourcePath("src/tools/eslint/index.ts"))};\n\nexport default defineEslintConfig({}, { rules: { "auaust/no-unused-vars": "warn" } });\n`,
-        "src/edited.ts": "const leftover = 1;\n\nexport const value = 2;\n",
-      });
-
-      mockCwd(project.root);
+      const project = createLintedProject(
+        '{}, { rules: { "auaust/no-unused-vars": "warn" } }',
+        "const leftover = 1;\n\nexport const value = 2;\n",
+      );
 
       const messages = await listInfoMessages(
         await loadConfig(project.root),

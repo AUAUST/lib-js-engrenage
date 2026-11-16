@@ -1,9 +1,7 @@
 import { pathExists, resolve } from "#foundation/filesystem/index";
 import { ensureIncludes, hasOption } from "#foundation/processes/index";
-import {
-  defaultSuppressionsFile,
-  eslintFlagArguments,
-} from "#tools/eslint/constants";
+import { defaultSuppressionsFile } from "#tools/eslint/constants";
+import { resolveEslintArguments } from "#tools/eslint/operations/resolveEslintArguments";
 
 async function hasSuppressions(args: readonly string[]): Promise<boolean> {
   return (
@@ -15,7 +13,7 @@ async function hasSuppressions(args: readonly string[]): Promise<boolean> {
 export async function resolveEslintFixArguments(
   args: readonly string[],
 ): Promise<string[]> {
-  const resolved = [...eslintFlagArguments, ...args];
+  const resolved = resolveEslintArguments(args);
 
   ensureIncludes(resolved, "--fix");
 

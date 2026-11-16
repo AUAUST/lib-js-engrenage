@@ -1,5 +1,5 @@
-import { eslintFlagArguments } from "#tools/eslint/constants";
+import { resolveEslintArguments } from "#tools/eslint/index";
 
 export default function (args: string[]): readonly string[] {
-  return [...eslintFlagArguments, ...args];
+  return resolveEslintArguments(args);
 }

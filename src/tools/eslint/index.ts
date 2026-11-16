@@ -20,6 +20,7 @@ export { loadEslint } from "#tools/eslint/operations/loadEslint";
 export { loadEslintConfigs } from "#tools/eslint/operations/loadEslintConfigs";
 export { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
 export { resolveConventionSections } from "#tools/eslint/operations/resolveConventionSections";
+export { resolveEslintArguments } from "#tools/eslint/operations/resolveEslintArguments";
 export { resolveEslintFixArguments } from "#tools/eslint/operations/resolveEslintFixArguments";
 export { resolveEslintSuppressArguments } from "#tools/eslint/operations/resolveEslintSuppressArguments";
 export { resolveScope } from "#tools/eslint/operations/resolveScope";
