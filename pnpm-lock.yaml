@@ -234,8 +234,8 @@ importers:
         specifier: ^0.42.2
         version: 0.42.2
       '@auaust/toolkit':
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.7.0
+        version: 0.7.0
       '@changesets/changelog-github':
         specifier: ^1.0.1
         version: 1.0.1
@@ -419,8 +419,8 @@ packages:
   '@auaust/primitive-kit@0.42.2':
     resolution: {integrity: sha512-nOyGqi8Ao+r+BsZ+bOsTJE+ymN4eC1gqsN9azi7K1A2Ox+1/go37pTABVR7BYnHFE5nnOS+RdHg8PP2i4PVQ3A==}
 
-  '@auaust/toolkit@0.6.0':
-    resolution: {integrity: sha512-OucXTztSbIsgRgNQmlTLhwg7LJp09hZntHfKV2gqn2MP8gl4X6QzeD3uwSugPVSntlqC1eTJpocV7CiSOeMnHw==}
+  '@auaust/toolkit@0.7.0':
+    resolution: {integrity: sha512-H3GK3F6Z8r+I0QogbnKSzN8OoDRnpnVhVUfVPoXbPP4mUPxU7updLMLI2dHBmGRC08b33xJWXaUSU7uX00uQYA==}
     engines: {node: '>=22'}
 
   '@babel/code-frame@8.0.6':
@@ -3118,7 +3118,7 @@ snapshots:
 
   '@auaust/primitive-kit@0.42.2': {}
 
-  '@auaust/toolkit@0.6.0': {}
+  '@auaust/toolkit@0.7.0': {}
 
   '@babel/code-frame@8.0.6':
     dependencies:

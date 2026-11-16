@@ -144,7 +144,7 @@
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",
     "@auaust/primitive-kit": "^0.42.2",
-    "@auaust/toolkit": "^0.6.0",
+    "@auaust/toolkit": "^0.7.0",
     "@changesets/changelog-github": "^1.0.1",
     "@changesets/cli": "^3.0.3",
     "@clack/prompts": "^1.8.1",
@@ -233,7 +233,7 @@
   },
   "inlinedDependencies": {
     "@auaust/primitive-kit": "0.42.2",
-    "@auaust/toolkit": "0.5.1",
+    "@auaust/toolkit": "0.6.0",
     "@clack/core": "1.5.1",
     "@clack/prompts": "1.8.1",
     "@commander-js/extra-typings": "15.0.0",
