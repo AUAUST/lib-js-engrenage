@@ -82,3 +82,4 @@
 - balanced JSDoc wrapping: no orphan last line — equal-length lines narrow long paragraphs far below the width
 - hybrid JSDoc wrapping: balance two-line paragraphs, pretty beyond — arbitrary line-count threshold
 - planning sheet skill: load the sheet only for issue-writing agents — skill invocation is model-driven and can be skipped; a `paths`-scoped rule on drafts loads deterministically
+- `TagDeclaration` documents flag: override whether a tag counts for `auaust/documented` — the body kind already decides it; no project needs another answer yet

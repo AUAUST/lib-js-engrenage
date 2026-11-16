@@ -23,7 +23,8 @@ export interface TagDeclaration {
   readonly subject?: "parameter" | "typeParameter" | "name";
   /**
    * The text after the tag's head: `none` rejects any, `inline` takes one line,
-   * `text` wrapped prose and `code` lines kept verbatim.
+   * `text` wrapped prose and `code` lines kept verbatim. A non-empty `text` body
+   * of a `public` tag documents its declaration for lint's `documented`.
    */
   readonly body: "none" | "inline" | "text" | "code";
   /**

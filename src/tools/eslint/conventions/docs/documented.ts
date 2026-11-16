@@ -10,6 +10,7 @@ import {
 import type { Rule } from "eslint";
 
 import { parseJsdoc } from "#foundation/jsdoc/index";
+import { splitDocTag, type TagDeclaration } from "#project/docs/index";
 import { entryRoleName } from "#project/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
@@ -61,15 +62,32 @@ function listEntryExports(
 function isDocumented(
   sourceCode: Rule.RuleContext["sourceCode"],
   node: TSESTree.Node,
+  declarations: ReadonlyMap<string, TagDeclaration>,
 ): boolean {
   const block = findJsdocBlock(sourceCode, node)?.range;
 
+  if (block === undefined) {
+    return false;
+  }
+
+  const {
+    description,
+    tags,
+  } = parseJsdoc(sourceCode.text.slice(block[0], block[1]), block[0]);
+
   return (
-    block !== undefined &&
-    parseJsdoc(
-      sourceCode.text.slice(block[0], block[1]),
-      block[0],
-    ).description.trim() !== ""
+    description.trim() !== "" ||
+    tags.some(({ name, text }) => {
+      const declaration = declarations.get(name);
+
+      if (declaration?.body !== "text" || declaration.output === "internal") {
+        return false;
+      }
+
+      const split = splitDocTag(declaration, text);
+
+      return split.ok && split.body !== "";
+    })
   );
 }
 
@@ -164,11 +182,16 @@ export default defineConvention({
   files: ["files.src"],
   typeAware: true,
   severity: "info",
-  sections: { entities: "entities" },
-  rule: ({ entities }) => {
+  sections: { entities: "entities", docs: "docs" },
+  rule: ({ entities, docs }) => {
+    const declarations: ReadonlyMap<
+      string,
+      TagDeclaration
+    > = new Map(docs.tags.map((tag) => [tag.name, tag] as const));
+
     return defineStructureRule({
       entities,
-      description: "Each member of a `ports` or `apis` interface and each declaration a package entry exports has a JSDoc description.",
+      description: "Each member of a `ports` or `apis` interface and each declaration a package entry exports has a JSDoc description or a public `text` doc tag with a body.",
       messages: {
         member: "Document `{{name}}`: its implementations live elsewhere, so state the behavior its name and signature leave open.",
         export: "Document `{{name}}`: a package entry exports it and consumers never see its source, so state the behavior its name and signature leave open.",
@@ -201,7 +224,7 @@ export default defineConvention({
               }
 
               for (const member of declaration.body.body) {
-                if (!isDocumented(sourceCode, member)) {
+                if (!isDocumented(sourceCode, member, declarations)) {
                   report(member, "member", memberName(sourceCode, member));
                 }
               }
@@ -242,9 +265,9 @@ export default defineConvention({
           const signatures = signaturesOf(statement);
 
           return signatures === undefined
-            ? isDocumented(sourceCode, statement)
+            ? isDocumented(sourceCode, statement, declarations)
             : signatures.some((signature) => {
-                return isDocumented(sourceCode, signature);
+                return isDocumented(sourceCode, signature, declarations);
               });
         }
 

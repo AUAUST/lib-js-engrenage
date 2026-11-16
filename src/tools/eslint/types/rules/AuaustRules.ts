@@ -58,7 +58,7 @@ export interface AuaustRules {
   "auaust/doc-tags"?: Rule<[]>;
   /**
    * Each member of a `ports` or `apis` interface and each declaration a package
-   * entry exports has a JSDoc description.
+   * entry exports has a JSDoc description or a public `text` doc tag with a body.
    */
   "auaust/documented"?: Rule<[]>;
   /**
