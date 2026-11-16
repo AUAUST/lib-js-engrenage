@@ -1,7 +1,7 @@
 import { posix } from "node:path";
 
-import { toCamelCase } from "@auaust/primitive-kit/strings";
 import { entries, getOwn } from "@auaust/toolkit/object";
+import { toCamelCase } from "@auaust/toolkit/string";
 
 import {
   collectStructureNodes,

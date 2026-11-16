@@ -1,9 +1,9 @@
 import { basename, dirname } from "node:path";
 
-import { toCamelCase } from "@auaust/primitive-kit/strings";
 import { toArray } from "@auaust/toolkit/array";
 import { unique } from "@auaust/toolkit/iterable";
 import { getOwn } from "@auaust/toolkit/object";
+import { toCamelCase } from "@auaust/toolkit/string";
 
 import {
   collectStructureNodes,

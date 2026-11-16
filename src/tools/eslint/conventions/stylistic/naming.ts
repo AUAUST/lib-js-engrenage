@@ -2,18 +2,14 @@ import { compileFunction } from "node:vm";
 
 import type { Rule, Scope, SourceCode } from "eslint";
 
-import {
-  split,
-  toCamelCase,
-  toPascalCase,
-} from "@auaust/primitive-kit/strings";
+import { split } from "@auaust/primitive-kit/strings";
 import { isString } from "@auaust/toolkit";
 import { includes, join, last, toArray } from "@auaust/toolkit/array";
 import {
   join as joinIterable,
   map as mapIterable,
 } from "@auaust/toolkit/iterable";
-import { toLowerCase } from "@auaust/toolkit/string";
+import { toCamelCase, toLowerCase, toPascalCase } from "@auaust/toolkit/string";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { delegateRule } from "#tools/eslint/utils/delegateRule";

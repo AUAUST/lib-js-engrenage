@@ -10,8 +10,8 @@ import {
   string,
 } from "valibot";
 
-import { toCamelCase } from "@auaust/primitive-kit/strings";
 import { toSorted } from "@auaust/toolkit/array";
+import { toCamelCase } from "@auaust/toolkit/string";
 
 import { validate } from "#foundation/options/index";
 import { exportGroups } from "#project/format/index";

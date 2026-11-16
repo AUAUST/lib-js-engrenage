@@ -1,4 +1,4 @@
-import { toKebabCase } from "@auaust/primitive-kit/strings";
+import { toKebabCase } from "@auaust/toolkit/string";
 
 export function createRuleName(convention: string): string {
   return toKebabCase(convention);
