@@ -6,6 +6,7 @@ import { array, is, looseObject, optional, string } from "valibot";
 import { isArray, isPlainObject } from "@auaust/toolkit";
 import {
   every,
+  filter,
   flatMap,
   includes,
   map,
@@ -109,8 +110,7 @@ function mergeSchemas(
       return;
     }
 
-    // @debt @auaust/primitive-kit's `filter` types a callback overload's result as `T[]`, a list of the input arrays, so these filters use the native method.
-    return entry.fileMatch.filter((matcher) => {
+    return filter(entry.fileMatch, (matcher) => {
       const url = schemas.get(matcher);
 
       if (url === undefined) {
@@ -129,7 +129,7 @@ function mergeSchemas(
 
   const missing = groupByUrl(
     schemas,
-    [...schemas.keys()].filter((matcher) => {
+    filter(schemas.keys(), (matcher) => {
       return !placed.has(matcher);
     }),
   );

@@ -12,7 +12,7 @@ import {
   type SourceFile,
 } from "typescript";
 
-import { filter, join, map } from "@auaust/toolkit/array";
+import { filter, flatMap, join, map } from "@auaust/toolkit/array";
 import { map as mapIterable } from "@auaust/toolkit/iterable";
 
 import type { Directory } from "#types/Directory";
@@ -145,8 +145,7 @@ export function createLibraryCompiler(libraries?: Directory) {
     const [first] = [
       ...program.getOptionsDiagnostics(),
       ...program.getGlobalDiagnostics(),
-      // @debt native flatMap is used because primitive-kit's filter types its result as an array of the input array; the same typing issue affects the filter(groups, …) call in generateApiDeclarations
-      ...program.getSourceFiles().flatMap((file) => {
+      ...flatMap(program.getSourceFiles(), (file) => {
         if (skipped.has(file.fileName)) {
           return [];
         }

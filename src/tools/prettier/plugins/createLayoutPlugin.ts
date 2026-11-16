@@ -6,7 +6,13 @@ import { parsers as meriyahParsers } from "prettier/plugins/meriyah";
 import { parsers as typescriptParsers } from "prettier/plugins/typescript";
 
 import { isObject } from "@auaust/toolkit";
-import { filterMap, findLast, flatMap, sort } from "@auaust/toolkit/array";
+import {
+  filter,
+  filterMap,
+  findLast,
+  flatMap,
+  sort,
+} from "@auaust/toolkit/array";
 import { mapValues, values } from "@auaust/toolkit/object";
 
 import { visitNodes } from "#tools/prettier/utils/visitNodes";
@@ -43,8 +49,7 @@ function isProgram(value: unknown): value is TSESTree.Program {
 
 // @debt the ignored node is the outermost one starting after the comment, an approximation of Prettier's own comment attachment
 function findIgnoredRanges(program: TSESTree.Program): readonly Range[] {
-  // @debt native `filter`, since primitive-kit's `filter` types a predicate's result as an array of arrays
-  const comments = (program.comments ?? []).filter((comment) => {
+  const comments = filter(program.comments ?? [], (comment) => {
     return comment.value.trim() === "prettier-ignore";
   });
 
@@ -203,8 +208,7 @@ export function createLayoutPlugin(
 
           const formatted = await format(source, {
             ...options,
-            // @debt native `filter`, since primitive-kit's `filter` types a predicate's result as an array of arrays
-            plugins: options.plugins.filter((plugin) => {
+            plugins: filter(options.plugins, (plugin) => {
               return plugin !== layoutPlugin;
             }),
           });
