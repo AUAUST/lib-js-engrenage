@@ -120,3 +120,10 @@
 - npx eslint: printed the ESLint version — npm refused on the `devEngines` pnpm requirement; called `node_modules/.bin/eslint` instead
 - ESLint API from scratchpad: imported `eslint` in a scratch script — bare specifier unresolvable outside the project; imported `node_modules/eslint/lib/api.js` by absolute path
 - engrenage gate --worktree: ran during a parallel session's .ai/issues draft edits — Prettier failed on their vanishing/ignored drafts; covered my files with eslint --fix and typecheck instead
+- `gh issue view --repo AUAUST/engrenage`: fetched issues by the package name — the repository is `AUAUST/lib-js-engrenage`, listed only in the planning sheet that loads after the first draft; resolved with `gh repo view`
+- zsh `echo ====`: printed a separator — zsh expands a leading `=` as a command path (`= not found`); quoted it
+- engrenage planning issue create --parent: passed `#{new-downstream-defaults}` — expects the bare stem `new-downstream-defaults`; retried
+- `gh issue view --repo AUAUST/engrenage`: fetched #567 by the package name — repository is `AUAUST/lib-js-engrenage`; retried without `--repo`
+- Bash `cd` into `dist/`: ran a later command from there — the Claude git hook resolved `dist/package.json` as the project and failed; returned to the root
+- tsdown build with a scratch `outDir`: built experiment variants outside `dist` — the build rewrote `package.json` paths to the scratch dir; restored with `git checkout`
+- rolldown plugin `getModuleInfo(...).isExternal`: marked modules importing packages in `buildEnd` — externals are listed in `getModuleIds` without `isExternal`; tested for non-path ids instead

@@ -86,3 +86,12 @@
 - lint rule optimisation, merging or removal: faster lint — rule logic is ≤ 15% of a full lint and < 20 ms per file; config load, program builds and the checker dominate
 - prettier import sorting plugin: move `auaust/sort-imports` load off ESLint — saves ~5 ms per file, adds a Prettier parse
 - reimplementing delegated rules: delegation overhead — `resolveDelegate` adds none at runtime
+- `@biomejs/biome`: validation stack switch — own CST rule API without JS fixes, far fewer type-aware rules, no formatter plugins; every convention rewritten
+- `rslint`: validation stack switch — younger 0.x fork of the tsgolint engine Oxlint maintains
+- `tsslint`: cache-friendly type-aware lint — runs as a language service plugin, which TypeScript 7 lacks
+- Oxlint beside ESLint: faster lint keeping conventions in ESLint — two hosts, and ESLint keeps its program builds while any convention reads types
+- typescript-eslint on TypeScript 7.1: faster type-aware lint — maintainers expect no speed-up from its first IPC client
+- rolldown `entriesAware` chunk groups: fewer small library chunks — merge threshold folds ESLint into CLI registration
+- rolldown priority `cli` chunk group: keep CLI registration out of merged chunks — build fails on an ineffective dynamic import
+- rolldown `experimentalInlineCommonChunks`: inline tiny shared chunks — requires `preserveEntrySignatures: false`, which empties library entry exports
+- rolldown `codeSplitting.groups` merging shared chunks: fewer files per library import — default splitting already loads ~14 files per entry; merges add bytes, leak packages and no measurable speed-up
