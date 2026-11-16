@@ -1,9 +1,5 @@
-import { isArray, isString } from "@auaust/toolkit";
+import { isArray, isString, iterable } from "@auaust/toolkit";
 import { filter, toArray } from "@auaust/toolkit/array";
-import {
-  filter as filterIterable,
-  map as mapIterable,
-} from "@auaust/toolkit/iterable";
 
 import { engrenage } from "#constants";
 import { resolveListOption } from "#foundation/options/index";
@@ -68,8 +64,8 @@ function listBaselineTypes(
 ): readonly string[] {
   // @debt includesEsLibrary only knows the generated editions: a lib it does not know (`esnext.*`, `ESNext`, `DOM`) never counts as including a library group
   return toArray(
-    mapIterable(
-      filterIterable(apis, (api) => {
+    iterable.map(
+      iterable.filter(apis, (api) => {
         if (!isLibraryGroup(api)) {
           return true;
         }

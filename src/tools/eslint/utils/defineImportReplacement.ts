@@ -1,4 +1,4 @@
-import { flatMap, join, map as mapIterable } from "@auaust/toolkit/iterable";
+import { iterable } from "@auaust/toolkit";
 
 import { defineReplacement } from "#tools/eslint/utils/defineReplacement";
 import type { Trait } from "#project/presets/index";
@@ -38,8 +38,8 @@ function createSelector(
   imports: readonly string[] | undefined,
 ): string {
   if (imports === undefined) {
-    return join(
-      mapIterable(
+    return iterable.join(
+      iterable.map(
         [
           "ImportDeclaration",
           "ExportNamedDeclaration",
@@ -54,8 +54,8 @@ function createSelector(
     );
   }
 
-  return join(
-    flatMap(imports, (name) => createImportSelectors(source, name)),
+  return iterable.join(
+    iterable.flatMap(imports, (name) => createImportSelectors(source, name)),
     ", ",
   );
 }
@@ -88,7 +88,7 @@ function createTarget(
     type: "disjunction",
   });
 
-  return `${importList.format(mapIterable(imports, describeImport))} from \`${source}\``;
+  return `${importList.format(iterable.map(imports, describeImport))} from \`${source}\``;
 }
 
 /**

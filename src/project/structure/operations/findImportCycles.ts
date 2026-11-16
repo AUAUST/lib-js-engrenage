@@ -10,11 +10,8 @@ import {
   transpileModule,
 } from "typescript";
 
+import { iterable } from "@auaust/toolkit";
 import { flat, flatMap } from "@auaust/toolkit/array";
-import {
-  flatMap as flatMapIterable,
-  map as mapIterable,
-} from "@auaust/toolkit/iterable";
 import { values } from "@auaust/toolkit/object";
 
 import { createImportResolver } from "#project/structure/utils/createImportResolver";
@@ -115,11 +112,11 @@ function candidatesOf(path: string, { extensions }: ModuleFiles): string[] {
 
   return [
     path,
-    ...mapIterable(extensions, (extension) => {
+    ...iterable.map(extensions, (extension) => {
       return `${withoutExtension}${extension}`;
     }),
-    ...mapIterable(extensions, (extension) => `${path}${extension}`),
-    ...mapIterable(extensions, (extension) => {
+    ...iterable.map(extensions, (extension) => `${path}${extension}`),
+    ...iterable.map(extensions, (extension) => {
       return posix.join(path, `index${extension}`);
     }),
   ];
@@ -240,7 +237,7 @@ export async function findImportCycles({
   const modules = readModuleFiles(languages);
 
   const directories = new Set(
-    flatMapIterable(values(structure), (environment) => {
+    iterable.flatMap(values(structure), (environment) => {
       return environment?.dirs ?? [];
     }),
   );
@@ -271,7 +268,7 @@ export async function findImportCycles({
     await Promise.all(
       [...files].sort().map(async (file): Promise<[string, string[]]> => {
         const targets = new Set(
-          flatMapIterable(
+          iterable.flatMap(
             await readRuntimeSpecifiers(filesystem, file, verbatimModuleSyntax),
             (specifier) => {
               const target = resolve(file, specifier);

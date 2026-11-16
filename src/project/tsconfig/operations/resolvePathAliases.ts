@@ -1,8 +1,8 @@
 import { glob as globFiles, stat } from "node:fs/promises";
 import { relative } from "node:path";
 
+import { iterable } from "@auaust/toolkit";
 import { sort } from "@auaust/toolkit/array";
-import { every, map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries } from "@auaust/toolkit/object";
 
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
@@ -30,9 +30,9 @@ function countWildcards(pattern: string): number {
 }
 
 function assertWildcards(alias: string, targets: readonly string[]) {
-  const counts = mapIterable([alias, ...targets], countWildcards);
+  const counts = iterable.map([alias, ...targets], countWildcards);
 
-  if (!every(counts, (count) => count === 1)) {
+  if (!iterable.every(counts, (count) => count === 1)) {
     throw new Error(
       `Alias '${alias}' and each of its targets need exactly one '*'`,
     );

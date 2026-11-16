@@ -3,7 +3,7 @@ import { isDeepStrictEqual } from "node:util";
 
 import { array, is, looseObject, optional, string } from "valibot";
 
-import { isArray, isPlainObject } from "@auaust/toolkit";
+import { isArray, isPlainObject, iterable } from "@auaust/toolkit";
 import {
   every,
   filter,
@@ -13,11 +13,6 @@ import {
   toArray,
   toReversed,
 } from "@auaust/toolkit/array";
-import {
-  flatMap as flatMapIterable,
-  map as mapIterable,
-  unique,
-} from "@auaust/toolkit/iterable";
 
 import { resolveDataFile } from "#foundation/data/index";
 import { toPosixPath, type Filesystem } from "#foundation/filesystem/index";
@@ -87,7 +82,7 @@ function mergeSchemas(
         {
           path: schemasLocation,
           value: toArray(
-            mapIterable(
+            iterable.map(
               groupByUrl(schemas, schemas.keys()),
               ([url, fileMatch]) => {
                 return {
@@ -302,7 +297,7 @@ async function loadEslintInfoRules(root: Directory): Promise<string[]> {
 
 function createSchemas(root: Directory): Map<Glob, string> {
   return new Map(
-    mapIterable(metadataSchemas, ({ file, schema }): [Glob, string] => {
+    iterable.map(metadataSchemas, ({ file, schema }): [Glob, string] => {
       return [
         `**/${file}`,
         `./${toPosixPath(relative(root, resolveDataFile(schema)))}`,
@@ -369,8 +364,8 @@ export async function syncVscodeFiles(
   const applicable = findIntegrations(environment.hasDependency);
 
   const recommendations = toArray(
-    unique(
-      flatMapIterable(applicable, (integration) => {
+    iterable.unique(
+      iterable.flatMap(applicable, (integration) => {
         return integration.extensions;
       }),
     ),

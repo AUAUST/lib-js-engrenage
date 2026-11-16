@@ -1,12 +1,6 @@
 import { strictObject, type StrictObjectIssue } from "valibot";
 
-import { isPlainObject, isString } from "@auaust/toolkit";
-import {
-  entries as entriesOf,
-  freeze,
-  hasOwn,
-  record,
-} from "@auaust/toolkit/object";
+import { isPlainObject, isString, object } from "@auaust/toolkit";
 
 import { createOptionSchema } from "#foundation/options/utils/createOptionSchema";
 import { resolveDefault } from "#foundation/options/utils/resolveDefault";
@@ -80,7 +74,7 @@ export function declareObject(
     const replacement = (
       issue.expected === "never" &&
       isString(issue.input) &&
-      hasOwn(renamed, issue.input)
+      object.hasOwn(renamed, issue.input)
     )
       ? renamed[issue.input]
       : undefined;
@@ -92,8 +86,8 @@ export function declareObject(
 
   const schema = createOptionSchema(
     strictObject(
-      record(
-        entriesOf(entries).map(([key, declaration]) => {
+      object.record(
+        object.entries(entries).map(([key, declaration]) => {
           return [key, declaration.schema] as const;
         }),
       ),
@@ -119,7 +113,7 @@ export function declareObject(
       : input;
 
     if (disable !== undefined && source === false) {
-      return freeze({ ...disable.value, enabled: false });
+      return object.freeze({ ...disable.value, enabled: false });
     }
 
     if (!isPlainObject(source)) {
@@ -130,7 +124,7 @@ export function declareObject(
 
     const resolved: Record<string, unknown> = {};
 
-    for (const [key, declaration] of entriesOf(entries)) {
+    for (const [key, declaration] of object.entries(entries)) {
       resolved[key] = declaration.resolve(
         source[key],
         context,
@@ -138,12 +132,12 @@ export function declareObject(
       );
     }
 
-    return freeze(
+    return object.freeze(
       disable === undefined ? resolved : { ...resolved, enabled: true },
     );
   }
 
-  return freeze({
+  return object.freeze({
     entries,
     schema,
     resolve,

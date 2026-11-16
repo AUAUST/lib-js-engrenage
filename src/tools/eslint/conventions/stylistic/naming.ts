@@ -2,12 +2,8 @@ import { compileFunction } from "node:vm";
 
 import type { Rule, Scope, SourceCode } from "eslint";
 
-import { camel, isString, pascal } from "@auaust/toolkit";
+import { camel, isString, iterable, pascal } from "@auaust/toolkit";
 import { includes, join, last, toArray } from "@auaust/toolkit/array";
-import {
-  join as joinIterable,
-  map as mapIterable,
-} from "@auaust/toolkit/iterable";
 import { split, toLowerCase } from "@auaust/toolkit/string";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
@@ -24,8 +20,8 @@ function convertName(name: string, formats: readonly string[]) {
   }
 
   // @debt consider toolkit's splitWords
-  const words = joinIterable(
-    mapIterable(split(name, "_"), (word) => {
+  const words = iterable.join(
+    iterable.map(split(name, "_"), (word) => {
       return /[a-z]/.test(word) ? word : toLowerCase(word);
     }),
     "_",
@@ -217,7 +213,7 @@ function fixFormat(
 
   return (fixer) => {
     return toArray(
-      mapIterable(identifiers, (identifier) => {
+      iterable.map(identifiers, (identifier) => {
         return identifier.type === "JSXIdentifier"
           ? fixer.replaceText(identifier, newName)
           : fixer.replaceText(

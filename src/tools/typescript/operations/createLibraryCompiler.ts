@@ -12,8 +12,8 @@ import {
   type SourceFile,
 } from "typescript";
 
+import { iterable } from "@auaust/toolkit";
 import { filter, flatMap, join, map } from "@auaust/toolkit/array";
-import { map as mapIterable } from "@auaust/toolkit/iterable";
 
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -96,7 +96,7 @@ export function createLibraryCompiler(libraries?: Directory) {
       const source = host.getSourceFile(fileName, ScriptTarget.ESNext);
 
       queue.push(
-        ...mapIterable(
+        ...iterable.map(
           source?.libReferenceDirectives ?? [],
           ({ fileName }) => fileName,
         ),

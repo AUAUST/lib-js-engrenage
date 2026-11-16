@@ -1,5 +1,4 @@
-import { map as mapIterable } from "@auaust/toolkit/iterable";
-import { hasOwn } from "@auaust/toolkit/object";
+import { iterable, object } from "@auaust/toolkit";
 
 import { loadLazy } from "#foundation/modules/index";
 import type { LoadedConfig } from "#project/config/index";
@@ -16,7 +15,7 @@ export async function loadConventionCategories(
   );
 
   const loaded = await Promise.all(
-    mapIterable(contributions, async ({ entry, extension }) => {
+    iterable.map(contributions, async ({ entry, extension }) => {
       return {
         entry,
         extension: extension.name,
@@ -32,7 +31,7 @@ export async function loadConventionCategories(
   for (const { entry, extension, convention } of loaded) {
     const { category, name } = entry;
 
-    if (hasOwn(builtInCategories, category)) {
+    if (object.hasOwn(builtInCategories, category)) {
       throw new Error(
         `Extension "${extension}" contributes conventions to the built-in ESLint category "${category}"`,
       );

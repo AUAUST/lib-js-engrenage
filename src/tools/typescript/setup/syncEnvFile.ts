@@ -1,5 +1,5 @@
+import { iterable } from "@auaust/toolkit";
 import { isNonEmptyArray } from "@auaust/toolkit/array";
-import { join, map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries } from "@auaust/toolkit/object";
 
 import { syncBlocks } from "#foundation/blocks/index";
@@ -28,11 +28,11 @@ function renderDescription(description: string | undefined): string {
     return `/** ${lines.join("")} */\n`;
   }
 
-  const body = mapIterable(lines, (line) => {
+  const body = iterable.map(lines, (line) => {
     return ` * ${line}`.trimEnd();
   });
 
-  return `/**\n${join(body, "\n")}\n */\n`;
+  return `/**\n${iterable.join(body, "\n")}\n */\n`;
 }
 
 function renderDeclaration([name, { value, exact, type, description }]: [
@@ -83,7 +83,10 @@ export async function syncEnvFile(config: LoadedConfig) {
 
   const content = hasBlock ? current : appendBlock(current);
 
-  const declarations = join(mapIterable(declared, renderDeclaration), "\n\n");
+  const declarations = iterable.join(
+    iterable.map(declared, renderDeclaration),
+    "\n\n",
+  );
 
   await filesystem.write(
     file,

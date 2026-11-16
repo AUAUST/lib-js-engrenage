@@ -1,7 +1,6 @@
 import { defineConfig } from "eslint/config";
 
-import { value } from "@auaust/toolkit";
-import { map as mapIterable } from "@auaust/toolkit/iterable";
+import { iterable, value } from "@auaust/toolkit";
 
 import { loadConfig, type LoadedConfig } from "#project/config/index";
 import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
@@ -36,6 +35,6 @@ export async function defineEslintConfig(
 
   return defineConfig(
     await createEslintConfig(config, resolvedOptions),
-    ...mapIterable(resolvedConfigs, resolveInfoRules),
+    ...iterable.map(resolvedConfigs, resolveInfoRules),
   );
 }

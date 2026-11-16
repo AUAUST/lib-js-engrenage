@@ -1,5 +1,4 @@
-import { isBoolean } from "@auaust/toolkit";
-import { flatMap, map as mapIterable } from "@auaust/toolkit/iterable";
+import { isBoolean, iterable } from "@auaust/toolkit";
 import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";
@@ -99,28 +98,31 @@ async function createTsconfigEdits(
     [["compilerOptions", "types"], option.types, () => []],
   ] as const;
 
-  const derived = flatMap(lists, ([path, listed, defaults]): JsonEdit[] => {
-    const items = resolveListOption(
-      listed,
-      defaults,
-      `workspaces tsconfig.${path.join(".")}`,
-    );
+  const derived = iterable.flatMap(
+    lists,
+    ([path, listed, defaults]): JsonEdit[] => {
+      const items = resolveListOption(
+        listed,
+        defaults,
+        `workspaces tsconfig.${path.join(".")}`,
+      );
 
-    if (items === false || (items.length === 0 && !isManaged(listed))) {
-      return [];
-    }
+      if (items === false || (items.length === 0 && !isManaged(listed))) {
+        return [];
+      }
 
-    return [
-      {
-        path: [...path],
-        value: path[0] === "extends" && items.length === 1
-          ? items[0]
-          : [...items],
-      },
-    ];
-  });
+      return [
+        {
+          path: [...path],
+          value: path[0] === "extends" && items.length === 1
+            ? items[0]
+            : [...items],
+        },
+      ];
+    },
+  );
 
-  const custom = mapIterable(
+  const custom = iterable.map(
     entries(option.compilerOptions),
     ([name, value]): JsonEdit => {
       return {

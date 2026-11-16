@@ -1,5 +1,5 @@
+import { iterable } from "@auaust/toolkit";
 import { flatMap, map } from "@auaust/toolkit/array";
-import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";
@@ -102,7 +102,7 @@ async function createEdits(
   });
 
   // @debt configured compilerOptions are only ever set: one removed from the config stays in the tsconfig file and `sync --check` still passes
-  const custom = mapIterable(
+  const custom = iterable.map(
     entries(target.compilerOptions),
     ([name, value]): JsonEdit => {
       return {

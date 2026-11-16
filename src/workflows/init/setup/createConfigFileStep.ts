@@ -1,11 +1,5 @@
-import { isString } from "@auaust/toolkit";
+import { isString, iterable } from "@auaust/toolkit";
 import { every, filterMap, map, sort, toArray } from "@auaust/toolkit/array";
-import {
-  flatMap,
-  join,
-  map as mapIterable,
-  unique,
-} from "@auaust/toolkit/iterable";
 import { startsWith } from "@auaust/toolkit/string";
 
 import { engrenage, engrenageConfigFile } from "#constants";
@@ -27,8 +21,8 @@ interface RolePresets {
 }
 
 function callPresets(names: readonly string[]): string {
-  return join(
-    mapIterable(names, (name) => `${name}()`),
+  return iterable.join(
+    iterable.map(names, (name) => `${name}()`),
     ", ",
   );
 }
@@ -36,7 +30,13 @@ function callPresets(names: readonly string[]): string {
 function listEnvironments(
   presets: readonly RolePresetEntry[],
 ): readonly string[] {
-  return toArray(unique(flatMap(presets, ({ environments }) => environments)));
+  return toArray(
+    iterable.unique(
+      iterable.flatMap(presets, ({ environments }) => {
+        return environments;
+      }),
+    ),
+  );
 }
 
 function groupPresets(presets: readonly RolePresetEntry[]): RolePresets {
@@ -51,7 +51,7 @@ function groupPresets(presets: readonly RolePresetEntry[]): RolePresets {
   });
 
   const extras = new Map(
-    mapIterable(environments, (environment) => {
+    iterable.map(environments, (environment) => {
       const names = filterMap(presets, (preset) => {
         return !shared.includes(preset) &&
           preset.environments.includes(environment)

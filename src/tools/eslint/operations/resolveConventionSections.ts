@@ -1,5 +1,4 @@
-import { flatMap, map as mapIterable } from "@auaust/toolkit/iterable";
-import { entries, freeze, record } from "@auaust/toolkit/object";
+import { iterable, object } from "@auaust/toolkit";
 
 import type { ConfigKey, LoadedConfig } from "#project/config/index";
 import type { Convention } from "#tools/eslint/ports/Convention";
@@ -11,11 +10,15 @@ export async function resolveConventionSections(
   config: LoadedConfig,
   conventions: readonly Convention[],
 ): Promise<ResolvedSections> {
-  const keys = new Set(flatMap(conventions, ({ sections }) => sections));
+  const keys = new Set(
+    iterable.flatMap(conventions, ({ sections }) => {
+      return sections;
+    }),
+  );
 
   const resolved = new Map<ConfigKey, unknown>(
     await Promise.all(
-      mapIterable(keys, async (key) => {
+      iterable.map(keys, async (key) => {
         return [key, await config.resolve(key)] as const;
       }),
     ),
@@ -38,15 +41,15 @@ export async function resolveConventionSections(
   function pick<Sections extends ConventionSections>(
     declared: Sections | undefined,
   ): ConventionValues<Sections> {
-    const picked = mapIterable(
-      entries<ConventionSections>(declared ?? {}),
+    const picked = iterable.map(
+      object.entries<ConventionSections>(declared ?? {}),
       ([name, key]) => {
         return [name, read(key)] as const;
       },
     );
 
     // @debt the record is built from the declared sections at runtime, so its type is asserted; a typed record mapper would infer it
-    return freeze(record(picked)) as ConventionValues<Sections>;
+    return object.freeze(object.record(picked)) as ConventionValues<Sections>;
   }
 
   return {

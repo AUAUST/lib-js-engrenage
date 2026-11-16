@@ -1,9 +1,9 @@
-import { join, map as mapIterable } from "@auaust/toolkit/iterable";
+import { iterable } from "@auaust/toolkit";
 
 export function renderGateCondition(variables: readonly string[]) {
   return {
-    run: join(
-      mapIterable(variables, (variable) => `test -n "$${variable}"`),
+    run: iterable.join(
+      iterable.map(variables, (variable) => `test -n "$${variable}"`),
       " || ",
     ),
   };

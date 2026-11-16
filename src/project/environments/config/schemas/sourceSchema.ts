@@ -1,7 +1,7 @@
 import { boolean, picklist, string } from "valibot";
 
+import { iterable } from "@auaust/toolkit";
 import { join } from "@auaust/toolkit/array";
-import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries } from "@auaust/toolkit/object";
 
 import {
@@ -27,11 +27,11 @@ import { exposedFilesSchema } from "#project/package/index";
 import { rolesSchema } from "#project/roles/index";
 
 function describeApiGroups(): string {
-  const roots = mapIterable(entries(apiGroupRoots), ([group, globals]) => {
+  const roots = iterable.map(entries(apiGroupRoots), ([group, globals]) => {
     return `\`${group}\` (${listDefaults(globals)})`;
   });
 
-  const libraries = mapIterable(entries(apiLibraryGroups), ([group, file]) => {
+  const libraries = iterable.map(entries(apiLibraryGroups), ([group, file]) => {
     return `\`${group}\` (the whole \`${file}\` of TypeScript, only for a project whose own lib provides it)`;
   });
 

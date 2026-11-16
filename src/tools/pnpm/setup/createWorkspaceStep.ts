@@ -1,5 +1,4 @@
-import { map as mapIterable } from "@auaust/toolkit/iterable";
-import { entries } from "@auaust/toolkit/object";
+import { iterable, object } from "@auaust/toolkit";
 
 import { workspaceFile, workspaceSettings } from "#tools/pnpm/constants";
 import { addWorkspaceSettings } from "#tools/pnpm/utils/addWorkspaceSettings";
@@ -11,11 +10,14 @@ function renderWorkspace({
   allowBuilds,
   minimumReleaseAgeExclude,
 }: WorkspaceSettings): string {
-  const builds = mapIterable(entries(allowBuilds), ([name, allowed]) => {
-    return `  ${JSON.stringify(name)}: ${allowed}`;
-  });
+  const builds = iterable.map(
+    object.entries(allowBuilds),
+    ([name, allowed]) => {
+      return `  ${JSON.stringify(name)}: ${allowed}`;
+    },
+  );
 
-  const excluded = mapIterable(minimumReleaseAgeExclude, (pattern) => {
+  const excluded = iterable.map(minimumReleaseAgeExclude, (pattern) => {
     return `  - ${JSON.stringify(pattern)}`;
   });
 

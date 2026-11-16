@@ -1,6 +1,6 @@
+import { object } from "@auaust/toolkit";
 import { compose } from "@auaust/toolkit/composer";
 import { once } from "@auaust/toolkit/function";
-import { freeze, get as getProperty } from "@auaust/toolkit/object";
 
 import { resolveWithin } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
@@ -14,7 +14,7 @@ export const typescriptSection = declareSection({
     const { tsconfig, verbatimModuleSyntax } = option;
 
     const base = once(() => {
-      const configured = getProperty(
+      const configured = object.get(
         tsconfig.compilerOptions,
         "verbatimModuleSyntax",
       );
@@ -25,7 +25,7 @@ export const typescriptSection = declareSection({
         );
       }
 
-      return freeze({
+      return object.freeze({
         file: tsconfig.path.file,
         extends: tsconfig.extends,
         compilerOptions: verbatimModuleSyntax
@@ -35,7 +35,7 @@ export const typescriptSection = declareSection({
       });
     });
 
-    return freeze(
+    return object.freeze(
       compose(
         {
           files: option.files,

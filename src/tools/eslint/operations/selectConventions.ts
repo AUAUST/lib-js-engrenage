@@ -1,7 +1,5 @@
-import { isBoolean } from "@auaust/toolkit";
+import { isBoolean, iterable, object } from "@auaust/toolkit";
 import { every, filter, find } from "@auaust/toolkit/array";
-import { join, map as mapIterable } from "@auaust/toolkit/iterable";
-import { entries, hasOwn, keys } from "@auaust/toolkit/object";
 
 import type { Environment } from "#project/config/index";
 import type { ResolvedTraits } from "#project/presets/index";
@@ -45,14 +43,14 @@ export function selectConventions({
   traits: ResolvedTraits;
   environment: Environment;
 }): SelectedConvention[] {
-  const unknownCategories = filter(keys(settings), (category) => {
-    return !hasOwn(categories, category);
+  const unknownCategories = filter(object.keys(settings), (category) => {
+    return !object.hasOwn(categories, category);
   });
 
   if (unknownCategories.length > 0) {
     throw new Error(
-      `Invalid ESLint options: unknown convention categories ${join(
-        mapIterable(unknownCategories, (name) => {
+      `Invalid ESLint options: unknown convention categories ${iterable.join(
+        iterable.map(unknownCategories, (name) => {
           return `"${name}"`;
         }),
         ", ",
@@ -62,7 +60,7 @@ export function selectConventions({
 
   const selected: SelectedConvention[] = [];
 
-  for (const [category, conventions] of entries(categories)) {
+  for (const [category, conventions] of object.entries(categories)) {
     const setting = settings[category] ?? true;
 
     if (setting === false) {
@@ -70,14 +68,14 @@ export function selectConventions({
     }
 
     if (!isBoolean(setting)) {
-      const unknown = filter(keys(setting), (name) => {
-        return !hasOwn(conventions, name);
+      const unknown = filter(object.keys(setting), (name) => {
+        return !object.hasOwn(conventions, name);
       });
 
       if (unknown.length > 0) {
         throw new Error(
-          `Invalid ESLint options: unknown ${category} conventions ${join(
-            mapIterable(unknown, (name) => {
+          `Invalid ESLint options: unknown ${category} conventions ${iterable.join(
+            iterable.map(unknown, (name) => {
               return `"${name}"`;
             }),
             ", ",
@@ -86,7 +84,7 @@ export function selectConventions({
       }
     }
 
-    for (const [name, convention] of entries(conventions)) {
+    for (const [name, convention] of object.entries(conventions)) {
       if (convention.typeAware && !typeAware) {
         continue;
       }

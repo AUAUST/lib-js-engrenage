@@ -1,6 +1,6 @@
 import { parse, record, string } from "valibot";
 
-import { entries, record as toRecord } from "@auaust/toolkit/object";
+import { object } from "@auaust/toolkit";
 
 import { engrenage } from "#constants";
 import { resolveDataFile } from "#foundation/data/index";
@@ -18,8 +18,8 @@ export const effectModulesSection = declareSection({
       await readJsonFile(file),
     );
 
-    return toRecord(
-      entries(modules).flatMap(([specifier, entry]) => {
+    return object.record(
+      object.entries(modules).flatMap(([specifier, entry]) => {
         return specifier.startsWith("node:")
           ? ([
               [specifier, entry],

@@ -1,6 +1,6 @@
 import { array, boolean, looseObject, optional, record, string } from "valibot";
 
-import { entries as toEntries } from "@auaust/toolkit/object";
+import { object } from "@auaust/toolkit";
 
 import { emptyObjectFile } from "#foundation/json/constants";
 import { readJsonValue, writeJsonValue } from "#foundation/json/index";
@@ -89,7 +89,7 @@ export async function syncHooks(
     });
   }
 
-  for (const [event, groups] of toEntries(read())) {
+  for (const [event, groups] of object.entries(read())) {
     for (let group = groups.length - 1; group >= 0; group--) {
       const { matcher, hooks: entries } = groups[group];
 

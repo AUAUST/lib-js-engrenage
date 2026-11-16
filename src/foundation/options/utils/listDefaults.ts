@@ -1,8 +1,8 @@
-import { join, map as mapIterable } from "@auaust/toolkit/iterable";
+import { iterable } from "@auaust/toolkit";
 
 export function listDefaults(values: readonly string[]): string {
-  return join(
-    mapIterable(values, (value) => `\`${value}\``),
+  return iterable.join(
+    iterable.map(values, (value) => `\`${value}\``),
     ", ",
   );
 }

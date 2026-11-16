@@ -1,7 +1,7 @@
 import { basename } from "node:path/posix";
 
+import { iterable } from "@auaust/toolkit";
 import { flatMap, map } from "@auaust/toolkit/array";
-import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import {
@@ -45,7 +45,7 @@ export async function resolveWorkspaces({
   const claimed = new Map<Directory, Glob>();
 
   const listed = await Promise.all(
-    mapIterable(entries(options), async ([glob, option]) => {
+    iterable.map(entries(options), async ([glob, option]) => {
       return {
         glob,
         option,
@@ -118,7 +118,7 @@ export async function resolveWorkspaces({
 
   return freeze(
     await Promise.all(
-      mapIterable(matched, async ({ glob, option, dirs }) => {
+      iterable.map(matched, async ({ glob, option, dirs }) => {
         const { generated, discovered, tsconfig } = option;
 
         return freeze({
@@ -129,7 +129,7 @@ export async function resolveWorkspaces({
           discovered,
           globs: flatMap(dirs, (dir) => filesIn(dir, typescriptFiles)),
           tsconfig,
-          workspaces: await Promise.all(mapIterable(dirs, describe)),
+          workspaces: await Promise.all(iterable.map(dirs, describe)),
         });
       }),
     ),
