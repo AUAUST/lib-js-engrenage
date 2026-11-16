@@ -1,6 +1,6 @@
 import { array, boolean, picklist, string } from "valibot";
 
-import { wrap } from "@auaust/primitive-kit/arrays";
+import { toArray } from "@auaust/toolkit/array";
 
 import {
   declare,
@@ -33,7 +33,7 @@ export const agentsSchema = declareObject(
       description: "Globs of the agent instruction files whose `@reference` blocks sync fills.",
       optional: { value: defaultInstructionFiles },
       adjust(input) {
-        return wrap(input);
+        return toArray(input);
       },
     }),
     snippetsDir: declare(directorySchema, {

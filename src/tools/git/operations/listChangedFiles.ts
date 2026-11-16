@@ -1,5 +1,5 @@
 import { toArray } from "@auaust/toolkit/array";
-import { unique } from "@auaust/toolkit/iterable";
+import { concat, unique } from "@auaust/toolkit/iterable";
 
 import { runGit } from "#tools/git/operations/runGit";
 import type { ChangeMode } from "#tools/git/types/ChangeMode";
@@ -32,5 +32,5 @@ export async function listChangedFiles(
     runGit(root, ["ls-files", "--others", "--exclude-standard", "-z"]),
   ]);
 
-  return toArray(unique([...splitPaths(tracked), ...splitPaths(untracked)]));
+  return toArray(unique(concat(splitPaths(tracked), splitPaths(untracked))));
 }

@@ -1,4 +1,4 @@
-import { wrap } from "@auaust/primitive-kit/arrays";
+import { toArray } from "@auaust/toolkit/array";
 
 import { jsonIndentation } from "#project/format/constants";
 import {
@@ -16,7 +16,7 @@ export function writePnpmDeclaration(
   const [
     declared,
     ...others
-  ] = wrap(packageJson.optional.devEngines?.packageManager);
+  ] = toArray(packageJson.optional.devEngines?.packageManager);
 
   if (others.length > 0) {
     throw new Error(

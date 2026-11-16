@@ -1,7 +1,6 @@
 import { array, pipe, regex, string, union } from "valibot";
 
-import { wrap } from "@auaust/primitive-kit/arrays";
-import { last, toSorted } from "@auaust/toolkit/array";
+import { last, toArray, toSorted } from "@auaust/toolkit/array";
 
 import { validate } from "#foundation/options/index";
 import { runProcess } from "#foundation/processes/index";
@@ -26,7 +25,7 @@ export async function resolveLatestPnpm(
     `pnpm view pnpm@${range}`,
   );
 
-  const latest = last(toSorted(wrap(versions), compareVersions));
+  const latest = last(toSorted(toArray(versions), compareVersions));
 
   if (latest === undefined) {
     throw new Error(`No pnpm release within ${range} found`);

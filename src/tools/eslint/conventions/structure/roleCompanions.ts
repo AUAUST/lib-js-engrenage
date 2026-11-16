@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { basename, extname, join } from "node:path";
 
-import { wrap } from "@auaust/primitive-kit/arrays";
+import { toArray } from "@auaust/toolkit/array";
 
 import { relativeWithin } from "#foundation/filesystem/index";
 import { indexRoleName } from "#project/roles/constants";
@@ -31,7 +31,7 @@ export default defineConvention({
 
         const file = relativeWithin(root, context.filename);
 
-        const missing = wrap(
+        const missing = toArray(
           companions.resolve({
             file,
             name: basename(file, extname(file)),

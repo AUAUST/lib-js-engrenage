@@ -1,5 +1,4 @@
-import { wrap } from "@auaust/primitive-kit/arrays";
-import { find } from "@auaust/toolkit/array";
+import { find, toArray } from "@auaust/toolkit/array";
 
 import type { PackageJson } from "#project/package/types/PackageJson";
 
@@ -12,7 +11,7 @@ export function readProjectPnpmVersion({
   optional,
 }: PackageJson): string | undefined {
   const declared = find(
-    wrap(optional.devEngines?.packageManager),
+    toArray(optional.devEngines?.packageManager),
     ({ name }) => name === "pnpm",
   )?.version;
 

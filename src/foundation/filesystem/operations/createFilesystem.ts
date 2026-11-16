@@ -8,9 +8,9 @@ import {
 } from "node:fs/promises";
 import { dirname, matchesGlob } from "node:path";
 
-import { flat, map, wrap } from "@auaust/primitive-kit/arrays";
+import { flat, map } from "@auaust/primitive-kit/arrays";
 import { sort, toArray } from "@auaust/toolkit/array";
-import { unique } from "@auaust/toolkit/iterable";
+import { concat, unique } from "@auaust/toolkit/iterable";
 import { freeze } from "@auaust/toolkit/object";
 
 import { readTextFile } from "#foundation/filesystem/operations/readTextFile";
@@ -147,7 +147,7 @@ export function createFilesystem(root: Directory): Filesystem {
     patterns: Glob | Globs,
     options?: { exclude?: Globs },
   ): Promise<Files> {
-    const globs = wrap(patterns);
+    const globs = toArray(patterns);
     const exclude = options?.exclude ?? [];
 
     const found = map(
@@ -167,7 +167,7 @@ export function createFilesystem(root: Directory): Filesystem {
       );
     });
 
-    return sort(toArray(unique([...found, ...created]))).filter((file) => {
+    return sort(toArray(unique(concat(found, created)))).filter((file) => {
       return !contents.has(file) || contents.get(file) !== undefined;
     });
   }
@@ -250,7 +250,7 @@ export function createFilesystem(root: Directory): Filesystem {
       return isListed(located, file, listing);
     });
 
-    return sort(toArray(unique([...found, ...staged]))).filter((file) => {
+    return sort(toArray(unique(concat(found, staged)))).filter((file) => {
       return !contents.has(file) || contents.get(file) !== undefined;
     });
   }

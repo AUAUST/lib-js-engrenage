@@ -1,5 +1,5 @@
 import { toArray } from "@auaust/toolkit/array";
-import { unique } from "@auaust/toolkit/iterable";
+import { concat, unique } from "@auaust/toolkit/iterable";
 import { max } from "@auaust/toolkit/math";
 import { entries } from "@auaust/toolkit/object";
 
@@ -72,7 +72,7 @@ async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
   ]);
 
   const files = toArray(
-    unique([directory, ...data.dirs, ...(sourcemap ? source.dirs : [])]),
+    unique(concat([directory], data.dirs, sourcemap ? source.dirs : [])),
   );
 
   const commands = entries(

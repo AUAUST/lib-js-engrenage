@@ -1,7 +1,7 @@
 import { map } from "@auaust/primitive-kit/arrays";
 import { toArray } from "@auaust/toolkit/array";
 import { compose } from "@auaust/toolkit/composer";
-import { unique } from "@auaust/toolkit/iterable";
+import { concat, unique } from "@auaust/toolkit/iterable";
 import { freeze } from "@auaust/toolkit/object";
 
 import { gitignoreFile } from "#constants";
@@ -70,10 +70,7 @@ export const gitSection = declareSection({
             ]);
 
             return toArray(
-              unique([
-                ...(rootFile === undefined ? [] : [rootFile]),
-                ...nested,
-              ]),
+              unique(concat(rootFile === undefined ? [] : [rootFile], nested)),
             );
           },
         }),

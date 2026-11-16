@@ -1,6 +1,6 @@
 import { join } from "node:path";
 
-import { wrap } from "@auaust/primitive-kit/arrays";
+import { toArray } from "@auaust/toolkit/array";
 import { memoize } from "@auaust/toolkit/function";
 import { freeze, record } from "@auaust/toolkit/object";
 
@@ -91,7 +91,7 @@ export function createStructureRoleResolver({
 
       return resolver === undefined
         ? []
-        : [[nested, freeze(wrap(resolver.resolve(location)))] as const];
+        : [[nested, freeze(toArray(resolver.resolve(location)))] as const];
     });
 
     return resolved.length === 0 ? {} : { fileNames: freeze(record(resolved)) };

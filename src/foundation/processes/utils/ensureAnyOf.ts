@@ -1,4 +1,4 @@
-import { wrap } from "@auaust/primitive-kit/arrays";
+import { toArray } from "@auaust/toolkit/array";
 
 import { getOptionsEnd } from "#foundation/processes/utils/getOptionsEnd";
 import { hasOption } from "#foundation/processes/utils/hasOption";
@@ -9,6 +9,6 @@ export function ensureAnyOf(
   fallback: string | readonly string[],
 ) {
   if (!hasOption(args, options)) {
-    args.splice(getOptionsEnd(args), 0, ...wrap(fallback));
+    args.splice(getOptionsEnd(args), 0, ...toArray(fallback));
   }
 }
