@@ -19,6 +19,7 @@ function resource(
     committed: false,
     generated: false,
     formatted: false,
+    linted: true,
     parts: false,
   };
 }

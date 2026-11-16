@@ -470,6 +470,26 @@ describe("structure boundaries", () => {
     expect(await lint("tests/a.test.src.ts", internal)).toEqual([]);
   });
 
+  test("keeps code from importing the static environment", async () => {
+    const lint = await createLinter(
+      "auaust/import-",
+      createTemporaryProject({
+        "package.json": '{ "name": "app", "type": "module" }',
+        "engrenage.config.ts": 'export default { traits: { disable: ["published"] }, src: { structure: { layers: ["feature"] } } };\n',
+        "tsconfig.json": "{}",
+        "src/feature/index.ts": exported,
+        "public/robots.txt": "",
+      }),
+    );
+
+    expect(
+      await lint(
+        "src/feature/index.ts",
+        'import robots from "../../public/robots.txt";\n\nexport { robots };\n',
+      ),
+    ).toEqual(["auaust/import-environments"]);
+  });
+
   test("names the alias of a relative specifier and reports unknown paths", async () => {
     const lint = await createLinter("auaust/import-specifiers");
 

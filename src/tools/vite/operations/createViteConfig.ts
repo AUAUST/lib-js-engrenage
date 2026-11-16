@@ -1,5 +1,7 @@
 import { join } from "node:path";
 
+import { isNotEmpty } from "@auaust/primitive-kit/arrays";
+
 import { project as pluginPrefix } from "#constants";
 import { resolveWithin } from "#foundation/filesystem/index";
 import { emittedManifestFile } from "#project/build/constants";
@@ -7,11 +9,13 @@ import { createDefine } from "#project/environments/index";
 import { createEmittedManifestPlugin } from "#tools/vite/plugins/createEmittedManifestPlugin";
 import type { LoadedConfig } from "#project/config/index";
 import type { Config } from "#tools/vite/types/Config";
+import type { Directory } from "#types/Directory";
 
 /**
  * Builds the Vite config of a loaded config: root, tsconfig paths, defined
- * globals and build output, emptying the output directory only when `build.clean`
- * is `all`. `isTesting` drops build-only globals instead of test-only ones.
+ * globals, public directory and build output, emptying the output directory
+ * only when `build.clean` is `all`. `isTesting` drops build-only globals
+ * instead of test-only ones.
  */
 export async function createViteConfig(
   config: LoadedConfig,
@@ -27,8 +31,11 @@ export async function createViteConfig(
 
   const resources = await config.resolve("resources");
 
+  const publicDir = await resolvePublicDir(config);
+
   return {
     root,
+    publicDir,
     ...(tsconfig === undefined
       ? {}
       : {
@@ -66,4 +73,24 @@ export async function createViteConfig(
       },
     },
   };
+}
+
+async function resolvePublicDir(
+  config: LoadedConfig,
+): Promise<Directory | false> {
+  const { dirs } = await config.resolve("static");
+
+  const [directory, ...others] = dirs;
+
+  if (directory === undefined) {
+    return false;
+  }
+
+  if (isNotEmpty(others)) {
+    throw new Error(
+      `Vite serves a single static directory, but \`static.dirs\` lists ${dirs.length}`,
+    );
+  }
+
+  return resolveWithin(config.context.root, directory);
 }

@@ -37,6 +37,11 @@ export interface FileResource {
    */
   readonly formatted?: boolean;
   /**
+   * Whether ESLint lints the resource; `false` adds it to the ESLint ignores.
+   * Defaults to `true`.
+   */
+  readonly linted?: boolean;
+  /**
    * Whether other extensions may own parts of the resource, as `<resource>#<part>`
    * under `owns.parts`. Defaults to `false`.
    */

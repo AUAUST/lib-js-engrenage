@@ -26,6 +26,10 @@ export const defaultDataDirectories = freeze([
   "data",
 ] as const) satisfies Directories;
 
+export const defaultStaticDirectories = freeze([
+  "public",
+] as const) satisfies Directories;
+
 export const defaultTestsDirectories = freeze([
   "tests",
 ] as const) satisfies Directories;

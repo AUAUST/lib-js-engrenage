@@ -36,12 +36,14 @@ export type * from "#project/environments/types/ResolvedData";
 export type * from "#project/environments/types/ResolvedDefine";
 export type * from "#project/environments/types/ResolvedScripts";
 export type * from "#project/environments/types/ResolvedSource";
+export type * from "#project/environments/types/ResolvedStatic";
 export type * from "#project/environments/types/ResolvedTests";
 export type * from "#project/environments/types/ResolvedTestsPatterns";
 export type * from "#project/environments/types/ResolvedTooling";
 export type * from "#project/environments/types/RuntimeInput";
 export type * from "#project/environments/types/ScriptsInput";
 export type * from "#project/environments/types/SourceInput";
+export type * from "#project/environments/types/StaticInput";
 export type * from "#project/environments/types/TestsInput";
 export type * from "#project/environments/types/ToolingInput";
 // @end
@@ -59,6 +61,7 @@ export { namespaceSchema } from "#project/environments/config/schemas/namespaceS
 export { runtimeSchema } from "#project/environments/config/schemas/runtimeSchema";
 export { scriptsSchema } from "#project/environments/config/schemas/scriptsSchema";
 export { sourceSchema } from "#project/environments/config/schemas/sourceSchema";
+export { staticSchema } from "#project/environments/config/schemas/staticSchema";
 export { structureKeySchema } from "#project/environments/config/schemas/structureKeySchema";
 export { testsSchema } from "#project/environments/config/schemas/testsSchema";
 export { toolingSchema } from "#project/environments/config/schemas/toolingSchema";
@@ -86,6 +89,7 @@ export { scriptsOptionsSection } from "#project/environments/config/sections/scr
 export { scriptsSection } from "#project/environments/config/sections/scriptsSection";
 export { sourceOptionsSection } from "#project/environments/config/sections/sourceOptionsSection";
 export { sourceSection } from "#project/environments/config/sections/sourceSection";
+export { staticSection } from "#project/environments/config/sections/staticSection";
 export { testsOptionsSection } from "#project/environments/config/sections/testsOptionsSection";
 export { testsSection } from "#project/environments/config/sections/testsSection";
 export { toolingOptionsSection } from "#project/environments/config/sections/toolingOptionsSection";

@@ -119,6 +119,9 @@ export async function createEslintConfig(
           ...flatMap(resources.list({ committed: false }), ({ location }) => {
             return listLocationGlobs(location);
           }),
+          ...flatMap(resources.list({ linted: false }), ({ location }) => {
+            return listLocationGlobs(location);
+          }),
           ...scopes.files.generated,
           ...scopes.files.fixtures,
         ],

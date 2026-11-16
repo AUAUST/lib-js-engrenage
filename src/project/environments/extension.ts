@@ -7,8 +7,9 @@ import type { Extension, FileLocation } from "#project/config/index";
 /**
  * Owns the `environments` and `languages` slots, the config keys of each built-in
  * environment and its options, `environments.claims`, `define` and `runtime`,
- * and the uncommitted coverage directory. Contributes the `src`, `tests`, `bin`,
- * `scripts`, `tooling` and `data` environments and the `javascript` language.
+ * the uncommitted coverage directory and the unlinted static directories.
+ * Contributes the `src`, `tests`, `bin`, `scripts`, `tooling`, `data` and `static`
+ * environments and the `javascript` language.
  */
 export default {
   name: "project/environments",
@@ -89,6 +90,12 @@ export default {
           return import("#project/environments/config/sections/dataSection");
         },
       },
+      "static": {
+        input: "static",
+        load() {
+          return import("#project/environments/config/sections/staticSection");
+        },
+      },
       "define": {
         input: "define",
         load() {
@@ -110,6 +117,23 @@ export default {
           const { coverageDir } = await config.resolve("tests");
 
           return { directory: coverageDir };
+        },
+      },
+      static: {
+        title: "Static files",
+        linted: false,
+        async locate(config): Promise<FileLocation | undefined> {
+          const { active, dirs } = await config.resolve("static");
+
+          if (!active) {
+            return;
+          }
+
+          return {
+            globs: dirs.map((directory) => {
+              return `${directory}/**`;
+            }),
+          };
         },
       },
     },
@@ -165,6 +189,11 @@ export default {
         title: "the data environment's files",
         level: "enforced",
       },
+      {
+        name: "static",
+        title: "the static environment's files",
+        level: "enforced",
+      },
     ],
     languages: [
       {
@@ -185,6 +214,7 @@ declare global {
       scripts: true;
       tooling: true;
       data: true;
+      static: true;
     }
   }
 }

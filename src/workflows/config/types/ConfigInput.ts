@@ -5,7 +5,7 @@ import type { BuildInput } from "#project/build/index";
 import type { CacheInput } from "#project/cache/index";
 import type { ExtensionOption } from "#project/config/index";
 import type { DocsInput } from "#project/docs/index";
-import type { AliasesInput, BinInput, DataInput, DefineInput, RuntimeInput, ScriptsInput, SourceInput, TestsInput, ToolingInput } from "#project/environments/index";
+import type { AliasesInput, BinInput, DataInput, DefineInput, RuntimeInput, ScriptsInput, SourceInput, StaticInput, TestsInput, ToolingInput } from "#project/environments/index";
 import type { FormatInput } from "#project/format/index";
 import type { TraitsInput } from "#project/presets/index";
 import type { StructureInput } from "#project/structure/index";
@@ -60,6 +60,12 @@ export interface BuiltinConfigInput {
    * `false` ships no data directory.
    */
   data?: ((false | DataInput) | undefined)
+  /**
+   * The static environment.
+   * `false` serves no static directory.
+   * @default disabled when the project is `published`
+   */
+  static?: ((false | StaticInput) | undefined)
   define?: (DefineInput | undefined)
   runtime?: (RuntimeInput | undefined)
   /**
