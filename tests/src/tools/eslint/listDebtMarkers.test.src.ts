@@ -1,11 +1,12 @@
 import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";
 
-describe("listDebtMarkers", () => {
+describe("listDebtMarkers", { timeout: binaryTimeout }, () => {
   test("lists well-formed markers of linted files only", async () => {
     const root = getFixture("debt");
 

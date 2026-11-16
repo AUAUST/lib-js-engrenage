@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
+import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
 
@@ -15,7 +16,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("engrenage debt", () => {
+describe("engrenage debt", { timeout: binaryTimeout }, () => {
   test("prints one line per marker, ignoring malformed markers", async () => {
     await debt({ json: false });
 

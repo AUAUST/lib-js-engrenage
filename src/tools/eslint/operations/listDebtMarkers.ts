@@ -21,6 +21,7 @@ export async function listDebtMarkers(
 
   const ruleId = `${pluginName}/${createRuleName("debtMarkers")}`;
 
+  // @debt Loads every plugin of the project's ESLint config to run one rule, which makes a cold run take seconds.
   const createLinter = await loadEslint(config);
 
   const linter = createLinter({
