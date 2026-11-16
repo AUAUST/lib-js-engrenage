@@ -9,6 +9,7 @@ import {
 } from "#foundation/options/index";
 import { buildToolNameSchema } from "#project/build/config/schemas/buildToolNameSchema";
 import { defaultBuildClean, defaultSourcemap } from "#project/build/constants";
+import type { BuildTool } from "#project/build/ports/BuildTool";
 import type { ResolvedDefine } from "#project/environments/index";
 import type { ResolvedTraits } from "#project/presets/index";
 import type { Tsconfig } from "#project/tsconfig/index";
@@ -17,6 +18,7 @@ import type { Directory } from "#types/Directory";
 interface OutDirContext {
   readonly root: Directory;
   tsconfig(): Promise<Tsconfig>;
+  tool(): Promise<BuildTool | false>;
 }
 
 export const buildSchema = declareObject(
@@ -27,22 +29,26 @@ export const buildSchema = declareObject(
         "`false` selects none.",
       ],
       optional: unset(
-        "the only active build tool, none when no build tool is active; resolving it fails when several are",
+        "the active build tool the preset prefers, else the only active one; none when no build tool is active; resolving it fails when several are and the preset prefers none of them",
       ),
       disable: { value: false },
     }),
     outDir: declare(directorySchema, {
       description: "Output directory of tsdown and Vite, ignored by Git and ESLint and listed in the published `files` of `package.json`.",
       optional: {
-        explain: "`compilerOptions.outDir` of the base tsconfig; building fails when neither is set",
+        explain: "`compilerOptions.outDir` of the base tsconfig, else the output directory of the selected build tool; building fails when none is set",
         async compute(context: OutDirContext) {
           const { optional } = await context.tsconfig();
 
           const { outDir } = optional;
 
-          return outDir === undefined || !isWithin(context.root, outDir)
-            ? undefined
-            : outDir;
+          if (outDir !== undefined && isWithin(context.root, outDir)) {
+            return outDir;
+          }
+
+          const tool = await context.tool();
+
+          return tool === false ? undefined : tool.outDir;
         },
       },
       adjust(input, _fallback, context: OutDirContext) {

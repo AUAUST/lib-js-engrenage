@@ -1,4 +1,4 @@
-import { looseObject, string } from "valibot";
+import { array, boolean, looseObject, optional, string } from "valibot";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 export const emittedManifestFile = "emitted.json";
@@ -11,4 +11,7 @@ export const defaultSourcemap = true;
 export const buildToolEntry: StandardSchemaV1 = looseObject({
   name: string(),
   package: string(),
+  outDir: optional(string()),
+  bundled: optional(boolean()),
+  types: optional(array(string())),
 });

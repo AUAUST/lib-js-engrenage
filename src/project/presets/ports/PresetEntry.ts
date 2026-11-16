@@ -11,6 +11,11 @@ export interface PresetEntry extends EntryShape {
    */
   readonly traits: readonly Trait[];
   /**
+   * Entry names by slot: the entry picked when its slot's key is unset and
+   * the entry is active.
+   */
+  readonly prefers?: Readonly<Record<string, string>>;
+  /**
    * Loads config defaults by dotted input path, under the project's own values;
    * called once per preset. A path within `preset` or `extensions` fails the
    * config. Without it, the preset sets no defaults.

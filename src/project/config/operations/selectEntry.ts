@@ -5,7 +5,15 @@ import type { Extension } from "#project/config/types/Extension";
 export async function selectEntry<Slot extends SlotOf<Extension>>(
   config: ConfigResolver,
   slot: Slot,
-  { key, name }: { key: string; name: string | false | undefined },
+  {
+    key,
+    name,
+    preferred,
+  }: {
+    key: string;
+    name: string | false | undefined;
+    preferred?: string | undefined;
+  },
 ): Promise<EntryOf<Extension, Slot> | false> {
   const { registry } = config.context;
 
@@ -20,6 +28,14 @@ export async function selectEntry<Slot extends SlotOf<Extension>>(
   }
 
   const active = await registry.contributions(slot, config);
+
+  const match = active.find(({ entry }) => {
+    return preferred !== undefined && entry.name === preferred;
+  });
+
+  if (match !== undefined) {
+    return match.entry;
+  }
 
   const [first, ...others] = active;
 

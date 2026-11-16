@@ -133,3 +133,4 @@
 - PreToolUse hook / engrenage sync: loads engrenage.config.ts, failed while a new barrel export it imports was missing — worker added the barrel line by hand
 - worktree isolation guard: compound git, heredoc, perl and multi-file shell edits refused in a worker worktree — split commands, used Edit
 - worktree isolation guard: heredocs, `git -C` and compound git commands refused in a worker worktree
+- `gh issue view --repo AUAUST/engrenage`: fetched #570 by the package name given in the task — repository is `AUAUST/lib-js-engrenage`; read it from `git remote -v`

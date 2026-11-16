@@ -25,7 +25,14 @@ export default {
     },
   },
   contributes: {
-    "build.tools": [{ name: tsdown, package: tsdown }],
+    "build.tools": [
+      {
+        name: tsdown,
+        package: tsdown,
+        outDir: "dist",
+        bundled: false,
+      },
+    ],
   },
 } satisfies Extension;
 

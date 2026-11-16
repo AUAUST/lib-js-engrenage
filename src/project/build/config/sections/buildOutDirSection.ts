@@ -13,6 +13,9 @@ export const buildOutDirSection = declareSection({
         tsconfig() {
           return config.resolve("tsconfig");
         },
+        tool() {
+          return config.resolve("build.tool");
+        },
       },
       "build.outDir",
     );

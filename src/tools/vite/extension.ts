@@ -25,7 +25,15 @@ export default {
     },
   },
   contributes: {
-    "build.tools": [{ name: vite, package: vite }],
+    "build.tools": [
+      {
+        name: vite,
+        package: vite,
+        outDir: "dist",
+        bundled: true,
+        types: ["vite/client"],
+      },
+    ],
   },
 } satisfies Extension;
 

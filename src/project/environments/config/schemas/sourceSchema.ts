@@ -47,7 +47,15 @@ export const sourceSchema = declareObject(
     aliases: aliasesSchema,
     bundled: declare(boolean(), {
       description: "Whether the source only runs through a bundler. It sets the src tsconfig `module` and `moduleResolution` to the bundler ones, writes the src aliases to the tsconfig `paths` and allows bundler aliases in `aliases.define`.",
-      optional: { value: false },
+      optional: {
+        // @debt The context restates the `BuildTool` port structurally because `environments` sits below `build`; the bundling capability could live in a lower shared domain.
+        explain: "whether the selected build tool bundles the source, `false` without a build tool",
+        compute(context: { tool: false | { readonly bundled?: boolean } }) {
+          return context.tool === false
+            ? false
+            : (context.tool.bundled ?? false);
+        },
+      },
     }),
     exports: declare(exposedFilesSchema, {
       description: [

@@ -126,7 +126,7 @@ export interface SourceInput {
   aliases?: ((false | AliasesInput) | undefined)
   /**
    * Whether the source only runs through a bundler. It sets the src tsconfig `module` and `moduleResolution` to the bundler ones, writes the src aliases to the tsconfig `paths` and allows bundler aliases in `aliases.define`.
-   * @default false
+   * @default whether the selected build tool bundles the source, `false` without a build tool
    */
   bundled?: (boolean | undefined)
   /**

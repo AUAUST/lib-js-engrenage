@@ -3,8 +3,8 @@ import type { Extension } from "#project/config/index";
 
 /**
  * Owns the `preset`, `traits` and `traits.adjustments` keys and the `presets`
- * slot, which takes one active preset, and contributes the `library` preset
- * with the `published` trait.
+ * slot, which takes one active preset, and contributes the `library` preset with
+ * the `published` trait, preferring tsdown as build tool.
  */
 export default {
   name: "project/presets",
@@ -33,7 +33,13 @@ export default {
     },
   },
   contributes: {
-    presets: [{ name: "library", traits: ["published"] }],
+    presets: [
+      {
+        name: "library",
+        traits: ["published"],
+        prefers: { "build.tools": "tsdown" },
+      },
+    ],
   },
 } satisfies Extension;
 

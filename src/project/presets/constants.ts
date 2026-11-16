@@ -4,6 +4,7 @@ import {
   looseObject,
   optional,
   picklist,
+  record,
   string,
 } from "valibot";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
@@ -16,5 +17,6 @@ export const traits = freeze(["published"] as const);
 export const presetEntry: StandardSchemaV1 = looseObject({
   name: string(),
   traits: array(picklist(traits)),
+  prefers: optional(record(string(), string())),
   load: optional(function_()),
 });

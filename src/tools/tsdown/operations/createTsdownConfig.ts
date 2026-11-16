@@ -133,7 +133,7 @@ export async function createTsdownConfig(
 
   if (outDir === undefined) {
     throw new Error(
-      `No output directory for ${root}: set build.outDir in the engrenage config or compilerOptions.outDir in the tsconfig`,
+      `No output directory for ${root}: set build.outDir in the engrenage config or compilerOptions.outDir in the tsconfig, or select a build tool providing one`,
     );
   }
 

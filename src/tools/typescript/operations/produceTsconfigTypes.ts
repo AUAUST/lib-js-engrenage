@@ -26,8 +26,12 @@ async function createDefaultTypes(
     return () => [];
   }
 
+  const tool = await resolveToolTypes(config, target);
+
   if (runtime.kind === "node") {
-    return () => ["node"];
+    return () => {
+      return ["node", ...tool];
+    };
   }
 
   const library = (
@@ -36,7 +40,22 @@ async function createDefaultTypes(
 
   const { apis } = await config.resolve("src");
 
-  return () => listBaselineTypes(target, apis, library);
+  return () => {
+    return [...listBaselineTypes(target, apis, library), ...tool];
+  };
+}
+
+async function resolveToolTypes(
+  config: LoadedConfig,
+  target: TsconfigTarget,
+): Promise<readonly string[]> {
+  if (target.key !== "src") {
+    return [];
+  }
+
+  const tool = await config.resolve("build.tool");
+
+  return tool === false ? [] : (tool.types ?? []);
 }
 
 function listBaselineTypes(
