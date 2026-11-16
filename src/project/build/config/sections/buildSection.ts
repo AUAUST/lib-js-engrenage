@@ -12,6 +12,7 @@ export const buildSection = declareSection({
 
     const context = {
       define: await config.resolve("define"),
+      traits: await config.resolve("traits"),
     };
 
     return freeze({
@@ -22,6 +23,7 @@ export const buildSection = declareSection({
         context,
         "build.sourcemap",
       ),
+      minify: entries.minify.resolve(input?.minify, context, "build.minify"),
       typed: entries.typed.resolve(input?.typed, context, "build.typed"),
     });
   },

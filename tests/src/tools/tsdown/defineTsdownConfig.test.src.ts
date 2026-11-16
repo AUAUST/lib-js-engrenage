@@ -54,7 +54,7 @@ describe("defineTsdownConfig", () => {
       deps: {
         onlyBundle: ["@fixture/tsdown"],
       },
-      minify: false,
+      minify: true,
     });
   });
 });

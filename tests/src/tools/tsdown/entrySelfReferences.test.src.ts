@@ -74,8 +74,8 @@ describe("entry-self-references", () => {
 
     expect(root.object).toBe(object);
 
-    expect(project.read("dist/index.mjs")).toContain(
-      'from "@scope/package/object"',
+    expect(project.read("dist/index.mjs")).toMatch(
+      /from ?"@scope\/package\/object"/,
     );
 
     expect(project.read("dist/index.d.mts")).not.toContain(

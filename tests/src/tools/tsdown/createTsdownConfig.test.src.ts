@@ -323,7 +323,7 @@ describe("createTsdownConfig", () => {
           ci: false,
         },
       ),
-    ).not.toHaveProperty("outputOptions");
+    ).not.toHaveProperty("outputOptions.comments");
   });
 
   test("fails on warnings outside CI too", async () => {
@@ -333,7 +333,74 @@ describe("createTsdownConfig", () => {
       }),
     ).toMatchObject({
       failOnWarn: true,
-      minify: false,
+    });
+  });
+
+  describe("minify", () => {
+    test("applies the same minification in and outside CI", async () => {
+      const config = await loadConfig(
+        createProject({
+          config: { preset: "library" },
+        }).root,
+      );
+
+      for (const ci of [true, false]) {
+        expect(await createTsdownConfig(config, { ci })).toMatchObject({
+          minify: true,
+          outputOptions: { keepNames: true },
+        });
+      }
+    });
+
+    test("keeps exported function names in a published build", async () => {
+      const project = createProject({
+        config: {
+          preset: "library",
+        },
+        files: {
+          "src/index.ts": "export function namedExport() {}\n",
+        },
+      });
+
+      await build({
+        ...(await createTsdownConfig(await loadConfig(project.root), {
+          ci: false,
+        })),
+        config: false,
+        logLevel: "silent",
+      });
+
+      const { namedExport } = (await import(
+        `${project.root}/dist/index.mjs`
+      )) as { namedExport(): void };
+
+      expect(namedExport.name).toBe("namedExport");
+    });
+
+    test("mangles names entirely outside published projects and disables on false", async () => {
+      const unpublished = await loadConfig(createProject().root);
+
+      expect((await unpublished.resolve("build")).minify).toBe(true);
+
+      expect(
+        await createTsdownConfig(unpublished, { ci: false }),
+      ).toMatchObject({
+        minify: true,
+        outputOptions: { keepNames: false },
+      });
+
+      const disabled = await loadConfig(
+        createProject({
+          config: {
+            build: { minify: false },
+          },
+        }).root,
+      );
+
+      expect(await createTsdownConfig(disabled, { ci: true })).toMatchObject({
+        minify: false,
+        outputOptions: { keepNames: false },
+      });
     });
   });
 

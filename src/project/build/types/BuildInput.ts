@@ -25,6 +25,11 @@ export interface BuildInput {
    */
   sourcemap?: (boolean | undefined)
   /**
+   * Minification of tsdown and Vite builds, the same locally and in CI: `false` disables it, `"keepNames"` minifies and mangles but keeps function and class names, `true` minifies and mangles entirely.
+   * @default `"keepNames"` when the project is `published`, `true` otherwise
+   */
+  minify?: ((boolean | "keepNames") | undefined)
+  /**
    * Whether tsdown emits declaration files.
    * @default `define.types`
    */

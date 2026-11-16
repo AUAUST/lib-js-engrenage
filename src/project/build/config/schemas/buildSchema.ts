@@ -10,6 +10,7 @@ import {
 import { buildToolNameSchema } from "#project/build/config/schemas/buildToolNameSchema";
 import { defaultBuildClean, defaultSourcemap } from "#project/build/constants";
 import type { ResolvedDefine } from "#project/environments/index";
+import type { ResolvedTraits } from "#project/presets/index";
 import type { Tsconfig } from "#project/tsconfig/index";
 import type { Directory } from "#types/Directory";
 
@@ -61,6 +62,15 @@ export const buildSchema = declareObject(
     sourcemap: declare(boolean(), {
       description: "Whether builds emit source maps and the source directories are published with them.",
       optional: { value: defaultSourcemap },
+    }),
+    minify: declare(union([boolean(), literal("keepNames")]), {
+      description: 'Minification of tsdown and Vite builds, the same locally and in CI: `false` disables it, `"keepNames"` minifies and mangles but keeps function and class names, `true` minifies and mangles entirely.',
+      optional: {
+        explain: '`"keepNames"` when the project is `published`, `true` otherwise',
+        compute(context: { traits: ResolvedTraits }) {
+          return context.traits.published ? "keepNames" : true;
+        },
+      },
     }),
     typed: declare(boolean(), {
       description: "Whether tsdown emits declaration files.",

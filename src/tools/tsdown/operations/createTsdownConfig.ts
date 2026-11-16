@@ -127,7 +127,7 @@ export async function createTsdownConfig(
     );
   }
 
-  const { typed, sourcemap, clean } = await config.resolve("build");
+  const { typed, sourcemap, clean, minify } = await config.resolve("build");
 
   const outDir = await config.resolve("build.outDir");
 
@@ -257,19 +257,20 @@ export async function createTsdownConfig(
         mainFields: [...mainFields],
       },
     },
-    ...(typed
-      ? {
-          outputOptions: {
+    outputOptions: {
+      keepNames: minify === "keepNames",
+      ...(typed
+        ? {
             comments: {
               jsdoc: false,
               legal: true,
               annotation: true,
             },
-          },
-        }
-      : {}),
+          }
+        : {}),
+    },
     failOnWarn: true,
-    minify: ci,
+    minify: minify !== false,
     hooks: {
       async "build:done"() {
         if (ci) {

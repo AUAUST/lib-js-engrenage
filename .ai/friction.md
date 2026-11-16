@@ -127,3 +127,4 @@
 - Bash `cd` into `dist/`: ran a later command from there — the Claude git hook resolved `dist/package.json` as the project and failed; returned to the root
 - tsdown build with a scratch `outDir`: built experiment variants outside `dist` — the build rewrote `package.json` paths to the scratch dir; restored with `git checkout`
 - rolldown plugin `getModuleInfo(...).isExternal`: marked modules importing packages in `buildEnd` — externals are listed in `getModuleIds` without `isExternal`; tested for non-path ids instead
+- gh issue view: guessed repo AUAUST/engrenage — remote is AUAUST/lib-js-engrenage; read it from git remote

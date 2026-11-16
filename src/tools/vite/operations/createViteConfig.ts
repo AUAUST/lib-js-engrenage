@@ -19,7 +19,7 @@ export async function createViteConfig(
 ): Promise<Config> {
   const root = config.context.root;
 
-  const { sourcemap, clean } = await config.resolve("build");
+  const { sourcemap, clean, minify } = await config.resolve("build");
 
   const outDir = await config.resolve("build.outDir");
 
@@ -58,6 +58,12 @@ export async function createViteConfig(
           }),
       emptyOutDir: clean === "all",
       sourcemap,
+      minify: minify !== false,
+      rolldownOptions: {
+        output: {
+          keepNames: minify === "keepNames",
+        },
+      },
     },
   };
 }
