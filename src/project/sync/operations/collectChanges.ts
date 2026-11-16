@@ -1,4 +1,5 @@
-import { flat, flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flat, flatMap } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { formatChanges } from "#project/sync/operations/formatChanges";
 import type { LoadedConfig } from "#project/config/index";

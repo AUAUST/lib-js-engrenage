@@ -1,5 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
-import { sort } from "@auaust/toolkit/array";
+import { map, sort } from "@auaust/toolkit/array";
 
 import type { TypeSource } from "#scripts/codegen/types/TypeSource";
 import type { Directory } from "#types/Directory";

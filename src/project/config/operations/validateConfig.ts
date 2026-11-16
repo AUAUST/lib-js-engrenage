@@ -1,4 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 

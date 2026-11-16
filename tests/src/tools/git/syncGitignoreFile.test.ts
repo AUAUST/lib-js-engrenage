@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import { loadConfig } from "@auaust/engrenage/extensions";
 import { syncGitignoreFile } from "@auaust/engrenage/git";
 import { defaultIgnores } from "@auaust/engrenage/git/constants";
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";

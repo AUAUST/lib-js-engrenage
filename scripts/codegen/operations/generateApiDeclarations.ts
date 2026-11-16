@@ -10,8 +10,8 @@ import {
   type SourceFile,
 } from "typescript";
 
-import { map } from "@auaust/primitive-kit/arrays";
-import { filter, filterMap, join, sort } from "@auaust/toolkit/array";
+import { filter, filterMap, join, map, sort } from "@auaust/toolkit/array";
+import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries, keys } from "@auaust/toolkit/object";
 
 import { resolve } from "#foundation/filesystem/index";
@@ -149,7 +149,7 @@ export async function generateApiDeclarations(
   const { collectClosure } = createApiDeclarationCollector(source);
 
   const closures = new Map(
-    map(entries(apiGroupRoots), ([group, roots]) => {
+    mapIterable(entries(apiGroupRoots), ([group, roots]) => {
       return [group, collectClosure(roots)] as const;
     }),
   );

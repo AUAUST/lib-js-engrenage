@@ -1,4 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { map as mapIterable } from "@auaust/toolkit/iterable";
 
 import {
   collectChanges,
@@ -20,8 +20,8 @@ export async function runSyncCheck(config: LoadedConfig): Promise<GateResult> {
   return {
     ok: outdated.length === 0 && failures.length === 0,
     output: [
-      ...map(outdated, formatSyncResult),
-      ...map(failures, formatSyncFailure),
+      ...mapIterable(outdated, formatSyncResult),
+      ...mapIterable(failures, formatSyncFailure),
     ].join("\n"),
   };
 }

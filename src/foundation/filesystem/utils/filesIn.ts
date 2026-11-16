@@ -1,5 +1,6 @@
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
-import { toArray } from "@auaust/toolkit/array";
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { a } from "@auaust/toolkit";
+import { map } from "@auaust/toolkit/array";
 
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
@@ -10,8 +11,8 @@ export function filesIn(
   directories: Directory | Directories,
   files: Glob | Globs,
 ): Globs {
-  return flatMap(toArray(directories), (directory) => {
-    return map(toArray(files), (glob) => {
+  return flatMap(a(directories), (directory) => {
+    return map(a(files), (glob) => {
       return directory === "." ? glob : `${directory}/${glob}`;
     });
   });

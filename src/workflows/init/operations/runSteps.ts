@@ -1,4 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { join, map as mapIterable } from "@auaust/toolkit/iterable";
 
 import { createStepContext } from "#workflows/init/operations/createStepContext";
 import type { LoadedConfig } from "#project/config/index";
@@ -31,7 +31,10 @@ export async function runSteps({
   }
 
   if (config.context.configFile !== undefined) {
-    const names = map(gaps, (step) => step.name).join(", ");
+    const names = join(
+      mapIterable(gaps, (step) => step.name),
+      ", ",
+    );
 
     const fill = await prompter.confirm(
       `Engrenage is already set up. Review the missing setup (${names})?`,

@@ -1,8 +1,7 @@
 import { boolean } from "valibot";
 import { describe, expect, test } from "vitest";
 
-import { map } from "@auaust/primitive-kit/arrays";
-import { toSorted } from "@auaust/toolkit/array";
+import { map, toSorted } from "@auaust/toolkit/array";
 import { values } from "@auaust/toolkit/object";
 
 import {

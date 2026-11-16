@@ -1,6 +1,7 @@
 import { Option } from "@commander-js/extra-typings";
 
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 import { entries } from "@auaust/toolkit/object";
 
 import type { LoadedConfig } from "#project/config/index";

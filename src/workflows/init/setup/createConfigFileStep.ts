@@ -1,6 +1,13 @@
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
 import { isString } from "@auaust/toolkit";
-import { deduplicate, every, filterMap, sort } from "@auaust/toolkit/array";
+import {
+  deduplicate,
+  every,
+  filterMap,
+  map,
+  sort,
+} from "@auaust/toolkit/array";
+import { join, map as mapIterable } from "@auaust/toolkit/iterable";
 import { startsWith } from "@auaust/toolkit/string";
 
 import { engrenage, engrenageConfigFile } from "#constants";
@@ -22,7 +29,10 @@ interface RolePresets {
 }
 
 function callPresets(names: readonly string[]): string {
-  return map(names, (name) => `${name}()`).join(", ");
+  return join(
+    mapIterable(names, (name) => `${name}()`),
+    ", ",
+  );
 }
 
 function listEnvironments(
@@ -43,7 +53,7 @@ function groupPresets(presets: readonly RolePresetEntry[]): RolePresets {
   });
 
   const extras = new Map(
-    map(environments, (environment) => {
+    mapIterable(environments, (environment) => {
       const names = filterMap(presets, (preset) => {
         return !shared.includes(preset) &&
           preset.environments.includes(environment)

@@ -1,6 +1,6 @@
 import type { JSONPath } from "jsonc-parser";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { engrenage, packageJsonFile } from "#constants";

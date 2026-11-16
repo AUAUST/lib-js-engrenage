@@ -1,5 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
-import { includes } from "@auaust/toolkit/array";
+import { includes, map } from "@auaust/toolkit/array";
 
 import { loadLazy } from "#foundation/modules/index";
 import type { LoadedConfig } from "#project/config/index";

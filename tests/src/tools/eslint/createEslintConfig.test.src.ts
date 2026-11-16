@@ -4,7 +4,8 @@ import { ESLint } from "eslint";
 import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 import { memoize } from "@auaust/toolkit/function";
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";

@@ -8,9 +8,9 @@ import {
 } from "node:fs/promises";
 import { dirname, matchesGlob } from "node:path";
 
-import { flat, map } from "@auaust/primitive-kit/arrays";
+import { flat } from "@auaust/primitive-kit/arrays";
 import { sort, toArray } from "@auaust/toolkit/array";
-import { concat, unique } from "@auaust/toolkit/iterable";
+import { concat, map as mapIterable, unique } from "@auaust/toolkit/iterable";
 import { freeze } from "@auaust/toolkit/object";
 
 import { readTextFile } from "#foundation/filesystem/operations/readTextFile";
@@ -150,7 +150,7 @@ export function createFilesystem(root: Directory): Filesystem {
     const globs = toArray(patterns);
     const exclude = options?.exclude ?? [];
 
-    const found = map(
+    const found = mapIterable(
       await Array.fromAsync(
         globFiles(globs, {
           cwd: root,
@@ -272,16 +272,18 @@ export function createFilesystem(root: Directory): Filesystem {
   }
 
   function changes(): SyncResults {
-    return map(originals, ([file, original]) => {
-      return {
-        file,
-        status: contents.get(file) === undefined
-          ? "deleted"
-          : original === undefined
-            ? "created"
-            : "synced",
-      };
-    });
+    return toArray(
+      mapIterable(originals, ([file, original]): SyncResult => {
+        return {
+          file,
+          status: contents.get(file) === undefined
+            ? "deleted"
+            : original === undefined
+              ? "created"
+              : "synced",
+        };
+      }),
+    );
   }
 
   function discard(): SyncResults {

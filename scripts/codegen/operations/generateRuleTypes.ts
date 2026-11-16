@@ -5,9 +5,9 @@ import { flatConfigsToPlugins, pluginsToRulesDTS } from "eslint-typegen/core";
 import { builtinRules } from "eslint/use-at-your-own-risk";
 import { format, resolveConfig } from "prettier";
 
-import { map } from "@auaust/primitive-kit/arrays";
 import { toPascalCase } from "@auaust/primitive-kit/strings";
-import { sort } from "@auaust/toolkit/array";
+import { map, sort } from "@auaust/toolkit/array";
+import { join, map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries, mapValues, record } from "@auaust/toolkit/object";
 
 import { pathExists, resolve, toPosixPath } from "#foundation/filesystem/index";
@@ -106,18 +106,18 @@ async function createSourceModule({
 }
 
 function createRulesModule(sources: RuleSource[]): string {
-  const imports = map(sources, ({ name }) => {
+  const imports = mapIterable(sources, ({ name }) => {
     return `import type { ${name} } from "#tools/eslint/types/rules/${name}";`;
   });
 
-  const names = map(sources, ({ name }) => name);
+  const names = mapIterable(sources, ({ name }) => name);
 
   return [
     generatedHeader,
     ...imports,
     ruleImport,
     "",
-    `export interface Rules extends Partial<Record<string, Rule>>, ${names.join(", ")} {}`,
+    `export interface Rules extends Partial<Record<string, Rule>>, ${join(names, ", ")} {}`,
   ].join("\n");
 }
 

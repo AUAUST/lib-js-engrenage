@@ -21,7 +21,7 @@ import {
   type Statement,
 } from "typescript";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import type { Library } from "#scripts/codegen/types/Library";
 import type { LibraryDeclaration } from "#scripts/codegen/types/LibraryDeclaration";

@@ -1,6 +1,7 @@
 import { join, posix } from "node:path";
 
-import { flat, map } from "@auaust/primitive-kit/arrays";
+import { flat } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import type { Filesystem } from "#foundation/filesystem/index";

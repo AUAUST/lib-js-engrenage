@@ -10,7 +10,8 @@ import {
   transpileModule,
 } from "typescript";
 
-import { flat, flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flat, flatMap } from "@auaust/primitive-kit/arrays";
+import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { values } from "@auaust/toolkit/object";
 
 import { createImportResolver } from "#project/structure/utils/createImportResolver";
@@ -111,9 +112,13 @@ function candidatesOf(path: string, { extensions }: ModuleFiles): string[] {
 
   return [
     path,
-    ...map(extensions, (extension) => `${withoutExtension}${extension}`),
-    ...map(extensions, (extension) => `${path}${extension}`),
-    ...map(extensions, (extension) => posix.join(path, `index${extension}`)),
+    ...mapIterable(extensions, (extension) => {
+      return `${withoutExtension}${extension}`;
+    }),
+    ...mapIterable(extensions, (extension) => `${path}${extension}`),
+    ...mapIterable(extensions, (extension) => {
+      return posix.join(path, `index${extension}`);
+    }),
   ];
 }
 

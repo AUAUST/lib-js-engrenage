@@ -1,7 +1,7 @@
 import { ESLint } from "eslint";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";

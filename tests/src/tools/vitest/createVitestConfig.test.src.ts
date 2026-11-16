@@ -8,7 +8,8 @@ import { describe, expect, test } from "vitest";
 import { configDefaults } from "vitest/config";
 import { startVitest } from "vitest/node";
 
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { testsetup } from "#project/roles/index";

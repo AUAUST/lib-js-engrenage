@@ -1,10 +1,11 @@
-import { map } from "@auaust/primitive-kit/arrays";
 import { isArray } from "@auaust/toolkit";
 import {
   difference,
   intersection,
   isNonEmptyArray,
+  map,
 } from "@auaust/toolkit/array";
+import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { freeze } from "@auaust/toolkit/object";
 
 import { loadLazy } from "#foundation/modules/index";
@@ -22,7 +23,7 @@ async function collectTags(
   );
 
   const sets = await Promise.all(
-    map(contributions, async ({ entry, extension }) => {
+    mapIterable(contributions, async ({ entry, extension }) => {
       return {
         source: `${extension.name} (${entry.name})`,
         declarations: await loadLazy(entry),
@@ -98,7 +99,9 @@ function adjustTags(
   }
 
   const appended = new Map(
-    map(append, (declaration) => [declaration.name, declaration] as const),
+    mapIterable(append, (declaration) => {
+      return [declaration.name, declaration] as const;
+    }),
   );
 
   const kept = contributed

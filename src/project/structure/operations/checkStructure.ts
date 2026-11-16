@@ -1,4 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
 import { hasStructureViolations } from "#project/structure/utils/hasStructureViolations";

@@ -1,4 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { join, map as mapIterable } from "@auaust/toolkit/iterable";
 
 interface NamedImports {
   names: readonly string[];
@@ -8,7 +8,10 @@ interface NamedImports {
 function renderImport({ names, entry }: NamedImports): string {
   const list = names.length === 1
     ? ` ${names.join("")} `
-    : `\n${map(names, (name) => `  ${name},\n`).join("")}`;
+    : `\n${join(
+        mapIterable(names, (name) => `  ${name},\n`),
+        "",
+      )}`;
 
   return `import {${list}} from "${entry}";\n`;
 }
@@ -26,12 +29,12 @@ export function createConfigModule({
   imports?: readonly NamedImports[];
   declarations?: readonly string[];
 }): string {
-  const statements = map(
+  const statements = mapIterable(
     [{ names: [definer], entry }, ...imports],
     renderImport,
   );
 
-  const body = map(declarations, (declaration) => `\n${declaration}\n`);
+  const body = mapIterable(declarations, (declaration) => `\n${declaration}\n`);
 
-  return `${statements.join("")}${body.join("")}\nexport default ${definer}(${options || ""});\n`;
+  return `${join(statements, "")}${join(body, "")}\nexport default ${definer}(${options || ""});\n`;
 }

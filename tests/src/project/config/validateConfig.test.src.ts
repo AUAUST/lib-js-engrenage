@@ -2,7 +2,7 @@ import { join } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { validateConfig } from "#project/config/operations/validateConfig";

@@ -6,9 +6,9 @@ import {
 import { compile } from "json-schema-to-typescript-lite";
 import { getDescription, strictObject } from "valibot";
 
-import { map } from "@auaust/primitive-kit/arrays";
 import { isArray, isBoolean, isObject, isString } from "@auaust/toolkit";
-import { sort } from "@auaust/toolkit/array";
+import { map, sort } from "@auaust/toolkit/array";
+import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { keys, mapValues } from "@auaust/toolkit/object";
 
 import { globsSchema } from "#foundation/options/index";
@@ -365,7 +365,7 @@ export async function generateConfigTypes(
   const inputs = collectConfigInputs(modules, sections, root, named);
 
   const names = new Map(
-    map([...inputs], ([core, { name }]) => [core, name] as const),
+    mapIterable([...inputs], ([core, { name }]) => [core, name] as const),
   );
 
   const sources = new Map(externalTypes);
@@ -375,7 +375,7 @@ export async function generateConfigTypes(
   }
 
   const files = [
-    ...map([...inputs], ([core, { name, domain, declaration }]) => {
+    ...mapIterable([...inputs], ([core, { name, domain, declaration }]) => {
       return {
         name,
         domain,

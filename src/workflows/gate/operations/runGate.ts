@@ -1,9 +1,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
-import { map } from "@auaust/primitive-kit/arrays";
 import { filter, toArray } from "@auaust/toolkit/array";
-import { unique } from "@auaust/toolkit/iterable";
+import { join, map as mapIterable, unique } from "@auaust/toolkit/iterable";
 
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { loadLazy } from "#foundation/modules/index";
@@ -89,7 +88,7 @@ async function runConcurrentSteps(
   files: Files,
 ): Promise<GateFailure[]> {
   const results = await Promise.all(
-    map(steps, (step) => {
+    mapIterable(steps, (step) => {
       return runStep(step, files);
     }),
   );
@@ -119,7 +118,7 @@ async function measureEntries(
     : [
         {
           step: "budgets",
-          output: map(flattened, formatBudgetFinding).join("\n"),
+          output: join(mapIterable(flattened, formatBudgetFinding), "\n"),
         },
       ];
 }
@@ -226,7 +225,7 @@ async function checkVerifiedTree(
   }
 
   const outputs = await Promise.all(
-    map(changed, ([before, after]) => {
+    mapIterable(changed, ([before, after]) => {
       return runGit(root, ["diff-tree", "-r", "--name-only", before, after]);
     }),
   );

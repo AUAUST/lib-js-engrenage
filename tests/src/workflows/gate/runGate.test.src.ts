@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";

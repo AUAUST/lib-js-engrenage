@@ -1,4 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import { alpha } from "#project/docs/utils/alpha";

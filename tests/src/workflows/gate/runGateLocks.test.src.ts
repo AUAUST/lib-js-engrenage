@@ -6,7 +6,7 @@ import { setTimeout } from "node:timers/promises";
 
 import { describe, expect, test, vi } from "vitest";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { gateIdentity } from "#tests/constants";

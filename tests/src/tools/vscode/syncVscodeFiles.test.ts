@@ -7,7 +7,7 @@ import { describe, expect, test } from "vitest";
 import { loadConfig } from "@auaust/engrenage/extensions";
 import { validate } from "@auaust/engrenage/options/internals";
 import { syncVscodeFiles } from "@auaust/engrenage/vscode";
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
