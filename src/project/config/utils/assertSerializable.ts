@@ -1,5 +1,5 @@
-import { isFinite } from "@auaust/primitive-kit/numbers";
 import { isArray, isBoolean, isPlainObject, isString } from "@auaust/toolkit";
+import { isFinite } from "@auaust/toolkit/number";
 
 import { isDefinition } from "#project/config/utils/isDefinition";
 

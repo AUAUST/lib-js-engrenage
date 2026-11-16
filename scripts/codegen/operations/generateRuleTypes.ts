@@ -5,8 +5,9 @@ import { flatConfigsToPlugins, pluginsToRulesDTS } from "eslint-typegen/core";
 import { builtinRules } from "eslint/use-at-your-own-risk";
 import { format, resolveConfig } from "prettier";
 
-import { map, sort } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
 import { toPascalCase } from "@auaust/primitive-kit/strings";
+import { sort } from "@auaust/toolkit/array";
 import { entries, mapValues, record } from "@auaust/toolkit/object";
 
 import { pathExists, resolve, toPosixPath } from "#foundation/filesystem/index";

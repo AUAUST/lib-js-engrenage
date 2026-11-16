@@ -1,7 +1,7 @@
 import { beforeEach, vi } from "vitest";
 
-import { startsWith } from "@auaust/primitive-kit/strings";
 import { keys } from "@auaust/toolkit/object";
+import { startsWith } from "@auaust/toolkit/string";
 
 for (const name of keys(process.env)) {
   if (startsWith(name, "GIT_")) {

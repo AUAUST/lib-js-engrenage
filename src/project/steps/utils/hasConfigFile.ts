@@ -1,4 +1,4 @@
-import { isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 
 import type { Filesystem } from "#foundation/filesystem/index";
 
@@ -8,5 +8,5 @@ export async function hasConfigFile(
 ): Promise<boolean> {
   const files = await filesystem.glob(`${tool}.config.*`);
 
-  return isNotEmpty(files);
+  return isNonEmptyArray(files);
 }

@@ -1,6 +1,7 @@
 import { array, looseObject, optional, record, string, unknown } from "valibot";
 
-import { includes, sort } from "@auaust/primitive-kit/arrays";
+import { includes } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/toolkit/array";
 import { keys } from "@auaust/toolkit/object";
 
 import { eslint } from "#constants";

@@ -1,4 +1,5 @@
-import { map, sort } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/toolkit/array";
 import { entries, keys, record } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";

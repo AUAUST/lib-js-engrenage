@@ -1,4 +1,4 @@
-import { isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 
 import {
   ensureAnyOf,
@@ -21,7 +21,7 @@ async function isSolution(
     filesystem: config.context.filesystem,
   });
 
-  return isNotEmpty(references);
+  return isNonEmptyArray(references);
 }
 
 export async function resolveTscProjectArguments(

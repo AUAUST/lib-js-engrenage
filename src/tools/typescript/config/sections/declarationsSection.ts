@@ -26,7 +26,7 @@ import {
   type TypeAliasDeclaration,
 } from "typescript";
 
-import { isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import { isJsdocComment, parseJsdoc } from "#foundation/jsdoc/index";
@@ -246,7 +246,7 @@ function listExports(
       : [];
 
     // @debt `SourceDeclaration.kind` has no member for a default-exported expression, so it is reported as `const`
-    return isNotEmpty(found)
+    return isNonEmptyArray(found)
       ? found.map((local): [string, Local] => ["default", local])
       : [
           [

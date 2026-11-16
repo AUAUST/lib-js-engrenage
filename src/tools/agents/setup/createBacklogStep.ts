@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 
-import { random } from "@auaust/primitive-kit/arrays";
+import { random } from "@auaust/toolkit/array";
 
 import { engrenage } from "#constants";
 import { resolveDataFile } from "#foundation/data/index";

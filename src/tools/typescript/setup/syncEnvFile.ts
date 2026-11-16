@@ -1,4 +1,5 @@
-import { isNotEmpty, map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { entries } from "@auaust/toolkit/object";
 
 import { syncBlocks } from "#foundation/blocks/index";
@@ -76,7 +77,7 @@ export async function syncEnvFile(config: LoadedConfig) {
 
   const hasBlock = markerLine.test(current);
 
-  if (!hasBlock && !isNotEmpty(declared)) {
+  if (!hasBlock && !isNonEmptyArray(declared)) {
     return;
   }
 
@@ -88,7 +89,7 @@ export async function syncEnvFile(config: LoadedConfig) {
     file,
     await syncBlocks(content, typescriptBlocks, {
       [directive](...args) {
-        if (isNotEmpty(args)) {
+        if (isNonEmptyArray(args)) {
           throw new Error(`"${marker}" takes no arguments in ${file}`);
         }
 

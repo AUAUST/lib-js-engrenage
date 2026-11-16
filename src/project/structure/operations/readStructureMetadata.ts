@@ -1,6 +1,6 @@
 import { posix } from "node:path";
 
-import { sort } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/toolkit/array";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import {

@@ -1,6 +1,7 @@
 import type { TSESTree } from "@typescript-eslint/types";
 
-import { filterMap, sort } from "@auaust/primitive-kit/arrays";
+import { filterMap } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/toolkit/array";
 
 import {
   findCommentLines,

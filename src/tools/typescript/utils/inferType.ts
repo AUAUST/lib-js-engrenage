@@ -1,5 +1,6 @@
-import { deduplicate, isNotEmpty, map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
 import { isArray, isBoolean, isPlainObject, isString } from "@auaust/toolkit";
+import { deduplicate, isNonEmptyArray } from "@auaust/toolkit/array";
 import { entries } from "@auaust/toolkit/object";
 
 import { identifierPattern } from "#tools/typescript/constants";
@@ -22,7 +23,7 @@ function renderArray(
     return `readonly [${types.join(", ")}]`;
   }
 
-  if (!isNotEmpty(types)) {
+  if (!isNonEmptyArray(types)) {
     return "unknown[]";
   }
 
@@ -52,7 +53,7 @@ function renderObject(
     }
   }
 
-  return isNotEmpty(properties)
+  return isNonEmptyArray(properties)
     ? `{\n${properties.join("\n")}\n${indent}}`
     : "{}";
 }

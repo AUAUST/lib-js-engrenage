@@ -1,6 +1,7 @@
 import { array, pipe, regex, string, union } from "valibot";
 
-import { last, toSorted, wrap } from "@auaust/primitive-kit/arrays";
+import { wrap } from "@auaust/primitive-kit/arrays";
+import { last, toSorted } from "@auaust/toolkit/array";
 
 import { validate } from "#foundation/options/index";
 import { runProcess } from "#foundation/processes/index";

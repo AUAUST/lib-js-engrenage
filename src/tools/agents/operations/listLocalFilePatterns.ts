@@ -1,4 +1,4 @@
-import { deduplicate } from "@auaust/primitive-kit/arrays";
+import { deduplicate } from "@auaust/toolkit/array";
 
 import { resolveListOption } from "#foundation/options/index";
 import { readIgnorePatterns } from "#tools/git/index";

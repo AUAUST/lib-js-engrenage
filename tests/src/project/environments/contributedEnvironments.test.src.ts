@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 
 import { findDirectories } from "#foundation/filesystem/index";
 import {
@@ -45,7 +45,7 @@ const liquidSection = declareSection({
     );
 
     return {
-      active: isNotEmpty(
+      active: isNonEmptyArray(
         await findDirectories(config.context.filesystem, dirs),
       ),
       dirs,
@@ -120,7 +120,7 @@ function createWorkers(
       );
 
       return {
-        active: isNotEmpty(
+        active: isNonEmptyArray(
           await findDirectories(config.context.filesystem, dirs),
         ),
         dirs,

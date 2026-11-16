@@ -1,4 +1,5 @@
-import { difference, isNotEmpty, map } from "@auaust/primitive-kit/arrays";
+import { difference, map } from "@auaust/primitive-kit/arrays";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
@@ -23,7 +24,7 @@ export const agentsSection = declareSection({
 
     const unknown = difference(preferred ?? [], names);
 
-    if (isNotEmpty(unknown)) {
+    if (isNonEmptyArray(unknown)) {
       throw new Error(
         `agents.preferred lists ${unknown.join(", ")}, which no active agent runtime contributes; active runtimes: ${names.length > 0 ? names.join(", ") : "none"}`,
       );

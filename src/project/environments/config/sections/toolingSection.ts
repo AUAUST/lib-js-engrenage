@@ -1,4 +1,4 @@
-import { isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
@@ -28,14 +28,14 @@ export const toolingSection = declareSection({
 
     const existing = await findDirectories(filesystem, walked);
 
-    const matched = isNotEmpty(rootFiles)
+    const matched = isNonEmptyArray(rootFiles)
       ? await filesystem.glob(rootFiles)
       : [];
 
     return freeze(
       compose(
         {
-          active: isNotEmpty(existing) || isNotEmpty(matched),
+          active: isNonEmptyArray(existing) || isNonEmptyArray(matched),
           dirs: walked,
           rootFiles,
           defines: false,

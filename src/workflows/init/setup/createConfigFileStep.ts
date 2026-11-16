@@ -1,13 +1,7 @@
-import {
-  deduplicate,
-  every,
-  filterMap,
-  flatMap,
-  map,
-  sort,
-} from "@auaust/primitive-kit/arrays";
-import { startsWith } from "@auaust/primitive-kit/strings";
+import { every, filterMap, flatMap, map } from "@auaust/primitive-kit/arrays";
 import { isString } from "@auaust/toolkit";
+import { deduplicate, sort } from "@auaust/toolkit/array";
+import { startsWith } from "@auaust/toolkit/string";
 
 import { engrenage, engrenageConfigFile } from "#constants";
 import { findCurrentMonth } from "#project/baseline/index";

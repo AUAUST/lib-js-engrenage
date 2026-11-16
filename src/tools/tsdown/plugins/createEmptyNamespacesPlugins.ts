@@ -1,7 +1,8 @@
 import type { TsdownPlugin } from "tsdown";
 
-import { filter, isNotEmpty, join, map } from "@auaust/primitive-kit/arrays";
+import { filter, join, map } from "@auaust/primitive-kit/arrays";
 import { isString } from "@auaust/toolkit";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 
 const declarationChunk = /\.d\.[cm]?ts$/;
 
@@ -37,7 +38,7 @@ export function createEmptyNamespacesPlugins(name: string): TsdownPlugin[] {
 
           emptyNamespaces.delete(fileName);
 
-          if (!isNotEmpty(names)) {
+          if (!isNonEmptyArray(names)) {
             return null;
           }
 

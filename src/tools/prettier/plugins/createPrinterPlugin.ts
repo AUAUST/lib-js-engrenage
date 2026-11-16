@@ -1,7 +1,7 @@
 import { printers } from "prettier/plugins/estree";
 import type { AstPath, Doc, Printer } from "prettier";
 
-import { findLast } from "@auaust/primitive-kit/arrays";
+import { findLast } from "@auaust/toolkit/array";
 
 import { printAssignedConditional } from "#tools/prettier/utils/printAssignedConditional";
 import { printAssignment } from "#tools/prettier/utils/printAssignment";

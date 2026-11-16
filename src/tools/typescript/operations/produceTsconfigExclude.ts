@@ -1,4 +1,4 @@
-import { isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 
 import { resolveListOption } from "#foundation/options/index";
 import {
@@ -43,7 +43,7 @@ export async function produceTsconfigExclude(
 
   const isDefault = option == null || option === true;
 
-  if (exclude === false || (!isNotEmpty(exclude) && isDefault)) {
+  if (exclude === false || (!isNonEmptyArray(exclude) && isDefault)) {
     return [];
   }
 

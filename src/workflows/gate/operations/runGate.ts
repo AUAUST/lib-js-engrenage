@@ -1,7 +1,9 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
-import { deduplicate, filter, map } from "@auaust/primitive-kit/arrays";
+import { filter, map } from "@auaust/primitive-kit/arrays";
+import { toArray } from "@auaust/toolkit/array";
+import { unique } from "@auaust/toolkit/iterable";
 
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { loadLazy } from "#foundation/modules/index";
@@ -229,11 +231,13 @@ async function checkVerifiedTree(
     }),
   );
 
-  const paths = deduplicate(
-    outputs
-      .join("\n")
-      .split("\n")
-      .filter((path) => path !== ""),
+  const paths = toArray(
+    unique(
+      outputs
+        .join("\n")
+        .split("\n")
+        .filter((path) => path !== ""),
+    ),
   );
 
   return {

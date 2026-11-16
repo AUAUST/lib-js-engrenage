@@ -11,7 +11,7 @@ import {
   string,
 } from "valibot";
 
-import { sort } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/toolkit/array";
 
 import { engrenage } from "#constants";
 import { listDataFiles, resolveDataFile } from "#foundation/data/index";

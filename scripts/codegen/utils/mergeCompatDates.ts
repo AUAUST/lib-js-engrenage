@@ -1,4 +1,4 @@
-import { sort } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/toolkit/array";
 import type { Maybe } from "@auaust/toolkit/types";
 
 export function mergeCompatDates(

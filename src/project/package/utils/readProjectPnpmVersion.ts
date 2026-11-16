@@ -1,4 +1,5 @@
-import { find, wrap } from "@auaust/primitive-kit/arrays";
+import { wrap } from "@auaust/primitive-kit/arrays";
+import { find } from "@auaust/toolkit/array";
 
 import type { PackageJson } from "#project/package/types/PackageJson";
 

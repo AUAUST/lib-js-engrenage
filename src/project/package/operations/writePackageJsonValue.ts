@@ -1,4 +1,4 @@
-import { findIndex, findLastIndex } from "@auaust/primitive-kit/arrays";
+import { findIndex, findLastIndex } from "@auaust/toolkit/array";
 
 import {
   readJsonValue,

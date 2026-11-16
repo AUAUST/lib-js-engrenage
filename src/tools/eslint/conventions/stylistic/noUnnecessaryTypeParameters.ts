@@ -17,7 +17,7 @@ import {
 } from "typescript";
 import type { Rule, SourceCode } from "eslint";
 
-import { last } from "@auaust/primitive-kit/arrays";
+import { last } from "@auaust/toolkit/array";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { delegateRule } from "#tools/eslint/utils/delegateRule";

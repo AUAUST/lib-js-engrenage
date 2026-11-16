@@ -1,6 +1,6 @@
 import type { TSESTree } from "@typescript-eslint/types";
 
-import { findLast } from "@auaust/primitive-kit/arrays";
+import { findLast } from "@auaust/toolkit/array";
 
 import type { LayoutEdit } from "#tools/prettier/types/LayoutEdit";
 

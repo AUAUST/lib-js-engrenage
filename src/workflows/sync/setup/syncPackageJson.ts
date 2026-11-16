@@ -1,4 +1,5 @@
-import { deduplicate } from "@auaust/primitive-kit/arrays";
+import { toArray } from "@auaust/toolkit/array";
+import { unique } from "@auaust/toolkit/iterable";
 import { max } from "@auaust/toolkit/math";
 import { entries } from "@auaust/toolkit/object";
 
@@ -70,11 +71,9 @@ async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
     context.filesystem,
   ]);
 
-  const files = deduplicate([
-    directory,
-    ...data.dirs,
-    ...(sourcemap ? source.dirs : []),
-  ]);
+  const files = toArray(
+    unique([directory, ...data.dirs, ...(sourcemap ? source.dirs : [])]),
+  );
 
   const commands = entries(
     await resolveCommandFiles(

@@ -6,8 +6,9 @@ import {
 import { compile } from "json-schema-to-typescript-lite";
 import { getDescription, strictObject } from "valibot";
 
-import { map, sort } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
 import { isArray, isBoolean, isObject, isString } from "@auaust/toolkit";
+import { sort } from "@auaust/toolkit/array";
 import { keys, mapValues } from "@auaust/toolkit/object";
 
 import { globsSchema } from "#foundation/options/index";

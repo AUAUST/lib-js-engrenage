@@ -1,7 +1,8 @@
 import { basename, dirname } from "node:path";
 
-import { deduplicate } from "@auaust/primitive-kit/arrays";
 import { toCamelCase } from "@auaust/primitive-kit/strings";
+import { toArray } from "@auaust/toolkit/array";
+import { unique } from "@auaust/toolkit/iterable";
 import { getOwn } from "@auaust/toolkit/object";
 
 import {
@@ -34,10 +35,12 @@ function planRoleBarrels(
       return isBelow(directory, file) && dirname(file) !== directory;
     });
 
-    const subdirectories = deduplicate(
-      nested.map((file) => {
-        return file.slice(directory.length + 1).split("/")[0] ?? file;
-      }),
+    const subdirectories = toArray(
+      unique(
+        nested.map((file) => {
+          return file.slice(directory.length + 1).split("/")[0] ?? file;
+        }),
+      ),
     );
 
     const reexports = subdirectories.flatMap((name) => {

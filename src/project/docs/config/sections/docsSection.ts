@@ -1,10 +1,6 @@
-import {
-  difference,
-  intersection,
-  isNotEmpty,
-  map,
-} from "@auaust/primitive-kit/arrays";
+import { difference, intersection, map } from "@auaust/primitive-kit/arrays";
 import { isArray } from "@auaust/toolkit";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import { loadLazy } from "#foundation/modules/index";
@@ -83,7 +79,7 @@ function adjustTags(
     exclude,
   );
 
-  if (isNotEmpty(both)) {
+  if (isNonEmptyArray(both)) {
     throw new Error(`docs.tags both appends and excludes ${both.join(", ")}`);
   }
 
@@ -91,7 +87,7 @@ function adjustTags(
 
   const unknown = difference(exclude, names);
 
-  if (isNotEmpty(unknown)) {
+  if (isNonEmptyArray(unknown)) {
     throw new Error(
       `docs.tags excludes ${unknown.join(", ")}, which no active extension declares`,
     );

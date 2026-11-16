@@ -4,7 +4,7 @@ import { basename } from "node:path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { parse } from "yaml";
 
-import { sort } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/toolkit/array";
 import { keys } from "@auaust/toolkit/object";
 
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";

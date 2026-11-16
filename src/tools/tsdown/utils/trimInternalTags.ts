@@ -6,7 +6,7 @@ import {
   SyntaxKind,
 } from "typescript";
 
-import { isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { min } from "@auaust/toolkit/math";
 
 import {
@@ -81,7 +81,7 @@ function trimTags(
     return;
   }
 
-  if (block.description === "" && !isNotEmpty(tags)) {
+  if (block.description === "" && !isNonEmptyArray(tags)) {
     if (lines !== undefined) {
       output.remove(lines[0], min(lines[1] + 1, code.length));
     } else {

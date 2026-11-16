@@ -1,5 +1,7 @@
-import { deduplicate, map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
+import { toArray } from "@auaust/toolkit/array";
 import { compose } from "@auaust/toolkit/composer";
+import { unique } from "@auaust/toolkit/iterable";
 import { freeze } from "@auaust/toolkit/object";
 
 import { gitignoreFile } from "#constants";
@@ -67,10 +69,12 @@ export const gitSection = declareSection({
               listNestedIgnoreFiles(config),
             ]);
 
-            return deduplicate([
-              ...(rootFile === undefined ? [] : [rootFile]),
-              ...nested,
-            ]);
+            return toArray(
+              unique([
+                ...(rootFile === undefined ? [] : [rootFile]),
+                ...nested,
+              ]),
+            );
           },
         }),
       ),

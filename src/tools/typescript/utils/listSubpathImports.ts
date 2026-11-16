@@ -1,4 +1,4 @@
-import { sort } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/toolkit/array";
 import { record } from "@auaust/toolkit/object";
 
 import { importPrefix } from "#tools/typescript/constants";

@@ -1,6 +1,7 @@
 import { posix } from "node:path";
 
-import { deduplicate, flatMap, sort } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { deduplicate, sort } from "@auaust/toolkit/array";
 
 import { toPosixPath, type Filesystem } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";

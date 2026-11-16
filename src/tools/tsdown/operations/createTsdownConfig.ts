@@ -2,7 +2,8 @@ import { join } from "node:path";
 
 import type { TsdownPlugin } from "tsdown";
 
-import { flatMap, isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
@@ -239,7 +240,7 @@ export async function createTsdownConfig(
         `${pluginPrefix}:bin-declarations`,
         keys(bins),
       ),
-      ...(isNotEmpty(internalTags)
+      ...(isNonEmptyArray(internalTags)
         ? createInternalTagsPlugins(
             `${pluginPrefix}:internal-tags`,
             internalTags,

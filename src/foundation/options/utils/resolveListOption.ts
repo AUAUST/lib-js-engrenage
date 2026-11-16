@@ -1,5 +1,6 @@
-import { difference, isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { difference } from "@auaust/primitive-kit/arrays";
 import { isArray, isPlainObject } from "@auaust/toolkit";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 import type { MaybeArray } from "@auaust/toolkit/types";
 
 import type { ListAdjustment } from "#foundation/options/types/ListAdjustment";
@@ -43,7 +44,7 @@ function warnDuplicates<Item extends string>(
 ): readonly Item[] {
   const duplicates = findDuplicates(items);
 
-  if (isNotEmpty(duplicates)) {
+  if (isNonEmptyArray(duplicates)) {
     console.warn(`${subject} lists ${duplicates.join(", ")} more than once`);
   }
 
@@ -82,7 +83,7 @@ export function resolveListOption<Item extends string>(
 
   const unmatched = difference(excluded, base);
 
-  if (isNotEmpty(unmatched)) {
+  if (isNonEmptyArray(unmatched)) {
     console.warn(
       `${subject} excludes ${unmatched.join(", ")}, absent from its defaults`,
     );

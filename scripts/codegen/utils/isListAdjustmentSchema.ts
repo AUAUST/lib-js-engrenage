@@ -1,4 +1,4 @@
-import { sort } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/toolkit/array";
 import { keys } from "@auaust/toolkit/object";
 
 import type { ConfigSchema } from "#scripts/codegen/types/ConfigSchema";

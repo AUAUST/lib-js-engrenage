@@ -10,7 +10,8 @@ import {
   string,
 } from "valibot";
 
-import { map, sort } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/toolkit/array";
 import { record } from "@auaust/toolkit/object";
 
 import { validate } from "#foundation/options/index";

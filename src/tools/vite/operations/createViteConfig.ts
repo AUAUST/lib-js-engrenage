@@ -1,6 +1,6 @@
 import { join } from "node:path";
 
-import { isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 
 import { project as pluginPrefix } from "#constants";
 import { resolveWithin } from "#foundation/filesystem/index";
@@ -24,7 +24,7 @@ function resolveOnlyDirectory(
     return;
   }
 
-  if (isNotEmpty(others)) {
+  if (isNonEmptyArray(others)) {
     throw new Error(failure);
   }
 

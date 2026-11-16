@@ -1,5 +1,5 @@
-import { sort } from "@auaust/primitive-kit/arrays";
 import { isArray, isNumber, isString } from "@auaust/toolkit";
+import { sort } from "@auaust/toolkit/array";
 
 import { splitRepository } from "#tools/github/issues/api/index";
 import type { IssueAccess } from "#tools/github/issues/contract/index";

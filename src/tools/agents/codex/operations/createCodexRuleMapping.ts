@@ -1,4 +1,4 @@
-import { sort } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/toolkit/array";
 
 import { claudeRulesGlob } from "#tools/agents/claude/constants";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";

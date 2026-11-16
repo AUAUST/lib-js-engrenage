@@ -1,14 +1,9 @@
 import satisfies from "semver/functions/satisfies.js";
 import validRange from "semver/ranges/valid.js";
 
-import {
-  flatMap,
-  includes,
-  isNotEmpty,
-  map,
-  toSorted,
-} from "@auaust/primitive-kit/arrays";
+import { flatMap, includes, map } from "@auaust/primitive-kit/arrays";
 import { isArray } from "@auaust/toolkit";
+import { isNonEmptyArray, toSorted } from "@auaust/toolkit/array";
 import { freeze, keys, values } from "@auaust/toolkit/object";
 
 import { collectExtensions } from "#foundation/extensions/index";
@@ -69,7 +64,7 @@ function checkCompatibility(extensions: readonly Extension[]): void {
         ];
   });
 
-  if (isNotEmpty(findings)) {
+  if (isNonEmptyArray(findings)) {
     throw new Error(`Incompatible extensions:\n${findings.join("\n")}`);
   }
 }
@@ -149,7 +144,7 @@ export function createProjectConfig({
 
     if (
       owner === undefined ||
-      (owner.when === undefined && !isNotEmpty(requires))
+      (owner.when === undefined && !isNonEmptyArray(requires))
     ) {
       return;
     }
@@ -200,7 +195,7 @@ export function createProjectConfig({
       });
     });
 
-    if (isNotEmpty(reserved)) {
+    if (isNonEmptyArray(reserved)) {
       throw new Error(
         `Preset "${name}" sets ${reserved.join(", ")}, which presets never set`,
       );

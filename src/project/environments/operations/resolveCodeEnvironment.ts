@@ -1,4 +1,4 @@
-import { isNotEmpty } from "@auaust/primitive-kit/arrays";
+import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import {
@@ -25,7 +25,7 @@ export async function resolveCodeEnvironment({
   filesystem: Filesystem;
 }) {
   return freeze({
-    active: isNotEmpty(await findDirectories(filesystem, dirs)),
+    active: isNonEmptyArray(await findDirectories(filesystem, dirs)),
     dirs,
     generated,
     discovered,

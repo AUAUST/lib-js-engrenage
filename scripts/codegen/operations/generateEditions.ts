@@ -5,7 +5,8 @@ import { dirname, join as joinPath } from "node:path";
 import { flattenDiagnosticMessageText } from "typescript";
 import { looseObject, parse, string } from "valibot";
 
-import { join, map, sort } from "@auaust/primitive-kit/arrays";
+import { join, map } from "@auaust/primitive-kit/arrays";
+import { sort } from "@auaust/toolkit/array";
 import { entries, record } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
