@@ -38,6 +38,16 @@ export const boundaryMessages = freeze({
   unknownPath: "`{{unknown}}` is not in the structure map; if you just created it, reload the editor window.",
 } as const satisfies Record<BoundaryCause, string>);
 
+export const eslintFlags = freeze([
+  "unstable_native_nodejs_ts_config",
+] as const);
+
+export const eslintFlagArguments = freeze(
+  eslintFlags.flatMap((flag) => {
+    return ["--flag", flag];
+  }),
+);
+
 export const infoRulesSetting = `${pluginName}/info-rules`;
 
 export const coreRules = freeze({

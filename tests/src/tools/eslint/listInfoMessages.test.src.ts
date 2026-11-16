@@ -50,6 +50,35 @@ describe("listInfoMessages", () => {
     binaryTimeout,
   );
 
+  test(
+    "skips a rule a later config object resets from info",
+    async () => {
+      const project = createTemporaryProject({
+        "package.json": JSON.stringify({
+          type: "module",
+          devDependencies: { eslint: "*" },
+        }),
+        "tsconfig.json": JSON.stringify({
+          extends: sourcePath("data/tsconfig/base.json"),
+          include: ["**/*.ts"],
+        }),
+        "engrenage.config.ts": "export default {};\n",
+        "eslint.config.ts": `import { defineEslintConfig } from ${JSON.stringify(sourcePath("src/tools/eslint/index.ts"))};\n\nexport default defineEslintConfig({}, { rules: { "auaust/no-unused-vars": "warn" } });\n`,
+        "src/edited.ts": "const leftover = 1;\n\nexport const value = 2;\n",
+      });
+
+      mockCwd(project.root);
+
+      const messages = await listInfoMessages(
+        await loadConfig(project.root),
+        project.resolve("src/edited.ts"),
+      );
+
+      expect(messages).toEqual([]);
+    },
+    binaryTimeout,
+  );
+
   test("rejects a project without the eslint dependency", async () => {
     const project = createTemporaryProject({
       "package.json": JSON.stringify({ type: "module" }),

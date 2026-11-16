@@ -1,6 +1,7 @@
 import type { ESLint } from "eslint";
 
 import { eslint } from "#constants";
+import { eslintFlags } from "#tools/eslint/constants";
 import { MissingEslintError } from "#tools/eslint/errors/MissingEslintError";
 import type { LoadedConfig } from "#project/config/index";
 
@@ -21,6 +22,7 @@ export async function loadEslint({
   function createLinter(options: Omit<ESLint.Options, "cwd" | "cache">) {
     return new ESLint({
       ...options,
+      flags: [...eslintFlags],
       cwd: context.root,
       cache: false,
     });

@@ -1,5 +1,6 @@
+import { deriveInfoRules } from "#tools/eslint/operations/deriveInfoRules";
 import { loadEslint } from "#tools/eslint/operations/loadEslint";
-import { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
+import { loadEslintConfigs } from "#tools/eslint/operations/loadEslintConfigs";
 import type { LoadedConfig } from "#project/config/index";
 import type { InfoMessage } from "#tools/eslint/types/InfoMessage";
 import type { File } from "#types/File";
@@ -10,10 +11,13 @@ export async function listInfoMessages(
 ): Promise<InfoMessage[]> {
   const createLinter = await loadEslint(config);
 
-  // @debt the ESLint config loads twice, once in `loadInfoRules` and once in the `ESLint` instance; the instance's `calculateConfigForFile` could supply the info rules
-  const infoRules = new Set(await loadInfoRules(config.context.root));
+  const configs = await loadEslintConfigs(config.context.root);
+
+  const infoRules = new Set(deriveInfoRules(configs));
 
   const results = await createLinter({
+    overrideConfigFile: true,
+    overrideConfig: configs,
     warnIgnored: false,
     ruleFilter: ({ ruleId }) => infoRules.has(ruleId),
   }).lintFiles(file);

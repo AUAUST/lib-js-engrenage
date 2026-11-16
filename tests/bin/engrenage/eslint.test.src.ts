@@ -43,7 +43,11 @@ describe("engrenage eslint", () => {
 
     await runDefinition(eslint, "src");
 
-    expect(readRecordedArgs(project)).toEqual(["src"]);
+    expect(readRecordedArgs(project)).toEqual([
+      "--flag",
+      "unstable_native_nodejs_ts_config",
+      "src",
+    ]);
   });
 
   test("passes --debug to ESLint", async () => {
@@ -51,6 +55,10 @@ describe("engrenage eslint", () => {
 
     await runDefinition(engrenage, "eslint", "--debug");
 
-    expect(readRecordedArgs(project)).toEqual(["--debug"]);
+    expect(readRecordedArgs(project)).toEqual([
+      "--flag",
+      "unstable_native_nodejs_ts_config",
+      "--debug",
+    ]);
   });
 });

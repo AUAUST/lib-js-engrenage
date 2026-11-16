@@ -11,11 +11,13 @@ export { createConventionRules } from "#tools/eslint/operations/createConvention
 export { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
 export { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";
 export { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
+export { deriveInfoRules } from "#tools/eslint/operations/deriveInfoRules";
 export { fixWithEslint } from "#tools/eslint/operations/fixWithEslint";
 export { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";
 export { listInfoMessages } from "#tools/eslint/operations/listInfoMessages";
 export { loadConventionCategories } from "#tools/eslint/operations/loadConventionCategories";
 export { loadEslint } from "#tools/eslint/operations/loadEslint";
+export { loadEslintConfigs } from "#tools/eslint/operations/loadEslintConfigs";
 export { loadInfoRules } from "#tools/eslint/operations/loadInfoRules";
 export { resolveConventionSections } from "#tools/eslint/operations/resolveConventionSections";
 export { resolveEslintFixArguments } from "#tools/eslint/operations/resolveEslintFixArguments";

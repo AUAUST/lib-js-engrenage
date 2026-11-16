@@ -7,4 +7,7 @@ export default defineToolCommand({
   configure(command) {
     return command.description("Lint the project.");
   },
+  action() {
+    return import("#bin/engrenage/actions/eslint");
+  },
 });

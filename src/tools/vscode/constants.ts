@@ -5,6 +5,7 @@ import {
   domainMetadataFile,
   namespaceMetadataFile,
 } from "#project/structure/constants";
+import { eslintFlags } from "#tools/eslint/constants";
 import type { Integration } from "#tools/vscode/types/Integration";
 import type { File } from "#types/File";
 
@@ -32,6 +33,9 @@ export const eslintIntegration = freeze({
       "source.sortImports": "never",
     },
     "eslint.codeActionsOnSave.mode": "problems",
+    "eslint.options": {
+      flags: [...eslintFlags],
+    },
   },
   extensions: ["dbaeumer.vscode-eslint"],
 } as const) satisfies Integration;
