@@ -5,5 +5,5 @@ import type { Maybe, MaybeAsyncFn } from "@auaust/toolkit/types";
  * and `undefined` stand for no value.
  */
 export type Resolvable<Data, Arguments extends unknown[] = []> = Maybe<
-  MaybeAsyncFn<Data, Arguments>
+  Data | MaybeAsyncFn<Data, Arguments>
 >;
