@@ -11,11 +11,10 @@ Skills and checks name issue types, fields, options and close reasons by their m
 
 ## Repositories
 
-| Short name      | Repository                    |
-| --------------- | ----------------------------- |
-| `engrenage`     | `AUAUST/lib-js-engrenage`     |
-| `primitive-kit` | `AUAUST/lib-js-primitive-kit` |
-| `toolkit`       | `AUAUST/lib-js-toolkit`       |
+| Short name  | Repository                |
+| ----------- | ------------------------- |
+| `engrenage` | `AUAUST/lib-js-engrenage` |
+| `toolkit`   | `AUAUST/lib-js-toolkit`   |
 
 ## Labels
 
@@ -46,28 +45,6 @@ Labels are each repository's own: pick them by their description.
 | Sync          | Sync targets, synced and generated files.                                           |
 | Tests         | The test runner, test selection and the test suites.                                |
 | TypeScript    | tsconfig composition, type checking and declarations.                               |
-
-### `primitive-kit`
-
-| Label                     | Description                                                          |
-| ------------------------- | -------------------------------------------------------------------- |
-| ⏳️ — Awaiting others      | Waiting for approval, information or feedback from non-developers    |
-| ⏳️ — Delayed              | Waiting for a better time to work on this.                           |
-| ⏳️ — High priority        | The sooner the better!                                               |
-| ⏳️ — On Hold              | Blocked by something out of our reach, such as a dependency's issue. |
-| 🐛 – Bug: Medium          | Something isn't working. The sooner the fix the better.              |
-| 🐛 — Bug: Critical        | Something isn't working, and it's really bad.                        |
-| 🐛 — Bug: Soft            | Something isn't working but has little consequences.                 |
-| 🔁 — Duplicate            | This will not be worked on.                                          |
-| 🔍 — Discussion           | Let's think about it twice, with twice as much brains                |
-| 🔍 — Information required | Further information is requested                                     |
-| 🗓️ — Low priority         | Consider working on it when you get bored.                           |
-| 🚀 — Feature              | An entirely new feature that should be implemented.                  |
-| 🚀 — Improvement          | Enhancement, feature request or suggestion.                          |
-| 🚫 — Irrelevant           | This will not be worked on.                                          |
-| 🧠 — Documentation        | Improvements or additions to documentation.                          |
-| 🧠 — Low effort           | If it's not a no-brainer, switch the issue to 🔍 — Discussion        |
-| 🧪 — Tests                | Related to test suites, code security and quality.                   |
 
 ### `toolkit`
 
