@@ -147,3 +147,4 @@
 - BSD sed -i: subagent edited files with GNU `sed -i` — macOS needs `-i ''`; retried
 - pnpm add in scratchpad: probing TypeScript 7 on the repo — auto mode classifier denied the install; relied on #558 measurements
 - dispatch hook Issue line: briefed `AUAUST/engrenage#555` — 404; repo is `AUAUST/lib-js-engrenage`, found via `gh repo view`
+- zsh `grep --include=*.md`: unquoted glob in a Bash call — zsh "no matches found" aborts the command; dropped the flag
