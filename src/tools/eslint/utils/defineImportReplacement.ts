@@ -1,4 +1,5 @@
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { join, map as mapIterable } from "@auaust/toolkit/iterable";
 
 import { defineReplacement } from "#tools/eslint/utils/defineReplacement";
 import type { Trait } from "#project/presets/index";
@@ -38,17 +39,20 @@ function createSelector(
   imports: readonly string[] | undefined,
 ): string {
   if (imports === undefined) {
-    return map(
-      [
-        "ImportDeclaration",
-        "ExportNamedDeclaration",
-        "ExportAllDeclaration",
-        "ImportExpression",
-      ],
-      (node) => {
-        return `${node}[source.value='${source}']`;
-      },
-    ).join(", ");
+    return join(
+      mapIterable(
+        [
+          "ImportDeclaration",
+          "ExportNamedDeclaration",
+          "ExportAllDeclaration",
+          "ImportExpression",
+        ],
+        (node) => {
+          return `${node}[source.value='${source}']`;
+        },
+      ),
+      ", ",
+    );
   }
 
   return flatMap(imports, (name) => {
@@ -84,7 +88,7 @@ function createTarget(
     type: "disjunction",
   });
 
-  return `${importList.format(map(imports, describeImport))} from \`${source}\``;
+  return `${importList.format(mapIterable(imports, describeImport))} from \`${source}\``;
 }
 
 /**

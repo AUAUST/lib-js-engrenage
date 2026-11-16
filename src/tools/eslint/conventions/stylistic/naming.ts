@@ -2,14 +2,17 @@ import { compileFunction } from "node:vm";
 
 import type { Rule, Scope, SourceCode } from "eslint";
 
-import { map } from "@auaust/primitive-kit/arrays";
 import {
   split,
   toCamelCase,
   toPascalCase,
 } from "@auaust/primitive-kit/strings";
 import { isString } from "@auaust/toolkit";
-import { includes, join, last } from "@auaust/toolkit/array";
+import { includes, join, last, toArray } from "@auaust/toolkit/array";
+import {
+  join as joinIterable,
+  map as mapIterable,
+} from "@auaust/toolkit/iterable";
 import { toLowerCase } from "@auaust/toolkit/string";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
@@ -26,8 +29,8 @@ function convertName(name: string, formats: readonly string[]) {
   }
 
   // @debt consider primitive-kit's splitWords
-  const words = join(
-    map(split(name, "_"), (word) => {
+  const words = joinIterable(
+    mapIterable(split(name, "_"), (word) => {
       return /[a-z]/.test(word) ? word : toLowerCase(word);
     }),
     "_",
@@ -218,14 +221,16 @@ function fixFormat(
   }
 
   return (fixer) => {
-    return map([...identifiers], (identifier) => {
-      return identifier.type === "JSXIdentifier"
-        ? fixer.replaceText(identifier, newName)
-        : fixer.replaceText(
-            identifier,
-            renamedText(sourceCode, identifier, name, newName),
-          );
-    });
+    return toArray(
+      mapIterable(identifiers, (identifier) => {
+        return identifier.type === "JSXIdentifier"
+          ? fixer.replaceText(identifier, newName)
+          : fixer.replaceText(
+              identifier,
+              renamedText(sourceCode, identifier, name, newName),
+            );
+      }),
+    );
   };
 }
 

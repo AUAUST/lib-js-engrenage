@@ -1,7 +1,6 @@
 import { join, relative } from "node:path";
 
-import { map } from "@auaust/primitive-kit/arrays";
-import { filterMap } from "@auaust/toolkit/array";
+import { filterMap, map } from "@auaust/toolkit/array";
 
 import {
   isWithin,

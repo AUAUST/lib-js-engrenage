@@ -1,5 +1,5 @@
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
-import { includes } from "@auaust/toolkit/array";
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { includes, map } from "@auaust/toolkit/array";
 
 import {
   anchorGlob,

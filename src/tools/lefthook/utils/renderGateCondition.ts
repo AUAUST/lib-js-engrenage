@@ -1,7 +1,10 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { join, map as mapIterable } from "@auaust/toolkit/iterable";
 
 export function renderGateCondition(variables: readonly string[]) {
   return {
-    run: map(variables, (variable) => `test -n "$${variable}"`).join(" || "),
+    run: join(
+      mapIterable(variables, (variable) => `test -n "$${variable}"`),
+      " || ",
+    ),
   };
 }

@@ -1,6 +1,6 @@
 import { picklist, string } from "valibot";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 import { values } from "@auaust/toolkit/object";
 
 import { declare, declareObject } from "#foundation/options/index";

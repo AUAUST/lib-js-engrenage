@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { syncBlocks, syncFiles } from "#foundation/blocks/index";
 import { claudeSkillsDir } from "#tools/agents/claude/constants";

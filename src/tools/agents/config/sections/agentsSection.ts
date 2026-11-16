@@ -1,5 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
-import { difference, isNonEmptyArray } from "@auaust/toolkit/array";
+import { difference, isNonEmptyArray, map } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";

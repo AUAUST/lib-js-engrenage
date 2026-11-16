@@ -1,7 +1,11 @@
 import { posix } from "node:path";
 
-import { map } from "@auaust/primitive-kit/arrays";
 import { filter } from "@auaust/toolkit/array";
+import {
+  filter as filterIterable,
+  join,
+  map as mapIterable,
+} from "@auaust/toolkit/iterable";
 
 import { packages } from "#constants";
 import { runGateBinary, type GateResult } from "#project/gate/index";
@@ -47,7 +51,7 @@ async function partitionFiles(
 
   const mirrors = listMirrors(structure.tests);
 
-  function ownerOf(file: File): readonly string[] | undefined {
+  function ownerOf(file: File): Iterable<string> | undefined {
     const entity = entities.entityOf(file);
 
     if (entity?.variant !== undefined) {
@@ -65,13 +69,13 @@ async function partitionFiles(
       return;
     }
 
-    const owners = map(dirs, (directory) => {
+    const owners = mapIterable(dirs, (directory) => {
       return mirrors.get(posix.join(directory, domain));
     });
 
     // @debt Mirror directories reach Vitest as substring filters, kept from matching sibling directories only by a trailing `/`; `owned` mixes those filters with test files as plain strings.
-    return map(
-      filter(owners, (mirror) => mirror !== undefined),
+    return mapIterable(
+      filterIterable(owners, (mirror) => mirror !== undefined),
       (mirror) => `${mirror}/`,
     );
   }
@@ -95,11 +99,14 @@ async function partitionFiles(
 }
 
 function mergeResults(results: readonly GateResult[]): GateResult {
-  const outputs = map(results, ({ output }) => output);
+  const outputs = mapIterable(results, ({ output }) => output);
 
   return {
     ok: results.every(({ ok }) => ok),
-    output: filter(outputs, (output) => output !== "").join("\n"),
+    output: join(
+      filterIterable(outputs, (output) => output !== ""),
+      "\n",
+    ),
   };
 }
 

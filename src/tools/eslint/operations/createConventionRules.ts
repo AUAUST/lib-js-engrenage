@@ -1,4 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { pluginName } from "#tools/eslint/constants";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";

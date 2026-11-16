@@ -1,5 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
-import { toArray } from "@auaust/toolkit/array";
+import { map, toArray } from "@auaust/toolkit/array";
 import { compose } from "@auaust/toolkit/composer";
 import { concat, unique } from "@auaust/toolkit/iterable";
 import { freeze } from "@auaust/toolkit/object";

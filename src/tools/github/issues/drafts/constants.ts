@@ -1,4 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { freeze, values } from "@auaust/toolkit/object";
 
 import { closeReasonMeanings } from "#tools/github/issues/contract/constants";
@@ -26,7 +26,7 @@ export const reservedKeys = freeze([
 
 export const draftStates = freeze([
   "open",
-  ...map(values(closeReasonMeanings), ({ name }) => name),
+  ...mapIterable(values(closeReasonMeanings), ({ name }) => name),
 ] as const);
 
 export const claimStates = freeze(["existing"] as const);

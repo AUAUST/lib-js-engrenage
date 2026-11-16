@@ -1,6 +1,6 @@
 import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/types";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { isMultiline } from "#tools/prettier/utils/isMultiline";
 import { visitNodes } from "#tools/prettier/utils/visitNodes";

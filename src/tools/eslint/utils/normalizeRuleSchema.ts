@@ -1,5 +1,5 @@
-import { map } from "@auaust/primitive-kit/arrays";
 import { isArray, isPlainObject, isString } from "@auaust/toolkit";
+import { map } from "@auaust/toolkit/array";
 
 const branchKeywords = ["anyOf", "oneOf"];
 

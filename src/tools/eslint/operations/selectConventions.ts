@@ -1,6 +1,6 @@
-import { map } from "@auaust/primitive-kit/arrays";
 import { isBoolean } from "@auaust/toolkit";
 import { every, filter, find } from "@auaust/toolkit/array";
+import { join, map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries, hasOwn, keys } from "@auaust/toolkit/object";
 
 import type { Environment } from "#project/config/index";
@@ -51,12 +51,12 @@ export function selectConventions({
 
   if (unknownCategories.length > 0) {
     throw new Error(
-      `Invalid ESLint options: unknown convention categories ${map(
-        unknownCategories,
-        (name) => {
+      `Invalid ESLint options: unknown convention categories ${join(
+        mapIterable(unknownCategories, (name) => {
           return `"${name}"`;
-        },
-      ).join(", ")}`,
+        }),
+        ", ",
+      )}`,
     );
   }
 
@@ -76,12 +76,12 @@ export function selectConventions({
 
       if (unknown.length > 0) {
         throw new Error(
-          `Invalid ESLint options: unknown ${category} conventions ${map(
-            unknown,
-            (name) => {
+          `Invalid ESLint options: unknown ${category} conventions ${join(
+            mapIterable(unknown, (name) => {
               return `"${name}"`;
-            },
-          ).join(", ")}`,
+            }),
+            ", ",
+          )}`,
         );
       }
     }

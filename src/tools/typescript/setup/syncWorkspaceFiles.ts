@@ -1,5 +1,6 @@
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
 import { isBoolean } from "@auaust/toolkit";
+import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";
@@ -120,7 +121,7 @@ async function createTsconfigEdits(
     ];
   });
 
-  const custom = map(
+  const custom = mapIterable(
     entries(option.compilerOptions),
     ([name, value]): JsonEdit => {
       return {

@@ -1,8 +1,11 @@
 import type { TsdownPlugin } from "tsdown";
 
-import { map } from "@auaust/primitive-kit/arrays";
 import { isString } from "@auaust/toolkit";
-import { filter, isNonEmptyArray, join } from "@auaust/toolkit/array";
+import { filter, isNonEmptyArray } from "@auaust/toolkit/array";
+import {
+  join as joinIterable,
+  map as mapIterable,
+} from "@auaust/toolkit/iterable";
 
 const declarationChunk = /\.d\.[cm]?ts$/;
 
@@ -42,12 +45,12 @@ export function createEmptyNamespacesPlugins(name: string): TsdownPlugin[] {
             return null;
           }
 
-          const declarations = map(names, (name) => {
+          const declarations = mapIterable(names, (name) => {
             return `declare const ${name}: {};`;
           });
 
           return {
-            code: `${code.trimEnd()}\n${join(declarations, "\n")}\n`,
+            code: `${code.trimEnd()}\n${joinIterable(declarations, "\n")}\n`,
             map: null,
           };
         },

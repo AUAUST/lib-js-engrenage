@@ -1,6 +1,6 @@
 import { Document, isMap } from "yaml";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { workspaceFile } from "#tools/pnpm/constants";
 import { addWorkspaceSettings } from "#tools/pnpm/utils/addWorkspaceSettings";

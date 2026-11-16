@@ -1,4 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 import { entries, record } from "@auaust/toolkit/object";
 
 import { resolveExportPaths } from "#project/package/index";

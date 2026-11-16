@@ -3,14 +3,17 @@ import { isDeepStrictEqual } from "node:util";
 
 import { array, is, looseObject, optional, string } from "valibot";
 
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
 import { isArray, isPlainObject } from "@auaust/toolkit";
 import {
   deduplicate,
   every,
   includes,
+  map,
+  toArray,
   toReversed,
 } from "@auaust/toolkit/array";
+import { map as mapIterable } from "@auaust/toolkit/iterable";
 
 import { resolveDataFile } from "#foundation/data/index";
 import { toPosixPath, type Filesystem } from "#foundation/filesystem/index";
@@ -79,14 +82,16 @@ function mergeSchemas(
       [
         {
           path: schemasLocation,
-          value: map(
-            [...groupByUrl(schemas, schemas.keys())],
-            ([url, fileMatch]) => {
-              return {
-                fileMatch,
-                url,
-              };
-            },
+          value: toArray(
+            mapIterable(
+              groupByUrl(schemas, schemas.keys()),
+              ([url, fileMatch]) => {
+                return {
+                  fileMatch,
+                  url,
+                };
+              },
+            ),
           ),
         },
       ],
@@ -294,7 +299,7 @@ async function loadEslintInfoRules(root: Directory): Promise<string[]> {
 
 function createSchemas(root: Directory): Map<Glob, string> {
   return new Map(
-    map(metadataSchemas, ({ file, schema }) => {
+    mapIterable(metadataSchemas, ({ file, schema }): [Glob, string] => {
       return [
         `**/${file}`,
         `./${toPosixPath(relative(root, resolveDataFile(schema)))}`,

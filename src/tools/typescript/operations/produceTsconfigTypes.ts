@@ -1,6 +1,9 @@
-import { map } from "@auaust/primitive-kit/arrays";
 import { isArray, isString } from "@auaust/toolkit";
-import { filter } from "@auaust/toolkit/array";
+import { filter, toArray } from "@auaust/toolkit/array";
+import {
+  filter as filterIterable,
+  map as mapIterable,
+} from "@auaust/toolkit/iterable";
 
 import { engrenage } from "#constants";
 import { resolveListOption } from "#foundation/options/index";
@@ -64,25 +67,30 @@ function listBaselineTypes(
   library: readonly string[],
 ): readonly string[] {
   // @debt includesEsLibrary only knows the generated editions: a lib it does not know (`esnext.*`, `ESNext`, `DOM`) never counts as including a library group
-  return map(
-    filter(apis, (api) => {
-      if (!isLibraryGroup(api)) {
-        return true;
-      }
+  return toArray(
+    mapIterable(
+      filterIterable(apis, (api) => {
+        if (!isLibraryGroup(api)) {
+          return true;
+        }
 
-      const name = apiLibraryGroups[api].slice("lib.".length, -".d.ts".length);
+        const name = apiLibraryGroups[api].slice(
+          "lib.".length,
+          -".d.ts".length,
+        );
 
-      if (!includesEsLibrary(library, name)) {
-        return true;
-      }
+        if (!includesEsLibrary(library, name)) {
+          return true;
+        }
 
-      console.warn(
-        `src.apis lists ${api}, whose lib ${name} is already in the ${target.key} tsconfig lib: it is left out of types; remove it from src.apis`,
-      );
+        console.warn(
+          `src.apis lists ${api}, whose lib ${name} is already in the ${target.key} tsconfig lib: it is left out of types; remove it from src.apis`,
+        );
 
-      return false;
-    }),
-    (api) => `${apiTypesPrefix}${api}`,
+        return false;
+      }),
+      (api) => `${apiTypesPrefix}${api}`,
+    ),
   );
 }
 

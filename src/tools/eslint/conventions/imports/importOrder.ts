@@ -1,6 +1,6 @@
 import { relative } from "node:path";
 
-import { map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
 
 import { organization } from "#constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";

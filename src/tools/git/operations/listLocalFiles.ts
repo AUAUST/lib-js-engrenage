@@ -1,4 +1,6 @@
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/toolkit/array";
+import { map as mapIterable } from "@auaust/toolkit/iterable";
 
 import { relativeWithin, resolveWithin } from "#foundation/filesystem/index";
 import { runGit } from "#tools/git/operations/runGit";
@@ -31,7 +33,7 @@ export async function listLocalFiles(
           : `${prefix}/${directory}/**/${pattern}`;
       });
 
-  const paths = map(files, (file) => {
+  const paths = mapIterable(files, (file) => {
     return relativeWithin(git.root, resolveWithin(base, file));
   });
 

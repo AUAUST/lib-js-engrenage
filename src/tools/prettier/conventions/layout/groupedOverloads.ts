@@ -1,7 +1,7 @@
 import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/types";
 
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
-import { filterMap } from "@auaust/toolkit/array";
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { filterMap, map } from "@auaust/toolkit/array";
 
 import { collectStatementPairs } from "#tools/prettier/utils/collectStatementPairs";
 import { unwrapExports } from "#tools/prettier/utils/unwrapExports";

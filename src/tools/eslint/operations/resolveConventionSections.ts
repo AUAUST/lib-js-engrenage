@@ -1,4 +1,5 @@
-import { flatMap, map } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
+import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries, freeze, record } from "@auaust/toolkit/object";
 
 import type { ConfigKey, LoadedConfig } from "#project/config/index";
@@ -15,7 +16,7 @@ export async function resolveConventionSections(
 
   const resolved = new Map<ConfigKey, unknown>(
     await Promise.all(
-      map([...keys], async (key) => {
+      mapIterable(keys, async (key) => {
         return [key, await config.resolve(key)] as const;
       }),
     ),
@@ -38,7 +39,7 @@ export async function resolveConventionSections(
   function pick<Sections extends ConventionSections>(
     declared: Sections | undefined,
   ): ConventionValues<Sections> {
-    const picked = map(
+    const picked = mapIterable(
       entries<ConventionSections>(declared ?? {}),
       ([name, key]) => {
         return [name, read(key)] as const;

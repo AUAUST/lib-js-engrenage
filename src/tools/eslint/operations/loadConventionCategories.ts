@@ -1,4 +1,4 @@
-import { map } from "@auaust/primitive-kit/arrays";
+import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { hasOwn } from "@auaust/toolkit/object";
 
 import { loadLazy } from "#foundation/modules/index";
@@ -16,7 +16,7 @@ export async function loadConventionCategories(
   );
 
   const loaded = await Promise.all(
-    map(contributions, async ({ entry, extension }) => {
+    mapIterable(contributions, async ({ entry, extension }) => {
       return {
         entry,
         extension: extension.name,
