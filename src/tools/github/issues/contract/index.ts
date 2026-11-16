@@ -19,6 +19,7 @@ export { readGithubBody } from "#tools/github/issues/contract/operations/readGit
 export { checkBlockersField } from "#tools/github/issues/contract/utils/checkBlockersField";
 export { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 export { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
+export { checkNesting } from "#tools/github/issues/contract/utils/checkNesting";
 export { checkProtocolNames } from "#tools/github/issues/contract/utils/checkProtocolNames";
 export { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
 export { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";

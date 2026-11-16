@@ -9,6 +9,7 @@ import {
 } from "#tools/github/issues/api/index";
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
+  checkNesting,
   findContractMeaning,
   type IssueAccess,
   type IssueContract,
@@ -29,6 +30,7 @@ import { createManifestSchema } from "#tools/github/issues/drafts/utils/createMa
 import { isClaimedStem } from "#tools/github/issues/drafts/utils/isClaimedStem";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
+import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
 import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
 import { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
 import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
@@ -117,7 +119,7 @@ function toPublished(
 function checkNewSegments(drafts: readonly PublishedDraft[]) {
   const listed = new Set(
     drafts
-      .filter(({ meaning }) => meaning === "plan")
+      .filter(({ meaning }) => meaning !== "segment")
       .flatMap(({ manifest }) => listDraftReferences(manifest.subIssues)),
   );
 
@@ -131,8 +133,45 @@ function checkNewSegments(drafts: readonly PublishedDraft[]) {
       );
     })
     .map(({ stem }) => {
-      return `${stem}: changes the Segment's \`subIssues\` while its parent Plan is outside the set: publish them together`;
+      return `${stem}: changes the Segment's \`subIssues\` while the issue listing it is outside the set: publish them together`;
     });
+}
+
+async function checkNestedSegments({ drafts, context, lookup }: Publication) {
+  const stems = new Set(drafts.map(({ stem }) => stem));
+
+  const nested = await Promise.all(
+    drafts
+      .filter(({ meaning }) => meaning === "segment")
+      .map(async ({ stem, manifest }) => {
+        const types = await Promise.all(
+          listDraftReferences(manifest.subIssues)
+            .map((reference) => parseReference(reference))
+            .filter((parsed) => parsed?.kind === "issue")
+            .map((parsed) => {
+              return { parsed, ...resolveStem(parsed, context) };
+            })
+            .filter(({ stem }) => !stems.has(stem))
+            .map(async ({ repository, parsed }) => {
+              const { type } = await lookup.find({
+                repository,
+                number: parsed.number,
+              });
+
+              return type;
+            }),
+        );
+
+        return types.flatMap((type) => {
+          return checkNesting(
+            findContractMeaning(context.protocol, type),
+            "segment",
+          ).map(({ message }) => `${stem}: ${message}`);
+        });
+      }),
+  );
+
+  return nested.flat();
 }
 
 export async function publishIssues(
@@ -185,6 +224,12 @@ export async function publishIssues(
     lookup: createIssueLookup(client),
     numbers: new Map(),
   };
+
+  const nested = await checkNestedSegments(publication);
+
+  if (nested.length > 0) {
+    return failed(nested);
+  }
 
   const conflicts: string[] = [];
 

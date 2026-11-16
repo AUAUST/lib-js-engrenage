@@ -63,8 +63,8 @@ async function createBodyNormalizer(
   };
 }
 
-function checkSegment(
-  { drafts, context }: Publication,
+async function checkSegment(
+  { drafts, context, lookup }: Publication,
   draft: PublishedDraft,
   base: Manifest,
 ) {
@@ -77,8 +77,14 @@ function checkSegment(
 
   const parent = draft.remote?.parent;
 
+  if (!changes || parent === undefined) {
+    return [];
+  }
+
+  const { type } = await lookup.find(parent);
+
   const outside = (
-    parent === undefined ||
+    type === context.protocol.types.plan &&
     !drafts.some(({ stem }) => {
       const parsed = parseStem(stem);
 
@@ -95,9 +101,9 @@ function checkSegment(
     })
   );
 
-  return changes && outside
+  return outside
     ? [
-        `${draft.stem}: changes the Segment's \`subIssues\` while its parent Plan is outside the set: publish them together`,
+        `${draft.stem}: changes the Segment's \`subIssues\` while the plan holding it is outside the set: publish them together`,
       ]
     : [];
 }

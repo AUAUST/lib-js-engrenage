@@ -9,6 +9,7 @@ import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
   checkBlockersField,
   checkIssueBody,
+  checkNesting,
   findContractMeaning,
   listOpenSections,
   parseIssueBody,
@@ -359,6 +360,7 @@ export function checkDrafts(
         readBlockers(manifest, context.protocol),
         context.protocol,
       ),
+      ...checkNesting(meaning, checked.get(parents.get(stem) ?? "")?.meaning),
       ...checkHeader(
         draft.body,
         meaning === undefined ? undefined : issueContracts[meaning],

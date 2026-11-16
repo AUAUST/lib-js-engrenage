@@ -772,11 +772,98 @@ Goal: the group
 
     expect(lines).toEqual([
       expect.stringMatching(
-        /^new-group: changes the Segment's `subIssues` while its parent Plan is outside the set/,
+        /^new-group: changes the Segment's `subIssues` while the issue listing it is outside the set/,
       ),
     ]);
 
     expect(requests).toEqual([]);
+  });
+
+  test("publishes a new Segment listed by a new Task", async () => {
+    const root = createProject({
+      ".ai/issues/new-parent.draft.md": `---\ntitle: Parent\ntype: Task\nNature: Feature\nsubIssues: ["#{new-group}"]\n---\n\n${taskBody.replace("#10 · Goal: the extra\n\n", "")}\n`,
+      ".ai/issues/new-group.draft.md": `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nGoal: the group\n`,
+      ".ai/issues/new-step.draft.md": `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the step")}\n`,
+    });
+
+    const { lines, passed } = await publishIssues(await loadConfig(root), [
+      "new-parent",
+      "new-group",
+      "new-step",
+    ]);
+
+    expect({ lines, passed }).toMatchObject({ passed: true });
+  });
+
+  async function changeClaimedSegment(parent: MockIssue) {
+    issues.set(parent.number, parent);
+
+    issues.set(
+      31,
+      createIssue(31, {
+        type: "Segment",
+        body: `#${parent.number} · Goal: the segment`,
+        subIssues: [32],
+      }),
+    );
+
+    issues.set(32, createIssue(32, {}));
+
+    const {
+      root,
+      config,
+    } = await claimEdited(["31"], "31", '"#32"', '"#32"\n  - "#{new-step}"');
+
+    await config.context.filesystem.write(
+      ".ai/issues/new-step.draft.md",
+      `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the step")}\n`,
+    );
+
+    await config.context.filesystem.flush();
+
+    return publishIssues(await loadConfig(root), ["31", "new-step"]);
+  }
+
+  test("changes a claimed Segment's members under a Task without the Task, never under a Plan", async () => {
+    const underTask = await changeClaimedSegment(
+      createIssue(30, { subIssues: [31] }),
+    );
+
+    expect(underTask.passed).toBe(true);
+
+    findIssue(10).subIssues.push(31);
+
+    const underPlan = await changeClaimedSegment({
+      ...findIssue(10),
+      subIssues: [11, 12, 31],
+    });
+
+    expect(underPlan.lines).toEqual([
+      expect.stringMatching(
+        /^31: changes the Segment's `subIssues` while the plan holding it is outside the set/,
+      ),
+    ]);
+  });
+
+  test("fails checking a Segment draft listing another Segment draft", async () => {
+    const root = createProject({
+      ".ai/issues/new-outer.draft.md": `---\ntitle: Outer\ntype: Segment\nsubIssues: ["#{new-inner}"]\n---\n\nGoal: the outer\n`,
+      ".ai/issues/new-inner.draft.md": `---\ntitle: Inner\ntype: Segment\nsubIssues: ["#13"]\n---\n\nGoal: the inner\n`,
+    });
+
+    const { lines, passed } = await checkIssues(
+      await loadConfig(root),
+      ["new-outer", "new-inner"],
+      "worker",
+    );
+
+    expect(passed).toBe(false);
+
+    expect(lines).toContainEqual(
+      expect.stringContaining(
+        "A Segment directly under a Segment: list its members in the parent Segment instead.",
+      ),
+    );
   });
 
   async function failCreatingExtra(request: string) {

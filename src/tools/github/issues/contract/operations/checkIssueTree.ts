@@ -3,6 +3,7 @@ import { findMissingReferences } from "#tools/github/issues/contract/operations/
 import { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
+import { checkNesting } from "#tools/github/issues/contract/utils/checkNesting";
 import { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
@@ -24,6 +25,7 @@ interface PlacedIssue {
   readonly ancestors: readonly IssueLocation[];
   readonly depth: number;
   readonly inTurn: boolean;
+  readonly parentType?: string | undefined;
 }
 
 function toKey({ repository, number }: IssueLocation) {
@@ -42,6 +44,7 @@ function placeInWalkOrder(
   },
   inTurn = true,
   depth = 0,
+  parentType?: string,
 ): PlacedIssue[] {
   const location = {
     repository: tree.repository,
@@ -72,6 +75,7 @@ function placeInWalkOrder(
         { types, isClosed },
         subInTurn,
         depth + 1,
+        tree.issue.type,
       );
     }),
     {
@@ -81,6 +85,7 @@ function placeInWalkOrder(
       ancestors,
       depth,
       inTurn,
+      parentType,
     },
   ];
 }
@@ -178,6 +183,7 @@ export async function checkIssueTree(
       ancestors: chain,
       depth,
       inTurn,
+      parentType,
     }) => {
       const closed = isClosed({ ...location, state: issue.state });
 
@@ -195,6 +201,10 @@ export async function checkIssueTree(
         findings: closed
           ? []
           : [
+              ...checkNesting(
+                findContractMeaning(access.protocol, issue.type),
+                findContractMeaning(access.protocol, parentType),
+              ),
               ...checkIssueBody(
                 issue.body,
                 findContractMeaning(access.protocol, issue.type),

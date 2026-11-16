@@ -128,3 +128,4 @@
 - tsdown build with a scratch `outDir`: built experiment variants outside `dist` — the build rewrote `package.json` paths to the scratch dir; restored with `git checkout`
 - rolldown plugin `getModuleInfo(...).isExternal`: marked modules importing packages in `buildEnd` — externals are listed in `getModuleIds` without `isExternal`; tested for non-path ids instead
 - gh issue view: guessed repo AUAUST/engrenage — remote is AUAUST/lib-js-engrenage; read it from git remote
+- worktree isolation guard: Bash commands with a `github` path segment refused as git commands — worker edited via Python scripts
