@@ -8,7 +8,8 @@ import {
 } from "node:fs/promises";
 import { dirname, matchesGlob } from "node:path";
 
-import { flat, sort, toArray } from "@auaust/toolkit/array";
+import { toArray } from "@auaust/toolkit";
+import { flat, sort } from "@auaust/toolkit/array";
 import { concat, map, unique } from "@auaust/toolkit/iterable";
 import { freeze } from "@auaust/toolkit/object";
 

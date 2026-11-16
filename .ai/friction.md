@@ -145,3 +145,5 @@
 - PreToolUse Bash hook: ran any Bash command while the CLI failed to load — the hook runs engrenage itself and blocked every command; fixed the CLI via Edit first
 - PreToolUse Bash hook: regex import-insertion script broke two source files mid-batch — hook loads project source and blocked every Bash call; subagent repaired them through the user terminal tab
 - BSD sed -i: subagent edited files with GNU `sed -i` — macOS needs `-i ''`; retried
+- pnpm add in scratchpad: probing TypeScript 7 on the repo — auto mode classifier denied the install; relied on #558 measurements
+- dispatch hook Issue line: briefed `AUAUST/engrenage#555` — 404; repo is `AUAUST/lib-js-engrenage`, found via `gh repo view`
