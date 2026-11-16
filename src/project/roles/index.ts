@@ -48,6 +48,7 @@ export { executable } from "#project/roles/utils/executable";
 export { fixtures } from "#project/roles/utils/fixtures";
 export { hooks } from "#project/roles/utils/hooks";
 export { index } from "#project/roles/utils/index";
+export { operations } from "#project/roles/utils/operations";
 export { pages } from "#project/roles/utils/pages";
 export { ports } from "#project/roles/utils/ports";
 export { schemas } from "#project/roles/utils/schemas";

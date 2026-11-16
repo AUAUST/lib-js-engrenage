@@ -14,6 +14,7 @@ export {
   fixtures,
   hooks,
   index,
+  operations,
   pages,
   ports,
   schemas,

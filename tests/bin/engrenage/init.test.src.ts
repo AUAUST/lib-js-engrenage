@@ -731,20 +731,18 @@ test("renders the role presets of an empty library's config from their contribut
 import {
   adapters,
   constants,
-  createRolePreset,
   declarations,
   entry,
   enums,
   errors,
   fixtures,
   index,
+  operations,
   ports,
   testsetup,
   types,
   utils,
 } from "@auaust/engrenage/roles";
-
-const operations = createRolePreset({ name: "operations", exports: "named-match" });
 
 const roles = [index(), constants(), declarations(), types(), utils(), errors(), enums(), ports(), adapters(), operations()];
 
@@ -760,6 +758,32 @@ export default defineConfig({
   agents: { preferred: [], attribution: false },
 });
 `);
+});
+
+test("ranks the operations role of an empty library's project map as effectful", async () => {
+  const project = createProject({
+    "package.json": '{\n  "name": "library",\n  "type": "module"\n}\n',
+  });
+
+  vi.spyOn(prompts, "createPrompter").mockReturnValue({
+    ...prompts.createPrompter({ yes: true }),
+    multiselect: (message, values, initial = []) => {
+      return Promise.resolve(
+        message === "Which coding agents do you use?"
+          ? values.filter((value) => value === "claude")
+          : [...initial],
+      );
+    },
+  });
+
+  await init({ yes: true });
+
+  const row = project
+    .read(".claude/rules/project-map.md")
+    .split("\n")
+    .find((line) => line.startsWith("| `operations`"));
+
+  expect(row).toContain("| effectful |");
 });
 
 test("does not generate agent setup without selected agents", async () => {

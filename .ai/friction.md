@@ -129,3 +129,4 @@
 - rolldown plugin `getModuleInfo(...).isExternal`: marked modules importing packages in `buildEnd` — externals are listed in `getModuleIds` without `isExternal`; tested for non-path ids instead
 - gh issue view: guessed repo AUAUST/engrenage — remote is AUAUST/lib-js-engrenage; read it from git remote
 - worktree isolation guard: Bash commands with a `github` path segment refused as git commands — worker edited via Python scripts
+- PreToolUse hook: loads engrenage.config.ts, failed while a barrel export was missing mid-edit — worker added the barrel line by hand before sync

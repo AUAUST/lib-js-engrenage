@@ -64,6 +64,11 @@ export default {
         environments: codeEnvironments,
       },
       {
+        name: "operations",
+        from,
+        environments: codeEnvironments,
+      },
+      {
         name: "fixtures",
         from,
         environments: ["tests"],

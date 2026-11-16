@@ -10,6 +10,7 @@ import {
   errors,
   fixtures,
   index,
+  operations,
   ports,
   testsetup,
   testutils,
@@ -105,14 +106,6 @@ const plugins = createRolePreset({
   effects: "effectful",
 });
 
-// @debt two contracts in one role: the identity definer `defineConfig` sits beside I/O, while lint ranks roles by imports only
-const operations = createRolePreset({
-  name: "operations",
-  purpose: "Effectful logic of the domain.",
-  exports: "named-match",
-  effects: "effectful",
-});
-
 const rules = createRolePreset({
   name: "rules",
   purpose: "ESLint rules a role preset carries, one per module.",
@@ -148,6 +141,7 @@ const codeRoles = [
   config(),
   setup(),
   plugins(),
+  // @debt two contracts in one role: the identity definer `defineConfig` sits beside I/O, while lint ranks roles by imports only
   operations(),
   conventions(),
   rules(),

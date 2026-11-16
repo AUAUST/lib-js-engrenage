@@ -20,10 +20,6 @@ import {
 import type { Visibility } from "#project/package/index";
 import type { RolePresetEntry } from "#project/roles/index";
 
-const operationsPreset = `const operations = createRolePreset({ name: "operations", exports: "named-match" });`;
-
-const presetFactory = "createRolePreset";
-
 const sourceEnvironment = "src";
 
 interface RolePresets {
@@ -76,7 +72,7 @@ function renderEnvironmentRoles(extras: readonly string[]): string {
 }
 
 function renderRoles({ shared, environments }: RolePresets): string {
-  const roles = `const roles = [${callPresets([...shared, "operations"])}];`;
+  const roles = `const roles = [${callPresets(shared)}];`;
 
   const source = renderEnvironmentRoles(
     environments.get(sourceEnvironment) ?? [],
@@ -103,9 +99,7 @@ function renderImports(presets: readonly RolePresetEntry[]): readonly {
   readonly names: readonly string[];
   readonly entry: string;
 }[] {
-  const groups = new Map<string, string[]>([
-    [`${engrenage}/roles`, [presetFactory]],
-  ]);
+  const groups = new Map<string, string[]>();
 
   for (const { name, from } of presets) {
     const names = groups.get(from) ?? [];
@@ -226,7 +220,7 @@ export function createConfigFileStep(): Step {
           entry: `${engrenage}/config`,
           definer: "defineConfig",
           imports: renderImports(rolePresets),
-          declarations: [operationsPreset, renderRoles(groups)],
+          declarations: [renderRoles(groups)],
           options: renderOptions(
             chosen,
             visibility,
