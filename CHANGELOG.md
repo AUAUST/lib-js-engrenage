@@ -1,5 +1,42 @@
 # @auaust/engrenage
 
+## 0.14.0
+
+### Minor Changes
+
+- [`deb41c0`](https://github.com/AUAUST/lib-js-engrenage/commit/deb41c03f7c98ccd2c5ef00901fe52a26764ad39) Thanks [@apademide](https://github.com/apademide)! - - Default `build.outDir`, `src.bundled` and the src tsconfig `types` from the selected build tool (Vite: `dist`, bundled, `vite/client`; tsdown: `dist`)
+  - Select the build tool the preset prefers when `build.tool` is unset, tsdown for the `library` preset
+
+- [`71bb2b3`](https://github.com/AUAUST/lib-js-engrenage/commit/71bb2b3b46267ec7677e619d1b9d9fd9ea123aae) Thanks [@apademide](https://github.com/apademide)! - The commit gate rejects a commit subject longer than 72 characters, GitHub's cut-off, for every committer: `lefthook.yml` gains a `commit-msg` command running `engrenage gate --message {1} --everyone`, which `engrenage sync` adds to existing files.
+
+- [`acff0fa`](https://github.com/AUAUST/lib-js-engrenage/commit/acff0fa34efae6103a959903971c366420370290) Thanks [@apademide](https://github.com/apademide)! - - Write and reference a shared tsconfig whenever an environment sharing it is active, so a project without `scripts` gets `tsconfig.scripts.json` for its tooling files without `tooling.tsconfig.inherits: false`
+  - Activate the tooling environment only when a tooling directory exists or a root file matches `tooling.files`
+
+- [`b5e81cf`](https://github.com/AUAUST/lib-js-engrenage/commit/b5e81cf35621ba0c6f9caac5f5d982e55ad2df84) Thanks [@apademide](https://github.com/apademide)! - - Serve and build Vite from the src directory, keeping the output and env directories at the project root
+  - Target the `src.baseline` browsers in Vite builds, as in tsdown builds
+
+### Patch Changes
+
+- [`f4a4d4b`](https://github.com/AUAUST/lib-js-engrenage/commit/f4a4d4ba9968f60616916bfe1cec009841cb63fb) Thanks [@apademide](https://github.com/apademide)! - - Add the `app` preset, preferring Vite as build tool and defaulting `src.host` to `"browser"`
+  - Add the `src.host` option, whose `"browser"` value adds the DOM libs to the src tsconfig
+
+- [`a376856`](https://github.com/AUAUST/lib-js-engrenage/commit/a3768568fe1bea46c14472d18c7aca389a128e7e) Thanks [@apademide](https://github.com/apademide)! - - Add `build.minify`, applying the same tsdown and Vite minification locally and in CI
+  - Keep function and class names in minified builds of `published` projects by default
+
+- [`d608745`](https://github.com/AUAUST/lib-js-engrenage/commit/d6087451d17b321a62f3db9ff40c0a342a439c11) Thanks [@apademide](https://github.com/apademide)! - `auaust/documented` accepts a block documented only by a public `text` doc tag with a body, such as `@throws {AssertionError} when …`; body-less, `inline`, `code` and internal tags still leave it undocumented.
+
+- [`bd2a871`](https://github.com/AUAUST/lib-js-engrenage/commit/bd2a871c01bff84f00673ba8de40a9129a3d379d) Thanks [@apademide](https://github.com/apademide)! - - Add an `operations` role preset to `@auaust/engrenage/roles`
+  - Use the `operations` preset in the config `engrenage init` writes
+
+- [`cef9c12`](https://github.com/AUAUST/lib-js-engrenage/commit/cef9c126e5f0c93db7140c9e922298c1cd2ac099) Thanks [@apademide](https://github.com/apademide)! - - Add `role()` to `@auaust/engrenage/roles`, declaring a project's own role without a preset
+
+- [`fe3274d`](https://github.com/AUAUST/lib-js-engrenage/commit/fe3274d245bfa8ebec318b4432cc4aed359bae09) Thanks [@apademide](https://github.com/apademide)! - - Publish Segment issues under tasks and problems
+  - Reject a Segment directly under a Segment
+
+- [`23e72a5`](https://github.com/AUAUST/lib-js-engrenage/commit/23e72a5d4afa941983dcc4658880b1efb0f441b6) Thanks [@apademide](https://github.com/apademide)! - - Add the `static` environment for files served as-is, `public` by default and disabled in `published` projects
+  - Set Vite's `publicDir` from the `static` environment
+  - Add the `linted` file resource flag, ignoring unlinted resources in ESLint
+
 ## 0.13.1
 
 ### Patch Changes
