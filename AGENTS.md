@@ -130,7 +130,7 @@ Analyse every request, suggestion and described fix before acting on it, within 
 - Name types after their tool's concept, without a tool prefix. Use the global `Directory`, `File` and `Glob` for path-like values, adding `URL` where a URL is accepted.
 - Compose function arguments from those types inline; never pick them from a larger options type.
 - Export global types only from the root entry.
-- `@auaust/toolkit`, `@auaust/primitive-kit`, commander and Octokit are devDependencies bundled into `dist`, so engrenage never depends on them at install time. `c12` and `valibot` are runtime dependencies, never bundled. Tool packages consumers configure (`eslint`, `prettier`, `typescript`, `vite`) are optional peer dependencies.
+- `@auaust/toolkit`, commander and Octokit are devDependencies bundled into `dist`, so engrenage never depends on them at install time. `c12` and `valibot` are runtime dependencies, never bundled. Tool packages consumers configure (`eslint`, `prettier`, `typescript`, `vite`) are optional peer dependencies.
 
 ## Agent fragments
 
@@ -206,7 +206,6 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 
 - Code style: `.claude/rules/code-style.md`.
 - `@auaust/toolkit`: `.claude/rules/prefer-toolkit.md`.
-- `@auaust/primitive-kit`: `.claude/rules/prefer-primitive-kit.md`.
 
 <!-- @reference @auaust/engrenage/agents/sections/verification.md -->
 
