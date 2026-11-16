@@ -29,6 +29,7 @@ export const sourceSection = declareSection({
           ...environment,
           bundled: option.bundled,
           apis: option.apis,
+          host: option.host,
         },
         compose.getters({
           runtime,

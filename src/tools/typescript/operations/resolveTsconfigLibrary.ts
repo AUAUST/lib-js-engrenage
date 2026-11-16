@@ -20,10 +20,16 @@ export async function resolveTsconfigLibrary(
     return false;
   }
 
+  const { host } = await config.resolve("src");
+
+  const browser = key === "src" && host === "browser";
+
   return resolveListOption(
     option,
     () => {
-      return runtime?.kind === "baseline" ? runtime.lib : ["ESNext"];
+      const library = runtime?.kind === "baseline" ? runtime.lib : ["ESNext"];
+
+      return browser ? [...library, "DOM", "DOM.Iterable"] : library;
     },
     `${key}.tsconfig.lib`,
   );

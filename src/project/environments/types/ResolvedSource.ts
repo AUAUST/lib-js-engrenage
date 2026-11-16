@@ -5,4 +5,6 @@ export interface ResolvedSource extends ResolvedCodeEnvironment {
   readonly bundled: boolean;
   readonly runtime: Runtime | undefined;
   readonly apis: readonly ApiGroup[];
+  // @debt The host union restates `sourceSchema`'s picklist instead of being inferred from it.
+  readonly host: "isomorphic" | "browser";
 }

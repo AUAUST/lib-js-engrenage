@@ -21,13 +21,14 @@ export function createBuildToolStep(): Step {
 
       return true;
     },
-    async plan({ select, getTraits, addDevDependency }) {
-      const traits = await getTraits();
+    async plan({ select, resolve, addDevDependency }) {
+      const preset = await resolve("preset");
 
       const buildTool = await select(
         "Which build tool?",
         [tsdown, vite, "none"],
-        traits.published ? tsdown : "none",
+        (preset === false ? undefined : preset.prefers?.["build.tools"]) ??
+          "none",
       );
 
       if (buildTool !== "none") {

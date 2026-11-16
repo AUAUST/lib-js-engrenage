@@ -81,6 +81,14 @@ export const sourceSchema = declareObject(
       ],
       optional: { value: [] },
     }),
+    host: declare(picklist(["isomorphic", "browser"]), {
+      description: [
+        "Host the source runs in: `isomorphic` for code any runtime can host, `browser` for code only browsers host.",
+        "A browser host appends `DOM` and `DOM.Iterable` to the default `lib` of the src tsconfig.",
+        "`browser` is exclusive with `src.node` and `src.apis`.",
+      ],
+      optional: { value: "isomorphic" },
+    }),
     node: declare(nodeMajorSchema, {
       description: [
         "Node major the source targets instead of a baseline: it feeds the Node types and lib of the src tsconfig, the tsdown `target` and the `engines.node` floor.",
@@ -108,9 +116,22 @@ export const sourceSchema = declareObject(
         baseline: undefined,
         node: undefined,
         apis: [],
+        host: "isomorphic",
       },
     },
-    assert({ baseline, node, apis }) {
+    assert({ baseline, node, apis, host }) {
+      if (host === "browser" && node !== undefined) {
+        throw new Error(
+          'src.host "browser" and src.node are mutually exclusive: unset src.node or set src.host to "isomorphic"',
+        );
+      }
+
+      if (host === "browser" && apis !== undefined) {
+        throw new Error(
+          'src.apis does not apply to src.host "browser": the DOM lib already provides these APIs; unset src.apis',
+        );
+      }
+
       if (baseline !== undefined && node !== undefined) {
         throw new Error(
           "src.baseline and src.node are mutually exclusive: set one of them",

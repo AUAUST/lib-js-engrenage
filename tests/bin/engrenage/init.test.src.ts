@@ -719,6 +719,37 @@ describe("engrenage init", () => {
   });
 });
 
+test("defaults an app's build tool to vite and its source host to the browser", async () => {
+  const project = createProject({
+    "package.json": '{\n  "name": "app",\n  "type": "module"\n}\n',
+  });
+
+  const prompter = {
+    ...prompts.createPrompter({ yes: true }),
+    select: answerSelect("What kind of project is this?", "app"),
+  };
+
+  const select = vi.spyOn(prompter, "select");
+
+  vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
+
+  await init({ yes: true });
+
+  expect(select).toHaveBeenCalledWith(
+    "Which build tool?",
+    expect.anything(),
+    "vite",
+  );
+
+  expect(project.read("engrenage.config.ts")).toContain('preset: "app"');
+
+  const config = await loadConfig(project.root);
+
+  expect(await config.resolve("build.tool")).toMatchObject({ name: "vite" });
+
+  expect((await config.resolve("src")).host).toBe("browser");
+});
+
 test("renders the role presets of an empty library's config from their contributions", async () => {
   const project = createProject({
     "package.json": '{\n  "name": "library",\n  "type": "module"\n}\n',

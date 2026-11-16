@@ -4,7 +4,8 @@ import type { Extension } from "#project/config/index";
 /**
  * Owns the `preset`, `traits` and `traits.adjustments` keys and the `presets`
  * slot, which takes one active preset, and contributes the `library` preset with
- * the `published` trait, preferring tsdown as build tool.
+ * the `published` trait, preferring tsdown as build tool, and the `app` preset,
+ * preferring Vite and defaulting the source host to the browser.
  */
 export default {
   name: "project/presets",
@@ -39,6 +40,14 @@ export default {
         traits: ["published"],
         prefers: { "build.tools": "tsdown" },
       },
+      {
+        name: "app",
+        traits: [],
+        prefers: { "build.tools": "vite" },
+        load() {
+          return Promise.resolve({ "src.host": "browser" });
+        },
+      },
     ],
   },
 } satisfies Extension;
@@ -47,6 +56,7 @@ declare global {
   namespace Engrenage {
     interface Presets {
       library: true;
+      app: true;
     }
   }
 }

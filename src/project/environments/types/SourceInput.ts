@@ -153,6 +153,13 @@ export interface SourceInput {
    */
   apis?: (ListOption<"abort" | "blob" | "compression" | "console" | "crypto" | "encoding" | "events" | "exceptions" | "microtasks" | "performance" | "streams" | "timers" | "url" | "disposable" | "float16"> | undefined)
   /**
+   * Host the source runs in: `isomorphic` for code any runtime can host, `browser` for code only browsers host.
+   * A browser host appends `DOM` and `DOM.Iterable` to the default `lib` of the src tsconfig.
+   * `browser` is exclusive with `src.node` and `src.apis`.
+   * @default `isomorphic`
+   */
+  host?: (("isomorphic" | "browser") | undefined)
+  /**
    * Node major the source targets instead of a baseline: it feeds the Node types and lib of the src tsconfig, the tsdown `target` and the `engines.node` floor.
    * Exclusive with `src.baseline` and `src.apis`.
    * @default none, so `src.baseline` decides

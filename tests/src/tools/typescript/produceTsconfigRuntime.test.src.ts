@@ -322,6 +322,41 @@ describe("runtime tsconfig fields", () => {
     );
   });
 
+  test("appends the DOM libs to the source lib of a browser host only", async () => {
+    const browser = await syncCompilerOptions({
+      src: { baseline: "2026-10", host: "browser" },
+    });
+
+    const isomorphic = await syncCompilerOptions({
+      src: { baseline: "2026-10" },
+    });
+
+    const { lib } = browser("tsconfig.src.json");
+
+    expect(lib).toEqual([
+      ...isomorphic("tsconfig.src.json").lib,
+      "DOM",
+      "DOM.Iterable",
+    ]);
+  });
+
+  test.each([{ node: 24 }, { baseline: "2026-10", apis: ["timers"] }])(
+    "rejects a browser host with %o",
+    async (source) => {
+      const config = await validateConfig(
+        createProjectConfig({
+          root: createTemporaryProject().root,
+          raw: {
+            src: { ...source, host: "browser" },
+          },
+          configFile: undefined,
+        }),
+      );
+
+      await expect(config.resolve("src")).rejects.toThrow(/src\.host/);
+    },
+  );
+
   test("lets compilerOptions pin the target", async () => {
     const read = await syncCompilerOptions({
       src: {
