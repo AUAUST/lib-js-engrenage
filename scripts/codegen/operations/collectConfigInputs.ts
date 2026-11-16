@@ -1,6 +1,5 @@
-import { isArray, isObject } from "@auaust/toolkit";
+import { isArray, isObject, pascal } from "@auaust/toolkit";
 import { entries, values } from "@auaust/toolkit/object";
-import { toPascalCase } from "@auaust/toolkit/string";
 
 import { getCoreConfigSchema } from "#scripts/codegen/utils/getCoreConfigSchema";
 import { getLazyConfigSchema } from "#scripts/codegen/utils/getLazyConfigSchema";
@@ -117,7 +116,7 @@ function collectDeclaredInputs(
       }
 
       inputs.set(getCoreConfigSchema(value.schema), {
-        name: `${toPascalCase(exportName.replace(/Schema$/, ""))}Input`,
+        name: `${pascal(exportName.replace(/Schema$/, ""))}Input`,
         domain,
         declaration: value,
       });

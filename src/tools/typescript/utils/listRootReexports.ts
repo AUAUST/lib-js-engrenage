@@ -1,7 +1,7 @@
 import { posix } from "node:path";
 
+import { camel } from "@auaust/toolkit";
 import { entries, getOwn } from "@auaust/toolkit/object";
-import { toCamelCase } from "@auaust/toolkit/string";
 
 import {
   collectStructureNodes,
@@ -18,7 +18,7 @@ import type { File } from "#types/File";
 const subpathPrefix = "./";
 
 function toNamespace(subpath: string): string {
-  return toCamelCase(subpath.slice(subpathPrefix.length).replaceAll("/", " "));
+  return camel(subpath.slice(subpathPrefix.length).replaceAll("/", " "));
 }
 
 function reexportAs(
@@ -93,7 +93,7 @@ export function listRootReexports(
       ? reexportAs(
           barrel,
           contract.reexport,
-          toCamelCase(node.name),
+          camel(node.name),
           contract.typeOnly,
         )
       : [];

@@ -1,4 +1,4 @@
-import { toPascalCase } from "@auaust/toolkit/string";
+import { pascal } from "@auaust/toolkit";
 
 import {
   adapters,
@@ -28,7 +28,7 @@ function definerFile({ lineage }: RoleLocation): string {
     throw new Error("A config role sits outside any namespace or domain");
   }
 
-  const name = toPascalCase(owner.name);
+  const name = pascal(owner.name);
 
   return name === "Config" ? "defineConfig.ts" : `define${name}Config.ts`;
 }

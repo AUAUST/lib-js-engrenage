@@ -1,5 +1,5 @@
-import { toKebabCase } from "@auaust/toolkit/string";
+import { kebab } from "@auaust/toolkit";
 
 export function createRuleName(convention: string): string {
-  return toKebabCase(convention);
+  return kebab(convention);
 }

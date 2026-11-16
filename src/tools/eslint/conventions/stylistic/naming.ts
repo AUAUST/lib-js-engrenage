@@ -2,18 +2,13 @@ import { compileFunction } from "node:vm";
 
 import type { Rule, Scope, SourceCode } from "eslint";
 
-import { isString } from "@auaust/toolkit";
+import { camel, isString, pascal } from "@auaust/toolkit";
 import { includes, join, last, toArray } from "@auaust/toolkit/array";
 import {
   join as joinIterable,
   map as mapIterable,
 } from "@auaust/toolkit/iterable";
-import {
-  split,
-  toCamelCase,
-  toLowerCase,
-  toPascalCase,
-} from "@auaust/toolkit/string";
+import { split, toLowerCase } from "@auaust/toolkit/string";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { delegateRule } from "#tools/eslint/utils/delegateRule";
@@ -37,15 +32,15 @@ function convertName(name: string, formats: readonly string[]) {
   );
 
   if (includes(formats, "PascalCase") && /^[A-Z][a-z]/.test(name)) {
-    return toPascalCase(words);
+    return pascal(words);
   }
 
   if (includes(formats, "camelCase")) {
-    return toCamelCase(words);
+    return camel(words);
   }
 
   if (includes(formats, "PascalCase")) {
-    return toPascalCase(words);
+    return pascal(words);
   }
 }
 

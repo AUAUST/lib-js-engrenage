@@ -10,8 +10,8 @@ import {
   string,
 } from "valibot";
 
+import { camel } from "@auaust/toolkit";
 import { toSorted } from "@auaust/toolkit/array";
-import { toCamelCase } from "@auaust/toolkit/string";
 
 import { validate } from "#foundation/options/index";
 import { exportGroups } from "#project/format/index";
@@ -87,9 +87,7 @@ function exportModule(
       listed.push({
         file,
         binding: defaultBinding,
-        name: colliding.has(name)
-          ? toCamelCase(domain.replaceAll("/", " "))
-          : name,
+        name: colliding.has(name) ? camel(domain.replaceAll("/", " ")) : name,
       });
 
       break;

@@ -1,9 +1,9 @@
 import { basename, dirname } from "node:path";
 
+import { camel } from "@auaust/toolkit";
 import { toArray } from "@auaust/toolkit/array";
 import { unique } from "@auaust/toolkit/iterable";
 import { getOwn } from "@auaust/toolkit/object";
-import { toCamelCase } from "@auaust/toolkit/string";
 
 import {
   collectStructureNodes,
@@ -48,7 +48,7 @@ function planRoleBarrels(
 
       return barrel === undefined
         ? []
-        : { file: barrel.file, name: toCamelCase(name) };
+        : { file: barrel.file, name: camel(name) };
     });
 
     const modules = files.filter((file) => {
