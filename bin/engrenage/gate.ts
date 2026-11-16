@@ -23,14 +23,14 @@ export default defineLazyCommand({
       .addOption(
         new Option(
           "--everyone",
-          "run only the fixes and checks every commit must pass",
+          "run only the fixes and checks every commit must pass, or only the message checks every commit message must pass",
         ).conflicts("worktree"),
       )
       .addOption(
         new Option(
           "--message <file>",
           "check only the commit message stored in a file",
-        ).conflicts(["staged", "worktree", "everyone"]),
+        ).conflicts(["staged", "worktree"]),
       );
   },
   action() {

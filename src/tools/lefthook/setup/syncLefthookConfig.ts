@@ -2,16 +2,16 @@ import { isDeepStrictEqual } from "node:util";
 
 import { isMap, isNode, parseDocument } from "yaml";
 
+import { entries } from "@auaust/toolkit/object";
+
 import {
   everyoneCommandName,
   gateCommandName,
-  hookName,
+  gateHooks,
   lefthookFile,
-  messageHookName,
 } from "#tools/lefthook/constants";
 import { listGateVariables } from "#tools/lefthook/utils/listGateVariables";
 import { renderGateCommand } from "#tools/lefthook/utils/renderGateCommand";
-import { renderMessageGateCommand } from "#tools/lefthook/utils/renderMessageGateCommand";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function syncLefthookConfig(config: LoadedConfig) {
@@ -37,13 +37,14 @@ export async function syncLefthookConfig(config: LoadedConfig) {
     throw new Error(`${lefthookFile} must contain a YAML mapping`);
   }
 
-  const commands = renderGateCommand(variables);
+  const targets = entries(gateHooks).flatMap(([hook, run]) => {
+    const commands = renderGateCommand(variables, run);
 
-  const targets = [
-    [hookName, gateCommandName, commands[gateCommandName]],
-    [hookName, everyoneCommandName, commands[everyoneCommandName]],
-    [messageHookName, gateCommandName, renderMessageGateCommand(variables)],
-  ] as const;
+    return [
+      [hook, gateCommandName, commands[gateCommandName]],
+      [hook, everyoneCommandName, commands[everyoneCommandName]],
+    ] as const;
+  });
 
   let changed = false;
 

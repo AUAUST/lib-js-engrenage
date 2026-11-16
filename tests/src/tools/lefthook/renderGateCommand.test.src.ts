@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import { agentShellVariables } from "#tools/agents/constants";
+import { gateHooks } from "#tools/lefthook/constants";
 import { listGateVariables } from "#tools/lefthook/utils/listGateVariables";
 import { renderGateCommand } from "#tools/lefthook/utils/renderGateCommand";
 
@@ -9,7 +10,10 @@ const gate = { commands: [], hook: undefined };
 describe("renderGateCommand", () => {
   test("gives agent and human commands complementary conditions", () => {
     expect(
-      renderGateCommand(listGateVariables({ preferred: ["claude"], gate })),
+      renderGateCommand(
+        listGateVariables({ preferred: ["claude"], gate }),
+        gateHooks["pre-commit"],
+      ),
     ).toEqual({
       "engrenage": {
         only: [{ run: 'test -n "$CLAUDECODE"' }],
@@ -27,7 +31,7 @@ describe("renderGateCommand", () => {
       [agentShellVariables.claude],
     );
 
-    const commands = renderGateCommand(["A", "B"]);
+    const commands = renderGateCommand(["A", "B"], gateHooks["pre-commit"]);
     const condition = [{ run: 'test -n "$A" || test -n "$B"' }];
 
     expect(commands.engrenage?.only).toEqual(condition);
@@ -35,7 +39,7 @@ describe("renderGateCommand", () => {
   });
 
   test("renders only an unconditional everyone command without agent variables", () => {
-    expect(renderGateCommand([])).toEqual({
+    expect(renderGateCommand([], gateHooks["pre-commit"])).toEqual({
       "engrenage-local": {
         run: "pnpm --silent engrenage gate --staged --everyone",
       },

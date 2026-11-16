@@ -1,30 +1,29 @@
 import { Document } from "yaml";
 
 import { isString } from "@auaust/toolkit/isString";
+import { entries, record } from "@auaust/toolkit/object";
 
 import { lefthook } from "#constants";
 import {
-  gateCommandName,
-  hookName,
+  gateHooks,
   installCommand,
   lefthookFile,
-  messageHookName,
 } from "#tools/lefthook/constants";
 import { listGateVariables } from "#tools/lefthook/utils/listGateVariables";
 import { renderGateCommand } from "#tools/lefthook/utils/renderGateCommand";
-import { renderMessageGateCommand } from "#tools/lefthook/utils/renderMessageGateCommand";
 import { createPnpmInvocation } from "#tools/pnpm/index";
 import type { Step, StepContext } from "#project/steps/index";
 
 const prepareLocation: [string, string] = ["scripts", "prepare"];
 
-async function listCommands(context: StepContext) {
+async function renderHooks(context: StepContext) {
   const variables = listGateVariables(await context.resolve("agents"));
 
-  return {
-    commands: renderGateCommand(variables),
-    message: renderMessageGateCommand(variables),
-  };
+  return record(
+    entries(gateHooks).map(([hook, run]) => {
+      return [hook, { commands: renderGateCommand(variables, run) }] as const;
+    }),
+  );
 }
 
 async function writePrepare({
@@ -48,7 +47,7 @@ export function createLefthookStep(): Step {
       return !(await context.filesystem.exists(lefthookFile));
     },
     async plan(context) {
-      const { commands, message } = await listCommands(context);
+      const hooks = await renderHooks(context);
 
       await context.addDevDependency(lefthook);
 
@@ -56,24 +55,9 @@ export function createLefthookStep(): Step {
 
       await context.filesystem.write(
         lefthookFile,
-        new Document(
-          {
-            [hookName]: {
-              commands,
-            },
-            ...(message === undefined
-              ? {}
-              : {
-                  [messageHookName]: {
-                    commands: { [gateCommandName]: message },
-                  },
-                }),
-          },
-          null,
-          {
-            aliasDuplicateObjects: false,
-          },
-        ).toString(),
+        new Document(hooks, null, {
+          aliasDuplicateObjects: false,
+        }).toString(),
       );
 
       context.invoke(

@@ -1,6 +1,7 @@
 // @barrel utils
 export { findHookBypass } from "#tools/git/utils/findHookBypass";
 export { hasSeparatedIssueReferences } from "#tools/git/utils/hasSeparatedIssueReferences";
+export { readCommitSubject } from "#tools/git/utils/readCommitSubject";
 // @end
 
 // @barrel setup

@@ -14,12 +14,14 @@ export default async function ({
   everyone?: true | undefined;
   message?: string | undefined;
 }): Promise<void> {
+  const audience = everyone === true ? "everyone" : "agents";
+
   const { failures, warnings } = message === undefined
     ? await runGate(await loadValidatedConfig(), {
         mode: worktree === true ? "worktree" : "staged",
-        audience: everyone === true ? "everyone" : "agents",
+        audience,
       })
-    : await runMessageGate(message);
+    : await runMessageGate(message, audience);
 
   for (const warning of warnings) {
     console.warn(formatGateEntry(warning));

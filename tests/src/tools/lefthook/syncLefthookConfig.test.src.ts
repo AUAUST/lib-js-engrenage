@@ -42,6 +42,13 @@ describe("syncLefthookConfig", () => {
             },
           },
         },
+        "commit-msg": {
+          commands: {
+            "engrenage-local": {
+              run: "pnpm --silent engrenage gate --message {1} --everyone",
+            },
+          },
+        },
       });
     },
   );
@@ -73,9 +80,13 @@ describe("syncLefthookConfig", () => {
       },
       "commit-msg": {
         commands: {
-          engrenage: {
+          "engrenage": {
             only: [{ run: 'test -n "$CLAUDECODE"' }],
             run: "pnpm --silent engrenage gate --message {1}",
+          },
+          "engrenage-local": {
+            skip: [{ run: 'test -n "$CLAUDECODE"' }],
+            run: "pnpm --silent engrenage gate --message {1} --everyone",
           },
         },
       },
@@ -131,7 +142,7 @@ describe("syncLefthookConfig", () => {
     const content = project.read("lefthook.yml");
 
     expect(content).not.toMatch(/&\w|\*\w/);
-    expect(content.match(/CLAUDECODE/g)).toHaveLength(3);
+    expect(content.match(/CLAUDECODE/g)).toHaveLength(4);
   });
 
   test("rewrites a changed condition", async () => {

@@ -508,6 +508,13 @@ describe("engrenage init", () => {
             },
           },
         },
+        "commit-msg": {
+          commands: {
+            "engrenage-local": {
+              run: "pnpm --silent engrenage gate --message {1} --everyone",
+            },
+          },
+        },
       });
 
       expect(project.read("engrenage.config.ts")).toContain(
