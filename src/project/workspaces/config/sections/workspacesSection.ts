@@ -1,4 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/array";
 
 import { withExtensions } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";

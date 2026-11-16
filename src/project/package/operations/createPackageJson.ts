@@ -11,7 +11,7 @@ import {
   type GenericSchema,
 } from "valibot";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/array";
 import { once } from "@auaust/toolkit/function";
 import { keys } from "@auaust/toolkit/object";
 

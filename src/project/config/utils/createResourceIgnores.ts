@@ -1,6 +1,5 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
-import { includes } from "@auaust/toolkit/array";
-import { map as mapIterable } from "@auaust/toolkit/iterable";
+import { flatMap, includes } from "@auaust/toolkit/array";
+import { map } from "@auaust/toolkit/iterable";
 
 import { anchorGlob } from "#foundation/blocks/index";
 import type { LocatedResource } from "#project/config/types/LocatedResource";
@@ -35,7 +34,7 @@ export function createResourceIgnores(
 
   for (const { title, location } of resources) {
     const lines = "globs" in location
-      ? mapIterable(location.globs, anchorGlob)
+      ? map(location.globs, anchorGlob)
       : listPathLine("file" in location ? location.file : location.directory);
 
     const group = groups.get(title) ?? [];

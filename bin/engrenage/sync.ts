@@ -1,6 +1,6 @@
 import { Argument } from "@commander-js/extra-typings";
 
-import { map as mapIterable } from "@auaust/toolkit/iterable";
+import { map } from "@auaust/toolkit/iterable";
 import { record } from "@auaust/toolkit/object";
 
 import { defineLazyCommand } from "#workflows/cli/index";
@@ -24,7 +24,7 @@ export default defineLazyCommand({
   },
   parse(targets, { check }, command) {
     const values = record(
-      mapIterable(command.options, (option) => {
+      map(command.options, (option) => {
         const name = option.attributeName();
 
         return [name, command.getOptionValue(name)];

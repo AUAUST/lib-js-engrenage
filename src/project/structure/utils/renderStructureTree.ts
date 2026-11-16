@@ -1,4 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/array";
 
 import type { Alias } from "#project/structure/types/Alias";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";

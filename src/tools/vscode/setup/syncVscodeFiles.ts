@@ -3,17 +3,20 @@ import { isDeepStrictEqual } from "node:util";
 
 import { array, is, looseObject, optional, string } from "valibot";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
 import { isArray, isPlainObject } from "@auaust/toolkit";
 import {
-  deduplicate,
   every,
+  flatMap,
   includes,
   map,
   toArray,
   toReversed,
 } from "@auaust/toolkit/array";
-import { map as mapIterable } from "@auaust/toolkit/iterable";
+import {
+  flatMap as flatMapIterable,
+  map as mapIterable,
+  unique,
+} from "@auaust/toolkit/iterable";
 
 import { resolveDataFile } from "#foundation/data/index";
 import { toPosixPath, type Filesystem } from "#foundation/filesystem/index";
@@ -365,10 +368,12 @@ export async function syncVscodeFiles(
 
   const applicable = findIntegrations(environment.hasDependency);
 
-  const recommendations = deduplicate(
-    flatMap(applicable, (integration) => {
-      return integration.extensions;
-    }),
+  const recommendations = toArray(
+    unique(
+      flatMapIterable(applicable, (integration) => {
+        return integration.extensions;
+      }),
+    ),
   );
 
   if (await isEnabled(filesystem, settingsFile, vscode.settings, settings)) {

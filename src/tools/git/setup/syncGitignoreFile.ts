@@ -1,4 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/array";
 
 import { settlePreset, syncIgnoreFile } from "#foundation/blocks/index";
 import {

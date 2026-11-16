@@ -1,5 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
-import { map as mapIterable } from "@auaust/toolkit/iterable";
+import { flatMap, map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries, freeze, record } from "@auaust/toolkit/object";
 
 import type { ConfigKey, LoadedConfig } from "#project/config/index";

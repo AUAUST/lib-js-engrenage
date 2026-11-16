@@ -1,4 +1,4 @@
-import { map as mapIterable } from "@auaust/toolkit/iterable";
+import { map } from "@auaust/toolkit/iterable";
 import { record } from "@auaust/toolkit/object";
 
 import { createGitRepository } from "#tests/utils/createGitRepository";
@@ -12,7 +12,7 @@ export function createGateRepository(
       "package.json": JSON.stringify({
         name: "project",
         type: "module",
-        devDependencies: record(mapIterable(modules, (name) => [name, "*"])),
+        devDependencies: record(map(modules, (name) => [name, "*"])),
       }),
       "engrenage.config.ts": `export default { src: { baseline: "2026-10" }, agents: { gate: { commands: ${JSON.stringify(commands)} } } };\n`,
       ".gitignore": "node_modules\n.runs*\n.env.*\n!.env.example\n",

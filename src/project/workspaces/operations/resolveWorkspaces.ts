@@ -1,7 +1,6 @@
 import { basename } from "node:path/posix";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
-import { map } from "@auaust/toolkit/array";
+import { flatMap, map } from "@auaust/toolkit/array";
 import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries, freeze } from "@auaust/toolkit/object";
 

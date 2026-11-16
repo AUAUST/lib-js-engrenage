@@ -1,5 +1,8 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
-import { map } from "@auaust/toolkit/array";
+import { flatMap, map, toArray } from "@auaust/toolkit/array";
+import {
+  flatMap as flatMapIterable,
+  map as mapIterable,
+} from "@auaust/toolkit/iterable";
 
 import { relativeToTsconfig } from "#project/tsconfig/utils/relativeToTsconfig";
 import type { File } from "#types/File";
@@ -59,7 +62,9 @@ export function toTsconfigGlobs(
   tsconfig: File,
   globs: readonly Glob[],
 ): readonly Glob[] {
-  const expanded = flatMap(globs, expandBraces);
-
-  return map(expanded, (glob) => relativeToTsconfig(tsconfig, glob));
+  return toArray(
+    mapIterable(flatMapIterable(globs, expandBraces), (glob) => {
+      return relativeToTsconfig(tsconfig, glob);
+    }),
+  );
 }

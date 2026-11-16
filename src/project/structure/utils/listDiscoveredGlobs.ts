@@ -1,4 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/array";
 import { entries } from "@auaust/toolkit/object";
 
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";

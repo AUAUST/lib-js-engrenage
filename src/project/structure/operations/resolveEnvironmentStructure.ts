@@ -1,6 +1,6 @@
 import { basename } from "node:path";
 
-import { flat } from "@auaust/primitive-kit/arrays";
+import { flat } from "@auaust/toolkit/array";
 import { freeze, getOwn, keys } from "@auaust/toolkit/object";
 
 import { assignRoleFiles } from "#project/structure/operations/assignRoleFiles";

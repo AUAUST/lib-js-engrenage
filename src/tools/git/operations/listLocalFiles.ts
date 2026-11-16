@@ -1,6 +1,5 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
 import { map } from "@auaust/toolkit/array";
-import { map as mapIterable } from "@auaust/toolkit/iterable";
+import { flatMap, map as mapIterable } from "@auaust/toolkit/iterable";
 
 import { relativeWithin, resolveWithin } from "#foundation/filesystem/index";
 import { runGit } from "#tools/git/operations/runGit";

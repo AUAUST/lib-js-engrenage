@@ -1,7 +1,7 @@
 import { posix } from "node:path";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
-import { deduplicate, sort } from "@auaust/toolkit/array";
+import { sort, toArray } from "@auaust/toolkit/array";
+import { flatMap, unique } from "@auaust/toolkit/iterable";
 
 import { toPosixPath, type Filesystem } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";
@@ -25,5 +25,5 @@ export async function listStructureDirectories(
     return name === undefined || nested.length === 0 ? [] : [name];
   });
 
-  return sort(deduplicate(holding));
+  return sort(toArray(unique(holding)));
 }

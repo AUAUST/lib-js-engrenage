@@ -1,6 +1,5 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
 import { a } from "@auaust/toolkit";
-import { map } from "@auaust/toolkit/array";
+import { flatMap, map } from "@auaust/toolkit/array";
 
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";

@@ -1,13 +1,11 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
 import { isString } from "@auaust/toolkit";
+import { every, filterMap, map, sort, toArray } from "@auaust/toolkit/array";
 import {
-  deduplicate,
-  every,
-  filterMap,
-  map,
-  sort,
-} from "@auaust/toolkit/array";
-import { join, map as mapIterable } from "@auaust/toolkit/iterable";
+  flatMap,
+  join,
+  map as mapIterable,
+  unique,
+} from "@auaust/toolkit/iterable";
 import { startsWith } from "@auaust/toolkit/string";
 
 import { engrenage, engrenageConfigFile } from "#constants";
@@ -38,7 +36,7 @@ function callPresets(names: readonly string[]): string {
 function listEnvironments(
   presets: readonly RolePresetEntry[],
 ): readonly string[] {
-  return deduplicate(flatMap(presets, ({ environments }) => environments));
+  return toArray(unique(flatMap(presets, ({ environments }) => environments)));
 }
 
 function groupPresets(presets: readonly RolePresetEntry[]): RolePresets {

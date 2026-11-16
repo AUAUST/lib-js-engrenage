@@ -1,4 +1,4 @@
-import { map as mapIterable } from "@auaust/toolkit/iterable";
+import { map } from "@auaust/toolkit/iterable";
 import { record, values } from "@auaust/toolkit/object";
 
 import { loadLazy } from "#foundation/modules/index";
@@ -55,7 +55,7 @@ export async function composeInputSchemas(
   }
 
   return record(
-    mapIterable([...schemas], ([input, { schema }]) => {
+    map([...schemas], ([input, { schema }]) => {
       return [input, schema] as const;
     }),
   );

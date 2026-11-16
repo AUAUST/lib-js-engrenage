@@ -6,8 +6,8 @@ import unusedImports from "eslint-plugin-unused-imports";
 import { defineConfig } from "eslint/config";
 import { configs as typescriptConfigs } from "typescript-eslint";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
 import { map } from "@auaust/toolkit/array";
+import { flatMap } from "@auaust/toolkit/iterable";
 import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
 import { withExtensions } from "#foundation/filesystem/index";

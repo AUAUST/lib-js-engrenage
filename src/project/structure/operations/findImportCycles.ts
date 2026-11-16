@@ -10,8 +10,11 @@ import {
   transpileModule,
 } from "typescript";
 
-import { flat, flatMap } from "@auaust/primitive-kit/arrays";
-import { map as mapIterable } from "@auaust/toolkit/iterable";
+import { flat, flatMap } from "@auaust/toolkit/array";
+import {
+  flatMap as flatMapIterable,
+  map as mapIterable,
+} from "@auaust/toolkit/iterable";
 import { values } from "@auaust/toolkit/object";
 
 import { createImportResolver } from "#project/structure/utils/createImportResolver";
@@ -237,7 +240,7 @@ export async function findImportCycles({
   const modules = readModuleFiles(languages);
 
   const directories = new Set(
-    flatMap(values(structure), (environment) => {
+    flatMapIterable(values(structure), (environment) => {
       return environment?.dirs ?? [];
     }),
   );
@@ -268,7 +271,7 @@ export async function findImportCycles({
     await Promise.all(
       [...files].sort().map(async (file): Promise<[string, string[]]> => {
         const targets = new Set(
-          flatMap(
+          flatMapIterable(
             await readRuntimeSpecifiers(filesystem, file, verbatimModuleSyntax),
             (specifier) => {
               const target = resolve(file, specifier);

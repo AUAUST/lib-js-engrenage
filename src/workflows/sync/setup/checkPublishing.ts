@@ -1,6 +1,6 @@
 import { looseObject, optional, string } from "valibot";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/array";
 import { startsWith } from "@auaust/toolkit/string";
 
 import { packageJsonFile } from "#constants";

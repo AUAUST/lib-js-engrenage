@@ -1,5 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
-import { join, map as mapIterable } from "@auaust/toolkit/iterable";
+import { flatMap, join, map as mapIterable } from "@auaust/toolkit/iterable";
 
 import { defineReplacement } from "#tools/eslint/utils/defineReplacement";
 import type { Trait } from "#project/presets/index";
@@ -55,9 +54,10 @@ function createSelector(
     );
   }
 
-  return flatMap(imports, (name) => {
-    return createImportSelectors(source, name);
-  }).join(", ");
+  return join(
+    flatMap(imports, (name) => createImportSelectors(source, name)),
+    ", ",
+  );
 }
 
 function describeImport(name: string): string {

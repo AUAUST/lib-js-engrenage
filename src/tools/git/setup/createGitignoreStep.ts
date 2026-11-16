@@ -1,5 +1,4 @@
-import { flat } from "@auaust/primitive-kit/arrays";
-import { pluck } from "@auaust/toolkit/array";
+import { flat, pluck } from "@auaust/toolkit/array";
 
 import { gitignoreFile } from "#constants";
 import { relativeWithin } from "#foundation/filesystem/index";

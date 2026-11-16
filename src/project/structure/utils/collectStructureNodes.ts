@@ -1,4 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/iterable";
 
 import type { StructureNode } from "#project/structure/types/StructureNode";
 

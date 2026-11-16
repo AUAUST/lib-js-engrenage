@@ -1,4 +1,4 @@
-import { join, map as mapIterable } from "@auaust/toolkit/iterable";
+import { join, map } from "@auaust/toolkit/iterable";
 import { getOwn, keys } from "@auaust/toolkit/object";
 
 import { syncFiles } from "#foundation/blocks/operations/syncFiles";
@@ -50,7 +50,7 @@ export async function syncIgnoreFile(
       );
     }
 
-    return join(mapIterable(preset(), renderGroup), "\n\n");
+    return join(map(preset(), renderGroup), "\n\n");
   }
 
   await syncFiles(config, [

@@ -1,5 +1,5 @@
-import { flat, flatMap } from "@auaust/primitive-kit/arrays";
-import { map } from "@auaust/toolkit/array";
+import { flat, toArray } from "@auaust/toolkit/array";
+import { flatMap, map } from "@auaust/toolkit/iterable";
 
 import { formatChanges } from "#project/sync/operations/formatChanges";
 import type { LoadedConfig } from "#project/config/index";
@@ -18,13 +18,15 @@ export async function collectChanges(
     );
   }
 
-  return map(
-    flatMap(filesystems, (filesystem) => filesystem.discard()),
-    ({ file }): SyncResult => {
-      return {
-        file,
-        status: "outdated",
-      };
-    },
+  return toArray(
+    map(
+      flatMap(filesystems, (filesystem) => filesystem.discard()),
+      ({ file }): SyncResult => {
+        return {
+          file,
+          status: "outdated",
+        };
+      },
+    ),
   );
 }
