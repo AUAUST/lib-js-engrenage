@@ -6,37 +6,47 @@ import { project as pluginPrefix } from "#constants";
 import { resolveWithin } from "#foundation/filesystem/index";
 import { resolveBuildTarget } from "#project/baseline/index";
 import { emittedManifestFile } from "#project/build/constants";
-import { createDefine } from "#project/environments/index";
+import { createDefine, type ResolvedSource } from "#project/environments/index";
 import { createEmittedManifestPlugin } from "#tools/vite/plugins/createEmittedManifestPlugin";
 import type { LoadedConfig } from "#project/config/index";
 import type { Config } from "#tools/vite/types/Config";
+import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 
-async function resolveViteRoot(
-  config: LoadedConfig,
+function resolveOnlyDirectory(
+  root: Directory,
+  dirs: Directories,
+  failure: string,
+): Directory | undefined {
+  const [directory, ...others] = dirs;
+
+  if (directory === undefined) {
+    return;
+  }
+
+  if (isNotEmpty(others)) {
+    throw new Error(failure);
+  }
+
+  return resolveWithin(root, directory);
+}
+
+function resolveViteRoot(
+  root: Directory,
+  source: ResolvedSource,
   isTesting: boolean,
-): Promise<Directory> {
-  const root = config.context.root;
-
-  const source = await config.resolve("src");
-
+): Directory {
   if (isTesting || !source.active) {
     return root;
   }
 
-  const [dir, ...others] = source.dirs;
-
-  if (dir === undefined) {
-    return root;
-  }
-
-  if (isNotEmpty(others)) {
-    throw new Error(
+  return (
+    resolveOnlyDirectory(
+      root,
+      source.dirs,
       `Several src.dirs in ${root}, so Vite has no single root: set root in the native Vite config layer`,
-    );
-  }
-
-  return resolveWithin(root, dir);
+    ) ?? root
+  );
 }
 
 /**
@@ -65,7 +75,7 @@ export async function createViteConfig(
   const source = await config.resolve("src");
 
   return {
-    root: await resolveViteRoot(config, isTesting),
+    root: resolveViteRoot(root, source, isTesting),
     envDir: root,
     publicDir: await resolvePublicDir(config),
     ...(tsconfig === undefined
@@ -117,17 +127,11 @@ async function resolvePublicDir(
 ): Promise<Directory | false> {
   const { dirs } = await config.resolve("static");
 
-  const [directory, ...others] = dirs;
-
-  if (directory === undefined) {
-    return false;
-  }
-
-  if (isNotEmpty(others)) {
-    throw new Error(
+  return (
+    resolveOnlyDirectory(
+      config.context.root,
+      dirs,
       `Vite serves a single static directory, but \`static.dirs\` lists ${dirs.length}`,
-    );
-  }
-
-  return resolveWithin(config.context.root, directory);
+    ) ?? false
+  );
 }

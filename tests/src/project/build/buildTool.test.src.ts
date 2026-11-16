@@ -43,6 +43,14 @@ describe("build.tool", () => {
     );
   });
 
+  test("leaves an explicit src.bundled resolvable with several build tools active", async () => {
+    const config = createConfig({
+      src: { bundled: true },
+    });
+
+    expect((await config.resolve("src")).bundled).toBe(true);
+  });
+
   test("resolves the tool the library preset prefers, without the Vite values", async () => {
     const config = createConfig({ preset: "library" });
 

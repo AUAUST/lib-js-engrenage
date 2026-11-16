@@ -1,17 +1,23 @@
-import { declareSection, type OutputOf } from "#foundation/options/index";
+import { freeze } from "@auaust/toolkit/object";
+
+import { declareSection } from "#foundation/options/index";
 import { sourceSchema } from "#project/environments/config/schemas/sourceSchema";
 import type { ConfigResolver } from "#project/config/index";
 
 export const sourceOptionsSection = declareSection({
   declaration: sourceSchema,
-  async resolve(
-    input,
-    config: ConfigResolver,
-  ): Promise<OutputOf<typeof sourceSchema>> {
-    return sourceSchema.resolve(
+  async resolve(input, config: ConfigResolver) {
+    const options = sourceSchema.resolve(
       input,
-      { tool: await config.resolve("build.tool") },
+      {
+        tool() {
+          return config.resolve("build.tool");
+        },
+      },
       "src",
     );
+
+    // @debt the object declaration resolves its entries synchronously, so the section awaits the one entry whose default is async; declareObject could await its entries instead
+    return freeze({ ...options, bundled: await options.bundled });
   },
 });

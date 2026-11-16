@@ -10,6 +10,7 @@ export interface PresetEntry extends EntryShape {
    * The traits the preset turns on, before the `traits` adjustments.
    */
   readonly traits: readonly Trait[];
+  // @debt keyed by any slot, but only `build.tools` reads it while `format.formatters` ignores it; slot and entry names are plain strings, so a typo is silently ignored
   /**
    * Entry names by slot: the entry picked when its slot's key is unset and
    * the entry is active.

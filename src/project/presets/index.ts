@@ -1,3 +1,4 @@
+export { readPreferredEntry } from "#project/presets/utils/readPreferredEntry";
 export { resolveTraits } from "#project/presets/utils/resolveTraits";
 
 // @barrel types

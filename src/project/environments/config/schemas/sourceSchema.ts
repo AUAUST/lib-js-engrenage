@@ -50,10 +50,12 @@ export const sourceSchema = declareObject(
       optional: {
         // @debt The context restates the `BuildTool` port structurally because `environments` sits below `build`; the bundling capability could live in a lower shared domain.
         explain: "whether the selected build tool bundles the source, `false` without a build tool",
-        compute(context: { tool: false | { readonly bundled?: boolean } }) {
-          return context.tool === false
-            ? false
-            : (context.tool.bundled ?? false);
+        async compute(context: {
+          tool(): Promise<false | { readonly bundled?: boolean }>;
+        }) {
+          const tool = await context.tool();
+
+          return tool === false ? false : (tool.bundled ?? false);
         },
       },
     }),

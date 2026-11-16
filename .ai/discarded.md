@@ -95,3 +95,4 @@
 - rolldown priority `cli` chunk group: keep CLI registration out of merged chunks — build fails on an ineffective dynamic import
 - rolldown `experimentalInlineCommonChunks`: inline tiny shared chunks — requires `preserveEntrySignatures: false`, which empties library entry exports
 - rolldown `codeSplitting.groups` merging shared chunks: fewer files per library import — default splitting already loads ~14 files per entry; merges add bytes, leak packages and no measurable speed-up
+- declareObject async entries: await async entry defaults inside the object resolve (src.bundled) — changes the synchronous Declaration.resolve contract across foundation/options

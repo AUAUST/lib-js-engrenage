@@ -1,4 +1,5 @@
 import { tsdown, vite } from "#constants";
+import { readPreferredEntry } from "#project/presets/index";
 import { hasConfigFile, type Step } from "#project/steps/index";
 
 // @debt the build tools are listed by hand instead of read from the contributions to `build.tools`
@@ -22,13 +23,10 @@ export function createBuildToolStep(): Step {
       return true;
     },
     async plan({ select, resolve, addDevDependency }) {
-      const preset = await resolve("preset");
-
       const buildTool = await select(
         "Which build tool?",
         [tsdown, vite, "none"],
-        (preset === false ? undefined : preset.prefers?.["build.tools"]) ??
-          "none",
+        readPreferredEntry(await resolve("preset"), "build.tools") ?? "none",
       );
 
       if (buildTool !== "none") {
