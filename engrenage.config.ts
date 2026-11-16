@@ -3,7 +3,6 @@ import { toPascalCase } from "@auaust/primitive-kit/strings";
 import {
   adapters,
   constants,
-  createRolePreset,
   declarations,
   entrypoint,
   enums,
@@ -12,6 +11,7 @@ import {
   index,
   operations,
   ports,
+  role,
   testsetup,
   testutils,
   types,
@@ -33,7 +33,7 @@ function definerFile({ lineage }: RoleLocation): string {
   return name === "Config" ? "defineConfig.ts" : `define${name}Config.ts`;
 }
 
-const config = createRolePreset({
+const config = role({
   name: "config",
   purpose: "Everything that configures the domain: its definer, option declarations and sections.",
   strict: true,
@@ -90,23 +90,23 @@ const config = createRolePreset({
 });
 
 // @debt redefined only to give `adapters` an effect level; the preset should carry it, as it does for every other role
-const rankedAdapters = createRolePreset(adapters({ effects: "effectful" }));
+const rankedAdapters = role(adapters({ effects: "effectful" }));
 
-const setup = createRolePreset({
+const setup = role({
   name: "setup",
   purpose: "Init steps and sync targets of the domain.",
   exports: "named-match",
   effects: "effectful",
 });
 
-const plugins = createRolePreset({
+const plugins = role({
   name: "plugins",
   purpose: "The tool's own plugins, one per module.",
   exports: "named-match",
   effects: "effectful",
 });
 
-const rules = createRolePreset({
+const rules = role({
   name: "rules",
   purpose: "ESLint rules a role preset carries, one per module.",
   exports: "named-match",
@@ -114,7 +114,7 @@ const rules = createRolePreset({
 });
 
 // @debt the modules are ESLint rule conventions, not formatting conventions, and the word collides with the `Conventions` of `project/format`
-const conventions = createRolePreset({
+const conventions = role({
   name: "conventions",
   purpose: "Formatting conventions, discovered by category.",
   categories: true,
@@ -137,14 +137,14 @@ const codeRoles = [
   enums(),
   ports(),
   apis(),
-  rankedAdapters(),
-  config(),
-  setup(),
-  plugins(),
+  rankedAdapters,
+  config,
+  setup,
+  plugins,
   // @debt two contracts in one role: the identity definer `defineConfig` sits beside I/O, while lint ranks roles by imports only
   operations(),
-  conventions(),
-  rules(),
+  conventions,
+  rules,
 ];
 
 export default defineConfig({
@@ -175,13 +175,13 @@ export default defineConfig({
       enums(),
       ports(),
       apis(),
-      rankedAdapters(),
+      rankedAdapters,
       fixtures(),
       testsetup(),
-      config(),
-      plugins(),
+      config,
+      plugins,
       operations(),
-      conventions(),
+      conventions,
     ],
     dist: {
       tsconfig: {

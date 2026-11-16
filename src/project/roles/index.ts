@@ -51,6 +51,7 @@ export { index } from "#project/roles/utils/index";
 export { operations } from "#project/roles/utils/operations";
 export { pages } from "#project/roles/utils/pages";
 export { ports } from "#project/roles/utils/ports";
+export { role } from "#project/roles/utils/role";
 export { schemas } from "#project/roles/utils/schemas";
 export { styles } from "#project/roles/utils/styles";
 export { testsetup } from "#project/roles/utils/testsetup";

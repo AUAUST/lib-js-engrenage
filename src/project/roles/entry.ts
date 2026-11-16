@@ -17,6 +17,7 @@ export {
   operations,
   pages,
   ports,
+  role,
   schemas,
   styles,
   testsetup,

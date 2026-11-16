@@ -130,3 +130,4 @@
 - gh issue view: guessed repo AUAUST/engrenage — remote is AUAUST/lib-js-engrenage; read it from git remote
 - worktree isolation guard: Bash commands with a `github` path segment refused as git commands — worker edited via Python scripts
 - PreToolUse hook: loads engrenage.config.ts, failed while a barrel export was missing mid-edit — worker added the barrel line by hand before sync
+- PreToolUse hook / engrenage sync: loads engrenage.config.ts, failed while a new barrel export it imports was missing — worker added the barrel line by hand
