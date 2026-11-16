@@ -2,7 +2,7 @@ import { importType } from "eslint-plugin-import-x/utils";
 import type { Rule } from "eslint";
 import type { RuleContext as ImportContext } from "eslint-plugin-import-x";
 
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 

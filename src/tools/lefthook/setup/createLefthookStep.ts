@@ -1,6 +1,6 @@
 import { Document } from "yaml";
 
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 import { entries, record } from "@auaust/toolkit/object";
 
 import { lefthook } from "#constants";

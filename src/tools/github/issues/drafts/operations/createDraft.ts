@@ -1,6 +1,6 @@
 import { Document, isMap, isScalar, isSeq } from "yaml";
 
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 import { keys, record } from "@auaust/toolkit/object";
 
 import { findRegisteredRepository } from "#tools/github/issues/api/index";

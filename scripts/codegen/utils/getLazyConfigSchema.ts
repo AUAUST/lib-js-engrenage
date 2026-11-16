@@ -1,4 +1,4 @@
-import { isFunction } from "@auaust/toolkit/isFunction";
+import { isFunction } from "@auaust/toolkit";
 
 import { isConfigSchema } from "#scripts/codegen/utils/isConfigSchema";
 import type { ConfigSchema } from "#scripts/codegen/types/ConfigSchema";

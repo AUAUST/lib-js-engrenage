@@ -1,6 +1,6 @@
 import { extname, matchesGlob, posix, relative } from "node:path";
 
-import { memoized } from "@auaust/toolkit/memoized";
+import { memoize } from "@auaust/toolkit/function";
 import { entries, freeze, getOwn, values } from "@auaust/toolkit/object";
 
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
@@ -274,7 +274,7 @@ export function createEntityIndex({
     });
   }
 
-  const nearest = memoized(
+  const nearest = memoize(
     (
       directory: Directory,
     ):
@@ -307,7 +307,7 @@ export function createEntityIndex({
     return toPosixPath(relative(root, resolve(root, file)));
   }
 
-  const describe = memoized((file: File): Entity | undefined => {
+  const describe = memoize((file: File): Entity | undefined => {
     const path = toProjectPath(file);
     const directory = posix.dirname(path);
     const located = locate(directory);

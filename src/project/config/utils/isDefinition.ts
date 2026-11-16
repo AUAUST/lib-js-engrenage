@@ -1,4 +1,4 @@
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
+import { isPlainObject } from "@auaust/toolkit";
 
 import { definitionKey } from "#project/config/constants";
 import type { Definition } from "#project/config/types/Definition";

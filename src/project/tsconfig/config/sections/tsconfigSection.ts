@@ -1,4 +1,4 @@
-import { memoized } from "@auaust/toolkit/memoized";
+import { memoize } from "@auaust/toolkit/function";
 
 import { declareSection } from "#foundation/options/index";
 import { memoizeByContext, type ConfigResolver } from "#project/config/index";
@@ -7,7 +7,7 @@ import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
 import type { File } from "#types/File";
 
 const parserFor = memoizeByContext(({ root, filesystem }) => {
-  return memoized(
+  return memoize(
     // @debt the memo key holds the content of the base tsconfig only, so staged changes to a local tsconfig it extends are not seen within a pass
     (
       path: File | undefined,

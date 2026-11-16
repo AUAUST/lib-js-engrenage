@@ -14,8 +14,7 @@ import {
   type GenericSchema,
 } from "valibot";
 
-import { isFunction } from "@auaust/toolkit/isFunction";
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
+import { isFunction, isPlainObject } from "@auaust/toolkit";
 
 import type { SlotDeclaration } from "#foundation/extensions/index";
 import type { Extension } from "#project/config/types/Extension";
@@ -25,10 +24,6 @@ import type { KeyDeclaration } from "#project/config/types/KeyDeclaration";
 type Owned = NonNullable<Extension["owns"]>;
 
 type Contributed = NonNullable<Extension["contributes"]>;
-
-function isCallable(input: unknown): boolean {
-  return isFunction(input);
-}
 
 function isPartKey(input: string): boolean {
   return input.includes("#");
@@ -44,7 +39,7 @@ const ownsSchema: GenericSchema<unknown, Owned> = objectWithRest(
         looseObject({
           input: exactOptional(string()),
           load: custom<KeyDeclaration["load"]>(
-            isCallable,
+            isFunction,
             "Expected a load function",
           ),
         }),
@@ -61,7 +56,7 @@ const ownsSchema: GenericSchema<unknown, Owned> = objectWithRest(
         string(),
         looseObject({
           locate: custom<FileResource["locate"]>(
-            isCallable,
+            isFunction,
             "Expected a locate function",
           ),
         }),
@@ -86,7 +81,7 @@ const contributesSchema = intersect([
       looseObject({
         load: exactOptional(
           custom<() => Promise<unknown>>(
-            isCallable,
+            isFunction,
             "Expected a load function",
           ),
         ),

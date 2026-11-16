@@ -346,6 +346,24 @@ describe("collectExtensions", () => {
       'first\'s entry 0 in slot "adapter" has no name, which a bucket requires',
     ],
     [
+      "a hook entry without a load function",
+      [
+        {
+          name: "host",
+          owns: {
+            slots: {
+              done: { kind: "hook" },
+            },
+          },
+        },
+        {
+          name: "first",
+          contributes: { done: [{}] },
+        },
+      ],
+      'first\'s entry 0 in hook slot "done" has no load function',
+    ],
+    [
       "a duplicate entry name",
       [
         {

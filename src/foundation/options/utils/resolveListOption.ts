@@ -1,6 +1,5 @@
 import { difference, isNotEmpty } from "@auaust/primitive-kit/arrays";
-import { isArray } from "@auaust/toolkit/isArray";
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
+import { isArray, isPlainObject } from "@auaust/toolkit";
 import type { MaybeArray } from "@auaust/toolkit/types";
 
 import type { ListAdjustment } from "#foundation/options/types/ListAdjustment";

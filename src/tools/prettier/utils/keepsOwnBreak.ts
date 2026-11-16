@@ -1,7 +1,6 @@
 import type { Doc } from "prettier";
 
-import { isArray } from "@auaust/toolkit/isArray";
-import { isObject } from "@auaust/toolkit/isObject";
+import { isArray, isObject } from "@auaust/toolkit";
 
 import { isAstNode } from "#tools/prettier/utils/isAstNode";
 import { isParenthesized } from "#tools/prettier/utils/isParenthesized";

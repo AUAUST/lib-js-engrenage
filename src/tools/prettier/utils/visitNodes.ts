@@ -1,8 +1,6 @@
 import type { TSESTree } from "@typescript-eslint/types";
 
-import { isArray } from "@auaust/toolkit/isArray";
-import { isObject } from "@auaust/toolkit/isObject";
-import { isString } from "@auaust/toolkit/isString";
+import { isArray, isObject, isString } from "@auaust/toolkit";
 import { entries } from "@auaust/toolkit/object";
 
 const metadataKeys: ReadonlySet<string> = new Set([

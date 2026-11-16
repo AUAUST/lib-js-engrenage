@@ -1,6 +1,6 @@
 import { boolean, custom, union } from "valibot";
 
-import { isFunction } from "@auaust/toolkit/isFunction";
+import { isFunction } from "@auaust/toolkit";
 
 import { declare, declareObject, validate } from "#foundation/options/index";
 import { defaultDefineTypes } from "#project/config/constants";

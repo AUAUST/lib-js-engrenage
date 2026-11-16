@@ -1,4 +1,4 @@
-import { value } from "@auaust/toolkit/value";
+import { value } from "@auaust/toolkit";
 
 import { loadConfig, type LoadedConfig } from "#project/config/index";
 import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";

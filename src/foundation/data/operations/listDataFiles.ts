@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import { looseObject, optional, record, string, unknown } from "valibot";
 
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import { validate } from "#foundation/options/index";
 import type { File } from "#types/File";

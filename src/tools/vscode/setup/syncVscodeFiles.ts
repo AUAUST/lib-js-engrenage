@@ -11,8 +11,7 @@ import {
   map,
   toReversed,
 } from "@auaust/primitive-kit/arrays";
-import { isArray } from "@auaust/toolkit/isArray";
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
+import { isArray, isPlainObject } from "@auaust/toolkit";
 
 import { resolveDataFile } from "#foundation/data/index";
 import { toPosixPath, type Filesystem } from "#foundation/filesystem/index";

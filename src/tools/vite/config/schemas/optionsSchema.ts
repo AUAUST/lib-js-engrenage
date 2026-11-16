@@ -1,7 +1,6 @@
 import { custom, optional, strictObject } from "valibot";
 
-import { isFunction } from "@auaust/toolkit/isFunction";
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
+import { isFunction, isPlainObject } from "@auaust/toolkit";
 
 import type { LoadedConfig } from "#project/config/index";
 import type { Config } from "#tools/vite/types/Config";

@@ -1,7 +1,7 @@
 import type { JSONPath } from "jsonc-parser";
 
 import { flatMap } from "@auaust/primitive-kit/arrays";
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
+import { isPlainObject } from "@auaust/toolkit";
 import { entries } from "@auaust/toolkit/object";
 
 import type { JsonEdit } from "#foundation/json/types/JsonEdit";

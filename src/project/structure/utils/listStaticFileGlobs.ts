@@ -1,6 +1,5 @@
 import { wrap } from "@auaust/primitive-kit/arrays";
-import { isArray } from "@auaust/toolkit/isArray";
-import { isString } from "@auaust/toolkit/isString";
+import { isArray, isString } from "@auaust/toolkit";
 
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { Globs } from "#types/Globs";

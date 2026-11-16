@@ -1,6 +1,6 @@
 import { compose } from "@auaust/toolkit/composer";
+import { once } from "@auaust/toolkit/function";
 import { freeze } from "@auaust/toolkit/object";
-import { once } from "@auaust/toolkit/once";
 
 import { declareSection } from "#foundation/options/index";
 import { resolveSourceRuntime } from "#project/baseline/index";

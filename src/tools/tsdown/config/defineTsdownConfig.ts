@@ -1,6 +1,6 @@
 import { mergeConfig } from "tsdown";
 
-import { value } from "@auaust/toolkit/value";
+import { value } from "@auaust/toolkit";
 
 import { loadConfig, type LoadedConfig } from "#project/config/index";
 import { createTsdownConfig } from "#tools/tsdown/operations/createTsdownConfig";

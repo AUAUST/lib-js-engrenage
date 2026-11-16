@@ -1,5 +1,4 @@
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
-import { isString } from "@auaust/toolkit/isString";
+import { isPlainObject, isString } from "@auaust/toolkit";
 
 export function resolveImportTarget(target: unknown): string | undefined {
   if (isString(target)) {

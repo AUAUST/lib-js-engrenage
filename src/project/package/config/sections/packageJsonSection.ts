@@ -1,4 +1,4 @@
-import { memoized } from "@auaust/toolkit/memoized";
+import { memoize } from "@auaust/toolkit/function";
 
 import { declareSection } from "#foundation/options/index";
 import { memoizeByContext, type ConfigResolver } from "#project/config/index";
@@ -7,7 +7,7 @@ import type { PackageJson } from "#project/package/types/PackageJson";
 import type { File } from "#types/File";
 
 const parserFor = memoizeByContext(({ root }) => {
-  return memoized(
+  return memoize(
     (path: File | undefined, content: string | undefined): PackageJson => {
       return createPackageJson({
         root,

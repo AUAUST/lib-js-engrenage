@@ -1,4 +1,4 @@
-import { isArray } from "@auaust/toolkit/isArray";
+import { isArray } from "@auaust/toolkit";
 
 import { ensureAnyOf } from "#foundation/processes/utils/ensureAnyOf";
 import { ensureIncludes } from "#foundation/processes/utils/ensureIncludes";

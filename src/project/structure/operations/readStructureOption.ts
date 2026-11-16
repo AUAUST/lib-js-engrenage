@@ -1,8 +1,6 @@
 import { custom, is } from "valibot";
 
-import { isArray } from "@auaust/toolkit/isArray";
-import { isBoolean } from "@auaust/toolkit/isBoolean";
-import { isObject } from "@auaust/toolkit/isObject";
+import { isArray, isBoolean, isObject } from "@auaust/toolkit";
 
 import type { Resolver } from "#foundation/options/index";
 import type { ConfigContext } from "#project/config/index";

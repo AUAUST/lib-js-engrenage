@@ -1,6 +1,6 @@
 import { custom } from "valibot";
 
-import { isFunction } from "@auaust/toolkit/isFunction";
+import { isFunction } from "@auaust/toolkit";
 
 import type { RoleCompanionResolver } from "#project/roles/types/RoleCompanionResolver";
 

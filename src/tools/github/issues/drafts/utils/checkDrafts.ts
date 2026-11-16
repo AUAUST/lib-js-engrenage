@@ -1,8 +1,6 @@
 import { getDotPath, safeParse } from "valibot";
 
-import { isArray } from "@auaust/toolkit/isArray";
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
-import { isString } from "@auaust/toolkit/isString";
+import { isArray, isPlainObject, isString } from "@auaust/toolkit";
 
 import { splitRepository } from "#tools/github/issues/api/index";
 import { issueContracts } from "#tools/github/issues/contract/constants";

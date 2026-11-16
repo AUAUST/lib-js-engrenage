@@ -1,5 +1,5 @@
 import { filter, flatMap, map } from "@auaust/primitive-kit/arrays";
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import { loadLazy } from "#foundation/modules/index";
 import { fixedOptions } from "#tools/prettier/constants";

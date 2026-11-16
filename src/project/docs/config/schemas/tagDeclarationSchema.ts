@@ -11,7 +11,7 @@ import {
 } from "valibot";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 
-import { isObject } from "@auaust/toolkit/isObject";
+import { isObject } from "@auaust/toolkit";
 
 function isStandardSchema(value: unknown): value is StandardSchemaV1<string> {
   return isObject(value) && "~standard" in value;

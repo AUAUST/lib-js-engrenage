@@ -1,5 +1,5 @@
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
-import { isBoolean } from "@auaust/toolkit/isBoolean";
+import { isBoolean } from "@auaust/toolkit";
 import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";

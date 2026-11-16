@@ -5,7 +5,7 @@ import { format } from "prettier";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
 import { flatMap, map } from "@auaust/primitive-kit/arrays";
-import { memoized } from "@auaust/toolkit/memoized";
+import { memoize } from "@auaust/toolkit/function";
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
@@ -63,7 +63,7 @@ async function createEslintConfig(
 
 const prettierOptions = await createPrettierConfig(await loadConfig(root));
 
-const getLinter = memoized<
+const getLinter = memoize<
   (options?: Options, fix?: boolean) => Promise<ESLint>,
   string
 >(

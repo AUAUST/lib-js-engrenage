@@ -1,7 +1,7 @@
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
 import type { Rule, Scope } from "eslint";
 
-import { isObject } from "@auaust/toolkit/isObject";
+import { isObject } from "@auaust/toolkit";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 

@@ -1,4 +1,4 @@
-import { isArray } from "@auaust/toolkit/isArray";
+import { isArray } from "@auaust/toolkit";
 
 import { isConfigSchema } from "#scripts/codegen/utils/isConfigSchema";
 import { isUnionConfigSchema } from "#scripts/codegen/utils/isUnionConfigSchema";

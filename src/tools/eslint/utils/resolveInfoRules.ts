@@ -2,7 +2,7 @@ import type { Linter } from "eslint";
 import type { defineConfig } from "eslint/config";
 
 import { map } from "@auaust/primitive-kit/arrays";
-import { isArray } from "@auaust/toolkit/isArray";
+import { isArray } from "@auaust/toolkit";
 import { entries } from "@auaust/toolkit/object";
 
 import { infoRulesSetting } from "#tools/eslint/constants";

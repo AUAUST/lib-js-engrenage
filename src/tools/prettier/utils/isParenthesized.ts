@@ -1,7 +1,6 @@
 import type { Doc } from "prettier";
 
-import { isArray } from "@auaust/toolkit/isArray";
-import { isObject } from "@auaust/toolkit/isObject";
+import { isArray, isObject } from "@auaust/toolkit";
 
 // @debt parentheses are recognized by the `(`…`)` array Prettier wraps a doc in, not by Prettier's own `needsParens`, which no API exposes
 export function isParenthesized(target: Doc): boolean {

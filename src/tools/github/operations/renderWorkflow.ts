@@ -9,7 +9,7 @@ import {
   type YAMLMap,
 } from "yaml";
 
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import { resolveDataFile } from "#foundation/data/index";
 import { workflowTemplates } from "#tools/github/constants";

@@ -12,8 +12,8 @@ import {
 } from "valibot";
 
 import { flatMap } from "@auaust/primitive-kit/arrays";
+import { once } from "@auaust/toolkit/function";
 import { keys } from "@auaust/toolkit/object";
-import { once } from "@auaust/toolkit/once";
 
 import { packageJsonFile } from "#constants";
 import { parseJson } from "#foundation/json/index";

@@ -11,9 +11,8 @@ import {
   flatMap,
   sort,
 } from "@auaust/primitive-kit/arrays";
-import { isObject } from "@auaust/toolkit/isObject";
-import { mappedValues } from "@auaust/toolkit/mappedValues";
-import { values } from "@auaust/toolkit/object";
+import { isObject } from "@auaust/toolkit";
+import { mapValues, values } from "@auaust/toolkit/object";
 
 import { visitNodes } from "#tools/prettier/utils/visitNodes";
 import type { TagDeclaration } from "#project/docs/index";
@@ -196,7 +195,7 @@ export function createLayoutPlugin(
   tags: readonly TagDeclaration[],
 ): Plugin {
   const layoutPlugin: Plugin = {
-    parsers: mappedValues(stockParsers, (stock, name): Parser => {
+    parsers: mapValues(stockParsers, (stock, name): Parser => {
       const parser = findParser(plugins, name) ?? stock;
 
       return {

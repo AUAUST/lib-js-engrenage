@@ -4,7 +4,7 @@ import { join } from "node:path";
 
 import { Document } from "yaml";
 
-import { isArray } from "@auaust/toolkit/isArray";
+import { isArray } from "@auaust/toolkit";
 
 import { spawnProcess } from "#foundation/processes/index";
 import { renderReference } from "#tools/github/issues/contract/index";

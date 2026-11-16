@@ -1,4 +1,5 @@
-import { is, keys } from "@auaust/toolkit/object";
+import { isSelf } from "@auaust/toolkit";
+import { keys } from "@auaust/toolkit/object";
 
 import { applyInputDefaults } from "#foundation/options/utils/applyInputDefaults";
 import { validate } from "#foundation/options/utils/validate";
@@ -264,7 +265,7 @@ export function createResolver<
     for (const [key, value] of live) {
       const fresh = await settle(key, []);
 
-      if (!is(fresh.value, value)) {
+      if (!isSelf(fresh.value, value)) {
         return true;
       }
     }

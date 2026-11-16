@@ -1,5 +1,5 @@
 import { filter } from "@auaust/primitive-kit/arrays";
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 import { entries } from "@auaust/toolkit/object";
 
 import {

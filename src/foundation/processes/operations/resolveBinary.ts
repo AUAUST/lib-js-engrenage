@@ -4,7 +4,7 @@ import { dirname } from "node:path";
 
 import { parse, record, string, union } from "valibot";
 
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 import { get } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";

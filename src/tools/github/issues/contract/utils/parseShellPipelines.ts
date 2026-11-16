@@ -1,6 +1,6 @@
 import { parse, type ParseEntry as Token } from "shell-quote";
 
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import { readShellOperator as readOperator } from "#tools/github/issues/contract/utils/readShellOperator";
 import type { ShellCommand as Command } from "#tools/github/issues/contract/types/ShellCommand";

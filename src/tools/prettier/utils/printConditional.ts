@@ -6,9 +6,7 @@ import {
   type Printer,
 } from "prettier";
 
-import { isArray } from "@auaust/toolkit/isArray";
-import { isObject } from "@auaust/toolkit/isObject";
-import { isString } from "@auaust/toolkit/isString";
+import { isArray, isObject, isString } from "@auaust/toolkit";
 
 import { isAstNode } from "#tools/prettier/utils/isAstNode";
 import { keepsOwnBreak } from "#tools/prettier/utils/keepsOwnBreak";

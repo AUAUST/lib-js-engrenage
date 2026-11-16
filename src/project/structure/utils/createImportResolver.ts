@@ -1,6 +1,6 @@
 import { posix, relative } from "node:path";
 
-import { memoized } from "@auaust/toolkit/memoized";
+import { memoize } from "@auaust/toolkit/function";
 
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import type { Alias } from "#project/structure/types/Alias";
@@ -51,7 +51,7 @@ export function createImportResolver({
 }): (specifier: string, from: File) => ResolvedSpecifier | undefined {
   const table = [...aliases.global, ...aliases.src];
 
-  const classify = memoized((specifier: string) => {
+  const classify = memoize((specifier: string) => {
     for (const alias of table) {
       const expanded = expandAlias(alias, specifier);
 
@@ -83,7 +83,7 @@ export function createImportResolver({
     } satisfies ResolvedSpecifier;
   });
 
-  const expandRelative = memoized(
+  const expandRelative = memoize(
     (directory: string, specifier: string): ResolvedSpecifier => {
       const base = toPosixPath(relative(root, resolve(root, directory)));
 

@@ -1,4 +1,4 @@
-import { isObject } from "@auaust/toolkit/isObject";
+import { isObject } from "@auaust/toolkit";
 import { getOwn, keys } from "@auaust/toolkit/object";
 
 import type { Lazy } from "#foundation/modules/types/Lazy";

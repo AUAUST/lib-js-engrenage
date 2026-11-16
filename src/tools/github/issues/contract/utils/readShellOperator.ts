@@ -1,4 +1,4 @@
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import type { ShellToken as Token } from "#tools/github/issues/contract/types/ShellToken";
 import type { ShellWord as Word } from "#tools/github/issues/contract/types/ShellWord";

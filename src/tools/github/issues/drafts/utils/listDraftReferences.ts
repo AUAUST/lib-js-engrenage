@@ -1,4 +1,4 @@
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import type { DraftManifest } from "#tools/github/issues/drafts/types/DraftManifest";
 

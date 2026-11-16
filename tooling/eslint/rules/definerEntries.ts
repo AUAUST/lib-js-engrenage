@@ -14,7 +14,7 @@ import {
   type Statement,
 } from "typescript";
 
-import { memoized } from "@auaust/toolkit/memoized";
+import { memoize } from "@auaust/toolkit/function";
 
 import { defineRoleRule } from "#tools/eslint/index";
 import type { File } from "#types/File";
@@ -57,7 +57,7 @@ function namesOf(statement: Statement): string[] {
 }
 
 // @debt memoized for the process, not the lint run: a long-lived ESLint (an editor server) keeps an entry's first reading after it changes
-const readEntryExports = memoized(
+const readEntryExports = memoize(
   (entry: File): ReadonlySet<string> | undefined => {
     let text: string;
 

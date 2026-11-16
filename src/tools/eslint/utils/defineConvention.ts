@@ -1,5 +1,5 @@
+import { value, type ResolvableValue } from "@auaust/toolkit";
 import { values } from "@auaust/toolkit/object";
-import { value, type ResolvableValue } from "@auaust/toolkit/value";
 
 import type { ConfigContext } from "#project/config/index";
 import type { Trait } from "#project/presets/index";

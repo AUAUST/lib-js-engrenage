@@ -1,4 +1,4 @@
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
 
 import { roleSchema, type Role } from "#project/roles/index";

@@ -2,8 +2,7 @@ import { execFile } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
-import { isArray } from "@auaust/toolkit/isArray";
-import { isString } from "@auaust/toolkit/isString";
+import { isArray, isString } from "@auaust/toolkit";
 
 const repositoryRoot = fileURLToPath(new URL("../../", import.meta.url));
 

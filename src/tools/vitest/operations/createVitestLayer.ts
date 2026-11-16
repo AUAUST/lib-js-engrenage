@@ -1,4 +1,4 @@
-import { value } from "@auaust/toolkit/value";
+import { value } from "@auaust/toolkit";
 
 import { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";
 import type { LoadedConfig } from "#project/config/index";

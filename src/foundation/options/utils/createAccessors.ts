@@ -1,6 +1,6 @@
 import { compose, type PropertyComposer } from "@auaust/toolkit/composer";
+import { once } from "@auaust/toolkit/function";
 import { entries } from "@auaust/toolkit/object";
-import { once } from "@auaust/toolkit/once";
 
 import type { Accessors } from "#foundation/options/types/Accessors";
 

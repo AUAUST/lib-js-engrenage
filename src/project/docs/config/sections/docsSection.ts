@@ -4,7 +4,7 @@ import {
   isNotEmpty,
   map,
 } from "@auaust/primitive-kit/arrays";
-import { isArray } from "@auaust/toolkit/isArray";
+import { isArray } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
 
 import { loadLazy } from "#foundation/modules/index";

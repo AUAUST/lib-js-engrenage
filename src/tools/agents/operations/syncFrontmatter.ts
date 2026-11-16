@@ -2,7 +2,7 @@ import { isDeepStrictEqual } from "node:util";
 
 import { isMap, isScalar, parseDocument, stringify, visit } from "yaml";
 
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
+import { isPlainObject } from "@auaust/toolkit";
 import { keys } from "@auaust/toolkit/object";
 
 import { preserveDirective } from "#tools/agents/constants";

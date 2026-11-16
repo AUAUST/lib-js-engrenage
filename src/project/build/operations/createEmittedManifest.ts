@@ -1,8 +1,7 @@
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
-import { isArray } from "@auaust/toolkit/isArray";
-import { isString } from "@auaust/toolkit/isString";
+import { isArray, isString } from "@auaust/toolkit";
 
 import {
   isWithin,

@@ -1,6 +1,5 @@
 import { includes } from "@auaust/primitive-kit/arrays";
-import { isBoolean } from "@auaust/toolkit/isBoolean";
-import { isString } from "@auaust/toolkit/isString";
+import { isBoolean, isString } from "@auaust/toolkit";
 
 import { globalScopes } from "#project/config/constants";
 import type { Definition } from "#project/config/types/Definition";

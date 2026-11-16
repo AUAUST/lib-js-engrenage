@@ -1,4 +1,4 @@
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import { parseShellPipelines } from "#tools/github/issues/contract/utils/parseShellPipelines";
 import { readShellOperator as readOperator } from "#tools/github/issues/contract/utils/readShellOperator";

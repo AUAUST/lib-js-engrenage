@@ -1,6 +1,6 @@
 import type { Rule } from "eslint";
 
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 export function visitImportSources(
   visit: (node: Rule.Node, source: string) => void,

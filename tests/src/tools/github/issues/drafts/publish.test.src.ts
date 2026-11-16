@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { format } from "prettier";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 import { max } from "@auaust/toolkit/math";
 
 import { loadConfig } from "#project/config/operations/loadConfig";

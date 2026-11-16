@@ -1,8 +1,6 @@
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 
-import { isFunction } from "@auaust/toolkit/isFunction";
-import { isObject } from "@auaust/toolkit/isObject";
-import { isPromise } from "@auaust/toolkit/isPromise";
+import { isMethod, isObject, isPromise } from "@auaust/toolkit";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import { createRegistry } from "#foundation/extensions/utils/createRegistry";
@@ -297,7 +295,7 @@ function checkEntry<Extension extends ExtensionShape>(
     );
   }
 
-  if (policy === "hook" && !isFunction(entry, "load")) {
+  if (policy === "hook" && !isMethod(entry, "load")) {
     findings.push(`${label} in hook slot "${slot}" has no load function`);
   }
 }

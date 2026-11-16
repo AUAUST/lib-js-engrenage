@@ -136,3 +136,10 @@
 - `gh issue view --repo AUAUST/engrenage`: fetched #570 by the package name given in the task — repository is `AUAUST/lib-js-engrenage`; read it from `git remote -v`
 - PreToolUse hook: dispatched a worker for issue-less dogfooding — hook demands an `Issue:` line; used a general-purpose agent
 - gh run view --log-failed: fetched logs of the latest run — returned empty/404 (repo renamed); got them with gh api repos/AUAUST/lib-js-engrenage/actions/jobs/<id>/logs
+- zsh `grep --include=*.ts`: unquoted glob in Bash calls, three times — zsh "no matches found" aborts the command; quoted or dropped the flag
+- zsh `echo ===== $f`: separator starting with `=` — zsh expands `=word` and aborts with "not found"; used `-----`
+- `gh issue list --repo AUAUST/engrenage`: searched engrenage issues by package name — repository is `AUAUST/lib-js-engrenage`; read it from `git remote -v`
+- `engrenage planning issue create --repo`: draft an issue for a client repository — only repositories in the planning sheet are registered; kept the client report in chat
+- `prettier --experimental-cli`: checked the repository with engrenage's config — silently dropped object plugins (options cross a worker boundary), 357 false reports; emulated with worker threads in a scratch script
+- npx tsc: ran tsc through npx — devEngines rejects npm (EBADDEVENGINES); used pnpm exec
+- PreToolUse Bash hook: ran any Bash command while the CLI failed to load — the hook runs engrenage itself and blocked every command; fixed the CLI via Edit first

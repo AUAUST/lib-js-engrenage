@@ -1,7 +1,7 @@
 import { defineConfig } from "eslint/config";
 
 import { map } from "@auaust/primitive-kit/arrays";
-import { value } from "@auaust/toolkit/value";
+import { value } from "@auaust/toolkit";
 
 import { loadConfig, type LoadedConfig } from "#project/config/index";
 import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";

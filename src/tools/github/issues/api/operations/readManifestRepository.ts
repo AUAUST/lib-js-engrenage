@@ -2,7 +2,7 @@ import { join } from "node:path";
 
 import { object, optional, string, union } from "valibot";
 
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import { readJsonFile } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";

@@ -9,7 +9,7 @@ import {
   toLowerCase,
   toPascalCase,
 } from "@auaust/primitive-kit/strings";
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { delegateRule } from "#tools/eslint/utils/delegateRule";

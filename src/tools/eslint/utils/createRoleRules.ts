@@ -1,8 +1,6 @@
 import type { Linter } from "eslint";
 
-import { isArray } from "@auaust/toolkit/isArray";
-import { isNumber } from "@auaust/toolkit/isNumber";
-import { isString } from "@auaust/toolkit/isString";
+import { isArray, isNumber, isString } from "@auaust/toolkit";
 import { entries, getOwn, values } from "@auaust/toolkit/object";
 
 import { pluginName, rolesPluginName } from "#tools/eslint/constants";

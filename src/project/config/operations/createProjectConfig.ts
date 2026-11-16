@@ -8,7 +8,7 @@ import {
   map,
   toSorted,
 } from "@auaust/primitive-kit/arrays";
-import { isArray } from "@auaust/toolkit/isArray";
+import { isArray } from "@auaust/toolkit";
 import { freeze, keys, values } from "@auaust/toolkit/object";
 
 import { collectExtensions } from "#foundation/extensions/index";

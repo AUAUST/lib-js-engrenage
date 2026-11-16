@@ -9,7 +9,7 @@ import {
   type InferOutput,
 } from "valibot";
 
-import { isArray } from "@auaust/toolkit/isArray";
+import { isArray } from "@auaust/toolkit";
 import { record } from "@auaust/toolkit/object";
 
 import { validate } from "#foundation/options/index";

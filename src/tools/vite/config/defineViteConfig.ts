@@ -1,6 +1,6 @@
 import { mergeConfig } from "vite";
 
-import { value } from "@auaust/toolkit/value";
+import { value } from "@auaust/toolkit";
 
 import { validate } from "#foundation/options/index";
 import { loadConfig, type LoadedConfig } from "#project/config/index";

@@ -1,7 +1,7 @@
 import { RequestError } from "@octokit/request-error";
 import { parse } from "valibot";
 
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import {
   createGithubClient,

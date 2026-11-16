@@ -1,6 +1,6 @@
 import type { Command, CommandUnknownOpts } from "@commander-js/extra-typings";
 
-import { isFunction } from "@auaust/toolkit/isFunction";
+import { isFunction } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
 
 import { loadLazy } from "#foundation/modules/index";

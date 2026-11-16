@@ -1,7 +1,7 @@
 import type { Rule } from "eslint";
 
 import { includes } from "@auaust/primitive-kit/arrays";
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
+import { isPlainObject } from "@auaust/toolkit";
 import { max } from "@auaust/toolkit/math";
 import { create, entries } from "@auaust/toolkit/object";
 

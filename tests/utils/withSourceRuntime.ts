@@ -1,4 +1,4 @@
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
+import { isPlainObject } from "@auaust/toolkit";
 
 export function withSourceRuntime(
   input: Record<string, unknown> = {},

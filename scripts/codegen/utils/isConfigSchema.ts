@@ -1,4 +1,4 @@
-import { isObject } from "@auaust/toolkit/isObject";
+import { isObject } from "@auaust/toolkit";
 
 import type { ConfigSchema } from "#scripts/codegen/types/ConfigSchema";
 

@@ -1,5 +1,5 @@
 import { every, filter, find, map } from "@auaust/primitive-kit/arrays";
-import { isBoolean } from "@auaust/toolkit/isBoolean";
+import { isBoolean } from "@auaust/toolkit";
 import { entries, hasOwn, keys } from "@auaust/toolkit/object";
 
 import type { Environment } from "#project/config/index";

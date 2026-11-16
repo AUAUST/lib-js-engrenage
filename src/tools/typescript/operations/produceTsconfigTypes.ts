@@ -1,6 +1,5 @@
 import { filter, map } from "@auaust/primitive-kit/arrays";
-import { isArray } from "@auaust/toolkit/isArray";
-import { isString } from "@auaust/toolkit/isString";
+import { isArray, isString } from "@auaust/toolkit";
 
 import { engrenage } from "#constants";
 import { resolveListOption } from "#foundation/options/index";

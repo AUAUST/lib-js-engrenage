@@ -1,6 +1,6 @@
 import { join } from "node:path";
 
-import { memoized } from "@auaust/toolkit/memoized";
+import { memoize } from "@auaust/toolkit/function";
 import { entries } from "@auaust/toolkit/object";
 
 import { collectStructureNodes } from "#project/structure/utils/collectStructureNodes";
@@ -20,7 +20,7 @@ interface Mirror {
 }
 
 export function createMirrorClassifier(tests: TestsContext) {
-  const counterparts = memoized(
+  const counterparts = memoize(
     (environment: string): ReadonlyMap<string, StructureNode> => {
       const structure = tests.environments[environment]?.structure;
 

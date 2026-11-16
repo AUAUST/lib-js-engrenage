@@ -1,8 +1,7 @@
 import { dirname } from "node:path";
 
-import { constant } from "@auaust/toolkit/constant";
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
-import { memoized } from "@auaust/toolkit/memoized";
+import { constant, isPlainObject } from "@auaust/toolkit";
+import { memoize } from "@auaust/toolkit/function";
 
 import { files } from "#constants";
 import {
@@ -20,7 +19,7 @@ interface FoundConfig {
   input: unknown;
 }
 
-const warnMissingConfig = memoized(function (root: Directory) {
+const warnMissingConfig = memoize(function (root: Directory) {
   console.warn(`No engrenage config found in ${root}, using defaults`);
 }, constant(true));
 

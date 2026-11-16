@@ -7,12 +7,8 @@ import { compile } from "json-schema-to-typescript-lite";
 import { getDescription, strictObject } from "valibot";
 
 import { map, sort } from "@auaust/primitive-kit/arrays";
-import { isArray } from "@auaust/toolkit/isArray";
-import { isBoolean } from "@auaust/toolkit/isBoolean";
-import { isObject } from "@auaust/toolkit/isObject";
-import { isString } from "@auaust/toolkit/isString";
-import { mappedValues } from "@auaust/toolkit/mappedValues";
-import { keys } from "@auaust/toolkit/object";
+import { isArray, isBoolean, isObject, isString } from "@auaust/toolkit";
+import { keys, mapValues } from "@auaust/toolkit/object";
 
 import { globsSchema } from "#foundation/options/index";
 import { buildToolNameSchema } from "#project/build/index";
@@ -205,7 +201,7 @@ function allowUndefined(
   { entries }: ConfigSchema & ObjectConfigSchema,
   jsonSchema: JsonSchema,
 ): JsonSchema {
-  const properties = mappedValues(
+  const properties = mapValues(
     jsonSchema.properties ?? {},
     (property, name): JsonSchema | boolean => {
       if (isBoolean(property) || entries[name]?.type !== "optional") {
@@ -307,7 +303,7 @@ function resolveNamedReferences(value: unknown): unknown {
     return withType({ type: "object" }, reference.slice(namedReference.length));
   }
 
-  return mappedValues(value, resolveNamedReferences);
+  return mapValues(value, resolveNamedReferences);
 }
 
 async function render(

@@ -12,7 +12,7 @@ import {
 } from "typescript";
 
 import { map } from "@auaust/primitive-kit/arrays";
-import { once } from "@auaust/toolkit/once";
+import { once } from "@auaust/toolkit/function";
 
 import {
   isWithin,

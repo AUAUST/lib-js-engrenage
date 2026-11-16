@@ -1,6 +1,4 @@
-import { isArray } from "@auaust/toolkit/isArray";
-import { isNumber } from "@auaust/toolkit/isNumber";
-import { isString } from "@auaust/toolkit/isString";
+import { isArray, isNumber, isString } from "@auaust/toolkit";
 
 import type { FieldValue } from "#tools/github/issues/drafts/types/FieldValue";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";

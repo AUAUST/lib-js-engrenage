@@ -1,5 +1,5 @@
+import { once } from "@auaust/toolkit/function";
 import { freeze } from "@auaust/toolkit/object";
-import { once } from "@auaust/toolkit/once";
 
 import { declareSection } from "#foundation/options/index";
 import { githubSchema } from "#tools/github/config/schemas/githubSchema";

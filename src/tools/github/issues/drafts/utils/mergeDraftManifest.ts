@@ -1,5 +1,5 @@
 import { sort } from "@auaust/primitive-kit/arrays";
-import { isArray } from "@auaust/toolkit/isArray";
+import { isArray } from "@auaust/toolkit";
 import { hasOwn, keys } from "@auaust/toolkit/object";
 
 import type { IssueProtocol } from "#tools/github/issues/contract/index";

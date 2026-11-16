@@ -98,3 +98,8 @@
 - declareObject async entries: await async entry defaults inside the object resolve (src.bundled) — changes the synchronous Declaration.resolve contract across foundation/options
 - tsdown declaration helper-stripping plugin: keep `output.keepNames` with declarations — rewrites rolldown-plugin-dts output and shifts declaration maps
 - rolldown-plugin-dts pnpm patch: drop `__name` from declaration chunks — fixes only this repository, not consumers of createTsdownConfig
+- eslint `--concurrency`: faster full lint (#558) — 34 → 25 s at 2.5–3× memory, each thread rebuilds the same TS programs
+- `oxfmt`: faster JS and TS formatting (#558) — no printer plugins, loses #418 layouts; fixed Prettier is ~1–2 s
+- tsgolint fork: native-speed typed conventions (#558) — permanent fork upkeep of a Go rule engine
+- `flint`: hybrid linter with TS rules on a native core (#558) — experimental
+- typescript-eslint `EXPERIMENTAL_backend: 'tsgo'`: ESLint typed rules on TS 7.1 (#558) — 1.0–1.7× slower than TS 6 until TS ships bulk APIs

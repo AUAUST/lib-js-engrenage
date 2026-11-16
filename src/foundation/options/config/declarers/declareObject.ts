@@ -1,7 +1,6 @@
 import { strictObject, type StrictObjectIssue } from "valibot";
 
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
-import { isString } from "@auaust/toolkit/isString";
+import { isPlainObject, isString } from "@auaust/toolkit";
 import {
   entries as entriesOf,
   freeze,

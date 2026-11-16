@@ -1,4 +1,4 @@
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
 
 import { roleContractDefaults } from "#project/roles/constants";

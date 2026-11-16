@@ -7,8 +7,7 @@ import { format, resolveConfig } from "prettier";
 
 import { map, sort } from "@auaust/primitive-kit/arrays";
 import { toPascalCase } from "@auaust/primitive-kit/strings";
-import { mappedValues } from "@auaust/toolkit/mappedValues";
-import { entries, record } from "@auaust/toolkit/object";
+import { entries, mapValues, record } from "@auaust/toolkit/object";
 
 import { pathExists, resolve, toPosixPath } from "#foundation/filesystem/index";
 import { rolesPluginName } from "#tools/eslint/constants";
@@ -66,7 +65,7 @@ async function readRuleSources(config: LoadedConfig): Promise<RuleSource[]> {
 }
 
 function normalizePluginSchemas(plugin: Plugin): Plugin {
-  const rules = mappedValues(plugin.rules ?? {}, (rule) => {
+  const rules = mapValues(plugin.rules ?? {}, (rule) => {
     return {
       ...rule,
       meta: {

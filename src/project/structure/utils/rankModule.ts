@@ -2,8 +2,7 @@ import { matchesGlob } from "node:path";
 
 import { parse } from "valibot";
 
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
-import { isString } from "@auaust/toolkit/isString";
+import { isPlainObject, isString } from "@auaust/toolkit";
 import { entries, values } from "@auaust/toolkit/object";
 
 import { effectModuleSchema } from "#project/structure/config/schemas/effectModuleSchema";

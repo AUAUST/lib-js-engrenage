@@ -1,8 +1,5 @@
 import { deduplicate, isNotEmpty, map } from "@auaust/primitive-kit/arrays";
-import { isArray } from "@auaust/toolkit/isArray";
-import { isBoolean } from "@auaust/toolkit/isBoolean";
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
-import { isString } from "@auaust/toolkit/isString";
+import { isArray, isBoolean, isPlainObject, isString } from "@auaust/toolkit";
 import { entries } from "@auaust/toolkit/object";
 
 import { identifierPattern } from "#tools/typescript/constants";

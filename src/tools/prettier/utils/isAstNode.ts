@@ -1,5 +1,4 @@
-import { isObject } from "@auaust/toolkit/isObject";
-import { isString } from "@auaust/toolkit/isString";
+import { isObject, isString } from "@auaust/toolkit";
 
 import type { AstNode } from "#tools/prettier/types/AstNode";
 

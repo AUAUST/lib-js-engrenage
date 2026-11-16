@@ -1,6 +1,6 @@
 import { cancel, isCancel, multiselect } from "@clack/prompts";
 
-import { empty } from "@auaust/toolkit/empty";
+import { empty } from "@auaust/toolkit";
 
 import { settleChanges } from "#project/sync/index";
 import {

@@ -1,6 +1,6 @@
 import { record, type GenericSchema } from "valibot";
 
-import { isPlainObject } from "@auaust/toolkit/isPlainObject";
+import { isPlainObject } from "@auaust/toolkit";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import { createOptionSchema } from "#foundation/options/utils/createOptionSchema";

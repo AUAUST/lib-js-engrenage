@@ -2,7 +2,7 @@ import { ESLint, type Linter } from "eslint";
 
 import { createEslintConfig } from "@auaust/engrenage/eslint";
 import { loadConfig } from "@auaust/engrenage/extensions";
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 

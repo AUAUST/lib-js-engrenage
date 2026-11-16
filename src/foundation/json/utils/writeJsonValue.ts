@@ -8,7 +8,7 @@ import {
   type ModificationOptions,
 } from "jsonc-parser";
 
-import { isNumber } from "@auaust/toolkit/isNumber";
+import { isNumber } from "@auaust/toolkit";
 
 import type { JsonIndentation } from "#foundation/json/types/JsonIndentation";
 import type { JsonValue } from "#foundation/json/types/JsonValue";

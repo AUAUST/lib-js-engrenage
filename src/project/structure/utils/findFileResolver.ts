@@ -1,4 +1,4 @@
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import type { DescribedResolver } from "#foundation/options/index";
 import type { RoleFileResolver } from "#project/roles/index";

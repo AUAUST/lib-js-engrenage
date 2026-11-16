@@ -1,6 +1,5 @@
 import { toPascalCase } from "@auaust/primitive-kit/strings";
-import { isArray } from "@auaust/toolkit/isArray";
-import { isObject } from "@auaust/toolkit/isObject";
+import { isArray, isObject } from "@auaust/toolkit";
 import { entries, values } from "@auaust/toolkit/object";
 
 import { getCoreConfigSchema } from "#scripts/codegen/utils/getCoreConfigSchema";

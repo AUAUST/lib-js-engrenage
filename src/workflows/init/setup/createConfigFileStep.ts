@@ -7,7 +7,7 @@ import {
   sort,
 } from "@auaust/primitive-kit/arrays";
 import { startsWith } from "@auaust/primitive-kit/strings";
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import { engrenage, engrenageConfigFile } from "#constants";
 import { findCurrentMonth } from "#project/baseline/index";

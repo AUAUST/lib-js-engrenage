@@ -1,4 +1,4 @@
-import { isPromise } from "@auaust/toolkit/isPromise";
+import { isPromise } from "@auaust/toolkit";
 
 import { splitDocTag } from "#project/docs/utils/splitDocTag";
 import type { JsdocTag } from "#foundation/jsdoc/index";

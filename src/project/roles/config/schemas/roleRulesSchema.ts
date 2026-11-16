@@ -10,9 +10,7 @@ import {
   type InferInput,
 } from "valibot";
 
-import { isFunction } from "@auaust/toolkit/isFunction";
-import { isObject } from "@auaust/toolkit/isObject";
-import { isString } from "@auaust/toolkit/isString";
+import { isFunction, isObject, isString } from "@auaust/toolkit";
 
 import type { RoleRuleModule } from "#project/roles/ports/RoleRuleModule";
 import type { RoleRuleLoader } from "#project/roles/types/RoleRuleLoader";

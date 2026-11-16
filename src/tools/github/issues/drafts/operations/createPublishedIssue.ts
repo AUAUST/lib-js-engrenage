@@ -1,7 +1,7 @@
 import { nullish, number, object, string } from "valibot";
 import { Document, visit } from "yaml";
 
-import { isString } from "@auaust/toolkit/isString";
+import { isString } from "@auaust/toolkit";
 
 import { validate } from "#foundation/options/index";
 import { splitRepository } from "#tools/github/issues/api/index";

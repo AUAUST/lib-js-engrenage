@@ -1,7 +1,7 @@
 import { join } from "node:path";
 
 import { wrap } from "@auaust/primitive-kit/arrays";
-import { memoized } from "@auaust/toolkit/memoized";
+import { memoize } from "@auaust/toolkit/function";
 import { freeze, record } from "@auaust/toolkit/object";
 
 import { noRoles } from "#project/structure/constants";
@@ -37,7 +37,7 @@ export function createStructureRoleResolver({
   roles: EnvironmentRoles | undefined;
   defined: RoleRegistry | undefined;
 }) {
-  const rolesFor = memoized(
+  const rolesFor = memoize(
     (scopes: readonly string[]): ResolvedRoles => {
       return roles === undefined
         ? noRoles

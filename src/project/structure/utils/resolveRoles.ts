@@ -1,5 +1,4 @@
-import { isFunction } from "@auaust/toolkit/isFunction";
-import { isString } from "@auaust/toolkit/isString";
+import { isFunction, isString } from "@auaust/toolkit";
 import { entries, freeze, record, values } from "@auaust/toolkit/object";
 
 import { defaultEffectLevels } from "#project/structure/constants";

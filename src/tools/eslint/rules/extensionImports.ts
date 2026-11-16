@@ -4,7 +4,7 @@ import { dirname, join, sep } from "node:path";
 
 import type { Rule } from "eslint";
 
-import { isObject } from "@auaust/toolkit/isObject";
+import { isObject } from "@auaust/toolkit";
 
 import { defineRoleRule } from "#tools/eslint/utils/defineRoleRule";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
