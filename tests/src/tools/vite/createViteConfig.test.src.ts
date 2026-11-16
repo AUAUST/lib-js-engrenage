@@ -1,10 +1,17 @@
 import { join } from "node:path";
 
+import { mergeConfig } from "vite";
 import { describe, expect, test } from "vitest";
 
+import { resolveBuildTarget } from "#project/baseline/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
+
+const viteManifest = JSON.stringify({
+  type: "module",
+  devDependencies: { vite: "*" },
+});
 
 async function loadProject(
   config: Record<string, unknown>,
@@ -92,4 +99,78 @@ describe("createViteConfig", () => {
       });
     },
   );
+
+  test("anchors root at src and the output at the project root", async () => {
+    const config = await loadProject(
+      {
+        build: { outDir: "dist" },
+      },
+      {
+        "package.json": viteManifest,
+        "src/index.html": "",
+      },
+    );
+
+    const { root } = config.context;
+
+    const vite = await createViteConfig(config, { isTesting: false });
+
+    expect(vite).toMatchObject({
+      root: join(root, "src"),
+      envDir: root,
+      build: { outDir: join(root, "dist") },
+    });
+
+    expect(mergeConfig(vite, { root }).build?.outDir).toBe(join(root, "dist"));
+  });
+
+  test("keeps the project root under tests", async () => {
+    const config = await loadProject(
+      {},
+      { "package.json": viteManifest, "src/index.html": "" },
+    );
+
+    const vite = await createViteConfig(config, { isTesting: true });
+
+    expect(vite.root).toBe(config.context.root);
+  });
+
+  test("fails outside tests with several src.dirs", async () => {
+    const config = await loadProject(
+      {
+        src: { dirs: ["src", "app"] },
+      },
+      {
+        "package.json": viteManifest,
+        "src/index.html": "",
+        "app/index.html": "",
+      },
+    );
+
+    await expect(
+      createViteConfig(config, { isTesting: false }),
+    ).rejects.toThrow("Several src.dirs");
+  });
+
+  test("targets the same browsers as tsdown for a baseline", async () => {
+    const config = await loadProject(
+      {
+        src: { baseline: "2026-10" },
+      },
+      {
+        "package.json": viteManifest,
+        "src/index.ts": "",
+      },
+    );
+
+    const { runtime } = await config.resolve("src");
+
+    if (runtime === undefined) {
+      throw new Error("expected a source runtime");
+    }
+
+    const vite = await createViteConfig(config, { isTesting: false });
+
+    expect(vite.build?.target).toEqual(resolveBuildTarget(runtime));
+  });
 });

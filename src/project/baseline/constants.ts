@@ -38,3 +38,11 @@ export const apiGroups = freeze([
 export const baselineWidelyAvailableMonths = 30;
 
 export const monthsPerYear = 12;
+
+export const targetBrowsers: Readonly<Record<string, string>> = freeze({
+  chrome: "chrome",
+  edge: "edge",
+  firefox: "firefox",
+  safari: "safari",
+  safari_ios: "ios",
+});

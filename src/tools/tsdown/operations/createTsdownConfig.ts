@@ -9,6 +9,7 @@ import type { Maybe } from "@auaust/toolkit/types";
 import { arethetypeswrongCore, packageJsonFile, publint } from "#constants";
 import { readJsonFile, resolveWithin } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
+import { resolveBuildTarget } from "#project/baseline/index";
 import { emittedManifestFile } from "#project/build/constants";
 import { createDefine } from "#project/environments/index";
 import { noRoles } from "#project/structure/constants";
@@ -29,7 +30,6 @@ import { createInternalTagsPlugins } from "#tools/tsdown/plugins/createInternalT
 import { createOmittedDeclarationsPlugins } from "#tools/tsdown/plugins/createOmittedDeclarationsPlugins";
 import { createTsdownEntries } from "#tools/tsdown/utils/createTsdownEntries";
 import { resolveDataExports } from "#tools/tsdown/utils/resolveDataExports";
-import { resolveTsdownTarget } from "#tools/tsdown/utils/resolveTsdownTarget";
 import type { LoadedConfig } from "#project/config/index";
 import type { PathAliases } from "#project/tsconfig/index";
 import type { ResolvedWorkspaceGroup } from "#project/workspaces/index";
@@ -180,7 +180,7 @@ export async function createTsdownConfig(
     ...(source.runtime === undefined
       ? {}
       : {
-          target: resolveTsdownTarget(source.runtime),
+          target: resolveBuildTarget(source.runtime),
         }),
     outDir,
     clean: clean === "all",

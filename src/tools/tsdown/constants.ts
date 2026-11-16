@@ -13,12 +13,4 @@ export const pluginNames = freeze([
 
 export const builtExtension = ".mjs";
 
-export const targetBrowsers: Readonly<Record<string, string>> = freeze({
-  chrome: "chrome",
-  edge: "edge",
-  firefox: "firefox",
-  safari: "safari",
-  safari_ios: "ios",
-});
-
 export { project as pluginPrefix, tsdown } from "#constants";

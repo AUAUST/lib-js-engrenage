@@ -132,3 +132,4 @@
 - PreToolUse hook: loads engrenage.config.ts, failed while a barrel export was missing mid-edit — worker added the barrel line by hand before sync
 - PreToolUse hook / engrenage sync: loads engrenage.config.ts, failed while a new barrel export it imports was missing — worker added the barrel line by hand
 - worktree isolation guard: compound git, heredoc, perl and multi-file shell edits refused in a worker worktree — split commands, used Edit
+- worktree isolation guard: heredocs, `git -C` and compound git commands refused in a worker worktree

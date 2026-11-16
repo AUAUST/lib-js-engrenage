@@ -14,6 +14,7 @@ export { includesEsLibrary } from "#project/baseline/utils/includesEsLibrary";
 export { listEsSelections } from "#project/baseline/utils/listEsSelections";
 export { qualifiesAtSnapshot } from "#project/baseline/utils/qualifiesAtSnapshot";
 export { resolveBaselineMinimums } from "#project/baseline/utils/resolveBaselineMinimums";
+export { resolveBuildTarget } from "#project/baseline/utils/resolveBuildTarget";
 export { resolveNodeRuntime } from "#project/baseline/utils/resolveNodeRuntime";
 export { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
 // @end

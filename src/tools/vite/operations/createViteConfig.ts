@@ -4,6 +4,7 @@ import { isNotEmpty } from "@auaust/primitive-kit/arrays";
 
 import { project as pluginPrefix } from "#constants";
 import { resolveWithin } from "#foundation/filesystem/index";
+import { resolveBuildTarget } from "#project/baseline/index";
 import { emittedManifestFile } from "#project/build/constants";
 import { createDefine } from "#project/environments/index";
 import { createEmittedManifestPlugin } from "#tools/vite/plugins/createEmittedManifestPlugin";
@@ -11,11 +12,41 @@ import type { LoadedConfig } from "#project/config/index";
 import type { Config } from "#tools/vite/types/Config";
 import type { Directory } from "#types/Directory";
 
+async function resolveViteRoot(
+  config: LoadedConfig,
+  isTesting: boolean,
+): Promise<Directory> {
+  const root = config.context.root;
+
+  const source = await config.resolve("src");
+
+  if (isTesting || !source.active) {
+    return root;
+  }
+
+  const [dir, ...others] = source.dirs;
+
+  if (dir === undefined) {
+    return root;
+  }
+
+  if (isNotEmpty(others)) {
+    throw new Error(
+      `Several src.dirs in ${root}, so Vite has no single root: set root in the native Vite config layer`,
+    );
+  }
+
+  return resolveWithin(root, dir);
+}
+
 /**
  * Builds the Vite config of a loaded config: root, tsconfig paths, defined
- * globals, public directory and build output, emptying the output directory
- * only when `build.clean` is `all`. `isTesting` drops build-only globals
- * instead of test-only ones.
+ * globals, public directory and build output, emptying the output directory only
+ * when `build.clean` is `all`. The root is the src environment's only directory,
+ * or the project root under tests or without an active src directory; several
+ * src directories throw. The output and env directories are absolute from the
+ * project root, so a native config setting `root` never moves them. `isTesting`
+ * drops build-only globals instead of test-only ones.
  */
 export async function createViteConfig(
   config: LoadedConfig,
@@ -31,11 +62,12 @@ export async function createViteConfig(
 
   const resources = await config.resolve("resources");
 
-  const publicDir = await resolvePublicDir(config);
+  const source = await config.resolve("src");
 
   return {
-    root,
-    publicDir,
+    root: await resolveViteRoot(config, isTesting),
+    envDir: root,
+    publicDir: await resolvePublicDir(config),
     ...(tsconfig === undefined
       ? {}
       : {
@@ -61,7 +93,12 @@ export async function createViteConfig(
       ...(outDir === undefined
         ? {}
         : {
-            outDir,
+            outDir: resolveWithin(root, outDir),
+          }),
+      ...(source.runtime === undefined
+        ? {}
+        : {
+            target: resolveBuildTarget(source.runtime),
           }),
       emptyOutDir: clean === "all",
       sourcemap,

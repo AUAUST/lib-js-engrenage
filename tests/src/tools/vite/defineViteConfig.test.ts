@@ -38,13 +38,13 @@ describe("defineViteConfig", () => {
     });
 
     expect(viteConfig).toMatchObject({
-      root,
+      root: join(root, "src"),
       tsconfig: join(root, "tsconfig.json"),
       resolve: {
         tsconfigPaths: true,
       },
       build: {
-        outDir: "build",
+        outDir: join(root, "build"),
         emptyOutDir: true,
         sourcemap: true,
       },

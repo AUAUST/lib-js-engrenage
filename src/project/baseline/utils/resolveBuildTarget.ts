@@ -1,9 +1,9 @@
 import { entries } from "@auaust/toolkit/object";
 
-import { targetBrowsers } from "#tools/tsdown/constants";
-import type { Runtime } from "#project/baseline/index";
+import { targetBrowsers } from "#project/baseline/constants";
+import type { Runtime } from "#project/baseline/types/Runtime";
 
-export function resolveTsdownTarget(runtime: Runtime): string[] {
+export function resolveBuildTarget(runtime: Runtime): string[] {
   if (runtime.kind === "node") {
     return [`node${runtime.major}`];
   }
