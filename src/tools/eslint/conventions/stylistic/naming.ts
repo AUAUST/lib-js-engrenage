@@ -2,14 +2,18 @@ import { compileFunction } from "node:vm";
 
 import type { Rule, Scope, SourceCode } from "eslint";
 
-import { split } from "@auaust/primitive-kit/strings";
 import { isString } from "@auaust/toolkit";
 import { includes, join, last, toArray } from "@auaust/toolkit/array";
 import {
   join as joinIterable,
   map as mapIterable,
 } from "@auaust/toolkit/iterable";
-import { toCamelCase, toLowerCase, toPascalCase } from "@auaust/toolkit/string";
+import {
+  split,
+  toCamelCase,
+  toLowerCase,
+  toPascalCase,
+} from "@auaust/toolkit/string";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { delegateRule } from "#tools/eslint/utils/delegateRule";
@@ -24,7 +28,7 @@ function convertName(name: string, formats: readonly string[]) {
     return;
   }
 
-  // @debt consider primitive-kit's splitWords
+  // @debt consider toolkit's splitWords
   const words = joinIterable(
     mapIterable(split(name, "_"), (word) => {
       return /[a-z]/.test(word) ? word : toLowerCase(word);

@@ -1,4 +1,4 @@
-import { toPascalCase } from "@auaust/primitive-kit/strings";
+import { toPascalCase } from "@auaust/toolkit/string";
 
 import {
   adapters,

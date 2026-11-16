@@ -5,10 +5,10 @@ import { flatConfigsToPlugins, pluginsToRulesDTS } from "eslint-typegen/core";
 import { builtinRules } from "eslint/use-at-your-own-risk";
 import { format, resolveConfig } from "prettier";
 
-import { toPascalCase } from "@auaust/primitive-kit/strings";
 import { map, sort } from "@auaust/toolkit/array";
 import { join, map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries, mapValues, record } from "@auaust/toolkit/object";
+import { toPascalCase } from "@auaust/toolkit/string";
 
 import { pathExists, resolve, toPosixPath } from "#foundation/filesystem/index";
 import { rolesPluginName } from "#tools/eslint/constants";
