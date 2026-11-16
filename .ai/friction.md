@@ -144,3 +144,4 @@
 - npx tsc: ran tsc through npx — devEngines rejects npm (EBADDEVENGINES); used pnpm exec
 - PreToolUse Bash hook: ran any Bash command while the CLI failed to load — the hook runs engrenage itself and blocked every command; fixed the CLI via Edit first
 - PreToolUse Bash hook: regex import-insertion script broke two source files mid-batch — hook loads project source and blocked every Bash call; subagent repaired them through the user terminal tab
+- BSD sed -i: subagent edited files with GNU `sed -i` — macOS needs `-i ''`; retried
