@@ -3,9 +3,14 @@ import { isDeepStrictEqual } from "node:util";
 
 import { array, is, looseObject, optional, string } from "valibot";
 
-import { every, flatMap, includes, map } from "@auaust/primitive-kit/arrays";
+import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { isArray, isPlainObject } from "@auaust/toolkit";
-import { deduplicate, toReversed } from "@auaust/toolkit/array";
+import {
+  deduplicate,
+  every,
+  includes,
+  toReversed,
+} from "@auaust/toolkit/array";
 
 import { resolveDataFile } from "#foundation/data/index";
 import { toPosixPath, type Filesystem } from "#foundation/filesystem/index";

@@ -1,6 +1,7 @@
 import { posix } from "node:path";
 
-import { filter, map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
+import { filter } from "@auaust/toolkit/array";
 
 import { packages } from "#constants";
 import { runGateBinary, type GateResult } from "#project/gate/index";

@@ -1,8 +1,8 @@
 import type { TsdownPlugin } from "tsdown";
 
-import { filter, join, map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
 import { isString } from "@auaust/toolkit";
-import { isNonEmptyArray } from "@auaust/toolkit/array";
+import { filter, isNonEmptyArray, join } from "@auaust/toolkit/array";
 
 const declarationChunk = /\.d\.[cm]?ts$/;
 

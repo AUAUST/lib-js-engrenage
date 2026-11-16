@@ -12,7 +12,8 @@ import {
   type SourceFile,
 } from "typescript";
 
-import { filter, join, map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
+import { filter, join } from "@auaust/toolkit/array";
 
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

@@ -3,7 +3,7 @@ import { relative } from "node:path";
 
 import { array, boolean, number, object, string } from "valibot";
 
-import { includes } from "@auaust/primitive-kit/arrays";
+import { includes } from "@auaust/toolkit/array";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { packages } from "#constants";

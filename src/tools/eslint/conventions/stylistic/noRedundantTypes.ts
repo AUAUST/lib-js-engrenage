@@ -1,4 +1,4 @@
-import { includes } from "@auaust/primitive-kit/arrays";
+import { includes } from "@auaust/toolkit/array";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { delegateRule } from "#tools/eslint/utils/delegateRule";

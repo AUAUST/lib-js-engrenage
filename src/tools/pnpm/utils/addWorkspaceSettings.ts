@@ -1,6 +1,6 @@
 import { isMap, isScalar, isSeq, type Document } from "yaml";
 
-import { filter } from "@auaust/primitive-kit/arrays";
+import { filter } from "@auaust/toolkit/array";
 import { entries } from "@auaust/toolkit/object";
 
 import { workspaceFile, workspaceSettings } from "#tools/pnpm/constants";

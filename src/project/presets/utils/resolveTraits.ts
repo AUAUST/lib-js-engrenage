@@ -1,4 +1,4 @@
-import { includes } from "@auaust/primitive-kit/arrays";
+import { includes } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import { traits } from "#project/presets/constants";

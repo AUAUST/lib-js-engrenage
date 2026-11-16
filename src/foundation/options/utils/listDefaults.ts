@@ -1,4 +1,5 @@
-import { join, map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
+import { join } from "@auaust/toolkit/array";
 
 export function listDefaults(values: readonly string[]): string {
   return join(

@@ -1,4 +1,4 @@
-import { filterMap, pluck } from "@auaust/primitive-kit/arrays";
+import { filterMap, pluck } from "@auaust/toolkit/array";
 
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
@@ -39,7 +39,7 @@ export function createAgentRulesStep(): Step {
       const names = await multiselect(
         "Choose rules to add",
         pluck(missing, "name"),
-        filterMap(missing, "default", "name"),
+        filterMap(missing, (template) => template.default, "name"),
       );
 
       await addAgentRules(

@@ -1,4 +1,4 @@
-import { every } from "@auaust/primitive-kit/arrays";
+import { every } from "@auaust/toolkit/array";
 import { entries, values } from "@auaust/toolkit/object";
 
 import { createRuleName } from "#tools/eslint/utils/createRuleName";

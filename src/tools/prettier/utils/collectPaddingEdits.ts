@@ -1,6 +1,6 @@
 import type { TSESTree } from "@typescript-eslint/types";
 
-import { filterMap } from "@auaust/primitive-kit/arrays";
+import { filterMap } from "@auaust/toolkit/array";
 
 import { collectStatementPairs } from "#tools/prettier/utils/collectStatementPairs";
 import { createPaddingEdit } from "#tools/prettier/utils/createPaddingEdit";

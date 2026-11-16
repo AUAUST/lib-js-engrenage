@@ -1,6 +1,10 @@
-import { difference, intersection, map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
 import { isArray } from "@auaust/toolkit";
-import { isNonEmptyArray } from "@auaust/toolkit/array";
+import {
+  difference,
+  intersection,
+  isNonEmptyArray,
+} from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import { loadLazy } from "#foundation/modules/index";

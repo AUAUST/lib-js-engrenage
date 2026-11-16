@@ -1,8 +1,8 @@
 import { glob as globFiles, stat } from "node:fs/promises";
 import { relative } from "node:path";
 
-import { every, map } from "@auaust/primitive-kit/arrays";
-import { sort } from "@auaust/toolkit/array";
+import { map } from "@auaust/primitive-kit/arrays";
+import { every, sort } from "@auaust/toolkit/array";
 import { entries } from "@auaust/toolkit/object";
 
 import { resolve, toPosixPath } from "#foundation/filesystem/index";

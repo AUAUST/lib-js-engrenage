@@ -2,14 +2,14 @@ import { compileFunction } from "node:vm";
 
 import type { Rule, Scope, SourceCode } from "eslint";
 
-import { includes, join, map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
 import {
   split,
   toCamelCase,
   toPascalCase,
 } from "@auaust/primitive-kit/strings";
 import { isString } from "@auaust/toolkit";
-import { last } from "@auaust/toolkit/array";
+import { includes, join, last } from "@auaust/toolkit/array";
 import { toLowerCase } from "@auaust/toolkit/string";
 
 import { defineConvention } from "#tools/eslint/utils/defineConvention";

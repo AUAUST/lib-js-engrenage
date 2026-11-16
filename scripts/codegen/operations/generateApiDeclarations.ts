@@ -10,8 +10,8 @@ import {
   type SourceFile,
 } from "typescript";
 
-import { filter, filterMap, join, map } from "@auaust/primitive-kit/arrays";
-import { sort } from "@auaust/toolkit/array";
+import { map } from "@auaust/primitive-kit/arrays";
+import { filter, filterMap, join, sort } from "@auaust/toolkit/array";
 import { entries, keys } from "@auaust/toolkit/object";
 
 import { resolve } from "#foundation/filesystem/index";

@@ -1,6 +1,6 @@
 import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/types";
 
-import { filterMap } from "@auaust/primitive-kit/arrays";
+import { filterMap } from "@auaust/toolkit/array";
 
 import { createPaddingEdit } from "#tools/prettier/utils/createPaddingEdit";
 import { isMultiline } from "#tools/prettier/utils/isMultiline";

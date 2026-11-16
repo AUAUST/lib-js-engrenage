@@ -1,8 +1,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
-import { filter, map } from "@auaust/primitive-kit/arrays";
-import { toArray } from "@auaust/toolkit/array";
+import { map } from "@auaust/primitive-kit/arrays";
+import { filter, toArray } from "@auaust/toolkit/array";
 import { unique } from "@auaust/toolkit/iterable";
 
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";

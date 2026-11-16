@@ -1,7 +1,7 @@
 import { boolean, custom, objectWithRest, optional, union } from "valibot";
 
-import { every } from "@auaust/primitive-kit/arrays";
 import { isBoolean, isPlainObject } from "@auaust/toolkit";
+import { every } from "@auaust/toolkit/array";
 import { values } from "@auaust/toolkit/object";
 
 import type * as conventionCategories from "#tools/eslint/conventions/index";

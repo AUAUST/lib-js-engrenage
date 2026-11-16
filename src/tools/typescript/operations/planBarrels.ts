@@ -1,6 +1,6 @@
 import { posix } from "node:path";
 
-import { filterMap } from "@auaust/primitive-kit/arrays";
+import { filterMap } from "@auaust/toolkit/array";
 import { values } from "@auaust/toolkit/object";
 
 import {

@@ -1,4 +1,4 @@
-import { includes } from "@auaust/primitive-kit/arrays";
+import { includes } from "@auaust/toolkit/array";
 
 import type { Agent } from "#tools/agents/types/Agent";
 

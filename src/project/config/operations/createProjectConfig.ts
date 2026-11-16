@@ -1,9 +1,9 @@
 import satisfies from "semver/functions/satisfies.js";
 import validRange from "semver/ranges/valid.js";
 
-import { flatMap, includes, map } from "@auaust/primitive-kit/arrays";
+import { flatMap, map } from "@auaust/primitive-kit/arrays";
 import { isArray } from "@auaust/toolkit";
-import { isNonEmptyArray, toSorted } from "@auaust/toolkit/array";
+import { includes, isNonEmptyArray, toSorted } from "@auaust/toolkit/array";
 import { freeze, keys, values } from "@auaust/toolkit/object";
 
 import { collectExtensions } from "#foundation/extensions/index";

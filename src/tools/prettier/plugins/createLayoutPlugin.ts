@@ -5,9 +5,9 @@ import { parsers as babelParsers } from "prettier/plugins/babel";
 import { parsers as meriyahParsers } from "prettier/plugins/meriyah";
 import { parsers as typescriptParsers } from "prettier/plugins/typescript";
 
-import { filterMap, flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/primitive-kit/arrays";
 import { isObject } from "@auaust/toolkit";
-import { findLast, sort } from "@auaust/toolkit/array";
+import { filterMap, findLast, sort } from "@auaust/toolkit/array";
 import { mapValues, values } from "@auaust/toolkit/object";
 
 import { visitNodes } from "#tools/prettier/utils/visitNodes";

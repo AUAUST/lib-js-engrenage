@@ -1,4 +1,4 @@
-import { join } from "@auaust/primitive-kit/arrays";
+import { join } from "@auaust/toolkit/array";
 
 import { defineRestriction } from "#tools/eslint/utils/defineRestriction";
 

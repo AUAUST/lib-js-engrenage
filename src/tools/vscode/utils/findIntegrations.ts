@@ -1,4 +1,4 @@
-import { every } from "@auaust/primitive-kit/arrays";
+import { every } from "@auaust/toolkit/array";
 
 import { integrations } from "#tools/vscode/constants";
 import type { Integration } from "#tools/vscode/types/Integration";

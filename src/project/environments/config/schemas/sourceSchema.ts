@@ -1,6 +1,7 @@
 import { boolean, picklist, string } from "valibot";
 
-import { join, map } from "@auaust/primitive-kit/arrays";
+import { map } from "@auaust/primitive-kit/arrays";
+import { join } from "@auaust/toolkit/array";
 import { entries } from "@auaust/toolkit/object";
 
 import {

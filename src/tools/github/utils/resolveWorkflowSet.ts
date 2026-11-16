@@ -1,5 +1,4 @@
-import { every } from "@auaust/primitive-kit/arrays";
-import { find } from "@auaust/toolkit/array";
+import { every, find } from "@auaust/toolkit/array";
 
 import { workflowSetNames, workflowSets } from "#tools/github/constants";
 import type { ResolvedTraits } from "#project/presets/index";
