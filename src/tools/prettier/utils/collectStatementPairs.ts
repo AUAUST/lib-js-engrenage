@@ -26,9 +26,18 @@ function listStatements(node: TSESTree.Node): readonly TSESTree.Node[] {
   }
 }
 
+// @debt the cached pairs stay valid only while no convention mutates the program between traversals
+const cache = new WeakMap<TSESTree.Program, readonly StatementPair[]>();
+
 export function collectStatementPairs(
   program: TSESTree.Program,
 ): readonly StatementPair[] {
+  const cached = cache.get(program);
+
+  if (cached !== undefined) {
+    return cached;
+  }
+
   const pairs: StatementPair[] = [];
 
   visitNodes(program, (node) => {
@@ -45,6 +54,8 @@ export function collectStatementPairs(
       }
     }
   });
+
+  cache.set(program, pairs);
 
   return pairs;
 }

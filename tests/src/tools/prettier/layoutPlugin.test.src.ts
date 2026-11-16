@@ -1,9 +1,11 @@
+import { AST_NODE_TYPES, type TSESTree } from "@typescript-eslint/types";
 import { parsers } from "prettier/plugins/typescript";
 import { describe, expect, test } from "vitest";
 
 import { max, min } from "@auaust/toolkit/math";
 
 import { formatWithPrettierConfig } from "#tests/utils/formatWithPrettierConfig";
+import { collectStatementPairs } from "#tools/prettier/utils/collectStatementPairs";
 import { wrapParagraph } from "#tools/prettier/utils/wrapParagraph";
 
 function wrapGreedily(words: readonly string[], width: number): string[] {
@@ -642,5 +644,34 @@ const ignored = 1;
     expect(lines.join(" ")).toBe(words.join(" "));
     expect(lines).toContain("{@link Foo bar}");
     expect(lines.every((line) => line.length <= 19)).toBe(true);
+  });
+});
+
+function createProgram(): TSESTree.Program {
+  return {
+    type: AST_NODE_TYPES.Program,
+    body: [],
+    comments: [],
+    tokens: [],
+    sourceType: "module",
+    range: [0, 0],
+    loc: {
+      start: { line: 1, column: 0 },
+      end: { line: 1, column: 0 },
+    },
+  };
+}
+
+describe("collectStatementPairs", () => {
+  test("returns the same pairs for one program", () => {
+    const program = createProgram();
+
+    expect(collectStatementPairs(program)).toBe(collectStatementPairs(program));
+  });
+
+  test("returns distinct pairs for two programs", () => {
+    expect(collectStatementPairs(createProgram())).not.toBe(
+      collectStatementPairs(createProgram()),
+    );
   });
 });
