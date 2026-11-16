@@ -2,7 +2,7 @@ import { realpath } from "node:fs/promises";
 
 import { configDefaults, coverageConfigDefaults } from "vitest/config";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/iterable";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { filesIn, resolve } from "#foundation/filesystem/index";

@@ -1,4 +1,4 @@
-import { flat } from "@auaust/primitive-kit/arrays";
+import { flat } from "@auaust/toolkit/array";
 
 import { packageJsonFile } from "#constants";
 import { runProcess } from "#foundation/processes/index";

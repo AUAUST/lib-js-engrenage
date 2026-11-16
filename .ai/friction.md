@@ -143,3 +143,4 @@
 - `prettier --experimental-cli`: checked the repository with engrenage's config — silently dropped object plugins (options cross a worker boundary), 357 false reports; emulated with worker threads in a scratch script
 - npx tsc: ran tsc through npx — devEngines rejects npm (EBADDEVENGINES); used pnpm exec
 - PreToolUse Bash hook: ran any Bash command while the CLI failed to load — the hook runs engrenage itself and blocked every command; fixed the CLI via Edit first
+- PreToolUse Bash hook: regex import-insertion script broke two source files mid-batch — hook loads project source and blocked every Bash call; subagent repaired them through the user terminal tab

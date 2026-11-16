@@ -5,7 +5,7 @@ import { promisify } from "node:util";
 import { ESLint } from "eslint";
 import { describe, expect, test } from "vitest";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/array";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { readEnvironments } from "#project/environments/operations/readEnvironments";

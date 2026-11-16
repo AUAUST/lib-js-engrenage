@@ -2,8 +2,8 @@ import { join } from "node:path";
 
 import type { TsdownPlugin } from "tsdown";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
 import { isNonEmptyArray } from "@auaust/toolkit/array";
+import { flatMap } from "@auaust/toolkit/iterable";
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 

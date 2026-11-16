@@ -1,6 +1,5 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
 import { isString } from "@auaust/toolkit";
-import { filter, map } from "@auaust/toolkit/array";
+import { filter, flatMap, map } from "@auaust/toolkit/array";
 import { map as mapIterable } from "@auaust/toolkit/iterable";
 
 import { loadLazy } from "#foundation/modules/index";

@@ -1,5 +1,5 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
 import { map } from "@auaust/toolkit/array";
+import { flatMap } from "@auaust/toolkit/iterable";
 
 import {
   toTsconfigSpecifier,

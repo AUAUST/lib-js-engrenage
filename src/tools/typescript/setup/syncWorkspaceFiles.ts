@@ -1,6 +1,5 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
 import { isBoolean } from "@auaust/toolkit";
-import { map as mapIterable } from "@auaust/toolkit/iterable";
+import { flatMap, map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";

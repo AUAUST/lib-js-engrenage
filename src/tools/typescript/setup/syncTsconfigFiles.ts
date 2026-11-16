@@ -1,5 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
-import { map } from "@auaust/toolkit/array";
+import { flatMap, map } from "@auaust/toolkit/array";
 import { map as mapIterable } from "@auaust/toolkit/iterable";
 import { entries } from "@auaust/toolkit/object";
 

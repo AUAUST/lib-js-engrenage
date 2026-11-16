@@ -1,4 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/array";
 import { getOwn } from "@auaust/toolkit/object";
 
 import { agentShellVariables } from "#tools/agents/constants";

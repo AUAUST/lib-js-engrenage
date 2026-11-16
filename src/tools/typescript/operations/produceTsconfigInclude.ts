@@ -1,6 +1,7 @@
 import { relative } from "node:path/posix";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/array";
+import { flatMap as flatMapIterable } from "@auaust/toolkit/iterable";
 
 import { filesIn } from "#foundation/filesystem/index";
 import { resolveListOption } from "#foundation/options/index";
@@ -62,9 +63,12 @@ async function createDistTestsInclude(
     const { plain, dist } = tests.patterns;
 
     // @debt role files are matched only at the root of the tests directories, as in findSetupFiles, so declarations placed deeper stay out of the dist check
-    const roleFiles = flatMap([testsetup(), declarations()], ({ name }) => {
-      return listStaticFileGlobs(roles.tests?.roles[name]?.file);
-    });
+    const roleFiles = flatMapIterable(
+      [testsetup(), declarations()],
+      ({ name }) => {
+        return listStaticFileGlobs(roles.tests?.roles[name]?.file);
+      },
+    );
 
     const globs = filesIn(tests.dirs, [...plain, ...dist, ...roleFiles]);
 

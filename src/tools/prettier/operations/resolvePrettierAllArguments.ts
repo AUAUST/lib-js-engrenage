@@ -1,4 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/iterable";
 
 import { findDirectories } from "#foundation/filesystem/index";
 import { listLocationGlobs, type LoadedConfig } from "#project/config/index";

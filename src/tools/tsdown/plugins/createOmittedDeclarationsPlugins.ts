@@ -1,6 +1,6 @@
 import type { TsdownPlugin } from "tsdown";
 
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/iterable";
 import { keys } from "@auaust/toolkit/object";
 
 // @debt bin declarations are generated and then deleted; tsdown should skip them per entry once it can

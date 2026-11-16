@@ -1,4 +1,4 @@
-import { flatMap } from "@auaust/primitive-kit/arrays";
+import { flatMap } from "@auaust/toolkit/array";
 import { values } from "@auaust/toolkit/object";
 
 import { filesIn } from "#foundation/filesystem/index";
