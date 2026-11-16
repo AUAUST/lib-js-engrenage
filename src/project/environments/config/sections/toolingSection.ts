@@ -24,12 +24,18 @@ export const toolingSection = declareSection({
     const walked = dirs.filter((directory) => directory !== ".");
     const rootFiles = walked.length === dirs.length ? [] : files;
 
+    const { filesystem } = config.context;
+
+    const existing = await findDirectories(filesystem, walked);
+
+    const matched = isNotEmpty(rootFiles)
+      ? await filesystem.glob(rootFiles)
+      : [];
+
     return freeze(
       compose(
         {
-          active: isNotEmpty(
-            await findDirectories(config.context.filesystem, dirs),
-          ),
+          active: isNotEmpty(existing) || isNotEmpty(matched),
           dirs: walked,
           rootFiles,
           defines: false,

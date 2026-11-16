@@ -160,6 +160,28 @@ describe("syncTsconfigFiles", () => {
     expect(() => project.read("tsconfig.scripts.json")).toThrow("ENOENT");
   });
 
+  test("creates a shared tsconfig whose owner is inactive but an inheritor is active", async () => {
+    const { project, config } = await createProject(
+      {},
+      {
+        "src/index.ts": "",
+        "vite.config.ts": "",
+        "tsconfig.json": "{}",
+      },
+    );
+
+    await config.context.filesystem.flush();
+
+    expect(JSON.parse(project.read("tsconfig.scripts.json")).include).toEqual(
+      expect.arrayContaining(["*.config.ts"]),
+    );
+
+    expect(JSON.parse(project.read("tsconfig.json")).references).toEqual([
+      { path: "./tsconfig.src.json" },
+      { path: "./tsconfig.scripts.json" },
+    ]);
+  });
+
   test("creates a missing base tsconfig", async () => {
     const { project, config } = await createProject({}, { "src/index.ts": "" });
 

@@ -1,4 +1,4 @@
-import { listTsconfigEnvironments } from "#tools/typescript/operations/listTsconfigEnvironments";
+import { listTsconfigOwners } from "#tools/typescript/operations/listTsconfigOwners";
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import type { ConfigResolver } from "#project/config/index";
 import type {
@@ -36,18 +36,6 @@ function toTarget(
 }
 
 // @debt "tests.dist" does not fit the config shape, so it is special-cased here and in createResolvedConfig, resolveTsconfigEnvironments and the extends, include, paths and skipLibCheck producers; a single lookup from tsconfig key to its environment would remove the branches
-async function isActive(
-  config: ConfigResolver,
-  key: TsconfigKey,
-): Promise<boolean> {
-  const { active } = await resolveTsconfigEnvironment(
-    config,
-    key === "tests.dist" ? "tests" : key,
-  );
-
-  return active;
-}
-
 async function findTsconfig(config: ConfigResolver, key: TsconfigKey) {
   if (key === "tests.dist") {
     const { dist } = await config.resolve("tests");
@@ -58,6 +46,16 @@ async function findTsconfig(config: ConfigResolver, key: TsconfigKey) {
   const { tsconfig } = await resolveTsconfigEnvironment(config, key);
 
   return tsconfig;
+}
+
+async function listVariantKeys(
+  config: ConfigResolver,
+): Promise<readonly TsconfigKey[]> {
+  const owners = await listTsconfigOwners(config);
+
+  const { active } = await resolveTsconfigEnvironment(config, "tests");
+
+  return active ? [...owners, "tests.dist"] : owners;
 }
 
 export async function listTsconfigTargets(
@@ -79,15 +77,10 @@ export async function listTsconfigTargets(
     },
   ];
 
-  const variantKeys: readonly TsconfigKey[] = [
-    ...(await listTsconfigEnvironments(config)),
-    "tests.dist",
-  ];
-
-  for (const key of variantKeys) {
+  for (const key of await listVariantKeys(config)) {
     const resolved = await findTsconfig(config, key);
 
-    if (resolved.owner !== key || !(await isActive(config, key))) {
+    if (resolved.owner !== key) {
       continue;
     }
 

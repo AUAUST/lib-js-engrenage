@@ -40,6 +40,6 @@ export function createGateRepository(
       }),
       "src/index.ts": "export const value: number = 1;\n",
     },
-    modules,
+    [...modules, "@types/node"],
   );
 }

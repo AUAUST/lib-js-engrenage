@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { mkdirSync, symlinkSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { vi } from "vitest";
@@ -39,6 +39,10 @@ export async function createGitRepository(
   mkdirSync(project.resolve("node_modules"));
 
   for (const name of modules) {
+    mkdirSync(dirname(project.resolve(`node_modules/${name}`)), {
+      recursive: true,
+    });
+
     symlinkSync(
       join(repositoryModules, name),
       project.resolve(`node_modules/${name}`),

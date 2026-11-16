@@ -116,3 +116,7 @@
 - zsh word splitting: passed an unquoted file list to eslint — zsh passed one word; fed the list through `xargs`
 - CLAUDE_SCRATCH: redirected output to `$CLAUDE_SCRATCH` — the variable is unset; used the scratchpad's absolute path
 - `pnpm engrenage gate`: ran it on unstaged changes expecting a type check — it passed silently while tsc failed; `pnpm test` caught it, `--worktree` covers unstaged files
+- `engrenage gate --worktree`: timed the gate on a probe edit — another session's uncommitted files were in the worktree, so its fixes ran on them too; reverted only the probe, stopped benchmarking the gate on the worktree
+- npx eslint: printed the ESLint version — npm refused on the `devEngines` pnpm requirement; called `node_modules/.bin/eslint` instead
+- ESLint API from scratchpad: imported `eslint` in a scratch script — bare specifier unresolvable outside the project; imported `node_modules/eslint/lib/api.js` by absolute path
+- engrenage gate --worktree: ran during a parallel session's .ai/issues draft edits — Prettier failed on their vanishing/ignored drafts; covered my files with eslint --fix and typecheck instead

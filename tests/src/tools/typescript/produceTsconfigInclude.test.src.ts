@@ -77,11 +77,16 @@ describe("produceTsconfigInclude", () => {
   });
 
   test("adds the globs of an inheriting environment", async () => {
-    const read = await syncProject({
-      scripts: {
-        tsconfig: { inherits: "bin" },
+    const read = await syncProject(
+      {
+        scripts: {
+          tsconfig: { inherits: "bin" },
+        },
       },
-    });
+      {
+        "vite.config.ts": "",
+      },
+    );
 
     expect(read("tsconfig.bin.json").include).toEqual([
       "bin/**/*.ts",

@@ -83,3 +83,6 @@
 - hybrid JSDoc wrapping: balance two-line paragraphs, pretty beyond — arbitrary line-count threshold
 - planning sheet skill: load the sheet only for issue-writing agents — skill invocation is model-driven and can be skipped; a `paths`-scoped rule on drafts loads deterministically
 - `TagDeclaration` documents flag: override whether a tag counts for `auaust/documented` — the body kind already decides it; no project needs another answer yet
+- lint rule optimisation, merging or removal: faster lint — rule logic is ≤ 15% of a full lint and < 20 ms per file; config load, program builds and the checker dominate
+- prettier import sorting plugin: move `auaust/sort-imports` load off ESLint — saves ~5 ms per file, adds a Prettier parse
+- reimplementing delegated rules: delegation overhead — `resolveDelegate` adds none at runtime

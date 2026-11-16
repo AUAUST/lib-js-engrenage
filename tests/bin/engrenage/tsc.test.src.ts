@@ -142,7 +142,7 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
     createSolution(
       'import { value } from "../src/index.ts";\n\nexport const text: string = value;\n',
       {
-        "engrenage.config.ts": "export default { tests: { tsconfig: { check: false } } };\n",
+        "engrenage.config.ts": "export default { tests: { tsconfig: { check: false } }, tooling: false };\n",
         "tsconfig.json": JSON.stringify({
           compilerOptions: { noEmit: true },
           files: [],
@@ -160,7 +160,7 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
     vi.spyOn(console, "info").mockImplementation(() => {});
 
     createSolution("export {};\n", {
-      "engrenage.config.ts": "export default { src: { tsconfig: { check: false } }, tests: { tsconfig: { check: false } } };\n",
+      "engrenage.config.ts": "export default { src: { tsconfig: { check: false } }, tests: { tsconfig: { check: false } }, tooling: false };\n",
       "tsconfig.json": JSON.stringify({
         compilerOptions: { noEmit: true },
         files: [],
