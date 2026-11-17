@@ -15,7 +15,7 @@ Cite debt IDs (`debt.N`) only in `.ai/debt.md` and in your report: they are neit
 
 ## Procedure
 
-1. Run `engrenage debt --json`. It prints an array of `{ file, line, column, statement }`. Read `.ai/debt.md` if it exists, `.ai/backlog/index.md` and the open issues (`gh issue list --state open`).
+1. Run `pnpm engrenage debt --json`. It prints an array of `{ file, line, column, statement }`. Read `.ai/debt.md` if it exists, `.ai/backlog/index.md` and the open issues (`gh issue list --state open`).
 2. Use each marker as an entry point: read the code around it and what its statement mentions, until you understand what the debt is about.
 3. Group the markers that describe one matter, across wording and files. Set aside the markers that are not debt, and leave them in the code. Set aside those already covered by an entry in `.ai/debt.md`, an entry in `.ai/backlog/` or an open issue; update a debt entry with what the marker adds instead of duplicating it.
 4. For each real group, search the project for the other locations that would benefit from the fix, then write or update its entry in `.ai/debt.md`.

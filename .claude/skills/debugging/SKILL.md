@@ -85,17 +85,17 @@ Write and edit issues as local drafts in `.ai/issues/`, revise them as the diagn
 - Start by reading `.ai/issues/`. Other sessions draft there too: resume only the drafts of your task, those the user names or those of the issues you were given.
 - Your drafts are those you created, claimed or resumed. Edit, check and publish only them, never another session's.
 - Read an issue from `.ai/issues/` when it holds a copy, and fetch it from GitHub only otherwise.
-- Create an issue with `engrenage planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest with each field's options and the body skeleton, and lists the draft in its parent's `subIssues`.
-- Claim an issue on its first edit with `engrenage planning issue claim <refs>`. Claim another repository's issue as `<repo>.123`: it takes no `drafting` lock. When it records `claim: existing`, another maintainer is drafting the issue: report it and keep diagnosing.
+- Create an issue with `pnpm engrenage planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest with each field's options and the body skeleton, and lists the draft in its parent's `subIssues`.
+- Claim an issue on its first edit with `pnpm engrenage planning issue claim <refs>`. Claim another repository's issue as `<repo>.123`: it takes no `drafting` lock. When it records `claim: existing`, another maintainer is drafting the issue: report it and keep diagnosing.
 - Fill or remove every section `create` writes: `check` fails on an empty one.
 - Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues, renders a plan's **Roadmap** from them and each header's ancestor chain from the tree. Write none of them by hand.
 - End each round with the drafts it changed and the changes waiting on each open question.
-- Run `engrenage planning issue check <refs>` on the drafts you changed before publishing them.
-- Publish when none of your drafts holds a change waiting on an open question, when the user asks, or when someone else needs the issue's current state, such as a worker, with `engrenage planning issue publish <refs>` on all your drafts at once. Before publishing, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md`.
+- Run `pnpm engrenage planning issue check <refs>` on the drafts you changed before publishing them.
+- Publish when none of your drafts holds a change waiting on an open question, when the user asks, or when someone else needs the issue's current state, such as a worker, with `pnpm engrenage planning issue publish <refs>` on all your drafts at once. Before publishing, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md`.
 
 ## Writing the issue
 
-When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then draft a new one. Write it as a `problem` meeting the issue contract that `engrenage planning issue check` enforces, complete through its ancestors, if any, for a worker who treats everything in it as binding and applies it without redesign:
+When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then draft a new one. Write it as a `problem` meeting the issue contract that `pnpm engrenage planning issue check` enforces, complete through its ancestors, if any, for a worker who treats everything in it as binding and applies it without redesign:
 
 ```markdown
 <sections>: <gist>
@@ -128,13 +128,13 @@ When the input is an issue, turn that issue into the task, condensing its origin
 - Write the header only for an issue inside a planned tree. List under **Prerequisites** only the issues tree order does not imply.
 - Drop **Prerequisites**, **Done when** or **Questions** when they would be empty, or when **Done when** would only say the Steps are done and the checks pass.
 - Set the type `problem` with its `defect`, and the repository's labels whose description fits the issue. While **Questions** remain, set `blockers` to `questions`; clear it once they are gone.
-- Run `engrenage planning issue check <n>` on the issue, once flushed, before reporting it ready for a worker.
+- Run `pnpm engrenage planning issue check <n>` on the issue, once flushed, before reporting it ready for a worker.
 - Start any worker brief you write with `Issue: <owner>/<repo>#<n>`.
 - Once an issue you create or edit tracks the work of an entry in the backlog or the debt backlog, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
 
 ## Finishing
 
-- Send no message before your final report, your only message: a completion or a blocker, sent once every command you started has finished and `engrenage gate --worktree` passes, so the stop gate reuses that pass.
+- Send no message before your final report, your only message: a completion or a blocker, sent once every command you started has finished and `pnpm engrenage gate --worktree` passes, so the stop gate reuses that pass.
 - The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again on that unchanged tree.
 - When resumed with a merger's findings, fix each one your input's reach covers, and report the rest with the reason.
 - When asked for a branch, create `debugger/<topic>` from the current commit, `debugger/issue-<n>` when the input is an issue.

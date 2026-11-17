@@ -14,7 +14,7 @@ Walk an issue tree in the main session: route each issue by the handling table, 
 
 ## Handling table
 
-Start at the issue the user names and run `engrenage planning walk check <n>` on it once per routing decision: it reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by a local commit), `blockers`, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn, and the next issue. Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches.
+Start at the issue the user names and run `pnpm engrenage planning walk check <n>` on it once per routing decision: it reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by a local commit), `blockers`, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn, and the next issue. Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches.
 
 | Issue                                                         | Walker                                                                                                                                                      |
 | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -23,7 +23,7 @@ Start at the issue the user names and run `engrenage planning walk check <n>` on
 | Open sub-issues                                               | Walk them in order (a `segment`'s in any order), meanwhile handling the issue's own findings by the rows below without stopping the walk; then its own work |
 | `plan` or `segment` with no open sub-issue                    | Closes with its last leaf's commit                                                                                                                          |
 | `blockers` `drafting`, with `.ai/issues/<n>.draft.md` present | Stop: it is being planned                                                                                                                                   |
-| `blockers` `drafting`, with no local draft                    | Ask the user whether to clear the claim and walk it; on yes, run `engrenage planning issue release <n>` and handle it by the next rows                      |
+| `blockers` `drafting`, with no local draft                    | Ask the user whether to clear the claim and walk it; on yes, run `pnpm engrenage planning issue release <n>` and handle it by the next rows                 |
 | Any `blockers`, or an open blocked-by issue                   | Stop and report                                                                                                                                             |
 | Has findings for **Planning**, `outdated` or structure        | Stop; send it to the consultant                                                                                                                             |
 | Has **Questions** open                                        | Stop; batch the questions to the user                                                                                                                       |
@@ -95,6 +95,6 @@ A worker commits at each `Checkpoint:` line of its issue; your final commit clos
 
 ## Report
 
-End at the end of the tree or at a stop, with the table of walked leaves, then each merger run's findings and where each went, then what is pending or blocked and why, then the walk's agent runs from `engrenage agents stats`, when the client records them.
+End at the end of the tree or at a stop, with the table of walked leaves, then each merger run's findings and where each went, then what is pending or blocked and why, then the walk's agent runs from `pnpm engrenage agents stats`, when the client records them.
 
 <!-- @end -->

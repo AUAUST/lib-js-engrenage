@@ -7,7 +7,7 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 ## Instruction maintenance
 
 - Change agent instructions or their sources only with explicit user consent to that change.
-- A `<!-- @reference <reference> -->` marker opens a block that `engrenage sync agents` fills with the referenced file, up to the next `@reference` or `<!-- @end -->` marker. Never edit blocks in place: add project rules after an `@end` marker, or change the referenced source.
+- A `<!-- @reference <reference> -->` marker opens a block that `pnpm engrenage sync agents` fills with the referenced file, up to the next `@reference` or `<!-- @end -->` marker. Never edit blocks in place: add project rules after an `@end` marker, or change the referenced source.
 - Put in AGENTS.md only rules every agent needs, and surface-specific detail in `.claude/rules/`, one file per surface. Keep feature documentation, file inventories, API details and records of recent changes out of both.
 - When tooling starts enforcing a rule, delete its prose. List it under "Enforced by tooling" only when its fix is manual and it shapes how code is first written.
 
@@ -138,6 +138,30 @@ Analyse every request, suggestion and described fix before acting on it, within 
 - Keep every fragment project-agnostic: no paths, commands, tools or documents specific to one repository.
 - After changing a fragment, run `pnpm engrenage sync agents`, which also updates this repository's own copies.
 
+<!-- @reference @auaust/engrenage/agents/sections/environment.md -->
+
+## Environment
+
+- On a session's first request only, check that the repository, package, paths and issues it names belong to the current repository; when they seem to point to another and the request does not explicitly work across repositories, ask the user to confirm the location before any change.
+- Run tools through pnpm: scripts as `pnpm <script>`, binaries as `pnpm exec <bin>`, engrenage as `pnpm engrenage <command>`; never `npx` or `npm`, which the package-manager policy rejects.
+
+| Need                                   | Command                          |
+| -------------------------------------- | -------------------------------- |
+| Check uncommitted work before delivery | `pnpm engrenage gate --worktree` |
+| Regenerate synced files                | `pnpm engrenage sync`            |
+| List `@debt` markers                   | `pnpm engrenage debt --json`     |
+| Any other engrenage task               | `pnpm engrenage --help`          |
+
+<!-- @reference @auaust/engrenage/agents/sections/shell.md -->
+
+## Shell
+
+- Quote every glob passed as an argument: zsh aborts on an unmatched glob.
+- Pass lists as arrays or through `xargs`: zsh never splits an unquoted variable.
+- Never start a word with `=`: zsh expands it as a command path.
+- On macOS, rely on each tool's own timeout, since there is no `timeout`, and write `sed -i ''`, since BSD `sed` requires the suffix.
+- In an agent worktree, run each git command alone and write files with the edit tools: Claude Code refuses compound commands, heredocs and command text naming git there.
+
 <!-- @reference @auaust/engrenage/agents/sections/implementation.md -->
 
 ## Implementation
@@ -169,7 +193,7 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 ```
 
 - The generated project maps (`.claude/rules/project-map.md`, `project-map/<environment>.md`) carry the layout, visibility, aliases, roles and imports lint enforces: read the map of each environment you edit, and never restate it.
-- Change the structure only in its description, the config and the `.namespace.json` and `.domain.json` files beside the directories they describe, then run `engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
+- Change the structure only in its description, the config and the `.namespace.json` and `.domain.json` files beside the directories they describe, then run `pnpm engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
 - Give each declared namespace, domain and role a one-line `purpose`; one that is hard to state or overlaps another reveals a design problem.
 - Place code in the domain owning its concern, in the role whose contract fits it. A concern several domains share gets its own domain in the lowest layer holding everything it needs.
 - Order sub-domains by inserting a namespace with layers; a domain never orders its children.
@@ -214,7 +238,7 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 - Before delivery, review the work against architectural boundaries and quality requirements, not only behavior.
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
 - Run targeted checks during implementation and the gate once at delivery, adding checks only for coverage it lacks.
-- Lint by hand only the files you name, always with `--fix`; leave linting the whole project to the gate.
+- Lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`: without files it lints the whole project, which the gate does.
 - Pass the commit gate with every commit you make; never bypass it.
 - Report actual results and blockers, including unavailable integrations and skipped checks. Never weaken compiler or lint settings to hide failures.
 
@@ -222,7 +246,7 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 
 ## Commands
 
-- The commit gate (`pnpm engrenage gate`) formats, lints and checks the changed files; never run format by hand before a commit.
+- Never run format by hand: the commit gate formats, lints and checks the changed files.
 - `pnpm test` runs tests in source mode and type checking.
 - `pnpm build` for entries, exports, imports or bundling changes. It builds, validates packaging with publint and attw, and reruns the tests against `dist/`.
 - `pnpm engrenage sync` after adding, renaming or removing a module, changing agent fragments, or anything else engrenage syncs; CI checks it with `--check`.

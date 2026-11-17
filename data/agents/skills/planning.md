@@ -67,13 +67,13 @@ Create and edit issues as local drafts in `.ai/issues/` and publish them togethe
 - Start by reading `.ai/issues/`. Other sessions draft there too: resume only the drafts of your task, those the user names or those of the issues you were given.
 - Your drafts are those you created, claimed or resumed. Edit, check and publish only them, never another session's.
 - Read an issue from `.ai/issues/` when it holds a copy, and fetch it from GitHub only otherwise.
-- Create an issue with `engrenage planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest with each field's options and the body skeleton, and lists the draft in its parent's `subIssues`.
-- Claim an issue on its first edit with `engrenage planning issue claim <refs>`. Claim another repository's issue as `<repo>.123`: it takes no `drafting` lock. When it records `claim: existing`, another maintainer is drafting the issue: report it and keep planning.
+- Create an issue with `pnpm engrenage planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest with each field's options and the body skeleton, and lists the draft in its parent's `subIssues`.
+- Claim an issue on its first edit with `pnpm engrenage planning issue claim <refs>`. Claim another repository's issue as `<repo>.123`: it takes no `drafting` lock. When it records `claim: existing`, another maintainer is drafting the issue: report it and keep planning.
 - Fill or remove every section `create` writes: `check` fails on an empty one.
 - Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues, renders a plan's **Roadmap** from them and each header's ancestor chain from the tree. Write none of them by hand.
 - End each round with the drafts it changed and the changes waiting on each open question.
-- Run `engrenage planning issue check <refs>` on the drafts you changed before publishing them.
-- Publish when none of your drafts holds a change waiting on an open question, or when the user asks, with `engrenage planning issue publish <refs>` on all your drafts at once. Before publishing, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md`.
+- Run `pnpm engrenage planning issue check <refs>` on the drafts you changed before publishing them.
+- Publish when none of your drafts holds a change waiting on an open question, or when the user asks, with `pnpm engrenage planning issue publish <refs>` on all your drafts at once. Before publishing, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md`.
 
 ## Consultant mode
 
@@ -130,7 +130,7 @@ Proposals are `idea` issues the plan relates to, never sub-issues. Before a plan
 
 ## Contract
 
-An issue is ready when `engrenage planning issue check <n>` passes. Run it on every issue of the tree before reporting the tree ready.
+An issue is ready when `pnpm engrenage planning issue check <n>` passes. Run it on every issue of the tree before reporting the tree ready.
 
 ## Splitting a task
 

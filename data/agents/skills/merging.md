@@ -46,7 +46,7 @@ In integration mode only, and only when the briefed landed range is not empty. W
 
 1. Set the uncommitted rest aside with `git stash push --include-untracked`.
 2. Rebase the leaf's commits onto the briefed `HEAD` commit, then restore the rest with `git stash pop`.
-3. Resolve each conflict: regenerate a generated file with `engrenage sync`, keep both sides of an append-only agent log, and merge a hand-written file so both sides' intent holds.
+3. Resolve each conflict: regenerate a generated file with `pnpm engrenage sync`, keep both sides of an append-only agent log, and merge a hand-written file so both sides' intent holds.
 4. When a hand-written conflict needs a choice neither side's issue settles, run `git rebase --abort`, restore the rest, and report the conflict with each side's intent.
 
 - Create no commit beyond the ones the rebase rewrites.
@@ -62,7 +62,7 @@ In integration mode only, and only when the briefed landed range is not empty. W
 The range base is the range's first parent.
 
 - Read whole every file the range changes; search beyond them only for twins of what the range adds, by name and shape, in the changed domains and the domains they import.
-- When the project has jscpd, run `engrenage jscpd:new <range base>` once, and verify each clone it lists as a lead.
+- When the project has jscpd, run `pnpm engrenage jscpd:new <range base>` once, and verify each clone it lists as a lead.
 - Compare each leaf of the range with the rest of the range: duplicated helpers, tests or fixtures; diverging names, patterns or choices for one concern; code one leaf added that another could reuse; release or project requirements one leaf meets and a sibling misses.
 - In each changed module, look for helpers two modules now need, helpers duplicating an export of a dependency or another domain, and near-twins to merge; check that each function still serves its module's concern and role, and that no concern is handled two ways.
 - Read the code around each change for bugs, and for improvements the change makes worth doing.

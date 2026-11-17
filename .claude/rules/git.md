@@ -36,7 +36,8 @@
 ## GitHub
 
 - Write to GitHub only in repositories owned by the AUAUST organization.
-- Read an issue with `gh issue view <n> --repo <owner>/<repo> --json title,body,state,labels,comments`; plain `--comments` fails on some repositories.
+- Omit `--repo` for the current repository; for another, take `<owner>/<repo>` from `.claude/rules/planning-sheet.md` › Repositories, never from a package name.
+- Read an issue with `gh issue view <n> --json title,body,state,labels,comments`; plain `--comments` fails on some repositories.
 - List an issue's sub-issues in order with `gh api repos/{owner}/{repo}/issues/<n>/sub_issues --jq '.[] | "\(.number) \(.state) \(.title)"'`.
 
 <!-- @end -->

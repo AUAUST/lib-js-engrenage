@@ -104,3 +104,6 @@
 - `flint`: hybrid linter with TS rules on a native core (#558) — experimental
 - typescript-eslint `EXPERIMENTAL_backend: 'tsgo'`: ESLint typed rules on TS 7.1 (#558) — 1.0–1.7× slower than TS 6 until TS ships bulk APIs
 - ESLint `calculateConfigForFile` as info-rules source: one native config load in the lint hook — returns merged settings, losing which config object last set each rule to `info`
+- @auaust/codegen: barrels and block writers outside engrenage — never published, repository idle since 2026-09 (#51 closed)
+- SessionStart identity hook: wrong-location check (#462) — agents already know their directory; another hook able to lock agents out (#598)
+- Bash hook shell-trap warnings: zsh friction (#597) — a hook on every Bash call; hooks lock agents out (#598)
