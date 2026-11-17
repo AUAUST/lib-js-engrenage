@@ -95,3 +95,4 @@
 - deny rule on .env*: moving and reading the Interscript theme .env/.env.example for #581 — blocked even outside the repo; left the move to the user
 - Claude PreToolUse Bash hook (github): zsh `${(f)…}` array expansion — hook shell parser failed with "Bad substitution" and blocked the call; used xargs instead
 - engrenage planning issue create: passed `report` as the type — it takes `resource`; the material is a field
+- changesets rule: wrote a changeset through a Bash heredoc — the rule is path-scoped to `.changeset/**`, so it never loaded; found its summary style only when reading the rule later

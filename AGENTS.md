@@ -145,12 +145,15 @@ Analyse every request, suggestion and described fix before acting on it, within 
 - On a session's first request only, check that the repository, package, paths and issues it names belong to the current repository; when they seem to point to another and the request does not explicitly work across repositories, ask the user to confirm the location before any change.
 - Run tools through pnpm: scripts as `pnpm <script>`, binaries as `pnpm exec <bin>`, engrenage as `pnpm engrenage <command>`; never `npx` or `npm`, which the package-manager policy rejects.
 
-| Need                                   | Command                          |
-| -------------------------------------- | -------------------------------- |
-| Check uncommitted work before delivery | `pnpm engrenage gate --worktree` |
-| Regenerate synced files                | `pnpm engrenage sync`            |
-| List `@debt` markers                   | `pnpm engrenage debt --json`     |
-| Any other engrenage task               | `pnpm engrenage --help`          |
+| Need                                                                                                  | Command                                             |
+| ----------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Check uncommitted work before delivery                                                                | `pnpm engrenage gate --worktree`                    |
+| Run the tests and type checking                                                                       | `pnpm engrenage vitest`, `pnpm engrenage typecheck` |
+| Build and test the output, after changing entries, exports or bundling                                | `pnpm build`                                        |
+| Regenerate synced files, after adding, renaming or removing a module or changing what engrenage syncs | `pnpm engrenage sync`                               |
+| List `@debt` markers                                                                                  | `pnpm engrenage debt --json`                        |
+| Release a change, where the project uses changesets                                                   | Add a changeset in `.changeset/`                    |
+| Any other engrenage task                                                                              | `pnpm engrenage --help`                             |
 
 <!-- @reference @auaust/engrenage/agents/sections/shell.md -->
 
@@ -239,15 +242,7 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
 - Run targeted checks during implementation and the gate once at delivery, adding checks only for coverage it lacks.
 - Lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`: without files it lints the whole project, which the gate does.
-- Pass the commit gate with every commit you make; never bypass it.
+- Pass the commit gate with every commit you make; never bypass it. It formats, lints and checks the changed files: never format by hand.
 - Report actual results and blockers, including unavailable integrations and skipped checks. Never weaken compiler or lint settings to hide failures.
 
 <!-- @end -->
-
-## Commands
-
-- Never run format by hand: the commit gate formats, lints and checks the changed files.
-- `pnpm test` runs tests in source mode and type checking.
-- `pnpm build` for entries, exports, imports or bundling changes. It builds, validates packaging with publint and attw, and reruns the tests against `dist/`.
-- `pnpm engrenage sync` after adding, renaming or removing a module, changing agent fragments, or anything else engrenage syncs; CI checks it with `--check`.
-- Add a changeset for any change that should be released.

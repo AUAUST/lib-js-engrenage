@@ -12,5 +12,5 @@ order: 70
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
 - Run targeted checks during implementation and the gate once at delivery, adding checks only for coverage it lacks.
 - Lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`: without files it lints the whole project, which the gate does.
-- Pass the commit gate with every commit you make; never bypass it.
+- Pass the commit gate with every commit you make; never bypass it. It formats, lints and checks the changed files: never format by hand.
 - Report actual results and blockers, including unavailable integrations and skipped checks. Never weaken compiler or lint settings to hide failures.

@@ -2,4 +2,6 @@
 "@auaust/engrenage": patch
 ---
 
-Agent instructions write engrenage commands as `pnpm engrenage <command>`, and two new default sections, Environment and Shell, state the session-location check, how to run tools and the shell's traps. Existing projects add them with `<!-- @reference @auaust/engrenage/agents/sections/environment.md -->` and `<!-- @reference @auaust/engrenage/agents/sections/shell.md -->` in `AGENTS.md`.
+- Add the Environment and Shell agent sections, with the commands agents run and the shell traits they hit
+- Write engrenage commands as `pnpm engrenage <command>` in agent instructions
+- Add the two sections to an existing `AGENTS.md` with `@reference` markers for `agents/sections/environment.md` and `agents/sections/shell.md`
