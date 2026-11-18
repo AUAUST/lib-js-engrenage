@@ -1,4 +1,4 @@
-import { loadLazy } from "#foundation/modules/index";
+import { loadFormatter } from "#project/format/index";
 import { syncCodexSkill } from "#tools/agents/codex/index";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
@@ -40,9 +40,7 @@ export async function addAgentSkills(
     }
   }
 
-  const selected = await config.resolve("format.formatter");
-
-  const formatter = selected === false ? undefined : await loadLazy(selected);
+  const formatter = await loadFormatter(config);
 
   for (const template of templates) {
     if (!names.includes(template.name)) {

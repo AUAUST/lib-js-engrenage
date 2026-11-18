@@ -1,6 +1,7 @@
 // @barrel operations
 export { formatContent } from "#project/format/operations/formatContent";
 export { formatFile } from "#project/format/operations/formatFile";
+export { loadFormatter } from "#project/format/operations/loadFormatter";
 // @end
 
 export { exportGroups } from "#project/format/constants";

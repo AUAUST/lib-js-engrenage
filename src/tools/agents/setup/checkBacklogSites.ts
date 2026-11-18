@@ -1,14 +1,21 @@
 import { posix } from "node:path";
 
 import { backlogIndex } from "#tools/agents/constants";
+import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import { isBacklogEntryFile } from "#tools/agents/utils/isBacklogEntryFile";
+import { throwViolations } from "#tools/agents/utils/throwViolations";
 import type { LoadedConfig } from "#project/config/index";
 
 const sitesBullet = /^- sites\b/;
 const sitesForm = /^- sites: `[^`\s:]+:[1-9]\d*`(?:, `[^`\s:]+:[1-9]\d*`)*$/;
+const sitePath = /`([^`\s:]+):[1-9]\d*`/g;
 
 export async function checkBacklogSites(config: LoadedConfig): Promise<void> {
   const { filesystem } = config.context;
+
+  if (!hasPreferredAgents(await config.resolve("agents"))) {
+    return;
+  }
 
   const files = await filesystem.glob(`${posix.dirname(backlogIndex)}/*.md`);
 
@@ -24,20 +31,27 @@ export async function checkBacklogSites(config: LoadedConfig): Promise<void> {
     const lines = content.split("\n");
 
     for (const [index, line] of lines.entries()) {
-      if (sitesBullet.test(line) && !sitesForm.test(line)) {
+      if (!sitesBullet.test(line)) {
+        continue;
+      }
+
+      if (!sitesForm.test(line)) {
         violations.push(
           `${file}:${index + 1}: a sites bullet holds only \`file:line\` code spans joined by ", "`,
         );
+
+        continue;
+      }
+
+      for (const [, path = ""] of line.matchAll(sitePath)) {
+        if (!(await filesystem.exists(path))) {
+          violations.push(
+            `${file}:${index + 1}: site \`${path}\` names no file: write its path from the project root, or follow the file it moved to`,
+          );
+        }
       }
     }
   }
 
-  if (violations.length > 0) {
-    throw new Error(
-      [
-        "Backlog sites bullets depart from their form:",
-        ...violations.map((violation) => `- ${violation}`),
-      ].join("\n"),
-    );
-  }
+  throwViolations("Backlog sites bullets depart from their form:", violations);
 }

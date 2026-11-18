@@ -5,7 +5,6 @@ import {
   backlogCategoriesHeading,
   backlogIndex,
   backlogTemplate,
-  endMarker,
 } from "#tools/agents/constants";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
@@ -14,7 +13,9 @@ import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
+import { formatBacklogIndex } from "#tools/agents/utils/formatBacklogIndex";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
+import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension, LoadedConfig } from "#project/config/index";
@@ -115,14 +116,7 @@ async function migrateBacklogIndex(filesystem: Filesystem) {
 
   await filesystem.write(
     backlogIndex,
-    [
-      lines[0],
-      "",
-      formatReferenceMarker(backlogTemplate),
-      endMarker,
-      "",
-      ...lines.slice(heading),
-    ].join("\n"),
+    formatBacklogIndex(lines[0] ?? "", lines.slice(heading + 1)),
   );
 }
 
@@ -142,7 +136,7 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     fillers: await createAgentFillers(loaded),
   };
 
-  if ((config.agents.preferred?.length ?? 0) === 0) {
+  if (!hasPreferredAgents(config.agents)) {
     return;
   }
 

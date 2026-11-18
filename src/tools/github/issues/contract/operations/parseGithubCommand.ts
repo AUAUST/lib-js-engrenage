@@ -49,9 +49,12 @@ const repositoryPattern = /([\w.-]+\/[\w.-]+)$/;
 
 const unreadable = { kind: "unreadable" } as const;
 
-type Directory = string | undefined | typeof unreadable;
+type ShellDirectory = string | undefined | typeof unreadable;
 
-function resolvePath(path: string, directory: Directory): GithubBodySource {
+function resolvePath(
+  path: string,
+  directory: ShellDirectory,
+): GithubBodySource {
   if (directory === undefined || posix.isAbsolute(path)) {
     return { kind: "file", path };
   }
@@ -61,7 +64,10 @@ function resolvePath(path: string, directory: Directory): GithubBodySource {
     : unreadable;
 }
 
-function readDirectory(command: ShellCommand, directory: Directory): Directory {
+function readDirectory(
+  command: ShellCommand,
+  directory: ShellDirectory,
+): ShellDirectory {
   if (readLiteral(command.words[0]) !== "cd") {
     return directory;
   }
@@ -70,16 +76,17 @@ function readDirectory(command: ShellCommand, directory: Directory): Directory {
     ? readLiteral(command.words[1])
     : undefined;
 
-  if (
-    path === undefined ||
-    path === "-" ||
-    path.startsWith("~") ||
-    (directory !== undefined && !isString(directory))
-  ) {
+  if (path === undefined || path === "-" || path.startsWith("~")) {
     return unreadable;
   }
 
-  return posix.isAbsolute(path) ? path : posix.join(directory ?? ".", path);
+  if (posix.isAbsolute(path)) {
+    return path;
+  }
+
+  return directory === undefined || isString(directory)
+    ? posix.join(directory ?? ".", path)
+    : unreadable;
 }
 
 function readLiteral(word: ShellWord | undefined): string | undefined {
@@ -133,7 +140,7 @@ function readHeredoc(command: ShellCommand): GithubBodySource | undefined {
 
 function readStandardInput(
   command: ShellCommand,
-  directory: Directory,
+  directory: ShellDirectory,
 ): GithubBodySource {
   const heredoc = readHeredoc(command);
 
@@ -173,7 +180,7 @@ function readBodyText(word: ShellWord): GithubBodySource {
 function readBody(
   command: ShellCommand,
   words: readonly ShellWord[],
-  directory: Directory,
+  directory: ShellDirectory,
 ): GithubBodySource | undefined {
   const body = readFlag(words, ["--body", "-b"]);
 
@@ -219,7 +226,7 @@ function readNumber(words: readonly ShellWord[]): number | undefined {
 
 function readWrite(
   command: ShellCommand,
-  directory: Directory,
+  directory: ShellDirectory,
 ): GithubWrite | undefined {
   const texts = command.words.map(readLiteral);
 
@@ -253,7 +260,7 @@ function readWrite(
 export function parseGithubCommand(command: string): readonly GithubWrite[] {
   const writes: GithubWrite[] = [];
 
-  let directory: Directory;
+  let directory: ShellDirectory;
 
   for (const shellCommand of parseShell(command)) {
     directory = readDirectory(shellCommand, directory);

@@ -41,41 +41,32 @@ async function removeSkillFiles(filesystem: Filesystem, directory: Directory) {
   }
 }
 
-async function rewriteSkillDirectory(
-  filesystem: Filesystem,
-  directory: Directory,
-  rewrite: (content: string) => string,
-) {
-  for (const file of await filesystem.list(directory)) {
-    const content = await filesystem.read(file);
-
-    if (content !== undefined && rewrite(content) !== content) {
-      await filesystem.write(file, rewrite(content));
-    }
-  }
-}
-
 async function moveSkillDirectory(
   filesystem: Filesystem,
   from: Directory,
   to: Directory,
   rewrite: (content: string) => string,
 ) {
-  if (await filesystem.isDirectory(to)) {
+  if (from !== to && (await filesystem.isDirectory(to))) {
     return removeSkillFiles(filesystem, from);
   }
 
   for (const file of await filesystem.list(from)) {
     const content = await filesystem.read(file);
 
+    const target = `${to}${file.slice(from.length)}`;
+
     if (content !== undefined) {
-      await filesystem.write(
-        `${to}${file.slice(from.length)}`,
-        rewrite(content),
-      );
+      const rewritten = rewrite(content);
+
+      if (target !== file || rewritten !== content) {
+        await filesystem.write(target, rewritten);
+      }
     }
 
-    await filesystem.remove(file);
+    if (target !== file) {
+      await filesystem.remove(file);
+    }
   }
 }
 
@@ -153,17 +144,17 @@ export async function migrateSkillFiles(config: {
 
       if (definition === undefined) {
         await removeSkillFiles(filesystem, from);
-      } else if (from !== `${directory}/${definition.name}`) {
+
+        continue;
+      }
+
+      const to = `${directory}/${definition.name}`;
+
+      if (from !== to || reference !== definition.reference) {
         await moveSkillDirectory(
           filesystem,
           from,
-          `${directory}/${definition.name}`,
-          rewriteTo(definition, reference),
-        );
-      } else if (reference !== definition.reference) {
-        await rewriteSkillDirectory(
-          filesystem,
-          from,
+          to,
           rewriteTo(definition, reference),
         );
       }

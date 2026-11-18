@@ -19,21 +19,9 @@ export async function syncCodexSkill(
 ) {
   const { name, reference, invocation, agent, body } = template;
 
-  const profiles = agent === undefined
-    ? []
-    : createCodexAgentProfiles({
-        agent,
-        reference,
-        body: formatter === undefined
-          ? body
-          : await formatContent(body, {
-              path: `${codexSkillsDir}/${name}/SKILL.md`,
-              config,
-              formatter,
-            }),
-      });
+  const skillFile = `${codexSkillsDir}/${name}/SKILL.md`;
 
-  const skill = await filesystem.read(`${codexSkillsDir}/${name}/SKILL.md`);
+  const skill = await filesystem.read(skillFile);
 
   if (!skill?.includes(formatReferenceMarker(reference))) {
     return;
@@ -55,6 +43,20 @@ export async function syncCodexSkill(
   );
 
   await filesystem.write(policyFile, policy.toString());
+
+  const profiles = agent === undefined
+    ? []
+    : createCodexAgentProfiles({
+        agent,
+        reference,
+        body: formatter === undefined
+          ? body
+          : await formatContent(body, {
+              path: skillFile,
+              config,
+              formatter,
+            }),
+      });
 
   // @debt The provenance line is built here and in `createCodexAgentProfiles`, and profile ownership is judged here and in `checkAgents`, which ignores former provenances; one owner of the provenance and its ownership test would keep them aligned.
   const formerProvenances = listFormerReferences(template).map((former) => {

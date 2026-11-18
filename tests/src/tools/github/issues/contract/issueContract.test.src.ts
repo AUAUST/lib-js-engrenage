@@ -726,6 +726,14 @@ describe("parseGithubCommand", () => {
     expect(
       readBody(`cd "$S" && gh issue edit 1 --body-file /tmp/b.md`),
     ).toEqual({ kind: "file", path: "/tmp/b.md" });
+
+    expect(
+      readBody(`cd "$S" && cd /abs && gh issue edit 1 --body-file body.md`),
+    ).toEqual({ kind: "file", path: "/abs/body.md" });
+
+    expect(
+      readBody(`cd "$S" && cd sub && gh issue edit 1 --body-file body.md`),
+    ).toEqual({ kind: "unreadable" });
   });
 
   test("reads every write of a command", () => {

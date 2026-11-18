@@ -1,6 +1,8 @@
 import { listTableCells } from "#foundation/markdown/index";
 import { tableCellWords } from "#tools/agents/constants";
 import { countWords } from "#tools/agents/utils/countWords";
+import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
+import { throwViolations } from "#tools/agents/utils/throwViolations";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function checkTableCells(config: LoadedConfig): Promise<void> {
@@ -8,7 +10,7 @@ export async function checkTableCells(config: LoadedConfig): Promise<void> {
 
   const agents = await config.resolve("agents");
 
-  if ((agents.preferred?.length ?? 0) === 0) {
+  if (!hasPreferredAgents(agents)) {
     return;
   }
 
@@ -32,12 +34,8 @@ export async function checkTableCells(config: LoadedConfig): Promise<void> {
     }
   }
 
-  if (violations.length > 0) {
-    throw new Error(
-      [
-        `Instruction table cells exceed ${tableCellWords} words:`,
-        ...violations.map((violation) => `- ${violation}`),
-      ].join("\n"),
-    );
-  }
+  throwViolations(
+    `Instruction table cells exceed ${tableCellWords} words:`,
+    violations,
+  );
 }

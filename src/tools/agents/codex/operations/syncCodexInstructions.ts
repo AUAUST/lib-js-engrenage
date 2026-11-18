@@ -1,5 +1,5 @@
 import { formatBlockMarker, syncBlocks } from "#foundation/blocks/index";
-import { loadLazy } from "#foundation/modules/index";
+import { loadFormatter } from "#project/format/index";
 import { codexFile, codexSkillsDir } from "#tools/agents/codex/constants";
 import { createCodexDispatch } from "#tools/agents/codex/operations/createCodexDispatch";
 import { createCodexRuleMapping } from "#tools/agents/codex/operations/createCodexRuleMapping";
@@ -30,9 +30,7 @@ export async function syncCodexInstructions({
     return;
   }
 
-  const selected = await config.resolve("format.formatter");
-
-  const formatter = selected === false ? undefined : await loadLazy(selected);
+  const formatter = await loadFormatter(config);
 
   const installed: SkillDefinition[] = [];
 

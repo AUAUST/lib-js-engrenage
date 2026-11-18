@@ -103,7 +103,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 17. Structure and map renderers are ad hoc
 
-- sites: `src/project/structure/utils/renderStructure.ts:55`, `src/project/structure/utils/renderStructure.ts:83`, `src/tools/agents/utils/renderEnvironmentMap.ts:15`
+- sites: `src/project/structure/utils/renderStructure.ts:55`, `src/project/structure/utils/renderStructure.ts:83`, `src/project/structure/utils/renderEnvironmentMap.ts:10`
 - why: path segments recomposed by hand though the node provides them; map renderers repeat code.
 - want: segments from the node; one structured renderer shared by the map renderers.
 

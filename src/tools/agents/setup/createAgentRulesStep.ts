@@ -3,6 +3,7 @@ import { filterMap, pluck } from "@auaust/toolkit/array";
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
+import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import type { Step } from "#project/steps/index";
 
 export function createAgentRulesStep(): Step {
@@ -12,7 +13,7 @@ export function createAgentRulesStep(): Step {
     async isMissing(context) {
       const agents = await context.resolve("agents");
 
-      if ((agents.preferred?.length ?? 0) === 0) {
+      if (!hasPreferredAgents(agents)) {
         return false;
       }
 

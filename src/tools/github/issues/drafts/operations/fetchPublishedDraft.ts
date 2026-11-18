@@ -1,9 +1,8 @@
 import { isArray, isPlainObject, isString } from "@auaust/toolkit";
 import { entries } from "@auaust/toolkit/object";
 
-import { loadLazy } from "#foundation/modules/index";
 import { validate } from "#foundation/options/index";
-import { formatContent } from "#project/format/index";
+import { formatContent, loadFormatter } from "#project/format/index";
 import { fetchIssue, isSameIssue } from "#tools/github/issues/contract/index";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
 import { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
@@ -40,9 +39,7 @@ async function createBodyNormalizer(
   { config }: Publication,
   draft: PublishedDraft,
 ) {
-  const selected = await config.resolve("format.formatter");
-
-  const formatter = selected === false ? undefined : await loadLazy(selected);
+  const formatter = await loadFormatter(config);
 
   const path = locateDraft(draft.stem);
 

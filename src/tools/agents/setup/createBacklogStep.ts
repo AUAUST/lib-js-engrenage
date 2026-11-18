@@ -1,9 +1,7 @@
 import { engrenage } from "#constants";
 import {
   agentsFile,
-  backlogCategoriesHeading,
   backlogIndex,
-  backlogTemplate,
   endMarker,
   scratchpadFile,
   scratchpadPlaceholder,
@@ -14,6 +12,7 @@ import { createAgentFillers } from "#tools/agents/operations/createAgentFillers"
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
+import { formatBacklogIndex } from "#tools/agents/utils/formatBacklogIndex";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { Step } from "#project/steps/index";
 
@@ -79,17 +78,7 @@ export function createBacklogStep(): Step {
       if (!(await filesystem.exists(backlogIndex))) {
         await filesystem.write(
           backlogIndex,
-          [
-            "# Backlog",
-            "",
-            formatReferenceMarker(backlogTemplate),
-            endMarker,
-            "",
-            backlogCategoriesHeading,
-            "",
-            "No open categories yet.",
-            "",
-          ].join("\n"),
+          formatBacklogIndex("# Backlog", ["", "No open categories yet.", ""]),
         );
       }
 

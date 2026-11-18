@@ -9,6 +9,7 @@ import {
   rulesDirectory,
 } from "#tools/agents/constants";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import type { GeneratedRule } from "#tools/agents/ports/GeneratedRule";
 import type { File } from "#types/File";
 
@@ -29,7 +30,7 @@ export async function syncGeneratedRules(config: LoadedConfig) {
     resolve("resources"),
   ]);
 
-  if ((agents.preferred?.length ?? 0) === 0) {
+  if (!hasPreferredAgents(agents)) {
     return;
   }
 

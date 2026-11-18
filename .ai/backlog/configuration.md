@@ -38,7 +38,7 @@ Project configuration contract: loading, environments, option shapes and list op
 
 ## 7. Option sections and tsconfig paths are cast or unchecked
 
-- sites: `src/foundation/options/config/declarers/declareSection.ts:7`, `src/foundation/options/types/Section.ts:4`, `src/foundation/options/utils/createResolver.ts:215`, `src/foundation/options/utils/createAccessors.ts:40`, `src/project/tsconfig/utils/readTsconfigPaths.ts:19`
+- sites: `src/foundation/options/config/declarers/declareSection.ts:7`, `src/foundation/options/ports/Section.ts:4`, `src/foundation/options/utils/createResolver.ts:215`, `src/foundation/options/utils/createAccessors.ts:40`, `src/project/tsconfig/utils/readTsconfigPaths.ts:19`
 - why: `Config` comes from the annotation, unchecked against the resolver; the resolver context is `unknown`, narrowed bivariantly; sections get the open resolver, so key reads are untyped; compose cannot type getters from a dynamic map; hand-written paths are cast.
 - want: section context typed through `Resolver<Context, Sections>`; paths validated against a schema.
 

@@ -554,7 +554,7 @@ describe("without a current repository", () => {
     ).resolves.toBe(".ai/issues/toolkit.new-x.draft.md");
 
     await expect(createDraft(config, "task", { slug: "y" })).rejects.toThrow(
-      "needs a GitHub repository, and package.json `repository` and the `origin` remote name none: record the finding as a backlog entry naming its owner instead",
+      "A draft without --repo needs the current repository: set `repository` in package.json or add an `origin` remote; record the finding as a backlog entry naming its owner instead",
     );
   });
 
@@ -579,7 +579,7 @@ describe("without a current repository", () => {
     ).resolves.toEqual({ lines: ["toolkit.new-x: ready"], passed: true });
 
     await expect(checkIssues(config, ["new-y"], "worker")).rejects.toThrow(
-      "new-y needs a GitHub repository",
+      "new-y needs the current repository",
     );
   });
 });
