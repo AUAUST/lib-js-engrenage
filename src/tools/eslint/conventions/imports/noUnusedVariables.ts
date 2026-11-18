@@ -6,6 +6,7 @@ export default defineConvention({
     delegateRule("unused-imports/no-unused-vars", [
       {
         args: "after-used",
+        caughtErrors: "none",
         argsIgnorePattern: "^(?:_|(?:ignored|unused)(?:[A-Z\\d_]|$))",
         ignoreRestSiblings: true,
       },

@@ -1222,6 +1222,14 @@ export const longform = {
 export function report(value: unknown, unusual: unknown) {
   return value;
 }
+
+export function parse(text: string): unknown {
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    return text;
+  }
+}
 `,
       {
         filePath: "src/unused.ts",
@@ -1232,7 +1240,10 @@ export function report(value: unknown, unusual: unknown) {
       map(result?.messages ?? [], (message) => {
         return `${message.line}:${message.ruleId}`;
       }),
-    ).toEqual(["5:auaust/no-unused-vars"]);
+    ).toEqual([
+      "5:auaust/no-unused-vars",
+      "12:unicorn/prefer-optional-catch-binding",
+    ]);
   });
 
   test("reports builtin imports without node: and undashed text encodings", async () => {
