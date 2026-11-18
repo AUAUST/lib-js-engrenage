@@ -80,3 +80,4 @@
 - PreToolUse Bash hook: removing the old hook commands mid-session — Claude Code keeps the session-start settings, so every git or gh-like Bash call and git commit stayed blocked; ran scripts from files, could not commit
 - `engrenage gate --worktree`: first gate run in an agent worktree — `projectMap` and `syncAgentFiles` tests hit the 5s timeout; passed alone, reran the gate, which passed
 - worktree isolation guard: chained commands naming paths under `tests/src/tools/github` — refused as a complex git command; split each into its own call
+- gh issue edit hook: `--body-file $S/…` with a variable path in a compound command — hook rejects variable paths and the whole command; edited the file in one call, published with a literal path in another

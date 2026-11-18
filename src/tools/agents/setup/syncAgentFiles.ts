@@ -1,6 +1,12 @@
 import { syncFiles } from "#foundation/blocks/index";
 import { syncCodexInstructions } from "#tools/agents/codex/index";
-import { attributionRules } from "#tools/agents/constants";
+import {
+  attributionRules,
+  backlogCategoriesHeading,
+  backlogIndex,
+  backlogTemplate,
+  endMarker,
+} from "#tools/agents/constants";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
@@ -88,6 +94,38 @@ async function migrateFormerRules(config: {
   }
 }
 
+async function migrateBacklogIndex(filesystem: Filesystem) {
+  const content = await filesystem.read(backlogIndex);
+
+  if (
+    content === undefined ||
+    content.includes(formatReferenceMarker(backlogTemplate))
+  ) {
+    return;
+  }
+
+  const lines = content.split("\n");
+  const heading = lines.indexOf(backlogCategoriesHeading);
+
+  if (heading === -1) {
+    throw new Error(
+      `${backlogIndex} has no "${backlogCategoriesHeading}" heading: add it below the instructions so sync can own them`,
+    );
+  }
+
+  await filesystem.write(
+    backlogIndex,
+    [
+      lines[0],
+      "",
+      formatReferenceMarker(backlogTemplate),
+      endMarker,
+      "",
+      ...lines.slice(heading),
+    ].join("\n"),
+  );
+}
+
 /**
  * Syncs agent files when an agent is preferred: migrations, attribution rules,
  * generated skill and rule files and Codex instructions. The `blocks` target
@@ -111,6 +149,8 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   await migrateSkillFiles(config);
 
   await migrateFormerRules(config);
+
+  await migrateBacklogIndex(config.filesystem);
 
   await syncAttributionRules(config);
 

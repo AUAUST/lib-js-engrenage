@@ -4,6 +4,7 @@ import {
   agentRuntimeEntry,
   agentsTarget,
   agentStatsDirectory,
+  backlogIndex,
   markdownBlocks,
   rulesDirectory,
 } from "#tools/agents/constants";
@@ -107,7 +108,11 @@ export default {
             agents.instructionFiles,
           );
 
-          return files.filter((file) => file !== codexFile);
+          const instructionFiles = files.filter((file) => file !== codexFile);
+
+          return (await config.context.filesystem.exists(backlogIndex))
+            ? [...instructionFiles, backlogIndex]
+            : instructionFiles;
         },
         load() {
           return import("#tools/agents/operations/fillReferenceBlock");

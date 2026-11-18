@@ -46,6 +46,8 @@ export const agentLoaderEntry: StandardSchemaV1 = looseObject({
 
 export const backlogIndex = ".ai/backlog/index.md" satisfies File;
 
+export const backlogCategoriesHeading = "## Open categories";
+
 export const backlogTemplate = `${engrenage}/agents/templates/backlog.md`;
 
 export const agentLogFiles = freeze([

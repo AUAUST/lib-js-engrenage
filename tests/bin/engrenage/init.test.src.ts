@@ -860,6 +860,10 @@ test("sets up Codex with backlog guidance without installing coding rules", asyn
     "No open categories yet.",
   );
 
+  expect(project.read(".ai/backlog/index.md")).toContain(
+    "agents/templates/backlog.md -->\n\nDeferred questions, bugs, tasks and improvements.\n",
+  );
+
   expect(project.read(".codex/hooks.json")).toContain(
     "engrenage agents codex hook github",
   );
@@ -963,7 +967,7 @@ test("adds a scratchpad to an existing backlog setup", async () => {
     "package.json": '{"name":"project","type":"module"}',
     "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };\n',
     "AGENTS.md": "# Agents\n\n<!-- @reference @auaust/engrenage/agents/sections/backlog.md -->\n<!-- @end -->\n",
-    ".ai/backlog/index.md": "# Backlog\n\nKeep project guidance.\n",
+    ".ai/backlog/index.md": "# Backlog\n\nOutdated guidance.\n\n## Open categories\n\nNo open categories yet.\n",
     ".claude/rules/backlog.md": "<!-- @reference @auaust/engrenage/agents/rules/backlog.md -->\n<!-- @end -->\n",
   });
 
@@ -973,8 +977,8 @@ test("adds a scratchpad to an existing backlog setup", async () => {
     "<!-- scratchpad-placeholder -->",
   );
 
-  expect(project.read(".ai/backlog/index.md")).toBe(
-    "# Backlog\n\nKeep project guidance.\n",
+  expect(project.read(".ai/backlog/index.md")).toMatch(
+    /^# Backlog\n\n<!-- @reference @auaust\/engrenage\/agents\/templates\/backlog\.md -->\n[^]*<!-- @end -->\n\n## Open categories\n\nNo open categories yet\.\n$/,
   );
 
   expect(project.read(".agents/skills/curation/SKILL.md")).toContain(

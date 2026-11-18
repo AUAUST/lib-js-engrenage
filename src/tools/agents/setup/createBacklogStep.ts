@@ -1,9 +1,7 @@
-import { readFile } from "node:fs/promises";
-
 import { engrenage } from "#constants";
-import { resolveDataFile } from "#foundation/data/index";
 import {
   agentsFile,
+  backlogCategoriesHeading,
   backlogIndex,
   backlogTemplate,
   endMarker,
@@ -81,7 +79,17 @@ export function createBacklogStep(): Step {
       if (!(await filesystem.exists(backlogIndex))) {
         await filesystem.write(
           backlogIndex,
-          await readFile(resolveDataFile(backlogTemplate), "utf-8"),
+          [
+            "# Backlog",
+            "",
+            formatReferenceMarker(backlogTemplate),
+            endMarker,
+            "",
+            backlogCategoriesHeading,
+            "",
+            "No open categories yet.",
+            "",
+          ].join("\n"),
         );
       }
 
