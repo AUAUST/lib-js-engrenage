@@ -45,8 +45,6 @@ const repositoryPattern = /([\w.-]+\/[\w.-]+)$/;
 
 const unreadable = { kind: "unreadable" } as const;
 
-const heredocOperators = new Set(["<<", "<<-"]);
-
 function readLiteral(word: ShellWord | undefined): string | undefined {
   return word?.kind === "literal" ? word.text : undefined;
 }
@@ -82,7 +80,7 @@ function isBareCat(command: ShellCommand) {
 
 function readHeredoc(command: ShellCommand): GithubBodySource | undefined {
   for (const { operator, target, heredoc } of command.redirects) {
-    if (heredocOperators.has(operator)) {
+    if (heredoc !== undefined) {
       const text = readLiteral(heredoc);
 
       return text === undefined ? unreadable : { kind: "text", text };

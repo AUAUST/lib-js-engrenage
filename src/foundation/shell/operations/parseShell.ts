@@ -4,15 +4,18 @@ import type {
   CallExpr,
   DeclClause,
   Node,
+  Redirect,
   Stmt,
   Word,
   WordPart,
 } from "sh-syntax";
 import type {
   BinCmdOperator,
+  createSourceIndex,
   LangVariant,
   parse,
   ParseError,
+  RedirOperator,
 } from "sh-syntax/sync";
 
 import { isArray, isObject, isString } from "@auaust/toolkit";
@@ -28,6 +31,8 @@ interface Parser {
   readonly ParseError: typeof ParseError;
   readonly LangVariant: typeof LangVariant;
   readonly BinCmdOperator: typeof BinCmdOperator;
+  readonly RedirOperator: typeof RedirOperator;
+  readonly createSourceIndex: typeof createSourceIndex;
 }
 
 let parser: Parser | undefined;
@@ -43,13 +48,16 @@ function isNode(value: unknown): value is Node {
   return isObject(value) && isString(Reflect.get(value, "type"));
 }
 
-function unescape(text: string, quoted: boolean) {
-  return text.replaceAll(
-    quoted ? /\\([$`"\\\n])/g : /\\(.|\n)/g,
-    (_, char: string) => {
-      return char === "\n" ? "" : char;
-    },
-  );
+const escapes = {
+  unquoted: /\\(.|\n)/g,
+  quoted: /\\([$`"\\\n])/g,
+  heredoc: /\\([$`\\\n])/g,
+};
+
+function unescape(text: string, escape: RegExp) {
+  return text.replaceAll(escape, (_, char: string) => {
+    return char === "\n" ? "" : char;
+  });
 }
 
 function readLiteral(
@@ -60,7 +68,7 @@ function readLiteral(
 
   for (const part of parts) {
     if (part.type === "Lit") {
-      text += unescape(part.value, quoted);
+      text += unescape(part.value, quoted ? escapes.quoted : escapes.unquoted);
     } else if (part.type === "SglQuoted" && !part.dollar && !quoted) {
       text += part.value;
     } else if (part.type === "DblQuoted" && !part.dollar && !quoted) {
@@ -74,6 +82,31 @@ function readLiteral(
     } else {
       return;
     }
+  }
+
+  return text;
+}
+
+function isQuotedDelimiter(delimiter: Word | null) {
+  return (
+    delimiter?.parts.some((part) => {
+      return part.type !== "Lit" || part.value.includes("\\");
+    }) ?? false
+  );
+}
+
+function readHeredocBody(
+  parts: readonly WordPart[],
+  quoted: boolean,
+): string | undefined {
+  let text = "";
+
+  for (const part of parts) {
+    if (part.type !== "Lit") {
+      return;
+    }
+
+    text += quoted ? part.value : unescape(part.value, escapes.heredoc);
   }
 
   return text;
@@ -99,16 +132,19 @@ function readSubstitution(word: Word) {
   return inner?.type === "CmdSubst" ? inner : undefined;
 }
 
-function createReader(source: string, { BinCmdOperator }: Parser) {
+function createReader(
+  source: string,
+  { BinCmdOperator, RedirOperator, createSourceIndex }: Parser,
+) {
   const pipeOperators = new Set<number>([
     BinCmdOperator.Pipe,
     BinCmdOperator.PipeAll,
   ]);
 
-  const bytes = Buffer.from(source);
+  const toIndex = createSourceIndex(source);
 
   function slice(start: number, end: number) {
-    return bytes.subarray(start, end).toString();
+    return source.slice(toIndex(start), toIndex(end));
   }
 
   function readStatements(
@@ -150,10 +186,12 @@ function createReader(source: string, { BinCmdOperator }: Parser) {
   function readWord(word: Word, sink: ShellCommand[]): ShellWord {
     const text = readLiteral(word.parts, false);
 
-    if (text !== undefined) {
-      return { kind: "literal", text };
-    }
+    return text === undefined
+      ? readExpansion(word, sink)
+      : { kind: "literal", text };
+  }
 
+  function readExpansion(word: Word, sink: ShellCommand[]): ShellWord {
     const wordSource = slice(word.start, word.end);
     const substitution = readSubstitution(word);
 
@@ -174,12 +212,22 @@ function createReader(source: string, { BinCmdOperator }: Parser) {
     };
   }
 
-  function readHeredoc(word: Word, sink: ShellCommand[]): ShellWord {
-    const heredoc = readWord(word, sink);
+  function readHeredoc(
+    { op, word: delimiter }: Redirect,
+    body: Word,
+    sink: ShellCommand[],
+  ): ShellWord {
+    const text = readHeredocBody(body.parts, isQuotedDelimiter(delimiter));
 
-    return heredoc.kind === "literal"
-      ? { kind: "literal", text: heredoc.text.replace(/\n$/, "") }
-      : heredoc;
+    if (text === undefined) {
+      return readExpansion(body, sink);
+    }
+
+    const lines = op === RedirOperator.DashHdoc
+      ? text.replaceAll(/^\t+/gm, "")
+      : text;
+
+    return { kind: "literal", text: lines.replace(/\n$/, "") };
   }
 
   function readRedirects(statement: Stmt, sink: ShellCommand[]) {
@@ -193,7 +241,7 @@ function createReader(source: string, { BinCmdOperator }: Parser) {
           : readWord(target, sink),
         heredoc: redirect.hdoc == null
           ? undefined
-          : readHeredoc(redirect.hdoc, sink),
+          : readHeredoc(redirect, redirect.hdoc, sink),
       };
     });
   }
@@ -301,6 +349,16 @@ function createReader(source: string, { BinCmdOperator }: Parser) {
   return { readStatements };
 }
 
+function readColumn(
+  source: string,
+  offset: number,
+  { createSourceIndex }: Parser,
+) {
+  const before = source.slice(0, createSourceIndex(source)(offset));
+
+  return before.length - before.lastIndexOf("\n");
+}
+
 /**
  * Lists every simple command the Bash `source` runs, in source order, each
  * command nested in a substitution following the command holding it.
@@ -318,7 +376,7 @@ export function parseShell(source: string): readonly ShellCommand[] {
       throw new ShellSyntaxError(
         error.text,
         error.pos?.line ?? 0,
-        (error.pos?.column ?? -1) + 1,
+        error.pos == null ? 0 : readColumn(source, error.pos.offset, loaded),
       );
     }
 

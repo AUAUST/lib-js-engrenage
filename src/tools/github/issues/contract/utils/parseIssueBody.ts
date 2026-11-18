@@ -42,7 +42,7 @@ function parseHeader(line: string): ParsedIssueBody["header"] {
   };
 }
 
-function splitBodySections(body: string) {
+function readSections(body: string) {
   return splitSections(body, 2).flatMap(({ name, source }) => {
     if (name === undefined) {
       return [];
@@ -139,7 +139,7 @@ export function parseIssueBody(body: string): ParsedIssueBody {
   const [first = ""] = normalized.split("\n", 1);
   const hasHeader = headerPattern.test(first);
 
-  const sections = splitBodySections(
+  const sections = readSections(
     hasHeader ? normalized.slice(first.length + 1) : normalized,
   );
 

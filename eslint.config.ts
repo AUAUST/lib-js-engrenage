@@ -1,5 +1,8 @@
 import { defineEslintConfig } from "#tools/eslint/index";
 
+const markdownPattern = String.raw`/^\^(---|#+ |#\{\d)|\(\?=#+ |\x60{3}|~{3}|[\x60~]\\?\{3/`;
+const regexpCall = `:matches(NewExpression, CallExpression)[callee.name="RegExp"]`;
+
 export default defineEslintConfig(
   {
     stylistic: {
@@ -9,13 +12,20 @@ export default defineEslintConfig(
   },
   {
     files: ["src/**/*.ts"],
+    ignores: ["src/tools/prettier/conventions/layout/canonicalJsdoc.ts"],
     rules: {
       "no-restricted-syntax": [
         "error",
-        {
-          selector: String.raw`Literal[regex.pattern=/^\^(---|#+ |#\{\d)|\(\?=#+ /]`,
-          message: "Use `#foundation/markdown` instead of frontmatter and heading regexes.",
-        },
+        ...[
+          `Literal[regex.pattern=${markdownPattern}]`,
+          `${regexpCall} > Literal[value=${markdownPattern}]`,
+          `${regexpCall} > TemplateLiteral > TemplateElement[value.raw=${markdownPattern}]`,
+        ].map((selector) => {
+          return {
+            selector,
+            message: "Use `#foundation/markdown` instead of frontmatter, heading and fence regexes.",
+          };
+        }),
       ],
     },
   },

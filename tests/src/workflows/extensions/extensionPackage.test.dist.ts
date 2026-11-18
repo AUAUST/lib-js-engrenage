@@ -93,14 +93,18 @@ describe("an extension package importing only the public entry", () => {
   );
 
   test(
-    "ships an agent fragment that reaches engrenage sync agents",
+    "ships an agent fragment that engrenage sync fills into its rule file",
     { timeout: binaryTimeout },
     async () => {
       const { root, read } = createExtensionProject();
 
-      await run(process.execPath, [getExecutable(), "sync", "agents"], {
-        cwd: root,
-      });
+      await run(
+        process.execPath,
+        [getExecutable(), "sync", "agents", "blocks"],
+        {
+          cwd: root,
+        },
+      );
 
       const synced = read(".claude/rules/fixture-rule.md");
 

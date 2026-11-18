@@ -2,6 +2,10 @@ import { describe, expect, test } from "vitest";
 
 import { parseShell } from "#foundation/shell/operations/parseShell";
 
+function readHeredoc(source: string) {
+  return parseShell(source)[0]?.redirects[0]?.heredoc;
+}
+
 describe("parseShell", () => {
   test("reads assignments, redirects and pipe input", () => {
     const [cat, gh, ...rest] = parseShell(
@@ -57,5 +61,36 @@ describe("parseShell", () => {
       { kind: "expansion", source: "x$(y)" },
       { kind: "expansion", source: "$n" },
     ]);
+  });
+
+  test("keeps the body of a heredoc with a quoted delimiter raw", () => {
+    expect(readHeredoc("cat <<'EOF'\na\\$b \\\\ \\x \\\nc\nEOF")).toEqual({
+      kind: "literal",
+      text: "a\\$b \\\\ \\x \\\nc",
+    });
+  });
+
+  test("removes only heredoc escapes from an unquoted delimiter's body", () => {
+    expect(readHeredoc('cat <<EOF\na\\$b \\\\ \\x \\" \\`\\\nc\nEOF')).toEqual({
+      kind: "literal",
+      text: 'a$b \\ \\x \\" `c',
+    });
+  });
+
+  test("strips leading tabs from a dashed heredoc", () => {
+    expect(readHeredoc("cat <<-EOF\n\ta\n\t\tb\n\tEOF")).toEqual({
+      kind: "literal",
+      text: "a\nb",
+    });
+  });
+
+  test("reports syntax errors at character columns", () => {
+    expect(() => parseShell(`echo 'é' "x`)).toThrow(
+      expect.objectContaining({
+        name: "ShellSyntaxError",
+        line: 1,
+        column: 10,
+      }),
+    );
   });
 });

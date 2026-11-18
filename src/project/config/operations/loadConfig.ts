@@ -13,30 +13,31 @@ import type { Directory } from "#types/Directory";
 const defaultReporter = createConsoleReporter();
 
 const loadedConfigs = new Map<
-  Reporter,
-  Map<Directory, Promise<LoadedConfig>>
+  Directory,
+  WeakMap<Reporter, Promise<LoadedConfig>>
 >();
 
+// @debt `pendingConfigs` and `roots` keep an entry per directory ever loaded for the process's lifetime, the pending one an empty `WeakMap` once its reads settle
 const pendingConfigs = new Map<
-  Reporter,
-  Map<Directory, Promise<LoadedConfig>>
+  Directory,
+  WeakMap<Reporter, Promise<LoadedConfig>>
 >();
 
 const roots = new Map<Directory, Directory>();
 
 function entriesOf(
-  caches: Map<Reporter, Map<Directory, Promise<LoadedConfig>>>,
-  reporter: Reporter,
-): Map<Directory, Promise<LoadedConfig>> {
-  const existing = caches.get(reporter);
+  cache: Map<Directory, WeakMap<Reporter, Promise<LoadedConfig>>>,
+  directory: Directory,
+): WeakMap<Reporter, Promise<LoadedConfig>> {
+  const existing = cache.get(directory);
 
   if (existing !== undefined) {
     return existing;
   }
 
-  const created = new Map<Directory, Promise<LoadedConfig>>();
+  const created = new WeakMap<Reporter, Promise<LoadedConfig>>();
 
-  caches.set(reporter, created);
+  cache.set(directory, created);
 
   return created;
 }
@@ -52,8 +53,8 @@ async function readConfig(
 
   roots.set(start, root);
 
-  const loaded = entriesOf(loadedConfigs, reporter);
-  const cached = loaded.get(root);
+  const loaded = entriesOf(loadedConfigs, root);
+  const cached = loaded.get(reporter);
 
   if (cached !== undefined) {
     return cached;
@@ -66,7 +67,7 @@ async function readConfig(
     reporter,
   });
 
-  loaded.set(root, Promise.resolve(created));
+  loaded.set(reporter, Promise.resolve(created));
 
   return created;
 }
@@ -83,33 +84,31 @@ function load(
 
   const loaded = root === undefined
     ? undefined
-    : loadedConfigs.get(reporter)?.get(root);
+    : loadedConfigs.get(root)?.get(reporter);
 
   if (loaded !== undefined) {
     return loaded;
   }
 
-  const pending = entriesOf(pendingConfigs, reporter);
-  const reading = pending.get(start);
+  const pending = entriesOf(pendingConfigs, start);
+  const reading = pending.get(reporter);
 
   if (reading !== undefined) {
     return reading;
   }
 
   const read = readConfig(start, searchParents, reporter).finally(() => {
-    pending.delete(start);
+    pending.delete(reporter);
   });
 
-  pending.set(start, read);
+  pending.set(reporter, read);
 
   return read;
 }
 
 // @debt a read pending when `refresh` runs still caches the config it read before the refresh
 function refresh(root: Directory): void {
-  for (const loaded of loadedConfigs.values()) {
-    loaded.delete(root);
-  }
+  loadedConfigs.delete(root);
 
   for (const [start, found] of roots) {
     if (found === root) {

@@ -167,6 +167,7 @@ function findCommandBypass({ assignments, words: shellWords }: ShellCommand) {
   }
 }
 
+// @debt commands run through a wrapper (`bash -c`, `sh -c`, `eval`, `command`, `sudo`, `xargs`, `exec`) are not followed, so `bash -c 'git commit -n'` passes; `parseShell` could parse the literal script of `-c` and `eval`
 export function findHookBypass(command: string) {
   for (const shellCommand of parseShell(command)) {
     const bypass = findCommandBypass(shellCommand);

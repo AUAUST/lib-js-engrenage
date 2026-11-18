@@ -85,3 +85,4 @@
 - `engrenage gate --worktree`: gate after `sync agents` on edited fragments — its format step realigned the analysis fragment table, leaving `.codex/agents/analyser.toml` outdated for `sync --check`; reran `sync agents` then the gate
 - engrenage sync: deleted modules a barrel still exported — sync fails loading the stale barrel; removed its lines by hand
 - Claude hook: a duplicate export in a barrel — every Bash command denied; fixed the file through the edit tool
+- `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the run shows no test console output; wrote it to a file instead

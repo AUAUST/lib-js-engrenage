@@ -51,9 +51,9 @@ export async function runTool(
   },
   args: readonly string[],
 ): Promise<void> {
-  const context = getRunContext();
+  const { signal, reporter } = getRunContext();
 
-  const config = await loadValidatedConfig();
+  const config = await loadValidatedConfig(undefined, { reporter });
 
   const binaryPath = await resolveBinary(
     config.context.root,
@@ -65,7 +65,7 @@ export async function runTool(
     process.stderr.write(`${message}\n`);
   }
 
-  const exitCode = await runBinary(binaryPath, args, context.signal);
+  const exitCode = await runBinary(binaryPath, args, signal);
 
   if (message !== undefined && exitCode === 0) {
     process.stderr.write(`${successMessage}\n`);
