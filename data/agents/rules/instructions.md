@@ -19,6 +19,8 @@ paths:
 
 Apply on top of the writing rules to every agent instruction you draft or edit, including wording proposed in issues and backlog entries. Aim: each rule exact, stated once by its owner, in the densest form that keeps its meaning, contradicting no other.
 
+Reached after you wrote instructions: run the process on every instruction you wrote in the task, and rewrite each until it meets these rules.
+
 ## Process
 
 1. **Inventory.** Before writing, search every source an agent reaches on the subject: `AGENTS.md` sections, rule files, skills, agent files, hook and lint messages. Note the owner of each fact you touch and every rule your text overlaps or contradicts.
