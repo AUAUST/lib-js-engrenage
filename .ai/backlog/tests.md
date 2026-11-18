@@ -16,7 +16,7 @@ Test infrastructure and coverage gaps.
 
 ## 3. Process-spawning tests time out under the worktree gate's load
 
-- why: `engrenage gate --worktree` failed 3 of 5 runs on different spawn-based tests (`runGateLocks` lock release, `hookFailures` 5000 ms timeout), each passing alone and in `pnpm test`.
+- why: under load, spawn-based tests fail while passing alone: `engrenage gate --worktree` 3 of 5 runs (`runGateLocks` lock release, `hookFailures` 5000 ms timeout), `pnpm build` once (`syncVscodeFiles.test.ts` settings merge, 5000 ms).
 - want: these tests scale their timeouts with `binaryTimeout`, or the gate runs them without competing load.
 
 ## 4. Tests initialize Git repositories by hand
