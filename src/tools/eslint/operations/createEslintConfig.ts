@@ -117,6 +117,8 @@ export async function createEslintConfig(
     configs.push(
       createIgnoreRules({
         ignoreFiles: await git.ignoreFiles,
+        excludeFiles: await git.excludeFiles,
+        root: git.root,
         ignored: [
           ...flatMap(resources.list({ committed: false }), ({ location }) => {
             return listLocationGlobs(location);

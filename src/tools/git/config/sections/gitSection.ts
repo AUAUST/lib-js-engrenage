@@ -9,6 +9,7 @@ import { declareSection } from "#foundation/options/index";
 import { locateFile, type ConfigResolver } from "#project/config/index";
 import { gitSchema } from "#tools/git/config/schemas/gitSchema";
 import { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
+import { listExcludeFiles } from "#tools/git/operations/listExcludeFiles";
 import { listIgnoredGlobs } from "#tools/git/operations/listIgnoredGlobs";
 import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 import type { File } from "#types/File";
@@ -62,6 +63,7 @@ export const gitSection = declareSection({
         compose.getters({
           gitignore: locateGitignore,
           ignored: () => listIgnoredGlobs(repositoryRoot, root),
+          excludeFiles: () => listExcludeFiles(repositoryRoot),
           ignoreFiles: async () => {
             const [rootFile, nested] = await Promise.all([
               locateGitignore(),

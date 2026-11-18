@@ -18,6 +18,7 @@ export { findHookBypass } from "#tools/git/operations/findHookBypass";
 export { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
 export { hashTree } from "#tools/git/operations/hashTree";
 export { listChangedFiles } from "#tools/git/operations/listChangedFiles";
+export { listExcludeFiles } from "#tools/git/operations/listExcludeFiles";
 export { listIgnoredGlobs } from "#tools/git/operations/listIgnoredGlobs";
 export { listIgnoreFiles } from "#tools/git/operations/listIgnoreFiles";
 export { listIssueCommits } from "#tools/git/operations/listIssueCommits";

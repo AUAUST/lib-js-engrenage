@@ -18,6 +18,7 @@ export interface ResolvedGit {
   };
   readonly gitignore: Promise<File | undefined>;
   readonly ignoreFiles: Promise<Files>;
+  readonly excludeFiles: Promise<Files>;
   readonly ignored: Promise<Globs>;
   readonly root: Directory;
   readonly filesystem: Filesystem;

@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { relative } from "node:path";
 
 import { ESLint } from "eslint";
@@ -1583,6 +1584,35 @@ export async function run(): Promise<unknown> {
     expect(await eslint.isPathIgnored("src/nested/root.ts")).toBe(false);
 
     expect(await eslint.isPathIgnored("src/nested/a.local.ts")).toBe(true);
+  });
+
+  test("ignores Git's excludes patterns relative to the repository root, from a subproject too", async () => {
+    const repository = createTemporaryProject({
+      "app/engrenage.config.ts": "export default {};\n",
+      "app/package.json": JSON.stringify({ type: "module" }),
+    });
+
+    execFileSync("git", ["init", "--quiet"], {
+      cwd: repository.root,
+      stdio: "pipe",
+    });
+
+    repository.write(
+      ".git/info/exclude",
+      "scratch/\n/app/src/local/\n/src/top/\n",
+    );
+
+    const app = repository.resolve("app");
+
+    const eslint = new ESLint({
+      cwd: app,
+      overrideConfigFile: true,
+      overrideConfig: await createEslintConfig(await loadConfig(app)),
+    });
+
+    expect(await eslint.isPathIgnored("src/scratch/a.ts")).toBe(true);
+    expect(await eslint.isPathIgnored("src/local/a.ts")).toBe(true);
+    expect(await eslint.isPathIgnored("src/top/a.ts")).toBe(false);
   });
 
   test("ignores the resolved tests.fixtures globs", async () => {
