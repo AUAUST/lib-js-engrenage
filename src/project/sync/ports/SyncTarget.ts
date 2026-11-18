@@ -16,9 +16,10 @@ export interface SyncTarget extends EntryShape, Lazy<SyncRun> {
   readonly name: string;
   /**
    * When the target runs: `generate` targets run first and the config forgets
-   * its resolved sections after the last of them; a `check` target's error
-   * is reported as a failure once every target ran, while any other target's
-   * error aborts the sync.
+   * its resolved sections after the last of them; a `check` target's error is
+   * reported as a failure once every target ran, while any other target's error
+   * aborts the sync; `fill` targets also run in a sync naming other targets,
+   * completing what those write.
    */
   readonly stage: SyncStage;
   /**

@@ -79,7 +79,7 @@ describe("engrenage sync", () => {
     expect(findings.some(({ level }) => level === "log")).toBe(false);
   });
 
-  test("checks only the selected targets without writing", async () => {
+  test("checks only the selected targets and the fill targets without writing", async () => {
     const project = createProject();
 
     const { messages } = await runCommand("sync", sync, "vscode", "--check");
@@ -89,6 +89,7 @@ describe("engrenage sync", () => {
     expect(messages.map(({ text }) => text)).toEqual([
       "Checking synced files...",
       "outdated: .vscode/settings.json",
+      "outdated: AGENTS.md",
     ]);
 
     expect(project.read("AGENTS.md")).toBe(emptyBlock);

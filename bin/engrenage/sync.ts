@@ -12,7 +12,10 @@ export default defineLazyCommand({
         "Update the existing project files that engrenage derives from the config. `engrenage init` creates missing ones.",
       )
       .addArgument(
-        new Argument("[targets...]", "targets to sync (all by default)"),
+        new Argument(
+          "[targets...]",
+          "targets to sync, plus every fill target (all by default)",
+        ),
       )
       .option("--check", "report outdated files without writing them", false);
   },

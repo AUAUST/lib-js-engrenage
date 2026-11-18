@@ -30,7 +30,11 @@ export async function runSync(
   }
 
   const selected = contributions.filter(({ entry }) => {
-    return names === undefined || includes(names, entry.name);
+    return (
+      names === undefined ||
+      includes(names, entry.name) ||
+      entry.stage === "fill"
+    );
   });
 
   const lastGenerator = selected.findLastIndex(({ entry }) => {

@@ -96,7 +96,7 @@ describe("runSync", () => {
     expect(runs).toEqual(["producer", "reader"]);
 
     expect(done.map(({ targets }) => targets)).toEqual([
-      ["producer", "reader"],
+      ["producer", "reader", "blocks"],
     ]);
   });
 
@@ -247,6 +247,7 @@ describe("runSync with generated sources", () => {
   function createSourceProject(
     files: Record<string, string>,
     targets: readonly unknown[],
+    done: SyncDone[] = [],
   ) {
     const project = createTemporaryProject({
       "package.json": '{ "name": "@fixture/project", "type": "module" }',
@@ -270,7 +271,18 @@ describe("runSync with generated sources", () => {
         extensions: [
           {
             name: "generated-fixture",
-            contributes: { "sync.targets": targets },
+            contributes: {
+              "sync.targets": targets,
+              "sync.done": [
+                {
+                  load() {
+                    return Promise.resolve((payload: SyncDone) => {
+                      done.push(payload);
+                    });
+                  },
+                },
+              ],
+            },
           },
         ],
       },
@@ -368,5 +380,61 @@ describe("runSync with generated sources", () => {
     await runSync(config, { names: ["generator", "reader"] });
 
     expect(domains).toEqual([["a"]]);
+  });
+
+  describe("fill targets", () => {
+    const skill = ".claude/skills/analysis/SKILL.md";
+
+    function createSkillProject(done: SyncDone[]) {
+      return createSourceProject(
+        {
+          [skill]: [
+            "<!-- @reference @auaust/engrenage/agents/skills/analysis.md -->",
+            "Stale fragment.",
+            "<!-- @end -->",
+            "",
+          ].join("\n"),
+        },
+        [],
+        done,
+      );
+    }
+
+    test("fills the blocks of the named targets' files after them", async () => {
+      const done: SyncDone[] = [];
+
+      const config = createSkillProject(done);
+
+      await settleChanges(config, {
+        check: false,
+        failures: await runSync(config, { names: ["agents"] }),
+      });
+
+      const fragment = readFileSync(
+        join(import.meta.dirname, "../../../../data/agents/skills/analysis.md"),
+        "utf-8",
+      );
+
+      const content = readFileSync(join(config.context.root, skill), "utf-8");
+
+      expect(content).not.toContain("Stale fragment.");
+      expect(content).toContain(fragment.trim().split("\n")[0]);
+
+      const [{ targets }] = done;
+
+      expect(targets.indexOf("blocks")).toBeGreaterThan(
+        targets.indexOf("agents"),
+      );
+    });
+
+    test("runs a named fill target once", async () => {
+      const done: SyncDone[] = [];
+
+      await runSync(createSkillProject(done), { names: ["blocks"] });
+
+      expect(done[0]?.targets.filter((name) => name === "blocks")).toEqual([
+        "blocks",
+      ]);
+    });
   });
 });
