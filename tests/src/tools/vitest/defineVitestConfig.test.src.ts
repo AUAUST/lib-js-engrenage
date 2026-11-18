@@ -29,7 +29,7 @@ describe("defineVitestConfig", () => {
 
     const vitestConfig = await defineVitestConfig(
       {
-        guardOutDir: false,
+        plugins: { "out-dir-guard": false },
       },
       nativeConfig,
     )({

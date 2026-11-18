@@ -107,12 +107,12 @@ describe("defineViteConfig", () => {
 
       const layered = await defineViteConfig({
         test: createVitestLayer({
-          guardOutDir: false,
+          plugins: { "out-dir-guard": false },
         }),
       })(env);
 
       const vitestConfig = await defineVitestConfig({
-        guardOutDir: false,
+        plugins: { "out-dir-guard": false },
       })(env);
 
       expect({ ...layered, plugins: undefined }).toEqual({

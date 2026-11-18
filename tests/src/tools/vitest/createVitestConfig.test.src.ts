@@ -46,8 +46,8 @@ describe("createVitestConfig", () => {
         },
       ],
       test: {
-        isolate: false,
-        restoreMocks: true,
+        isolate: true,
+        restoreMocks: false,
         exclude: [...configDefaults.exclude, "tests/**/fixtures/**"],
         coverage: {
           provider: "istanbul",
@@ -67,14 +67,32 @@ describe("createVitestConfig", () => {
             mode: "test",
           },
           {
-            guardOutDir: false,
+            plugins: { "out-dir-guard": false },
           },
         )
       ).plugins,
     ).toEqual([]);
   });
 
-  test("loads the setup file of the tests root unless the options give others", async () => {
+  test("collects the configured and Vitest's default test extensions, by mode", async () => {
+    const config = await loadConfig(root);
+
+    const include = (
+      await createVitestConfig(config, { command: "serve", mode: "test" })
+    ).test?.include;
+
+    expect(include).toEqual(
+      expect.arrayContaining([
+        "**/*.test.{ts,tsx}",
+        "**/*.test.?(c|m)[jt]s?(x)",
+        "**/*.test.src.?(c|m)[jt]s?(x)",
+      ]),
+    );
+
+    expect(include?.some((pattern) => pattern.includes(".dist"))).toBe(false);
+  });
+
+  test("loads the setup file of the tests root and adds the given ones", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "name": "project", "type": "module" }',
       "engrenage.config.ts": `export default { tests: { roles: ${JSON.stringify([testsetup()])} } };\n`,
@@ -95,7 +113,7 @@ describe("createVitestConfig", () => {
           setupFiles: ["other.ts"],
         })
       ).test?.setupFiles,
-    ).toEqual(["other.ts"]);
+    ).toEqual(["tests/setup.ts", "other.ts"]);
   });
 
   test("tests the build output with the dist tsconfig in build mode", async () => {

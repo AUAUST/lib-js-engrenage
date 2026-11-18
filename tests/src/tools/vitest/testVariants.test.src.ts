@@ -74,7 +74,12 @@ describe("test variants", () => {
           mode: "test",
         })
       ).test?.include,
-    ).toEqual(["**/*.test.{ts,tsx}", "**/*.test.src.{ts,tsx}"]);
+    ).toEqual([
+      "**/*.test.{ts,tsx}",
+      "**/*.test.src.{ts,tsx}",
+      "**/*.test.?(c|m)[jt]s?(x)",
+      "**/*.test.src.?(c|m)[jt]s?(x)",
+    ]);
 
     expect(
       (
@@ -83,7 +88,12 @@ describe("test variants", () => {
           mode: "build",
         })
       ).test?.include,
-    ).toEqual(["**/*.test.{ts,tsx}", "**/*.test.dist.{ts,tsx}"]);
+    ).toEqual([
+      "**/*.test.{ts,tsx}",
+      "**/*.test.dist.{ts,tsx}",
+      "**/*.test.?(c|m)[jt]s?(x)",
+      "**/*.test.dist.?(c|m)[jt]s?(x)",
+    ]);
   });
 
   test("derives the patterns from custom location, suffix and extension parts", async () => {

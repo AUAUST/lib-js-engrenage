@@ -7,6 +7,7 @@ export { declareStructureOptions } from "#project/environments/config/declarers/
 // @end
 
 // @barrel utils
+export { composeTestsPatterns } from "#project/environments/utils/composeTestsPatterns";
 export { getOptionsKey } from "#project/environments/utils/getOptionsKey";
 export { readInputDirs } from "#project/environments/utils/readInputDirs";
 // @end

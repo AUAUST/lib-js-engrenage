@@ -3,15 +3,11 @@ import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
 import { resolveNodeRuntime } from "#project/baseline/index";
-import {
-  distTestsVariant,
-  sourceTestsVariant,
-} from "#project/environments/constants";
 import { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
 import { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
+import { composeTestsPatterns } from "#project/environments/utils/composeTestsPatterns";
 import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedTests } from "#project/environments/types/ResolvedTests";
-import type { Globs } from "#types/Globs";
 
 export const testsSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ResolvedTests> {
@@ -19,17 +15,7 @@ export const testsSection = declareSection({
 
     const option = await config.resolve("tests.options");
 
-    function pattern(variant: string): Globs {
-      return option.enabled
-        ? [`${option.location}${option.suffix}${variant}${option.extension}`]
-        : [];
-    }
-
-    const patterns = freeze({
-      plain: pattern(""),
-      source: pattern(sourceTestsVariant),
-      dist: pattern(distTestsVariant),
-    });
+    const patterns = composeTestsPatterns(option);
 
     return freeze(
       compose(

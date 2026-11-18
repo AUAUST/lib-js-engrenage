@@ -2,11 +2,12 @@ import { realpath } from "node:fs/promises";
 
 import { configDefaults, coverageConfigDefaults } from "vitest/config";
 
-import { flatMap } from "@auaust/toolkit/iterable";
+import { flatMap, unique } from "@auaust/toolkit/iterable";
 import type { Maybe } from "@auaust/toolkit/types";
 
 import { filesIn, resolve } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
+import { composeTestsPatterns } from "#project/environments/index";
 import { noRoles } from "#project/structure/constants";
 import { optionsSchema } from "#tools/vitest/config/schemas/optionsSchema";
 import {
@@ -15,6 +16,7 @@ import {
   outDirGuard,
   pluginPrefix,
   sourceGuard,
+  vitestTestExtension,
 } from "#tools/vitest/constants";
 import { findSetupFiles } from "#tools/vitest/operations/findSetupFiles";
 import { createOutDirGuard } from "#tools/vitest/plugins/createOutDirGuard";
@@ -24,9 +26,11 @@ import type { ConfigEnv, Plugin } from "#tools/vite/index";
 import type { Config } from "#tools/vitest/types/Config";
 import type { Options } from "#tools/vitest/types/Options";
 
+type PluginSwitches = NonNullable<Options["plugins"]>;
+
 async function createSourcePlugins(
   config: LoadedConfig,
-  guardOutDir: boolean,
+  plugins: PluginSwitches,
 ): Promise<Plugin[]> {
   const outDir = await config.resolve("build.outDir");
 
@@ -34,7 +38,11 @@ async function createSourcePlugins(
 
   const packageName = packageJson.optional.name;
 
-  if (!guardOutDir || outDir === undefined || packageName === undefined) {
+  if (
+    plugins[outDirGuard] === false ||
+    outDir === undefined ||
+    packageName === undefined
+  ) {
     return [];
   }
 
@@ -46,10 +54,13 @@ async function createSourcePlugins(
   ];
 }
 
-async function createDistPlugins(config: LoadedConfig): Promise<Plugin[]> {
+async function createDistPlugins(
+  config: LoadedConfig,
+  plugins: PluginSwitches,
+): Promise<Plugin[]> {
   const traits = await config.resolve("traits");
 
-  if (!traits.published) {
+  if (plugins[sourceGuard] === false || !traits.published) {
     return [];
   }
 
@@ -74,12 +85,20 @@ async function createTestsInclude(
     return;
   }
 
-  // @debt `include` replaces Vitest's default, so `.js` and `.mjs` tests are no longer collected
   const tests = await config.resolve("tests");
 
-  const { plain, source, dist } = tests.patterns;
+  const option = await config.resolve("tests.options");
 
-  const patterns = [...plain, ...(testsBuild ? dist : source)];
+  const vitestPatterns = composeTestsPatterns(option, vitestTestExtension);
+
+  const patterns = [
+    ...unique([
+      ...tests.patterns.plain,
+      ...(testsBuild ? tests.patterns.dist : tests.patterns.source),
+      ...vitestPatterns.plain,
+      ...(testsBuild ? vitestPatterns.dist : vitestPatterns.source),
+    ]),
+  ];
 
   return [
     ...patterns,
@@ -104,15 +123,19 @@ export async function createVitestConfig(
   const roles = await config.resolve("environmentRoles");
 
   const {
-    guardOutDir,
+    plugins,
     isolate,
     restoreMocks = !isolate,
-    setupFiles = await findSetupFiles({
-      tests: await config.resolve("tests"),
-      roles: roles.tests ?? noRoles,
-      filesystem: config.context.filesystem,
-    }),
+    setupFiles: addedSetupFiles = [],
   } = validate(optionsSchema, options ?? {}, "Vitest options");
+
+  const discoveredSetupFiles = await findSetupFiles({
+    tests: await config.resolve("tests"),
+    roles: roles.tests ?? noRoles,
+    filesystem: config.context.filesystem,
+  });
+
+  const setupFiles = [...unique([...discoveredSetupFiles, ...addedSetupFiles])];
 
   const testsBuild = mode === buildMode;
 
@@ -157,13 +180,13 @@ export async function createVitestConfig(
       tsconfigPaths: !testsBuild,
     },
     plugins: testsBuild
-      ? await createDistPlugins(config)
-      : await createSourcePlugins(config, guardOutDir),
+      ? await createDistPlugins(config, plugins)
+      : await createSourcePlugins(config, plugins),
     test: {
       ...(include === undefined ? {} : { include }),
       isolate,
       restoreMocks,
-      setupFiles: [...setupFiles],
+      setupFiles,
       exclude: [...configDefaults.exclude, ...(await git.ignored), ...fixtures],
       coverage: {
         provider: defaultCoverageProvider,
