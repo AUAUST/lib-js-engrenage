@@ -16,11 +16,14 @@ Walk an issue tree in the main session: route each issue by the handling table, 
 
 The walk request sets them:
 
-| Request word              | Effect                                                             |
-| ------------------------- | ------------------------------------------------------------------ |
-| `pool <K>`                | K leaves in flight; 4 when unset, always 1 under Codex             |
-| `sequential` or `no pool` | K = 1                                                              |
-| `autonomous`              | No user to answer: §Autonomous replaces every question to the user |
+| Request words                                                 | Effect                                                             |
+| ------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `pool <K>` or `K = <K>`                                       | K leaves in flight; 3 when unset, always 1 under Codex             |
+| `sequential` or `no pool`                                     | K = 1                                                              |
+| No depth, `depth 0` or `depth 1`                              | Plan depth 1: nested plans are set aside                           |
+| `depth <n>`; `and direct children` or `and child plans` for 2 | Plan depth n: the walked plan and the plans n − 1 levels below it  |
+| `deep`, `deeply` or `traverse`                                | Plan depth `all`: every plan below the walked one                  |
+| `autonomous`                                                  | No user to answer: §Autonomous replaces every question to the user |
 
 ## Flow
 
@@ -42,14 +45,14 @@ walk check ──► route the ready set (§Handling table)
 
 ## Handling table
 
-Run `pnpm engrenage planning walk check <n>` on the issue the user names: at the start, after each commit and after each consultant update, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by a local commit), `blockers`, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn, and the next issue.
+Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, after each commit and after each consultant update, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by a local commit), `blockers`, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn within the plan depth, and the next issue.
 
 Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches. Setting an issue aside also holds every issue ordered after it, which the ready set already leaves out: keep walking the rest.
 
 | Issue                                                                   | Walker                                                                                                                                                      |
 | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Closed, or closed by a local commit                                     | Skip                                                                                                                                                        |
-| A `plan` other than the one walked                                      | Set aside: walked on its own                                                                                                                                |
+| A nested `plan` past the plan depth                                     | Set aside: walked on its own                                                                                                                                |
 | Open sub-issues                                                         | Walk them in order (a `segment`'s in any order), meanwhile handling the issue's own findings by the rows below without stopping the walk; then its own work |
 | `plan` or `segment` with no open sub-issue                              | Closes with its last leaf's commit                                                                                                                          |
 | `blockers` `drafting`, with `.ai/issues/<n>.draft.md` present           | Set aside: it is being planned                                                                                                                              |
@@ -110,7 +113,7 @@ When no integration merger runs:
 
 ## Boundary reviews
 
-When a segment closes and at the walk's end:
+When a segment or a nested plan closes and at the walk's end:
 
 1. Dispatch a new merger under the merging skill in the main checkout, briefed as its §Brief states for review mode, with the range since the previous review run or the walk's start.
 2. Brief a new debugger with its findings and the leaf findings agents declined since the previous review run, when any, and handle the outcome by §After a debugger.
@@ -123,16 +126,26 @@ When a segment closes and at the walk's end:
 - Call it only for a blocker the issue's text does not answer, a deviation changing planned behavior, contracts, scope or tree order, or an issue its row sends to it or no row fits; answer nothing from code yourself.
 - Batch what it sends back to the user with its findings and recommendations.
 
+## Reshaping
+
+When an issue stays set aside after the consultant or the user cannot settle it, and it holds issues ordered after it:
+
+1. Start a new `planner`, apart from the consultant, briefed `reshape` with the plan number, the mode, the plan depth, each such issue with why it is unsettled, and the leaves in flight.
+2. It answers once: the issues it moved ahead of the held one, or why each must wait.
+3. Run `walk check` and refill the pool.
+
+Reshape each held issue once per settlement attempt: run it again only after the consultant or the user changed that issue.
+
 ## Autonomous
 
 The user delegated every decision the instructions let an agent settle and is not there to answer: never ask them or wait for them.
 
-| Instead of                                                       | Do                                                                             |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Batching questions to the user                                   | Send them to the consultant; the issues it cannot settle stay set aside        |
-| Asking to clear a `drafting` claim                               | Set the issue aside                                                            |
-| Reporting a debugger written up for planning                     | Send it to the consultant, which plans it into the tree or leaves it set aside |
-| Resuming a leaf's agent a third time for one gate failure or gap | Set the leaf aside with its worktree, and report its state                     |
+| Instead of                                                       | Do                                                                                           |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Batching questions to the user                                   | Send them to the consultant; the issues it cannot settle stay set aside and go to §Reshaping |
+| Asking to clear a `drafting` claim                               | Set the issue aside                                                                          |
+| Reporting a debugger written up for planning                     | Send it to the consultant, which plans it into the tree or leaves it set aside               |
+| Resuming a leaf's agent a third time for one gate failure or gap | Set the leaf aside with its worktree, and report its state                                   |
 
 ## Resumed agents
 
@@ -155,7 +168,7 @@ End once no leaf is in flight and the ready set is empty, at the end of the tree
 1. The table of walked leaves, rebuilt from the walk's commits.
 2. Each merger run's findings and where each went.
 3. In autonomous mode, every decision the consultant settled, from its carry-over.
-4. What is set aside, pending or blocked, and why.
+4. What is set aside, pending or blocked, and why, with each reshape's moves.
 5. The walk's agent runs from `pnpm engrenage agents stats`, when the client records them.
 
 <!-- @end -->

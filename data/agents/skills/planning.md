@@ -7,7 +7,7 @@ formerly:
   - issue-planning
 agent:
   name: planner
-  description: Planner in consultant mode, for the walker's use only. The walker starts it on first need during a walk and resumes it to settle what the code and the plan settle and to update issues after a deviation.
+  description: Planner in consultant mode, for the walker's use only. The walker starts it on first need during a walk and resumes it to settle what the code and the plan settle and to update issues after a deviation, and starts a fresh one to reorder the tree around an issue nobody can settle yet.
   model: opus
   effort: high
   freshness: 2
@@ -93,7 +93,7 @@ The walker runs you as its `planner` subagent: a fallback that keeps code and pl
 - Send what the plan does not settle back to the walker, batched with your findings and recommendations for the user.
 - Return the answer and become idle; the walker resumes you for the next question.
 - End each answer with a **Carry-over**: one line per decision, pending question and rejected deviation of the walk that the published issues do not record, replacing your previous one, so a new consultant starts from it without your history.
-- Here, the latitude of Decisions and questions covers only how issues word and split settled work: change a plan decision, a contract or the tree order only on the user's answer, or under §Autonomous walks.
+- Here, the latitude of Decisions and questions covers only how issues word and split settled work: change a plan decision, a contract or the tree order only on the user's answer, under §Autonomous walks or under §Reshaping.
 - Never implement.
 
 ### Autonomous walks
@@ -108,6 +108,15 @@ When the walker briefs `autonomous`, the user has delegated to you every questio
 
 - Record each settlement where the settled fact belongs, the plan's **Decisions** or the issue, with the alternative it overrode.
 - List each settlement in your **Carry-over** under `Settled without the user` until the walk ends: the walker reports them.
+
+### Reshaping
+
+When the walker briefs `reshape`, you are a fresh consultant judging whether the walk can go on past issues nobody can settle yet. Read the walk's state with `pnpm engrenage planning walk check <plan> --depth <plan depth>`.
+
+- For each issue held behind an unsettled one, decide from the issues' text and the code whether it needs the unsettled issue's work: a contract, file, behavior or decision it introduces.
+- Move every held issue that does not ahead of the unsettled one, through the parent's `subIssues`, keeping each dependency before its dependents; move it into an earlier segment only when it is independent of that segment's siblings.
+- Change no issue's content, decision or contract: only order.
+- Publish the moves at once and answer once with them and, for each issue left held, the dependency that holds it.
 
 ## Decisions and questions
 

@@ -38,27 +38,34 @@ function placeInWalkOrder(
   {
     types,
     isClosed,
+    planDepth,
   }: {
     types: IssueProtocol["types"];
     isClosed(issue: IssueLocation & { readonly state: string }): boolean;
+    planDepth: number;
   },
   inTurn = true,
   depth = 0,
   parentType?: string,
+  nestedPlans = 0,
 ): PlacedIssue[] {
   const location = {
     repository: tree.repository,
     number: tree.issue.number,
   };
 
-  const below = tree.issue.type === types.plan
-    ? [location]
-    : [...ancestors, location];
+  const isPlan = tree.issue.type === types.plan;
+
+  const plans = depth > 0 && isPlan ? nestedPlans + 1 : nestedPlans;
+
+  const walked = inTurn && plans < Math.max(planDepth, 1);
+
+  const below = isPlan ? [location] : [...ancestors, location];
 
   return [
     ...tree.subIssues.flatMap((sub, index) => {
       const subInTurn = (
-        inTurn &&
+        walked &&
         (tree.issue.type === types.segment ||
           tree.subIssues.slice(0, index).every((earlier) => {
             return isClosed({
@@ -72,10 +79,15 @@ function placeInWalkOrder(
       return placeInWalkOrder(
         sub,
         below,
-        { types, isClosed },
+        {
+          types,
+          isClosed,
+          planDepth,
+        },
         subInTurn,
         depth + 1,
         tree.issue.type,
+        plans,
       );
     }),
     {
@@ -84,7 +96,7 @@ function placeInWalkOrder(
       parsed: parseIssueBody(tree.issue.body),
       ancestors,
       depth,
-      inTurn,
+      inTurn: walked,
       parentType,
     },
   ];
@@ -127,7 +139,7 @@ async function findMissing(
 export async function checkIssueTree(
   access: IssueAccess,
   number: number,
-  { root }: { root?: Directory } = {},
+  { root, planDepth = 1 }: { root?: Directory; planDepth?: number } = {},
 ): Promise<IssueTreeCheck> {
   const { repository } = access;
 
@@ -160,6 +172,7 @@ export async function checkIssueTree(
   const placed = placeInWalkOrder(tree, ancestors, {
     types: access.protocol.types,
     isClosed,
+    planDepth,
   });
 
   const missing = await findMissing(

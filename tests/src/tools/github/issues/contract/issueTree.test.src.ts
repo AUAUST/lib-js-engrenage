@@ -56,6 +56,18 @@ const tree: Record<number, MockIssue> = {
   },
   21: task(21, "#20 · Roadmap"),
   22: task(22, "#20 · Roadmap"),
+  30: {
+    type: "Plan",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #31\n2. #33\n\n## Decisions\n\nx\n",
+    subIssues: [31, 33],
+  },
+  31: {
+    type: "Plan",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #32\n\n## Decisions\n\nx\n",
+    subIssues: [32],
+  },
+  32: task(32, "#31 · Roadmap"),
+  33: task(33, "#30 · Roadmap"),
 };
 
 function connection(nodes: readonly unknown[]) {
@@ -187,6 +199,21 @@ describe("checkIssueTree", () => {
     });
 
     expect(closed.ready).toEqual([{ repository: "o/r", number: 22 }]);
+  });
+
+  test("walks a nested plan only within the plan depth", async () => {
+    mockGraphql();
+
+    const root = createWorkingCopy();
+
+    const [shallow, nested] = await Promise.all([
+      checkIssueTree(access, 30, { root }),
+      checkIssueTree(access, 30, { root, planDepth: 2 }),
+    ]);
+
+    expect(shallow.ready).toEqual([]);
+
+    expect(nested.ready).toEqual([{ repository: "o/r", number: 32 }]);
   });
 
   test("prints each parent above its sub-issues, then the ready set and the next issue", async () => {

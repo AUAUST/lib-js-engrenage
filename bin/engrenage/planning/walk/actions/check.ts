@@ -8,7 +8,7 @@ import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (
   number: number,
-  { repo }: { repo?: string | undefined },
+  { repo, depth }: { repo?: string | undefined; depth: number },
 ): Promise<void> {
   const root = process.cwd();
 
@@ -25,6 +25,7 @@ export default async function (
     number,
     {
       root,
+      planDepth: depth,
     },
   );
 
