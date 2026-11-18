@@ -79,7 +79,7 @@ A finding is within the fix radius when its fix stays in the reviewed files, or 
 | Within the fix radius, outside the leaf's issue                   | A carry-over line for the review run             | A finding                                 |
 | Located in the code, beyond the fix radius                        | A `@debt` marker at its site                     | A `@debt` marker at its site              |
 | Not located: a missing abstraction, drift across domains, tooling | A backlog entry                                  | A backlog entry                           |
-| A solution you weighed and set aside                              | A line under the discarded-solutions rule        | A line under the discarded-solutions rule |
+| A solution you weighed and set aside                              | A line under the agent-records rule              | A line under the discarded-solutions rule |
 
 - Edit only your mechanical fixes, debt markers, the backlog and the agent logs, in the tree you review; never edit an issue or commit.
 

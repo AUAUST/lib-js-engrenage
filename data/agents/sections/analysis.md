@@ -18,11 +18,9 @@ Analyse every request, suggestion and described fix before acting on it, within 
 
 - Your role sets what you may adopt: your skill's rules, otherwise the reach the request names, pausing under the decision protocol before anything past it.
 - Never adopt a reach your role does not allow, whoever asked: an issue or a proposal costs less than a half-applied refactor.
-- Log each solution you set aside under the discarded-solutions rule, and mark with `@debt` the code your change leaves short of the ideal.
+- Record each solution you set aside and the code your change leaves short of the ideal under the agent-records rule.
 
 ### Dependencies
 
-- Before building a capability, check whether a current dependency or an established library provides it.
-- Weigh a dependency change like any other choice, by its size, the share you would use and its maturity.
-- An experimental, single-maintainer or pre-1.0 library increases the cost of adoption but doesn't automatically rule it out.
+- Before building a capability, check whether a current dependency or an established library provides it, weighing its size, the share you would use and its maturity: an experimental, single-maintainer or pre-1.0 library costs more but is not ruled out.
 - Before adding a dependency, check the current ones for overlap, and propose a consolidation once several cover what one would.

@@ -2,6 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { basename, dirname, resolve } from "node:path";
 
 import {
+  array,
   boolean,
   integer,
   looseObject,
@@ -31,6 +32,7 @@ const templateSchema = looseObject({
   category: string(),
   default: optional(boolean(), false),
   order: pipe(number(), integer()),
+  formerly: optional(array(string())),
 });
 
 // @debt engrenage lists its own fragments beside its AGENTS.md template rather than through `listDataFiles`, since it has no URL of its package root

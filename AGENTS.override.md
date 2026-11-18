@@ -12,24 +12,45 @@ Paths below are relative to the project root. Before editing a file, read and fo
 
 | Matching glob | Rule to read |
 | --- | --- |
+| <code>.*.ts</code> | <code>.claude/rules/project-map.md</code> |
 | <code>.*.ts</code> | <code>.claude/rules/project-map/tooling.md</code> |
+| <code>.agents/**</code> | <code>.claude/rules/instructions.md</code> |
 | <code>.ai/backlog/*.md</code> | <code>.claude/rules/backlog.md</code> |
+| <code>.ai/backlog/**</code> | <code>.claude/rules/budgets.md</code> |
+| <code>.ai/debt.md</code> | <code>.claude/rules/budgets.md</code> |
+| <code>.ai/issues/**</code> | <code>.claude/rules/budgets.md</code> |
+| <code>.ai/issues/**</code> | <code>.claude/rules/instructions.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/planning-sheet.md</code> |
 | <code>.changeset/**</code> | <code>.claude/rules/changesets.md</code> |
+| <code>.claude/**</code> | <code>.claude/rules/instructions.md</code> |
+| <code>*.config.ts</code> | <code>.claude/rules/project-map.md</code> |
 | <code>*.config.ts</code> | <code>.claude/rules/project-map/tooling.md</code> |
 | <code>**/*.ts</code> | <code>.claude/rules/code-style.md</code> |
 | <code>**/*.ts</code> | <code>.claude/rules/prefer-toolkit.md</code> |
+| <code>AGENTS.md</code> | <code>.claude/rules/instructions.md</code> |
+| <code>AGENTS.override.md</code> | <code>.claude/rules/instructions.md</code> |
+| <code>bin/**</code> | <code>.claude/rules/modules.md</code> |
+| <code>bin/**</code> | <code>.claude/rules/project-map.md</code> |
 | <code>bin/**</code> | <code>.claude/rules/project-map/bin.md</code> |
+| <code>CLAUDE.md</code> | <code>.claude/rules/instructions.md</code> |
+| <code>data/agents/**</code> | <code>.claude/rules/agent-fragments.md</code> |
+| <code>data/agents/**</code> | <code>.claude/rules/instructions.md</code> |
+| <code>package.json</code> | <code>.claude/rules/modules.md</code> |
+| <code>scripts/**</code> | <code>.claude/rules/modules.md</code> |
+| <code>scripts/**</code> | <code>.claude/rules/project-map.md</code> |
 | <code>scripts/**</code> | <code>.claude/rules/project-map/scripts.md</code> |
+| <code>src/**</code> | <code>.claude/rules/modules.md</code> |
+| <code>src/**</code> | <code>.claude/rules/project-map.md</code> |
 | <code>src/**</code> | <code>.claude/rules/project-map/src.md</code> |
+| <code>tests/**</code> | <code>.claude/rules/modules.md</code> |
+| <code>tests/**</code> | <code>.claude/rules/project-map.md</code> |
 | <code>tests/**</code> | <code>.claude/rules/project-map/tests.md</code> |
+| <code>tooling/**</code> | <code>.claude/rules/modules.md</code> |
+| <code>tooling/**</code> | <code>.claude/rules/project-map.md</code> |
 | <code>tooling/**</code> | <code>.claude/rules/project-map/tooling.md</code> |
-| All files | <code>.claude/rules/agent-friction.md</code> |
-| All files | <code>.claude/rules/debt-markers.md</code> |
-| All files | <code>.claude/rules/discarded-solutions.md</code> |
+| All files | <code>.claude/rules/agent-records.md</code> |
 | All files | <code>.claude/rules/git.md</code> |
 | All files | <code>.claude/rules/no-attribution.md</code> |
-| All files | <code>.claude/rules/project-map.md</code> |
 
 <!-- @end -->
 

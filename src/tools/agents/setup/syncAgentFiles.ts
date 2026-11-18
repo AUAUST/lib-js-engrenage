@@ -64,6 +64,39 @@ async function syncAttributionRules(config: {
   }
 }
 
+async function migrateFormerRules(config: {
+  filesystem: Filesystem;
+  extensions: readonly Extension[];
+  fillers: BlockFillers;
+}) {
+  const [
+    references,
+    templates,
+  ] = await Promise.all([getRuleReferences(config), getRuleTemplates(config)]);
+
+  for (const template of templates) {
+    const { file, reference } = template;
+
+    for (const former of listFormerReferences(template)) {
+      for (const found of references.get(former) ?? []) {
+        const content = await config.filesystem.read(found);
+
+        // @debt a former rule file merged into an existing one loses the project lines it holds outside its block; sync could report them instead
+        if (content !== undefined && !(await config.filesystem.exists(file))) {
+          await config.filesystem.write(
+            file,
+            content
+              .split(`<!-- @reference ${former} -->`)
+              .join(`<!-- @reference ${reference} -->`),
+          );
+        }
+
+        await config.filesystem.remove(found);
+      }
+    }
+  }
+}
+
 async function moveDirectory(
   filesystem: Filesystem,
   from: Directory,
@@ -163,6 +196,8 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   }
 
   await migrateFormerSkills(config);
+
+  await migrateFormerRules(config);
 
   await syncAttributionRules(config);
 

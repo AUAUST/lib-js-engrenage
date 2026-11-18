@@ -319,6 +319,37 @@ describe("fragment fillers", () => {
     );
   });
 
+  test("merges former rule files into the one rule that replaces them", async () => {
+    const rules = "@auaust/engrenage/agents/rules";
+
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module"}',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
+      ".claude/rules/agent-friction.md": `<!-- @reference ${rules}/agent-friction.md -->\n<!-- @end -->\n`,
+      ".claude/rules/debt-markers.md": `<!-- @reference ${rules}/debt-markers.md -->\n<!-- @end -->\n`,
+    });
+
+    const config = await loadConfig(project.root);
+
+    const { filesystem } = config.context;
+
+    await syncAgentFiles(config);
+
+    expect(await filesystem.exists(".claude/rules/agent-friction.md")).toBe(
+      false,
+    );
+
+    expect(await filesystem.exists(".claude/rules/debt-markers.md")).toBe(
+      false,
+    );
+
+    const merged = await filesystem.read(".claude/rules/agent-records.md");
+
+    expect(merged).toBe(
+      `<!-- @reference ${rules}/agent-records.md -->\n<!-- @end -->\n`,
+    );
+  });
+
   test("leaves a former skill directory when the new one exists", async () => {
     const former = "@auaust/engrenage/agents/skills/issue-planning.md";
     const current = "@auaust/engrenage/agents/skills/planning.md";

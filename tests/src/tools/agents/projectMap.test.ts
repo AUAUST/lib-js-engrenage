@@ -76,6 +76,7 @@ describe("project map", () => {
     expect(overview).toContain("| `peer`");
     expect(overview).toContain("| `src`");
     expect(overview).toContain(".claude/rules/project-map/src.md");
+    expect(overview).toMatch(/^---\npaths:\n {2}- src\/\*\*\n/u);
     expect(map).toContain("paths:\n  - src/**");
     expect(map).toContain("base < *");
 

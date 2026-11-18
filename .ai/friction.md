@@ -96,3 +96,5 @@
 - Claude PreToolUse Bash hook (github): zsh `${(f)…}` array expansion — hook shell parser failed with "Bad substitution" and blocked the call; used xargs instead
 - engrenage planning issue create: passed `report` as the type — it takes `resource`; the material is a field
 - changesets rule: wrote a changeset through a Bash heredoc — the rule is path-scoped to `.changeset/**`, so it never loaded; found its summary style only when reading the rule later
+- zsh `grep --include=*.ts` and `config/*.ts`: unquoted globs in Bash calls, twice — "no matches found" despite the new Shell section; quoted or dropped them
+- `syncAgentFiles` tests: expected a package `@reference` block filled in a temporary project — package specifiers stay unresolved there without a warning; asserted the marker only

@@ -22,19 +22,24 @@ export async function generateProjectMapRules(
     return [];
   }
 
+  const mapped = entries(structure).filter(([, environment]) => {
+    return environment !== undefined;
+  });
+
   return [
     {
       name: projectMapRule,
+      paths: mapped.flatMap(([name]) => {
+        return paths[name] ?? [];
+      }),
       directives: [`project-map ${directory}/${projectMapRule}`],
     },
-    ...entries(structure)
-      .filter(([, environment]) => environment !== undefined)
-      .map(([name]) => {
-        return {
-          name: `${projectMapRule}/${name}`,
-          paths: paths[name] ?? [],
-          directives: [`environment-map ${name}`],
-        };
-      }),
+    ...mapped.map(([name]) => {
+      return {
+        name: `${projectMapRule}/${name}`,
+        paths: paths[name] ?? [],
+        directives: [`environment-map ${name}`],
+      };
+    }),
   ];
 }

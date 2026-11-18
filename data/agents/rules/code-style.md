@@ -23,6 +23,7 @@ Write these correctly from the start, since no tool fixes them:
 - Await, return or `void` every promise, and never spread it or test it for truthiness.
 - Use `await` only on values that may be promises.
 - Put test files only under the test directories.
+- Document with JSDoc each member of a `ports/` or `apis/` interface and each symbol a package entry exports, stating only the behavior its name and signature leave open.
 - Write each `@debt` marker as `@debt <statement>` at the start of its own comment.
 
 ## Not checked by tools
