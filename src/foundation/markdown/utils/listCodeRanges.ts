@@ -6,7 +6,7 @@ import type { CodeRange } from "#foundation/markdown/types/CodeRange";
 
 type MarkdownNode = ReturnType<typeof fromMarkdown>["children"][number];
 
-// @debt the three parsing utils of this domain each repeat the parser options, since a shared `parseMarkdown` util would join the public barrel and a `constants.ts` value must be deeply read-only, which the parser's option types reject
+// @debt the four parsing utils of this domain each repeat the parser options, since a shared `parseMarkdown` util would join the public barrel and a `constants.ts` value must be deeply read-only, which the parser's option types reject
 /**
  * Lists the code blocks, fenced or indented, and code spans of `content` by
  * source offset, in source order.

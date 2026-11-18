@@ -16,14 +16,14 @@ Implement one GitHub issue as written. The issue and its plan carry the design: 
 
 Read the issue, then only the ancestors and plan sections its header line names. Your context ends at the nearest plan above the issue: read any other plan only when you believe it holds information the issue needs. Then stop and report instead of implementing when:
 
-| Check                                               | Stop when                                                                                                                                                  |
-| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| The issue itself                                    | It has no **Steps**: it is a report or a request, not a planned task. Report that it needs the debugger, or the planner when the work spans several tasks. |
-| **Prerequisites**                                   | One is still open.                                                                                                                                         |
-| Sub-issues                                          | Some are open. Report them in order: each is worked on its own before the issue's remaining work, and a segment has no work beyond its sub-issues.         |
-| The plan, the reference for shared names and shapes | It disagrees with the issue.                                                                                                                               |
-| **Planning** or **Questions**                       | Either is present.                                                                                                                                         |
-| `blockers`                                          | Any is set.                                                                                                                                                |
+| Check                                               | Stop when                                                                                                                              |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| The issue itself                                    | It has no **Steps**, so it is a report or request: report it needs the debugger, or the planner for work spanning several tasks.       |
+| **Prerequisites**                                   | One is still open.                                                                                                                     |
+| Sub-issues                                          | Some are open. Report them in order: each is worked alone before the issue's remaining work; a segment has none beyond its sub-issues. |
+| The plan, the reference for shared names and shapes | It disagrees with the issue.                                                                                                           |
+| **Planning** or **Questions**                       | Either is present.                                                                                                                     |
+| `blockers`                                          | Any is set.                                                                                                                            |
 
 ## Reading the issue
 

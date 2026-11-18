@@ -33,12 +33,12 @@ Read `.claude/rules/issues.md` before writing any issue. Your findings become ba
 
 ## Scope
 
-| Target           | Allowed                                                                                                                                             |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Backlog and logs | Entries and categories in `.ai/backlog/`; `.ai/scratchpad.md`; `.ai/friction.md`                                                                    |
-| Code             | Only new `@debt` markers: existing ones stay until their fix lands, as its list of sites                                                            |
-| Other local file | A configuration value or trivial edit a note explicitly asks for; anything larger becomes an entry                                                  |
-| GitHub           | Issues only, as drafts, where the git rule allows GitHub writes; a note asking for a comment, pull request, label, push or message becomes an entry |
+| Target           | Allowed                                                                                                                                    |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Backlog and logs | Entries and categories in `.ai/backlog/`; `.ai/scratchpad.md`; `.ai/friction.md`                                                           |
+| Code             | Only new `@debt` markers: existing ones stay until their fix lands, as its list of sites                                                   |
+| Other local file | A configuration value or trivial edit a note explicitly asks for; anything larger becomes an entry                                         |
+| GitHub           | Issues only, as drafts, where the git rule allows GitHub writes; a comment, pull request, label, push or message a note asks for: an entry |
 
 ## Stages
 

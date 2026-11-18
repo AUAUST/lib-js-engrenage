@@ -142,3 +142,5 @@ export const defaultInstructionFiles = freeze([
   ".claude/agents/*.md",
   ".agents/skills/*/SKILL.md",
 ] as const) satisfies Globs;
+
+export const tableCellWords = 25;

@@ -14,10 +14,8 @@ Applies to every issue you file or draft. Outcome binds only under a skill namin
 
 ## Outcome
 
-| The sound change                                                                                                                                                   | You                                                                                                                                                                                |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Delivers what your request or input names, in its owner's code, with no new pattern, architecture or shared contract, no reversed decision and no rework elsewhere | Apply it when your skill lets you change code; otherwise write it up                                                                                                               |
-| Goes past that                                                                                                                                                     | In the main session, pause under the decision protocol, and write it up unless the answer widens your request or drops the change; as a subagent, write it up and apply none of it |
+- **The sound change delivers what your request or input names**, in its owner's code, with no new pattern, architecture or shared contract, no reversed decision and no rework elsewhere: apply it when your skill lets you change code; otherwise write it up.
+- **It goes past that**: in the main session, pause under the decision protocol, and write it up unless the answer widens your request or drops the change; as a subagent, write it up and apply none of it.
 
 Write up one issue per independent change, and several ordered changes as one issue holding the diagnosis and, under **Planning**, the breakdown left to design: report that it needs planning.
 
@@ -53,19 +51,19 @@ Write up one issue per independent change, and several ordered changes as one is
 
 Items are `task` and `problem` issues. Write each complete, through its ancestors, for a worker who treats everything in it as binding and applies it without redesign. Uncertainty lives only under **Planning**, design not finished, and **Questions**, what the user owes; never in vague **Steps**.
 
-| Section           | Types               | Holds                                                                                                                                                           |
-| ----------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Header line       | segment, item       | Inside a tree only: `<plan sections it builds on>: <gist>`                                                                                                      |
-| **Goal**          | plan                | Why the work is needed and the target state                                                                                                                     |
-| Model sections    | plan                | Only the shapes at least two items use, as tables, trees and diagrams                                                                                           |
-| **Decisions**     | plan                | Each choice spanning several items, with its reason in one clause                                                                                               |
-| **Context**       | segment, item       | A segment: what it adds. An item: the problem, its cause and every site sharing that cause, then what is decided for this item only, with exact paths and names |
-| **Prerequisites** | segment, item       | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                                            |
-| **Steps**         | item                | Actionable changes only, naming the files, functions, models and helpers; when split, the work left after the sub-issues                                        |
-| **Tests**         | item                | Each case with its expected outcome, usually one expected case and one meaningful edge case; for a fix, the regression case and how to reproduce it             |
-| **Done when**     | plan, segment, item | Observable state beyond the **Steps**; dropped when it would only say the Steps are done and the checks pass                                                    |
-| **Planning**      | plan, segment, item | Design not finished yet                                                                                                                                         |
-| **Questions**     | plan, segment, item | What investigation could not settle: the findings and the candidate answers                                                                                     |
+| Section           | Types               | Holds                                                                                                                                            |
+| ----------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Header line       | segment, item       | Inside a tree only: `<plan sections it builds on>: <gist>`                                                                                       |
+| **Goal**          | plan                | Why the work is needed and the target state                                                                                                      |
+| Model sections    | plan                | Only the shapes at least two items use, as tables, trees and diagrams                                                                            |
+| **Decisions**     | plan                | Each choice spanning several items, with its reason in one clause                                                                                |
+| **Context**       | segment, item       | A segment: what it adds. An item: the problem, its cause and every site sharing it, then its own decisions, with exact paths and names           |
+| **Prerequisites** | segment, item       | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                             |
+| **Steps**         | item                | Actionable changes only, naming the files, functions, models and helpers; when split, the work left after the sub-issues                         |
+| **Tests**         | item                | Each case with its expected outcome, usually one expected case and one meaningful edge case; for a fix, the regression case and its reproduction |
+| **Done when**     | plan, segment, item | Observable state beyond the **Steps**; dropped when it would only say the Steps are done and the checks pass                                     |
+| **Planning**      | plan, segment, item | Design not finished yet                                                                                                                          |
+| **Questions**     | plan, segment, item | What investigation could not settle: the findings and the candidate answers                                                                      |
 
 - Put a line `Checkpoint: <expected state>` between two groups of **Steps**, never after the last, only when the steps up to it leave the codebase coherent with checks passing and already change several files. State what then holds and which checks pass, never a commit message. A trivial or regular task gets none: it is committed once.
 - Never restate the project's instructions: workers follow them for everything an issue does not say.
