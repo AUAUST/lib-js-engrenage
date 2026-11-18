@@ -18,3 +18,8 @@ The commit gate and its process locks.
 
 - site: `src/workflows/gate/types/GateWarning.ts:1`
 - want: one gate entry type carrying its severity.
+
+## 4. `gate --worktree` in a shared checkout touches other sessions' work
+
+- why: it fixes files other sessions changed, and its lint output interleaves runs from other worktrees (6 friction lines; #615 › F25).
+- want: the gate limited to the session's own changes, and output kept per run.
