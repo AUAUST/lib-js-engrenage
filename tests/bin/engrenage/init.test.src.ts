@@ -261,7 +261,7 @@ describe("engrenage init", () => {
     expect(existsSync(project.resolve("prettier.config.ts"))).toBe(false);
 
     expect(project.read("vitest.config.ts")).toContain(
-      "export default defineVitestConfig();",
+      "export default defineVitestConfig.at(import.meta.url)();",
     );
 
     expect(spawnProcess).toHaveBeenCalledTimes(4);

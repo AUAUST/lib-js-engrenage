@@ -1,3 +1,6 @@
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+
 import { ESLint } from "eslint";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
@@ -47,5 +50,20 @@ describe("defineEslintConfig", () => {
     const ruleIds = map(result?.messages ?? [], (message) => message.ruleId);
 
     expect(ruleIds).toEqual(["auaust/no-runtime-typeof"]);
+  });
+
+  test("loads the project holding the root it is rooted at", async () => {
+    mockCwd(getFixture("tsdown"));
+
+    const callback = vi.fn((_config: LoadedConfig) => {
+      return {};
+    });
+
+    await defineEslintConfig.at(pathToFileURL(join(root, "eslint.config.ts")))(
+      callback,
+    );
+
+    expect(callback).toHaveBeenCalledOnce();
+    expect(callback.mock.calls[0]?.[0].context.root).toBe(root);
   });
 });

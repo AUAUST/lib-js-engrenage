@@ -24,6 +24,7 @@ export function createViteConfigStep(): Step {
         createConfigModule({
           entry: `${engrenage}/vite`,
           definer: "defineViteConfig",
+          rooted: true,
           ...(tested && {
             options: "{\n  test: createVitestLayer(),\n}",
             imports: [

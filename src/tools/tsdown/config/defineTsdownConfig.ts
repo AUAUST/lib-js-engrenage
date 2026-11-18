@@ -2,7 +2,7 @@ import { mergeConfig } from "tsdown";
 
 import { value } from "@auaust/toolkit";
 
-import { loadConfig, type LoadedConfig } from "#project/config/index";
+import { createDefiner, type LoadedConfig } from "#project/config/index";
 import { createTsdownConfig } from "#tools/tsdown/operations/createTsdownConfig";
 import type { Config } from "#tools/tsdown/types/Config";
 import type { ConfigContext } from "#tools/tsdown/types/ConfigContext";
@@ -12,12 +12,16 @@ import type { Options } from "#tools/tsdown/types/Options";
 import type { Resolvable } from "#types/Resolvable";
 
 /**
- * Returns a tsdown config function building the config of the project in
- * the current working directory, then merging `configs` over it in order.
- * `options` and `configs` resolve with the loaded config and tsdown's inline
- * config and context.
+ * Returns a tsdown config function building the config of the project in the
+ * current working directory, then merging `configs` over it in order. `options`
+ * and `configs` resolve with the loaded config and tsdown's inline config and
+ * context. `.at(root)` loads the config of the project holding `root` instead,
+ * a directory or a file URL such as `import.meta.url`.
  */
-export function defineTsdownConfig(
+export const defineTsdownConfig = createDefiner(defineTsdownConfigAt);
+
+function defineTsdownConfigAt(
+  load: () => Promise<LoadedConfig>,
   options?: Resolvable<Options, [LoadedConfig, InlineConfig, ConfigContext]>,
   ...configs: readonly Resolvable<
     Config,
@@ -25,8 +29,7 @@ export function defineTsdownConfig(
   >[]
 ): ConfigFn {
   return async function tsdownConfig(inlineConfig, context) {
-    // @debt loads the config of `process.cwd()`, not of the project owning this tool config file (backlog configuration.13)
-    const config = await loadConfig();
+    const config = await load();
 
     const resolvedOptions = await value(options, config, inlineConfig, context);
 

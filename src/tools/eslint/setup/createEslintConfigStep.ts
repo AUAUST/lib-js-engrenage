@@ -28,6 +28,7 @@ export function createEslintConfigStep(): Step {
         createConfigModule({
           entry: `${engrenage}/eslint`,
           definer: "defineEslintConfig",
+          rooted: true,
         }),
       );
 

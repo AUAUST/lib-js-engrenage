@@ -20,12 +20,14 @@ export function createConfigModule({
   entry,
   definer,
   options,
+  rooted = false,
   imports = [],
   declarations = [],
 }: {
   entry: string;
   definer: string;
   options?: string;
+  rooted?: boolean;
   imports?: readonly NamedImports[];
   declarations?: readonly string[];
 }): string {
@@ -36,5 +38,7 @@ export function createConfigModule({
 
   const body = map(declarations, (declaration) => `\n${declaration}\n`);
 
-  return `${join(statements, "")}${join(body, "")}\nexport default ${definer}(${options || ""});\n`;
+  const call = rooted ? `${definer}.at(import.meta.url)` : definer;
+
+  return `${join(statements, "")}${join(body, "")}\nexport default ${call}(${options || ""});\n`;
 }

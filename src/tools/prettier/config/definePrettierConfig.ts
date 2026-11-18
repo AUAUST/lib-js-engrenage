@@ -1,19 +1,23 @@
 import { value } from "@auaust/toolkit";
 
-import { loadConfig, type LoadedConfig } from "#project/config/index";
+import { createDefiner, type LoadedConfig } from "#project/config/index";
 import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
 import type { Config } from "#tools/prettier/types/Config";
 import type { Resolvable } from "#types/Resolvable";
 
 /**
- * Builds the Prettier config of the project in the current working directory, with
- * `options`, resolved with the loaded config, overriding engrenage's options.
+ * Builds the Prettier config of the project in the current working directory,
+ * with `options`, resolved with the loaded config, overriding engrenage's
+ * options. `.at(root)` loads the config of the project holding `root` instead,
+ * a directory or a file URL such as `import.meta.url`.
  */
-export async function definePrettierConfig(
+export const definePrettierConfig = createDefiner(definePrettierConfigAt);
+
+async function definePrettierConfigAt(
+  load: () => Promise<LoadedConfig>,
   options?: Resolvable<Config, [LoadedConfig]>,
 ): Promise<Config> {
-  // @debt loads the config of `process.cwd()`, not of the project owning this tool config file (backlog configuration.13)
-  const config = await loadConfig();
+  const config = await load();
 
   const resolvedOptions = await value(options, config);
 

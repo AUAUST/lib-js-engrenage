@@ -1,3 +1,7 @@
+// @barrel apis
+export type * from "#project/config/apis/Definer";
+// @end
+
 // @barrel types
 export type * from "#project/config/types/ConfigContext";
 export type * from "#project/config/types/ConfigKey";
@@ -27,6 +31,7 @@ export type * from "#project/config/types/SectionsOf";
 // @end
 
 // @barrel operations
+export { createDefiner } from "#project/config/operations/createDefiner";
 export { createProjectConfig } from "#project/config/operations/createProjectConfig";
 export { loadConfig } from "#project/config/operations/loadConfig";
 export { loadValidatedConfig } from "#project/config/operations/loadValidatedConfig";

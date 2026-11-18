@@ -23,6 +23,7 @@ export function createTsdownConfigStep(): Step {
         createConfigModule({
           entry: `${engrenage}/tsdown`,
           definer: "defineTsdownConfig",
+          rooted: true,
         }),
       );
 

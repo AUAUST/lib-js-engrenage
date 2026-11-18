@@ -3,7 +3,7 @@ import { defineEslintConfig } from "#tools/eslint/index";
 const markdownPattern = String.raw`/^\^(---|#+ |#\{\d)|\(\?=#+ |\x60{3}|~{3}|[\x60~]\\?\{3/`;
 const regexpCall = `:matches(NewExpression, CallExpression)[callee.name="RegExp"]`;
 
-export default defineEslintConfig(
+export default defineEslintConfig.at(import.meta.url)(
   {
     stylistic: {
       functionLines: false, // @debt refactor required to cleanup

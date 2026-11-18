@@ -1,50 +1,11 @@
-import { mergeConfig } from "vite";
-
-import { value } from "@auaust/toolkit";
-
-import { validate } from "#foundation/options/index";
-import { loadConfig, type LoadedConfig } from "#project/config/index";
-import { optionsSchema } from "#tools/vite/config/schemas/optionsSchema";
-import { createViteConfig } from "#tools/vite/operations/createViteConfig";
-import type { Config } from "#tools/vite/types/Config";
-import type { ConfigEnv } from "#tools/vite/types/ConfigEnv";
-import type { ConfigFn } from "#tools/vite/types/ConfigFn";
-import type { Options } from "#tools/vite/types/Options";
-import type { Resolvable } from "#types/Resolvable";
+import { createDefiner } from "#project/config/index";
+import { createViteConfigFn } from "#tools/vite/operations/createViteConfigFn";
 
 /**
- * Returns a Vite config function building the config of the project in the
- * current working directory, then merging the `test` option and `configs` over
- * it in order, each resolved with the loaded config and Vite's config env.
+ * Returns a Vite config function building the config of the project in the current
+ * working directory, then merging the `test` option and `configs` over it in
+ * order, each resolved with the loaded config and Vite's config env. `.at(root)`
+ * loads the config of the project holding `root` instead, a directory or a file
+ * URL such as `import.meta.url`.
  */
-export function defineViteConfig(
-  options?: Resolvable<Options, [LoadedConfig, ConfigEnv]>,
-  ...configs: readonly Resolvable<Config, [LoadedConfig, ConfigEnv]>[]
-): ConfigFn {
-  return async function viteConfig(env) {
-    // @debt loads the config of `process.cwd()`, not of the project owning this tool config file (backlog configuration.13)
-    const config = await loadConfig();
-
-    const resolvedOptions = await value(options, config, env);
-
-    const {
-      test,
-    } = validate(optionsSchema, resolvedOptions ?? {}, "Vite options");
-
-    let merged: Config = await createViteConfig(config, {
-      isTesting: process.env.VITEST === "true",
-    });
-
-    const testConfig = await value(test, config, env);
-
-    merged = mergeConfig(merged, testConfig ?? {});
-
-    for (const nativeConfig of configs) {
-      const resolvedNativeConfig = await value(nativeConfig, config, env);
-
-      merged = mergeConfig(merged, resolvedNativeConfig ?? {});
-    }
-
-    return merged;
-  };
-}
+export const defineViteConfig = createDefiner(createViteConfigFn);

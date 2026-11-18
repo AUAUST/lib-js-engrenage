@@ -8,6 +8,7 @@ export { defineViteConfig } from "#tools/vite/config/defineViteConfig";
 
 // @barrel operations
 export { createViteConfig } from "#tools/vite/operations/createViteConfig";
+export { createViteConfigFn } from "#tools/vite/operations/createViteConfigFn";
 // @end
 
 // @barrel types

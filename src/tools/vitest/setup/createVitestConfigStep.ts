@@ -24,6 +24,7 @@ export function createVitestConfigStep(): Step {
         createConfigModule({
           entry: `${engrenage}/vitest`,
           definer: "defineVitestConfig",
+          rooted: true,
         }),
       );
     },

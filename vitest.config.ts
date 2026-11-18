@@ -1,6 +1,6 @@
 import { defineVitestConfig } from "#tools/vitest/index";
 
-export default defineVitestConfig(
+export default defineVitestConfig.at(import.meta.url)(
   {
     restoreMocks: true,
   },
