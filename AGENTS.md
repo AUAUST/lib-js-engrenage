@@ -114,7 +114,7 @@ Analyse every request, suggestion and described fix before acting on it, within 
 | Build and test the output, after changing entries, exports or bundling                                | `pnpm build`                                        |
 | Regenerate synced files, after adding, renaming or removing a module or changing what engrenage syncs | `pnpm engrenage sync`                               |
 | List `@debt` markers                                                                                  | `pnpm engrenage debt --json`                        |
-| Release a change, where the project uses changesets                                                   | Add a changeset in `.changeset/`                    |
+| Make a user-facing change, where the project uses changesets                                          | Add a changeset in `.changeset/` with it            |
 | Any other engrenage task                                                                              | `pnpm engrenage --help`                             |
 
 <!-- @reference @auaust/engrenage/agents/sections/shell.md -->

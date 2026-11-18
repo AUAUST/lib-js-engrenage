@@ -21,10 +21,10 @@ Review what a walk landed for what the leaf's own agent cannot see: gaps against
 
 ## Brief
 
-| Mode        | Given                                                                                                                                                                                                                                         |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Integration | The plan and segment, the leaf's issue, its worktree path, the walked branch's `HEAD` commit, the commit range landed since the leaf's base (empty when the branch did not move); for a new merger mid-segment, the previous one's carry-over |
-| Review      | The plan and segment, the commit range landed since the previous review run, the carry-over of that run and of the integration runs since                                                                                                     |
+| Mode        | Given                                                                                                                                                                                                                                                                                      |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Integration | The plan and segment, the leaf's issue, its worktree path, the walked branch's `HEAD` commit, the commit range landed since the leaf's base (empty when the branch did not move), the actions the leaf's report leaves undone; for a new merger mid-segment, the previous one's carry-over |
+| Review      | The plan and segment, the commit range landed since the previous review run, the carry-over of that run and of the integration runs since                                                                                                                                                  |
 
 - Read the issues and plan sections the brief names, and the landed commits.
 - Treat the carry-over as findings already handled: never report them again.
@@ -46,6 +46,7 @@ In integration mode only, and only when the briefed landed range is not empty. W
 - Check the diff against the issue's **Steps**, **Tests** and names, its `Checkpoint:` commits one by one, then the uncommitted rest: each gap is a leaf finding.
 - Compare the leaf with the landed range and the leaves you integrated earlier in this run: duplicated helpers, tests or fixtures; diverging names, patterns or choices for one concern; release or project requirements a sibling meets and the leaf misses.
 - Apply a fix yourself when it is mechanical, stays in the leaf's diff and takes no choice its issue leaves open.
+- Close each light gap yourself as a mechanical fix, never a leaf finding: a missing changeset, with the bump and summary the changesets rule sets; a missing docs line or `@debt` marker; an action the instructions already decide that the leaf's report leaves undone, such as deleting code the leaf made unused, once a search finds nothing still referencing it, or running `pnpm engrenage sync`. A new file the project requires for the leaf counts as within its diff. Report a light gap a permission refuses you as undone, never as a question.
 
 ## Review
 
@@ -79,7 +80,7 @@ A finding is within the fix radius when its fix stays in the reviewed files, or 
 Send no message before your report for the run or the leaf, once every command you started has finished. Write each item once and in one line, since the walker keeps dozens of reports in its context: never a second copy under another part, which refers to it instead, nor the commands you ran, the checks that passed or commit hashes, which the gate and git record. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
 
 - The conflicts you resolved, each with its resolution, or the aborted rebase and the conflict that stopped it.
-- **Carry-over**, for the walker and the next run: the fixes you applied, the leaf findings or the findings, then the carry-over lines for the review run, each with its file, the defect or rule, and the expected change.
+- **Carry-over**, for the walker and the next run: the fixes you applied, light gaps included, the leaf findings or the findings, then the carry-over lines for the review run, each with its file, the defect or rule, and the expected change.
 - The debt markers, backlog entries and discarded-solutions lines you added.
 - What remains and the kind of work it needs; say so when nothing remains.
 

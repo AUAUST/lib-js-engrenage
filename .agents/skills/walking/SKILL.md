@@ -31,15 +31,16 @@ walk check ──► route the ready set (§Handling table)
   │
   ├─ leaf ──► dispatch (§Dispatching) ──► agent report
   │              ├─ blocker ──► consultant ──► resume the agent
+  │              ├─ scope stop ──► consultant splits the issue ──► drop the leaf's work ──► walk check
   │              └─ completion
   │                   ▼
   │             integration merger (§Integration), or your own review (§Review)
   │                   ▼
   │             gaps and leaf findings ──► resume the agent ──► check its fixes
   │                   ▼
-  │             closing commit (§Commit) ──► report row ──► walk check
+  │             closing commit (§Commit) ──► commit line ──► walk check
   │
-  └─ segment or walk closes ──► review merger ──► debugger ──► commit ──► walk check
+  └─ segment or walk closes ──► review merger ──► debugger, on findings ──► commit ──► walk check
 ```
 
 ## Handling table
@@ -79,6 +80,8 @@ Handle each issue by the first matching row; the `complexity` row applies on top
   3. Report the held work's state and branch: to the user at once, who may say how to proceed, or in autonomous mode in your final report.
   4. Until the user says how to proceed, dispatch neither a held leaf nor the issues ordered after it, which `walk check` still reports ready, nor, for a held boundary-review debugger, anything ordered after its segment; refill the pool with the rest.
 - Send a blocker the issue's text does not answer to the consultant; resume the agent with what it settles.
+- Send a scope stop, a worker report opening with `Scope stop:`, to the consultant with the worker's leads. Once the consultant has handled the issue, drop the leaf's work instead of resuming the agent, keeping its lines in `.ai/friction.md` and `.ai/discarded.md`: at K > 1, append them to the main checkout's logs, then remove the worktree with `--force`, since it holds uncommitted work; at K = 1, reset the walked branch to the leaf's dispatch base and discard the other files the leaf changed or added, keeping every other change. Then run `walk check`, which routes the sub-issues it split the issue into to new agents.
+- Treat a report that leaves a light gap (merging §Integration: a missing changeset, docs line or debt marker, or a mechanical action the instructions decide) as a completion, even when worded as a blocker or a question: the integration merger closes it. Without an integration merger, resume the agent once with it. When a permission refuses the action again, or refuses it to the merger, which reports it, name it in the commit line, or in autonomous mode in the final report. Never ask the user about it.
 - Complete a leaf on the agent's final report, a completion or a blocker; never wait for a later agent-finished event, which may never wake you.
 - Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress from the agents in flight only when a decision depends on it or after 3 consecutive timeouts with no agent event.
 
@@ -103,8 +106,9 @@ When no integration merger runs:
 
 1. At K > 1, cherry-pick the leaf's checkpoint commits, then apply its uncommitted rest; never rewrite a checkpoint.
 2. Make the closing commit under the project's git rules, closing the issue and every segment or parent it completes. Do not run the checks: the commit gate runs them.
-3. At K > 1, remove the leaf's worktree; then run `walk check` and refill the pool.
-4. Report one row to the user: issue · consequences · decisions and deviations.
+3. When the commit fails, at K > 1 keep the leaf's worktree and reset the main checkout to before the leaf's cherry-picks and apply, discarding only the files they changed; then resume the agent with the gate's failing commands and output.
+4. Once the closing commit exists, at K > 1, remove the leaf's worktree. Then run `walk check` and refill the pool, except when the commit closes a segment or a nested plan: §Boundary reviews runs first and holds what is ordered after it.
+5. Outside autonomous mode, send the user one commit line: issue · consequences · decisions and deviations. Never re-send an earlier line or the table: the final report rebuilds it from the commits.
 
 ## After a debugger
 
@@ -120,8 +124,8 @@ When no integration merger runs:
 When a segment or a nested plan closes and at the walk's end:
 
 1. Dispatch a new merger under the merging skill in the main checkout, briefed as its §Brief states for review mode, with the range since the previous review run or the walk's start.
-2. Brief a new debugger with its findings and the leaf findings agents declined since the previous review run, when any, and handle the outcome by §After a debugger.
-3. Commit the debt markers, backlog entries and discarded-solutions lines the merger added with the debugger's fix, or alone when there is none.
+2. When the merger reports findings or agents declined leaf findings since the previous review run, brief a new debugger with them and handle the outcome by §After a debugger; otherwise dispatch no debugger.
+3. Commit the debt markers, backlog entries and discarded-solutions lines the merger added with the debugger's fix, or alone when no debugger ran or it fixed nothing.
 4. Dispatch nothing ordered after the segment until that commit lands: the fix may change what later work builds on.
 
 ## Consultant
@@ -155,7 +159,8 @@ The user delegated every decision the instructions let an agent settle and is no
 ## Resumed agents
 
 - Resume the consultant and the integration merger through the client's messaging or resume tool instead of starting new ones.
-- Start a new one instead when a segment closes, when the current one has been idle longer than the prompt-cache lifetime, or, under Codex, once its reported context exceeds twice what it started with: past that, every resumed turn re-reads more history than a fresh start costs.
+- Start a new consultant or integration merger instead when a segment closes, or, under Codex, once its reported context exceeds twice what it started with: past that, every resumed turn re-reads more history than a fresh start costs.
+- Under Claude Code, a hook refuses a resume past the growth the agent's definition allows: on a refusal, start a new one as below; never retry the resume.
 - Brief a new consultant with the plan number, the mode and the previous one's last carry-over, a new integration merger as the first, with the previous one's carry-over.
 
 ## Context
@@ -163,7 +168,8 @@ The user delegated every decision the instructions let an agent settle and is no
 Every turn re-reads your whole context, and a long walk outgrows it.
 
 - Read only `walk check` output and agent reports, plus the issue and the diff §Review names; never plans or code beyond that diff.
-- Make the commands of one step one call: a leaf's cherry-picks, apply and commit; its worktree removal and the next `walk check`.
+- Make the commands of one step one call, chained with `&&` so a failure stops the rest: a leaf's cherry-picks, apply and commit; its worktree removal and the next `walk check`.
+- Message the user only with the commit lines, held work, set-aside issues and questions your mode allows, and the final report: no progress or status messages in between.
 - Keep only the latest carry-over of each consultant and merger; rebuild everything else after a compaction from `walk check`, the walk's commits and the held leaves' branches.
 
 ## Report

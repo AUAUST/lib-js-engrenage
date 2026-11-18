@@ -18,3 +18,8 @@ Agent runtime integrations: hooks and runtime names.
 
 - why: Codex-generated override file goes stale when a rebase brings new instructions; out of the cleanup pass with Codex work (#613 › Decisions). Seen in AUAUST/lib-js-toolkit#325 › Gate.
 - want: sync regenerates it, or `--check` names the command that does.
+
+## 4. Nothing bounds the walker's context in a long walk
+
+- why: #654: walker context climbed 65k→214k, ~75% of its cost re-reading; `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` is reported ignored in a `settings.json` `env` block, on recent versions and in bridge-attached sessions.
+- want: an enforceable compaction or relay point at each segment close, relying on walking §Context's rebuild from `walk check`.

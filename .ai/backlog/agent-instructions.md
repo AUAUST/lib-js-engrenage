@@ -51,6 +51,7 @@ Shared agent instructions, skills and the backlog conventions.
 ## 10. Always-loaded context carries rules only some edits need
 
 - why: the TypeScript section and structure design rows (~110 words each) load for every agent; a `paths` rule misses a new file written without reading a matching one.
+- why: #654: cold starts at 22–38k context were a third of worker and planner units; the prefix, not reuse thresholds, is the lever.
 - want: accept that leak or not; if so, move TypeScript to `code-style.md` and the design rows to a project-map-generated rule.
 
 ## 11. Long-cell tables break the writing rule they sit under
@@ -83,17 +84,12 @@ Shared agent instructions, skills and the backlog conventions.
 - why: the worker's and debugger's "fix them and stop again" is unbounded; load timeouts and other sessions' files fail the gate (friction ×3).
 - want: rerun once; still failing, report a blocker naming the files, editing none; the walker counts it as no resume cause.
 
-## 17. No agent owns changesets in a walk
-
-- why: `environment.md`'s "Release a change" row names neither which changes need one nor who adds it; neither the worker nor the walker's §Commit does.
-- want: trigger "A user-facing change"; the walker's §Commit adds the changeset a leaf missed.
-
-## 18. A question asked mid-task can end the task
+## 17. A question asked mid-task can end the task
 
 - why: the decision protocol's question row stops at answering; a literal agent answers and leaves its work half done and uncommitted.
 - want: the row ends "then continue the task in progress".
 
-## 19. Skill terms are undefined or carry several meanings
+## 18. Skill terms are undefined or carry several meanings
 
 - why: "leaf" is never defined (walking, merging, Codex dispatch); the debugger's "reach" means sites sharing a cause, unlike AGENTS.md's; planning's "steps" means sub-issues, inner parts, Roadmap entries and the **Steps** section.
 - want: define leaf in walking §Handling; the debugger says "sites"; planning says items, parts and Roadmap entries.
