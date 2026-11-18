@@ -4,7 +4,7 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 1. Attribution rule conflicts go unreported
 
-- sites: the `@debt` of `syncAttributionRules` in `src/tools/agents/setup/syncAgentFiles.ts`.
+- sites: `src/tools/agents/setup/syncAgentFiles.ts:40`
 - why: a rule file at the wanted path without its reference silently drops the rule.
 - want: sync reports the conflict.
 

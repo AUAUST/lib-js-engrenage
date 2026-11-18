@@ -4,7 +4,8 @@ Generated tsdown build configuration: entries, outputs and declaration files.
 
 ## 1. Tsdown config and entry self-references are hand-built
 
-- sites: `src/tools/tsdown/operations/createTsdownConfig.ts:177` (repeated `=== undefined` checks; a "prop if defined" helper, placed in `src/utils` or toolkit: decision), `src/tools/tsdown/plugins/createEntrySelfReferencesPlugins.ts:12` (specifier rebuilt from the entry name; `PathAlias` should carry it).
+- sites: `src/tools/tsdown/operations/createTsdownConfig.ts:177`, `src/tools/tsdown/plugins/createEntrySelfReferencesPlugins.ts:12`
+- why: `createTsdownConfig` repeats `=== undefined` checks where a "prop if defined" helper fits, its place (`src/utils` or toolkit) a decision; `createEntrySelfReferencesPlugins` rebuilds the specifier from the entry name, which `PathAlias` should carry.
 - want: helper and `PathAlias` specifier.
 
 ## 2. Declarations stay bundled because rolldown-plugin-dts keeps externalized `import()` types verbatim
@@ -14,7 +15,8 @@ Generated tsdown build configuration: entries, outputs and declaration files.
 
 ## 3. Build lists are maintained by hand beside their source
 
-- sites: `tsdown.config.ts:5` (commander and @clack transitive dependencies, mirrored in `inlinedDependencies`), `src/project/build/setup/createBuildToolStep.ts:4` (build tools not read from `build.tools` contributions).
+- sites: `tsdown.config.ts:5`, `src/project/build/setup/createBuildToolStep.ts:4`
+- why: commander and @clack transitive dependencies are mirrored in `inlinedDependencies`; build tools are not read from `build.tools` contributions.
 - want: the bundled dependency closure derived from the package; build tools read from their contributions.
 
 ## 4. Bin declarations are generated, then deleted

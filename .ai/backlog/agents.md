@@ -10,7 +10,7 @@ Agent runtime integrations: hooks and runtime names.
 
 ## 2. Info lint messages for Codex edits
 
-- sites: `src/tools/agents/claude/constants.ts` (`PostToolUse` lint hook), `src/tools/agents/codex/`
+- sites: `src/tools/agents/claude/constants.ts:49`, `src/tools/agents/codex/constants.ts:16`
 - why: Claude gets `info` lint messages after each edit (#526); Codex declares no `PostToolUse` hook.
 - want: check whether Codex hooks fire after file edits with an equivalent of `additionalContext`; if so, add the same lint hook for Codex.
 

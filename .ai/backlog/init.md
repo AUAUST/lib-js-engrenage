@@ -10,6 +10,6 @@ Init steps and their step context.
 
 ## 2. Init steps pass no active extensions to the instruction templates
 
-- sites: `src/tools/agents/operations/getInstructionTemplates.ts` (`@debt`)
+- sites: `src/tools/agents/operations/getInstructionTemplates.ts:37`
 - why: #473 moved the planning skills into an extension's data root, so init reads only engrenage's own templates and skips them.
 - want: init steps resolve the active extensions as `engrenage sync agents` does.

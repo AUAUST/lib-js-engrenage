@@ -44,7 +44,7 @@ Project configuration contract: loading, environments, option shapes and list op
 
 ## 8. Options infer meaning from shape or wording, and defaults live elsewhere
 
-- sites: `src/foundation/options/utils/applyInputDefaults.ts:26`, `:57`, `src/foundation/options/utils/validate.ts:37`, `src/foundation/options/config/declarers/declareManagedList.ts:21`, `src/tools/git/config/schemas/gitSchema.ts:25`
+- sites: `src/foundation/options/utils/applyInputDefaults.ts:26`, `src/foundation/options/utils/applyInputDefaults.ts:57`, `src/foundation/options/utils/validate.ts:37`, `src/foundation/options/config/declarers/declareManagedList.ts:21`, `src/tools/git/config/schemas/gitSchema.ts:25`
 - why: a list adjustment is recognised by shape; creating a parent object skips an object option's computed default; valibot's default message detected by wording; some defaults are computed elsewhere and only documented.
 - want: the declared option decides; no wording matches; defaults computed at the declaration.
 
@@ -56,7 +56,7 @@ Project configuration contract: loading, environments, option shapes and list op
 
 ## 10. Config codegen asserts what it could type
 
-- sites: `scripts/codegen/operations/generateConfigTypes.ts:146`, `:309`, `scripts/codegen/operations/composeInputSchemas.ts:9`
+- sites: `scripts/codegen/operations/generateConfigTypes.ts:146`, `scripts/codegen/operations/generateConfigTypes.ts:309`, `scripts/codegen/operations/composeInputSchemas.ts:9`
 - why: every custom schema but one reads as `GlobalsFactory`; the draft 07 schema is asserted to the draft 04 type; `Section` erases its declaration type, so readers assert presence.
 - want: each custom schema mapped to its type; `ConfigInput` type-checked against the sections (planning).
 
@@ -68,5 +68,6 @@ Project configuration contract: loading, environments, option shapes and list op
 
 ## 12. Sections and schemas state intent indirectly
 
-- sites: `src/tools/git/config/sections/gitSection.ts:50` (composing adds nothing over the plain object), `src/project/build/config/schemas/buildSchema.ts:50` (`resolveWithin` called only for its throw, also in `cache()`).
+- sites: `src/tools/git/config/sections/gitSection.ts:50`, `src/project/build/config/schemas/buildSchema.ts:50`
+- why: composing `gitSection` adds nothing over the plain object; `buildSchema` calls `resolveWithin` only for its throw, also in `cache()`.
 - want: the object written directly; an explicit containment assertion.

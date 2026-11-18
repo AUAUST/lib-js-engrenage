@@ -21,6 +21,6 @@ Test infrastructure and coverage gaps.
 
 ## 4. Tests initialize Git repositories by hand
 
-- sites: `tests/src/project/environments/environments.test.ts:179`, `tests/src/tools/github/syncWorkflowFiles.test.src.ts:133`, `tests/src/tools/prettier/resolvePrettierAllArguments.test.src.ts:60`, and six more `execFileSync("git", ["init", "--quiet"], …)` calls
+- sites: `tests/src/project/environments/environments.test.ts:179`, `tests/src/project/environments/environments.test.ts:203`, `tests/src/project/environments/environments.test.ts:208`, `tests/src/tools/github/syncWorkflowFiles.test.src.ts:133`, `tests/src/tools/prettier/resolvePrettierAllArguments.test.src.ts:60`, `tests/src/tools/vitest/createVitestConfig.test.src.ts:345`, `tests/src/tools/shopify/theme/theme.test.src.ts:101`, `tests/src/tools/github/issues/contract/issueTree.test.src.ts:146`, `tests/src/tools/github/issues/contract/issueContract.test.src.ts:831`, `tests/src/tools/git/hashTree.test.src.ts:38`, `tests/src/tools/git/listExcludeFiles.test.src.ts:11`, `tests/src/tools/git/listIgnoredGlobs.test.src.ts:18`, `tests/src/tools/eslint/createEslintConfig.test.src.ts:1595`
 - why: nine tests repeat the same `git init` beside `createTemporaryProject`, while `createGitRepository` covers only linked-module repositories.
 - want: one test utility, or a `createTemporaryProject` option, creating the repository.

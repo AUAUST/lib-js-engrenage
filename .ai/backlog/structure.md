@@ -20,7 +20,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 3. The `conventions` role in `engrenage.config.ts` is unscoped and misnamed
 
-- sites: `engrenage.config.ts:123`, `:129`
+- sites: `engrenage.config.ts:123`, `engrenage.config.ts:129`
 - why: namespace `roles.enable` only accepts catalogue roles; it imports section values only the creator resolves; `conventions` names ESLint rule conventions and collides with `project/format`'s `Conventions`.
 - want: scope the role to its namespace (or state why not); a decision on the name (planning).
 
@@ -79,31 +79,31 @@ Project structure description, its report and the tooling generated from it.
 
 ## 13. Structure declaration in `engrenage.config.ts` mixes concerns
 
-- sites: `engrenage.config.ts:108`, `:135`
+- sites: `engrenage.config.ts:108`, `engrenage.config.ts:135`
 - why: the `config` role holds the identity definer `defineConfig` beside I/O, while lint ranks roles by imports only; scripts and tooling list roles none of their modules use.
 - want: a decision on the role split (planning).
 
 ## 14. Structure resolvers and index hold loose rules
 
-- sites: `src/project/structure/operations/createStructureDomainResolver.ts:68`, `createStructureRoleResolver.ts:131`, `src/project/structure/utils/createEntityIndex.ts:96`, `:101`, `src/project/structure/operations/findImportCycles.ts:238`
+- sites: `src/project/structure/operations/createStructureDomainResolver.ts:68`, `src/project/structure/operations/createStructureRoleResolver.ts:131`, `src/project/structure/utils/createEntityIndex.ts:96`, `src/project/structure/utils/createEntityIndex.ts:101`, `src/project/structure/operations/findImportCycles.ts:238`
 - why: a later `undefined` overrides an earlier glob's value; a directory role passes as a file role; public file roles stay out of the surface; child visibility misses a namespace's scoped roles; without `verbatimModuleSyntax`, a value re-export of a type-only module counts as a runtime edge.
 - want: each rule fixed at its site.
 
 ## 15. Structure boundary and layer rules miss cases
 
-- sites: `src/project/structure/utils/checkBoundary.ts:47`, `:111`, `checkLayers.ts:7`, `checkSurfaces.ts:8`
+- sites: `src/project/structure/utils/checkBoundary.ts:47`, `src/project/structure/utils/checkBoundary.ts:111`, `src/project/structure/utils/checkLayers.ts:7`, `src/project/structure/utils/checkSurfaces.ts:8`
 - why: the fix reads the index specifier as the first surface entry; files at an environment root outside global roles and root entry, and imports between two directories of one environment, are never checked; layer and surface rules split by target kind.
 - want: index specifier read directly; every environment file checked; rules split by broken relation.
 
 ## 16. Structure reads tsconfig to find output directories
 
-- sites: `src/project/structure/config/sections/aliasesSection.ts:22`, `:26`, `entitiesSection.ts:16`
+- sites: `src/project/structure/config/sections/aliasesSection.ts:22`, `src/project/structure/config/sections/aliasesSection.ts:26`, `src/project/structure/config/sections/entitiesSection.ts:16`
 - why: an unreadable tsconfig hides the output directory, so the alias is generated and the index skips instead of failing; aliases target the language named `typescript` only.
 - want: output directory resolved without the tsconfig; aliases not keyed by one language name.
 
 ## 17. Structure and map renderers are ad hoc
 
-- sites: `src/project/structure/utils/renderStructure.ts:55`, `:83`, `src/tools/agents/utils/renderEnvironmentMap.ts:15`
+- sites: `src/project/structure/utils/renderStructure.ts:55`, `src/project/structure/utils/renderStructure.ts:83`, `src/tools/agents/utils/renderEnvironmentMap.ts:15`
 - why: path segments recomposed by hand though the node provides them; map renderers repeat code.
 - want: segments from the node; one structured renderer shared by the map renderers.
 

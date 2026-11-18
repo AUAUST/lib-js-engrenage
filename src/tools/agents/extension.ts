@@ -141,6 +141,13 @@ export default {
           return import("#tools/agents/setup/syncAgents");
         },
       },
+      {
+        name: "backlog-sites",
+        stage: "check",
+        load() {
+          return import("#tools/agents/setup/checkBacklogSites");
+        },
+      },
     ],
     "sync.done": [
       {

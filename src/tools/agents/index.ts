@@ -19,6 +19,7 @@ export { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 export { isHookCommand } from "#tools/agents/utils/isHookCommand";
 
 // @barrel setup
+export { checkBacklogSites } from "#tools/agents/setup/checkBacklogSites";
 export { createAgentRulesStep } from "#tools/agents/setup/createAgentRulesStep";
 export { createAgentsStep } from "#tools/agents/setup/createAgentsStep";
 export { createBacklogStep } from "#tools/agents/setup/createBacklogStep";

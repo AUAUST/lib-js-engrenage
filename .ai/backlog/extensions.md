@@ -4,7 +4,7 @@ The extension registry and extension declarations.
 
 ## 1. Extension registry erases declaration types
 
-- sites: `src/foundation/extensions/utils/collectExtensions.ts:74`, `src/foundation/extensions/utils/createRegistry.ts:26`, `:153`
+- sites: `src/foundation/extensions/utils/collectExtensions.ts:74`, `src/foundation/extensions/utils/createRegistry.ts:26`, `src/foundation/extensions/utils/createRegistry.ts:153`
 - why: `ExtensionShape` types `owns` and `contributes` as `object`, so reads cast them; the slot policy union is restated twice; per-kind and per-slot maps erase declaration and entry types. Related: #331.
 - want: typed declarations and entries through the registry; one slot policy union.
 
@@ -22,6 +22,6 @@ The extension registry and extension declarations.
 
 ## 4. Directive fills cache their per-run state in module-level maps
 
-- sites: `src/tools/git/operations/fillIgnoreBlock.ts`, `src/tools/agents/operations/fillReferenceBlock.ts`
+- sites: `src/tools/git/operations/fillIgnoreBlock.ts:60`, `src/tools/agents/operations/fillReferenceBlock.ts:57`
 - why: `DirectiveFill` runs once per marker with no per-run setup, so each fill memoizes its presets or fillers in a `WeakMap` keyed by `LoadedConfig`, a lifetime `syncDirectiveBlocks` does not own; `memoizeByContext` keys by `ConfigContext` and fits neither.
 - want: `DirectiveDeclaration` loads a per-run fill factory (`(config) => fill`) that `syncDirectiveBlocks` calls once per run.

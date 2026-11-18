@@ -32,13 +32,14 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 
 ## 6. ES library selection and baseline month logic rest on assumptions
 
-- sites: `src/tools/typescript/operations/produceTsconfigTypes.ts:47`, `:87`, `src/project/baseline/utils/{includesEsLibrary.ts:5,listEsSelections.ts:13,addMonths.ts:5}`, `src/project/baseline/entry.ts:1`, `scripts/codegen/operations/generateApiDeclarations.ts:231`
+- sites: `src/tools/typescript/operations/produceTsconfigTypes.ts:47`, `src/tools/typescript/operations/produceTsconfigTypes.ts:87`, `src/project/baseline/utils/includesEsLibrary.ts:5`, `src/project/baseline/utils/listEsSelections.ts:13`, `src/project/baseline/utils/addMonths.ts:5`, `src/project/baseline/entry.ts:1`, `scripts/codegen/operations/generateApiDeclarations.ts:231`
 - why: `esnext.*`, `ESNext`, `DOM` never count as a group; candidate months follow the selection rule, not the selection; lib name from the `lib.<name>.d.ts` convention; `addMonths` can return 2026-02-31; the removed prefix is stated apart from `listDefaultTypes`; `./baseline` exposes `addMonths`, `findCurrentMonth`, `listEsSelections`, which no consumer imports; the `editions` type repeats in three modules.
 - want: lib name declared beside its group; one source for type prefixes; valid dates; candidates from the selection; the entry trimmed to consumed helpers.
 
 ## 7. Baseline and edition generation depend on upstream conventions
 
-- sites: `src/project/baseline/utils/resolveBaselineMinimums.ts:8` (V8 versions follow Chromium majors), `:25` (first match relies on `node-releases` ascending order), `scripts/codegen/operations/generateEditions.ts:317` (base edition trusted as TypeScript ships it).
+- sites: `src/project/baseline/utils/resolveBaselineMinimums.ts:8`, `src/project/baseline/utils/resolveBaselineMinimums.ts:25`, `scripts/codegen/operations/generateEditions.ts:317`
+- why: V8 versions are assumed to follow Chromium majors; the first match relies on `node-releases` ascending order; the base edition is trusted as TypeScript ships it.
 - want: mapping read from a source stating it; first match chosen by version; decide on the base-edition trust (planning).
 
 ## 8. Timer handle types are not isomorphic
