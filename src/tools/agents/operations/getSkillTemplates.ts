@@ -26,7 +26,7 @@ export async function getSkillTemplates({
   fillers,
 }: {
   agents: ResolvedAgents;
-  extensions?: readonly Extension[];
+  extensions?: readonly Extension[] | undefined;
   fillers: BlockFillers;
 }) {
   const preferred = agents.preferred ?? [];

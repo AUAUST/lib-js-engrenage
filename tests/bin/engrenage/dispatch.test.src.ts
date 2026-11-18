@@ -6,6 +6,7 @@ import { runDefinition } from "#tests/utils/runDefinition";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
@@ -110,7 +111,7 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
 
 async function installed() {
   const project = createTemporaryProject({
-    "package.json": '{"type":"module"}',
+    "package.json": '{"type":"module","repository":"github:acme/consumer"}',
     "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
   });
 
@@ -120,6 +121,7 @@ async function installed() {
     {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
+      extensions: await listActiveExtensions(config),
       fillers: await createAgentFillers(config),
     },
     ["issue-implementation", "debugging"],
@@ -163,7 +165,9 @@ test.each([
 });
 
 test("rejects missing/conflicting generated output and ignores unowned custom names", async () => {
-  const { filesystem, config } = await installed();
+  const { config, filesystem } = await installed();
+
+  const extensions = await listActiveExtensions(config);
 
   await filesystem.remove(".codex/agents/worker_medium.toml");
 
@@ -171,6 +175,7 @@ test("rejects missing/conflicting generated output and ignores unowned custom na
     resolveCodexProfile(
       {
         filesystem,
+        extensions,
         fillers: await createAgentFillers(config),
       },
       "worker_medium",
@@ -183,6 +188,7 @@ test("rejects missing/conflicting generated output and ignores unowned custom na
     resolveCodexProfile(
       {
         filesystem,
+        extensions,
         fillers: await createAgentFillers(config),
       },
       "worker",
@@ -195,6 +201,7 @@ test("rejects missing/conflicting generated output and ignores unowned custom na
     resolveCodexProfile(
       {
         filesystem,
+        extensions,
         fillers: await createAgentFillers(config),
       },
       "debugger",
@@ -205,6 +212,7 @@ test("rejects missing/conflicting generated output and ignores unowned custom na
     resolveCodexProfile(
       {
         filesystem,
+        extensions,
         fillers: await createAgentFillers(config),
       },
       "worker_custom",

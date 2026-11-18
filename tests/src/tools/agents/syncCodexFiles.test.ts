@@ -11,7 +11,7 @@ const override = "# Codex only\n\n<!-- @rules -->\n<!-- @end -->\n\nKeep this pr
 describe("syncCodexFiles", () => {
   test("maps local globs and global rules, preserves notes and stays idempotent", async () => {
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["codex"], instructionFiles: ["*.md", ".claude/rules/**/*.md"] } };',
       "AGENTS.override.md": override,
       ".claude/rules/types.md": '---\npaths: ["src/**/*.ts", "tests/**/*.ts"]\n---\nType rules',
@@ -68,10 +68,10 @@ describe("syncCodexFiles", () => {
   });
 
   test("refreshes only installed owned profiles, reports missing/outdated output and removes only owned obsolete variants", async () => {
-    const reference = "@auaust/engrenage/agents/skills/issue-implementation.md";
+    const reference = "@auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/issue-implementation.md";
 
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
       "AGENTS.override.md": override,
       ".agents/skills/issue-implementation/SKILL.md": `<!-- @reference ${reference} -->\n<!-- @end -->\n`,
@@ -139,7 +139,7 @@ describe("syncCodexFiles", () => {
 
   test("does nothing without selected agents, even with an explicit creation flag", async () => {
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": "export default {};",
       "AGENTS.override.md": override,
     });
@@ -155,7 +155,7 @@ describe("syncCodexFiles", () => {
 
   test("rejects invalid frontmatter with the rule path", async () => {
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
       "AGENTS.override.md": override,
       ".claude/rules/broken.md": "---\npaths: false\n---\nRule",

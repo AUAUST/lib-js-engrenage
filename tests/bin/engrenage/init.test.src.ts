@@ -264,16 +264,9 @@ describe("engrenage init", () => {
       "export default defineVitestConfig.at(import.meta.url)();",
     );
 
-    expect(spawnProcess).toHaveBeenCalledTimes(4);
+    expect(spawnProcess).toHaveBeenCalledTimes(3);
 
-    expect(spawnProcess).toHaveBeenNthCalledWith(
-      3,
-      "git",
-      ["remote", "get-url", "origin"],
-      { cwd: project.root, env: undefined },
-    );
-
-    expect(spawnProcess).toHaveBeenNthCalledWith(4, "claude", ["--version"], {
+    expect(spawnProcess).toHaveBeenNthCalledWith(3, "claude", ["--version"], {
       cwd: project.root,
     });
 

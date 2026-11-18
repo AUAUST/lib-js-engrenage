@@ -94,7 +94,7 @@ const responses: Record<string, unknown> = {
   },
 };
 
-function createRegistry() {
+function createRegistry(github: Readonly<Record<string, unknown>> = {}) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({
       name: "@o/b",
@@ -107,6 +107,7 @@ function createRegistry() {
     raw: {
       github: {
         repositories: { a: "o/a" },
+        ...github,
       },
     },
     configFile: undefined,
@@ -220,6 +221,21 @@ describe("fetchGithubSnapshot", () => {
     expect(config.context.filesystem.changes()).toEqual([]);
 
     expect(project.read(".engrenage/github.json")).toBe(written);
+  });
+
+  test("writes the snapshot while github.planning is false", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((url: string) => respond(responses[url.replace(/\?.*$/, "")])),
+    );
+
+    const { project, config } = createRegistry({ planning: false });
+
+    await fetchGithubSnapshot(config, client);
+
+    await settleChanges(config, { check: false });
+
+    expect(project.read(".engrenage/github.json")).toContain('"o/a"');
   });
 
   test("fails before any metadata read when a classic token lacks read:org", async () => {

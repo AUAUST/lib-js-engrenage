@@ -3,13 +3,22 @@ import { parseDocument } from "yaml";
 import { getCodexProfiles } from "#tools/agents/codex/operations/getCodexProfiles";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { Extension } from "#project/config/index";
 import type { BlockFillers } from "#types/BlockFillers";
 
 export async function resolveCodexProfile(
-  { filesystem, fillers }: { filesystem: Filesystem; fillers: BlockFillers },
+  {
+    filesystem,
+    extensions,
+    fillers,
+  }: {
+    filesystem: Filesystem;
+    extensions: readonly Extension[];
+    fillers: BlockFillers;
+  },
   name: string,
 ) {
-  const profiles = await getCodexProfiles(fillers);
+  const profiles = await getCodexProfiles({ extensions, fillers });
 
   const profile = profiles.find((candidate) => candidate.name === name);
 

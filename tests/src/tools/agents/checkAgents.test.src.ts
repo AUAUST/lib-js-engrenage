@@ -8,6 +8,7 @@ import { syncCodexFiles } from "#tools/agents/codex/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 
 vi.mock("#foundation/processes/operations/spawnProcess", () => {
   return {
@@ -29,7 +30,7 @@ afterEach(() => {
 
 async function fixture() {
   const project = createTemporaryProject({
-    "package.json": '{"type":"module"}',
+    "package.json": '{"type":"module","repository":"github:acme/consumer"}',
     "engrenage.config.ts": 'export default { agents: { preferred: ["codex"], codexHooks: true } };',
     "AGENTS.md": "Instructions\n",
     "AGENTS.override.md": "<!-- @rules -->\n<!-- @end -->\n",
@@ -41,6 +42,7 @@ async function fixture() {
     {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
+      extensions: await listActiveExtensions(config),
       fillers: await createAgentFillers(config),
     },
     ["issue-implementation"],
@@ -148,7 +150,7 @@ test("distinguishes an unavailable client from another unverified version", asyn
 
 test("recognizes inspected Claude capabilities while leaving effective overrides unverified", async () => {
   const project = createTemporaryProject({
-    "package.json": '{"type":"module"}',
+    "package.json": '{"type":"module","repository":"github:acme/consumer"}',
     "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
     "AGENTS.md": "Instructions",
     "CLAUDE.md": "@AGENTS.md",

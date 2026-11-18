@@ -5,7 +5,7 @@ description: Walk a planned tree of GitHub issues in order, dispatching each
   the user asks to walk an issue tree.
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/walking.md -->
+<!-- @reference @auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/walking.md -->
 
 # Walking
 

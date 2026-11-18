@@ -1,4 +1,4 @@
-import { githubSnapshotFile } from "#tools/github/constants";
+import { githubSnapshotFile } from "#tools/github/issues/api/constants";
 import { readGithubSnapshot } from "#tools/github/issues/api/index";
 import {
   checkProtocolNames,

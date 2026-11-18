@@ -7,6 +7,7 @@ import {
   addAgentSkills,
   createAgentFillers,
   getSkillTemplates,
+  listActiveExtensions,
 } from "#tools/agents/index";
 import { getRunContext } from "#workflows/cli/index";
 import {
@@ -25,6 +26,7 @@ async function getNames(config: LoadedConfig, name: string | undefined) {
 
   const templates = await getSkillTemplates({
     agents,
+    extensions: await listActiveExtensions(config),
     fillers: await createAgentFillers(config),
   });
 
@@ -91,6 +93,7 @@ export default async function (name?: string): Promise<void> {
     {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
+      extensions: await listActiveExtensions(config),
       fillers: await createAgentFillers(config),
     },
     names,

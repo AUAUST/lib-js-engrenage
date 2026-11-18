@@ -10,6 +10,7 @@ import { agentsFile } from "#tools/agents/constants";
 import { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { LoadedConfig } from "#project/config/index";
@@ -45,7 +46,13 @@ export async function checkAgents(
 
   const fillers = await createAgentFillers(config);
 
-  const templates = await getSkillTemplates({ agents, fillers });
+  const extensions = await listActiveExtensions(config);
+
+  const templates = await getSkillTemplates({
+    agents,
+    extensions,
+    fillers,
+  });
 
   for (const agent of preferred) {
     const instructions = agent === "codex" ? codexFile : claudeFile;
@@ -150,7 +157,14 @@ export async function checkAgents(
       if (agent === "codex") {
         for (const profile of template.profiles) {
           try {
-            await resolveCodexProfile({ filesystem, fillers }, profile.name);
+            await resolveCodexProfile(
+              {
+                filesystem,
+                extensions,
+                fillers,
+              },
+              profile.name,
+            );
 
             add(
               agent,

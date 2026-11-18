@@ -1,5 +1,6 @@
-import { readdir, readFile } from "node:fs/promises";
-import { basename, dirname, resolve } from "node:path";
+import { readFile } from "node:fs/promises";
+import { basename } from "node:path";
+import { pathToFileURL } from "node:url";
 
 import {
   array,
@@ -17,12 +18,10 @@ import { sort } from "@auaust/toolkit/array";
 import { engrenage } from "#constants";
 import { listDataFiles, resolveDataFile } from "#foundation/data/index";
 import { validate } from "#foundation/options/index";
-import { agentsTemplate } from "#tools/agents/constants";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { renderFragment } from "#tools/agents/utils/renderFragment";
 import type { Extension } from "#project/config/index";
 import type { BlockFillers } from "#types/BlockFillers";
-import type { File } from "#types/File";
 
 type InstructionKind = "rules" | "sections" | "skills";
 
@@ -35,32 +34,7 @@ const templateSchema = looseObject({
   formerly: optional(array(string())),
 });
 
-// @debt engrenage lists its own fragments beside its AGENTS.md template rather than through `listDataFiles`, since it has no URL of its package root
-async function listOwnTemplateFiles(
-  kind: InstructionKind,
-): Promise<readonly { readonly file: File; readonly specifier: string }[]> {
-  const directory = resolve(
-    dirname(resolveDataFile(agentsTemplate)),
-    `../${kind}`,
-  );
-
-  const entries = await readdir(directory, {
-    withFileTypes: true,
-  });
-
-  return entries
-    .filter((entry) => {
-      return entry.isFile() && entry.name.endsWith(".md");
-    })
-    .map(({ name }) => {
-      return {
-        file: resolve(directory, name),
-        specifier: `${engrenage}/agents/${kind}/${name}`,
-      };
-    });
-}
-
-// @debt only `engrenage sync agents` passes the active extensions; init steps, agent checks and codex profile resolution read engrenage's own fragments
+// @debt init steps pass no active extensions, so they read only engrenage's own fragments
 export async function getInstructionTemplates(
   kind: InstructionKind,
   {
@@ -71,12 +45,20 @@ export async function getInstructionTemplates(
     fillers?: BlockFillers;
   } = {},
 ) {
+  const engrenageRoot = new URL(
+    ".",
+    pathToFileURL(resolveDataFile(`${engrenage}/package.json`)),
+  );
+
   const shipped = await Promise.all([
-    listOwnTemplateFiles(kind),
-    ...extensions.flatMap(({ root }) => {
+    listDataFiles(engrenageRoot, `./agents/${kind}/*.md`),
+    ...extensions.map(({ name, root }) => {
       return root === undefined
-        ? []
-        : [listDataFiles(root, `./agents/${kind}/*.md`)];
+        ? listDataFiles(
+            engrenageRoot,
+            `./extensions/${name}/agents/${kind}/*.md`,
+          )
+        : listDataFiles(root, `./agents/${kind}/*.md`);
     }),
   ]);
 

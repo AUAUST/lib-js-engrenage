@@ -13,9 +13,13 @@ import {
 import { map, sort } from "@auaust/toolkit/array";
 import { record } from "@auaust/toolkit/object";
 
+import { resolveWithin } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
-import { scopesHeader } from "#tools/github/issues/api/constants";
+import {
+  githubSnapshotFile,
+  scopesHeader,
+} from "#tools/github/issues/api/constants";
 import { fetchRepositoryLabels } from "#tools/github/issues/api/operations/fetchRepositoryLabels";
 import { checkTokenScopes } from "#tools/github/issues/api/utils/checkTokenScopes";
 import { splitRepository } from "#tools/github/issues/api/utils/splitRepository";
@@ -394,10 +398,8 @@ export async function fetchGithubSnapshot(
     ),
   };
 
-  const resources = await config.resolve("resources");
-
   await config.context.filesystem.write(
-    resources.path("state.github"),
+    resolveWithin(config.context.root, githubSnapshotFile),
     `${JSON.stringify(snapshot, undefined, jsonIndentation.tabSize)}\n`,
   );
 }

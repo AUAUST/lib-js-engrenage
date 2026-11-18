@@ -7,7 +7,7 @@ import { fillAgentLimits } from "#tools/agents/operations/fillAgentLimits";
 test("renders the limits of shipped agents although a skill holds its own marker", async () => {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
-    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] }, github: { planning: true } };',
   });
 
   const limits = await fillAgentLimits(await loadConfig(project.root));

@@ -5,6 +5,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { runDefinition } from "#tests/utils/runDefinition";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkAgentStop } from "#workflows/gate/index";
 
@@ -42,7 +43,7 @@ test.each([
   "stops the generated %s profile with its canonical gate policy",
   async (name) => {
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
     });
 
@@ -52,6 +53,7 @@ test.each([
       {
         filesystem: config.context.filesystem,
         agents: await config.resolve("agents"),
+        extensions: await listActiveExtensions(config),
         fillers: await createAgentFillers(config),
       },
       ["issue-implementation", "debugging", "planning", "curation"],

@@ -16,7 +16,7 @@ tools:
   - ToolSearch
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/merging.md -->
+<!-- @reference @auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/merging.md -->
 
 # Merging
 

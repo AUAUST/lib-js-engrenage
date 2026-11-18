@@ -4,11 +4,12 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 
 describe("addAgentSkills", () => {
   test("installs an explicit skill and its agent for every preferred agent", async () => {
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude", "codex"] } };',
     });
 
@@ -18,6 +19,7 @@ describe("addAgentSkills", () => {
       {
         filesystem: config.context.filesystem,
         agents: await config.resolve("agents"),
+        extensions: await listActiveExtensions(config),
         fillers: await createAgentFillers(config),
       },
       ["debugging"],
@@ -52,7 +54,7 @@ describe("addAgentSkills", () => {
 
   test("writes the agent model and effort to the Claude Code agent", async () => {
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
     });
 
@@ -62,6 +64,7 @@ describe("addAgentSkills", () => {
       {
         filesystem: config.context.filesystem,
         agents: await config.resolve("agents"),
+        extensions: await listActiveExtensions(config),
         fillers: await createAgentFillers(config),
       },
       ["issue-implementation"],
@@ -76,7 +79,7 @@ describe("addAgentSkills", () => {
 
   test("lets the curation skill be invoked implicitly", async () => {
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude", "codex"] } };',
     });
 
@@ -86,6 +89,7 @@ describe("addAgentSkills", () => {
       {
         filesystem: config.context.filesystem,
         agents: await config.resolve("agents"),
+        extensions: await listActiveExtensions(config),
         fillers: await createAgentFillers(config),
       },
       ["curation"],
@@ -108,7 +112,7 @@ describe("addAgentSkills", () => {
 
   test("installs six canonical roles selectively with their complexity effort variants", async () => {
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
     });
 
@@ -117,6 +121,7 @@ describe("addAgentSkills", () => {
     const sections = {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
+      extensions: await listActiveExtensions(config),
       fillers: await createAgentFillers(config),
     };
 
@@ -153,7 +158,7 @@ describe("addAgentSkills", () => {
 
   test("preserves and reports an unowned profile collision", async () => {
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
       ".codex/agents/worker.toml": 'name = "custom"\n',
     });
@@ -163,6 +168,7 @@ describe("addAgentSkills", () => {
     const sections = {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
+      extensions: await listActiveExtensions(config),
       fillers: await createAgentFillers(config),
     };
 
@@ -177,7 +183,7 @@ describe("addAgentSkills", () => {
 
   test("requires preferred agents", async () => {
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": "export default {};",
     });
 
@@ -186,6 +192,7 @@ describe("addAgentSkills", () => {
     const sections = {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
+      extensions: await listActiveExtensions(config),
       fillers: await createAgentFillers(config),
     };
 

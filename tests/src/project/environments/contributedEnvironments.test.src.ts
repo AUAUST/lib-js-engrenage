@@ -187,7 +187,7 @@ function createConfig(
   owns?: readonly string[],
 ) {
   const project = createTemporaryProject({
-    "package.json": '{ "name": "project", "type": "module" }',
+    "package.json": '{ "name": "project", "type": "module", "repository": "github:o/project" }',
     ...files,
   });
 

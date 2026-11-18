@@ -85,7 +85,7 @@ describe("syncAgentFiles", () => {
     const metadata = "# Keep metadata\ninterface:\n  display_name: My skill\npolicy:\n  # Keep policy comment\n  allow_implicit_invocation: false # Keep inline comment\ndependencies:\n  tools: []\n";
 
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
       ".agents/skills/planning/SKILL.md": `<!-- @reference ${planning} -->\n<!-- @end -->\n`,
       ".agents/skills/planning/agents/openai.yaml": metadata,
@@ -152,7 +152,7 @@ describe("syncAgentFiles", () => {
 
     async function load(files: Record<string, string>) {
       const project = createTemporaryProject({
-        "package.json": '{"type":"module"}',
+        "package.json": '{"type":"module","repository":"github:acme/consumer"}',
         "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], instructionFiles: [] } };',
         ...files,
       });
@@ -215,10 +215,10 @@ describe("syncAgentFiles", () => {
 describe("fragment fillers", () => {
   test("moves a former skill directory and rewrites references to its former fragment", async () => {
     const former = "@auaust/engrenage/agents/skills/issue-planning.md";
-    const current = "@auaust/engrenage/agents/skills/planning.md";
+    const current = "@auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/planning.md";
 
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
       ".claude/skills/issue-planning/SKILL.md": `<!-- @reference ${former} -->\n<!-- @end -->\n`,
       ".claude/agents/planner.md": `<!-- @reference ${former} -->\n<!-- @end -->\n`,
@@ -247,7 +247,7 @@ describe("fragment fillers", () => {
     const rules = "@auaust/engrenage/agents/rules";
 
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
       ".claude/rules/agent-friction.md": `<!-- @reference ${rules}/agent-friction.md -->\n<!-- @end -->\n`,
       ".claude/rules/debt-markers.md": `<!-- @reference ${rules}/debt-markers.md -->\n<!-- @end -->\n`,
@@ -276,10 +276,10 @@ describe("fragment fillers", () => {
 
   test("removes the generated files of a former skill directory when the new one exists", async () => {
     const former = "@auaust/engrenage/agents/skills/issue-planning.md";
-    const current = "@auaust/engrenage/agents/skills/planning.md";
+    const current = "@auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/planning.md";
 
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
       ".claude/skills/issue-planning/SKILL.md": `<!-- @reference ${former} -->\n<!-- @end -->\n`,
       ".claude/skills/issue-planning/notes.md": "keep\n",
@@ -301,11 +301,52 @@ describe("fragment fillers", () => {
     ).toBe(false);
   });
 
+  test.each([true, false])(
+    "carries skills synced before the planning data root moved, with github.planning %s",
+    async (planning) => {
+      const former = "@auaust/engrenage/agents/skills/planning.md";
+      const current = "@auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/planning.md";
+
+      const project = createTemporaryProject({
+        "package.json": '{"type":"module"}',
+        "engrenage.config.ts": `export default { agents: { preferred: ["claude"] }, github: { planning: ${planning} } };`,
+        ".claude/skills/planning/SKILL.md": `<!-- @reference ${former} -->\n<!-- @end -->\n`,
+        ".claude/agents/planner.md": `<!-- @reference ${former} -->\n<!-- @end -->\n`,
+        ".claude/skills/walking/SKILL.md": `<!-- @reference ${current.replace("planning.md", "walking.md")} -->\n<!-- @end -->\n`,
+      });
+
+      const config = await loadConfig(project.root);
+
+      const { filesystem } = config.context;
+
+      await syncAgentFiles(config);
+
+      if (!planning) {
+        return void expect(
+          await filesystem.glob([".claude/skills/*/*", ".claude/agents/*"]),
+        ).toEqual([]);
+      }
+
+      for (const [file, name] of [
+        [".claude/skills/planning/SKILL.md", "planning"],
+        [".claude/agents/planner.md", "planner"],
+      ] as const) {
+        const content = await filesystem.read(file);
+
+        expect(content).toContain(`<!-- @reference ${current} -->`);
+
+        expect(content).toMatch(
+          new RegExp(String.raw`^---\nname: ${name}\n`, "u"),
+        );
+      }
+    },
+  );
+
   test("merges the skills a skill replaces into it, with its agent", async () => {
     const skills = "@auaust/engrenage/agents/skills";
 
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
       ".claude/skills/debt-harvesting/SKILL.md": `<!-- @reference ${skills}/debt-harvesting.md -->\n<!-- @end -->\n`,
       ".claude/skills/scratchpad/SKILL.md": `<!-- @reference ${skills}/scratchpad.md -->\n<!-- @end -->\n`,
@@ -335,7 +376,7 @@ describe("fragment fillers", () => {
     const retired = "@auaust/engrenage/agents/skills/retired.md";
 
     const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude", "codex"] } };',
       ".claude/skills/retired/SKILL.md": `<!-- @reference ${retired} -->\n<!-- @end -->\n`,
       ".agents/skills/retired/SKILL.md": `<!-- @reference ${retired} -->\n<!-- @end -->\n`,

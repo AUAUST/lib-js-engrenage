@@ -20,6 +20,7 @@ export { default as toolsChangesets } from "#tools/changesets/extension";
 export { default as toolsEslint } from "#tools/eslint/extension";
 export { default as toolsGit } from "#tools/git/extension";
 export { default as toolsGithub } from "#tools/github/extension";
+export { default as toolsGithubIssuesPlanning } from "#tools/github/issues/planning/extension";
 export { default as toolsJscpd } from "#tools/jscpd/extension";
 export { default as toolsLefthook } from "#tools/lefthook/extension";
 export { default as toolsPnpm } from "#tools/pnpm/extension";

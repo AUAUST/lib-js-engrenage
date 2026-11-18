@@ -221,6 +221,8 @@ export default defineConfig({
       "./agents/rules/*.md": "data/agents/rules/*.md",
       "./agents/sections/*.md": "data/agents/sections/*.md",
       "./agents/skills/*.md": "data/agents/skills/*.md",
+      "./extensions/tools/github/issues/planning/agents/skills/*.md": "data/extensions/tools/github/issues/planning/agents/skills/*.md",
+      "./package.json": "package.json",
       "./github/workflows/*.yml": "data/github/workflows/*.yml",
       "./tsconfig/*.json": "data/tsconfig/*.json",
       "./schemas/*.json": "data/schemas/*.json",

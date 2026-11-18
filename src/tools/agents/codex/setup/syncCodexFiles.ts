@@ -5,6 +5,7 @@ import {
 } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { syncHooks } from "#tools/agents/operations/syncHooks";
 import type { LoadedConfig } from "#project/config/index";
 
@@ -23,6 +24,7 @@ export async function syncCodexFiles(
     filesystem: context.filesystem,
     resolve: context.path,
     agents: await resolve("agents"),
+    extensions: await listActiveExtensions(loaded),
   };
 
   if (config.agents.preferred?.includes("codex") !== true) {

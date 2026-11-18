@@ -67,3 +67,18 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: the decision protocol's question row stops at answering; a literal agent answers and leaves its work half done and uncommitted.
 - want: the row ends "then continue the task in progress".
+
+## 18. Skill terms are undefined or carry several meanings
+
+- why: "leaf" is never defined (walking, merging, Codex dispatch); the debugger's "reach" means sites sharing a cause, unlike AGENTS.md's; planning's "steps" means sub-issues, inner parts, Roadmap entries and the **Steps** section.
+- want: define leaf in walking §Handling; the debugger says "sites"; planning says items, parts and Roadmap entries.
+
+## 19. Mixed skills keep planning references when `github.planning` is off
+
+- why: #473 gates the planning sheet and the `planning`, `walking`, `issue-implementation` and `merging` skills; `debugging` (GitHub issue intake table, planning-sheet names in issue writing, the walker's `Walk:` line), `analysis` (planner hand-off, planning-sheet names) and `curation` (`gh issue list` reconciliation, filing under the `planning` skill's draft rules) still name them.
+- want: those references shown only while planning is active, or worded to fall back to the backlog.
+
+## 20. The `git` rule's GitHub section assumes planning
+
+- why: it takes `<owner>/<repo>` from `.claude/rules/planning-sheet.md` › Repositories and reads issues and sub-issues with `gh`, while that sheet is absent when `github.planning` is off.
+- want: the section gated on `github.planning`, or a repository source that exists without the planning sheet.

@@ -38,8 +38,6 @@ export { githubSection } from "#tools/github/config/sections/githubSection";
 
 // @barrel operations
 export { fetchLabelDiff } from "#tools/github/operations/fetchLabelDiff";
-export { fillPlanningSheet } from "#tools/github/operations/fillPlanningSheet";
-export { generatePlanningSheetRules } from "#tools/github/operations/generatePlanningSheetRules";
 export { locateWorkflowFiles } from "#tools/github/operations/locateWorkflowFiles";
 export { pruneLabels } from "#tools/github/operations/pruneLabels";
 export { refreshGithubSnapshot } from "#tools/github/operations/refreshGithubSnapshot";

@@ -16,7 +16,7 @@ tools:
   - ToolSearch
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/planning.md -->
+<!-- @reference @auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/planning.md -->
 
 # Planning
 

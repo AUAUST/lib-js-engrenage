@@ -1,10 +1,17 @@
 import { codexSkillsDir } from "#tools/agents/codex/constants";
 import { createCodexAgentProfiles } from "#tools/agents/codex/operations/createCodexAgentProfiles";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
+import type { Extension } from "#project/config/index";
 import type { BlockFillers } from "#types/BlockFillers";
 
-export async function getCodexProfiles(fillers: BlockFillers) {
-  const definitions = await getSkillDefinitions({ fillers });
+export async function getCodexProfiles({
+  extensions,
+  fillers,
+}: {
+  extensions: readonly Extension[];
+  fillers: BlockFillers;
+}) {
+  const definitions = await getSkillDefinitions({ extensions, fillers });
 
   return definitions.flatMap(({ name, reference, agent, body, invocation }) => {
     return agent === undefined

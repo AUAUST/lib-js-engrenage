@@ -25,7 +25,11 @@ function usage(startContext: number, peakContext: number) {
 
 async function setUp() {
   const project = createTemporaryProject({
-    "package.json": JSON.stringify({ name: "consumer", type: "module" }),
+    "package.json": JSON.stringify({
+      name: "consumer",
+      type: "module",
+      repository: "github:acme/consumer",
+    }),
   });
 
   const config = await loadConfig(project.root);

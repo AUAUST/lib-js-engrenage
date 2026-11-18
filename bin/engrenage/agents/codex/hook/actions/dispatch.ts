@@ -5,6 +5,7 @@ import {
   checkAgentDispatch,
   createAgentFillers,
   denyToolUse,
+  listActiveExtensions,
   readHookPayload,
 } from "#tools/agents/index";
 import { getRunContext } from "#workflows/cli/index";
@@ -34,6 +35,7 @@ export default async function (): Promise<void> {
   const profile = await resolveCodexProfile(
     {
       filesystem: config.context.filesystem,
+      extensions: await listActiveExtensions(config),
       fillers: await createAgentFillers(config),
     },
     input.agent_type ?? input.subagent_type ?? "default",
