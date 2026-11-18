@@ -4,14 +4,9 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runDefinition } from "#tests/utils/runDefinition";
-import { defineGroup } from "#workflows/cli/index";
+import { runCommand } from "#tests/utils/runCommand";
 
 import sync from "#bin/engrenage/sync";
-
-const program = defineGroup({
-  commands: { sync },
-});
 
 const hostIgnores = [
   "/shopify.app*.toml",
@@ -75,7 +70,7 @@ describe("shopify-app", () => {
   test("syncs the extension workspaces with Preact and Polaris types", async () => {
     const project = createApp();
 
-    await runDefinition(program, "sync", "workspaces", "pnpm");
+    await runCommand("sync", sync, "workspaces", "pnpm");
 
     expect(project.read("pnpm-workspace.yaml")).toContain(
       "packages:\n  - extensions/*\n",
@@ -108,7 +103,7 @@ describe("shopify-app", () => {
 `,
     });
 
-    await runDefinition(program, "sync", "workspaces", "pnpm");
+    await runCommand("sync", sync, "workspaces", "pnpm");
 
     expect(JSON.parse(project.read("extensions/a/package.json")).name).toBe(
       "@scope/a",

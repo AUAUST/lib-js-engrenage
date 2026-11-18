@@ -80,6 +80,18 @@ async function removeEmptyParents(root: Directory, file: File) {
   }
 }
 
+async function readEntries(path: string) {
+  try {
+    return await readdir(path, { withFileTypes: true });
+  } catch (error) {
+    if (isMissingError(error)) {
+      return [];
+    }
+
+    throw error;
+  }
+}
+
 function isBelow(directory: File, file: File): boolean {
   return directory === "" || file.startsWith(`${directory}/`);
 }
@@ -170,6 +182,7 @@ export function createFilesystem(root: Directory): Filesystem {
     return stage(file, undefined);
   }
 
+  // @debt `globFiles` also yields the directories `patterns` match, so `glob` returns them as files
   async function glob(
     patterns: Glob | Globs,
     options?: { exclude?: Globs },
@@ -199,23 +212,57 @@ export function createFilesystem(root: Directory): Filesystem {
     });
   }
 
+  async function holdsOnDisk(directory: File, skip: Globs): Promise<boolean> {
+    const entries = await readEntries(resolveWithin(root, directory));
+
+    const kept = entries
+      .map((entry) => {
+        return { entry, path: joinLocated(directory, entry.name) };
+      })
+      .filter(({ path }) => !isSkipped(path, skip));
+
+    const files = kept.filter(({ entry }) => !entry.isDirectory());
+
+    const present = files.some(({ path }) => {
+      return !contents.has(path) || contents.get(path) !== undefined;
+    });
+
+    if (present) {
+      return true;
+    }
+
+    for (const { entry, path } of kept) {
+      if (entry.isDirectory() && (await holdsOnDisk(path, skip))) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  async function hasFile(
+    directory: Directory,
+    options?: { skip?: Globs },
+  ): Promise<boolean> {
+    const located = locate(directory);
+    const skip = options?.skip ?? [];
+
+    const staged = contents.entries().some(([file, content]) => {
+      return (
+        content !== undefined &&
+        isListed(located, file, { skip, recursive: true }) &&
+        !isSkipped(file, skip)
+      );
+    });
+
+    return staged || holdsOnDisk(located, skip);
+  }
+
   async function listOnDisk(
     directory: File,
     { skip, recursive }: { skip: Globs; recursive: boolean },
   ): Promise<Files> {
-    let entries;
-
-    try {
-      entries = await readdir(resolveWithin(root, directory), {
-        withFileTypes: true,
-      });
-    } catch (error) {
-      if (isMissingError(error)) {
-        return [];
-      }
-
-      throw error;
-    }
+    const entries = await readEntries(resolveWithin(root, directory));
 
     const listed = await Promise.all(
       entries.map(async (entry): Promise<Files> => {
@@ -378,6 +425,7 @@ export function createFilesystem(root: Directory): Filesystem {
     write,
     remove,
     glob,
+    hasFile,
     list,
     format,
     changes,

@@ -5,14 +5,9 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runDefinition } from "#tests/utils/runDefinition";
-import { defineGroup } from "#workflows/cli/index";
+import { runCommand } from "#tests/utils/runCommand";
 
 import sync from "#bin/engrenage/sync";
-
-const program = defineGroup({
-  commands: { sync },
-});
 
 const emptyBlock = [
   "<!-- @reference ./.claude/shared.md -->",
@@ -47,7 +42,7 @@ describe("engrenage sync", () => {
   test("syncs every target so a later check passes", async () => {
     const project = createProject();
 
-    await runDefinition(program, "sync");
+    await runCommand("sync", sync);
 
     expect(project.read("AGENTS.md")).toContain("## Shared section");
 
@@ -55,7 +50,7 @@ describe("engrenage sync", () => {
       '"editor.formatOnSave": true',
     );
 
-    const { messages } = await runDefinition(program, "sync", "--check");
+    const { messages } = await runCommand("sync", sync, "--check");
 
     expect(process.exitCode).toBeUndefined();
 
@@ -71,9 +66,9 @@ describe("engrenage sync", () => {
   test("reports the agent findings of a check to the run's reporter", async () => {
     createProject();
 
-    await runDefinition(program, "sync");
+    await runCommand("sync", sync);
 
-    const { messages } = await runDefinition(program, "sync", "--check");
+    const { messages } = await runCommand("sync", sync, "--check");
 
     const findings = messages.filter(({ text }) => {
       return text.startsWith("claude · ");
@@ -87,9 +82,7 @@ describe("engrenage sync", () => {
   test("checks only the selected targets without writing", async () => {
     const project = createProject();
 
-    const {
-      messages,
-    } = await runDefinition(program, "sync", "vscode", "--check");
+    const { messages } = await runCommand("sync", sync, "vscode", "--check");
 
     expect(process.exitCode).toBe(1);
 
@@ -109,11 +102,11 @@ describe("engrenage sync", () => {
 
     mockCwd(project.root);
 
-    await runDefinition(program, "sync", "vscode");
+    await runCommand("sync", sync, "vscode");
 
     expect(existsSync(project.resolve(".vscode/settings.json"))).toBe(false);
 
-    await runDefinition(program, "sync", "vscode", "--vscode-settings");
+    await runCommand("sync", sync, "vscode", "--vscode-settings");
 
     expect(JSON.parse(project.read(".vscode/settings.json"))).toMatchObject({
       "editor.formatOnSave": true,
@@ -138,7 +131,7 @@ describe("engrenage sync", () => {
 
     mockCwd(project.root);
 
-    await runDefinition(program, "sync");
+    await runCommand("sync", sync);
 
     expect(existsSync(project.resolve("tsconfig.json"))).toBe(true);
     expect(project.read(".gitignore")).toContain("/dist");

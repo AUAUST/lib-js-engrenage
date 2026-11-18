@@ -45,6 +45,12 @@ export interface Filesystem {
    */
   glob(patterns: Glob | Globs, options?: { exclude?: Globs }): Promise<Files>;
   /**
+   * Whether the directory holds a file on disk or staged, without those staged
+   * for removal, recursively, stopping at the first one. Files and subdirectories
+   * matching `skip` count as absent.
+   */
+  hasFile(directory: Directory, options?: { skip?: Globs }): Promise<boolean>;
+  /**
    * Files in the directory on disk or staged, without those staged for
    * removal, as sorted root-relative POSIX paths; empty when the directory is
    * missing. Recurses unless `recursive` is `false`, skipping subdirectories

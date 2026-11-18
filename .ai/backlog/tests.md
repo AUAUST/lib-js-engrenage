@@ -18,3 +18,9 @@ Test infrastructure and coverage gaps.
 
 - why: `engrenage gate --worktree` failed 3 of 5 runs on different spawn-based tests (`runGateLocks` lock release, `hookFailures` 5000 ms timeout), each passing alone and in `pnpm test`.
 - want: these tests scale their timeouts with `binaryTimeout`, or the gate runs them without competing load.
+
+## 4. Tests initialize Git repositories by hand
+
+- sites: `tests/src/project/environments/environments.test.ts:179`, `tests/src/tools/github/syncWorkflowFiles.test.src.ts:133`, `tests/src/tools/prettier/resolvePrettierAllArguments.test.src.ts:60`, and six more `execFileSync("git", ["init", "--quiet"], …)` calls
+- why: nine tests repeat the same `git init` beside `createTemporaryProject`, while `createGitRepository` covers only linked-module repositories.
+- want: one test utility, or a `createTemporaryProject` option, creating the repository.

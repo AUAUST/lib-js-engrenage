@@ -1,11 +1,10 @@
-import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
 import { filesIn } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
 import { resolveNodeRuntime } from "#project/baseline/index";
-import { findPopulatedDirectories } from "#project/environments/operations/findPopulatedDirectories";
+import { hasUnignoredFile } from "#project/environments/operations/hasUnignoredFile";
 import { resolveEnvironmentDirs } from "#project/environments/operations/resolveEnvironmentDirs";
 import { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
 import type { ConfigResolver } from "#project/config/index";
@@ -25,18 +24,15 @@ export const toolingSection = declareSection({
     const walked = dirs.filter((directory) => directory !== ".");
     const rootFiles = walked.length === dirs.length ? [] : files;
 
-    const { filesystem } = config.context;
-
-    const existing = await findPopulatedDirectories(config, walked);
-
-    const matched = isNonEmptyArray(rootFiles)
-      ? await filesystem.glob(rootFiles)
-      : [];
+    const active = await hasUnignoredFile(config, {
+      dirs: walked,
+      files: rootFiles,
+    });
 
     return freeze(
       compose(
         {
-          active: isNonEmptyArray(existing) || isNonEmptyArray(matched),
+          active,
           dirs: walked,
           rootFiles,
           defines: false,

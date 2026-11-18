@@ -119,3 +119,29 @@ test("stages deletions, hides them from globs and restores them if flush fails",
 
   expect(existsSync(project.resolve("existing.txt"))).toBe(false);
 });
+
+test("finds a file in a directory past skipped and removed ones", async () => {
+  const project = createTemporaryProject({
+    "dir/.DS_Store": "",
+    "dir/cache/out.ts": "",
+    "dir/nested/kept.ts": "",
+  });
+
+  const filesystem = createFilesystem(project.root);
+  const skip = ["**/.DS_Store", "dir/cache"];
+
+  expect(await filesystem.hasFile("dir", { skip })).toBe(true);
+
+  await filesystem.remove("dir/nested/kept.ts");
+
+  expect(await filesystem.hasFile("dir", { skip })).toBe(false);
+
+  await filesystem.write("dir/cache/staged.ts", "");
+
+  expect(await filesystem.hasFile("dir", { skip })).toBe(false);
+
+  await filesystem.write("dir/staged.ts", "");
+
+  expect(await filesystem.hasFile("dir", { skip })).toBe(true);
+  expect(await filesystem.hasFile("missing")).toBe(false);
+});

@@ -9,16 +9,11 @@ import { checkWorkspaces } from "#project/structure/index";
 import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runDefinition } from "#tests/utils/runDefinition";
+import { runCommand } from "#tests/utils/runCommand";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
-import { defineGroup } from "#workflows/cli/index";
 
 import sync from "#bin/engrenage/sync";
-
-const program = defineGroup({
-  commands: { sync },
-});
 
 const placeholder = "{dir}";
 
@@ -69,7 +64,7 @@ describe("workspaces", () => {
   test("syncs the workspace files of two globs, and a check reports drift", async () => {
     const project = createProject();
 
-    await runDefinition(program, "sync", "workspaces", "pnpm");
+    await runCommand("sync", sync, "workspaces", "pnpm");
 
     expect(project.read("pnpm-workspace.yaml")).toContain(
       "packages:\n  - extensions/action-*\n  - extensions/functions-*\n",
@@ -112,7 +107,7 @@ describe("workspaces", () => {
         .compilerOptions,
     ).toEqual({ jsx: "preserve" });
 
-    await runDefinition(program, "sync", "workspaces", "pnpm", "--check");
+    await runCommand("sync", sync, "workspaces", "pnpm", "--check");
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -128,7 +123,7 @@ describe("workspaces", () => {
       ),
     );
 
-    await runDefinition(program, "sync", "workspaces");
+    await runCommand("sync", sync, "workspaces");
 
     expect(
       JSON.parse(project.read("extensions/action-a/package.json"))
@@ -144,7 +139,7 @@ describe("workspaces", () => {
 
     const {
       messages,
-    } = await runDefinition(program, "sync", "workspaces", "--check");
+    } = await runCommand("sync", sync, "workspaces", "--check");
 
     expect(process.exitCode).toBe(1);
 

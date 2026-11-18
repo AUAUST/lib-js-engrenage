@@ -3,8 +3,7 @@
   "type": "object",
   "properties": {
     "$schema": {
-      "type": "string",
-      "description": "@default none"
+      "type": "string"
     },
     "layers": {
       "type": "array",

@@ -1,9 +1,7 @@
 import { entries, freeze } from "@auaust/toolkit/object";
 
-import {
-  findPopulatedDirectories,
-  readEnvironment,
-} from "#project/environments/index";
+import { filesIn } from "#foundation/filesystem/index";
+import { hasUnignoredFile, readEnvironment } from "#project/environments/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { Globs } from "#types/Globs";
@@ -12,10 +10,7 @@ export async function listMappedEnvironments(config: LoadedConfig): Promise<{
   structure: ResolvedStructure;
   paths: Readonly<Partial<Record<string, Globs>>>;
 }> {
-  const [filesystem, structure] = await Promise.all([
-    config.context.filesystem,
-    config.resolve("structure"),
-  ]);
+  const structure = await config.resolve("structure");
 
   const mapped = { ...structure };
   const paths: Partial<Record<string, Globs>> = {};
@@ -27,25 +22,18 @@ export async function listMappedEnvironments(config: LoadedConfig): Promise<{
 
     const { rootFiles: files = [] } = await readEnvironment(config, name);
 
-    const directories = await findPopulatedDirectories(
-      config,
-      environment.dirs,
-    );
+    const populated = await hasUnignoredFile(config, {
+      dirs: environment.dirs,
+      files,
+    });
 
-    const matches = files.length === 0 ? [] : await filesystem.glob(files);
-
-    if (directories.length === 0 && matches.length === 0) {
+    if (!populated) {
       mapped[name] = undefined;
 
       continue;
     }
 
-    paths[name] = freeze([
-      ...environment.dirs.map((dir) => {
-        return dir === "." ? "**" : `${dir}/**`;
-      }),
-      ...files,
-    ]);
+    paths[name] = freeze([...filesIn(environment.dirs, "**"), ...files]);
   }
 
   return { structure: freeze(mapped), paths: freeze(paths) };

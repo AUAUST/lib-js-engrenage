@@ -17,6 +17,7 @@ function addAllRunOptions(command: CommandUnknownOpts) {
   }
 }
 
+// @debt the root definition's `commandExtension` never runs, since only `defineGroup` applies extensions before parsing; tests wrap a command in a group to reach its extended options
 export function createProgram(
   name: string,
   definition: CommandDefinition,

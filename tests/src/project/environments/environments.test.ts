@@ -184,6 +184,30 @@ describe("environments", () => {
     expect((await config.resolve("bin")).active).toBe(true);
   });
 
+  test("deactivate tooling whose root files Git ignores", async () => {
+    const tooling = '{ tooling: { files: ["local.config.ts", "kept.config.ts"] } }';
+
+    const ignored = createProject(tooling, {
+      ".gitignore": "local.config.ts\n",
+      "local.config.ts": "",
+    });
+
+    const kept = createProject(tooling, {
+      ".gitignore": "local.config.ts\n",
+      "kept.config.ts": "",
+    });
+
+    execFileSync("git", ["init", "--quiet"], { cwd: ignored.root });
+    execFileSync("git", ["init", "--quiet"], { cwd: kept.root });
+
+    const ignoredConfig = await loadConfig(ignored.root);
+
+    const keptConfig = await loadConfig(kept.root);
+
+    expect((await ignoredConfig.resolve("tooling")).active).toBe(false);
+    expect((await keptConfig.resolve("tooling")).active).toBe(true);
+  });
+
   test("adjust a default list and the TypeScript files", async () => {
     const project = createProject(`{
       typescript: { files: "**/*.ts" },

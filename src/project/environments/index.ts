@@ -71,6 +71,7 @@ export { toolingSchema } from "#project/environments/config/schemas/toolingSchem
 // @barrel operations
 export { createDefine } from "#project/environments/operations/createDefine";
 export { findPopulatedDirectories } from "#project/environments/operations/findPopulatedDirectories";
+export { hasUnignoredFile } from "#project/environments/operations/hasUnignoredFile";
 export { readEnvironment } from "#project/environments/operations/readEnvironment";
 export { readEnvironments } from "#project/environments/operations/readEnvironments";
 export { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";

@@ -1,9 +1,8 @@
-import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
 import { dataSchema } from "#project/environments/config/schemas/dataSchema";
-import { findPopulatedDirectories } from "#project/environments/operations/findPopulatedDirectories";
+import { hasUnignoredFile } from "#project/environments/operations/hasUnignoredFile";
 import { resolveEnvironmentDirs } from "#project/environments/operations/resolveEnvironmentDirs";
 import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedData } from "#project/environments/types/ResolvedData";
@@ -20,7 +19,7 @@ export const dataSection = declareSection({
     const dirs = await resolveEnvironmentDirs(config, "data", option.dirs);
 
     return freeze({
-      active: isNonEmptyArray(await findPopulatedDirectories(config, dirs)),
+      active: await hasUnignoredFile(config, { dirs }),
       dirs,
       exports: option.exports,
     });

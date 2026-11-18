@@ -18,6 +18,8 @@ export async function findPopulatedDirectories(
 
   const git = await config.resolve("git");
 
+  // @debt `git.ignored` reruns `git status` on each read, so every environment resolution and `listMappedEnvironments` spawns its own; a value read once per load would serve them all
+
   const ignored = await git.ignored;
 
   const skip = [

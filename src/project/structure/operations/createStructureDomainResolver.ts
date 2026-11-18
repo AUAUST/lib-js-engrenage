@@ -60,7 +60,7 @@ export function createStructureDomainResolver({
       directory,
       namespace,
       exact,
-      declared: metadata.length > 0,
+      declared: metadata.at(-1)?.source,
       metadata: metadata.reduce<Partial<DomainDeclaration>>(
         (merged, declared) => {
           return {

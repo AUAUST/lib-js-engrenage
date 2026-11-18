@@ -2,6 +2,7 @@ import {
   array,
   boolean,
   lazy,
+  optional,
   picklist,
   string,
   union,
@@ -14,6 +15,7 @@ import {
   declare,
   declareObject,
   declareRecord,
+  validate,
   type Declaration,
 } from "#foundation/options/index";
 import { structureKeySchema } from "#project/environments/config/schemas/structureKeySchema";
@@ -64,8 +66,23 @@ function declareChildren() {
   };
 }
 
-const $schema = declare(string(), {
-  optional: { value: undefined },
+const schemaReference = optional(string());
+
+function resolveSchemaReference(
+  input: unknown,
+  _context: unknown,
+  path: string,
+): string | undefined {
+  return validate(schemaReference, input, path);
+}
+
+const $schema: Declaration<
+  string | undefined,
+  string | undefined,
+  unknown
+> = freeze({
+  schema: schemaReference,
+  resolve: resolveSchemaReference,
 });
 
 const namespaceFields = freeze({

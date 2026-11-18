@@ -138,7 +138,9 @@ export function createStructureWalker({
     }
 
     const mirrorClass = (
-      classifyMirror === undefined || declared || parent.kind === "role"
+      classifyMirror === undefined ||
+      declared !== undefined ||
+      parent.kind === "role"
     )
       ? undefined
       : classifyMirror(directory, parent);
@@ -246,8 +248,8 @@ export function createStructureWalker({
       return domain("inferred");
     }
 
-    if (declared || parent.childKind === "domains") {
-      return domain(declared ? "config" : parent.source);
+    if (declared !== undefined || parent.childKind === "domains") {
+      return domain(declared ?? parent.source);
     }
 
     const probed = await walk(envDirectory, subpath, {
