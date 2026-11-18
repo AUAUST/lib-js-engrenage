@@ -36,6 +36,8 @@ export type PackageJson = Accessors<{
   type: PackageType | undefined;
   bin: File | Partial<Record<string, File>> | undefined;
   scripts: Partial<Record<string, string>> | undefined;
+  exports:
+    string | readonly unknown[] | Readonly<Record<string, unknown>> | undefined;
   imports: SubpathImports | undefined;
   main: File | undefined;
   module: File | undefined;

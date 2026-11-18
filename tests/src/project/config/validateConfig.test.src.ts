@@ -41,6 +41,23 @@ describe("validateConfig", () => {
     );
   });
 
+  test("names the replacement of a removed top-level key without listing the registered extensions", async () => {
+    const project = createTemporaryProject({
+      "package.json": "{}",
+      "engrenage.config.ts": `export default { presets: ["library"] };\n`,
+    });
+
+    const config = await loadConfig(project.root);
+
+    await expect(validateConfig(config)).rejects.toThrow(
+      'Unknown key "presets", replaced by `preset: "library"`',
+    );
+
+    await expect(validateConfig(config)).rejects.not.toThrow(
+      "Registered extensions",
+    );
+  });
+
   test("rejects an invalid git input with the git section's message", async () => {
     const project = createTemporaryProject({
       "package.json": "{}",

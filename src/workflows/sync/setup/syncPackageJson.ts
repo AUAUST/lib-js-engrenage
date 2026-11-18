@@ -18,11 +18,14 @@ import type { JsonValue } from "#foundation/json/index";
 import type { Runtime } from "#project/baseline/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { ResolvedBin, ResolvedSource } from "#project/environments/index";
+import type { ResolvedTraits } from "#project/presets/index";
 
 interface Field {
   location: readonly [string] | readonly [string, string];
   value: JsonValue;
 }
+
+const privateFields = ["publishConfig", "exports"] as const;
 
 function toNodeMajor(runtime: Runtime): number {
   return runtime.kind === "node" ? runtime.major : runtime.node;
@@ -94,7 +97,10 @@ async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
   return [{ location: ["files"], value: files }, ...commands];
 }
 
-async function createFields(config: LoadedConfig): Promise<Field[]> {
+async function createFields(
+  config: LoadedConfig,
+  traits: ResolvedTraits,
+): Promise<Field[]> {
   const { resolve } = config;
 
   const { node } = await resolve("runtime");
@@ -107,8 +113,6 @@ async function createFields(config: LoadedConfig): Promise<Field[]> {
       onFail: "error",
     },
   };
-
-  const traits = await resolve("traits");
 
   if (!traits.published) {
     return [runtime, { location: ["private"], value: true }];
@@ -133,7 +137,9 @@ export async function syncPackageJson(config: LoadedConfig) {
 
   const root = context.root;
 
-  const fields = await createFields(config);
+  const traits = await config.resolve("traits");
+
+  const fields = await createFields(config, traits);
 
   await syncFiles(
     {
@@ -152,6 +158,17 @@ export async function syncPackageJson(config: LoadedConfig) {
 
           for (const warning of listPnpmWarnings(packageJson)) {
             context.reporter.warn(warning, { source: packageJsonFile });
+          }
+
+          if (!traits.published) {
+            for (const field of privateFields) {
+              if (packageJson.optional[field] !== undefined) {
+                context.reporter.warn(
+                  `package.json: ${field} is set, but the config resolves without the \`published\` trait, so sync treats the package as private; set a preset carrying that trait`,
+                  { source: packageJsonFile },
+                );
+              }
+            }
           }
 
           return fields.reduce((current, { location, value }) => {

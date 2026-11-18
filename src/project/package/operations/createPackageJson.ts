@@ -132,6 +132,12 @@ export function createPackageJson({
       scripts() {
         return read("scripts", record(string(), string()));
       },
+      exports() {
+        return read(
+          "exports",
+          union([string(), array(unknown()), record(string(), unknown())]),
+        );
+      },
       imports() {
         return read("imports", record(string(), unknown()));
       },

@@ -1,7 +1,7 @@
 import satisfies from "semver/functions/satisfies.js";
 import validRange from "semver/ranges/valid.js";
 
-import { isArray } from "@auaust/toolkit";
+import { isArray, isString } from "@auaust/toolkit";
 import {
   flatMap,
   includes,
@@ -76,6 +76,35 @@ function checkCompatibility(extensions: readonly Extension[]): void {
 
   if (isNonEmptyArray(findings)) {
     throw new Error(`Incompatible extensions:\n${findings.join("\n")}`);
+  }
+}
+
+function describeRemovedKey(key: string, value: unknown): string | undefined {
+  switch (key) {
+    case "presets": {
+      const [name, ...rest] = isArray(value) ? value : [value];
+
+      return isString(name) && rest.length === 0
+        ? `replaced by \`preset: "${name}"\``
+        : "replaced by `preset`, which takes one preset name";
+    }
+
+    case "source": {
+      return 'renamed "src"';
+    }
+
+    case "test": {
+      return 'renamed "tests"';
+    }
+
+    case "code": {
+      return "replaced by `typescript.files`, `tooling.files` and each environment's `generated` and `discovered`";
+    }
+
+    case "directories":
+    case "files": {
+      return "replaced by each environment's options";
+    }
   }
 }
 
@@ -273,6 +302,7 @@ export function createProjectConfig({
       },
       defaults,
       unknownNote: `Registered extensions: ${names.join(", ")}`,
+      describeUnknown: describeRemovedKey,
       reporter,
     },
   );

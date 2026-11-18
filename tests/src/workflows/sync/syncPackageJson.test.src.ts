@@ -41,6 +41,10 @@ async function sync(
   };
 }
 
+function isPrivateWarning({ level, text }: { level: string; text: string }) {
+  return level === "warn" && text.includes("`published` trait");
+}
+
 const library = `{
   preset: "library",
   runtime: { node: 24 },
@@ -143,7 +147,13 @@ describe("syncPackageJson", () => {
   });
 
   test("only writes devEngines.runtime and private outside the library preset", async () => {
-    const { manifest } = await sync(`{ runtime: { node: 24 } }`, {});
+    const reporter = createTestReporter();
+
+    const {
+      manifest,
+    } = await sync(`{ runtime: { node: 24 } }`, {}, {}, reporter);
+
+    expect(reporter.messages.filter(isPrivateWarning)).toEqual([]);
 
     expect(await manifest()).toEqual({
       type: "module",
@@ -156,6 +166,23 @@ describe("syncPackageJson", () => {
         },
       },
     });
+  });
+
+  test("warns once about exports outside the published trait", async () => {
+    const reporter = createTestReporter();
+
+    await sync(
+      `{ runtime: { node: 24 } }`,
+      { exports: "./index.js" },
+      {},
+      reporter,
+    );
+
+    expect(reporter.messages.filter(isPrivateWarning)).toEqual([
+      expect.objectContaining({
+        text: expect.stringMatching(/^package\.json: exports is set/),
+      }),
+    ]);
   });
 
   test("reports drift until the file is written", async () => {

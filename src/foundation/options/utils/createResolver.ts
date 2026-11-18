@@ -34,6 +34,7 @@ export function createResolver<
     sections,
     defaults,
     unknownNote,
+    describeUnknown,
     reporter,
   }: {
     source?: string;
@@ -43,6 +44,7 @@ export function createResolver<
       reader: Resolver<Context>,
     ): Promise<Readonly<Record<string, unknown>>>;
     unknownNote?: string;
+    describeUnknown?(key: string, value: unknown): string | undefined;
     reporter: Reporter;
   },
 ): InputResolver<Context, Sections> {
@@ -371,9 +373,19 @@ export function createResolver<
     const unknown = keys(input).filter((key) => !known.has(key));
 
     if (unknown.length > 0) {
-      const lines = unknown.map((key) => `Unknown key "${key}"`);
+      const descriptions = unknown.map((key) => {
+        return describeUnknown?.(key, input[key]);
+      });
 
-      if (unknownNote !== undefined) {
+      const lines = unknown.map((key, index) => {
+        const description = descriptions[index];
+
+        return description === undefined
+          ? `Unknown key "${key}"`
+          : `Unknown key "${key}", ${description}`;
+      });
+
+      if (unknownNote !== undefined && descriptions.includes(undefined)) {
         lines.push(unknownNote);
       }
 
