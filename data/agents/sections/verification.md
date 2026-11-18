@@ -8,9 +8,11 @@ order: 70
 
 ## Verification
 
-- Before delivery, review the work against architectural boundaries and quality requirements, not only behavior.
+| When                  | Check                                                                                                                                                     |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| During implementation | Targeted checks; lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`: without files it lints the whole project                 |
+| Before delivery       | Review the work against architectural boundaries and quality requirements, not only behavior; run the gate once, adding checks only for coverage it lacks |
+| Each commit           | Pass the commit gate, never bypassing it; it formats, lints and checks the changed files, so never format by hand                                         |
+
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
-- Run targeted checks during implementation and the gate once at delivery, adding checks only for coverage it lacks.
-- Lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`: without files it lints the whole project, which the gate does.
-- Pass the commit gate with every commit you make; never bypass it. It formats, lints and checks the changed files: never format by hand.
 - Report actual results and blockers, including unavailable integrations and skipped checks. Never weaken compiler or lint settings to hide failures.

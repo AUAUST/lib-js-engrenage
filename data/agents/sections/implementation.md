@@ -13,7 +13,7 @@ order: 40
 - Before editing, inspect the execution path. Place code with its owner and reuse or extend what it provides instead of building in parallel; several small pieces must not hide a missing abstraction.
 - Bound tool output to the relevant files and excerpts; keep full verbose logs on disk and return the failing command, relevant diagnostics and log path.
 - Derive behavior from authoritative sources, never from hardcoded lists, flags or example data. Fail clearly on missing invariants; fall back only where the contract says so.
-- Write only these comments, each under ~150 words: directives that change how a tool treats the code, within the rules for each directive; `@debt` markers; JSDoc on contracts and entry exports; and comments the user explicitly requests. Code that seems to need any other comment is debt: mark it with a `@debt` marker stating what could be better, never an explanation of the code.
+- Write only these comments: directives that change how a tool treats the code, within the rules for each directive; `@debt` markers; the JSDoc lint asks for; and comments the user explicitly requests. Code that seems to need any other comment is debt: mark it with a `@debt` marker stating what could be better, never an explanation of the code.
 - Change repository-wide configuration only after trying an alternative inside the code you own. Report any configuration change with its reason separately from general code changes.
 - Delete obsolete and commented-out code. Add no feature READMEs or `docs/` directory.
 - Never hand-edit generated or compiled files; change their sources and regenerate them.

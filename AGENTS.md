@@ -114,11 +114,14 @@ Analyse every request, suggestion and described fix before acting on it, within 
 
 ## Shell
 
-- Quote every glob passed as an argument: zsh aborts on an unmatched glob.
-- Pass lists as arrays or through `xargs`: zsh never splits an unquoted variable.
-- Never start a word with `=`: zsh expands it as a command path.
-- On macOS, rely on each tool's own timeout, since there is no `timeout`, and write `sed -i ''`, since BSD `sed` requires the suffix.
-- In an agent worktree, run each git command alone and write files with the edit tools: Claude Code refuses compound commands, heredocs and command text naming git there.
+| Trap                                                                                      | Write                                                |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| zsh aborts on an unmatched glob                                                           | Quote every glob passed as an argument               |
+| zsh never splits an unquoted variable                                                     | Lists as arrays or through `xargs`                   |
+| zsh expands a word starting with `=` as a command path                                    | No word starting with `=`                            |
+| macOS has no `timeout`                                                                    | Each tool's own timeout                              |
+| BSD `sed` requires the in-place suffix                                                    | `sed -i ''`                                          |
+| In an agent worktree, Claude Code refuses compound commands, heredocs and text naming git | Each git command alone; files through the edit tools |
 
 <!-- @reference @auaust/engrenage/agents/sections/implementation.md -->
 
@@ -129,7 +132,7 @@ Analyse every request, suggestion and described fix before acting on it, within 
 - Before editing, inspect the execution path. Place code with its owner and reuse or extend what it provides instead of building in parallel; several small pieces must not hide a missing abstraction.
 - Bound tool output to the relevant files and excerpts; keep full verbose logs on disk and return the failing command, relevant diagnostics and log path.
 - Derive behavior from authoritative sources, never from hardcoded lists, flags or example data. Fail clearly on missing invariants; fall back only where the contract says so.
-- Write only these comments, each under ~150 words: directives that change how a tool treats the code, within the rules for each directive; `@debt` markers; JSDoc on contracts and entry exports; and comments the user explicitly requests. Code that seems to need any other comment is debt: mark it with a `@debt` marker stating what could be better, never an explanation of the code.
+- Write only these comments: directives that change how a tool treats the code, within the rules for each directive; `@debt` markers; the JSDoc lint asks for; and comments the user explicitly requests. Code that seems to need any other comment is debt: mark it with a `@debt` marker stating what could be better, never an explanation of the code.
 - Change repository-wide configuration only after trying an alternative inside the code you own. Report any configuration change with its reason separately from general code changes.
 - Delete obsolete and commented-out code. Add no feature READMEs or `docs/` directory.
 - Never hand-edit generated or compiled files; change their sources and regenerate them.
@@ -149,7 +152,7 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
       └─ sub-domain  same rules
 ```
 
-- The generated project maps (`.claude/rules/project-map.md`, `project-map/<environment>.md`) carry the layout, visibility, aliases, roles and imports lint enforces: read the map of each environment you edit, and never restate it.
+- The generated project maps (`.claude/rules/project-map.md`, `project-map/<environment>.md`) carry the layout, visibility, aliases, roles and imports lint enforces: read the map of each environment you edit or design for, and never restate it.
 - Change the structure only in its description, the config and the `.namespace.json` and `.domain.json` files beside the directories they describe, then run `pnpm engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
 - Give each declared namespace, domain and role a one-line `purpose`; one that is hard to state or overlaps another reveals a design problem.
 - Place code in the domain owning its concern, in the role whose contract fits it. A concern several domains share gets its own domain in the lowest layer holding everything it needs.
@@ -185,11 +188,13 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 
 ## Verification
 
-- Before delivery, review the work against architectural boundaries and quality requirements, not only behavior.
+| When                  | Check                                                                                                                                                     |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| During implementation | Targeted checks; lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`: without files it lints the whole project                 |
+| Before delivery       | Review the work against architectural boundaries and quality requirements, not only behavior; run the gate once, adding checks only for coverage it lacks |
+| Each commit           | Pass the commit gate, never bypassing it; it formats, lints and checks the changed files, so never format by hand                                         |
+
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
-- Run targeted checks during implementation and the gate once at delivery, adding checks only for coverage it lacks.
-- Lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`: without files it lints the whole project, which the gate does.
-- Pass the commit gate with every commit you make; never bypass it. It formats, lints and checks the changed files: never format by hand.
 - Report actual results and blockers, including unavailable integrations and skipped checks. Never weaken compiler or lint settings to hide failures.
 
 <!-- @end -->

@@ -4,15 +4,22 @@
 
 ## Commits
 
-- Don't push.
-- When your work covers several tasks, commit each task's changes separately; commit at each checkpoint an issue marks; otherwise leave your changes uncommitted with the suggested commit message in your report.
-- Avoid committing changes you did not make; stage paths by name, never `.ai/issues/`, whose drafts stay local.
-- Stage every uncommitted change to the agent logs `.ai/friction.md` and `.ai/discarded.md` in each commit you make, whoever wrote it, and mention it in neither the commit message nor your report.
-- Write every commit message, suggested or committed, with the subject `<type>: <summary>`, where `<type>` is the type below that matches the commit's main purpose.
-- Write the summary as the label a reader would use to recall the commit's main change, starting lowercase, with no trailing period and no verb the type already carries.
-- Leave the change's parts, reasons and mechanics out of the commit message.
-- When the summary needs "and" to cover several changes, name what they have in common instead.
-- Limit the message body to one `Closes #<n>` consecutive line per issue the commit resolves and one `Towards #<n>` line per issue it advances without resolving, on consecutive lines.
+| When                                                                    | Do                                                                                      |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| A task's work is settled: no question on it pending, its checks passing | Commit it before ending the turn, without asking                                        |
+| A question on the work is pending                                       | Leave it uncommitted, with the suggested commit message in your report                  |
+| Your work covers several tasks                                          | One commit per task                                                                     |
+| An issue marks a checkpoint                                             | Commit at it                                                                            |
+| Staging                                                                 | Only your changes, by path, never `.ai/issues/`, whose drafts stay local                |
+| `.ai/friction.md` or `.ai/discarded.md` has uncommitted changes         | Stage them in each commit, whoever wrote them, and mention them in no message or report |
+| Any commit                                                              | Never push                                                                              |
+
+| Message part    | Form                                                                                                                                              |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Subject         | `<type>: <summary>`, `<type>` from the table below by the commit's main purpose                                                                   |
+| Summary         | The label a reader would recall the main change by: lowercase start, no trailing period, no verb the type carries, no parts, reasons or mechanics |
+| Several changes | Name what they have in common, never a list joined by "and"                                                                                       |
+| Body            | Only consecutive lines: `Closes #<n>` per issue resolved, `Towards #<n>` per issue advanced                                                       |
 
 | Type      | Main purpose                                                 |
 | --------- | ------------------------------------------------------------ |

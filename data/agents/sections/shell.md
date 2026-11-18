@@ -8,8 +8,11 @@ order: 36
 
 ## Shell
 
-- Quote every glob passed as an argument: zsh aborts on an unmatched glob.
-- Pass lists as arrays or through `xargs`: zsh never splits an unquoted variable.
-- Never start a word with `=`: zsh expands it as a command path.
-- On macOS, rely on each tool's own timeout, since there is no `timeout`, and write `sed -i ''`, since BSD `sed` requires the suffix.
-- In an agent worktree, run each git command alone and write files with the edit tools: Claude Code refuses compound commands, heredocs and command text naming git there.
+| Trap                                                                                      | Write                                                |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| zsh aborts on an unmatched glob                                                           | Quote every glob passed as an argument               |
+| zsh never splits an unquoted variable                                                     | Lists as arrays or through `xargs`                   |
+| zsh expands a word starting with `=` as a command path                                    | No word starting with `=`                            |
+| macOS has no `timeout`                                                                    | Each tool's own timeout                              |
+| BSD `sed` requires the in-place suffix                                                    | `sed -i ''`                                          |
+| In an agent worktree, Claude Code refuses compound commands, heredocs and text naming git | Each git command alone; files through the edit tools |

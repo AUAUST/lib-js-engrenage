@@ -7,6 +7,8 @@ paths:
   - ".claude/**"
   - ".agents/**"
   - ".ai/issues/**"
+  - ".ai/backlog/**"
+  - ".codex/**"
   - "data/agents/**"
 ---
 
