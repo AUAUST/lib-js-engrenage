@@ -115,5 +115,5 @@ Project structure description, its report and the tooling generated from it.
 
 ## 19. A domain's index drops a role's modules silently when it has no `@barrel <role>` marker
 
-- why: `syncBarrelBlocks` (`src/tools/typescript/setup/syncBarrelBlocks.ts`) fills only existing markers, so modules moved into a role the index has no block for leave its surface while `sync --check` passes; seen moving interfaces to `apis/` and `ports/` in AUAUST/lib-js-engrenage#533. Related: #9 ("Markers fail silently").
+- why: `fillBarrelBlock` (`src/tools/typescript/operations/fillBarrelBlock.ts`) fills only existing markers, so modules moved into a role the index has no block for leave its surface while `sync --check` passes; seen moving interfaces to `apis/` and `ports/` in AUAUST/lib-js-engrenage#533. Related: #9 ("Markers fail silently").
 - want: sync adds the missing block, or `--check` reports each placed role whose modules no marker of the index covers.
