@@ -1,5 +1,4 @@
 import {
-  agentLimitsFiller,
   agentLoaderEntry,
   agentLogFiles,
   agentRuntimeEntry,
@@ -119,7 +118,7 @@ export default {
   contributes: {
     "agents.fillers": [
       {
-        name: agentLimitsFiller,
+        name: "agent-limits",
         load() {
           return import("#tools/agents/operations/fillAgentLimits");
         },

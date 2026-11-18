@@ -5,6 +5,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { runDefinition } from "#tests/utils/runDefinition";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
@@ -119,7 +120,7 @@ async function installed() {
     {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
-      fillers: {},
+      fillers: await createAgentFillers(config),
     },
     ["issue-implementation", "debugging"],
   );
@@ -162,7 +163,7 @@ test.each([
 });
 
 test("rejects missing/conflicting generated output and ignores unowned custom names", async () => {
-  const { filesystem } = await installed();
+  const { filesystem, config } = await installed();
 
   await filesystem.remove(".codex/agents/worker_medium.toml");
 
@@ -170,7 +171,7 @@ test("rejects missing/conflicting generated output and ignores unowned custom na
     resolveCodexProfile(
       {
         filesystem,
-        fillers: {},
+        fillers: await createAgentFillers(config),
       },
       "worker_medium",
     ),
@@ -182,7 +183,7 @@ test("rejects missing/conflicting generated output and ignores unowned custom na
     resolveCodexProfile(
       {
         filesystem,
-        fillers: {},
+        fillers: await createAgentFillers(config),
       },
       "worker",
     ),
@@ -194,7 +195,7 @@ test("rejects missing/conflicting generated output and ignores unowned custom na
     resolveCodexProfile(
       {
         filesystem,
-        fillers: {},
+        fillers: await createAgentFillers(config),
       },
       "debugger",
     ),
@@ -204,7 +205,7 @@ test("rejects missing/conflicting generated output and ignores unowned custom na
     resolveCodexProfile(
       {
         filesystem,
-        fillers: {},
+        fillers: await createAgentFillers(config),
       },
       "worker_custom",
     ),

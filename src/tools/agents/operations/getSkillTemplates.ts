@@ -19,6 +19,7 @@ import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { BlockFillers } from "#types/BlockFillers";
 import type { File } from "#types/File";
 
+// @debt callers pass any filler set, so one missing a directive a shipped skill uses fails only at render; deriving the fillers from the loaded config here would remove the parameter
 export async function getSkillTemplates({
   agents,
   extensions,

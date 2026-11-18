@@ -15,7 +15,6 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension } from "#project/config/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
-import type { BlockFillers } from "#types/BlockFillers";
 import type { Directory } from "#types/Directory";
 
 const skillReferencePrefix = `${engrenage}/agents/skills/`;
@@ -65,11 +64,12 @@ export async function migrateSkillFiles(config: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
   extensions: readonly Extension[];
-  fillers: BlockFillers;
 }) {
   const { filesystem } = config;
 
-  const definitions = await getSkillDefinitions(config);
+  const definitions = await getSkillDefinitions({
+    extensions: config.extensions,
+  });
 
   const owners = new Map<string, SkillDefinition>();
 

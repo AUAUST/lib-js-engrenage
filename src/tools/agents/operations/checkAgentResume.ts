@@ -5,7 +5,6 @@ import {
   readTextFile,
   resolveWithin,
 } from "#foundation/filesystem/index";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
@@ -49,7 +48,6 @@ async function resolveFreshness(
   role: string,
 ): Promise<number | undefined> {
   const definitions = await getSkillDefinitions({
-    fillers: await createAgentFillers(config),
     extensions: await listActiveExtensions(config),
   });
 

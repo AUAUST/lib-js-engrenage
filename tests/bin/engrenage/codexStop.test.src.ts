@@ -4,6 +4,7 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { runDefinition } from "#tests/utils/runDefinition";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkAgentStop } from "#workflows/gate/index";
 
@@ -51,7 +52,7 @@ test.each([
       {
         filesystem: config.context.filesystem,
         agents: await config.resolve("agents"),
-        fillers: {},
+        fillers: await createAgentFillers(config),
       },
       ["issue-implementation", "debugging", "planning", "curation"],
     );

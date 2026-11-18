@@ -7,6 +7,7 @@ import { syncClaudeSettings } from "#tools/agents/claude/index";
 import { syncCodexFiles } from "#tools/agents/codex/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
+import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 
 vi.mock("#foundation/processes/operations/spawnProcess", () => {
   return {
@@ -40,7 +41,7 @@ async function fixture() {
     {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
-      fillers: {},
+      fillers: await createAgentFillers(config),
     },
     ["issue-implementation"],
   );

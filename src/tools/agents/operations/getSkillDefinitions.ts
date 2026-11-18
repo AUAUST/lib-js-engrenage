@@ -5,7 +5,7 @@ import type { Extension } from "#project/config/index";
 import type { BlockFillers } from "#types/BlockFillers";
 
 export async function getSkillDefinitions(config: {
-  fillers: BlockFillers;
+  fillers?: BlockFillers;
   extensions?: readonly Extension[] | undefined;
 }) {
   const templates = await getInstructionTemplates("skills", config);

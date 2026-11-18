@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 
 describe("addAgentSkills", () => {
   test("installs an explicit skill and its agent for every preferred agent", async () => {
@@ -17,7 +18,7 @@ describe("addAgentSkills", () => {
       {
         filesystem: config.context.filesystem,
         agents: await config.resolve("agents"),
-        fillers: {},
+        fillers: await createAgentFillers(config),
       },
       ["debugging"],
     );
@@ -61,7 +62,7 @@ describe("addAgentSkills", () => {
       {
         filesystem: config.context.filesystem,
         agents: await config.resolve("agents"),
-        fillers: {},
+        fillers: await createAgentFillers(config),
       },
       ["issue-implementation"],
     );
@@ -85,7 +86,7 @@ describe("addAgentSkills", () => {
       {
         filesystem: config.context.filesystem,
         agents: await config.resolve("agents"),
-        fillers: {},
+        fillers: await createAgentFillers(config),
       },
       ["curation"],
     );
@@ -116,7 +117,7 @@ describe("addAgentSkills", () => {
     const sections = {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
-      fillers: {},
+      fillers: await createAgentFillers(config),
     };
 
     await addAgentSkills(sections, ["issue-implementation"]);
@@ -162,7 +163,7 @@ describe("addAgentSkills", () => {
     const sections = {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
-      fillers: {},
+      fillers: await createAgentFillers(config),
     };
 
     await expect(
@@ -185,7 +186,7 @@ describe("addAgentSkills", () => {
     const sections = {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
-      fillers: {},
+      fillers: await createAgentFillers(config),
     };
 
     await expect(addAgentSkills(sections, ["planning"])).rejects.toThrow(
