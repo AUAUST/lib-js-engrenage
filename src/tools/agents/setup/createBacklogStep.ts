@@ -1,7 +1,5 @@
 import { readFile } from "node:fs/promises";
 
-import { random } from "@auaust/toolkit/array";
-
 import { engrenage } from "#constants";
 import { resolveDataFile } from "#foundation/data/index";
 import {
@@ -9,7 +7,7 @@ import {
   backlogIndex,
   backlogTemplate,
   scratchpadFile,
-  scratchpadPlaceholders,
+  scratchpadPlaceholder,
 } from "#tools/agents/constants";
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
@@ -102,7 +100,7 @@ export function createBacklogStep(): Step {
       if (!(await filesystem.exists(scratchpadFile))) {
         await filesystem.write(
           scratchpadFile,
-          `# Scratchpad\n\n<!-- scratchpad-placeholder -->\n\n${random(scratchpadPlaceholders)}\n`,
+          `# Scratchpad\n\n<!-- scratchpad-placeholder -->\n\n${scratchpadPlaceholder}\n`,
         );
       }
 

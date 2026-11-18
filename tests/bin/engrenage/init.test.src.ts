@@ -14,7 +14,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
-import { scratchpadPlaceholders } from "#tools/agents/constants";
+import { scratchpadPlaceholder } from "#tools/agents/constants";
 import type { Prompter } from "#project/steps/index";
 
 import * as prompts from "#workflows/init/operations/createPrompter";
@@ -878,11 +878,8 @@ test("sets up Codex with backlog guidance without installing coding rules", asyn
     "# Curation",
   );
 
-  expect(scratchpadPlaceholders).toContain(
-    project
-      .read(".ai/scratchpad.md")
-      .split("<!-- scratchpad-placeholder -->\n")[1]
-      ?.trim(),
+  expect(project.read(".ai/scratchpad.md")).toBe(
+    `# Scratchpad\n\n<!-- scratchpad-placeholder -->\n\n${scratchpadPlaceholder}\n`,
   );
 
   expect(existsSync(project.resolve("CLAUDE.md"))).toBe(false);
