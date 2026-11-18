@@ -1,12 +1,10 @@
 import { parseDocument } from "yaml";
 
+import { splitFrontmatter } from "#foundation/markdown/index";
 import { quoteReferenceHint } from "#tools/github/issues/drafts/constants";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Draft } from "#tools/github/issues/drafts/types/Draft";
 import type { File } from "#types/File";
-
-// @debt a third frontmatter splitter beside `parseInstruction` in the agents domain and `readGithubBody` in the contract domain, instead of one shared frontmatter parser
-const frontmatterPattern = /^---\r?\n((?:.*\r?\n)*?)---[ \t]*(?:\r?\n|$)/;
 
 export async function readDraft(
   filesystem: Filesystem,
@@ -18,9 +16,9 @@ export async function readDraft(
     return;
   }
 
-  const match = frontmatterPattern.exec(content);
+  const split = splitFrontmatter(content);
 
-  const manifest = parseDocument(match?.[1] ?? "");
+  const manifest = parseDocument(split.kind === "closed" ? split.yaml : "");
 
   const [error] = manifest.errors;
 
@@ -39,6 +37,6 @@ export async function readDraft(
 
   return {
     manifest,
-    body: content.slice(match?.[0].length ?? 0).trim(),
+    body: split.body.trim(),
   };
 }

@@ -66,6 +66,22 @@ describe("budgets", () => {
     ]);
   });
 
+  test("keeps a fenced heading line inside its entry", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module"}',
+      "engrenage.config.ts": "export default {};\n",
+      ".ai/backlog/tools.md": `# tools\n\n## 1. Fenced\n\n- why: ${words(70)}\n\n\`\`\`md\n## Not an entry\n${words(70)}\n\`\`\`\n`,
+    });
+
+    const findings = await measureEditedFile(
+      project.root,
+      project.resolve(".ai/backlog/tools.md"),
+      await loadBudgets(project.root),
+    );
+
+    expect(findings).toMatchObject([{ subject: "1. Fenced" }]);
+  });
+
   test("ignores files that hold no budgeted entries", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',

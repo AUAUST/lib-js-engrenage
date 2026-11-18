@@ -1,4 +1,5 @@
 import { listBlockMarkers } from "#foundation/blocks/index";
+import { listCodeRanges } from "#foundation/markdown/index";
 import { claudeRulesGlob } from "#tools/agents/claude/constants";
 import { markdownBlocks } from "#tools/agents/constants";
 import type { Filesystem } from "#foundation/filesystem/index";
@@ -14,8 +15,17 @@ export async function getRuleReferences({
   for (const file of await filesystem.glob(claudeRulesGlob)) {
     const content = (await filesystem.read(file)) ?? "";
 
+    const code = listCodeRanges(content);
+
     const markers = listBlockMarkers(content, markdownBlocks).filter(
-      ({ directive }) => directive === "reference",
+      ({ directive, index }) => {
+        return (
+          directive === "reference" &&
+          !code.some(({ start, end }) => {
+            return index >= start && index < end;
+          })
+        );
+      },
     );
 
     for (const {

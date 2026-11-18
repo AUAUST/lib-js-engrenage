@@ -1,9 +1,13 @@
 import {
+  listCodeRanges,
+  splitSections,
+  stripCode,
+} from "#foundation/markdown/index";
+import {
   checkpointPrefix,
   roadmapSection,
   stepsSection,
 } from "#tools/github/issues/contract/constants";
-import { stripCode } from "#tools/github/issues/contract/utils/stripCode";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
 const qualifiedReference = String.raw`(?:([\w.-]+\/[\w.-]+))?#(\d+)`;
@@ -15,9 +19,7 @@ const roadmapReferencePattern = new RegExp(
   "g",
 );
 
-const sectionPattern = /^## (.+?)\s*$/;
 const itemPattern = /^\d+\.\s+(.*)$/;
-const fencePattern = /^\s*(```|~~~)/;
 const referencePattern = /(?<![\w/&])#(\d+)\b/g;
 
 const roadmapLinePattern = new RegExp(
@@ -40,30 +42,14 @@ function parseHeader(line: string): ParsedIssueBody["header"] {
   };
 }
 
-function splitSections(lines: readonly string[]) {
-  const sections: { name: string; content: string[] }[] = [];
-
-  let fenced = false;
-
-  for (const line of lines) {
-    const opensFence = fencePattern.test(line);
-
-    const name = fenced || opensFence
-      ? undefined
-      : sectionPattern.exec(line)?.[1];
-
-    if (opensFence) {
-      fenced = !fenced;
+function splitBodySections(body: string) {
+  return splitSections(body, 2).flatMap(({ name, source }) => {
+    if (name === undefined) {
+      return [];
     }
 
-    if (name !== undefined) {
-      sections.push({ name, content: [] });
-    } else {
-      sections.at(-1)?.content.push(line);
-    }
-  }
+    const [, ...content] = source.split("\n");
 
-  return sections.map(({ name, content }) => {
     return { name, content: content.join("\n").trim() };
   });
 }
@@ -71,15 +57,21 @@ function splitSections(lines: readonly string[]) {
 function parseList(content: string) {
   const items: { text: string; checkpoints: string[] }[] = [];
 
+  const blocks = listCodeRanges(content).filter(({ kind }) => {
+    return kind === "block";
+  });
+
   let numbered = true;
-  let fenced = false;
+  let offset = 0;
 
   for (const line of content.split("\n")) {
-    const insideFence = fenced || fencePattern.test(line);
+    const lineStart = offset;
 
-    if (fencePattern.test(line)) {
-      fenced = !fenced;
-    }
+    offset += line.length + 1;
+
+    const insideFence = blocks.some(({ start, end }) => {
+      return lineStart + line.length > start && lineStart < end;
+    });
 
     const item = insideFence ? null : itemPattern.exec(line);
     const last = items.at(-1);
@@ -143,10 +135,14 @@ function parseRoadmapLine(text: string) {
 }
 
 export function parseIssueBody(body: string): ParsedIssueBody {
-  const lines = body.replaceAll("\r\n", "\n").split("\n");
-  const [first = "", ...rest] = lines;
+  const normalized = body.replaceAll("\r\n", "\n");
+  const [first = ""] = normalized.split("\n", 1);
   const hasHeader = headerPattern.test(first);
-  const sections = splitSections(hasHeader ? rest : lines);
+
+  const sections = splitBodySections(
+    hasHeader ? normalized.slice(first.length + 1) : normalized,
+  );
+
   const steps = sections.find(({ name }) => name === stepsSection);
 
   const roadmap = sections.find(({ name }) => name === roadmapSection);

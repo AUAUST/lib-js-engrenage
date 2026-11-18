@@ -1,5 +1,4 @@
-// @debt repeats the fence and code span patterns of `stripCode` instead of sharing one code splitter
-const codePattern = /^[ \t]*(```|~~~)[\s\S]*?^[ \t]*\1.*$|(`+)[^`]*?\2/gm;
+import { listCodeRanges } from "#foundation/markdown/utils/listCodeRanges";
 
 export function replaceOutsideCode(
   text: string,
@@ -15,12 +14,10 @@ export function replaceOutsideCode(
   let result = "";
   let last = 0;
 
-  for (const match of text.matchAll(codePattern)) {
-    result += replaceText(text.slice(last, match.index));
+  for (const { start, end } of listCodeRanges(text)) {
+    result += replaceText(text.slice(last, start)) + text.slice(start, end);
 
-    result += match[0];
-
-    last = match.index + match[0].length;
+    last = end;
   }
 
   return result + replaceText(text.slice(last));

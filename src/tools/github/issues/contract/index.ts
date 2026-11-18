@@ -34,8 +34,6 @@ export { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSe
 export { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 export { renderPlanningSheet } from "#tools/github/issues/contract/utils/renderPlanningSheet";
 export { renderReference } from "#tools/github/issues/contract/utils/renderReference";
-export { replaceOutsideCode } from "#tools/github/issues/contract/utils/replaceOutsideCode";
-export { stripCode } from "#tools/github/issues/contract/utils/stripCode";
 // @end
 
 // @barrel types

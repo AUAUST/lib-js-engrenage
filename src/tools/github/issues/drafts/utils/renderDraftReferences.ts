@@ -1,6 +1,6 @@
+import { replaceOutsideCode } from "#foundation/markdown/index";
 import {
   renderReference,
-  replaceOutsideCode,
   type IssueLocation,
 } from "#tools/github/issues/contract/index";
 import { resolveIssueLocation } from "#tools/github/issues/drafts/utils/resolveIssueLocation";

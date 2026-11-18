@@ -3,12 +3,9 @@ import { Document, visit } from "yaml";
 
 import { isString } from "@auaust/toolkit";
 
+import { replaceOutsideCode } from "#foundation/markdown/index";
 import { validate } from "#foundation/options/index";
 import { splitRepository } from "#tools/github/issues/api/index";
-import {
-  replaceOutsideCode,
-  type FetchedIssue,
-} from "#tools/github/issues/contract/index";
 import { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFieldValue";
 import { findBlockersField } from "#tools/github/issues/drafts/utils/findBlockersField";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
@@ -19,6 +16,7 @@ import { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
 import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
 import { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
+import type { FetchedIssue } from "#tools/github/issues/contract/index";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";

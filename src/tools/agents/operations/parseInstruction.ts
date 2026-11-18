@@ -1,6 +1,7 @@
 import { array, looseObject, optional, string } from "valibot";
 import { parse } from "yaml";
 
+import { splitFrontmatter } from "#foundation/markdown/index";
 import { validate } from "#foundation/options/index";
 import type { File } from "#types/File";
 
@@ -9,7 +10,9 @@ const metadataSchema = looseObject({
 });
 
 export function parseInstruction(content: string, file: File) {
-  if (!/^---\r?\n/.test(content)) {
+  const split = splitFrontmatter(content);
+
+  if (split.kind === "none") {
     return {
       body: content,
       frontmatter: "",
@@ -19,13 +22,11 @@ export function parseInstruction(content: string, file: File) {
     };
   }
 
-  const match = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(content);
-
-  if (match === null) {
+  if (split.kind === "unclosed") {
     throw new Error(`Unclosed frontmatter in ${file}`);
   }
 
-  const [frontmatter, yaml = ""] = match;
+  const { source: frontmatter, yaml, body } = split;
 
   let input: unknown;
 
@@ -42,7 +43,7 @@ export function parseInstruction(content: string, file: File) {
   } = validate(metadataSchema, input ?? {}, `${file} frontmatter`);
 
   return {
-    body: content.slice(frontmatter.length).trimStart(),
+    body: body.trimStart(),
     frontmatter,
     yaml,
     metadata: input ?? {},

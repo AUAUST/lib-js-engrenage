@@ -1,3 +1,4 @@
+import { splitSections } from "#foundation/markdown/index";
 import { countWords } from "#tools/agents/utils/countWords";
 import type { BudgetFinding } from "#tools/agents/types/BudgetFinding";
 import type { BudgetKind } from "#tools/agents/types/BudgetKind";
@@ -8,12 +9,12 @@ export function getOverBudgetEntries(
 ): BudgetFinding[] {
   const findings: BudgetFinding[] = [];
 
-  for (const entry of content.split(/^(?=## )/m)) {
-    const words = countWords(entry);
+  for (const { name, source } of splitSections(content, 2)) {
+    const words = countWords(source);
 
-    if (entry.startsWith("## ") && words > budget) {
+    if (name !== undefined && words > budget) {
       findings.push({
-        subject: entry.split("\n", 1)[0].slice(3).trim(),
+        subject: name,
         kind,
         words,
         budget,

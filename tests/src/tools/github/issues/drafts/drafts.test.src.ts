@@ -5,6 +5,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { checkIssues } from "#tools/github/issues/drafts/operations/checkIssues";
 import { createDraft } from "#tools/github/issues/drafts/operations/createDraft";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
+import { splitBodySections } from "#tools/github/issues/drafts/utils/splitBodySections";
 
 function entity(name: string) {
   return {
@@ -116,6 +117,27 @@ async function createProject(drafts: Record<string, string>) {
 
   return loadConfig(project.root);
 }
+
+describe("splitBodySections", () => {
+  test("keeps a fenced heading line verbatim in its section", () => {
+    expect(
+      splitBodySections("## Context\n\n```md\n## Steps\n```\n## Tests"),
+    ).toEqual([
+      {
+        name: undefined,
+        lines: [""],
+      },
+      {
+        name: "Context",
+        lines: ["## Context", "", "```md", "## Steps", "```"],
+      },
+      {
+        name: "Tests",
+        lines: ["## Tests"],
+      },
+    ]);
+  });
+});
 
 describe("createDraft", () => {
   test("writes a Task's pinned fields with their options and its skeleton, listed last in the parent plan", async () => {

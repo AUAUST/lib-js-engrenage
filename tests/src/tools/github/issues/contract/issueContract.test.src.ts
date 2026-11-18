@@ -82,6 +82,14 @@ describe("parseIssueBody", () => {
 
     expect(parsed.references).toEqual([10, 11]);
   });
+
+  test("opens no section on a heading line inside a fence", () => {
+    const parsed = parseIssueBody("## Context\n\n```md\n## Steps\n```\n");
+
+    expect(parsed.sections.map(({ name }) => name)).toEqual(["Context"]);
+
+    expect(parsed.steps).toBeUndefined();
+  });
 });
 
 describe("checkIssueBody", () => {

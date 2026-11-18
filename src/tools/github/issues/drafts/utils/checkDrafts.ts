@@ -2,6 +2,7 @@ import { getDotPath, safeParse } from "valibot";
 
 import { isArray, isPlainObject, isString } from "@auaust/toolkit";
 
+import { stripCode } from "#foundation/markdown/index";
 import { splitRepository } from "#tools/github/issues/api/index";
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
@@ -11,7 +12,6 @@ import {
   findContractMeaning,
   listOpenSections,
   parseIssueBody,
-  stripCode,
   type ContractMeaning,
   type IssueContract,
   type IssueFinding,

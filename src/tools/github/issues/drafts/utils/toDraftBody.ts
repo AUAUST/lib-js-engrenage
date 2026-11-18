@@ -1,7 +1,4 @@
-import {
-  replaceOutsideCode,
-  type IssueContract,
-} from "#tools/github/issues/contract/index";
+import { replaceOutsideCode } from "#foundation/markdown/index";
 import {
   chainSeparator,
   headerSeparator,
@@ -10,6 +7,7 @@ import { findShortName } from "#tools/github/issues/drafts/utils/findShortName";
 import { splitBodySections } from "#tools/github/issues/drafts/utils/splitBodySections";
 import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
 import { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
+import type { IssueContract } from "#tools/github/issues/contract/index";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
 
 const chainReference = String.raw`(?:[\w.-]+/[\w.-]+)?#\d+`;
