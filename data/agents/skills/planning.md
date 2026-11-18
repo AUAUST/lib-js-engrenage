@@ -38,19 +38,19 @@ Edit nothing but issues and instruction or context files, apart from code the us
 
 ## Modes
 
-| Mode       | Started by                                                                                 | Scope                               | Runs                                                                         | Asks through                      | Publishes                                                                      |
-| ---------- | ------------------------------------------------------------------------------------------ | ----------------------------------- | ---------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------ |
-| Single     | The user, by default                                                                       | The tree                            | §Outer pass and §Inner pass on each item, together, revisiting either freely | The user                          | When none of your drafts holds a change waiting on an open question, or on ask |
-| Outer      | The user saying `outer`, `foundation` or `scaffold`, or accepting your proposal to run one | The tree                            | §Outer pass, then §Inner dispatch                                            | The user                          | As single                                                                      |
-| Inner      | An outer session, briefed `inner`                                                          | The briefed item and its sub-issues | §Inner pass                                                                  | The outer session, in your report | Once, before your report, **Questions** included                               |
-| Consultant | The walker; `autonomous` in its brief widens §Latitude                                     | The issues the walker sends         | §Consultant                                                                  | The walker                        | Each update at once: the walker needs it on GitHub before it resumes           |
-| Reshape    | The walker, briefed `reshape`                                                              | The order of held issues            | §Reshaping                                                                   | Nobody                            | The moves, at once                                                             |
+| Mode       | Started by                                                                                 | Scope                               | Runs                                                                         | Asks through                      | Publishes                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------ | ----------------------------------- | ---------------------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------- |
+| Single     | The user, by default                                                                       | The tree                            | §Outer pass and §Inner pass on each item, together, revisiting either freely | The user                          | When none of your drafts holds a change waiting on an open question, or on ask           |
+| Outer      | The user saying `outer`, `foundation` or `scaffold`, or accepting your proposal to run one | The tree                            | §Outer pass, then §Inner dispatch                                            | The user                          | As single                                                                                |
+| Inner      | An outer session, briefed `inner`                                                          | The briefed item and its sub-issues | §Inner pass                                                                  | The outer session, in your report | Each issue once ready or left with only **Questions**: a stopped planner keeps it        |
+| Consultant | The walker; `autonomous` in its brief widens §Latitude                                     | The issues the walker sends         | §Consultant                                                                  | The walker                        | Each issue once ready or left set aside: the walker needs it on GitHub before it resumes |
+| Reshape    | The walker, briefed `reshape`                                                              | The order of held issues            | §Reshaping                                                                   | Nobody                            | The moves, at once                                                                       |
 
 Propose outer mode when the goal spans several segments or domains: deepening every item there in one pass outgrows one context and hides the items left shallow.
 
 ## Drafts
 
-Create and edit issues as local drafts in `.ai/issues/` and publish them together. A draft edit costs a diff instead of a full body, survives a stopped session and shows the user each change. Everything this skill says about creating and editing issues applies to the drafts until they are published.
+Create and edit issues as local drafts in `.ai/issues/` and publish them when §Modes says. A draft edit costs a diff instead of a full body, survives a stopped session and shows the user each change. Everything this skill says about creating and editing issues applies to the drafts until they are published.
 
 | File             | Holds                                                                                                       |
 | ---------------- | ----------------------------------------------------------------------------------------------------------- |
@@ -85,7 +85,7 @@ Create and edit issues as local drafts in `.ai/issues/` and publish them togethe
 - Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues, renders a plan's **Roadmap** from them and each header's ancestor chain from the tree. Write none of them by hand.
 - End each round with the drafts it changed and the changes waiting on each open question.
 - Run `pnpm engrenage planning issue check <refs>` on the drafts you changed before publishing them.
-- Publish when your mode's row in §Modes says, with `pnpm engrenage planning issue publish <refs>` on all your drafts at once. Before publishing, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md`.
+- Publish when your mode's row in §Modes says, with `pnpm engrenage planning issue publish <refs>` on every draft due then in one call. Before publishing, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md`.
 
 ## Decisions and questions
 
@@ -190,7 +190,7 @@ Outer mode, once the groundwork holds:
 - every fact more than one item would decide is in the plan;
 - every draft is published.
 
-1. Dispatch a new `planner` per item, in the background and in the main checkout, briefed `inner` with `Issue: <owner>/<repo>#<n>` as the first line and the plan number. A segment whose members share their design is one item.
+1. Keep up to K inner planners in flight, K from `pool <K>` in the user's request, 2 when unset, dispatching the next item as each reports. Dispatch a new `planner` per item, in the background and in the main checkout, briefed `inner` with `Issue: <owner>/<repo>#<n>` as the first line and the plan number. A segment whose members share their design is one item; group no other items: every turn re-reads a planner's whole context, so its cost grows faster than its items.
 2. Batch the inner planners' questions to the user, apply their plan findings yourself, and resume every inner planner whose item an answer or a plan change affects, already deepened or not.
 3. Once every inner planner has reported, review the tree under §Readiness.
 
@@ -233,7 +233,7 @@ The walker runs you as its `planner` subagent: a fallback that keeps code and pl
 | Only seems better than the plan                                                                    | Ask                                                                                                                                                                 | Reject it, and record it as an `idea` the plan relates to |
 | Shows the plan is wrong                                                                            | Ask                                                                                                                                                                 | Handle it as a question under §Latitude                   |
 
-- Return the answer and become idle; the walker resumes you for the next question.
+- Handle the issues the walker sends in tree order. Return once as many are ready as the free slots its brief names, or once none is left, listing the rest as pending; continue them when resumed. Otherwise, return the answer and become idle; the walker resumes you for the next question.
 - End each answer with a **Carry-over**: one line per decision, pending question and rejected deviation of the walk that the published issues do not record, replacing your previous one, so a new consultant starts from it without your history. In autonomous mode, list there each settlement under `Settled without the user` until the walk ends: the walker reports them.
 - Never implement.
 

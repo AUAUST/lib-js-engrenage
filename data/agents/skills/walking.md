@@ -124,6 +124,7 @@ When a segment or a nested plan closes and at the walk's end:
 
 - Start the `planner` subagent on first need with the plan number, and `autonomous` in autonomous mode; resume it under §Resumed agents.
 - Call it only for a blocker the issue's text does not answer, a deviation changing planned behavior, contracts, scope or tree order, or an issue its row sends to it or no row fits; answer nothing from code yourself.
+- Send it set-aside issues in tree order with the pool's free slots, at least one; it returns once that many are ready. Dispatch them, then resume it for the pending ones.
 - Batch what it sends back to the user with its findings and recommendations.
 
 ## Reshaping
