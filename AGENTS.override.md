@@ -74,7 +74,7 @@ Use the installed workflows below when their descriptions match the request.
 | Profile | Canonical role | Effort | Complexity |
 | --- | --- | --- | --- |
 | `analyser` | `analyser` | high | any other |
-| `planner` | `planner` | high | any other |
+| `planner` | `planner` | medium | any other |
 | `debugger` | `debugger` | medium | any other |
 | `debugger_low` | `debugger` | low | `trivial` |
 | `debugger_high` | `debugger` | high | `complex` |

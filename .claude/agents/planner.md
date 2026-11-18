@@ -6,7 +6,7 @@ description: Planner subagent, never for direct requests. The walker starts it
   reorder the tree around an issue nobody can settle yet; an outer planning
   session starts one per item to deepen it.
 model: opus
-effort: high
+effort: medium
 tools:
   - Bash
   - Read

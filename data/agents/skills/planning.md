@@ -9,7 +9,7 @@ agent:
   name: planner
   description: Planner subagent, never for direct requests. The walker starts it as its consultant on first need and resumes it to settle what the code and the plan settle and to update issues after a deviation, or starts a fresh one to reorder the tree around an issue nobody can settle yet; an outer planning session starts one per item to deepen it.
   model: opus
-  effort: high
+  effort: medium
   freshness: 2
   tools:
     - Bash
