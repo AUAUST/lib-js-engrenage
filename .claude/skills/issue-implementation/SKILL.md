@@ -50,6 +50,6 @@ Everything in the issue binds you: follow the **Steps** in order and write the l
 - When asked for a branch, create `worker/issue-<n>` from the current commit.
 - Never edit, comment on, set types or fields on, or close issues.
 - Report whether **Done when** holds, each deviation from the issue with its reason, each local choice you made, and what the issue tree needs updated.
-- Write each item in one line, since the walker reads dozens of reports: never the commands you ran, the checks that passed or commit hashes, which the gate and git record.
+- Write each item once and in one line, since the walker keeps dozens of reports in its context: never a second copy under another part, which refers to it instead, nor the commands you ran, the checks that passed or commit hashes, which the gate and git record. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
 
 <!-- @end -->

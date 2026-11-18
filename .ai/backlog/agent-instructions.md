@@ -13,10 +13,10 @@ Shared agent instructions, skills and the backlog conventions.
 - why: §Drafts of `analysis.md`, `debugging.md`, `planning.md` differ (publish trigger, "keep analysing"); `curation.md` › File cites the `planning` skill. A nested `@reference` ends the skill's block.
 - want: one source synced into every drafting skill, per #277; fallback: an always-loaded rule, ~35 lines per session.
 
-## 3. The walked agents' skills repeat their gated finishing lines word for word
+## 3. Subagent skills repeat their finishing and report lines
 
-- why: `issue-implementation.md` and `debugging.md` share final-report, gate, worktree and merger-findings lines; `merging.md` repeats the one-line rule. Drifted: one-line items always (worker) vs with `Walk:` (debugger); "your issue's scope" vs "your input's reach".
-- want: one source for agents with `gate: true`, generated into each; a sync check failing when the shared lines differ.
+- why: worker, debugger and merger share finishing lines; six skills repeat the report-once rule. Drifted: one-line items always (worker) vs with `Walk:` (debugger); "your issue's scope" vs "your input's reach".
+- want: report rule in the writing section; gated lines generated from one source; a sync check on them.
 
 ## 4. Walked agents read whole plan issues for the sections their header names
 

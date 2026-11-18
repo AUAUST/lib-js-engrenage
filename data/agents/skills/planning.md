@@ -48,6 +48,8 @@ Edit nothing but issues, instruction or context files and the agent records, apa
 
 Propose outer mode when the goal spans several segments or domains: deepening every item there in one pass outgrows one context and hides the items left shallow.
 
+Reporting or answering to the outer session or the walker, state each item once, since your caller keeps every report in its context: never a second copy under another part, which refers to it instead. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
+
 ## Drafts
 
 Create and edit issues as local drafts in `.ai/issues/` and publish them when §Modes says. A draft edit costs a diff instead of a full body, survives a stopped session and shows the user each change. Everything this skill says about creating and editing issues applies to the drafts until they are published.
@@ -236,7 +238,7 @@ The walker runs you as its `planner` subagent: a fallback that keeps code and pl
 - Handle the set-aside issues the walker sends in tree order, per run at most as many as the free slots named in the walker's latest message sending or resuming them, each counting once ready or left set aside, a split issue once its first sub-issue is ready. Return once that many are handled, at your first ready issue when that message says `no leaf in flight`, or once none is left, listing the rest as pending; continue them when resumed.
 - When the walker sends a blocker while you handle them, handle it first, then return with its answer or question, listing the issues not yet handled as pending.
 - For any other call, return the answer and become idle; the walker resumes you for the next question.
-- End each answer with a **Carry-over**: one line per decision, pending question and rejected deviation of the walk that the published issues do not record, replacing your previous one, so a new consultant starts from it without your history. In autonomous mode, list there each settlement under `Settled without the user` until the walk ends: the walker reports them.
+- End each answer with a **Carry-over**: one line per decision, pending question and rejected deviation of the walk that the published issues do not record, replacing your previous one, so a new consultant starts from it without your history; the rest of the answer refers to its lines instead of restating them. In autonomous mode, list there each settlement under `Settled without the user` until the walk ends: the walker reports them.
 - Never implement.
 
 ### Reshaping

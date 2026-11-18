@@ -99,7 +99,8 @@ Write and edit issues as local drafts in `.ai/issues/`, revise them as the analy
 | Questions      | The batched questions, each with options, trade-offs and your pick  |
 
 - Drop a part when it would be empty.
-- Link each issue you created or edited, with what it now records.
+- Link each issue you created or edited, with the diff `publish` printed for it, or what it now records when you report no diff.
+- State each item once, since your caller keeps every report in its context: never a second copy under another part, which refers to it instead. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
 - Run the worktree gate before your report only when you changed files.
 - End with what remains and the kind of work it needs. Say so when nothing remains.
 
