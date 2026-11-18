@@ -57,6 +57,7 @@ describe("createVitestConfig", () => {
           provider: "istanbul",
         },
         typecheck: {
+          exclude: [...configDefaults.exclude, "tests/**/fixtures/**"],
           tsconfig: join(root, "tsconfig.tests.json"),
         },
       },
@@ -220,6 +221,7 @@ describe("createVitestConfig type checking", () => {
       "tsconfig.tests.json": '{ "compilerOptions": { "strict": true, "noEmit": true, "composite": true, "noEmitOnError": false, "types": [] }, "include": ["tests"] }',
       "tests/failing.test.ts": 'import { expectTypeOf, test } from "vitest";\ntest("failing", () => {\n  expectTypeOf<string>().toEqualTypeOf<number>();\n});\n',
       "tests/passing.test.ts": 'import { expectTypeOf, test } from "vitest";\ntest("passing", () => {\n  expectTypeOf<number>().toEqualTypeOf<number>();\n});\n',
+      "tests/fixtures/ignored.test.ts": 'import { expectTypeOf, test } from "vitest";\ntest("ignored", () => {\n  expectTypeOf<string>().toEqualTypeOf<number>();\n});\n',
     });
 
     mkdirSync(project.resolve("node_modules/.bin"), {
@@ -252,6 +254,7 @@ describe("createVitestConfig type checking", () => {
       run: true,
       watch: false,
       reporters: [],
+      exclude: vitestConfig.test?.exclude ?? [],
       typecheck: {
         ...vitestConfig.test?.typecheck,
         enabled: true,

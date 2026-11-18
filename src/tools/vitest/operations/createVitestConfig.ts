@@ -168,6 +168,12 @@ export async function createVitestConfig(
     git,
   ] = await Promise.all([config.resolve("files"), config.resolve("git")]);
 
+  const exclude = [
+    ...configDefaults.exclude,
+    ...(await git.ignored),
+    ...fixtures,
+  ];
+
   return {
     ...(tsconfig === undefined
       ? {}
@@ -185,7 +191,7 @@ export async function createVitestConfig(
       isolate,
       restoreMocks,
       setupFiles,
-      exclude: [...configDefaults.exclude, ...(await git.ignored), ...fixtures],
+      exclude,
       coverage: {
         provider: defaultCoverageProvider,
         exclude: [
@@ -199,6 +205,7 @@ export async function createVitestConfig(
         include: [
           ...unique([...configDefaults.typecheck.include, ...testsPatterns]),
         ],
+        exclude,
         ...(typecheckTsconfig === undefined
           ? {}
           : { tsconfig: typecheckTsconfig }),
