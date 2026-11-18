@@ -15,6 +15,10 @@ describe("loadConfig", () => {
 
     await loadConfig(second, { reporter });
 
+    loadConfig.refresh(first);
+
+    await loadConfig(first, { reporter });
+
     expect(reporter.messages.map(({ text }) => text)).toEqual([
       `No engrenage config found in ${first}, using defaults`,
       `No engrenage config found in ${second}, using defaults`,

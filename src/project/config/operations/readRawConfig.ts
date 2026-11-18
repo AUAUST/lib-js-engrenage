@@ -19,6 +19,21 @@ interface FoundConfig {
   input: unknown;
 }
 
+const warnedRoots = new WeakMap<Reporter, Set<Directory>>();
+
+function warnMissingConfig(root: Directory, reporter: Reporter): void {
+  const warned = warnedRoots.get(reporter) ?? new Set<Directory>();
+
+  if (warned.has(root)) {
+    return;
+  }
+
+  warned.add(root);
+  warnedRoots.set(reporter, warned);
+
+  reporter.warn(`No engrenage config found in ${root}, using defaults`);
+}
+
 async function findConfigFile(
   directory: Directory,
 ): Promise<FoundConfig | undefined> {
@@ -102,7 +117,7 @@ export async function readRawConfig(
   } = searchParents ? await findConfig(start) : await findConfigIn(start);
 
   if (configFile === undefined) {
-    reporter.warn(`No engrenage config found in ${root}, using defaults`);
+    warnMissingConfig(root, reporter);
   }
 
   if (!isPlainObject(input)) {

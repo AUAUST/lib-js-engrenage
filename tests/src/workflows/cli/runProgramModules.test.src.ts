@@ -1,8 +1,6 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { createTestReporter } from "#tests/utils/createTestReporter";
-import { mockCwd } from "#tests/utils/mockCwd";
+import { useFailingProgram } from "#tests/utils/useFailingProgram";
 import {
   createProgram as createDefinedProgram,
   defineCommand,
@@ -13,43 +11,11 @@ const succeeding = defineCommand({
   action() {},
 });
 
-const failing = defineCommand({
-  action() {
-    throw new Error("outer", { cause: new Error("inner") });
-  },
-});
-
-function createProgram() {
-  return createDefinedProgram(
-    "program",
-    defineGroup({
-      commands: { failing },
-    }),
-  );
-}
-
-let reporter = createTestReporter();
-
-function printed() {
-  return reporter.messages
-    .filter(({ level }) => level === "error")
-    .map(({ text }) => text)
-    .join("\n");
-}
-
-beforeEach(() => {
-  reporter = createTestReporter();
-
-  mockCwd(createTemporaryProject({ "package.json": "{}" }).root);
-});
+const { getReporter, createProgram, printed } = useFailingProgram();
 
 afterEach(() => {
-  vi.restoreAllMocks();
-  vi.unstubAllEnvs();
   vi.doUnmock("#project/config/index");
   vi.doUnmock("#workflows/config/index");
-
-  process.exitCode = undefined;
 });
 
 describe("runProgram without the config modules", () => {
@@ -76,10 +42,10 @@ describe("runProgram without the config modules", () => {
         }),
       ),
       ["node", "program", "succeeding"],
-      { reporter },
+      { reporter: getReporter() },
     );
 
-    expect(reporter.messages).toEqual([]);
+    expect(getReporter().messages).toEqual([]);
     expect(process.exitCode).toBeUndefined();
   });
 
@@ -97,7 +63,7 @@ describe("runProgram without the config modules", () => {
     } = await import("#workflows/cli/operations/runProgram");
 
     await runFreshProgram(createProgram(), ["node", "program", "failing"], {
-      reporter,
+      reporter: getReporter(),
     });
 
     expect(printed()).toContain("    at ");

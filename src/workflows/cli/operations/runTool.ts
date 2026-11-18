@@ -68,6 +68,6 @@ export async function runTool(
   const exitCode = await runBinary(binaryPath, args, signal);
 
   if (message !== undefined && exitCode === 0) {
-    reporter.log(successMessage);
+    reporter.info(successMessage);
   }
 }

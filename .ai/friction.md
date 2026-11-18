@@ -60,6 +60,7 @@
 - `engrenage gate --worktree`: timed the gate on a probe edit — another session's uncommitted files were in the worktree, so its fixes ran on them too; reverted only the probe, stopped benchmarking the gate on the worktree
 - ESLint API from scratchpad: imported `eslint` in a scratch script — bare specifier unresolvable outside the project; imported `node_modules/eslint/lib/api.js` by absolute path
 - engrenage gate --worktree: ran during a parallel session's .ai/issues draft edits — Prettier failed on their vanishing/ignored drafts; covered my files with eslint --fix and typecheck instead
+- `engrenage gate --worktree`: ran while a parallel session published its `.ai/issues` drafts — Prettier failed on the vanished drafts; reran the gate once they were gone
 - engrenage planning issue create --parent: passed `#{new-downstream-defaults}` — expects the bare stem `new-downstream-defaults`; retried
 - Bash `cd` into `dist/`: ran a later command from there — the Claude git hook resolved `dist/package.json` as the project and failed; returned to the root
 - tsdown build with a scratch `outDir`: built experiment variants outside `dist` — the build rewrote `package.json` paths to the scratch dir; restored with `git checkout`

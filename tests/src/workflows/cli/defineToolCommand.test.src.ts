@@ -117,7 +117,7 @@ describe("defineToolCommand", () => {
     expect(readRecordedArgs(project)).toEqual(["--only"]);
   });
 
-  test("announces the command and reports success only when the binary passes", async () => {
+  test("announces the command and reports success at info only when the binary passes", async () => {
     createProject(fakeTool);
 
     const passing = await runDefinition(commands.fakeChecked, "--pass");
@@ -129,7 +129,7 @@ describe("defineToolCommand", () => {
         data: undefined,
       },
       {
-        level: "log",
+        level: "info",
         text: "All good!",
         data: undefined,
       },

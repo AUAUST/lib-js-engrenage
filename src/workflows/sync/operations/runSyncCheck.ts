@@ -29,6 +29,7 @@ function createRecordingReporter(problems: string[]): Reporter {
   };
 }
 
+// @debt `runStep` keeps a step's output only when it fails, so the warnings recorded here vanish whenever the files are in sync; `GateResult` needs a warnings channel the gate prints
 export async function runSyncCheck(config: LoadedConfig): Promise<GateResult> {
   const problems: string[] = [];
 

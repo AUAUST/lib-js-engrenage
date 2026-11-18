@@ -1,10 +1,11 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import type { Command } from "@commander-js/extra-typings";
 
 import { loadConfig } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { useFailingProgram } from "#tests/utils/useFailingProgram";
 import { reportAgentChecks } from "#tools/agents/index";
 import {
   createProgram as createDefinedProgram,
@@ -16,48 +17,13 @@ import { runProgram } from "#workflows/cli/operations/runProgram";
 
 import sync from "#bin/engrenage/sync";
 
-const failing = defineCommand({
-  action() {
-    throw new Error("outer", { cause: new Error("inner") });
-  },
-});
-
-function createProgram() {
-  return createDefinedProgram(
-    "program",
-    defineGroup({
-      commands: { failing },
-    }),
-  );
-}
-
-let reporter = createTestReporter();
+const { getReporter, createProgram, printed } = useFailingProgram();
 
 function run(program: Command, ...args: string[]) {
-  return runProgram(program, ["node", "program", ...args], { reporter });
+  return runProgram(program, ["node", "program", ...args], {
+    reporter: getReporter(),
+  });
 }
-
-function printed() {
-  return reporter.messages
-    .filter(({ level }) => level === "error")
-    .map(({ text }) => text)
-    .join("\n");
-}
-
-beforeEach(() => {
-  reporter = createTestReporter();
-
-  mockCwd(createTemporaryProject({ "package.json": "{}" }).root);
-});
-
-afterEach(() => {
-  vi.restoreAllMocks();
-  vi.unstubAllEnvs();
-  vi.doUnmock("#project/config/index");
-  vi.doUnmock("#workflows/config/index");
-
-  process.exitCode = undefined;
-});
 
 describe("runProgram", () => {
   test("prints the message and its causes without a stack", async () => {
