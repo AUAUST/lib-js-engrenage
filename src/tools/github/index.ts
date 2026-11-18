@@ -50,6 +50,8 @@ export { syncLabels } from "#tools/github/operations/syncLabels";
 
 // @barrel utils
 export { diffLabels } from "#tools/github/utils/diffLabels";
+export { parseManifestRepository } from "#tools/github/utils/parseManifestRepository";
+export { parseRepository } from "#tools/github/utils/parseRepository";
 export { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 // @end
 

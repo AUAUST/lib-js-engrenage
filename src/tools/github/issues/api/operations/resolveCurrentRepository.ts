@@ -1,6 +1,6 @@
 import { runGit } from "#tools/git/index";
 import { readManifestRepository } from "#tools/github/issues/api/operations/readManifestRepository";
-import { parseRepository } from "#tools/github/issues/api/utils/parseRepository";
+import { parseRepository } from "#tools/github/utils/parseRepository";
 import type { Directory } from "#types/Directory";
 
 async function readOriginRepository(root: Directory) {

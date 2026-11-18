@@ -2,11 +2,9 @@ import { join } from "node:path";
 
 import { object, optional, string, union } from "valibot";
 
-import { isString } from "@auaust/toolkit";
-
 import { readJsonFile } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
-import { parseRepository } from "#tools/github/issues/api/utils/parseRepository";
+import { parseManifestRepository } from "#tools/github/utils/parseManifestRepository";
 import type { Directory } from "#types/Directory";
 
 const manifestSchema = object({
@@ -29,7 +27,5 @@ export async function readManifestRepository(
 
   const { repository } = validate(manifestSchema, manifest, path);
 
-  return parseRepository(
-    isString(repository) ? repository : (repository?.url ?? ""),
-  );
+  return parseManifestRepository(repository);
 }

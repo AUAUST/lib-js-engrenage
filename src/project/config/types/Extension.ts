@@ -9,9 +9,10 @@ import type { PackageName } from "#types/PackageName";
 
 /**
  * An engrenage extension: the config keys, slots, file resources, file parts,
- * block directives and line markers it owns, and the entries it contributes
- * to slots. With `when.installed`, it is active only while the project
- * depends on that package.
+ * block directives and line markers it owns, and the entries it contributes to
+ * slots. With `when.installed`, it is active only while the project depends on
+ * that package; with `when.config`, a dotted config key path, only while that
+ * key resolves to `true`.
  *
  * @stable
  */
@@ -27,7 +28,7 @@ export interface Extension extends ExtensionShape<
   {
     readonly [Slot in keyof Engrenage.Slots]?: readonly Engrenage.Slots[Slot][];
   },
-  { readonly installed: PackageName }
+  { readonly installed: PackageName } | { readonly config: string }
 > {
   /**
    * URL of the extension package's root directory, with a trailing slash: its

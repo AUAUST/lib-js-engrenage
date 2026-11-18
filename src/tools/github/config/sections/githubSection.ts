@@ -12,16 +12,25 @@ import type { ResolvedGithub } from "#tools/github/types/ResolvedGithub";
 export const githubSection = declareSection({
   declaration: githubSchema,
   async resolve(input, config: ConfigResolver): Promise<ResolvedGithub> {
-    const [traits, { hasDependency }] = await Promise.all([
+    const [traits, { hasDependency }, packageJson] = await Promise.all([
       config.resolve("traits"),
       config.resolve("environment"),
+      config.resolve("packageJson"),
     ]);
 
     const {
       repositories: configured,
       labels: declared,
       ...resolved
-    } = githubSchema.resolve(input, { traits, hasDependency }, "github");
+    } = githubSchema.resolve(
+      input,
+      {
+        traits,
+        hasDependency,
+        repository: packageJson.optional.repository,
+      },
+      "github",
+    );
 
     const labels = freeze(
       mapValues(declared, (label): Label => {

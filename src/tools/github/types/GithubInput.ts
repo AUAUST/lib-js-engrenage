@@ -33,6 +33,10 @@ export interface GithubInput {
       color?: string
     })
   } | undefined)
+   * Turns GitHub planning on: the snapshot, the planning sheet and the issue skills.
+   * @default whether `repository` in package.json names a GitHub repository
+   */
+  planning?: (boolean | undefined)
   /**
    * GitHub names of the issue protocol's meanings, which skills and checks name instead.
    * `engrenage sync agents` fails when the snapshot of `engrenage github fetch` lacks a mapped type, field or option.

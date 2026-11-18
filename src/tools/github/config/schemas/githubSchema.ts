@@ -1,4 +1,5 @@
 import {
+  boolean,
   integer,
   literal,
   minLength,
@@ -21,6 +22,7 @@ import {
 } from "#foundation/options/index";
 import { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolSchema";
 import { workflowSetNames } from "#tools/github/constants";
+import { parseManifestRepository } from "#tools/github/utils/parseManifestRepository";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 import type { ResolvedTraits } from "#project/presets/index";
 import type { PackageName } from "#types/PackageName";
@@ -86,6 +88,17 @@ export const githubSchema = declareObject(
         },
       },
     ),
+    planning: declare(boolean(), {
+      description: "Turns GitHub planning on: the snapshot, the planning sheet and the issue skills.",
+      optional: {
+        explain: "whether `repository` in package.json names a GitHub repository",
+        compute(context: {
+          readonly repository: string | { url: string } | undefined;
+        }) {
+          return parseManifestRepository(context.repository) !== undefined;
+        },
+      },
+    }),
     protocol: issueProtocolSchema,
   },
   {

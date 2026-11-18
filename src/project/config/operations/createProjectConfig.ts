@@ -9,7 +9,7 @@ import {
   map,
   toSorted,
 } from "@auaust/toolkit/array";
-import { freeze, keys, values } from "@auaust/toolkit/object";
+import { freeze, getPath, keys, values } from "@auaust/toolkit/object";
 
 import { collectExtensions } from "#foundation/extensions/index";
 import {
@@ -22,6 +22,7 @@ import {
   createResolver,
   validate,
   type KeyedSection,
+  type Resolver,
 } from "#foundation/options/index";
 import {
   createConsoleReporter,
@@ -158,6 +159,10 @@ export function createProjectConfig({
           return true;
         }
 
+        if ("config" in when) {
+          return (await readConfigPath(config, when.config)) === true;
+        }
+
         const environment = await config.resolve("environment");
 
         return environment.hasDependency(when.installed);
@@ -174,7 +179,11 @@ export function createProjectConfig({
   checkDirectiveNames(registry);
 
   function explainInactive({ when }: Extension): string | undefined {
-    return when === undefined ? undefined : `install ${when.installed}`;
+    if (when !== undefined) {
+      return "config" in when
+        ? `set ${when.config} to true`
+        : `install ${when.installed}`;
+    }
   }
 
   async function refuse(
@@ -314,4 +323,13 @@ export function createProjectConfig({
     validate: validateKeys,
     forget,
   });
+}
+
+async function readConfigPath(
+  config: Resolver<ConfigContext>,
+  path: string,
+): Promise<unknown> {
+  const [key = "", ...rest] = path.split(".");
+
+  return getPath(await config.resolve(key), rest);
 }
