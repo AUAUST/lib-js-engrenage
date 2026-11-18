@@ -1,9 +1,4 @@
-import { readFile } from "node:fs/promises";
-
-import { map } from "@auaust/toolkit/array";
-
-import { syncBlocks, syncFiles } from "#foundation/blocks/index";
-import { codexFile } from "#tools/agents/codex/constants";
+import { formatBlockMarker, syncFiles } from "#foundation/blocks/index";
 import { syncCodexInstructions } from "#tools/agents/codex/index";
 import { attributionRules, markdownBlocks } from "#tools/agents/constants";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
@@ -12,11 +7,8 @@ import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
-import { parseInstruction } from "#tools/agents/operations/parseInstruction";
-import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
-import { renderFragment } from "#tools/agents/utils/renderFragment";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension, LoadedConfig } from "#project/config/index";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
@@ -84,8 +76,10 @@ async function migrateFormerRules(config: {
           await config.filesystem.write(
             file,
             content
-              .split(`<!-- @reference ${former} -->`)
-              .join(`<!-- @reference ${reference} -->`),
+              .split(formatBlockMarker(markdownBlocks, "reference", [former]))
+              .join(
+                formatBlockMarker(markdownBlocks, "reference", [reference]),
+              ),
           );
         }
 
@@ -96,10 +90,9 @@ async function migrateFormerRules(config: {
 }
 
 /**
- * Syncs agent files when an agent is preferred: the `@reference` blocks of
- * instruction files from their fragments, generated skill and rule files,
- * attribution rules and Codex instructions. A reference that cannot be resolved
- * leaves its block untouched and logs a warning.
+ * Syncs agent files when an agent is preferred: migrations, attribution rules,
+ * generated skill and rule files and Codex instructions. The `blocks` target
+ * fills their `@reference` blocks.
  */
 export async function syncAgentFiles(loaded: LoadedConfig) {
   const { resolve, context } = loaded;
@@ -122,88 +115,6 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
 
   await syncAttributionRules(config);
 
-  const instructionFiles = await config.filesystem.glob(
-    config.agents.instructionFiles,
-  );
-
-  const discovered = instructionFiles.filter((file) => file !== codexFile);
-
-  async function findReference(
-    reference: string,
-    path: File,
-  ): Promise<File | undefined> {
-    try {
-      return await resolveAgentReference(config, reference, path);
-    } catch (error) {
-      if (!(error instanceof Error)) {
-        throw error;
-      }
-
-      console.warn(`${error.message}: its block is left untouched`);
-    }
-  }
-
-  async function readReferences(): Promise<ReadonlyMap<string, string>> {
-    const bodies = new Map<string, string>();
-
-    await Promise.all(
-      discovered.map(async (file) => {
-        const content = await config.filesystem.read(file);
-
-        if (content === undefined) {
-          return;
-        }
-
-        const path = config.resolve(file);
-        const referenced = new Set<string>();
-
-        await syncBlocks(content, markdownBlocks, {
-          reference(reference) {
-            if (reference === undefined) {
-              throw new Error(`Expected a reference in a marker of ${path}`);
-            }
-
-            referenced.add(reference);
-          },
-        });
-
-        await Promise.all(
-          [...referenced].map(async (reference) => {
-            const source = await findReference(reference, path);
-
-            if (source !== undefined) {
-              bodies.set(
-                `${path}\0${reference}`,
-                await renderFragment(
-                  parseInstruction(await readFile(source, "utf-8"), source)
-                    .body,
-                  source,
-                  config.fillers,
-                ),
-              );
-            }
-          }),
-        );
-      }),
-    );
-
-    return bodies;
-  }
-
-  function createUpdate(bodies: ReadonlyMap<string, string>) {
-    return async function update(content: string, path: File): Promise<string> {
-      return syncBlocks(content, markdownBlocks, {
-        reference(reference) {
-          if (reference === undefined) {
-            throw new Error(`Expected a reference in a marker of ${path}`);
-          }
-
-          return bodies.get(`${path}\0${reference}`);
-        },
-      });
-    };
-  }
-
   const generated: FileSync[] = [];
 
   function generate(
@@ -214,7 +125,11 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     generated.push({
       file,
       update(current, path) {
-        if (!current.includes(`<!-- @reference ${reference} -->`)) {
+        if (
+          !current.includes(
+            formatBlockMarker(markdownBlocks, "reference", [reference]),
+          )
+        ) {
           return current;
         }
 
@@ -247,18 +162,6 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   }
 
   await syncFiles(config, generated);
-
-  const update = createUpdate(await readReferences());
-
-  await syncFiles(
-    config,
-    map(discovered, (file) => {
-      return {
-        file,
-        update,
-      };
-    }),
-  );
 
   await syncCodexInstructions(config);
 }

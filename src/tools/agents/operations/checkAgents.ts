@@ -1,3 +1,4 @@
+import { formatBlockMarker } from "#foundation/blocks/index";
 import { spawnProcess } from "#foundation/processes/index";
 import {
   claudeAgentsDir,
@@ -6,7 +7,7 @@ import {
 } from "#tools/agents/claude/constants";
 import { codexFile, codexSkillsDir } from "#tools/agents/codex/constants";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
-import { agentsFile } from "#tools/agents/constants";
+import { agentsFile, markdownBlocks } from "#tools/agents/constants";
 import { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
@@ -82,8 +83,9 @@ export async function checkAgents(
       const installed = await filesystem.read(skillFile.file);
 
       let owned = (
-        installed?.includes(`<!-- @reference ${template.reference} -->`) ===
-        true
+        installed?.includes(
+          formatBlockMarker(markdownBlocks, "reference", [template.reference]),
+        ) === true
       );
 
       if (!owned) {
@@ -101,7 +103,13 @@ export async function checkAgents(
 
           const current = await filesystem.read(output.file);
 
-          if (current?.includes(`<!-- @reference ${template.reference} -->`)) {
+          if (
+            current?.includes(
+              formatBlockMarker(markdownBlocks, "reference", [
+                template.reference,
+              ]),
+            )
+          ) {
             owned = true;
           }
         }
@@ -133,7 +141,11 @@ export async function checkAgents(
 
         const valid = (
           current !== undefined &&
-          current.includes(`<!-- @reference ${template.reference} -->`) &&
+          current.includes(
+            formatBlockMarker(markdownBlocks, "reference", [
+              template.reference,
+            ]),
+          ) &&
           (output.frontmatter === undefined ||
             syncFrontmatter(current, output.frontmatter, output.file) ===
               current) &&

@@ -2,11 +2,11 @@
 
 Shared agent instructions, skills and the backlog conventions.
 
-## 1. The reference marker syntax is hand-written and conflicts go unreported
+## 1. Attribution rule conflicts go unreported
 
-- sites: `src/tools/agents/setup/createBacklogStep.ts:69`, `src/tools/agents/setup/syncAgentFiles.ts:35`, `:40`, `src/foundation/blocks/utils/syncBlocks.ts:40` (skips `@debt` comments the marker regex reads as directives), `createAgentsStep`, `createInstructionFile`, `getMissingRuleTemplates` (regex re-parse).
-- why: `markdownBlocks` describes the syntax; a rule file at the wanted path without its reference silently drops the rule.
-- want: #442: one marker grammar owned by extensions; sync reports conflicts.
+- site: the `@debt` of `syncAttributionRules` in `src/tools/agents/setup/syncAgentFiles.ts`.
+- why: a rule file at the wanted path without its reference silently drops the rule.
+- want: sync reports the conflict.
 
 ## 2. The issue-drafts rules have three diverging copies, and the curator loads the planner for them
 

@@ -1,11 +1,13 @@
 import { readFile } from "node:fs/promises";
 
 import { engrenage } from "#constants";
+import { formatBlockMarker } from "#foundation/blocks/index";
 import { resolveDataFile } from "#foundation/data/index";
 import {
   agentsFile,
   backlogIndex,
   backlogTemplate,
+  markdownBlocks,
   scratchpadFile,
   scratchpadPlaceholder,
 } from "#tools/agents/constants";
@@ -89,11 +91,10 @@ export function createBacklogStep(): Step {
         throw new Error(`Create ${agentsFile} before setting up the backlog`);
       }
 
-      // @debt the "<!-- @reference … -->" syntax is hand-written here, in createAgentsStep and createInstructionFile, and re-parsed by a regex in getMissingRuleTemplates, although markdownBlocks already describes it
       if (!instructions.includes(sectionReference)) {
         await filesystem.write(
           agentsFile,
-          `${instructions.trimEnd()}\n\n<!-- @reference ${sectionReference} -->\n<!-- @end -->\n`,
+          `${instructions.trimEnd()}\n\n${formatBlockMarker(markdownBlocks, "reference", [sectionReference])}\n${formatBlockMarker(markdownBlocks, "end")}\n`,
         );
       }
 

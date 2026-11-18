@@ -1,4 +1,4 @@
-import { syncBlocks } from "#foundation/blocks/index";
+import { formatBlockMarker, syncBlocks } from "#foundation/blocks/index";
 import { codexFile, codexSkillsDir } from "#tools/agents/codex/constants";
 import { createCodexDispatch } from "#tools/agents/codex/operations/createCodexDispatch";
 import { createCodexRuleMapping } from "#tools/agents/codex/operations/createCodexRuleMapping";
@@ -36,7 +36,11 @@ export async function syncCodexInstructions({
       `${codexSkillsDir}/${template.name}/SKILL.md`,
     );
 
-    if (!skill?.includes(`<!-- @reference ${template.reference} -->`)) {
+    if (
+      !skill?.includes(
+        formatBlockMarker(markdownBlocks, "reference", [template.reference]),
+      )
+    ) {
       continue;
     }
 
@@ -56,9 +60,9 @@ export async function syncCodexInstructions({
   await filesystem.write(
     codexFile,
     await syncBlocks(
-      content.includes("<!-- @dispatch -->")
+      content.includes(formatBlockMarker(markdownBlocks, "dispatch"))
         ? content
-        : `${content.trimEnd()}\n\n## Dispatch\n\n<!-- @dispatch -->\n<!-- @end -->\n`,
+        : `${content.trimEnd()}\n\n## Dispatch\n\n${formatBlockMarker(markdownBlocks, "dispatch")}\n${formatBlockMarker(markdownBlocks, "end")}\n`,
       markdownBlocks,
       {
         dispatch() {

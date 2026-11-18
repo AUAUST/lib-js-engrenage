@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import {
   resolveAgentReference,
@@ -24,19 +24,6 @@ async function resolveSections({
 }
 
 describe("syncAgentFiles", () => {
-  test("syncs only the configured instruction files", async () => {
-    const config = await loadConfig(root);
-
-    await syncAgentFiles(config);
-
-    expect(config.context.filesystem.discard()).toEqual([
-      {
-        file: "INSTRUCTIONS.md",
-        status: "synced",
-      },
-    ]);
-  });
-
   test("resolves snippets, references relative to the file and package specifiers", async () => {
     const config = await loadConfig(root);
 
@@ -89,35 +76,6 @@ describe("syncAgentFiles", () => {
     await expect(
       resolveAgentReference(references, "missing.md", from),
     ).rejects.toThrow(`Cannot resolve reference "missing.md" in ${from}`);
-  });
-
-  test("warns about an unresolvable reference and leaves its block untouched", async () => {
-    const warn = vi.spyOn(console, "warn");
-
-    const instructions = [
-      "<!-- @reference ./missing.md -->",
-      "kept text",
-      "<!-- @end -->",
-      "",
-    ].join("\n");
-
-    const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
-      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], instructionFiles: ["AGENTS.md"] } };',
-      "AGENTS.md": instructions,
-    });
-
-    const config = await loadConfig(project.root);
-
-    await syncAgentFiles(config);
-
-    expect(await config.context.filesystem.read("AGENTS.md")).toBe(
-      instructions,
-    );
-
-    expect(warn).toHaveBeenCalledWith(
-      `Cannot resolve reference "./missing.md" in ${project.resolve("AGENTS.md")}: its block is left untouched`,
-    );
   });
 
   test("repairs stale planning policy and toggles the owned YAML key while preserving metadata and comments", async () => {
@@ -255,41 +213,6 @@ describe("syncAgentFiles", () => {
 });
 
 describe("fragment fillers", () => {
-  function createProject(fragment: string) {
-    return createTemporaryProject({
-      "package.json": '{"type":"module"}',
-      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], instructionFiles: ["AGENTS.md"] } };',
-      "src/feature/index.ts": "",
-      "fragment.md": fragment,
-      "AGENTS.md": "<!-- @reference ./fragment.md -->\n<!-- @end -->\n",
-    });
-  }
-
-  test("renders a filler directive inside the referenced fragment", async () => {
-    const project = createProject(
-      "# Shared\n\n<!-- @environment-map src -->\n<!-- @end -->\n\nAfter.\n",
-    );
-
-    const config = await loadConfig(project.root);
-
-    await syncAgentFiles(config);
-
-    const content = await config.context.filesystem.read("AGENTS.md");
-
-    expect(content).toContain("# Shared\n\n# Project map: src\n");
-    expect(content).toContain("feature");
-    expect(content).toContain("\n\nAfter.\n");
-    expect(content).not.toContain("@environment-map");
-  });
-
-  test("fails on an unknown directive, naming it", async () => {
-    const project = createProject("<!-- @unknown-table -->\n<!-- @end -->\n");
-
-    await expect(
-      syncAgentFiles(await loadConfig(project.root)),
-    ).rejects.toThrow('Unknown directive in "<!-- @unknown-table -->"');
-  });
-
   test("moves a former skill directory and rewrites references to its former fragment", async () => {
     const former = "@auaust/engrenage/agents/skills/issue-planning.md";
     const current = "@auaust/engrenage/agents/skills/planning.md";

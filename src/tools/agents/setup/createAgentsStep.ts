@@ -1,7 +1,12 @@
 import { readFile } from "node:fs/promises";
 
+import { formatBlockMarker } from "#foundation/blocks/index";
 import { resolveDataFile } from "#foundation/data/index";
-import { agentsFile, agentsTemplate } from "#tools/agents/constants";
+import {
+  agentsFile,
+  agentsTemplate,
+  markdownBlocks,
+} from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 import type { Step } from "#project/steps/index";
@@ -25,7 +30,9 @@ export function createAgentsStep(): Step {
       const sections = templates.filter((section) => section.default);
 
       const references = sections
-        .map(({ reference }) => `<!-- @reference ${reference} -->`)
+        .map(({ reference }) => {
+          return formatBlockMarker(markdownBlocks, "reference", [reference]);
+        })
         .join("\n");
 
       const text = await readFile(template, "utf-8");
@@ -36,7 +43,7 @@ export function createAgentsStep(): Step {
         agentsFile,
         references === ""
           ? `${body}\n`
-          : `${body}\n\n${references}\n<!-- @end -->\n`,
+          : `${body}\n\n${references}\n${formatBlockMarker(markdownBlocks, "end")}\n`,
       );
 
       await syncAgentFiles(context);
