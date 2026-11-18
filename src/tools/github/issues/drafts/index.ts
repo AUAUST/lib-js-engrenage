@@ -42,6 +42,7 @@ export { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHead
 export { readIssueManifest } from "#tools/github/issues/drafts/utils/readIssueManifest";
 export { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
 export { renderDraftReferences } from "#tools/github/issues/drafts/utils/renderDraftReferences";
+export { resolveDraftRepository } from "#tools/github/issues/drafts/utils/resolveDraftRepository";
 export { resolveIssueLocation } from "#tools/github/issues/drafts/utils/resolveIssueLocation";
 export { resolveIssueStem } from "#tools/github/issues/drafts/utils/resolveIssueStem";
 export { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";

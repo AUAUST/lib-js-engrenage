@@ -554,7 +554,17 @@ describe("without a current repository", () => {
     ).resolves.toBe(".ai/issues/toolkit.new-x.draft.md");
 
     await expect(createDraft(config, "task", { slug: "y" })).rejects.toThrow(
-      "needs the current repository: set `repository` in package.json or add an `origin` remote",
+      "needs a GitHub repository, and package.json `repository` and the `origin` remote name none: record the finding as a backlog entry naming its owner instead",
+    );
+  });
+
+  test("points an unknown repository to the backlog", async () => {
+    const config = await createDetachedProject({});
+
+    await expect(
+      createDraft(config, "task", { slug: "x", repo: "unknown" }),
+    ).rejects.toThrow(
+      "Unknown repository short name `unknown`; registered: toolkit; record the finding as a backlog entry naming its owner instead",
     );
   });
 
@@ -569,7 +579,7 @@ describe("without a current repository", () => {
     ).resolves.toEqual({ lines: ["toolkit.new-x: ready"], passed: true });
 
     await expect(checkIssues(config, ["new-y"], "worker")).rejects.toThrow(
-      "new-y needs the current repository",
+      "new-y needs a GitHub repository",
     );
   });
 });

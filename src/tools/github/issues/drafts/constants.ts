@@ -43,3 +43,5 @@ export const issueTypeMutation = `mutation($issueId: ID!, $issueTypeId: ID!) {
 }`;
 
 export const headerPlaceholder = "<sections>: <gist>";
+
+export const backlogFallbackHint = "record the finding as a backlog entry naming its owner instead";
