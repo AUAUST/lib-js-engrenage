@@ -104,7 +104,7 @@ export async function syncHooks(
         .filter(({ entry }) => {
           return (
             (entry.command?.startsWith(prefix) === true ||
-              entry.command?.startsWith(ownedPrefix) === true) &&
+              entry.command?.includes(ownedPrefix) === true) &&
             !isProduced(event, matcher, entry)
           );
         });
@@ -132,7 +132,15 @@ export async function syncHooks(
   const present = read();
 
   for (const hook of hooks) {
-    const { event, matcher, command, condition, onFailure, async } = hook;
+    const {
+      event,
+      matcher,
+      command,
+      condition,
+      onFailure,
+      async,
+      payloadIncludes,
+    } = hook;
 
     const found = present[event]?.some((group) => {
       return (
@@ -151,7 +159,7 @@ export async function syncHooks(
           hooks: [
             {
               type: "command",
-              command: createHookCommand(command),
+              command: createHookCommand(command, payloadIncludes),
               ...(condition === undefined ? {} : { if: condition }),
               ...(onFailure === undefined ? {} : { onFailure }),
               ...(async === undefined ? {} : { async }),

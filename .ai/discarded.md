@@ -113,5 +113,5 @@
 - environment role list config key: one load of default role presets — a new config key contract; a context-memoized `readEnvironmentRoles` operation suffices
 - sync include filler: inline the issues rule into each drafting skill — sync code beyond the writer's role; skills Read the `paths` rule explicitly until #277
 - issue-drafting skill: one filing and drafts source for four skills — no skill-to-skill install dependency, invocation model-driven; a default `paths` rule instead
-- dispatch stop gate via `claude --settings`: headless gated agent stop gate — caller's engrenage writes a hook the target's engrenage version may not accept; a target `Stop` settings hook instead, costing ~1s per session stop
+- dispatch stop gate via `claude --settings`: headless gated agent stop gate — caller's engrenage writes a hook the target's engrenage version may not accept; a target `Stop` settings hook instead
 - runtime-name map of dispatchers in `agents`: picking a runtime's headless client — runtimes are contributed data; an optional `dispatcher` on `AgentRuntime` instead

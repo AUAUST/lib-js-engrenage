@@ -75,6 +75,8 @@ export const claudeHooks = freeze([
     event: "Stop",
     matcher: "*",
     command: `${claudeHookPrefix}stop`,
+    // @debt the guard text restates the stop handler's payload keys, `agent_id` and `agent_type`, instead of deriving from its schema
+    payloadIncludes: '"agent_',
   } as const satisfies HookDefinition,
   ...(["Stop", "SubagentStop"] as const).map((event) => {
     return {

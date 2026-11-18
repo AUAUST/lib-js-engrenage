@@ -139,7 +139,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook stop || exit 2"
+            "command": "engrenage_hook_payload=\"$(cat)\"; case \"$engrenage_hook_payload\" in *'\"agent_'*) ;; *) exit 0 ;; esac; printf '%s' \"$engrenage_hook_payload\" | { engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook stop || exit 2; }"
           }
         ]
       }

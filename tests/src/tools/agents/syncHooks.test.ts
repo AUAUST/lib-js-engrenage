@@ -300,3 +300,69 @@ test("package-resolution failure exits 2 before running a successful child comma
   expect(result.stderr).toContain("No consumer package found");
   expect(result.stdout).toBe("");
 });
+
+test("runs the session stop hook only for a payload naming an agent, replacing its unguarded entry", async () => {
+  const project = createTemporaryProject({
+    "package.json": '{"type":"module"}',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
+    ".claude/settings.json": JSON.stringify({
+      hooks: {
+        Stop: [
+          {
+            matcher: "*",
+            hooks: [
+              {
+                type: "command",
+                command: `engrenage_hook_root="$(node -e 'const fs=require("node:fs"),p=require("node:path");let d=process.cwd();while(!fs.existsSync(p.join(d,"package.json"))){const n=p.dirname(d);if(n===d)throw Error("No consumer package found");d=n}process.stdout.write(d)')" && cd -- "$engrenage_hook_root" && pnpm --silent engrenage agents claude hook stop || exit 2`,
+              },
+            ],
+          },
+        ],
+      },
+    }),
+    "bin/pnpm": "#!/bin/sh\necho child-started\ncat\n",
+  });
+
+  chmodSync(project.resolve("bin/pnpm"), 0o755);
+
+  const config = await loadConfig(project.root);
+
+  await syncClaudeSettings(config);
+
+  await config.context.filesystem.flush();
+
+  const stops: {
+    hooks: { command: string; async?: boolean }[];
+  }[] = JSON.parse(project.read(".claude/settings.json")).hooks.Stop;
+
+  const commands = stops
+    .flatMap((group) => group.hooks)
+    .filter((entry) => entry.async !== true)
+    .map((entry) => entry.command);
+
+  expect(commands).toHaveLength(1);
+
+  function run(input: string) {
+    return spawnSync("sh", ["-c", commands[0]], {
+      cwd: project.root,
+      input,
+      env: {
+        ...process.env,
+        PATH: `${project.resolve("bin")}:${process.env.PATH ?? ""}`,
+      },
+      encoding: "utf-8",
+    });
+  }
+
+  const main = run('{"session_id":"s","cwd":"."}');
+
+  expect(main.status, main.stderr).toBe(0);
+  expect(main.stdout).toBe("");
+
+  const payload = '{"session_id":"s","agent_type":"worker","cwd":"."}';
+
+  const agent = run(payload);
+
+  expect(agent.status, agent.stderr).toBe(0);
+  expect(agent.stdout).toBe(`child-started\n${payload}`);
+});

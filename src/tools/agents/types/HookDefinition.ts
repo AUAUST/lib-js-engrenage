@@ -11,4 +11,9 @@ export interface HookDefinition {
   readonly condition?: string;
   readonly onFailure?: "block";
   readonly async?: true;
+  /**
+   * Text the hook's stdin payload must contain for the command to run; any other
+   * payload exits 0 before the package manager starts.
+   */
+  readonly payloadIncludes?: string;
 }
